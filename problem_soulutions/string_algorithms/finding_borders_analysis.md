@@ -382,3 +382,270 @@ def find_borders_rolling_hash(s):
 ---
 
 *This analysis shows how to efficiently find borders using KMP failure function and other string algorithms.* 
+
+## 🎯 Problem Variations & Related Questions
+
+### 🔄 **Variations of the Original Problem**
+
+#### **Variation 1: Finding Borders with Constraints**
+**Problem**: Find borders with additional constraints (length, alphabet, etc.).
+```python
+def constrained_finding_borders(s, constraints):
+    # constraints = {'min_length': x, 'max_length': y, 'alphabet': chars}
+    
+    n = len(s)
+    
+    # Apply constraints
+    if 'alphabet' in constraints:
+        if not all(c in constraints['alphabet'] for c in s):
+            return []
+    
+    # Use KMP failure function
+    borders = []
+    lps = compute_lps(s)
+    
+    length = lps[n - 1]
+    while length > 0:
+        # Apply length constraints
+        if 'min_length' in constraints and length < constraints['min_length']:
+            break
+        if 'max_length' in constraints and length > constraints['max_length']:
+            length = lps[length - 1]
+            continue
+        
+        borders.append(s[:length])
+        length = lps[length - 1]
+    
+    return borders[::-1]
+```
+
+#### **Variation 2: Finding Borders with Multiple Criteria**
+**Problem**: Find borders that optimize multiple criteria (length, frequency, etc.).
+```python
+def multi_criteria_finding_borders(s, criteria):
+    # criteria = {'length_weight': w1, 'frequency_weight': w2, 'simplicity_weight': w3}
+    
+    n = len(s)
+    all_borders = []
+    lps = compute_lps(s)
+    
+    length = lps[n - 1]
+    while length > 0:
+        all_borders.append(s[:length])
+        length = lps[length - 1]
+    
+    # Score each border
+    scored_borders = []
+    for border in all_borders:
+        score = 0
+        
+        # Length score (longer is better)
+        if 'length_weight' in criteria:
+            score += criteria['length_weight'] * len(border)
+        
+        # Frequency score (how often it appears)
+        if 'frequency_weight' in criteria:
+            freq = s.count(border)
+            score += criteria['frequency_weight'] * freq
+        
+        # Simplicity score (fewer unique characters is better)
+        if 'simplicity_weight' in criteria:
+            unique_chars = len(set(border))
+            score += criteria['simplicity_weight'] * (len(border) - unique_chars)
+        
+        scored_borders.append((border, score))
+    
+    # Return borders sorted by score
+    scored_borders.sort(key=lambda x: x[1], reverse=True)
+    return [border for border, _ in scored_borders]
+```
+
+#### **Variation 3: Finding Borders with Costs**
+**Problem**: Each character has a cost, find borders with minimum total cost.
+```python
+def cost_based_finding_borders(s, char_costs):
+    # char_costs[c] = cost of character c
+    
+    n = len(s)
+    borders = []
+    lps = compute_lps(s)
+    
+    length = lps[n - 1]
+    while length > 0:
+        border = s[:length]
+        cost = sum(char_costs.get(c, 1) for c in border)
+        borders.append((border, cost))
+        length = lps[length - 1]
+    
+    # Sort by cost (ascending)
+    borders.sort(key=lambda x: x[1])
+    return [border for border, _ in borders]
+```
+
+#### **Variation 4: Finding Borders with Probabilities**
+**Problem**: Characters have probabilities, find expected borders.
+```python
+def probabilistic_finding_borders(s, char_probs):
+    # char_probs[c] = probability of character c
+    
+    n = len(s)
+    expected_borders = []
+    
+    # Calculate expected borders based on character probabilities
+    for length in range(1, n):
+        prefix = s[:length]
+        suffix = s[n - length:]
+        
+        # Calculate probability that prefix equals suffix
+        prob_match = 1.0
+        for i in range(length):
+            if prefix[i] == suffix[i]:
+                prob_match *= char_probs.get(prefix[i], 0.1)
+            else:
+                prob_match = 0
+                break
+        
+        if prob_match >= 0.5:  # Threshold for "border"
+            expected_borders.append(prefix)
+    
+    return expected_borders
+```
+
+#### **Variation 5: Finding Borders with Multiple Strings**
+**Problem**: Find common borders across multiple strings.
+```python
+def multiple_string_finding_borders(strings):
+    # Find borders that are common to all strings
+    
+    if not strings:
+        return []
+    
+    # Find borders for each string
+    all_border_sets = []
+    for s in strings:
+        borders = find_borders_kmp(s)
+        all_border_sets.append(set(borders))
+    
+    # Find intersection of all border sets
+    common_borders = all_border_sets[0]
+    for border_set in all_border_sets[1:]:
+        common_borders = common_borders.intersection(border_set)
+    
+    return sorted(common_borders, key=len)
+```
+
+### 🔗 **Related Problems & Concepts**
+
+#### **1. Border Problems**
+- **Border Detection**: Detect borders in strings
+- **Border Analysis**: Analyze border properties
+- **Border Classification**: Classify borders
+- **Border Prediction**: Predict future borders
+
+#### **2. String Analysis Problems**
+- **Periodicity**: Analyze periodic properties
+- **Suffix Analysis**: Analyze suffix properties
+- **Prefix Analysis**: Analyze prefix properties
+- **Pattern Analysis**: Analyze repeating patterns
+
+#### **3. String Algorithms**
+- **KMP Algorithm**: Efficient pattern matching
+- **Z-Algorithm**: Linear time string processing
+- **Failure Functions**: KMP failure function applications
+- **Border Functions**: Border-based algorithms
+
+#### **4. Optimization Problems**
+- **Maximization**: Find maximum value solutions
+- **Cost Optimization**: Optimize with respect to costs
+- **Constrained Optimization**: Optimization with constraints
+- **Multi-objective Optimization**: Optimize multiple criteria
+
+#### **5. Algorithmic Techniques**
+- **Dynamic Programming**: Solve optimization problems
+- **Two Pointers**: Use two pointers for efficiency
+- **Sliding Window**: Process data in windows
+- **Mathematical Analysis**: Use mathematical properties
+
+### 🎯 **Competitive Programming Variations**
+
+#### **1. Multiple Test Cases with Different Strings**
+```python
+t = int(input())
+for _ in range(t):
+    s = input().strip()
+    borders = find_borders_kmp(s)
+    print(len(borders))
+    print(*borders)
+```
+
+#### **2. Range Queries on Border Finding**
+```python
+def range_border_finding_queries(s, queries):
+    # queries = [(l, r), ...] - find borders of substring s[l:r]
+    
+    results = []
+    for l, r in queries:
+        substring = s[l:r]
+        borders = find_borders_kmp(substring)
+        results.append(borders)
+    
+    return results
+```
+
+#### **3. Interactive Border Finding Problems**
+```python
+def interactive_border_finding():
+    while True:
+        s = input("Enter string (or 'quit' to exit): ")
+        if s.lower() == 'quit':
+            break
+        
+        borders = find_borders_kmp(s)
+        print(f"String: {s}")
+        print(f"Borders: {borders}")
+        print(f"Number of borders: {len(borders)}")
+```
+
+### 🧮 **Mathematical Extensions**
+
+#### **1. Border Theory**
+- **Border Properties**: Mathematical properties of borders
+- **Border Functions**: Mathematical functions on borders
+- **Border Complexity**: Complexity measures for borders
+- **Border Transformations**: Mathematical transformations
+
+#### **2. Combinatorial Analysis**
+- **Border Enumeration**: Count borders with properties
+- **Pattern Enumeration**: Count patterns in borders
+- **String Enumeration**: Count strings with border properties
+- **Combinatorial Counting**: Count combinations and permutations
+
+#### **3. String Theory**
+- **String Properties**: Periodicity, borders, periods
+- **String Functions**: Mathematical functions on strings
+- **String Complexity**: Complexity measures for strings
+- **String Transformations**: Mathematical transformations
+
+### 📚 **Learning Resources**
+
+#### **1. Related Algorithms**
+- **String Matching**: KMP, Boyer-Moore, Rabin-Karp algorithms
+- **Suffix Structures**: Suffix arrays, suffix trees, suffix automata
+- **String Compression**: LZ77, LZ78, Huffman coding
+- **String Parsing**: Regular expressions, context-free parsing
+
+#### **2. Mathematical Concepts**
+- **Combinatorics**: String combinatorics and counting
+- **Information Theory**: Entropy, compression, encoding
+- **Formal Languages**: Regular languages, context-free languages
+- **Automata Theory**: Finite automata, pushdown automata
+
+#### **3. Programming Concepts**
+- **String Manipulation**: Efficient string operations
+- **Algorithm Design**: Systematic approach to problem solving
+- **Complexity Analysis**: Time and space complexity
+- **Optimization Techniques**: Improving algorithm performance
+
+---
+
+*This analysis demonstrates efficient border finding techniques and shows various extensions for border analysis problems.* 

@@ -435,3 +435,262 @@ def build_trie(strings):
 ---
 
 *This analysis shows how to efficiently count distinct substrings using suffix automaton and other string algorithms.* 
+
+## 🎯 Problem Variations & Related Questions
+
+### 🔄 **Variations of the Original Problem**
+
+#### **Variation 1: Distinct Substrings with Length Constraints**
+**Problem**: Count distinct substrings with specific length constraints.
+```python
+def distinct_substrings_length_constraints(s, min_length, max_length):
+    # Count distinct substrings with length between min_length and max_length
+    
+    n = len(s)
+    sa = SuffixAutomaton()
+    for c in s:
+        sa.sa_extend(c)
+    
+    count = 0
+    for i in range(sa.size):
+        length = sa.states[i].len
+        if min_length <= length <= max_length:
+            # Count distinct substrings ending at this state
+            count += length - sa.states[i].link
+    
+    return count
+```
+
+#### **Variation 2: Distinct Substrings with Alphabet Constraints**
+**Problem**: Count distinct substrings using only specific characters.
+```python
+def distinct_substrings_alphabet_constraints(s, alphabet):
+    # Count distinct substrings using only characters in alphabet
+    
+    n = len(s)
+    
+    # Filter string to only include allowed characters
+    filtered_s = ''.join(c for c in s if c in alphabet)
+    
+    if not filtered_s:
+        return 0
+    
+    sa = SuffixAutomaton()
+    for c in filtered_s:
+        sa.sa_extend(c)
+    
+    count = 0
+    for i in range(sa.size):
+        count += sa.states[i].len - sa.states[i].link
+    
+    return count
+```
+
+#### **Variation 3: Distinct Substrings with Costs**
+**Problem**: Each character has a cost, find distinct substrings with minimum total cost.
+```python
+def cost_based_distinct_substrings(s, char_costs, budget):
+    # Find distinct substrings with total cost within budget
+    
+    n = len(s)
+    sa = SuffixAutomaton()
+    for c in s:
+        sa.sa_extend(c)
+    
+    distinct_substrings = set()
+    total_cost = 0
+    
+    for i in range(sa.size):
+        length = sa.states[i].len
+        # Generate all substrings ending at this state
+        for j in range(sa.states[i].link + 1, length + 1):
+            substring = s[:j]
+            cost = sum(char_costs.get(c, 1) for c in substring)
+            
+            if substring not in distinct_substrings and total_cost + cost <= budget:
+                distinct_substrings.add(substring)
+                total_cost += cost
+    
+    return len(distinct_substrings)
+```
+
+#### **Variation 4: Distinct Substrings with Probabilities**
+**Problem**: Characters have probabilities, find expected number of distinct substrings.
+```python
+def probabilistic_distinct_substrings(s, char_probs):
+    # char_probs[c] = probability of character c
+    
+    n = len(s)
+    # For probabilistic strings, calculate expected distinct substrings
+    expected_count = 0
+    
+    # Calculate expected count based on character probabilities
+    for length in range(1, n + 1):
+        for start in range(n - length + 1):
+            prob_substring = 1.0
+            for i in range(start, start + length):
+                if i < len(s):
+                    prob_substring *= char_probs.get(s[i], 0.1)
+            expected_count += prob_substring
+    
+    return expected_count
+```
+
+#### **Variation 5: Distinct Substrings with Multiple Strings**
+**Problem**: Count distinct substrings across multiple strings.
+```python
+def multiple_string_distinct_substrings(strings):
+    # Count distinct substrings across all strings
+    
+    all_substrings = set()
+    
+    for s in strings:
+        n = len(s)
+        sa = SuffixAutomaton()
+        for c in s:
+            sa.sa_extend(c)
+        
+        # Add all substrings from this string
+        for i in range(sa.size):
+            length = sa.states[i].len
+            for j in range(sa.states[i].link + 1, length + 1):
+                substring = s[:j]
+                all_substrings.add(substring)
+    
+    return len(all_substrings)
+```
+
+### 🔗 **Related Problems & Concepts**
+
+#### **1. String Counting Problems**
+- **Substring Counting**: Count substrings with specific properties
+- **Pattern Counting**: Count occurrences of patterns
+- **Palindrome Counting**: Count palindromic substrings
+- **Anagram Counting**: Count anagrams of strings
+
+#### **2. String Analysis Problems**
+- **Periodicity**: Analyze periodic properties of strings
+- **Border Analysis**: Find borders and periods
+- **Suffix Analysis**: Analyze suffix properties
+- **Prefix Analysis**: Analyze prefix properties
+
+#### **3. String Data Structures**
+- **Suffix Arrays**: Sort all suffixes of a string
+- **Suffix Trees**: Tree representation of suffixes
+- **Suffix Automata**: Compact automaton for suffixes
+- **Trie**: Tree for string storage and retrieval
+
+#### **4. Optimization Problems**
+- **Maximization**: Find maximum value solutions
+- **Cost Optimization**: Optimize with respect to costs
+- **Constrained Optimization**: Optimization with constraints
+- **Multi-objective Optimization**: Optimize multiple criteria
+
+#### **5. Algorithmic Techniques**
+- **Suffix Automaton**: Efficient substring processing
+- **Dynamic Programming**: Solve optimization problems
+- **Sliding Window**: Process data in windows
+- **Two Pointers**: Use two pointers for efficiency
+
+### 🎯 **Competitive Programming Variations**
+
+#### **1. Multiple Test Cases with Different Strings**
+```python
+t = int(input())
+for _ in range(t):
+    s = input().strip()
+    sa = SuffixAutomaton()
+    for c in s:
+        sa.sa_extend(c)
+    
+    count = 0
+    for i in range(sa.size):
+        count += sa.states[i].len - sa.states[i].link
+    
+    print(count)
+```
+
+#### **2. Range Queries on Distinct Substrings**
+```python
+def range_distinct_substring_queries(s, queries):
+    # queries = [(l, r), ...] - count distinct substrings in s[l:r]
+    
+    results = []
+    for l, r in queries:
+        substring = s[l:r]
+        sa = SuffixAutomaton()
+        for c in substring:
+            sa.sa_extend(c)
+        
+        count = 0
+        for i in range(sa.size):
+            count += sa.states[i].len - sa.states[i].link
+        
+        results.append(count)
+    
+    return results
+```
+
+#### **3. Interactive Distinct Substring Problems**
+```python
+def interactive_distinct_substrings():
+    while True:
+        s = input("Enter string (or 'quit' to exit): ")
+        if s.lower() == 'quit':
+            break
+        
+        sa = SuffixAutomaton()
+        for c in s:
+            sa.sa_extend(c)
+        
+        count = 0
+        for i in range(sa.size):
+            count += sa.states[i].len - sa.states[i].link
+        
+        print(f"String: {s}")
+        print(f"Number of distinct substrings: {count}")
+```
+
+### 🧮 **Mathematical Extensions**
+
+#### **1. String Theory**
+- **String Properties**: Periodicity, borders, periods
+- **String Functions**: Failure function, border array
+- **String Complexity**: Kolmogorov complexity of strings
+- **String Enumeration**: Count strings with certain properties
+
+#### **2. Combinatorial Analysis**
+- **String Enumeration**: Count strings with certain properties
+- **Substring Enumeration**: Count substrings with properties
+- **Pattern Enumeration**: Count patterns in strings
+- **Combinatorial Counting**: Count combinations and permutations
+
+#### **3. Probability Theory**
+- **Expected Values**: Calculate expected outcomes
+- **Probability Distributions**: Character probability distributions
+- **Stochastic Processes**: Random string generation
+- **Markov Chains**: State transitions in strings
+
+### 📚 **Learning Resources**
+
+#### **1. Related Algorithms**
+- **String Matching**: KMP, Boyer-Moore, Rabin-Karp algorithms
+- **Suffix Structures**: Suffix arrays, suffix trees, suffix automata
+- **String Compression**: LZ77, LZ78, Huffman coding
+- **String Parsing**: Regular expressions, context-free parsing
+
+#### **2. Mathematical Concepts**
+- **Combinatorics**: String combinatorics and counting
+- **Information Theory**: Entropy, compression, encoding
+- **Formal Languages**: Regular languages, context-free languages
+- **Automata Theory**: Finite automata, pushdown automata
+
+#### **3. Programming Concepts**
+- **String Representations**: Character arrays, string objects
+- **Memory Management**: Efficient string storage and manipulation
+- **Algorithm Optimization**: Improving string algorithm performance
+- **Error Handling**: Dealing with invalid inputs and edge cases
+
+---
+
+*This analysis demonstrates efficient distinct substring counting techniques and shows various extensions for string analysis problems.* 
