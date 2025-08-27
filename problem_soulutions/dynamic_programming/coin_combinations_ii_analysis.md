@@ -274,3 +274,237 @@ for coin in sorted_coins:
 ---
 
 *This analysis shows how to efficiently solve unordered combination problems using dynamic programming.* 
+
+## 🎯 Problem Variations & Related Questions
+
+### 🔄 **Variations of the Original Problem**
+
+#### **Variation 1: Coin Combinations with Limited Supply**
+**Problem**: Each coin can only be used a limited number of times.
+```python
+def coin_combinations_ii_limited_supply(n, x, coins, limits):
+    # limits[i] = maximum times coin i can be used
+    MOD = 10**9 + 7
+    
+    # dp[i][j] = number of ways to make sum i using first j coins
+    dp = [[0] * (n + 1) for _ in range(x + 1)]
+    dp[0][0] = 1  # Base case
+    
+    for i in range(x + 1):
+        for j in range(1, n + 1):
+            dp[i][j] = dp[i][j-1]  # Don't use coin j
+            for k in range(1, limits[j-1] + 1):
+                if i >= k * coins[j-1]:
+                    dp[i][j] = (dp[i][j] + dp[i - k * coins[j-1]][j-1]) % MOD
+    
+    return dp[x][n]
+```
+
+#### **Variation 2: Coin Combinations with Minimum Coins**
+**Problem**: Find combinations that use at least k coins.
+```python
+def coin_combinations_ii_minimum_coins(n, x, coins, min_coins):
+    MOD = 10**9 + 7
+    
+    # dp[i][j] = number of ways to make sum i using exactly j coins
+    dp = [[0] * (x + 1) for _ in range(x + 1)]
+    dp[0][0] = 1  # Base case
+    
+    for i in range(x + 1):
+        for j in range(x + 1):
+            for coin in coins:
+                if i >= coin and j > 0:
+                    dp[i][j] = (dp[i][j] + dp[i - coin][j - 1]) % MOD
+    
+    # Sum all ways with at least min_coins
+    result = 0
+    for j in range(min_coins, x + 1):
+        result = (result + dp[x][j]) % MOD
+    
+    return result
+```
+
+#### **Variation 3: Coin Combinations with Maximum Coins**
+**Problem**: Find combinations that use at most k coins.
+```python
+def coin_combinations_ii_maximum_coins(n, x, coins, max_coins):
+    MOD = 10**9 + 7
+    
+    # dp[i][j] = number of ways to make sum i using exactly j coins
+    dp = [[0] * (max_coins + 1) for _ in range(x + 1)]
+    dp[0][0] = 1  # Base case
+    
+    for i in range(x + 1):
+        for j in range(max_coins + 1):
+            for coin in coins:
+                if i >= coin and j > 0:
+                    dp[i][j] = (dp[i][j] + dp[i - coin][j - 1]) % MOD
+    
+    # Sum all ways with at most max_coins
+    result = 0
+    for j in range(max_coins + 1):
+        result = (result + dp[x][j]) % MOD
+    
+    return result
+```
+
+#### **Variation 4: Coin Combinations with Costs**
+**Problem**: Each coin has a cost, find combinations with minimum total cost.
+```python
+def coin_combinations_ii_with_costs(n, x, coins, costs):
+    # costs[i] = cost of using coin i
+    
+    # dp[i] = minimum cost to make sum i
+    dp = [float('inf')] * (x + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, x + 1):
+        for j, coin in enumerate(coins):
+            if i >= coin:
+                dp[i] = min(dp[i], costs[j] + dp[i - coin])
+    
+    return dp[x] if dp[x] != float('inf') else -1
+```
+
+#### **Variation 5: Coin Combinations with Probabilities**
+**Problem**: Each coin has a probability of being used, find expected number of combinations.
+```python
+def coin_combinations_ii_with_probabilities(n, x, coins, probabilities):
+    # probabilities[i] = probability of using coin i
+    
+    # dp[i] = expected number of ways to make sum i
+    dp = [0.0] * (x + 1)
+    dp[0] = 1.0  # Base case
+    
+    for i in range(1, x + 1):
+        for j, coin in enumerate(coins):
+            if i >= coin:
+                dp[i] += dp[i - coin] * probabilities[j]
+    
+    return dp[x]
+```
+
+### 🔗 **Related Problems & Concepts**
+
+#### **1. Knapsack Problems**
+- **0/1 Knapsack**: Each item can be used at most once
+- **Unbounded Knapsack**: Unlimited copies of each item
+- **Fractional Knapsack**: Can take fractions of items
+- **Multiple Knapsack**: Multiple knapsacks with constraints
+
+#### **2. Dynamic Programming Patterns**
+- **1D DP**: Single state variable (target sum)
+- **2D DP**: Two state variables (target sum, additional constraint)
+- **State Compression**: Optimize space complexity
+- **Memoization**: Top-down approach with caching
+
+#### **3. Counting Problems**
+- **Combinatorial Counting**: Count valid combinations
+- **Inclusion-Exclusion**: Count with constraints
+- **Generating Functions**: Algebraic approach to counting
+- **Burnside's Lemma**: Count orbits under group actions
+
+#### **4. Optimization Problems**
+- **Minimum Cost**: Find minimum cost solution
+- **Maximum Value**: Find maximum value solution
+- **Resource Allocation**: Optimal use of limited resources
+- **Scheduling**: Optimal arrangement of tasks
+
+#### **5. Algorithmic Techniques**
+- **Greedy Algorithms**: Heuristic optimization
+- **Branch and Bound**: Exact optimization
+- **Dynamic Programming**: Optimal substructure
+- **Linear Programming**: Mathematical optimization
+
+### 🎯 **Competitive Programming Variations**
+
+#### **1. Multiple Test Cases with Different Constraints**
+```python
+t = int(input())
+for _ in range(t):
+    n, x = map(int, input().split())
+    coins = list(map(int, input().split()))
+    result = coin_combinations_ii_dp(n, x, coins)
+    print(result)
+```
+
+#### **2. Range Queries on Coin Combinations**
+```python
+def range_coin_combinations_ii_queries(n, coins, queries):
+    # Precompute for all sums up to max_x
+    max_x = max(query[1] for query in queries)
+    dp = [0] * (max_x + 1)
+    dp[0] = 1
+    
+    for i in range(1, max_x + 1):
+        for coin in coins:
+            if i >= coin:
+                dp[i] = (dp[i] + dp[i - coin]) % MOD
+    
+    # Answer queries
+    for l, r in queries:
+        total = sum(dp[i] for i in range(l, r + 1)) % MOD
+        print(total)
+```
+
+#### **3. Interactive Coin Combination Problems**
+```python
+def interactive_coin_combination_ii_game():
+    n, x = map(int, input("Enter n and x: ").split())
+    coins = list(map(int, input("Enter coins: ").split()))
+    
+    print(f"Coins: {coins}")
+    print(f"Target sum: {x}")
+    
+    player_guess = int(input("Enter number of ways: "))
+    actual_ways = coin_combinations_ii_dp(n, x, coins)
+    
+    if player_guess == actual_ways:
+        print("Correct!")
+    else:
+        print(f"Wrong! Number of ways is {actual_ways}")
+```
+
+### 🧮 **Mathematical Extensions**
+
+#### **1. Generating Functions**
+- **Power Series**: Represent combinations as polynomial coefficients
+- **Recurrence Relations**: Find closed-form solutions
+- **Asymptotic Analysis**: Analyze behavior for large sums
+- **Combinatorial Identities**: Prove mathematical relationships
+
+#### **2. Advanced DP Techniques**
+- **Digit DP**: Count combinations with specific properties
+- **Convex Hull Trick**: Optimize DP transitions
+- **Divide and Conquer**: Split problems into subproblems
+- **Persistent Data Structures**: Maintain combination history
+
+#### **3. Combinatorial Analysis**
+- **Partition Theory**: Mathematical study of partitions
+- **Composition Theory**: Study of ordered partitions
+- **Generating Functions**: Algebraic approach to counting
+- **Asymptotic Analysis**: Behavior for large numbers
+
+### 📚 **Learning Resources**
+
+#### **1. Related Algorithms**
+- **Knapsack Algorithms**: 0/1, unbounded, fractional
+- **Subset Sum**: Find subsets with given sum
+- **Partition Problems**: Divide set into equal parts
+- **Scheduling Algorithms**: Optimal task arrangement
+
+#### **2. Mathematical Concepts**
+- **Combinatorics**: Counting principles and techniques
+- **Number Theory**: Properties of integers
+- **Linear Algebra**: Matrix operations and transformations
+- **Probability Theory**: Random processes and outcomes
+
+#### **3. Programming Concepts**
+- **Dynamic Programming**: Optimal substructure and overlapping subproblems
+- **Memoization**: Caching computed results
+- **Space-Time Trade-offs**: Optimizing for different constraints
+- **Modular Arithmetic**: Handling large numbers efficiently
+
+---
+
+*This analysis demonstrates the power of dynamic programming for unordered combination problems and shows various extensions and applications.* 

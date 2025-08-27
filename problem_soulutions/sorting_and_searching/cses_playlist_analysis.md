@@ -291,3 +291,286 @@ for end in range(n):
 ---
 
 *This analysis shows how to systematically improve from O(n³) to O(n) and extracts reusable insights for sliding window problems.* 
+
+## 🎯 Problem Variations & Related Questions
+
+### 🔄 **Variations of the Original Problem**
+
+#### **Variation 1: Playlist with K Duplicates Allowed**
+**Problem**: Find longest sequence where each song appears at most K times.
+```python
+def playlist_k_duplicates(songs, k):
+    n = len(songs)
+    song_count = {}
+    max_length = 0
+    start = 0
+    
+    for end in range(n):
+        current_song = songs[end]
+        song_count[current_song] = song_count.get(current_song, 0) + 1
+        
+        # Shrink window if we exceed k occurrences
+        while song_count[current_song] > k:
+            song_count[songs[start]] -= 1
+            start += 1
+        
+        max_length = max(max_length, end - start + 1)
+    
+    return max_length
+```
+
+#### **Variation 2: Playlist with Minimum Length**
+**Problem**: Find shortest sequence with exactly K unique songs.
+```python
+def playlist_min_length_k_unique(songs, k):
+    n = len(songs)
+    song_count = {}
+    min_length = float('inf')
+    start = 0
+    
+    for end in range(n):
+        current_song = songs[end]
+        song_count[current_song] = song_count.get(current_song, 0) + 1
+        
+        # Shrink window while maintaining k unique songs
+        while len(song_count) > k:
+            song_count[songs[start]] -= 1
+            if song_count[songs[start]] == 0:
+                del song_count[songs[start]]
+            start += 1
+        
+        if len(song_count) == k:
+            min_length = min(min_length, end - start + 1)
+    
+    return min_length if min_length != float('inf') else -1
+```
+
+#### **Variation 3: Playlist with Weighted Songs**
+**Problem**: Each song has a weight. Find sequence with maximum total weight.
+```python
+def playlist_weighted(songs, weights):
+    n = len(songs)
+    song_count = {}
+    max_weight = 0
+    current_weight = 0
+    start = 0
+    
+    for end in range(n):
+        current_song = songs[end]
+        current_weight += weights[end]
+        song_count[current_song] = song_count.get(current_song, 0) + 1
+        
+        # Shrink window if we have duplicates
+        while song_count[current_song] > 1:
+            song_count[songs[start]] -= 1
+            current_weight -= weights[start]
+            start += 1
+        
+        max_weight = max(max_weight, current_weight)
+    
+    return max_weight
+```
+
+#### **Variation 4: Playlist with Genre Constraints**
+**Problem**: Find longest sequence with at most G different genres.
+```python
+def playlist_genre_constraints(songs, genres, max_genres):
+    n = len(songs)
+    genre_count = {}
+    max_length = 0
+    start = 0
+    
+    for end in range(n):
+        current_genre = genres[end]
+        genre_count[current_genre] = genre_count.get(current_genre, 0) + 1
+        
+        # Shrink window if we exceed genre limit
+        while len(genre_count) > max_genres:
+            genre_count[genres[start]] -= 1
+            if genre_count[genres[start]] == 0:
+                del genre_count[genres[start]]
+            start += 1
+        
+        max_length = max(max_length, end - start + 1)
+    
+    return max_length
+```
+
+#### **Variation 5: Playlist with Time Constraints**
+**Problem**: Each song has duration. Find sequence with total duration ≤ T.
+```python
+def playlist_time_constraints(songs, durations, max_time):
+    n = len(songs)
+    song_count = {}
+    current_time = 0
+    max_length = 0
+    start = 0
+    
+    for end in range(n):
+        current_song = songs[end]
+        current_time += durations[end]
+        song_count[current_song] = song_count.get(current_song, 0) + 1
+        
+        # Shrink window if we exceed time or have duplicates
+        while current_time > max_time or song_count[current_song] > 1:
+            song_count[songs[start]] -= 1
+            current_time -= durations[start]
+            start += 1
+        
+        max_length = max(max_length, end - start + 1)
+    
+    return max_length
+```
+
+### 🔗 **Related Problems & Concepts**
+
+#### **1. Sliding Window Problems**
+- **Longest Substring Without Repeating**: Find substring with unique characters
+- **Minimum Window Substring**: Find smallest substring containing all characters
+- **Substring with Concatenation**: Find substring containing all words
+- **Longest Substring with At Most K**: Find substring with at most k distinct characters
+
+#### **2. Two Pointers Problems**
+- **Two Sum**: Find pair with given sum
+- **Three Sum**: Find triplet with given sum
+- **Container With Most Water**: Find maximum area
+- **Trapping Rain Water**: Calculate trapped water
+
+#### **3. Hash Table Problems**
+- **Hash Table Implementation**: Custom hash table design
+- **Collision Resolution**: Handle hash collisions
+- **Load Factor**: Optimize hash table performance
+- **Hash Functions**: Design good hash functions
+
+#### **4. String Processing Problems**
+- **String Matching**: Find pattern occurrences in text
+- **Anagram Detection**: Check if strings are anagrams
+- **Palindrome Detection**: Check if string is palindrome
+- **String Compression**: Compress repeated characters
+
+#### **5. Array Manipulation Problems**
+- **Array Rotation**: Rotate array by k positions
+- **Array Partitioning**: Partition array based on conditions
+- **Array Merging**: Merge sorted arrays
+- **Array Sorting**: Sort array efficiently
+
+### 🎯 **Competitive Programming Variations**
+
+#### **1. Multiple Test Cases**
+```python
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    songs = list(map(int, input().split()))
+    
+    last_seen = {}
+    max_length = 0
+    start = 0
+    
+    for end in range(n):
+        current_song = songs[end]
+        if current_song in last_seen:
+            start = max(start, last_seen[current_song] + 1)
+        last_seen[current_song] = end
+        max_length = max(max_length, end - start + 1)
+    
+    print(max_length)
+```
+
+#### **2. Range Queries**
+```python
+# Precompute longest unique sequences for all ranges
+def precompute_unique_ranges(songs):
+    n = len(songs)
+    unique_lengths = [[0] * n for _ in range(n)]
+    
+    for i in range(n):
+        song_count = {}
+        for j in range(i, n):
+            song_count[songs[j]] = song_count.get(songs[j], 0) + 1
+            if song_count[songs[j]] == 1:
+                unique_lengths[i][j] = j - i + 1
+            else:
+                unique_lengths[i][j] = unique_lengths[i][j-1]
+    
+    return unique_lengths
+
+# Answer queries about longest unique sequences
+def unique_query(unique_lengths, l, r):
+    return unique_lengths[l][r]
+```
+
+#### **3. Interactive Problems**
+```python
+# Interactive playlist analyzer
+def interactive_playlist():
+    n = int(input("Enter number of songs: "))
+    songs = list(map(int, input("Enter song IDs: ").split()))
+    
+    print(f"Playlist: {songs}")
+    
+    # Analyze playlist
+    last_seen = {}
+    max_length = 0
+    start = 0
+    best_start = 0
+    best_end = 0
+    
+    for end in range(n):
+        current_song = songs[end]
+        if current_song in last_seen:
+            start = max(start, last_seen[current_song] + 1)
+        last_seen[current_song] = end
+        
+        if end - start + 1 > max_length:
+            max_length = end - start + 1
+            best_start = start
+            best_end = end
+    
+    print(f"Longest unique sequence: {max_length}")
+    print(f"Sequence: {songs[best_start:best_end+1]}")
+```
+
+### 🧮 **Mathematical Extensions**
+
+#### **1. Probability and Statistics**
+- **Expected Length**: Calculate expected length of unique sequences
+- **Variance Analysis**: Analyze distribution of sequence lengths
+- **Sampling Theory**: Estimate unique sequences from samples
+- **Confidence Intervals**: Estimate population parameters
+
+#### **2. Information Theory**
+- **Entropy**: Calculate information content of song distribution
+- **Compression**: Compress playlist data efficiently
+- **Redundancy**: Measure duplicate information
+- **Uniqueness**: Quantify how unique songs are
+
+#### **3. Combinatorics**
+- **Permutations**: Count arrangements of unique songs
+- **Combinations**: Count selections of unique songs
+- **Partitions**: Count ways to partition songs
+- **Derangements**: Count arrangements with no fixed points
+
+### 📚 **Learning Resources**
+
+#### **1. Related Algorithms**
+- **Sliding Window**: Two-pointer technique
+- **Hash Tables**: Efficient lookup data structures
+- **Two Pointers**: Efficient array processing
+- **String Algorithms**: Pattern matching techniques
+
+#### **2. Mathematical Concepts**
+- **Set Theory**: Union, intersection, difference operations
+- **Combinatorics**: Counting principles and arrangements
+- **Probability**: Random sampling and distributions
+- **Information Theory**: Entropy and data compression
+
+#### **3. Programming Concepts**
+- **Data Structures**: Efficient storage and retrieval
+- **Algorithm Analysis**: Time and space complexity
+- **Memory Management**: Optimizing space usage
+- **Performance Optimization**: Trade-offs between time and space
+
+---
+
+*This analysis demonstrates sliding window techniques and shows various extensions for sequence processing problems.* 

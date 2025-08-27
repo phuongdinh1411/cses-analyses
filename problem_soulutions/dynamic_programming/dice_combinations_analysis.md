@@ -259,6 +259,224 @@ def solve(target):
 4. **Handle base case**: dp[0] = 1
 5. **Use modular arithmetic**: Take modulo at each step
 
+## 🎯 Problem Variations & Related Questions
+
+### 🔄 **Variations of the Original Problem**
+
+#### **Variation 1: Different Dice Values**
+**Problem**: Instead of {1,2,3,4,5,6}, use dice with values {1,2,3,4,5,6,7,8}.
+```python
+def dice_combinations_extended(n):
+    MOD = 10**9 + 7
+    dp = [0] * (n + 1)
+    dp[0] = 1
+    
+    for i in range(1, n + 1):
+        for dice in range(1, 9):  # 8-sided dice
+            if i >= dice:
+                dp[i] = (dp[i] + dp[i - dice]) % MOD
+    
+    return dp[n]
+```
+
+#### **Variation 2: Minimum Number of Throws**
+**Problem**: Find the minimum number of dice throws needed to make sum n.
+```python
+def min_dice_throws(n):
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0
+    
+    for i in range(1, n + 1):
+        for dice in range(1, 7):
+            if i >= dice:
+                dp[i] = min(dp[i], dp[i - dice] + 1)
+    
+    return dp[n] if dp[n] != float('inf') else -1
+```
+
+#### **Variation 3: Count Ways with Maximum Throws**
+**Problem**: Count ways to make sum n using at most k dice throws.
+```python
+def dice_combinations_with_limit(n, k):
+    MOD = 10**9 + 7
+    # dp[i][j] = ways to make sum i using exactly j throws
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+    
+    for i in range(n + 1):
+        for j in range(k + 1):
+            for dice in range(1, 7):
+                if i >= dice and j > 0:
+                    dp[i][j] = (dp[i][j] + dp[i - dice][j - 1]) % MOD
+    
+    # Sum all ways with at most k throws
+    result = 0
+    for j in range(k + 1):
+        result = (result + dp[n][j]) % MOD
+    return result
+```
+
+#### **Variation 4: Unbounded vs Bounded Dice**
+**Problem**: What if you can only use each dice value a limited number of times?
+```python
+def bounded_dice_combinations(n, limits):
+    # limits[i] = max times you can use dice value i+1
+    MOD = 10**9 + 7
+    dp = [0] * (n + 1)
+    dp[0] = 1
+    
+    for dice in range(1, 7):
+        for i in range(n, dice - 1, -1):  # Process backwards
+            for count in range(1, limits[dice - 1] + 1):
+                if i >= dice * count:
+                    dp[i] = (dp[i] + dp[i - dice * count]) % MOD
+    
+    return dp[n]
+```
+
+#### **Variation 5: Probability of Reaching Sum**
+**Problem**: What's the probability of reaching sum n with fair dice?
+```python
+def dice_probability(n, max_throws=100):
+    # dp[i][j] = probability of reaching sum i in j throws
+    dp = [[0.0] * (max_throws + 1) for _ in range(n + 1)]
+    dp[0][0] = 1.0
+    
+    for j in range(max_throws):
+        for i in range(n + 1):
+            if dp[i][j] > 0:
+                for dice in range(1, 7):
+                    if i + dice <= n:
+                        dp[i + dice][j + 1] += dp[i][j] / 6.0
+    
+    # Sum probabilities of reaching n in any number of throws
+    return sum(dp[n][j] for j in range(max_throws + 1))
+```
+
+### 🔗 **Related Problems & Concepts**
+
+#### **1. Coin Change Problems**
+- **Unbounded Knapsack**: Use unlimited coins of each denomination
+- **Bounded Knapsack**: Limited number of each coin type
+- **Minimum Coins**: Find minimum coins needed
+- **All Possible Combinations**: Count all ways to make change
+
+#### **2. Dynamic Programming Patterns**
+- **1D DP**: Single state variable (sum)
+- **2D DP**: Two state variables (sum, number of items)
+- **State Compression**: Optimize space complexity
+- **Memoization**: Top-down approach with caching
+
+#### **3. Combinatorics Problems**
+- **Permutations**: Order matters
+- **Combinations**: Order doesn't matter
+- **Partitions**: Ways to partition a number
+- **Catalan Numbers**: Special counting sequences
+
+#### **4. Optimization Problems**
+- **Shortest Path**: Minimum steps to reach target
+- **Longest Path**: Maximum steps to reach target
+- **Resource Allocation**: Optimal use of limited resources
+- **Scheduling**: Optimal arrangement of tasks
+
+#### **5. Probability & Statistics**
+- **Expected Value**: Average outcome over many trials
+- **Variance**: Spread of outcomes
+- **Markov Chains**: State transition probabilities
+- **Monte Carlo**: Simulation-based probability estimation
+
+### 🎯 **Competitive Programming Variations**
+
+#### **1. Multiple Test Cases with Different Constraints**
+```python
+t = int(input())
+for _ in range(t):
+    n, k = map(int, input().split())
+    # n = target sum, k = max throws
+    result = dice_combinations_with_limit(n, k)
+    print(result)
+```
+
+#### **2. Range Queries**
+```python
+# Precompute for range [1, max_n]
+def precompute_dice_combinations(max_n):
+    MOD = 10**9 + 7
+    dp = [0] * (max_n + 1)
+    dp[0] = 1
+    
+    for i in range(1, max_n + 1):
+        for dice in range(1, 7):
+            if i >= dice:
+                dp[i] = (dp[i] + dp[i - dice]) % MOD
+    
+    return dp
+
+# Answer range queries
+def range_query(l, r, dp):
+    return sum(dp[i] for i in range(l, r + 1))
+```
+
+#### **3. Interactive Problems**
+```python
+# Interactive dice game
+def interactive_dice_game():
+    target = int(input())
+    current_sum = 0
+    throws = 0
+    
+    while current_sum < target:
+        dice = int(input())  # Player chooses dice value
+        if 1 <= dice <= 6:
+            current_sum += dice
+            throws += 1
+            print(f"Current sum: {current_sum}, Throws: {throws}")
+        else:
+            print("Invalid dice value!")
+    
+    print(f"Reached target in {throws} throws!")
+```
+
+### 🧮 **Mathematical Extensions**
+
+#### **1. Generating Functions**
+- **Power Series**: Represent combinations as polynomial coefficients
+- **Recurrence Relations**: Find closed-form solutions
+- **Asymptotic Analysis**: Analyze behavior for large n
+- **Combinatorial Identities**: Prove mathematical relationships
+
+#### **2. Number Theory Connections**
+- **Modular Arithmetic**: Work with large numbers
+- **Prime Factorization**: Analyze divisibility properties
+- **Chinese Remainder Theorem**: Solve modular equations
+- **Euler's Totient Function**: Count coprime numbers
+
+#### **3. Advanced DP Techniques**
+- **Digit DP**: Count numbers with specific properties
+- **Convex Hull Trick**: Optimize DP transitions
+- **Divide and Conquer**: Split problems into subproblems
+- **Persistent Data Structures**: Maintain history of states
+
+### 📚 **Learning Resources**
+
+#### **1. Related Algorithms**
+- **Knapsack Algorithms**: 0/1, unbounded, fractional
+- **Subset Sum**: Find subsets with given sum
+- **Partition Problems**: Divide set into equal parts
+- **Scheduling Algorithms**: Optimal task arrangement
+
+#### **2. Mathematical Concepts**
+- **Combinatorics**: Counting principles and techniques
+- **Probability Theory**: Random processes and outcomes
+- **Number Theory**: Properties of integers
+- **Linear Algebra**: Matrix operations and transformations
+
+#### **3. Programming Concepts**
+- **Dynamic Programming**: Optimal substructure and overlapping subproblems
+- **Memoization**: Caching computed results
+- **Space-Time Trade-offs**: Optimizing for different constraints
+- **Modular Arithmetic**: Handling large numbers efficiently
+
 ---
 
-*This analysis shows how to efficiently solve counting problems using dynamic programming.* 
+*This analysis demonstrates the power of dynamic programming for counting problems and shows various extensions and applications.* 

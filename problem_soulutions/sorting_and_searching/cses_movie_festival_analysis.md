@@ -229,6 +229,294 @@ print(selected)
 **Interviewer**: "What if you can watch multiple movies simultaneously?"
 **Candidate**: "This becomes a different problem - finding the maximum number of movies that can be watched at the same time, which is about finding maximum overlap."
 
+## 🎯 Problem Variations & Related Questions
+
+### 🔄 **Variations of the Original Problem**
+
+#### **Variation 1: Weighted Movie Festival**
+**Problem**: Each movie has a weight/rating. Find maximum total weight of movies you can watch.
+```python
+def weighted_movie_festival(movies):
+    # movies[i] = (start, end, weight)
+    n = len(movies)
+    movies.sort(key=lambda x: x[1])  # Sort by end time
+    
+    # dp[i] = max weight ending at movie i
+    dp = [0] * n
+    
+    for i in range(n):
+        # Weight of current movie
+        dp[i] = movies[i][2]
+        
+        # Find last non-overlapping movie
+        j = i - 1
+        while j >= 0 and movies[j][1] > movies[i][0]:
+            j -= 1
+        
+        if j >= 0:
+            dp[i] += dp[j]
+    
+    return max(dp)
+```
+
+#### **Variation 2: Movie Festival with Duration Constraint**
+**Problem**: You can only watch movies with duration at most D.
+```python
+def movie_festival_duration_constraint(movies, max_duration):
+    # Filter movies by duration
+    valid_movies = [(start, end) for start, end in movies if end - start <= max_duration]
+    
+    # Apply greedy algorithm
+    valid_movies.sort(key=lambda x: x[1])  # Sort by end time
+    
+    count = 0
+    last_end = 0
+    
+    for start, end in valid_movies:
+        if start >= last_end:
+            count += 1
+            last_end = end
+    
+    return count
+```
+
+#### **Variation 3: Movie Festival with Multiple Theaters**
+**Problem**: You have k theaters. Find maximum movies you can watch.
+```python
+def movie_festival_multiple_theaters(movies, k):
+    # Sort by end time
+    movies.sort(key=lambda x: x[1])
+    
+    # Track end times of k theaters
+    theater_end_times = [0] * k
+    
+    count = 0
+    for start, end in movies:
+        # Find theater that becomes available earliest
+        theater_idx = 0
+        for i in range(1, k):
+            if theater_end_times[i] < theater_end_times[theater_idx]:
+                theater_idx = i
+        
+        # If theater is available, assign movie
+        if theater_end_times[theater_idx] <= start:
+            count += 1
+            theater_end_times[theater_idx] = end
+    
+    return count
+```
+
+#### **Variation 4: Movie Festival with Break Time**
+**Problem**: You need at least t minutes break between movies.
+```python
+def movie_festival_with_break(movies, break_time):
+    movies.sort(key=lambda x: x[1])  # Sort by end time
+    
+    count = 0
+    last_end = -break_time  # Allow first movie to start anytime
+    
+    for start, end in movies:
+        if start >= last_end + break_time:
+            count += 1
+            last_end = end
+    
+    return count
+```
+
+#### **Variation 5: Movie Festival with Priority**
+**Problem**: Some movies have higher priority. Maximize priority sum.
+```python
+def movie_festival_priority(movies):
+    # movies[i] = (start, end, priority)
+    movies.sort(key=lambda x: x[1])  # Sort by end time
+    
+    # Use binary search to find optimal solution
+    def can_achieve_priority(target_priority):
+        dp = [0] * len(movies)
+        
+        for i, (start, end, priority) in enumerate(movies):
+            dp[i] = priority
+            
+            # Find last non-overlapping movie
+            j = i - 1
+            while j >= 0 and movies[j][1] > start:
+                j -= 1
+            
+            if j >= 0:
+                dp[i] += dp[j]
+            
+            if dp[i] >= target_priority:
+                return True
+        
+        return max(dp) >= target_priority
+    
+    # Binary search on priority
+    left, right = 0, sum(movie[2] for movie in movies)
+    while left < right:
+        mid = (left + right + 1) // 2
+        if can_achieve_priority(mid):
+            left = mid
+        else:
+            right = mid - 1
+    
+    return left
+```
+
+### 🔗 **Related Problems & Concepts**
+
+#### **1. Interval Scheduling Problems**
+- **Activity Selection**: Select maximum non-overlapping activities
+- **Meeting Room Scheduling**: Assign meetings to rooms
+- **Job Scheduling**: Schedule jobs on machines
+- **Resource Allocation**: Allocate limited resources
+
+#### **2. Greedy Algorithm Problems**
+- **Fractional Knapsack**: Fill knapsack optimally
+- **Huffman Coding**: Build optimal prefix codes
+- **Dijkstra's Algorithm**: Find shortest paths
+- **Kruskal's Algorithm**: Find minimum spanning tree
+
+#### **3. Dynamic Programming Problems**
+- **Weighted Interval Scheduling**: Maximum weight non-overlapping intervals
+- **Longest Increasing Subsequence**: Find LIS in array
+- **Coin Change**: Minimum coins to make amount
+- **Subset Sum**: Find subset with given sum
+
+#### **4. Optimization Problems**
+- **Linear Programming**: Formulate as LP problem
+- **Integer Programming**: Discrete optimization
+- **Combinatorial Optimization**: Optimize discrete structures
+- **Approximation Algorithms**: Find approximate solutions
+
+#### **5. Time Management Problems**
+- **Task Scheduling**: Schedule tasks with deadlines
+- **Project Planning**: Plan project timeline
+- **Resource Management**: Manage limited resources
+- **Capacity Planning**: Plan resource capacity
+
+### 🎯 **Competitive Programming Variations**
+
+#### **1. Multiple Test Cases**
+```python
+t = int(input())
+for _ in range(t):
+    n = int(input())
+    movies = []
+    for _ in range(n):
+        start, end = map(int, input().split())
+        movies.append((start, end))
+    
+    movies.sort(key=lambda x: x[1])
+    
+    count = 0
+    last_end = 0
+    
+    for start, end in movies:
+        if start >= last_end:
+            count += 1
+            last_end = end
+    
+    print(count)
+```
+
+#### **2. Range Queries**
+```python
+# Precompute maximum movies for different time ranges
+def precompute_movie_ranges(movies, max_time):
+    # Create timeline of events
+    events = []
+    for start, end in movies:
+        events.append((start, 1))   # Movie starts
+        events.append((end, -1))    # Movie ends
+    
+    events.sort()
+    
+    # Precompute for each time point
+    timeline = [0] * (max_time + 1)
+    current_movies = 0
+    
+    for time, event_type in events:
+        if time <= max_time:
+            current_movies += event_type
+            timeline[time] = current_movies
+    
+    return timeline
+
+# Answer queries about movie count in time range
+def movie_count_query(timeline, start_time, end_time):
+    return timeline[end_time] - timeline[start_time]
+```
+
+#### **3. Interactive Problems**
+```python
+# Interactive movie festival planner
+def interactive_movie_festival():
+    n = int(input("Enter number of movies: "))
+    movies = []
+    
+    for i in range(n):
+        start = int(input(f"Enter start time for movie {i+1}: "))
+        end = int(input(f"Enter end time for movie {i+1}: "))
+        movies.append((start, end))
+    
+    print(f"Movies: {movies}")
+    
+    # Solve using greedy algorithm
+    movies.sort(key=lambda x: x[1])
+    
+    selected = []
+    last_end = 0
+    
+    for start, end in movies:
+        if start >= last_end:
+            selected.append((start, end))
+            last_end = end
+            print(f"Selected movie: {start}-{end}")
+    
+    print(f"Total movies you can watch: {len(selected)}")
+    print(f"Selected movies: {selected}")
+```
+
+### 🧮 **Mathematical Extensions**
+
+#### **1. Optimization Theory**
+- **Linear Programming**: Formulate as LP problem
+- **Integer Programming**: Discrete optimization
+- **Duality**: Study dual problems
+- **Sensitivity Analysis**: Analyze parameter changes
+
+#### **2. Algorithm Analysis**
+- **Greedy Correctness**: Prove greedy choice property
+- **Optimal Substructure**: Prove optimal substructure
+- **Complexity Analysis**: Time and space complexity
+- **Lower Bounds**: Establish problem lower bounds
+
+#### **3. Scheduling Theory**
+- **Interval Graphs**: Graph representation of intervals
+- **Clique Cover**: Cover intervals with minimum cliques
+- **Independent Set**: Find maximum independent set
+- **Coloring**: Color intervals with minimum colors
+
+### 📚 **Learning Resources**
+
+#### **1. Related Algorithms**
+- **Greedy Algorithms**: Local optimal choices
+- **Dynamic Programming**: Optimal substructure
+- **Interval Scheduling**: Classic greedy problem
+- **Binary Search**: Search for optimal solutions
+
+#### **2. Mathematical Concepts**
+- **Optimization**: Mathematical optimization theory
+- **Combinatorics**: Counting and arrangement
+- **Graph Theory**: Interval graphs and coloring
+- **Algorithm Analysis**: Complexity and correctness
+
+#### **3. Programming Concepts**
+- **Sorting**: Custom sorting techniques
+- **Data Structures**: Efficient storage and retrieval
+- **Algorithm Design**: Problem-solving strategies
+- **Complexity Analysis**: Performance evaluation
+
 ---
 
-*This analysis demonstrates the interview progression from exponential brute force through DP to optimal greedy solution with clear explanations and complexity analysis.* 
+*This analysis demonstrates greedy algorithm techniques and shows various extensions for interval scheduling problems.* 
