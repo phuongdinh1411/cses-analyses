@@ -16,12 +16,7 @@ cses_analyses/
 │   ├── 🚀 ultimate_cheatsheet.md          # Complete quick reference guide
 │   ├── ⚠️ common_mistakes.md              # Avoid common pitfalls
 │   └── 🔬 advanced_algorithms.md          # Advanced algorithm techniques
-├── 📁 study_materials/                    # Learning resources
-│   ├── 🛤️ learning_paths.md              # Choose your study journey
-│   ├── 📅 weekly_guides.md                # Structured weekly study plans
-│   ├── 🤔 self_assessment.md              # Track your progress
-│   ├── 📊 performance_analytics.md        # Detailed progress tracking
-│   └── 📅 3_month_learning_plan.md        # Structured study plan
+
 └── 📁 problem_soulutions/                  # Individual problem analyses (240+ problems)
     ├── 📁 introductory_problems/          # 25 problems - Start here!
     ├── 📁 sorting_and_searching/          # 35 problems - Master fundamentals
@@ -40,18 +35,18 @@ cses_analyses/
 
 ### 🚀 For Beginners (0-6 months experience)
 **Perfect for**: Programming beginners, CS students, interview preparation
-1. **Start with**: `study_materials/learning_paths.md` - Choose your path
-2. **Follow**: `study_materials/weekly_guides.md` - Structured learning
+1. **Start with**: `quick_reference/ultimate_cheatsheet.md` - Choose your path
+2. **Follow**: Practice problems in order - Structured learning
 3. **Reference**: `quick_reference/ultimate_cheatsheet.md` - Quick lookup
 4. **Practice**: Problems in `problem_soulutions/introductory_problems/` folder
-5. **Track**: Use `study_materials/self_assessment.md` for progress
+5. **Track**: Use the problem solutions for progress tracking
 
 ### 🚀 For Intermediate Learners (6-12 months experience)
 **Perfect for**: Experienced programmers, competitive programming beginners
 1. **Review**: `quick_reference/ultimate_cheatsheet.md` - Algorithm selection
 2. **Study**: Advanced techniques and algorithms
 3. **Practice**: Problems across all categories
-4. **Assess**: `study_materials/performance_analytics.md` - Track progress
+4. **Assess**: Use problem solutions to track progress
 5. **Prepare**: Use contest preparation strategies
 
 ### 🚀 For Advanced Learners (12+ months experience)
@@ -68,19 +63,18 @@ cses_analyses/
 - **[Common Mistakes](quick_reference/common_mistakes.md)**: Comprehensive error prevention
 - **[Advanced Algorithms](quick_reference/advanced_algorithms.md)**: Advanced algorithm techniques
 
-### 📖 Study Materials
-- **[Learning Paths](study_materials/learning_paths.md)**: Choose your learning journey
-- **[Weekly Guides](study_materials/weekly_guides.md)**: Structured weekly study plans
-- **[Self Assessment](study_materials/self_assessment.md)**: Track your progress
-- **[Performance Analytics](study_materials/performance_analytics.md)**: Detailed progress tracking
-- **[3 Month Learning Plan](study_materials/3_month_learning_plan.md)**: Structured study plan
+### 📖 Learning Resources
+- **Problem Solutions**: 240+ detailed problem analyses with step-by-step solutions
+- **Quick Reference**: Comprehensive algorithm cheatsheet and decision trees
+- **Advanced Techniques**: Advanced algorithm implementations and optimizations
+- **Progress Tracking**: Track your learning through problem-solving practice
 
 ### 🚀 Advanced Resources
-- **Advanced Algorithms**: Advanced techniques and optimizations (available in study materials)
-- **Contest Strategy**: Contest preparation and strategy (available in study materials)
-- **Practice Sets**: Organized practice problems (available in study materials)
+- **Advanced Algorithms**: Advanced techniques and optimizations (available in quick reference)
+- **Contest Strategy**: Contest preparation and strategy (available in problem solutions)
+- **Practice Sets**: Organized practice problems (available in problem categories)
 
-*Note: Advanced resources are integrated into the study materials and quick reference guides.*
+*Note: Advanced resources are integrated into the quick reference guides and problem solutions.*
 
 ## 🎯 Complete Problem Solutions (240+ Problems)
 
