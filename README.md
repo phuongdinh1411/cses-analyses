@@ -19,7 +19,8 @@ This document summarizes all the key techniques, algorithms, and problem-solving
 - **String Algorithms**: 14 problems
 - **Advanced Graph Problems**: 28 problems
 - **Counting Problems**: 19 problems
-- **Total**: 209 problems with detailed analyses
+- **Geometry**: 16 problems
+- **Total**: 225 problems with detailed analyses
 
 ---
 
@@ -1067,6 +1068,184 @@ def count_with_dp(n, constraints):
 
 ---
 
+## 🌐 Geometry Techniques
+
+### 1. **Sweep Line Algorithm**
+**Identification**: Problems asking for "line segment intersections", "rectangle union", "geometric events"
+**When to Apply**:
+- When you need to process geometric events in sorted order
+- When you need to find intersections between line segments
+- When you need to calculate union area of rectangles
+
+**Key Patterns**:
+```python
+def sweep_line(events):
+    events.sort()  # Sort by x-coordinate or time
+    active_set = set()
+    
+    for event in events:
+        if event.type == 'start':
+            active_set.add(event.segment)
+        else:  # end event
+            active_set.remove(event.segment)
+        
+        # Process active segments
+        process_active_segments(active_set)
+```
+
+**Examples**: Line Segment Intersection, Area of Rectangles, Intersection Points
+
+### 2. **Divide and Conquer**
+**Identification**: Problems asking for "closest pair", "geometric optimization"
+**When to Apply**:
+- When you need to find closest pair of points
+- When you have spatial structure that can be divided
+- When you need to optimize geometric properties
+
+**Key Patterns**:
+```python
+def closest_pair(points):
+    n = len(points)
+    if n <= 3:
+        return brute_force_closest_pair(points)
+    
+    # Divide
+    mid = n // 2
+    left_points = points[:mid]
+    right_points = points[mid:]
+    
+    # Conquer
+    left_min = closest_pair(left_points)
+    right_min = closest_pair(right_points)
+    
+    # Combine
+    min_dist = min(left_min, right_min)
+    strip = [p for p in points if abs(p[0] - points[mid][0]) < min_dist]
+    
+    return min(min_dist, strip_closest_pair(strip))
+```
+
+**Examples**: Minimum Euclidean Distance
+
+### 3. **Convex Hull Algorithms**
+**Identification**: Problems asking for "convex hull", "boundary", "farthest pair"
+**When to Apply**:
+- When you need to find the smallest convex polygon containing all points
+- When you need to find boundary of a set of points
+- When you need to find farthest pair of points
+
+**Key Patterns**:
+```python
+def convex_hull(points):
+    if len(points) < 3:
+        return points
+    
+    # Sort points by x-coordinate
+    points = sorted(points)
+    
+    # Build lower hull
+    lower = []
+    for p in points:
+        while len(lower) >= 2 and cross_product(lower[-2], lower[-1], p) <= 0:
+            lower.pop()
+        lower.append(p)
+    
+    # Build upper hull
+    upper = []
+    for p in reversed(points):
+        while len(upper) >= 2 and cross_product(upper[-2], upper[-1], p) <= 0:
+            upper.pop()
+        upper.append(p)
+    
+    return lower[:-1] + upper[:-1]
+```
+
+**Examples**: Convex Hull
+
+### 4. **Geometric Formulas**
+**Identification**: Problems asking for "area", "lattice points", "polygon properties"
+**When to Apply**:
+- When you need to calculate polygon area
+- When you need to count lattice points in polygons
+- When you need to use geometric theorems
+
+**Key Patterns**:
+```python
+# Shoelace Formula for polygon area
+def polygon_area(vertices):
+    n = len(vertices)
+    area = 0
+    for i in range(n):
+        j = (i + 1) % n
+        area += vertices[i][0] * vertices[j][1]
+        area -= vertices[j][0] * vertices[i][1]
+    return abs(area) / 2
+
+# Pick's Theorem for lattice points
+def picks_theorem(area, boundary_points):
+    # I = A - B/2 + 1
+    # where I = interior lattice points
+    #       A = area
+    #       B = boundary lattice points
+    interior_points = area - boundary_points // 2 + 1
+    return interior_points
+```
+
+**Examples**: Polygon Area, Polygon Lattice Points
+
+### 5. **Point Location**
+**Identification**: Problems asking for "point in polygon", "containment", "spatial queries"
+**When to Apply**:
+- When you need to test if a point is inside a polygon
+- When you need to perform spatial queries
+- When you need to determine point containment
+
+**Key Patterns**:
+```python
+# Ray Casting Algorithm
+def point_in_polygon(point, polygon):
+    x, y = point
+    n = len(polygon)
+    inside = False
+    
+    for i in range(n):
+        j = (i + 1) % n
+        if ((polygon[i][1] > y) != (polygon[j][1] > y) and
+            x < (polygon[j][0] - polygon[i][0]) * (y - polygon[i][1]) / 
+                (polygon[j][1] - polygon[i][1]) + polygon[i][0]):
+            inside = not inside
+    
+    return inside
+```
+
+**Examples**: Point in Polygon, Point Location Test
+
+### 6. **Distance Problems**
+**Identification**: Problems asking for "minimum distance", "maximum distance", "all pairs distance"
+**When to Apply**:
+- When you need to find minimum/maximum distances between points
+- When you need to calculate all pairs distances
+- When you need to optimize distance-based problems
+
+**Key Patterns**:
+```python
+# Euclidean distance
+def euclidean_distance(p1, p2):
+    return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+# Manhattan distance
+def manhattan_distance(p1, p2):
+    return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
+
+# Cross product for orientation
+def cross_product(o, a, b):
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+```
+
+**Examples**: Minimum Euclidean Distance, Maximum Manhattan Distance, All Manhattan Distances
+
+---
+
 ## 🎯 Problem-Solving Framework
 
 ### 1. **Problem Analysis**
@@ -1147,6 +1326,11 @@ def count_with_dp(n, constraints):
 - **Patterns**: Combinatorics, inclusion-exclusion, DP for counting
 - **Constraints**: Often involve large numbers (modulo 10^9 + 7)
 
+### **Geometry Problems**
+- **Keywords**: "points", "lines", "polygons", "intersection", "distance", "area"
+- **Patterns**: Spatial relationships, geometric properties, coordinate systems
+- **Constraints**: Precision requirements, coordinate ranges, geometric constraints
+
 ---
 
 ## 📚 Key Mathematical Concepts
@@ -1208,7 +1392,8 @@ def count_with_dp(n, constraints):
 - ✅ String Algorithms (14/14)
 - ✅ Advanced Graph Problems (28/28)
 - ✅ Counting Problems (19/19)
-- **Total**: 209 problems with detailed analyses
+- ✅ Geometry (16/16)
+- **Total**: 225 problems with detailed analyses
 
 ### **Next Steps**
 - Continue with other CSES sections
