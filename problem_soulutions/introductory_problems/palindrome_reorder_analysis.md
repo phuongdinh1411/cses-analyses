@@ -30,103 +30,84 @@ Given a string, determine if it can be rearranged to form a palindrome. If possi
 ## Solution Approach
 
 ### Method 1: Frequency Counting
-```cpp
-string palindromeReorder(string s) {
-    vector<int> freq(26, 0);
+```python
+def palindrome_reorder(s):
+    freq = [0] * 26
     
-    // Count character frequencies
-    for (char c : s) {
-        freq[c - 'A']++;
-    }
+    # Count character frequencies
+    for c in s:
+        freq[ord(c) - ord('A')] += 1
     
-    // Check feasibility
-    int odd_count = 0;
-    for (int f : freq) {
-        if (f % 2 == 1) odd_count++;
-    }
+    # Check feasibility
+    odd_count = sum(1 for f in freq if f % 2 == 1)
     
-    if (odd_count > 1) {
-        return "NO SOLUTION";
-    }
+    if odd_count > 1:
+        return "NO SOLUTION"
     
-    // Construct palindrome
-    string first_half = "";
-    string middle = "";
+    # Construct palindrome
+    first_half = ""
+    middle = ""
     
-    for (int i = 0; i < 26; i++) {
-        if (freq[i] > 0) {
-            if (freq[i] % 2 == 1) {
-                middle = string(1, 'A' + i);
-                freq[i]--;
-            }
-            first_half += string(freq[i] / 2, 'A' + i);
-        }
-    }
+    for i in range(26):
+        if freq[i] > 0:
+            if freq[i] % 2 == 1:
+                middle = chr(ord('A') + i)
+                freq[i] -= 1
+            first_half += chr(ord('A') + i) * (freq[i] // 2)
     
-    string second_half = first_half;
-    reverse(second_half.begin(), second_half.end());
+    second_half = first_half[::-1]
     
-    return first_half + middle + second_half;
-}
+    return first_half + middle + second_half
 ```
 
 ### Method 2: Two Pointers Approach
-```cpp
-string palindromeReorderTwoPointers(string s) {
-    vector<int> freq(26, 0);
+```python
+def palindrome_reorder_two_pointers(s):
+    freq = [0] * 26
     
-    // Count frequencies
-    for (char c : s) {
-        freq[c - 'A']++;
-    }
+    # Count frequencies
+    for c in s:
+        freq[ord(c) - ord('A')] += 1
     
-    // Check feasibility
-    int odd_count = 0;
-    for (int f : freq) {
-        if (f % 2 == 1) odd_count++;
-    }
+    # Check feasibility
+    odd_count = sum(1 for f in freq if f % 2 == 1)
     
-    if (odd_count > 1) {
-        return "NO SOLUTION";
-    }
+    if odd_count > 1:
+        return "NO SOLUTION"
     
-    // Use two pointers to construct
-    vector<char> result(s.length());
-    int left = 0, right = s.length() - 1;
+    # Use two pointers to construct
+    result = [''] * len(s)
+    left, right = 0, len(s) - 1
     
-    for (int i = 0; i < 26; i++) {
-        if (freq[i] % 2 == 1) {
-            // Place odd character in middle
-            result[s.length() / 2] = 'A' + i;
-            freq[i]--;
-        }
+    for i in range(26):
+        if freq[i] % 2 == 1:
+            # Place odd character in middle
+            result[len(s) // 2] = chr(ord('A') + i)
+            freq[i] -= 1
         
-        // Place pairs symmetrically
-        while (freq[i] > 0) {
-            result[left++] = 'A' + i;
-            result[right--] = 'A' + i;
-            freq[i] -= 2;
-        }
-    }
+        # Place pairs symmetrically
+        while freq[i] > 0:
+            result[left] = chr(ord('A') + i)
+            result[right] = chr(ord('A') + i)
+            left += 1
+            right -= 1
+            freq[i] -= 2
     
-    return string(result.begin(), result.end());
-}
+    return ''.join(result)
 ```
 
 ### Method 3: Greedy Construction
-```cpp
-string palindromeReorderGreedy(string s) {
-    map<char, int> freq;
+```python
+def palindrome_reorder_greedy(s):
+    from collections import Counter
     
-    // Count frequencies
-    for (char c : s) {
-        freq[c]++;
-    }
+    freq = Counter(s)
     
-    // Find odd character
-    char odd_char = 0;
-    for (auto& [c, count] : freq) {
-        if (count % 2 == 1) {
+    # Find odd character
+    odd_char = None
+    for c, count in freq.items():
+        if count % 2 == 1:
+```
             if (odd_char != 0) {
                 return "NO SOLUTION";
             }
@@ -208,74 +189,68 @@ string palindromeReorderGreedy(string s) {
 ## Advanced Optimizations
 
 ### 1. Bit Manipulation
-```cpp
-string palindromeReorderBit(string s) {
-    int freq = 0;
+```python
+def palindrome_reorder_bit(s):
+    freq = 0
     
-    // Use bits to track odd/even frequencies
-    for (char c : s) {
-        freq ^= (1 << (c - 'A'));
-    }
+    # Use bits to track odd/even frequencies
+    for c in s:
+        freq ^= (1 << (ord(c) - ord('A')))
     
-    // Check if more than one bit is set
-    if (freq && (freq & (freq - 1))) {
-        return "NO SOLUTION";
-    }
+    # Check if more than one bit is set
+    if freq and (freq & (freq - 1)):
+        return "NO SOLUTION"
     
-    // Construct palindrome using bit manipulation
-    // Implementation continues...
-}
+    # Construct palindrome using bit manipulation
+    # Implementation continues...
+    return s
 ```
 
 ### 2. In-place Construction
-```cpp
-string palindromeReorderInplace(string s) {
-    vector<int> freq(26, 0);
+```python
+def palindrome_reorder_inplace(s):
+    freq = [0] * 26
     
-    // Count frequencies
-    for (char c : s) {
-        freq[c - 'A']++;
-    }
+    # Count frequencies
+    for c in s:
+        freq[ord(c) - ord('A')] += 1
     
-    // Check feasibility
-    int odd_count = 0;
-    for (int f : freq) {
-        if (f % 2 == 1) odd_count++;
-    }
+    # Check feasibility
+    odd_count = sum(1 for f in freq if f % 2 == 1)
     
-    if (odd_count > 1) {
-        return "NO SOLUTION";
-    }
+    if odd_count > 1:
+        return "NO SOLUTION"
     
-    // Construct in-place
-    int left = 0, right = s.length() - 1;
+    # Convert to list for in-place modification
+    s_list = list(s)
     
-    for (int i = 0; i < 26; i++) {
-        if (freq[i] % 2 == 1) {
-            s[s.length() / 2] = 'A' + i;
-            freq[i]--;
-        }
+    # Construct in-place
+    left, right = 0, len(s) - 1
+    
+    for i in range(26):
+        if freq[i] % 2 == 1:
+            s_list[len(s) // 2] = chr(ord('A') + i)
+            freq[i] -= 1
         
-        while (freq[i] > 0) {
-            s[left++] = 'A' + i;
-            s[right--] = 'A' + i;
-            freq[i] -= 2;
-        }
-    }
+        while freq[i] > 0:
+            s_list[left] = chr(ord('A') + i)
+            s_list[right] = chr(ord('A') + i)
+            left += 1
+            right -= 1
+            freq[i] -= 2
     
-    return s;
-}
+    return ''.join(s_list)
 ```
 
 ### 3. Parallel Processing
-```cpp
-string palindromeReorderParallel(string s) {
-    // For very large strings, use parallel frequency counting
-    // Divide string into chunks and process in parallel
-    // Merge results and construct palindrome
+```python
+def palindrome_reorder_parallel(s):
+    # For very large strings, use parallel frequency counting
+    # Divide string into chunks and process in parallel
+    # Merge results and construct palindrome
     
-    // Implementation for parallel processing...
-}
+    # Implementation for parallel processing...
+    return s
 ```
 
 ## Related Problems

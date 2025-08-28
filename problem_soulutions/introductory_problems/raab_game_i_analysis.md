@@ -30,78 +30,66 @@ In the Raab game, two players take turns removing stones from piles. Each player
 ## Solution Approach
 
 ### Method 1: Grundy Number Calculation
-```cpp
-bool canFirstPlayerWin(vector<int>& piles) {
-    int nim_sum = 0;
+```python
+def can_first_player_win(piles):
+    nim_sum = 0
     
-    // Calculate Grundy number for each pile
-    for (int pile : piles) {
-        nim_sum ^= (pile % 4);
-    }
+    # Calculate Grundy number for each pile
+    for pile in piles:
+        nim_sum ^= (pile % 4)
     
-    // First player wins if nim sum is not zero
-    return nim_sum != 0;
-}
+    # First player wins if nim sum is not zero
+    return nim_sum != 0
 ```
 
 ### Method 2: Dynamic Programming
-```cpp
-class RaabGame {
-private:
-    vector<int> grundy;
+```python
+class RaabGame:
+    def __init__(self):
+        self.grundy = []
     
-    void precomputeGrundy(int max_pile) {
-        grundy.assign(max_pile + 1, 0);
+    def precompute_grundy(self, max_pile):
+        self.grundy = [0] * (max_pile + 1)
         
-        for (int i = 1; i <= max_pile; i++) {
-            set<int> mex_values;
+        for i in range(1, max_pile + 1):
+            mex_values = set()
             
-            // Try all possible moves
-            for (int stones = 1; stones <= min(3, i); stones++) {
-                mex_values.insert(grundy[i - stones]);
-            }
+            # Try all possible moves
+            for stones in range(1, min(4, i + 1)):
+                mex_values.add(self.grundy[i - stones])
             
-            // Calculate MEX
-            grundy[i] = 0;
-            while (mex_values.count(grundy[i])) {
-                grundy[i]++;
-            }
-        }
-    }
+            # Calculate MEX
+            self.grundy[i] = 0
+            while self.grundy[i] in mex_values:
+                self.grundy[i] += 1
     
-public:
-    bool canWin(vector<int>& piles) {
-        int max_pile = *max_element(piles.begin(), piles.end());
-        precomputeGrundy(max_pile);
+    def can_win(self, piles):
+        max_pile = max(piles)
+        self.precompute_grundy(max_pile)
         
-        int nim_sum = 0;
-        for (int pile : piles) {
-            nim_sum ^= grundy[pile];
-        }
+        nim_sum = 0
+        for pile in piles:
+            nim_sum ^= self.grundy[pile]
         
-        return nim_sum != 0;
-    }
-};
+        return nim_sum != 0
 ```
 
 ### Method 3: Mathematical Analysis
-```cpp
-bool canFirstPlayerWinMath(vector<int>& piles) {
-    // For Raab game, Grundy number = pile_size % 4
-    // This is because:
-    // - Pile size 0: Grundy = 0 (terminal position)
-    // - Pile size 1: Grundy = 1 (can move to 0)
-    // - Pile size 2: Grundy = 2 (can move to 0 or 1)
-    // - Pile size 3: Grundy = 3 (can move to 0, 1, or 2)
-    // - Pile size 4: Grundy = 0 (can move to 1, 2, or 3, but opponent can counter)
+```python
+def can_first_player_win_math(piles):
+    # For Raab game, Grundy number = pile_size % 4
+    # This is because:
+    # - Pile size 0: Grundy = 0 (terminal position)
+    # - Pile size 1: Grundy = 1 (can move to 0)
+    # - Pile size 2: Grundy = 2 (can move to 0 or 1)
+    # - Pile size 3: Grundy = 3 (can move to 0, 1, or 2)
+    # - Pile size 4: Grundy = 0 (can move to 1, 2, or 3, but opponent can counter)
     
-    int nim_sum = 0;
-    for (int pile : piles) {
-        nim_sum ^= (pile % 4);
-    }
+    nim_sum = 0
+    for pile in piles:
+        nim_sum ^= (pile % 4)
     
-    return nim_sum != 0;
-}
+    return nim_sum != 0
 ```
 
 ## Time Complexity
@@ -155,74 +143,66 @@ bool canFirstPlayerWinMath(vector<int>& piles) {
 ## Advanced Optimizations
 
 ### 1. Fast Grundy Calculation
-```cpp
-int fastGrundy(int pile_size, int max_move) {
-    // For standard Raab game (max_move = 3)
-    return pile_size % (max_move + 1);
-}
+```python
+def fast_grundy(pile_size, max_move):
+    # For standard Raab game (max_move = 3)
+    return pile_size % (max_move + 1)
 
-int fastGrundyGeneral(int pile_size, int max_move) {
-    // For general case
-    if (pile_size == 0) return 0;
-    if (pile_size <= max_move) return pile_size;
-    return pile_size % (max_move + 1);
-}
+def fast_grundy_general(pile_size, max_move):
+    # For general case
+    if pile_size == 0:
+        return 0
+    if pile_size <= max_move:
+        return pile_size
+    return pile_size % (max_move + 1)
 ```
 
 ### 2. Winning Move Finder
-```cpp
-vector<pair<int, int>> findWinningMoves(vector<int>& piles) {
-    vector<pair<int, int>> moves; // (pile_index, stones_to_remove)
+```python
+def find_winning_moves(piles):
+    moves = []  # (pile_index, stones_to_remove)
     
-    int nim_sum = 0;
-    for (int pile : piles) {
-        nim_sum ^= (pile % 4);
-    }
+    nim_sum = 0
+    for pile in piles:
+        nim_sum ^= (pile % 4)
     
-    if (nim_sum == 0) return moves; // No winning moves
+    if nim_sum == 0:
+        return moves  # No winning moves
     
-    // Find moves that make nim sum zero
-    for (int i = 0; i < piles.size(); i++) {
-        int current_grundy = piles[i] % 4;
-        int target_grundy = nim_sum ^ current_grundy;
+    # Find moves that make nim sum zero
+    for i in range(len(piles)):
+        current_grundy = piles[i] % 4
+        target_grundy = nim_sum ^ current_grundy
         
-        if (target_grundy < current_grundy) {
-            int stones_to_remove = current_grundy - target_grundy;
-            if (stones_to_remove <= 3 && stones_to_remove <= piles[i]) {
-                moves.push_back({i, stones_to_remove});
-            }
-        }
-    }
+        if target_grundy < current_grundy:
+            stones_to_remove = current_grundy - target_grundy
+            if stones_to_remove <= 3 and stones_to_remove <= piles[i]:
+                moves.append((i, stones_to_remove))
     
-    return moves;
-}
+    return moves
 ```
 
 ### 3. State Compression
-```cpp
-class CompressedRaabGame {
-private:
-    map<vector<int>, bool> memo;
+```python
+class CompressedRaabGame:
+    def __init__(self):
+        self.memo = {}
     
-    bool canWinCompressed(vector<int>& piles) {
-        // Sort piles for state compression
-        sort(piles.begin(), piles.end());
+    def can_win_compressed(self, piles):
+        # Sort piles for state compression
+        piles_tuple = tuple(sorted(piles))
         
-        if (memo.count(piles)) {
-            return memo[piles];
-        }
+        if piles_tuple in self.memo:
+            return self.memo[piles_tuple]
         
-        // Calculate nim sum
-        int nim_sum = 0;
-        for (int pile : piles) {
-            nim_sum ^= (pile % 4);
-        }
+        # Calculate nim sum
+        nim_sum = 0
+        for pile in piles:
+            nim_sum ^= (pile % 4)
         
-        bool result = (nim_sum != 0);
-        memo[piles] = result;
-        return result;
-    }
-};
+        result = (nim_sum != 0)
+        self.memo[piles_tuple] = result
+        return result
 ```
 
 ## Related Problems
