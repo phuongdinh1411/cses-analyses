@@ -7,8 +7,6 @@ main:
       - title: "Introductory Problems"
         url: /problem_soulutions/introductory_problems/
         children:
-          - title: "Apple Division"
-            url: /problem_soulutions/introductory_problems/apple_division_analysis/
           - title: "Bit Strings"
             url: /problem_soulutions/introductory_problems/bit_strings_analysis/
           - title: "Chessboard and Queens"
