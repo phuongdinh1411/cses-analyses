@@ -64,6 +64,12 @@
             color: white;
         }
         
+        .nav__item a.active {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        
         .nav__sub-items {
             list-style: none;
             margin-left: 15px;
@@ -98,6 +104,12 @@
             transform: rotate(90deg);
         }
         
+        .nav__sub-item a.active {
+            background: #e3f2fd;
+            color: #1976d2;
+            font-weight: 500;
+        }
+        
         .nav__sub-sub-items {
             list-style: none;
             margin-left: 15px;
@@ -123,6 +135,12 @@
         .nav__sub-sub-item a:hover {
             background: #e3f2fd;
             color: #1976d2;
+        }
+        
+        .nav__sub-sub-item a.active {
+            background: #1976d2;
+            color: white;
+            font-weight: 500;
         }
         
         .main-content {
@@ -220,21 +238,21 @@
                 <ul class="nav__items">
                     {% for item in site.data.navigation.main %}
                         <li class="nav__item">
-                            <a href="{{ item.url | relative_url }}">
+                            <a href="{{ item.url | relative_url }}" {% if page.url == item.url %}class="active"{% endif %}>
                                 {{ item.title }}
                             </a>
                             {% if item.children %}
-                                <ul class="nav__sub-items">
+                                <ul class="nav__sub-items" {% if page.url contains item.url or page.url contains 'problem_soulutions' %}style="display: block;"{% endif %}>
                                     {% for child in item.children %}
-                                        <li class="nav__sub-item">
-                                            <a href="{{ child.url | relative_url }}" class="category-link">
+                                        <li class="nav__sub-item" {% if page.url contains child.url %}class="expanded"{% endif %}>
+                                            <a href="{{ child.url | relative_url }}" class="category-link" {% if page.url contains child.url %}class="category-link active"{% endif %}>
                                                 {{ child.title }}
                                             </a>
                                             {% if child.children %}
-                                                <ul class="nav__sub-sub-items">
+                                                <ul class="nav__sub-sub-items" {% if page.url contains child.url %}style="display: block;"{% endif %}>
                                                     {% for grandchild in child.children %}
                                                         <li class="nav__sub-sub-item">
-                                                            <a href="{{ grandchild.url | relative_url }}">
+                                                            <a href="{{ grandchild.url | relative_url }}" {% if page.url == grandchild.url %}class="active"{% endif %}>
                                                                 {{ grandchild.title }}
                                                             </a>
                                                         </li>
@@ -261,6 +279,31 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            
+            // Function to highlight active navigation items
+            function highlightActiveItems() {
+                // Remove all active classes first
+                document.querySelectorAll('.nav__item a, .nav__sub-item a, .nav__sub-sub-item a').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Find and highlight the active item
+                document.querySelectorAll('.nav__item a, .nav__sub-item a, .nav__sub-sub-item a').forEach(link => {
+                    if (link.getAttribute('href') && currentPath.includes(link.getAttribute('href'))) {
+                        link.classList.add('active');
+                        
+                        // Expand parent categories if this is a problem page
+                        if (link.closest('.nav__sub-sub-item')) {
+                            const subItem = link.closest('.nav__sub-item');
+                            const subItems = link.closest('.nav__sub-items');
+                            if (subItem) subItem.classList.add('expanded');
+                            if (subItems) subItems.classList.add('expanded');
+                        }
+                    }
+                });
+            }
+            
             // Add click event listeners to category links
             const categoryLinks = document.querySelectorAll('.category-link');
             
@@ -295,6 +338,32 @@
                     });
                 }
             });
+            
+            // Initialize highlighting
+            highlightActiveItems();
+            
+            // Auto-expand the relevant sections for the current page
+            if (currentPath.includes('problem_soulutions')) {
+                // Auto-expand Problem Categories
+                const problemCategoriesLink = document.querySelector('.nav__item a[href*="problem_soulutions"]');
+                if (problemCategoriesLink) {
+                    const subItems = problemCategoriesLink.parentElement.querySelector('.nav__sub-items');
+                    if (subItems) {
+                        subItems.classList.add('expanded');
+                    }
+                }
+                
+                // Auto-expand the relevant category
+                const categoryLinks = document.querySelectorAll('.category-link');
+                categoryLinks.forEach(link => {
+                    if (currentPath.includes(link.getAttribute('href'))) {
+                        const subItem = link.parentElement;
+                        const subSubItems = subItem.querySelector('.nav__sub-sub-items');
+                        if (subItem) subItem.classList.add('expanded');
+                        if (subSubItems) subSubItems.classList.add('expanded');
+                    }
+                });
+            }
         });
     </script>
 </body>
