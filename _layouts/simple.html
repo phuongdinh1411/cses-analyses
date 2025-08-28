@@ -308,16 +308,16 @@
             
             categoryLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
                     const subItem = this.parentElement;
                     const subSubItems = subItem.querySelector('.nav__sub-sub-items');
                     
                     if (subSubItems) {
-                        // Toggle the expanded class
+                        // If clicking on a category that has problems, toggle expansion
+                        e.preventDefault();
                         subItem.classList.toggle('expanded');
                         subSubItems.classList.toggle('expanded');
                     }
+                    // If no sub-items, let the link work normally (navigate to category page)
                 });
             });
             
