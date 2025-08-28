@@ -7,6 +7,8 @@ main:
       - title: "Introductory Problems"
         url: /problem_soulutions/introductory_problems/
         children:
+          - title: "Apple Division"
+            url: /problem_soulutions/introductory_problems/apple_division_analysis/
           - title: "Bit Strings"
             url: /problem_soulutions/introductory_problems/bit_strings_analysis/
           - title: "Chessboard and Queens"
@@ -519,5 +521,12 @@ main:
             url: /problem_soulutions/geometry/triangle_area_analysis/
   - title: "Quick Reference"
     url: /quick_reference/
+    children:
+      - title: "Ultimate Cheatsheet"
+        url: /quick_reference/ultimate_cheatsheet/
+      - title: "Advanced Algorithms"
+        url: /quick_reference/advanced_algorithms/
+      - title: "Common Mistakes"
+        url: /quick_reference/common_mistakes/
   - title: "About"
     url: /about/
