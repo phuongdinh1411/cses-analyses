@@ -274,3 +274,359 @@ def process_queries(nearest_source, queries):
 ---
 
 *This analysis shows how to efficiently find nearest shops using multi-source BFS.* 
+
+## Problem Variations & Related Questions
+
+### Problem Variations
+
+#### 1. **Nearest Shops with Costs**
+**Variation**: Each edge has a cost, find minimum cost path to nearest shop.
+**Approach**: Use weighted multi-source BFS or Dijkstra's algorithm.
+```python
+def cost_based_nearest_shops(n, q, edges, edge_costs, shops, queries):
+    # Build weighted adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        cost = edge_costs.get((a, b), 1)
+        adj[a].append((b, cost))
+        adj[b].append((a, cost))
+    
+    # Multi-source Dijkstra from all shops
+    import heapq
+    distance = [float('inf')] * (n + 1)
+    nearest_shop = [-1] * (n + 1)
+    heap = []
+    
+    # Add all shops to heap
+    for i in range(1, n + 1):
+        if shops[i] == 1:
+            distance[i] = 0
+            nearest_shop[i] = i
+            heapq.heappush(heap, (0, i))
+    
+    # Dijkstra's algorithm
+    while heap:
+        dist, node = heapq.heappop(heap)
+        if dist > distance[node]:
+            continue
+        
+        for neighbor, cost in adj[node]:
+            new_dist = distance[node] + cost
+            if new_dist < distance[neighbor]:
+                distance[neighbor] = new_dist
+                nearest_shop[neighbor] = nearest_shop[node]
+                heapq.heappush(heap, (new_dist, neighbor))
+    
+    # Process queries
+    result = []
+    for query in queries:
+        result.append(nearest_shop[query])
+    
+    return result
+```
+
+#### 2. **Nearest Shops with Constraints**
+**Variation**: Limited budget, restricted paths, or specific shop requirements.
+**Approach**: Use constraint satisfaction with modified BFS.
+```python
+def constrained_nearest_shops(n, q, edges, shops, budget, restricted_edges, queries):
+    # Build adjacency list excluding restricted edges
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        if (a, b) not in restricted_edges and (b, a) not in restricted_edges:
+            adj[a].append(b)
+            adj[b].append(a)
+    
+    # Multi-source BFS with budget constraint
+    from collections import deque
+    queue = deque()
+    distance = [float('inf')] * (n + 1)
+    nearest_shop = [-1] * (n + 1)
+    
+    # Add all shops to queue
+    for i in range(1, n + 1):
+        if shops[i] == 1:
+            queue.append(i)
+            distance[i] = 0
+            nearest_shop[i] = i
+    
+    # BFS with budget constraint
+    while queue:
+        node = queue.popleft()
+        if distance[node] >= budget:
+            continue
+        
+        for neighbor in adj[node]:
+            if distance[neighbor] > distance[node] + 1:
+                distance[neighbor] = distance[node] + 1
+                nearest_shop[neighbor] = nearest_shop[node]
+                queue.append(neighbor)
+    
+    # Process queries
+    result = []
+    for query in queries:
+        if distance[query] <= budget:
+            result.append(nearest_shop[query])
+        else:
+            result.append(-1)  # No shop within budget
+    
+    return result
+```
+
+#### 3. **Nearest Shops with Probabilities**
+**Variation**: Each shop has a probability of being open, find expected nearest shop.
+**Approach**: Use probabilistic BFS or Monte Carlo simulation.
+```python
+def probabilistic_nearest_shops(n, q, edges, shops, shop_probabilities, queries):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Multi-source BFS with probability tracking
+    from collections import deque
+    queue = deque()
+    distance = [float('inf')] * (n + 1)
+    nearest_shop = [-1] * (n + 1)
+    shop_prob = [0.0] * (n + 1)
+    
+    # Add all shops to queue
+    for i in range(1, n + 1):
+        if shops[i] == 1:
+            queue.append(i)
+            distance[i] = 0
+            nearest_shop[i] = i
+            shop_prob[i] = shop_probabilities.get(i, 0.5)
+    
+    # BFS
+    while queue:
+        node = queue.popleft()
+        for neighbor in adj[node]:
+            if distance[neighbor] > distance[node] + 1:
+                distance[neighbor] = distance[node] + 1
+                nearest_shop[neighbor] = nearest_shop[node]
+                shop_prob[neighbor] = shop_prob[node]
+                queue.append(neighbor)
+    
+    # Process queries
+    result = []
+    for query in queries:
+        if nearest_shop[query] != -1:
+            result.append((nearest_shop[query], shop_prob[query]))
+        else:
+            result.append((-1, 0.0))
+    
+    return result
+```
+
+#### 4. **Nearest Shops with Multiple Criteria**
+**Variation**: Optimize for multiple objectives (distance, cost, probability).
+**Approach**: Use multi-objective optimization or weighted sum approach.
+```python
+def multi_criteria_nearest_shops(n, q, edges, shops, criteria_weights, queries):
+    # criteria_weights = {'distance': 0.4, 'cost': 0.3, 'probability': 0.3}
+    
+    def calculate_shop_score(shop_attributes):
+        return (criteria_weights['distance'] * shop_attributes['distance'] + 
+                criteria_weights['cost'] * shop_attributes['cost'] + 
+                criteria_weights['probability'] * shop_attributes['probability'])
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Multi-source BFS
+    from collections import deque
+    queue = deque()
+    distance = [float('inf')] * (n + 1)
+    nearest_shop = [-1] * (n + 1)
+    
+    # Add all shops to queue
+    for i in range(1, n + 1):
+        if shops[i] == 1:
+            queue.append(i)
+            distance[i] = 0
+            nearest_shop[i] = i
+    
+    # BFS
+    while queue:
+        node = queue.popleft()
+        for neighbor in adj[node]:
+            if distance[neighbor] > distance[node] + 1:
+                distance[neighbor] = distance[node] + 1
+                nearest_shop[neighbor] = nearest_shop[node]
+                queue.append(neighbor)
+    
+    # Process queries
+    result = []
+    for query in queries:
+        if nearest_shop[query] != -1:
+            shop_attrs = {
+                'distance': distance[query],
+                'cost': distance[query],  # Simplified
+                'probability': 0.5  # Simplified
+            }
+            score = calculate_shop_score(shop_attrs)
+            result.append((nearest_shop[query], score))
+        else:
+            result.append((-1, float('inf')))
+    
+    return result
+```
+
+#### 5. **Nearest Shops with Dynamic Updates**
+**Variation**: Shop locations can be modified dynamically.
+**Approach**: Use dynamic graph algorithms or incremental updates.
+```python
+class DynamicNearestShops:
+    def __init__(self, n):
+        self.n = n
+        self.adj = [[] for _ in range(n + 1)]
+        self.shops = [0] * (n + 1)
+        self.distance_cache = None
+        self.nearest_shop_cache = None
+    
+    def add_edge(self, a, b):
+        self.adj[a].append(b)
+        self.adj[b].append(a)
+        self.invalidate_cache()
+    
+    def remove_edge(self, a, b):
+        self.adj[a].remove(b)
+        self.adj[b].remove(a)
+        self.invalidate_cache()
+    
+    def add_shop(self, node):
+        self.shops[node] = 1
+        self.invalidate_cache()
+    
+    def remove_shop(self, node):
+        self.shops[node] = 0
+        self.invalidate_cache()
+    
+    def invalidate_cache(self):
+        self.distance_cache = None
+        self.nearest_shop_cache = None
+    
+    def get_nearest_shop(self, query):
+        if self.distance_cache is None:
+            self.compute_distances()
+        return self.nearest_shop_cache[query]
+    
+    def compute_distances(self):
+        from collections import deque
+        queue = deque()
+        self.distance_cache = [float('inf')] * (self.n + 1)
+        self.nearest_shop_cache = [-1] * (self.n + 1)
+        
+        # Add all shops to queue
+        for i in range(1, self.n + 1):
+            if self.shops[i] == 1:
+                queue.append(i)
+                self.distance_cache[i] = 0
+                self.nearest_shop_cache[i] = i
+        
+        # BFS
+        while queue:
+            node = queue.popleft()
+            for neighbor in self.adj[node]:
+                if self.distance_cache[neighbor] > self.distance_cache[node] + 1:
+                    self.distance_cache[neighbor] = self.distance_cache[node] + 1
+                    self.nearest_shop_cache[neighbor] = self.nearest_shop_cache[node]
+                    queue.append(neighbor)
+```
+
+### Related Problems & Concepts
+
+#### 1. **Nearest Neighbor Problems**
+- **Nearest Shop**: Find closest shop to a location
+- **Nearest Hospital**: Find closest hospital to a location
+- **Nearest Restaurant**: Find closest restaurant to a location
+- **Nearest Facility**: Find closest facility of any type
+
+#### 2. **Graph Traversal Problems**
+- **BFS**: Breadth-first search for shortest paths
+- **Multi-Source BFS**: BFS from multiple starting points
+- **Dijkstra's Algorithm**: Shortest path with weighted edges
+- **Floyd-Warshall**: All pairs shortest paths
+
+#### 3. **Tree Problems**
+- **Tree Traversal**: Navigate tree structure
+- **Tree Diameter**: Longest path in tree
+- **Tree Distance**: Distance between nodes in tree
+- **Tree Queries**: Query operations on trees
+
+#### 4. **Query Processing Problems**
+- **Range Queries**: Querying ranges of data
+- **Point Queries**: Querying specific points
+- **Batch Queries**: Processing multiple queries
+- **Online Queries**: Real-time query processing
+
+#### 5. **Distance Problems**
+- **Shortest Path**: Minimum distance between nodes
+- **All Pairs Shortest Path**: Shortest paths between all pairs
+- **Distance Matrix**: Matrix of distances between nodes
+- **Distance Queries**: Querying distances efficiently
+
+### Competitive Programming Variations
+
+#### 1. **Online Judge Variations**
+- **Time Limits**: Optimize for strict constraints
+- **Memory Limits**: Space-efficient solutions
+- **Input Size**: Handle large graphs
+- **Edge Cases**: Robust graph operations
+
+#### 2. **Algorithm Contests**
+- **Speed Programming**: Fast implementation
+- **Code Golf**: Minimal code solutions
+- **Team Contests**: Collaborative problem solving
+- **Live Coding**: Real-time problem solving
+
+#### 3. **Advanced Techniques**
+- **Binary Search**: On answer space
+- **Two Pointers**: Efficient graph traversal
+- **Sliding Window**: Optimal subgraph problems
+- **Monotonic Stack/Queue**: Maintaining order
+
+### Mathematical Extensions
+
+#### 1. **Graph Theory**
+- **Graph Properties**: Connectivity, diameter, girth
+- **Tree Properties**: Unique paths, leaf nodes, internal nodes
+- **Distance Metrics**: Euclidean, Manhattan, Chebyshev
+- **Graph Algorithms**: BFS, DFS, Dijkstra, Floyd-Warshall
+
+#### 2. **Optimization Theory**
+- **Shortest Path**: Minimum cost paths
+- **Facility Location**: Optimal facility placement
+- **Network Flow**: Maximum flow, minimum cut
+- **Linear Programming**: Mathematical optimization
+
+#### 3. **Computational Geometry**
+- **Nearest Neighbor**: Geometric nearest neighbor
+- **Voronoi Diagrams**: Partitioning space by proximity
+- **Convex Hull**: Minimum convex polygon
+- **Point Location**: Locating points in subdivisions
+
+### Learning Resources
+
+#### 1. **Online Platforms**
+- **LeetCode**: Graph and tree problems
+- **Codeforces**: Competitive programming
+- **HackerRank**: Algorithm challenges
+- **AtCoder**: Japanese programming contests
+
+#### 2. **Educational Resources**
+- **CLRS**: Introduction to Algorithms
+- **CP-Algorithms**: Competitive programming algorithms
+- **GeeksforGeeks**: Algorithm tutorials
+- **TopCoder**: Algorithm tutorials
+
+#### 3. **Practice Problems**
+- **Graph Problems**: BFS, DFS, shortest paths
+- **Tree Problems**: Tree traversal, tree queries
+- **Distance Problems**: Nearest neighbor, facility location
+- **Query Problems**: Range queries, point queries 

@@ -1,5 +1,3 @@
-# 🚀 CSES Ultimate Learning Resource - Complete Analysis & Learning Guide
-
 ## 🎯 Welcome to the Ultimate CSES Learning Resource!
 
 This is the **most comprehensive** CSES problem set learning resource available. Everything you need to master competitive programming is here.
