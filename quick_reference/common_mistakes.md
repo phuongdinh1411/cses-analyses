@@ -1,4 +1,10 @@
-# ⚠️ Common Mistakes and How to Avoid Them
+---
+layout: simple
+title: Common Mistakes
+permalink: /quick_reference/common_mistakes/
+---
+
+# Common Mistakes and Pitfalls
 
 ## 🚨 Time Complexity Mistakes
 

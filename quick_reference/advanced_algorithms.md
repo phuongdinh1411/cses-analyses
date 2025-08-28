@@ -1,4 +1,10 @@
-# 🚀 Advanced Algorithm Techniques
+---
+layout: simple
+title: Advanced Algorithms
+permalink: /quick_reference/advanced_algorithms/
+---
+
+# Advanced Algorithms Reference
 
 ## 🎯 Advanced Dynamic Programming
 

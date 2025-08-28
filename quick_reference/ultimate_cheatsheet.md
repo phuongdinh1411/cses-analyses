@@ -1,3 +1,9 @@
+---
+layout: simple
+title: Ultimate Cheatsheet
+permalink: /quick_reference/ultimate_cheatsheet/
+---
+
 # 🚀 CSES Ultimate Cheatsheet - Complete Quick Reference Guide
 
 ## 📊 Quick Reference Guide
