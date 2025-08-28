@@ -9,55 +9,277 @@ permalink: /quick_reference/ultimate_cheatsheet/
 ## 📊 Quick Reference Guide
 
 ### 🎯 Dynamic Programming
-| Problem Type | Algorithm | Time | Space | Key Pattern |
-|-------------|-----------|------|-------|-------------|
-| Coin Change | Unbounded Knapsack | O(n*target) | O(target) | `dp[i] += dp[i-coin]` |
-| LIS | Binary Search | O(n log n) | O(n) | `bisect.bisect_left(dp, x)` |
-| Grid Paths | 2D DP | O(m*n) | O(m*n) | `dp[i][j] = dp[i-1][j] + dp[i][j-1]` |
-| Edit Distance | String DP | O(m*n) | O(m*n) | `dp[i][j] = min(insert, delete, replace)` |
+
+<table>
+<thead>
+<tr>
+<th>Problem Type</th>
+<th>Algorithm</th>
+<th>Time</th>
+<th>Space</th>
+<th>Key Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Coin Change</td>
+<td>Unbounded Knapsack</td>
+<td>O(n*target)</td>
+<td>O(target)</td>
+<td><code>dp[i] += dp[i-coin]</code></td>
+</tr>
+<tr>
+<td>LIS</td>
+<td>Binary Search</td>
+<td>O(n log n)</td>
+<td>O(n)</td>
+<td><code>bisect.bisect_left(dp, x)</code></td>
+</tr>
+<tr>
+<td>Grid Paths</td>
+<td>2D DP</td>
+<td>O(m*n)</td>
+<td>O(m*n)</td>
+<td><code>dp[i][j] = dp[i-1][j] + dp[i][j-1]</code></td>
+</tr>
+<tr>
+<td>Edit Distance</td>
+<td>String DP</td>
+<td>O(m*n)</td>
+<td>O(m*n)</td>
+<td><code>dp[i][j] = min(insert, delete, replace)</code></td>
+</tr>
+</tbody>
+</table>
 
 ### 🌐 Graph Algorithms
-| Problem Type | Algorithm | Time | Space | Key Pattern |
-|-------------|-----------|------|-------|-------------|
-| Shortest Path | Dijkstra | O((V+E) log V) | O(V) | `heapq.heappush(pq, (dist, node))` |
-| All Pairs | Floyd-Warshall | O(V³) | O(V²) | `dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])` |
-| SCC | Kosaraju | O(V+E) | O(V+E) | DFS + Transpose + DFS |
-| Topological Sort | Kahn's | O(V+E) | O(V) | `indegree[node] == 0` |
+
+<table>
+<thead>
+<tr>
+<th>Problem Type</th>
+<th>Algorithm</th>
+<th>Time</th>
+<th>Space</th>
+<th>Key Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shortest Path</td>
+<td>Dijkstra</td>
+<td>O((V+E) log V)</td>
+<td>O(V)</td>
+<td><code>heapq.heappush(pq, (dist, node))</code></td>
+</tr>
+<tr>
+<td>All Pairs</td>
+<td>Floyd-Warshall</td>
+<td>O(V³)</td>
+<td>O(V²)</td>
+<td><code>dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])</code></td>
+</tr>
+<tr>
+<td>SCC</td>
+<td>Kosaraju</td>
+<td>O(V+E)</td>
+<td>O(V+E)</td>
+<td>DFS + Transpose + DFS</td>
+</tr>
+<tr>
+<td>Topological Sort</td>
+<td>Kahn's</td>
+<td>O(V+E)</td>
+<td>O(V)</td>
+<td><code>indegree[node] == 0</code></td>
+</tr>
+</tbody>
+</table>
 
 ### 🌳 Tree Algorithms
-| Problem Type | Algorithm | Time | Space | Key Pattern |
-|-------------|-----------|------|-------|-------------|
-| LCA | Binary Lifting | O(log n) | O(n log n) | `parent[node][j] = parent[parent[node][j-1]][j-1]` |
-| Tree Diameter | DFS | O(n) | O(n) | `max_depth + second_max_depth` |
-| Tree DP | Post-order | O(n) | O(n) | `dfs(child) then combine results` |
+
+<table>
+<thead>
+<tr>
+<th>Problem Type</th>
+<th>Algorithm</th>
+<th>Time</th>
+<th>Space</th>
+<th>Key Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LCA</td>
+<td>Binary Lifting</td>
+<td>O(log n)</td>
+<td>O(n log n)</td>
+<td><code>parent[node][j] = parent[parent[node][j-1]][j-1]</code></td>
+</tr>
+<tr>
+<td>Tree Diameter</td>
+<td>DFS</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td><code>max_depth + second_max_depth</code></td>
+</tr>
+<tr>
+<td>Tree DP</td>
+<td>Post-order</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td><code>dfs(child) then combine results</code></td>
+</tr>
+</tbody>
+</table>
 
 ### 🔍 Range Queries
-| Problem Type | Algorithm | Time | Space | Key Pattern |
-|-------------|-----------|------|-------|-------------|
-| Static Sum | Prefix Sum | O(1) | O(n) | `prefix[r+1] - prefix[l]` |
-| Dynamic Sum | Binary Indexed Tree | O(log n) | O(n) | `update(idx, val)` |
-| Range Min | Segment Tree | O(log n) | O(4n) | `min(left_child, right_child)` |
+
+<table>
+<thead>
+<tr>
+<th>Problem Type</th>
+<th>Algorithm</th>
+<th>Time</th>
+<th>Space</th>
+<th>Key Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Static Sum</td>
+<td>Prefix Sum</td>
+<td>O(1)</td>
+<td>O(n)</td>
+<td><code>prefix[r+1] - prefix[l]</code></td>
+</tr>
+<tr>
+<td>Dynamic Sum</td>
+<td>Binary Indexed Tree</td>
+<td>O(log n)</td>
+<td>O(n)</td>
+<td><code>update(idx, val)</code></td>
+</tr>
+<tr>
+<td>Range Min</td>
+<td>Segment Tree</td>
+<td>O(log n)</td>
+<td>O(4n)</td>
+<td><code>min(left_child, right_child)</code></td>
+</tr>
+</tbody>
+</table>
 
 ### 📝 String Algorithms
-| Problem Type | Algorithm | Time | Space | Key Pattern |
-|-------------|-----------|------|-------|-------------|
-| Pattern Matching | KMP | O(n+m) | O(m) | `build_lps(pattern)` |
-| Palindrome | Manacher | O(n) | O(n) | `expand around center` |
-| Suffix Array | SA-IS | O(n) | O(n) | `sort suffixes` |
+
+<table>
+<thead>
+<tr>
+<th>Problem Type</th>
+<th>Algorithm</th>
+<th>Time</th>
+<th>Space</th>
+<th>Key Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pattern Matching</td>
+<td>KMP</td>
+<td>O(n+m)</td>
+<td>O(m)</td>
+<td><code>build_lps(pattern)</code></td>
+</tr>
+<tr>
+<td>Palindrome</td>
+<td>Manacher</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td><code>expand around center</code></td>
+</tr>
+<tr>
+<td>Suffix Array</td>
+<td>SA-IS</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td><code>sort suffixes</code></td>
+</tr>
+</tbody>
+</table>
 
 ### 🔍 Binary Search
-| Problem Type | Algorithm | Time | Space | Key Pattern |
-|-------------|-----------|------|-------|-------------|
-| Find Element | Binary Search | O(log n) | O(1) | `left <= right` |
-| Find Answer | Binary Search | O(log range) | O(1) | `while left < right` |
-| Find Peak | Binary Search | O(log n) | O(1) | `nums[mid] > nums[mid+1]` |
+
+<table>
+<thead>
+<tr>
+<th>Problem Type</th>
+<th>Algorithm</th>
+<th>Time</th>
+<th>Space</th>
+<th>Key Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Find Element</td>
+<td>Binary Search</td>
+<td>O(log n)</td>
+<td>O(1)</td>
+<td><code>left <= right</code></td>
+</tr>
+<tr>
+<td>Find Answer</td>
+<td>Binary Search</td>
+<td>O(log range)</td>
+<td>O(1)</td>
+<td><code>while left < right</code></td>
+</tr>
+<tr>
+<td>Find Peak</td>
+<td>Binary Search</td>
+<td>O(log n)</td>
+<td>O(1)</td>
+<td><code>nums[mid] > nums[mid+1]</code></td>
+</tr>
+</tbody>
+</table>
 
 ### 👆 Two Pointers
-| Problem Type | Algorithm | Time | Space | Key Pattern |
-|-------------|-----------|------|-------|-------------|
-| Sorted Array | Two Pointers | O(n) | O(1) | `left++ or right--` |
-| Sliding Window | Two Pointers | O(n) | O(1) | `while condition: left++` |
-| Linked List | Fast/Slow | O(n) | O(1) | `fast = fast.next.next` |
+
+<table>
+<thead>
+<tr>
+<th>Problem Type</th>
+<th>Algorithm</th>
+<th>Time</th>
+<th>Space</th>
+<th>Key Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sorted Array</td>
+<td>Two Pointers</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td><code>left++ or right--</code></td>
+</tr>
+<tr>
+<td>Sliding Window</td>
+<td>Two Pointers</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td><code>while condition: left++</code></td>
+</tr>
+<tr>
+<td>Linked List</td>
+<td>Fast/Slow</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td><code>fast = fast.next.next</code></td>
+</tr>
+</tbody>
+</table>
 
 ## 🎯 Problem-Solving Decision Tree
 
