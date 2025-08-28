@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Tree Distances II"permalink: /problem_soulutions/tree_algorithms/tree_distances_ii_analysis
+title: "Tree Distances II"
+permalink: /problem_soulutions/tree_algorithms/tree_distances_ii_analysis
 ---
 
 
@@ -102,9 +103,8 @@ def tree_distances_rerooting(n, edges):
         distance_sums[node] = dist_sum
         
         for child in tree[node]:
-            if child != parent:
-                # When moving root from node to child:
-                # - Nodes in child's subtree get closer by 1
+            if child != parent: # When moving root from node to 
+child: # - Nodes in child's subtree get closer by 1
                 # - Nodes outside child's subtree get farther by 1
                 nodes_in_subtree = subtree_sizes[child]
                 nodes_outside_subtree = n - nodes_in_subtree
@@ -272,9 +272,8 @@ def dfs2(node, parent, dist_sum):
     distance_sums[node] = dist_sum
     
     for child in tree[node]:
-        if child != parent:
-            # When moving root from node to child:
-            # - Nodes in child's subtree get closer by 1
+        if child != parent: # When moving root from node to 
+child: # - Nodes in child's subtree get closer by 1
             # - Nodes outside child's subtree get farther by 1
             nodes_in_subtree = subtree_sizes[child]
             nodes_outside_subtree = n - nodes_in_subtree

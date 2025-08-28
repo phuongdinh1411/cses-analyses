@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Tasks and Deadlines"permalink: /problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysis
+title: "Tasks and Deadlines"
+permalink: /problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysis
 ---
 
 
@@ -258,9 +259,8 @@ def tasks_with_resource_constraints(n, tasks, resource_requirements, available_r
     for duration, deadline, resources, task_id in task_data:
         # Check if we have required resources
         can_execute = True
-        for resource in resources:
-            if resource in used_resources:
-                can_execute = False
+        for resource in resources: if resource in 
+used_resources: can_execute = False
                 break
         
         if can_execute:

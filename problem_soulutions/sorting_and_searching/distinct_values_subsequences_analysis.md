@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Distinct Values Subsequences"permalink: /problem_soulutions/sorting_and_searching/distinct_values_subsequences_analysis
+title: "Distinct Values Subsequences"
+permalink: /problem_soulutions/sorting_and_searching/distinct_values_subsequences_analysis
 ---
 
 
@@ -42,9 +43,8 @@ def distinct_values_subsequences_naive(n, k, arr):
     
     def generate_subsequences(index, current_subseq):
         nonlocal count
-        if index == n:
-            if len(set(current_subseq)) == k:
-                count += 1
+        if index == n: if len(set(current_subseq)) == 
+k: count += 1
             return
         
         # Include current element

@@ -171,9 +171,8 @@ print()
 ### 1. **Direct Algorithm Implementation**
 ```python
 # Follow algorithm rules directly
-while n != target:
-    if condition:
-        n = operation1(n)
+while n != target: if 
+condition: n = operation1(n)
     else:
         n = operation2(n)
 ```
@@ -263,9 +262,8 @@ def collatz_steps(n):
 ```python
 def reaches_target(n, target, max_steps=1000):
     steps = 0
-    while n != 1 and steps < max_steps:
-        if n == target:
-            return True
+    while n != 1 and steps < max_steps: if n == 
+target: return True
         if n % 2 == 0:
             n = n // 2
         else:

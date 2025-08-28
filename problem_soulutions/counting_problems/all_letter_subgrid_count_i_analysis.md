@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "All Letter Subgrid Count I"permalink: /problem_soulutions/counting_problems/all_letter_subgrid_count_i_analysis
+title: "All Letter Subgrid Count I"
+permalink: /problem_soulutions/counting_problems/all_letter_subgrid_count_i_analysis
 ---
 
 
@@ -416,7 +417,8 @@ def interactive_grid_analyzer():
                 weight = int(input(f"Enter weight for {letter}: "))
                 weights[letter] = weight
             count, max_weight = weighted_all_letter_subgrids(n, m, k, grid, weights)
-            print(f"Count: {count}, Max weight: {max_weight}")
+            print(f"Count: {count}, Max 
+weight: {max_weight}")
         elif query == "min_freq":
             min_freq = int(input("Enter minimum frequency: "))
             result = min_frequency_all_letter_subgrids(n, m, k, grid, min_freq)

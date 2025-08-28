@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Sum of Three Values"permalink: /problem_soulutions/sorting_and_searching/sum_of_three_values_analysis
+title: "Sum of Three Values"
+permalink: /problem_soulutions/sorting_and_searching/sum_of_three_values_analysis
 ---
 
 
@@ -508,8 +509,8 @@ def interactive_three_sum():
             current_sum = pairs[left][0] + pairs[right][0]
             print(f"Checking {pairs[left][0]} + {pairs[right][0]} = {current_sum}")
             
-            if current_sum == target:
-                print(f"Found solution: {pairs[i][1]} {pairs[left][1]} {pairs[right][1]}")
+            if current_sum == target: print(f"Found 
+solution: {pairs[i][1]} {pairs[left][1]} {pairs[right][1]}")
                 found = True
                 break
             elif current_sum < target:

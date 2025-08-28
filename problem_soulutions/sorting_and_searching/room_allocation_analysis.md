@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Room Allocation"permalink: /problem_soulutions/sorting_and_searching/room_allocation_analysis
+title: "Room Allocation"
+permalink: /problem_soulutions/sorting_and_searching/room_allocation_analysis
 ---
 
 
@@ -305,9 +306,8 @@ def room_allocation_with_capacity(n, customers, room_capacity):
                 assigned = True
                 break
         
-        if not assigned:
-            if available_rooms:
-                room_id = available_rooms.pop()
+        if not assigned: if 
+available_rooms: room_id = available_rooms.pop()
             else:
                 room_id = next_room_id
                 next_room_id += 1
@@ -494,9 +494,8 @@ for _ in range(t):
     next_room_id = 1
     assignments = [0] * n
     
-    for arrival, departure, customer_id in customers:
-        while occupied_rooms and occupied_rooms[0][0] < arrival:
-            _, room_id = heapq.heappop(occupied_rooms)
+    for arrival, departure, customer_id in customers: while occupied_rooms and occupied_rooms[0][0] < 
+arrival: _, room_id = heapq.heappop(occupied_rooms)
             available_rooms.append(room_id)
         
         if available_rooms:

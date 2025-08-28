@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Hamiltonian Flights"permalink: /problem_soulutions/graph_algorithms/hamiltonian_flights_analysis
+title: "Hamiltonian Flights"
+permalink: /problem_soulutions/graph_algorithms/hamiltonian_flights_analysis
 ---
 
 
@@ -513,8 +514,8 @@ def range_hamiltonian_flights_queries(n, flights, queries):
     # queries = [(start_flight, end_flight), ...] - find paths using flights in range
     
     results = []
-    for start, end in queries:
-        subset_flights = flights[start:end+1]
+    for start, end in queries: subset_flights = flights[
+start: end+1]
         result = count_hamiltonian_flights(n, len(subset_flights), subset_flights)
         results.append(result)
     

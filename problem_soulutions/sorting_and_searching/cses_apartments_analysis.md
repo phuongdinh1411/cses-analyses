@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Apartments"permalink: /problem_soulutions/sorting_and_searching/cses_apartments_analysis
+title: "Apartments"
+permalink: /problem_soulutions/sorting_and_searching/cses_apartments_analysis
 ---
 
 
@@ -169,9 +170,8 @@ apartments.sort()
 
 # Two pointers approach
 i = j = matches = 0
-while i < n and j < m:
-    if abs(applicants[i] - apartments[j]) <= k:
-        matches += 1
+while i < n and j < m: if abs(applicants[i] - apartments[j]) <= 
+k: matches += 1
         i += 1
         j += 1
     elif applicants[i] < apartments[j]:
@@ -282,7 +282,8 @@ for item in data:
 # Find elements in range [min_val, max_val]
 left = bisect.bisect_left(arr, min_val)
 right = bisect.bisect_right(arr, max_val)
-# Elements in range: arr[left:right]
+# Elements in range: arr[
+left: right]
 ```
 
 ## Edge Cases to Remember
@@ -326,9 +327,8 @@ def weighted_apartment_matching(applicants, apartments, k, weights):
         best_weight = -1
         
         for j, apartment in enumerate(apartments):
-            if j not in used_apartments and abs(applicant - apartment) <= k:
-                if weights[i][j] > best_weight:
-                    best_weight = weights[i][j]
+            if j not in used_apartments and abs(applicant - apartment) <= k: if weights[i][j] > 
+best_weight: best_weight = weights[i][j]
                     best_apartment = j
         
         if best_apartment is not None:
@@ -404,9 +404,8 @@ def capacity_constrained_matching(applicants, apartments, capacities, k):
     apartments_with_capacity = [(apartments[i], i) for i in range(m)]
     apartments_with_capacity.sort()
     
-    for applicant in applicants:
-        for size, apt_idx in apartments_with_capacity:
-            if (apartment_usage[apt_idx] < capacities[apt_idx] and 
+    for applicant in applicants: for size, apt_idx in 
+apartments_with_capacity: if (apartment_usage[apt_idx] < capacities[apt_idx] and 
                 abs(applicant - size) <= k):
                 matches += 1
                 apartment_usage[apt_idx] += 1
@@ -496,9 +495,8 @@ for _ in range(t):
     matches = 0
     apt_idx = 0
     
-    for applicant in applicants:
-        while apt_idx < m and apartments[apt_idx] < applicant - k:
-            apt_idx += 1
+    for applicant in applicants: while apt_idx < m and apartments[apt_idx] < applicant - 
+k: apt_idx += 1
         
         if apt_idx < m and apartments[apt_idx] <= applicant + k:
             matches += 1
@@ -524,9 +522,8 @@ def precompute_matching_ranges(applicants, apartments, k):
 # Answer queries about matching possibilities
 def matching_query(matching_matrix, applicant_range, apartment_range):
     count = 0
-    for i in applicant_range:
-        for j in apartment_range:
-            if matching_matrix[i][j]:
+    for i in applicant_range: for j in 
+apartment_range: if matching_matrix[i][j]:
                 count += 1
     return count
 ```
@@ -559,9 +556,8 @@ def interactive_apartment_assignment():
     matches = 0
     apt_idx = 0
     
-    for applicant in applicants:
-        while apt_idx < m and apartments[apt_idx] < applicant - k:
-            apt_idx += 1
+    for applicant in applicants: while apt_idx < m and apartments[apt_idx] < applicant - 
+k: apt_idx += 1
         
         if apt_idx < m and apartments[apt_idx] <= applicant + k:
             print(f"Assigned applicant {applicant} to apartment {apartments[apt_idx]}")

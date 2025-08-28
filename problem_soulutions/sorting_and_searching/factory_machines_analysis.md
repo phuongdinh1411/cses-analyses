@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Factory Machines"permalink: /problem_soulutions/sorting_and_searching/factory_machines_analysis
+title: "Factory Machines"
+permalink: /problem_soulutions/sorting_and_searching/factory_machines_analysis
 ---
 
 

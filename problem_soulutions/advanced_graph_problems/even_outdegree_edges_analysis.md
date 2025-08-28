@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Even Outdegree Edges"permalink: /problem_soulutions/advanced_graph_problems/even_outdegree_edges_analysis
+title: "Even Outdegree Edges"
+permalink: /problem_soulutions/advanced_graph_problems/even_outdegree_edges_analysis
 ---
 
 
@@ -328,9 +329,8 @@ def probabilistic_even_outdegree_edges(n, m, edges, removal_probabilities):
         adj = [[] for _ in range(n + 1)]
         removed_set = set(removed_edges)
         
-        for a, b in original_edges:
-            if (a, b) not in removed_set and (b, a) not in removed_set:
-                adj[a].append(b)
+        for a, b in original_edges: if (a, b) not in removed_set and (b, a) not in 
+removed_set: adj[a].append(b)
                 adj[b].append(a)
         
         # Check if all degrees are even

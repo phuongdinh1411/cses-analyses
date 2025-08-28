@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Distinct Values Subarrays"permalink: /problem_soulutions/sorting_and_searching/distinct_values_subarrays_analysis
+title: "Distinct Values Subarrays"
+permalink: /problem_soulutions/sorting_and_searching/distinct_values_subarrays_analysis
 ---
 
 
@@ -477,7 +478,8 @@ def interactive_distinct_subarrays():
         
         for right in range(n):
             freq[arr[right]] = freq.get(arr[right], 0) + 1
-            print(f"Window [{left}, {right}]: {arr[left:right+1]}, Distinct: {len(freq)}")
+            print(f"Window [{left}, {right}]: {arr[left: right+1]}, 
+Distinct: {len(freq)}")
             
             while len(freq) > k:
                 freq[arr[left]] -= 1

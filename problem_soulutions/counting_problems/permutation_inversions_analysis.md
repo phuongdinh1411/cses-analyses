@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Permutation Inversions"permalink: /problem_soulutions/counting_problems/permutation_inversions_analysis
+title: "Permutation Inversions"
+permalink: /problem_soulutions/counting_problems/permutation_inversions_analysis
 ---
 
 

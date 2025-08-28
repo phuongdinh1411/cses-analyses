@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subarray with Given Sum"permalink: /problem_soulutions/sliding_window/subarray_with_given_sum_analysis
+title: "Subarray with Given Sum"
+permalink: /problem_soulutions/sliding_window/subarray_with_given_sum_analysis
 ---
 
 
@@ -235,9 +236,8 @@ def two_pointer_subarray_exists(arr, target):
     for right in range(len(arr)):
         current_sum += arr[right]
         
-        while current_sum >= target and left <= right:
-            if current_sum == target:
-                return True
+        while current_sum >= target and left <= right: if current_sum == 
+target: return True
             current_sum -= arr[left]
             left += 1
     

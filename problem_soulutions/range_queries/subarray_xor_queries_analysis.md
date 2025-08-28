@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subarray XOR Queries"permalink: /problem_soulutions/range_queries/subarray_xor_queries_analysis
+title: "Subarray XOR Queries"
+permalink: /problem_soulutions/range_queries/subarray_xor_queries_analysis
 ---
 
 
@@ -184,14 +185,15 @@ def process_subarray_xor_queries(n, q, array, queries):
     
     result = []
     
-    for query in queries:
-        if query[0] == 1:  # Update query: 1 k x
+    for query in queries: if query[0] == 1:  # Update 
+query: 1 k x
             k, x = query[1], query[2]
             old_val = array[k-1]
             array[k-1] = x
             # XOR out old value and XOR in new value
             bit.update(k, old_val ^ x)
-        else:  # XOR query: 2 a b
+        else: # XOR 
+query: 2 a b
             a, b = query[1], query[2]
             xor_val = bit.range_query(a, b)
             result.append(xor_val)
@@ -787,9 +789,8 @@ def interactive_subarray_xor_queries(n, array):
     for i in range(n):
         bit.update(i + 1, array[i])
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subarray Sums II"permalink: /problem_soulutions/sliding_window/subarray_sums_ii_analysis
+title: "Subarray Sums II"
+permalink: /problem_soulutions/sliding_window/subarray_sums_ii_analysis
 ---
 
 
@@ -241,9 +242,8 @@ def two_pointer_subarray_sum(arr, target):
     for right in range(len(arr)):
         current_sum += arr[right]
         
-        while current_sum >= target and left <= right:
-            if current_sum == target:
-                count += 1
+        while current_sum >= target and left <= right: if current_sum == 
+target: count += 1
             current_sum -= arr[left]
             left += 1
     

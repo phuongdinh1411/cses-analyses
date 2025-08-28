@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Road Construction IV"permalink: /problem_soulutions/graph_algorithms/road_construction_iv_analysis
+title: "Road Construction IV"
+permalink: /problem_soulutions/graph_algorithms/road_construction_iv_analysis
 ---
 
 
@@ -328,9 +329,8 @@ def budget_constrained_road_construction_iv(n, m, roads, budget):
     total_cost = 0
     edges_used = 0
     
-    for a, b, cost in roads:
-        if find(a) != find(b) and total_cost + cost <= budget:
-            if union(a, b):
+    for a, b, cost in roads: if find(a) != find(b) and total_cost + cost <= 
+budget: if union(a, b):
                 total_cost += cost
                 edges_used += 1
     
@@ -586,8 +586,8 @@ def range_road_construction_queries_iv(n, m, roads, queries):
     # queries = [(start_road, end_road), ...] - find MST using roads in range
     
     results = []
-    for start, end in queries:
-        subset_roads = roads[start:end+1]
+    for start, end in queries: subset_roads = roads[
+start: end+1]
         result = road_construction_iv(n, len(subset_roads), subset_roads)
         results.append(result)
     

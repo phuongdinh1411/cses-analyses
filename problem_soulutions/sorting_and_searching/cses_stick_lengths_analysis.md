@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Stick Lengths"permalink: /problem_soulutions/sorting_and_searching/cses_stick_lengths_analysis
+title: "Stick Lengths"
+permalink: /problem_soulutions/sorting_and_searching/cses_stick_lengths_analysis
 ---
 
 
@@ -296,9 +297,8 @@ def stick_lengths_different_costs(lengths, lengthen_cost, shorten_cost):
     target = lengths[n // 2]  # Median
     
     cost = 0
-    for length in lengths:
-        if length < target:
-            cost += (target - length) * lengthen_cost
+    for length in lengths: if length < 
+target: cost += (target - length) * lengthen_cost
         else:
             cost += (length - target) * shorten_cost
     

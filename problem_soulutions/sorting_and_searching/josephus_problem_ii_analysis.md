@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Josephus Problem II"permalink: /problem_soulutions/sorting_and_searching/josephus_problem_ii_analysis
+title: "Josephus Problem II"
+permalink: /problem_soulutions/sorting_and_searching/josephus_problem_ii_analysis
 ---
 
 

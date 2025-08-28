@@ -107,9 +107,8 @@ def apple_division_meet_middle(weights):
     min_diff = float('inf')
     
     # Try all combinations
-    for left_sum in left_sums:
-        for right_sum in right_sums:
-            subset_sum = left_sum + right_sum
+    for left_sum in left_sums: for right_sum in 
+right_sums: subset_sum = left_sum + right_sum
             diff = abs(total_sum - 2 * subset_sum)
             min_diff = min(min_diff, diff)
     
@@ -183,7 +182,8 @@ def test_apple_division():
     for weights, expected in test_cases:
         result = apple_division_bitmask(weights)
         print(f"Weights: {weights}")
-        print(f"Expected: {expected}, Got: {result}")
+        print(f"Expected: {expected}, 
+Got: {result}")
         print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
         print()
 

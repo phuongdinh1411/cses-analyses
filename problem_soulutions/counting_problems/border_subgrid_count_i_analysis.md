@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Border Subgrid Count I"permalink: /problem_soulutions/counting_problems/border_subgrid_count_i_analysis
+title: "Border Subgrid Count I"
+permalink: /problem_soulutions/counting_problems/border_subgrid_count_i_analysis
 ---
 
 
@@ -489,7 +490,8 @@ def interactive_border_analyzer():
                 row = list(map(int, input(f"Weight row {i+1}: ").split()))
                 weights.append(row)
             count, max_weight = weighted_border_subgrids(n, m, k, grid, weights)
-            print(f"Count: {count}, Max weight: {max_weight}")
+            print(f"Count: {count}, Max 
+weight: {max_weight}")
         elif query == "min_width":
             min_width = int(input("Enter minimum border width: "))
             result = min_border_width_subgrids(n, m, k, grid, min_width)

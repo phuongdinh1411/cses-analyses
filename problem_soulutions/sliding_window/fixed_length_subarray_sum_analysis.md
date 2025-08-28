@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Fixed Length Subarray Sum"permalink: /problem_soulutions/sliding_window/fixed_length_subarray_sum_analysis
+title: "Fixed Length Subarray Sum"
+permalink: /problem_soulutions/sliding_window/fixed_length_subarray_sum_analysis
 ---
 
 

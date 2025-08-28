@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Nearest Shops"permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis
+title: "Nearest Shops"
+permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis
 ---
 
 
@@ -338,9 +339,8 @@ def cost_based_nearest_shops(n, q, edges, edge_costs, shops, queries):
 def constrained_nearest_shops(n, q, edges, shops, budget, restricted_edges, queries):
     # Build adjacency list excluding restricted edges
     adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        if (a, b) not in restricted_edges and (b, a) not in restricted_edges:
-            adj[a].append(b)
+    for a, b in edges: if (a, b) not in restricted_edges and (b, a) not in 
+restricted_edges: adj[a].append(b)
             adj[b].append(a)
     
     # Multi-source BFS with budget constraint
@@ -370,9 +370,8 @@ def constrained_nearest_shops(n, q, edges, shops, budget, restricted_edges, quer
     
     # Process queries
     result = []
-    for query in queries:
-        if distance[query] <= budget:
-            result.append(nearest_shop[query])
+    for query in queries: if distance[query] <= 
+budget: result.append(nearest_shop[query])
         else:
             result.append(-1)  # No shop within budget
     

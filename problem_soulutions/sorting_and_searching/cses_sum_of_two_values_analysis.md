@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Sum of Two Values"permalink: /problem_soulutions/sorting_and_searching/cses_sum_of_two_values_analysis
+title: "Sum of Two Values"
+permalink: /problem_soulutions/sorting_and_searching/cses_sum_of_two_values_analysis
 ---
 
 

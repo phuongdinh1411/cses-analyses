@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Movie Festival - Interview Analysis"permalink: /problem_soulutions/sorting_and_searching/cses_movie_festival_analysis
+title: "Movie Festival - Interview Analysis"
+permalink: /problem_soulutions/sorting_and_searching/cses_movie_festival_analysis
 ---
 
 
@@ -160,9 +161,8 @@ def movie_festival_greedy(movies):
     selected = 0
     last_end = 0
     
-    for start, end in movies:
-        if start >= last_end:
-            selected += 1
+    for start, end in movies: if start >= 
+last_end: selected += 1
             last_end = end
     
     return selected
@@ -191,9 +191,8 @@ movies.sort(key=lambda x: x[1])
 selected = 0
 last_end = 0
 
-for start, end in movies:
-    if start >= last_end:
-        selected += 1
+for start, end in movies: if start >= 
+last_end: selected += 1
         last_end = end
 
 print(selected)
@@ -278,9 +277,8 @@ def movie_festival_duration_constraint(movies, max_duration):
     count = 0
     last_end = 0
     
-    for start, end in valid_movies:
-        if start >= last_end:
-            count += 1
+    for start, end in valid_movies: if start >= 
+last_end: count += 1
             last_end = end
     
     return count
@@ -321,9 +319,8 @@ def movie_festival_with_break(movies, break_time):
     count = 0
     last_end = -break_time  # Allow first movie to start anytime
     
-    for start, end in movies:
-        if start >= last_end + break_time:
-            count += 1
+    for start, end in movies: if start >= last_end + 
+break_time: count += 1
             last_end = end
     
     return count
@@ -417,9 +414,8 @@ for _ in range(t):
     count = 0
     last_end = 0
     
-    for start, end in movies:
-        if start >= last_end:
-            count += 1
+    for start, end in movies: if start >= 
+last_end: count += 1
             last_end = end
     
     print(count)
@@ -441,9 +437,8 @@ def precompute_movie_ranges(movies, max_time):
     timeline = [0] * (max_time + 1)
     current_movies = 0
     
-    for time, event_type in events:
-        if time <= max_time:
-            current_movies += event_type
+    for time, event_type in events: if time <= 
+max_time: current_movies += event_type
             timeline[time] = current_movies
     
     return timeline
@@ -473,9 +468,8 @@ def interactive_movie_festival():
     selected = []
     last_end = 0
     
-    for start, end in movies:
-        if start >= last_end:
-            selected.append((start, end))
+    for start, end in movies: if start >= 
+last_end: selected.append((start, end))
             last_end = end
             print(f"Selected movie: {start}-{end}")
     

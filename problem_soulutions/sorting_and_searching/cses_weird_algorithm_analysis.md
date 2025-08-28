@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Weird Algorithm"permalink: /problem_soulutions/sorting_and_searching/cses_weird_algorithm_analysis
+title: "Weird Algorithm"
+permalink: /problem_soulutions/sorting_and_searching/cses_weird_algorithm_analysis
 ---
 
 
@@ -39,9 +40,8 @@ Output: 3 10 5 16 8 4 2 1
 3. **Termination**: The sequence always reaches 1 (conjectured, not proven)
 4. **Output Format**: Space-separated numbers on one line
 
-### Mathematical Background:
-The Collatz conjecture (also known as the 3n+1 conjecture) states that:
-- For any positive integer n, the sequence will always reach 1
+### Mathematical Background: The Collatz conjecture (also known as the 3n+1 conjecture) states 
+that: - For any positive integer n, the sequence will always reach 1
 - This has been verified for numbers up to 2^60 but remains unproven
 - Some numbers have very long sequences (e.g., n=27 has 111 steps)
 
@@ -481,8 +481,8 @@ def range_query(lengths, start, end):
 def interactive_collatz_explorer():
     print("Welcome to the Collatz Explorer!")
     
-    while True:
-        print("\nOptions:")
+    while True: print("\
+nOptions: ")
         print("1. Generate Collatz sequence")
         print("2. Find sequence length")
         print("3. Find maximum value")

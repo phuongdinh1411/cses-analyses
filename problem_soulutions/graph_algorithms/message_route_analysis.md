@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Message Route"permalink: /problem_soulutions/graph_algorithms/message_route_analysis
+title: "Message Route"
+permalink: /problem_soulutions/graph_algorithms/message_route_analysis
 ---
 
 
@@ -187,7 +188,8 @@ def message_route_bidirectional_bfs(n, m, cables):
         
         # Backward BFS from end
         backward_queue = deque([n])
-        backward_visited = {n: 0}  # node: distance
+        backward_visited = {n: 0}  # 
+node: distance
         backward_parent = {n: -1}
         
         while forward_queue and backward_queue:
@@ -544,9 +546,8 @@ def all_shortest_paths(n, m, cables):
 def constrained_route(n, m, cables, forbidden, max_cables):
     # forbidden = set of computers to avoid
     graph = [[] for _ in range(n + 1)]
-    for a, b in cables:
-        if a not in forbidden and b not in forbidden:
-            graph[a].append(b)
+    for a, b in cables: if a not in forbidden and b not in 
+forbidden: graph[a].append(b)
             graph[b].append(a)
     
     queue = deque([(1, [1], 0)])  # (node, path, cables_used)
@@ -707,8 +708,8 @@ def interactive_network():
     current = 1
     path = [1]
     
-    while current != n:
-        print(f"Current node: {current}")
+    while current != n: print(f"Current 
+node: {current}")
         print(f"Neighbors: {graph[current]}")
         
         next_node = int(input("Choose next node: "))

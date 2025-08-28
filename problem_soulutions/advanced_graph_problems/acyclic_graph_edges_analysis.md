@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Acyclic Graph Edges"permalink: /problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis
+title: "Acyclic Graph Edges"
+permalink: /problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis
 ---
 
 
@@ -454,9 +455,8 @@ def constrained_acyclic_graph_edges(n, m, edges, budget, restricted_edges):
         
         # Filter out restricted edges
         removable_edges = []
-        for edge in edges_to_remove:
-            if edge not in restricted_edges:
-                removable_edges.append(edge)
+        for edge in edges_to_remove: if edge not in 
+restricted_edges: removable_edges.append(edge)
         
         # Sort by cost (assuming unit cost for simplicity)
         removable_edges.sort(key=lambda x: 1)  # Unit cost
@@ -505,9 +505,8 @@ def probabilistic_acyclic_graph_edges(n, m, edges, removal_probabilities):
         adj = [[] for _ in range(n + 1)]
         removed_set = set(removed_edges)
         
-        for a, b in original_edges:
-            if (a, b) not in removed_set:
-                adj[a].append(b)
+        for a, b in original_edges: if (a, b) not in 
+removed_set: adj[a].append(b)
         
         # Check for cycles
         visited = [False] * (n + 1)
@@ -621,9 +620,8 @@ def multi_criteria_acyclic_graph_edges(n, m, edges, criteria_weights):
         adj = [[] for _ in range(n + 1)]
         removed_set = set(removed_edges)
         
-        for a, b in original_edges:
-            if (a, b) not in removed_set:
-                adj[a].append(b)
+        for a, b in original_edges: if (a, b) not in 
+removed_set: adj[a].append(b)
         
         # Check for cycles
         visited = [False] * (n + 1)

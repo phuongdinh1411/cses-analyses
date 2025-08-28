@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Finding Periods"permalink: /problem_soulutions/string_algorithms/finding_periods_analysis
+title: "Finding Periods"
+permalink: /problem_soulutions/string_algorithms/finding_periods_analysis
 ---
 
 
@@ -613,8 +614,8 @@ def range_period_finding_queries(s, queries):
     # queries = [(l, r), ...] - find period of substring s[l:r]
     
     results = []
-    for l, r in queries:
-        substring = s[l:r]
+    for l, r in queries: substring = s[
+l: r]
         period = find_period_kmp(substring)
         results.append(period)
     

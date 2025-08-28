@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Cycle Finding"permalink: /problem_soulutions/graph_algorithms/cycle_finding_analysis
+title: "Cycle Finding"
+permalink: /problem_soulutions/graph_algorithms/cycle_finding_analysis
 ---
 
 
@@ -679,8 +680,8 @@ def interactive_cycle_finding():
         edges.append((a, b, w))
     
     has_cycle, cycle = find_negative_cycle(n, m, edges)
-    if has_cycle:
-        print(f"Negative cycle found: {cycle}")
+    if has_cycle: print(f"Negative cycle 
+found: {cycle}")
     else:
         print("No negative cycle found")
 ```

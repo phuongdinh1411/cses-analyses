@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Shortest Subarray with Sum"permalink: /problem_soulutions/sliding_window/shortest_subarray_with_sum_analysis
+title: "Shortest Subarray with Sum"
+permalink: /problem_soulutions/sliding_window/shortest_subarray_with_sum_analysis
 ---
 
 

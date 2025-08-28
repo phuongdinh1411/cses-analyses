@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Planets Queries II"permalink: /problem_soulutions/graph_algorithms/planets_queries_ii_analysis
+title: "Planets Queries II"
+permalink: /problem_soulutions/graph_algorithms/planets_queries_ii_analysis
 ---
 
 
@@ -63,9 +64,8 @@ def planets_queries_ii_naive(n, q, teleporters, queries):
         
         # Find first common element
         common = -1
-        for planet in path_a:
-            if planet in path_b:
-                common = planet
+        for planet in path_a: if planet in 
+path_b: common = planet
                 break
         
         results.append(common)
@@ -136,9 +136,8 @@ def planets_queries_ii_optimized(n, q, teleporters, queries):
         
         # Find first common element
         common = -1
-        for planet in path_a:
-            if planet in path_b:
-                common = planet
+        for planet in path_a: if planet in 
+path_b: common = planet
                 break
         
         results.append(common)
@@ -199,9 +198,8 @@ def answer_planets_queries_ii(n, q, teleporters, queries):
         
         # Find first common element
         common = -1
-        for planet in path_a:
-            if planet in path_b:
-                common = planet
+        for planet in path_a: if planet in 
+path_b: common = planet
                 break
         
         results.append(common)
@@ -280,9 +278,8 @@ def generate_path(teleporters, start, cycle_entry):
 ### 3. **Common Element Finding**
 ```python
 def find_common_element(path_a, path_b):
-    for planet in path_a:
-        if planet in path_b:
-            return planet
+    for planet in path_a: if planet in 
+path_b: return planet
     return -1
 ```
 
@@ -431,9 +428,8 @@ def constrained_planets_queries_ii(n, q, teleporters, max_teleporters, queries):
         
         # Find intersection
         intersection = -1
-        for planet in path_a:
-            if planet in path_b:
-                intersection = planet
+        for planet in path_a: if planet in 
+path_b: intersection = planet
                 break
         
         results.append(intersection)
@@ -610,9 +606,8 @@ def dynamic_planets_queries_ii(n, q, initial_teleporters, updates, queries):
             
             # Find intersection
             intersection = -1
-            for planet in path_a:
-                if planet in path_b:
-                    intersection = planet
+            for planet in path_a: if planet in 
+path_b: intersection = planet
                     break
             
             current_results.append(intersection)
@@ -696,9 +691,8 @@ def range_path_intersection_queries(n, teleporters, queries):
                 
                 # Find intersection
                 intersection = -1
-                for planet in path_a:
-                    if planet in path_b:
-                        intersection = planet
+                for planet in path_a: if planet in 
+path_b: intersection = planet
                         break
                 
                 range_results.append(intersection)

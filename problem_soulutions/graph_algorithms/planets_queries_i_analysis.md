@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Planets Queries I"permalink: /problem_soulutions/graph_algorithms/planets_queries_i_analysis
+title: "Planets Queries I"
+permalink: /problem_soulutions/graph_algorithms/planets_queries_i_analysis
 ---
 
 
@@ -270,9 +271,8 @@ def constrained_planets_queries_i(n, q, teleporters, max_teleporters, queries):
             up[j][i] = up[j-1][up[j-1][i]]
     
     results = []
-    for a, k in queries:
-        if k > max_teleporters:
-            results.append(-1)  # Constraint violated
+    for a, k in queries: if k > 
+max_teleporters: results.append(-1)  # Constraint violated
             continue
         
         current = a - 1

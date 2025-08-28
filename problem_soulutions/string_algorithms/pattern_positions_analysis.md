@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Pattern Positions"permalink: /problem_soulutions/string_algorithms/pattern_positions_analysis
+title: "Pattern Positions"
+permalink: /problem_soulutions/string_algorithms/pattern_positions_analysis
 ---
 
 
@@ -40,8 +41,8 @@ def pattern_positions_naive(s, p):
     n, m = len(s), len(p)
     
     for i in range(n - m + 1):
-        if s[i:i + m] == p:
-            positions.append(i + 1)  # 1-indexed
+        if s[i: i + m] == 
+p: positions.append(i + 1)  # 1-indexed
     
     return positions
 ```
@@ -616,8 +617,8 @@ def range_pattern_position_queries(s, queries):
     # queries = [(l, r, pattern), ...] - find pattern in substring s[l:r]
     
     results = []
-    for l, r, pattern in queries:
-        substring = s[l:r]
+    for l, r, pattern in queries: substring = s[
+l: r]
         positions = kmp_string_matching(substring, pattern)
         # Adjust positions to original string coordinates
         adjusted_positions = [pos + l + 1 for pos in positions]  # 1-indexed

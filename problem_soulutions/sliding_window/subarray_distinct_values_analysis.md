@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subarray Distinct Values"permalink: /problem_soulutions/sliding_window/subarray_distinct_values_analysis
+title: "Subarray Distinct Values"
+permalink: /problem_soulutions/sliding_window/subarray_distinct_values_analysis
 ---
 
 

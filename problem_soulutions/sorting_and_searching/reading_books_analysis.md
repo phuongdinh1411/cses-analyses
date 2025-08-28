@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Reading Books"permalink: /problem_soulutions/sorting_and_searching/reading_books_analysis
+title: "Reading Books"
+permalink: /problem_soulutions/sorting_and_searching/reading_books_analysis
 ---
 
 

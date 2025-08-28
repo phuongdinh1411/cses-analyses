@@ -112,11 +112,12 @@ def pizzeria_queries_segment_tree(n, q, prices, queries):
     st = SegmentTree(prices)
     result = []
     
-    for query in queries:
-        if query[0] == 1:  # Update query: 1 k x
+    for query in queries: if query[0] == 1:  # Update 
+query: 1 k x
             k, x = query[1], query[2]
             st.update(k-1, x)  # Convert to 0-indexed
-        else:  # Minimum query: 2 a b
+        else: # Minimum 
+query: 2 a b
             a, b = query[1], query[2]
             min_price = st.query(a-1, b)  # Convert to 0-indexed, right exclusive
             result.append(min_price)
@@ -180,11 +181,12 @@ def process_pizzeria_queries(n, q, prices, queries):
     st = SegmentTree(prices)
     result = []
     
-    for query in queries:
-        if query[0] == 1:  # Update query: 1 k x
+    for query in queries: if query[0] == 1:  # Update 
+query: 1 k x
             k, x = query[1], query[2]
             st.update(k-1, x)  # Convert to 0-indexed
-        else:  # Minimum query: 2 a b
+        else: # Minimum 
+query: 2 a b
             a, b = query[1], query[2]
             min_price = st.query(a-1, b)  # Convert to 0-indexed, right exclusive
             result.append(min_price)
@@ -415,9 +417,8 @@ def pizzeria_queries_multiple_criteria(n, q, prices, ratings, operations):
         def _query_with_rating(self, node, left, right, l, r, min_rating):
             if r < left or l > right:
                 return float('inf')
-            if l <= left and right <= r:
-                if self.rating_tree[node] >= min_rating:
-                    return self.price_tree[node]
+            if l <= left and right <= r: if self.rating_tree[node] >= 
+min_rating: return self.price_tree[node]
                 return float('inf')
             mid = (left + right) // 2
             return min(
@@ -757,9 +758,8 @@ def interactive_pizzeria_queries(n, prices):
     # Handle interactive queries
     st = SegmentTree(prices)
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

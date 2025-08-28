@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Removal Game"permalink: /problem_soulutions/dynamic_programming/removal_game_analysis
+title: "Removal Game"
+permalink: /problem_soulutions/dynamic_programming/removal_game_analysis
 ---
 
 
@@ -384,7 +385,8 @@ def interactive_removal_game():
             score = arr[-1]
             arr = arr[:-1]
         
-        print(f"Your score: {score}, Remaining: {arr}")
+        print(f"Your score: {score}, 
+Remaining: {arr}")
         
         if not arr:
             break
@@ -401,7 +403,8 @@ def interactive_removal_game():
                 computer_score = arr[-1]
                 arr = arr[:-1]
         
-        print(f"Computer score: {computer_score}, Remaining: {arr}")
+        print(f"Computer score: {computer_score}, 
+Remaining: {arr}")
 ```
 
 ### 🧮 **Mathematical Extensions**

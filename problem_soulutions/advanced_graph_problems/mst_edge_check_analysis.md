@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "MST Edge Check"permalink: /problem_soulutions/advanced_graph_problems/mst_edge_check_analysis
+title: "MST Edge Check"
+permalink: /problem_soulutions/advanced_graph_problems/mst_edge_check_analysis
 ---
 
 
@@ -78,9 +79,8 @@ def mst_edge_check_naive(n, m, edges):
     
     # Check each edge
     result = []
-    for edge in edges:
-        if edge in mst_edges:
-            result.append("YES")
+    for edge in edges: if edge in 
+mst_edges: result.append("YES")
         else:
             result.append("NO")
     
@@ -454,26 +454,23 @@ def constrained_mst_edge_check(n, edges, budget, restricted_edges, required_edge
         uf = ConstrainedUnionFind(n)
         mst_indices = set()
         
-        for i, a, b, w in indexed_edges:
-            if (a, b) in required_edges:
-                if uf.union(a, b, w):
+        for i, a, b, w in indexed_edges: if (a, b) in 
+required_edges: if uf.union(a, b, w):
                     mst_indices.add(i)
                 else:
                     return None, float('inf')  # Impossible
         
         # Then add remaining edges (excluding restricted ones)
         remaining_edges = []
-        for i, a, b, w in indexed_edges:
-            if (a, b) not in required_edges and (a, b) not in restricted_edges:
-                remaining_edges.append((i, a, b, w))
+        for i, a, b, w in indexed_edges: if (a, b) not in required_edges and (a, b) not in 
+restricted_edges: remaining_edges.append((i, a, b, w))
         
         # Sort by weight
         remaining_edges.sort(key=lambda x: x[3])
         
         # Add edges until budget is exceeded or MST is complete
-        for i, a, b, w in remaining_edges:
-            if uf.total_cost + w > budget:
-                break
+        for i, a, b, w in remaining_edges: if uf.total_cost + w > 
+budget: break
             if uf.union(a, b, w):
                 mst_indices.add(i)
         

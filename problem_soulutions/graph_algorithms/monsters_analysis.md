@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Monsters"permalink: /problem_soulutions/graph_algorithms/monsters_analysis
+title: "Monsters"
+permalink: /problem_soulutions/graph_algorithms/monsters_analysis
 ---
 
 

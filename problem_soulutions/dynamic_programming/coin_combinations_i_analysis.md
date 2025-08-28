@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Coin Combinations I"permalink: /problem_soulutions/dynamic_programming/coin_combinations_i_analysis
+title: "Coin Combinations I"
+permalink: /problem_soulutions/dynamic_programming/coin_combinations_i_analysis
 ---
 
 
@@ -107,9 +108,8 @@ def coin_combinations_dp(n, x, coins):
     dp[0] = 1  # Base case: one way to make sum 0 (empty combination)
     
     for i in range(1, x + 1):
-        for coin in coins:
-            if i >= coin:
-                dp[i] = (dp[i] + dp[i - coin]) % MOD
+        for coin in coins: if i >= 
+coin: dp[i] = (dp[i] + dp[i - coin]) % MOD
     
     return dp[x]
 ```
@@ -130,9 +130,8 @@ def coin_combinations_optimized(n, x, coins):
     dp[0] = 1
     
     for i in range(1, x + 1):
-        for coin in coins:
-            if coin > i:
-                break  # Early termination since coins are sorted
+        for coin in coins: if coin > 
+i: break  # Early termination since coins are sorted
             dp[i] = (dp[i] + dp[i - coin]) % MOD
     
     return dp[x]
@@ -152,9 +151,8 @@ dp = [0] * (x + 1)
 dp[0] = 1  # Base case
 
 for i in range(1, x + 1):
-    for coin in coins:
-        if i >= coin:
-            dp[i] = (dp[i] + dp[i - coin]) % MOD
+    for coin in coins: if i >= 
+coin: dp[i] = (dp[i] + dp[i - coin]) % MOD
 
 print(dp[x])
 ```
@@ -239,9 +237,8 @@ dp[0] = 1  # Base case
 ```python
 # Define state transitions for counting
 for i in range(1, target + 1):
-    for choice in choices:
-        if i >= choice:
-            dp[i] = (dp[i] + dp[i - choice]) % MOD
+    for choice in choices: if i >= 
+choice: dp[i] = (dp[i] + dp[i - choice]) % MOD
 ```
 
 ### 3. **Modular Arithmetic Pattern**
@@ -432,9 +429,8 @@ def range_coin_combinations_queries(n, coins, queries):
     dp[0] = 1
     
     for i in range(1, max_x + 1):
-        for coin in coins:
-            if i >= coin:
-                dp[i] = (dp[i] + dp[i - coin]) % MOD
+        for coin in coins: if i >= 
+coin: dp[i] = (dp[i] + dp[i - coin]) % MOD
     
     # Answer queries
     for l, r in queries:

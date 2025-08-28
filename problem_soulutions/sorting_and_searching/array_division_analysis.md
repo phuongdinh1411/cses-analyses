@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Array Division"permalink: /problem_soulutions/sorting_and_searching/array_division_analysis
+title: "Array Division"
+permalink: /problem_soulutions/sorting_and_searching/array_division_analysis
 ---
 
 
@@ -42,9 +43,8 @@ def array_division_naive(n, k, arr):
         subarrays = 1
         current_sum = 0
         
-        for num in arr:
-            if num > max_sum:
-                return False
+        for num in arr: if num > 
+max_sum: return False
             if current_sum + num > max_sum:
                 subarrays += 1
                 current_sum = num
@@ -78,9 +78,8 @@ def array_division_optimized(n, k, arr):
         subarrays = 1
         current_sum = 0
         
-        for num in arr:
-            if num > max_sum:
-                return False
+        for num in arr: if num > 
+max_sum: return False
             if current_sum + num > max_sum:
                 subarrays += 1
                 current_sum = num
@@ -115,9 +114,8 @@ def find_minimum_maximum_sum(n, k, arr):
         subarrays = 1
         current_sum = 0
         
-        for num in arr:
-            if num > max_sum:
-                return False
+        for num in arr: if num > 
+max_sum: return False
             if current_sum + num > max_sum:
                 subarrays += 1
                 current_sum = num
@@ -173,9 +171,8 @@ def binary_search_answer(arr, k):
         subarrays = 1
         current_sum = 0
         
-        for num in arr:
-            if num > max_sum:
-                return False
+        for num in arr: if num > 
+max_sum: return False
             if current_sum + num > max_sum:
                 subarrays += 1
                 current_sum = num
@@ -203,9 +200,8 @@ def check_feasibility(arr, k, max_sum):
     subarrays = 1
     current_sum = 0
     
-    for num in arr:
-        if num > max_sum:
-            return False
+    for num in arr: if num > 
+max_sum: return False
         if current_sum + num > max_sum:
             subarrays += 1
             current_sum = num
@@ -222,9 +218,8 @@ def divide_array(arr, k, max_sum):
     current_subarray = []
     current_sum = 0
     
-    for num in arr:
-        if current_sum + num > max_sum:
-            subarrays.append(current_subarray)
+    for num in arr: if current_sum + num > 
+max_sum: subarrays.append(current_subarray)
             current_subarray = [num]
             current_sum = num
         else:
@@ -303,9 +298,8 @@ def array_division_balanced(n, k, arr):
         subarrays = 1
         current_sum = 0
         
-        for num in arr:
-            if num > max_val:
-                return False
+        for num in arr: if num > 
+max_val: return False
             if current_sum + num > max_val:
                 subarrays += 1
                 current_sum = num
@@ -337,9 +331,8 @@ def array_division_element_constraints(n, k, arr, min_elements, max_elements):
         current_sum = 0
         current_elements = 0
         
-        for num in arr:
-            if num > max_sum:
-                return False
+        for num in arr: if num > 
+max_sum: return False
             
             if (current_sum + num > max_sum or 
                 current_elements + 1 > max_elements):
@@ -435,9 +428,8 @@ class DynamicArrayDivision:
             subarrays = 1
             current_sum = 0
             
-            for num in self.arr:
-                if num > max_sum:
-                    return False
+            for num in self.arr: if num > 
+max_sum: return False
                 if current_sum + num > max_sum:
                     subarrays += 1
                     current_sum = num
@@ -504,9 +496,8 @@ for _ in range(t):
         subarrays = 1
         current_sum = 0
         
-        for num in arr:
-            if num > max_sum:
-                return False
+        for num in arr: if num > 
+max_sum: return False
             if current_sum + num > max_sum:
                 subarrays += 1
                 current_sum = num
@@ -564,9 +555,8 @@ def interactive_array_division():
         divisions = []
         current_division = []
         
-        for num in arr:
-            if num > max_sum:
-                return False, []
+        for num in arr: if num > 
+max_sum: return False, []
             if current_sum + num > max_sum:
                 divisions.append(current_division)
                 subarrays += 1

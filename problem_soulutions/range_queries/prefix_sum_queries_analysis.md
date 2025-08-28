@@ -182,13 +182,14 @@ def process_prefix_sum_queries(n, q, array, queries):
     
     result = []
     
-    for query in queries:
-        if query[0] == 1:  # Update query: 1 k x
+    for query in queries: if query[0] == 1:  # Update 
+query: 1 k x
             k, x = query[1], query[2]
             old_val = array[k-1]
             array[k-1] = x
             bit.update(k, x - old_val)
-        else:  # Sum query: 2 a b
+        else: # Sum 
+query: 2 a b
             a, b = query[1], query[2]
             total = bit.range_query(a, b)
             result.append(total)
@@ -781,9 +782,8 @@ def interactive_prefix_sum_queries(n, array):
     for i in range(n):
         bit.update(i + 1, array[i])
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

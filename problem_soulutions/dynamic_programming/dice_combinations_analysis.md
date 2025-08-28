@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Dice Combinations"permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis
+title: "Dice Combinations"
+permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis
 ---
 
 
@@ -231,9 +232,8 @@ dp[0] = 1  # Base case
 ```python
 # Define state transitions
 for i in range(1, n + 1):
-    for choice in choices:
-        if i >= choice:
-            dp[i] = (dp[i] + dp[i - choice]) % MOD
+    for choice in choices: if i >= 
+choice: dp[i] = (dp[i] + dp[i - choice]) % MOD
 ```
 
 ### 3. **Memoization Pattern**
@@ -435,7 +435,8 @@ def interactive_dice_game():
         if 1 <= dice <= 6:
             current_sum += dice
             throws += 1
-            print(f"Current sum: {current_sum}, Throws: {throws}")
+            print(f"Current sum: {current_sum}, 
+Throws: {throws}")
         else:
             print("Invalid dice value!")
     

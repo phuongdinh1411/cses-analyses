@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "De Bruijn Sequence"permalink: /problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis
+title: "De Bruijn Sequence"
+permalink: /problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis
 ---
 
 
@@ -327,15 +328,13 @@ def constrained_de_bruijn_sequence(n, forbidden_substrings):
         next_node_1 = node[1:] + '1'
         
         # Check if adding 0 creates forbidden substring
-        if node + '0' not in forbidden_substrings:
-            if node not in adj:
-                adj[node] = []
+        if node + '0' not in forbidden_substrings: if node not in 
+adj: adj[node] = []
             adj[node].append(next_node_0)
         
         # Check if adding 1 creates forbidden substring
-        if node + '1' not in forbidden_substrings:
-            if node not in adj:
-                adj[node] = []
+        if node + '1' not in forbidden_substrings: if node not in 
+adj: adj[node] = []
             adj[node].append(next_node_1)
     
     # Find Eulerian circuit

@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Collecting Numbers Distribution"permalink: /problem_soulutions/counting_problems/collecting_numbers_distribution_analysis
+title: "Collecting Numbers Distribution"
+permalink: /problem_soulutions/counting_problems/collecting_numbers_distribution_analysis
 ---
 
 
@@ -82,9 +83,8 @@ def collecting_numbers_distribution_improved(n, numbers):
     for num in numbers:
         # Find smallest available number
         min_available = None
-        for sorted_num in sorted_nums:
-            if sorted_num not in collected:
-                min_available = sorted_num
+        for sorted_num in sorted_nums: if sorted_num not in 
+collected: min_available = sorted_num
                 break
         
         if num != min_available:
@@ -115,9 +115,8 @@ def collecting_numbers_distribution_optimal(n, numbers):
     for num in numbers:
         # Find smallest available number
         min_available = None
-        for sorted_num, _ in sorted_with_indices:
-            if sorted_num not in collected:
-                min_available = sorted_num
+        for sorted_num, _ in sorted_with_indices: if sorted_num not in 
+collected: min_available = sorted_num
                 break
         
         if num != min_available:
@@ -150,9 +149,8 @@ def count_collection_distributions(n, numbers):
     for num in numbers:
         # Find smallest available number
         min_available = None
-        for sorted_num, _ in sorted_with_indices:
-            if sorted_num not in collected:
-                min_available = sorted_num
+        for sorted_num, _ in sorted_with_indices: if sorted_num not in 
+collected: min_available = sorted_num
                 break
         
         if num != min_available:
@@ -198,9 +196,8 @@ def validate_collection_order(numbers):
     
     for num in numbers:
         min_available = None
-        for sorted_num in sorted_nums:
-            if sorted_num not in collected:
-                min_available = sorted_num
+        for sorted_num in sorted_nums: if sorted_num not in 
+collected: min_available = sorted_num
                 break
         
         if num != min_available:
@@ -221,9 +218,8 @@ def analyze_collection_order(numbers):
     
     for num in numbers:
         min_available = None
-        for sorted_num, _ in sorted_with_indices:
-            if sorted_num not in collected:
-                min_available = sorted_num
+        for sorted_num, _ in sorted_with_indices: if sorted_num not in 
+collected: min_available = sorted_num
                 break
         
         if num != min_available:

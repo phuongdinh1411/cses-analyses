@@ -96,9 +96,8 @@ def two_knights_math(n):
                     (i+2, j-1), (i+2, j+1)
                 ]
                 
-                for ni, nj in moves:
-                    if 0 <= ni < k and 0 <= nj < k:
-                        attacking_ways += 1
+                for ni, nj in moves: if 0 <= ni < k and 0 <= nj < 
+k: attacking_ways += 1
         
         # Each attacking pair is counted twice, so divide by 2
         attacking_ways //= 2
@@ -139,9 +138,8 @@ def two_knights_optimized(n):
                     (i+2, j-1), (i+2, j+1)
                 ]
                 
-                for ni, nj in moves:
-                    if 0 <= ni < k and 0 <= nj < k:
-                        valid_moves += 1
+                for ni, nj in moves: if 0 <= ni < k and 0 <= nj < 
+k: valid_moves += 1
                 
                 attacking_ways += valid_moves
         
@@ -191,8 +189,8 @@ n = int(input())
 for k in range(1, n + 1):
     if k < 2:
         print(0)
-    else:
-        # Closed formula: (k²(k²-1))/2 - 4(k-1)(k-2)
+    else: # Closed 
+formula: (k²(k²-1))/2 - 4(k-1)(k-2)
         total_ways = (k * k) * (k * k - 1) // 2
         attacking_ways = 4 * (k - 1) * (k - 2)
         result = total_ways - attacking_ways

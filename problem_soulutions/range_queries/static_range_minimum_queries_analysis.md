@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Static Range Minimum Queries"permalink: /problem_soulutions/range_queries/static_range_minimum_queries_analysis
+title: "Static Range Minimum Queries"
+permalink: /problem_soulutions/range_queries/static_range_minimum_queries_analysis
 ---
 
 
@@ -463,9 +464,8 @@ def interactive_rmq(n, arr):
         for i in range(n - (1 << j) + 1):
             st[j][i] = min(st[j-1][i], st[j-1][i + (1 << (j-1))])
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

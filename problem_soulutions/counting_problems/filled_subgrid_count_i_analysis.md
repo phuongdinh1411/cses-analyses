@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Filled Subgrid Count I"permalink: /problem_soulutions/counting_problems/filled_subgrid_count_i_analysis
+title: "Filled Subgrid Count I"
+permalink: /problem_soulutions/counting_problems/filled_subgrid_count_i_analysis
 ---
 
 
@@ -448,7 +449,8 @@ def interactive_filled_analyzer():
                 row = list(map(int, input(f"Weight row {i+1}: ").split()))
                 weights.append(row)
             count, max_weight = weighted_filled_subgrids(n, m, grid, weights)
-            print(f"Count: {count}, Max weight: {max_weight}")
+            print(f"Count: {count}, Max 
+weight: {max_weight}")
         elif query == "percentage":
             percentage = int(input("Enter minimum percentage: "))
             result = percentage_filled_subgrids(n, m, grid, percentage)

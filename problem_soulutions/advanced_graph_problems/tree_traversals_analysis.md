@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Tree Traversals"permalink: /problem_soulutions/advanced_graph_problems/tree_traversals_analysis
+title: "Tree Traversals"
+permalink: /problem_soulutions/advanced_graph_problems/tree_traversals_analysis
 ---
 
 
@@ -371,9 +372,8 @@ def cost_based_tree_traversals(n, edges, edge_costs):
 def constrained_tree_traversals(n, edges, budget, restricted_edges):
     # Build adjacency list excluding restricted edges
     adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        if (a, b) not in restricted_edges and (b, a) not in restricted_edges:
-            adj[a].append(b)
+    for a, b in edges: if (a, b) not in restricted_edges and (b, a) not in 
+restricted_edges: adj[a].append(b)
             adj[b].append(a)
     
     # Initialize traversal lists

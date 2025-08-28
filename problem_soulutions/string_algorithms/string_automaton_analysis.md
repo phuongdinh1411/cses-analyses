@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "String Automaton"permalink: /problem_soulutions/string_algorithms/string_automaton_analysis
+title: "String Automaton"
+permalink: /problem_soulutions/string_algorithms/string_automaton_analysis
 ---
 
 
@@ -50,8 +51,8 @@ def string_automaton_naive(s, queries):
         m = len(pattern)
         
         for i in range(n - m + 1):
-            if s[i:i + m] == pattern:
-                count += 1
+            if s[i: i + m] == 
+pattern: count += 1
         
         return count
     
@@ -120,9 +121,8 @@ def string_automaton_suffix_automaton(s, queries):
         
         def count_occurrences(self, pattern):
             curr = 0
-            for c in pattern:
-                if c not in self.states[curr].next:
-                    return 0
+            for c in pattern: if c not in self.states[curr].
+next: return 0
                 curr = self.states[curr].next[c]
             
             return self.states[curr].size
@@ -206,9 +206,8 @@ class SuffixAutomaton:
     
     def count_occurrences(self, pattern):
         curr = 0
-        for c in pattern:
-            if c not in self.states[curr].next:
-                return 0
+        for c in pattern: if c not in self.states[curr].
+next: return 0
             curr = self.states[curr].next[c]
         
         return self.states[curr].size
@@ -295,9 +294,8 @@ class SuffixAutomaton:
 ```python
 def count_occurrences(sa, pattern):
     curr = 0
-    for c in pattern:
-        if c not in sa.states[curr].next:
-            return 0
+    for c in pattern: if c not in sa.states[curr].
+next: return 0
         curr = sa.states[curr].next[c]
     
     return sa.states[curr].size
@@ -307,9 +305,8 @@ def count_occurrences(sa, pattern):
 ```python
 def traverse_automaton(sa, string):
     curr = 0
-    for c in string:
-        if c not in sa.states[curr].next:
-            return None
+    for c in string: if c not in sa.states[curr].
+next: return None
         curr = sa.states[curr].next[c]
     return curr
 ```
@@ -507,8 +504,8 @@ def range_string_automaton_queries(s, queries):
     # queries = [(l, r, pattern), ...] - find pattern in substring s[l:r]
     
     results = []
-    for l, r, pattern in queries:
-        substring = s[l:r]
+    for l, r, pattern in queries: substring = s[
+l: r]
         sa = SuffixAutomaton()
         for c in substring:
             sa.sa_extend(c)

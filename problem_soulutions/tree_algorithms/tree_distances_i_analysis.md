@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Tree Distances I"permalink: /problem_soulutions/tree_algorithms/tree_distances_i_analysis
+title: "Tree Distances I"
+permalink: /problem_soulutions/tree_algorithms/tree_distances_i_analysis
 ---
 
 

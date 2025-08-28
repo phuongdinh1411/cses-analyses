@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subarray Mode Queries"permalink: /problem_soulutions/range_queries/subarray_mode_queries_analysis
+title: "Subarray Mode Queries"
+permalink: /problem_soulutions/range_queries/subarray_mode_queries_analysis
 ---
 
 
@@ -298,8 +299,8 @@ def process_subarray_mode_queries(n, q, array, queries):
     st = SegmentTree(compressed_array)
     result = []
     
-    for query in queries:
-        if query[0] == 1:  # Update query: 1 k x
+    for query in queries: if query[0] == 1:  # Update 
+query: 1 k x
             k, x = query[1], query[2]
             if x in value_to_idx:
                 compressed_x = value_to_idx[x]
@@ -308,7 +309,8 @@ def process_subarray_mode_queries(n, q, array, queries):
                 compressed_x = len(value_to_idx)
                 value_to_idx[x] = compressed_x
             st.update(k-1, compressed_x)
-        else:  # Mode query: 2 a b
+        else: # Mode 
+query: 2 a b
             a, b = query[1], query[2]
             mode_compressed = st.query(a-1, b)
             if mode_compressed is not None:
@@ -983,9 +985,8 @@ def interactive_subarray_mode_queries(n, array):
     
     st = SegmentTree(compressed_array)
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

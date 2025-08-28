@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Prüfer Code"permalink: /problem_soulutions/advanced_graph_problems/prufer_code_analysis
+title: "Prüfer Code"
+permalink: /problem_soulutions/advanced_graph_problems/prufer_code_analysis
 ---
 
 
@@ -355,18 +356,16 @@ def cost_based_prufer_code(n, edges, edge_costs, target_prufer):
 def constrained_prufer_code(n, edges, budget, restricted_edges, target_prufer):
     # Build adjacency list excluding restricted edges
     adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        if (a, b) not in restricted_edges and (b, a) not in restricted_edges:
-            adj[a].append(b)
+    for a, b in edges: if (a, b) not in restricted_edges and (b, a) not in 
+restricted_edges: adj[a].append(b)
             adj[b].append(a)
     
     # Check if target Prüfer code is feasible
     tree_edges = tree_from_prufer(target_prufer)
     
     # Check if all required edges are available
-    for a, b in tree_edges:
-        if (a, b) in restricted_edges or (b, a) in restricted_edges:
-            return None  # Not feasible
+    for a, b in tree_edges: if (a, b) in restricted_edges or (b, a) in 
+restricted_edges: return None  # Not feasible
     
     # Check budget constraint
     total_cost = len(tree_edges)  # Simplified cost

@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Longest Palindrome"permalink: /problem_soulutions/string_algorithms/longest_palindrome_analysis
+title: "Longest Palindrome"
+permalink: /problem_soulutions/string_algorithms/longest_palindrome_analysis
 ---
 
 
@@ -604,8 +605,8 @@ def range_longest_palindrome_queries(s, queries):
     # queries = [(l, r), ...] - find longest palindrome in s[l:r]
     
     results = []
-    for l, r in queries:
-        substring = s[l:r]
+    for l, r in queries: substring = s[
+l: r]
         palindrome = expand_around_center(substring)
         results.append(palindrome)
     

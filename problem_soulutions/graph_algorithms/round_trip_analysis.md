@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Round Trip"permalink: /problem_soulutions/graph_algorithms/round_trip_analysis
+title: "Round Trip"
+permalink: /problem_soulutions/graph_algorithms/round_trip_analysis
 ---
 
 
@@ -198,9 +199,8 @@ def round_trip_union_find(n, m, roads):
     # Find path between a and b using BFS
     a, b = cycle_edge
     graph = [[] for _ in range(n + 1)]
-    for x, y in roads:
-        if (x, y) != cycle_edge and (y, x) != cycle_edge:
-            graph[x].append(y)
+    for x, y in roads: if (x, y) != cycle_edge and (y, x) != 
+cycle_edge: graph[x].append(y)
             graph[y].append(x)
     
     # BFS to find path from a to b
@@ -535,9 +535,8 @@ def constrained_round_trip(n, m, roads, required_nodes, forbidden_roads):
     # forbidden_roads = set of roads that cannot be used
     
     graph = [[] for _ in range(n + 1)]
-    for a, b in roads:
-        if (a, b) not in forbidden_roads and (b, a) not in forbidden_roads:
-            graph[a].append(b)
+    for a, b in roads: if (a, b) not in forbidden_roads and (b, a) not in 
+forbidden_roads: graph[a].append(b)
             graph[b].append(a)
     
     def find_constrained_cycle():

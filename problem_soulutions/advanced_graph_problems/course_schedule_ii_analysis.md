@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Course Schedule II"permalink: /problem_soulutions/advanced_graph_problems/course_schedule_ii_analysis
+title: "Course Schedule II"
+permalink: /problem_soulutions/advanced_graph_problems/course_schedule_ii_analysis
 ---
 
 
@@ -432,9 +433,8 @@ def probabilistic_course_schedule_ii(n, m, prerequisites, availability_probabili
         adj = [[] for _ in range(n + 1)]
         in_degree = [0] * (n + 1)
         
-        for a, b in prerequisites:
-            if a in available_courses and b in available_courses:
-                adj[a].append(b)
+        for a, b in prerequisites: if a in available_courses and b in 
+available_courses: adj[a].append(b)
                 in_degree[b] += 1
         
         # Kahn's algorithm

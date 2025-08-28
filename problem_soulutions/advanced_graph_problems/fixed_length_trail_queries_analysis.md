@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Fixed Length Trail Queries"permalink: /problem_soulutions/advanced_graph_problems/fixed_length_trail_queries_analysis
+title: "Fixed Length Trail Queries"
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_trail_queries_analysis
 ---
 
 

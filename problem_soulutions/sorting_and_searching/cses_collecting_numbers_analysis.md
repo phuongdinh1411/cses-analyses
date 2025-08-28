@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Collecting Numbers"permalink: /problem_soulutions/sorting_and_searching/cses_collecting_numbers_analysis
+title: "Collecting Numbers"
+permalink: /problem_soulutions/sorting_and_searching/cses_collecting_numbers_analysis
 ---
 
 
@@ -380,9 +381,8 @@ def collecting_numbers_with_skipping(arr, max_skips):
     for target in range(1, n + 1):
         target_pos = pos[target]
         
-        if target_pos < current_pos:
-            if skips_used < max_skips:
-                skips_used += 1
+        if target_pos < current_pos: if skips_used < 
+max_skips: skips_used += 1
             else:
                 rounds += 1
                 skips_used = 0
@@ -519,8 +519,8 @@ def interactive_collecting_numbers():
         
         if not collected_this_round:
             print("  No numbers collected this round")
-        else:
-            print(f"  Collected: {collected_this_round}")
+        else: print(f"  
+Collected: {collected_this_round}")
     
     print(f"\nTotal rounds needed: {rounds}")
 ```

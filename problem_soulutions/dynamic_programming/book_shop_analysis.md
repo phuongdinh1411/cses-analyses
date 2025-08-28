@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Book Shop"permalink: /problem_soulutions/dynamic_programming/book_shop_analysis
+title: "Book Shop"
+permalink: /problem_soulutions/dynamic_programming/book_shop_analysis
 ---
 
 

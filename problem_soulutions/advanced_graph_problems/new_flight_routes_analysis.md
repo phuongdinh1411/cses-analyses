@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "New Flight Routes"permalink: /problem_soulutions/advanced_graph_problems/new_flight_routes_analysis
+title: "New Flight Routes"
+permalink: /problem_soulutions/advanced_graph_problems/new_flight_routes_analysis
 ---
 
 
@@ -481,9 +482,8 @@ def cost_based_new_flight_routes(n, m, edges, route_costs):
         best_edges = []
         
         # Try different combinations of source-sink connections
-        for source in sources:
-            for sink in sinks:
-                if source != sink:
+        for source in sources: for sink in 
+sinks: if source != sink:
                     # Find minimum cost edge from source to sink
                     cost = float('inf')
                     for i in range(1, n + 1):
@@ -588,9 +588,8 @@ def constrained_new_flight_routes(n, m, edges, budget, restricted_routes, requir
                     added_edges.append((req_a, req_b))
         
         # Add minimum edges to connect remaining sources and sinks
-        for source in sources:
-            for sink in sinks:
-                if source != sink:
+        for source in sources: for sink in 
+sinks: if source != sink:
                     # Check if this connection is needed and allowed
                     if (source, sink) not in restricted_routes:
                         cost = 1  # Assuming unit cost
@@ -714,9 +713,8 @@ def multi_criteria_new_flight_routes(n, m, edges, criteria_weights):
         optimal_routes = []
         total_score = 0
         
-        for source in sources:
-            for sink in sinks:
-                if source != sink:
+        for source in sources: for sink in 
+sinks: if source != sink:
                     # Find best route from source to sink
                     best_score = float('inf')
                     best_route = None

@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Distinct Numbers"permalink: /problem_soulutions/sorting_and_searching/cses_distinct_numbers_analysis
+title: "Distinct Numbers"
+permalink: /problem_soulutions/sorting_and_searching/cses_distinct_numbers_analysis
 ---
 
 
@@ -179,8 +180,8 @@ print(distinct_count)
 ```python
 # Common patterns
 seen = set()
-for item in data:
-    if item in seen:  # O(1) lookup
+for item in data: if item in 
+seen: # O(1) lookup
         # Handle duplicate
     seen.add(item)    # O(1) insertion
 ```
@@ -263,7 +264,8 @@ def distinct_with_condition(arr, condition):
     return len(unique_elements)
 
 # Example: Count distinct even numbers
-distinct_even = lambda arr: distinct_with_condition(arr, lambda x: x % 2 == 0)
+distinct_even = lambda arr: distinct_with_condition(arr, lambda 
+x: x % 2 == 0)
 ```
 
 #### **Variation 4: K-th Most Frequent Element**
@@ -385,8 +387,8 @@ def interactive_distinct_counter():
     print("Enter numbers one by one (enter 'done' to finish):")
     numbers = set()
     
-    while True:
-        user_input = input("Enter number: ")
+    while True: user_input = input("Enter 
+number: ")
         if user_input.lower() == 'done':
             break
         

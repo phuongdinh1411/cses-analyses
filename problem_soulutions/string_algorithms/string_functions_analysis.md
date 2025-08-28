@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "String Functions"permalink: /problem_soulutions/string_algorithms/string_functions_analysis
+title: "String Functions"
+permalink: /problem_soulutions/string_algorithms/string_functions_analysis
 ---
 
 
@@ -378,8 +379,8 @@ def range_string_functions_queries(s, queries):
     n = len(s)
     results = []
     
-    for l, r, k in queries:
-        substring = s[l:r]
+    for l, r, k in queries: substring = s[
+l: r]
         if k <= len(substring):
             failure = build_failure_function(substring)
             results.append(failure[k - 1])
@@ -396,9 +397,8 @@ def interactive_string_functions():
     print(f"String: {s}")
     print(f"Length: {len(s)}")
     
-    while True:
-        try:
-            k = int(input("Enter k (or -1 to quit): "))
+    while True: 
+try: k = int(input("Enter k (or -1 to quit): "))
             if k == -1:
                 break
             if 1 <= k <= len(s):

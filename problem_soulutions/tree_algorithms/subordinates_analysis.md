@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subordinates"permalink: /problem_soulutions/tree_algorithms/subordinates_analysis
+title: "Subordinates"
+permalink: /problem_soulutions/tree_algorithms/subordinates_analysis
 ---
 
 

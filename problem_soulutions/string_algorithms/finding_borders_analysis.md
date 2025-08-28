@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Finding Borders"permalink: /problem_soulutions/string_algorithms/finding_borders_analysis
+title: "Finding Borders"
+permalink: /problem_soulutions/string_algorithms/finding_borders_analysis
 ---
 
 
@@ -590,8 +591,8 @@ def range_border_finding_queries(s, queries):
     # queries = [(l, r), ...] - find borders of substring s[l:r]
     
     results = []
-    for l, r in queries:
-        substring = s[l:r]
+    for l, r in queries: substring = s[
+l: r]
         borders = find_borders_kmp(substring)
         results.append(borders)
     

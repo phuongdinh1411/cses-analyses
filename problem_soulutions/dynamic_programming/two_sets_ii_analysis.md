@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Two Sets II"permalink: /problem_soulutions/dynamic_programming/two_sets_ii_analysis
+title: "Two Sets II"
+permalink: /problem_soulutions/dynamic_programming/two_sets_ii_analysis
 ---
 
 

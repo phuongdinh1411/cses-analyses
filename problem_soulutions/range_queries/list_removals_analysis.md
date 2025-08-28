@@ -426,9 +426,8 @@ def list_removals_aggregation(n, q, arr, operations):
             x = op[1]
             # Count elements less than x
             count = 0
-            for val, idx in sorted_list:
-                if val < x:
-                    count += 1
+            for val, idx in sorted_list: if val < 
+x: count += 1
                 else:
                     break
             results.append(count)
@@ -453,9 +452,8 @@ def interactive_list_removals(n, arr):
     elements = [(arr[i], i) for i in range(n)]
     sorted_list = SortedList(elements)
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

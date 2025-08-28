@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Quick Reference"permalink: /quick_reference
+title: "Quick Reference"
+permalink: /quick_reference
 ---
 
 

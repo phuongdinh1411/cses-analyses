@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Area of Rectangles - Geometry Analysis"permalink: /problem_soulutions/geometry/area_of_rectangles_analysis
+title: "Area of Rectangles - Geometry Analysis"
+permalink: /problem_soulutions/geometry/area_of_rectangles_analysis
 ---
 
 
@@ -157,9 +158,8 @@ def sweep_line_area(rectangles):
     total_area = 0
     prev_x = 0
     
-    for x, event_type, y1, y2 in events:
-        if x > prev_x:
-            covered_length = calculate_covered_length(active_intervals)
+    for x, event_type, y1, y2 in events: if x > 
+prev_x: covered_length = calculate_covered_length(active_intervals)
             total_area += (x - prev_x) * covered_length
         
         if event_type == 'start':

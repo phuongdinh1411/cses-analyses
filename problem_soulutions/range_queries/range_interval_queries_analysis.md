@@ -48,9 +48,8 @@ def range_interval_queries_naive(n, q, intervals, queries):
     
     for x in queries:
         count = 0
-        for a, b in intervals:
-            if a <= x <= b:
-                count += 1
+        for a, b in intervals: if a <= x <= 
+b: count += 1
         result.append(count)
     
     return result
@@ -505,9 +504,8 @@ def range_interval_queries_range_overlap(n, q, intervals, operations):
             
             # Count intervals that start before r and end after l
             count = 0
-            for a, b in intervals:
-                if a <= r and b >= l:
-                    count += 1
+            for a, b in intervals: if a <= r and b >= 
+l: count += 1
             results.append(count)
     
     return results
@@ -858,9 +856,8 @@ def interactive_range_interval_queries(n, intervals):
         bit.update(start_idx, 1)
         bit.update(end_idx + 1, -1)
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

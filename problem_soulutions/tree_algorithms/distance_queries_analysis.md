@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Distance Queries"permalink: /problem_soulutions/tree_algorithms/distance_queries_analysis
+title: "Distance Queries"
+permalink: /problem_soulutions/tree_algorithms/distance_queries_analysis
 ---
 
 

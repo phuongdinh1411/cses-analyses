@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Counting Paths"permalink: /problem_soulutions/tree_algorithms/counting_paths_analysis
+title: "Counting Paths"
+permalink: /problem_soulutions/tree_algorithms/counting_paths_analysis
 ---
 
 

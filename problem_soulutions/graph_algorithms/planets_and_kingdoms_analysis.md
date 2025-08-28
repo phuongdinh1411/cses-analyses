@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Planets and Kingdoms"permalink: /problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis
+title: "Planets and Kingdoms"
+permalink: /problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis
 ---
 
 
@@ -646,8 +647,8 @@ def range_planets_kingdoms_queries(n, edges, queries):
     # queries = [(start_edge, end_edge), ...] - find kingdoms using edges in range
     
     results = []
-    for start, end in queries:
-        subset_edges = edges[start:end+1]
+    for start, end in queries: subset_edges = edges[
+start: end+1]
         num_kingdoms, kingdom_ids = planets_and_kingdoms(n, subset_edges)
         results.append((num_kingdoms, kingdom_ids))
     

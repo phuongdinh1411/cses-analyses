@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Labyrinth"permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis
+title: "Labyrinth"
+permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis
 ---
 
 

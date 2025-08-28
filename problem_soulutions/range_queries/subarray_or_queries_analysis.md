@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subarray OR Queries"permalink: /problem_soulutions/range_queries/subarray_or_queries_analysis
+title: "Subarray OR Queries"
+permalink: /problem_soulutions/range_queries/subarray_or_queries_analysis
 ---
 
 
@@ -232,11 +233,12 @@ def process_subarray_or_queries(n, q, array, queries):
     st = SegmentTree(array)
     result = []
     
-    for query in queries:
-        if query[0] == 1:  # Update query: 1 k x
+    for query in queries: if query[0] == 1:  # Update 
+query: 1 k x
             k, x = query[1], query[2]
             st.update(k-1, x)  # Convert to 0-indexed
-        else:  # OR query: 2 a b
+        else: # OR 
+query: 2 a b
             a, b = query[1], query[2]
             or_val = st.query(a-1, b)  # Convert to 0-indexed, right exclusive
             result.append(or_val)
@@ -878,9 +880,8 @@ def interactive_subarray_or_queries(n, array):
     # Handle interactive queries
     st = SegmentTree(array)
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

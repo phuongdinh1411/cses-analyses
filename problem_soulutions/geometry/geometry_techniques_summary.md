@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Geometry Techniques Summary"permalink: /problem_soulutions/geometry/geometry_techniques_summary
+title: "Geometry Techniques Summary"
+permalink: /problem_soulutions/geometry/geometry_techniques_summary
 ---
 
 

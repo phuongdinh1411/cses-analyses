@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Edit Distance"permalink: /problem_soulutions/dynamic_programming/edit_distance_analysis
+title: "Edit Distance"
+permalink: /problem_soulutions/dynamic_programming/edit_distance_analysis
 ---
 
 

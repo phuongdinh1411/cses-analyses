@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Filled Subgrid Count II"permalink: /problem_soulutions/counting_problems/filled_subgrid_count_ii_analysis
+title: "Filled Subgrid Count II"
+permalink: /problem_soulutions/counting_problems/filled_subgrid_count_ii_analysis
 ---
 
 
@@ -455,7 +456,8 @@ def interactive_filled_analyzer_all_sizes():
                 row = list(map(int, input(f"Weight row {i+1}: ").split()))
                 weights.append(row)
             count, max_weight = weighted_filled_subgrids_all_sizes(n, m, grid, weights)
-            print(f"Count: {count}, Max weight: {max_weight}")
+            print(f"Count: {count}, Max 
+weight: {max_weight}")
         elif query == "min_size":
             min_size = int(input("Enter minimum size: "))
             result = min_size_filled_subgrids(n, m, grid, min_size)

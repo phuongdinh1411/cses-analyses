@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Topological Sorting"permalink: /problem_soulutions/graph_algorithms/topological_sorting_analysis
+title: "Topological Sorting"
+permalink: /problem_soulutions/graph_algorithms/topological_sorting_analysis
 ---
 
 
@@ -366,9 +367,8 @@ def probabilistic_topological_sorting(n, edges, probabilities):
             node = queue.popleft()
             topo_order.append(node)
             
-            for a, b in sampled_edges:
-                if a == node:
-                    in_degree[b] -= 1
+            for a, b in sampled_edges: if a == 
+node: in_degree[b] -= 1
                     if in_degree[b] == 0:
                         queue.append(b)
         
@@ -548,9 +548,8 @@ def range_topological_queries(n, edges, queries):
     results = []
     for start, end in queries:
         range_order = []
-        for node in topo_order:
-            if start <= node <= end:
-                range_order.append(node)
+        for node in topo_order: if start <= node <= 
+end: range_order.append(node)
         results.append(range_order)
     
     return results
@@ -568,8 +567,8 @@ def interactive_topological_sorting():
         edges.append((a, b))
     
     result = topological_sort(n, edges)
-    if result:
-        print(f"Topological order: {result}")
+    if result: print(f"Topological 
+order: {result}")
     else:
         print("No valid topological order exists (cycle detected)")
 ```

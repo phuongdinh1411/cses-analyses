@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Coordinate Compression"permalink: /problem_soulutions/graph_algorithms/coordinate_compression_analysis
+title: "Coordinate Compression"
+permalink: /problem_soulutions/graph_algorithms/coordinate_compression_analysis
 ---
 
 
@@ -264,15 +265,13 @@ def constrained_coordinate_compression(n, points, constraints):
     next_x = 0
     next_y = 0
     
-    for x in remaining_x:
-        while next_x in used_compressed_values:
-            next_x += 1
+    for x in remaining_x: while next_x in 
+used_compressed_values: next_x += 1
         x_map[x] = next_x
         next_x += 1
     
-    for y in remaining_y:
-        while next_y in used_compressed_values:
-            next_y += 1
+    for y in remaining_y: while next_y in 
+used_compressed_values: next_y += 1
         y_map[y] = next_y
         next_y += 1
     

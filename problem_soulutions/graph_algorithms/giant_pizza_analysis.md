@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Giant Pizza"permalink: /problem_soulutions/graph_algorithms/giant_pizza_analysis
+title: "Giant Pizza"
+permalink: /problem_soulutions/graph_algorithms/giant_pizza_analysis
 ---
 
 
@@ -685,8 +686,8 @@ def range_giant_pizza_queries(n, m, preferences, queries):
     # queries = [(start_pref, end_pref), ...] - check satisfiability using preferences in range
     
     results = []
-    for start, end in queries:
-        subset_preferences = preferences[start:end+1]
+    for start, end in queries: subset_preferences = preferences[
+start: end+1]
         result = check_giant_pizza(len(subset_preferences), m, subset_preferences)
         results.append(result)
     

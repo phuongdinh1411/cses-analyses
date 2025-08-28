@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Fixed Length Cycle Queries"permalink: /problem_soulutions/advanced_graph_problems/fixed_length_cycle_queries_analysis
+title: "Fixed Length Cycle Queries"
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_cycle_queries_analysis
 ---
 
 

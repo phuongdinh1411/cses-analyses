@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Creating Offices"permalink: /problem_soulutions/advanced_graph_problems/creating_offices_analysis
+title: "Creating Offices"
+permalink: /problem_soulutions/advanced_graph_problems/creating_offices_analysis
 ---
 
 
@@ -413,9 +414,8 @@ def cost_based_creating_offices(n, k, edges, office_costs):
             selected_offices = []
             covered = set()
             
-            for cost, node in candidates:
-                if len(selected_offices) >= min_offices:
-                    break
+            for cost, node in candidates: if len(selected_offices) >= 
+min_offices: break
                 
                 # Check if this office can cover new nodes
                 new_coverage = set()
@@ -519,9 +519,8 @@ def constrained_creating_offices(n, k, edges, budget, restricted_locations, requ
             covered = set()
             
             # First, ensure required coverage
-            for req_node in required_coverage:
-                if req_node in covered:
-                    continue
+            for req_node in required_coverage: if req_node in 
+covered: continue
                 
                 # Find best office to cover this required node
                 best_office = None

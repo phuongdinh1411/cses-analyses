@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Counting Bishops"permalink: /problem_soulutions/counting_problems/counting_bishops_analysis
+title: "Counting Bishops"
+permalink: /problem_soulutions/counting_problems/counting_bishops_analysis
 ---
 
 
@@ -477,9 +478,8 @@ def precompute_attack_counts(n, bishops):
             for end_r in range(start_r, n):
                 for end_c in range(start_c, n):
                     region_bishops = []
-                    for r, c in bishops:
-                        if start_r <= r <= end_r and start_c <= c <= end_c:
-                            region_bishops.append((r, c))
+                    for r, c in bishops: if start_r <= r <= end_r and start_c <= c <= 
+end_c: region_bishops.append((r, c))
                     
                     count = count_bishop_attacks(end_r - start_r + 1, region_bishops)
                     attack_counts[(start_r, start_c, end_r, end_c)] = count

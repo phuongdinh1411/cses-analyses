@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Download Speed"permalink: /problem_soulutions/graph_algorithms/download_speed_analysis
+title: "Download Speed"
+permalink: /problem_soulutions/graph_algorithms/download_speed_analysis
 ---
 
 
@@ -712,8 +713,8 @@ def range_download_speed_queries(n, connections, queries):
     # queries = [(start_connection, end_connection), ...] - find max flow using connections in range
     
     results = []
-    for start, end in queries:
-        subset_connections = connections[start:end+1]
+    for start, end in queries: subset_connections = connections[
+start: end+1]
         result = download_speed(n, subset_connections)
         results.append(result)
     

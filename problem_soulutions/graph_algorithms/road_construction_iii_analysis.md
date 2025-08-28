@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Road Construction III"permalink: /problem_soulutions/graph_algorithms/road_construction_iii_analysis
+title: "Road Construction III"
+permalink: /problem_soulutions/graph_algorithms/road_construction_iii_analysis
 ---
 
 
@@ -328,9 +329,8 @@ def budget_constrained_road_construction(n, edges, budget):
     total_cost = 0
     edges_used = 0
     
-    for a, b, cost in edges:
-        if find(a) != find(b) and total_cost + cost <= budget:
-            union(a, b)
+    for a, b, cost in edges: if find(a) != find(b) and total_cost + cost <= 
+budget: union(a, b)
             total_cost += cost
             edges_used += 1
     
@@ -590,8 +590,8 @@ def range_road_construction_queries(n, edges, queries):
     # queries = [(start_edge, end_edge), ...] - find MST using edges in range
     
     results = []
-    for start, end in queries:
-        subset_edges = edges[start:end+1]
+    for start, end in queries: subset_edges = edges[
+start: end+1]
         result = road_construction(n, subset_edges)
         results.append(result)
     

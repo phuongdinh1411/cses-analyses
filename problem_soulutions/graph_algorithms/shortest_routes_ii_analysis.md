@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Shortest Routes II"permalink: /problem_soulutions/graph_algorithms/shortest_routes_ii_analysis
+title: "Shortest Routes II"
+permalink: /problem_soulutions/graph_algorithms/shortest_routes_ii_analysis
 ---
 
 
@@ -506,9 +507,8 @@ def constrained_shortest_routes_ii(n, m, flights, max_fuel, restricted_routes):
         distances[i][i] = 0
     
     # Add direct edges (excluding restricted routes)
-    for a, b, c in flights:
-        if (a, b) not in restricted_routes and c <= max_fuel:
-            distances[a][b] = min(distances[a][b], c)
+    for a, b, c in flights: if (a, b) not in restricted_routes and c <= 
+max_fuel: distances[a][b] = min(distances[a][b], c)
     
     # Constrained Floyd-Warshall
     for k in range(1, n + 1):

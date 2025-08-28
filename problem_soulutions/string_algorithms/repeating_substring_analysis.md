@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Repeating Substring"permalink: /problem_soulutions/string_algorithms/repeating_substring_analysis
+title: "Repeating Substring"
+permalink: /problem_soulutions/string_algorithms/repeating_substring_analysis
 ---
 
 
@@ -44,8 +45,8 @@ def repeating_substring_naive(s):
             # Check if this substring appears at least twice
             count = 0
             for k in range(n - len(substring) + 1):
-                if s[k:k + len(substring)] == substring:
-                    count += 1
+                if s[k: k + len(substring)] == 
+substring: count += 1
                     if count >= 2:
                         break
             
@@ -211,9 +212,8 @@ def repeating_substring_rolling_hash(s):
         seen = {}
         for i in range(n - length + 1):
             h = get_hash(hash_values, power, mod, i, i + length)
-            if h in seen:
-                if length > max_length:
-                    max_length = length
+            if h in seen: if length > 
+max_length: max_length = length
                     result = s[i:i + length]
                 break
             seen[h] = i
@@ -678,9 +678,8 @@ def multiple_string_repeating_substring(strings):
     # Check which substrings appear in all other strings
     for s in strings[1:]:
         current_common = set()
-        for substring in common_substrings:
-            if substring in s:
-                current_common.add(substring)
+        for substring in common_substrings: if substring in 
+s: current_common.add(substring)
         common_substrings = current_common
     
     # Return longest common substring
@@ -747,8 +746,8 @@ def range_repeating_substring_queries(s, queries):
     # queries = [(l, r), ...] - find longest repeating substring in s[l:r]
     
     results = []
-    for l, r in queries:
-        substring = s[l:r]
+    for l, r in queries: substring = s[
+l: r]
         sa = SuffixAutomaton()
         for c in substring:
             sa.sa_extend(c)

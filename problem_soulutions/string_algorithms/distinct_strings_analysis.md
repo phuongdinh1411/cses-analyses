@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Distinct Strings"permalink: /problem_soulutions/string_algorithms/distinct_strings_analysis
+title: "Distinct Strings"
+permalink: /problem_soulutions/string_algorithms/distinct_strings_analysis
 ---
 
 
@@ -161,9 +162,8 @@ def distinct_strings_trie(s):
         
         def insert(self, s):
             node = self.root
-            for c in s:
-                if c not in node.children:
-                    node.children[c] = TrieNode()
+            for c in s: if c not in node.
+children: node.children[c] = TrieNode()
                     self.count += 1
                 node = node.children[c]
     
@@ -401,17 +401,15 @@ def build_trie(strings):
         
         def insert(self, s):
             node = self.root
-            for c in s:
-                if c not in node.children:
-                    node.children[c] = TrieNode()
+            for c in s: if c not in node.
+children: node.children[c] = TrieNode()
                 node = node.children[c]
             node.is_end = True
         
         def search(self, s):
             node = self.root
-            for c in s:
-                if c not in node.children:
-                    return False
+            for c in s: if c not in node.
+children: return False
                 node = node.children[c]
             return node.is_end
     
@@ -622,8 +620,8 @@ def range_distinct_substring_queries(s, queries):
     # queries = [(l, r), ...] - count distinct substrings in s[l:r]
     
     results = []
-    for l, r in queries:
-        substring = s[l:r]
+    for l, r in queries: substring = s[
+l: r]
         sa = SuffixAutomaton()
         for c in substring:
             sa.sa_extend(c)

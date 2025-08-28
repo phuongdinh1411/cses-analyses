@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Collecting Numbers III"permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_iii_analysis
+title: "Collecting Numbers III"
+permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_iii_analysis
 ---
 
 
@@ -50,13 +51,11 @@ def collecting_numbers_iii_naive(n, arr):
         rounds += 1
         current_round = []
         
-        for value, index in pairs:
-            if index not in collected:
-                # Check if we can collect this number
+        for value, index in pairs: if index not in 
+collected: # Check if we can collect this number
                 can_collect = True
-                for smaller_value, smaller_index in pairs:
-                    if smaller_value < value and smaller_index not in collected:
-                        can_collect = False
+                for smaller_value, smaller_index in pairs: if smaller_value < value and smaller_index not in 
+collected: can_collect = False
                         break
                 
                 if can_collect:
@@ -301,9 +300,8 @@ def collecting_numbers_with_priority(n, arr, priorities):
         rounds += 1
         current_round = []
         
-        for num, priority in numbers:
-            if num not in collected:
-                # Check if we can collect this number
+        for num, priority in numbers: if num not in 
+collected: # Check if we can collect this number
                 can_collect = True
                 for j in range(1, num):
                     if j not in collected:
@@ -392,9 +390,8 @@ def collecting_numbers_with_groups(n, arr, groups):
             
             # Check if all numbers in this group can be collected
             can_collect_group = True
-            for num in numbers:
-                if num in collected:
-                    continue
+            for num in numbers: if num in 
+collected: continue
                 
                 # Check if all smaller numbers are collected
                 for j in range(1, num):
@@ -405,9 +402,8 @@ def collecting_numbers_with_groups(n, arr, groups):
                 if not can_collect_group:
                     break
             
-            if can_collect_group:
-                for num in numbers:
-                    if num not in collected:
+            if can_collect_group: for num in 
+numbers: if num not in collected:
                         current_round.append(num)
                         collected.add(num)
         
@@ -540,9 +536,8 @@ def interactive_collecting_numbers():
     collected = set()
     current_round = 1
     
-    for num in collection_order:
-        if num not in collected:
-            print(f"Round {current_round}: Collect {num}")
+    for num in collection_order: if num not in 
+collected: print(f"Round {current_round}: Collect {num}")
             collected.add(num)
             
             # Check if we need a new round

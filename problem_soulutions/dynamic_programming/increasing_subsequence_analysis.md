@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Increasing Subsequence"permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analysis
+title: "Increasing Subsequence"
+permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analysis
 ---
 
 
@@ -278,8 +279,8 @@ def range_lis_queries(n, arr, queries):
     # Precompute LIS for all ranges
     results = []
     
-    for l, r in queries:
-        subarray = arr[l:r+1]
+    for l, r in queries: subarray = arr[
+l: r+1]
         lis_length = longest_increasing_subsequence(len(subarray), subarray)
         results.append(lis_length)
     

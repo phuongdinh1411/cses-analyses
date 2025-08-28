@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Grid Completion"permalink: /problem_soulutions/counting_problems/grid_completion_analysis
+title: "Grid Completion"
+permalink: /problem_soulutions/counting_problems/grid_completion_analysis
 ---
 
 
@@ -351,9 +352,8 @@ def pattern_avoiding_grid_completion(n, m, grid, forbidden_patterns, MOD=10**9+7
             [grid[row][col-1], value]
         ]
         
-        for forbidden in forbidden_patterns:
-            if pattern == forbidden:
-                return False
+        for forbidden in forbidden_patterns: if pattern == 
+forbidden: return False
         return True
     
     def solve(row, col):

@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "String Matching"permalink: /problem_soulutions/string_algorithms/string_matching_analysis
+title: "String Matching"
+permalink: /problem_soulutions/string_algorithms/string_matching_analysis
 ---
 
 
@@ -40,8 +41,8 @@ def string_matching_naive(s, p):
     n, m = len(s), len(p)
     
     for i in range(n - m + 1):
-        if s[i:i + m] == p:
-            positions.append(i + 1)  # 1-indexed
+        if s[i: i + m] == 
+p: positions.append(i + 1)  # 1-indexed
     
     return positions
 ```
@@ -469,8 +470,8 @@ def case_insensitive_matching(s, p):
     n, m = len(s), len(p)
     
     for i in range(n - m + 1):
-        if s_lower[i:i + m] == p_lower:
-            positions.append(i + 1)
+        if s_lower[i: i + m] == 
+p_lower: positions.append(i + 1)
     
     return positions
 ```
@@ -491,9 +492,8 @@ def multiple_pattern_matching(s, patterns):
         root = TrieNode()
         for pattern in patterns:
             node = root
-            for char in pattern:
-                if char not in node.children:
-                    node.children[char] = TrieNode()
+            for char in pattern: if char not in node.
+children: node.children[char] = TrieNode()
                 node = node.children[char]
             node.is_end = True
             node.pattern = pattern
@@ -526,9 +526,8 @@ def multiple_pattern_matching(s, patterns):
         current = current.children[char] if current else root
         
         temp = current
-        while temp:
-            if temp.is_end:
-                results[temp.pattern].append(i - len(temp.pattern) + 2)  # 1-indexed
+        while temp: if temp.
+is_end: results[temp.pattern].append(i - len(temp.pattern) + 2)  # 1-indexed
             temp = temp.fail
     
     return results
@@ -603,8 +602,8 @@ def circular_string_matching(s, p):
     n, m = len(s), len(p)
     
     for i in range(n):  # Only check starting positions in original string
-        if circular_s[i:i + m] == p:
-            positions.append(i + 1)
+        if circular_s[i: i + m] == 
+p: positions.append(i + 1)
     
     return positions
 ```
@@ -687,8 +686,8 @@ def interactive_string_matching():
             break
         
         positions = string_matching_kmp(s, p)
-        if positions:
-            print(f"Pattern found at positions: {positions}")
+        if positions: print(f"Pattern found at 
+positions: {positions}")
         else:
             print("Pattern not found")
 ```

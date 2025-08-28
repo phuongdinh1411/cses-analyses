@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Counting Towers"permalink: /problem_soulutions/dynamic_programming/counting_towers_analysis
+title: "Counting Towers"
+permalink: /problem_soulutions/dynamic_programming/counting_towers_analysis
 ---
 
 

@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Building Teams"permalink: /problem_soulutions/graph_algorithms/building_teams_analysis
+title: "Building Teams"
+permalink: /problem_soulutions/graph_algorithms/building_teams_analysis
 ---
 
 
@@ -755,8 +756,8 @@ def interactive_building_teams():
         edges.append((a, b))
     
     success, color = build_teams(n, m, edges)
-    if success:
-        print(f"Team assignment: {[color[i] + 1 for i in range(1, n + 1)]}")
+    if success: print(f"Team 
+assignment: {[color[i] + 1 for i in range(1, n + 1)]}")
     else:
         print("IMPOSSIBLE")
 ```

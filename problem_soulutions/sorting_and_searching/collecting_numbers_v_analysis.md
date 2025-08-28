@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Collecting Numbers V"permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_v_analysis
+title: "Collecting Numbers V"
+permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_v_analysis
 ---
 
 
@@ -51,13 +52,11 @@ def collecting_numbers_v_naive(n, arr):
         rounds += 1
         current_round = []
         
-        for value, index in pairs:
-            if index not in collected:
-                # Check if we can collect this number
+        for value, index in pairs: if index not in 
+collected: # Check if we can collect this number
                 can_collect = True
-                for smaller_value, smaller_index in pairs:
-                    if smaller_value < value and smaller_index not in collected:
-                        can_collect = False
+                for smaller_value, smaller_index in pairs: if smaller_value < value and smaller_index not in 
+collected: can_collect = False
                         break
                 
                 if can_collect:

@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Salary Queries"permalink: /problem_soulutions/range_queries/salary_queries_analysis
+title: "Salary Queries"
+permalink: /problem_soulutions/range_queries/salary_queries_analysis
 ---
 
 
@@ -57,9 +58,8 @@ def salary_queries_naive(n, q, salaries, queries):
         else:  # Count query
             a, b = query[1], query[2]
             count = 0
-            for salary in salaries:
-                if a <= salary <= b:
-                    count += 1
+            for salary in salaries: if a <= salary <= 
+b: count += 1
             results.append(count)
     
     return results
@@ -882,9 +882,8 @@ def interactive_salary_queries(n, salaries):
         idx = value_to_index[salary]
         bit.update(idx + 1, 1)
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

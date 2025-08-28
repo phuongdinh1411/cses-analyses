@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subtree Queries"permalink: /problem_soulutions/tree_algorithms/subtree_queries_analysis
+title: "Subtree Queries"
+permalink: /problem_soulutions/tree_algorithms/subtree_queries_analysis
 ---
 
 

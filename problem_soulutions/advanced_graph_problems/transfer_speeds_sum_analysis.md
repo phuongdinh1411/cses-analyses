@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Transfer Speeds Sum"permalink: /problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analysis
+title: "Transfer Speeds Sum"
+permalink: /problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analysis
 ---
 
 
@@ -212,9 +213,8 @@ def constrained_transfer_speeds_sum(n, m, edges, max_bandwidth, restricted_trans
     total_sum = 0
     used_transfers = []
     
-    for a, b, c in edges:
-        if (a, b) not in restricted_transfers:
-            if total_sum + c <= max_bandwidth:
+    for a, b, c in edges: if (a, b) not in 
+restricted_transfers: if total_sum + c <= max_bandwidth:
                 total_sum += c
                 used_transfers.append((a, b, c))
     

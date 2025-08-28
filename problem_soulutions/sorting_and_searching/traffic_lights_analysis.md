@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Traffic Lights"permalink: /problem_soulutions/sorting_and_searching/traffic_lights_analysis
+title: "Traffic Lights"
+permalink: /problem_soulutions/sorting_and_searching/traffic_lights_analysis
 ---
 
 
@@ -167,9 +168,8 @@ for result in results:
 def track_red_lights(events, n):
     red_lights = set()
     
-    for event in events:
-        if event in red_lights:
-            red_lights.remove(event)
+    for event in events: if event in 
+red_lights: red_lights.remove(event)
         else:
             red_lights.add(event)
     
@@ -448,9 +448,8 @@ for _ in range(t):
     red_lights = set()
     results = []
     
-    for event in events:
-        if event in red_lights:
-            red_lights.remove(event)
+    for event in events: if event in 
+red_lights: red_lights.remove(event)
         else:
             red_lights.add(event)
         
@@ -479,9 +478,8 @@ def precompute_traffic_segments(n, events):
         for end_pos in range(start_pos, n + 1):
             # Simulate events in this range
             red_lights = set()
-            for event in events:
-                if start_pos <= event <= end_pos:
-                    if event in red_lights:
+            for event in events: if start_pos <= event <= 
+end_pos: if event in red_lights:
                         red_lights.remove(event)
                     else:
                         red_lights.add(event)

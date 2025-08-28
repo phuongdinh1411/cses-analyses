@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Missing Coin Sum"permalink: /problem_soulutions/sorting_and_searching/missing_coin_sum_analysis
+title: "Missing Coin Sum"
+permalink: /problem_soulutions/sorting_and_searching/missing_coin_sum_analysis
 ---
 
 
@@ -239,9 +240,8 @@ def missing_coin_sum_weighted(n, coins, weights, max_weight):
     current_sum = 0
     current_weight = 0
     
-    for coin, weight in coin_data:
-        if current_weight + weight > max_weight:
-            continue
+    for coin, weight in coin_data: if current_weight + weight > 
+max_weight: continue
         
         if coin > current_sum + 1:
             return current_sum + 1

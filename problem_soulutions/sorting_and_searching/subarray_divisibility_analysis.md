@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subarray Divisibility"permalink: /problem_soulutions/sorting_and_searching/subarray_divisibility_analysis
+title: "Subarray Divisibility"
+permalink: /problem_soulutions/sorting_and_searching/subarray_divisibility_analysis
 ---
 
 

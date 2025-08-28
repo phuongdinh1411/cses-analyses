@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Playlist"permalink: /problem_soulutions/sorting_and_searching/cses_playlist_analysis
+title: "Playlist"
+permalink: /problem_soulutions/sorting_and_searching/cses_playlist_analysis
 ---
 
 
@@ -533,7 +534,8 @@ def interactive_playlist():
             best_end = end
     
     print(f"Longest unique sequence: {max_length}")
-    print(f"Sequence: {songs[best_start:best_end+1]}")
+    print(f"Sequence: {songs[
+best_start: best_end+1]}")
 ```
 
 ### 🧮 **Mathematical Extensions**

@@ -259,8 +259,8 @@ def construct_dual_mex_math(n, row_mex, col_mex):
         # Use standard construction
         return construct_mex_grid(n, row_mex)
     
-    if row_mex == 1 and col_mex == n:
-        # Special case: rows have MEX 1, columns have MEX n
+    if row_mex == 1 and col_mex == n: # Special 
+case: rows have MEX 1, columns have MEX n
         for i in range(n):
             for j in range(n):
                 grid[i][j] = j

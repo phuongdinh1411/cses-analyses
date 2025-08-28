@@ -145,8 +145,8 @@ for _ in range(n):
 
 intersections = sweep_line_intersections(segments)
 print(len(intersections))
-for x, y in intersections:
-    print(f"{x:.6f} {y:.6f}")
+for x, y in intersections: print(f"{
+x: .6f} {y:.6f}")
 ```
 
 ## Complexity Analysis

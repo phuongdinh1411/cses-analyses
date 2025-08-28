@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Word Combinations"permalink: /problem_soulutions/string_algorithms/word_combinations_analysis
+title: "Word Combinations"
+permalink: /problem_soulutions/string_algorithms/word_combinations_analysis
 ---
 
 
@@ -72,8 +73,8 @@ def word_combinations_dp(s, words):
         if dp[i] == 0:
             continue
         
-        for word in words:
-            if i + len(word) <= n and s[i:i + len(word)] == word:
+        for word in words: if i + len(word) <= n and s[
+i: i + len(word)] == word:
                 dp[i + len(word)] += dp[i]
     
     return dp[n]
@@ -107,8 +108,8 @@ def word_combinations_optimized_dp(s, words):
         
         # Try words of different lengths
         for length, word_list in word_lengths.items():
-            if i + length <= n:
-                substring = s[i:i + length]
+            if i + length <= n: substring = s[
+i: i + length]
                 if substring in word_set:
                     dp[i + length] += dp[i]
     
@@ -130,9 +131,8 @@ def build_trie(words):
     root = TrieNode()
     for word in words:
         node = root
-        for char in word:
-            if char not in node.children:
-                node.children[char] = TrieNode()
+        for char in word: if char not in node.
+children: node.children[char] = TrieNode()
             node = node.children[char]
         node.is_end = True
     return root
@@ -177,8 +177,8 @@ for i in range(len(s)):
     if dp[i] == 0:
         continue
     
-    for word in words:
-        if i + len(word) <= len(s) and s[i:i + len(word)] == word:
+    for word in words: if i + len(word) <= len(s) and s[
+i: i + len(word)] == word:
             dp[i + len(word)] += dp[i]
 
 print(dp[len(s)])
@@ -264,8 +264,8 @@ def dp_string_construction(s, words):
         if dp[i] == 0:
             continue
         
-        for word in words:
-            if i + len(word) <= n and s[i:i + len(word)] == word:
+        for word in words: if i + len(word) <= n and s[
+i: i + len(word)] == word:
                 dp[i + len(word)] += dp[i]
     
     return dp[n]
@@ -277,9 +277,8 @@ def build_trie(words):
     root = TrieNode()
     for word in words:
         node = root
-        for char in word:
-            if char not in node.children:
-                node.children[char] = TrieNode()
+        for char in word: if char not in node.
+children: node.children[char] = TrieNode()
             node = node.children[char]
         node.is_end = True
     return root
@@ -335,8 +334,8 @@ def constrained_word_combinations(s, words, constraints):
         if dp[i] == 0:
             continue
         
-        for word in words:
-            if i + len(word) <= n and s[i:i + len(word)] == word:
+        for word in words: if i + len(word) <= n and s[
+i: i + len(word)] == word:
                 # Apply constraints
                 if 'word_order' in constraints:
                     if constraints['word_order'] == 'ascending':
@@ -370,8 +369,8 @@ def cost_based_word_combinations(s, words, word_costs):
         if dp[i] == float('inf'):
             continue
         
-        for word in words:
-            if i + len(word) <= n and s[i:i + len(word)] == word:
+        for word in words: if i + len(word) <= n and s[
+i: i + len(word)] == word:
                 cost = word_costs.get(word, 1)
                 dp[i + len(word)] = min(dp[i + len(word)], dp[i] + cost)
     
@@ -392,8 +391,8 @@ def probabilistic_word_combinations(s, words, word_probs):
         if dp[i] == 0.0:
             continue
         
-        for word in words:
-            if i + len(word) <= n and s[i:i + len(word)] == word:
+        for word in words: if i + len(word) <= n and s[
+i: i + len(word)] == word:
                 prob = word_probs.get(word, 0.1)
                 dp[i + len(word)] += dp[i] * prob
     
@@ -417,8 +416,8 @@ def multiple_target_word_combinations(targets, words):
             if dp[i] == 0:
                 continue
             
-            for word in words:
-                if i + len(word) <= n and s[i:i + len(word)] == word:
+            for word in words: if i + len(word) <= n and s[
+i: i + len(word)] == word:
                     dp[i + len(word)] += dp[i]
         
         results.append(dp[n])
@@ -450,8 +449,8 @@ def dynamic_word_combinations(s, words, updates):
             if dp[i] == 0:
                 continue
             
-            for w in current_words:
-                if i + len(w) <= n and s[i:i + len(w)] == w:
+            for w in current_words: if i + len(w) <= n and s[
+i: i + len(w)] == w:
                     dp[i + len(w)] += dp[i]
         
         combination_history.append(dp[n])
@@ -510,8 +509,8 @@ def range_word_combination_queries(s, queries):
     # queries = [(l, r, words), ...] - count combinations for substring s[l:r]
     
     results = []
-    for l, r, words in queries:
-        substring = s[l:r]
+    for l, r, words in queries: substring = s[
+l: r]
         result = dp_string_construction(substring, words)
         results.append(result)
     

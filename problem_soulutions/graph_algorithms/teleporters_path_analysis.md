@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Teleporters Path"permalink: /problem_soulutions/graph_algorithms/teleporters_path_analysis
+title: "Teleporters Path"
+permalink: /problem_soulutions/graph_algorithms/teleporters_path_analysis
 ---
 
 
@@ -741,8 +742,8 @@ def range_teleporters_path_queries(n, edges, queries):
     # queries = [(start_edge, end_edge), ...] - find trail using edges in range
     
     results = []
-    for start, end in queries:
-        subset_edges = edges[start:end+1]
+    for start, end in queries: subset_edges = edges[
+start: end+1]
         result = find_teleporters_path(n, len(subset_edges), subset_edges)
         results.append(result)
     

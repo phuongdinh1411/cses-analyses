@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subarray Sums I"permalink: /problem_soulutions/sorting_and_searching/subarray_sums_i_analysis
+title: "Subarray Sums I"
+permalink: /problem_soulutions/sorting_and_searching/subarray_sums_i_analysis
 ---
 
 

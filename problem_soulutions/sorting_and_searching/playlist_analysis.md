@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Playlist"permalink: /problem_soulutions/sorting_and_searching/playlist_analysis
+title: "Playlist"
+permalink: /problem_soulutions/sorting_and_searching/playlist_analysis
 ---
 
 
@@ -213,9 +214,8 @@ def weighted_playlist(n, genres, weights):
         seen[genres[right]] = right
         
         # Update result if we have better weight for same or longer length
-        if right - left + 1 >= max_length:
-            if right - left + 1 > max_length or current_weight > max_weight:
-                max_length = right - left + 1
+        if right - left + 1 >= max_length: if right - left + 1 > max_length or current_weight > 
+max_weight: max_length = right - left + 1
                 max_weight = current_weight
     
     return max_length, max_weight
@@ -409,7 +409,8 @@ def interactive_playlist_analyzer():
                 weight = int(input(f"Enter weight for song {i+1}: "))
                 weights.append(weight)
             length, weight = weighted_playlist(n, genres, weights)
-            print(f"Longest weighted segment: {length}, Weight: {weight}")
+            print(f"Longest weighted segment: {length}, 
+Weight: {weight}")
         elif query == "k_duplicate":
             k = int(input("Enter k: "))
             result = k_duplicate_playlist(n, genres, k)

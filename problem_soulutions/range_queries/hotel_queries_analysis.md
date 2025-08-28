@@ -619,9 +619,8 @@ def hotel_queries_optimal_assignment(n, q, hotels, costs, operations):
             # Find the one with minimum cost
             min_cost = float('inf')
             best_hotel = -1
-            for hotel in suitable_hotels:
-                if costs[hotel] < min_cost:
-                    min_cost = costs[hotel]
+            for hotel in suitable_hotels: if costs[hotel] < 
+min_cost: min_cost = costs[hotel]
                     best_hotel = hotel
             
             return best_hotel
@@ -633,9 +632,8 @@ def hotel_queries_optimal_assignment(n, q, hotels, costs, operations):
             if self.capacity_tree[node] < target:
                 return
             
-            if left == right:
-                if left < self.n and self.capacity_tree[node] >= target:
-                    suitable.append(left)
+            if left == right: if left < self.n and self.capacity_tree[node] >= 
+target: suitable.append(left)
                 return
             
             mid = (left + right) // 2
@@ -776,9 +774,8 @@ def interactive_hotel_queries(n, hotels):
     # Handle interactive queries
     st = SegmentTree(hotels)
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

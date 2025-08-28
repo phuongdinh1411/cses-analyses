@@ -583,9 +583,8 @@ def interactive_dynamic_queries(n, arr):
     for i in range(n):
         bit.update(i + 1, arr[i])
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

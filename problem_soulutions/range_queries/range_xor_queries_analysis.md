@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Range Xor Queries"permalink: /problem_soulutions/range_queries/range_xor_queries_analysis
+title: "Range Xor Queries"
+permalink: /problem_soulutions/range_queries/range_xor_queries_analysis
 ---
 
 
@@ -447,9 +448,8 @@ def interactive_xor_queries(n, arr):
     for i in range(n):
         prefix_xor[i + 1] = prefix_xor[i] ^ arr[i]
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

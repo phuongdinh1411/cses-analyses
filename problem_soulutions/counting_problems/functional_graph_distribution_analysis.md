@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Functional Graph Distribution"permalink: /problem_soulutions/counting_problems/functional_graph_distribution_analysis
+title: "Functional Graph Distribution"
+permalink: /problem_soulutions/counting_problems/functional_graph_distribution_analysis
 ---
 
 

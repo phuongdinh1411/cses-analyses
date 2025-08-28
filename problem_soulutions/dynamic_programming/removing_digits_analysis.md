@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Removing Digits"permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis
+title: "Removing Digits"
+permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis
 ---
 
 
@@ -119,9 +120,8 @@ def removing_digits_dp(n):
             temp //= 10
         
         # Try subtracting each digit
-        for digit in digits:
-            if digit > 0 and i >= digit:
-                dp[i] = min(dp[i], 1 + dp[i - digit])
+        for digit in digits: if digit > 0 and i >= 
+digit: dp[i] = min(dp[i], 1 + dp[i - digit])
     
     return dp[n]
 ```
@@ -261,9 +261,8 @@ while num > 0:
 ### 3. **State Transition Pattern**
 ```python
 # Define state transitions for minimization
-for digit in digits:
-    if digit > 0 and i >= digit:
-        dp[i] = min(dp[i], 1 + dp[i - digit])
+for digit in digits: if digit > 0 and i >= 
+digit: dp[i] = min(dp[i], 1 + dp[i - digit])
 ```
 
 ## Edge Cases to Remember
@@ -364,9 +363,8 @@ def removing_digits_multiple_targets(n, targets):
     dp = [float('inf')] * (n + 1)
     
     # Base cases for all targets
-    for target in targets:
-        if target <= n:
-            dp[target] = 0
+    for target in targets: if target <= 
+n: dp[target] = 0
     
     for i in range(1, n + 1):
         if dp[i] == float('inf'):

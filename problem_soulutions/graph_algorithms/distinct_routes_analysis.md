@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Distinct Routes"permalink: /problem_soulutions/graph_algorithms/distinct_routes_analysis
+title: "Distinct Routes"
+permalink: /problem_soulutions/graph_algorithms/distinct_routes_analysis
 ---
 
 
@@ -583,8 +584,8 @@ def probabilistic_distinct_routes(n, edges, probabilities):
     expected_paths = 0
     
     # Calculate expected number of paths based on edge probabilities
-    for a, b in edges:
-        if a == 1 or b == n:  # Direct edges from source or to sink
+    for a, b in edges: if a == 1 or b == 
+n: # Direct edges from source or to sink
             prob = probabilities.get((a, b), 0.5)
             expected_paths += prob
     

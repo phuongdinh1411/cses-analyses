@@ -209,9 +209,8 @@ def find_knights_tour(n):
         return None
 
 result = find_knights_tour(n)
-if result:
-    for row in result:
-        print(*row)
+if result: for row in 
+result: print(*row)
 else:
     print("No solution exists")
 ```
@@ -397,9 +396,8 @@ def cost_based_knights_tour(n, costs):
     def backtrack(x, y, move_count, current_cost):
         nonlocal min_cost, best_tour
         
-        if move_count == n * n:
-            if current_cost < min_cost:
-                min_cost = current_cost
+        if move_count == n * n: if current_cost < 
+min_cost: min_cost = current_cost
                 best_tour = [row[:] for row in board]
             return
         

@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "String Compression"permalink: /problem_soulutions/string_algorithms/string_compression_analysis
+title: "String Compression"
+permalink: /problem_soulutions/string_algorithms/string_compression_analysis
 ---
 
 
@@ -273,9 +274,8 @@ def constrained_compression(s, max_ratio=0.5, min_run=2):
     for i in range(1, len(s)):
         if s[i] == current_char:
             count += 1
-        else:
-            if count >= min_run:
-                compressed.append(current_char + str(count))
+        else: if count >= 
+min_run: compressed.append(current_char + str(count))
             else:
                 compressed.append(current_char * count)
             current_char = s[i]
@@ -352,9 +352,8 @@ def multi_algorithm_compression(s):
     best_result = s
     best_ratio = 1.0
     
-    for name, algorithm in algorithms:
-        try:
-            result = algorithm(s)
+    for name, algorithm in algorithms: 
+try: result = algorithm(s)
             ratio = len(str(result)) / len(s)
             if ratio < best_ratio:
                 best_ratio = ratio
@@ -449,7 +448,8 @@ def interactive_compression():
         ratio = len(compressed) / len(s)
         print(f"Original: {s}")
         print(f"Compressed: {compressed}")
-        print(f"Compression ratio: {ratio:.2f}")
+        print(f"Compression ratio: {
+ratio: .2f}")
 ```
 
 ### 🧮 **Mathematical Extensions**

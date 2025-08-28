@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Static Range Sum Queries"permalink: /problem_soulutions/range_queries/static_range_sum_queries_analysis
+title: "Static Range Sum Queries"
+permalink: /problem_soulutions/range_queries/static_range_sum_queries_analysis
 ---
 
 
@@ -343,9 +344,8 @@ def interactive_range_queries(n, arr):
     for i in range(n):
         prefix[i + 1] = prefix[i] + arr[i]
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

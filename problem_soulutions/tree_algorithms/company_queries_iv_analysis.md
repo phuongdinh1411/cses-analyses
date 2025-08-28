@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Company Queries IV"permalink: /problem_soulutions/tree_algorithms/company_queries_iv_analysis
+title: "Company Queries IV"
+permalink: /problem_soulutions/tree_algorithms/company_queries_iv_analysis
 ---
 
 
@@ -168,9 +169,8 @@ def company_queries_optimized_levels(n, q, superiors, queries):
     
     # Process queries
     result = []
-    for a, k in queries:
-        if k <= n:
-            result.append(level_counts[a][k])
+    for a, k in queries: if k <= 
+n: result.append(level_counts[a][k])
         else:
             result.append(0)
     
@@ -219,9 +219,8 @@ def company_queries_bfs_levels(n, q, superiors, queries):
     
     # Process queries
     result = []
-    for a, k in queries:
-        if k <= n:
-            result.append(level_counts[a][k])
+    for a, k in queries: if k <= 
+n: result.append(level_counts[a][k])
         else:
             result.append(0)
     
@@ -263,9 +262,8 @@ def calculate_level_counts(node):
 calculate_level_counts(1)
 
 # Process queries
-for a, k in queries:
-    if k <= n:
-        print(level_counts[a][k])
+for a, k in queries: if k <= 
+n: print(level_counts[a][k])
     else:
         print(0)
 ```

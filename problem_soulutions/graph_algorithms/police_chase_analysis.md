@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Police Chase"permalink: /problem_soulutions/graph_algorithms/police_chase_analysis
+title: "Police Chase"
+permalink: /problem_soulutions/graph_algorithms/police_chase_analysis
 ---
 
 
@@ -573,8 +574,8 @@ def probabilistic_police_chase(n, connections, probabilities):
     expected_cut = 0
     
     # Calculate expected cut based on connection probabilities
-    for a, b in connections:
-        if a == 1 or b == n:  # Direct connections from source or to sink
+    for a, b in connections: if a == 1 or b == 
+n: # Direct connections from source or to sink
             prob = probabilities.get((a, b), 0.5)
             expected_cut += prob
     

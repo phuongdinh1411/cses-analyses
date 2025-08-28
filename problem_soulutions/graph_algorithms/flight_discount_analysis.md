@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Flight Discount"permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis
+title: "Flight Discount"
+permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis
 ---
 
 
@@ -589,9 +590,8 @@ def range_flight_cost_queries(n, edges, queries):
     for start, end in queries:
         # Run Dijkstra from start to end
         adj = [[] for _ in range(n + 1)]
-        for a, b, c in edges:
-            if start <= a <= end and start <= b <= end:
-                adj[a].append((b, c))
+        for a, b, c in edges: if start <= a <= end and start <= b <= 
+end: adj[a].append((b, c))
         
         result = find_minimum_cost_with_discount(end - start + 1, len(edges), edges)
         results.append(result)

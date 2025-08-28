@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "String Rotation"permalink: /problem_soulutions/string_algorithms/string_rotation_analysis
+title: "String Rotation"
+permalink: /problem_soulutions/string_algorithms/string_rotation_analysis
 ---
 
 
@@ -387,8 +388,8 @@ def range_string_rotation_queries(s, queries):
     # queries = [(l, r), ...] - find minimal rotation of substring s[l:r]
     
     results = []
-    for l, r in queries:
-        substring = s[l:r]
+    for l, r in queries: substring = s[
+l: r]
         rotation = booth_algorithm(substring)
         results.append(rotation)
     

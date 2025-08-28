@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Ultimate Cheatsheet"permalink: /quick_reference/ultimate_cheatsheet
+title: "Ultimate Cheatsheet"
+permalink: /quick_reference/ultimate_cheatsheet
 ---
 
 

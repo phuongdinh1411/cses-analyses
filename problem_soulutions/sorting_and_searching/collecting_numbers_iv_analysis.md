@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Collecting Numbers IV"permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_iv_analysis
+title: "Collecting Numbers IV"
+permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_iv_analysis
 ---
 
 
@@ -51,13 +52,11 @@ def collecting_numbers_iv_naive(n, arr):
         rounds += 1
         current_round = []
         
-        for value, index in pairs:
-            if index not in collected:
-                # Check if we can collect this number
+        for value, index in pairs: if index not in 
+collected: # Check if we can collect this number
                 can_collect = True
-                for smaller_value, smaller_index in pairs:
-                    if smaller_value < value and smaller_index not in collected:
-                        can_collect = False
+                for smaller_value, smaller_index in pairs: if smaller_value < value and smaller_index not in 
+collected: can_collect = False
                         break
                 
                 if can_collect:
@@ -485,8 +484,8 @@ def interactive_collection_game():
             rounds, orders, weights_dict = weighted_collecting_numbers_iv(n, arr, weights)
             print(f"Total rounds: {rounds}")
             for round_num in range(1, rounds + 1):
-                if round_num in orders:
-                    print(f"Round {round_num}: {orders[round_num]}, Weight: {weights_dict[round_num]}")
+                if round_num in orders: print(f"Round {round_num}: {orders[round_num]}, 
+Weight: {weights_dict[round_num]}")
         elif query == "constrained":
             k = int(input("Enter maximum elements per round: "))
             rounds, orders = constrained_collecting_numbers_iv(n, arr, k)

@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Strongly Connected Edges"permalink: /problem_soulutions/advanced_graph_problems/strongly_connected_edges_analysis
+title: "Strongly Connected Edges"
+permalink: /problem_soulutions/advanced_graph_problems/strongly_connected_edges_analysis
 ---
 
 
@@ -407,9 +408,8 @@ def constrained_strongly_connected_edges(n, m, edges, budget, restricted_edges):
     adj = [[] for _ in range(n + 1)]
     adj_rev = [[] for _ in range(n + 1)]
     
-    for a, b in edges:
-        if (a, b) not in restricted_edges:
-            adj[a].append(b)
+    for a, b in edges: if (a, b) not in 
+restricted_edges: adj[a].append(b)
             adj_rev[b].append(a)
     
     # Find SCCs
@@ -438,9 +438,8 @@ def constrained_strongly_connected_edges(n, m, edges, budget, restricted_edges):
         for node1 in range(1, n + 1):
             if scc_id[node1] == source:
                 for node2 in range(1, n + 1):
-                    if scc_id[node2] == sink:
-                        if (node1, node2) not in restricted_edges:
-                            edge_cost = 1  # Simplified cost
+                    if scc_id[node2] == sink: if (node1, node2) not in 
+restricted_edges: edge_cost = 1  # Simplified cost
                             if current_cost + edge_cost <= budget:
                                 edges_to_add.append((node1, node2))
                                 current_cost += edge_cost

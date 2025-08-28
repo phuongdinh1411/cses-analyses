@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Company Queries I"permalink: /problem_soulutions/tree_algorithms/company_queries_i_analysis
+title: "Company Queries I"
+permalink: /problem_soulutions/tree_algorithms/company_queries_i_analysis
 ---
 
 

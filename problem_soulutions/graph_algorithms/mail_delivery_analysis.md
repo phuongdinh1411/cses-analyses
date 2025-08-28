@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Mail Delivery"permalink: /problem_soulutions/graph_algorithms/mail_delivery_analysis
+title: "Mail Delivery"
+permalink: /problem_soulutions/graph_algorithms/mail_delivery_analysis
 ---
 
 
@@ -625,8 +626,8 @@ def range_mail_delivery_queries(n, edges, queries):
     # queries = [(start_edge, end_edge), ...] - find circuit using edges in range
     
     results = []
-    for start, end in queries:
-        subset_edges = edges[start:end+1]
+    for start, end in queries: subset_edges = edges[
+start: end+1]
         result = find_mail_delivery_route(n, len(subset_edges), subset_edges)
         results.append(result)
     

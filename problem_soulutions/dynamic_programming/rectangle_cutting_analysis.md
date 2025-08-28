@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Rectangle Cutting"permalink: /problem_soulutions/dynamic_programming/rectangle_cutting_analysis
+title: "Rectangle Cutting"
+permalink: /problem_soulutions/dynamic_programming/rectangle_cutting_analysis
 ---
 
 

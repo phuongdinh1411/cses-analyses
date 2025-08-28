@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Shortest Routes I"permalink: /problem_soulutions/graph_algorithms/shortest_routes_i_analysis
+title: "Shortest Routes I"
+permalink: /problem_soulutions/graph_algorithms/shortest_routes_i_analysis
 ---
 
 
@@ -479,9 +480,8 @@ def constrained_shortest_routes_i(n, m, edges, max_fuel, restricted_routes):
     
     # Build adjacency list
     graph = [[] for _ in range(n + 1)]
-    for a, b, w in edges:
-        if (a, b) not in restricted_routes and (b, a) not in restricted_routes:
-            graph[a].append((b, w))
+    for a, b, w in edges: if (a, b) not in restricted_routes and (b, a) not in 
+restricted_routes: graph[a].append((b, w))
             graph[b].append((a, w))
     
     def bfs_with_constraints():

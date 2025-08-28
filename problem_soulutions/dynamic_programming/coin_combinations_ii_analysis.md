@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Coin Combinations II"permalink: /problem_soulutions/dynamic_programming/coin_combinations_ii_analysis
+title: "Coin Combinations II"
+permalink: /problem_soulutions/dynamic_programming/coin_combinations_ii_analysis
 ---
 
 
@@ -53,8 +54,8 @@ def coin_combinations_ii_brute_force(n, x, coins):
             return 0
         
         ways = 0
-        for coin in coins:
-            if coin >= last_coin:  # Ensure non-decreasing order
+        for coin in coins: if coin >= 
+last_coin: # Ensure non-decreasing order
                 ways += count_ways(target - coin, coin)
         
         return ways % MOD
@@ -82,8 +83,8 @@ def coin_combinations_ii_memoization(n, x, coins):
             return 0
         
         ways = 0
-        for coin in coins:
-            if coin >= last_coin:  # Ensure non-decreasing order
+        for coin in coins: if coin >= 
+last_coin: # Ensure non-decreasing order
                 ways += count_ways(target - coin, coin)
         
         memo[(target, last_coin)] = ways % MOD
@@ -442,9 +443,8 @@ def range_coin_combinations_ii_queries(n, coins, queries):
     dp[0] = 1
     
     for i in range(1, max_x + 1):
-        for coin in coins:
-            if i >= coin:
-                dp[i] = (dp[i] + dp[i - coin]) % MOD
+        for coin in coins: if i >= 
+coin: dp[i] = (dp[i] + dp[i - coin]) % MOD
     
     # Answer queries
     for l, r in queries:

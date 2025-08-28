@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Visible Buildings Queries"permalink: /problem_soulutions/range_queries/visible_buildings_queries_analysis
+title: "Visible Buildings Queries"
+permalink: /problem_soulutions/range_queries/visible_buildings_queries_analysis
 ---
 
 
@@ -436,9 +437,8 @@ def visible_buildings_queries_multiple_viewpoints(n, q, heights, operations):
             viewpoints = op[1]  # List of (a, b) pairs
             viewpoint_results = []
             
-            for a, b in viewpoints:
-                if a > b:
-                    a, b = b, a
+            for a, b in viewpoints: if a > 
+b: a, b = b, a
                 
                 visible = 0
                 max_height = 0
@@ -821,9 +821,8 @@ def interactive_visible_buildings(n, heights):
         for i in range(n - (1 << j) + 1):
             sparse_table[j][i] = max(sparse_table[j-1][i], sparse_table[j-1][i + (1 << (j-1))])
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

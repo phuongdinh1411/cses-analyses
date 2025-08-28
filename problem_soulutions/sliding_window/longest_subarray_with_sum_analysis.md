@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Longest Subarray with Sum"permalink: /problem_soulutions/sliding_window/longest_subarray_with_sum_analysis
+title: "Longest Subarray with Sum"
+permalink: /problem_soulutions/sliding_window/longest_subarray_with_sum_analysis
 ---
 
 
@@ -257,9 +258,8 @@ def two_pointer_longest_subarray(arr, target):
     for right in range(len(arr)):
         current_sum += arr[right]
         
-        while current_sum >= target and left <= right:
-            if current_sum == target:
-                max_length = max(max_length, right - left + 1)
+        while current_sum >= target and left <= right: if current_sum == 
+target: max_length = max(max_length, right - left + 1)
             current_sum -= arr[left]
             left += 1
     

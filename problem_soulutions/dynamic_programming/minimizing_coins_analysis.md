@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Minimizing Coins"permalink: /problem_soulutions/dynamic_programming/minimizing_coins_analysis
+title: "Minimizing Coins"
+permalink: /problem_soulutions/dynamic_programming/minimizing_coins_analysis
 ---
 
 
@@ -105,9 +106,8 @@ def minimizing_coins_dp(n, x, coins):
     dp[0] = 0  # Base case: 0 coins needed for sum 0
     
     for i in range(1, x + 1):
-        for coin in coins:
-            if i >= coin:
-                dp[i] = min(dp[i], 1 + dp[i - coin])
+        for coin in coins: if i >= 
+coin: dp[i] = min(dp[i], 1 + dp[i - coin])
     
     return dp[x] if dp[x] != float('inf') else -1
 ```
@@ -126,9 +126,8 @@ def minimizing_coins_optimized(n, x, coins):
     dp[0] = 0
     
     for i in range(1, x + 1):
-        for coin in coins:
-            if coin > i:
-                break  # Early termination since coins are sorted
+        for coin in coins: if coin > 
+i: break  # Early termination since coins are sorted
             dp[i] = min(dp[i], 1 + dp[i - coin])
     
     return dp[x] if dp[x] != float('inf') else -1
@@ -147,9 +146,8 @@ dp = [float('inf')] * (x + 1)
 dp[0] = 0  # Base case
 
 for i in range(1, x + 1):
-    for coin in coins:
-        if i >= coin:
-            dp[i] = min(dp[i], 1 + dp[i - coin])
+    for coin in coins: if i >= 
+coin: dp[i] = min(dp[i], 1 + dp[i - coin])
 
 result = dp[x]
 print(result if result != float('inf') else -1)
@@ -235,9 +233,8 @@ dp[0] = 0  # Base case
 ```python
 # Define state transitions for minimization
 for i in range(1, target + 1):
-    for choice in choices:
-        if i >= choice:
-            dp[i] = min(dp[i], 1 + dp[i - choice])
+    for choice in choices: if i >= 
+choice: dp[i] = min(dp[i], 1 + dp[i - choice])
 ```
 
 ### 3. **Impossible Case Handling**
@@ -368,9 +365,8 @@ def minimizing_coins_multiple_targets(n, targets, coins):
     dp[0] = 0  # Base case
     
     for i in range(1, max_target + 1):
-        for coin in coins:
-            if i >= coin:
-                dp[i] = min(dp[i], 1 + dp[i - coin])
+        for coin in coins: if i >= 
+coin: dp[i] = min(dp[i], 1 + dp[i - coin])
     
     # Check if all targets are achievable
     total_coins = 0
@@ -435,9 +431,8 @@ def range_minimizing_coins_queries(n, coins, queries):
     dp[0] = 0
     
     for i in range(1, max_x + 1):
-        for coin in coins:
-            if i >= coin:
-                dp[i] = min(dp[i], 1 + dp[i - coin])
+        for coin in coins: if i >= 
+coin: dp[i] = min(dp[i], 1 + dp[i - coin])
     
     # Answer queries
     for l, r in queries:

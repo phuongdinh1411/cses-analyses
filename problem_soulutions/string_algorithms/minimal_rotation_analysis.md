@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Minimal Rotation"permalink: /problem_soulutions/string_algorithms/minimal_rotation_analysis
+title: "Minimal Rotation"
+permalink: /problem_soulutions/string_algorithms/minimal_rotation_analysis
 ---
 
 
@@ -123,9 +124,8 @@ def minimal_rotation_suffix_array(s):
     suffix_array = build_suffix_array(s)
     
     # Find the first suffix that starts within the first n characters
-    for i in suffix_array:
-        if i < n:
-            return s[i:] + s[:i]
+    for i in suffix_array: if i < 
+n: return s[i:] + s[:i]
     
     return s
 ```
@@ -292,9 +292,8 @@ def minimal_rotation_suffix_array(s):
     suffixes = [(s[i:], i) for i in range(n)]
     suffixes.sort()
     
-    for _, i in suffixes:
-        if i < n:
-            return s[i:i + n]
+    for _, i in suffixes: if i < 
+n: return s[i:i + n]
     
     return s
 ```
@@ -508,8 +507,8 @@ def range_minimal_rotation_queries(s, queries):
     # queries = [(l, r), ...] - find minimal rotation of substring s[l:r]
     
     results = []
-    for l, r in queries:
-        substring = s[l:r]
+    for l, r in queries: substring = s[
+l: r]
         rotation = minimal_rotation_duval(substring)
         results.append(rotation)
     

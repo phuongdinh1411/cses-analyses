@@ -562,9 +562,8 @@ def interactive_forest_queries(n, grid):
                                        prefix_sum[i][j] + 
                                        (1 if grid[i][j] == '*' else 0))
     
-    while True:
-        try:
-            query = input().strip()
+    while True: 
+try: query = input().strip()
             if query == 'END':
                 break
             

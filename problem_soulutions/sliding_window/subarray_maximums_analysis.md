@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subarray Maximums"permalink: /problem_soulutions/sliding_window/subarray_maximums_analysis
+title: "Subarray Maximums"
+permalink: /problem_soulutions/sliding_window/subarray_maximums_analysis
 ---
 
 

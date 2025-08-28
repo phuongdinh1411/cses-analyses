@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Required Substring"permalink: /problem_soulutions/string_algorithms/required_substring_analysis
+title: "Required Substring"
+permalink: /problem_soulutions/string_algorithms/required_substring_analysis
 ---
 
 
@@ -39,8 +40,8 @@ def required_substring_naive(s, t):
     def is_substring(s, t):
         n, m = len(s), len(t)
         for i in range(n - m + 1):
-            if s[i:i + m] == t:
-                return True
+            if s[i: i + m] == 
+t: return True
         return False
     
     if is_substring(s, t):
@@ -673,8 +674,8 @@ def range_required_substring_queries(s, queries):
     # queries = [(l, r, pattern), ...] - find min chars for substring s[l:r]
     
     results = []
-    for l, r, pattern in queries:
-        substring = s[l:r]
+    for l, r, pattern in queries: substring = s[
+l: r]
         chars_needed = find_overlap_kmp(substring, pattern)
         results.append(len(pattern) - chars_needed)
     

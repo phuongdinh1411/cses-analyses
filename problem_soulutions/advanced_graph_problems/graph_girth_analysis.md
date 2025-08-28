@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Graph Girth"permalink: /problem_soulutions/advanced_graph_problems/graph_girth_analysis
+title: "Graph Girth"
+permalink: /problem_soulutions/advanced_graph_problems/graph_girth_analysis
 ---
 
 

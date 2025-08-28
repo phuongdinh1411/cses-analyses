@@ -1,6 +1,7 @@
 ---
 layout: simple
-title: "Subarray Minimums"permalink: /problem_soulutions/sliding_window/subarray_minimums_analysis
+title: "Subarray Minimums"
+permalink: /problem_soulutions/sliding_window/subarray_minimums_analysis
 ---
 
 
