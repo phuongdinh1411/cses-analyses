@@ -31,84 +31,69 @@ Given a grid path description (string of 'R', 'D', 'L', 'U' for right, down, lef
 ## Solution Approach
 
 ### Method 1: Recursive with Memoization
-```cpp
-class Solution {
-private:
-    vector<vector<vector<long long>>> dp;
-    string path;
-    int n;
+```python
+class Solution:
+    def __init__(self):
+        self.dp = {}
+        self.path = ""
+        self.n = 0
     
-    long long solve(int x, int y, int idx) {
-        if (idx == path.length()) {
-            return 1;
-        }
+    def solve(self, x, y, idx):
+        if idx == len(self.path):
+            return 1
         
-        if (dp[x][y][idx] != -1) {
-            return dp[x][y][idx];
-        }
+        if (x, y, idx) in self.dp:
+            return self.dp[(x, y, idx)]
         
-        long long count = 0;
-        char dir = path[idx];
+        count = 0
+        direction = self.path[idx]
         
-        if (dir == 'R' && x + 1 < n) {
-            count += solve(x + 1, y, idx + 1);
-        }
-        if (dir == 'D' && y + 1 < n) {
-            count += solve(x, y + 1, idx + 1);
-        }
-        if (dir == 'L' && x - 1 >= 0) {
-            count += solve(x - 1, y, idx + 1);
-        }
-        if (dir == 'U' && y - 1 >= 0) {
-            count += solve(x, y - 1, idx + 1);
-        }
+        if direction == 'R' and x + 1 < self.n:
+            count += self.solve(x + 1, y, idx + 1)
+        if direction == 'D' and y + 1 < self.n:
+            count += self.solve(x, y + 1, idx + 1)
+        if direction == 'L' and x - 1 >= 0:
+            count += self.solve(x - 1, y, idx + 1)
+        if direction == 'U' and y - 1 >= 0:
+            count += self.solve(x, y - 1, idx + 1)
         
-        return dp[x][y][idx] = count;
-    }
+        self.dp[(x, y, idx)] = count
+        return count
     
-public:
-    long long countPaths(string path_desc, int grid_size) {
-        path = path_desc;
-        n = grid_size;
-        dp.assign(n, vector<vector<long long>>(n, vector<long long>(path.length(), -1)));
+    def count_paths(self, path_desc, grid_size):
+        self.path = path_desc
+        self.n = grid_size
+        self.dp = {}
         
-        return solve(0, 0, 0);
-    }
-};
+        return self.solve(0, 0, 0)
 ```
 
 ### Method 2: Iterative DP
-```cpp
-long long countPathsIterative(string path, int n) {
-    vector<vector<vector<long long>>> dp(n, vector<vector<long long>>(n, vector<long long>(path.length() + 1, 0)));
+```python
+def count_paths_iterative(path, n):
+    # Initialize 3D DP table: dp[x][y][idx]
+    dp = [[[0] * (len(path) + 1) for _ in range(n)] for _ in range(n)]
     
-    dp[0][0][0] = 1;
+    dp[0][0][0] = 1
     
-    for (int idx = 0; idx < path.length(); idx++) {
-        for (int x = 0; x < n; x++) {
-            for (int y = 0; y < n; y++) {
-                if (dp[x][y][idx] == 0) continue;
+    for idx in range(len(path)):
+        for x in range(n):
+            for y in range(n):
+                if dp[x][y][idx] == 0:
+                    continue
                 
-                char dir = path[idx];
+                direction = path[idx]
                 
-                if (dir == 'R' && x + 1 < n) {
-                    dp[x + 1][y][idx + 1] += dp[x][y][idx];
-                }
-                if (dir == 'D' && y + 1 < n) {
-                    dp[x][y + 1][idx + 1] += dp[x][y][idx];
-                }
-                if (dir == 'L' && x - 1 >= 0) {
-                    dp[x - 1][y][idx + 1] += dp[x][y][idx];
-                }
-                if (dir == 'U' && y - 1 >= 0) {
-                    dp[x][y - 1][idx + 1] += dp[x][y][idx];
-                }
-            }
-        }
-    }
+                if direction == 'R' and x + 1 < n:
+                    dp[x + 1][y][idx + 1] += dp[x][y][idx]
+                if direction == 'D' and y + 1 < n:
+                    dp[x][y + 1][idx + 1] += dp[x][y][idx]
+                if direction == 'L' and x - 1 >= 0:
+                    dp[x - 1][y][idx + 1] += dp[x][y][idx]
+                if direction == 'U' and y - 1 >= 0:
+                    dp[x][y - 1][idx + 1] += dp[x][y][idx]
     
-    return dp[0][0][path.length()];
-}
+    return dp[0][0][len(path)]
 ```
 
 ## Time Complexity

@@ -33,62 +33,59 @@ Given an n×n grid, find the minimum number of moves for a knight to reach from 
 ## Solution Approach
 
 ### Method 1: BFS with Queue
-```cpp
-int knightMoves(int n) {
-    if (n == 1) return 0;
-    if (n == 2) return -1; // Impossible
+```python
+from collections import deque
+
+def knight_moves(n):
+    if n == 1:
+        return 0
+    if n == 2:
+        return -1  # Impossible
     
-    vector<vector<bool>> visited(n, vector<bool>(n, false));
-    queue<pair<int, int>> q;
-    queue<int> moves;
+    visited = [[False] * n for _ in range(n)]
+    queue = deque([(0, 0, 0)])  # (x, y, moves)
+    visited[0][0] = True
     
-    q.push({0, 0});
-    moves.push(0);
-    visited[0][0] = true;
+    # Knight's 8 possible moves
+    dx = [-2, -2, -1, -1, 1, 1, 2, 2]
+    dy = [-1, 1, -2, 2, -2, 2, -1, 1]
     
-    int dx[] = {-2, -2, -1, -1, 1, 1, 2, 2};
-    int dy[] = {-1, 1, -2, 2, -2, 2, -1, 1};
-    
-    while (!q.empty()) {
-        int x = q.front().first;
-        int y = q.front().second;
-        int current_moves = moves.front();
-        q.pop();
-        moves.pop();
+    while queue:
+        x, y, current_moves = queue.popleft()
         
-        if (x == n-1 && y == n-1) {
-            return current_moves;
-        }
+        if x == n-1 and y == n-1:
+            return current_moves
         
-        for (int i = 0; i < 8; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
+        for i in range(8):
+            nx = x + dx[i]
+            ny = y + dy[i]
             
-            if (nx >= 0 && nx < n && ny >= 0 && ny < n && !visited[nx][ny]) {
-                visited[nx][ny] = true;
-                q.push({nx, ny});
-                moves.push(current_moves + 1);
-            }
-        }
-    }
+            if (0 <= nx < n and 0 <= ny < n and 
+                not visited[nx][ny]):
+                visited[nx][ny] = True
+                queue.append((nx, ny, current_moves + 1))
     
-    return -1; // Impossible
-}
+    return -1  # Impossible
 ```
 
 ### Method 2: Mathematical Approach
-```cpp
-int knightMovesMathematical(int n) {
-    if (n == 1) return 0;
-    if (n == 2) return -1;
-    if (n == 3) return 2;
-    if (n == 4) return 2;
-    if (n == 5) return 4;
-    if (n == 6) return 4;
+```python
+def knight_moves_mathematical(n):
+    if n == 1:
+        return 0
+    if n == 2:
+        return -1
+    if n == 3:
+        return 2
+    if n == 4:
+        return 2
+    if n == 5:
+        return 4
+    if n == 6:
+        return 4
     
-    // For larger grids, use mathematical formula
-    return (n + 1) / 2;
-}
+    # For larger grids, use mathematical formula
+    return (n + 1) // 2
 ```
 
 ## Time Complexity
@@ -158,38 +155,39 @@ int knightMovesMathematical(int n) {
 ## Advanced Optimizations
 
 ### 1. Bidirectional BFS
-```cpp
-int bidirectionalBFS(int n) {
-    if (n == 1) return 0;
-    if (n == 2) return -1;
+```python
+from collections import deque
+
+def bidirectional_bfs(n):
+    if n == 1:
+        return 0
+    if n == 2:
+        return -1
     
-    set<pair<int, int>> start_visited, end_visited;
-    queue<pair<int, int>> start_q, end_q;
-    queue<int> start_moves, end_moves;
+    start_visited = set()
+    end_visited = set()
+    start_queue = deque([(0, 0, 0)])  # (x, y, moves)
+    end_queue = deque([(n-1, n-1, 0)])
     
-    start_q.push({0, 0});
-    start_moves.push(0);
-    start_visited.insert({0, 0});
+    start_visited.add((0, 0))
+    end_visited.add((n-1, n-1))
     
-    end_q.push({n-1, n-1});
-    end_moves.push(0);
-    end_visited.insert({n-1, n-1});
-    
-    // Continue with bidirectional search...
-}
+    # Continue with bidirectional search...
+    # This can significantly reduce search space
 ```
 
 ### 2. A* Search
-```cpp
-int aStarSearch(int n) {
-    priority_queue<pair<int, pair<int, int>>> pq;
-    vector<vector<int>> g_score(n, vector<int>(n, INT_MAX));
+```python
+import heapq
+
+def a_star_search(n):
+    pq = [(0, 0, 0)]  # (f_score, x, y)
+    g_score = [[float('inf')] * n for _ in range(n)]
     
-    pq.push({0, {0, 0}});
-    g_score[0][0] = 0;
+    g_score[0][0] = 0
     
-    // Continue with A* search...
-}
+    # Continue with A* search...
+    # Uses heuristic to guide search more efficiently
 ```
 
 ## Related Problems

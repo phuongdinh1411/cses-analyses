@@ -42,16 +42,17 @@ Solving:
 
 ## Solution Approach
 
-```cpp
-bool canEmptyPiles(int a, int b) {
-    // Check if 2a - b is divisible by 3 and non-negative
-    if ((2 * a - b) % 3 != 0 || (2 * a - b) < 0) return false;
+```python
+def can_empty_piles(a, b):
+    # Check if 2a - b is divisible by 3 and non-negative
+    if (2 * a - b) % 3 != 0 or (2 * a - b) < 0:
+        return False
     
-    // Check if 2b - a is divisible by 3 and non-negative
-    if ((2 * b - a) % 3 != 0 || (2 * b - a) < 0) return false;
+    # Check if 2b - a is divisible by 3 and non-negative
+    if (2 * b - a) % 3 != 0 or (2 * b - a) < 0:
+        return False
     
-    return true;
-}
+    return True
 ```
 
 ## Time Complexity
