@@ -304,4 +304,524 @@ def efficient_range_min_queries(n, operations):
 
 ---
 
-*This analysis shows how to efficiently handle dynamic range minimum queries using segment tree.* 
+*This analysis shows how to efficiently handle dynamic range minimum queries using segment tree.*
+
+## 🎯 Problem Variations & Related Questions
+
+### 🔄 **Variations of the Original Problem**
+
+#### **Variation 1: Pizzeria Queries with Range Updates**
+**Problem**: Support range updates (modify prices of pizzerias in a range) and point queries.
+```python
+def pizzeria_queries_range_updates(n, q, prices, operations):
+    # Use Segment Tree with lazy propagation
+    class LazySegmentTree:
+        def __init__(self, data):
+            self.n = len(data)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.tree = [float('inf')] * (2 * self.size)
+            self.lazy = [None] * (2 * self.size)
+            
+            # Build the tree
+            for i in range(self.n):
+                self.tree[self.size + i] = data[i]
+            for i in range(self.size - 1, 0, -1):
+                self.tree[i] = min(self.tree[2 * i], self.tree[2 * i + 1])
+        
+        def push(self, node, left, right):
+            if self.lazy[node] is not None:
+                self.tree[node] = self.lazy[node]
+                if left != right:
+                    self.lazy[2 * node] = self.lazy[node]
+                    self.lazy[2 * node + 1] = self.lazy[node]
+                self.lazy[node] = None
+        
+        def range_update(self, node, left, right, l, r, val):
+            self.push(node, left, right)
+            if r < left or l > right:
+                return
+            if l <= left and right <= r:
+                self.lazy[node] = val
+                self.push(node, left, right)
+                return
+            mid = (left + right) // 2
+            self.range_update(2 * node, left, mid, l, r, val)
+            self.range_update(2 * node + 1, mid + 1, right, l, r, val)
+            self.tree[node] = min(self.tree[2 * node], self.tree[2 * node + 1])
+        
+        def point_query(self, node, left, right, index):
+            self.push(node, left, right)
+            if left == right:
+                return self.tree[node]
+            mid = (left + right) // 2
+            if index <= mid:
+                return self.point_query(2 * node, left, mid, index)
+            else:
+                return self.point_query(2 * node + 1, mid + 1, right, index)
+    
+    st = LazySegmentTree(prices)
+    results = []
+    
+    for op in operations:
+        if op[0] == 1:  # Range Update
+            l, r, val = op[1], op[2], op[3]
+            st.range_update(1, 0, st.size - 1, l-1, r-1, val)
+        else:  # Point Query
+            k = op[1]
+            result = st.point_query(1, 0, st.size - 1, k-1)
+            results.append(result)
+    
+    return results
+```
+
+#### **Variation 2: Pizzeria Queries with Multiple Criteria**
+**Problem**: Each pizzeria has price and rating, find minimum price with minimum rating threshold.
+```python
+def pizzeria_queries_multiple_criteria(n, q, prices, ratings, operations):
+    # Use Segment Tree with multiple criteria
+    class MultiCriteriaSegmentTree:
+        def __init__(self, prices, ratings):
+            self.n = len(prices)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.price_tree = [float('inf')] * (2 * self.size)
+            self.rating_tree = [0] * (2 * self.size)
+            
+            # Build trees
+            for i in range(self.n):
+                self.price_tree[self.size + i] = prices[i]
+                self.rating_tree[self.size + i] = ratings[i]
+            for i in range(self.size - 1, 0, -1):
+                self.price_tree[i] = min(self.price_tree[2 * i], self.price_tree[2 * i + 1])
+                self.rating_tree[i] = max(self.rating_tree[2 * i], self.rating_tree[2 * i + 1])
+        
+        def update(self, index, price, rating):
+            index += self.size
+            self.price_tree[index] = price
+            self.rating_tree[index] = rating
+            index //= 2
+            while index >= 1:
+                self.price_tree[index] = min(self.price_tree[2 * index], self.price_tree[2 * index + 1])
+                self.rating_tree[index] = max(self.rating_tree[2 * index], self.rating_tree[2 * index + 1])
+                index //= 2
+        
+        def query_with_rating(self, left, right, min_rating):
+            return self._query_with_rating(1, 0, self.size - 1, left, right, min_rating)
+        
+        def _query_with_rating(self, node, left, right, l, r, min_rating):
+            if r < left or l > right:
+                return float('inf')
+            if l <= left and right <= r:
+                if self.rating_tree[node] >= min_rating:
+                    return self.price_tree[node]
+                return float('inf')
+            mid = (left + right) // 2
+            return min(
+                self._query_with_rating(2 * node, left, mid, l, r, min_rating),
+                self._query_with_rating(2 * node + 1, mid + 1, right, l, r, min_rating)
+            )
+    
+    st = MultiCriteriaSegmentTree(prices, ratings)
+    results = []
+    
+    for op in operations:
+        if op[0] == 1:  # Update
+            k, price, rating = op[1], op[2], op[3]
+            st.update(k-1, price, rating)
+        else:  # Query with rating threshold
+            l, r, min_rating = op[1], op[2], op[3]
+            result = st.query_with_rating(l-1, r-1, min_rating)
+            results.append(result if result != float('inf') else -1)
+    
+    return results
+```
+
+#### **Variation 3: Pizzeria Queries with Distance Constraints**
+**Problem**: Find minimum price pizzeria within a certain distance from a given point.
+```python
+def pizzeria_queries_with_distance(n, q, prices, positions, operations):
+    # Use Segment Tree with distance constraints
+    class DistanceSegmentTree:
+        def __init__(self, prices, positions):
+            self.n = len(prices)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.price_tree = [float('inf')] * (2 * self.size)
+            self.positions = positions
+            
+            # Build tree
+            for i in range(self.n):
+                self.price_tree[self.size + i] = prices[i]
+            for i in range(self.size - 1, 0, -1):
+                self.price_tree[i] = min(self.price_tree[2 * i], self.price_tree[2 * i + 1])
+        
+        def update(self, index, price):
+            index += self.size
+            self.price_tree[index] = price
+            index //= 2
+            while index >= 1:
+                self.price_tree[index] = min(self.price_tree[2 * index], self.price_tree[2 * index + 1])
+                index //= 2
+        
+        def query_within_distance(self, center, max_distance):
+            # Find all positions within distance and query their minimum price
+            min_price = float('inf')
+            for i in range(self.n):
+                if abs(self.positions[i] - center) <= max_distance:
+                    min_price = min(min_price, self.price_tree[self.size + i])
+            return min_price if min_price != float('inf') else -1
+    
+    st = DistanceSegmentTree(prices, positions)
+    results = []
+    
+    for op in operations:
+        if op[0] == 1:  # Update
+            k, price = op[1], op[2]
+            st.update(k-1, price)
+        else:  # Query within distance
+            center, max_distance = op[1], op[2]
+            result = st.query_within_distance(center, max_distance)
+            results.append(result)
+    
+    return results
+```
+
+#### **Variation 4: Pizzeria Queries with Time Windows**
+**Problem**: Each pizzeria has different prices at different times, handle time-based queries.
+```python
+def pizzeria_queries_time_windows(n, q, prices, time_slots, operations):
+    # Use Segment Tree with time-based pricing
+    class TimeSegmentTree:
+        def __init__(self, prices, time_slots):
+            self.n = len(prices)
+            self.time_slots = time_slots  # List of (start_time, end_time, price) for each pizzeria
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.trees = {}  # Separate tree for each time slot
+        
+        def get_price_at_time(self, pizzeria, time):
+            # Find the price for pizzeria at given time
+            for start, end, price in self.time_slots[pizzeria]:
+                if start <= time <= end:
+                    return price
+            return float('inf')
+        
+        def build_tree_for_time(self, time):
+            if time in self.trees:
+                return self.trees[time]
+            
+            tree = [float('inf')] * (2 * self.size)
+            for i in range(self.n):
+                tree[self.size + i] = self.get_price_at_time(i, time)
+            for i in range(self.size - 1, 0, -1):
+                tree[i] = min(tree[2 * i], tree[2 * i + 1])
+            
+            self.trees[time] = tree
+            return tree
+        
+        def query_at_time(self, left, right, time):
+            tree = self.build_tree_for_time(time)
+            left += self.size
+            right += self.size
+            result = float('inf')
+            
+            while left < right:
+                if left % 2 == 1:
+                    result = min(result, tree[left])
+                    left += 1
+                if right % 2 == 1:
+                    right -= 1
+                    result = min(result, tree[right])
+                left //= 2
+                right //= 2
+            
+            return result if result != float('inf') else -1
+    
+    st = TimeSegmentTree(prices, time_slots)
+    results = []
+    
+    for op in operations:
+        if op[0] == 1:  # Update time slot
+            k, start, end, price = op[1], op[2], op[3], op[4]
+            st.time_slots[k-1].append((start, end, price))
+            st.trees.clear()  # Invalidate cached trees
+        else:  # Query at specific time
+            l, r, time = op[1], op[2], op[3]
+            result = st.query_at_time(l-1, r-1, time)
+            results.append(result)
+    
+    return results
+```
+
+#### **Variation 5: Pizzeria Queries with Multiple Pizzerias**
+**Problem**: Each building can have multiple pizzerias, find minimum price across all pizzerias in range.
+```python
+def pizzeria_queries_multiple_pizzerias(n, q, pizzeria_lists, operations):
+    # Use Segment Tree with multiple pizzerias per building
+    class MultiPizzeriaSegmentTree:
+        def __init__(self, pizzeria_lists):
+            self.n = len(pizzeria_lists)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.tree = [float('inf')] * (2 * self.size)
+            
+            # Build tree with minimum price per building
+            for i in range(self.n):
+                min_price = min(pizzeria_lists[i]) if pizzeria_lists[i] else float('inf')
+                self.tree[self.size + i] = min_price
+            for i in range(self.size - 1, 0, -1):
+                self.tree[i] = min(self.tree[2 * i], self.tree[2 * i + 1])
+        
+        def update(self, building, pizzeria_index, new_price):
+            building += self.size
+            # Update the specific pizzeria price
+            pizzeria_lists[building - self.size][pizzeria_index] = new_price
+            # Update building's minimum price
+            min_price = min(pizzeria_lists[building - self.size])
+            self.tree[building] = min_price
+            
+            building //= 2
+            while building >= 1:
+                self.tree[building] = min(self.tree[2 * building], self.tree[2 * building + 1])
+                building //= 2
+        
+        def query(self, left, right):
+            left += self.size
+            right += self.size
+            result = float('inf')
+            
+            while left < right:
+                if left % 2 == 1:
+                    result = min(result, self.tree[left])
+                    left += 1
+                if right % 2 == 1:
+                    right -= 1
+                    result = min(result, self.tree[right])
+                left //= 2
+                right //= 2
+            
+            return result if result != float('inf') else -1
+    
+    st = MultiPizzeriaSegmentTree(pizzeria_lists)
+    results = []
+    
+    for op in operations:
+        if op[0] == 1:  # Update specific pizzeria
+            building, pizzeria_idx, price = op[1], op[2], op[3]
+            st.update(building-1, pizzeria_idx-1, price)
+        else:  # Query minimum across range
+            l, r = op[1], op[2]
+            result = st.query(l-1, r-1)
+            results.append(result)
+    
+    return results
+```
+
+### 🔗 **Related Problems & Concepts**
+
+#### **1. Dynamic Range Query Data Structures**
+- **Segment Tree**: O(log n) point updates and range queries
+- **Binary Indexed Tree**: O(log n) operations but limited to specific queries
+- **Sparse Table**: O(1) queries but static
+- **Lazy Segment Tree**: Efficient range updates
+
+#### **2. Range Query Types**
+- **Range Minimum**: Find minimum in range
+- **Range Maximum**: Find maximum in range
+- **Range Sum**: Find sum in range
+- **Range Count**: Count elements in range
+
+#### **3. Advanced Range Techniques**
+- **Lazy Propagation**: Efficient range updates
+- **Persistent Segment Tree**: Handle historical queries
+- **2D Range Queries**: Extend to multiple dimensions
+- **Offline Processing**: Process queries in optimal order
+
+#### **4. Optimization Problems**
+- **Optimal Range Selection**: Find optimal range for queries
+- **Range with Constraints**: Add additional constraints to queries
+- **Weighted Range Queries**: Elements have weights
+- **Time-based Queries**: Handle temporal data
+
+#### **5. Competitive Programming Patterns**
+- **Binary Search**: Find optimal ranges
+- **Two Pointers**: Efficient range processing
+- **Sliding Window**: Optimize consecutive ranges
+- **Greedy**: Optimize range selection
+
+### 🎯 **Competitive Programming Variations**
+
+#### **1. Multiple Test Cases**
+```python
+t = int(input())
+for _ in range(t):
+    n, q = map(int, input().split())
+    prices = list(map(int, input().split()))
+    
+    st = SegmentTree(prices)
+    for _ in range(q):
+        query = list(map(int, input().split()))
+        if query[0] == 1:  # Update
+            k, x = query[1], query[2]
+            st.update(k-1, x)
+        else:  # Query
+            a, b = query[1], query[2]
+            result = st.query(a-1, b)
+            print(result)
+```
+
+#### **2. Pizzeria Queries with Aggregation**
+```python
+def pizzeria_queries_aggregation(n, q, prices, operations):
+    # Support multiple aggregation functions
+    class AggregationSegmentTree:
+        def __init__(self, data):
+            self.n = len(data)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.min_tree = [float('inf')] * (2 * self.size)
+            self.max_tree = [-float('inf')] * (2 * self.size)
+            self.sum_tree = [0] * (2 * self.size)
+            
+            # Build trees
+            for i in range(self.n):
+                self.min_tree[self.size + i] = data[i]
+                self.max_tree[self.size + i] = data[i]
+                self.sum_tree[self.size + i] = data[i]
+            for i in range(self.size - 1, 0, -1):
+                self.min_tree[i] = min(self.min_tree[2 * i], self.min_tree[2 * i + 1])
+                self.max_tree[i] = max(self.max_tree[2 * i], self.max_tree[2 * i + 1])
+                self.sum_tree[i] = self.sum_tree[2 * i] + self.sum_tree[2 * i + 1]
+        
+        def update(self, index, value):
+            index += self.size
+            self.min_tree[index] = value
+            self.max_tree[index] = value
+            self.sum_tree[index] = value
+            index //= 2
+            while index >= 1:
+                self.min_tree[index] = min(self.min_tree[2 * index], self.min_tree[2 * index + 1])
+                self.max_tree[index] = max(self.max_tree[2 * index], self.max_tree[2 * index + 1])
+                self.sum_tree[index] = self.sum_tree[2 * index] + self.sum_tree[2 * index + 1]
+                index //= 2
+        
+        def query(self, left, right, op):
+            if op == 'MIN':
+                return self._query_min(left, right)
+            elif op == 'MAX':
+                return self._query_max(left, right)
+            elif op == 'SUM':
+                return self._query_sum(left, right)
+        
+        def _query_min(self, left, right):
+            left += self.size
+            right += self.size
+            result = float('inf')
+            while left < right:
+                if left % 2 == 1:
+                    result = min(result, self.min_tree[left])
+                    left += 1
+                if right % 2 == 1:
+                    right -= 1
+                    result = min(result, self.min_tree[right])
+                left //= 2
+                right //= 2
+            return result
+    
+    st = AggregationSegmentTree(prices)
+    results = []
+    
+    for op in operations:
+        if op[0] == 1:  # Update
+            k, x = op[1], op[2]
+            st.update(k-1, x)
+        else:  # Query
+            l, r, query_type = op[1], op[2], op[3]
+            result = st.query(l-1, r-1, query_type)
+            results.append(result)
+    
+    return results
+```
+
+#### **3. Interactive Pizzeria Queries**
+```python
+def interactive_pizzeria_queries(n, prices):
+    # Handle interactive queries
+    st = SegmentTree(prices)
+    
+    while True:
+        try:
+            query = input().strip()
+            if query == 'END':
+                break
+            
+            parts = query.split()
+            if parts[0] == 'UPDATE':
+                k, x = int(parts[1]), int(parts[2])
+                st.update(k-1, x)
+                print(f"Updated pizzeria {k} to price {x}")
+            elif parts[0] == 'QUERY':
+                a, b = int(parts[1]), int(parts[2])
+                result = st.query(a-1, b-1)
+                print(f"Minimum price in range [{a},{b}]: {result}")
+            
+        except EOFError:
+            break
+```
+
+### 🧮 **Mathematical Extensions**
+
+#### **1. Range Query Properties**
+- **Idempotency**: min(min(a,b), min(c,d)) = min(a,b,c,d)
+- **Commutativity**: min(a,b) = min(b,a)
+- **Associativity**: min(min(a,b), c) = min(a, min(b,c))
+- **Monotonicity**: If a ≤ b, then min(a,c) ≤ min(b,c)
+
+#### **2. Optimization Techniques**
+- **Early Termination**: Stop if minimum is found
+- **Binary Search**: Find ranges with specific minimums
+- **Caching**: Store frequently accessed ranges
+- **Compression**: Handle sparse ranges efficiently
+
+#### **3. Advanced Mathematical Concepts**
+- **Monotonic Stack**: Efficient minimum tracking
+- **Cartesian Tree**: Alternative minimum representation
+- **LCA Reduction**: Reduce range minimum to LCA problem
+- **Fourier Transform**: Fast range operations using FFT
+
+#### **4. Algorithmic Improvements**
+- **Block Decomposition**: Divide array into blocks
+- **Lazy Propagation**: Efficient range updates
+- **Compression**: Handle sparse arrays efficiently
+- **Parallel Processing**: Use multiple cores for large datasets
+
+### 📚 **Learning Resources**
+
+#### **1. Related Algorithms**
+- **Segment Tree**: Efficient range queries and updates
+- **Binary Indexed Tree**: Dynamic range operations
+- **Sparse Table**: Static range queries
+- **Lazy Propagation**: Efficient range updates
+
+#### **2. Mathematical Concepts**
+- **Range Operations**: Understanding range query properties
+- **Monotonicity**: Using monotonic properties
+- **Optimization**: Finding optimal ranges
+- **Complexity Analysis**: Understanding time/space trade-offs
+
+#### **3. Programming Concepts**
+- **Data Structures**: Choosing appropriate range query structures
+- **Algorithm Design**: Optimizing for range constraints
+- **Problem Decomposition**: Breaking complex range problems
+- **Code Optimization**: Writing efficient range implementations
+
+---
+
+**Practice these variations to master dynamic range query techniques and segment tree operations!** 🎯 
