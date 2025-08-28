@@ -1,0 +1,25 @@
+title: CSES Analyses
+description: Solutions and explanations for CSES problems
+baseurl: "/cses-analyses" # repo name
+url: "https://phuongdinh1411.github.io"
+
+remote_theme: "mmistakes/minimal-mistakes"
+
+plugins:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+  - jekyll-include-cache
+  - jekyll-toc
+
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: single
+      sidebar:
+        nav: "main"
+
+markdown: kramdown
