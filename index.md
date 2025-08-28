@@ -78,12 +78,12 @@ Learn computational geometry algorithms and techniques.
 
 ## 🔗 Quick Navigation
 
-- [Introductory Problems](/problem_soulutions/introductory_problems/) - Complete overview of 24 problems
-- [Sorting and Searching](/problem_soulutions/sorting_and_searching/array_division_analysis/) - Start with Array Division
-- [Dynamic Programming](/problem_soulutions/dynamic_programming/coin_combinations_i_analysis/) - Start with Coin Combinations I
-- [Graph Algorithms](/problem_soulutions/graph_algorithms/building_roads_analysis/) - Start with Building Roads
-- [Advanced Graph Problems](/problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis/) - Start with Acyclic Graph Edges
-- [Quick Reference](/quick_reference/) - Ultimate Cheatsheet and Guides
+- [Introductory Problems](/cses-analyses/problem_soulutions/introductory_problems/) - Complete overview of 24 problems
+- [Sorting and Searching](/cses-analyses/problem_soulutions/sorting_and_searching/array_division_analysis/) - Start with Array Division
+- [Dynamic Programming](/cses-analyses/problem_soulutions/dynamic_programming/coin_combinations_i_analysis/) - Start with Coin Combinations I
+- [Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/building_roads_analysis/) - Start with Building Roads
+- [Advanced Graph Problems](/cses-analyses/problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis/) - Start with Acyclic Graph Edges
+- [Quick Reference](/cses-analyses/quick_reference/) - Ultimate Cheatsheet and Guides
 
 ## 📝 Contributing
 
