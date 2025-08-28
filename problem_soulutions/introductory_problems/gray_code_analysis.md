@@ -29,47 +29,42 @@ Generate a Gray code sequence of length 2^n where consecutive numbers differ by 
 ## Solution Approach
 
 ### Method 1: Recursive Construction
-```cpp
-vector<int> grayCode(int n) {
-    if (n == 0) return {0};
+```python
+def gray_code(n):
+    if n == 0:
+        return [0]
     
-    vector<int> prev = grayCode(n - 1);
-    vector<int> result = prev;
+    prev = gray_code(n - 1)
+    result = prev.copy()
     
-    // Add reflected sequence with leading 1
-    for (int i = prev.size() - 1; i >= 0; i--) {
-        result.push_back(prev[i] | (1 << (n - 1)));
-    }
+    # Add reflected sequence with leading 1
+    for i in range(len(prev) - 1, -1, -1):
+        result.append(prev[i] | (1 << (n - 1)))
     
-    return result;
-}
+    return result
 ```
 
 ### Method 2: Iterative Formula
-```cpp
-vector<int> grayCode(int n) {
-    vector<int> result;
-    int size = 1 << n;
+```python
+def gray_code(n):
+    result = []
+    size = 1 << n
     
-    for (int i = 0; i < size; i++) {
-        result.push_back(i ^ (i >> 1));
-    }
+    for i in range(size):
+        result.append(i ^ (i >> 1))
     
-    return result;
-}
+    return result
 ```
 
 ### Method 3: Bit Manipulation
-```cpp
-vector<int> grayCode(int n) {
-    vector<int> result(1 << n);
+```python
+def gray_code(n):
+    result = [0] * (1 << n)
     
-    for (int i = 0; i < (1 << n); i++) {
-        result[i] = i ^ (i >> 1);
-    }
+    for i in range(1 << n):
+        result[i] = i ^ (i >> 1)
     
-    return result;
-}
+    return result
 ```
 
 ## Time Complexity
@@ -134,29 +129,27 @@ vector<int> grayCode(int n) {
 ## Implementation Details
 
 ### Efficient Bit Operations
-```cpp
-// Check if two numbers differ by exactly one bit
-bool differByOneBit(int a, int b) {
-    int diff = a ^ b;
-    return diff && (diff & (diff - 1)) == 0;
-}
+```python
+# Check if two numbers differ by exactly one bit
+def differ_by_one_bit(a, b):
+    diff = a ^ b
+    return diff != 0 and (diff & (diff - 1)) == 0
 
-// Get the position of the differing bit
-int getDifferingBit(int a, int b) {
-    return __builtin_ctz(a ^ b);
-}
+# Get the position of the differing bit
+def get_differing_bit(a, b):
+    return (a ^ b).bit_length() - 1
 ```
 
 ### Memory-Efficient Generation
-```cpp
-void generateGrayCode(int n, vector<int>& result) {
-    result.clear();
-    result.reserve(1 << n);
+```python
+def generate_gray_code(n):
+    result = []
+    result.reserve(1 << n)  # Pre-allocate space
     
-    for (int i = 0; i < (1 << n); i++) {
-        result.push_back(i ^ (i >> 1));
-    }
-}
+    for i in range(1 << n):
+        result.append(i ^ (i >> 1))
+    
+    return result
 ```
 
 ## Related Problems

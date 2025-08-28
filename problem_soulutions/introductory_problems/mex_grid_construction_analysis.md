@@ -30,103 +30,88 @@ Construct an n×n grid filled with integers from 0 to n²-1 such that the MEX (m
 ## Solution Approach
 
 ### Method 1: Systematic Construction
-```cpp
-vector<vector<int>> constructMexGrid(int n, int target_mex) {
-    vector<vector<int>> grid(n, vector<int>(n));
+```python
+def construct_mex_grid(n, target_mex):
+    grid = [[0] * n for _ in range(n)]
     
-    // Fill with consecutive numbers starting from 0
-    int current = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            grid[i][j] = current++;
-        }
-    }
+    # Fill with consecutive numbers starting from 0
+    current = 0
+    for i in range(n):
+        for j in range(n):
+            grid[i][j] = current
+            current += 1
     
-    // If target_mex is n², we're done
-    if (target_mex == n * n) {
-        return grid;
-    }
+    # If target_mex is n², we're done
+    if target_mex == n * n:
+        return grid
     
-    // Otherwise, we need to modify the grid
-    // Strategy: ensure 0 to target_mex-1 are present
-    // and target_mex is missing from each row/column
+    # Otherwise, we need to modify the grid
+    # Strategy: ensure 0 to target_mex-1 are present
+    # and target_mex is missing from each row/column
     
-    // Rearrange to achieve target MEX
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (grid[i][j] >= target_mex) {
-                // Replace with a value that ensures target_mex is MEX
-                grid[i][j] = target_mex + (i * n + j) % (n * n - target_mex);
-            }
-        }
-    }
+    # Rearrange to achieve target MEX
+    for i in range(n):
+        for j in range(n):
+            if grid[i][j] >= target_mex:
+                # Replace with a value that ensures target_mex is MEX
+                grid[i][j] = target_mex + (i * n + j) % (n * n - target_mex)
     
-    return grid;
-}
+    return grid
 ```
 
 ### Method 2: Latin Square Based
-```cpp
-vector<vector<int>> constructMexGridLatin(int n, int target_mex) {
-    vector<vector<int>> grid(n, vector<int>(n));
+```python
+def construct_mex_grid_latin(n, target_mex):
+    grid = [[0] * n for _ in range(n)]
     
-    // Create a Latin square base
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            grid[i][j] = (i + j) % n;
-        }
-    }
+    # Create a Latin square base
+    for i in range(n):
+        for j in range(n):
+            grid[i][j] = (i + j) % n
     
-    // Scale and shift to achieve target MEX
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (grid[i][j] < target_mex) {
-                grid[i][j] = grid[i][j];
-            } else {
-                grid[i][j] = target_mex + grid[i][j];
-            }
-        }
-    }
+    # Scale and shift to achieve target MEX
+    for i in range(n):
+        for j in range(n):
+            if grid[i][j] < target_mex:
+                grid[i][j] = grid[i][j]
+            else:
+                grid[i][j] = target_mex + grid[i][j]
     
-    return grid;
-}
+    return grid
 ```
 
 ### Method 3: Backtracking Approach
-```cpp
-class MexGridConstructor {
-private:
-    vector<vector<int>> grid;
-    int n, target_mex;
-    bool found;
+```python
+class MexGridConstructor:
+    def __init__(self):
+        self.grid = []
+        self.n = 0
+        self.target_mex = 0
+        self.found = False
     
-    bool isValid(int row, int col, int val) {
-        // Check if val can be placed at (row, col)
-        // Ensure MEX constraints are maintained
+    def is_valid(self, row, col, val):
+        # Check if val can be placed at (row, col)
+        # Ensure MEX constraints are maintained
         
-        // Check row MEX
-        set<int> row_vals;
-        for (int j = 0; j < n; j++) {
-            if (j != col && grid[row][j] != -1) {
-                row_vals.insert(grid[row][j]);
-            }
-        }
-        row_vals.insert(val);
+        # Check row MEX
+        row_vals = set()
+        for j in range(self.n):
+            if j != col and self.grid[row][j] != -1:
+                row_vals.add(self.grid[row][j])
+        row_vals.add(val)
         
-        // Check column MEX
-        set<int> col_vals;
-        for (int i = 0; i < n; i++) {
-            if (i != row && grid[i][col] != -1) {
-                col_vals.insert(grid[i][col]);
-            }
-        }
-        col_vals.insert(val);
+        # Check column MEX
+        col_vals = set()
+        for i in range(self.n):
+            if i != row and self.grid[i][col] != -1:
+                col_vals.add(self.grid[i][col])
+        col_vals.add(val)
         
-        return getMex(row_vals) <= target_mex && getMex(col_vals) <= target_mex;
-    }
+        return self.get_mex(row_vals) <= self.target_mex and self.get_mex(col_vals) <= self.target_mex
     
-    int getMex(const set<int>& vals) {
-        int mex = 0;
+    def get_mex(self, vals):
+        mex = 0
+```
         for (int x : vals) {
             if (x == mex) mex++;
         }
@@ -223,58 +208,50 @@ public:
 ## Advanced Optimizations
 
 ### 1. Symmetry Breaking
-```cpp
-vector<vector<int>> constructMexGridSymmetry(int n, int target_mex) {
-    vector<vector<int>> grid(n, vector<int>(n));
+```python
+def construct_mex_grid_symmetry(n, target_mex):
+    grid = [[0] * n for _ in range(n)]
     
-    // Use symmetry to reduce search space
-    // Only construct upper triangle, reflect for lower
+    # Use symmetry to reduce search space
+    # Only construct upper triangle, reflect for lower
     
-    for (int i = 0; i < n; i++) {
-        for (int j = i; j < n; j++) {
-            int val = (i * n + j) % target_mex;
-            grid[i][j] = val;
-            if (i != j) grid[j][i] = val;
-        }
-    }
+    for i in range(n):
+        for j in range(i, n):
+            val = (i * n + j) % target_mex
+            grid[i][j] = val
+            if i != j:
+                grid[j][i] = val
     
-    return grid;
-}
+    return grid
 ```
 
 ### 2. Mathematical Construction
-```cpp
-vector<vector<int>> constructMexGridMath(int n, int target_mex) {
-    vector<vector<int>> grid(n, vector<int>(n));
+```python
+def construct_mex_grid_math(n, target_mex):
+    grid = [[0] * n for _ in range(n)]
     
-    // Use mathematical patterns for specific cases
-    if (target_mex == n) {
-        // Use identity matrix pattern
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                grid[i][j] = (i + j) % n;
-            }
-        }
-    } else if (target_mex == n + 1) {
-        // Use shifted pattern
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                grid[i][j] = (i + j + 1) % (n + 1);
-            }
-        }
-    }
+    # Use mathematical patterns for specific cases
+    if target_mex == n:
+        # Use identity matrix pattern
+        for i in range(n):
+            for j in range(n):
+                grid[i][j] = (i + j) % n
+    elif target_mex == n + 1:
+        # Use shifted pattern
+        for i in range(n):
+            for j in range(n):
+                grid[i][j] = (i + j + 1) % (n + 1)
     
-    return grid;
-}
+    return grid
 ```
 
 ### 3. Constraint Satisfaction
-```cpp
-// Use constraint satisfaction techniques
-// Implement arc consistency and forward checking
-class ConstraintSatisfaction {
-    // Implementation for advanced constraint handling
-};
+```python
+# Use constraint satisfaction techniques
+# Implement arc consistency and forward checking
+class ConstraintSatisfaction:
+    # Implementation for advanced constraint handling
+    pass
 ```
 
 ## Related Problems

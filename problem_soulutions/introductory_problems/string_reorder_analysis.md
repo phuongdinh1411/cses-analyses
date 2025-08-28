@@ -30,76 +30,64 @@ Given a string, find the lexicographically smallest string that can be obtained 
 ## Solution Approach
 
 ### Method 1: Sort and Count
-```cpp
-string stringReorder(string s) {
-    // Count character frequencies
-    vector<int> freq(26, 0);
-    for (char c : s) {
-        freq[c - 'A']++;
-    }
+```python
+def string_reorder(s):
+    # Count character frequencies
+    freq = [0] * 26
+    for c in s:
+        freq[ord(c) - ord('A')] += 1
     
-    // Construct lexicographically smallest string
-    string result = "";
-    for (int i = 0; i < 26; i++) {
-        result += string(freq[i], 'A' + i);
-    }
+    # Construct lexicographically smallest string
+    result = ""
+    for i in range(26):
+        result += chr(ord('A') + i) * freq[i]
     
-    return result;
-}
+    return result
 ```
 
 ### Method 2: Using Sort
-```cpp
-string stringReorderSort(string s) {
-    // Sort the string directly
-    sort(s.begin(), s.end());
-    return s;
-}
+```python
+def string_reorder_sort(s):
+    # Sort the string directly
+    return ''.join(sorted(s))
 ```
 
 ### Method 3: Bucket Sort
-```cpp
-string stringReorderBucket(string s) {
-    // Use bucket sort for better performance
-    vector<int> buckets(26, 0);
+```python
+def string_reorder_bucket(s):
+    # Use bucket sort for better performance
+    buckets = [0] * 26
     
-    // Count characters
-    for (char c : s) {
-        buckets[c - 'A']++;
-    }
+    # Count characters
+    for c in s:
+        buckets[ord(c) - ord('A')] += 1
     
-    // Construct result
-    string result;
-    for (int i = 0; i < 26; i++) {
-        for (int j = 0; j < buckets[i]; j++) {
-            result += ('A' + i);
-        }
-    }
+    # Construct result
+    result = ""
+    for i in range(26):
+        result += chr(ord('A') + i) * buckets[i]
     
-    return result;
-}
+    return result
 ```
 
 ### Method 4: Priority Queue
-```cpp
-string stringReorderPQ(string s) {
-    // Use priority queue (min heap)
-    priority_queue<char, vector<char>, greater<char>> pq;
+```python
+import heapq
+
+def string_reorder_pq(s):
+    # Use priority queue (min heap)
+    pq = []
     
-    // Add all characters to priority queue
-    for (char c : s) {
-        pq.push(c);
-    }
+    # Add all characters to priority queue
+    for c in s:
+        heapq.heappush(pq, c)
     
-    // Extract characters in sorted order
-    string result = "";
-    while (!pq.empty()) {
-        result += pq.top();
-        pq.pop();
-    }
+    # Extract characters in sorted order
+    result = ""
+    while pq:
+        result += heapq.heappop(pq)
     
-    return result;
-}
+    return result
 ```
 
 ## Time Complexity
@@ -154,66 +142,61 @@ string stringReorderPQ(string s) {
 ## Advanced Optimizations
 
 ### 1. In-place Reordering
-```cpp
-void stringReorderInplace(string& s) {
-    // Count frequencies
-    vector<int> freq(26, 0);
-    for (char c : s) {
-        freq[c - 'A']++;
-    }
+```python
+def string_reorder_inplace(s):
+    # Convert to list for in-place modification
+    s_list = list(s)
     
-    // Reorder in-place
-    int pos = 0;
-    for (int i = 0; i < 26; i++) {
-        for (int j = 0; j < freq[i]; j++) {
-            s[pos++] = 'A' + i;
-        }
-    }
-}
+    # Count frequencies
+    freq = [0] * 26
+    for c in s_list:
+        freq[ord(c) - ord('A')] += 1
+    
+    # Reorder in-place
+    pos = 0
+    for i in range(26):
+        for j in range(freq[i]):
+            s_list[pos] = chr(ord('A') + i)
+            pos += 1
+    
+    return ''.join(s_list)
 ```
 
 ### 2. Bit Manipulation
-```cpp
-string stringReorderBit(string s) {
-    // Use bit manipulation for small alphabets
-    int freq = 0;
+```python
+def string_reorder_bit(s):
+    # Use bit manipulation for small alphabets
+    freq = 0
     
-    // Count characters using bits
-    for (char c : s) {
-        freq += (1 << (c - 'A'));
-    }
+    # Count characters using bits
+    for c in s:
+        freq += (1 << (ord(c) - ord('A')))
     
-    // Extract characters in order
-    string result = "";
-    for (int i = 0; i < 26; i++) {
-        if (freq & (1 << i)) {
-            result += ('A' + i);
-        }
-    }
+    # Extract characters in order
+    result = ""
+    for i in range(26):
+        if freq & (1 << i):
+            result += chr(ord('A') + i)
     
-    return result;
-}
+    return result
 ```
 
 ### 3. Parallel Processing
-```cpp
-string stringReorderParallel(string s) {
-    // For very large strings, use parallel processing
-    // Divide string into chunks and process in parallel
-    // Merge results
+```python
+def string_reorder_parallel(s):
+    # For very large strings, use parallel processing
+    # Divide string into chunks and process in parallel
+    # Merge results
     
-    // Implementation for parallel processing...
-    return s;
-}
+    # Implementation for parallel processing...
+    return ''.join(sorted(s))
 ```
 
 ### 4. Memory Efficient
-```cpp
-string stringReorderMemoryEfficient(string s) {
-    // Use minimal extra memory
-    sort(s.begin(), s.end());
-    return s;
-}
+```python
+def string_reorder_memory_efficient(s):
+    # Use minimal extra memory
+    return ''.join(sorted(s))
 ```
 
 ## Related Problems
