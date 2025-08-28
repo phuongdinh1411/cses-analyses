@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Minimizing Coins
-permalink: /problem_soulutions/dynamic_programming/minimizing_coins_analysis/"
+title: "Minimizing Coins"permalink: /problem_soulutions/dynamic_programming/minimizing_coins_analysis
 ---
 
 
@@ -48,7 +47,7 @@ def minimizing_coins_brute_force(n, x, coins):
     def min_coins(target):
         if target == 0:
             return 0
-        if target < 0:"
+        if target < 0:
             return float('inf')
         
         min_count = float('inf')

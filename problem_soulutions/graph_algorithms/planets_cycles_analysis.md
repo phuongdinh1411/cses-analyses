@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Planets Cycles
-permalink: /problem_soulutions/graph_algorithms/planets_cycles_analysis/"
+title: "Planets Cycles"permalink: /problem_soulutions/graph_algorithms/planets_cycles_analysis
 ---
 
 
@@ -66,7 +65,7 @@ def planets_cycles_naive(n, teleporters):
 **Description**: Use Union-Find to group planets in the same cycle.
 
 ```python
-def planets_cycles_optimized(n, teleporters):"
+def planets_cycles_optimized(n, teleporters):
     # Find cycle entry points using Floyd's cycle finding
     def find_cycle_entry(start):
         # Floyd's cycle finding

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Removal Game
-permalink: /problem_soulutions/dynamic_programming/removal_game_analysis/"
+title: "Removal Game"permalink: /problem_soulutions/dynamic_programming/removal_game_analysis
 ---
 
 
@@ -40,7 +39,7 @@ Output:
 def removal_game_naive(n, arr):
     def optimal_play(left, right, turn):
         if left > right:
-            return 0"
+            return 0
         if turn == 0:  # First player's turn
             return max(arr[left] + optimal_play(left + 1, right, 1),
                       arr[right] + optimal_play(left, right - 1, 1))

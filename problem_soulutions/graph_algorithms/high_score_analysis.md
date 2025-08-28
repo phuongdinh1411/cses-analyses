@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "High Score
-permalink: /problem_soulutions/graph_algorithms/high_score_analysis/"
+title: "High Score"permalink: /problem_soulutions/graph_algorithms/high_score_analysis
 ---
 
 
@@ -44,7 +43,7 @@ Output:
 
 ```python
 def high_score_bellman_ford(n, m, flights):
-    def bellman_ford():"
+    def bellman_ford():
         distances = [float('-inf')] * (n + 1)
         distances[1] = 0
         

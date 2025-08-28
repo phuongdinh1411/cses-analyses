@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Distance Queries
-permalink: /problem_soulutions/tree_algorithms/distance_queries_analysis/"
+title: "Distance Queries"permalink: /problem_soulutions/tree_algorithms/distance_queries_analysis
 ---
 
 
@@ -554,4 +553,4 @@ def process_distance_queries(ancestor, depth, queries, log_n):
 
 ---
 
-*This analysis shows how to efficiently calculate distances in trees using LCA-based formulas.*"
+*This analysis shows how to efficiently calculate distances in trees using LCA-based formulas.*

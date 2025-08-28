@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Counting Sequences
-permalink: /problem_soulutions/counting_problems/counting_sequences_analysis/"
+title: "Counting Sequences"permalink: /problem_soulutions/counting_problems/counting_sequences_analysis
 ---
 
 
@@ -255,7 +254,7 @@ def weighted_sequences(n, target, weights, MOD=10**9+7):
     dp[0][0] = 1
     
     for i in range(1, n + 1):
-        for j in range(target + 1):"
+        for j in range(target + 1):
             # Don't include element i
             dp[i][j] = dp[i-1][j]
             

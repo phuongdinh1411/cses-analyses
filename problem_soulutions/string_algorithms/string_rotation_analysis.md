@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "String Rotation
-permalink: /problem_soulutions/string_algorithms/string_rotation_analysis/"
+title: "String Rotation"permalink: /problem_soulutions/string_algorithms/string_rotation_analysis
 ---
 
 
@@ -48,7 +47,7 @@ def string_rotation_naive(s):
     return min(rotations)
 ```
 
-**Why this is inefficient**: We need to generate all rotations and compare them, leading to O(|s|²) time complexity."
+**Why this is inefficient**: We need to generate all rotations and compare them, leading to O(|s|²) time complexity.
 ### Improvement 1: Booth's Algorithm - O(|s|)
 **Description**: Use Booth's algorithm to find the lexicographically smallest rotation efficiently.
 

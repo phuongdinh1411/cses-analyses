@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Company Queries I
-permalink: /problem_soulutions/tree_algorithms/company_queries_i_analysis/"
+title: "Company Queries I"permalink: /problem_soulutions/tree_algorithms/company_queries_i_analysis
 ---
 
 
@@ -449,4 +448,4 @@ def ancestor_query(ancestor, node, k):
 
 ---
 
-*This analysis shows how to efficiently find k-th ancestors in trees using binary lifting technique.*"
+*This analysis shows how to efficiently find k-th ancestors in trees using binary lifting technique.*

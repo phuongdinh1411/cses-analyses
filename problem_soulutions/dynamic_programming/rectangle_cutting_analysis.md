@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Rectangle Cutting
-permalink: /problem_soulutions/dynamic_programming/rectangle_cutting_analysis/"
+title: "Rectangle Cutting"permalink: /problem_soulutions/dynamic_programming/rectangle_cutting_analysis
 ---
 
 
@@ -43,7 +42,7 @@ def rectangle_cutting_naive(a, b):
             return height - 1
         
         if height == 1:
-            return width - 1"
+            return width - 1
         min_cuts = float('inf')
         
         # Try all possible horizontal cuts

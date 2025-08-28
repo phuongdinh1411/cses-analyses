@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Building Roads
-permalink: /problem_soulutions/graph_algorithms/building_roads_analysis/"
+title: "Building Roads"permalink: /problem_soulutions/graph_algorithms/building_roads_analysis
 ---
 
 
@@ -391,7 +390,7 @@ def cost_based_building_roads(n, m, roads, costs):
     min_cost_edges = []
     total_cost = 0
     
-    for i in range(len(components) - 1):"
+    for i in range(len(components) - 1):
         min_cost = float('inf')
         best_edge = None
         

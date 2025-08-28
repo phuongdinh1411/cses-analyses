@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Tree Diameter
-permalink: /problem_soulutions/tree_algorithms/tree_diameter_analysis/"
+title: "Tree Diameter"permalink: /problem_soulutions/tree_algorithms/tree_diameter_analysis
 ---
 
 
@@ -423,4 +422,4 @@ def bfs_diameter(tree, n):
 
 ---
 
-*This analysis shows how to efficiently find tree diameter using height tracking and longest path calculations.*"
+*This analysis shows how to efficiently find tree diameter using height tracking and longest path calculations.*

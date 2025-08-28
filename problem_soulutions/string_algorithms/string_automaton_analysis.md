@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "String Automaton
-permalink: /problem_soulutions/string_algorithms/string_automaton_analysis/"
+title: "String Automaton"permalink: /problem_soulutions/string_algorithms/string_automaton_analysis
 ---
 
 
@@ -75,7 +74,7 @@ def string_automaton_suffix_automaton(s, queries):
         def __init__(self):
             self.next = {}  # Transitions
             self.link = -1  # Suffix link
-            self.len = 0    # Length of longest string in this state"
+            self.len = 0    # Length of longest string in this state
             self.size = 1   # Size of this state's endpos set
     
     class SuffixAutomaton:

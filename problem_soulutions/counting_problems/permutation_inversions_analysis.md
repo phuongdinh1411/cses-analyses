@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Permutation Inversions
-permalink: /problem_soulutions/counting_problems/permutation_inversions_analysis/"
+title: "Permutation Inversions"permalink: /problem_soulutions/counting_problems/permutation_inversions_analysis
 ---
 
 
@@ -542,7 +541,7 @@ def range_query(inversions, start, end):
 #### **3. Interactive Problems**
 ```python
 # Interactive inversion analyzer
-def interactive_inversion_analyzer():"
+def interactive_inversion_analyzer():
     n = int(input("Enter array length: "))
     arr = list(map(int, input("Enter array: ").split()))
     

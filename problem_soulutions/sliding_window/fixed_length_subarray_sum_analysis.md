@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Fixed Length Subarray Sum
-permalink: /problem_soulutions/sliding_window/fixed_length_subarray_sum_analysis/"
+title: "Fixed Length Subarray Sum"permalink: /problem_soulutions/sliding_window/fixed_length_subarray_sum_analysis
 ---
 
 
@@ -37,7 +36,7 @@ Output:
 **Description**: Check all possible subarrays of length k and find the maximum sum.
 
 ```python
-def fixed_length_subarray_sum_naive(n, k, arr):"
+def fixed_length_subarray_sum_naive(n, k, arr):
     max_sum = float('-inf')
     
     for i in range(n - k + 1):

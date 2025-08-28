@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Strongly Connected Edges
-permalink: /problem_soulutions/advanced_graph_problems/strongly_connected_edges_analysis/"
+title: "Strongly Connected Edges"permalink: /problem_soulutions/advanced_graph_problems/strongly_connected_edges_analysis
 ---
 
 
@@ -35,7 +34,7 @@ Output:
 
 ## Solution Progression
 
-### Approach 1: Naive Strongly Connected Components - O(n + m)"
+### Approach 1: Naive Strongly Connected Components - O(n + m)
 **Description**: Use Kosaraju's algorithm to find strongly connected components and count needed edges.
 
 ```python

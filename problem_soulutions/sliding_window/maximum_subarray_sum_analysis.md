@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Maximum Subarray Sum
-permalink: /problem_soulutions/sliding_window/maximum_subarray_sum_analysis/"
+title: "Maximum Subarray Sum"permalink: /problem_soulutions/sliding_window/maximum_subarray_sum_analysis
 ---
 
 
@@ -37,7 +36,7 @@ Output:
 **Description**: Check all possible subarrays and find the maximum sum.
 
 ```python
-def max_subarray_sum_naive(n, arr):"
+def max_subarray_sum_naive(n, arr):
     max_sum = float('-inf')
     
     for i in range(n):

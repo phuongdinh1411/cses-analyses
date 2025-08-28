@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Counting Reorders
-permalink: /problem_soulutions/counting_problems/counting_reorders_analysis/"
+title: "Counting Reorders"permalink: /problem_soulutions/counting_problems/counting_reorders_analysis
 ---
 
 
@@ -39,7 +38,7 @@ def counting_reorders_naive(s):
     from itertools import permutations
     
     unique_perms = set()
-    for perm in permutations(s):"
+    for perm in permutations(s):
         unique_perms.add(''.join(perm))
     
     return len(unique_perms) % MOD

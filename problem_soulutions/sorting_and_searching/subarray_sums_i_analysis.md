@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Subarray Sums I
-permalink: /problem_soulutions/sorting_and_searching/subarray_sums_i_analysis/"
+title: "Subarray Sums I"permalink: /problem_soulutions/sorting_and_searching/subarray_sums_i_analysis
 ---
 
 
@@ -402,7 +401,7 @@ def sum_query(sum_matrix, l, r):
 #### **3. Interactive Problems**
 ```python
 # Interactive subarray sum finder
-def interactive_subarray_sums():"
+def interactive_subarray_sums():
     n = int(input("Enter array size: "))
     x = int(input("Enter target sum: "))
     arr = list(map(int, input("Enter array: ").split()))

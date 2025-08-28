@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Bit Strings
-permalink: /problem_soulutions/introductory_problems/bit_strings_analysis/"
+title: "Bit Strings"
+permalink: /problem_soulutions/introductory_problems/bit_strings_analysis
 ---
 
 
@@ -41,7 +41,7 @@ def bit_strings_brute_force(n):
         if length == 0:
             return [current]
         
-        strings = []"
+        strings = []
         strings.extend(generate_strings(length - 1, current + '0'))
         strings.extend(generate_strings(length - 1, current + '1'))
         return strings

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Even Outdegree Edges
-permalink: /problem_soulutions/advanced_graph_problems/even_outdegree_edges_analysis/"
+title: "Even Outdegree Edges"permalink: /problem_soulutions/advanced_graph_problems/even_outdegree_edges_analysis
 ---
 
 
@@ -138,7 +137,7 @@ print(result)
 **Principle**: For an Eulerian circuit, all nodes must have even degree.
 **Applicable to**: Eulerian circuit problems, degree problems, graph optimization problems
 
-### 2. **Degree Parity Analysis**"
+### 2. **Degree Parity Analysis**
 **Principle**: Each edge removal affects exactly 2 nodes' degrees.
 **Applicable to**: Degree problems, edge removal problems, graph optimization problems
 

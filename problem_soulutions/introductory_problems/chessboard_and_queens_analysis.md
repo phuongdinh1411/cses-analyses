@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Chessboard and Queens Analysis
-permalink: /problem_soulutions/introductory_problems/chessboard_and_queens_analysis/"
+title: "Chessboard and Queens Analysis"
+permalink: /problem_soulutions/introductory_problems/chessboard_and_queens_analysis
 ---
 
 
@@ -160,4 +160,4 @@ def backtrack(self, row, col_mask, diag1_mask, diag2_mask):
 3. **Bit manipulation** can significantly speed up operations
 4. **Symmetry** can be exploited to reduce search space
 5. **Early termination** is crucial for performance
-6. **State representation** affects both time and space complexity"
+6. **State representation** affects both time and space complexity

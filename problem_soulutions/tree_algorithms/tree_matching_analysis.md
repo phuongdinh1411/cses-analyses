@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Tree Matching
-permalink: /problem_soulutions/tree_algorithms/tree_matching_analysis/"
+title: "Tree Matching"permalink: /problem_soulutions/tree_algorithms/tree_matching_analysis
 ---
 
 
@@ -284,7 +283,7 @@ print((n - 1) - matching_edges)
 - Greedy algorithms
 - Algorithm design
 
-### 2. **Bottom-up Processing**"
+### 2. **Bottom-up Processing**
 **Principle**: Process tree nodes bottom-up when decisions depend on children's states.
 **Applicable to**:
 - Tree algorithms

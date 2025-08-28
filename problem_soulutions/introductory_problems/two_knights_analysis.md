@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Two Knights
-permalink: /problem_soulutions/introductory_problems/two_knights_analysis/"
+title: "Two Knights"
+permalink: /problem_soulutions/introductory_problems/two_knights_analysis
 ---
 
 
@@ -67,7 +67,7 @@ def two_knights_brute_force(n):
         results.append(count_ways(k))
     
     return results
-```"
+```
 **Why this is inefficient**: For each board size k, we're trying all possible pairs of positions, which leads to O(k⁴) complexity. For n board sizes, this becomes O(n⁵).
 
 ### Improvement 1: Mathematical Formula - O(n)

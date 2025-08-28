@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Pizzeria Queries
-permalink: /problem_soulutions/range_queries/pizzeria_queries_analysis/"
+title: "Pizzeria Queries"
+permalink: /problem_soulutions/range_queries/pizzeria_queries_analysis
 ---
 
 
@@ -14,7 +14,7 @@ Given n buildings in a line, each with a pizzeria, process q queries. Each query
 
 ### Input
 The first input line has two integers n and q: the number of buildings and the number of queries.
-The second line has n integers p_1,p_2,…,p_n: the initial prices of pizzerias."
+The second line has n integers p_1,p_2,…,p_n: the initial prices of pizzerias.
 Then there are q lines describing the queries. Each line has three integers: either "1 k x" (update) or "2 a b" (minimum query).
 
 ### Output

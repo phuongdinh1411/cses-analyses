@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Tournament Graph Distribution
-permalink: /problem_soulutions/counting_problems/tournament_graph_distribution_analysis/"
+title: "Tournament Graph Distribution"permalink: /problem_soulutions/counting_problems/tournament_graph_distribution_analysis
 ---
 
 
@@ -126,7 +125,7 @@ def tournament_graph_distribution_mathematical(n):
     if n == 1:
         return 1
     
-    # Formula: n! / 2^(n*(n-1)/2)"
+    # Formula: n! / 2^(n*(n-1)/2)
     # But for valid tournaments, it's just n!
     result = 1
     for i in range(1, n + 1):

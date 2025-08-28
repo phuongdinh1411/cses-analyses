@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Company Queries II
-permalink: /problem_soulutions/tree_algorithms/company_queries_ii_analysis/"
+title: "Company Queries II"permalink: /problem_soulutions/tree_algorithms/company_queries_ii_analysis
 ---
 
 
@@ -563,7 +562,7 @@ def rmq_lca(euler_tour, first_occurrence, depth, a, b):
     if left > right:
         left, right = right, left
     
-    # Find minimum depth in range [left, right]"
+    # Find minimum depth in range [left, right]
     min_depth = float('inf')
     lca_node = 0
     

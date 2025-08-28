@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Josephus Problem I
-permalink: /problem_soulutions/sorting_and_searching/josephus_problem_i_analysis/"
+title: "Josephus Problem I"permalink: /problem_soulutions/sorting_and_searching/josephus_problem_i_analysis
 ---
 
 
@@ -343,7 +342,7 @@ def josephus_query(results, n):
 ```python
 # Interactive Josephus problem solver
 def interactive_josephus():
-    while True:"
+    while True:
         n = int(input("Enter number of people (0 to exit): "))
         if n == 0:
             break

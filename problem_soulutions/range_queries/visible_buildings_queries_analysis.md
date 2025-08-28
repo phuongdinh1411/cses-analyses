@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Visible Buildings Queries
-permalink: /problem_soulutions/range_queries/visible_buildings_queries_analysis/"
+title: "Visible Buildings Queries"permalink: /problem_soulutions/range_queries/visible_buildings_queries_analysis
 ---
 
 
@@ -689,7 +688,7 @@ def visible_buildings_queries_line_of_sight(n, q, heights, operations):
 #### **2. Visibility Problems**
 - **Line of Sight**: Check if objects are visible
 - **Skyline Problem**: Find visible skyline
-- **Hidden Surface Removal**: 3D visibility"
+- **Hidden Surface Removal**: 3D visibility
 - **Ray Casting**: Determine what's visible
 
 #### **3. Geometric Algorithms**

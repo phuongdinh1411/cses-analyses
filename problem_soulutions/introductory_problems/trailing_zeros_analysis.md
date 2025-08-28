@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Trailing Zeros
-permalink: /problem_soulutions/introductory_problems/trailing_zeros_analysis/"
+title: "Trailing Zeros"
+permalink: /problem_soulutions/introductory_problems/trailing_zeros_analysis
 ---
 
 
@@ -49,7 +49,7 @@ def trailing_zeros_brute_force(n):
         factorial //= 10
     
     return count
-```"
+```
 **Why this is inefficient**: We're calculating the entire factorial, which becomes extremely large for large n. This leads to integer overflow and is completely impractical.
 
 ### Improvement 1: Mathematical Analysis - O(log n)

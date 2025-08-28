@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Prüfer Code
-permalink: /problem_soulutions/advanced_graph_problems/prufer_code_analysis/"
+title: "Prüfer Code"permalink: /problem_soulutions/advanced_graph_problems/prufer_code_analysis
 ---
 
 
@@ -339,7 +338,7 @@ def cost_based_prufer_code(n, edges, edge_costs, target_prufer):
     # Calculate total cost
     total_cost = 0
     for a, b in tree_edges:
-        # Find minimum cost edge between a and b"
+        # Find minimum cost edge between a and b
         min_cost = float('inf')
         for neighbor, cost in adj[a]:
             if neighbor == b:

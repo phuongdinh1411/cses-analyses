@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Mex Grid Construction II Analysis
-permalink: /problem_soulutions/introductory_problems/mex_grid_construction_ii_analysis/"
+title: "Mex Grid Construction II Analysis"
+permalink: /problem_soulutions/introductory_problems/mex_grid_construction_ii_analysis
 ---
 
 
@@ -300,4 +300,4 @@ class ConstraintPropagator:
 4. **Backtracking** is useful for complex constraint combinations
 5. **Latin squares** provide good base structures
 6. **Constraint propagation** can speed up search
-7. **Special cases** often have elegant solutions"
+7. **Special cases** often have elegant solutions

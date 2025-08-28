@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Graph Girth
-permalink: /problem_soulutions/advanced_graph_problems/graph_girth_analysis/"
+title: "Graph Girth"permalink: /problem_soulutions/advanced_graph_problems/graph_girth_analysis
 ---
 
 
@@ -48,7 +47,7 @@ def graph_girth_naive(n, m, edges):
     adj = [[] for _ in range(n + 1)]
     for a, b in edges:
         adj[a].append(b)
-        adj[b].append(a)"
+        adj[b].append(a)
     min_cycle = float('inf')
     
     # Try each node as starting point

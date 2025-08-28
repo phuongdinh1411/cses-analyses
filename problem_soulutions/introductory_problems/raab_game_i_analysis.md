@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Raab Game I Analysis
-permalink: /problem_soulutions/introductory_problems/raab_game_i_analysis/"
+title: "Raab Game I Analysis"
+permalink: /problem_soulutions/introductory_problems/raab_game_i_analysis
 ---
 
 
@@ -223,4 +223,4 @@ class CompressedRaabGame:
 4. **State compression** helps with memoization
 5. **Winning strategy** involves leaving opponent with nim sum = 0
 6. **Pattern recognition** is crucial for game theory
-7. **Edge cases** like empty piles need special handling"
+7. **Edge cases** like empty piles need special handling

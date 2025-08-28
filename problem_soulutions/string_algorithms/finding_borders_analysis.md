@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Finding Borders
-permalink: /problem_soulutions/string_algorithms/finding_borders_analysis/"
+title: "Finding Borders"permalink: /problem_soulutions/string_algorithms/finding_borders_analysis
 ---
 
 
@@ -31,7 +30,7 @@ abab
 
 ## Solution Progression
 
-### Approach 1: Naive Border Finding - O(|s|²)"
+### Approach 1: Naive Border Finding - O(|s|²)
 **Description**: Check each possible prefix to see if it's also a suffix.
 
 ```python

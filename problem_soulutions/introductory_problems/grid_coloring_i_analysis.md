@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Grid Coloring I Analysis
-permalink: /problem_soulutions/introductory_problems/grid_coloring_i_analysis/"
+title: "Grid Coloring I Analysis"
+permalink: /problem_soulutions/introductory_problems/grid_coloring_i_analysis
 ---
 
 
@@ -228,4 +228,4 @@ def count_colorings_matrix_tree(n, k):
 4. **Symmetry breaking** can significantly reduce search space
 5. **Inclusion-exclusion** provides alternative counting approach
 6. **Matrix operations** help with special cases
-7. **Constraint validation** must be carefully implemented"
+7. **Constraint validation** must be carefully implemented

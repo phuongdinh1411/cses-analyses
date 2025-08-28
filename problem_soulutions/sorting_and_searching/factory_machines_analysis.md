@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Factory Machines
-permalink: /problem_soulutions/sorting_and_searching/factory_machines_analysis/"
+title: "Factory Machines"permalink: /problem_soulutions/sorting_and_searching/factory_machines_analysis
 ---
 
 
@@ -471,7 +470,7 @@ def time_query(min_times, k):
 #### **3. Interactive Problems**
 ```python
 # Interactive factory machine optimizer
-def interactive_factory_machines():"
+def interactive_factory_machines():
     n = int(input("Enter number of machines: "))
     k = int(input("Enter target products: "))
     times = list(map(int, input("Enter production times: ").split()))

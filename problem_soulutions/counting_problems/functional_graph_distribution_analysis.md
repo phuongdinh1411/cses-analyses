@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Functional Graph Distribution
-permalink: /problem_soulutions/counting_problems/functional_graph_distribution_analysis/"
+title: "Functional Graph Distribution"permalink: /problem_soulutions/counting_problems/functional_graph_distribution_analysis
 ---
 
 
@@ -372,7 +371,7 @@ for _ in range(t):
     
     result = functional_graph_distribution(n, edges)
     print(len(result))
-    for component_id, size in result.items():"
+    for component_id, size in result.items():
         print(f"Component {component_id}: {size}")
 ```
 

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Missing Coin Sum
-permalink: /problem_soulutions/sorting_and_searching/missing_coin_sum_analysis/"
+title: "Missing Coin Sum"permalink: /problem_soulutions/sorting_and_searching/missing_coin_sum_analysis
 ---
 
 
@@ -313,7 +312,7 @@ def missing_coin_sum_modulo(n, coins, m):
 #### **1. Greedy Algorithm Problems**
 - **Fractional Knapsack**: Fill knapsack optimally
 - **Activity Selection**: Select maximum activities
-- **Huffman Coding**: Build optimal prefix codes"
+- **Huffman Coding**: Build optimal prefix codes
 - **Dijkstra's Algorithm**: Find shortest paths
 
 #### **2. Dynamic Programming Problems**

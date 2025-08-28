@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Nested Ranges Count
-permalink: /problem_soulutions/sorting_and_searching/nested_ranges_count_analysis/"
+title: "Nested Ranges Count"permalink: /problem_soulutions/sorting_and_searching/nested_ranges_count_analysis
 ---
 
 
@@ -434,7 +433,7 @@ def containment_query(matrix, i, j):
 #### **3. Interactive Problems**
 ```python
 # Interactive range containment game
-def interactive_range_game():"
+def interactive_range_game():
     n = int(input("Enter number of ranges: "))
     ranges = []
     

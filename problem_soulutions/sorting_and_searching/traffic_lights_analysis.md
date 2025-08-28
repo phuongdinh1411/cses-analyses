@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Traffic Lights
-permalink: /problem_soulutions/sorting_and_searching/traffic_lights_analysis/"
+title: "Traffic Lights"permalink: /problem_soulutions/sorting_and_searching/traffic_lights_analysis
 ---
 
 
@@ -225,7 +224,7 @@ def toggle_state(positions, pos):
 #### **Variation 1: Traffic Lights with Multiple Colors**
 **Problem**: Traffic lights can be red, yellow, or green. Find longest green segment.
 ```python
-def traffic_lights_multiple_colors(n, q, events):"
+def traffic_lights_multiple_colors(n, q, events):
     # events[i] = (position, color) where color is 'R', 'Y', or 'G'
     light_states = {}  # position -> color
     results = []

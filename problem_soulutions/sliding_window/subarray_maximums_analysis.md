@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Subarray Maximums
-permalink: /problem_soulutions/sliding_window/subarray_maximums_analysis/"
+title: "Subarray Maximums"permalink: /problem_soulutions/sliding_window/subarray_maximums_analysis
 ---
 
 
@@ -325,4 +324,4 @@ def calculate_element_contribution(arr, left, right):
 
 ---
 
-*This analysis shows how to efficiently find the sum of maximums of all subarrays using monotonic stack technique.*"
+*This analysis shows how to efficiently find the sum of maximums of all subarrays using monotonic stack technique.*

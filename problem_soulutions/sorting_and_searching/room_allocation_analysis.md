@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Room Allocation
-permalink: /problem_soulutions/sorting_and_searching/room_allocation_analysis/"
+title: "Room Allocation"permalink: /problem_soulutions/sorting_and_searching/room_allocation_analysis
 ---
 
 
@@ -256,7 +255,7 @@ def room_allocation_with_types(n, customers, room_types):
             available_rooms[room_type].append(room_id)
         
         # Find cheapest available room
-        best_room_type = None"
+        best_room_type = None
         best_cost = float('inf')
         
         for room_type, (capacity, cost) in enumerate(room_types):

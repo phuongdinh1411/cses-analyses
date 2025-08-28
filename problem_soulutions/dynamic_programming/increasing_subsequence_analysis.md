@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Increasing Subsequence
-permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analysis/"
+title: "Increasing Subsequence"permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analysis
 ---
 
 
@@ -43,7 +42,7 @@ def increasing_subsequence_naive(n, arr):
             return 0
         
         # Skip current element
-        skip = lis_recursive(index + 1, prev)"
+        skip = lis_recursive(index + 1, prev)
         # Include current element if it's greater than previous
         include = 0
         if arr[index] > prev:

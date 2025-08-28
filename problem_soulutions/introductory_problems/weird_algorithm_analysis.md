@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Weird Algorithm
-permalink: /problem_soulutions/introductory_problems/weird_algorithm_analysis/"
+title: "Weird Algorithm"
+permalink: /problem_soulutions/introductory_problems/weird_algorithm_analysis
 ---
 
 
@@ -66,7 +66,7 @@ def weird_algorithm_recursive(n):
         return [n] + weird_algorithm_recursive(n // 2)
     else:
         return [n] + weird_algorithm_recursive(3 * n + 1)
-```"
+```
 **Why this works**: The recursive approach follows the same logic but uses the call stack instead of a loop. It's elegant but may cause stack overflow for very large sequences.
 
 ### Alternative: Iterative with Vector - O(log n)

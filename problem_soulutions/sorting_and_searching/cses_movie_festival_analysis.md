@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Movie Festival - Interview Analysis
-permalink: /problem_soulutions/sorting_and_searching/cses_movie_festival_analysis/"
+title: "Movie Festival - Interview Analysis"permalink: /problem_soulutions/sorting_and_searching/cses_movie_festival_analysis
 ---
 
 
@@ -38,7 +37,7 @@ Output:
 
 ## Interview Approach
 
-### Step 1: Understanding the Problem"
+### Step 1: Understanding the Problem
 **Interviewer**: "Can you explain what this problem is asking for?"
 **Candidate**: "I need to select the maximum number of movies I can watch completely without any overlap. Each movie has a start and end time, and I can't watch two movies that overlap in time."
 

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Coin Collector
-permalink: /problem_soulutions/graph_algorithms/coin_collector_analysis/"
+title: "Coin Collector"permalink: /problem_soulutions/graph_algorithms/coin_collector_analysis
 ---
 
 
@@ -51,7 +50,7 @@ def coin_collector_naive(n, m, coins, edges):
     
     for a, b in edges:
         adj[a].append(b)
-        in_degree[b] += 1"
+        in_degree[b] += 1
     # Topological sort using Kahn's algorithm
     queue = []
     for i in range(1, n + 1):

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Sum of Two Values
-permalink: /problem_soulutions/sorting_and_searching/cses_sum_of_two_values_analysis/"
+title: "Sum of Two Values"permalink: /problem_soulutions/sorting_and_searching/cses_sum_of_two_values_analysis
 ---
 
 
@@ -15,7 +14,7 @@ The first input line has two integers n and x: the array size and the target sum
 
 The second line has n integers a1,a2,…,an: the array values.
 
-### Output"
+### Output
 Print two integers: the positions of the values. If there are several solutions, you may print any of them. If there are no solutions, print "IMPOSSIBLE".
 
 ### Constraints

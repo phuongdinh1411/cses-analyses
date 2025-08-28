@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Repeating Substring
-permalink: /problem_soulutions/string_algorithms/repeating_substring_analysis/"
+title: "Repeating Substring"permalink: /problem_soulutions/string_algorithms/repeating_substring_analysis
 ---
 
 
@@ -36,7 +35,7 @@ abab
 ```python
 def repeating_substring_naive(s):
     n = len(s)
-    max_length = 0"
+    max_length = 0
     result = ""
     
     for i in range(n):

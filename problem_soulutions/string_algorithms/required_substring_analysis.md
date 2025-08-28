@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Required Substring
-permalink: /problem_soulutions/string_algorithms/required_substring_analysis/"
+title: "Required Substring"permalink: /problem_soulutions/string_algorithms/required_substring_analysis
 ---
 
 
@@ -54,7 +53,7 @@ def required_substring_naive(s, t):
             min_chars = min(min_chars, i)
     
     return min_chars
-```"
+```
 **Why this is inefficient**: Quadratic time complexity and doesn't consider all possible positions.
 
 ### Improvement 1: Use KMP Algorithm - O(|s| + |t|)

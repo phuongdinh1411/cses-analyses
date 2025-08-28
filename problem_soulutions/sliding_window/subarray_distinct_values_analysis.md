@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Subarray Distinct Values
-permalink: /problem_soulutions/sliding_window/subarray_distinct_values_analysis/"
+title: "Subarray Distinct Values"permalink: /problem_soulutions/sliding_window/subarray_distinct_values_analysis
 ---
 
 
@@ -310,4 +309,4 @@ def maintain_window_constraint(arr, constraint_func):
 
 ---
 
-*This analysis shows how to efficiently count subarrays with at most k distinct values using sliding window technique.*"
+*This analysis shows how to efficiently count subarrays with at most k distinct values using sliding window technique.*

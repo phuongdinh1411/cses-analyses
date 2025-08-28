@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Static Range Minimum Queries
-permalink: /problem_soulutions/range_queries/static_range_minimum_queries_analysis/"
+title: "Static Range Minimum Queries"permalink: /problem_soulutions/range_queries/static_range_minimum_queries_analysis
 ---
 
 
@@ -51,7 +50,7 @@ def static_range_min_naive(n, q, arr, queries):
     
     for a, b in queries:
         # Convert to 0-indexed
-        start, end = a - 1, b - 1"
+        start, end = a - 1, b - 1
         min_val = float('inf')
         
         for i in range(start, end + 1):

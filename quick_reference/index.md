@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Quick Reference
-permalink: /quick_reference/"
+title: "Quick Reference"permalink: /quick_reference
 ---
 
 
@@ -85,4 +84,4 @@ Welcome to the Quick Reference section! This is your go-to resource for fast acc
 
 **Happy Problem Solving! 🚀**
 
-*This quick reference section provides fast access to essential competitive programming knowledge.*"
+*This quick reference section provides fast access to essential competitive programming knowledge.*

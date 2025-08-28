@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Subordinates
-permalink: /problem_soulutions/tree_algorithms/subordinates_analysis/"
+title: "Subordinates"permalink: /problem_soulutions/tree_algorithms/subordinates_analysis
 ---
 
 
@@ -319,4 +318,4 @@ def count_subtree_sizes(tree, n):
 
 ---
 
-*This analysis shows how to efficiently calculate subtree sizes using tree traversal algorithms.*"
+*This analysis shows how to efficiently calculate subtree sizes using tree traversal algorithms.*

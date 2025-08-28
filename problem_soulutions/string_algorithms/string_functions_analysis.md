@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "String Functions
-permalink: /problem_soulutions/string_algorithms/string_functions_analysis/"
+title: "String Functions"permalink: /problem_soulutions/string_algorithms/string_functions_analysis
 ---
 
 
@@ -223,7 +222,7 @@ def string_function_query(s, k):
 **Problem**: Answer multiple queries about different string functions efficiently.
 ```python
 def string_functions_multiple_queries(s, queries):
-    # queries = [(k, function_type), ...]"
+    # queries = [(k, function_type), ...]
     # function_type: 'border', 'period', 'prefix', 'suffix'
     
     n = len(s)

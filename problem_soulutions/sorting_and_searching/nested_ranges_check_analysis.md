@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Nested Ranges Check
-permalink: /problem_soulutions/sorting_and_searching/nested_ranges_check_analysis/"
+title: "Nested Ranges Check"permalink: /problem_soulutions/sorting_and_searching/nested_ranges_check_analysis
 ---
 
 
@@ -405,7 +404,7 @@ def containment_query(matrix, i, j):
 #### **3. Interactive Problems**
 ```python
 # Interactive range checking game
-def interactive_range_checker():"
+def interactive_range_checker():
     n = int(input("Enter number of ranges: "))
     ranges = []
     

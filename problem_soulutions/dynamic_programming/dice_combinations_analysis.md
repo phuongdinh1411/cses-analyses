@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Dice Combinations
-permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis/"
+title: "Dice Combinations"permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis
 ---
 
 
@@ -56,7 +55,7 @@ def dice_combinations_brute_force(n):
         return ways % MOD
     
     return count_ways(n)
-```"
+```
 **Why this is inefficient**: We're trying all possible combinations of dice throws, which leads to exponential complexity. For each position, we have 6 choices, leading to O(6^n) complexity.
 
 ### Improvement 1: Recursive with Memoization - O(n)

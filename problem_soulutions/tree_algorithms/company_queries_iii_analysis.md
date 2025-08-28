@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Company Queries III
-permalink: /problem_soulutions/tree_algorithms/company_queries_iii_analysis/"
+title: "Company Queries III"permalink: /problem_soulutions/tree_algorithms/company_queries_iii_analysis
 ---
 
 
@@ -179,7 +178,7 @@ def company_queries_bfs(n, q, superiors, queries):
         
         while queue:
             node = queue.popleft()
-            subtree_sizes[node] = 1  # Count the node itself"
+            subtree_sizes[node] = 1  # Count the node itself
             # Add children's subtree sizes
             for child in tree[node]:
                 subtree_sizes[node] += subtree_sizes[child]

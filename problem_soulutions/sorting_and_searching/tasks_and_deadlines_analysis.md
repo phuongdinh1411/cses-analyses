@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Tasks and Deadlines
-permalink: /problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysis/"
+title: "Tasks and Deadlines"permalink: /problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysis
 ---
 
 
@@ -370,7 +369,7 @@ def tasks_with_parallel_execution(n, tasks, parallel_groups):
 #### **3. Greedy Algorithm Problems**
 - **Activity Selection**: Select maximum activities
 - **Fractional Knapsack**: Fill knapsack optimally
-- **Huffman Coding**: Build optimal prefix codes"
+- **Huffman Coding**: Build optimal prefix codes
 - **Dijkstra's Algorithm**: Find shortest paths
 
 #### **4. Graph Theory Problems**

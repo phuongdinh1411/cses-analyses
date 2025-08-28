@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Distinct Values Subarrays II
-permalink: /problem_soulutions/sorting_and_searching/distinct_values_subarrays_ii_analysis/"
+title: "Distinct Values Subarrays II"permalink: /problem_soulutions/sorting_and_searching/distinct_values_subarrays_ii_analysis
 ---
 
 
@@ -131,7 +130,7 @@ print(result)
 **Principle**: Use sliding window with inclusion-exclusion principle for exact counting.
 **Applicable to**: Subarray problems, counting problems, window problems
 
-### 2. **Inclusion-Exclusion Principle**"
+### 2. **Inclusion-Exclusion Principle**
 **Principle**: Count "at most k" and subtract "at most k-1" to get "exactly k".
 **Applicable to**: Counting problems, range problems, exact value problems
 

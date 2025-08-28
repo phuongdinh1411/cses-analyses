@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Strongly Connected Components
-permalink: /problem_soulutions/graph_algorithms/strongly_connected_components_analysis/"
+title: "Strongly Connected Components"permalink: /problem_soulutions/graph_algorithms/strongly_connected_components_analysis
 ---
 
 
@@ -39,7 +38,7 @@ Output:
 5
 ```
 
-## Solution Progression"
+## Solution Progression
 ### Approach 1: Kosaraju's Algorithm - O(n + m)
 **Description**: Use Kosaraju's algorithm to find strongly connected components.
 

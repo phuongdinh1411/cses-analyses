@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Maximum Subarray Sum
-permalink: /problem_soulutions/sorting_and_searching/cses_maximum_subarray_sum_analysis/"
+title: "Maximum Subarray Sum"permalink: /problem_soulutions/sorting_and_searching/cses_maximum_subarray_sum_analysis
 ---
 
 
@@ -38,7 +37,7 @@ Output:
 
 ```python
 def max_subarray_brute_force(arr):
-    n = len(arr)"
+    n = len(arr)
     max_sum = float('-inf')
     
     for start in range(n):

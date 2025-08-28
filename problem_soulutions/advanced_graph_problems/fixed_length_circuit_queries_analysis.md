@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Fixed Length Circuit Queries
-permalink: /problem_soulutions/advanced_graph_problems/fixed_length_circuit_queries_analysis/"
+title: "Fixed Length Circuit Queries"permalink: /problem_soulutions/advanced_graph_problems/fixed_length_circuit_queries_analysis
 ---
 
 
@@ -376,7 +375,7 @@ def process_circuit_queries(n, q, adjacency_matrix, queries, MOD):
 def cost_based_fixed_length_circuit_queries(n, q, adjacency_matrix, edge_costs, queries):
     MOD = 10**9 + 7
     
-    def weighted_matrix_multiply(a, b):"
+    def weighted_matrix_multiply(a, b):
         result = [[float('inf')] * n for _ in range(n)]
         for i in range(n):
             for j in range(n):

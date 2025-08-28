@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Two Sets
-permalink: /problem_soulutions/introductory_problems/two_sets_analysis/"
+title: "Two Sets"
+permalink: /problem_soulutions/introductory_problems/two_sets_analysis
 ---
 
 
@@ -13,7 +13,7 @@ Your task is to divide the numbers 1,2,…,n into two sets of equal sum.
 ### Input
 The only input line contains an integer n.
 
-### Output"
+### Output
 Print "YES", if the division is possible, and "NO" otherwise.
 
 In the first case, also print an example of how to create the sets. First, print the number of elements in the first set and then the elements themselves in a separate line, and then, print the second set in a similar way.

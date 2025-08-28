@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Point Location Test - Geometry Analysis
-permalink: /problem_soulutions/geometry/point_location_test_analysis/"
+title: "Point Location Test - Geometry Analysis"permalink: /problem_soulutions/geometry/point_location_test_analysis
 ---
 
 
@@ -35,7 +34,7 @@ Given a point and a line segment, determine whether the point is on the line seg
 ## Complete Implementation
 
 ```python
-def cross_product(a, b, c):"
+def cross_product(a, b, c):
     """Calculate cross product of vectors AB and AC"""
     return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
 

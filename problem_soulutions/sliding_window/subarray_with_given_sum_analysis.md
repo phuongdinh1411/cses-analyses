@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Subarray with Given Sum
-permalink: /problem_soulutions/sliding_window/subarray_with_given_sum_analysis/"
+title: "Subarray with Given Sum"permalink: /problem_soulutions/sliding_window/subarray_with_given_sum_analysis
 ---
 
 
@@ -14,7 +13,7 @@ Given an array of n integers and a target sum x, your task is to find if there e
 The first input line has two integers n and x: the size of the array and the target sum.
 The second line has n integers a1,a2,…,an: the contents of the array.
 
-### Output"
+### Output
 Print "YES" if there exists a subarray with sum x, otherwise print "NO".
 
 ### Constraints

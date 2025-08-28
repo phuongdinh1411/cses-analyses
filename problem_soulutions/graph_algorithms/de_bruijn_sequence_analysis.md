@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "De Bruijn Sequence
-permalink: /problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis/"
+title: "De Bruijn Sequence"permalink: /problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis
 ---
 
 
@@ -28,7 +27,7 @@ Output:
 0011
 ```
 
-## Solution Progression"
+## Solution Progression
 ### Approach 1: Hierholzer's Algorithm on De Bruijn Graph - O(2^n)
 **Description**: Use Hierholzer's algorithm on the De Bruijn graph.
 

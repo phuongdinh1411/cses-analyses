@@ -1,13 +1,12 @@
 ---
 layout: simple
-title: "All Letter Subgrid Count II
-permalink: /problem_soulutions/counting_problems/all_letter_subgrid_count_ii_analysis/"
+title: "All Letter Subgrid Count II"permalink: /problem_soulutions/counting_problems/all_letter_subgrid_count_ii_analysis
 ---
 
 
 # All Letter Subgrid Count II
 
-## Problem Statement"
+## Problem Statement
 Given a 2D grid of size n×m containing letters, count the number of subgrids of any size that contain all letters from 'A' to 'Z' (case insensitive).
 
 ### Input

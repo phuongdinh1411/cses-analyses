@@ -1,13 +1,12 @@
 ---
 layout: simple
-title: "Cycle Finding
-permalink: /problem_soulutions/graph_algorithms/cycle_finding_analysis/"
+title: "Cycle Finding"permalink: /problem_soulutions/graph_algorithms/cycle_finding_analysis
 ---
 
 
 # Cycle Finding
 
-## Problem Statement"
+## Problem Statement
 Given a directed graph with n nodes and m edges, find a negative cycle if it exists. If there is no negative cycle, print "NO". Otherwise, print "YES" and the nodes in the cycle.
 
 ### Input

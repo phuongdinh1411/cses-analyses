@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Polygon Lattice Points - Geometry Analysis
-permalink: /problem_soulutions/geometry/polygon_lattice_points_analysis/"
+title: "Polygon Lattice Points - Geometry Analysis"permalink: /problem_soulutions/geometry/polygon_lattice_points_analysis
 ---
 
 
@@ -12,7 +11,7 @@ Count the number of lattice points (integer coordinates) inside a polygon.
 
 ## Solution Progression
 
-### 1. **Brute Force Approach**"
+### 1. **Brute Force Approach**
 **Description**: Check each lattice point to see if it's inside the polygon.
 
 **Why this is inefficient**: 

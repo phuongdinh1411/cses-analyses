@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Subarray with K Distinct
-permalink: /problem_soulutions/sliding_window/subarray_with_k_distinct_analysis/"
+title: "Subarray with K Distinct"permalink: /problem_soulutions/sliding_window/subarray_with_k_distinct_analysis
 ---
 
 
@@ -145,7 +144,7 @@ print(result)
 **Principle**: Use inclusion-exclusion principle to find exactly k distinct values.
 **Applicable to**: Exactly k distinct problems, subarray problems, inclusion-exclusion principle
 
-### 2. **Inclusion-Exclusion Principle**"
+### 2. **Inclusion-Exclusion Principle**
 **Principle**: Count "at most k" minus "at most k-1" to get "exactly k".
 **Applicable to**: Counting problems, inclusion-exclusion principle, algorithm design
 

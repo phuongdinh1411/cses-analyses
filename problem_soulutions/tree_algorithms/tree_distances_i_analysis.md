@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Tree Distances I
-permalink: /problem_soulutions/tree_algorithms/tree_distances_i_analysis/"
+title: "Tree Distances I"permalink: /problem_soulutions/tree_algorithms/tree_distances_i_analysis
 ---
 
 
@@ -488,4 +487,4 @@ def height_based_distances(tree, n):
 
 ---
 
-*This analysis shows how to efficiently find maximum distances in trees using diameter properties.*"
+*This analysis shows how to efficiently find maximum distances in trees using diameter properties.*

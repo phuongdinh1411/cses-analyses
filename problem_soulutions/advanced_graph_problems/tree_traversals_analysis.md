@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Tree Traversals
-permalink: /problem_soulutions/advanced_graph_problems/tree_traversals_analysis/"
+title: "Tree Traversals"permalink: /problem_soulutions/advanced_graph_problems/tree_traversals_analysis
 ---
 
 
@@ -517,7 +516,7 @@ def probabilistic_tree_traversals(n, edges, node_probabilities, num_samples=1000
 **Variation**: Optimize for multiple objectives (visit count, cost, probability).
 **Approach**: Use multi-objective optimization or weighted sum approach.
 ```python
-def multi_criteria_tree_traversals(n, edges, criteria_weights):"
+def multi_criteria_tree_traversals(n, edges, criteria_weights):
     # criteria_weights = {'visit_count': 0.4, 'cost': 0.3, 'probability': 0.3}
     
     def calculate_traversal_score(traversal_attributes):

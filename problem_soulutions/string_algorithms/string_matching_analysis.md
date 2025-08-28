@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "String Matching
-permalink: /problem_soulutions/string_algorithms/string_matching_analysis/"
+title: "String Matching"permalink: /problem_soulutions/string_algorithms/string_matching_analysis
 ---
 
 
@@ -178,7 +177,7 @@ def string_matching_z_algorithm(s, p):
     n, m = len(s), len(p)
     
     if m == 0:
-        return []"
+        return []
     # Concatenate pattern + '$' + string
     combined = p + '$' + s
     z = compute_z_array(combined)

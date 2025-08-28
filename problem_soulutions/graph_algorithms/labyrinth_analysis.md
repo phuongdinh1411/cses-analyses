@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Labyrinth
-permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis/"
+title: "Labyrinth"permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis
 ---
 
 
@@ -13,7 +12,7 @@ You are given a map of a labyrinth, and your task is to count the number of wall
 The labyrinth consists of n×m squares, and each square is either wall or floor. You can walk left, right, up, and down through the floor squares.
 
 ### Input
-The first input line has two integers n and m: the height and width of the labyrinth."
+The first input line has two integers n and m: the height and width of the labyrinth.
 Then there are n lines that describe the labyrinth. Each line has m characters: "." denotes a floor and "#" denotes a wall.
 
 ### Output

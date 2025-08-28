@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Counting Towers
-permalink: /problem_soulutions/dynamic_programming/counting_towers_analysis/"
+title: "Counting Towers"permalink: /problem_soulutions/dynamic_programming/counting_towers_analysis
 ---
 
 
@@ -65,7 +64,7 @@ def counting_towers_brute_force(n):
         return ways % MOD
     
     return count_towers(n, 0)
-```"
+```
 **Why this is inefficient**: We're trying all possible configurations, which leads to exponential complexity. For each level, we have multiple choices, leading to O(2^n) complexity.
 
 ### Improvement 1: Recursive with Memoization - O(n)

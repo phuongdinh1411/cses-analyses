@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Sum of Four Values
-permalink: /problem_soulutions/sorting_and_searching/sum_of_four_values_analysis/"
+title: "Sum of Four Values"permalink: /problem_soulutions/sorting_and_searching/sum_of_four_values_analysis
 ---
 
 
@@ -14,7 +13,7 @@ Given an array of n integers and a target sum x, find four distinct indices such
 The first input line has two integers n and x: the size of the array and the target sum.
 The second line has n integers a1,a2,…,an: the array.
 
-### Output"
+### Output
 Print four distinct indices (1-indexed) such that the sum equals x, or "IMPOSSIBLE" if no solution exists.
 
 ### Constraints

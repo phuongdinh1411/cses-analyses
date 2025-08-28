@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Course Schedule II
-permalink: /problem_soulutions/advanced_graph_problems/course_schedule_ii_analysis/"
+title: "Course Schedule II"permalink: /problem_soulutions/advanced_graph_problems/course_schedule_ii_analysis
 ---
 
 
@@ -14,7 +13,7 @@ Given n courses and m prerequisites, find a valid order to take all courses. Eac
 The first input line has two integers n and m: the number of courses and prerequisites.
 Then there are m lines describing the prerequisites. Each line has two integers a and b: course a must be taken before course b.
 
-### Output"
+### Output
 Print a valid order to take all courses, or "IMPOSSIBLE" if no valid order exists.
 
 ### Constraints

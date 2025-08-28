@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Edit Distance
-permalink: /problem_soulutions/dynamic_programming/edit_distance_analysis/"
+title: "Edit Distance"permalink: /problem_soulutions/dynamic_programming/edit_distance_analysis
 ---
 
 
@@ -13,7 +12,7 @@ The edit distance between two strings is the minimum number of operations requir
 The allowed operations are:
 - Insert a character
 - Delete a character
-- Replace a character"
+- Replace a character
 For example, the edit distance between "LOVE" and "MOVIE" is 2.
 
 ### Input

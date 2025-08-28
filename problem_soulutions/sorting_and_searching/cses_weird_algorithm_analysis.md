@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Weird Algorithm
-permalink: /problem_soulutions/sorting_and_searching/cses_weird_algorithm_analysis/"
+title: "Weird Algorithm"permalink: /problem_soulutions/sorting_and_searching/cses_weird_algorithm_analysis
 ---
 
 
@@ -111,7 +110,7 @@ For n = 6:
 
 ### Python Solution (Optimal):
 ```python
-n = int(input())"
+n = int(input())
 print(n, end='')
 
 while n != 1:

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Pattern Positions
-permalink: /problem_soulutions/string_algorithms/pattern_positions_analysis/"
+title: "Pattern Positions"permalink: /problem_soulutions/string_algorithms/pattern_positions_analysis
 ---
 
 
@@ -171,7 +170,7 @@ def pattern_positions_z(s, p):
                     r -= 1
         return z
     
-    # Concatenate pattern + separator + string"
+    # Concatenate pattern + separator + string
     text = p + '$' + s
     z = compute_z_array(text)
     

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Grid Completion
-permalink: /problem_soulutions/counting_problems/grid_completion_analysis/"
+title: "Grid Completion"permalink: /problem_soulutions/counting_problems/grid_completion_analysis
 ---
 
 
@@ -545,7 +544,7 @@ def range_query(completions, start_i, start_j, end_i, end_j):
 #### **3. Interactive Problems**
 ```python
 # Interactive grid completion analyzer
-def interactive_grid_completion_analyzer():"
+def interactive_grid_completion_analyzer():
     n = int(input("Enter grid height: "))
     m = int(input("Enter grid width: "))
     grid = []

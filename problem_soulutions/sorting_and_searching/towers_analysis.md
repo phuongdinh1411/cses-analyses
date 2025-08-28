@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Towers
-permalink: /problem_soulutions/sorting_and_searching/towers_analysis/"
+title: "Towers"permalink: /problem_soulutions/sorting_and_searching/towers_analysis
 ---
 
 
@@ -197,7 +196,7 @@ def manage_towers(cubes):
 
 ### 🔄 **Variations of the Original Problem**
 
-#### **Variation 1: Weighted Towers**"
+#### **Variation 1: Weighted Towers**
 **Problem**: Each cube has a weight. Find the minimum number of towers such that the total weight of each tower doesn't exceed a given limit.
 ```python
 def weighted_towers(n, cubes, weights, max_weight):

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Intersection Points"
-permalink: /problem_soulutions/geometry/intersection_points_analysis/
+permalink: /problem_soulutions/geometry/intersection_points_analysis
 ---
 
 
@@ -39,7 +39,7 @@ Find all intersection points between a set of line segments.
 import heapq
 from sortedcontainers import SortedList
 
-def cross_product(a, b, c):"
+def cross_product(a, b, c):
     """Calculate cross product of vectors AB and AC"""
     return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
 

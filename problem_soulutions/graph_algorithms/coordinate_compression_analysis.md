@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Coordinate Compression
-permalink: /problem_soulutions/graph_algorithms/coordinate_compression_analysis/"
+title: "Coordinate Compression"permalink: /problem_soulutions/graph_algorithms/coordinate_compression_analysis
 ---
 
 
@@ -457,7 +456,7 @@ class DynamicCoordinateCompressor:
 #### 2. **Number Theory**
 - **Modular Arithmetic**: Large number handling
 - **Prime Numbers**: Special coordinate cases
-- **GCD/LCM**: Mathematical properties"
+- **GCD/LCM**: Mathematical properties
 - **Euler's Totient**: Counting coprime coordinates
 
 #### 3. **Linear Algebra**

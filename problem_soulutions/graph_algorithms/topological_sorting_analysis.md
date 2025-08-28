@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Topological Sorting
-permalink: /problem_soulutions/graph_algorithms/topological_sorting_analysis/"
+title: "Topological Sorting"permalink: /problem_soulutions/graph_algorithms/topological_sorting_analysis
 ---
 
 
@@ -65,7 +64,7 @@ def topological_sorting_naive(n, m, edges):
     return finish_order[::-1]
 ```
 
-**Why this is inefficient**: The implementation is correct but can be optimized for clarity."
+**Why this is inefficient**: The implementation is correct but can be optimized for clarity.
 ### Improvement 1: Kahn's Algorithm - O(n + m)
 **Description**: Use Kahn's algorithm (BFS-based) for topological sorting.
 

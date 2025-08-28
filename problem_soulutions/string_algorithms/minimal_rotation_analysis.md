@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Minimal Rotation
-permalink: /problem_soulutions/string_algorithms/minimal_rotation_analysis/"
+title: "Minimal Rotation"permalink: /problem_soulutions/string_algorithms/minimal_rotation_analysis
 ---
 
 
@@ -47,7 +46,7 @@ def minimal_rotation_naive(s):
     return min(rotations)
 ```
 
-**Why this is inefficient**: Quadratic time complexity and space complexity."
+**Why this is inefficient**: Quadratic time complexity and space complexity.
 ### Improvement 1: Booth's Algorithm - O(|s|)
 **Description**: Use Booth's algorithm to find the lexicographically smallest rotation efficiently.
 

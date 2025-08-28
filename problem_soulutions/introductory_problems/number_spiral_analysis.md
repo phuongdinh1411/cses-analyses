@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Number Spiral
-permalink: /problem_soulutions/introductory_problems/number_spiral_analysis/"
+title: "Number Spiral"
+permalink: /problem_soulutions/introductory_problems/number_spiral_analysis
 ---
 
 
@@ -79,7 +79,7 @@ def number_spiral_brute_force(y, x):
             num += 1
     
     return spiral[y-1][x-1]
-```"
+```
 **Why this is inefficient**: We're constructing the entire spiral up to the maximum coordinate, which is impractical for large coordinates (up to 10^9).
 
 ### Improvement 1: Mathematical Formula - O(1)

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Longest Common Subsequence
-permalink: /problem_soulutions/dynamic_programming/longest_common_subsequence_analysis/"
+title: "Longest Common Subsequence"permalink: /problem_soulutions/dynamic_programming/longest_common_subsequence_analysis
 ---
 
 
@@ -350,7 +349,7 @@ def range_lcs_queries(s, t, queries):
 
 #### **3. Interactive LCS Problems**
 ```python
-def interactive_lcs_game():"
+def interactive_lcs_game():
     s = input("Enter first string: ")
     t = input("Enter second string: ")
     

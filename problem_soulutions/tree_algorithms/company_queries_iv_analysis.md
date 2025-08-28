@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Company Queries IV
-permalink: /problem_soulutions/tree_algorithms/company_queries_iv_analysis/"
+title: "Company Queries IV"permalink: /problem_soulutions/tree_algorithms/company_queries_iv_analysis
 ---
 
 
@@ -403,4 +402,4 @@ def bfs_level_tracking(tree, start, n):
 
 ---
 
-*This analysis shows how to efficiently calculate level-based information in trees using post-order traversal and preprocessing.*"
+*This analysis shows how to efficiently calculate level-based information in trees using post-order traversal and preprocessing.*

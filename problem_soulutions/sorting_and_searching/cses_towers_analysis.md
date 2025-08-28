@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Towers
-permalink: /problem_soulutions/sorting_and_searching/cses_towers_analysis/"
+title: "Towers"permalink: /problem_soulutions/sorting_and_searching/cses_towers_analysis
 ---
 
 
@@ -68,7 +67,7 @@ def towers_brute_force(cubes):
     
     try_arrangement([], 0)
     return min_towers
-```"
+```
 **Why this is inefficient**: We're trying all possible arrangements of cubes into towers, which leads to factorial complexity. This is completely impractical for large inputs.
 
 ### Improvement 1: Greedy Approach - O(n²)

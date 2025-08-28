@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Two Sets II
-permalink: /problem_soulutions/dynamic_programming/two_sets_ii_analysis/"
+title: "Two Sets II"permalink: /problem_soulutions/dynamic_programming/two_sets_ii_analysis
 ---
 
 
@@ -355,7 +354,7 @@ def range_partition_queries(max_n, queries):
 #### **3. Interactive Partition Problems**
 ```python
 def interactive_partition_game():
-    n = int(input())"
+    n = int(input())
     print(f"Find ways to partition numbers 1 to {n} into two equal-sum sets")
     
     player_guess = int(input())

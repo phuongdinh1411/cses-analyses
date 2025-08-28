@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Playlist
-permalink: /problem_soulutions/sorting_and_searching/playlist_analysis/"
+title: "Playlist"permalink: /problem_soulutions/sorting_and_searching/playlist_analysis
 ---
 
 
@@ -62,7 +61,7 @@ def playlist_optimized(n, genres):
     left = 0
     seen = {}
     
-    for right in range(n):"
+    for right in range(n):
         # If we've seen this genre before, move left pointer
         if genres[right] in seen and seen[genres[right]] >= left:
             left = seen[genres[right]] + 1

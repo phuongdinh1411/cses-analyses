@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Prefix Sum Queries
-permalink: /problem_soulutions/range_queries/prefix_sum_queries_analysis/"
+title: "Prefix Sum Queries"
+permalink: /problem_soulutions/range_queries/prefix_sum_queries_analysis
 ---
 
 
@@ -14,7 +14,7 @@ Given an array of n integers, process q queries. Each query is either:
 
 ### Input
 The first input line has two integers n and q: the size of the array and the number of queries.
-The second line has n integers x_1,x_2,…,x_n: the contents of the array."
+The second line has n integers x_1,x_2,…,x_n: the contents of the array.
 Then there are q lines describing the queries. Each line has three integers: either "1 k x" (update) or "2 a b" (sum query).
 
 ### Output

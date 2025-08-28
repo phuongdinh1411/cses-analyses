@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Collecting Numbers V
-permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_v_analysis/"
+title: "Collecting Numbers V"permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_v_analysis
 ---
 
 
@@ -142,7 +141,7 @@ total_rounds, round_orders = find_minimum_rounds_and_round_orders_with_positions
 print(total_rounds)
 
 for round_num in range(1, total_rounds + 1):
-    if round_num in round_orders:"
+    if round_num in round_orders:
         positions_str = " ".join([f"({value},{pos})" for value, pos in round_orders[round_num]])
         print(f"Round {round_num}: {positions_str}")
 ```

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Longest Substring Without Repeating Characters
-permalink: /problem_soulutions/sliding_window/longest_substring_without_repeating_analysis/"
+title: "Longest Substring Without Repeating Characters"permalink: /problem_soulutions/sliding_window/longest_substring_without_repeating_analysis
 ---
 
 
@@ -207,4 +206,4 @@ def hash_map_unique_substring(s):
 
 ---
 
-*This analysis shows how to efficiently find the longest substring without repeating characters using sliding window technique.*"
+*This analysis shows how to efficiently find the longest substring without repeating characters using sliding window technique.*

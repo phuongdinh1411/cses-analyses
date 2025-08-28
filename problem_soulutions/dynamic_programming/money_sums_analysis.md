@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Money Sums
-permalink: /problem_soulutions/dynamic_programming/money_sums_analysis/"
+title: "Money Sums"permalink: /problem_soulutions/dynamic_programming/money_sums_analysis
 ---
 
 
@@ -201,7 +200,7 @@ def count_ways_for_sums(n, coins):
 **Problem**: For each achievable sum, find the minimum number of coins needed.
 ```python
 def min_coins_for_sums(n, coins):
-    max_sum = sum(coins)"
+    max_sum = sum(coins)
     dp = [float('inf')] * (max_sum + 1)
     dp[0] = 0  # Zero coins needed for sum 0
     

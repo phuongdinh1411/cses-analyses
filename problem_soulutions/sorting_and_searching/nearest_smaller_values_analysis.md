@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Nearest Smaller Values
-permalink: /problem_soulutions/sorting_and_searching/nearest_smaller_values_analysis/"
+title: "Nearest Smaller Values"permalink: /problem_soulutions/sorting_and_searching/nearest_smaller_values_analysis
 ---
 
 
@@ -451,7 +450,7 @@ def nearest_query(nearest_matrix, start, end):
 #### **3. Interactive Problems**
 ```python
 # Interactive nearest smaller values finder
-def interactive_nearest_smaller():"
+def interactive_nearest_smaller():
     n = int(input("Enter array size: "))
     arr = list(map(int, input("Enter array: ").split()))
     

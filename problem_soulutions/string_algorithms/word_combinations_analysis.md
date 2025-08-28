@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Word Combinations
-permalink: /problem_soulutions/string_algorithms/word_combinations_analysis/"
+title: "Word Combinations"permalink: /problem_soulutions/string_algorithms/word_combinations_analysis
 ---
 
 
@@ -325,7 +324,7 @@ def group_words_by_length(words):
 #### **Variation 1: Word Combinations with Constraints**
 **Problem**: Count ways to construct string with additional constraints (word order, length, etc.).
 ```python
-def constrained_word_combinations(s, words, constraints):"
+def constrained_word_combinations(s, words, constraints):
     # constraints = {'min_words': x, 'max_words': y, 'word_order': 'ascending/descending'}
     
     n = len(s)

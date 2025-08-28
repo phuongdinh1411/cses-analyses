@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Police Chase
-permalink: /problem_soulutions/graph_algorithms/police_chase_analysis/"
+title: "Police Chase"permalink: /problem_soulutions/graph_algorithms/police_chase_analysis
 ---
 
 
@@ -38,7 +37,7 @@ Output:
 
 ## Solution Progression
 
-### Approach 1: Minimum Cut using Max Flow - O(n * m * max_flow)"
+### Approach 1: Minimum Cut using Max Flow - O(n * m * max_flow)
 **Description**: Use maximum flow to find minimum cut (Menger's theorem).
 
 ```python

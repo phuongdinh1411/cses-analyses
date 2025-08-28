@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Longest Subarray with Sum
-permalink: /problem_soulutions/sliding_window/longest_subarray_with_sum_analysis/"
+title: "Longest Subarray with Sum"permalink: /problem_soulutions/sliding_window/longest_subarray_with_sum_analysis
 ---
 
 
@@ -70,7 +69,7 @@ def longest_subarray_prefix_sum(n, x, arr):
         # If we have seen (prefix_sum - x) before, we found a subarray with sum x
         if prefix_sum - x in sum_indices:
             length = i - sum_indices[prefix_sum - x]
-            max_length = max(max_length, length)"
+            max_length = max(max_length, length)
         # Only update if we haven't seen this prefix sum before
         if prefix_sum not in sum_indices:
             sum_indices[prefix_sum] = i

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Range Xor Queries
-permalink: /problem_soulutions/range_queries/range_xor_queries_analysis/"
+title: "Range Xor Queries"permalink: /problem_soulutions/range_queries/range_xor_queries_analysis
 ---
 
 
@@ -202,7 +201,7 @@ def range_xor_with_updates(n, q, arr, operations):
         bit.update(i + 1, arr[i])
     
     results = []
-    for op in operations:"
+    for op in operations:
         if op[0] == 'U':  # Update
             idx, val = op[1], op[2]
             old_val = arr[idx-1]

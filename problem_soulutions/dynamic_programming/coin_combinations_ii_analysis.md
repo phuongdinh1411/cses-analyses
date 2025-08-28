@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Coin Combinations II
-permalink: /problem_soulutions/dynamic_programming/coin_combinations_ii_analysis/"
+title: "Coin Combinations II"permalink: /problem_soulutions/dynamic_programming/coin_combinations_ii_analysis
 ---
 
 
@@ -13,7 +12,7 @@ Consider a money system consisting of n coins. Each coin has a positive integer 
 For example, if the coins are {2,3,5} and the desired sum is 9, there are 3 ways:
 - 2+2+5
 - 3+3+3
-- 2+2+2+3"
+- 2+2+2+3
 Note: The order of coins doesn't matter in this problem.
 
 ### Input

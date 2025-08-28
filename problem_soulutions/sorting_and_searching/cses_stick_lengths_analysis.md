@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Stick Lengths
-permalink: /problem_soulutions/sorting_and_searching/cses_stick_lengths_analysis/"
+title: "Stick Lengths"permalink: /problem_soulutions/sorting_and_searching/cses_stick_lengths_analysis
 ---
 
 
@@ -42,7 +41,7 @@ Output:
 def stick_lengths_brute_force(lengths):
     n = len(lengths)
     min_length = min(lengths)
-    max_length = max(lengths)"
+    max_length = max(lengths)
     min_cost = float('inf')
     
     # Try all possible target lengths

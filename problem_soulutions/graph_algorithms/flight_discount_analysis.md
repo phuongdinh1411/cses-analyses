@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Flight Discount
-permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis/"
+title: "Flight Discount"permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis
 ---
 
 
@@ -38,7 +37,7 @@ Output:
 
 ## Solution Progression
 
-### Approach 1: Dijkstra with Discount State - O(m log n)"
+### Approach 1: Dijkstra with Discount State - O(m log n)
 **Description**: Use Dijkstra's algorithm with a state to track discount usage.
 
 ```python

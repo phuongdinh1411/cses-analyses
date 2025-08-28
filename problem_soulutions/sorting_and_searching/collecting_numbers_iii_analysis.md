@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Collecting Numbers III
-permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_iii_analysis/"
+title: "Collecting Numbers III"permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_iii_analysis
 ---
 
 
@@ -511,7 +510,7 @@ def rounds_query(rounds_matrix, l, r):
 #### **3. Interactive Problems**
 ```python
 # Interactive collecting numbers simulator
-def interactive_collecting_numbers():"
+def interactive_collecting_numbers():
     n = int(input("Enter array size: "))
     arr = list(map(int, input("Enter array: ").split()))
     

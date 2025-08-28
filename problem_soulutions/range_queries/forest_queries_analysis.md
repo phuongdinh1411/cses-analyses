@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Forest Queries
-permalink: /problem_soulutions/range_queries/forest_queries_analysis/"
+title: "Forest Queries"
+permalink: /problem_soulutions/range_queries/forest_queries_analysis
 ---
 
 
@@ -11,7 +11,7 @@ permalink: /problem_soulutions/range_queries/forest_queries_analysis/"
 Given a 2D grid of size n×n, process q queries. Each query asks for the sum of values in a rectangular region [y1,x1] to [y2,x2].
 
 ### Input
-The first input line has two integers n and q: the size of the grid and the number of queries."
+The first input line has two integers n and q: the size of the grid and the number of queries.
 Then there are n lines describing the grid. Each line has n characters: '.' for empty and '*' for tree.
 Finally, there are q lines describing the queries. Each line has four integers y1,x1,y2,x2: the rectangular region.
 

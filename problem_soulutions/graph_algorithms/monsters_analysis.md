@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Monsters
-permalink: /problem_soulutions/graph_algorithms/monsters_analysis/"
+title: "Monsters"permalink: /problem_soulutions/graph_algorithms/monsters_analysis
 ---
 
 
@@ -13,7 +12,7 @@ You are playing a game where you have a grid of size n×m. Each cell is either f
 Your task is to determine if it is possible to reach the destination without being caught by a monster.
 
 ### Input
-The first input line has two integers n and m: the height and width of the grid."
+The first input line has two integers n and m: the height and width of the grid.
 Then there are n lines that describe the grid. Each line has m characters: "." denotes a free cell, "#" denotes a wall, "A" denotes your starting position, and "M" denotes a monster.
 
 ### Output

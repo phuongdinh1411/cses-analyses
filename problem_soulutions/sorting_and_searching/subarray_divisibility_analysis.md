@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Subarray Divisibility
-permalink: /problem_soulutions/sorting_and_searching/subarray_divisibility_analysis/"
+title: "Subarray Divisibility"permalink: /problem_soulutions/sorting_and_searching/subarray_divisibility_analysis
 ---
 
 
@@ -364,7 +363,7 @@ def subarray_divisibility_weighted(n, k, arr, weights, max_weight):
 #### **2. Modular Arithmetic Problems**
 - **Modular Exponentiation**: Efficient modular exponentiation
 - **Modular Inverse**: Find modular inverse
-- **Chinese Remainder Theorem**: Solve modular equations"
+- **Chinese Remainder Theorem**: Solve modular equations
 - **Fermat's Little Theorem**: Modular arithmetic properties
 
 #### **3. Subarray Problems**

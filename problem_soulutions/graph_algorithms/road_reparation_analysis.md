@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Road Reparation
-permalink: /problem_soulutions/graph_algorithms/road_reparation_analysis/"
+title: "Road Reparation"permalink: /problem_soulutions/graph_algorithms/road_reparation_analysis
 ---
 
 
@@ -14,7 +13,7 @@ Given a graph with n cities and m roads, find the minimum cost to repair roads s
 The first input line has two integers n and m: the number of cities and roads.
 Then there are m lines describing the roads. Each line has three integers a, b, and c: there is a road between cities a and b with repair cost c.
 
-### Output"
+### Output
 Print the minimum cost to repair roads so that all cities are connected, or "IMPOSSIBLE" if it's not possible.
 
 ### Constraints

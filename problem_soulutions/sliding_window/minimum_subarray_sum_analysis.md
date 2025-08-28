@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Minimum Subarray Sum
-permalink: /problem_soulutions/sliding_window/minimum_subarray_sum_analysis/"
+title: "Minimum Subarray Sum"permalink: /problem_soulutions/sliding_window/minimum_subarray_sum_analysis
 ---
 
 
@@ -37,7 +36,7 @@ Output:
 **Description**: Check all possible subarrays and find the minimum sum.
 
 ```python
-def min_subarray_sum_naive(n, arr):"
+def min_subarray_sum_naive(n, arr):
     min_sum = float('inf')
     
     for i in range(n):

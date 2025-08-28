@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Transfer Speeds Sum
-permalink: /problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analysis/"
+title: "Transfer Speeds Sum"permalink: /problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analysis
 ---
 
 
@@ -59,7 +58,7 @@ def transfer_speeds_sum_naive(n, m, edges):
                         total_sum += speed
     
     return total_sum
-```"
+```
 **Why this is inefficient**: This approach has O(n²m) complexity and doesn't handle the problem correctly.
 
 ### Improvement 1: Direct Edge Sum - O(m)

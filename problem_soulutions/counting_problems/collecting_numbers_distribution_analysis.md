@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Collecting Numbers Distribution
-permalink: /problem_soulutions/counting_problems/collecting_numbers_distribution_analysis/"
+title: "Collecting Numbers Distribution"permalink: /problem_soulutions/counting_problems/collecting_numbers_distribution_analysis
 ---
 
 
@@ -44,7 +43,7 @@ def collecting_numbers_distribution_naive(n, numbers):
     def is_valid_collection(perm):
         collected = set()
         for num in perm:
-            # Find smallest available number"
+            # Find smallest available number
             min_available = float('inf')
             for i, val in enumerate(numbers):
                 if val not in collected:

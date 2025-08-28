@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Range Interval Queries
-permalink: /problem_soulutions/range_queries/range_interval_queries_analysis/"
+title: "Range Interval Queries"
+permalink: /problem_soulutions/range_queries/range_interval_queries_analysis
 ---
 
 
@@ -860,7 +860,7 @@ def interactive_range_interval_queries(n, intervals):
     
     while True:
         try:
-            query = input().strip()"
+            query = input().strip()
             if query == 'END':
                 break
             

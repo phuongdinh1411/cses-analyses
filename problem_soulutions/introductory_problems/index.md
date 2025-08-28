@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Introductory Problems"
-permalink: /problem_soulutions/introductory_problems/
+permalink: /problem_soulutions/introductory_problems
 ---
 
 

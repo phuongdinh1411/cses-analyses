@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Creating Offices
-permalink: /problem_soulutions/advanced_graph_problems/creating_offices_analysis/"
+title: "Creating Offices"permalink: /problem_soulutions/advanced_graph_problems/creating_offices_analysis
 ---
 
 
@@ -387,7 +386,7 @@ def cost_based_creating_offices(n, k, edges, office_costs):
     
     def find_minimum_cost_offices(diameter, adj):
         if k >= diameter:
-            # Only need one office, find minimum cost location"
+            # Only need one office, find minimum cost location
             min_cost = float('inf')
             best_location = 1
             

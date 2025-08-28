@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Subarray Minimums
-permalink: /problem_soulutions/sliding_window/subarray_minimums_analysis/"
+title: "Subarray Minimums"permalink: /problem_soulutions/sliding_window/subarray_minimums_analysis
 ---
 
 
@@ -325,4 +324,4 @@ def calculate_element_contribution(arr, left, right):
 
 ---
 
-*This analysis shows how to efficiently find the sum of minimums of all subarrays using monotonic stack technique.*"
+*This analysis shows how to efficiently find the sum of minimums of all subarrays using monotonic stack technique.*

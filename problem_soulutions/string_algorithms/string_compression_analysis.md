@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "String Compression
-permalink: /problem_soulutions/string_algorithms/string_compression_analysis/"
+title: "String Compression"permalink: /problem_soulutions/string_algorithms/string_compression_analysis
 ---
 
 
@@ -36,7 +35,7 @@ a3b3c2
 
 ```python
 def string_compression_naive(s):
-    if not s:"
+    if not s:
         return ""
     
     compressed = []

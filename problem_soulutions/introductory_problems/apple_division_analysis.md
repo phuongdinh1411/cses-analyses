@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Apple Division"
-permalink: /problem_soulutions/introductory_problems/apple_division_analysis/
+permalink: /problem_soulutions/introductory_problems/apple_division_analysis
 ---
 
 

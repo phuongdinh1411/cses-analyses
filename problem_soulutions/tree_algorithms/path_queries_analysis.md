@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Path Queries
-permalink: /problem_soulutions/tree_algorithms/path_queries_analysis/"
+title: "Path Queries"permalink: /problem_soulutions/tree_algorithms/path_queries_analysis
 ---
 
 
@@ -367,4 +366,4 @@ def decompose_path(a, b, lca_func):
 
 ---
 
-*This analysis shows how to efficiently calculate path sums using LCA and path decomposition technique.*"
+*This analysis shows how to efficiently calculate path sums using LCA and path decomposition technique.*

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Mail Delivery
-permalink: /problem_soulutions/graph_algorithms/mail_delivery_analysis/"
+title: "Mail Delivery"permalink: /problem_soulutions/graph_algorithms/mail_delivery_analysis
 ---
 
 
@@ -14,7 +13,7 @@ Given an undirected graph with n nodes and m edges, find an Eulerian circuit (a 
 The first input line has two integers n and m: the number of nodes and edges.
 Then there are m lines describing the edges. Each line has two integers a and b: there is an edge between nodes a and b.
 
-### Output"
+### Output
 Print the nodes in the order they are visited in the Eulerian circuit, or "IMPOSSIBLE" if no Eulerian circuit exists.
 
 ### Constraints

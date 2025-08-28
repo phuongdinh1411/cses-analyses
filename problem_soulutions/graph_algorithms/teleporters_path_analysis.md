@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Teleporters Path
-permalink: /problem_soulutions/graph_algorithms/teleporters_path_analysis/"
+title: "Teleporters Path"permalink: /problem_soulutions/graph_algorithms/teleporters_path_analysis
 ---
 
 
@@ -14,7 +13,7 @@ Given a directed graph with n nodes and m edges, find a path that visits every e
 The first input line has two integers n and m: the number of nodes and edges.
 Then there are m lines describing the edges. Each line has two integers a and b: there is an edge from node a to node b.
 
-### Output"
+### Output
 Print the nodes in the order they are visited in the Eulerian trail, or "IMPOSSIBLE" if no Eulerian trail exists.
 
 ### Constraints

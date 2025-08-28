@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Grid Paths II
-permalink: /problem_soulutions/counting_problems/grid_paths_ii_analysis/"
+title: "Grid Paths II"permalink: /problem_soulutions/counting_problems/grid_paths_ii_analysis
 ---
 
 
@@ -11,7 +10,7 @@ permalink: /problem_soulutions/counting_problems/grid_paths_ii_analysis/"
 Given an n×n grid with some blocked cells, count the number of paths from the top-left corner to the bottom-right corner, moving only right or down.
 
 ### Input
-The first input line has an integer n: the size of the grid."
+The first input line has an integer n: the size of the grid.
 Then there are n lines describing the grid. Each line has n characters: '.' for empty cell and '#' for blocked cell.
 
 ### Output

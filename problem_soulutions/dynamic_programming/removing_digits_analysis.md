@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Removing Digits
-permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis/"
+title: "Removing Digits"permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis
 ---
 
 
@@ -40,7 +39,7 @@ def removing_digits_brute_force(n):
     def min_steps(num):
         if num == 0:
             return 0
-        if num < 0:"
+        if num < 0:
             return float('inf')
         
         # Extract all digits

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Collecting Numbers
-permalink: /problem_soulutions/sorting_and_searching/cses_collecting_numbers_analysis/"
+title: "Collecting Numbers"permalink: /problem_soulutions/sorting_and_searching/cses_collecting_numbers_analysis
 ---
 
 
@@ -53,7 +52,7 @@ def collecting_numbers_brute_force(arr):
         for i in range(n):
             if arr[i] == current_target and arr[i] not in collected:
                 collected.add(arr[i])
-                current_target += 1"
+                current_target += 1
         # If no progress was made, we can't collect more
         if len(collected) == 0:
             break

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Shortest Routes I
-permalink: /problem_soulutions/graph_algorithms/shortest_routes_i_analysis/"
+title: "Shortest Routes I"permalink: /problem_soulutions/graph_algorithms/shortest_routes_i_analysis
 ---
 
 
@@ -36,7 +35,7 @@ Output:
 0 5 2
 ```
 
-## Solution Progression"
+## Solution Progression
 ### Approach 1: Dijkstra's Algorithm - O((n + m) * log(n))
 **Description**: Use Dijkstra's algorithm with a priority queue to find shortest paths.
 

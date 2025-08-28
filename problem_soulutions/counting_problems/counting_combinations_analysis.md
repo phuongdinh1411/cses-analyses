@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Counting Combinations
-permalink: /problem_soulutions/counting_problems/counting_combinations_analysis/"
+title: "Counting Combinations"permalink: /problem_soulutions/counting_problems/counting_combinations_analysis
 ---
 
 
@@ -92,7 +91,7 @@ def counting_combinations_mathematical(n, k):
             result = (result * i) % MOD
         return result
     
-    def mod_inverse(a, m):"
+    def mod_inverse(a, m):
         # Fermat's little theorem: a^(m-1) ≡ 1 (mod m)
         return pow(a, m-2, m)
     

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Reading Books
-permalink: /problem_soulutions/sorting_and_searching/reading_books_analysis/"
+title: "Reading Books"permalink: /problem_soulutions/sorting_and_searching/reading_books_analysis
 ---
 
 
@@ -38,7 +37,7 @@ Output:
 
 ```python
 def reading_books_naive(n, times):
-    from itertools import permutations"
+    from itertools import permutations
     min_time = float('inf')
     
     for order in permutations(range(n)):

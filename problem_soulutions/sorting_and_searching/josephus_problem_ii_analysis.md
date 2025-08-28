@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Josephus Problem II
-permalink: /problem_soulutions/sorting_and_searching/josephus_problem_ii_analysis/"
+title: "Josephus Problem II"permalink: /problem_soulutions/sorting_and_searching/josephus_problem_ii_analysis
 ---
 
 
@@ -312,7 +311,7 @@ def josephus_query(dp, n, k):
 #### **3. Interactive Problems**
 ```python
 # Interactive Josephus game
-def interactive_josephus():"
+def interactive_josephus():
     print("Welcome to the Josephus Problem!")
     
     while True:

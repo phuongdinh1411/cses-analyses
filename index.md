@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Problem Solutions & Analysis"
-permalink: /
+permalink: 
 ---
 
 

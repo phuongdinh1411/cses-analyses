@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Array Description
-permalink: /problem_soulutions/dynamic_programming/array_description_analysis/"
+title: "Array Description"permalink: /problem_soulutions/dynamic_programming/array_description_analysis
 ---
 
 
@@ -69,7 +68,7 @@ def array_description_brute_force(n, m, arr):
         for val in range(1, m + 1):
             ways += count_ways(1, val)
         return ways % MOD
-```"
+```
 **Why this is inefficient**: We're trying all possible values for unknown positions, which leads to exponential complexity. For each unknown position, we try all m values, leading to O(m^n) complexity.
 
 ### Improvement 1: Recursive with Memoization - O(n*m²)

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Subarray Sums I
-permalink: /problem_soulutions/sliding_window/subarray_sums_i_analysis/"
+title: "Subarray Sums I"permalink: /problem_soulutions/sliding_window/subarray_sums_i_analysis
 ---
 
 
@@ -269,4 +268,4 @@ def two_pointer_subarray_sum(arr, target):
 
 ---
 
-*This analysis shows how to efficiently find subarrays with target sum using prefix sum and hash map techniques.*"
+*This analysis shows how to efficiently find subarrays with target sum using prefix sum and hash map techniques.*

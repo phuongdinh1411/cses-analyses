@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Nearest Shops
-permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis/"
+title: "Nearest Shops"permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis
 ---
 
 
@@ -101,7 +100,7 @@ def nearest_shops_multisource(n, q, edges, shops, queries):
     
     # Multi-source BFS from all shops
     from collections import deque
-    queue = deque()"
+    queue = deque()
     distance = [float('inf')] * (n + 1)
     nearest_shop = [-1] * (n + 1)
     

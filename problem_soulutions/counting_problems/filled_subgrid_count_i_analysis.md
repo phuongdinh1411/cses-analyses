@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Filled Subgrid Count I
-permalink: /problem_soulutions/counting_problems/filled_subgrid_count_i_analysis/"
+title: "Filled Subgrid Count I"permalink: /problem_soulutions/counting_problems/filled_subgrid_count_i_analysis
 ---
 
 
@@ -422,7 +421,7 @@ def range_query(filled_counts, start_i, start_j, end_i, end_j):
 #### **3. Interactive Problems**
 ```python
 # Interactive filled subgrid analyzer
-def interactive_filled_analyzer():"
+def interactive_filled_analyzer():
     n = int(input("Enter grid height: "))
     m = int(input("Enter grid width: "))
     grid = []

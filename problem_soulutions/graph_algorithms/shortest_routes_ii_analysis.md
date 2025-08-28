@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Shortest Routes II
-permalink: /problem_soulutions/graph_algorithms/shortest_routes_ii_analysis/"
+title: "Shortest Routes II"permalink: /problem_soulutions/graph_algorithms/shortest_routes_ii_analysis
 ---
 
 
@@ -45,7 +44,7 @@ Output:
 
 ```python
 def shortest_routes_floyd_warshall(n, m, flights):
-    # Initialize distance matrix"
+    # Initialize distance matrix
     distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
     
     # Set diagonal to 0

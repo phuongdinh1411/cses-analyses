@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Distinct Values Queries
-permalink: /problem_soulutions/tree_algorithms/distinct_values_queries_analysis/"
+title: "Distinct Values Queries"permalink: /problem_soulutions/tree_algorithms/distinct_values_queries_analysis
 ---
 
 
@@ -79,7 +78,7 @@ def distinct_values_queries_naive(n, colors, edges, queries):
     return results
 ```
 
-**Why this is inefficient**: For each query, we need to traverse the entire subtree, leading to O(q × n) time complexity."
+**Why this is inefficient**: For each query, we need to traverse the entire subtree, leading to O(q × n) time complexity.
 ### Improvement 1: Euler Tour with Mo's Algorithm - O(n√n)
 **Description**: Use Euler Tour to flatten the tree and apply Mo's algorithm for range distinct queries.
 

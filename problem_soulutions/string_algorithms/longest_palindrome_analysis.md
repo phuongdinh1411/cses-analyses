@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Longest Palindrome
-permalink: /problem_soulutions/string_algorithms/longest_palindrome_analysis/"
+title: "Longest Palindrome"permalink: /problem_soulutions/string_algorithms/longest_palindrome_analysis
 ---
 
 
@@ -83,7 +82,7 @@ def longest_palindrome_expand(s):
     return s[start:start + max_length]
 ```
 
-**Why this improvement works**: Expand around center reduces time complexity to quadratic."
+**Why this improvement works**: Expand around center reduces time complexity to quadratic.
 ### Improvement 2: Manacher's Algorithm - O(|s|)
 **Description**: Use Manacher's algorithm to find the longest palindrome in linear time.
 

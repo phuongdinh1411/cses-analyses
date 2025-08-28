@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Gray Code Analysis
-permalink: /problem_soulutions/introductory_problems/gray_code_analysis/"
+title: "Gray Code Analysis"
+permalink: /problem_soulutions/introductory_problems/gray_code_analysis
 ---
 
 
@@ -170,4 +170,4 @@ def generate_gray_code(n):
 4. **Reflection property** is key to understanding Gray codes
 5. **Applications** extend beyond just sequence generation
 6. **Memory efficiency** is important for large n values
-7. **Circular property** makes it useful for encoders"
+7. **Circular property** makes it useful for encoders

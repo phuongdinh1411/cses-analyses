@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Finding Periods
-permalink: /problem_soulutions/string_algorithms/finding_periods_analysis/"
+title: "Finding Periods"permalink: /problem_soulutions/string_algorithms/finding_periods_analysis
 ---
 
 
@@ -409,7 +408,7 @@ def verify_period(s, period):
 #### **Variation 1: Finding Periods with Constraints**
 **Problem**: Find periods with additional constraints (minimum/maximum length, etc.).
 ```python
-def constrained_finding_periods(s, constraints):"
+def constrained_finding_periods(s, constraints):
     # constraints = {'min_period': x, 'max_period': y, 'alphabet': chars}
     
     n = len(s)

@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Shortest Subarray with Sum
-permalink: /problem_soulutions/sliding_window/shortest_subarray_with_sum_analysis/"
+title: "Shortest Subarray with Sum"permalink: /problem_soulutions/sliding_window/shortest_subarray_with_sum_analysis
 ---
 
 
@@ -37,7 +36,7 @@ Output:
 **Description**: Check all possible subarrays to find the shortest one with sum at least x.
 
 ```python
-def shortest_subarray_naive(n, x, arr):"
+def shortest_subarray_naive(n, x, arr):
     min_length = float('inf')
     
     for i in range(n):

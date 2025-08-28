@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "New Flight Routes
-permalink: /problem_soulutions/advanced_graph_problems/new_flight_routes_analysis/"
+title: "New Flight Routes"permalink: /problem_soulutions/advanced_graph_problems/new_flight_routes_analysis
 ---
 
 
@@ -66,7 +65,7 @@ def new_flight_routes_naive(n, m, edges):
     if is_strongly_connected():
         return 0
     
-    # Try adding edges"
+    # Try adding edges
     min_edges = float('inf')
     for i in range(1, n + 1):
         for j in range(1, n + 1):

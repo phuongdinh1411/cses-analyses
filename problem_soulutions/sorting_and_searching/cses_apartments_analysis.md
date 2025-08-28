@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Apartments
-permalink: /problem_soulutions/sorting_and_searching/cses_apartments_analysis/"
+title: "Apartments"permalink: /problem_soulutions/sorting_and_searching/cses_apartments_analysis
 ---
 
 
@@ -69,7 +68,7 @@ def apartments_brute_force(applicants, apartments, k):
     
     backtrack(0, [False] * m, 0)
     return max_matches
-```"
+```
 **Why this is inefficient**: We're trying all possible combinations, which is exponential. For each applicant, we have m choices, leading to O(m^n) complexity.
 
 ### Improvement 1: Greedy with Sorting - O(n log n + m log m)

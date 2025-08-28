@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Ultimate Cheatsheet
-permalink: /quick_reference/ultimate_cheatsheet/"
+title: "Ultimate Cheatsheet"permalink: /quick_reference/ultimate_cheatsheet
 ---
 
 
@@ -88,7 +87,7 @@ permalink: /quick_reference/ultimate_cheatsheet/"
 <td>DFS + Transpose + DFS</td>
 </tr>
 <tr>
-<td>Topological Sort</td>"
+<td>Topological Sort</td>
 <td>Kahn's</td>
 <td>O(V+E)</td>
 <td>O(V)</td>

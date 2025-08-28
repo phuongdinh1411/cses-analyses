@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Sum of Three Values
-permalink: /problem_soulutions/sorting_and_searching/sum_of_three_values_analysis/"
+title: "Sum of Three Values"permalink: /problem_soulutions/sorting_and_searching/sum_of_three_values_analysis
 ---
 
 
@@ -14,7 +13,7 @@ Given an array of n integers and a target sum x, find three distinct indices suc
 The first input line has two integers n and x: the size of the array and the target sum.
 The second line has n integers a1,a2,…,an: the array.
 
-### Output"
+### Output
 Print three distinct indices (1-indexed) such that the sum equals x, or "IMPOSSIBLE" if no solution exists.
 
 ### Constraints

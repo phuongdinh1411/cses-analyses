@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Coin Combinations I
-permalink: /problem_soulutions/dynamic_programming/coin_combinations_i_analysis/"
+title: "Coin Combinations I"permalink: /problem_soulutions/dynamic_programming/coin_combinations_i_analysis
 ---
 
 
@@ -64,7 +63,7 @@ def coin_combinations_brute_force(n, x, coins):
         return ways % MOD
     
     return count_ways(x)
-```"
+```
 **Why this is inefficient**: We're trying all possible combinations of coins, which leads to exponential complexity. For each target, we try all coin values, leading to O(n^x) complexity.
 
 ### Improvement 1: Recursive with Memoization - O(n*x)

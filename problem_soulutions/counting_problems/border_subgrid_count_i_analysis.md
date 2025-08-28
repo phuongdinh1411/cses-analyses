@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Border Subgrid Count I
-permalink: /problem_soulutions/counting_problems/border_subgrid_count_i_analysis/"
+title: "Border Subgrid Count I"permalink: /problem_soulutions/counting_problems/border_subgrid_count_i_analysis
 ---
 
 
@@ -462,7 +461,7 @@ def range_query(dp, start_i, start_j):
 #### **3. Interactive Problems**
 ```python
 # Interactive border analyzer
-def interactive_border_analyzer():"
+def interactive_border_analyzer():
     n = int(input("Enter grid height: "))
     m = int(input("Enter grid width: "))
     k = int(input("Enter subgrid size: "))

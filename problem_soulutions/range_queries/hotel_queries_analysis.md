@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Hotel Queries
-permalink: /problem_soulutions/range_queries/hotel_queries_analysis/"
+title: "Hotel Queries"
+permalink: /problem_soulutions/range_queries/hotel_queries_analysis
 ---
 
 
@@ -338,7 +338,7 @@ def hotel_queries_with_updates(n, q, hotels, operations):
     st = DynamicSegmentTree(hotels)
     results = []
     
-    for op in operations:"
+    for op in operations:
         if op[0] == 'Q':  # Query
             x = op[1]
             pos = st.find_first_ge(x)

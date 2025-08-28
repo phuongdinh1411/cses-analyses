@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Distinct Numbers
-permalink: /problem_soulutions/sorting_and_searching/cses_distinct_numbers_analysis/"
+title: "Distinct Numbers"permalink: /problem_soulutions/sorting_and_searching/cses_distinct_numbers_analysis
 ---
 
 
@@ -213,7 +212,7 @@ for item in data:
 
 ## Problem-Solving Framework
 
-1. **Start with brute force**: Understand the problem completely"
+1. **Start with brute force**: Understand the problem completely
 2. **Identify bottlenecks**: What's causing the inefficiency?
 3. **Look for patterns**: Can sorting or hashing help?
 4. **Consider trade-offs**: Time vs space complexity

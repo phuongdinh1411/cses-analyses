@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Sliding Window Advertisement
-permalink: /problem_soulutions/sliding_window/sliding_window_advertisement_analysis/"
+title: "Sliding Window Advertisement"permalink: /problem_soulutions/sliding_window/sliding_window_advertisement_analysis
 ---
 
 
@@ -37,7 +36,7 @@ Output:
 **Description**: Check all possible subarrays of size k to find the maximum sum.
 
 ```python
-def sliding_window_sum_naive(n, k, arr):"
+def sliding_window_sum_naive(n, k, arr):
     max_sum = float('-inf')
     
     for i in range(n - k + 1):

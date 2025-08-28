@@ -1,7 +1,7 @@
 ---
 layout: simple
-title: "Increasing Array
-permalink: /problem_soulutions/introductory_problems/increasing_array_analysis/"
+title: "Increasing Array"
+permalink: /problem_soulutions/introductory_problems/increasing_array_analysis
 ---
 
 
@@ -40,7 +40,7 @@ Output:
 
 ```python
 def increasing_array_brute_force(arr):
-    n = len(arr)"
+    n = len(arr)
     min_moves = float('inf')
     
     def try_modifications(index, current_arr, moves):

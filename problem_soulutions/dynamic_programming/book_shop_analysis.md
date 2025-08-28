@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Book Shop
-permalink: /problem_soulutions/dynamic_programming/book_shop_analysis/"
+title: "Book Shop"permalink: /problem_soulutions/dynamic_programming/book_shop_analysis
 ---
 
 
@@ -46,7 +45,7 @@ def book_shop_brute_force(n, x, prices, pages):
     def max_pages(index, remaining_money):
         if index == n:
             return 0
-        if remaining_money < 0:"
+        if remaining_money < 0:
             return float('-inf')
         
         # Don't buy current book

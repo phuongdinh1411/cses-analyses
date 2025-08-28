@@ -1,7 +1,6 @@
 ---
 layout: simple
-title: "Subarray Sums II
-permalink: /problem_soulutions/sorting_and_searching/subarray_sums_ii_analysis/"
+title: "Subarray Sums II"permalink: /problem_soulutions/sorting_and_searching/subarray_sums_ii_analysis
 ---
 
 
@@ -422,7 +421,7 @@ def sum_query_negative(sum_matrix, l, r):
 #### **3. Interactive Problems**
 ```python
 # Interactive subarray sum finder with negative numbers
-def interactive_subarray_sums_negative():"
+def interactive_subarray_sums_negative():
     n = int(input("Enter array size: "))
     x = int(input("Enter target sum: "))
     arr = list(map(int, input("Enter array (can include negative numbers): ").split()))
