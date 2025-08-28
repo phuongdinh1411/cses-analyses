@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page.title | default: site.title }}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -169,23 +168,12 @@
 <body>
     <div class="container">
         <aside class="sidebar">
-            <h3><i class="fas fa-code"></i> CSES Analyses</h3>
+            <h3>CSES Analyses</h3>
             <nav class="nav__list">
                 <ul class="nav__items">
                     {% for item in site.data.navigation.main %}
                         <li class="nav__item">
                             <a href="{{ item.url | relative_url }}">
-                                {% if item.title contains "Home" %}
-                                    <i class="fas fa-home"></i>
-                                {% elsif item.title contains "Problem" %}
-                                    <i class="fas fa-puzzle-piece"></i>
-                                {% elsif item.title contains "Quick" %}
-                                    <i class="fas fa-book"></i>
-                                {% elsif item.title contains "About" %}
-                                    <i class="fas fa-info-circle"></i>
-                                {% else %}
-                                    <i class="fas fa-folder"></i>
-                                {% endif %}
                                 {{ item.title }}
                             </a>
                             {% if item.children %}
@@ -193,29 +181,6 @@
                                     {% for child in item.children %}
                                         <li class="nav__sub-item">
                                             <a href="{{ child.url | relative_url }}">
-                                                {% if child.title contains "Introductory" %}
-                                                    <i class="fas fa-play"></i>
-                                                {% elsif child.title contains "Sorting" %}
-                                                    <i class="fas fa-sort"></i>
-                                                {% elsif child.title contains "Dynamic" %}
-                                                    <i class="fas fa-cogs"></i>
-                                                {% elsif child.title contains "Graph" %}
-                                                    <i class="fas fa-project-diagram"></i>
-                                                {% elsif child.title contains "String" %}
-                                                    <i class="fas fa-font"></i>
-                                                {% elsif child.title contains "Tree" %}
-                                                    <i class="fas fa-tree"></i>
-                                                {% elsif child.title contains "Geometry" %}
-                                                    <i class="fas fa-shapes"></i>
-                                                {% elsif child.title contains "Range" %}
-                                                    <i class="fas fa-ruler"></i>
-                                                {% elsif child.title contains "Sliding" %}
-                                                    <i class="fas fa-window-maximize"></i>
-                                                {% elsif child.title contains "Counting" %}
-                                                    <i class="fas fa-calculator"></i>
-                                                {% else %}
-                                                    <i class="fas fa-file"></i>
-                                                {% endif %}
                                                 {{ child.title }}
                                             </a>
                                         </li>
