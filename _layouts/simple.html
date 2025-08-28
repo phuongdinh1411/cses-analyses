@@ -68,6 +68,11 @@
             list-style: none;
             margin-left: 15px;
             margin-top: 5px;
+            display: none;
+        }
+        
+        .nav__sub-items.expanded {
+            display: block;
         }
         
         .nav__sub-item {
@@ -78,12 +83,30 @@
             font-size: 0.95em;
             padding: 6px 10px;
             font-weight: 400;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .nav__sub-item a::before {
+            content: '▶';
+            margin-right: 8px;
+            font-size: 0.8em;
+            transition: transform 0.3s ease;
+        }
+        
+        .nav__sub-item.expanded a::before {
+            transform: rotate(90deg);
         }
         
         .nav__sub-sub-items {
             list-style: none;
             margin-left: 15px;
             margin-top: 3px;
+            display: none;
+        }
+        
+        .nav__sub-sub-items.expanded {
+            display: block;
         }
         
         .nav__sub-sub-item {
@@ -204,7 +227,7 @@
                                 <ul class="nav__sub-items">
                                     {% for child in item.children %}
                                         <li class="nav__sub-item">
-                                            <a href="{{ child.url | relative_url }}">
+                                            <a href="{{ child.url | relative_url }}" class="category-link">
                                                 {{ child.title }}
                                             </a>
                                             {% if child.children %}
@@ -235,5 +258,44 @@
             </div>
         </main>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event listeners to category links
+            const categoryLinks = document.querySelectorAll('.category-link');
+            
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const subItem = this.parentElement;
+                    const subSubItems = subItem.querySelector('.nav__sub-sub-items');
+                    
+                    if (subSubItems) {
+                        // Toggle the expanded class
+                        subItem.classList.toggle('expanded');
+                        subSubItems.classList.toggle('expanded');
+                    }
+                });
+            });
+            
+            // Add click event listeners to main navigation items
+            const navItems = document.querySelectorAll('.nav__item');
+            
+            navItems.forEach(item => {
+                const link = item.querySelector('a');
+                const subItems = item.querySelector('.nav__sub-items');
+                
+                if (subItems && link.textContent.trim() === 'Problem Categories') {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Toggle the expanded class
+                        subItems.classList.toggle('expanded');
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html> 
