@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Josephus Problem II - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/josephus_problem_ii_analysis/
+---
+
 # CSES Josephus Problem II - Problem Analysis
 
 ## Problem Statement

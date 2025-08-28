@@ -1,3 +1,9 @@
+---
+layout: simple
+title: Polygon Lattice Points - CSES Geometry Analysis
+permalink: /problem_soulutions/geometry/polygon_lattice_points_analysis/
+---
+
 # Polygon Lattice Points - CSES Geometry Analysis
 
 ## Problem Description

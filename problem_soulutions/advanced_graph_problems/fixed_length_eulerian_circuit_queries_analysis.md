@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Fixed Length Eulerian Circuit Queries - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_eulerian_circuit_queries_analysis/
+---
+
 # CSES Fixed Length Eulerian Circuit Queries - Problem Analysis
 
 ## Problem Statement

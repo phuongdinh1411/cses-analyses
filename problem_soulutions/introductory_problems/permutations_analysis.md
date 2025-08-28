@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Permutations - Problem Analysis
+permalink: /problem_soulutions/introductory_problems/permutations_analysis/
+---
+
 # CSES Permutations - Problem Analysis
 
 ## Problem Statement

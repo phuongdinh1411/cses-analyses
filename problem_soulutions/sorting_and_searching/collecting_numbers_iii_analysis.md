@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Collecting Numbers III - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_iii_analysis/
+---
+
 # CSES Collecting Numbers III - Problem Analysis
 
 ## Problem Statement

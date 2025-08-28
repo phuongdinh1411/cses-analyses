@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Empty String - Problem Analysis
+permalink: /problem_soulutions/counting_problems/empty_string_analysis/
+---
+
 # CSES Empty String - Problem Analysis
 
 ## Problem Statement

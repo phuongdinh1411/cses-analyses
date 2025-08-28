@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Number Spiral - Problem Analysis
+permalink: /problem_soulutions/introductory_problems/number_spiral_analysis/
+---
+
 # CSES Number Spiral - Problem Analysis
 
 ## Problem Statement

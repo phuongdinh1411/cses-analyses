@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES String Automaton - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/string_automaton_analysis/
+---
+
 # CSES String Automaton - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Labyrinth - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis/
+---
+
 # CSES Labyrinth - Problem Analysis
 
 ## Problem Statement

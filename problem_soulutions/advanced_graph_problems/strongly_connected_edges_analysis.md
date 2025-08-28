@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Strongly Connected Edges - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/strongly_connected_edges_analysis/
+---
+
 # CSES Strongly Connected Edges - Problem Analysis
 
 ## Problem Statement

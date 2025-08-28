@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES New Flight Routes - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/new_flight_routes_analysis/
+---
+
 # CSES New Flight Routes - Problem Analysis
 
 ## Problem Statement

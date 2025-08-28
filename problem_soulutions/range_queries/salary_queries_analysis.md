@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Salary Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/salary_queries_analysis/
+---
+
 # CSES Salary Queries - Problem Analysis
 
 ## Problem Statement

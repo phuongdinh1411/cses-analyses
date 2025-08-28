@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Functional Graph Distribution - Problem Analysis
+permalink: /problem_soulutions/counting_problems/functional_graph_distribution_analysis/
+---
+
 # CSES Functional Graph Distribution - Problem Analysis
 
 ## Problem Statement

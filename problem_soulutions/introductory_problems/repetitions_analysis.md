@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Repetitions - Problem Analysis
+permalink: /problem_soulutions/introductory_problems/repetitions_analysis/
+---
+
 # CSES Repetitions - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Acyclic Graph Edges - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis/
+---
+
 # CSES Acyclic Graph Edges - Problem Analysis
 
 ## Problem Statement

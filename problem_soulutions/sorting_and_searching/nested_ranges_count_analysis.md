@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Nested Ranges Count - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/nested_ranges_count_analysis/
+---
+
 # CSES Nested Ranges Count - Problem Analysis
 
 ## Problem Statement

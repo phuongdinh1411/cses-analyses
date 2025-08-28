@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Planets Queries I - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/planets_queries_i_analysis/
+---
+
 # CSES Planets Queries I - Problem Analysis
 
 ## Problem Statement

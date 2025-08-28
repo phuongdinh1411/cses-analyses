@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Planets and Kingdoms - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis/
+---
+
 # CSES Planets and Kingdoms - Problem Analysis
 
 ## Problem Statement

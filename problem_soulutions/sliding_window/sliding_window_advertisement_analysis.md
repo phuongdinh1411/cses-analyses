@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Sliding Window Advertisement - Problem Analysis
+permalink: /problem_soulutions/sliding_window/sliding_window_advertisement_analysis/
+---
+
 # CSES Sliding Window Advertisement - Problem Analysis
 
 ## Problem Statement

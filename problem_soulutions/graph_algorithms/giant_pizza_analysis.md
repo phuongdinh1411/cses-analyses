@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Giant Pizza - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/giant_pizza_analysis/
+---
+
 # CSES Giant Pizza - Problem Analysis
 
 ## Problem Statement

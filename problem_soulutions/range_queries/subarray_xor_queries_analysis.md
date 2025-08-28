@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray XOR Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/subarray_xor_queries_analysis/
+---
+
 # CSES Subarray XOR Queries - Problem Analysis
 
 ## Problem Statement

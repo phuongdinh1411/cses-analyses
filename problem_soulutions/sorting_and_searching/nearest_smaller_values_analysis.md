@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Nearest Smaller Values - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/nearest_smaller_values_analysis/
+---
+
 # CSES Nearest Smaller Values - Problem Analysis
 
 ## Problem Statement

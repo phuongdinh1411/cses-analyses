@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES High Score - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/high_score_analysis/
+---
+
 # CSES High Score - Problem Analysis
 
 ## Problem Statement

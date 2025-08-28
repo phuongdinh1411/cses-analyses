@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subtree Queries - Problem Analysis
+permalink: /problem_soulutions/tree_algorithms/subtree_queries_analysis/
+---
+
 # CSES Subtree Queries - Problem Analysis
 
 ## Problem Statement

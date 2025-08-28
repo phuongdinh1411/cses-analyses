@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Planets Cycles - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/planets_cycles_analysis/
+---
+
 # CSES Planets Cycles - Problem Analysis
 
 ## Problem Statement

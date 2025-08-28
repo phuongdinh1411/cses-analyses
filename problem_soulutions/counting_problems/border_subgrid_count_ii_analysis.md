@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Border Subgrid Count II - Problem Analysis
+permalink: /problem_soulutions/counting_problems/border_subgrid_count_ii_analysis/
+---
+
 # CSES Border Subgrid Count II - Problem Analysis
 
 ## Problem Statement

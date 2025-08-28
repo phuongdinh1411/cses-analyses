@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray Divisibility - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/subarray_divisibility_analysis/
+---
+
 # CSES Subarray Divisibility - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Shortest Routes I - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/shortest_routes_i_analysis/
+---
+
 # CSES Shortest Routes I - Problem Analysis
 
 ## Problem Statement

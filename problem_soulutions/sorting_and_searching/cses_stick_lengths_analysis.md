@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Stick Lengths - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/cses_stick_lengths_analysis/
+---
+
 # CSES Stick Lengths - Problem Analysis
 
 ## Problem Statement

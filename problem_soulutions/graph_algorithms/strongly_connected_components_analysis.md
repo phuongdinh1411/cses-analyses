@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Strongly Connected Components - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/strongly_connected_components_analysis/
+---
+
 # CSES Strongly Connected Components - Problem Analysis
 
 ## Problem Statement

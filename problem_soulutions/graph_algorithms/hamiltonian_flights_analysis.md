@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Hamiltonian Flights - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/hamiltonian_flights_analysis/
+---
+
 # CSES Hamiltonian Flights - Problem Analysis
 
 ## Problem Statement

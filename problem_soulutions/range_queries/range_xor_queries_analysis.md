@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Range Xor Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/range_xor_queries_analysis/
+---
+
 # CSES Range Xor Queries - Problem Analysis
 
 ## Problem Statement

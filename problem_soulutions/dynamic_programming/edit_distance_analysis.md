@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Edit Distance - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/edit_distance_analysis/
+---
+
 # CSES Edit Distance - Problem Analysis
 
 ## Problem Statement

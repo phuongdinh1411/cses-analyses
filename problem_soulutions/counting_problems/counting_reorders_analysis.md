@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Counting Reorders - Problem Analysis
+permalink: /problem_soulutions/counting_problems/counting_reorders_analysis/
+---
+
 # CSES Counting Reorders - Problem Analysis
 
 ## Problem Statement

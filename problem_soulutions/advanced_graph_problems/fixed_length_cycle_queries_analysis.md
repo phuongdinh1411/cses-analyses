@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Fixed Length Cycle Queries - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_cycle_queries_analysis/
+---
+
 # CSES Fixed Length Cycle Queries - Problem Analysis
 
 ## Problem Statement

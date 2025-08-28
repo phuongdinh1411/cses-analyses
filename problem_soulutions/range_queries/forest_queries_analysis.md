@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Forest Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/forest_queries_analysis/
+---
+
 # CSES Forest Queries - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray Sum Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/subarray_sum_queries_analysis/
+---
+
 # CSES Subarray Sum Queries - Problem Analysis
 
 ## Problem Statement

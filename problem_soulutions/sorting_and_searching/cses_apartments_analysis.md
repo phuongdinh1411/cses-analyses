@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Apartments - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/cses_apartments_analysis/
+---
+
 # CSES Apartments - Problem Analysis
 
 ## Problem Statement

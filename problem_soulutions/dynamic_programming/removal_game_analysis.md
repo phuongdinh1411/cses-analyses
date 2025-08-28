@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Removal Game - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/removal_game_analysis/
+---
+
 # CSES Removal Game - Problem Analysis
 
 ## Problem Statement

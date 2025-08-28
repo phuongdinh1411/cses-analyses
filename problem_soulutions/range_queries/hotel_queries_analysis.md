@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Hotel Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/hotel_queries_analysis/
+---
+
 # CSES Hotel Queries - Problem Analysis
 
 ## Problem Statement

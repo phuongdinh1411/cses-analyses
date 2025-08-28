@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Longest Common Subsequence - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/longest_common_subsequence_analysis/
+---
+
 # CSES Longest Common Subsequence - Problem Analysis
 
 ## Problem Statement

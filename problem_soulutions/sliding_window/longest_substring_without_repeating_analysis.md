@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Longest Substring Without Repeating Characters - Problem Analysis
+permalink: /problem_soulutions/sliding_window/longest_substring_without_repeating_analysis/
+---
+
 # CSES Longest Substring Without Repeating Characters - Problem Analysis
 
 ## Problem Statement

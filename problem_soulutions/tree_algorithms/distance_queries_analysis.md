@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Distance Queries - Problem Analysis
+permalink: /problem_soulutions/tree_algorithms/distance_queries_analysis/
+---
+
 # CSES Distance Queries - Problem Analysis
 
 ## Problem Statement

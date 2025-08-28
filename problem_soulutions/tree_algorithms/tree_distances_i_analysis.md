@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Tree Distances I - Problem Analysis
+permalink: /problem_soulutions/tree_algorithms/tree_distances_i_analysis/
+---
+
 # CSES Tree Distances I - Problem Analysis
 
 ## Problem Statement

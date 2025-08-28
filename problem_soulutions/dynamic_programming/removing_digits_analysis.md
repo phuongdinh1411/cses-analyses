@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Removing Digits - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis/
+---
+
 # CSES Removing Digits - Problem Analysis
 
 ## Problem Statement

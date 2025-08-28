@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Police Chase - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/police_chase_analysis/
+---
+
 # CSES Police Chase - Problem Analysis
 
 ## Problem Statement

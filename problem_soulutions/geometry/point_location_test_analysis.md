@@ -1,3 +1,9 @@
+---
+layout: simple
+title: Point Location Test - CSES Geometry Analysis
+permalink: /problem_soulutions/geometry/point_location_test_analysis/
+---
+
 # Point Location Test - CSES Geometry Analysis
 
 ## Problem Description

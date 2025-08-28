@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Road Reparation - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/road_reparation_analysis/
+---
+
 # CSES Road Reparation - Problem Analysis
 
 ## Problem Statement

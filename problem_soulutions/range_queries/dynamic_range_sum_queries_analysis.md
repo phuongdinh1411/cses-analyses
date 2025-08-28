@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Dynamic Range Sum Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/dynamic_range_sum_queries_analysis/
+---
+
 # CSES Dynamic Range Sum Queries - Problem Analysis
 
 ## Problem Statement

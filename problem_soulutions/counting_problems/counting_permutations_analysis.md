@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Counting Permutations - Problem Analysis
+permalink: /problem_soulutions/counting_problems/counting_permutations_analysis/
+---
+
 # CSES Counting Permutations - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Permutation Inversions - Problem Analysis
+permalink: /problem_soulutions/counting_problems/permutation_inversions_analysis/
+---
+
 # CSES Permutation Inversions - Problem Analysis
 
 ## Problem Statement

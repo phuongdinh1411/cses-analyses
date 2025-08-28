@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray Maximums - Problem Analysis
+permalink: /problem_soulutions/sliding_window/subarray_maximums_analysis/
+---
+
 # CSES Subarray Maximums - Problem Analysis
 
 ## Problem Statement

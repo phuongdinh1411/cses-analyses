@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Tree Diameter - Problem Analysis
+permalink: /problem_soulutions/tree_algorithms/tree_diameter_analysis/
+---
+
 # CSES Tree Diameter - Problem Analysis
 
 ## Problem Statement

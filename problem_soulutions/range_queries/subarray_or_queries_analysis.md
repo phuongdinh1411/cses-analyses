@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray OR Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/subarray_or_queries_analysis/
+---
+
 # CSES Subarray OR Queries - Problem Analysis
 
 ## Problem Statement

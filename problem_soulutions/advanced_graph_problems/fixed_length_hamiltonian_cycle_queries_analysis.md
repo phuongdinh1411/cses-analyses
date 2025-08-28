@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Fixed Length Hamiltonian Cycle Queries - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_cycle_queries_analysis/
+---
+
 # CSES Fixed Length Hamiltonian Cycle Queries - Problem Analysis
 
 ## Problem Statement

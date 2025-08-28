@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Coin Combinations II - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/coin_combinations_ii_analysis/
+---
+
 # CSES Coin Combinations II - Problem Analysis
 
 ## Problem Statement

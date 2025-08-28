@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Pattern Positions - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/pattern_positions_analysis/
+---
+
 # CSES Pattern Positions - Problem Analysis
 
 ## Problem Statement

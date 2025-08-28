@@ -1,3 +1,9 @@
+---
+layout: simple
+title: Convex Hull Analysis
+permalink: /problem_soulutions/geometry/convex_hull_analysis/
+---
+
 # Convex Hull Analysis
 
 ## Problem Statement

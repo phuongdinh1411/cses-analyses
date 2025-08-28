@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Fixed Length Hamiltonian Path Queries - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_path_queries_analysis/
+---
+
 # CSES Fixed Length Hamiltonian Path Queries - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Visible Buildings Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/visible_buildings_queries_analysis/
+---
+
 # CSES Visible Buildings Queries - Problem Analysis
 
 ## Problem Statement

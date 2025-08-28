@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Longest Palindrome - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/longest_palindrome_analysis/
+---
+
 # CSES Longest Palindrome - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Factory Machines - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/factory_machines_analysis/
+---
+
 # CSES Factory Machines - Problem Analysis
 
 ## Problem Statement

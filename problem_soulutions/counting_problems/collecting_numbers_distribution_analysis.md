@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Collecting Numbers Distribution - Problem Analysis
+permalink: /problem_soulutions/counting_problems/collecting_numbers_distribution_analysis/
+---
+
 # CSES Collecting Numbers Distribution - Problem Analysis
 
 ## Problem Statement

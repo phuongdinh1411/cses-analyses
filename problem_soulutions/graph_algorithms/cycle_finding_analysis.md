@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Cycle Finding - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/cycle_finding_analysis/
+---
+
 # CSES Cycle Finding - Problem Analysis
 
 ## Problem Statement

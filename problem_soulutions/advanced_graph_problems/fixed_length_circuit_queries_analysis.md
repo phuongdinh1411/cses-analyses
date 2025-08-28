@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Fixed Length Circuit Queries - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_circuit_queries_analysis/
+---
+
 # CSES Fixed Length Circuit Queries - Problem Analysis
 
 ## Problem Statement

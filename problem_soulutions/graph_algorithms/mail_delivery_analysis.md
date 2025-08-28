@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Mail Delivery - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/mail_delivery_analysis/
+---
+
 # CSES Mail Delivery - Problem Analysis
 
 ## Problem Statement

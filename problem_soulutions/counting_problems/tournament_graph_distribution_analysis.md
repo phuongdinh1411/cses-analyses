@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Tournament Graph Distribution - Problem Analysis
+permalink: /problem_soulutions/counting_problems/tournament_graph_distribution_analysis/
+---
+
 # CSES Tournament Graph Distribution - Problem Analysis
 
 ## Problem Statement

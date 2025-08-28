@@ -1,3 +1,9 @@
+---
+layout: simple
+title: Polygon Area Analysis
+permalink: /problem_soulutions/geometry/polygon_area_analysis/
+---
+
 # Polygon Area Analysis
 
 ## Problem Statement

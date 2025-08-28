@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Word Combinations - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/word_combinations_analysis/
+---
+
 # CSES Word Combinations - Problem Analysis
 
 ## Problem Statement

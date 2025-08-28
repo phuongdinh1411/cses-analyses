@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES List Removals - Problem Analysis
+permalink: /problem_soulutions/range_queries/list_removals_analysis/
+---
+
 # CSES List Removals - Problem Analysis
 
 ## Problem Statement

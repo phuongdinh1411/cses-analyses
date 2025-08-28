@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Traffic Lights - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/traffic_lights_analysis/
+---
+
 # CSES Traffic Lights - Problem Analysis
 
 ## Problem Statement

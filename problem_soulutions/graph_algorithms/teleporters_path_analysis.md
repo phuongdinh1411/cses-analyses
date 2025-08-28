@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Teleporters Path - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/teleporters_path_analysis/
+---
+
 # CSES Teleporters Path - Problem Analysis
 
 ## Problem Statement

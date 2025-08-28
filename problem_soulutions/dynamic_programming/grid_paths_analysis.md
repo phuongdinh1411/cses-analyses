@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Grid Paths - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/grid_paths_analysis/
+---
+
 # CSES Grid Paths - Problem Analysis
 
 ## Problem Statement

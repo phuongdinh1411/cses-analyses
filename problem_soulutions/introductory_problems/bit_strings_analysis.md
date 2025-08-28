@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Bit Strings - Problem Analysis
+permalink: /problem_soulutions/introductory_problems/bit_strings_analysis/
+---
+
 # CSES Bit Strings - Problem Analysis
 
 ## Problem Statement

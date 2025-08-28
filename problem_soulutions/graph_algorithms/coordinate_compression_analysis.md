@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Coordinate Compression - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/coordinate_compression_analysis/
+---
+
 # CSES Coordinate Compression - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Reading Books - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/reading_books_analysis/
+---
+
 # CSES Reading Books - Problem Analysis
 
 ## Problem Statement

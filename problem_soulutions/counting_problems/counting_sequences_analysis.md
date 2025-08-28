@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Counting Sequences - Problem Analysis
+permalink: /problem_soulutions/counting_problems/counting_sequences_analysis/
+---
+
 # CSES Counting Sequences - Problem Analysis
 
 ## Problem Statement

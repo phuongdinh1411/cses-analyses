@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Fixed Length Subarray Sum - Problem Analysis
+permalink: /problem_soulutions/sliding_window/fixed_length_subarray_sum_analysis/
+---
+
 # CSES Fixed Length Subarray Sum - Problem Analysis
 
 ## Problem Statement

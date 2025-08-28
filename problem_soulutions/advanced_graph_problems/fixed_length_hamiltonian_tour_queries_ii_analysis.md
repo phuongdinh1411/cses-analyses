@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Fixed Length Hamiltonian Tour Queries II - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_tour_queries_ii_analysis/
+---
+
 # CSES Fixed Length Hamiltonian Tour Queries II - Problem Analysis
 
 ## Problem Statement

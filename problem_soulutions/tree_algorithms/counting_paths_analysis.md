@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Counting Paths - Problem Analysis
+permalink: /problem_soulutions/tree_algorithms/counting_paths_analysis/
+---
+
 # CSES Counting Paths - Problem Analysis
 
 ## Problem Statement

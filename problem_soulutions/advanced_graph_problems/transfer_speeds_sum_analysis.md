@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Transfer Speeds Sum - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analysis/
+---
+
 # CSES Transfer Speeds Sum - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray Distinct Values Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/subarray_distinct_values_queries_analysis/
+---
+
 # CSES Subarray Distinct Values Queries - Problem Analysis
 
 ## Problem Statement

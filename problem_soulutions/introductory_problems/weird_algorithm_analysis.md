@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Weird Algorithm - Problem Analysis
+permalink: /problem_soulutions/introductory_problems/weird_algorithm_analysis/
+---
+
 # CSES Weird Algorithm - Problem Analysis
 
 ## Problem Statement

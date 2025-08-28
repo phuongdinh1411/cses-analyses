@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Sum of Two Values - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/cses_sum_of_two_values_analysis/
+---
+
 # CSES Sum of Two Values - Problem Analysis
 
 ## Problem Statement

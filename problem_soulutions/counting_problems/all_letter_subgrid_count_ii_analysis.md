@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES All Letter Subgrid Count II - Problem Analysis
+permalink: /problem_soulutions/counting_problems/all_letter_subgrid_count_ii_analysis/
+---
+
 # CSES All Letter Subgrid Count II - Problem Analysis
 
 ## Problem Statement

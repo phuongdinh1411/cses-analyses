@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Tree Traversals - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/tree_traversals_analysis/
+---
+
 # CSES Tree Traversals - Problem Analysis
 
 ## Problem Statement

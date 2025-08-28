@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Dice Combinations - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis/
+---
+
 # CSES Dice Combinations - Problem Analysis
 
 ## Problem Statement

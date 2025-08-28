@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Road Construction IV - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/road_construction_iv_analysis/
+---
+
 # CSES Road Construction IV - Problem Analysis
 
 ## Problem Statement

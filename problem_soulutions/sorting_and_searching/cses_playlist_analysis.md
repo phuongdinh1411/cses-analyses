@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Playlist - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/cses_playlist_analysis/
+---
+
 # CSES Playlist - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Increasing Array - Problem Analysis
+permalink: /problem_soulutions/introductory_problems/increasing_array_analysis/
+---
+
 # CSES Increasing Array - Problem Analysis
 
 ## Problem Statement

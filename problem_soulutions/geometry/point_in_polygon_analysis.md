@@ -1,3 +1,9 @@
+---
+layout: simple
+title: Point in Polygon - CSES Geometry Analysis
+permalink: /problem_soulutions/geometry/point_in_polygon_analysis/
+---
+
 # Point in Polygon - CSES Geometry Analysis
 
 ## Problem Description

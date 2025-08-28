@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Monsters - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/monsters_analysis/
+---
+
 # CSES Monsters - Problem Analysis
 
 ## Problem Statement

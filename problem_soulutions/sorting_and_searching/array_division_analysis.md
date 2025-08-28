@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Array Division - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/array_division_analysis/
+---
+
 # CSES Array Division - Problem Analysis
 
 ## Problem Statement

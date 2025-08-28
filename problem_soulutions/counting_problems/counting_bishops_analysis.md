@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Counting Bishops - Problem Analysis
+permalink: /problem_soulutions/counting_problems/counting_bishops_analysis/
+---
+
 # CSES Counting Bishops - Problem Analysis
 
 ## Problem Statement

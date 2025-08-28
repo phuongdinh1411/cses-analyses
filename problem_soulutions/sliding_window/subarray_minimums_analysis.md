@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray Minimums - Problem Analysis
+permalink: /problem_soulutions/sliding_window/subarray_minimums_analysis/
+---
+
 # CSES Subarray Minimums - Problem Analysis
 
 ## Problem Statement

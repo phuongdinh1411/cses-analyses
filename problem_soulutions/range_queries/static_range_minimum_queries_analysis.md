@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Static Range Minimum Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/static_range_minimum_queries_analysis/
+---
+
 # CSES Static Range Minimum Queries - Problem Analysis
 
 ## Problem Statement

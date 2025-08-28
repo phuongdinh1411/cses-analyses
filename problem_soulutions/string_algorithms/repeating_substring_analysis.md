@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Repeating Substring - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/repeating_substring_analysis/
+---
+
 # CSES Repeating Substring - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Download Speed - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/download_speed_analysis/
+---
+
 # CSES Download Speed - Problem Analysis
 
 ## Problem Statement

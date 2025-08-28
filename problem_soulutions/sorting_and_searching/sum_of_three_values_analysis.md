@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Sum of Three Values - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/sum_of_three_values_analysis/
+---
+
 # CSES Sum of Three Values - Problem Analysis
 
 ## Problem Statement

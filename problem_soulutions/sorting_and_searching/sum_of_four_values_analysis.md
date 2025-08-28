@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Sum of Four Values - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/sum_of_four_values_analysis/
+---
+
 # CSES Sum of Four Values - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Nearest Shops - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis/
+---
+
 # CSES Nearest Shops - Problem Analysis
 
 ## Problem Statement

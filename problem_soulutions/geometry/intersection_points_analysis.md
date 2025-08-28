@@ -1,3 +1,9 @@
+---
+layout: simple
+title: Intersection Points - CSES Geometry Analysis
+permalink: /problem_soulutions/geometry/intersection_points_analysis/
+---
+
 # Intersection Points - CSES Geometry Analysis
 
 ## Problem Description

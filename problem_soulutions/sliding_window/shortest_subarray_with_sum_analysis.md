@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Shortest Subarray with Sum - Problem Analysis
+permalink: /problem_soulutions/sliding_window/shortest_subarray_with_sum_analysis/
+---
+
 # CSES Shortest Subarray with Sum - Problem Analysis
 
 ## Problem Statement

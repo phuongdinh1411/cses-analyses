@@ -1,3 +1,9 @@
+---
+layout: simple
+title: Line Segment Intersection - CSES Geometry Analysis
+permalink: /problem_soulutions/geometry/line_segment_intersection_analysis/
+---
+
 # Line Segment Intersection - CSES Geometry Analysis
 
 ## Problem Description

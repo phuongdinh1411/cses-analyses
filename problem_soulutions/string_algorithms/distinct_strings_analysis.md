@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Distinct Strings - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/distinct_strings_analysis/
+---
+
 # CSES Distinct Strings - Problem Analysis
 
 ## Problem Statement

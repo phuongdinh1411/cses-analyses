@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Longest Subarray with Sum - Problem Analysis
+permalink: /problem_soulutions/sliding_window/longest_subarray_with_sum_analysis/
+---
+
 # CSES Longest Subarray with Sum - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray Minimum Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/subarray_minimum_queries_analysis/
+---
+
 # CSES Subarray Minimum Queries - Problem Analysis
 
 ## Problem Statement

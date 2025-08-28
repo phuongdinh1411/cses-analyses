@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray Distinct Values - Problem Analysis
+permalink: /problem_soulutions/sliding_window/subarray_distinct_values_analysis/
+---
+
 # CSES Subarray Distinct Values - Problem Analysis
 
 ## Problem Statement

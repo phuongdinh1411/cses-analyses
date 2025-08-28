@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Path Queries - Problem Analysis
+permalink: /problem_soulutions/tree_algorithms/path_queries_analysis/
+---
+
 # CSES Path Queries - Problem Analysis
 
 ## Problem Statement

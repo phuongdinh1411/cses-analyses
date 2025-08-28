@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Two Sets - Problem Analysis
+permalink: /problem_soulutions/introductory_problems/two_sets_analysis/
+---
+
 # CSES Two Sets - Problem Analysis
 
 ## Problem Statement

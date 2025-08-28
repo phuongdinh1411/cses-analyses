@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Minimal Grid Path - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/minimal_grid_path_analysis/
+---
+
 # CSES Minimal Grid Path - Problem Analysis
 
 ## Problem Statement

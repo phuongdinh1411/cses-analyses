@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray with Given Sum - Problem Analysis
+permalink: /problem_soulutions/sliding_window/subarray_with_given_sum_analysis/
+---
+
 # CSES Subarray with Given Sum - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Prüfer Code - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/prufer_code_analysis/
+---
+
 # CSES Prüfer Code - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Distinct Routes - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/distinct_routes_analysis/
+---
+
 # CSES Distinct Routes - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES String Compression - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/string_compression_analysis/
+---
+
 # CSES String Compression - Problem Analysis
 
 ## Problem Statement

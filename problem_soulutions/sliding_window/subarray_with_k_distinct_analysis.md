@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray with K Distinct - Problem Analysis
+permalink: /problem_soulutions/sliding_window/subarray_with_k_distinct_analysis/
+---
+
 # CSES Subarray with K Distinct - Problem Analysis
 
 ## Problem Statement

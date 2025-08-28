@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Round Trip - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/round_trip_analysis/
+---
+
 # CSES Round Trip - Problem Analysis
 
 ## Problem Statement

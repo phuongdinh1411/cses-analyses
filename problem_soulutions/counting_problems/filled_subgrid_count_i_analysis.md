@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Filled Subgrid Count I - Problem Analysis
+permalink: /problem_soulutions/counting_problems/filled_subgrid_count_i_analysis/
+---
+
 # CSES Filled Subgrid Count I - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Minimizing Coins - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/minimizing_coins_analysis/
+---
+
 # CSES Minimizing Coins - Problem Analysis
 
 ## Problem Statement

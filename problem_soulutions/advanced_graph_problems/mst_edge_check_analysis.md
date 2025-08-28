@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES MST Edge Check - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/mst_edge_check_analysis/
+---
+
 # CSES MST Edge Check - Problem Analysis
 
 ## Problem Statement

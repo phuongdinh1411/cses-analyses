@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Finding Periods - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/finding_periods_analysis/
+---
+
 # CSES Finding Periods - Problem Analysis
 
 ## Problem Statement

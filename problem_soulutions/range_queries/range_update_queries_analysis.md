@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Range Update Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/range_update_queries_analysis/
+---
+
 # CSES Range Update Queries - Problem Analysis
 
 ## Problem Statement

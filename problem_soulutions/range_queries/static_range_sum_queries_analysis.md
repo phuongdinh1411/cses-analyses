@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Static Range Sum Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/static_range_sum_queries_analysis/
+---
+
 # CSES Static Range Sum Queries - Problem Analysis
 
 ## Problem Statement

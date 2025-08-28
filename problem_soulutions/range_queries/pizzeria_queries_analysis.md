@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Pizzeria Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/pizzeria_queries_analysis/
+---
+
 # CSES Pizzeria Queries - Problem Analysis
 
 ## Problem Statement

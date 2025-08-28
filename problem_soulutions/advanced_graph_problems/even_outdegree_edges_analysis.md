@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Even Outdegree Edges - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/even_outdegree_edges_analysis/
+---
+
 # CSES Even Outdegree Edges - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES String Rotation - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/string_rotation_analysis/
+---
+
 # CSES String Rotation - Problem Analysis
 
 ## Problem Statement

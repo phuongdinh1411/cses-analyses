@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Money Sums - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/money_sums_analysis/
+---
+
 # CSES Money Sums - Problem Analysis
 
 ## Problem Statement

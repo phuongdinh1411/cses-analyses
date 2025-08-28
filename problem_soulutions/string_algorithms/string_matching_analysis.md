@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES String Matching - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/string_matching_analysis/
+---
+
 # CSES String Matching - Problem Analysis
 
 ## Problem Statement

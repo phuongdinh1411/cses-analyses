@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Counting Rooms - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/counting_rooms_analysis/
+---
+
 # CSES Counting Rooms - Problem Analysis
 
 ## Problem Statement

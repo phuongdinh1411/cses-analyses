@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Towers - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/towers_analysis/
+---
+
 # CSES Towers - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Course Schedule II - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/course_schedule_ii_analysis/
+---
+
 # CSES Course Schedule II - Problem Analysis
 
 ## Problem Statement

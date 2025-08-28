@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Road Construction III - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/road_construction_iii_analysis/
+---
+
 # CSES Road Construction III - Problem Analysis
 
 ## Problem Statement

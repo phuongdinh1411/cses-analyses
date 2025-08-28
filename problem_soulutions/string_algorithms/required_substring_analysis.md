@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Required Substring - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/required_substring_analysis/
+---
+
 # CSES Required Substring - Problem Analysis
 
 ## Problem Statement

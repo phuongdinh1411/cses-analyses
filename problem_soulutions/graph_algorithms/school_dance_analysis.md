@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES School Dance - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/school_dance_analysis/
+---
+
 # CSES School Dance - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Trailing Zeros - Problem Analysis
+permalink: /problem_soulutions/introductory_problems/trailing_zeros_analysis/
+---
+
 # CSES Trailing Zeros - Problem Analysis
 
 ## Problem Statement

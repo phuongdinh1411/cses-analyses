@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Array Description - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/array_description_analysis/
+---
+
 # CSES Array Description - Problem Analysis
 
 ## Problem Statement

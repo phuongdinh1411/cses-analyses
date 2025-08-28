@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Two Sets II - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/two_sets_ii_analysis/
+---
+
 # CSES Two Sets II - Problem Analysis
 
 ## Problem Statement

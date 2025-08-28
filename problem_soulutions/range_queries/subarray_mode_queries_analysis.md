@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray Mode Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/subarray_mode_queries_analysis/
+---
+
 # CSES Subarray Mode Queries - Problem Analysis
 
 ## Problem Statement

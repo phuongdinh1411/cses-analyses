@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Grid Completion - Problem Analysis
+permalink: /problem_soulutions/counting_problems/grid_completion_analysis/
+---
+
 # CSES Grid Completion - Problem Analysis
 
 ## Problem Statement

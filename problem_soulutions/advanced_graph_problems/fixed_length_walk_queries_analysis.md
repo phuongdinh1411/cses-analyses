@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Fixed Length Walk Queries - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_walk_queries_analysis/
+---
+
 # CSES Fixed Length Walk Queries - Problem Analysis
 
 ## Problem Statement

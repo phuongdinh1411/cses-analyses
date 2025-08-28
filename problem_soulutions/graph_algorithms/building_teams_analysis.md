@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Building Teams - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/building_teams_analysis/
+---
+
 # CSES Building Teams - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Tree Matching - Problem Analysis
+permalink: /problem_soulutions/tree_algorithms/tree_matching_analysis/
+---
+
 # CSES Tree Matching - Problem Analysis
 
 ## Problem Statement

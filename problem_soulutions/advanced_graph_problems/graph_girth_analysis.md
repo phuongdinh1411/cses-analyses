@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Graph Girth - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/graph_girth_analysis/
+---
+
 # CSES Graph Girth - Problem Analysis
 
 ## Problem Statement

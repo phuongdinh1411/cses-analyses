@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Distinct Values Queries - Problem Analysis
+permalink: /problem_soulutions/tree_algorithms/distinct_values_queries_analysis/
+---
+
 # CSES Distinct Values Queries - Problem Analysis
 
 ## Problem Statement

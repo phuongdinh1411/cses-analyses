@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Counting Combinations - Problem Analysis
+permalink: /problem_soulutions/counting_problems/counting_combinations_analysis/
+---
+
 # CSES Counting Combinations - Problem Analysis
 
 ## Problem Statement

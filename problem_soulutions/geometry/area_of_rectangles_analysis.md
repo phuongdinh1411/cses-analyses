@@ -1,3 +1,9 @@
+---
+layout: simple
+title: Area of Rectangles - CSES Geometry Analysis
+permalink: /problem_soulutions/geometry/area_of_rectangles_analysis/
+---
+
 # Area of Rectangles - CSES Geometry Analysis
 
 ## Problem Description

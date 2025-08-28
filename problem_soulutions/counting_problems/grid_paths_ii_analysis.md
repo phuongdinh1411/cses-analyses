@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Grid Paths II - Problem Analysis
+permalink: /problem_soulutions/counting_problems/grid_paths_ii_analysis/
+---
+
 # CSES Grid Paths II - Problem Analysis
 
 ## Problem Statement

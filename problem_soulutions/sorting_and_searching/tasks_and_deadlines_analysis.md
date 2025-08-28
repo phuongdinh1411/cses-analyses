@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Tasks and Deadlines - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysis/
+---
+
 # CSES Tasks and Deadlines - Problem Analysis
 
 ## Problem Statement

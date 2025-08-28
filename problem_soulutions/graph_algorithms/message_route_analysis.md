@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Message Route - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/message_route_analysis/
+---
+
 # CSES Message Route - Problem Analysis
 
 ## Problem Statement

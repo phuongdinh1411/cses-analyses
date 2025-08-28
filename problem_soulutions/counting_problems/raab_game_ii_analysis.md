@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Raab Game II - Problem Analysis
+permalink: /problem_soulutions/counting_problems/raab_game_ii_analysis/
+---
+
 # CSES Raab Game II - Problem Analysis
 
 ## Problem Statement

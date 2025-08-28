@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Two Knights - Problem Analysis
+permalink: /problem_soulutions/introductory_problems/two_knights_analysis/
+---
+
 # CSES Two Knights - Problem Analysis
 
 ## Problem Statement

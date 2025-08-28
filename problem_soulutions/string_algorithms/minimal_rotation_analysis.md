@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Minimal Rotation - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/minimal_rotation_analysis/
+---
+
 # CSES Minimal Rotation - Problem Analysis
 
 ## Problem Statement

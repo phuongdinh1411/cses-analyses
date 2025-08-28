@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Room Allocation - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/room_allocation_analysis/
+---
+
 # CSES Room Allocation - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Missing Coin Sum - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/missing_coin_sum_analysis/
+---
+
 # CSES Missing Coin Sum - Problem Analysis
 
 ## Problem Statement

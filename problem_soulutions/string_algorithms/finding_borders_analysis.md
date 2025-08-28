@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Finding Borders - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/finding_borders_analysis/
+---
+
 # CSES Finding Borders - Problem Analysis
 
 ## Problem Statement

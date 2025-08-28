@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Distinct Numbers - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/cses_distinct_numbers_analysis/
+---
+
 # CSES Distinct Numbers - Problem Analysis
 
 ## Problem Statement

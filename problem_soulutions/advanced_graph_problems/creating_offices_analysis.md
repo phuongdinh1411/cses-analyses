@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Creating Offices - Problem Analysis
+permalink: /problem_soulutions/advanced_graph_problems/creating_offices_analysis/
+---
+
 # CSES Creating Offices - Problem Analysis
 
 ## Problem Statement

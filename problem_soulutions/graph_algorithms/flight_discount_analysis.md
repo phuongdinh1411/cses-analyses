@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Flight Discount - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis/
+---
+
 # CSES Flight Discount - Problem Analysis
 
 ## Problem Statement

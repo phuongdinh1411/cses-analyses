@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subarray Sums I - Problem Analysis
+permalink: /problem_soulutions/sliding_window/subarray_sums_i_analysis/
+---
+
 # CSES Subarray Sums I - Problem Analysis
 
 ## Problem Statement

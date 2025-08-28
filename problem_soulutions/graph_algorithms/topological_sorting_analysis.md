@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Topological Sorting - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/topological_sorting_analysis/
+---
+
 # CSES Topological Sorting - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Company Queries III - Problem Analysis
+permalink: /problem_soulutions/tree_algorithms/company_queries_iii_analysis/
+---
+
 # CSES Company Queries III - Problem Analysis
 
 ## Problem Statement

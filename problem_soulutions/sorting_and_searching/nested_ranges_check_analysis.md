@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Nested Ranges Check - Problem Analysis
+permalink: /problem_soulutions/sorting_and_searching/nested_ranges_check_analysis/
+---
+
 # CSES Nested Ranges Check - Problem Analysis
 
 ## Problem Statement

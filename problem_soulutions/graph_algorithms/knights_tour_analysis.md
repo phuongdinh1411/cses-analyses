@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Knight's Tour - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/knights_tour_analysis/
+---
+
 # CSES Knight's Tour - Problem Analysis
 
 ## Problem Statement

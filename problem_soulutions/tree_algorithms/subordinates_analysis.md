@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Subordinates - Problem Analysis
+permalink: /problem_soulutions/tree_algorithms/subordinates_analysis/
+---
+
 # CSES Subordinates - Problem Analysis
 
 ## Problem Statement

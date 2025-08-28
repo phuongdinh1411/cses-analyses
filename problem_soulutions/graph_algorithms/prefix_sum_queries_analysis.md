@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Prefix Sum Queries - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/prefix_sum_queries_analysis/
+---
+
 # CSES Prefix Sum Queries - Problem Analysis
 
 ## Problem Statement

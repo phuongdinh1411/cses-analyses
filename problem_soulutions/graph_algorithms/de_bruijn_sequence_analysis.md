@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES De Bruijn Sequence - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis/
+---
+
 # CSES De Bruijn Sequence - Problem Analysis
 
 ## Problem Statement

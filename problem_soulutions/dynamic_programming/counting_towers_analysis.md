@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Counting Towers - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/counting_towers_analysis/
+---
+
 # CSES Counting Towers - Problem Analysis
 
 ## Problem Statement

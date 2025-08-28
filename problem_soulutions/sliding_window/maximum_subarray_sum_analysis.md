@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Maximum Subarray Sum - Problem Analysis
+permalink: /problem_soulutions/sliding_window/maximum_subarray_sum_analysis/
+---
+
 # CSES Maximum Subarray Sum - Problem Analysis
 
 ## Problem Statement

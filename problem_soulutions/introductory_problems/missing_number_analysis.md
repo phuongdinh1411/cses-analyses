@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Missing Number - Problem Analysis
+permalink: /problem_soulutions/introductory_problems/missing_number_analysis/
+---
+
 # CSES Missing Number - Problem Analysis
 
 ## Problem Statement

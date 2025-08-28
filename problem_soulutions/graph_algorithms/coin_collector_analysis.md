@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Coin Collector - Problem Analysis
+permalink: /problem_soulutions/graph_algorithms/coin_collector_analysis/
+---
+
 # CSES Coin Collector - Problem Analysis
 
 ## Problem Statement

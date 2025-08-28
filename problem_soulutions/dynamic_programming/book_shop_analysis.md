@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Book Shop - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/book_shop_analysis/
+---
+
 # CSES Book Shop - Problem Analysis
 
 ## Problem Statement

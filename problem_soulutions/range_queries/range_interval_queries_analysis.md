@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Range Interval Queries - Problem Analysis
+permalink: /problem_soulutions/range_queries/range_interval_queries_analysis/
+---
+
 # CSES Range Interval Queries - Problem Analysis
 
 ## Problem Statement

@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES String Functions - Problem Analysis
+permalink: /problem_soulutions/string_algorithms/string_functions_analysis/
+---
+
 # CSES String Functions - Problem Analysis
 
 ## Problem Statement

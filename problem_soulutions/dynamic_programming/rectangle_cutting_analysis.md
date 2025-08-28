@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Rectangle Cutting - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/rectangle_cutting_analysis/
+---
+
 # CSES Rectangle Cutting - Problem Analysis
 
 ## Problem Statement

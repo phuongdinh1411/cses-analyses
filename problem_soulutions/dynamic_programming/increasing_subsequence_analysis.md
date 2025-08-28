@@ -1,3 +1,9 @@
+---
+layout: simple
+title: CSES Increasing Subsequence - Problem Analysis
+permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analysis/
+---
+
 # CSES Increasing Subsequence - Problem Analysis
 
 ## Problem Statement
