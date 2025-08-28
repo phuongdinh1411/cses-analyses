@@ -10,7 +10,7 @@ Welcome to the CSES Quick Reference section! This is your go-to resource for fas
 
 ## 📚 Available References
 
-### 🚀 [Ultimate Cheatsheet](/quick_reference/ultimate_cheatsheet/)
+### 🚀 [Ultimate Cheatsheet](/cses-analyses/quick_reference/ultimate_cheatsheet/)
 **Complete comprehensive guide** with all algorithms, techniques, and problem-solving strategies in one place.
 
 **Includes:**
@@ -21,7 +21,7 @@ Welcome to the CSES Quick Reference section! This is your go-to resource for fas
 - Visual learning aids
 - Emergency quick reference
 
-### 🔬 [Advanced Algorithms](/quick_reference/advanced_algorithms/)
+### 🔬 [Advanced Algorithms](/cses-analyses/quick_reference/advanced_algorithms/)
 **Advanced techniques** and complex algorithms for challenging problems.
 
 **Includes:**
@@ -31,7 +31,7 @@ Welcome to the CSES Quick Reference section! This is your go-to resource for fas
 - Optimization techniques
 - Mathematical algorithms
 
-### ⚠️ [Common Mistakes](/quick_reference/common_mistakes/)
+### ⚠️ [Common Mistakes](/cses-analyses/quick_reference/common_mistakes/)
 **Common pitfalls** and how to avoid them in competitive programming.
 
 **Includes:**
@@ -67,9 +67,9 @@ Welcome to the CSES Quick Reference section! This is your go-to resource for fas
 
 ## 🚀 Getting Started
 
-1. **Start with Ultimate Cheatsheet** for comprehensive overview
-2. **Use Advanced Algorithms** for complex problems
-3. **Check Common Mistakes** to avoid pitfalls
+1. **[Start with Ultimate Cheatsheet](/cses-analyses/quick_reference/ultimate_cheatsheet/)** for comprehensive overview
+2. **[Use Advanced Algorithms](/cses-analyses/quick_reference/advanced_algorithms/)** for complex problems
+3. **[Check Common Mistakes](/cses-analyses/quick_reference/common_mistakes/)** to avoid pitfalls
 4. **Practice regularly** with CSES problems
 
 ## 💡 Tips for Effective Use
