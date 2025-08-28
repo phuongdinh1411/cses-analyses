@@ -14,6 +14,10 @@ plugins:
   - jekyll-toc
   - jekyll-auto-nav
 
+auto_nav:
+  collections: ["pages"]
+  depth: 3
+
 defaults:
   - scope:
       path: ""
