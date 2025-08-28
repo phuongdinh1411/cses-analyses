@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Permutation Inversions - Problem Analysis
+title: "Permutation Inversions
 permalink: /problem_soulutions/counting_problems/permutation_inversions_analysis/
 ---
 
-# CSES Permutation Inversions - Problem Analysis
+# Permutation Inversions
 
 ## Problem Statement
 Given a permutation of numbers from 1 to n, count the number of inversions. An inversion is a pair of indices (i,j) where i < j and a[i] > a[j].
@@ -541,7 +541,7 @@ def range_query(inversions, start, end):
 #### **3. Interactive Problems**
 ```python
 # Interactive inversion analyzer
-def interactive_inversion_analyzer():
+def interactive_inversion_analyzer():"
     n = int(input("Enter array length: "))
     arr = list(map(int, input("Enter array: ").split()))
     

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Weird Algorithm - Problem Analysis
+title: "Weird Algorithm
 permalink: /problem_soulutions/introductory_problems/weird_algorithm_analysis/
 ---
 
-# CSES Weird Algorithm - Problem Analysis
+# Weird Algorithm
 
 ## Problem Statement
 Consider an algorithm that takes as input a positive integer n. If n is even, the algorithm divides it by two, and if n is odd, the algorithm multiplies it by three and adds one. The algorithm repeats this, until n is one.
@@ -65,8 +65,7 @@ def weird_algorithm_recursive(n):
         return [n] + weird_algorithm_recursive(n // 2)
     else:
         return [n] + weird_algorithm_recursive(3 * n + 1)
-```
-
+```"
 **Why this works**: The recursive approach follows the same logic but uses the call stack instead of a loop. It's elegant but may cause stack overflow for very large sequences.
 
 ### Alternative: Iterative with Vector - O(log n)

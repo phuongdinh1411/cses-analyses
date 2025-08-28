@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Array Division - Problem Analysis
+title: "Array Division
 permalink: /problem_soulutions/sorting_and_searching/array_division_analysis/
 ---
 
-# CSES Array Division - Problem Analysis
+# Array Division
 
 ## Problem Statement
 Given an array of n integers, divide it into k subarrays such that the maximum sum of any subarray is minimized.
@@ -101,8 +101,7 @@ def array_division_optimized(n, k, arr):
             left = mid + 1
     
     return left
-```
-
+```"
 **Why this improvement works**: Instead of trying all possible divisions, we use binary search to find the minimum maximum sum. For a given maximum sum, we can check if it's possible to divide the array into k subarrays.
 
 ## Final Optimal Solution

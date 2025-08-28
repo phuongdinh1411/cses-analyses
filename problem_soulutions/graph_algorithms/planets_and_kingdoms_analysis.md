@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Planets and Kingdoms - Problem Analysis
+title: "Planets and Kingdoms
 permalink: /problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis/
 ---
 
-# CSES Planets and Kingdoms - Problem Analysis
+# Planets and Kingdoms
 
 ## Problem Statement
 Given a directed graph with n planets and m teleporters, find all strongly connected components (kingdoms) and assign each planet to a kingdom.
@@ -35,8 +35,7 @@ Output:
 1 1 1 2
 ```
 
-## Solution Progression
-
+## Solution Progression"
 ### Approach 1: Kosaraju's Algorithm - O(n + m)
 **Description**: Use Kosaraju's algorithm to find strongly connected components.
 

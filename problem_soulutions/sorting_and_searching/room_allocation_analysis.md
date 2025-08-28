@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Room Allocation - Problem Analysis
+title: "Room Allocation
 permalink: /problem_soulutions/sorting_and_searching/room_allocation_analysis/
 ---
 
-# CSES Room Allocation - Problem Analysis
+# Room Allocation
 
 ## Problem Statement
 Given n customers, each with arrival and departure times, assign rooms to customers so that no two customers share a room at the same time. Find the minimum number of rooms needed and assign rooms to each customer.
@@ -255,7 +255,7 @@ def room_allocation_with_types(n, customers, room_types):
             available_rooms[room_type].append(room_id)
         
         # Find cheapest available room
-        best_room_type = None
+        best_room_type = None"
         best_cost = float('inf')
         
         for room_type, (capacity, cost) in enumerate(room_types):

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Nested Ranges Check - Problem Analysis
+title: "Nested Ranges Check
 permalink: /problem_soulutions/sorting_and_searching/nested_ranges_check_analysis/
 ---
 
-# CSES Nested Ranges Check - Problem Analysis
+# Nested Ranges Check
 
 ## Problem Statement
 Given n ranges [a1,b1],[a2,b2],…,[an,bn], for each range check if it contains any other range and if it is contained by any other range.
@@ -404,7 +404,7 @@ def containment_query(matrix, i, j):
 #### **3. Interactive Problems**
 ```python
 # Interactive range checking game
-def interactive_range_checker():
+def interactive_range_checker():"
     n = int(input("Enter number of ranges: "))
     ranges = []
     

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Transfer Speeds Sum - Problem Analysis
+title: "Transfer Speeds Sum
 permalink: /problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analysis/
 ---
 
-# CSES Transfer Speeds Sum - Problem Analysis
+# Transfer Speeds Sum
 
 ## Problem Statement
 Given a directed graph with n nodes and m edges, where each edge has a transfer speed, find the sum of all transfer speeds between all pairs of nodes.
@@ -58,8 +58,7 @@ def transfer_speeds_sum_naive(n, m, edges):
                         total_sum += speed
     
     return total_sum
-```
-
+```"
 **Why this is inefficient**: This approach has O(n²m) complexity and doesn't handle the problem correctly.
 
 ### Improvement 1: Direct Edge Sum - O(m)

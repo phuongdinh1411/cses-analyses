@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Shortest Routes II - Problem Analysis
+title: "Shortest Routes II
 permalink: /problem_soulutions/graph_algorithms/shortest_routes_ii_analysis/
 ---
 
-# CSES Shortest Routes II - Problem Analysis
+# Shortest Routes II
 
 ## Problem Statement
 There are n cities and m flight connections. Your task is to find the shortest route between any two cities.
@@ -44,7 +44,7 @@ Output:
 
 ```python
 def shortest_routes_floyd_warshall(n, m, flights):
-    # Initialize distance matrix
+    # Initialize distance matrix"
     distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
     
     # Set diagonal to 0

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Collecting Numbers Distribution - Problem Analysis
+title: "Collecting Numbers Distribution
 permalink: /problem_soulutions/counting_problems/collecting_numbers_distribution_analysis/
 ---
 
-# CSES Collecting Numbers Distribution - Problem Analysis
+# Collecting Numbers Distribution
 
 ## Problem Statement
 Given n numbers, count the number of different ways to collect them in order, where each collection step must pick the smallest available number.
@@ -43,7 +43,7 @@ def collecting_numbers_distribution_naive(n, numbers):
     def is_valid_collection(perm):
         collected = set()
         for num in perm:
-            # Find smallest available number
+            # Find smallest available number"
             min_available = float('inf')
             for i, val in enumerate(numbers):
                 if val not in collected:

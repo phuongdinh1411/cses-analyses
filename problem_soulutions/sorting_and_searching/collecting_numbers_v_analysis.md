@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Collecting Numbers V - Problem Analysis
+title: "Collecting Numbers V
 permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_v_analysis/
 ---
 
-# CSES Collecting Numbers V - Problem Analysis
+# Collecting Numbers V
 
 ## Problem Statement
 Given an array of n integers, you want to collect them in increasing order. You can collect a number if you have already collected all numbers smaller than it. Find the minimum number of rounds needed to collect all numbers, and also find the order in which numbers are collected in each round, along with their original positions.
@@ -141,7 +141,7 @@ total_rounds, round_orders = find_minimum_rounds_and_round_orders_with_positions
 print(total_rounds)
 
 for round_num in range(1, total_rounds + 1):
-    if round_num in round_orders:
+    if round_num in round_orders:"
         positions_str = " ".join([f"({value},{pos})" for value, pos in round_orders[round_num]])
         print(f"Round {round_num}: {positions_str}")
 ```

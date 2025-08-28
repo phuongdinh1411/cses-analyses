@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Subtree Queries - Problem Analysis
+title: "Subtree Queries
 permalink: /problem_soulutions/tree_algorithms/subtree_queries_analysis/
 ---
 
-# CSES Subtree Queries - Problem Analysis
+# Subtree Queries
 
 ## Problem Statement
 Given a tree with n nodes, each node has a value. Process q queries. Each query is either:
@@ -15,7 +15,7 @@ Given a tree with n nodes, each node has a value. Process q queries. Each query 
 The first input line has two integers n and q: the number of nodes and the number of queries.
 The second line has n integers x1,x2,…,xn: the values of the nodes.
 Then there are n-1 lines describing the edges. Each line has two integers a and b: an edge between nodes a and b.
-Finally, there are q lines describing the queries. Each line has either:
+Finally, there are q lines describing the queries. Each line has either:"
 - "1 s x": update the value of node s to x
 - "2 s": calculate the sum of values in the subtree of node s
 

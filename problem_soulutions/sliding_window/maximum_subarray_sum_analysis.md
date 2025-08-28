@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Maximum Subarray Sum - Problem Analysis
+title: "Maximum Subarray Sum
 permalink: /problem_soulutions/sliding_window/maximum_subarray_sum_analysis/
 ---
 
-# CSES Maximum Subarray Sum - Problem Analysis
+# Maximum Subarray Sum
 
 ## Problem Statement
 Given an array of n integers, your task is to find the maximum sum of a subarray.
@@ -36,7 +36,7 @@ Output:
 **Description**: Check all possible subarrays and find the maximum sum.
 
 ```python
-def max_subarray_sum_naive(n, arr):
+def max_subarray_sum_naive(n, arr):"
     max_sum = float('-inf')
     
     for i in range(n):

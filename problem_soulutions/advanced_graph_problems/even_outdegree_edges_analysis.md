@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Even Outdegree Edges - Problem Analysis
+title: "Even Outdegree Edges
 permalink: /problem_soulutions/advanced_graph_problems/even_outdegree_edges_analysis/
 ---
 
-# CSES Even Outdegree Edges - Problem Analysis
+# Even Outdegree Edges
 
 ## Problem Statement
 Given an undirected graph with n nodes and m edges, find the minimum number of edges to remove so that every node has even outdegree.
@@ -137,7 +137,7 @@ print(result)
 **Principle**: For an Eulerian circuit, all nodes must have even degree.
 **Applicable to**: Eulerian circuit problems, degree problems, graph optimization problems
 
-### 2. **Degree Parity Analysis**
+### 2. **Degree Parity Analysis**"
 **Principle**: Each edge removal affects exactly 2 nodes' degrees.
 **Applicable to**: Degree problems, edge removal problems, graph optimization problems
 

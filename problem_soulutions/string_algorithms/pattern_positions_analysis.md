@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Pattern Positions - Problem Analysis
+title: "Pattern Positions
 permalink: /problem_soulutions/string_algorithms/pattern_positions_analysis/
 ---
 
-# CSES Pattern Positions - Problem Analysis
+# Pattern Positions
 
 ## Problem Statement
 Given a string and a pattern, find all positions where the pattern occurs in the string.
@@ -170,7 +170,7 @@ def pattern_positions_z(s, p):
                     r -= 1
         return z
     
-    # Concatenate pattern + separator + string
+    # Concatenate pattern + separator + string"
     text = p + '$' + s
     z = compute_z_array(text)
     

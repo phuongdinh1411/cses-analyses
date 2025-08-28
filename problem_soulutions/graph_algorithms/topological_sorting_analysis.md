@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Topological Sorting - Problem Analysis
+title: "Topological Sorting
 permalink: /problem_soulutions/graph_algorithms/topological_sorting_analysis/
 ---
 
-# CSES Topological Sorting - Problem Analysis
+# Topological Sorting
 
 ## Problem Statement
 Given a directed acyclic graph (DAG) with n nodes and m edges, find a topological ordering of the nodes. A topological ordering is a linear ordering of vertices such that for every directed edge (u, v), vertex u comes before vertex v in the ordering.
@@ -64,8 +64,7 @@ def topological_sorting_naive(n, m, edges):
     return finish_order[::-1]
 ```
 
-**Why this is inefficient**: The implementation is correct but can be optimized for clarity.
-
+**Why this is inefficient**: The implementation is correct but can be optimized for clarity."
 ### Improvement 1: Kahn's Algorithm - O(n + m)
 **Description**: Use Kahn's algorithm (BFS-based) for topological sorting.
 

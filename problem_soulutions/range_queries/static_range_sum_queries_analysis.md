@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Static Range Sum Queries - Problem Analysis
+title: "Static Range Sum Queries
 permalink: /problem_soulutions/range_queries/static_range_sum_queries_analysis/
 ---
 
-# CSES Static Range Sum Queries - Problem Analysis
+# Static Range Sum Queries
 
 ## Problem Statement
 Given an array of n integers, process q queries. Each query asks for the sum of values in a range [a,b].
@@ -136,7 +136,7 @@ def range_sum_with_updates(n, q, arr, operations):
         bit.update(i + 1, arr[i])
     
     results = []
-    for op in operations:
+    for op in operations:"
         if op[0] == 'Q':  # Query
             l, r = op[1], op[2]
             results.append(bit.query(r) - bit.query(l - 1))

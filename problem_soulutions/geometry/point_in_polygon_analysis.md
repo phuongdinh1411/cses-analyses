@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: Point in Polygon - CSES Geometry Analysis
+title: "Point in Polygon - Geometry Analysis
 permalink: /problem_soulutions/geometry/point_in_polygon_analysis/
 ---
 
-# Point in Polygon - CSES Geometry Analysis
+# Point in Polygon - Geometry Analysis
 
 ## Problem Description
 Determine if a point lies inside, outside, or on the boundary of a polygon.
@@ -36,7 +36,7 @@ Determine if a point lies inside, outside, or on the boundary of a polygon.
 ## Complete Implementation
 
 ```python
-def cross_product(a, b, c):
+def cross_product(a, b, c):"
     """Calculate cross product of vectors AB and AC"""
     return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
 

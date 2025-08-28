@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Distinct Values Subsequences - Problem Analysis
+title: "Distinct Values Subsequences
 permalink: /problem_soulutions/sorting_and_searching/distinct_values_subsequences_analysis/
 ---
 
-# CSES Distinct Values Subsequences - Problem Analysis
+# Distinct Values Subsequences
 
 ## Problem Statement
 Given an array of n integers, find the number of subsequences that contain exactly k distinct values.
@@ -72,7 +72,7 @@ def distinct_values_subsequences_optimized(n, k, arr):
     
     # Fill dp table
     for i in range(1, n):
-        for j in range(1, k + 1):
+        for j in range(1, k + 1):"
             # Don't include current element
             dp[i][j] = dp[i-1][j]
             

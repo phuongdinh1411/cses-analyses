@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Distinct Values Subarrays - Problem Analysis
+title: "Distinct Values Subarrays
 permalink: /problem_soulutions/sorting_and_searching/distinct_values_subarrays_analysis/
 ---
 
-# CSES Distinct Values Subarrays - Problem Analysis
+# Distinct Values Subarrays
 
 ## Problem Statement
 Given an array of n integers, find the number of subarrays that contain exactly k distinct values.
@@ -130,7 +130,7 @@ print(result)
 **Principle**: Use sliding window with inclusion-exclusion principle for exact counting.
 **Applicable to**: Subarray problems, counting problems, window problems
 
-### 2. **Inclusion-Exclusion Principle**
+### 2. **Inclusion-Exclusion Principle**"
 **Principle**: Count "at most k" and subtract "at most k-1" to get "exactly k".
 **Applicable to**: Counting problems, range problems, exact value problems
 

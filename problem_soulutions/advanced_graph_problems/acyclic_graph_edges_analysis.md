@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Acyclic Graph Edges - Problem Analysis
+title: "Acyclic Graph Edges
 permalink: /problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis/
 ---
 
-# CSES Acyclic Graph Edges - Problem Analysis
+# Acyclic Graph Edges
 
 ## Problem Statement
 Given a directed graph with n nodes and m edges, find the minimum number of edges to remove to make the graph acyclic.
@@ -74,8 +74,7 @@ def acyclic_graph_edges_naive(n, m, edges):
             dfs(i, -1)
     
     return len(cycle_edges)
-```
-
+```"
 **Why this is inefficient**: This approach doesn't correctly identify the minimum number of edges to remove.
 
 ### Improvement 1: Feedback Arc Set - O(n + m)

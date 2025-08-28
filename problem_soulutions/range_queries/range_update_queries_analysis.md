@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Range Update Queries - Problem Analysis
+title: "Range Update Queries
 permalink: /problem_soulutions/range_queries/range_update_queries_analysis/
 ---
 
-# CSES Range Update Queries - Problem Analysis
+# Range Update Queries
 
 ## Problem Statement
 Given an array of n integers, process q queries. Each query is either:
@@ -14,7 +14,7 @@ Given an array of n integers, process q queries. Each query is either:
 ### Input
 The first input line has two integers n and q: the size of the array and the number of queries.
 The second line has n integers x1,x2,…,xn: the contents of the array.
-Finally, there are q lines describing the queries. Each line has either:
+Finally, there are q lines describing the queries. Each line has either:"
 - "1 a b x": add x to all values in range [a,b]
 - "2 k": print the value at position k
 

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Collecting Numbers - Problem Analysis
+title: "Collecting Numbers
 permalink: /problem_soulutions/sorting_and_searching/cses_collecting_numbers_analysis/
 ---
 
-# CSES Collecting Numbers - Problem Analysis
+# Collecting Numbers
 
 ## Problem Statement
 You are given an array that contains each number between 1…n exactly once. Your task is to collect the numbers from 1 to n in increasing order.
@@ -52,8 +52,7 @@ def collecting_numbers_brute_force(arr):
         for i in range(n):
             if arr[i] == current_target and arr[i] not in collected:
                 collected.add(arr[i])
-                current_target += 1
-        
+                current_target += 1"
         # If no progress was made, we can't collect more
         if len(collected) == 0:
             break

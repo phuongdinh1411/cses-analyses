@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Coordinate Compression - Problem Analysis
+title: "Coordinate Compression
 permalink: /problem_soulutions/graph_algorithms/coordinate_compression_analysis/
 ---
 
-# CSES Coordinate Compression - Problem Analysis
+# Coordinate Compression
 
 ## Problem Statement
 Given n points in a 2D plane, compress the coordinates so that the relative order is preserved but the coordinates are mapped to consecutive integers starting from 0.
@@ -456,7 +456,7 @@ class DynamicCoordinateCompressor:
 #### 2. **Number Theory**
 - **Modular Arithmetic**: Large number handling
 - **Prime Numbers**: Special coordinate cases
-- **GCD/LCM**: Mathematical properties
+- **GCD/LCM**: Mathematical properties"
 - **Euler's Totient**: Counting coprime coordinates
 
 #### 3. **Linear Algebra**

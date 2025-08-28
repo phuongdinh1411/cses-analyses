@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Company Queries I - Problem Analysis
+title: "Company Queries I
 permalink: /problem_soulutions/tree_algorithms/company_queries_i_analysis/
 ---
 
-# CSES Company Queries I - Problem Analysis
+# Company Queries I
 
 ## Problem Statement
 A company has n employees, numbered 1,2,…,n. Each employee except 1 has exactly one superior. Given q queries, for each query find the k-th superior of an employee.
@@ -448,4 +448,4 @@ def ancestor_query(ancestor, node, k):
 
 ---
 
-*This analysis shows how to efficiently find k-th ancestors in trees using binary lifting technique.* 
+*This analysis shows how to efficiently find k-th ancestors in trees using binary lifting technique.*"

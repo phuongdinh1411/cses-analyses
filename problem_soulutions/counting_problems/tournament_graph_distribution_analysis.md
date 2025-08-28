@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Tournament Graph Distribution - Problem Analysis
+title: "Tournament Graph Distribution
 permalink: /problem_soulutions/counting_problems/tournament_graph_distribution_analysis/
 ---
 
-# CSES Tournament Graph Distribution - Problem Analysis
+# Tournament Graph Distribution
 
 ## Problem Statement
 Given n teams, count the number of different tournament graphs where each team plays against every other team exactly once, and the result is a valid tournament (no cycles).
@@ -125,7 +125,7 @@ def tournament_graph_distribution_mathematical(n):
     if n == 1:
         return 1
     
-    # Formula: n! / 2^(n*(n-1)/2)
+    # Formula: n! / 2^(n*(n-1)/2)"
     # But for valid tournaments, it's just n!
     result = 1
     for i in range(1, n + 1):

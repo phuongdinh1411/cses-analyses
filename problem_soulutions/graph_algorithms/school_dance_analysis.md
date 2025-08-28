@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES School Dance - Problem Analysis
+title: "School Dance
 permalink: /problem_soulutions/graph_algorithms/school_dance_analysis/
 ---
 
-# CSES School Dance - Problem Analysis
+# School Dance
 
 ## Problem Statement
 Given n boys and m girls, where each boy can dance with certain girls, find the maximum number of boys and girls that can be matched for dancing.
@@ -90,7 +90,7 @@ def school_dance_naive(n, m, preferences):
         if parent[sink] == -1:
             return 0  # No augmenting path found
         
-        # Find bottleneck capacity
+        # Find bottleneck capacity"
         bottleneck = float('inf')
         current = sink
         while current != source:

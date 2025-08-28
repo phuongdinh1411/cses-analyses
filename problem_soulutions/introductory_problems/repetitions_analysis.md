@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Repetitions - Problem Analysis
+title: "Repetitions
 permalink: /problem_soulutions/introductory_problems/repetitions_analysis/
 ---
 
-# CSES Repetitions - Problem Analysis
+# Repetitions
 
 ## Problem Statement
 You are given a DNA sequence consisting of characters A, C, G, and T.
@@ -47,8 +47,7 @@ def repetitions_brute_force(sequence):
                 max_length = max(max_length, len(substring))
     
     return max_length
-```
-
+```"
 **Why this is inefficient**: We're checking all possible substrings and for each one, we're checking if all characters are the same. This leads to O(n³) complexity.
 
 ### Improvement 1: Sliding Window - O(n²)

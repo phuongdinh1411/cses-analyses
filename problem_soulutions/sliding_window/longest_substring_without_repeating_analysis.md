@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Longest Substring Without Repeating Characters - Problem Analysis
+title: "Longest Substring Without Repeating Characters
 permalink: /problem_soulutions/sliding_window/longest_substring_without_repeating_analysis/
 ---
 
-# CSES Longest Substring Without Repeating Characters - Problem Analysis
+# Longest Substring Without Repeating Characters
 
 ## Problem Statement
 Given a string, find the length of the longest substring without repeating characters.
@@ -206,4 +206,4 @@ def hash_map_unique_substring(s):
 
 ---
 
-*This analysis shows how to efficiently find the longest substring without repeating characters using sliding window technique.* 
+*This analysis shows how to efficiently find the longest substring without repeating characters using sliding window technique.*"

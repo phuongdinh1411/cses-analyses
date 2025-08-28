@@ -1,17 +1,17 @@
 ---
 layout: simple
-title: Polygon Lattice Points - CSES Geometry Analysis
+title: "Polygon Lattice Points - Geometry Analysis
 permalink: /problem_soulutions/geometry/polygon_lattice_points_analysis/
 ---
 
-# Polygon Lattice Points - CSES Geometry Analysis
+# Polygon Lattice Points - Geometry Analysis
 
 ## Problem Description
 Count the number of lattice points (integer coordinates) inside a polygon.
 
 ## Solution Progression
 
-### 1. **Brute Force Approach**
+### 1. **Brute Force Approach**"
 **Description**: Check each lattice point to see if it's inside the polygon.
 
 **Why this is inefficient**: 

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Subarray Divisibility - Problem Analysis
+title: "Subarray Divisibility
 permalink: /problem_soulutions/sorting_and_searching/subarray_divisibility_analysis/
 ---
 
-# CSES Subarray Divisibility - Problem Analysis
+# Subarray Divisibility
 
 ## Problem Statement
 Given an array of n integers and a positive integer k, find the number of subarrays whose sum is divisible by k.
@@ -363,7 +363,7 @@ def subarray_divisibility_weighted(n, k, arr, weights, max_weight):
 #### **2. Modular Arithmetic Problems**
 - **Modular Exponentiation**: Efficient modular exponentiation
 - **Modular Inverse**: Find modular inverse
-- **Chinese Remainder Theorem**: Solve modular equations
+- **Chinese Remainder Theorem**: Solve modular equations"
 - **Fermat's Little Theorem**: Modular arithmetic properties
 
 #### **3. Subarray Problems**

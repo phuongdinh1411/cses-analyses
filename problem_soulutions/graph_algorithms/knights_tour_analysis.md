@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Knight's Tour - Problem Analysis
+title: CSES Knight's Tour
 permalink: /problem_soulutions/graph_algorithms/knights_tour_analysis/
 ---
 
-# CSES Knight's Tour - Problem Analysis
+# CSES Knight's Tour
 
 ## Problem Statement
 Given a chessboard of size n×n, find a knight's tour (a path where the knight visits every square exactly once).

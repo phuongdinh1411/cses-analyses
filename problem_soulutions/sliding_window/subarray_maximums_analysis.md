@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Subarray Maximums - Problem Analysis
+title: "Subarray Maximums
 permalink: /problem_soulutions/sliding_window/subarray_maximums_analysis/
 ---
 
-# CSES Subarray Maximums - Problem Analysis
+# Subarray Maximums
 
 ## Problem Statement
 Given an array of n integers, your task is to find the sum of maximums of all subarrays.
@@ -324,4 +324,4 @@ def calculate_element_contribution(arr, left, right):
 
 ---
 
-*This analysis shows how to efficiently find the sum of maximums of all subarrays using monotonic stack technique.* 
+*This analysis shows how to efficiently find the sum of maximums of all subarrays using monotonic stack technique.*"

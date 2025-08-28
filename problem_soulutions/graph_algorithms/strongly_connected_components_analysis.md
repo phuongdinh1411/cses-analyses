@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Strongly Connected Components - Problem Analysis
+title: "Strongly Connected Components
 permalink: /problem_soulutions/graph_algorithms/strongly_connected_components_analysis/
 ---
 
-# CSES Strongly Connected Components - Problem Analysis
+# Strongly Connected Components
 
 ## Problem Statement
 Given a directed graph with n nodes and m edges, find all strongly connected components (SCCs). A strongly connected component is a subset of vertices where every vertex is reachable from every other vertex in the component.
@@ -38,8 +38,7 @@ Output:
 5
 ```
 
-## Solution Progression
-
+## Solution Progression"
 ### Approach 1: Kosaraju's Algorithm - O(n + m)
 **Description**: Use Kosaraju's algorithm to find strongly connected components.
 

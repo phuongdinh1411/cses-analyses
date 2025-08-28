@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Required Substring - Problem Analysis
+title: "Required Substring
 permalink: /problem_soulutions/string_algorithms/required_substring_analysis/
 ---
 
-# CSES Required Substring - Problem Analysis
+# Required Substring
 
 ## Problem Statement
 Given a string and a required substring, find the minimum number of characters to add to make the string contain the required substring.
@@ -53,8 +53,7 @@ def required_substring_naive(s, t):
             min_chars = min(min_chars, i)
     
     return min_chars
-```
-
+```"
 **Why this is inefficient**: Quadratic time complexity and doesn't consider all possible positions.
 
 ### Improvement 1: Use KMP Algorithm - O(|s| + |t|)

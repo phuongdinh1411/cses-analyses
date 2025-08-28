@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Police Chase - Problem Analysis
+title: "Police Chase
 permalink: /problem_soulutions/graph_algorithms/police_chase_analysis/
 ---
 
-# CSES Police Chase - Problem Analysis
+# Police Chase
 
 ## Problem Statement
 Given a network with n computers and m connections, find the minimum number of connections that need to be cut to disconnect computer 1 from computer n.
@@ -37,7 +37,7 @@ Output:
 
 ## Solution Progression
 
-### Approach 1: Minimum Cut using Max Flow - O(n * m * max_flow)
+### Approach 1: Minimum Cut using Max Flow - O(n * m * max_flow)"
 **Description**: Use maximum flow to find minimum cut (Menger's theorem).
 
 ```python

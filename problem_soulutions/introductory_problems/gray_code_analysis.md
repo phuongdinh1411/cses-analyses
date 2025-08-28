@@ -1,6 +1,6 @@
 ---
 layout: simple
-title: Gray Code Analysis
+title: "Gray Code Analysis
 permalink: /problem_soulutions/introductory_problems/gray_code_analysis/
 ---
 
@@ -158,7 +158,7 @@ def generate_gray_code(n):
 - [Creating Strings](../creating_strings_analysis/)
 
 ## Practice Problems
-1. **CSES**: Gray Code
+1. ****: Gray Code
 2. **LeetCode**: Gray Code
 3. **AtCoder**: Similar bit manipulation problems
 
@@ -169,4 +169,4 @@ def generate_gray_code(n):
 4. **Reflection property** is key to understanding Gray codes
 5. **Applications** extend beyond just sequence generation
 6. **Memory efficiency** is important for large n values
-7. **Circular property** makes it useful for encoders
+7. **Circular property** makes it useful for encoders"

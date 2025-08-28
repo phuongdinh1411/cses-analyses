@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Edit Distance - Problem Analysis
+title: "Edit Distance
 permalink: /problem_soulutions/dynamic_programming/edit_distance_analysis/
 ---
 
-# CSES Edit Distance - Problem Analysis
+# Edit Distance
 
 ## Problem Statement
 The edit distance between two strings is the minimum number of operations required to transform one string into the other.
@@ -12,8 +12,7 @@ The edit distance between two strings is the minimum number of operations requir
 The allowed operations are:
 - Insert a character
 - Delete a character
-- Replace a character
-
+- Replace a character"
 For example, the edit distance between "LOVE" and "MOVIE" is 2.
 
 ### Input

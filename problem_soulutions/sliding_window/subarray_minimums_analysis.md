@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Subarray Minimums - Problem Analysis
+title: "Subarray Minimums
 permalink: /problem_soulutions/sliding_window/subarray_minimums_analysis/
 ---
 
-# CSES Subarray Minimums - Problem Analysis
+# Subarray Minimums
 
 ## Problem Statement
 Given an array of n integers, your task is to find the sum of minimums of all subarrays.
@@ -324,4 +324,4 @@ def calculate_element_contribution(arr, left, right):
 
 ---
 
-*This analysis shows how to efficiently find the sum of minimums of all subarrays using monotonic stack technique.* 
+*This analysis shows how to efficiently find the sum of minimums of all subarrays using monotonic stack technique.*"

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Functional Graph Distribution - Problem Analysis
+title: "Functional Graph Distribution
 permalink: /problem_soulutions/counting_problems/functional_graph_distribution_analysis/
 ---
 
-# CSES Functional Graph Distribution - Problem Analysis
+# Functional Graph Distribution
 
 ## Problem Statement
 Given n nodes, count the number of different functional graphs (directed graphs where each node has exactly one outgoing edge).
@@ -371,7 +371,7 @@ for _ in range(t):
     
     result = functional_graph_distribution(n, edges)
     print(len(result))
-    for component_id, size in result.items():
+    for component_id, size in result.items():"
         print(f"Component {component_id}: {size}")
 ```
 

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Factory Machines - Problem Analysis
+title: "Factory Machines
 permalink: /problem_soulutions/sorting_and_searching/factory_machines_analysis/
 ---
 
-# CSES Factory Machines - Problem Analysis
+# Factory Machines
 
 ## Problem Statement
 There are n machines and k products. Each machine takes a certain time to produce one product. Find the minimum time needed to produce all k products.
@@ -470,7 +470,7 @@ def time_query(min_times, k):
 #### **3. Interactive Problems**
 ```python
 # Interactive factory machine optimizer
-def interactive_factory_machines():
+def interactive_factory_machines():"
     n = int(input("Enter number of machines: "))
     k = int(input("Enter target products: "))
     times = list(map(int, input("Enter production times: ").split()))

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Nested Ranges Count - Problem Analysis
+title: "Nested Ranges Count
 permalink: /problem_soulutions/sorting_and_searching/nested_ranges_count_analysis/
 ---
 
-# CSES Nested Ranges Count - Problem Analysis
+# Nested Ranges Count
 
 ## Problem Statement
 Given n ranges [a1,b1],[a2,b2],…,[an,bn], for each range count how many other ranges it contains and how many other ranges contain it.
@@ -433,7 +433,7 @@ def containment_query(matrix, i, j):
 #### **3. Interactive Problems**
 ```python
 # Interactive range containment game
-def interactive_range_game():
+def interactive_range_game():"
     n = int(input("Enter number of ranges: "))
     ranges = []
     

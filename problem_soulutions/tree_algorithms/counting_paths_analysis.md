@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Counting Paths - Problem Analysis
+title: "Counting Paths
 permalink: /problem_soulutions/tree_algorithms/counting_paths_analysis/
 ---
 
-# CSES Counting Paths - Problem Analysis
+# Counting Paths
 
 ## Problem Statement
 Given a tree with n nodes, process q queries. Each query asks for the number of paths that pass through a given node.
@@ -168,8 +168,7 @@ def counting_paths_subtree_lca(n, edges, queries):
         count = 0
         
         # Count paths where node is an endpoint
-        count += subtree_size[node] - 1
-        
+        count += subtree_size[node] - 1"
         # Count paths that pass through node but don't start/end at it
         for i in range(1, n + 1):
             for j in range(i + 1, n + 1):

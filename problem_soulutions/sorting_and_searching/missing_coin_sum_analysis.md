@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Missing Coin Sum - Problem Analysis
+title: "Missing Coin Sum
 permalink: /problem_soulutions/sorting_and_searching/missing_coin_sum_analysis/
 ---
 
-# CSES Missing Coin Sum - Problem Analysis
+# Missing Coin Sum
 
 ## Problem Statement
 Given n coins with values a1,a2,…,an, find the smallest sum that cannot be formed using any subset of the coins.
@@ -312,7 +312,7 @@ def missing_coin_sum_modulo(n, coins, m):
 #### **1. Greedy Algorithm Problems**
 - **Fractional Knapsack**: Fill knapsack optimally
 - **Activity Selection**: Select maximum activities
-- **Huffman Coding**: Build optimal prefix codes
+- **Huffman Coding**: Build optimal prefix codes"
 - **Dijkstra's Algorithm**: Find shortest paths
 
 #### **2. Dynamic Programming Problems**

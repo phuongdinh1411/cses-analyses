@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Planets Queries II - Problem Analysis
+title: "Planets Queries II
 permalink: /problem_soulutions/graph_algorithms/planets_queries_ii_analysis/
 ---
 
-# CSES Planets Queries II - Problem Analysis
+# Planets Queries II
 
 ## Problem Statement
 Given a directed graph with n planets and q queries, for each query find the first planet that appears in both paths starting from planets a and b.
@@ -91,8 +91,7 @@ def planets_queries_ii_optimized(n, q, teleporters, queries):
     # Build binary lifting table
     for j in range(1, log_n):
         for i in range(n):
-            up[j][i] = up[j-1][up[j-1][i]]
-    
+            up[j][i] = up[j-1][up[j-1][i]]"
     # Find cycle entry points using Floyd's cycle finding
     def find_cycle_entry(start):
         # Floyd's cycle finding

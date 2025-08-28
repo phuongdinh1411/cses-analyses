@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES List Removals - Problem Analysis
+title: "List Removals
 permalink: /problem_soulutions/range_queries/list_removals_analysis/
 ---
 
-# CSES List Removals - Problem Analysis
+# List Removals
 
 ## Problem Statement
 Given an array of n integers, process q queries. Each query asks for the k-th smallest element in the current array, and then removes that element from the array.
@@ -192,7 +192,7 @@ def list_removals_with_insertions(n, q, arr, operations):
     next_index = n
     
     results = []
-    for op in operations:
+    for op in operations:"
         if op[0] == 'REMOVE':  # Remove k-th element
             k = op[1]
             element, index = sorted_list[k-1]

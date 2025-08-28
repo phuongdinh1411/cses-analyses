@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Collecting Numbers II - Problem Analysis
+title: "Collecting Numbers II
 permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_ii_analysis/
 ---
 
-# CSES Collecting Numbers II - Problem Analysis
+# Collecting Numbers II
 
 ## Problem Statement
 Given an array of n integers, you want to collect them in increasing order. You can collect a number if you have already collected all numbers smaller than it. Find the minimum number of rounds needed to collect all numbers.
@@ -388,7 +388,7 @@ def rounds_query(rounds_matrix, l, r):
 #### **3. Interactive Problems**
 ```python
 # Interactive collecting numbers game
-def interactive_collecting_numbers():
+def interactive_collecting_numbers():"
     n = int(input("Enter array size: "))
     arr = list(map(int, input("Enter array: ").split()))
     

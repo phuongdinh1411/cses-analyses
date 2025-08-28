@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Grid Paths - Problem Analysis
+title: "Grid Paths
 permalink: /problem_soulutions/dynamic_programming/grid_paths_analysis/
 ---
 
-# CSES Grid Paths - Problem Analysis
+# Grid Paths
 
 ## Problem Statement
 Consider an n×n grid whose squares may have traps. It is not allowed to move to a square with a trap.
@@ -12,7 +12,7 @@ Consider an n×n grid whose squares may have traps. It is not allowed to move to
 Your task is to calculate the number of paths from the upper-left square to the lower-right square. You can only move right or down.
 
 ### Input
-The first input line has an integer n: the size of the grid.
+The first input line has an integer n: the size of the grid."
 After this, there are n lines that describe the grid. Each line has n characters: "." denotes an empty cell, and "*" denotes a trap.
 
 ### Output

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Towers - Problem Analysis
+title: "Towers
 permalink: /problem_soulutions/sorting_and_searching/cses_towers_analysis/
 ---
 
-# CSES Towers - Problem Analysis
+# Towers
 
 ## Problem Statement
 You are given n cubes in a certain order, and your task is to build towers by stacking them upon each other.
@@ -67,8 +67,7 @@ def towers_brute_force(cubes):
     
     try_arrangement([], 0)
     return min_towers
-```
-
+```"
 **Why this is inefficient**: We're trying all possible arrangements of cubes into towers, which leads to factorial complexity. This is completely impractical for large inputs.
 
 ### Improvement 1: Greedy Approach - O(n²)

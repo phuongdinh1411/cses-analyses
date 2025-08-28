@@ -1,6 +1,6 @@
 ---
 layout: simple
-title: Mex Grid Construction II Analysis
+title: "Mex Grid Construction II Analysis
 permalink: /problem_soulutions/introductory_problems/mex_grid_construction_ii_analysis/
 ---
 
@@ -288,7 +288,7 @@ class ConstraintPropagator:
 - [Two Knights](../two_knights_analysis/)
 
 ## Practice Problems
-1. **CSES**: Mex Grid Construction II
+1. ****: Mex Grid Construction II
 2. **AtCoder**: Similar dual constraint problems
 3. **Codeforces**: Constraint satisfaction problems
 
@@ -299,4 +299,4 @@ class ConstraintPropagator:
 4. **Backtracking** is useful for complex constraint combinations
 5. **Latin squares** provide good base structures
 6. **Constraint propagation** can speed up search
-7. **Special cases** often have elegant solutions
+7. **Special cases** often have elegant solutions"

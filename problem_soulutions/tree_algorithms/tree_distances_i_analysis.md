@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Tree Distances I - Problem Analysis
+title: "Tree Distances I
 permalink: /problem_soulutions/tree_algorithms/tree_distances_i_analysis/
 ---
 
-# CSES Tree Distances I - Problem Analysis
+# Tree Distances I
 
 ## Problem Statement
 Given a tree with n nodes, find for each node the maximum distance to any other node.
@@ -487,4 +487,4 @@ def height_based_distances(tree, n):
 
 ---
 
-*This analysis shows how to efficiently find maximum distances in trees using diameter properties.* 
+*This analysis shows how to efficiently find maximum distances in trees using diameter properties.*"

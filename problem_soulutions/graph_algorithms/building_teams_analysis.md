@@ -1,12 +1,12 @@
 ---
 layout: simple
-title: CSES Building Teams - Problem Analysis
+title: "Building Teams
 permalink: /problem_soulutions/graph_algorithms/building_teams_analysis/
 ---
 
-# CSES Building Teams - Problem Analysis
+# Building Teams
 
-## Problem Statement
+## Problem Statement"
 There are n pupils in Uolevi's class, and m friendships between them. Your task is to divide the pupils into two teams in such a way that no two pupils in a team are friends. You can freely choose the sizes of the teams.
 
 ### Input

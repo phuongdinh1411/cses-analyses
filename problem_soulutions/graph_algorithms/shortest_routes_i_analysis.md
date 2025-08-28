@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Shortest Routes I - Problem Analysis
+title: "Shortest Routes I
 permalink: /problem_soulutions/graph_algorithms/shortest_routes_i_analysis/
 ---
 
-# CSES Shortest Routes I - Problem Analysis
+# Shortest Routes I
 
 ## Problem Statement
 There are n cities and m flight connections. Your task is to find the shortest route from city 1 to all other cities.
@@ -35,8 +35,7 @@ Output:
 0 5 2
 ```
 
-## Solution Progression
-
+## Solution Progression"
 ### Approach 1: Dijkstra's Algorithm - O((n + m) * log(n))
 **Description**: Use Dijkstra's algorithm with a priority queue to find shortest paths.
 

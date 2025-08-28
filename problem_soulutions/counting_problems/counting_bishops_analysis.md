@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Counting Bishops - Problem Analysis
+title: "Counting Bishops
 permalink: /problem_soulutions/counting_problems/counting_bishops_analysis/
 ---
 
-# CSES Counting Bishops - Problem Analysis
+# Counting Bishops
 
 ## Problem Statement
 Given a chessboard of size n×n, count the number of ways to place k bishops such that no bishop attacks another bishop.
@@ -494,7 +494,7 @@ def range_query(attack_counts, start_r, start_c, end_r, end_c):
 #### **3. Interactive Problems**
 ```python
 # Interactive bishop analyzer
-def interactive_bishop_analyzer():
+def interactive_bishop_analyzer():"
     n = int(input("Enter board size: "))
     k = int(input("Enter number of bishops: "))
     bishops = []

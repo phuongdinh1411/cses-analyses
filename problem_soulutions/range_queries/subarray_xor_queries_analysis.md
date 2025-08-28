@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Subarray XOR Queries - Problem Analysis
+title: "Subarray XOR Queries
 permalink: /problem_soulutions/range_queries/subarray_xor_queries_analysis/
 ---
 
-# CSES Subarray XOR Queries - Problem Analysis
+# Subarray XOR Queries
 
 ## Problem Statement
 Given an array of n integers, process q queries. Each query is either:
@@ -13,7 +13,7 @@ Given an array of n integers, process q queries. Each query is either:
 
 ### Input
 The first input line has two integers n and q: the size of the array and the number of queries.
-The second line has n integers x_1,x_2,…,x_n: the contents of the array.
+The second line has n integers x_1,x_2,…,x_n: the contents of the array."
 Then there are q lines describing the queries. Each line has three integers: either "1 k x" (update) or "2 a b" (XOR query).
 
 ### Output

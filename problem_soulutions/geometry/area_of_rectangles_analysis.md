@@ -1,17 +1,17 @@
 ---
 layout: simple
-title: Area of Rectangles - CSES Geometry Analysis
+title: "Area of Rectangles - Geometry Analysis
 permalink: /problem_soulutions/geometry/area_of_rectangles_analysis/
 ---
 
-# Area of Rectangles - CSES Geometry Analysis
+# Area of Rectangles - Geometry Analysis
 
 ## Problem Description
 Calculate the total area covered by a set of rectangles.
 
 ## Solution Progression
 
-### 1. **Brute Force Approach**
+### 1. **Brute Force Approach**"
 **Description**: Check each point to see if it's covered by any rectangle.
 
 **Why this is inefficient**: 

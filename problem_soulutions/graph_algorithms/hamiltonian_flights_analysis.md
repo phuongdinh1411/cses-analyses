@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Hamiltonian Flights - Problem Analysis
+title: "Hamiltonian Flights
 permalink: /problem_soulutions/graph_algorithms/hamiltonian_flights_analysis/
 ---
 
-# CSES Hamiltonian Flights - Problem Analysis
+# Hamiltonian Flights
 
 ## Problem Statement
 Given a directed graph with n cities and m flights, count the number of different Hamiltonian paths from city 1 to city n.
@@ -44,8 +44,7 @@ def hamiltonian_flights_naive(n, m, flights):
     # Build adjacency list
     adj = [[] for _ in range(n + 1)]
     for a, b in flights:
-        adj[a].append(b)
-    
+        adj[a].append(b)"
     # dp[mask][last] = number of paths ending at 'last' with visited cities in 'mask'
     dp = [[0] * (n + 1) for _ in range(1 << n)]
     

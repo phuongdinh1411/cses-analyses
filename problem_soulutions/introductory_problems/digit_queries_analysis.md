@@ -1,6 +1,6 @@
 ---
 layout: simple
-title: Digit Queries Analysis
+title: "Digit Queries Analysis
 permalink: /problem_soulutions/introductory_problems/digit_queries_analysis/
 ---
 
@@ -224,7 +224,7 @@ def find_digit_log(k):
 - [Number Spiral](../number_spiral_analysis/)
 
 ## Practice Problems
-1. **CSES**: Digit Queries
+1. ****: Digit Queries
 2. **LeetCode**: Similar digit manipulation problems
 3. **AtCoder**: Mathematical sequence problems
 
@@ -235,4 +235,4 @@ def find_digit_log(k):
 4. **Precomputation** helps with multiple queries
 5. **Logarithmic estimation** can speed up group finding
 6. **Edge cases** like small k need special handling
-7. **Overflow handling** is crucial for large k values
+7. **Overflow handling** is crucial for large k values"

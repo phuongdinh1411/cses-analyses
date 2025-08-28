@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Round Trip - Problem Analysis
+title: "Round Trip
 permalink: /problem_soulutions/graph_algorithms/round_trip_analysis/
 ---
 
-# CSES Round Trip - Problem Analysis
+# Round Trip
 
 ## Problem Statement
 Byteland has n cities and m roads between them. Your task is to find a round trip that begins in a city, goes through two or more other cities, and finally returns to the starting city. Every intermediate city must be visited exactly once.
@@ -13,7 +13,7 @@ Byteland has n cities and m roads between them. Your task is to find a round tri
 The first input line has two integers n and m: the number of cities and roads. The cities are numbered 1,2,…,n.
 Then, there are m lines describing the roads. Each line has two integers a and b: there is a road between cities a and b.
 
-### Output
+### Output"
 Print "IMPOSSIBLE" if there is no such round trip, and otherwise print the number of cities on the trip and the cities in the order they are visited.
 
 ### Constraints

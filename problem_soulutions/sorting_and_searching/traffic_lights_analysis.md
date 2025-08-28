@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Traffic Lights - Problem Analysis
+title: "Traffic Lights
 permalink: /problem_soulutions/sorting_and_searching/traffic_lights_analysis/
 ---
 
-# CSES Traffic Lights - Problem Analysis
+# Traffic Lights
 
 ## Problem Statement
 There are n traffic lights on a street. Initially, all lights are green. Then, q events happen: either a light turns red or a light turns green. After each event, find the length of the longest continuous segment of green lights.
@@ -224,7 +224,7 @@ def toggle_state(positions, pos):
 #### **Variation 1: Traffic Lights with Multiple Colors**
 **Problem**: Traffic lights can be red, yellow, or green. Find longest green segment.
 ```python
-def traffic_lights_multiple_colors(n, q, events):
+def traffic_lights_multiple_colors(n, q, events):"
     # events[i] = (position, color) where color is 'R', 'Y', or 'G'
     light_states = {}  # position -> color
     results = []

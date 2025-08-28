@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Building Roads - Problem Analysis
+title: "Building Roads
 permalink: /problem_soulutions/graph_algorithms/building_roads_analysis/
 ---
 
-# CSES Building Roads - Problem Analysis
+# Building Roads
 
 ## Problem Statement
 There are n cities and m roads between them. Your task is to determine the minimum number of new roads that need to be built so that there is a route between any two cities.
@@ -390,7 +390,7 @@ def cost_based_building_roads(n, m, roads, costs):
     min_cost_edges = []
     total_cost = 0
     
-    for i in range(len(components) - 1):
+    for i in range(len(components) - 1):"
         min_cost = float('inf')
         best_edge = None
         

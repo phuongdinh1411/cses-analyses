@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Subarray Sums I - Problem Analysis
+title: "Subarray Sums I
 permalink: /problem_soulutions/sliding_window/subarray_sums_i_analysis/
 ---
 
-# CSES Subarray Sums I - Problem Analysis
+# Subarray Sums I
 
 ## Problem Statement
 Given an array of n integers, your task is to find the number of subarrays with sum x.
@@ -268,4 +268,4 @@ def two_pointer_subarray_sum(arr, target):
 
 ---
 
-*This analysis shows how to efficiently find subarrays with target sum using prefix sum and hash map techniques.* 
+*This analysis shows how to efficiently find subarrays with target sum using prefix sum and hash map techniques.*"

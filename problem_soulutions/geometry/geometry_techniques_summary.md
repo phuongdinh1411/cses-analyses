@@ -1,17 +1,17 @@
 ---
 layout: simple
-title: Geometry Techniques Summary
+title: "Geometry Techniques Summary
 permalink: /problem_soulutions/geometry/geometry_techniques_summary/
 ---
 
 # Geometry Techniques Summary
 
 ## Overview
-This document summarizes the key geometric algorithms and techniques covered in the CSES geometry problems.
+This document summarizes the key geometric algorithms and techniques covered in the geometry problems.
 
 ## Completed Geometry Problems
 
-### 1. **Convex Hull** (`convex_hull_analysis.md`)
+### 1. **Convex Hull** (`convex_hull_analysis.md`)"
 - **Technique**: Andrew's Monotone Chain Algorithm
 - **Time Complexity**: O(n log n)
 - **Key Insight**: Sort points and build upper/lower hulls incrementally

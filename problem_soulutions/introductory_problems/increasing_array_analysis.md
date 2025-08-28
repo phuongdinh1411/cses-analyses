@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Increasing Array - Problem Analysis
+title: "Increasing Array
 permalink: /problem_soulutions/introductory_problems/increasing_array_analysis/
 ---
 
-# CSES Increasing Array - Problem Analysis
+# Increasing Array
 
 ## Problem Statement
 You are given an array of n integers. You want to modify the array so that it is increasing, i.e., every element is at least as large as the previous element.
@@ -39,7 +39,7 @@ Output:
 
 ```python
 def increasing_array_brute_force(arr):
-    n = len(arr)
+    n = len(arr)"
     min_moves = float('inf')
     
     def try_modifications(index, current_arr, moves):

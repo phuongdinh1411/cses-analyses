@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Missing Number - Problem Analysis
+title: "Missing Number
 permalink: /problem_soulutions/introductory_problems/missing_number_analysis/
 ---
 
-# CSES Missing Number - Problem Analysis
+# Missing Number
 
 ## Problem Statement
 You are given all numbers between 1,2,…,n except one. Your task is to find the missing number.
@@ -40,8 +40,7 @@ def missing_number_brute_force(n, numbers):
         if i not in numbers:
             return i
     return -1  # Should not happen given problem constraints
-```
-
+```"
 **Why this is inefficient**: For each number from 1 to n, we're searching through the entire array to check if it exists. This leads to O(n²) complexity.
 
 ### Improvement 1: Using Set - O(n)

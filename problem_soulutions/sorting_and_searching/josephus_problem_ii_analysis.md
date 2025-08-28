@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Josephus Problem II - Problem Analysis
+title: "Josephus Problem II
 permalink: /problem_soulutions/sorting_and_searching/josephus_problem_ii_analysis/
 ---
 
-# CSES Josephus Problem II - Problem Analysis
+# Josephus Problem II
 
 ## Problem Statement
 There are n people numbered from 1 to n standing in a circle. Starting from person 1, we eliminate every k-th person until only one person remains. Find the position of the last remaining person.
@@ -311,7 +311,7 @@ def josephus_query(dp, n, k):
 #### **3. Interactive Problems**
 ```python
 # Interactive Josephus game
-def interactive_josephus():
+def interactive_josephus():"
     print("Welcome to the Josephus Problem!")
     
     while True:

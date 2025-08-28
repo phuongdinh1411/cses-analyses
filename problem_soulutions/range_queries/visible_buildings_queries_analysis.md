@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Visible Buildings Queries - Problem Analysis
+title: "Visible Buildings Queries
 permalink: /problem_soulutions/range_queries/visible_buildings_queries_analysis/
 ---
 
-# CSES Visible Buildings Queries - Problem Analysis
+# Visible Buildings Queries
 
 ## Problem Statement
 Given n buildings with heights, process q queries. Each query asks for the number of visible buildings when looking from building a to building b (buildings are visible if they are not blocked by taller buildings in between).
@@ -688,7 +688,7 @@ def visible_buildings_queries_line_of_sight(n, q, heights, operations):
 #### **2. Visibility Problems**
 - **Line of Sight**: Check if objects are visible
 - **Skyline Problem**: Find visible skyline
-- **Hidden Surface Removal**: 3D visibility
+- **Hidden Surface Removal**: 3D visibility"
 - **Ray Casting**: Determine what's visible
 
 #### **3. Geometric Algorithms**

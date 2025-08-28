@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Longest Common Subsequence - Problem Analysis
+title: "Longest Common Subsequence
 permalink: /problem_soulutions/dynamic_programming/longest_common_subsequence_analysis/
 ---
 
-# CSES Longest Common Subsequence - Problem Analysis
+# Longest Common Subsequence
 
 ## Problem Statement
 Given two strings, find the length of their longest common subsequence (LCS). A subsequence is a sequence that can be derived from another sequence by deleting some elements without changing the order of the remaining elements.
@@ -349,7 +349,7 @@ def range_lcs_queries(s, t, queries):
 
 #### **3. Interactive LCS Problems**
 ```python
-def interactive_lcs_game():
+def interactive_lcs_game():"
     s = input("Enter first string: ")
     t = input("Enter second string: ")
     

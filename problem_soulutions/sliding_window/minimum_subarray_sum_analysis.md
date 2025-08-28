@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Minimum Subarray Sum - Problem Analysis
+title: "Minimum Subarray Sum
 permalink: /problem_soulutions/sliding_window/minimum_subarray_sum_analysis/
 ---
 
-# CSES Minimum Subarray Sum - Problem Analysis
+# Minimum Subarray Sum
 
 ## Problem Statement
 Given an array of n integers, your task is to find the minimum sum of a subarray.
@@ -36,7 +36,7 @@ Output:
 **Description**: Check all possible subarrays and find the minimum sum.
 
 ```python
-def min_subarray_sum_naive(n, arr):
+def min_subarray_sum_naive(n, arr):"
     min_sum = float('inf')
     
     for i in range(n):

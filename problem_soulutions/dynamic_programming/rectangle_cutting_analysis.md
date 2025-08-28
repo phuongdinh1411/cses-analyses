@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Rectangle Cutting - Problem Analysis
+title: "Rectangle Cutting
 permalink: /problem_soulutions/dynamic_programming/rectangle_cutting_analysis/
 ---
 
-# CSES Rectangle Cutting - Problem Analysis
+# Rectangle Cutting
 
 ## Problem Statement
 Given a rectangle of size a×b, find the minimum number of cuts needed to cut it into squares. You can only cut horizontally or vertically.
@@ -42,8 +42,7 @@ def rectangle_cutting_naive(a, b):
             return height - 1
         
         if height == 1:
-            return width - 1
-        
+            return width - 1"
         min_cuts = float('inf')
         
         # Try all possible horizontal cuts

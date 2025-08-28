@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: Line Segment Intersection - CSES Geometry Analysis
+title: "Line Segment Intersection - Geometry Analysis
 permalink: /problem_soulutions/geometry/line_segment_intersection_analysis/
 ---
 
-# Line Segment Intersection - CSES Geometry Analysis
+# Line Segment Intersection - Geometry Analysis
 
 ## Problem Description
 Given two line segments, determine if they intersect.
@@ -35,7 +35,7 @@ Given two line segments, determine if they intersect.
 ## Complete Implementation
 
 ```python
-def cross_product(a, b, c):
+def cross_product(a, b, c):"
     """Calculate cross product of vectors AB and AC"""
     return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
 

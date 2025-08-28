@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Playlist - Problem Analysis
+title: "Playlist
 permalink: /problem_soulutions/sorting_and_searching/playlist_analysis/
 ---
 
-# CSES Playlist - Problem Analysis
+# Playlist
 
 ## Problem Statement
 Given a playlist of n songs, each with a genre, find the longest continuous segment where no song appears more than once.
@@ -61,7 +61,7 @@ def playlist_optimized(n, genres):
     left = 0
     seen = {}
     
-    for right in range(n):
+    for right in range(n):"
         # If we've seen this genre before, move left pointer
         if genres[right] in seen and seen[genres[right]] >= left:
             left = seen[genres[right]] + 1

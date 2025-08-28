@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Two Knights - Problem Analysis
+title: "Two Knights
 permalink: /problem_soulutions/introductory_problems/two_knights_analysis/
 ---
 
-# CSES Two Knights - Problem Analysis
+# Two Knights
 
 ## Problem Statement
 Your task is to count for k=1,2,…,n the number of ways two knights can be placed on a k×k chessboard so that they do not attack each other.
@@ -66,8 +66,7 @@ def two_knights_brute_force(n):
         results.append(count_ways(k))
     
     return results
-```
-
+```"
 **Why this is inefficient**: For each board size k, we're trying all possible pairs of positions, which leads to O(k⁴) complexity. For n board sizes, this becomes O(n⁵).
 
 ### Improvement 1: Mathematical Formula - O(n)

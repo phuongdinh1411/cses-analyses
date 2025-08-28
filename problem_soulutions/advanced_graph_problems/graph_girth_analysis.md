@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Graph Girth - Problem Analysis
+title: "Graph Girth
 permalink: /problem_soulutions/advanced_graph_problems/graph_girth_analysis/
 ---
 
-# CSES Graph Girth - Problem Analysis
+# Graph Girth
 
 ## Problem Statement
 Given an undirected graph with n nodes and m edges, find the length of the shortest cycle in the graph (the girth). If the graph has no cycles, output -1.
@@ -47,8 +47,7 @@ def graph_girth_naive(n, m, edges):
     adj = [[] for _ in range(n + 1)]
     for a, b in edges:
         adj[a].append(b)
-        adj[b].append(a)
-    
+        adj[b].append(a)"
     min_cycle = float('inf')
     
     # Try each node as starting point

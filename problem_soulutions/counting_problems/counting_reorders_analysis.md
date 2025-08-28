@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Counting Reorders - Problem Analysis
+title: "Counting Reorders
 permalink: /problem_soulutions/counting_problems/counting_reorders_analysis/
 ---
 
-# CSES Counting Reorders - Problem Analysis
+# Counting Reorders
 
 ## Problem Statement
 Given a string s, count the number of different strings that can be obtained by reordering the characters of s.
@@ -38,7 +38,7 @@ def counting_reorders_naive(s):
     from itertools import permutations
     
     unique_perms = set()
-    for perm in permutations(s):
+    for perm in permutations(s):"
         unique_perms.add(''.join(perm))
     
     return len(unique_perms) % MOD

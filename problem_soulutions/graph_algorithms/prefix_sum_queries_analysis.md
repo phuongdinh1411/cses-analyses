@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Prefix Sum Queries - Problem Analysis
+title: "Prefix Sum Queries
 permalink: /problem_soulutions/graph_algorithms/prefix_sum_queries_analysis/
 ---
 
-# CSES Prefix Sum Queries - Problem Analysis
+# Prefix Sum Queries
 
 ## Problem Statement
 Given an array of n integers, process q queries. Each query is either:
@@ -14,7 +14,7 @@ Given an array of n integers, process q queries. Each query is either:
 ### Input
 The first input line has two integers n and q: the size of the array and the number of queries.
 The second line has n integers a1,a2,…,an: the array.
-Then there are q lines describing the queries. Each line has either:
+Then there are q lines describing the queries. Each line has either:"
 - "1 k x": update the value at position k to x
 - "2 a b": calculate the sum from position a to b
 

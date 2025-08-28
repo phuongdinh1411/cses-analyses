@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES De Bruijn Sequence - Problem Analysis
+title: "De Bruijn Sequence
 permalink: /problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis/
 ---
 
-# CSES De Bruijn Sequence - Problem Analysis
+# De Bruijn Sequence
 
 ## Problem Statement
 Given an integer n, construct a De Bruijn sequence of order n, which is a cyclic sequence of length 2^n containing all possible binary strings of length n as substrings.
@@ -27,8 +27,7 @@ Output:
 0011
 ```
 
-## Solution Progression
-
+## Solution Progression"
 ### Approach 1: Hierholzer's Algorithm on De Bruijn Graph - O(2^n)
 **Description**: Use Hierholzer's algorithm on the De Bruijn graph.
 

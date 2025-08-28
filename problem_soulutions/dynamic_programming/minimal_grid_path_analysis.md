@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Minimal Grid Path - Problem Analysis
+title: "Minimal Grid Path
 permalink: /problem_soulutions/dynamic_programming/minimal_grid_path_analysis/
 ---
 
-# CSES Minimal Grid Path - Problem Analysis
+# Minimal Grid Path
 
 ## Problem Statement
 Given an n×n grid, find the minimum cost path from the top-left corner to the bottom-right corner. You can only move right or down, and each cell has a cost.
@@ -43,7 +43,7 @@ def minimal_grid_path_naive(n, grid):
         if i == n-1 and j == n-1:
             return grid[i][j]
         
-        if i >= n or j >= n:
+        if i >= n or j >= n:"
             return float('inf')
         
         return grid[i][j] + min(min_path_recursive(i+1, j), min_path_recursive(i, j+1))

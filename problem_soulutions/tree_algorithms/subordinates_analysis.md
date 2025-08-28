@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Subordinates - Problem Analysis
+title: "Subordinates
 permalink: /problem_soulutions/tree_algorithms/subordinates_analysis/
 ---
 
-# CSES Subordinates - Problem Analysis
+# Subordinates
 
 ## Problem Statement
 You are given a company hierarchy with a tree structure. The company has n employees, numbered 1,2,…,n. Each employee except 1 has exactly one superior. Your task is to find for each employee the number of subordinates.
@@ -318,4 +318,4 @@ def count_subtree_sizes(tree, n):
 
 ---
 
-*This analysis shows how to efficiently calculate subtree sizes using tree traversal algorithms.* 
+*This analysis shows how to efficiently calculate subtree sizes using tree traversal algorithms.*"

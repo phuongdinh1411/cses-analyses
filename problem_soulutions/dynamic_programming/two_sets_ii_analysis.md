@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Two Sets II - Problem Analysis
+title: "Two Sets II
 permalink: /problem_soulutions/dynamic_programming/two_sets_ii_analysis/
 ---
 
-# CSES Two Sets II - Problem Analysis
+# Two Sets II
 
 ## Problem Statement
 Given a number n, find the number of ways to divide the numbers 1,2,…,n into two sets with equal sums.
@@ -354,7 +354,7 @@ def range_partition_queries(max_n, queries):
 #### **3. Interactive Partition Problems**
 ```python
 def interactive_partition_game():
-    n = int(input())
+    n = int(input())"
     print(f"Find ways to partition numbers 1 to {n} into two equal-sum sets")
     
     player_guess = int(input())

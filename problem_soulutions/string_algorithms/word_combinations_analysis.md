@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Word Combinations - Problem Analysis
+title: "Word Combinations
 permalink: /problem_soulutions/string_algorithms/word_combinations_analysis/
 ---
 
-# CSES Word Combinations - Problem Analysis
+# Word Combinations
 
 ## Problem Statement
 Given a string and a list of words, find the number of ways to construct the string by concatenating the words.
@@ -324,7 +324,7 @@ def group_words_by_length(words):
 #### **Variation 1: Word Combinations with Constraints**
 **Problem**: Count ways to construct string with additional constraints (word order, length, etc.).
 ```python
-def constrained_word_combinations(s, words, constraints):
+def constrained_word_combinations(s, words, constraints):"
     # constraints = {'min_words': x, 'max_words': y, 'word_order': 'ascending/descending'}
     
     n = len(s)

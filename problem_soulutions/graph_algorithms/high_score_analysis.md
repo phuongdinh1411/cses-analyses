@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES High Score - Problem Analysis
+title: "High Score
 permalink: /problem_soulutions/graph_algorithms/high_score_analysis/
 ---
 
-# CSES High Score - Problem Analysis
+# High Score
 
 ## Problem Statement
 There are n cities and m flight connections. Your task is to find the highest possible score for a route from city 1 to city n.
@@ -43,7 +43,7 @@ Output:
 
 ```python
 def high_score_bellman_ford(n, m, flights):
-    def bellman_ford():
+    def bellman_ford():"
         distances = [float('-inf')] * (n + 1)
         distances[1] = 0
         

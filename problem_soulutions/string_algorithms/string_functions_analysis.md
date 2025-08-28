@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES String Functions - Problem Analysis
+title: "String Functions
 permalink: /problem_soulutions/string_algorithms/string_functions_analysis/
 ---
 
-# CSES String Functions - Problem Analysis
+# String Functions
 
 ## Problem Statement
 Given a string s, process q queries. Each query asks for the value of a specific string function at a given position.
@@ -222,7 +222,7 @@ def string_function_query(s, k):
 **Problem**: Answer multiple queries about different string functions efficiently.
 ```python
 def string_functions_multiple_queries(s, queries):
-    # queries = [(k, function_type), ...]
+    # queries = [(k, function_type), ...]"
     # function_type: 'border', 'period', 'prefix', 'suffix'
     
     n = len(s)

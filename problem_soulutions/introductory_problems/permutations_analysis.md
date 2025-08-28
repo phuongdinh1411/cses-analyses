@@ -1,14 +1,13 @@
 ---
 layout: simple
-title: CSES Permutations - Problem Analysis
+title: "Permutations
 permalink: /problem_soulutions/introductory_problems/permutations_analysis/
 ---
 
-# CSES Permutations - Problem Analysis
+# Permutations
 
 ## Problem Statement
-A permutation of integers 1,2,…,n is called beautiful if there are no adjacent elements whose difference is 1.
-
+A permutation of integers 1,2,…,n is called beautiful if there are no adjacent elements whose difference is 1."
 Given n, construct a beautiful permutation of size n or determine that it's impossible.
 
 ### Input

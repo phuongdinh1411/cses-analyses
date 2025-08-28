@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Coin Combinations I - Problem Analysis
+title: "Coin Combinations I
 permalink: /problem_soulutions/dynamic_programming/coin_combinations_i_analysis/
 ---
 
-# CSES Coin Combinations I - Problem Analysis
+# Coin Combinations I
 
 ## Problem Statement
 Consider a money system consisting of n coins. Each coin has a positive integer value. Your task is to calculate the number of distinct ways you can produce a sum of money x using the available coins.
@@ -63,8 +63,7 @@ def coin_combinations_brute_force(n, x, coins):
         return ways % MOD
     
     return count_ways(x)
-```
-
+```"
 **Why this is inefficient**: We're trying all possible combinations of coins, which leads to exponential complexity. For each target, we try all coin values, leading to O(n^x) complexity.
 
 ### Improvement 1: Recursive with Memoization - O(n*x)

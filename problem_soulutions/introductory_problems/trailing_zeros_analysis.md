@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Trailing Zeros - Problem Analysis
+title: "Trailing Zeros
 permalink: /problem_soulutions/introductory_problems/trailing_zeros_analysis/
 ---
 
-# CSES Trailing Zeros - Problem Analysis
+# Trailing Zeros
 
 ## Problem Statement
 Your task is to calculate the number of trailing zeros in a factorial.
@@ -48,8 +48,7 @@ def trailing_zeros_brute_force(n):
         factorial //= 10
     
     return count
-```
-
+```"
 **Why this is inefficient**: We're calculating the entire factorial, which becomes extremely large for large n. This leads to integer overflow and is completely impractical.
 
 ### Improvement 1: Mathematical Analysis - O(log n)

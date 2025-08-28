@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Distinct Routes - Problem Analysis
+title: "Distinct Routes
 permalink: /problem_soulutions/graph_algorithms/distinct_routes_analysis/
 ---
 
-# CSES Distinct Routes - Problem Analysis
+# Distinct Routes
 
 ## Problem Statement
 Given a directed graph with n nodes and m edges, find the maximum number of edge-disjoint paths from node 1 to node n.
@@ -71,7 +71,7 @@ def distinct_routes_naive(n, m, edges):
         if parent[sink] == -1:
             return 0  # No augmenting path found
         
-        # Find bottleneck capacity
+        # Find bottleneck capacity"
         bottleneck = float('inf')
         current = sink
         while current != source:

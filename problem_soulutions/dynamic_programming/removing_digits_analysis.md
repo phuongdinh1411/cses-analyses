@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Removing Digits - Problem Analysis
+title: "Removing Digits
 permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis/
 ---
 
-# CSES Removing Digits - Problem Analysis
+# Removing Digits
 
 ## Problem Statement
 You are given an integer n. On each step, you may subtract one of the digits from the number. How many steps are required to make the number equal to 0?
@@ -39,7 +39,7 @@ def removing_digits_brute_force(n):
     def min_steps(num):
         if num == 0:
             return 0
-        if num < 0:
+        if num < 0:"
             return float('inf')
         
         # Extract all digits

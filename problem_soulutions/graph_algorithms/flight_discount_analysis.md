@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Flight Discount - Problem Analysis
+title: "Flight Discount
 permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis/
 ---
 
-# CSES Flight Discount - Problem Analysis
+# Flight Discount
 
 ## Problem Statement
 Given a directed graph with n cities and m flights, find the minimum cost to travel from city 1 to city n. You can use at most one discount coupon that halves the cost of any flight.
@@ -37,7 +37,7 @@ Output:
 
 ## Solution Progression
 
-### Approach 1: Dijkstra with Discount State - O(m log n)
+### Approach 1: Dijkstra with Discount State - O(m log n)"
 **Description**: Use Dijkstra's algorithm with a state to track discount usage.
 
 ```python

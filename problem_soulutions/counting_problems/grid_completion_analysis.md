@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Grid Completion - Problem Analysis
+title: "Grid Completion
 permalink: /problem_soulutions/counting_problems/grid_completion_analysis/
 ---
 
-# CSES Grid Completion - Problem Analysis
+# Grid Completion
 
 ## Problem Statement
 Given a partially filled n×n grid, count the number of ways to complete it with numbers 1 to n in each row and column (Latin square).
@@ -544,7 +544,7 @@ def range_query(completions, start_i, start_j, end_i, end_j):
 #### **3. Interactive Problems**
 ```python
 # Interactive grid completion analyzer
-def interactive_grid_completion_analyzer():
+def interactive_grid_completion_analyzer():"
     n = int(input("Enter grid height: "))
     m = int(input("Enter grid width: "))
     grid = []

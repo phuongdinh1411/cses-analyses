@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Distinct Strings - Problem Analysis
+title: "Distinct Strings
 permalink: /problem_soulutions/string_algorithms/distinct_strings_analysis/
 ---
 
-# CSES Distinct Strings - Problem Analysis
+# Distinct Strings
 
 ## Problem Statement
 Given a string, find the number of distinct substrings.
@@ -475,7 +475,7 @@ def distinct_substrings_alphabet_constraints(s, alphabet):
     
     n = len(s)
     
-    # Filter string to only include allowed characters
+    # Filter string to only include allowed characters"
     filtered_s = ''.join(c for c in s if c in alphabet)
     
     if not filtered_s:

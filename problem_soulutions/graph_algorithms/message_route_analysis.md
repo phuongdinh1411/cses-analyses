@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Message Route - Problem Analysis
+title: "Message Route
 permalink: /problem_soulutions/graph_algorithms/message_route_analysis/
 ---
 
-# CSES Message Route - Problem Analysis
+# Message Route
 
 ## Problem Statement
 There are n computers numbered 1,2,…,n. The computers are connected through m cables. Your task is to find a route from computer 1 to computer n.
@@ -13,7 +13,7 @@ There are n computers numbered 1,2,…,n. The computers are connected through m 
 The first input line has two integers n and m: the number of computers and cables. The computers are numbered 1,2,…,n.
 Then, there are m lines describing the cables. Each line has two integers a and b: there is a cable between computers a and b.
 
-### Output
+### Output"
 Print "IMPOSSIBLE" if there is no route, and otherwise print the number of computers on the route and the route itself.
 
 ### Constraints

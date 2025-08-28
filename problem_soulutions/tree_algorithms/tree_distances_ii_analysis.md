@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Tree Distances II - Problem Analysis
+title: "Tree Distances II
 permalink: /problem_soulutions/tree_algorithms/tree_distances_ii_analysis/
 ---
 
-# CSES Tree Distances II - Problem Analysis
+# Tree Distances II
 
 ## Problem Statement
 Given a tree with n nodes, find for each node the sum of distances to all other nodes.
@@ -103,7 +103,7 @@ def tree_distances_rerooting(n, edges):
         
         for child in tree[node]:
             if child != parent:
-                # When moving root from node to child:
+                # When moving root from node to child:"
                 # - Nodes in child's subtree get closer by 1
                 # - Nodes outside child's subtree get farther by 1
                 nodes_in_subtree = subtree_sizes[child]

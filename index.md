@@ -1,6 +1,6 @@
 ---
 layout: simple
-title: "CSES Problem Solutions & Analysis"
+title: "Problem Solutions & Analysis"
 permalink: /
 ---
 

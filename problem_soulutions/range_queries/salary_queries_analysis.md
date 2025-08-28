@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Salary Queries - Problem Analysis
+title: "Salary Queries
 permalink: /problem_soulutions/range_queries/salary_queries_analysis/
 ---
 
-# CSES Salary Queries - Problem Analysis
+# Salary Queries
 
 ## Problem Statement
 Given an array of n integers representing salaries, process q queries. Each query is either:
@@ -14,7 +14,7 @@ Given an array of n integers representing salaries, process q queries. Each quer
 ### Input
 The first input line has two integers n and q: the size of the array and the number of queries.
 The second line has n integers x1,x2,…,xn: the salaries.
-Finally, there are q lines describing the queries. Each line has either:
+Finally, there are q lines describing the queries. Each line has either:"
 - "! k x": update the salary at position k to x
 - "? a b": count salaries in range [a,b]
 

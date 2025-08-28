@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES MST Edge Check - Problem Analysis
+title: "MST Edge Check
 permalink: /problem_soulutions/advanced_graph_problems/mst_edge_check_analysis/
 ---
 
-# CSES MST Edge Check - Problem Analysis
+# MST Edge Check
 
 ## Problem Statement
 Given a weighted undirected graph with n nodes and m edges, for each edge determine if it belongs to the minimum spanning tree (MST).
@@ -13,7 +13,7 @@ Given a weighted undirected graph with n nodes and m edges, for each edge determ
 The first input line has two integers n and m: the number of nodes and edges.
 Then there are m lines describing the edges. Each line has three integers a, b, and c: there is an edge between nodes a and b with weight c.
 
-### Output
+### Output"
 For each edge, print "YES" if it belongs to the MST, or "NO" otherwise.
 
 ### Constraints

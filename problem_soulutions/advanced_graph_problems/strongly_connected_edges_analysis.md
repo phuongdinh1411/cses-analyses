@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Strongly Connected Edges - Problem Analysis
+title: "Strongly Connected Edges
 permalink: /problem_soulutions/advanced_graph_problems/strongly_connected_edges_analysis/
 ---
 
-# CSES Strongly Connected Edges - Problem Analysis
+# Strongly Connected Edges
 
 ## Problem Statement
 Given a directed graph with n nodes and m edges, find the minimum number of edges to add to make the graph strongly connected.
@@ -34,7 +34,7 @@ Output:
 
 ## Solution Progression
 
-### Approach 1: Naive Strongly Connected Components - O(n + m)
+### Approach 1: Naive Strongly Connected Components - O(n + m)"
 **Description**: Use Kosaraju's algorithm to find strongly connected components and count needed edges.
 
 ```python

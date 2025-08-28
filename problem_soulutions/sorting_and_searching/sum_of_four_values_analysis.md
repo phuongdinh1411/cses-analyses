@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Sum of Four Values - Problem Analysis
+title: "Sum of Four Values
 permalink: /problem_soulutions/sorting_and_searching/sum_of_four_values_analysis/
 ---
 
-# CSES Sum of Four Values - Problem Analysis
+# Sum of Four Values
 
 ## Problem Statement
 Given an array of n integers and a target sum x, find four distinct indices such that the sum of the values at those indices equals x.
@@ -13,7 +13,7 @@ Given an array of n integers and a target sum x, find four distinct indices such
 The first input line has two integers n and x: the size of the array and the target sum.
 The second line has n integers a1,a2,…,an: the array.
 
-### Output
+### Output"
 Print four distinct indices (1-indexed) such that the sum equals x, or "IMPOSSIBLE" if no solution exists.
 
 ### Constraints

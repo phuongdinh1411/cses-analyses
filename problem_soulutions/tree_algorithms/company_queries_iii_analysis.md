@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Company Queries III - Problem Analysis
+title: "Company Queries III
 permalink: /problem_soulutions/tree_algorithms/company_queries_iii_analysis/
 ---
 
-# CSES Company Queries III - Problem Analysis
+# Company Queries III
 
 ## Problem Statement
 A company has n employees, numbered 1,2,…,n. Each employee except 1 has exactly one superior. Given q queries, for each query find the number of employees in the subtree of an employee.
@@ -178,8 +178,7 @@ def company_queries_bfs(n, q, superiors, queries):
         
         while queue:
             node = queue.popleft()
-            subtree_sizes[node] = 1  # Count the node itself
-            
+            subtree_sizes[node] = 1  # Count the node itself"
             # Add children's subtree sizes
             for child in tree[node]:
                 subtree_sizes[node] += subtree_sizes[child]

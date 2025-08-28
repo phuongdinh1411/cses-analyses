@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Dice Combinations - Problem Analysis
+title: "Dice Combinations
 permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis/
 ---
 
-# CSES Dice Combinations - Problem Analysis
+# Dice Combinations
 
 ## Problem Statement
 Your task is to count the number of ways to construct sum n by throwing a dice one or more times. Each throw produces an outcome in {1,2,3,4,5,6}.
@@ -55,8 +55,7 @@ def dice_combinations_brute_force(n):
         return ways % MOD
     
     return count_ways(n)
-```
-
+```"
 **Why this is inefficient**: We're trying all possible combinations of dice throws, which leads to exponential complexity. For each position, we have 6 choices, leading to O(6^n) complexity.
 
 ### Improvement 1: Recursive with Memoization - O(n)

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Sliding Window Advertisement - Problem Analysis
+title: "Sliding Window Advertisement
 permalink: /problem_soulutions/sliding_window/sliding_window_advertisement_analysis/
 ---
 
-# CSES Sliding Window Advertisement - Problem Analysis
+# Sliding Window Advertisement
 
 ## Problem Statement
 Given an array of n integers and a window size k, find the maximum sum of any subarray of size k.
@@ -36,7 +36,7 @@ Output:
 **Description**: Check all possible subarrays of size k to find the maximum sum.
 
 ```python
-def sliding_window_sum_naive(n, k, arr):
+def sliding_window_sum_naive(n, k, arr):"
     max_sum = float('-inf')
     
     for i in range(n - k + 1):

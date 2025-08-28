@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Hotel Queries - Problem Analysis
+title: "Hotel Queries
 permalink: /problem_soulutions/range_queries/hotel_queries_analysis/
 ---
 
-# CSES Hotel Queries - Problem Analysis
+# Hotel Queries
 
 ## Problem Statement
 There are n hotels along a highway. For each group of tourists, you want to assign a hotel with the minimum number of rooms that can accommodate the group. Process q queries where each query asks for the first hotel that can accommodate a group of size x.
@@ -337,7 +337,7 @@ def hotel_queries_with_updates(n, q, hotels, operations):
     st = DynamicSegmentTree(hotels)
     results = []
     
-    for op in operations:
+    for op in operations:"
         if op[0] == 'Q':  # Query
             x = op[1]
             pos = st.find_first_ge(x)

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES New Flight Routes - Problem Analysis
+title: "New Flight Routes
 permalink: /problem_soulutions/advanced_graph_problems/new_flight_routes_analysis/
 ---
 
-# CSES New Flight Routes - Problem Analysis
+# New Flight Routes
 
 ## Problem Statement
 Given a directed graph with n nodes and m edges, find the minimum number of new edges to add so that the graph becomes strongly connected.
@@ -65,7 +65,7 @@ def new_flight_routes_naive(n, m, edges):
     if is_strongly_connected():
         return 0
     
-    # Try adding edges
+    # Try adding edges"
     min_edges = float('inf')
     for i in range(1, n + 1):
         for j in range(1, n + 1):

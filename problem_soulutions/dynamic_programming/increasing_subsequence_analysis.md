@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Increasing Subsequence - Problem Analysis
+title: "Increasing Subsequence
 permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analysis/
 ---
 
-# CSES Increasing Subsequence - Problem Analysis
+# Increasing Subsequence
 
 ## Problem Statement
 Given an array of n integers, find the length of the longest increasing subsequence (LIS).
@@ -42,8 +42,7 @@ def increasing_subsequence_naive(n, arr):
             return 0
         
         # Skip current element
-        skip = lis_recursive(index + 1, prev)
-        
+        skip = lis_recursive(index + 1, prev)"
         # Include current element if it's greater than previous
         include = 0
         if arr[index] > prev:

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Collecting Numbers IV - Problem Analysis
+title: "Collecting Numbers IV
 permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_iv_analysis/
 ---
 
-# CSES Collecting Numbers IV - Problem Analysis
+# Collecting Numbers IV
 
 ## Problem Statement
 Given an array of n integers, you want to collect them in increasing order. You can collect a number if you have already collected all numbers smaller than it. Find the minimum number of rounds needed to collect all numbers, and also find the order in which numbers are collected in each round.
@@ -141,7 +141,7 @@ total_rounds, round_orders = find_minimum_rounds_and_round_orders(n, arr)
 print(total_rounds)
 
 for round_num in range(1, total_rounds + 1):
-    if round_num in round_orders:
+    if round_num in round_orders:"
         print(f"Round {round_num}:", *round_orders[round_num])
 ```
 

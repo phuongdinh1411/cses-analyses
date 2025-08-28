@@ -1,16 +1,16 @@
 ---
 layout: simple
-title: CSES Counting Rooms - Problem Analysis
+title: "Counting Rooms
 permalink: /problem_soulutions/graph_algorithms/counting_rooms_analysis/
 ---
 
-# CSES Counting Rooms - Problem Analysis
+# Counting Rooms
 
 ## Problem Statement
 You are given a map of a building, and your task is to count the number of its rooms. The size of the map is n×m squares, and each square is either floor or wall. You can walk left, right, up, and down through the floor squares.
 
 ### Input
-The first input line has two integers n and m: the height and width of the map.
+The first input line has two integers n and m: the height and width of the map."
 Then there are n lines that describe the map. Each line has m characters: "." denotes a floor and "#" denotes a wall.
 
 ### Output

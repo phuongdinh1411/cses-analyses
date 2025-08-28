@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Bit Strings - Problem Analysis
+title: "Bit Strings
 permalink: /problem_soulutions/introductory_problems/bit_strings_analysis/
 ---
 
-# CSES Bit Strings - Problem Analysis
+# Bit Strings
 
 ## Problem Statement
 Your task is to calculate the number of bit strings of length n.
@@ -40,7 +40,7 @@ def bit_strings_brute_force(n):
         if length == 0:
             return [current]
         
-        strings = []
+        strings = []"
         strings.extend(generate_strings(length - 1, current + '0'))
         strings.extend(generate_strings(length - 1, current + '1'))
         return strings

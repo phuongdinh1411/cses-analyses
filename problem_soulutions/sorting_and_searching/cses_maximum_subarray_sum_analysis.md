@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Maximum Subarray Sum - Problem Analysis
+title: "Maximum Subarray Sum
 permalink: /problem_soulutions/sorting_and_searching/cses_maximum_subarray_sum_analysis/
 ---
 
-# CSES Maximum Subarray Sum - Problem Analysis
+# Maximum Subarray Sum
 
 ## Problem Statement
 Given an array of n integers, your task is to find the maximum sum of a subarray.
@@ -37,7 +37,7 @@ Output:
 
 ```python
 def max_subarray_brute_force(arr):
-    n = len(arr)
+    n = len(arr)"
     max_sum = float('-inf')
     
     for start in range(n):

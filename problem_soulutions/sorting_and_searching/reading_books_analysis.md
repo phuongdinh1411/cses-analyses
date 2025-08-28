@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Reading Books - Problem Analysis
+title: "Reading Books
 permalink: /problem_soulutions/sorting_and_searching/reading_books_analysis/
 ---
 
-# CSES Reading Books - Problem Analysis
+# Reading Books
 
 ## Problem Statement
 Given n books, each with a reading time, find the minimum time needed to read all books. You can read books in parallel, but each book must be read completely before starting another.
@@ -37,8 +37,7 @@ Output:
 
 ```python
 def reading_books_naive(n, times):
-    from itertools import permutations
-    
+    from itertools import permutations"
     min_time = float('inf')
     
     for order in permutations(range(n)):

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Tree Diameter - Problem Analysis
+title: "Tree Diameter
 permalink: /problem_soulutions/tree_algorithms/tree_diameter_analysis/
 ---
 
-# CSES Tree Diameter - Problem Analysis
+# Tree Diameter
 
 ## Problem Statement
 Given a tree with n nodes, find the diameter of the tree (the longest path between any two nodes).
@@ -422,4 +422,4 @@ def bfs_diameter(tree, n):
 
 ---
 
-*This analysis shows how to efficiently find tree diameter using height tracking and longest path calculations.* 
+*This analysis shows how to efficiently find tree diameter using height tracking and longest path calculations.*"

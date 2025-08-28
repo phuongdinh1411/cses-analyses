@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Coin Collector - Problem Analysis
+title: "Coin Collector
 permalink: /problem_soulutions/graph_algorithms/coin_collector_analysis/
 ---
 
-# CSES Coin Collector - Problem Analysis
+# Coin Collector
 
 ## Problem Statement
 Given a directed acyclic graph (DAG) with n nodes and m edges, where each node has a coin value, find the maximum number of coins that can be collected by traversing the graph.
@@ -50,8 +50,7 @@ def coin_collector_naive(n, m, coins, edges):
     
     for a, b in edges:
         adj[a].append(b)
-        in_degree[b] += 1
-    
+        in_degree[b] += 1"
     # Topological sort using Kahn's algorithm
     queue = []
     for i in range(1, n + 1):

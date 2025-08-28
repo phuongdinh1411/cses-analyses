@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Stick Lengths - Problem Analysis
+title: "Stick Lengths
 permalink: /problem_soulutions/sorting_and_searching/cses_stick_lengths_analysis/
 ---
 
-# CSES Stick Lengths - Problem Analysis
+# Stick Lengths
 
 ## Problem Statement
 There are n sticks with some lengths. Your task is to modify the lengths so that all sticks have equal lengths. You can either lengthen or shorten each stick. Both operations cost x where x is the difference between the new and original length.
@@ -41,8 +41,7 @@ Output:
 def stick_lengths_brute_force(lengths):
     n = len(lengths)
     min_length = min(lengths)
-    max_length = max(lengths)
-    
+    max_length = max(lengths)"
     min_cost = float('inf')
     
     # Try all possible target lengths

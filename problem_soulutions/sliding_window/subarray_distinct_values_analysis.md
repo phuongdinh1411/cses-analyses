@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Subarray Distinct Values - Problem Analysis
+title: "Subarray Distinct Values
 permalink: /problem_soulutions/sliding_window/subarray_distinct_values_analysis/
 ---
 
-# CSES Subarray Distinct Values - Problem Analysis
+# Subarray Distinct Values
 
 ## Problem Statement
 Given an array of n integers, your task is to find the number of subarrays with at most k distinct values.
@@ -309,4 +309,4 @@ def maintain_window_constraint(arr, constraint_func):
 
 ---
 
-*This analysis shows how to efficiently count subarrays with at most k distinct values using sliding window technique.* 
+*This analysis shows how to efficiently count subarrays with at most k distinct values using sliding window technique.*"

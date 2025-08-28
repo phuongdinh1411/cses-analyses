@@ -1,6 +1,6 @@
 ---
 layout: simple
-title: Raab Game I Analysis
+title: "Raab Game I Analysis
 permalink: /problem_soulutions/introductory_problems/raab_game_i_analysis/
 ---
 
@@ -211,7 +211,7 @@ class CompressedRaabGame:
 - [Apple Division](../apple_division_analysis/)
 
 ## Practice Problems
-1. **CSES**: Raab Game I
+1. ****: Raab Game I
 2. **AtCoder**: Similar game theory problems
 3. **Codeforces**: Nim game variations
 
@@ -222,4 +222,4 @@ class CompressedRaabGame:
 4. **State compression** helps with memoization
 5. **Winning strategy** involves leaving opponent with nim sum = 0
 6. **Pattern recognition** is crucial for game theory
-7. **Edge cases** like empty piles need special handling
+7. **Edge cases** like empty piles need special handling"

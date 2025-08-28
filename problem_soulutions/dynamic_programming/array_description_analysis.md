@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Array Description - Problem Analysis
+title: "Array Description
 permalink: /problem_soulutions/dynamic_programming/array_description_analysis/
 ---
 
-# CSES Array Description - Problem Analysis
+# Array Description
 
 ## Problem Statement
 You are given an array of n integers. Your task is to find the number of ways to fill the array with integers between 1 and m so that the absolute difference between any two adjacent numbers is at most 1.
@@ -68,8 +68,7 @@ def array_description_brute_force(n, m, arr):
         for val in range(1, m + 1):
             ways += count_ways(1, val)
         return ways % MOD
-```
-
+```"
 **Why this is inefficient**: We're trying all possible values for unknown positions, which leads to exponential complexity. For each unknown position, we try all m values, leading to O(m^n) complexity.
 
 ### Improvement 1: Recursive with Memoization - O(n*m²)

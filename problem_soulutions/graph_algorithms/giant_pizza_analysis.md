@@ -1,12 +1,12 @@
 ---
 layout: simple
-title: CSES Giant Pizza - Problem Analysis
+title: "Giant Pizza
 permalink: /problem_soulutions/graph_algorithms/giant_pizza_analysis/
 ---
 
-# CSES Giant Pizza - Problem Analysis
+# Giant Pizza
 
-## Problem Statement
+## Problem Statement"
 Given a list of pizza toppings preferences where each person likes some toppings and dislikes others, determine if it's possible to make a pizza that satisfies everyone's preferences.
 
 ### Input

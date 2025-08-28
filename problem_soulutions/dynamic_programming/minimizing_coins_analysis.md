@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Minimizing Coins - Problem Analysis
+title: "Minimizing Coins
 permalink: /problem_soulutions/dynamic_programming/minimizing_coins_analysis/
 ---
 
-# CSES Minimizing Coins - Problem Analysis
+# Minimizing Coins
 
 ## Problem Statement
 Consider a money system consisting of n coins. Each coin has a positive integer value. Your task is to produce a sum of money x using the available coins in such a way that the number of coins is minimal.
@@ -47,7 +47,7 @@ def minimizing_coins_brute_force(n, x, coins):
     def min_coins(target):
         if target == 0:
             return 0
-        if target < 0:
+        if target < 0:"
             return float('inf')
         
         min_count = float('inf')

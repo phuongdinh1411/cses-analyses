@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Company Queries IV - Problem Analysis
+title: "Company Queries IV
 permalink: /problem_soulutions/tree_algorithms/company_queries_iv_analysis/
 ---
 
-# CSES Company Queries IV - Problem Analysis
+# Company Queries IV
 
 ## Problem Statement
 A company has n employees, numbered 1,2,…,n. Each employee except 1 has exactly one superior. Given q queries, for each query find the number of employees that are exactly k levels below an employee.
@@ -402,4 +402,4 @@ def bfs_level_tracking(tree, start, n):
 
 ---
 
-*This analysis shows how to efficiently calculate level-based information in trees using post-order traversal and preprocessing.* 
+*This analysis shows how to efficiently calculate level-based information in trees using post-order traversal and preprocessing.*"

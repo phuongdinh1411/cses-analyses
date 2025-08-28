@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES String Compression - Problem Analysis
+title: "String Compression
 permalink: /problem_soulutions/string_algorithms/string_compression_analysis/
 ---
 
-# CSES String Compression - Problem Analysis
+# String Compression
 
 ## Problem Statement
 Given a string s, find the shortest compressed representation of the string. The compressed string should represent the original string using the minimum number of characters.
@@ -35,7 +35,7 @@ a3b3c2
 
 ```python
 def string_compression_naive(s):
-    if not s:
+    if not s:"
         return ""
     
     compressed = []

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Distinct Numbers - Problem Analysis
+title: "Distinct Numbers
 permalink: /problem_soulutions/sorting_and_searching/cses_distinct_numbers_analysis/
 ---
 
-# CSES Distinct Numbers - Problem Analysis
+# Distinct Numbers
 
 ## Problem Statement
 You are given a list of n integers, and your task is to calculate the number of distinct values in the list.
@@ -212,7 +212,7 @@ for item in data:
 
 ## Problem-Solving Framework
 
-1. **Start with brute force**: Understand the problem completely
+1. **Start with brute force**: Understand the problem completely"
 2. **Identify bottlenecks**: What's causing the inefficiency?
 3. **Look for patterns**: Can sorting or hashing help?
 4. **Consider trade-offs**: Time vs space complexity

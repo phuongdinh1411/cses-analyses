@@ -1,12 +1,12 @@
 ---
 layout: simple
-title: Quick Reference
+title: "Quick Reference
 permalink: /quick_reference/
 ---
 
 # Quick Reference Guide
 
-Welcome to the CSES Quick Reference section! This is your go-to resource for fast access to essential algorithms, techniques, and problem-solving strategies.
+Welcome to the Quick Reference section! This is your go-to resource for fast access to essential algorithms, techniques, and problem-solving strategies.
 
 ## 📚 Available References
 
@@ -70,7 +70,7 @@ Welcome to the CSES Quick Reference section! This is your go-to resource for fas
 1. **[Start with Ultimate Cheatsheet](/cses-analyses/quick_reference/ultimate_cheatsheet/)** for comprehensive overview
 2. **[Use Advanced Algorithms](/cses-analyses/quick_reference/advanced_algorithms/)** for complex problems
 3. **[Check Common Mistakes](/cses-analyses/quick_reference/common_mistakes/)** to avoid pitfalls
-4. **Practice regularly** with CSES problems
+4. **Practice regularly** with problems
 
 ## 💡 Tips for Effective Use
 
@@ -84,4 +84,4 @@ Welcome to the CSES Quick Reference section! This is your go-to resource for fas
 
 **Happy Problem Solving! 🚀**
 
-*This quick reference section provides fast access to essential competitive programming knowledge.* 
+*This quick reference section provides fast access to essential competitive programming knowledge.*"

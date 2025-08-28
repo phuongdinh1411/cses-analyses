@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Repeating Substring - Problem Analysis
+title: "Repeating Substring
 permalink: /problem_soulutions/string_algorithms/repeating_substring_analysis/
 ---
 
-# CSES Repeating Substring - Problem Analysis
+# Repeating Substring
 
 ## Problem Statement
 Given a string, find the longest substring that appears at least twice.
@@ -35,7 +35,7 @@ abab
 ```python
 def repeating_substring_naive(s):
     n = len(s)
-    max_length = 0
+    max_length = 0"
     result = ""
     
     for i in range(n):

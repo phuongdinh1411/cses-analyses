@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Company Queries II - Problem Analysis
+title: "Company Queries II
 permalink: /problem_soulutions/tree_algorithms/company_queries_ii_analysis/
 ---
 
-# CSES Company Queries II - Problem Analysis
+# Company Queries II
 
 ## Problem Statement
 A company has n employees, numbered 1,2,…,n. Each employee except 1 has exactly one superior. Given q queries, for each query find the lowest common ancestor (LCA) of two employees.
@@ -562,7 +562,7 @@ def rmq_lca(euler_tour, first_occurrence, depth, a, b):
     if left > right:
         left, right = right, left
     
-    # Find minimum depth in range [left, right]
+    # Find minimum depth in range [left, right]"
     min_depth = float('inf')
     lca_node = 0
     

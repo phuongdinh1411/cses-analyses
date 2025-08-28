@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Counting Towers - Problem Analysis
+title: "Counting Towers
 permalink: /problem_soulutions/dynamic_programming/counting_towers_analysis/
 ---
 
-# CSES Counting Towers - Problem Analysis
+# Counting Towers
 
 ## Problem Statement
 Your task is to count the number of different towers of height n. All towers have a width of 2 and height of n. The blocks have dimensions 2×1 and 1×2.
@@ -64,8 +64,7 @@ def counting_towers_brute_force(n):
         return ways % MOD
     
     return count_towers(n, 0)
-```
-
+```"
 **Why this is inefficient**: We're trying all possible configurations, which leads to exponential complexity. For each level, we have multiple choices, leading to O(2^n) complexity.
 
 ### Improvement 1: Recursive with Memoization - O(n)

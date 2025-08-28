@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: Ultimate Cheatsheet
+title: "Ultimate Cheatsheet
 permalink: /quick_reference/ultimate_cheatsheet/
 ---
 
-# 🚀 CSES Ultimate Cheatsheet - Complete Quick Reference Guide
+# 🚀 Ultimate Cheatsheet - Complete Quick Reference Guide
 
 ## 📊 Quick Reference Guide
 
@@ -87,7 +87,7 @@ permalink: /quick_reference/ultimate_cheatsheet/
 <td>DFS + Transpose + DFS</td>
 </tr>
 <tr>
-<td>Topological Sort</td>
+<td>Topological Sort</td>"
 <td>Kahn's</td>
 <td>O(V+E)</td>
 <td>O(V)</td>

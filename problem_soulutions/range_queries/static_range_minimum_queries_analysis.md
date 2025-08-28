@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Static Range Minimum Queries - Problem Analysis
+title: "Static Range Minimum Queries
 permalink: /problem_soulutions/range_queries/static_range_minimum_queries_analysis/
 ---
 
-# CSES Static Range Minimum Queries - Problem Analysis
+# Static Range Minimum Queries
 
 ## Problem Statement
 Given an array of n integers, process q queries. Each query asks for the minimum value in a range [a,b].
@@ -50,7 +50,7 @@ def static_range_min_naive(n, q, arr, queries):
     
     for a, b in queries:
         # Convert to 0-indexed
-        start, end = a - 1, b - 1
+        start, end = a - 1, b - 1"
         min_val = float('inf')
         
         for i in range(start, end + 1):

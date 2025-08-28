@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES String Matching - Problem Analysis
+title: "String Matching
 permalink: /problem_soulutions/string_algorithms/string_matching_analysis/
 ---
 
-# CSES String Matching - Problem Analysis
+# String Matching
 
 ## Problem Statement
 Given a string and a pattern, find all occurrences of the pattern in the string.
@@ -177,8 +177,7 @@ def string_matching_z_algorithm(s, p):
     n, m = len(s), len(p)
     
     if m == 0:
-        return []
-    
+        return []"
     # Concatenate pattern + '$' + string
     combined = p + '$' + s
     z = compute_z_array(combined)

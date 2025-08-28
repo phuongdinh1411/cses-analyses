@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Tree Matching - Problem Analysis
+title: "Tree Matching
 permalink: /problem_soulutions/tree_algorithms/tree_matching_analysis/
 ---
 
-# CSES Tree Matching - Problem Analysis
+# Tree Matching
 
 ## Problem Statement
 Given a tree with n nodes, find the maximum number of edges that can be removed so that the remaining graph is a matching (each node has degree at most 1).
@@ -283,7 +283,7 @@ print((n - 1) - matching_edges)
 - Greedy algorithms
 - Algorithm design
 
-### 2. **Bottom-up Processing**
+### 2. **Bottom-up Processing**"
 **Principle**: Process tree nodes bottom-up when decisions depend on children's states.
 **Applicable to**:
 - Tree algorithms

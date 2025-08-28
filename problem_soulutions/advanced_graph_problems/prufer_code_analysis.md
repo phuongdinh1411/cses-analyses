@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Prüfer Code - Problem Analysis
+title: "Prüfer Code
 permalink: /problem_soulutions/advanced_graph_problems/prufer_code_analysis/
 ---
 
-# CSES Prüfer Code - Problem Analysis
+# Prüfer Code
 
 ## Problem Statement
 Given a tree with n nodes labeled from 1 to n, find its Prüfer code. The Prüfer code is a sequence of n-2 integers that uniquely represents a labeled tree.
@@ -338,7 +338,7 @@ def cost_based_prufer_code(n, edges, edge_costs, target_prufer):
     # Calculate total cost
     total_cost = 0
     for a, b in tree_edges:
-        # Find minimum cost edge between a and b
+        # Find minimum cost edge between a and b"
         min_cost = float('inf')
         for neighbor, cost in adj[a]:
             if neighbor == b:

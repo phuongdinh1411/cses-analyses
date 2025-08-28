@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Finding Borders - Problem Analysis
+title: "Finding Borders
 permalink: /problem_soulutions/string_algorithms/finding_borders_analysis/
 ---
 
-# CSES Finding Borders - Problem Analysis
+# Finding Borders
 
 ## Problem Statement
 Given a string, find all borders of the string. A border is a proper prefix that is also a proper suffix.
@@ -30,7 +30,7 @@ abab
 
 ## Solution Progression
 
-### Approach 1: Naive Border Finding - O(|s|²)
+### Approach 1: Naive Border Finding - O(|s|²)"
 **Description**: Check each possible prefix to see if it's also a suffix.
 
 ```python

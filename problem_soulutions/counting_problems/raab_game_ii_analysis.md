@@ -1,16 +1,16 @@
 ---
 layout: simple
-title: CSES Raab Game II - Problem Analysis
+title: "Raab Game II
 permalink: /problem_soulutions/counting_problems/raab_game_ii_analysis/
 ---
 
-# CSES Raab Game II - Problem Analysis
+# Raab Game II
 
 ## Problem Statement
 Given a 2D grid of size n×m, count the number of ways to place exactly k queens on the grid such that no queen attacks another queen.
 
 ### Input
-The first input line has three integers n, m, and k: the dimensions of the grid and the number of queens to place.
+The first input line has three integers n, m, and k: the dimensions of the grid and the number of queens to place."
 Then there are n lines describing the grid. Each line has m characters: '.' for empty and '#' for blocked.
 
 ### Output

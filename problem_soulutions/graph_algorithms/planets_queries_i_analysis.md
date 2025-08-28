@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Planets Queries I - Problem Analysis
+title: "Planets Queries I
 permalink: /problem_soulutions/graph_algorithms/planets_queries_i_analysis/
 ---
 
-# CSES Planets Queries I - Problem Analysis
+# Planets Queries I
 
 ## Problem Statement
 Given a directed graph with n planets and q queries, for each query find the k-th planet in the path starting from planet a.
@@ -471,7 +471,7 @@ def range_ancestor_queries(n, teleporters, queries):
 
 #### **3. Interactive Ancestor Query Problems**
 ```python
-def interactive_planets_queries_i():
+def interactive_planets_queries_i():"
     n = int(input("Enter number of planets: "))
     print("Enter teleporters (space-separated):")
     teleporters = list(map(int, input().split()))

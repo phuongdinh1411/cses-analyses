@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Towers - Problem Analysis
+title: "Towers
 permalink: /problem_soulutions/sorting_and_searching/towers_analysis/
 ---
 
-# CSES Towers - Problem Analysis
+# Towers
 
 ## Problem Statement
 Given n cubes with side lengths a1,a2,…,an, you want to build towers by stacking cubes. You can only place a cube on top of another cube if its side length is smaller than the side length of the cube below it. Find the minimum number of towers needed.
@@ -196,7 +196,7 @@ def manage_towers(cubes):
 
 ### 🔄 **Variations of the Original Problem**
 
-#### **Variation 1: Weighted Towers**
+#### **Variation 1: Weighted Towers**"
 **Problem**: Each cube has a weight. Find the minimum number of towers such that the total weight of each tower doesn't exceed a given limit.
 ```python
 def weighted_towers(n, cubes, weights, max_weight):

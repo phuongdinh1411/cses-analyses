@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Border Subgrid Count I - Problem Analysis
+title: "Border Subgrid Count I
 permalink: /problem_soulutions/counting_problems/border_subgrid_count_i_analysis/
 ---
 
-# CSES Border Subgrid Count I - Problem Analysis
+# Border Subgrid Count I
 
 ## Problem Statement
 Given a 2D grid of size n×m, count the number of subgrids of size k×k where all cells on the border have the same value.
@@ -461,7 +461,7 @@ def range_query(dp, start_i, start_j):
 #### **3. Interactive Problems**
 ```python
 # Interactive border analyzer
-def interactive_border_analyzer():
+def interactive_border_analyzer():"
     n = int(input("Enter grid height: "))
     m = int(input("Enter grid width: "))
     k = int(input("Enter subgrid size: "))

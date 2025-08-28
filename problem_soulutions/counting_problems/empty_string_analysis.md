@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Empty String - Problem Analysis
+title: "Empty String
 permalink: /problem_soulutions/counting_problems/empty_string_analysis/
 ---
 
-# CSES Empty String - Problem Analysis
+# Empty String
 
 ## Problem Statement
 Given a string s, you can perform the following operation: remove two adjacent equal characters. Count the number of different ways to reduce the string to an empty string.
@@ -219,7 +219,7 @@ def weighted_empty_strings(n, target, weights, MOD=10**9+7):
     dp[0][0] = 1
     
     for i in range(1, n + 1):
-        for j in range(target + 1):
+        for j in range(target + 1):"
             # Don't include operation i
             dp[i][j] = dp[i-1][j]
             

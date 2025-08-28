@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Distance Queries - Problem Analysis
+title: "Distance Queries
 permalink: /problem_soulutions/tree_algorithms/distance_queries_analysis/
 ---
 
-# CSES Distance Queries - Problem Analysis
+# Distance Queries
 
 ## Problem Statement
 Given a tree with n nodes, answer q queries about the distance between two nodes.
@@ -553,4 +553,4 @@ def process_distance_queries(ancestor, depth, queries, log_n):
 
 ---
 
-*This analysis shows how to efficiently calculate distances in trees using LCA-based formulas.* 
+*This analysis shows how to efficiently calculate distances in trees using LCA-based formulas.*"

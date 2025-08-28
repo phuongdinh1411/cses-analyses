@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Nearest Shops - Problem Analysis
+title: "Nearest Shops
 permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis/
 ---
 
-# CSES Nearest Shops - Problem Analysis
+# Nearest Shops
 
 ## Problem Statement
 Given a tree with n nodes and q queries, for each query find the nearest shop to a given node. Each node is either a shop or not.
@@ -100,7 +100,7 @@ def nearest_shops_multisource(n, q, edges, shops, queries):
     
     # Multi-source BFS from all shops
     from collections import deque
-    queue = deque()
+    queue = deque()"
     distance = [float('inf')] * (n + 1)
     nearest_shop = [-1] * (n + 1)
     

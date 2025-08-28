@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Range Interval Queries - Problem Analysis
+title: "Range Interval Queries
 permalink: /problem_soulutions/range_queries/range_interval_queries_analysis/
 ---
 
-# CSES Range Interval Queries - Problem Analysis
+# Range Interval Queries
 
 ## Problem Statement
 Given n intervals, process q queries. Each query asks for the number of intervals that contain a given point x.
@@ -859,7 +859,7 @@ def interactive_range_interval_queries(n, intervals):
     
     while True:
         try:
-            query = input().strip()
+            query = input().strip()"
             if query == 'END':
                 break
             

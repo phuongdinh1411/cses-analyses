@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Fixed Length Subarray Sum - Problem Analysis
+title: "Fixed Length Subarray Sum
 permalink: /problem_soulutions/sliding_window/fixed_length_subarray_sum_analysis/
 ---
 
-# CSES Fixed Length Subarray Sum - Problem Analysis
+# Fixed Length Subarray Sum
 
 ## Problem Statement
 Given an array of n integers and a fixed length k, your task is to find the maximum sum of a subarray of length k.
@@ -36,7 +36,7 @@ Output:
 **Description**: Check all possible subarrays of length k and find the maximum sum.
 
 ```python
-def fixed_length_subarray_sum_naive(n, k, arr):
+def fixed_length_subarray_sum_naive(n, k, arr):"
     max_sum = float('-inf')
     
     for i in range(n - k + 1):

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Removal Game - Problem Analysis
+title: "Removal Game
 permalink: /problem_soulutions/dynamic_programming/removal_game_analysis/
 ---
 
-# CSES Removal Game - Problem Analysis
+# Removal Game
 
 ## Problem Statement
 Given an array of n integers, two players take turns removing elements from either end of the array. Each player wants to maximize their total score. Find the maximum score difference between the first and second player.
@@ -39,8 +39,7 @@ Output:
 def removal_game_naive(n, arr):
     def optimal_play(left, right, turn):
         if left > right:
-            return 0
-        
+            return 0"
         if turn == 0:  # First player's turn
             return max(arr[left] + optimal_play(left + 1, right, 1),
                       arr[right] + optimal_play(left, right - 1, 1))

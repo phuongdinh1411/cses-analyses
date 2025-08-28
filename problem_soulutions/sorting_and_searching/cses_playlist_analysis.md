@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Playlist - Problem Analysis
+title: "Playlist
 permalink: /problem_soulutions/sorting_and_searching/cses_playlist_analysis/
 ---
 
-# CSES Playlist - Problem Analysis
+# Playlist
 
 ## Problem Statement
 You are given a playlist of a radio station since its establishment. The playlist has a total of n songs.
@@ -58,8 +58,7 @@ def playlist_brute_force(songs):
                 max_length = max(max_length, end - start + 1)
     
     return max_length
-```
-
+```"
 **Why this is inefficient**: We're checking all possible subarrays and for each one, we're checking if all elements are unique. This leads to O(n³) complexity.
 
 ### Improvement 1: Sliding Window with Set - O(n²)

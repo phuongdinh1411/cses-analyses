@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Filled Subgrid Count I - Problem Analysis
+title: "Filled Subgrid Count I
 permalink: /problem_soulutions/counting_problems/filled_subgrid_count_i_analysis/
 ---
 
-# CSES Filled Subgrid Count I - Problem Analysis
+# Filled Subgrid Count I
 
 ## Problem Statement
 Given a 2D grid of size n×m, count the number of filled subgrids of size k×k. A subgrid is filled if all cells in it contain the same value.
@@ -421,7 +421,7 @@ def range_query(filled_counts, start_i, start_j, end_i, end_j):
 #### **3. Interactive Problems**
 ```python
 # Interactive filled subgrid analyzer
-def interactive_filled_analyzer():
+def interactive_filled_analyzer():"
     n = int(input("Enter grid height: "))
     m = int(input("Enter grid width: "))
     grid = []

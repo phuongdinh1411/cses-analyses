@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Nearest Smaller Values - Problem Analysis
+title: "Nearest Smaller Values
 permalink: /problem_soulutions/sorting_and_searching/nearest_smaller_values_analysis/
 ---
 
-# CSES Nearest Smaller Values - Problem Analysis
+# Nearest Smaller Values
 
 ## Problem Statement
 Given an array of n integers, for each position find the nearest position to the left that has a smaller value. If there is no such position, print 0.
@@ -450,7 +450,7 @@ def nearest_query(nearest_matrix, start, end):
 #### **3. Interactive Problems**
 ```python
 # Interactive nearest smaller values finder
-def interactive_nearest_smaller():
+def interactive_nearest_smaller():"
     n = int(input("Enter array size: "))
     arr = list(map(int, input("Enter array: ").split()))
     

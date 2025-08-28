@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Download Speed - Problem Analysis
+title: "Download Speed
 permalink: /problem_soulutions/graph_algorithms/download_speed_analysis/
 ---
 
-# CSES Download Speed - Problem Analysis
+# Download Speed
 
 ## Problem Statement
 Given a network with n computers and m connections, find the maximum download speed from computer 1 to computer n. Each connection has a capacity.
@@ -72,7 +72,7 @@ def download_speed_naive(n, m, connections):
         if parent[sink] == -1:
             return 0  # No augmenting path found
         
-        # Find bottleneck capacity
+        # Find bottleneck capacity"
         bottleneck = float('inf')
         current = sink
         while current != source:

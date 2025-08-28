@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Shortest Subarray with Sum - Problem Analysis
+title: "Shortest Subarray with Sum
 permalink: /problem_soulutions/sliding_window/shortest_subarray_with_sum_analysis/
 ---
 
-# CSES Shortest Subarray with Sum - Problem Analysis
+# Shortest Subarray with Sum
 
 ## Problem Statement
 Given an array of n integers, your task is to find the length of the shortest subarray with sum at least x.
@@ -36,7 +36,7 @@ Output:
 **Description**: Check all possible subarrays to find the shortest one with sum at least x.
 
 ```python
-def shortest_subarray_naive(n, x, arr):
+def shortest_subarray_naive(n, x, arr):"
     min_length = float('inf')
     
     for i in range(n):

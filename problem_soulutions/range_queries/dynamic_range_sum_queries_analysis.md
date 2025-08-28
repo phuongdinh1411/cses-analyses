@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Dynamic Range Sum Queries - Problem Analysis
+title: "Dynamic Range Sum Queries
 permalink: /problem_soulutions/range_queries/dynamic_range_sum_queries_analysis/
 ---
 
-# CSES Dynamic Range Sum Queries - Problem Analysis
+# Dynamic Range Sum Queries
 
 ## Problem Statement
 Given an array of n integers, process q queries. Each query is either:
@@ -14,7 +14,7 @@ Given an array of n integers, process q queries. Each query is either:
 ### Input
 The first input line has two integers n and q: the size of the array and the number of queries.
 The second line has n integers x1,x2,…,xn: the contents of the array.
-Finally, there are q lines describing the queries. Each line has either:
+Finally, there are q lines describing the queries. Each line has either:"
 - "1 k x": update the value at position k to x
 - "2 a b": calculate the sum of values in range [a,b]
 

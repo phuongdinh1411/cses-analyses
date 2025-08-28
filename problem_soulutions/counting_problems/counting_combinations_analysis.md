@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Counting Combinations - Problem Analysis
+title: "Counting Combinations
 permalink: /problem_soulutions/counting_problems/counting_combinations_analysis/
 ---
 
-# CSES Counting Combinations - Problem Analysis
+# Counting Combinations
 
 ## Problem Statement
 Given integers n and k, count the number of ways to choose k elements from a set of n elements (combinations).
@@ -91,7 +91,7 @@ def counting_combinations_mathematical(n, k):
             result = (result * i) % MOD
         return result
     
-    def mod_inverse(a, m):
+    def mod_inverse(a, m):"
         # Fermat's little theorem: a^(m-1) ≡ 1 (mod m)
         return pow(a, m-2, m)
     

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Path Queries - Problem Analysis
+title: "Path Queries
 permalink: /problem_soulutions/tree_algorithms/path_queries_analysis/
 ---
 
-# CSES Path Queries - Problem Analysis
+# Path Queries
 
 ## Problem Statement
 Given a tree with n nodes, each node has a value. Process q queries. Each query asks for the sum of values on the path between two nodes.
@@ -366,4 +366,4 @@ def decompose_path(a, b, lca_func):
 
 ---
 
-*This analysis shows how to efficiently calculate path sums using LCA and path decomposition technique.* 
+*This analysis shows how to efficiently calculate path sums using LCA and path decomposition technique.*"

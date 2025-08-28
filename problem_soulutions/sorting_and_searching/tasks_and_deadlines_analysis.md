@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: CSES Tasks and Deadlines - Problem Analysis
+title: "Tasks and Deadlines
 permalink: /problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysis/
 ---
 
-# CSES Tasks and Deadlines - Problem Analysis
+# Tasks and Deadlines
 
 ## Problem Statement
 Given n tasks, each with a duration and deadline, find the maximum profit that can be obtained. The profit for a task is deadline - completion_time, and completion_time is the sum of durations of all tasks completed before it plus its own duration.
@@ -369,7 +369,7 @@ def tasks_with_parallel_execution(n, tasks, parallel_groups):
 #### **3. Greedy Algorithm Problems**
 - **Activity Selection**: Select maximum activities
 - **Fractional Knapsack**: Fill knapsack optimally
-- **Huffman Coding**: Build optimal prefix codes
+- **Huffman Coding**: Build optimal prefix codes"
 - **Dijkstra's Algorithm**: Find shortest paths
 
 #### **4. Graph Theory Problems**
