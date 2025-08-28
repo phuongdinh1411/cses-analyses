@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Subarray XOR Queries
-permalink: /problem_soulutions/range_queries/subarray_xor_queries_analysis/
+permalink: /problem_soulutions/range_queries/subarray_xor_queries_analysis/"
 ---
+
 
 # Subarray XOR Queries
 

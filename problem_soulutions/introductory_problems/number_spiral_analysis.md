@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Number Spiral
-permalink: /problem_soulutions/introductory_problems/number_spiral_analysis/
+permalink: /problem_soulutions/introductory_problems/number_spiral_analysis/"
 ---
+
 
 # Number Spiral
 

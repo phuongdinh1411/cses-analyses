@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Money Sums
-permalink: /problem_soulutions/dynamic_programming/money_sums_analysis/
+permalink: /problem_soulutions/dynamic_programming/money_sums_analysis/"
 ---
+
 
 # Money Sums
 

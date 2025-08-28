@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Point in Polygon - Geometry Analysis
-permalink: /problem_soulutions/geometry/point_in_polygon_analysis/
+permalink: /problem_soulutions/geometry/point_in_polygon_analysis/"
 ---
+
 
 # Point in Polygon - Geometry Analysis
 

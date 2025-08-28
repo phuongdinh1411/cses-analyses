@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Sliding Window Advertisement
-permalink: /problem_soulutions/sliding_window/sliding_window_advertisement_analysis/
+permalink: /problem_soulutions/sliding_window/sliding_window_advertisement_analysis/"
 ---
+
 
 # Sliding Window Advertisement
 

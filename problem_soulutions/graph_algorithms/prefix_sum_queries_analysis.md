@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Prefix Sum Queries
-permalink: /problem_soulutions/graph_algorithms/prefix_sum_queries_analysis/
+permalink: /problem_soulutions/graph_algorithms/prefix_sum_queries_analysis/"
 ---
+
 
 # Prefix Sum Queries
 

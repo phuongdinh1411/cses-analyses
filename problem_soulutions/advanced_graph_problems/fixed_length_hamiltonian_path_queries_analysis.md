@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Fixed Length Hamiltonian Path Queries
-permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_path_queries_analysis/
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_path_queries_analysis/"
 ---
+
 
 # Fixed Length Hamiltonian Path Queries
 

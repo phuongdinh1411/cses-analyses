@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Longest Subarray with Sum
-permalink: /problem_soulutions/sliding_window/longest_subarray_with_sum_analysis/
+permalink: /problem_soulutions/sliding_window/longest_subarray_with_sum_analysis/"
 ---
+
 
 # Longest Subarray with Sum
 

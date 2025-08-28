@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Quick Reference
-permalink: /quick_reference/
+permalink: /quick_reference/"
 ---
+
 
 # Quick Reference Guide
 

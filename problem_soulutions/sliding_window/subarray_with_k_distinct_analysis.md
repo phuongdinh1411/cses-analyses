@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Subarray with K Distinct
-permalink: /problem_soulutions/sliding_window/subarray_with_k_distinct_analysis/
+permalink: /problem_soulutions/sliding_window/subarray_with_k_distinct_analysis/"
 ---
+
 
 # Subarray with K Distinct
 

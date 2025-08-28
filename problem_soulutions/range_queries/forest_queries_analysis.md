@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Forest Queries
-permalink: /problem_soulutions/range_queries/forest_queries_analysis/
+permalink: /problem_soulutions/range_queries/forest_queries_analysis/"
 ---
+
 
 # Forest Queries
 

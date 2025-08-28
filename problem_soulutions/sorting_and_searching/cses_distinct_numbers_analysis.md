@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Distinct Numbers
-permalink: /problem_soulutions/sorting_and_searching/cses_distinct_numbers_analysis/
+permalink: /problem_soulutions/sorting_and_searching/cses_distinct_numbers_analysis/"
 ---
+
 
 # Distinct Numbers
 

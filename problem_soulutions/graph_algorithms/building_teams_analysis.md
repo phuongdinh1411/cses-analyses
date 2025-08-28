@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Building Teams
-permalink: /problem_soulutions/graph_algorithms/building_teams_analysis/
+permalink: /problem_soulutions/graph_algorithms/building_teams_analysis/"
 ---
+
 
 # Building Teams
 

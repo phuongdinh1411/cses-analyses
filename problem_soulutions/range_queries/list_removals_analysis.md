@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "List Removals
-permalink: /problem_soulutions/range_queries/list_removals_analysis/
+permalink: /problem_soulutions/range_queries/list_removals_analysis/"
 ---
+
 
 # List Removals
 

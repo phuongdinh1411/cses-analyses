@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Josephus Problem II
-permalink: /problem_soulutions/sorting_and_searching/josephus_problem_ii_analysis/
+permalink: /problem_soulutions/sorting_and_searching/josephus_problem_ii_analysis/"
 ---
+
 
 # Josephus Problem II
 

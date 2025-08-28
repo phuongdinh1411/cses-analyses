@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Required Substring
-permalink: /problem_soulutions/string_algorithms/required_substring_analysis/
+permalink: /problem_soulutions/string_algorithms/required_substring_analysis/"
 ---
+
 
 # Required Substring
 

@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Border Subgrid Count II
-permalink: /problem_soulutions/counting_problems/border_subgrid_count_ii_analysis/
+permalink: /problem_soulutions/counting_problems/border_subgrid_count_ii_analysis/"
 ---
+
 
 # Border Subgrid Count II
 

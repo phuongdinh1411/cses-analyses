@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Grid Paths II
-permalink: /problem_soulutions/counting_problems/grid_paths_ii_analysis/
+permalink: /problem_soulutions/counting_problems/grid_paths_ii_analysis/"
 ---
+
 
 # Grid Paths II
 

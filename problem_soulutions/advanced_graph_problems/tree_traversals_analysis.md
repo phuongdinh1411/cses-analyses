@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Tree Traversals
-permalink: /problem_soulutions/advanced_graph_problems/tree_traversals_analysis/
+permalink: /problem_soulutions/advanced_graph_problems/tree_traversals_analysis/"
 ---
+
 
 # Tree Traversals
 

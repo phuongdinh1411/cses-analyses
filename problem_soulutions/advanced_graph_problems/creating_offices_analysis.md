@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Creating Offices
-permalink: /problem_soulutions/advanced_graph_problems/creating_offices_analysis/
+permalink: /problem_soulutions/advanced_graph_problems/creating_offices_analysis/"
 ---
+
 
 # Creating Offices
 

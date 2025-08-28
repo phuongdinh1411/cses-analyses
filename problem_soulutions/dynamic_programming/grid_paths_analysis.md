@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Grid Paths
-permalink: /problem_soulutions/dynamic_programming/grid_paths_analysis/
+permalink: /problem_soulutions/dynamic_programming/grid_paths_analysis/"
 ---
+
 
 # Grid Paths
 

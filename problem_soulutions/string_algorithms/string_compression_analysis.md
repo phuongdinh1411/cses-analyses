@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "String Compression
-permalink: /problem_soulutions/string_algorithms/string_compression_analysis/
+permalink: /problem_soulutions/string_algorithms/string_compression_analysis/"
 ---
+
 
 # String Compression
 

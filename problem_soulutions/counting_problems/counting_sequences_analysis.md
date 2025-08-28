@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Counting Sequences
-permalink: /problem_soulutions/counting_problems/counting_sequences_analysis/
+permalink: /problem_soulutions/counting_problems/counting_sequences_analysis/"
 ---
+
 
 # Counting Sequences
 

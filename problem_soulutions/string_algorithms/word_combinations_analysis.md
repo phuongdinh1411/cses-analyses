@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Word Combinations
-permalink: /problem_soulutions/string_algorithms/word_combinations_analysis/
+permalink: /problem_soulutions/string_algorithms/word_combinations_analysis/"
 ---
+
 
 # Word Combinations
 

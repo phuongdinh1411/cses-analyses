@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Counting Rooms
-permalink: /problem_soulutions/graph_algorithms/counting_rooms_analysis/
+permalink: /problem_soulutions/graph_algorithms/counting_rooms_analysis/"
 ---
+
 
 # Counting Rooms
 

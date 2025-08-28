@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Distinct Values Queries
-permalink: /problem_soulutions/tree_algorithms/distinct_values_queries_analysis/
+permalink: /problem_soulutions/tree_algorithms/distinct_values_queries_analysis/"
 ---
+
 
 # Distinct Values Queries
 

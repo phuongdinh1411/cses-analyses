@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Fixed Length Eulerian Trail Queries
-permalink: /problem_soulutions/advanced_graph_problems/fixed_length_eulerian_trail_queries_analysis/
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_eulerian_trail_queries_analysis/"
 ---
+
 
 # Fixed Length Eulerian Trail Queries
 

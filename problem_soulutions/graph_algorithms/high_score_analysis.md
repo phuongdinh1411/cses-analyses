@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "High Score
-permalink: /problem_soulutions/graph_algorithms/high_score_analysis/
+permalink: /problem_soulutions/graph_algorithms/high_score_analysis/"
 ---
+
 
 # High Score
 

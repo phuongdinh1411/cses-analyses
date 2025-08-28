@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Increasing Array
-permalink: /problem_soulutions/introductory_problems/increasing_array_analysis/
+permalink: /problem_soulutions/introductory_problems/increasing_array_analysis/"
 ---
+
 
 # Increasing Array
 

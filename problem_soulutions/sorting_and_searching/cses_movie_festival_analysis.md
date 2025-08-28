@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Movie Festival - Interview Analysis
-permalink: /problem_soulutions/sorting_and_searching/cses_movie_festival_analysis/
+permalink: /problem_soulutions/sorting_and_searching/cses_movie_festival_analysis/"
 ---
+
 
 # Movie Festival - Interview Analysis
 

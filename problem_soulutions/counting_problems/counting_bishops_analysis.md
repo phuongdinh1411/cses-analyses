@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Counting Bishops
-permalink: /problem_soulutions/counting_problems/counting_bishops_analysis/
+permalink: /problem_soulutions/counting_problems/counting_bishops_analysis/"
 ---
+
 
 # Counting Bishops
 

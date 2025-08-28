@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Road Construction IV
-permalink: /problem_soulutions/graph_algorithms/road_construction_iv_analysis/
+permalink: /problem_soulutions/graph_algorithms/road_construction_iv_analysis/"
 ---
+
 
 # Road Construction IV
 

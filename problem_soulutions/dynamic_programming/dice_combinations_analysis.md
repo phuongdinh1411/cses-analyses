@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Dice Combinations
-permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis/
+permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis/"
 ---
+
 
 # Dice Combinations
 

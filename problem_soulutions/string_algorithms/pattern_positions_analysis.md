@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Pattern Positions
-permalink: /problem_soulutions/string_algorithms/pattern_positions_analysis/
+permalink: /problem_soulutions/string_algorithms/pattern_positions_analysis/"
 ---
+
 
 # Pattern Positions
 

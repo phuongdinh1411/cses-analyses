@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Tree Distances II
-permalink: /problem_soulutions/tree_algorithms/tree_distances_ii_analysis/
+permalink: /problem_soulutions/tree_algorithms/tree_distances_ii_analysis/"
 ---
+
 
 # Tree Distances II
 

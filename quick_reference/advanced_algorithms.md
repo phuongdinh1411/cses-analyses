@@ -1,8 +1,9 @@
 ---
 layout: simple
-title: Advanced Algorithms
+title: "Advanced Algorithms"
 permalink: /quick_reference/advanced_algorithms/
 ---
+
 
 # Advanced Algorithms Reference
 

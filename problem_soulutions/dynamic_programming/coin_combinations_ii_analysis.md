@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Coin Combinations II
-permalink: /problem_soulutions/dynamic_programming/coin_combinations_ii_analysis/
+permalink: /problem_soulutions/dynamic_programming/coin_combinations_ii_analysis/"
 ---
+
 
 # Coin Combinations II
 

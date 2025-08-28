@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Counting Reorders
-permalink: /problem_soulutions/counting_problems/counting_reorders_analysis/
+permalink: /problem_soulutions/counting_problems/counting_reorders_analysis/"
 ---
+
 
 # Counting Reorders
 

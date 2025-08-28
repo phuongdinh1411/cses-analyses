@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Transfer Speeds Sum
-permalink: /problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analysis/
+permalink: /problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analysis/"
 ---
+
 
 # Transfer Speeds Sum
 

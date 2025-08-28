@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Sum of Four Values
-permalink: /problem_soulutions/sorting_and_searching/sum_of_four_values_analysis/
+permalink: /problem_soulutions/sorting_and_searching/sum_of_four_values_analysis/"
 ---
+
 
 # Sum of Four Values
 

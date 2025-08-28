@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Array Description
-permalink: /problem_soulutions/dynamic_programming/array_description_analysis/
+permalink: /problem_soulutions/dynamic_programming/array_description_analysis/"
 ---
+
 
 # Array Description
 

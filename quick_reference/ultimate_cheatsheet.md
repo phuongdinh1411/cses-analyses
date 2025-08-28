@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Ultimate Cheatsheet
-permalink: /quick_reference/ultimate_cheatsheet/
+permalink: /quick_reference/ultimate_cheatsheet/"
 ---
+
 
 # 🚀 Ultimate Cheatsheet - Complete Quick Reference Guide
 

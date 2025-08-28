@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Dynamic Range Sum Queries
-permalink: /problem_soulutions/range_queries/dynamic_range_sum_queries_analysis/
+permalink: /problem_soulutions/range_queries/dynamic_range_sum_queries_analysis/"
 ---
+
 
 # Dynamic Range Sum Queries
 

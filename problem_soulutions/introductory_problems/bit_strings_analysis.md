@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Bit Strings
-permalink: /problem_soulutions/introductory_problems/bit_strings_analysis/
+permalink: /problem_soulutions/introductory_problems/bit_strings_analysis/"
 ---
+
 
 # Bit Strings
 

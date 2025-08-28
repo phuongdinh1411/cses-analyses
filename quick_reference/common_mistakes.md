@@ -1,8 +1,9 @@
 ---
 layout: simple
-title: Common Mistakes
+title: "Common Mistakes"
 permalink: /quick_reference/common_mistakes/
 ---
+
 
 # Common Mistakes and Pitfalls
 

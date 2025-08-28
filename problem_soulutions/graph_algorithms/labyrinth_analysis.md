@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Labyrinth
-permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis/
+permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis/"
 ---
+
 
 # Labyrinth
 

@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Subarray Sums I
-permalink: /problem_soulutions/sliding_window/subarray_sums_i_analysis/
+permalink: /problem_soulutions/sliding_window/subarray_sums_i_analysis/"
 ---
+
 
 # Subarray Sums I
 

@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Longest Common Subsequence
-permalink: /problem_soulutions/dynamic_programming/longest_common_subsequence_analysis/
+permalink: /problem_soulutions/dynamic_programming/longest_common_subsequence_analysis/"
 ---
+
 
 # Longest Common Subsequence
 

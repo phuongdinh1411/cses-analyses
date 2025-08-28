@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Nearest Smaller Values
-permalink: /problem_soulutions/sorting_and_searching/nearest_smaller_values_analysis/
+permalink: /problem_soulutions/sorting_and_searching/nearest_smaller_values_analysis/"
 ---
+
 
 # Nearest Smaller Values
 

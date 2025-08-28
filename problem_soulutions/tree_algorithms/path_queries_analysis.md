@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Path Queries
-permalink: /problem_soulutions/tree_algorithms/path_queries_analysis/
+permalink: /problem_soulutions/tree_algorithms/path_queries_analysis/"
 ---
+
 
 # Path Queries
 

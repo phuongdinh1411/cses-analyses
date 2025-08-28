@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Counting Permutations
-permalink: /problem_soulutions/counting_problems/counting_permutations_analysis/
+permalink: /problem_soulutions/counting_problems/counting_permutations_analysis/"
 ---
+
 
 # Counting Permutations
 

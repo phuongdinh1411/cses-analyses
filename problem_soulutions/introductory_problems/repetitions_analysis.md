@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Repetitions
-permalink: /problem_soulutions/introductory_problems/repetitions_analysis/
+permalink: /problem_soulutions/introductory_problems/repetitions_analysis/"
 ---
+
 
 # Repetitions
 

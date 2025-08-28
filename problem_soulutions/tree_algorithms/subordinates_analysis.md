@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Subordinates
-permalink: /problem_soulutions/tree_algorithms/subordinates_analysis/
+permalink: /problem_soulutions/tree_algorithms/subordinates_analysis/"
 ---
+
 
 # Subordinates
 

@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Minimal Rotation
-permalink: /problem_soulutions/string_algorithms/minimal_rotation_analysis/
+permalink: /problem_soulutions/string_algorithms/minimal_rotation_analysis/"
 ---
+
 
 # Minimal Rotation
 

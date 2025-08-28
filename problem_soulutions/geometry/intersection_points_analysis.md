@@ -1,8 +1,9 @@
 ---
 layout: simple
-title: "Intersection Points - Geometry Analysis
+title: "Intersection Points"
 permalink: /problem_soulutions/geometry/intersection_points_analysis/
 ---
+
 
 # Intersection Points - Geometry Analysis
 

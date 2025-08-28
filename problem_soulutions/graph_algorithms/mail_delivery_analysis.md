@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Mail Delivery
-permalink: /problem_soulutions/graph_algorithms/mail_delivery_analysis/
+permalink: /problem_soulutions/graph_algorithms/mail_delivery_analysis/"
 ---
+
 
 # Mail Delivery
 

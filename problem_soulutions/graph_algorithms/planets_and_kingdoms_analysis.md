@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Planets and Kingdoms
-permalink: /problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis/
+permalink: /problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis/"
 ---
+
 
 # Planets and Kingdoms
 

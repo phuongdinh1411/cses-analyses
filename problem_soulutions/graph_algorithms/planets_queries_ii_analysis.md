@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Planets Queries II
-permalink: /problem_soulutions/graph_algorithms/planets_queries_ii_analysis/
+permalink: /problem_soulutions/graph_algorithms/planets_queries_ii_analysis/"
 ---
+
 
 # Planets Queries II
 

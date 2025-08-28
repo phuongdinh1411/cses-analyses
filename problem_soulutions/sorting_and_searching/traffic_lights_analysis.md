@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Traffic Lights
-permalink: /problem_soulutions/sorting_and_searching/traffic_lights_analysis/
+permalink: /problem_soulutions/sorting_and_searching/traffic_lights_analysis/"
 ---
+
 
 # Traffic Lights
 

@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Flight Discount
-permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis/
+permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis/"
 ---
+
 
 # Flight Discount
 

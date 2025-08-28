@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Filled Subgrid Count I
-permalink: /problem_soulutions/counting_problems/filled_subgrid_count_i_analysis/
+permalink: /problem_soulutions/counting_problems/filled_subgrid_count_i_analysis/"
 ---
+
 
 # Filled Subgrid Count I
 

@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Collecting Numbers II
-permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_ii_analysis/
+permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_ii_analysis/"
 ---
+
 
 # Collecting Numbers II
 

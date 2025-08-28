@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Distinct Values Subsequences
-permalink: /problem_soulutions/sorting_and_searching/distinct_values_subsequences_analysis/
+permalink: /problem_soulutions/sorting_and_searching/distinct_values_subsequences_analysis/"
 ---
+
 
 # Distinct Values Subsequences
 

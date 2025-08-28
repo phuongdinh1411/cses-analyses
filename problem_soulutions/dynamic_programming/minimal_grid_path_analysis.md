@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Minimal Grid Path
-permalink: /problem_soulutions/dynamic_programming/minimal_grid_path_analysis/
+permalink: /problem_soulutions/dynamic_programming/minimal_grid_path_analysis/"
 ---
+
 
 # Minimal Grid Path
 

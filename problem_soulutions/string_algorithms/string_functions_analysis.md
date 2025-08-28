@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "String Functions
-permalink: /problem_soulutions/string_algorithms/string_functions_analysis/
+permalink: /problem_soulutions/string_algorithms/string_functions_analysis/"
 ---
+
 
 # String Functions
 

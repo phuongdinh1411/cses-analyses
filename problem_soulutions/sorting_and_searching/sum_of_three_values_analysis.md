@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Sum of Three Values
-permalink: /problem_soulutions/sorting_and_searching/sum_of_three_values_analysis/
+permalink: /problem_soulutions/sorting_and_searching/sum_of_three_values_analysis/"
 ---
+
 
 # Sum of Three Values
 

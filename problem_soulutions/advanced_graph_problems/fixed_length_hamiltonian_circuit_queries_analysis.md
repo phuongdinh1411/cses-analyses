@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Fixed Length Hamiltonian Circuit Queries
-permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_circuit_queries_analysis/
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_circuit_queries_analysis/"
 ---
+
 
 # Fixed Length Hamiltonian Circuit Queries
 

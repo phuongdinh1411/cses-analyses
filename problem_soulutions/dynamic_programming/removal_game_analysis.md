@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Removal Game
-permalink: /problem_soulutions/dynamic_programming/removal_game_analysis/
+permalink: /problem_soulutions/dynamic_programming/removal_game_analysis/"
 ---
+
 
 # Removal Game
 

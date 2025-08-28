@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Subarray Mode Queries
-permalink: /problem_soulutions/range_queries/subarray_mode_queries_analysis/
+permalink: /problem_soulutions/range_queries/subarray_mode_queries_analysis/"
 ---
+
 
 # Subarray Mode Queries
 

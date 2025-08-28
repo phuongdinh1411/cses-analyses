@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Nested Ranges Count
-permalink: /problem_soulutions/sorting_and_searching/nested_ranges_count_analysis/
+permalink: /problem_soulutions/sorting_and_searching/nested_ranges_count_analysis/"
 ---
+
 
 # Nested Ranges Count
 

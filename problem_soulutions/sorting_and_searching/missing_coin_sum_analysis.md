@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Missing Coin Sum
-permalink: /problem_soulutions/sorting_and_searching/missing_coin_sum_analysis/
+permalink: /problem_soulutions/sorting_and_searching/missing_coin_sum_analysis/"
 ---
+
 
 # Missing Coin Sum
 

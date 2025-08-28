@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Fixed Length Walk Queries
-permalink: /problem_soulutions/advanced_graph_problems/fixed_length_walk_queries_analysis/
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_walk_queries_analysis/"
 ---
+
 
 # Fixed Length Walk Queries
 

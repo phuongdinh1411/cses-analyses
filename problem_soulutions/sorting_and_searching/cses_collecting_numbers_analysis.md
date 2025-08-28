@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Collecting Numbers
-permalink: /problem_soulutions/sorting_and_searching/cses_collecting_numbers_analysis/
+permalink: /problem_soulutions/sorting_and_searching/cses_collecting_numbers_analysis/"
 ---
+
 
 # Collecting Numbers
 

@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Apartments
-permalink: /problem_soulutions/sorting_and_searching/cses_apartments_analysis/
+permalink: /problem_soulutions/sorting_and_searching/cses_apartments_analysis/"
 ---
+
 
 # Apartments
 

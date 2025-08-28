@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Permutations
-permalink: /problem_soulutions/introductory_problems/permutations_analysis/
+permalink: /problem_soulutions/introductory_problems/permutations_analysis/"
 ---
+
 
 # Permutations
 

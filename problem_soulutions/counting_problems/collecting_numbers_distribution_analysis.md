@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Collecting Numbers Distribution
-permalink: /problem_soulutions/counting_problems/collecting_numbers_distribution_analysis/
+permalink: /problem_soulutions/counting_problems/collecting_numbers_distribution_analysis/"
 ---
+
 
 # Collecting Numbers Distribution
 

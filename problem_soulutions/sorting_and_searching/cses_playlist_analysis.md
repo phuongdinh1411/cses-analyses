@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Playlist
-permalink: /problem_soulutions/sorting_and_searching/cses_playlist_analysis/
+permalink: /problem_soulutions/sorting_and_searching/cses_playlist_analysis/"
 ---
+
 
 # Playlist
 

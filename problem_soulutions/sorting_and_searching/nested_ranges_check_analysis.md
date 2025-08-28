@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Nested Ranges Check
-permalink: /problem_soulutions/sorting_and_searching/nested_ranges_check_analysis/
+permalink: /problem_soulutions/sorting_and_searching/nested_ranges_check_analysis/"
 ---
+
 
 # Nested Ranges Check
 

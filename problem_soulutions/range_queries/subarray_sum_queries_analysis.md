@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Subarray Sum Queries
-permalink: /problem_soulutions/range_queries/subarray_sum_queries_analysis/
+permalink: /problem_soulutions/range_queries/subarray_sum_queries_analysis/"
 ---
+
 
 # Subarray Sum Queries
 

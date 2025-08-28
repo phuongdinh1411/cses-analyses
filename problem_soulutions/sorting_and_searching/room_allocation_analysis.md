@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Room Allocation
-permalink: /problem_soulutions/sorting_and_searching/room_allocation_analysis/
+permalink: /problem_soulutions/sorting_and_searching/room_allocation_analysis/"
 ---
+
 
 # Room Allocation
 

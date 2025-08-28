@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Polygon Lattice Points - Geometry Analysis
-permalink: /problem_soulutions/geometry/polygon_lattice_points_analysis/
+permalink: /problem_soulutions/geometry/polygon_lattice_points_analysis/"
 ---
+
 
 # Polygon Lattice Points - Geometry Analysis
 

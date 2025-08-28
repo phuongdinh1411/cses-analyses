@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "String Rotation
-permalink: /problem_soulutions/string_algorithms/string_rotation_analysis/
+permalink: /problem_soulutions/string_algorithms/string_rotation_analysis/"
 ---
+
 
 # String Rotation
 

@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Geometry Techniques Summary
-permalink: /problem_soulutions/geometry/geometry_techniques_summary/
+permalink: /problem_soulutions/geometry/geometry_techniques_summary/"
 ---
+
 
 # Geometry Techniques Summary
 

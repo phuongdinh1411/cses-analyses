@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Minimum Subarray Sum
-permalink: /problem_soulutions/sliding_window/minimum_subarray_sum_analysis/
+permalink: /problem_soulutions/sliding_window/minimum_subarray_sum_analysis/"
 ---
+
 
 # Minimum Subarray Sum
 

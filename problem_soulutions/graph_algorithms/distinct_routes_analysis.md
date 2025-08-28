@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Distinct Routes
-permalink: /problem_soulutions/graph_algorithms/distinct_routes_analysis/
+permalink: /problem_soulutions/graph_algorithms/distinct_routes_analysis/"
 ---
+
 
 # Distinct Routes
 

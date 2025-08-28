@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Finding Periods
-permalink: /problem_soulutions/string_algorithms/finding_periods_analysis/
+permalink: /problem_soulutions/string_algorithms/finding_periods_analysis/"
 ---
+
 
 # Finding Periods
 

@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Distinct Values Subarrays
-permalink: /problem_soulutions/sorting_and_searching/distinct_values_subarrays_analysis/
+permalink: /problem_soulutions/sorting_and_searching/distinct_values_subarrays_analysis/"
 ---
+
 
 # Distinct Values Subarrays
 

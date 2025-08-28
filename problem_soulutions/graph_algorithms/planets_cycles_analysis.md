@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Planets Cycles
-permalink: /problem_soulutions/graph_algorithms/planets_cycles_analysis/
+permalink: /problem_soulutions/graph_algorithms/planets_cycles_analysis/"
 ---
+
 
 # Planets Cycles
 

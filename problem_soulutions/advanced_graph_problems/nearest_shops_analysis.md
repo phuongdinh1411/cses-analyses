@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Nearest Shops
-permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis/
+permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis/"
 ---
+
 
 # Nearest Shops
 

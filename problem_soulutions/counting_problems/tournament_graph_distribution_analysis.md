@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Tournament Graph Distribution
-permalink: /problem_soulutions/counting_problems/tournament_graph_distribution_analysis/
+permalink: /problem_soulutions/counting_problems/tournament_graph_distribution_analysis/"
 ---
+
 
 # Tournament Graph Distribution
 

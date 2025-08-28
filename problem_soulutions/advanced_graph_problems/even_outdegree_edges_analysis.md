@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Even Outdegree Edges
-permalink: /problem_soulutions/advanced_graph_problems/even_outdegree_edges_analysis/
+permalink: /problem_soulutions/advanced_graph_problems/even_outdegree_edges_analysis/"
 ---
+
 
 # Even Outdegree Edges
 

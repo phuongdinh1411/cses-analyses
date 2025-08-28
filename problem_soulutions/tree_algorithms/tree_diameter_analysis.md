@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Tree Diameter
-permalink: /problem_soulutions/tree_algorithms/tree_diameter_analysis/
+permalink: /problem_soulutions/tree_algorithms/tree_diameter_analysis/"
 ---
+
 
 # Tree Diameter
 

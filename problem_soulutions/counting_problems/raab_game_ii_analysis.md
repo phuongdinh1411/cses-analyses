@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Raab Game II
-permalink: /problem_soulutions/counting_problems/raab_game_ii_analysis/
+permalink: /problem_soulutions/counting_problems/raab_game_ii_analysis/"
 ---
+
 
 # Raab Game II
 

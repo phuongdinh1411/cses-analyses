@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Stick Lengths
-permalink: /problem_soulutions/sorting_and_searching/cses_stick_lengths_analysis/
+permalink: /problem_soulutions/sorting_and_searching/cses_stick_lengths_analysis/"
 ---
+
 
 # Stick Lengths
 

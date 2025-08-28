@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Topological Sorting
-permalink: /problem_soulutions/graph_algorithms/topological_sorting_analysis/
+permalink: /problem_soulutions/graph_algorithms/topological_sorting_analysis/"
 ---
+
 
 # Topological Sorting
 

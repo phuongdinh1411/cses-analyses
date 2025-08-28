@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Two Knights
-permalink: /problem_soulutions/introductory_problems/two_knights_analysis/
+permalink: /problem_soulutions/introductory_problems/two_knights_analysis/"
 ---
+
 
 # Two Knights
 

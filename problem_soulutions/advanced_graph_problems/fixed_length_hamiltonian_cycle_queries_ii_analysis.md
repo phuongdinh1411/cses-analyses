@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Fixed Length Hamiltonian Cycle Queries II
-permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_cycle_queries_ii_analysis/
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_cycle_queries_ii_analysis/"
 ---
+
 
 # Fixed Length Hamiltonian Cycle Queries II
 

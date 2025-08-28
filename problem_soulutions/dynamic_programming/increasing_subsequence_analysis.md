@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Increasing Subsequence
-permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analysis/
+permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analysis/"
 ---
+
 
 # Increasing Subsequence
 

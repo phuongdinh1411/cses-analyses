@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Message Route
-permalink: /problem_soulutions/graph_algorithms/message_route_analysis/
+permalink: /problem_soulutions/graph_algorithms/message_route_analysis/"
 ---
+
 
 # Message Route
 

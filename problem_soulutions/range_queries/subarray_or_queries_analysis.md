@@ -1,8 +1,9 @@
 ---
 layout: simple
 title: "Subarray OR Queries
-permalink: /problem_soulutions/range_queries/subarray_or_queries_analysis/
+permalink: /problem_soulutions/range_queries/subarray_or_queries_analysis/"
 ---
+
 
 # Subarray OR Queries
 

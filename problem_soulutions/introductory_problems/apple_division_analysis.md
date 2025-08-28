@@ -4,9 +4,10 @@ title: "Apple Division"
 permalink: /problem_soulutions/introductory_problems/apple_division_analysis/
 ---
 
+
 # Apple Division
 
-## 📋 Problem Description
+## Problem Description
 
 **Problem**: Given n apples with weights w₁, w₂, ..., wₙ, divide them into two groups such that the difference between the total weights of the two groups is minimized.
 
@@ -35,7 +36,7 @@ But better: Group 1: {3, 2, 4} = 9, Group 2: {7, 1} = 8, Difference = |9-8| = 1
 1. **Small n**: Since n ≤ 20, we can use brute force with bitmask
 2. **Subset Sum**: We need to find two subsets with minimum difference
 3. **Symmetry**: If we find one subset, the other is the complement
-4. **Total Sum**: The difference is |total_sum - 2*subset_sum|
+4. **Total Sum**: The difference is total_sum - 2*subset_sum
 
 ### Complexity Analysis
 - **Time**: O(2ⁿ) - try all possible subsets
@@ -47,7 +48,7 @@ But better: Group 1: {3, 2, 4} = 9, Group 2: {7, 1} = 8, Difference = |9-8| = 1
 
 **Idea**: Try all possible subsets using bitmask representation.
 
-```python
+{% highlight python %}
 def apple_division_bitmask(weights):
     n = len(weights)
     total_sum = sum(weights)
@@ -70,7 +71,7 @@ def apple_division_bitmask(weights):
 weights = [3, 2, 7, 4, 1]
 result = apple_division_bitmask(weights)
 print(result)  # Output: 1
-```
+{% endhighlight %}
 
 **Time Complexity**: O(n × 2ⁿ)
 **Space Complexity**: O(1)
