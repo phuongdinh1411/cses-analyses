@@ -108,28 +108,18 @@ For n = 6:
 
 ## Implementation
 
-### C++ Solution (Optimal):
-```cpp
-#include <iostream>
-using namespace std;
+### Python Solution (Optimal):
+```python
+n = int(input())
+print(n, end='')
 
-int main() {
-    long long n;
-    cin >> n;
-    
-    cout << n;
-    while (n != 1) {
-        if (n % 2 == 0) {
-            n = n / 2;
-        } else {
-            n = 3 * n + 1;
-        }
-        cout << " " << n;
-    }
-    cout << endl;
-    
-    return 0;
-}
+while n != 1:
+    if n % 2 == 0:
+        n = n // 2
+    else:
+        n = 3 * n + 1
+    print(f" {n}", end='')
+print()
 ```
 
 ### Python Solution:
@@ -169,32 +159,22 @@ public class WeirdAlgorithm {
 }
 ```
 
-### Recursive Solution (C++):
-```cpp
-#include <iostream>
-using namespace std;
-
-void collatz(long long n) {
-    cout << n;
-    if (n == 1) {
-        cout << endl;
-        return;
-    }
-    cout << " ";
+### Recursive Solution (Python):
+```python
+def collatz(n):
+    print(n, end='')
+    if n == 1:
+        print()
+        return
+    print(" ", end='')
     
-    if (n % 2 == 0) {
-        collatz(n / 2);
-    } else {
-        collatz(3 * n + 1);
-    }
-}
+    if n % 2 == 0:
+        collatz(n // 2)
+    else:
+        collatz(3 * n + 1)
 
-int main() {
-    long long n;
-    cin >> n;
-    collatz(n);
-    return 0;
-}
+n = int(input())
+collatz(n)
 ```
 
 ## Edge Cases and Special Considerations

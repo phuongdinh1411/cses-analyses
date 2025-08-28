@@ -178,24 +178,21 @@ def create_strings_iterative(s):
 ## Advanced Optimizations
 
 ### 1. Efficient Duplicate Handling
-```cpp
-vector<string> createStringsEfficient(string s) {
-    vector<string> result;
+```python
+from itertools import permutations
+
+def create_strings_efficient(s):
+    # Sort to get lexicographically smallest
+    s_sorted = ''.join(sorted(s))
     
-    // Sort to get lexicographically smallest
-    sort(s.begin(), s.end());
+    # Use set to automatically handle duplicates
+    unique_permutations = set()
     
-    // Use set to automatically handle duplicates
-    set<string> unique_permutations;
+    for perm in permutations(s_sorted):
+        unique_permutations.add(''.join(perm))
     
-    do {
-        unique_permutations.insert(s);
-    } while (next_permutation(s.begin(), s.end()));
-    
-    // Convert set to vector
-    result.assign(unique_permutations.begin(), unique_permutations.end());
-    return result;
-}
+    # Convert set to list
+    return list(unique_permutations)
 ```
 
 ### 2. Mathematical Counting
