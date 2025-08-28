@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title | default: site.title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        
+        .nav__items {
+            list-style: none;
+        }
+        
+        .nav__item {
+            margin-bottom: 8px;
+        }
+        
+        .nav__item a {
+            color: #555;
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav__item a:hover {
+            background: #3498db;
+            color: white;
+        }
+        
+        .nav__sub-items {
+            list-style: none;
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+        
+        .nav__sub-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav__sub-item a {
+            font-size: 0.9em;
+            padding: 5px 10px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            max-width: calc(100vw - 280px);
+        }
+        
+        .page-title {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .content {
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+        
+        .content h1, .content h2, .content h3 {
+            color: #2c3e50;
+            margin: 30px 0 15px 0;
+        }
+        
+        .content h1 {
+            font-size: 2em;
+        }
+        
+        .content h2 {
+            font-size: 1.5em;
+        }
+        
+        .content h3 {
+            font-size: 1.3em;
+        }
+        
+        .content p {
+            margin-bottom: 15px;
+        }
+        
+        .content ul, .content ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        .content li {
+            margin-bottom: 8px;
+        }
+        
+        .content code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        
+        .content pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .content pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+            }
+            
+            .main-content {
+                max-width: 100%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h3><i class="fas fa-code"></i> CSES Analyses</h3>
+            <nav class="nav__list">
+                <ul class="nav__items">
+                    {% for item in site.data.navigation.main %}
+                        <li class="nav__item">
+                            <a href="{{ item.url | relative_url }}">
+                                {% if item.title contains "Home" %}
+                                    <i class="fas fa-home"></i>
+                                {% elsif item.title contains "Problem" %}
+                                    <i class="fas fa-puzzle-piece"></i>
+                                {% elsif item.title contains "Quick" %}
+                                    <i class="fas fa-book"></i>
+                                {% elsif item.title contains "About" %}
+                                    <i class="fas fa-info-circle"></i>
+                                {% else %}
+                                    <i class="fas fa-folder"></i>
+                                {% endif %}
+                                {{ item.title }}
+                            </a>
+                            {% if item.children %}
+                                <ul class="nav__sub-items">
+                                    {% for child in item.children %}
+                                        <li class="nav__sub-item">
+                                            <a href="{{ child.url | relative_url }}">
+                                                {% if child.title contains "Introductory" %}
+                                                    <i class="fas fa-play"></i>
+                                                {% elsif child.title contains "Sorting" %}
+                                                    <i class="fas fa-sort"></i>
+                                                {% elsif child.title contains "Dynamic" %}
+                                                    <i class="fas fa-cogs"></i>
+                                                {% elsif child.title contains "Graph" %}
+                                                    <i class="fas fa-project-diagram"></i>
+                                                {% elsif child.title contains "String" %}
+                                                    <i class="fas fa-font"></i>
+                                                {% elsif child.title contains "Tree" %}
+                                                    <i class="fas fa-tree"></i>
+                                                {% elsif child.title contains "Geometry" %}
+                                                    <i class="fas fa-shapes"></i>
+                                                {% elsif child.title contains "Range" %}
+                                                    <i class="fas fa-ruler"></i>
+                                                {% elsif child.title contains "Sliding" %}
+                                                    <i class="fas fa-window-maximize"></i>
+                                                {% elsif child.title contains "Counting" %}
+                                                    <i class="fas fa-calculator"></i>
+                                                {% else %}
+                                                    <i class="fas fa-file"></i>
+                                                {% endif %}
+                                                {{ child.title }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <h1 class="page-title">{{ page.title | default: site.title }}</h1>
+            <div class="content">
+                {{ content }}
+            </div>
+        </main>
+    </div>
+</body>
+</html> 

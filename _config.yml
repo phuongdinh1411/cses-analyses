@@ -12,18 +12,24 @@ plugins:
   - jekyll-feed
   - jekyll-include-cache
   - jekyll-toc
-  - jekyll-auto-nav
 
-auto_nav:
-  collections: ["pages"]
-  depth: 3
+# Sidebar configuration
+sidebar:
+  nav: "main"
 
 defaults:
   - scope:
       path: ""
       type: "pages"
     values:
-      layout: single
+      layout: simple
+      sidebar:
+        nav: "main"
+  - scope:
+      path: "problem_soulutions"
+      type: "pages"
+    values:
+      layout: simple
       sidebar:
         nav: "main"
 

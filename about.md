@@ -1,8 +1,7 @@
 ---
-layout: single
+layout: simple
 title: "About"
 permalink: /about/
-author_profile: true
 ---
 
 # About This Project

@@ -1,0 +1,19 @@
+<meta charset="utf-8">
+
+{% include seo.html %}
+{% include head/custom.html %}
+
+{% if site.feed_meta %}
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }} {{ site.title_separator }} {{ site.description }}" href="{{ site.feed.path | default: 'feed.xml' | relative_url }}">
+{% endif %}
+
+{% if site.head_scripts %}
+  {% for script in site.head_scripts %}
+    {% if script contains "://" %}
+      {% capture script_path %}{{ script }}{% endcapture %}
+    {% else %}
+      {% capture script_path %}{{ script | relative_url }}{% endcapture %}
+    {% endif %}
+    <script src="{{ script_path }}"></script>
+  {% endfor %}
+{% endif %} 

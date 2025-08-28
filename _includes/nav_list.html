@@ -1,0 +1,20 @@
+{% assign navigation = include.nav %}
+
+{% for item in navigation %}
+  {% if item.children %}
+    <h3 class="nav__title" style="padding: 0;">
+      <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
+    </h3>
+    <ul class="nav__items">
+      {% for child in item.children %}
+        <li class="nav__item">
+          <a href="{{ child.url | relative_url }}">{{ child.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <h3 class="nav__title" style="padding: 0;">
+      <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
+    </h3>
+  {% endif %}
+{% endfor %} 

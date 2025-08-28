@@ -1,0 +1,21 @@
+<div class="sidebar sticky">
+  <nav class="nav__list">
+    <h3 class="nav__title">Navigation</h3>
+    <ul class="nav__items">
+      {% for item in site.data.navigation.main %}
+        <li class="nav__item">
+          <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
+          {% if item.children %}
+            <ul class="nav__sub-items">
+              {% for child in item.children %}
+                <li class="nav__sub-item">
+                  <a href="{{ child.url | relative_url }}">{{ child.title }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+</div> 

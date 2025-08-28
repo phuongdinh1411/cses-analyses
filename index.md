@@ -1,8 +1,7 @@
 ---
-layout: single
+layout: simple
 title: "CSES Problem Solutions & Analysis"
 permalink: /
-author_profile: true
 ---
 
 # CSES Problem Solutions & Analysis
