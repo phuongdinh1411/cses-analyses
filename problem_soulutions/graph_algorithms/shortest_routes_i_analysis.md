@@ -416,3 +416,335 @@ def spfa(graph, start, n):
 ---
 
 *This analysis shows how to efficiently solve single-source shortest path problems using various graph algorithms.* 
+
+## Problem Variations & Related Questions
+
+### Problem Variations
+
+#### 1. **Shortest Routes I with Costs**
+**Variation**: Each route has additional costs (tolls, fuel, etc.) beyond distance.
+**Approach**: Use Dijkstra's algorithm with multi-dimensional cost tracking.
+```python
+def cost_based_shortest_routes_i(n, m, edges, costs):
+    # costs[(a, b)] = additional cost for route from a to b
+    
+    # Build adjacency list with costs
+    graph = [[] for _ in range(n + 1)]
+    for a, b, w in edges:
+        additional_cost = costs.get((a, b), 0)
+        graph[a].append((b, w, additional_cost))
+    
+    def dijkstra_with_costs():
+        # (total_cost, distance, node)
+        distances = [float('inf')] * (n + 1)
+        total_costs = [float('inf')] * (n + 1)
+        distances[1] = 0
+        total_costs[1] = 0
+        
+        pq = [(0, 0, 1)]  # (total_cost, distance, node)
+        
+        while pq:
+            total_cost, dist, node = heapq.heappop(pq)
+            
+            if total_cost > total_costs[node]:
+                continue
+            
+            for neighbor, weight, cost in graph[node]:
+                new_dist = dist + weight
+                new_total_cost = total_cost + weight + cost
+                
+                if new_total_cost < total_costs[neighbor]:
+                    distances[neighbor] = new_dist
+                    total_costs[neighbor] = new_total_cost
+                    heapq.heappush(pq, (new_total_cost, new_dist, neighbor))
+        
+        return distances, total_costs
+    
+    distances, costs = dijkstra_with_costs()
+    return distances[1:], costs[1:]
+```
+
+#### 2. **Shortest Routes I with Constraints**
+**Variation**: Limited fuel, time constraints, or restricted routes.
+**Approach**: Use BFS with state tracking for constraint satisfaction.
+```python
+def constrained_shortest_routes_i(n, m, edges, max_fuel, restricted_routes):
+    # max_fuel = maximum fuel capacity
+    # restricted_routes = set of routes that cannot be used
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b, w in edges:
+        if (a, b) not in restricted_routes and (b, a) not in restricted_routes:
+            graph[a].append((b, w))
+            graph[b].append((a, w))
+    
+    def bfs_with_constraints():
+        # (node, fuel, distance)
+        queue = deque([(1, 0, 0)])
+        visited = set()
+        distances = [float('inf')] * (n + 1)
+        
+        while queue:
+            node, fuel, dist = queue.popleft()
+            
+            if fuel > max_fuel:
+                continue
+            
+            if dist < distances[node]:
+                distances[node] = dist
+            
+            state = (node, fuel)
+            if state in visited:
+                continue
+            visited.add(state)
+            
+            for neighbor, weight in graph[node]:
+                new_fuel = fuel + weight
+                if new_fuel <= max_fuel:
+                    queue.append((neighbor, new_fuel, dist + weight))
+        
+        return distances
+    
+    distances = bfs_with_constraints()
+    return [d if d != float('inf') else -1 for d in distances[1:]]
+```
+
+#### 3. **Shortest Routes I with Probabilities**
+**Variation**: Each route has a probability of being available or having delays.
+**Approach**: Use Monte Carlo simulation or expected value calculation.
+```python
+def probabilistic_shortest_routes_i(n, m, edges, probabilities):
+    # probabilities[(a, b)] = probability route from a to b is available
+    
+    def monte_carlo_simulation(trials=1000):
+        successful_routes = [0] * (n + 1)
+        
+        for _ in range(trials):
+            # Simulate available routes
+            available_edges = []
+            for a, b, w in edges:
+                if random.random() < probabilities.get((a, b), 1.0):
+                    available_edges.append((a, b, w))
+            
+            # Calculate shortest paths with available routes
+            distances = calculate_shortest_paths(n, available_edges)
+            
+            for i in range(1, n + 1):
+                if distances[i] != float('inf'):
+                    successful_routes[i] += 1
+        
+        return [successful_routes[i] / trials for i in range(1, n + 1)]
+    
+    def calculate_shortest_paths(n, edges):
+        graph = [[] for _ in range(n + 1)]
+        for a, b, w in edges:
+            graph[a].append((b, w))
+        
+        distances = [float('inf')] * (n + 1)
+        distances[1] = 0
+        pq = [(0, 1)]
+        
+        while pq:
+            dist, node = heapq.heappop(pq)
+            if dist > distances[node]:
+                continue
+            
+            for neighbor, weight in graph[node]:
+                new_dist = dist + weight
+                if new_dist < distances[neighbor]:
+                    distances[neighbor] = new_dist
+                    heapq.heappush(pq, (new_dist, neighbor))
+        
+        return distances
+    
+    return monte_carlo_simulation()
+```
+
+#### 4. **Shortest Routes I with Multiple Criteria**
+**Variation**: Optimize for multiple objectives (distance, time, cost, comfort).
+**Approach**: Use multi-objective optimization or weighted sum approach.
+```python
+def multi_criteria_shortest_routes_i(n, m, edges, criteria_weights):
+    # criteria_weights = {'distance': 0.4, 'time': 0.3, 'cost': 0.2, 'comfort': 0.1}
+    # edges = [(a, b, distance, time, cost, comfort), ...]
+    
+    # Build adjacency list with multiple criteria
+    graph = [[] for _ in range(n + 1)]
+    for a, b, dist, time, cost, comfort in edges:
+        graph[a].append((b, dist, time, cost, comfort))
+    
+    def multi_objective_dijkstra():
+        # Calculate weighted scores
+        def calculate_score(dist, time, cost, comfort):
+            return (criteria_weights['distance'] * dist + 
+                   criteria_weights['time'] * time + 
+                   criteria_weights['cost'] * cost + 
+                   criteria_weights['comfort'] * comfort)
+        
+        scores = [float('inf')] * (n + 1)
+        scores[1] = 0
+        distances = [float('inf')] * (n + 1)
+        distances[1] = 0
+        
+        pq = [(0, 0, 1)]  # (score, distance, node)
+        
+        while pq:
+            score, dist, node = heapq.heappop(pq)
+            
+            if score > scores[node]:
+                continue
+            
+            for neighbor, d, t, c, comf in graph[node]:
+                new_dist = dist + d
+                new_score = calculate_score(d, t, c, comf)
+                
+                if new_score < scores[neighbor]:
+                    scores[neighbor] = new_score
+                    distances[neighbor] = new_dist
+                    heapq.heappush(pq, (new_score, new_dist, neighbor))
+        
+        return distances, scores
+    
+    distances, scores = multi_objective_dijkstra()
+    return distances[1:], scores[1:]
+```
+
+#### 5. **Shortest Routes I with Dynamic Updates**
+**Variation**: Routes can be added, removed, or modified dynamically.
+**Approach**: Use dynamic graph algorithms or incremental updates.
+```python
+class DynamicShortestRoutes:
+    def __init__(self, n):
+        self.n = n
+        self.graph = [[] for _ in range(n + 1)]
+        self.distances = [float('inf')] * (n + 1)
+        self.distances[1] = 0
+    
+    def add_edge(self, a, b, weight):
+        self.graph[a].append((b, weight))
+        self.update_distances()
+    
+    def remove_edge(self, a, b):
+        self.graph[a] = [(neighbor, w) for neighbor, w in self.graph[a] if neighbor != b]
+        self.update_distances()
+    
+    def update_edge_weight(self, a, b, new_weight):
+        for i, (neighbor, weight) in enumerate(self.graph[a]):
+            if neighbor == b:
+                self.graph[a][i] = (b, new_weight)
+                break
+        self.update_distances()
+    
+    def update_distances(self):
+        # Recalculate shortest paths
+        self.distances = [float('inf')] * (self.n + 1)
+        self.distances[1] = 0
+        pq = [(0, 1)]
+        
+        while pq:
+            dist, node = heapq.heappop(pq)
+            if dist > self.distances[node]:
+                continue
+            
+            for neighbor, weight in self.graph[node]:
+                new_dist = dist + weight
+                if new_dist < self.distances[neighbor]:
+                    self.distances[neighbor] = new_dist
+                    heapq.heappush(pq, (new_dist, neighbor))
+    
+    def get_distances(self):
+        return [d if d != float('inf') else -1 for d in self.distances[1:]]
+```
+
+### Related Problems & Concepts
+
+#### 1. **Shortest Path Problems**
+- **Single Source**: Dijkstra's, Bellman-Ford, SPFA
+- **All Pairs**: Floyd-Warshall, Johnson's algorithm
+- **K-Shortest Paths**: Yen's algorithm, Eppstein's algorithm
+- **Disjoint Paths**: Menger's theorem, max flow
+
+#### 2. **Graph Algorithms**
+- **Connectivity**: Strongly connected components
+- **Flow Networks**: Maximum flow, minimum cut
+- **Matching**: Bipartite matching, stable marriage
+- **Coloring**: Graph coloring, bipartite graphs
+
+#### 3. **Optimization Problems**
+- **Linear Programming**: Network flow, assignment
+- **Dynamic Programming**: State optimization
+- **Greedy Algorithms**: Local optimal choices
+- **Heuristic Search**: A*, genetic algorithms
+
+#### 4. **Network Problems**
+- **Routing**: Internet routing, GPS navigation
+- **Flow**: Traffic flow, data flow
+- **Connectivity**: Network reliability, fault tolerance
+- **Scheduling**: Task scheduling, resource allocation
+
+#### 5. **Algorithm Design**
+- **Data Structures**: Priority queues, heaps
+- **Complexity Analysis**: Time and space complexity
+- **Algorithm Selection**: Choosing appropriate algorithms
+- **Optimization**: Performance tuning, efficiency
+
+### Competitive Programming Variations
+
+#### 1. **Online Judge Variations**
+- **Time Limits**: Optimize for strict constraints
+- **Memory Limits**: Space-efficient solutions
+- **Input Size**: Handle large graphs
+- **Edge Cases**: Robust algorithm implementation
+
+#### 2. **Algorithm Contests**
+- **Speed Programming**: Fast implementation
+- **Code Golf**: Minimal code solutions
+- **Team Contests**: Collaborative problem solving
+- **Live Coding**: Real-time problem solving
+
+#### 3. **Advanced Techniques**
+- **Binary Search**: On answer space
+- **Two Pointers**: Efficient array processing
+- **Sliding Window**: Optimal subarray problems
+- **Monotonic Stack/Queue**: Maintaining order
+
+### Mathematical Extensions
+
+#### 1. **Combinatorics**
+- **Path Counting**: Number of shortest paths
+- **Permutations**: Order of visits
+- **Combinations**: Choice of routes
+- **Catalan Numbers**: Valid path sequences
+
+#### 2. **Probability Theory**
+- **Expected Values**: Average path length
+- **Markov Chains**: State transitions
+- **Random Walks**: Stochastic processes
+- **Monte Carlo**: Simulation methods
+
+#### 3. **Number Theory**
+- **Modular Arithmetic**: Large number handling
+- **Prime Numbers**: Special cases
+- **GCD/LCM**: Mathematical properties
+- **Euler's Totient**: Counting coprime paths
+
+### Learning Resources
+
+#### 1. **Online Platforms**
+- **LeetCode**: Graph and shortest path problems
+- **Codeforces**: Competitive programming
+- **HackerRank**: Algorithm challenges
+- **AtCoder**: Japanese programming contests
+
+#### 2. **Educational Resources**
+- **CLRS**: Introduction to Algorithms
+- **CP-Algorithms**: Competitive programming algorithms
+- **GeeksforGeeks**: Algorithm tutorials
+- **TopCoder**: Algorithm tutorials
+
+#### 3. **Practice Problems**
+- **Graph Problems**: Shortest path, connectivity
+- **Path Problems**: All pairs, k-shortest paths
+- **Network Problems**: Flow, routing, connectivity
+- **Optimization Problems**: Multi-objective, constrained 
