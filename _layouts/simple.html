@@ -194,6 +194,42 @@
             font-family: 'Monaco', 'Menlo', monospace;
         }
         
+        /* Table Styles */
+        .content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        .content table th,
+        .content table td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        
+        .content table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .content table tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .content table code {
+            background: #e9ecef;
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-size: 0.85em;
+        }
+        
         .content pre {
             background: #f8f9fa;
             padding: 15px;
