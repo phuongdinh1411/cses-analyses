@@ -30,40 +30,38 @@ Place 8 queens on an 8×8 chessboard so that no two queens threaten each other. 
 
 ## Solution Approach
 
-```cpp
-class Solution {
-private:
-    vector<vector<bool>> blocked;
-    vector<bool> col, diag1, diag2;
-    int count = 0;
+```python
+class Solution:
+    def __init__(self):
+        self.blocked = []
+        self.col = []
+        self.diag1 = []
+        self.diag2 = []
+        self.count = 0
     
-    void backtrack(int row) {
-        if (row == 8) {
-            count++;
-            return;
-        }
+    def backtrack(self, row):
+        if row == 8:
+            self.count += 1
+            return
         
-        for (int c = 0; c < 8; c++) {
-            if (blocked[row][c]) continue;
-            if (col[c] || diag1[row + c] || diag2[row - c + 7]) continue;
+        for c in range(8):
+            if self.blocked[row][c]:
+                continue
+            if self.col[c] or self.diag1[row + c] or self.diag2[row - c + 7]:
+                continue
             
-            col[c] = diag1[row + c] = diag2[row - c + 7] = true;
-            backtrack(row + 1);
-            col[c] = diag1[row + c] = diag2[row - c + 7] = false;
-        }
-    }
+            self.col[c] = self.diag1[row + c] = self.diag2[row - c + 7] = True
+            self.backtrack(row + 1)
+            self.col[c] = self.diag1[row + c] = self.diag2[row - c + 7] = False
     
-public:
-    int solve(vector<vector<bool>>& blocked_squares) {
-        blocked = blocked_squares;
-        col.assign(8, false);
-        diag1.assign(15, false);  // row + col
-        diag2.assign(15, false);  // row - col + 7
-        count = 0;
-        backtrack(0);
-        return count;
-    }
-};
+    def solve(self, blocked_squares):
+        self.blocked = blocked_squares
+        self.col = [False] * 8
+        self.diag1 = [False] * 15  # row + col
+        self.diag2 = [False] * 15  # row - col + 7
+        self.count = 0
+        self.backtrack(0)
+        return self.count
 ```
 
 ## Time Complexity
@@ -120,25 +118,21 @@ public:
 ## Advanced Optimizations
 
 ### 1. Bit Manipulation
-```cpp
-void backtrack(int row, int col_mask, int diag1_mask, int diag2_mask) {
-    if (row == 8) {
-        count++;
-        return;
-    }
+```python
+def backtrack(self, row, col_mask, diag1_mask, diag2_mask):
+    if row == 8:
+        self.count += 1
+        return
     
-    int available = ((1 << 8) - 1) & ~col_mask & ~diag1_mask & ~diag2_mask;
-    while (available) {
-        int col = __builtin_ctz(available);
-        if (!blocked[row][col]) {
-            backtrack(row + 1, 
-                     col_mask | (1 << col),
-                     (diag1_mask | (1 << (row + col))) << 1,
-                     (diag2_mask | (1 << (row - col + 7))) << 1);
-        }
-        available &= available - 1;
-    }
-}
+    available = ((1 << 8) - 1) & ~col_mask & ~diag1_mask & ~diag2_mask
+    while available:
+        col = (available & -available).bit_length() - 1  # Get least significant bit
+        if not self.blocked[row][col]:
+            self.backtrack(row + 1, 
+                          col_mask | (1 << col),
+                          (diag1_mask | (1 << (row + col))) << 1,
+                          (diag2_mask | (1 << (row - col + 7))) << 1)
+        available &= available - 1
 ```
 
 ### 2. Symmetry Breaking

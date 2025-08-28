@@ -30,103 +30,87 @@ Construct an n×n grid filled with integers such that the MEX (minimum excluded 
 ## Solution Approach
 
 ### Method 1: Dual Constraint Construction
-```cpp
-vector<vector<int>> constructDualMexGrid(int n, int row_mex, int col_mex) {
-    vector<vector<int>> grid(n, vector<int>(n));
+```python
+def construct_dual_mex_grid(n, row_mex, col_mex):
+    grid = [[0] * n for _ in range(n)]
     
-    if (row_mex == col_mex) {
-        // Use standard MEX grid construction
-        return constructMexGrid(n, row_mex);
-    }
+    if row_mex == col_mex:
+        # Use standard MEX grid construction
+        return construct_mex_grid(n, row_mex)
     
-    if (row_mex > col_mex) {
-        // Rows need more values than columns can provide
-        // This is generally impossible for large differences
-        if (row_mex > col_mex + n) {
-            return {}; // Impossible
-        }
+    if row_mex > col_mex:
+        # Rows need more values than columns can provide
+        # This is generally impossible for large differences
+        if row_mex > col_mex + n:
+            return []  # Impossible
         
-        // Construct with column-first approach
-        for (int j = 0; j < n; j++) {
-            for (int i = 0; i < n; i++) {
-                if (i < col_mex) {
-                    grid[i][j] = i;
-                } else {
-                    grid[i][j] = col_mex + (i * n + j) % (n * n - col_mex);
-                }
-            }
-        }
-    } else {
-        // Columns need more values than rows can provide
-        if (col_mex > row_mex + n) {
-            return {}; // Impossible
-        }
+        # Construct with column-first approach
+        for j in range(n):
+            for i in range(n):
+                if i < col_mex:
+                    grid[i][j] = i
+                else:
+                    grid[i][j] = col_mex + (i * n + j) % (n * n - col_mex)
+    else:
+        # Columns need more values than rows can provide
+        if col_mex > row_mex + n:
+            return []  # Impossible
         
-        // Construct with row-first approach
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (j < row_mex) {
-                    grid[i][j] = j;
-                } else {
-                    grid[i][j] = row_mex + (i * n + j) % (n * n - row_mex);
-                }
-            }
-        }
-    }
+        # Construct with row-first approach
+        for i in range(n):
+            for j in range(n):
+                if j < row_mex:
+                    grid[i][j] = j
+                else:
+                    grid[i][j] = row_mex + (i * n + j) % (n * n - row_mex)
     
-    return grid;
-}
+    return grid
 ```
 
 ### Method 2: Latin Square Modification
-```cpp
-vector<vector<int>> constructDualMexLatin(int n, int row_mex, int col_mex) {
-    vector<vector<int>> grid(n, vector<int>(n));
+```python
+def construct_dual_mex_latin(n, row_mex, col_mex):
+    grid = [[0] * n for _ in range(n)]
     
-    // Start with Latin square
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            grid[i][j] = (i + j) % n;
-        }
-    }
+    # Start with Latin square
+    for i in range(n):
+        for j in range(n):
+            grid[i][j] = (i + j) % n
     
-    // Modify to satisfy dual constraints
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            int val = grid[i][j];
+    # Modify to satisfy dual constraints
+    for i in range(n):
+        for j in range(n):
+            val = grid[i][j]
             
-            // Adjust for row MEX
-            if (val >= row_mex) {
-                val = row_mex + (val - row_mex) % (n - row_mex);
-            }
+            # Adjust for row MEX
+            if val >= row_mex:
+                val = row_mex + (val - row_mex) % (n - row_mex)
             
-            // Adjust for column MEX
-            if (val >= col_mex) {
-                val = col_mex + (val - col_mex) % (n - col_mex);
-            }
+            # Adjust for column MEX
+            if val >= col_mex:
+                val = col_mex + (val - col_mex) % (n - col_mex)
             
-            grid[i][j] = val;
-        }
-    }
+            grid[i][j] = val
     
-    return grid;
-}
+    return grid
 ```
 
 ### Method 3: Backtracking with Dual Constraints
-```cpp
-class DualMexConstructor {
-private:
-    vector<vector<int>> grid;
-    int n, row_mex, col_mex;
-    bool found;
+```python
+class DualMexConstructor:
+    def __init__(self):
+        self.grid = []
+        self.n = 0
+        self.row_mex = 0
+        self.col_mex = 0
+        self.found = False
     
-    bool isValid(int row, int col, int val) {
-        // Check row MEX constraint
-        set<int> row_vals;
-        for (int j = 0; j < n; j++) {
-            if (j != col && grid[row][j] != -1) {
-                row_vals.insert(grid[row][j]);
+    def is_valid(self, row, col, val):
+        # Check row MEX constraint
+        row_vals = set()
+        for j in range(self.n):
+            if j != col and self.grid[row][j] != -1:
+                row_vals.add(self.grid[row][j])
             }
         }
         row_vals.insert(val);
@@ -244,64 +228,58 @@ public:
 ## Advanced Optimizations
 
 ### 1. Feasibility Analysis
-```cpp
-bool isFeasible(int n, int row_mex, int col_mex) {
-    // Check if construction is possible
+```python
+def is_feasible(n, row_mex, col_mex):
+    # Check if construction is possible
     
-    // Basic bounds
-    if (row_mex > n * n || col_mex > n * n) return false;
+    # Basic bounds
+    if row_mex > n * n or col_mex > n * n:
+        return False
     
-    // Check if constraints are compatible
-    if (abs(row_mex - col_mex) > n) return false;
+    # Check if constraints are compatible
+    if abs(row_mex - col_mex) > n:
+        return False
     
-    // Check if we have enough distinct values
-    int min_vals_needed = max(row_mex, col_mex);
-    if (min_vals_needed > n * n) return false;
+    # Check if we have enough distinct values
+    min_vals_needed = max(row_mex, col_mex)
+    if min_vals_needed > n * n:
+        return False
     
-    return true;
-}
+    return True
 ```
 
 ### 2. Mathematical Construction
-```cpp
-vector<vector<int>> constructDualMexMath(int n, int row_mex, int col_mex) {
-    vector<vector<int>> grid(n, vector<int>(n));
+```python
+def construct_dual_mex_math(n, row_mex, col_mex):
+    grid = [[0] * n for _ in range(n)]
     
-    // Use mathematical patterns for specific cases
-    if (row_mex == col_mex) {
-        // Use standard construction
-        return constructMexGrid(n, row_mex);
-    }
+    # Use mathematical patterns for specific cases
+    if row_mex == col_mex:
+        # Use standard construction
+        return construct_mex_grid(n, row_mex)
     
-    if (row_mex == 1 && col_mex == n) {
-        // Special case: rows have MEX 1, columns have MEX n
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                grid[i][j] = j;
-            }
-        }
-    }
+    if row_mex == 1 and col_mex == n:
+        # Special case: rows have MEX 1, columns have MEX n
+        for i in range(n):
+            for j in range(n):
+                grid[i][j] = j
     
-    if (row_mex == n && col_mex == 1) {
-        // Special case: rows have MEX n, columns have MEX 1
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                grid[i][j] = i;
-            }
-        }
-    }
+    if row_mex == n and col_mex == 1:
+        # Special case: rows have MEX n, columns have MEX 1
+        for i in range(n):
+            for j in range(n):
+                grid[i][j] = i
     
-    return grid;
-}
+    return grid
 ```
 
 ### 3. Constraint Propagation
-```cpp
-class ConstraintPropagator {
-    // Implement constraint propagation for faster backtracking
-    // Use arc consistency and forward checking
-    // Maintain domain reduction for each cell
-};
+```python
+class ConstraintPropagator:
+    # Implement constraint propagation for faster backtracking
+    # Use arc consistency and forward checking
+    # Maintain domain reduction for each cell
+    pass
 ```
 
 ## Related Problems

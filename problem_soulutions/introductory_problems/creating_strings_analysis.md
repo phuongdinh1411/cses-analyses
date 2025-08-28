@@ -29,104 +29,92 @@ Given a string, find all distinct strings that can be created by reordering its 
 
 ## Solution Approach
 
-### Method 1: Using next_permutation
-```cpp
-vector<string> createStrings(string s) {
-    vector<string> result;
-    
-    // Sort string to get lexicographically smallest permutation
-    sort(s.begin(), s.end());
-    
-    // Generate all permutations
-    do {
-        result.push_back(s);
-    } while (next_permutation(s.begin(), s.end()));
-    
-    return result;
-}
+### Method 1: Using itertools.permutations
+```python
+from itertools import permutations
 
-int countDistinctStrings(string s) {
-    // Count character frequencies
-    vector<int> freq(26, 0);
-    for (char c : s) {
-        freq[c - 'a']++;
-    }
+def create_strings(s):
+    result = []
     
-    // Calculate multinomial coefficient
-    int n = s.length();
-    long long result = 1;
+    # Sort string to get lexicographically smallest permutation
+    s_sorted = ''.join(sorted(s))
     
-    // Calculate n!
-    for (int i = 2; i <= n; i++) {
-        result *= i;
-    }
+    # Generate all permutations
+    for perm in permutations(s_sorted):
+        result.append(''.join(perm))
     
-    // Divide by factorial of each frequency
-    for (int f : freq) {
-        if (f > 1) {
-            for (int i = 2; i <= f; i++) {
-                result /= i;
-            }
-        }
-    }
+    return result
+
+def count_distinct_strings(s):
+    from collections import Counter
+    from math import factorial
     
-    return result;
-}
+    # Count character frequencies
+    freq = Counter(s)
+    
+    # Calculate multinomial coefficient
+    n = len(s)
+    result = factorial(n)
+    
+    # Divide by factorial of each frequency
+    for count in freq.values():
+        if count > 1:
+            result //= factorial(count)
+    
+    return result
 ```
 
 ### Method 2: Recursive Generation
-```cpp
-class StringCreator {
-private:
-    vector<string> result;
-    string current;
-    vector<int> freq;
+```python
+class StringCreator:
+    def __init__(self):
+        self.result = []
+        self.current = []
+        self.freq = {}
     
-    void generate(int pos, int n) {
-        if (pos == n) {
-            result.push_back(current);
-            return;
-        }
+    def generate(self, pos, n):
+        if pos == n:
+            self.result.append(''.join(self.current))
+            return
         
-        for (int i = 0; i < 26; i++) {
-            if (freq[i] > 0) {
-                freq[i]--;
-                current[pos] = 'a' + i;
-                generate(pos + 1, n);
-                freq[i]++;
-            }
-        }
-    }
+        for char in self.freq:
+            if self.freq[char] > 0:
+                self.freq[char] -= 1
+                self.current[pos] = char
+                self.generate(pos + 1, n)
+                self.freq[char] += 1
     
-public:
-    vector<string> createStringsRecursive(string s) {
-        // Count frequencies
-        freq.assign(26, 0);
-        for (char c : s) {
-            freq[c - 'a']++;
-        }
+    def create_strings_recursive(self, s):
+        # Count frequencies
+        self.freq = {}
+        for c in s:
+            self.freq[c] = self.freq.get(c, 0) + 1
         
-        current = s;
-        generate(0, s.length());
-        return result;
-    }
-};
+        self.current = [''] * len(s)
+        self.generate(0, len(s))
+        return self.result
 ```
 
 ### Method 3: Iterative with Duplicate Handling
-```cpp
-vector<string> createStringsIterative(string s) {
-    vector<string> result;
+```python
+from itertools import permutations
+
+def create_strings_iterative(s):
+    result = []
     
-    // Sort to handle duplicates correctly
-    sort(s.begin(), s.end());
+    # Sort to handle duplicates correctly
+    s_sorted = ''.join(sorted(s))
     
-    // Generate permutations and skip duplicates
-    do {
-        result.push_back(s);
-        
-        // Skip duplicate permutations
-        while (next_permutation(s.begin(), s.end()) && 
+    # Generate permutations and skip duplicates
+    seen = set()
+    for perm in permutations(s_sorted):
+        perm_str = ''.join(perm)
+        if perm_str not in seen:
+            result.append(perm_str)
+            seen.add(perm_str)
+    
+    return result
+``` 
                result.back() == s) {
             // Skip duplicates
         }
@@ -211,79 +199,64 @@ vector<string> createStringsEfficient(string s) {
 ```
 
 ### 2. Mathematical Counting
-```cpp
-long long countPermutations(string s) {
-    vector<int> freq(26, 0);
-    for (char c : s) {
-        freq[c - 'a']++;
-    }
+```python
+def count_permutations(s):
+    from collections import Counter
+    from math import factorial
     
-    int n = s.length();
-    long long numerator = 1;
-    long long denominator = 1;
+    freq = Counter(s)
+    n = len(s)
+    numerator = factorial(n)
+    denominator = 1
     
-    // Calculate n!
-    for (int i = 2; i <= n; i++) {
-        numerator *= i;
-    }
+    # Calculate product of factorials of frequencies
+    for count in freq.values():
+        if count > 1:
+            denominator *= factorial(count)
     
-    // Calculate product of factorials of frequencies
-    for (int f : freq) {
-        if (f > 1) {
-            for (int i = 2; i <= f; i++) {
-                denominator *= i;
-            }
-        }
-    }
-    
-    return numerator / denominator;
-}
+    return numerator // denominator
 ```
 
 ### 3. Memory Efficient Generation
-```cpp
-class MemoryEfficientStringCreator {
-private:
-    vector<string> result;
-    string s;
+```python
+class MemoryEfficientStringCreator:
+    def __init__(self):
+        self.result = []
+        self.s = ""
     
-    void generatePermutations(int start) {
-        if (start == s.length() - 1) {
-            result.push_back(s);
-            return;
-        }
+    def generate_permutations(self, start):
+        if start == len(self.s) - 1:
+            self.result.append(self.s)
+            return
         
-        set<char> used;
-        for (int i = start; i < s.length(); i++) {
-            if (used.count(s[i])) continue;
-            used.insert(s[i]);
+        used = set()
+        for i in range(start, len(self.s)):
+            if self.s[i] in used:
+                continue
+            used.add(self.s[i])
             
-            swap(s[start], s[i]);
-            generatePermutations(start + 1);
-            swap(s[start], s[i]);
-        }
-    }
+            # Swap characters
+            self.s = self.s[:start] + self.s[i] + self.s[start+1:i] + self.s[start] + self.s[i+1:]
+            self.generate_permutations(start + 1)
+            # Swap back
+            self.s = self.s[:start] + self.s[i] + self.s[start+1:i] + self.s[start] + self.s[i+1:]
     
-public:
-    vector<string> createStrings(string input) {
-        s = input;
-        sort(s.begin(), s.end());
-        generatePermutations(0);
-        return result;
-    }
-};
+    def create_strings(self, input_str):
+        self.s = input_str
+        self.s = ''.join(sorted(self.s))
+        self.generate_permutations(0)
+        return self.result
 ```
 
 ### 4. Parallel Generation
-```cpp
-vector<string> createStringsParallel(string s) {
-    // For large strings, use parallel processing
-    // Divide permutation space and process in parallel
-    // Merge results
+```python
+def create_strings_parallel(s):
+    # For large strings, use parallel processing
+    # Divide permutation space and process in parallel
+    # Merge results
     
-    // Implementation for parallel processing...
-    return vector<string>();
-}
+    # Implementation for parallel processing...
+    return []
 ```
 
 ## Related Problems

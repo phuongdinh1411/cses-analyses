@@ -31,95 +31,84 @@ Given an n×n grid, color each cell with one of k colors such that no two adjace
 ## Solution Approach
 
 ### Method 1: Recursive with Memoization
-```cpp
-class Solution {
-private:
-    vector<vector<vector<long long>>> dp;
-    int n, k;
+```python
+class Solution:
+    def __init__(self):
+        self.dp = {}
+        self.n = 0
+        self.k = 0
     
-    long long solve(int row, int col, int prev_colors) {
-        if (row == n) return 1;
-        if (col == n) return solve(row + 1, 0, 0);
+    def solve(self, row, col, prev_colors):
+        if row == self.n:
+            return 1
+        if col == self.n:
+            return self.solve(row + 1, 0, 0)
         
-        int state = (row * n + col) * k + prev_colors;
-        if (dp[row][col][prev_colors] != -1) {
-            return dp[row][col][prev_colors];
-        }
+        state = (row, col, prev_colors)
+        if state in self.dp:
+            return self.dp[state]
         
-        long long count = 0;
+        count = 0
         
-        // Try each color
-        for (int color = 0; color < k; color++) {
-            bool valid = true;
+        # Try each color
+        for color in range(self.k):
+            valid = True
             
-            // Check left neighbor
-            if (col > 0 && ((prev_colors >> (col - 1)) & 1) == color) {
-                valid = false;
-            }
+            # Check left neighbor
+            if col > 0 and ((prev_colors >> (col - 1)) & 1) == color:
+                valid = False
             
-            // Check top neighbor
-            if (row > 0 && ((prev_colors >> (n + col)) & 1) == color) {
-                valid = false;
-            }
+            # Check top neighbor
+            if row > 0 and ((prev_colors >> (self.n + col)) & 1) == color:
+                valid = False
             
-            if (valid) {
-                int new_prev = prev_colors;
-                new_prev |= (color << col);
-                count += solve(row, col + 1, new_prev);
-            }
-        }
+            if valid:
+                new_prev = prev_colors
+                new_prev |= (color << col)
+                count += self.solve(row, col + 1, new_prev)
         
-        return dp[row][col][prev_colors] = count;
-    }
+        self.dp[state] = count
+        return count
     
-public:
-    long long countColorings(int grid_size, int num_colors) {
-        n = grid_size;
-        k = num_colors;
-        dp.assign(n, vector<vector<long long>>(n, vector<long long>(1 << (2 * n), -1)));
+    def count_colorings(self, grid_size, num_colors):
+        self.n = grid_size
+        self.k = num_colors
+        self.dp = {}
         
-        return solve(0, 0, 0);
-    }
-};
+        return self.solve(0, 0, 0)
 ```
 
 ### Method 2: Iterative DP
-```cpp
-long long countColoringsIterative(int n, int k) {
-    vector<vector<long long>> dp(n * n + 1, vector<long long>(1 << n, 0));
-    dp[0][0] = 1;
+```python
+def count_colorings_iterative(n, k):
+    dp = [[0] * (1 << n) for _ in range(n * n + 1)]
+    dp[0][0] = 1
     
-    for (int pos = 0; pos < n * n; pos++) {
-        int row = pos / n;
-        int col = pos % n;
+    for pos in range(n * n):
+        row = pos // n
+        col = pos % n
         
-        for (int mask = 0; mask < (1 << n); mask++) {
-            if (dp[pos][mask] == 0) continue;
+        for mask in range(1 << n):
+            if dp[pos][mask] == 0:
+                continue
             
-            for (int color = 0; color < k; color++) {
-                bool valid = true;
+            for color in range(k):
+                valid = True
                 
-                // Check left neighbor
-                if (col > 0 && ((mask >> (col - 1)) & 1) == color) {
-                    valid = false;
-                }
+                # Check left neighbor
+                if col > 0 and ((mask >> (col - 1)) & 1) == color:
+                    valid = False
                 
-                // Check top neighbor (stored in different part of mask)
-                if (row > 0 && ((mask >> (n + col)) & 1) == color) {
-                    valid = false;
-                }
+                # Check top neighbor (stored in different part of mask)
+                if row > 0 and ((mask >> (n + col)) & 1) == color:
+                    valid = False
                 
-                if (valid) {
-                    int new_mask = mask;
-                    new_mask |= (color << col);
-                    dp[pos + 1][new_mask] += dp[pos][mask];
-                }
-            }
-        }
-    }
+                if valid:
+                    new_mask = mask
+                    new_mask |= (color << col)
+                    dp[pos + 1][new_mask] += dp[pos][mask]
     
-    return dp[n * n][0];
-}
+    return dp[n * n][0]
 ```
 
 ## Time Complexity
@@ -180,48 +169,45 @@ long long countColoringsIterative(int n, int k) {
 ## Advanced Optimizations
 
 ### 1. Symmetry Breaking
-```cpp
-long long countColoringsSymmetry(int n, int k) {
-    // Use symmetry to reduce search space
-    // Only consider canonical colorings
-    vector<vector<long long>> dp(n * n + 1, vector<long long>(1 << n, 0));
+```python
+def count_colorings_symmetry(n, k):
+    # Use symmetry to reduce search space
+    # Only consider canonical colorings
+    dp = [[0] * (1 << n) for _ in range(n * n + 1)]
     
-    // Start with canonical first row
-    for (int color = 0; color < k; color++) {
-        dp[n][1 << color] = 1;
-    }
+    # Start with canonical first row
+    for color in range(k):
+        dp[n][1 << color] = 1
     
-    // Continue with rest of grid...
-}
+    # Continue with rest of grid...
+    return dp[n * n][0]
 ```
 
 ### 2. Inclusion-Exclusion
-```cpp
-long long countColoringsInclusionExclusion(int n, int k) {
-    long long total = 1;
-    for (int i = 0; i < n * n; i++) {
-        total *= k;
-    }
+```python
+def count_colorings_inclusion_exclusion(n, k):
+    total = 1
+    for i in range(n * n):
+        total *= k
     
-    // Subtract invalid colorings using inclusion-exclusion
-    for (int mask = 1; mask < (1 << (n * n)); mask++) {
-        // Count colorings violating edges in mask
-        // Add/subtract based on parity
-    }
+    # Subtract invalid colorings using inclusion-exclusion
+    for mask in range(1, 1 << (n * n)):
+        # Count colorings violating edges in mask
+        # Add/subtract based on parity
+        pass
     
-    return total;
-}
+    return total
 ```
 
 ### 3. Matrix Tree Theorem
-```cpp
-// For special cases, use matrix tree theorem
-// Count spanning trees in dual graph
-long long countColoringsMatrixTree(int n, int k) {
-    // Construct Laplacian matrix
-    // Count spanning trees
-    // Multiply by k^(number of components)
-}
+```python
+# For special cases, use matrix tree theorem
+# Count spanning trees in dual graph
+def count_colorings_matrix_tree(n, k):
+    # Construct Laplacian matrix
+    # Count spanning trees
+    # Multiply by k^(number of components)
+    pass
 ```
 
 ## Related Problems

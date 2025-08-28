@@ -151,53 +151,50 @@ def count_paths_iterative(path, n):
 ## Advanced Optimizations
 
 ### 1. State Compression
-```cpp
-long long countPathsCompressed(string path, int n) {
-    vector<vector<long long>> dp(n, vector<long long>(n, 0));
-    dp[0][0] = 1;
+```python
+def count_paths_compressed(path, n):
+    dp = [[0] * n for _ in range(n)]
+    dp[0][0] = 1
     
-    for (char dir : path) {
-        vector<vector<long long>> new_dp(n, vector<long long>(n, 0));
+    for dir in path:
+        new_dp = [[0] * n for _ in range(n)]
         
-        for (int x = 0; x < n; x++) {
-            for (int y = 0; y < n; y++) {
-                if (dp[x][y] == 0) continue;
+        for x in range(n):
+            for y in range(n):
+                if dp[x][y] == 0:
+                    continue
                 
-                // Apply direction
-                int nx = x, ny = y;
-                if (dir == 'R') nx++;
-                else if (dir == 'D') ny++;
-                else if (dir == 'L') nx--;
-                else if (dir == 'U') ny--;
+                # Apply direction
+                nx, ny = x, y
+                if dir == 'R':
+                    nx += 1
+                elif dir == 'D':
+                    ny += 1
+                elif dir == 'L':
+                    nx -= 1
+                elif dir == 'U':
+                    ny -= 1
                 
-                if (nx >= 0 && nx < n && ny >= 0 && ny < n) {
-                    new_dp[nx][ny] += dp[x][y];
-                }
-            }
-        }
-        dp = new_dp;
-    }
+                if 0 <= nx < n and 0 <= ny < n:
+                    new_dp[nx][ny] += dp[x][y]
+        
+        dp = new_dp
     
-    return dp[0][0];
-}
+    return dp[0][0]
 ```
 
 ### 2. Matrix Exponentiation
-```cpp
-// For repeated patterns, use matrix exponentiation
-vector<vector<long long>> matrixMultiply(vector<vector<long long>>& a, vector<vector<long long>>& b, int n) {
-    vector<vector<long long>> result(n, vector<long long>(n, 0));
+```python
+# For repeated patterns, use matrix exponentiation
+def matrix_multiply(a, b, n):
+    result = [[0] * n for _ in range(n)]
     
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            for (int k = 0; k < n; k++) {
-                result[i][j] += a[i][k] * b[k][j];
-            }
-        }
-    }
+    for i in range(n):
+        for j in range(n):
+            for k in range(n):
+                result[i][j] += a[i][k] * b[k][j]
     
-    return result;
-}
+    return result
 ```
 
 ## Related Problems
