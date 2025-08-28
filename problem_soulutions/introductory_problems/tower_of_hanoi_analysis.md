@@ -35,60 +35,55 @@ Move n disks from the first tower to the third tower using the second tower as a
 ## Solution Approach
 
 ### Method 1: Recursive Solution
-```cpp
-void towerOfHanoi(int n, char from, char aux, char to) {
-    if (n == 1) {
-        cout << from << " " << to << "\n";
-        return;
-    }
+```python
+def tower_of_hanoi(n, from_rod, aux_rod, to_rod):
+    if n == 1:
+        print(f"{from_rod} {to_rod}")
+        return
     
-    towerOfHanoi(n - 1, from, to, aux);
-    cout << from << " " << to << "\n";
-    towerOfHanoi(n - 1, aux, from, to);
-}
+    tower_of_hanoi(n - 1, from_rod, to_rod, aux_rod)
+    print(f"{from_rod} {to_rod}")
+    tower_of_hanoi(n - 1, aux_rod, from_rod, to_rod)
 
-// Count moves
-int countMoves(int n) {
-    if (n == 1) return 1;
-    return 2 * countMoves(n - 1) + 1;
-}
+# Count moves
+def count_moves(n):
+    if n == 1:
+        return 1
+    return 2 * count_moves(n - 1) + 1
 ```
 
 ### Method 2: Iterative Solution
-```cpp
-void towerOfHanoiIterative(int n) {
-    stack<pair<int, pair<char, char>>> st;
-    st.push({n, {'A', 'C'}});
+```python
+def tower_of_hanoi_iterative(n):
+    from collections import deque
     
-    while (!st.empty()) {
-        auto [disks, towers] = st.top();
-        auto [from, to] = towers;
-        st.pop();
+    stack = deque()
+    stack.append((n, ('A', 'C')))
+    
+    while stack:
+        disks, towers = stack.pop()
+        from_rod, to_rod = towers
         
-        if (disks == 1) {
-            cout << from << " " << to << "\n";
-        } else {
-            char aux = 'A' + 'B' + 'C' - from - to;
-            st.push({disks - 1, {aux, to}});
-            st.push({1, {from, to}});
-            st.push({disks - 1, {from, aux}});
-        }
-    }
-}
+        if disks == 1:
+            print(f"{from_rod} {to_rod}")
+        else:
+            aux_rod = chr(ord('A') + ord('B') + ord('C') - ord(from_rod) - ord(to_rod))
+            stack.append((disks - 1, (aux_rod, to_rod)))
+            stack.append((1, (from_rod, to_rod)))
+            stack.append((disks - 1, (from_rod, aux_rod)))
 ```
 
 ### Method 3: Mathematical Formula
-```cpp
-void towerOfHanoiMathematical(int n) {
-    for (int i = 1; i <= (1 << n) - 1; i++) {
-        int disk = __builtin_ctz(i) + 1;
-        int from = (i >> (disk - 1)) % 3;
-        int to = (from + 1) % 3;
-        if (n % 2 == 0 && disk == 1) to = (to + 1) % 3;
+```python
+def tower_of_hanoi_mathematical(n):
+    for i in range(1, (1 << n)):
+        disk = (i & -i).bit_length()  # Get least significant bit
+        from_rod = (i >> (disk - 1)) % 3
+        to_rod = (from_rod + 1) % 3
+        if n % 2 == 0 and disk == 1:
+            to_rod = (to_rod + 1) % 3
         
-        cout << (char)('A' + from) << " " << (char)('A' + to) << "\n";
-    }
-}
+        print(f"{chr(ord('A') + from_rod)} {chr(ord('A') + to_rod)}")
 ```
 
 ## Time Complexity
@@ -162,33 +157,32 @@ void towerOfHanoiMathematical(int n) {
 ## Implementation Details
 
 ### State Representation
-```cpp
-struct State {
-    vector<stack<int>> towers;
+```python
+class State:
+    def __init__(self, towers):
+        self.towers = towers
     
-    bool operator==(const State& other) const {
-        return towers == other.towers;
-    }
+    def __eq__(self, other):
+        return self.towers == other.towers
     
-    size_t hash() const {
-        // Custom hash function for state
-        size_t h = 0;
-        for (const auto& tower : towers) {
-            h = h * 31 + tower.size();
-        }
-        return h;
-    }
-};
+    def __hash__(self):
+        # Custom hash function for state
+        h = 0
+        for tower in self.towers:
+            h = h * 31 + len(tower)
+        return h
 ```
 
 ### Move Validation
-```cpp
-bool isValidMove(const State& state, int from, int to) {
-    if (from == to) return false;
-    if (state.towers[from].empty()) return false;
-    if (state.towers[to].empty()) return true;
-    return state.towers[from].top() < state.towers[to].top();
-}
+```python
+def is_valid_move(state, from_tower, to_tower):
+    if from_tower == to_tower:
+        return False
+    if not state.towers[from_tower]:
+        return False
+    if not state.towers[to_tower]:
+        return True
+    return state.towers[from_tower][-1] < state.towers[to_tower][-1]
 ```
 
 ## Related Problems

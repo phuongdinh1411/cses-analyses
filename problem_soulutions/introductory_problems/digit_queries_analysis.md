@@ -30,97 +30,86 @@ Consider the infinite sequence: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ... Find 
 ## Solution Approach
 
 ### Method 1: Binary Search
-```cpp
-long long findDigit(long long k) {
-    // Find which group (1-digit, 2-digit, etc.) contains position k
-    long long digits = 0;
-    long long group_size = 9;
-    long long num_digits = 1;
+```python
+def find_digit(k):
+    # Find which group (1-digit, 2-digit, etc.) contains position k
+    digits = 0
+    group_size = 9
+    num_digits = 1
     
-    while (digits + group_size * num_digits < k) {
-        digits += group_size * num_digits;
-        group_size *= 10;
-        num_digits++;
-    }
+    while digits + group_size * num_digits < k:
+        digits += group_size * num_digits
+        group_size *= 10
+        num_digits += 1
     
-    // Calculate the specific number
-    long long remaining = k - digits - 1;
-    long long number = pow(10, num_digits - 1) + remaining / num_digits;
-    long long digit_pos = remaining % num_digits;
+    # Calculate the specific number
+    remaining = k - digits - 1
+    number = 10**(num_digits - 1) + remaining // num_digits
+    digit_pos = remaining % num_digits
     
-    // Extract the digit
-    return (number / (long long)pow(10, num_digits - 1 - digit_pos)) % 10;
-}
+    # Extract the digit
+    return (number // (10**(num_digits - 1 - digit_pos))) % 10
 ```
 
 ### Method 2: Mathematical Calculation
-```cpp
-long long findDigitMathematical(long long k) {
-    if (k <= 9) return k;
+```python
+def find_digit_mathematical(k):
+    if k <= 9:
+        return k
     
-    // Find number of digits in the target number
-    long long n = 1;
-    long long total_digits = 9;
+    # Find number of digits in the target number
+    n = 1
+    total_digits = 9
     
-    while (total_digits < k) {
-        n++;
-        total_digits += 9 * n * (long long)pow(10, n - 1);
-    }
+    while total_digits < k:
+        n += 1
+        total_digits += 9 * n * (10**(n - 1))
     
-    // Calculate position within n-digit numbers
-    long long prev_total = 9;
-    for (int i = 2; i < n; i++) {
-        prev_total += 9 * i * (long long)pow(10, i - 1);
-    }
+    # Calculate position within n-digit numbers
+    prev_total = 9
+    for i in range(2, n):
+        prev_total += 9 * i * (10**(i - 1))
     
-    long long pos_in_group = k - prev_total - 1;
-    long long number = (long long)pow(10, n - 1) + pos_in_group / n;
-    long long digit_pos = pos_in_group % n;
+    pos_in_group = k - prev_total - 1
+    number = 10**(n - 1) + pos_in_group // n
+    digit_pos = pos_in_group % n
     
-    return (number / (long long)pow(10, n - 1 - digit_pos)) % 10;
-}
+    return (number // (10**(n - 1 - digit_pos))) % 10
 ```
 
 ### Method 3: Precomputation
-```cpp
-class DigitQueries {
-private:
-    vector<long long> group_sizes;
-    vector<long long> cumulative_digits;
+```python
+class DigitQueries:
+    def __init__(self):
+        self.group_sizes = []
+        self.cumulative_digits = []
+        self.precompute()
     
-    void precompute() {
-        long long digits = 0;
-        long long group_size = 9;
-        long long num_digits = 1;
+    def precompute(self):
+        digits = 0
+        group_size = 9
+        num_digits = 1
         
-        while (digits < 1e18) {
-            group_sizes.push_back(group_size * num_digits);
-            digits += group_size * num_digits;
-            cumulative_digits.push_back(digits);
-            group_size *= 10;
-            num_digits++;
-        }
-    }
+        while digits < 10**18:
+            self.group_sizes.append(group_size * num_digits)
+            digits += group_size * num_digits
+            self.cumulative_digits.append(digits)
+            group_size *= 10
+            num_digits += 1
     
-public:
-    DigitQueries() {
-        precompute();
-    }
-    
-    long long query(long long k) {
-        // Binary search to find group
-        int group = upper_bound(cumulative_digits.begin(), cumulative_digits.end(), k) - cumulative_digits.begin();
+    def query(self, k):
+        # Binary search to find group
+        import bisect
+        group = bisect.bisect_right(self.cumulative_digits, k)
         
-        long long prev_total = (group == 0) ? 0 : cumulative_digits[group - 1];
-        long long pos_in_group = k - prev_total - 1;
-        long long num_digits = group + 1;
+        prev_total = 0 if group == 0 else self.cumulative_digits[group - 1]
+        pos_in_group = k - prev_total - 1
+        num_digits = group + 1
         
-        long long number = (long long)pow(10, num_digits - 1) + pos_in_group / num_digits;
-        long long digit_pos = pos_in_group % num_digits;
+        number = 10**(num_digits - 1) + pos_in_group // num_digits
+        digit_pos = pos_in_group % num_digits
         
-        return (number / (long long)pow(10, num_digits - 1 - digit_pos)) % 10;
-    }
-};
+        return (number // (10**(num_digits - 1 - digit_pos))) % 10
 ```
 
 ## Time Complexity
@@ -177,60 +166,56 @@ public:
 ## Advanced Optimizations
 
 ### 1. Fast Power
-```cpp
-long long fastPow(long long base, long long exp) {
-    long long result = 1;
-    while (exp > 0) {
-        if (exp & 1) result *= base;
-        base *= base;
-        exp >>= 1;
-    }
-    return result;
-}
+```python
+def fast_pow(base, exp):
+    result = 1
+    while exp > 0:
+        if exp & 1:
+            result *= base
+        base *= base
+        exp >>= 1
+    return result
 ```
 
 ### 2. Digit Extraction
-```cpp
-long long getDigit(long long number, long long position) {
-    while (position > 0) {
-        number /= 10;
-        position--;
-    }
-    return number % 10;
-}
+```python
+def get_digit(number, position):
+    while position > 0:
+        number //= 10
+        position -= 1
+    return number % 10
 ```
 
 ### 3. Logarithmic Approach
-```cpp
-long long findDigitLog(long long k) {
-    if (k <= 9) return k;
+```python
+import math
+
+def find_digit_log(k):
+    if k <= 9:
+        return k
     
-    // Use logarithms to estimate group
-    double log_k = log10(k);
-    long long estimated_digits = (long long)log_k + 1;
+    # Use logarithms to estimate group
+    log_k = math.log10(k)
+    estimated_digits = int(log_k) + 1
     
-    // Refine estimate
-    long long total = 0;
-    for (long long i = 1; i < estimated_digits; i++) {
-        total += 9 * i * (long long)pow(10, i - 1);
-    }
+    # Refine estimate
+    total = 0
+    for i in range(1, estimated_digits):
+        total += 9 * i * (10**(i - 1))
     
-    if (k <= total) {
-        estimated_digits--;
-    }
+    if k <= total:
+        estimated_digits -= 1
     
-    // Calculate exact position
-    long long prev_total = 0;
-    for (long long i = 1; i < estimated_digits; i++) {
-        prev_total += 9 * i * (long long)pow(10, i - 1);
-    }
+    # Calculate exact position
+    prev_total = 0
+    for i in range(1, estimated_digits):
+        prev_total += 9 * i * (10**(i - 1))
     
-    long long pos_in_group = k - prev_total - 1;
-    long long number = (long long)pow(10, estimated_digits - 1) + pos_in_group / estimated_digits;
-    long long digit_pos = pos_in_group % estimated_digits;
+    pos_in_group = k - prev_total - 1
+    number = 10**(estimated_digits - 1) + pos_in_group // estimated_digits
+    digit_pos = pos_in_group % estimated_digits
     
-    return (number / (long long)pow(10, estimated_digits - 1 - digit_pos)) % 10;
-}
+    return (number // (10**(estimated_digits - 1 - digit_pos))) % 10
 ```
 
 ## Related Problems
