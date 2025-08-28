@@ -12,6 +12,7 @@ plugins:
   - jekyll-feed
   - jekyll-include-cache
   - jekyll-toc
+  - jekyll-auto-nav
 
 defaults:
   - scope:

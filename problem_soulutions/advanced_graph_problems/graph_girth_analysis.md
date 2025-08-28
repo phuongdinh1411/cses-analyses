@@ -370,3 +370,442 @@ def graph_girth_algorithm(n, m, edges):
 ---
 
 *This analysis shows how to efficiently find the girth (shortest cycle) of an undirected graph using BFS with edge removal technique.* 
+
+## Problem Variations & Related Questions
+
+### Problem Variations
+
+#### 1. **Graph Girth with Costs**
+**Variation**: Each edge has a cost, find minimum cost cycle.
+**Approach**: Use weighted BFS with cost tracking.
+```python
+def cost_based_graph_girth(n, m, edges, edge_costs):
+    # edge_costs[(a, b)] = cost of edge (a, b)
+    
+    def find_weighted_cycle_with_edge_removal(adj, edge):
+        a, b = edge
+        # Remove edge temporarily
+        adj[a].remove(b)
+        adj[b].remove(a)
+        
+        # Find shortest weighted path
+        shortest_path_cost = dijkstra_shortest_path(adj, a, b, edge_costs)
+        
+        # Restore edge
+        adj[a].append(b)
+        adj[b].append(a)
+        
+        edge_cost = edge_costs.get((a, b), 1)
+        return shortest_path_cost + edge_cost if shortest_path_cost != float('inf') else float('inf')
+    
+    def dijkstra_shortest_path(adj, start, end, costs):
+        import heapq
+        
+        distances = [float('inf')] * (n + 1)
+        distances[start] = 0
+        pq = [(0, start)]
+        
+        while pq:
+            dist, node = heapq.heappop(pq)
+            
+            if node == end:
+                return dist
+            
+            if dist > distances[node]:
+                continue
+            
+            for neighbor in adj[node]:
+                edge_cost = costs.get((node, neighbor), 1)
+                new_dist = dist + edge_cost
+                
+                if new_dist < distances[neighbor]:
+                    distances[neighbor] = new_dist
+                    heapq.heappush(pq, (new_dist, neighbor))
+        
+        return float('inf')
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    min_cycle_cost = float('inf')
+    
+    # For each edge, find minimum cost cycle containing it
+    for a, b in edges:
+        cycle_cost = find_weighted_cycle_with_edge_removal(adj, (a, b))
+        min_cycle_cost = min(min_cycle_cost, cycle_cost)
+    
+    return min_cycle_cost if min_cycle_cost != float('inf') else -1
+```
+
+#### 2. **Graph Girth with Constraints**
+**Variation**: Limited path length, restricted edges, or specific cycle requirements.
+**Approach**: Use constraint satisfaction with cycle detection.
+```python
+def constrained_graph_girth(n, m, edges, max_cycle_length, restricted_edges):
+    # max_cycle_length = maximum allowed cycle length
+    # restricted_edges = set of edges that cannot be used in cycles
+    
+    def find_constrained_cycle_with_edge_removal(adj, edge):
+        a, b = edge
+        if (a, b) in restricted_edges or (b, a) in restricted_edges:
+            return float('inf')
+        
+        # Remove edge temporarily
+        adj[a].remove(b)
+        adj[b].remove(a)
+        
+        # Find shortest path with constraint
+        path_length = constrained_bfs_shortest_path(adj, a, b, max_cycle_length - 1)
+        
+        # Restore edge
+        adj[a].append(b)
+        adj[b].append(a)
+        
+        return path_length + 1 if path_length != -1 else float('inf')
+    
+    def constrained_bfs_shortest_path(adj, start, end, max_length):
+        queue = [(start, 0)]
+        visited = {start}
+        
+        while queue:
+            node, dist = queue.pop(0)
+            
+            if node == end:
+                return dist
+            
+            if dist >= max_length:
+                continue
+            
+            for neighbor in adj[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append((neighbor, dist + 1))
+        
+        return -1
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    min_cycle = float('inf')
+    
+    # For each edge, find constrained cycle
+    for a, b in edges:
+        cycle_length = find_constrained_cycle_with_edge_removal(adj, (a, b))
+        if cycle_length <= max_cycle_length:
+            min_cycle = min(min_cycle, cycle_length)
+    
+    return min_cycle if min_cycle != float('inf') else -1
+```
+
+#### 3. **Graph Girth with Probabilities**
+**Variation**: Each edge has a probability of being available.
+**Approach**: Use Monte Carlo simulation or expected value calculation.
+```python
+def probabilistic_graph_girth(n, m, edges, edge_probabilities):
+    # edge_probabilities[(a, b)] = probability edge (a, b) is available
+    
+    def monte_carlo_simulation(trials=1000):
+        cycle_lengths = []
+        
+        for _ in range(trials):
+            # Simulate available edges
+            available_edges = []
+            for a, b in edges:
+                if random.random() < edge_probabilities.get((a, b), 0.5):
+                    available_edges.append((a, b))
+            
+            # Find girth with available edges
+            girth = find_girth_with_edges(n, available_edges)
+            if girth != -1:
+                cycle_lengths.append(girth)
+        
+        return min(cycle_lengths) if cycle_lengths else -1
+    
+    def find_girth_with_edges(n, available_edges):
+        # Build adjacency list
+        adj = [[] for _ in range(n + 1)]
+        for a, b in available_edges:
+            adj[a].append(b)
+            adj[b].append(a)
+        
+        min_cycle = float('inf')
+        
+        # For each edge, find cycle
+        for a, b in available_edges:
+            # Remove edge temporarily
+            adj[a].remove(b)
+            adj[b].remove(a)
+            
+            # Find shortest path
+            path_length = bfs_shortest_path(adj, a, b)
+            if path_length != -1:
+                min_cycle = min(min_cycle, path_length + 1)
+            
+            # Restore edge
+            adj[a].append(b)
+            adj[b].append(a)
+        
+        return min_cycle if min_cycle != float('inf') else -1
+    
+    def bfs_shortest_path(adj, start, end):
+        queue = [(start, 0)]
+        visited = {start}
+        
+        while queue:
+            node, dist = queue.pop(0)
+            
+            if node == end:
+                return dist
+            
+            for neighbor in adj[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append((neighbor, dist + 1))
+        
+        return -1
+    
+    return monte_carlo_simulation()
+```
+
+#### 4. **Graph Girth with Multiple Criteria**
+**Variation**: Optimize for multiple objectives (length, cost, reliability).
+**Approach**: Use multi-objective optimization or weighted sum approach.
+```python
+def multi_criteria_graph_girth(n, m, edges, criteria_weights):
+    # criteria_weights = {'length': 0.4, 'cost': 0.3, 'reliability': 0.3}
+    # Each edge has multiple attributes
+    
+    def calculate_cycle_score(cycle_attributes):
+        return (criteria_weights['length'] * cycle_attributes['length'] + 
+                criteria_weights['cost'] * cycle_attributes['cost'] + 
+                criteria_weights['reliability'] * cycle_attributes['reliability'])
+    
+    def find_multi_criteria_girth():
+        # Build adjacency list
+        adj = [[] for _ in range(n + 1)]
+        for a, b in edges:
+            adj[a].append(b)
+            adj[b].append(a)
+        
+        min_score = float('inf')
+        best_cycle = None
+        
+        # For each edge, find optimal cycle
+        for a, b in edges:
+            # Remove edge temporarily
+            adj[a].remove(b)
+            adj[b].remove(a)
+            
+            # Find shortest path
+            path_length = bfs_shortest_path(adj, a, b)
+            
+            # Restore edge
+            adj[a].append(b)
+            adj[b].append(a)
+            
+            if path_length != -1:
+                cycle_length = path_length + 1
+                
+                # Calculate cycle attributes (simplified)
+                cycle_attrs = {
+                    'length': cycle_length,
+                    'cost': cycle_length * 10,  # Assuming cost proportional to length
+                    'reliability': 1.0 / cycle_length  # Shorter cycles more reliable
+                }
+                
+                score = calculate_cycle_score(cycle_attrs)
+                if score < min_score:
+                    min_score = score
+                    best_cycle = (a, b, cycle_length)
+        
+        return best_cycle, min_score
+    
+    def bfs_shortest_path(adj, start, end):
+        queue = [(start, 0)]
+        visited = {start}
+        
+        while queue:
+            node, dist = queue.pop(0)
+            
+            if node == end:
+                return dist
+            
+            for neighbor in adj[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append((neighbor, dist + 1))
+        
+        return -1
+    
+    cycle, score = find_multi_criteria_girth()
+    return cycle, score
+```
+
+#### 5. **Graph Girth with Dynamic Updates**
+**Variation**: Edges can be added or removed dynamically.
+**Approach**: Use dynamic graph algorithms or incremental updates.
+```python
+class DynamicGraphGirth:
+    def __init__(self, n):
+        self.n = n
+        self.edges = []
+        self.girth_cache = None
+    
+    def add_edge(self, a, b):
+        self.edges.append((a, b))
+        self.invalidate_cache()
+    
+    def remove_edge(self, a, b):
+        if (a, b) in self.edges:
+            self.edges.remove((a, b))
+            self.invalidate_cache()
+    
+    def invalidate_cache(self):
+        self.girth_cache = None
+    
+    def get_girth(self):
+        if self.girth_cache is None:
+            self.girth_cache = self.compute_girth()
+        return self.girth_cache
+    
+    def compute_girth(self):
+        # Build adjacency list
+        adj = [[] for _ in range(self.n + 1)]
+        for a, b in self.edges:
+            adj[a].append(b)
+            adj[b].append(a)
+        
+        min_cycle = float('inf')
+        
+        # For each edge, find cycle
+        for a, b in self.edges:
+            # Remove edge temporarily
+            adj[a].remove(b)
+            adj[b].remove(a)
+            
+            # Find shortest path
+            path_length = self.bfs_shortest_path(adj, a, b)
+            if path_length != -1:
+                min_cycle = min(min_cycle, path_length + 1)
+            
+            # Restore edge
+            adj[a].append(b)
+            adj[b].append(a)
+        
+        return min_cycle if min_cycle != float('inf') else -1
+    
+    def bfs_shortest_path(self, adj, start, end):
+        queue = [(start, 0)]
+        visited = {start}
+        
+        while queue:
+            node, dist = queue.pop(0)
+            
+            if node == end:
+                return dist
+            
+            for neighbor in adj[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append((neighbor, dist + 1))
+        
+        return -1
+```
+
+### Related Problems & Concepts
+
+#### 1. **Cycle Detection Problems**
+- **Graph Girth**: Shortest cycle in graph
+- **Cycle Enumeration**: Find all cycles
+- **Cycle Counting**: Count number of cycles
+- **Cycle Decomposition**: Break into cycles
+
+#### 2. **Shortest Path Problems**
+- **Single Source**: Dijkstra's, Bellman-Ford
+- **All Pairs**: Floyd-Warshall
+- **K-Shortest Paths**: Yen's algorithm
+- **Disjoint Paths**: Menger's theorem
+
+#### 3. **Graph Algorithms**
+- **Breadth-First Search**: Level-by-level exploration
+- **Depth-First Search**: Recursive exploration
+- **Connectivity**: Strongly connected components
+- **Flow Networks**: Maximum flow, minimum cut
+
+#### 4. **Optimization Problems**
+- **Minimum Cycle**: Shortest cycle finding
+- **Cycle Cover**: Covering with cycles
+- **Cycle Packing**: Maximum disjoint cycles
+- **Cycle Decomposition**: Breaking into cycles
+
+#### 5. **Dynamic Graph Problems**
+- **Incremental Girth**: Adding edges
+- **Decremental Girth**: Removing edges
+- **Fully Dynamic**: Both adding and removing
+- **Online Algorithms**: Real-time updates
+
+### Competitive Programming Variations
+
+#### 1. **Online Judge Variations**
+- **Time Limits**: Optimize for strict constraints
+- **Memory Limits**: Space-efficient solutions
+- **Input Size**: Handle large graphs
+- **Edge Cases**: Robust cycle detection
+
+#### 2. **Algorithm Contests**
+- **Speed Programming**: Fast implementation
+- **Code Golf**: Minimal code solutions
+- **Team Contests**: Collaborative problem solving
+- **Live Coding**: Real-time problem solving
+
+#### 3. **Advanced Techniques**
+- **Binary Search**: On answer space
+- **Two Pointers**: Efficient graph traversal
+- **Sliding Window**: Optimal subgraph problems
+- **Monotonic Stack/Queue**: Maintaining order
+
+### Mathematical Extensions
+
+#### 1. **Combinatorics**
+- **Cycle Enumeration**: Counting cycles
+- **Permutations**: Order of cycle visits
+- **Combinations**: Choice of cycle edges
+- **Catalan Numbers**: Valid cycle sequences
+
+#### 2. **Probability Theory**
+- **Expected Values**: Average cycle length
+- **Markov Chains**: State transitions
+- **Random Graphs**: Erdős-Rényi model
+- **Monte Carlo**: Simulation methods
+
+#### 3. **Number Theory**
+- **Modular Arithmetic**: Large number handling
+- **Prime Numbers**: Special graph cases
+- **GCD/LCM**: Mathematical properties
+- **Euler's Totient**: Counting coprime cycles
+
+### Learning Resources
+
+#### 1. **Online Platforms**
+- **LeetCode**: Graph and cycle problems
+- **Codeforces**: Competitive programming
+- **HackerRank**: Algorithm challenges
+- **AtCoder**: Japanese programming contests
+
+#### 2. **Educational Resources**
+- **CLRS**: Introduction to Algorithms
+- **CP-Algorithms**: Competitive programming algorithms
+- **GeeksforGeeks**: Algorithm tutorials
+- **TopCoder**: Algorithm tutorials
+
+#### 3. **Practice Problems**
+- **Graph Problems**: Cycle detection, girth
+- **Path Problems**: Shortest path, all pairs
+- **Dynamic Problems**: Incremental, decremental
+- **Optimization Problems**: Multi-objective, constrained 
