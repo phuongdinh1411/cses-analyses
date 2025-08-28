@@ -1,32 +1,32 @@
 main:
-  - title: "🏠 Home"
+  - title: "Home"
     url: /
-  - title: "📚 Problem Categories"
+  - title: "Problem Categories"
     url: /problem_soulutions/
     children:
-      - title: "🧮 Introductory Problems"
+      - title: "Introductory Problems"
         url: /problem_soulutions/introductory_problems/
-      - title: "🔍 Sorting and Searching"
+      - title: "Sorting and Searching"
         url: /problem_soulutions/sorting_and_searching/
-      - title: "📊 Dynamic Programming"
+      - title: "Dynamic Programming"
         url: /problem_soulutions/dynamic_programming/
-      - title: "🔢 Counting Problems"
+      - title: "Counting Problems"
         url: /problem_soulutions/counting_problems/
-      - title: "🌐 Graph Algorithms"
+      - title: "Graph Algorithms"
         url: /problem_soulutions/graph_algorithms/
-      - title: "🔗 Advanced Graph Problems"
+      - title: "Advanced Graph Problems"
         url: /problem_soulutions/advanced_graph_problems/
-      - title: "📏 Range Queries"
+      - title: "Range Queries"
         url: /problem_soulutions/range_queries/
-      - title: "🪟 Sliding Window"
+      - title: "Sliding Window"
         url: /problem_soulutions/sliding_window/
-      - title: "🧵 String Algorithms"
+      - title: "String Algorithms"
         url: /problem_soulutions/string_algorithms/
-      - title: "🌳 Tree Algorithms"
+      - title: "Tree Algorithms"
         url: /problem_soulutions/tree_algorithms/
-      - title: "📐 Geometry"
+      - title: "Geometry"
         url: /problem_soulutions/geometry/
-  - title: "📖 Quick Reference"
+  - title: "Quick Reference"
     url: /quick_reference/
-  - title: "📝 About"
+  - title: "About"
     url: /about/
