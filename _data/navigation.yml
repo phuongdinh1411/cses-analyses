@@ -1,0 +1,37 @@
+main:
+  - title: "Home"
+    url: /
+
+  - title: "Quick Reference"
+    children:
+      - title: "Ultimate Cheatsheet"
+        url: /quick_reference/ultimate_cheatsheet/
+      - title: "Common Mistakes"
+        url: /quick_reference/common_mistakes/
+      - title: "Advanced Algorithms"
+        url: /quick_reference/advanced_algorithms/
+
+  - title: "Problem Solutions"
+    children:
+      - title: "Introductory Problems"
+        url: /problem_solutions/introductory_problems/
+      - title: "Sorting and Searching"
+        url: /problem_solutions/sorting_and_searching/
+      - title: "Dynamic Programming"
+        url: /problem_solutions/dynamic_programming/
+      - title: "Graph Algorithms"
+        url: /problem_solutions/graph_algorithms/
+      - title: "Tree Algorithms"
+        url: /problem_solutions/tree_algorithms/
+      - title: "String Algorithms"
+        url: /problem_solutions/string_algorithms/
+      - title: "Sliding Window"
+        url: /problem_solutions/sliding_window/
+      - title: "Range Queries"
+        url: /problem_solutions/range_queries/
+      - title: "Advanced Graph Problems"
+        url: /problem_solutions/advanced_graph_problems/
+      - title: "Counting Problems"
+        url: /problem_solutions/counting_problems/
+      - title: "Geometry"
+        url: /problem_solutions/geometry/
