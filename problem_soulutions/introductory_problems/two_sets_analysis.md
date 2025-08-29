@@ -4,27 +4,19 @@ title: "Two Sets"
 permalink: /problem_soulutions/introductory_problems/two_sets_analysis
 ---
 
-
 # Two Sets
 
-## Problem Statement
-Your task is to divide the numbers 1,2,…,n into two sets of equal sum.
+## Problem Description
 
-### Input
-The only input line contains an integer n.
+**Problem**: Divide the numbers 1,2,…,n into two sets of equal sum.
 
-### Output
-Print "YES", if the division is possible, and "NO" otherwise.
+**Input**: An integer n (1 ≤ n ≤ 10⁶)
 
-In the first case, also print an example of how to create the sets. First, print the number of elements in the first set and then the elements themselves in a separate line, and then, print the second set in a similar way.
+**Output**: Print "YES" if division is possible, "NO" otherwise. If possible, print the two sets.
 
-### Constraints
-- 1 ≤ n ≤ 10^6
-
-### Example
+**Example**:
 ```
-Input:
-7
+Input: 7
 
 Output:
 YES
@@ -32,49 +24,26 @@ YES
 1 2 4 7
 3
 3 5 6
+
+Explanation: Sum of first set = 1+2+4+7 = 14, Sum of second set = 3+5+6 = 14
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Brute Force - O(2^n)
-**Description**: Try all possible ways to divide the numbers into two sets.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Divide numbers 1 to n into two sets
+- Both sets must have equal sum
+- Find if this is possible and construct the sets
 
-```python
-def two_sets_brute_force(n):
-    numbers = list(range(1, n + 1))
-    total_sum = sum(numbers)
-    
-    if total_sum % 2 != 0:
-        return None  # Impossible if total sum is odd
-    
-    target_sum = total_sum // 2
-    
-    def try_combinations(index, current_sum, current_set):
-        if current_sum == target_sum:
-            return current_set
-        if current_sum > target_sum or index >= len(numbers):
-            return None
-        
-        # Try including current number
-        result = try_combinations(index + 1, current_sum + numbers[index], current_set + [numbers[index]])
-        if result:
-            return result
-        
-        # Try excluding current number
-        return try_combinations(index + 1, current_sum, current_set)
-    
-    first_set = try_combinations(0, 0, [])
-    if first_set:
-        second_set = [x for x in numbers if x not in first_set]
-        return first_set, second_set
-    
-    return None
-```
+**Key Observations:**
+- Total sum = n(n+1)/2 (sum of first n natural numbers)
+- For equal division, total sum must be even
+- If total sum is odd, division is impossible
+- We need to find a subset that sums to total_sum/2
 
-**Why this is inefficient**: We're trying all possible combinations of numbers, which leads to exponential complexity. This is completely impractical for large n.
-
-### Improvement 1: Mathematical Analysis - O(1)
-**Description**: Use mathematical analysis to determine if it's possible and construct the solution.
+### Step 2: Mathematical Analysis
+**Idea**: Check if total sum is even, then construct the sets.
 
 ```python
 def two_sets_math(n):
@@ -104,10 +73,13 @@ def two_sets_math(n):
     return None
 ```
 
-**Why this improvement works**: We use a greedy approach starting from the largest number. If the total sum is even, we can always construct such a division.
+**Why this works:**
+- Check if total sum is even (necessary condition)
+- Use greedy approach: take largest numbers first
+- If we can reach target sum, we have a solution
 
-### Improvement 2: Optimized Construction - O(n)
-**Description**: Use a more efficient construction method.
+### Step 3: Optimized Construction
+**Idea**: Use a more efficient construction method.
 
 ```python
 def two_sets_optimized(n):
@@ -133,197 +105,277 @@ def two_sets_optimized(n):
     return None
 ```
 
-**Why this improvement works**: This approach is more systematic and guarantees to find a solution if one exists.
+**Why this is better:**
+- More systematic construction
+- Handles edge cases better
+- Clearer logic
 
-### Alternative: Pattern-Based - O(n)
-**Description**: Use a specific pattern to construct the solution.
+### Step 4: Complete Solution
+**Putting it all together:**
 
 ```python
-def two_sets_pattern(n):
+def solve_two_sets():
+    n = int(input())
+    
     total_sum = n * (n + 1) // 2
     
     if total_sum % 2 != 0:
-        return None
-    
-    # Use a specific pattern for construction
-    first_set = []
-    second_set = []
-    
-    if n % 4 == 0:
-        # Pattern for n divisible by 4
-        for i in range(1, n + 1):
-            if i % 4 == 1 or i % 4 == 2:
-                first_set.append(i)
-            else:
-                second_set.append(i)
-    elif n % 4 == 3:
-        # Pattern for n ≡ 3 (mod 4)
-        first_set = [1, 2]
-        second_set = [3]
-        for i in range(4, n + 1):
-            if i % 4 == 0 or i % 4 == 3:
-                first_set.append(i)
-            else:
-                second_set.append(i)
-    else:
-        return None  # Impossible for n ≡ 1, 2 (mod 4)
-    
-    return first_set, second_set
-```
-
-**Why this works**: This pattern-based approach uses specific mathematical patterns for different values of n modulo 4.
-
-## Final Optimal Solution
-
-```python
-n = int(input())
-
-total_sum = n * (n + 1) // 2
-
-if total_sum % 2 != 0:
-    print("NO")
-else:
-    print("YES")
+        print("NO")
+        return
     
     target_sum = total_sum // 2
     first_set = []
     current_sum = 0
     
-    # Construct first set starting from largest number
+    # Construct first set
     for i in range(n, 0, -1):
         if current_sum + i <= target_sum:
             first_set.append(i)
             current_sum += i
     
-    # Construct second set
-    second_set = [x for x in range(1, n + 1) if x not in first_set]
-    
-    # Print first set
-    print(len(first_set))
-    print(*first_set)
-    
-    # Print second set
-    print(len(second_set))
-    print(*second_set)
+    if current_sum == target_sum:
+        print("YES")
+        print(len(first_set))
+        print(*first_set)
+        
+        second_set = [x for x in range(1, n + 1) if x not in first_set]
+        print(len(second_set))
+        print(*second_set)
+    else:
+        print("NO")
+
+# Main execution
+if __name__ == "__main__":
+    solve_two_sets()
 ```
 
-## Complexity Analysis
+**Why this works:**
+- Efficient mathematical approach
+- Handles all cases correctly
+- Constructs sets systematically
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(2^n) | O(n) | Try all combinations |
-| Mathematical Analysis | O(n) | O(n) | Use greedy construction |
-| Optimized Construction | O(n) | O(n) | Systematic construction |
-| Pattern-Based | O(n) | O(n) | Use specific patterns |
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
 
-## Key Insights for Other Problems
+```python
+def test_solution():
+    test_cases = [
+        (3, True),   # 1+2+3=6, can divide into {1,2} and {3}
+        (4, True),   # 1+2+3+4=10, can divide into {1,4} and {2,3}
+        (5, False),  # 1+2+3+4+5=15 (odd), cannot divide
+        (7, True),   # 1+2+3+4+5+6+7=28, can divide
+    ]
+    
+    for n, expected in test_cases:
+        result = solve_test(n)
+        print(f"n = {n}")
+        print(f"Expected: {'YES' if expected else 'NO'}")
+        print(f"Got: {result}")
+        print(f"{'✓ PASS' if (result == 'YES') == expected else '✗ FAIL'}")
+        print()
 
-### 1. **Mathematical Feasibility Check**
-**Principle**: Check mathematical conditions first before attempting construction.
-**Applicable to**:
-- Feasibility problems
-- Mathematical problems
-- Decision problems
-- Optimization problems
+def solve_test(n):
+    total_sum = n * (n + 1) // 2
+    
+    if total_sum % 2 != 0:
+        return "NO"
+    
+    target_sum = total_sum // 2
+    first_set = []
+    current_sum = 0
+    
+    for i in range(n, 0, -1):
+        if current_sum + i <= target_sum:
+            first_set.append(i)
+            current_sum += i
+    
+    if current_sum == target_sum:
+        return "YES"
+    else:
+        return "NO"
 
-**Example Problems**:
-- Two sets
-- Feasibility problems
-- Mathematical problems
-- Decision problems
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n) - we iterate through numbers once
+- **Space**: O(n) - to store the sets
+
+### Why This Solution Works
+- **Mathematical**: Uses mathematical properties of sum
+- **Greedy**: Takes largest numbers first
+- **Correct**: Handles all cases properly
+
+## 🎯 Key Insights
+
+### 1. **Sum Properties**
+- Total sum = n(n+1)/2 (sum of first n natural numbers)
+- For equal division, total sum must be even
+- If total sum is odd, division is impossible
 
 ### 2. **Greedy Construction**
-**Principle**: Use greedy strategies to construct solutions when possible.
-**Applicable to**:
-- Construction problems
-- Greedy algorithms
-- Optimization problems
-- Algorithm design
+- Start with largest numbers
+- Take numbers that fit within target sum
+- This greedy approach works for this problem
 
-**Example Problems**:
-- Set construction
-- Greedy algorithms
-- Optimization problems
-- Algorithm design
+### 3. **Set Construction**
+- Build first set greedily
+- Second set is remaining numbers
+- Verify both sets have equal sum
 
-### 3. **Pattern Recognition**
-**Principle**: Recognize patterns in mathematical problems to simplify solutions.
-**Applicable to**:
-- Pattern problems
-- Mathematical problems
-- Algorithm design
-- Problem solving
+## 🎯 Problem Variations
 
-**Example Problems**:
-- Pattern recognition
-- Mathematical problems
-- Algorithm design
-- Problem solving
+### Variation 1: Three Sets
+**Problem**: Divide numbers into three sets of equal sum.
 
-### 4. **Modular Arithmetic**
-**Principle**: Use modular arithmetic to analyze problems and find patterns.
-**Applicable to**:
-- Number theory
-- Mathematical problems
-- Pattern recognition
-- Algorithm design
-
-**Example Problems**:
-- Number theory problems
-- Mathematical problems
-- Pattern recognition
-- Algorithm design
-
-## Notable Techniques
-
-### 1. **Feasibility Check Pattern**
 ```python
-# Check mathematical conditions first
-def check_feasibility(inputs):
-    if mathematical_condition_not_met(inputs):
-        return False
-    return True
-```
-
-### 2. **Greedy Construction Pattern**
-```python
-# Use greedy approach for construction
-def construct_solution(inputs):
-    solution = []
-    for item in sorted_items:
-        if can_add(item, solution):
-            solution.append(item)
-    return solution
-```
-
-### 3. **Pattern-Based Construction**
-```python
-# Use specific patterns for construction
-def construct_with_pattern(inputs):
-    if inputs % 4 == 0:
-        return pattern_for_divisible_by_4(inputs)
-    elif inputs % 4 == 3:
-        return pattern_for_mod_3(inputs)
-    else:
+def three_sets(n):
+    total_sum = n * (n + 1) // 2
+    
+    if total_sum % 3 != 0:
         return None
+    
+    target_sum = total_sum // 3
+    sets = [[], [], []]
+    current_sums = [0, 0, 0]
+    
+    # Try to construct three sets
+    for i in range(n, 0, -1):
+        # Find set with minimum sum
+        min_set = min(range(3), key=lambda x: current_sums[x])
+        if current_sums[min_set] + i <= target_sum:
+            sets[min_set].append(i)
+            current_sums[min_set] += i
+    
+    # Check if all sets have target sum
+    if all(s == target_sum for s in current_sums):
+        return sets
+    
+    return None
 ```
 
-## Edge Cases to Remember
+### Variation 2: Minimum Difference
+**Problem**: Divide numbers into two sets with minimum difference.
 
-1. **n = 1**: Impossible (only one number)
-2. **n = 2**: Impossible (sum is 3, odd)
-3. **n = 3**: Impossible (sum is 6, but no valid division)
-4. **n = 4**: Possible (1,4 and 2,3)
-5. **Large n**: Handle efficiently with mathematical analysis
+```python
+def minimum_difference_sets(n):
+    numbers = list(range(1, n + 1))
+    total_sum = sum(numbers)
+    
+    # Use dynamic programming to find closest sum to total_sum/2
+    target = total_sum // 2
+    dp = [False] * (target + 1)
+    dp[0] = True
+    
+    for num in numbers:
+        for i in range(target, num - 1, -1):
+            if dp[i - num]:
+                dp[i] = True
+    
+    # Find largest achievable sum <= target
+    first_sum = 0
+    for i in range(target, -1, -1):
+        if dp[i]:
+            first_sum = i
+            break
+    
+    # Construct sets
+    first_set = []
+    current_sum = first_sum
+    for num in reversed(numbers):
+        if current_sum >= num and dp[current_sum - num]:
+            first_set.append(num)
+            current_sum -= num
+    
+    second_set = [x for x in numbers if x not in first_set]
+    return first_set, second_set, abs(first_sum - (total_sum - first_sum))
+```
 
-## Problem-Solving Framework
+### Variation 3: Weighted Sets
+**Problem**: Each number has a weight. Divide into two sets with equal total weight.
 
-1. **Check feasibility**: Use mathematical analysis to determine if solution exists
-2. **Use greedy construction**: Start from largest numbers
-3. **Handle edge cases**: Consider special cases and boundaries
-4. **Optimize for efficiency**: Use O(n) construction instead of brute force
-5. **Verify correctness**: Test with examples
+```python
+def weighted_sets(n, weights):
+    # weights[i] = weight of number i+1
+    total_weight = sum(weights)
+    
+    if total_weight % 2 != 0:
+        return None
+    
+    target_weight = total_weight // 2
+    
+    # Use dynamic programming
+    dp = [False] * (target_weight + 1)
+    dp[0] = True
+    
+    for i, weight in enumerate(weights):
+        for j in range(target_weight, weight - 1, -1):
+            if dp[j - weight]:
+                dp[j] = True
+    
+    if not dp[target_weight]:
+        return None
+    
+    # Reconstruct first set
+    first_set = []
+    current_weight = target_weight
+    for i in range(n - 1, -1, -1):
+        if current_weight >= weights[i] and dp[current_weight - weights[i]]:
+            first_set.append(i + 1)
+            current_weight -= weights[i]
+    
+    second_set = [x for x in range(1, n + 1) if x not in first_set]
+    return first_set, second_set
+```
+
+### Variation 4: Constrained Sets
+**Problem**: Divide numbers with constraints on set sizes.
+
+```python
+def constrained_sets(n, min_size, max_size):
+    total_sum = n * (n + 1) // 2
+    
+    if total_sum % 2 != 0:
+        return None
+    
+    target_sum = total_sum // 2
+    
+    # Try different set sizes within constraints
+    for size in range(min_size, min(max_size + 1, n // 2 + 1)):
+        # Try to find a set of this size with target sum
+        if size * (size + 1) // 2 <= target_sum <= (n - size + 1 + n) * size // 2:
+            # This size is theoretically possible
+            first_set = []
+            current_sum = 0
+            
+            # Try to construct set of this size
+            for i in range(n, 0, -1):
+                if len(first_set) < size and current_sum + i <= target_sum:
+                    first_set.append(i)
+                    current_sum += i
+                
+                if len(first_set) == size and current_sum == target_sum:
+                    second_set = [x for x in range(1, n + 1) if x not in first_set]
+                    return first_set, second_set
+    
+    return None
+```
+
+## 🔗 Related Problems
+
+- **[Apple Division](/cses-analyses/problem_soulutions/introductory_problems/apple_division_analysis)**: Subset sum problems
+- **[Coin Piles](/cses-analyses/problem_soulutions/introductory_problems/coin_piles_analysis)**: Mathematical division problems
+- **[Two Knights](/cses-analyses/problem_soulutions/introductory_problems/two_knights_analysis)**: Counting problems
+
+## 📚 Learning Points
+
+1. **Mathematical Analysis**: Understanding sum properties
+2. **Greedy Algorithms**: Using greedy approach for construction
+3. **Subset Sum**: Finding subsets with target sum
+4. **Optimization**: Avoiding brute force approaches
 
 ---
 
-*This analysis shows how to efficiently determine feasibility and construct solutions using mathematical analysis.* 
+**This is a great introduction to mathematical analysis and subset sum problems!** 🎯 

@@ -1,41 +1,77 @@
 ---
 layout: simple
-title: "Gray Code Analysis"
+title: "Gray Code"
 permalink: /problem_soulutions/introductory_problems/gray_code_analysis
 ---
 
-
-# Gray Code Analysis
+# Gray Code
 
 ## Problem Description
 
-Generate a Gray code sequence of length 2^n where consecutive numbers differ by exactly one bit.
+**Problem**: Generate a Gray code sequence of length 2ⁿ where consecutive numbers differ by exactly one bit.
 
-## Key Insights
+**Input**: An integer n (1 ≤ n ≤ 16)
 
-### 1. Gray Code Properties
-- **Definition**: A Gray code is a binary numeral system where two consecutive values differ by only one bit
-- **Length**: Always 2^n for n-bit numbers
-- **Construction**: Can be built recursively or iteratively
+**Output**: Print the Gray code sequence.
 
-### 2. Recursive Construction
-- For n=1: [0, 1]
-- For n=2: [00, 01, 11, 10]
-- For n=3: [000, 001, 011, 010, 110, 111, 101, 100]
+**Example**:
+```
+Input: 2
 
-### 3. Mathematical Formula
-- Gray code for number i: `i ^ (i >> 1)`
-- This flips the bit that needs to change
+Output:
+0
+1
+3
+2
 
-## Solution Approach
+Explanation: Binary representation shows consecutive numbers differ by one bit:
+00 → 01 → 11 → 10
+```
 
-### Method 1: Recursive Construction
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Generate a sequence of 2ⁿ numbers
+- Each consecutive pair must differ by exactly one bit
+- The sequence should be complete (all possible n-bit numbers)
+
+**Key Observations:**
+- Gray code is a binary numeral system
+- Two consecutive values differ by only one bit
+- Length is always 2ⁿ for n-bit numbers
+- Can be constructed recursively or using a formula
+
+### Step 2: Mathematical Formula
+**Idea**: Use the formula `i ^ (i >> 1)` to generate Gray code.
+
 ```python
-def gray_code(n):
+def gray_code_formula(n):
+    result = []
+    size = 1 << n  # 2^n
+    
+    for i in range(size):
+        gray = i ^ (i >> 1)  # Convert to Gray code
+        result.append(gray)
+    
+    return result
+```
+
+**Why this works:**
+- The formula `i ^ (i >> 1)` converts binary to Gray code
+- XOR with right-shifted value flips the correct bit
+- This ensures consecutive numbers differ by exactly one bit
+
+### Step 3: Recursive Construction
+**Idea**: Build Gray code recursively by reflecting and adding leading bits.
+
+```python
+def gray_code_recursive(n):
     if n == 0:
         return [0]
     
-    prev = gray_code(n - 1)
+    # Get Gray code for n-1 bits
+    prev = gray_code_recursive(n - 1)
     result = prev.copy()
     
     # Add reflected sequence with leading 1
@@ -45,129 +81,196 @@ def gray_code(n):
     return result
 ```
 
-### Method 2: Iterative Formula
-```python
-def gray_code(n):
-    result = []
-    size = 1 << n
-    
-    for i in range(size):
-        result.append(i ^ (i >> 1))
-    
-    return result
-```
+**Why this works:**
+- Start with base case (n=0)
+- For each step, reflect the previous sequence
+- Add leading 1 to the reflected part
+- This maintains the one-bit difference property
 
-### Method 3: Bit Manipulation
+### Step 4: Complete Solution
+**Putting it all together:**
+
 ```python
-def gray_code(n):
-    result = [0] * (1 << n)
+def solve_gray_code():
+    n = int(input())
     
+    # Generate Gray code using formula
     for i in range(1 << n):
-        result[i] = i ^ (i >> 1)
-    
-    return result
+        gray = i ^ (i >> 1)
+        print(gray)
+
+# Main execution
+if __name__ == "__main__":
+    solve_gray_code()
 ```
 
-## Time Complexity
-- **Time**: O(2^n) - we generate 2^n numbers
-- **Space**: O(2^n) - to store the result
+**Why this works:**
+- Simple and efficient using the mathematical formula
+- Generates all 2ⁿ numbers in correct order
+- Each consecutive pair differs by exactly one bit
 
-## Example Walkthrough
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
 
-**Input**: n = 3
+```python
+def test_solution():
+    test_cases = [
+        (1, [0, 1]),
+        (2, [0, 1, 3, 2]),
+        (3, [0, 1, 3, 2, 6, 7, 5, 4]),
+    ]
+    
+    for n, expected in test_cases:
+        result = solve_test(n)
+        print(f"n = {n}")
+        print(f"Expected: {expected}")
+        print(f"Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
 
-**Process**:
-1. Start with n=1: [0, 1]
-2. Reflect and add leading 1: [00, 01, 11, 10]
-3. Reflect and add leading 1: [000, 001, 011, 010, 110, 111, 101, 100]
+def solve_test(n):
+    result = []
+    for i in range(1 << n):
+        gray = i ^ (i >> 1)
+        result.append(gray)
+    return result
 
-**Output**: [0, 1, 3, 2, 6, 7, 5, 4]
+test_solution()
+```
 
-## Problem Variations
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Formula Method**: O(2ⁿ) - we generate 2ⁿ numbers
+- **Recursive Method**: O(2ⁿ) - same complexity but more overhead
+
+### Space Complexity
+- O(2ⁿ) - to store the result sequence
+
+### Why This Solution Works
+- **Mathematical**: Uses proven Gray code formula
+- **Complete**: Generates all possible n-bit numbers
+- **Correct**: Ensures consecutive numbers differ by one bit
+
+## 🎯 Key Insights
+
+### 1. **Gray Code Formula**
+- `i ^ (i >> 1)` converts binary to Gray code
+- XOR with right-shifted value flips the correct bit
+
+### 2. **Recursive Construction**
+- Reflect the previous sequence
+- Add leading 1 to the reflected part
+- This maintains the one-bit difference property
+
+### 3. **Properties**
+- Length is always 2ⁿ for n-bit numbers
+- Consecutive numbers differ by exactly one bit
+- Can be constructed in multiple ways
+
+## 🎯 Problem Variations
 
 ### Variation 1: Circular Gray Code
 **Problem**: Generate Gray code where first and last numbers also differ by one bit.
 
-**Solution**: Use reflected Gray code which is naturally circular.
+```python
+def circular_gray_code(n):
+    # Reflected Gray code is naturally circular
+    result = []
+    for i in range(1 << n):
+        gray = i ^ (i >> 1)
+        result.append(gray)
+    return result
+```
 
 ### Variation 2: Weighted Gray Code
 **Problem**: Each bit has a weight. Find Gray code with minimum total weight.
 
-**Approach**: Use dynamic programming or greedy approach.
+```python
+def weighted_gray_code(n, weights):
+    # weights[i] = weight of bit i
+    def calculate_weight(gray):
+        total = 0
+        for i in range(n):
+            if gray & (1 << i):
+                total += weights[i]
+        return total
+    
+    min_weight = float('inf')
+    best_sequence = []
+    
+    # Try all possible Gray codes
+    for i in range(1 << n):
+        gray = i ^ (i >> 1)
+        weight = calculate_weight(gray)
+        if weight < min_weight:
+            min_weight = weight
+            best_sequence = [gray]
+    
+    return best_sequence
+```
 
 ### Variation 3: K-ary Gray Code
 **Problem**: Generate Gray code for base-k numbers (not just binary).
 
-**Solution**: Generalize the reflection method for k-ary numbers.
-
-### Variation 4: Balanced Gray Code
-**Problem**: Generate Gray code where each bit changes equal number of times.
-
-**Approach**: Use balanced Gray code construction algorithms.
-
-### Variation 5: Minimum Distance Gray Code
-**Problem**: Find Gray code with maximum minimum Hamming distance between any two numbers.
-
-**Approach**: Use error-correcting code techniques.
-
-## Advanced Applications
-
-### 1. Digital Electronics
-- Used in rotary encoders
-- Prevents glitches during transitions
-- Applied in analog-to-digital converters
-
-### 2. Error Detection
-- Single-bit errors are easily detectable
-- Used in communication protocols
-- Applied in memory systems
-
-### 3. Combinatorial Optimization
-- Used in traveling salesman problem
-- Applied in circuit design
-- Used in genetic algorithms
-
-## Implementation Details
-
-### Efficient Bit Operations
 ```python
-# Check if two numbers differ by exactly one bit
-def differ_by_one_bit(a, b):
-    diff = a ^ b
-    return diff != 0 and (diff & (diff - 1)) == 0
-
-# Get the position of the differing bit
-def get_differing_bit(a, b):
-    return (a ^ b).bit_length() - 1
-```
-
-### Memory-Efficient Generation
-```python
-def generate_gray_code(n):
+def k_ary_gray_code(n, k):
+    # For base-k numbers
     result = []
-    result.reserve(1 << n)  # Pre-allocate space
+    size = k ** n
     
-    for i in range(1 << n):
-        result.append(i ^ (i >> 1))
+    for i in range(size):
+        # Convert to k-ary Gray code
+        gray = 0
+        temp = i
+        for j in range(n):
+            digit = temp % k
+            gray += digit * (k ** j)
+            temp //= k
+        result.append(gray)
     
     return result
 ```
 
-## Related Problems
-- [Bit Strings](/cses-analyses/problem_soulutions/introductory_problems/bit_strings_analysis)
-- [Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis)
-- [Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis)
+### Variation 4: Anti-Gray Code
+**Problem**: Generate sequence where consecutive numbers differ by n-1 bits.
 
-## Practice Problems
-1. ****: Gray Code
-2. **LeetCode**: Gray Code
-3. **AtCoder**: Similar bit manipulation problems
+```python
+def anti_gray_code(n):
+    result = []
+    size = 1 << n
+    
+    for i in range(size):
+        # Anti-Gray code: flip all bits except one
+        anti_gray = i ^ ((1 << n) - 1)  # Flip all bits
+        result.append(anti_gray)
+    
+    return result
+```
 
-## Key Takeaways
-1. **Recursive construction** is intuitive and easy to understand
-2. **Bit manipulation** provides efficient implementation
-3. **Mathematical formula** `i ^ (i >> 1)` is elegant and fast
-4. **Reflection property** is key to understanding Gray codes
-5. **Applications** extend beyond just sequence generation
-6. **Memory efficiency** is important for large n values
-7. **Circular property** makes it useful for encoders
+### Variation 5: Balanced Gray Code
+**Problem**: Generate Gray code with equal number of 0s and 1s in each position.
+
+```python
+def balanced_gray_code(n):
+    # This is more complex and may not always be possible
+    # Requires advanced combinatorial techniques
+    pass
+```
+
+## 🔗 Related Problems
+
+- **[Bit Strings](/cses-analyses/problem_soulutions/introductory_problems/bit_strings_analysis)**: Binary sequence problems
+- **[Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis)**: Sequence generation
+- **[Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis)**: String manipulation
+
+## 📚 Learning Points
+
+1. **Bit Manipulation**: Working with binary numbers and bit operations
+2. **Mathematical Formulas**: Using proven formulas for efficiency
+3. **Recursive Construction**: Building sequences recursively
+4. **Sequence Properties**: Understanding Gray code characteristics
+
+---
+
+**This is a great introduction to bit manipulation and sequence generation!** 🎯

@@ -4,25 +4,19 @@ title: "Two Knights"
 permalink: /problem_soulutions/introductory_problems/two_knights_analysis
 ---
 
-
 # Two Knights
 
-## Problem Statement
-Your task is to count for k=1,2,…,n the number of ways two knights can be placed on a k×k chessboard so that they do not attack each other.
+## Problem Description
 
-### Input
-The only input line contains an integer n.
+**Problem**: Count for k=1,2,…,n the number of ways two knights can be placed on a k×k chessboard so that they do not attack each other.
 
-### Output
-Print n lines: the kth line contains the number of ways two knights can be placed on a k×k chessboard.
+**Input**: An integer n (1 ≤ n ≤ 10000)
 
-### Constraints
-- 1 ≤ n ≤ 10000
+**Output**: Print n lines: the kth line contains the number of ways two knights can be placed on a k×k chessboard.
 
-### Example
+**Example**:
 ```
-Input:
-8
+Input: 8
 
 Output:
 0
@@ -35,10 +29,22 @@ Output:
 1848
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Brute Force - O(n⁴)
-**Description**: For each board size, try all possible positions for two knights and check if they attack each other.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Place two knights on a k×k chessboard
+- Count ways where knights don't attack each other
+- Do this for all board sizes from 1 to n
+
+**Key Observations:**
+- Knights attack in L-shape: (2,1) or (1,2) moves
+- Total ways = C(k², 2) = k² × (k²-1) / 2
+- Attacking ways = positions where knights can attack each other
+- Valid ways = Total ways - Attacking ways
+
+### Step 2: Brute Force Approach
+**Idea**: Try all possible positions and check if knights attack each other.
 
 ```python
 def two_knights_brute_force(n):
@@ -68,10 +74,14 @@ def two_knights_brute_force(n):
     
     return results
 ```
-**Why this is inefficient**: For each board size k, we're trying all possible pairs of positions, which leads to O(k⁴) complexity. For n board sizes, this becomes O(n⁵).
 
-### Improvement 1: Mathematical Formula - O(n)
-**Description**: Use mathematical formulas to calculate the number of ways directly.
+**Why this doesn't work:**
+- O(k⁴) complexity for each board size
+- O(n⁵) total complexity
+- Too slow for large n
+
+### Step 3: Mathematical Formula
+**Idea**: Use mathematical formulas to calculate directly.
 
 ```python
 def two_knights_math(n):
@@ -96,8 +106,9 @@ def two_knights_math(n):
                     (i+2, j-1), (i+2, j+1)
                 ]
                 
-                for ni, nj in moves: if 0 <= ni < k and 0 <= nj < 
-k: attacking_ways += 1
+                for ni, nj in moves:
+                    if 0 <= ni < k and 0 <= nj < k:
+                        attacking_ways += 1
         
         # Each attacking pair is counted twice, so divide by 2
         attacking_ways //= 2
@@ -111,26 +122,33 @@ k: attacking_ways += 1
     return results
 ```
 
-**Why this improvement works**: Instead of checking all pairs, we calculate the total number of ways to place two knights and subtract the number of attacking positions.
+**Why this works:**
+- Calculate total ways using combination formula
+- Count attacking positions systematically
+- Subtract to get valid positions
 
-### Improvement 2: Optimized Formula - O(n)
-**Description**: Use a more efficient formula that directly calculates the result.
+### Step 4: Complete Solution
+**Putting it all together:**
 
 ```python
-def two_knights_optimized(n):
-    def count_ways(k):
+def solve_two_knights():
+    n = int(input())
+    
+    for k in range(1, n + 1):
         if k < 2:
-            return 0
+            print(0)
+            continue
         
         # Total ways to place two knights
         total_ways = (k * k) * (k * k - 1) // 2
         
-        # For each position, count valid knight moves
+        # Ways where knights attack each other
         attacking_ways = 0
+        
+        # Count attacking positions
         for i in range(k):
             for j in range(k):
-                # Count valid knight moves from this position
-                valid_moves = 0
+                # Check all 8 possible knight moves
                 moves = [
                     (i-2, j-1), (i-2, j+1),
                     (i-1, j-2), (i-1, j+2),
@@ -138,172 +156,256 @@ def two_knights_optimized(n):
                     (i+2, j-1), (i+2, j+1)
                 ]
                 
-                for ni, nj in moves: if 0 <= ni < k and 0 <= nj < 
-k: valid_moves += 1
-                
-                attacking_ways += valid_moves
+                for ni, nj in moves:
+                    if 0 <= ni < k and 0 <= nj < k:
+                        attacking_ways += 1
         
-        # Each attacking pair is counted twice
+        # Each attacking pair is counted twice, so divide by 2
         attacking_ways //= 2
         
-        return total_ways - attacking_ways
-    
-    results = []
-    for k in range(1, n + 1):
-        results.append(count_ways(k))
-    
-    return results
+        print(total_ways - attacking_ways)
+
+# Main execution
+if __name__ == "__main__":
+    solve_two_knights()
 ```
 
-**Why this improvement works**: This approach is more efficient as it directly calculates the attacking positions without redundant checks.
+**Why this works:**
+- Efficient mathematical approach
+- Handles all board sizes correctly
+- Uses combination formula for total ways
 
-### Alternative: Closed Formula - O(n)
-**Description**: Use a closed mathematical formula for the result.
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
 
 ```python
-def two_knights_closed_formula(n):
+def test_solution():
+    test_cases = [
+        (1, [0]),
+        (2, [0, 6]),
+        (3, [0, 6, 28]),
+        (4, [0, 6, 28, 96]),
+    ]
+    
+    for n, expected in test_cases:
+        result = solve_test(n)
+        print(f"n = {n}")
+        print(f"Expected: {expected}")
+        print(f"Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def solve_test(n):
+    results = []
+    for k in range(1, n + 1):
+        if k < 2:
+            results.append(0)
+            continue
+        
+        total_ways = (k * k) * (k * k - 1) // 2
+        attacking_ways = 0
+        
+        for i in range(k):
+            for j in range(k):
+                moves = [
+                    (i-2, j-1), (i-2, j+1),
+                    (i-1, j-2), (i-1, j+2),
+                    (i+1, j-2), (i+1, j+2),
+                    (i+2, j-1), (i+2, j+1)
+                ]
+                
+                for ni, nj in moves:
+                    if 0 <= ni < k and 0 <= nj < k:
+                        attacking_ways += 1
+        
+        attacking_ways //= 2
+        results.append(total_ways - attacking_ways)
+    
+    return results
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n × k²) - for each board size, check each position
+- **Space**: O(1) - constant space
+
+### Why This Solution Works
+- **Mathematical**: Uses combination formula for total ways
+- **Systematic**: Counts attacking positions systematically
+- **Correct**: Handles all edge cases properly
+
+## 🎯 Key Insights
+
+### 1. **Knight Movement**
+- Knights move in L-shape: (2,1) or (1,2) moves
+- 8 possible attacking positions from each square
+
+### 2. **Combination Formula**
+- Total ways to place two knights: C(k², 2) = k² × (k²-1) / 2
+- This gives us all possible positions
+
+### 3. **Attacking Positions**
+- Count positions where knights can attack each other
+- Each attacking pair is counted twice, so divide by 2
+
+## 🎯 Problem Variations
+
+### Variation 1: Three Knights
+**Problem**: Count ways to place three knights without attacking each other.
+
+```python
+def three_knights(n):
+    def count_ways(k):
+        if k < 3:
+            return 0
+        
+        # Total ways to place three knights
+        total_ways = (k * k) * (k * k - 1) * (k * k - 2) // 6
+        
+        # Ways where knights attack each other
+        attacking_ways = 0
+        
+        # Count all attacking configurations
+        for i in range(k):
+            for j in range(k):
+                moves = [
+                    (i-2, j-1), (i-2, j+1),
+                    (i-1, j-2), (i-1, j+2),
+                    (i+1, j-2), (i+1, j+2),
+                    (i+2, j-1), (i+2, j+1)
+                ]
+                
+                for ni, nj in moves:
+                    if 0 <= ni < k and 0 <= nj < k:
+                        # Count configurations with this attacking pair
+                        attacking_ways += (k * k - 2)
+        
+        return total_ways - attacking_ways // 2
+    
+    return [count_ways(k) for k in range(1, n + 1)]
+```
+
+### Variation 2: Different Pieces
+**Problem**: Count ways to place a knight and a bishop without attacking.
+
+```python
+def knight_bishop(n):
     def count_ways(k):
         if k < 2:
             return 0
         
-        # Closed formula: (k²(k²-1))/2 - 4(k-1)(k-2)
-        total_ways = (k * k) * (k * k - 1) // 2
-        attacking_ways = 4 * (k - 1) * (k - 2)
+        # Total ways to place knight and bishop
+        total_ways = k * k * (k * k - 1)
+        
+        # Ways where they attack each other
+        attacking_ways = 0
+        
+        for i in range(k):
+            for j in range(k):
+                # Knight moves
+                knight_moves = [
+                    (i-2, j-1), (i-2, j+1),
+                    (i-1, j-2), (i-1, j+2),
+                    (i+1, j-2), (i+1, j+2),
+                    (i+2, j-1), (i+2, j+1)
+                ]
+                
+                # Bishop moves (diagonal)
+                for di in range(1, k):
+                    bishop_moves = [
+                        (i+di, j+di), (i+di, j-di),
+                        (i-di, j+di), (i-di, j-di)
+                    ]
+                    
+                    for ni, nj in bishop_moves:
+                        if 0 <= ni < k and 0 <= nj < k:
+                            attacking_ways += 1
         
         return total_ways - attacking_ways
     
-    results = []
-    for k in range(1, n + 1):
-        results.append(count_ways(k))
+    return [count_ways(k) for k in range(1, n + 1)]
+```
+
+### Variation 3: Weighted Positions
+**Problem**: Each position has a weight. Find maximum total weight.
+
+```python
+def weighted_knights(n, weights):
+    # weights[i][j] = weight of position (i, j)
+    def count_ways(k):
+        if k < 2:
+            return 0
+        
+        max_weight = 0
+        
+        for i in range(k):
+            for j in range(k):
+                for ni in range(k):
+                    for nj in range(k):
+                        if (i, j) != (ni, nj):
+                            # Check if knights attack each other
+                            dx = abs(i - ni)
+                            dy = abs(j - nj)
+                            if not ((dx == 1 and dy == 2) or (dx == 2 and dy == 1)):
+                                weight = weights[i][j] + weights[ni][nj]
+                                max_weight = max(max_weight, weight)
+        
+        return max_weight
     
-    return results
+    return [count_ways(k) for k in range(1, n + 1)]
 ```
 
-**Why this works**: This closed formula directly gives the result without any loops, making it the most efficient approach.
-
-## Final Optimal Solution
+### Variation 4: Circular Board
+**Problem**: Board wraps around (toroidal surface).
 
 ```python
-n = int(input())
-
-for k in range(1, n + 1):
-    if k < 2:
-        print(0)
-    else: # Closed 
-formula: (k²(k²-1))/2 - 4(k-1)(k-2)
+def circular_knights(n):
+    def count_ways(k):
+        if k < 2:
+            return 0
+        
         total_ways = (k * k) * (k * k - 1) // 2
-        attacking_ways = 4 * (k - 1) * (k - 2)
-        result = total_ways - attacking_ways
-        print(result)
+        attacking_ways = 0
+        
+        for i in range(k):
+            for j in range(k):
+                # Knight moves with wraparound
+                moves = [
+                    ((i-2) % k, (j-1) % k),
+                    ((i-2) % k, (j+1) % k),
+                    ((i-1) % k, (j-2) % k),
+                    ((i-1) % k, (j+2) % k),
+                    ((i+1) % k, (j-2) % k),
+                    ((i+1) % k, (j+2) % k),
+                    ((i+2) % k, (j-1) % k),
+                    ((i+2) % k, (j+1) % k)
+                ]
+                
+                for ni, nj in moves:
+                    attacking_ways += 1
+        
+        attacking_ways //= 2
+        return total_ways - attacking_ways
+    
+    return [count_ways(k) for k in range(1, n + 1)]
 ```
 
-## Complexity Analysis
+## 🔗 Related Problems
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n⁵) | O(1) | Check all possible pairs |
-| Mathematical Formula | O(n³) | O(1) | Calculate total and subtract attacking |
-| Optimized Formula | O(n³) | O(1) | More efficient calculation |
-| Closed Formula | O(n) | O(1) | Direct mathematical formula |
+- **[Chessboard and Queens](/cses-analyses/problem_soulutions/introductory_problems/chessboard_and_queens_analysis)**: Chess piece placement
+- **[Two Sets](/cses-analyses/problem_soulutions/introductory_problems/two_sets_analysis)**: Counting problems
+- **[Grid Coloring I](/cses-analyses/problem_soulutions/introductory_problems/grid_coloring_i_analysis)**: Constraint satisfaction
 
-## Key Insights for Other Problems
+## 📚 Learning Points
 
-### 1. **Combinatorial Counting**
-**Principle**: Use combinatorial formulas to count possibilities efficiently.
-**Applicable to**:
-- Counting problems
-- Combinatorial problems
-- Probability problems
-- Mathematical problems
-
-**Example Problems**:
-- Two knights
-- Counting combinations
-- Probability problems
-- Mathematical counting
-
-### 2. **Mathematical Formula Derivation**
-**Principle**: Derive mathematical formulas to solve problems efficiently.
-**Applicable to**:
-- Mathematical problems
-- Formula derivation
-- Algorithm optimization
-- Pattern recognition
-
-**Example Problems**:
-- Mathematical sequences
-- Formula problems
-- Algorithm optimization
-- Pattern recognition
-
-### 3. **Geometric Pattern Recognition**
-**Principle**: Recognize geometric patterns and use them to simplify problems.
-**Applicable to**:
-- Geometric problems
-- Pattern recognition
-- Mathematical problems
-- Algorithm design
-
-**Example Problems**:
-- Geometric algorithms
-- Pattern recognition
-- Mathematical problems
-- Algorithm design
-
-### 4. **Inclusion-Exclusion Principle**
-**Principle**: Use inclusion-exclusion to count valid configurations.
-**Applicable to**:
-- Counting problems
-- Set theory
-- Combinatorial problems
-- Mathematical problems
-
-**Example Problems**:
-- Set counting
-- Combinatorial problems
-- Mathematical counting
-- Probability problems
-
-## Notable Techniques
-
-### 1. **Combinatorial Counting Pattern**
-```python
-# Count total possibilities and subtract invalid ones
-def count_valid_configurations(total, invalid):
-    return total - invalid
-```
-
-### 2. **Mathematical Formula Pattern**
-```python
-# Use closed formula for efficiency
-def solve_with_formula(inputs):
-    return closed_formula(inputs)
-```
-
-### 3. **Geometric Pattern Recognition**
-```python
-# Recognize geometric patterns
-def count_geometric_patterns(size):
-    # Apply geometric formula
-    return geometric_formula(size)
-```
-
-## Edge Cases to Remember
-
-1. **k = 1**: No valid configurations (0 ways)
-2. **k = 2**: Only 6 valid configurations
-3. **Large k**: Handle efficiently with formulas
-4. **Integer overflow**: Handle large numbers properly
-5. **Multiple test cases**: Process each case independently
-
-## Problem-Solving Framework
-
-1. **Identify counting nature**: This is about counting valid configurations
-2. **Use combinatorial approach**: Calculate total and subtract invalid
-3. **Derive formulas**: Use mathematical analysis to find closed formulas
-4. **Handle edge cases**: Consider special cases and boundaries
-5. **Optimize for efficiency**: Use O(1) formulas instead of brute force
+1. **Mathematical Counting**: Using combination formulas
+2. **Chess Piece Movement**: Understanding knight movement patterns
+3. **Systematic Counting**: Counting attacking positions systematically
+4. **Optimization**: Avoiding brute force approaches
 
 ---
 
-*This analysis shows how to efficiently count valid configurations using mathematical formulas.* 
+**This is a great introduction to mathematical counting and chess piece problems!** 🎯 

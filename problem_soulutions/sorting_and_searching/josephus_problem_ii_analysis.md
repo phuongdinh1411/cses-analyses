@@ -4,38 +4,61 @@ title: "Josephus Problem II"
 permalink: /problem_soulutions/sorting_and_searching/josephus_problem_ii_analysis
 ---
 
-
 # Josephus Problem II
 
-## Problem Statement
-There are n people numbered from 1 to n standing in a circle. Starting from person 1, we eliminate every k-th person until only one person remains. Find the position of the last remaining person.
+## Problem Description
 
-### Input
-The first input line has two integers n and k: the number of people and the step size.
+**Problem**: There are n people numbered from 1 to n standing in a circle. Starting from person 1, we eliminate every k-th person until only one person remains. Find the position of the last remaining person.
 
-### Output
-Print one integer: the position of the last remaining person.
+**Input**: 
+- First line: n k (number of people and step size)
 
-### Constraints
-- 1 ≤ n ≤ 10^9
-- 1 ≤ k ≤ 10^9
+**Output**: Position of the last remaining person.
 
-### Example
+**Example**:
 ```
 Input:
 7 3
 
 Output:
 4
+
+Explanation: 
+Initial circle: [1, 2, 3, 4, 5, 6, 7]
+Round 1: Eliminate 3, 6, 2, 7, 5 → [1, 4]
+Round 2: Eliminate 1 → [4]
+Last remaining: 4
+
+Let me trace this step by step:
+Starting from 1, eliminate every 3rd person:
+1, 2, 3, 4, 5, 6, 7
+1, 2, _, 4, 5, _, 7  (eliminate 3, 6)
+1, _, _, 4, _, _, 7  (eliminate 2, 5)
+1, _, _, 4, _, _, _  (eliminate 7)
+_, _, _, 4, _, _, _  (eliminate 1)
+Last remaining: 4
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Simulation - O(n)
-**Description**: Simulate the elimination process step by step.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- n people in a circle numbered 1 to n
+- Start from person 1
+- Eliminate every k-th person
+- Find the last remaining person
+
+**Key Observations:**
+- This is the general Josephus problem
+- Has a recursive solution
+- Can be solved iteratively for efficiency
+- Pattern depends on k and n
+
+### Step 2: Brute Force Approach
+**Idea**: Simulate the elimination process step by step.
 
 ```python
-def josephus_problem_ii_naive(n, k):
+def josephus_problem_brute_force(n, k):
     people = list(range(1, n + 1))
     index = 0
     
@@ -47,343 +70,262 @@ def josephus_problem_ii_naive(n, k):
     return people[0]
 ```
 
-**Why this is inefficient**: We need to eliminate n-1 people, and each elimination takes O(n) time, leading to O(n²) time complexity.
+**Why this works:**
+- Simulates actual elimination process
+- Easy to understand and implement
+- Guarantees correct answer
+- O(n²) time complexity
 
-### Improvement 1: Recursive Formula - O(n)
-**Description**: Use the recursive formula for the Josephus problem.
+### Step 3: Recursive Formula Optimization
+**Idea**: Use the recursive formula for the Josephus problem.
 
 ```python
-def josephus_problem_ii_optimized(n, k):
+def josephus_problem_recursive(n, k):
     if n == 1:
         return 1
     
     # Recursive formula: J(n,k) = (J(n-1,k) + k) % n
     # If the result is 0, it means the last person is at position n
-    result = (josephus_problem_ii_optimized(n - 1, k) + k) % n
+    result = (josephus_problem_recursive(n - 1, k) + k) % n
     return result if result != 0 else n
 ```
 
-**Why this improvement works**: The Josephus problem has a recursive solution. If we know the position of the last remaining person for n-1 people, we can calculate it for n people using the formula J(n,k) = (J(n-1,k) + k) % n.
+**Why this is better:**
+- O(n) time complexity
+- Uses mathematical insight
+- More efficient than simulation
+- Handles large n
 
-## Final Optimal Solution
+### Step 4: Iterative Optimization
+**Idea**: Convert recursive solution to iterative for better efficiency.
 
 ```python
-n, k = map(int, input().split())
-
-def find_last_remaining_person(n, k):
-    if n == 1:
-        return 1
+def josephus_problem_iterative(n, k):
+    result = 0  # 0-indexed result
     
-    # Recursive formula: J(n,k) = (J(n-1,k) + k) % n
-    # If the result is 0, it means the last person is at position n
-    result = (find_last_remaining_person(n - 1, k) + k) % n
-    return result if result != 0 else n
-
-result = find_last_remaining_person(n, k)
-print(result)
-```
-
-## Complexity Analysis
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Simulation | O(n²) | O(n) | Simulate elimination process |
-| Recursive Formula | O(n) | O(n) | Use recursive solution |
-
-## Key Insights for Other Problems
-
-### 1. **Josephus Problems**
-**Principle**: Use recursive formulas for efficient solutions to Josephus problems.
-**Applicable to**: Josephus problems, elimination problems, recursive problems
-
-### 2. **Recursive Solutions**
-**Principle**: Break down problems into smaller subproblems using recursion.
-**Applicable to**: Recursive problems, mathematical problems, optimization problems
-
-### 3. **Modular Arithmetic**
-**Principle**: Use modular arithmetic to handle circular arrangements efficiently.
-**Applicable to**: Circular problems, modular problems, mathematical problems
-
-## Notable Techniques
-
-### 1. **Recursive Josephus Formula**
-```python
-def josephus_recursive(n, k):
-    if n == 1:
-        return 1
-    
-    result = (josephus_recursive(n - 1, k) + k) % n
-    return result if result != 0 else n
-```
-
-### 2. **Iterative Josephus Formula**
-```python
-def josephus_iterative(n, k):
-    result = 0
     for i in range(2, n + 1):
         result = (result + k) % i
     
+    return result + 1  # Convert to 1-indexed
+```
+
+**Why this is better:**
+- O(n) time complexity
+- O(1) space complexity
+- No recursion stack
+- Most efficient approach
+
+### Step 5: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_josephus_problem_ii():
+    n, k = map(int, input().split())
+    
+    result = 0  # 0-indexed result
+    
+    for i in range(2, n + 1):
+        result = (result + k) % i
+    
+    print(result + 1)  # Convert to 1-indexed
+
+# Main execution
+if __name__ == "__main__":
+    solve_josephus_problem_ii()
+```
+
+**Why this works:**
+- Optimal iterative approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 6: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (7, 3, 4),
+        (5, 2, 3),
+        (3, 2, 3),
+        (1, 1, 1),
+        (10, 3, 4),
+    ]
+    
+    for n, k, expected in test_cases:
+        result = solve_test(n, k)
+        print(f"n={n}, k={k}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def solve_test(n, k):
+    result = 0
+    for i in range(2, n + 1):
+        result = (result + k) % i
     return result + 1
+
+test_solution()
 ```
 
-### 3. **Modular Arithmetic Handling**
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n) - iterate from 2 to n
+- **Space**: O(1) - constant extra space
+
+### Why This Solution Works
+- **Recursive Formula**: J(n,k) = (J(n-1,k) + k) % n
+- **Iterative Conversion**: Convert recursion to iteration
+- **Modulo Arithmetic**: Handle circular elimination
+- **Optimal Approach**: No better solution possible
+
+## 🎯 Key Insights
+
+### 1. **Recursive Formula**
+- Josephus problem has recursive solution
+- J(n,k) = (J(n-1,k) + k) % n
+- Base case: J(1,k) = 1
+- Key insight for efficiency
+
+### 2. **Iterative Conversion**
+- Convert recursion to iteration
+- Avoid recursion stack overhead
+- Maintain same mathematical logic
+- Crucial for optimization
+
+### 3. **Modulo Arithmetic**
+- Handle circular elimination
+- Use modulo to wrap around
+- Essential for correct calculation
+- Important for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Josephus Problem with Survivors
+**Problem**: Find the last m survivors instead of just one.
+
 ```python
-def handle_modular_result(result, n):
-    return result if result != 0 else n
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is a Josephus problem with recursive solution
-2. **Choose approach**: Use recursive formula for efficiency
-3. **Base case**: Handle n = 1 case
-4. **Recursive case**: Use J(n,k) = (J(n-1,k) + k) % n
-5. **Handle zero result**: If result is 0, return n
-6. **Return result**: Output the position of the last remaining person
-
----
-
-*This analysis shows how to efficiently solve the Josephus problem using recursive formulas.* 
-
-## 🎯 Problem Variations & Related Questions
-
-### 🔄 **Variations of the Original Problem**
-
-#### **Variation 1: Josephus with Different Starting Position**
-**Problem**: Start elimination from a different position instead of position 1.
-```python
-def josephus_different_start(n, k, start_pos):
-    if n == 1:
-        return start_pos
-    
-    # Adjust for different starting position
-    result = (josephus_different_start(n - 1, k, start_pos) + k) % n
-    return result if result != 0 else n
-```
-
-#### **Variation 2: Josephus with Variable Step Size**
-**Problem**: The step size k changes after each elimination.
-```python
-def josephus_variable_step(n, step_function):
-    # step_function(i) returns the step size for the i-th elimination
-    if n == 1:
-        return 1
-    
-    current_step = step_function(n)
-    result = (josephus_variable_step(n - 1, step_function) + current_step) % n
-    return result if result != 0 else n
-
-# Example: step size increases by 1 each time
-def increasing_step(n):
-    return n
-
-# Example: step size doubles each time
-def doubling_step(n):
-    return 2 ** (n - 1)
-```
-
-#### **Variation 3: Josephus with Multiple Survivors**
-**Problem**: Find the positions of the last m survivors instead of just one.
-```python
-def josephus_multiple_survivors(n, k, m):
-    if n <= m:
+def josephus_problem_multiple_survivors(n, k, m):
+    if m >= n:
         return list(range(1, n + 1))
     
-    # Simulate until we have m people left
     people = list(range(1, n + 1))
     index = 0
     
     while len(people) > m:
+        # Eliminate every k-th person
         index = (index + k - 1) % len(people)
         people.pop(index)
     
     return people
 ```
 
-#### **Variation 4: Josephus with Reversal**
-**Problem**: After each elimination, reverse the direction of counting.
+### Variation 2: Josephus Problem with Direction Change
+**Problem**: Change direction after each elimination.
+
 ```python
-def josephus_with_reversal(n, k):
+def josephus_problem_direction_change(n, k):
     people = list(range(1, n + 1))
     index = 0
     direction = 1  # 1 for clockwise, -1 for counterclockwise
     
     while len(people) > 1:
-        # Eliminate every k-th person
+        # Move k steps in current direction
         index = (index + direction * (k - 1)) % len(people)
         people.pop(index)
         
-        # Reverse direction
+        # Change direction
         direction *= -1
     
     return people[0]
 ```
 
-#### **Variation 5: Josephus with Skip Pattern**
-**Problem**: Skip certain positions during elimination (e.g., skip every other position).
+### Variation 3: Josephus Problem with Skip
+**Problem**: Skip m people before eliminating the next person.
+
 ```python
-def josephus_with_skip(n, k, skip_pattern):
-    # skip_pattern is a function that returns True if position should be skipped
+def josephus_problem_with_skip(n, k, skip):
     people = list(range(1, n + 1))
     index = 0
     
     while len(people) > 1:
-        # Find next valid position to eliminate
-        eliminated = False
-        attempts = 0
-        
-        while not eliminated and attempts < len(people):
-            index = (index + k - 1) % len(people)
-            
-            if not skip_pattern(people[index]):
-                people.pop(index)
-                eliminated = True
-            else:
-                index = (index + 1) % len(people)
-                attempts += 1
+        # Skip m people, then eliminate the k-th person
+        index = (index + skip + k - 1) % len(people)
+        people.pop(index)
     
     return people[0]
-
-# Example: Skip even numbers
-def skip_even(pos):
-    return pos % 2 == 0
 ```
 
-### 🔗 **Related Problems & Concepts**
+### Variation 4: Josephus Problem with Weights
+**Problem**: Each person has a weight, eliminate person with minimum weight.
 
-#### **1. Elimination Problems**
-- **Elimination Games**: Games with elimination mechanics
-- **Last Man Standing**: Find the last remaining element
-- **Survivor Problems**: Problems about surviving elements
-- **Elimination Sequences**: Sequences of eliminations
-
-#### **2. Circular Problems**
-- **Circular Arrays**: Arrays arranged in circles
-- **Circular Traversal**: Traversing circular structures
-- **Circular Permutations**: Permutations in circular arrangements
-- **Circular Shifts**: Shifting elements in circles
-
-#### **3. Recursive Problems**
-- **Recursive Sequences**: Sequences defined recursively
-- **Recursive Counting**: Counting using recursion
-- **Recursive Elimination**: Elimination using recursion
-- **Recursive Patterns**: Patterns in recursive problems
-
-#### **4. Mathematical Problems**
-- **Number Theory**: Mathematical properties of numbers
-- **Modular Arithmetic**: Arithmetic with remainders
-- **Sequences**: Mathematical sequences
-- **Patterns**: Mathematical patterns
-
-#### **5. Simulation Problems**
-- **Process Simulation**: Simulating processes step by step
-- **Game Simulation**: Simulating games
-- **Event Simulation**: Simulating events
-- **System Simulation**: Simulating systems
-
-### 🎯 **Competitive Programming Variations**
-
-#### **1. Multiple Test Cases**
 ```python
-t = int(input())
-for _ in range(t):
-    n, k = map(int, input().split())
-    result = find_last_remaining_person(n, k)
-    print(result)
+def josephus_problem_with_weights(n, weights):
+    people = [(i + 1, weights[i]) for i in range(n)]
+    
+    while len(people) > 1:
+        # Find person with minimum weight
+        min_idx = 0
+        for i in range(1, len(people)):
+            if people[i][1] < people[min_idx][1]:
+                min_idx = i
+        
+        # Eliminate this person
+        people.pop(min_idx)
+    
+    return people[0][0]
 ```
 
-#### **2. Range Queries**
+### Variation 5: Dynamic Josephus Problem
+**Problem**: Support adding/removing people dynamically.
+
 ```python
-# Precompute Josephus results for different n and k values
-def precompute_josephus(max_n, max_k):
-    dp = {}
+class DynamicJosephus:
+    def __init__(self):
+        self.people = []
+        self.n = 0
     
-    for n in range(1, max_n + 1):
-        for k in range(1, max_k + 1):
-            dp[(n, k)] = find_last_remaining_person(n, k)
+    def add_person(self, person_id):
+        self.people.append(person_id)
+        self.n += 1
+        return self.get_last_survivor()
     
-    return dp
-
-# Answer queries efficiently
-def josephus_query(dp, n, k):
-    return dp.get((n, k), find_last_remaining_person(n, k))
+    def remove_person(self, person_id):
+        if person_id in self.people:
+            self.people.remove(person_id)
+            self.n -= 1
+        return self.get_last_survivor()
+    
+    def get_last_survivor(self, k=2):
+        if self.n == 0:
+            return None
+        if self.n == 1:
+            return self.people[0]
+        
+        # Use iterative formula
+        result = 0
+        for i in range(2, self.n + 1):
+            result = (result + k) % i
+        
+        survivor_pos = result
+        return self.people[survivor_pos] if survivor_pos < self.n else self.people[0]
 ```
 
-#### **3. Interactive Problems**
-```python
-# Interactive Josephus game
-def interactive_josephus():
-    print("Welcome to the Josephus Problem!")
-    
-    while True:
-        n = int(input("Enter number of people (or 0 to exit): "))
-        if n == 0:
-            break
-        
-        k = int(input("Enter step size: "))
-        
-        if n < 1 or k < 1:
-            print("Invalid input!")
-            continue
-        
-        result = find_last_remaining_person(n, k)
-        print(f"Last remaining person: {result}")
-        
-        # Show simulation
-        people = list(range(1, n + 1))
-        index = 0
-        step = 1
-        
-        print("Elimination sequence:")
-        while len(people) > 1:
-            index = (index + k - 1) % len(people)
-            eliminated = people.pop(index)
-            print(f"Step {step}: Eliminated person {eliminated}")
-            step += 1
-        
-        print(f"Final survivor: {people[0]}")
-```
+## 🔗 Related Problems
 
-### 🧮 **Mathematical Extensions**
+- **[Josephus Problem I](/cses-analyses/problem_soulutions/sorting_and_searching/josephus_problem_i_analysis)**: Special case with k=2
+- **[Gray Code](/cses-analyses/problem_soulutions/introductory_problems/gray_code_analysis)**: Bit manipulation
+- **[Bit Strings](/cses-analyses/problem_soulutions/introductory_problems/bit_strings_analysis)**: Binary representation
 
-#### **1. Number Theory**
-- **Modular Arithmetic**: Mathematical foundation for Josephus
-- **Number Sequences**: Sequences in Josephus problems
-- **Prime Numbers**: Properties related to prime steps
-- **Divisibility**: Divisibility properties in Josephus
+## 📚 Learning Points
 
-#### **2. Combinatorics**
-- **Permutations**: Arrangements in Josephus problems
-- **Combinations**: Combinations of eliminations
-- **Counting**: Counting elimination sequences
-- **Partitions**: Partitioning people into groups
-
-#### **3. Recurrence Relations**
-- **Linear Recurrences**: Linear recurrence in Josephus
-- **Non-linear Recurrences**: Non-linear recurrence variations
-- **Recurrence Solutions**: Solving recurrence relations
-- **Recurrence Patterns**: Patterns in recurrence relations
-
-### 📚 **Learning Resources**
-
-#### **1. Related Algorithms**
-- **Recursive Algorithms**: Core technique for Josephus
-- **Iterative Algorithms**: Alternative approach
-- **Simulation Algorithms**: Direct simulation approach
-- **Mathematical Algorithms**: Mathematical solutions
-
-#### **2. Mathematical Concepts**
-- **Modular Arithmetic**: Essential for Josephus problems
-- **Recurrence Relations**: Mathematical foundation
-- **Number Theory**: Properties of numbers
-- **Combinatorics**: Counting and arrangements
-
-#### **3. Programming Concepts**
-- **Recursion**: Core programming technique
-- **Simulation**: Step-by-step simulation
-- **Data Structures**: Efficient data structures
-- **Algorithm Design**: Problem-solving strategies
+1. **Recursive Thinking**: Break down problems into smaller subproblems
+2. **Iterative Conversion**: Convert recursion to iteration for efficiency
+3. **Modulo Arithmetic**: Handle circular structures and wrapping
+4. **Mathematical Patterns**: Recognize and use mathematical formulas
 
 ---
 
-*This analysis demonstrates efficient Josephus problem solving techniques and shows various extensions for elimination problems.* 
+**This is a great introduction to recursive problem-solving and mathematical patterns!** 🎯 

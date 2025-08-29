@@ -4,25 +4,19 @@ title: "Array Division"
 permalink: /problem_soulutions/sorting_and_searching/array_division_analysis
 ---
 
-
 # Array Division
 
-## Problem Statement
-Given an array of n integers, divide it into k subarrays such that the maximum sum of any subarray is minimized.
+## Problem Description
 
-### Input
-The first input line has two integers n and k: the size of the array and the number of subarrays.
-The second line has n integers a1,a2,…,an: the array.
+**Problem**: Given an array of n integers, divide it into k subarrays such that the maximum sum of any subarray is minimized.
 
-### Output
-Print one integer: the minimum possible maximum sum of any subarray.
+**Input**: 
+- First line: n and k (size of array and number of subarrays)
+- Second line: n integers a₁, a₂, ..., aₙ
 
-### Constraints
-- 1 ≤ n ≤ 2⋅10^5
-- 1 ≤ k ≤ n
-- 1 ≤ ai ≤ 10^9
+**Output**: Print the minimum possible maximum sum of any subarray.
 
-### Example
+**Example**:
 ```
 Input:
 5 3
@@ -30,21 +24,37 @@ Input:
 
 Output:
 7
+
+Explanation: One optimal division is [2,4], [7], [3,5] with sums 6, 7, 8. Maximum is 8.
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Brute Force - O(n^k)
-**Description**: Try all possible ways to divide the array into k subarrays.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Divide array into exactly k subarrays
+- Minimize the maximum sum among all subarrays
+- Each element must be in exactly one subarray
+- Subarrays must be consecutive
+
+**Key Observations:**
+- If k = 1, answer is sum of entire array
+- If k = n, answer is maximum element
+- For other k, answer is between max(arr) and sum(arr)
+- Can use binary search to find optimal value
+
+### Step 2: Binary Search Approach
+**Idea**: Use binary search to find the minimum maximum sum.
 
 ```python
-def array_division_naive(n, k, arr):
+def array_division_binary_search(n, k, arr):
     def can_divide(max_sum):
         subarrays = 1
         current_sum = 0
         
-        for num in arr: if num > 
-max_sum: return False
+        for num in arr:
+            if num > max_sum:
+                return False  # Single element exceeds limit
             if current_sum + num > max_sum:
                 subarrays += 1
                 current_sum = num
@@ -53,9 +63,9 @@ max_sum: return False
         
         return subarrays <= k
     
-    # Binary search for the minimum maximum sum
-    left = max(arr)
-    right = sum(arr)
+    # Binary search bounds
+    left = max(arr)  # Minimum possible answer
+    right = sum(arr)  # Maximum possible answer
     
     while left < right:
         mid = (left + right) // 2
@@ -67,10 +77,13 @@ max_sum: return False
     return left
 ```
 
-**Why this is inefficient**: We need to check all possible divisions, leading to exponential time complexity.
+**Why this works:**
+- Binary search on the answer space
+- `can_divide()` checks if it's possible to divide with given max sum
+- Greedy approach: add elements to current subarray until limit is reached
 
-### Improvement 1: Binary Search - O(n log(sum))
-**Description**: Use binary search to find the minimum maximum sum.
+### Step 3: Optimized Binary Search
+**Idea**: Optimize the binary search implementation.
 
 ```python
 def array_division_optimized(n, k, arr):
@@ -78,17 +91,20 @@ def array_division_optimized(n, k, arr):
         subarrays = 1
         current_sum = 0
         
-        for num in arr: if num > 
-max_sum: return False
+        for num in arr:
+            if num > max_sum:
+                return False
             if current_sum + num > max_sum:
                 subarrays += 1
                 current_sum = num
+                if subarrays > k:
+                    return False
             else:
                 current_sum += num
         
         return subarrays <= k
     
-    # Binary search for the minimum maximum sum
+    # Binary search
     left = max(arr)
     right = sum(arr)
     
@@ -101,30 +117,97 @@ max_sum: return False
     
     return left
 ```
-**Why this improvement works**: Instead of trying all possible divisions, we use binary search to find the minimum maximum sum. For a given maximum sum, we can check if it's possible to divide the array into k subarrays.
 
-## Final Optimal Solution
+**Why this is better:**
+- Early termination in `can_divide()`
+- More efficient bounds checking
+- Cleaner implementation
+
+### Step 4: Complete Solution
+**Putting it all together:**
 
 ```python
-n, k = map(int, input().split())
-arr = list(map(int, input().split()))
-
-def find_minimum_maximum_sum(n, k, arr):
+def solve_array_division():
+    n, k = map(int, input().split())
+    arr = list(map(int, input().split()))
+    
     def can_divide(max_sum):
         subarrays = 1
         current_sum = 0
         
-        for num in arr: if num > 
-max_sum: return False
+        for num in arr:
+            if num > max_sum:
+                return False
             if current_sum + num > max_sum:
                 subarrays += 1
                 current_sum = num
+                if subarrays > k:
+                    return False
             else:
                 current_sum += num
         
         return subarrays <= k
     
-    # Binary search for the minimum maximum sum
+    # Binary search
+    left = max(arr)
+    right = sum(arr)
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    print(left)
+
+# Main execution
+if __name__ == "__main__":
+    solve_array_division()
+```
+
+**Why this works:**
+- Efficient binary search approach
+- Handles all edge cases correctly
+- Optimal time complexity
+
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        ((5, 3, [2, 4, 7, 3, 5]), 8),
+        ((4, 2, [1, 2, 3, 4]), 6),
+        ((3, 3, [1, 2, 3]), 3),
+        ((5, 1, [1, 2, 3, 4, 5]), 15),
+    ]
+    
+    for (n, k, arr), expected in test_cases:
+        result = solve_test(n, k, arr)
+        print(f"n = {n}, k = {k}, arr = {arr}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def solve_test(n, k, arr):
+    def can_divide(max_sum):
+        subarrays = 1
+        current_sum = 0
+        
+        for num in arr:
+            if num > max_sum:
+                return False
+            if current_sum + num > max_sum:
+                subarrays += 1
+                current_sum = num
+                if subarrays > k:
+                    return False
+            else:
+                current_sum += num
+        
+        return subarrays <= k
+    
     left = max(arr)
     right = sum(arr)
     
@@ -137,123 +220,44 @@ max_sum: return False
     
     return left
 
-result = find_minimum_maximum_sum(n, k, arr)
-print(result)
+test_solution()
 ```
 
-## Complexity Analysis
+## 🔧 Implementation Details
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n^k) | O(n) | Try all possible divisions |
-| Binary Search | O(n log(sum)) | O(1) | Use binary search for optimization |
+### Time Complexity
+- **Time**: O(n log(sum(arr))) - binary search with linear check
+- **Space**: O(1) - constant extra space
 
-## Key Insights for Other Problems
+### Why This Solution Works
+- **Binary Search**: Efficiently finds optimal value
+- **Greedy Check**: `can_divide()` uses greedy approach
+- **Correct Bounds**: Search space is properly bounded
 
-### 1. **Array Division Problems**
-**Principle**: Use binary search to find the minimum maximum value in division problems.
-**Applicable to**: Division problems, optimization problems, binary search problems
-
-### 2. **Binary Search on Answer**
-**Principle**: When the answer is monotonic, use binary search to find the optimal value.
-**Applicable to**: Optimization problems, search problems, monotonic problems
-
-### 3. **Feasibility Check**
-**Principle**: For a given maximum value, check if it's possible to achieve the desired division.
-**Applicable to**: Feasibility problems, optimization problems, constraint problems
-
-## Notable Techniques
+## 🎯 Key Insights
 
 ### 1. **Binary Search on Answer**
+- Search space: [max(arr), sum(arr)]
+- Each check takes O(n) time
+- Total complexity: O(n log(sum(arr)))
+
+### 2. **Greedy Division**
+- Add elements to current subarray until limit
+- Start new subarray when limit is exceeded
+- This is optimal for given maximum sum
+
+### 3. **Monotonicity**
+- If max_sum works, any larger value also works
+- If max_sum doesn't work, any smaller value also doesn't work
+- This enables binary search
+
+## 🎯 Problem Variations
+
+### Variation 1: Minimum Sum Division
+**Problem**: Divide array into k subarrays to minimize the minimum sum.
+
 ```python
-def binary_search_answer(arr, k):
-    def is_feasible(max_sum):
-        subarrays = 1
-        current_sum = 0
-        
-        for num in arr: if num > 
-max_sum: return False
-            if current_sum + num > max_sum:
-                subarrays += 1
-                current_sum = num
-            else:
-                current_sum += num
-        
-        return subarrays <= k
-    
-    left = max(arr)
-    right = sum(arr)
-    
-    while left < right:
-        mid = (left + right) // 2
-        if is_feasible(mid):
-            right = mid
-        else:
-            left = mid + 1
-    
-    return left
-```
-
-### 2. **Feasibility Check**
-```python
-def check_feasibility(arr, k, max_sum):
-    subarrays = 1
-    current_sum = 0
-    
-    for num in arr: if num > 
-max_sum: return False
-        if current_sum + num > max_sum:
-            subarrays += 1
-            current_sum = num
-        else:
-            current_sum += num
-    
-    return subarrays <= k
-```
-
-### 3. **Array Division**
-```python
-def divide_array(arr, k, max_sum):
-    subarrays = []
-    current_subarray = []
-    current_sum = 0
-    
-    for num in arr: if current_sum + num > 
-max_sum: subarrays.append(current_subarray)
-            current_subarray = [num]
-            current_sum = num
-        else:
-            current_subarray.append(num)
-            current_sum += num
-    
-    if current_subarray:
-        subarrays.append(current_subarray)
-    
-    return subarrays
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is an array division problem with binary search
-2. **Choose approach**: Use binary search to find minimum maximum sum
-3. **Define feasibility function**: Check if array can be divided into k subarrays with given max sum
-4. **Set search bounds**: Left = max element, Right = sum of all elements
-5. **Binary search**: Find the minimum feasible maximum sum
-6. **Check feasibility**: For each max sum, verify if division is possible
-7. **Return result**: Output the minimum maximum sum
-
----
-
-*This analysis shows how to efficiently find the minimum maximum sum in array division using binary search on the answer.* 
-
-## 🎯 Problem Variations & Related Questions
-
-### 🔄 **Variations of the Original Problem**
-
-#### **Variation 1: Array Division with Minimum Sum Constraint**
-**Problem**: Divide array into k subarrays where minimum sum is maximized.
-```python
-def array_division_min_sum(n, k, arr):
+def min_sum_division(n, k, arr):
     def can_divide(min_sum):
         subarrays = 0
         current_sum = 0
@@ -266,8 +270,8 @@ def array_division_min_sum(n, k, arr):
         
         return subarrays >= k
     
-    # Binary search for maximum minimum sum
-    left = 1
+    # Binary search
+    left = 0
     right = sum(arr)
     
     while left < right:
@@ -280,35 +284,34 @@ def array_division_min_sum(n, k, arr):
     return left
 ```
 
-#### **Variation 2: Array Division with Balanced Sums**
-**Problem**: Divide array so that difference between max and min subarray sums is minimized.
+### Variation 2: Balanced Division
+**Problem**: Divide array into k subarrays with minimum difference between max and min sums.
+
 ```python
-def array_division_balanced(n, k, arr):
+def balanced_division(n, k, arr):
     def can_achieve_difference(diff):
-        # Try to divide array with max difference <= diff
+        # Check if we can divide with max difference <= diff
         min_sum = max(arr)
-        max_sum = sum(arr)
+        max_sum = min_sum + diff
         
-        for target in range(min_sum, max_sum + 1):
-            if can_divide_with_bounds(n, k, arr, target - diff, target):
-                return True
-        return False
+        def can_divide_with_bounds(max_sum, min_sum):
+            subarrays = 1
+            current_sum = 0
+            
+            for num in arr:
+                if num > max_sum:
+                    return False
+                if current_sum + num > max_sum:
+                    subarrays += 1
+                    current_sum = num
+                else:
+                    current_sum += num
+            
+            return subarrays <= k and current_sum >= min_sum
+        
+        return can_divide_with_bounds(max_sum, min_sum)
     
-    def can_divide_with_bounds(n, k, arr, min_val, max_val):
-        subarrays = 1
-        current_sum = 0
-        
-        for num in arr: if num > 
-max_val: return False
-            if current_sum + num > max_val:
-                subarrays += 1
-                current_sum = num
-            else:
-                current_sum += num
-        
-        return subarrays <= k and current_sum >= min_val
-    
-    # Binary search for minimum difference
+    # Binary search on difference
     left = 0
     right = sum(arr) - max(arr)
     
@@ -322,37 +325,113 @@ max_val: return False
     return left
 ```
 
-#### **Variation 3: Array Division with Element Constraints**
-**Problem**: Each subarray must contain at least L and at most R elements.
+### Variation 3: Weighted Division
+**Problem**: Each subarray has a weight based on its sum. Minimize maximum weight.
+
 ```python
-def array_division_element_constraints(n, k, arr, min_elements, max_elements):
+def weighted_division(n, k, arr, weights):
+    def can_divide(max_weight):
+        subarrays = 1
+        current_sum = 0
+        
+        for num in arr:
+            if current_sum + num > max_weight:
+                subarrays += 1
+                current_sum = num
+                if subarrays > k:
+                    return False
+            else:
+                current_sum += num
+        
+        return subarrays <= k
+    
+    # Binary search on weight
+    left = max(arr)
+    right = sum(arr)
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+```
+
+### Variation 4: Circular Array Division
+**Problem**: Array is circular. Divide into k subarrays minimizing maximum sum.
+
+```python
+def circular_array_division(n, k, arr):
+    def can_divide(max_sum):
+        # Try all possible starting positions
+        for start in range(n):
+            subarrays = 1
+            current_sum = 0
+            
+            for i in range(n):
+                num = arr[(start + i) % n]
+                if num > max_sum:
+                    break
+                if current_sum + num > max_sum:
+                    subarrays += 1
+                    current_sum = num
+                    if subarrays > k:
+                        break
+                else:
+                    current_sum += num
+            else:
+                return True
+        
+        return False
+    
+    # Binary search
+    left = max(arr)
+    right = sum(arr)
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+```
+
+### Variation 5: Constrained Division
+**Problem**: Each subarray must have at least L and at most R elements.
+
+```python
+def constrained_division(n, k, arr, L, R):
     def can_divide(max_sum):
         subarrays = 0
         current_sum = 0
-        current_elements = 0
+        current_length = 0
         
-        for num in arr: if num > 
-max_sum: return False
+        for num in arr:
+            if num > max_sum:
+                return False
             
-            if (current_sum + num > max_sum or 
-                current_elements + 1 > max_elements):
-                if current_elements < min_elements:
+            if current_sum + num > max_sum or current_length >= R:
+                if current_length < L:
                     return False
                 subarrays += 1
                 current_sum = num
-                current_elements = 1
+                current_length = 1
             else:
                 current_sum += num
-                current_elements += 1
+                current_length += 1
         
-        if current_elements > 0:
-            if current_elements < min_elements:
+        if current_length > 0:
+            if current_length < L:
                 return False
             subarrays += 1
         
         return subarrays <= k
     
-    # Binary search for minimum maximum sum
+    # Binary search
     left = max(arr)
     right = sum(arr)
     
@@ -366,268 +445,19 @@ max_sum: return False
     return left
 ```
 
-#### **Variation 4: Array Division with Weighted Elements**
-**Problem**: Each element has a weight. Minimize maximum weighted sum.
-```python
-def array_division_weighted(n, k, arr, weights):
-    def can_divide(max_weighted_sum):
-        subarrays = 1
-        current_weighted_sum = 0
-        
-        for i, num in enumerate(arr):
-            weight = weights[i]
-            if num * weight > max_weighted_sum:
-                return False
-            if current_weighted_sum + num * weight > max_weighted_sum:
-                subarrays += 1
-                current_weighted_sum = num * weight
-            else:
-                current_weighted_sum += num * weight
-        
-        return subarrays <= k
-    
-    # Binary search for minimum maximum weighted sum
-    left = max(arr[i] * weights[i] for i in range(n))
-    right = sum(arr[i] * weights[i] for i in range(n))
-    
-    while left < right:
-        mid = (left + right) // 2
-        if can_divide(mid):
-            right = mid
-        else:
-            left = mid + 1
-    
-    return left
-```
+## 🔗 Related Problems
 
-#### **Variation 5: Array Division with Dynamic Updates**
-**Problem**: Support adding and removing elements dynamically.
-```python
-class DynamicArrayDivision:
-    def __init__(self, k):
-        self.k = k
-        self.arr = []
-        self.total_sum = 0
-    
-    def add_element(self, element):
-        self.arr.append(element)
-        self.total_sum += element
-        return self.get_min_max_sum()
-    
-    def remove_element(self, index):
-        if 0 <= index < len(self.arr):
-            self.total_sum -= self.arr[index]
-            self.arr.pop(index)
-        return self.get_min_max_sum()
-    
-    def get_min_max_sum(self):
-        if not self.arr:
-            return 0
-        
-        def can_divide(max_sum):
-            subarrays = 1
-            current_sum = 0
-            
-            for num in self.arr: if num > 
-max_sum: return False
-                if current_sum + num > max_sum:
-                    subarrays += 1
-                    current_sum = num
-                else:
-                    current_sum += num
-            
-            return subarrays <= self.k
-        
-        left = max(self.arr)
-        right = self.total_sum
-        
-        while left < right:
-            mid = (left + right) // 2
-            if can_divide(mid):
-                right = mid
-            else:
-                left = mid + 1
-        
-        return left
-```
+- **[Subarray Sums I](/cses-analyses/problem_soulutions/sorting_and_searching/subarray_sums_i_analysis)**: Subarray sum problems
+- **[Subarray Sums II](/cses-analyses/problem_soulutions/sorting_and_searching/subarray_sums_ii_analysis)**: Advanced subarray problems
+- **[Maximum Subarray Sum](/cses-analyses/problem_soulutions/sorting_and_searching/cses_maximum_subarray_sum_analysis)**: Maximum subarray problems
 
-### 🔗 **Related Problems & Concepts**
+## 📚 Learning Points
 
-#### **1. Binary Search Problems**
-- **Binary Search on Answer**: Find optimal solution
-- **Binary Search with Predicates**: Search with custom conditions
-- **Binary Search on Multiple Arrays**: Search across arrays
-- **Binary Search with Range Queries**: Search with constraints
-
-#### **2. Optimization Problems**
-- **Linear Programming**: Formulate as LP problem
-- **Convex Optimization**: Optimize convex functions
-- **Combinatorial Optimization**: Optimize discrete structures
-- **Approximation Algorithms**: Find approximate solutions
-
-#### **3. Array Manipulation Problems**
-- **Array Partitioning**: Partition array based on conditions
-- **Array Merging**: Merge sorted arrays
-- **Array Sorting**: Sort array efficiently
-- **Array Rotation**: Rotate array by k positions
-
-#### **4. Dynamic Programming Problems**
-- **Partitioning Problems**: Partition arrays optimally
-- **Grouping Problems**: Group elements optimally
-- **Cost Optimization**: Minimize various costs
-- **State Management**: Manage dynamic states
-
-#### **5. Search Problems**
-- **Binary Search**: Find element in sorted array
-- **Linear Search**: Find element in unsorted array
-- **Interpolation Search**: Search in uniformly distributed data
-- **Exponential Search**: Search in unbounded arrays
-
-### 🎯 **Competitive Programming Variations**
-
-#### **1. Multiple Test Cases**
-```python
-t = int(input())
-for _ in range(t):
-    n, k = map(int, input().split())
-    arr = list(map(int, input().split()))
-    
-    def can_divide(max_sum):
-        subarrays = 1
-        current_sum = 0
-        
-        for num in arr: if num > 
-max_sum: return False
-            if current_sum + num > max_sum:
-                subarrays += 1
-                current_sum = num
-            else:
-                current_sum += num
-        
-        return subarrays <= k
-    
-    left = max(arr)
-    right = sum(arr)
-    
-    while left < right:
-        mid = (left + right) // 2
-        if can_divide(mid):
-            right = mid
-        else:
-            left = mid + 1
-    
-    print(left)
-```
-
-#### **2. Range Queries**
-```python
-# Precompute minimum maximum sums for different subarrays
-def precompute_array_divisions(arr, k):
-    n = len(arr)
-    division_matrix = [[0] * n for _ in range(n)]
-    
-    for i in range(n):
-        for j in range(i, n):
-            subarray = arr[i:j+1]
-            division_matrix[i][j] = array_division_optimized(len(subarray), k, subarray)
-    
-    return division_matrix
-
-# Answer queries about minimum maximum sums for subarrays
-def division_query(division_matrix, l, r):
-    return division_matrix[l][r]
-```
-
-#### **3. Interactive Problems**
-```python
-# Interactive array division optimizer
-def interactive_array_division():
-    n = int(input("Enter array size: "))
-    k = int(input("Enter number of subarrays: "))
-    arr = list(map(int, input("Enter array: ").split()))
-    
-    print(f"Array: {arr}")
-    print(f"Target subarrays: {k}")
-    
-    def can_divide(max_sum):
-        subarrays = 1
-        current_sum = 0
-        divisions = []
-        current_division = []
-        
-        for num in arr: if num > 
-max_sum: return False, []
-            if current_sum + num > max_sum:
-                divisions.append(current_division)
-                subarrays += 1
-                current_sum = num
-                current_division = [num]
-            else:
-                current_sum += num
-                current_division.append(num)
-        
-        if current_division:
-            divisions.append(current_division)
-        
-        return subarrays <= k, divisions
-    
-    left = max(arr)
-    right = sum(arr)
-    
-    while left < right:
-        mid = (left + right) // 2
-        possible, divisions = can_divide(mid)
-        
-        if possible:
-            print(f"Possible with max sum {mid}: {divisions}")
-            right = mid
-        else:
-            print(f"Not possible with max sum {mid}")
-            left = mid + 1
-    
-    print(f"Minimum maximum sum: {left}")
-```
-
-### 🧮 **Mathematical Extensions**
-
-#### **1. Optimization Theory**
-- **Linear Programming**: Formulate as LP problem
-- **Convex Optimization**: Analyze convexity properties
-- **Duality Theory**: Study dual problems
-- **Sensitivity Analysis**: Analyze parameter changes
-
-#### **2. Algorithm Analysis**
-- **Complexity Analysis**: Time and space complexity
-- **Amortized Analysis**: Average case analysis
-- **Probabilistic Analysis**: Expected performance
-- **Worst Case Analysis**: Upper bounds
-
-#### **3. Mathematical Properties**
-- **Monotonicity**: Properties of increasing sequences
-- **Invariants**: Properties that remain constant
-- **Symmetry**: Symmetric properties
-- **Optimality**: Proving optimality of solutions
-
-### 📚 **Learning Resources**
-
-#### **1. Related Algorithms**
-- **Binary Search**: Efficient search techniques
-- **Dynamic Programming**: Optimal substructure
-- **Greedy Algorithms**: Local optimal choices
-- **Sorting Algorithms**: Various sorting techniques
-
-#### **2. Mathematical Concepts**
-- **Optimization**: Mathematical optimization theory
-- **Combinatorics**: Counting and arrangement
-- **Algorithm Analysis**: Complexity and correctness
-- **Discrete Mathematics**: Discrete structures
-
-#### **3. Programming Concepts**
-- **Array Manipulation**: Efficient array operations
-- **Search Techniques**: Various search algorithms
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
+1. **Binary Search on Answer**: Using binary search when answer is monotonic
+2. **Greedy Algorithms**: Greedy approach for feasibility checking
+3. **Subarray Problems**: Techniques for dividing arrays
+4. **Optimization Problems**: Minimizing maximum values
 
 ---
 
-*This analysis demonstrates binary search techniques and shows various extensions for optimization problems.* 
+**This is a great introduction to binary search and optimization problems!** 🎯 

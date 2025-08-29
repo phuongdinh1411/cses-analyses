@@ -1,38 +1,73 @@
 ---
 layout: simple
-title: "Palindrome Reorder Analysis"
+title: "Palindrome Reorder"
 permalink: /problem_soulutions/introductory_problems/palindrome_reorder_analysis
 ---
 
-
-# Palindrome Reorder Analysis
+# Palindrome Reorder
 
 ## Problem Description
 
-Given a string, determine if it can be rearranged to form a palindrome. If possible, output one such palindrome; otherwise, output "NO SOLUTION".
+**Problem**: Given a string, determine if it can be rearranged to form a palindrome. If possible, output one such palindrome; otherwise, output "NO SOLUTION".
 
-## Key Insights
+**Input**: A string s (1 ≤ |s| ≤ 10⁶)
 
-### 1. Palindrome Properties
-- **Even length**: All characters must appear even number of times
-- **Odd length**: All characters except one must appear even number of times
-- **Character frequency**: Count occurrences of each character
+**Output**: A palindrome if possible, or "NO SOLUTION".
 
-### 2. Feasibility Check
-- Count frequency of each character
-- For even length: all frequencies must be even
-- For odd length: exactly one frequency must be odd
+**Example**:
+```
+Input: AAAACACBA
 
-### 3. Construction Strategy
-- Use half of each character pair for first half
-- Place odd character in middle (if exists)
-- Mirror the first half for second half
+Output: AAACBCAAA
 
-## Solution Approach
+Explanation: The string can be rearranged to form the palindrome "AAACBCAAA".
+```
 
-### Method 1: Frequency Counting
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Check if a string can be rearranged into a palindrome
+- If possible, construct one such palindrome
+- If not possible, return "NO SOLUTION"
+
+**Key Observations:**
+- Palindrome reads the same forwards and backwards
+- Character frequencies determine feasibility
+- Even length: all characters must have even frequency
+- Odd length: exactly one character can have odd frequency
+
+### Step 2: Feasibility Check
+**Idea**: Count character frequencies and check if palindrome is possible.
+
 ```python
-def palindrome_reorder(s):
+def check_palindrome_feasibility(s):
+    freq = [0] * 26
+    
+    # Count character frequencies
+    for c in s:
+        freq[ord(c) - ord('A')] += 1
+    
+    # Count odd frequencies
+    odd_count = sum(1 for f in freq if f % 2 == 1)
+    
+    # Check feasibility
+    if odd_count > 1:
+        return False  # Cannot form palindrome
+    
+    return True  # Can form palindrome
+```
+
+**Why this works:**
+- Count frequency of each character
+- For palindrome, at most one character can have odd frequency
+- If more than one odd frequency, palindrome is impossible
+
+### Step 3: Palindrome Construction
+**Idea**: Build the palindrome using character frequencies.
+
+```python
+def construct_palindrome(s):
     freq = [0] * 26
     
     # Count character frequencies
@@ -41,7 +76,6 @@ def palindrome_reorder(s):
     
     # Check feasibility
     odd_count = sum(1 for f in freq if f % 2 == 1)
-    
     if odd_count > 1:
         return "NO SOLUTION"
     
@@ -61,214 +95,318 @@ def palindrome_reorder(s):
     return first_half + middle + second_half
 ```
 
-### Method 2: Two Pointers Approach
+**Why this works:**
+- Use half of each character pair for first half
+- Place odd character in middle (if exists)
+- Mirror first half for second half
+
+### Step 4: Complete Solution
+**Putting it all together:**
+
 ```python
-def palindrome_reorder_two_pointers(s):
+def solve_palindrome_reorder():
+    s = input().strip()
+    
     freq = [0] * 26
     
-    # Count frequencies
+    # Count character frequencies
     for c in s:
         freq[ord(c) - ord('A')] += 1
     
     # Check feasibility
     odd_count = sum(1 for f in freq if f % 2 == 1)
+    if odd_count > 1:
+        print("NO SOLUTION")
+        return
     
+    # Construct palindrome
+    first_half = ""
+    middle = ""
+    
+    for i in range(26):
+        if freq[i] > 0:
+            if freq[i] % 2 == 1:
+                middle = chr(ord('A') + i)
+                freq[i] -= 1
+            first_half += chr(ord('A') + i) * (freq[i] // 2)
+    
+    second_half = first_half[::-1]
+    
+    print(first_half + middle + second_half)
+
+# Main execution
+if __name__ == "__main__":
+    solve_palindrome_reorder()
+```
+
+**Why this works:**
+- Efficient frequency counting approach
+- Handles all cases correctly
+- Constructs palindrome systematically
+
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        ("AAAACACBA", "AAACBCAAA"),
+        ("AAB", "ABA"),
+        ("ABC", "NO SOLUTION"),
+        ("AAAA", "AAAA"),
+        ("A", "A"),
+    ]
+    
+    for s, expected in test_cases:
+        result = solve_test(s)
+        print(f"Input: '{s}'")
+        print(f"Expected: '{expected}', Got: '{result}'")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def solve_test(s):
+    freq = [0] * 26
+    
+    # Count character frequencies
+    for c in s:
+        freq[ord(c) - ord('A')] += 1
+    
+    # Check feasibility
+    odd_count = sum(1 for f in freq if f % 2 == 1)
     if odd_count > 1:
         return "NO SOLUTION"
     
-    # Use two pointers to construct
-    result = [''] * len(s)
-    left, right = 0, len(s) - 1
+    # Construct palindrome
+    first_half = ""
+    middle = ""
     
     for i in range(26):
-        if freq[i] % 2 == 1:
-            # Place odd character in middle
-            result[len(s) // 2] = chr(ord('A') + i)
-            freq[i] -= 1
-        
-        # Place pairs symmetrically
-        while freq[i] > 0:
-            result[left] = chr(ord('A') + i)
-            result[right] = chr(ord('A') + i)
-            left += 1
-            right -= 1
-            freq[i] -= 2
+        if freq[i] > 0:
+            if freq[i] % 2 == 1:
+                middle = chr(ord('A') + i)
+                freq[i] -= 1
+            first_half += chr(ord('A') + i) * (freq[i] // 2)
     
-    return ''.join(result)
+    second_half = first_half[::-1]
+    
+    return first_half + middle + second_half
+
+test_solution()
 ```
 
-### Method 3: Greedy Construction
-```python
-def palindrome_reorder_greedy(s):
-    from collections import Counter
-    
-    freq = Counter(s)
-    
-    # Find odd character
-    odd_char = None
-    for c, count in freq.items():
-        if count % 2 == 1:
-```
-            if (odd_char != 0) {
-                return "NO SOLUTION";
-            }
-            odd_char = c;
-        }
-    }
-    
-    // Construct palindrome
-    string result;
-    
-    // Add first half
-    for (auto& [c, count] : freq) {
-        result += string(count / 2, c);
-    }
-    
-    // Add middle character if exists
-    if (odd_char != 0) {
-        result += odd_char;
-    }
-    
-    // Add second half (reverse of first half)
-    string first_half = result.substr(0, result.length() - (odd_char != 0 ? 1 : 0));
-    reverse(first_half.begin(), first_half.end());
-    result += first_half;
-    
-    return result;
-}
-```
+## 🔧 Implementation Details
 
-## Time Complexity
+### Time Complexity
 - **Time**: O(n) - where n is string length
 - **Space**: O(1) - constant space for frequency array
 
-## Example Walkthrough
+### Why This Solution Works
+- **Efficient**: Linear time complexity
+- **Complete**: Handles all cases including edge cases
+- **Correct**: Follows palindrome properties
 
-**Input**: "AABBC"
+## 🎯 Key Insights
 
-**Process**:
-1. Count frequencies: A=2, B=2, C=1
-2. Check feasibility: 1 odd frequency (C) ✓
-3. Construct first half: "AB"
-4. Add middle: "ABC"
-5. Add second half: "ABCBA"
+### 1. **Palindrome Properties**
+- Reads the same forwards and backwards
+- Character frequencies determine feasibility
+- At most one character can have odd frequency
 
-**Output**: "ABCBA"
+### 2. **Frequency Analysis**
+- Count occurrences of each character
+- Check if palindrome is possible
+- Use frequencies to construct palindrome
 
-## Problem Variations
+### 3. **Construction Strategy**
+- Use half of each character pair for first half
+- Place odd character in middle (if exists)
+- Mirror first half for second half
 
-### Variation 1: Lexicographically Smallest
-**Problem**: Find lexicographically smallest palindrome.
+## 🎯 Problem Variations
 
-**Approach**: Sort characters before constructing.
+### Variation 1: Lexicographically Smallest Palindrome
+**Problem**: Find the lexicographically smallest palindrome.
+
+```python
+def lexicographically_smallest_palindrome(s):
+    freq = [0] * 26
+    
+    # Count character frequencies
+    for c in s:
+        freq[ord(c) - ord('A')] += 1
+    
+    # Check feasibility
+    odd_count = sum(1 for f in freq if f % 2 == 1)
+    if odd_count > 1:
+        return "NO SOLUTION"
+    
+    # Construct lexicographically smallest palindrome
+    first_half = ""
+    middle = ""
+    
+    for i in range(26):
+        if freq[i] > 0:
+            if freq[i] % 2 == 1:
+                middle = chr(ord('A') + i)
+                freq[i] -= 1
+            first_half += chr(ord('A') + i) * (freq[i] // 2)
+    
+    second_half = first_half[::-1]
+    
+    return first_half + middle + second_half
+```
 
 ### Variation 2: All Possible Palindromes
 **Problem**: Generate all possible palindromes.
 
-**Approach**: Use backtracking with permutations.
-
-### Variation 3: Minimum Operations
-**Problem**: Find minimum swaps to make palindrome.
-
-**Approach**: Use greedy approach with inversions.
-
-### Variation 4: Weighted Characters
-**Problem**: Each character has a weight. Find minimum weight palindrome.
-
-**Approach**: Use dynamic programming.
-
-### Variation 5: Constrained Positions
-**Problem**: Some positions must have specific characters.
-
-**Approach**: Modify construction to respect constraints.
-
-### Variation 6: Different Alphabets
-**Problem**: Use different character sets (digits, symbols).
-
-**Solution**: Extend frequency counting to larger alphabet.
-
-## Advanced Optimizations
-
-### 1. Bit Manipulation
 ```python
-def palindrome_reorder_bit(s):
-    freq = 0
+def all_palindromes(s):
+    from itertools import permutations
     
-    # Use bits to track odd/even frequencies
-    for c in s:
-        freq ^= (1 << (ord(c) - ord('A')))
-    
-    # Check if more than one bit is set
-    if freq and (freq & (freq - 1)):
-        return "NO SOLUTION"
-    
-    # Construct palindrome using bit manipulation
-    # Implementation continues...
-    return s
-```
-
-### 2. In-place Construction
-```python
-def palindrome_reorder_inplace(s):
     freq = [0] * 26
     
-    # Count frequencies
+    # Count character frequencies
     for c in s:
         freq[ord(c) - ord('A')] += 1
     
     # Check feasibility
     odd_count = sum(1 for f in freq if f % 2 == 1)
+    if odd_count > 1:
+        return []
     
+    # Generate all possible first halves
+    first_half_chars = []
+    middle = ""
+    
+    for i in range(26):
+        if freq[i] > 0:
+            if freq[i] % 2 == 1:
+                middle = chr(ord('A') + i)
+                freq[i] -= 1
+            first_half_chars.extend([chr(ord('A') + i)] * (freq[i] // 2))
+    
+    # Generate all permutations of first half
+    palindromes = set()
+    for perm in permutations(first_half_chars):
+        first_half = ''.join(perm)
+        second_half = first_half[::-1]
+        palindrome = first_half + middle + second_half
+        palindromes.add(palindrome)
+    
+    return sorted(palindromes)
+```
+
+### Variation 3: Minimum Changes to Make Palindrome
+**Problem**: Find minimum changes needed to make string a palindrome.
+
+```python
+def min_changes_for_palindrome(s):
+    n = len(s)
+    changes = 0
+    
+    # Count mismatched pairs
+    for i in range(n // 2):
+        if s[i] != s[n - 1 - i]:
+            changes += 1
+    
+    return changes
+```
+
+### Variation 4: Palindrome with Constraints
+**Problem**: Create palindrome with certain characters in specific positions.
+
+```python
+def constrained_palindrome(s, constraints):
+    # constraints is a dict: {position: character}
+    n = len(s)
+    result = [''] * n
+    
+    # Apply constraints
+    for pos, char in constraints.items():
+        if pos < n:
+            result[pos] = char
+            # Mirror constraint
+            if pos != n - 1 - pos:
+                result[n - 1 - pos] = char
+    
+    # Check if constraints are compatible
+    for i in range(n // 2):
+        if result[i] and result[n - 1 - i] and result[i] != result[n - 1 - i]:
+            return "NO SOLUTION"
+    
+    # Fill remaining positions
+    freq = [0] * 26
+    for c in s:
+        freq[ord(c) - ord('A')] += 1
+    
+    # Subtract used characters
+    for char in result:
+        if char:
+            freq[ord(char) - ord('A')] -= 1
+    
+    # Check feasibility
+    odd_count = sum(1 for f in freq if f % 2 == 1)
     if odd_count > 1:
         return "NO SOLUTION"
     
-    # Convert to list for in-place modification
-    s_list = list(s)
+    # Fill remaining positions
+    for i in range(n // 2):
+        if not result[i]:
+            # Find available character
+            for j in range(26):
+                if freq[j] >= 2:
+                    result[i] = chr(ord('A') + j)
+                    result[n - 1 - i] = chr(ord('A') + j)
+                    freq[j] -= 2
+                    break
     
-    # Construct in-place
-    left, right = 0, len(s) - 1
+    # Handle middle character for odd length
+    if n % 2 == 1 and not result[n // 2]:
+        for j in range(26):
+            if freq[j] % 2 == 1:
+                result[n // 2] = chr(ord('A') + j)
+                break
     
-    for i in range(26):
-        if freq[i] % 2 == 1:
-            s_list[len(s) // 2] = chr(ord('A') + i)
-            freq[i] -= 1
-        
-        while freq[i] > 0:
-            s_list[left] = chr(ord('A') + i)
-            s_list[right] = chr(ord('A') + i)
-            left += 1
-            right -= 1
-            freq[i] -= 2
-    
-    return ''.join(s_list)
+    return ''.join(result)
 ```
 
-### 3. Parallel Processing
+### Variation 5: Palindrome with Minimum Cost
+**Problem**: Create palindrome with minimum cost of character changes.
+
 ```python
-def palindrome_reorder_parallel(s):
-    # For very large strings, use parallel frequency counting
-    # Divide string into chunks and process in parallel
-    # Merge results and construct palindrome
+def min_cost_palindrome(s, costs):
+    # costs[i][j] = cost to change character i to j
+    n = len(s)
+    total_cost = 0
     
-    # Implementation for parallel processing...
-    return s
+    for i in range(n // 2):
+        char1 = ord(s[i]) - ord('A')
+        char2 = ord(s[n - 1 - i]) - ord('A')
+        
+        if char1 != char2:
+            # Find minimum cost to make them equal
+            min_cost = float('inf')
+            for target in range(26):
+                cost = costs[char1][target] + costs[char2][target]
+                min_cost = min(min_cost, cost)
+            total_cost += min_cost
+    
+    return total_cost
 ```
 
-## Related Problems
-- [Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis)
-- [String Reorder](/cses-analyses/problem_soulutions/introductory_problems/string_reorder_analysis)
-- [Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis)
+## 🔗 Related Problems
 
-## Practice Problems
-1. **CSES**: Palindrome Reorder
-2. **LeetCode**: Similar palindrome problems
-3. **AtCoder**: String manipulation problems
+- **[String Reorder](/cses-analyses/problem_soulutions/introductory_problems/string_reorder_analysis)**: String manipulation
+- **[Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis)**: String generation
+- **[Repetitions](/cses-analyses/problem_soulutions/introductory_problems/repetitions_analysis)**: String analysis
 
-## Key Takeaways
-1. **Frequency counting** is essential for palindrome construction
-2. **Feasibility check** must be done before construction
-3. **Symmetrical placement** ensures palindrome property
-4. **Bit manipulation** can optimize frequency tracking
-5. **In-place construction** saves memory
-6. **Lexicographical ordering** requires careful character placement
-7. **Edge cases** like single characters need special handling
+## 📚 Learning Points
+
+1. **Palindrome Properties**: Understanding palindrome characteristics
+2. **Frequency Analysis**: Counting character occurrences
+3. **String Construction**: Building strings systematically
+4. **Feasibility Checking**: Determining if solution exists
+
+---
+
+**This is a great introduction to palindrome problems and string manipulation!** 🎯

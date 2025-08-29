@@ -1,277 +1,283 @@
 ---
 layout: simple
-title: "Creating Strings Analysis"
+title: "Creating Strings"
 permalink: /problem_soulutions/introductory_problems/creating_strings_analysis
 ---
 
-
-# Creating Strings Analysis
+# Creating Strings
 
 ## Problem Description
 
-Given a string, find all distinct strings that can be created by reordering its characters. Output the number of distinct strings and list them in lexicographical order.
+**Problem**: Given a string, generate all possible permutations of its characters.
 
-## Key Insights
+**Input**: A string s (1 ≤ |s| ≤ 8)
 
-### 1. Permutation Generation
-- **Distinct permutations**: Handle duplicate characters correctly
-- **Lexicographical order**: Generate permutations in sorted order
-- **Efficiency**: Avoid generating duplicate permutations
+**Output**: 
+- First line: number of distinct permutations
+- Next lines: each permutation on a separate line (in lexicographic order)
 
-### 2. Mathematical Formula
-- **Total permutations**: n! / (f1! × f2! × ... × fk!)
-- Where n is string length and fi is frequency of character i
-- **Distinct count**: Use multinomial coefficient
+**Example**:
+```
+Input: aabac
 
-### 3. Implementation Strategy
-- Use next_permutation for lexicographical generation
-- Handle duplicates by sorting first
-- Count distinct permutations efficiently
+Output:
+20
+aaabc
+aaacb
+aabac
+aabca
+aacab
+aacba
+abaac
+abaca
+abcaa
+acaab
+acaba
+acbaa
+baaac
+baaca
+bacaa
+bcaaa
+caaab
+caaba
+cabaa
+cbaaa
+```
 
-## Solution Approach
+## 🎯 Solution Progression
 
-### Method 1: Using itertools.permutations
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Generate all possible arrangements of characters in the string
+- Handle duplicate characters correctly
+- Output in lexicographic (alphabetical) order
+- Count the total number of distinct permutations
+
+**Key Observations:**
+- For a string of length n, there are n! total arrangements
+- But with duplicates, we get fewer distinct permutations
+- We need to avoid generating duplicate permutations
+
+### Step 2: Using Built-in Permutations
+**Idea**: Use Python's itertools.permutations to generate all permutations.
+
 ```python
 from itertools import permutations
 
-def create_strings(s):
-    result = []
-    
-    # Sort string to get lexicographically smallest permutation
-    s_sorted = ''.join(sorted(s))
-    
+def solve_with_itertools(s):
     # Generate all permutations
-    for perm in permutations(s_sorted):
-        result.append(''.join(perm))
+    perms = set(permutations(s))  # Use set to remove duplicates
     
-    return result
-
-def count_distinct_strings(s):
-    from collections import Counter
-    from math import factorial
-    
-    # Count character frequencies
-    freq = Counter(s)
-    
-    # Calculate multinomial coefficient
-    n = len(s)
-    result = factorial(n)
-    
-    # Divide by factorial of each frequency
-    for count in freq.values():
-        if count > 1:
-            result //= factorial(count)
+    # Convert to strings and sort
+    result = [''.join(p) for p in perms]
+    result.sort()
     
     return result
 ```
 
-### Method 2: Recursive Generation
+**Why this works:**
+- `itertools.permutations()` generates all possible arrangements
+- Using a set automatically removes duplicates
+- Sorting ensures lexicographic order
+
+### Step 3: Manual Permutation Generation
+**Idea**: Implement permutation generation manually using backtracking.
+
 ```python
-class StringCreator:
-    def __init__(self):
-        self.result = []
-        self.current = []
-        self.freq = {}
-    
-    def generate(self, pos, n):
-        if pos == n:
-            self.result.append(''.join(self.current))
+def solve_manual(s):
+    def generate_permutations(chars, current, used, result):
+        if len(current) == len(chars):
+            result.append(''.join(current))
             return
         
-        for char in self.freq:
-            if self.freq[char] > 0:
-                self.freq[char] -= 1
-                self.current[pos] = char
-                self.generate(pos + 1, n)
-                self.freq[char] += 1
+        for i in range(len(chars)):
+            if not used[i]:
+                # Skip duplicates
+                if i > 0 and chars[i] == chars[i-1] and not used[i-1]:
+                    continue
+                
+                used[i] = True
+                current.append(chars[i])
+                generate_permutations(chars, current, used, result)
+                current.pop()
+                used[i] = False
     
-    def create_strings_recursive(self, s):
-        # Count frequencies
-        self.freq = {}
-        for c in s:
-            self.freq[c] = self.freq.get(c, 0) + 1
-        
-        self.current = [''] * len(s)
-        self.generate(0, len(s))
-        return self.result
+    chars = list(s)
+    chars.sort()  # Sort to handle duplicates properly
+    result = []
+    generate_permutations(chars, [], [False] * len(chars), result)
+    return result
 ```
 
-### Method 3: Iterative with Duplicate Handling
+**Why this works:**
+- Backtracking generates all possible arrangements
+- We skip duplicate characters to avoid duplicate permutations
+- Sorting the input helps with duplicate detection
+
+### Step 4: Complete Solution
+**Putting it all together:**
+
 ```python
 from itertools import permutations
 
-def create_strings_iterative(s):
-    result = []
+def solve_creating_strings():
+    s = input().strip()
     
-    # Sort to handle duplicates correctly
-    s_sorted = ''.join(sorted(s))
+    # Generate all permutations and remove duplicates
+    perms = set(permutations(s))
     
-    # Generate permutations and skip duplicates
-    seen = set()
-    for perm in permutations(s_sorted):
-        perm_str = ''.join(perm)
-        if perm_str not in seen:
-            result.append(perm_str)
-            seen.add(perm_str)
+    # Convert to strings and sort
+    result = [''.join(p) for p in perms]
+    result.sort()
     
-    return result
-``` 
-               result.back() == s) {
-            // Skip duplicates
-        }
-    } while (next_permutation(s.begin(), s.end()));
-    
-    return result;
-}
+    # Print output
+    print(len(result))
+    for perm in result:
+        print(perm)
+
+# Main execution
+if __name__ == "__main__":
+    solve_creating_strings()
 ```
 
-## Time Complexity
-- **Method 1**: O(n! × n) - generate all permutations
-- **Method 2**: O(n! × n) - recursive generation
-- **Method 3**: O(n! × n) - iterative with duplicate handling
+**Why this works:**
+- Simple and efficient using built-in functions
+- Automatically handles duplicates
+- Produces correct output format
 
-## Example Walkthrough
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
 
-**Input**: "aab"
+```python
+def test_solution():
+    test_cases = [
+        ("abc", 6),      # 3! = 6 permutations
+        ("aab", 3),      # 3!/2! = 3 distinct permutations
+        ("aaa", 1),      # Only 1 distinct permutation
+    ]
+    
+    for s, expected_count in test_cases:
+        result = solve_test(s)
+        print(f"String: {s}")
+        print(f"Expected count: {expected_count}")
+        print(f"Got count: {len(result)}")
+        print(f"Permutations: {result}")
+        print(f"{'✓ PASS' if len(result) == expected_count else '✗ FAIL'}")
+        print()
 
-**Process**:
-1. Sort string: "aab"
-2. Generate permutations:
-   - "aab" (original)
-   - "aba" (swap b with second a)
-   - "baa" (swap b with first a)
-3. All are distinct
+def solve_test(s):
+    perms = set(permutations(s))
+    result = [''.join(p) for p in perms]
+    result.sort()
+    return result
 
-**Output**: 3 distinct strings: ["aab", "aba", "baa"]
+test_solution()
+```
 
-## Problem Variations
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Generation**: O(n!) - we generate all n! permutations
+- **Sorting**: O(n! × n × log(n!)) - sorting n! strings of length n
+- **Overall**: O(n! × n × log(n!))
+
+### Space Complexity
+- O(n! × n) - storing all permutations
+
+### Why This Solution Works
+- **Complete**: Generates all possible arrangements
+- **Correct**: Handles duplicates properly
+- **Efficient**: Uses optimized built-in functions
+
+## 🎯 Key Insights
+
+### 1. **Permutation Counting**
+- For string with unique characters: n! permutations
+- With duplicates: n! / (count1! × count2! × ...)
+
+### 2. **Duplicate Handling**
+- Use set to automatically remove duplicates
+- Or implement duplicate skipping in manual generation
+
+### 3. **Lexicographic Order**
+- Sort the result list to get alphabetical order
+- Or generate permutations in order using next_permutation
+
+## 🔗 Related Problems
+
+- **[Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis)**: Generate permutations of numbers
+- **[String Reorder](/cses-analyses/problem_soulutions/introductory_problems/string_reorder_analysis)**: String manipulation
+- **[Gray Code](/cses-analyses/problem_soulutions/introductory_problems/gray_code_analysis)**: Generate sequences
+
+## 🎯 Problem Variations
 
 ### Variation 1: K-th Permutation
-**Problem**: Find k-th lexicographical permutation.
+**Problem**: Find the k-th lexicographical permutation of the string.
 
-**Solution**: Use mathematical approach or binary search.
-
-### Variation 2: Constrained Permutations
-**Problem**: Some characters must maintain relative order.
-
-**Approach**: Use topological sorting or constraint satisfaction.
-
-### Variation 3: Weighted Permutations
-**Problem**: Each permutation has a weight. Find minimum/maximum weight.
-
-**Solution**: Use dynamic programming or greedy approach.
-
-### Variation 4: Circular Permutations
-**Problem**: Consider rotations as equivalent.
-
-**Approach**: Use Burnside's lemma or group theory.
-
-### Variation 5: Partial Permutations
-**Problem**: Generate permutations of length k from string of length n.
-
-**Solution**: Use combination generation with permutation.
-
-### Variation 6: Probabilistic Permutations
-**Problem**: Each character has a probability. Find expected number of distinct permutations.
-
-**Approach**: Use probability theory and expected values.
-
-## Advanced Optimizations
-
-### 1. Efficient Duplicate Handling
 ```python
-from itertools import permutations
-
-def create_strings_efficient(s):
-    # Sort to get lexicographically smallest
-    s_sorted = ''.join(sorted(s))
-    
-    # Use set to automatically handle duplicates
-    unique_permutations = set()
-    
-    for perm in permutations(s_sorted):
-        unique_permutations.add(''.join(perm))
-    
-    # Convert set to list
-    return list(unique_permutations)
-```
-
-### 2. Mathematical Counting
-```python
-def count_permutations(s):
-    from collections import Counter
+def kth_string_permutation(s, k):
     from math import factorial
     
-    freq = Counter(s)
-    n = len(s)
-    numerator = factorial(n)
-    denominator = 1
+    chars = list(s)
+    chars.sort()
+    result = []
+    k -= 1  # Convert to 0-based indexing
     
-    # Calculate product of factorials of frequencies
-    for count in freq.values():
-        if count > 1:
-            denominator *= factorial(count)
+    while chars:
+        n = len(chars)
+        fact = factorial(n - 1)
+        index = k // fact
+        result.append(chars.pop(index))
+        k %= fact
     
-    return numerator // denominator
+    return ''.join(result)
 ```
 
-### 3. Memory Efficient Generation
+### Variation 2: Permutations with Constraints
+**Problem**: Generate permutations where certain characters must maintain relative order.
+
 ```python
-class MemoryEfficientStringCreator:
-    def __init__(self):
-        self.result = []
-        self.s = ""
-    
-    def generate_permutations(self, start):
-        if start == len(self.s) - 1:
-            self.result.append(self.s)
-            return
-        
-        used = set()
-        for i in range(start, len(self.s)):
-            if self.s[i] in used:
-                continue
-            used.add(self.s[i])
-            
-            # Swap characters
-            self.s = self.s[:start] + self.s[i] + self.s[start+1:i] + self.s[start] + self.s[i+1:]
-            self.generate_permutations(start + 1)
-            # Swap back
-            self.s = self.s[:start] + self.s[i] + self.s[start+1:i] + self.s[start] + self.s[i+1:]
-    
-    def create_strings(self, input_str):
-        self.s = input_str
-        self.s = ''.join(sorted(self.s))
-        self.generate_permutations(0)
-        return self.result
+def constrained_string_permutations(s, constraints):
+    # constraints: list of (a, b) where char a must come before char b
+    # This requires topological sorting approach
+    pass
 ```
 
-### 4. Parallel Generation
+### Variation 3: Partial Permutations
+**Problem**: Generate all permutations of length k from string of length n.
+
 ```python
-def create_strings_parallel(s):
-    # For large strings, use parallel processing
-    # Divide permutation space and process in parallel
-    # Merge results
-    
-    # Implementation for parallel processing...
-    return []
+def partial_string_permutations(s, k):
+    from itertools import permutations
+    return [''.join(p) for p in permutations(s, k)]
 ```
 
-## Related Problems
-- [String Reorder](/cses-analyses/problem_soulutions/introductory_problems/string_reorder_analysis)
-- [Palindrome Reorder](/cses-analyses/problem_soulutions/introductory_problems/palindrome_reorder_analysis)
-- [Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis)
+### Variation 4: Permutations with Repetition
+**Problem**: Generate all possible strings by rearranging characters (allowing repetition).
 
-## Practice Problems
-1. **CSES**: Creating Strings
-2. **LeetCode**: Similar permutation problems
-3. **AtCoder**: String manipulation problems
+```python
+def string_combinations_with_repetition(s, length):
+    from itertools import product
+    return [''.join(p) for p in product(s, repeat=length)]
+```
 
-## Key Takeaways
-1. **next_permutation** is efficient for lexicographical generation
-2. **Mathematical counting** helps avoid generating all permutations
-3. **Duplicate handling** is crucial for correct results
-4. **Memory efficiency** is important for large strings
-5. **Lexicographical order** requires initial sorting
-6. **Mathematical formulas** provide exact counts
-7. **Optimization techniques** depend on problem constraints
+### Variation 5: Unique Permutations Only
+**Problem**: Generate only unique permutations (handle duplicates efficiently).
+
+```python
+def unique_string_permutations(s):
+    from itertools import permutations
+    perms = set(permutations(s))
+    return [''.join(p) for p in sorted(perms)]
+```
+
+## 📚 Learning Points
+
+1. **Combinatorics**: Understanding permutation counting
+2. **Backtracking**: Manual permutation generation
+3. **Duplicate Handling**: Avoiding redundant permutations
+4. **Built-in Functions**: Using language features efficiently
+
+---
+
+**This is a great introduction to combinatorics and backtracking!** 🎯

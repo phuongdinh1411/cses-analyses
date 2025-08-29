@@ -1,163 +1,345 @@
 ---
 layout: simple
-title: "Chessboard and Queens Analysis"
+title: "Chessboard and Queens"
 permalink: /problem_soulutions/introductory_problems/chessboard_and_queens_analysis
 ---
 
-
-# Chessboard and Queens Analysis
+# Chessboard and Queens
 
 ## Problem Description
 
-Place 8 queens on an 8×8 chessboard so that no two queens threaten each other. Some squares are blocked and cannot be used.
+**Problem**: Place 8 queens on an 8×8 chessboard so that no two queens threaten each other. Some squares are blocked and cannot be used.
 
-## Key Insights
+**Input**: 8 lines describing the chessboard ('.' for empty, '*' for blocked)
 
-### 1. Backtracking Approach
-- Use recursive backtracking to try all valid queen placements
-- For each row, try placing a queen in each valid column
-- Check if the placement is valid (no conflicts with previous queens)
+**Output**: The number of valid configurations.
 
-### 2. Conflict Detection
-- **Row conflicts**: Only one queen per row (handled by placing one per row)
-- **Column conflicts**: Check if column is already occupied
-- **Diagonal conflicts**: Check both main diagonal and anti-diagonal
-- **Blocked squares**: Cannot place queens on blocked squares
+**Example**:
+```
+Input:
+........
+........
+........
+........
+........
+........
+........
+........
 
-### 3. Optimization Techniques
-- Use bit manipulation for faster conflict checking
-- Early termination when no valid placement is possible
-- Symmetry breaking for faster enumeration
+Output:
+92
+```
 
-## Solution Approach
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Place 8 queens on an 8×8 chessboard
+- No two queens can threaten each other
+- Some squares are blocked and cannot be used
+- Count all valid configurations
+
+**Key Observations:**
+- Queens threaten each other if they share same row, column, or diagonal
+- We need to place exactly one queen per row
+- We can use backtracking to try all valid placements
+
+### Step 2: Backtracking Approach
+**Idea**: Try placing queens row by row, checking for conflicts.
 
 ```python
-class Solution:
-    def __init__(self):
-        self.blocked = []
-        self.col = []
-        self.diag1 = []
-        self.diag2 = []
-        self.count = 0
-    
-    def backtrack(self, row):
-        if row == 8:
-            self.count += 1
-            return
+def solve_queens(blocked):
+    def is_safe(row, col):
+        # Check if position is blocked
+        if blocked[row][col]:
+            return False
         
-        for c in range(8):
-            if self.blocked[row][c]:
-                continue
-            if self.col[c] or self.diag1[row + c] or self.diag2[row - c + 7]:
+        # Check column conflicts
+        for r in range(row):
+            if queens[r] == col:
+                return False
+        
+        # Check diagonal conflicts
+        for r in range(row):
+            if abs(queens[r] - col) == abs(r - row):
+                return False
+        
+        return True
+    
+    def backtrack(row):
+        if row == 8:
+            return 1
+        
+        count = 0
+        for col in range(8):
+            if is_safe(row, col):
+                queens[row] = col
+                count += backtrack(row + 1)
+                queens[row] = -1
+        
+        return count
+    
+    queens = [-1] * 8
+    return backtrack(0)
+```
+
+**Why this works:**
+- We place one queen per row
+- Check for conflicts with previously placed queens
+- Count all valid configurations
+
+### Step 3: Optimized Solution
+**Idea**: Use bit manipulation for faster conflict checking.
+
+```python
+def solve_optimized(blocked):
+    def backtrack(row, cols, diag1, diag2):
+        if row == 8:
+            return 1
+        
+        count = 0
+        for col in range(8):
+            if blocked[row][col]:
                 continue
             
-            self.col[c] = self.diag1[row + c] = self.diag2[row - c + 7] = True
-            self.backtrack(row + 1)
-            self.col[c] = self.diag1[row + c] = self.diag2[row - c + 7] = False
+            # Check conflicts using bit manipulation
+            if cols & (1 << col):
+                continue
+            if diag1 & (1 << (row + col)):
+                continue
+            if diag2 & (1 << (row - col + 7)):
+                continue
+            
+            # Place queen and recurse
+            count += backtrack(row + 1, 
+                             cols | (1 << col),
+                             diag1 | (1 << (row + col)),
+                             diag2 | (1 << (row - col + 7)))
+        
+        return count
     
-    def solve(self, blocked_squares):
-        self.blocked = blocked_squares
-        self.col = [False] * 8
-        self.diag1 = [False] * 15  # row + col
-        self.diag2 = [False] * 15  # row - col + 7
-        self.count = 0
-        self.backtrack(0)
-        return self.count
+    return backtrack(0, 0, 0, 0)
 ```
 
-## Time Complexity
-- **Time**: O(8!) - in worst case, we try all permutations
-- **Space**: O(8) - recursion depth + arrays for conflict checking
+**Why this is better:**
+- Faster conflict checking using bit operations
+- More efficient than checking arrays
+- Cleaner code structure
 
-## Example Walkthrough
+### Step 4: Complete Solution
+**Putting it all together:**
 
-**Input**: 8×8 grid with some blocked squares
+```python
+def solve_chessboard_queens():
+    # Read blocked squares
+    blocked = []
+    for _ in range(8):
+        row = input().strip()
+        blocked.append([c == '*' for c in row])
+    
+    def backtrack(row, cols, diag1, diag2):
+        if row == 8:
+            return 1
+        
+        count = 0
+        for col in range(8):
+            if blocked[row][col]:
+                continue
+            
+            if cols & (1 << col):
+                continue
+            if diag1 & (1 << (row + col)):
+                continue
+            if diag2 & (1 << (row - col + 7)):
+                continue
+            
+            count += backtrack(row + 1, 
+                             cols | (1 << col),
+                             diag1 | (1 << (row + col)),
+                             diag2 | (1 << (row - col + 7)))
+        
+        return count
+    
+    return backtrack(0, 0, 0, 0)
+
+# Main execution
+if __name__ == "__main__":
+    result = solve_chessboard_queens()
+    print(result)
 ```
-........
-........
-........
-........
-........
-........
-........
-........
+
+**Why this works:**
+- Efficient backtracking with bit manipulation
+- Handles blocked squares correctly
+- Counts all valid configurations
+
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    # Test with empty board
+    empty_board = [[False] * 8 for _ in range(8)]
+    result = solve_test(empty_board)
+    print(f"Empty board: {result} configurations")
+    
+    # Test with some blocked squares
+    blocked_board = [[False] * 8 for _ in range(8)]
+    blocked_board[0][0] = True  # Block top-left corner
+    result = solve_test(blocked_board)
+    print(f"Blocked corner: {result} configurations")
+
+def solve_test(blocked):
+    def backtrack(row, cols, diag1, diag2):
+        if row == 8:
+            return 1
+        
+        count = 0
+        for col in range(8):
+            if blocked[row][col]:
+                continue
+            
+            if cols & (1 << col):
+                continue
+            if diag1 & (1 << (row + col)):
+                continue
+            if diag2 & (1 << (row - col + 7)):
+                continue
+            
+            count += backtrack(row + 1, 
+                             cols | (1 << col),
+                             diag1 | (1 << (row + col)),
+                             diag2 | (1 << (row - col + 7)))
+        
+        return count
+    
+    return backtrack(0, 0, 0, 0)
+
+test_solution()
 ```
 
-**Process**:
-1. Place queen in row 0, column 0
-2. Check conflicts for row 1
-3. Continue until all 8 queens placed
-4. Count valid configurations
+## 🔧 Implementation Details
 
-## Problem Variations
+### Time Complexity
+- **Worst Case**: O(8!) - we try all possible queen placements
+- **Average Case**: Much faster due to early termination
+- **Space**: O(8) - recursion depth
+
+### Why This Solution Works
+- **Complete**: Tries all valid configurations
+- **Efficient**: Uses bit manipulation for fast conflict checking
+- **Correct**: Handles all constraints properly
+
+## 🎯 Key Insights
+
+### 1. **Backtracking Pattern**
+- Place one queen per row
+- Check conflicts with previously placed queens
+- Backtrack when no valid placement is possible
+
+### 2. **Conflict Detection**
+- **Column conflicts**: Use bit mask for occupied columns
+- **Diagonal conflicts**: Use bit masks for both diagonals
+- **Blocked squares**: Check before placing queen
+
+### 3. **Bit Manipulation**
+- Use bits to represent occupied positions
+- Fast conflict checking with bitwise operations
+- Efficient state representation
+
+## 🎯 Problem Variations
 
 ### Variation 1: N-Queens Problem
 **Problem**: Place N queens on N×N board without conflicts.
 
-**Solution**: Same approach but with variable board size.
+```python
+def n_queens(n):
+    def backtrack(row, cols, diag1, diag2):
+        if row == n:
+            return 1
+        
+        count = 0
+        for col in range(n):
+            if cols & (1 << col):
+                continue
+            if diag1 & (1 << (row + col)):
+                continue
+            if diag2 & (1 << (row - col + n - 1)):
+                continue
+            
+            count += backtrack(row + 1, 
+                             cols | (1 << col),
+                             diag1 | (1 << (row + col)),
+                             diag2 | (1 << (row - col + n - 1)))
+        
+        return count
+    
+    return backtrack(0, 0, 0, 0)
+```
 
 ### Variation 2: Weighted Queens
 **Problem**: Each square has a weight. Find placement with maximum total weight.
 
-**Approach**: Modify backtracking to track current weight and update maximum.
-
-### Variation 3: Minimum Queens
-**Problem**: Find minimum queens needed to attack all squares.
-
-**Approach**: Use greedy or dynamic programming approach.
-
-### Variation 4: Queens with Constraints
-**Problem**: Queens can only move in certain directions or have limited range.
-
-**Approach**: Modify conflict detection based on new rules.
-
-### Variation 5: Multiple Piece Types
-**Problem**: Place queens, rooks, bishops, and knights without conflicts.
-
-**Approach**: Track different piece types and their movement patterns.
-
-## Advanced Optimizations
-
-### 1. Bit Manipulation
 ```python
-def backtrack(self, row, col_mask, diag1_mask, diag2_mask):
-    if row == 8:
-        self.count += 1
-        return
+def weighted_queens(weights):
+    def backtrack(row, cols, diag1, diag2, current_weight):
+        if row == 8:
+            return current_weight
+        
+        max_weight = 0
+        for col in range(8):
+            if cols & (1 << col):
+                continue
+            if diag1 & (1 << (row + col)):
+                continue
+            if diag2 & (1 << (row - col + 7)):
+                continue
+            
+            weight = backtrack(row + 1, 
+                             cols | (1 << col),
+                             diag1 | (1 << (row + col)),
+                             diag2 | (1 << (row - col + 7)),
+                             current_weight + weights[row][col])
+            max_weight = max(max_weight, weight)
+        
+        return max_weight
     
-    available = ((1 << 8) - 1) & ~col_mask & ~diag1_mask & ~diag2_mask
-    while available:
-        col = (available & -available).bit_length() - 1  # Get least significant bit
-        if not self.blocked[row][col]:
-            self.backtrack(row + 1, 
-                          col_mask | (1 << col),
-                          (diag1_mask | (1 << (row + col))) << 1,
-                          (diag2_mask | (1 << (row - col + 7))) << 1)
-        available &= available - 1
+    return backtrack(0, 0, 0, 0, 0)
 ```
 
-### 2. Symmetry Breaking
-- Use rotational and reflectional symmetries
-- Only count unique configurations up to symmetry
+### Variation 3: Minimum Queens
+**Problem**: Find minimum number of queens to cover all squares.
 
-### 3. Constraint Propagation
-- Use advanced constraint satisfaction techniques
-- Forward checking and arc consistency
+```python
+def minimum_queens(board):
+    # This is a more complex problem requiring different approach
+    # Similar to minimum dominating set problem
+    pass
+```
 
-## Related Problems
-- [Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis)
-- [Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis)
-- [Two Knights](/cses-analyses/problem_soulutions/introductory_problems/two_knights_analysis)
+### Variation 4: Queens with Different Powers
+**Problem**: Some queens can move like rooks, others like bishops.
 
-## Practice Problems
-1. ****: Chessboard and Queens
-2. **LeetCode**: N-Queens, N-Queens II
-3. **AtCoder**: Similar backtracking problems
+```python
+def mixed_queens(board, queen_types):
+    # queen_types[i] = type of queen in row i
+    # Different conflict checking for different queen types
+    pass
+```
 
-## Key Takeaways
-1. **Backtracking** is essential for constraint satisfaction problems
-2. **Conflict detection** must be efficient for good performance
-3. **Bit manipulation** can significantly speed up operations
-4. **Symmetry** can be exploited to reduce search space
-5. **Early termination** is crucial for performance
-6. **State representation** affects both time and space complexity
+## 🔗 Related Problems
+
+- **[Two Knights](/cses-analyses/problem_soulutions/introductory_problems/two_knights_analysis)**: Chess piece placement
+- **[Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis)**: Backtracking problems
+- **[Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis)**: Constraint satisfaction
+
+## 📚 Learning Points
+
+1. **Backtracking**: Systematic search with pruning
+2. **Bit Manipulation**: Efficient state representation
+3. **Constraint Satisfaction**: Handling multiple constraints
+4. **Optimization**: Early termination and pruning
+
+---
+
+**This is a great introduction to backtracking and constraint satisfaction problems!** 🎯

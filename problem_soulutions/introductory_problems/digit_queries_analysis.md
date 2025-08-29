@@ -1,39 +1,117 @@
 ---
 layout: simple
-title: "Digit Queries Analysis"
+title: "Digit Queries"
 permalink: /problem_soulutions/introductory_problems/digit_queries_analysis
 ---
 
-
-# Digit Queries Analysis
+# Digit Queries
 
 ## Problem Description
 
-Consider the infinite sequence: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ... Find the digit at position k in this sequence.
+**Problem**: Consider the infinite sequence: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ... Find the digit at position k in this sequence.
 
-## Key Insights
+**Input**: 
+- First line: q (number of queries)
+- Next q lines: integer k (1 ≤ k ≤ 10¹⁸)
 
-### 1. Digit Grouping
+**Output**: For each query, print the digit at position k.
+
+**Example**:
+```
+Input:
+3
+7
+19
+12
+
+Output:
+7
+4
+1
+
+Explanation: 
+Position 7: 1,2,3,4,5,6,7 → digit 7
+Position 19: 1,2,3,4,5,6,7,8,9,1,0,1,1,1,2,1,3,1,4 → digit 4
+Position 12: 1,2,3,4,5,6,7,8,9,1,0,1,1 → digit 1
+```
+
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find the digit at a specific position in the infinite sequence
+- The sequence is: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ...
+- We need to find which number contains the k-th digit
+
+**Key Observations:**
 - 1-digit numbers: 1-9 (9 numbers, 9 digits)
 - 2-digit numbers: 10-99 (90 numbers, 180 digits)
 - 3-digit numbers: 100-999 (900 numbers, 2700 digits)
-- n-digit numbers: 10^(n-1) to 10^n-1 (9×10^(n-1) numbers, 9×n×10^(n-1) digits)
+- Pattern: n-digit numbers have 9×n×10^(n-1) digits
 
-### 2. Binary Search Approach
-- Find which group (1-digit, 2-digit, etc.) contains position k
-- Calculate the specific number in that group
-- Find the exact digit position within that number
+### Step 2: Finding the Group
+**Idea**: Determine which group (1-digit, 2-digit, etc.) contains position k.
 
-### 3. Mathematical Formula
-- For n-digit numbers: digits = 9×n×10^(n-1)
-- Position k falls in group where: sum of previous groups < k ≤ sum including current group
+```python
+def find_group(k):
+    digits = 0
+    group_size = 9
+    num_digits = 1
+    
+    # Find which group contains position k
+    while digits + group_size * num_digits < k:
+        digits += group_size * num_digits
+        group_size *= 10
+        num_digits += 1
+    
+    return num_digits, digits
+```
 
-## Solution Approach
+**Why this works:**
+- We calculate how many digits are in each group
+- We find which group contains our target position
+- This tells us how many digits the target number has
 
-### Method 1: Binary Search
+### Step 3: Finding the Specific Number
+**Idea**: Calculate which specific number in the group contains our digit.
+
 ```python
 def find_digit(k):
-    # Find which group (1-digit, 2-digit, etc.) contains position k
+    # Find the group
+    num_digits, total_before = find_group(k)
+    
+    # Calculate position within this group
+    remaining = k - total_before - 1
+    
+    # Find the specific number
+    number = 10**(num_digits - 1) + remaining // num_digits
+    
+    # Find the digit position within the number
+    digit_pos = remaining % num_digits
+    
+    # Extract the digit
+    return (number // (10**(num_digits - 1 - digit_pos))) % 10
+```
+
+**Why this works:**
+- We know how many digits come before our group
+- We calculate which number in the group contains our position
+- We find the exact digit position within that number
+
+### Step 4: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_digit_queries():
+    q = int(input())
+    
+    for _ in range(q):
+        k = int(input())
+        result = find_digit(k)
+        print(result)
+
+def find_digit(k):
+    # Find which group contains position k
     digits = 0
     group_size = 9
     num_digits = 1
@@ -50,189 +128,178 @@ def find_digit(k):
     
     # Extract the digit
     return (number // (10**(num_digits - 1 - digit_pos))) % 10
+
+# Main execution
+if __name__ == "__main__":
+    solve_digit_queries()
 ```
 
-### Method 2: Mathematical Calculation
+**Why this works:**
+- Handles all cases correctly
+- Efficient for large values of k
+- Clear and readable implementation
+
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
+
 ```python
-def find_digit_mathematical(k):
-    if k <= 9:
-        return k
+def test_solution():
+    test_cases = [
+        (7, 7),    # Position 7 should be digit 7
+        (19, 4),   # Position 19 should be digit 4
+        (12, 1),   # Position 12 should be digit 1
+        (1, 1),    # Position 1 should be digit 1
+        (10, 1),   # Position 10 should be digit 1 (from 10)
+    ]
     
-    # Find number of digits in the target number
-    n = 1
-    total_digits = 9
-    
-    while total_digits < k:
-        n += 1
-        total_digits += 9 * n * (10**(n - 1))
-    
-    # Calculate position within n-digit numbers
-    prev_total = 9
-    for i in range(2, n):
-        prev_total += 9 * i * (10**(i - 1))
-    
-    pos_in_group = k - prev_total - 1
-    number = 10**(n - 1) + pos_in_group // n
-    digit_pos = pos_in_group % n
-    
-    return (number // (10**(n - 1 - digit_pos))) % 10
+    for k, expected in test_cases:
+        result = find_digit(k)
+        print(f"Position {k}: Expected {expected}, Got {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+test_solution()
 ```
 
-### Method 3: Precomputation
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Per Query**: O(log k) - we need to find the group
+- **Overall**: O(q × log k) where q is number of queries
+
+### Space Complexity
+- O(1) - we only use a few variables
+
+### Why This Solution Works
+- **Mathematical**: Uses the pattern of digit groups
+- **Efficient**: Logarithmic time per query
+- **Complete**: Handles all possible values of k
+
+## 🎯 Key Insights
+
+### 1. **Digit Grouping**
+- Each group has a predictable number of digits
+- We can calculate which group contains position k
+
+### 2. **Mathematical Pattern**
+- n-digit numbers: 9×n×10^(n-1) digits
+- This allows us to find the group efficiently
+
+### 3. **Position Calculation**
+- Within a group, we can find the exact number and digit position
+- Use integer division and modulo operations
+
+## 🎯 Problem Variations
+
+### Variation 1: Reverse Digit Queries
+**Problem**: Given a digit, find all positions where it appears.
+
 ```python
-class DigitQueries:
-    def __init__(self):
-        self.group_sizes = []
-        self.cumulative_digits = []
-        self.precompute()
+def find_positions_of_digit(digit):
+    positions = []
+    current_pos = 1
     
-    def precompute(self):
-        digits = 0
-        group_size = 9
-        num_digits = 1
-        
-        while digits < 10**18:
-            self.group_sizes.append(group_size * num_digits)
-            digits += group_size * num_digits
-            self.cumulative_digits.append(digits)
-            group_size *= 10
-            num_digits += 1
+    for num in range(1, 1000):  # Limit for demonstration
+        num_str = str(num)
+        for i, d in enumerate(num_str):
+            if int(d) == digit:
+                positions.append(current_pos + i)
+        current_pos += len(num_str)
     
-    def query(self, k):
-        # Binary search to find group
-        import bisect
-        group = bisect.bisect_right(self.cumulative_digits, k)
-        
-        prev_total = 0 if group == 0 else self.cumulative_digits[group - 1]
-        pos_in_group = k - prev_total - 1
-        num_digits = group + 1
-        
-        number = 10**(num_digits - 1) + pos_in_group // num_digits
-        digit_pos = pos_in_group % num_digits
-        
-        return (number // (10**(num_digits - 1 - digit_pos))) % 10
+    return positions
 ```
 
-## Time Complexity
-- **Time**: O(log k) - binary search approach
-- **Space**: O(1) - constant space
+### Variation 2: Range Queries
+**Problem**: Find the sum of digits in positions [l, r].
 
-## Example Walkthrough
-
-**Input**: k = 15
-
-**Process**:
-1. 1-digit numbers: positions 1-9 (digits 1-9)
-2. 2-digit numbers: positions 10-189 (digits 1,0,1,1,1,2,...)
-3. Position 15 falls in 2-digit group
-4. Position within 2-digit group: 15 - 9 = 6
-5. Number: 10 + (6-1)/2 = 12
-6. Digit position: (6-1) % 2 = 1
-7. Extract digit at position 1 from 12: 2
-
-**Output**: 2
-
-## Problem Variations
-
-### Variation 1: Range Queries
-**Problem**: Find digits at positions [l, r].
-
-**Approach**: Use prefix sums or binary search for each position.
-
-### Variation 2: Sum of Digits
-**Problem**: Find sum of digits from position l to r.
-
-**Approach**: Extract each digit and sum them.
-
-### Variation 3: Different Bases
-**Problem**: Use base b instead of base 10.
-
-**Solution**: Modify formulas for different base.
-
-### Variation 4: Skip Numbers
-**Problem**: Skip certain numbers (e.g., multiples of 3).
-
-**Approach**: Modify counting to skip invalid numbers.
-
-### Variation 5: Custom Sequence
-**Problem**: Use different sequence (e.g., Fibonacci, primes).
-
-**Solution**: Generate sequence and find position.
-
-### Variation 6: Multiple Queries
-**Problem**: Handle many queries efficiently.
-
-**Approach**: Use precomputation and binary search.
-
-## Advanced Optimizations
-
-### 1. Fast Power
 ```python
-def fast_pow(base, exp):
-    result = 1
-    while exp > 0:
-        if exp & 1:
-            result *= base
-        base *= base
-        exp >>= 1
-    return result
-```
-
-### 2. Digit Extraction
-```python
-def get_digit(number, position):
-    while position > 0:
-        number //= 10
-        position -= 1
-    return number % 10
-```
-
-### 3. Logarithmic Approach
-```python
-import math
-
-def find_digit_log(k):
-    if k <= 9:
-        return k
-    
-    # Use logarithms to estimate group
-    log_k = math.log10(k)
-    estimated_digits = int(log_k) + 1
-    
-    # Refine estimate
+def range_digit_sum(l, r):
     total = 0
-    for i in range(1, estimated_digits):
-        total += 9 * i * (10**(i - 1))
-    
-    if k <= total:
-        estimated_digits -= 1
-    
-    # Calculate exact position
-    prev_total = 0
-    for i in range(1, estimated_digits):
-        prev_total += 9 * i * (10**(i - 1))
-    
-    pos_in_group = k - prev_total - 1
-    number = 10**(estimated_digits - 1) + pos_in_group // estimated_digits
-    digit_pos = pos_in_group % estimated_digits
-    
-    return (number // (10**(estimated_digits - 1 - digit_pos))) % 10
+    for pos in range(l, r + 1):
+        total += find_digit(pos)
+    return total
 ```
 
-## Related Problems
-- [Missing Number](/cses-analyses/problem_soulutions/introductory_problems/missing_number_analysis)
-- [Number Spiral](/cses-analyses/problem_soulutions/introductory_problems/number_spiral_analysis)
+### Variation 3: Pattern Queries
+**Problem**: Find the first position where a specific pattern appears.
 
-## Practice Problems
-1. ****: Digit Queries
-2. **LeetCode**: Similar digit manipulation problems
-3. **AtCoder**: Mathematical sequence problems
+```python
+def find_pattern_position(pattern):
+    # pattern is a string like "123"
+    current_pos = 1
+    current_sequence = ""
+    
+    for num in range(1, 10000):  # Limit for demonstration
+        num_str = str(num)
+        current_sequence += num_str
+        
+        if pattern in current_sequence:
+            # Find the position of pattern in current_sequence
+            pattern_pos = current_sequence.find(pattern)
+            return current_pos + pattern_pos
+        
+        current_pos += len(num_str)
+    
+    return -1  # Pattern not found
+```
 
-## Key Takeaways
-1. **Binary search** is efficient for finding groups
-2. **Mathematical formulas** help calculate exact positions
-3. **Digit extraction** requires careful position calculation
-4. **Precomputation** helps with multiple queries
-5. **Logarithmic estimation** can speed up group finding
-6. **Edge cases** like small k need special handling
-7. **Overflow handling** is crucial for large k values
+### Variation 4: Binary Sequence
+**Problem**: Consider binary sequence: 1, 10, 11, 100, 101, ... Find bit at position k.
+
+```python
+def find_binary_bit(k):
+    # Similar approach but for binary numbers
+    digits = 0
+    group_size = 1
+    num_digits = 1
+    
+    while digits + group_size * num_digits < k:
+        digits += group_size * num_digits
+        group_size *= 2
+        num_digits += 1
+    
+    remaining = k - digits - 1
+    number = 2**(num_digits - 1) + remaining // num_digits
+    bit_pos = remaining % num_digits
+    
+    return (number >> (num_digits - 1 - bit_pos)) & 1
+```
+
+### Variation 5: Custom Base
+**Problem**: Consider sequence in base b. Find digit at position k.
+
+```python
+def find_digit_base_b(k, b):
+    digits = 0
+    group_size = b - 1
+    num_digits = 1
+    
+    while digits + group_size * num_digits < k:
+        digits += group_size * num_digits
+        group_size *= b
+        num_digits += 1
+    
+    remaining = k - digits - 1
+    number = b**(num_digits - 1) + remaining // num_digits
+    digit_pos = remaining % num_digits
+    
+    # Extract digit in base b
+    return (number // (b**(num_digits - 1 - digit_pos))) % b
+```
+
+## 🔗 Related Problems
+
+- **[Missing Number](/cses-analyses/problem_soulutions/introductory_problems/missing_number_analysis)**: Number sequence problems
+- **[Repetitions](/cses-analyses/problem_soulutions/introductory_problems/repetitions_analysis)**: Pattern recognition
+- **[Gray Code](/cses-analyses/problem_soulutions/introductory_problems/gray_code_analysis)**: Sequence generation
+
+## 📚 Learning Points
+
+1. **Mathematical Patterns**: Recognizing and using number patterns
+2. **Binary Search**: Finding groups efficiently
+3. **Position Calculation**: Converting positions to specific numbers
+4. **Digit Extraction**: Working with individual digits in numbers
+
+---
+
+**This is a great introduction to mathematical sequence problems and position calculations!** 🎯
