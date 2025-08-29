@@ -81,6 +81,12 @@ Learn computational geometry algorithms and techniques.
 - [Sorting and Searching](/cses-analyses/problem_soulutions/sorting_and_searching/array_division_analysis) - Start with Array Division
 - [Dynamic Programming](/cses-analyses/problem_soulutions/dynamic_programming/coin_combinations_i_analysis) - Start with Coin Combinations I
 - [Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/building_roads_analysis) - Start with Building Roads
+- [Tree Algorithms](/cses-analyses/problem_soulutions/tree_algorithms/company_queries_i_analysis) - Start with Company Queries I
+- [Sliding Window](/cses-analyses/problem_soulutions/sliding_window/fixed_length_subarray_sum_analysis) - Start with Fixed Length Subarray Sum
+- [Range Queries](/cses-analyses/problem_soulutions/range_queries/dynamic_range_sum_queries_analysis) - Start with Dynamic Range Sum Queries
+- [String Algorithms](/cses-analyses/problem_soulutions/string_algorithms/distinct_strings_analysis) - Start with Distinct Strings
+- [Geometry](/cses-analyses/problem_soulutions/geometry/all_manhattan_distances_analysis) - Start with All Manhattan Distances
+- [Counting Problems](/cses-analyses/problem_soulutions/counting_problems/all_letter_subgrid_count_i_analysis) - Start with All Letter Subgrid Count I
 - [Advanced Graph Problems](/cses-analyses/problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis) - Start with Acyclic Graph Edges
 - [Quick Reference](/cses-analyses/quick_reference/) - Ultimate Cheatsheet and Guides
 
