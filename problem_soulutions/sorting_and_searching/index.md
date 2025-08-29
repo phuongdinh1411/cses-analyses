@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Sorting and Searching"
-permalink: /cses-analyses/problem_soulutions/sorting_and_searching/
+permalink: /cses-analyses/problem_soulutions/sorting_and_searching
 ---
 
 # Sorting and Searching

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Dynamic Programming"
-permalink: /cses-analyses/problem_soulutions/dynamic_programming/
+permalink: /cses-analyses/problem_soulutions/dynamic_programming
 ---
 
 # Dynamic Programming

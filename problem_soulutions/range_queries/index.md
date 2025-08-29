@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Range Queries"
-permalink: /cses-analyses/problem_soulutions/range_queries/
+permalink: /cses-analyses/problem_soulutions/range_queries
 ---
 
 # Range Queries

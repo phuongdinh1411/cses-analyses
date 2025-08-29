@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Graph Algorithms"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/
+permalink: /cses-analyses/problem_soulutions/graph_algorithms
 ---
 
 # Graph Algorithms
