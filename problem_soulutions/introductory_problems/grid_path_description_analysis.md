@@ -199,9 +199,9 @@ def matrix_multiply(a, b, n):
 ```
 
 ## Related Problems
-- [Grid Paths](/cses-analyses/problem_soulutions/grid_paths_analysis/)
-- [Knight Moves Grid](/cses-analyses/problem_soulutions/knight_moves_grid_analysis/)
-- [Two Knights](/cses-analyses/problem_soulutions/two_knights_analysis/)
+- [Grid Paths](/cses-analyses/problem_soulutions/grid_paths_analysis)
+- [Knight Moves Grid](/cses-analyses/problem_soulutions/knight_moves_grid_analysis)
+- [Two Knights](/cses-analyses/problem_soulutions/two_knights_analysis)
 
 ## Practice Problems
 1. **CSES**: Grid Path Description

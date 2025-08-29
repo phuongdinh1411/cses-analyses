@@ -11,7 +11,7 @@ Welcome to the Quick Reference section! This is your go-to resource for fast acc
 
 ## 📚 Available References
 
-### 🚀 [Ultimate Cheatsheet](/cses-analyses/quick_reference/ultimate_cheatsheet/)
+### 🚀 [Ultimate Cheatsheet](/cses-analyses/quick_reference/ultimate_cheatsheet)
 **Complete comprehensive guide** with all algorithms, techniques, and problem-solving strategies in one place.
 
 **Includes:**
@@ -22,7 +22,7 @@ Welcome to the Quick Reference section! This is your go-to resource for fast acc
 - Visual learning aids
 - Emergency quick reference
 
-### 🔬 [Advanced Algorithms](/cses-analyses/quick_reference/advanced_algorithms/)
+### 🔬 [Advanced Algorithms](/cses-analyses/quick_reference/advanced_algorithms)
 **Advanced techniques** and complex algorithms for challenging problems.
 
 **Includes:**
@@ -32,7 +32,7 @@ Welcome to the Quick Reference section! This is your go-to resource for fast acc
 - Optimization techniques
 - Mathematical algorithms
 
-### ⚠️ [Common Mistakes](/cses-analyses/quick_reference/common_mistakes/)
+### ⚠️ [Common Mistakes](/cses-analyses/quick_reference/common_mistakes)
 **Common pitfalls** and how to avoid them in competitive programming.
 
 **Includes:**
@@ -68,9 +68,9 @@ Welcome to the Quick Reference section! This is your go-to resource for fast acc
 
 ## 🚀 Getting Started
 
-1. **[Start with Ultimate Cheatsheet](/cses-analyses/quick_reference/ultimate_cheatsheet/)** for comprehensive overview
-2. **[Use Advanced Algorithms](/cses-analyses/quick_reference/advanced_algorithms/)** for complex problems
-3. **[Check Common Mistakes](/cses-analyses/quick_reference/common_mistakes/)** to avoid pitfalls
+1. **[Start with Ultimate Cheatsheet](/cses-analyses/quick_reference/ultimate_cheatsheet)** for comprehensive overview
+2. **[Use Advanced Algorithms](/cses-analyses/quick_reference/advanced_algorithms)** for complex problems
+3. **[Check Common Mistakes](/cses-analyses/quick_reference/common_mistakes)** to avoid pitfalls
 4. **Practice regularly** with problems
 
 ## 💡 Tips for Effective Use

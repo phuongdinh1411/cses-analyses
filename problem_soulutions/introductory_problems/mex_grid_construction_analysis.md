@@ -256,9 +256,9 @@ class ConstraintSatisfaction:
 ```
 
 ## Related Problems
-- [Mex Grid Construction II](/cses-analyses/problem_soulutions/mex_grid_construction_ii_analysis/)
-- [Grid Coloring I](/cses-analyses/problem_soulutions/grid_coloring_i_analysis/)
-- [Two Knights](/cses-analyses/problem_soulutions/two_knights_analysis/)
+- [Mex Grid Construction II](/cses-analyses/problem_soulutions/mex_grid_construction_ii_analysis)
+- [Grid Coloring I](/cses-analyses/problem_soulutions/grid_coloring_i_analysis)
+- [Two Knights](/cses-analyses/problem_soulutions/two_knights_analysis)
 
 ## Practice Problems
 1. **CSES**: Mex Grid Construction

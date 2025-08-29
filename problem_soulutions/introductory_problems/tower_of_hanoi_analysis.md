@@ -187,9 +187,9 @@ def is_valid_move(state, from_tower, to_tower):
 ```
 
 ## Related Problems
-- [Permutations](/cses-analyses/problem_soulutions/permutations_analysis/)
-- [Creating Strings](/cses-analyses/problem_soulutions/creating_strings_analysis/)
-- [Gray Code](/cses-analyses/problem_soulutions/gray_code_analysis/)
+- [Permutations](/cses-analyses/problem_soulutions/permutations_analysis)
+- [Creating Strings](/cses-analyses/problem_soulutions/creating_strings_analysis)
+- [Gray Code](/cses-analyses/problem_soulutions/gray_code_analysis)
 
 ## Practice Problems
 1. **CSES**: Tower of Hanoi

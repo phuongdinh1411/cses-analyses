@@ -212,9 +212,9 @@ def count_colorings_matrix_tree(n, k):
 ```
 
 ## Related Problems
-- [Grid Coloring II](/cses-analyses/problem_soulutions/grid_coloring_ii_analysis/)
-- [Chessboard and Queens](/cses-analyses/problem_soulutions/chessboard_and_queens_analysis/)
-- [Two Knights](/cses-analyses/problem_soulutions/two_knights_analysis/)
+- [Grid Coloring II](/cses-analyses/problem_soulutions/grid_coloring_ii_analysis)
+- [Chessboard and Queens](/cses-analyses/problem_soulutions/chessboard_and_queens_analysis)
+- [Two Knights](/cses-analyses/problem_soulutions/two_knights_analysis)
 
 ## Practice Problems
 1. ****: Grid Coloring I
