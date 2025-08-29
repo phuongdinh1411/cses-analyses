@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Acyclic Graph Edges"
-permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis
+permalink: /problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis
 ---
 
 

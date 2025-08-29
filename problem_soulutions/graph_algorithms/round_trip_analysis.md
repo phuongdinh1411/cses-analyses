@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Round Trip"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/round_trip_analysis
+permalink: /problem_soulutions/graph_algorithms/round_trip_analysis
 ---
 
 

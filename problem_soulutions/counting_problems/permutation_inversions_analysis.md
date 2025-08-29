@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Permutation Inversions"
-permalink: /cses-analyses/problem_soulutions/counting_problems/permutation_inversions_analysis
+permalink: /problem_soulutions/counting_problems/permutation_inversions_analysis
 ---
 
 

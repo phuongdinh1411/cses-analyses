@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "De Bruijn Sequence"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis
+permalink: /problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis
 ---
 
 

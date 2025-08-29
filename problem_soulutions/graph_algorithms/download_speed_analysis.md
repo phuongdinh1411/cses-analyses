@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Download Speed"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/download_speed_analysis
+permalink: /problem_soulutions/graph_algorithms/download_speed_analysis
 ---
 
 

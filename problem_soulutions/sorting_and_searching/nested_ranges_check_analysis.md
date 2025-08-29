@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Nested Ranges Check"
-permalink: /cses-analyses/problem_soulutions/sorting_and_searching/nested_ranges_check_analysis
+permalink: /problem_soulutions/sorting_and_searching/nested_ranges_check_analysis
 ---
 
 

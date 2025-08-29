@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Nearest Shops"
-permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/nearest_shops_analysis
+permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis
 ---
 
 

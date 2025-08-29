@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "All Letter Subgrid Count II"
-permalink: /cses-analyses/problem_soulutions/counting_problems/all_letter_subgrid_count_ii_analysis
+permalink: /problem_soulutions/counting_problems/all_letter_subgrid_count_ii_analysis
 ---
 
 

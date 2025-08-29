@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Labyrinth"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/labyrinth_analysis
+permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis
 ---
 
 

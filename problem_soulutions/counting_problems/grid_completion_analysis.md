@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Grid Completion"
-permalink: /cses-analyses/problem_soulutions/counting_problems/grid_completion_analysis
+permalink: /problem_soulutions/counting_problems/grid_completion_analysis
 ---
 
 

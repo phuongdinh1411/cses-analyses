@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "String Compression"
-permalink: /cses-analyses/problem_soulutions/string_algorithms/string_compression_analysis
+permalink: /problem_soulutions/string_algorithms/string_compression_analysis
 ---
 
 

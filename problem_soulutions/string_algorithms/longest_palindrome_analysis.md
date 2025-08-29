@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Longest Palindrome"
-permalink: /cses-analyses/problem_soulutions/string_algorithms/longest_palindrome_analysis
+permalink: /problem_soulutions/string_algorithms/longest_palindrome_analysis
 ---
 
 

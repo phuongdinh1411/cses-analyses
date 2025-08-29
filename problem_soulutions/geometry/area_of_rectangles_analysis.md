@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Area of Rectangles - Geometry Analysis"
-permalink: /cses-analyses/problem_soulutions/geometry/area_of_rectangles_analysis
+permalink: /problem_soulutions/geometry/area_of_rectangles_analysis
 ---
 
 

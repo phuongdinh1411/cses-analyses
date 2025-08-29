@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Even Outdegree Edges"
-permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/even_outdegree_edges_analysis
+permalink: /problem_soulutions/advanced_graph_problems/even_outdegree_edges_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Grid Paths"
-permalink: /cses-analyses/problem_soulutions/dynamic_programming/grid_paths_analysis
+permalink: /problem_soulutions/dynamic_programming/grid_paths_analysis
 ---
 
 

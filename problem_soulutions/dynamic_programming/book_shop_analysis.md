@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Book Shop"
-permalink: /cses-analyses/problem_soulutions/dynamic_programming/book_shop_analysis
+permalink: /problem_soulutions/dynamic_programming/book_shop_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Distinct Values Queries"
-permalink: /cses-analyses/problem_soulutions/tree_algorithms/distinct_values_queries_analysis
+permalink: /problem_soulutions/tree_algorithms/distinct_values_queries_analysis
 ---
 
 

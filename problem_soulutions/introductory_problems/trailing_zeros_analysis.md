@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Trailing Zeros"
-permalink: /cses-analyses/problem_soulutions/introductory_problems/trailing_zeros_analysis
+permalink: /problem_soulutions/introductory_problems/trailing_zeros_analysis
 ---
 
 

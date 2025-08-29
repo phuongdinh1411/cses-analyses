@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Course Schedule II"
-permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/course_schedule_ii_analysis
+permalink: /problem_soulutions/advanced_graph_problems/course_schedule_ii_analysis
 ---
 
 

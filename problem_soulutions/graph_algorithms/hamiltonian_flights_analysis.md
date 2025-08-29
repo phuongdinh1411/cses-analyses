@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Hamiltonian Flights"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/hamiltonian_flights_analysis
+permalink: /problem_soulutions/graph_algorithms/hamiltonian_flights_analysis
 ---
 
 

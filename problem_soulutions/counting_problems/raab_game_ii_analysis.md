@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Raab Game II"
-permalink: /cses-analyses/problem_soulutions/counting_problems/raab_game_ii_analysis
+permalink: /problem_soulutions/counting_problems/raab_game_ii_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "String Reorder Analysis"
-permalink: /cses-analyses/problem_soulutions/introductory_problems/string_reorder_analysis
+permalink: /problem_soulutions/introductory_problems/string_reorder_analysis
 ---
 
 

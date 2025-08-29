@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Monsters"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/monsters_analysis
+permalink: /problem_soulutions/graph_algorithms/monsters_analysis
 ---
 
 

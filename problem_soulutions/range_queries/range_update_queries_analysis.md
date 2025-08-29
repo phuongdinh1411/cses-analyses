@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Range Update Queries
-permalink: /cses-analyses/problem_soulutions/range_queries/range_update_queries_analysis/"
+permalink: /problem_soulutions/range_queries/range_update_queries_analysis/"
 ---
 
 

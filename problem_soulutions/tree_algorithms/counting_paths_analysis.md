@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Counting Paths"
-permalink: /cses-analyses/problem_soulutions/tree_algorithms/counting_paths_analysis
+permalink: /problem_soulutions/tree_algorithms/counting_paths_analysis
 ---
 
 

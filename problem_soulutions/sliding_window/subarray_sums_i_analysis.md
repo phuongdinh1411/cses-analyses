@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subarray Sums I"
-permalink: /cses-analyses/problem_soulutions/sliding_window/subarray_sums_i_analysis
+permalink: /problem_soulutions/sliding_window/subarray_sums_i_analysis
 ---
 
 

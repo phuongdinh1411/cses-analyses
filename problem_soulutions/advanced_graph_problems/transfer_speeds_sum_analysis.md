@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Transfer Speeds Sum"
-permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analysis
+permalink: /problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analysis
 ---
 
 

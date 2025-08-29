@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Line Segment Intersection - Geometry Analysis"
-permalink: /cses-analyses/problem_soulutions/geometry/line_segment_intersection_analysis
+permalink: /problem_soulutions/geometry/line_segment_intersection_analysis
 ---
 
 

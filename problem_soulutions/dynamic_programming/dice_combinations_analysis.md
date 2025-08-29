@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Dice Combinations"
-permalink: /cses-analyses/problem_soulutions/dynamic_programming/dice_combinations_analysis
+permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis
 ---
 
 

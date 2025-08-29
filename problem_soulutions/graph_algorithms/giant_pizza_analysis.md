@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Giant Pizza"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/giant_pizza_analysis
+permalink: /problem_soulutions/graph_algorithms/giant_pizza_analysis
 ---
 
 

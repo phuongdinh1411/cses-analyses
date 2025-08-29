@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Repeating Substring"
-permalink: /cses-analyses/problem_soulutions/string_algorithms/repeating_substring_analysis
+permalink: /problem_soulutions/string_algorithms/repeating_substring_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Road Construction II"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/road_construction_ii_analysis
+permalink: /problem_soulutions/graph_algorithms/road_construction_ii_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Graph Girth"
-permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/graph_girth_analysis
+permalink: /problem_soulutions/advanced_graph_problems/graph_girth_analysis
 ---
 
 

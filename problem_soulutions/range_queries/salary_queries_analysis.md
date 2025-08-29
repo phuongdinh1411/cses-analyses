@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Salary Queries"
-permalink: /cses-analyses/problem_soulutions/range_queries/salary_queries_analysis
+permalink: /problem_soulutions/range_queries/salary_queries_analysis
 ---
 
 

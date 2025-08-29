@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Prüfer Code"
-permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/prufer_code_analysis
+permalink: /problem_soulutions/advanced_graph_problems/prufer_code_analysis
 ---
 
 

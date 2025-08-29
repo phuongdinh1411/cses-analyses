@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Forest Queries"
-permalink: /cses-analyses/problem_soulutions/range_queries/forest_queries_analysis
+permalink: /problem_soulutions/range_queries/forest_queries_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Minimal Rotation"
-permalink: /cses-analyses/problem_soulutions/string_algorithms/minimal_rotation_analysis
+permalink: /problem_soulutions/string_algorithms/minimal_rotation_analysis
 ---
 
 

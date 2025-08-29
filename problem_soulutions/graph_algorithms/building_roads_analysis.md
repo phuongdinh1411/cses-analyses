@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Building Roads"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/building_roads_analysis
+permalink: /problem_soulutions/graph_algorithms/building_roads_analysis
 ---
 
 

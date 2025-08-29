@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Distinct Routes"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/distinct_routes_analysis
+permalink: /problem_soulutions/graph_algorithms/distinct_routes_analysis
 ---
 
 

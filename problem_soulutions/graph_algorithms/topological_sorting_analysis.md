@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Topological Sorting"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/topological_sorting_analysis
+permalink: /problem_soulutions/graph_algorithms/topological_sorting_analysis
 ---
 
 

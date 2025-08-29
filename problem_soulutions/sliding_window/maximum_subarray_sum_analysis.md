@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Maximum Subarray Sum"
-permalink: /cses-analyses/problem_soulutions/sliding_window/maximum_subarray_sum_analysis
+permalink: /problem_soulutions/sliding_window/maximum_subarray_sum_analysis
 ---
 
 

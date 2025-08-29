@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Fixed Length Circuit Queries"
-permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_circuit_queries_analysis
+permalink: /problem_soulutions/advanced_graph_problems/fixed_length_circuit_queries_analysis
 ---
 
 

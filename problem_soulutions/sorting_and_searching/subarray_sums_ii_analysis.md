@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subarray Sums II"
-permalink: /cses-analyses/problem_soulutions/sorting_and_searching/subarray_sums_ii_analysis
+permalink: /problem_soulutions/sorting_and_searching/subarray_sums_ii_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Hotel Queries"
-permalink: /cses-analyses/problem_soulutions/range_queries/hotel_queries_analysis
+permalink: /problem_soulutions/range_queries/hotel_queries_analysis
 ---
 
 

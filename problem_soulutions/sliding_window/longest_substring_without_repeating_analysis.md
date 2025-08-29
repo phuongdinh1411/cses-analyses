@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Longest Substring Without Repeating Characters"
-permalink: /cses-analyses/problem_soulutions/sliding_window/longest_substring_without_repeating_analysis
+permalink: /problem_soulutions/sliding_window/longest_substring_without_repeating_analysis
 ---
 
 

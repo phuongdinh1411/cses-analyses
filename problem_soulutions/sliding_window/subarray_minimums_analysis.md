@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subarray Minimums"
-permalink: /cses-analyses/problem_soulutions/sliding_window/subarray_minimums_analysis
+permalink: /problem_soulutions/sliding_window/subarray_minimums_analysis
 ---
 
 

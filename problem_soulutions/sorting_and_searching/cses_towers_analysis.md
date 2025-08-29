@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Towers"
-permalink: /cses-analyses/problem_soulutions/sorting_and_searching/cses_towers_analysis
+permalink: /problem_soulutions/sorting_and_searching/cses_towers_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Shortest Subarray with Sum"
-permalink: /cses-analyses/problem_soulutions/sliding_window/shortest_subarray_with_sum_analysis
+permalink: /problem_soulutions/sliding_window/shortest_subarray_with_sum_analysis
 ---
 
 

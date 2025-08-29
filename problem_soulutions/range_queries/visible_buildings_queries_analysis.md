@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Visible Buildings Queries"
-permalink: /cses-analyses/problem_soulutions/range_queries/visible_buildings_queries_analysis
+permalink: /problem_soulutions/range_queries/visible_buildings_queries_analysis
 ---
 
 

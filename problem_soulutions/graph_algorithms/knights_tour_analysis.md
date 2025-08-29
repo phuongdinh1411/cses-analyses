@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: CSES Knight's Tour
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/knights_tour_analysis
+permalink: /problem_soulutions/graph_algorithms/knights_tour_analysis
 ---
 
 

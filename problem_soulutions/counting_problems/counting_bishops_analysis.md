@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Counting Bishops"
-permalink: /cses-analyses/problem_soulutions/counting_problems/counting_bishops_analysis
+permalink: /problem_soulutions/counting_problems/counting_bishops_analysis
 ---
 
 

@@ -2,8 +2,29 @@
 
 This is the **most comprehensive** CSES problem set learning resource available. Everything you need to master competitive programming is here.
 
+### 🌐 **Live Site: [https://phuongdinh1411.github.io/cses-analyses/](https://phuongdinh1411.github.io/cses-analyses/)**
+
+**📖 Browse all 240+ problems with interactive navigation, search, and comprehensive solutions!**
+
 ## 📊 Overview
 This repository contains comprehensive analysis of all 240+ problems from the [CSES Problem Set](https://cses.fi/problemset/), organized by topic with detailed solutions, learning paths, and study materials.
+
+## 🌐 Live Website
+This repository is automatically deployed to GitHub Pages, providing an interactive web interface for browsing all problems:
+
+- **🌐 Live Site**: [https://phuongdinh1411.github.io/cses-analyses/](https://phuongdinh1411.github.io/cses-analyses/)
+- **📱 Responsive Design**: Works on desktop, tablet, and mobile
+- **🔍 Interactive Navigation**: Collapsible sidebar with all problem categories
+- **⚡ Fast Loading**: Optimized for quick access to any problem
+- **🎨 Modern UI**: Clean, readable interface with syntax highlighting
+
+### 🚀 Features of the Live Site
+- **Complete Problem Coverage**: All 240+ CSES problems with detailed solutions
+- **Interactive Navigation**: Drill-down menu to find any problem quickly
+- **Related Problems**: Cross-references between similar problems
+- **Code Examples**: Python implementations with syntax highlighting
+- **Problem Variations**: Extended problems for deeper learning
+- **Quick Reference**: Ultimate cheatsheet and algorithm guides
 
 ## 🗂️ Complete Repository Structure
 

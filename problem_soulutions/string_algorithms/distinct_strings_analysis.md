@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Distinct Strings"
-permalink: /cses-analyses/problem_soulutions/string_algorithms/distinct_strings_analysis
+permalink: /problem_soulutions/string_algorithms/distinct_strings_analysis
 ---
 
 

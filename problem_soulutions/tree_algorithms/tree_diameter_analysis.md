@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Tree Diameter"
-permalink: /cses-analyses/problem_soulutions/tree_algorithms/tree_diameter_analysis
+permalink: /problem_soulutions/tree_algorithms/tree_diameter_analysis
 ---
 
 

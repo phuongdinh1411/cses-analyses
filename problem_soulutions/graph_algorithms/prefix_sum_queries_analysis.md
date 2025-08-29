@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Prefix Sum Queries"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/prefix_sum_queries_analysis
+permalink: /problem_soulutions/graph_algorithms/prefix_sum_queries_analysis
 ---
 
 

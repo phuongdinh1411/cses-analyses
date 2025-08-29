@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Point in Polygon - Geometry Analysis"
-permalink: /cses-analyses/problem_soulutions/geometry/point_in_polygon_analysis
+permalink: /problem_soulutions/geometry/point_in_polygon_analysis
 ---
 
 

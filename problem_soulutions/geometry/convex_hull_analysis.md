@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Convex Hull Analysis"
-permalink: /cses-analyses/problem_soulutions/geometry/convex_hull_analysis
+permalink: /problem_soulutions/geometry/convex_hull_analysis
 ---
 
 

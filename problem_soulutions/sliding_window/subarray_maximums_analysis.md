@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subarray Maximums"
-permalink: /cses-analyses/problem_soulutions/sliding_window/subarray_maximums_analysis
+permalink: /problem_soulutions/sliding_window/subarray_maximums_analysis
 ---
 
 

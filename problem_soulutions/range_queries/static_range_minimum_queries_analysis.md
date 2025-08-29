@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Static Range Minimum Queries"
-permalink: /cses-analyses/problem_soulutions/range_queries/static_range_minimum_queries_analysis
+permalink: /problem_soulutions/range_queries/static_range_minimum_queries_analysis
 ---
 
 

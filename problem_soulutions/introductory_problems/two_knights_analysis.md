@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Two Knights"
-permalink: /cses-analyses/problem_soulutions/introductory_problems/two_knights_analysis
+permalink: /problem_soulutions/introductory_problems/two_knights_analysis
 ---
 
 

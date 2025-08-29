@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Two Sets"
-permalink: /cses-analyses/problem_soulutions/introductory_problems/two_sets_analysis
+permalink: /problem_soulutions/introductory_problems/two_sets_analysis
 ---
 
 

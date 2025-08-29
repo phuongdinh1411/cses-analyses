@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Removal Game"
-permalink: /cses-analyses/problem_soulutions/dynamic_programming/removal_game_analysis
+permalink: /problem_soulutions/dynamic_programming/removal_game_analysis
 ---
 
 

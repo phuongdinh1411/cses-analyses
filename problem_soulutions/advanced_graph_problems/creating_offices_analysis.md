@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Creating Offices"
-permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/creating_offices_analysis
+permalink: /problem_soulutions/advanced_graph_problems/creating_offices_analysis
 ---
 
 

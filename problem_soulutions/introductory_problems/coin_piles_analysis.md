@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Coin Piles Analysis"
-permalink: /cses-analyses/problem_soulutions/introductory_problems/coin_piles_analysis
+permalink: /problem_soulutions/introductory_problems/coin_piles_analysis
 ---
 
 

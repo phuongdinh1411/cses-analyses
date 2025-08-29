@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Point Location Test - Geometry Analysis"
-permalink: /cses-analyses/problem_soulutions/geometry/point_location_test_analysis
+permalink: /problem_soulutions/geometry/point_location_test_analysis
 ---
 
 

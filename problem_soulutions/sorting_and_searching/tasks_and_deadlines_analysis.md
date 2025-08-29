@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Tasks and Deadlines"
-permalink: /cses-analyses/problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysis
+permalink: /problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysis
 ---
 
 

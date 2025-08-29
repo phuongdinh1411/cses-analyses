@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Rectangle Cutting"
-permalink: /cses-analyses/problem_soulutions/dynamic_programming/rectangle_cutting_analysis
+permalink: /problem_soulutions/dynamic_programming/rectangle_cutting_analysis
 ---
 
 

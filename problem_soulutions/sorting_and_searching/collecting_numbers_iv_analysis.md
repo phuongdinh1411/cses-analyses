@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Collecting Numbers IV"
-permalink: /cses-analyses/problem_soulutions/sorting_and_searching/collecting_numbers_iv_analysis
+permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_iv_analysis
 ---
 
 

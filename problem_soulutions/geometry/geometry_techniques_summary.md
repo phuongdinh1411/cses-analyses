@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Geometry Techniques Summary"
-permalink: /cses-analyses/problem_soulutions/geometry/geometry_techniques_summary
+permalink: /problem_soulutions/geometry/geometry_techniques_summary
 ---
 
 

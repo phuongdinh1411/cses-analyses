@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Finding Borders"
-permalink: /cses-analyses/problem_soulutions/string_algorithms/finding_borders_analysis
+permalink: /problem_soulutions/string_algorithms/finding_borders_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Polygon Lattice Points - Geometry Analysis"
-permalink: /cses-analyses/problem_soulutions/geometry/polygon_lattice_points_analysis
+permalink: /problem_soulutions/geometry/polygon_lattice_points_analysis
 ---
 
 

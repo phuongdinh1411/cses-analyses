@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Missing Number"
-permalink: /cses-analyses/problem_soulutions/introductory_problems/missing_number_analysis
+permalink: /problem_soulutions/introductory_problems/missing_number_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subtree Queries"
-permalink: /cses-analyses/problem_soulutions/tree_algorithms/subtree_queries_analysis
+permalink: /problem_soulutions/tree_algorithms/subtree_queries_analysis
 ---
 
 

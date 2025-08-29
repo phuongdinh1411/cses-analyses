@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Flight Discount"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/flight_discount_analysis
+permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis
 ---
 
 

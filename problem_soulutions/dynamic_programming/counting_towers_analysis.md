@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Counting Towers"
-permalink: /cses-analyses/problem_soulutions/dynamic_programming/counting_towers_analysis
+permalink: /problem_soulutions/dynamic_programming/counting_towers_analysis
 ---
 
 

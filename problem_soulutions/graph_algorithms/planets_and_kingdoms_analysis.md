@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Planets and Kingdoms"
-permalink: /cses-analyses/problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis
+permalink: /problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis
 ---
 
 
