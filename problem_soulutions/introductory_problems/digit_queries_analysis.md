@@ -221,7 +221,6 @@ def find_digit_log(k):
 
 ## Related Problems
 - [Missing Number](/cses-analyses/problem_soulutions/introductory_problems/missing_number_analysis)
-- [Digit Sum](/cses-analyses/problem_soulutions/digit_sum_analysis)
 - [Number Spiral](/cses-analyses/problem_soulutions/introductory_problems/number_spiral_analysis)
 
 ## Practice Problems
