@@ -322,10 +322,11 @@ for weight in weights:
 
 ## 🔗 Related Problems
 
-- **Subset Sum**: Find if a subset sums to target
-- **Partition Equal Subset Sum**: Divide into two equal parts
-- **Target Sum**: Assign +/- to get target
-- **Knapsack Problems**: Optimization with constraints
+- **[Two Sets](/cses-analyses/problem_soulutions/introductory_problems/two_sets_analysis)**: Divide into two equal parts
+- **[Two Sets](/cses-analyses/problem_soulutions/introductory_problems/two_sets_analysis)**: Dynamic programming approach
+- **[Money Sums](/cses-analyses/problem_soulutions/dynamic_programming/money_sums_analysis)**: Find all possible subset sums
+- **[Coin Combinations I](/cses-analyses/problem_soulutions/dynamic_programming/coin_combinations_i_analysis)**: Count ways to make sum
+- **[Coin Combinations I](/cses-analyses/problem_soulutions/dynamic_programming/coin_combinations_i_analysis)**: Count ways with limited coins
 
 ## 📚 Learning Resources
 
