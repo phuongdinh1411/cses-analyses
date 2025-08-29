@@ -1,100 +1,115 @@
 ---
 layout: simple
 title: "Introductory Problems"
-permalink: /problem_soulutions/introductory_problems
+permalink: /cses-analyses/problem_soulutions/introductory_problems/
 ---
-
 
 # Introductory Problems
 
-Welcome to the Introductory Problems section! These problems are designed to help you master fundamental algorithms and data structures in competitive programming.
+Welcome to the Introductory Problems section! This category contains fundamental algorithmic problems that serve as an excellent starting point for learning competitive programming concepts.
 
-## 🎯 Overview
+## Overview
 
-Introductory problems cover essential concepts that form the foundation of competitive programming:
-- **Basic algorithms**: Sorting, searching, and simple data structures
-- **Mathematical thinking**: Number theory, combinatorics, and patterns
-- **Implementation skills**: Clean code, edge cases, and optimization
-- **Problem-solving strategies**: Breaking down problems and choosing approaches
+Introductory Problems are designed to help you build a strong foundation in:
+- **Basic algorithms and data structures**
+- **Problem-solving techniques**
+- **Implementation skills**
+- **Mathematical thinking**
 
-## 📚 Problem List
+## Topics Covered
 
-### 🔢 Mathematical Problems
-- [Apple Division](/cses-analyses/problem_soulutions/introductory_problems/apple_division_analysis) - Divide apples into two groups with minimum difference
-- [Coin Piles](/cses-analyses/problem_soulutions/introductory_problems/coin_piles_analysis) - Mathematical analysis of coin removal game
-- [Digit Queries](/cses-analyses/problem_soulutions/introductory_problems/digit_queries_analysis) - Find digits in sequence using binary search
-- [Missing Number](/cses-analyses/problem_soulutions/introductory_problems/missing_number_analysis) - Find missing number in sequence
-- [Number Spiral](/cses-analyses/problem_soulutions/introductory_problems/number_spiral_analysis) - Generate spiral pattern
-- [Trailing Zeros](/cses-analyses/problem_soulutions/introductory_problems/trailing_zeros_analysis) - Count trailing zeros in factorial
+### 🔢 **Number Theory & Mathematics**
+- **Weird Algorithm** - Understanding basic loops and conditions
+- **Missing Number** - Mathematical series and arithmetic
+- **Number Spiral** - Pattern recognition and coordinate systems
+- **Trailing Zeros** - Prime factorization and counting
+- **Gray Code** - Binary number manipulation
+- **Digit Queries** - Mathematical patterns in sequences
 
-### 🔄 Permutation and Combination
-- [Bit Strings](/cses-analyses/problem_soulutions/introductory_problems/bit_strings_analysis) - Count binary strings without consecutive ones
-- [Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis) - Generate all distinct permutations
-- [Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis) - Generate all permutations
-- [String Reorder](/cses-analyses/problem_soulutions/introductory_problems/string_reorder_analysis) - Find lexicographically smallest reordering
+### 🎯 **Combinatorics & Permutations**
+- **Bit Strings** - Binary counting and combinations
+- **Creating Strings** - Permutation generation
+- **Permutations** - Recursive backtracking
+- **Palindrome Reorder** - Character frequency analysis
 
-### 🎮 Game Theory
-- [Raab Game I](/cses-analyses/problem_soulutions/introductory_problems/raab_game_i_analysis) - Game theory with Grundy numbers
-- [Two Sets](/cses-analyses/problem_soulutions/introductory_problems/two_sets_analysis) - Divide numbers into two sets
+### 🎮 **Game Theory & Logic**
+- **Apple Division** - Subset sum and optimization
+- **Coin Piles** - Mathematical reasoning
+- **Two Sets** - Set theory and mathematical logic
+- **Raab Game I** - Game theory fundamentals
 
-### 🏁 Grid and Path Problems
-- [Chessboard and Queens](/cses-analyses/problem_soulutions/introductory_problems/chessboard_and_queens_analysis) - Place queens without conflicts
-- [Grid Coloring I](/cses-analyses/problem_soulutions/introductory_problems/grid_coloring_i_analysis) - Color grid with constraints
-- [Grid Path Description](/cses-analyses/problem_soulutions/introductory_problems/grid_path_description_analysis) - Count valid paths following description
-- [Knight Moves Grid](/cses-analyses/problem_soulutions/introductory_problems/knight_moves_grid_analysis) - Find minimum knight moves
-- [Two Knights](/cses-analyses/problem_soulutions/introductory_problems/two_knights_analysis) - Place two knights without attacks
+### 🏗️ **Grid & Matrix Problems**
+- **Grid Coloring I** - Graph coloring concepts
+- **Grid Path Description** - Path counting and dynamic programming
+- **Knight Moves Grid** - Chess piece movement patterns
+- **Mex Grid Construction** - Minimum excludant (MEX) concept
 
-### 🔤 String Problems
-- [Palindrome Reorder](/cses-analyses/problem_soulutions/introductory_problems/palindrome_reorder_analysis) - Reorder string to form palindrome
-- [Repetitions](/cses-analyses/problem_soulutions/introductory_problems/repetitions_analysis) - Find longest consecutive repetition
+### 📊 **Array & Sequence Problems**
+- **Increasing Array** - Greedy algorithms
+- **Repetitions** - Frequency counting
+- **String Reorder** - String manipulation and sorting
 
-### 🔢 Advanced Mathematical
-- [Gray Code](/cses-analyses/problem_soulutions/introductory_problems/gray_code_analysis) - Generate Gray code sequence
-- [Increasing Array](/cses-analyses/problem_soulutions/introductory_problems/increasing_array_analysis) - Make array increasing with minimum operations
-- [Mex Grid Construction](/cses-analyses/problem_soulutions/introductory_problems/mex_grid_construction_analysis) - Construct grid with specific MEX values
-- [Mex Grid Construction II](/cses-analyses/problem_soulutions/introductory_problems/mex_grid_construction_ii_analysis) - Dual MEX constraints
-- [Tower of Hanoi](/cses-analyses/problem_soulutions/introductory_problems/tower_of_hanoi_analysis) - Classic recursive problem
-- [Weird Algorithm](/cses-analyses/problem_soulutions/introductory_problems/weird_algorithm_analysis) - Follow algorithm to reach 1
+### 🏛️ **Classic Problems**
+- **Tower of Hanoi** - Recursive thinking
+- **Chessboard and Queens** - Backtracking and constraint satisfaction
+- **Two Knights** - Combinatorial counting
 
-## 🎯 Learning Path
+## Learning Path
 
-### For Beginners
-1. Start with **Mathematical Problems** to build number sense
-2. Move to **String Problems** for basic string manipulation
-3. Try **Grid Problems** for 2D array concepts
-4. Explore **Game Theory** for strategic thinking
+### 🟢 **Beginner Level** (Start Here)
+1. **Weird Algorithm** - Basic loops and conditions
+2. **Missing Number** - Simple mathematical thinking
+3. **Increasing Array** - Greedy approach
+4. **Repetitions** - Basic counting
 
-### For Intermediate
-1. Focus on **Permutation and Combination** problems
-2. Master **Advanced Mathematical** concepts
-3. Practice **Grid and Path Problems** with optimization
-4. Challenge yourself with complex **Game Theory**
+### 🟡 **Intermediate Level**
+1. **Bit Strings** - Binary concepts
+2. **Creating Strings** - Recursive thinking
+3. **Number Spiral** - Pattern recognition
+4. **Trailing Zeros** - Prime factorization
 
-## 💡 Key Concepts Covered
+### 🔴 **Advanced Level**
+1. **Apple Division** - Subset sum optimization
+2. **Chessboard and Queens** - Backtracking
+3. **Gray Code** - Advanced bit manipulation
+4. **Digit Queries** - Mathematical patterns
 
-- **Mathematical thinking** and pattern recognition
-- **String manipulation** and text processing
-- **Grid algorithms** and 2D array operations
-- **Game theory** and strategic problem-solving
-- **Combinatorics** and counting techniques
-- **Recursion** and recursive thinking
-- **Optimization** and efficiency
+## Key Concepts
 
-## 🚀 Tips for Success
+### 🧮 **Mathematical Foundations**
+- **Arithmetic sequences** and series
+- **Prime factorization** and divisibility
+- **Combinatorial counting** principles
+- **Pattern recognition** in sequences
 
-1. **Read carefully**: Understand the problem constraints and requirements
-2. **Start simple**: Begin with brute force solutions, then optimize
-3. **Handle edge cases**: Consider boundary conditions and special cases
-4. **Practice implementation**: Focus on clean, readable code
-5. **Analyze complexity**: Understand time and space complexity
-6. **Look for patterns**: Many problems have similar underlying structures
+### 💻 **Programming Techniques**
+- **Recursive algorithms** and backtracking
+- **Greedy approaches** for optimization
+- **Dynamic programming** fundamentals
+- **Bit manipulation** and binary operations
 
-## 🔗 Related Resources
+### 🎯 **Problem-Solving Skills**
+- **Pattern identification** in problems
+- **Mathematical modeling** of real-world scenarios
+- **Algorithm design** and optimization
+- **Implementation** and debugging
 
-- [Quick Reference](/quick_reference/) - Essential algorithms and techniques
-- [Sorting and Searching](/problem_soulutions/sorting_and_searching/) - Next level problems
-- [Dynamic Programming](/problem_soulutions/dynamic_programming/) - Advanced optimization
+## Tips for Success
+
+1. **Start Simple**: Begin with the easiest problems to build confidence
+2. **Understand Patterns**: Look for mathematical patterns and relationships
+3. **Practice Implementation**: Focus on clean, efficient code
+4. **Think Mathematically**: Many problems have elegant mathematical solutions
+5. **Use Test Cases**: Always test with small examples first
+
+## Related Topics
+
+After mastering these introductory problems, you'll be ready to tackle:
+- **Sorting and Searching** - More advanced algorithms
+- **Dynamic Programming** - Optimization techniques
+- **Graph Algorithms** - Network and connectivity problems
+- **String Algorithms** - Text processing challenges
 
 ---
 
-**Ready to start? Choose a problem from the list above and begin your competitive programming journey!** 🚀 
+*Ready to start your journey? Pick any problem above and begin building your algorithmic foundation!* 
