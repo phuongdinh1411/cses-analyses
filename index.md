@@ -85,21 +85,21 @@ Learn computational geometry algorithms and techniques.
 ### 🎯 Recommended Learning Paths
 
 #### 🟢 **Beginner Path** (Start Here)
-- **[🧮 Introductory Problems](/cses-analyses/problem_soulutions/introductory_problems)** (24 problems) - Master fundamentals with basic algorithms and data structures
-- **[🔍 Sorting and Searching](/cses-analyses/problem_soulutions/sorting_and_searching/array_division_analysis)** (32 problems) - Learn efficient sorting algorithms and search techniques
+- **[🧮 Introductory Problems](/cses-analyses/problem_soulutions/introductory_problems/summary)** (24 problems) - Master fundamentals with basic algorithms and data structures
+- **[🔍 Sorting and Searching](/cses-analyses/problem_soulutions/sorting_and_searching/summary)** (32 problems) - Learn efficient sorting algorithms and search techniques
 
 #### 🟡 **Intermediate Path** (Build Core Skills)
-- **[📊 Dynamic Programming](/cses-analyses/problem_soulutions/dynamic_programming/coin_combinations_i_analysis)** (18 problems) - Explore DP patterns and optimization strategies
-- **[🌐 Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/building_roads_analysis)** (32 problems) - Master connectivity, shortest paths, and graph traversal
-- **[🌳 Tree Algorithms](/cses-analyses/problem_soulutions/tree_algorithms/company_queries_i_analysis)** (15 problems) - Learn tree data structures and traversal techniques
-- **[🪟 Sliding Window](/cses-analyses/problem_soulutions/sliding_window/fixed_length_subarray_sum_analysis)** (15 problems) - Master sliding window techniques for array problems
+- **[📊 Dynamic Programming](/cses-analyses/problem_soulutions/dynamic_programming/summary)** (18 problems) - Explore DP patterns and optimization strategies
+- **[🌐 Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/summary)** (32 problems) - Master connectivity, shortest paths, and graph traversal
+- **[🌳 Tree Algorithms](/cses-analyses/problem_soulutions/tree_algorithms/summary)** (15 problems) - Learn tree data structures and traversal techniques
+- **[🪟 Sliding Window](/cses-analyses/problem_soulutions/sliding_window/summary)** (15 problems) - Master sliding window techniques for array problems
 
 #### 🔴 **Advanced Path** (Master Complex Concepts)
-- **[📏 Range Queries](/cses-analyses/problem_soulutions/range_queries/dynamic_range_sum_queries_analysis)** (18 problems) - Advanced data structures for efficient range operations
-- **[🧵 String Algorithms](/cses-analyses/problem_soulutions/string_algorithms/distinct_strings_analysis)** (15 problems) - Pattern matching, text processing, and string manipulation
-- **[📐 Geometry](/cses-analyses/problem_soulutions/geometry/all_manhattan_distances_analysis)** (17 problems) - Computational geometry algorithms and techniques
-- **[🔢 Counting Problems](/cses-analyses/problem_soulutions/counting_problems/all_letter_subgrid_count_i_analysis)** (20 problems) - Combinatorics and advanced counting techniques
-- **[🔗 Advanced Graph Problems](/cses-analyses/problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis)** (25 problems) - Complex graph theory and advanced algorithms
+- **[📏 Range Queries](/cses-analyses/problem_soulutions/range_queries/summary)** (18 problems) - Advanced data structures for efficient range operations
+- **[🧵 String Algorithms](/cses-analyses/problem_soulutions/string_algorithms/summary)** (15 problems) - Pattern matching, text processing, and string manipulation
+- **[📐 Geometry](/cses-analyses/problem_soulutions/geometry/summary)** (17 problems) - Computational geometry algorithms and techniques
+- **[🔢 Counting Problems](/cses-analyses/problem_soulutions/counting_problems/summary)** (20 problems) - Combinatorics and advanced counting techniques
+- **[🔗 Advanced Graph Problems](/cses-analyses/problem_soulutions/advanced_graph_problems/summary)** (25 problems) - Complex graph theory and advanced algorithms
 
 ---
 
