@@ -201,9 +201,9 @@ def string_reorder_memory_efficient(s):
 ```
 
 ## Related Problems
-- [Creating Strings](../creating_strings_analysis/)
-- [Palindrome Reorder](../palindrome_reorder_analysis/)
-- [Permutations](../permutations_analysis/)
+- [Creating Strings](/cses-analyses/problem_soulutions/creating_strings_analysis/)
+- [Palindrome Reorder](/cses-analyses/problem_soulutions/palindrome_reorder_analysis/)
+- [Permutations](/cses-analyses/problem_soulutions/permutations_analysis/)
 
 ## Practice Problems
 1. **CSES**: String Reorder

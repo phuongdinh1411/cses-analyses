@@ -20,41 +20,41 @@ Introductory problems cover essential concepts that form the foundation of compe
 ## 📚 Problem List
 
 ### 🔢 Mathematical Problems
-- [Apple Division](../apple_division_analysis/) - Divide apples into two groups with minimum difference
-- [Coin Piles](../coin_piles_analysis/) - Mathematical analysis of coin removal game
-- [Digit Queries](../digit_queries_analysis/) - Find digits in sequence using binary search
-- [Missing Number](../missing_number_analysis/) - Find missing number in sequence
-- [Number Spiral](../number_spiral_analysis/) - Generate spiral pattern
-- [Trailing Zeros](../trailing_zeros_analysis/) - Count trailing zeros in factorial
+- [Apple Division](/cses-analyses/problem_soulutions/apple_division_analysis/) - Divide apples into two groups with minimum difference
+- [Coin Piles](/cses-analyses/problem_soulutions/coin_piles_analysis/) - Mathematical analysis of coin removal game
+- [Digit Queries](/cses-analyses/problem_soulutions/digit_queries_analysis/) - Find digits in sequence using binary search
+- [Missing Number](/cses-analyses/problem_soulutions/missing_number_analysis/) - Find missing number in sequence
+- [Number Spiral](/cses-analyses/problem_soulutions/number_spiral_analysis/) - Generate spiral pattern
+- [Trailing Zeros](/cses-analyses/problem_soulutions/trailing_zeros_analysis/) - Count trailing zeros in factorial
 
 ### 🔄 Permutation and Combination
-- [Bit Strings](../bit_strings_analysis/) - Count binary strings without consecutive ones
-- [Creating Strings](../creating_strings_analysis/) - Generate all distinct permutations
-- [Permutations](../permutations_analysis/) - Generate all permutations
-- [String Reorder](../string_reorder_analysis/) - Find lexicographically smallest reordering
+- [Bit Strings](/cses-analyses/problem_soulutions/bit_strings_analysis/) - Count binary strings without consecutive ones
+- [Creating Strings](/cses-analyses/problem_soulutions/creating_strings_analysis/) - Generate all distinct permutations
+- [Permutations](/cses-analyses/problem_soulutions/permutations_analysis/) - Generate all permutations
+- [String Reorder](/cses-analyses/problem_soulutions/string_reorder_analysis/) - Find lexicographically smallest reordering
 
 ### 🎮 Game Theory
-- [Raab Game I](../raab_game_i_analysis/) - Game theory with Grundy numbers
-- [Two Sets](../two_sets_analysis/) - Divide numbers into two sets
+- [Raab Game I](/cses-analyses/problem_soulutions/raab_game_i_analysis/) - Game theory with Grundy numbers
+- [Two Sets](/cses-analyses/problem_soulutions/two_sets_analysis/) - Divide numbers into two sets
 
 ### 🏁 Grid and Path Problems
-- [Chessboard and Queens](../chessboard_and_queens_analysis/) - Place queens without conflicts
-- [Grid Coloring I](../grid_coloring_i_analysis/) - Color grid with constraints
-- [Grid Path Description](../grid_path_description_analysis/) - Count valid paths following description
-- [Knight Moves Grid](../knight_moves_grid_analysis/) - Find minimum knight moves
-- [Two Knights](../two_knights_analysis/) - Place two knights without attacks
+- [Chessboard and Queens](/cses-analyses/problem_soulutions/chessboard_and_queens_analysis/) - Place queens without conflicts
+- [Grid Coloring I](/cses-analyses/problem_soulutions/grid_coloring_i_analysis/) - Color grid with constraints
+- [Grid Path Description](/cses-analyses/problem_soulutions/grid_path_description_analysis/) - Count valid paths following description
+- [Knight Moves Grid](/cses-analyses/problem_soulutions/knight_moves_grid_analysis/) - Find minimum knight moves
+- [Two Knights](/cses-analyses/problem_soulutions/two_knights_analysis/) - Place two knights without attacks
 
 ### 🔤 String Problems
-- [Palindrome Reorder](../palindrome_reorder_analysis/) - Reorder string to form palindrome
-- [Repetitions](../repetitions_analysis/) - Find longest consecutive repetition
+- [Palindrome Reorder](/cses-analyses/problem_soulutions/palindrome_reorder_analysis/) - Reorder string to form palindrome
+- [Repetitions](/cses-analyses/problem_soulutions/repetitions_analysis/) - Find longest consecutive repetition
 
 ### 🔢 Advanced Mathematical
-- [Gray Code](../gray_code_analysis/) - Generate Gray code sequence
-- [Increasing Array](../increasing_array_analysis/) - Make array increasing with minimum operations
-- [Mex Grid Construction](../mex_grid_construction_analysis/) - Construct grid with specific MEX values
-- [Mex Grid Construction II](../mex_grid_construction_ii_analysis/) - Dual MEX constraints
-- [Tower of Hanoi](../tower_of_hanoi_analysis/) - Classic recursive problem
-- [Weird Algorithm](../weird_algorithm_analysis/) - Follow algorithm to reach 1
+- [Gray Code](/cses-analyses/problem_soulutions/gray_code_analysis/) - Generate Gray code sequence
+- [Increasing Array](/cses-analyses/problem_soulutions/increasing_array_analysis/) - Make array increasing with minimum operations
+- [Mex Grid Construction](/cses-analyses/problem_soulutions/mex_grid_construction_analysis/) - Construct grid with specific MEX values
+- [Mex Grid Construction II](/cses-analyses/problem_soulutions/mex_grid_construction_ii_analysis/) - Dual MEX constraints
+- [Tower of Hanoi](/cses-analyses/problem_soulutions/tower_of_hanoi_analysis/) - Classic recursive problem
+- [Weird Algorithm](/cses-analyses/problem_soulutions/weird_algorithm_analysis/) - Follow algorithm to reach 1
 
 ## 🎯 Learning Path
 

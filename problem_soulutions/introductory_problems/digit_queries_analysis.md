@@ -220,9 +220,9 @@ def find_digit_log(k):
 ```
 
 ## Related Problems
-- [Missing Number](../missing_number_analysis/)
-- [Digit Sum](../digit_sum_analysis/)
-- [Number Spiral](../number_spiral_analysis/)
+- [Missing Number](/cses-analyses/problem_soulutions/missing_number_analysis/)
+- [Digit Sum](/cses-analyses/problem_soulutions/digit_sum_analysis/)
+- [Number Spiral](/cses-analyses/problem_soulutions/number_spiral_analysis/)
 
 ## Practice Problems
 1. ****: Digit Queries

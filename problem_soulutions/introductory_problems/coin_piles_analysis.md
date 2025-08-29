@@ -98,9 +98,9 @@ def can_empty_piles(a, b):
 **Approach**: Use greedy strategy or dynamic programming.
 
 ## Related Problems
-- [Two Sets](../two_sets_analysis/)
-- [Apple Division](../apple_division_analysis/)
-- [Creating Strings](../creating_strings_analysis/)
+- [Two Sets](/cses-analyses/problem_soulutions/two_sets_analysis/)
+- [Apple Division](/cses-analyses/problem_soulutions/apple_division_analysis/)
+- [Creating Strings](/cses-analyses/problem_soulutions/creating_strings_analysis/)
 
 ## Practice Problems
 1. **CSES**: Coin Piles

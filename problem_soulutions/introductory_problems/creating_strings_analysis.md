@@ -258,9 +258,9 @@ def create_strings_parallel(s):
 ```
 
 ## Related Problems
-- [String Reorder](../string_reorder_analysis/)
-- [Palindrome Reorder](../palindrome_reorder_analysis/)
-- [Permutations](../permutations_analysis/)
+- [String Reorder](/cses-analyses/problem_soulutions/string_reorder_analysis/)
+- [Palindrome Reorder](/cses-analyses/problem_soulutions/palindrome_reorder_analysis/)
+- [Permutations](/cses-analyses/problem_soulutions/permutations_analysis/)
 
 ## Practice Problems
 1. **CSES**: Creating Strings
