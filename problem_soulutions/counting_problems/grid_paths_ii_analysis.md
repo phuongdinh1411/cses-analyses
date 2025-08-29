@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Grid Paths II"
-permalink: /problem_soulutions/counting_problems/grid_paths_ii_analysis
+permalink: /cses-analyses/problem_soulutions/counting_problems/grid_paths_ii_analysis
 ---
 
 

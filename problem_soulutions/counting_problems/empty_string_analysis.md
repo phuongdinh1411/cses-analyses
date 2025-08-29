@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Empty String"
-permalink: /problem_soulutions/counting_problems/empty_string_analysis
+permalink: /cses-analyses/problem_soulutions/counting_problems/empty_string_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Pizzeria Queries"
-permalink: /problem_soulutions/range_queries/pizzeria_queries_analysis
+permalink: /cses-analyses/problem_soulutions/range_queries/pizzeria_queries_analysis
 ---
 
 

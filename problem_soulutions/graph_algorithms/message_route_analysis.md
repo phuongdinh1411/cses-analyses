@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Message Route"
-permalink: /problem_soulutions/graph_algorithms/message_route_analysis
+permalink: /cses-analyses/problem_soulutions/graph_algorithms/message_route_analysis
 ---
 
 

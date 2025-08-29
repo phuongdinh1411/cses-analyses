@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Money Sums"
-permalink: /problem_soulutions/dynamic_programming/money_sums_analysis
+permalink: /cses-analyses/problem_soulutions/dynamic_programming/money_sums_analysis
 ---
 
 

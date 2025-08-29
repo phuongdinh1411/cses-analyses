@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subarray Divisibility"
-permalink: /problem_soulutions/sorting_and_searching/subarray_divisibility_analysis
+permalink: /cses-analyses/problem_soulutions/sorting_and_searching/subarray_divisibility_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Intersection Points"
-permalink: /problem_soulutions/geometry/intersection_points_analysis
+permalink: /cses-analyses/problem_soulutions/geometry/intersection_points_analysis
 ---
 
 

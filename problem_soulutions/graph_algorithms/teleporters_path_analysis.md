@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Teleporters Path"
-permalink: /problem_soulutions/graph_algorithms/teleporters_path_analysis
+permalink: /cses-analyses/problem_soulutions/graph_algorithms/teleporters_path_analysis
 ---
 
 

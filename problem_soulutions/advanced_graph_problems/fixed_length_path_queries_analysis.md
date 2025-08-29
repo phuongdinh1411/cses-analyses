@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Fixed Length Path Queries"
-permalink: /problem_soulutions/advanced_graph_problems/fixed_length_path_queries_analysis
+permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_path_queries_analysis
 ---
 
 

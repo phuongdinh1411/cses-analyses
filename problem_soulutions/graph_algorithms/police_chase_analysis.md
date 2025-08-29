@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Police Chase"
-permalink: /problem_soulutions/graph_algorithms/police_chase_analysis
+permalink: /cses-analyses/problem_soulutions/graph_algorithms/police_chase_analysis
 ---
 
 

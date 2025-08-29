@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Counting Combinations"
-permalink: /problem_soulutions/counting_problems/counting_combinations_analysis
+permalink: /cses-analyses/problem_soulutions/counting_problems/counting_combinations_analysis
 ---
 
 

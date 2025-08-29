@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subarray Distinct Values Queries"
-permalink: /problem_soulutions/range_queries/subarray_distinct_values_queries_analysis
+permalink: /cses-analyses/problem_soulutions/range_queries/subarray_distinct_values_queries_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subarray with Given Sum"
-permalink: /problem_soulutions/sliding_window/subarray_with_given_sum_analysis
+permalink: /cses-analyses/problem_soulutions/sliding_window/subarray_with_given_sum_analysis
 ---
 
 

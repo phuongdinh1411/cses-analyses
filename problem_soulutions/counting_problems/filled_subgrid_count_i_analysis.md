@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Filled Subgrid Count I"
-permalink: /problem_soulutions/counting_problems/filled_subgrid_count_i_analysis
+permalink: /cses-analyses/problem_soulutions/counting_problems/filled_subgrid_count_i_analysis
 ---
 
 

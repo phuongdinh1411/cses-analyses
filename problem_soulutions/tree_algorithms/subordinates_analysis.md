@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subordinates"
-permalink: /problem_soulutions/tree_algorithms/subordinates_analysis
+permalink: /cses-analyses/problem_soulutions/tree_algorithms/subordinates_analysis
 ---
 
 

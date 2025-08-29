@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Collecting Numbers V"
-permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_v_analysis
+permalink: /cses-analyses/problem_soulutions/sorting_and_searching/collecting_numbers_v_analysis
 ---
 
 

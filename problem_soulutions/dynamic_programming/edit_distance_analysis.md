@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Edit Distance"
-permalink: /problem_soulutions/dynamic_programming/edit_distance_analysis
+permalink: /cses-analyses/problem_soulutions/dynamic_programming/edit_distance_analysis
 ---
 
 

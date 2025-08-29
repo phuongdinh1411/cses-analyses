@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Permutations"
-permalink: /problem_soulutions/introductory_problems/permutations_analysis
+permalink: /cses-analyses/problem_soulutions/introductory_problems/permutations_analysis
 ---
 
 

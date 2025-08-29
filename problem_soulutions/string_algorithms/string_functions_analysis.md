@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "String Functions"
-permalink: /problem_soulutions/string_algorithms/string_functions_analysis
+permalink: /cses-analyses/problem_soulutions/string_algorithms/string_functions_analysis
 ---
 
 

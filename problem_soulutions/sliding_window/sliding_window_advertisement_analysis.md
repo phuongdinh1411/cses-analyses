@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Sliding Window Advertisement"
-permalink: /problem_soulutions/sliding_window/sliding_window_advertisement_analysis
+permalink: /cses-analyses/problem_soulutions/sliding_window/sliding_window_advertisement_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Counting Permutations"
-permalink: /problem_soulutions/counting_problems/counting_permutations_analysis
+permalink: /cses-analyses/problem_soulutions/counting_problems/counting_permutations_analysis
 ---
 
 

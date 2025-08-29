@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Two Sets II"
-permalink: /problem_soulutions/dynamic_programming/two_sets_ii_analysis
+permalink: /cses-analyses/problem_soulutions/dynamic_programming/two_sets_ii_analysis
 ---
 
 

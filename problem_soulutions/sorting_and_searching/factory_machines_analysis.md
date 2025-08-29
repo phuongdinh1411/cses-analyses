@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Factory Machines"
-permalink: /problem_soulutions/sorting_and_searching/factory_machines_analysis
+permalink: /cses-analyses/problem_soulutions/sorting_and_searching/factory_machines_analysis
 ---
 
 

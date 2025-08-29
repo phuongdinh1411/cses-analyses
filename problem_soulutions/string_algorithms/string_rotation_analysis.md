@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "String Rotation"
-permalink: /problem_soulutions/string_algorithms/string_rotation_analysis
+permalink: /cses-analyses/problem_soulutions/string_algorithms/string_rotation_analysis
 ---
 
 

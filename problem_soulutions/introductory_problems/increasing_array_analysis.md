@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Increasing Array"
-permalink: /problem_soulutions/introductory_problems/increasing_array_analysis
+permalink: /cses-analyses/problem_soulutions/introductory_problems/increasing_array_analysis
 ---
 
 

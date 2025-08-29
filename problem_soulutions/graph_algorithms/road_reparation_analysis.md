@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Road Reparation"
-permalink: /problem_soulutions/graph_algorithms/road_reparation_analysis
+permalink: /cses-analyses/problem_soulutions/graph_algorithms/road_reparation_analysis
 ---
 
 

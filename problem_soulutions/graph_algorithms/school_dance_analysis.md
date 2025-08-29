@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "School Dance"
-permalink: /problem_soulutions/graph_algorithms/school_dance_analysis
+permalink: /cses-analyses/problem_soulutions/graph_algorithms/school_dance_analysis
 ---
 
 

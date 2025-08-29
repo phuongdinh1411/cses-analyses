@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Weird Algorithm"
-permalink: /problem_soulutions/sorting_and_searching/cses_weird_algorithm_analysis
+permalink: /cses-analyses/problem_soulutions/sorting_and_searching/cses_weird_algorithm_analysis
 ---
 
 

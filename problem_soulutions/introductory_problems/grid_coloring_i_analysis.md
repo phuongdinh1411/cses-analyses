@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Grid Coloring I Analysis"
-permalink: /problem_soulutions/introductory_problems/grid_coloring_i_analysis
+permalink: /cses-analyses/problem_soulutions/introductory_problems/grid_coloring_i_analysis
 ---
 
 

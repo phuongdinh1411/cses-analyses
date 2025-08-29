@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Minimizing Coins"
-permalink: /problem_soulutions/dynamic_programming/minimizing_coins_analysis
+permalink: /cses-analyses/problem_soulutions/dynamic_programming/minimizing_coins_analysis
 ---
 
 

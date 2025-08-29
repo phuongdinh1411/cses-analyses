@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Planets Queries II"
-permalink: /problem_soulutions/graph_algorithms/planets_queries_ii_analysis
+permalink: /cses-analyses/problem_soulutions/graph_algorithms/planets_queries_ii_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Coin Combinations I"
-permalink: /problem_soulutions/dynamic_programming/coin_combinations_i_analysis
+permalink: /cses-analyses/problem_soulutions/dynamic_programming/coin_combinations_i_analysis
 ---
 
 

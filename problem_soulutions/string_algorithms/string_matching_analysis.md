@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "String Matching"
-permalink: /problem_soulutions/string_algorithms/string_matching_analysis
+permalink: /cses-analyses/problem_soulutions/string_algorithms/string_matching_analysis
 ---
 
 

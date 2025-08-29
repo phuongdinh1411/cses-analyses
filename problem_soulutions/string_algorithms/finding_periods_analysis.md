@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Finding Periods"
-permalink: /problem_soulutions/string_algorithms/finding_periods_analysis
+permalink: /cses-analyses/problem_soulutions/string_algorithms/finding_periods_analysis
 ---
 
 

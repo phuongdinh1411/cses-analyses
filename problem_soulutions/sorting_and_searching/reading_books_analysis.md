@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Reading Books"
-permalink: /problem_soulutions/sorting_and_searching/reading_books_analysis
+permalink: /cses-analyses/problem_soulutions/sorting_and_searching/reading_books_analysis
 ---
 
 

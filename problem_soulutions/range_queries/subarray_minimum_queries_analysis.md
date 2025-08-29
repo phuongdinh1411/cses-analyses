@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subarray Minimum Queries"
-permalink: /problem_soulutions/range_queries/subarray_minimum_queries_analysis
+permalink: /cses-analyses/problem_soulutions/range_queries/subarray_minimum_queries_analysis
 ---
 
 

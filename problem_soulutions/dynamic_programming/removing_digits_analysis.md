@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Removing Digits"
-permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis
+permalink: /cses-analyses/problem_soulutions/dynamic_programming/removing_digits_analysis
 ---
 
 

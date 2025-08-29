@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Cycle Finding"
-permalink: /problem_soulutions/graph_algorithms/cycle_finding_analysis
+permalink: /cses-analyses/problem_soulutions/graph_algorithms/cycle_finding_analysis
 ---
 
 

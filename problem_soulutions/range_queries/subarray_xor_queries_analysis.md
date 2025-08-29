@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subarray XOR Queries"
-permalink: /problem_soulutions/range_queries/subarray_xor_queries_analysis
+permalink: /cses-analyses/problem_soulutions/range_queries/subarray_xor_queries_analysis
 ---
 
 

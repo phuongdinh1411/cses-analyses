@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Traffic Lights"
-permalink: /problem_soulutions/sorting_and_searching/traffic_lights_analysis
+permalink: /cses-analyses/problem_soulutions/sorting_and_searching/traffic_lights_analysis
 ---
 
 

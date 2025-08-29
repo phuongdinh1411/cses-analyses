@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Strongly Connected Edges"
-permalink: /problem_soulutions/advanced_graph_problems/strongly_connected_edges_analysis
+permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/strongly_connected_edges_analysis
 ---
 
 

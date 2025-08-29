@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Tree Distances II"
-permalink: /problem_soulutions/tree_algorithms/tree_distances_ii_analysis
+permalink: /cses-analyses/problem_soulutions/tree_algorithms/tree_distances_ii_analysis
 ---
 
 

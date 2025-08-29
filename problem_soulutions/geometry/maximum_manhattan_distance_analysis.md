@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Maximum Manhattan Distance Analysis"
-permalink: /problem_soulutions/geometry/maximum_manhattan_distance_analysis
+permalink: /cses-analyses/problem_soulutions/geometry/maximum_manhattan_distance_analysis
 ---
 
 

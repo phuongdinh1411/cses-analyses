@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Subarray Sum Queries"
-permalink: /problem_soulutions/range_queries/subarray_sum_queries_analysis
+permalink: /cses-analyses/problem_soulutions/range_queries/subarray_sum_queries_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Tree Traversals"
-permalink: /problem_soulutions/advanced_graph_problems/tree_traversals_analysis
+permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/tree_traversals_analysis
 ---
 
 

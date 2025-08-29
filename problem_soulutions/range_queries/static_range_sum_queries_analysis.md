@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Static Range Sum Queries"
-permalink: /problem_soulutions/range_queries/static_range_sum_queries_analysis
+permalink: /cses-analyses/problem_soulutions/range_queries/static_range_sum_queries_analysis
 ---
 
 

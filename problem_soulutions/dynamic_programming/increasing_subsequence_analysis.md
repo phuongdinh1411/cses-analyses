@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Increasing Subsequence"
-permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analysis
+permalink: /cses-analyses/problem_soulutions/dynamic_programming/increasing_subsequence_analysis
 ---
 
 

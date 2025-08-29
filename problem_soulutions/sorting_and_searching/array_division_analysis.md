@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Array Division"
-permalink: /problem_soulutions/sorting_and_searching/array_division_analysis
+permalink: /cses-analyses/problem_soulutions/sorting_and_searching/array_division_analysis
 ---
 
 

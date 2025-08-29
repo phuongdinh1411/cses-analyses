@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Minimal Grid Path"
-permalink: /problem_soulutions/dynamic_programming/minimal_grid_path_analysis
+permalink: /cses-analyses/problem_soulutions/dynamic_programming/minimal_grid_path_analysis
 ---
 
 

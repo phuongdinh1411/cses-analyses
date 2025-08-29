@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Advanced Algorithms"
-permalink: /quick_reference/advanced_algorithms
+permalink: /cses-analyses/quick_reference/advanced_algorithms
 ---
 
 

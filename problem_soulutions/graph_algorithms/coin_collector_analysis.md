@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Coin Collector"
-permalink: /problem_soulutions/graph_algorithms/coin_collector_analysis
+permalink: /cses-analyses/problem_soulutions/graph_algorithms/coin_collector_analysis
 ---
 
 

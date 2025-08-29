@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Strongly Connected Components"
-permalink: /problem_soulutions/graph_algorithms/strongly_connected_components_analysis
+permalink: /cses-analyses/problem_soulutions/graph_algorithms/strongly_connected_components_analysis
 ---
 
 

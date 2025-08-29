@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Room Allocation"
-permalink: /problem_soulutions/sorting_and_searching/room_allocation_analysis
+permalink: /cses-analyses/problem_soulutions/sorting_and_searching/room_allocation_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Minimum Subarray Sum"
-permalink: /problem_soulutions/sliding_window/minimum_subarray_sum_analysis
+permalink: /cses-analyses/problem_soulutions/sliding_window/minimum_subarray_sum_analysis
 ---
 
 

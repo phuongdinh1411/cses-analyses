@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Coordinate Compression"
-permalink: /problem_soulutions/graph_algorithms/coordinate_compression_analysis
+permalink: /cses-analyses/problem_soulutions/graph_algorithms/coordinate_compression_analysis
 ---
 
 

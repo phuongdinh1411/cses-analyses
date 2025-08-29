@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Distinct Values Subsequences"
-permalink: /problem_soulutions/sorting_and_searching/distinct_values_subsequences_analysis
+permalink: /cses-analyses/problem_soulutions/sorting_and_searching/distinct_values_subsequences_analysis
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Tree Matching"
-permalink: /problem_soulutions/tree_algorithms/tree_matching_analysis
+permalink: /cses-analyses/problem_soulutions/tree_algorithms/tree_matching_analysis
 ---
 
 

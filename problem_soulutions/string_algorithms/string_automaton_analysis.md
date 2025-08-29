@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "String Automaton"
-permalink: /problem_soulutions/string_algorithms/string_automaton_analysis
+permalink: /cses-analyses/problem_soulutions/string_algorithms/string_automaton_analysis
 ---
 
 

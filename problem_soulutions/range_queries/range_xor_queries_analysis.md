@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Range Xor Queries"
-permalink: /problem_soulutions/range_queries/range_xor_queries_analysis
+permalink: /cses-analyses/problem_soulutions/range_queries/range_xor_queries_analysis
 ---
 
 

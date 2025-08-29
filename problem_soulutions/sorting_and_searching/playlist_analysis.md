@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Playlist"
-permalink: /problem_soulutions/sorting_and_searching/playlist_analysis
+permalink: /cses-analyses/problem_soulutions/sorting_and_searching/playlist_analysis
 ---
 
 

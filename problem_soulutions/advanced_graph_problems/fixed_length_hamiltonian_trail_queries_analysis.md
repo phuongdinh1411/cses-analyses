@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Fixed Length Hamiltonian Trail Queries"
-permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_trail_queries_analysis
+permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_trail_queries_analysis
 ---
 
 

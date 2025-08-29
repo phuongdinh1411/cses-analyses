@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Company Queries II"
-permalink: /problem_soulutions/tree_algorithms/company_queries_ii_analysis
+permalink: /cses-analyses/problem_soulutions/tree_algorithms/company_queries_ii_analysis
 ---
 
 

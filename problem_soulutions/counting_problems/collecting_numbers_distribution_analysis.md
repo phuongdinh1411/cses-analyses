@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Collecting Numbers Distribution"
-permalink: /problem_soulutions/counting_problems/collecting_numbers_distribution_analysis
+permalink: /cses-analyses/problem_soulutions/counting_problems/collecting_numbers_distribution_analysis
 ---
 
 

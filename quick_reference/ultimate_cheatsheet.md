@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Ultimate Cheatsheet"
-permalink: /quick_reference/ultimate_cheatsheet
+permalink: /cses-analyses/quick_reference/ultimate_cheatsheet
 ---
 
 

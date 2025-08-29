@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "MST Edge Check"
-permalink: /problem_soulutions/advanced_graph_problems/mst_edge_check_analysis
+permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/mst_edge_check_analysis
 ---
 
 

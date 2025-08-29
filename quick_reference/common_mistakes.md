@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Common Mistakes"
-permalink: /quick_reference/common_mistakes
+permalink: /cses-analyses/quick_reference/common_mistakes
 ---
 
 

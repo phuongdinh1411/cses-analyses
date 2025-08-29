@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Range Interval Queries"
-permalink: /problem_soulutions/range_queries/range_interval_queries_analysis
+permalink: /cses-analyses/problem_soulutions/range_queries/range_interval_queries_analysis
 ---
 
 

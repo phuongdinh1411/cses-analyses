@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Polygon Area Analysis"
-permalink: /problem_soulutions/geometry/polygon_area_analysis
+permalink: /cses-analyses/problem_soulutions/geometry/polygon_area_analysis
 ---
 
 

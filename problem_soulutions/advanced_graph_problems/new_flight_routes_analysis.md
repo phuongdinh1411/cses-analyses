@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "New Flight Routes"
-permalink: /problem_soulutions/advanced_graph_problems/new_flight_routes_analysis
+permalink: /cses-analyses/problem_soulutions/advanced_graph_problems/new_flight_routes_analysis
 ---
 
 

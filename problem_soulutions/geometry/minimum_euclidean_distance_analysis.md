@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Minimum Euclidean Distance Analysis"
-permalink: /problem_soulutions/geometry/minimum_euclidean_distance_analysis
+permalink: /cses-analyses/problem_soulutions/geometry/minimum_euclidean_distance_analysis
 ---
 
 

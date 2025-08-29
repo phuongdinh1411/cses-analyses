@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Required Substring"
-permalink: /problem_soulutions/string_algorithms/required_substring_analysis
+permalink: /cses-analyses/problem_soulutions/string_algorithms/required_substring_analysis
 ---
 
 

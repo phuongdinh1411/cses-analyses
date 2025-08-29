@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Shortest Routes II"
-permalink: /problem_soulutions/graph_algorithms/shortest_routes_ii_analysis
+permalink: /cses-analyses/problem_soulutions/graph_algorithms/shortest_routes_ii_analysis
 ---
 
 
