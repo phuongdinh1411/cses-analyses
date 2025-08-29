@@ -112,6 +112,7 @@ We welcome contributions! Here's how you can help:
 
 If you have questions, suggestions, or want to contribute:
 
+- **Email**: phuongdinh1411@gmail.com
 - **GitHub Issues**: Open an issue on the repository
 - **Pull Requests**: Submit improvements via pull requests
 - **Discussions**: Use GitHub Discussions for questions and ideas

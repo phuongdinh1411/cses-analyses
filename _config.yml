@@ -3,6 +3,11 @@ description: Solutions and explanations for CSES problems
 baseurl: "/cses-analyses" # repo name
 url: "https://phuongdinh1411.github.io"
 
+# Contact information
+author:
+  name: "Phuong Dinh"
+  email: "phuongdinh1411@gmail.com"
+
 remote_theme: "mmistakes/minimal-mistakes"
 
 plugins:
