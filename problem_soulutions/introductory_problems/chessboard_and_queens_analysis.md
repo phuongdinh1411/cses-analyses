@@ -145,9 +145,9 @@ def backtrack(self, row, col_mask, diag1_mask, diag2_mask):
 - Forward checking and arc consistency
 
 ## Related Problems
-- [Permutations](/cses-analyses/problem_soulutions/permutations_analysis)
-- [Creating Strings](/cses-analyses/problem_soulutions/creating_strings_analysis)
-- [Two Knights](/cses-analyses/problem_soulutions/two_knights_analysis)
+- [Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis)
+- [Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis)
+- [Two Knights](/cses-analyses/problem_soulutions/introductory_problems/two_knights_analysis)
 
 ## Practice Problems
 1. ****: Chessboard and Queens

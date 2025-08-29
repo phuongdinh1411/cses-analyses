@@ -207,9 +207,9 @@ class CompressedRaabGame:
 ```
 
 ## Related Problems
-- [Two Sets](/cses-analyses/problem_soulutions/two_sets_analysis)
-- [Coin Piles](/cses-analyses/problem_soulutions/coin_piles_analysis)
-- [Apple Division](/cses-analyses/problem_soulutions/apple_division_analysis)
+- [Two Sets](/cses-analyses/problem_soulutions/introductory_problems/two_sets_analysis)
+- [Coin Piles](/cses-analyses/problem_soulutions/introductory_problems/coin_piles_analysis)
+- [Apple Division](/cses-analyses/problem_soulutions/introductory_problems/apple_division_analysis)
 
 ## Practice Problems
 1. ****: Raab Game I

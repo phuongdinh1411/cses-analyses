@@ -192,8 +192,8 @@ def a_star_search(n):
 ```
 
 ## Related Problems
-- [Grid Paths](/cses-analyses/problem_soulutions/grid_path_description_analysis)
-- [Two Knights](/cses-analyses/problem_soulutions/two_knights_analysis)
+- [Grid Paths](/cses-analyses/problem_soulutions/introductory_problems/grid_path_description_analysis)
+- [Two Knights](/cses-analyses/problem_soulutions/introductory_problems/two_knights_analysis)
 - [Labyrinth](/cses-analyses/problem_soulutions/graph_algorithms/labyrinth_analysis)
 
 ## Practice Problems

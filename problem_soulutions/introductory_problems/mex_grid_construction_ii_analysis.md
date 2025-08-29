@@ -284,9 +284,9 @@ class ConstraintPropagator:
 ```
 
 ## Related Problems
-- [Mex Grid Construction](/cses-analyses/problem_soulutions/mex_grid_construction_analysis)
-- [Grid Coloring I](/cses-analyses/problem_soulutions/grid_coloring_i_analysis)
-- [Two Knights](/cses-analyses/problem_soulutions/two_knights_analysis)
+- [Mex Grid Construction](/cses-analyses/problem_soulutions/introductory_problems/mex_grid_construction_analysis)
+- [Grid Coloring I](/cses-analyses/problem_soulutions/introductory_problems/grid_coloring_i_analysis)
+- [Two Knights](/cses-analyses/problem_soulutions/introductory_problems/two_knights_analysis)
 
 ## Practice Problems
 1. ****: Mex Grid Construction II
