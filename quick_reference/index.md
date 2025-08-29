@@ -44,27 +44,54 @@ Welcome to the Quick Reference section! This is your go-to resource for fast acc
 
 ## 🎯 Quick Navigation
 
+### 📊 Problem Collection Overview
+**Total Problems**: 231 | **Categories**: 11 | **Learning Paths**: 3
+
+### 🎯 Learning Paths by Difficulty
+
+#### 🟢 **Beginner Level** (0-6 months)
+- **🧮 Introductory Problems** (24) - Fundamentals and basic algorithms
+- **🔍 Sorting & Searching** (32) - Core algorithmic techniques
+
+#### 🟡 **Intermediate Level** (6-12 months)  
+- **📊 Dynamic Programming** (18) - Optimization and memoization
+- **🌐 Graph Algorithms** (32) - Connectivity and path finding
+- **🌳 Tree Algorithms** (15) - Hierarchical data structures
+- **🪟 Sliding Window** (15) - Array manipulation techniques
+
+#### 🔴 **Advanced Level** (12+ months)
+- **📏 Range Queries** (18) - Advanced data structures
+- **🧵 String Algorithms** (15) - Pattern matching and text processing
+- **📐 Geometry** (17) - Computational geometry
+- **🔢 Counting Problems** (20) - Combinatorics and probability
+- **🔗 Advanced Graph Problems** (25) - Complex graph theory
+
+---
+
 ### 🔍 Problem-Solving Decision Tree
-1. **Read problem carefully** - Identify keywords and constraints
-2. **Classify problem type** - Choose appropriate algorithm category
-3. **Select specific algorithm** - Based on constraints and requirements
-4. **Implement solution** - Write clean, efficient code
-5. **Test & optimize** - Handle edge cases and optimize performance
+1. **📖 Read problem carefully** - Identify keywords and constraints
+2. **🏷️ Classify problem type** - Choose appropriate algorithm category
+3. **🎯 Select specific algorithm** - Based on constraints and requirements
+4. **💻 Implement solution** - Write clean, efficient code
+5. **✅ Test & optimize** - Handle edge cases and optimize performance
 
 ### 📏 Constraint-Based Algorithm Selection
-- **n ≤ 10⁶**: O(n) or O(n log n) required
-- **n ≤ 10⁵**: O(n log n) acceptable
-- **n ≤ 10³**: O(n²) acceptable
-- **n ≤ 20**: O(2ⁿ) acceptable (bitmask)
+| Constraint | Time Complexity | Algorithm Examples |
+|------------|----------------|-------------------|
+| **n ≤ 10⁶** | O(n) or O(n log n) | Linear scan, Binary search |
+| **n ≤ 10⁵** | O(n log n) acceptable | Sorting, Tree operations |
+| **n ≤ 10³** | O(n²) acceptable | Nested loops, DP |
+| **n ≤ 20** | O(2ⁿ) acceptable | Bitmask, Backtracking |
 
-### 🎯 Algorithm Categories
-- **Dynamic Programming**: Optimization, counting problems
-- **Graph Algorithms**: Path finding, connectivity
-- **Tree Algorithms**: Hierarchical data structures
-- **Range Queries**: Interval operations
-- **String Algorithms**: Pattern matching, text processing
-- **Binary Search**: Searching, optimization
-- **Two Pointers**: Subarray problems, sliding window
+### 🎯 Algorithm Categories & Use Cases
+- **📊 Dynamic Programming**: Optimization, counting, memoization
+- **🌐 Graph Algorithms**: Path finding, connectivity, traversal
+- **🌳 Tree Algorithms**: Hierarchical structures, queries
+- **📏 Range Queries**: Interval operations, segment trees
+- **🧵 String Algorithms**: Pattern matching, text processing
+- **🔍 Binary Search**: Searching, optimization problems
+- **🪟 Two Pointers**: Subarray problems, sliding window
+- **🔢 Counting**: Combinatorics, probability, inclusion-exclusion
 
 ## 🚀 Getting Started
 
