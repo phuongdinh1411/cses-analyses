@@ -7,28 +7,17 @@ permalink: /problem_soulutions/dynamic_programming/minimizing_coins_analysis
 
 # Minimizing Coins
 
-## Problem Statement
-Consider a money system consisting of n coins. Each coin has a positive integer value. Your task is to produce a sum of money x using the available coins in such a way that the number of coins is minimal.
+## Problem Description
 
-For example, if the coins are {1,3,4} and the desired sum is 6, there are two ways:
-- 1+1+4 (3 coins)
-- 3+3 (2 coins)
+**Problem**: Given a money system with n coins of different values, find the minimum number of coins needed to produce a sum x.
 
-The answer is 2.
+**Input**: 
+- n, x: number of coins and target sum
+- c1, c2, ..., cn: values of each coin
 
-### Input
-The first input line has two integers n and x: the number of coins and the desired sum of money.
-The second line has n distinct integers c1,c2,…,cn: the value of each coin.
+**Output**: Minimum number of coins needed, or -1 if impossible.
 
-### Output
-Print one integer: the minimum number of coins. If it is not possible to produce the desired sum, print −1.
-
-### Constraints
-- 1 ≤ n ≤ 100
-- 1 ≤ x ≤ 10^6
-- 1 ≤ ci ≤ 10^6
-
-### Example
+**Example**:
 ```
 Input:
 3 6
@@ -36,6 +25,12 @@ Input:
 
 Output:
 2
+
+Explanation: 
+We can achieve sum 6 with:
+- 1+1+4 (3 coins)
+- 3+3 (2 coins) ← minimum
+The answer is 2 coins.
 ```
 
 ## Solution Progression
@@ -98,6 +93,264 @@ def minimizing_coins_memoization(n, x, coins):
 
 ### Improvement 2: Bottom-Up Dynamic Programming - O(n*x)
 **Description**: Use iterative DP to build the solution from smaller subproblems.
+
+```python
+def minimizing_coins_dp(n, x, coins):
+    # dp[i] = minimum coins needed for sum i
+    dp = [float('inf')] * (x + 1)
+    dp[0] = 0  # Base case: 0 coins needed for sum 0
+    
+    for i in range(1, x + 1):
+        for coin in coins:
+            if i >= coin:
+                dp[i] = min(dp[i], 1 + dp[i - coin])
+    
+    return dp[x] if dp[x] != float('inf') else -1
+```
+
+**Why this improvement works**: We build the solution iteratively by solving smaller subproblems first. For each sum i, we try all coin values and take the minimum.
+
+### Step 3: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_minimizing_coins():
+    n, x = map(int, input().split())
+    coins = list(map(int, input().split()))
+    
+    # dp[i] = minimum coins needed for sum i
+    dp = [float('inf')] * (x + 1)
+    dp[0] = 0  # Base case: 0 coins needed for sum 0
+    
+    for i in range(1, x + 1):
+        for coin in coins:
+            if i >= coin:
+                dp[i] = min(dp[i], 1 + dp[i - coin])
+    
+    result = dp[x] if dp[x] != float('inf') else -1
+    print(result)
+
+# Main execution
+if __name__ == "__main__":
+    solve_minimizing_coins()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (3, 6, [1, 3, 4], 2),
+        (2, 5, [2, 3], -1),
+        (4, 10, [1, 2, 5, 10], 1),
+        (3, 7, [1, 3, 4], 2),
+    ]
+    
+    for n, x, coins, expected in test_cases:
+        result = solve_test(n, x, coins)
+        print(f"n={n}, x={x}, coins={coins}, expected={expected}, result={result}")
+        assert result == expected, f"Failed for n={n}, x={x}, coins={coins}"
+        print("✓ Passed")
+        print()
+
+def solve_test(n, x, coins):
+    # dp[i] = minimum coins needed for sum i
+    dp = [float('inf')] * (x + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, x + 1):
+        for coin in coins:
+            if i >= coin:
+                dp[i] = min(dp[i], 1 + dp[i - coin])
+    
+    return dp[x] if dp[x] != float('inf') else -1
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n*x) - we iterate through each sum and each coin
+- **Space**: O(x) - we store dp array of size x+1
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes minimum coins using optimal substructure
+- **State Transition**: dp[i] = min(dp[i-coin] + 1) for all valid coins
+- **Base Case**: dp[0] = 0 represents no coins needed for sum 0
+- **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for Optimization**
+- Find minimum/maximum using smaller subproblems
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **State Transition**
+- Clear definition of how to build larger solutions from smaller ones
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Greedy vs DP**
+- When to use greedy vs dynamic programming
+- Important for understanding
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Coin Combinations with Limited Supply
+**Problem**: Each coin has a limited number available.
+
+```python
+def minimizing_coins_limited_supply(n, x, coins, quantities):
+    # dp[i] = minimum coins needed for sum i
+    dp = [float('inf')] * (x + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, x + 1):
+        for j, coin in enumerate(coins):
+            for k in range(1, quantities[j] + 1):
+                if i >= k * coin:
+                    dp[i] = min(dp[i], k + dp[i - k * coin])
+    
+    return dp[x] if dp[x] != float('inf') else -1
+
+# Example usage
+coins = [1, 3, 4]
+quantities = [5, 2, 1]  # 5 coins of value 1, 2 coins of value 3, 1 coin of value 4
+result = minimizing_coins_limited_supply(3, 6, coins, quantities)
+print(f"Minimum coins needed: {result}")
+```
+
+### Variation 2: Coin Combinations with Weights
+**Problem**: Each coin has a weight, minimize total weight.
+
+```python
+def minimizing_coins_with_weights(n, x, coins, weights):
+    # dp[i] = minimum weight needed for sum i
+    dp = [float('inf')] * (x + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, x + 1):
+        for j, coin in enumerate(coins):
+            if i >= coin:
+                dp[i] = min(dp[i], weights[j] + dp[i - coin])
+    
+    return dp[x] if dp[x] != float('inf') else -1
+
+# Example usage
+coins = [1, 3, 4]
+weights = [2, 5, 3]  # weight of each coin
+result = minimizing_coins_with_weights(3, 6, coins, weights)
+print(f"Minimum weight needed: {result}")
+```
+
+### Variation 3: Coin Combinations with Constraints
+**Problem**: Cannot use certain combinations of coins.
+
+```python
+def minimizing_coins_with_constraints(n, x, coins, forbidden_combinations):
+    # dp[i][mask] = minimum coins needed for sum i with used coins mask
+    dp = [[float('inf')] * (1 << n) for _ in range(x + 1)]
+    dp[0][0] = 0  # Base case
+    
+    for i in range(x + 1):
+        for mask in range(1 << n):
+            if dp[i][mask] != float('inf'):
+                for j, coin in enumerate(coins):
+                    if i + coin <= x:
+                        new_mask = mask | (1 << j)
+                        if new_mask not in forbidden_combinations:
+                            dp[i + coin][new_mask] = min(dp[i + coin][new_mask], 
+                                                        dp[i][mask] + 1)
+    
+    min_coins = min(dp[x])
+    return min_coins if min_coins != float('inf') else -1
+
+# Example usage
+coins = [1, 3, 4]
+forbidden = {0b110}  # Cannot use coins 1 and 3 together
+result = minimizing_coins_with_constraints(3, 6, coins, forbidden)
+print(f"Minimum coins needed: {result}")
+```
+
+### Variation 4: Coin Combinations with Probability
+**Problem**: Each coin has a probability of success, maximize expected value.
+
+```python
+def maximizing_expected_value(n, x, coins, probabilities):
+    # dp[i] = maximum expected value for sum i
+    dp = [0.0] * (x + 1)
+    
+    for i in range(1, x + 1):
+        for j, coin in enumerate(coins):
+            if i >= coin:
+                expected_value = coin * probabilities[j] + dp[i - coin]
+                dp[i] = max(dp[i], expected_value)
+    
+    return dp[x]
+
+# Example usage
+coins = [1, 3, 4]
+probabilities = [0.9, 0.8, 0.7]  # probability of each coin being valid
+result = maximizing_expected_value(3, 6, coins, probabilities)
+print(f"Maximum expected value: {result}")
+```
+
+### Variation 5: Coin Combinations with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
+```python
+def minimizing_coins_optimized(n, x, coins):
+    # Sort coins for better performance
+    coins.sort()
+    
+    # dp[i] = minimum coins needed for sum i
+    dp = [float('inf')] * (x + 1)
+    dp[0] = 0  # Base case
+    
+    # Use early termination
+    for i in range(1, x + 1):
+        for coin in coins:
+            if coin > i:
+                break  # Early termination
+            dp[i] = min(dp[i], 1 + dp[i - coin])
+    
+    return dp[x] if dp[x] != float('inf') else -1
+
+# Example usage
+coins = [4, 3, 1]  # Unsorted
+result = minimizing_coins_optimized(3, 6, coins)
+print(f"Minimum coins needed: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Dice Combinations](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar counting problems
+- **[Coin Combinations](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar coin problems
+- **[Money Sums](/cses-analyses/problem_soulutions/dynamic_programming/)**: Sum-related problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming**: Essential for optimization problems
+2. **State Transitions**: Important for DP formulation
+3. **Greedy vs DP**: Important for algorithm selection
+4. **Optimization**: Important for performance
+
+---
+
+**This is a great introduction to dynamic programming for optimization problems!** 🎯
 
 ```python
 def minimizing_coins_dp(n, x, coins):

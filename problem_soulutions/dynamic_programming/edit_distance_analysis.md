@@ -7,25 +7,22 @@ permalink: /problem_soulutions/dynamic_programming/edit_distance_analysis
 
 # Edit Distance
 
-## Problem Statement
-The edit distance between two strings is the minimum number of operations required to transform one string into the other.
+## Problem Description
 
-The allowed operations are:
+**Problem**: The edit distance between two strings is the minimum number of operations required to transform one string into the other.
+
+**Allowed operations**:
 - Insert a character
 - Delete a character
 - Replace a character
-For example, the edit distance between "LOVE" and "MOVIE" is 2.
 
-### Input
-The first input line contains a string a, and the second line contains a string b.
+**Input**: 
+- a: first string
+- b: second string
 
-### Output
-Print one integer: the edit distance.
+**Output**: Minimum edit distance between the two strings.
 
-### Constraints
-- 1 ≤ |a|,|b| ≤ 5000
-
-### Example
+**Example**:
 ```
 Input:
 LOVE
@@ -33,6 +30,12 @@ MOVIE
 
 Output:
 2
+
+Explanation: 
+Transform "LOVE" to "MOVIE":
+1. Replace 'L' with 'M': MOVE
+2. Insert 'I' before 'E': MOVIE
+Total: 2 operations
 ```
 
 ## Solution Progression
@@ -98,6 +101,357 @@ def edit_distance_memoization(a, b):
 ```
 
 **Why this improvement works**: By storing the results of subproblems in a memo dictionary, we avoid recalculating the same values multiple times. Each subproblem is solved only once, leading to O(n*m) complexity.
+
+### Step 2: Dynamic Programming Approach
+**Description**: Use iterative DP to build the solution from smaller subproblems.
+
+```python
+def edit_distance_dp(a, b):
+    n, m = len(a), len(b)
+    
+    # dp[i][j] = edit distance between a[0:i] and b[0:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    # Base cases
+    for i in range(n + 1):
+        dp[i][0] = i  # Delete i characters from a
+    for j in range(m + 1):
+        dp[0][j] = j  # Insert j characters into a
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if a[i-1] == b[j-1]:
+                dp[i][j] = dp[i-1][j-1]  # No operation needed
+            else:
+                dp[i][j] = 1 + min(dp[i-1][j],    # Delete
+                                  dp[i][j-1],    # Insert
+                                  dp[i-1][j-1])  # Replace
+    
+    return dp[n][m]
+```
+
+### Step 3: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_edit_distance():
+    a = input().strip()
+    b = input().strip()
+    
+    n, m = len(a), len(b)
+    
+    # dp[i][j] = edit distance between a[0:i] and b[0:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    # Base cases
+    for i in range(n + 1):
+        dp[i][0] = i  # Delete i characters from a
+    for j in range(m + 1):
+        dp[0][j] = j  # Insert j characters into a
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if a[i-1] == b[j-1]:
+                dp[i][j] = dp[i-1][j-1]  # No operation needed
+            else:
+                dp[i][j] = 1 + min(dp[i-1][j],    # Delete
+                                  dp[i][j-1],    # Insert
+                                  dp[i-1][j-1])  # Replace
+    
+    print(dp[n][m])
+
+# Main execution
+if __name__ == "__main__":
+    solve_edit_distance()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        ("LOVE", "MOVIE", 2),
+        ("KITTEN", "SITTING", 3),
+        ("", "ABC", 3),
+        ("ABC", "", 3),
+        ("ABC", "ABC", 0),
+    ]
+    
+    for a, b, expected in test_cases:
+        result = solve_test(a, b)
+        print(f"a='{a}', b='{b}', expected={expected}, result={result}")
+        assert result == expected, f"Failed for a='{a}', b='{b}'"
+        print("✓ Passed")
+        print()
+
+def solve_test(a, b):
+    n, m = len(a), len(b)
+    
+    # dp[i][j] = edit distance between a[0:i] and b[0:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    # Base cases
+    for i in range(n + 1):
+        dp[i][0] = i  # Delete i characters from a
+    for j in range(m + 1):
+        dp[0][j] = j  # Insert j characters into a
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if a[i-1] == b[j-1]:
+                dp[i][j] = dp[i-1][j-1]  # No operation needed
+            else:
+                dp[i][j] = 1 + min(dp[i-1][j],    # Delete
+                                  dp[i][j-1],    # Insert
+                                  dp[i-1][j-1])  # Replace
+    
+    return dp[n][m]
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n*m) - we fill a 2D DP table
+- **Space**: O(n*m) - we store the entire DP table
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes edit distance using optimal substructure
+- **State Transition**: dp[i][j] = min(dp[i-1][j] + 1, dp[i][j-1] + 1, dp[i-1][j-1] + cost)
+- **Base Case**: dp[i][0] = i, dp[0][j] = j for empty strings
+- **Optimal Substructure**: Optimal solution can be built from smaller subproblems
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for String Problems**
+- Find optimal substructure in string problems
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **2D DP Table**
+- Use 2D table for two string positions
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **String Alignment**
+- Align strings optimally
+- Important for understanding
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Edit Distance with Different Costs
+**Problem**: Different operations have different costs.
+
+```python
+def edit_distance_with_costs(a, b, insert_cost, delete_cost, replace_cost):
+    n, m = len(a), len(b)
+    
+    # dp[i][j] = edit distance between a[0:i] and b[0:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    # Base cases
+    for i in range(n + 1):
+        dp[i][0] = i * delete_cost  # Delete i characters from a
+    for j in range(m + 1):
+        dp[0][j] = j * insert_cost  # Insert j characters into a
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if a[i-1] == b[j-1]:
+                dp[i][j] = dp[i-1][j-1]  # No operation needed
+            else:
+                dp[i][j] = min(dp[i-1][j] + delete_cost,    # Delete
+                              dp[i][j-1] + insert_cost,    # Insert
+                              dp[i-1][j-1] + replace_cost)  # Replace
+    
+    return dp[n][m]
+
+# Example usage
+result = edit_distance_with_costs("LOVE", "MOVIE", 2, 1, 3)
+print(f"Edit distance with costs: {result}")
+```
+
+### Variation 2: Edit Distance with Character-Specific Costs
+**Problem**: Different characters have different costs.
+
+```python
+def edit_distance_character_costs(a, b, char_costs):
+    n, m = len(a), len(b)
+    
+    # dp[i][j] = edit distance between a[0:i] and b[0:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    # Base cases
+    for i in range(n + 1):
+        dp[i][0] = sum(char_costs.get(a[k], 1) for k in range(i))
+    for j in range(m + 1):
+        dp[0][j] = sum(char_costs.get(b[k], 1) for k in range(j))
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if a[i-1] == b[j-1]:
+                dp[i][j] = dp[i-1][j-1]  # No operation needed
+            else:
+                delete_cost = char_costs.get(a[i-1], 1)
+                insert_cost = char_costs.get(b[j-1], 1)
+                replace_cost = char_costs.get((a[i-1], b[j-1]), 1)
+                
+                dp[i][j] = min(dp[i-1][j] + delete_cost,    # Delete
+                              dp[i][j-1] + insert_cost,    # Insert
+                              dp[i-1][j-1] + replace_cost)  # Replace
+    
+    return dp[n][m]
+
+# Example usage
+char_costs = {'A': 2, 'B': 3, ('A', 'B'): 4}
+result = edit_distance_character_costs("ABC", "ABD", char_costs)
+print(f"Edit distance with character costs: {result}")
+```
+
+### Variation 3: Edit Distance with Transposition
+**Problem**: Allow swapping adjacent characters.
+
+```python
+def edit_distance_with_transposition(a, b):
+    n, m = len(a), len(b)
+    
+    # dp[i][j] = edit distance between a[0:i] and b[0:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    # Base cases
+    for i in range(n + 1):
+        dp[i][0] = i
+    for j in range(m + 1):
+        dp[0][j] = j
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if a[i-1] == b[j-1]:
+                dp[i][j] = dp[i-1][j-1]  # No operation needed
+            else:
+                dp[i][j] = 1 + min(dp[i-1][j],    # Delete
+                                  dp[i][j-1],    # Insert
+                                  dp[i-1][j-1])  # Replace
+                
+                # Check for transposition
+                if i > 1 and j > 1 and a[i-1] == b[j-2] and a[i-2] == b[j-1]:
+                    dp[i][j] = min(dp[i][j], 1 + dp[i-2][j-2])
+    
+    return dp[n][m]
+
+# Example usage
+result = edit_distance_with_transposition("ABC", "ACB")
+print(f"Edit distance with transposition: {result}")
+```
+
+### Variation 4: Edit Distance with Substring Operations
+**Problem**: Allow substring operations (copy, paste, cut).
+
+```python
+def edit_distance_substring_ops(a, b):
+    n, m = len(a), len(b)
+    
+    # dp[i][j] = edit distance between a[0:i] and b[0:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    # Base cases
+    for i in range(n + 1):
+        dp[i][0] = i
+    for j in range(m + 1):
+        dp[0][j] = j
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if a[i-1] == b[j-1]:
+                dp[i][j] = dp[i-1][j-1]  # No operation needed
+            else:
+                dp[i][j] = 1 + min(dp[i-1][j],    # Delete
+                                  dp[i][j-1],    # Insert
+                                  dp[i-1][j-1])  # Replace
+            
+            # Check for substring operations
+            for k in range(1, min(i, j)):
+                if a[i-k:i] == b[j-k:j]:
+                    dp[i][j] = min(dp[i][j], dp[i-k][j-k] + 1)  # Copy operation
+    
+    return dp[n][m]
+
+# Example usage
+result = edit_distance_substring_ops("ABCABC", "ABC")
+print(f"Edit distance with substring ops: {result}")
+```
+
+### Variation 5: Edit Distance with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
+```python
+def optimized_edit_distance(a, b):
+    n, m = len(a), len(b)
+    
+    # Use only 2 rows to save space
+    dp = [[0] * (m + 1) for _ in range(2)]
+    
+    # Base case: first row
+    for j in range(m + 1):
+        dp[0][j] = j
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        curr_row = i % 2
+        prev_row = (i - 1) % 2
+        
+        dp[curr_row][0] = i  # Base case for current row
+        
+        for j in range(1, m + 1):
+            if a[i-1] == b[j-1]:
+                dp[curr_row][j] = dp[prev_row][j-1]  # No operation needed
+            else:
+                dp[curr_row][j] = 1 + min(dp[prev_row][j],    # Delete
+                                         dp[curr_row][j-1],  # Insert
+                                         dp[prev_row][j-1])  # Replace
+    
+    return dp[n % 2][m]
+
+# Example usage
+result = optimized_edit_distance("LOVE", "MOVIE")
+print(f"Optimized edit distance: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Dynamic Programming Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar DP problems
+- **[String Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar string problems
+- **[Alignment Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: General alignment problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming**: Essential for string alignment problems
+2. **2D DP Tables**: Important for two string positions
+3. **String Alignment**: Important for understanding optimal transformations
+4. **Space Optimization**: Important for performance improvement
+
+---
+
+**This is a great introduction to dynamic programming for string alignment problems!** 🎯
 
 ### Improvement 2: Bottom-Up Dynamic Programming - O(n*m)
 **Description**: Use iterative DP to build the solution from smaller subproblems.

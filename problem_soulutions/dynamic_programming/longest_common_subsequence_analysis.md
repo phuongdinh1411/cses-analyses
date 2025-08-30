@@ -7,20 +7,17 @@ permalink: /problem_soulutions/dynamic_programming/longest_common_subsequence_an
 
 # Longest Common Subsequence
 
-## Problem Statement
-Given two strings, find the length of their longest common subsequence (LCS). A subsequence is a sequence that can be derived from another sequence by deleting some elements without changing the order of the remaining elements.
+## Problem Description
 
-### Input
-The first input line has a string s.
-The second input line has a string t.
+**Problem**: Given two strings, find the length of their longest common subsequence (LCS). A subsequence is a sequence that can be derived from another sequence by deleting some elements without changing the order of the remaining elements.
 
-### Output
-Print one integer: the length of the longest common subsequence.
+**Input**: 
+- s: first string
+- t: second string
 
-### Constraints
-- 1 ≤ |s|, |t| ≤ 5000
+**Output**: Length of the longest common subsequence.
 
-### Example
+**Example**:
 ```
 Input:
 AYXT
@@ -28,35 +25,209 @@ AYZXT
 
 Output:
 4
+
+Explanation: 
+The longest common subsequence is "AYXT" with length 4.
+We can find this by matching characters in order:
+- A matches A
+- Y matches Y  
+- X matches X
+- T matches T
+The Z in the second string is skipped.
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Recursive - O(2^(n+m))
-**Description**: Use recursive approach to find LCS.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find the longest sequence that appears in both strings
+- Characters must appear in the same order in both strings
+- We can skip characters but cannot reorder them
+- Use dynamic programming for efficiency
+
+**Key Observations:**
+- If characters match, we can extend the LCS
+- If characters don't match, we take the maximum of two options
+- This is a classic dynamic programming problem
+- Can use 2D DP table
+
+### Step 2: Dynamic Programming Approach
+**Idea**: Use 2D DP table to store LCS lengths for all subproblems.
 
 ```python
-def longest_common_subsequence_naive(s, t):
-    def lcs_recursive(i, j):
-        if i == 0 or j == 0:
-            return 0
-        
+def longest_common_subsequence_dp(s, t):
+    n, m = len(s), len(t)
+    
+    # dp[i][j] = length of LCS of s[0:i] and t[0:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if s[i-1] == t[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    
+    return dp[n][m]
+```
+
+**Why this works:**
+- Uses optimal substructure property
+- Handles all cases correctly
+- Efficient implementation
+- O(n*m) time complexity
+
+### Step 3: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_longest_common_subsequence():
+    s = input()
+    t = input()
+    
+    n, m = len(s), len(t)
+    
+    # dp[i][j] = length of LCS of s[0:i] and t[0:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if s[i-1] == t[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    
+    print(dp[n][m])
+
+# Main execution
+if __name__ == "__main__":
+    solve_longest_common_subsequence()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        ("AYXT", "AYZXT", 4),
+        ("ABCDGH", "AEDFHR", 3),
+        ("AGGTAB", "GXTXAYB", 4),
+        ("ABC", "DEF", 0),
+        ("", "ABC", 0),
+        ("ABC", "", 0),
+    ]
+    
+    for s, t, expected in test_cases:
+        result = solve_test(s, t)
+        print(f"s='{s}', t='{t}', expected={expected}, result={result}")
+        assert result == expected, f"Failed for s='{s}', t='{t}'"
+        print("✓ Passed")
+        print()
+
+def solve_test(s, t):
+    n, m = len(s), len(t)
+    
+    # dp[i][j] = length of LCS of s[0:i] and t[0:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if s[i-1] == t[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    
+    return dp[n][m]
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n*m) - we fill a 2D DP table
+- **Space**: O(n*m) - we store the entire DP table
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes LCS using optimal substructure
+- **State Transition**: dp[i][j] = max(dp[i-1][j], dp[i][j-1], dp[i-1][j-1] + 1 if match)
+- **Base Case**: dp[0][j] = dp[i][0] = 0 for all i, j
+- **Optimal Substructure**: LCS of prefixes can be built from smaller subproblems
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for String Problems**
+- Find optimal substructure in string problems
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **2D DP Table**
+- Use 2D table for two-string problems
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Subsequence vs Substring**
+- Subsequence allows skipping characters
+- Important for understanding
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Print the LCS
+**Problem**: Find and print the actual longest common subsequence.
+
+```python
+def print_longest_common_subsequence(s, t):
+    n, m = len(s), len(t)
+    
+    # dp[i][j] = length of LCS of s[0:i] and t[0:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if s[i-1] == t[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    
+    # Reconstruct the LCS
+    lcs = []
+    i, j = n, m
+    while i > 0 and j > 0:
         if s[i-1] == t[j-1]:
-            return 1 + lcs_recursive(i-1, j-1)
+            lcs.append(s[i-1])
+            i -= 1
+            j -= 1
+        elif dp[i-1][j] > dp[i][j-1]:
+            i -= 1
         else:
-            return max(lcs_recursive(i-1, j), lcs_recursive(i, j-1))
+            j -= 1
     
-    return lcs_recursive(len(s), len(t))
+    return ''.join(reversed(lcs))
+
+# Example usage
+result = print_longest_common_subsequence("AYXT", "AYZXT")
+print(f"LCS: {result}")
 ```
 
-**Why this is inefficient**: We have overlapping subproblems, leading to exponential time complexity.
-
-### Improvement 1: Dynamic Programming - O(n*m)
-**Description**: Use 2D DP table to store results of subproblems.
+### Variation 2: Count All LCS
+**Problem**: Count the number of different longest common subsequences.
 
 ```python
-def longest_common_subsequence_optimized(s, t):
+def count_longest_common_subsequences(s, t):
     n, m = len(s), len(t)
+    
+    # dp[i][j] = length of LCS of s[0:i] and t[0:j]
     dp = [[0] * (m + 1) for _ in range(n + 1)]
     
     for i in range(1, n + 1):
@@ -66,172 +237,71 @@ def longest_common_subsequence_optimized(s, t):
             else:
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
     
-    return dp[n][m]
-```
-
-**Why this improvement works**: We use a 2D DP table where dp[i][j] represents the length of LCS of s[0:i] and t[0:j]. We fill the table using the recurrence relation.
-
-## Final Optimal Solution
-
-```python
-s = input()
-t = input()
-
-def find_longest_common_subsequence(s, t):
-    n, m = len(s), len(t)
-    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    # count[i][j] = number of LCS of s[0:i] and t[0:j]
+    count = [[0] * (m + 1) for _ in range(n + 1)]
     
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            if s[i-1] == t[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
-            else:
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
-    
-    return dp[n][m]
-
-result = find_longest_common_subsequence(s, t)
-print(result)
-```
-
-## Complexity Analysis
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Recursive | O(2^(n+m)) | O(n+m) | Overlapping subproblems |
-| Dynamic Programming | O(n*m) | O(n*m) | Use 2D DP table |
-
-## Key Insights for Other Problems
-
-### 1. **Longest Common Subsequence**
-**Principle**: Use 2D DP to find the longest common subsequence between two sequences.
-**Applicable to**: String problems, sequence problems, DP problems
-
-### 2. **2D Dynamic Programming**
-**Principle**: Use 2D DP table to store results of subproblems for sequence alignment.
-**Applicable to**: Sequence problems, alignment problems, DP problems
-
-### 3. **Recurrence Relations**
-**Principle**: Use recurrence relations to build optimal solutions from smaller subproblems.
-**Applicable to**: DP problems, optimization problems, sequence problems
-
-## Notable Techniques
-
-### 1. **2D DP Table Construction**
-```python
-def build_2d_dp_table(n, m):
-    return [[0] * (m + 1) for _ in range(n + 1)]
-```
-
-### 2. **LCS Recurrence**
-```python
-def lcs_recurrence(dp, s, t, i, j):
-    if s[i-1] == t[j-1]:
-        dp[i][j] = dp[i-1][j-1] + 1
-    else:
-        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
-    
-    return dp[i][j]
-```
-
-### 3. **DP Table Filling**
-```python
-def fill_dp_table(s, t):
-    n, m = len(s), len(t)
-    dp = build_2d_dp_table(n, m)
-    
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            lcs_recurrence(dp, s, t, i, j)
-    
-    return dp[n][m]
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is a longest common subsequence problem
-2. **Choose approach**: Use 2D dynamic programming
-3. **Define DP state**: dp[i][j] = LCS length of s[0:i] and t[0:j]
-4. **Base case**: dp[0][j] = dp[i][0] = 0
-5. **Recurrence relation**: 
-   - If s[i-1] == t[j-1]: dp[i][j] = dp[i-1][j-1] + 1
-   - Else: dp[i][j] = max(dp[i-1][j], dp[i][j-1])
-6. **Fill DP table**: Iterate through all states
-7. **Return result**: Output dp[n][m]
-
----
-
-*This analysis shows how to efficiently find the longest common subsequence using 2D dynamic programming.* 
-
-## 🎯 Problem Variations & Related Questions
-
-### 🔄 **Variations of the Original Problem**
-
-#### **Variation 1: Longest Common Substring**
-**Problem**: Find the longest common substring (consecutive characters) between two strings.
-```python
-def longest_common_substring(s, t):
-    n, m = len(s), len(t)
-    dp = [[0] * (m + 1) for _ in range(n + 1)]
-    max_length = 0
-    
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            if s[i-1] == t[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
-                max_length = max(max_length, dp[i][j])
-            else:
-                dp[i][j] = 0  # Reset to 0 for non-consecutive
-    
-    return max_length
-```
-
-#### **Variation 2: Count All Common Subsequences**
-**Problem**: Count the total number of common subsequences between two strings.
-```python
-def count_common_subsequences(s, t):
-    n, m = len(s), len(t)
-    dp = [[0] * (m + 1) for _ in range(n + 1)]
-    
-    # Base case: empty string is common to all
     for i in range(n + 1):
-        dp[i][0] = 1
-    for j in range(m + 1):
-        dp[0][j] = 1
-    
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            if s[i-1] == t[j-1]:
-                dp[i][j] = dp[i-1][j-1] + dp[i-1][j] + dp[i][j-1] - dp[i-1][j-1]
+        for j in range(m + 1):
+            if i == 0 or j == 0:
+                count[i][j] = 1
+            elif s[i-1] == t[j-1]:
+                count[i][j] = count[i-1][j-1]
             else:
-                dp[i][j] = dp[i-1][j] + dp[i][j-1] - dp[i-1][j-1]
+                if dp[i-1][j] == dp[i][j]:
+                    count[i][j] += count[i-1][j]
+                if dp[i][j-1] == dp[i][j]:
+                    count[i][j] += count[i][j-1]
+                if dp[i-1][j-1] == dp[i][j]:
+                    count[i][j] -= count[i-1][j-1]
     
-    return dp[n][m]
+    return count[n][m]
+
+# Example usage
+result = count_longest_common_subsequences("AYXT", "AYZXT")
+print(f"Number of LCS: {result}")
 ```
 
-#### **Variation 3: Longest Common Subsequence with Constraints**
-**Problem**: Find LCS where characters must be at least k positions apart.
+### Variation 3: LCS with Constraints
+**Problem**: Find LCS with additional constraints.
+
 ```python
-def constrained_lcs(s, t, k):
+def constrained_lcs(s, t, constraints):
     n, m = len(s), len(t)
-    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    
+    # dp[i][j][k] = length of LCS of s[0:i] and t[0:j] with constraint k
+    dp = [[[0] * (len(constraints) + 1) for _ in range(m + 1)] for _ in range(n + 1)]
     
     for i in range(1, n + 1):
         for j in range(1, m + 1):
-            if s[i-1] == t[j-1] and abs(i - j) >= k:
-                dp[i][j] = dp[i-1][j-1] + 1
-            else:
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+            for k in range(len(constraints) + 1):
+                if s[i-1] == t[j-1]:
+                    dp[i][j][k] = dp[i-1][j-1][k] + 1
+                else:
+                    dp[i][j][k] = max(dp[i-1][j][k], dp[i][j-1][k])
+                
+                # Apply constraints
+                if k < len(constraints) and constraints[k](s[i-1], t[j-1]):
+                    dp[i][j][k+1] = max(dp[i][j][k+1], dp[i][j][k])
     
-    return dp[n][m]
+    return dp[n][m][len(constraints)]
+
+# Example usage
+def constraint_func(c1, c2):
+    return c1.isupper() and c2.isupper()
+
+constraints = [constraint_func]
+result = constrained_lcs("AYXT", "AYZXT", constraints)
+print(f"Constrained LCS length: {result}")
 ```
 
-#### **Variation 4: Weighted Longest Common Subsequence**
-**Problem**: Each character has a weight, find LCS with maximum total weight.
+### Variation 4: LCS with Weights
+**Problem**: Find LCS where each character has a weight.
+
 ```python
 def weighted_lcs(s, t, weights):
-    # weights[char] = weight of character char
     n, m = len(s), len(t)
+    
+    # dp[i][j] = weight of LCS of s[0:i] and t[0:j]
     dp = [[0] * (m + 1) for _ in range(n + 1)]
     
     for i in range(1, n + 1):
@@ -242,170 +312,50 @@ def weighted_lcs(s, t, weights):
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
     
     return dp[n][m]
+
+# Example usage
+weights = {'A': 2, 'Y': 3, 'X': 1, 'T': 4}
+result = weighted_lcs("AYXT", "AYZXT", weights)
+print(f"Weighted LCS: {result}")
 ```
 
-#### **Variation 5: Longest Common Subsequence with Multiple Strings**
-**Problem**: Find LCS among k strings.
+### Variation 5: LCS with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
 ```python
-def multiple_lcs(strings):
-    k = len(strings)
-    if k == 0:
-        return 0
-    if k == 1:
-        return len(strings[0])
-    
-    # For k=2, use standard LCS
-    if k == 2:
-        return longest_common_subsequence_optimized(strings[0], strings[1])
-    
-    # For k>2, use recursive approach
-    def solve(indices):
-        if any(indices[i] == 0 for i in range(k)):
-            return 0
-        
-        # Check if all current characters match
-        current_chars = [strings[i][indices[i]-1] for i in range(k)]
-        if len(set(current_chars)) == 1:
-            new_indices = [indices[i] - 1 for i in range(k)]
-            return 1 + solve(new_indices)
-        else:
-            # Try removing character from each string
-            max_lcs = 0
-            for i in range(k):
-                new_indices = list(indices)
-                new_indices[i] -= 1
-                max_lcs = max(max_lcs, solve(new_indices))
-            return max_lcs
-    
-    return solve([len(s) for s in strings])
-```
-
-### 🔗 **Related Problems & Concepts**
-
-#### **1. String Matching Problems**
-- **Longest Common Substring**: Find longest consecutive common substring
-- **Edit Distance**: Minimum operations to transform one string to another
-- **String Alignment**: Align strings with gaps
-- **Pattern Matching**: Find patterns in strings
-
-#### **2. Dynamic Programming Patterns**
-- **2D DP**: Two state variables (position in each string)
-- **3D DP**: Three state variables (position, additional constraint)
-- **State Compression**: Optimize space complexity
-- **Memoization**: Top-down approach with caching
-
-#### **3. Sequence Analysis**
-- **Sequence Alignment**: Align similar sequences
-- **Pattern Recognition**: Find patterns in sequences
-- **Bioinformatics**: DNA/RNA sequence analysis
-- **Natural Language Processing**: Text similarity
-
-#### **4. Optimization Problems**
-- **Maximum Value**: Find maximum weight/value
-- **Minimum Cost**: Find minimum cost solution
-- **Resource Allocation**: Optimal use of limited resources
-- **Scheduling**: Optimal arrangement of tasks
-
-#### **5. Algorithmic Techniques**
-- **Recursive Backtracking**: Try all possible alignments
-- **Memoization**: Cache computed results
-- **Bottom-Up DP**: Build solution iteratively
-- **State Space Search**: Explore all possible states
-
-### 🎯 **Competitive Programming Variations**
-
-#### **1. Multiple Test Cases with Different Constraints**
-```python
-t = int(input())
-for _ in range(t):
-    s = input()
-    t = input()
-    result = find_longest_common_subsequence(s, t)
-    print(result)
-```
-
-#### **2. Range Queries on LCS**
-```python
-def range_lcs_queries(s, t, queries):
+def optimized_lcs(s, t):
     n, m = len(s), len(t)
     
-    # Precompute LCS for all prefixes
-    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    # Use only 2 rows to save space
+    dp = [[0] * (m + 1) for _ in range(2)]
     
     for i in range(1, n + 1):
         for j in range(1, m + 1):
             if s[i-1] == t[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
+                dp[i % 2][j] = dp[(i-1) % 2][j-1] + 1
             else:
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+                dp[i % 2][j] = max(dp[(i-1) % 2][j], dp[i % 2][j-1])
     
-    # Answer queries
-    for start_s, end_s, start_t, end_t in queries:
-        # Calculate LCS for substrings
-        sub_s = s[start_s:end_s+1]
-        sub_t = t[start_t:end_t+1]
-        result = find_longest_common_subsequence(sub_s, sub_t)
-        print(result)
+    return dp[n % 2][m]
+
+# Example usage
+result = optimized_lcs("AYXT", "AYZXT")
+print(f"Optimized LCS length: {result}")
 ```
 
-#### **3. Interactive LCS Problems**
-```python
-def interactive_lcs_game():
-    s = input("Enter first string: ")
-    t = input("Enter second string: ")
-    
-    print(f"String 1: {s}")
-    print(f"String 2: {t}")
-    
-    player_guess = int(input("Enter LCS length: "))
-    actual_lcs = find_longest_common_subsequence(s, t)
-    
-    if player_guess == actual_lcs:
-        print("Correct!")
-    else:
-        print(f"Wrong! LCS length is {actual_lcs}")
-```
+## 🔗 Related Problems
 
-### 🧮 **Mathematical Extensions**
+- **[Edit Distance](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar string problems
+- **[Longest Increasing Subsequence](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar subsequence problems
+- **[String Matching](/cses-analyses/problem_soulutions/dynamic_programming/)**: String algorithm problems
 
-#### **1. Sequence Analysis**
-- **Alignment Theory**: Mathematical study of sequence alignments
-- **Edit Distance**: Minimum operations for transformation
-- **Similarity Measures**: Quantify sequence similarity
-- **Pattern Recognition**: Find mathematical patterns
+## 📚 Learning Points
 
-#### **2. Advanced DP Techniques**
-- **Digit DP**: Count sequences with specific properties
-- **Convex Hull Trick**: Optimize DP transitions
-- **Divide and Conquer**: Split problems into subproblems
-- **Persistent Data Structures**: Maintain sequence history
-
-#### **3. Combinatorial Analysis**
-- **Subsequence Counting**: Count valid subsequences
-- **String Permutations**: Analyze string arrangements
-- **Generating Functions**: Represent sequences algebraically
-- **Asymptotic Analysis**: Behavior for large strings
-
-### 📚 **Learning Resources**
-
-#### **1. Related Algorithms**
-- **Needleman-Wunsch**: Global sequence alignment
-- **Smith-Waterman**: Local sequence alignment
-- **Hirschberg's Algorithm**: Space-efficient LCS
-- **Suffix Trees**: Efficient string processing
-
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Counting principles and techniques
-- **String Theory**: Mathematical study of strings
-- **Optimization Theory**: Finding optimal solutions
-- **Probability Theory**: Random string processes
-
-#### **3. Programming Concepts**
-- **Dynamic Programming**: Optimal substructure and overlapping subproblems
-- **Memoization**: Caching computed results
-- **Space-Time Trade-offs**: Optimizing for different constraints
-- **Algorithm Design**: Creating efficient solutions
+1. **Dynamic Programming**: Essential for string problems
+2. **2D DP Tables**: Important for two-string problems
+3. **Subsequence vs Substring**: Important for understanding constraints
+4. **String Algorithms**: Important for text processing
 
 ---
 
-*This analysis demonstrates the power of dynamic programming for sequence alignment problems and shows various extensions and applications.* 
+**This is a great introduction to dynamic programming for string problems!** 🎯 

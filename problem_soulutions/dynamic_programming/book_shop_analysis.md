@@ -7,25 +7,18 @@ permalink: /problem_soulutions/dynamic_programming/book_shop_analysis
 
 # Book Shop
 
-## Problem Statement
-You are in a book shop which sells n different books. You know the price and number of pages of each book.
+## Problem Description
 
-You have decided that the total price of your books will be at most x. What is the maximum number of pages you can buy? You can buy each book at most once.
+**Problem**: You are in a book shop with n different books. Each book has a price and number of pages. You have a budget of x and want to maximize the total number of pages you can buy. You can buy each book at most once.
 
-### Input
-The first input line contains two integers n and x: the number of books and the maximum total price.
-The second line contains n integers h1,h2,…,hn: the price of each book.
-The third line contains n integers s1,s2,…,sn: the number of pages of each book.
+**Input**: 
+- n, x: number of books and maximum total price
+- h1, h2, ..., hn: price of each book
+- s1, s2, ..., sn: number of pages of each book
 
-### Output
-Print one integer: the maximum number of pages.
+**Output**: Maximum number of pages you can buy within the budget.
 
-### Constraints
-- 1 ≤ n ≤ 1000
-- 1 ≤ x ≤ 10^5
-- 1 ≤ hi,si ≤ 1000
-
-### Example
+**Example**:
 ```
 Input:
 4 10
@@ -34,56 +27,310 @@ Input:
 
 Output:
 13
+
+Explanation: 
+We can buy books with prices [4, 5, 1] = 10 (within budget)
+Total pages: 5 + 8 + 1 = 14
+
+Or buy books with prices [4, 3, 3] = 10 (within budget)  
+Total pages: 5 + 1 + 1 = 7
+
+Actually, the optimal solution is:
+Buy books with prices [4, 5, 1] = 10
+Total pages: 5 + 8 + 1 = 14
+
+Wait, let me recalculate:
+Book 1: price 4, pages 5
+Book 2: price 8, pages 12  
+Book 3: price 5, pages 8
+Book 4: price 3, pages 1
+
+Optimal: Buy books 1 and 3
+Total price: 4 + 5 = 9 ≤ 10
+Total pages: 5 + 8 = 13
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Recursive Brute Force - O(2^n)
-**Description**: Try all possible combinations of books recursively.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Choose a subset of books to buy
+- Maximize total pages within budget constraint
+- Each book can be bought at most once
+- This is a 0/1 knapsack problem
+
+**Key Observations:**
+- For each book, we have 2 choices: buy or don't buy
+- We need to track remaining budget
+- This is a classic dynamic programming problem
+- Can use 2D DP table
+
+### Step 2: Dynamic Programming Approach
+**Idea**: Use 2D DP table to store maximum pages for each budget and book combination.
 
 ```python
-def book_shop_brute_force(n, x, prices, pages):
-    def max_pages(index, remaining_money):
-        if index == n:
-            return 0
-        if remaining_money < 0:
-            return float('-inf')
-        
-        # Don't buy current book
-        not_buy = max_pages(index + 1, remaining_money)
-        
-        # Buy current book
-        buy = float('-inf')
-        if remaining_money >= prices[index]:
-            buy = pages[index] + max_pages(index + 1, remaining_money - prices[index])
-        
-        return max(not_buy, buy)
+def book_shop_dp(n, x, prices, pages):
+    # dp[i][j] = max pages using first i books with budget j
+    dp = [[0] * (x + 1) for _ in range(n + 1)]
     
-    return max_pages(0, x)
+    for i in range(1, n + 1):
+        for j in range(x + 1):
+            # Don't buy current book
+            dp[i][j] = dp[i-1][j]
+            
+            # Buy current book if we have enough money
+            if j >= prices[i-1]:
+                dp[i][j] = max(dp[i][j], dp[i-1][j - prices[i-1]] + pages[i-1])
+    
+    return dp[n][x]
 ```
 
-**Why this is inefficient**: We're trying all possible combinations of books, which leads to exponential complexity. For each book, we have 2 choices (buy or don't buy), leading to O(2^n) complexity.
+**Why this works:**
+- Uses optimal substructure property
+- Handles all cases correctly
+- Efficient implementation
+- O(n*x) time complexity
 
-### Improvement 1: Recursive with Memoization - O(n*x)
-**Description**: Use memoization to avoid recalculating the same subproblems.
+### Step 3: Complete Solution
+**Putting it all together:**
 
 ```python
-def book_shop_memoization(n, x, prices, pages):
-    memo = {}
+def solve_book_shop():
+    n, x = map(int, input().split())
+    prices = list(map(int, input().split()))
+    pages = list(map(int, input().split()))
     
-    def max_pages(index, remaining_money):
-        if (index, remaining_money) in memo:
-            return memo[(index, remaining_money)]
-        
-        if index == n:
-            return 0
-        if remaining_money < 0:
-            return float('-inf')
-        
-        # Don't buy current book
-        not_buy = max_pages(index + 1, remaining_money)
-        
-        # Buy current book
+    # dp[i][j] = max pages using first i books with budget j
+    dp = [[0] * (x + 1) for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        for j in range(x + 1):
+            # Don't buy current book
+            dp[i][j] = dp[i-1][j]
+            
+            # Buy current book if we have enough money
+            if j >= prices[i-1]:
+                dp[i][j] = max(dp[i][j], dp[i-1][j - prices[i-1]] + pages[i-1])
+    
+    print(dp[n][x])
+
+# Main execution
+if __name__ == "__main__":
+    solve_book_shop()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (4, 10, [4, 8, 5, 3], [5, 12, 8, 1], 13),
+        (3, 5, [2, 3, 4], [3, 4, 5], 7),
+        (2, 3, [1, 2], [2, 3], 5),
+    ]
+    
+    for n, x, prices, pages, expected in test_cases:
+        result = solve_test(n, x, prices, pages)
+        print(f"n={n}, x={x}, prices={prices}, pages={pages}, expected={expected}, result={result}")
+        assert result == expected, f"Failed for n={n}, x={x}"
+        print("✓ Passed")
+        print()
+
+def solve_test(n, x, prices, pages):
+    # dp[i][j] = max pages using first i books with budget j
+    dp = [[0] * (x + 1) for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        for j in range(x + 1):
+            # Don't buy current book
+            dp[i][j] = dp[i-1][j]
+            
+            # Buy current book if we have enough money
+            if j >= prices[i-1]:
+                dp[i][j] = max(dp[i][j], dp[i-1][j - prices[i-1]] + pages[i-1])
+    
+    return dp[n][x]
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n*x) - we fill a 2D DP table
+- **Space**: O(n*x) - we store the entire DP table
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes optimal book selection using optimal substructure
+- **State Transition**: dp[i][j] = max(dp[i-1][j], dp[i-1][j-price[i-1]] + pages[i-1])
+- **Base Case**: dp[0][j] = 0 for all j (no books selected)
+- **Optimal Substructure**: Optimal solution can be built from smaller subproblems
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for Knapsack Problems**
+- Choose optimal subset with constraints
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **2D DP Table**
+- Use 2D table for item selection problems
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **0/1 Knapsack Pattern**
+- Each item can be chosen at most once
+- Important for understanding
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Unbounded Knapsack
+**Problem**: You can buy each book multiple times.
+
+```python
+def unbounded_book_shop(n, x, prices, pages):
+    # dp[j] = max pages with budget j
+    dp = [0] * (x + 1)
+    
+    for j in range(1, x + 1):
+        for i in range(n):
+            if j >= prices[i]:
+                dp[j] = max(dp[j], dp[j - prices[i]] + pages[i])
+    
+    return dp[x]
+
+# Example usage
+result = unbounded_book_shop(4, 10, [4, 8, 5, 3], [5, 12, 8, 1])
+print(f"Unbounded max pages: {result}")
+```
+
+### Variation 2: Fractional Knapsack
+**Problem**: You can buy fractional parts of books.
+
+```python
+def fractional_book_shop(n, x, prices, pages):
+    # Sort by pages per price ratio
+    books = [(pages[i] / prices[i], prices[i], pages[i]) for i in range(n)]
+    books.sort(reverse=True)
+    
+    total_pages = 0
+    remaining_budget = x
+    
+    for ratio, price, pages in books:
+        if remaining_budget >= price:
+            total_pages += pages
+            remaining_budget -= price
+        else:
+            # Buy fractional part
+            fraction = remaining_budget / price
+            total_pages += pages * fraction
+            break
+    
+    return total_pages
+
+# Example usage
+result = fractional_book_shop(4, 10, [4, 8, 5, 3], [5, 12, 8, 1])
+print(f"Fractional max pages: {result}")
+```
+
+### Variation 3: Multiple Constraints
+**Problem**: Books have both price and weight constraints.
+
+```python
+def constrained_book_shop(n, x, w, prices, pages, weights):
+    # dp[i][j][k] = max pages using first i books with budget j and weight k
+    dp = [[[0] * (w + 1) for _ in range(x + 1)] for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        for j in range(x + 1):
+            for k in range(w + 1):
+                # Don't buy current book
+                dp[i][j][k] = dp[i-1][j][k]
+                
+                # Buy current book if constraints are satisfied
+                if j >= prices[i-1] and k >= weights[i-1]:
+                    dp[i][j][k] = max(dp[i][j][k], 
+                                    dp[i-1][j - prices[i-1]][k - weights[i-1]] + pages[i-1])
+    
+    return dp[n][x][w]
+
+# Example usage
+result = constrained_book_shop(4, 10, 5, [4, 8, 5, 3], [5, 12, 8, 1], [2, 3, 2, 1])
+print(f"Constrained max pages: {result}")
+```
+
+### Variation 4: Book Shop with Discounts
+**Problem**: Books have volume discounts.
+
+```python
+def discounted_book_shop(n, x, prices, pages, discounts):
+    # dp[i][j] = max pages using first i books with budget j
+    dp = [[0] * (x + 1) for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        for j in range(x + 1):
+            # Don't buy current book
+            dp[i][j] = dp[i-1][j]
+            
+            # Buy current book with discount
+            discounted_price = prices[i-1] * (1 - discounts[i-1])
+            if j >= discounted_price:
+                dp[i][j] = max(dp[i][j], dp[i-1][j - discounted_price] + pages[i-1])
+    
+    return dp[n][x]
+
+# Example usage
+discounts = [0.1, 0.2, 0.15, 0.05]  # 10%, 20%, 15%, 5% discounts
+result = discounted_book_shop(4, 10, [4, 8, 5, 3], [5, 12, 8, 1], discounts)
+print(f"Discounted max pages: {result}")
+```
+
+### Variation 5: Book Shop with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
+```python
+def optimized_book_shop(n, x, prices, pages):
+    # Use 1D DP array to save space
+    dp = [0] * (x + 1)
+    
+    for i in range(n):
+        for j in range(x, prices[i] - 1, -1):  # Reverse order to avoid overcounting
+            dp[j] = max(dp[j], dp[j - prices[i]] + pages[i])
+    
+    return dp[x]
+
+# Example usage
+result = optimized_book_shop(4, 10, [4, 8, 5, 3], [5, 12, 8, 1])
+print(f"Optimized max pages: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Coin Combinations](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar knapsack problems
+- **[Money Sums](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar subset problems
+- **[Knapsack Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: General knapsack problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming**: Essential for knapsack problems
+2. **2D DP Tables**: Important for item selection problems
+3. **0/1 Knapsack**: Important for understanding constraints
+4. **Space Optimization**: Important for performance improvement
+
+---
+
+**This is a great introduction to dynamic programming for knapsack problems!** 🎯
         buy = float('-inf')
         if remaining_money >= prices[index]:
             buy = pages[index] + max_pages(index + 1, remaining_money - prices[index])

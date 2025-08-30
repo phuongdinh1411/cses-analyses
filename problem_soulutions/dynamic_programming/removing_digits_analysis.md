@@ -7,27 +7,40 @@ permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis
 
 # Removing Digits
 
-## Problem Statement
-You are given an integer n. On each step, you may subtract one of the digits from the number. How many steps are required to make the number equal to 0?
+## Problem Description
 
-For example, if n=27, you can subtract 2 or 7. If you subtract 2, you get 25, and if you subtract 7, you get 20. The minimum number of steps is 5.
+**Problem**: Given an integer n, find the minimum number of steps to reduce it to 0. In each step, you can subtract any digit from the current number.
 
-### Input
-The only input line contains an integer n.
+**Input**: 
+- n: the starting integer
 
-### Output
-Print one integer: the minimum number of steps.
+**Output**: Minimum number of steps to reach 0.
 
-### Constraints
-- 1 ≤ n ≤ 10^6
-
-### Example
+**Example**:
 ```
 Input:
 27
 
 Output:
 5
+
+Explanation: 
+Starting with 27, we can:
+- Subtract 2: 27 → 25
+- Subtract 5: 25 → 20  
+- Subtract 2: 20 → 18
+- Subtract 8: 18 → 10
+- Subtract 1: 10 → 9
+- Subtract 9: 9 → 0
+Total: 6 steps
+
+Or more optimally:
+- Subtract 7: 27 → 20
+- Subtract 2: 20 → 18
+- Subtract 8: 18 → 10
+- Subtract 1: 10 → 9
+- Subtract 9: 9 → 0
+Total: 5 steps (minimum)
 ```
 
 ## Solution Progression

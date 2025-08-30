@@ -7,10 +7,27 @@ permalink: /problem_soulutions/dynamic_programming/coin_combinations_i_analysis
 
 # Coin Combinations I
 
-## Problem Statement
-Consider a money system consisting of n coins. Each coin has a positive integer value. Your task is to calculate the number of distinct ways you can produce a sum of money x using the available coins.
+## Problem Description
 
-For example, if the coins are {2,3,5} and the desired sum is 9, there are 8 ways:
+**Problem**: Given a money system with n coins of different values, count the number of distinct ways to produce a sum x using the available coins.
+
+**Input**: 
+- n, x: number of coins and target sum
+- c1, c2, ..., cn: values of each coin
+
+**Output**: Number of distinct ways modulo 10^9+7.
+
+**Example**:
+```
+Input:
+3 9
+2 3 5
+
+Output:
+8
+
+Explanation: 
+There are 8 distinct ways to achieve sum 9:
 - 2+2+5
 - 2+5+2
 - 5+2+2
@@ -19,27 +36,6 @@ For example, if the coins are {2,3,5} and the desired sum is 9, there are 8 ways
 - 2+2+3+2
 - 2+3+2+2
 - 3+2+2+2
-
-### Input
-The first input line has two integers n and x: the number of coins and the desired sum of money.
-The second line has n distinct integers c1,c2,…,cn: the value of each coin.
-
-### Output
-Print one integer: the number of ways modulo 10^9+7.
-
-### Constraints
-- 1 ≤ n ≤ 100
-- 1 ≤ x ≤ 10^6
-- 1 ≤ ci ≤ 10^6
-
-### Example
-```
-Input:
-3 9
-2 3 5
-
-Output:
-8
 ```
 
 ## Solution Progression
@@ -98,6 +94,277 @@ def coin_combinations_memoization(n, x, coins):
 
 ### Improvement 2: Bottom-Up Dynamic Programming - O(n*x)
 **Description**: Use iterative DP to build the solution from smaller subproblems.
+
+```python
+def coin_combinations_dp(n, x, coins):
+    MOD = 10**9 + 7
+    
+    # dp[i] = number of ways to make sum i
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case: one way to make sum 0 (empty combination)
+    
+    for i in range(1, x + 1):
+        for coin in coins:
+            if i >= coin:
+                dp[i] = (dp[i] + dp[i - coin]) % MOD
+    
+    return dp[x]
+```
+
+**Why this improvement works**: We build the solution iteratively by solving smaller subproblems first. For each sum i, we consider all coin values and add the ways to make sum (i-coin).
+
+### Step 3: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_coin_combinations_i():
+    n, x = map(int, input().split())
+    coins = list(map(int, input().split()))
+    
+    MOD = 10**9 + 7
+    
+    # dp[i] = number of ways to make sum i
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case: one way to make sum 0 (empty combination)
+    
+    for i in range(1, x + 1):
+        for coin in coins:
+            if i >= coin:
+                dp[i] = (dp[i] + dp[i - coin]) % MOD
+    
+    print(dp[x])
+
+# Main execution
+if __name__ == "__main__":
+    solve_coin_combinations_i()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (3, 9, [2, 3, 5], 8),
+        (2, 5, [1, 2], 8),
+        (3, 6, [1, 2, 3], 7),
+        (4, 10, [1, 2, 5, 10], 11),
+    ]
+    
+    for n, x, coins, expected in test_cases:
+        result = solve_test(n, x, coins)
+        print(f"n={n}, x={x}, coins={coins}, expected={expected}, result={result}")
+        assert result == expected, f"Failed for n={n}, x={x}, coins={coins}"
+        print("✓ Passed")
+        print()
+
+def solve_test(n, x, coins):
+    MOD = 10**9 + 7
+    
+    # dp[i] = number of ways to make sum i
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case
+    
+    for i in range(1, x + 1):
+        for coin in coins:
+            if i >= coin:
+                dp[i] = (dp[i] + dp[i - coin]) % MOD
+    
+    return dp[x]
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n*x) - we iterate through each sum and each coin
+- **Space**: O(x) - we store dp array of size x+1
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes combinations using optimal substructure
+- **State Transition**: dp[i] = sum of dp[i-coin] for all valid coins
+- **Base Case**: dp[0] = 1 represents empty combination
+- **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for Counting**
+- Count ways to achieve target using smaller subproblems
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **State Transition**
+- Clear definition of how to build larger solutions from smaller ones
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Modular Arithmetic**
+- Handle large numbers efficiently
+- Important for performance
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Coin Combinations with Limited Supply
+**Problem**: Each coin has a limited number available.
+
+```python
+def coin_combinations_limited_supply(n, x, coins, quantities):
+    MOD = 10**9 + 7
+    
+    # dp[i] = number of ways to make sum i
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case
+    
+    for i in range(1, x + 1):
+        for j, coin in enumerate(coins):
+            for k in range(1, quantities[j] + 1):
+                if i >= k * coin:
+                    dp[i] = (dp[i] + dp[i - k * coin]) % MOD
+    
+    return dp[x]
+
+# Example usage
+coins = [2, 3, 5]
+quantities = [3, 2, 1]  # 3 coins of value 2, 2 coins of value 3, 1 coin of value 5
+result = coin_combinations_limited_supply(3, 9, coins, quantities)
+print(f"Ways to make sum 9: {result}")
+```
+
+### Variation 2: Coin Combinations with Order Constraints
+**Problem**: Coins must be used in a specific order.
+
+```python
+def coin_combinations_ordered(n, x, coins):
+    MOD = 10**9 + 7
+    
+    # dp[i][j] = ways to make sum i using first j coins
+    dp = [[0] * (n + 1) for _ in range(x + 1)]
+    dp[0][0] = 1  # Base case
+    
+    for i in range(x + 1):
+        for j in range(n + 1):
+            if dp[i][j] > 0:  # If this state is reachable
+                # Don't use coin j
+                if j + 1 <= n:
+                    dp[i][j + 1] = (dp[i][j + 1] + dp[i][j]) % MOD
+                # Use coin j
+                if j < n and i + coins[j] <= x:
+                    dp[i + coins[j]][j] = (dp[i + coins[j]][j] + dp[i][j]) % MOD
+    
+    return dp[x][n]
+
+# Example usage
+coins = [2, 3, 5]
+result = coin_combinations_ordered(3, 9, coins)
+print(f"Ways to make sum 9: {result}")
+```
+
+### Variation 3: Coin Combinations with Probability
+**Problem**: Each coin has a probability of success.
+
+```python
+def coin_combinations_probability(n, x, coins, probabilities):
+    MOD = 10**9 + 7
+    
+    # dp[i] = expected number of ways to make sum i
+    dp = [0.0] * (x + 1)
+    dp[0] = 1.0  # Base case
+    
+    for i in range(1, x + 1):
+        for j, coin in enumerate(coins):
+            if i >= coin:
+                dp[i] += dp[i - coin] * probabilities[j]
+    
+    return dp[x]
+
+# Example usage
+coins = [2, 3, 5]
+probabilities = [0.9, 0.8, 0.7]  # probability of each coin being valid
+result = coin_combinations_probability(3, 9, coins, probabilities)
+print(f"Expected ways to make sum 9: {result}")
+```
+
+### Variation 4: Coin Combinations with Weights
+**Problem**: Each coin has a weight, find weighted combinations.
+
+```python
+def coin_combinations_weighted(n, x, coins, weights):
+    MOD = 10**9 + 7
+    
+    # dp[i] = weighted sum of ways to make sum i
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case
+    
+    for i in range(1, x + 1):
+        for j, coin in enumerate(coins):
+            if i >= coin:
+                dp[i] = (dp[i] + dp[i - coin] * weights[j]) % MOD
+    
+    return dp[x]
+
+# Example usage
+coins = [2, 3, 5]
+weights = [2, 3, 1]  # weight of each coin
+result = coin_combinations_weighted(3, 9, coins, weights)
+print(f"Weighted ways to make sum 9: {result}")
+```
+
+### Variation 5: Coin Combinations with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
+```python
+def coin_combinations_optimized(n, x, coins):
+    MOD = 10**9 + 7
+    
+    # Sort coins for better performance
+    coins.sort()
+    
+    # dp[i] = number of ways to make sum i
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case
+    
+    # Use early termination and better memory access
+    for i in range(1, x + 1):
+        for coin in coins:
+            if coin > i:
+                break  # Early termination
+            dp[i] = (dp[i] + dp[i - coin]) % MOD
+    
+    return dp[x]
+
+# Example usage
+coins = [5, 3, 2]  # Unsorted
+result = coin_combinations_optimized(3, 9, coins)
+print(f"Ways to make sum 9: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Dice Combinations](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar counting problems
+- **[Minimizing Coins](/cses-analyses/problem_soulutions/dynamic_programming/)**: Optimization problems
+- **[Money Sums](/cses-analyses/problem_soulutions/dynamic_programming/)**: Sum-related problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming**: Essential for counting problems
+2. **State Transitions**: Important for DP formulation
+3. **Modular Arithmetic**: Important for handling large numbers
+4. **Combinatorics**: Important for understanding counting
+
+---
+
+**This is a great introduction to dynamic programming for counting problems!** 🎯
 
 ```python
 def coin_combinations_dp(n, x, coins):

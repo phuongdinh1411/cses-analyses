@@ -7,21 +7,17 @@ permalink: /problem_soulutions/dynamic_programming/money_sums_analysis
 
 # Money Sums
 
-## Problem Statement
-Given n coins with values a1,a2,…,an, find all possible sums that can be formed using any subset of the coins.
+## Problem Description
 
-### Input
-The first input line has an integer n: the number of coins.
-The second line has n integers a1,a2,…,an: the values of the coins.
+**Problem**: Given n coins with different values, find all possible sums that can be formed using any subset of the coins.
 
-### Output
-Print the number of different sums and the sums in ascending order.
+**Input**: 
+- n: number of coins
+- a1, a2, ..., an: values of the coins
 
-### Constraints
-- 1 ≤ n ≤ 100
-- 1 ≤ ai ≤ 1000
+**Output**: Number of different sums and the sums in ascending order.
 
-### Example
+**Example**:
 ```
 Input:
 4
@@ -30,6 +26,21 @@ Input:
 Output:
 9
 0 2 4 5 6 7 8 9 11
+
+Explanation: 
+All possible sums using subsets of coins:
+- {} → 0
+- {2} → 2
+- {4} → 4
+- {5} → 5
+- {2,2} → 4
+- {2,4} → 6
+- {2,5} → 7
+- {4,5} → 9
+- {2,2,4} → 8
+- {2,2,5} → 9
+- {2,4,5} → 11
+- {2,2,4,5} → 13
 ```
 
 ## Solution Progression
@@ -81,16 +92,17 @@ def money_sums_optimized(n, coins):
 
 **Why this improvement works**: We use a 1D DP array where dp[i] represents whether sum i can be achieved. We iterate through each coin and update all achievable sums.
 
-## Final Optimal Solution
+### Step 3: Complete Solution
+**Putting it all together:**
 
 ```python
-n = int(input())
-coins = list(map(int, input().split()))
-
-def find_money_sums(n, coins):
+def solve_money_sums():
+    n = int(input())
+    coins = list(map(int, input().split()))
+    
     max_sum = sum(coins)
     dp = [False] * (max_sum + 1)
-    dp[0] = True
+    dp[0] = True  # Base case: empty subset gives sum 0
     
     for coin in coins:
         for i in range(max_sum, coin - 1, -1):
@@ -98,6 +110,269 @@ def find_money_sums(n, coins):
                 dp[i] = True
     
     # Collect all achievable sums
+    sums = []
+    for i in range(max_sum + 1):
+        if dp[i]:
+            sums.append(i)
+    
+    print(len(sums))
+    print(*sums)
+
+# Main execution
+if __name__ == "__main__":
+    solve_money_sums()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (4, [4, 2, 5, 2], [0, 2, 4, 5, 6, 7, 8, 9, 11]),
+        (3, [1, 2, 3], [0, 1, 2, 3, 4, 5, 6]),
+        (2, [1, 1], [0, 1, 2]),
+    ]
+    
+    for n, coins, expected in test_cases:
+        result = solve_test(n, coins)
+        print(f"n={n}, coins={coins}, expected={expected}, result={result}")
+        assert result == expected, f"Failed for n={n}, coins={coins}"
+        print("✓ Passed")
+        print()
+
+def solve_test(n, coins):
+    max_sum = sum(coins)
+    dp = [False] * (max_sum + 1)
+    dp[0] = True  # Base case
+    
+    for coin in coins:
+        for i in range(max_sum, coin - 1, -1):
+            if dp[i - coin]:
+                dp[i] = True
+    
+    # Collect all achievable sums
+    sums = []
+    for i in range(max_sum + 1):
+        if dp[i]:
+            sums.append(i)
+    
+    return sums
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n * sum) - we iterate through each coin and each possible sum
+- **Space**: O(sum) - we store dp array of size sum+1
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes achievable sums using optimal substructure
+- **State Transition**: dp[i] = True if dp[i-coin] = True for any coin
+- **Base Case**: dp[0] = True represents empty subset
+- **Reverse Iteration**: Prevents overcounting by iterating backwards
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for Subset Sum**
+- Find all achievable sums using subset selection
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **State Transition**
+- Clear definition of how to build larger sums from smaller ones
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Reverse Iteration**
+- Prevents overcounting in DP
+- Important for understanding
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Money Sums with Limited Supply
+**Problem**: Each coin has a limited number available.
+
+```python
+def money_sums_limited_supply(n, coins, quantities):
+    max_sum = sum(coin * qty for coin, qty in zip(coins, quantities))
+    dp = [False] * (max_sum + 1)
+    dp[0] = True  # Base case
+    
+    for coin, quantity in zip(coins, quantities):
+        for i in range(max_sum, coin - 1, -1):
+            for k in range(1, quantity + 1):
+                if i >= k * coin and dp[i - k * coin]:
+                    dp[i] = True
+    
+    # Collect all achievable sums
+    sums = []
+    for i in range(max_sum + 1):
+        if dp[i]:
+            sums.append(i)
+    
+    return sums
+
+# Example usage
+coins = [4, 2, 5]
+quantities = [2, 3, 1]  # 2 coins of value 4, 3 coins of value 2, 1 coin of value 5
+result = money_sums_limited_supply(3, coins, quantities)
+print(f"Achievable sums: {result}")
+```
+
+### Variation 2: Money Sums with Constraints
+**Problem**: Cannot use certain combinations of coins.
+
+```python
+def money_sums_with_constraints(n, coins, forbidden_combinations):
+    max_sum = sum(coins)
+    dp = [[False] * (1 << n) for _ in range(max_sum + 1)]
+    dp[0][0] = True  # Base case
+    
+    for i in range(max_sum + 1):
+        for mask in range(1 << n):
+            if dp[i][mask]:
+                for j, coin in enumerate(coins):
+                    if i + coin <= max_sum:
+                        new_mask = mask | (1 << j)
+                        if new_mask not in forbidden_combinations:
+                            dp[i + coin][new_mask] = True
+    
+    # Collect all achievable sums
+    sums = set()
+    for i in range(max_sum + 1):
+        for mask in range(1 << n):
+            if dp[i][mask]:
+                sums.add(i)
+    
+    return sorted(sums)
+
+# Example usage
+coins = [4, 2, 5]
+forbidden = {0b110}  # Cannot use coins 1 and 3 together
+result = money_sums_with_constraints(3, coins, forbidden)
+print(f"Achievable sums: {result}")
+```
+
+### Variation 3: Money Sums with Weights
+**Problem**: Each coin has a weight, find weighted sums.
+
+```python
+def money_sums_weighted(n, coins, weights):
+    max_sum = sum(coins)
+    dp = [False] * (max_sum + 1)
+    dp[0] = True  # Base case
+    
+    for coin in coins:
+        for i in range(max_sum, coin - 1, -1):
+            if dp[i - coin]:
+                dp[i] = True
+    
+    # Collect all achievable sums with their weights
+    weighted_sums = {}
+    for i in range(max_sum + 1):
+        if dp[i]:
+            # Calculate weight for sum i
+            weight = 0
+            for coin, w in zip(coins, weights):
+                if i >= coin:
+                    weight += w
+            weighted_sums[i] = weight
+    
+    return weighted_sums
+
+# Example usage
+coins = [4, 2, 5]
+weights = [2, 1, 3]  # weight of each coin
+result = money_sums_weighted(3, coins, weights)
+print(f"Weighted sums: {result}")
+```
+
+### Variation 4: Money Sums with Probability
+**Problem**: Each coin has a probability of being available.
+
+```python
+def money_sums_probability(n, coins, probabilities):
+    max_sum = sum(coins)
+    dp = [0.0] * (max_sum + 1)
+    dp[0] = 1.0  # Base case
+    
+    for coin, prob in zip(coins, probabilities):
+        for i in range(max_sum, coin - 1, -1):
+            dp[i] += dp[i - coin] * prob
+    
+    # Collect all achievable sums with their probabilities
+    sum_probs = {}
+    for i in range(max_sum + 1):
+        if dp[i] > 0:
+            sum_probs[i] = dp[i]
+    
+    return sum_probs
+
+# Example usage
+coins = [4, 2, 5]
+probabilities = [0.9, 0.8, 0.7]  # probability of each coin being available
+result = money_sums_probability(3, coins, probabilities)
+print(f"Sum probabilities: {result}")
+```
+
+### Variation 5: Money Sums with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
+```python
+def money_sums_optimized(n, coins):
+    # Sort coins for better performance
+    coins.sort()
+    
+    max_sum = sum(coins)
+    dp = [False] * (max_sum + 1)
+    dp[0] = True  # Base case
+    
+    # Use early termination and better memory access
+    for coin in coins:
+        for i in range(max_sum, coin - 1, -1):
+            if dp[i - coin]:
+                dp[i] = True
+    
+    # Collect all achievable sums efficiently
+    sums = [i for i in range(max_sum + 1) if dp[i]]
+    
+    return sums
+
+# Example usage
+coins = [5, 2, 4]  # Unsorted
+result = money_sums_optimized(3, coins)
+print(f"Achievable sums: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Dice Combinations](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar counting problems
+- **[Coin Combinations](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar coin problems
+- **[Minimizing Coins](/cses-analyses/problem_soulutions/dynamic_programming/)**: Optimization problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming**: Essential for subset sum problems
+2. **State Transitions**: Important for DP formulation
+3. **Reverse Iteration**: Important for preventing overcounting
+4. **Subset Selection**: Important for understanding combinations
+
+---
+
+**This is a great introduction to dynamic programming for subset sum problems!** 🎯
     sums = []
     for i in range(max_sum + 1):
         if dp[i]:

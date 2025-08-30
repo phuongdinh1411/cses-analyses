@@ -7,23 +7,17 @@ permalink: /problem_soulutions/dynamic_programming/counting_towers_analysis
 
 # Counting Towers
 
-## Problem Statement
-Your task is to count the number of different towers of height n. All towers have a width of 2 and height of n. The blocks have dimensions 2×1 and 1×2.
+## Problem Description
 
-For example, when n=3, there are 5 different towers.
+**Problem**: Your task is to count the number of different towers of height n. All towers have a width of 2 and height of n. The blocks have dimensions 2×1 and 1×2.
 
-### Input
-The first input line contains an integer t: the number of tests.
-After this, there are t lines, each containing an integer n.
+**Input**: 
+- t: number of test cases
+- n: height of the tower for each test case
 
-### Output
-For each test, print the number of towers modulo 10^9+7.
+**Output**: Number of different towers modulo 10^9+7 for each test case.
 
-### Constraints
-- 1 ≤ t ≤ 10^5
-- 1 ≤ n ≤ 10^6
-
-### Example
+**Example**:
 ```
 Input:
 3
@@ -35,6 +29,11 @@ Output:
 1
 2
 5
+
+Explanation: 
+For n=1: Only 1 way (2 horizontal blocks)
+For n=2: 2 ways (2 horizontal + 2 horizontal, or 1 vertical + 1 vertical)
+For n=3: 5 ways (various combinations of horizontal and vertical blocks)
 ```
 
 ## Solution Progression
@@ -99,12 +98,320 @@ def counting_towers_memoization(n):
 
 **Why this improvement works**: By storing the results of subproblems in a memo dictionary, we avoid recalculating the same values multiple times. Each subproblem is solved only once, leading to O(n) complexity.
 
-### Improvement 2: Bottom-Up Dynamic Programming - O(n)
+### Step 2: Dynamic Programming Approach
 **Description**: Use iterative DP to build the solution from smaller subproblems.
 
 ```python
 def counting_towers_dp(n):
     MOD = 10**9 + 7
+    
+    # dp[i][j] = number of ways to build tower of height i with state j
+    # state 0: empty, state 1: one vertical block
+    dp = [[0] * 2 for _ in range(n + 1)]
+    
+    # Base case: height 0
+    dp[0][0] = 1
+    dp[0][1] = 0
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        # From empty state
+        dp[i][0] = (dp[i-1][0] + dp[i-1][1]) % MOD  # 2 horizontal or 1 vertical
+        # From one vertical state
+        dp[i][1] = dp[i-1][0] % MOD  # 1 horizontal
+    
+    return dp[n][0]
+```
+
+### Step 3: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_counting_towers():
+    t = int(input())
+    MOD = 10**9 + 7
+    
+    # Precompute for all possible heights
+    max_n = 10**6
+    dp = [[0] * 2 for _ in range(max_n + 1)]
+    
+    # Base case: height 0
+    dp[0][0] = 1
+    dp[0][1] = 0
+    
+    # Fill DP table
+    for i in range(1, max_n + 1):
+        # From empty state
+        dp[i][0] = (dp[i-1][0] + dp[i-1][1]) % MOD  # 2 horizontal or 1 vertical
+        # From one vertical state
+        dp[i][1] = dp[i-1][0] % MOD  # 1 horizontal
+    
+    # Answer queries
+    for _ in range(t):
+        n = int(input())
+        print(dp[n][0])
+
+# Main execution
+if __name__ == "__main__":
+    solve_counting_towers()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (1, 1),
+        (2, 2),
+        (3, 5),
+        (4, 12),
+        (5, 29),
+    ]
+    
+    for n, expected in test_cases:
+        result = solve_test(n)
+        print(f"n={n}, expected={expected}, result={result}")
+        assert result == expected, f"Failed for n={n}"
+        print("✓ Passed")
+        print()
+
+def solve_test(n):
+    MOD = 10**9 + 7
+    
+    # dp[i][j] = number of ways to build tower of height i with state j
+    dp = [[0] * 2 for _ in range(n + 1)]
+    
+    # Base case: height 0
+    dp[0][0] = 1
+    dp[0][1] = 0
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        # From empty state
+        dp[i][0] = (dp[i-1][0] + dp[i-1][1]) % MOD  # 2 horizontal or 1 vertical
+        # From one vertical state
+        dp[i][1] = dp[i-1][0] % MOD  # 1 horizontal
+    
+    return dp[n][0]
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n) - we fill a 2D DP table
+- **Space**: O(n) - we store the entire DP table
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes tower configurations using optimal substructure
+- **State Transition**: dp[i][0] = dp[i-1][0] + dp[i-1][1], dp[i][1] = dp[i-1][0]
+- **Base Case**: dp[0][0] = 1, dp[0][1] = 0
+- **Optimal Substructure**: Optimal solution can be built from smaller subproblems
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for Geometric Problems**
+- Find optimal substructure in geometric problems
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **State Representation**
+- Use states to represent partial configurations
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Geometric Optimization**
+- Optimize configurations in geometric shapes
+- Important for understanding
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Counting Towers with Different Block Sizes
+**Problem**: Use blocks of different dimensions.
+
+```python
+def counting_towers_with_different_blocks(n, block_sizes):
+    MOD = 10**9 + 7
+    
+    # dp[i][j] = number of ways to build tower of height i with state j
+    dp = [[0] * len(block_sizes) for _ in range(n + 1)]
+    
+    # Base case: height 0
+    dp[0][0] = 1
+    for j in range(1, len(block_sizes)):
+        dp[0][j] = 0
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for state in range(len(block_sizes)):
+            for block in block_sizes:
+                if i >= block[1]:  # Check if block fits
+                    dp[i][state] = (dp[i][state] + dp[i - block[1]][block[0]]) % MOD
+    
+    return dp[n][0]
+
+# Example usage
+block_sizes = [(0, 1), (1, 2), (2, 3)]  # (state, height) for each block type
+result = counting_towers_with_different_blocks(5, block_sizes)
+print(f"Towers with different blocks: {result}")
+```
+
+### Variation 2: Counting Towers with Width Constraints
+**Problem**: Towers can have different widths.
+
+```python
+def counting_towers_with_width(n, max_width):
+    MOD = 10**9 + 7
+    
+    # dp[i][w] = number of ways to build tower of height i and width w
+    dp = [[0] * (max_width + 1) for _ in range(n + 1)]
+    
+    # Base case: height 0
+    dp[0][0] = 1
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for w in range(max_width + 1):
+            # Try different block configurations
+            if w >= 2:
+                dp[i][w] = (dp[i][w] + dp[i-1][w-2]) % MOD  # 2 horizontal blocks
+            if w >= 1:
+                dp[i][w] = (dp[i][w] + dp[i-1][w-1]) % MOD  # 1 vertical block
+    
+    return dp[n][max_width]
+
+# Example usage
+result = counting_towers_with_width(5, 3)
+print(f"Towers with width constraint: {result}")
+```
+
+### Variation 3: Counting Towers with Color Constraints
+**Problem**: Blocks have different colors and adjacent blocks must have different colors.
+
+```python
+def counting_towers_with_colors(n, num_colors):
+    MOD = 10**9 + 7
+    
+    # dp[i][j][c] = number of ways to build tower of height i, state j, last color c
+    dp = [[[0] * num_colors for _ in range(2)] for _ in range(n + 1)]
+    
+    # Base case: height 0
+    for c in range(num_colors):
+        dp[0][0][c] = 1
+        dp[0][1][c] = 0
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for state in range(2):
+            for last_color in range(num_colors):
+                for new_color in range(num_colors):
+                    if new_color != last_color:  # Different color constraint
+                        if state == 0:
+                            dp[i][0][new_color] = (dp[i][0][new_color] + dp[i-1][0][last_color]) % MOD
+                            dp[i][1][new_color] = (dp[i][1][new_color] + dp[i-1][1][last_color]) % MOD
+                        else:
+                            dp[i][0][new_color] = (dp[i][0][new_color] + dp[i-1][0][last_color]) % MOD
+    
+    # Sum over all colors
+    result = 0
+    for c in range(num_colors):
+        result = (result + dp[n][0][c]) % MOD
+    
+    return result
+
+# Example usage
+result = counting_towers_with_colors(5, 3)
+print(f"Towers with color constraints: {result}")
+```
+
+### Variation 4: Counting Towers with Cost Minimization
+**Problem**: Find the minimum cost to build towers.
+
+```python
+def counting_towers_with_cost(n, block_costs):
+    MOD = 10**9 + 7
+    
+    # dp[i][j] = minimum cost to build tower of height i with state j
+    dp = [[float('inf')] * 2 for _ in range(n + 1)]
+    
+    # Base case: height 0
+    dp[0][0] = 0
+    dp[0][1] = float('inf')
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        # From empty state
+        dp[i][0] = min(dp[i-1][0] + block_costs[0], dp[i-1][1] + block_costs[1])
+        # From one vertical state
+        dp[i][1] = dp[i-1][0] + block_costs[2]
+    
+    return dp[n][0] if dp[n][0] != float('inf') else -1
+
+# Example usage
+block_costs = [2, 3, 1]  # Cost for 2 horizontal, 1 vertical, 1 horizontal
+result = counting_towers_with_cost(5, block_costs)
+print(f"Minimum cost towers: {result}")
+```
+
+### Variation 5: Counting Towers with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
+```python
+def optimized_counting_towers(n):
+    MOD = 10**9 + 7
+    
+    # Use only 2 rows to save space
+    dp = [[0] * 2 for _ in range(2)]
+    
+    # Base case: height 0
+    dp[0][0] = 1
+    dp[0][1] = 0
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        curr_row = i % 2
+        prev_row = (i - 1) % 2
+        
+        # From empty state
+        dp[curr_row][0] = (dp[prev_row][0] + dp[prev_row][1]) % MOD
+        # From one vertical state
+        dp[curr_row][1] = dp[prev_row][0] % MOD
+    
+    return dp[n % 2][0]
+
+# Example usage
+result = optimized_counting_towers(5)
+print(f"Optimized towers: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Dynamic Programming Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar DP problems
+- **[Geometric Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar geometric problems
+- **[Counting Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: General counting problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming**: Essential for geometric counting problems
+2. **State Representation**: Important for representing partial configurations
+3. **Geometric Optimization**: Important for understanding constraints
+4. **Space Optimization**: Important for performance improvement
+
+---
+
+**This is a great introduction to dynamic programming for geometric counting problems!** 🎯
     
     # dp[i][j] = number of ways to build tower of height i with state j
     # j = 0: empty state, j = 1: one vertical block

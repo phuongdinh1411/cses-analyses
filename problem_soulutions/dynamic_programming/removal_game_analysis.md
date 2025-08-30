@@ -7,21 +7,17 @@ permalink: /problem_soulutions/dynamic_programming/removal_game_analysis
 
 # Removal Game
 
-## Problem Statement
-Given an array of n integers, two players take turns removing elements from either end of the array. Each player wants to maximize their total score. Find the maximum score difference between the first and second player.
+## Problem Description
 
-### Input
-The first input line has an integer n: the size of the array.
-The second line has n integers a1,a2,…,an: the array.
+**Problem**: Given an array of n integers, two players take turns removing elements from either end of the array. Each player wants to maximize their total score. Find the maximum score difference between the first and second player.
 
-### Output
-Print one integer: the maximum score difference.
+**Input**: 
+- n: size of the array
+- a1, a2, ..., an: the array elements
 
-### Constraints
-- 1 ≤ n ≤ 5000
-- -10^9 ≤ ai ≤ 10^9
+**Output**: Maximum score difference (first player - second player).
 
-### Example
+**Example**:
 ```
 Input:
 4
@@ -29,6 +25,14 @@ Input:
 
 Output:
 5
+
+Explanation: 
+Optimal play:
+- Player 1 takes 4 from left: [5, 1, 3], score = 4
+- Player 2 takes 3 from right: [5, 1], score = 3  
+- Player 1 takes 5 from left: [1], score = 4 + 5 = 9
+- Player 2 takes 1: [], score = 3 + 1 = 4
+Final difference: 9 - 4 = 5
 ```
 
 ## Solution Progression
@@ -76,13 +80,65 @@ def removal_game_optimized(n, arr):
 
 **Why this improvement works**: We use a 2D DP table where dp[left][right] represents the maximum score difference when playing optimally on subarray arr[left:right+1]. We fill the table using the recurrence relation.
 
-## Final Optimal Solution
+### Step 3: Complete Solution
+**Putting it all together:**
 
 ```python
-n = int(input())
-arr = list(map(int, input().split()))
+def solve_removal_game():
+    n = int(input())
+    arr = list(map(int, input().split()))
+    
+    # dp[left][right] = max score difference for subarray arr[left:right+1]
+    dp = [[0] * n for _ in range(n)]
+    
+    # Fill diagonal (single element)
+    for i in range(n):
+        dp[i][i] = arr[i]
+    
+    # Fill for subarrays of increasing length
+    for length in range(2, n + 1):
+        for left in range(n - length + 1):
+            right = left + length - 1
+            dp[left][right] = max(arr[left] - dp[left + 1][right],
+                                arr[right] - dp[left][right - 1])
+    
+    print(dp[0][n - 1])
 
-def find_removal_game_score(n, arr):
+# Main execution
+if __name__ == "__main__":
+    solve_removal_game()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        ([4, 5, 1, 3], 5),
+        ([1, 2, 3, 4], 2),
+        ([1, 1, 1, 1], 0),
+        ([1], 1),
+        ([1, 2], 1),
+    ]
+    
+    for arr, expected in test_cases:
+        result = solve_test(arr)
+        print(f"arr={arr}, expected={expected}, result={result}")
+        assert result == expected, f"Failed for arr={arr}"
+        print("✓ Passed")
+        print()
+
+def solve_test(arr):
+    n = len(arr)
+    
+    # dp[left][right] = max score difference for subarray arr[left:right+1]
     dp = [[0] * n for _ in range(n)]
     
     # Fill diagonal (single element)
@@ -97,6 +153,243 @@ def find_removal_game_score(n, arr):
                                 arr[right] - dp[left][right - 1])
     
     return dp[0][n - 1]
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n²) - we fill a 2D DP table
+- **Space**: O(n²) - we store the entire DP table
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes optimal game strategy using optimal substructure
+- **State Transition**: dp[left][right] = max(arr[left] - dp[left+1][right], arr[right] - dp[left][right-1])
+- **Base Case**: dp[i][i] = arr[i] for single elements
+- **Optimal Substructure**: Optimal solution can be built from smaller subproblems
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for Game Theory**
+- Find optimal strategy in turn-based games
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **2D DP Table**
+- Use 2D table for range-based problems
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Minimax Algorithm**
+- Maximize your score while minimizing opponent's score
+- Important for understanding
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Removal Game with Different Rules
+**Problem**: Players can remove from both ends or middle.
+
+```python
+def extended_removal_game(arr):
+    n = len(arr)
+    
+    # dp[left][right] = max score difference for subarray arr[left:right+1]
+    dp = [[0] * n for _ in range(n)]
+    
+    # Fill diagonal (single element)
+    for i in range(n):
+        dp[i][i] = arr[i]
+    
+    # Fill for subarrays of increasing length
+    for length in range(2, n + 1):
+        for left in range(n - length + 1):
+            right = left + length - 1
+            
+            # Try all possible moves
+            moves = []
+            moves.append(arr[left] - dp[left + 1][right])  # Take from left
+            moves.append(arr[right] - dp[left][right - 1])  # Take from right
+            
+            # Take from middle if possible
+            if length > 2:
+                for mid in range(left + 1, right):
+                    moves.append(arr[mid] - dp[left][mid - 1] - dp[mid + 1][right])
+            
+            dp[left][right] = max(moves)
+    
+    return dp[0][n - 1]
+
+# Example usage
+result = extended_removal_game([4, 5, 1, 3])
+print(f"Extended game score difference: {result}")
+```
+
+### Variation 2: Removal Game with Weights
+**Problem**: Different positions have different weights.
+
+```python
+def weighted_removal_game(arr, weights):
+    n = len(arr)
+    
+    # dp[left][right] = max score difference for subarray arr[left:right+1]
+    dp = [[0] * n for _ in range(n)]
+    
+    # Fill diagonal (single element)
+    for i in range(n):
+        dp[i][i] = arr[i] * weights[i]
+    
+    # Fill for subarrays of increasing length
+    for length in range(2, n + 1):
+        for left in range(n - length + 1):
+            right = left + length - 1
+            dp[left][right] = max(arr[left] * weights[left] - dp[left + 1][right],
+                                arr[right] * weights[right] - dp[left][right - 1])
+    
+    return dp[0][n - 1]
+
+# Example usage
+weights = [1, 2, 1, 2]  # Weight for each position
+result = weighted_removal_game([4, 5, 1, 3], weights)
+print(f"Weighted game score difference: {result}")
+```
+
+### Variation 3: Removal Game with Multiple Players
+**Problem**: More than two players take turns.
+
+```python
+def multi_player_removal_game(arr, num_players):
+    n = len(arr)
+    
+    # dp[left][right][player] = max score for player on subarray arr[left:right+1]
+    dp = [[[0] * num_players for _ in range(n)] for _ in range(n)]
+    
+    # Fill diagonal (single element)
+    for i in range(n):
+        for p in range(num_players):
+            if p == 0:
+                dp[i][i][p] = arr[i]
+            else:
+                dp[i][i][p] = 0
+    
+    # Fill for subarrays of increasing length
+    for length in range(2, n + 1):
+        for left in range(n - length + 1):
+            right = left + length - 1
+            for player in range(num_players):
+                next_player = (player + 1) % num_players
+                
+                # Try taking from left
+                score_left = arr[left] + dp[left + 1][right][next_player]
+                
+                # Try taking from right
+                score_right = arr[right] + dp[left][right - 1][next_player]
+                
+                dp[left][right][player] = max(score_left, score_right)
+    
+    return dp[0][n - 1][0] - dp[0][n - 1][1]  # Difference between first two players
+
+# Example usage
+result = multi_player_removal_game([4, 5, 1, 3], 3)
+print(f"Multi-player game score difference: {result}")
+```
+
+### Variation 4: Removal Game with Constraints
+**Problem**: Players can only take elements that satisfy certain conditions.
+
+```python
+def constrained_removal_game(arr, constraints):
+    n = len(arr)
+    
+    # dp[left][right] = max score difference for subarray arr[left:right+1]
+    dp = [[0] * n for _ in range(n)]
+    
+    # Fill diagonal (single element)
+    for i in range(n):
+        if constraints(arr[i]):
+            dp[i][i] = arr[i]
+        else:
+            dp[i][i] = 0
+    
+    # Fill for subarrays of increasing length
+    for length in range(2, n + 1):
+        for left in range(n - length + 1):
+            right = left + length - 1
+            
+            moves = []
+            
+            # Try taking from left if allowed
+            if constraints(arr[left]):
+                moves.append(arr[left] - dp[left + 1][right])
+            
+            # Try taking from right if allowed
+            if constraints(arr[right]):
+                moves.append(arr[right] - dp[left][right - 1])
+            
+            if moves:
+                dp[left][right] = max(moves)
+            else:
+                dp[left][right] = 0
+    
+    return dp[0][n - 1]
+
+# Example usage
+def even_constraint(x):
+    return x % 2 == 0  # Only take even numbers
+
+result = constrained_removal_game([4, 5, 1, 3], even_constraint)
+print(f"Constrained game score difference: {result}")
+```
+
+### Variation 5: Removal Game with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
+```python
+def optimized_removal_game(arr):
+    n = len(arr)
+    
+    # Use 1D DP array to save space
+    dp = [0] * n
+    
+    # Fill for subarrays of increasing length
+    for length in range(1, n + 1):
+        new_dp = [0] * n
+        for left in range(n - length + 1):
+            right = left + length - 1
+            if left == right:
+                new_dp[left] = arr[left]
+            else:
+                new_dp[left] = max(arr[left] - dp[left + 1],
+                                 arr[right] - dp[left])
+        dp = new_dp
+    
+    return dp[0]
+
+# Example usage
+result = optimized_removal_game([4, 5, 1, 3])
+print(f"Optimized game score difference: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Game Theory Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar game problems
+- **[Range DP Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar range-based problems
+- **[Minimax Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: General minimax problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming**: Essential for game theory problems
+2. **2D DP Tables**: Important for range-based problems
+3. **Minimax Algorithm**: Important for understanding game strategy
+4. **Space Optimization**: Important for performance improvement
+
+---
+
+**This is a great introduction to dynamic programming for game theory problems!** 🎯
 
 result = find_removal_game_score(n, arr)
 print(result)

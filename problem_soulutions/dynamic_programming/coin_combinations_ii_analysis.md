@@ -7,28 +7,17 @@ permalink: /problem_soulutions/dynamic_programming/coin_combinations_ii_analysis
 
 # Coin Combinations II
 
-## Problem Statement
-Consider a money system consisting of n coins. Each coin has a positive integer value. Your task is to calculate the number of distinct ordered ways you can produce a sum of money x using the available coins.
+## Problem Description
 
-For example, if the coins are {2,3,5} and the desired sum is 9, there are 3 ways:
-- 2+2+5
-- 3+3+3
-- 2+2+2+3
-Note: The order of coins doesn't matter in this problem.
+**Problem**: Given a money system with n coins of different values, count the number of distinct ordered ways to produce a sum x using the available coins (order doesn't matter).
 
-### Input
-The first input line has two integers n and x: the number of coins and the desired sum of money.
-The second line has n distinct integers c1,c2,…,cn: the value of each coin.
+**Input**: 
+- n, x: number of coins and target sum
+- c1, c2, ..., cn: values of each coin
 
-### Output
-Print one integer: the number of ways modulo 10^9+7.
+**Output**: Number of distinct ordered ways modulo 10^9+7.
 
-### Constraints
-- 1 ≤ n ≤ 100
-- 1 ≤ x ≤ 10^6
-- 1 ≤ ci ≤ 10^6
-
-### Example
+**Example**:
 ```
 Input:
 3 9
@@ -36,6 +25,13 @@ Input:
 
 Output:
 3
+
+Explanation: 
+There are 3 distinct ordered ways to achieve sum 9:
+- 2+2+5
+- 3+3+3
+- 2+2+2+3
+Note: The order of coins doesn't matter, so 2+2+5 and 5+2+2 are considered the same.
 ```
 
 ## Solution Progression
@@ -97,6 +93,290 @@ last_coin: # Ensure non-decreasing order
 
 ### Improvement 2: Bottom-Up Dynamic Programming - O(n*x)
 **Description**: Use iterative DP to build the solution from smaller subproblems.
+
+```python
+def coin_combinations_ii_dp(n, x, coins):
+    MOD = 10**9 + 7
+    
+    # dp[i] = number of ways to make sum i (ordered)
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case: one way to make sum 0 (empty combination)
+    
+    # Sort coins to ensure non-decreasing order
+    coins.sort()
+    
+    for coin in coins:
+        for i in range(coin, x + 1):
+            dp[i] = (dp[i] + dp[i - coin]) % MOD
+    
+    return dp[x]
+```
+
+**Why this improvement works**: We iterate through coins first, then through sums. This ensures that we only count ordered combinations (non-decreasing order).
+
+### Step 3: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_coin_combinations_ii():
+    n, x = map(int, input().split())
+    coins = list(map(int, input().split()))
+    
+    MOD = 10**9 + 7
+    
+    # dp[i] = number of ways to make sum i (ordered)
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case: one way to make sum 0 (empty combination)
+    
+    # Sort coins to ensure non-decreasing order
+    coins.sort()
+    
+    for coin in coins:
+        for i in range(coin, x + 1):
+            dp[i] = (dp[i] + dp[i - coin]) % MOD
+    
+    print(dp[x])
+
+# Main execution
+if __name__ == "__main__":
+    solve_coin_combinations_ii()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles ordered combinations correctly
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (3, 9, [2, 3, 5], 3),
+        (2, 5, [1, 2], 3),
+        (3, 6, [1, 2, 3], 4),
+        (4, 10, [1, 2, 5, 10], 4),
+    ]
+    
+    for n, x, coins, expected in test_cases:
+        result = solve_test(n, x, coins)
+        print(f"n={n}, x={x}, coins={coins}, expected={expected}, result={result}")
+        assert result == expected, f"Failed for n={n}, x={x}, coins={coins}"
+        print("✓ Passed")
+        print()
+
+def solve_test(n, x, coins):
+    MOD = 10**9 + 7
+    
+    # dp[i] = number of ways to make sum i (ordered)
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case
+    
+    # Sort coins to ensure non-decreasing order
+    coins.sort()
+    
+    for coin in coins:
+        for i in range(coin, x + 1):
+            dp[i] = (dp[i] + dp[i - coin]) % MOD
+    
+    return dp[x]
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n*x) - we iterate through each coin and each sum
+- **Space**: O(x) - we store dp array of size x+1
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes ordered combinations using optimal substructure
+- **State Transition**: dp[i] = sum of dp[i-coin] for all valid coins (in order)
+- **Base Case**: dp[0] = 1 represents empty combination
+- **Ordering**: Sorting coins ensures non-decreasing order
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for Ordered Counting**
+- Count ordered ways to achieve target using smaller subproblems
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **Ordering in DP**
+- Iterate through coins first, then sums to maintain order
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Modular Arithmetic**
+- Handle large numbers efficiently
+- Important for performance
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Ordered Combinations with Limited Supply
+**Problem**: Each coin has a limited number available.
+
+```python
+def coin_combinations_ii_limited_supply(n, x, coins, quantities):
+    MOD = 10**9 + 7
+    
+    # dp[i] = number of ways to make sum i (ordered)
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case
+    
+    # Sort coins to ensure non-decreasing order
+    sorted_coins = sorted(zip(coins, quantities))
+    
+    for coin, quantity in sorted_coins:
+        for i in range(x, coin - 1, -1):  # Reverse order to avoid overcounting
+            for k in range(1, quantity + 1):
+                if i >= k * coin:
+                    dp[i] = (dp[i] + dp[i - k * coin]) % MOD
+    
+    return dp[x]
+
+# Example usage
+coins = [2, 3, 5]
+quantities = [3, 2, 1]  # 3 coins of value 2, 2 coins of value 3, 1 coin of value 5
+result = coin_combinations_ii_limited_supply(3, 9, coins, quantities)
+print(f"Ordered ways to make sum 9: {result}")
+```
+
+### Variation 2: Ordered Combinations with Constraints
+**Problem**: Cannot use certain combinations of coins.
+
+```python
+def coin_combinations_ii_with_constraints(n, x, coins, forbidden_combinations):
+    MOD = 10**9 + 7
+    
+    # dp[i][mask] = ways to make sum i with used coins mask (ordered)
+    dp = [[0] * (1 << n) for _ in range(x + 1)]
+    dp[0][0] = 1  # Base case
+    
+    # Sort coins to ensure non-decreasing order
+    sorted_coins = sorted(enumerate(coins), key=lambda x: x[1])
+    
+    for idx, coin in sorted_coins:
+        for i in range(coin, x + 1):
+            for mask in range(1 << n):
+                if dp[i - coin][mask] > 0:
+                    new_mask = mask | (1 << idx)
+                    if new_mask not in forbidden_combinations:
+                        dp[i][new_mask] = (dp[i][new_mask] + dp[i - coin][mask]) % MOD
+    
+    return sum(dp[x]) % MOD
+
+# Example usage
+coins = [2, 3, 5]
+forbidden = {0b110}  # Cannot use coins 1 and 3 together
+result = coin_combinations_ii_with_constraints(3, 9, coins, forbidden)
+print(f"Ordered ways to make sum 9: {result}")
+```
+
+### Variation 3: Ordered Combinations with Weights
+**Problem**: Each coin has a weight, find weighted ordered combinations.
+
+```python
+def coin_combinations_ii_weighted(n, x, coins, weights):
+    MOD = 10**9 + 7
+    
+    # dp[i] = weighted sum of ordered ways to make sum i
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case
+    
+    # Sort coins to ensure non-decreasing order
+    sorted_coins = sorted(zip(coins, weights), key=lambda x: x[0])
+    
+    for coin, weight in sorted_coins:
+        for i in range(coin, x + 1):
+            dp[i] = (dp[i] + dp[i - coin] * weight) % MOD
+    
+    return dp[x]
+
+# Example usage
+coins = [2, 3, 5]
+weights = [2, 3, 1]  # weight of each coin
+result = coin_combinations_ii_weighted(3, 9, coins, weights)
+print(f"Weighted ordered ways to make sum 9: {result}")
+```
+
+### Variation 4: Ordered Combinations with Probability
+**Problem**: Each coin has a probability of success.
+
+```python
+def coin_combinations_ii_probability(n, x, coins, probabilities):
+    MOD = 10**9 + 7
+    
+    # dp[i] = expected number of ordered ways to make sum i
+    dp = [0.0] * (x + 1)
+    dp[0] = 1.0  # Base case
+    
+    # Sort coins to ensure non-decreasing order
+    sorted_coins = sorted(zip(coins, probabilities), key=lambda x: x[0])
+    
+    for coin, prob in sorted_coins:
+        for i in range(coin, x + 1):
+            dp[i] += dp[i - coin] * prob
+    
+    return dp[x]
+
+# Example usage
+coins = [2, 3, 5]
+probabilities = [0.9, 0.8, 0.7]  # probability of each coin being valid
+result = coin_combinations_ii_probability(3, 9, coins, probabilities)
+print(f"Expected ordered ways to make sum 9: {result}")
+```
+
+### Variation 5: Ordered Combinations with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
+```python
+def coin_combinations_ii_optimized(n, x, coins):
+    MOD = 10**9 + 7
+    
+    # Sort coins for better performance and ordering
+    coins.sort()
+    
+    # dp[i] = number of ways to make sum i (ordered)
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case
+    
+    # Use early termination and better memory access
+    for coin in coins:
+        for i in range(coin, x + 1):
+            dp[i] = (dp[i] + dp[i - coin]) % MOD
+    
+    return dp[x]
+
+# Example usage
+coins = [5, 3, 2]  # Unsorted
+result = coin_combinations_ii_optimized(3, 9, coins)
+print(f"Ordered ways to make sum 9: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Dice Combinations](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar counting problems
+- **[Coin Combinations I](/cses-analyses/problem_soulutions/dynamic_programming/)**: Unordered combinations
+- **[Money Sums](/cses-analyses/problem_soulutions/dynamic_programming/)**: Sum-related problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming**: Essential for ordered counting problems
+2. **Ordering in DP**: Important for maintaining order constraints
+3. **Modular Arithmetic**: Important for handling large numbers
+4. **Combinatorics**: Important for understanding ordered counting
+
+---
+
+**This is a great introduction to dynamic programming for ordered counting problems!** 🎯
 
 ```python
 def coin_combinations_ii_dp(n, x, coins):
