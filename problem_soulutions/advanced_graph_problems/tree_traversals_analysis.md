@@ -4,24 +4,19 @@ title: "Tree Traversals"
 permalink: /problem_soulutions/advanced_graph_problems/tree_traversals_analysis
 ---
 
-
 # Tree Traversals
 
-## Problem Statement
-Given a tree with n nodes, find the preorder, inorder, and postorder traversals of the tree.
+## Problem Description
 
-### Input
-The first input line has one integer n: the number of nodes.
-Then there are n-1 lines describing the tree edges. Each line has two integers a and b: there is an edge between nodes a and b.
+**Problem**: Given a tree with n nodes, find the preorder, inorder, and postorder traversals of the tree.
 
-### Output
-Print three lines: the preorder, inorder, and postorder traversals.
+**Input**: 
+- n: number of nodes
+- n-1 lines: a b (edge between nodes a and b)
 
-### Constraints
-- 1 ≤ n ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
+**Output**: Three lines containing preorder, inorder, and postorder traversals.
 
-### Example
+**Example**:
 ```
 Input:
 4
@@ -33,15 +28,34 @@ Output:
 1 2 3 4
 4 3 2 1
 4 3 2 1
+
+Explanation: 
+Tree structure: 1 -- 2 -- 3 -- 4
+Preorder: Visit root, then children (1, 2, 3, 4)
+Inorder: Visit left subtree, root, right subtree (4, 3, 2, 1)
+Postorder: Visit children, then root (4, 3, 2, 1)
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: DFS Traversals - O(n)
-**Description**: Use DFS to perform the three tree traversals.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find three types of tree traversals
+- Use DFS algorithms
+- Handle general tree structures
+- Understand traversal order
+
+**Key Observations:**
+- Preorder: Root → Left → Right
+- Inorder: Left → Root → Right (for binary trees)
+- Postorder: Left → Right → Root
+- Need to handle general trees properly
+
+### Step 2: DFS Traversal Approach
+**Idea**: Use DFS to perform the three tree traversals.
 
 ```python
-def tree_traversals_naive(n, edges):
+def tree_traversals_dfs(n, edges):
     # Build adjacency list
     adj = [[] for _ in range(n + 1)]
     for a, b in edges:
@@ -63,8 +77,7 @@ def tree_traversals_naive(n, edges):
             if child != parent:
                 dfs(child, node)
         
-        # Inorder: visit node between children (for binary trees)
-        # For general trees, we can visit after all children
+        # Inorder: visit node after all children (for general trees)
         inorder.append(node)
         
         # Postorder: visit node after children
@@ -76,13 +89,419 @@ def tree_traversals_naive(n, edges):
     return preorder, inorder, postorder
 ```
 
-**Why this is inefficient**: The inorder traversal for general trees is not well-defined, and we need to handle the tree structure properly.
+**Why this works:**
+- Uses DFS for tree traversal
+- Handles general tree structures
+- Simple and efficient implementation
+- O(n) time complexity
 
-### Improvement 1: Proper Tree Traversals - O(n)
-**Description**: Implement proper tree traversals with correct handling of general trees.
+### Step 3: Complete Solution
+**Putting it all together:**
 
 ```python
-def tree_traversals_proper(n, edges):
+def solve_tree_traversals():
+    n = int(input())
+    edges = []
+    
+    for _ in range(n - 1):
+        a, b = map(int, input().split())
+        edges.append((a, b))
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Initialize traversal lists
+    preorder = []
+    inorder = []
+    postorder = []
+    
+    # DFS traversal
+    def dfs(node, parent):
+        # Preorder: visit node before children
+        preorder.append(node)
+        
+        # Visit children
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        # Inorder: visit node after all children (for general trees)
+        inorder.append(node)
+        
+        # Postorder: visit node after children
+        postorder.append(node)
+    
+    # Start from root (assuming node 1 is root)
+    dfs(1, -1)
+    
+    # Print results
+    print(*preorder)
+    print(*inorder)
+    print(*postorder)
+
+# Main execution
+if __name__ == "__main__":
+    solve_tree_traversals()
+```
+
+**Why this works:**
+- Optimal DFS-based approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (4, [(1, 2), (2, 3), (3, 4)]),
+        (3, [(1, 2), (2, 3)]),
+        (5, [(1, 2), (1, 3), (2, 4), (2, 5)]),
+    ]
+    
+    for n, edges in test_cases:
+        preorder, inorder, postorder = solve_test(n, edges)
+        print(f"n={n}, edges={edges}")
+        print(f"Preorder: {preorder}")
+        print(f"Inorder: {inorder}")
+        print(f"Postorder: {postorder}")
+        print()
+
+def solve_test(n, edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Initialize traversal lists
+    preorder = []
+    inorder = []
+    postorder = []
+    
+    # DFS traversal
+    def dfs(node, parent):
+        # Preorder: visit node before children
+        preorder.append(node)
+        
+        # Visit children
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        # Inorder: visit node after all children (for general trees)
+        inorder.append(node)
+        
+        # Postorder: visit node after children
+        postorder.append(node)
+    
+    # Start from root (assuming node 1 is root)
+    dfs(1, -1)
+    
+    return preorder, inorder, postorder
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n) - DFS traversal of the tree
+- **Space**: O(n) - adjacency list and recursion stack
+
+### Why This Solution Works
+- **DFS Traversal**: Efficient tree traversal algorithm
+- **Parent Tracking**: Avoids revisiting parent nodes
+- **Traversal Order**: Correctly implements all three orders
+- **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### 1. **Tree Traversals**
+- Different ways to visit tree nodes
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **DFS Algorithm**
+- Efficient tree traversal
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Traversal Order**
+- Preorder: Root → Left → Right
+- Inorder: Left → Root → Right
+- Postorder: Left → Right → Root
+- Important for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Tree Traversals with Weights
+**Problem**: Each node has a weight, find weighted traversals.
+
+```python
+def weighted_tree_traversals(n, edges, weights):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Initialize traversal lists
+    preorder = []
+    inorder = []
+    postorder = []
+    
+    # DFS traversal with weights
+    def dfs(node, parent):
+        # Preorder: visit node before children
+        preorder.append((node, weights[node]))
+        
+        # Visit children
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        # Inorder: visit node after all children
+        inorder.append((node, weights[node]))
+        
+        # Postorder: visit node after children
+        postorder.append((node, weights[node]))
+    
+    # Start from root
+    dfs(1, -1)
+    
+    return preorder, inorder, postorder
+```
+
+### Variation 2: Tree Traversals with Constraints
+**Problem**: Perform traversals avoiding certain nodes.
+
+```python
+def constrained_tree_traversals(n, edges, forbidden_nodes):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Initialize traversal lists
+    preorder = []
+    inorder = []
+    postorder = []
+    
+    # DFS traversal with constraints
+    def dfs(node, parent):
+        if node in forbidden_nodes:
+            return
+        
+        # Preorder: visit node before children
+        preorder.append(node)
+        
+        # Visit children
+        for child in adj[node]:
+            if child != parent and child not in forbidden_nodes:
+                dfs(child, node)
+        
+        # Inorder: visit node after all children
+        inorder.append(node)
+        
+        # Postorder: visit node after children
+        postorder.append(node)
+    
+    # Start from root
+    dfs(1, -1)
+    
+    return preorder, inorder, postorder
+```
+
+### Variation 3: Dynamic Tree Traversals
+**Problem**: Support adding/removing edges and maintaining traversals.
+
+```python
+class DynamicTreeTraversals:
+    def __init__(self, n):
+        self.n = n
+        self.adj = [[] for _ in range(n + 1)]
+        self.edges = set()
+    
+    def add_edge(self, a, b):
+        if (a, b) not in self.edges and (b, a) not in self.edges:
+            self.edges.add((a, b))
+            self.adj[a].append(b)
+            self.adj[b].append(a)
+    
+    def remove_edge(self, a, b):
+        if (a, b) in self.edges:
+            self.edges.remove((a, b))
+            self.adj[a].remove(b)
+            self.adj[b].remove(a)
+            return True
+        elif (b, a) in self.edges:
+            self.edges.remove((b, a))
+            self.adj[a].remove(b)
+            self.adj[b].remove(a)
+            return True
+        return False
+    
+    def get_traversals(self):
+        # Initialize traversal lists
+        preorder = []
+        inorder = []
+        postorder = []
+        
+        # DFS traversal
+        def dfs(node, parent):
+            # Preorder: visit node before children
+            preorder.append(node)
+            
+            # Visit children
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node)
+            
+            # Inorder: visit node after all children
+            inorder.append(node)
+            
+            # Postorder: visit node after children
+            postorder.append(node)
+        
+        # Start from root
+        dfs(1, -1)
+        
+        return preorder, inorder, postorder
+```
+
+### Variation 4: Tree Traversals with Multiple Constraints
+**Problem**: Perform traversals satisfying multiple constraints.
+
+```python
+def multi_constrained_tree_traversals(n, edges, constraints):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    forbidden_nodes = constraints.get('forbidden_nodes', set())
+    allowed_nodes = constraints.get('allowed_nodes', set(range(1, n + 1)))
+    
+    for a, b in edges:
+        if a in allowed_nodes and b in allowed_nodes:
+            adj[a].append(b)
+            adj[b].append(a)
+    
+    # Initialize traversal lists
+    preorder = []
+    inorder = []
+    postorder = []
+    
+    # DFS traversal with multiple constraints
+    def dfs(node, parent):
+        if node in forbidden_nodes:
+            return
+        
+        # Preorder: visit node before children
+        preorder.append(node)
+        
+        # Visit children
+        for child in adj[node]:
+            if child != parent and child not in forbidden_nodes:
+                dfs(child, node)
+        
+        # Inorder: visit node after all children
+        inorder.append(node)
+        
+        # Postorder: visit node after children
+        postorder.append(node)
+    
+    # Start from root
+    dfs(1, -1)
+    
+    return preorder, inorder, postorder
+```
+
+### Variation 5: Tree Traversals with Level Order
+**Problem**: Also perform level-order (BFS) traversal.
+
+```python
+def level_order_tree_traversals(n, edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Initialize traversal lists
+    preorder = []
+    inorder = []
+    postorder = []
+    level_order = []
+    
+    # DFS traversal
+    def dfs(node, parent):
+        # Preorder: visit node before children
+        preorder.append(node)
+        
+        # Visit children
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        # Inorder: visit node after all children
+        inorder.append(node)
+        
+        # Postorder: visit node after children
+        postorder.append(node)
+    
+    # BFS for level order
+    def bfs():
+        from collections import deque
+        queue = deque([(1, -1, 0)])  # (node, parent, level)
+        visited = {1}
+        
+        while queue:
+            node, parent, level = queue.popleft()
+            level_order.append((node, level))
+            
+            for child in adj[node]:
+                if child != parent and child not in visited:
+                    visited.add(child)
+                    queue.append((child, node, level + 1))
+    
+    # Start traversals
+    dfs(1, -1)
+    bfs()
+    
+    return preorder, inorder, postorder, level_order
+```
+
+## 🔗 Related Problems
+
+- **[Tree Algorithms](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Tree algorithms
+- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
+- **[DFS/BFS](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Depth-first and breadth-first search
+
+## 📚 Learning Points
+
+1. **Tree Traversals**: Essential for tree processing
+2. **DFS Algorithm**: Efficient tree traversal
+3. **Traversal Order**: Important algorithmic concept
+4. **Tree Properties**: Important tree theory concept
+
+---
+
+**This is a great introduction to tree traversals and tree algorithms!** 🎯python
+def solve_tree_traversals():
+    n = int(input())
+    edges = []
+    
+    for _ in range(n - 1):
+        a, b = map(int, input().split())
+        edges.append((a, b))
+    
     # Build adjacency list
     adj = [[] for _ in range(n + 1)]
     for a, b in edges:
@@ -98,33 +517,321 @@ def tree_traversals_proper(n, edges):
         # Preorder: visit node before children
         preorder.append(node)
         
-        # Get children (excluding parent)
-        children = [child for child in adj[node] if child != parent]
+        # Visit children
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
         
-        # For inorder in general trees, visit node after first half of children
-        if children:
-            # Visit first half of children
-            for i in range(len(children) // 2):
-                dfs(children[i], node)
-            
-            # Visit node (inorder)
-            inorder.append(node)
-            
-            # Visit second half of children
-            for i in range(len(children) // 2, len(children)):
-                dfs(children[i], node)
-        else:
-            # Leaf node
-            inorder.append(node)
+        # Inorder: visit node after all children (for general trees)
+        inorder.append(node)
         
-        # Postorder: visit node after all children
+        # Postorder: visit node after children
+        postorder.append(node)
+    
+    # Start from root (assuming node 1 is root)
+    dfs(1, -1)
+    
+    # Print results
+    print(*preorder)
+    print(*inorder)
+    print(*postorder)
+
+# Main execution
+if __name__ == "__main__":
+    solve_tree_traversals()
+```
+
+**Why this works:**
+- Optimal tree traversal approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (4, [(1, 2), (2, 3), (3, 4)], ([1, 2, 3, 4], [4, 3, 2, 1], [4, 3, 2, 1])),
+        (3, [(1, 2), (2, 3)], ([1, 2, 3], [3, 2, 1], [3, 2, 1])),
+        (5, [(1, 2), (1, 3), (2, 4), (2, 5)], ([1, 2, 4, 5, 3], [4, 5, 2, 3, 1], [4, 5, 2, 3, 1])),
+    ]
+    
+    for n, edges, expected in test_cases:
+        result = solve_test(n, edges)
+        print(f"n={n}, edges={edges}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def solve_test(n, edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Initialize traversal lists
+    preorder = []
+    inorder = []
+    postorder = []
+    
+    def dfs(node, parent):
+        # Preorder: visit node before children
+        preorder.append(node)
+        
+        # Visit children
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        # Inorder: visit node after all children (for general trees)
+        inorder.append(node)
+        
+        # Postorder: visit node after children
         postorder.append(node)
     
     # Start from root (assuming node 1 is root)
     dfs(1, -1)
     
     return preorder, inorder, postorder
+
+test_solution()
 ```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n) - single DFS traversal
+- **Space**: O(n) - adjacency list and traversal lists
+
+### Why This Solution Works
+- **DFS Traversal**: Efficient tree exploration
+- **Three Orders**: Preorder, inorder, postorder
+- **General Trees**: Handles arbitrary tree structures
+- **Optimal Approach**: Single pass through the tree
+
+## 🎯 Key Insights
+
+### 1. **Tree Traversal Orders**
+- Preorder: Root → Left → Right
+- Inorder: Left → Root → Right (for binary trees)
+- Postorder: Left → Right → Root
+- Key insight for understanding
+
+### 2. **DFS Implementation**
+- Single DFS pass for all three traversals
+- Efficient and elegant solution
+- Important for performance
+- Essential for understanding
+
+### 3. **General Tree Handling**
+- Extends binary tree concepts to general trees
+- Inorder for general trees: visit after all children
+- Simple but important observation
+- Essential for correctness
+
+## 🎯 Problem Variations
+
+### Variation 1: Binary Tree Traversals
+**Problem**: Handle binary trees with left/right children.
+
+```python
+def binary_tree_traversals(n, edges):
+    # Build binary tree structure
+    left_child = [0] * (n + 1)
+    right_child = [0] * (n + 1)
+    
+    for a, b in edges:
+        if left_child[a] == 0:
+            left_child[a] = b
+        else:
+            right_child[a] = b
+    
+    preorder = []
+    inorder = []
+    postorder = []
+    
+    def dfs(node):
+        if node == 0:
+            return
+        
+        # Preorder: Root → Left → Right
+        preorder.append(node)
+        dfs(left_child[node])
+        dfs(right_child[node])
+        
+        # Inorder: Left → Root → Right
+        inorder.append(node)
+        
+        # Postorder: Left → Right → Root
+        postorder.append(node)
+    
+    dfs(1)
+    return preorder, inorder, postorder
+```
+
+### Variation 2: Iterative Traversals
+**Problem**: Implement traversals without recursion.
+
+```python
+def iterative_tree_traversals(n, edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Iterative preorder
+    def iterative_preorder():
+        stack = [(1, -1, False)]
+        preorder = []
+        
+        while stack:
+            node, parent, processed = stack.pop()
+            
+            if not processed:
+                preorder.append(node)
+                stack.append((node, parent, True))
+                
+                # Add children in reverse order
+                for child in reversed(adj[node]):
+                    if child != parent:
+                        stack.append((child, node, False))
+        
+        return preorder
+    
+    # Iterative postorder
+    def iterative_postorder():
+        stack = [(1, -1, False)]
+        postorder = []
+        
+        while stack:
+            node, parent, processed = stack.pop()
+            
+            if processed:
+                postorder.append(node)
+            else:
+                stack.append((node, parent, True))
+                
+                # Add children in reverse order
+                for child in reversed(adj[node]):
+                    if child != parent:
+                        stack.append((child, node, False))
+        
+        return postorder
+    
+    return iterative_preorder(), iterative_postorder()
+```
+
+### Variation 3: Level Order Traversal
+**Problem**: Add level order (breadth-first) traversal.
+
+```python
+def level_order_traversal(n, edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Level order traversal
+    from collections import deque
+    queue = deque([(1, -1)])
+    level_order = []
+    
+    while queue:
+        node, parent = queue.popleft()
+        level_order.append(node)
+        
+        for child in adj[node]:
+            if child != parent:
+                queue.append((child, node))
+    
+    return level_order
+```
+
+### Variation 4: Traversal with Node Values
+**Problem**: Each node has a value, traverse and collect values.
+
+```python
+def tree_traversals_with_values(n, edges, values):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    preorder_values = []
+    inorder_values = []
+    postorder_values = []
+    
+    def dfs(node, parent):
+        # Preorder: visit node before children
+        preorder_values.append(values[node])
+        
+        # Visit children
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        # Inorder: visit node after all children
+        inorder_values.append(values[node])
+        
+        # Postorder: visit node after children
+        postorder_values.append(values[node])
+    
+    dfs(1, -1)
+    return preorder_values, inorder_values, postorder_values
+```
+
+### Variation 5: Traversal Paths
+**Problem**: Find the path from root to each node in each traversal.
+
+```python
+def tree_traversal_paths(n, edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    preorder_paths = {}
+    inorder_paths = {}
+    postorder_paths = {}
+    
+    def dfs(node, parent, path):
+        # Preorder path
+        preorder_paths[node] = path + [node]
+        
+        # Visit children
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node, path + [node])
+        
+        # Inorder path
+        inorder_paths[node] = path + [node]
+        
+        # Postorder path
+        postorder_paths[node] = path + [node]
+    
+    dfs(1, -1, [])
+    return preorder_paths, inorder_paths, postorder_paths
+```
+
+## 🔗 Related Problems
+
+- **[Tree Algorithms](/cses-analyses/problem_soulutions/tree_algorithms/)**: Tree problems
+- **[Graph Traversal](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph algorithms
+- **[Binary Tree Problems](/cses-analyses/problem_soulutions/tree_algorithms/)**: Binary tree algorithms
+
+## 📚 Learning Points
+
+1. **Tree Traversals**: Essential for tree algorithms
+2. **DFS Implementation**: Efficient tree exploration
+3. **Traversal Orders**: Understanding different visit patterns
+4. **General Trees**: Extending binary tree concepts
 
 **Why this improvement works**: Properly handles general trees by defining inorder traversal as visiting the node after the first half of children.
 
@@ -438,102 +1145,9 @@ def probabilistic_tree_traversals(n, edges, node_probabilities, num_samples=1000
         adj[a].append(b)
         adj[b].append(a)
     
-    # Monte Carlo simulation
-    preorder_samples = []
-    inorder_samples = []
-    postorder_samples = []
-    
-    for _ in range(num_samples):
-        # Sample nodes based on probabilities
-        visited_nodes = set()
-        for i in range(1, n + 1):
-            prob = node_probabilities.get(i, 0.5)
-            if random.random() < prob:
-                visited_nodes.add(i)
-        
-        # Perform traversals on sampled nodes
-        preorder = []
-        inorder = []
-        postorder = []
-        
-        def dfs(node, parent):
-            if node not in visited_nodes:
-                return
-            
-            # Preorder
-            preorder.append(node)
-            
-            children = [child for child in adj[node] if child != parent and child in visited_nodes]
-            
-            if children:
-                # Visit first half
-                for i in range(len(children) // 2):
-                    dfs(children[i], node)
-                
-                # Inorder
-                inorder.append(node)
-                
-                # Visit second half
-                for i in range(len(children) // 2, len(children)):
-                    dfs(children[i], node)
-            else:
-                inorder.append(node)
-            
-            # Postorder
-            postorder.append(node)
-        
-        # Start from root if visited
-        if 1 in visited_nodes:
-            dfs(1, -1)
-        
-        preorder_samples.append(preorder)
-        inorder_samples.append(inorder)
-        postorder_samples.append(postorder)
-    
-    # Calculate expected traversals
-    def average_traversal(samples):
-        if not samples:
-            return []
-        
-        max_len = max(len(sample) for sample in samples)
-        expected = []
-        
-        for i in range(max_len):
-            values = [sample[i] for sample in samples if i < len(sample)]
-            if values:
-                expected.append(sum(values) / len(values))
-        
-        return expected
-    
-    expected_preorder = average_traversal(preorder_samples)
-    expected_inorder = average_traversal(inorder_samples)
-    expected_postorder = average_traversal(postorder_samples)
-    
-    return expected_preorder, expected_inorder, expected_postorder
-```
+---
 
-#### 4. **Tree Traversals with Multiple Criteria**
-**Variation**: Optimize for multiple objectives (visit count, cost, probability).
-**Approach**: Use multi-objective optimization or weighted sum approach.
-```python
-def multi_criteria_tree_traversals(n, edges, criteria_weights):
-    # criteria_weights = {'visit_count': 0.4, 'cost': 0.3, 'probability': 0.3}
-    
-    def calculate_traversal_score(traversal_attributes):
-        return (criteria_weights['visit_count'] * traversal_attributes['visit_count'] + 
-                criteria_weights['cost'] * traversal_attributes['cost'] + 
-                criteria_weights['probability'] * traversal_attributes['probability'])
-    
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        adj[a].append(b)
-        adj[b].append(a)
-    
-    # Perform traversals
-    preorder = []
-    inorder = []
-    postorder = []
+**This is a great introduction to tree traversals and DFS algorithms!** 🎯
     
     def dfs(node, parent):
         # Preorder

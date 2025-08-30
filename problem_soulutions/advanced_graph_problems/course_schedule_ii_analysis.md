@@ -4,697 +4,1378 @@ title: "Course Schedule II"
 permalink: /problem_soulutions/advanced_graph_problems/course_schedule_ii_analysis
 ---
 
-
 # Course Schedule II
 
-## Problem Statement
-Given n courses and m prerequisites, find a valid order to take all courses. Each prerequisite is a pair (a,b) meaning course a must be taken before course b.
+## Problem Description
 
-### Input
-The first input line has two integers n and m: the number of courses and prerequisites.
-Then there are m lines describing the prerequisites. Each line has two integers a and b: course a must be taken before course b.
+**Problem**: Given n courses and their prerequisites, find a valid order to complete all courses. If it's impossible, return an empty array.
 
-### Output
-Print a valid order to take all courses, or "IMPOSSIBLE" if no valid order exists.
+**Input**: 
+- n: number of courses (labeled from 0 to n-1)
+- prerequisites: array of [a, b] where b is a prerequisite for a
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
+**Output**: Valid order to complete all courses, or empty array if impossible.
 
-### Example
+**Example**:
 ```
 Input:
-4 3
-1 2
-2 3
-3 4
+n = 4
+prerequisites = [[1,0],[2,0],[3,1],[3,2]]
 
 Output:
-1 2 3 4
+[0,1,2,3]
+
+Explanation: 
+Course 0 has no prerequisites
+Course 1 requires course 0
+Course 2 requires course 0  
+Course 3 requires courses 1 and 2
+Valid order: 0 → 1 → 2 → 3
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Topological Sort with DFS - O(n + m)
-**Description**: Use topological sort with DFS to find a valid course order.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find a valid order to complete all courses
+- Respect prerequisite relationships
+- Detect if impossible (cycles in prerequisites)
+- Use topological sorting
+
+**Key Observations:**
+- This is a topological sorting problem
+- Prerequisites form a directed graph
+- Need to detect cycles (impossible case)
+- Kahn's algorithm is perfect for this
+
+### Step 2: Topological Sorting with Kahn's Algorithm
+**Idea**: Use Kahn's algorithm to find topological order and detect cycles.
 
 ```python
-def course_schedule_ii_naive(n, m, prerequisites):
+def course_schedule_ii_kahn(n, prerequisites):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm
+    from collections import deque
+    queue = deque()
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    result = []
+    while queue:
+        course = queue.popleft()
+        result.append(course)
+        
+        # Remove this course and update in-degrees
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
+    
+    # Check if we processed all courses
+    return result if len(result) == n else []
+```
+
+**Why this works:**
+- Uses Kahn's algorithm for topological sorting
+- Detects cycles by checking if all courses are processed
+- Simple and efficient implementation
+- O(n + m) time complexity
+
+### Step 3: DFS with Cycle Detection
+**Idea**: Use DFS with cycle detection to find topological order.
+
+```python
+def course_schedule_ii_dfs(n, prerequisites):
     # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in prerequisites:
-        adj[a].append(b)
+    adj = [[] for _ in range(n)]
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
     
-    # Topological sort using DFS
-    visited = [False] * (n + 1)
-    in_stack = [False] * (n + 1)
-    order = []
+    # DFS with cycle detection
+    visited = [False] * n
+    in_stack = [False] * n
+    result = []
     
-    def dfs(node):
-        if in_stack[node]:
+    def dfs(course):
+        if in_stack[course]:
             return False  # Cycle detected
-        if visited[node]:
+        if visited[course]:
             return True
         
-        visited[node] = True
-        in_stack[node] = True
+        visited[course] = True
+        in_stack[course] = True
         
-        for neighbor in adj[node]:
-            if not dfs(neighbor):
+        for next_course in adj[course]:
+            if not dfs(next_course):
                 return False
         
-        in_stack[node] = False
-        order.append(node)
+        in_stack[course] = False
+        result.append(course)
         return True
     
-    # Try to visit all nodes
-    for i in range(1, n + 1):
+    # Check for cycles from each course
+    for i in range(n):
         if not visited[i]:
             if not dfs(i):
-                return "IMPOSSIBLE"
+                return []
     
-    # Reverse order to get topological sort
-    return order[::-1]
+    return result[::-1]  # Reverse to get topological order
 ```
 
-**Why this is inefficient**: The implementation is correct but can be optimized for clarity.
+**Why this works:**
+- Uses DFS with cycle detection
+- Tracks nodes in current recursion stack
+- Returns topological order in reverse
+- O(n + m) time complexity
 
-### Improvement 1: Kahn's Algorithm - O(n + m)
-**Description**: Use Kahn's algorithm (BFS-based topological sort) for better efficiency.
+### Step 4: Complete Solution
+**Putting it all together:**
 
 ```python
-def course_schedule_ii_kahn(n, m, prerequisites):
-    # Build adjacency list and in-degree
-    adj = [[] for _ in range(n + 1)]
-    in_degree = [0] * (n + 1)
+def solve_course_schedule_ii():
+    n, m = map(int, input().split())
+    prerequisites = []
     
-    for a, b in prerequisites:
-        adj[a].append(b)
-        in_degree[b] += 1
+    for _ in range(m):
+        a, b = map(int, input().split())
+        prerequisites.append((a, b))
+    
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
     
     # Kahn's algorithm
     from collections import deque
     queue = deque()
     
-    # Add all nodes with in-degree 0
-    for i in range(1, n + 1):
+    # Add all courses with no prerequisites
+    for i in range(n):
         if in_degree[i] == 0:
             queue.append(i)
     
-    order = []
-    
+    result = []
     while queue:
-        node = queue.popleft()
-        order.append(node)
+        course = queue.popleft()
+        result.append(course)
         
-        # Remove edges from this node
-        for neighbor in adj[node]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                queue.append(neighbor)
+        # Remove this course and update in-degrees
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
     
-    # Check if all nodes were processed
-    if len(order) != n:
-        return "IMPOSSIBLE"
-    
-    return order
+    # Check if we processed all courses
+    if len(result) == n:
+        print(*result)
+    else:
+        print(-1)
+
+# Main execution
+if __name__ == "__main__":
+    solve_course_schedule_ii()
 ```
 
-**Why this improvement works**: Kahn's algorithm is more efficient and easier to understand than DFS-based topological sort.
+**Why this works:**
+- Optimal topological sorting approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
 
-## Final Optimal Solution
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
 
 ```python
-from collections import deque
-
-n, m = map(int, input().split())
-prerequisites = []
-for _ in range(m):
-    a, b = map(int, input().split())
-    prerequisites.append((a, b))
-
-def find_course_order(n, m, prerequisites):
-    # Build adjacency list and in-degree
-    adj = [[] for _ in range(n + 1)]
-    in_degree = [0] * (n + 1)
+def test_solution():
+    test_cases = [
+        (4, 3, [(1, 2), (2, 3), (3, 4)]),
+        (3, 2, [(1, 2), (2, 3)]),
+        (4, 4, [(1, 2), (2, 3), (3, 4), (4, 1)]),  # Cycle
+    ]
     
-    for a, b in prerequisites:
-        adj[a].append(b)
-        in_degree[b] += 1
+    for n, m, prerequisites in test_cases:
+        result = solve_test(n, m, prerequisites)
+        print(f"n={n}, m={m}, prerequisites={prerequisites}")
+        print(f"Result: {result}")
+        print()
+
+def solve_test(n, m, prerequisites):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
     
     # Kahn's algorithm
-    queue = deque()
-    
-    # Add all nodes with in-degree 0
-    for i in range(1, n + 1):
-        if in_degree[i] == 0:
-            queue.append(i)
-    
-    order = []
-    
-    while queue:
-        node = queue.popleft()
-        order.append(node)
-        
-        # Remove edges from this node
-        for neighbor in adj[node]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                queue.append(neighbor)
-    
-    # Check if all nodes were processed
-    if len(order) != n:
-        return "IMPOSSIBLE"
-    
-    return order
-
-result = find_course_order(n, m, prerequisites)
-if result == "IMPOSSIBLE":
-    print(result)
-else:
-    print(*result)
-```
-
-## Complexity Analysis
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| DFS Topological Sort | O(n + m) | O(n) | Cycle detection with DFS |
-| Kahn's Algorithm | O(n + m) | O(n) | BFS-based topological sort |
-
-## Key Insights for Other Problems
-
-### 1. **Topological Sort Properties**
-**Principle**: Topological sort orders nodes so that all edges point forward, possible only in DAGs.
-**Applicable to**: Dependency problems, scheduling problems, DAG problems
-
-### 2. **Kahn's Algorithm**
-**Principle**: Use BFS to iteratively remove nodes with no incoming edges.
-**Applicable to**: Topological sort problems, dependency resolution, graph problems
-
-### 3. **Cycle Detection**
-**Principle**: Topological sort is impossible if the graph contains cycles.
-**Applicable to**: Cycle detection problems, dependency problems, graph problems
-
-## Notable Techniques
-
-### 1. **Kahn's Algorithm Implementation**
-```python
-def kahn_algorithm(n, adj):
-    from collections import deque
-    
-    # Calculate in-degrees
-    in_degree = [0] * (n + 1)
-    for i in range(1, n + 1):
-        for neighbor in adj[i]:
-            in_degree[neighbor] += 1
-    
-    # Initialize queue with nodes having in-degree 0
-    queue = deque()
-    for i in range(1, n + 1):
-        if in_degree[i] == 0:
-            queue.append(i)
-    
-    # Process nodes
-    order = []
-    while queue:
-        node = queue.popleft()
-        order.append(node)
-        
-        for neighbor in adj[node]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                queue.append(neighbor)
-    
-    return order
-```
-
-### 2. **DFS Topological Sort**
-```python
-def dfs_topological_sort(n, adj):
-    visited = [False] * (n + 1)
-    in_stack = [False] * (n + 1)
-    order = []
-    
-    def dfs(node):
-        if in_stack[node]:
-            return False  # Cycle detected
-        if visited[node]:
-            return True
-        
-        visited[node] = True
-        in_stack[node] = True
-        
-        for neighbor in adj[node]:
-            if not dfs(neighbor):
-                return False
-        
-        in_stack[node] = False
-        order.append(node)
-        return True
-    
-    for i in range(1, n + 1):
-        if not visited[i]:
-            if not dfs(i):
-                return None  # Cycle detected
-    
-    return order[::-1]
-```
-
-### 3. **Cycle Detection**
-```python
-def has_cycle(n, adj):
-    visited = [False] * (n + 1)
-    in_stack = [False] * (n + 1)
-    
-    def dfs(node):
-        if in_stack[node]:
-            return True  # Cycle detected
-        if visited[node]:
-            return False
-        
-        visited[node] = True
-        in_stack[node] = True
-        
-        for neighbor in adj[node]:
-            if dfs(neighbor):
-                return True
-        
-        in_stack[node] = False
-        return False
-    
-    for i in range(1, n + 1):
-        if not visited[i]:
-            if dfs(i):
-                return True
-    
-    return False
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is a topological sort problem with dependency constraints
-2. **Choose approach**: Use Kahn's algorithm for efficient topological sort
-3. **Initialize data structure**: Build adjacency list and calculate in-degrees
-4. **Find starting nodes**: Add all nodes with in-degree 0 to queue
-5. **Process nodes**: Remove nodes and update in-degrees of neighbors
-6. **Check completion**: Verify all nodes were processed
-7. **Return result**: Output topological order or "IMPOSSIBLE"
-
----
-
-*This analysis shows how to efficiently solve course scheduling using Kahn's algorithm for topological sort.* 
-
-## Problem Variations & Related Questions
-
-### Problem Variations
-
-#### 1. **Course Schedule II with Costs**
-**Variation**: Each course has a cost, find minimum cost schedule.
-**Approach**: Use weighted topological sort with cost optimization.
-```python
-def cost_based_course_schedule_ii(n, m, prerequisites, course_costs):
-    # course_costs[i] = cost of taking course i
-    
-    # Build adjacency list and in-degree
-    adj = [[] for _ in range(n + 1)]
-    in_degree = [0] * (n + 1)
-    
-    for a, b in prerequisites:
-        adj[a].append(b)
-        in_degree[b] += 1
-    
-    # Kahn's algorithm with cost tracking
     from collections import deque
     queue = deque()
     
-    # Add all nodes with in-degree 0
-    for i in range(1, n + 1):
+    # Add all courses with no prerequisites
+    for i in range(n):
         if in_degree[i] == 0:
             queue.append(i)
     
-    order = []
-    total_cost = 0
-    
+    result = []
     while queue:
-        # Sort by cost to prioritize cheaper courses
-        queue = deque(sorted(queue, key=lambda x: course_costs[x]))
-        node = queue.popleft()
+        course = queue.popleft()
+        result.append(course)
         
-        order.append(node)
-        total_cost += course_costs[node]
-        
-        for neighbor in adj[node]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                queue.append(neighbor)
+        # Remove this course and update in-degrees
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
     
-    if len(order) != n:
-        return "IMPOSSIBLE", float('inf')
-    
-    return order, total_cost
+    # Check if we processed all courses
+    if len(result) == n:
+        return result
+    else:
+        return []
+
+test_solution()
 ```
 
-#### 2. **Course Schedule II with Constraints**
-**Variation**: Limited budget, restricted courses, or specific scheduling requirements.
-**Approach**: Use constraint satisfaction with topological sort.
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n + m) - Kahn's algorithm for topological sorting
+- **Space**: O(n + m) - adjacency list and queue
+
+### Why This Solution Works
+- **Topological Sorting**: Finds valid course order
+- **Cycle Detection**: Identifies impossible cases
+- **Kahn's Algorithm**: Efficient implementation
+- **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### 1. **Topological Sorting**
+- Orders vertices in DAG
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **Cycle Detection**
+- Identifies impossible cases
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Kahn's Algorithm**
+- Efficient topological sorting
+- Important for performance
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Course Schedule with Weights
+**Problem**: Each course has a weight/difficulty, find optimal order.
+
 ```python
-def constrained_course_schedule_ii(n, m, prerequisites, budget, restricted_courses):
-    # budget = maximum cost allowed
-    # restricted_courses = set of courses that cannot be taken
+def weighted_course_schedule_ii(n, prerequisites, weights):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
     
-    # Build adjacency list and in-degree
-    adj = [[] for _ in range(n + 1)]
-    in_degree = [0] * (n + 1)
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
     
-    for a, b in prerequisites:
-        adj[a].append(b)
-        in_degree[b] += 1
+    # Kahn's algorithm with priority queue
+    import heapq
+    queue = []
     
-    # Kahn's algorithm with constraints
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            heapq.heappush(queue, (weights[i], i))
+    
+    result = []
+    while queue:
+        weight, course = heapq.heappop(queue)
+        result.append(course)
+        
+        # Remove this course and update in-degrees
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                heapq.heappush(queue, (weights[next_course], next_course))
+    
+    # Check if we processed all courses
+    return result if len(result) == n else []
+```
+
+### Variation 2: Course Schedule with Parallel Processing
+**Problem**: Can take multiple courses simultaneously if no conflicts.
+
+```python
+def parallel_course_schedule_ii(n, prerequisites, max_parallel):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm with parallel processing
     from collections import deque
     queue = deque()
     
-    # Add all nodes with in-degree 0 (excluding restricted)
-    for i in range(1, n + 1):
-        if in_degree[i] == 0 and i not in restricted_courses:
-            queue.append(i)
-    
-    order = []
-    total_cost = 0
-    
-    while queue:
-        node = queue.popleft()
-        
-        if total_cost + 1 > budget:  # Assuming unit cost
-            break
-        
-        order.append(node)
-        total_cost += 1
-        
-        for neighbor in adj[node]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0 and neighbor not in restricted_courses:
-                queue.append(neighbor)
-    
-    if len(order) != n:
-        return "IMPOSSIBLE", total_cost
-    
-    return order, total_cost
-```
-
-#### 3. **Course Schedule II with Probabilities**
-**Variation**: Each course has a probability of being available.
-**Approach**: Use Monte Carlo simulation or expected value calculation.
-```python
-def probabilistic_course_schedule_ii(n, m, prerequisites, availability_probabilities):
-    # availability_probabilities[i] = probability course i is available
-    
-    def monte_carlo_simulation(trials=1000):
-        successful_schedules = []
-        
-        for _ in range(trials):
-            # Simulate course availability
-            available_courses = set()
-            for i in range(1, n + 1):
-                if random.random() < availability_probabilities.get(i, 0.8):
-                    available_courses.add(i)
-            
-            # Try to schedule available courses
-            schedule = schedule_available_courses(n, m, prerequisites, available_courses)
-            if schedule != "IMPOSSIBLE":
-                successful_schedules.append(schedule)
-        
-        return successful_schedules
-    
-    def schedule_available_courses(n, m, prerequisites, available_courses):
-        # Build adjacency list and in-degree for available courses
-        adj = [[] for _ in range(n + 1)]
-        in_degree = [0] * (n + 1)
-        
-        for a, b in prerequisites: if a in available_courses and b in 
-available_courses: adj[a].append(b)
-                in_degree[b] += 1
-        
-        # Kahn's algorithm
-        from collections import deque
-        queue = deque()
-        
-        for i in available_courses:
-            if in_degree[i] == 0:
-                queue.append(i)
-        
-        order = []
-        
-        while queue:
-            node = queue.popleft()
-            order.append(node)
-            
-            for neighbor in adj[node]:
-                in_degree[neighbor] -= 1
-                if in_degree[neighbor] == 0:
-                    queue.append(neighbor)
-        
-        if len(order) != len(available_courses):
-            return "IMPOSSIBLE"
-        
-        return order
-    
-    return monte_carlo_simulation()
-```
-
-#### 4. **Course Schedule II with Multiple Criteria**
-**Variation**: Optimize for multiple objectives (cost, time, difficulty).
-**Approach**: Use multi-objective optimization or weighted sum approach.
-```python
-def multi_criteria_course_schedule_ii(n, m, prerequisites, criteria_weights):
-    # criteria_weights = {'cost': 0.4, 'time': 0.3, 'difficulty': 0.3}
-    # Each course has multiple attributes
-    
-    def calculate_course_score(course_attributes):
-        return (criteria_weights['cost'] * course_attributes['cost'] + 
-                criteria_weights['time'] * course_attributes['time'] + 
-                criteria_weights['difficulty'] * course_attributes['difficulty'])
-    
-    # Build adjacency list and in-degree
-    adj = [[] for _ in range(n + 1)]
-    in_degree = [0] * (n + 1)
-    
-    for a, b in prerequisites:
-        adj[a].append(b)
-        in_degree[b] += 1
-    
-    # Kahn's algorithm with multi-criteria selection
-    from collections import deque
-    queue = deque()
-    
-    for i in range(1, n + 1):
+    # Add all courses with no prerequisites
+    for i in range(n):
         if in_degree[i] == 0:
             queue.append(i)
     
-    order = []
-    total_score = 0
-    
+    result = []
     while queue:
-        # Sort by multi-criteria score
-        queue = deque(sorted(queue, key=lambda x: calculate_course_score({
-            'cost': 1, 'time': 1, 'difficulty': 1  # Simplified attributes
-        })))
+        # Take up to max_parallel courses
+        current_semester = []
+        for _ in range(min(max_parallel, len(queue))):
+            if queue:
+                course = queue.popleft()
+                current_semester.append(course)
         
-        node = queue.popleft()
-        order.append(node)
-        total_score += calculate_course_score({
-            'cost': 1, 'time': 1, 'difficulty': 1
-        })
+        result.extend(current_semester)
         
-        for neighbor in adj[node]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                queue.append(neighbor)
+        # Update in-degrees for taken courses
+        for course in current_semester:
+            for next_course in adj[course]:
+                in_degree[next_course] -= 1
+                if in_degree[next_course] == 0:
+                    queue.append(next_course)
     
-    if len(order) != n:
-        return "IMPOSSIBLE", float('inf')
-    
-    return order, total_score
+    # Check if we processed all courses
+    return result if len(result) == n else []
 ```
 
-#### 5. **Course Schedule II with Dynamic Updates**
-**Variation**: Prerequisites can be added or removed dynamically.
-**Approach**: Use dynamic graph algorithms or incremental updates.
+### Variation 3: Course Schedule with Deadlines
+**Problem**: Each course has a deadline, find feasible schedule.
+
+```python
+def deadline_course_schedule_ii(n, prerequisites, deadlines):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm with deadline consideration
+    from collections import deque
+    queue = deque()
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    result = []
+    current_time = 0
+    
+    while queue:
+        # Find course with earliest deadline
+        best_course = min(queue, key=lambda x: deadlines[x])
+        queue.remove(best_course)
+        
+        if current_time > deadlines[best_course]:
+            return []  # Deadline missed
+        
+        result.append(best_course)
+        current_time += 1
+        
+        # Update in-degrees
+        for next_course in adj[best_course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
+    
+    # Check if we processed all courses
+    return result if len(result) == n else []
+```
+
+### Variation 4: Dynamic Course Schedule
+**Problem**: Support adding/removing prerequisites dynamically.
+
 ```python
 class DynamicCourseScheduleII:
     def __init__(self, n):
         self.n = n
-        self.prerequisites = []
-        self.adj = [[] for _ in range(n + 1)]
-        self.in_degree = [0] * (n + 1)
-        self.order_cache = None
+        self.adj = [[] for _ in range(n)]
+        self.in_degree = [0] * n
+        self.prerequisites = set()
     
-    def add_prerequisite(self, a, b):
-        self.prerequisites.append((a, b))
-        self.adj[a].append(b)
-        self.in_degree[b] += 1
-        self.invalidate_cache()
+    def add_prerequisite(self, course, prereq):
+        if (course, prereq) not in self.prerequisites:
+            self.prerequisites.add((course, prereq))
+            self.adj[prereq].append(course)
+            self.in_degree[course] += 1
     
-    def remove_prerequisite(self, a, b):
-        if (a, b) in self.prerequisites:
-            self.prerequisites.remove((a, b))
-            self.adj[a].remove(b)
-            self.in_degree[b] -= 1
-            self.invalidate_cache()
+    def remove_prerequisite(self, course, prereq):
+        if (course, prereq) in self.prerequisites:
+            self.prerequisites.remove((course, prereq))
+            self.adj[prereq].remove(course)
+            self.in_degree[course] -= 1
+            return True
+        return False
     
-    def invalidate_cache(self):
-        self.order_cache = None
-    
-    def get_schedule(self):
-        if self.order_cache is None:
-            self.order_cache = self.compute_schedule()
-        return self.order_cache
-    
-    def compute_schedule(self):
+    def get_valid_order(self):
         # Kahn's algorithm
         from collections import deque
         queue = deque()
         
-        # Add all nodes with in-degree 0
-        for i in range(1, self.n + 1):
+        # Add all courses with no prerequisites
+        for i in range(self.n):
             if self.in_degree[i] == 0:
                 queue.append(i)
         
-        order = []
-        
+        result = []
         while queue:
-            node = queue.popleft()
-            order.append(node)
+            course = queue.popleft()
+            result.append(course)
             
-            for neighbor in self.adj[node]:
-                self.in_degree[neighbor] -= 1
-                if self.in_degree[neighbor] == 0:
-                    queue.append(neighbor)
+            # Remove this course and update in-degrees
+            for next_course in self.adj[course]:
+                self.in_degree[next_course] -= 1
+                if self.in_degree[next_course] == 0:
+                    queue.append(next_course)
         
-        if len(order) != self.n:
-            return "IMPOSSIBLE"
-        
-        return order
-    
-    def has_cycle(self):
-        # Check if adding any prerequisite creates a cycle
-        visited = [False] * (self.n + 1)
-        in_stack = [False] * (self.n + 1)
-        
-        def dfs(node):
-            if in_stack[node]:
-                return True  # Cycle detected
-            if visited[node]:
-                return False
-            
-            visited[node] = True
-            in_stack[node] = True
-            
-            for neighbor in self.adj[node]:
-                if dfs(neighbor):
-                    return True
-            
-            in_stack[node] = False
-            return False
-        
-        for i in range(1, self.n + 1):
-            if not visited[i]:
-                if dfs(i):
-                    return True
-        
-        return False
+        # Check if we processed all courses
+        return result if len(result) == self.n else []
 ```
 
-### Related Problems & Concepts
+### Variation 5: Course Schedule with Multiple Constraints
+**Problem**: Find valid schedule satisfying multiple constraints.
 
-#### 1. **Topological Sort Problems**
-- **Course Schedule I**: Check if valid schedule exists
-- **Alien Dictionary**: Order characters from alien language
-- **Build Order**: Construction project dependencies
-- **Task Scheduling**: Job dependencies and ordering
+```python
+def multi_constrained_course_schedule_ii(n, prerequisites, constraints):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Apply constraints
+    forbidden_edges = constraints.get('forbidden_edges', set())
+    required_edges = constraints.get('required_edges', set())
+    
+    # Remove forbidden prerequisites
+    for course, prereq in forbidden_edges:
+        if prereq in adj[course]:
+            adj[course].remove(prereq)
+            in_degree[course] -= 1
+    
+    # Add required prerequisites
+    for course, prereq in required_edges:
+        if prereq not in adj[course]:
+            adj[prereq].append(course)
+            in_degree[course] += 1
+    
+    # Kahn's algorithm
+    from collections import deque
+    queue = deque()
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    result = []
+    while queue:
+        course = queue.popleft()
+        result.append(course)
+        
+        # Remove this course and update in-degrees
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
+    
+    # Check if we processed all courses
+    return result if len(result) == n else []
+```
 
-#### 2. **Graph Algorithms**
-- **Depth-First Search**: Recursive exploration
-- **Breadth-First Search**: Level-by-level traversal
-- **Cycle Detection**: Detecting cycles in directed graphs
-- **Strongly Connected Components**: Tarjan's, Kosaraju's
+## 🔗 Related Problems
 
-#### 3. **Dependency Problems**
-- **Package Management**: Software dependencies
-- **Build Systems**: Compilation order
-- **Workflow Management**: Task dependencies
-- **Resource Allocation**: Resource constraints
+- **[Topological Sorting](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Topological sorting algorithms
+- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
+- **[Cycle Detection](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Cycle detection algorithms
 
-#### 4. **Scheduling Problems**
-- **Job Scheduling**: Task ordering with constraints
-- **Project Planning**: Critical path analysis
-- **Event Planning**: Event dependencies
-- **Academic Planning**: Course prerequisites
+## 📚 Learning Points
 
-#### 5. **Dynamic Graph Problems**
-- **Incremental Topological Sort**: Adding edges
-- **Decremental Topological Sort**: Removing edges
-- **Fully Dynamic**: Both adding and removing
-- **Online Algorithms**: Real-time updates
+1. **Topological Sorting**: Essential for dependency resolution
+2. **Kahn's Algorithm**: Efficient implementation
+3. **Cycle Detection**: Important for impossible cases
+4. **Graph Theory**: Important graph theory concept
 
-### Competitive Programming Variations
+---
 
-#### 1. **Online Judge Variations**
-- **Time Limits**: Optimize for strict constraints
-- **Memory Limits**: Space-efficient solutions
-- **Input Size**: Handle large graphs
-- **Edge Cases**: Robust cycle detection
+**This is a great introduction to course scheduling and topological sorting!** 🎯
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+    
+    # DFS with cycle detection
+    visited = [0] * n  # 0: unvisited, 1: visiting, 2: visited
+    result = []
+    
+    def dfs(course):
+        if visited[course] == 1:  # Cycle detected
+            return False
+        if visited[course] == 2:  # Already processed
+            return True
+        
+        visited[course] = 1  # Mark as visiting
+        
+        for next_course in adj[course]:
+            if not dfs(next_course):
+                return False
+        
+        visited[course] = 2  # Mark as visited
+        result.append(course)
+        return True
+    
+    # Try DFS from all courses
+    for course in range(n):
+        if visited[course] == 0:
+            if not dfs(course):
+                return []
+    
+    return result[::-1]  # Reverse to get topological order
+```
 
-#### 2. **Algorithm Contests**
-- **Speed Programming**: Fast implementation
-- **Code Golf**: Minimal code solutions
-- **Team Contests**: Collaborative problem solving
-- **Live Coding**: Real-time problem solving
+**Why this works:**
+- Uses DFS with cycle detection
+- Three-state visited array
+- Detects cycles during traversal
+- O(n + m) time complexity
 
-#### 3. **Advanced Techniques**
-- **Binary Search**: On answer space
-- **Two Pointers**: Efficient graph traversal
-- **Sliding Window**: Optimal subgraph problems
-- **Monotonic Stack/Queue**: Maintaining order
+### Step 3: Complete Solution
+**Putting it all together:**
 
-### Mathematical Extensions
+```python
+def solve_course_schedule_ii():
+    n, m = map(int, input().split())
+    prerequisites = []
+    
+    for _ in range(m):
+        a, b = map(int, input().split())
+        prerequisites.append((a, b))
+    
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm
+    from collections import deque
+    queue = deque()
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    result = []
+    while queue:
+        course = queue.popleft()
+        result.append(course)
+        
+        # Remove this course and update in-degrees
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
+    
+    # Check if we processed all courses
+    if len(result) == n:
+        print(*result)
+    else:
+        print(-1)
 
-#### 1. **Combinatorics**
-- **Permutation Counting**: Valid orderings
-- **Combination Problems**: Course selections
-- **Catalan Numbers**: Valid dependency sequences
-- **Stirling Numbers**: Partitioning courses
+# Main execution
+if __name__ == "__main__":
+    solve_course_schedule_ii()
+```
 
-#### 2. **Probability Theory**
-- **Expected Values**: Average completion time
-- **Markov Chains**: State transitions
-- **Random Graphs**: Erdős-Rényi model
-- **Monte Carlo**: Simulation methods
+**Why this works:**
+- Optimal Kahn's algorithm approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
 
-#### 3. **Number Theory**
-- **Modular Arithmetic**: Large number handling
-- **Prime Numbers**: Special graph cases
-- **GCD/LCM**: Mathematical properties
-- **Euler's Totient**: Counting coprime courses
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
 
-### Learning Resources
+```python
+def test_solution():
+    test_cases = [
+        (4, [(1, 0), (2, 0), (3, 1), (3, 2)]),
+        (2, [(1, 0), (0, 1)]),  # Cycle
+        (3, [(1, 0), (2, 1)]),
+    ]
+    
+    for n, prerequisites in test_cases:
+        result = solve_test(n, prerequisites)
+        print(f"n={n}, prerequisites={prerequisites}")
+        print(f"Schedule: {result}")
+        print()
 
-#### 1. **Online Platforms**
-- **LeetCode**: Course schedule problems
-- **Codeforces**: Competitive programming
-- **HackerRank**: Algorithm challenges
-- **AtCoder**: Japanese programming contests
+def solve_test(n, prerequisites):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm
+    from collections import deque
+    queue = deque()
+    
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    result = []
+    while queue:
+        course = queue.popleft()
+        result.append(course)
+        
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
+    
+    return result if len(result) == n else []
 
-#### 2. **Educational Resources**
-- **CLRS**: Introduction to Algorithms
-- **CP-Algorithms**: Competitive programming algorithms
-- **GeeksforGeeks**: Algorithm tutorials
-- **TopCoder**: Algorithm tutorials
+test_solution()
+```
 
-#### 3. **Practice Problems**
-- **Graph Problems**: Topological sort, cycle detection
-- **Scheduling Problems**: Course planning, job scheduling
-- **Dynamic Problems**: Incremental, decremental
-- **Dependency Problems**: Package management, build systems 
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n + m) - Kahn's algorithm
+- **Space**: O(n + m) - adjacency list and queue
+
+### Why This Solution Works
+- **Kahn's Algorithm**: Finds topological order efficiently
+- **Cycle Detection**: Detects impossible cases
+- **In-Degree Tracking**: Manages prerequisite relationships
+- **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### 1. **Topological Sorting**
+- Kahn's algorithm for ordering
+- Essential for dependency resolution
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **Cycle Detection**
+- Detect impossible schedules
+- Important for validation
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **In-Degree Management**
+- Track prerequisite counts
+- Important for performance
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Course Schedule with Weights
+**Problem**: Each course has a completion time, find minimum total time.
+
+```python
+def course_schedule_with_weights(n, prerequisites, weights):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm with time tracking
+    from collections import deque
+    queue = deque()
+    completion_time = [0] * n
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+            completion_time[i] = weights[i]
+    
+    result = []
+    while queue:
+        course = queue.popleft()
+        result.append(course)
+        
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            completion_time[next_course] = max(
+                completion_time[next_course],
+                completion_time[course] + weights[next_course]
+            )
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
+    
+    return result if len(result) == n else [], max(completion_time)
+```
+
+### Variation 2: Course Schedule with Parallel Processing
+**Problem**: Allow taking multiple courses simultaneously.
+
+```python
+def parallel_course_schedule(n, prerequisites, max_parallel):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm with parallel processing
+    from collections import deque
+    queue = deque()
+    
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    result = []
+    semester = 0
+    
+    while queue:
+        # Take up to max_parallel courses
+        current_semester = []
+        for _ in range(min(max_parallel, len(queue))):
+            course = queue.popleft()
+            current_semester.append(course)
+            result.append(course)
+        
+        # Update in-degrees for next semester
+        for course in current_semester:
+            for next_course in adj[course]:
+                in_degree[next_course] -= 1
+                if in_degree[next_course] == 0:
+                    queue.append(next_course)
+        
+        semester += 1
+    
+    return result if len(result) == n else [], semester
+```
+
+### Variation 3: Course Schedule with Constraints
+**Problem**: Some courses cannot be taken in the same semester.
+
+```python
+def constrained_course_schedule(n, prerequisites, conflicts):
+    # conflicts: set of course pairs that cannot be taken together
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm with conflict checking
+    from collections import deque
+    queue = deque()
+    
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    result = []
+    current_semester = []
+    
+    while queue:
+        course = queue.popleft()
+        
+        # Check conflicts with current semester
+        can_take = True
+        for taken_course in current_semester:
+            if (course, taken_course) in conflicts or (taken_course, course) in conflicts:
+                can_take = False
+                break
+        
+        if can_take:
+            current_semester.append(course)
+            result.append(course)
+            
+            # Update in-degrees
+            for next_course in adj[course]:
+                in_degree[next_course] -= 1
+                if in_degree[next_course] == 0:
+                    queue.append(next_course)
+        else:
+            # Put back in queue for next semester
+            queue.append(course)
+    
+    return result if len(result) == n else []
+```
+
+### Variation 4: Dynamic Course Schedule
+**Problem**: Support adding/removing prerequisites and answering schedule queries.
+
+```python
+class DynamicCourseSchedule:
+    def __init__(self, n):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.in_degree = [0] * n
+        self.prerequisites = set()
+    
+    def add_prerequisite(self, course, prereq):
+        if (course, prereq) not in self.prerequisites:
+            self.adj[prereq].append(course)
+            self.in_degree[course] += 1
+            self.prerequisites.add((course, prereq))
+    
+    def remove_prerequisite(self, course, prereq):
+        if (course, prereq) in self.prerequisites:
+            self.adj[prereq].remove(course)
+            self.in_degree[course] -= 1
+            self.prerequisites.remove((course, prereq))
+    
+    def get_schedule(self):
+        # Kahn's algorithm
+        from collections import deque
+        queue = deque()
+        
+        # Copy in-degrees
+        in_degree_copy = self.in_degree.copy()
+        
+        for i in range(self.n):
+            if in_degree_copy[i] == 0:
+                queue.append(i)
+        
+        result = []
+        while queue:
+            course = queue.popleft()
+            result.append(course)
+            
+            for next_course in self.adj[course]:
+                in_degree_copy[next_course] -= 1
+                if in_degree_copy[next_course] == 0:
+                    queue.append(next_course)
+        
+        return result if len(result) == self.n else []
+```
+
+### Variation 5: Course Schedule with Priorities
+**Problem**: Each course has a priority, prefer higher priority courses.
+
+```python
+def priority_course_schedule(n, prerequisites, priorities):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm with priority queue
+    from heapq import heappush, heappop
+    
+    # Priority queue: (-priority, course) for max heap
+    pq = []
+    
+    for i in range(n):
+        if in_degree[i] == 0:
+            heappush(pq, (-priorities[i], i))
+    
+    result = []
+    while pq:
+        priority, course = heappop(pq)
+        result.append(course)
+        
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                heappush(pq, (-priorities[next_course], next_course))
+    
+    return result if len(result) == n else []
+```
+
+## 🔗 Related Problems
+
+- **[Topological Sorting](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph algorithms
+- **[Kahn's Algorithm](/cses-analyses/problem_soulutions/graph_algorithms/)**: Topological sorting
+- **[Cycle Detection](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph algorithms
+
+## 📚 Learning Points
+
+1. **Topological Sorting**: Essential for dependency resolution
+2. **Kahn's Algorithm**: Efficient topological sorting algorithm
+3. **Cycle Detection**: Important for validation
+4. **In-Degree Management**: Fundamental concept
+
+---
+
+**This is a great introduction to course scheduling and topological sorting!** 🎯
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+    
+    # DFS with cycle detection
+    visited = [False] * n
+    in_stack = [False] * n
+    result = []
+    
+    def dfs(course):
+        if in_stack[course]:
+            return False  # Cycle detected
+        if visited[course]:
+            return True
+        
+        visited[course] = True
+        in_stack[course] = True
+        
+        for next_course in adj[course]:
+            if not dfs(next_course):
+                return False
+        
+        in_stack[course] = False
+        result.append(course)
+        return True
+    
+    # Process all courses
+    for course in range(n):
+        if not visited[course]:
+            if not dfs(course):
+                return []  # Cycle found
+    
+    return result[::-1]  # Reverse for topological order
+```
+
+**Why this is useful:**
+- Alternative approach using DFS
+- More intuitive for some problems
+- Still detects cycles efficiently
+- Good for understanding the concept
+
+### Step 4: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_course_schedule_ii():
+    n = int(input())
+    m = int(input())
+    prerequisites = []
+    
+    for _ in range(m):
+        course, prereq = map(int, input().split())
+        prerequisites.append([course, prereq])
+    
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm
+    from collections import deque
+    queue = deque()
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    result = []
+    while queue:
+        course = queue.popleft()
+        result.append(course)
+        
+        # Remove this course and update in-degrees
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
+    
+    # Check if we processed all courses
+    if len(result) == n:
+        print(*result)
+    else:
+        print("IMPOSSIBLE")
+
+# Main execution
+if __name__ == "__main__":
+    solve_course_schedule_ii()
+```
+
+**Why this works:**
+- Optimal topological sorting approach
+- Handles all edge cases including cycles
+- Efficient implementation
+- Clear and readable code
+
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (4, [[1,0],[2,0],[3,1],[3,2]], [0,1,2,3]),
+        (2, [[1,0]], [0,1]),
+        (2, [[1,0],[0,1]], []),  # Cycle
+        (3, [[1,0],[2,1]], [0,1,2]),
+        (1, [], [0]),  # No prerequisites
+    ]
+    
+    for n, prerequisites, expected in test_cases:
+        result = solve_test(n, prerequisites)
+        print(f"n={n}, prerequisites={prerequisites}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def solve_test(n, prerequisites):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm
+    from collections import deque
+    queue = deque()
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    result = []
+    while queue:
+        course = queue.popleft()
+        result.append(course)
+        
+        # Remove this course and update in-degrees
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
+    
+    # Check if we processed all courses
+    return result if len(result) == n else []
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n + m) - building graph and topological sort
+- **Space**: O(n + m) - adjacency list and result array
+
+### Why This Solution Works
+- **Topological Sorting**: Finds valid order respecting prerequisites
+- **Cycle Detection**: Identifies impossible cases
+- **Kahn's Algorithm**: Efficient implementation
+- **Optimal Approach**: Guarantees correct result
+
+## 🎯 Key Insights
+
+### 1. **Topological Sorting**
+- Orders nodes so all edges point forward
+- Perfect for dependency problems
+- Key insight for solution
+- Essential for understanding
+
+### 2. **Cycle Detection**
+- Cycles make ordering impossible
+- Kahn's algorithm naturally detects cycles
+- Important for correctness
+- Critical edge case
+
+### 3. **Dependency Graph**
+- Prerequisites form directed graph
+- Understanding graph structure is key
+- Enables efficient solution
+- Fundamental concept
+
+## 🎯 Problem Variations
+
+### Variation 1: Course Schedule with Weights
+**Problem**: Each course has a duration. Find minimum time to complete all courses.
+
+```python
+def course_schedule_with_weights(n, prerequisites, durations):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm with time tracking
+    from collections import deque
+    queue = deque()
+    completion_time = [0] * n
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+            completion_time[i] = durations[i]
+    
+    result = []
+    while queue:
+        course = queue.popleft()
+        result.append(course)
+        
+        # Update dependent courses
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            completion_time[next_course] = max(
+                completion_time[next_course],
+                completion_time[course] + durations[next_course]
+            )
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
+    
+    if len(result) == n:
+        return max(completion_time)
+    else:
+        return -1  # Impossible
+```
+
+### Variation 2: Course Schedule with Parallel Execution
+**Problem**: Can take multiple courses simultaneously. Find minimum time.
+
+```python
+def course_schedule_parallel(n, prerequisites, durations):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm with parallel execution
+    from collections import deque
+    queue = deque()
+    completion_time = [0] * n
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+            completion_time[i] = durations[i]
+    
+    result = []
+    while queue:
+        # Process all available courses in parallel
+        level_courses = []
+        while queue:
+            level_courses.append(queue.popleft())
+        
+        # Add all courses at this level
+        result.extend(level_courses)
+        
+        # Update dependent courses
+        for course in level_courses:
+            for next_course in adj[course]:
+                in_degree[next_course] -= 1
+                completion_time[next_course] = max(
+                    completion_time[next_course],
+                    completion_time[course] + durations[next_course]
+                )
+                if in_degree[next_course] == 0:
+                    queue.append(next_course)
+    
+    if len(result) == n:
+        return max(completion_time)
+    else:
+        return -1  # Impossible
+```
+
+### Variation 3: Course Schedule with Limited Resources
+**Problem**: Can only take k courses simultaneously. Find minimum time.
+
+```python
+def course_schedule_limited_resources(n, prerequisites, durations, k):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm with resource limitation
+    from collections import deque
+    queue = deque()
+    completion_time = [0] * n
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+            completion_time[i] = durations[i]
+    
+    result = []
+    while queue:
+        # Take at most k courses
+        level_courses = []
+        for _ in range(min(k, len(queue))):
+            level_courses.append(queue.popleft())
+        
+        # Add courses at this level
+        result.extend(level_courses)
+        
+        # Update dependent courses
+        for course in level_courses:
+            for next_course in adj[course]:
+                in_degree[next_course] -= 1
+                completion_time[next_course] = max(
+                    completion_time[next_course],
+                    completion_time[course] + durations[next_course]
+                )
+                if in_degree[next_course] == 0:
+                    queue.append(next_course)
+    
+    if len(result) == n:
+        return max(completion_time)
+    else:
+        return -1  # Impossible
+```
+
+### Variation 4: Course Schedule with Prerequisites Count
+**Problem**: Find all valid orders and count them.
+
+```python
+def count_course_schedules(n, prerequisites):
+    # Build adjacency list
+    adj = [[] for _ in range(n)]
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+    
+    # Use dynamic programming to count valid orders
+    from functools import lru_cache
+    
+    @lru_cache(None)
+    def count_orders(mask):
+        if mask == (1 << n) - 1:
+            return 1
+        
+        count = 0
+        for course in range(n):
+            if mask & (1 << course) == 0:  # Course not taken
+                # Check if all prerequisites are satisfied
+                can_take = True
+                for prereq, _ in prerequisites:
+                    if prereq == course:
+                        prereq_course = _
+                        if mask & (1 << prereq_course) == 0:
+                            can_take = False
+                            break
+                
+                if can_take:
+                    count += count_orders(mask | (1 << course))
+        
+        return count
+    
+    return count_orders(0)
+```
+
+### Variation 5: Course Schedule with Deadlines
+**Problem**: Each course has a deadline. Find if possible to complete all courses on time.
+
+```python
+def course_schedule_with_deadlines(n, prerequisites, durations, deadlines):
+    # Build adjacency list and in-degree count
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+    
+    # Kahn's algorithm with deadline checking
+    from collections import deque
+    queue = deque()
+    completion_time = [0] * n
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            queue.append(i)
+            completion_time[i] = durations[i]
+    
+    result = []
+    while queue:
+        course = queue.popleft()
+        
+        # Check if we can complete on time
+        if completion_time[course] > deadlines[course]:
+            return []  # Impossible
+        
+        result.append(course)
+        
+        # Update dependent courses
+        for next_course in adj[course]:
+            in_degree[next_course] -= 1
+            completion_time[next_course] = max(
+                completion_time[next_course],
+                completion_time[course] + durations[next_course]
+            )
+            if in_degree[next_course] == 0:
+                queue.append(next_course)
+    
+    return result if len(result) == n else []
+```
+
+## 🔗 Related Problems
+
+- **[Acyclic Graph Edges](/cses-analyses/problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis)**: Cycle detection
+- **[Topological Sorting](/cses-analyses/problem_soulutions/graph_algorithms/topological_sorting_analysis)**: Graph ordering
+- **[Graph Problems](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph algorithms
+
+## 📚 Learning Points
+
+1. **Topological Sorting**: Essential for dependency problems
+2. **Cycle Detection**: Critical for impossible cases
+3. **Kahn's Algorithm**: Efficient implementation
+4. **Dependency Graphs**: Common pattern in real-world problems
+
+---
+
+**This is a great introduction to topological sorting and dependency resolution!** 🎯 

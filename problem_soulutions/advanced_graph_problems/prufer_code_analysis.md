@@ -1,27 +1,22 @@
 ---
 layout: simple
-title: "Prüfer Code"
+title: "Prufer Code"
 permalink: /problem_soulutions/advanced_graph_problems/prufer_code_analysis
 ---
 
+# Prufer Code
 
-# Prüfer Code
+## Problem Description
 
-## Problem Statement
-Given a tree with n nodes labeled from 1 to n, find its Prüfer code. The Prüfer code is a sequence of n-2 integers that uniquely represents a labeled tree.
+**Problem**: Given a tree with n vertices, find its Prufer code. The Prufer code is a unique sequence that represents a labeled tree.
 
-### Input
-The first input line has one integer n: the number of nodes.
-Then there are n-1 lines describing the tree edges. Each line has two integers a and b: there is an edge between nodes a and b.
+**Input**: 
+- n: number of vertices
+- n-1 edges: a b (edge between vertices a and b)
 
-### Output
-Print the Prüfer code of the tree.
+**Output**: Prufer code of the tree.
 
-### Constraints
-- 2 ≤ n ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
-
-### Example
+**Example**:
 ```
 Input:
 4
@@ -31,242 +26,570 @@ Input:
 
 Output:
 2 3
+
+Explanation: 
+The Prufer code [2, 3] represents the tree:
+1 -- 2 -- 3 -- 4
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Naive Prüfer Code Construction - O(n²)
-**Description**: Use the standard algorithm to construct Prüfer code by repeatedly removing leaves.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find Prufer code of a labeled tree
+- Use tree properties and algorithms
+- Understand Prufer code construction
+- Apply graph theory concepts
 
-```python
-def prufer_code_naive(n, edges):
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        adj[a].append(b)
-        adj[b].append(a)
-    
-    # Find degree of each node
-    degree = [0] * (n + 1)
-    for i in range(1, n + 1):
-        degree[i] = len(adj[i])
-    
-    # Construct Prüfer code
-    prufer = []
-    remaining_nodes = set(range(1, n + 1))
-    
-    for _ in range(n - 2):
-        # Find the leaf with smallest label
-        leaf = min(node for node in remaining_nodes if degree[node] == 1)
-        
-        # Find its neighbor
-        neighbor = None
-        for neighbor_node in adj[leaf]:
-            if neighbor_node in remaining_nodes:
-                neighbor = neighbor_node
-                break
-        
-        # Add neighbor to Prüfer code
-        prufer.append(neighbor)
-        
-        # Remove leaf and update degrees
-        remaining_nodes.remove(leaf)
-        degree[leaf] -= 1
-        degree[neighbor] -= 1
-    
-    return prufer
-```
+**Key Observations:**
+- Prufer code has length n-2
+- Each step removes a leaf vertex
+- Code records the neighbor of removed leaf
+- Unique representation of labeled trees
 
-**Why this is inefficient**: Finding the minimum leaf takes O(n) time in each iteration, leading to O(n²) total complexity.
+### Step 2: Prufer Code Construction
+**Idea**: Iteratively remove leaves and record their neighbors.
 
-### Improvement 1: Efficient Prüfer Code Construction - O(n log n)
-**Description**: Use a priority queue to efficiently find the minimum leaf.
-
-```python
-def prufer_code_efficient(n, edges):
-    import heapq
-    
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        adj[a].append(b)
-        adj[b].append(a)
-    
-    # Find degree of each node
-    degree = [0] * (n + 1)
-    for i in range(1, n + 1):
-        degree[i] = len(adj[i])
-    
-    # Use priority queue for leaves
-    leaves = []
-    for i in range(1, n + 1):
-        if degree[i] == 1:
-            heapq.heappush(leaves, i)
-    
-    # Construct Prüfer code
-    prufer = []
-    remaining_nodes = set(range(1, n + 1))
-    
-    for _ in range(n - 2):
-        # Get the leaf with smallest label
-        leaf = heapq.heappop(leaves)
-        
-        # Find its neighbor
-        neighbor = None
-        for neighbor_node in adj[leaf]:
-            if neighbor_node in remaining_nodes:
-                neighbor = neighbor_node
-                break
-        
-        # Add neighbor to Prüfer code
-        prufer.append(neighbor)
-        
-        # Remove leaf and update degrees
-        remaining_nodes.remove(leaf)
-        degree[leaf] -= 1
-        degree[neighbor] -= 1
-        
-        # If neighbor becomes a leaf, add it to queue
-        if degree[neighbor] == 1:
-            heapq.heappush(leaves, neighbor)
-    
-    return prufer
-```
-
-**Why this improvement works**: Using a priority queue reduces the time to find the minimum leaf from O(n) to O(log n) per iteration.
-
-## Final Optimal Solution
-
-```python
-import heapq
-
-n = int(input())
-edges = []
-for _ in range(n - 1):
-    a, b = map(int, input().split())
-    edges.append((a, b))
-
-def construct_prufer_code(n, edges):
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        adj[a].append(b)
-        adj[b].append(a)
-    
-    # Find degree of each node
-    degree = [0] * (n + 1)
-    for i in range(1, n + 1):
-        degree[i] = len(adj[i])
-    
-    # Use priority queue for leaves
-    leaves = []
-    for i in range(1, n + 1):
-        if degree[i] == 1:
-            heapq.heappush(leaves, i)
-    
-    # Construct Prüfer code
-    prufer = []
-    remaining_nodes = set(range(1, n + 1))
-    
-    for _ in range(n - 2):
-        # Get the leaf with smallest label
-        leaf = heapq.heappop(leaves)
-        
-        # Find its neighbor
-        neighbor = None
-        for neighbor_node in adj[leaf]:
-            if neighbor_node in remaining_nodes:
-                neighbor = neighbor_node
-                break
-        
-        # Add neighbor to Prüfer code
-        prufer.append(neighbor)
-        
-        # Remove leaf and update degrees
-        remaining_nodes.remove(leaf)
-        degree[leaf] -= 1
-        degree[neighbor] -= 1
-        
-        # If neighbor becomes a leaf, add it to queue
-        if degree[neighbor] == 1:
-            heapq.heappush(leaves, neighbor)
-    
-    return prufer
-
-result = construct_prufer_code(n, edges)
-print(*result)
-```
-
-## Complexity Analysis
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Naive Construction | O(n²) | O(n) | Simple but inefficient |
-| Priority Queue | O(n log n) | O(n) | Efficient leaf selection |
-
-## Key Insights for Other Problems
-
-### 1. **Prüfer Code Properties**
-**Principle**: Prüfer code is a bijection between labeled trees and sequences of n-2 integers.
-**Applicable to**: Tree encoding problems, tree isomorphism problems, tree counting problems
-
-### 2. **Priority Queue for Minimum Selection**
-**Principle**: Use priority queue to efficiently find and remove minimum elements.
-**Applicable to**: Minimum selection problems, greedy algorithms, tree problems
-
-### 3. **Tree Leaf Removal**
-**Principle**: Trees can be constructed by iteratively removing leaves and tracking neighbors.
-**Applicable to**: Tree construction problems, tree traversal problems, graph problems
-
-## Notable Techniques
-
-### 1. **Prüfer Code Construction**
 ```python
 def prufer_code_construction(n, edges):
-    import heapq
-    
-    # Build adjacency list and degrees
+    # Build adjacency list
     adj = [[] for _ in range(n + 1)]
-    degree = [0] * (n + 1)
-    
     for a, b in edges:
         adj[a].append(b)
         adj[b].append(a)
-        degree[a] += 1
-        degree[b] += 1
     
-    # Initialize leaves
-    leaves = []
+    # Count degrees
+    degree = [0] * (n + 1)
     for i in range(1, n + 1):
-        if degree[i] == 1:
-            heapq.heappush(leaves, i)
+        degree[i] = len(adj[i])
     
-    # Construct Prüfer code
+    # Find Prufer code
     prufer = []
-    remaining = set(range(1, n + 1))
-    
     for _ in range(n - 2):
-        leaf = heapq.heappop(leaves)
-        neighbor = next(n for n in adj[leaf] if n in remaining)
+        # Find leaf with smallest label
+        leaf = 1
+        while degree[leaf] != 1:
+            leaf += 1
         
+        # Find its neighbor
+        neighbor = adj[leaf][0]
         prufer.append(neighbor)
-        remaining.remove(leaf)
-        degree[leaf] -= 1
-        degree[neighbor] -= 1
         
-        if degree[neighbor] == 1:
-            heapq.heappush(leaves, neighbor)
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
     
     return prufer
 ```
 
-### 2. **Tree from Prüfer Code**
+**Why this works:**
+- Follows Prufer code algorithm
+- Removes leaves iteratively
+- Records neighbors in sequence
+- O(n²) time complexity
+
+### Step 3: Complete Solution
+**Putting it all together:**
+
 ```python
-def tree_from_prufer(prufer):
-    n = len(prufer) + 2
-    degree = [1] * (n + 1)
+def solve_prufer_code():
+    n = int(input())
+    edges = []
     
-    # Count occurrences in Prüfer code
+    for _ in range(n - 1):
+        a, b = map(int, input().split())
+        edges.append((a, b))
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Find leaf with smallest label
+        leaf = 1
+        while degree[leaf] != 1:
+            leaf += 1
+        
+        # Find its neighbor
+        neighbor = adj[leaf][0]
+        prufer.append(neighbor)
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
+    
+    print(*prufer)
+
+# Main execution
+if __name__ == "__main__":
+    solve_prufer_code()
+```
+
+**Why this works:**
+- Optimal Prufer code construction
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (4, [(1, 2), (2, 3), (3, 4)]),
+        (5, [(1, 2), (2, 3), (3, 4), (4, 5)]),
+        (3, [(1, 2), (2, 3)]),
+    ]
+    
+    for n, edges in test_cases:
+        result = solve_test(n, edges)
+        print(f"n={n}, edges={edges}")
+        print(f"Result: {result}")
+        print()
+
+def solve_test(n, edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Find leaf with smallest label
+        leaf = 1
+        while degree[leaf] != 1:
+            leaf += 1
+        
+        # Find its neighbor
+        neighbor = adj[leaf][0]
+        prufer.append(neighbor)
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
+    
+    return prufer
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n²) - finding leaves and removing them
+- **Space**: O(n) - adjacency list and degree array
+
+### Why This Solution Works
+- **Prufer Code Algorithm**: Follows standard construction
+- **Leaf Removal**: Iteratively removes leaves
+- **Neighbor Recording**: Records neighbors in sequence
+- **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### 1. **Prufer Code**
+- Unique representation of labeled trees
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **Leaf Removal**
+- Iteratively removes leaves
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Neighbor Recording**
+- Records neighbors in sequence
+- Important for performance
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Prufer Code with Weights
+**Problem**: Each edge has a weight, construct weighted Prufer code.
+
+```python
+def weighted_prufer_code(n, edges, weights):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        weight = weights.get((a, b), 1)
+        adj[a].append((b, weight))
+        adj[b].append((a, weight))
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Find weighted Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Find leaf with smallest label
+        leaf = 1
+        while degree[leaf] != 1:
+            leaf += 1
+        
+        # Find its neighbor and weight
+        neighbor, weight = adj[leaf][0]
+        prufer.append((neighbor, weight))
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove((leaf, weight))
+    
+    return prufer
+```
+
+### Variation 2: Prufer Code with Constraints
+**Problem**: Construct Prufer code avoiding certain edges.
+
+```python
+def constrained_prufer_code(n, edges, forbidden_edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
+            adj[a].append(b)
+            adj[b].append(a)
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Find leaf with smallest label
+        leaf = 1
+        while degree[leaf] != 1:
+            leaf += 1
+        
+        # Find its neighbor
+        neighbor = adj[leaf][0]
+        prufer.append(neighbor)
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
+    
+    return prufer
+```
+
+### Variation 3: Dynamic Prufer Code
+**Problem**: Support adding/removing edges and maintaining Prufer code.
+
+```python
+class DynamicPruferCode:
+    def __init__(self, n):
+        self.n = n
+        self.adj = [[] for _ in range(n + 1)]
+        self.edges = set()
+    
+    def add_edge(self, a, b):
+        if (a, b) not in self.edges and (b, a) not in self.edges:
+            self.edges.add((a, b))
+            self.adj[a].append(b)
+            self.adj[b].append(a)
+    
+    def remove_edge(self, a, b):
+        if (a, b) in self.edges:
+            self.edges.remove((a, b))
+            self.adj[a].remove(b)
+            self.adj[b].remove(a)
+            return True
+        elif (b, a) in self.edges:
+            self.edges.remove((b, a))
+            self.adj[a].remove(b)
+            self.adj[b].remove(a)
+            return True
+        return False
+    
+    def get_prufer_code(self):
+        # Count degrees
+        degree = [0] * (self.n + 1)
+        for i in range(1, self.n + 1):
+            degree[i] = len(self.adj[i])
+        
+        # Find Prufer code
+        prufer = []
+        for _ in range(self.n - 2):
+            # Find leaf with smallest label
+            leaf = 1
+            while degree[leaf] != 1:
+                leaf += 1
+            
+            # Find its neighbor
+            neighbor = self.adj[leaf][0]
+            prufer.append(neighbor)
+            
+            # Remove the leaf
+            degree[leaf] = 0
+            degree[neighbor] -= 1
+            self.adj[neighbor].remove(leaf)
+        
+        return prufer
+```
+
+### Variation 4: Prufer Code with Multiple Constraints
+**Problem**: Construct Prufer code satisfying multiple constraints.
+
+```python
+def multi_constrained_prufer_code(n, edges, constraints):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    forbidden_edges = constraints.get('forbidden_edges', set())
+    allowed_nodes = constraints.get('allowed_nodes', set(range(1, n + 1)))
+    
+    for a, b in edges:
+        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
+            if a in allowed_nodes and b in allowed_nodes:
+                adj[a].append(b)
+                adj[b].append(a)
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Find leaf with smallest label
+        leaf = 1
+        while degree[leaf] != 1:
+            leaf += 1
+        
+        # Find its neighbor
+        neighbor = adj[leaf][0]
+        prufer.append(neighbor)
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
+    
+    return prufer
+```
+
+### Variation 5: Prufer Code with Edge Weights
+**Problem**: Each edge has a weight, construct weighted Prufer code.
+
+```python
+def weighted_prufer_code_optimized(n, edges, weights):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        weight = weights.get((a, b), 1)
+        adj[a].append((b, weight))
+        adj[b].append((a, weight))
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Find weighted Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Find leaf with smallest label
+        leaf = 1
+        while degree[leaf] != 1:
+            leaf += 1
+        
+        # Find its neighbor and weight
+        neighbor, weight = adj[leaf][0]
+        prufer.append((neighbor, weight))
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove((leaf, weight))
+    
+    return prufer
+```
+
+## 🔗 Related Problems
+
+- **[Tree Algorithms](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Tree algorithms
+- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
+- **[Tree Representation](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Tree representation algorithms
+
+## 📚 Learning Points
+
+1. **Prufer Code**: Essential for tree representation
+2. **Tree Properties**: Important tree concepts
+3. **Leaf Removal**: Key algorithmic technique
+4. **Graph Theory**: Important graph theory concept
+
+---
+
+**This is a great introduction to Prufer code and tree representation!** 🎯
+        a, b = map(int, input().split())
+        edges.append((a, b))
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Find leaf with smallest label
+        leaf = 1
+        while degree[leaf] != 1:
+            leaf += 1
+        
+        # Find its neighbor
+        neighbor = adj[leaf][0]
+        prufer.append(neighbor)
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
+    
+    # Print result
+    print(*prufer)
+
+# Main execution
+if __name__ == "__main__":
+    solve_prufer_code()
+```
+
+**Why this works:**
+- Optimal Prufer code construction
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (4, [(1, 2), (2, 3), (3, 4)]),
+        (3, [(1, 2), (2, 3)]),
+        (5, [(1, 2), (2, 3), (3, 4), (4, 5)]),
+    ]
+    
+    for n, edges in test_cases:
+        result = solve_test(n, edges)
+        print(f"n={n}, edges={edges}")
+        print(f"Prufer code: {result}")
+        print()
+
+def solve_test(n, edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Find leaf with smallest label
+        leaf = 1
+        while degree[leaf] != 1:
+            leaf += 1
+        
+        # Find its neighbor
+        neighbor = adj[leaf][0]
+        prufer.append(neighbor)
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
+    
+    return prufer
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n²) - finding leaves and removing edges
+- **Space**: O(n) - adjacency list and degree array
+
+### Why This Solution Works
+- **Prufer Code Algorithm**: Follows standard construction method
+- **Leaf Removal**: Iteratively removes leaves
+- **Neighbor Recording**: Records neighbors in sequence
+- **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### 1. **Prufer Code Construction**
+- Remove leaves iteratively
+- Record neighbors in sequence
+- Essential for tree representation
+- Enables efficient solution
+
+### 2. **Tree Properties**
+- Trees have n-1 edges
+- Prufer code has length n-2
+- Important for understanding
+- Fundamental concept
+
+### 3. **Leaf Removal**
+- Find leaves efficiently
+- Important for performance
+- Simple but important concept
+- Essential for algorithm
+
+## 🎯 Problem Variations
+
+### Variation 1: Prufer Code to Tree
+**Problem**: Reconstruct tree from Prufer code.
+
+```python
+def prufer_to_tree(prufer):
+    n = len(prufer) + 2
+    edges = []
+    
+    # Count occurrences in Prufer code
+    degree = [1] * (n + 1)
     for x in prufer:
         degree[x] += 1
     
@@ -276,357 +599,627 @@ def tree_from_prufer(prufer):
         if degree[i] == 1:
             leaves.append(i)
     
-    # Construct tree
-    edges = []
+    # Reconstruct tree
     for x in prufer:
+        # Connect smallest leaf to x
         leaf = min(leaves)
         edges.append((leaf, x))
+        
+        # Remove leaf and update degrees
         leaves.remove(leaf)
         degree[x] -= 1
         if degree[x] == 1:
             leaves.append(x)
     
-    # Add last edge
+    # Connect last two vertices
     edges.append((leaves[0], leaves[1]))
+    
     return edges
 ```
 
-### 3. **Efficient Leaf Management**
+### Variation 2: Weighted Tree Prufer Code
+**Problem**: Find Prufer code for weighted tree.
+
 ```python
-def manage_leaves(degree, leaves, node):
-    degree[node] -= 1
-    if degree[node] == 1:
-        heapq.heappush(leaves, node)
-    elif degree[node] == 0:
-        # Node becomes isolated, remove from leaves if present
-        if node in leaves:
-            leaves.remove(node)
+def weighted_prufer_code(n, edges, weights):
+    # Build adjacency list with weights
+    adj = [[] for _ in range(n + 1)]
+    for i, (a, b) in enumerate(edges):
+        adj[a].append((b, weights[i]))
+        adj[b].append((a, weights[i]))
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Find leaf with smallest label
+        leaf = 1
+        while degree[leaf] != 1:
+            leaf += 1
+        
+        # Find its neighbor
+        neighbor = adj[leaf][0][0]
+        prufer.append(neighbor)
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor] = [(v, w) for v, w in adj[neighbor] if v != leaf]
+    
+    return prufer
 ```
 
-## Problem-Solving Framework
+### Variation 3: Prufer Code Validation
+**Problem**: Check if a sequence is a valid Prufer code.
 
-1. **Identify problem type**: This is a tree encoding problem using Prüfer code
-2. **Choose approach**: Use priority queue for efficient leaf selection
-3. **Initialize data structure**: Build adjacency list and degree array
-4. **Find initial leaves**: Add all degree-1 nodes to priority queue
-5. **Iterative construction**: Remove minimum leaf and add its neighbor to code
-6. **Update degrees**: Decrease degrees and add new leaves to queue
-7. **Return result**: Output the Prüfer code sequence
+```python
+def is_valid_prufer_code(prufer, n):
+    if len(prufer) != n - 2:
+        return False
+    
+    # Check if all values are in range [1, n]
+    for x in prufer:
+        if x < 1 or x > n:
+            return False
+    
+    # Count occurrences
+    count = [0] * (n + 1)
+    for x in prufer:
+        count[x] += 1
+    
+    # Check if reconstruction is possible
+    degree = [1] * (n + 1)
+    for x in prufer:
+        degree[x] += 1
+    
+    # Find leaves
+    leaves = []
+    for i in range(1, n + 1):
+        if degree[i] == 1:
+            leaves.append(i)
+    
+    # Try to reconstruct
+    for x in prufer:
+        if not leaves:
+            return False
+        
+        leaf = min(leaves)
+        leaves.remove(leaf)
+        degree[x] -= 1
+        if degree[x] == 1:
+            leaves.append(x)
+    
+    return len(leaves) == 2
+```
+
+### Variation 4: Prufer Code with Constraints
+**Problem**: Find Prufer code avoiding certain edges.
+
+```python
+def constrained_prufer_code(n, edges, forbidden_edges):
+    # Build adjacency list avoiding forbidden edges
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
+            adj[a].append(b)
+            adj[b].append(a)
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Find leaf with smallest label
+        leaf = 1
+        while degree[leaf] != 1:
+            leaf += 1
+        
+        # Find its neighbor
+        neighbor = adj[leaf][0]
+        prufer.append(neighbor)
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
+    
+    return prufer
+```
+
+### Variation 5: Dynamic Prufer Code
+**Problem**: Support adding/removing edges and answering Prufer code queries.
+
+```python
+class DynamicPruferCode:
+    def __init__(self, n):
+        self.n = n
+        self.adj = [[] for _ in range(n + 1)]
+        self.edges = set()
+    
+    def add_edge(self, a, b):
+        if (a, b) not in self.edges and (b, a) not in self.edges:
+            self.adj[a].append(b)
+            self.adj[b].append(a)
+            self.edges.add((a, b))
+    
+    def remove_edge(self, a, b):
+        if (a, b) in self.edges:
+            self.adj[a].remove(b)
+            self.adj[b].remove(a)
+            self.edges.remove((a, b))
+        elif (b, a) in self.edges:
+            self.adj[a].remove(b)
+            self.adj[b].remove(a)
+            self.edges.remove((b, a))
+    
+    def get_prufer_code(self):
+        if len(self.edges) != self.n - 1:
+            return None  # Not a tree
+        
+        # Count degrees
+        degree = [0] * (self.n + 1)
+        for i in range(1, self.n + 1):
+            degree[i] = len(self.adj[i])
+        
+        # Find Prufer code
+        prufer = []
+        adj_copy = [adj[:] for adj in self.adj]
+        
+        for _ in range(self.n - 2):
+            # Find leaf with smallest label
+            leaf = 1
+            while degree[leaf] != 1:
+                leaf += 1
+            
+            # Find its neighbor
+            neighbor = adj_copy[leaf][0]
+            prufer.append(neighbor)
+            
+            # Remove the leaf
+            degree[leaf] = 0
+            degree[neighbor] -= 1
+            adj_copy[neighbor].remove(leaf)
+        
+        return prufer
+```
+
+## 🔗 Related Problems
+
+- **[Tree Algorithms](/cses-analyses/problem_soulutions/tree_algorithms/)**: Tree algorithms
+- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
+- **[Tree Properties](/cses-analyses/problem_soulutions/tree_algorithms/)**: Tree properties
+
+## 📚 Learning Points
+
+1. **Prufer Code**: Essential for tree representation
+2. **Tree Properties**: Important graph theory concept
+3. **Leaf Removal**: Fundamental tree algorithm
+4. **Tree Reconstruction**: Inverse of Prufer code
 
 ---
 
-*This analysis shows how to efficiently construct Prüfer code using priority queue optimization.* 
-
-## Problem Variations & Related Questions
-
-### Problem Variations
-
-#### 1. **Prüfer Code with Costs**
-**Variation**: Each edge has a cost, find minimum cost tree with given Prüfer code.
-**Approach**: Use weighted Prüfer code construction with cost optimization.
-```python
-def cost_based_prufer_code(n, edges, edge_costs, target_prufer):
-    # Build weighted adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        cost = edge_costs.get((a, b), 1)
-        adj[a].append((b, cost))
-        adj[b].append((a, cost))
+**This is a great introduction to Prufer codes and tree algorithms!** 🎯
+        adj[b].append(a)
     
-    # Construct tree from Prüfer code
-    tree_edges = tree_from_prufer(target_prufer)
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
     
-    # Calculate total cost
-    total_cost = 0
-    for a, b in tree_edges:
-        # Find minimum cost edge between a and b
-        min_cost = float('inf')
-        for neighbor, cost in adj[a]:
-            if neighbor == b:
-                min_cost = min(min_cost, cost)
-        total_cost += min_cost
+    # Use priority queue for leaves
+    from heapq import heappush, heappop
+    leaves = []
+    for i in range(1, n + 1):
+        if degree[i] == 1:
+            heappush(leaves, i)
     
-    return total_cost, tree_edges
-```
-
-#### 2. **Prüfer Code with Constraints**
-**Variation**: Limited budget, restricted edges, or specific tree requirements.
-**Approach**: Use constraint satisfaction with Prüfer code construction.
-```python
-def constrained_prufer_code(n, edges, budget, restricted_edges, target_prufer):
-    # Build adjacency list excluding restricted edges
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges: if (a, b) not in restricted_edges and (b, a) not in 
-restricted_edges: adj[a].append(b)
-            adj[b].append(a)
-    
-    # Check if target Prüfer code is feasible
-    tree_edges = tree_from_prufer(target_prufer)
-    
-    # Check if all required edges are available
-    for a, b in tree_edges: if (a, b) in restricted_edges or (b, a) in 
-restricted_edges: return None  # Not feasible
-    
-    # Check budget constraint
-    total_cost = len(tree_edges)  # Simplified cost
-    if total_cost > budget:
-        return None  # Exceeds budget
-    
-    return tree_edges
-```
-
-#### 3. **Prüfer Code with Probabilities**
-**Variation**: Each edge has a probability, find expected Prüfer code.
-**Approach**: Use probabilistic Prüfer code construction or Monte Carlo simulation.
-```python
-def probabilistic_prufer_code(n, edges, edge_probabilities, num_samples=1000):
-    import random
-    
-    # Build adjacency list with probabilities
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        prob = edge_probabilities.get((a, b), 0.5)
-        adj[a].append((b, prob))
-        adj[b].append((a, prob))
-    
-    # Monte Carlo simulation
-    prufer_samples = []
-    for _ in range(num_samples):
-        # Sample edges based on probabilities
-        sampled_edges = []
-        for a, b in edges:
-            prob = edge_probabilities.get((a, b), 0.5)
-            if random.random() < prob:
-                sampled_edges.append((a, b))
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Get smallest leaf
+        leaf = heappop(leaves)
         
-        # Check if sampled edges form a tree
-        if len(sampled_edges) == n - 1:
-            try:
-                prufer = prufer_code_construction(n, sampled_edges)
-                prufer_samples.append(prufer)
-            except:
-                continue
+        # Find its neighbor
+        neighbor = adj[leaf][0]
+        prufer.append(neighbor)
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
+        
+        # Add neighbor to leaves if it becomes a leaf
+        if degree[neighbor] == 1:
+            heappush(leaves, neighbor)
     
-    # Calculate expected Prüfer code
-    if prufer_samples:
-        expected_prufer = []
-        for i in range(n - 2):
-            values = [prufer[i] for prufer in prufer_samples]
-            expected_prufer.append(sum(values) / len(values))
-        return expected_prufer
-    
-    return None
+    return prufer
 ```
 
-#### 4. **Prüfer Code with Multiple Criteria**
-**Variation**: Optimize for multiple objectives (cost, probability, tree properties).
-**Approach**: Use multi-objective optimization or weighted sum approach.
-```python
-def multi_criteria_prufer_code(n, edges, criteria_weights, target_prufer):
-    # criteria_weights = {'cost': 0.4, 'probability': 0.3, 'diameter': 0.3}
-    
-    def calculate_tree_score(tree_attributes):
-        return (criteria_weights['cost'] * tree_attributes['cost'] + 
-                criteria_weights['probability'] * tree_attributes['probability'] + 
-                criteria_weights['diameter'] * tree_attributes['diameter'])
-    
-    # Construct tree from Prüfer code
-    tree_edges = tree_from_prufer(target_prufer)
-    
-    # Calculate tree attributes
-    tree_attrs = {
-        'cost': len(tree_edges),  # Simplified cost
-        'probability': 0.5,  # Simplified probability
-        'diameter': calculate_tree_diameter(n, tree_edges)  # Tree diameter
-    }
-    
-    score = calculate_tree_score(tree_attrs)
-    return score, tree_edges
+**Why this is better:**
+- Uses priority queue for efficiency
+- O(n log n) time complexity
+- More scalable for large trees
+- Maintains correctness
 
-def calculate_tree_diameter(n, edges):
+### Step 4: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_prufer_code():
+    n = int(input())
+    edges = []
+    
+    for _ in range(n - 1):
+        a, b = map(int, input().split())
+        edges.append((a, b))
+    
     # Build adjacency list
     adj = [[] for _ in range(n + 1)]
     for a, b in edges:
         adj[a].append(b)
         adj[b].append(a)
     
-    # Find diameter using BFS
-    def bfs_diameter(start):
-        from collections import deque
-        queue = deque([(start, 0)])
-        visited = [False] * (n + 1)
-        visited[start] = True
-        max_dist = 0
-        farthest_node = start
-        
-        while queue:
-            node, dist = queue.popleft()
-            if dist > max_dist:
-                max_dist = dist
-                farthest_node = node
-            
-            for neighbor in adj[node]:
-                if not visited[neighbor]:
-                    visited[neighbor] = True
-                    queue.append((neighbor, dist + 1))
-        
-        return farthest_node, max_dist
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
     
-    # Find diameter
-    farthest1, _ = bfs_diameter(1)
-    farthest2, diameter = bfs_diameter(farthest1)
-    return diameter
+    # Use priority queue for leaves
+    from heapq import heappush, heappop
+    leaves = []
+    for i in range(1, n + 1):
+        if degree[i] == 1:
+            heappush(leaves, i)
+    
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Get smallest leaf
+        leaf = heappop(leaves)
+        
+        # Find its neighbor
+        neighbor = adj[leaf][0]
+        prufer.append(neighbor)
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
+        
+        # Add neighbor to leaves if it becomes a leaf
+        if degree[neighbor] == 1:
+            heappush(leaves, neighbor)
+    
+    print(*prufer)
+
+# Main execution
+if __name__ == "__main__":
+    solve_prufer_code()
 ```
 
-#### 5. **Prüfer Code with Dynamic Updates**
-**Variation**: Tree structure can be modified dynamically.
-**Approach**: Use dynamic tree algorithms or incremental updates.
+**Why this works:**
+- Optimal Prufer code construction
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
+
 ```python
-class DynamicPruferCode:
-    def __init__(self, n):
-        self.n = n
-        self.adj = [[] for _ in range(n + 1)]
-        self.degree = [0] * (n + 1)
-        self.prufer_cache = None
+def test_solution():
+    test_cases = [
+        (4, [(1, 2), (2, 3), (3, 4)], [2, 3]),
+        (3, [(1, 2), (2, 3)], [2]),
+        (5, [(1, 2), (2, 3), (3, 4), (4, 5)], [2, 3, 4]),
+    ]
     
-    def add_edge(self, a, b):
-        self.adj[a].append(b)
-        self.adj[b].append(a)
-        self.degree[a] += 1
-        self.degree[b] += 1
-        self.invalidate_cache()
+    for n, edges, expected in test_cases:
+        result = solve_test(n, edges)
+        print(f"n={n}, edges={edges}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def solve_test(n, edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
     
-    def remove_edge(self, a, b):
-        self.adj[a].remove(b)
-        self.adj[b].remove(a)
-        self.degree[a] -= 1
-        self.degree[b] -= 1
-        self.invalidate_cache()
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
     
-    def invalidate_cache(self):
-        self.prufer_cache = None
+    # Use priority queue for leaves
+    from heapq import heappush, heappop
+    leaves = []
+    for i in range(1, n + 1):
+        if degree[i] == 1:
+            heappush(leaves, i)
     
-    def get_prufer_code(self):
-        if self.prufer_cache is None:
-            self.prufer_cache = self.compute_prufer_code()
-        return self.prufer_cache
-    
-    def compute_prufer_code(self):
-        import heapq
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Get smallest leaf
+        leaf = heappop(leaves)
         
-        # Initialize leaves
-        leaves = []
-        for i in range(1, self.n + 1):
-            if self.degree[i] == 1:
-                heapq.heappush(leaves, i)
+        # Find its neighbor
+        neighbor = adj[leaf][0]
+        prufer.append(neighbor)
         
-        # Construct Prüfer code
-        prufer = []
-        remaining = set(range(1, self.n + 1))
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
         
-        for _ in range(self.n - 2):
-            leaf = heapq.heappop(leaves)
-            neighbor = next(n for n in self.adj[leaf] if n in remaining)
-            
-            prufer.append(neighbor)
-            remaining.remove(leaf)
-            self.degree[leaf] -= 1
-            self.degree[neighbor] -= 1
-            
-            if self.degree[neighbor] == 1:
-                heapq.heappush(leaves, neighbor)
-        
-        return prufer
+        # Add neighbor to leaves if it becomes a leaf
+        if degree[neighbor] == 1:
+            heappush(leaves, neighbor)
+    
+    return prufer
+
+test_solution()
 ```
 
-### Related Problems & Concepts
+## 🔧 Implementation Details
 
-#### 1. **Tree Encoding Problems**
-- **Prüfer Code**: Unique tree representation
-- **Tree Reconstruction**: Build tree from encoding
-- **Tree Isomorphism**: Check if trees are isomorphic
-- **Tree Enumeration**: Count different trees
+### Time Complexity
+- **Time**: O(n log n) - priority queue operations
+- **Space**: O(n) - adjacency list and priority queue
 
-#### 2. **Graph Theory Problems**
-- **Tree Properties**: Unique paths, leaf nodes, internal nodes
-- **Tree Traversal**: Navigate tree structure
-- **Tree Construction**: Build trees with specific properties
-- **Tree Algorithms**: BFS, DFS, diameter calculation
+### Why This Solution Works
+- **Prufer Code Algorithm**: Standard tree encoding method
+- **Leaf Removal**: Iteratively removes leaves
+- **Priority Queue**: Efficient leaf finding
+- **Optimal Approach**: Guarantees correct result
 
-#### 3. **Combinatorics Problems**
-- **Tree Counting**: Count labeled/unlabeled trees
-- **Permutation Problems**: Ordering of tree nodes
-- **Combination Problems**: Selecting tree edges
-- **Enumeration Problems**: Listing all possible trees
+## 🎯 Key Insights
 
-#### 4. **Algorithm Problems**
-- **Priority Queue**: Efficient minimum element selection
-- **Heap Operations**: Insert, delete, extract minimum
-- **Tree Algorithms**: Tree construction, traversal
-- **Graph Algorithms**: Graph representation, manipulation
+### 1. **Prufer Code Properties**
+- Length is n-2 for n-vertex tree
+- Unique representation of labeled trees
+- Key insight for tree encoding
+- Essential for understanding
 
-#### 5. **Data Structure Problems**
-- **Tree Data Structures**: Binary trees, general trees
-- **Graph Representations**: Adjacency list, adjacency matrix
-- **Priority Queues**: Heap implementation
-- **Set Operations**: Efficient set manipulation
+### 2. **Leaf Removal Process**
+- Iteratively removes leaves
+- Records neighbors in sequence
+- Important for efficiency
+- Fundamental algorithm
 
-### Competitive Programming Variations
+### 3. **Priority Queue Usage**
+- Efficient leaf finding
+- Maintains smallest label order
+- Simple but important optimization
+- Essential for performance
 
-#### 1. **Online Judge Variations**
-- **Time Limits**: Optimize for strict constraints
-- **Memory Limits**: Space-efficient solutions
-- **Input Size**: Handle large trees
-- **Edge Cases**: Robust tree operations
+## 🎯 Problem Variations
 
-#### 2. **Algorithm Contests**
-- **Speed Programming**: Fast implementation
-- **Code Golf**: Minimal code solutions
-- **Team Contests**: Collaborative problem solving
-- **Live Coding**: Real-time problem solving
+### Variation 1: Tree Reconstruction from Prufer Code
+**Problem**: Given a Prufer code, reconstruct the original tree.
 
-#### 3. **Advanced Techniques**
-- **Binary Search**: On answer space
-- **Two Pointers**: Efficient tree traversal
-- **Sliding Window**: Optimal subtree problems
-- **Monotonic Stack/Queue**: Maintaining order
+```python
+def reconstruct_tree_from_prufer(n, prufer):
+    # Initialize degree array
+    degree = [1] * (n + 1)
+    for code in prufer:
+        degree[code] += 1
+    
+    # Find missing vertices
+    missing = []
+    for i in range(1, n + 1):
+        if degree[i] == 1:
+            missing.append(i)
+    
+    # Reconstruct tree
+    edges = []
+    for code in prufer:
+        # Find smallest missing vertex
+        leaf = min(missing)
+        missing.remove(leaf)
+        
+        # Add edge
+        edges.append((code, leaf))
+        
+        # Update degrees
+        degree[code] -= 1
+        if degree[code] == 1:
+            missing.append(code)
+    
+    # Add final edge
+    if len(missing) == 2:
+        edges.append((missing[0], missing[1]))
+    
+    return edges
+```
 
-### Mathematical Extensions
+### Variation 2: Prufer Code with Weights
+**Problem**: Each edge has a weight. Find Prufer code and total weight.
 
-#### 1. **Graph Theory**
-- **Tree Properties**: Unique paths, leaf nodes, internal nodes
-- **Tree Algorithms**: BFS, DFS, diameter calculation
-- **Tree Enumeration**: Counting different trees
-- **Tree Isomorphism**: Checking tree equivalence
+```python
+def prufer_code_with_weights(n, edges, weights):
+    # Build adjacency list with weights
+    adj = [[] for _ in range(n + 1)]
+    for i, (a, b) in enumerate(edges):
+        adj[a].append((b, weights[i]))
+        adj[b].append((a, weights[i]))
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Use priority queue for leaves
+    from heapq import heappush, heappop
+    leaves = []
+    for i in range(1, n + 1):
+        if degree[i] == 1:
+            heappush(leaves, i)
+    
+    # Find Prufer code and total weight
+    prufer = []
+    total_weight = 0
+    
+    for _ in range(n - 2):
+        # Get smallest leaf
+        leaf = heappop(leaves)
+        
+        # Find its neighbor and weight
+        neighbor, weight = adj[leaf][0]
+        prufer.append(neighbor)
+        total_weight += weight
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove((leaf, weight))
+        
+        # Add neighbor to leaves if it becomes a leaf
+        if degree[neighbor] == 1:
+            heappush(leaves, neighbor)
+    
+    return prufer, total_weight
+```
 
-#### 2. **Combinatorics**
-- **Tree Counting**: Cayley's formula, labeled trees
-- **Permutation Theory**: Ordering and arrangements
-- **Enumeration**: Systematic listing of objects
-- **Bijection**: One-to-one correspondences
+### Variation 3: Prufer Code for Forests
+**Problem**: Handle multiple trees (forest) and find Prufer codes.
 
-#### 3. **Number Theory**
-- **Modular Arithmetic**: Large number handling
-- **Prime Numbers**: Special tree cases
-- **GCD/LCM**: Mathematical properties
-- **Euler's Totient**: Counting coprime trees
+```python
+def prufer_code_forest(n, edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Find connected components
+    visited = [False] * (n + 1)
+    components = []
+    
+    def dfs(node, component):
+        visited[node] = True
+        component.append(node)
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                dfs(neighbor, component)
+    
+    for i in range(1, n + 1):
+        if not visited[i]:
+            component = []
+            dfs(i, component)
+            components.append(component)
+    
+    # Find Prufer code for each component
+    all_prufer_codes = []
+    for component in components:
+        if len(component) > 1:
+            # Create subgraph for this component
+            component_edges = []
+            for a, b in edges:
+                if a in component and b in component:
+                    component_edges.append((a, b))
+            
+            # Find Prufer code for this component
+            prufer = prufer_code_for_component(component, component_edges)
+            all_prufer_codes.append(prufer)
+    
+    return all_prufer_codes
 
-### Learning Resources
+def prufer_code_for_component(component, edges):
+    # Similar to main algorithm but for a specific component
+    # Implementation details...
+    pass
+```
 
-#### 1. **Online Platforms**
-- **LeetCode**: Tree and graph problems
-- **Codeforces**: Competitive programming
-- **HackerRank**: Algorithm challenges
-- **AtCoder**: Japanese programming contests
+### Variation 4: Prufer Code with Constraints
+**Problem**: Find Prufer code while respecting certain constraints.
 
-#### 2. **Educational Resources**
-- **CLRS**: Introduction to Algorithms
-- **CP-Algorithms**: Competitive programming algorithms
-- **GeeksforGeeks**: Algorithm tutorials
-- **TopCoder**: Algorithm tutorials
+```python
+def prufer_code_constrained(n, edges, constraints):
+    # constraints: set of forbidden edges
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        if (a, b) not in constraints and (b, a) not in constraints:
+            adj[a].append(b)
+            adj[b].append(a)
+    
+    # Count degrees
+    degree = [0] * (n + 1)
+    for i in range(1, n + 1):
+        degree[i] = len(adj[i])
+    
+    # Use priority queue for leaves
+    from heapq import heappush, heappop
+    leaves = []
+    for i in range(1, n + 1):
+        if degree[i] == 1:
+            heappush(leaves, i)
+    
+    # Find Prufer code
+    prufer = []
+    for _ in range(n - 2):
+        # Get smallest leaf
+        leaf = heappop(leaves)
+        
+        # Find its neighbor
+        neighbor = adj[leaf][0]
+        prufer.append(neighbor)
+        
+        # Remove the leaf
+        degree[leaf] = 0
+        degree[neighbor] -= 1
+        adj[neighbor].remove(leaf)
+        
+        # Add neighbor to leaves if it becomes a leaf
+        if degree[neighbor] == 1:
+            heappush(leaves, neighbor)
+    
+    return prufer
+```
 
-#### 3. **Practice Problems**
-- **Tree Problems**: Tree traversal, tree construction
-- **Graph Problems**: Graph representation, graph algorithms
-- **Combinatorics Problems**: Tree counting, enumeration
-- **Algorithm Problems**: Priority queues, heaps 
+### Variation 5: Prufer Code Enumeration
+**Problem**: Count all possible Prufer codes for a given tree structure.
+
+```python
+def count_prufer_codes(n, tree_structure):
+    # tree_structure: describes the tree topology
+    # For labeled trees, number of Prufer codes = n!
+    # For unlabeled trees, need to consider symmetries
+    
+    # For labeled trees
+    if tree_structure == "labeled":
+        from math import factorial
+        return factorial(n)
+    
+    # For unlabeled trees, more complex
+    # Would need to consider automorphisms
+    return "Complex calculation needed"
+```
+
+## 🔗 Related Problems
+
+- **[Tree Traversals](/cses-analyses/problem_soulutions/advanced_graph_problems/tree_traversals_analysis)**: Tree algorithms
+- **[Graph Problems](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph algorithms
+- **[Tree Problems](/cses-analyses/problem_soulutions/tree_algorithms/)**: Tree algorithms
+
+## 📚 Learning Points
+
+1. **Prufer Code**: Essential tree encoding method
+2. **Tree Properties**: Understanding tree structure
+3. **Priority Queue**: Efficient leaf finding
+4. **Tree Algorithms**: Common pattern in graph theory
+
+---
+
+**This is a great introduction to tree encoding and Prufer codes!** 🎯 

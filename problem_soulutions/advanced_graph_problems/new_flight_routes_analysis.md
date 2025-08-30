@@ -7,22 +7,17 @@ permalink: /problem_soulutions/advanced_graph_problems/new_flight_routes_analysi
 
 # New Flight Routes
 
-## Problem Statement
-Given a directed graph with n nodes and m edges, find the minimum number of new edges to add so that the graph becomes strongly connected.
+## Problem Description
 
-### Input
-The first input line has two integers n and m: the number of nodes and edges.
-Then there are m lines describing the edges. Each line has two integers a and b: there is a directed edge from node a to node b.
+**Problem**: Given a directed graph with n nodes and m edges, find the minimum number of new edges to add so that the graph becomes strongly connected.
 
-### Output
-Print the minimum number of new edges needed.
+**Input**: 
+- n, m: number of nodes and edges
+- m lines: a b (directed edge from a to b)
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2*10^5
-- 1 ≤ a,b ≤ n
+**Output**: Minimum number of new edges needed for strong connectivity.
 
-### Example
+**Example**:
 ```
 Input:
 4 2
@@ -31,55 +26,741 @@ Input:
 
 Output:
 2
+
+Explanation: 
+Need to add 2 edges to make graph strongly connected.
+Possible solution: add edges 2→3 and 4→1.
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Brute Force Edge Addition - O(n²)
-**Description**: Try adding edges and check if the graph becomes strongly connected.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find minimum edges to add for strong connectivity
+- Use strongly connected components (SCCs)
+- Apply graph theory concepts
+- Handle condensation graph
+
+**Key Observations:**
+- This is a strong connectivity problem
+- Need to find SCCs first
+- Condensation graph is a DAG
+- Minimum edges = max(sources, sinks)
+
+### Step 2: Strongly Connected Components Approach
+**Idea**: Use Kosaraju's algorithm to find SCCs and calculate minimum edges needed.
 
 ```python
-def new_flight_routes_naive(n, m, edges):
-    # Build adjacency list
+def new_flight_routes_scc(n, m, edges):
+    # Build adjacency lists
     adj = [[] for _ in range(n + 1)]
+    adj_rev = [[] for _ in range(n + 1)]
+    
     for a, b in edges:
         adj[a].append(b)
+        adj_rev[b].append(a)
     
-    def is_strongly_connected():
-        # Check if every node can reach every other node
-        for start in range(1, n + 1):
-            visited = set()
-            queue = [start]
-            visited.add(start)
-            
-            while queue:
-                node = queue.pop(0)
-                for neighbor in adj[node]:
-                    if neighbor not in visited:
-                        visited.add(neighbor)
-                        queue.append(neighbor)
-            
-            if len(visited) != n:
-                return False
-        return True
+    # Kosaraju's algorithm to find SCCs
+    visited = [False] * (n + 1)
+    finish_order = []
     
-    if is_strongly_connected():
+    def dfs1(node):
+        visited[node] = True
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                dfs1(neighbor)
+        finish_order.append(node)
+    
+    # First DFS to get finish order
+    for i in range(1, n + 1):
+        if not visited[i]:
+            dfs1(i)
+    
+    # Second DFS to find SCCs
+    scc_id = [0] * (n + 1)
+    scc_count = 0
+    
+    def dfs2(node, component_id):
+        scc_id[node] = component_id
+        for neighbor in adj_rev[node]:
+            if scc_id[neighbor] == 0:
+                dfs2(neighbor, component_id)
+    
+    # Process nodes in reverse finish order
+    for node in reversed(finish_order):
+        if scc_id[node] == 0:
+            scc_count += 1
+            dfs2(node, scc_count)
+    
+    # Build condensation graph
+    condensation = [[] for _ in range(scc_count + 1)]
+    for a, b in edges:
+        if scc_id[a] != scc_id[b]:
+            condensation[scc_id[a]].append(scc_id[b])
+    
+    # Count sources and sinks in condensation graph
+    in_degree = [0] * (scc_count + 1)
+    out_degree = [0] * (scc_count + 1)
+    
+    for i in range(1, scc_count + 1):
+        for j in condensation[i]:
+            out_degree[i] += 1
+            in_degree[j] += 1
+    
+    sources = sum(1 for i in range(1, scc_count + 1) if in_degree[i] == 0)
+    sinks = sum(1 for i in range(1, scc_count + 1) if out_degree[i] == 0)
+    
+    # If only one SCC, no edges needed
+    if scc_count == 1:
         return 0
     
-    # Try adding edges
-    min_edges = float('inf')
-    for i in range(1, n + 1):
-        for j in range(1, n + 1):
-            if i != j:
-                adj[i].append(j)
-                if is_strongly_connected():
-                    min_edges = min(min_edges, 1)
-                adj[i].pop()
-    
-    return min_edges if min_edges != float('inf') else -1
+    # Minimum edges needed = max(sources, sinks)
+    return max(sources, sinks)
 ```
 
-**Why this is inefficient**: O(n²) complexity and doesn't handle the problem correctly.
+**Why this works:**
+- Uses Kosaraju's algorithm for SCCs
+- Builds condensation graph
+- Counts sources and sinks
+- O(n + m) time complexity
+
+### Step 3: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_new_flight_routes():
+    n, m = map(int, input().split())
+    edges = []
+    
+    for _ in range(m):
+        a, b = map(int, input().split())
+        edges.append((a, b))
+    
+    # Build adjacency lists
+    adj = [[] for _ in range(n + 1)]
+    adj_rev = [[] for _ in range(n + 1)]
+    
+    for a, b in edges:
+        adj[a].append(b)
+        adj_rev[b].append(a)
+    
+    # Kosaraju's algorithm to find SCCs
+    visited = [False] * (n + 1)
+    finish_order = []
+    
+    def dfs1(node):
+        visited[node] = True
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                dfs1(neighbor)
+        finish_order.append(node)
+    
+    # First DFS to get finish order
+    for i in range(1, n + 1):
+        if not visited[i]:
+            dfs1(i)
+    
+    # Second DFS to find SCCs
+    scc_id = [0] * (n + 1)
+    scc_count = 0
+    
+    def dfs2(node, component_id):
+        scc_id[node] = component_id
+        for neighbor in adj_rev[node]:
+            if scc_id[neighbor] == 0:
+                dfs2(neighbor, component_id)
+    
+    # Process nodes in reverse finish order
+    for node in reversed(finish_order):
+        if scc_id[node] == 0:
+            scc_count += 1
+            dfs2(node, scc_count)
+    
+    # Build condensation graph
+    condensation = [[] for _ in range(scc_count + 1)]
+    for a, b in edges:
+        if scc_id[a] != scc_id[b]:
+            condensation[scc_id[a]].append(scc_id[b])
+    
+    # Count sources and sinks in condensation graph
+    in_degree = [0] * (scc_count + 1)
+    out_degree = [0] * (scc_count + 1)
+    
+    for i in range(1, scc_count + 1):
+        for j in condensation[i]:
+            out_degree[i] += 1
+            in_degree[j] += 1
+    
+    sources = sum(1 for i in range(1, scc_count + 1) if in_degree[i] == 0)
+    sinks = sum(1 for i in range(1, scc_count + 1) if out_degree[i] == 0)
+    
+    # If only one SCC, no edges needed
+    if scc_count == 1:
+        print(0)
+    else:
+        # Minimum edges needed = max(sources, sinks)
+        print(max(sources, sinks))
+
+# Main execution
+if __name__ == "__main__":
+    solve_new_flight_routes()
+```
+
+**Why this works:**
+- Optimal SCC-based approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (4, 2, [(1, 2), (3, 4)]),
+        (4, 3, [(1, 2), (2, 3), (3, 4)]),
+        (3, 2, [(1, 2), (2, 3)]),
+    ]
+    
+    for n, m, edges in test_cases:
+        result = solve_test(n, m, edges)
+        print(f"n={n}, m={m}, edges={edges}")
+        print(f"Result: {result}")
+        print()
+
+def solve_test(n, m, edges):
+    # Build adjacency lists
+    adj = [[] for _ in range(n + 1)]
+    adj_rev = [[] for _ in range(n + 1)]
+    
+    for a, b in edges:
+        adj[a].append(b)
+        adj_rev[b].append(a)
+    
+    # Kosaraju's algorithm to find SCCs
+    visited = [False] * (n + 1)
+    finish_order = []
+    
+    def dfs1(node):
+        visited[node] = True
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                dfs1(neighbor)
+        finish_order.append(node)
+    
+    # First DFS to get finish order
+    for i in range(1, n + 1):
+        if not visited[i]:
+            dfs1(i)
+    
+    # Second DFS to find SCCs
+    scc_id = [0] * (n + 1)
+    scc_count = 0
+    
+    def dfs2(node, component_id):
+        scc_id[node] = component_id
+        for neighbor in adj_rev[node]:
+            if scc_id[neighbor] == 0:
+                dfs2(neighbor, component_id)
+    
+    # Process nodes in reverse finish order
+    for node in reversed(finish_order):
+        if scc_id[node] == 0:
+            scc_count += 1
+            dfs2(node, scc_count)
+    
+    # Build condensation graph
+    condensation = [[] for _ in range(scc_count + 1)]
+    for a, b in edges:
+        if scc_id[a] != scc_id[b]:
+            condensation[scc_id[a]].append(scc_id[b])
+    
+    # Count sources and sinks in condensation graph
+    in_degree = [0] * (scc_count + 1)
+    out_degree = [0] * (scc_count + 1)
+    
+    for i in range(1, scc_count + 1):
+        for j in condensation[i]:
+            out_degree[i] += 1
+            in_degree[j] += 1
+    
+    sources = sum(1 for i in range(1, scc_count + 1) if in_degree[i] == 0)
+    sinks = sum(1 for i in range(1, scc_count + 1) if out_degree[i] == 0)
+    
+    # If only one SCC, no edges needed
+    if scc_count == 1:
+        return 0
+    else:
+        # Minimum edges needed = max(sources, sinks)
+        return max(sources, sinks)
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n + m) - Kosaraju's algorithm for SCCs
+- **Space**: O(n + m) - adjacency lists and SCC tracking
+
+### Why This Solution Works
+- **Strongly Connected Components**: Identifies graph structure
+- **Kosaraju's Algorithm**: Efficient SCC finding
+- **Condensation Graph**: Simplifies the problem
+- **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### 1. **Strongly Connected Components**
+- Groups of mutually reachable nodes
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **Kosaraju's Algorithm**
+- Efficient SCC finding algorithm
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Condensation Graph**
+- DAG of SCCs
+- Important for performance
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: New Flight Routes with Constraints
+**Problem**: Find minimum edges with certain constraints.
+
+```python
+def constrained_new_flight_routes(n, m, edges, constraints):
+    # Build adjacency lists
+    adj = [[] for _ in range(n + 1)]
+    adj_rev = [[] for _ in range(n + 1)]
+    
+    # Apply constraints
+    forbidden_edges = constraints.get('forbidden_edges', set())
+    required_edges = constraints.get('required_edges', set())
+    
+    for a, b in edges:
+        if (a, b) not in forbidden_edges:
+            adj[a].append(b)
+            adj_rev[b].append(a)
+    
+    # Add required edges
+    for a, b in required_edges:
+        adj[a].append(b)
+        adj_rev[b].append(a)
+    
+    # Kosaraju's algorithm to find SCCs
+    visited = [False] * (n + 1)
+    finish_order = []
+    
+    def dfs1(node):
+        visited[node] = True
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                dfs1(neighbor)
+        finish_order.append(node)
+    
+    # First DFS to get finish order
+    for i in range(1, n + 1):
+        if not visited[i]:
+            dfs1(i)
+    
+    # Second DFS to find SCCs
+    scc_id = [0] * (n + 1)
+    scc_count = 0
+    
+    def dfs2(node, component_id):
+        scc_id[node] = component_id
+        for neighbor in adj_rev[node]:
+            if scc_id[neighbor] == 0:
+                dfs2(neighbor, component_id)
+    
+    # Process nodes in reverse finish order
+    for node in reversed(finish_order):
+        if scc_id[node] == 0:
+            scc_count += 1
+            dfs2(node, scc_count)
+    
+    # Build condensation graph
+    condensation = [[] for _ in range(scc_count + 1)]
+    for a, b in edges:
+        if scc_id[a] != scc_id[b]:
+            condensation[scc_id[a]].append(scc_id[b])
+    
+    # Count sources and sinks
+    in_degree = [0] * (scc_count + 1)
+    out_degree = [0] * (scc_count + 1)
+    
+    for i in range(1, scc_count + 1):
+        for j in condensation[i]:
+            out_degree[i] += 1
+            in_degree[j] += 1
+    
+    sources = sum(1 for i in range(1, scc_count + 1) if in_degree[i] == 0)
+    sinks = sum(1 for i in range(1, scc_count + 1) if out_degree[i] == 0)
+    
+    if scc_count == 1:
+        return 0
+    else:
+        return max(sources, sinks)
+```
+
+### Variation 2: New Flight Routes with Weights
+**Problem**: Each new edge has a cost, find minimum cost solution.
+
+```python
+def weighted_new_flight_routes(n, m, edges, edge_costs):
+    # Build adjacency lists
+    adj = [[] for _ in range(n + 1)]
+    adj_rev = [[] for _ in range(n + 1)]
+    
+    for a, b in edges:
+        adj[a].append(b)
+        adj_rev[b].append(a)
+    
+    # Kosaraju's algorithm to find SCCs
+    visited = [False] * (n + 1)
+    finish_order = []
+    
+    def dfs1(node):
+        visited[node] = True
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                dfs1(neighbor)
+        finish_order.append(node)
+    
+    # First DFS to get finish order
+    for i in range(1, n + 1):
+        if not visited[i]:
+            dfs1(i)
+    
+    # Second DFS to find SCCs
+    scc_id = [0] * (n + 1)
+    scc_count = 0
+    
+    def dfs2(node, component_id):
+        scc_id[node] = component_id
+        for neighbor in adj_rev[node]:
+            if scc_id[neighbor] == 0:
+                dfs2(neighbor, component_id)
+    
+    # Process nodes in reverse finish order
+    for node in reversed(finish_order):
+        if scc_id[node] == 0:
+            scc_count += 1
+            dfs2(node, scc_count)
+    
+    # Build condensation graph
+    condensation = [[] for _ in range(scc_count + 1)]
+    for a, b in edges:
+        if scc_id[a] != scc_id[b]:
+            condensation[scc_id[a]].append(scc_id[b])
+    
+    # Count sources and sinks
+    in_degree = [0] * (scc_count + 1)
+    out_degree = [0] * (scc_count + 1)
+    
+    for i in range(1, scc_count + 1):
+        for j in condensation[i]:
+            out_degree[i] += 1
+            in_degree[j] += 1
+    
+    sources = [i for i in range(1, scc_count + 1) if in_degree[i] == 0]
+    sinks = [i for i in range(1, scc_count + 1) if out_degree[i] == 0]
+    
+    if scc_count == 1:
+        return 0
+    
+    # Find minimum cost edges to connect sources and sinks
+    # This is a more complex problem requiring bipartite matching
+    # For now, return the basic solution
+    return max(len(sources), len(sinks))
+```
+
+### Variation 3: Dynamic New Flight Routes
+**Problem**: Support adding/removing edges and maintaining connectivity.
+
+```python
+class DynamicNewFlightRoutes:
+    def __init__(self, n):
+        self.n = n
+        self.adj = [[] for _ in range(n + 1)]
+        self.adj_rev = [[] for _ in range(n + 1)]
+        self.edges = set()
+    
+    def add_edge(self, a, b):
+        if (a, b) not in self.edges:
+            self.edges.add((a, b))
+            self.adj[a].append(b)
+            self.adj_rev[b].append(a)
+    
+    def remove_edge(self, a, b):
+        if (a, b) in self.edges:
+            self.edges.remove((a, b))
+            self.adj[a].remove(b)
+            self.adj_rev[b].remove(a)
+            return True
+        return False
+    
+    def get_min_edges_needed(self):
+        # Kosaraju's algorithm to find SCCs
+        visited = [False] * (self.n + 1)
+        finish_order = []
+        
+        def dfs1(node):
+            visited[node] = True
+            for neighbor in self.adj[node]:
+                if not visited[neighbor]:
+                    dfs1(neighbor)
+            finish_order.append(node)
+        
+        # First DFS to get finish order
+        for i in range(1, self.n + 1):
+            if not visited[i]:
+                dfs1(i)
+        
+        # Second DFS to find SCCs
+        scc_id = [0] * (self.n + 1)
+        scc_count = 0
+        
+        def dfs2(node, component_id):
+            scc_id[node] = component_id
+            for neighbor in self.adj_rev[node]:
+                if scc_id[neighbor] == 0:
+                    dfs2(neighbor, component_id)
+        
+        # Process nodes in reverse finish order
+        for node in reversed(finish_order):
+            if scc_id[node] == 0:
+                scc_count += 1
+                dfs2(node, scc_count)
+        
+        # Build condensation graph
+        condensation = [[] for _ in range(scc_count + 1)]
+        for a, b in self.edges:
+            if scc_id[a] != scc_id[b]:
+                condensation[scc_id[a]].append(scc_id[b])
+        
+        # Count sources and sinks
+        in_degree = [0] * (scc_count + 1)
+        out_degree = [0] * (scc_count + 1)
+        
+        for i in range(1, scc_count + 1):
+            for j in condensation[i]:
+                out_degree[i] += 1
+                in_degree[j] += 1
+        
+        sources = sum(1 for i in range(1, scc_count + 1) if in_degree[i] == 0)
+        sinks = sum(1 for i in range(1, scc_count + 1) if out_degree[i] == 0)
+        
+        if scc_count == 1:
+            return 0
+        else:
+            return max(sources, sinks)
+```
+
+### Variation 4: New Flight Routes with Multiple Constraints
+**Problem**: Find minimum edges satisfying multiple constraints.
+
+```python
+def multi_constrained_new_flight_routes(n, m, edges, constraints):
+    # Build adjacency lists
+    adj = [[] for _ in range(n + 1)]
+    adj_rev = [[] for _ in range(n + 1)]
+    
+    # Apply multiple constraints
+    forbidden_edges = constraints.get('forbidden_edges', set())
+    required_edges = constraints.get('required_edges', set())
+    max_new_edges = constraints.get('max_new_edges', float('inf'))
+    
+    for a, b in edges:
+        if (a, b) not in forbidden_edges:
+            adj[a].append(b)
+            adj_rev[b].append(a)
+    
+    # Add required edges
+    for a, b in required_edges:
+        adj[a].append(b)
+        adj_rev[b].append(a)
+    
+    # Kosaraju's algorithm to find SCCs
+    visited = [False] * (n + 1)
+    finish_order = []
+    
+    def dfs1(node):
+        visited[node] = True
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                dfs1(neighbor)
+        finish_order.append(node)
+    
+    # First DFS to get finish order
+    for i in range(1, n + 1):
+        if not visited[i]:
+            dfs1(i)
+    
+    # Second DFS to find SCCs
+    scc_id = [0] * (n + 1)
+    scc_count = 0
+    
+    def dfs2(node, component_id):
+        scc_id[node] = component_id
+        for neighbor in adj_rev[node]:
+            if scc_id[neighbor] == 0:
+                dfs2(neighbor, component_id)
+    
+    # Process nodes in reverse finish order
+    for node in reversed(finish_order):
+        if scc_id[node] == 0:
+            scc_count += 1
+            dfs2(node, scc_count)
+    
+    # Build condensation graph
+    condensation = [[] for _ in range(scc_count + 1)]
+    for a, b in edges:
+        if scc_id[a] != scc_id[b]:
+            condensation[scc_id[a]].append(scc_id[b])
+    
+    # Count sources and sinks
+    in_degree = [0] * (scc_count + 1)
+    out_degree = [0] * (scc_count + 1)
+    
+    for i in range(1, scc_count + 1):
+        for j in condensation[i]:
+            out_degree[i] += 1
+            in_degree[j] += 1
+    
+    sources = sum(1 for i in range(1, scc_count + 1) if in_degree[i] == 0)
+    sinks = sum(1 for i in range(1, scc_count + 1) if out_degree[i] == 0)
+    
+    if scc_count == 1:
+        return 0
+    else:
+        min_edges = max(sources, sinks)
+        return min(min_edges, max_new_edges)
+```
+
+### Variation 5: New Flight Routes with Edge Replacement
+**Problem**: Allow replacing existing edges with new ones.
+
+```python
+def edge_replacement_new_flight_routes(n, m, edges, replacement_cost):
+    # Build adjacency lists
+    adj = [[] for _ in range(n + 1)]
+    adj_rev = [[] for _ in range(n + 1)]
+    
+    for a, b in edges:
+        adj[a].append(b)
+        adj_rev[b].append(a)
+    
+    # Kosaraju's algorithm to find SCCs
+    visited = [False] * (n + 1)
+    finish_order = []
+    
+    def dfs1(node):
+        visited[node] = True
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                dfs1(neighbor)
+        finish_order.append(node)
+    
+    # First DFS to get finish order
+    for i in range(1, n + 1):
+        if not visited[i]:
+            dfs1(i)
+    
+    # Second DFS to find SCCs
+    scc_id = [0] * (n + 1)
+    scc_count = 0
+    
+    def dfs2(node, component_id):
+        scc_id[node] = component_id
+        for neighbor in adj_rev[node]:
+            if scc_id[neighbor] == 0:
+                dfs2(neighbor, component_id)
+    
+    # Process nodes in reverse finish order
+    for node in reversed(finish_order):
+        if scc_id[node] == 0:
+            scc_count += 1
+            dfs2(node, scc_count)
+    
+    # Build condensation graph
+    condensation = [[] for _ in range(scc_count + 1)]
+    for a, b in edges:
+        if scc_id[a] != scc_id[b]:
+            condensation[scc_id[a]].append(scc_id[b])
+    
+    # Count sources and sinks
+    in_degree = [0] * (scc_count + 1)
+    out_degree = [0] * (scc_count + 1)
+    
+    for i in range(1, scc_count + 1):
+        for j in condensation[i]:
+            out_degree[i] += 1
+            in_degree[j] += 1
+    
+    sources = sum(1 for i in range(1, scc_count + 1) if in_degree[i] == 0)
+    sinks = sum(1 for i in range(1, scc_count + 1) if out_degree[i] == 0)
+    
+    if scc_count == 1:
+        return 0
+    
+    # Consider edge replacement as an option
+    min_edges = max(sources, sinks)
+    min_cost = min_edges * replacement_cost
+    
+    return min_cost
+```
+
+## 🔗 Related Problems
+
+- **[Strongly Connected Components](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: SCC algorithms
+- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
+- **[Kosaraju's Algorithm](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Kosaraju's algorithm
+
+## 📚 Learning Points
+
+1. **Strongly Connected Components**: Essential for graph analysis
+2. **Kosaraju's Algorithm**: Efficient SCC finding
+3. **Condensation Graph**: Important optimization technique
+4. **Graph Theory**: Important graph theory concept
+
+---
+
+**This is a great introduction to new flight routes and strong connectivity!** 🎯
+    
+    # Count sources and sinks
+    in_degree = [0] * (scc_count + 1)
+    out_degree = [0] * (scc_count + 1)
+    
+    for u in range(1, scc_count + 1):
+        for v in condensation[u]:
+            out_degree[u] += 1
+            in_degree[v] += 1
+    
+    sources = sum(1 for d in in_degree[1:] if d == 0)
+    sinks = sum(1 for d in out_degree[1:] if d == 0)
+    
+    # If only one SCC, no edges needed
+    if scc_count == 1:
+        return 0
+    
+    # Minimum edges needed
+    return max(sources, sinks)
+```
+
+**Why this works:**
+- Uses Kosaraju's algorithm for SCCs
+- Builds condensation graph
+- Counts sources and sinks
+- O(n + m) time complexity
 
 ### Improvement 1: Strongly Connected Components - O(n + m)
 **Description**: Use Kosaraju's algorithm to find SCCs and calculate minimum edges needed.

@@ -4,766 +4,1401 @@ title: "Fixed Length Hamiltonian Path Queries II"
 permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_path_queries_ii_analysis
 ---
 
-
 # Fixed Length Hamiltonian Path Queries II
 
-## Problem Statement
-Given a directed graph with n nodes and q queries, for each query find the number of Hamiltonian paths of length k from node a to node b, where each path must visit exactly k nodes.
+## Problem Description
 
-### Input
-The first input line has two integers n and q: the number of nodes and queries.
-Then there are n lines describing the adjacency matrix. Each line has n integers: 1 if there is an edge, 0 otherwise.
-Finally, there are q lines describing the queries. Each line has three integers a, b, and k: find Hamiltonian paths from a to b of length k.
+**Problem**: Given a graph, answer queries about Hamiltonian paths (paths visiting each vertex exactly once) of fixed length with additional constraints.
 
-### Output
-Print the answer to each query modulo 10^9 + 7.
+**Input**: 
+- n, m: number of vertices and edges
+- m lines: a b (edge between vertices a and b)
+- q: number of queries
+- q lines: u v k (query: is there a Hamiltonian path of length k from u to v?)
 
-### Constraints
-- 1 ≤ n ≤ 100
-- 1 ≤ q ≤ 10^5
-- 1 ≤ k ≤ 10^9
-- 1 ≤ a,b ≤ n
+**Output**: For each query, print "YES" if Hamiltonian path exists, "NO" otherwise.
 
-### Example
+**Example**:
 ```
 Input:
-3 2
-0 1 0
-0 0 1
-1 0 0
-1 2 2
-2 3 3
+4 4
+1 2
+2 3
+3 4
+4 1
+3
+1 4 3
+1 4 4
+2 3 2
 
 Output:
-0
-0
+NO
+YES
+NO
+
+Explanation: 
+No Hamiltonian path of length 3 from 1 to 4
+Hamiltonian path 1→2→3→4 has length 4 from 1 to 4
+No Hamiltonian path of length 2 from 2 to 3
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Matrix Exponentiation for Hamiltonian Paths - O(n³ log k)
-**Description**: Use matrix exponentiation to find the number of Hamiltonian paths of length k.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find Hamiltonian paths of specific lengths
+- Use graph algorithms and dynamic programming
+- Handle multiple queries efficiently
+- Apply constraint satisfaction concepts
 
-```python
-def fixed_length_hamiltonian_path_queries_ii_naive(n, q, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, b, k in queries:
-        # Convert to 0-indexed
-        a, b = a - 1, b - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        hamiltonian_paths = powered_matrix[a][b]
-        result.append(hamiltonian_paths)
-    
-    return result
-```
+**Key Observations:**
+- This is a Hamiltonian path problem
+- Can use dynamic programming with bitmasking
+- Hamiltonian paths must visit each vertex exactly once
+- State representation is crucial
 
-**Why this is inefficient**: This counts all walks, not Hamiltonian paths. Hamiltonian paths must visit each node exactly once.
-
-### Improvement 1: Optimized Matrix Exponentiation - O(n³ log k)
-**Description**: Use optimized matrix exponentiation with better implementation.
+### Step 2: Dynamic Programming with Bitmasking
+**Idea**: Use DP with bitmask to track visited vertices.
 
 ```python
-def fixed_length_hamiltonian_path_queries_ii_optimized(n, q, adjacency_matrix, queries):
-    MOD = 10**9 + 7
+def hamiltonian_path_queries_dp(n, edges, queries):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
     
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
+    # DP with bitmask
+    def has_hamiltonian_path(start, end, length):
+        # dp[mask][pos] = can we reach pos with visited vertices in mask
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        
+        # Base case: start position
+        dp[1 << (start - 1)][start] = True
+        
+        # Try all possible masks
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                # Try all neighbors
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:  # Not visited
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        # Check if we can reach end with exactly length vertices
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
     
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, b, k in queries:
-        # Convert to 0-indexed
-        a, b = a - 1, b - 1
-        
-        # Handle edge case: Hamiltonian paths of length 0
-        if k == 0:
-            if a == b:
-                result.append(1)
-            else:
-                result.append(0)
+    # Answer queries
+    results = []
+    for u, v, k in queries:
+        if has_hamiltonian_path(u, v, k):
+            results.append("YES")
         else:
-            # Calculate matrix power
-            powered_matrix = matrix_power(adjacency_matrix, k)
-            hamiltonian_paths = powered_matrix[a][b]
-            result.append(hamiltonian_paths)
+            results.append("NO")
     
-    return result
+    return results
 ```
 
-**Why this improvement works**: Handles the edge case for Hamiltonian paths of length 0.
+**Why this works:**
+- Uses dynamic programming with bitmasking
+- Handles Hamiltonian path constraints
+- Efficient implementation
+- O(2^n * n * m) time complexity
 
-### Approach 2: Correct Hamiltonian Path Counting - O(n³ log k)
-**Description**: Use matrix exponentiation with proper Hamiltonian path handling.
+### Step 3: Complete Solution
+**Putting it all together:**
 
 ```python
-def fixed_length_hamiltonian_path_queries_ii_correct(n, q, adjacency_matrix, queries):
-    MOD = 10**9 + 7
+def solve_fixed_length_hamiltonian_path_queries_ii():
+    n, m = map(int, input().split())
+    edges = []
     
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
+    for _ in range(m):
+        a, b = map(int, input().split())
+        edges.append((a, b))
     
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
+    q = int(input())
+    queries = []
+    for _ in range(q):
+        u, v, k = map(int, input().split())
+        queries.append((u, v, k))
     
-    # Process queries
-    result = []
-    for a, b, k in queries:
-        # Convert to 0-indexed
-        a, b = a - 1, b - 1
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # DP with bitmask
+    def has_hamiltonian_path(start, end, length):
+        # dp[mask][pos] = can we reach pos with visited vertices in mask
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
         
-        # Handle edge cases for Hamiltonian paths
-        if k == 0:
-            # Empty Hamiltonian path (staying at the same node)
-            if a == b:
-                result.append(1)
-            else:
-                result.append(0)
-        elif k == 1:
-            # Direct edge
-            hamiltonian_paths = adjacency_matrix[a][b]
-            result.append(hamiltonian_paths)
-        elif k > n:
-            # No Hamiltonian path can have length > n
-            result.append(0)
+        # Base case: start position
+        dp[1 << (start - 1)][start] = True
+        
+        # Try all possible masks
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                # Try all neighbors
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:  # Not visited
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        # Check if we can reach end with exactly length vertices
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    # Answer queries
+    for u, v, k in queries:
+        if has_hamiltonian_path(u, v, k):
+            print("YES")
         else:
-            # Calculate matrix power
-            powered_matrix = matrix_power(adjacency_matrix, k)
-            hamiltonian_paths = powered_matrix[a][b]
-            result.append(hamiltonian_paths)
-    
-    return result
+            print("NO")
+
+# Main execution
+if __name__ == "__main__":
+    solve_fixed_length_hamiltonian_path_queries_ii()
 ```
 
-**Why this improvement works**: Properly handles all edge cases for Hamiltonian path counting.
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
 
-## Final Optimal Solution
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
 
 ```python
-n, q = map(int, input().split())
-adjacency_matrix = []
-for _ in range(n):
-    row = list(map(int, input().split()))
-    adjacency_matrix.append(row)
-queries = []
-for _ in range(q):
-    a, b, k = map(int, input().split())
-    queries.append((a, b, k))
+def test_solution():
+    test_cases = [
+        (4, [(1, 2), (2, 3), (3, 4), (4, 1)], [(1, 4, 3), (1, 4, 4), (2, 3, 2)]),
+        (3, [(1, 2), (2, 3), (3, 1)], [(1, 3, 3), (2, 1, 3), (3, 2, 3)]),
+    ]
+    
+    for n, edges, queries in test_cases:
+        result = solve_test(n, edges, queries)
+        print(f"n={n}, edges={edges}, queries={queries}")
+        print(f"Result: {result}")
+        print()
 
-def process_fixed_length_hamiltonian_path_queries_ii(n, q, adjacency_matrix, queries):
-    MOD = 10**9 + 7
+def solve_test(n, edges, queries):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
     
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
+    # DP with bitmask
+    def has_hamiltonian_path(start, end, length):
+        # dp[mask][pos] = can we reach pos with visited vertices in mask
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        
+        # Base case: start position
+        dp[1 << (start - 1)][start] = True
+        
+        # Try all possible masks
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                # Try all neighbors
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:  # Not visited
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        # Check if we can reach end with exactly length vertices
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
     
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, b, k in queries:
-        # Convert to 0-indexed
-        a, b = a - 1, b - 1
-        
-        # Handle edge cases for Hamiltonian paths
-        if k == 0:
-            # Empty Hamiltonian path (staying at the same node)
-            if a == b:
-                result.append(1)
-            else:
-                result.append(0)
-        elif k == 1:
-            # Direct edge
-            hamiltonian_paths = adjacency_matrix[a][b]
-            result.append(hamiltonian_paths)
-        elif k > n:
-            # No Hamiltonian path can have length > n (pigeonhole principle)
-            result.append(0)
+    # Answer queries
+    results = []
+    for u, v, k in queries:
+        if has_hamiltonian_path(u, v, k):
+            results.append("YES")
         else:
-            # Calculate matrix power
-            powered_matrix = matrix_power(adjacency_matrix, k)
-            hamiltonian_paths = powered_matrix[a][b]
-            result.append(hamiltonian_paths)
+            results.append("NO")
     
-    return result
+    return results
 
-result = process_fixed_length_hamiltonian_path_queries_ii(n, q, adjacency_matrix, queries)
-for res in result:
-    print(res)
+test_solution()
 ```
 
-## Complexity Analysis
+## 🔧 Implementation Details
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Matrix Exponentiation | O(n³ log k) | O(n²) | Matrix power for Hamiltonian path counting |
-| Optimized Matrix Exponentiation | O(n³ log k) | O(n²) | Binary exponentiation with edge cases |
-| Correct Hamiltonian Path Counting | O(n³ log k) | O(n²) | Proper edge case handling |
+### Time Complexity
+- **Time**: O(2^n * n * m) - dynamic programming with bitmasking
+- **Space**: O(2^n * n) - DP table
 
-## Key Insights for Other Problems
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes path existence
+- **Bitmasking**: Tracks visited vertices efficiently
+- **Hamiltonian Paths**: Ensures each vertex is visited exactly once
+- **Optimal Approach**: Handles all cases correctly
 
-### 1. **Hamiltonian Path vs Walk vs Path Distinction**
-**Principle**: Hamiltonian paths must visit each node exactly once.
-**Applicable to**: Graph theory problems, Hamiltonian path analysis problems, node-based problems
+## 🎯 Key Insights
 
-### 2. **Pigeonhole Principle for Path Length**
-**Principle**: A Hamiltonian path cannot have length greater than the number of nodes.
-**Applicable to**: Graph theory problems, path analysis problems, constraint problems
+### 1. **Hamiltonian Paths**
+- Paths visiting each vertex exactly once
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
 
-### 3. **Matrix Exponentiation for Hamiltonian Path Counting**
-**Principle**: Matrix powers can count Hamiltonian paths, but need careful handling for node constraints.
-**Applicable to**: Graph theory problems, matrix problems, combinatorics problems
+### 2. **Dynamic Programming**
+- Efficient path existence algorithm
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
 
-## Notable Techniques
+### 3. **Bitmasking**
+- Efficient state representation
+- Important for performance
+- Simple but important concept
+- Essential for understanding
 
-### 1. **Matrix Multiplication**
+## 🎯 Problem Variations
+
+### Variation 1: Hamiltonian Paths with Weights
+**Problem**: Each edge has a weight, find minimum weight Hamiltonian paths.
+
 ```python
-def matrix_multiply(a, b, n, MOD):
-    result = [[0] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(n):
-            for k in range(n):
-                result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-    return result
-```
-
-### 2. **Binary Matrix Exponentiation**
-```python
-def matrix_power(matrix, power, n, MOD):
-    # Initialize result as identity matrix
-    result = [[0] * n for _ in range(n)]
-    for i in range(n):
-        result[i][i] = 1
+def weighted_hamiltonian_path_queries(n, edges, queries, weights):
+    # Build adjacency list with weights
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        weight = weights.get((a, b), 1)
+        adj[a].append((b, weight))
+        adj[b].append((a, weight))
     
-    # Binary exponentiation
-    base = matrix
-    while power > 0:
-        if power % 2 == 1:
-            result = matrix_multiply(result, base, n, MOD)
-        base = matrix_multiply(base, base, n, MOD)
-        power //= 2
-    
-    return result
-```
-
-### 3. **Hamiltonian Path Edge Cases**
-```python
-def handle_hamiltonian_path_edge_cases(a, b, k, n):
-    if k == 0:
-        return 1 if a == b else 0
-    elif k == 1:
-        return adjacency_matrix[a][b]
-    elif k > n:
-        return 0  # Pigeonhole principle
-    else:
-        # Use matrix exponentiation
-        return count_paths_with_matrix(a, b, k)
-```
-
-### 4. **Query Processing**
-```python
-def process_hamiltonian_path_queries_ii(n, q, adjacency_matrix, queries, MOD):
-    result = []
-    for a, b, k in queries:
-        # Convert to 0-indexed
-        a, b = a - 1, b - 1
+    def min_weight_hamiltonian_path(start, end, length):
+        # dp[mask][pos] = minimum weight to reach pos with visited vertices in mask
+        dp = [[float('inf')] * (n + 1) for _ in range(1 << n)]
         
-        # Handle edge cases
-        if k == 0:
-            hamiltonian_paths = 1 if a == b else 0
-        elif k == 1:
-            hamiltonian_paths = adjacency_matrix[a][b]
-        elif k > n:
-            hamiltonian_paths = 0
+        # Base case: start position
+        dp[1 << (start - 1)][start] = 0
+        
+        # Try all possible masks
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if dp[mask][pos] == float('inf'):
+                    continue
+                
+                # Try all neighbors
+                for neighbor, weight in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:  # Not visited
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = min(dp[new_mask][neighbor], 
+                                                   dp[mask][pos] + weight)
+        
+        # Check if we can reach end with exactly length vertices
+        min_weight = float('inf')
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end] != float('inf'):
+                min_weight = min(min_weight, dp[mask][end])
+        
+        return min_weight if min_weight != float('inf') else -1
+    
+    # Answer queries
+    results = []
+    for u, v, k in queries:
+        weight = min_weight_hamiltonian_path(u, v, k)
+        results.append(weight)
+    
+    return results
+```
+
+### Variation 2: Hamiltonian Paths with Constraints
+**Problem**: Find Hamiltonian paths avoiding certain edges.
+
+```python
+def constrained_hamiltonian_path_queries(n, edges, queries, forbidden_edges):
+    # Build adjacency list excluding forbidden edges
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
+            adj[a].append(b)
+            adj[b].append(a)
+    
+    def has_hamiltonian_path(start, end, length):
+        # dp[mask][pos] = can we reach pos with visited vertices in mask
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        
+        # Base case: start position
+        dp[1 << (start - 1)][start] = True
+        
+        # Try all possible masks
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                # Try all neighbors
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:  # Not visited
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        # Check if we can reach end with exactly length vertices
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    # Answer queries
+    results = []
+    for u, v, k in queries:
+        if has_hamiltonian_path(u, v, k):
+            results.append("YES")
         else:
-            # Calculate paths
-            powered_matrix = matrix_power(adjacency_matrix, k, n, MOD)
-            hamiltonian_paths = powered_matrix[a][b]
-        
-        result.append(hamiltonian_paths)
+            results.append("NO")
     
-    return result
+    return results
 ```
 
-## Problem-Solving Framework
+### Variation 3: Dynamic Hamiltonian Paths
+**Problem**: Support adding/removing edges and maintaining path existence.
 
-1. **Identify problem type**: This is a Hamiltonian path counting problem using matrix exponentiation
-2. **Choose approach**: Use matrix exponentiation with proper edge case handling
-3. **Initialize data structure**: Use adjacency matrix representation
-4. **Implement matrix multiplication**: Multiply matrices with modular arithmetic
-5. **Implement matrix power**: Use binary exponentiation for efficiency
-6. **Handle edge cases**: Check for k=0, k=1, k>n cases
-7. **Process queries**: Calculate Hamiltonian paths for each query
-8. **Return result**: Output Hamiltonian path counts for all queries
+```python
+class DynamicHamiltonianPathQueries:
+    def __init__(self, n):
+        self.n = n
+        self.adj = [[] for _ in range(n + 1)]
+        self.edges = set()
+    
+    def add_edge(self, a, b):
+        if (a, b) not in self.edges and (b, a) not in self.edges:
+            self.edges.add((a, b))
+            self.adj[a].append(b)
+            self.adj[b].append(a)
+    
+    def remove_edge(self, a, b):
+        if (a, b) in self.edges:
+            self.edges.remove((a, b))
+            self.adj[a].remove(b)
+            self.adj[b].remove(a)
+            return True
+        elif (b, a) in self.edges:
+            self.edges.remove((b, a))
+            self.adj[a].remove(b)
+            self.adj[b].remove(a)
+            return True
+        return False
+    
+    def has_hamiltonian_path(self, start, end, length):
+        # dp[mask][pos] = can we reach pos with visited vertices in mask
+        dp = [[False] * (self.n + 1) for _ in range(1 << self.n)]
+        
+        # Base case: start position
+        dp[1 << (start - 1)][start] = True
+        
+        # Try all possible masks
+        for mask in range(1 << self.n):
+            for pos in range(1, self.n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                # Try all neighbors
+                for neighbor in self.adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:  # Not visited
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        # Check if we can reach end with exactly length vertices
+        for mask in range(1 << self.n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+```
+
+### Variation 4: Hamiltonian Paths with Multiple Constraints
+**Problem**: Find Hamiltonian paths satisfying multiple constraints.
+
+```python
+def multi_constrained_hamiltonian_path_queries(n, edges, queries, constraints):
+    # Apply multiple constraints
+    forbidden_edges = constraints.get('forbidden_edges', set())
+    required_edges = constraints.get('required_edges', set())
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
+            adj[a].append(b)
+            adj[b].append(a)
+    
+    # Add required edges
+    for a, b in required_edges:
+        if b not in adj[a]:
+            adj[a].append(b)
+        if a not in adj[b]:
+            adj[b].append(a)
+    
+    def has_hamiltonian_path(start, end, length):
+        # dp[mask][pos] = can we reach pos with visited vertices in mask
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        
+        # Base case: start position
+        dp[1 << (start - 1)][start] = True
+        
+        # Try all possible masks
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                # Try all neighbors
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:  # Not visited
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        # Check if we can reach end with exactly length vertices
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    # Answer queries
+    results = []
+    for u, v, k in queries:
+        if has_hamiltonian_path(u, v, k):
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    return results
+```
+
+### Variation 5: Hamiltonian Paths with Edge Replacement
+**Problem**: Allow replacing existing edges with new ones.
+
+```python
+def edge_replacement_hamiltonian_path_queries(n, edges, queries, replacement_edges):
+    def has_hamiltonian_path_with_edges(start, end, length, edge_set):
+        # Build adjacency list
+        adj = [[] for _ in range(n + 1)]
+        for a, b in edge_set:
+            adj[a].append(b)
+            adj[b].append(a)
+        
+        # dp[mask][pos] = can we reach pos with visited vertices in mask
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        
+        # Base case: start position
+        dp[1 << (start - 1)][start] = True
+        
+        # Try all possible masks
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                # Try all neighbors
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:  # Not visited
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        # Check if we can reach end with exactly length vertices
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    # Try different edge replacements
+    best_results = []
+    for u, v, k in queries:
+        best_has_path = False
+        
+        # Try original edges
+        if has_hamiltonian_path_with_edges(u, v, k, edges):
+            best_has_path = True
+        
+        # Try each replacement
+        for old_edge, new_edge in replacement_edges:
+            # Create modified edges
+            modified_edges = [e for e in edges if e != old_edge and (e[1], e[0]) != old_edge]
+            modified_edges.append(new_edge)
+            
+            # Check if path exists
+            if has_hamiltonian_path_with_edges(u, v, k, modified_edges):
+                best_has_path = True
+        
+        best_results.append("YES" if best_has_path else "NO")
+    
+    return best_results
+```
+
+## 🔗 Related Problems
+
+- **[Hamiltonian Paths](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Hamiltonian path algorithms
+- **[Dynamic Programming](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Dynamic programming algorithms
+- **[Bitmasking](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Bitmasking techniques
+
+## 📚 Learning Points
+
+1. **Hamiltonian Paths**: Essential for path analysis
+2. **Dynamic Programming**: Efficient path existence computation
+3. **Bitmasking**: Important optimization technique
+4. **Graph Theory**: Important graph theory concept
 
 ---
 
-*This analysis shows how to efficiently count Hamiltonian paths of fixed length using matrix exponentiation with proper edge case handling.* 
-
-## Problem Variations & Related Questions
-
-### Problem Variations
-
-#### 1. **Fixed Length Hamiltonian Path Queries II with Costs**
-**Variation**: Each edge has a cost, find minimum cost Hamiltonian paths of length k.
-**Approach**: Use weighted matrix exponentiation with cost tracking.
-```python
-def cost_based_fixed_length_hamiltonian_path_queries_ii(n, q, adjacency_matrix, edge_costs, queries):
-    MOD = 10**9 + 7
-    
-    def weighted_matrix_multiply(a, b):
-        result = [[float('inf')] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    if a[i][k] != float('inf') and b[k][j] != float('inf'):
-                        new_cost = a[i][k] + b[k][j]
-                        if new_cost < result[i][j]:
-                            result[i][j] = new_cost
-        return result
-    
-    def weighted_matrix_power(matrix, power):
-        # Initialize result as identity matrix (0 cost for self-loops)
-        result = [[float('inf')] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 0
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = weighted_matrix_multiply(result, base)
-            base = weighted_matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Build weighted adjacency matrix
-    weighted_matrix = [[float('inf')] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(n):
-            if adjacency_matrix[i][j] == 1:
-                weighted_matrix[i][j] = edge_costs.get((i, j), 1)
-    
-    # Process queries
-    result = []
-    for a, b, k in queries:
-        a, b = a - 1, b - 1  # Convert to 0-indexed
-        
-        if k == 0:
-            min_cost = 0 if a == b else float('inf')
-        elif k == 1:
-            min_cost = weighted_matrix[a][b] if weighted_matrix[a][b] != float('inf') else -1
-        elif k > n:
-            min_cost = -1  # Pigeonhole principle
+**This is a great introduction to Hamiltonian paths and dynamic programming!** 🎯
+        if has_hamiltonian_path(u, v, k):
+            results.append("YES")
         else:
-            powered_matrix = weighted_matrix_power(weighted_matrix, k)
-            min_cost = powered_matrix[a][b] if powered_matrix[a][b] != float('inf') else -1
-        
-        result.append(min_cost)
+            results.append("NO")
     
-    return result
+    return results
 ```
 
-#### 2. **Fixed Length Hamiltonian Path Queries II with Constraints**
-**Variation**: Limited budget, restricted edges, or specific Hamiltonian path requirements.
-**Approach**: Use constraint satisfaction with matrix exponentiation.
+**Why this works:**
+- Uses dynamic programming with bitmasking
+- Tracks visited vertices efficiently
+- Handles all path lengths correctly
+- O(2^n * n * m) time complexity
+
+### Step 3: Complete Solution
+**Putting it all together:**
+
 ```python
-def constrained_fixed_length_hamiltonian_path_queries_ii(n, q, adjacency_matrix, budget, restricted_edges, queries):
-    MOD = 10**9 + 7
+def solve_fixed_length_hamiltonian_path_queries_ii():
+    n, m = map(int, input().split())
+    edges = []
     
-    def constrained_matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    # Check if edge (i,k) and (k,j) are not restricted
-                    if (i, k) not in restricted_edges and (k, j) not in restricted_edges:
-                        result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
+    for _ in range(m):
+        a, b = map(int, input().split())
+        edges.append((a, b))
     
-    def constrained_matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = constrained_matrix_multiply(result, base)
-            base = constrained_matrix_multiply(base, base)
-            power //= 2
-        
-        return result
+    q = int(input())
+    queries = []
+    for _ in range(q):
+        u, v, k = map(int, input().split())
+        queries.append((u, v, k))
     
-    # Process queries
-    result = []
-    for a, b, k in queries:
-        a, b = a - 1, b - 1  # Convert to 0-indexed
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)  # Undirected graph
+    
+    # DP with bitmask
+    def has_hamiltonian_path(start, end, length):
+        # dp[mask][pos] = can we reach pos with visited vertices in mask
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
         
-        if k == 0:
-            hamiltonian_paths = 1 if a == b else 0
-        elif k == 1:
-            hamiltonian_paths = adjacency_matrix[a][b] if (a, b) not in restricted_edges else 0
-        elif k > n:
-            hamiltonian_paths = 0  # Pigeonhole principle
+        # Base case: start position
+        dp[1 << (start - 1)][start] = True
+        
+        # Try all possible masks
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                # Try all neighbors
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:  # Not visited
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        # Check if we can reach end with exactly length vertices
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    # Answer queries
+    for u, v, k in queries:
+        if has_hamiltonian_path(u, v, k):
+            print("YES")
         else:
-            powered_matrix = constrained_matrix_power(adjacency_matrix, k)
-            hamiltonian_paths = powered_matrix[a][b]
-        
-        result.append(hamiltonian_paths)
-    
-    return result
+            print("NO")
+
+# Main execution
+if __name__ == "__main__":
+    solve_fixed_length_hamiltonian_path_queries_ii()
 ```
 
-#### 3. **Fixed Length Hamiltonian Path Queries II with Probabilities**
-**Variation**: Each edge has a probability, find expected number of Hamiltonian paths.
-**Approach**: Use probabilistic matrix exponentiation or Monte Carlo simulation.
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
 ```python
-def probabilistic_fixed_length_hamiltonian_path_queries_ii(n, q, adjacency_matrix, edge_probabilities, queries):
-    MOD = 10**9 + 7
+def test_solution():
+    test_cases = [
+        (4, [(1, 2), (2, 3), (3, 4), (4, 1)], [(1, 4, 3), (1, 4, 4), (2, 3, 2)]),
+        (3, [(1, 2), (2, 3)], [(1, 3, 2), (1, 3, 3)]),
+    ]
     
-    def probabilistic_matrix_multiply(a, b):
-        result = [[0.0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
+    for n, edges, queries in test_cases:
+        result = solve_test(n, edges, queries)
+        print(f"n={n}, edges={edges}, queries={queries}")
+        print(f"Results: {result}")
+        print()
+
+def solve_test(n, edges, queries):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)  # Undirected graph
     
-    def probabilistic_matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0.0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1.0
+    # DP with bitmask
+    def has_hamiltonian_path(start, end, length):
+        # dp[mask][pos] = can we reach pos with visited vertices in mask
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
         
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = probabilistic_matrix_multiply(result, base)
-            base = probabilistic_matrix_multiply(base, base)
-            power //= 2
+        # Base case: start position
+        dp[1 << (start - 1)][start] = True
         
-        return result
-    
-    # Build probabilistic adjacency matrix
-    prob_matrix = [[0.0] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(n):
-            if adjacency_matrix[i][j] == 1:
-                prob_matrix[i][j] = edge_probabilities.get((i, j), 0.5)
-    
-    # Process queries
-    result = []
-    for a, b, k in queries:
-        a, b = a - 1, b - 1  # Convert to 0-indexed
+        # Try all possible masks
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                # Try all neighbors
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:  # Not visited
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
         
-        if k == 0:
-            expected_hamiltonian_paths = 1.0 if a == b else 0.0
-        elif k == 1:
-            expected_hamiltonian_paths = prob_matrix[a][b]
-        elif k > n:
-            expected_hamiltonian_paths = 0.0  # Pigeonhole principle
+        # Check if we can reach end with exactly length vertices
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    # Answer queries
+    results = []
+    for u, v, k in queries:
+        if has_hamiltonian_path(u, v, k):
+            results.append("YES")
         else:
-            powered_matrix = probabilistic_matrix_power(prob_matrix, k)
-            expected_hamiltonian_paths = powered_matrix[a][b]
-        
-        result.append(expected_hamiltonian_paths)
+            results.append("NO")
     
-    return result
+    return results
+
+test_solution()
 ```
 
-#### 4. **Fixed Length Hamiltonian Path Queries II with Multiple Criteria**
-**Variation**: Optimize for multiple objectives (path count, cost, probability).
-**Approach**: Use multi-objective optimization or weighted sum approach.
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(2^n * n * m) - dynamic programming with bitmask
+- **Space**: O(2^n * n) - DP table
+
+### Why This Solution Works
+- **Dynamic Programming**: Finds Hamiltonian paths efficiently
+- **Bitmasking**: Tracks visited vertices compactly
+- **State Representation**: Efficient state management
+- **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### 1. **Hamiltonian Path Properties**
+- Visits each vertex exactly once
+- Essential for path counting
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **Dynamic Programming**
+- State-based approach
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Bitmasking**
+- Compact state representation
+- Important for performance
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Hamiltonian Path with Constraints
+**Problem**: Find Hamiltonian paths avoiding certain edges.
+
 ```python
-def multi_criteria_fixed_length_hamiltonian_path_queries_ii(n, q, adjacency_matrix, criteria_weights, queries):
-    # criteria_weights = {'count': 0.4, 'cost': 0.3, 'probability': 0.3}
+def constrained_hamiltonian_path_queries(n, edges, queries, forbidden_edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
+            adj[a].append(b)
+            adj[b].append(a)
     
-    def calculate_hamiltonian_path_score(path_attributes):
-        return (criteria_weights['count'] * path_attributes['count'] + 
-                criteria_weights['cost'] * path_attributes['cost'] + 
-                criteria_weights['probability'] * path_attributes['probability'])
+    # DP with bitmask
+    def has_hamiltonian_path(start, end, length):
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        dp[1 << (start - 1)][start] = True
+        
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
     
-    def multi_criteria_matrix_multiply(a, b):
-        result = [[{'count': 0, 'cost': 0, 'probability': 0.0} for _ in range(n)] for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    # Combine attributes
-                    new_count = a[i][k]['count'] * b[k][j]['count']
-                    new_cost = a[i][k]['cost'] + b[k][j]['cost']
-                    new_prob = a[i][k]['probability'] * b[k][j]['probability']
+    # Answer queries
+    results = []
+    for u, v, k in queries:
+        if has_hamiltonian_path(u, v, k):
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    return results
+```
+
+### Variation 2: Weighted Hamiltonian Path Queries
+**Problem**: Each edge has a weight, find Hamiltonian paths with specific total weight.
+
+```python
+def weighted_hamiltonian_path_queries(n, edges, weights, queries):
+    # Build adjacency list with weights
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        weight = weights.get((a, b), 1)
+        adj[a].append((b, weight))
+        adj[b].append((a, weight))
+    
+    # DP with bitmask and weight tracking
+    def has_hamiltonian_path(start, end, length, target_weight):
+        # dp[mask][pos][weight] = can we reach pos with visited vertices in mask and total weight
+        dp = [[[False] * (target_weight + 1) for _ in range(n + 1)] for _ in range(1 << n)]
+        dp[1 << (start - 1)][start][0] = True
+        
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                for weight in range(target_weight + 1):
+                    if not dp[mask][pos][weight]:
+                        continue
                     
-                    result[i][j]['count'] += new_count
-                    result[i][j]['cost'] = min(result[i][j]['cost'], new_cost) if result[i][j]['cost'] > 0 else new_cost
-                    result[i][j]['probability'] += new_prob
+                    for neighbor, edge_weight in adj[pos]:
+                        if mask & (1 << (neighbor - 1)) == 0:
+                            new_mask = mask | (1 << (neighbor - 1))
+                            new_weight = weight + edge_weight
+                            if new_weight <= target_weight:
+                                dp[new_mask][neighbor][new_weight] = True
         
-        return result
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end][target_weight]:
+                return True
+        
+        return False
     
-    # Process queries
-    result = []
-    for a, b, k in queries:
-        a, b = a - 1, b - 1  # Convert to 0-indexed
-        
-        if k == 0:
-            path_attrs = {'count': 1 if a == b else 0, 'cost': 0, 'probability': 1.0 if a == b else 0.0}
-        elif k == 1:
-            path_attrs = {
-                'count': adjacency_matrix[a][b],
-                'cost': 1 if adjacency_matrix[a][b] else 0,
-                'probability': 0.5 if adjacency_matrix[a][b] else 0.0
-            }
-        elif k > n:
-            path_attrs = {'count': 0, 'cost': float('inf'), 'probability': 0.0}
+    # Answer queries
+    results = []
+    for u, v, k, target_weight in queries:
+        if has_hamiltonian_path(u, v, k, target_weight):
+            results.append("YES")
         else:
-            # Simplified for demonstration
-            path_attrs = {'count': 1, 'cost': k, 'probability': 0.5}
-        
-        score = calculate_hamiltonian_path_score(path_attrs)
-        result.append(score)
+            results.append("NO")
     
-    return result
+    return results
 ```
 
-#### 5. **Fixed Length Hamiltonian Path Queries II with Dynamic Updates**
-**Variation**: Graph structure can be modified dynamically.
-**Approach**: Use dynamic graph algorithms or incremental updates.
+### Variation 3: Hamiltonian Path Length Range Queries
+**Problem**: Find Hamiltonian paths with length in a given range.
+
 ```python
-class DynamicFixedLengthHamiltonianPathQueriesII:
+def hamiltonian_path_range_queries(n, edges, queries):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # DP with bitmask
+    def has_hamiltonian_path(start, end, length):
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        dp[1 << (start - 1)][start] = True
+        
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    # Answer queries
+    results = []
+    for u, v, min_len, max_len in queries:
+        has_path = False
+        for k in range(min_len, max_len + 1):
+            if has_hamiltonian_path(u, v, k):
+                has_path = True
+                break
+        
+        results.append("YES" if has_path else "NO")
+    
+    return results
+```
+
+### Variation 4: Dynamic Hamiltonian Path Queries
+**Problem**: Support adding/removing edges and answering Hamiltonian path queries.
+
+```python
+class DynamicHamiltonianPathQueries:
     def __init__(self, n):
         self.n = n
-        self.adjacency_matrix = [[0] * n for _ in range(n)]
-        self.hamiltonian_path_cache = {}
+        self.adj = [[] for _ in range(n + 1)]
     
     def add_edge(self, a, b):
-        self.adjacency_matrix[a][b] = 1
-        self.invalidate_cache()
+        self.adj[a].append(b)
+        self.adj[b].append(a)
     
     def remove_edge(self, a, b):
-        self.adjacency_matrix[a][b] = 0
-        self.invalidate_cache()
+        if b in self.adj[a]:
+            self.adj[a].remove(b)
+        if a in self.adj[b]:
+            self.adj[b].remove(a)
     
-    def invalidate_cache(self):
-        self.hamiltonian_path_cache.clear()
-    
-    def get_hamiltonian_path_count(self, start, end, length, MOD=10**9 + 7):
-        cache_key = (start, end, length)
-        if cache_key in self.hamiltonian_path_cache:
-            return self.hamiltonian_path_cache[cache_key]
+    def has_hamiltonian_path(self, start, end, length):
+        # DP with bitmask
+        dp = [[False] * (self.n + 1) for _ in range(1 << self.n)]
+        dp[1 << (start - 1)][start] = True
         
-        if length == 0:
-            result = 1 if start == end else 0
-        elif length == 1:
-            result = self.adjacency_matrix[start][end]
-        elif length > self.n:
-            result = 0  # Pigeonhole principle
-        else:
-            powered_matrix = self.matrix_power(self.adjacency_matrix, length, MOD)
-            result = powered_matrix[start][end]
+        for mask in range(1 << self.n):
+            for pos in range(1, self.n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                for neighbor in self.adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
         
-        self.hamiltonian_path_cache[cache_key] = result
-        return result
-    
-    def matrix_multiply(self, a, b, MOD):
-        result = [[0] * self.n for _ in range(self.n)]
-        for i in range(self.n):
-            for j in range(self.n):
-                for k in range(self.n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(self, matrix, power, MOD):
-        result = [[0] * self.n for _ in range(self.n)]
-        for i in range(self.n):
-            result[i][i] = 1
+        for mask in range(1 << self.n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
         
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = self.matrix_multiply(result, base, MOD)
-            base = self.matrix_multiply(base, base, MOD)
-            power //= 2
-        
-        return result
+        return False
 ```
 
-### Related Problems & Concepts
+### Variation 5: Hamiltonian Path with Multiple Constraints
+**Problem**: Find Hamiltonian paths satisfying multiple constraints.
 
-#### 1. **Hamiltonian Path Problems**
-- **Hamiltonian Cycle**: Path visiting each node once and returning to start
-- **Hamiltonian Circuit**: Circuit visiting each node once
-- **Traveling Salesman**: Minimum cost Hamiltonian path
-- **Permutation Problems**: Ordering nodes in paths
+```python
+def multi_constrained_hamiltonian_path_queries(n, edges, queries, constraints):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    forbidden_edges = constraints.get('forbidden_edges', set())
+    
+    for a, b in edges:
+        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
+            adj[a].append(b)
+            adj[b].append(a)
+    
+    # DP with bitmask
+    def has_hamiltonian_path(start, end, length):
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        dp[1 << (start - 1)][start] = True
+        
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    # Answer queries
+    results = []
+    for u, v, k in queries:
+        if has_hamiltonian_path(u, v, k):
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    return results
+```
 
-#### 2. **Matrix Problems**
-- **Matrix Exponentiation**: Fast matrix power computation
-- **Adjacency Matrix**: Graph representation
-- **Transition Matrix**: State transition probabilities
-- **Markov Chains**: Probabilistic state transitions
+## 🔗 Related Problems
 
-#### 3. **Graph Theory Problems**
-- **Path Counting**: Count paths between nodes
-- **Walk Counting**: Count walks of given length
-- **Path Detection**: Find paths in graphs
-- **Connectivity**: Graph connectivity analysis
+- **[Dynamic Programming](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: DP algorithms
+- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
+- **[Hamiltonian Paths](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Hamiltonian path algorithms
 
-#### 4. **Dynamic Programming Problems**
-- **State Transitions**: Dynamic state changes
-- **Memoization**: Caching computed results
-- **Optimal Substructure**: Breaking into subproblems
-- **Overlapping Subproblems**: Reusing solutions
+## 📚 Learning Points
 
-#### 5. **Query Processing Problems**
-- **Range Queries**: Querying ranges of data
-- **Point Queries**: Querying specific points
-- **Batch Queries**: Processing multiple queries
-- **Online Queries**: Real-time query processing
+1. **Hamiltonian Path Properties**: Essential for path counting
+2. **Dynamic Programming**: Efficient state-based approach
+3. **Bitmasking**: Compact state representation
+4. **Constraint Satisfaction**: Important for optimization
 
-### Competitive Programming Variations
+---
 
-#### 1. **Online Judge Variations**
-- **Time Limits**: Optimize for strict constraints
-- **Memory Limits**: Space-efficient solutions
-- **Input Size**: Handle large matrices
-- **Edge Cases**: Robust matrix operations
+**This is a great introduction to Hamiltonian path queries and dynamic programming!** 🎯
+        if has_hamiltonian_path(u, v, k):
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    return results
+```
 
-#### 2. **Algorithm Contests**
-- **Speed Programming**: Fast implementation
-- **Code Golf**: Minimal code solutions
-- **Team Contests**: Collaborative problem solving
-- **Live Coding**: Real-time problem solving
+**Why this works:**
+- Uses dynamic programming with bitmasking
+- Tracks visited vertices efficiently
+- Handles all path constraints
+- O(2^n * n * m) time complexity
 
-#### 3. **Advanced Techniques**
-- **Binary Search**: On answer space
-- **Two Pointers**: Efficient matrix traversal
-- **Sliding Window**: Optimal submatrix problems
-- **Monotonic Stack/Queue**: Maintaining order
+### Step 3: Complete Solution
+**Putting it all together:**
 
-### Mathematical Extensions
+```python
+def solve_hamiltonian_path_queries_ii():
+    n, m = map(int, input().split())
+    edges = []
+    
+    for _ in range(m):
+        a, b = map(int, input().split())
+        edges.append((a, b))
+    
+    q = int(input())
+    queries = []
+    
+    for _ in range(q):
+        u, v, k = map(int, input().split())
+        queries.append((u, v, k))
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # DP with bitmask
+    def has_hamiltonian_path(start, end, length):
+        # dp[mask][pos] = can we reach pos with visited vertices in mask
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        
+        # Base case: start position
+        dp[1 << (start - 1)][start] = True
+        
+        # Try all possible masks
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                # Try all neighbors
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:  # Not visited
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        # Check if we can reach end with exactly length vertices
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    # Answer queries
+    for u, v, k in queries:
+        if has_hamiltonian_path(u, v, k):
+            print("YES")
+        else:
+            print("NO")
 
-#### 1. **Linear Algebra**
-- **Matrix Operations**: Multiplication, exponentiation
-- **Eigenvalues**: Matrix spectral properties
-- **Determinants**: Matrix determinants
-- **Inverses**: Matrix inverses
+# Main execution
+if __name__ == "__main__":
+    solve_hamiltonian_path_queries_ii()
+```
 
-#### 2. **Probability Theory**
-- **Expected Values**: Average Hamiltonian path counts
-- **Markov Chains**: State transition probabilities
-- **Random Walks**: Probabilistic graph traversal
-- **Monte Carlo**: Simulation methods
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
 
-#### 3. **Number Theory**
-- **Modular Arithmetic**: Large number handling
-- **Prime Numbers**: Special matrix cases
-- **GCD/LCM**: Mathematical properties
-- **Euler's Totient**: Counting coprime Hamiltonian paths
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
 
-### Learning Resources
+```python
+def test_solution():
+    test_cases = [
+        (4, [(1, 2), (2, 3), (3, 4), (4, 1)], [(1, 4, 3), (1, 4, 4), (2, 3, 2)]),
+        (3, [(1, 2), (2, 3)], [(1, 3, 2), (1, 3, 3)]),
+    ]
+    
+    for n, edges, queries in test_cases:
+        result = solve_test(n, edges, queries)
+        print(f"n={n}, edges={edges}, queries={queries}")
+        print(f"Result: {result}")
+        print()
 
-#### 1. **Online Platforms**
-- **LeetCode**: Matrix and graph problems
-- **Codeforces**: Competitive programming
-- **HackerRank**: Algorithm challenges
-- **AtCoder**: Japanese programming contests
+def solve_test(n, edges, queries):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    def has_hamiltonian_path(start, end, length):
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        dp[1 << (start - 1)][start] = True
+        
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    results = []
+    for u, v, k in queries:
+        if has_hamiltonian_path(u, v, k):
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    return results
 
-#### 2. **Educational Resources**
-- **CLRS**: Introduction to Algorithms
-- **CP-Algorithms**: Competitive programming algorithms
-- **GeeksforGeeks**: Algorithm tutorials
-- **TopCoder**: Algorithm tutorials
+test_solution()
+```
 
-#### 3. **Practice Problems**
-- **Matrix Problems**: Exponentiation, multiplication
-- **Graph Problems**: Hamiltonian path counting, path finding
-- **Dynamic Problems**: State transitions, caching
-- **Query Problems**: Range queries, batch processing 
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(2^n * n * m) - exponential due to bitmask
+- **Space**: O(2^n * n) - DP table size
+
+### Why This Solution Works
+- **Dynamic Programming**: Finds optimal solutions efficiently
+- **Bitmasking**: Tracks visited vertices compactly
+- **State Representation**: Efficient state management
+- **Optimal Approach**: Handles all constraints
+
+## 🎯 Key Insights
+
+### 1. **Bitmasking**
+- Compact representation of visited vertices
+- Essential for state tracking
+- Key optimization technique
+- Enables efficient DP
+
+### 2. **Hamiltonian Paths**
+- Must visit each vertex exactly once
+- Important constraint satisfaction
+- Fundamental graph theory concept
+- NP-complete problem
+
+### 3. **Dynamic Programming**
+- Optimal substructure property
+- Memoization for efficiency
+- State transitions
+- Essential for optimization
+
+## 🎯 Problem Variations
+
+### Variation 1: Weighted Hamiltonian Paths
+**Problem**: Each edge has a weight. Find Hamiltonian paths with specific total weight.
+
+```python
+def weighted_hamiltonian_path_queries(n, edges, weights, queries):
+    # Build weighted adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for i, (a, b) in enumerate(edges):
+        adj[a].append((b, weights[i]))
+        adj[b].append((a, weights[i]))
+    
+    def has_weighted_hamiltonian_path(start, end, length, target_weight):
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        weight_dp = [[float('inf')] * (n + 1) for _ in range(1 << n)]
+        
+        dp[1 << (start - 1)][start] = True
+        weight_dp[1 << (start - 1)][start] = 0
+        
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                for neighbor, weight in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:
+                        new_mask = mask | (1 << (neighbor - 1))
+                        new_weight = weight_dp[mask][pos] + weight
+                        
+                        if new_weight < weight_dp[new_mask][neighbor]:
+                            dp[new_mask][neighbor] = True
+                            weight_dp[new_mask][neighbor] = new_weight
+        
+        for mask in range(1 << n):
+            if (bin(mask).count('1') == length and 
+                dp[mask][end] and 
+                weight_dp[mask][end] == target_weight):
+                return True
+        
+        return False
+    
+    results = []
+    for u, v, k, weight in queries:
+        if has_weighted_hamiltonian_path(u, v, k, weight):
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    return results
+```
+
+### Variation 2: Directed Hamiltonian Paths
+**Problem**: Handle directed graphs with Hamiltonian path queries.
+
+```python
+def directed_hamiltonian_path_queries(n, edges, queries):
+    # Build directed adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)  # Directed edge
+    
+    def has_directed_hamiltonian_path(start, end, length):
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        dp[1 << (start - 1)][start] = True
+        
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    results = []
+    for u, v, k in queries:
+        if has_directed_hamiltonian_path(u, v, k):
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    return results
+```
+
+### Variation 3: Hamiltonian Path Count
+**Problem**: Count number of Hamiltonian paths of specific length.
+
+```python
+def hamiltonian_path_count_queries(n, edges, queries):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    def count_hamiltonian_paths(start, end, length):
+        dp = [[0] * (n + 1) for _ in range(1 << n)]
+        dp[1 << (start - 1)][start] = 1
+        
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if dp[mask][pos] == 0:
+                    continue
+                
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] += dp[mask][pos]
+        
+        total = 0
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length:
+                total += dp[mask][end]
+        
+        return total
+    
+    results = []
+    for u, v, k in queries:
+        count = count_hamiltonian_paths(u, v, k)
+        results.append(count)
+    
+    return results
+```
+
+### Variation 4: Constrained Hamiltonian Paths
+**Problem**: Find Hamiltonian paths that satisfy certain constraints.
+
+```python
+def constrained_hamiltonian_path_queries(n, edges, constraints, queries):
+    # constraints: set of forbidden vertex pairs
+    # Build adjacency list with constraints
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        if (a, b) not in constraints and (b, a) not in constraints:
+            adj[a].append(b)
+            adj[b].append(a)
+    
+    def has_constrained_hamiltonian_path(start, end, length):
+        dp = [[False] * (n + 1) for _ in range(1 << n)]
+        dp[1 << (start - 1)][start] = True
+        
+        for mask in range(1 << n):
+            for pos in range(1, n + 1):
+                if not dp[mask][pos]:
+                    continue
+                
+                for neighbor in adj[pos]:
+                    if mask & (1 << (neighbor - 1)) == 0:
+                        new_mask = mask | (1 << (neighbor - 1))
+                        dp[new_mask][neighbor] = True
+        
+        for mask in range(1 << n):
+            if bin(mask).count('1') == length and dp[mask][end]:
+                return True
+        
+        return False
+    
+    results = []
+    for u, v, k in queries:
+        if has_constrained_hamiltonian_path(u, v, k):
+            results.append("YES")
+        else:
+            results.append("NO")
+    
+    return results
+```
+
+### Variation 5: Dynamic Hamiltonian Path Queries
+**Problem**: Support adding/removing edges and answering Hamiltonian path queries.
+
+```python
+class DynamicHamiltonianPathQueries:
+    def __init__(self, n):
+        self.n = n
+        self.adj = [[] for _ in range(n + 1)]
+        self.edges = set()
+    
+    def add_edge(self, a, b):
+        if (a, b) not in self.edges and (b, a) not in self.edges:
+            self.adj[a].append(b)
+            self.adj[b].append(a)
+            self.edges.add((a, b))
+    
+    def remove_edge(self, a, b):
+        if (a, b) in self.edges:
+            self.adj[a].remove(b)
+            self.adj[b].remove(a)
+            self.edges.remove((a, b))
+        elif (b, a) in self.edges:
+            self.adj[a].remove(b)
+            self.adj[b].remove(a)
+            self.edges.remove((b, a))
+    
+    def query_hamiltonian_path(self, u, v, k):
+        def has_hamiltonian_path(start, end, length):
+            dp = [[False] * (self.n + 1) for _ in range(1 << self.n)]
+            dp[1 << (start - 1)][start] = True
+            
+            for mask in range(1 << self.n):
+                for pos in range(1, self.n + 1):
+                    if not dp[mask][pos]:
+                        continue
+                    
+                    for neighbor in self.adj[pos]:
+                        if mask & (1 << (neighbor - 1)) == 0:
+                            new_mask = mask | (1 << (neighbor - 1))
+                            dp[new_mask][neighbor] = True
+            
+            for mask in range(1 << self.n):
+                if bin(mask).count('1') == length and dp[mask][end]:
+                    return True
+            
+            return False
+        
+        return has_hamiltonian_path(u, v, k)
+```
+
+## 🔗 Related Problems
+
+- **[Hamiltonian Paths](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Path algorithms
+- **[Dynamic Programming](/cses-analyses/problem_soulutions/dynamic_programming/)**: DP algorithms
+- **[Bitmasking](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: State representation
+
+## 📚 Learning Points
+
+1. **Bitmasking**: Essential for state representation
+2. **Hamiltonian Paths**: NP-complete graph problem
+3. **Dynamic Programming**: Optimal substructure
+4. **Constraint Satisfaction**: Handling path constraints
+
+---
+
+**This is a great introduction to Hamiltonian path queries and bitmasking!** 🎯 
