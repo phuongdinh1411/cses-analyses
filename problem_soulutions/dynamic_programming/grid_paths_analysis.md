@@ -7,22 +7,17 @@ permalink: /problem_soulutions/dynamic_programming/grid_paths_analysis
 
 # Grid Paths
 
-## Problem Statement
-Consider an n×n grid whose squares may have traps. It is not allowed to move to a square with a trap.
+## Problem Description
 
-Your task is to calculate the number of paths from the upper-left square to the lower-right square. You can only move right or down.
+**Problem**: Consider an n×n grid whose squares may have traps. It is not allowed to move to a square with a trap. Your task is to calculate the number of paths from the upper-left square to the lower-right square. You can only move right or down.
 
-### Input
-The first input line has an integer n: the size of the grid.
-After this, there are n lines that describe the grid. Each line has n characters: "." denotes an empty cell, and "*" denotes a trap.
+**Input**: 
+- n: size of the grid
+- grid: n×n grid where "." denotes an empty cell and "*" denotes a trap
 
-### Output
-Print the number of paths modulo 10^9+7.
+**Output**: Number of paths from (0,0) to (n-1,n-1) modulo 10^9+7.
 
-### Constraints
-- 1 ≤ n ≤ 1000
-
-### Example
+**Example**:
 ```
 Input:
 4
@@ -33,6 +28,12 @@ Input:
 
 Output:
 3
+
+Explanation: 
+There are 3 valid paths from (0,0) to (3,3):
+1. Right → Right → Down → Down
+2. Right → Down → Right → Down  
+3. Down → Right → Right → Down
 ```
 
 ## Solution Progression
@@ -90,7 +91,7 @@ def grid_paths_memoization(n, grid):
 
 **Why this improvement works**: By storing the results of subproblems in a memo dictionary, we avoid recalculating the same values multiple times. Each subproblem is solved only once, leading to O(n²) complexity.
 
-### Improvement 2: Bottom-Up Dynamic Programming - O(n²)
+### Step 2: Dynamic Programming Approach
 **Description**: Use iterative DP to build the solution from smaller subproblems.
 
 ```python
@@ -98,6 +99,374 @@ def grid_paths_dp(n, grid):
     MOD = 10**9 + 7
     
     # dp[i][j] = number of paths from (0,0) to (i,j)
+    dp = [[0] * n for _ in range(n)]
+    
+    # Base case: starting position
+    if grid[0][0] != '*':
+        dp[0][0] = 1
+    
+    # Fill first row
+    for j in range(1, n):
+        if grid[0][j] != '*':
+            dp[0][j] = dp[0][j-1]
+    
+    # Fill first column
+    for i in range(1, n):
+        if grid[i][0] != '*':
+            dp[i][0] = dp[i-1][0]
+    
+    # Fill rest of the grid
+    for i in range(1, n):
+        for j in range(1, n):
+            if grid[i][j] != '*':
+                dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD
+    
+    return dp[n-1][n-1]
+```
+
+### Step 3: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_grid_paths():
+    n = int(input())
+    grid = []
+    for _ in range(n):
+        grid.append(input().strip())
+    
+    MOD = 10**9 + 7
+    
+    # dp[i][j] = number of paths from (0,0) to (i,j)
+    dp = [[0] * n for _ in range(n)]
+    
+    # Base case: starting position
+    if grid[0][0] != '*':
+        dp[0][0] = 1
+    
+    # Fill first row
+    for j in range(1, n):
+        if grid[0][j] != '*':
+            dp[0][j] = dp[0][j-1]
+    
+    # Fill first column
+    for i in range(1, n):
+        if grid[i][0] != '*':
+            dp[i][0] = dp[i-1][0]
+    
+    # Fill rest of the grid
+    for i in range(1, n):
+        for j in range(1, n):
+            if grid[i][j] != '*':
+                dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD
+    
+    print(dp[n-1][n-1])
+
+# Main execution
+if __name__ == "__main__":
+    solve_grid_paths()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (4, ["....", ".*..", "...*", "*..."], 3),
+        (2, ["..", ".."], 2),
+        (3, ["...", "...", "..."], 6),
+        (2, ["..", ".*"], 1),
+        (2, ["*.", ".."], 0),
+    ]
+    
+    for n, grid, expected in test_cases:
+        result = solve_test(n, grid)
+        print(f"n={n}, grid={grid}, expected={expected}, result={result}")
+        assert result == expected, f"Failed for n={n}, grid={grid}"
+        print("✓ Passed")
+        print()
+
+def solve_test(n, grid):
+    MOD = 10**9 + 7
+    
+    # dp[i][j] = number of paths from (0,0) to (i,j)
+    dp = [[0] * n for _ in range(n)]
+    
+    # Base case: starting position
+    if grid[0][0] != '*':
+        dp[0][0] = 1
+    
+    # Fill first row
+    for j in range(1, n):
+        if grid[0][j] != '*':
+            dp[0][j] = dp[0][j-1]
+    
+    # Fill first column
+    for i in range(1, n):
+        if grid[i][0] != '*':
+            dp[i][0] = dp[i-1][0]
+    
+    # Fill rest of the grid
+    for i in range(1, n):
+        for j in range(1, n):
+            if grid[i][j] != '*':
+                dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD
+    
+    return dp[n-1][n-1]
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n²) - we fill a 2D DP table
+- **Space**: O(n²) - we store the entire DP table
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes path counts using optimal substructure
+- **State Transition**: dp[i][j] = dp[i-1][j] + dp[i][j-1] for valid cells
+- **Base Case**: dp[0][0] = 1 if starting cell is valid
+- **Optimal Substructure**: Optimal solution can be built from smaller subproblems
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for Grid Problems**
+- Find optimal substructure in grid problems
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **2D DP Table**
+- Use 2D table for grid positions
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Path Counting**
+- Count paths in geometric structures
+- Important for understanding
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Grid Paths with Different Movement Rules
+**Problem**: Allow diagonal movement or more directions.
+
+```python
+def grid_paths_with_diagonals(n, grid):
+    MOD = 10**9 + 7
+    
+    # dp[i][j] = number of paths from (0,0) to (i,j)
+    dp = [[0] * n for _ in range(n)]
+    
+    # Base case: starting position
+    if grid[0][0] != '*':
+        dp[0][0] = 1
+    
+    # Fill first row
+    for j in range(1, n):
+        if grid[0][j] != '*':
+            dp[0][j] = dp[0][j-1]
+    
+    # Fill first column
+    for i in range(1, n):
+        if grid[i][0] != '*':
+            dp[i][0] = dp[i-1][0]
+    
+    # Fill rest of the grid
+    for i in range(1, n):
+        for j in range(1, n):
+            if grid[i][j] != '*':
+                dp[i][j] = (dp[i-1][j] + dp[i][j-1] + dp[i-1][j-1]) % MOD
+    
+    return dp[n-1][n-1]
+
+# Example usage
+grid = ["....", ".*..", "...*", "*..."]
+result = grid_paths_with_diagonals(4, grid)
+print(f"Grid paths with diagonals: {result}")
+```
+
+### Variation 2: Grid Paths with Cost Minimization
+**Problem**: Find the minimum cost path.
+
+```python
+def grid_paths_with_costs(n, grid, costs):
+    # costs[i][j] = cost to move to cell (i,j)
+    
+    # dp[i][j] = minimum cost to reach (i,j)
+    dp = [[float('inf')] * n for _ in range(n)]
+    
+    # Base case: starting position
+    if grid[0][0] != '*':
+        dp[0][0] = costs[0][0]
+    
+    # Fill first row
+    for j in range(1, n):
+        if grid[0][j] != '*':
+            dp[0][j] = dp[0][j-1] + costs[0][j]
+    
+    # Fill first column
+    for i in range(1, n):
+        if grid[i][0] != '*':
+            dp[i][0] = dp[i-1][0] + costs[i][0]
+    
+    # Fill rest of the grid
+    for i in range(1, n):
+        for j in range(1, n):
+            if grid[i][j] != '*':
+                dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + costs[i][j]
+    
+    return dp[n-1][n-1] if dp[n-1][n-1] != float('inf') else -1
+
+# Example usage
+costs = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]
+result = grid_paths_with_costs(4, ["....", ".*..", "...*", "*..."], costs)
+print(f"Minimum cost path: {result}")
+```
+
+### Variation 3: Grid Paths with Multiple Destinations
+**Problem**: Find paths to multiple destination points.
+
+```python
+def grid_paths_multiple_destinations(n, grid, destinations):
+    MOD = 10**9 + 7
+    
+    # dp[i][j] = number of paths from (0,0) to (i,j)
+    dp = [[0] * n for _ in range(n)]
+    
+    # Base case: starting position
+    if grid[0][0] != '*':
+        dp[0][0] = 1
+    
+    # Fill first row
+    for j in range(1, n):
+        if grid[0][j] != '*':
+            dp[0][j] = dp[0][j-1]
+    
+    # Fill first column
+    for i in range(1, n):
+        if grid[i][0] != '*':
+            dp[i][0] = dp[i-1][0]
+    
+    # Fill rest of the grid
+    for i in range(1, n):
+        for j in range(1, n):
+            if grid[i][j] != '*':
+                dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD
+    
+    # Return paths to all destinations
+    results = []
+    for dest in destinations:
+        results.append(dp[dest[0]][dest[1]])
+    
+    return results
+
+# Example usage
+destinations = [(1, 1), (2, 2), (3, 3)]
+result = grid_paths_multiple_destinations(4, ["....", ".*..", "...*", "*..."], destinations)
+print(f"Paths to multiple destinations: {result}")
+```
+
+### Variation 4: Grid Paths with Constraints
+**Problem**: Add constraints like maximum steps or specific patterns.
+
+```python
+def grid_paths_with_step_limit(n, grid, max_steps):
+    MOD = 10**9 + 7
+    
+    # dp[i][j][k] = number of paths from (0,0) to (i,j) in exactly k steps
+    dp = [[[0] * (max_steps + 1) for _ in range(n)] for _ in range(n)]
+    
+    # Base case: starting position
+    if grid[0][0] != '*':
+        dp[0][0][0] = 1
+    
+    # Fill DP table
+    for step in range(max_steps):
+        for i in range(n):
+            for j in range(n):
+                if grid[i][j] != '*' and dp[i][j][step] > 0:
+                    # Move right
+                    if j + 1 < n and grid[i][j+1] != '*':
+                        dp[i][j+1][step+1] = (dp[i][j+1][step+1] + dp[i][j][step]) % MOD
+                    # Move down
+                    if i + 1 < n and grid[i+1][j] != '*':
+                        dp[i+1][j][step+1] = (dp[i+1][j][step+1] + dp[i][j][step]) % MOD
+    
+    return dp[n-1][n-1][max_steps]
+
+# Example usage
+result = grid_paths_with_step_limit(4, ["....", ".*..", "...*", "*..."], 6)
+print(f"Grid paths with step limit: {result}")
+```
+
+### Variation 5: Grid Paths with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
+```python
+def optimized_grid_paths(n, grid):
+    MOD = 10**9 + 7
+    
+    # Use 1D DP array to save space
+    dp = [0] * n
+    
+    # Base case: first row
+    if grid[0][0] != '*':
+        dp[0] = 1
+    
+    for j in range(1, n):
+        if grid[0][j] != '*':
+            dp[j] = dp[j-1]
+        else:
+            dp[j] = 0
+    
+    # Fill rest of the grid
+    for i in range(1, n):
+        new_dp = [0] * n
+        
+        # First column
+        if grid[i][0] != '*':
+            new_dp[0] = dp[0]
+        
+        # Rest of the row
+        for j in range(1, n):
+            if grid[i][j] != '*':
+                new_dp[j] = (dp[j] + new_dp[j-1]) % MOD
+        
+        dp = new_dp
+    
+    return dp[n-1]
+
+# Example usage
+result = optimized_grid_paths(4, ["....", ".*..", "...*", "*..."])
+print(f"Optimized grid paths: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Dynamic Programming Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar DP problems
+- **[Grid Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar grid problems
+- **[Path Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: General path problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming**: Essential for grid path problems
+2. **2D DP Tables**: Important for grid positions
+3. **Path Counting**: Important for understanding geometric paths
+4. **Space Optimization**: Important for performance improvement
+
+---
+
+**This is a great introduction to dynamic programming for grid path problems!** 🎯
     dp = [[0] * n for _ in range(n)]
     
     # Base case: starting position
