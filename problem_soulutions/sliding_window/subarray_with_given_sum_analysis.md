@@ -1,27 +1,24 @@
 ---
 layout: simple
-title: "Subarray with Given Sum"
+title: "Subarray with Given Sum Analysis"
 permalink: /problem_soulutions/sliding_window/subarray_with_given_sum_analysis
 ---
 
 
-# Subarray with Given Sum
+# Subarray with Given Sum Analysis
 
-## Problem Statement
-Given an array of n integers and a target sum x, your task is to find if there exists a subarray with sum x.
+## Problem Description
 
-### Input
-The first input line has two integers n and x: the size of the array and the target sum.
-The second line has n integers a1,a2,…,an: the contents of the array.
+**Problem**: Given an array of n integers and a target sum x, find if there exists a subarray with sum x.
 
-### Output
-Print "YES" if there exists a subarray with sum x, otherwise print "NO".
+**Input**: 
+- n: the size of the array
+- x: the target sum
+- arr: array of n integers
 
-### Constraints
-- 1 ≤ n ≤ 2⋅10^5
-- −10^9 ≤ x,ai ≤ 10^9
+**Output**: "YES" if there exists a subarray with sum x, otherwise "NO".
 
-### Example
+**Example**:
 ```
 Input:
 5 7
@@ -29,12 +26,29 @@ Input:
 
 Output:
 YES
+
+Explanation: 
+The subarray [2, -1, 3, 5, -2] has sum 7.
+We can verify: 2 + (-1) + 3 + 5 + (-2) = 7.
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Check All Subarrays - O(n²)
-**Description**: Check all possible subarrays to find one with sum x.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find if any subarray sums to a target value x
+- Handle both positive and negative numbers
+- Use efficient algorithms to avoid brute force
+- Consider edge cases like empty subarray
+
+**Key Observations:**
+- Subarrays can have any length from 1 to n
+- Need to track cumulative sums efficiently
+- Hash set can help find target sums quickly
+- Sliding window works for positive numbers only
+
+### Step 2: Brute Force Approach
+**Idea**: Check all possible subarrays to find one with sum x.
 
 ```python
 def subarray_with_sum_naive(n, x, arr):
@@ -47,10 +61,14 @@ def subarray_with_sum_naive(n, x, arr):
     return False
 ```
 
-**Why this is inefficient**: Quadratic time complexity for large arrays.
+**Why this is inefficient:**
+- Time complexity: O(n²)
+- Lots of redundant calculations
+- Not scalable for large inputs
+- Inefficient sum calculation
 
-### Improvement 1: Prefix Sum with Hash Set - O(n)
-**Description**: Use prefix sum and hash set to find subarray with target sum.
+### Step 3: Optimization with Prefix Sum and Hash Set
+**Idea**: Use prefix sum and hash set to find subarray with target sum.
 
 ```python
 def subarray_with_sum_prefix_sum(n, x, arr):
@@ -70,10 +88,14 @@ def subarray_with_sum_prefix_sum(n, x, arr):
     return False
 ```
 
-**Why this improvement works**: Prefix sum allows us to find subarrays with target sum in constant time using hash set.
+**Why this improvement works:**
+- Time complexity: O(n)
+- Prefix sum allows constant time subarray sum calculation
+- Hash set tracks previous prefix sums efficiently
+- Handles both positive and negative numbers
 
-### Alternative: Sliding Window (for positive numbers) - O(n)
-**Description**: Use sliding window technique for arrays with positive numbers.
+### Step 4: Alternative Approach with Sliding Window
+**Idea**: Use sliding window technique for arrays with positive numbers.
 
 ```python
 def subarray_with_sum_sliding_window(n, x, arr):
@@ -94,9 +116,50 @@ def subarray_with_sum_sliding_window(n, x, arr):
     return False
 ```
 
-**Why this works**: Sliding window efficiently finds subarrays with target sum for positive numbers.
+**Why this works:**
+- Sliding window efficiently maintains valid sum
+- Time complexity: O(n)
+- Good for positive number arrays
+- Limited applicability but very efficient
 
-## Final Optimal Solution
+### Step 5: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_subarray_with_given_sum():
+    n, x = map(int, input().split())
+    arr = list(map(int, input().split()))
+    
+    result = check_subarray_with_sum(n, x, arr)
+    print(result)
+
+def check_subarray_with_sum(n, x, arr):
+    """Check if there exists a subarray with sum x using prefix sum and hash set"""
+    prefix_sum = 0
+    seen_sums = set()
+    seen_sums.add(0)  # Empty subarray has sum 0
+    
+    for num in arr:
+        prefix_sum += num
+        
+        # If we have seen (prefix_sum - x) before, we found a subarray with sum x
+        if prefix_sum - x in seen_sums:
+            return "YES"
+        
+        seen_sums.add(prefix_sum)
+    
+    return "NO"
+
+# Main execution
+if __name__ == "__main__":
+    solve_subarray_with_given_sum()
+```
+
+**Why this works:**
+- Optimal prefix sum + hash set algorithm approach
+- Handles all edge cases correctly
+- Efficient sum calculation
+- Clear and readable code
 
 ```python
 n, x = map(int, input().split())
@@ -122,83 +185,255 @@ result = subarray_with_sum_prefix_sum(n, x, arr)
 print("YES" if result else "NO")
 ```
 
-## Complexity Analysis
+### Step 6: Testing Our Solution
+**Let's verify with examples:**
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Naive | O(n²) | O(1) | Check all subarrays |
-| Prefix Sum | O(n) | O(n) | Use hash set for prefix sums |
-| Sliding Window | O(n) | O(1) | For positive numbers only |
-
-## Key Insights for Other Problems
-
-### 1. **Subarray Existence Problems**
-**Principle**: Use prefix sum and hash set to efficiently check for subarray existence.
-**Applicable to**:
-- Subarray existence problems
-- Subarray sum problems
-- Hash set applications
-- Algorithm design
-
-**Example Problems**:
-- Subarray existence problems
-- Subarray sum problems
-- Hash set applications
-- Algorithm design
-
-### 2. **Prefix Sum Technique**
-**Principle**: Use prefix sum to convert range queries to point queries.
-**Applicable to**:
-- Range sum problems
-- Subarray problems
-- Cumulative sum problems
-- Algorithm design
-
-**Example Problems**:
-- Range sum problems
-- Subarray problems
-- Cumulative sum problems
-- Algorithm design
-
-### 3. **Hash Set for Existence**
-**Principle**: Use hash set to efficiently check for existence of prefix sums.
-**Applicable to**:
-- Existence checking
-- Hash set applications
-- Algorithm design
-- Problem solving
-
-**Example Problems**:
-- Existence checking
-- Hash set applications
-- Algorithm design
-- Problem solving
-
-### 4. **Sliding Window Applications**
-**Principle**: Use sliding window for problems involving contiguous subarrays with constraints.
-**Applicable to**:
-- Contiguous subarray problems
-- Two pointer problems
-- Window-based problems
-- Algorithm design
-
-**Example Problems**:
-- Contiguous subarray problems
-- Two pointer problems
-- Window-based problems
-- Algorithm design
-
-## Notable Techniques
-
-### 1. **Prefix Sum with Hash Set Pattern**
 ```python
-def check_subarray_exists(arr, target):
+def test_solution():
+    test_cases = [
+        ((5, 7, [2, -1, 3, 5, -2]), "YES"),
+        ((4, 6, [1, 2, 3, 4]), "YES"),
+        ((3, 10, [1, 2, 3]), "NO"),
+        ((2, 5, [1, 4]), "YES"),
+        ((1, 1, [1]), "YES"),
+        ((3, 0, [1, -1, 0]), "YES"),
+    ]
+    
+    for (n, x, arr), expected in test_cases:
+        result = check_subarray_with_sum(n, x, arr)
+        print(f"n={n}, x={x}, arr={arr}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def check_subarray_with_sum(n, x, arr):
     prefix_sum = 0
     seen_sums = set()
     seen_sums.add(0)
     
     for num in arr:
         prefix_sum += num
+        
+        if prefix_sum - x in seen_sums:
+            return "YES"
+        
+        seen_sums.add(prefix_sum)
+    
+    return "NO"
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n) - single pass through the array with prefix sum
+- **Space**: O(n) - hash set to store prefix sums
+
+### Why This Solution Works
+- **Prefix Sum**: Efficiently calculates subarray sums
+- **Hash Set**: Tracks previous prefix sums for existence checking
+- **Optimal Algorithm**: Best known approach for this problem
+- **Edge Case Handling**: Properly handles empty subarray case
+
+## 🎯 Key Insights
+
+### 1. **Prefix Sum Technique**
+- Convert range queries to point queries
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **Hash Set for Existence**
+- Track previous prefix sums efficiently
+- Important for understanding
+- Simple but important concept
+- Essential for algorithm
+
+### 3. **Subarray Sum Calculation**
+- Use prefix sum difference for subarray sums
+- Important for understanding
+- Fundamental concept
+- Essential for optimization
+
+## 🎯 Problem Variations
+
+### Variation 1: Subarray with Sum in Range
+**Problem**: Check if there exists a subarray with sum in range [L, R].
+
+```python
+def check_subarray_with_sum_in_range(n, L, R, arr):
+    prefix_sum = 0
+    seen_sums = set()
+    seen_sums.add(0)
+    
+    for num in arr:
+        prefix_sum += num
+        
+        # Check if any previous prefix sum gives us a sum in [L, R]
+        for prev_sum in seen_sums:
+            current_sum = prefix_sum - prev_sum
+            if L <= current_sum <= R:
+                return "YES"
+        
+        seen_sums.add(prefix_sum)
+    
+    return "NO"
+
+# Example usage
+result = check_subarray_with_sum_in_range(5, 5, 10, [2, -1, 3, 5, -2])
+print(f"Subarray with sum in [5, 10]: {result}")
+```
+
+### Variation 2: Subarray with Even Sum
+**Problem**: Check if there exists a subarray with even sum.
+
+```python
+def check_subarray_with_even_sum(n, arr):
+    prefix_sum = 0
+    even_seen = set()
+    odd_seen = set()
+    even_seen.add(0)
+    
+    for num in arr:
+        prefix_sum += num
+        
+        if prefix_sum % 2 == 0:
+            # Even sum, look for previous even prefix sum
+            if prefix_sum in even_seen:
+                return "YES"
+            even_seen.add(prefix_sum)
+        else:
+            # Odd sum, look for previous odd prefix sum
+            if prefix_sum in odd_seen:
+                return "YES"
+            odd_seen.add(prefix_sum)
+    
+    return "NO"
+
+# Example usage
+result = check_subarray_with_even_sum(5, [2, -1, 3, 5, -2])
+print(f"Subarray with even sum: {result}")
+```
+
+### Variation 3: Subarray with Sum and Length Constraints
+**Problem**: Check if there exists a subarray with sum x and length at least k.
+
+```python
+def check_subarray_with_sum_and_length(n, x, k, arr):
+    prefix_sum = 0
+    seen_sums = {}  # Map prefix sum to earliest index
+    seen_sums[0] = -1
+    
+    for i, num in enumerate(arr):
+        prefix_sum += num
+        
+        if prefix_sum - x in seen_sums:
+            length = i - seen_sums[prefix_sum - x]
+            if length >= k:
+                return "YES"
+        
+        if prefix_sum not in seen_sums:
+            seen_sums[prefix_sum] = i
+    
+    return "NO"
+
+# Example usage
+result = check_subarray_with_sum_and_length(5, 7, 2, [2, -1, 3, 5, -2])
+print(f"Subarray with sum 7 and length >= 2: {result}")
+```
+
+### Variation 4: Subarray with Sum and Character Constraints
+**Problem**: Check if there exists a subarray with sum x where no two adjacent elements are negative.
+
+```python
+def check_subarray_with_sum_and_constraints(n, x, arr):
+    prefix_sum = 0
+    seen_sums = set()
+    seen_sums.add(0)
+    last_negative = -1
+    
+    for i, num in enumerate(arr):
+        prefix_sum += num
+        
+        # Check constraint: no two adjacent negative elements
+        if num < 0:
+            if last_negative == i - 1:
+                # Two consecutive negative numbers, reset
+                seen_sums.clear()
+                seen_sums.add(0)
+                prefix_sum = num
+            last_negative = i
+        
+        if prefix_sum - x in seen_sums:
+            return "YES"
+        
+        seen_sums.add(prefix_sum)
+    
+    return "NO"
+
+# Example usage
+result = check_subarray_with_sum_and_constraints(5, 7, [2, -1, 3, 5, -2])
+print(f"Subarray with sum 7 and constraints: {result}")
+```
+
+### Variation 5: Subarray with Sum and Range Queries
+**Problem**: Answer queries about subarray existence with sum x in specific ranges.
+
+```python
+def subarray_sum_existence_queries(n, x, arr, queries):
+    """Answer subarray existence queries for specific ranges"""
+    results = []
+    
+    for start, end in queries:
+        if start > end or start < 0 or end >= n:
+            results.append("NO")
+        else:
+            # Extract subarray for this range
+            subarray = arr[start:end + 1]
+            exists = check_subarray_with_sum_in_range(len(subarray), x, subarray)
+            results.append(exists)
+    
+    return results
+
+def check_subarray_with_sum_in_range(n, x, arr):
+    """Check if there exists a subarray with sum x in a specific range"""
+    prefix_sum = 0
+    seen_sums = set()
+    seen_sums.add(0)
+    
+    for num in arr:
+        prefix_sum += num
+        
+        if prefix_sum - x in seen_sums:
+            return "YES"
+        
+        seen_sums.add(prefix_sum)
+    
+    return "NO"
+
+# Example usage
+queries = [(0, 4), (1, 3), (2, 4)]
+result = subarray_sum_existence_queries(5, 7, [2, -1, 3, 5, -2], queries)
+print(f"Range query results: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Longest Subarray with Sum](/cses-analyses/problem_soulutions/sliding_window/)**: Longest subarray problems
+- **[Shortest Subarray with Sum](/cses-analyses/problem_soulutions/sliding_window/)**: Shortest subarray problems
+- **[Fixed Length Subarray Sum](/cses-analyses/problem_soulutions/sliding_window/)**: Fixed-size subarray problems
+
+## 📚 Learning Points
+
+1. **Prefix Sum Technique**: Essential for subarray sum problems
+2. **Hash Set for Existence**: Important for efficient existence checking
+3. **Subarray Sum Calculation**: Key for understanding prefix sum differences
+4. **Edge Case Handling**: Important for robust solutions
+
+---
+
+**This is a great introduction to subarray existence problems!** 🎯
         
         if prefix_sum - target in seen_sums:
             return True

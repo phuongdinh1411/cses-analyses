@@ -1,27 +1,24 @@
 ---
 layout: simple
-title: "Longest Subarray with Sum"
+title: "Longest Subarray with Sum Analysis"
 permalink: /problem_soulutions/sliding_window/longest_subarray_with_sum_analysis
 ---
 
 
-# Longest Subarray with Sum
+# Longest Subarray with Sum Analysis
 
-## Problem Statement
-Given an array of n integers, your task is to find the length of the longest subarray with sum x.
+## Problem Description
 
-### Input
-The first input line has two integers n and x: the size of the array and the required sum.
-The second line has n integers a1,a2,…,an: the contents of the array.
+**Problem**: Given an array of n integers, find the length of the longest subarray with sum x.
 
-### Output
-Print one integer: the length of the longest subarray with sum x, or -1 if no such subarray exists.
+**Input**: 
+- n: the size of the array
+- x: the required sum
+- arr: array of n integers
 
-### Constraints
-- 1 ≤ n ≤ 2⋅10^5
-- −10^9 ≤ x,ai ≤ 10^9
+**Output**: The length of the longest subarray with sum x, or -1 if no such subarray exists.
 
-### Example
+**Example**:
 ```
 Input:
 5 7
@@ -29,12 +26,29 @@ Input:
 
 Output:
 3
+
+Explanation: 
+The subarray [2, -1, 3, 5, -2] has sum 7 and length 3.
+Other subarrays with sum 7 may exist but this is the longest.
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Check All Subarrays - O(n²)
-**Description**: Check all possible subarrays to find the longest one with sum x.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find the longest subarray that sums to a target value x
+- Handle both positive and negative numbers
+- Use efficient algorithms to avoid brute force
+- Consider edge cases like no valid subarray
+
+**Key Observations:**
+- Subarrays can have any length from 1 to n
+- Need to track cumulative sums efficiently
+- Hash map can help find target sums quickly
+- Sliding window works for positive numbers only
+
+### Step 2: Brute Force Approach
+**Idea**: Check all possible subarrays to find the longest one with sum x.
 
 ```python
 def longest_subarray_naive(n, x, arr):
@@ -50,10 +64,14 @@ def longest_subarray_naive(n, x, arr):
     return max_length
 ```
 
-**Why this is inefficient**: Quadratic time complexity for large arrays.
+**Why this is inefficient:**
+- Time complexity: O(n²)
+- Lots of redundant calculations
+- Not scalable for large inputs
+- Inefficient sum calculation
 
-### Improvement 1: Prefix Sum with Hash Map - O(n)
-**Description**: Use prefix sum and hash map to find the longest subarray with target sum.
+### Step 3: Optimization with Prefix Sum and Hash Map
+**Idea**: Use prefix sum and hash map to find the longest subarray with target sum.
 
 ```python
 def longest_subarray_prefix_sum(n, x, arr):
@@ -78,10 +96,14 @@ def longest_subarray_prefix_sum(n, x, arr):
     return max_length
 ```
 
-**Why this improvement works**: Prefix sum allows us to find subarrays with target sum in constant time using hash map.
+**Why this improvement works:**
+- Time complexity: O(n)
+- Prefix sum allows constant time subarray sum calculation
+- Hash map tracks previous prefix sums efficiently
+- Handles both positive and negative numbers
 
-### Alternative: Sliding Window (for positive numbers) - O(n)
-**Description**: Use sliding window technique for arrays with positive numbers.
+### Step 4: Alternative Approach with Sliding Window
+**Idea**: Use sliding window technique for arrays with positive numbers.
 
 ```python
 def longest_subarray_sliding_window(n, x, arr):
@@ -103,15 +125,25 @@ def longest_subarray_sliding_window(n, x, arr):
     return max_length
 ```
 
-**Why this works**: Sliding window efficiently finds the longest subarray with target sum for positive numbers.
+**Why this works:**
+- Sliding window efficiently maintains valid sum
+- Time complexity: O(n)
+- Good for positive number arrays
+- Limited applicability but very efficient
 
-## Final Optimal Solution
+### Step 5: Complete Solution
+**Putting it all together:**
 
 ```python
-n, x = map(int, input().split())
-arr = list(map(int, input().split()))
+def solve_longest_subarray_with_sum():
+    n, x = map(int, input().split())
+    arr = list(map(int, input().split()))
+    
+    result = find_longest_subarray_with_sum(n, x, arr)
+    print(result)
 
-def longest_subarray_prefix_sum(n, x, arr):
+def find_longest_subarray_with_sum(n, x, arr):
+    """Find length of longest subarray with sum x using prefix sum and hash map"""
     from collections import defaultdict
     
     prefix_sum = 0
@@ -133,81 +165,282 @@ def longest_subarray_prefix_sum(n, x, arr):
     
     return max_length
 
-result = longest_subarray_prefix_sum(n, x, arr)
-print(result)
+# Main execution
+if __name__ == "__main__":
+    solve_longest_subarray_with_sum()
 ```
 
-## Complexity Analysis
+**Why this works:**
+- Optimal prefix sum + hash map algorithm approach
+- Handles all edge cases correctly
+- Efficient sum calculation
+- Clear and readable code
+            max_length = max(max_length, right - left + 1)
+    
+    return max_length
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Naive | O(n²) | O(1) | Check all subarrays |
-| Prefix Sum | O(n) | O(n) | Use hash map for prefix sums |
-| Sliding Window | O(n) | O(1) | For positive numbers only |
+### Step 6: Testing Our Solution
+**Let's verify with examples:**
 
-## Key Insights for Other Problems
-
-### 1. **Longest Subarray Problems**
-**Principle**: Use prefix sum and hash map to efficiently find the longest subarray with target sum.
-**Applicable to**:
-- Longest subarray problems
-- Subarray sum problems
-- Hash map applications
-- Algorithm design
-
-**Example Problems**:
-- Longest subarray problems
-- Subarray sum problems
-- Hash map applications
-- Algorithm design
-
-### 2. **Prefix Sum Technique**
-**Principle**: Use prefix sum to convert range queries to point queries.
-**Applicable to**:
-- Range sum problems
-- Subarray problems
-- Cumulative sum problems
-- Algorithm design
-
-**Example Problems**:
-- Range sum problems
-- Subarray problems
-- Cumulative sum problems
-- Algorithm design
-
-### 3. **Hash Map for Index Tracking**
-**Principle**: Use hash map to track the first occurrence of each prefix sum for longest subarray.
-**Applicable to**:
-- Index tracking
-- Hash map applications
-- Algorithm design
-- Problem solving
-
-**Example Problems**:
-- Index tracking
-- Hash map applications
-- Algorithm design
-- Problem solving
-
-### 4. **Sliding Window Applications**
-**Principle**: Use sliding window for problems involving contiguous subarrays with constraints.
-**Applicable to**:
-- Contiguous subarray problems
-- Two pointer problems
-- Window-based problems
-- Algorithm design
-
-**Example Problems**:
-- Contiguous subarray problems
-- Two pointer problems
-- Window-based problems
-- Algorithm design
-
-## Notable Techniques
-
-### 1. **Prefix Sum with Hash Map Pattern**
 ```python
-def find_longest_subarray_with_sum(arr, target):
+def test_solution():
+    test_cases = [
+        ((5, 7, [2, -1, 3, 5, -2]), 3),
+        ((4, 6, [1, 2, 3, 4]), 2),
+        ((3, 0, [1, -1, 0]), 3),
+        ((2, 5, [1, 4]), 2),
+        ((1, 1, [1]), 1),
+    ]
+    
+    for (n, x, arr), expected in test_cases:
+        result = find_longest_subarray_with_sum(n, x, arr)
+        print(f"n={n}, x={x}, arr={arr}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def find_longest_subarray_with_sum(n, x, arr):
+    from collections import defaultdict
+    
+    prefix_sum = 0
+    max_length = -1
+    sum_indices = defaultdict(int)
+    sum_indices[0] = -1
+    
+    for i in range(n):
+        prefix_sum += arr[i]
+        
+        if prefix_sum - x in sum_indices:
+            length = i - sum_indices[prefix_sum - x]
+            max_length = max(max_length, length)
+        
+        if prefix_sum not in sum_indices:
+            sum_indices[prefix_sum] = i
+    
+    return max_length
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n) - single pass through the array with prefix sum
+- **Space**: O(n) - hash map to store prefix sum indices
+
+### Why This Solution Works
+- **Prefix Sum**: Efficiently calculates subarray sums
+- **Hash Map**: Tracks first occurrence of each prefix sum
+- **Optimal Algorithm**: Best known approach for this problem
+- **Edge Case Handling**: Properly handles no valid subarray case
+
+## 🎯 Key Insights
+
+### 1. **Prefix Sum Technique**
+- Convert range queries to point queries
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **Hash Map for Index Tracking**
+- Track first occurrence of each prefix sum
+- Important for understanding
+- Simple but important concept
+- Essential for algorithm
+
+### 3. **Longest Subarray Optimization**
+- Only update hash map for first occurrence
+- Important for understanding
+- Fundamental concept
+- Essential for optimization
+
+## 🎯 Problem Variations
+
+### Variation 1: Longest Subarray with Sum at Most K
+**Problem**: Find longest subarray with sum at most k.
+
+```python
+def find_longest_subarray_with_sum_at_most_k(n, k, arr):
+    from collections import defaultdict
+    
+    prefix_sum = 0
+    max_length = 0
+    sum_indices = defaultdict(int)
+    sum_indices[0] = -1
+    
+    for i in range(n):
+        prefix_sum += arr[i]
+        
+        # Find the smallest prefix sum >= (prefix_sum - k)
+        target = prefix_sum - k
+        for prev_sum, prev_idx in sum_indices.items():
+            if prev_sum >= target:
+                length = i - prev_idx
+                max_length = max(max_length, length)
+        
+        if prefix_sum not in sum_indices:
+            sum_indices[prefix_sum] = i
+    
+    return max_length
+
+# Example usage
+result = find_longest_subarray_with_sum_at_most_k(5, 7, [2, -1, 3, 5, -2])
+print(f"Longest subarray with sum at most 7: {result}")
+```
+
+### Variation 2: Longest Subarray with Sum in Range
+**Problem**: Find longest subarray with sum in range [L, R].
+
+```python
+def find_longest_subarray_with_sum_in_range(n, L, R, arr):
+    from collections import defaultdict
+    
+    prefix_sum = 0
+    max_length = 0
+    sum_indices = defaultdict(int)
+    sum_indices[0] = -1
+    
+    for i in range(n):
+        prefix_sum += arr[i]
+        
+        # Check if any previous prefix sum gives us a sum in [L, R]
+        for prev_sum, prev_idx in sum_indices.items():
+            current_sum = prefix_sum - prev_sum
+            if L <= current_sum <= R:
+                length = i - prev_idx
+                max_length = max(max_length, length)
+        
+        if prefix_sum not in sum_indices:
+            sum_indices[prefix_sum] = i
+    
+    return max_length
+
+# Example usage
+result = find_longest_subarray_with_sum_in_range(5, 5, 10, [2, -1, 3, 5, -2])
+print(f"Longest subarray with sum in [5, 10]: {result}")
+```
+
+### Variation 3: Longest Subarray with Even Sum
+**Problem**: Find longest subarray with even sum.
+
+```python
+def find_longest_subarray_with_even_sum(n, arr):
+    from collections import defaultdict
+    
+    prefix_sum = 0
+    max_length = 0
+    even_indices = defaultdict(int)
+    odd_indices = defaultdict(int)
+    even_indices[0] = -1
+    
+    for i in range(n):
+        prefix_sum += arr[i]
+        
+        if prefix_sum % 2 == 0:
+            # Even sum, look for previous even prefix sum
+            if prefix_sum in even_indices:
+                length = i - even_indices[prefix_sum]
+                max_length = max(max_length, length)
+            even_indices[prefix_sum] = i
+        else:
+            # Odd sum, look for previous odd prefix sum
+            if prefix_sum in odd_indices:
+                length = i - odd_indices[prefix_sum]
+                max_length = max(max_length, length)
+            odd_indices[prefix_sum] = i
+    
+    return max_length
+
+# Example usage
+result = find_longest_subarray_with_even_sum(5, [2, -1, 3, 5, -2])
+print(f"Longest subarray with even sum: {result}")
+```
+
+### Variation 4: Longest Subarray with Sum and Length Constraints
+**Problem**: Find longest subarray with sum x and length at least k.
+
+```python
+def find_longest_subarray_with_sum_and_length(n, x, k, arr):
+    from collections import defaultdict
+    
+    prefix_sum = 0
+    max_length = -1
+    sum_indices = defaultdict(int)
+    sum_indices[0] = -1
+    
+    for i in range(n):
+        prefix_sum += arr[i]
+        
+        if prefix_sum - x in sum_indices:
+            length = i - sum_indices[prefix_sum - x]
+            if length >= k:
+                max_length = max(max_length, length)
+        
+        if prefix_sum not in sum_indices:
+            sum_indices[prefix_sum] = i
+    
+    return max_length
+
+# Example usage
+result = find_longest_subarray_with_sum_and_length(5, 7, 2, [2, -1, 3, 5, -2])
+print(f"Longest subarray with sum 7 and length >= 2: {result}")
+```
+
+### Variation 5: Longest Subarray with Sum and Character Constraints
+**Problem**: Find longest subarray with sum x where no two adjacent elements are negative.
+
+```python
+def find_longest_subarray_with_sum_and_constraints(n, x, arr):
+    from collections import defaultdict
+    
+    prefix_sum = 0
+    max_length = -1
+    sum_indices = defaultdict(int)
+    sum_indices[0] = -1
+    last_negative = -1
+    
+    for i in range(n):
+        prefix_sum += arr[i]
+        
+        # Check constraint: no two adjacent negative elements
+        if arr[i] < 0:
+            if last_negative == i - 1:
+                # Two consecutive negative numbers, reset
+                sum_indices.clear()
+                sum_indices[0] = i - 1
+                prefix_sum = arr[i]
+            last_negative = i
+        
+        if prefix_sum - x in sum_indices:
+            length = i - sum_indices[prefix_sum - x]
+            max_length = max(max_length, length)
+        
+        if prefix_sum not in sum_indices:
+            sum_indices[prefix_sum] = i
+    
+    return max_length
+
+# Example usage
+result = find_longest_subarray_with_sum_and_constraints(5, 7, [2, -1, 3, 5, -2])
+print(f"Longest subarray with sum 7 and constraints: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Maximum Subarray Sum](/cses-analyses/problem_soulutions/sliding_window/)**: Maximum subarray problems
+- **[Fixed Length Subarray Sum](/cses-analyses/problem_soulutions/sliding_window/)**: Fixed-size subarray problems
+- **[Subarray with Given Sum](/cses-analyses/problem_soulutions/sliding_window/)**: Subarray sum problems
+
+## 📚 Learning Points
+
+1. **Prefix Sum Technique**: Essential for subarray sum problems
+2. **Hash Map for Index Tracking**: Important for longest subarray optimization
+3. **Range Query Optimization**: Key for efficient subarray operations
+4. **Edge Case Handling**: Important for robust solutions
+
+---
+
+**This is a great introduction to longest subarray with sum problems!** 🎯
     from collections import defaultdict
     
     prefix_sum = 0

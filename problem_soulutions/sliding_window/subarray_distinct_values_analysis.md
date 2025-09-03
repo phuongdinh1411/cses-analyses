@@ -1,28 +1,28 @@
 ---
 layout: simple
-title: "Subarray Distinct Values"
+title: "Subarray Distinct Values - Count Subarrays with At Most K Distinct"
 permalink: /problem_soulutions/sliding_window/subarray_distinct_values_analysis
 ---
 
+# Subarray Distinct Values - Count Subarrays with At Most K Distinct
 
-# Subarray Distinct Values
+## 📋 Problem Description
 
-## Problem Statement
-Given an array of n integers, your task is to find the number of subarrays with at most k distinct values.
+Given an array of n integers, find the number of subarrays with at most k distinct values.
 
-### Input
-The first input line has two integers n and k: the size of the array and the maximum number of distinct values.
-The second line has n integers a1,a2,…,an: the contents of the array.
+**Input**: 
+- First line: Two integers n and k (array size and maximum distinct values)
+- Second line: n integers a₁, a₂, ..., aₙ (array contents)
 
-### Output
-Print one integer: the number of subarrays with at most k distinct values.
+**Output**: 
+- One integer: the number of subarrays with at most k distinct values
 
-### Constraints
-- 1 ≤ n ≤ 2⋅10^5
+**Constraints**:
+- 1 ≤ n ≤ 2⋅10⁵
 - 1 ≤ k ≤ n
-- 1 ≤ ai ≤ 10^9
+- 1 ≤ aᵢ ≤ 10⁹
 
-### Example
+**Example**:
 ```
 Input:
 5 2
@@ -32,10 +32,29 @@ Output:
 10
 ```
 
-## Solution Progression
+**Explanation**: The subarrays with at most 2 distinct values are:
+- [1] → distinct values: {1}
+- [1, 2] → distinct values: {1, 2}
+- [1, 2, 1] → distinct values: {1, 2}
+- [2] → distinct values: {2}
+- [2, 1] → distinct values: {1, 2}
+- [1] → distinct values: {1}
+- [1, 3] → distinct values: {1, 3}
+- [3] → distinct values: {3}
+- [3, 4] → distinct values: {3, 4}
+- [4] → distinct values: {4}
 
-### Approach 1: Check All Subarrays - O(n² × k)
-**Description**: Check all possible subarrays to count those with at most k distinct values.
+Total count = 10 valid subarrays
+
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Count subarrays with at most k distinct values
+- **Key Insight**: Use sliding window to maintain constraint on distinct values
+- **Challenge**: Efficiently track distinct values and count valid subarrays
+
+### Step 2: Brute Force Approach
+**Check all possible subarrays and count distinct values:**
 
 ```python
 def subarray_distinct_naive(n, k, arr):
@@ -53,10 +72,10 @@ def subarray_distinct_naive(n, k, arr):
     return count
 ```
 
-**Why this is inefficient**: Quadratic time complexity and inefficient distinct value counting.
+**Complexity**: O(n² × k) - too slow for large arrays
 
-### Improvement 1: Sliding Window with Hash Map - O(n)
-**Description**: Use sliding window technique with hash map to track distinct values efficiently.
+### Step 3: Optimization
+**Use sliding window with hash map for efficient counting:**
 
 ```python
 def subarray_distinct_sliding_window(n, k, arr):
@@ -86,42 +105,19 @@ def subarray_distinct_sliding_window(n, k, arr):
     return count
 ```
 
-**Why this improvement works**: Sliding window efficiently maintains the constraint of at most k distinct values.
+**Key Insight**: Use sliding window to maintain constraint of at most k distinct values
 
-### Alternative: Two Pointers with Counter - O(n)
-**Description**: Use two pointers with a counter to track distinct values.
-
-```python
-def subarray_distinct_two_pointers(n, k, arr):
-    from collections import Counter
-    
-    left = 0
-    count = 0
-    counter = Counter()
-    
-    for right in range(n):
-        counter[arr[right]] += 1
-        
-        while len(counter) > k:
-            counter[arr[left]] -= 1
-            if counter[arr[left]] == 0:
-                del counter[arr[left]]
-            left += 1
-        
-        count += right - left + 1
-    
-    return count
-```
-
-**Why this works**: Two pointers efficiently maintain the window with at most k distinct values.
-
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
-n, k = map(int, input().split())
-arr = list(map(int, input().split()))
+def solve_subarray_distinct_values():
+    n, k = map(int, input().split())
+    arr = list(map(int, input().split()))
+    
+    result = count_subarrays_with_at_most_k_distinct(n, k, arr)
+    print(result)
 
-def subarray_distinct_sliding_window(n, k, arr):
+def count_subarrays_with_at_most_k_distinct(n, k, arr):
     from collections import defaultdict
     
     left = 0
@@ -147,81 +143,32 @@ def subarray_distinct_sliding_window(n, k, arr):
     
     return count
 
-result = subarray_distinct_sliding_window(n, k, arr)
-print(result)
+if __name__ == "__main__":
+    solve_subarray_distinct_values()
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Naive | O(n² × k) | O(k) | Check all subarrays |
-| Sliding Window | O(n) | O(k) | Use hash map for distinct values |
-| Two Pointers | O(n) | O(k) | Use counter for frequency |
-
-## Key Insights for Other Problems
-
-### 1. **Distinct Value Problems**
-**Principle**: Use sliding window with hash map to efficiently track distinct values in subarrays.
-**Applicable to**:
-- Distinct value problems
-- Subarray problems
-- Window-based problems
-- Hash map applications
-
-**Example Problems**:
-- Distinct value problems
-- Subarray problems
-- Window-based problems
-- Hash map applications
-
-### 2. **Sliding Window Technique**
-**Principle**: Use sliding window to maintain constraints while expanding and contracting the window.
-**Applicable to**:
-- Window-based problems
-- Subarray problems
-- Two pointer problems
-- Algorithm design
-
-**Example Problems**:
-- Window-based problems
-- Subarray problems
-- Two pointer problems
-- Algorithm design
-
-### 3. **Hash Map for Frequency**
-**Principle**: Use hash map to efficiently track frequency of elements in the current window.
-**Applicable to**:
-- Frequency counting
-- Hash map applications
-- Algorithm design
-- Problem solving
-
-**Example Problems**:
-- Frequency counting
-- Hash map applications
-- Algorithm design
-- Problem solving
-
-### 4. **Two Pointer Applications**
-**Principle**: Use two pointers to maintain a valid window that satisfies the given constraints.
-**Applicable to**:
-- Two pointer problems
-- Window-based problems
-- Subarray problems
-- Algorithm design
-
-**Example Problems**:
-- Two pointer problems
-- Window-based problems
-- Subarray problems
-- Algorithm design
-
-## Notable Techniques
-
-### 1. **Sliding Window with Hash Map Pattern**
 ```python
-def sliding_window_distinct_values(arr, k):
+def test_solution():
+    test_cases = [
+        ((5, 2, [1, 2, 1, 3, 4]), 10),
+        ((4, 1, [1, 1, 1, 1]), 10),
+        ((3, 3, [1, 2, 3]), 6),
+        ((2, 2, [1, 2]), 3),
+        ((1, 1, [1]), 1),
+        ((4, 2, [1, 2, 1, 2]), 10),
+    ]
+    
+    for (n, k, arr), expected in test_cases:
+        result = count_subarrays_with_at_most_k_distinct(n, k, arr)
+        print(f"n={n}, k={k}, arr={arr}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def count_subarrays_with_at_most_k_distinct(n, k, arr):
     from collections import defaultdict
     
     left = 0
@@ -229,85 +176,265 @@ def sliding_window_distinct_values(arr, k):
     distinct_count = defaultdict(int)
     distinct_values = 0
     
-    for right in range(len(arr)):
-        # Add current element
+    for right in range(n):
         if distinct_count[arr[right]] == 0:
             distinct_values += 1
         distinct_count[arr[right]] += 1
         
-        # Shrink window if needed
         while distinct_values > k:
             distinct_count[arr[left]] -= 1
             if distinct_count[arr[left]] == 0:
                 distinct_values -= 1
             left += 1
         
-        # Count valid subarrays
         count += right - left + 1
     
     return count
+
+test_solution()
 ```
 
-### 2. **Two Pointers with Counter Pattern**
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n) - single pass through the array with sliding window
+- **Space**: O(k) - hash map to store distinct value counts
+
+### Why This Solution Works
+- **Sliding Window**: Efficiently maintains window with at most k distinct values
+- **Hash Map**: Tracks frequency of each distinct value
+- **Window Expansion**: Adds new elements and shrinks when constraint violated
+- **Optimal Algorithm**: Best known approach for this problem
+
+## 🎯 Key Insights
+
+### 1. **Sliding Window Technique**
+- Maintain window constraints efficiently
+- Important for understanding
+- Expand and contract as needed
+- Essential for algorithm
+
+### 2. **Distinct Value Counting**
+- Use hash map for frequency tracking
+- Important for understanding
+- Handle edge cases properly
+- Essential for optimization
+
+### 3. **Window Management**
+- Expand window when adding elements
+- Important for understanding
+- Shrink window when constraints violated
+- Essential for algorithm
+
+## 🎯 Problem Variations
+
+### Variation 1: Subarrays with Exactly K Distinct Values
+**Problem**: Count subarrays with exactly k distinct values.
+
 ```python
-def two_pointers_distinct_values(arr, k):
-    from collections import Counter
+def count_subarrays_with_exactly_k_distinct(n, k, arr):
+    from collections import defaultdict
+    
+    def count_subarrays_with_at_most_k_distinct(k_limit):
+        left = 0
+        count = 0
+        distinct_count = defaultdict(int)
+        distinct_values = 0
+        
+        for right in range(n):
+            if distinct_count[arr[right]] == 0:
+                distinct_values += 1
+            distinct_count[arr[right]] += 1
+            
+            while distinct_values > k_limit:
+                distinct_count[arr[left]] -= 1
+                if distinct_count[arr[left]] == 0:
+                    distinct_values -= 1
+                left += 1
+            
+            count += right - left + 1
+        
+        return count
+    
+    # Exactly k = At most k - At most (k-1)
+    return count_subarrays_with_at_most_k_distinct(k) - count_subarrays_with_at_most_k_distinct(k - 1)
+
+# Example usage
+result = count_subarrays_with_exactly_k_distinct(5, 2, [1, 2, 1, 3, 4])
+print(f"Subarrays with exactly 2 distinct: {result}")
+```
+
+### Variation 2: Subarrays with At Least K Distinct Values
+**Problem**: Count subarrays with at least k distinct values.
+
+```python
+def count_subarrays_with_at_least_k_distinct(n, k, arr):
+    from collections import defaultdict
+    
+    def count_subarrays_with_at_most_k_distinct(k_limit):
+        left = 0
+        count = 0
+        distinct_count = defaultdict(int)
+        distinct_values = 0
+        
+        for right in range(n):
+            if distinct_count[arr[right]] == 0:
+                distinct_values += 1
+            distinct_count[arr[right]] += 1
+            
+            while distinct_values > k_limit:
+                distinct_count[arr[left]] -= 1
+                if distinct_count[arr[left]] == 0:
+                    distinct_values -= 1
+                left += 1
+            
+            count += right - left + 1
+        
+        return count
+    
+    # Total subarrays - subarrays with at most (k-1) distinct
+    total_subarrays = n * (n + 1) // 2
+    at_most_k_minus_1 = count_subarrays_with_at_most_k_distinct(k - 1)
+    
+    return total_subarrays - at_most_k_minus_1
+
+# Example usage
+result = count_subarrays_with_at_least_k_distinct(5, 3, [1, 2, 1, 3, 4])
+print(f"Subarrays with at least 3 distinct: {result}")
+```
+
+### Variation 3: Subarrays with K Distinct and Length Constraint
+**Problem**: Count subarrays with at most k distinct values and length at least L.
+
+```python
+def count_subarrays_with_k_distinct_and_length(n, k, L, arr):
+    from collections import defaultdict
     
     left = 0
     count = 0
-    counter = Counter()
+    distinct_count = defaultdict(int)
+    distinct_values = 0
     
-    for right in range(len(arr)):
-        counter[arr[right]] += 1
+    for right in range(n):
+        if distinct_count[arr[right]] == 0:
+            distinct_values += 1
+        distinct_count[arr[right]] += 1
         
-        while len(counter) > k:
-            counter[arr[left]] -= 1
-            if counter[arr[left]] == 0:
-                del counter[arr[left]]
+        while distinct_values > k:
+            distinct_count[arr[left]] -= 1
+            if distinct_count[arr[left]] == 0:
+                distinct_values -= 1
+            left += 1
+        
+        # Only count subarrays with length >= L
+        if right - left + 1 >= L:
+            count += right - left + 1 - L + 1
+    
+    return count
+
+# Example usage
+result = count_subarrays_with_k_distinct_and_length(5, 2, 2, [1, 2, 1, 3, 4])
+print(f"Subarrays with at most 2 distinct and length >= 2: {result}")
+```
+
+### Variation 4: Subarrays with K Distinct and Sum Constraint
+**Problem**: Count subarrays with at most k distinct values and sum at most S.
+
+```python
+def count_subarrays_with_k_distinct_and_sum(n, k, S, arr):
+    from collections import defaultdict
+    
+    left = 0
+    count = 0
+    distinct_count = defaultdict(int)
+    distinct_values = 0
+    current_sum = 0
+    
+    for right in range(n):
+        if distinct_count[arr[right]] == 0:
+            distinct_values += 1
+        distinct_count[arr[right]] += 1
+        current_sum += arr[right]
+        
+        # Shrink window if constraints violated
+        while (distinct_values > k or current_sum > S):
+            distinct_count[arr[left]] -= 1
+            if distinct_count[arr[left]] == 0:
+                distinct_values -= 1
+            current_sum -= arr[left]
             left += 1
         
         count += right - left + 1
     
     return count
+
+# Example usage
+result = count_subarrays_with_k_distinct_and_sum(5, 2, 10, [1, 2, 1, 3, 4])
+print(f"Subarrays with at most 2 distinct and sum <= 10: {result}")
 ```
 
-### 3. **Window Maintenance Pattern**
+### Variation 5: Subarrays with K Distinct and Range Queries
+**Problem**: Answer queries about subarrays with at most k distinct values in specific ranges.
+
 ```python
-def maintain_window_constraint(arr, constraint_func):
-    left = 0
-    result = 0
+def subarray_distinct_range_queries(n, k, arr, queries):
+    """Answer queries about subarrays with at most k distinct values in ranges"""
+    results = []
     
-    for right in range(len(arr)):
-        # Add element to window
-        # Update constraint
+    for start, end in queries:
+        if start > end or start < 0 or end >= n:
+            results.append(0)
+        else:
+            # Extract subarray for this range
+            subarray = arr[start:end + 1]
+            count = count_subarrays_with_at_most_k_distinct_in_range(len(subarray), k, subarray)
+            results.append(count)
+    
+    return results
+
+def count_subarrays_with_at_most_k_distinct_in_range(n, k, arr):
+    """Count subarrays with at most k distinct values in a specific range"""
+    from collections import defaultdict
+    
+    left = 0
+    count = 0
+    distinct_count = defaultdict(int)
+    distinct_values = 0
+    
+    for right in range(n):
+        if distinct_count[arr[right]] == 0:
+            distinct_values += 1
+        distinct_count[arr[right]] += 1
         
-        # Shrink window while constraint is violated
-        while not constraint_func(left, right):
-            # Remove left element
+        while distinct_values > k:
+            distinct_count[arr[left]] -= 1
+            if distinct_count[arr[left]] == 0:
+                distinct_values -= 1
             left += 1
         
-        # Process valid window
-        result += right - left + 1
+        count += right - left + 1
     
-    return result
+    return count
+
+# Example usage
+queries = [(0, 2), (1, 3), (2, 4)]
+result = subarray_distinct_range_queries(5, 2, [1, 2, 1, 3, 4], queries)
+print(f"Range query results: {result}")
 ```
 
-## Edge Cases to Remember
+## 🔗 Related Problems
 
-1. **k = 1**: Only single elements are valid
-2. **k = n**: All subarrays are valid
-3. **All same elements**: All subarrays are valid
-4. **All distinct elements**: Limited by k
-5. **Empty array**: Handle appropriately
+- **[Subarray with K Distinct](/cses-analyses/problem_soulutions/sliding_window/)**: Exactly k distinct problems
+- **[Longest Substring without Repeating](/cses-analyses/problem_soulutions/sliding_window/)**: Distinct character problems
+- **[Sliding Window Problems](/cses-analyses/problem_soulutions/sliding_window/)**: Window-based problems
 
-## Problem-Solving Framework
+## 📚 Learning Points
 
-1. **Identify window nature**: This is a sliding window problem with distinct value constraint
-2. **Choose approach**: Use sliding window with hash map for efficiency
-3. **Track distinct values**: Maintain count of distinct values in current window
-4. **Maintain constraint**: Shrink window when distinct values exceed k
-5. **Count subarrays**: Add all valid subarrays ending at current position
+1. **Sliding Window Technique**: Essential for maintaining constraints efficiently
+2. **Distinct Value Counting**: Important for tracking unique elements
+3. **Hash Map Usage**: Key for frequency tracking and O(1) operations
+4. **Window Management**: Important for expanding and contracting based on constraints
 
 ---
 
-*This analysis shows how to efficiently count subarrays with at most k distinct values using sliding window technique.*
+**This is a great introduction to sliding window problems with distinct value constraints!** 🎯

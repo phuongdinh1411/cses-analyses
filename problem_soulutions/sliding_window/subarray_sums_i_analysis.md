@@ -1,27 +1,27 @@
 ---
 layout: simple
-title: "Subarray Sums I"
+title: "Subarray Sums I - Count Subarrays with Sum X"
 permalink: /problem_soulutions/sliding_window/subarray_sums_i_analysis
 ---
 
+# Subarray Sums I - Count Subarrays with Sum X
 
-# Subarray Sums I
+## 📋 Problem Description
 
-## Problem Statement
-Given an array of n integers, your task is to find the number of subarrays with sum x.
+Given an array of n integers, find the number of subarrays with sum x.
 
-### Input
-The first input line has two integers n and x: the size of the array and the required sum.
-The second line has n integers a1,a2,…,an: the contents of the array.
+**Input**: 
+- First line: Two integers n and x (array size and target sum)
+- Second line: n integers a₁, a₂, ..., aₙ (array contents)
 
-### Output
-Print one integer: the number of subarrays with sum x.
+**Output**: 
+- One integer: the number of subarrays with sum x
 
-### Constraints
-- 1 ≤ n ≤ 2⋅10^5
-- −10^9 ≤ x,ai ≤ 10^9
+**Constraints**:
+- 1 ≤ n ≤ 2⋅10⁵
+- −10⁹ ≤ x, aᵢ ≤ 10⁹
 
-### Example
+**Example**:
 ```
 Input:
 5 7
@@ -31,10 +31,19 @@ Output:
 2
 ```
 
-## Solution Progression
+**Explanation**: The subarrays with sum 7 are:
+- [2, -1, 3, 5, -2] → sum = 2 + (-1) + 3 + 5 + (-2) = 7
+- [3, 5, -1] → sum = 3 + 5 + (-1) = 7
 
-### Approach 1: Check All Subarrays - O(n²)
-**Description**: Check all possible subarrays to find those with sum x.
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Count subarrays with exactly sum x
+- **Key Insight**: Use prefix sum to find subarray sums efficiently
+- **Challenge**: Handle negative numbers and find all valid subarrays
+
+### Step 2: Brute Force Approach
+**Check all possible subarrays and calculate their sums:**
 
 ```python
 def subarray_sums_naive(n, x, arr):
@@ -50,10 +59,10 @@ def subarray_sums_naive(n, x, arr):
     return count
 ```
 
-**Why this is inefficient**: Quadratic time complexity for large arrays.
+**Complexity**: O(n²) - too slow for large arrays
 
-### Improvement 1: Prefix Sum with Hash Map - O(n)
-**Description**: Use prefix sum and hash map to find subarrays with target sum.
+### Step 3: Optimization
+**Use prefix sum with hash map for efficient counting:**
 
 ```python
 def subarray_sums_prefix_sum(n, x, arr):
@@ -73,40 +82,19 @@ def subarray_sums_prefix_sum(n, x, arr):
     return count
 ```
 
-**Why this improvement works**: Prefix sum allows us to find subarrays with target sum in constant time using hash map.
+**Key Insight**: Use prefix sum difference to find subarrays with target sum
 
-### Alternative: Sliding Window (for positive numbers) - O(n)
-**Description**: Use sliding window technique for arrays with positive numbers.
-
-```python
-def subarray_sums_sliding_window(n, x, arr):
-    # This works only for positive numbers
-    left = 0
-    current_sum = 0
-    count = 0
-    
-    for right in range(n):
-        current_sum += arr[right]
-        
-        while current_sum > x and left <= right:
-            current_sum -= arr[left]
-            left += 1
-        
-        if current_sum == x:
-            count += 1
-    
-    return count
-```
-
-**Why this works**: Sliding window efficiently finds subarrays with target sum for positive numbers.
-
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
-n, x = map(int, input().split())
-arr = list(map(int, input().split()))
+def solve_subarray_sums_i():
+    n, x = map(int, input().split())
+    arr = list(map(int, input().split()))
+    
+    result = count_subarrays_with_sum(n, x, arr)
+    print(result)
 
-def subarray_sums_prefix_sum(n, x, arr):
+def count_subarrays_with_sum(n, x, arr):
     from collections import defaultdict
     
     prefix_sum = 0
@@ -122,81 +110,32 @@ def subarray_sums_prefix_sum(n, x, arr):
     
     return count
 
-result = subarray_sums_prefix_sum(n, x, arr)
-print(result)
+if __name__ == "__main__":
+    solve_subarray_sums_i()
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Naive | O(n²) | O(1) | Check all subarrays |
-| Prefix Sum | O(n) | O(n) | Use hash map for prefix sums |
-| Sliding Window | O(n) | O(1) | For positive numbers only |
-
-## Key Insights for Other Problems
-
-### 1. **Subarray Sum Problems**
-**Principle**: Use prefix sum and hash map to efficiently find subarrays with target sum.
-**Applicable to**:
-- Subarray sum problems
-- Range sum queries
-- Two pointer problems
-- Hash map applications
-
-**Example Problems**:
-- Subarray sum problems
-- Range sum queries
-- Two pointer problems
-- Hash map applications
-
-### 2. **Prefix Sum Technique**
-**Principle**: Use prefix sum to convert range queries to point queries.
-**Applicable to**:
-- Range sum problems
-- Subarray problems
-- Cumulative sum problems
-- Algorithm design
-
-**Example Problems**:
-- Range sum problems
-- Subarray problems
-- Cumulative sum problems
-- Algorithm design
-
-### 3. **Hash Map for Frequency**
-**Principle**: Use hash map to track frequency of prefix sums for efficient lookup.
-**Applicable to**:
-- Frequency counting
-- Hash map applications
-- Algorithm design
-- Problem solving
-
-**Example Problems**:
-- Frequency counting
-- Hash map applications
-- Algorithm design
-- Problem solving
-
-### 4. **Sliding Window Applications**
-**Principle**: Use sliding window for problems involving contiguous subarrays with constraints.
-**Applicable to**:
-- Contiguous subarray problems
-- Two pointer problems
-- Window-based problems
-- Algorithm design
-
-**Example Problems**:
-- Contiguous subarray problems
-- Two pointer problems
-- Window-based problems
-- Algorithm design
-
-## Notable Techniques
-
-### 1. **Prefix Sum with Hash Map Pattern**
 ```python
-def find_subarrays_with_sum(arr, target):
+def test_solution():
+    test_cases = [
+        ((5, 7, [2, -1, 3, 5, -2]), 2),
+        ((4, 6, [1, 2, 3, 4]), 1),
+        ((3, 0, [1, -1, 0]), 3),
+        ((2, 5, [1, 4]), 1),
+        ((1, 1, [1]), 1),
+        ((4, 10, [2, 3, 4, 1]), 1),
+    ]
+    
+    for (n, x, arr), expected in test_cases:
+        result = count_subarrays_with_sum(n, x, arr)
+        print(f"n={n}, x={x}, arr={arr}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def count_subarrays_with_sum(n, x, arr):
     from collections import defaultdict
     
     prefix_sum = 0
@@ -206,66 +145,230 @@ def find_subarrays_with_sum(arr, target):
     
     for num in arr:
         prefix_sum += num
-        count += sum_count[prefix_sum - target]
+        count += sum_count[prefix_sum - x]
         sum_count[prefix_sum] += 1
     
     return count
+
+test_solution()
 ```
 
-### 2. **Sliding Window Pattern**
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n) - single pass through the array with prefix sum
+- **Space**: O(n) - hash map to store prefix sum frequencies
+
+### Why This Solution Works
+- **Prefix Sum**: Efficiently calculates subarray sums
+- **Hash Map**: Tracks frequency of prefix sums for O(1) lookup
+- **Difference Calculation**: Uses prefix_sum - x to find target subarrays
+- **Optimal Algorithm**: Best known approach for this problem
+
+## 🎯 Key Insights
+
+### 1. **Prefix Sum Technique**
+- Convert range queries to point queries
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **Hash Map for Frequency**
+- Track frequency of prefix sums efficiently
+- Important for understanding
+- Enable O(1) lookup time
+- Essential for algorithm
+
+### 3. **Subarray Sum Calculation**
+- Use prefix sum difference for subarray sums
+- Important for understanding
+- Fundamental concept
+- Essential for optimization
+
+## 🎯 Problem Variations
+
+### Variation 1: Subarray Sums with Length Constraint
+**Problem**: Count subarrays with sum x and length at least k.
+
 ```python
-def sliding_window_subarray_sum(arr, target):
-    left = 0
-    current_sum = 0
-    count = 0
+def count_subarrays_with_sum_and_length(n, x, k, arr):
+    from collections import defaultdict
     
-    for right in range(len(arr)):
-        current_sum += arr[right]
+    prefix_sum = 0
+    count = 0
+    sum_count = defaultdict(list)  # Map sum to list of indices
+    sum_count[0] = [-1]  # Empty subarray at index -1
+    
+    for i, num in enumerate(arr):
+        prefix_sum += num
         
-        while current_sum > target and left <= right:
-            current_sum -= arr[left]
-            left += 1
+        if prefix_sum - x in sum_count:
+            # Check if any previous index gives us length >= k
+            for prev_idx in sum_count[prefix_sum - x]:
+                if i - prev_idx >= k:
+                    count += 1
         
-        if current_sum == target:
+        sum_count[prefix_sum].append(i)
+    
+    return count
+
+# Example usage
+result = count_subarrays_with_sum_and_length(5, 7, 2, [2, -1, 3, 5, -2])
+print(f"Subarrays with sum 7 and length >= 2: {result}")
+```
+
+### Variation 2: Subarray Sums with Even/Odd Constraint
+**Problem**: Count subarrays with sum x where the sum is even/odd.
+
+```python
+def count_subarrays_with_sum_and_parity(n, x, arr, want_even=True):
+    from collections import defaultdict
+    
+    prefix_sum = 0
+    count = 0
+    even_sums = defaultdict(int)  # Track even prefix sums
+    odd_sums = defaultdict(int)   # Track odd prefix sums
+    even_sums[0] = 1  # Empty subarray has even sum 0
+    
+    for num in arr:
+        prefix_sum += num
+        
+        if want_even and prefix_sum % 2 == 0:
+            # Looking for even sum, check if (prefix_sum - x) is even
+            if (prefix_sum - x) % 2 == 0:
+                count += even_sums[prefix_sum - x]
+            even_sums[prefix_sum] += 1
+        elif not want_even and prefix_sum % 2 == 1:
+            # Looking for odd sum, check if (prefix_sum - x) is odd
+            if (prefix_sum - x) % 2 == 1:
+                count += odd_sums[prefix_sum - x]
+            odd_sums[prefix_sum] += 1
+        else:
+            # Update appropriate counter
+            if prefix_sum % 2 == 0:
+                even_sums[prefix_sum] += 1
+            else:
+                odd_sums[prefix_sum] += 1
+    
+    return count
+
+# Example usage
+even_count = count_subarrays_with_sum_and_parity(5, 7, [2, -1, 3, 5, -2], True)
+odd_count = count_subarrays_with_sum_and_parity(5, 7, [2, -1, 3, 5, -2], False)
+print(f"Even sum subarrays: {even_count}, Odd sum subarrays: {odd_count}")
+```
+
+### Variation 3: Subarray Sums with Range Constraint
+**Problem**: Count subarrays with sum in range [L, R].
+
+```python
+def count_subarrays_with_sum_range(n, L, R, arr):
+    from collections import defaultdict
+    
+    prefix_sum = 0
+    count = 0
+    sum_count = defaultdict(int)
+    sum_count[0] = 1
+    
+    for num in arr:
+        prefix_sum += num
+        
+        # Count subarrays with sum in [L, R]
+        for target in range(L, R + 1):
+            if prefix_sum - target in sum_count:
+                count += sum_count[prefix_sum - target]
+        
+        sum_count[prefix_sum] += 1
+    
+    return count
+
+# Example usage
+result = count_subarrays_with_sum_range(5, 5, 10, [2, -1, 3, 5, -2])
+print(f"Subarrays with sum in [5, 10]: {result}")
+```
+
+### Variation 4: Subarray Sums with K Occurrences
+**Problem**: Count subarrays with sum x that appear exactly k times.
+
+```python
+def count_subarrays_with_sum_k_occurrences(n, x, k, arr):
+    from collections import defaultdict
+    
+    prefix_sum = 0
+    count = 0
+    sum_count = defaultdict(int)
+    sum_count[0] = 1
+    
+    for num in arr:
+        prefix_sum += num
+        
+        # Check if we have exactly k occurrences of (prefix_sum - x)
+        if prefix_sum - x in sum_count and sum_count[prefix_sum - x] == k:
             count += 1
-    
-    return count
-```
-
-### 3. **Two Pointer Technique**
-```python
-def two_pointer_subarray_sum(arr, target):
-    left = 0
-    current_sum = 0
-    count = 0
-    
-    for right in range(len(arr)):
-        current_sum += arr[right]
         
-        while current_sum >= target and left <= right: if current_sum == 
-target: count += 1
-            current_sum -= arr[left]
-            left += 1
+        sum_count[prefix_sum] += 1
     
     return count
+
+# Example usage
+result = count_subarrays_with_sum_k_occurrences(5, 7, 1, [2, -1, 3, 5, -2])
+print(f"Subarrays with sum 7 appearing exactly 1 time: {result}")
 ```
 
-## Edge Cases to Remember
+### Variation 5: Subarray Sums with Range Queries
+**Problem**: Answer queries about subarray sums in specific ranges.
 
-1. **Empty subarray**: Consider sum 0
-2. **Negative numbers**: Use prefix sum approach
-3. **Zero target**: Handle carefully
-4. **Large numbers**: Use appropriate data types
-5. **No valid subarrays**: Return 0
+```python
+def subarray_sums_range_queries(n, x, arr, queries):
+    """Answer queries about subarray sums with target x in ranges"""
+    results = []
+    
+    for start, end in queries:
+        if start > end or start < 0 or end >= n:
+            results.append(0)
+        else:
+            # Extract subarray for this range
+            subarray = arr[start:end + 1]
+            count = count_subarrays_with_sum_in_range(len(subarray), x, subarray)
+            results.append(count)
+    
+    return results
 
-## Problem-Solving Framework
+def count_subarrays_with_sum_in_range(n, x, arr):
+    """Count subarrays with sum x in a specific range"""
+    from collections import defaultdict
+    
+    prefix_sum = 0
+    count = 0
+    sum_count = defaultdict(int)
+    sum_count[0] = 1
+    
+    for num in arr:
+        prefix_sum += num
+        count += sum_count[prefix_sum - x]
+        sum_count[prefix_sum] += 1
+    
+    return count
 
-1. **Identify subarray nature**: This is a subarray sum problem
-2. **Choose approach**: Use prefix sum with hash map for efficiency
-3. **Track prefix sums**: Maintain running sum and frequency
-4. **Count subarrays**: Use hash map to find target sum differences
-5. **Return result**: Return the count of valid subarrays
+# Example usage
+queries = [(0, 2), (1, 3), (0, 3)]
+result = subarray_sums_range_queries(5, 7, [2, -1, 3, 5, -2], queries)
+print(f"Range query results: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Subarray with Given Sum](/cses-analyses/problem_soulutions/sliding_window/)**: Subarray existence problems
+- **[Longest Subarray with Sum](/cses-analyses/problem_soulutions/sliding_window/)**: Longest subarray problems
+- **[Shortest Subarray with Sum](/cses-analyses/problem_soulutions/sliding_window/)**: Shortest subarray problems
+
+## 📚 Learning Points
+
+1. **Prefix Sum Technique**: Essential for subarray sum problems
+2. **Hash Map for Frequency**: Important for efficient counting
+3. **Subarray Sum Calculation**: Key for understanding prefix sum differences
+4. **Range Query Handling**: Important for complex subarray problems
 
 ---
 
-*This analysis shows how to efficiently find subarrays with target sum using prefix sum and hash map techniques.*
+**This is a great introduction to subarray sum counting problems!** 🎯

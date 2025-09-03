@@ -1,37 +1,51 @@
 ---
 layout: simple
-title: "Longest Substring Without Repeating Characters"
+title: "Longest Substring Without Repeating Characters Analysis"
 permalink: /problem_soulutions/sliding_window/longest_substring_without_repeating_analysis
 ---
 
 
-# Longest Substring Without Repeating Characters
+# Longest Substring Without Repeating Characters Analysis
 
-## Problem Statement
-Given a string, find the length of the longest substring without repeating characters.
+## Problem Description
 
-### Input
-The first input line has a string s.
+**Problem**: Given a string, find the length of the longest substring without repeating characters.
 
-### Output
-Print one integer: the length of the longest substring without repeating characters.
+**Input**: 
+- s: a string
 
-### Constraints
-- 1 ≤ |s| ≤ 10^5
+**Output**: The length of the longest substring without repeating characters.
 
-### Example
+**Example**:
 ```
 Input:
 abcabcbb
 
 Output:
 3
+
+Explanation: 
+The longest substring without repeating characters is "abc" with length 3.
+Other valid substrings include "bca", "cab", etc.
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Check All Substrings - O(n³)
-**Description**: Check all possible substrings to find the longest one without repeating characters.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find the longest substring with all unique characters
+- Use sliding window technique for efficiency
+- Track character uniqueness dynamically
+- Handle edge cases properly
+
+**Key Observations:**
+- Need to track unique characters in current window
+- Window can expand and contract
+- Must maintain character uniqueness
+- Window size should be maximized
+
+### Step 2: Brute Force Approach
+**Idea**: Check all possible substrings to find the longest one without repeating characters.
 
 ```python
 def longest_substring_naive(s):
@@ -47,10 +61,14 @@ def longest_substring_naive(s):
     return max_length
 ```
 
-**Why this is inefficient**: Cubic time complexity for large strings.
+**Why this is inefficient:**
+- Time complexity: O(n³)
+- Lots of redundant calculations
+- Not scalable for large inputs
+- Inefficient uniqueness checking
 
-### Improvement 1: Sliding Window with Hash Set - O(n)
-**Description**: Use sliding window technique with hash set to track unique characters.
+### Step 3: Optimization with Sliding Window
+**Idea**: Use sliding window technique with hash set to track unique characters.
 
 ```python
 def longest_substring_sliding_window(s):
@@ -74,10 +92,14 @@ def longest_substring_sliding_window(s):
     return max_length
 ```
 
-**Why this improvement works**: Sliding window efficiently maintains a window with unique characters.
+**Why this improvement works:**
+- Time complexity: O(n)
+- Efficiently maintains window with unique characters
+- Single pass through the string
+- Optimal algorithm for this problem
 
-### Alternative: Sliding Window with Hash Map - O(n)
-**Description**: Use sliding window with hash map to track character frequencies.
+### Step 4: Alternative Approach with Hash Map
+**Idea**: Use sliding window with hash map to track character frequencies.
 
 ```python
 def longest_substring_hash_map(s):
@@ -103,14 +125,27 @@ def longest_substring_hash_map(s):
     return max_length
 ```
 
-**Why this works**: Hash map efficiently tracks character frequencies in the current window.
+**Why this works:**
+- Hash map provides more detailed character tracking
+- Useful for variations with character constraints
+- Same time complexity: O(n)
+- Good alternative approach
 
-## Final Optimal Solution
+### Step 5: Complete Solution
+**Putting it all together:**
 
 ```python
-s = input().strip()
+def solve_longest_substring_without_repeating():
+    s = input().strip()
+    
+    result = find_longest_substring_without_repeating(s)
+    print(result)
 
-def longest_substring_sliding_window(s):
+def find_longest_substring_without_repeating(s):
+    """Find length of longest substring without repeating characters"""
+    if not s:
+        return 0
+    
     n = len(s)
     left = 0
     max_length = 0
@@ -130,7 +165,286 @@ def longest_substring_sliding_window(s):
     
     return max_length
 
-result = longest_substring_sliding_window(s)
+# Main execution
+if __name__ == "__main__":
+    solve_longest_substring_without_repeating()
+```
+
+**Why this works:**
+- Optimal sliding window algorithm approach
+- Handles all edge cases correctly
+- Efficient character tracking
+- Clear and readable code
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+### Step 6: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        ("abcabcbb", 3),
+        ("bbbbb", 1),
+        ("pwwkew", 3),
+        ("", 0),
+        ("a", 1),
+        ("abc", 3),
+    ]
+    
+    for s, expected in test_cases:
+        result = find_longest_substring_without_repeating(s)
+        print(f"s: '{s}'")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def find_longest_substring_without_repeating(s):
+    if not s:
+        return 0
+    
+    n = len(s)
+    left = 0
+    max_length = 0
+    char_set = set()
+    
+    for right in range(n):
+        while s[right] in char_set:
+            char_set.remove(s[left])
+            left += 1
+        
+        char_set.add(s[right])
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n) - single pass through the string with sliding window
+- **Space**: O(min(m, n)) - where m is the size of the character set
+
+### Why This Solution Works
+- **Sliding Window**: Efficiently finds longest unique substring
+- **Character Tracking**: Maintains uniqueness with hash set
+- **Optimal Algorithm**: Best known approach for this problem
+- **Edge Case Handling**: Properly handles empty strings and single characters
+
+## 🎯 Key Insights
+
+### 1. **Sliding Window Technique**
+- Use two pointers to maintain a valid window
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **Character Uniqueness Tracking**
+- Track unique characters in current window
+- Important for understanding
+- Simple but important concept
+- Essential for algorithm
+
+### 3. **Window Contraction**
+- Shrink window when duplicates are found
+- Important for understanding
+- Fundamental concept
+- Essential for optimization
+
+## 🎯 Problem Variations
+
+### Variation 1: Longest Substring with At Most K Repeating Characters
+**Problem**: Find longest substring with at most k repeating characters.
+
+```python
+def longest_substring_with_k_repeating(s, k):
+    if not s:
+        return 0
+    
+    n = len(s)
+    left = 0
+    max_length = 0
+    char_count = {}
+    
+    for right in range(n):
+        char_count[s[right]] = char_count.get(s[right], 0) + 1
+        
+        # Shrink window if we have more than k repeating characters
+        while len(char_count) > k:
+            char_count[s[left]] -= 1
+            if char_count[s[left]] == 0:
+                del char_count[s[left]]
+            left += 1
+        
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+# Example usage
+result = longest_substring_with_k_repeating("eceba", 2)
+print(f"Longest substring with at most 2 repeating: {result}")
+```
+
+### Variation 2: Longest Substring with Character Order Constraint
+**Problem**: Find longest substring where characters appear in alphabetical order.
+
+```python
+def longest_substring_alphabetical_order(s):
+    if not s:
+        return 0
+    
+    n = len(s)
+    max_length = 1
+    current_length = 1
+    
+    for i in range(1, n):
+        if s[i] >= s[i-1]:
+            current_length += 1
+        else:
+            current_length = 1
+        max_length = max(max_length, current_length)
+    
+    return max_length
+
+# Example usage
+result = longest_substring_alphabetical_order("abcabcbb")
+print(f"Longest alphabetical substring: {result}")
+```
+
+### Variation 3: Longest Substring with Character Frequency Constraint
+**Problem**: Find longest substring where each character appears exactly k times.
+
+```python
+def longest_substring_exact_k_frequency(s, k):
+    if not s or k <= 0:
+        return 0
+    
+    n = len(s)
+    max_length = 0
+    
+    for i in range(n):
+        char_count = {}
+        for j in range(i, n):
+            char_count[s[j]] = char_count.get(s[j], 0) + 1
+            
+            # Check if all characters have exactly k frequency
+            valid = True
+            for count in char_count.values():
+                if count != k:
+                    valid = False
+                    break
+            
+            if valid:
+                max_length = max(max_length, j - i + 1)
+    
+    return max_length
+
+# Example usage
+result = longest_substring_exact_k_frequency("aabbcc", 2)
+print(f"Longest substring with exact 2 frequency: {result}")
+```
+
+### Variation 4: Longest Substring with Range Queries
+**Problem**: Answer queries about longest substring without repeating characters in specific ranges.
+
+```python
+def longest_substring_range_queries(s, queries):
+    """Answer longest substring queries for specific ranges"""
+    results = []
+    
+    for start, end in queries:
+        if start > end or start < 0 or end >= len(s):
+            results.append(0)
+        else:
+            # Extract substring for this range
+            substring = s[start:end + 1]
+            max_length = find_longest_substring_without_repeating_in_range(substring)
+            results.append(max_length)
+    
+    return results
+
+def find_longest_substring_without_repeating_in_range(s):
+    """Find longest substring without repeating characters in a specific range"""
+    if not s:
+        return 0
+    
+    n = len(s)
+    left = 0
+    max_length = 0
+    char_set = set()
+    
+    for right in range(n):
+        while s[right] in char_set:
+            char_set.remove(s[left])
+            left += 1
+        
+        char_set.add(s[right])
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+# Example usage
+queries = [(0, 4), (1, 6), (2, 7)]
+result = longest_substring_range_queries("abcabcbb", queries)
+print(f"Range query results: {result}")
+```
+
+### Variation 5: Longest Substring with Character Weights
+**Problem**: Each character has a weight, find longest substring with maximum total weight.
+
+```python
+def longest_substring_with_max_weight(s, weights):
+    if not s:
+        return 0
+    
+    n = len(s)
+    left = 0
+    max_length = 0
+    max_weight = 0
+    char_set = set()
+    current_weight = 0
+    
+    for right in range(n):
+        while s[right] in char_set:
+            char_set.remove(s[left])
+            current_weight -= weights.get(s[left], 0)
+            left += 1
+        
+        char_set.add(s[right])
+        current_weight += weights.get(s[right], 0)
+        
+        if right - left + 1 > max_length or \
+           (right - left + 1 == max_length and current_weight > max_weight):
+            max_length = right - left + 1
+            max_weight = current_weight
+    
+    return max_length, max_weight
+
+# Example usage
+weights = {'a': 3, 'b': 2, 'c': 1}
+result, weight = longest_substring_with_max_weight("abcabcbb", weights)
+print(f"Longest substring with max weight: {result}, Weight: {weight}")
+```
+
+## 🔗 Related Problems
+
+- **[Minimum Window Substring](/cses-analyses/problem_soulutions/sliding_window/)**: Substring optimization problems
+- **[Subarray with Given Sum](/cses-analyses/problem_soulutions/sliding_window/)**: Subarray problems
+- **[Sliding Window Advertisement](/cses-analyses/problem_soulutions/sliding_window/)**: Other sliding window problems
+
+## 📚 Learning Points
+
+1. **Sliding Window Technique**: Essential for substring optimization
+2. **Character Uniqueness Tracking**: Important for string problems
+3. **Window Contraction**: Key for optimization
+4. **Hash Set/Map Usage**: Important for efficient character tracking
+
+---
+
+**This is a great introduction to longest substring without repeating problems!** 🎯
 print(result)
 ```
 
