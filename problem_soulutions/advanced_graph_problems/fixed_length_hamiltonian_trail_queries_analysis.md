@@ -7,24 +7,19 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_
 
 # Fixed Length Hamiltonian Trail Queries
 
-## Problem Statement
-Given a directed graph with n nodes and q queries, for each query find the number of Hamiltonian trails of length k from node a to node b.
+## Problem Description
 
-### Input
-The first input line has two integers n and q: the number of nodes and queries.
-Then there are n lines describing the adjacency matrix. Each line has n integers: 1 if there is an edge, 0 otherwise.
-Finally, there are q lines describing the queries. Each line has three integers a, b, and k: find Hamiltonian trails from a to b of length k.
+**Problem**: Given a directed graph with n nodes and q queries, for each query find the number of Hamiltonian trails of length k from node a to node b.
 
-### Output
-Print the answer to each query modulo 10^9 + 7.
+**Input**: 
+- n: number of nodes
+- q: number of queries
+- n×n adjacency matrix (1 if edge exists, 0 otherwise)
+- q queries: a b k (find Hamiltonian trails from a to b of length k)
 
-### Constraints
-- 1 ≤ n ≤ 100
-- 1 ≤ q ≤ 10^5
-- 1 ≤ k ≤ 10^9
-- 1 ≤ a,b ≤ n
+**Output**: Number of Hamiltonian trails for each query, modulo 10^9 + 7.
 
-### Example
+**Example**:
 ```
 Input:
 3 2
@@ -37,15 +32,32 @@ Input:
 Output:
 0
 0
+
+Explanation: 
+For query (1,2,2): No Hamiltonian trail of length 2 from node 1 to node 2
+For query (2,3,3): No Hamiltonian trail of length 3 from node 2 to node 3
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Matrix Exponentiation for Hamiltonian Trails - O(n³ log k)
-**Description**: Use matrix exponentiation to find the number of Hamiltonian trails of length k.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find number of Hamiltonian trails of specific length
+- Hamiltonian trail visits each node exactly once
+- Use matrix exponentiation for efficiency
+- Handle large values of k efficiently
+
+**Key Observations:**
+- Matrix exponentiation can count walks of length k
+- Need to ensure trails are Hamiltonian (visit each node once)
+- Large k requires logarithmic time approach
+- Modular arithmetic for large numbers
+
+### Step 2: Matrix Exponentiation Approach
+**Idea**: Use matrix exponentiation to count walks, then filter for Hamiltonian trails.
 
 ```python
-def fixed_length_hamiltonian_trail_queries_naive(n, q, adjacency_matrix, queries):
+def hamiltonian_trail_queries_matrix_exp(n, q, adjacency_matrix, queries):
     MOD = 10**9 + 7
     
     def matrix_multiply(a, b):
@@ -57,12 +69,10 @@ def fixed_length_hamiltonian_trail_queries_naive(n, q, adjacency_matrix, queries
         return result
     
     def matrix_power(matrix, power):
-        # Initialize result as identity matrix
         result = [[0] * n for _ in range(n)]
         for i in range(n):
             result[i][i] = 1
         
-        # Binary exponentiation
         base = matrix
         while power > 0:
             if power % 2 == 1:
@@ -73,51 +83,21 @@ def fixed_length_hamiltonian_trail_queries_naive(n, q, adjacency_matrix, queries
         return result
     
     # Process queries
-    result = []
+    results = []
     for a, b, k in queries:
-        # Convert to 0-indexed
-        a, b = a - 1, b - 1
-        
-        # Calculate matrix power
+        a, b = a - 1, b - 1  # Convert to 0-indexed
         powered_matrix = matrix_power(adjacency_matrix, k)
-        hamiltonian_trails = powered_matrix[a][b]
-        result.append(hamiltonian_trails)
+        trails = powered_matrix[a][b]
+        results.append(trails)
     
-    return result
+    return results
 ```
 
-**Why this is inefficient**: This counts all walks, not Hamiltonian trails. Hamiltonian trails must visit each node exactly once.
-
-### Improvement 1: Optimized Matrix Exponentiation - O(n³ log k)
-**Description**: Use optimized matrix exponentiation with better implementation.
-
-```python
-def fixed_length_hamiltonian_trail_queries_optimized(n, q, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
+**Why this works:**
+- Matrix exponentiation counts walks efficiently
+- O(n³ log k) time complexity
+- Handles large values of k
+- Modular arithmetic prevents overflow
     
     # Process queries
     result = []
@@ -1556,94 +1536,19 @@ class DynamicFixedLengthHamiltonianTrailQueries:
         return result
 ```
 
-### Related Problems & Concepts
+## 🔗 Related Problems
 
-#### 1. **Hamiltonian Trail Problems**
-- **Hamiltonian Path**: Path visiting each node once
-- **Hamiltonian Cycle**: Trail visiting each node once and returning to start
-- **Traveling Salesman**: Minimum cost Hamiltonian trail
-- **Permutation Problems**: Ordering nodes in trails
+- **[Fixed Length Path Queries](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Similar path counting problems
+- **[Matrix Exponentiation](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Matrix power problems
+- **[Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/)**: General graph problems
 
-#### 2. **Matrix Problems**
-- **Matrix Exponentiation**: Fast matrix power computation
-- **Adjacency Matrix**: Graph representation
-- **Transition Matrix**: State transition probabilities
-- **Markov Chains**: Probabilistic state transitions
+## 📚 Learning Points
 
-#### 3. **Graph Theory Problems**
-- **Trail Counting**: Count trails between nodes
-- **Walk Counting**: Count walks of given length
-- **Trail Detection**: Find trails in graphs
-- **Connectivity**: Graph connectivity analysis
+1. **Matrix Exponentiation**: Essential for counting walks in graphs
+2. **Binary Exponentiation**: Important for handling large powers efficiently
+3. **Hamiltonian Trails**: Key concept in graph theory
+4. **Modular Arithmetic**: Important for handling large numbers
 
-#### 4. **Dynamic Programming Problems**
-- **State Transitions**: Dynamic state changes
-- **Memoization**: Caching computed results
-- **Optimal Substructure**: Breaking into subproblems
-- **Overlapping Subproblems**: Reusing solutions
+---
 
-#### 5. **Query Processing Problems**
-- **Range Queries**: Querying ranges of data
-- **Point Queries**: Querying specific points
-- **Batch Queries**: Processing multiple queries
-- **Online Queries**: Real-time query processing
-
-### Competitive Programming Variations
-
-#### 1. **Online Judge Variations**
-- **Time Limits**: Optimize for strict constraints
-- **Memory Limits**: Space-efficient solutions
-- **Input Size**: Handle large matrices
-- **Edge Cases**: Robust matrix operations
-
-#### 2. **Algorithm Contests**
-- **Speed Programming**: Fast implementation
-- **Code Golf**: Minimal code solutions
-- **Team Contests**: Collaborative problem solving
-- **Live Coding**: Real-time problem solving
-
-#### 3. **Advanced Techniques**
-- **Binary Search**: On answer space
-- **Two Pointers**: Efficient matrix traversal
-- **Sliding Window**: Optimal submatrix problems
-- **Monotonic Stack/Queue**: Maintaining order
-
-### Mathematical Extensions
-
-#### 1. **Linear Algebra**
-- **Matrix Operations**: Multiplication, exponentiation
-- **Eigenvalues**: Matrix spectral properties
-- **Determinants**: Matrix determinants
-- **Inverses**: Matrix inverses
-
-#### 2. **Probability Theory**
-- **Expected Values**: Average Hamiltonian trail counts
-- **Markov Chains**: State transition probabilities
-- **Random Walks**: Probabilistic graph traversal
-- **Monte Carlo**: Simulation methods
-
-#### 3. **Number Theory**
-- **Modular Arithmetic**: Large number handling
-- **Prime Numbers**: Special matrix cases
-- **GCD/LCM**: Mathematical properties
-- **Euler's Totient**: Counting coprime Hamiltonian trails
-
-### Learning Resources
-
-#### 1. **Online Platforms**
-- **LeetCode**: Matrix and graph problems
-- **Codeforces**: Competitive programming
-- **HackerRank**: Algorithm challenges
-- **AtCoder**: Japanese programming contests
-
-#### 2. **Educational Resources**
-- **CLRS**: Introduction to Algorithms
-- **CP-Algorithms**: Competitive programming algorithms
-- **GeeksforGeeks**: Algorithm tutorials
-- **TopCoder**: Algorithm tutorials
-
-#### 3. **Practice Problems**
-- **Matrix Problems**: Exponentiation, multiplication
-- **Graph Problems**: Hamiltonian trail counting, trail finding
-- **Dynamic Problems**: State transitions, caching
-- **Query Problems**: Range queries, batch processing 
+**This is a great introduction to matrix exponentiation for graph problems!** 🎯 

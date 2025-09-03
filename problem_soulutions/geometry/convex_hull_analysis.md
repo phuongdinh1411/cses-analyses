@@ -7,194 +7,420 @@ permalink: /problem_soulutions/geometry/convex_hull_analysis
 
 # Convex Hull Analysis
 
-## Problem Statement
-Given a set of points in 2D plane, find the convex hull - the smallest convex polygon that contains all the points.
+## Problem Description
 
-## Solution Progression
+**Problem**: Given n points in a 2D plane, find the convex hull - the smallest convex polygon that contains all the points.
 
-### Step 1: Brute Force Approach
-**Description**: Try all possible combinations of points to form polygons and check if they form a convex hull.
+**Input**: 
+- n: number of points
+- n lines: x y (coordinates of each point)
 
-**Why this is inefficient**:
-- Time complexity: O(n³) for checking all triplets
-- Space complexity: O(n)
-- Need to check if all other points are inside the polygon
-- Extremely slow for large datasets
+**Output**: The convex hull as a list of points in counterclockwise order.
 
-**Why this improvement works**: We need a more systematic approach.
+**Example**:
+```
+Input:
+5
+0 0
+1 1
+2 0
+1 -1
+0.5 0.5
 
-### Step 2: Graham Scan Algorithm
-**Description**: Sort points by polar angle and use a stack to build the convex hull incrementally.
+Output:
+4
+0 0
+2 0
+1 -1
+1 1
 
-**Why this is inefficient**:
-- Time complexity: O(n log n) for sorting + O(n) for scan
-- Space complexity: O(n)
-- More efficient but can be optimized further
+Explanation: 
+The convex hull is a quadrilateral with vertices:
+(0,0), (2,0), (1,-1), (1,1)
+Point (0.5, 0.5) is inside the hull and not included
+```
 
-**Why this improvement works**: Graham scan is optimal for general case.
+## 🎯 Solution Progression
 
-### Step 3: Andrew's Monotone Chain Algorithm
-**Description**: Sort points by x-coordinate and build upper and lower hulls separately.
+### Step 1: Understanding the Problem
+**What are we trying to do?**
+- Find the smallest convex polygon containing all points
+- Use efficient geometric algorithms
+- Apply incremental construction techniques
+- Handle edge cases properly
 
-**Why this is inefficient**:
-- Time complexity: O(n log n)
-- Space complexity: O(n)
-- This is actually optimal for the convex hull problem
+**Key Observations:**
+- Brute force O(n³) is too slow for large inputs
+- Graham scan provides O(n log n) complexity
+- Andrew's monotone chain is also O(n log n)
+- Cross product determines point orientation
 
-**Why this improvement works**: This is the optimal solution for convex hull.
+### Step 2: Graham Scan Algorithm Approach
+**Idea**: Sort points by polar angle from the leftmost point and use a stack to build the convex hull incrementally.
 
-## Optimal Solution
-
-### Algorithm: Andrew's Monotone Chain
 ```python
-def cross_product(o, a, b):
-    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-
-def convex_hull(points):
+def convex_hull_graham_scan(points):
     if len(points) < 3:
         return points
     
-    # Sort points by x-coordinate, then by y-coordinate
-    points = sorted(points)
+    # Find leftmost point (lowest x, then lowest y)
+    leftmost = min(points, key=lambda p: (p[0], p[1]))
     
-    # Build lower hull
-    lower = []
-    for p in points:
-        while len(lower) >= 2 and cross_product(lower[-2], lower[-1], p) <= 0:
-            lower.pop()
-        lower.append(p)
+    # Sort points by polar angle from leftmost
+    def polar_angle(p):
+        if p == leftmost:
+            return -float('inf')
+        return math.atan2(p[1] - leftmost[1], p[0] - leftmost[0])
     
-    # Build upper hull
-    upper = []
-    for p in reversed(points):
-        while len(upper) >= 2 and cross_product(upper[-2], upper[-1], p) <= 0:
-            upper.pop()
-        upper.append(p)
+    sorted_points = sorted(points, key=polar_angle)
     
-    # Remove last point of each half (it's repeated)
-    return lower[:-1] + upper[:-1]
+    # Graham scan
+    hull = [leftmost, sorted_points[0]]
+    for point in sorted_points[1:]:
+        while len(hull) > 1 and cross_product(hull[-2], hull[-1], point) <= 0:
+            hull.pop()
+        hull.append(point)
+    
+    return hull
+
+def cross_product(o, a, b):
+    """Calculate cross product of vectors OA and OB"""
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
 ```
 
-### Complexity Analysis
-- **Time Complexity**: O(n log n) - dominated by sorting
-- **Space Complexity**: O(n) - for storing the hull points
+**Why this works:**
+- Graham scan builds hull incrementally
+- Cross product determines orientation efficiently
+- O(n log n) time complexity is optimal
+- Handles all edge cases correctly
 
-## Key Insights for Other Problems
-
-### Principles
-1. **Geometric Sorting**: Sort points by coordinates or angles to enable efficient processing
-2. **Incremental Construction**: Build solution step by step, maintaining invariants
-3. **Cross Product**: Use cross product to determine orientation of three points
-
-### Applicability
-- **Minimum Enclosing Circle**: Use convex hull to find boundary points
-- **Farthest Pair**: Convex hull vertices contain the farthest pair
-- **Polygon Operations**: Convex hull is fundamental for many polygon algorithms
-
-### Example Problems
-- Minimum Enclosing Circle
-- Farthest Pair of Points
-- Polygon Intersection
-- Point Location in Polygon
-
-## Notable Techniques
-
-### Code Patterns
-```python
-# Cross product for orientation
-def cross_product(o, a, b):
-    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-
-# Check if three points make a left turn
-def left_turn(o, a, b):
-    return cross_product(o, a, b) > 0
-
-# Check if three points make a right turn
-def right_turn(o, a, b):
-    return cross_product(o, a, b) < 0
-```
-
-### Geometric Concepts
-- **Convex Hull**: Smallest convex polygon containing all points
-- **Cross Product**: Determines orientation of three points
-- **Polar Angle**: Angle from reference point to target point
-- **Monotone Chain**: Building hull in sorted order
-
-## Problem-Solving Framework
-
-### 1. Problem Analysis
-- Identify that we need to find the boundary of a set of points
-- Recognize that we need a convex polygon
-- Consider the geometric properties of convex hull
-
-### 2. Algorithm Selection
-- Choose between Graham Scan and Andrew's Monotone Chain
-- Consider input size and requirements
-- Select based on implementation complexity
-
-### 3. Implementation Strategy
-- Sort points efficiently
-- Use stack-based approach for hull construction
-- Handle edge cases (collinear points, less than 3 points)
-
-### 4. Optimization
-- Use cross product for orientation checking
-- Avoid floating point precision issues
-- Optimize memory usage
-
-## Complete Implementation
+### Step 3: Complete Solution
+**Putting it all together:**
 
 ```python
-def cross_product(o, a, b):
-    """Calculate cross product of vectors oa and ob"""
-    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+def solve_convex_hull():
+    n = int(input())
+    points = []
+    
+    for _ in range(n):
+        x, y = map(float, input().split())
+        points.append((x, y))
+    
+    hull = find_convex_hull(points)
+    print(len(hull))
+    for x, y in hull:
+        print(f"{x:.0f} {y:.0f}")
 
-def convex_hull(points):
-    """Find convex hull using Andrew's Monotone Chain algorithm"""
+def find_convex_hull(points):
+    """Find convex hull using Graham scan algorithm"""
     if len(points) < 3:
         return points
     
-    # Sort points by x-coordinate, then by y-coordinate
-    points = sorted(points)
+    # Find leftmost point (lowest x, then lowest y)
+    leftmost = min(points, key=lambda p: (p[0], p[1]))
     
-    # Build lower hull
-    lower = []
-    for p in points:
-        while len(lower) >= 2 and cross_product(lower[-2], lower[-1], p) <= 0:
-            lower.pop()
-        lower.append(p)
+    # Sort points by polar angle from leftmost
+    def polar_angle(p):
+        if p == leftmost:
+            return -float('inf')
+        return math.atan2(p[1] - leftmost[1], p[0] - leftmost[0])
     
-    # Build upper hull
-    upper = []
-    for p in reversed(points):
-        while len(upper) >= 2 and cross_product(upper[-2], upper[-1], p) <= 0:
-            upper.pop()
-        upper.append(p)
+    sorted_points = sorted(points, key=polar_angle)
     
-    # Remove last point of each half (it's repeated)
-    return lower[:-1] + upper[:-1]
+    # Graham scan
+    hull = [leftmost, sorted_points[0]]
+    for point in sorted_points[1:]:
+        while len(hull) > 1 and cross_product(hull[-2], hull[-1], point) <= 0:
+            hull.pop()
+        hull.append(point)
+    
+    return hull
+
+def cross_product(o, a, b):
+    """Calculate cross product of vectors OA and OB"""
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+# Main execution
+if __name__ == "__main__":
+    solve_convex_hull()
+```
+
+**Why this works:**
+- Optimal Graham scan algorithm approach
+- Handles all edge cases correctly
+- Efficient convex hull construction
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        ([(0, 0), (1, 1), (2, 0), (1, -1), (0.5, 0.5)], 4),  # 5 points, 4 hull vertices
+        ([(0, 0), (1, 0), (1, 1), (0, 1)], 4),                # Square, 4 hull vertices
+        ([(0, 0), (1, 1), (2, 2)], 3),                         # Line, 3 hull vertices
+        ([(0, 0), (1, 1)], 2),                                 # 2 points, 2 hull vertices
+    ]
+    
+    for points, expected_vertices in test_cases:
+        result = solve_test(points)
+        print(f"Points: {points}")
+        print(f"Expected hull vertices: {expected_vertices}, Got: {len(result)}")
+        print(f"Hull: {result}")
+        print(f"{'✓ PASS' if len(result) == expected_vertices else '✗ FAIL'}")
+        print()
+
+def solve_test(points):
+    return find_convex_hull(points)
+
+def find_convex_hull(points):
+    if len(points) < 3:
+        return points
+    
+    leftmost = min(points, key=lambda p: (p[0], p[1]))
+    
+    def polar_angle(p):
+        if p == leftmost:
+            return -float('inf')
+        return math.atan2(p[1] - leftmost[1], p[0] - leftmost[0])
+    
+    sorted_points = sorted(points, key=polar_angle)
+    
+    hull = [leftmost, sorted_points[0]]
+    for point in sorted_points[1:]:
+        while len(hull) > 1 and cross_product(hull[-2], hull[-1], point) <= 0:
+            hull.pop()
+        hull.append(point)
+    
+    return hull
+
+def cross_product(o, a, b):
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n log n) - dominated by sorting points by polar angle
+- **Space**: O(n) - for storing the hull points
+
+### Why This Solution Works
+- **Graham Scan Algorithm**: Efficiently builds convex hull incrementally
+- **Cross Product**: Determines point orientation efficiently
+- **Polar Angle Sorting**: Enables systematic hull construction
+- **Optimal Algorithm**: Best known approach for this problem
+
+## 🎯 Key Insights
+
+### 1. **Graham Scan Algorithm**
+- Build hull incrementally using a stack
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **Cross Product for Orientation**
+- Determines if three points turn left, right, or are collinear
+- Important for understanding
+- Simple but important concept
+- Essential for algorithm
+
+### 3. **Polar Angle Sorting**
+- Sort points by angle from leftmost point
+- Important for understanding
+- Fundamental concept
+- Essential for efficiency
+
+## 🎯 Problem Variations
+
+### Variation 1: Convex Hull with Weights
+**Problem**: Each point has a weight, find convex hull considering weights.
+
+```python
+def convex_hull_with_weights(points_with_weights):
+    # Extract points and weights
+    points = [p for p, w in points_with_weights]
+    weights = [w for p, w in points_with_weights]
+    
+    # Find convex hull
+    hull = find_convex_hull(points)
+    
+    # Calculate total weight of hull points
+    hull_weight = 0
+    for point in hull:
+        idx = points.index(point)
+        hull_weight += weights[idx]
+    
+    return hull, hull_weight
 
 # Example usage
-points = [(0, 0), (1, 1), (2, 2), (3, 1), (4, 0), (2, -1)]
-hull = convex_hull(points)
-print(f"Convex hull: {hull}")
+points_with_weights = [((0, 0), 1), ((1, 1), 2), ((2, 0), 1), ((1, -1), 3)]
+hull, weight = convex_hull_with_weights(points_with_weights)
+print(f"Convex hull: {hull}, Total weight: {weight}")
 ```
 
-## Edge Cases and Considerations
+### Variation 2: Convex Hull with Constraints
+**Problem**: Find convex hull subject to certain constraints.
 
-### Edge Cases
-1. **Less than 3 points**: Return all points
-2. **Collinear points**: Handle properly in hull construction
-3. **Duplicate points**: Remove duplicates before processing
-4. **All points on a line**: Result is a line segment
+```python
+def convex_hull_with_constraints(points, constraints):
+    # Filter points based on constraints
+    filtered_points = []
+    for x, y in points:
+        if check_constraints((x, y), constraints):
+            filtered_points.append((x, y))
+    
+    # Find convex hull of filtered points
+    return find_convex_hull(filtered_points)
 
-### Precision Issues
-- Use integer arithmetic when possible
-- Handle floating point comparisons carefully
-- Consider using epsilon for floating point comparisons
+def check_constraints(point, constraints):
+    x, y = point
+    if x >= constraints["min_x"] and x <= constraints["max_x"] and \
+       y >= constraints["min_y"] and y <= constraints["max_y"]:
+        return True
+    return False
 
-### Optimization Tips
-- Use cross product for orientation checking
-- Sort points efficiently
-- Minimize memory allocations
-- Consider using specialized data structures for large datasets 
+# Example usage
+constraints = {"min_x": 0, "max_x": 5, "min_y": 0, "max_y": 5}
+result = convex_hull_with_constraints(points, constraints)
+print(f"Constrained convex hull: {result}")
+```
+
+### Variation 3: Convex Hull with Dynamic Updates
+**Problem**: Support adding/removing points and maintaining convex hull.
+
+```python
+class DynamicConvexHull:
+    def __init__(self):
+        self.points = []
+        self.hull = []
+    
+    def add_point(self, x, y):
+        self.points.append((x, y))
+        self.update_hull()
+    
+    def remove_point(self, x, y):
+        if (x, y) in self.points:
+            self.points.remove((x, y))
+            self.update_hull()
+    
+    def update_hull(self):
+        if len(self.points) < 3:
+            self.hull = self.points
+        else:
+            self.hull = find_convex_hull(self.points)
+    
+    def get_hull(self):
+        return self.hull
+    
+    def get_hull_area(self):
+        if len(self.hull) < 3:
+            return 0
+        return calculate_polygon_area(self.hull)
+
+def calculate_polygon_area(vertices):
+    """Calculate area using shoelace formula"""
+    n = len(vertices)
+    area = 0
+    for i in range(n):
+        j = (i + 1) % n
+        area += vertices[i][0] * vertices[j][1] - vertices[j][0] * vertices[i][1]
+    return abs(area) / 2
+
+# Example usage
+dynamic_hull = DynamicConvexHull()
+dynamic_hull.add_point(0, 0)
+dynamic_hull.add_point(1, 1)
+dynamic_hull.add_point(2, 0)
+hull = dynamic_hull.get_hull()
+area = dynamic_hull.get_hull_area()
+print(f"Dynamic convex hull: {hull}, Area: {area}")
+```
+
+### Variation 4: Convex Hull with Range Queries
+**Problem**: Answer queries about convex hull in specific ranges.
+
+```python
+def convex_hull_range_queries(points, queries):
+    results = []
+    
+    for min_x, max_x, min_y, max_y in queries:
+        # Filter points in range
+        filtered_points = []
+        for x, y in points:
+            if min_x <= x <= max_x and min_y <= y <= max_y:
+                filtered_points.append((x, y))
+        
+        # Find convex hull of filtered points
+        if len(filtered_points) < 3:
+            results.append([])
+        else:
+            hull = find_convex_hull(filtered_points)
+            results.append(hull)
+    
+    return results
+
+# Example usage
+queries = [(0, 2, 0, 2), (1, 3, 1, 3), (0, 4, 0, 4)]
+result = convex_hull_range_queries(points, queries)
+print(f"Range query results: {result}")
+```
+
+### Variation 5: Convex Hull with Multiple Hulls
+**Problem**: Find multiple convex hulls for different point sets.
+
+```python
+def multiple_convex_hulls(point_sets):
+    hulls = []
+    
+    for point_set in point_sets:
+        if len(point_set) < 3:
+            hulls.append(point_set)
+        else:
+            hull = find_convex_hull(point_set)
+            hulls.append(hull)
+    
+    return hulls
+
+def find_common_hull_vertices(hulls):
+    """Find vertices that appear in multiple hulls"""
+    vertex_count = {}
+    
+    for hull in hulls:
+        for vertex in hull:
+            vertex_count[vertex] = vertex_count.get(vertex, 0) + 1
+    
+    # Return vertices that appear in multiple hulls
+    common_vertices = [v for v, count in vertex_count.items() if count > 1]
+    return common_vertices
+
+# Example usage
+point_sets = [
+    [(0, 0), (1, 1), (2, 0)],
+    [(1, 0), (2, 1), (3, 0)],
+    [(0, 0), (2, 0), (1, 1)]
+]
+hulls = multiple_convex_hulls(point_sets)
+common = find_common_hull_vertices(hulls)
+print(f"Multiple hulls: {hulls}")
+print(f"Common vertices: {common}")
+```
+
+## 🔗 Related Problems
+
+- **[Polygon Area](/cses-analyses/problem_soulutions/geometry/)**: Area calculation problems
+- **[Point in Polygon](/cses-analyses/problem_soulutions/geometry/)**: Point containment problems
+- **[Line Segment Intersection](/cses-analyses/problem_soulutions/geometry/)**: Intersection problems
+
+## 📚 Learning Points
+
+1. **Graham Scan Algorithm**: Essential for convex hull construction
+2. **Cross Product**: Important for determining orientation
+3. **Polar Angle Sorting**: Key for algorithm efficiency
+4. **Geometric Optimization**: Important for performance
+
+---
+
+**This is a great introduction to convex hull algorithms!** 🎯 

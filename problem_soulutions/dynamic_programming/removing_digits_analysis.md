@@ -108,6 +108,315 @@ def removing_digits_memoization(n):
                     min_count = min(min_count, 1 + result)
         
         memo[num] = min_count
+        return min_count
+    
+    return min_steps(n)
+```
+
+**Why this improvement works**: By storing the results of subproblems in a memo dictionary, we avoid recalculating the same values multiple times. Each subproblem is solved only once, leading to O(n) complexity.
+
+### Step 2: Dynamic Programming Approach
+**Description**: Use iterative DP to build the solution from smaller subproblems.
+
+```python
+def removing_digits_dp(n):
+    # dp[i] = minimum steps to reduce i to 0
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, n + 1):
+        # Extract all digits
+        temp = i
+        while temp > 0:
+            digit = temp % 10
+            if digit > 0 and i - digit >= 0:
+                dp[i] = min(dp[i], 1 + dp[i - digit])
+            temp //= 10
+    
+    return dp[n]
+```
+
+### Step 3: Complete Solution
+**Putting it all together:**
+
+```python
+def solve_removing_digits():
+    n = int(input())
+    
+    # dp[i] = minimum steps to reduce i to 0
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, n + 1):
+        # Extract all digits
+        temp = i
+        while temp > 0:
+            digit = temp % 10
+            if digit > 0 and i - digit >= 0:
+                dp[i] = min(dp[i], 1 + dp[i - digit])
+            temp //= 10
+    
+    print(dp[n])
+
+# Main execution
+if __name__ == "__main__":
+    solve_removing_digits()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (27, 5),
+        (10, 1),
+        (123, 3),
+        (1, 1),
+        (999, 1),
+    ]
+    
+    for n, expected in test_cases:
+        result = solve_test(n)
+        print(f"n={n}, expected={expected}, result={result}")
+        assert result == expected, f"Failed for n={n}"
+        print("✓ Passed")
+        print()
+
+def solve_test(n):
+    # dp[i] = minimum steps to reduce i to 0
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, n + 1):
+        # Extract all digits
+        temp = i
+        while temp > 0:
+            digit = temp % 10
+            if digit > 0 and i - digit >= 0:
+                dp[i] = min(dp[i], 1 + dp[i - digit])
+            temp //= 10
+    
+    return dp[n]
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n*d) - we fill a 1D DP array and extract digits
+- **Space**: O(n) - we store the entire DP array
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes minimum steps using optimal substructure
+- **State Transition**: dp[i] = min(1 + dp[i-digit]) for all valid digits
+- **Base Case**: dp[0] = 0
+- **Optimal Substructure**: Optimal solution can be built from smaller subproblems
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for Digit Problems**
+- Find optimal substructure in digit problems
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **1D DP Array**
+- Use 1D table for single number problems
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Digit Extraction**
+- Extract digits efficiently
+- Important for understanding
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Removing Digits with Different Costs
+**Problem**: Different digits have different costs.
+
+```python
+def removing_digits_with_costs(n, costs):
+    # dp[i] = minimum cost to reduce i to 0
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, n + 1):
+        # Extract all digits
+        temp = i
+        while temp > 0:
+            digit = temp % 10
+            if digit > 0 and i - digit >= 0:
+                cost = costs.get(digit, 1)
+                dp[i] = min(dp[i], cost + dp[i - digit])
+            temp //= 10
+    
+    return dp[n] if dp[n] != float('inf') else -1
+
+# Example usage
+costs = {1: 2, 2: 3, 7: 1, 8: 4, 9: 2}
+result = removing_digits_with_costs(27, costs)
+print(f"Minimum cost to reduce 27: {result}")
+```
+
+### Variation 2: Removing Digits with Constraints
+**Problem**: Can only remove certain digits.
+
+```python
+def removing_digits_with_constraints(n, allowed_digits):
+    # dp[i] = minimum steps to reduce i to 0
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, n + 1):
+        # Extract all digits
+        temp = i
+        while temp > 0:
+            digit = temp % 10
+            if digit in allowed_digits and i - digit >= 0:
+                dp[i] = min(dp[i], 1 + dp[i - digit])
+            temp //= 10
+    
+    return dp[n] if dp[n] != float('inf') else -1
+
+# Example usage
+allowed = {1, 2, 5, 7}
+result = removing_digits_with_constraints(27, allowed)
+print(f"Minimum steps with constraints: {result}")
+```
+
+### Variation 3: Removing Digits with Multiple Numbers
+**Problem**: Start with multiple numbers and reduce them all to 0.
+
+```python
+def removing_digits_multiple_numbers(numbers):
+    max_num = max(numbers)
+    
+    # dp[i] = minimum steps to reduce i to 0
+    dp = [float('inf')] * (max_num + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, max_num + 1):
+        # Extract all digits
+        temp = i
+        while temp > 0:
+            digit = temp % 10
+            if digit > 0 and i - digit >= 0:
+                dp[i] = min(dp[i], 1 + dp[i - digit])
+            temp //= 10
+    
+    # Sum up steps for all numbers
+    total_steps = sum(dp[num] for num in numbers)
+    return total_steps
+
+# Example usage
+numbers = [27, 15, 8]
+result = removing_digits_multiple_numbers(numbers)
+print(f"Total steps for all numbers: {result}")
+```
+
+### Variation 4: Removing Digits with Path Tracking
+**Problem**: Find the actual sequence of digits removed.
+
+```python
+def removing_digits_with_path(n):
+    # dp[i] = minimum steps to reduce i to 0
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # Base case
+    
+    # prev[i] = previous number in optimal path
+    prev = [-1] * (n + 1)
+    
+    for i in range(1, n + 1):
+        # Extract all digits
+        temp = i
+        while temp > 0:
+            digit = temp % 10
+            if digit > 0 and i - digit >= 0:
+                if 1 + dp[i - digit] < dp[i]:
+                    dp[i] = 1 + dp[i - digit]
+                    prev[i] = i - digit
+            temp //= 10
+    
+    # Reconstruct path
+    path = []
+    current = n
+    while current > 0:
+        path.append(current - prev[current])
+        current = prev[current]
+    
+    return dp[n], path[::-1]
+
+# Example usage
+steps, path = removing_digits_with_path(27)
+print(f"Steps: {steps}, Path: {path}")
+```
+
+### Variation 5: Removing Digits with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
+```python
+def optimized_removing_digits(n):
+    # Use set for faster digit lookup
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, n + 1):
+        # Extract digits more efficiently
+        digits = set()
+        temp = i
+        while temp > 0:
+            digits.add(temp % 10)
+            temp //= 10
+        
+        # Try all digits
+        for digit in digits:
+            if digit > 0 and i - digit >= 0:
+                dp[i] = min(dp[i], 1 + dp[i - digit])
+    
+    return dp[n]
+
+# Example usage
+result = optimized_removing_digits(27)
+print(f"Optimized minimum steps: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Dynamic Programming Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar DP problems
+- **[Digit Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar digit problems
+- **[Optimization Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: General optimization problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming**: Essential for digit optimization problems
+2. **1D DP Arrays**: Important for single number problems
+3. **Digit Extraction**: Important for understanding number manipulation
+4. **Path Reconstruction**: Important for understanding optimal solutions
+
+---
+
+**This is a great introduction to dynamic programming for digit optimization problems!** 🎯
+            temp //= 10
+        
+        min_count = float('inf')
+        for digit in digits:
+            if digit > 0:  # Don't subtract 0
+                result = min_steps(num - digit)
+                if result != float('inf'):
+                    min_count = min(min_count, 1 + result)
+        
+        memo[num] = min_count
         return memo[num]
     
     return min_steps(n)

@@ -7,21 +7,17 @@ permalink: /problem_soulutions/dynamic_programming/minimal_grid_path_analysis
 
 # Minimal Grid Path
 
-## Problem Statement
-Given an n×n grid, find the minimum cost path from the top-left corner to the bottom-right corner. You can only move right or down, and each cell has a cost.
+## Problem Description
 
-### Input
-The first input line has an integer n: the size of the grid.
-Then there are n lines. Each line has n integers: the costs of the cells.
+**Problem**: Given an n×n grid, find the minimum cost path from the top-left corner to the bottom-right corner. You can only move right or down, and each cell has a cost.
 
-### Output
-Print one integer: the minimum cost of a path from top-left to bottom-right.
+**Input**: 
+- n: size of the grid
+- grid: n×n grid with costs for each cell
 
-### Constraints
-- 1 ≤ n ≤ 1000
-- 1 ≤ cost ≤ 10^9
+**Output**: Minimum cost of a path from top-left to bottom-right.
 
-### Example
+**Example**:
 ```
 Input:
 3
@@ -31,6 +27,11 @@ Input:
 
 Output:
 21
+
+Explanation: 
+The minimum cost path is: 1 → 2 → 6 → 9 = 1 + 2 + 6 + 9 = 18
+Wait, let me recalculate: 1 → 2 → 3 → 6 → 9 = 1 + 2 + 3 + 6 + 9 = 21
+Actually, the optimal path is: 1 → 2 → 3 → 6 → 9 = 21
 ```
 
 ## Solution Progression
@@ -85,16 +86,73 @@ def minimal_grid_path_optimized(n, grid):
 
 **Why this improvement works**: We use a 2D DP table where dp[i][j] represents the minimum cost to reach cell (i,j) from the destination. We fill the table from bottom-right to top-left.
 
-## Final Optimal Solution
+### Step 3: Complete Solution
+**Putting it all together:**
 
 ```python
-n = int(input())
-grid = []
-for _ in range(n):
-    row = list(map(int, input().split()))
-    grid.append(row)
+def solve_minimal_grid_path():
+    n = int(input())
+    grid = []
+    for _ in range(n):
+        row = list(map(int, input().split()))
+        grid.append(row)
+    
+    # dp[i][j] = minimum cost to reach (i,j) from destination
+    dp = [[float('inf')] * n for _ in range(n)]
+    
+    # Base case
+    dp[n-1][n-1] = grid[n-1][n-1]
+    
+    # Fill from bottom-right to top-left
+    for i in range(n-1, -1, -1):
+        for j in range(n-1, -1, -1):
+            if i == n-1 and j == n-1:
+                continue
+            
+            # Can move right
+            if j + 1 < n:
+                dp[i][j] = min(dp[i][j], dp[i][j+1])
+            
+            # Can move down
+            if i + 1 < n:
+                dp[i][j] = min(dp[i][j], dp[i+1][j])
+            
+            dp[i][j] += grid[i][j]
+    
+    print(dp[0][0])
 
-def find_minimal_grid_path(n, grid):
+# Main execution
+if __name__ == "__main__":
+    solve_minimal_grid_path()
+```
+
+**Why this works:**
+- Optimal dynamic programming approach
+- Handles all edge cases
+- Efficient implementation
+- Clear and readable code
+
+### Step 4: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        (3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]], 21),
+        (2, [[1, 2], [3, 4]], 7),
+        (1, [[5]], 5),
+        (2, [[1, 1], [1, 1]], 3),
+    ]
+    
+    for n, grid, expected in test_cases:
+        result = solve_test(n, grid)
+        print(f"n={n}, grid={grid}, expected={expected}, result={result}")
+        assert result == expected, f"Failed for n={n}, grid={grid}"
+        print("✓ Passed")
+        print()
+
+def solve_test(n, grid):
+    # dp[i][j] = minimum cost to reach (i,j) from destination
     dp = [[float('inf')] * n for _ in range(n)]
     
     # Base case
@@ -118,9 +176,246 @@ def find_minimal_grid_path(n, grid):
     
     return dp[0][0]
 
-result = find_minimal_grid_path(n, grid)
-print(result)
+test_solution()
 ```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n²) - we fill a 2D DP table
+- **Space**: O(n²) - we store the entire DP table
+
+### Why This Solution Works
+- **Dynamic Programming**: Efficiently computes minimum cost paths using optimal substructure
+- **State Transition**: dp[i][j] = grid[i][j] + min(dp[i+1][j], dp[i][j+1])
+- **Base Case**: dp[n-1][n-1] = grid[n-1][n-1]
+- **Optimal Substructure**: Optimal solution can be built from smaller subproblems
+
+## 🎯 Key Insights
+
+### 1. **Dynamic Programming for Grid Problems**
+- Find optimal substructure in grid problems
+- Essential for understanding
+- Key optimization technique
+- Enables efficient solution
+
+### 2. **2D DP Table**
+- Use 2D table for grid positions
+- Important for understanding
+- Fundamental concept
+- Essential for algorithm
+
+### 3. **Minimum Cost Path**
+- Find optimal paths in geometric structures
+- Important for understanding
+- Simple but important concept
+- Essential for understanding
+
+## 🎯 Problem Variations
+
+### Variation 1: Minimal Grid Path with Different Movement Rules
+**Problem**: Allow diagonal movement or more directions.
+
+```python
+def minimal_grid_path_with_diagonals(n, grid):
+    # dp[i][j] = minimum cost to reach (i,j) from destination
+    dp = [[float('inf')] * n for _ in range(n)]
+    
+    # Base case
+    dp[n-1][n-1] = grid[n-1][n-1]
+    
+    # Fill from bottom-right to top-left
+    for i in range(n-1, -1, -1):
+        for j in range(n-1, -1, -1):
+            if i == n-1 and j == n-1:
+                continue
+            
+            # Can move right
+            if j + 1 < n:
+                dp[i][j] = min(dp[i][j], dp[i][j+1])
+            
+            # Can move down
+            if i + 1 < n:
+                dp[i][j] = min(dp[i][j], dp[i+1][j])
+            
+            # Can move diagonally
+            if i + 1 < n and j + 1 < n:
+                dp[i][j] = min(dp[i][j], dp[i+1][j+1])
+            
+            dp[i][j] += grid[i][j]
+    
+    return dp[0][0]
+
+# Example usage
+grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+result = minimal_grid_path_with_diagonals(3, grid)
+print(f"Minimal path with diagonals: {result}")
+```
+
+### Variation 2: Minimal Grid Path with Obstacles
+**Problem**: Some cells are blocked and cannot be traversed.
+
+```python
+def minimal_grid_path_with_obstacles(n, grid, obstacles):
+    # dp[i][j] = minimum cost to reach (i,j) from destination
+    dp = [[float('inf')] * n for _ in range(n)]
+    
+    # Base case
+    if (n-1, n-1) not in obstacles:
+        dp[n-1][n-1] = grid[n-1][n-1]
+    
+    # Fill from bottom-right to top-left
+    for i in range(n-1, -1, -1):
+        for j in range(n-1, -1, -1):
+            if (i, j) in obstacles:
+                continue
+            
+            if i == n-1 and j == n-1:
+                continue
+            
+            # Can move right
+            if j + 1 < n and (i, j+1) not in obstacles:
+                dp[i][j] = min(dp[i][j], dp[i][j+1])
+            
+            # Can move down
+            if i + 1 < n and (i+1, j) not in obstacles:
+                dp[i][j] = min(dp[i][j], dp[i+1][j])
+            
+            if dp[i][j] != float('inf'):
+                dp[i][j] += grid[i][j]
+    
+    return dp[0][0] if dp[0][0] != float('inf') else -1
+
+# Example usage
+obstacles = {(1, 1)}  # Cell (1,1) is blocked
+result = minimal_grid_path_with_obstacles(3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]], obstacles)
+print(f"Minimal path with obstacles: {result}")
+```
+
+### Variation 3: Minimal Grid Path with Multiple Destinations
+**Problem**: Find minimum cost paths to multiple destination points.
+
+```python
+def minimal_grid_path_multiple_destinations(n, grid, destinations):
+    # dp[i][j] = minimum cost to reach (i,j) from any destination
+    dp = [[float('inf')] * n for _ in range(n)]
+    
+    # Base cases: all destinations
+    for dest_i, dest_j in destinations:
+        dp[dest_i][dest_j] = grid[dest_i][dest_j]
+    
+    # Fill from bottom-right to top-left
+    for i in range(n-1, -1, -1):
+        for j in range(n-1, -1, -1):
+            if (i, j) in destinations:
+                continue
+            
+            # Can move right
+            if j + 1 < n:
+                dp[i][j] = min(dp[i][j], dp[i][j+1])
+            
+            # Can move down
+            if i + 1 < n:
+                dp[i][j] = min(dp[i][j], dp[i+1][j])
+            
+            if dp[i][j] != float('inf'):
+                dp[i][j] += grid[i][j]
+    
+    return dp[0][0] if dp[0][0] != float('inf') else -1
+
+# Example usage
+destinations = [(1, 1), (2, 2)]
+result = minimal_grid_path_multiple_destinations(3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]], destinations)
+print(f"Minimal path to multiple destinations: {result}")
+```
+
+### Variation 4: Minimal Grid Path with Step Constraints
+**Problem**: Find minimum cost path with maximum number of steps.
+
+```python
+def minimal_grid_path_with_steps(n, grid, max_steps):
+    # dp[i][j][k] = minimum cost to reach (i,j) in exactly k steps
+    dp = [[[float('inf')] * (max_steps + 1) for _ in range(n)] for _ in range(n)]
+    
+    # Base case: starting position
+    dp[0][0][0] = grid[0][0]
+    
+    # Fill DP table
+    for step in range(max_steps):
+        for i in range(n):
+            for j in range(n):
+                if dp[i][j][step] != float('inf'):
+                    # Move right
+                    if j + 1 < n:
+                        dp[i][j+1][step+1] = min(dp[i][j+1][step+1], dp[i][j][step] + grid[i][j+1])
+                    
+                    # Move down
+                    if i + 1 < n:
+                        dp[i+1][j][step+1] = min(dp[i+1][j][step+1], dp[i][j][step] + grid[i+1][j])
+    
+    return dp[n-1][n-1][max_steps] if dp[n-1][n-1][max_steps] != float('inf') else -1
+
+# Example usage
+result = minimal_grid_path_with_steps(3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]], 4)
+print(f"Minimal path with step constraint: {result}")
+```
+
+### Variation 5: Minimal Grid Path with Dynamic Programming Optimization
+**Problem**: Optimize the DP solution for better performance.
+
+```python
+def optimized_minimal_grid_path(n, grid):
+    # Use 1D DP array to save space
+    dp = [float('inf')] * n
+    
+    # Base case: last row
+    dp[n-1] = grid[n-1][n-1]
+    
+    # Fill from bottom-right to top-left
+    for i in range(n-1, -1, -1):
+        new_dp = [float('inf')] * n
+        
+        for j in range(n-1, -1, -1):
+            if i == n-1 and j == n-1:
+                new_dp[j] = grid[i][j]
+                continue
+            
+            # Can move right
+            if j + 1 < n:
+                new_dp[j] = min(new_dp[j], new_dp[j+1])
+            
+            # Can move down
+            if i + 1 < n:
+                new_dp[j] = min(new_dp[j], dp[j])
+            
+            if new_dp[j] != float('inf'):
+                new_dp[j] += grid[i][j]
+        
+        dp = new_dp
+    
+    return dp[0]
+
+# Example usage
+result = optimized_minimal_grid_path(3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+print(f"Optimized minimal path: {result}")
+```
+
+## 🔗 Related Problems
+
+- **[Dynamic Programming Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar DP problems
+- **[Grid Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar grid problems
+- **[Path Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: General path problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming**: Essential for grid path optimization problems
+2. **2D DP Tables**: Important for grid positions
+3. **Minimum Cost Path**: Important for understanding optimal paths
+4. **Space Optimization**: Important for performance improvement
+
+---
+
+**This is a great introduction to dynamic programming for grid path optimization problems!** 🎯
 
 ## Complexity Analysis
 
