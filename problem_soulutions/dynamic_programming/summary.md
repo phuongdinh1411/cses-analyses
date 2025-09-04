@@ -55,25 +55,99 @@ Welcome to the Dynamic Programming section! This category covers techniques for 
 3. Solve complex array problems with **Array Description**
 4. Tackle string problems with **Longest Common Subsequence**
 
-## Key Concepts
+## Key Concepts & Techniques
 
 ### DP Fundamentals
 - **State Definition**: Choosing what to store
+  - *When to use*: Define states that capture all necessary information for the problem
+  - *Example*: `dp[i]` for 1D problems, `dp[i][j]` for 2D problems
 - **Transition Function**: How states relate
+  - *When to use*: Express how current state depends on previous states
+  - *Example*: `dp[i] = dp[i-1] + dp[i-2]` for Fibonacci
 - **Base Cases**: Starting points
+  - *When to use*: Define initial conditions that don't depend on other states
+  - *Example*: `dp[0] = 1, dp[1] = 1` for Fibonacci
 - **Memoization**: Storing results
+  - *When to use*: Avoid recomputing the same subproblems
+  - *Example*: Use hash map or array to store computed values
 
-### Common Patterns
-- **1D DP**: Linear state space
-- **2D DP**: Grid or two-parameter states
-- **State Compression**: Reducing memory usage
-- **Path Problems**: Finding optimal paths
+### Common DP Patterns
+
+#### 1D DP (Linear State Space)
+- **When to use**: Problems with single parameter progression
+- **Examples**: Fibonacci, coin change, longest increasing subsequence
+- **State**: `dp[i]` represents solution for first i elements
+- **Transition**: `dp[i] = f(dp[i-1], dp[i-2], ..., dp[0])`
+
+#### 2D DP (Grid/Two Parameters)
+- **When to use**: Problems with two independent parameters
+- **Examples**: Grid paths, LCS, edit distance, knapsack
+- **State**: `dp[i][j]` represents solution for parameters i and j
+- **Transition**: `dp[i][j] = f(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])`
+
+#### State Compression
+- **When to use**: When only previous states are needed
+- **Examples**: Fibonacci, rolling array optimization
+- **Technique**: Use only necessary previous states
+- **Memory**: Reduces O(n²) to O(n) or O(n) to O(1)
+
+#### Path Problems
+- **When to use**: Finding optimal paths in graphs/grids
+- **Examples**: Shortest path, maximum path sum, path counting
+- **State**: `dp[i][j]` represents best path to position (i,j)
+- **Transition**: Consider all possible moves to current position
+
+### Advanced DP Techniques
+
+#### Bitmask DP
+- **When to use**: Problems with subset selection or state representation
+- **Examples**: TSP, subset problems, state machines
+- **State**: Use bits to represent selected elements
+- **Transition**: Update bitmask by adding/removing elements
+
+#### Tree DP
+- **When to use**: Problems on trees with parent-child relationships
+- **Examples**: Tree diameter, tree coloring, tree matching
+- **State**: `dp[node][state]` for each node and possible states
+- **Transition**: Combine results from children nodes
+
+#### Interval DP
+- **When to use**: Problems on intervals or ranges
+- **Examples**: Matrix chain multiplication, palindrome partitioning
+- **State**: `dp[i][j]` represents solution for interval [i,j]
+- **Transition**: Try all possible ways to split the interval
+
+#### Digit DP
+- **When to use**: Problems involving digits of numbers
+- **Examples**: Count numbers with certain properties, digit sum problems
+- **State**: `dp[pos][tight][sum]` for position, tight constraint, and sum
+- **Transition**: Try all possible digits at current position
 
 ### Optimization Techniques
-- **Space Optimization**: Reducing memory usage
-- **Time Optimization**: Efficient transitions
-- **State Design**: Minimizing state space
-- **Transition Design**: Efficient state updates
+
+#### Space Optimization
+- **Rolling Arrays**: When only previous states needed
+  - *When to use*: 2D DP where only previous row/column matters
+  - *Example*: Knapsack with rolling array
+- **State Compression**: Using bits or compact representations
+  - *When to use*: When state can be represented compactly
+  - *Example*: Bitmask for subset problems
+
+#### Time Optimization
+- **Prefix Sums**: For range queries in DP
+  - *When to use*: When transitions involve range sums
+  - *Example*: Range sum queries in DP
+- **Binary Search**: For optimization problems
+  - *When to use*: When looking for optimal value
+  - *Example*: Longest increasing subsequence with binary search
+
+#### Transition Optimization
+- **Precomputation**: Calculate common values once
+  - *When to use*: When same calculations repeated
+  - *Example*: Precompute factorials for combinations
+- **Mathematical Formulas**: Direct calculation instead of DP
+  - *When to use*: When closed-form solution exists
+  - *Example*: Fibonacci with matrix exponentiation
 
 ## Tips for Success
 

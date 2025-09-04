@@ -57,25 +57,111 @@ Welcome to the Counting Problems section! This category covers combinatorics and
 3. Solve complex distributions with **Tournament Graph Distribution**
 4. Tackle game counting with **Raab Game II**
 
-## Key Concepts
+## Key Concepts & Techniques
 
 ### Combinatorial Principles
-- **Addition Principle**: Counting disjoint cases
-- **Multiplication Principle**: Independent choices
-- **Inclusion-Exclusion**: Overlapping sets
-- **Binomial Coefficients**: Combinations
 
-### Advanced Counting
-- **Generating Functions**: Sequence counting
-- **Recurrence Relations**: Pattern finding
-- **Burnside's Lemma**: Symmetry counting
-- **Catalan Numbers**: Special sequences
+#### Addition Principle
+- **When to use**: Counting disjoint cases that don't overlap
+- **Formula**: If A and B are disjoint, |A ∪ B| = |A| + |B|
+- **Example**: Count ways to choose red OR blue balls
+- **Implementation**: Sum the counts of each case
+
+#### Multiplication Principle
+- **When to use**: Counting independent choices made sequentially
+- **Formula**: If choices are independent, total = choice1 × choice2 × ...
+- **Example**: Count ways to choose shirt AND pants AND shoes
+- **Implementation**: Multiply the counts of each choice
+
+#### Inclusion-Exclusion Principle
+- **When to use**: Counting elements in union of overlapping sets
+- **Formula**: |A ∪ B| = |A| + |B| - |A ∩ B|
+- **Example**: Count numbers divisible by 2 OR 3
+- **Implementation**: Add individual counts, subtract intersections
+
+#### Binomial Coefficients
+- **When to use**: Counting combinations (unordered selections)
+- **Formula**: C(n,k) = n! / (k!(n-k)!)
+- **Example**: Count ways to choose k items from n items
+- **Implementation**: Use factorial precomputation or Pascal's triangle
+
+### Advanced Counting Techniques
+
+#### Generating Functions
+- **When to use**: Counting sequences with specific properties
+- **Formula**: G(x) = Σ aₙxⁿ where aₙ is the count
+- **Example**: Count ways to make change with coins
+- **Implementation**: Use polynomial multiplication
+
+#### Recurrence Relations
+- **When to use**: When counting follows a pattern
+- **Formula**: aₙ = f(aₙ₋₁, aₙ₋₂, ..., a₀)
+- **Example**: Fibonacci sequence, Catalan numbers
+- **Implementation**: Use dynamic programming or matrix exponentiation
+
+#### Burnside's Lemma
+- **When to use**: Counting objects under group actions (symmetry)
+- **Formula**: |X/G| = (1/|G|) Σ |X^g| where X^g are fixed points
+- **Example**: Count distinct colorings of a necklace
+- **Implementation**: Count fixed points under each group action
+
+#### Catalan Numbers
+- **When to use**: Counting valid parentheses, binary trees, paths
+- **Formula**: Cₙ = (1/(n+1)) × C(2n,n)
+- **Example**: Count valid parentheses expressions
+- **Implementation**: Use recurrence Cₙ = Σ Cᵢ × Cₙ₋₁₋ᵢ
 
 ### Mathematical Tools
-- **Modular Arithmetic**: Large numbers
-- **Combinatorial Identities**: Counting formulas
-- **Probability Theory**: Expected values
-- **Number Theory**: Prime factorization
+
+#### Modular Arithmetic
+- **When to use**: Handling large numbers that don't fit in standard types
+- **Properties**: (a + b) mod m = ((a mod m) + (b mod m)) mod m
+- **Example**: Count combinations modulo 10⁹ + 7
+- **Implementation**: Apply modulo at each step to prevent overflow
+
+#### Combinatorial Identities
+- **When to use**: Simplifying complex counting expressions
+- **Examples**: 
+  - C(n,k) = C(n,n-k) (symmetry)
+  - C(n,k) = C(n-1,k-1) + C(n-1,k) (Pascal's identity)
+- **Implementation**: Use identities to reduce computation
+
+#### Probability Theory
+- **When to use**: Counting with probability or expected values
+- **Formula**: P(A) = |A| / |S| where S is sample space
+- **Example**: Expected number of inversions in random permutation
+- **Implementation**: Count favorable outcomes / total outcomes
+
+#### Number Theory
+- **When to use**: Problems involving prime factorization or divisibility
+- **Examples**: Count numbers with specific prime factors
+- **Implementation**: Use sieve algorithms or factorization
+
+### Specialized Counting Techniques
+
+#### Stars and Bars
+- **When to use**: Counting ways to distribute identical objects
+- **Formula**: C(n+k-1, k-1) ways to distribute n objects into k bins
+- **Example**: Count ways to distribute 10 identical balls into 3 boxes
+- **Implementation**: Use binomial coefficient formula
+
+#### Principle of Reflection
+- **When to use**: Counting paths that avoid certain boundaries
+- **Formula**: Total paths - reflected paths
+- **Example**: Count paths from (0,0) to (n,m) staying above y=x
+- **Implementation**: Use reflection to count invalid paths
+
+#### Bijective Proofs
+- **When to use**: Proving two sets have same size by finding bijection
+- **Method**: Show one-to-one correspondence between sets
+- **Example**: Prove C(n,k) = C(n,n-k) by showing bijection
+- **Implementation**: Construct explicit mapping between sets
+
+#### Pigeonhole Principle
+- **When to use**: Proving existence of certain configurations
+- **Statement**: If n+1 objects are placed in n boxes, some box has ≥2 objects
+- **Example**: Prove that in any group of 13 people, two have same birthday month
+- **Implementation**: Use contradiction or direct counting
 
 ## Tips for Success
 

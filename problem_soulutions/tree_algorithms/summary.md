@@ -50,25 +50,208 @@ Welcome to the Tree Algorithms section! This category covers algorithms and tech
 3. Solve complex counting with **Counting Paths**
 4. Tackle distinct values with **Distinct Values Queries**
 
-## Key Concepts
+## Key Concepts & Techniques
 
-### Tree Properties
-- **Tree Structure**: Parent-child relationships
-- **Rooted Trees**: Hierarchical organization
-- **Tree Paths**: Node connections
-- **Subtrees**: Tree components
+### Tree Properties & Representation
 
-### Basic Algorithms
-- **DFS**: Depth-first traversal
-- **BFS**: Breadth-first traversal
-- **Tree DP**: Dynamic programming on trees
-- **Tree Diameter**: Longest path finding
+#### Tree Structure
+- **When to use**: Hierarchical data, parent-child relationships
+- **Properties**: n nodes, n-1 edges, acyclic, connected
+- **Applications**: File systems, organization charts, decision trees
+- **Implementation**: Adjacency list or parent array
 
-### Advanced Techniques
-- **Binary Lifting**: Fast ancestor queries
-- **Heavy-Light Decomposition**: Path queries
-- **Euler Tour**: Linear tree representation
-- **Segment Trees**: Range queries on trees
+#### Rooted Trees
+- **When to use**: When hierarchy matters, directed relationships
+- **Properties**: One root node, directed edges from parent to child
+- **Applications**: Family trees, company hierarchies, parse trees
+- **Implementation**: Store parent for each node
+
+#### Tree Paths
+- **When to use**: Finding connections between nodes
+- **Properties**: Unique path between any two nodes
+- **Applications**: Network routing, game trees, decision paths
+- **Implementation**: DFS or BFS to find path
+
+#### Subtrees
+- **When to use**: Operations on tree components
+- **Properties**: Connected subgraph containing a node and descendants
+- **Applications**: File system operations, tree queries
+- **Implementation**: DFS to identify subtree nodes
+
+### Basic Tree Algorithms
+
+#### Depth-First Search (DFS)
+- **When to use**: Tree traversal, path finding, subtree operations
+- **Time**: O(n) where n is number of nodes
+- **Space**: O(h) where h is tree height
+- **Applications**: Tree traversal, path finding, subtree size calculation
+- **Implementation**: Recursive or iterative with stack
+
+#### Breadth-First Search (BFS)
+- **When to use**: Level-order traversal, shortest path in trees
+- **Time**: O(n)
+- **Space**: O(w) where w is maximum width
+- **Applications**: Level-order processing, shortest path
+- **Implementation**: Queue-based iterative approach
+
+#### Tree Dynamic Programming
+- **When to use**: Optimization problems on trees
+- **Time**: O(n) for most problems
+- **Space**: O(n)
+- **Applications**: Tree matching, tree coloring, tree optimization
+- **Implementation**: Post-order traversal with state computation
+
+#### Tree Diameter
+- **When to use**: Finding longest path in tree
+- **Time**: O(n)
+- **Space**: O(n)
+- **Applications**: Network analysis, tree metrics
+- **Implementation**: Two DFS passes or tree DP
+
+### Advanced Tree Techniques
+
+#### Binary Lifting
+- **When to use**: Fast ancestor queries, LCA finding
+- **Time**: O(n log n) preprocessing, O(log n) per query
+- **Space**: O(n log n)
+- **Applications**: LCA queries, k-th ancestor, path queries
+- **Implementation**: Precompute 2^i-th ancestors for each node
+
+#### Heavy-Light Decomposition
+- **When to use**: Path queries and updates in trees
+- **Time**: O(log² n) per query/update
+- **Space**: O(n)
+- **Applications**: Path sum, path maximum, path updates
+- **Implementation**: Decompose tree into heavy chains, use segment trees
+
+#### Euler Tour
+- **When to use**: Linear representation of tree, subtree queries
+- **Time**: O(n) preprocessing, O(log n) per query
+- **Space**: O(n)
+- **Applications**: Subtree queries, path queries, tree flattening
+- **Implementation**: DFS with entry/exit times
+
+#### Centroid Decomposition
+- **When to use**: Tree problems with divide-and-conquer
+- **Time**: O(n log n) for decomposition
+- **Space**: O(n)
+- **Applications**: Tree distances, tree counting, tree optimization
+- **Implementation**: Find centroid, solve recursively
+
+### Tree Query Techniques
+
+#### Lowest Common Ancestor (LCA)
+- **Binary Lifting Method**: Fast LCA queries
+  - *When to use*: Multiple LCA queries
+  - *Time*: O(log n) per query
+  - *Implementation*: Precompute ancestors, binary search
+- **Euler Tour + RMQ**: LCA via range minimum
+  - *When to use*: When you need Euler tour anyway
+  - *Time*: O(1) per query with sparse table
+  - *Implementation*: Euler tour with depth array, RMQ on depths
+
+#### Path Queries
+- **Path Sum**: Sum of values on path
+  - *When to use*: When you need sum of path values
+  - *Time*: O(log n) per query
+  - *Implementation*: Use LCA and prefix sums
+- **Path Minimum/Maximum**: Min/max on path
+  - *When to use*: When you need extremal values on path
+  - *Time*: O(log n) per query
+  - *Implementation*: Use LCA and sparse table
+
+#### Subtree Queries
+- **Subtree Sum**: Sum of subtree values
+  - *When to use*: When you need sum of subtree
+  - *Time*: O(log n) per query
+  - *Implementation*: Use Euler tour with segment tree
+- **Subtree Update**: Update all nodes in subtree
+  - *When to use*: When you need to update subtree
+  - *Time*: O(log n) per update
+  - *Implementation*: Use Euler tour with lazy propagation
+
+### Specialized Tree Algorithms
+
+#### Tree Matching
+- **Maximum Matching**: Find maximum matching in tree
+- **When to use**: Assignment problems, resource allocation
+- **Time**: O(n)
+- **Space**: O(n)
+- **Applications**: Job assignment, resource allocation
+- **Implementation**: Greedy algorithm or tree DP
+
+#### Tree Coloring
+- **Vertex Coloring**: Color vertices with constraints
+- **When to use**: Resource allocation, scheduling
+- **Time**: O(n)
+- **Space**: O(n)
+- **Applications**: Resource allocation, conflict resolution
+- **Implementation**: Greedy coloring or tree DP
+
+#### Tree Distances
+- **All-Pairs Distances**: Distance between all pairs
+- **When to use**: When you need all distances
+- **Time**: O(n²)
+- **Space**: O(n²)
+- **Applications**: Network analysis, graph metrics
+- **Implementation**: BFS from each node or tree DP
+
+#### Tree Counting
+- **Subtree Counting**: Count subtrees with properties
+- **When to use**: When you need to count tree structures
+- **Time**: O(n)
+- **Space**: O(n)
+- **Applications**: Graph enumeration, tree analysis
+- **Implementation**: Tree DP with counting
+
+### Tree Data Structures
+
+#### Segment Tree on Trees
+- **When to use**: Range queries on tree paths
+- **Time**: O(log n) per query/update
+- **Space**: O(n)
+- **Applications**: Path queries, subtree queries
+- **Implementation**: Use Euler tour to linearize tree
+
+#### Fenwick Tree on Trees
+- **When to use**: Point updates with range queries on trees
+- **Time**: O(log n) per query/update
+- **Space**: O(n)
+- **Applications**: Point updates, range sums on trees
+- **Implementation**: Use Euler tour with Fenwick tree
+
+#### Persistent Data Structures
+- **When to use**: Version control, time-travel queries
+- **Time**: O(log n) per query/update
+- **Space**: O(n log n)
+- **Applications**: Version history, temporal queries
+- **Implementation**: Create new nodes for each update
+
+### Optimization Techniques
+
+#### Space Optimization
+- **In-place Updates**: Modify tree in place
+  - *When to use*: When original tree not needed
+  - *Example*: In-place tree transformation
+- **Lazy Evaluation**: Compute on demand
+  - *When to use*: When not all values needed
+  - *Example*: Lazy tree construction
+
+#### Time Optimization
+- **Precomputation**: Compute values once
+  - *When to use*: Multiple queries on same tree
+  - *Example*: Precompute LCA for all pairs
+- **Caching**: Store computed results
+  - *When to use*: Repeated calculations
+  - *Example*: Cache subtree sizes
+
+#### Memory Optimization
+- **Tree Compression**: Reduce memory usage
+  - *When to use*: Large trees with patterns
+  - *Example*: Compress repeated subtrees
+- **Lazy Allocation**: Allocate memory on demand
+  - *When to use*: Sparse trees
+  - *Example*: Dynamic tree construction
 
 ## Tips for Success
 
