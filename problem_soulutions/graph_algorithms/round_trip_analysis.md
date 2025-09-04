@@ -1,27 +1,30 @@
 ---
 layout: simple
-title: "Round Trip"
+title: "Round Trip - Cycle Detection in Undirected Graph"
 permalink: /problem_soulutions/graph_algorithms/round_trip_analysis
 ---
 
+# Round Trip - Cycle Detection in Undirected Graph
 
-# Round Trip
+## 📋 Problem Description
 
-## Problem Statement
 Byteland has n cities and m roads between them. Your task is to find a round trip that begins in a city, goes through two or more other cities, and finally returns to the starting city. Every intermediate city must be visited exactly once.
 
-### Input
-The first input line has two integers n and m: the number of cities and roads. The cities are numbered 1,2,…,n.
-Then, there are m lines describing the roads. Each line has two integers a and b: there is a road between cities a and b.
+This is a cycle detection problem in an undirected graph. We need to find a simple cycle (no repeated vertices except start/end) that visits at least 3 cities.
 
-### Output
-Print "IMPOSSIBLE" if there is no such round trip, and otherwise print the number of cities on the trip and the cities in the order they are visited.
+**Input**: 
+- First line: Two integers n and m (number of cities and roads)
+- Next m lines: Two integers a and b (road between cities a and b)
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
+**Output**: 
+- Print "IMPOSSIBLE" if there is no such round trip
+- Otherwise print the number of cities on the trip and the cities in the order they are visited
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2⋅10⁵
+
+**Example**:
 ```
 Input:
 5 6
@@ -37,10 +40,20 @@ Output:
 1 3 5 1
 ```
 
-## Solution Progression
+**Explanation**: 
+- The round trip: 1 → 3 → 5 → 1
+- This visits 4 cities (including the return to start)
+- Each intermediate city is visited exactly once
 
-### Approach 1: DFS with Cycle Detection - O(n + m)
-**Description**: Use depth-first search to find a cycle in the graph.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find a simple cycle in undirected graph that visits at least 3 cities
+- **Key Insight**: Use DFS to detect cycles and reconstruct the path
+- **Challenge**: Handle cycle detection and path reconstruction efficiently
+
+### Step 2: Initial Approach
+**DFS with cycle detection and path reconstruction:**
 
 ```python
 def round_trip_dfs(n, m, roads):
@@ -158,8 +171,8 @@ def round_trip_bfs(n, m, roads):
 
 **Why this improvement works**: BFS can find shorter cycles and is more memory-efficient for large graphs.
 
-### Improvement 2: Union-Find with Cycle Detection - O(n + m * α(n))
-**Description**: Use union-find to detect cycles during graph construction.
+### Step 3: Optimization/Alternative
+**Union-Find with cycle detection:**
 
 ```python
 class UnionFind:
@@ -280,7 +293,7 @@ def round_trip_backtracking(n, m, roads):
 
 **Why this works**: This approach finds the minimum length cycle, which is often what we want.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 n, m = map(int, input().split())
@@ -342,7 +355,14 @@ else:
     print(*cycle)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple cycle graph (should return the cycle)
+- **Test 2**: Tree graph (should return "IMPOSSIBLE")
+- **Test 3**: Complex graph with multiple cycles (should find one cycle)
+- **Test 4**: Graph with no cycles (should return "IMPOSSIBLE")
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -350,6 +370,169 @@ else:
 | BFS Cycle Detection | O(n + m) | O(n + m) | Level-by-level search |
 | Union-Find | O(n + m * α(n)) | O(n) | Detect during construction |
 | Backtracking DFS | O(n + m) | O(n) | Find minimum cycle |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Cycle Detection**: Find cycles in undirected graphs using DFS or BFS
+- **Path Reconstruction**: Reconstruct the cycle path from parent pointers
+- **Graph Traversal**: Use DFS/BFS to explore graph structure
+- **Union-Find**: Alternative approach for cycle detection
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Minimum Length Cycle**
+```python
+def minimum_length_cycle(n, m, roads):
+    # Find the shortest cycle in the graph
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b in roads:
+        graph[a].append(b)
+        graph[b].append(a)
+    
+    def find_minimum_cycle():
+        min_cycle_length = float('inf')
+        min_cycle = None
+        
+        for start in range(1, n + 1):
+            # BFS from each node to find shortest cycle
+            from collections import deque
+            queue = deque([(start, [start])])
+            visited = {start}
+            
+            while queue:
+                node, path = queue.popleft()
+                
+                for neighbor in graph[node]:
+                    if neighbor == start and len(path) > 2:
+                        # Found a cycle back to start
+                        cycle_length = len(path)
+                        if cycle_length < min_cycle_length:
+                            min_cycle_length = cycle_length
+                            min_cycle = path + [start]
+                    elif neighbor not in visited:
+                        visited.add(neighbor)
+                        queue.append((neighbor, path + [neighbor]))
+        
+        return min_cycle
+    
+    cycle = find_minimum_cycle()
+    if cycle is None:
+        return "IMPOSSIBLE"
+    else:
+        return f"{len(cycle)}\n{' '.join(map(str, cycle))}"
+```
+
+#### **2. All Cycles in Graph**
+```python
+def all_cycles(n, m, roads):
+    # Find all cycles in the graph
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b in roads:
+        graph[a].append(b)
+        graph[b].append(a)
+    
+    def find_all_cycles():
+        cycles = []
+        visited = [False] * (n + 1)
+        path = []
+        
+        def dfs(node, parent):
+            if visited[node]:
+                # Found a cycle
+                cycle_start = path.index(node)
+                cycle = path[cycle_start:] + [node]
+                cycles.append(cycle)
+                return
+            
+            visited[node] = True
+            path.append(node)
+            
+            for neighbor in graph[node]:
+                if neighbor != parent:
+                    dfs(neighbor, node)
+            
+            path.pop()
+            visited[node] = False
+        
+        for i in range(1, n + 1):
+            if not visited[i]:
+                dfs(i, -1)
+        
+        return cycles
+    
+    cycles = find_all_cycles()
+    return cycles
+```
+
+#### **3. Cycle with Specific Length**
+```python
+def cycle_with_length(n, m, roads, target_length):
+    # Find a cycle with specific length
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b in roads:
+        graph[a].append(b)
+        graph[b].append(a)
+    
+    def find_cycle_with_length():
+        for start in range(1, n + 1):
+            # DFS to find cycle of specific length
+            def dfs(node, path, visited):
+                if len(path) == target_length:
+                    # Check if we can return to start
+                    if start in graph[node]:
+                        return path + [start]
+                    return None
+                
+                if len(path) > target_length:
+                    return None
+                
+                for neighbor in graph[node]:
+                    if neighbor not in visited:
+                        visited.add(neighbor)
+                        result = dfs(neighbor, path + [neighbor], visited)
+                        if result:
+                            return result
+                        visited.remove(neighbor)
+                
+                return None
+            
+            result = dfs(start, [start], {start})
+            if result:
+                return result
+        
+        return None
+    
+    cycle = find_cycle_with_length()
+    if cycle is None:
+        return "IMPOSSIBLE"
+    else:
+        return f"{len(cycle)}\n{' '.join(map(str, cycle))}"
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Cycle Detection**: Various cycle finding problems
+- **Graph Algorithms**: Path and cycle problems
+- **DFS/BFS**: Graph traversal algorithms
+- **Union-Find**: Connectivity and cycle detection
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **DFS** is efficient for cycle detection in undirected graphs
+- **BFS** can find shorter cycles and is more memory-efficient
+- **Union-Find** provides an alternative approach for cycle detection
+- **Path reconstruction** is crucial for returning the actual cycle
 
 ## Key Insights for Other Problems
 

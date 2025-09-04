@@ -1,30 +1,30 @@
 ---
 layout: simple
-title: "Coin Collector"
+title: "Coin Collector - Maximum Path Sum in DAG"
 permalink: /problem_soulutions/graph_algorithms/coin_collector_analysis
 ---
 
+# Coin Collector - Maximum Path Sum in DAG
 
-# Coin Collector
+## 📋 Problem Description
 
-## Problem Statement
 Given a directed acyclic graph (DAG) with n nodes and m edges, where each node has a coin value, find the maximum number of coins that can be collected by traversing the graph.
 
-### Input
-The first input line has two integers n and m: the number of nodes and edges.
-Then there are n lines with coin values. The i-th line has an integer c_i: the coin value at node i.
-Then there are m lines describing the edges. Each line has two integers a and b: there is an edge from node a to node b.
+**Input**: 
+- First line: Two integers n and m (number of nodes and edges)
+- Next n lines: Integer cᵢ (coin value at node i)
+- Next m lines: Two integers a and b (edge from node a to node b)
 
-### Output
-Print the maximum number of coins that can be collected.
+**Output**: 
+- Maximum number of coins that can be collected
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
-- 1 ≤ c_i ≤ 10^9
-- 1 ≤ a,b ≤ n
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2⋅10⁵
+- 1 ≤ cᵢ ≤ 10⁹
+- 1 ≤ a, b ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 4 4
@@ -38,10 +38,20 @@ Output:
 10
 ```
 
-## Solution Progression
+**Explanation**: 
+- Path 1 → 2 → 3 → 4: 1 + 2 + 3 + 4 = 10
+- Path 1 → 4: 1 + 4 = 5
+- Maximum coins: 10 (longest path)
 
-### Approach 1: Dynamic Programming on DAG - O(n + m)
-**Description**: Use dynamic programming with topological sorting to find maximum path sum.
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find maximum coins collectible by traversing DAG
+- **Key Insight**: Use dynamic programming with topological sorting
+- **Challenge**: Handle DAG structure and maximize path sum
+
+### Step 2: Brute Force Approach
+**Try all possible paths and find maximum:**
 
 ```python
 def coin_collector_naive(n, m, coins, edges):
@@ -52,6 +62,7 @@ def coin_collector_naive(n, m, coins, edges):
     for a, b in edges:
         adj[a].append(b)
         in_degree[b] += 1
+    
     # Topological sort using Kahn's algorithm
     queue = []
     for i in range(1, n + 1):
@@ -75,10 +86,10 @@ def coin_collector_naive(n, m, coins, edges):
     return max(dp)
 ```
 
-**Why this is inefficient**: The implementation is correct but can be optimized for clarity.
+**Complexity**: O(n + m) - actually optimal for this problem
 
-### Improvement 1: Optimized DP on DAG - O(n + m)
-**Description**: Use optimized dynamic programming with better topological sorting.
+### Step 3: Optimization
+**Use optimized data structures and better implementation:**
 
 ```python
 def coin_collector_optimized(n, m, coins, edges):
@@ -90,14 +101,14 @@ def coin_collector_optimized(n, m, coins, edges):
         adj[a].append(b)
         in_degree[b] += 1
     
-    # Topological sort using Kahn's algorithm
+    # Topological sort using Kahn's algorithm with deque
     from collections import deque
     queue = deque()
     for i in range(1, n + 1):
         if in_degree[i] == 0:
             queue.append(i)
     
-    # Dynamic programming
+    # Dynamic programming with better structure
     dp = [0] * (n + 1)
     
     while queue:
@@ -157,30 +168,409 @@ def find_maximum_coins(n, m, coins, edges):
     
     return max(dp)
 
-result = find_maximum_coins(n, m, coins, edges)
-print(result)
+### Step 4: Complete Solution
+
+```python
+def solve_coin_collector():
+    n, m = map(int, input().split())
+    coins = [0] + list(map(int, input().split()))
+    edges = []
+    for _ in range(m):
+        a, b = map(int, input().split())
+        edges.append((a, b))
+    
+    result = find_maximum_coins(n, m, coins, edges)
+    print(result)
+
+def find_maximum_coins(n, m, coins, edges):
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    in_degree = [0] * (n + 1)
+    
+    for a, b in edges:
+        adj[a].append(b)
+        in_degree[b] += 1
+    
+    # Topological sort using Kahn's algorithm
+    from collections import deque
+    queue = deque()
+    for i in range(1, n + 1):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    # Dynamic programming
+    dp = [0] * (n + 1)
+    
+    while queue:
+        node = queue.popleft()
+        dp[node] = coins[node]
+        
+        for neighbor in adj[node]:
+            dp[neighbor] = max(dp[neighbor], dp[node] + coins[neighbor])
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    return max(dp)
+
+if __name__ == "__main__":
+    solve_coin_collector()
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| DP on DAG | O(n + m) | O(n + m) | Use dynamic programming on topological order |
-| Optimized DP | O(n + m) | O(n + m) | Optimized DP implementation |
+```python
+def test_solution():
+    test_cases = [
+        ((4, 4, [1, 2, 3, 4], [(1, 2), (2, 3), (3, 4), (1, 4)]), 10),
+        ((3, 2, [5, 3, 2], [(1, 2), (2, 3)]), 10),
+        ((2, 1, [1, 2], [(1, 2)]), 3),
+        ((1, 0, [5], []), 5),  # Single node
+    ]
+    
+    for (n, m, coins, edges), expected in test_cases:
+        coins_with_offset = [0] + coins
+        result = find_maximum_coins(n, m, coins_with_offset, edges)
+        print(f"n={n}, m={m}, coins={coins}, edges={edges}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
 
-## Key Insights for Other Problems
+def find_maximum_coins(n, m, coins, edges):
+    adj = [[] for _ in range(n + 1)]
+    in_degree = [0] * (n + 1)
+    
+    for a, b in edges:
+        adj[a].append(b)
+        in_degree[b] += 1
+    
+    from collections import deque
+    queue = deque()
+    for i in range(1, n + 1):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    dp = [0] * (n + 1)
+    
+    while queue:
+        node = queue.popleft()
+        dp[node] = coins[node]
+        
+        for neighbor in adj[node]:
+            dp[neighbor] = max(dp[neighbor], dp[node] + coins[neighbor])
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    return max(dp)
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n + m) - single pass through nodes and edges
+- **Space**: O(n + m) - adjacency list and dynamic programming array
+
+### Why This Solution Works
+- **Topological Sorting**: Ensures we process nodes in correct dependency order
+- **Dynamic Programming**: Builds optimal solution incrementally
+- **DAG Property**: No cycles allow for optimal substructure
+- **Greedy Choice**: Always choose maximum path to each node
+
+## 🎯 Key Insights
 
 ### 1. **Dynamic Programming on DAG**
-**Principle**: Use dynamic programming with topological sorting for DAG problems.
-**Applicable to**: DAG problems, path problems, optimization problems
+- Use dynamic programming with topological sorting for DAG problems
+- Important for understanding
+- Ensures optimal substructure
+- Essential for algorithm
 
 ### 2. **Topological Sorting**
-**Principle**: Use Kahn's algorithm or DFS for topological sorting.
-**Applicable to**: DAG problems, dependency problems, ordering problems
+- Use Kahn's algorithm for efficient topological sorting
+- Important for understanding
+- Maintains dependency order
+- Essential for correctness
 
 ### 3. **Maximum Path Sum**
-**Principle**: Use dynamic programming to find maximum path sum in DAG.
-**Applicable to**: Path problems, optimization problems, graph problems
+- Use dynamic programming to find maximum path sum in DAG
+- Important for understanding
+- Builds optimal solution incrementally
+- Essential for optimization
+
+## 🎯 Problem Variations
+
+### Variation 1: Coin Collector with Constraints
+**Problem**: Find maximum coins with constraints on path length or node visits.
+
+```python
+def coin_collector_with_constraints(n, m, coins, edges, max_length):
+    """Find maximum coins with path length constraint"""
+    adj = [[] for _ in range(n + 1)]
+    in_degree = [0] * (n + 1)
+    
+    for a, b in edges:
+        adj[a].append(b)
+        in_degree[b] += 1
+    
+    # DP with length constraint: dp[node][length] = max coins
+    dp = [[0] * (max_length + 1) for _ in range(n + 1)]
+    
+    from collections import deque
+    queue = deque()
+    for i in range(1, n + 1):
+        if in_degree[i] == 0:
+            queue.append((i, 1))  # (node, current_length)
+    
+    while queue:
+        node, length = queue.popleft()
+        if length <= max_length:
+            dp[node][length] = coins[node]
+            
+            for neighbor in adj[node]:
+                if length + 1 <= max_length:
+                    dp[neighbor][length + 1] = max(
+                        dp[neighbor][length + 1], 
+                        dp[node][length] + coins[neighbor]
+                    )
+                    in_degree[neighbor] -= 1
+                    if in_degree[neighbor] == 0:
+                        queue.append((neighbor, length + 1))
+    
+    return max(max(row) for row in dp)
+
+# Example usage
+result = coin_collector_with_constraints(4, 4, [1, 2, 3, 4], 
+                                       [(1, 2), (2, 3), (3, 4), (1, 4)], 3)
+print(f"Max coins with length constraint 3: {result}")
+```
+
+### Variation 2: Coin Collector with Multiple Paths
+**Problem**: Find maximum coins considering multiple paths to each node.
+
+```python
+def coin_collector_multiple_paths(n, m, coins, edges):
+    """Find maximum coins considering all possible paths"""
+    adj = [[] for _ in range(n + 1)]
+    in_degree = [0] * (n + 1)
+    
+    for a, b in edges:
+        adj[a].append(b)
+        in_degree[b] += 1
+    
+    # DP with multiple path consideration
+    dp = [0] * (n + 1)
+    paths = [[] for _ in range(n + 1)]
+    
+    from collections import deque
+    queue = deque()
+    for i in range(1, n + 1):
+        if in_degree[i] == 0:
+            queue.append(i)
+            dp[i] = coins[i]
+            paths[i] = [i]
+    
+    while queue:
+        node = queue.popleft()
+        
+        for neighbor in adj[node]:
+            new_value = dp[node] + coins[neighbor]
+            if new_value > dp[neighbor]:
+                dp[neighbor] = new_value
+                paths[neighbor] = paths[node] + [neighbor]
+            
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    # Find node with maximum coins
+    max_coins = max(dp)
+    max_node = dp.index(max_coins)
+    
+    return max_coins, paths[max_node]
+
+# Example usage
+max_coins, best_path = coin_collector_multiple_paths(4, 4, [1, 2, 3, 4], 
+                                                    [(1, 2), (2, 3), (3, 4), (1, 4)])
+print(f"Max coins: {max_coins}, Best path: {best_path}")
+```
+
+### Variation 3: Coin Collector with Weighted Edges
+**Problem**: Find maximum coins considering both node values and edge costs.
+
+```python
+def coin_collector_weighted_edges(n, m, coins, edges, edge_costs):
+    """Find maximum coins considering edge costs"""
+    adj = [[] for _ in range(n + 1)]
+    in_degree = [0] * (n + 1)
+    
+    for i, (a, b) in enumerate(edges):
+        cost = edge_costs[i]
+        adj[a].append((b, cost))
+        in_degree[b] += 1
+    
+    # DP considering edge costs
+    dp = [0] * (n + 1)
+    
+    from collections import deque
+    queue = deque()
+    for i in range(1, n + 1):
+        if in_degree[i] == 0:
+            queue.append(i)
+            dp[i] = coins[i]
+    
+    while queue:
+        node = queue.popleft()
+        
+        for neighbor, cost in adj[node]:
+            new_value = dp[node] + coins[neighbor] - cost
+            dp[neighbor] = max(dp[neighbor], new_value)
+            
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    return max(dp)
+
+# Example usage
+edge_costs = [1, 1, 1, 2]  # Cost for each edge
+result = coin_collector_weighted_edges(4, 4, [1, 2, 3, 4], 
+                                      [(1, 2), (2, 3), (3, 4), (1, 4)], edge_costs)
+print(f"Max coins with edge costs: {result}")
+```
+
+### Variation 4: Coin Collector with Time Windows
+**Problem**: Find maximum coins considering time constraints for visiting nodes.
+
+```python
+def coin_collector_time_windows(n, m, coins, edges, time_windows):
+    """Find maximum coins with time window constraints"""
+    adj = [[] for _ in range(n + 1)]
+    in_degree = [0] * (n + 1)
+    
+    for a, b in edges:
+        adj[a].append(b)
+        in_degree[b] += 1
+    
+    # DP with time consideration: dp[node][time] = max coins
+    max_time = max(end for _, end in time_windows)
+    dp = [[0] * (max_time + 1) for _ in range(n + 1)]
+    
+    from collections import deque
+    queue = deque()
+    for i in range(1, n + 1):
+        if in_degree[i] == 0:
+            start, end = time_windows[i-1]
+            for t in range(start, end + 1):
+                dp[i][t] = coins[i]
+            queue.append(i)
+    
+    while queue:
+        node = queue.popleft()
+        
+        for neighbor in adj[node]:
+            start, end = time_windows[neighbor-1]
+            for t in range(start, end + 1):
+                for prev_t in range(t):
+                    if dp[node][prev_t] > 0:
+                        dp[neighbor][t] = max(
+                            dp[neighbor][t], 
+                            dp[node][prev_t] + coins[neighbor]
+                        )
+            
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    return max(max(row) for row in dp)
+
+# Example usage
+time_windows = [(0, 2), (1, 3), (2, 4), (0, 4)]  # (start_time, end_time)
+result = coin_collector_time_windows(4, 4, [1, 2, 3, 4], 
+                                    [(1, 2), (2, 3), (3, 4), (1, 4)], time_windows)
+print(f"Max coins with time windows: {result}")
+```
+
+### Variation 5: Dynamic Coin Collector
+**Problem**: Maintain maximum coins as coins are added/removed dynamically.
+
+```python
+class DynamicCoinCollector:
+    def __init__(self, n):
+        self.n = n
+        self.coins = [0] * (n + 1)
+        self.adj = [[] for _ in range(n + 1)]
+        self.in_degree = [0] * (n + 1)
+        self.dp = [0] * (n + 1)
+    
+    def add_edge(self, a, b):
+        """Add edge from a to b"""
+        self.adj[a].append(b)
+        self.in_degree[b] += 1
+        self.update_dp()
+    
+    def remove_edge(self, a, b):
+        """Remove edge from a to b"""
+        if b in self.adj[a]:
+            self.adj[a].remove(b)
+            self.in_degree[b] -= 1
+            self.update_dp()
+            return True
+        return False
+    
+    def update_coins(self, node, new_value):
+        """Update coin value at node"""
+        self.coins[node] = new_value
+        self.update_dp()
+    
+    def update_dp(self):
+        """Recalculate dynamic programming values"""
+        from collections import deque
+        
+        # Reset
+        temp_in_degree = self.in_degree.copy()
+        self.dp = [0] * (self.n + 1)
+        
+        queue = deque()
+        for i in range(1, self.n + 1):
+            if temp_in_degree[i] == 0:
+                queue.append(i)
+                self.dp[i] = self.coins[i]
+        
+        while queue:
+            node = queue.popleft()
+            
+            for neighbor in self.adj[node]:
+                self.dp[neighbor] = max(
+                    self.dp[neighbor], 
+                    self.dp[node] + self.coins[neighbor]
+                )
+                temp_in_degree[neighbor] -= 1
+                if temp_in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+    
+    def get_maximum_coins(self):
+        """Get current maximum coins"""
+        return max(self.dp)
+
+# Example usage
+collector = DynamicCoinCollector(4)
+collector.update_coins(1, 1)
+collector.update_coins(2, 2)
+collector.update_coins(3, 3)
+collector.update_coins(4, 4)
+
+collector.add_edge(1, 2)
+print(f"After adding edge (1,2): {collector.get_maximum_coins()}")
+
+collector.add_edge(2, 3)
+print(f"After adding edge (2,3): {collector.get_maximum_coins()}")
+
+collector.add_edge(3, 4)
+print(f"After adding edge (3,4): {collector.get_maximum_coins()}")
+```
 
 ## Notable Techniques
 
@@ -407,6 +797,67 @@ def multi_criteria_coin_collector(n, adj, coins, times, energies):
     
     # Calculate in-degrees
     in_degree = [0] * (n + 1)
+    
+    for u in range(1, n + 1):
+        for v in adj[u]:
+            in_degree[v] += 1
+    
+    # Use DP with multiple criteria
+    dp = [(0, 0, 0)] * (n + 1)  # (coins, time, energy)
+    
+    # Find starting nodes
+    queue = deque()
+    for i in range(1, n + 1):
+        if in_degree[i] == 0:
+            queue.append(i)
+            dp[i] = (coins[i], 0, 0)
+    
+    while queue:
+        node = queue.popleft()
+        
+        for neighbor in adj[node]:
+            move_time = times.get((node, neighbor), 0)
+            move_energy = energies.get((node, neighbor), 0)
+            
+            new_coins = dp[node][0] + coins[neighbor]
+            new_time = dp[node][1] + move_time
+            new_energy = dp[node][2] + move_energy
+            
+            if new_coins > dp[neighbor][0]:
+                dp[neighbor] = (new_coins, new_time, new_energy)
+            
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    return max(dp, key=lambda x: x[0])
+
+# Example usage
+times = {(1, 2): 1, (2, 3): 2, (3, 4): 1}
+energies = {(1, 2): 5, (2, 3): 3, (3, 4): 4}
+result = multi_criteria_coin_collector(4, adj, coins, times, energies)
+print(f"Multi-criteria result: {result}")
+```
+
+---
+
+## 🔗 Related Problems
+
+- **[Topological Sorting](/cses-analyses/problem_soulutions/graph_algorithms/)**: DAG ordering problems
+- **[Shortest Routes I](/cses-analyses/problem_soulutions/graph_algorithms/)**: Path finding problems
+- **[Building Roads](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph connectivity problems
+
+## 📚 Learning Points
+
+1. **Dynamic Programming on DAG**: Essential for optimal path problems in directed acyclic graphs
+2. **Topological Sorting**: Important for processing nodes in dependency order
+3. **Maximum Path Sum**: Key technique for optimization problems in graphs
+4. **Kahn's Algorithm**: Efficient approach for topological sorting
+5. **Graph Traversal**: Foundation for all graph algorithms
+
+---
+
+**This is a great introduction to dynamic programming on DAGs and coin collection problems!** 🎯
     for u in range(1, n + 1):
         for v in adj[u]:
             in_degree[v] += 1

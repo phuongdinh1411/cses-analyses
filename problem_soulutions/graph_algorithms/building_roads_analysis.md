@@ -1,27 +1,29 @@
 ---
 layout: simple
-title: "Building Roads"
+title: "Building Roads - Minimum Connectivity"
 permalink: /problem_soulutions/graph_algorithms/building_roads_analysis
 ---
 
+# Building Roads - Minimum Connectivity
 
-# Building Roads
+## 📋 Problem Description
 
-## Problem Statement
 There are n cities and m roads between them. Your task is to determine the minimum number of new roads that need to be built so that there is a route between any two cities.
 
-### Input
-The first input line has two integers n and m: the number of cities and roads. The cities are numbered 1,2,…,n.
-Then, there are m lines describing the roads. Each line has two integers a and b: there is a road between cities a and b.
+This is a classic connectivity problem where we need to find the minimum number of edges to add to make a graph connected. The solution involves counting connected components and connecting them with the minimum number of edges.
 
-### Output
-Print one integer: the minimum number of new roads.
+**Input**: 
+- First line: Two integers n and m (number of cities and roads)
+- Next m lines: Two integers a and b (road between cities a and b)
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
+**Output**: 
+- One integer: minimum number of new roads needed
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2⋅10⁵
+
+**Example**:
 ```
 Input:
 4 2
@@ -32,10 +34,21 @@ Output:
 1
 ```
 
-## Solution Progression
+**Explanation**: 
+- Cities 1 and 2 are connected (component 1)
+- Cities 3 and 4 are connected (component 2)
+- We need 1 road to connect these 2 components
+- Result: 2 components - 1 = 1 road needed
 
-### Approach 1: DFS to Count Components - O(n + m)
-**Description**: Use depth-first search to find connected components and count the minimum roads needed.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find minimum roads to connect all cities
+- **Key Insight**: Count connected components and connect them with (components - 1) roads
+- **Challenge**: Handle large graphs efficiently and count components accurately
+
+### Step 2: Brute Force Approach
+**Use depth-first search to find connected components and count minimum roads:**
 
 ```python
 def building_roads_dfs(n, m, roads):
@@ -65,10 +78,10 @@ def building_roads_dfs(n, m, roads):
     return components - 1
 ```
 
-**Why this is efficient**: We visit each node and edge at most once, giving us O(n + m) complexity.
+**Complexity**: O(n + m) - optimal for this problem
 
-### Improvement 1: BFS for Component Counting - O(n + m)
-**Description**: Use breadth-first search instead of DFS for component counting.
+### Step 3: Optimization
+**Use breadth-first search instead of DFS for component counting:**
 
 ```python
 from collections import deque
@@ -188,7 +201,7 @@ def building_roads_iterative_dfs(n, m, roads):
 
 **Why this works**: Iterative DFS avoids potential stack overflow for very large graphs while maintaining the same logic as recursive DFS.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 n, m = map(int, input().split())
@@ -218,73 +231,284 @@ for i in range(1, n + 1):
 
 # Minimum roads needed = components - 1
 print(components - 1)
+
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        ((4, 2, [(1, 2), (3, 4)]), 1),  # 2 components, need 1 road
+        ((3, 1, [(1, 2)]), 1),  # 2 components, need 1 road
+        ((5, 3, [(1, 2), (2, 3), (4, 5)]), 1),  # 2 components, need 1 road
+        ((4, 0, []), 3),  # 4 components, need 3 roads
+        ((3, 2, [(1, 2), (2, 3)]), 0),  # 1 component, need 0 roads
+    ]
+    
+    for (n, m, roads), expected in test_cases:
+        result = find_minimum_roads(n, m, roads)
+        print(f"n={n}, m={m}, roads={roads}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def find_minimum_roads(n, m, roads):
+    from collections import deque
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b in roads:
+        graph[a].append(b)
+        graph[b].append(a)
+    
+    def bfs(start):
+        queue = deque([start])
+        visited[start] = True
+        
+        while queue:
+            node = queue.popleft()
+            for neighbor in graph[node]:
+                if not visited[neighbor]:
+                    visited[neighbor] = True
+                    queue.append(neighbor)
+    
+    visited = [False] * (n + 1)
+    components = 0
+    
+    # Count connected components
+    for i in range(1, n + 1):
+        if not visited[i]:
+            bfs(i)
+            components += 1
+    
+    # Minimum roads needed = components - 1
+    return components - 1
+
+test_solution()
+```
 ```
 
-## Complexity Analysis
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
-| DFS | O(n + m) | O(n + m) | Visit each node once |
-| BFS | O(n + m) | O(n + m) | Level-by-level exploration |
-| Union-Find | O(n + m * α(n)) | O(n) | Efficient connectivity |
-| Iterative DFS | O(n + m) | O(n + m) | Avoid stack overflow |
+| DFS Component Counting | O(n + m) | O(n + m) | Count connected components |
+| BFS Component Counting | O(n + m) | O(n + m) | Iterative component exploration |
+| Union-Find | O(n + m * α(n)) | O(n) | Efficient connectivity queries |
 
-## Key Insights for Other Problems
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Connected Components**: Count components to determine minimum edges needed
+- **Graph Traversal**: Use DFS/BFS to explore each component
+- **Minimum Connectivity**: Formula: (components - 1) edges needed
+- **Union-Find**: Alternative approach for connectivity queries
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Minimum Cost Road Building**
+```python
+def minimum_cost_roads(n, m, roads, costs):
+    # Find minimum cost to connect all cities
+    # costs[i] = cost to build road i
+    from collections import deque
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for i, (a, b) in enumerate(roads):
+        graph[a].append((b, costs[i]))
+        graph[b].append((a, costs[i]))
+    
+    def find_components():
+        visited = [False] * (n + 1)
+        components = []
+        
+        def dfs(node, component):
+            if visited[node]:
+                return
+            visited[node] = True
+            component.append(node)
+            for neighbor, _ in graph[node]:
+                dfs(neighbor, component)
+        
+        for i in range(1, n + 1):
+            if not visited[i]:
+                component = []
+                dfs(i, component)
+                components.append(component)
+        
+        return components
+    
+    components = find_components()
+    if len(components) <= 1:
+        return 0  # Already connected
+    
+    # Find minimum cost edges between components
+    min_cost = 0
+    for i in range(len(components) - 1):
+        # Find minimum cost edge from component i to any other component
+        min_edge_cost = float('inf')
+        for node in components[i]:
+            for neighbor, cost in graph[node]:
+                if neighbor not in components[i]:
+                    min_edge_cost = min(min_edge_cost, cost)
+        min_cost += min_edge_cost
+    
+    return min_cost
+```
+
+#### **2. Road Building with Constraints**
+```python
+def constrained_road_building(n, m, roads, constraints):
+    # Build roads with additional constraints
+    # constraints = list of (city1, city2, max_roads) tuples
+    
+    from collections import deque
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b in roads:
+        graph[a].append(b)
+        graph[b].append(a)
+    
+    def find_components():
+        visited = [False] * (n + 1)
+        components = []
+        
+        def dfs(node, component):
+            if visited[node]:
+                return
+            visited[node] = True
+            component.append(node)
+            for neighbor in graph[node]:
+                dfs(neighbor, component)
+        
+        for i in range(1, n + 1):
+            if not visited[i]:
+                component = []
+                dfs(i, component)
+                components.append(component)
+        
+        return components
+    
+    components = find_components()
+    if len(components) <= 1:
+        return 0  # Already connected
+    
+    # Check constraints
+    for city1, city2, max_roads in constraints:
+        # Find components containing city1 and city2
+        comp1 = comp2 = -1
+        for i, comp in enumerate(components):
+            if city1 in comp:
+                comp1 = i
+            if city2 in comp:
+                comp2 = i
+        
+        if comp1 != comp2:
+            # Need to connect these components
+            if max_roads < 1:
+                return -1  # Impossible due to constraints
+    
+    return len(components) - 1
+```
+
+#### **3. Dynamic Road Building**
+```python
+def dynamic_road_building(n, m, roads, queries):
+    # Handle dynamic road additions and connectivity queries
+    from collections import deque
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b in roads:
+        graph[a].append(b)
+        graph[b].append(a)
+    
+    def find_components():
+        visited = [False] * (n + 1)
+        components = []
+        
+        def dfs(node, component):
+            if visited[node]:
+                return
+            visited[node] = True
+            component.append(node)
+            for neighbor in graph[node]:
+                dfs(neighbor, component)
+        
+        for i in range(1, n + 1):
+            if not visited[i]:
+                component = []
+                dfs(i, component)
+                components.append(component)
+        
+        return components
+    
+    results = []
+    for query in queries:
+        if query[0] == "ADD":
+            # Add road
+            _, a, b = query
+            graph[a].append(b)
+            graph[b].append(a)
+        elif query[0] == "QUERY":
+            # Query minimum roads needed
+            components = find_components()
+            results.append(len(components) - 1)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Connected Components**: Component counting problems
+- **Minimum Spanning Tree**: Tree optimization problems
+- **Graph Connectivity**: Connectivity problems
+- **Network Design**: Network optimization problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Connected components** are fundamental for graph connectivity
+- **Component counting** determines minimum edges needed
+- **Graph traversal** (DFS/BFS) efficiently explores components
+- **Minimum connectivity** formula: (components - 1) edges
+- **Union-Find** provides alternative connectivity approach
+
+## 🎯 Key Insights
 
 ### 1. **Connected Components in Graphs**
-**Principle**: Use graph traversal algorithms to find connected components in undirected graphs.
-**Applicable to**:
-- Graph connectivity
-- Component counting
-- Network analysis
-- Graph algorithms
-
-**Example Problems**:
-- Connected components
-- Network connectivity
-- Component counting
-- Graph analysis
+- Use graph traversal algorithms to find connected components in undirected graphs
+- Important for understanding
+- Enables efficient component counting
+- Essential for algorithm
 
 ### 2. **Minimum Spanning Tree Concepts**
-**Principle**: The minimum number of edges to connect all components is (components - 1).
-**Applicable to**:
-- Connectivity problems
-- Network design
-- Graph theory
-- Algorithm design
-
-**Example Problems**:
-- Connectivity problems
-- Network design
-- Graph theory
-- Algorithm design
+- The minimum number of edges to connect all components is (components - 1)
+- Important for understanding
+- Provides optimal solution
+- Essential for correctness
 
 ### 3. **Union-Find for Connectivity**
-**Principle**: Use union-find data structure for efficient connectivity queries and component tracking.
-**Applicable to**:
-- Connectivity problems
-- Dynamic connectivity
-- Component tracking
-- Algorithm design
-
-**Example Problems**:
-- Connectivity problems
-- Dynamic connectivity
-- Component tracking
-- Algorithm design
+- Use union-find data structure for efficient connectivity queries and component tracking
+- Important for understanding
+- Provides alternative approach
+- Essential for advanced solutions
 
 ### 4. **Graph Representation**
-**Principle**: Choose appropriate graph representation (adjacency list vs matrix) based on problem characteristics.
-**Applicable to**:
-- Graph algorithms
-- Data structures
-- Algorithm design
-- Performance optimization
+- Choose appropriate graph representation (adjacency list vs matrix) based on problem characteristics
+- Important for understanding
+- Enables efficient implementation
+- Essential for performance
 
-**Example Problems**:
-- Graph algorithms
-- Data structures
-- Algorithm design
+## 🎯 Problem Variations
+
+### Variation 1: Building Roads with Costs
+**Problem**: Each road has a construction cost, find minimum cost roads to connect all cities.
 - Performance optimization
 
 ## Notable Techniques
@@ -739,4 +963,24 @@ def interactive_building_roads():
 
 ---
 
-*This analysis demonstrates efficient connectivity techniques and shows various extensions for building roads problems.* 
+*This analysis demonstrates efficient connectivity techniques and shows various extensions for building roads problems.*
+
+---
+
+## 🔗 Related Problems
+
+- **[Connected Components](/cses-analyses/problem_soulutions/graph_algorithms/)**: Component counting problems
+- **[Minimum Spanning Tree](/cses-analyses/problem_soulutions/graph_algorithms/)**: Tree optimization problems
+- **[Graph Connectivity](/cses-analyses/problem_soulutions/graph_algorithms/)**: Connectivity problems
+
+## 📚 Learning Points
+
+1. **Connected Components**: Essential for graph connectivity problems
+2. **Component Counting**: Important for minimum edge calculations
+3. **Graph Traversal**: Key technique for component exploration
+4. **Minimum Edges**: Critical concept for connectivity optimization
+5. **Graph Theory**: Foundation for many algorithmic problems
+
+---
+
+**This is a great introduction to graph connectivity and component counting!** 🎯 

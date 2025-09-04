@@ -1,28 +1,31 @@
 ---
 layout: simple
-title: "Strongly Connected Components"
+title: "Strongly Connected Components - Graph Decomposition"
 permalink: /problem_soulutions/graph_algorithms/strongly_connected_components_analysis
 ---
 
+# Strongly Connected Components - Graph Decomposition
 
-# Strongly Connected Components
+## 📋 Problem Description
 
-## Problem Statement
 Given a directed graph with n nodes and m edges, find all strongly connected components (SCCs). A strongly connected component is a subset of vertices where every vertex is reachable from every other vertex in the component.
 
-### Input
-The first input line has two integers n and m: the number of nodes and edges.
-Then there are m lines describing the edges. Each line has two integers a and b: there is an edge from node a to node b.
+This is a fundamental graph theory problem that involves decomposing a directed graph into its maximal strongly connected subgraphs. SCCs are important for understanding graph structure and connectivity.
 
-### Output
-Print the number of SCCs and the nodes in each component.
+**Input**: 
+- First line: Two integers n and m (number of nodes and edges)
+- Next m lines: Two integers a and b (edge from node a to node b)
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
+**Output**: 
+- First line: Number of SCCs
+- Next lines: Nodes in each component
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2⋅10⁵
+- 1 ≤ a, b ≤ n
+
+**Example**:
 ```
 Input:
 5 5
@@ -39,9 +42,21 @@ Output:
 5
 ```
 
-## Solution Progression
-### Approach 1: Kosaraju's Algorithm - O(n + m)
-**Description**: Use Kosaraju's algorithm to find strongly connected components.
+**Explanation**: 
+- Component 1: Nodes 1, 2, 3 form a cycle (1→2→3→1)
+- Component 2: Node 4 (can reach 5 but can't be reached from 1,2,3)
+- Component 3: Node 5 (can't reach any other nodes)
+- Total: 3 strongly connected components
+
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find all strongly connected components in a directed graph
+- **Key Insight**: Use Kosaraju's algorithm with two DFS passes
+- **Challenge**: Handle large graphs efficiently and correctly identify SCCs
+
+### Step 2: Brute Force Approach
+**Use Kosaraju's algorithm to find strongly connected components:**
 
 ```python
 def strongly_connected_components_naive(n, m, edges):
@@ -88,10 +103,10 @@ def strongly_connected_components_naive(n, m, edges):
     return sccs
 ```
 
-**Why this is inefficient**: The implementation is correct but can be optimized for clarity.
+**Complexity**: O(n + m) - optimal for this problem
 
-### Improvement 1: Optimized Kosaraju's Algorithm - O(n + m)
-**Description**: Use optimized Kosaraju's algorithm with better structure.
+### Step 3: Optimization
+**Use optimized Kosaraju's algorithm with better structure:**
 
 ```python
 def strongly_connected_components_optimized(n, m, edges):
@@ -192,11 +207,53 @@ def find_strongly_connected_components(n, m, edges):
     
     return sccs
 
-result = find_strongly_connected_components(n, m, edges)
-print(len(result))
-for component in result:
+sccs = find_strongly_connected_components(n, m, edges)
+print(len(sccs))
+for component in sccs:
     print(*component)
+
+def test_solution():
+    # Test case 1: Simple graph with 2 SCCs
+    n1, m1 = 4, 4
+    edges1 = [(1, 2), (2, 3), (3, 1), (4, 1)]
+    result1 = find_strongly_connected_components(n1, m1, edges1)
+    print(f"Test 1: {len(result1)} SCCs")
+    for i, component in enumerate(result1):
+        print(f"  SCC {i+1}: {component}")
+    
+    # Test case 2: Single SCC
+    n2, m2 = 3, 3
+    edges2 = [(1, 2), (2, 3), (3, 1)]
+    result2 = find_strongly_connected_components(n2, m2, edges2)
+    print(f"\nTest 2: {len(result2)} SCCs")
+    for i, component in enumerate(result2):
+        print(f"  SCC {i+1}: {component}")
+    
+    # Test case 3: Disconnected components
+    n3, m3 = 5, 2
+    edges3 = [(1, 2), (4, 5)]
+    result3 = find_strongly_connected_components(n3, m3, edges3)
+    print(f"\nTest 3: {len(result3)} SCCs")
+    for i, component in enumerate(result3):
+        print(f"  SCC {i+1}: {component}")
+
+if __name__ == "__main__":
+    solve_strongly_connected_components()
 ```
+
+## Implementation Details
+
+### 1. **Graph Representation**
+- **Adjacency Lists**: We use two adjacency lists - one for the original graph and one for the reversed graph
+- **Edge Storage**: Store edges in both directions for efficient traversal
+
+### 2. **Two-Phase DFS Approach**
+- **Phase 1**: Perform DFS on the original graph to get topological finish order
+- **Phase 2**: Perform DFS on the reversed graph in reverse finish order to find SCCs
+
+### 3. **SCC Identification**
+- **Component Tracking**: Each DFS call in phase 2 identifies one complete SCC
+- **Visited Management**: Separate visited arrays for each phase to ensure correctness
 
 ## Complexity Analysis
 
@@ -204,6 +261,23 @@ for component in result:
 |----------|----------------|------------------|-------------|
 | Kosaraju's Algorithm | O(n + m) | O(n + m) | Use two DFS traversals |
 | Optimized Kosaraju's | O(n + m) | O(n + m) | Better structure and clarity |
+
+## Key Insights
+
+### 1. **Two-Phase DFS Strategy**
+- **First Phase**: Get topological finish order from original graph
+- **Second Phase**: Use reversed graph and finish order to identify SCCs
+- **Key Insight**: The finish order ensures we process nodes in the correct order
+
+### 2. **Graph Reversal for SCC Detection**
+- **Reversed Edges**: Creating a reversed graph helps identify reachability
+- **SCC Property**: In a reversed graph, nodes in the same SCC can still reach each other
+- **Component Isolation**: Each DFS call in phase 2 identifies one complete SCC
+
+### 3. **Efficient Component Tracking**
+- **Visited Arrays**: Separate visited arrays for each phase prevent interference
+- **Component Building**: Build components incrementally during DFS traversal
+- **Order Dependency**: Processing nodes in reverse finish order is crucial
 
 ## Key Insights for Other Problems
 
@@ -217,7 +291,7 @@ for component in result:
 
 ### 3. **Graph Decomposition**
 **Principle**: Decompose directed graphs into strongly connected components for analysis.
-**Applicable to**: Graph analysis problems, component problems, connectivity problems
+**Applicable to**: SCC problems, graph decomposition problems, connectivity problems
 
 ## Notable Techniques
 
@@ -659,9 +733,257 @@ def dynamic_scc(n, initial_edges, updates):
 - **Connectivity Theory**: Theory of graph connectivity
 - **Combinatorics**: Counting components and structures
 
-### 🎯 **Competitive Programming Variations**
+## Problem Variations
 
-#### **1. Multiple Test Cases with Different Graphs**
+### **Variation 1: SCCs with Edge Costs**
+**Problem**: Find SCCs and calculate the total cost of edges within each component.
+```python
+def find_scc_with_costs(n, edges, costs):
+    # costs = {(a, b): cost} - cost of each edge
+    
+    # Build adjacency lists with costs
+    adj = [[] for _ in range(n + 1)]
+    adj_rev = [[] for _ in range(n + 1)]
+    
+    for a, b in edges:
+        cost = costs.get((a, b), 0)
+        adj[a].append((b, cost))
+        adj_rev[b].append((a, cost))
+    
+    # First DFS for topological order
+    visited = [False] * (n + 1)
+    finish_order = []
+    
+    def first_dfs(node):
+        visited[node] = True
+        for neighbor, _ in adj[node]:
+            if not visited[neighbor]:
+                first_dfs(neighbor)
+        finish_order.append(node)
+    
+    for i in range(1, n + 1):
+        if not visited[i]:
+            first_dfs(i)
+    
+    # Second DFS for SCCs with cost tracking
+    visited = [False] * (n + 1)
+    sccs = []
+    scc_costs = []
+    
+    def second_dfs(node, component, component_cost):
+        visited[node] = True
+        component.append(node)
+        for neighbor, cost in adj_rev[node]:
+            if not visited[neighbor]:
+                component_cost[0] += cost
+                second_dfs(neighbor, component, component_cost)
+    
+    for node in reversed(finish_order):
+        if not visited[node]:
+            component = []
+            component_cost = [0]
+            second_dfs(node, component, component_cost)
+            sccs.append(component)
+            scc_costs.append(component_cost[0])
+    
+    return sccs, scc_costs
+```
+
+### **Variation 2: SCCs with Size Constraints**
+**Problem**: Find SCCs that satisfy size constraints (minimum/maximum component size).
+```python
+def find_constrained_scc(n, edges, min_size=1, max_size=float('inf')):
+    # Build adjacency lists
+    adj = [[] for _ in range(n + 1)]
+    adj_rev = [[] for _ in range(n + 1)]
+    
+    for a, b in edges:
+        adj[a].append(b)
+        adj_rev[b].append(a)
+    
+    # First DFS for topological order
+    visited = [False] * (n + 1)
+    finish_order = []
+    
+    def first_dfs(node):
+        visited[node] = True
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                first_dfs(neighbor)
+        finish_order.append(node)
+    
+    for i in range(1, n + 1):
+        if not visited[i]:
+            first_dfs(i)
+    
+    # Second DFS for SCCs with constraints
+    visited = [False] * (n + 1)
+    sccs = []
+    
+    def second_dfs(node, component):
+        visited[node] = True
+        component.append(node)
+        for neighbor in adj_rev[node]:
+            if not visited[neighbor]:
+                second_dfs(neighbor, component)
+    
+    for node in reversed(finish_order):
+        if not visited[node]:
+            component = []
+            second_dfs(node, component)
+            
+            # Apply size constraints
+            if min_size <= len(component) <= max_size:
+                sccs.append(component)
+    
+    return sccs
+```
+
+### **Variation 3: Dynamic SCC Updates**
+**Problem**: Handle dynamic edge additions/deletions and maintain SCC information.
+```python
+class DynamicSCC:
+    def __init__(self, n):
+        self.n = n
+        self.edges = set()
+        self.adj = [[] for _ in range(n + 1)]
+        self.adj_rev = [[] for _ in range(n + 1)]
+        self.sccs = []
+        self.update_sccs()
+    
+    def add_edge(self, a, b):
+        if (a, b) not in self.edges:
+            self.edges.add((a, b))
+            self.adj[a].append(b)
+            self.adj_rev[b].append(a)
+            self.update_sccs()
+    
+    def remove_edge(self, a, b):
+        if (a, b) in self.edges:
+            self.edges.remove((a, b))
+            self.adj[a].remove(b)
+            self.adj_rev[b].remove(a)
+            self.update_sccs()
+    
+    def update_sccs(self):
+        # Recompute SCCs using Kosaraju's algorithm
+        visited = [False] * (self.n + 1)
+        finish_order = []
+        
+        def first_dfs(node):
+            visited[node] = True
+            for neighbor in self.adj[node]:
+                if not visited[neighbor]:
+                    first_dfs(neighbor)
+            finish_order.append(node)
+        
+        for i in range(1, self.n + 1):
+            if not visited[i]:
+                first_dfs(i)
+        
+        visited = [False] * (self.n + 1)
+        self.sccs = []
+        
+        def second_dfs(node, component):
+            visited[node] = True
+            component.append(node)
+            for neighbor in self.adj_rev[node]:
+                if not visited[neighbor]:
+                    second_dfs(neighbor, component)
+        
+        for node in reversed(finish_order):
+            if not visited[node]:
+                component = []
+                second_dfs(node, component)
+                self.sccs.append(component)
+    
+    def get_sccs(self):
+        return self.sccs
+```
+
+### **Variation 4: SCC Condensation Graph**
+**Problem**: Build a condensation graph where each SCC becomes a single node.
+```python
+def build_condensation_graph(n, edges):
+    # Find all SCCs first
+    sccs = find_strongly_connected_components(n, len(edges), edges)
+    
+    # Create mapping from node to SCC ID
+    node_to_scc = {}
+    for i, scc in enumerate(sccs):
+        for node in scc:
+            node_to_scc[node] = i
+    
+    # Build condensation graph
+    condensation_edges = set()
+    for a, b in edges:
+        scc_a = node_to_scc[a]
+        scc_b = node_to_scc[b]
+        if scc_a != scc_b:  # Only add edge if nodes are in different SCCs
+            condensation_edges.add((scc_a, scc_b))
+    
+    # Build adjacency list for condensation graph
+    condensation_adj = [[] for _ in range(len(sccs))]
+    for scc_a, scc_b in condensation_edges:
+        condensation_adj[scc_a].append(scc_b)
+    
+    return condensation_adj, sccs
+```
+
+### **Variation 5: SCC with Node Weights**
+**Problem**: Find SCCs and calculate total weight of nodes in each component.
+```python
+def find_scc_with_weights(n, edges, node_weights):
+    # node_weights = [w1, w2, ..., wn] - weight of each node
+    
+    # Build adjacency lists
+    adj = [[] for _ in range(n + 1)]
+    adj_rev = [[] for _ in range(n + 1)]
+    
+    for a, b in edges:
+        adj[a].append(b)
+        adj_rev[b].append(a)
+    
+    # First DFS for topological order
+    visited = [False] * (n + 1)
+    finish_order = []
+    
+    def first_dfs(node):
+        visited[node] = True
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                first_dfs(neighbor)
+        finish_order.append(node)
+    
+    for i in range(1, n + 1):
+        if not visited[i]:
+            first_dfs(i)
+    
+    # Second DFS for SCCs with weight calculation
+    visited = [False] * (n + 1)
+    sccs = []
+    scc_weights = []
+    
+    def second_dfs(node, component, component_weight):
+        visited[node] = True
+        component.append(node)
+        component_weight[0] += node_weights[node - 1]  # Convert to 0-indexed
+        for neighbor in adj_rev[node]:
+            if not visited[neighbor]:
+                second_dfs(neighbor, component, component_weight)
+    
+    for node in reversed(finish_order):
+        if not visited[node]:
+            component = []
+            component_weight = [0]
+            second_dfs(node, component, component_weight)
+            sccs.append(component)
+            scc_weights.append(component_weight[0])
+    
+    return sccs, scc_weights
+```
+
+### 🎯 **Competitive Programming Variations**
 ```python
 t = int(input())
 for _ in range(t):
@@ -753,6 +1075,40 @@ def interactive_scc():
 - **DFS Implementation**: Efficient DFS implementations
 - **Algorithm Optimization**: Improving time and space complexity
 - **Dynamic Programming**: Handling dynamic updates
+
+## Related Problems
+
+### **1. Graph Connectivity Problems**
+- **Connected Components**: Find connected components in undirected graphs
+- **Bridges and Articulation Points**: Find critical edges and nodes
+- **Biconnected Components**: Find biconnected components in graphs
+
+### **2. Path and Cycle Problems**
+- **Eulerian Paths/Circuits**: Find paths that use every edge exactly once
+- **Hamiltonian Paths/Cycles**: Find paths that visit every node exactly once
+- **Shortest Paths**: Find shortest paths between nodes
+
+### **3. Graph Decomposition Problems**
+- **Topological Sorting**: Order nodes in a DAG
+- **Bipartite Graph Detection**: Check if graph is bipartite
+- **Planar Graph Problems**: Problems on planar graphs
+
+## Learning Points
+
+### **1. Algorithm Design**
+- **Two-Phase Approach**: Breaking complex problems into simpler phases
+- **Graph Reversal**: Using reversed graphs for specific properties
+- **DFS Applications**: Multiple ways to use DFS for different purposes
+
+### **2. Implementation Techniques**
+- **Efficient Graph Representation**: Using adjacency lists for sparse graphs
+- **Visited Array Management**: Proper handling of visited states
+- **Component Building**: Incremental construction of solution components
+
+### **3. Problem-Solving Strategies**
+- **Component Analysis**: Breaking graphs into manageable components
+- **Reachability Analysis**: Understanding node reachability in graphs
+- **Graph Properties**: Leveraging specific graph properties for solutions
 
 ---
 

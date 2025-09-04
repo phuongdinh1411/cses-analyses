@@ -1,29 +1,31 @@
 ---
 layout: simple
-title: "Flight Discount"
+title: "Flight Discount - Shortest Path with Coupon"
 permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis
 ---
 
+# Flight Discount - Shortest Path with Coupon
 
-# Flight Discount
+## 📋 Problem Description
 
-## Problem Statement
 Given a directed graph with n cities and m flights, find the minimum cost to travel from city 1 to city n. You can use at most one discount coupon that halves the cost of any flight.
 
-### Input
-The first input line has two integers n and m: the number of cities and flights.
-Then there are m lines describing the flights. Each line has three integers a, b, and c: there is a flight from city a to city b with cost c.
+This is a shortest path problem with a twist - you can use one discount coupon to halve the cost of any single flight. The solution requires finding the optimal use of the discount coupon to minimize the total travel cost.
 
-### Output
-Print one integer: the minimum cost to travel from city 1 to city n.
+**Input**: 
+- First line: Two integers n and m (number of cities and flights)
+- Next m lines: Three integers a, b, and c (flight from city a to city b with cost c)
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
-- 1 ≤ c ≤ 10^9
+**Output**: 
+- One integer: minimum cost to travel from city 1 to city n
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2⋅10⁵
+- 1 ≤ a, b ≤ n
+- 1 ≤ c ≤ 10⁹
+
+**Example**:
 ```
 Input:
 3 4
@@ -36,10 +38,21 @@ Output:
 2
 ```
 
-## Solution Progression
+**Explanation**: 
+- Path 1→2→3: cost 3+1 = 4
+- Path 1→3 with discount: cost 7/2 = 3.5 (rounds to 4)
+- Path 1→2→3 with discount on flight 1→2: cost (3/2)+1 = 2.5 (rounds to 2)
+- Optimal: Use discount on flight 1→2, then take flight 2→3
 
-### Approach 1: Dijkstra with Discount State - O(m log n)
-**Description**: Use Dijkstra's algorithm with a state to track discount usage.
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find shortest path with option to use one discount coupon
+- **Key Insight**: Use Dijkstra's algorithm with state tracking for discount usage
+- **Challenge**: Handle discount state efficiently in shortest path algorithm
+
+### Step 2: Brute Force Approach
+**Use Dijkstra's algorithm with a state to track discount usage:**
 
 ```python
 import heapq
@@ -83,10 +96,10 @@ def flight_discount_naive(n, m, edges):
     return min(dist[n][0], dist[n][1])
 ```
 
-**Why this is inefficient**: The implementation is correct but can be optimized for clarity.
+**Complexity**: O(m log n) - optimal for this problem
 
-### Improvement 1: Optimized Dijkstra with State - O(m log n)
-**Description**: Use optimized Dijkstra with cleaner state management.
+### Step 3: Optimization
+**Use optimized Dijkstra with cleaner state management:**
 
 ```python
 import heapq
@@ -265,7 +278,27 @@ def apply_discount(weight, discount_used):
 
 ---
 
-*This analysis shows how to efficiently find the minimum cost path with discount using Dijkstra's algorithm with state tracking.* 
+*This analysis shows how to efficiently find the minimum cost path with discount using Dijkstra's algorithm with state tracking.*
+
+---
+
+## 🔗 Related Problems
+
+- **[Shortest Path](/cses-analyses/problem_soulutions/graph_algorithms/)**: Path optimization problems
+- **[Dijkstra's Algorithm](/cses-analyses/problem_soulutions/graph_algorithms/)**: Shortest path problems
+- **[State Management](/cses-analyses/problem_soulutions/graph_algorithms/)**: Constraint problems
+
+## 📚 Learning Points
+
+1. **Dijkstra with State**: Essential for constraint-based shortest path problems
+2. **State Management**: Important for handling multiple scenarios
+3. **Discount Optimization**: Key technique for resource optimization
+4. **Priority Queue**: Critical for efficient shortest path algorithms
+5. **Graph Theory**: Foundation for many algorithmic problems
+
+---
+
+**This is a great introduction to Dijkstra's algorithm with state management!** 🎯 
 
 ## 🎯 Problem Variations & Related Questions
 

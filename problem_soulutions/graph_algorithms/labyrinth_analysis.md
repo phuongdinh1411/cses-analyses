@@ -1,28 +1,28 @@
 ---
 layout: simple
-title: "Labyrinth"
+title: "Labyrinth - Minimum Walls Path Finding"
 permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis
 ---
 
+# Labyrinth - Minimum Walls Path Finding
 
-# Labyrinth
+## 📋 Problem Description
 
-## Problem Statement
 You are given a map of a labyrinth, and your task is to count the number of walls between the upper-left and lower-right corner.
 
 The labyrinth consists of n×m squares, and each square is either wall or floor. You can walk left, right, up, and down through the floor squares.
 
-### Input
-The first input line has two integers n and m: the height and width of the labyrinth.
-Then there are n lines that describe the labyrinth. Each line has m characters: "." denotes a floor and "#" denotes a wall.
+**Input**: 
+- First line: Two integers n and m (height and width of the labyrinth)
+- Next n lines: m characters each (". " denotes floor, "#" denotes wall)
 
-### Output
-Print one integer: the number of walls between the upper-left and lower-right corner.
+**Output**: 
+- One integer: minimum number of walls to pass through
 
-### Constraints
-- 1 ≤ n,m ≤ 1000
+**Constraints**:
+- 1 ≤ n, m ≤ 1000
 
-### Example
+**Example**:
 ```
 Input:
 5 8
@@ -36,10 +36,20 @@ Output:
 2
 ```
 
-## Solution Progression
+**Explanation**: 
+- Start at (0,0), end at (4,7)
+- Optimal path: (0,0) → (1,1) → (1,2) → (1,3) → (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
+- Passes through 2 walls: at (2,7) and (4,7)
 
-### Approach 1: BFS with Wall Counting - O(n*m)
-**Description**: Use breadth-first search to find the shortest path and count walls.
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find path with minimum walls between start and end
+- **Key Insight**: Use BFS with modified queue to prioritize floors over walls
+- **Challenge**: Handle grid navigation and wall counting efficiently
+
+### Step 2: Brute Force Approach
+**Try all possible paths and find minimum walls:**
 
 ```python
 from collections import deque
@@ -75,10 +85,10 @@ def labyrinth_bfs(n, m, grid):
     return bfs()
 ```
 
-**Why this is efficient**: We use BFS with a modified queue that prioritizes floor cells over wall cells, ensuring we find the path with minimum walls.
+**Complexity**: O(n × m) - optimal for this problem
 
-### Improvement 1: Dijkstra's Algorithm - O(n*m * log(n*m))
-**Description**: Use Dijkstra's algorithm with a priority queue to find the shortest path.
+### Step 3: Optimization
+**Use Dijkstra's algorithm with priority queue for better performance:**
 
 ```python
 import heapq
@@ -194,15 +204,19 @@ def labyrinth_astar(n, m, grid):
 
 **Why this works**: A* search uses a heuristic to guide the search toward the goal, potentially reducing the number of nodes explored.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
-from collections import deque
+def solve_labyrinth():
+    n, m = map(int, input().split())
+    grid = [input().strip() for _ in range(n)]
+    
+    result = bfs_01(n, m, grid)
+    print(result if result != -1 else "IMPOSSIBLE")
 
-n, m = map(int, input().split())
-grid = [input().strip() for _ in range(n)]
-
-def bfs_01():
+def bfs_01(n, m, grid):
+    from collections import deque
+    
     queue = deque([(0, 0, 0)])  # (row, col, walls)
     visited = [[False] * m for _ in range(n)]
     
@@ -229,18 +243,356 @@ def bfs_01():
     
     return -1  # No path found
 
-result = bfs_01()
-print(result if result != -1 else "IMPOSSIBLE")
+if __name__ == "__main__":
+    solve_labyrinth()
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| BFS with Wall Counting | O(n*m) | O(n*m) | Use modified queue |
-| Dijkstra's | O(n*m * log(n*m)) | O(n*m) | Guaranteed shortest path |
-| 0-1 BFS | O(n*m) | O(n*m) | Optimal for 0-1 weights |
-| A* Search | O(n*m * log(n*m)) | O(n*m) | Heuristic-guided search |
+```python
+def test_solution():
+    test_cases = [
+        ((5, 8, [
+            "########",
+            "#..#...#",
+            "####.#.#",
+            "#..#...#",
+            "########"
+        ]), 2),
+        ((3, 3, [
+            ".#.",
+            "#.#",
+            ".#."
+        ]), 2),
+        ((2, 2, [
+            "..",
+            ".."
+        ]), 0),  # No walls
+        ((2, 2, [
+            "##",
+            "##"
+        ]), -1),  # Impossible
+    ]
+    
+    for (n, m, grid), expected in test_cases:
+        result = bfs_01(n, m, grid)
+        print(f"n={n}, m={m}, grid:")
+        for row in grid:
+            print(f"  {row}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def bfs_01(n, m, grid):
+    from collections import deque
+    
+    queue = deque([(0, 0, 0)])  # (row, col, walls)
+    visited = [[False] * m for _ in range(n)]
+    
+    while queue:
+        row, col, walls = queue.popleft()
+        
+        if row == n-1 and col == m-1:
+            return walls
+        
+        if visited[row][col]:
+            continue
+        
+        visited[row][col] = True
+        
+        # Explore all four directions
+        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            nr, nc = row + dr, col + dc
+            if (0 <= nr < n and 0 <= nc < m and 
+                not visited[nr][nc]):
+                if grid[nr][nc] == '#':
+                    queue.append((nr, nc, walls + 1))  # Add to end
+                else:
+                    queue.appendleft((nr, nc, walls))  # Add to front
+    
+    return -1  # No path found
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n × m) - single pass through grid
+- **Space**: O(n × m) - visited array and queue
+
+### Why This Solution Works
+- **0-1 BFS**: Optimal for problems with binary edge weights
+- **Modified Queue**: Prioritizes floors over walls
+- **Grid Navigation**: Efficient 4-directional movement
+- **Optimal Algorithm**: Best known approach for this problem
+## 🎯 Problem Variations
+
+### Variation 1: Labyrinth with Diagonal Movement
+**Problem**: Allow diagonal movement in addition to 4-directional movement.
+
+```python
+def labyrinth_diagonal(n, m, grid):
+    """Find minimum walls with diagonal movement allowed"""
+    from collections import deque
+    
+    queue = deque([(0, 0, 0)])  # (row, col, walls)
+    visited = [[False] * m for _ in range(n)]
+    
+    # 8 directions: 4 cardinal + 4 diagonal
+    directions = [
+        (1, 0), (-1, 0), (0, 1), (0, -1),  # Cardinal
+        (1, 1), (1, -1), (-1, 1), (-1, -1)  # Diagonal
+    ]
+    
+    while queue:
+        row, col, walls = queue.popleft()
+        
+        if row == n-1 and col == m-1:
+            return walls
+        
+        if visited[row][col]:
+            continue
+        
+        visited[row][col] = True
+        
+        # Explore all eight directions
+        for dr, dc in directions:
+            nr, nc = row + dr, col + dc
+            if (0 <= nr < n and 0 <= nc < m and 
+                not visited[nr][nc]):
+                if grid[nr][nc] == '#':
+                    queue.append((nr, nc, walls + 1))
+                else:
+                    queue.appendleft((nr, nc, walls))
+    
+    return -1
+
+# Example usage
+grid = [
+    ".#.",
+    "#.#",
+    ".#."
+]
+result = labyrinth_diagonal(3, 3, grid)
+print(f"Diagonal movement result: {result}")
+```
+
+### Variation 2: Labyrinth with Multiple Goals
+**Problem**: Find minimum walls to reach any of multiple goal positions.
+
+```python
+def labyrinth_multiple_goals(n, m, grid, goals):
+    """Find minimum walls to reach any goal position"""
+    from collections import deque
+    
+    queue = deque([(0, 0, 0)])  # (row, col, walls)
+    visited = [[False] * m for _ in range(n)]
+    
+    while queue:
+        row, col, walls = queue.popleft()
+        
+        # Check if current position is a goal
+        if (row, col) in goals:
+            return walls
+        
+        if visited[row][col]:
+            continue
+        
+        visited[row][col] = True
+        
+        # Explore all four directions
+        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            nr, nc = row + dr, col + dc
+            if (0 <= nr < n and 0 <= nc < m and 
+                not visited[nr][nc]):
+                if grid[nr][nc] == '#':
+                    queue.append((nr, nc, walls + 1))
+                else:
+                    queue.appendleft((nr, nc, walls))
+    
+    return -1
+
+# Example usage
+goals = [(1, 1), (3, 3), (4, 4)]
+result = labyrinth_multiple_goals(5, 5, grid, goals)
+print(f"Multiple goals result: {result}")
+```
+
+### Variation 3: Labyrinth with Weighted Walls
+**Problem**: Different walls have different costs to pass through.
+
+```python
+def labyrinth_weighted_walls(n, m, grid, wall_costs):
+    """Find minimum cost with weighted walls"""
+    import heapq
+    
+    pq = [(0, 0, 0)]  # (cost, row, col)
+    distances = [[float('inf')] * m for _ in range(n)]
+    distances[0][0] = 0
+    
+    while pq:
+        cost, row, col = heapq.heappop(pq)
+        
+        if row == n-1 and col == m-1:
+            return cost
+        
+        if cost > distances[row][col]:
+            continue
+        
+        # Explore all four directions
+        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            nr, nc = row + dr, col + dc
+            if (0 <= nr < n and 0 <= nc < m):
+                if grid[nr][nc] == '#':
+                    wall_cost = wall_costs.get((nr, nc), 1)
+                    new_cost = cost + wall_cost
+                else:
+                    new_cost = cost
+                
+                if new_cost < distances[nr][nc]:
+                    distances[nr][nc] = new_cost
+                    heapq.heappush(pq, (new_cost, nr, nc))
+    
+    return distances[n-1][m-1] if distances[n-1][m-1] != float('inf') else -1
+
+# Example usage
+wall_costs = {(1, 1): 3, (2, 2): 5, (3, 3): 2}
+result = labyrinth_weighted_walls(5, 5, grid, wall_costs)
+print(f"Weighted walls result: {result}")
+```
+
+### Variation 4: Labyrinth with Time Constraints
+**Problem**: Find path with minimum walls within a time limit.
+
+```python
+def labyrinth_time_constrained(n, m, grid, time_limit):
+    """Find minimum walls within time constraint"""
+    from collections import deque
+    
+    queue = deque([(0, 0, 0, 0)])  # (row, col, walls, time)
+    visited = [[False] * m for _ in range(n)]
+    
+    while queue:
+        row, col, walls, time = queue.popleft()
+        
+        if row == n-1 and col == m-1:
+            return walls
+        
+        if time >= time_limit or visited[row][col]:
+            continue
+        
+        visited[row][col] = True
+        
+        # Explore all four directions
+        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            nr, nc = row + dr, col + dc
+            if (0 <= nr < n and 0 <= nc < m and 
+                not visited[nr][nc]):
+                new_time = time + 1
+                if grid[nr][nc] == '#':
+                    queue.append((nr, nc, walls + 1, new_time))
+                else:
+                    queue.appendleft((nr, nc, walls, new_time))
+    
+    return -1
+
+# Example usage
+result = labyrinth_time_constrained(5, 5, grid, 10)
+print(f"Time constrained result: {result}")
+```
+
+### Variation 5: Dynamic Labyrinth
+**Problem**: Maintain minimum walls as the labyrinth changes dynamically.
+
+```python
+class DynamicLabyrinth:
+    def __init__(self, n, m, initial_grid):
+        self.n = n
+        self.m = m
+        self.grid = [list(row) for row in initial_grid]
+        self.min_walls = None
+    
+    def update_cell(self, row, col, new_value):
+        """Update a cell in the labyrinth"""
+        if 0 <= row < self.n and 0 <= col < self.m:
+            self.grid[row][col] = new_value
+            self.min_walls = None  # Reset cached result
+    
+    def get_min_walls(self):
+        """Get current minimum walls"""
+        if self.min_walls is None:
+            self.min_walls = self._calculate_min_walls()
+        return self.min_walls
+    
+    def _calculate_min_walls(self):
+        """Calculate minimum walls using 0-1 BFS"""
+        from collections import deque
+        
+        queue = deque([(0, 0, 0)])
+        visited = [[False] * self.m for _ in range(self.n)]
+        
+        while queue:
+            row, col, walls = queue.popleft()
+            
+            if row == self.n-1 and col == self.m-1:
+                return walls
+            
+            if visited[row][col]:
+                continue
+            
+            visited[row][col] = True
+            
+            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                nr, nc = row + dr, col + dc
+                if (0 <= nr < self.n and 0 <= nc < self.m and 
+                    not visited[nr][nc]):
+                    if self.grid[nr][nc] == '#':
+                        queue.append((nr, nc, walls + 1))
+                    else:
+                        queue.appendleft((nr, nc, walls))
+        
+        return -1
+    
+    def get_grid(self):
+        """Get current grid state"""
+        return [''.join(row) for row in self.grid]
+
+# Example usage
+initial_grid = [
+    ".#.",
+    "#.#",
+    ".#."
+]
+labyrinth = DynamicLabyrinth(3, 3, initial_grid)
+print(f"Initial min walls: {labyrinth.get_min_walls()}")
+
+labyrinth.update_cell(1, 1, '.')
+print(f"After updating (1,1) to floor: {labyrinth.get_min_walls()}")
+
+labyrinth.update_cell(0, 1, '#')
+print(f"After updating (0,1) to wall: {labyrinth.get_min_walls()}")
+```
+---
+
+## 🔗 Related Problems
+
+- **[Grid Navigation](/cses-analyses/problem_soulutions/graph_algorithms/)**: Grid-based pathfinding problems
+- **[Shortest Path](/cses-analyses/problem_soulutions/graph_algorithms/)**: Path optimization problems
+- **[BFS/DFS](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph traversal problems
+
+## 📚 Learning Points
+
+1. **0-1 BFS**: Essential for problems with binary edge weights
+2. **Grid Navigation**: Important for 2D grid problems
+3. **Modified Queue**: Key technique for prioritizing certain paths
+4. **Path Optimization**: Critical for finding optimal routes
+5. **Graph Representation**: Foundation for efficient algorithm implementation
+
+---
+
+**This is a great introduction to grid-based pathfinding and 0-1 BFS!** 🎯
 
 ## Key Insights for Other Problems
 

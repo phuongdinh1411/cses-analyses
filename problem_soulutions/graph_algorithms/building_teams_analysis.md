@@ -1,27 +1,29 @@
 ---
 layout: simple
-title: "Building Teams"
+title: "Building Teams - Bipartite Graph Coloring"
 permalink: /problem_soulutions/graph_algorithms/building_teams_analysis
 ---
 
+# Building Teams - Bipartite Graph Coloring
 
-# Building Teams
+## 📋 Problem Description
 
-## Problem Statement
 There are n pupils in Uolevi's class, and m friendships between them. Your task is to divide the pupils into two teams in such a way that no two pupils in a team are friends. You can freely choose the sizes of the teams.
 
-### Input
-The first input line has two integers n and m: the number of pupils and friendships. The pupils are numbered 1,2,…,n.
-Then, there are m lines describing the friendships. Each line has two integers a and b: pupils a and b are friends.
+This is a classic bipartite graph coloring problem where we need to check if the friendship graph can be colored with 2 colors such that no adjacent vertices have the same color.
 
-### Output
-Print "IMPOSSIBLE" if this is not possible, and otherwise print the team assignment.
+**Input**: 
+- First line: Two integers n and m (number of pupils and friendships)
+- Next m lines: Two integers a and b (pupils a and b are friends)
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
+**Output**: 
+- Print "IMPOSSIBLE" if not possible, otherwise print team assignment
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2⋅10⁵
+
+**Example**:
 ```
 Input:
 5 3
@@ -33,10 +35,22 @@ Output:
 1 2 2 1 1
 ```
 
-## Solution Progression
+**Explanation**: 
+- Pupil 1: Team 1
+- Pupil 2: Team 2 (friend of 1)
+- Pupil 3: Team 2 (friend of 1)
+- Pupil 4: Team 1
+- Pupil 5: Team 1 (friend of 4)
 
-### Approach 1: BFS with Bipartition - O(n + m)
-**Description**: Use breadth-first search to check if the graph is bipartite and assign teams.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Divide pupils into two teams with no friends in same team
+- **Key Insight**: This is a bipartite graph coloring problem
+- **Challenge**: Check if graph is bipartite and assign colors/teams
+
+### Step 2: Initial Approach
+**Use BFS to check bipartiteness and assign teams:**
 
 ```python
 from collections import deque
@@ -78,8 +92,8 @@ def building_teams_bfs(n, m, friendships):
 
 **Why this is efficient**: We visit each node and edge at most once, giving us O(n + m) complexity.
 
-### Improvement 1: DFS with Bipartition - O(n + m)
-**Description**: Use depth-first search for bipartition checking.
+### Step 3: Optimization/Alternative
+**DFS approach for bipartition checking:**
 
 ```python
 def building_teams_dfs(n, m, friendships):
@@ -225,7 +239,7 @@ def building_teams_two_color(n, m, friendships):
 
 **Why this works**: This approach directly assigns team numbers (1 and 2) and is very intuitive.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 from collections import deque
@@ -267,7 +281,14 @@ else:
     print(' '.join(str(color[i] + 1) for i in range(1, n + 1)))
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple bipartite graph (should work)
+- **Test 2**: Graph with odd cycle (should return IMPOSSIBLE)
+- **Test 3**: Disconnected components (should work)
+- **Test 4**: Single node (should work)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -275,6 +296,136 @@ else:
 | DFS Bipartition | O(n + m) | O(n) | Recursive approach |
 | Union-Find | O(n + m * α(n)) | O(n) | Dynamic connectivity |
 | Two-Color BFS | O(n + m) | O(n + m) | Direct team assignment |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Bipartite Graph Detection**: Use graph coloring to check if graph can be divided into two independent sets
+- **Graph Traversal**: BFS/DFS for systematic node visiting and coloring
+- **Conflict Detection**: Check for adjacent nodes with same color/team
+- **Component Handling**: Process each connected component separately
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. K-Color Graph Coloring**
+```python
+def k_color_graph(n, m, edges, k):
+    # Check if graph can be colored with k colors
+    graph = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        graph[a].append(b)
+        graph[b].append(a)
+    
+    def is_k_colorable():
+        color = [0] * (n + 1)
+        
+        def dfs(node):
+            for neighbor in graph[node]:
+                if color[neighbor] == color[node]:
+                    return False
+                if color[neighbor] == 0:
+                    for c in range(1, k + 1):
+                        if c != color[node]:
+                            color[neighbor] = c
+                            if dfs(neighbor):
+                                return True
+                            color[neighbor] = 0
+            return True
+        
+        for start in range(1, n + 1):
+            if color[start] == 0:
+                for c in range(1, k + 1):
+                    color[start] = c
+                    if dfs(start):
+                        return True
+                    color[start] = 0
+        return False
+    
+    return is_k_colorable()
+```
+
+#### **2. Maximum Bipartite Matching**
+```python
+def max_bipartite_matching(n, m, edges):
+    # Find maximum matching in bipartite graph
+    graph = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        graph[a].append(b)
+    
+    match = [0] * (n + 1)
+    visited = [False] * (n + 1)
+    
+    def dfs(u):
+        for v in graph[u]:
+            if not visited[v]:
+                visited[v] = True
+                if match[v] == 0 or dfs(match[v]):
+                    match[v] = u
+                    return True
+        return False
+    
+    result = 0
+    for u in range(1, n + 1):
+        visited = [False] * (n + 1)
+        if dfs(u):
+            result += 1
+    
+    return result
+```
+
+#### **3. Graph Bipartition with Weights**
+```python
+def weighted_bipartition(n, m, edges, weights):
+    # Find bipartition that minimizes weight difference
+    graph = [[] for _ in range(n + 1)]
+    for i, (a, b) in enumerate(edges):
+        graph[a].append((b, weights[i]))
+        graph[b].append((a, weights[i]))
+    
+    def find_balanced_partition():
+        color = [-1] * (n + 1)
+        team1_weight = 0
+        team2_weight = 0
+        
+        def dfs(node, current_color):
+            nonlocal team1_weight, team2_weight
+            color[node] = current_color
+            
+            for neighbor, weight in graph[node]:
+                if color[neighbor] == -1:
+                    if current_color == 0:
+                        team1_weight += weight
+                    else:
+                        team2_weight += weight
+                    dfs(neighbor, 1 - current_color)
+        
+        for start in range(1, n + 1):
+            if color[start] == -1:
+                dfs(start, 0)
+        
+        return abs(team1_weight - team2_weight), color
+    
+    return find_balanced_partition()
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Graph Coloring**: Similar coloring constraints
+- **Bipartite Matching**: Related bipartite graph problems
+- **Independent Sets**: Finding independent vertex sets
+- **Conflict Resolution**: Resolving conflicts in assignments
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Bipartite graphs** can be detected using graph coloring
+- **BFS/DFS** are effective for systematic graph traversal
+- **Conflict detection** is crucial for constraint satisfaction
+- **Component separation** helps handle disconnected graphs
+- **Graph theory** concepts apply to many real-world problems
 
 ## Key Insights for Other Problems
 

@@ -1,27 +1,30 @@
 ---
 layout: simple
-title: "Message Route"
+title: "Message Route - Shortest Path Finding"
 permalink: /problem_soulutions/graph_algorithms/message_route_analysis
 ---
 
+# Message Route - Shortest Path Finding
 
-# Message Route
+## 📋 Problem Description
 
-## Problem Statement
 There are n computers numbered 1,2,…,n. The computers are connected through m cables. Your task is to find a route from computer 1 to computer n.
 
-### Input
-The first input line has two integers n and m: the number of computers and cables. The computers are numbered 1,2,…,n.
-Then, there are m lines describing the cables. Each line has two integers a and b: there is a cable between computers a and b.
+This is a classic shortest path problem in an unweighted, undirected graph. The goal is to find the minimum number of computers to traverse to get from computer 1 to computer n, and output the actual path.
 
-### Output
-Print "IMPOSSIBLE" if there is no route, and otherwise print the number of computers on the route and the route itself.
+**Input**: 
+- First line: Two integers n and m (number of computers and cables)
+- Next m lines: Two integers a and b (cable between computers a and b)
 
-### Constraints
-- 2 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
+**Output**: 
+- First line: Number of computers on the route
+- Second line: The route (sequence of computers)
 
-### Example
+**Constraints**:
+- 2 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2⋅10⁵
+
+**Example**:
 ```
 Input:
 5 5
@@ -36,10 +39,20 @@ Output:
 1 4 5
 ```
 
-## Solution Progression
+**Explanation**: 
+- Route: 1 → 4 → 5
+- Number of computers: 3
+- This is the shortest path from computer 1 to computer 5
 
-### Approach 1: BFS with Path Tracking - O(n + m)
-**Description**: Use breadth-first search to find the shortest path and track the path.
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find shortest path from computer 1 to computer n
+- **Key Insight**: Use BFS for unweighted graph shortest path
+- **Challenge**: Track the actual path while finding shortest distance
+
+### Step 2: Brute Force Approach
+**Use breadth-first search to find the shortest path and track the path:**
 
 ```python
 from collections import deque
@@ -77,10 +90,10 @@ def message_route_bfs(n, m, cables):
         return f"{len(path)}\n{' '.join(map(str, path))}"
 ```
 
-**Why this is efficient**: BFS guarantees finding the shortest path, and we visit each node at most once.
+**Complexity**: O(n + m) - optimal for this problem
 
-### Improvement 1: BFS with Parent Tracking - O(n + m)
-**Description**: Use BFS with parent tracking to reconstruct the path more efficiently.
+### Step 3: Optimization
+**Use BFS with parent tracking to reconstruct the path more efficiently:**
 
 ```python
 from collections import deque
@@ -279,6 +292,136 @@ def bfs():
                 path.append(current)
                 current = parent[current]
             return path[::-1]  # Reverse to get correct order
+
+### Step 4: Complete Solution
+
+```python
+def solve_message_route():
+    n, m = map(int, input().split())
+    cables = []
+    for _ in range(m):
+        a, b = map(int, input().split())
+        cables.append((a, b))
+    
+    result = find_message_route(n, m, cables)
+    print(result)
+
+def find_message_route(n, m, cables):
+    from collections import deque
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b in cables:
+        graph[a].append(b)
+        graph[b].append(a)
+    
+    def bfs():
+        queue = deque([1])
+        visited = [False] * (n + 1)
+        parent = [-1] * (n + 1)
+        visited[1] = True
+        
+        while queue:
+            node = queue.popleft()
+            
+            if node == n:
+                break
+            
+            for neighbor in graph[node]:
+                if not visited[neighbor]:
+                    visited[neighbor] = True
+                    parent[neighbor] = node
+                    queue.append(neighbor)
+        
+        # Reconstruct path
+        if parent[n] == -1:
+            return None
+        
+        path = []
+        current = n
+        while current != -1:
+            path.append(current)
+            current = parent[current]
+        
+        return path[::-1]
+    
+    path = bfs()
+    if path is None:
+        return "IMPOSSIBLE"
+    else:
+        return f"{len(path)}\n{' '.join(map(str, path))}"
+
+if __name__ == "__main__":
+    solve_message_route()
+```
+
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        ((5, 5, [(1, 2), (1, 3), (1, 4), (2, 3), (5, 4)]), (3, [1, 4, 5])),
+        ((3, 2, [(1, 2), (2, 3)]), (3, [1, 2, 3])),
+        ((4, 2, [(1, 2), (3, 4)]), "IMPOSSIBLE"),  # No path
+        ((3, 1, [(1, 2)]), "IMPOSSIBLE"),  # No path to 3
+    ]
+    
+    for (n, m, cables), expected in test_cases:
+        result = find_message_route(n, m, cables)
+        print(f"n={n}, m={m}, cables={cables}")
+        print(f"Expected: {expected}")
+        print(f"Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def find_message_route(n, m, cables):
+    from collections import deque
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b in cables:
+        graph[a].append(b)
+        graph[b].append(a)
+    
+    def bfs():
+        queue = deque([1])
+        visited = [False] * (n + 1)
+        parent = [-1] * (n + 1)
+        visited[1] = True
+        
+        while queue:
+            node = queue.popleft()
+            
+            if node == n:
+                break
+            
+            for neighbor in graph[node]:
+                if not visited[neighbor]:
+                    visited[neighbor] = True
+                    parent[neighbor] = node
+                    queue.append(neighbor)
+        
+        # Reconstruct path
+        if parent[n] == -1:
+            return None
+        
+        path = []
+        current = n
+        while current != -1:
+            path.append(current)
+            current = parent[current]
+        
+        return path[::-1]
+    
+    path = bfs()
+    if path is None:
+        return "IMPOSSIBLE"
+    else:
+        return f"{len(path)}\n{' '.join(map(str, path))}"
+
+test_solution()
+```
         
         for neighbor in graph[node]:
             if not visited[neighbor]:
@@ -764,4 +907,24 @@ node: {current}")
 
 ---
 
-*This analysis demonstrates fundamental graph traversal techniques and shows various extensions for pathfinding problems.* 
+*This analysis demonstrates fundamental graph traversal techniques and shows various extensions for pathfinding problems.*
+
+---
+
+## 🔗 Related Problems
+
+- **[Shortest Path](/cses-analyses/problem_soulutions/graph_algorithms/)**: Path optimization problems
+- **[BFS](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph traversal problems
+- **[Path Reconstruction](/cses-analyses/problem_soulutions/graph_algorithms/)**: Path finding problems
+
+## 📚 Learning Points
+
+1. **BFS for Shortest Path**: Essential for unweighted graph shortest path
+2. **Path Reconstruction**: Important for tracking actual paths
+3. **Parent Tracking**: Key technique for efficient path storage
+4. **Queue Management**: Critical for BFS implementation
+5. **Graph Theory**: Foundation for many algorithmic problems
+
+---
+
+**This is a great introduction to BFS and shortest path finding!** 🎯 

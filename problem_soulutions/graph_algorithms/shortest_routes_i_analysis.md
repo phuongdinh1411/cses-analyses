@@ -1,29 +1,31 @@
 ---
 layout: simple
-title: "Shortest Routes I"
+title: "Shortest Routes I - Single Source Shortest Paths"
 permalink: /problem_soulutions/graph_algorithms/shortest_routes_i_analysis
 ---
 
+# Shortest Routes I - Single Source Shortest Paths
 
-# Shortest Routes I
+## 📋 Problem Description
 
-## Problem Statement
-There are n cities and m flight connections. Your task is to find the shortest route from city 1 to all other cities.
+There are n cities and m flight connections. Find the shortest route from city 1 to all other cities.
 
-### Input
-The first input line has two integers n and m: the number of cities and flight connections. The cities are numbered 1,2,…,n.
-Then, there are m lines describing the flight connections. Each line has three integers a, b, and c: there is a flight from city a to city b with cost c.
+**Input**: 
+- First line: Two integers n and m (number of cities and flight connections)
+- Next m lines: Three integers a, b, and c (flight from city a to city b with cost c)
 
-### Output
-Print n integers: the shortest route lengths from city 1 to all cities. If there is no route, print -1.
+**Output**: 
+- n integers: shortest route lengths from city 1 to all cities
+- If no route exists, print -1
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
-- 1 ≤ c ≤ 10^9
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2⋅10⁵
+- 1 ≤ a, b ≤ n
+- 1 ≤ c ≤ 10⁹
+- Cities are numbered 1, 2, ..., n
 
-### Example
+**Example**:
 ```
 Input:
 3 4
@@ -36,14 +38,65 @@ Output:
 0 5 2
 ```
 
-## Solution Progression
-### Approach 1: Dijkstra's Algorithm - O((n + m) * log(n))
-**Description**: Use Dijkstra's algorithm with a priority queue to find shortest paths.
+**Explanation**: 
+- City 1 to City 1: 0 (same city)
+- City 1 to City 2: 5 (path: 1 → 3 → 2, cost: 2 + 3 = 5)
+- City 1 to City 3: 2 (direct flight from 1 to 3)
+
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find shortest paths from source city 1 to all other cities
+- **Key Insight**: Use Dijkstra's algorithm for non-negative edge weights
+- **Challenge**: Handle large graphs efficiently with priority queue
+
+### Step 2: Brute Force Approach
+**Try all possible paths and find minimum:**
 
 ```python
-import heapq
+def shortest_routes_naive(n, m, flights):
+    from itertools import permutations
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b, c in flights:
+        graph[a].append((b, c))
+    
+    def find_all_paths(start, end, visited, path, cost):
+        if start == end:
+            return [path + [end]]
+        
+        paths = []
+        for neighbor, weight in graph[start]:
+            if neighbor not in visited:
+                new_paths = find_all_paths(neighbor, end, visited | {start}, path + [start], cost + weight)
+                paths.extend(new_paths)
+        
+        return paths
+    
+    # Find shortest path to each city
+    distances = [0]  # Distance to city 1
+    for target in range(2, n + 1):
+        all_paths = find_all_paths(1, target, set(), [], 0)
+        if all_paths:
+            min_cost = min(sum(graph[path[i]][path[i+1]] for i in range(len(path)-1)) 
+                         for path in all_paths)
+            distances.append(min_cost)
+        else:
+            distances.append(-1)
+    
+    return distances
+```
 
+**Complexity**: O(n!) - extremely slow for large graphs
+
+### Step 3: Optimization
+**Use Dijkstra's algorithm with priority queue:**
+
+```python
 def shortest_routes_dijkstra(n, m, flights):
+    import heapq
+    
     # Build adjacency list
     graph = [[] for _ in range(n + 1)]
     for a, b, c in flights:
@@ -85,133 +138,53 @@ def shortest_routes_dijkstra(n, m, flights):
     return result
 ```
 
-**Why this is efficient**: Dijkstra's algorithm is optimal for finding shortest paths in graphs with non-negative edge weights.
+**Key Insight**: Use priority queue to always process closest unvisited node
 
-### Improvement 1: Optimized Dijkstra with Early Termination - O((n + m) * log(n))
-**Description**: Use optimized Dijkstra with early termination and better data structures.
+### Step 4: Complete Solution
 
 ```python
-import heapq
+def solve_shortest_routes_i():
+    n, m = map(int, input().split())
+    flights = []
+    for _ in range(m):
+        a, b, c = map(int, input().split())
+        flights.append((a, b, c))
+    
+    result = find_shortest_routes(n, m, flights)
+    print(*result)
 
-def shortest_routes_optimized_dijkstra(n, m, flights):
+def find_shortest_routes(n, m, flights):
+    import heapq
+    
     # Build adjacency list
     graph = [[] for _ in range(n + 1)]
     for a, b, c in flights:
         graph[a].append((b, c))
     
-    def dijkstra_optimized():
+    def dijkstra():
         distances = [float('inf')] * (n + 1)
         distances[1] = 0
         
-        # Use set for faster lookups
-        visited = set()
+        # Priority queue: (distance, node)
         pq = [(0, 1)]
         
-        while pq and len(visited) < n:
+        while pq:
             dist, node = heapq.heappop(pq)
             
-            if node in visited:
+            # If we've already found a shorter path, skip
+            if dist > distances[node]:
                 continue
             
-            visited.add(node)
-            
-            # Early termination if all nodes are visited
-            if len(visited) == n:
-                break
-            
+            # Explore neighbors
             for neighbor, weight in graph[node]:
-                if neighbor not in visited:
-                    new_dist = dist + weight
-                    if new_dist < distances[neighbor]:
-                        distances[neighbor] = new_dist
-                        heapq.heappush(pq, (new_dist, neighbor))
-        
-        return distances
-    
-    distances = dijkstra_optimized()
-    
-    # Convert to output format
-    result = []
-    for i in range(1, n + 1):
-        if distances[i] == float('inf'):
-            result.append(-1)
-        else:
-            result.append(distances[i])
-    
-    return result
-```
-
-**Why this improvement works**: Early termination and using a set for visited nodes can improve performance for large graphs.
-
-### Improvement 2: Bellman-Ford Algorithm - O(n*m)
-**Description**: Use Bellman-Ford algorithm for graphs that might have negative edges.
-
-```python
-def shortest_routes_bellman_ford(n, m, flights):
-    def bellman_ford():
-        distances = [float('inf')] * (n + 1)
-        distances[1] = 0
-        
-        # Relax edges n-1 times
-        for _ in range(n - 1):
-            for a, b, c in flights:
-                if distances[a] != float('inf'):
-                    if distances[a] + c < distances[b]:
-                        distances[b] = distances[a] + c
-        
-        return distances
-    
-    distances = bellman_ford()
-    
-    # Convert to output format
-    result = []
-    for i in range(1, n + 1):
-        if distances[i] == float('inf'):
-            result.append(-1)
-        else:
-            result.append(distances[i])
-    
-    return result
-```
-
-**Why this improvement works**: Bellman-Ford can handle negative edge weights and is simpler to implement.
-
-### Alternative: SPFA (Shortest Path Faster Algorithm) - O(n*m)
-**Description**: Use SPFA which is an optimization of Bellman-Ford.
-
-```python
-from collections import deque
-
-def shortest_routes_spfa(n, m, flights):
-    # Build adjacency list
-    graph = [[] for _ in range(n + 1)]
-    for a, b, c in flights:
-        graph[a].append((b, c))
-    
-    def spfa():
-        distances = [float('inf')] * (n + 1)
-        distances[1] = 0
-        
-        # Queue for nodes to process
-        queue = deque([1])
-        in_queue = [False] * (n + 1)
-        in_queue[1] = True
-        
-        while queue:
-            node = queue.popleft()
-            in_queue[node] = False
-            
-            for neighbor, weight in graph[node]:
-                new_dist = distances[node] + weight
+                new_dist = dist + weight
                 if new_dist < distances[neighbor]:
                     distances[neighbor] = new_dist
-                    if not in_queue[neighbor]:
-                        queue.append(neighbor)
-                        in_queue[neighbor] = True
+                    heapq.heappush(pq, (new_dist, neighbor))
         
         return distances
     
-    distances = spfa()
+    distances = dijkstra()
     
     # Convert to output format
     result = []
@@ -222,336 +195,47 @@ def shortest_routes_spfa(n, m, flights):
             result.append(distances[i])
     
     return result
+
+if __name__ == "__main__":
+    solve_shortest_routes_i()
 ```
 
-**Why this works**: SPFA is often faster than Bellman-Ford in practice, especially for sparse graphs.
-
-## Final Optimal Solution
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
 
 ```python
-import heapq
-
-n, m = map(int, input().split())
-flights = [tuple(map(int, input().split())) for _ in range(m)]
-
-# Build adjacency list
-graph = [[] for _ in range(n + 1)]
-for a, b, c in flights:
-    graph[a].append((b, c))
-
-def dijkstra():
-    distances = [float('inf')] * (n + 1)
-    distances[1] = 0
+def test_solution():
+    test_cases = [
+        ((3, 4, [(1, 2, 6), (1, 3, 2), (3, 2, 3), (1, 3, 4)]), [0, 5, 2]),
+        ((4, 3, [(1, 2, 1), (2, 3, 2), (3, 4, 3)]), [0, 1, 3, 6]),
+        ((2, 1, [(1, 2, 5)]), [0, 5]),
+        ((3, 2, [(1, 2, 1), (2, 3, 1)]), [0, 1, 2]),
+        ((3, 1, [(2, 3, 1)]), [0, -1, -1]),  # No path to cities 2, 3
+    ]
     
-    # Priority queue: (distance, node)
-    pq = [(0, 1)]
+    for (n, m, flights), expected in test_cases:
+        result = find_shortest_routes(n, m, flights)
+        print(f"n={n}, m={m}, flights={flights}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def find_shortest_routes(n, m, flights):
+    import heapq
     
-    while pq:
-        dist, node = heapq.heappop(pq)
-        
-        # If we've already found a shorter path, skip
-        if dist > distances[node]:
-            continue
-        
-        # Explore neighbors
-        for neighbor, weight in graph[node]:
-            new_dist = dist + weight
-            if new_dist < distances[neighbor]:
-                distances[neighbor] = new_dist
-                heapq.heappush(pq, (new_dist, neighbor))
-    
-    return distances
-
-distances = dijkstra()
-
-# Convert to output format
-result = []
-for i in range(1, n + 1):
-    if distances[i] == float('inf'):
-        result.append(-1)
-    else:
-        result.append(distances[i])
-
-print(*result)
-```
-
-## Complexity Analysis
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Dijkstra's | O((n + m) * log(n)) | O(n + m) | Optimal for non-negative weights |
-| Optimized Dijkstra | O((n + m) * log(n)) | O(n + m) | Early termination |
-| Bellman-Ford | O(n*m) | O(n) | Handles negative weights |
-| SPFA | O(n*m) | O(n + m) | Optimized Bellman-Ford |
-
-## Key Insights for Other Problems
-
-### 1. **Shortest Path Algorithms**
-**Principle**: Choose appropriate shortest path algorithm based on graph characteristics.
-**Applicable to**:
-- Shortest path problems
-- Graph algorithms
-- Network routing
-- Algorithm design
-
-**Example Problems**:
-- Shortest path problems
-- Graph algorithms
-- Network routing
-- Algorithm design
-
-### 2. **Priority Queue Usage**
-**Principle**: Use priority queues to efficiently process nodes in order of increasing distance.
-**Applicable to**:
-- Dijkstra's algorithm
-- Priority-based algorithms
-- Graph traversal
-- Algorithm optimization
-
-**Example Problems**:
-- Dijkstra's algorithm
-- Priority-based algorithms
-- Graph traversal
-- Algorithm optimization
-
-### 3. **Edge Relaxation**
-**Principle**: Relax edges to update shortest path distances during algorithm execution.
-**Applicable to**:
-- Shortest path algorithms
-- Dynamic programming
-- Graph algorithms
-- Algorithm design
-
-**Example Problems**:
-- Shortest path algorithms
-- Dynamic programming
-- Graph algorithms
-- Algorithm design
-
-### 4. **Negative Edge Handling**
-**Principle**: Use appropriate algorithms (Bellman-Ford, SPFA) for graphs with negative edge weights.
-**Applicable to**:
-- Negative weight graphs
-- Graph algorithms
-- Algorithm selection
-- Problem solving
-
-**Example Problems**:
-- Negative weight graphs
-- Graph algorithms
-- Algorithm selection
-- Problem solving
-
-## Notable Techniques
-
-### 1. **Dijkstra's Pattern**
-```python
-def dijkstra(graph, start, n):
-    distances = [float('inf')] * n
-    distances[start] = 0
-    pq = [(0, start)]
-    
-    while pq:
-        dist, node = heapq.heappop(pq)
-        if dist > distances[node]:
-            continue
-        
-        for neighbor, weight in graph[node]:
-            new_dist = dist + weight
-            if new_dist < distances[neighbor]:
-                distances[neighbor] = new_dist
-                heapq.heappush(pq, (new_dist, neighbor))
-    
-    return distances
-```
-
-### 2. **Bellman-Ford Pattern**
-```python
-def bellman_ford(edges, n, start):
-    distances = [float('inf')] * n
-    distances[start] = 0
-    
-    for _ in range(n - 1):
-        for u, v, w in edges:
-            if distances[u] != float('inf'):
-                distances[v] = min(distances[v], distances[u] + w)
-    
-    return distances
-```
-
-### 3. **SPFA Pattern**
-```python
-def spfa(graph, start, n):
-    distances = [float('inf')] * n
-    distances[start] = 0
-    queue = deque([start])
-    in_queue = [False] * n
-    in_queue[start] = True
-    
-    while queue:
-        node = queue.popleft()
-        in_queue[node] = False
-        
-        for neighbor, weight in graph[node]:
-            new_dist = distances[node] + weight
-            if new_dist < distances[neighbor]:
-                distances[neighbor] = new_dist
-                if not in_queue[neighbor]:
-                    queue.append(neighbor)
-                    in_queue[neighbor] = True
-    
-    return distances
-```
-
-## Edge Cases to Remember
-
-1. **No path exists**: Return -1 for unreachable nodes
-2. **Negative cycles**: Handle with appropriate algorithm
-3. **Large edge weights**: Use appropriate data types
-4. **Self-loops**: Handle properly
-5. **Multiple edges**: Consider minimum weight
-
-## Problem-Solving Framework
-
-1. **Identify shortest path nature**: This is a single-source shortest path problem
-2. **Choose algorithm**: Use Dijkstra's for non-negative weights
-3. **Handle edge cases**: Check for unreachable nodes
-4. **Optimize performance**: Use priority queue efficiently
-5. **Format output**: Convert distances to required format
-
----
-
-*This analysis shows how to efficiently solve single-source shortest path problems using various graph algorithms.* 
-
-## Problem Variations & Related Questions
-
-### Problem Variations
-
-#### 1. **Shortest Routes I with Costs**
-**Variation**: Each route has additional costs (tolls, fuel, etc.) beyond distance.
-**Approach**: Use Dijkstra's algorithm with multi-dimensional cost tracking.
-```python
-def cost_based_shortest_routes_i(n, m, edges, costs):
-    # costs[(a, b)] = additional cost for route from a to b
-    
-    # Build adjacency list with costs
     graph = [[] for _ in range(n + 1)]
-    for a, b, w in edges:
-        additional_cost = costs.get((a, b), 0)
-        graph[a].append((b, w, additional_cost))
+    for a, b, c in flights:
+        graph[a].append((b, c))
     
-    def dijkstra_with_costs():
-        # (total_cost, distance, node)
-        distances = [float('inf')] * (n + 1)
-        total_costs = [float('inf')] * (n + 1)
-        distances[1] = 0
-        total_costs[1] = 0
-        
-        pq = [(0, 0, 1)]  # (total_cost, distance, node)
-        
-        while pq:
-            total_cost, dist, node = heapq.heappop(pq)
-            
-            if total_cost > total_costs[node]:
-                continue
-            
-            for neighbor, weight, cost in graph[node]:
-                new_dist = dist + weight
-                new_total_cost = total_cost + weight + cost
-                
-                if new_total_cost < total_costs[neighbor]:
-                    distances[neighbor] = new_dist
-                    total_costs[neighbor] = new_total_cost
-                    heapq.heappush(pq, (new_total_cost, new_dist, neighbor))
-        
-        return distances, total_costs
-    
-    distances, costs = dijkstra_with_costs()
-    return distances[1:], costs[1:]
-```
-
-#### 2. **Shortest Routes I with Constraints**
-**Variation**: Limited fuel, time constraints, or restricted routes.
-**Approach**: Use BFS with state tracking for constraint satisfaction.
-```python
-def constrained_shortest_routes_i(n, m, edges, max_fuel, restricted_routes):
-    # max_fuel = maximum fuel capacity
-    # restricted_routes = set of routes that cannot be used
-    
-    # Build adjacency list
-    graph = [[] for _ in range(n + 1)]
-    for a, b, w in edges: if (a, b) not in restricted_routes and (b, a) not in 
-restricted_routes: graph[a].append((b, w))
-            graph[b].append((a, w))
-    
-    def bfs_with_constraints():
-        # (node, fuel, distance)
-        queue = deque([(1, 0, 0)])
-        visited = set()
-        distances = [float('inf')] * (n + 1)
-        
-        while queue:
-            node, fuel, dist = queue.popleft()
-            
-            if fuel > max_fuel:
-                continue
-            
-            if dist < distances[node]:
-                distances[node] = dist
-            
-            state = (node, fuel)
-            if state in visited:
-                continue
-            visited.add(state)
-            
-            for neighbor, weight in graph[node]:
-                new_fuel = fuel + weight
-                if new_fuel <= max_fuel:
-                    queue.append((neighbor, new_fuel, dist + weight))
-        
-        return distances
-    
-    distances = bfs_with_constraints()
-    return [d if d != float('inf') else -1 for d in distances[1:]]
-```
-
-#### 3. **Shortest Routes I with Probabilities**
-**Variation**: Each route has a probability of being available or having delays.
-**Approach**: Use Monte Carlo simulation or expected value calculation.
-```python
-def probabilistic_shortest_routes_i(n, m, edges, probabilities):
-    # probabilities[(a, b)] = probability route from a to b is available
-    
-    def monte_carlo_simulation(trials=1000):
-        successful_routes = [0] * (n + 1)
-        
-        for _ in range(trials):
-            # Simulate available routes
-            available_edges = []
-            for a, b, w in edges:
-                if random.random() < probabilities.get((a, b), 1.0):
-                    available_edges.append((a, b, w))
-            
-            # Calculate shortest paths with available routes
-            distances = calculate_shortest_paths(n, available_edges)
-            
-            for i in range(1, n + 1):
-                if distances[i] != float('inf'):
-                    successful_routes[i] += 1
-        
-        return [successful_routes[i] / trials for i in range(1, n + 1)]
-    
-    def calculate_shortest_paths(n, edges):
-        graph = [[] for _ in range(n + 1)]
-        for a, b, w in edges:
-            graph[a].append((b, w))
-        
+    def dijkstra():
         distances = [float('inf')] * (n + 1)
         distances[1] = 0
+        
         pq = [(0, 1)]
         
         while pq:
             dist, node = heapq.heappop(pq)
+            
             if dist > distances[node]:
                 continue
             
@@ -563,61 +247,268 @@ def probabilistic_shortest_routes_i(n, m, edges, probabilities):
         
         return distances
     
-    return monte_carlo_simulation()
+    distances = dijkstra()
+    
+    result = []
+    for i in range(1, n + 1):
+        if distances[i] == float('inf'):
+            result.append(-1)
+        else:
+            result.append(distances[i])
+    
+    return result
+
+test_solution()
 ```
 
-#### 4. **Shortest Routes I with Multiple Criteria**
-**Variation**: Optimize for multiple objectives (distance, time, cost, comfort).
-**Approach**: Use multi-objective optimization or weighted sum approach.
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O((n + m) × log(n)) - Dijkstra's algorithm with priority queue
+- **Space**: O(n + m) - adjacency list and priority queue
+
+### Why This Solution Works
+- **Dijkstra's Algorithm**: Optimal for non-negative edge weights
+- **Priority Queue**: Always processes closest unvisited node
+- **Greedy Approach**: Local optimal choice leads to global optimum
+- **Efficient Implementation**: Uses heap for O(log n) operations
+
+## 🎯 Key Insights
+
+### 1. **Dijkstra's Algorithm**
+- Greedy algorithm for shortest paths
+- Important for understanding
+- Works only with non-negative weights
+- Essential for algorithm
+
+### 2. **Priority Queue Usage**
+- Always process closest unvisited node
+- Important for understanding
+- Ensures optimal path discovery
+- Essential for efficiency
+
+### 3. **Graph Representation**
+- Use adjacency list for sparse graphs
+- Important for understanding
+- Efficient for most real-world graphs
+- Essential for performance
+
+## 🎯 Problem Variations
+
+### Variation 1: Shortest Routes with Negative Weights
+**Problem**: Find shortest paths when edges can have negative weights (Bellman-Ford algorithm).
+
 ```python
-def multi_criteria_shortest_routes_i(n, m, edges, criteria_weights):
-    # criteria_weights = {'distance': 0.4, 'time': 0.3, 'cost': 0.2, 'comfort': 0.1}
-    # edges = [(a, b, distance, time, cost, comfort), ...]
-    
-    # Build adjacency list with multiple criteria
+def shortest_routes_bellman_ford(n, m, flights):
+    # Build adjacency list
     graph = [[] for _ in range(n + 1)]
-    for a, b, dist, time, cost, comfort in edges:
-        graph[a].append((b, dist, time, cost, comfort))
+    for a, b, c in flights:
+        graph[a].append((b, c))
     
-    def multi_objective_dijkstra():
-        # Calculate weighted scores
-        def calculate_score(dist, time, cost, comfort):
-            return (criteria_weights['distance'] * dist + 
-                   criteria_weights['time'] * time + 
-                   criteria_weights['cost'] * cost + 
-                   criteria_weights['comfort'] * comfort)
-        
-        scores = [float('inf')] * (n + 1)
-        scores[1] = 0
+    def bellman_ford():
         distances = [float('inf')] * (n + 1)
         distances[1] = 0
         
-        pq = [(0, 0, 1)]  # (score, distance, node)
+        # Relax edges n-1 times
+        for _ in range(n - 1):
+            for u in range(1, n + 1):
+                for v, weight in graph[u]:
+                    if distances[u] != float('inf') and distances[u] + weight < distances[v]:
+                        distances[v] = distances[u] + weight
         
-        while pq:
-            score, dist, node = heapq.heappop(pq)
-            
-            if score > scores[node]:
-                continue
-            
-            for neighbor, d, t, c, comf in graph[node]:
-                new_dist = dist + d
-                new_score = calculate_score(d, t, c, comf)
-                
-                if new_score < scores[neighbor]:
-                    scores[neighbor] = new_score
-                    distances[neighbor] = new_dist
-                    heapq.heappush(pq, (new_score, new_dist, neighbor))
+        # Check for negative cycles
+        for u in range(1, n + 1):
+            for v, weight in graph[u]:
+                if distances[u] != float('inf') and distances[u] + weight < distances[v]:
+                    return None  # Negative cycle detected
         
-        return distances, scores
+        return distances
     
-    distances, scores = multi_objective_dijkstra()
-    return distances[1:], scores[1:]
+    distances = bellman_ford()
+    
+    if distances is None:
+        return [-1] * n  # Negative cycle
+    
+    result = []
+    for i in range(1, n + 1):
+        if distances[i] == float('inf'):
+            result.append(-1)
+        else:
+            result.append(distances[i])
+    
+    return result
+
+# Example usage
+result = shortest_routes_bellman_ford(3, 3, [(1, 2, 1), (2, 3, -2), (3, 1, 1)])
+print(f"Shortest routes with negative weights: {result}")
 ```
 
-#### 5. **Shortest Routes I with Dynamic Updates**
-**Variation**: Routes can be added, removed, or modified dynamically.
-**Approach**: Use dynamic graph algorithms or incremental updates.
+### Variation 2: Shortest Routes with K Stops
+**Problem**: Find shortest path from city 1 to city n with at most k stops.
+
+```python
+def shortest_routes_k_stops(n, m, flights, k):
+    import heapq
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b, c in flights:
+        graph[a].append((b, c))
+    
+    def dijkstra_k_stops():
+        # distances[node][stops] = shortest distance to node with stops stops
+        distances = [[float('inf')] * (k + 1) for _ in range(n + 1)]
+        distances[1][0] = 0
+        
+        # Priority queue: (distance, node, stops)
+        pq = [(0, 1, 0)]
+        
+        while pq:
+            dist, node, stops = heapq.heappop(pq)
+            
+            if dist > distances[node][stops]:
+                continue
+            
+            if stops < k:
+                for neighbor, weight in graph[node]:
+                    new_dist = dist + weight
+                    if new_dist < distances[neighbor][stops + 1]:
+                        distances[neighbor][stops + 1] = new_dist
+                        heapq.heappush(pq, (new_dist, neighbor, stops + 1))
+        
+        return distances
+    
+    distances = dijkstra_k_stops()
+    
+    # Find minimum distance to target with any number of stops
+    min_distance = min(distances[n])
+    
+    return min_distance if min_distance != float('inf') else -1
+
+# Example usage
+result = shortest_routes_k_stops(4, 4, [(1, 2, 1), (2, 3, 2), (3, 4, 3), (1, 4, 10)], 2)
+print(f"Shortest route with at most 2 stops: {result}")
+```
+
+### Variation 3: Shortest Routes with Time Windows
+**Problem**: Find shortest path considering time windows when flights are available.
+
+```python
+def shortest_routes_time_windows(n, m, flights, time_windows):
+    import heapq
+    
+    # Build adjacency list with time windows
+    graph = [[] for _ in range(n + 1)]
+    for i, (a, b, c) in enumerate(flights):
+        start_time, end_time = time_windows[i]
+        graph[a].append((b, c, start_time, end_time))
+    
+    def dijkstra_time_windows():
+        distances = [float('inf')] * (n + 1)
+        distances[1] = 0
+        
+        # Priority queue: (distance, node, current_time)
+        pq = [(0, 1, 0)]  # Start at time 0
+        
+        while pq:
+            dist, node, current_time = heapq.heappop(pq)
+            
+            if dist > distances[node]:
+                continue
+            
+            for neighbor, weight, start_time, end_time in graph[node]:
+                # Check if flight is available at current time
+                if start_time <= current_time <= end_time:
+                    new_dist = dist + weight
+                    if new_dist < distances[neighbor]:
+                        distances[neighbor] = new_dist
+                        heapq.heappush(pq, (new_dist, neighbor, current_time + weight))
+        
+        return distances
+    
+    distances = dijkstra_time_windows()
+    
+    result = []
+    for i in range(1, n + 1):
+        if distances[i] == float('inf'):
+            result.append(-1)
+        else:
+            result.append(distances[i])
+    
+    return result
+
+# Example usage
+flights = [(1, 2, 1), (2, 3, 2), (1, 3, 5)]
+time_windows = [(0, 10), (5, 15), (0, 20)]  # (start_time, end_time)
+result = shortest_routes_time_windows(3, 3, flights, time_windows)
+print(f"Shortest routes with time windows: {result}")
+```
+
+### Variation 4: Shortest Routes with Multiple Criteria
+**Problem**: Find shortest path considering multiple criteria like cost, time, and reliability.
+
+```python
+def shortest_routes_multi_criteria(n, m, flights, criteria):
+    import heapq
+    
+    # Build adjacency list with multiple criteria
+    graph = [[] for _ in range(n + 1)]
+    for i, (a, b, c) in enumerate(flights):
+        cost = c
+        time = criteria['time'][i]
+        reliability = criteria['reliability'][i]
+        graph[a].append((b, cost, time, reliability))
+    
+    def dijkstra_multi_criteria():
+        # distances[node] = (total_cost, total_time, total_reliability)
+        distances = [(float('inf'), float('inf'), 0)] * (n + 1)
+        distances[1] = (0, 0, 1.0)
+        
+        # Priority queue: (total_cost, total_time, node, total_reliability)
+        pq = [(0, 0, 1, 1.0)]
+        
+        while pq:
+            total_cost, total_time, node, total_reliability = heapq.heappop(pq)
+            
+            if (total_cost, total_time) > (distances[node][0], distances[node][1]):
+                continue
+            
+            for neighbor, cost, time, reliability in graph[node]:
+                new_cost = total_cost + cost
+                new_time = total_time + time
+                new_reliability = total_reliability * reliability
+                
+                if (new_cost < distances[neighbor][0] or 
+                    (new_cost == distances[neighbor][0] and new_time < distances[neighbor][1])):
+                    distances[neighbor] = (new_cost, new_time, new_reliability)
+                    heapq.heappush(pq, (new_cost, new_time, neighbor, new_reliability))
+        
+        return distances
+    
+    distances = dijkstra_multi_criteria()
+    
+    result = []
+    for i in range(1, n + 1):
+        if distances[i][0] == float('inf'):
+            result.append((-1, -1, 0))
+        else:
+            result.append((distances[i][0], distances[i][1], distances[i][2]))
+    
+    return result
+
+# Example usage
+flights = [(1, 2, 1), (2, 3, 2), (1, 3, 5)]
+criteria = {
+    'time': [1, 2, 3],
+    'reliability': [0.9, 0.8, 0.7]
+}
+result = shortest_routes_multi_criteria(3, 3, flights, criteria)
+print(f"Multi-criteria shortest routes: {result}")
+```
+
+### Variation 5: Shortest Routes with Dynamic Updates
+**Problem**: Maintain shortest paths as flight connections are added/removed dynamically.
+
 ```python
 class DynamicShortestRoutes:
     def __init__(self, n):
@@ -626,29 +517,33 @@ class DynamicShortestRoutes:
         self.distances = [float('inf')] * (n + 1)
         self.distances[1] = 0
     
-    def add_edge(self, a, b, weight):
-        self.graph[a].append((b, weight))
-        self.update_distances()
+    def add_flight(self, a, b, c):
+        """Add flight from city a to city b with cost c"""
+        self.graph[a].append((b, c))
+        self.update_shortest_paths()
     
-    def remove_edge(self, a, b):
-        self.graph[a] = [(neighbor, w) for neighbor, w in self.graph[a] if neighbor != b]
-        self.update_distances()
+    def remove_flight(self, a, b, c):
+        """Remove flight from city a to city b with cost c"""
+        if (b, c) in self.graph[a]:
+            self.graph[a].remove((b, c))
+            self.update_shortest_paths()
+            return True
+        return False
     
-    def update_edge_weight(self, a, b, new_weight):
-        for i, (neighbor, weight) in enumerate(self.graph[a]):
-            if neighbor == b:
-                self.graph[a][i] = (b, new_weight)
-                break
-        self.update_distances()
-    
-    def update_distances(self):
-        # Recalculate shortest paths
+    def update_shortest_paths(self):
+        """Recalculate shortest paths using Dijkstra's algorithm"""
+        import heapq
+        
+        # Reset distances
         self.distances = [float('inf')] * (self.n + 1)
         self.distances[1] = 0
+        
+        # Priority queue: (distance, node)
         pq = [(0, 1)]
         
         while pq:
             dist, node = heapq.heappop(pq)
+            
             if dist > self.distances[node]:
                 continue
             
@@ -658,98 +553,44 @@ class DynamicShortestRoutes:
                     self.distances[neighbor] = new_dist
                     heapq.heappush(pq, (new_dist, neighbor))
     
-    def get_distances(self):
-        return [d if d != float('inf') else -1 for d in self.distances[1:]]
+    def get_shortest_routes(self):
+        """Get current shortest routes to all cities"""
+        result = []
+        for i in range(1, self.n + 1):
+            if self.distances[i] == float('inf'):
+                result.append(-1)
+            else:
+                result.append(self.distances[i])
+        return result
+
+# Example usage
+sorter = DynamicShortestRoutes(3)
+print(f"Initial routes: {sorter.get_shortest_routes()}")
+
+sorter.add_flight(1, 2, 1)
+print(f"After adding flight (1,2): {sorter.get_shortest_routes()}")
+
+sorter.add_flight(2, 3, 2)
+print(f"After adding flight (2,3): {sorter.get_shortest_routes()}")
+
+sorter.add_flight(1, 3, 5)
+print(f"After adding flight (1,3): {sorter.get_shortest_routes()}")
 ```
 
-### Related Problems & Concepts
+## 🔗 Related Problems
 
-#### 1. **Shortest Path Problems**
-- **Single Source**: Dijkstra's, Bellman-Ford, SPFA
-- **All Pairs**: Floyd-Warshall, Johnson's algorithm
-- **K-Shortest Paths**: Yen's algorithm, Eppstein's algorithm
-- **Disjoint Paths**: Menger's theorem, max flow
+- **[Shortest Routes II](/cses-analyses/problem_soulutions/graph_algorithms/)**: All-pairs shortest paths
+- **[Message Route](/cses-analyses/problem_soulutions/graph_algorithms/)**: Path finding problems
+- **[Flight Discount](/cses-analyses/problem_soulutions/graph_algorithms/)**: Discount-based routing
 
-#### 2. **Graph Algorithms**
-- **Connectivity**: Strongly connected components
-- **Flow Networks**: Maximum flow, minimum cut
-- **Matching**: Bipartite matching, stable marriage
-- **Coloring**: Graph coloring, bipartite graphs
+## 📚 Learning Points
 
-#### 3. **Optimization Problems**
-- **Linear Programming**: Network flow, assignment
-- **Dynamic Programming**: State optimization
-- **Greedy Algorithms**: Local optimal choices
-- **Heuristic Search**: A*, genetic algorithms
+1. **Dijkstra's Algorithm**: Essential for single-source shortest paths with non-negative weights
+2. **Priority Queue**: Important for efficient node selection in graph algorithms
+3. **Graph Representation**: Key for efficient graph operations
+4. **Dynamic Updates**: Important for maintaining shortest paths as graph changes
+5. **Multi-Criteria Optimization**: Key for real-world routing problems
 
-#### 4. **Network Problems**
-- **Routing**: Internet routing, GPS navigation
-- **Flow**: Traffic flow, data flow
-- **Connectivity**: Network reliability, fault tolerance
-- **Scheduling**: Task scheduling, resource allocation
+---
 
-#### 5. **Algorithm Design**
-- **Data Structures**: Priority queues, heaps
-- **Complexity Analysis**: Time and space complexity
-- **Algorithm Selection**: Choosing appropriate algorithms
-- **Optimization**: Performance tuning, efficiency
-
-### Competitive Programming Variations
-
-#### 1. **Online Judge Variations**
-- **Time Limits**: Optimize for strict constraints
-- **Memory Limits**: Space-efficient solutions
-- **Input Size**: Handle large graphs
-- **Edge Cases**: Robust algorithm implementation
-
-#### 2. **Algorithm Contests**
-- **Speed Programming**: Fast implementation
-- **Code Golf**: Minimal code solutions
-- **Team Contests**: Collaborative problem solving
-- **Live Coding**: Real-time problem solving
-
-#### 3. **Advanced Techniques**
-- **Binary Search**: On answer space
-- **Two Pointers**: Efficient array processing
-- **Sliding Window**: Optimal subarray problems
-- **Monotonic Stack/Queue**: Maintaining order
-
-### Mathematical Extensions
-
-#### 1. **Combinatorics**
-- **Path Counting**: Number of shortest paths
-- **Permutations**: Order of visits
-- **Combinations**: Choice of routes
-- **Catalan Numbers**: Valid path sequences
-
-#### 2. **Probability Theory**
-- **Expected Values**: Average path length
-- **Markov Chains**: State transitions
-- **Random Walks**: Stochastic processes
-- **Monte Carlo**: Simulation methods
-
-#### 3. **Number Theory**
-- **Modular Arithmetic**: Large number handling
-- **Prime Numbers**: Special cases
-- **GCD/LCM**: Mathematical properties
-- **Euler's Totient**: Counting coprime paths
-
-### Learning Resources
-
-#### 1. **Online Platforms**
-- **LeetCode**: Graph and shortest path problems
-- **Codeforces**: Competitive programming
-- **HackerRank**: Algorithm challenges
-- **AtCoder**: Japanese programming contests
-
-#### 2. **Educational Resources**
-- **CLRS**: Introduction to Algorithms
-- **CP-Algorithms**: Competitive programming algorithms
-- **GeeksforGeeks**: Algorithm tutorials
-- **TopCoder**: Algorithm tutorials
-
-#### 3. **Practice Problems**
-- **Graph Problems**: Shortest path, connectivity
-- **Path Problems**: All pairs, k-shortest paths
-- **Network Problems**: Flow, routing, connectivity
-- **Optimization Problems**: Multi-objective, constrained 
+**This is a great introduction to shortest path algorithms and graph routing!** 🎯 

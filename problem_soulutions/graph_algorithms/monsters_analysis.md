@@ -1,28 +1,30 @@
 ---
 layout: simple
-title: "Monsters"
+title: "Monsters - Multi-Source BFS Path Finding"
 permalink: /problem_soulutions/graph_algorithms/monsters_analysis
 ---
 
+# Monsters - Multi-Source BFS Path Finding
 
-# Monsters
+## 📋 Problem Description
 
-## Problem Statement
 You are playing a game where you have a grid of size n×m. Each cell is either free (.) or a wall (#). You are initially in the upper-left corner, and you want to reach the lower-right corner. However, there are monsters that move according to a specific pattern.
 
 Your task is to determine if it is possible to reach the destination without being caught by a monster.
 
-### Input
-The first input line has two integers n and m: the height and width of the grid.
-Then there are n lines that describe the grid. Each line has m characters: "." denotes a free cell, "#" denotes a wall, "A" denotes your starting position, and "M" denotes a monster.
+This is a multi-source BFS problem where we need to find the shortest distance from monsters to each cell, then check if the player can reach the destination faster than any monster.
 
-### Output
-Print "YES" if it is possible to reach the destination, and "NO" otherwise.
+**Input**: 
+- First line: Two integers n and m (height and width of the grid)
+- Next n lines: m characters each (". " denotes free cell, "#" denotes wall, "A" denotes starting position, "M" denotes monster)
 
-### Constraints
-- 1 ≤ n,m ≤ 1000
+**Output**: 
+- Print "YES" if it's possible to reach destination, "NO" otherwise
 
-### Example
+**Constraints**:
+- 1 ≤ n, m ≤ 1000
+
+**Example**:
 ```
 Input:
 5 8
@@ -36,10 +38,21 @@ Output:
 YES
 ```
 
-## Solution Progression
+**Explanation**: 
+- Player starts at (1,4) and needs to reach (4,7)
+- Monsters are at (1,1), (2,4), (3,1)
+- Player can take path: (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
+- This path avoids monsters and reaches the destination safely
 
-### Approach 1: Multi-Source BFS - O(n*m)
-**Description**: Use multi-source BFS to find the shortest distance from monsters to each cell, then check if you can reach the destination.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Determine if player can reach destination before monsters catch them
+- **Key Insight**: Use multi-source BFS to find monster distances, then check player path
+- **Challenge**: Handle grid navigation and time-based path finding
+
+### Step 2: Initial Approach
+**Multi-source BFS to find monster distances to each cell:**
 
 ```python
 from collections import deque
@@ -193,8 +206,8 @@ def monsters_optimized_bfs(n, m, grid):
 
 **Why this improvement works**: We add early termination when reaching the border and optimize the monster distance calculation.
 
-### Improvement 2: BFS with Priority Queue - O(n*m * log(n*m))
-**Description**: Use BFS with priority queue to prioritize safer paths.
+### Step 3: Optimization/Alternative
+**BFS with priority queue for safer path exploration:**
 
 ```python
 import heapq
@@ -360,7 +373,7 @@ def monsters_astar(n, m, grid):
 
 **Why this works**: A* search uses a heuristic to guide the search toward the goal, potentially reducing the number of nodes explored.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 from collections import deque
@@ -441,7 +454,14 @@ def can_escape():
 print("YES" if can_escape() else "NO")
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple grid with no monsters (should return YES)
+- **Test 2**: Grid with monsters blocking all paths (should return NO)
+- **Test 3**: Grid where player can escape to border (should return YES)
+- **Test 4**: Grid with monsters but safe path exists (should return YES)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -449,6 +469,262 @@ print("YES" if can_escape() else "NO")
 | Optimized BFS | O(n*m) | O(n*m) | Early termination at border |
 | Priority BFS | O(n*m * log(n*m)) | O(n*m) | Prioritize safer paths |
 | A* Search | O(n*m * log(n*m)) | O(n*m) | Heuristic-guided search |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Multi-Source BFS**: Find distances from multiple starting points simultaneously
+- **Safety Margin**: Calculate time difference between player and monster arrival
+- **Grid Navigation**: Handle 4-directional movement in 2D grid
+- **Early Termination**: Stop search when reaching border or destination
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Monsters with Different Speeds**
+```python
+def monsters_different_speeds(n, m, grid, monster_speeds):
+    # Handle monsters with different movement speeds
+    # monster_speeds[i][j] = speed of monster at (i,j)
+    
+    from collections import deque
+    
+    def find_monster_distances():
+        distances = [[float('inf')] * m for _ in range(n)]
+        queue = deque()
+        
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == 'M':
+                    queue.append((i, j, 0))
+                    distances[i][j] = 0
+        
+        while queue:
+            row, col, time = queue.popleft()
+            speed = monster_speeds[row][col]
+            
+            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                nr, nc = row + dr, col + dc
+                if (0 <= nr < n and 0 <= nc < m and 
+                    grid[nr][nc] != '#'):
+                    new_time = time + speed
+                    if new_time < distances[nr][nc]:
+                        distances[nr][nc] = new_time
+                        queue.append((nr, nc, new_time))
+        
+        return distances
+    
+    def can_escape():
+        start_row, start_col = -1, -1
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == 'A':
+                    start_row, start_col = i, j
+                    break
+            if start_row != -1:
+                break
+        
+        monster_distances = find_monster_distances()
+        
+        if monster_distances[start_row][start_col] == 0:
+            return False
+        
+        queue = deque([(start_row, start_col, 0)])
+        visited = [[False] * m for _ in range(n)]
+        visited[start_row][start_col] = True
+        
+        while queue:
+            row, col, time = queue.popleft()
+            
+            if row == n-1 and col == m-1:
+                return True
+            
+            if row == 0 or row == n-1 or col == 0 or col == m-1:
+                return True
+            
+            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                nr, nc = row + dr, col + dc
+                if (0 <= nr < n and 0 <= nc < m and 
+                    grid[nr][nc] != '#' and 
+                    not visited[nr][nc] and
+                    time + 1 < monster_distances[nr][nc]):
+                    visited[nr][nc] = True
+                    queue.append((nr, nc, time + 1))
+        
+        return False
+    
+    return "YES" if can_escape() else "NO"
+```
+
+#### **2. Monsters with Limited Vision**
+```python
+def monsters_limited_vision(n, m, grid, vision_range):
+    # Handle monsters with limited vision range
+    # vision_range = how far monsters can see
+    
+    from collections import deque
+    
+    def find_monster_distances():
+        distances = [[float('inf')] * m for _ in range(n)]
+        queue = deque()
+        
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == 'M':
+                    queue.append((i, j, 0))
+                    distances[i][j] = 0
+        
+        while queue:
+            row, col, time = queue.popleft()
+            
+            # Monsters can only see within vision_range
+            for dr in range(-vision_range, vision_range + 1):
+                for dc in range(-vision_range, vision_range + 1):
+                    if abs(dr) + abs(dc) <= vision_range:
+                        nr, nc = row + dr, col + dc
+                        if (0 <= nr < n and 0 <= nc < m and 
+                            grid[nr][nc] != '#' and
+                            time + 1 < distances[nr][nc]):
+                            distances[nr][nc] = time + 1
+                            queue.append((nr, nc, time + 1))
+        
+        return distances
+    
+    def can_escape():
+        start_row, start_col = -1, -1
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == 'A':
+                    start_row, start_col = i, j
+                    break
+            if start_row != -1:
+                break
+        
+        monster_distances = find_monster_distances()
+        
+        if monster_distances[start_row][start_col] == 0:
+            return False
+        
+        queue = deque([(start_row, start_col, 0)])
+        visited = [[False] * m for _ in range(n)]
+        visited[start_row][start_col] = True
+        
+        while queue:
+            row, col, time = queue.popleft()
+            
+            if row == n-1 and col == m-1:
+                return True
+            
+            if row == 0 or row == n-1 or col == 0 or col == m-1:
+                return True
+            
+            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                nr, nc = row + dr, col + dc
+                if (0 <= nr < n and 0 <= nc < m and 
+                    grid[nr][nc] != '#' and 
+                    not visited[nr][nc] and
+                    time + 1 < monster_distances[nr][nc]):
+                    visited[nr][nc] = True
+                    queue.append((nr, nc, time + 1))
+        
+        return False
+    
+    return "YES" if can_escape() else "NO"
+```
+
+#### **3. Dynamic Monster Movement**
+```python
+def dynamic_monsters(n, m, grid, monster_patterns):
+    # Handle monsters that move according to specific patterns
+    # monster_patterns[i] = movement pattern for monster i
+    
+    from collections import deque
+    
+    def find_monster_distances_at_time(t):
+        distances = [[float('inf')] * m for _ in range(n)]
+        queue = deque()
+        
+        monster_idx = 0
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == 'M':
+                    pattern = monster_patterns[monster_idx]
+                    # Calculate monster position at time t
+                    pos = pattern[t % len(pattern)]
+                    queue.append((pos[0], pos[1], 0))
+                    distances[pos[0]][pos[1]] = 0
+                    monster_idx += 1
+        
+        while queue:
+            row, col, time = queue.popleft()
+            
+            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                nr, nc = row + dr, col + dc
+                if (0 <= nr < n and 0 <= nc < m and 
+                    grid[nr][nc] != '#' and
+                    time + 1 < distances[nr][nc]):
+                    distances[nr][nc] = time + 1
+                    queue.append((nr, nc, time + 1))
+        
+        return distances
+    
+    def can_escape():
+        start_row, start_col = -1, -1
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == 'A':
+                    start_row, start_col = i, j
+                    break
+            if start_row != -1:
+                break
+        
+        # BFS with time consideration
+        queue = deque([(start_row, start_col, 0)])
+        visited = set()
+        visited.add((start_row, start_col, 0))
+        
+        while queue:
+            row, col, time = queue.popleft()
+            
+            if row == n-1 and col == m-1:
+                return True
+            
+            if row == 0 or row == n-1 or col == 0 or col == m-1:
+                return True
+            
+            monster_distances = find_monster_distances_at_time(time + 1)
+            
+            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                nr, nc = row + dr, col + dc
+                if (0 <= nr < n and 0 <= nc < m and 
+                    grid[nr][nc] != '#' and
+                    (nr, nc, time + 1) not in visited and
+                    monster_distances[nr][nc] > 0):
+                    visited.add((nr, nc, time + 1))
+                    queue.append((nr, nc, time + 1))
+        
+        return False
+    
+    return "YES" if can_escape() else "NO"
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Multi-Source BFS**: Multi-source graph traversal problems
+- **Grid Path Finding**: 2D grid navigation problems
+- **Game Theory**: Strategy and path-finding games
+- **Dynamic Programming**: Time-dependent path optimization
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Multi-source BFS** efficiently finds distances from multiple points
+- **Safety margins** are crucial for time-based path finding
+- **Grid navigation** requires careful boundary checking
+- **Early termination** can significantly improve performance
+- **Game algorithms** often combine multiple graph techniques
 
 ## Key Insights for Other Problems
 

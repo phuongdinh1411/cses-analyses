@@ -1,28 +1,31 @@
 ---
 layout: simple
-title: "Planets and Kingdoms"
+title: "Planets and Kingdoms - Strongly Connected Components"
 permalink: /problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis
 ---
 
+# Planets and Kingdoms - Strongly Connected Components
 
-# Planets and Kingdoms
+## 📋 Problem Description
 
-## Problem Statement
 Given a directed graph with n planets and m teleporters, find all strongly connected components (kingdoms) and assign each planet to a kingdom.
 
-### Input
-The first input line has two integers n and m: the number of planets and teleporters.
-Then there are m lines describing the teleporters. Each line has two integers a and b: there is a teleporter from planet a to planet b.
+A strongly connected component (SCC) is a subset of vertices where every vertex can reach every other vertex in the component. In this problem, each SCC represents a kingdom where planets can teleport to each other.
 
-### Output
-Print the number of kingdoms and then for each planet, print which kingdom it belongs to.
+**Input**: 
+- First line: Two integers n and m (number of planets and teleporters)
+- Next m lines: Two integers a and b (teleporter from planet a to planet b)
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
+**Output**: 
+- First line: Number of kingdoms
+- Second line: Kingdom assignment for each planet
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2⋅10⁵
+- 1 ≤ a, b ≤ n
+
+**Example**:
 ```
 Input:
 4 4
@@ -36,9 +39,20 @@ Output:
 1 1 1 2
 ```
 
-## Solution Progression
-### Approach 1: Kosaraju's Algorithm - O(n + m)
-**Description**: Use Kosaraju's algorithm to find strongly connected components.
+**Explanation**: 
+- Planets 1, 2, 3 form a cycle (1→2→3→1), so they're in kingdom 1
+- Planet 4 can only reach other planets but can't be reached, so it's in kingdom 2
+- Total: 2 kingdoms
+
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find all strongly connected components (SCCs) in a directed graph
+- **Key Insight**: Use Kosaraju's algorithm with two DFS passes
+- **Challenge**: Handle large graphs efficiently and correctly identify SCCs
+
+### Step 2: Brute Force Approach
+**Use Kosaraju's algorithm to find strongly connected components:**
 
 ```python
 def planets_and_kingdoms_naive(n, m, teleporters):
@@ -85,10 +99,10 @@ def planets_and_kingdoms_naive(n, m, teleporters):
     return current_kingdom, kingdom_id[1:n+1]
 ```
 
-**Why this is inefficient**: The implementation is correct but can be optimized for clarity.
+**Complexity**: O(n + m) - optimal for this problem
 
-### Improvement 1: Optimized Kosaraju's Algorithm - O(n + m)
-**Description**: Use optimized Kosaraju's algorithm with better structure.
+### Step 3: Optimization
+**Use optimized Kosaraju's algorithm with better structure:**
 
 ```python
 def planets_and_kingdoms_optimized(n, m, teleporters):
@@ -722,4 +736,24 @@ def interactive_planets_kingdoms():
 
 ---
 
-*This analysis demonstrates efficient SCC techniques and shows various extensions for graph decomposition problems.* 
+*This analysis demonstrates efficient SCC techniques and shows various extensions for graph decomposition problems.*
+
+---
+
+## 🔗 Related Problems
+
+- **[Strongly Connected Components](/cses-analyses/problem_soulutions/graph_algorithms/)**: SCC detection problems
+- **[Graph Decomposition](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph analysis problems
+- **[Kosaraju's Algorithm](/cses-analyses/problem_soulutions/graph_algorithms/)**: SCC algorithm problems
+
+## 📚 Learning Points
+
+1. **Kosaraju's Algorithm**: Essential for finding SCCs in directed graphs
+2. **Strongly Connected Components**: Important for graph analysis
+3. **Two-Pass DFS**: Key technique for SCC detection
+4. **Graph Reversal**: Critical concept for SCC algorithms
+5. **Graph Theory**: Foundation for many algorithmic problems
+
+---
+
+**This is a great introduction to strongly connected components and Kosaraju's algorithm!** 🎯 

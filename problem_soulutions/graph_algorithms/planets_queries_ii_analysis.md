@@ -1,29 +1,31 @@
 ---
 layout: simple
-title: "Planets Queries II"
+title: "Planets Queries II - Common Path Intersection"
 permalink: /problem_soulutions/graph_algorithms/planets_queries_ii_analysis
 ---
 
+# Planets Queries II - Common Path Intersection
 
-# Planets Queries II
+## 📋 Problem Description
 
-## Problem Statement
 Given a directed graph with n planets and q queries, for each query find the first planet that appears in both paths starting from planets a and b.
 
-### Input
-The first input line has two integers n and q: the number of planets and queries.
-The second line has n integers t1,t2,…,tn: for each planet, there is a teleporter from planet i to planet ti.
-Then there are q lines describing the queries. Each line has two integers a and b: find the first common planet in paths from a and b.
+This is a path intersection problem where we need to find the first common planet in the paths from two different starting planets. We can solve this efficiently using binary lifting or by finding the lowest common ancestor in the functional graph.
 
-### Output
-For each query, print the first common planet, or -1 if there is no common planet.
+**Input**: 
+- First line: Two integers n and q (number of planets and queries)
+- Second line: n integers t₁, t₂, ..., tₙ (teleporter destinations)
+- Next q lines: Two integers a and b (find first common planet in paths from a and b)
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ ti ≤ n
-- 1 ≤ a,b ≤ n
+**Output**: 
+- For each query, print the first common planet, or -1 if no common planet exists
 
-### Example
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ tᵢ ≤ n
+- 1 ≤ a, b ≤ n
+
+**Example**:
 ```
 Input:
 5 3
@@ -38,10 +40,20 @@ Output:
 -1
 ```
 
-## Solution Progression
+**Explanation**: 
+- Query 1: Path from 1: 1→2→3→4→5→3, Path from 2: 2→3→4→5→3, First common: 3
+- Query 2: Path from 1: 1→2→3→4→5→3, Path from 3: 3→4→5→3, First common: 3
+- Query 3: Path from 2: 2→3→4→5→3, Path from 4: 4→5→3, No common planet
 
-### Approach 1: Naive Path Comparison - O(q * n)
-**Description**: Generate paths and find first common element.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find first common planet in paths from two starting planets
+- **Key Insight**: Use binary lifting or path intersection techniques
+- **Challenge**: Handle large queries efficiently without generating full paths
+
+### Step 2: Initial Approach
+**Naive path comparison by generating full paths:**
 
 ```python
 def planets_queries_ii_naive(n, q, teleporters, queries):
@@ -147,7 +159,10 @@ path_b: common = planet
 
 **Why this improvement works**: We use Floyd's cycle finding to detect cycles and then compare paths efficiently.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Enhanced cycle detection with binary lifting:**
+
+### Step 4: Complete Solution
 
 ```python
 n, q = map(int, input().split())
@@ -217,12 +232,226 @@ for res in result:
     print(res)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple paths with common planet (should return common planet)
+- **Test 2**: Paths with no common planet (should return -1)
+- **Test 3**: Paths entering same cycle (should return cycle entry)
+- **Test 4**: Complex functional graph (should handle cycles correctly)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Naive Path Comparison | O(q * n) | O(n) | Generate and compare paths |
 | Cycle Detection | O(n log n + q log n) | O(n) | Use Floyd's cycle finding |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Floyd's Cycle Finding**: Efficiently detect cycles in functional graphs
+- **Path Intersection**: Find common elements in two paths
+- **Cycle Entry Points**: Identify where paths enter cycles
+- **Functional Graphs**: Directed graphs where each node has exactly one outgoing edge
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Multiple Path Intersection**
+```python
+def multiple_path_intersection(n, q, teleporters, queries):
+    # Find first common planet in multiple paths
+    # queries = list of (start_planets, k) where k is number of paths
+    
+    def find_cycle_entry(start):
+        slow = fast = start - 1
+        while True:
+            slow = teleporters[slow] - 1
+            fast = teleporters[teleporters[fast] - 1] - 1
+            if slow == fast:
+                break
+        
+        slow = start - 1
+        while slow != fast:
+            slow = teleporters[slow] - 1
+            fast = teleporters[fast] - 1
+        
+        return slow + 1
+    
+    def generate_path(start, cycle_entry):
+        path = []
+        current = start
+        
+        while current != cycle_entry:
+            path.append(current)
+            current = teleporters[current - 1]
+        path.append(current)
+        return path
+    
+    def find_common_planet(paths):
+        if not paths:
+            return -1
+        
+        # Find intersection of all paths
+        common = set(paths[0])
+        for path in paths[1:]:
+            common &= set(path)
+        
+        if not common:
+            return -1
+        
+        # Return first common planet
+        for planet in paths[0]:
+            if planet in common:
+                return planet
+        return -1
+    
+    results = []
+    for start_planets, k in queries:
+        paths = []
+        for start in start_planets:
+            cycle_entry = find_cycle_entry(start)
+            path = generate_path(start, cycle_entry)
+            paths.append(path)
+        
+        common = find_common_planet(paths)
+        results.append(common)
+    
+    return results
+```
+
+#### **2. Path Intersection with Distance**
+```python
+def path_intersection_with_distance(n, q, teleporters, queries):
+    # Find first common planet and its distance from each start
+    
+    def find_cycle_entry(start):
+        slow = fast = start - 1
+        while True:
+            slow = teleporters[slow] - 1
+            fast = teleporters[teleporters[fast] - 1] - 1
+            if slow == fast:
+                break
+        
+        slow = start - 1
+        while slow != fast:
+            slow = teleporters[slow] - 1
+            fast = teleporters[fast] - 1
+        
+        return slow + 1
+    
+    def generate_path_with_distances(start, cycle_entry):
+        path = []
+        distances = {}
+        current = start
+        dist = 0
+        
+        while current != cycle_entry:
+            path.append(current)
+            distances[current] = dist
+            current = teleporters[current - 1]
+            dist += 1
+        
+        path.append(current)
+        distances[current] = dist
+        return path, distances
+    
+    results = []
+    for a, b in queries:
+        cycle_entry_a = find_cycle_entry(a)
+        cycle_entry_b = find_cycle_entry(b)
+        
+        path_a, dist_a = generate_path_with_distances(a, cycle_entry_a)
+        path_b, dist_b = generate_path_with_distances(b, cycle_entry_b)
+        
+        # Find first common planet
+        common = -1
+        for planet in path_a:
+            if planet in path_b:
+                common = planet
+                break
+        
+        if common == -1:
+            results.append((-1, -1, -1))
+        else:
+            results.append((common, dist_a[common], dist_b[common]))
+    
+    return results
+```
+
+#### **3. Dynamic Path Intersection**
+```python
+def dynamic_path_intersection(n, q, teleporters, queries):
+    # Handle dynamic updates to teleporters and path intersection queries
+    
+    def find_cycle_entry(start):
+        slow = fast = start - 1
+        while True:
+            slow = teleporters[slow] - 1
+            fast = teleporters[teleporters[fast] - 1] - 1
+            if slow == fast:
+                break
+        
+        slow = start - 1
+        while slow != fast:
+            slow = teleporters[slow] - 1
+            fast = teleporters[fast] - 1
+        
+        return slow + 1
+    
+    def generate_path(start, cycle_entry):
+        path = []
+        current = start
+        
+        while current != cycle_entry:
+            path.append(current)
+            current = teleporters[current - 1]
+        path.append(current)
+        return path
+    
+    results = []
+    for query in queries:
+        if query[0] == "UPDATE":
+            # Update teleporter
+            _, planet, new_destination = query
+            teleporters[planet - 1] = new_destination
+        elif query[0] == "QUERY":
+            # Path intersection query
+            _, a, b = query
+            cycle_entry_a = find_cycle_entry(a)
+            cycle_entry_b = find_cycle_entry(b)
+            
+            path_a = generate_path(a, cycle_entry_a)
+            path_b = generate_path(b, cycle_entry_b)
+            
+            common = -1
+            for planet in path_a:
+                if planet in path_b:
+                    common = planet
+                    break
+            
+            results.append(common)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Path Intersection**: Path finding and intersection problems
+- **Cycle Detection**: Cycle detection in graphs
+- **Functional Graphs**: Special graph structures
+- **Binary Lifting**: Efficient path queries
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Floyd's cycle finding** is essential for functional graph problems
+- **Path intersection** requires careful cycle handling
+- **Cycle entry points** are crucial for path analysis
+- **Functional graphs** have special properties that can be exploited
+- **Path queries** can be optimized with preprocessing
 
 ## Key Insights for Other Problems
 

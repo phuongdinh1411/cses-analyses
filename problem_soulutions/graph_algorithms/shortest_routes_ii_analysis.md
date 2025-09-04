@@ -1,29 +1,32 @@
 ---
 layout: simple
-title: "Shortest Routes II"
+title: "Shortest Routes II - All Pairs Shortest Paths"
 permalink: /problem_soulutions/graph_algorithms/shortest_routes_ii_analysis
 ---
 
+# Shortest Routes II - All Pairs Shortest Paths
 
-# Shortest Routes II
+## 📋 Problem Description
 
-## Problem Statement
 There are n cities and m flight connections. Your task is to find the shortest route between any two cities.
 
-### Input
-The first input line has two integers n and m: the number of cities and flight connections. The cities are numbered 1,2,…,n.
-Then, there are m lines describing the flight connections. Each line has three integers a, b, and c: there is a flight from city a to city b with cost c.
+This is an all-pairs shortest path problem where we need to find the shortest distance between every pair of cities. We can solve this using the Floyd-Warshall algorithm.
 
-### Output
-Print n lines with n integers each: the shortest route lengths between all pairs of cities. If there is no route, print -1.
+**Input**: 
+- First line: Two integers n and m (number of cities and flight connections)
+- Next m lines: Three integers a, b, and c (flight from city a to city b with cost c)
 
-### Constraints
+**Output**: 
+- n lines with n integers each: shortest route lengths between all pairs of cities
+- If no route exists, print -1
+
+**Constraints**:
 - 1 ≤ n ≤ 500
-- 1 ≤ m ≤ n^2
-- 1 ≤ a,b ≤ n
-- 1 ≤ c ≤ 10^9
+- 1 ≤ m ≤ n²
+- 1 ≤ a, b ≤ n
+- 1 ≤ c ≤ 10⁹
 
-### Example
+**Example**:
 ```
 Input:
 4 3
@@ -38,10 +41,21 @@ Output:
 -1 -1 -1 0
 ```
 
-## Solution Progression
+**Explanation**: 
+- City 1 to City 2: 1 (direct flight)
+- City 1 to City 3: 2 (path: 1 → 2 → 3, cost: 1 + 1 = 2)
+- City 1 to City 4: 3 (path: 1 → 2 → 3 → 4, cost: 1 + 1 + 1 = 3)
+- Cities 2, 3, 4 have similar patterns
 
-### Approach 1: Floyd-Warshall Algorithm - O(n³)
-**Description**: Use Floyd-Warshall algorithm to find shortest paths between all pairs of vertices.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find shortest paths between all pairs of cities
+- **Key Insight**: Use Floyd-Warshall algorithm for all-pairs shortest paths
+- **Challenge**: Handle negative cycles and unreachable cities efficiently
+
+### Step 2: Initial Approach
+**Floyd-Warshall algorithm for all-pairs shortest paths:**
 
 ```python
 def shortest_routes_floyd_warshall(n, m, flights):
@@ -130,8 +144,8 @@ def shortest_routes_optimized_floyd_warshall(n, m, flights):
 
 **Why this improvement works**: Early termination when intermediate paths don't exist can improve performance.
 
-### Improvement 2: Johnson's Algorithm - O(n² * log(n) + n*m)
-**Description**: Use Johnson's algorithm which combines Bellman-Ford and Dijkstra's for better performance on sparse graphs.
+### Step 3: Optimization/Alternative
+**Johnson's algorithm for better performance on sparse graphs:**
 
 ```python
 import heapq
@@ -254,7 +268,7 @@ def shortest_routes_matrix_multiplication(n, m, flights):
 
 **Why this works**: Matrix multiplication approach can be useful for understanding the concept.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 n, m = map(int, input().split())
@@ -299,6 +313,162 @@ for i in range(1, n + 1):
 | Optimized Floyd-Warshall | O(n³) | O(n²) | Early termination |
 | Johnson's | O(n² * log(n) + n*m) | O(n²) | Better for sparse graphs |
 | Matrix Multiplication | O(n³ * log(n)) | O(n²) | Educational approach |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **All-Pairs Shortest Path**: Find shortest paths between all pairs of vertices
+- **Floyd-Warshall Algorithm**: Dynamic programming approach for all-pairs shortest paths
+- **Johnson's Algorithm**: Combines Bellman-Ford and Dijkstra's for sparse graphs
+- **Matrix Operations**: Use matrix multiplication for graph algorithms
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. All-Pairs Shortest Path with Path Reconstruction**
+```python
+def all_pairs_shortest_path_with_paths(n, m, flights):
+    # Find shortest paths and reconstruct the actual paths
+    
+    # Initialize distance and parent matrices
+    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+    parent = [[-1] * (n + 1) for _ in range(n + 1)]
+    
+    # Set diagonal to 0
+    for i in range(1, n + 1):
+        distances[i][i] = 0
+        parent[i][i] = i
+    
+    # Add direct edges
+    for a, b, c in flights:
+        if c < distances[a][b]:
+            distances[a][b] = c
+            parent[a][b] = a
+    
+    # Floyd-Warshall with path reconstruction
+    for k in range(1, n + 1):
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                if (distances[i][k] != float('inf') and 
+                    distances[k][j] != float('inf')):
+                    new_dist = distances[i][k] + distances[k][j]
+                    if new_dist < distances[i][j]:
+                        distances[i][j] = new_dist
+                        parent[i][j] = parent[k][j]
+    
+    def reconstruct_path(start, end):
+        if distances[start][end] == float('inf'):
+            return []
+        
+        path = []
+        current = end
+        while current != start:
+            path.append(current)
+            current = parent[start][current]
+        path.append(start)
+        path.reverse()
+        return path
+    
+    return distances, reconstruct_path
+```
+
+#### **2. All-Pairs Shortest Path with Negative Cycles**
+```python
+def all_pairs_shortest_path_negative_cycles(n, m, flights):
+    # Handle negative cycles in all-pairs shortest path
+    
+    # Initialize distance matrix
+    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+    
+    # Set diagonal to 0
+    for i in range(1, n + 1):
+        distances[i][i] = 0
+    
+    # Add direct edges
+    for a, b, c in flights:
+        distances[a][b] = min(distances[a][b], c)
+    
+    # Floyd-Warshall
+    for k in range(1, n + 1):
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                if (distances[i][k] != float('inf') and 
+                    distances[k][j] != float('inf')):
+                    distances[i][j] = min(distances[i][j], 
+                                        distances[i][k] + distances[k][j])
+    
+    # Check for negative cycles
+    has_negative_cycle = False
+    for i in range(1, n + 1):
+        if distances[i][i] < 0:
+            has_negative_cycle = True
+            break
+    
+    # Mark nodes affected by negative cycles
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            for k in range(1, n + 1):
+                if (distances[i][k] != float('inf') and 
+                    distances[k][j] != float('inf') and
+                    distances[k][k] < 0):
+                    distances[i][j] = float('-inf')
+    
+    return distances, has_negative_cycle
+```
+
+#### **3. All-Pairs Shortest Path with Time Windows**
+```python
+def all_pairs_shortest_path_time_windows(n, m, flights, time_windows):
+    # Find shortest paths with time window constraints
+    # time_windows[i] = (earliest_time, latest_time) for node i
+    
+    # Initialize distance matrix
+    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+    
+    # Set diagonal to 0
+    for i in range(1, n + 1):
+        distances[i][i] = 0
+    
+    # Add direct edges with time window constraints
+    for a, b, c in flights:
+        # Check if edge can be used within time windows
+        if (time_windows[a][1] >= time_windows[b][0] and
+            distances[a][b] > c):
+            distances[a][b] = c
+    
+    # Floyd-Warshall with time window constraints
+    for k in range(1, n + 1):
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                if (distances[i][k] != float('inf') and 
+                    distances[k][j] != float('inf')):
+                    # Check time window constraints
+                    arrival_time = distances[i][k] + time_windows[k][0]
+                    if arrival_time <= time_windows[j][1]:
+                        new_dist = distances[i][k] + distances[k][j]
+                        if new_dist < distances[i][j]:
+                            distances[i][j] = new_dist
+    
+    return distances
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **All-Pairs Shortest Path**: Various shortest path algorithms
+- **Graph Algorithms**: Path finding and optimization problems
+- **Dynamic Programming**: DP-based graph algorithms
+- **Network Analysis**: Network optimization problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Floyd-Warshall** is optimal for dense graphs
+- **Johnson's algorithm** is better for sparse graphs
+- **Negative cycles** require special handling
+- **Path reconstruction** adds complexity but provides more information
+- **Time windows** add constraints to shortest path problems
 
 ## Key Insights for Other Problems
 

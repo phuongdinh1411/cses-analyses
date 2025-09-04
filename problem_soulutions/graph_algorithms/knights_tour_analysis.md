@@ -1,25 +1,27 @@
 ---
 layout: simple
-title: CSES Knight's Tour
+title: "Knight's Tour - Hamiltonian Path on Chessboard"
 permalink: /problem_soulutions/graph_algorithms/knights_tour_analysis
 ---
 
+# Knight's Tour - Hamiltonian Path on Chessboard
 
-# CSES Knight's Tour
+## 📋 Problem Description
 
-## Problem Statement
 Given a chessboard of size n×n, find a knight's tour (a path where the knight visits every square exactly once).
 
-### Input
-The first input line has one integer n: the size of the chessboard.
+A knight's tour is a sequence of moves by a knight on a chessboard such that the knight visits every square exactly once. This is a classic problem in graph theory and computer science.
 
-### Output
-Print the knight's tour as an n×n grid where each number represents the order in which the knight visits that square.
+**Input**: 
+- First line: Integer n (size of the chessboard)
 
-### Constraints
+**Output**: 
+- An n×n grid where each number represents the order in which the knight visits that square
+
+**Constraints**:
 - 1 ≤ n ≤ 8
 
-### Example
+**Example**:
 ```
 Input:
 5
@@ -31,6 +33,12 @@ Output:
 18 3 12 7 16
 11 6 17 4 5
 ```
+
+**Explanation**: 
+- The knight starts at position (0,0) marked as 1
+- It moves in L-shape patterns (2 squares in one direction, 1 square perpendicular)
+- Each number represents the step number in the tour
+- The tour visits all 25 squares exactly once
 
 ## Solution Progression
 
@@ -88,10 +96,10 @@ def knights_tour_naive(n):
         return None
 ```
 
-**Why this is inefficient**: The implementation is correct but can be optimized for clarity.
+**Complexity**: O(8^(n²)) - exponential growth, very slow for larger boards
 
-### Improvement 1: Optimized Backtracking with Warnsdorff's Rule - O(n²)
-**Description**: Use optimized backtracking with better Warnsdorff's rule implementation.
+### Step 3: Optimization
+**Use Warnsdorff's rule to prioritize moves with fewer future options:**
 
 ```python
 def knights_tour_optimized(n):
@@ -209,37 +217,183 @@ def find_knights_tour(n):
         return None
 
 result = find_knights_tour(n)
-if result: for row in 
-result: print(*row)
+if result:
+    for row in result:
+        print(*row)
 else:
     print("No solution exists")
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Backtracking with Warnsdorff's | O(n²) | O(n²) | Use Warnsdorff's rule for optimization |
-| Optimized Backtracking | O(n²) | O(n²) | Optimized backtracking implementation |
+```python
+def test_solution():
+    test_cases = [3, 4, 5]
+    
+    for n in test_cases:
+        print(f"Testing n = {n}")
+        result = find_knights_tour(n)
+        if result:
+            print("Knight's tour found:")
+            for row in result:
+                print(" ".join(f"{val:2d}" for val in row))
+        else:
+            print("No solution exists")
+        print()
 
-## Key Insights for Other Problems
+def find_knights_tour(n):
+    # Knight's possible moves
+    moves = [
+        (-2, -1), (-2, 1), (-1, -2), (-1, 2),
+        (1, -2), (1, 2), (2, -1), (2, 1)
+    ]
+    
+    # Initialize board
+    board = [[0] * n for _ in range(n)]
+    
+    def is_valid(x, y):
+        return 0 <= x < n and 0 <= y < n and board[x][y] == 0
+    
+    def count_valid_moves(x, y):
+        count = 0
+        for dx, dy in moves:
+            nx, ny = x + dx, y + dy
+            if is_valid(nx, ny):
+                count += 1
+        return count
+    
+    def get_sorted_moves(x, y):
+        valid_moves = []
+        for dx, dy in moves:
+            nx, ny = x + dx, y + dy
+            if is_valid(nx, ny):
+                valid_moves.append((nx, ny, count_valid_moves(nx, ny)))
+        
+        # Sort by number of valid moves (Warnsdorff's rule)
+        valid_moves.sort(key=lambda pos: pos[2])
+        return [(x, y) for x, y, _ in valid_moves]
+    
+    def backtrack(x, y, move_count):
+        if move_count == n * n:
+            return True
+        
+        next_moves = get_sorted_moves(x, y)
+        
+        for nx, ny in next_moves:
+            board[nx][ny] = move_count + 1
+            if backtrack(nx, ny, move_count + 1):
+                return True
+            board[nx][ny] = 0
+        
+        return False
+    
+    # Start from (0, 0)
+    board[0][0] = 1
+    if backtrack(0, 0, 1):
+        return board
+    else:
+        return None
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n²) - Warnsdorff's rule significantly reduces search space
+- **Space**: O(n²) - board storage and recursion stack
+
+### Why This Solution Works
+- **Warnsdorff's Rule**: Prioritizes moves with fewer future options
+- **Backtracking**: Systematically explores all possible paths
+- **Heuristic Guidance**: Reduces search space dramatically
+- **Optimal Algorithm**: Best known approach for knight's tour
+
+## 🎯 Key Insights
 
 ### 1. **Knight's Tour**
-**Principle**: Use backtracking with Warnsdorff's rule to find knight's tour.
-**Applicable to**: Tour problems, path problems, backtracking problems
+- Use backtracking with Warnsdorff's rule to find knight's tour
+- Important for understanding
+- Enables efficient tour construction
+- Essential for algorithm
 
 ### 2. **Warnsdorff's Rule**
-**Principle**: Choose moves that lead to positions with fewer valid moves.
-**Applicable to**: Tour problems, path problems, optimization problems
+- Choose moves that lead to positions with fewer valid moves
+- Important for understanding
+- Reduces search space dramatically
+- Essential for optimization
 
 ### 3. **Backtracking with Heuristics**
-**Principle**: Use heuristics to guide backtracking search.
-**Applicable to**: Search problems, optimization problems, constraint problems
+- Use heuristics to guide backtracking search
+- Important for understanding
+- Improves search efficiency
+- Essential for performance
 
-## Notable Techniques
+## 🎯 Problem Variations
 
-### 1. **Knight's Tour Backtracking**
+### Variation 1: Knight's Tour with Different Starting Positions
+**Problem**: Find knight's tour starting from any given position.
+
 ```python
+def knights_tour_start_position(n, start_x, start_y):
+    """Find knight's tour starting from specific position"""
+    moves = [
+        (-2, -1), (-2, 1), (-1, -2), (-1, 2),
+        (1, -2), (1, 2), (2, -1), (2, 1)
+    ]
+    
+    board = [[0] * n for _ in range(n)]
+    
+    def is_valid(x, y):
+        return 0 <= x < n and 0 <= y < n and board[x][y] == 0
+    
+    def count_valid_moves(x, y):
+        count = 0
+        for dx, dy in moves:
+            nx, ny = x + dx, y + dy
+            if is_valid(nx, ny):
+                count += 1
+        return count
+    
+    def get_sorted_moves(x, y):
+        valid_moves = []
+        for dx, dy in moves:
+            nx, ny = x + dx, y + dy
+            if is_valid(nx, ny):
+                valid_moves.append((nx, ny, count_valid_moves(nx, ny)))
+        
+        valid_moves.sort(key=lambda pos: pos[2])
+        return [(x, y) for x, y, _ in valid_moves]
+    
+    def backtrack(x, y, move_count):
+        if move_count == n * n:
+            return True
+        
+        next_moves = get_sorted_moves(x, y)
+        
+        for nx, ny in next_moves:
+            board[nx][ny] = move_count + 1
+            if backtrack(nx, ny, move_count + 1):
+                return True
+            board[nx][ny] = 0
+        
+        return False
+    
+    # Start from specified position
+    board[start_x][start_y] = 1
+    if backtrack(start_x, start_y, 1):
+        return board
+    else:
+        return None
+
+# Example usage
+result = knights_tour_start_position(5, 2, 2)  # Start from center
+if result:
+    print("Center-starting knight's tour:")
+    for row in result:
+        print(" ".join(f"{val:2d}" for val in row))
+```
 def knights_tour_backtracking(n):
     moves = [
         (-2, -1), (-2, 1), (-1, -2), (-1, 2),
@@ -665,4 +819,24 @@ def interactive_knights_tour():
 
 ---
 
-*This analysis demonstrates efficient backtracking techniques and shows various extensions for knight's tour problems.* 
+*This analysis demonstrates efficient backtracking techniques and shows various extensions for knight's tour problems.*
+
+---
+
+## 🔗 Related Problems
+
+- **[Hamiltonian Path](/cses-analyses/problem_soulutions/graph_algorithms/)**: Path visiting all vertices exactly once
+- **[Backtracking](/cses-analyses/problem_soulutions/graph_algorithms/)**: Systematic search problems
+- **[Graph Traversal](/cses-analyses/problem_soulutions/graph_algorithms/)**: Pathfinding problems
+
+## 📚 Learning Points
+
+1. **Warnsdorff's Rule**: Essential for knight's tour optimization
+2. **Backtracking**: Important for systematic search problems
+3. **Heuristic Search**: Key technique for reducing search space
+4. **Hamiltonian Path**: Critical concept in graph theory
+5. **Chess Problems**: Foundation for many algorithmic challenges
+
+---
+
+**This is a great introduction to knight's tour and heuristic-guided backtracking!** 🎯 

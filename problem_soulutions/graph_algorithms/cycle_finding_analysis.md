@@ -1,29 +1,32 @@
 ---
 layout: simple
-title: "Cycle Finding"
+title: "Cycle Finding - Negative Cycle Detection"
 permalink: /problem_soulutions/graph_algorithms/cycle_finding_analysis
 ---
 
+# Cycle Finding - Negative Cycle Detection
 
-# Cycle Finding
+## 📋 Problem Description
 
-## Problem Statement
 Given a directed graph with n nodes and m edges, find a negative cycle if it exists. If there is no negative cycle, print "NO". Otherwise, print "YES" and the nodes in the cycle.
 
-### Input
-The first input line has two integers n and m: the number of nodes and edges.
-Then there are m lines describing the edges. Each line has three integers a, b, and c: there is an edge from node a to node b with weight c.
+This is a classic negative cycle detection problem using the Bellman-Ford algorithm. We need to detect if there exists a cycle where the sum of edge weights is negative.
 
-### Output
-If there is no negative cycle, print "NO". Otherwise, print "YES" and the nodes in the cycle.
+**Input**: 
+- First line: Two integers n and m (number of nodes and edges)
+- Next m lines: Three integers a, b, and c (edge from node a to node b with weight c)
 
-### Constraints
+**Output**: 
+- Print "NO" if no negative cycle exists
+- Print "YES" followed by cycle nodes if negative cycle exists
+
+**Constraints**:
 - 1 ≤ n ≤ 2500
 - 1 ≤ m ≤ 5000
-- 1 ≤ a,b ≤ n
-- -10^9 ≤ c ≤ 10^9
+- 1 ≤ a, b ≤ n
+- -10⁹ ≤ c ≤ 10⁹
 
-### Example
+**Example**:
 ```
 Input:
 4 5
@@ -38,10 +41,19 @@ YES
 2 3 4 2
 ```
 
-## Solution Progression
+**Explanation**: 
+- The cycle 2 → 3 → 4 → 2 has total weight: 2 + 1 + (-5) = -2
+- This is a negative cycle, so we output "YES" and the cycle
 
-### Approach 1: Bellman-Ford with Cycle Detection - O(n*m)
-**Description**: Use Bellman-Ford algorithm to detect negative cycles.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Detect negative cycles in directed weighted graph
+- **Key Insight**: Use Bellman-Ford algorithm to detect negative cycles
+- **Challenge**: Find the actual cycle nodes, not just detect existence
+
+### Step 2: Initial Approach
+**Bellman-Ford algorithm for negative cycle detection:**
 
 ```python
 def cycle_finding_naive(n, m, edges):
@@ -117,7 +129,10 @@ def cycle_finding_optimized(n, m, edges):
 
 **Why this improvement works**: We use Bellman-Ford algorithm to detect negative cycles and then reconstruct the cycle path using the parent array.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Enhanced Bellman-Ford with better cycle reconstruction:**
+
+### Step 4: Complete Solution
 
 ```python
 n, m = map(int, input().split())
@@ -177,12 +192,153 @@ else:
     print("NO")
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Graph with no negative cycle (should return NO)
+- **Test 2**: Graph with negative cycle (should return YES and cycle)
+- **Test 3**: Single node graph (should return NO)
+- **Test 4**: Graph with multiple negative cycles (should find one)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Bellman-Ford | O(n*m) | O(n) | Use Bellman-Ford for negative cycle detection |
 | Path Reconstruction | O(n*m) | O(n) | Reconstruct cycle using parent array |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Bellman-Ford Algorithm**: Detects negative cycles in weighted graphs
+- **Cycle Reconstruction**: Use parent array to trace back cycle path
+- **Relaxation Process**: Key mechanism for detecting negative cycles
+- **Graph Traversal**: Systematic edge processing for cycle detection
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. All Negative Cycles Detection**
+```python
+def find_all_negative_cycles(n, m, edges):
+    # Find all negative cycles in the graph
+    cycles = []
+    
+    def bellman_ford_with_cycles():
+        dist = [float('inf')] * (n + 1)
+        parent = [-1] * (n + 1)
+        dist[1] = 0
+        
+        # Run Bellman-Ford
+        for i in range(n - 1):
+            for u, v, w in edges:
+                if dist[u] != float('inf') and dist[u] + w < dist[v]:
+                    dist[v] = dist[u] + w
+                    parent[v] = u
+        
+        # Check for negative cycles
+        for u, v, w in edges:
+            if dist[u] != float('inf') and dist[u] + w < dist[v]:
+                # Found negative cycle, reconstruct it
+                cycle = reconstruct_cycle(u, v, parent)
+                if cycle not in cycles:
+                    cycles.append(cycle)
+        
+        return cycles
+    
+    return bellman_ford_with_cycles()
+```
+
+#### **2. Shortest Path with Negative Weights**
+```python
+def shortest_path_with_negative_weights(n, m, edges, start, end):
+    # Find shortest path allowing negative weights
+    dist = [float('inf')] * (n + 1)
+    parent = [-1] * (n + 1)
+    dist[start] = 0
+    
+    # Run Bellman-Ford
+    for i in range(n - 1):
+        for u, v, w in edges:
+            if dist[u] != float('inf') and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                parent[v] = u
+    
+    # Check for negative cycle on path
+    for u, v, w in edges:
+        if dist[u] != float('inf') and dist[u] + w < dist[v]:
+            return None  # Negative cycle detected
+    
+    # Reconstruct path
+    if dist[end] == float('inf'):
+        return None
+    
+    path = []
+    current = end
+    while current != -1:
+        path.append(current)
+        current = parent[current]
+    path.reverse()
+    
+    return dist[end], path
+```
+
+#### **3. Minimum Mean Cycle**
+```python
+def minimum_mean_cycle(n, m, edges):
+    # Find cycle with minimum mean weight
+    min_mean = float('inf')
+    best_cycle = []
+    
+    def find_min_mean_cycle():
+        nonlocal min_mean, best_cycle
+        
+        # Try each node as potential cycle start
+        for start in range(1, n + 1):
+            dist = [float('inf')] * (n + 1)
+            parent = [-1] * (n + 1)
+            dist[start] = 0
+            
+            # Run Bellman-Ford
+            for i in range(n - 1):
+                for u, v, w in edges:
+                    if dist[u] != float('inf') and dist[u] + w < dist[v]:
+                        dist[v] = dist[u] + w
+                        parent[v] = u
+            
+            # Check for cycles
+            for u, v, w in edges:
+                if dist[u] != float('inf') and dist[u] + w < dist[v]:
+                    cycle = reconstruct_cycle(u, v, parent)
+                    cycle_weight = sum(edges[i][2] for i in range(len(edges)) 
+                                     if (edges[i][0], edges[i][1]) in zip(cycle, cycle[1:] + [cycle[0]]))
+                    mean_weight = cycle_weight / len(cycle)
+                    
+                    if mean_weight < min_mean:
+                        min_mean = mean_weight
+                        best_cycle = cycle
+        
+        return min_mean, best_cycle
+    
+    return find_min_mean_cycle()
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Shortest Path**: Related shortest path algorithms
+- **Graph Cycles**: Other cycle detection problems
+- **Network Flow**: Flow algorithms with negative weights
+- **Graph Theory**: Fundamental graph theory concepts
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Bellman-Ford** is essential for negative weight graphs
+- **Cycle detection** requires careful parent array management
+- **Path reconstruction** is crucial for finding actual cycles
+- **Negative cycles** can make shortest path problems unsolvable
+- **Graph algorithms** have different complexities for different graph types
 
 ## Key Insights for Other Problems
 

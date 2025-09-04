@@ -1,28 +1,30 @@
 ---
 layout: simple
-title: "Police Chase"
+title: "Police Chase - Minimum Cut Problem"
 permalink: /problem_soulutions/graph_algorithms/police_chase_analysis
 ---
 
+# Police Chase - Minimum Cut Problem
 
-# Police Chase
+## 📋 Problem Description
 
-## Problem Statement
 Given a network with n computers and m connections, find the minimum number of connections that need to be cut to disconnect computer 1 from computer n.
 
-### Input
-The first input line has two integers n and m: the number of computers and connections.
-Then there are m lines describing the connections. Each line has two integers a and b: there is a connection between computers a and b.
+This is a minimum cut problem where we need to find the minimum number of edges to remove to disconnect the source from the sink. We can solve this using maximum flow algorithms like Ford-Fulkerson or Dinic's algorithm.
 
-### Output
-Print the minimum number of connections that need to be cut.
+**Input**: 
+- First line: Two integers n and m (number of computers and connections)
+- Next m lines: Two integers a and b (connection between computers a and b)
 
-### Constraints
+**Output**: 
+- Minimum number of connections that need to be cut
+
+**Constraints**:
 - 1 ≤ n ≤ 500
 - 1 ≤ m ≤ 1000
-- 1 ≤ a,b ≤ n
+- 1 ≤ a, b ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 4 5
@@ -36,10 +38,21 @@ Output:
 2
 ```
 
-## Solution Progression
+**Explanation**: 
+- Network: 1-2-3-4, 1-3, 2-4
+- To disconnect 1 from 4, we need to cut at least 2 connections
+- One possible cut: remove edges (1,2) and (3,4)
+- This disconnects computer 1 from computer 4
 
-### Approach 1: Minimum Cut using Max Flow - O(n * m * max_flow)
-**Description**: Use maximum flow to find minimum cut (Menger's theorem).
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find minimum number of edges to cut to disconnect source from sink
+- **Key Insight**: Use maximum flow algorithms to find minimum cut
+- **Challenge**: Efficiently find maximum flow and identify cut edges
+
+### Step 2: Initial Approach
+**Minimum cut using maximum flow (Menger's theorem):**
 
 ```python
 def police_chase_naive(n, m, connections):
@@ -166,7 +179,10 @@ def police_chase_optimized(n, m, connections):
 
 **Why this improvement works**: We use optimized Ford-Fulkerson algorithm to find minimum cut efficiently.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Dinic's algorithm for more efficient maximum flow:**
+
+### Step 4: Complete Solution
 
 ```python
 from collections import deque
@@ -238,12 +254,285 @@ result = find_minimum_cut(n, m, connections)
 print(result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple network with single path (should return 1)
+- **Test 2**: Network with multiple paths (should return minimum cut)
+- **Test 3**: Network with no path (should return 0)
+- **Test 4**: Complex network (should return correct minimum cut)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Minimum Cut via Max Flow | O(n * m * max_flow) | O(n²) | Use max flow to find minimum cut |
 | Optimized Minimum Cut | O(n * m * max_flow) | O(n²) | Optimized max flow implementation |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Minimum Cut**: Minimum number of edges to disconnect source from sink
+- **Maximum Flow**: Maximum flow from source to sink
+- **Menger's Theorem**: Minimum cut equals maximum flow
+- **Ford-Fulkerson Algorithm**: Find maximum flow using augmenting paths
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Minimum Cut with Edge Weights**
+```python
+def minimum_cut_weighted(n, m, connections, weights):
+    # Find minimum cut with weighted edges
+    # weights[i] = weight of edge i
+    
+    from collections import deque
+    
+    # Build adjacency list with capacities
+    adj = [[] for _ in range(n + 1)]
+    capacity = [[0] * (n + 1) for _ in range(n + 1)]
+    
+    for i, (a, b) in enumerate(connections):
+        adj[a].append(b)
+        adj[b].append(a)
+        capacity[a][b] = weights[i]
+        capacity[b][a] = weights[i]
+    
+    def bfs(source, sink):
+        parent = [-1] * (n + 1)
+        parent[source] = source
+        queue = deque([source])
+        
+        while queue:
+            current = queue.popleft()
+            
+            for next_node in adj[current]:
+                if parent[next_node] == -1 and capacity[current][next_node] > 0:
+                    parent[next_node] = current
+                    queue.append(next_node)
+                    
+                    if next_node == sink:
+                        break
+        
+        if parent[sink] == -1:
+            return 0
+        
+        # Find bottleneck capacity
+        bottleneck = float('inf')
+        current = sink
+        while current != source:
+            bottleneck = min(bottleneck, capacity[parent[current]][current])
+            current = parent[current]
+        
+        # Update residual graph
+        current = sink
+        while current != source:
+            capacity[parent[current]][current] -= bottleneck
+            capacity[current][parent[current]] += bottleneck
+            current = parent[current]
+        
+        return bottleneck
+    
+    # Ford-Fulkerson algorithm
+    max_flow = 0
+    while True:
+        flow = bfs(1, n)
+        if flow == 0:
+            break
+        max_flow += flow
+    
+    return max_flow
+```
+
+#### **2. Minimum Cut with Multiple Sources/Sinks**
+```python
+def minimum_cut_multiple_sources(n, m, connections, sources, sinks):
+    # Find minimum cut with multiple sources and sinks
+    
+    from collections import deque
+    
+    # Add super source and super sink
+    super_source = 0
+    super_sink = n + 1
+    
+    # Build adjacency list with capacities
+    adj = [[] for _ in range(n + 2)]
+    capacity = [[0] * (n + 2) for _ in range(n + 2)]
+    
+    # Add edges from super source to sources
+    for source in sources:
+        adj[super_source].append(source)
+        adj[source].append(super_source)
+        capacity[super_source][source] = float('inf')
+    
+    # Add edges from sinks to super sink
+    for sink in sinks:
+        adj[sink].append(super_sink)
+        adj[super_sink].append(sink)
+        capacity[sink][super_sink] = float('inf')
+    
+    # Add original edges
+    for a, b in connections:
+        adj[a].append(b)
+        adj[b].append(a)
+        capacity[a][b] = 1
+        capacity[b][a] = 1
+    
+    def bfs(source, sink):
+        parent = [-1] * (n + 2)
+        parent[source] = source
+        queue = deque([source])
+        
+        while queue:
+            current = queue.popleft()
+            
+            for next_node in adj[current]:
+                if parent[next_node] == -1 and capacity[current][next_node] > 0:
+                    parent[next_node] = current
+                    queue.append(next_node)
+                    
+                    if next_node == sink:
+                        break
+        
+        if parent[sink] == -1:
+            return 0
+        
+        # Find bottleneck capacity
+        bottleneck = float('inf')
+        current = sink
+        while current != source:
+            bottleneck = min(bottleneck, capacity[parent[current]][current])
+            current = parent[current]
+        
+        # Update residual graph
+        current = sink
+        while current != source:
+            capacity[parent[current]][current] -= bottleneck
+            capacity[current][parent[current]] += bottleneck
+            current = parent[current]
+        
+        return bottleneck
+    
+    # Ford-Fulkerson algorithm
+    max_flow = 0
+    while True:
+        flow = bfs(super_source, super_sink)
+        if flow == 0:
+            break
+        max_flow += flow
+    
+    return max_flow
+```
+
+#### **3. Minimum Cut with Vertex Capacities**
+```python
+def minimum_cut_vertex_capacities(n, m, connections, vertex_capacities):
+    # Find minimum cut with vertex capacities
+    # vertex_capacities[i] = capacity of vertex i
+    
+    from collections import deque
+    
+    # Split each vertex into two: in-vertex and out-vertex
+    # For vertex i, create vertices 2*i-1 (in) and 2*i (out)
+    
+    def get_in_vertex(i):
+        return 2 * i - 1
+    
+    def get_out_vertex(i):
+        return 2 * i
+    
+    # Build adjacency list with capacities
+    adj = [[] for _ in range(2 * n + 1)]
+    capacity = [[0] * (2 * n + 1) for _ in range(2 * n + 1)]
+    
+    # Add edges from in-vertex to out-vertex with vertex capacity
+    for i in range(1, n + 1):
+        in_v = get_in_vertex(i)
+        out_v = get_out_vertex(i)
+        adj[in_v].append(out_v)
+        capacity[in_v][out_v] = vertex_capacities[i]
+    
+    # Add edges between vertices
+    for a, b in connections:
+        a_out = get_out_vertex(a)
+        b_in = get_in_vertex(b)
+        b_out = get_out_vertex(b)
+        a_in = get_in_vertex(a)
+        
+        # Add bidirectional edges
+        adj[a_out].append(b_in)
+        adj[b_in].append(a_out)
+        capacity[a_out][b_in] = float('inf')
+        
+        adj[b_out].append(a_in)
+        adj[a_in].append(b_out)
+        capacity[b_out][a_in] = float('inf')
+    
+    def bfs(source, sink):
+        parent = [-1] * (2 * n + 1)
+        parent[source] = source
+        queue = deque([source])
+        
+        while queue:
+            current = queue.popleft()
+            
+            for next_node in adj[current]:
+                if parent[next_node] == -1 and capacity[current][next_node] > 0:
+                    parent[next_node] = current
+                    queue.append(next_node)
+                    
+                    if next_node == sink:
+                        break
+        
+        if parent[sink] == -1:
+            return 0
+        
+        # Find bottleneck capacity
+        bottleneck = float('inf')
+        current = sink
+        while current != source:
+            bottleneck = min(bottleneck, capacity[parent[current]][current])
+            current = parent[current]
+        
+        # Update residual graph
+        current = sink
+        while current != source:
+            capacity[parent[current]][current] -= bottleneck
+            capacity[current][parent[current]] += bottleneck
+            current = parent[current]
+        
+        return bottleneck
+    
+    # Ford-Fulkerson algorithm
+    source = get_in_vertex(1)
+    sink = get_out_vertex(n)
+    max_flow = 0
+    
+    while True:
+        flow = bfs(source, sink)
+        if flow == 0:
+            break
+        max_flow += flow
+    
+    return max_flow
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Maximum Flow**: Flow network problems
+- **Minimum Cut**: Cut and connectivity problems
+- **Network Flow**: Flow optimization problems
+- **Graph Connectivity**: Connectivity analysis problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Minimum cut** problems can be solved using maximum flow algorithms
+- **Menger's theorem** connects minimum cut to maximum flow
+- **Ford-Fulkerson** algorithm is fundamental for flow problems
+- **Residual graphs** are crucial for flow algorithms
+- **Network flow** has many practical applications
 
 ## Key Insights for Other Problems
 

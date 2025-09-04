@@ -1,28 +1,30 @@
 ---
 layout: simple
-title: "Hamiltonian Flights"
+title: "Hamiltonian Flights - Path Counting with Bitmask DP"
 permalink: /problem_soulutions/graph_algorithms/hamiltonian_flights_analysis
 ---
 
+# Hamiltonian Flights - Path Counting with Bitmask DP
 
-# Hamiltonian Flights
+## 📋 Problem Description
 
-## Problem Statement
 Given a directed graph with n cities and m flights, count the number of different Hamiltonian paths from city 1 to city n.
 
-### Input
-The first input line has two integers n and m: the number of cities and flights.
-Then there are m lines describing the flights. Each line has two integers a and b: there is a flight from city a to city b.
+A Hamiltonian path is a path that visits every city exactly once. This problem requires counting all such paths from the starting city to the destination city, which is a classic application of dynamic programming with bitmask state representation.
 
-### Output
-Print the number of different Hamiltonian paths from city 1 to city n modulo 10^9 + 7.
+**Input**: 
+- First line: Two integers n and m (number of cities and flights)
+- Next m lines: Two integers a and b (flight from city a to city b)
 
-### Constraints
+**Output**: 
+- Number of different Hamiltonian paths from city 1 to city n modulo 10⁹ + 7
+
+**Constraints**:
 - 1 ≤ n ≤ 20
 - 1 ≤ m ≤ n(n-1)
-- 1 ≤ a,b ≤ n
+- 1 ≤ a, b ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 4 4
@@ -35,10 +37,20 @@ Output:
 2
 ```
 
-## Solution Progression
+**Explanation**: 
+- Two possible Hamiltonian paths: 1→2→3→4 and 1→4→2→3
+- Each path visits all 4 cities exactly once
+- Paths must start at city 1 and end at city n
 
-### Approach 1: Dynamic Programming with Bitmask - O(n * 2^n)
-**Description**: Use dynamic programming with bitmask to count Hamiltonian paths.
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Count all Hamiltonian paths from start to end city
+- **Key Insight**: Use bitmask DP to represent visited cities efficiently
+- **Challenge**: Handle exponential state space and modular arithmetic
+
+### Step 2: Brute Force Approach
+**Try all possible paths and count Hamiltonian ones:**
 
 ```python
 def hamiltonian_flights_naive(n, m, flights):
@@ -46,6 +58,7 @@ def hamiltonian_flights_naive(n, m, flights):
     adj = [[] for _ in range(n + 1)]
     for a, b in flights:
         adj[a].append(b)
+    
     # dp[mask][last] = number of paths ending at 'last' with visited cities in 'mask'
     dp = [[0] * (n + 1) for _ in range(1 << n)]
     
@@ -73,10 +86,10 @@ def hamiltonian_flights_naive(n, m, flights):
     return dp[full_mask][n]
 ```
 
-**Why this is inefficient**: The implementation is correct but can be optimized for clarity.
+**Complexity**: O(n × 2ⁿ) - exponential growth with n, optimal for this problem
 
-### Improvement 1: Optimized Bitmask DP - O(n * 2^n)
-**Description**: Use optimized dynamic programming with better bitmask handling.
+### Step 3: Optimization
+**Use optimized dynamic programming with better bitmask handling:**
 
 ```python
 def hamiltonian_flights_optimized(n, m, flights):
@@ -582,4 +595,24 @@ def interactive_hamiltonian_flights():
 
 ---
 
-*This analysis demonstrates efficient Hamiltonian path techniques and shows various extensions for flight path problems.* 
+*This analysis demonstrates efficient Hamiltonian path techniques and shows various extensions for flight path problems.*
+
+---
+
+## 🔗 Related Problems
+
+- **[Hamiltonian Path](/cses-analyses/problem_soulutions/graph_algorithms/)**: Path visiting all vertices exactly once
+- **[Bitmask DP](/cses-analyses/problem_soulutions/graph_algorithms/)**: State compression problems
+- **[Path Counting](/cses-analyses/problem_soulutions/graph_algorithms/)**: Counting problems with constraints
+
+## 📚 Learning Points
+
+1. **Bitmask DP**: Essential for state compression problems
+2. **Hamiltonian Path**: Important for path enumeration problems
+3. **State Space Management**: Key technique for exponential problems
+4. **Modular Arithmetic**: Critical for large number handling
+5. **Graph Theory**: Foundation for many algorithmic problems
+
+---
+
+**This is a great introduction to Hamiltonian paths and bitmask dynamic programming!** 🎯 

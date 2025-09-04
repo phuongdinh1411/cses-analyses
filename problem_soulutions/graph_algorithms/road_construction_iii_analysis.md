@@ -1,29 +1,31 @@
 ---
 layout: simple
-title: "Road Construction III"
+title: "Road Construction III - Advanced Minimum Spanning Tree"
 permalink: /problem_soulutions/graph_algorithms/road_construction_iii_analysis
 ---
 
+# Road Construction III - Advanced Minimum Spanning Tree
 
-# Road Construction III
+## 📋 Problem Description
 
-## Problem Statement
 Given a graph with n cities and m roads, find the minimum cost to build roads so that all cities are connected. Each road has a construction cost.
 
-### Input
-The first input line has two integers n and m: the number of cities and roads.
-Then there are m lines describing the roads. Each line has three integers a, b, and c: there is a road between cities a and b with construction cost c.
+This is an advanced minimum spanning tree (MST) problem with additional complexity. We need to find the minimum cost to connect all cities while handling more sophisticated requirements.
 
-### Output
-Print the minimum cost to build roads so that all cities are connected, or "IMPOSSIBLE" if it's not possible.
+**Input**: 
+- First line: Two integers n and m (number of cities and roads)
+- Next m lines: Three integers a, b, and c (road between cities a and b with cost c)
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
-- 1 ≤ c ≤ 10^9
+**Output**: 
+- Minimum cost to build roads so all cities are connected, or "IMPOSSIBLE" if not possible
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2⋅10⁵
+- 1 ≤ a, b ≤ n
+- 1 ≤ c ≤ 10⁹
+
+**Example**:
 ```
 Input:
 4 4
@@ -36,10 +38,20 @@ Output:
 6
 ```
 
-## Solution Progression
+**Explanation**: 
+- Roads: (1,2) cost 1, (2,3) cost 2, (3,4) cost 3, (1,4) cost 4
+- Minimum spanning tree: (1,2) + (2,3) + (3,4) = 1 + 2 + 3 = 6
+- This connects all cities with minimum cost
 
-### Approach 1: Kruskal's Algorithm - O(m log m)
-**Description**: Use Kruskal's algorithm to find minimum spanning tree.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find minimum cost to connect all cities with advanced requirements
+- **Key Insight**: This is an advanced minimum spanning tree problem
+- **Challenge**: Handle complex constraints while maintaining MST properties
+
+### Step 2: Initial Approach
+**Advanced Kruskal's algorithm with sophisticated constraint handling:**
 
 ```python
 def road_construction_iii_naive(n, m, roads):
@@ -125,7 +137,10 @@ def road_construction_iii_optimized(n, m, roads):
 
 **Why this improvement works**: We use Kruskal's algorithm with optimized Union-Find to find the minimum spanning tree efficiently.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Prim's algorithm with advanced data structures:**
+
+### Step 4: Complete Solution
 
 ```python
 n, m = map(int, input().split())
@@ -180,12 +195,207 @@ result = find_minimum_construction_cost_iii(n, m, roads)
 print(result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple connected graph (should return MST cost)
+- **Test 2**: Disconnected graph (should return "IMPOSSIBLE")
+- **Test 3**: Single edge graph (should return edge cost)
+- **Test 4**: Complex graph with advanced constraints (should handle correctly)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Kruskal's Algorithm | O(m log m) | O(n) | Use Kruskal's for minimum spanning tree |
 | Optimized Kruskal's | O(m log m) | O(n) | Optimized Union-Find implementation |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Advanced MST**: Minimum spanning tree with sophisticated requirements
+- **Kruskal's Algorithm**: Greedy algorithm for MST using Union-Find
+- **Union-Find**: Data structure for dynamic connectivity
+- **Advanced Optimization**: Sophisticated techniques for complex MST problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. MST with Multiple Objectives**
+```python
+def mst_multiple_objectives(n, m, roads, objectives):
+    # Find MST optimizing multiple objectives
+    # objectives = list of weights for different criteria
+    
+    # Sort roads by weighted sum of objectives
+    def get_weight(road):
+        total_weight = 0
+        for i, weight in enumerate(objectives):
+            total_weight += weight * road[2 + i]  # Additional criteria
+        return total_weight
+    
+    roads.sort(key=get_weight)
+    
+    # Union-Find
+    parent = list(range(n + 1))
+    rank = [0] * (n + 1)
+    
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+    
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px == py:
+            return False
+        
+        if rank[px] < rank[py]:
+            parent[px] = py
+        elif rank[px] > rank[py]:
+            parent[py] = px
+        else:
+            parent[py] = px
+            rank[px] += 1
+        return True
+    
+    # Kruskal's algorithm
+    total_cost = 0
+    edges_used = 0
+    
+    for road in roads:
+        a, b = road[0], road[1]
+        if union(a, b):
+            total_cost += road[2]  # Primary cost
+            edges_used += 1
+    
+    if edges_used == n - 1:
+        return total_cost
+    else:
+        return "IMPOSSIBLE"
+```
+
+#### **2. MST with Dynamic Edge Weights**
+```python
+def mst_dynamic_weights(n, m, roads, weight_functions):
+    # Find MST with dynamically changing edge weights
+    # weight_functions[i] = function to calculate weight for edge i
+    
+    # Union-Find
+    parent = list(range(n + 1))
+    rank = [0] * (n + 1)
+    
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+    
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px == py:
+            return False
+        
+        if rank[px] < rank[py]:
+            parent[px] = py
+        elif rank[px] > rank[py]:
+            parent[py] = px
+        else:
+            parent[py] = px
+            rank[px] += 1
+        return True
+    
+    # Calculate dynamic weights
+    dynamic_roads = []
+    for i, (a, b, base_cost) in enumerate(roads):
+        dynamic_cost = weight_functions[i](base_cost)
+        dynamic_roads.append((a, b, dynamic_cost))
+    
+    # Sort by dynamic weights
+    dynamic_roads.sort(key=lambda x: x[2])
+    
+    # Kruskal's algorithm
+    total_cost = 0
+    edges_used = 0
+    
+    for a, b, cost in dynamic_roads:
+        if union(a, b):
+            total_cost += cost
+            edges_used += 1
+    
+    if edges_used == n - 1:
+        return total_cost
+    else:
+        return "IMPOSSIBLE"
+```
+
+#### **3. MST with Probabilistic Constraints**
+```python
+def mst_probabilistic(n, m, roads, probabilities):
+    # Find MST with probabilistic edge availability
+    # probabilities[i] = probability that edge i is available
+    
+    # Union-Find
+    parent = list(range(n + 1))
+    rank = [0] * (n + 1)
+    
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+    
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px == py:
+            return False
+        
+        if rank[px] < rank[py]:
+            parent[px] = py
+        elif rank[px] > rank[py]:
+            parent[py] = px
+        else:
+            parent[py] = px
+            rank[px] += 1
+        return True
+    
+    # Sort roads by expected cost (cost / probability)
+    expected_roads = []
+    for i, (a, b, cost) in enumerate(roads):
+        expected_cost = cost / probabilities[i] if probabilities[i] > 0 else float('inf')
+        expected_roads.append((a, b, expected_cost, cost))
+    
+    expected_roads.sort(key=lambda x: x[2])
+    
+    # Kruskal's algorithm
+    total_cost = 0
+    edges_used = 0
+    
+    for a, b, expected_cost, actual_cost in expected_roads:
+        if union(a, b):
+            total_cost += actual_cost
+            edges_used += 1
+    
+    if edges_used == n - 1:
+        return total_cost
+    else:
+        return "IMPOSSIBLE"
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Advanced MST**: Sophisticated minimum spanning tree problems
+- **Multi-Objective Optimization**: Optimization with multiple criteria
+- **Dynamic Programming**: Dynamic optimization problems
+- **Graph Algorithms**: Advanced graph problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Advanced MST** problems require sophisticated techniques
+- **Multi-objective optimization** is crucial for real-world applications
+- **Dynamic weights** add complexity to MST problems
+- **Probabilistic constraints** require careful handling
+- **Advanced algorithms** combine multiple techniques
 
 ## Key Insights for Other Problems
 

@@ -1,28 +1,30 @@
 ---
 layout: simple
-title: "Distinct Routes"
+title: "Distinct Routes - Maximum Edge-Disjoint Paths"
 permalink: /problem_soulutions/graph_algorithms/distinct_routes_analysis
 ---
 
+# Distinct Routes - Maximum Edge-Disjoint Paths
 
-# Distinct Routes
+## 📋 Problem Description
 
-## Problem Statement
 Given a directed graph with n nodes and m edges, find the maximum number of edge-disjoint paths from node 1 to node n.
 
-### Input
-The first input line has two integers n and m: the number of nodes and edges.
-Then there are m lines describing the edges. Each line has two integers a and b: there is an edge from node a to node b.
+This is a classic maximum flow problem where we need to find the maximum number of edge-disjoint paths from source to sink. We can solve this using maximum flow algorithms by setting all edge capacities to 1.
 
-### Output
-Print the maximum number of edge-disjoint paths from node 1 to node n.
+**Input**: 
+- First line: Two integers n and m (number of nodes and edges)
+- Next m lines: Two integers a and b (edge from node a to node b)
 
-### Constraints
+**Output**: 
+- Maximum number of edge-disjoint paths from node 1 to node n
+
+**Constraints**:
 - 1 ≤ n ≤ 500
 - 1 ≤ m ≤ 1000
-- 1 ≤ a,b ≤ n
+- 1 ≤ a, b ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 4 5
@@ -36,10 +38,21 @@ Output:
 2
 ```
 
-## Solution Progression
+**Explanation**: 
+- Path 1: 1 → 2 → 3 → 4
+- Path 2: 1 → 3 → 4 (using edge 1→3 and 3→4)
+- These paths are edge-disjoint (no shared edges)
+- Maximum edge-disjoint paths: 2
 
-### Approach 1: Maximum Flow for Edge-Disjoint Paths - O(n * m * max_flow)
-**Description**: Use maximum flow to find maximum number of edge-disjoint paths.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find maximum number of edge-disjoint paths from source to sink
+- **Key Insight**: Convert to maximum flow problem with unit capacities
+- **Challenge**: Efficiently find maximum flow in the graph
+
+### Step 2: Initial Approach
+**Maximum flow algorithm for edge-disjoint paths:**
 
 ```python
 def distinct_routes_naive(n, m, edges):
@@ -164,7 +177,10 @@ def distinct_routes_optimized(n, m, edges):
 
 **Why this improvement works**: We use optimized Ford-Fulkerson algorithm to find maximum edge-disjoint paths efficiently.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Enhanced Ford-Fulkerson with better path finding:**
+
+### Step 4: Complete Solution
 
 ```python
 from collections import deque
@@ -235,12 +251,229 @@ result = find_maximum_edge_disjoint_paths(n, m, edges)
 print(result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple graph with 2 edge-disjoint paths (should return 2)
+- **Test 2**: Graph with no paths (should return 0)
+- **Test 3**: Single path graph (should return 1)
+- **Test 4**: Complex graph with multiple paths (should find maximum)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Edge-Disjoint Paths via Max Flow | O(n * m * max_flow) | O(n²) | Use max flow for edge-disjoint paths |
 | Optimized Edge-Disjoint Paths | O(n * m * max_flow) | O(n²) | Optimized max flow implementation |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Maximum Flow**: Convert edge-disjoint paths problem to maximum flow
+- **Ford-Fulkerson Algorithm**: Use BFS to find augmenting paths
+- **Residual Graph**: Maintain residual capacities for flow updates
+- **Unit Capacities**: Set all edge capacities to 1 for edge-disjoint paths
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Vertex-Disjoint Paths**
+```python
+def vertex_disjoint_paths(n, m, edges):
+    # Find maximum number of vertex-disjoint paths
+    # Split each vertex into in and out nodes
+    adj = [[] for _ in range(2 * n + 1)]
+    capacity = [[0] * (2 * n + 1) for _ in range(2 * n + 1)]
+    
+    # Split vertices: vertex i becomes i_in and i_out
+    for i in range(1, n + 1):
+        adj[i].append(i + n)
+        adj[i + n].append(i)
+        capacity[i][i + n] = 1  # Vertex capacity
+    
+    # Add edges
+    for a, b in edges:
+        adj[a + n].append(b)  # From a_out to b_in
+        adj[b].append(a + n)
+        capacity[a + n][b] = 1
+    
+    def bfs(source, sink):
+        parent = [-1] * (2 * n + 1)
+        parent[source] = source
+        queue = deque([source])
+        
+        while queue:
+            current = queue.popleft()
+            for next_node in adj[current]:
+                if parent[next_node] == -1 and capacity[current][next_node] > 0:
+                    parent[next_node] = current
+                    queue.append(next_node)
+                    if next_node == sink:
+                        break
+        
+        if parent[sink] == -1:
+            return 0
+        
+        # Update flow
+        bottleneck = float('inf')
+        current = sink
+        while current != source:
+            bottleneck = min(bottleneck, capacity[parent[current]][current])
+            current = parent[current]
+        
+        current = sink
+        while current != source:
+            capacity[parent[current]][current] -= bottleneck
+            capacity[current][parent[current]] += bottleneck
+            current = parent[current]
+        
+        return bottleneck
+    
+    max_flow = 0
+    while True:
+        flow = bfs(1, n + n)
+        if flow == 0:
+            break
+        max_flow += flow
+    
+    return max_flow
+```
+
+#### **2. Maximum Flow with Capacities**
+```python
+def maximum_flow_with_capacities(n, m, edges, capacities):
+    # Find maximum flow with given edge capacities
+    adj = [[] for _ in range(n + 1)]
+    capacity = [[0] * (n + 1) for _ in range(n + 1)]
+    
+    for i, (a, b) in enumerate(edges):
+        adj[a].append(b)
+        adj[b].append(a)
+        capacity[a][b] = capacities[i]
+    
+    def bfs(source, sink):
+        parent = [-1] * (n + 1)
+        parent[source] = source
+        queue = deque([source])
+        
+        while queue:
+            current = queue.popleft()
+            for next_node in adj[current]:
+                if parent[next_node] == -1 and capacity[current][next_node] > 0:
+                    parent[next_node] = current
+                    queue.append(next_node)
+                    if next_node == sink:
+                        break
+        
+        if parent[sink] == -1:
+            return 0
+        
+        # Find bottleneck
+        bottleneck = float('inf')
+        current = sink
+        while current != source:
+            bottleneck = min(bottleneck, capacity[parent[current]][current])
+            current = parent[current]
+        
+        # Update residual graph
+        current = sink
+        while current != source:
+            capacity[parent[current]][current] -= bottleneck
+            capacity[current][parent[current]] += bottleneck
+            current = parent[current]
+        
+        return bottleneck
+    
+    max_flow = 0
+    while True:
+        flow = bfs(1, n)
+        if flow == 0:
+            break
+        max_flow += flow
+    
+    return max_flow
+```
+
+#### **3. Minimum Cut**
+```python
+def minimum_cut(n, m, edges):
+    # Find minimum cut in the graph
+    adj = [[] for _ in range(n + 1)]
+    capacity = [[0] * (n + 1) for _ in range(n + 1)]
+    
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+        capacity[a][b] = 1
+        capacity[b][a] = 1
+    
+    def bfs(source, sink):
+        parent = [-1] * (n + 1)
+        parent[source] = source
+        queue = deque([source])
+        
+        while queue:
+            current = queue.popleft()
+            for next_node in adj[current]:
+                if parent[next_node] == -1 and capacity[current][next_node] > 0:
+                    parent[next_node] = current
+                    queue.append(next_node)
+                    if next_node == sink:
+                        break
+        
+        if parent[sink] == -1:
+            return 0, []
+        
+        # Find bottleneck
+        bottleneck = float('inf')
+        current = sink
+        while current != source:
+            bottleneck = min(bottleneck, capacity[parent[current]][current])
+            current = parent[current]
+        
+        # Update residual graph
+        current = sink
+        while current != source:
+            capacity[parent[current]][current] -= bottleneck
+            capacity[current][parent[current]] += bottleneck
+            current = parent[current]
+        
+        return bottleneck, parent
+    
+    max_flow = 0
+    while True:
+        flow, parent = bfs(1, n)
+        if flow == 0:
+            break
+        max_flow += flow
+    
+    # Find minimum cut edges
+    cut_edges = []
+    for i in range(1, n + 1):
+        if parent[i] != -1:
+            for j in adj[i]:
+                if parent[j] == -1 and capacity[i][j] == 0:
+                    cut_edges.append((i, j))
+    
+    return max_flow, cut_edges
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Maximum Flow**: Core flow algorithms
+- **Network Flow**: Flow network problems
+- **Graph Connectivity**: Connectivity and cut problems
+- **Path Problems**: Various path-finding problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Maximum flow** can solve edge-disjoint paths problems
+- **Ford-Fulkerson** is fundamental for flow algorithms
+- **Residual graphs** are crucial for flow updates
+- **Menger's theorem** connects paths and cuts
+- **Unit capacities** model edge-disjoint constraints
 
 ## Key Insights for Other Problems
 

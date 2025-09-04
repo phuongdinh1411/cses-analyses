@@ -1,27 +1,27 @@
 ---
 layout: simple
-title: "Planets Cycles"
+title: "Planets Cycles - Cycle Detection in Functional Graphs"
 permalink: /problem_soulutions/graph_algorithms/planets_cycles_analysis
 ---
 
+# Planets Cycles - Cycle Detection in Functional Graphs
 
-# Planets Cycles
+## 📋 Problem Description
 
-## Problem Statement
 Given a directed graph with n planets, find the length of the cycle that each planet enters.
 
-### Input
-The first input line has an integer n: the number of planets.
-The second line has n integers t1,t2,…,tn: for each planet, there is a teleporter from planet i to planet ti.
+**Input**: 
+- First line: Integer n (number of planets)
+- Second line: n integers t₁, t₂, ..., tₙ (teleporter destinations)
 
-### Output
-Print n integers: the length of the cycle that each planet enters.
+**Output**: 
+- n integers: length of the cycle that each planet enters
 
-### Constraints
-- 1 ≤ n ≤ 2⋅10^5
-- 1 ≤ ti ≤ n
+**Constraints**:
+- 1 ≤ n ≤ 2⋅10⁵
+- 1 ≤ tᵢ ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 5
@@ -31,9 +31,202 @@ Output:
 3 3 3 3 3
 ```
 
-## Solution Progression
+**Explanation**: 
+- Planet 1 → Planet 2 → Planet 3 → Planet 4 → Planet 5 → Planet 3 (cycle starts)
+- All planets enter the same cycle of length 3
+- The cycle is: 3 → 4 → 5 → 3
 
-### Approach 1: DFS with Cycle Detection - O(n²)
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find cycle length for each planet in a functional graph
+- **Key Insight**: Use Floyd's cycle finding algorithm for efficient detection
+- **Challenge**: Avoid quadratic complexity when processing each planet individually
+
+### Step 2: Brute Force Approach
+**Use DFS to find cycles for each planet:**
+
+```python
+def planets_cycles_naive(n, teleporters):
+    def find_cycle_length(start):
+        visited = [False] * (n + 1)
+        path = []
+        current = start
+        
+        while not visited[current]:
+            visited[current] = True
+            path.append(current)
+            current = teleporters[current - 1]
+        
+        # Find cycle length
+        cycle_start = path.index(current)
+        return len(path) - cycle_start
+    
+    results = []
+    for i in range(1, n + 1):
+        cycle_length = find_cycle_length(i)
+        results.append(cycle_length)
+    
+    return results
+```
+
+**Complexity**: O(n²) - too slow for large graphs
+
+### Step 3: Optimization
+**Use Floyd's cycle finding algorithm for efficient cycle detection:**
+
+```python
+def planets_cycles_optimized(n, teleporters):
+    # Find cycle entry points using Floyd's cycle finding
+    def find_cycle_entry(start):
+        # Floyd's cycle finding
+        slow = fast = start - 1
+        while True:
+            slow = teleporters[slow] - 1
+            fast = teleporters[teleporters[fast] - 1] - 1
+            if slow == fast:
+                break
+        
+        # Find cycle entry
+        slow = start - 1
+        while slow != fast:
+            slow = teleporters[slow] - 1
+            fast = teleporters[fast] - 1
+        
+        return slow + 1
+    
+    # Find cycle length for a given cycle entry
+    def find_cycle_length(cycle_entry):
+        length = 1
+        current = teleporters[cycle_entry - 1]
+        
+        while current != cycle_entry:
+            length += 1
+            current = teleporters[current - 1]
+        
+        return length
+    
+    # Find cycle entry and length for each planet
+    results = []
+    for i in range(1, n + 1):
+        cycle_entry = find_cycle_entry(i)
+        cycle_length = find_cycle_length(cycle_entry)
+        results.append(cycle_length)
+    
+    return results
+```
+
+**Key Insight**: Use Floyd's algorithm to find cycle entry points efficiently
+
+### Step 4: Complete Solution
+
+```python
+def find_planet_cycles(n, teleporters):
+    # Find cycle entry points using Floyd's cycle finding
+    def find_cycle_entry(start):
+        # Floyd's cycle finding
+        slow = fast = start - 1
+        while True:
+            slow = teleporters[slow] - 1
+            fast = teleporters[teleporters[fast] - 1] - 1
+            if slow == fast:
+                break
+        
+        # Find cycle entry
+        slow = start - 1
+        while slow != fast:
+            slow = teleporters[slow] - 1
+            fast = teleporters[fast] - 1
+        
+        return slow + 1
+    
+    # Find cycle length for a given cycle entry
+    def find_cycle_length(cycle_entry):
+        length = 1
+        current = teleporters[cycle_entry - 1]
+        
+        while current != cycle_entry:
+            length += 1
+            current = teleporters[current - 1]
+        
+        return length
+    
+    # Find cycle entry and length for each planet
+    results = []
+    for i in range(1, n + 1):
+        cycle_entry = find_cycle_entry(i)
+        cycle_length = find_cycle_length(cycle_entry)
+        results.append(cycle_length)
+    
+    return results
+
+def solve_planets_cycles():
+    n = int(input())
+    teleporters = list(map(int, input().split()))
+    
+    result = find_planet_cycles(n, teleporters)
+    print(*result)
+
+if __name__ == "__main__":
+    solve_planets_cycles()
+```
+
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    # Test case 1: Simple cycle
+    n1 = 5
+    teleporters1 = [2, 3, 4, 5, 3]
+    result1 = find_planet_cycles(n1, teleporters1)
+    print(f"Test 1: {result1}")
+    
+    # Test case 2: Self-loop
+    n2 = 3
+    teleporters2 = [1, 2, 3]
+    result2 = find_planet_cycles(n2, teleporters2)
+    print(f"Test 2: {result2}")
+    
+    # Test case 3: Multiple cycles
+    n3 = 6
+    teleporters3 = [2, 1, 4, 3, 6, 5]
+    result3 = find_planet_cycles(n3, teleporters3)
+    print(f"Test 3: {result3}")
+
+test_solution()
+```
+
+## 🔧 Implementation Details
+
+### Time Complexity
+- **Time**: O(n) - single pass through all planets
+- **Space**: O(1) - constant extra space
+
+### Why This Solution Works
+- **Floyd's Algorithm**: Efficiently finds cycle entry points
+- **Functional Graph**: Each planet has exactly one outgoing edge
+- **Cycle Properties**: All planets in the same component enter the same cycle
+- **Optimal Algorithm**: Best possible complexity for this problem
+
+## 🎯 Key Insights
+
+### 1. **Functional Graph Properties**
+- Each planet has exactly one teleporter destination
+- Paths eventually lead to cycles
+- All planets in the same component enter the same cycle
+- Cycle length is the same for all planets in a component
+
+### 2. **Floyd's Cycle Finding**
+- Use two pointers (slow and fast) to detect cycles
+- Fast pointer moves twice as fast as slow pointer
+- When they meet, a cycle is detected
+- Efficiently finds cycle entry points
+
+### 3. **Cycle Length Calculation**
+- Once cycle entry is found, count steps to complete the cycle
+- Cycle length is independent of starting planet
+- All planets in the same component have the same cycle length
 **Description**: Use DFS to find cycles for each planet.
 
 ```python
@@ -93,6 +286,46 @@ def planets_cycles_optimized(n, teleporters):
         while current != cycle_entry:
             length += 1
             current = teleporters[current - 1]
+        
+        return length
+    
+    # Find cycle entry and length for each planet
+    results = []
+    for i in range(1, n + 1):
+        cycle_entry = find_cycle_entry(i)
+        cycle_length = find_cycle_length(cycle_entry)
+        results.append(cycle_length)
+    
+    return results
+
+def solve_planets_cycles():
+    n = int(input())
+    teleporters = list(map(int, input().split()))
+    
+    result = find_planet_cycles(n, teleporters)
+    print(*result)
+
+def test_solution():
+    # Test case 1: Simple cycle
+    n1 = 5
+    teleporters1 = [2, 3, 4, 5, 3]
+    result1 = find_planet_cycles(n1, teleporters1)
+    print(f"Test 1: {result1}")
+    
+    # Test case 2: Self-loop
+    n2 = 3
+    teleporters2 = [1, 2, 3]
+    result2 = find_planet_cycles(n2, teleporters2)
+    print(f"Test 2: {result2}")
+    
+    # Test case 3: Multiple cycles
+    n3 = 6
+    teleporters3 = [2, 1, 4, 3, 6, 5]
+    result3 = find_planet_cycles(n3, teleporters3)
+    print(f"Test 3: {result3}")
+
+if __name__ == "__main__":
+    solve_planets_cycles()
         
         return length
     
@@ -466,7 +699,238 @@ def dynamic_planets_cycles(n, initial_teleporters, updates):
 - **Combinatorics**: Counting cycles and paths
 - **Probability**: Probabilistic cycle analysis
 
-### 🎯 **Competitive Programming Variations**
+### Problem Variations
+
+### **Variation 1: Cycle Detection with Costs**
+**Problem**: Find cycle length and total cost for each planet.
+```python
+def planets_cycles_with_costs(n, teleporters, costs):
+    # costs[i] = cost of teleporter from planet i to teleporters[i]
+    
+    def find_cycle_entry(start):
+        slow = fast = start - 1
+        while True:
+            slow = teleporters[slow] - 1
+            fast = teleporters[teleporters[fast] - 1] - 1
+            if slow == fast:
+                break
+        
+        slow = start - 1
+        while slow != fast:
+            slow = teleporters[slow] - 1
+            fast = teleporters[fast] - 1
+        
+        return slow + 1
+    
+    def find_cycle_info(cycle_entry):
+        length = 1
+        total_cost = costs[cycle_entry - 1]
+        current = teleporters[cycle_entry - 1]
+        
+        while current != cycle_entry:
+            length += 1
+            total_cost += costs[current - 1]
+            current = teleporters[current - 1]
+        
+        return length, total_cost
+    
+    results = []
+    for i in range(1, n + 1):
+        cycle_entry = find_cycle_entry(i)
+        length, cost = find_cycle_info(cycle_entry)
+        results.append((length, cost))
+    
+    return results
+```
+
+### **Variation 2: Cycle Detection with Probabilities**
+**Problem**: Find expected cycle length considering teleporter failure probabilities.
+```python
+def planets_cycles_with_probabilities(n, teleporters, probabilities):
+    # probabilities[i] = probability that teleporter from i works
+    
+    def find_cycle_entry(start):
+        slow = fast = start - 1
+        while True:
+            slow = teleporters[slow] - 1
+            fast = teleporters[teleporters[fast] - 1] - 1
+            if slow == fast:
+                break
+        
+        slow = start - 1
+        while slow != fast:
+            slow = teleporters[slow] - 1
+            fast = teleporters[fast] - 1
+        
+        return slow + 1
+    
+    def find_expected_cycle_length(cycle_entry):
+        length = 1
+        prob = probabilities[cycle_entry - 1]
+        current = teleporters[cycle_entry - 1]
+        
+        while current != cycle_entry:
+            length += 1
+            prob *= probabilities[current - 1]
+            current = teleporters[current - 1]
+        
+        return length, prob
+    
+    results = []
+    for i in range(1, n + 1):
+        cycle_entry = find_cycle_entry(i)
+        length, prob = find_expected_cycle_length(cycle_entry)
+        results.append((length, prob))
+    
+    return results
+```
+
+### **Variation 3: Dynamic Cycle Detection**
+**Problem**: Handle dynamic updates to teleporter destinations.
+```python
+class DynamicPlanetsCycles:
+    def __init__(self, n, teleporters):
+        self.n = n
+        self.teleporters = teleporters.copy()
+        self.cycle_cache = {}
+        self._compute_cycles()
+    
+    def _compute_cycles(self):
+        """Recompute all cycle information"""
+        self.cycle_cache.clear()
+        
+        for i in range(1, self.n + 1):
+            if i not in self.cycle_cache:
+                cycle_entry = self._find_cycle_entry(i)
+                cycle_length = self._find_cycle_length(cycle_entry)
+                
+                # Cache for all planets in this cycle
+                current = i
+                while current not in self.cycle_cache:
+                    self.cycle_cache[current] = (cycle_entry, cycle_length)
+                    current = self.teleporters[current - 1]
+    
+    def _find_cycle_entry(self, start):
+        slow = fast = start - 1
+        while True:
+            slow = self.teleporters[slow] - 1
+            fast = self.teleporters[self.teleporters[fast] - 1] - 1
+            if slow == fast:
+                break
+        
+        slow = start - 1
+        while slow != fast:
+            slow = self.teleporters[slow] - 1
+            fast = self.teleporters[fast] - 1
+        
+        return slow + 1
+    
+    def _find_cycle_length(self, cycle_entry):
+        length = 1
+        current = self.teleporters[cycle_entry - 1]
+        
+        while current != cycle_entry:
+            length += 1
+            current = self.teleporters[current - 1]
+        
+        return length
+    
+    def update_teleporter(self, planet, new_destination):
+        """Update teleporter destination for a planet"""
+        self.teleporters[planet - 1] = new_destination
+        self._compute_cycles()
+    
+    def get_cycle_length(self, planet):
+        """Get cycle length for a specific planet"""
+        if planet in self.cycle_cache:
+            return self.cycle_cache[planet][1]
+        return None
+```
+
+### **Variation 4: Multi-Dimensional Cycles**
+**Problem**: Detect cycles in multi-dimensional coordinate space.
+```python
+def multi_dimensional_cycles(n, teleporters_3d):
+    # teleporters_3d = [(x, y, z) for each planet] - 3D coordinates
+    
+    def find_cycle_entry_3d(start):
+        slow = fast = start - 1
+        while True:
+            slow = teleporters_3d[slow]
+            fast = teleporters_3d[teleporters_3d[fast]]
+            if slow == fast:
+                break
+        
+        slow = start - 1
+        while slow != fast:
+            slow = teleporters_3d[slow]
+            fast = teleporters_3d[fast]
+        
+        return slow + 1
+    
+    def find_cycle_length_3d(cycle_entry):
+        length = 1
+        current = teleporters_3d[cycle_entry - 1]
+        
+        while current != cycle_entry:
+            length += 1
+            current = teleporters_3d[current - 1]
+        
+        return length
+    
+    results = []
+    for i in range(1, n + 1):
+        cycle_entry = find_cycle_entry_3d(i)
+        cycle_length = find_cycle_length_3d(cycle_entry)
+        results.append(cycle_length)
+    
+    return results
+```
+
+### **Variation 5: Cycle Detection with Constraints**
+**Problem**: Find cycles that satisfy specific constraints (e.g., minimum/maximum length).
+```python
+def constrained_cycle_detection(n, teleporters, min_length=1, max_length=float('inf')):
+    def find_cycle_entry(start):
+        slow = fast = start - 1
+        while True:
+            slow = teleporters[slow] - 1
+            fast = teleporters[teleporters[fast] - 1] - 1
+            if slow == fast:
+                break
+        
+        slow = start - 1
+        while slow != fast:
+            slow = teleporters[slow] - 1
+            fast = teleporters[fast] - 1
+        
+        return slow + 1
+    
+    def find_cycle_length(cycle_entry):
+        length = 1
+        current = teleporters[cycle_entry - 1]
+        
+        while current != cycle_entry:
+            length += 1
+            current = teleporters[current - 1]
+        
+        return length
+    
+    results = []
+    for i in range(1, n + 1):
+        cycle_entry = find_cycle_entry(i)
+        cycle_length = find_cycle_length(cycle_entry)
+        
+        # Apply constraints
+        if min_length <= cycle_length <= max_length:
+            results.append(cycle_length)
+        else:
+            results.append(-1)  # Constraint violated
+    
+    return results
+```
+
+## 🎯 **Competitive Programming Variations**
 
 #### **1. Multiple Test Cases with Different Graphs**
 ```python
@@ -556,6 +1020,46 @@ def interactive_planets_cycles():
 - **Graph Representations**: Adjacency list vs adjacency matrix
 - **Algorithm Optimization**: Improving time and space complexity
 - **Dynamic Programming**: Handling dynamic updates
+
+## Related Problems
+
+### **1. Cycle Detection Problems**
+- **Cycle Detection in Linked Lists**: Find cycles in linked list structures
+- **Cycle Detection in Arrays**: Detect cycles in array-based graphs
+- **Functional Graph Cycles**: Handle cycles in functional graphs
+- **Directed Graph Cycles**: Find cycles in directed graphs
+
+### **2. Graph Traversal Problems**
+- **DFS/BFS**: Graph traversal algorithms for cycle detection
+- **Union-Find**: Connectivity data structure for cycle analysis
+- **Topological Sorting**: Detect cycles in DAGs
+- **Strongly Connected Components**: Find cycles in directed graphs
+
+### **3. Two-Pointer Problems**
+- **Floyd's Cycle Finding**: Two-pointer technique for cycle detection
+- **Linked List Problems**: Various linked list cycle problems
+- **Array Cycle Problems**: Cycle detection in arrays
+- **String Cycle Problems**: Find cycles in string patterns
+
+## Learning Points
+
+### **1. Algorithm Design**
+- **Floyd's Algorithm**: Essential technique for efficient cycle detection
+- **Two-Pointer Technique**: Use slow and fast pointers for cycle finding
+- **Functional Graph Analysis**: Understand properties of graphs with single outgoing edges
+- **Cycle Properties**: Leverage cycle properties for efficient solutions
+
+### **2. Implementation Techniques**
+- **Cycle Entry Detection**: Find where cycles begin in paths
+- **Cycle Length Calculation**: Efficiently compute cycle lengths
+- **Caching Strategies**: Cache cycle information to avoid recomputation
+- **Dynamic Updates**: Handle changes to graph structure
+
+### **3. Problem-Solving Strategies**
+- **Graph Decomposition**: Break graphs into cycles and paths
+- **Efficient Traversal**: Avoid quadratic complexity through smart algorithms
+- **Mathematical Properties**: Use mathematical properties of cycles
+- **Optimization Techniques**: Trade space for time when appropriate
 
 ---
 

@@ -1,28 +1,30 @@
 ---
 layout: simple
-title: "Teleporters Path"
+title: "Teleporters Path - Eulerian Trail Problem"
 permalink: /problem_soulutions/graph_algorithms/teleporters_path_analysis
 ---
 
+# Teleporters Path - Eulerian Trail Problem
 
-# Teleporters Path
+## 📋 Problem Description
 
-## Problem Statement
 Given a directed graph with n nodes and m edges, find a path that visits every edge exactly once (Eulerian trail).
 
-### Input
-The first input line has two integers n and m: the number of nodes and edges.
-Then there are m lines describing the edges. Each line has two integers a and b: there is an edge from node a to node b.
+This is an Eulerian trail problem where we need to find a path that uses every edge exactly once. An Eulerian trail exists if and only if the graph is connected and has exactly 0 or 2 vertices with odd degree.
 
-### Output
-Print the nodes in the order they are visited in the Eulerian trail, or "IMPOSSIBLE" if no Eulerian trail exists.
+**Input**: 
+- First line: Two integers n and m (number of nodes and edges)
+- Next m lines: Two integers a and b (edge from node a to node b)
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
+**Output**: 
+- Print the nodes in the order they are visited in the Eulerian trail, or "IMPOSSIBLE" if no Eulerian trail exists
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2⋅10⁵
+- 1 ≤ a, b ≤ n
+
+**Example**:
 ```
 Input:
 4 4
@@ -35,10 +37,20 @@ Output:
 1 2 3 4 1
 ```
 
-## Solution Progression
+**Explanation**: 
+- The graph forms a cycle: 1 → 2 → 3 → 4 → 1
+- This is an Eulerian trail that visits every edge exactly once
+- All vertices have equal in-degree and out-degree
 
-### Approach 1: Hierholzer's Algorithm for Eulerian Trail - O(n + m)
-**Description**: Use Hierholzer's algorithm to find Eulerian trail.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find a path that visits every edge exactly once (Eulerian trail)
+- **Key Insight**: Use Hierholzer's algorithm for Eulerian trail construction
+- **Challenge**: Check Eulerian trail conditions and construct the path efficiently
+
+### Step 2: Initial Approach
+**Hierholzer's algorithm for Eulerian trail construction:**
 
 ```python
 def teleporters_path_naive(n, m, edges):
@@ -167,7 +179,10 @@ def teleporters_path_optimized(n, m, edges):
 
 **Why this improvement works**: We use optimized Hierholzer's algorithm with better degree checking to find Eulerian trail efficiently.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Alternative approaches for Eulerian trail construction:**
+
+### Step 4: Complete Solution
 
 ```python
 n, m = map(int, input().split())
@@ -237,12 +252,201 @@ result = find_teleporters_path(n, m, edges)
 print(result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple cycle graph (should return Eulerian trail)
+- **Test 2**: Graph with no Eulerian trail (should return "IMPOSSIBLE")
+- **Test 3**: Complex graph with Eulerian trail (should find correct path)
+- **Test 4**: Graph with multiple components (should return "IMPOSSIBLE")
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Hierholzer's Algorithm | O(n + m) | O(n + m) | Use Hierholzer's for Eulerian trail |
 | Optimized Hierholzer's | O(n + m) | O(n + m) | Optimized Hierholzer's implementation |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Eulerian Trail**: Path that visits every edge exactly once
+- **Hierholzer's Algorithm**: Efficient algorithm for Eulerian trail construction
+- **Degree Conditions**: Check if Eulerian trail exists based on vertex degrees
+- **Graph Connectivity**: Ensure graph is connected for Eulerian trail
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Eulerian Circuit (Closed Trail)**
+```python
+def eulerian_circuit(n, m, edges):
+    # Find Eulerian circuit (closed trail that starts and ends at same vertex)
+    
+    # Check if Eulerian circuit exists
+    in_degree = [0] * (n + 1)
+    out_degree = [0] * (n + 1)
+    adj = [[] for _ in range(n + 1)]
+    
+    for a, b in edges:
+        out_degree[a] += 1
+        in_degree[b] += 1
+        adj[a].append(b)
+    
+    # For Eulerian circuit, all vertices must have in_degree = out_degree
+    for i in range(1, n + 1):
+        if in_degree[i] != out_degree[i]:
+            return "IMPOSSIBLE"
+    
+    # Hierholzer's algorithm for circuit
+    def find_eulerian_circuit():
+        path = []
+        stack = [1]  # Start from any vertex
+        
+        while stack:
+            current = stack[-1]
+            
+            if adj[current]:
+                next_node = adj[current].pop()
+                stack.append(next_node)
+            else:
+                path.append(stack.pop())
+        
+        return path[::-1]
+    
+    circuit = find_eulerian_circuit()
+    
+    if len(circuit) != m + 1:
+        return "IMPOSSIBLE"
+    
+    return " ".join(map(str, circuit))
+```
+
+#### **2. Eulerian Trail with Edge Weights**
+```python
+def eulerian_trail_weighted(n, m, edges):
+    # Find Eulerian trail with weighted edges
+    
+    # Check if Eulerian trail exists
+    in_degree = [0] * (n + 1)
+    out_degree = [0] * (n + 1)
+    adj = [[] for _ in range(n + 1)]
+    
+    for a, b, weight in edges:
+        out_degree[a] += 1
+        in_degree[b] += 1
+        adj[a].append((b, weight))
+    
+    # Find start and end vertices
+    start = None
+    end = None
+    
+    for i in range(1, n + 1):
+        diff = out_degree[i] - in_degree[i]
+        if diff == 1:
+            if start is None:
+                start = i
+            else:
+                return "IMPOSSIBLE"
+        elif diff == -1:
+            if end is None:
+                end = i
+            else:
+                return "IMPOSSIBLE"
+        elif diff != 0:
+            return "IMPOSSIBLE"
+    
+    if start is None or end is None:
+        return "IMPOSSIBLE"
+    
+    # Hierholzer's algorithm with weights
+    def find_eulerian_trail():
+        path = []
+        stack = [start]
+        
+        while stack:
+            current = stack[-1]
+            
+            if adj[current]:
+                next_node, weight = adj[current].pop()
+                stack.append(next_node)
+            else:
+                path.append(stack.pop())
+        
+        return path[::-1]
+    
+    trail = find_eulerian_trail()
+    
+    if len(trail) != m + 1:
+        return "IMPOSSIBLE"
+    
+    return " ".join(map(str, trail))
+```
+
+#### **3. Eulerian Trail with Multiple Components**
+```python
+def eulerian_trail_multiple_components(n, m, edges):
+    # Find Eulerian trail in graph with multiple components
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+    
+    # Check connectivity
+    visited = [False] * (n + 1)
+    
+    def dfs(node):
+        visited[node] = True
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                dfs(neighbor)
+    
+    # Find all components
+    components = []
+    for i in range(1, n + 1):
+        if not visited[i]:
+            component = []
+            dfs(i)
+            components.append(component)
+    
+    # Check if Eulerian trail exists in each component
+    for component in components:
+        in_degree = [0] * (n + 1)
+        out_degree = [0] * (n + 1)
+        
+        for a, b in edges:
+            if a in component and b in component:
+                out_degree[a] += 1
+                in_degree[b] += 1
+        
+        # Check degree conditions
+        odd_degree_count = 0
+        for node in component:
+            if in_degree[node] != out_degree[node]:
+                odd_degree_count += 1
+        
+        if odd_degree_count > 2:
+            return "IMPOSSIBLE"
+    
+    return "POSSIBLE"
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Eulerian Trail**: Path finding problems
+- **Graph Algorithms**: Trail and circuit problems
+- **Hierholzer's Algorithm**: Eulerian path algorithms
+- **Graph Connectivity**: Connectivity problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Eulerian trail** exists if graph is connected and has 0 or 2 odd-degree vertices
+- **Hierholzer's algorithm** is efficient for Eulerian trail construction
+- **Degree conditions** are crucial for determining trail existence
+- **Graph connectivity** must be checked before applying Eulerian algorithms
 
 ## Key Insights for Other Problems
 

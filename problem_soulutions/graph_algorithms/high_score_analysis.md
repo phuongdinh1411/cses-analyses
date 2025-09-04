@@ -1,29 +1,31 @@
 ---
 layout: simple
-title: "High Score"
+title: "High Score - Longest Path with Negative Weights"
 permalink: /problem_soulutions/graph_algorithms/high_score_analysis
 ---
 
+# High Score - Longest Path with Negative Weights
 
-# High Score
+## 📋 Problem Description
 
-## Problem Statement
 There are n cities and m flight connections. Your task is to find the highest possible score for a route from city 1 to city n.
 
-### Input
-The first input line has two integers n and m: the number of cities and flight connections. The cities are numbered 1,2,…,n.
-Then, there are m lines describing the flight connections. Each line has three integers a, b, and c: there is a flight from city a to city b with score c.
+This is a longest path problem in a directed graph with potentially negative weights. We need to find the maximum score path from source to destination, handling negative cycles that could lead to infinite scores.
 
-### Output
-Print one integer: the highest possible score for a route from city 1 to city n. If there is no route, print -1.
+**Input**: 
+- First line: Two integers n and m (number of cities and flight connections)
+- Next m lines: Three integers a, b, and c (flight from city a to city b with score c)
 
-### Constraints
+**Output**: 
+- Highest possible score for a route from city 1 to city n, or -1 if no route exists
+
+**Constraints**:
 - 1 ≤ n ≤ 2500
 - 1 ≤ m ≤ 5000
-- 1 ≤ a,b ≤ n
-- -10^9 ≤ c ≤ 10^9
+- 1 ≤ a, b ≤ n
+- -10⁹ ≤ c ≤ 10⁹
 
-### Example
+**Example**:
 ```
 Input:
 4 5
@@ -37,10 +39,21 @@ Output:
 2
 ```
 
-## Solution Progression
+**Explanation**: 
+- Path 1 → 2 → 4: score = 3 + (-1) = 2
+- Path 1 → 3 → 4: score = (-2) + 7 = 5
+- Path 1 → 4: score = 2
+- Highest score: 5 (path 1 → 3 → 4)
 
-### Approach 1: Bellman-Ford with Negative Cycle Detection - O(n*m)
-**Description**: Use Bellman-Ford algorithm to find the longest path, handling negative cycles.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find highest score path from city 1 to city n
+- **Key Insight**: This is a longest path problem with potentially negative weights
+- **Challenge**: Handle negative cycles that could lead to infinite scores
+
+### Step 2: Initial Approach
+**Bellman-Ford algorithm for longest path with negative cycle detection:**
 
 ```python
 def high_score_bellman_ford(n, m, flights):
@@ -162,8 +175,8 @@ def high_score_optimized_bellman_ford(n, m, flights):
 
 **Why this improvement works**: Early termination and optimized reachability checks improve performance.
 
-### Improvement 2: SPFA with Negative Cycle Detection - O(n*m)
-**Description**: Use SPFA (Shortest Path Faster Algorithm) for better performance.
+### Step 3: Optimization/Alternative
+**SPFA (Shortest Path Faster Algorithm) with negative cycle detection:**
 
 ```python
 from collections import deque
@@ -309,7 +322,7 @@ def high_score_dfs(n, m, flights):
 
 **Why this works**: DFS approach can be useful for understanding the problem conceptually.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 from collections import deque
@@ -383,7 +396,14 @@ else:
     print(result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple path with positive weights (should return path sum)
+- **Test 2**: Path with negative weights (should return maximum score)
+- **Test 3**: Graph with positive cycle reachable from destination (should return -1)
+- **Test 4**: No path exists (should return -1)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -391,6 +411,189 @@ else:
 | Optimized Bellman-Ford | O(n*m) | O(n) | Early termination |
 | SPFA | O(n*m) | O(n + m) | Often faster in practice |
 | DFS | O(n*m) | O(n) | Educational approach |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Longest Path Problem**: Find maximum weight path in directed graph
+- **Negative Weight Handling**: Use Bellman-Ford or SPFA for negative weights
+- **Cycle Detection**: Detect positive cycles that can reach destination
+- **Reachability Check**: Verify if cycles can actually reach target node
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Longest Path with Constraints**
+```python
+def longest_path_with_constraints(n, m, edges, constraints):
+    # Find longest path with additional constraints
+    # constraints = list of (node, max_visits) tuples
+    
+    from collections import deque
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b, c in edges:
+        graph[a].append((b, c))
+    
+    def spfa_with_constraints():
+        # distances[node][visits] = maximum distance to node with visits
+        distances = [[float('-inf')] * (max_visits + 1) for _ in range(n + 1)]
+        distances[1][0] = 0
+        
+        queue = deque([(1, 0)])  # (node, visits)
+        in_queue = [[False] * (max_visits + 1) for _ in range(n + 1)]
+        in_queue[1][0] = True
+        
+        while queue:
+            node, visits = queue.popleft()
+            in_queue[node][visits] = False
+            
+            for neighbor, weight in graph[node]:
+                new_visits = visits + 1
+                if new_visits <= max_visits:
+                    new_dist = distances[node][visits] + weight
+                    if new_dist > distances[neighbor][new_visits]:
+                        distances[neighbor][new_visits] = new_dist
+                        if not in_queue[neighbor][new_visits]:
+                            queue.append((neighbor, new_visits))
+                            in_queue[neighbor][new_visits] = True
+        
+        return max(distances[n])
+    
+    max_visits = max(constraint[1] for constraint in constraints)
+    return spfa_with_constraints()
+```
+
+#### **2. Multiple Source Longest Path**
+```python
+def multiple_source_longest_path(n, m, edges, sources):
+    # Find longest path from any source to destination
+    from collections import deque
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b, c in edges:
+        graph[a].append((b, c))
+    
+    def spfa_multiple_sources():
+        distances = [float('-inf')] * (n + 1)
+        
+        # Initialize all sources
+        queue = deque()
+        in_queue = [False] * (n + 1)
+        
+        for source in sources:
+            distances[source] = 0
+            queue.append(source)
+            in_queue[source] = True
+        
+        visit_count = [0] * (n + 1)
+        
+        while queue:
+            node = queue.popleft()
+            in_queue[node] = False
+            
+            for neighbor, weight in graph[node]:
+                new_dist = distances[node] + weight
+                if new_dist > distances[neighbor]:
+                    distances[neighbor] = new_dist
+                    visit_count[neighbor] += 1
+                    
+                    if visit_count[neighbor] >= n:
+                        # Check for positive cycle
+                        if can_reach_n(neighbor, n):
+                            return float('inf')
+                    
+                    if not in_queue[neighbor]:
+                        queue.append(neighbor)
+                        in_queue[neighbor] = True
+        
+        return distances[n]
+    
+    def can_reach_n(start, target):
+        visited = [False] * (n + 1)
+        queue = deque([start])
+        visited[start] = True
+        
+        while queue:
+            node = queue.popleft()
+            if node == target:
+                return True
+            
+            for neighbor, weight in graph[node]:
+                if not visited[neighbor]:
+                    visited[neighbor] = True
+                    queue.append(neighbor)
+        
+        return False
+    
+    return spfa_multiple_sources()
+```
+
+#### **3. Longest Path with Time Windows**
+```python
+def longest_path_time_windows(n, m, edges, time_windows):
+    # Find longest path with time window constraints
+    # time_windows[node] = (earliest_time, latest_time)
+    
+    from collections import deque
+    
+    # Build adjacency list
+    graph = [[] for _ in range(n + 1)]
+    for a, b, c in edges:
+        graph[a].append((b, c))
+    
+    def spfa_time_windows():
+        # distances[node][time] = maximum distance to node at time
+        max_time = max(tw[1] for tw in time_windows.values())
+        distances = [[float('-inf')] * (max_time + 1) for _ in range(n + 1)]
+        
+        # Initialize source at time 0
+        distances[1][0] = 0
+        queue = deque([(1, 0)])
+        in_queue = [[False] * (max_time + 1) for _ in range(n + 1)]
+        in_queue[1][0] = True
+        
+        while queue:
+            node, time = queue.popleft()
+            in_queue[node][time] = False
+            
+            for neighbor, weight in graph[node]:
+                new_time = time + 1
+                if new_time <= max_time:
+                    # Check time window constraint
+                    earliest, latest = time_windows[neighbor]
+                    if earliest <= new_time <= latest:
+                        new_dist = distances[node][time] + weight
+                        if new_dist > distances[neighbor][new_time]:
+                            distances[neighbor][new_time] = new_dist
+                            if not in_queue[neighbor][new_time]:
+                                queue.append((neighbor, new_time))
+                                in_queue[neighbor][new_time] = True
+        
+        return max(distances[n])
+    
+    return spfa_time_windows()
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Shortest Path**: Related path-finding algorithms
+- **Negative Cycle Detection**: Cycle detection problems
+- **Graph Algorithms**: Various graph traversal problems
+- **Dynamic Programming**: Path optimization problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Longest path** problems require special algorithms for negative weights
+- **Bellman-Ford** and **SPFA** handle negative weights effectively
+- **Cycle detection** is crucial for avoiding infinite scores
+- **Reachability checks** ensure cycles can actually reach destination
+- **Graph algorithms** have many variations for different constraints
 
 ## Key Insights for Other Problems
 

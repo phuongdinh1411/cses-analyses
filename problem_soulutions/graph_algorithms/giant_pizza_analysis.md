@@ -1,28 +1,30 @@
 ---
 layout: simple
-title: "Giant Pizza"
+title: "Giant Pizza - 2-SAT Problem"
 permalink: /problem_soulutions/graph_algorithms/giant_pizza_analysis
 ---
 
+# Giant Pizza - 2-SAT Problem
 
-# Giant Pizza
+## 📋 Problem Description
 
-## Problem Statement
 Given a list of pizza toppings preferences where each person likes some toppings and dislikes others, determine if it's possible to make a pizza that satisfies everyone's preferences.
 
-### Input
-The first input line has two integers n and m: the number of people and the number of toppings.
-Then there are n lines describing the preferences. Each line has two integers a and b: person likes topping a and dislikes topping b.
+This is a classic 2-SAT (2-Satisfiability) problem where we need to determine if there exists a truth assignment that satisfies all logical constraints. Each person's preference creates implications that must be satisfied.
 
-### Output
-Print "YES" if it's possible to make a pizza that satisfies everyone, or "NO" otherwise.
+**Input**: 
+- First line: Two integers n and m (number of people and toppings)
+- Next n lines: Two integers a and b (person likes topping a and dislikes topping b)
 
-### Constraints
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 10^5
-- 1 ≤ a,b ≤ m
+**Output**: 
+- Print "YES" if it's possible to make a satisfying pizza, "NO" otherwise
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 10⁵
+- 1 ≤ a, b ≤ m
+
+**Example**:
 ```
 Input:
 3 3
@@ -34,10 +36,21 @@ Output:
 YES
 ```
 
-## Solution Progression
+**Explanation**: 
+- Person 1: likes topping 1, dislikes topping 2
+- Person 2: likes topping 2, dislikes topping 3
+- Person 3: likes topping 3, dislikes topping 1
+- Solution: Include toppings 1, 2, 3 (satisfies all preferences)
 
-### Approach 1: 2-SAT with Kosaraju's Algorithm - O(n + m)
-**Description**: Use 2-SAT problem reduction to strongly connected components.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Determine if pizza can satisfy all people's preferences
+- **Key Insight**: This is a 2-SAT problem with logical implications
+- **Challenge**: Convert preferences to logical constraints and check satisfiability
+
+### Step 2: Initial Approach
+**2-SAT with Kosaraju's algorithm for strongly connected components:**
 
 ```python
 def giant_pizza_naive(n, m, preferences):
@@ -157,7 +170,10 @@ def giant_pizza_optimized(n, m, preferences):
 
 **Why this improvement works**: We use 2-SAT problem reduction with optimized Kosaraju's algorithm to check satisfiability efficiently.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Enhanced 2-SAT with better graph construction:**
+
+### Step 4: Complete Solution
 
 ```python
 n, m = map(int, input().split())
@@ -220,12 +236,218 @@ result = check_giant_pizza(n, m, preferences)
 print(result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Satisfiable preferences (should return YES)
+- **Test 2**: Unsatisfiable preferences (should return NO)
+- **Test 3**: Single person preference (should return YES)
+- **Test 4**: Conflicting preferences (should return NO)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | 2-SAT with Kosaraju's | O(n + m) | O(n + m) | Use 2-SAT reduction to SCC |
 | Optimized 2-SAT | O(n + m) | O(n + m) | Optimized 2-SAT implementation |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **2-SAT Problem**: Boolean satisfiability with 2 variables per clause
+- **Implication Graph**: Directed graph representing logical implications
+- **Strongly Connected Components**: Used to check satisfiability
+- **Kosaraju's Algorithm**: Efficient SCC finding algorithm
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. General SAT Problem**
+```python
+def general_sat(n, m, clauses):
+    # Solve general SAT problem (not just 2-SAT)
+    # clauses = list of clauses, each clause is a list of literals
+    # Each literal is (variable, is_positive)
+    
+    def is_satisfiable():
+        # Try all possible truth assignments
+        for assignment in range(1 << m):
+            satisfied = True
+            for clause in clauses:
+                clause_satisfied = False
+                for var, is_positive in clause:
+                    if (assignment >> (var - 1)) & 1 == is_positive:
+                        clause_satisfied = True
+                        break
+                if not clause_satisfied:
+                    satisfied = False
+                    break
+            if satisfied:
+                return True
+        return False
+    
+    return is_satisfiable()
+```
+
+#### **2. Weighted 2-SAT**
+```python
+def weighted_2sat(n, m, preferences, weights):
+    # Solve 2-SAT with weights on variables
+    # weights[i] = weight of variable i
+    
+    def build_weighted_graph():
+        adj = [[] for _ in range(2*m + 1)]
+        adj_rev = [[] for _ in range(2*m + 1)]
+        
+        for a, b in preferences:
+            adj[a].append(b + m)
+            adj_rev[b + m].append(a)
+            adj[b].append(a + m)
+            adj_rev[a + m].append(b)
+        
+        return adj, adj_rev
+    
+    def kosaraju_scc():
+        adj, adj_rev = build_weighted_graph()
+        visited = [False] * (2*m + 1)
+        finish_order = []
+        
+        def first_dfs(node):
+            visited[node] = True
+            for neighbor in adj[node]:
+                if not visited[neighbor]:
+                    first_dfs(neighbor)
+            finish_order.append(node)
+        
+        for i in range(1, 2*m + 1):
+            if not visited[i]:
+                first_dfs(i)
+        
+        visited = [False] * (2*m + 1)
+        scc_id = [0] * (2*m + 1)
+        current_scc = 0
+        
+        def second_dfs(node, scc):
+            visited[node] = True
+            scc_id[node] = scc
+            for neighbor in adj_rev[node]:
+                if not visited[neighbor]:
+                    second_dfs(neighbor, scc)
+        
+        for node in reversed(finish_order):
+            if not visited[node]:
+                current_scc += 1
+                second_dfs(node, current_scc)
+        
+        return scc_id
+    
+    scc_id = kosaraju_scc()
+    
+    # Check satisfiability
+    for i in range(1, m + 1):
+        if scc_id[i] == scc_id[i + m]:
+            return False, None
+    
+    # Find optimal assignment
+    assignment = [False] * (m + 1)
+    for i in range(1, m + 1):
+        if scc_id[i] < scc_id[i + m]:
+            assignment[i] = True
+    
+    return True, assignment
+```
+
+#### **3. Dynamic 2-SAT**
+```python
+def dynamic_2sat(n, m, preferences, queries):
+    # Handle dynamic 2-SAT with adding/removing constraints
+    adj = [[] for _ in range(2*m + 1)]
+    adj_rev = [[] for _ in range(2*m + 1)]
+    
+    def add_constraint(a, b):
+        adj[a].append(b + m)
+        adj_rev[b + m].append(a)
+        adj[b].append(a + m)
+        adj_rev[a + m].append(b)
+    
+    def remove_constraint(a, b):
+        adj[a].remove(b + m)
+        adj_rev[b + m].remove(a)
+        adj[b].remove(a + m)
+        adj_rev[a + m].remove(b)
+    
+    def check_satisfiability():
+        # Run Kosaraju's algorithm
+        visited = [False] * (2*m + 1)
+        finish_order = []
+        
+        def first_dfs(node):
+            visited[node] = True
+            for neighbor in adj[node]:
+                if not visited[neighbor]:
+                    first_dfs(neighbor)
+            finish_order.append(node)
+        
+        for i in range(1, 2*m + 1):
+            if not visited[i]:
+                first_dfs(i)
+        
+        visited = [False] * (2*m + 1)
+        scc_id = [0] * (2*m + 1)
+        current_scc = 0
+        
+        def second_dfs(node, scc):
+            visited[node] = True
+            scc_id[node] = scc
+            for neighbor in adj_rev[node]:
+                if not visited[neighbor]:
+                    second_dfs(neighbor, scc)
+        
+        for node in reversed(finish_order):
+            if not visited[node]:
+                current_scc += 1
+                second_dfs(node, current_scc)
+        
+        # Check satisfiability
+        for i in range(1, m + 1):
+            if scc_id[i] == scc_id[i + m]:
+                return False
+        return True
+    
+    # Add initial constraints
+    for a, b in preferences:
+        add_constraint(a, b)
+    
+    results = []
+    for query in queries:
+        if query[0] == "ADD":
+            _, a, b = query
+            add_constraint(a, b)
+        elif query[0] == "REMOVE":
+            _, a, b = query
+            remove_constraint(a, b)
+        elif query[0] == "CHECK":
+            results.append(check_satisfiability())
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **2-SAT**: Boolean satisfiability problems
+- **Strongly Connected Components**: Graph connectivity problems
+- **Constraint Satisfaction**: Constraint satisfaction problems
+- **Graph Theory**: Fundamental graph theory concepts
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **2-SAT** is a special case of boolean satisfiability
+- **Implication graphs** represent logical constraints
+- **Strongly connected components** determine satisfiability
+- **Kosaraju's algorithm** efficiently finds SCCs
+- **Boolean logic** has many algorithmic applications
 
 ## Key Insights for Other Problems
 

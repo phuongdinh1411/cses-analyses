@@ -1,30 +1,30 @@
 ---
 layout: simple
-title: "Planets Queries I"
+title: "Planets Queries I - Binary Lifting for Path Queries"
 permalink: /problem_soulutions/graph_algorithms/planets_queries_i_analysis
 ---
 
+# Planets Queries I - Binary Lifting for Path Queries
 
-# Planets Queries I
+## 📋 Problem Description
 
-## Problem Statement
 Given a directed graph with n planets and q queries, for each query find the k-th planet in the path starting from planet a.
 
-### Input
-The first input line has two integers n and q: the number of planets and queries.
-The second line has n integers t1,t2,…,tn: for each planet, there is a teleporter from planet i to planet ti.
-Then there are q lines describing the queries. Each line has two integers a and k: find the k-th planet in the path starting from planet a.
+**Input**: 
+- First line: Two integers n and q (number of planets and queries)
+- Second line: n integers t₁, t₂, ..., tₙ (teleporter destinations)
+- Next q lines: Two integers a and k (start planet and k-th planet to find)
 
-### Output
-For each query, print the k-th planet in the path.
+**Output**: 
+- For each query, print the k-th planet in the path
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ ti ≤ n
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ tᵢ ≤ n
 - 1 ≤ a ≤ n
-- 1 ≤ k ≤ 10^9
+- 1 ≤ k ≤ 10⁹
 
-### Example
+**Example**:
 ```
 Input:
 4 3
@@ -39,10 +39,20 @@ Output:
 2
 ```
 
-## Solution Progression
+**Explanation**: 
+- Query 1: Start at planet 1, 1st planet in path is planet 1 itself
+- Query 2: Start at planet 1, 2nd planet in path is planet 2 (1 → 2)
+- Query 3: Start at planet 1, 3rd planet in path is planet 1 (1 → 2 → 1)
 
-### Approach 1: Naive Simulation - O(q * k)
-**Description**: Simulate the path for each query.
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find k-th planet in path from starting planet
+- **Key Insight**: Use binary lifting for efficient ancestor queries
+- **Challenge**: Handle very large k values efficiently
+
+### Step 2: Brute Force Approach
+**Simulate the path for each query:**
 
 ```python
 def planets_queries_i_naive(n, q, teleporters, queries):
@@ -57,10 +67,10 @@ def planets_queries_i_naive(n, q, teleporters, queries):
     return results
 ```
 
-**Why this is inefficient**: For large k values, this approach becomes too slow.
+**Complexity**: O(q × k) - too slow for large k values
 
-### Improvement 1: Binary Lifting - O(n log n + q log k)
-**Description**: Use binary lifting to answer queries efficiently.
+### Step 3: Optimization
+**Use binary lifting to precompute ancestors:**
 
 ```python
 def planets_queries_i_optimized(n, q, teleporters, queries):
@@ -89,9 +99,9 @@ def planets_queries_i_optimized(n, q, teleporters, queries):
     return results
 ```
 
-**Why this improvement works**: We use binary lifting to precompute the 2^j-th ancestor for each node, allowing us to answer queries in O(log k) time.
+**Key Insight**: Precompute 2^j-th ancestors for O(log k) query time
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 n, q = map(int, input().split())
@@ -139,6 +149,44 @@ for res in result:
 |----------|----------------|------------------|-------------|
 | Naive Simulation | O(q * k) | O(1) | Simulate path for each query |
 | Binary Lifting | O(n log n + q log k) | O(n log n) | Precompute ancestors for efficient queries |
+
+## Implementation Details
+
+### 1. **Binary Lifting Table Construction**
+- **Table Structure**: 2D array where `up[j][i]` represents the 2^j-th ancestor of node i
+- **Initialization**: First row contains direct teleporter destinations
+- **Recursive Building**: Each row is built using the previous row: `up[j][i] = up[j-1][up[j-1][i]]`
+- **Logarithmic Height**: Table height is log₂(n) for efficient queries
+
+### 2. **Query Processing**
+- **Binary Decomposition**: Decompose k into powers of 2 using bit manipulation
+- **Ancestor Traversal**: Use the lifting table to jump 2^j steps at a time
+- **Efficient Lookup**: Each query takes O(log k) time regardless of k's magnitude
+
+### 3. **Memory Management**
+- **Space Optimization**: Use 0-indexed arrays internally, convert to 1-indexed for output
+- **Table Size**: O(n log n) space for the lifting table
+- **Query Storage**: O(q) space for storing query results
+
+## Key Insights
+
+### 1. **Binary Lifting Strategy**
+- **Power of 2 Decomposition**: Break down large jumps into powers of 2 for efficient traversal
+- **Precomputation**: Build lookup tables to answer queries in logarithmic time
+- **Recursive Structure**: Each level of the table builds upon the previous level
+- **Query Efficiency**: Transform O(k) path simulation into O(log k) table lookups
+
+### 2. **Functional Graph Properties**
+- **Single Outgoing Edge**: Each planet has exactly one teleporter destination
+- **Path Structure**: Paths eventually lead to cycles or fixed points
+- **Cycle Detection**: Binary lifting can detect cycles by checking if 2^j-th ancestor exists
+- **Efficient Simulation**: Avoid actual path traversal for large k values
+
+### 3. **Query Optimization**
+- **Bit Manipulation**: Use bitwise operations to decompose k into powers of 2
+- **Table Lookup**: Access precomputed ancestors for O(1) lookup time
+- **Memory Trade-off**: Use O(n log n) space to achieve O(log k) query time
+- **Scalability**: Handle queries with k up to 10^9 efficiently
 
 ## Key Insights for Other Problems
 
@@ -209,6 +257,40 @@ def build_lifting_table(n, teleporters):
 5. **Fill table**: Use recurrence to fill remaining rows
 6. **Answer queries**: Use binary representation of k to find k-th ancestor
 7. **Return results**: Output answers for all queries
+
+## Related Problems
+
+### **1. Tree and Ancestor Problems**
+- **Lowest Common Ancestor (LCA)**: Find common ancestor of two nodes
+- **K-th Ancestor**: Find k-th ancestor of a node in a tree
+- **Tree Path Queries**: Answer queries about paths in trees
+
+### **2. Graph Traversal Problems**
+- **Shortest Path**: Find shortest path between nodes
+- **Cycle Detection**: Detect cycles in directed graphs
+- **Functional Graphs**: Handle graphs with single outgoing edges per node
+
+### **3. Query Processing Problems**
+- **Range Queries**: Answer queries over ranges of data
+- **Binary Lifting**: Use power-of-2 decomposition for efficient queries
+- **Sparse Tables**: Precompute data for fast range queries
+
+## Learning Points
+
+### **1. Algorithm Design**
+- **Binary Lifting**: Essential technique for efficient ancestor queries
+- **Precomputation**: Trade space for time to achieve logarithmic query complexity
+- **Bit Manipulation**: Use binary representation to decompose large values
+
+### **2. Implementation Techniques**
+- **Table Construction**: Build lookup tables incrementally
+- **Query Processing**: Efficiently answer queries using precomputed data
+- **Memory Management**: Balance space usage with query efficiency
+
+### **3. Problem-Solving Strategies**
+- **Functional Graph Analysis**: Understand properties of graphs with single outgoing edges
+- **Query Optimization**: Transform linear-time operations into logarithmic-time queries
+- **Scalability**: Handle very large input values efficiently
 
 ---
 

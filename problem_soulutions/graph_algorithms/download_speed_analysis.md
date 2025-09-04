@@ -1,29 +1,31 @@
 ---
 layout: simple
-title: "Download Speed"
+title: "Download Speed - Maximum Network Flow"
 permalink: /problem_soulutions/graph_algorithms/download_speed_analysis
 ---
 
+# Download Speed - Maximum Network Flow
 
-# Download Speed
+## 📋 Problem Description
 
-## Problem Statement
 Given a network with n computers and m connections, find the maximum download speed from computer 1 to computer n. Each connection has a capacity.
 
-### Input
-The first input line has two integers n and m: the number of computers and connections.
-Then there are m lines describing the connections. Each line has three integers a, b, and c: there is a connection from computer a to computer b with capacity c.
+This is a classic maximum flow problem where we need to find the maximum amount of data that can flow from source (computer 1) to sink (computer n) through the network connections.
 
-### Output
-Print the maximum download speed from computer 1 to computer n.
+**Input**: 
+- First line: Two integers n and m (number of computers and connections)
+- Next m lines: Three integers a, b, and c (connection from computer a to computer b with capacity c)
 
-### Constraints
+**Output**: 
+- Maximum download speed from computer 1 to computer n
+
+**Constraints**:
 - 1 ≤ n ≤ 500
 - 1 ≤ m ≤ 1000
-- 1 ≤ a,b ≤ n
-- 1 ≤ c ≤ 10^9
+- 1 ≤ a, b ≤ n
+- 1 ≤ c ≤ 10⁹
 
-### Example
+**Example**:
 ```
 Input:
 4 5
@@ -37,10 +39,21 @@ Output:
 5
 ```
 
-## Solution Progression
+**Explanation**: 
+- Path 1: 1 → 2 → 3 → 4 (capacity: min(3,2,3) = 2)
+- Path 2: 1 → 3 → 4 (capacity: min(1,3) = 1)
+- Path 3: 1 → 2 → 4 (capacity: min(3,2) = 2)
+- Maximum flow: 2 + 1 + 2 = 5
 
-### Approach 1: Ford-Fulkerson Algorithm - O(n * m * max_flow)
-**Description**: Use Ford-Fulkerson algorithm to find maximum flow.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find maximum flow from source to sink in network
+- **Key Insight**: Use maximum flow algorithms like Ford-Fulkerson
+- **Challenge**: Efficiently find augmenting paths and update residual graph
+
+### Step 2: Initial Approach
+**Ford-Fulkerson algorithm for maximum flow:**
 
 ```python
 def download_speed_naive(n, m, connections):
@@ -165,7 +178,10 @@ def download_speed_optimized(n, m, connections):
 
 **Why this improvement works**: We use optimized Ford-Fulkerson algorithm with better BFS implementation to find maximum flow efficiently.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Enhanced Ford-Fulkerson with better path finding:**
+
+### Step 4: Complete Solution
 
 ```python
 from collections import deque
@@ -236,12 +252,227 @@ result = find_maximum_download_speed(n, m, connections)
 print(result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple network with single path (should return path capacity)
+- **Test 2**: Network with multiple paths (should return sum of path capacities)
+- **Test 3**: Network with bottleneck (should return bottleneck capacity)
+- **Test 4**: Network with no path (should return 0)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Ford-Fulkerson | O(n * m * max_flow) | O(n²) | Use Ford-Fulkerson for maximum flow |
 | Optimized Ford-Fulkerson | O(n * m * max_flow) | O(n²) | Optimized Ford-Fulkerson implementation |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Maximum Flow**: Find maximum flow from source to sink in network
+- **Ford-Fulkerson Algorithm**: Use BFS to find augmenting paths
+- **Residual Graph**: Maintain residual capacities for flow updates
+- **Augmenting Paths**: Find paths with positive residual capacity
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Dinic's Algorithm for Maximum Flow**
+```python
+def dinic_maximum_flow(n, m, connections):
+    # More efficient maximum flow algorithm
+    adj = [[] for _ in range(n + 1)]
+    capacity = [[0] * (n + 1) for _ in range(n + 1)]
+    
+    for a, b, c in connections:
+        adj[a].append(b)
+        adj[b].append(a)
+        capacity[a][b] = c
+    
+    def bfs_level_graph(source, sink):
+        level = [-1] * (n + 1)
+        level[source] = 0
+        queue = deque([source])
+        
+        while queue:
+            current = queue.popleft()
+            for next_node in adj[current]:
+                if level[next_node] == -1 and capacity[current][next_node] > 0:
+                    level[next_node] = level[current] + 1
+                    queue.append(next_node)
+        
+        return level[sink] != -1
+    
+    def dfs_blocking_flow(current, sink, flow, level):
+        if current == sink:
+            return flow
+        
+        for next_node in adj[current]:
+            if level[next_node] == level[current] + 1 and capacity[current][next_node] > 0:
+                pushed = dfs_blocking_flow(next_node, sink, min(flow, capacity[current][next_node]), level)
+                if pushed > 0:
+                    capacity[current][next_node] -= pushed
+                    capacity[next_node][current] += pushed
+                    return pushed
+        return 0
+    
+    max_flow = 0
+    while bfs_level_graph(1, n):
+        while True:
+            flow = dfs_blocking_flow(1, n, float('inf'), level)
+            if flow == 0:
+                break
+            max_flow += flow
+    
+    return max_flow
+```
+
+#### **2. Minimum Cost Maximum Flow**
+```python
+def min_cost_max_flow(n, m, connections, costs):
+    # Find maximum flow with minimum cost
+    adj = [[] for _ in range(n + 1)]
+    capacity = [[0] * (n + 1) for _ in range(n + 1)]
+    cost = [[0] * (n + 1) for _ in range(n + 1)]
+    
+    for i, (a, b, c) in enumerate(connections):
+        adj[a].append(b)
+        adj[b].append(a)
+        capacity[a][b] = c
+        cost[a][b] = costs[i]
+        cost[b][a] = -costs[i]  # Negative cost for reverse edge
+    
+    def bellman_ford():
+        dist = [float('inf')] * (n + 1)
+        parent = [-1] * (n + 1)
+        dist[1] = 0
+        
+        for _ in range(n - 1):
+            for u in range(1, n + 1):
+                for v in adj[u]:
+                    if capacity[u][v] > 0 and dist[u] + cost[u][v] < dist[v]:
+                        dist[v] = dist[u] + cost[u][v]
+                        parent[v] = u
+        
+        return dist, parent
+    
+    max_flow = 0
+    total_cost = 0
+    
+    while True:
+        dist, parent = bellman_ford()
+        if dist[n] == float('inf'):
+            break
+        
+        # Find bottleneck
+        bottleneck = float('inf')
+        current = n
+        while current != 1:
+            bottleneck = min(bottleneck, capacity[parent[current]][current])
+            current = parent[current]
+        
+        # Update flow and cost
+        current = n
+        while current != 1:
+            capacity[parent[current]][current] -= bottleneck
+            capacity[current][parent[current]] += bottleneck
+            total_cost += bottleneck * cost[parent[current]][current]
+            current = parent[current]
+        
+        max_flow += bottleneck
+    
+    return max_flow, total_cost
+```
+
+#### **3. Multi-Source Multi-Sink Flow**
+```python
+def multi_source_sink_flow(n, m, connections, sources, sinks):
+    # Find maximum flow with multiple sources and sinks
+    # Add super source and super sink
+    super_source = 0
+    super_sink = n + 1
+    
+    adj = [[] for _ in range(n + 2)]
+    capacity = [[0] * (n + 2) for _ in range(n + 2)]
+    
+    # Add connections from super source to sources
+    for source in sources:
+        adj[super_source].append(source)
+        adj[source].append(super_source)
+        capacity[super_source][source] = float('inf')
+    
+    # Add connections from sinks to super sink
+    for sink in sinks:
+        adj[sink].append(super_sink)
+        adj[super_sink].append(sink)
+        capacity[sink][super_sink] = float('inf')
+    
+    # Add original connections
+    for a, b, c in connections:
+        adj[a].append(b)
+        adj[b].append(a)
+        capacity[a][b] = c
+    
+    def bfs(source, sink):
+        parent = [-1] * (n + 2)
+        parent[source] = source
+        queue = deque([source])
+        
+        while queue:
+            current = queue.popleft()
+            for next_node in adj[current]:
+                if parent[next_node] == -1 and capacity[current][next_node] > 0:
+                    parent[next_node] = current
+                    queue.append(next_node)
+                    if next_node == sink:
+                        break
+        
+        if parent[sink] == -1:
+            return 0
+        
+        # Find bottleneck
+        bottleneck = float('inf')
+        current = sink
+        while current != source:
+            bottleneck = min(bottleneck, capacity[parent[current]][current])
+            current = parent[current]
+        
+        # Update residual graph
+        current = sink
+        while current != source:
+            capacity[parent[current]][current] -= bottleneck
+            capacity[current][parent[current]] += bottleneck
+            current = parent[current]
+        
+        return bottleneck
+    
+    max_flow = 0
+    while True:
+        flow = bfs(super_source, super_sink)
+        if flow == 0:
+            break
+        max_flow += flow
+    
+    return max_flow
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Network Flow**: Core flow algorithms
+- **Maximum Flow**: Flow optimization problems
+- **Graph Connectivity**: Connectivity and cut problems
+- **Network Optimization**: Network design problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Maximum flow** is fundamental for network optimization
+- **Ford-Fulkerson** provides a simple but effective approach
+- **Residual graphs** are crucial for flow updates
+- **Augmenting paths** are the key to increasing flow
+- **Network flow** has many real-world applications
 
 ## Key Insights for Other Problems
 

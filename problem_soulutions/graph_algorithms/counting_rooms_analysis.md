@@ -1,26 +1,28 @@
 ---
 layout: simple
-title: "Counting Rooms"
+title: "Counting Rooms - Connected Components in Grid"
 permalink: /problem_soulutions/graph_algorithms/counting_rooms_analysis
 ---
 
+# Counting Rooms - Connected Components in Grid
 
-# Counting Rooms
+## 📋 Problem Description
 
-## Problem Statement
 You are given a map of a building, and your task is to count the number of its rooms. The size of the map is n×m squares, and each square is either floor or wall. You can walk left, right, up, and down through the floor squares.
 
-### Input
-The first input line has two integers n and m: the height and width of the map.
-Then there are n lines that describe the map. Each line has m characters: "." denotes a floor and "#" denotes a wall.
+A room is defined as a connected component of floor squares. Two floor squares are connected if you can walk from one to the other using only floor squares, moving in the four cardinal directions.
 
-### Output
-Print one integer: the number of rooms.
+**Input**: 
+- First line: Two integers n and m (height and width of the map)
+- Next n lines: m characters each (". " denotes floor, "#" denotes wall)
 
-### Constraints
-- 1 ≤ n,m ≤ 1000
+**Output**: 
+- One integer: the number of rooms
 
-### Example
+**Constraints**:
+- 1 ≤ n, m ≤ 1000
+
+**Example**:
 ```
 Input:
 5 8
@@ -34,10 +36,22 @@ Output:
 3
 ```
 
-## Solution Progression
+**Explanation**: 
+- The building has 3 rooms (connected components of floor squares)
+- Room 1: Top-left area with 2 floor squares
+- Room 2: Middle area with 6 floor squares  
+- Room 3: Bottom area with 2 floor squares
+- Each room is separated by walls
 
-### Approach 1: Recursive DFS - O(n*m)
-**Description**: Use depth-first search to explore each room and mark visited cells.
+## 🚀 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Count connected components (rooms) in a grid
+- **Key Insight**: Use DFS/BFS to explore each room completely
+- **Challenge**: Handle large grids efficiently and avoid revisiting cells
+
+### Step 2: Brute Force Approach
+**Use depth-first search to explore each room and mark visited cells:**
 
 ```python
 def counting_rooms_dfs(n, m, grid):
@@ -66,10 +80,10 @@ def counting_rooms_dfs(n, m, grid):
     return rooms
 ```
 
-**Why this is efficient**: We visit each cell at most once, and each cell is processed in O(1) time. The total complexity is O(n*m).
+**Complexity**: O(n × m) - optimal for this problem
 
-### Improvement 1: Iterative DFS with Stack - O(n*m)
-**Description**: Use iterative DFS with a stack to avoid recursion stack overflow.
+### Step 3: Optimization
+**Use iterative DFS with stack to avoid recursion stack overflow:**
 
 ```python
 def counting_rooms_iterative_dfs(n, m, grid):
@@ -228,74 +242,121 @@ for i in range(n):
             rooms += 1
 
 print(rooms)
+
+### Step 5: Testing Our Solution
+**Let's verify with examples:**
+
+```python
+def test_solution():
+    test_cases = [
+        ((5, 8, [
+            "########",
+            "#..#...#",
+            "####.#.#",
+            "#..#...#",
+            "########"
+        ]), 3),
+        ((3, 3, [
+            "...",
+            "...",
+            "..."
+        ]), 1),  # One large room
+        ((3, 3, [
+            "###",
+            "###",
+            "###"
+        ]), 0),  # No rooms
+        ((2, 2, [
+            ".#",
+            "#."
+        ]), 2),  # Two small rooms
+    ]
+    
+    for (n, m, grid), expected in test_cases:
+        result = count_rooms(n, m, grid)
+        print(f"n={n}, m={m}, grid:")
+        for row in grid:
+            print(f"  {row}")
+        print(f"Expected: {expected}, Got: {result}")
+        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
+        print()
+
+def count_rooms(n, m, grid):
+    def dfs_iterative(start_row, start_col):
+        stack = [(start_row, start_col)]
+        
+        while stack:
+            row, col = stack.pop()
+            
+            if (row < 0 or row >= n or col < 0 or col >= m or 
+                grid[row][col] == '#' or visited[row][col]):
+                continue
+            
+            visited[row][col] = True
+            
+            # Add all four directions to stack
+            stack.append((row + 1, col))  # Down
+            stack.append((row - 1, col))  # Up
+            stack.append((row, col + 1))  # Right
+            stack.append((row, col - 1))  # Left
+    
+    visited = [[False] * m for _ in range(n)]
+    rooms = 0
+    
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == '.' and not visited[i][j]:
+                dfs_iterative(i, j)
+                rooms += 1
+    
+    return rooms
+
+test_solution()
+```
 ```
 
-## Complexity Analysis
+## 🔧 Implementation Details
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Recursive DFS | O(n*m) | O(n*m) | Visit each cell once |
-| Iterative DFS | O(n*m) | O(n*m) | Avoid stack overflow |
-| BFS | O(n*m) | O(n*m) | Level-by-level exploration |
-| Union-Find | O(n*m * α(n*m)) | O(n*m) | Connect components |
+### Time Complexity
+- **Time**: O(n × m) - single pass through grid
+- **Space**: O(n × m) - visited array and stack storage
 
-## Key Insights for Other Problems
+### Why This Solution Works
+- **DFS/BFS**: Optimal for finding connected components
+- **Grid Traversal**: Efficient 4-directional movement
+- **Visited Tracking**: Prevents revisiting cells
+- **Component Counting**: Increments counter for each new room
+
+## 🎯 Key Insights
 
 ### 1. **Connected Components in Grids**
-**Principle**: Use graph traversal algorithms to find connected components in grid-based problems.
-**Applicable to**:
-- Grid problems
-- Connected components
-- Flood fill
-- Graph traversal
-
-**Example Problems**:
-- Counting rooms
-- Number of islands
-- Flood fill
-- Connected components
+- Use graph traversal algorithms to find connected components in grid-based problems
+- Important for understanding
+- Enables efficient room counting
+- Essential for algorithm
 
 ### 2. **DFS vs BFS for Graph Traversal**
-**Principle**: Choose between DFS and BFS based on problem requirements and constraints.
-**Applicable to**:
-- Graph traversal
-- Connected components
-- Path finding
-- Algorithm design
-
-**Example Problems**:
-- Graph traversal
-- Connected components
-- Path finding
-- Algorithm design
+- Choose between DFS and BFS based on problem requirements and constraints
+- Important for understanding
+- Provides flexibility in approach
+- Essential for optimization
 
 ### 3. **Grid Representation**
-**Principle**: Represent grids as graphs where adjacent cells are connected nodes.
-**Applicable to**:
-- Grid problems
-- Graph algorithms
-- Spatial problems
-- Algorithm design
-
-**Example Problems**:
-- Grid problems
-- Graph algorithms
-- Spatial problems
-- Algorithm design
+- Represent grids as graphs where adjacent cells are connected nodes
+- Important for understanding
+- Enables graph algorithm application
+- Essential for implementation
 
 ### 4. **Union-Find for Connectivity**
-**Principle**: Use union-find data structure to efficiently handle connectivity queries.
-**Applicable to**:
-- Connectivity problems
-- Component counting
-- Dynamic connectivity
-- Algorithm design
+- Use union-find data structure to efficiently handle connectivity queries
+- Important for understanding
+- Provides alternative approach
+- Essential for advanced solutions
 
-**Example Problems**:
-- Connectivity problems
-- Component counting
-- Dynamic connectivity
-- Algorithm design
+## 🎯 Problem Variations
+
+### Variation 1: Counting Rooms with Diagonal Movement
+**Problem**: Allow diagonal movement in addition to 4-directional movement.
 
 ## Notable Techniques
 
@@ -715,4 +776,24 @@ def interactive_counting_rooms():
 
 ---
 
-*This analysis demonstrates efficient grid traversal techniques and shows various extensions for counting rooms problems.* 
+*This analysis demonstrates efficient grid traversal techniques and shows various extensions for counting rooms problems.*
+
+---
+
+## 🔗 Related Problems
+
+- **[Connected Components](/cses-analyses/problem_soulutions/graph_algorithms/)**: Component counting problems
+- **[Grid Traversal](/cses-analyses/problem_soulutions/graph_algorithms/)**: Grid-based pathfinding problems
+- **[DFS/BFS](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph traversal problems
+
+## 📚 Learning Points
+
+1. **Connected Components**: Essential for grid analysis problems
+2. **Graph Traversal**: Important for component exploration
+3. **Grid Representation**: Key technique for spatial problems
+4. **DFS vs BFS**: Critical for algorithm choice
+5. **Union-Find**: Foundation for connectivity problems
+
+---
+
+**This is a great introduction to connected components and grid traversal!** 🎯 

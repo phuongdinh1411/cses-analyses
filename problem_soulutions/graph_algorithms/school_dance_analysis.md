@@ -1,27 +1,29 @@
 ---
 layout: simple
-title: "School Dance"
+title: "School Dance - Maximum Bipartite Matching"
 permalink: /problem_soulutions/graph_algorithms/school_dance_analysis
 ---
 
+# School Dance - Maximum Bipartite Matching
 
-# School Dance
+## 📋 Problem Description
 
-## Problem Statement
 Given n boys and m girls, where each boy can dance with certain girls, find the maximum number of boys and girls that can be matched for dancing.
 
-### Input
-The first input line has two integers n and m: the number of boys and girls.
-Then there are n lines describing the preferences. The i-th line has k integers: the girls that boy i can dance with.
+This is a maximum bipartite matching problem where we need to find the maximum number of pairs that can be formed between boys and girls based on their preferences.
 
-### Output
-Print the maximum number of boys and girls that can be matched.
+**Input**: 
+- First line: Two integers n and m (number of boys and girls)
+- Next n lines: k integers (girls that boy i can dance with)
 
-### Constraints
-- 1 ≤ n,m ≤ 500
+**Output**: 
+- Maximum number of boys and girls that can be matched
+
+**Constraints**:
+- 1 ≤ n, m ≤ 500
 - 1 ≤ k ≤ m
 
-### Example
+**Example**:
 ```
 Input:
 3 3
@@ -33,10 +35,21 @@ Output:
 3
 ```
 
-## Solution Progression
+**Explanation**: 
+- Boy 1 can dance with girls 1, 2
+- Boy 2 can dance with girls 2, 3
+- Boy 3 can dance with girls 1, 3
+- Maximum matching: (1,1), (2,2), (3,3) = 3 pairs
 
-### Approach 1: Maximum Bipartite Matching - O(n * m * max_flow)
-**Description**: Use maximum flow to find maximum bipartite matching.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find maximum number of boy-girl pairs that can dance together
+- **Key Insight**: Convert to maximum flow problem with bipartite graph
+- **Challenge**: Efficiently find maximum matching using flow algorithms
+
+### Step 2: Initial Approach
+**Maximum flow algorithm for bipartite matching:**
 
 ```python
 def school_dance_naive(n, m, preferences):
@@ -120,8 +133,8 @@ def school_dance_naive(n, m, preferences):
 
 **Why this is inefficient**: The implementation is correct but can be optimized for clarity.
 
-### Improvement 1: Optimized Bipartite Matching - O(n * m * max_flow)
-**Description**: Use optimized Ford-Fulkerson algorithm for bipartite matching.
+### Step 3: Optimization/Alternative
+**Optimized bipartite matching with better flow algorithms:**
 
 ```python
 def school_dance_optimized(n, m, preferences):
@@ -203,7 +216,7 @@ def school_dance_optimized(n, m, preferences):
 
 **Why this improvement works**: We use optimized Ford-Fulkerson algorithm to find maximum bipartite matching efficiently.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 from collections import deque
@@ -297,12 +310,254 @@ result = find_maximum_matching(n, m, preferences)
 print(result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple bipartite graph (should return maximum matching)
+- **Test 2**: Complete bipartite graph (should return min(n,m))
+- **Test 3**: No possible matches (should return 0)
+- **Test 4**: Complex preferences (should find optimal matching)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Bipartite Matching via Max Flow | O(n * m * max_flow) | O((n+m)²) | Use max flow for bipartite matching |
 | Optimized Bipartite Matching | O(n * m * max_flow) | O((n+m)²) | Optimized max flow implementation |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Maximum Bipartite Matching**: Find maximum number of pairs in bipartite graph
+- **Maximum Flow**: Convert matching problem to flow problem
+- **Ford-Fulkerson Algorithm**: Use augmenting paths to find maximum flow
+- **Bipartite Graph**: Graph with two disjoint vertex sets
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Weighted Bipartite Matching**
+```python
+def weighted_bipartite_matching(n, m, preferences, weights):
+    # Find maximum weight bipartite matching
+    
+    from collections import deque
+    
+    # Build bipartite graph with weights
+    total_nodes = 2 + n + m
+    source = 0
+    sink = total_nodes - 1
+    
+    adj = [[] for _ in range(total_nodes)]
+    capacity = [[0] * total_nodes for _ in range(total_nodes)]
+    cost = [[0] * total_nodes for _ in range(total_nodes)]
+    
+    # Source to boys
+    for boy in range(1, n + 1):
+        adj[source].append(boy)
+        adj[boy].append(source)
+        capacity[source][boy] = 1
+        cost[source][boy] = 0
+        cost[boy][source] = 0
+    
+    # Boys to girls with weights
+    for boy in range(1, n + 1):
+        for i, girl in enumerate(preferences[boy - 1]):
+            girl_node = n + girl
+            adj[boy].append(girl_node)
+            adj[girl_node].append(boy)
+            capacity[boy][girl_node] = 1
+            cost[boy][girl_node] = -weights[boy - 1][i]  # Negative for max weight
+            cost[girl_node][boy] = weights[boy - 1][i]
+    
+    # Girls to sink
+    for girl in range(1, m + 1):
+        girl_node = n + girl
+        adj[girl_node].append(sink)
+        adj[sink].append(girl_node)
+        capacity[girl_node][sink] = 1
+        cost[girl_node][sink] = 0
+        cost[sink][girl_node] = 0
+    
+    # Min cost max flow algorithm
+    def min_cost_max_flow():
+        total_flow = 0
+        total_cost = 0
+        
+        while True:
+            # Bellman-Ford for shortest path
+            dist = [float('inf')] * total_nodes
+            parent = [-1] * total_nodes
+            dist[source] = 0
+            
+            for _ in range(total_nodes - 1):
+                for u in range(total_nodes):
+                    for v in adj[u]:
+                        if capacity[u][v] > 0 and dist[u] + cost[u][v] < dist[v]:
+                            dist[v] = dist[u] + cost[u][v]
+                            parent[v] = u
+            
+            if parent[sink] == -1:
+                break
+            
+            # Find bottleneck
+            bottleneck = float('inf')
+            current = sink
+            while current != source:
+                bottleneck = min(bottleneck, capacity[parent[current]][current])
+                current = parent[current]
+            
+            # Update flow and cost
+            current = sink
+            while current != source:
+                capacity[parent[current]][current] -= bottleneck
+                capacity[current][parent[current]] += bottleneck
+                total_cost += bottleneck * cost[parent[current]][current]
+                current = parent[current]
+            
+            total_flow += bottleneck
+        
+        return total_flow, -total_cost  # Return positive cost
+    
+    flow, max_weight = min_cost_max_flow()
+    return flow, max_weight
+```
+
+#### **2. Stable Marriage Problem**
+```python
+def stable_marriage(n, men_preferences, women_preferences):
+    # Find stable matching using Gale-Shapley algorithm
+    
+    # Initialize
+    men_free = list(range(n))
+    women_engaged = [-1] * n
+    men_proposals = [0] * n  # Track how many proposals each man made
+    
+    while men_free:
+        man = men_free[0]
+        
+        # Get next woman to propose to
+        if men_proposals[man] < n:
+            woman = men_preferences[man][men_proposals[man]]
+            men_proposals[man] += 1
+            
+            if women_engaged[woman] == -1:
+                # Woman is free, engage them
+                women_engaged[woman] = man
+                men_free.pop(0)
+            else:
+                # Woman is engaged, check if she prefers this man
+                current_man = women_engaged[woman]
+                
+                # Check woman's preference
+                current_rank = women_preferences[woman].index(current_man)
+                new_rank = women_preferences[woman].index(man)
+                
+                if new_rank < current_rank:
+                    # Woman prefers new man
+                    women_engaged[woman] = man
+                    men_free.pop(0)
+                    men_free.append(current_man)
+                # If woman prefers current man, new man remains free
+    
+    return women_engaged
+```
+
+#### **3. Maximum Cardinality Matching with Constraints**
+```python
+def constrained_bipartite_matching(n, m, preferences, constraints):
+    # Find maximum matching with additional constraints
+    
+    from collections import deque
+    
+    # Build bipartite graph with constraints
+    total_nodes = 2 + n + m
+    source = 0
+    sink = total_nodes - 1
+    
+    adj = [[] for _ in range(total_nodes)]
+    capacity = [[0] * total_nodes for _ in range(total_nodes)]
+    
+    # Source to boys with capacity constraints
+    for boy in range(1, n + 1):
+        adj[source].append(boy)
+        adj[boy].append(source)
+        capacity[source][boy] = constraints.get('max_boys_per_dance', 1)
+    
+    # Boys to girls
+    for boy in range(1, n + 1):
+        for girl in preferences[boy - 1]:
+            girl_node = n + girl
+            adj[boy].append(girl_node)
+            adj[girl_node].append(boy)
+            capacity[boy][girl_node] = 1
+    
+    # Girls to sink with capacity constraints
+    for girl in range(1, m + 1):
+        girl_node = n + girl
+        adj[girl_node].append(sink)
+        adj[sink].append(girl_node)
+        capacity[girl_node][sink] = constraints.get('max_girls_per_dance', 1)
+    
+    # Ford-Fulkerson algorithm
+    def max_flow():
+        total_flow = 0
+        
+        while True:
+            parent = [-1] * total_nodes
+            parent[source] = source
+            queue = deque([source])
+            
+            while queue:
+                current = queue.popleft()
+                
+                for next_node in adj[current]:
+                    if parent[next_node] == -1 and capacity[current][next_node] > 0:
+                        parent[next_node] = current
+                        queue.append(next_node)
+                        
+                        if next_node == sink:
+                            break
+            
+            if parent[sink] == -1:
+                break
+            
+            # Find bottleneck
+            bottleneck = float('inf')
+            current = sink
+            while current != source:
+                bottleneck = min(bottleneck, capacity[parent[current]][current])
+                current = parent[current]
+            
+            # Update residual graph
+            current = sink
+            while current != source:
+                capacity[parent[current]][current] -= bottleneck
+                capacity[current][parent[current]] += bottleneck
+                current = parent[current]
+            
+            total_flow += bottleneck
+        
+        return total_flow
+    
+    return max_flow()
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Maximum Bipartite Matching**: Various matching problems
+- **Maximum Flow**: Flow network problems
+- **Stable Marriage**: Preference-based matching problems
+- **Graph Algorithms**: Bipartite graph problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Maximum flow** can solve bipartite matching problems
+- **Ford-Fulkerson algorithm** is efficient for finding maximum flow
+- **Bipartite graphs** have special properties for matching
+- **Augmenting paths** are key to finding maximum flow
 
 ## Key Insights for Other Problems
 
