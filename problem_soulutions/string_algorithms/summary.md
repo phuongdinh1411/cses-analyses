@@ -226,12 +226,680 @@ Welcome to the String Algorithms section! This category covers fundamental and a
   - *When to use*: When not all values needed
   - *Example*: Lazy suffix array construction
 
+## Detailed Examples and Implementations
+
+### Classic String Algorithms with Code
+
+#### 1. Knuth-Morris-Pratt (KMP) Algorithm
+```python
+def kmp_search(text, pattern):
+    def build_failure_function(pattern):
+        m = len(pattern)
+        failure = [0] * m
+        j = 0
+        
+        for i in range(1, m):
+            while j > 0 and pattern[i] != pattern[j]:
+                j = failure[j - 1]
+            
+            if pattern[i] == pattern[j]:
+                j += 1
+            
+            failure[i] = j
+        
+        return failure
+    
+    n, m = len(text), len(pattern)
+    if m == 0:
+        return 0
+    
+    failure = build_failure_function(pattern)
+    j = 0
+    
+    for i in range(n):
+        while j > 0 and text[i] != pattern[j]:
+            j = failure[j - 1]
+        
+        if text[i] == pattern[j]:
+            j += 1
+        
+        if j == m:
+            return i - m + 1
+    
+    return -1
+
+def kmp_find_all(text, pattern):
+    def build_failure_function(pattern):
+        m = len(pattern)
+        failure = [0] * m
+        j = 0
+        
+        for i in range(1, m):
+            while j > 0 and pattern[i] != pattern[j]:
+                j = failure[j - 1]
+            
+            if pattern[i] == pattern[j]:
+                j += 1
+            
+            failure[i] = j
+        
+        return failure
+    
+    n, m = len(text), len(pattern)
+    if m == 0:
+        return list(range(n + 1))
+    
+    failure = build_failure_function(pattern)
+    j = 0
+    matches = []
+    
+    for i in range(n):
+        while j > 0 and text[i] != pattern[j]:
+            j = failure[j - 1]
+        
+        if text[i] == pattern[j]:
+            j += 1
+        
+        if j == m:
+            matches.append(i - m + 1)
+            j = failure[j - 1]
+    
+    return matches
+```
+
+#### 2. Z Algorithm
+```python
+def z_algorithm(text):
+    n = len(text)
+    z = [0] * n
+    l, r = 0, 0
+    
+    for i in range(1, n):
+        if i <= r:
+            z[i] = min(r - i + 1, z[i - l])
+        
+        while i + z[i] < n and text[z[i]] == text[i + z[i]]:
+            z[i] += 1
+        
+        if i + z[i] - 1 > r:
+            l, r = i, i + z[i] - 1
+    
+    return z
+
+def z_search(text, pattern):
+    combined = pattern + '$' + text
+    z = z_algorithm(combined)
+    m = len(pattern)
+    matches = []
+    
+    for i in range(m + 1, len(combined)):
+        if z[i] == m:
+            matches.append(i - m - 1)
+    
+    return matches
+```
+
+#### 3. Rabin-Karp Algorithm
+```python
+def rabin_karp(text, pattern, base=256, mod=10**9 + 7):
+    n, m = len(text), len(pattern)
+    if m == 0:
+        return 0
+    if m > n:
+        return -1
+    
+    # Calculate hash of pattern and first window of text
+    pattern_hash = 0
+    text_hash = 0
+    h = 1
+    
+    # Calculate h = base^(m-1) % mod
+    for i in range(m - 1):
+        h = (h * base) % mod
+    
+    # Calculate initial hashes
+    for i in range(m):
+        pattern_hash = (base * pattern_hash + ord(pattern[i])) % mod
+        text_hash = (base * text_hash + ord(text[i])) % mod
+    
+    # Slide the pattern over text
+    for i in range(n - m + 1):
+        if pattern_hash == text_hash:
+            # Check character by character
+            if text[i:i+m] == pattern:
+                return i
+        
+        if i < n - m:
+            # Remove leading digit, add trailing digit
+            text_hash = (base * (text_hash - ord(text[i]) * h) + ord(text[i + m])) % mod
+            if text_hash < 0:
+                text_hash += mod
+    
+    return -1
+
+def rabin_karp_multiple_patterns(text, patterns, base=256, mod=10**9 + 7):
+    n = len(text)
+    results = {}
+    
+    for pattern in patterns:
+        m = len(pattern)
+        if m == 0:
+            results[pattern] = [0]
+            continue
+        if m > n:
+            results[pattern] = []
+            continue
+        
+        pattern_hash = 0
+        text_hash = 0
+        h = 1
+        
+        for i in range(m - 1):
+            h = (h * base) % mod
+        
+        for i in range(m):
+            pattern_hash = (base * pattern_hash + ord(pattern[i])) % mod
+            text_hash = (base * text_hash + ord(text[i])) % mod
+        
+        matches = []
+        for i in range(n - m + 1):
+            if pattern_hash == text_hash:
+                if text[i:i+m] == pattern:
+                    matches.append(i)
+            
+            if i < n - m:
+                text_hash = (base * (text_hash - ord(text[i]) * h) + ord(text[i + m])) % mod
+                if text_hash < 0:
+                    text_hash += mod
+        
+        results[pattern] = matches
+    
+    return results
+```
+
+#### 4. Manacher's Algorithm for Palindromes
+```python
+def manacher_algorithm(text):
+    # Transform string to handle even-length palindromes
+    transformed = '#'.join('^{}$'.format(text))
+    n = len(transformed)
+    p = [0] * n
+    center, right = 0, 0
+    
+    for i in range(1, n - 1):
+        # Mirror index
+        mirror = 2 * center - i
+        
+        if i < right:
+            p[i] = min(right - i, p[mirror])
+        
+        # Try to expand palindrome centered at i
+        try:
+            while transformed[i + (1 + p[i])] == transformed[i - (1 + p[i])]:
+                p[i] += 1
+        except IndexError:
+            pass
+        
+        # Update center and right if palindrome extends beyond right
+        if i + p[i] > right:
+            center, right = i, i + p[i]
+    
+    # Find maximum length and center
+    max_len = 0
+    center_index = 0
+    for i in range(1, n - 1):
+        if p[i] > max_len:
+            max_len = p[i]
+            center_index = i
+    
+    start = (center_index - max_len) // 2
+    return text[start:start + max_len]
+
+def find_all_palindromes(text):
+    transformed = '#'.join('^{}$'.format(text))
+    n = len(transformed)
+    p = [0] * n
+    center, right = 0, 0
+    palindromes = []
+    
+    for i in range(1, n - 1):
+        mirror = 2 * center - i
+        
+        if i < right:
+            p[i] = min(right - i, p[mirror])
+        
+        try:
+            while transformed[i + (1 + p[i])] == transformed[i - (1 + p[i])]:
+                p[i] += 1
+        except IndexError:
+            pass
+        
+        if i + p[i] > right:
+            center, right = i, i + p[i]
+        
+        # Store palindrome if length > 1
+        if p[i] > 0:
+            start = (i - p[i]) // 2
+            length = p[i]
+            palindromes.append((start, start + length))
+    
+    return palindromes
+```
+
+### Advanced String Data Structures
+
+#### 1. Suffix Array Construction
+```python
+def build_suffix_array(text):
+    n = len(text)
+    k = 1
+    c = [ord(text[i]) for i in range(n)]
+    sa = list(range(n))
+    
+    while k < n:
+        # Sort suffixes by first k characters
+        sa.sort(key=lambda x: (c[x], c[x + k]) if x + k < n else (c[x], -1))
+        
+        # Update equivalence classes
+        new_c = [0] * n
+        new_c[sa[0]] = 0
+        
+        for i in range(1, n):
+            curr = (c[sa[i]], c[sa[i] + k]) if sa[i] + k < n else (c[sa[i]], -1)
+            prev = (c[sa[i-1]], c[sa[i-1] + k]) if sa[i-1] + k < n else (c[sa[i-1]], -1)
+            
+            if curr == prev:
+                new_c[sa[i]] = new_c[sa[i-1]]
+            else:
+                new_c[sa[i]] = new_c[sa[i-1]] + 1
+        
+        c = new_c
+        k *= 2
+    
+    return sa
+
+def build_lcp_array(text, sa):
+    n = len(text)
+    lcp = [0] * n
+    rank = [0] * n
+    
+    for i in range(n):
+        rank[sa[i]] = i
+    
+    k = 0
+    for i in range(n):
+        if rank[i] == n - 1:
+            k = 0
+            continue
+        
+        j = sa[rank[i] + 1]
+        while i + k < n and j + k < n and text[i + k] == text[j + k]:
+            k += 1
+        
+        lcp[rank[i]] = k
+        if k > 0:
+            k -= 1
+    
+    return lcp
+```
+
+#### 2. Trie Implementation
+```python
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
+        self.count = 0
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+    
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+            node.count += 1
+        node.is_end_of_word = True
+    
+    def search(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
+    
+    def starts_with(self, prefix):
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return True
+    
+    def count_prefix(self, prefix):
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return 0
+            node = node.children[char]
+        return node.count
+    
+    def delete(self, word):
+        def delete_helper(node, word, index):
+            if index == len(word):
+                if not node.is_end_of_word:
+                    return False
+                node.is_end_of_word = False
+                return len(node.children) == 0
+            
+            char = word[index]
+            if char not in node.children:
+                return False
+            
+            should_delete = delete_helper(node.children[char], word, index + 1)
+            
+            if should_delete:
+                del node.children[char]
+                return len(node.children) == 0 and not node.is_end_of_word
+            
+            return False
+        
+        delete_helper(self.root, word, 0)
+```
+
+#### 3. Aho-Corasick Algorithm
+```python
+class AhoCorasickNode:
+    def __init__(self):
+        self.children = {}
+        self.failure = None
+        self.output = []
+        self.is_end = False
+
+class AhoCorasick:
+    def __init__(self):
+        self.root = AhoCorasickNode()
+    
+    def add_pattern(self, pattern):
+        node = self.root
+        for char in pattern:
+            if char not in node.children:
+                node.children[char] = AhoCorasickNode()
+            node = node.children[char]
+        node.is_end = True
+        node.output.append(pattern)
+    
+    def build_failure_links(self):
+        queue = []
+        
+        # Initialize failure links for first level
+        for char, child in self.root.children.items():
+            child.failure = self.root
+            queue.append(child)
+        
+        # Build failure links for remaining levels
+        while queue:
+            current = queue.pop(0)
+            
+            for char, child in current.children.items():
+                queue.append(child)
+                failure = current.failure
+                
+                while failure is not None and char not in failure.children:
+                    failure = failure.failure
+                
+                if failure is not None:
+                    child.failure = failure.children[char]
+                else:
+                    child.failure = self.root
+                
+                # Merge output sets
+                child.output.extend(child.failure.output)
+    
+    def search(self, text):
+        results = []
+        current = self.root
+        
+        for i, char in enumerate(text):
+            # Follow failure links until we find a match or reach root
+            while current is not None and char not in current.children:
+                current = current.failure
+            
+            if current is not None:
+                current = current.children[char]
+            else:
+                current = self.root
+            
+            # Collect all matches at current position
+            for pattern in current.output:
+                results.append((i - len(pattern) + 1, pattern))
+        
+        return results
+```
+
+### String Processing Techniques
+
+#### 1. Rolling Hash Implementation
+```python
+class RollingHash:
+    def __init__(self, text, base=256, mod=10**9 + 7):
+        self.text = text
+        self.base = base
+        self.mod = mod
+        self.n = len(text)
+        self.powers = [1] * (self.n + 1)
+        
+        # Precompute powers
+        for i in range(1, self.n + 1):
+            self.powers[i] = (self.powers[i-1] * base) % mod
+        
+        # Precompute prefix hashes
+        self.prefix_hashes = [0] * (self.n + 1)
+        for i in range(self.n):
+            self.prefix_hashes[i+1] = (self.prefix_hashes[i] * base + ord(text[i])) % mod
+    
+    def get_hash(self, start, end):
+        if start >= end:
+            return 0
+        
+        hash_value = (self.prefix_hashes[end] - 
+                     self.prefix_hashes[start] * self.powers[end - start]) % self.mod
+        
+        return hash_value if hash_value >= 0 else hash_value + self.mod
+    
+    def get_substring_hash(self, start, length):
+        return self.get_hash(start, start + length)
+```
+
+#### 2. String Compression
+```python
+def run_length_encoding(text):
+    if not text:
+        return ""
+    
+    result = []
+    current_char = text[0]
+    count = 1
+    
+    for i in range(1, len(text)):
+        if text[i] == current_char:
+            count += 1
+        else:
+            result.append(f"{count}{current_char}")
+            current_char = text[i]
+            count = 1
+    
+    result.append(f"{count}{current_char}")
+    return "".join(result)
+
+def run_length_decoding(encoded):
+    if not encoded:
+        return ""
+    
+    result = []
+    i = 0
+    
+    while i < len(encoded):
+        # Extract count
+        count_str = ""
+        while i < len(encoded) and encoded[i].isdigit():
+            count_str += encoded[i]
+            i += 1
+        
+        if i < len(encoded):
+            char = encoded[i]
+            count = int(count_str)
+            result.append(char * count)
+            i += 1
+    
+    return "".join(result)
+
+def lz77_compression(text, window_size=4096, lookahead_size=18):
+    compressed = []
+    i = 0
+    
+    while i < len(text):
+        # Find longest match in sliding window
+        best_match = (0, 0)  # (offset, length)
+        
+        # Search in sliding window
+        start = max(0, i - window_size)
+        for j in range(start, i):
+            match_length = 0
+            while (match_length < lookahead_size and 
+                   i + match_length < len(text) and
+                   j + match_length < i and
+                   text[j + match_length] == text[i + match_length]):
+                match_length += 1
+            
+            if match_length > best_match[1]:
+                best_match = (i - j, match_length)
+        
+        if best_match[1] > 0:
+            # Encode as (offset, length, next_char)
+            next_char = text[i + best_match[1]] if i + best_match[1] < len(text) else ""
+            compressed.append((best_match[0], best_match[1], next_char))
+            i += best_match[1] + 1
+        else:
+            # Encode as literal
+            compressed.append((0, 0, text[i]))
+            i += 1
+    
+    return compressed
+```
+
+### Advanced String Analysis
+
+#### 1. Period Detection
+```python
+def find_period(text):
+    n = len(text)
+    
+    # Check all possible periods
+    for period in range(1, n + 1):
+        if n % period != 0:
+            continue
+        
+        is_period = True
+        for i in range(period, n):
+            if text[i] != text[i % period]:
+                is_period = False
+                break
+        
+        if is_period:
+            return period
+    
+    return n
+
+def find_all_periods(text):
+    n = len(text)
+    periods = []
+    
+    for period in range(1, n + 1):
+        if n % period != 0:
+            continue
+        
+        is_period = True
+        for i in range(period, n):
+            if text[i] != text[i % period]:
+                is_period = False
+                break
+        
+        if is_period:
+            periods.append(period)
+    
+    return periods
+
+def border_array(text):
+    n = len(text)
+    border = [0] * n
+    j = 0
+    
+    for i in range(1, n):
+        while j > 0 and text[i] != text[j]:
+            j = border[j - 1]
+        
+        if text[i] == text[j]:
+            j += 1
+        
+        border[i] = j
+    
+    return border
+```
+
+#### 2. String Rotation and Cyclic Shifts
+```python
+def is_rotation(s1, s2):
+    if len(s1) != len(s2):
+        return False
+    
+    return s2 in s1 + s1
+
+def find_rotation_point(text):
+    n = len(text)
+    left, right = 0, n - 1
+    
+    while left < right:
+        mid = (left + right) // 2
+        
+        if text[mid] > text[right]:
+            left = mid + 1
+        else:
+            right = mid
+    
+    return left
+
+def lexicographically_minimal_rotation(text):
+    n = len(text)
+    text = text + text  # Double the string
+    i, j = 0, 1
+    
+    while j < n:
+        k = 0
+        while k < n and text[i + k] == text[j + k]:
+            k += 1
+        
+        if text[i + k] > text[j + k]:
+            i = max(i + k + 1, j)
+            j = i + 1
+        else:
+            j = j + k + 1
+    
+    return text[i:i + n]
+```
+
 ## Tips for Success
 
 1. **Master Basic Operations**: String manipulation
 2. **Understand KMP**: Essential for pattern matching
 3. **Learn Hashing**: Fast string comparison
 4. **Practice Implementation**: Code common algorithms
+5. **Study Data Structures**: Trie, Suffix Array, etc.
+6. **Handle Edge Cases**: Empty strings, single characters
 
 ## Common Pitfalls to Avoid
 
@@ -239,6 +907,8 @@ Welcome to the String Algorithms section! This category covers fundamental and a
 2. **Memory Usage**: With large strings
 3. **Hash Collisions**: In string hashing
 4. **Edge Cases**: Empty strings, single characters
+5. **Index Errors**: Off-by-one mistakes
+6. **Unicode Issues**: Multi-byte characters
 
 ## Advanced Topics
 
