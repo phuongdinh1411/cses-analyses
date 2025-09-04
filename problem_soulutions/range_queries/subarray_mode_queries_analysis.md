@@ -7,26 +7,31 @@ permalink: /problem_soulutions/range_queries/subarray_mode_queries_analysis
 
 # Subarray Mode Queries
 
-## Problem Statement
+## 📋 Problem Description
+
 Given an array of n integers, process q queries. Each query is either:
 1. Update the value at position k to x
 2. Calculate the mode (most frequent value) in range [a,b]
 
-### Input
-The first input line has two integers n and q: the size of the array and the number of queries.
-The second line has n integers x_1,x_2,…,x_n: the contents of the array.
-Then there are q lines describing the queries. Each line has three integers: either "1 k x" (update) or "2 a b" (mode query).
+This is a dynamic range query problem where we need to efficiently handle both point updates and range mode queries. We can solve this using coordinate compression with frequency tracking and efficient data structures for mode calculation.
 
-### Output
-Print the answer to each mode query.
+**Input**: 
+- First line: n q (size of the array and number of queries)
+- Second line: n integers x₁, x₂, ..., xₙ (the contents of the array)
+- Next q lines: queries of the form:
+  - "1 k x": update the value at position k to x
+  - "2 a b": calculate the mode in range [a,b]
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ x_i ≤ 10^9
+**Output**: 
+- Print the answer to each mode query
+
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ xᵢ ≤ 10⁹
 - 1 ≤ k ≤ n
 - 1 ≤ a ≤ b ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 8 3
@@ -39,6 +44,12 @@ Output:
 3
 3
 ```
+
+**Explanation**: 
+- Initial array: [3, 2, 4, 5, 1, 1, 5, 3]
+- Query 1: Mode in range [1,4] → 3 (appears once, but 3 is the smallest mode)
+- Update: Change value at position 4 from 5 to 9 → [3, 2, 4, 9, 1, 1, 5, 3]
+- Query 2: Mode in range [1,4] → 3 (still the mode in this range)
 
 ## Solution Progression
 
@@ -1033,25 +1044,259 @@ try: query = input().strip()
 - **Frequency Tracking**: Track frequencies efficiently
 - **Parallel Processing**: Use multiple cores for large datasets
 
-### 📚 **Learning Resources**
+## 🔧 Implementation Details
 
-#### **1. Related Algorithms**
-- **Segment Tree**: Efficient range mode queries
-- **Mo's Algorithm**: Offline range query optimization
-- **Coordinate Compression**: Handle large value ranges
-- **Frequency Analysis**: Efficient frequency tracking
+### Time and Space Complexity
+- **Time Complexity**: O(n√n) for Mo's algorithm, O(q log n) for segment tree approach
+- **Space Complexity**: O(n) for coordinate compression and frequency tracking
+- **Why it works**: Coordinate compression maps large values to smaller indices, frequency tracking enables efficient mode calculation
 
-#### **2. Mathematical Concepts**
-- **Statistical Measures**: Understanding mode properties
-- **Frequency Analysis**: Understanding frequency distributions
-- **Central Tendency**: Understanding measures of central tendency
-- **Complexity Analysis**: Understanding time/space trade-offs
+### Key Implementation Points
+- Use coordinate compression to handle large value ranges
+- Mo's algorithm for offline range mode queries
+- Frequency tracking for efficient mode calculation
+- Handle both point updates and range queries efficiently
 
-#### **3. Programming Concepts**
-- **Data Structures**: Choosing appropriate mode query structures
-- **Algorithm Design**: Optimizing for mode query constraints
-- **Problem Decomposition**: Breaking complex mode query problems
-- **Code Optimization**: Writing efficient mode query implementations
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Coordinate Compression**: Essential for handling large value ranges efficiently
+- **Mo's Algorithm**: Optimizes offline range queries by sorting queries optimally
+- **Frequency Tracking**: Enables efficient mode calculation in ranges
+- **Range Mode**: Most frequent value in a given range
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Subarray Mode Queries with Range Updates**
+```python
+class DynamicSubarrayModeQueries:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.arr = arr.copy()
+        
+        # Coordinate compression
+        all_values = set(arr)
+        self.sorted_values = sorted(all_values)
+        self.coord_map = {val: i for i, val in enumerate(self.sorted_values)}
+        
+        # Frequency tracking for each position
+        self.frequencies = [{} for _ in range(self.n)]
+        self.mode_cache = {}
+        
+        # Initialize frequencies
+        for i in range(self.n):
+            self.frequencies[i][self.coord_map[arr[i]]] = 1
+    
+    def update_value(self, pos, new_value):
+        old_value = self.arr[pos - 1]
+        old_coord = self.coord_map[old_value]
+        new_coord = self.coord_map[new_value]
+        
+        # Update frequency
+        self.frequencies[pos - 1][old_coord] = 0
+        self.frequencies[pos - 1][new_coord] = 1
+        
+        # Clear mode cache for affected ranges
+        self.mode_cache.clear()
+        
+        self.arr[pos - 1] = new_value
+    
+    def get_mode(self, a, b):
+        # Check cache first
+        cache_key = (a, b)
+        if cache_key in self.mode_cache:
+            return self.mode_cache[cache_key]
+        
+        # Calculate mode for range [a, b]
+        freq_count = {}
+        max_freq = 0
+        mode_value = None
+        
+        for i in range(a - 1, b):
+            for coord, count in self.frequencies[i].items():
+                if count > 0:
+                    freq_count[coord] = freq_count.get(coord, 0) + count
+                    if freq_count[coord] > max_freq:
+                        max_freq = freq_count[coord]
+                        mode_value = coord
+        
+        # Find smallest mode if there are ties
+        if mode_value is not None:
+            for coord, freq in freq_count.items():
+                if freq == max_freq and coord < mode_value:
+                    mode_value = coord
+        
+        result = self.sorted_values[mode_value] if mode_value is not None else None
+        self.mode_cache[cache_key] = result
+        return result
+```
+
+#### **2. Subarray Mode Queries with Multiple Modes**
+```python
+def subarray_mode_queries_multiple_modes(n, arr, queries):
+    # Handle queries that return all modes (not just one)
+    
+    # Coordinate compression
+    all_values = set(arr)
+    sorted_values = sorted(all_values)
+    coord_map = {val: i for i, val in enumerate(sorted_values)}
+    
+    results = []
+    
+    for query in queries:
+        if query[0] == 1:
+            # Update query
+            k, x = query[1], query[2]
+            arr[k - 1] = x
+        else:
+            # Mode query
+            a, b = query[1], query[2]
+            
+            # Calculate frequencies in range [a, b]
+            freq_count = {}
+            for i in range(a - 1, b):
+                coord = coord_map[arr[i]]
+                freq_count[coord] = freq_count.get(coord, 0) + 1
+            
+            # Find maximum frequency
+            max_freq = max(freq_count.values()) if freq_count else 0
+            
+            # Find all modes
+            modes = []
+            for coord, freq in freq_count.items():
+                if freq == max_freq:
+                    modes.append(sorted_values[coord])
+            
+            # Sort modes and return
+            modes.sort()
+            results.append(modes)
+    
+    return results
+```
+
+#### **3. Subarray Mode Queries with Statistical Measures**
+```python
+class StatisticalSubarrayQueries:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.arr = arr.copy()
+        
+        # Coordinate compression
+        all_values = set(arr)
+        self.sorted_values = sorted(all_values)
+        self.coord_map = {val: i for i, val in enumerate(self.sorted_values)}
+        
+        # Precompute prefix statistics
+        self.prefix_stats = [{} for _ in range(self.n + 1)]
+        self.prefix_stats[0] = {}
+        
+        for i in range(self.n):
+            coord = self.coord_map[arr[i]]
+            self.prefix_stats[i + 1] = self.prefix_stats[i].copy()
+            self.prefix_stats[i + 1][coord] = self.prefix_stats[i + 1].get(coord, 0) + 1
+    
+    def get_mode(self, a, b):
+        # Calculate mode in range [a, b]
+        freq_count = {}
+        for coord, count in self.prefix_stats[b].items():
+            prev_count = self.prefix_stats[a - 1].get(coord, 0)
+            if count - prev_count > 0:
+                freq_count[coord] = count - prev_count
+        
+        if not freq_count:
+            return None
+        
+        max_freq = max(freq_count.values())
+        modes = [coord for coord, freq in freq_count.items() if freq == max_freq]
+        return self.sorted_values[min(modes)]
+    
+    def get_median(self, a, b):
+        # Calculate median in range [a, b]
+        freq_count = {}
+        total_elements = 0
+        
+        for coord, count in self.prefix_stats[b].items():
+            prev_count = self.prefix_stats[a - 1].get(coord, 0)
+            if count - prev_count > 0:
+                freq_count[coord] = count - prev_count
+                total_elements += count - prev_count
+        
+        if total_elements == 0:
+            return None
+        
+        # Find median position
+        median_pos = (total_elements + 1) // 2
+        current_pos = 0
+        
+        for coord in sorted(freq_count.keys()):
+            current_pos += freq_count[coord]
+            if current_pos >= median_pos:
+                return self.sorted_values[coord]
+        
+        return None
+    
+    def get_range_stats(self, a, b):
+        # Get comprehensive statistics for range [a, b]
+        freq_count = {}
+        total_elements = 0
+        
+        for coord, count in self.prefix_stats[b].items():
+            prev_count = self.prefix_stats[a - 1].get(coord, 0)
+            if count - prev_count > 0:
+                freq_count[coord] = count - prev_count
+                total_elements += count - prev_count
+        
+        if total_elements == 0:
+            return {
+                'mode': None,
+                'median': None,
+                'min': None,
+                'max': None,
+                'unique_count': 0,
+                'total_count': 0
+            }
+        
+        # Calculate statistics
+        max_freq = max(freq_count.values())
+        modes = [self.sorted_values[coord] for coord, freq in freq_count.items() if freq == max_freq]
+        
+        # Find median
+        median_pos = (total_elements + 1) // 2
+        current_pos = 0
+        median = None
+        
+        for coord in sorted(freq_count.keys()):
+            current_pos += freq_count[coord]
+            if current_pos >= median_pos and median is None:
+                median = self.sorted_values[coord]
+        
+        return {
+            'mode': min(modes),
+            'median': median,
+            'min': self.sorted_values[min(freq_count.keys())],
+            'max': self.sorted_values[max(freq_count.keys())],
+            'unique_count': len(freq_count),
+            'total_count': total_elements
+        }
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Range Queries**: Subarray Minimum Queries, Subarray Distinct Values Queries
+- **Mode Queries**: Frequency analysis, Statistical measures
+- **Coordinate Compression**: Salary Queries, Hotel Queries
+- **Mo's Algorithm**: Offline range queries, Range optimization
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Coordinate compression** is essential for handling large value ranges efficiently
+- **Mo's algorithm** optimizes offline range queries by sorting queries optimally
+- **Frequency tracking** enables efficient mode calculation in ranges
+- **Range mode** is a fundamental statistical measure in range queries
 
 ---
 

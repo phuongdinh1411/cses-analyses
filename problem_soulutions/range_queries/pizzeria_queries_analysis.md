@@ -7,26 +7,31 @@ permalink: /problem_soulutions/range_queries/pizzeria_queries_analysis
 
 # Pizzeria Queries
 
-## Problem Statement
+## 📋 Problem Description
+
 Given n buildings in a line, each with a pizzeria, process q queries. Each query is either:
 1. Update the price of pizzeria at building k to x
 2. Find the minimum price of a pizzeria in range [a,b]
 
-### Input
-The first input line has two integers n and q: the number of buildings and the number of queries.
-The second line has n integers p_1,p_2,…,p_n: the initial prices of pizzerias.
-Then there are q lines describing the queries. Each line has three integers: either "1 k x" (update) or "2 a b" (minimum query).
+This is a dynamic range query problem where we need to efficiently handle both point updates and range minimum queries. We can solve this using a Segment Tree for efficient range minimum queries and point updates.
 
-### Output
-Print the answer to each minimum query.
+**Input**: 
+- First line: n q (number of buildings and number of queries)
+- Second line: n integers p₁, p₂, ..., pₙ (the initial prices of pizzerias)
+- Next q lines: queries of the form:
+  - "1 k x": update the price of pizzeria at building k to x
+  - "2 a b": find the minimum price of a pizzeria in range [a,b]
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ p_i ≤ 10^9
+**Output**: 
+- Print the answer to each minimum query
+
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ pᵢ ≤ 10⁹
 - 1 ≤ k ≤ n
 - 1 ≤ a ≤ b ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 5 3
@@ -39,6 +44,12 @@ Output:
 1
 0
 ```
+
+**Explanation**: 
+- Initial prices: [1, 2, 3, 4, 5]
+- Query 1: Minimum price in range [1,3] → 1 (minimum of 1, 2, 3)
+- Update: Change price at building 2 from 2 to 0 → [1, 0, 3, 4, 5]
+- Query 2: Minimum price in range [1,3] → 0 (minimum of 1, 0, 3)
 
 ## Solution Progression
 
@@ -803,25 +814,291 @@ try: query = input().strip()
 - **Compression**: Handle sparse arrays efficiently
 - **Parallel Processing**: Use multiple cores for large datasets
 
-### 📚 **Learning Resources**
+## 🔧 Implementation Details
 
-#### **1. Related Algorithms**
-- **Segment Tree**: Efficient range queries and updates
-- **Binary Indexed Tree**: Dynamic range operations
-- **Sparse Table**: Static range queries
-- **Lazy Propagation**: Efficient range updates
+### Time and Space Complexity
+- **Time Complexity**: O(log n) per query and update
+- **Space Complexity**: O(n) for segment tree
+- **Why it works**: Segment tree enables efficient range minimum queries and point updates in O(log n) time
 
-#### **2. Mathematical Concepts**
-- **Range Operations**: Understanding range query properties
-- **Monotonicity**: Using monotonic properties
-- **Optimization**: Finding optimal ranges
-- **Complexity Analysis**: Understanding time/space trade-offs
+### Key Implementation Points
+- Use segment tree for efficient range minimum queries
+- Handle point updates efficiently
+- Segment tree supports both range queries and point updates
+- Lazy propagation for range updates if needed
 
-#### **3. Programming Concepts**
-- **Data Structures**: Choosing appropriate range query structures
-- **Algorithm Design**: Optimizing for range constraints
-- **Problem Decomposition**: Breaking complex range problems
-- **Code Optimization**: Writing efficient range implementations
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Segment Tree**: Essential for efficient range minimum queries
+- **Range Minimum**: Most efficient way to find minimum in a range
+- **Point Updates**: Update single elements efficiently
+- **Range Queries**: Query minimum value in any range
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Pizzeria Queries with Range Updates**
+```python
+class RangeUpdatePizzeriaQueries:
+    def __init__(self, prices):
+        self.n = len(prices)
+        self.prices = prices.copy()
+        
+        # Segment tree with lazy propagation
+        self.tree = [float('inf')] * (4 * self.n)
+        self.lazy = [0] * (4 * self.n)
+        
+        self.build(1, 0, self.n - 1)
+    
+    def build(self, node, start, end):
+        if start == end:
+            self.tree[node] = self.prices[start]
+        else:
+            mid = (start + end) // 2
+            self.build(2 * node, start, mid)
+            self.build(2 * node + 1, mid + 1, end)
+            self.tree[node] = min(self.tree[2 * node], self.tree[2 * node + 1])
+    
+    def push_lazy(self, node, start, end):
+        if self.lazy[node] != 0:
+            self.tree[node] += self.lazy[node]
+            
+            if start != end:
+                self.lazy[2 * node] += self.lazy[node]
+                self.lazy[2 * node + 1] += self.lazy[node]
+            
+            self.lazy[node] = 0
+    
+    def range_update(self, node, start, end, l, r, val):
+        self.push_lazy(node, start, end)
+        
+        if start > end or start > r or end < l:
+            return
+        
+        if start >= l and end <= r:
+            self.lazy[node] += val
+            self.push_lazy(node, start, end)
+            return
+        
+        mid = (start + end) // 2
+        self.range_update(2 * node, start, mid, l, r, val)
+        self.range_update(2 * node + 1, mid + 1, end, l, r, val)
+        
+        self.push_lazy(2 * node, start, mid)
+        self.push_lazy(2 * node + 1, mid + 1, end)
+        self.tree[node] = min(self.tree[2 * node], self.tree[2 * node + 1])
+    
+    def range_minimum(self, node, start, end, l, r):
+        self.push_lazy(node, start, end)
+        
+        if start > end or start > r or end < l:
+            return float('inf')
+        
+        if start >= l and end <= r:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        left_min = self.range_minimum(2 * node, start, mid, l, r)
+        right_min = self.range_minimum(2 * node + 1, mid + 1, end, l, r)
+        
+        return min(left_min, right_min)
+    
+    def point_update(self, node, start, end, pos, val):
+        if start == end:
+            self.tree[node] = val
+        else:
+            mid = (start + end) // 2
+            if pos <= mid:
+                self.point_update(2 * node, start, mid, pos, val)
+            else:
+                self.point_update(2 * node + 1, mid + 1, end, pos, val)
+            self.tree[node] = min(self.tree[2 * node], self.tree[2 * node + 1])
+```
+
+#### **2. Pizzeria Queries with Multiple Operations**
+```python
+class MultiOperationPizzeriaQueries:
+    def __init__(self, prices):
+        self.n = len(prices)
+        self.prices = prices.copy()
+        
+        # Segment trees for different operations
+        self.min_tree = [float('inf')] * (4 * self.n)
+        self.max_tree = [float('-inf')] * (4 * self.n)
+        self.sum_tree = [0] * (4 * self.n)
+        
+        self.build(1, 0, self.n - 1)
+    
+    def build(self, node, start, end):
+        if start == end:
+            self.min_tree[node] = self.prices[start]
+            self.max_tree[node] = self.prices[start]
+            self.sum_tree[node] = self.prices[start]
+        else:
+            mid = (start + end) // 2
+            self.build(2 * node, start, mid)
+            self.build(2 * node + 1, mid + 1, end)
+            
+            self.min_tree[node] = min(self.min_tree[2 * node], self.min_tree[2 * node + 1])
+            self.max_tree[node] = max(self.max_tree[2 * node], self.max_tree[2 * node + 1])
+            self.sum_tree[node] = self.sum_tree[2 * node] + self.sum_tree[2 * node + 1]
+    
+    def range_minimum(self, node, start, end, l, r):
+        if start > end or start > r or end < l:
+            return float('inf')
+        
+        if start >= l and end <= r:
+            return self.min_tree[node]
+        
+        mid = (start + end) // 2
+        left_min = self.range_minimum(2 * node, start, mid, l, r)
+        right_min = self.range_minimum(2 * node + 1, mid + 1, end, l, r)
+        
+        return min(left_min, right_min)
+    
+    def range_maximum(self, node, start, end, l, r):
+        if start > end or start > r or end < l:
+            return float('-inf')
+        
+        if start >= l and end <= r:
+            return self.max_tree[node]
+        
+        mid = (start + end) // 2
+        left_max = self.range_maximum(2 * node, start, mid, l, r)
+        right_max = self.range_maximum(2 * node + 1, mid + 1, end, l, r)
+        
+        return max(left_max, right_max)
+    
+    def range_sum(self, node, start, end, l, r):
+        if start > end or start > r or end < l:
+            return 0
+        
+        if start >= l and end <= r:
+            return self.sum_tree[node]
+        
+        mid = (start + end) // 2
+        left_sum = self.range_sum(2 * node, start, mid, l, r)
+        right_sum = self.range_sum(2 * node + 1, mid + 1, end, l, r)
+        
+        return left_sum + right_sum
+    
+    def get_range_stats(self, a, b):
+        # Get comprehensive statistics for range [a, b]
+        min_price = self.range_minimum(1, 0, self.n - 1, a - 1, b - 1)
+        max_price = self.range_maximum(1, 0, self.n - 1, a - 1, b - 1)
+        total_cost = self.range_sum(1, 0, self.n - 1, a - 1, b - 1)
+        count = b - a + 1
+        avg_price = total_cost / count if count > 0 else 0
+        
+        return {
+            'min_price': min_price,
+            'max_price': max_price,
+            'total_cost': total_cost,
+            'count': count,
+            'average_price': avg_price
+        }
+```
+
+#### **3. Pizzeria Queries with Distance Constraints**
+```python
+class DistanceConstrainedPizzeriaQueries:
+    def __init__(self, prices, distances):
+        self.n = len(prices)
+        self.prices = prices.copy()
+        self.distances = distances.copy()  # Distance from building 1
+        
+        # Segment tree for prices
+        self.price_tree = [float('inf')] * (4 * self.n)
+        self.build_price_tree(1, 0, self.n - 1)
+        
+        # Segment tree for distances
+        self.distance_tree = [0] * (4 * self.n)
+        self.build_distance_tree(1, 0, self.n - 1)
+    
+    def build_price_tree(self, node, start, end):
+        if start == end:
+            self.price_tree[node] = self.prices[start]
+        else:
+            mid = (start + end) // 2
+            self.build_price_tree(2 * node, start, mid)
+            self.build_price_tree(2 * node + 1, mid + 1, end)
+            self.price_tree[node] = min(self.price_tree[2 * node], self.price_tree[2 * node + 1])
+    
+    def build_distance_tree(self, node, start, end):
+        if start == end:
+            self.distance_tree[node] = self.distances[start]
+        else:
+            mid = (start + end) // 2
+            self.build_distance_tree(2 * node, start, mid)
+            self.build_distance_tree(2 * node + 1, mid + 1, end)
+            self.distance_tree[node] = max(self.distance_tree[2 * node], self.distance_tree[2 * node + 1])
+    
+    def range_minimum_price(self, node, start, end, l, r):
+        if start > end or start > r or end < l:
+            return float('inf')
+        
+        if start >= l and end <= r:
+            return self.price_tree[node]
+        
+        mid = (start + end) // 2
+        left_min = self.range_minimum_price(2 * node, start, mid, l, r)
+        right_min = self.range_minimum_price(2 * node + 1, mid + 1, end, l, r)
+        
+        return min(left_min, right_min)
+    
+    def range_maximum_distance(self, node, start, end, l, r):
+        if start > end or start > r or end < l:
+            return 0
+        
+        if start >= l and end <= r:
+            return self.distance_tree[node]
+        
+        mid = (start + end) // 2
+        left_max = self.range_maximum_distance(2 * node, start, mid, l, r)
+        right_max = self.range_maximum_distance(2 * node + 1, mid + 1, end, l, r)
+        
+        return max(left_max, right_max)
+    
+    def find_cheapest_within_distance(self, start_building, max_distance):
+        # Find cheapest pizzeria within max_distance from start_building
+        start_pos = start_building - 1
+        start_distance = self.distances[start_pos]
+        
+        # Binary search for range
+        left = start_pos
+        right = self.n - 1
+        
+        # Find rightmost building within distance
+        while left <= right:
+            mid = (left + right) // 2
+            if self.distances[mid] - start_distance <= max_distance:
+                left = mid + 1
+            else:
+                right = mid - 1
+        
+        if right >= start_pos:
+            return self.range_minimum_price(1, 0, self.n - 1, start_pos, right)
+        else:
+            return float('inf')
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Range Queries**: Static Range Minimum Queries, Range Update Queries
+- **Segment Tree**: Range Sum Queries, Range XOR Queries
+- **Minimum Queries**: Range minimum, Point updates
+- **Data Structures**: Segment tree, Sparse table
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Segment tree** is essential for efficient range minimum queries
+- **Range minimum** can be computed efficiently using segment trees
+- **Point updates** are handled efficiently in segment trees
+- **Range queries** are fundamental operations in competitive programming
 
 ---
 

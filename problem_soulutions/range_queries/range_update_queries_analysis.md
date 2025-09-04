@@ -7,28 +7,31 @@ permalink: /problem_soulutions/range_queries/range_update_queries_analysis/"
 
 # Range Update Queries
 
-## Problem Statement
+## 📋 Problem Description
+
 Given an array of n integers, process q queries. Each query is either:
 1. Add x to all values in range [a,b]
 2. Print the value at position k
 
-### Input
-The first input line has two integers n and q: the size of the array and the number of queries.
-The second line has n integers x1,x2,…,xn: the contents of the array.
-Finally, there are q lines describing the queries. Each line has either:"
-- "1 a b x": add x to all values in range [a,b]
-- "2 k": print the value at position k
+This is a range update and point query problem where we need to efficiently handle range updates and point queries. We can solve this using a difference array or Binary Indexed Tree (Fenwick Tree) for efficient range updates and point queries.
 
-### Output
-Print the answer to each query of type 2.
+**Input**: 
+- First line: n q (size of the array and number of queries)
+- Second line: n integers x₁, x₂, ..., xₙ (the contents of the array)
+- Next q lines: queries of the form:
+  - "1 a b x": add x to all values in range [a,b]
+  - "2 k": print the value at position k
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ xi ≤ 10^9
+**Output**: 
+- Print the answer to each query of type 2
+
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ xᵢ ≤ 10⁹
 - 1 ≤ a ≤ b ≤ n
 - 1 ≤ k ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 8 3
@@ -41,6 +44,12 @@ Output:
 6
 7
 ```
+
+**Explanation**: 
+- Initial array: [3, 2, 4, 5, 1, 1, 5, 3]
+- Query 1: Add 2 to range [2,4] → [3, 4, 6, 7, 1, 1, 5, 3]
+- Query 2: Value at position 3 → 6
+- Query 3: Value at position 4 → 7
 
 ## Solution Progression
 
@@ -752,25 +761,199 @@ try: query = input().strip()
 - **Compression**: Handle sparse arrays efficiently
 - **Parallel Processing**: Use multiple cores for large datasets
 
-### 📚 **Learning Resources**
+## 🔧 Implementation Details
 
-#### **1. Related Algorithms**
-- **Difference Array**: Efficient range updates
-- **Binary Indexed Tree**: Dynamic range operations
-- **Segment Tree**: Versatile range query data structure
-- **Lazy Propagation**: Efficient range updates
+### Time and Space Complexity
+- **Time Complexity**: O(q) for queries, O(n) for preprocessing
+- **Space Complexity**: O(n) for difference array
+- **Why it works**: Difference array enables O(1) range updates, prefix sum gives O(1) point queries
 
-#### **2. Mathematical Concepts**
-- **Range Operations**: Understanding range update properties
-- **Linear Algebra**: Range updates as transformations
-- **Optimization**: Finding optimal update strategies
-- **Complexity Analysis**: Understanding time/space trade-offs
+### Key Implementation Points
+- Use difference array for efficient range updates
+- Prefix sum for point queries
+- Handle range updates and point queries efficiently
 
-#### **3. Programming Concepts**
-- **Data Structures**: Choosing appropriate update structures
-- **Algorithm Design**: Optimizing for specific update patterns
-- **Problem Decomposition**: Breaking complex update problems
-- **Code Optimization**: Writing efficient update implementations
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Difference Array**: Essential for efficient range updates
+- **Prefix Sum**: Enables O(1) point queries after range updates
+- **Range Updates**: Add value to all elements in a range
+- **Point Queries**: Get value at a specific position
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Range Update Queries with Range Queries**
+```python
+def range_update_range_queries(n, arr, queries):
+    # Handle both range updates and range queries (sum, min, max)
+    
+    # Initialize difference array
+    diff = [0] * (n + 2)
+    
+    # Apply initial array values
+    for i in range(n):
+        diff[i + 1] = arr[i]
+        if i > 0:
+            diff[i + 1] -= arr[i - 1]
+    
+    results = []
+    
+    for query in queries:
+        if query[0] == 1:
+            # Range update: add x to range [a, b]
+            a, b, x = query[1], query[2], query[3]
+            diff[a] += x
+            diff[b + 1] -= x
+        elif query[0] == 2:
+            # Range query: sum of range [a, b]
+            a, b = query[1], query[2]
+            
+            # Reconstruct array up to position b
+            current_sum = 0
+            range_sum = 0
+            for i in range(1, b + 1):
+                current_sum += diff[i]
+                if i >= a:
+                    range_sum += current_sum
+            
+            results.append(range_sum)
+    
+    return results
+```
+
+#### **2. Range Update Queries with Multiple Operations**
+```python
+class MultiOperationRangeQueries:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.arr = arr.copy()
+        
+        # Difference arrays for different operations
+        self.add_diff = [0] * (self.n + 2)
+        self.multiply_diff = [1] * (self.n + 2)
+        self.set_diff = [None] * (self.n + 2)
+        
+        # Initialize with original values
+        for i in range(self.n):
+            self.add_diff[i + 1] = arr[i]
+            if i > 0:
+                self.add_diff[i + 1] -= arr[i - 1]
+    
+    def range_add(self, a, b, x):
+        # Add x to range [a, b]
+        self.add_diff[a] += x
+        self.add_diff[b + 1] -= x
+    
+    def range_multiply(self, a, b, x):
+        # Multiply by x in range [a, b]
+        self.multiply_diff[a] *= x
+        self.multiply_diff[b + 1] /= x
+    
+    def range_set(self, a, b, x):
+        # Set all values in range [a, b] to x
+        self.set_diff[a] = x
+        self.set_diff[b + 1] = None
+    
+    def get_value(self, k):
+        # Get value at position k
+        current_add = 0
+        current_multiply = 1
+        current_set = None
+        
+        for i in range(1, k + 1):
+            current_add += self.add_diff[i]
+            current_multiply *= self.multiply_diff[i]
+            if self.set_diff[i] is not None:
+                current_set = self.set_diff[i]
+        
+        if current_set is not None:
+            return current_set
+        else:
+            return current_add * current_multiply
+```
+
+#### **3. Range Update Queries with Lazy Propagation**
+```python
+class LazyRangeUpdateQueries:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.arr = arr.copy()
+        
+        # Segment tree with lazy propagation
+        self.tree = [0] * (4 * self.n)
+        self.lazy = [0] * (4 * self.n)
+        
+        self.build(1, 0, self.n - 1)
+    
+    def build(self, node, start, end):
+        if start == end:
+            self.tree[node] = self.arr[start]
+        else:
+            mid = (start + end) // 2
+            self.build(2 * node, start, mid)
+            self.build(2 * node + 1, mid + 1, end)
+            self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+    
+    def push_lazy(self, node, start, end):
+        if self.lazy[node] != 0:
+            self.tree[node] += self.lazy[node] * (end - start + 1)
+            
+            if start != end:
+                self.lazy[2 * node] += self.lazy[node]
+                self.lazy[2 * node + 1] += self.lazy[node]
+            
+            self.lazy[node] = 0
+    
+    def range_update(self, node, start, end, l, r, val):
+        self.push_lazy(node, start, end)
+        
+        if start > end or start > r or end < l:
+            return
+        
+        if start >= l and end <= r:
+            self.lazy[node] += val
+            self.push_lazy(node, start, end)
+            return
+        
+        mid = (start + end) // 2
+        self.range_update(2 * node, start, mid, l, r, val)
+        self.range_update(2 * node + 1, mid + 1, end, l, r, val)
+        
+        self.push_lazy(2 * node, start, mid)
+        self.push_lazy(2 * node + 1, mid + 1, end)
+        self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+    
+    def point_query(self, node, start, end, pos):
+        self.push_lazy(node, start, end)
+        
+        if start == end:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        if pos <= mid:
+            return self.point_query(2 * node, start, mid, pos)
+        else:
+            return self.point_query(2 * node + 1, mid + 1, end, pos)
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Range Queries**: Static Range Sum Queries, Dynamic Range Sum Queries
+- **Difference Array**: Range Update Queries, Prefix Sum Queries
+- **Lazy Propagation**: Segment Tree problems, Range operations
+- **Point Queries**: Range updates with point queries
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Difference array** is essential for efficient range updates
+- **Prefix sum** enables O(1) point queries after range updates
+- **Range updates** add value to all elements in a range efficiently
+- **Point queries** get value at a specific position after updates
 
 ---
 

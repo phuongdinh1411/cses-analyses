@@ -7,26 +7,31 @@ permalink: /problem_soulutions/range_queries/subarray_distinct_values_queries_an
 
 # Subarray Distinct Values Queries
 
-## Problem Statement
+## 📋 Problem Description
+
 Given an array of n integers, process q queries. Each query is either:
 1. Update the value at position k to x
 2. Calculate the number of distinct values in range [a,b]
 
-### Input
-The first input line has two integers n and q: the size of the array and the number of queries.
-The second line has n integers x_1,x_2,…,x_n: the contents of the array.
-Then there are q lines describing the queries. Each line has three integers: either "1 k x" (update) or "2 a b" (distinct values query).
+This is a dynamic range query problem where we need to efficiently handle both point updates and range distinct value count queries. We can solve this using coordinate compression with frequency tracking and efficient data structures for distinct value counting.
 
-### Output
-Print the answer to each distinct values query.
+**Input**: 
+- First line: n q (size of the array and number of queries)
+- Second line: n integers x₁, x₂, ..., xₙ (the contents of the array)
+- Next q lines: queries of the form:
+  - "1 k x": update the value at position k to x
+  - "2 a b": calculate the number of distinct values in range [a,b]
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ x_i ≤ 10^9
+**Output**: 
+- Print the answer to each distinct values query
+
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ xᵢ ≤ 10⁹
 - 1 ≤ k ≤ n
 - 1 ≤ a ≤ b ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 8 3
@@ -39,6 +44,12 @@ Output:
 4
 4
 ```
+
+**Explanation**: 
+- Initial array: [3, 2, 4, 5, 1, 1, 5, 3]
+- Query 1: Distinct values in range [1,4] → 4 (values: 3, 2, 4, 5)
+- Update: Change value at position 4 from 5 to 9 → [3, 2, 4, 9, 1, 1, 5, 3]
+- Query 2: Distinct values in range [1,4] → 4 (values: 3, 2, 4, 9)
 
 ## Solution Progression
 
@@ -971,25 +982,208 @@ try: query = input().strip()
 - **Frequency Tracking**: Track frequencies efficiently
 - **Parallel Processing**: Use multiple cores for large datasets
 
-### 📚 **Learning Resources**
+## 🔧 Implementation Details
 
-#### **1. Related Algorithms**
-- **Segment Tree**: Efficient range distinct queries
-- **Mo's Algorithm**: Offline range query optimization
-- **Coordinate Compression**: Handle large value ranges
-- **Set Operations**: Efficient set manipulation
+### Time and Space Complexity
+- **Time Complexity**: O(n√n) for Mo's algorithm, O(q log n) for segment tree approach
+- **Space Complexity**: O(n) for coordinate compression and frequency tracking
+- **Why it works**: Coordinate compression maps large values to smaller indices, frequency tracking enables efficient distinct value counting
 
-#### **2. Mathematical Concepts**
-- **Set Theory**: Understanding set operations
-- **Frequency Analysis**: Understanding frequency distributions
-- **Statistical Measures**: Mode, median, percentiles
-- **Complexity Analysis**: Understanding time/space trade-offs
+### Key Implementation Points
+- Use coordinate compression to handle large value ranges
+- Mo's algorithm for offline range distinct value queries
+- Frequency tracking for efficient distinct value counting
+- Handle both point updates and range queries efficiently
 
-#### **3. Programming Concepts**
-- **Data Structures**: Choosing appropriate distinct value structures
-- **Algorithm Design**: Optimizing for distinct value constraints
-- **Problem Decomposition**: Breaking complex distinct value problems
-- **Code Optimization**: Writing efficient distinct value implementations
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Coordinate Compression**: Essential for handling large value ranges efficiently
+- **Mo's Algorithm**: Optimizes offline range queries by sorting queries optimally
+- **Frequency Tracking**: Enables efficient distinct value counting in ranges
+- **Range Distinct Values**: Count unique values in a given range
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Subarray Distinct Values Queries with Range Updates**
+```python
+class RangeUpdateDistinctQueries:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.arr = arr.copy()
+        
+        # Coordinate compression
+        all_values = set(arr)
+        self.sorted_values = sorted(all_values)
+        self.coord_map = {val: i for i, val in enumerate(self.sorted_values)}
+        
+        # Frequency tracking for each position
+        self.frequencies = [{} for _ in range(self.n)]
+        self.distinct_cache = {}
+        
+        # Initialize frequencies
+        for i in range(self.n):
+            self.frequencies[i][self.coord_map[arr[i]]] = 1
+    
+    def update_value(self, pos, new_value):
+        old_value = self.arr[pos - 1]
+        old_coord = self.coord_map[old_value]
+        new_coord = self.coord_map[new_value]
+        
+        # Update frequency
+        self.frequencies[pos - 1][old_coord] = 0
+        self.frequencies[pos - 1][new_coord] = 1
+        
+        # Clear distinct cache for affected ranges
+        self.distinct_cache.clear()
+        
+        self.arr[pos - 1] = new_value
+    
+    def get_distinct_count(self, a, b):
+        # Check cache first
+        cache_key = (a, b)
+        if cache_key in self.distinct_cache:
+            return self.distinct_cache[cache_key]
+        
+        # Calculate distinct count for range [a, b]
+        distinct_values = set()
+        
+        for i in range(a - 1, b):
+            for coord, count in self.frequencies[i].items():
+                if count > 0:
+                    distinct_values.add(coord)
+        
+        result = len(distinct_values)
+        self.distinct_cache[cache_key] = result
+        return result
+```
+
+#### **2. Subarray Distinct Values Queries with K-th Distinct**
+```python
+def subarray_kth_distinct_queries(n, arr, queries):
+    # Handle queries that return the k-th distinct value in a range
+    
+    # Coordinate compression
+    all_values = set(arr)
+    sorted_values = sorted(all_values)
+    coord_map = {val: i for i, val in enumerate(sorted_values)}
+    
+    results = []
+    
+    for query in queries:
+        if query[0] == 1:
+            # Update query
+            k, x = query[1], query[2]
+            arr[k - 1] = x
+        else:
+            # K-th distinct query
+            a, b, k = query[1], query[2], query[3]
+            
+            # Get distinct values in range [a, b]
+            distinct_values = set()
+            for i in range(a - 1, b):
+                distinct_values.add(arr[i])
+            
+            # Sort distinct values
+            sorted_distinct = sorted(distinct_values)
+            
+            # Return k-th distinct value (1-indexed)
+            if k <= len(sorted_distinct):
+                results.append(sorted_distinct[k - 1])
+            else:
+                results.append(-1)  # Not enough distinct values
+    
+    return results
+```
+
+#### **3. Subarray Distinct Values Queries with Statistical Measures**
+```python
+class StatisticalDistinctQueries:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.arr = arr.copy()
+        
+        # Coordinate compression
+        all_values = set(arr)
+        self.sorted_values = sorted(all_values)
+        self.coord_map = {val: i for i, val in enumerate(self.sorted_values)}
+        
+        # Precompute prefix distinct counts
+        self.prefix_distinct = [set() for _ in range(self.n + 1)]
+        
+        for i in range(self.n):
+            self.prefix_distinct[i + 1] = self.prefix_distinct[i].copy()
+            self.prefix_distinct[i + 1].add(self.coord_map[arr[i]])
+    
+    def get_distinct_count(self, a, b):
+        # Calculate distinct count in range [a, b]
+        distinct_values = set()
+        
+        for i in range(a - 1, b):
+            distinct_values.add(self.coord_map[self.arr[i]])
+        
+        return len(distinct_values)
+    
+    def get_distinct_values(self, a, b):
+        # Get all distinct values in range [a, b]
+        distinct_values = set()
+        
+        for i in range(a - 1, b):
+            distinct_values.add(self.arr[i])
+        
+        return sorted(distinct_values)
+    
+    def get_range_stats(self, a, b):
+        # Get comprehensive statistics for range [a, b]
+        distinct_values = set()
+        freq_count = {}
+        total_elements = 0
+        
+        for i in range(a - 1, b):
+            val = self.arr[i]
+            distinct_values.add(val)
+            freq_count[val] = freq_count.get(val, 0) + 1
+            total_elements += 1
+        
+        # Calculate statistics
+        distinct_count = len(distinct_values)
+        max_freq = max(freq_count.values()) if freq_count else 0
+        min_freq = min(freq_count.values()) if freq_count else 0
+        
+        # Find most frequent value
+        most_frequent = None
+        for val, freq in freq_count.items():
+            if freq == max_freq:
+                most_frequent = val
+                break
+        
+        return {
+            'distinct_count': distinct_count,
+            'total_elements': total_elements,
+            'most_frequent': most_frequent,
+            'max_frequency': max_freq,
+            'min_frequency': min_freq,
+            'distinct_values': sorted(distinct_values)
+        }
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Range Queries**: Subarray Mode Queries, Subarray Minimum Queries
+- **Distinct Values**: Frequency analysis, Set operations
+- **Coordinate Compression**: Salary Queries, Hotel Queries
+- **Mo's Algorithm**: Offline range queries, Range optimization
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Coordinate compression** is essential for handling large value ranges efficiently
+- **Mo's algorithm** optimizes offline range queries by sorting queries optimally
+- **Frequency tracking** enables efficient distinct value counting in ranges
+- **Range distinct values** is a fundamental counting problem in range queries
 
 ---
 

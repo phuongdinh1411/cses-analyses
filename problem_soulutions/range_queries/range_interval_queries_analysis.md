@@ -7,22 +7,25 @@ permalink: /problem_soulutions/range_queries/range_interval_queries_analysis
 
 # Range Interval Queries
 
-## Problem Statement
+## 📋 Problem Description
+
 Given n intervals, process q queries. Each query asks for the number of intervals that contain a given point x.
 
-### Input
-The first input line has two integers n and q: the number of intervals and the number of queries.
-Then there are n lines describing the intervals. Each line has two integers a and b: the interval [a,b].
-Then there are q lines describing the queries. Each line has one integer x: find the number of intervals containing x.
+This is a range query problem where we need to efficiently count how many intervals contain a specific point. We can solve this using coordinate compression with prefix sums or segment trees for efficient point-in-interval queries.
 
-### Output
-Print the answer to each query.
+**Input**: 
+- First line: n q (number of intervals and number of queries)
+- Next n lines: two integers a b (interval [a,b])
+- Next q lines: one integer x (find the number of intervals containing x)
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ a,b,x ≤ 10^9
+**Output**: 
+- Print the answer to each query
 
-### Example
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ a, b, x ≤ 10⁹
+
+**Example**:
 ```
 Input:
 3 2
@@ -36,6 +39,11 @@ Output:
 2
 1
 ```
+
+**Explanation**: 
+- Intervals: [1,5], [2,8], [3,6]
+- Query 1: Point x=4 is contained in intervals [1,5] and [3,6] → 2 intervals
+- Query 2: Point x=7 is contained in interval [2,8] only → 1 interval
 
 ## Solution Progression
 
@@ -909,25 +917,319 @@ try: query = input().strip()
 - **Compression**: Handle sparse coordinate distributions
 - **Parallel Processing**: Use multiple cores for large datasets
 
-### 📚 **Learning Resources**
+## 🔧 Implementation Details
 
-#### **1. Related Algorithms**
-- **Binary Indexed Tree**: Efficient range queries
-- **Segment Tree**: Dynamic range operations
-- **Coordinate Compression**: Handle large values
-- **Sweep Line**: Process geometric events
+### Time and Space Complexity
+- **Time Complexity**: O(n log n + q log n) for coordinate compression approach
+- **Space Complexity**: O(n) for coordinate compression and prefix sums
+- **Why it works**: Coordinate compression maps large values to smaller indices, prefix sums enable efficient point-in-interval counting
 
-#### **2. Mathematical Concepts**
-- **Interval Theory**: Understanding interval properties
-- **Range Queries**: Efficient range operations
-- **Optimization**: Finding optimal intervals
-- **Complexity Analysis**: Understanding time/space trade-offs
+### Key Implementation Points
+- Use coordinate compression to handle large value ranges
+- Sweep line algorithm for efficient interval processing
+- Prefix sums for fast point-in-interval queries
+- Handle overlapping intervals efficiently
 
-#### **3. Programming Concepts**
-- **Data Structures**: Choosing appropriate query structures
-- **Algorithm Design**: Optimizing for interval constraints
-- **Problem Decomposition**: Breaking complex interval problems
-- **Code Optimization**: Writing efficient interval implementations
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Coordinate Compression**: Essential for handling large value ranges efficiently
+- **Sweep Line Algorithm**: Processes intervals in sorted order for efficient counting
+- **Prefix Sums**: Enable fast range sum queries for point-in-interval counting
+- **Interval Overlap**: Count how many intervals contain a specific point
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Range Interval Queries with Dynamic Intervals**
+```python
+class DynamicIntervalQueries:
+    def __init__(self, intervals):
+        self.intervals = intervals.copy()
+        self.n = len(intervals)
+        
+        # Coordinate compression
+        all_points = set()
+        for a, b in intervals:
+            all_points.add(a)
+            all_points.add(b)
+        
+        self.sorted_points = sorted(all_points)
+        self.coord_map = {point: i for i, point in enumerate(self.sorted_points)}
+        
+        # Build prefix sum array
+        self.prefix_sums = [0] * (len(self.sorted_points) + 1)
+        self.build_prefix_sums()
+    
+    def build_prefix_sums(self):
+        # Reset prefix sums
+        self.prefix_sums = [0] * (len(self.sorted_points) + 1)
+        
+        # Process each interval
+        for a, b in self.intervals:
+            start_idx = self.coord_map[a]
+            end_idx = self.coord_map[b]
+            
+            # Mark interval start and end
+            self.prefix_sums[start_idx] += 1
+            if end_idx + 1 < len(self.prefix_sums):
+                self.prefix_sums[end_idx + 1] -= 1
+        
+        # Build prefix sum
+        for i in range(1, len(self.prefix_sums)):
+            self.prefix_sums[i] += self.prefix_sums[i - 1]
+    
+    def add_interval(self, a, b):
+        self.intervals.append((a, b))
+        self.n += 1
+        
+        # Add new points to coordinate compression
+        new_points = set()
+        for point in [a, b]:
+            if point not in self.coord_map:
+                new_points.add(point)
+        
+        if new_points:
+            # Rebuild coordinate compression
+            all_points = set(self.sorted_points) | new_points
+            self.sorted_points = sorted(all_points)
+            self.coord_map = {point: i for i, point in enumerate(self.sorted_points)}
+        
+        # Rebuild prefix sums
+        self.build_prefix_sums()
+    
+    def remove_interval(self, a, b):
+        if (a, b) in self.intervals:
+            self.intervals.remove((a, b))
+            self.n -= 1
+            self.build_prefix_sums()
+    
+    def count_intervals_containing(self, x):
+        if x not in self.coord_map:
+            return 0
+        
+        idx = self.coord_map[x]
+        return self.prefix_sums[idx]
+```
+
+#### **2. Range Interval Queries with Range Updates**
+```python
+class RangeUpdateIntervalQueries:
+    def __init__(self, intervals):
+        self.intervals = intervals.copy()
+        self.n = len(intervals)
+        
+        # Coordinate compression
+        all_points = set()
+        for a, b in intervals:
+            all_points.add(a)
+            all_points.add(b)
+        
+        self.sorted_points = sorted(all_points)
+        self.coord_map = {point: i for i, point in enumerate(self.sorted_points)}
+        
+        # Segment tree for range updates and point queries
+        self.tree = [0] * (4 * len(self.sorted_points))
+        self.lazy = [0] * (4 * len(self.sorted_points))
+        
+        self.build(1, 0, len(self.sorted_points) - 1)
+    
+    def build(self, node, start, end):
+        if start == end:
+            self.tree[node] = 0
+        else:
+            mid = (start + end) // 2
+            self.build(2 * node, start, mid)
+            self.build(2 * node + 1, mid + 1, end)
+            self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+    
+    def push_lazy(self, node, start, end):
+        if self.lazy[node] != 0:
+            self.tree[node] += self.lazy[node] * (end - start + 1)
+            
+            if start != end:
+                self.lazy[2 * node] += self.lazy[node]
+                self.lazy[2 * node + 1] += self.lazy[node]
+            
+            self.lazy[node] = 0
+    
+    def range_update(self, node, start, end, l, r, val):
+        self.push_lazy(node, start, end)
+        
+        if start > end or start > r or end < l:
+            return
+        
+        if start >= l and end <= r:
+            self.lazy[node] += val
+            self.push_lazy(node, start, end)
+            return
+        
+        mid = (start + end) // 2
+        self.range_update(2 * node, start, mid, l, r, val)
+        self.range_update(2 * node + 1, mid + 1, end, l, r, val)
+        
+        self.push_lazy(2 * node, start, mid)
+        self.push_lazy(2 * node + 1, mid + 1, end)
+        self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+    
+    def point_query(self, node, start, end, pos):
+        self.push_lazy(node, start, end)
+        
+        if start == end:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        if pos <= mid:
+            return self.point_query(2 * node, start, mid, pos)
+        else:
+            return self.point_query(2 * node + 1, mid + 1, end, pos)
+    
+    def add_interval(self, a, b):
+        if a in self.coord_map and b in self.coord_map:
+            start_idx = self.coord_map[a]
+            end_idx = self.coord_map[b]
+            self.range_update(1, 0, len(self.sorted_points) - 1, start_idx, end_idx, 1)
+    
+    def remove_interval(self, a, b):
+        if a in self.coord_map and b in self.coord_map:
+            start_idx = self.coord_map[a]
+            end_idx = self.coord_map[b]
+            self.range_update(1, 0, len(self.sorted_points) - 1, start_idx, end_idx, -1)
+    
+    def count_intervals_containing(self, x):
+        if x not in self.coord_map:
+            return 0
+        
+        idx = self.coord_map[x]
+        return self.point_query(1, 0, len(self.sorted_points) - 1, idx)
+```
+
+#### **3. Range Interval Queries with Statistical Analysis**
+```python
+class StatisticalIntervalQueries:
+    def __init__(self, intervals):
+        self.intervals = intervals.copy()
+        self.n = len(intervals)
+        
+        # Coordinate compression
+        all_points = set()
+        for a, b in intervals:
+            all_points.add(a)
+            all_points.add(b)
+        
+        self.sorted_points = sorted(all_points)
+        self.coord_map = {point: i for i, point in enumerate(self.sorted_points)}
+        
+        # Build prefix sum array for counting
+        self.prefix_sums = [0] * (len(self.sorted_points) + 1)
+        self.build_prefix_sums()
+        
+        # Build additional statistics
+        self.interval_lengths = [b - a + 1 for a, b in intervals]
+        self.total_length = sum(self.interval_lengths)
+    
+    def build_prefix_sums(self):
+        # Reset prefix sums
+        self.prefix_sums = [0] * (len(self.sorted_points) + 1)
+        
+        # Process each interval
+        for a, b in self.intervals:
+            start_idx = self.coord_map[a]
+            end_idx = self.coord_map[b]
+            
+            # Mark interval start and end
+            self.prefix_sums[start_idx] += 1
+            if end_idx + 1 < len(self.prefix_sums):
+                self.prefix_sums[end_idx + 1] -= 1
+        
+        # Build prefix sum
+        for i in range(1, len(self.prefix_sums)):
+            self.prefix_sums[i] += self.prefix_sums[i - 1]
+    
+    def count_intervals_containing(self, x):
+        if x not in self.coord_map:
+            return 0
+        
+        idx = self.coord_map[x]
+        return self.prefix_sums[idx]
+    
+    def get_interval_statistics(self, x):
+        # Get comprehensive statistics for point x
+        count = self.count_intervals_containing(x)
+        
+        # Find intervals containing x
+        containing_intervals = []
+        for a, b in self.intervals:
+            if a <= x <= b:
+                containing_intervals.append((a, b))
+        
+        # Calculate statistics
+        if containing_intervals:
+            lengths = [b - a + 1 for a, b in containing_intervals]
+            min_length = min(lengths)
+            max_length = max(lengths)
+            avg_length = sum(lengths) / len(lengths)
+            
+            # Find closest interval boundaries
+            left_boundaries = [a for a, b in containing_intervals]
+            right_boundaries = [b for a, b in containing_intervals]
+            
+            min_left = min(left_boundaries)
+            max_right = max(right_boundaries)
+            
+            return {
+                'count': count,
+                'min_length': min_length,
+                'max_length': max_length,
+                'average_length': avg_length,
+                'min_left_boundary': min_left,
+                'max_right_boundary': max_right,
+                'containing_intervals': containing_intervals
+            }
+        else:
+            return {
+                'count': 0,
+                'min_length': 0,
+                'max_length': 0,
+                'average_length': 0,
+                'min_left_boundary': None,
+                'max_right_boundary': None,
+                'containing_intervals': []
+            }
+    
+    def get_range_statistics(self, start, end):
+        # Get statistics for a range of points
+        stats = []
+        for x in range(start, end + 1):
+            stats.append(self.get_interval_statistics(x))
+        
+        # Aggregate statistics
+        total_count = sum(stat['count'] for stat in stats)
+        avg_count = total_count / len(stats) if stats else 0
+        
+        return {
+            'total_count': total_count,
+            'average_count': avg_count,
+            'point_statistics': stats
+        }
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Range Queries**: Static Range Sum Queries, Range Update Queries
+- **Interval Problems**: Interval scheduling, Interval covering
+- **Coordinate Compression**: Salary Queries, Hotel Queries
+- **Sweep Line**: Geometric algorithms, Event processing
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Coordinate compression** is essential for handling large value ranges efficiently
+- **Sweep line algorithm** processes intervals in sorted order for efficient counting
+- **Prefix sums** enable fast range sum queries for point-in-interval counting
+- **Interval overlap** is a fundamental geometric problem in competitive programming
 
 ---
 

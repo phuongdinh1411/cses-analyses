@@ -7,28 +7,31 @@ permalink: /problem_soulutions/range_queries/salary_queries_analysis
 
 # Salary Queries
 
-## Problem Statement
+## 📋 Problem Description
+
 Given an array of n integers representing salaries, process q queries. Each query is either:
 1. Update the salary at position k to x
 2. Count the number of salaries in range [a,b]
 
-### Input
-The first input line has two integers n and q: the size of the array and the number of queries.
-The second line has n integers x1,x2,…,xn: the salaries.
-Finally, there are q lines describing the queries. Each line has either:
-- "! k x": update the salary at position k to x
-- "? a b": count salaries in range [a,b]
+This is a dynamic range query problem where we need to efficiently handle both point updates and range count queries. We can solve this using coordinate compression with a Binary Indexed Tree (Fenwick Tree) or Segment Tree for efficient range counting.
 
-### Output
-Print the answer to each count query.
+**Input**: 
+- First line: n q (size of the array and number of queries)
+- Second line: n integers x₁, x₂, ..., xₙ (the salaries)
+- Next q lines: queries of the form:
+  - "! k x": update the salary at position k to x
+  - "? a b": count salaries in range [a,b]
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ xi ≤ 10^9
+**Output**: 
+- Print the answer to each count query
+
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ xᵢ ≤ 10⁹
 - 1 ≤ k ≤ n
-- 1 ≤ a ≤ b ≤ 10^9
+- 1 ≤ a ≤ b ≤ 10⁹
 
-### Example
+**Example**:
 ```
 Input:
 5 3
@@ -41,6 +44,12 @@ Output:
 2
 1
 ```
+
+**Explanation**: 
+- Initial salaries: [3, 7, 2, 2, 5]
+- Query 1: Count salaries in range [2,3] → 2 (salaries 2 and 2)
+- Update: Change salary at position 3 from 2 to 6 → [3, 7, 6, 2, 5]
+- Query 2: Count salaries in range [2,3] → 1 (only salary 2)
 
 ## Solution Progression
 
@@ -939,25 +948,200 @@ try: query = input().strip()
 - **Compression**: Handle sparse arrays efficiently
 - **Parallel Processing**: Use multiple cores for large datasets
 
-### 📚 **Learning Resources**
+## 🔧 Implementation Details
 
-#### **1. Related Algorithms**
-- **Binary Indexed Tree**: Efficient range count queries
-- **Coordinate Compression**: Handle large value ranges
-- **Segment Tree**: Dynamic range operations
-- **Order Statistics**: Find k-th element efficiently
+### Time and Space Complexity
+- **Time Complexity**: O(q log n) for queries, O(n log n) for preprocessing
+- **Space Complexity**: O(n) for coordinate compression and BIT
+- **Why it works**: Coordinate compression maps large values to smaller indices, BIT enables efficient range count queries
 
-#### **2. Mathematical Concepts**
-- **Range Counting**: Understanding count properties
-- **Coordinate Compression**: Mapping large values
-- **Percentiles**: Statistical measures
-- **Complexity Analysis**: Understanding time/space trade-offs
+### Key Implementation Points
+- Use coordinate compression to handle large value ranges
+- Binary Indexed Tree for efficient range count operations
+- Handle both point updates and range queries efficiently
 
-#### **3. Programming Concepts**
-- **Data Structures**: Choosing appropriate count structures
-- **Algorithm Design**: Optimizing for count constraints
-- **Problem Decomposition**: Breaking complex count problems
-- **Code Optimization**: Writing efficient count implementations
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Coordinate Compression**: Essential for handling large value ranges efficiently
+- **Binary Indexed Tree**: Enables O(log n) range count queries
+- **Dynamic Updates**: Point updates with range count queries
+- **Range Counting**: Count elements in a given range efficiently
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Salary Queries with Range Updates**
+```python
+def salary_queries_range_updates(n, salaries, queries):
+    # Handle range updates instead of point updates
+    
+    # Coordinate compression
+    all_values = set()
+    for salary in salaries:
+        all_values.add(salary)
+    
+    for query in queries:
+        if query[0] == '!':
+            all_values.add(query[2])
+        elif query[0] == '?':
+            all_values.add(query[1])
+            all_values.add(query[2])
+    
+    sorted_values = sorted(all_values)
+    coord_map = {val: i for i, val in enumerate(sorted_values)}
+    
+    # Initialize BIT
+    bit_size = len(sorted_values)
+    bit = [0] * (bit_size + 1)
+    
+    # Add initial salaries
+    for salary in salaries:
+        update_bit(bit, coord_map[salary], 1)
+    
+    results = []
+    for query in queries:
+        if query[0] == '!':
+            # Range update: add x to all salaries in range [a, b]
+            k, x, a, b = query[1], query[2], query[3], query[4]
+            for i in range(coord_map[a], coord_map[b] + 1):
+                update_bit(bit, i, x)
+        elif query[0] == '?':
+            # Count query
+            a, b = query[1], query[2]
+            count = query_bit(bit, coord_map[b]) - query_bit(bit, coord_map[a] - 1)
+            results.append(count)
+    
+    return results
+```
+
+#### **2. Salary Queries with Percentile Calculations**
+```python
+def salary_queries_percentiles(n, salaries, queries):
+    # Handle percentile calculations (e.g., 50th percentile, 90th percentile)
+    
+    # Coordinate compression
+    all_values = set(salaries)
+    for query in queries:
+        if query[0] == '!':
+            all_values.add(query[2])
+        elif query[0] == '?':
+            all_values.add(query[1])
+            all_values.add(query[2])
+    
+    sorted_values = sorted(all_values)
+    coord_map = {val: i for i, val in enumerate(sorted_values)}
+    
+    # Initialize BIT
+    bit_size = len(sorted_values)
+    bit = [0] * (bit_size + 1)
+    
+    # Add initial salaries
+    for salary in salaries:
+        update_bit(bit, coord_map[salary], 1)
+    
+    results = []
+    for query in queries:
+        if query[0] == '!':
+            # Point update
+            k, x = query[1], query[2]
+            old_salary = salaries[k - 1]
+            update_bit(bit, coord_map[old_salary], -1)
+            update_bit(bit, coord_map[x], 1)
+            salaries[k - 1] = x
+        elif query[0] == '?':
+            # Percentile query: find p-th percentile in range [a, b]
+            a, b, p = query[1], query[2], query[3]
+            total_count = query_bit(bit, coord_map[b]) - query_bit(bit, coord_map[a] - 1)
+            target_count = (total_count * p) // 100
+            
+            # Binary search for percentile value
+            left, right = coord_map[a], coord_map[b]
+            while left < right:
+                mid = (left + right) // 2
+                count = query_bit(bit, mid) - query_bit(bit, coord_map[a] - 1)
+                if count < target_count:
+                    left = mid + 1
+                else:
+                    right = mid
+            
+            results.append(sorted_values[left])
+    
+    return results
+```
+
+#### **3. Salary Queries with Multiple Arrays**
+```python
+class MultiArraySalaryQueries:
+    def __init__(self, arrays):
+        self.arrays = arrays
+        self.n = len(arrays)
+        self.array_sizes = [len(arr) for arr in arrays]
+        
+        # Coordinate compression for all arrays
+        all_values = set()
+        for arr in arrays:
+            for val in arr:
+                all_values.add(val)
+        
+        self.sorted_values = sorted(all_values)
+        self.coord_map = {val: i for i, val in enumerate(self.sorted_values)}
+        
+        # Initialize BIT for each array
+        self.bits = []
+        for arr in arrays:
+            bit = [0] * (len(self.sorted_values) + 1)
+            for val in arr:
+                self.update_bit(bit, self.coord_map[val], 1)
+            self.bits.append(bit)
+    
+    def update_bit(self, bit, index, delta):
+        index += 1
+        while index < len(bit):
+            bit[index] += delta
+            index += index & -index
+    
+    def query_bit(self, bit, index):
+        index += 1
+        result = 0
+        while index > 0:
+            result += bit[index]
+            index -= index & -index
+        return result
+    
+    def update_salary(self, array_id, position, new_salary):
+        old_salary = self.arrays[array_id][position]
+        self.update_bit(self.bits[array_id], self.coord_map[old_salary], -1)
+        self.update_bit(self.bits[array_id], self.coord_map[new_salary], 1)
+        self.arrays[array_id][position] = new_salary
+    
+    def count_salaries(self, array_id, a, b):
+        return (self.query_bit(self.bits[array_id], self.coord_map[b]) - 
+                self.query_bit(self.bits[array_id], self.coord_map[a] - 1))
+    
+    def count_all_arrays(self, a, b):
+        total = 0
+        for i in range(self.n):
+            total += self.count_salaries(i, a, b)
+        return total
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Range Queries**: Static Range Sum Queries, Dynamic Range Sum Queries
+- **Coordinate Compression**: Hotel Queries, List Removals
+- **Binary Indexed Tree**: Range Update Queries, Prefix Sum Queries
+- **Dynamic Updates**: Point updates with range queries
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Coordinate compression** is essential for handling large value ranges efficiently
+- **Binary Indexed Tree** enables O(log n) range count queries
+- **Dynamic updates** require careful handling of point updates with range queries
+- **Range counting** is a fundamental pattern in competitive programming
 
 ---
 
