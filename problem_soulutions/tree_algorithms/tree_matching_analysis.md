@@ -1,27 +1,29 @@
 ---
 layout: simple
-title: "Tree Matching"
+title: "Tree Matching - Maximum Matching in Trees"
 permalink: /problem_soulutions/tree_algorithms/tree_matching_analysis
 ---
 
+# Tree Matching - Maximum Matching in Trees
 
-# Tree Matching
+## 📋 Problem Description
 
-## Problem Statement
 Given a tree with n nodes, find the maximum number of edges that can be removed so that the remaining graph is a matching (each node has degree at most 1).
 
-### Input
-The first input line has an integer n: the number of nodes. The nodes are numbered 1,2,…,n.
-Then, there are n−1 lines describing the edges. Each line has two integers a and b: there is an edge between nodes a and b.
+This is a maximum matching problem on trees. A matching is a set of edges where no two edges share a common vertex. We need to find the maximum number of edges that can be kept such that each node has degree at most 1.
 
-### Output
-Print one integer: the maximum number of edges that can be removed.
+**Input**: 
+- First line: Integer n (number of nodes)
+- Next n-1 lines: Two integers a and b (edge between nodes a and b)
 
-### Constraints
-- 1 ≤ n ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
+**Output**: 
+- One integer: maximum number of edges that can be removed
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 2⋅10⁵
+- 1 ≤ a, b ≤ n
+
+**Example**:
 ```
 Input:
 5
@@ -34,10 +36,21 @@ Output:
 2
 ```
 
-## Solution Progression
+**Explanation**: 
+- Tree structure: 1-2, 1-3, 3-4, 3-5
+- Maximum matching: (1,2) and (3,4) or (1,2) and (3,5)
+- We can keep 2 edges, so we remove 2 edges
+- Each node in the matching has degree at most 1
 
-### Approach 1: Greedy DFS - O(n)
-**Description**: Use greedy approach with DFS to find maximum matching by processing nodes bottom-up.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find maximum matching in a tree (maximum number of edges with no shared vertices)
+- **Key Insight**: Use greedy DFS approach processing nodes bottom-up
+- **Challenge**: Ensure optimal matching while maintaining tree structure
+
+### Step 2: Initial Approach
+**Greedy DFS approach for maximum matching in trees:**
 
 ```python
 def tree_matching_greedy(n, edges):
@@ -132,8 +145,8 @@ def tree_matching_dp(n, edges):
 
 **Why this improvement works**: Dynamic programming considers all possible matching states and finds the optimal solution.
 
-### Improvement 2: Optimized Greedy with Post-order - O(n)
-**Description**: Use optimized greedy approach with post-order traversal for better performance.
+### Step 3: Optimization/Alternative
+**Optimized greedy approach with post-order traversal:**
 
 ```python
 def tree_matching_optimized_greedy(n, edges):
@@ -219,7 +232,7 @@ def tree_matching_bfs(n, edges):
 
 **Why this works**: BFS approach processes nodes level by level, which can be useful for understanding.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 n = int(input())
@@ -259,7 +272,14 @@ dfs(1, -1)
 print((n - 1) - matching_edges)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple tree (should return correct matching)
+- **Test 2**: Linear tree (should return optimal matching)
+- **Test 3**: Star tree (should return 1 matching)
+- **Test 4**: Complex tree (should find maximum matching)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -267,6 +287,186 @@ print((n - 1) - matching_edges)
 | Dynamic Programming | O(n) | O(n) | Optimal substructure |
 | Optimized Greedy | O(n) | O(n) | Most efficient approach |
 | BFS | O(n) | O(n) | Level-based processing |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Maximum Matching**: Find maximum number of edges with no shared vertices
+- **Tree DP**: Dynamic programming on trees with optimal substructure
+- **Greedy Approach**: Bottom-up processing for optimal matching
+- **Post-order Traversal**: Process children before parent for tree problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Weighted Tree Matching**
+```python
+def weighted_tree_matching(n, edges, weights):
+    # Find maximum weight matching in tree
+    
+    # Build adjacency list with weights
+    tree = [[] for _ in range(n + 1)]
+    for i, (a, b) in enumerate(edges):
+        tree[a].append((b, weights[i]))
+        tree[b].append((a, weights[i]))
+    
+    # DP states: dp[node][matched] = max weight matching in subtree
+    dp = {}
+    
+    def dfs(node, parent, matched):
+        state = (node, matched)
+        if state in dp:
+            return dp[state]
+        
+        if matched:
+            # Current node is matched, children must be unmatched
+            result = 0
+            for child, weight in tree[node]:
+                if child != parent:
+                    result += dfs(child, node, False)
+            dp[state] = result
+            return result
+        
+        # Current node is unmatched, try matching with children
+        unmatched_sum = 0
+        for child, weight in tree[node]:
+            if child != parent:
+                unmatched_sum += dfs(child, node, False)
+        
+        # Try matching with each child
+        best = unmatched_sum
+        for child, weight in tree[node]:
+            if child != parent:
+                # Match with this child
+                match_with_child = weight + dfs(child, node, True)
+                # Add unmatched children
+                other_children = unmatched_sum - dfs(child, node, False)
+                best = max(best, match_with_child + other_children)
+        
+        dp[state] = best
+        return best
+    
+    return dfs(1, -1, False)
+```
+
+#### **2. Tree Matching with Constraints**
+```python
+def constrained_tree_matching(n, edges, constraints):
+    # Find maximum matching with additional constraints
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        tree[a].append(b)
+        tree[b].append(a)
+    
+    # Track matched nodes
+    matched = [False] * (n + 1)
+    matching_edges = 0
+    
+    def dfs(node, parent):
+        nonlocal matching_edges
+        
+        # Process all children first
+        unmatched_children = []
+        for child in tree[node]:
+            if child != parent:
+                dfs(child, node)
+                if not matched[child]:
+                    unmatched_children.append(child)
+        
+        # Apply constraints
+        if constraints.get('max_degree', float('inf')) <= len(unmatched_children):
+            return
+        
+        # Try to match with unmatched children
+        if unmatched_children and not matched[node]:
+            # Check if matching is allowed by constraints
+            if constraints.get('allow_matching', True):
+                matched[node] = True
+                matched[unmatched_children[0]] = True
+                matching_edges += 1
+    
+    # Start DFS from root
+    dfs(1, -1)
+    
+    return matching_edges
+```
+
+#### **3. Dynamic Tree Matching**
+```python
+def dynamic_tree_matching(n, edges, updates):
+    # Handle dynamic updates to tree matching
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        tree[a].append(b)
+        tree[b].append(a)
+    
+    def compute_matching():
+        # Track matched nodes
+        matched = [False] * (n + 1)
+        matching_edges = 0
+        
+        def dfs(node, parent):
+            nonlocal matching_edges
+            
+            # Process all children first
+            unmatched_children = []
+            for child in tree[node]:
+                if child != parent:
+                    dfs(child, node)
+                    if not matched[child]:
+                        unmatched_children.append(child)
+            
+            # Try to match with an unmatched child
+            if unmatched_children and not matched[node]:
+                matched[node] = True
+                matched[unmatched_children[0]] = True
+                matching_edges += 1
+        
+        # Start DFS from root
+        dfs(1, -1)
+        return matching_edges
+    
+    # Process updates
+    results = []
+    for update in updates:
+        if update[0] == 'add':
+            # Add edge
+            a, b = update[1], update[2]
+            tree[a].append(b)
+            tree[b].append(a)
+        elif update[0] == 'remove':
+            # Remove edge
+            a, b = update[1], update[2]
+            tree[a].remove(b)
+            tree[b].remove(a)
+        
+        # Recompute matching
+        result = compute_matching()
+        results.append(result)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Maximum Matching**: Various matching problems
+- **Tree DP**: Dynamic programming on trees
+- **Graph Algorithms**: Matching and tree problems
+- **Greedy Algorithms**: Greedy tree algorithms
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Greedy approach** works well for tree matching problems
+- **Dynamic programming** provides optimal solutions
+- **Post-order traversal** is crucial for tree problems
+- **Tree structure** simplifies matching algorithms
 
 ## Key Insights for Other Problems
 

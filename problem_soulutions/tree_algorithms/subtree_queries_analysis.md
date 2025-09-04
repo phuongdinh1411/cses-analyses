@@ -1,34 +1,34 @@
 ---
 layout: simple
-title: "Subtree Queries"
+title: "Subtree Queries - Dynamic Subtree Sum with Updates"
 permalink: /problem_soulutions/tree_algorithms/subtree_queries_analysis
 ---
 
+# Subtree Queries - Dynamic Subtree Sum with Updates
 
-# Subtree Queries
+## 📋 Problem Description
 
-## Problem Statement
 Given a tree with n nodes, each node has a value. Process q queries. Each query is either:
 1. Update the value of a node
 2. Calculate the sum of values in the subtree of a node
 
-### Input
-The first input line has two integers n and q: the number of nodes and the number of queries.
-The second line has n integers x1,x2,…,xn: the values of the nodes.
-Then there are n-1 lines describing the edges. Each line has two integers a and b: an edge between nodes a and b.
-Finally, there are q lines describing the queries. Each line has either:
-- "1 s x": update the value of node s to x
-- "2 s": calculate the sum of values in the subtree of node s
+This is a dynamic subtree sum problem that requires efficient handling of both point updates and subtree sum queries. The solution involves using Euler Tour technique with segment trees or binary indexed trees.
 
-### Output
-Print the answer to each query of type 2.
+**Input**: 
+- First line: Two integers n and q (number of nodes and queries)
+- Second line: n integers x₁, x₂, ..., xₙ (values of the nodes)
+- Next n-1 lines: Two integers a and b (edge between nodes a and b)
+- Next q lines: Queries (either "1 s x" for updates or "2 s" for subtree sums)
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ xi ≤ 10^9
-- 1 ≤ a,b,s ≤ n
+**Output**: 
+- For each query of type 2, print the sum of values in the subtree
 
-### Example
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ xᵢ ≤ 10⁹
+- 1 ≤ a, b, s ≤ n
+
+**Example**:
 ```
 Input:
 5 3
@@ -46,10 +46,21 @@ Output:
 10
 ```
 
-## Solution Progression
+**Explanation**: 
+- Tree structure: 1-2, 1-3, 2-4, 2-5
+- Query 1: Update node 2 to value 10
+- Query 2: Sum of subtree rooted at 1 = 1 + 10 + 3 + 4 + 5 = 23
+- Query 3: Sum of subtree rooted at 2 = 10 + 4 + 5 = 19
 
-### Approach 1: Recalculate for Each Query - O(q × n)
-**Description**: For each subtree sum query, traverse the subtree and calculate the sum. For updates, simply modify the value.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Handle dynamic subtree sum queries with point updates
+- **Key Insight**: Use Euler Tour technique to flatten tree into array
+- **Challenge**: Efficiently handle both updates and range sum queries
+
+### Step 2: Initial Approach
+**Naive approach with recalculation for each query:**
 
 ```python
 def subtree_queries_naive(n, values, edges, queries):
@@ -90,8 +101,8 @@ def subtree_queries_naive(n, values, edges, queries):
 
 **Why this is inefficient**: For each subtree sum query, we need to traverse the entire subtree, leading to O(q × n) time complexity.
 
-### Improvement 1: Euler Tour with Segment Tree - O(n + q log n)
-**Description**: Use Euler Tour technique with Segment Tree to handle subtree queries efficiently.
+### Step 3: Optimization/Alternative
+**Euler Tour with Segment Tree:**
 
 ```python
 def subtree_queries_euler_tour(n, values, edges, queries):
@@ -180,7 +191,7 @@ def subtree_queries_euler_tour(n, values, edges, queries):
 
 **Why this improvement works**: Euler Tour converts subtree queries to range queries, which can be handled efficiently with Segment Tree.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 n, q = map(int, input().split())
@@ -279,12 +290,331 @@ for query in queries:
         print(sum_val)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple tree with updates (should handle correctly)
+- **Test 2**: Linear tree (should handle path queries)
+- **Test 3**: Star tree (should handle root queries)
+- **Test 4**: Complex tree with multiple updates (should maintain consistency)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Naive | O(q × n) | O(n) | Traverse subtree for each query |
 | Euler Tour + Segment Tree | O(n + q log n) | O(n) | Convert subtree to range queries |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Euler Tour**: Flatten tree into array for range queries
+- **Segment Tree**: Handle range sum queries and point updates efficiently
+- **Subtree Queries**: Convert to range queries using in/out times
+- **Tree Flattening**: Transform tree problems to array problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Subtree Maximum/Minimum Queries**
+```python
+def subtree_max_min_queries(n, values, edges, queries):
+    # Handle subtree maximum and minimum queries
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Euler Tour arrays
+    in_time = [0] * (n + 1)
+    out_time = [0] * (n + 1)
+    euler_tour = []
+    
+    def dfs(node, parent):
+        in_time[node] = len(euler_tour)
+        euler_tour.append(values[node])
+        
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        out_time[node] = len(euler_tour) - 1
+    
+    # Build Euler Tour
+    dfs(1, -1)
+    
+    # Build Segment Tree for max/min
+    class SegmentTree:
+        def __init__(self, arr):
+            self.n = len(arr)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.tree_max = [-float('inf')] * (2 * self.size)
+            self.tree_min = [float('inf')] * (2 * self.size)
+            
+            # Build the tree
+            for i in range(self.n):
+                self.tree_max[self.size + i] = arr[i]
+                self.tree_min[self.size + i] = arr[i]
+            for i in range(self.size - 1, 0, -1):
+                self.tree_max[i] = max(self.tree_max[2 * i], self.tree_max[2 * i + 1])
+                self.tree_min[i] = min(self.tree_min[2 * i], self.tree_min[2 * i + 1])
+        
+        def update(self, index, value):
+            index += self.size
+            self.tree_max[index] = value
+            self.tree_min[index] = value
+            index //= 2
+            while index >= 1:
+                self.tree_max[index] = max(self.tree_max[2 * index], self.tree_max[2 * index + 1])
+                self.tree_min[index] = min(self.tree_min[2 * index], self.tree_min[2 * index + 1])
+                index //= 2
+        
+        def query_max(self, left, right):
+            left += self.size
+            right += self.size
+            result = -float('inf')
+            
+            while left <= right:
+                if left % 2 == 1:
+                    result = max(result, self.tree_max[left])
+                    left += 1
+                if right % 2 == 0:
+                    result = max(result, self.tree_max[right])
+                    right -= 1
+                left //= 2
+                right //= 2
+            
+            return result
+        
+        def query_min(self, left, right):
+            left += self.size
+            right += self.size
+            result = float('inf')
+            
+            while left <= right:
+                if left % 2 == 1:
+                    result = min(result, self.tree_min[left])
+                    left += 1
+                if right % 2 == 0:
+                    result = min(result, self.tree_min[right])
+                    right -= 1
+                left //= 2
+                right //= 2
+            
+            return result
+    
+    # Initialize Segment Tree
+    st = SegmentTree(euler_tour)
+    
+    results = []
+    for query in queries:
+        if query[0] == 1:  # Update
+            s, x = query[1], query[2]
+            st.update(in_time[s], x)
+            values[s] = x
+        elif query[0] == 2:  # Subtree max
+            s = query[1]
+            max_val = st.query_max(in_time[s], out_time[s])
+            results.append(max_val)
+        else:  # Subtree min
+            s = query[1]
+            min_val = st.query_min(in_time[s], out_time[s])
+            results.append(min_val)
+    
+    return results
+```
+
+#### **2. Subtree Count Queries**
+```python
+def subtree_count_queries(n, values, edges, queries):
+    # Handle subtree count queries (count nodes with specific property)
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Euler Tour arrays
+    in_time = [0] * (n + 1)
+    out_time = [0] * (n + 1)
+    euler_tour = []
+    
+    def dfs(node, parent):
+        in_time[node] = len(euler_tour)
+        euler_tour.append(1 if values[node] > 0 else 0)  # Binary values
+        
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        out_time[node] = len(euler_tour) - 1
+    
+    # Build Euler Tour
+    dfs(1, -1)
+    
+    # Build Segment Tree for sum (count)
+    class SegmentTree:
+        def __init__(self, arr):
+            self.n = len(arr)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.tree = [0] * (2 * self.size)
+            
+            # Build the tree
+            for i in range(self.n):
+                self.tree[self.size + i] = arr[i]
+            for i in range(self.size - 1, 0, -1):
+                self.tree[i] = self.tree[2 * i] + self.tree[2 * i + 1]
+        
+        def update(self, index, value):
+            index += self.size
+            self.tree[index] = value
+            index //= 2
+            while index >= 1:
+                self.tree[index] = self.tree[2 * index] + self.tree[2 * index + 1]
+                index //= 2
+        
+        def query(self, left, right):
+            left += self.size
+            right += self.size
+            result = 0
+            
+            while left <= right:
+                if left % 2 == 1:
+                    result += self.tree[left]
+                    left += 1
+                if right % 2 == 0:
+                    result += self.tree[right]
+                    right -= 1
+                left //= 2
+                right //= 2
+            
+            return result
+    
+    # Initialize Segment Tree
+    st = SegmentTree(euler_tour)
+    
+    results = []
+    for query in queries:
+        if query[0] == 1:  # Update
+            s, x = query[1], query[2]
+            st.update(in_time[s], 1 if x > 0 else 0)
+            values[s] = x
+        else:  # Subtree count
+            s = query[1]
+            count = st.query(in_time[s], out_time[s])
+            results.append(count)
+    
+    return results
+```
+
+#### **3. Subtree XOR Queries**
+```python
+def subtree_xor_queries(n, values, edges, queries):
+    # Handle subtree XOR queries
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Euler Tour arrays
+    in_time = [0] * (n + 1)
+    out_time = [0] * (n + 1)
+    euler_tour = []
+    
+    def dfs(node, parent):
+        in_time[node] = len(euler_tour)
+        euler_tour.append(values[node])
+        
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        out_time[node] = len(euler_tour) - 1
+    
+    # Build Euler Tour
+    dfs(1, -1)
+    
+    # Build Segment Tree for XOR
+    class SegmentTree:
+        def __init__(self, arr):
+            self.n = len(arr)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.tree = [0] * (2 * self.size)
+            
+            # Build the tree
+            for i in range(self.n):
+                self.tree[self.size + i] = arr[i]
+            for i in range(self.size - 1, 0, -1):
+                self.tree[i] = self.tree[2 * i] ^ self.tree[2 * i + 1]
+        
+        def update(self, index, value):
+            index += self.size
+            self.tree[index] = value
+            index //= 2
+            while index >= 1:
+                self.tree[index] = self.tree[2 * index] ^ self.tree[2 * index + 1]
+                index //= 2
+        
+        def query(self, left, right):
+            left += self.size
+            right += self.size
+            result = 0
+            
+            while left <= right:
+                if left % 2 == 1:
+                    result ^= self.tree[left]
+                    left += 1
+                if right % 2 == 0:
+                    result ^= self.tree[right]
+                    right -= 1
+                left //= 2
+                right //= 2
+            
+            return result
+    
+    # Initialize Segment Tree
+    st = SegmentTree(euler_tour)
+    
+    results = []
+    for query in queries:
+        if query[0] == 1:  # Update
+            s, x = query[1], query[2]
+            st.update(in_time[s], x)
+            values[s] = x
+        else:  # Subtree XOR
+            s = query[1]
+            xor_val = st.query(in_time[s], out_time[s])
+            results.append(xor_val)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Subtree Queries**: Various subtree query problems
+- **Euler Tour**: Tree flattening techniques
+- **Segment Tree**: Range query data structures
+- **Tree Algorithms**: Tree traversal and query problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Euler Tour** converts subtree queries to range queries
+- **Segment Tree** handles range queries and updates efficiently
+- **Tree flattening** is a powerful technique for tree problems
+- **In/out times** define subtree ranges in Euler Tour
 
 ## Key Insights for Other Problems
 

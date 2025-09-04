@@ -1,37 +1,50 @@
 ---
 layout: simple
-title: "Longest Palindrome"
+title: "Longest Palindrome - Longest Palindromic Substring"
 permalink: /problem_soulutions/string_algorithms/longest_palindrome_analysis
 ---
 
+# Longest Palindrome - Longest Palindromic Substring
 
-# Longest Palindrome
+## 📋 Problem Description
 
-## Problem Statement
 Given a string, find the longest palindromic substring.
 
-### Input
-The first input line has a string s.
+This is a classic string algorithm problem that requires finding the longest substring that reads the same forwards and backwards. The solution involves using efficient algorithms like Manacher's algorithm or expand around centers approach to achieve linear time complexity.
 
-### Output
-Print the longest palindromic substring.
+**Input**: 
+- First line: A string s
 
-### Constraints
-- 1 ≤ |s| ≤ 10^6
+**Output**: 
+- Print the longest palindromic substring
 
-### Example
+**Constraints**:
+- 1 ≤ |s| ≤ 10⁶
+
+**Example**:
 ```
 Input:
 babad
 
 Output:
 bab
+
+Explanation**: 
+- String: "babad"
+- Possible palindromes: "b", "a", "b", "a", "d", "aba", "bab"
+- Longest palindrome: "bab" (length 3)
+- Alternative: "aba" is also valid with same length
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Check All Substrings - O(|s|³)
-**Description**: Check all possible substrings to find the longest palindrome.
+### Step 1: Understanding the Problem
+- **Goal**: Find the longest substring that is a palindrome
+- **Key Insight**: Use expand around centers or Manacher's algorithm for efficiency
+- **Challenge**: Handle large strings efficiently without O(|s|³) complexity
+
+### Step 2: Initial Approach
+**Check all substrings (inefficient but correct):**
 
 ```python
 def longest_palindrome_naive(s):
@@ -128,8 +141,8 @@ def longest_palindrome_manacher(s):
 
 **Why this improvement works**: Manacher's algorithm uses palindrome properties to achieve linear time.
 
-### Alternative: Dynamic Programming - O(|s|²)
-**Description**: Use dynamic programming to find the longest palindrome.
+### Step 3: Optimization/Alternative
+**Dynamic Programming approach:**
 
 ```python
 def longest_palindrome_dp(s):
@@ -166,7 +179,7 @@ def longest_palindrome_dp(s):
 
 **Why this works**: Dynamic programming builds solutions from smaller subproblems.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 s = input().strip()
@@ -212,7 +225,21 @@ result = longest_palindrome_manacher(s)
 print(result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic palindrome (should return longest palindrome)
+- **Test 2**: No palindrome (should return single character)
+- **Test 3**: Multiple palindromes (should return longest)
+- **Test 4**: Even length palindrome (should handle correctly)
+
+## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Naive | O(|s|³) | O(1) | Check all substrings |
+| Expand Centers | O(|s|²) | O(1) | Expand around each center |
+| Dynamic Programming | O(|s|²) | O(|s|²) | Build from smaller subproblems |
+| Manacher's | O(|s|) | O(|s|) | Use palindrome properties |
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -220,6 +247,149 @@ print(result)
 | Expand Around Center | O(|s|²) | O(1) | Expand from each position |
 | Manacher's | O(|s|) | O(|s|) | Use palindrome properties |
 | Dynamic Programming | O(|s|²) | O(|s|²) | Build from subproblems |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Manacher's Algorithm**: Use palindrome properties for linear time
+- **Expand Around Centers**: Check palindromes from each position
+- **Dynamic Programming**: Build solutions from smaller subproblems
+- **String Transformation**: Handle even/odd length palindromes
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Longest Palindrome with Character Constraints**
+```python
+def longest_palindrome_constrained(s, allowed_chars):
+    # Handle palindromes with character constraints
+    
+    def is_valid_palindrome(substring):
+        return all(char in allowed_chars for char in substring)
+    
+    def expand_around_center(s, left, right):
+        while left >= 0 and right < len(s) and s[left] == s[right]:
+            if is_valid_palindrome(s[left:right + 1]):
+                left -= 1
+                right += 1
+            else:
+                break
+        return s[left + 1:right]
+    
+    max_palindrome = ""
+    
+    for i in range(len(s)):
+        # Odd length palindromes
+        palindrome1 = expand_around_center(s, i, i)
+        if len(palindrome1) > len(max_palindrome):
+            max_palindrome = palindrome1
+        
+        # Even length palindromes
+        palindrome2 = expand_around_center(s, i, i + 1)
+        if len(palindrome2) > len(max_palindrome):
+            max_palindrome = palindrome2
+    
+    return max_palindrome
+```
+
+#### **2. Longest Palindrome with Length Constraints**
+```python
+def longest_palindrome_length_constrained(s, min_length, max_length):
+    # Handle palindromes with length constraints
+    
+    def expand_around_center(s, left, right):
+        while left >= 0 and right < len(s) and s[left] == s[right]:
+            left -= 1
+            right += 1
+        return s[left + 1:right]
+    
+    max_palindrome = ""
+    
+    for i in range(len(s)):
+        # Odd length palindromes
+        palindrome1 = expand_around_center(s, i, i)
+        if min_length <= len(palindrome1) <= max_length and len(palindrome1) > len(max_palindrome):
+            max_palindrome = palindrome1
+        
+        # Even length palindromes
+        palindrome2 = expand_around_center(s, i, i + 1)
+        if min_length <= len(palindrome2) <= max_length and len(palindrome2) > len(max_palindrome):
+            max_palindrome = palindrome2
+    
+    return max_palindrome
+```
+
+#### **3. Longest Palindrome with Dynamic Updates**
+```python
+def longest_palindrome_dynamic(operations):
+    # Handle palindromes with dynamic string updates
+    
+    s = ""
+    max_palindrome = ""
+    
+    for operation in operations:
+        if operation[0] == 'add':
+            # Add character to string
+            char = operation[1]
+            s += char
+            
+            # Recalculate longest palindrome
+            max_palindrome = calculate_longest_palindrome(s)
+        
+        elif operation[0] == 'remove':
+            # Remove last character
+            if len(s) > 0:
+                s = s[:-1]
+                max_palindrome = calculate_longest_palindrome(s)
+        
+        elif operation[0] == 'query':
+            # Return current longest palindrome
+            yield max_palindrome
+    
+    return list(longest_palindrome_dynamic(operations))
+
+def calculate_longest_palindrome(s):
+    if len(s) == 0:
+        return ""
+    
+    def expand_around_center(s, left, right):
+        while left >= 0 and right < len(s) and s[left] == s[right]:
+            left -= 1
+            right += 1
+        return s[left + 1:right]
+    
+    max_palindrome = ""
+    
+    for i in range(len(s)):
+        # Odd length palindromes
+        palindrome1 = expand_around_center(s, i, i)
+        if len(palindrome1) > len(max_palindrome):
+            max_palindrome = palindrome1
+        
+        # Even length palindromes
+        palindrome2 = expand_around_center(s, i, i + 1)
+        if len(palindrome2) > len(max_palindrome):
+            max_palindrome = palindrome2
+    
+    return max_palindrome
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Palindrome Problems**: String palindrome detection
+- **String Algorithms**: Advanced string processing
+- **Dynamic Programming**: String DP problems
+- **Manacher's Algorithm**: Linear time palindrome algorithms
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Manacher's algorithm** provides optimal O(|s|) solution
+- **Expand around centers** is intuitive and efficient
+- **Dynamic programming** builds from smaller subproblems
+- **String transformation** handles even/odd length cases
 
 ## Key Insights for Other Problems
 

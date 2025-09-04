@@ -1,21 +1,28 @@
 ---
 layout: simple
-title: "Minimizing Coins"
+title: "Minimizing Coins - Minimum Coins to Make Sum"
 permalink: /problem_soulutions/dynamic_programming/minimizing_coins_analysis
 ---
 
+# Minimizing Coins - Minimum Coins to Make Sum
 
-# Minimizing Coins
+## 📋 Problem Description
 
-## Problem Description
+Given a money system with n coins of different values, find the minimum number of coins needed to produce a sum x.
 
-**Problem**: Given a money system with n coins of different values, find the minimum number of coins needed to produce a sum x.
+This is a classic dynamic programming problem that requires finding the minimum number of coins to make a target sum. The solution involves using bottom-up DP to build optimal solutions from smaller subproblems.
 
 **Input**: 
 - n, x: number of coins and target sum
 - c1, c2, ..., cn: values of each coin
 
-**Output**: Minimum number of coins needed, or -1 if impossible.
+**Output**: 
+- Minimum number of coins needed, or -1 if impossible
+
+**Constraints**:
+- 1 ≤ n ≤ 100
+- 1 ≤ x ≤ 10⁶
+- 1 ≤ ci ≤ 10⁶
 
 **Example**:
 ```
@@ -26,17 +33,22 @@ Input:
 Output:
 2
 
-Explanation: 
+Explanation**: 
 We can achieve sum 6 with:
 - 1+1+4 (3 coins)
 - 3+3 (2 coins) ← minimum
 The answer is 2 coins.
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Recursive Brute Force - O(n^x)
-**Description**: Try all possible combinations of coins recursively.
+### Step 1: Understanding the Problem
+- **Goal**: Find the minimum number of coins to make a target sum
+- **Key Insight**: Use dynamic programming to build optimal solutions from smaller subproblems
+- **Challenge**: Avoid exponential time complexity with recursive approach
+
+### Step 2: Initial Approach
+**Recursive brute force (inefficient but correct):**
 
 ```python
 def minimizing_coins_brute_force(n, x, coins):
@@ -91,8 +103,8 @@ def minimizing_coins_memoization(n, x, coins):
 
 **Why this improvement works**: By storing the results of subproblems in a memo dictionary, we avoid recalculating the same values multiple times. Each subproblem is solved only once, leading to O(n*x) complexity.
 
-### Improvement 2: Bottom-Up Dynamic Programming - O(n*x)
-**Description**: Use iterative DP to build the solution from smaller subproblems.
+### Step 3: Optimization/Alternative
+**Bottom-up dynamic programming:**
 
 ```python
 def minimizing_coins_dp(n, x, coins):
@@ -110,7 +122,7 @@ def minimizing_coins_dp(n, x, coins):
 
 **Why this improvement works**: We build the solution iteratively by solving smaller subproblems first. For each sum i, we try all coin values and take the minimum.
 
-### Step 3: Complete Solution
+### Step 4: Complete Solution
 **Putting it all together:**
 
 ```python
@@ -141,7 +153,7 @@ if __name__ == "__main__":
 - Efficient implementation
 - Clear and readable code
 
-### Step 4: Testing Our Solution
+### Step 5: Testing Our Solution
 **Let's verify with examples:**
 
 ```python
@@ -176,6 +188,12 @@ test_solution()
 ```
 
 ## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Recursive | O(n^x) | O(x) | Try all combinations |
+| Memoized | O(n×x) | O(x) | Store subproblem results |
+| Bottom-up DP | O(n×x) | O(x) | Build from smaller subproblems |
 
 ### Time Complexity
 - **Time**: O(n*x) - we iterate through each sum and each coin
@@ -414,6 +432,125 @@ print(result if result != float('inf') else -1)
 | Memoization | O(n*x) | O(x) | Store subproblem results |
 | Bottom-Up DP | O(n*x) | O(x) | Build solution iteratively |
 | Optimized DP | O(n*x) | O(x) | Early termination with sorting |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Dynamic Programming**: Build optimal solutions from smaller subproblems
+- **Coin Change**: Classic DP problem with optimal substructure
+- **Bottom-up Approach**: Iterative solution building
+- **Optimization**: Find minimum/maximum values efficiently
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Minimizing Coins with Limited Coins**
+```python
+def minimizing_coins_limited(n, x, coins, limits):
+    # Handle coin minimization with limited number of each coin
+    
+    # dp[i] = minimum coins needed for sum i
+    dp = [float('inf')] * (x + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(n):
+        coin = coins[i]
+        limit = limits[i]
+        
+        # Process this coin type
+        for j in range(x, coin - 1, -1):
+            for k in range(1, min(limit + 1, j // coin + 1)):
+                if j >= k * coin:
+                    dp[j] = min(dp[j], k + dp[j - k * coin])
+    
+    return dp[x] if dp[x] != float('inf') else -1
+```
+
+#### **2. Minimizing Coins with Path Reconstruction**
+```python
+def minimizing_coins_with_path(n, x, coins):
+    # Handle coin minimization with path reconstruction
+    
+    # dp[i] = minimum coins needed for sum i
+    dp = [float('inf')] * (x + 1)
+    parent = [-1] * (x + 1)
+    dp[0] = 0
+    
+    for i in range(1, x + 1):
+        for coin in coins:
+            if i >= coin and dp[i - coin] + 1 < dp[i]:
+                dp[i] = dp[i - coin] + 1
+                parent[i] = coin
+    
+    if dp[x] == float('inf'):
+        return -1, []
+    
+    # Reconstruct path
+    path = []
+    current = x
+    while current > 0:
+        coin = parent[current]
+        path.append(coin)
+        current -= coin
+    
+    return dp[x], path
+```
+
+#### **3. Minimizing Coins with Dynamic Updates**
+```python
+def minimizing_coins_dynamic(operations):
+    # Handle coin minimization with dynamic coin updates
+    
+    coins = []
+    x = 0
+    dp = [float('inf')] * (10**6 + 1)
+    dp[0] = 0
+    
+    for operation in operations:
+        if operation[0] == 'add_coin':
+            # Add new coin
+            coin = operation[1]
+            coins.append(coin)
+            
+            # Update DP array
+            for i in range(coin, x + 1):
+                dp[i] = min(dp[i], 1 + dp[i - coin])
+        
+        elif operation[0] == 'set_target':
+            # Set target sum
+            x = operation[1]
+            
+            # Recalculate DP array
+            dp = [float('inf')] * (x + 1)
+            dp[0] = 0
+            
+            for coin in coins:
+                for i in range(coin, x + 1):
+                    dp[i] = min(dp[i], 1 + dp[i - coin])
+        
+        elif operation[0] == 'query':
+            # Return current minimum coins
+            yield dp[x] if x < len(dp) and dp[x] != float('inf') else -1
+    
+    return list(minimizing_coins_dynamic(operations))
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Dynamic Programming**: Coin change, knapsack problems
+- **Optimization**: Minimum/maximum value problems
+- **Greedy**: Coin change with greedy algorithms
+- **Combinatorics**: Counting and optimization
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Dynamic programming** is essential for optimization problems
+- **Bottom-up approach** is often more efficient than top-down
+- **State transitions** should be carefully designed
+- **Path reconstruction** can be added for additional insights
 
 ## Key Insights for Other Problems
 

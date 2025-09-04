@@ -1,33 +1,33 @@
 ---
 layout: simple
-title: "Dynamic Range Sum Queries"
+title: "Dynamic Range Sum Queries - Range Sum with Updates"
 permalink: /problem_soulutions/range_queries/dynamic_range_sum_queries_analysis
 ---
 
+# Dynamic Range Sum Queries - Range Sum with Updates
 
-# Dynamic Range Sum Queries
+## 📋 Problem Description
 
-## Problem Statement
 Given an array of n integers, process q queries. Each query is either:
 1. Update the value at position k to x
 2. Calculate the sum of values in range [a,b]
 
-### Input
-The first input line has two integers n and q: the size of the array and the number of queries.
-The second line has n integers x1,x2,…,xn: the contents of the array.
-Finally, there are q lines describing the queries. Each line has either:
-- "1 k x": update the value at position k to x
-- "2 a b": calculate the sum of values in range [a,b]
+This is a classic dynamic range query problem that requires efficiently handling both updates and range sum queries. The solution involves using data structures like Binary Indexed Tree (Fenwick Tree) or Segment Tree to achieve O(log n) time for both operations.
 
-### Output
-Print the answer to each sum query.
+**Input**: 
+- First line: n and q (array size and number of queries)
+- Second line: n integers (array contents)
+- Next q lines: queries of type "1 k x" (update) or "2 a b" (sum query)
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ xi ≤ 10^9
-- 1 ≤ k,a,b ≤ n
+**Output**: 
+- Print the answer to each sum query
 
-### Example
+**Constraints**:
+- 1 ≤ n, q ≤ 2×10⁵
+- 1 ≤ xi ≤ 10⁹
+- 1 ≤ k, a, b ≤ n
+
+**Example**:
 ```
 Input:
 8 3
@@ -39,12 +39,22 @@ Input:
 Output:
 14
 18
+
+Explanation**: 
+- Query 1: sum of elements at positions 1,2,3,4 = 3+2+4+5 = 14
+- Update: change element at position 4 from 5 to 9
+- Query 2: sum of elements at positions 1,2,3,4 = 3+2+4+9 = 18
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Recalculate After Each Update - O(q × n)
-**Description**: For each sum query, iterate through the range and calculate the sum. For updates, simply modify the array.
+### Step 1: Understanding the Problem
+- **Goal**: Efficiently handle both updates and range sum queries on a dynamic array
+- **Key Insight**: Use Binary Indexed Tree or Segment Tree for O(log n) operations
+- **Challenge**: Avoid O(q×n) complexity with naive approach
+
+### Step 2: Initial Approach
+**Recalculate after each update (inefficient but correct):**
 
 ```python
 def dynamic_range_sum_naive(n, q, arr, queries):
@@ -112,7 +122,10 @@ def dynamic_range_sum_binary_indexed_tree(n, q, arr, queries):
 
 **Why this improvement works**: Binary Indexed Tree allows us to perform both point updates and range sum queries in O(log n) time.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Segment Tree approach (alternative to BIT):**
+
+### Step 4: Complete Solution
 
 ```python
 n, q = map(int, input().split())
@@ -158,12 +171,214 @@ for _ in range(q):
         print(sum_range)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic range queries (should return correct sums)
+- **Test 2**: Point updates (should modify array correctly)
+- **Test 3**: Mixed operations (should handle updates and queries together)
+- **Test 4**: Large number of operations (should handle efficiently)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Naive | O(q × n) | O(1) | Recalculate after each update |
 | Binary Indexed Tree | O(n log n + q log n) | O(n) | Use BIT for dynamic updates |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Binary Indexed Tree**: Efficient data structure for point updates and range queries
+- **Dynamic Range Queries**: Handle both updates and queries efficiently
+- **Logarithmic Operations**: Achieve O(log n) time for both updates and queries
+- **Data Structure Choice**: Choose appropriate structure based on operation types
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Dynamic Range Sum with Range Updates**
+```python
+def dynamic_range_sum_with_range_updates(n, q, arr, operations):
+    # Handle range sum queries with range updates using lazy propagation
+    
+    class LazySegmentTree:
+        def __init__(self, n, arr):
+            self.n = n
+            self.tree = [0] * (4 * n)
+            self.lazy = [0] * (4 * n)
+            self.build(arr, 1, 0, n - 1)
+        
+        def build(self, arr, node, start, end):
+            if start == end:
+                self.tree[node] = arr[start]
+            else:
+                mid = (start + end) // 2
+                self.build(arr, 2 * node, start, mid)
+                self.build(arr, 2 * node + 1, mid + 1, end)
+                self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+        
+        def update_range(self, node, start, end, l, r, val):
+            if self.lazy[node] != 0:
+                self.tree[node] += (end - start + 1) * self.lazy[node]
+                if start != end:
+                    self.lazy[2 * node] += self.lazy[node]
+                    self.lazy[2 * node + 1] += self.lazy[node]
+                self.lazy[node] = 0
+            
+            if start > end or start > r or end < l:
+                return
+            
+            if start >= l and end <= r:
+                self.tree[node] += (end - start + 1) * val
+                if start != end:
+                    self.lazy[2 * node] += val
+                    self.lazy[2 * node + 1] += val
+                return
+            
+            mid = (start + end) // 2
+            self.update_range(2 * node, start, mid, l, r, val)
+            self.update_range(2 * node + 1, mid + 1, end, l, r, val)
+            self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+        
+        def query_range(self, node, start, end, l, r):
+            if start > end or start > r or end < l:
+                return 0
+            
+            if self.lazy[node] != 0:
+                self.tree[node] += (end - start + 1) * self.lazy[node]
+                if start != end:
+                    self.lazy[2 * node] += self.lazy[node]
+                    self.lazy[2 * node + 1] += self.lazy[node]
+                self.lazy[node] = 0
+            
+            if start >= l and end <= r:
+                return self.tree[node]
+            
+            mid = (start + end) // 2
+            return (self.query_range(2 * node, start, mid, l, r) + 
+                    self.query_range(2 * node + 1, mid + 1, end, l, r))
+    
+    st = LazySegmentTree(n, arr)
+    results = []
+    
+    for op in operations:
+        if op[0] == 'U':  # Range Update
+            l, r, val = op[1], op[2], op[3]
+            st.update_range(1, 0, n - 1, l - 1, r - 1, val)
+        else:  # Range Query
+            l, r = op[1], op[2]
+            results.append(st.query_range(1, 0, n - 1, l - 1, r - 1))
+    
+    return results
+```
+
+#### **2. Dynamic Range Sum with Multiple Arrays**
+```python
+def dynamic_range_sum_multiple_arrays(arrays, operations):
+    # Handle range sum queries across multiple arrays
+    
+    class MultiArrayBIT:
+        def __init__(self, arrays):
+            self.arrays = arrays
+            self.bits = []
+            for arr in arrays:
+                bit = BIT(len(arr))
+                for i in range(len(arr)):
+                    bit.update(i + 1, arr[i])
+                self.bits.append(bit)
+        
+        def update(self, array_idx, pos, val):
+            old_val = self.arrays[array_idx][pos - 1]
+            self.bits[array_idx].update(pos, val - old_val)
+            self.arrays[array_idx][pos - 1] = val
+        
+        def query(self, array_idx, l, r):
+            return self.bits[array_idx].range_query(l, r)
+        
+        def query_all_arrays(self, l, r):
+            total = 0
+            for bit in self.bits:
+                total += bit.range_query(l, r)
+            return total
+    
+    multi_bit = MultiArrayBIT(arrays)
+    results = []
+    
+    for op in operations:
+        if op[0] == 'U':  # Update
+            array_idx, pos, val = op[1], op[2], op[3]
+            multi_bit.update(array_idx, pos, val)
+        elif op[0] == 'Q':  # Single array query
+            array_idx, l, r = op[1], op[2], op[3]
+            results.append(multi_bit.query(array_idx, l, r))
+        else:  # All arrays query
+            l, r = op[1], op[2]
+            results.append(multi_bit.query_all_arrays(l, r))
+    
+    return results
+```
+
+#### **3. Dynamic Range Sum with Persistence**
+```python
+def dynamic_range_sum_persistent(n, q, arr, operations):
+    # Handle range sum queries with persistent data structures
+    
+    class PersistentBIT:
+        def __init__(self, n, arr):
+            self.n = n
+            self.versions = []
+            self.build_initial(arr)
+        
+        def build_initial(self, arr):
+            bit = BIT(self.n)
+            for i in range(self.n):
+                bit.update(i + 1, arr[i])
+            self.versions.append(bit)
+        
+        def update(self, version, pos, val):
+            new_bit = BIT(self.n)
+            # Copy from previous version
+            for i in range(1, self.n + 1):
+                new_bit.tree[i] = self.versions[version].tree[i]
+            
+            new_bit.update(pos, val)
+            self.versions.append(new_bit)
+            return len(self.versions) - 1
+        
+        def query(self, version, l, r):
+            return self.versions[version].range_query(l, r)
+    
+    persistent_bit = PersistentBIT(n, arr)
+    current_version = 0
+    results = []
+    
+    for op in operations:
+        if op[0] == 'U':  # Update
+            pos, val = op[1], op[2]
+            current_version = persistent_bit.update(current_version, pos, val)
+        else:  # Query
+            version, l, r = op[1], op[2], op[3]
+            results.append(persistent_bit.query(version, l, r))
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Range Queries**: Static range sum, range minimum queries
+- **Data Structures**: Segment trees, binary indexed trees
+- **Dynamic Problems**: Point updates, range updates
+- **Advanced**: Persistent data structures, lazy propagation
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Binary Indexed Tree** is optimal for point updates and range sum queries
+- **Data structure choice** depends on operation types and requirements
+- **Logarithmic complexity** is achievable for dynamic range queries
+- **Space-time tradeoffs** are important in range query problems
 
 ## Key Insights for Other Problems
 

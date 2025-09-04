@@ -1,29 +1,31 @@
 ---
 layout: simple
-title: "Company Queries III"
+title: "Company Queries III - Number of Employees in Subtree"
 permalink: /problem_soulutions/tree_algorithms/company_queries_iii_analysis
 ---
 
+# Company Queries III - Number of Employees in Subtree
 
-# Company Queries III
+## 📋 Problem Description
 
-## Problem Statement
 A company has n employees, numbered 1,2,…,n. Each employee except 1 has exactly one superior. Given q queries, for each query find the number of employees in the subtree of an employee.
 
-### Input
-The first input line has two integers n and q: the number of employees and queries.
-The second line has n−1 integers p2,p3,…,pn: each pi is the superior of employee i.
-Then, there are q lines describing the queries. Each line has one integer a: find the number of employees in the subtree of employee a.
+This is a tree subtree size query problem that requires finding the number of nodes in each subtree. The solution involves using DFS to calculate subtree sizes efficiently.
 
-### Output
-Print q integers: the answers to the queries.
+**Input**: 
+- First line: Two integers n and q (number of employees and queries)
+- Second line: n-1 integers p₂, p₃, ..., pₙ (each pᵢ is the superior of employee i)
+- Next q lines: One integer a (find the number of employees in the subtree of employee a)
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ pi < i
+**Output**: 
+- For each query, print the number of employees in the subtree
+
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ pᵢ < i
 - 1 ≤ a ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 5 3
@@ -38,10 +40,20 @@ Output:
 1
 ```
 
-## Solution Progression
+**Explanation**: 
+- Query 1: Subtree of employee 1 contains all 5 employees
+- Query 2: Subtree of employee 2 contains employees 2, 4, 5 (3 employees)
+- Query 3: Subtree of employee 3 contains only employee 3 (1 employee)
 
-### Approach 1: DFS for Each Query - O(q * n)
-**Description**: For each query, perform DFS to count the number of employees in the subtree.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find the number of nodes in each subtree efficiently
+- **Key Insight**: Use DFS to calculate subtree sizes in O(n) time
+- **Challenge**: Handle multiple queries efficiently without O(q × n) complexity
+
+### Step 2: Initial Approach
+**DFS for each query (inefficient but correct):**
 
 ```python
 def company_queries_dfs_each(n, q, superiors, queries):
@@ -100,8 +112,8 @@ def company_queries_precompute(n, q, superiors, queries):
 
 **Why this improvement works**: Single DFS precomputes all subtree sizes, making queries O(1).
 
-### Improvement 2: Iterative DFS - O(n + q)
-**Description**: Use iterative DFS to avoid recursion stack issues for deep trees.
+### Step 3: Optimization/Alternative
+**Iterative DFS:**
 
 ```python
 def company_queries_iterative_dfs(n, q, superiors, queries):
@@ -204,7 +216,7 @@ def company_queries_bfs(n, q, superiors, queries):
 
 **Why this works**: BFS approach processes nodes in topological order, ensuring parent nodes are processed after their children.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 n, q = map(int, input().split())
@@ -234,7 +246,14 @@ for a in queries:
     print(subtree_sizes[a])
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple tree (should return correct subtree sizes)
+- **Test 2**: Linear tree (should return correct sizes)
+- **Test 3**: Star tree (should return correct sizes)
+- **Test 4**: Complex tree (should find all subtree sizes)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -242,6 +261,169 @@ for a in queries:
 | Precompute Subtree Sizes | O(n + q) | O(n) | Single DFS preprocessing |
 | Iterative DFS | O(n + q) | O(n) | Avoid recursion stack |
 | BFS | O(n + q) | O(n) | Topological order processing |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Subtree Size Calculation**: Use DFS to calculate subtree sizes efficiently
+- **Post-order Traversal**: Process children before parent for subtree calculations
+- **Precomputation**: Calculate all subtree sizes in O(n) time for O(1) queries
+- **Tree Traversal**: Use DFS or BFS to traverse tree structure
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Company Queries with Dynamic Updates**
+```python
+def dynamic_subtree_queries(n, superiors, operations):
+    # Handle subtree queries with dynamic tree updates
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for i in range(2, n + 1):
+        superior = superiors[i - 2]
+        tree[superior].append(i)
+    
+    def calculate_subtree_sizes():
+        # Recalculate subtree sizes after updates
+        subtree_sizes = [0] * (n + 1)
+        
+        def dfs(node):
+            subtree_sizes[node] = 1
+            for child in tree[node]:
+                subtree_sizes[node] += dfs(child)
+            return subtree_sizes[node]
+        
+        dfs(1)
+        return subtree_sizes
+    
+    # Process operations
+    results = []
+    for operation in operations:
+        if operation[0] == 'add_employee':
+            # Add new employee
+            employee, superior = operation[1], operation[2]
+            tree[superior].append(employee)
+        elif operation[0] == 'remove_employee':
+            # Remove employee
+            employee, superior = operation[1], operation[2]
+            tree[superior].remove(employee)
+        elif operation[0] == 'query':
+            # Subtree size query
+            employee = operation[1]
+            subtree_sizes = calculate_subtree_sizes()
+            results.append(subtree_sizes[employee])
+    
+    return results
+```
+
+#### **2. Company Queries with Weighted Subtrees**
+```python
+def weighted_subtree_queries(n, superiors, weights, queries):
+    # Handle subtree queries with weighted nodes
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for i in range(2, n + 1):
+        superior = superiors[i - 2]
+        tree[superior].append(i)
+    
+    # Array to store weighted subtree sizes
+    weighted_subtree_sizes = [0] * (n + 1)
+    
+    def calculate_weighted_subtree_sizes():
+        def dfs(node):
+            weighted_subtree_sizes[node] = weights[node]
+            for child in tree[node]:
+                weighted_subtree_sizes[node] += dfs(child)
+            return weighted_subtree_sizes[node]
+        
+        dfs(1)
+    
+    # Calculate all weighted subtree sizes
+    calculate_weighted_subtree_sizes()
+    
+    # Process queries
+    results = []
+    for employee in queries:
+        results.append(weighted_subtree_sizes[employee])
+    
+    return results
+```
+
+#### **3. Company Queries with Range Constraints**
+```python
+def constrained_subtree_queries(n, superiors, queries, constraints):
+    # Handle subtree queries with range constraints
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for i in range(2, n + 1):
+        superior = superiors[i - 2]
+        tree[superior].append(i)
+    
+    # Array to store subtree sizes
+    subtree_sizes = [0] * (n + 1)
+    
+    def calculate_subtree_sizes():
+        def dfs(node):
+            subtree_sizes[node] = 1
+            for child in tree[node]:
+                subtree_sizes[node] += dfs(child)
+            return subtree_sizes[node]
+        
+        dfs(1)
+    
+    # Calculate all subtree sizes
+    calculate_subtree_sizes()
+    
+    def count_employees_in_range(employee, min_level, max_level):
+        # Count employees in subtree within level range
+        count = 0
+        
+        def dfs_with_level(node, level):
+            nonlocal count
+            if min_level <= level <= max_level:
+                count += 1
+            
+            for child in tree[node]:
+                dfs_with_level(child, level + 1)
+        
+        dfs_with_level(employee, 0)
+        return count
+    
+    # Process queries
+    results = []
+    for query in queries:
+        employee = query[0]
+        if len(query) == 1:
+            # Simple subtree size query
+            results.append(subtree_sizes[employee])
+        else:
+            # Range-constrained query
+            min_level, max_level = query[1], query[2]
+            count = count_employees_in_range(employee, min_level, max_level)
+            results.append(count)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Company Queries**: Various company hierarchy problems
+- **Subtree Queries**: Tree subtree query problems
+- **Tree Algorithms**: Tree traversal and query problems
+- **DFS**: Depth-first search problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **DFS** is ideal for subtree size calculations
+- **Post-order traversal** processes children before parents
+- **Precomputation** enables O(1) query responses
+- **Tree structure** enables efficient subtree operations
 
 ## Key Insights for Other Problems
 

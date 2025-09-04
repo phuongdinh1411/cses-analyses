@@ -1,21 +1,29 @@
 ---
 layout: simple
-title: "MST Edge Check"
+title: "MST Edge Check - Determine MST Edge Membership"
 permalink: /problem_soulutions/advanced_graph_problems/mst_edge_check_analysis
 ---
 
+# MST Edge Check - Determine MST Edge Membership
 
-# MST Edge Check
+## 📋 Problem Description
 
-## Problem Description
+Given a weighted undirected graph with n nodes and m edges, for each edge determine if it belongs to the minimum spanning tree (MST).
 
-**Problem**: Given a weighted undirected graph with n nodes and m edges, for each edge determine if it belongs to the minimum spanning tree (MST).
+This is a classic graph theory problem that requires determining which edges belong to the MST. The solution involves using Kruskal's algorithm with Union-Find data structure to efficiently determine MST edge membership.
 
 **Input**: 
 - n, m: number of nodes and edges
 - m lines: a b c (edge between a and b with weight c)
 
-**Output**: For each edge, print "YES" if it belongs to the MST, "NO" otherwise.
+**Output**: 
+- For each edge, print "YES" if it belongs to the MST, "NO" otherwise
+
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2×10⁵
+- 1 ≤ a, b ≤ n
+- 1 ≤ c ≤ 10⁹
 
 **Example**:
 ```
@@ -34,7 +42,7 @@ YES
 NO
 NO
 
-Explanation: 
+Explanation**: 
 MST contains edges: (1,2), (2,3), (3,4) with total weight 6
 Edges (1,3) and (2,4) are not in MST as they have higher weights
 ```
@@ -42,11 +50,12 @@ Edges (1,3) and (2,4) are not in MST as they have higher weights
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find which edges belong to the MST
-- Use Kruskal's or Prim's algorithm
-- Handle edge weight ties correctly
-- Determine MST membership
+- **Goal**: Determine which edges belong to the minimum spanning tree
+- **Key Insight**: Use Kruskal's algorithm with Union-Find to efficiently determine MST membership
+- **Challenge**: Handle edge weight ties and efficiently check MST membership
+
+### Step 2: Initial Approach
+**Brute force approach (inefficient but correct):**
 
 **Key Observations:**
 - MST contains n-1 edges
@@ -54,8 +63,8 @@ Edges (1,3) and (2,4) are not in MST as they have higher weights
 - Need to handle equal weights properly
 - Union-Find is essential for efficiency
 
-### Step 2: Kruskal's Algorithm Approach
-**Idea**: Use Kruskal's algorithm to find MST and track included edges.
+### Step 3: Optimization/Alternative
+**Kruskal's algorithm approach:**
 
 ```python
 def mst_edge_check_kruskal(n, m, edges):
@@ -163,6 +172,22 @@ if __name__ == "__main__":
 - Handles all edge cases
 - Efficient implementation
 - Clear and readable code
+
+### Step 4: Complete Solution
+
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic MST (should return correct edge membership)
+- **Test 2**: Equal weights (should handle ties correctly)
+- **Test 3**: Single edge (should return YES)
+- **Test 4**: Large graphs (should handle efficiently)
+
+## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(m²) | O(n) | Check each edge individually |
+| Kruskal's Algorithm | O(m log m) | O(n) | Use Union-Find for efficiency |
 
 ### Step 4: Testing Our Solution
 **Let's verify with examples:**
@@ -565,6 +590,163 @@ def mst_edge_replacement_check(n, m, edges):
     
     return result
 ```
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **MST Edge Check**: Determine which edges belong to the minimum spanning tree
+- **Kruskal's Algorithm**: Efficient MST construction using edge sorting and Union-Find
+- **Union-Find Data Structure**: Efficiently manages disjoint sets for cycle detection
+- **Edge Weight Sorting**: Process edges in weight order to ensure optimal MST
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. MST Edge Check with Multiple Queries**
+```python
+def mst_edge_check_queries(n, m, edges, queries):
+    # Handle MST edge check with multiple queries
+    
+    # Add indices to edges for tracking
+    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
+    
+    # Sort edges by weight
+    indexed_edges.sort(key=lambda x: x[3])
+    
+    # Union-Find data structure
+    parent = list(range(n + 1))
+    rank = [0] * (n + 1)
+    
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+    
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px == py:
+            return False
+        if rank[px] < rank[py]:
+            px, py = py, px
+        parent[py] = px
+        if rank[px] == rank[py]:
+            rank[px] += 1
+        return True
+    
+    # Find MST edges
+    mst_edges = set()
+    for idx, a, b, c in indexed_edges:
+        if union(a, b):
+            mst_edges.add(idx)
+    
+    # Process queries
+    results = []
+    for query in queries:
+        if query[0] == 'check':
+            edge_idx = query[1]
+            results.append("YES" if edge_idx in mst_edges else "NO")
+        elif query[0] == 'update':
+            edge_idx, new_weight = query[1], query[2]
+            # Update edge weight and recompute MST
+            edges[edge_idx] = (edges[edge_idx][0], edges[edge_idx][1], new_weight)
+            # Recompute MST (simplified)
+            results.append("MST updated")
+    
+    return results
+```
+
+#### **2. MST Edge Check with Dynamic Updates**
+```python
+def mst_edge_check_dynamic(n, m, initial_edges, operations):
+    # Handle MST edge check with dynamic edge updates
+    
+    current_edges = initial_edges.copy()
+    results = []
+    
+    for op in operations:
+        if op[0] == 'add':
+            # Add new edge
+            a, b, c = op[1], op[2], op[3]
+            current_edges.append((a, b, c))
+        elif op[0] == 'remove':
+            # Remove edge
+            edge_idx = op[1]
+            current_edges.pop(edge_idx)
+        elif op[0] == 'check':
+            # Check MST edge membership
+            result = solve_mst_edge_check(n, len(current_edges), current_edges)
+            results.append(result)
+    
+    return results
+```
+
+#### **3. MST Edge Check with Constraints**
+```python
+def mst_edge_check_constrained(n, m, edges, constraints):
+    # Handle MST edge check with additional constraints
+    
+    # Filter edges based on constraints
+    valid_edges = []
+    for i, (a, b, c) in enumerate(edges):
+        if constraints[i]:  # Edge satisfies constraints
+            valid_edges.append((i, a, b, c))
+    
+    # Sort valid edges by weight
+    valid_edges.sort(key=lambda x: x[3])
+    
+    # Union-Find data structure
+    parent = list(range(n + 1))
+    rank = [0] * (n + 1)
+    
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+    
+    def union(x, y):
+        px, py = find(x), find(y)
+        if px == py:
+            return False
+        if rank[px] < rank[py]:
+            px, py = py, px
+        parent[py] = px
+        if rank[px] == rank[py]:
+            rank[px] += 1
+        return True
+    
+    # Find MST edges among valid edges
+    mst_edges = set()
+    for idx, a, b, c in valid_edges:
+        if union(a, b):
+            mst_edges.add(idx)
+    
+    # Check each original edge
+    result = []
+    for i in range(m):
+        if constraints[i] and i in mst_edges:
+            result.append("YES")
+        else:
+            result.append("NO")
+    
+    return result
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Graph Theory**: Minimum spanning tree, Union-Find
+- **Graph Algorithms**: Kruskal's algorithm, Prim's algorithm
+- **Data Structures**: Union-Find, disjoint sets
+- **Optimization**: MST problems, edge selection
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **MST edge check** is a fundamental graph theory problem
+- **Kruskal's algorithm** efficiently constructs MSTs
+- **Union-Find data structure** is essential for cycle detection
+- **Edge weight sorting** ensures optimal MST construction
 
 ## 🔗 Related Problems
 

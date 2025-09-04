@@ -1,29 +1,31 @@
 ---
 layout: simple
-title: "Hotel Queries"
+title: "Hotel Queries - First Hotel with Sufficient Rooms"
 permalink: /problem_soulutions/range_queries/hotel_queries_analysis
 ---
 
+# Hotel Queries - First Hotel with Sufficient Rooms
 
-# Hotel Queries
+## 📋 Problem Description
 
-## Problem Statement
 There are n hotels along a highway. For each group of tourists, you want to assign a hotel with the minimum number of rooms that can accommodate the group. Process q queries where each query asks for the first hotel that can accommodate a group of size x.
 
-### Input
-The first input line has two integers n and q: the number of hotels and the number of queries.
-The second line has n integers h1,h2,…,hn: the number of rooms in each hotel.
-Finally, there are q lines describing the queries. Each line has one integer x: the size of the group.
+This is a classic range query problem that requires efficiently finding the first hotel with sufficient capacity. The solution involves using data structures like Segment Tree or Binary Indexed Tree to achieve O(log n) query time.
 
-### Output
-Print the answer to each query (1-indexed hotel number, or 0 if no hotel can accommodate).
+**Input**: 
+- First line: n and q (number of hotels and queries)
+- Second line: n integers (number of rooms in each hotel)
+- Next q lines: x (size of each group)
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ hi ≤ 10^9
-- 1 ≤ x ≤ 10^9
+**Output**: 
+- Print the answer to each query (1-indexed hotel number, or 0 if no hotel can accommodate)
 
-### Example
+**Constraints**:
+- 1 ≤ n, q ≤ 2×10⁵
+- 1 ≤ hi ≤ 10⁹
+- 1 ≤ x ≤ 10⁹
+
+**Example**:
 ```
 Input:
 5 3
@@ -36,12 +38,22 @@ Output:
 3
 1
 1
+
+Explanation**: 
+- Query 1: group size 4, first hotel with ≥4 rooms is hotel 3 (4 rooms)
+- Query 2: group size 2, first hotel with ≥2 rooms is hotel 1 (2 rooms)
+- Query 3: group size 1, first hotel with ≥1 room is hotel 1 (2 rooms)
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Linear Search for Each Query - O(q × n)
-**Description**: For each query, iterate through hotels from left to right to find the first one that can accommodate the group.
+### Step 1: Understanding the Problem
+- **Goal**: Efficiently find the first hotel with sufficient capacity for each group
+- **Key Insight**: Use data structures like Segment Tree for O(log n) query time
+- **Challenge**: Avoid O(q×n) complexity with naive linear search
+
+### Step 2: Initial Approach
+**Linear search for each query (inefficient but correct):**
 
 ```python
 def hotel_queries_naive(n, q, hotels, queries):
@@ -122,7 +134,10 @@ def hotel_queries_segment_tree(n, q, hotels, queries):
 
 **Why this improvement works**: Segment Tree allows us to find the first hotel with sufficient rooms in O(log n) time per query.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Binary Indexed Tree approach (alternative to Segment Tree):**
+
+### Step 4: Complete Solution
 
 ```python
 n, q = map(int, input().split())
@@ -180,12 +195,260 @@ for _ in range(q):
         print(0)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic queries (should return correct hotel indices)
+- **Test 2**: No available hotels (should return 0)
+- **Test 3**: Multiple hotels with same capacity (should return first one)
+- **Test 4**: Large number of queries (should handle efficiently)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Naive | O(q × n) | O(1) | Linear search for each query |
 | Segment Tree | O(n + q log n) | O(n) | Use Segment Tree for range queries |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Segment Tree**: Efficient data structure for range queries and updates
+- **First Greater/Equal**: Find first element satisfying a condition
+- **Range Queries**: Efficiently answer multiple queries on static data
+- **Data Structure Choice**: Choose appropriate structure based on operation types
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Hotel Queries with Dynamic Updates**
+```python
+def hotel_queries_dynamic(n, q, hotels, operations):
+    # Handle hotel queries with dynamic room updates
+    
+    class DynamicSegmentTree:
+        def __init__(self, arr):
+            self.n = len(arr)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.tree = [0] * (2 * self.size)
+            
+            # Build the tree
+            for i in range(self.n):
+                self.tree[self.size + i] = arr[i]
+            for i in range(self.size - 1, 0, -1):
+                self.tree[i] = max(self.tree[2 * i], self.tree[2 * i + 1])
+        
+        def update(self, pos, val):
+            pos += self.size
+            self.tree[pos] = val
+            pos //= 2
+            while pos >= 1:
+                self.tree[pos] = max(self.tree[2 * pos], self.tree[2 * pos + 1])
+                pos //= 2
+        
+        def find_first_ge(self, target):
+            return self._find_first_ge(1, 0, self.size - 1, target)
+        
+        def _find_first_ge(self, node, left, right, target):
+            if left >= self.n:
+                return -1
+            
+            if self.tree[node] < target:
+                return -1
+            
+            if left == right:
+                return left if left < self.n else -1
+            
+            mid = (left + right) // 2
+            
+            # Check left child first
+            if self.tree[2 * node] >= target:
+                result = self._find_first_ge(2 * node, left, mid, target)
+                if result != -1:
+                    return result
+            
+            # Check right child
+            return self._find_first_ge(2 * node + 1, mid + 1, right, target)
+    
+    st = DynamicSegmentTree(hotels)
+    results = []
+    
+    for op in operations:
+        if op[0] == 'U':  # Update
+            pos, val = op[1], op[2]
+            st.update(pos - 1, val)  # Convert to 0-indexed
+            hotels[pos - 1] = val
+        else:  # Query
+            x = op[1]
+            pos = st.find_first_ge(x)
+            if pos != -1:
+                results.append(pos + 1)  # Convert to 1-indexed
+            else:
+                results.append(0)
+    
+    return results
+```
+
+#### **2. Hotel Queries with Multiple Criteria**
+```python
+def hotel_queries_multiple_criteria(n, q, hotels, criteria, queries):
+    # Handle hotel queries with multiple criteria (rooms, price, rating)
+    
+    class MultiCriteriaSegmentTree:
+        def __init__(self, hotels, prices, ratings):
+            self.n = len(hotels)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            
+            # Separate trees for each criteria
+            self.rooms_tree = [0] * (2 * self.size)
+            self.prices_tree = [float('inf')] * (2 * self.size)
+            self.ratings_tree = [0] * (2 * self.size)
+            
+            # Build trees
+            for i in range(self.n):
+                self.rooms_tree[self.size + i] = hotels[i]
+                self.prices_tree[self.size + i] = prices[i]
+                self.ratings_tree[self.size + i] = ratings[i]
+            
+            for i in range(self.size - 1, 0, -1):
+                self.rooms_tree[i] = max(self.rooms_tree[2 * i], self.rooms_tree[2 * i + 1])
+                self.prices_tree[i] = min(self.prices_tree[2 * i], self.prices_tree[2 * i + 1])
+                self.ratings_tree[i] = max(self.ratings_tree[2 * i], self.ratings_tree[2 * i + 1])
+        
+        def find_first_suitable(self, min_rooms, max_price, min_rating):
+            return self._find_first_suitable(1, 0, self.size - 1, min_rooms, max_price, min_rating)
+        
+        def _find_first_suitable(self, node, left, right, min_rooms, max_price, min_rating):
+            if left >= self.n:
+                return -1
+            
+            if (self.rooms_tree[node] < min_rooms or 
+                self.prices_tree[node] > max_price or 
+                self.ratings_tree[node] < min_rating):
+                return -1
+            
+            if left == right:
+                return left if left < self.n else -1
+            
+            mid = (left + right) // 2
+            
+            # Check left child first
+            result = self._find_first_suitable(2 * node, left, mid, min_rooms, max_price, min_rating)
+            if result != -1:
+                return result
+            
+            # Check right child
+            return self._find_first_suitable(2 * node + 1, mid + 1, right, min_rooms, max_price, min_rating)
+    
+    st = MultiCriteriaSegmentTree(hotels, criteria['prices'], criteria['ratings'])
+    results = []
+    
+    for query in queries:
+        min_rooms, max_price, min_rating = query
+        pos = st.find_first_suitable(min_rooms, max_price, min_rating)
+        if pos != -1:
+            results.append(pos + 1)  # Convert to 1-indexed
+        else:
+            results.append(0)
+    
+    return results
+```
+
+#### **3. Hotel Queries with Persistence**
+```python
+def hotel_queries_persistent(n, q, hotels, operations):
+    # Handle hotel queries with persistent data structures
+    
+    class PersistentSegmentTree:
+        def __init__(self, arr):
+            self.n = len(arr)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.versions = []
+            self.build_initial(arr)
+        
+        def build_initial(self, arr):
+            tree = [0] * (2 * self.size)
+            for i in range(self.n):
+                tree[self.size + i] = arr[i]
+            for i in range(self.size - 1, 0, -1):
+                tree[i] = max(tree[2 * i], tree[2 * i + 1])
+            self.versions.append(tree)
+        
+        def update(self, version, pos, val):
+            new_tree = self.versions[version].copy()
+            pos += self.size
+            new_tree[pos] = val
+            pos //= 2
+            while pos >= 1:
+                new_tree[pos] = max(new_tree[2 * pos], new_tree[2 * pos + 1])
+                pos //= 2
+            self.versions.append(new_tree)
+            return len(self.versions) - 1
+        
+        def find_first_ge(self, version, target):
+            return self._find_first_ge(version, 1, 0, self.size - 1, target)
+        
+        def _find_first_ge(self, version, node, left, right, target):
+            if left >= self.n:
+                return -1
+            
+            if self.versions[version][node] < target:
+                return -1
+            
+            if left == right:
+                return left if left < self.n else -1
+            
+            mid = (left + right) // 2
+            
+            # Check left child first
+            if self.versions[version][2 * node] >= target:
+                result = self._find_first_ge(version, 2 * node, left, mid, target)
+                if result != -1:
+                    return result
+            
+            # Check right child
+            return self._find_first_ge(version, 2 * node + 1, mid + 1, right, target)
+    
+    persistent_st = PersistentSegmentTree(hotels)
+    current_version = 0
+    results = []
+    
+    for op in operations:
+        if op[0] == 'U':  # Update
+            pos, val = op[1], op[2]
+            current_version = persistent_st.update(current_version, pos - 1, val)
+        else:  # Query
+            version, x = op[1], op[2]
+            pos = persistent_st.find_first_ge(version, x)
+            if pos != -1:
+                results.append(pos + 1)  # Convert to 1-indexed
+            else:
+                results.append(0)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Range Queries**: First greater/equal, range minimum queries
+- **Data Structures**: Segment trees, binary indexed trees
+- **Search Problems**: Binary search, first occurrence
+- **Optimization**: Efficient query answering
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Segment Tree** is optimal for range queries and updates
+- **First greater/equal** is a common pattern in range queries
+- **Data structure choice** depends on operation types and requirements
+- **Logarithmic complexity** is achievable for range query problems
 
 ## Key Insights for Other Problems
 

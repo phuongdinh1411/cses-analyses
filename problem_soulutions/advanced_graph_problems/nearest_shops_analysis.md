@@ -1,14 +1,16 @@
 ---
 layout: simple
-title: "Nearest Shops"
+title: "Nearest Shops - Multi-Source Shortest Path Problem"
 permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis
 ---
 
-# Nearest Shops
+# Nearest Shops - Multi-Source Shortest Path Problem
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a graph with shops and customers, find the nearest shop for each customer.
+Given a graph with shops and customers, find the nearest shop for each customer.
+
+This is a classic multi-source shortest path problem that requires finding the shortest distance from each customer to the nearest shop. The solution involves using Dijkstra's algorithm with multiple sources or BFS for unweighted graphs.
 
 **Input**: 
 - n: number of nodes (shops and customers)
@@ -17,7 +19,14 @@ permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis
 - m lines: a b w (edge from a to b with weight w)
 - k lines: shop locations
 
-**Output**: For each customer, find the nearest shop and distance.
+**Output**: 
+- For each customer, find the nearest shop and distance
+
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2×10⁵
+- 1 ≤ k ≤ n
+- 1 ≤ w ≤ 10⁹
 
 **Example**:
 ```
@@ -34,7 +43,7 @@ Output:
 Customer 2: Nearest shop is 1, distance = 3
 Customer 4: Nearest shop is 3, distance = 1
 
-Explanation: 
+Explanation**: 
 Shop at node 1, shop at node 3
 Customer 2 is closest to shop 1 (distance 3)
 Customer 4 is closest to shop 3 (distance 1)
@@ -43,11 +52,12 @@ Customer 4 is closest to shop 3 (distance 1)
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find nearest shop for each customer
-- Use shortest path algorithms
-- Handle multiple sources (shops)
-- Apply Dijkstra's or BFS
+- **Goal**: Find the nearest shop for each customer using shortest path algorithms
+- **Key Insight**: Use multi-source shortest path algorithms like Dijkstra's or BFS
+- **Challenge**: Efficiently handle multiple sources and find nearest shop for each customer
+
+### Step 2: Initial Approach
+**Brute force approach (inefficient but correct):**
 
 **Key Observations:**
 - This is a multi-source shortest path problem
@@ -55,8 +65,8 @@ Customer 4 is closest to shop 3 (distance 1)
 - Need to find minimum distance to any shop
 - Efficient algorithm is crucial
 
-### Step 2: Multi-Source Dijkstra's Approach
-**Idea**: Use Dijkstra's algorithm from all shop locations simultaneously.
+### Step 3: Optimization/Alternative
+**Multi-source Dijkstra's approach:**
 
 ```python
 def nearest_shops_dijkstra(n, edges, shops):
@@ -252,23 +262,173 @@ test_solution()
 
 ## 🎯 Key Insights
 
-### 1. **Multi-Source Shortest Path**
-- Finds shortest path from multiple sources
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
+### Important Concepts and Patterns
+- **Multi-Source Shortest Path**: Find shortest path from multiple sources efficiently
+- **Dijkstra's Algorithm**: Efficient shortest path algorithm for weighted graphs
+- **Priority Queue**: Maintains minimum distance nodes for optimal performance
+- **Graph Algorithms**: Use BFS for unweighted graphs, Dijkstra's for weighted graphs
 
-### 2. **Dijkstra's Algorithm**
-- Efficient shortest path algorithm
-- Important for understanding
-- Fundamental concept
-- Essential for algorithm
+## 🚀 Problem Variations
 
-### 3. **Priority Queue**
-- Maintains minimum distance nodes
-- Important for performance
-- Simple but important concept
-- Essential for understanding
+### Extended Problems with Detailed Code Examples
+
+#### **1. Nearest Shops with Constraints**
+```python
+def nearest_shops_constrained(n, edges, shops, customers, constraints):
+    # Handle nearest shops with additional constraints
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b, w in edges:
+        adj[a].append((b, w))
+        adj[b].append((a, w))
+    
+    # Apply constraints
+    forbidden_edges = constraints.get('forbidden_edges', set())
+    allowed_shops = constraints.get('allowed_shops', set(shops))
+    
+    # Remove forbidden edges
+    filtered_adj = [[] for _ in range(n + 1)]
+    for a in range(n + 1):
+        for b, w in adj[a]:
+            if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
+                filtered_adj[a].append((b, w))
+    
+    # Multi-source Dijkstra's with constraints
+    from heapq import heappush, heappop
+    
+    distances = [float('inf')] * (n + 1)
+    pq = []
+    
+    # Add only allowed shops to priority queue
+    for shop in shops:
+        if shop in allowed_shops:
+            distances[shop] = 0
+            heappush(pq, (0, shop))
+    
+    # Dijkstra's algorithm
+    while pq:
+        dist, node = heappop(pq)
+        
+        if dist > distances[node]:
+            continue
+        
+        for neighbor, weight in filtered_adj[node]:
+            new_dist = dist + weight
+            
+            if new_dist < distances[neighbor]:
+                distances[neighbor] = new_dist
+                heappush(pq, (new_dist, neighbor))
+    
+    # Return results for customers
+    result = []
+    for customer in customers:
+        result.append(distances[customer])
+    
+    return result
+```
+
+#### **2. Nearest Shops with Dynamic Updates**
+```python
+def nearest_shops_dynamic(n, initial_edges, initial_shops, operations):
+    # Handle nearest shops with dynamic shop updates
+    
+    current_edges = initial_edges.copy()
+    current_shops = initial_shops.copy()
+    results = []
+    
+    for op in operations:
+        if op[0] == 'add_shop':
+            # Add new shop
+            shop = op[1]
+            current_shops.append(shop)
+        elif op[0] == 'remove_shop':
+            # Remove shop
+            shop = op[1]
+            current_shops.remove(shop)
+        elif op[0] == 'add_edge':
+            # Add new edge
+            a, b, w = op[1], op[2], op[3]
+            current_edges.append((a, b, w))
+        elif op[0] == 'query':
+            # Query nearest shops
+            customers = op[1]
+            result = solve_nearest_shops(n, current_edges, current_shops, customers)
+            results.append(result)
+    
+    return results
+```
+
+#### **3. Nearest Shops with Multiple Criteria**
+```python
+def nearest_shops_multiple_criteria(n, edges, shops, customers, criteria):
+    # Handle nearest shops with multiple criteria (distance, price, rating)
+    
+    # Build adjacency list with multiple weights
+    adj = [[] for _ in range(n + 1)]
+    for a, b, w in edges:
+        adj[a].append((b, w))
+        adj[b].append((a, w))
+    
+    # Multi-source Dijkstra's with multiple criteria
+    from heapq import heappush, heappop
+    
+    distances = [float('inf')] * (n + 1)
+    prices = [float('inf')] * (n + 1)
+    ratings = [0] * (n + 1)
+    
+    pq = []
+    
+    # Add all shops to priority queue
+    for shop in shops:
+        distances[shop] = 0
+        prices[shop] = criteria['shop_prices'].get(shop, 0)
+        ratings[shop] = criteria['shop_ratings'].get(shop, 0)
+        heappush(pq, (0, shop))
+    
+    # Dijkstra's algorithm
+    while pq:
+        dist, node = heappop(pq)
+        
+        if dist > distances[node]:
+            continue
+        
+        for neighbor, weight in adj[node]:
+            new_dist = dist + weight
+            
+            if new_dist < distances[neighbor]:
+                distances[neighbor] = new_dist
+                prices[neighbor] = prices[node]
+                ratings[neighbor] = ratings[node]
+                heappush(pq, (new_dist, neighbor))
+    
+    # Return results for customers with multiple criteria
+    result = []
+    for customer in customers:
+        result.append({
+            'distance': distances[customer],
+            'price': prices[customer],
+            'rating': ratings[customer]
+        })
+    
+    return result
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Graph Theory**: Multi-source shortest path, Dijkstra's algorithm
+- **Graph Algorithms**: BFS, shortest path algorithms
+- **Location Optimization**: Facility location, nearest neighbor
+- **Optimization**: Multi-source problems, distance optimization
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Multi-source shortest path** efficiently handles multiple starting points
+- **Dijkstra's algorithm** is optimal for weighted graphs
+- **Priority queue** maintains optimal performance
+- **Graph algorithms** solve complex location optimization problems
 
 ## 🎯 Problem Variations
 

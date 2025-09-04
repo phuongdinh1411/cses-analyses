@@ -1,29 +1,31 @@
 ---
 layout: simple
-title: "Static Range Sum Queries"
+title: "Static Range Sum Queries - Efficient Range Sum Calculation"
 permalink: /problem_soulutions/range_queries/static_range_sum_queries_analysis
 ---
 
+# Static Range Sum Queries - Efficient Range Sum Calculation
 
-# Static Range Sum Queries
+## 📋 Problem Description
 
-## Problem Statement
 Given an array of n integers, process q queries. Each query asks for the sum of values in a range [a,b].
 
-### Input
-The first input line has two integers n and q: the size of the array and the number of queries.
-The second line has n integers x1,x2,…,xn: the contents of the array.
-Finally, there are q lines describing the queries. Each line has two integers a and b: the range [a,b].
+This is a classic range query problem that requires efficiently answering multiple sum queries on a static array. The solution involves using prefix sums to achieve O(1) query time after O(n) preprocessing.
 
-### Output
-Print the answer to each query.
+**Input**: 
+- First line: n and q (array size and number of queries)
+- Second line: n integers (array contents)
+- Next q lines: a and b (range [a,b] for each query)
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ xi ≤ 10^9
+**Output**: 
+- Print the answer to each query
+
+**Constraints**:
+- 1 ≤ n, q ≤ 2×10⁵
+- 1 ≤ xi ≤ 10⁹
 - 1 ≤ a ≤ b ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 8 4
@@ -38,12 +40,23 @@ Output:
 2
 24
 4
+
+Explanation**: 
+- Query [2,4]: sum of elements at positions 2,3,4 = 2+4+5 = 11
+- Query [5,6]: sum of elements at positions 5,6 = 1+1 = 2
+- Query [1,8]: sum of all elements = 3+2+4+5+1+1+5+3 = 24
+- Query [3,3]: sum of element at position 3 = 4
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Calculate Sum for Each Query - O(q × n)
-**Description**: For each query, iterate through the range and calculate the sum.
+### Step 1: Understanding the Problem
+- **Goal**: Efficiently answer multiple range sum queries on a static array
+- **Key Insight**: Use prefix sums to achieve O(1) query time after O(n) preprocessing
+- **Challenge**: Avoid O(q×n) complexity with naive approach
+
+### Step 2: Initial Approach
+**Calculate sum for each query (inefficient but correct):**
 
 ```python
 def static_range_sum_naive(n, q, arr, queries):
@@ -86,7 +99,10 @@ def static_range_sum_prefix_sum(n, q, arr, queries):
 
 **Why this improvement works**: Prefix sum allows us to calculate any range sum in O(1) time using the formula: sum[a,b] = prefix[b+1] - prefix[a].
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Segment Tree approach (for dynamic updates):**
+
+### Step 4: Complete Solution
 
 ```python
 n, q = map(int, input().split())
@@ -105,6 +121,142 @@ for _ in range(q):
     sum_range = prefix_sum[end + 1] - prefix_sum[start]
     print(sum_range)
 ```
+
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic range queries (should return correct sums)
+- **Test 2**: Single element queries (should return element value)
+- **Test 3**: Full array queries (should return total sum)
+- **Test 4**: Large number of queries (should handle efficiently)
+
+## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Naive | O(q×n) | O(1) | Calculate sum for each query |
+| Prefix Sum | O(n+q) | O(n) | Precompute prefix sums |
+| Segment Tree | O(n log n + q log n) | O(n) | Handle dynamic updates |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Prefix Sums**: Precompute cumulative sums for O(1) range queries
+- **Range Queries**: Efficiently answer multiple queries on static data
+- **Preprocessing**: Trade space for time to optimize query performance
+- **Static vs Dynamic**: Choose appropriate data structure based on update requirements
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Range Sum with Point Updates**
+```python
+def range_sum_with_updates(n, q, arr, operations):
+    # Handle range sum queries with point updates using Binary Indexed Tree
+    
+    class BIT:
+        def __init__(self, n):
+            self.n = n
+            self.tree = [0] * (n + 1)
+        
+        def update(self, idx, val):
+            while idx <= self.n:
+                self.tree[idx] += val
+                idx += idx & -idx
+        
+        def query(self, idx):
+            result = 0
+            while idx > 0:
+                result += self.tree[idx]
+                idx -= idx & -idx
+            return result
+    
+    bit = BIT(n)
+    for i in range(n):
+        bit.update(i + 1, arr[i])
+    
+    results = []
+    for op in operations:
+        if op[0] == 'Q':  # Query
+            l, r = op[1], op[2]
+            results.append(bit.query(r) - bit.query(l - 1))
+        else:  # Update
+            idx, val = op[1], op[2]
+            bit.update(idx, val - arr[idx - 1])
+            arr[idx - 1] = val
+    
+    return results
+```
+
+#### **2. Range Sum with Range Updates**
+```python
+def range_sum_with_range_updates(n, q, arr, operations):
+    # Handle range sum queries with range updates using difference array
+    
+    diff = [0] * (n + 1)
+    diff[0] = arr[0]
+    for i in range(1, n):
+        diff[i] = arr[i] - arr[i-1]
+    
+    def range_update(l, r, val):
+        diff[l] += val
+        if r + 1 < n:
+            diff[r + 1] -= val
+    
+    def point_query(idx):
+        result = 0
+        for i in range(idx + 1):
+            result += diff[i]
+        return result
+    
+    results = []
+    for op in operations:
+        if op[0] == 'U':  # Range Update
+            l, r, val = op[1], op[2], op[3]
+            range_update(l, r, val)
+        else:  # Point Query
+            idx = op[1]
+            results.append(point_query(idx))
+    
+    return results
+```
+
+#### **3. 2D Range Sum Queries**
+```python
+def range_sum_2d(n, m, matrix, queries):
+    # Handle 2D range sum queries using 2D prefix sums
+    
+    # Build 2D prefix sum
+    prefix = [[0] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            prefix[i][j] = matrix[i-1][j-1] + prefix[i-1][j] + prefix[i][j-1] - prefix[i-1][j-1]
+    
+    results = []
+    for query in queries:
+        x1, y1, x2, y2 = query
+        # Calculate sum using inclusion-exclusion principle
+        sum_2d = prefix[x2][y2] - prefix[x1-1][y2] - prefix[x2][y1-1] + prefix[x1-1][y1-1]
+        results.append(sum_2d)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Range Queries**: Dynamic range sum, range minimum queries
+- **Data Structures**: Segment trees, binary indexed trees
+- **Prefix Sums**: 2D prefix sums, cumulative sums
+- **Optimization**: Space-time tradeoffs
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Prefix sums** provide optimal solution for static range queries
+- **Preprocessing** is crucial for efficient query answering
+- **Data structure choice** depends on update requirements
+- **Space-time tradeoffs** are common in range query problems
 
 ## 🎯 Problem Variations & Related Questions
 

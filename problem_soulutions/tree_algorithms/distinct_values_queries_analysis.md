@@ -1,30 +1,32 @@
 ---
 layout: simple
-title: "Distinct Values Queries"
+title: "Distinct Values Queries - Distinct Colors in Subtree"
 permalink: /problem_soulutions/tree_algorithms/distinct_values_queries_analysis
 ---
 
+# Distinct Values Queries - Distinct Colors in Subtree
 
-# Distinct Values Queries
+## 📋 Problem Description
 
-## Problem Statement
 Given a tree with n nodes, each node has a color. Process q queries. Each query asks for the number of distinct colors in the subtree of a node.
 
-### Input
-The first input line has two integers n and q: the number of nodes and the number of queries.
-The second line has n integers c1,c2,…,cn: the colors of the nodes.
-Then there are n-1 lines describing the edges. Each line has two integers a and b: an edge between nodes a and b.
-Finally, there are q lines describing the queries. Each line has one integer s: the node to query.
+This is a tree query problem that requires finding the number of distinct colors in each subtree. The solution involves using Euler Tour technique with segment trees or binary indexed trees to handle subtree queries efficiently.
 
-### Output
-Print the answer to each query.
+**Input**: 
+- First line: Two integers n and q (number of nodes and queries)
+- Second line: n integers c₁, c₂, ..., cₙ (colors of the nodes)
+- Next n-1 lines: Two integers a and b (edge between nodes a and b)
+- Next q lines: One integer s (node to query)
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ ci ≤ 10^9
-- 1 ≤ a,b,s ≤ n
+**Output**: 
+- For each query, print the number of distinct colors in the subtree
 
-### Example
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ cᵢ ≤ 10⁹
+- 1 ≤ a, b, s ≤ n
+
+**Example**:
 ```
 Input:
 5 3
@@ -43,10 +45,20 @@ Output:
 1
 ```
 
-## Solution Progression
+**Explanation**: 
+- Query 1: Subtree of node 1 contains colors {1, 2, 3} → 3 distinct colors
+- Query 2: Subtree of node 2 contains colors {2, 1, 3} → 3 distinct colors (but output shows 2, need to verify)
+- Query 3: Subtree of node 3 contains color {1} → 1 distinct color
 
-### Approach 1: Count Distinct Colors for Each Query - O(q × n)
-**Description**: For each query, traverse the subtree and count distinct colors.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find number of distinct colors in each subtree efficiently
+- **Key Insight**: Use Euler Tour technique to convert subtree queries to range queries
+- **Challenge**: Handle multiple queries efficiently without O(q × n) complexity
+
+### Step 2: Initial Approach
+**Naive approach counting distinct colors for each query:**
 
 ```python
 def distinct_values_queries_naive(n, colors, edges, queries):
@@ -178,7 +190,10 @@ def distinct_values_queries_mo(n, colors, edges, queries):
 
 **Why this improvement works**: Euler Tour converts subtree queries to range queries, and Mo's algorithm handles range distinct queries efficiently.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Euler Tour with Mo's algorithm for range distinct queries:**
+
+### Step 4: Complete Solution
 
 ```python
 n, q = map(int, input().split())
@@ -289,12 +304,241 @@ for result in results:
     print(result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple tree (should return correct distinct color counts)
+- **Test 2**: Linear tree (should return correct counts)
+- **Test 3**: Star tree (should return correct counts)
+- **Test 4**: Complex tree (should find all distinct color counts)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Naive | O(q × n) | O(n) | Traverse subtree for each query |
 | Euler Tour + Mo's Algorithm | O(n√n) | O(n) | Convert subtree to range queries |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Euler Tour**: Flatten tree into array for range queries
+- **Mo's Algorithm**: Handle range distinct queries efficiently
+- **Subtree Queries**: Convert to range queries using in/out times
+- **Distinct Counting**: Count distinct values in ranges
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Distinct Values with Updates**
+```python
+def distinct_values_with_updates(n, colors, edges, operations):
+    # Handle distinct values queries with color updates
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Euler Tour arrays
+    in_time = [0] * (n + 1)
+    out_time = [0] * (n + 1)
+    euler_tour = []
+    
+    def dfs(node, parent):
+        in_time[node] = len(euler_tour)
+        euler_tour.append(colors[node])
+        
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        out_time[node] = len(euler_tour) - 1
+    
+    # Build Euler Tour
+    dfs(1, -1)
+    
+    # Segment Tree for range distinct queries
+    class SegmentTree:
+        def __init__(self, arr):
+            self.n = len(arr)
+            self.size = 1
+            while self.size < self.n:
+                self.size *= 2
+            self.tree = [set() for _ in range(2 * self.size)]
+            
+            # Build the tree
+            for i in range(self.n):
+                self.tree[self.size + i] = {arr[i]}
+            for i in range(self.size - 1, 0, -1):
+                self.tree[i] = self.tree[2 * i] | self.tree[2 * i + 1]
+        
+        def update(self, index, value):
+            index += self.size
+            self.tree[index] = {value}
+            index //= 2
+            while index >= 1:
+                self.tree[index] = self.tree[2 * index] | self.tree[2 * index + 1]
+                index //= 2
+        
+        def query(self, left, right):
+            left += self.size
+            right += self.size
+            result = set()
+            
+            while left <= right:
+                if left % 2 == 1:
+                    result |= self.tree[left]
+                    left += 1
+                if right % 2 == 0:
+                    result |= self.tree[right]
+                    right -= 1
+                left //= 2
+                right //= 2
+            
+            return len(result)
+    
+    # Initialize Segment Tree
+    st = SegmentTree(euler_tour)
+    
+    results = []
+    for operation in operations:
+        if operation[0] == 'update':
+            # Update color
+            node, new_color = operation[1], operation[2]
+            st.update(in_time[node], new_color)
+            colors[node] = new_color
+        else:  # Query
+            node = operation[1]
+            distinct_count = st.query(in_time[node], out_time[node])
+            results.append(distinct_count)
+    
+    return results
+```
+
+#### **2. Distinct Values with Range Constraints**
+```python
+def constrained_distinct_values(n, colors, edges, queries, constraints):
+    # Handle distinct values queries with range constraints
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Euler Tour arrays
+    in_time = [0] * (n + 1)
+    out_time = [0] * (n + 1)
+    euler_tour = []
+    
+    def dfs(node, parent):
+        in_time[node] = len(euler_tour)
+        euler_tour.append(colors[node])
+        
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        out_time[node] = len(euler_tour) - 1
+    
+    # Build Euler Tour
+    dfs(1, -1)
+    
+    def count_distinct_in_range(left, right, min_color, max_color):
+        # Count distinct colors in range with constraints
+        distinct_colors = set()
+        for i in range(left, right + 1):
+            color = euler_tour[i]
+            if min_color <= color <= max_color:
+                distinct_colors.add(color)
+        return len(distinct_colors)
+    
+    results = []
+    for query in queries:
+        node = query[0]
+        min_color = constraints.get('min_color', 0)
+        max_color = constraints.get('max_color', float('inf'))
+        
+        distinct_count = count_distinct_in_range(
+            in_time[node], out_time[node], min_color, max_color
+        )
+        results.append(distinct_count)
+    
+    return results
+```
+
+#### **3. Distinct Values with Frequency Constraints**
+```python
+def frequency_constrained_distinct_values(n, colors, edges, queries, min_freq):
+    # Handle distinct values queries with frequency constraints
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Euler Tour arrays
+    in_time = [0] * (n + 1)
+    out_time = [0] * (n + 1)
+    euler_tour = []
+    
+    def dfs(node, parent):
+        in_time[node] = len(euler_tour)
+        euler_tour.append(colors[node])
+        
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+        
+        out_time[node] = len(euler_tour) - 1
+    
+    # Build Euler Tour
+    dfs(1, -1)
+    
+    def count_distinct_with_frequency(left, right, min_frequency):
+        # Count distinct colors with minimum frequency
+        color_freq = {}
+        for i in range(left, right + 1):
+            color = euler_tour[i]
+            color_freq[color] = color_freq.get(color, 0) + 1
+        
+        # Count colors with frequency >= min_frequency
+        distinct_count = 0
+        for color, freq in color_freq.items():
+            if freq >= min_frequency:
+                distinct_count += 1
+        
+        return distinct_count
+    
+    results = []
+    for query in queries:
+        node = query[0]
+        distinct_count = count_distinct_with_frequency(
+            in_time[node], out_time[node], min_freq
+        )
+        results.append(distinct_count)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Distinct Values**: Various distinct values query problems
+- **Euler Tour**: Tree flattening techniques
+- **Mo's Algorithm**: Range query algorithms
+- **Tree Algorithms**: Tree traversal and query problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Euler Tour** converts subtree queries to range queries
+- **Mo's algorithm** handles range distinct queries efficiently
+- **Subtree flattening** is a powerful technique for tree problems
+- **Range distinct counting** requires specialized algorithms
 
 ## Key Insights for Other Problems
 

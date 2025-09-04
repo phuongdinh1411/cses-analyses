@@ -1,27 +1,29 @@
 ---
 layout: simple
-title: "Tree Diameter"
+title: "Tree Diameter - Longest Path in Tree"
 permalink: /problem_soulutions/tree_algorithms/tree_diameter_analysis
 ---
 
+# Tree Diameter - Longest Path in Tree
 
-# Tree Diameter
+## 📋 Problem Description
 
-## Problem Statement
 Given a tree with n nodes, find the diameter of the tree (the longest path between any two nodes).
 
-### Input
-The first input line has an integer n: the number of nodes. The nodes are numbered 1,2,…,n.
-Then, there are n−1 lines describing the edges. Each line has two integers a and b: there is an edge between nodes a and b.
+The diameter of a tree is the longest path between any two nodes in the tree. This is a fundamental tree algorithm problem that requires finding the two nodes that are farthest apart.
 
-### Output
-Print one integer: the diameter of the tree.
+**Input**: 
+- First line: Integer n (number of nodes)
+- Next n-1 lines: Two integers a and b (edge between nodes a and b)
 
-### Constraints
-- 1 ≤ n ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
+**Output**: 
+- One integer: diameter of the tree
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 2⋅10⁵
+- 1 ≤ a, b ≤ n
+
+**Example**:
 ```
 Input:
 5
@@ -34,10 +36,20 @@ Output:
 3
 ```
 
-## Solution Progression
+**Explanation**: 
+- Tree structure: 1-2, 1-3, 3-4, 3-5
+- Longest path: 2 → 1 → 3 → 4 (or 2 → 1 → 3 → 5)
+- Diameter: 3 edges (length 3)
 
-### Approach 1: Two DFS Approach - O(n)
-**Description**: Use two DFS traversals to find the diameter by finding the longest path from any node to its farthest node, then from that node to its farthest node.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find the longest path between any two nodes in a tree
+- **Key Insight**: Use two DFS traversals to find diameter efficiently
+- **Challenge**: Efficiently find the two nodes that are farthest apart
+
+### Step 2: Initial Approach
+**Two DFS approach to find tree diameter:**
 
 ```python
 def tree_diameter_two_dfs(n, edges):
@@ -118,8 +130,8 @@ def tree_diameter_single_dfs(n, edges):
 
 **Why this improvement works**: Single DFS calculates diameter more efficiently by tracking heights and updating diameter during traversal.
 
-### Improvement 2: BFS Approach - O(n)
-**Description**: Use BFS to find the diameter by finding the longest shortest path.
+### Step 3: Optimization/Alternative
+**BFS approach for tree diameter:**
 
 ```python
 from collections import deque
@@ -215,7 +227,7 @@ def tree_diameter_dp(n, edges):
 
 **Why this works**: DP approach stores heights for reuse and calculates diameter efficiently.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 n = int(input())
@@ -261,7 +273,14 @@ dfs(1, -1)
 print(diameter)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple tree (should return correct diameter)
+- **Test 2**: Linear tree (should return n-1)
+- **Test 3**: Star tree (should return 2)
+- **Test 4**: Complex tree (should find longest path)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -269,6 +288,187 @@ print(diameter)
 | Single DFS | O(n) | O(n) | Track heights efficiently |
 | BFS | O(n) | O(n) | Iterative approach |
 | Dynamic Programming | O(n) | O(n) | Store heights for reuse |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Tree Diameter**: Longest path between any two nodes in a tree
+- **Two DFS Approach**: Find farthest node, then find farthest from that node
+- **Single DFS**: Calculate heights and update diameter during traversal
+- **BFS Approach**: Use breadth-first search for iterative solution
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Tree Diameter with Path Reconstruction**
+```python
+def tree_diameter_with_path(n, edges):
+    # Find diameter and reconstruct the actual path
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        tree[a].append(b)
+        tree[b].append(a)
+    
+    def dfs(node, parent, distance):
+        # DFS to find farthest node and distances
+        distances = {node: distance}
+        farthest_node = node
+        max_distance = distance
+        
+        for child in tree[node]:
+            if child != parent:
+                child_farthest, child_max_dist, child_distances = dfs(child, node, distance + 1)
+                distances.update(child_distances)
+                
+                if child_max_dist > max_distance:
+                    max_distance = child_max_dist
+                    farthest_node = child_farthest
+        
+        return farthest_node, max_distance, distances
+    
+    # First DFS: find farthest node from node 1
+    farthest1, _, distances1 = dfs(1, -1, 0)
+    
+    # Second DFS: find farthest node from farthest1
+    farthest2, diameter, distances2 = dfs(farthest1, -1, 0)
+    
+    # Reconstruct path using distances
+    def reconstruct_path(start, end, distances):
+        path = [end]
+        current = end
+        
+        while current != start:
+            for neighbor in tree[current]:
+                if distances.get(neighbor, float('inf')) == distances[current] - 1:
+                    path.append(neighbor)
+                    current = neighbor
+                    break
+        
+        return path[::-1]
+    
+    path = reconstruct_path(farthest1, farthest2, distances2)
+    
+    return diameter, path
+```
+
+#### **2. Tree Diameter with Edge Weights**
+```python
+def weighted_tree_diameter(n, edges, weights):
+    # Find diameter in weighted tree
+    
+    # Build adjacency list with weights
+    tree = [[] for _ in range(n + 1)]
+    for i, (a, b) in enumerate(edges):
+        tree[a].append((b, weights[i]))
+        tree[b].append((a, weights[i]))
+    
+    def dfs(node, parent, distance):
+        # DFS to find farthest node and distances
+        distances = {node: distance}
+        farthest_node = node
+        max_distance = distance
+        
+        for child, weight in tree[node]:
+            if child != parent:
+                child_farthest, child_max_dist, child_distances = dfs(child, node, distance + weight)
+                distances.update(child_distances)
+                
+                if child_max_dist > max_distance:
+                    max_distance = child_max_dist
+                    farthest_node = child_farthest
+        
+        return farthest_node, max_distance, distances
+    
+    # First DFS: find farthest node from node 1
+    farthest1, _, distances1 = dfs(1, -1, 0)
+    
+    # Second DFS: find farthest node from farthest1
+    farthest2, diameter, distances2 = dfs(farthest1, -1, 0)
+    
+    return diameter
+```
+
+#### **3. Tree Diameter with Multiple Queries**
+```python
+def tree_diameter_queries(n, edges, queries):
+    # Handle multiple diameter queries efficiently
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        tree[a].append(b)
+        tree[b].append(a)
+    
+    def dfs(node, parent, distance):
+        # DFS to find farthest node and distances
+        distances = {node: distance}
+        farthest_node = node
+        max_distance = distance
+        
+        for child in tree[node]:
+            if child != parent:
+                child_farthest, child_max_dist, child_distances = dfs(child, node, distance + 1)
+                distances.update(child_distances)
+                
+                if child_max_dist > max_distance:
+                    max_distance = child_max_dist
+                    farthest_node = child_farthest
+        
+        return farthest_node, max_distance, distances
+    
+    # Precompute diameter
+    farthest1, _, distances1 = dfs(1, -1, 0)
+    farthest2, diameter, distances2 = dfs(farthest1, -1, 0)
+    
+    # Process queries
+    results = []
+    for query in queries:
+        if query[0] == 'diameter':
+            results.append(diameter)
+        elif query[0] == 'distance':
+            a, b = query[1], query[2]
+            # Calculate distance between a and b
+            def distance_between(a, b):
+                # BFS to find distance
+                from collections import deque
+                queue = deque([(a, 0)])
+                visited = {a}
+                
+                while queue:
+                    node, dist = queue.popleft()
+                    if node == b:
+                        return dist
+                    
+                    for neighbor in tree[node]:
+                        if neighbor not in visited:
+                            visited.add(neighbor)
+                            queue.append((neighbor, dist + 1))
+                
+                return -1
+            
+            results.append(distance_between(a, b))
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Tree Diameter**: Various tree diameter problems
+- **Tree Algorithms**: Tree traversal and path problems
+- **Graph Algorithms**: Path and distance problems
+- **Tree DP**: Dynamic programming on trees
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Two DFS approach** is the most common method for tree diameter
+- **Single DFS** can be more efficient for some cases
+- **BFS approach** is iterative and memory-efficient
+- **Tree structure** simplifies diameter calculation
 
 ## Key Insights for Other Problems
 

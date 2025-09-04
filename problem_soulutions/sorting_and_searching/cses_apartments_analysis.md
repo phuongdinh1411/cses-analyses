@@ -1,21 +1,29 @@
 ---
 layout: simple
-title: "Apartments"
+title: "Apartments - Optimal Apartment Distribution"
 permalink: /problem_soulutions/sorting_and_searching/cses_apartments_analysis
 ---
 
-# Apartments
+# Apartments - Optimal Apartment Distribution
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: There are n applicants and m free apartments. Distribute apartments so that as many applicants as possible get an apartment. Each applicant accepts any apartment whose size is at least aᵢ-k and at most aᵢ+k.
+There are n applicants and m free apartments. Distribute apartments so that as many applicants as possible get an apartment. Each applicant accepts any apartment whose size is at least aᵢ-k and at most aᵢ+k.
+
+This is a bipartite matching problem that requires optimally matching applicants to apartments within their acceptable size range. The solution involves using a greedy approach with sorting to maximize the number of successful matches.
 
 **Input**: 
-- First line: n, m, k (applicants, apartments, max difference)
-- Second line: n integers (desired apartment sizes)
-- Third line: m integers (apartment sizes)
+- First line: n, m, k (number of applicants, apartments, and maximum acceptable difference)
+- Second line: n integers a₁, a₂, ..., aₙ (desired apartment sizes for each applicant)
+- Third line: m integers b₁, b₂, ..., bₘ (available apartment sizes)
 
-**Output**: Number of applicants who will get an apartment.
+**Output**: 
+- Number of applicants who will get an apartment
+
+**Constraints**:
+- 1 ≤ n, m ≤ 2⋅10⁵
+- 0 ≤ k ≤ 10⁹
+- 1 ≤ aᵢ, bᵢ ≤ 10⁹
 
 **Example**:
 ```
@@ -27,7 +35,12 @@ Input:
 Output:
 2
 
-Explanation: Applicant 1 (60) gets apartment 2 (60), Applicant 2 (45) gets apartment 1 (30).
+Explanation: 
+- Applicant 1 (desires 60) can get apartment 2 (size 60): |60-60| = 0 ≤ 5 ✓
+- Applicant 2 (desires 45) can get apartment 1 (size 30): |45-30| = 15 > 5 ✗
+- Applicant 3 (desires 80) can get apartment 3 (size 75): |80-75| = 5 ≤ 5 ✓
+- Applicant 4 (desires 60) can get apartment 2 (size 60): |60-60| = 0 ≤ 5 ✓
+- Optimal matching: Applicant 1 → Apartment 2, Applicant 3 → Apartment 3 (2 matches)
 ```
 
 ## 🎯 Solution Progression
@@ -102,6 +115,12 @@ def apartments_optimized(applicants, apartments, k):
 - More efficient pointer management
 - Clearer logic flow
 - Same time complexity but cleaner implementation
+
+### Step 3: Optimization/Alternative
+**Alternative approaches:**
+- **Binary Search**: For each applicant, binary search for suitable apartments
+- **Two Pointers**: Use two pointers on sorted arrays for efficient matching
+- **Greedy Matching**: Always match to smallest suitable apartment
 
 ### Step 4: Complete Solution
 **Putting it all together:**
@@ -182,9 +201,14 @@ def solve_test(n, m, k, applicants, apartments):
 test_solution()
 ```
 
-## 🔧 Implementation Details
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic matching (should return correct number of matches)
+- **Test 2**: No matches possible (should return 0)
+- **Test 3**: All matches possible (should return min(n,m))
+- **Test 4**: Edge cases with k=0 (should return exact matches only)
 
-### Time Complexity
+## 🔧 Implementation Details
 - **Time**: O(n log n + m log m) - sorting both arrays
 - **Space**: O(1) - constant extra space
 
@@ -383,11 +407,135 @@ def range_queries(applicants, apartments, k, queries):
     return results
 ```
 
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Bipartite Matching**: Match elements from two sets optimally
+- **Greedy Algorithm**: Always choose the locally optimal choice
+- **Two Pointers**: Use sorted arrays with pointer technique
+- **Sorting**: Preprocess data for efficient matching
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Apartments with Multiple Preferences**
+```python
+def apartments_multiple_preferences(n, m, k, applicants, apartments, preferences):
+    # Handle apartments with multiple preference levels
+    
+    # Sort applicants by preference count (fewer preferences first)
+    applicants_with_prefs = [(applicants[i], preferences[i]) for i in range(n)]
+    applicants_with_prefs.sort(key=lambda x: len(x[1]))
+    
+    # Sort apartments by size
+    apartments.sort()
+    
+    matches = 0
+    used_apartments = set()
+    
+    for applicant, prefs in applicants_with_prefs:
+        # Try to match with preferred apartments first
+        matched = False
+        for pref in prefs:
+            if pref in used_apartments:
+                continue
+            
+            # Check if apartment is suitable
+            for apt in apartments:
+                if apt == pref and abs(applicant - apt) <= k:
+                    matches += 1
+                    used_apartments.add(apt)
+                    matched = True
+                    break
+            
+            if matched:
+                break
+        
+        # If no preferred apartment available, try any suitable apartment
+        if not matched:
+            for apt in apartments:
+                if apt not in used_apartments and abs(applicant - apt) <= k:
+                    matches += 1
+                    used_apartments.add(apt)
+                    break
+    
+    return matches
+```
+
+#### **2. Apartments with Capacity Constraints**
+```python
+def apartments_with_capacity(n, m, k, applicants, apartments, capacities):
+    # Handle apartments with capacity constraints
+    
+    # Sort applicants by desired size
+    applicants.sort()
+    
+    # Create list of (apartment_size, capacity) and sort by size
+    apt_with_cap = [(apartments[i], capacities[i]) for i in range(m)]
+    apt_with_cap.sort()
+    
+    matches = 0
+    
+    for applicant in applicants:
+        # Find suitable apartment with available capacity
+        for i, (apt_size, capacity) in enumerate(apt_with_cap):
+            if capacity > 0 and abs(applicant - apt_size) <= k:
+                matches += 1
+                apt_with_cap[i] = (apt_size, capacity - 1)
+                break
+    
+    return matches
+```
+
+#### **3. Apartments with Dynamic Updates**
+```python
+def apartments_dynamic_updates(n, m, k, operations):
+    # Handle apartments with dynamic updates
+    
+    applicants = []
+    apartments = []
+    matches = 0
+    
+    for operation in operations:
+        if operation[0] == 'add_applicant':
+            # Add new applicant
+            applicant = operation[1]
+            applicants.append(applicant)
+            
+            # Try to match with available apartments
+            for i, apt in enumerate(apartments):
+                if apt is not None and abs(applicant - apt) <= k:
+                    matches += 1
+                    apartments[i] = None  # Mark as used
+                    break
+        
+        elif operation[0] == 'add_apartment':
+            # Add new apartment
+            apartment = operation[1]
+            apartments.append(apartment)
+            
+            # Try to match with waiting applicants
+            for i, applicant in enumerate(applicants):
+                if applicant is not None and abs(applicant - apartment) <= k:
+                    matches += 1
+                    applicants[i] = None  # Mark as matched
+                    break
+        
+        elif operation[0] == 'query':
+            # Return current number of matches
+            yield matches
+    
+    return list(apartments_dynamic_updates(n, m, k, operations))
+```
+
 ## 🔗 Related Problems
 
-- **[Sum of Two Values](/cses-analyses/problem_soulutions/sorting_and_searching/cses_sum_of_two_values_analysis)**: Two-pointer problems
-- **[Distinct Numbers](/cses-analyses/problem_soulutions/sorting_and_searching/cses_distinct_numbers_analysis)**: Sorting and searching
-- **[Room Allocation](/cses-analyses/problem_soulutions/sorting_and_searching/room_allocation_analysis)**: Allocation problems
+### Links to Similar Problems
+- **Bipartite Matching**: Maximum matching problems
+- **Greedy Algorithms**: Interval scheduling, activity selection
+- **Two Pointers**: Array problems with sorted data
+- **Sorting**: Problems requiring data preprocessing
 
 ## 📚 Learning Points
 

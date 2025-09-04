@@ -1,37 +1,50 @@
 ---
 layout: simple
-title: "Distinct Strings"
+title: "Distinct Strings - Count Unique Substrings"
 permalink: /problem_soulutions/string_algorithms/distinct_strings_analysis
 ---
 
+# Distinct Strings - Count Unique Substrings
 
-# Distinct Strings
+## 📋 Problem Description
 
-## Problem Statement
 Given a string, find the number of distinct substrings.
 
-### Input
-The first input line has a string s.
+This is a string algorithm problem that requires counting all unique substrings in a given string. The solution involves using efficient algorithms like suffix arrays or suffix automaton to achieve optimal time complexity.
 
-### Output
-Print the number of distinct substrings.
+**Input**: 
+- First line: A string s
 
-### Constraints
-- 1 ≤ |s| ≤ 10^5
+**Output**: 
+- Print the number of distinct substrings
 
-### Example
+**Constraints**:
+- 1 ≤ |s| ≤ 10⁵
+
+**Example**:
 ```
 Input:
 abab
 
 Output:
 7
+
+Explanation**: 
+- String: "abab"
+- All substrings: "a", "b", "a", "b", "ab", "ba", "ab", "ba", "aba", "bab", "abab"
+- Distinct substrings: "a", "b", "ab", "ba", "aba", "bab", "abab"
+- Count: 7 unique substrings
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Generate All Substrings - O(|s|³)
-**Description**: Generate all possible substrings and count distinct ones.
+### Step 1: Understanding the Problem
+- **Goal**: Count all unique substrings in a given string
+- **Key Insight**: Use suffix arrays or suffix automaton for efficiency
+- **Challenge**: Handle large strings efficiently without O(|s|³) complexity
+
+### Step 2: Initial Approach
+**Generate all substrings (inefficient but correct):**
 
 ```python
 def distinct_strings_naive(s):
@@ -146,8 +159,8 @@ def distinct_strings_suffix_automaton(s):
 
 **Why this improvement works**: Suffix automaton efficiently represents all substrings.
 
-### Alternative: Use Trie - O(|s|²)
-**Description**: Use trie to count distinct substrings.
+### Step 3: Optimization/Alternative
+**Trie approach:**
 
 ```python
 def distinct_strings_trie(s):
@@ -179,7 +192,7 @@ children: node.children[c] = TrieNode()
 
 **Why this works**: Trie efficiently stores and counts distinct substrings.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 s = input().strip()
@@ -246,7 +259,21 @@ result = distinct_strings_suffix_automaton(s)
 print(result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic string (should return correct count)
+- **Test 2**: Single character (should return 1)
+- **Test 3**: All same characters (should return n)
+- **Test 4**: Complex pattern (should return optimal count)
+
+## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Naive | O(|s|³) | O(|s|²) | Generate all substrings |
+| Suffix Array | O(|s|² × log|s|) | O(|s|) | Use suffix array properties |
+| Suffix Automaton | O(|s|) | O(|s|) | Efficient substring representation |
+| Trie | O(|s|²) | O(|s|²) | Store substrings in trie |
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -254,6 +281,213 @@ print(result)
 | Suffix Array | O(|s|² × log(|s|)) | O(|s|²) | Use suffix array |
 | Suffix Automaton | O(|s|) | O(|s|) | Use suffix automaton |
 | Trie | O(|s|²) | O(|s|²) | Use trie |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Suffix Automaton**: Efficiently represents all substrings
+- **Suffix Array**: Use suffix properties for substring counting
+- **Trie**: Store and count distinct substrings
+- **Linear Time**: Achieve O(|s|) complexity with suffix automaton
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Distinct Strings with Length Constraints**
+```python
+def distinct_strings_length_constrained(s, min_length, max_length):
+    # Handle distinct strings with length constraints
+    
+    class State:
+        def __init__(self):
+            self.next = {}
+            self.link = -1
+            self.len = 0
+    
+    class SuffixAutomaton:
+        def __init__(self):
+            self.size = 1
+            self.last = 0
+            self.states = [State()]
+        
+        def sa_extend(self, c):
+            p = self.last
+            curr = self.size
+            self.size += 1
+            self.states.append(State())
+            self.states[curr].len = self.states[p].len + 1
+            
+            while p >= 0 and c not in self.states[p].next:
+                self.states[p].next[c] = curr
+                p = self.states[p].link
+            
+            if p == -1:
+                self.states[curr].link = 0
+            else:
+                q = self.states[p].next[c]
+                if self.states[p].len + 1 == self.states[q].len:
+                    self.states[curr].link = q
+                else:
+                    clone = self.size
+                    self.size += 1
+                    self.states.append(State())
+                    self.states[clone].len = self.states[p].len + 1
+                    self.states[clone].next = self.states[q].next.copy()
+                    self.states[clone].link = self.states[q].link
+                    
+                    while p >= 0 and self.states[p].next[c] == q:
+                        self.states[p].next[c] = clone
+                        p = self.states[p].link
+                    
+                    self.states[q].link = clone
+                    self.states[curr].link = clone
+            
+            self.last = curr
+    
+    sa = SuffixAutomaton()
+    for c in s:
+        sa.sa_extend(c)
+    
+    # Count distinct substrings with length constraints
+    count = 0
+    for i in range(1, sa.size):
+        state_len = sa.states[i].len
+        link_len = sa.states[sa.states[i].link].len
+        
+        # Count substrings in this state that meet length constraints
+        for length in range(max(link_len + 1, min_length), min(state_len + 1, max_length + 1)):
+            count += 1
+    
+    return count
+```
+
+#### **2. Distinct Strings with Character Constraints**
+```python
+def distinct_strings_character_constrained(s, allowed_chars):
+    # Handle distinct strings with character constraints
+    
+    def is_valid_substring(substring):
+        return all(char in allowed_chars for char in substring)
+    
+    distinct = set()
+    n = len(s)
+    
+    for i in range(n):
+        for j in range(i + 1, n + 1):
+            substring = s[i:j]
+            if is_valid_substring(substring):
+                distinct.add(substring)
+    
+    return len(distinct)
+```
+
+#### **3. Distinct Strings with Dynamic Updates**
+```python
+def distinct_strings_dynamic(operations):
+    # Handle distinct strings with dynamic string updates
+    
+    s = ""
+    distinct_count = 0
+    
+    for operation in operations:
+        if operation[0] == 'add':
+            # Add character to string
+            char = operation[1]
+            s += char
+            
+            # Recalculate distinct count
+            distinct_count = calculate_distinct_count(s)
+        
+        elif operation[0] == 'remove':
+            # Remove last character
+            if len(s) > 0:
+                s = s[:-1]
+                distinct_count = calculate_distinct_count(s)
+        
+        elif operation[0] == 'query':
+            # Return current distinct count
+            yield distinct_count
+    
+    return list(distinct_strings_dynamic(operations))
+
+def calculate_distinct_count(s):
+    if len(s) == 0:
+        return 0
+    
+    class State:
+        def __init__(self):
+            self.next = {}
+            self.link = -1
+            self.len = 0
+    
+    class SuffixAutomaton:
+        def __init__(self):
+            self.size = 1
+            self.last = 0
+            self.states = [State()]
+        
+        def sa_extend(self, c):
+            p = self.last
+            curr = self.size
+            self.size += 1
+            self.states.append(State())
+            self.states[curr].len = self.states[p].len + 1
+            
+            while p >= 0 and c not in self.states[p].next:
+                self.states[p].next[c] = curr
+                p = self.states[p].link
+            
+            if p == -1:
+                self.states[curr].link = 0
+            else:
+                q = self.states[p].next[c]
+                if self.states[p].len + 1 == self.states[q].len:
+                    self.states[curr].link = q
+                else:
+                    clone = self.size
+                    self.size += 1
+                    self.states.append(State())
+                    self.states[clone].len = self.states[p].len + 1
+                    self.states[clone].next = self.states[q].next.copy()
+                    self.states[clone].link = self.states[q].link
+                    
+                    while p >= 0 and self.states[p].next[c] == q:
+                        self.states[p].next[c] = clone
+                        p = self.states[p].link
+                    
+                    self.states[q].link = clone
+                    self.states[curr].link = clone
+            
+            self.last = curr
+    
+    sa = SuffixAutomaton()
+    for c in s:
+        sa.sa_extend(c)
+    
+    # Count distinct substrings
+    count = 0
+    for i in range(1, sa.size):
+        count += sa.states[i].len - sa.states[sa.states[i].link].len
+    
+    return count
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **String Algorithms**: Suffix array, suffix automaton problems
+- **Substring Problems**: String substring analysis
+- **Counting Problems**: String counting algorithms
+- **Data Structures**: Trie, suffix tree problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Suffix automaton** provides optimal O(|s|) solution
+- **Suffix arrays** are useful for substring problems
+- **Trie** is intuitive for substring storage
+- **Linear time** algorithms are crucial for large strings
 
 ## Key Insights for Other Problems
 

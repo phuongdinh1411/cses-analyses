@@ -1,20 +1,28 @@
 ---
 layout: simple
-title: "Array Division"
+title: "Array Division - Minimize Maximum Subarray Sum"
 permalink: /problem_soulutions/sorting_and_searching/array_division_analysis
 ---
 
-# Array Division
+# Array Division - Minimize Maximum Subarray Sum
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given an array of n integers, divide it into k subarrays such that the maximum sum of any subarray is minimized.
+Given an array of n integers, divide it into k subarrays such that the maximum sum of any subarray is minimized.
+
+This is a binary search optimization problem that requires finding the minimum possible maximum sum when dividing an array into k consecutive subarrays. The solution involves using binary search on the answer space with a greedy validation function.
 
 **Input**: 
 - First line: n and k (size of array and number of subarrays)
 - Second line: n integers a₁, a₂, ..., aₙ
 
-**Output**: Print the minimum possible maximum sum of any subarray.
+**Output**: 
+- Print the minimum possible maximum sum of any subarray
+
+**Constraints**:
+- 1 ≤ n ≤ 2⋅10⁵
+- 1 ≤ k ≤ n
+- 1 ≤ aᵢ ≤ 10⁹
 
 **Example**:
 ```
@@ -25,7 +33,12 @@ Input:
 Output:
 7
 
-Explanation: One optimal division is [2,4], [7], [3,5] with sums 6, 7, 8. Maximum is 8.
+Explanation**: 
+- Array: [2, 4, 7, 3, 5]
+- Optimal division: [2,4], [7], [3,5]
+- Subarray sums: 6, 7, 8
+- Maximum sum: 7
+- This is the minimum possible maximum sum for k=3
 ```
 
 ## 🎯 Solution Progression
@@ -122,6 +135,12 @@ def array_division_optimized(n, k, arr):
 - Early termination in `can_divide()`
 - More efficient bounds checking
 - Cleaner implementation
+
+### Step 3: Optimization/Alternative
+**Alternative approaches:**
+- **Brute Force**: Try all possible divisions O(n^k)
+- **Binary Search**: Optimal O(n log(sum)) approach
+- **Dynamic Programming**: For weighted subarray problems
 
 ### Step 4: Complete Solution
 **Putting it all together:**
@@ -223,7 +242,20 @@ def solve_test(n, k, arr):
 test_solution()
 ```
 
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic array division (should return optimal maximum sum)
+- **Test 2**: Single subarray (should return sum of array)
+- **Test 3**: Each element separate (should return maximum element)
+- **Test 4**: Complex pattern (should return optimal division)
+
 ## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(n^k) | O(1) | Try all possible divisions |
+| Binary Search | O(n log(sum)) | O(1) | Binary search on answer space |
+| Dynamic Programming | O(n²k) | O(nk) | For weighted subarray problems |
 
 ### Time Complexity
 - **Time**: O(n log(sum(arr))) - binary search with linear check
@@ -445,11 +477,170 @@ def constrained_division(n, k, arr, L, R):
     return left
 ```
 
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Binary Search on Answer**: Search for optimal value in answer space
+- **Greedy Validation**: Check if a value is achievable with greedy approach
+- **Subarray Division**: Divide array into consecutive subarrays
+- **Optimization Problems**: Minimize maximum value in constraints
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Array Division with Weighted Subarrays**
+```python
+def array_division_weighted(n, k, arr, weights):
+    # Handle array division with weighted subarrays
+    
+    def can_divide_weighted(max_weighted_sum):
+        subarrays = 1
+        current_sum = 0
+        current_weight = 0
+        
+        for i, num in enumerate(arr):
+            weight = weights[i]
+            
+            if num * weight > max_weighted_sum:
+                return False
+            
+            if current_sum + num * weight > max_weighted_sum:
+                subarrays += 1
+                current_sum = num * weight
+                current_weight = weight
+                if subarrays > k:
+                    return False
+            else:
+                current_sum += num * weight
+                current_weight += weight
+        
+        return subarrays <= k
+    
+    # Binary search
+    left = max(arr[i] * weights[i] for i in range(n))
+    right = sum(arr[i] * weights[i] for i in range(n))
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide_weighted(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+```
+
+#### **2. Array Division with Minimum Subarray Size**
+```python
+def array_division_min_size(n, k, arr, min_size):
+    # Handle array division with minimum subarray size constraint
+    
+    def can_divide_min_size(max_sum):
+        subarrays = 1
+        current_sum = 0
+        current_size = 0
+        
+        for num in arr:
+            if num > max_sum:
+                return False
+            
+            if current_sum + num > max_sum or current_size >= min_size:
+                subarrays += 1
+                current_sum = num
+                current_size = 1
+                if subarrays > k:
+                    return False
+            else:
+                current_sum += num
+                current_size += 1
+        
+        return subarrays <= k and current_size >= min_size
+    
+    # Binary search
+    left = max(arr)
+    right = sum(arr)
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide_min_size(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+```
+
+#### **3. Array Division with Dynamic Updates**
+```python
+def array_division_dynamic(operations):
+    # Handle array division with dynamic array updates
+    
+    arr = []
+    k = 0
+    
+    for operation in operations:
+        if operation[0] == 'set_k':
+            # Set number of subarrays
+            k = operation[1]
+        
+        elif operation[0] == 'add':
+            # Add element to array
+            element = operation[1]
+            arr.append(element)
+        
+        elif operation[0] == 'remove':
+            # Remove element at index
+            index = operation[1]
+            if 0 <= index < len(arr):
+                arr.pop(index)
+        
+        elif operation[0] == 'query':
+            # Query minimum maximum sum
+            if len(arr) == 0 or k == 0:
+                yield 0
+                continue
+            
+            def can_divide(max_sum):
+                subarrays = 1
+                current_sum = 0
+                
+                for num in arr:
+                    if num > max_sum:
+                        return False
+                    if current_sum + num > max_sum:
+                        subarrays += 1
+                        current_sum = num
+                        if subarrays > k:
+                            return False
+                    else:
+                        current_sum += num
+                
+                return subarrays <= k
+            
+            # Binary search
+            left = max(arr)
+            right = sum(arr)
+            
+            while left < right:
+                mid = (left + right) // 2
+                if can_divide(mid):
+                    right = mid
+                else:
+                    left = mid + 1
+            
+            yield left
+    
+    return list(array_division_dynamic(operations))
+```
+
 ## 🔗 Related Problems
 
-- **[Subarray Sums I](/cses-analyses/problem_soulutions/sorting_and_searching/subarray_sums_i_analysis)**: Subarray sum problems
-- **[Subarray Sums II](/cses-analyses/problem_soulutions/sorting_and_searching/subarray_sums_ii_analysis)**: Advanced subarray problems
-- **[Maximum Subarray Sum](/cses-analyses/problem_soulutions/sorting_and_searching/cses_maximum_subarray_sum_analysis)**: Maximum subarray problems
+### Links to Similar Problems
+- **Binary Search**: Problems with answer space search
+- **Subarray Problems**: Array division and partitioning
+- **Optimization**: Minimize maximum value problems
+- **Greedy Algorithms**: Problems with greedy validation
 
 ## 📚 Learning Points
 

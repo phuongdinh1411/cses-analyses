@@ -1,27 +1,29 @@
 ---
 layout: simple
-title: "Tree Distances I"
+title: "Tree Distances I - Maximum Distance from Each Node"
 permalink: /problem_soulutions/tree_algorithms/tree_distances_i_analysis
 ---
 
+# Tree Distances I - Maximum Distance from Each Node
 
-# Tree Distances I
+## 📋 Problem Description
 
-## Problem Statement
 Given a tree with n nodes, find for each node the maximum distance to any other node.
 
-### Input
-The first input line has an integer n: the number of nodes. The nodes are numbered 1,2,…,n.
-Then, there are n−1 lines describing the edges. Each line has two integers a and b: there is an edge between nodes a and b.
+This is a tree distance problem that requires finding the farthest node from each node in the tree. The solution involves using dynamic programming on trees to efficiently calculate distances.
 
-### Output
-Print n integers: the maximum distance from each node to any other node.
+**Input**: 
+- First line: Integer n (number of nodes)
+- Next n-1 lines: Two integers a and b (edge between nodes a and b)
 
-### Constraints
-- 1 ≤ n ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
+**Output**: 
+- n integers: maximum distance from each node to any other node
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 2⋅10⁵
+- 1 ≤ a, b ≤ n
+
+**Example**:
 ```
 Input:
 5
@@ -34,10 +36,22 @@ Output:
 2 3 2 3 3
 ```
 
-## Solution Progression
+**Explanation**: 
+- Node 1: max distance = 2 (to nodes 4 or 5)
+- Node 2: max distance = 3 (to nodes 4 or 5)
+- Node 3: max distance = 2 (to nodes 2, 4, or 5)
+- Node 4: max distance = 3 (to node 2)
+- Node 5: max distance = 3 (to node 2)
 
-### Approach 1: Multiple BFS - O(n²)
-**Description**: Use BFS from each node to find the maximum distance to any other node.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find maximum distance from each node to any other node in the tree
+- **Key Insight**: Use dynamic programming on trees with two DFS passes
+- **Challenge**: Efficiently calculate distances without O(n²) complexity
+
+### Step 2: Initial Approach
+**Multiple BFS approach (inefficient but correct):**
 
 ```python
 from collections import deque
@@ -131,8 +145,8 @@ def tree_distances_diameter_endpoints(n, edges):
 
 **Why this improvement works**: Using diameter endpoints reduces the problem to two distance calculations.
 
-### Improvement 2: Single DFS with Height and Diameter - O(n)
-**Description**: Use a single DFS to calculate heights and use diameter information.
+### Step 3: Optimization/Alternative
+**Single DFS with height and diameter calculation:**
 
 ```python
 def tree_distances_single_dfs(n, edges):
@@ -263,7 +277,7 @@ def tree_distances_rerooting(n, edges):
 
 **Why this works**: Rerooting technique efficiently calculates distances for all nodes.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 n = int(input())
@@ -318,7 +332,14 @@ for i in range(1, n + 1):
 print(*result)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple tree (should return correct max distances)
+- **Test 2**: Linear tree (should return correct distances)
+- **Test 3**: Star tree (should return correct distances)
+- **Test 4**: Complex tree (should find all max distances)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -326,6 +347,202 @@ print(*result)
 | Diameter Endpoints | O(n) | O(n) | Use diameter properties |
 | Single DFS | O(n) | O(n) | Height-based calculation |
 | Rerooting | O(n) | O(n) | Efficient rerooting technique |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Tree Diameter**: Longest path in tree, useful for distance calculations
+- **Rerooting**: Change root and recalculate distances efficiently
+- **Dynamic Programming**: Use DP on trees for optimal solutions
+- **Height Calculation**: Calculate subtree heights for distance computation
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Tree Distances with Edge Weights**
+```python
+def weighted_tree_distances(n, edges, weights):
+    # Find maximum weighted distance from each node
+    
+    # Build adjacency list with weights
+    tree = [[] for _ in range(n + 1)]
+    for i, (a, b) in enumerate(edges):
+        tree[a].append((b, weights[i]))
+        tree[b].append((a, weights[i]))
+    
+    # Arrays to store heights and maximum distances
+    heights = [0] * (n + 1)
+    max_distances = [0] * (n + 1)
+    
+    def dfs(node, parent):
+        # Heights of all children
+        child_heights = []
+        
+        for child, weight in tree[node]:
+            if child != parent:
+                height = dfs(child, node) + weight
+                child_heights.append(height)
+        
+        if not child_heights:
+            heights[node] = 0
+            return 0
+        
+        # Store height of current node
+        heights[node] = max(child_heights)
+        return heights[node]
+    
+    # Calculate heights
+    dfs(1, -1)
+    
+    # Calculate maximum distances using rerooting
+    def calculate_max_distances(node, parent, dist_from_root):
+        # Maximum distance is max of:
+        # 1. Distance to root + height of other subtrees
+        # 2. Height of current subtree
+        max_dist = dist_from_root
+        
+        # Get heights of all children
+        child_heights = []
+        for child, weight in tree[node]:
+            if child != parent:
+                child_heights.append(heights[child] + weight)
+        
+        if child_heights:
+            max_dist = max(max_dist, max(child_heights))
+        
+        max_distances[node] = max_dist
+        
+        # Recurse to children
+        for child, weight in tree[node]:
+            if child != parent:
+                # Calculate new distance from root for child
+                new_dist = dist_from_root + weight
+                calculate_max_distances(child, node, new_dist)
+    
+    # Start from root
+    calculate_max_distances(1, -1, 0)
+    
+    return max_distances[1:n + 1]
+```
+
+#### **2. Tree Distances with Multiple Queries**
+```python
+def tree_distances_queries(n, edges, queries):
+    # Handle multiple distance queries efficiently
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        tree[a].append(b)
+        tree[b].append(a)
+    
+    # Precompute all distances using BFS
+    def bfs_distances(start):
+        distances = [-1] * (n + 1)
+        queue = [(start, 0)]
+        distances[start] = 0
+        
+        while queue:
+            node, dist = queue.pop(0)
+            for child in tree[node]:
+                if distances[child] == -1:
+                    distances[child] = dist + 1
+                    queue.append((child, dist + 1))
+        
+        return distances
+    
+    # Precompute distances from all nodes
+    all_distances = {}
+    for i in range(1, n + 1):
+        all_distances[i] = bfs_distances(i)
+    
+    # Process queries
+    results = []
+    for query in queries:
+        if query[0] == 'max_distance':
+            node = query[1]
+            max_dist = max(all_distances[node][1:n + 1])
+            results.append(max_dist)
+        elif query[0] == 'distance':
+            a, b = query[1], query[2]
+            dist = all_distances[a][b]
+            results.append(dist)
+    
+    return results
+```
+
+#### **3. Tree Distances with Path Reconstruction**
+```python
+def tree_distances_with_path(n, edges):
+    # Find maximum distance and reconstruct the path
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        tree[a].append(b)
+        tree[b].append(a)
+    
+    def dfs(node, parent, distance):
+        max_dist = distance
+        farthest_node = node
+        path = [node]
+        
+        for child in tree[node]:
+            if child != parent:
+                dist, far_node, child_path = dfs(child, node, distance + 1)
+                if dist > max_dist:
+                    max_dist = dist
+                    farthest_node = far_node
+                    path = [node] + child_path
+        
+        return max_dist, farthest_node, path
+    
+    # Find diameter endpoints
+    _, endpoint1, _ = dfs(1, -1, 0)
+    _, endpoint2, path = dfs(endpoint1, -1, 0)
+    
+    # Calculate distances from both endpoints
+    def calculate_distances(start):
+        distances = [-1] * (n + 1)
+        stack = [(start, -1, 0)]
+        
+        while stack:
+            node, parent, dist = stack.pop()
+            distances[node] = dist
+            
+            for child in tree[node]:
+                if child != parent:
+                    stack.append((child, node, dist + 1))
+        
+        return distances
+    
+    dist1 = calculate_distances(endpoint1)
+    dist2 = calculate_distances(endpoint2)
+    
+    # Maximum distance for each node
+    result = []
+    for i in range(1, n + 1):
+        result.append(max(dist1[i], dist2[i]))
+    
+    return result, path
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Tree Distances**: Various tree distance problems
+- **Tree Diameter**: Tree diameter problems
+- **Tree Algorithms**: Tree traversal and distance problems
+- **Dynamic Programming**: DP on trees
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Diameter endpoints** are useful for distance calculations
+- **Rerooting technique** efficiently calculates distances for all nodes
+- **Tree DP** provides optimal solutions for tree problems
+- **Height calculation** is fundamental for tree distance problems
 
 ## Key Insights for Other Problems
 

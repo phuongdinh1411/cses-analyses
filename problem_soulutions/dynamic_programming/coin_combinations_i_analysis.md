@@ -1,21 +1,28 @@
 ---
 layout: simple
-title: "Coin Combinations I"
+title: "Coin Combinations I - Count Ways to Make Sum"
 permalink: /problem_soulutions/dynamic_programming/coin_combinations_i_analysis
 ---
 
+# Coin Combinations I - Count Ways to Make Sum
 
-# Coin Combinations I
+## 📋 Problem Description
 
-## Problem Description
+Given a money system with n coins of different values, count the number of distinct ways to produce a sum x using the available coins.
 
-**Problem**: Given a money system with n coins of different values, count the number of distinct ways to produce a sum x using the available coins.
+This is a classic dynamic programming problem that requires counting the number of ways to make a target sum using available coins. The solution involves using bottom-up DP to build solutions from smaller subproblems.
 
 **Input**: 
 - n, x: number of coins and target sum
 - c1, c2, ..., cn: values of each coin
 
-**Output**: Number of distinct ways modulo 10^9+7.
+**Output**: 
+- Number of distinct ways modulo 10⁹+7
+
+**Constraints**:
+- 1 ≤ n ≤ 100
+- 1 ≤ x ≤ 10⁶
+- 1 ≤ ci ≤ 10⁶
 
 **Example**:
 ```
@@ -26,22 +33,22 @@ Input:
 Output:
 8
 
-Explanation: 
+Explanation**: 
 There are 8 distinct ways to achieve sum 9:
-- 2+2+5
-- 2+5+2
-- 5+2+2
-- 3+3+3
-- 2+2+2+3
-- 2+2+3+2
-- 2+3+2+2
-- 3+2+2+2
+- 2+2+5, 2+5+2, 5+2+2 (using 2,2,5)
+- 3+3+3 (using 3,3,3)
+- 2+2+2+3, 2+2+3+2, 2+3+2+2, 3+2+2+2 (using 2,2,2,3)
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Recursive Brute Force - O(n^x)
-**Description**: Try all possible combinations of coins recursively.
+### Step 1: Understanding the Problem
+- **Goal**: Count the number of ways to make a target sum using available coins
+- **Key Insight**: Use dynamic programming to build solutions from smaller subproblems
+- **Challenge**: Avoid exponential time complexity with recursive approach
+
+### Step 2: Initial Approach
+**Recursive brute force (inefficient but correct):**
 
 ```python
 def coin_combinations_brute_force(n, x, coins):
@@ -92,8 +99,8 @@ def coin_combinations_memoization(n, x, coins):
 
 **Why this improvement works**: By storing the results of subproblems in a memo dictionary, we avoid recalculating the same values multiple times. Each subproblem is solved only once, leading to O(n*x) complexity.
 
-### Improvement 2: Bottom-Up Dynamic Programming - O(n*x)
-**Description**: Use iterative DP to build the solution from smaller subproblems.
+### Step 3: Optimization/Alternative
+**Bottom-up dynamic programming:**
 
 ```python
 def coin_combinations_dp(n, x, coins):
@@ -113,7 +120,7 @@ def coin_combinations_dp(n, x, coins):
 
 **Why this improvement works**: We build the solution iteratively by solving smaller subproblems first. For each sum i, we consider all coin values and add the ways to make sum (i-coin).
 
-### Step 3: Complete Solution
+### Step 4: Complete Solution
 **Putting it all together:**
 
 ```python
@@ -145,7 +152,7 @@ if __name__ == "__main__":
 - Efficient implementation
 - Clear and readable code
 
-### Step 4: Testing Our Solution
+### Step 5: Testing Our Solution
 **Let's verify with examples:**
 
 ```python
@@ -182,6 +189,12 @@ test_solution()
 ```
 
 ## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Recursive | O(n^x) | O(x) | Try all combinations |
+| Memoized | O(n×x) | O(x) | Store subproblem results |
+| Bottom-up DP | O(n×x) | O(x) | Build from smaller subproblems |
 
 ### Time Complexity
 - **Time**: O(n*x) - we iterate through each sum and each coin
@@ -432,6 +445,124 @@ print(dp[x])
 | Memoization | O(n*x) | O(x) | Store subproblem results |
 | Bottom-Up DP | O(n*x) | O(x) | Build solution iteratively |
 | Optimized DP | O(n*x) | O(x) | Early termination with sorting |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Dynamic Programming**: Build solutions from smaller subproblems
+- **Coin Change**: Classic DP problem with optimal substructure
+- **Bottom-up Approach**: Iterative solution building
+- **Modular Arithmetic**: Handle large numbers with modulo operations
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Coin Combinations with Limited Coins**
+```python
+def coin_combinations_limited(n, x, coins, limits):
+    # Handle coin combinations with limited number of each coin
+    
+    MOD = 10**9 + 7
+    
+    # dp[i] = number of ways to make sum i
+    dp = [0] * (x + 1)
+    dp[0] = 1  # Base case
+    
+    for i in range(n):
+        coin = coins[i]
+        limit = limits[i]
+        
+        # Process this coin type
+        for j in range(x, coin - 1, -1):
+            for k in range(1, min(limit + 1, j // coin + 1)):
+                if j >= k * coin:
+                    dp[j] = (dp[j] + dp[j - k * coin]) % MOD
+    
+    return dp[x]
+```
+
+#### **2. Coin Combinations with Minimum Coins**
+```python
+def coin_combinations_minimum(n, x, coins):
+    # Handle coin combinations with minimum number of coins
+    
+    MOD = 10**9 + 7
+    
+    # dp[i] = number of ways to make sum i with minimum coins
+    dp = [0] * (x + 1)
+    min_coins = [float('inf')] * (x + 1)
+    
+    dp[0] = 1
+    min_coins[0] = 0
+    
+    for i in range(1, x + 1):
+        for coin in coins:
+            if i >= coin:
+                if min_coins[i - coin] + 1 < min_coins[i]:
+                    min_coins[i] = min_coins[i - coin] + 1
+                    dp[i] = dp[i - coin]
+                elif min_coins[i - coin] + 1 == min_coins[i]:
+                    dp[i] = (dp[i] + dp[i - coin]) % MOD
+    
+    return dp[x] if min_coins[x] != float('inf') else 0
+```
+
+#### **3. Coin Combinations with Dynamic Updates**
+```python
+def coin_combinations_dynamic(operations):
+    # Handle coin combinations with dynamic coin updates
+    
+    coins = []
+    x = 0
+    dp = [0] * (10**6 + 1)
+    dp[0] = 1
+    MOD = 10**9 + 7
+    
+    for operation in operations:
+        if operation[0] == 'add_coin':
+            # Add new coin
+            coin = operation[1]
+            coins.append(coin)
+            
+            # Update DP array
+            for i in range(coin, x + 1):
+                dp[i] = (dp[i] + dp[i - coin]) % MOD
+        
+        elif operation[0] == 'set_target':
+            # Set target sum
+            x = operation[1]
+            
+            # Recalculate DP array
+            dp = [0] * (x + 1)
+            dp[0] = 1
+            
+            for coin in coins:
+                for i in range(coin, x + 1):
+                    dp[i] = (dp[i] + dp[i - coin]) % MOD
+        
+        elif operation[0] == 'query':
+            # Return current number of ways
+            yield dp[x] if x < len(dp) else 0
+    
+    return list(coin_combinations_dynamic(operations))
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Dynamic Programming**: Coin change, knapsack problems
+- **Counting Problems**: Ways to make sums, combinations
+- **Optimization**: Minimum coins, maximum value
+- **Combinatorics**: Permutations and combinations
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Dynamic programming** is essential for counting problems
+- **Bottom-up approach** is often more efficient than top-down
+- **State transitions** should be carefully designed
+- **Modular arithmetic** prevents integer overflow
 
 ## Key Insights for Other Problems
 

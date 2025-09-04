@@ -1,20 +1,27 @@
 ---
 layout: simple
-title: "Playlist"
+title: "Playlist - Longest Unique Song Sequence"
 permalink: /problem_soulutions/sorting_and_searching/cses_playlist_analysis
 ---
 
-# Playlist
+# Playlist - Longest Unique Song Sequence
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: You are given a playlist of a radio station. What is the longest sequence of consecutive songs where each song is unique?
+You are given a playlist of a radio station. What is the longest sequence of consecutive songs where each song is unique?
+
+This is a sliding window problem that requires finding the longest contiguous subarray with all unique elements. The solution involves using the two pointers technique with a frequency map to track unique elements.
 
 **Input**: 
 - First line: n (number of songs)
 - Second line: n integers k₁, k₂, ..., kₙ (song IDs)
 
-**Output**: Length of the longest sequence of unique songs.
+**Output**: 
+- Length of the longest sequence of unique songs
+
+**Constraints**:
+- 1 ≤ n ≤ 2⋅10⁵
+- 1 ≤ kᵢ ≤ 10⁹
 
 **Example**:
 ```
@@ -25,7 +32,11 @@ Input:
 Output:
 5
 
-Explanation: The longest sequence of unique songs is [1, 3, 2, 7, 4] with length 5.
+Explanation**: 
+- Song sequence: [1, 2, 1, 3, 2, 7, 4, 2]
+- Longest unique sequence: [1, 3, 2, 7, 4] (positions 3-7)
+- Length: 5 songs
+- Cannot extend further as song 2 appears again at position 8
 ```
 
 ## 🎯 Solution Progression
@@ -104,6 +115,12 @@ def playlist_optimized(songs):
 - Clearer variable names
 - More readable logic
 - Same optimal time complexity
+
+### Step 3: Optimization/Alternative
+**Alternative approaches:**
+- **Brute Force**: Check all possible subarrays O(n²)
+- **Sliding Window**: Two pointers with frequency map O(n)
+- **Hash Map**: Track last occurrence of each element
 
 ### Step 4: Complete Solution
 **Putting it all together:**
@@ -186,7 +203,20 @@ def solve_test(songs):
 test_solution()
 ```
 
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic unique sequence (should return correct length)
+- **Test 2**: All unique songs (should return n)
+- **Test 3**: All same songs (should return 1)
+- **Test 4**: Complex pattern (should return optimal length)
+
 ## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(n²) | O(1) | Check all possible subarrays |
+| Sliding Window | O(n) | O(n) | Two pointers with frequency map |
+| Hash Map | O(n) | O(n) | Track last occurrence positions |
 
 ### Time Complexity
 - **Time**: O(n) - single pass through array
@@ -344,11 +374,133 @@ def longest_subarray_with_target_sum(arr, target):
     return max_length
 ```
 
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Sliding Window**: Two pointers technique for contiguous subarrays
+- **Hash Map**: Track frequency or last occurrence of elements
+- **Unique Elements**: Maintain window with all unique elements
+- **Two Pointers**: Efficient technique for subarray problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Playlist with K Duplicates Allowed**
+```python
+def playlist_k_duplicates(songs, k):
+    # Handle playlist where each song can appear at most k times
+    
+    song_count = {}
+    longest_sequence = 0
+    window_start = 0
+    
+    for window_end in range(len(songs)):
+        current_song = songs[window_end]
+        
+        # Add current song to window
+        song_count[current_song] = song_count.get(current_song, 0) + 1
+        
+        # Shrink window if any song appears more than k times
+        while song_count[current_song] > k:
+            song_count[songs[window_start]] -= 1
+            if song_count[songs[window_start]] == 0:
+                del song_count[songs[window_start]]
+            window_start += 1
+        
+        # Update longest sequence
+        current_length = window_end - window_start + 1
+        longest_sequence = max(longest_sequence, current_length)
+    
+    return longest_sequence
+```
+
+#### **2. Playlist with Weighted Songs**
+```python
+def playlist_weighted(songs, weights):
+    # Handle playlist with weighted songs
+    
+    song_positions = {}
+    longest_sequence = 0
+    window_start = 0
+    current_weight = 0
+    
+    for window_end in range(len(songs)):
+        current_song = songs[window_end]
+        
+        # If song already in window, move start pointer
+        if current_song in song_positions:
+            # Remove weight of songs before the duplicate
+            for i in range(window_start, song_positions[current_song] + 1):
+                current_weight -= weights[i]
+            window_start = song_positions[current_song] + 1
+        
+        # Add current song weight
+        current_weight += weights[window_end]
+        song_positions[current_song] = window_end
+        
+        # Update longest sequence (by weight)
+        longest_sequence = max(longest_sequence, current_weight)
+    
+    return longest_sequence
+```
+
+#### **3. Playlist with Dynamic Updates**
+```python
+def playlist_dynamic(operations):
+    # Handle playlist with dynamic song additions/removals
+    
+    songs = []
+    longest_sequence = 0
+    
+    for operation in operations:
+        if operation[0] == 'add':
+            # Add new song
+            song = operation[1]
+            songs.append(song)
+            
+            # Recalculate longest unique sequence
+            longest_sequence = calculate_longest_unique(songs)
+        
+        elif operation[0] == 'remove':
+            # Remove song at index
+            index = operation[1]
+            if 0 <= index < len(songs):
+                songs.pop(index)
+                longest_sequence = calculate_longest_unique(songs)
+        
+        elif operation[0] == 'query':
+            # Return current longest sequence
+            yield longest_sequence
+    
+    return list(playlist_dynamic(operations))
+
+def calculate_longest_unique(songs):
+    song_positions = {}
+    longest_sequence = 0
+    window_start = 0
+    
+    for window_end in range(len(songs)):
+        current_song = songs[window_end]
+        
+        if current_song in song_positions:
+            window_start = max(window_start, song_positions[current_song] + 1)
+        
+        song_positions[current_song] = window_end
+        
+        current_length = window_end - window_start + 1
+        longest_sequence = max(longest_sequence, current_length)
+    
+    return longest_sequence
+```
+
 ## 🔗 Related Problems
 
-- **[Longest Substring Without Repeating](/cses-analyses/problem_soulutions/sorting_and_searching/longest_substring_without_repeating_analysis)**: Similar sliding window problem
-- **[Subarray Distinct Values](/cses-analyses/problem_soulutions/sorting_and_searching/subarray_distinct_values_analysis)**: Distinct value problems
-- **[Sliding Window](/cses-analyses/problem_soulutions/sorting_and_searching/sliding_window_advertisement_analysis)**: Sliding window techniques
+### Links to Similar Problems
+- **Sliding Window**: Subarray problems with constraints
+- **Two Pointers**: Array problems with two pointers
+- **Hash Map**: Frequency counting problems
+- **Unique Elements**: Problems with distinct values
 
 ## 📚 Learning Points
 

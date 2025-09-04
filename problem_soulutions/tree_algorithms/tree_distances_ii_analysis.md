@@ -1,27 +1,29 @@
 ---
 layout: simple
-title: "Tree Distances II"
+title: "Tree Distances II - Sum of Distances from Each Node"
 permalink: /problem_soulutions/tree_algorithms/tree_distances_ii_analysis
 ---
 
+# Tree Distances II - Sum of Distances from Each Node
 
-# Tree Distances II
+## 📋 Problem Description
 
-## Problem Statement
 Given a tree with n nodes, find for each node the sum of distances to all other nodes.
 
-### Input
-The first input line has an integer n: the number of nodes. The nodes are numbered 1,2,…,n.
-Then, there are n−1 lines describing the edges. Each line has two integers a and b: there is an edge between nodes a and b.
+This is a tree distance problem that requires finding the sum of distances from each node to all other nodes in the tree. The solution involves using dynamic programming on trees with rerooting technique.
 
-### Output
-Print n integers: the sum of distances from each node to all other nodes.
+**Input**: 
+- First line: Integer n (number of nodes)
+- Next n-1 lines: Two integers a and b (edge between nodes a and b)
 
-### Constraints
-- 1 ≤ n ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
+**Output**: 
+- n integers: sum of distances from each node to all other nodes
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 2⋅10⁵
+- 1 ≤ a, b ≤ n
+
+**Example**:
 ```
 Input:
 5
@@ -34,10 +36,22 @@ Output:
 6 9 5 8 8
 ```
 
-## Solution Progression
+**Explanation**: 
+- Node 1: sum = 0+1+1+2+2 = 6
+- Node 2: sum = 1+0+2+3+3 = 9
+- Node 3: sum = 1+2+0+1+1 = 5
+- Node 4: sum = 2+3+1+0+2 = 8
+- Node 5: sum = 2+3+1+2+0 = 8
 
-### Approach 1: Multiple BFS - O(n²)
-**Description**: Use BFS from each node to find the sum of distances to all other nodes.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find sum of distances from each node to all other nodes
+- **Key Insight**: Use dynamic programming on trees with rerooting technique
+- **Challenge**: Efficiently calculate distances without O(n²) complexity
+
+### Step 2: Initial Approach
+**Multiple BFS approach (inefficient but correct):**
 
 ```python
 from collections import deque
@@ -130,8 +144,8 @@ child: # - Nodes in child's subtree get closer by 1
 
 **Why this improvement works**: Rerooting technique efficiently calculates distance sums for all nodes using subtree sizes.
 
-### Improvement 2: Single DFS with Height and Count - O(n)
-**Description**: Use a single DFS to calculate heights and node counts for efficient distance calculation.
+### Step 3: Optimization/Alternative
+**Single DFS with height and count calculation:**
 
 ```python
 def tree_distances_single_dfs(n, edges):
@@ -243,7 +257,7 @@ def tree_distances_dp(n, edges):
 
 **Why this works**: DP approach uses parent information to calculate distance sums efficiently.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 n = int(input())
@@ -297,7 +311,14 @@ dfs2(1, -1, initial_sum)
 print(*distance_sums[1:n + 1])
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple tree (should return correct distance sums)
+- **Test 2**: Linear tree (should return correct sums)
+- **Test 3**: Star tree (should return correct sums)
+- **Test 4**: Complex tree (should find all distance sums)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -305,6 +326,230 @@ print(*distance_sums[1:n + 1])
 | Rerooting | O(n) | O(n) | Use subtree sizes |
 | Single DFS | O(n) | O(n) | Efficient rerooting |
 | Dynamic Programming | O(n) | O(n) | Parent-based calculation |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Rerooting Technique**: Change root and recalculate distances efficiently
+- **Subtree Sizes**: Use subtree sizes to calculate distance changes
+- **Dynamic Programming**: Use DP on trees for optimal solutions
+- **Distance Sum Formula**: sum_new = sum_old - nodes_in_subtree + nodes_outside_subtree
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Tree Distances with Edge Weights**
+```python
+def weighted_tree_distances_ii(n, edges, weights):
+    # Find sum of weighted distances from each node
+    
+    # Build adjacency list with weights
+    tree = [[] for _ in range(n + 1)]
+    for i, (a, b) in enumerate(edges):
+        tree[a].append((b, weights[i]))
+        tree[b].append((a, weights[i]))
+    
+    # Arrays to store subtree sizes and distance sums
+    subtree_sizes = [0] * (n + 1)
+    distance_sums = [0] * (n + 1)
+    
+    def dfs1(node, parent):
+        # First DFS: calculate subtree sizes
+        subtree_sizes[node] = 1
+        for child, weight in tree[node]:
+            if child != parent:
+                subtree_sizes[node] += dfs1(child, node)
+        return subtree_sizes[node]
+    
+    def dfs2(node, parent, dist_sum):
+        # Second DFS: calculate distance sums using rerooting
+        distance_sums[node] = dist_sum
+        
+        for child, weight in tree[node]:
+            if child != parent:
+                # When moving root from node to child:
+                # - Nodes in child's subtree get closer by weight
+                # - Nodes outside child's subtree get farther by weight
+                nodes_in_subtree = subtree_sizes[child]
+                nodes_outside_subtree = n - nodes_in_subtree
+                
+                new_dist_sum = dist_sum - nodes_in_subtree * weight + nodes_outside_subtree * weight
+                dfs2(child, node, new_dist_sum)
+    
+    # Calculate initial distance sum from root
+    def calculate_initial_sum(node, parent, depth):
+        total = depth
+        for child, weight in tree[node]:
+            if child != parent:
+                total += calculate_initial_sum(child, node, depth + weight)
+        return total
+    
+    # Start rerooting from root
+    dfs1(1, -1)
+    initial_sum = calculate_initial_sum(1, -1, 0)
+    dfs2(1, -1, initial_sum)
+    
+    return distance_sums[1:n + 1]
+```
+
+#### **2. Tree Distances with Multiple Queries**
+```python
+def tree_distances_ii_queries(n, edges, queries):
+    # Handle multiple distance sum queries efficiently
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        tree[a].append(b)
+        tree[b].append(a)
+    
+    # Precompute all distance sums using rerooting
+    subtree_sizes = [0] * (n + 1)
+    distance_sums = [0] * (n + 1)
+    
+    def dfs1(node, parent):
+        subtree_sizes[node] = 1
+        for child in tree[node]:
+            if child != parent:
+                subtree_sizes[node] += dfs1(child, node)
+        return subtree_sizes[node]
+    
+    def dfs2(node, parent, dist_sum):
+        distance_sums[node] = dist_sum
+        
+        for child in tree[node]:
+            if child != parent:
+                nodes_in_subtree = subtree_sizes[child]
+                nodes_outside_subtree = n - nodes_in_subtree
+                new_dist_sum = dist_sum - nodes_in_subtree + nodes_outside_subtree
+                dfs2(child, node, new_dist_sum)
+    
+    def calculate_initial_sum(node, parent, depth):
+        total = depth
+        for child in tree[node]:
+            if child != parent:
+                total += calculate_initial_sum(child, node, depth + 1)
+        return total
+    
+    # Precompute all distance sums
+    dfs1(1, -1)
+    initial_sum = calculate_initial_sum(1, -1, 0)
+    dfs2(1, -1, initial_sum)
+    
+    # Process queries
+    results = []
+    for query in queries:
+        if query[0] == 'sum':
+            node = query[1]
+            results.append(distance_sums[node])
+        elif query[0] == 'distance':
+            a, b = query[1], query[2]
+            # Calculate distance between a and b
+            def distance_between(a, b):
+                from collections import deque
+                queue = deque([(a, 0)])
+                visited = {a}
+                
+                while queue:
+                    node, dist = queue.popleft()
+                    if node == b:
+                        return dist
+                    
+                    for child in tree[node]:
+                        if child not in visited:
+                            visited.add(child)
+                            queue.append((child, dist + 1))
+                
+                return -1
+            
+            results.append(distance_between(a, b))
+    
+    return results
+```
+
+#### **3. Tree Distances with Updates**
+```python
+def tree_distances_ii_updates(n, edges, updates):
+    # Handle dynamic updates to tree structure
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        tree[a].append(b)
+        tree[b].append(a)
+    
+    def compute_distance_sums():
+        # Recompute distance sums after updates
+        subtree_sizes = [0] * (n + 1)
+        distance_sums = [0] * (n + 1)
+        
+        def dfs1(node, parent):
+            subtree_sizes[node] = 1
+            for child in tree[node]:
+                if child != parent:
+                    subtree_sizes[node] += dfs1(child, node)
+            return subtree_sizes[node]
+        
+        def dfs2(node, parent, dist_sum):
+            distance_sums[node] = dist_sum
+            
+            for child in tree[node]:
+                if child != parent:
+                    nodes_in_subtree = subtree_sizes[child]
+                    nodes_outside_subtree = n - nodes_in_subtree
+                    new_dist_sum = dist_sum - nodes_in_subtree + nodes_outside_subtree
+                    dfs2(child, node, new_dist_sum)
+        
+        def calculate_initial_sum(node, parent, depth):
+            total = depth
+            for child in tree[node]:
+                if child != parent:
+                    total += calculate_initial_sum(child, node, depth + 1)
+            return total
+        
+        dfs1(1, -1)
+        initial_sum = calculate_initial_sum(1, -1, 0)
+        dfs2(1, -1, initial_sum)
+        
+        return distance_sums[1:n + 1]
+    
+    # Process updates
+    results = []
+    for update in updates:
+        if update[0] == 'add':
+            # Add edge
+            a, b = update[1], update[2]
+            tree[a].append(b)
+            tree[b].append(a)
+        elif update[0] == 'remove':
+            # Remove edge
+            a, b = update[1], update[2]
+            tree[a].remove(b)
+            tree[b].remove(a)
+        
+        # Recompute distance sums
+        result = compute_distance_sums()
+        results.append(result)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Tree Distances**: Various tree distance problems
+- **Rerooting**: Rerooting technique problems
+- **Tree Algorithms**: Tree traversal and distance problems
+- **Dynamic Programming**: DP on trees
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Rerooting technique** efficiently calculates distance sums for all nodes
+- **Subtree sizes** are crucial for distance sum calculations
+- **Distance sum formula** simplifies rerooting calculations
+- **Tree DP** provides optimal solutions for tree problems
 
 ## Key Insights for Other Problems
 

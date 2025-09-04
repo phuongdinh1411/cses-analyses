@@ -1,21 +1,29 @@
 ---
 layout: simple
-title: "Graph Girth"
+title: "Graph Girth - Shortest Cycle Length in Undirected Graph"
 permalink: /problem_soulutions/advanced_graph_problems/graph_girth_analysis
 ---
 
-# Graph Girth
+# Graph Girth - Shortest Cycle Length in Undirected Graph
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given an undirected graph, find the length of the shortest cycle (girth).
+Given an undirected graph, find the length of the shortest cycle (girth).
+
+This is a classic graph theory problem that requires finding the shortest cycle in an undirected graph. The solution involves using BFS from each vertex to detect cycles and find the minimum cycle length.
 
 **Input**: 
 - n: number of vertices
 - m: number of edges
 - m lines: a b (edge between vertices a and b)
 
-**Output**: Length of the shortest cycle, or -1 if no cycle exists.
+**Output**: 
+- Length of the shortest cycle, or -1 if no cycle exists
+
+**Constraints**:
+- 1 ≤ n ≤ 1000
+- 1 ≤ m ≤ 2000
+- 1 ≤ a, b ≤ n
 
 **Example**:
 ```
@@ -29,27 +37,22 @@ Input:
 Output:
 4
 
-Explanation: 
+Explanation**: 
 The shortest cycle is 1 → 2 → 3 → 4 → 1 with length 4.
 ```
 
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find the shortest cycle in an undirected graph
-- Use graph algorithms and cycle detection
-- Apply BFS or DFS approaches
-- Handle cases with no cycles
+- **Goal**: Find the shortest cycle length (girth) in an undirected graph
+- **Key Insight**: Use BFS from each vertex to detect cycles and find minimum length
+- **Challenge**: Efficiently detect cycles and find the shortest one
 
-**Key Observations:**
-- This is a cycle detection problem
-- Need to find shortest cycle length
-- Can use BFS from each vertex
-- Girth is the minimum cycle length
+### Step 2: Initial Approach
+**DFS approach (inefficient but correct):**
 
-### Step 2: BFS Approach
-**Idea**: Use BFS from each vertex to find shortest cycles.
+### Step 3: Optimization/Alternative
+**BFS approach:**
 
 ```python
 def graph_girth_bfs(n, edges):
@@ -212,6 +215,137 @@ test_solution()
 - **Parent Tracking**: Avoids revisiting parent nodes
 - **Distance Tracking**: Calculates cycle lengths
 - **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Graph Girth**: Length of shortest cycle in undirected graph
+- **BFS Cycle Detection**: Use BFS from each vertex to find shortest cycles
+- **Parent Tracking**: Avoid revisiting parent nodes to prevent false cycles
+- **Cycle Length Calculation**: Calculate cycle length using distance information
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Graph Girth with Weights**
+```python
+def graph_girth_weighted(n, edges, weights):
+    # Handle graph girth with weighted edges
+    
+    # Build adjacency list with weights
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        weight = weights.get((a, b), 1)
+        adj[a].append((b, weight))
+        adj[b].append((a, weight))
+    
+    min_cycle = float('inf')
+    
+    # Try BFS from each vertex
+    for start in range(1, n + 1):
+        # BFS to find shortest weighted cycle containing start
+        from collections import deque
+        queue = deque([(start, -1, 0)])  # (node, parent, distance)
+        visited = {start: 0}
+        
+        while queue:
+            node, parent, dist = queue.popleft()
+            
+            for neighbor, weight in adj[node]:
+                if neighbor == parent:
+                    continue
+                
+                if neighbor in visited:
+                    # Found a cycle
+                    cycle_length = dist + visited[neighbor] + weight
+                    min_cycle = min(min_cycle, cycle_length)
+                else:
+                    visited[neighbor] = dist + weight
+                    queue.append((neighbor, node, dist + weight))
+    
+    return min_cycle if min_cycle != float('inf') else -1
+```
+
+#### **2. Graph Girth with Constraints**
+```python
+def graph_girth_constrained(n, edges, forbidden_edges):
+    # Handle graph girth with forbidden edges
+    
+    # Build adjacency list excluding forbidden edges
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
+            adj[a].append(b)
+            adj[b].append(a)
+    
+    min_cycle = float('inf')
+    
+    # Try BFS from each vertex
+    for start in range(1, n + 1):
+        # BFS to find shortest cycle containing start
+        from collections import deque
+        queue = deque([(start, -1, 0)])  # (node, parent, distance)
+        visited = {start: 0}
+        
+        while queue:
+            node, parent, dist = queue.popleft()
+            
+            for neighbor in adj[node]:
+                if neighbor == parent:
+                    continue
+                
+                if neighbor in visited:
+                    # Found a cycle
+                    cycle_length = dist + visited[neighbor] + 1
+                    min_cycle = min(min_cycle, cycle_length)
+                else:
+                    visited[neighbor] = dist + 1
+                    queue.append((neighbor, node, dist + 1))
+    
+    return min_cycle if min_cycle != float('inf') else -1
+```
+
+#### **3. Graph Girth with Dynamic Updates**
+```python
+def graph_girth_dynamic(n, initial_edges, operations):
+    # Handle graph girth with dynamic edge updates
+    
+    current_edges = initial_edges.copy()
+    results = []
+    
+    for op in operations:
+        if op[0] == 'add':
+            # Add new edge
+            a, b = op[1], op[2]
+            current_edges.append((a, b))
+        elif op[0] == 'remove':
+            # Remove edge
+            a, b = op[1], op[2]
+            current_edges.remove((a, b))
+        elif op[0] == 'query':
+            # Query current girth
+            result = solve_graph_girth(n, current_edges)
+            results.append(result)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Graph Theory**: Cycle detection, shortest paths
+- **Graph Algorithms**: BFS, DFS, cycle detection
+- **Graph Properties**: Girth, diameter, connectivity
+- **Optimization**: Shortest cycle problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Graph girth** is a fundamental graph property
+- **BFS cycle detection** efficiently finds shortest cycles
+- **Parent tracking** prevents false cycle detection
+- **Graph algorithms** solve complex cycle problems
 
 ## 🎯 Key Insights
 

@@ -1,26 +1,28 @@
 ---
 layout: simple
-title: "String Matching"
+title: "String Matching - Pattern Occurrence Detection"
 permalink: /problem_soulutions/string_algorithms/string_matching_analysis
 ---
 
+# String Matching - Pattern Occurrence Detection
 
-# String Matching
+## 📋 Problem Description
 
-## Problem Statement
 Given a string and a pattern, find all occurrences of the pattern in the string.
 
-### Input
-The first input line has a string s.
-The second input line has a pattern p.
+This is a classic string matching problem that requires finding all positions where a pattern occurs in a text string. The solution involves using efficient algorithms like KMP (Knuth-Morris-Pratt) or Z-algorithm to achieve linear time complexity.
 
-### Output
-Print all positions where the pattern occurs in the string (1-indexed).
+**Input**: 
+- First line: A string s
+- Second line: A pattern p
 
-### Constraints
-- 1 ≤ |s|, |p| ≤ 10^6
+**Output**: 
+- Print all positions where the pattern occurs in the string (1-indexed)
 
-### Example
+**Constraints**:
+- 1 ≤ |s|, |p| ≤ 10⁶
+
+**Example**:
 ```
 Input:
 ABCABCA
@@ -28,12 +30,23 @@ ABC
 
 Output:
 1 4
+
+Explanation**: 
+- String: "ABCABCA"
+- Pattern: "ABC"
+- Position 1: "ABC"ABCA (match at index 0, 1-indexed = 1)
+- Position 4: ABC"ABC"A (match at index 3, 1-indexed = 4)
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Naive String Matching - O(|s| * |p|)
-**Description**: Check each position in the string for a match with the pattern.
+### Step 1: Understanding the Problem
+- **Goal**: Find all occurrences of a pattern in a text string
+- **Key Insight**: Use KMP algorithm or Z-algorithm for linear time complexity
+- **Challenge**: Handle large strings efficiently without O(|s| × |p|) complexity
+
+### Step 2: Initial Approach
+**Naive string matching (inefficient but correct):**
 
 ```python
 def string_matching_naive(s, p):
@@ -102,8 +115,8 @@ def string_matching_kmp(s, p):
 
 **Why this improvement works**: KMP algorithm uses failure function to avoid unnecessary comparisons.
 
-### Improvement 2: Boyer-Moore Algorithm - O(|s| + |p|)
-**Description**: Use Boyer-Moore algorithm with bad character rule for efficient matching.
+### Step 3: Optimization/Alternative
+**Boyer-Moore algorithm:**
 
 ```python
 def build_bad_char_table(pattern):
@@ -193,7 +206,7 @@ def string_matching_z_algorithm(s, p):
 
 **Why this works**: Z-algorithm finds all occurrences of pattern in linear time.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 s = input().strip()
@@ -249,7 +262,21 @@ positions = string_matching_kmp(s, p)
 print(*positions)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic pattern matching (should return all positions)
+- **Test 2**: No matches (should return empty)
+- **Test 3**: Multiple matches (should return all positions)
+- **Test 4**: Pattern longer than string (should return empty)
+
+## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Naive | O(|s| × |p|) | O(1) | Check all positions |
+| KMP | O(|s| + |p|) | O(|p|) | Use failure function |
+| Boyer-Moore | O(|s| + |p|) | O(|p|) | Bad character rule |
+| Z-Algorithm | O(|s| + |p|) | O(|s| + |p|) | Z-array computation |
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -257,6 +284,230 @@ print(*positions)
 | KMP | O(|s| + |p|) | O(|p|) | Use failure function |
 | Boyer-Moore | O(|s| + |p|) | O(|p|) | Bad character rule |
 | Z-Algorithm | O(|s| + |p|) | O(|s| + |p|) | Z-array computation |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **KMP Algorithm**: Use failure function for efficient pattern matching
+- **String Matching**: Find all occurrences of pattern in text
+- **Linear Time**: Achieve O(|s| + |p|) complexity
+- **Pattern Preprocessing**: Build failure function for efficient matching
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. String Matching with Wildcards**
+```python
+def string_matching_wildcards(s, p):
+    # Handle pattern matching with wildcard characters
+    
+    def build_failure_function(pattern):
+        m = len(pattern)
+        lps = [0] * m
+        length = 0
+        i = 1
+        
+        while i < m:
+            if pattern[i] == pattern[length] or pattern[i] == '?' or pattern[length] == '?':
+                length += 1
+                lps[i] = length
+                i += 1
+            else:
+                if length != 0:
+                    length = lps[length - 1]
+                else:
+                    lps[i] = 0
+                    i += 1
+        
+        return lps
+    
+    def matches(pattern, text, i, j):
+        if pattern[j] == '?' or pattern[j] == text[i]:
+            return True
+        return False
+    
+    positions = []
+    n, m = len(s), len(p)
+    
+    if m == 0:
+        return []
+    
+    lps = build_failure_function(p)
+    i = j = 0
+    
+    while i < n:
+        if matches(p, s, i, j):
+            i += 1
+            j += 1
+        
+        if j == m:
+            positions.append(i - j + 1)  # 1-indexed
+            j = lps[j - 1]
+        elif i < n and not matches(p, s, i, j):
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                i += 1
+    
+    return positions
+```
+
+#### **2. String Matching with Multiple Patterns**
+```python
+def string_matching_multiple_patterns(s, patterns):
+    # Handle matching multiple patterns simultaneously
+    
+    def build_aho_corasick(patterns):
+        # Simplified Aho-Corasick implementation
+        trie = {}
+        failure = {}
+        output = {}
+        
+        # Build trie
+        for i, pattern in enumerate(patterns):
+            node = trie
+            for char in pattern:
+                if char not in node:
+                    node[char] = {}
+                node = node[char]
+            node['$'] = i  # Mark end of pattern
+        
+        # Build failure function
+        queue = []
+        for char, child in trie.items():
+            if char != '$':
+                failure[child] = trie
+                queue.append(child)
+        
+        while queue:
+            node = queue.pop(0)
+            for char, child in node.items():
+                if char != '$':
+                    queue.append(child)
+                    fail = failure[node]
+                    while fail and char not in fail:
+                        fail = failure.get(fail, {})
+                    failure[child] = fail.get(char, trie)
+        
+        return trie, failure, output
+    
+    trie, failure, output = build_aho_corasick(patterns)
+    positions = {i: [] for i in range(len(patterns))}
+    
+    node = trie
+    for i, char in enumerate(s):
+        while node and char not in node:
+            node = failure.get(node, {})
+        node = node.get(char, {})
+        
+        if '$' in node:
+            pattern_idx = node['$']
+            positions[pattern_idx].append(i - len(patterns[pattern_idx]) + 2)  # 1-indexed
+    
+    return positions
+```
+
+#### **3. String Matching with Dynamic Updates**
+```python
+def string_matching_dynamic(operations):
+    # Handle string matching with dynamic text updates
+    
+    s = ""
+    pattern = ""
+    positions = []
+    
+    for operation in operations:
+        if operation[0] == 'set_pattern':
+            # Set pattern
+            pattern = operation[1]
+            positions = find_matches(s, pattern)
+        
+        elif operation[0] == 'add_char':
+            # Add character to string
+            char = operation[1]
+            s += char
+            
+            # Update positions
+            positions = find_matches(s, pattern)
+        
+        elif operation[0] == 'remove_char':
+            # Remove last character
+            if len(s) > 0:
+                s = s[:-1]
+                positions = find_matches(s, pattern)
+        
+        elif operation[0] == 'query':
+            # Return current positions
+            yield positions
+    
+    return list(string_matching_dynamic(operations))
+
+def find_matches(s, p):
+    if len(p) == 0:
+        return []
+    
+    def build_lps(pattern):
+        m = len(pattern)
+        lps = [0] * m
+        length = 0
+        i = 1
+        
+        while i < m:
+            if pattern[i] == pattern[length]:
+                length += 1
+                lps[i] = length
+                i += 1
+            else:
+                if length != 0:
+                    length = lps[length - 1]
+                else:
+                    lps[i] = 0
+                    i += 1
+        
+        return lps
+    
+    positions = []
+    n, m = len(s), len(p)
+    
+    if m == 0:
+        return []
+    
+    lps = build_lps(p)
+    i = j = 0
+    
+    while i < n:
+        if p[j] == s[i]:
+            i += 1
+            j += 1
+        
+        if j == m:
+            positions.append(i - j + 1)  # 1-indexed
+            j = lps[j - 1]
+        elif i < n and p[j] != s[i]:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                i += 1
+    
+    return positions
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **String Matching**: KMP, Boyer-Moore, Z-algorithm problems
+- **Pattern Matching**: String pattern recognition
+- **String Algorithms**: Advanced string processing
+- **Text Processing**: String manipulation and analysis
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **KMP algorithm** is essential for efficient string matching
+- **Failure function** enables linear time complexity
+- **Pattern preprocessing** is crucial for performance
+- **Multiple algorithms** exist for different scenarios
 
 ## Key Insights for Other Problems
 

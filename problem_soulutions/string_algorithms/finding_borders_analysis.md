@@ -1,25 +1,27 @@
 ---
 layout: simple
-title: "Finding Borders"
+title: "Finding Borders - String Border Detection"
 permalink: /problem_soulutions/string_algorithms/finding_borders_analysis
 ---
 
+# Finding Borders - String Border Detection
 
-# Finding Borders
+## 📋 Problem Description
 
-## Problem Statement
 Given a string, find all borders of the string. A border is a proper prefix that is also a proper suffix.
 
-### Input
-The first input line has a string s.
+This is a string algorithm problem that requires finding all proper prefixes that are also proper suffixes. The solution involves using the KMP algorithm's failure function or a direct approach to efficiently find all borders.
 
-### Output
-Print all borders of the string in ascending order of length.
+**Input**: 
+- First line: A string s
 
-### Constraints
-- 1 ≤ |s| ≤ 10^6
+**Output**: 
+- Print all borders of the string in ascending order of length
 
-### Example
+**Constraints**:
+- 1 ≤ |s| ≤ 10⁶
+
+**Example**:
 ```
 Input:
 ababab
@@ -27,12 +29,23 @@ ababab
 Output:
 ab
 abab
+
+Explanation**: 
+- String: "ababab"
+- Border 1: "ab" (prefix: "ab", suffix: "ab")
+- Border 2: "abab" (prefix: "abab", suffix: "abab")
+- No other borders exist as they would be the entire string
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Naive Border Finding - O(|s|²)
-**Description**: Check each possible prefix to see if it's also a suffix.
+### Step 1: Understanding the Problem
+- **Goal**: Find all proper prefixes that are also proper suffixes
+- **Key Insight**: Use KMP failure function or direct comparison approach
+- **Challenge**: Handle large strings efficiently without O(|s|²) complexity
+
+### Step 2: Initial Approach
+**Naive border finding (inefficient but correct):**
 
 ```python
 def finding_borders_naive(s):
@@ -90,8 +103,8 @@ def finding_borders_kmp(s):
 
 **Why this improvement works**: KMP failure function directly gives us border lengths in linear time.
 
-### Improvement 2: Z-Algorithm Approach - O(|s|)
-**Description**: Use Z-algorithm to find borders by comparing string with itself.
+### Step 3: Optimization/Alternative
+**Z-Algorithm approach:**
 
 ```python
 def compute_z_array(s):
@@ -162,7 +175,7 @@ def finding_borders_rolling_hash(s):
 
 **Why this works**: Rolling hash provides fast comparison of prefixes and suffixes.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 s = input().strip()
@@ -205,7 +218,21 @@ for border in borders:
     print(border)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic string with borders (should return all borders)
+- **Test 2**: String with no borders (should return empty)
+- **Test 3**: Single character string (should return empty)
+- **Test 4**: Complex pattern (should return all valid borders)
+
+## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Naive | O(|s|²) | O(1) | Check all possible prefixes |
+| KMP LPS | O(|s|) | O(|s|) | Use failure function |
+| Z-Algorithm | O(|s|) | O(|s|) | Find suffix matches |
+| Rolling Hash | O(|s|) | O(1) | Fast hash comparison |
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -213,6 +240,178 @@ for border in borders:
 | KMP | O(|s|) | O(|s|) | Use failure function |
 | Z-Algorithm | O(|s|) | O(|s|) | Z-array computation |
 | Rolling Hash | O(|s|) | O(|s|) | Hash-based comparison |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **KMP Algorithm**: Use failure function to find borders efficiently
+- **String Matching**: Find patterns within strings
+- **Prefix/Suffix**: Compare string prefixes with suffixes
+- **Linear Time**: Achieve O(|s|) complexity for border finding
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Finding Borders with Constraints**
+```python
+def finding_borders_constrained(s, min_length, max_length):
+    # Handle borders with length constraints
+    
+    def compute_lps(s):
+        n = len(s)
+        lps = [0] * n
+        length = 0
+        i = 1
+        
+        while i < n:
+            if s[i] == s[length]:
+                length += 1
+                lps[i] = length
+                i += 1
+            else:
+                if length != 0:
+                    length = lps[length - 1]
+                else:
+                    lps[i] = 0
+                    i += 1
+        
+        return lps
+    
+    lps = compute_lps(s)
+    borders = []
+    
+    # Find borders with length constraints
+    length = lps[-1]
+    while length > 0:
+        if min_length <= length <= max_length:
+            borders.append(s[:length])
+        length = lps[length - 1]
+    
+    return borders[::-1]
+```
+
+#### **2. Finding Borders with Character Constraints**
+```python
+def finding_borders_character_constraints(s, allowed_chars):
+    # Handle borders with character constraints
+    
+    def is_valid_border(border):
+        return all(char in allowed_chars for char in border)
+    
+    def compute_lps(s):
+        n = len(s)
+        lps = [0] * n
+        length = 0
+        i = 1
+        
+        while i < n:
+            if s[i] == s[length]:
+                length += 1
+                lps[i] = length
+                i += 1
+            else:
+                if length != 0:
+                    length = lps[length - 1]
+                else:
+                    lps[i] = 0
+                    i += 1
+        
+        return lps
+    
+    lps = compute_lps(s)
+    borders = []
+    
+    # Find valid borders
+    length = lps[-1]
+    while length > 0:
+        border = s[:length]
+        if is_valid_border(border):
+            borders.append(border)
+        length = lps[length - 1]
+    
+    return borders[::-1]
+```
+
+#### **3. Finding Borders with Dynamic Updates**
+```python
+def finding_borders_dynamic(operations):
+    # Handle borders with dynamic string updates
+    
+    s = ""
+    borders = []
+    
+    for operation in operations:
+        if operation[0] == 'add':
+            # Add character to string
+            char = operation[1]
+            s += char
+            
+            # Recalculate borders
+            borders = calculate_borders(s)
+        
+        elif operation[0] == 'remove':
+            # Remove last character
+            if len(s) > 0:
+                s = s[:-1]
+                borders = calculate_borders(s)
+        
+        elif operation[0] == 'query':
+            # Return current borders
+            yield borders
+    
+    return list(finding_borders_dynamic(operations))
+
+def calculate_borders(s):
+    if len(s) == 0:
+        return []
+    
+    def compute_lps(s):
+        n = len(s)
+        lps = [0] * n
+        length = 0
+        i = 1
+        
+        while i < n:
+            if s[i] == s[length]:
+                length += 1
+                lps[i] = length
+                i += 1
+            else:
+                if length != 0:
+                    length = lps[length - 1]
+                else:
+                    lps[i] = 0
+                    i += 1
+        
+        return lps
+    
+    lps = compute_lps(s)
+    borders = []
+    
+    length = lps[-1]
+    while length > 0:
+        borders.append(s[:length])
+        length = lps[length - 1]
+    
+    return borders[::-1]
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **String Matching**: KMP, Z-algorithm problems
+- **Prefix/Suffix**: String prefix and suffix problems
+- **Pattern Matching**: String pattern recognition
+- **String Algorithms**: Advanced string processing
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **KMP algorithm** is essential for string matching
+- **Failure function** directly gives border information
+- **Linear time** algorithms are crucial for large strings
+- **String preprocessing** enables efficient queries
 
 ## Key Insights for Other Problems
 

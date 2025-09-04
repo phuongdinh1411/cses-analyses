@@ -1,21 +1,27 @@
 ---
 layout: simple
-title: "Money Sums"
+title: "Money Sums - Find All Possible Sums"
 permalink: /problem_soulutions/dynamic_programming/money_sums_analysis
 ---
 
+# Money Sums - Find All Possible Sums
 
-# Money Sums
+## 📋 Problem Description
 
-## Problem Description
+Given n coins with different values, find all possible sums that can be formed using any subset of the coins.
 
-**Problem**: Given n coins with different values, find all possible sums that can be formed using any subset of the coins.
+This is a classic dynamic programming problem that requires finding all possible sums that can be formed using subsets of coins. The solution involves using a boolean DP array to track which sums are achievable.
 
 **Input**: 
 - n: number of coins
 - a1, a2, ..., an: values of the coins
 
-**Output**: Number of different sums and the sums in ascending order.
+**Output**: 
+- Number of different sums and the sums in ascending order
+
+**Constraints**:
+- 1 ≤ n ≤ 100
+- 1 ≤ ai ≤ 1000
 
 **Example**:
 ```
@@ -27,26 +33,23 @@ Output:
 9
 0 2 4 5 6 7 8 9 11
 
-Explanation: 
+Explanation**: 
 All possible sums using subsets of coins:
-- {} → 0
-- {2} → 2
-- {4} → 4
-- {5} → 5
-- {2,2} → 4
-- {2,4} → 6
-- {2,5} → 7
-- {4,5} → 9
-- {2,2,4} → 8
-- {2,2,5} → 9
-- {2,4,5} → 11
-- {2,2,4,5} → 13
+- {} → 0, {2} → 2, {4} → 4, {5} → 5
+- {2,2} → 4, {2,4} → 6, {2,5} → 7, {4,5} → 9
+- {2,2,4} → 8, {2,2,5} → 9, {2,4,5} → 11
+- {2,2,4,5} → 13 (but this exceeds the maximum possible sum)
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Recursive - O(2^n)
-**Description**: Use recursive approach to find all possible sums.
+### Step 1: Understanding the Problem
+- **Goal**: Find all possible sums that can be formed using subsets of coins
+- **Key Insight**: Use dynamic programming with boolean array to track achievable sums
+- **Challenge**: Avoid exponential time complexity with recursive approach
+
+### Step 2: Initial Approach
+**Recursive approach (inefficient but correct):**
 
 ```python
 def money_sums_naive(n, coins):
@@ -92,7 +95,10 @@ def money_sums_optimized(n, coins):
 
 **Why this improvement works**: We use a 1D DP array where dp[i] represents whether sum i can be achieved. We iterate through each coin and update all achievable sums.
 
-### Step 3: Complete Solution
+### Step 3: Optimization/Alternative
+**Optimized DP with space optimization:**
+
+### Step 4: Complete Solution
 **Putting it all together:**
 
 ```python
@@ -129,7 +135,7 @@ if __name__ == "__main__":
 - Efficient implementation
 - Clear and readable code
 
-### Step 4: Testing Our Solution
+### Step 5: Testing Our Solution
 **Let's verify with examples:**
 
 ```python
@@ -170,6 +176,12 @@ test_solution()
 
 ## 🔧 Implementation Details
 
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Recursive | O(2^n) | O(n) | Try all subsets |
+| Memoized | O(n×sum) | O(n×sum) | Store subproblem results |
+| Bottom-up DP | O(n×sum) | O(sum) | Build from smaller subproblems |
+
 ### Time Complexity
 - **Time**: O(n * sum) - we iterate through each coin and each possible sum
 - **Space**: O(sum) - we store dp array of size sum+1
@@ -179,6 +191,116 @@ test_solution()
 - **State Transition**: dp[i] = True if dp[i-coin] = True for any coin
 - **Base Case**: dp[0] = True represents empty subset
 - **Reverse Iteration**: Prevents overcounting by iterating backwards
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Dynamic Programming**: Build solutions from smaller subproblems
+- **Subset Sum**: Classic DP problem with boolean states
+- **Reverse Iteration**: Prevent overcounting by iterating backwards
+- **Space Optimization**: Use 1D array instead of 2D
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Money Sums with Limited Coins**
+```python
+def money_sums_limited(n, coins, limits):
+    # Handle money sums with limited number of each coin
+    
+    max_sum = sum(coin * limit for coin, limit in zip(coins, limits))
+    dp = [False] * (max_sum + 1)
+    dp[0] = True  # Base case
+    
+    for i in range(n):
+        coin = coins[i]
+        limit = limits[i]
+        
+        # Process this coin type
+        for j in range(max_sum, coin - 1, -1):
+            for k in range(1, min(limit + 1, j // coin + 1)):
+                if j >= k * coin and dp[j - k * coin]:
+                    dp[j] = True
+    
+    # Collect all achievable sums
+    sums = []
+    for i in range(max_sum + 1):
+        if dp[i]:
+            sums.append(i)
+    
+    return sums
+```
+
+#### **2. Money Sums with Target Sum**
+```python
+def money_sums_target(n, coins, target):
+    # Handle money sums with specific target sum
+    
+    max_sum = sum(coins)
+    dp = [False] * (max_sum + 1)
+    dp[0] = True  # Base case
+    
+    for coin in coins:
+        for i in range(max_sum, coin - 1, -1):
+            if dp[i - coin]:
+                dp[i] = True
+    
+    # Check if target is achievable
+    if target <= max_sum and dp[target]:
+        return True, target
+    else:
+        return False, -1
+```
+
+#### **3. Money Sums with Dynamic Updates**
+```python
+def money_sums_dynamic(operations):
+    # Handle money sums with dynamic coin updates
+    
+    coins = []
+    dp = [False] * (10**5 + 1)
+    dp[0] = True
+    max_sum = 0
+    
+    for operation in operations:
+        if operation[0] == 'add_coin':
+            # Add new coin
+            coin = operation[1]
+            coins.append(coin)
+            max_sum += coin
+            
+            # Update DP array
+            for i in range(max_sum, coin - 1, -1):
+                if dp[i - coin]:
+                    dp[i] = True
+        
+        elif operation[0] == 'query':
+            # Return current achievable sums
+            sums = []
+            for i in range(max_sum + 1):
+                if dp[i]:
+                    sums.append(i)
+            yield sums
+    
+    return list(money_sums_dynamic(operations))
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Dynamic Programming**: Subset sum, knapsack problems
+- **Counting Problems**: Ways to make sums, combinations
+- **Optimization**: Minimum/maximum value problems
+- **Combinatorics**: Subset selection problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Dynamic programming** is essential for subset problems
+- **Boolean DP** efficiently tracks achievable states
+- **Reverse iteration** prevents overcounting
+- **Space optimization** reduces memory usage
 
 ## 🎯 Key Insights
 

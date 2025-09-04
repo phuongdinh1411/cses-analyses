@@ -1,29 +1,31 @@
 ---
 layout: simple
-title: "List Removals"
+title: "List Removals - K-th Smallest Element with Removal"
 permalink: /problem_soulutions/range_queries/list_removals_analysis
 ---
 
+# List Removals - K-th Smallest Element with Removal
 
-# List Removals
+## 📋 Problem Description
 
-## Problem Statement
 Given an array of n integers, process q queries. Each query asks for the k-th smallest element in the current array, and then removes that element from the array.
 
-### Input
-The first input line has two integers n and q: the size of the array and the number of queries.
-The second line has n integers x1,x2,…,xn: the contents of the array.
-Finally, there are q lines describing the queries. Each line has one integer k: the position of the element to find and remove.
+This is a classic dynamic range query problem that requires efficiently finding and removing the k-th smallest element. The solution involves using data structures like Segment Tree or Binary Indexed Tree to achieve O(log n) time for both operations.
 
-### Output
-Print the answer to each query.
+**Input**: 
+- First line: n and q (array size and number of queries)
+- Second line: n integers (array contents)
+- Next q lines: k (position of element to find and remove)
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ xi ≤ 10^9
+**Output**: 
+- Print the answer to each query
+
+**Constraints**:
+- 1 ≤ n, q ≤ 2×10⁵
+- 1 ≤ xi ≤ 10⁹
 - 1 ≤ k ≤ current array size
 
-### Example
+**Example**:
 ```
 Input:
 5 3
@@ -36,12 +38,22 @@ Output:
 3
 1
 2
+
+Explanation**: 
+- Query 1: 3rd smallest element is 3, remove it → array becomes [1,2,4,5]
+- Query 2: 1st smallest element is 1, remove it → array becomes [2,4,5]
+- Query 3: 2nd smallest element is 4, remove it → array becomes [2,5]
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Sort and Remove for Each Query - O(q × n log n)
-**Description**: For each query, sort the current array, find the k-th element, remove it, and return the result.
+### Step 1: Understanding the Problem
+- **Goal**: Efficiently find and remove the k-th smallest element from a dynamic array
+- **Key Insight**: Use data structures like Segment Tree for O(log n) operations
+- **Challenge**: Avoid O(q×n log n) complexity with naive sorting approach
+
+### Step 2: Initial Approach
+**Sort and remove for each query (inefficient but correct):**
 
 ```python
 def list_removals_naive(n, q, arr, queries):
@@ -86,7 +98,10 @@ def list_removals_order_statistic_tree(n, q, arr, queries):
 
 **Why this improvement works**: Order statistic tree allows us to find and remove the k-th smallest element in O(log n) time per operation.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Segment Tree approach (alternative to Order Statistic Tree):**
+
+### Step 4: Complete Solution
 
 ```python
 n, q = map(int, input().split())
@@ -108,12 +123,133 @@ for _ in range(q):
     sorted_list.remove((element, index))
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic queries (should return correct k-th smallest elements)
+- **Test 2**: Single element removal (should handle correctly)
+- **Test 3**: Multiple removals (should maintain order correctly)
+- **Test 4**: Large number of queries (should handle efficiently)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Naive | O(q × n log n) | O(n) | Sort and remove for each query |
 | Order Statistic Tree | O(n log n + q log n) | O(n) | Use sorted data structure |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Order Statistic Tree**: Efficient data structure for dynamic order statistics
+- **Dynamic Order Statistics**: Find and remove k-th smallest element efficiently
+- **Sorted Data Structures**: Maintain order while supporting efficient operations
+- **Element Removal**: Handle dynamic removals while maintaining order
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. List Removals with Insertions**
+```python
+def list_removals_with_insertions(n, q, arr, operations):
+    # Handle list removals with dynamic insertions
+    
+    from sortedcontainers import SortedList
+    
+    # Create a sorted list with elements and their indices
+    elements = [(arr[i], i) for i in range(n)]
+    sorted_list = SortedList(elements)
+    next_index = n
+    
+    results = []
+    for op in operations:
+        if op[0] == 'R':  # Remove
+            k = op[1]
+            element, index = sorted_list[k-1]
+            results.append(element)
+            sorted_list.remove((element, index))
+        else:  # Insert
+            val = op[1]
+            sorted_list.add((val, next_index))
+            next_index += 1
+    
+    return results
+```
+
+#### **2. List Removals with Range Queries**
+```python
+def list_removals_with_range_queries(n, q, arr, operations):
+    # Handle list removals with range queries
+    
+    from sortedcontainers import SortedList
+    
+    # Create a sorted list with elements and their indices
+    elements = [(arr[i], i) for i in range(n)]
+    sorted_list = SortedList(elements)
+    
+    results = []
+    for op in operations:
+        if op[0] == 'R':  # Remove
+            k = op[1]
+            element, index = sorted_list[k-1]
+            results.append(element)
+            sorted_list.remove((element, index))
+        else:  # Range query
+            l, r = op[1], op[2]
+            # Count elements in range [l, r]
+            count = 0
+            for element, index in sorted_list:
+                if l <= element <= r:
+                    count += 1
+            results.append(count)
+    
+    return results
+```
+
+#### **3. List Removals with Persistence**
+```python
+def list_removals_persistent(n, q, arr, operations):
+    # Handle list removals with persistent data structures
+    
+    from sortedcontainers import SortedList
+    
+    # Create a sorted list with elements and their indices
+    elements = [(arr[i], i) for i in range(n)]
+    sorted_list = SortedList(elements)
+    versions = [sorted_list.copy()]
+    
+    results = []
+    for op in operations:
+        if op[0] == 'R':  # Remove
+            version, k = op[1], op[2]
+            current_list = versions[version].copy()
+            element, index = current_list[k-1]
+            results.append(element)
+            current_list.remove((element, index))
+            versions.append(current_list)
+        else:  # Query
+            version, k = op[1], op[2]
+            element, index = versions[version][k-1]
+            results.append(element)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Dynamic Order Statistics**: K-th smallest element, order maintenance
+- **Data Structures**: Order statistic trees, segment trees
+- **Dynamic Problems**: Element removal, order maintenance
+- **Advanced**: Persistent data structures, range queries
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Order Statistic Tree** is optimal for dynamic order statistics
+- **Sorted data structures** efficiently maintain order during operations
+- **Element removal** can be handled efficiently with appropriate data structures
+- **Dynamic operations** require careful data structure selection
 
 ## Key Insights for Other Problems
 

@@ -1,20 +1,29 @@
 ---
 layout: simple
-title: "Course Schedule II"
+title: "Course Schedule II - Topological Sorting for Course Prerequisites"
 permalink: /problem_soulutions/advanced_graph_problems/course_schedule_ii_analysis
 ---
 
-# Course Schedule II
+# Course Schedule II - Topological Sorting for Course Prerequisites
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given n courses and their prerequisites, find a valid order to complete all courses. If it's impossible, return an empty array.
+Given n courses and their prerequisites, find a valid order to complete all courses. If it's impossible, return an empty array.
+
+This is a classic topological sorting problem that requires finding a valid order to complete courses while respecting prerequisite relationships. The solution involves using Kahn's algorithm to detect cycles and find a valid topological order.
 
 **Input**: 
 - n: number of courses (labeled from 0 to n-1)
 - prerequisites: array of [a, b] where b is a prerequisite for a
 
-**Output**: Valid order to complete all courses, or empty array if impossible.
+**Output**: 
+- Valid order to complete all courses, or empty array if impossible
+
+**Constraints**:
+- 1 ≤ n ≤ 2000
+- 0 ≤ prerequisites.length ≤ 5000
+- prerequisites[i].length == 2
+- 0 ≤ ai, bi < n
 
 **Example**:
 ```
@@ -25,7 +34,7 @@ prerequisites = [[1,0],[2,0],[3,1],[3,2]]
 Output:
 [0,1,2,3]
 
-Explanation: 
+Explanation**: 
 Course 0 has no prerequisites
 Course 1 requires course 0
 Course 2 requires course 0  
@@ -36,20 +45,15 @@ Valid order: 0 → 1 → 2 → 3
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find a valid order to complete all courses
-- Respect prerequisite relationships
-- Detect if impossible (cycles in prerequisites)
-- Use topological sorting
+- **Goal**: Find a valid order to complete all courses while respecting prerequisites
+- **Key Insight**: Use topological sorting to detect cycles and find valid order
+- **Challenge**: Handle impossible cases (cycles in prerequisites)
 
-**Key Observations:**
-- This is a topological sorting problem
-- Prerequisites form a directed graph
-- Need to detect cycles (impossible case)
-- Kahn's algorithm is perfect for this
+### Step 2: Initial Approach
+**DFS approach (inefficient but correct):**
 
-### Step 2: Topological Sorting with Kahn's Algorithm
-**Idea**: Use Kahn's algorithm to find topological order and detect cycles.
+### Step 3: Optimization/Alternative
+**Kahn's algorithm approach:**
 
 ```python
 def course_schedule_ii_kahn(n, prerequisites):
@@ -196,6 +200,20 @@ if __name__ == "__main__":
 - Clear and readable code
 
 ### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic course schedule (should return valid order)
+- **Test 2**: Impossible schedule (should return empty array)
+- **Test 3**: Single course (should return [0])
+- **Test 4**: Complex dependencies (should handle correctly)
+
+## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| DFS | O(n + m) | O(n) | Use DFS with cycle detection |
+| Kahn's Algorithm | O(n + m) | O(n) | Use in-degree counting |
+
+### Step 5: Testing Our Solution
 **Let's verify with examples:**
 
 ```python
@@ -261,6 +279,145 @@ test_solution()
 - **Cycle Detection**: Identifies impossible cases
 - **Kahn's Algorithm**: Efficient implementation
 - **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Topological Sorting**: Orders vertices in DAG to find valid course sequence
+- **Cycle Detection**: Detects cycles in directed graphs to handle impossible cases
+- **Kahn's Algorithm**: Efficient topological sorting using in-degree counting
+- **Graph Algorithms**: Use DFS or BFS for cycle detection and ordering
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Course Schedule with Weights**
+```python
+def course_schedule_weighted(n, prerequisites, weights):
+    # Handle course schedule with weighted prerequisites
+    
+    # Build adjacency list with weights
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    
+    for course, prereq, weight in prerequisites:
+        adj[prereq].append((course, weight))
+        in_degree[course] += 1
+    
+    # Use priority queue for weighted topological sorting
+    import heapq
+    queue = []
+    
+    # Add all courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            heapq.heappush(queue, (0, i))  # (weight, course)
+    
+    result = []
+    total_weight = 0
+    
+    while queue:
+        weight, course = heapq.heappop(queue)
+        result.append(course)
+        total_weight += weight
+        
+        # Update in-degrees and add to queue
+        for next_course, edge_weight in adj[course]:
+            in_degree[next_course] -= 1
+            if in_degree[next_course] == 0:
+                heapq.heappush(queue, (edge_weight, next_course))
+    
+    return result if len(result) == n else [], total_weight
+```
+
+#### **2. Course Schedule with Multiple Prerequisites**
+```python
+def course_schedule_multiple_prereqs(n, prerequisites):
+    # Handle course schedule with multiple prerequisite types
+    
+    # Build adjacency list for each prerequisite type
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
+    prereq_types = {}  # Track prerequisite types
+    
+    for course, prereq, prereq_type in prerequisites:
+        adj[prereq].append(course)
+        in_degree[course] += 1
+        prereq_types[(course, prereq)] = prereq_type
+    
+    # Use multiple queues for different prerequisite types
+    queues = {
+        'core': [],
+        'elective': [],
+        'lab': []
+    }
+    
+    # Add courses with no prerequisites
+    for i in range(n):
+        if in_degree[i] == 0:
+            # Determine course type based on prerequisites
+            course_type = determine_course_type(i, prereq_types)
+            queues[course_type].append(i)
+    
+    result = []
+    
+    # Process courses in order of priority
+    for queue_type in ['core', 'elective', 'lab']:
+        while queues[queue_type]:
+            course = queues[queue_type].pop(0)
+            result.append(course)
+            
+            # Update in-degrees
+            for next_course in adj[course]:
+                in_degree[next_course] -= 1
+                if in_degree[next_course] == 0:
+                    next_type = determine_course_type(next_course, prereq_types)
+                    queues[next_type].append(next_course)
+    
+    return result if len(result) == n else []
+```
+
+#### **3. Course Schedule with Dynamic Updates**
+```python
+def course_schedule_dynamic(n, initial_prereqs, operations):
+    # Handle course schedule with dynamic prerequisite updates
+    
+    current_prereqs = initial_prereqs.copy()
+    results = []
+    
+    for op in operations:
+        if op[0] == 'add':
+            # Add new prerequisite
+            course, prereq = op[1], op[2]
+            current_prereqs.append((course, prereq))
+        elif op[0] == 'remove':
+            # Remove prerequisite
+            course, prereq = op[1], op[2]
+            current_prereqs.remove((course, prereq))
+        elif op[0] == 'query':
+            # Query current schedule
+            result = solve_course_schedule_ii(n, current_prereqs)
+            results.append(result)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Topological Sorting**: Course schedule, task scheduling
+- **Graph Algorithms**: Cycle detection, DFS, BFS
+- **Dependency Resolution**: Package management, build systems
+- **Scheduling**: Task scheduling, resource allocation
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Topological sorting** is essential for dependency resolution
+- **Cycle detection** is crucial for handling impossible cases
+- **Kahn's algorithm** provides efficient topological sorting
+- **Graph algorithms** solve complex scheduling problems
 
 ## 🎯 Key Insights
 

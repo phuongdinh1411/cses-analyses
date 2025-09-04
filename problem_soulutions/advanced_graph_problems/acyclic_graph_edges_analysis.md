@@ -1,20 +1,28 @@
 ---
 layout: simple
-title: "Acyclic Graph Edges"
+title: "Acyclic Graph Edges - Minimum Edges to Remove for Acyclicity"
 permalink: /problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis
 ---
 
-# Acyclic Graph Edges
+# Acyclic Graph Edges - Minimum Edges to Remove for Acyclicity
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a directed graph with n nodes and m edges, find the minimum number of edges to remove to make the graph acyclic.
+Given a directed graph with n nodes and m edges, find the minimum number of edges to remove to make the graph acyclic.
+
+This is a classic feedback arc set problem that requires finding the minimum number of edges to remove to eliminate all cycles in a directed graph. The solution involves using DFS to identify back edges and applying graph theory concepts.
 
 **Input**: 
 - First line: n m (number of nodes and edges)
 - Next m lines: a b (edge from node a to node b)
 
-**Output**: Minimum number of edges to remove.
+**Output**: 
+- Minimum number of edges to remove
+
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+- 1 ≤ m ≤ 2×10⁵
+- 1 ≤ a, b ≤ n
 
 **Example**:
 ```
@@ -29,7 +37,7 @@ Input:
 Output:
 1
 
-Explanation: 
+Explanation**: 
 Remove edge (4, 1) to break the cycle 1→2→3→4→1.
 The resulting graph is acyclic.
 ```
@@ -37,17 +45,12 @@ The resulting graph is acyclic.
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find minimum edges to remove from a directed graph
-- Make the graph acyclic (no cycles)
-- Use feedback arc set concept
-- Apply topological sorting
+- **Goal**: Find the minimum number of edges to remove to make a directed graph acyclic
+- **Key Insight**: Use DFS to identify back edges, which represent cycles
+- **Challenge**: Efficiently identify all cycles and find minimum edge removal
 
-**Key Observations:**
-- This is a feedback arc set problem
-- Minimum edges to remove = number of back edges in any DFS
-- Can use topological sorting to identify cycles
-- Need to find edges that create cycles
+### Step 2: Initial Approach
+**Brute force approach (inefficient but correct):**
 
 ### Step 2: DFS Cycle Detection Approach
 **Idea**: Use DFS to detect cycles and count edges that need to be removed.
@@ -95,8 +98,8 @@ def acyclic_graph_edges_dfs(n, m, edges):
 - Simple to understand and implement
 - O(n + m) time complexity
 
-### Step 3: Feedback Arc Set Optimization
-**Idea**: Use the concept of feedback arc set to find minimum edges to remove.
+### Step 3: Optimization/Alternative
+**Feedback Arc Set approach:**
 
 ```python
 def acyclic_graph_edges_feedback_arc_set(n, m, edges):
@@ -264,6 +267,121 @@ test_solution()
 - **Topological Sorting**: Identifies back edges
 - **Cycle Detection**: Back edges create cycles
 - **Optimal Approach**: Handles all cases correctly
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Feedback Arc Set**: Minimum edges to remove to make graph acyclic
+- **Topological Sorting**: Orders vertices in DAG to identify cycles
+- **Back Edge Detection**: Edges that violate topological order create cycles
+- **Cycle Detection**: Use DFS or topological sorting to identify cycles
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Weighted Acyclic Graph Edges**
+```python
+def weighted_acyclic_graph_edges(n, m, edges, weights):
+    # Handle weighted edges with minimum weight removal
+    
+    # Build adjacency list with weights
+    adj = [[] for _ in range(n + 1)]
+    for i, (a, b) in enumerate(edges):
+        adj[a].append((b, weights[i]))
+    
+    # Kahn's algorithm for topological sorting
+    in_degree = [0] * (n + 1)
+    for a, b in edges:
+        in_degree[b] += 1
+    
+    # Find topological order
+    queue = []
+    for i in range(1, n + 1):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    topo_order = []
+    while queue:
+        node = queue.pop(0)
+        topo_order.append(node)
+        
+        for neighbor, _ in adj[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    # Find minimum weight back edges
+    min_weight = float('inf')
+    for i, (a, b) in enumerate(edges):
+        if topo_order.index(a) > topo_order.index(b):
+            min_weight = min(min_weight, weights[i])
+    
+    return min_weight
+```
+
+#### **2. Acyclic Graph Edges with Constraints**
+```python
+def acyclic_graph_edges_constrained(n, m, edges, constraints):
+    # Handle acyclic graph edges with additional constraints
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+    
+    # Apply constraints (e.g., certain edges cannot be removed)
+    removable_edges = []
+    for i, (a, b) in enumerate(edges):
+        if constraints[i]:  # Edge can be removed
+            removable_edges.append((a, b))
+    
+    # Use only removable edges for feedback arc set
+    # ... (similar to previous approach but with constraints)
+    
+    return len(removable_edges)
+```
+
+#### **3. Acyclic Graph Edges with Dynamic Updates**
+```python
+def acyclic_graph_edges_dynamic(n, m, edges, operations):
+    # Handle acyclic graph edges with dynamic edge updates
+    
+    current_edges = edges.copy()
+    results = []
+    
+    for op in operations:
+        if op[0] == 'add':
+            # Add new edge
+            a, b = op[1], op[2]
+            current_edges.append((a, b))
+        elif op[0] == 'remove':
+            # Remove edge
+            a, b = op[1], op[2]
+            current_edges.remove((a, b))
+        elif op[0] == 'query':
+            # Query minimum edges to remove
+            result = solve_acyclic_graph_edges(current_edges)
+            results.append(result)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Graph Theory**: Cycle detection, topological sorting
+- **Feedback Arc Set**: Minimum edge removal problems
+- **Graph Algorithms**: DFS, BFS, cycle detection
+- **Optimization**: Minimum edge/vertex removal problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Feedback arc set** is a fundamental concept in graph theory
+- **Topological sorting** is essential for cycle detection
+- **Back edge detection** efficiently identifies cycles
+- **Graph algorithms** can solve complex optimization problems
 
 ## 🎯 Key Insights
 

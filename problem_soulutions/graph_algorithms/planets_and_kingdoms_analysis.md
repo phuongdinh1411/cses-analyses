@@ -208,26 +208,20 @@ print(num_kingdoms)
 print(*kingdoms)
 ```
 
-## Complexity Analysis
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Kosaraju's Algorithm | O(n + m) | O(n + m) | Use Kosaraju's for strongly connected components |
 | Optimized Kosaraju's | O(n + m) | O(n + m) | Optimized Kosaraju's implementation |
 
-## Key Insights for Other Problems
+## 🎯 Key Insights
 
-### 1. **Strongly Connected Components**
-**Principle**: Use Kosaraju's or Tarjan's algorithm to find strongly connected components.
-**Applicable to**: SCC problems, graph decomposition problems, connectivity problems
-
-### 2. **Kosaraju's Algorithm**
-**Principle**: Use two DFS passes to find strongly connected components.
-**Applicable to**: SCC problems, graph problems, connectivity problems
-
-### 3. **Graph Decomposition**
-**Principle**: Decompose directed graph into strongly connected components.
-**Applicable to**: Graph analysis problems, connectivity problems, optimization problems
+### Important Concepts and Patterns
+- **Strongly Connected Components**: Subsets where every vertex can reach every other vertex
+- **Kosaraju's Algorithm**: Two-pass DFS algorithm for finding SCCs
+- **Graph Reversal**: Reverse graph for second DFS pass
+- **Component Assignment**: Assign each vertex to its SCC component
 
 ## Notable Techniques
 
@@ -311,9 +305,9 @@ def reverse_graph(adj):
 
 *This analysis shows how to efficiently find strongly connected components using Kosaraju's algorithm.* 
 
-## 🎯 Problem Variations & Related Questions
+## 🚀 Problem Variations
 
-### 🔄 **Variations of the Original Problem**
+### Extended Problems with Detailed Code Examples
 
 #### **Variation 1: Planets and Kingdoms with Costs**
 **Problem**: Each teleporter has a cost, find minimum cost to establish kingdoms.

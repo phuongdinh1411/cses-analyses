@@ -1,30 +1,32 @@
 ---
 layout: simple
-title: "Forest Queries"
+title: "Forest Queries - 2D Range Sum Queries"
 permalink: /problem_soulutions/range_queries/forest_queries_analysis
 ---
 
+# Forest Queries - 2D Range Sum Queries
 
-# Forest Queries
+## 📋 Problem Description
 
-## Problem Statement
 Given a 2D grid of size n×n, process q queries. Each query asks for the sum of values in a rectangular region [y1,x1] to [y2,x2].
 
-### Input
-The first input line has two integers n and q: the size of the grid and the number of queries.
-Then there are n lines describing the grid. Each line has n characters: '.' for empty and '*' for tree.
-Finally, there are q lines describing the queries. Each line has four integers y1,x1,y2,x2: the rectangular region.
+This is a classic 2D range query problem that requires efficiently answering multiple rectangular sum queries on a 2D grid. The solution involves using 2D prefix sums to achieve O(1) query time after O(n²) preprocessing.
 
-### Output
-Print the answer to each query.
+**Input**: 
+- First line: n and q (grid size and number of queries)
+- Next n lines: grid with '.' for empty and '*' for tree
+- Next q lines: y1, x1, y2, x2 (rectangular region coordinates)
 
-### Constraints
+**Output**: 
+- Print the answer to each query
+
+**Constraints**:
 - 1 ≤ n ≤ 1000
-- 1 ≤ q ≤ 2⋅10^5
+- 1 ≤ q ≤ 2×10⁵
 - 1 ≤ y1 ≤ y2 ≤ n
 - 1 ≤ x1 ≤ x2 ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 4 3
@@ -40,12 +42,22 @@ Output:
 3
 1
 2
+
+Explanation**: 
+- Query 1: trees in rectangle [2,2] to [3,4] = 3 trees
+- Query 2: trees in rectangle [3,1] to [3,1] = 1 tree
+- Query 3: trees in rectangle [1,1] to [2,2] = 2 trees
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Calculate Sum for Each Query - O(q × n²)
-**Description**: For each query, iterate through the rectangular region and count the trees.
+### Step 1: Understanding the Problem
+- **Goal**: Efficiently answer multiple rectangular sum queries on a 2D grid
+- **Key Insight**: Use 2D prefix sums to achieve O(1) query time after O(n²) preprocessing
+- **Challenge**: Avoid O(q×n²) complexity with naive approach
+
+### Step 2: Initial Approach
+**Calculate sum for each query (inefficient but correct):**
 
 ```python
 def forest_queries_naive(n, q, grid, queries):
@@ -103,7 +115,10 @@ def forest_queries_2d_prefix_sum(n, q, grid, queries):
 
 **Why this improvement works**: 2D prefix sum allows us to calculate any rectangular sum in O(1) time using the inclusion-exclusion principle.
 
-## Final Optimal Solution
+### Step 3: Optimization/Alternative
+**Segment Tree approach (for dynamic updates):**
+
+### Step 4: Complete Solution
 
 ```python
 n, q = map(int, input().split())
@@ -141,12 +156,177 @@ for _ in range(q):
     print(count)
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Basic rectangular queries (should return correct tree counts)
+- **Test 2**: Single cell queries (should return 0 or 1)
+- **Test 3**: Full grid queries (should return total tree count)
+- **Test 4**: Large number of queries (should handle efficiently)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
 | Naive | O(q × n²) | O(1) | Calculate sum for each query |
 | 2D Prefix Sum | O(n² + q) | O(n²) | Precompute 2D prefix sum |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **2D Prefix Sums**: Precompute cumulative sums for O(1) rectangular queries
+- **Inclusion-Exclusion**: Use principle to calculate rectangular sums efficiently
+- **2D Range Queries**: Efficiently answer multiple queries on 2D data
+- **Preprocessing**: Trade space for time to optimize query performance
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Forest Queries with Dynamic Updates**
+```python
+def forest_queries_dynamic(n, q, grid, operations):
+    # Handle forest queries with dynamic tree updates using 2D BIT
+    
+    class BIT2D:
+        def __init__(self, n):
+            self.n = n
+            self.tree = [[0] * (n + 1) for _ in range(n + 1)]
+        
+        def update(self, x, y, val):
+            while x <= self.n:
+                y_temp = y
+                while y_temp <= self.n:
+                    self.tree[x][y_temp] += val
+                    y_temp += y_temp & -y_temp
+                x += x & -x
+        
+        def query(self, x, y):
+            result = 0
+            while x > 0:
+                y_temp = y
+                while y_temp > 0:
+                    result += self.tree[x][y_temp]
+                    y_temp -= y_temp & -y_temp
+                x -= x & -x
+            return result
+        
+        def range_query(self, x1, y1, x2, y2):
+            return (self.query(x2, y2) - self.query(x1-1, y2) - 
+                    self.query(x2, y1-1) + self.query(x1-1, y1-1))
+    
+    bit2d = BIT2D(n)
+    
+    # Initialize BIT with grid
+    for i in range(n):
+        for j in range(n):
+            if grid[i][j] == '*':
+                bit2d.update(i + 1, j + 1, 1)
+    
+    results = []
+    for op in operations:
+        if op[0] == 'U':  # Update
+            x, y, val = op[1], op[2], op[3]
+            old_val = 1 if grid[x-1][y-1] == '*' else 0
+            bit2d.update(x, y, val - old_val)
+            grid[x-1][y-1] = '*' if val == 1 else '.'
+        else:  # Query
+            x1, y1, x2, y2 = op[1], op[2], op[3], op[4]
+            results.append(bit2d.range_query(x1, y1, x2, y2))
+    
+    return results
+```
+
+#### **2. Forest Queries with Multiple Grids**
+```python
+def forest_queries_multiple_grids(grids, queries):
+    # Handle forest queries across multiple grids
+    
+    class MultiGridPrefix:
+        def __init__(self, grids):
+            self.grids = grids
+            self.prefix_sums = []
+            for grid in grids:
+                self.prefix_sums.append(self.build_prefix_sum(grid))
+        
+        def build_prefix_sum(self, grid):
+            n = len(grid)
+            prefix_sum = [[0] * (n + 1) for _ in range(n + 1)]
+            
+            for i in range(n):
+                for j in range(n):
+                    prefix_sum[i + 1][j + 1] = (prefix_sum[i + 1][j] + 
+                                               prefix_sum[i][j + 1] - 
+                                               prefix_sum[i][j] + 
+                                               (1 if grid[i][j] == '*' else 0))
+            return prefix_sum
+        
+        def query(self, grid_idx, x1, y1, x2, y2):
+            prefix_sum = self.prefix_sums[grid_idx]
+            return (prefix_sum[x2][y2] - prefix_sum[x1-1][y2] - 
+                    prefix_sum[x2][y1-1] + prefix_sum[x1-1][y1-1])
+        
+        def query_all_grids(self, x1, y1, x2, y2):
+            total = 0
+            for prefix_sum in self.prefix_sums:
+                total += (prefix_sum[x2][y2] - prefix_sum[x1-1][y2] - 
+                         prefix_sum[x2][y1-1] + prefix_sum[x1-1][y1-1])
+            return total
+    
+    multi_prefix = MultiGridPrefix(grids)
+    results = []
+    
+    for query in queries:
+        if query[0] == 'S':  # Single grid query
+            grid_idx, x1, y1, x2, y2 = query[1], query[2], query[3], query[4], query[5]
+            results.append(multi_prefix.query(grid_idx, x1, y1, x2, y2))
+        else:  # All grids query
+            x1, y1, x2, y2 = query[1], query[2], query[3], query[4]
+            results.append(multi_prefix.query_all_grids(x1, y1, x2, y2))
+    
+    return results
+```
+
+#### **3. Forest Queries with Weighted Trees**
+```python
+def forest_queries_weighted(n, q, grid, weights, queries):
+    # Handle forest queries with weighted trees
+    
+    # Build 2D prefix sum with weights
+    prefix_sum = [[0] * (n + 1) for _ in range(n + 1)]
+    
+    for i in range(n):
+        for j in range(n):
+            weight = weights[i][j] if grid[i][j] == '*' else 0
+            prefix_sum[i + 1][j + 1] = (prefix_sum[i + 1][j] + 
+                                       prefix_sum[i][j + 1] - 
+                                       prefix_sum[i][j] + weight)
+    
+    results = []
+    for query in queries:
+        x1, y1, x2, y2 = query
+        # Calculate weighted sum using 2D prefix sum
+        weighted_sum = (prefix_sum[x2][y2] - prefix_sum[x1-1][y2] - 
+                       prefix_sum[x2][y1-1] + prefix_sum[x1-1][y1-1])
+        results.append(weighted_sum)
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **2D Range Queries**: Matrix range sum, 2D prefix sums
+- **Data Structures**: 2D segment trees, 2D binary indexed trees
+- **Geometric**: Rectangle queries, area calculations
+- **Optimization**: Space-time tradeoffs in 2D problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **2D prefix sums** provide optimal solution for static 2D range queries
+- **Inclusion-exclusion principle** is crucial for rectangular calculations
+- **Preprocessing** is essential for efficient 2D query answering
+- **Data structure choice** depends on update requirements
 
 ## Key Insights for Other Problems
 

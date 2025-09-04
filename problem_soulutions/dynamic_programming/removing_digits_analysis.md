@@ -1,20 +1,25 @@
 ---
 layout: simple
-title: "Removing Digits"
+title: "Removing Digits - Minimum Steps to Zero"
 permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis
 ---
 
+# Removing Digits - Minimum Steps to Zero
 
-# Removing Digits
+## 📋 Problem Description
 
-## Problem Description
+Given an integer n, find the minimum number of steps to reduce it to 0. In each step, you can subtract any digit from the current number.
 
-**Problem**: Given an integer n, find the minimum number of steps to reduce it to 0. In each step, you can subtract any digit from the current number.
+This is a classic dynamic programming problem that requires finding the minimum number of steps to reduce a number to zero by subtracting its digits. The solution involves using bottom-up DP to build optimal solutions from smaller subproblems.
 
 **Input**: 
 - n: the starting integer
 
-**Output**: Minimum number of steps to reach 0.
+**Output**: 
+- Minimum number of steps to reach 0
+
+**Constraints**:
+- 1 ≤ n ≤ 10⁶
 
 **Example**:
 ```
@@ -24,17 +29,8 @@ Input:
 Output:
 5
 
-Explanation: 
+Explanation**: 
 Starting with 27, we can:
-- Subtract 2: 27 → 25
-- Subtract 5: 25 → 20  
-- Subtract 2: 20 → 18
-- Subtract 8: 18 → 10
-- Subtract 1: 10 → 9
-- Subtract 9: 9 → 0
-Total: 6 steps
-
-Or more optimally:
 - Subtract 7: 27 → 20
 - Subtract 2: 20 → 18
 - Subtract 8: 18 → 10
@@ -43,10 +39,15 @@ Or more optimally:
 Total: 5 steps (minimum)
 ```
 
-## Solution Progression
+## 🎯 Solution Progression
 
-### Approach 1: Recursive Brute Force - O(d^n)
-**Description**: Try all possible digit removals recursively.
+### Step 1: Understanding the Problem
+- **Goal**: Find the minimum number of steps to reduce a number to zero by subtracting its digits
+- **Key Insight**: Use dynamic programming to build optimal solutions from smaller subproblems
+- **Challenge**: Avoid exponential time complexity with recursive approach
+
+### Step 2: Initial Approach
+**Recursive brute force (inefficient but correct):**
 
 ```python
 def removing_digits_brute_force(n):
@@ -115,8 +116,8 @@ def removing_digits_memoization(n):
 
 **Why this improvement works**: By storing the results of subproblems in a memo dictionary, we avoid recalculating the same values multiple times. Each subproblem is solved only once, leading to O(n) complexity.
 
-### Step 2: Dynamic Programming Approach
-**Description**: Use iterative DP to build the solution from smaller subproblems.
+### Step 3: Optimization/Alternative
+**Dynamic Programming approach:**
 
 ```python
 def removing_digits_dp(n):
@@ -136,7 +137,7 @@ def removing_digits_dp(n):
     return dp[n]
 ```
 
-### Step 3: Complete Solution
+### Step 4: Complete Solution
 **Putting it all together:**
 
 ```python
@@ -169,7 +170,7 @@ if __name__ == "__main__":
 - Efficient implementation
 - Clear and readable code
 
-### Step 4: Testing Our Solution
+### Step 5: Testing Our Solution
 **Let's verify with examples:**
 
 ```python
@@ -209,6 +210,12 @@ test_solution()
 ```
 
 ## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Recursive | O(d^n) | O(n) | Try all digit removals |
+| Memoized | O(n) | O(n) | Store subproblem results |
+| Bottom-up DP | O(n) | O(n) | Build from smaller subproblems |
 
 ### Time Complexity
 - **Time**: O(n*d) - we fill a 1D DP array and extract digits
@@ -502,6 +509,124 @@ print(dp[n])
 | Memoization | O(n) | O(n) | Store subproblem results |
 | Bottom-Up DP | O(n) | O(n) | Build solution iteratively |
 | Optimized DP | O(n) | O(n) | Efficient digit extraction |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Dynamic Programming**: Build optimal solutions from smaller subproblems
+- **Digit Manipulation**: Extract and process digits efficiently
+- **Bottom-up Approach**: Iterative solution building
+- **Optimization**: Find minimum steps efficiently
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Removing Digits with Path Reconstruction**
+```python
+def removing_digits_with_path(n):
+    # Handle removing digits with path reconstruction
+    
+    # dp[i] = minimum steps to reduce i to 0
+    dp = [float('inf')] * (n + 1)
+    parent = [-1] * (n + 1)
+    dp[0] = 0
+    
+    for i in range(1, n + 1):
+        # Extract all digits
+        temp = i
+        while temp > 0:
+            digit = temp % 10
+            if digit > 0 and i - digit >= 0:
+                if dp[i - digit] + 1 < dp[i]:
+                    dp[i] = dp[i - digit] + 1
+                    parent[i] = digit
+            temp //= 10
+    
+    if dp[n] == float('inf'):
+        return -1, []
+    
+    # Reconstruct path
+    path = []
+    current = n
+    while current > 0:
+        digit = parent[current]
+        path.append(digit)
+        current -= digit
+    
+    return dp[n], path
+```
+
+#### **2. Removing Digits with Constraints**
+```python
+def removing_digits_constrained(n, allowed_digits):
+    # Handle removing digits with constraints on allowed digits
+    
+    # dp[i] = minimum steps to reduce i to 0
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0  # Base case
+    
+    for i in range(1, n + 1):
+        # Extract all digits
+        temp = i
+        while temp > 0:
+            digit = temp % 10
+            if digit in allowed_digits and i - digit >= 0:
+                dp[i] = min(dp[i], 1 + dp[i - digit])
+            temp //= 10
+    
+    return dp[n] if dp[n] != float('inf') else -1
+```
+
+#### **3. Removing Digits with Dynamic Updates**
+```python
+def removing_digits_dynamic(operations):
+    # Handle removing digits with dynamic updates
+    
+    n = 0
+    dp = [float('inf')] * (10**6 + 1)
+    dp[0] = 0
+    
+    for operation in operations:
+        if operation[0] == 'set_number':
+            # Set new number
+            n = operation[1]
+            
+            # Recalculate DP array
+            dp = [float('inf')] * (n + 1)
+            dp[0] = 0
+            
+            for i in range(1, n + 1):
+                # Extract all digits
+                temp = i
+                while temp > 0:
+                    digit = temp % 10
+                    if digit > 0 and i - digit >= 0:
+                        dp[i] = min(dp[i], 1 + dp[i - digit])
+                    temp //= 10
+        
+        elif operation[0] == 'query':
+            # Return current minimum steps
+            yield dp[n] if n < len(dp) and dp[n] != float('inf') else -1
+    
+    return list(removing_digits_dynamic(operations))
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Dynamic Programming**: Digit DP, number theory problems
+- **Optimization**: Minimum steps, shortest path problems
+- **Number Theory**: Digit manipulation, number properties
+- **Combinatorics**: Counting and optimization
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Dynamic programming** is essential for optimization problems
+- **Digit extraction** is a common technique in number problems
+- **Bottom-up approach** is often more efficient than top-down
+- **Path reconstruction** can be added for additional insights
 
 ## Key Insights for Other Problems
 

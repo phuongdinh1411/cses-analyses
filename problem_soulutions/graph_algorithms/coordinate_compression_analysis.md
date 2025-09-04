@@ -662,22 +662,115 @@ print(f"Compressed bounds: {bounds}")
 - **Minimum Spanning Tree**: Connecting points in coordinate space
 - **Closest Pair**: Finding nearest neighbors efficiently
 
-## Learning Points
+## 🎯 Key Insights
 
-### **1. Algorithm Design**
-- **Coordinate Compression**: Essential technique for handling large coordinate values efficiently
-- **Set Operations**: Important for removing duplicates in O(1) time
-- **Dictionary Mapping**: Key for O(1) coordinate lookup during compression
+### Important Concepts and Patterns
+- **Coordinate Compression**: Map large coordinate values to small consecutive integers
+- **Set Operations**: Remove duplicates efficiently using set data structure
+- **Dictionary Mapping**: Create O(1) lookup for coordinate compression
+- **Relative Ordering**: Preserve spatial relationships during compression
 
-### **2. Implementation Techniques**
-- **Sorting**: Essential for preserving relative ordering between coordinates
-- **Memory Management**: Efficient storage of coordinate mappings
-- **Data Structure Selection**: Choosing appropriate structures for coordinate operations
+## 🚀 Problem Variations
 
-### **3. Problem-Solving Strategies**
-- **Space-Time Trade-offs**: Balancing memory usage with computational efficiency
-- **Coordinate System Design**: Understanding how to represent spatial relationships
-- **Algorithm Optimization**: Improving efficiency through better data structures
+### Extended Problems with Detailed Code Examples
+
+#### **1. 3D Coordinate Compression**
+```python
+def coordinate_compression_3d(n, points):
+    # Handle 3D coordinate compression
+    
+    # Extract x, y, z coordinates
+    x_coords = sorted(set(point[0] for point in points))
+    y_coords = sorted(set(point[1] for point in points))
+    z_coords = sorted(set(point[2] for point in points))
+    
+    # Create mapping dictionaries
+    x_map = {x: i for i, x in enumerate(x_coords)}
+    y_map = {y: i for i, y in enumerate(y_coords)}
+    z_map = {z: i for i, z in enumerate(z_coords)}
+    
+    # Compress coordinates
+    result = []
+    for x, y, z in points:
+        compressed_x = x_map[x]
+        compressed_y = y_map[y]
+        compressed_z = z_map[z]
+        result.append((compressed_x, compressed_y, compressed_z))
+    
+    return result
+```
+
+#### **2. Coordinate Compression with Weights**
+```python
+def coordinate_compression_weighted(n, points, weights):
+    # Handle coordinate compression with point weights
+    
+    # Extract coordinates
+    x_coords = sorted(set(point[0] for point in points))
+    y_coords = sorted(set(point[1] for point in points))
+    
+    # Create mapping dictionaries
+    x_map = {x: i for i, x in enumerate(x_coords)}
+    y_map = {y: i for i, y in enumerate(y_coords)}
+    
+    # Compress coordinates with weights
+    result = []
+    for i, (x, y) in enumerate(points):
+        compressed_x = x_map[x]
+        compressed_y = y_map[y]
+        weight = weights[i]
+        result.append((compressed_x, compressed_y, weight))
+    
+    return result
+```
+
+#### **3. Dynamic Coordinate Compression**
+```python
+class DynamicCoordinateCompression:
+    def __init__(self):
+        self.x_coords = []
+        self.y_coords = []
+        self.x_map = {}
+        self.y_map = {}
+        self.next_x = 0
+        self.next_y = 0
+    
+    def add_point(self, x, y):
+        # Add x coordinate if new
+        if x not in self.x_map:
+            self.x_coords.append(x)
+            self.x_map[x] = self.next_x
+            self.next_x += 1
+        
+        # Add y coordinate if new
+        if y not in self.y_map:
+            self.y_coords.append(y)
+            self.y_map[y] = self.next_y
+            self.next_y += 1
+        
+        return (self.x_map[x], self.y_map[y])
+    
+    def compress_point(self, x, y):
+        if x in self.x_map and y in self.y_map:
+            return (self.x_map[x], self.y_map[y])
+        return None
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Grid Problems**: Labyrinth, Counting Rooms, Building Roads
+- **Range Queries**: Range Sum Queries, 2D Range Queries
+- **Spatial Data**: Closest Pair, Minimum Spanning Tree
+- **Graph Algorithms**: Shortest Path in coordinate space
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Coordinate compression** efficiently handles large coordinate values
+- **Set operations** remove duplicates in O(1) time
+- **Dictionary mapping** provides O(1) coordinate lookup
+- **Relative ordering** is preserved during compression
 
 ---
 

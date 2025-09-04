@@ -1,28 +1,30 @@
 ---
 layout: simple
-title: "Distance Queries"
+title: "Distance Queries - Tree Distance Between Two Nodes"
 permalink: /problem_soulutions/tree_algorithms/distance_queries_analysis
 ---
 
+# Distance Queries - Tree Distance Between Two Nodes
 
-# Distance Queries
+## 📋 Problem Description
 
-## Problem Statement
 Given a tree with n nodes, answer q queries about the distance between two nodes.
 
-### Input
-The first input line has two integers n and q: the number of nodes and queries.
-Then, there are n−1 lines describing the edges. Each line has two integers a and b: there is an edge between nodes a and b.
-Finally, there are q lines describing the queries. Each line has two integers a and b: find the distance between nodes a and b.
+This is a tree distance query problem that requires finding the distance between any two nodes in a tree. The solution involves using Lowest Common Ancestor (LCA) to efficiently calculate distances.
 
-### Output
-Print q integers: the answers to the queries.
+**Input**: 
+- First line: Two integers n and q (number of nodes and queries)
+- Next n-1 lines: Two integers a and b (edge between nodes a and b)
+- Next q lines: Two integers a and b (find distance between nodes a and b)
 
-### Constraints
-- 1 ≤ n,q ≤ 2⋅10^5
-- 1 ≤ a,b ≤ n
+**Output**: 
+- For each query, print the distance between the two nodes
 
-### Example
+**Constraints**:
+- 1 ≤ n, q ≤ 2⋅10⁵
+- 1 ≤ a, b ≤ n
+
+**Example**:
 ```
 Input:
 5 3
@@ -40,10 +42,20 @@ Output:
 3
 ```
 
-## Solution Progression
+**Explanation**: 
+- Query 1: Distance between nodes 2 and 4 = 3 (path: 2-1-3-4)
+- Query 2: Distance between nodes 1 and 5 = 2 (path: 1-3-5)
+- Query 3: Distance between nodes 2 and 5 = 3 (path: 2-1-3-5)
 
-### Approach 1: BFS for Each Query - O(q * n)
-**Description**: Use BFS from one node to find the distance to the other node for each query.
+## 🎯 Solution Progression
+
+### Step 1: Understanding the Problem
+- **Goal**: Find distance between any two nodes in a tree efficiently
+- **Key Insight**: Use LCA (Lowest Common Ancestor) to calculate distances
+- **Challenge**: Handle multiple queries efficiently without O(q × n) complexity
+
+### Step 2: Initial Approach
+**BFS for each query (inefficient but correct):**
 
 ```python
 from collections import deque
@@ -161,8 +173,8 @@ def distance_queries_lca(n, q, edges, queries):
 
 **Why this improvement works**: LCA-based approach uses the formula distance(a,b) = depth(a) + depth(b) - 2*depth(lca(a,b)) for efficient distance calculation.
 
-### Improvement 2: Optimized LCA with Better Setup - O(n * log(n) + q * log(n))
-**Description**: Optimize the LCA setup with better depth calculation and ancestor table building.
+### Step 3: Optimization/Alternative
+**Optimized LCA with better setup:**
 
 ```python
 def distance_queries_optimized_lca(n, q, edges, queries):
@@ -337,7 +349,7 @@ def distance_queries_euler_tour(n, q, edges, queries):
 
 **Why this works**: Euler Tour technique reduces LCA to RMQ problem for distance calculation.
 
-## Final Optimal Solution
+### Step 4: Complete Solution
 
 ```python
 n, q = map(int, input().split())
@@ -421,7 +433,14 @@ for a, b in queries:
     print(calculate_distance(a, b))
 ```
 
-## Complexity Analysis
+### Step 5: Testing Our Solution
+**Test cases to verify correctness:**
+- **Test 1**: Simple tree (should return correct distances)
+- **Test 2**: Linear tree (should return correct distances)
+- **Test 3**: Star tree (should return correct distances)
+- **Test 4**: Complex tree (should find all distances)
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
@@ -429,6 +448,278 @@ for a, b in queries:
 | LCA-based | O(n * log(n) + q * log(n)) | O(n * log(n)) | Use LCA formula |
 | Optimized LCA | O(n * log(n) + q * log(n)) | O(n * log(n)) | Better implementation |
 | Euler Tour | O(n + q * log(n)) | O(n * log(n)) | RMQ-based approach |
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **LCA (Lowest Common Ancestor)**: Find common ancestors for distance calculation
+- **Distance Formula**: distance(a,b) = depth(a) + depth(b) - 2*depth(lca(a,b))
+- **Binary Lifting**: Efficient LCA computation using binary lifting
+- **Tree Traversal**: Use DFS to calculate depths and build ancestor tables
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Distance Queries with Edge Weights**
+```python
+def weighted_distance_queries(n, q, edges, weights, queries):
+    # Handle distance queries with edge weights
+    
+    # Build adjacency list with weights
+    tree = [[] for _ in range(n + 1)]
+    for i, (a, b) in enumerate(edges):
+        tree[a].append((b, weights[i]))
+        tree[b].append((a, weights[i]))
+    
+    # Binary lifting for LCA with weighted distances
+    log_n = 20
+    ancestor = [[0] * log_n for _ in range(n + 1)]
+    depth = [0] * (n + 1)
+    distance_from_root = [0] * (n + 1)
+    
+    def dfs(node, parent, current_depth, current_distance):
+        depth[node] = current_depth
+        distance_from_root[node] = current_distance
+        ancestor[node][0] = parent
+        
+        for child, weight in tree[node]:
+            if child != parent:
+                dfs(child, node, current_depth + 1, current_distance + weight)
+    
+    dfs(1, 0, 0, 0)
+    
+    # Fill ancestor table
+    for level in range(1, log_n):
+        for node in range(1, n + 1):
+            if ancestor[node][level - 1] != 0:
+                ancestor[node][level] = ancestor[ancestor[node][level - 1]][level - 1]
+    
+    def find_lca(a, b):
+        # Bring both nodes to same depth
+        if depth[a] < depth[b]:
+            a, b = b, a
+        
+        # Bring a to same depth as b
+        diff = depth[a] - depth[b]
+        for level in range(log_n):
+            if diff & (1 << level):
+                a = ancestor[a][level]
+        
+        if a == b:
+            return a
+        
+        # Find LCA by binary search
+        for level in range(log_n - 1, -1, -1):
+            if ancestor[a][level] != ancestor[b][level]:
+                a = ancestor[a][level]
+                b = ancestor[b][level]
+        
+        return ancestor[a][0]
+    
+    def calculate_weighted_distance(a, b):
+        lca_node = find_lca(a, b)
+        return distance_from_root[a] + distance_from_root[b] - 2 * distance_from_root[lca_node]
+    
+    # Process queries
+    result = []
+    for a, b in queries:
+        result.append(calculate_weighted_distance(a, b))
+    
+    return result
+```
+
+#### **2. Distance Queries with Updates**
+```python
+def dynamic_distance_queries(n, q, edges, operations):
+    # Handle distance queries with dynamic tree updates
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        tree[a].append(b)
+        tree[b].append(a)
+    
+    def rebuild_lca():
+        # Rebuild LCA tables after updates
+        log_n = 20
+        ancestor = [[0] * log_n for _ in range(n + 1)]
+        depth = [0] * (n + 1)
+        
+        def dfs(node, parent, current_depth):
+            depth[node] = current_depth
+            ancestor[node][0] = parent
+            
+            for child in tree[node]:
+                if child != parent:
+                    dfs(child, node, current_depth + 1)
+        
+        dfs(1, 0, 0)
+        
+        # Fill ancestor table
+        for level in range(1, log_n):
+            for node in range(1, n + 1):
+                if ancestor[node][level - 1] != 0:
+                    ancestor[node][level] = ancestor[ancestor[node][level - 1]][level - 1]
+        
+        return ancestor, depth
+    
+    def find_lca(ancestor, depth, a, b):
+        # Bring both nodes to same depth
+        if depth[a] < depth[b]:
+            a, b = b, a
+        
+        # Bring a to same depth as b
+        diff = depth[a] - depth[b]
+        for level in range(20):
+            if diff & (1 << level):
+                a = ancestor[a][level]
+        
+        if a == b:
+            return a
+        
+        # Find LCA by binary search
+        for level in range(19, -1, -1):
+            if ancestor[a][level] != ancestor[b][level]:
+                a = ancestor[a][level]
+                b = ancestor[b][level]
+        
+        return ancestor[a][0]
+    
+    def calculate_distance(ancestor, depth, a, b):
+        lca_node = find_lca(ancestor, depth, a, b)
+        return depth[a] + depth[b] - 2 * depth[lca_node]
+    
+    # Process operations
+    result = []
+    for operation in operations:
+        if operation[0] == 'add':
+            # Add edge
+            a, b = operation[1], operation[2]
+            tree[a].append(b)
+            tree[b].append(a)
+        elif operation[0] == 'remove':
+            # Remove edge
+            a, b = operation[1], operation[2]
+            tree[a].remove(b)
+            tree[b].remove(a)
+        elif operation[0] == 'query':
+            # Distance query
+            a, b = operation[1], operation[2]
+            ancestor, depth = rebuild_lca()
+            distance = calculate_distance(ancestor, depth, a, b)
+            result.append(distance)
+    
+    return result
+```
+
+#### **3. Distance Queries with Path Information**
+```python
+def distance_queries_with_path(n, q, edges, queries):
+    # Handle distance queries with path reconstruction
+    
+    # Build adjacency list
+    tree = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        tree[a].append(b)
+        tree[b].append(a)
+    
+    # Binary lifting for LCA
+    log_n = 20
+    ancestor = [[0] * log_n for _ in range(n + 1)]
+    depth = [0] * (n + 1)
+    
+    def dfs(node, parent, current_depth):
+        depth[node] = current_depth
+        ancestor[node][0] = parent
+        
+        for child in tree[node]:
+            if child != parent:
+                dfs(child, node, current_depth + 1)
+    
+    dfs(1, 0, 0)
+    
+    # Fill ancestor table
+    for level in range(1, log_n):
+        for node in range(1, n + 1):
+            if ancestor[node][level - 1] != 0:
+                ancestor[node][level] = ancestor[ancestor[node][level - 1]][level - 1]
+    
+    def find_lca(a, b):
+        # Bring both nodes to same depth
+        if depth[a] < depth[b]:
+            a, b = b, a
+        
+        # Bring a to same depth as b
+        diff = depth[a] - depth[b]
+        for level in range(log_n):
+            if diff & (1 << level):
+                a = ancestor[a][level]
+        
+        if a == b:
+            return a
+        
+        # Find LCA by binary search
+        for level in range(log_n - 1, -1, -1):
+            if ancestor[a][level] != ancestor[b][level]:
+                a = ancestor[a][level]
+                b = ancestor[b][level]
+        
+        return ancestor[a][0]
+    
+    def get_path(a, b):
+        # Get the path from a to b
+        lca_node = find_lca(a, b)
+        path = []
+        
+        # Add nodes from a to LCA
+        current = a
+        while current != lca_node:
+            path.append(current)
+            current = ancestor[current][0]
+        path.append(lca_node)
+        
+        # Add nodes from b to LCA (in reverse)
+        current = b
+        temp_path = []
+        while current != lca_node:
+            temp_path.append(current)
+            current = ancestor[current][0]
+        
+        # Combine paths
+        path.extend(reversed(temp_path))
+        return path
+    
+    def calculate_distance_with_path(a, b):
+        lca_node = find_lca(a, b)
+        distance = depth[a] + depth[b] - 2 * depth[lca_node]
+        path = get_path(a, b)
+        return distance, path
+    
+    # Process queries
+    result = []
+    for a, b in queries:
+        distance, path = calculate_distance_with_path(a, b)
+        result.append((distance, path))
+    
+    return result
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Distance Queries**: Various tree distance query problems
+- **LCA**: Lowest Common Ancestor problems
+- **Tree Algorithms**: Tree traversal and distance problems
+- **Binary Lifting**: Binary lifting technique problems
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **LCA formula** efficiently calculates tree distances
+- **Binary lifting** provides fast LCA computation
+- **Distance formula** works for both weighted and unweighted trees
+- **Tree structure** enables efficient distance calculations
 
 ## Key Insights for Other Problems
 
