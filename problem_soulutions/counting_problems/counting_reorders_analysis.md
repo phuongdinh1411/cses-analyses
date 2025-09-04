@@ -7,19 +7,22 @@ permalink: /problem_soulutions/counting_problems/counting_reorders_analysis
 
 # Counting Reorders
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a string s, count the number of different strings that can be obtained by reordering the characters of s.
 
-### Input
-The first input line has a string s.
+This is a combinatorics problem where we need to count the number of distinct permutations of a string with repeated characters. We can solve this efficiently using the multinomial coefficient formula, which accounts for the fact that identical characters are indistinguishable.
 
-### Output
-Print the number of different reorderings modulo 10^9 + 7.
+**Input**: 
+- First line: string s (the input string)
 
-### Constraints
+**Output**: 
+- Print the number of different reorderings modulo 10⁹ + 7
+
+**Constraints**:
 - 1 ≤ |s| ≤ 100
 
-### Example
+**Example**:
 ```
 Input:
 aab
@@ -27,6 +30,14 @@ aab
 Output:
 3
 ```
+
+**Explanation**: 
+The string "aab" can be reordered in 3 different ways:
+1. "aab" (original)
+2. "aba" (swap second and third characters)
+3. "baa" (swap first and second characters)
+
+Note that "aab" and "aab" are considered the same since the two 'a's are identical.
 
 ## Solution Progression
 
@@ -476,27 +487,245 @@ def interactive_reordering_calculator():
 - **Combinatorial Optimization**: Optimize combinatorial problems
 - **Dynamic Programming**: Optimize using dynamic programming
 - **Algorithm Optimization**: Optimize algorithms
-- **Complexity Analysis**: Analyze algorithm complexity
+## 🔧 Implementation Details
 
-### 📚 **Learning Resources**
+### Time and Space Complexity
+- **Time Complexity**: O(|s|) for counting characters and computing multinomial coefficient
+- **Space Complexity**: O(|s|) for storing character frequencies
+- **Why it works**: We use the multinomial coefficient formula: n! / (c1! * c2! * ... * ck!) where ci is the count of character i
 
-#### **1. Related Algorithms**
-- **Dynamic Programming**: Efficient DP algorithms
-- **Modular Arithmetic**: Modular arithmetic algorithms
-- **Combinatorial Algorithms**: Combinatorial algorithms
-- **Optimization Algorithms**: Optimization algorithms
+### Key Implementation Points
+- Count the frequency of each character in the string
+- Use the multinomial coefficient formula to calculate distinct permutations
+- Precompute factorials and modular inverses for efficiency
+- Handle modular arithmetic to prevent overflow
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Foundation for counting problems
-- **Number Theory**: Mathematical properties of numbers
-- **Modular Theory**: Properties of modular arithmetic
-- **Optimization**: Mathematical optimization techniques
+## 🎯 Key Insights
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Combinatorial Processing**: Efficient combinatorial processing techniques
-- **Modular Processing**: Modular processing techniques
+### Important Concepts and Patterns
+- **Multinomial Coefficients**: Mathematical foundation for counting permutations with repetitions
+- **Character Frequency**: Essential for handling repeated characters
+- **Modular Arithmetic**: Required for handling large numbers
+- **Combinatorics**: Foundation for counting distinct arrangements
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Counting Reorders with Constraints**
+```python
+def counting_reorders_with_constraints(s, constraints):
+    # Count reorders with additional constraints
+    MOD = 10**9 + 7
+    
+    # Count character frequencies
+    freq = {}
+    for char in s:
+        freq[char] = freq.get(char, 0) + 1
+    
+    # Precompute factorials
+    n = len(s)
+    fact = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = (fact[i-1] * i) % MOD
+    
+    # Precompute modular inverses
+    inv_fact = [1] * (n + 1)
+    inv_fact[n] = pow(fact[n], MOD - 2, MOD)
+    for i in range(n - 1, -1, -1):
+        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
+    
+    # Calculate multinomial coefficient
+    result = fact[n]
+    for count in freq.values():
+        result = (result * inv_fact[count]) % MOD
+    
+    # Apply constraints
+    if constraints.get("max_length", n) < n:
+        return 0
+    if constraints.get("min_length", 0) > n:
+        return 0
+    if constraints.get("forbidden_chars"):
+        for char in constraints["forbidden_chars"]:
+            if char in freq:
+                return 0
+    
+    return result
+
+# Example usage
+s = "aab"
+constraints = {"max_length": 10, "min_length": 1, "forbidden_chars": []}
+result = counting_reorders_with_constraints(s, constraints)
+print(f"Constrained reorders: {result}")
+```
+
+#### **2. Counting Reorders with Position Constraints**
+```python
+def counting_reorders_with_position_constraints(s, position_constraints):
+    # Count reorders with constraints on character positions
+    MOD = 10**9 + 7
+    
+    # Count character frequencies
+    freq = {}
+    for char in s:
+        freq[char] = freq.get(char, 0) + 1
+    
+    # Check if position constraints are satisfiable
+    for pos, required_char in position_constraints.items():
+        if pos >= len(s):
+            return 0
+        if required_char not in freq or freq[required_char] == 0:
+            return 0
+        freq[required_char] -= 1
+    
+    # Calculate remaining characters
+    remaining_chars = []
+    for char, count in freq.items():
+        remaining_chars.extend([char] * count)
+    
+    # Count reorders of remaining characters
+    if not remaining_chars:
+        return 1
+    
+    # Count frequencies of remaining characters
+    remaining_freq = {}
+    for char in remaining_chars:
+        remaining_freq[char] = remaining_freq.get(char, 0) + 1
+    
+    # Precompute factorials
+    n = len(remaining_chars)
+    fact = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = (fact[i-1] * i) % MOD
+    
+    # Precompute modular inverses
+    inv_fact = [1] * (n + 1)
+    inv_fact[n] = pow(fact[n], MOD - 2, MOD)
+    for i in range(n - 1, -1, -1):
+        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
+    
+    # Calculate multinomial coefficient
+    result = fact[n]
+    for count in remaining_freq.values():
+        result = (result * inv_fact[count]) % MOD
+    
+    return result
+
+# Example usage
+s = "aab"
+position_constraints = {0: 'a'}  # First character must be 'a'
+result = counting_reorders_with_position_constraints(s, position_constraints)
+print(f"Position-constrained reorders: {result}")
+```
+
+#### **3. Counting Reorders with Multiple Strings**
+```python
+def counting_reorders_multiple_strings(strings):
+    # Count reorders for multiple strings
+    MOD = 10**9 + 7
+    results = {}
+    
+    for s in strings:
+        # Count character frequencies
+        freq = {}
+        for char in s:
+            freq[char] = freq.get(char, 0) + 1
+        
+        # Precompute factorials
+        n = len(s)
+        fact = [1] * (n + 1)
+        for i in range(1, n + 1):
+            fact[i] = (fact[i-1] * i) % MOD
+        
+        # Precompute modular inverses
+        inv_fact = [1] * (n + 1)
+        inv_fact[n] = pow(fact[n], MOD - 2, MOD)
+        for i in range(n - 1, -1, -1):
+            inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
+        
+        # Calculate multinomial coefficient
+        result = fact[n]
+        for count in freq.values():
+            result = (result * inv_fact[count]) % MOD
+        
+        results[s] = result
+    
+    return results
+
+# Example usage
+strings = ["aab", "abc", "aabb", "xyz"]
+results = counting_reorders_multiple_strings(strings)
+for s, count in results.items():
+    print(f"String '{s}' has {count} reorders")
+```
+
+#### **4. Counting Reorders with Statistics**
+```python
+def counting_reorders_with_statistics(s):
+    # Count reorders and provide statistics
+    MOD = 10**9 + 7
+    
+    # Count character frequencies
+    freq = {}
+    for char in s:
+        freq[char] = freq.get(char, 0) + 1
+    
+    # Precompute factorials
+    n = len(s)
+    fact = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = (fact[i-1] * i) % MOD
+    
+    # Precompute modular inverses
+    inv_fact = [1] * (n + 1)
+    inv_fact[n] = pow(fact[n], MOD - 2, MOD)
+    for i in range(n - 1, -1, -1):
+        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
+    
+    # Calculate multinomial coefficient
+    result = fact[n]
+    for count in freq.values():
+        result = (result * inv_fact[count]) % MOD
+    
+    # Calculate statistics
+    unique_chars = len(freq)
+    max_freq = max(freq.values()) if freq else 0
+    min_freq = min(freq.values()) if freq else 0
+    total_chars = sum(freq.values())
+    
+    statistics = {
+        "total_reorders": result,
+        "unique_characters": unique_chars,
+        "max_frequency": max_freq,
+        "min_frequency": min_freq,
+        "total_characters": total_chars,
+        "character_frequencies": freq
+    }
+    
+    return result, statistics
+
+# Example usage
+s = "aab"
+count, stats = counting_reorders_with_statistics(s)
+print(f"Total reorders: {count}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Combinatorics**: Permutations, Arrangements, Combinations
+- **String Algorithms**: String manipulation, Character counting
+- **Modular Arithmetic**: Modular exponentiation, Modular inverses
+- **Counting Problems**: Subset counting, Path counting
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Multinomial coefficients** are essential for counting permutations with repetitions
+- **Character frequency counting** is fundamental for handling repeated characters
+- **Modular arithmetic** is required for handling large numbers
+- **Combinatorics** provides the mathematical foundation for counting problems
 
 ---
 

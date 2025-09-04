@@ -7,21 +7,24 @@ permalink: /problem_soulutions/counting_problems/filled_subgrid_count_ii_analysi
 
 # Filled Subgrid Count II
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a 2D grid of size n×m, count the number of filled subgrids of any size. A subgrid is filled if all cells in it contain the same value.
 
-### Input
-The first input line has two integers n and m: the dimensions of the grid.
-Then there are n lines describing the grid. Each line has m integers: the values in the grid.
+This is a grid counting problem where we need to find all rectangular subgrids that are filled (all cells have the same value). We can solve this by checking all possible rectangular subgrids and verifying if they are filled.
 
-### Output
-Print one integer: the number of filled subgrids of any size.
+**Input**: 
+- First line: two integers n and m (grid dimensions)
+- Next n lines: m integers each (grid values)
 
-### Constraints
+**Output**: 
+- Print one integer: the number of filled subgrids of any size
+
+**Constraints**:
 - 1 ≤ n,m ≤ 100
-- 1 ≤ grid[i][j] ≤ 10^9
+- 1 ≤ grid[i][j] ≤ 10⁹
 
-### Example
+**Example**:
 ```
 Input:
 3 3
@@ -32,6 +35,13 @@ Input:
 Output:
 14
 ```
+
+**Explanation**: 
+In the 3×3 grid, there are 14 filled subgrids:
+- 9 single cells (1×1 subgrids)
+- 3 filled 2×1 subgrids in the first two rows
+- 1 filled 3×1 subgrid in the third row
+- 1 filled 1×3 subgrid in the third column
 
 ## Solution Progression
 
@@ -508,23 +518,223 @@ weight: {max_weight}")
 
 ### 📚 **Learning Resources**
 
-#### **1. Related Algorithms**
-- **Grid Traversal**: Efficient grid traversal algorithms
-- **Fill Detection**: Fill detection algorithms
-- **Pattern Matching**: Pattern matching algorithms
-- **Dynamic Programming**: For optimization problems
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Foundation for counting problems
-- **Grid Theory**: Mathematical properties of grids
-- **Pattern Theory**: Properties of patterns
-- **Optimization**: Mathematical optimization techniques
+### Time and Space Complexity
+- **Time Complexity**: O(n² × m²) for checking all rectangular subgrids
+- **Space Complexity**: O(1) for storing the count
+- **Why it works**: We iterate through all possible rectangular subgrids and check if they are filled
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Grid Processing**: Efficient grid processing techniques
-- **Pattern Recognition**: Pattern recognition techniques
+### Key Implementation Points
+- Iterate through all possible rectangular subgrids
+- Check if all cells in each subgrid have the same value
+- Handle different subgrid sizes efficiently
+- Optimize by early termination when a subgrid is not filled
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Grid Traversal**: Systematic way to check all rectangular subgrids
+- **Fill Detection**: Efficient way to verify if a subgrid is filled
+- **Subgrid Counting**: Counting patterns in 2D grids
+- **Pattern Recognition**: Identifying filled patterns
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Filled Subgrid Count with Size Constraints**
+```python
+def filled_subgrid_count_with_size_constraints(n, m, grid, size_constraints):
+    # Count filled subgrids with constraints on size
+    count = 0
+    
+    for k in range(1, min(n, m) + 1):
+        # Check size constraints
+        if size_constraints.get("min_size", 1) > k:
+            continue
+        if size_constraints.get("max_size", min(n, m)) < k:
+            continue
+        if size_constraints.get("allowed_sizes") and k not in size_constraints["allowed_sizes"]:
+            continue
+        
+        for i in range(n - k + 1):
+            for j in range(m - k + 1):
+                # Check if this k×k subgrid is filled
+                first_value = grid[i][j]
+                is_filled = True
+                
+                for row in range(i, i + k):
+                    for col in range(j, j + k):
+                        if grid[row][col] != first_value:
+                            is_filled = False
+                            break
+                    if not is_filled:
+                        break
+                
+                if is_filled:
+                    count += 1
+    
+    return count
+
+# Example usage
+n, m = 3, 3
+grid = [[1, 1, 2], [1, 1, 2], [3, 3, 3]]
+size_constraints = {"min_size": 2, "max_size": 3, "allowed_sizes": [2, 3]}
+result = filled_subgrid_count_with_size_constraints(n, m, grid, size_constraints)
+print(f"Size-constrained filled subgrid count: {result}")
+```
+
+#### **2. Filled Subgrid Count with Value Constraints**
+```python
+def filled_subgrid_count_with_value_constraints(n, m, grid, value_constraints):
+    # Count filled subgrids with constraints on values
+    count = 0
+    
+    for k in range(1, min(n, m) + 1):
+        for i in range(n - k + 1):
+            for j in range(m - k + 1):
+                # Check if this k×k subgrid is filled
+                first_value = grid[i][j]
+                
+                # Check value constraints
+                if value_constraints.get("min_value", 0) > first_value:
+                    continue
+                if value_constraints.get("max_value", float('inf')) < first_value:
+                    continue
+                if value_constraints.get("allowed_values") and first_value not in value_constraints["allowed_values"]:
+                    continue
+                
+                is_filled = True
+                for row in range(i, i + k):
+                    for col in range(j, j + k):
+                        if grid[row][col] != first_value:
+                            is_filled = False
+                            break
+                    if not is_filled:
+                        break
+                
+                if is_filled:
+                    count += 1
+    
+    return count
+
+# Example usage
+n, m = 3, 3
+grid = [[1, 1, 2], [1, 1, 2], [3, 3, 3]]
+value_constraints = {"min_value": 1, "max_value": 2, "allowed_values": [1, 2]}
+result = filled_subgrid_count_with_value_constraints(n, m, grid, value_constraints)
+print(f"Value-constrained filled subgrid count: {result}")
+```
+
+#### **3. Filled Subgrid Count with Position Constraints**
+```python
+def filled_subgrid_count_with_position_constraints(n, m, grid, position_constraints):
+    # Count filled subgrids with constraints on position
+    count = 0
+    
+    for k in range(1, min(n, m) + 1):
+        for i in range(n - k + 1):
+            for j in range(m - k + 1):
+                # Check position constraints
+                if position_constraints.get("min_row", 0) > i:
+                    continue
+                if position_constraints.get("max_row", n) < i + k:
+                    continue
+                if position_constraints.get("min_col", 0) > j:
+                    continue
+                if position_constraints.get("max_col", m) < j + k:
+                    continue
+                
+                # Check if this k×k subgrid is filled
+                first_value = grid[i][j]
+                is_filled = True
+                
+                for row in range(i, i + k):
+                    for col in range(j, j + k):
+                        if grid[row][col] != first_value:
+                            is_filled = False
+                            break
+                    if not is_filled:
+                        break
+                
+                if is_filled:
+                    count += 1
+    
+    return count
+
+# Example usage
+n, m = 3, 3
+grid = [[1, 1, 2], [1, 1, 2], [3, 3, 3]]
+position_constraints = {"min_row": 0, "max_row": 2, "min_col": 0, "max_col": 2}
+result = filled_subgrid_count_with_position_constraints(n, m, grid, position_constraints)
+print(f"Position-constrained filled subgrid count: {result}")
+```
+
+#### **4. Filled Subgrid Count with Statistics**
+```python
+def filled_subgrid_count_with_statistics(n, m, grid):
+    # Count filled subgrids and provide statistics
+    count = 0
+    size_counts = {}
+    value_counts = {}
+    positions = []
+    
+    for k in range(1, min(n, m) + 1):
+        size_counts[k] = 0
+        
+        for i in range(n - k + 1):
+            for j in range(m - k + 1):
+                # Check if this k×k subgrid is filled
+                first_value = grid[i][j]
+                is_filled = True
+                
+                for row in range(i, i + k):
+                    for col in range(j, j + k):
+                        if grid[row][col] != first_value:
+                            is_filled = False
+                            break
+                    if not is_filled:
+                        break
+                
+                if is_filled:
+                    count += 1
+                    size_counts[k] += 1
+                    value_counts[first_value] = value_counts.get(first_value, 0) + 1
+                    positions.append((i, j, k, first_value))
+    
+    statistics = {
+        "total_count": count,
+        "size_distribution": size_counts,
+        "value_distribution": value_counts,
+        "positions": positions
+    }
+    
+    return count, statistics
+
+# Example usage
+n, m = 3, 3
+grid = [[1, 1, 2], [1, 1, 2], [3, 3, 3]]
+count, stats = filled_subgrid_count_with_statistics(n, m, grid)
+print(f"Filled subgrid count: {count}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Grid Algorithms**: Grid traversal, Grid counting
+- **Pattern Matching**: Pattern recognition, Pattern counting
+- **Subgrid Problems**: Subgrid analysis, Subgrid optimization
+- **Counting Problems**: Subset counting, Path counting
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Grid traversal** is essential for checking all possible subgrids
+- **Fill detection** can be optimized by checking values systematically
+- **Subgrid counting** is a fundamental grid analysis technique
+- **Pattern recognition** helps identify filled patterns in grids
 
 ---
 

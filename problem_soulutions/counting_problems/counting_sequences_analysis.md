@@ -7,20 +7,23 @@ permalink: /problem_soulutions/counting_problems/counting_sequences_analysis
 
 # Counting Sequences
 
-## Problem Statement
+## 📋 Problem Description
+
 Given integers n and k, count the number of sequences of length n where each element is between 1 and k, and no two consecutive elements are equal.
 
-### Input
-The first input line has two integers n and k: the length of the sequence and the maximum value.
+This is a combinatorics problem where we need to count valid sequences with the constraint that no two consecutive elements can be the same. We can solve this using dynamic programming by tracking the last element of the sequence.
 
-### Output
-Print the number of valid sequences modulo 10^9 + 7.
+**Input**: 
+- First line: two integers n and k (sequence length and maximum value)
 
-### Constraints
-- 1 ≤ n ≤ 10^6
-- 1 ≤ k ≤ 10^6
+**Output**: 
+- Print the number of valid sequences modulo 10⁹ + 7
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 10⁶
+- 1 ≤ k ≤ 10⁶
+
+**Example**:
 ```
 Input:
 3 2
@@ -28,6 +31,13 @@ Input:
 Output:
 2
 ```
+
+**Explanation**: 
+For n = 3 and k = 2, there are 2 valid sequences:
+1. [1, 2, 1] - no consecutive elements are equal
+2. [2, 1, 2] - no consecutive elements are equal
+
+The sequences [1, 1, 2], [1, 2, 2], [2, 1, 1], and [2, 2, 1] are invalid because they have consecutive equal elements.
 
 ## Solution Progression
 
@@ -514,23 +524,223 @@ def interactive_sequence_calculator():
 
 ### 📚 **Learning Resources**
 
-#### **1. Related Algorithms**
-- **Dynamic Programming**: Efficient DP algorithms
-- **Modular Arithmetic**: Modular arithmetic algorithms
-- **Combinatorial Algorithms**: Combinatorial algorithms
-- **Optimization Algorithms**: Optimization algorithms
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
+### Time and Space Complexity
+- **Time Complexity**: O(n × k) for the DP approach
+- **Space Complexity**: O(k) for storing DP states
+- **Why it works**: We use dynamic programming to count sequences by tracking the last element and avoiding consecutive equal elements
+
+### Key Implementation Points
+- Use dynamic programming with state representing the last element
+- For each position, count sequences ending with each possible value
+- Ensure no two consecutive elements are equal
+- Use modular arithmetic to prevent overflow
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Dynamic Programming**: Essential for counting sequences with constraints
+- **State Tracking**: Track the last element to avoid consecutive equal elements
+- **Modular Arithmetic**: Required for handling large numbers
 - **Combinatorics**: Foundation for counting problems
-- **Number Theory**: Mathematical properties of numbers
-- **Modular Theory**: Properties of modular arithmetic
-- **Optimization**: Mathematical optimization techniques
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Combinatorial Processing**: Efficient combinatorial processing techniques
-- **Modular Processing**: Modular processing techniques
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Counting Sequences with Additional Constraints**
+```python
+def counting_sequences_with_constraints(n, k, constraints):
+    # Count sequences with additional constraints
+    MOD = 10**9 + 7
+    
+    # Check constraints
+    if constraints.get("min_length", 1) > n:
+        return 0
+    if constraints.get("max_length", float('inf')) < n:
+        return 0
+    if constraints.get("min_value", 1) > 1:
+        return 0
+    if constraints.get("max_value", k) < k:
+        k = constraints["max_value"]
+    
+    # DP: dp[i][j] = number of sequences of length i ending with j
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    
+    # Base case: sequences of length 1
+    for j in range(1, k + 1):
+        dp[1][j] = 1
+    
+    # Fill DP table
+    for i in range(2, n + 1):
+        for j in range(1, k + 1):
+            # Sum all sequences of length i-1 that don't end with j
+            for prev_j in range(1, k + 1):
+                if prev_j != j:
+                    dp[i][j] = (dp[i][j] + dp[i-1][prev_j]) % MOD
+    
+    # Sum all sequences of length n
+    result = 0
+    for j in range(1, k + 1):
+        result = (result + dp[n][j]) % MOD
+    
+    return result
+
+# Example usage
+n, k = 3, 2
+constraints = {"min_length": 1, "max_length": 10, "min_value": 1, "max_value": 2}
+result = counting_sequences_with_constraints(n, k, constraints)
+print(f"Constrained sequence count: {result}")
+```
+
+#### **2. Counting Sequences with Forbidden Patterns**
+```python
+def counting_sequences_with_forbidden_patterns(n, k, forbidden_patterns):
+    # Count sequences avoiding forbidden patterns
+    MOD = 10**9 + 7
+    
+    # DP: dp[i][j] = number of sequences of length i ending with j
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    
+    # Base case: sequences of length 1
+    for j in range(1, k + 1):
+        dp[1][j] = 1
+    
+    # Fill DP table
+    for i in range(2, n + 1):
+        for j in range(1, k + 1):
+            # Sum all sequences of length i-1 that don't end with j
+            for prev_j in range(1, k + 1):
+                if prev_j != j:
+                    # Check if this transition creates a forbidden pattern
+                    is_forbidden = False
+                    for pattern in forbidden_patterns:
+                        if len(pattern) == 2 and pattern[0] == prev_j and pattern[1] == j:
+                            is_forbidden = True
+                            break
+                    
+                    if not is_forbidden:
+                        dp[i][j] = (dp[i][j] + dp[i-1][prev_j]) % MOD
+    
+    # Sum all sequences of length n
+    result = 0
+    for j in range(1, k + 1):
+        result = (result + dp[n][j]) % MOD
+    
+    return result
+
+# Example usage
+n, k = 3, 2
+forbidden_patterns = [[1, 2]]  # Forbid the pattern 1,2
+result = counting_sequences_with_forbidden_patterns(n, k, forbidden_patterns)
+print(f"Sequence count avoiding forbidden patterns: {result}")
+```
+
+#### **3. Counting Sequences with Multiple Lengths**
+```python
+def counting_sequences_multiple_lengths(lengths, k):
+    # Count sequences for multiple lengths
+    MOD = 10**9 + 7
+    results = {}
+    
+    max_length = max(lengths)
+    
+    # DP: dp[i][j] = number of sequences of length i ending with j
+    dp = [[0] * (k + 1) for _ in range(max_length + 1)]
+    
+    # Base case: sequences of length 1
+    for j in range(1, k + 1):
+        dp[1][j] = 1
+    
+    # Fill DP table
+    for i in range(2, max_length + 1):
+        for j in range(1, k + 1):
+            # Sum all sequences of length i-1 that don't end with j
+            for prev_j in range(1, k + 1):
+                if prev_j != j:
+                    dp[i][j] = (dp[i][j] + dp[i-1][prev_j]) % MOD
+    
+    # Calculate results for each length
+    for n in lengths:
+        result = 0
+        for j in range(1, k + 1):
+            result = (result + dp[n][j]) % MOD
+        results[n] = result
+    
+    return results
+
+# Example usage
+lengths = [1, 2, 3, 4]
+k = 2
+results = counting_sequences_multiple_lengths(lengths, k)
+for n, count in results.items():
+    print(f"Sequences of length {n}: {count}")
+```
+
+#### **4. Counting Sequences with Statistics**
+```python
+def counting_sequences_with_statistics(n, k):
+    # Count sequences and provide statistics
+    MOD = 10**9 + 7
+    
+    # DP: dp[i][j] = number of sequences of length i ending with j
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    
+    # Base case: sequences of length 1
+    for j in range(1, k + 1):
+        dp[1][j] = 1
+    
+    # Fill DP table
+    for i in range(2, n + 1):
+        for j in range(1, k + 1):
+            # Sum all sequences of length i-1 that don't end with j
+            for prev_j in range(1, k + 1):
+                if prev_j != j:
+                    dp[i][j] = (dp[i][j] + dp[i-1][prev_j]) % MOD
+    
+    # Calculate total count
+    total_count = 0
+    for j in range(1, k + 1):
+        total_count = (total_count + dp[n][j]) % MOD
+    
+    # Calculate statistics
+    ending_counts = {}
+    for j in range(1, k + 1):
+        ending_counts[j] = dp[n][j]
+    
+    statistics = {
+        "total_sequences": total_count,
+        "sequence_length": n,
+        "max_value": k,
+        "ending_distribution": ending_counts,
+        "most_common_ending": max(ending_counts, key=ending_counts.get) if ending_counts else None
+    }
+    
+    return total_count, statistics
+
+# Example usage
+n, k = 3, 2
+count, stats = counting_sequences_with_statistics(n, k)
+print(f"Sequence count: {count}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Dynamic Programming**: Sequence DP, State DP
+- **Combinatorics**: Permutation counting, Arrangement counting
+- **Modular Arithmetic**: Modular exponentiation, Modular inverses
+- **Counting Problems**: Subset counting, Path counting
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Dynamic programming** is essential for counting sequences with constraints
+- **State tracking** helps avoid consecutive equal elements
+- **Modular arithmetic** is required for handling large numbers
+- **Combinatorics** provides the mathematical foundation for counting problems
 
 ---
 

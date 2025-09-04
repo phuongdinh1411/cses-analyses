@@ -7,20 +7,23 @@ permalink: /problem_soulutions/counting_problems/counting_combinations_analysis
 
 # Counting Combinations
 
-## Problem Statement
+## 📋 Problem Description
+
 Given integers n and k, count the number of ways to choose k elements from a set of n elements (combinations).
 
-### Input
-The first input line has two integers n and k: the total number of elements and the number to choose.
+This is a combinatorics problem where we need to calculate the number of ways to choose k elements from a set of n elements without considering order. This is the classic "n choose k" problem, which can be solved using the binomial coefficient formula with modular arithmetic.
 
-### Output
-Print the number of combinations modulo 10^9 + 7.
+**Input**: 
+- First line: two integers n and k (total number of elements and number to choose)
 
-### Constraints
-- 1 ≤ n ≤ 10^6
+**Output**: 
+- Print the number of combinations modulo 10⁹ + 7
+
+**Constraints**:
+- 1 ≤ n ≤ 10⁶
 - 0 ≤ k ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 5 2
@@ -28,6 +31,10 @@ Input:
 Output:
 10
 ```
+
+**Explanation**: 
+From a set of 5 elements, we can choose 2 elements in C(5,2) = 10 ways:
+- {1,2}, {1,3}, {1,4}, {1,5}, {2,3}, {2,4}, {2,5}, {3,4}, {3,5}, {4,5}
 
 ## Solution Progression
 
@@ -530,19 +537,211 @@ def interactive_combination_calculator():
 - **Dynamic Programming**: Efficient DP algorithms
 - **Modular Arithmetic**: Modular arithmetic algorithms
 - **Combinatorial Algorithms**: Combinatorial algorithms
-- **Optimization Algorithms**: Optimization algorithms
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Foundation for counting problems
-- **Number Theory**: Mathematical properties of numbers
-- **Modular Theory**: Properties of modular arithmetic
-- **Optimization**: Mathematical optimization techniques
+### Time and Space Complexity
+- **Time Complexity**: O(n) for precomputing factorials, O(1) per query
+- **Space Complexity**: O(n) for storing factorials and modular inverses
+- **Why it works**: We precompute factorials and their modular inverses to calculate combinations efficiently using the formula C(n,k) = n! / (k! * (n-k)!)
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Combinatorial Processing**: Efficient combinatorial processing techniques
-- **Modular Processing**: Modular processing techniques
+### Key Implementation Points
+- Precompute factorials modulo 10⁹ + 7
+- Precompute modular inverses of factorials using Fermat's little theorem
+- Use the formula C(n,k) = n! / (k! * (n-k)!) with modular arithmetic
+- Handle edge cases like k = 0 or k = n
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Binomial Coefficients**: Mathematical foundation for combinations
+- **Modular Arithmetic**: Essential for handling large numbers
+- **Fermat's Little Theorem**: Used for computing modular inverses
+- **Precomputation**: Efficient technique for multiple queries
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Counting Combinations with Multiple Queries**
+```python
+def counting_combinations_multiple_queries(queries):
+    # Precompute factorials and modular inverses
+    MOD = 10**9 + 7
+    MAX_N = 10**6
+    
+    # Precompute factorials
+    fact = [1] * (MAX_N + 1)
+    for i in range(1, MAX_N + 1):
+        fact[i] = (fact[i-1] * i) % MOD
+    
+    # Precompute modular inverses using Fermat's little theorem
+    inv_fact = [1] * (MAX_N + 1)
+    inv_fact[MAX_N] = pow(fact[MAX_N], MOD - 2, MOD)
+    for i in range(MAX_N - 1, -1, -1):
+        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
+    
+    def comb(n, k):
+        if k > n or k < 0:
+            return 0
+        return (fact[n] * inv_fact[k] % MOD) * inv_fact[n - k] % MOD
+    
+    # Answer all queries
+    results = []
+    for n, k in queries:
+        results.append(comb(n, k))
+    
+    return results
+
+# Example usage
+queries = [(5, 2), (10, 3), (100, 50)]
+results = counting_combinations_multiple_queries(queries)
+print(f"Combination results: {results}")
+```
+
+#### **2. Counting Combinations with Range Queries**
+```python
+def counting_combinations_range_queries(n, range_queries):
+    # Count combinations for range queries on k
+    MOD = 10**9 + 7
+    
+    # Precompute factorials
+    fact = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = (fact[i-1] * i) % MOD
+    
+    # Precompute modular inverses
+    inv_fact = [1] * (n + 1)
+    inv_fact[n] = pow(fact[n], MOD - 2, MOD)
+    for i in range(n - 1, -1, -1):
+        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
+    
+    def comb(n, k):
+        if k > n or k < 0:
+            return 0
+        return (fact[n] * inv_fact[k] % MOD) * inv_fact[n - k] % MOD
+    
+    # Answer range queries
+    results = []
+    for start_k, end_k in range_queries:
+        total = 0
+        for k in range(start_k, end_k + 1):
+            total = (total + comb(n, k)) % MOD
+        results.append(total)
+    
+    return results
+
+# Example usage
+n = 10
+range_queries = [(0, 5), (3, 7), (8, 10)]
+results = counting_combinations_range_queries(n, range_queries)
+print(f"Range query results: {results}")
+```
+
+#### **3. Counting Combinations with Constraints**
+```python
+def counting_combinations_with_constraints(n, k, constraints):
+    # Count combinations with additional constraints
+    MOD = 10**9 + 7
+    
+    # Precompute factorials
+    fact = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = (fact[i-1] * i) % MOD
+    
+    # Precompute modular inverses
+    inv_fact = [1] * (n + 1)
+    inv_fact[n] = pow(fact[n], MOD - 2, MOD)
+    for i in range(n - 1, -1, -1):
+        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
+    
+    def comb(n, k):
+        if k > n or k < 0:
+            return 0
+        return (fact[n] * inv_fact[k] % MOD) * inv_fact[n - k] % MOD
+    
+    # Apply constraints
+    if constraints.get("min_k", 0) > k:
+        return 0
+    if constraints.get("max_k", n) < k:
+        return 0
+    if constraints.get("even_k", False) and k % 2 != 0:
+        return 0
+    if constraints.get("odd_k", False) and k % 2 == 0:
+        return 0
+    
+    return comb(n, k)
+
+# Example usage
+n, k = 10, 3
+constraints = {"min_k": 2, "max_k": 5, "even_k": False}
+result = counting_combinations_with_constraints(n, k, constraints)
+print(f"Constrained combination: {result}")
+```
+
+#### **4. Counting Combinations with Statistics**
+```python
+def counting_combinations_with_statistics(n):
+    # Calculate combination statistics for all k
+    MOD = 10**9 + 7
+    
+    # Precompute factorials
+    fact = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = (fact[i-1] * i) % MOD
+    
+    # Precompute modular inverses
+    inv_fact = [1] * (n + 1)
+    inv_fact[n] = pow(fact[n], MOD - 2, MOD)
+    for i in range(n - 1, -1, -1):
+        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
+    
+    def comb(n, k):
+        if k > n or k < 0:
+            return 0
+        return (fact[n] * inv_fact[k] % MOD) * inv_fact[n - k] % MOD
+    
+    # Calculate all combinations
+    combinations = [comb(n, k) for k in range(n + 1)]
+    
+    # Calculate statistics
+    total = sum(combinations) % MOD
+    max_comb = max(combinations)
+    max_k = combinations.index(max_comb)
+    min_comb = min(combinations)
+    min_k = combinations.index(min_comb)
+    
+    statistics = {
+        "total_combinations": total,
+        "max_combination": max_comb,
+        "max_k": max_k,
+        "min_combination": min_comb,
+        "min_k": min_k,
+        "all_combinations": combinations
+    }
+    
+    return statistics
+
+# Example usage
+n = 10
+stats = counting_combinations_with_statistics(n)
+print(f"Combination statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Combinatorics**: Permutations, Arrangements, Partitions
+- **Modular Arithmetic**: Modular exponentiation, Modular inverses
+- **Mathematical Algorithms**: Factorial computation, Prime factorization
+- **Counting Problems**: Subset counting, Path counting
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Binomial coefficients** are fundamental in combinatorics
+- **Modular arithmetic** is essential for handling large numbers
+- **Precomputation** can significantly improve performance for multiple queries
+- **Fermat's little theorem** provides an efficient way to compute modular inverses
 
 ---
 

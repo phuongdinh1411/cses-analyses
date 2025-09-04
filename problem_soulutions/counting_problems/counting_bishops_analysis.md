@@ -7,20 +7,23 @@ permalink: /problem_soulutions/counting_problems/counting_bishops_analysis
 
 # Counting Bishops
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a chessboard of size n×n, count the number of ways to place k bishops such that no bishop attacks another bishop.
 
-### Input
-The first input line has two integers n and k: the size of the chessboard and the number of bishops to place.
+This is a chess problem where we need to count valid bishop placements on a chessboard. Bishops attack each other if they are on the same diagonal. We can solve this using backtracking or by analyzing the diagonal structure of the chessboard.
 
-### Output
-Print one integer: the number of ways to place k bishops.
+**Input**: 
+- First line: two integers n and k (chessboard size and number of bishops)
 
-### Constraints
+**Output**: 
+- Print one integer: the number of ways to place k bishops
+
+**Constraints**:
 - 1 ≤ n ≤ 8
 - 0 ≤ k ≤ n²
 
-### Example
+**Example**:
 ```
 Input:
 3 2
@@ -28,6 +31,9 @@ Input:
 Output:
 26
 ```
+
+**Explanation**: 
+On a 3×3 chessboard, there are 26 ways to place 2 bishops such that they don't attack each other. Bishops attack along diagonals, so we need to ensure no two bishops are on the same diagonal.
 
 ## Solution Progression
 
@@ -561,19 +567,232 @@ def interactive_bishop_analyzer():
 - **Chess Algorithms**: Efficient chess algorithms
 - **Diagonal Traversal**: Diagonal traversal algorithms
 - **Coordinate Mapping**: Coordinate mapping algorithms
-- **Dynamic Programming**: For optimization problems
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Foundation for counting problems
-- **Chess Theory**: Mathematical properties of chess
-- **Diagonal Theory**: Properties of diagonals
-- **Optimization**: Mathematical optimization techniques
+### Time and Space Complexity
+- **Time Complexity**: O(n^(n²)) for the naive approach, O(2^(2n-1) × k) for diagonal-based approach
+- **Space Complexity**: O(k) for storing bishop positions
+- **Why it works**: We use backtracking or diagonal analysis to place bishops without conflicts
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Chess Processing**: Efficient chess processing techniques
-- **Attack Analysis**: Attack analysis techniques
+### Key Implementation Points
+- Use backtracking to place bishops systematically
+- Check for conflicts along diagonals only
+- Optimize by analyzing diagonal structure
+- Handle edge cases like k = 0 or k = n²
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Backtracking**: Essential for exploring all valid bishop placements
+- **Diagonal Analysis**: Bishops attack along diagonals, not rows/columns
+- **Chess Theory**: Understanding bishop movement patterns
+- **Combinatorics**: Counting valid arrangements with constraints
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Counting Bishops with Blocked Squares**
+```python
+def counting_bishops_with_blocked_squares(n, k, blocked_squares):
+    # Count ways to place bishops with blocked squares
+    def is_valid_placement(positions):
+        for i in range(len(positions)):
+            for j in range(i + 1, len(positions)):
+                r1, c1 = positions[i]
+                r2, c2 = positions[j]
+                
+                # Check if bishops are on the same diagonal
+                if abs(r1 - r2) == abs(c1 - c2):
+                    return False
+        return True
+    
+    def backtrack(pos, placed):
+        if placed == k:
+            return 1
+        
+        count = 0
+        for i in range(n):
+            for j in range(n):
+                if (i, j) not in blocked_squares:
+                    # Try placing a bishop
+                    positions = [(i, j)]
+                    if is_valid_placement(positions):
+                        blocked_squares.add((i, j))
+                        count += backtrack(pos + 1, placed + 1)
+                        blocked_squares.remove((i, j))  # Backtrack
+        
+        return count
+    
+    return backtrack(0, 0)
+
+# Example usage
+n, k = 3, 2
+blocked_squares = {(1, 1)}  # Center square is blocked
+result = counting_bishops_with_blocked_squares(n, k, blocked_squares)
+print(f"Ways to place bishops with blocked squares: {result}")
+```
+
+#### **2. Counting Bishops with Different Colors**
+```python
+def counting_bishops_with_colors(n, k, color_constraints):
+    # Count ways to place bishops with color constraints
+    def is_valid_placement(positions):
+        for i in range(len(positions)):
+            for j in range(i + 1, len(positions)):
+                r1, c1 = positions[i]
+                r2, c2 = positions[j]
+                
+                # Check if bishops are on the same diagonal
+                if abs(r1 - r2) == abs(c1 - c2):
+                    return False
+        return True
+    
+    def get_square_color(r, c):
+        return (r + c) % 2  # 0 for white, 1 for black
+    
+    def backtrack(pos, placed, white_count, black_count):
+        if placed == k:
+            return 1
+        
+        count = 0
+        for i in range(n):
+            for j in range(n):
+                color = get_square_color(i, j)
+                
+                # Check color constraints
+                if color == 0 and white_count >= color_constraints.get("max_white", k):
+                    continue
+                if color == 1 and black_count >= color_constraints.get("max_black", k):
+                    continue
+                
+                # Try placing a bishop
+                positions = [(i, j)]
+                if is_valid_placement(positions):
+                    if color == 0:
+                        count += backtrack(pos + 1, placed + 1, white_count + 1, black_count)
+                    else:
+                        count += backtrack(pos + 1, placed + 1, white_count, black_count + 1)
+        
+        return count
+    
+    return backtrack(0, 0, 0, 0)
+
+# Example usage
+n, k = 3, 2
+color_constraints = {"max_white": 1, "max_black": 1}
+result = counting_bishops_with_colors(n, k, color_constraints)
+print(f"Ways to place bishops with color constraints: {result}")
+```
+
+#### **3. Counting Bishops with Multiple Boards**
+```python
+def counting_bishops_multiple_boards(boards, k):
+    # Count ways to place bishops on multiple boards
+    results = {}
+    
+    for i, n in enumerate(boards):
+        def backtrack(pos, placed):
+            if placed == k:
+                return 1
+            
+            count = 0
+            for row in range(n):
+                for col in range(n):
+                    # Try placing a bishop
+                    valid = True
+                    for r, c in [(row, col)]:
+                        for existing_r, existing_c in [(row, col)]:
+                            if abs(existing_r - r) == abs(existing_c - c):
+                                valid = False
+                                break
+                    
+                    if valid:
+                        count += backtrack(pos + 1, placed + 1)
+            
+            return count
+        
+        results[i] = backtrack(0, 0)
+    
+    return results
+
+# Example usage
+boards = [3, 4, 5]
+k = 2
+results = counting_bishops_multiple_boards(boards, k)
+for i, count in results.items():
+    print(f"Board {i+1}x{i+1} ways to place {k} bishops: {count}")
+```
+
+#### **4. Counting Bishops with Statistics**
+```python
+def counting_bishops_with_statistics(n, k):
+    # Count ways to place bishops and provide statistics
+    placements = []
+    
+    def backtrack(pos, placed, current_placement):
+        if placed == k:
+            placements.append(current_placement[:])
+            return 1
+        
+        count = 0
+        for i in range(n):
+            for j in range(n):
+                # Check if this position conflicts with existing bishops
+                valid = True
+                for r, c in current_placement:
+                    if abs(i - r) == abs(j - c):
+                        valid = False
+                        break
+                
+                if valid:
+                    current_placement.append((i, j))
+                    count += backtrack(pos + 1, placed + 1, current_placement)
+                    current_placement.pop()
+        
+        return count
+    
+    total_count = backtrack(0, 0, [])
+    
+    # Calculate statistics
+    diagonal_counts = {}
+    for placement in placements:
+        for r, c in placement:
+            diagonal = r - c  # Main diagonal identifier
+            diagonal_counts[diagonal] = diagonal_counts.get(diagonal, 0) + 1
+    
+    statistics = {
+        "total_placements": total_count,
+        "bishops_placed": k,
+        "board_size": n,
+        "diagonal_distribution": diagonal_counts,
+        "sample_placements": placements[:5]  # First 5 placements
+    }
+    
+    return total_count, statistics
+
+# Example usage
+n, k = 3, 2
+count, stats = counting_bishops_with_statistics(n, k)
+print(f"Total ways to place bishops: {count}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Backtracking**: N-Queens, Constraint satisfaction
+- **Chess Problems**: Rook placement, Knight placement
+- **Combinatorics**: Placement counting, Arrangement counting
+- **Grid Algorithms**: Grid traversal, Grid counting
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Backtracking** is essential for exploring all valid bishop placements
+- **Diagonal analysis** is crucial for understanding bishop attacks
+- **Chess theory** provides insights into piece movement patterns
+- **Optimization techniques** can significantly improve performance
 
 ---
 

@@ -7,20 +7,23 @@ permalink: /problem_soulutions/counting_problems/counting_permutations_analysis
 
 # Counting Permutations
 
-## Problem Statement
+## 📋 Problem Description
+
 Given an integer n, count the number of permutations of {1, 2, ..., n} that have exactly k inversions.
 
-### Input
-The first input line has two integers n and k: the size of the permutation and the number of inversions.
+This is a combinatorial problem where we need to count the number of permutations with a specific number of inversions. An inversion is a pair of indices (i,j) where i < j and a[i] > a[j]. We can solve this using dynamic programming.
 
-### Output
-Print the number of permutations modulo 10^9 + 7.
+**Input**: 
+- First line: two integers n and k (size of the permutation and number of inversions)
 
-### Constraints
+**Output**: 
+- Print the number of permutations modulo 10⁹ + 7
+
+**Constraints**:
 - 1 ≤ n ≤ 1000
 - 0 ≤ k ≤ n(n-1)/2
 
-### Example
+**Example**:
 ```
 Input:
 3 1
@@ -28,6 +31,13 @@ Input:
 Output:
 2
 ```
+
+**Explanation**: 
+For n = 3, there are 6 possible permutations: [1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]. We need to find those with exactly 1 inversion:
+1. [1,3,2]: 1 inversion (3 > 2)
+2. [2,1,3]: 1 inversion (2 > 1)
+
+So there are 2 permutations with exactly 1 inversion.
 
 ## Solution Progression
 
@@ -457,19 +467,205 @@ def interactive_permutation_calculator():
 - **Dynamic Programming**: Efficient DP algorithms
 - **Modular Arithmetic**: Modular arithmetic algorithms
 - **Combinatorial Algorithms**: Combinatorial algorithms
-- **Optimization Algorithms**: Optimization algorithms
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Foundation for counting problems
-- **Number Theory**: Mathematical properties of numbers
-- **Modular Theory**: Properties of modular arithmetic
-- **Optimization**: Mathematical optimization techniques
+### Time and Space Complexity
+- **Time Complexity**: O(n! × n²) for the naive approach, O(n × k) for dynamic programming
+- **Space Complexity**: O(n × k) for storing DP states
+- **Why it works**: We use dynamic programming to count permutations with specific inversion counts
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Combinatorial Processing**: Efficient combinatorial processing techniques
-- **Modular Processing**: Modular processing techniques
+### Key Implementation Points
+- Use dynamic programming to avoid recomputing subproblems
+- Handle base cases (n = 1, k = 0)
+- Use modular arithmetic for large numbers
+- Optimize by using the recurrence relation for permutation counting
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Dynamic Programming**: Essential for counting permutations efficiently
+- **Combinatorics**: Understanding permutation properties
+- **Inversion Counting**: Counting inversions in permutations
+- **Modular Arithmetic**: Handling large numbers with modulo operations
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Counting Permutations with Range Queries**
+```python
+def counting_permutations_range_queries(n, k_range):
+    # Count permutations for a range of inversion counts
+    MOD = 10**9 + 7
+    results = {}
+    
+    # Precompute all values using DP
+    dp = [[0] * (n * (n - 1) // 2 + 1) for _ in range(n + 1)]
+    
+    # Base cases
+    for i in range(n + 1):
+        dp[i][0] = 1  # No inversions
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for j in range(1, min(i * (i - 1) // 2 + 1, len(dp[i]))):
+            dp[i][j] = 0
+            for l in range(min(j + 1, i)):
+                dp[i][j] = (dp[i][j] + dp[i - 1][j - l]) % MOD
+    
+    # Answer queries
+    for k in k_range:
+        if k <= n * (n - 1) // 2:
+            results[k] = dp[n][k]
+        else:
+            results[k] = 0
+    
+    return results
+
+# Example usage
+n = 4
+k_range = [0, 1, 2, 3, 4, 5, 6]
+results = counting_permutations_range_queries(n, k_range)
+for k, count in results.items():
+    print(f"Permutations with {k} inversions: {count}")
+```
+
+#### **2. Counting Permutations with Constraints**
+```python
+def counting_permutations_with_constraints(n, k, constraints):
+    # Count permutations with constraints
+    MOD = 10**9 + 7
+    
+    def count_permutations(n, k, memo):
+        if n == 0:
+            return 1 if k == 0 else 0
+        
+        if (n, k) in memo:
+            return memo[(n, k)]
+        
+        count = 0
+        for i in range(min(k + 1, n)):
+            # Check constraints
+            if constraints.get("max_inversions_per_element") and i > constraints["max_inversions_per_element"]:
+                continue
+            if constraints.get("min_inversions_per_element") and i < constraints["min_inversions_per_element"]:
+                continue
+            
+            count = (count + count_permutations(n - 1, k - i, memo)) % MOD
+        
+        memo[(n, k)] = count
+        return count
+    
+    return count_permutations(n, k, {})
+
+# Example usage
+n, k = 4, 2
+constraints = {
+    "max_inversions_per_element": 2,
+    "min_inversions_per_element": 0
+}
+result = counting_permutations_with_constraints(n, k, constraints)
+print(f"Permutations with constraints: {result}")
+```
+
+#### **3. Counting Permutations with Multiple Values**
+```python
+def counting_permutations_multiple_values(n_values, k_values):
+    # Count permutations for multiple n and k values
+    MOD = 10**9 + 7
+    results = {}
+    
+    for n in n_values:
+        for k in k_values:
+            if k <= n * (n - 1) // 2:
+                # Use DP to count permutations
+                dp = [[0] * (k + 1) for _ in range(n + 1)]
+                
+                # Base cases
+                for i in range(n + 1):
+                    dp[i][0] = 1
+                
+                # Fill DP table
+                for i in range(1, n + 1):
+                    for j in range(1, min(k + 1, i * (i - 1) // 2 + 1)):
+                        dp[i][j] = 0
+                        for l in range(min(j + 1, i)):
+                            dp[i][j] = (dp[i][j] + dp[i - 1][j - l]) % MOD
+                
+                results[(n, k)] = dp[n][k]
+            else:
+                results[(n, k)] = 0
+    
+    return results
+
+# Example usage
+n_values = [3, 4]
+k_values = [1, 2, 3]
+results = counting_permutations_multiple_values(n_values, k_values)
+for (n, k), count in results.items():
+    print(f"Permutations of {n} elements with {k} inversions: {count}")
+```
+
+#### **4. Counting Permutations with Statistics**
+```python
+def counting_permutations_with_statistics(n, k):
+    # Count permutations and provide statistics
+    MOD = 10**9 + 7
+    
+    # Count permutations using DP
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    
+    # Base cases
+    for i in range(n + 1):
+        dp[i][0] = 1
+    
+    # Fill DP table
+    for i in range(1, n + 1):
+        for j in range(1, min(k + 1, i * (i - 1) // 2 + 1)):
+            dp[i][j] = 0
+            for l in range(min(j + 1, i)):
+                dp[i][j] = (dp[i][j] + dp[i - 1][j - l]) % MOD
+    
+    total_permutations = dp[n][k]
+    
+    # Calculate statistics
+    max_possible_inversions = n * (n - 1) // 2
+    total_permutations_all = 1
+    for i in range(1, n + 1):
+        total_permutations_all = (total_permutations_all * i) % MOD
+    
+    statistics = {
+        "permutations_with_k_inversions": total_permutations,
+        "total_permutations": total_permutations_all,
+        "max_possible_inversions": max_possible_inversions,
+        "inversion_rate": k / max_possible_inversions if max_possible_inversions > 0 else 0,
+        "permutation_rate": total_permutations / total_permutations_all if total_permutations_all > 0 else 0
+    }
+    
+    return total_permutations, statistics
+
+# Example usage
+n, k = 4, 2
+count, stats = counting_permutations_with_statistics(n, k)
+print(f"Permutations with {k} inversions: {count}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Dynamic Programming**: Permutation DP, Counting DP
+- **Combinatorics**: Permutation counting, Arrangement counting
+- **Number Theory**: Modular arithmetic, Factorial calculations
+- **Sorting**: Inversion counting, Merge sort
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Dynamic programming** is essential for counting permutations efficiently
+- **Combinatorics** provides the mathematical foundation for permutation counting
+- **Inversion counting** is a fundamental concept in permutation analysis
+- **Modular arithmetic** is crucial for handling large numbers
 
 ---
 

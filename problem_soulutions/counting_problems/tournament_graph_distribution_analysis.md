@@ -7,19 +7,22 @@ permalink: /problem_soulutions/counting_problems/tournament_graph_distribution_a
 
 # Tournament Graph Distribution
 
-## Problem Statement
+## 📋 Problem Description
+
 Given n teams, count the number of different tournament graphs where each team plays against every other team exactly once, and the result is a valid tournament (no cycles).
 
-### Input
-The first input line has an integer n: the number of teams.
+This is a graph theory problem where we need to count the number of valid tournament graphs. A tournament is a directed graph where every pair of vertices is connected by exactly one directed edge, and it must be acyclic (no directed cycles).
 
-### Output
-Print the number of different tournament graphs modulo 10^9 + 7.
+**Input**: 
+- First line: integer n (number of teams)
 
-### Constraints
+**Output**: 
+- Print the number of different tournament graphs modulo 10⁹ + 7
+
+**Constraints**:
 - 1 ≤ n ≤ 20
 
-### Example
+**Example**:
 ```
 Input:
 3
@@ -27,6 +30,13 @@ Input:
 Output:
 2
 ```
+
+**Explanation**: 
+For n = 3 teams, there are 2 valid tournament graphs:
+1. Team 1 beats Team 2, Team 2 beats Team 3, Team 1 beats Team 3
+2. Team 1 beats Team 3, Team 3 beats Team 2, Team 1 beats Team 2
+
+Both result in acyclic tournament graphs where each team plays every other team exactly once.
 
 ## Solution Progression
 
@@ -572,22 +582,324 @@ def interactive_tournament_analyzer():
 ### 📚 **Learning Resources**
 
 #### **1. Related Algorithms**
-- **Graph Traversal**: Efficient graph traversal algorithms
-- **Component Analysis**: Component analysis algorithms
-- **Cycle Detection**: Cycle detection algorithms
-- **Dynamic Programming**: For optimization problems
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Graph Theory**: Foundation for graph problems
-- **Component Theory**: Mathematical properties of components
-- **Cycle Theory**: Properties of cycles
-- **Optimization**: Mathematical optimization techniques
+### Time and Space Complexity
+- **Time Complexity**: O(n!) for generating all tournaments, O(n²) for cycle detection
+- **Space Complexity**: O(n²) for storing the tournament graph
+- **Why it works**: We generate all possible tournament graphs and check for cycles using DFS
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Graph Processing**: Efficient graph processing techniques
-- **Component Analysis**: Component analysis techniques
+### Key Implementation Points
+- Generate all possible tournament graphs systematically
+- Use DFS to detect cycles in directed graphs
+- Handle modular arithmetic for large numbers
+- Optimize by pruning invalid tournaments early
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Tournament Graphs**: Directed graphs with exactly one edge between each pair of vertices
+- **Cycle Detection**: Essential for ensuring valid tournaments
+- **Graph Theory**: Understanding tournament properties
+- **Combinatorics**: Counting valid graph structures
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Tournament Graph Distribution with Constraints**
+```python
+def tournament_graph_distribution_with_constraints(n, constraints):
+    # Count tournament graphs with additional constraints
+    MOD = 10**9 + 7
+    
+    def is_valid_tournament(edges):
+        # Check for cycles using DFS
+        adj = [[] for _ in range(n)]
+        for u, v in edges:
+            adj[u].append(v)
+        
+        visited = [False] * n
+        rec_stack = [False] * n
+        
+        def has_cycle(node):
+            visited[node] = True
+            rec_stack[node] = True
+            
+            for neighbor in adj[node]:
+                if not visited[neighbor]:
+                    if has_cycle(neighbor):
+                        return True
+                elif rec_stack[neighbor]:
+                    return True
+            
+            rec_stack[node] = False
+            return False
+        
+        for i in range(n):
+            if not visited[i]:
+                if has_cycle(i):
+                    return False
+        
+        return True
+    
+    def generate_tournaments(pos, edges):
+        if pos == n * (n - 1) // 2:
+            return 1 if is_valid_tournament(edges) else 0
+        
+        count = 0
+        u, v = pos // (n - 1), pos % (n - 1)
+        if v >= u:
+            v += 1
+        
+        # Try both directions
+        for direction in [(u, v), (v, u)]:
+            # Check constraints
+            if constraints.get("forbidden_edges") and direction in constraints["forbidden_edges"]:
+                continue
+            if constraints.get("required_edges") and direction not in constraints.get("required_edges", []):
+                continue
+            
+            count = (count + generate_tournaments(pos + 1, edges + [direction])) % MOD
+        
+        return count
+    
+    return generate_tournaments(0, [])
+
+# Example usage
+n = 3
+constraints = {"forbidden_edges": [], "required_edges": []}
+result = tournament_graph_distribution_with_constraints(n, constraints)
+print(f"Tournament graphs with constraints: {result}")
+```
+
+#### **2. Tournament Graph Distribution with Team Strengths**
+```python
+def tournament_graph_distribution_with_strengths(n, team_strengths):
+    # Count tournament graphs considering team strengths
+    MOD = 10**9 + 7
+    
+    def is_valid_tournament(edges):
+        # Check for cycles using DFS
+        adj = [[] for _ in range(n)]
+        for u, v in edges:
+            adj[u].append(v)
+        
+        visited = [False] * n
+        rec_stack = [False] * n
+        
+        def has_cycle(node):
+            visited[node] = True
+            rec_stack[node] = True
+            
+            for neighbor in adj[node]:
+                if not visited[neighbor]:
+                    if has_cycle(neighbor):
+                        return True
+                elif rec_stack[neighbor]:
+                    return True
+            
+            rec_stack[node] = False
+            return False
+        
+        for i in range(n):
+            if not visited[i]:
+                if has_cycle(i):
+                    return False
+        
+        return True
+    
+    def generate_tournaments(pos, edges):
+        if pos == n * (n - 1) // 2:
+            return 1 if is_valid_tournament(edges) else 0
+        
+        count = 0
+        u, v = pos // (n - 1), pos % (n - 1)
+        if v >= u:
+            v += 1
+        
+        # Determine winner based on team strengths
+        if team_strengths[u] > team_strengths[v]:
+            winner, loser = u, v
+        elif team_strengths[v] > team_strengths[u]:
+            winner, loser = v, u
+        else:
+            # Equal strength - try both directions
+            for direction in [(u, v), (v, u)]:
+                count = (count + generate_tournaments(pos + 1, edges + [direction])) % MOD
+            return count
+        
+        count = (count + generate_tournaments(pos + 1, edges + [(winner, loser)])) % MOD
+        return count
+    
+    return generate_tournaments(0, [])
+
+# Example usage
+n = 3
+team_strengths = [3, 2, 1]  # Team 0 is strongest, Team 2 is weakest
+result = tournament_graph_distribution_with_strengths(n, team_strengths)
+print(f"Tournament graphs with team strengths: {result}")
+```
+
+#### **3. Tournament Graph Distribution with Multiple Sizes**
+```python
+def tournament_graph_distribution_multiple_sizes(sizes):
+    # Count tournament graphs for multiple sizes
+    MOD = 10**9 + 7
+    results = {}
+    
+    for n in sizes:
+        def is_valid_tournament(edges):
+            # Check for cycles using DFS
+            adj = [[] for _ in range(n)]
+            for u, v in edges:
+                adj[u].append(v)
+            
+            visited = [False] * n
+            rec_stack = [False] * n
+            
+            def has_cycle(node):
+                visited[node] = True
+                rec_stack[node] = True
+                
+                for neighbor in adj[node]:
+                    if not visited[neighbor]:
+                        if has_cycle(neighbor):
+                            return True
+                    elif rec_stack[neighbor]:
+                        return True
+                
+                rec_stack[node] = False
+                return False
+            
+            for i in range(n):
+                if not visited[i]:
+                    if has_cycle(i):
+                        return False
+            
+            return True
+        
+        def generate_tournaments(pos, edges):
+            if pos == n * (n - 1) // 2:
+                return 1 if is_valid_tournament(edges) else 0
+            
+            count = 0
+            u, v = pos // (n - 1), pos % (n - 1)
+            if v >= u:
+                v += 1
+            
+            # Try both directions
+            for direction in [(u, v), (v, u)]:
+                count = (count + generate_tournaments(pos + 1, edges + [direction])) % MOD
+            
+            return count
+        
+        results[n] = generate_tournaments(0, [])
+    
+    return results
+
+# Example usage
+sizes = [2, 3, 4]
+results = tournament_graph_distribution_multiple_sizes(sizes)
+for n, count in results.items():
+    print(f"Tournament graphs for {n} teams: {count}")
+```
+
+#### **4. Tournament Graph Distribution with Statistics**
+```python
+def tournament_graph_distribution_with_statistics(n):
+    # Count tournament graphs and provide statistics
+    MOD = 10**9 + 7
+    tournaments = []
+    
+    def is_valid_tournament(edges):
+        # Check for cycles using DFS
+        adj = [[] for _ in range(n)]
+        for u, v in edges:
+            adj[u].append(v)
+        
+        visited = [False] * n
+        rec_stack = [False] * n
+        
+        def has_cycle(node):
+            visited[node] = True
+            rec_stack[node] = True
+            
+            for neighbor in adj[node]:
+                if not visited[neighbor]:
+                    if has_cycle(neighbor):
+                        return True
+                elif rec_stack[neighbor]:
+                    return True
+            
+            rec_stack[node] = False
+            return False
+        
+        for i in range(n):
+            if not visited[i]:
+                if has_cycle(i):
+                    return False
+        
+        return True
+    
+    def generate_tournaments(pos, edges):
+        if pos == n * (n - 1) // 2:
+            if is_valid_tournament(edges):
+                tournaments.append(edges[:])
+                return 1
+            return 0
+        
+        count = 0
+        u, v = pos // (n - 1), pos % (n - 1)
+        if v >= u:
+            v += 1
+        
+        # Try both directions
+        for direction in [(u, v), (v, u)]:
+            count = (count + generate_tournaments(pos + 1, edges + [direction])) % MOD
+        
+        return count
+    
+    total_count = generate_tournaments(0, [])
+    
+    # Calculate statistics
+    win_counts = [0] * n
+    for tournament in tournaments:
+        for u, v in tournament:
+            win_counts[u] += 1
+    
+    statistics = {
+        "total_tournaments": total_count,
+        "teams": n,
+        "total_matches": n * (n - 1) // 2,
+        "average_wins": [count / total_count for count in win_counts] if total_count > 0 else [0] * n,
+        "sample_tournaments": tournaments[:5]  # First 5 tournaments
+    }
+    
+    return total_count, statistics
+
+# Example usage
+n = 3
+count, stats = tournament_graph_distribution_with_statistics(n)
+print(f"Total tournament graphs: {count}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Graph Theory**: Tournament graphs, Directed acyclic graphs
+- **Combinatorics**: Graph counting, Arrangement counting
+- **Cycle Detection**: DFS, Topological sorting
+- **Counting Problems**: Subset counting, Path counting
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Tournament graphs** are fundamental structures in graph theory
+- **Cycle detection** is essential for ensuring valid tournaments
+- **Graph generation** requires systematic exploration of all possibilities
+- **Combinatorics** provides the mathematical foundation for counting problems
 
 ---
 

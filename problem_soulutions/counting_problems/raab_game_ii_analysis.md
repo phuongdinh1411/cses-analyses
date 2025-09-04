@@ -7,22 +7,25 @@ permalink: /problem_soulutions/counting_problems/raab_game_ii_analysis
 
 # Raab Game II
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a 2D grid of size n×m, count the number of ways to place exactly k queens on the grid such that no queen attacks another queen.
 
-### Input
-The first input line has three integers n, m, and k: the dimensions of the grid and the number of queens to place.
-Then there are n lines describing the grid. Each line has m characters: '.' for empty and '#' for blocked.
+This is a classic N-Queens problem variant where we need to count the number of valid queen placements on a grid with blocked cells. Queens attack each other if they are in the same row, column, or diagonal. We can solve this using backtracking or bitmask techniques.
 
-### Output
-Print one integer: the number of ways to place k queens.
+**Input**: 
+- First line: three integers n, m, and k (grid dimensions and number of queens)
+- Next n lines: m characters each ('.' for empty, '#' for blocked)
 
-### Constraints
+**Output**: 
+- Print one integer: the number of ways to place k queens
+
+**Constraints**:
 - 1 ≤ n,m ≤ 8
 - 0 ≤ k ≤ min(n,m)
 - Grid contains only '.' and '#'
 
-### Example
+**Example**:
 ```
 Input:
 3 3 2
@@ -33,6 +36,17 @@ Input:
 Output:
 8
 ```
+
+**Explanation**: 
+In a 3×3 empty grid, there are 8 ways to place 2 queens such that they don't attack each other:
+1. (0,0) and (1,2) - not attacking
+2. (0,0) and (2,1) - not attacking
+3. (0,1) and (1,0) - not attacking
+4. (0,1) and (2,2) - not attacking
+5. (0,2) and (1,0) - not attacking
+6. (0,2) and (2,1) - not attacking
+7. (1,0) and (2,2) - not attacking
+8. (1,2) and (2,0) - not attacking
 
 ## Solution Progression
 
@@ -515,23 +529,252 @@ def interactive_raab_analyzer():
 
 ### 📚 **Learning Resources**
 
-#### **1. Related Algorithms**
-- **Dynamic Programming**: Efficient DP algorithms
-- **Game Theory**: Game theory algorithms
-- **Strategy Analysis**: Strategy analysis algorithms
-- **Optimization Algorithms**: Optimization algorithms
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Game Theory**: Foundation for game problems
-- **Strategy Theory**: Mathematical properties of strategies
-- **Winning Theory**: Properties of winning conditions
-- **Optimization**: Mathematical optimization techniques
+### Time and Space Complexity
+- **Time Complexity**: O(n^m × k²) for the naive approach, O(n! × k) for backtracking
+- **Space Complexity**: O(k) for storing queen positions
+- **Why it works**: We use backtracking to place queens one by one, checking for conflicts at each step
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Game Processing**: Efficient game processing techniques
-- **Strategy Analysis**: Strategy analysis techniques
+### Key Implementation Points
+- Use backtracking to place queens systematically
+- Check for conflicts in rows, columns, and diagonals
+- Handle blocked cells ('#') in the grid
+- Optimize by pruning invalid branches early
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Backtracking**: Essential for exploring all valid queen placements
+- **Conflict Detection**: Check for queen attacks in rows, columns, and diagonals
+- **Grid Constraints**: Handle blocked cells in the grid
+- **N-Queens Problem**: Classic constraint satisfaction problem
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Raab Game with Different Piece Types**
+```python
+def raab_game_with_piece_types(n, m, pieces, grid):
+    # Count ways to place different types of pieces
+    def is_valid_placement(positions):
+        for i in range(len(positions)):
+            for j in range(i + 1, len(positions)):
+                r1, c1 = positions[i]
+                r2, c2 = positions[j]
+                
+                # Check if pieces attack each other
+                if pieces[i] == 'Q' and pieces[j] == 'Q':  # Queen vs Queen
+                    if r1 == r2 or c1 == c2 or abs(r1 - r2) == abs(c1 - c2):
+                        return False
+                elif pieces[i] == 'R' and pieces[j] == 'R':  # Rook vs Rook
+                    if r1 == r2 or c1 == c2:
+                        return False
+                elif pieces[i] == 'B' and pieces[j] == 'B':  # Bishop vs Bishop
+                    if abs(r1 - r2) == abs(c1 - c2):
+                        return False
+        return True
+    
+    def backtrack(pos, placed):
+        if placed == len(pieces):
+            return 1
+        
+        count = 0
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == '.':
+                    # Try placing the current piece
+                    positions = [(i, j)]
+                    if is_valid_placement(positions):
+                        grid[i][j] = pieces[placed]
+                        count += backtrack(pos + 1, placed + 1)
+                        grid[i][j] = '.'  # Backtrack
+        
+        return count
+    
+    return backtrack(0, 0)
+
+# Example usage
+n, m = 3, 3
+pieces = ['Q', 'R']  # Queen and Rook
+grid = [['.', '.', '.'], ['.', '.', '.'], ['.', '.', '.']]
+result = raab_game_with_piece_types(n, m, pieces, grid)
+print(f"Ways to place pieces: {result}")
+```
+
+#### **2. Raab Game with Attack Constraints**
+```python
+def raab_game_with_attack_constraints(n, m, k, grid, attack_constraints):
+    # Count ways to place queens with specific attack constraints
+    def is_valid_placement(positions):
+        for i in range(len(positions)):
+            for j in range(i + 1, len(positions)):
+                r1, c1 = positions[i]
+                r2, c2 = positions[j]
+                
+                # Check attack constraints
+                if attack_constraints.get("allow_row_attacks", False):
+                    if r1 == r2:
+                        return False
+                if attack_constraints.get("allow_col_attacks", False):
+                    if c1 == c2:
+                        return False
+                if attack_constraints.get("allow_diagonal_attacks", False):
+                    if abs(r1 - r2) == abs(c1 - c2):
+                        return False
+        return True
+    
+    def backtrack(pos, placed):
+        if placed == k:
+            return 1
+        
+        count = 0
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == '.':
+                    # Try placing a queen
+                    positions = [(i, j)]
+                    if is_valid_placement(positions):
+                        grid[i][j] = 'Q'
+                        count += backtrack(pos + 1, placed + 1)
+                        grid[i][j] = '.'  # Backtrack
+        
+        return count
+    
+    return backtrack(0, 0)
+
+# Example usage
+n, m, k = 3, 3, 2
+grid = [['.', '.', '.'], ['.', '.', '.'], ['.', '.', '.']]
+attack_constraints = {"allow_row_attacks": False, "allow_col_attacks": False, "allow_diagonal_attacks": False}
+result = raab_game_with_attack_constraints(n, m, k, grid, attack_constraints)
+print(f"Ways to place queens with constraints: {result}")
+```
+
+#### **3. Raab Game with Multiple Grids**
+```python
+def raab_game_multiple_grids(grids, k):
+    # Count ways to place queens on multiple grids
+    results = {}
+    
+    for i, grid in enumerate(grids):
+        n, m = len(grid), len(grid[0])
+        
+        def backtrack(pos, placed):
+            if placed == k:
+                return 1
+            
+            count = 0
+            for row in range(n):
+                for col in range(m):
+                    if grid[row][col] == '.':
+                        # Check if this position conflicts with existing queens
+                        valid = True
+                        for r, c in [(row, col)]:
+                            for existing_row, existing_col in [(row, col)]:
+                                if (existing_row == r or existing_col == c or 
+                                    abs(existing_row - r) == abs(existing_col - c)):
+                                    valid = False
+                                    break
+                        
+                        if valid:
+                            grid[row][col] = 'Q'
+                            count += backtrack(pos + 1, placed + 1)
+                            grid[row][col] = '.'  # Backtrack
+            
+            return count
+        
+        results[i] = backtrack(0, 0)
+    
+    return results
+
+# Example usage
+grids = [
+    [['.', '.', '.'], ['.', '.', '.'], ['.', '.', '.']],
+    [['.', '#', '.'], ['.', '.', '.'], ['.', '.', '.']]
+]
+k = 2
+results = raab_game_multiple_grids(grids, k)
+for i, count in results.items():
+    print(f"Grid {i} ways to place {k} queens: {count}")
+```
+
+#### **4. Raab Game with Statistics**
+```python
+def raab_game_with_statistics(n, m, k, grid):
+    # Count ways to place queens and provide statistics
+    placements = []
+    
+    def backtrack(pos, placed, current_placement):
+        if placed == k:
+            placements.append(current_placement[:])
+            return 1
+        
+        count = 0
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == '.':
+                    # Check if this position conflicts with existing queens
+                    valid = True
+                    for r, c in current_placement:
+                        if (i == r or j == c or abs(i - r) == abs(j - c)):
+                            valid = False
+                            break
+                    
+                    if valid:
+                        grid[i][j] = 'Q'
+                        current_placement.append((i, j))
+                        count += backtrack(pos + 1, placed + 1, current_placement)
+                        current_placement.pop()
+                        grid[i][j] = '.'  # Backtrack
+        
+        return count
+    
+    total_count = backtrack(0, 0, [])
+    
+    # Calculate statistics
+    row_counts = [0] * n
+    col_counts = [0] * m
+    for placement in placements:
+        for r, c in placement:
+            row_counts[r] += 1
+            col_counts[c] += 1
+    
+    statistics = {
+        "total_placements": total_count,
+        "queens_placed": k,
+        "grid_size": (n, m),
+        "row_distribution": row_counts,
+        "col_distribution": col_counts,
+        "sample_placements": placements[:5]  # First 5 placements
+    }
+    
+    return total_count, statistics
+
+# Example usage
+n, m, k = 3, 3, 2
+grid = [['.', '.', '.'], ['.', '.', '.'], ['.', '.', '.']]
+count, stats = raab_game_with_statistics(n, m, k, grid)
+print(f"Total ways to place queens: {count}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Backtracking**: N-Queens, Constraint satisfaction
+- **Game Theory**: Chess problems, Board games
+- **Combinatorics**: Placement counting, Arrangement counting
+- **Grid Algorithms**: Grid traversal, Grid counting
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Backtracking** is essential for exploring all valid placements
+- **Conflict detection** is crucial for ensuring valid queen placements
+- **Grid constraints** add complexity to the classic N-Queens problem
+- **Optimization techniques** can significantly improve performance
 
 ---
 

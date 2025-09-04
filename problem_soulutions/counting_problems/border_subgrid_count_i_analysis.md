@@ -7,22 +7,25 @@ permalink: /problem_soulutions/counting_problems/border_subgrid_count_i_analysis
 
 # Border Subgrid Count I
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a 2D grid of size n×m, count the number of subgrids of size k×k where all cells on the border have the same value.
 
-### Input
-The first input line has three integers n, m, and k: the dimensions of the grid and the size of subgrids to count.
-Then there are n lines describing the grid. Each line has m integers: the values in the grid.
+This is a grid counting problem where we need to find all k×k subgrids that have a uniform border (all border cells have the same value). We can solve this by checking each possible k×k subgrid and verifying if its border is uniform.
 
-### Output
-Print one integer: the number of k×k subgrids with uniform border.
+**Input**: 
+- First line: three integers n, m, and k (grid dimensions and subgrid size)
+- Next n lines: m integers each (grid values)
 
-### Constraints
+**Output**: 
+- Print one integer: the number of k×k subgrids with uniform border
+
+**Constraints**:
 - 1 ≤ n,m ≤ 100
 - 1 ≤ k ≤ min(n,m)
-- 1 ≤ grid[i][j] ≤ 10^9
+- 1 ≤ grid[i][j] ≤ 10⁹
 
-### Example
+**Example**:
 ```
 Input:
 3 3 2
@@ -33,6 +36,11 @@ Input:
 Output:
 2
 ```
+
+**Explanation**: 
+In the 3×3 grid, there are 2 subgrids of size 2×2 with uniform borders:
+1. Subgrid from (0,0) to (1,1): border values are all 1
+2. Subgrid from (1,0) to (2,1): border values are all 1
 
 ## Solution Progression
 
@@ -529,20 +537,238 @@ weight: {max_weight}")
 #### **1. Related Algorithms**
 - **Grid Traversal**: Efficient grid traversal algorithms
 - **Border Detection**: Border detection algorithms
-- **Pattern Matching**: Pattern matching algorithms
-- **Dynamic Programming**: For optimization problems
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Foundation for counting problems
-- **Grid Theory**: Mathematical properties of grids
-- **Pattern Theory**: Properties of patterns
-- **Optimization**: Mathematical optimization techniques
+### Time and Space Complexity
+- **Time Complexity**: O(n × m × k) for checking all subgrids
+- **Space Complexity**: O(1) for storing the count
+- **Why it works**: We iterate through all possible k×k subgrids and check if their borders are uniform
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Grid Processing**: Efficient grid processing techniques
-- **Pattern Recognition**: Pattern recognition techniques
+### Key Implementation Points
+- Iterate through all possible starting positions for k×k subgrids
+- Check if all border cells have the same value
+- Handle edge cases like k = 1 (single cell subgrids)
+- Optimize by checking border values efficiently
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Grid Traversal**: Systematic way to check all subgrids
+- **Border Checking**: Efficient way to verify uniform borders
+- **Subgrid Counting**: Counting patterns in 2D grids
+- **Pattern Recognition**: Identifying uniform patterns
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Border Subgrid Count with Different Sizes**
+```python
+def border_subgrid_count_multiple_sizes(n, m, grid, sizes):
+    # Count subgrids with uniform borders for multiple sizes
+    results = {}
+    
+    for k in sizes:
+        count = 0
+        
+        for i in range(n - k + 1):
+            for j in range(m - k + 1):
+                # Check if this k×k subgrid has uniform border
+                border_value = grid[i][j]  # Top-left corner
+                is_uniform = True
+                
+                # Check top and bottom borders
+                for col in range(j, j + k):
+                    if grid[i][col] != border_value or grid[i + k - 1][col] != border_value:
+                        is_uniform = False
+                        break
+                
+                # Check left and right borders
+                if is_uniform:
+                    for row in range(i, i + k):
+                        if grid[row][j] != border_value or grid[row][j + k - 1] != border_value:
+                            is_uniform = False
+                            break
+                
+                if is_uniform:
+                    count += 1
+        
+        results[k] = count
+    
+    return results
+
+# Example usage
+n, m = 3, 3
+grid = [[1, 1, 2], [1, 1, 2], [3, 3, 3]]
+sizes = [1, 2, 3]
+results = border_subgrid_count_multiple_sizes(n, m, grid, sizes)
+print(f"Results for different sizes: {results}")
+```
+
+#### **2. Border Subgrid Count with Value Constraints**
+```python
+def border_subgrid_count_with_constraints(n, m, k, grid, constraints):
+    # Count subgrids with uniform borders and value constraints
+    count = 0
+    
+    for i in range(n - k + 1):
+        for j in range(m - k + 1):
+            # Check if this k×k subgrid has uniform border
+            border_value = grid[i][j]  # Top-left corner
+            
+            # Check value constraints
+            if constraints.get("min_value", 0) > border_value:
+                continue
+            if constraints.get("max_value", float('inf')) < border_value:
+                continue
+            if constraints.get("allowed_values") and border_value not in constraints["allowed_values"]:
+                continue
+            
+            is_uniform = True
+            
+            # Check top and bottom borders
+            for col in range(j, j + k):
+                if grid[i][col] != border_value or grid[i + k - 1][col] != border_value:
+                    is_uniform = False
+                    break
+            
+            # Check left and right borders
+            if is_uniform:
+                for row in range(i, i + k):
+                    if grid[row][j] != border_value or grid[row][j + k - 1] != border_value:
+                        is_uniform = False
+                        break
+            
+            if is_uniform:
+                count += 1
+    
+    return count
+
+# Example usage
+n, m, k = 3, 3, 2
+grid = [[1, 1, 2], [1, 1, 2], [3, 3, 3]]
+constraints = {"min_value": 1, "max_value": 2, "allowed_values": [1, 2]}
+result = border_subgrid_count_with_constraints(n, m, k, grid, constraints)
+print(f"Constrained border subgrid count: {result}")
+```
+
+#### **3. Border Subgrid Count with Position Constraints**
+```python
+def border_subgrid_count_with_position_constraints(n, m, k, grid, position_constraints):
+    # Count subgrids with uniform borders and position constraints
+    count = 0
+    
+    for i in range(n - k + 1):
+        for j in range(m - k + 1):
+            # Check position constraints
+            if position_constraints.get("min_row", 0) > i:
+                continue
+            if position_constraints.get("max_row", n) < i + k:
+                continue
+            if position_constraints.get("min_col", 0) > j:
+                continue
+            if position_constraints.get("max_col", m) < j + k:
+                continue
+            
+            # Check if this k×k subgrid has uniform border
+            border_value = grid[i][j]  # Top-left corner
+            is_uniform = True
+            
+            # Check top and bottom borders
+            for col in range(j, j + k):
+                if grid[i][col] != border_value or grid[i + k - 1][col] != border_value:
+                    is_uniform = False
+                    break
+            
+            # Check left and right borders
+            if is_uniform:
+                for row in range(i, i + k):
+                    if grid[row][j] != border_value or grid[row][j + k - 1] != border_value:
+                        is_uniform = False
+                        break
+            
+            if is_uniform:
+                count += 1
+    
+    return count
+
+# Example usage
+n, m, k = 3, 3, 2
+grid = [[1, 1, 2], [1, 1, 2], [3, 3, 3]]
+position_constraints = {"min_row": 0, "max_row": 2, "min_col": 0, "max_col": 2}
+result = border_subgrid_count_with_position_constraints(n, m, k, grid, position_constraints)
+print(f"Position-constrained border subgrid count: {result}")
+```
+
+#### **4. Border Subgrid Count with Statistics**
+```python
+def border_subgrid_count_with_statistics(n, m, k, grid):
+    # Count subgrids with uniform borders and provide statistics
+    count = 0
+    border_values = []
+    positions = []
+    
+    for i in range(n - k + 1):
+        for j in range(m - k + 1):
+            # Check if this k×k subgrid has uniform border
+            border_value = grid[i][j]  # Top-left corner
+            is_uniform = True
+            
+            # Check top and bottom borders
+            for col in range(j, j + k):
+                if grid[i][col] != border_value or grid[i + k - 1][col] != border_value:
+                    is_uniform = False
+                    break
+            
+            # Check left and right borders
+            if is_uniform:
+                for row in range(i, i + k):
+                    if grid[row][j] != border_value or grid[row][j + k - 1] != border_value:
+                        is_uniform = False
+                        break
+            
+            if is_uniform:
+                count += 1
+                border_values.append(border_value)
+                positions.append((i, j))
+    
+    # Calculate statistics
+    from collections import Counter
+    value_counts = Counter(border_values)
+    
+    statistics = {
+        "total_count": count,
+        "unique_border_values": len(value_counts),
+        "most_common_value": value_counts.most_common(1)[0] if value_counts else None,
+        "value_distribution": dict(value_counts),
+        "positions": positions
+    }
+    
+    return count, statistics
+
+# Example usage
+n, m, k = 3, 3, 2
+grid = [[1, 1, 2], [1, 1, 2], [3, 3, 3]]
+count, stats = border_subgrid_count_with_statistics(n, m, k, grid)
+print(f"Border subgrid count: {count}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Grid Algorithms**: Grid traversal, Grid counting
+- **Pattern Matching**: Pattern recognition, Pattern counting
+- **Subgrid Problems**: Subgrid analysis, Subgrid optimization
+- **Counting Problems**: Subset counting, Path counting
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Grid traversal** is essential for checking all possible subgrids
+- **Border checking** can be optimized by checking values systematically
+- **Subgrid counting** is a fundamental grid analysis technique
+- **Pattern recognition** helps identify uniform patterns in grids
 
 ---
 

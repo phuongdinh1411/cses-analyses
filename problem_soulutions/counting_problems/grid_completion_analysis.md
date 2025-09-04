@@ -7,20 +7,23 @@ permalink: /problem_soulutions/counting_problems/grid_completion_analysis
 
 # Grid Completion
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a partially filled n×n grid, count the number of ways to complete it with numbers 1 to n in each row and column (Latin square).
 
-### Input
-The first input line has an integer n: the size of the grid.
-Then there are n lines describing the grid. Each line has n integers: 0 for empty cell, 1 to n for filled cells.
+This is a Latin square completion problem where we need to fill the empty cells (marked as 0) with numbers 1 to n such that each number appears exactly once in each row and each column. We can solve this using backtracking with constraint propagation.
 
-### Output
-Print the number of ways to complete the grid modulo 10^9 + 7.
+**Input**: 
+- First line: integer n (size of the grid)
+- Next n lines: n integers each (0 for empty cell, 1 to n for filled cells)
 
-### Constraints
+**Output**: 
+- Print the number of ways to complete the grid modulo 10⁹ + 7
+
+**Constraints**:
 - 1 ≤ n ≤ 8
 
-### Example
+**Example**:
 ```
 Input:
 3
@@ -31,6 +34,13 @@ Input:
 Output:
 2
 ```
+
+**Explanation**: 
+For the 3×3 grid, there are 2 ways to complete it as a Latin square:
+1. Fill (0,2) with 3, (1,0) with 2, (1,1) with 3, (1,2) with 1, (2,0) with 3, (2,1) with 1
+2. Fill (0,2) with 3, (1,0) with 3, (1,1) with 1, (1,2) with 2, (2,0) with 2, (2,1) with 3
+
+Both result in valid Latin squares where each number 1, 2, 3 appears exactly once in each row and column.
 
 ## Solution Progression
 
@@ -632,22 +642,281 @@ def interactive_grid_completion_analyzer():
 ### 📚 **Learning Resources**
 
 #### **1. Related Algorithms**
-- **Dynamic Programming**: Efficient DP algorithms
-- **Grid Traversal**: Grid traversal algorithms
-- **Pattern Matching**: Pattern matching algorithms
-- **Constraint Satisfaction**: Constraint satisfaction algorithms
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Foundation for counting problems
-- **Grid Theory**: Mathematical properties of grids
-- **Pattern Theory**: Properties of patterns
-- **Optimization**: Mathematical optimization techniques
+### Time and Space Complexity
+- **Time Complexity**: O(n^(n²)) for the naive approach, O(n!) for optimized backtracking
+- **Space Complexity**: O(n²) for storing the grid
+- **Why it works**: We use backtracking to fill empty cells while maintaining Latin square constraints
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Grid Processing**: Efficient grid processing techniques
-- **Pattern Recognition**: Pattern recognition techniques
+### Key Implementation Points
+- Use backtracking to fill empty cells systematically
+- Check row and column constraints for each placement
+- Optimize by choosing cells with fewer valid options first
+- Handle modular arithmetic for large numbers
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Backtracking**: Essential for exploring all valid completions
+- **Constraint Satisfaction**: Maintain Latin square properties
+- **Latin Squares**: Mathematical structures with unique row/column properties
+- **Grid Completion**: Systematic way to fill partial grids
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Grid Completion with Additional Constraints**
+```python
+def grid_completion_with_constraints(n, grid, constraints):
+    # Count ways to complete grid with additional constraints
+    MOD = 10**9 + 7
+    
+    def is_valid(row, col, num):
+        # Check row constraint
+        for j in range(n):
+            if grid[row][j] == num:
+                return False
+        
+        # Check column constraint
+        for i in range(n):
+            if grid[i][col] == num:
+                return False
+        
+        # Check additional constraints
+        if constraints.get("forbidden_cells"):
+            if (row, col) in constraints["forbidden_cells"]:
+                return False
+        
+        if constraints.get("required_cells"):
+            if (row, col) in constraints["required_cells"] and num not in constraints["required_cells"][(row, col)]:
+                return False
+        
+        return True
+    
+    def backtrack(pos):
+        if pos == n * n:
+            return 1
+        
+        row, col = pos // n, pos % n
+        
+        if grid[row][col] != 0:
+            return backtrack(pos + 1)
+        
+        count = 0
+        for num in range(1, n + 1):
+            if is_valid(row, col, num):
+                grid[row][col] = num
+                count = (count + backtrack(pos + 1)) % MOD
+                grid[row][col] = 0  # Backtrack
+        
+        return count
+    
+    return backtrack(0)
+
+# Example usage
+n = 3
+grid = [[1, 2, 0], [0, 0, 0], [0, 0, 3]]
+constraints = {"forbidden_cells": [], "required_cells": {}}
+result = grid_completion_with_constraints(n, grid, constraints)
+print(f"Grid completions with constraints: {result}")
+```
+
+#### **2. Grid Completion with Diagonal Constraints**
+```python
+def grid_completion_with_diagonal_constraints(n, grid, diagonal_constraints):
+    # Count ways to complete grid with diagonal constraints
+    MOD = 10**9 + 7
+    
+    def is_valid(row, col, num):
+        # Check row constraint
+        for j in range(n):
+            if grid[row][j] == num:
+                return False
+        
+        # Check column constraint
+        for i in range(n):
+            if grid[i][col] == num:
+                return False
+        
+        # Check diagonal constraints
+        if diagonal_constraints.get("main_diagonal"):
+            if row == col:
+                for i in range(n):
+                    if i != row and grid[i][i] == num:
+                        return False
+        
+        if diagonal_constraints.get("anti_diagonal"):
+            if row + col == n - 1:
+                for i in range(n):
+                    if i != row and grid[i][n-1-i] == num:
+                        return False
+        
+        return True
+    
+    def backtrack(pos):
+        if pos == n * n:
+            return 1
+        
+        row, col = pos // n, pos % n
+        
+        if grid[row][col] != 0:
+            return backtrack(pos + 1)
+        
+        count = 0
+        for num in range(1, n + 1):
+            if is_valid(row, col, num):
+                grid[row][col] = num
+                count = (count + backtrack(pos + 1)) % MOD
+                grid[row][col] = 0  # Backtrack
+        
+        return count
+    
+    return backtrack(0)
+
+# Example usage
+n = 3
+grid = [[1, 2, 0], [0, 0, 0], [0, 0, 3]]
+diagonal_constraints = {"main_diagonal": True, "anti_diagonal": False}
+result = grid_completion_with_diagonal_constraints(n, grid, diagonal_constraints)
+print(f"Grid completions with diagonal constraints: {result}")
+```
+
+#### **3. Grid Completion with Multiple Grids**
+```python
+def grid_completion_multiple_grids(grids):
+    # Count ways to complete multiple grids
+    MOD = 10**9 + 7
+    results = {}
+    
+    for i, grid in enumerate(grids):
+        n = len(grid)
+        
+        def is_valid(row, col, num):
+            # Check row constraint
+            for j in range(n):
+                if grid[row][j] == num:
+                    return False
+            
+            # Check column constraint
+            for i in range(n):
+                if grid[i][col] == num:
+                    return False
+            
+            return True
+        
+        def backtrack(pos):
+            if pos == n * n:
+                return 1
+            
+            row, col = pos // n, pos % n
+            
+            if grid[row][col] != 0:
+                return backtrack(pos + 1)
+            
+            count = 0
+            for num in range(1, n + 1):
+                if is_valid(row, col, num):
+                    grid[row][col] = num
+                    count = (count + backtrack(pos + 1)) % MOD
+                    grid[row][col] = 0  # Backtrack
+            
+            return count
+        
+        results[i] = backtrack(0)
+    
+    return results
+
+# Example usage
+grids = [
+    [[1, 2, 0], [0, 0, 0], [0, 0, 3]],
+    [[1, 0, 0], [0, 2, 0], [0, 0, 3]]
+]
+results = grid_completion_multiple_grids(grids)
+for i, count in results.items():
+    print(f"Grid {i} completions: {count}")
+```
+
+#### **4. Grid Completion with Statistics**
+```python
+def grid_completion_with_statistics(n, grid):
+    # Count ways to complete grid and provide statistics
+    MOD = 10**9 + 7
+    completions = []
+    
+    def is_valid(row, col, num):
+        # Check row constraint
+        for j in range(n):
+            if grid[row][j] == num:
+                return False
+        
+        # Check column constraint
+        for i in range(n):
+            if grid[i][col] == num:
+                return False
+        
+        return True
+    
+    def backtrack(pos):
+        if pos == n * n:
+            completions.append([row[:] for row in grid])
+            return 1
+        
+        row, col = pos // n, pos % n
+        
+        if grid[row][col] != 0:
+            return backtrack(pos + 1)
+        
+        count = 0
+        for num in range(1, n + 1):
+            if is_valid(row, col, num):
+                grid[row][col] = num
+                count = (count + backtrack(pos + 1)) % MOD
+                grid[row][col] = 0  # Backtrack
+        
+        return count
+    
+    total_count = backtrack(0)
+    
+    # Calculate statistics
+    empty_cells = sum(1 for i in range(n) for j in range(n) if grid[i][j] == 0)
+    filled_cells = n * n - empty_cells
+    
+    statistics = {
+        "total_completions": total_count,
+        "grid_size": n,
+        "empty_cells": empty_cells,
+        "filled_cells": filled_cells,
+        "completion_rate": filled_cells / (n * n),
+        "sample_completions": completions[:3]  # First 3 completions
+    }
+    
+    return total_count, statistics
+
+# Example usage
+n = 3
+grid = [[1, 2, 0], [0, 0, 0], [0, 0, 3]]
+count, stats = grid_completion_with_statistics(n, grid)
+print(f"Total grid completions: {count}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Backtracking**: N-Queens, Constraint satisfaction
+- **Grid Algorithms**: Grid traversal, Grid counting
+- **Combinatorics**: Latin squares, Arrangement counting
+- **Constraint Satisfaction**: Sudoku, Magic squares
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Backtracking** is essential for exploring all valid completions
+- **Constraint satisfaction** is crucial for maintaining Latin square properties
+- **Latin squares** are fundamental mathematical structures
+- **Grid completion** requires systematic exploration with pruning
 
 ---
 

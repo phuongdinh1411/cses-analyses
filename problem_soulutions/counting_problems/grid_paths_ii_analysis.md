@@ -7,20 +7,23 @@ permalink: /problem_soulutions/counting_problems/grid_paths_ii_analysis
 
 # Grid Paths II
 
-## Problem Statement
+## 📋 Problem Description
+
 Given an n×n grid with some blocked cells, count the number of paths from the top-left corner to the bottom-right corner, moving only right or down.
 
-### Input
-The first input line has an integer n: the size of the grid.
-Then there are n lines describing the grid. Each line has n characters: '.' for empty cell and '#' for blocked cell.
+This is a dynamic programming problem where we need to count the number of valid paths in a grid with obstacles. We can only move right or down, and we need to avoid blocked cells. We can solve this using dynamic programming or memoization.
 
-### Output
-Print the number of valid paths modulo 10^9 + 7.
+**Input**: 
+- First line: integer n (size of the grid)
+- Next n lines: n characters each ('.' for empty cell, '#' for blocked cell)
 
-### Constraints
+**Output**: 
+- Print the number of valid paths modulo 10⁹ + 7
+
+**Constraints**:
 - 1 ≤ n ≤ 1000
 
-### Example
+**Example**:
 ```
 Input:
 3
@@ -31,6 +34,13 @@ Input:
 Output:
 2
 ```
+
+**Explanation**: 
+In the 3×3 grid, there are 2 valid paths from (0,0) to (2,2):
+1. Right → Right → Down → Down: (0,0) → (0,1) → (0,2) → (1,2) → (2,2)
+2. Down → Down → Right → Right: (0,0) → (1,0) → (2,0) → (2,1) → (2,2)
+
+Both paths avoid the blocked cell at (1,1) and reach the destination.
 
 ## Solution Progression
 
@@ -557,17 +567,241 @@ def interactive_grid_path_analyzer():
 - **Path Finding**: Path finding algorithms
 - **Constraint Satisfaction**: Constraint satisfaction algorithms
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Foundation for counting problems
-- **Grid Theory**: Mathematical properties of grids
-- **Path Theory**: Properties of paths
-- **Optimization**: Mathematical optimization techniques
+## 🔧 Implementation Details
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Grid Processing**: Efficient grid processing techniques
-- **Path Analysis**: Path analysis techniques
+### Time and Space Complexity
+- **Time Complexity**: O(2^(n²)) for the naive approach, O(n²) for dynamic programming
+- **Space Complexity**: O(n²) for storing DP states
+- **Why it works**: We use dynamic programming to count paths from each cell to the destination
+
+### Key Implementation Points
+- Use dynamic programming to avoid recomputing subproblems
+- Handle blocked cells by setting their path count to 0
+- Use modular arithmetic for large numbers
+- Optimize by filling the DP table bottom-up
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Dynamic Programming**: Essential for avoiding recomputation
+- **Grid Traversal**: Understanding movement constraints (right/down only)
+- **Path Counting**: Counting valid paths with obstacles
+- **Modular Arithmetic**: Handling large numbers with modulo operations
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Grid Paths with Different Movement Rules**
+```python
+def grid_paths_different_movements(n, grid, movements):
+    # Count paths with different movement rules
+    MOD = 10**9 + 7
+    
+    def count_paths(i, j, memo):
+        if i == n-1 and j == n-1:
+            return 1
+        
+        if i >= n or j >= n or grid[i][j] == '#':
+            return 0
+        
+        if (i, j) in memo:
+            return memo[(i, j)]
+        
+        count = 0
+        for di, dj in movements:
+            ni, nj = i + di, j + dj
+            if 0 <= ni < n and 0 <= nj < n:
+                count = (count + count_paths(ni, nj, memo)) % MOD
+        
+        memo[(i, j)] = count
+        return count
+    
+    return count_paths(0, 0, {})
+
+# Example usage
+n = 3
+grid = [
+    ['.', '.', '.'],
+    ['.', '#', '.'],
+    ['.', '.', '.']
+]
+movements = [(0, 1), (1, 0), (1, 1)]  # Right, Down, Diagonal
+result = grid_paths_different_movements(n, grid, movements)
+print(f"Paths with different movements: {result}")
+```
+
+#### **2. Grid Paths with Multiple Destinations**
+```python
+def grid_paths_multiple_destinations(n, grid, destinations):
+    # Count paths to multiple destinations
+    MOD = 10**9 + 7
+    results = {}
+    
+    for dest in destinations:
+        def count_paths(i, j, memo):
+            if i == dest[0] and j == dest[1]:
+                return 1
+            
+            if i >= n or j >= n or grid[i][j] == '#':
+                return 0
+            
+            if (i, j) in memo:
+                return memo[(i, j)]
+            
+            count = 0
+            # Right
+            if j + 1 < n:
+                count = (count + count_paths(i, j + 1, memo)) % MOD
+            # Down
+            if i + 1 < n:
+                count = (count + count_paths(i + 1, j, memo)) % MOD
+            
+            memo[(i, j)] = count
+            return count
+        
+        results[dest] = count_paths(0, 0, {})
+    
+    return results
+
+# Example usage
+n = 3
+grid = [
+    ['.', '.', '.'],
+    ['.', '#', '.'],
+    ['.', '.', '.']
+]
+destinations = [(2, 2), (1, 2), (2, 1)]
+results = grid_paths_multiple_destinations(n, grid, destinations)
+for dest, count in results.items():
+    print(f"Paths to {dest}: {count}")
+```
+
+#### **3. Grid Paths with Multiple Grids**
+```python
+def grid_paths_multiple_grids(grids):
+    # Count paths for multiple grids
+    MOD = 10**9 + 7
+    results = {}
+    
+    for i, grid in enumerate(grids):
+        n = len(grid)
+        
+        def count_paths(i, j, memo):
+            if i == n-1 and j == n-1:
+                return 1
+            
+            if i >= n or j >= n or grid[i][j] == '#':
+                return 0
+            
+            if (i, j) in memo:
+                return memo[(i, j)]
+            
+            count = 0
+            # Right
+            if j + 1 < n:
+                count = (count + count_paths(i, j + 1, memo)) % MOD
+            # Down
+            if i + 1 < n:
+                count = (count + count_paths(i + 1, j, memo)) % MOD
+            
+            memo[(i, j)] = count
+            return count
+        
+        results[i] = count_paths(0, 0, {})
+    
+    return results
+
+# Example usage
+grids = [
+    [['.', '.'], ['.', '.']],
+    [['.', '#'], ['.', '.']],
+    [['#', '.'], ['.', '.']]
+]
+results = grid_paths_multiple_grids(grids)
+for i, count in results.items():
+    print(f"Grid {i} paths: {count}")
+```
+
+#### **4. Grid Paths with Statistics**
+```python
+def grid_paths_with_statistics(n, grid):
+    # Count paths and provide statistics
+    MOD = 10**9 + 7
+    memo = {}
+    path_sequences = []
+    
+    def count_paths(i, j, memo, current_path):
+        if i == n-1 and j == n-1:
+            path_sequences.append(current_path[:])
+            return 1
+        
+        if i >= n or j >= n or grid[i][j] == '#':
+            return 0
+        
+        if (i, j) in memo:
+            return memo[(i, j)]
+        
+        count = 0
+        # Right
+        if j + 1 < n:
+            current_path.append('R')
+            count = (count + count_paths(i, j + 1, memo, current_path)) % MOD
+            current_path.pop()
+        # Down
+        if i + 1 < n:
+            current_path.append('D')
+            count = (count + count_paths(i + 1, j, memo, current_path)) % MOD
+            current_path.pop()
+        
+        memo[(i, j)] = count
+        return count
+    
+    total_count = count_paths(0, 0, memo, [])
+    
+    # Calculate statistics
+    blocked_cells = sum(1 for i in range(n) for j in range(n) if grid[i][j] == '#')
+    total_cells = n * n
+    free_cells = total_cells - blocked_cells
+    
+    statistics = {
+        "total_paths": total_count,
+        "grid_size": n,
+        "blocked_cells": blocked_cells,
+        "free_cells": free_cells,
+        "blockage_rate": blocked_cells / total_cells,
+        "sample_paths": path_sequences[:3]  # First 3 paths
+    }
+    
+    return total_count, statistics
+
+# Example usage
+n = 3
+grid = [
+    ['.', '.', '.'],
+    ['.', '#', '.'],
+    ['.', '.', '.']
+]
+count, stats = grid_paths_with_statistics(n, grid)
+print(f"Total paths: {count}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Dynamic Programming**: Path counting, Grid DP
+- **Grid Algorithms**: Grid traversal, Grid counting
+- **Combinatorics**: Path counting, Arrangement counting
+- **Graph Algorithms**: Shortest path, Path finding
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Dynamic programming** is essential for avoiding recomputation
+- **Grid traversal** requires understanding movement constraints
+- **Path counting** is a fundamental DP problem
+- **Modular arithmetic** is crucial for handling large numbers
 
 ---
 

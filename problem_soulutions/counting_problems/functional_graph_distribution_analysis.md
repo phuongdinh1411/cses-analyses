@@ -7,19 +7,22 @@ permalink: /problem_soulutions/counting_problems/functional_graph_distribution_a
 
 # Functional Graph Distribution
 
-## Problem Statement
+## 📋 Problem Description
+
 Given n nodes, count the number of different functional graphs (directed graphs where each node has exactly one outgoing edge).
 
-### Input
-The first input line has an integer n: the number of nodes.
+This is a combinatorics problem where we need to count all possible functions from a set of n elements to itself. Each node must have exactly one outgoing edge, which means we're counting all possible mappings from {1, 2, ..., n} to {1, 2, ..., n}.
 
-### Output
-Print the number of different functional graphs modulo 10^9 + 7.
+**Input**: 
+- First line: integer n (number of nodes)
 
-### Constraints
-- 1 ≤ n ≤ 10^5
+**Output**: 
+- Print the number of different functional graphs modulo 10⁹ + 7
 
-### Example
+**Constraints**:
+- 1 ≤ n ≤ 10⁵
+
+**Example**:
 ```
 Input:
 3
@@ -27,6 +30,11 @@ Input:
 Output:
 27
 ```
+
+**Explanation**: 
+For n = 3, there are 3³ = 27 different functional graphs:
+- Each of the 3 nodes can point to any of the 3 nodes (including itself)
+- This gives us 3 × 3 × 3 = 27 total possibilities
 
 ## Solution Progression
 
@@ -484,22 +492,149 @@ def interactive_functional_analyzer():
 ### 📚 **Learning Resources**
 
 #### **1. Related Algorithms**
-- **Graph Traversal**: Efficient graph traversal algorithms
-- **Component Analysis**: Component analysis algorithms
-- **Cycle Detection**: Cycle detection algorithms
-- **Dynamic Programming**: For optimization problems
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Graph Theory**: Foundation for graph problems
-- **Component Theory**: Mathematical properties of components
-- **Cycle Theory**: Properties of cycles
-- **Optimization**: Mathematical optimization techniques
+### Time and Space Complexity
+- **Time Complexity**: O(1) for the mathematical formula approach
+- **Space Complexity**: O(1) for storing the result
+- **Why it works**: We use the mathematical formula n^n to count all possible functions from n elements to n elements
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient storage and retrieval
-- **Algorithm Design**: Problem-solving strategies
-- **Graph Processing**: Efficient graph processing techniques
-- **Component Analysis**: Component analysis techniques
+### Key Implementation Points
+- Use the mathematical formula n^n for counting functional graphs
+- Handle modular arithmetic to prevent overflow
+- Use fast exponentiation for large values of n
+- Consider edge cases like n = 1
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Function Counting**: Mathematical foundation for counting functions
+- **Modular Arithmetic**: Required for handling large numbers
+- **Fast Exponentiation**: Efficient way to compute n^n mod MOD
+- **Combinatorics**: Foundation for counting problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Functional Graph Distribution with Constraints**
+```python
+def functional_graph_distribution_with_constraints(n, constraints):
+    # Count functional graphs with additional constraints
+    MOD = 10**9 + 7
+    
+    # Check constraints
+    if constraints.get("min_nodes", 1) > n:
+        return 0
+    if constraints.get("max_nodes", float('inf')) < n:
+        return 0
+    if constraints.get("allowed_sizes") and n not in constraints["allowed_sizes"]:
+        return 0
+    
+    # Calculate n^n mod MOD
+    result = pow(n, n, MOD)
+    
+    return result
+
+# Example usage
+n = 3
+constraints = {"min_nodes": 1, "max_nodes": 10, "allowed_sizes": [1, 2, 3, 4, 5]}
+result = functional_graph_distribution_with_constraints(n, constraints)
+print(f"Constrained functional graph count: {result}")
+```
+
+#### **2. Functional Graph Distribution with Cycle Constraints**
+```python
+def functional_graph_distribution_with_cycle_constraints(n, cycle_constraints):
+    # Count functional graphs with constraints on cycles
+    MOD = 10**9 + 7
+    
+    # Check cycle constraints
+    if cycle_constraints.get("min_cycles", 0) > n:
+        return 0
+    if cycle_constraints.get("max_cycles", n) < 1:
+        return 0
+    if cycle_constraints.get("allowed_cycle_lengths"):
+        # This is more complex and would require advanced combinatorics
+        pass
+    
+    # For now, just return the basic count
+    result = pow(n, n, MOD)
+    
+    return result
+
+# Example usage
+n = 3
+cycle_constraints = {"min_cycles": 1, "max_cycles": 3, "allowed_cycle_lengths": [1, 2, 3]}
+result = functional_graph_distribution_with_cycle_constraints(n, cycle_constraints)
+print(f"Cycle-constrained functional graph count: {result}")
+```
+
+#### **3. Functional Graph Distribution with Multiple Sizes**
+```python
+def functional_graph_distribution_multiple_sizes(sizes):
+    # Count functional graphs for multiple sizes
+    MOD = 10**9 + 7
+    results = {}
+    
+    for n in sizes:
+        # Calculate n^n mod MOD
+        result = pow(n, n, MOD)
+        results[n] = result
+    
+    return results
+
+# Example usage
+sizes = [1, 2, 3, 4, 5]
+results = functional_graph_distribution_multiple_sizes(sizes)
+for n, count in results.items():
+    print(f"Functional graphs for n={n}: {count}")
+```
+
+#### **4. Functional Graph Distribution with Statistics**
+```python
+def functional_graph_distribution_with_statistics(n):
+    # Count functional graphs and provide statistics
+    MOD = 10**9 + 7
+    
+    # Calculate n^n mod MOD
+    result = pow(n, n, MOD)
+    
+    # Calculate statistics
+    statistics = {
+        "total_count": result,
+        "nodes": n,
+        "theoretical_max": n**n,
+        "modulo": MOD,
+        "has_cycles": True,  # All functional graphs have cycles
+        "min_cycles": 1,     # At least one cycle
+        "max_cycles": n      # At most n cycles (one per node)
+    }
+    
+    return result, statistics
+
+# Example usage
+n = 3
+count, stats = functional_graph_distribution_with_statistics(n)
+print(f"Functional graph count: {count}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **Graph Algorithms**: Graph counting, Graph construction
+- **Combinatorics**: Function counting, Permutation counting
+- **Modular Arithmetic**: Modular exponentiation, Modular inverses
+- **Counting Problems**: Subset counting, Path counting
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Function counting** is fundamental for understanding functional graphs
+- **Mathematical formulas** can often replace complex algorithms
+- **Modular arithmetic** is required for handling large numbers
+- **Fast exponentiation** is essential for computing large powers efficiently
 
 ---
 
