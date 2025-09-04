@@ -7,23 +7,26 @@ permalink: /problem_soulutions/string_algorithms/string_functions_analysis
 
 # String Functions
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a string s, process q queries. Each query asks for the value of a specific string function at a given position.
 
-### Input
-The first input line has a string s.
-The second line has an integer q: the number of queries.
-Then there are q lines describing the queries. Each line has one integer k: the position to query.
+This is a string algorithm problem where we need to calculate the value of a string function at specific positions. The string function typically calculates the length of the longest proper suffix that is also a proper prefix for the substring ending at position k. We can solve this efficiently using the KMP algorithm's failure function.
 
-### Output
-Print the answer to each query.
+**Input**: 
+- First line: string s (the input string)
+- Second line: integer q (number of queries)
+- Next q lines: integer k (position to query)
 
-### Constraints
-- 1 ≤ |s| ≤ 10^5
-- 1 ≤ q ≤ 10^5
+**Output**: 
+- Print the answer to each query
+
+**Constraints**:
+- 1 ≤ |s| ≤ 10⁵
+- 1 ≤ q ≤ 10⁵
 - 1 ≤ k ≤ |s|
 
-### Example
+**Example**:
 ```
 Input:
 abacaba
@@ -37,6 +40,12 @@ Output:
 0
 1
 ```
+
+**Explanation**: 
+For the string "abacaba":
+- At position 1: substring "a" has no proper suffix that is also a proper prefix, so function value is 0
+- At position 2: substring "ab" has no proper suffix that is also a proper prefix, so function value is 0
+- At position 3: substring "aba" has "a" as both proper suffix and proper prefix, so function value is 1
 
 ## Solution Progression
 
@@ -433,22 +442,219 @@ try: k = int(input("Enter k (or -1 to quit): "))
 ### 📚 **Learning Resources**
 
 #### **1. Related Algorithms**
-- **String Matching**: KMP, Boyer-Moore, Rabin-Karp algorithms
-- **Suffix Structures**: Suffix arrays, suffix trees, suffix automata
-- **String Compression**: LZ77, LZ78, Huffman coding
-- **String Parsing**: Regular expressions, context-free parsing
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: String combinatorics and counting
-- **Information Theory**: Entropy, compression, encoding
-- **Formal Languages**: Regular languages, context-free languages
-- **Automata Theory**: Finite automata, pushdown automata
+### Time and Space Complexity
+- **Time Complexity**: O(|s|) for preprocessing, O(1) per query
+- **Space Complexity**: O(|s|) for storing the failure function
+- **Why it works**: The KMP failure function efficiently precomputes the string function values for all positions
 
-#### **3. Programming Concepts**
-- **String Representations**: Character arrays, string objects
-- **Memory Management**: Efficient string storage and manipulation
-- **Algorithm Optimization**: Improving string algorithm performance
-- **Error Handling**: Dealing with invalid inputs and edge cases
+### Key Implementation Points
+- Use KMP algorithm to build the failure function
+- The failure function gives us the string function values for all positions
+- Handle edge cases like single character strings
+- Optimize for multiple queries by preprocessing once
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **KMP Algorithm**: Efficient string matching algorithm with failure function
+- **String Functions**: Mathematical functions on strings
+- **Prefix-Suffix Matching**: Finding longest common prefix and suffix
+- **String Analysis**: Analyzing string properties and structure
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. String Functions with Multiple Queries**
+```python
+def string_functions_multiple_queries(s, queries):
+    # Calculate string function values for multiple queries efficiently
+    n = len(s)
+    if n == 0:
+        return [0] * len(queries)
+    
+    # Build failure function using KMP
+    failure = [0] * n
+    j = 0
+    
+    for i in range(1, n):
+        while j > 0 and s[i] != s[j]:
+            j = failure[j - 1]
+        
+        if s[i] == s[j]:
+            j += 1
+        
+        failure[i] = j
+    
+    # Answer queries
+    results = []
+    for k in queries:
+        if k <= 0 or k > n:
+            results.append(0)
+        else:
+            results.append(failure[k - 1])
+    
+    return results
+
+# Example usage
+s = "abacaba"
+queries = [1, 2, 3, 4, 5, 6, 7]
+results = string_functions_multiple_queries(s, queries)
+print(f"String function values: {results}")
+```
+
+#### **2. String Functions with Range Queries**
+```python
+def string_functions_range_queries(s, range_queries):
+    # Calculate string function values for range queries
+    n = len(s)
+    if n == 0:
+        return [0] * len(range_queries)
+    
+    # Build failure function
+    failure = [0] * n
+    j = 0
+    
+    for i in range(1, n):
+        while j > 0 and s[i] != s[j]:
+            j = failure[j - 1]
+        
+        if s[i] == s[j]:
+            j += 1
+        
+        failure[i] = j
+    
+    # Answer range queries
+    results = []
+    for start, end in range_queries:
+        if start <= 0 or end > n or start > end:
+            results.append(0)
+        else:
+            # Find maximum function value in range
+            max_value = 0
+            for i in range(start - 1, end):
+                max_value = max(max_value, failure[i])
+            results.append(max_value)
+    
+    return results
+
+# Example usage
+s = "abacaba"
+range_queries = [(1, 3), (2, 5), (1, 7)]
+results = string_functions_range_queries(s, range_queries)
+print(f"Range query results: {results}")
+```
+
+#### **3. String Functions with Custom Functions**
+```python
+def string_functions_custom(s, queries, function_type="standard"):
+    # Calculate different types of string functions
+    n = len(s)
+    if n == 0:
+        return [0] * len(queries)
+    
+    # Build failure function
+    failure = [0] * n
+    j = 0
+    
+    for i in range(1, n):
+        while j > 0 and s[i] != s[j]:
+            j = failure[j - 1]
+        
+        if s[i] == s[j]:
+            j += 1
+        
+        failure[i] = j
+    
+    # Calculate function values based on type
+    results = []
+    for k in queries:
+        if k <= 0 or k > n:
+            results.append(0)
+        else:
+            if function_type == "standard":
+                results.append(failure[k - 1])
+            elif function_type == "squared":
+                results.append(failure[k - 1] ** 2)
+            elif function_type == "logarithmic":
+                results.append(failure[k - 1] if failure[k - 1] == 0 else 1)
+            elif function_type == "binary":
+                results.append(1 if failure[k - 1] > 0 else 0)
+    
+    return results
+
+# Example usage
+s = "abacaba"
+queries = [1, 2, 3, 4, 5, 6, 7]
+function_types = ["standard", "squared", "logarithmic", "binary"]
+
+for func_type in function_types:
+    results = string_functions_custom(s, queries, func_type)
+    print(f"{func_type} function values: {results}")
+```
+
+#### **4. String Functions with Statistics**
+```python
+def string_functions_with_statistics(s):
+    # Calculate string function values and provide statistics
+    n = len(s)
+    if n == 0:
+        return [], {"total": 0, "average": 0, "maximum": 0, "minimum": 0}
+    
+    # Build failure function
+    failure = [0] * n
+    j = 0
+    
+    for i in range(1, n):
+        while j > 0 and s[i] != s[j]:
+            j = failure[j - 1]
+        
+        if s[i] == s[j]:
+            j += 1
+        
+        failure[i] = j
+    
+    # Calculate statistics
+    total = sum(failure)
+    average = total / n if n > 0 else 0
+    maximum = max(failure) if failure else 0
+    minimum = min(failure) if failure else 0
+    
+    statistics = {
+        "total": total,
+        "average": average,
+        "maximum": maximum,
+        "minimum": minimum,
+        "non_zero_count": sum(1 for x in failure if x > 0),
+        "zero_count": sum(1 for x in failure if x == 0)
+    }
+    
+    return failure, statistics
+
+# Example usage
+s = "abacaba"
+function_values, stats = string_functions_with_statistics(s)
+print(f"String function values: {function_values}")
+print(f"Statistics: {stats}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **String Algorithms**: String matching, Pattern matching
+- **KMP Algorithm**: String matching, Failure function
+- **String Functions**: String analysis, String properties
+- **String Analysis**: String structure, String patterns
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **KMP algorithm** is essential for efficient string function calculation
+- **String functions** provide important insights into string structure
+- **Prefix-suffix matching** is a fundamental string analysis technique
+- **String analysis** helps understand string properties and patterns
 
 ---
 

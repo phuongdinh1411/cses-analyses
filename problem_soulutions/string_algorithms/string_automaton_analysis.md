@@ -7,23 +7,26 @@ permalink: /problem_soulutions/string_algorithms/string_automaton_analysis
 
 # String Automaton
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a string s, build a suffix automaton and process q queries. Each query asks for the number of occurrences of a pattern in the string.
 
-### Input
-The first input line has a string s.
-The second line has an integer q: the number of queries.
-Then there are q lines describing the queries. Each line has a pattern p.
+This is a string algorithm problem where we need to efficiently count occurrences of patterns in a string using a suffix automaton. A suffix automaton is a powerful data structure that allows efficient pattern matching and substring counting.
 
-### Output
-Print the answer to each query.
+**Input**: 
+- First line: string s (the input string)
+- Second line: integer q (number of queries)
+- Next q lines: pattern p (pattern to search for)
 
-### Constraints
-- 1 ≤ |s| ≤ 10^5
-- 1 ≤ q ≤ 10^5
+**Output**: 
+- Print the answer to each query (number of occurrences)
+
+**Constraints**:
+- 1 ≤ |s| ≤ 10⁵
+- 1 ≤ q ≤ 10⁵
 - 1 ≤ |p| ≤ |s|
 
-### Example
+**Example**:
 ```
 Input:
 abacaba
@@ -37,6 +40,12 @@ Output:
 1
 0
 ```
+
+**Explanation**: 
+In the string "abacaba":
+- Pattern "aba" appears 2 times: at positions 0-2 and 4-6
+- Pattern "ac" appears 1 time: at position 2-3
+- Pattern "xyz" appears 0 times: not found in the string
 
 ## Solution Progression
 
@@ -558,22 +567,305 @@ def interactive_string_automaton():
 ### 📚 **Learning Resources**
 
 #### **1. Related Algorithms**
-- **String Matching**: KMP, Boyer-Moore, Rabin-Karp algorithms
-- **Suffix Structures**: Suffix arrays, suffix trees, suffix automata
-- **String Compression**: LZ77, LZ78, Huffman coding
-- **String Parsing**: Regular expressions, context-free parsing
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: String combinatorics and counting
-- **Information Theory**: Entropy, compression, encoding
-- **Formal Languages**: Regular languages, context-free languages
-- **Automata Theory**: Finite automata, pushdown automata
+### Time and Space Complexity
+- **Time Complexity**: O(|s|) for building suffix automaton, O(|p|) per query
+- **Space Complexity**: O(|s|) for suffix automaton
+- **Why it works**: Suffix automaton efficiently represents all suffixes of a string and allows fast pattern matching
 
-#### **3. Programming Concepts**
-- **String Representations**: Character arrays, string objects
-- **Memory Management**: Efficient string storage and manipulation
-- **Algorithm Optimization**: Improving string algorithm performance
-- **Error Handling**: Dealing with invalid inputs and edge cases
+### Key Implementation Points
+- Build suffix automaton to represent all suffixes of the string
+- Use automaton to efficiently count pattern occurrences
+- Handle edge cases like empty patterns and non-existent patterns
+- Optimize memory usage for large strings
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Suffix Automaton**: Powerful data structure for string analysis
+- **Pattern Matching**: Efficient substring searching using automata
+- **String Analysis**: Analyzing patterns and repetitions in strings
+- **Automata Theory**: Finite state machines for string processing
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. String Automaton with Position Tracking**
+```python
+class SuffixAutomaton:
+    def __init__(self, s):
+        self.s = s
+        self.size = 1
+        self.last = 0
+        self.st = [{'len': 0, 'link': -1, 'next': {}}]
+        self.positions = [[] for _ in range(len(s) * 2)]
+        
+        for i, c in enumerate(s):
+            self.add_char(c, i)
+    
+    def add_char(self, c, pos):
+        p = self.last
+        curr = self.size
+        self.size += 1
+        self.st.append({'len': self.st[p]['len'] + 1, 'link': -1, 'next': {}})
+        
+        while p >= 0 and c not in self.st[p]['next']:
+            self.st[p]['next'][c] = curr
+            p = self.st[p]['link']
+        
+        if p == -1:
+            self.st[curr]['link'] = 0
+        else:
+            q = self.st[p]['next'][c]
+            if self.st[p]['len'] + 1 == self.st[q]['len']:
+                self.st[curr]['link'] = q
+            else:
+                clone = self.size
+                self.size += 1
+                self.st.append({
+                    'len': self.st[p]['len'] + 1,
+                    'link': self.st[q]['link'],
+                    'next': self.st[q]['next'].copy()
+                })
+                
+                while p >= 0 and self.st[p]['next'][c] == q:
+                    self.st[p]['next'][c] = clone
+                    p = self.st[p]['link']
+                
+                self.st[q]['link'] = clone
+                self.st[curr]['link'] = clone
+        
+        self.last = curr
+        self.positions[curr].append(pos)
+    
+    def count_occurrences(self, pattern):
+        # Count occurrences of pattern in the string
+        curr = 0
+        for c in pattern:
+            if c not in self.st[curr]['next']:
+                return 0
+            curr = self.st[curr]['next'][c]
+        
+        return len(self.positions[curr])
+    
+    def get_positions(self, pattern):
+        # Get all positions where pattern occurs
+        curr = 0
+        for c in pattern:
+            if c not in self.st[curr]['next']:
+                return []
+            curr = self.st[curr]['next'][c]
+        
+        return self.positions[curr]
+
+# Example usage
+s = "abacaba"
+automaton = SuffixAutomaton(s)
+pattern = "aba"
+count = automaton.count_occurrences(pattern)
+positions = automaton.get_positions(pattern)
+print(f"Pattern '{pattern}' occurs {count} times at positions {positions}")
+```
+
+#### **2. String Automaton with Multiple Patterns**
+```python
+class MultiPatternAutomaton:
+    def __init__(self, patterns):
+        self.patterns = patterns
+        self.automaton = self.build_automaton()
+    
+    def build_automaton(self):
+        # Build automaton for multiple patterns
+        automaton = {'states': [{}], 'final': set()}
+        
+        for i, pattern in enumerate(self.patterns):
+            state = 0
+            for c in pattern:
+                if c not in automaton['states'][state]:
+                    automaton['states'][state][c] = len(automaton['states'])
+                    automaton['states'].append({})
+                state = automaton['states'][state][c]
+            automaton['final'].add(state)
+        
+        return automaton
+    
+    def search_patterns(self, text):
+        # Search for all patterns in text
+        results = {pattern: [] for pattern in self.patterns}
+        
+        for i in range(len(text)):
+            state = 0
+            for j in range(i, len(text)):
+                if text[j] not in self.automaton['states'][state]:
+                    break
+                state = self.automaton['states'][state][text[j]]
+                
+                if state in self.automaton['final']:
+                    # Find which pattern this state represents
+                    for k, pattern in enumerate(self.patterns):
+                        if self.is_final_state(state, pattern):
+                            results[pattern].append(i)
+        
+        return results
+    
+    def is_final_state(self, state, pattern):
+        # Check if state is final for given pattern
+        return state == len(pattern)
+
+# Example usage
+patterns = ["aba", "ac", "xyz"]
+text = "abacaba"
+automaton = MultiPatternAutomaton(patterns)
+results = automaton.search_patterns(text)
+print(f"Pattern occurrences: {results}")
+```
+
+#### **3. String Automaton with Longest Common Substring**
+```python
+class LongestCommonSubstringAutomaton:
+    def __init__(self, s1, s2):
+        self.s1 = s1
+        self.s2 = s2
+        self.automaton = self.build_automaton()
+    
+    def build_automaton(self):
+        # Build suffix automaton for s1
+        automaton = {'states': [{}], 'final': set()}
+        
+        for i in range(len(self.s1)):
+            state = 0
+            for j in range(i, len(self.s1)):
+                c = self.s1[j]
+                if c not in automaton['states'][state]:
+                    automaton['states'][state][c] = len(automaton['states'])
+                    automaton['states'].append({})
+                state = automaton['states'][state][c]
+            automaton['final'].add(state)
+        
+        return automaton
+    
+    def find_longest_common_substring(self):
+        # Find longest common substring between s1 and s2
+        max_length = 0
+        result = ""
+        
+        for i in range(len(self.s2)):
+            state = 0
+            current_length = 0
+            current_substring = ""
+            
+            for j in range(i, len(self.s2)):
+                c = self.s2[j]
+                if c in self.automaton['states'][state]:
+                    state = self.automaton['states'][state][c]
+                    current_length += 1
+                    current_substring += c
+                    
+                    if current_length > max_length:
+                        max_length = current_length
+                        result = current_substring
+                else:
+                    break
+        
+        return result
+
+# Example usage
+s1 = "abacaba"
+s2 = "bacab"
+automaton = LongestCommonSubstringAutomaton(s1, s2)
+result = automaton.find_longest_common_substring()
+print(f"Longest common substring: {result}")
+```
+
+#### **4. String Automaton with Pattern Statistics**
+```python
+class PatternStatisticsAutomaton:
+    def __init__(self, s):
+        self.s = s
+        self.automaton = self.build_automaton()
+        self.statistics = self.compute_statistics()
+    
+    def build_automaton(self):
+        # Build suffix automaton
+        automaton = {'states': [{}], 'final': set()}
+        
+        for i in range(len(self.s)):
+            state = 0
+            for j in range(i, len(self.s)):
+                c = self.s[j]
+                if c not in automaton['states'][state]:
+                    automaton['states'][state][c] = len(automaton['states'])
+                    automaton['states'].append({})
+                state = automaton['states'][state][c]
+            automaton['final'].add(state)
+        
+        return automaton
+    
+    def compute_statistics(self):
+        # Compute statistics for all substrings
+        statistics = {}
+        
+        for i in range(len(self.s)):
+            for j in range(i + 1, len(self.s) + 1):
+                substring = self.s[i:j]
+                if substring not in statistics:
+                    statistics[substring] = {
+                        'count': 0,
+                        'positions': [],
+                        'length': len(substring)
+                    }
+                statistics[substring]['count'] += 1
+                statistics[substring]['positions'].append(i)
+        
+        return statistics
+    
+    def get_pattern_statistics(self, pattern):
+        # Get statistics for a specific pattern
+        if pattern in self.statistics:
+            return self.statistics[pattern]
+        else:
+            return {
+                'count': 0,
+                'positions': [],
+                'length': len(pattern)
+            }
+    
+    def get_most_frequent_patterns(self, min_length=1):
+        # Get most frequent patterns
+        frequent = []
+        for pattern, stats in self.statistics.items():
+            if stats['length'] >= min_length:
+                frequent.append((pattern, stats['count']))
+        
+        frequent.sort(key=lambda x: x[1], reverse=True)
+        return frequent
+
+# Example usage
+s = "abacaba"
+automaton = PatternStatisticsAutomaton(s)
+stats = automaton.get_pattern_statistics("aba")
+print(f"Statistics for 'aba': {stats}")
+frequent = automaton.get_most_frequent_patterns(min_length=2)
+print(f"Most frequent patterns: {frequent[:5]}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **String Algorithms**: String matching, Pattern matching
+- **Suffix Automaton**: String analysis, String processing
+- **Pattern Matching**: Substring search, String search
+- **String Analysis**: Pattern detection, String statistics
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Suffix automaton** is a powerful data structure for string analysis
+- **Pattern matching** can be efficiently implemented using automata
+- **String analysis** helps identify patterns and repetitions in text
+- **Automata theory** provides the foundation for efficient string processing
 
 ---
 

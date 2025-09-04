@@ -7,20 +7,23 @@ permalink: /problem_soulutions/string_algorithms/string_rotation_analysis
 
 # String Rotation
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a string s, find the lexicographically smallest rotation of the string.
 
-### Input
-The first input line has a string s.
+This is a string algorithm problem where we need to find the lexicographically smallest rotation of a given string. A rotation is obtained by moving characters from the beginning to the end. We can solve this efficiently using the Booth's algorithm or by comparing all rotations.
 
-### Output
-Print the lexicographically smallest rotation.
+**Input**: 
+- First line: string s (the input string)
 
-### Constraints
-- 1 ≤ |s| ≤ 10^5
+**Output**: 
+- Print the lexicographically smallest rotation
+
+**Constraints**:
+- 1 ≤ |s| ≤ 10⁵
 - String contains only lowercase letters
 
-### Example
+**Example**:
 ```
 Input:
 abacaba
@@ -28,6 +31,18 @@ abacaba
 Output:
 aabacab
 ```
+
+**Explanation**: 
+The rotations of "abacaba" are:
+1. "abacaba" (original)
+2. "bacabaa" (rotate left by 1)
+3. "acabaab" (rotate left by 2)
+4. "cabaaba" (rotate left by 3)
+5. "abaabac" (rotate left by 4)
+6. "baabaca" (rotate left by 5)
+7. "aabacab" (rotate left by 6)
+
+The lexicographically smallest is "aabacab".
 
 ## Solution Progression
 
@@ -434,25 +449,144 @@ def interactive_string_rotation():
 - **String Complexity**: Complexity measures for strings
 - **String Transformations**: Mathematical transformations
 
-### 📚 **Learning Resources**
+## 🔧 Implementation Details
 
-#### **1. Related Algorithms**
-- **String Algorithms**: KMP, Boyer-Moore, Rabin-Karp
-- **Suffix Structures**: Suffix arrays, suffix trees, suffix automata
-- **Sorting Algorithms**: Comparison-based and linear sorting
-- **Search Algorithms**: Binary search, linear search
+### Time and Space Complexity
+- **Time Complexity**: O(|s|) for Booth's algorithm, O(|s|²) for naive approach
+- **Space Complexity**: O(|s|) for storing the string
+- **Why it works**: Booth's algorithm efficiently finds the lexicographically smallest rotation by comparing rotations in linear time
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Counting, permutations, combinations
-- **Group Theory**: Groups, subgroups, group actions
-- **Order Theory**: Partial orders, total orders, lattices
-- **Number Theory**: Properties of integers and sequences
+### Key Implementation Points
+- Use Booth's algorithm for optimal O(|s|) time complexity
+- Compare rotations efficiently without generating all of them
+- Handle edge cases like single character strings
+- Use string concatenation to simulate rotations
 
-#### **3. Programming Concepts**
-- **String Manipulation**: Efficient string operations
-- **Algorithm Design**: Systematic approach to problem solving
-- **Complexity Analysis**: Time and space complexity
-- **Optimization Techniques**: Improving algorithm performance
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Booth's Algorithm**: Efficient algorithm for finding lexicographically smallest rotation
+- **String Rotation**: Moving characters from beginning to end
+- **Lexicographic Order**: Dictionary order comparison of strings
+- **String Comparison**: Efficient comparison of rotated strings
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. String Rotation with K-th Smallest**
+```python
+def kth_smallest_rotation(s, k):
+    # Find the k-th lexicographically smallest rotation
+    n = len(s)
+    rotations = []
+    
+    # Generate all rotations
+    for i in range(n):
+        rotation = s[i:] + s[:i]
+        rotations.append((rotation, i))
+    
+    # Sort by rotation string
+    rotations.sort(key=lambda x: x[0])
+    
+    # Return k-th smallest (1-indexed)
+    if k <= len(rotations):
+        return rotations[k-1][0]
+    else:
+        return None
+
+# Example usage
+s = "abacaba"
+k = 3
+result = kth_smallest_rotation(s, k)
+print(f"K-th smallest rotation: {result}")
+```
+
+#### **2. String Rotation with Maximum Lexicographic**
+```python
+def maximum_lexicographic_rotation(s):
+    # Find the lexicographically largest rotation
+    n = len(s)
+    max_rotation = s
+    max_index = 0
+    
+    for i in range(1, n):
+        rotation = s[i:] + s[:i]
+        if rotation > max_rotation:
+            max_rotation = rotation
+            max_index = i
+    
+    return max_rotation, max_index
+
+# Example usage
+s = "abacaba"
+result, index = maximum_lexicographic_rotation(s)
+print(f"Maximum rotation: {result} at index {index}")
+```
+
+#### **3. String Rotation with Period Detection**
+```python
+def rotation_period_detection(s):
+    # Find the period of the string (smallest rotation that gives original string)
+    n = len(s)
+    
+    for i in range(1, n):
+        if n % i == 0:  # Only check divisors of n
+            is_period = True
+            for j in range(i, n):
+                if s[j] != s[j % i]:
+                    is_period = False
+                    break
+            if is_period:
+                return i
+    
+    return n  # No period found, period is the full string
+
+# Example usage
+s = "ababab"
+period = rotation_period_detection(s)
+print(f"Period: {period}")
+```
+
+#### **4. String Rotation with Circular Matching**
+```python
+def circular_string_matching(s, pattern):
+    # Check if pattern appears in any rotation of s
+    n = len(s)
+    m = len(pattern)
+    
+    # Create doubled string to handle rotations
+    doubled_s = s + s
+    
+    # Check if pattern appears in doubled string
+    for i in range(n):
+        if doubled_s[i:i+m] == pattern:
+            return True
+    
+    return False
+
+# Example usage
+s = "abacaba"
+pattern = "caba"
+result = circular_string_matching(s, pattern)
+print(f"Pattern found in rotation: {result}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **String Algorithms**: String matching, Pattern matching
+- **Lexicographic Order**: String sorting, String comparison
+- **String Rotation**: Circular strings, String transformations
+- **Period Detection**: String periods, Repetitive patterns
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Booth's algorithm** is the most efficient way to find lexicographically smallest rotation
+- **String rotation** is a fundamental string transformation operation
+- **Lexicographic order** is essential for string comparison and sorting
+- **String periods** can be detected using rotation analysis
 
 ---
 

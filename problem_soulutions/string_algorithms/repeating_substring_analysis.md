@@ -7,19 +7,22 @@ permalink: /problem_soulutions/string_algorithms/repeating_substring_analysis
 
 # Repeating Substring
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a string, find the longest substring that appears at least twice.
 
-### Input
-The first input line has a string s.
+This is a string algorithm problem where we need to find the longest substring that appears at least twice in the given string. We can solve this efficiently using suffix arrays or by checking all possible substrings with optimizations.
 
-### Output
-Print the longest substring that appears at least twice, or -1 if no such substring exists.
+**Input**: 
+- First line: string s (the input string)
 
-### Constraints
-- 1 ≤ |s| ≤ 10^5
+**Output**: 
+- Print the longest substring that appears at least twice, or -1 if no such substring exists
 
-### Example
+**Constraints**:
+- 1 ≤ |s| ≤ 10⁵
+
+**Example**:
 ```
 Input:
 ababab
@@ -27,6 +30,13 @@ ababab
 Output:
 abab
 ```
+
+**Explanation**: 
+In the string "ababab", the substring "abab" appears twice:
+1. Starting at position 0: "abab"ab
+2. Starting at position 2: ab"abab"
+
+This is the longest substring that appears at least twice.
 
 ## Solution Progression
 
@@ -807,23 +817,188 @@ def interactive_repeating_substring():
 
 ### 📚 **Learning Resources**
 
-#### **1. Related Algorithms**
-- **String Matching**: KMP, Boyer-Moore, Rabin-Karp algorithms
-- **Suffix Structures**: Suffix arrays, suffix trees, suffix automata
-- **String Compression**: LZ77, LZ78, Huffman coding
-- **String Parsing**: Regular expressions, context-free parsing
+## 🔧 Implementation Details
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: String combinatorics and counting
-- **Information Theory**: Entropy, compression, encoding
-- **Formal Languages**: Regular languages, context-free languages
-- **Automata Theory**: Finite automata, pushdown automata
+### Time and Space Complexity
+- **Time Complexity**: O(|s|²) for optimized approach, O(|s|⁴) for naive approach
+- **Space Complexity**: O(|s|) for storing substrings and counts
+- **Why it works**: We can optimize by checking substrings in decreasing order of length and stopping when we find the first repeating substring
 
-#### **3. Programming Concepts**
-- **String Representations**: Character arrays, string objects
-- **Memory Management**: Efficient string storage and manipulation
-- **Algorithm Optimization**: Improving string algorithm performance
-- **Error Handling**: Dealing with invalid inputs and edge cases
+### Key Implementation Points
+- Check substrings in decreasing order of length to find the longest first
+- Use efficient string matching to count occurrences
+- Stop early when a repeating substring is found
+- Handle edge cases like single character strings
+
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Suffix Arrays**: Efficient data structure for string analysis
+- **String Matching**: Finding occurrences of substrings in strings
+- **Longest Common Substring**: Finding the longest substring that appears multiple times
+- **String Analysis**: Analyzing patterns and repetitions in strings
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Repeating Substring with Minimum Occurrences**
+```python
+def repeating_substring_min_occurrences(s, min_count):
+    # Find the longest substring that appears at least min_count times
+    n = len(s)
+    
+    # Check substrings in decreasing order of length
+    for length in range(n, 0, -1):
+        for i in range(n - length + 1):
+            substring = s[i:i + length]
+            count = 0
+            
+            # Count occurrences
+            for j in range(n - length + 1):
+                if s[j:j + length] == substring:
+                    count += 1
+                    if count >= min_count:
+                        return substring
+    
+    return -1
+
+# Example usage
+s = "ababab"
+min_count = 3
+result = repeating_substring_min_occurrences(s, min_count)
+print(f"Longest substring with {min_count} occurrences: {result}")
+```
+
+#### **2. Repeating Substring with Non-Overlapping**
+```python
+def repeating_substring_non_overlapping(s):
+    # Find the longest substring that appears at least twice without overlapping
+    n = len(s)
+    
+    # Check substrings in decreasing order of length
+    for length in range(n // 2, 0, -1):
+        for i in range(n - length + 1):
+            substring = s[i:i + length]
+            
+            # Check for non-overlapping occurrences
+            positions = []
+            for j in range(n - length + 1):
+                if s[j:j + length] == substring:
+                    positions.append(j)
+            
+            # Check if we have at least 2 non-overlapping occurrences
+            if len(positions) >= 2:
+                # Check for non-overlapping
+                for k in range(len(positions)):
+                    for l in range(k + 1, len(positions)):
+                        if positions[l] >= positions[k] + length:
+                            return substring
+    
+    return -1
+
+# Example usage
+s = "ababab"
+result = repeating_substring_non_overlapping(s)
+print(f"Longest non-overlapping repeating substring: {result}")
+```
+
+#### **3. Repeating Substring with Maximum Frequency**
+```python
+def repeating_substring_max_frequency(s):
+    # Find the substring with maximum frequency
+    n = len(s)
+    max_frequency = 0
+    result = ""
+    
+    # Check all possible substrings
+    for i in range(n):
+        for j in range(i + 1, n + 1):
+            substring = s[i:j]
+            count = 0
+            
+            # Count occurrences
+            for k in range(n - len(substring) + 1):
+                if s[k:k + len(substring)] == substring:
+                    count += 1
+            
+            # Update result if frequency is higher
+            if count > max_frequency:
+                max_frequency = count
+                result = substring
+    
+    return result, max_frequency
+
+# Example usage
+s = "ababab"
+result, frequency = repeating_substring_max_frequency(s)
+print(f"Substring with max frequency: {result} (frequency: {frequency})")
+```
+
+#### **4. Repeating Substring with Suffix Array**
+```python
+def build_suffix_array(s):
+    # Build suffix array for efficient string analysis
+    n = len(s)
+    suffixes = []
+    
+    for i in range(n):
+        suffixes.append((s[i:], i))
+    
+    suffixes.sort()
+    return [suffix[1] for suffix in suffixes]
+
+def repeating_substring_suffix_array(s):
+    # Find longest repeating substring using suffix array
+    n = len(s)
+    suffix_array = build_suffix_array(s)
+    
+    max_length = 0
+    result = ""
+    
+    # Compare adjacent suffixes
+    for i in range(n - 1):
+        suffix1 = s[suffix_array[i]:]
+        suffix2 = s[suffix_array[i + 1]:]
+        
+        # Find common prefix length
+        common_length = 0
+        min_len = min(len(suffix1), len(suffix2))
+        
+        for j in range(min_len):
+            if suffix1[j] == suffix2[j]:
+                common_length += 1
+            else:
+                break
+        
+        # Update result if common prefix is longer
+        if common_length > max_length:
+            max_length = common_length
+            result = suffix1[:common_length]
+    
+    return result if max_length > 0 else -1
+
+# Example usage
+s = "ababab"
+result = repeating_substring_suffix_array(s)
+print(f"Longest repeating substring (suffix array): {result}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **String Algorithms**: String matching, Pattern matching
+- **Suffix Arrays**: String analysis, String processing
+- **String Compression**: Repetitive patterns, String optimization
+- **String Analysis**: Pattern detection, String statistics
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Suffix arrays** are efficient for string analysis and pattern detection
+- **String matching** can be optimized using various algorithms
+- **Longest common substring** is a fundamental string analysis problem
+- **String analysis** helps identify patterns and repetitions in text
 
 ---
 

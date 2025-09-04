@@ -7,23 +7,26 @@ permalink: /problem_soulutions/string_algorithms/word_combinations_analysis
 
 # Word Combinations
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a string and a list of words, find the number of ways to construct the string by concatenating the words.
 
-### Input
-The first input line has a string s.
-The second input line has an integer n: the number of words.
-Then, there are n lines describing the words.
+This is a dynamic programming problem where we need to count the number of ways to build a target string using a given set of words. We can solve this using dynamic programming with memoization to avoid recalculating the same subproblems.
 
-### Output
-Print one integer: the number of ways to construct the string.
+**Input**: 
+- First line: string s (target string to construct)
+- Second line: integer n (number of words)
+- Next n lines: words that can be used for construction
 
-### Constraints
+**Output**: 
+- Print one integer: the number of ways to construct the string
+
+**Constraints**:
 - 1 ≤ |s| ≤ 5000
 - 1 ≤ n ≤ 100
 - 1 ≤ |word| ≤ 100
 
-### Example
+**Example**:
 ```
 Input:
 ababc
@@ -36,6 +39,13 @@ abc
 Output:
 4
 ```
+
+**Explanation**: 
+The string "ababc" can be constructed in 4 ways:
+1. "ab" + "ab" + "c"
+2. "ab" + "abc"
+3. "ab" + "ab" + "c" (different order)
+4. "abc" + "ab"
 
 ## Solution Progression
 
@@ -557,25 +567,145 @@ def interactive_word_combinations():
 - **Convex Optimization**: Optimization with convex functions
 - **Combinatorial Optimization**: Optimization over discrete structures
 
-### 📚 **Learning Resources**
+## 🔧 Implementation Details
 
-#### **1. Related Algorithms**
-- **Dynamic Programming**: Optimal substructure and overlapping subproblems
-- **String Matching**: KMP, Boyer-Moore, Rabin-Karp algorithms
-- **Data Structures**: Tries, hash sets, trees
-- **Graph Algorithms**: BFS, DFS, shortest path
+### Time and Space Complexity
+- **Time Complexity**: O(n × |s|) for dynamic programming approach
+- **Space Complexity**: O(|s|) for memoization table
+- **Why it works**: Dynamic programming avoids recalculating the same subproblems by storing results in a memoization table
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Counting principles and techniques
-- **Probability Theory**: Probability distributions and expected values
-- **Optimization Theory**: Mathematical optimization principles
-- **Number Theory**: Properties of integers and sequences
+### Key Implementation Points
+- Use dynamic programming with memoization to avoid exponential time complexity
+- For each position in the string, try all possible words that match
+- Store results to avoid recalculating the same subproblems
+- Handle edge cases like empty strings and no valid combinations
 
-#### **3. Programming Concepts**
-- **String Manipulation**: Efficient string operations
-- **Memory Management**: Efficient storage and retrieval
-- **Algorithm Optimization**: Improving algorithm performance
-- **Error Handling**: Dealing with invalid inputs and edge cases
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Dynamic Programming**: Essential for avoiding exponential time complexity
+- **String Matching**: Efficiently check if a word matches at a given position
+- **Memoization**: Store results of subproblems to avoid recalculation
+- **Word Combinations**: Count ways to construct strings using given words
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Word Combinations with Minimum Cost**
+```python
+def word_combinations_minimum_cost(s, words, costs):
+    # Find minimum cost to construct the string
+    n = len(s)
+    dp = [float('inf')] * (n + 1)
+    dp[0] = 0
+    
+    for i in range(n + 1):
+        if dp[i] != float('inf'):
+            for word, cost in zip(words, costs):
+                if i + len(word) <= n and s[i:i+len(word)] == word:
+                    dp[i + len(word)] = min(dp[i + len(word)], dp[i] + cost)
+    
+    return dp[n] if dp[n] != float('inf') else -1
+
+# Example usage
+s = "ababc"
+words = ["ab", "abc", "c"]
+costs = [2, 3, 1]
+result = word_combinations_minimum_cost(s, words, costs)
+print(f"Minimum cost: {result}")
+```
+
+#### **2. Word Combinations with Maximum Length**
+```python
+def word_combinations_maximum_length(s, words):
+    # Find maximum length of constructed string
+    n = len(s)
+    dp = [0] * (n + 1)
+    
+    for i in range(n + 1):
+        if dp[i] > 0 or i == 0:
+            for word in words:
+                if i + len(word) <= n and s[i:i+len(word)] == word:
+                    dp[i + len(word)] = max(dp[i + len(word)], dp[i] + len(word))
+    
+    return max(dp)
+
+# Example usage
+s = "ababc"
+words = ["ab", "abc", "c"]
+result = word_combinations_maximum_length(s, words)
+print(f"Maximum length: {result}")
+```
+
+#### **3. Word Combinations with All Solutions**
+```python
+def word_combinations_all_solutions(s, words):
+    # Find all possible ways to construct the string
+    n = len(s)
+    dp = [[] for _ in range(n + 1)]
+    dp[0] = [[]]  # Empty combination for empty string
+    
+    for i in range(n + 1):
+        if dp[i]:
+            for word in words:
+                if i + len(word) <= n and s[i:i+len(word)] == word:
+                    for combination in dp[i]:
+                        dp[i + len(word)].append(combination + [word])
+    
+    return dp[n]
+
+# Example usage
+s = "ababc"
+words = ["ab", "abc", "c"]
+result = word_combinations_all_solutions(s, words)
+print(f"All solutions: {result}")
+```
+
+#### **4. Word Combinations with Constraints**
+```python
+def word_combinations_with_constraints(s, words, max_words, max_length):
+    # Find combinations with constraints on number of words and total length
+    n = len(s)
+    dp = [[0] * (max_words + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+    
+    for i in range(n + 1):
+        for j in range(max_words + 1):
+            if dp[i][j] > 0:
+                for word in words:
+                    if (i + len(word) <= n and 
+                        j + 1 <= max_words and 
+                        i + len(word) <= max_length and
+                        s[i:i+len(word)] == word):
+                        dp[i + len(word)][j + 1] += dp[i][j]
+    
+    return sum(dp[n])
+
+# Example usage
+s = "ababc"
+words = ["ab", "abc", "c"]
+max_words = 3
+max_length = 10
+result = word_combinations_with_constraints(s, words, max_words, max_length)
+print(f"Combinations with constraints: {result}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **String Algorithms**: String matching, Pattern matching
+- **Dynamic Programming**: Coin change, Subset sum
+- **Combinatorics**: Counting problems, Permutations
+- **String Construction**: String building, Word formation
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Dynamic programming** is essential for avoiding exponential time complexity
+- **String matching** can be optimized using efficient algorithms
+- **Memoization** helps avoid recalculating the same subproblems
+- **Word combinations** is a fundamental string construction problem
 
 ---
 

@@ -7,19 +7,22 @@ permalink: /problem_soulutions/string_algorithms/minimal_rotation_analysis
 
 # Minimal Rotation
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a string, find the lexicographically smallest rotation of the string.
 
-### Input
-The first input line has a string s.
+This is a string algorithm problem where we need to find the lexicographically smallest rotation of a given string. A rotation is obtained by moving characters from the beginning to the end. We can solve this efficiently using Booth's algorithm or by comparing all rotations.
 
-### Output
-Print the lexicographically smallest rotation of the string.
+**Input**: 
+- First line: string s (the input string)
 
-### Constraints
-- 1 ≤ |s| ≤ 10^6
+**Output**: 
+- Print the lexicographically smallest rotation of the string
 
-### Example
+**Constraints**:
+- 1 ≤ |s| ≤ 10⁶
+
+**Example**:
 ```
 Input:
 baabaa
@@ -27,6 +30,17 @@ baabaa
 Output:
 aabaab
 ```
+
+**Explanation**: 
+The rotations of "baabaa" are:
+1. "baabaa" (original)
+2. "aabaa" + "b" = "aabaab" (rotate left by 1)
+3. "abaa" + "ba" = "abaaba" (rotate left by 2)
+4. "baa" + "aab" = "baaaab" (rotate left by 3)
+5. "aa" + "baab" = "aabaab" (rotate left by 4)
+6. "a" + "baaba" = "abaaba" (rotate left by 5)
+
+The lexicographically smallest is "aabaab".
 
 ## Solution Progression
 
@@ -553,25 +567,201 @@ def interactive_minimal_rotation():
 - **String Complexity**: Complexity measures for strings
 - **String Transformations**: Mathematical transformations
 
-### 📚 **Learning Resources**
+## 🔧 Implementation Details
 
-#### **1. Related Algorithms**
-- **String Algorithms**: KMP, Boyer-Moore, Rabin-Karp
-- **Suffix Structures**: Suffix arrays, suffix trees, suffix automata
-- **Sorting Algorithms**: Comparison-based and linear sorting
-- **Search Algorithms**: Binary search, linear search
+### Time and Space Complexity
+- **Time Complexity**: O(|s|) for Booth's algorithm, O(|s|²) for naive approach
+- **Space Complexity**: O(|s|) for storing the string
+- **Why it works**: Booth's algorithm efficiently finds the lexicographically smallest rotation by comparing rotations in linear time
 
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Counting, permutations, combinations
-- **Group Theory**: Groups, subgroups, group actions
-- **Order Theory**: Partial orders, total orders, lattices
-- **Number Theory**: Properties of integers and sequences
+### Key Implementation Points
+- Use Booth's algorithm for optimal O(|s|) time complexity
+- Compare rotations efficiently without generating all of them
+- Handle edge cases like single character strings
+- Use string concatenation to simulate rotations
 
-#### **3. Programming Concepts**
-- **String Manipulation**: Efficient string operations
-- **Algorithm Design**: Systematic approach to problem solving
-- **Complexity Analysis**: Time and space complexity
-- **Optimization Techniques**: Improving algorithm performance
+## 🎯 Key Insights
+
+### Important Concepts and Patterns
+- **Booth's Algorithm**: Efficient algorithm for finding lexicographically smallest rotation
+- **String Rotation**: Moving characters from beginning to end
+- **Lexicographic Order**: Dictionary order comparison of strings
+- **String Comparison**: Efficient comparison of rotated strings
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Minimal Rotation with Index**
+```python
+def minimal_rotation_with_index(s):
+    # Find the lexicographically smallest rotation and its index
+    n = len(s)
+    if n == 0:
+        return "", 0
+    
+    # Booth's algorithm
+    s_doubled = s + s
+    i = 0
+    j = 1
+    
+    while j < n:
+        k = 0
+        while k < n and s_doubled[i + k] == s_doubled[j + k]:
+            k += 1
+        
+        if s_doubled[i + k] > s_doubled[j + k]:
+            i = j
+            j = i + 1
+        else:
+            j += k + 1
+    
+    return s[i:] + s[:i], i
+
+# Example usage
+s = "baabaa"
+rotation, index = minimal_rotation_with_index(s)
+print(f"Minimal rotation: {rotation} at index {index}")
+```
+
+#### **2. Minimal Rotation with All Indices**
+```python
+def minimal_rotation_all_indices(s):
+    # Find all indices that produce the lexicographically smallest rotation
+    n = len(s)
+    if n == 0:
+        return []
+    
+    # Find the minimal rotation
+    s_doubled = s + s
+    i = 0
+    j = 1
+    
+    while j < n:
+        k = 0
+        while k < n and s_doubled[i + k] == s_doubled[j + k]:
+            k += 1
+        
+        if s_doubled[i + k] > s_doubled[j + k]:
+            i = j
+            j = i + 1
+        else:
+            j += k + 1
+    
+    # Find all indices that produce the same minimal rotation
+    minimal_rotation = s[i:] + s[:i]
+    indices = []
+    
+    for j in range(n):
+        rotation = s[j:] + s[:j]
+        if rotation == minimal_rotation:
+            indices.append(j)
+    
+    return minimal_rotation, indices
+
+# Example usage
+s = "baabaa"
+rotation, indices = minimal_rotation_all_indices(s)
+print(f"Minimal rotation: {rotation}")
+print(f"Indices: {indices}")
+```
+
+#### **3. Minimal Rotation with Custom Comparison**
+```python
+def minimal_rotation_custom_comparison(s, compare_func):
+    # Find minimal rotation with custom comparison function
+    n = len(s)
+    if n == 0:
+        return ""
+    
+    s_doubled = s + s
+    i = 0
+    j = 1
+    
+    while j < n:
+        k = 0
+        while k < n and s_doubled[i + k] == s_doubled[j + k]:
+            k += 1
+        
+        if compare_func(s_doubled[i + k], s_doubled[j + k]) > 0:
+            i = j
+            j = i + 1
+        else:
+            j += k + 1
+    
+    return s[i:] + s[:i]
+
+# Example usage
+s = "baabaa"
+
+# Standard lexicographic comparison
+def standard_compare(a, b):
+    return 1 if a > b else -1 if a < b else 0
+
+# Reverse lexicographic comparison
+def reverse_compare(a, b):
+    return 1 if a < b else -1 if a > b else 0
+
+standard_rotation = minimal_rotation_custom_comparison(s, standard_compare)
+reverse_rotation = minimal_rotation_custom_comparison(s, reverse_compare)
+
+print(f"Standard minimal rotation: {standard_rotation}")
+print(f"Reverse minimal rotation: {reverse_rotation}")
+```
+
+#### **4. Minimal Rotation with Multiple Strings**
+```python
+def minimal_rotation_multiple_strings(strings):
+    # Find minimal rotation for multiple strings
+    results = {}
+    
+    for s in strings:
+        n = len(s)
+        if n == 0:
+            results[s] = ""
+            continue
+        
+        s_doubled = s + s
+        i = 0
+        j = 1
+        
+        while j < n:
+            k = 0
+            while k < n and s_doubled[i + k] == s_doubled[j + k]:
+                k += 1
+            
+            if s_doubled[i + k] > s_doubled[j + k]:
+                i = j
+                j = i + 1
+            else:
+                j += k + 1
+        
+        results[s] = s[i:] + s[:i]
+    
+    return results
+
+# Example usage
+strings = ["baabaa", "abcabc", "defdef", "xyzxyz"]
+results = minimal_rotation_multiple_strings(strings)
+for s, rotation in results.items():
+    print(f"String '{s}' -> Minimal rotation: {rotation}")
+```
+
+## 🔗 Related Problems
+
+### Links to Similar Problems
+- **String Algorithms**: String matching, Pattern matching
+- **Lexicographic Order**: String sorting, String comparison
+- **String Rotation**: Circular strings, String transformations
+- **Booth's Algorithm**: String rotation, Lexicographic ordering
+
+## 📚 Learning Points
+
+### Key Takeaways
+- **Booth's algorithm** is the most efficient way to find lexicographically smallest rotation
+- **String rotation** is a fundamental string transformation operation
+- **Lexicographic order** is essential for string comparison and sorting
+- **String comparison** can be optimized using efficient algorithms
 
 ---
 
