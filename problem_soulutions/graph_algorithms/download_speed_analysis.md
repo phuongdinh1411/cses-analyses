@@ -266,6 +266,138 @@ print(result)
 | Ford-Fulkerson | O(n * m * max_flow) | O(n²) | Use Ford-Fulkerson for maximum flow |
 | Optimized Ford-Fulkerson | O(n * m * max_flow) | O(n²) | Optimized Ford-Fulkerson implementation |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 computers, 5 connections:
+Connection 1: 1 → 2 (capacity: 3)
+Connection 2: 2 → 3 (capacity: 2)
+Connection 3: 3 → 4 (capacity: 3)
+Connection 4: 1 → 3 (capacity: 1)
+Connection 5: 2 → 4 (capacity: 2)
+```
+
+### Network Graph Visualization
+```
+Computers: 1, 2, 3, 4
+Connections with capacities:
+
+    1 ──3──→ 2
+    │        │
+    │1       │2
+    ↓        ↓
+    3 ──3──→ 4
+    │
+    │2
+    ↓
+    4
+
+Source: Computer 1
+Sink: Computer 4
+```
+
+### Ford-Fulkerson Algorithm Process
+```
+Step 1: Find augmenting path 1 → 2 → 3 → 4
+- Path: 1 → 2 → 3 → 4
+- Bottleneck: min(3, 2, 3) = 2
+- Send flow: 2
+- Update residual capacities
+- Total flow: 2
+
+Residual graph after step 1:
+    1 ──1──→ 2
+    │        │
+    │1       │0
+    ↓        ↓
+    3 ──3──→ 4
+    │
+    │2
+    ↓
+    4
+
+Step 2: Find augmenting path 1 → 3 → 4
+- Path: 1 → 3 → 4
+- Bottleneck: min(1, 3) = 1
+- Send flow: 1
+- Update residual capacities
+- Total flow: 3
+
+Residual graph after step 2:
+    1 ──1──→ 2
+    │        │
+    │0       │0
+    ↓        ↓
+    3 ──2──→ 4
+    │
+    │2
+    ↓
+    4
+
+Step 3: Find augmenting path 1 → 2 → 4
+- Path: 1 → 2 → 4
+- Bottleneck: min(1, 2) = 1
+- Send flow: 1
+- Update residual capacities
+- Total flow: 4
+
+Residual graph after step 3:
+    1 ──0──→ 2
+    │        │
+    │0       │0
+    ↓        ↓
+    3 ──2──→ 4
+    │
+    │1
+    ↓
+    4
+
+Step 4: Find augmenting path 1 → 2 → 3 → 4
+- Path: 1 → 2 → 3 → 4
+- Bottleneck: min(0, 0, 2) = 0
+- No flow possible
+
+No more augmenting paths found.
+Maximum flow: 4
+```
+
+### Flow Paths Summary
+```
+Path 1: 1 → 2 → 3 → 4 (flow: 2)
+Path 2: 1 → 3 → 4 (flow: 1)
+Path 3: 1 → 2 → 4 (flow: 1)
+
+Total maximum flow: 2 + 1 + 1 = 4
+```
+
+### Residual Graph Concept
+```
+For each edge (u, v) with capacity c and flow f:
+- Forward edge: (u, v) with residual capacity c - f
+- Backward edge: (v, u) with residual capacity f
+
+Example edge 1 → 2 with capacity 3:
+- If flow = 2: forward edge (1,2) has capacity 1, backward edge (2,1) has capacity 2
+- If flow = 3: forward edge (1,2) has capacity 0, backward edge (2,1) has capacity 3
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Ford-Fulkerson  │ O(n×m×f)     │ O(n²)        │ Augmenting   │
+│                 │              │              │ paths        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Edmonds-Karp    │ O(n×m²)      │ O(n²)        │ BFS for      │
+│                 │              │              │ shortest path│
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Dinic's         │ O(n²×m)      │ O(n²)        │ Level graph  │
+│                 │              │              │ + blocking   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

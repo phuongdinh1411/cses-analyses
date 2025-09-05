@@ -250,6 +250,124 @@ print(result)
 | 2-SAT with Kosaraju's | O(n + m) | O(n + m) | Use 2-SAT reduction to SCC |
 | Optimized 2-SAT | O(n + m) | O(n + m) | Optimized 2-SAT implementation |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+3 people, 3 toppings:
+Person 1: likes topping 1, dislikes topping 2
+Person 2: likes topping 2, dislikes topping 3
+Person 3: likes topping 3, dislikes topping 1
+```
+
+### Logical Constraints
+```
+Person 1: likes 1, dislikes 2
+- If topping 2 is included, then topping 1 must be included
+- Implication: ¬2 → 1 (if not 2, then 1)
+- Equivalent: 2 ∨ 1
+
+Person 2: likes 2, dislikes 3
+- If topping 3 is included, then topping 2 must be included
+- Implication: ¬3 → 2 (if not 3, then 2)
+- Equivalent: 3 ∨ 2
+
+Person 3: likes 3, dislikes 1
+- If topping 1 is included, then topping 3 must be included
+- Implication: ¬1 → 3 (if not 1, then 3)
+- Equivalent: 1 ∨ 3
+```
+
+### Implication Graph
+```
+Variables: 1, 2, 3 (toppings)
+Negations: ¬1, ¬2, ¬3
+
+Implication graph:
+¬2 → 1    (if not 2, then 1)
+¬3 → 2    (if not 3, then 2)
+¬1 → 3    (if not 1, then 3)
+
+Graph edges:
+¬2 ──→ 1
+¬3 ──→ 2
+¬1 ──→ 3
+
+Also add contrapositives:
+¬1 ──→ 3
+¬2 ──→ 1
+¬3 ──→ 2
+```
+
+### 2-SAT Reduction
+```
+Original clauses:
+- (2 ∨ 1)
+- (3 ∨ 2)
+- (1 ∨ 3)
+
+Convert to implications:
+- (2 ∨ 1) → (¬2 → 1) and (¬1 → 2)
+- (3 ∨ 2) → (¬3 → 2) and (¬2 → 3)
+- (1 ∨ 3) → (¬1 → 3) and (¬3 → 1)
+
+Implication graph:
+¬2 → 1, ¬1 → 2
+¬3 → 2, ¬2 → 3
+¬1 → 3, ¬3 → 1
+```
+
+### Strongly Connected Components
+```
+SCC Analysis:
+- SCC 1: {1, 2, 3} (all connected)
+- SCC 2: {¬1, ¬2, ¬3} (all connected)
+
+Check for conflicts:
+- If 1 and ¬1 are in the same SCC → UNSATISFIABLE
+- If 2 and ¬2 are in the same SCC → UNSATISFIABLE
+- If 3 and ¬3 are in the same SCC → UNSATISFIABLE
+
+In this case: No conflicts → SATISFIABLE
+```
+
+### Solution Construction
+```
+Topological order of SCCs:
+1. SCC 2: {¬1, ¬2, ¬3}
+2. SCC 1: {1, 2, 3}
+
+Assignment:
+- Process SCC 2 first: assign all to false
+- Process SCC 1: assign all to true
+
+Final assignment:
+- Topping 1: true (include)
+- Topping 2: true (include)
+- Topping 3: true (include)
+
+Verification:
+- Person 1: likes 1 ✓, dislikes 2 ✗ (but 1 is included, so satisfied)
+- Person 2: likes 2 ✓, dislikes 3 ✗ (but 2 is included, so satisfied)
+- Person 3: likes 3 ✓, dislikes 1 ✗ (but 3 is included, so satisfied)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ 2-SAT with SCC  │ O(n + m)     │ O(n + m)     │ Implication  │
+│                 │              │              │ graph        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Kosaraju's      │ O(n + m)     │ O(n + m)     │ Two DFS      │
+│                 │              │              │ traversals   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Tarjan's        │ O(n + m)     │ O(n + m)     │ Single DFS   │
+│                 │              │              │ with stack   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

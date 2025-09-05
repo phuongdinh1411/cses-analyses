@@ -324,6 +324,108 @@ print(result)
 | Bipartite Matching via Max Flow | O(n * m * max_flow) | O((n+m)²) | Use max flow for bipartite matching |
 | Optimized Bipartite Matching | O(n * m * max_flow) | O((n+m)²) | Optimized max flow implementation |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+3 boys, 3 girls:
+Boy 1 can dance with: girls 1, 2
+Boy 2 can dance with: girls 2, 3
+Boy 3 can dance with: girls 1, 3
+```
+
+### Bipartite Graph Visualization
+```
+Boys: 1, 2, 3
+Girls: 1, 2, 3
+
+    1 ──── 1
+    │      │
+    │      │
+    2 ──── 2
+    │      │
+    │      │
+    3 ──── 3
+
+Edges: (1,1), (1,2), (2,2), (2,3), (3,1), (3,3)
+```
+
+### Maximum Flow Network
+```
+Add source (S) and sink (T):
+
+    S ──1──→ 1 ──── 1 ──1──→ T
+    │        │      │
+    │        │      │
+    └─1──→ 2 ──── 2 ──1──→ T
+    │        │      │
+    │        │      │
+    └─1──→ 3 ──── 3 ──1──→ T
+
+All edges from source to boys: capacity 1
+All edges from girls to sink: capacity 1
+All boy-girl edges: capacity 1
+```
+
+### Ford-Fulkerson Algorithm Process
+```
+Step 1: Find augmenting path S → 1 → 1 → T
+- Flow: min(1, 1, 1) = 1
+- Update residual capacities
+- Total flow: 1
+
+Step 2: Find augmenting path S → 2 → 2 → T
+- Flow: min(1, 1, 1) = 1
+- Update residual capacities
+- Total flow: 2
+
+Step 3: Find augmenting path S → 3 → 3 → T
+- Flow: min(1, 1, 1) = 1
+- Update residual capacities
+- Total flow: 3
+
+No more augmenting paths found.
+Maximum flow: 3
+```
+
+### Matching Reconstruction
+```
+From the final flow:
+- Boy 1 → Girl 1 (flow = 1)
+- Boy 2 → Girl 2 (flow = 1)
+- Boy 3 → Girl 3 (flow = 1)
+
+Maximum matching: 3 pairs
+(1,1), (2,2), (3,3)
+```
+
+### Alternative Matching
+```
+Another valid maximum matching:
+- Boy 1 → Girl 2 (flow = 1)
+- Boy 2 → Girl 3 (flow = 1)
+- Boy 3 → Girl 1 (flow = 1)
+
+Maximum matching: 3 pairs
+(1,2), (2,3), (3,1)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Ford-Fulkerson  │ O(n×m×f)     │ O(n²)        │ Augmenting   │
+│                 │              │              │ paths        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Hopcroft-Karp   │ O(n×m^0.5)   │ O(n+m)       │ BFS + DFS    │
+│                 │              │              │ layers       │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Hungarian       │ O(n³)        │ O(n²)        │ Assignment   │
+│                 │              │              │ problem      │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns
