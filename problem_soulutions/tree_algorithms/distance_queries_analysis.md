@@ -47,6 +47,77 @@ Output:
 - Query 2: Distance between nodes 1 and 5 = 2 (path: 1-3-5)
 - Query 3: Distance between nodes 2 and 5 = 3 (path: 2-1-3-5)
 
+## 🎯 Visual Example
+
+### Input
+```
+n = 5, q = 3
+Edges: [(1,2), (1,3), (3,4), (3,5)]
+Queries: [(2,4), (1,5), (2,5)]
+```
+
+### Tree Structure
+```
+Node 1
+├── Node 2
+└── Node 3
+    ├── Node 4
+    └── Node 5
+
+Tree representation:
+    1
+   / \
+  2   3
+     / \
+    4   5
+```
+
+### Distance Query Processing
+```
+Query 1: Distance between nodes 2 and 4
+- Path: 2 → 1 → 3 → 4
+- Distance: 3
+- Result: 3
+
+Query 2: Distance between nodes 1 and 5
+- Path: 1 → 3 → 5
+- Distance: 2
+- Result: 2
+
+Query 3: Distance between nodes 2 and 5
+- Path: 2 → 1 → 3 → 5
+- Distance: 3
+- Result: 3
+```
+
+### LCA-based Distance Calculation
+```
+Distance formula: dist(a,b) = depth[a] + depth[b] - 2*depth[LCA(a,b)]
+
+Query 1: dist(2,4)
+- depth[2] = 1, depth[4] = 2
+- LCA(2,4) = 1, depth[1] = 0
+- dist(2,4) = 1 + 2 - 2*0 = 3
+
+Query 2: dist(1,5)
+- depth[1] = 0, depth[5] = 2
+- LCA(1,5) = 1, depth[1] = 0
+- dist(1,5) = 0 + 2 - 2*0 = 2
+
+Query 3: dist(2,5)
+- depth[2] = 1, depth[5] = 2
+- LCA(2,5) = 1, depth[1] = 0
+- dist(2,5) = 1 + 2 - 2*0 = 3
+```
+
+### Key Insight
+Tree distance calculation works by:
+1. Using LCA to find the lowest common ancestor
+2. Calculating distance using depth information
+3. Formula: dist(a,b) = depth[a] + depth[b] - 2*depth[LCA(a,b)]
+4. Time complexity: O(log n) per query after O(n log n) preprocessing
+5. Space complexity: O(n log n) for binary lifting table
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

@@ -46,6 +46,73 @@ Output:
 - Query 2: Employees 2 levels below employee 1 = employees 4, 5 (2 employees)
 - Query 3: Employees 1 level below employee 2 = employees 4, 5 (2 employees)
 
+## 🎯 Visual Example
+
+### Input
+```
+n = 5, q = 3
+Superiors: [1, 1, 2, 2]
+Queries: [(1, 1), (1, 2), (2, 1)]
+```
+
+### Tree Structure
+```
+Employee 1 (CEO)
+├── Employee 2
+│   ├── Employee 3
+│   └── Employee 4
+└── Employee 5
+
+Tree representation:
+    1
+   / \
+  2   5
+ / \
+3   4
+```
+
+### Level-based Query Processing
+```
+Query 1: Employees 1 level below employee 1
+- Level 0: Employee 1
+- Level 1: Employees 2, 5
+- Count: 2
+- Result: 2
+
+Query 2: Employees 2 levels below employee 1
+- Level 0: Employee 1
+- Level 1: Employees 2, 5
+- Level 2: Employees 3, 4
+- Count: 2
+- Result: 2
+
+Query 3: Employees 1 level below employee 2
+- Level 0: Employee 2
+- Level 1: Employees 3, 4
+- Count: 2
+- Result: 2
+```
+
+### BFS Level Calculation
+```
+BFS from employee 1:
+Level 0: [1]
+Level 1: [2, 5]
+Level 2: [3, 4]
+
+BFS from employee 2:
+Level 0: [2]
+Level 1: [3, 4]
+```
+
+### Key Insight
+Level-based queries work by:
+1. Using BFS to traverse the tree level by level
+2. Counting nodes at the specified level
+3. Handling multiple queries efficiently
+4. Time complexity: O(n) per query in worst case
+5. Space complexity: O(n) for BFS queue
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

@@ -46,6 +46,75 @@ Output:
 - Query 2: 2nd superior of employee 2 = -1 (doesn't exist)
 - Query 3: 1st superior of employee 5 = 2
 
+## 🎯 Visual Example
+
+### Input
+```
+n = 5, q = 3
+Superiors: [1, 1, 2, 2]
+Queries: [(2, 1), (2, 2), (5, 1)]
+```
+
+### Tree Structure
+```
+Employee 1 (CEO)
+├── Employee 2
+│   ├── Employee 3
+│   └── Employee 4
+└── Employee 5
+
+Tree representation:
+    1
+   / \
+  2   5
+ / \
+3   4
+```
+
+### Query Processing
+```
+Query 1: Find 1st superior of employee 2
+- Employee 2 → 1st superior = 1
+- Result: 1
+
+Query 2: Find 2nd superior of employee 2
+- Employee 2 → 1st superior = 1
+- Employee 1 → 2nd superior = -1 (no superior)
+- Result: -1
+
+Query 3: Find 1st superior of employee 5
+- Employee 5 → 1st superior = 2
+- Result: 2
+```
+
+### Binary Lifting Visualization
+```
+For each node, precompute ancestors at powers of 2:
+- up[node][0] = direct parent
+- up[node][1] = 2nd ancestor (grandparent)
+- up[node][2] = 4th ancestor
+- up[node][3] = 8th ancestor
+- ...
+
+Example for node 4:
+- up[4][0] = 2 (direct parent)
+- up[4][1] = 1 (2nd ancestor)
+- up[4][2] = -1 (4th ancestor doesn't exist)
+
+To find k-th ancestor:
+- Express k in binary
+- Jump using powers of 2
+- Example: k=5 = 4+1, so jump 4 levels then 1 level
+```
+
+### Key Insight
+Binary lifting technique works by:
+1. Precomputing ancestors at powers of 2 for each node
+2. Expressing k in binary representation
+3. Jumping through ancestors using powers of 2
+4. Time complexity: O(log n) per query after O(n log n) preprocessing
+5. Space complexity: O(n log n) for storing ancestors
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

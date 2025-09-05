@@ -41,6 +41,71 @@ Output:
 - Longest path: 2 → 1 → 3 → 4 (or 2 → 1 → 3 → 5)
 - Diameter: 3 edges (length 3)
 
+## 🎯 Visual Example
+
+### Input
+```
+n = 5
+Edges: [(1,2), (1,3), (3,4), (3,5)]
+```
+
+### Tree Structure
+```
+Node 1
+├── Node 2
+└── Node 3
+    ├── Node 4
+    └── Node 5
+
+Tree representation:
+    1
+   / \
+  2   3
+     / \
+    4   5
+```
+
+### Diameter Calculation
+```
+Two DFS approach:
+
+Step 1: First DFS from node 1
+- Find farthest node from 1: node 4 (distance 2)
+- Path: 1 → 3 → 4
+
+Step 2: Second DFS from node 4
+- Find farthest node from 4: node 2 (distance 3)
+- Path: 4 → 3 → 1 → 2
+
+Diameter: 3 edges (longest path)
+```
+
+### All Possible Paths
+```
+All paths in the tree:
+1. 1-2 (length 1)
+2. 1-3 (length 1)
+3. 3-4 (length 1)
+4. 3-5 (length 1)
+5. 1-3-4 (length 2)
+6. 1-3-5 (length 2)
+7. 2-1-3 (length 2)
+8. 2-1-3-4 (length 3) ← Longest
+9. 2-1-3-5 (length 3) ← Longest
+10. 4-3-5 (length 2)
+
+Longest paths: 2-1-3-4 and 2-1-3-5 (length 3)
+```
+
+### Key Insight
+Tree diameter calculation works by:
+1. Using two DFS traversals
+2. First DFS: find farthest node from any starting node
+3. Second DFS: find farthest node from the first farthest node
+4. Distance between these two nodes is the diameter
+5. Time complexity: O(n) for two DFS traversals
+6. Space complexity: O(n) for recursion stack
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

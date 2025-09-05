@@ -8,6 +8,47 @@ permalink: /problem_soulutions/tree_algorithms/summary
 
 Welcome to the Tree Algorithms section! This category covers algorithms and techniques for working with tree data structures.
 
+## 🎯 Visual Example
+
+### Tree Algorithm Techniques Overview
+```
+1. Tree Traversal:
+   Tree:    1
+          / \
+         2   3
+        / \
+       4   5
+   
+   DFS: 1 → 2 → 4 → 5 → 3
+   BFS: 1 → 2 → 3 → 4 → 5
+
+2. Subtree Operations:
+   Subtree of 2: {2, 4, 5}
+   Size: 3 nodes
+   Sum: 2 + 4 + 5 = 11
+
+3. Path Queries:
+   Path 1-4: 1 → 2 → 4
+   Distance: 2 edges
+   Sum: 1 + 2 + 4 = 7
+
+4. LCA Queries:
+   LCA(4,5) = 2
+   LCA(2,3) = 1
+```
+
+### Algorithm Complexity Comparison
+```
+Algorithm          | Time    | Space   | Use Case
+-------------------|---------|---------|------------------
+DFS                | O(n)    | O(h)    | Tree traversal
+BFS                | O(n)    | O(w)    | Level traversal
+LCA (Binary Lift)  | O(log n)| O(n log n)| Ancestor queries
+Euler Tour         | O(n)    | O(n)    | Subtree queries
+Tree DP            | O(n)    | O(n)    | Tree optimization
+Rerooting          | O(n)    | O(n)    | All-node queries
+```
+
 ## Key Concepts & Techniques
 
 ### Tree Properties & Representation

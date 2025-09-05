@@ -43,6 +43,88 @@ Output:
 - Node 4: max distance = 3 (to node 2)
 - Node 5: max distance = 3 (to node 2)
 
+## 🎯 Visual Example
+
+### Input
+```
+n = 5
+Edges: [(1,2), (1,3), (3,4), (3,5)]
+```
+
+### Tree Structure
+```
+Node 1
+├── Node 2
+└── Node 3
+    ├── Node 4
+    └── Node 5
+
+Tree representation:
+    1
+   / \
+  2   3
+     / \
+    4   5
+```
+
+### Maximum Distance Calculation
+```
+For each node, find the farthest node:
+
+Node 1: Maximum distance = 2
+- Distance to 2: 1
+- Distance to 3: 1
+- Distance to 4: 2 (path: 1 → 3 → 4)
+- Distance to 5: 2 (path: 1 → 3 → 5)
+- Maximum: 2
+
+Node 2: Maximum distance = 3
+- Distance to 1: 1
+- Distance to 3: 2 (path: 2 → 1 → 3)
+- Distance to 4: 3 (path: 2 → 1 → 3 → 4)
+- Distance to 5: 3 (path: 2 → 1 → 3 → 5)
+- Maximum: 3
+
+Node 3: Maximum distance = 2
+- Distance to 1: 1
+- Distance to 2: 2 (path: 3 → 1 → 2)
+- Distance to 4: 1
+- Distance to 5: 1
+- Maximum: 2
+
+Node 4: Maximum distance = 3
+- Distance to 1: 2 (path: 4 → 3 → 1)
+- Distance to 2: 3 (path: 4 → 3 → 1 → 2)
+- Distance to 3: 1
+- Distance to 5: 2 (path: 4 → 3 → 5)
+- Maximum: 3
+
+Node 5: Maximum distance = 3
+- Distance to 1: 2 (path: 5 → 3 → 1)
+- Distance to 2: 3 (path: 5 → 3 → 1 → 2)
+- Distance to 3: 1
+- Distance to 4: 2 (path: 5 → 3 → 4)
+- Maximum: 3
+```
+
+### Dynamic Programming Approach
+```
+Two DFS passes:
+1. First DFS: Calculate distances from each node to its subtree
+2. Second DFS: Calculate distances from each node to the rest of the tree
+
+For each node, maximum distance = max(distance_to_subtree, distance_to_rest)
+```
+
+### Key Insight
+Maximum distance calculation works by:
+1. Using two DFS traversals
+2. First DFS: calculate distances within subtrees
+3. Second DFS: calculate distances to the rest of the tree
+4. For each node, take the maximum of both distances
+5. Time complexity: O(n) for two DFS traversals
+6. Space complexity: O(n) for recursion stack
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

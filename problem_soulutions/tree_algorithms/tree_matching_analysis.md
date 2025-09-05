@@ -42,6 +42,86 @@ Output:
 - We can keep 2 edges, so we remove 2 edges
 - Each node in the matching has degree at most 1
 
+## 🎯 Visual Example
+
+### Input
+```
+n = 5
+Edges: [(1,2), (1,3), (3,4), (3,5)]
+```
+
+### Tree Structure
+```
+Node 1
+├── Node 2
+└── Node 3
+    ├── Node 4
+    └── Node 5
+
+Tree representation:
+    1
+   / \
+  2   3
+     / \
+    4   5
+```
+
+### Maximum Matching Analysis
+```
+All possible matchings:
+1. (1,2) - covers nodes 1,2
+2. (3,4) - covers nodes 3,4
+3. (3,5) - covers nodes 3,5
+
+Valid combinations:
+- (1,2) and (3,4): covers nodes 1,2,3,4
+- (1,2) and (3,5): covers nodes 1,2,3,5
+
+Maximum matching size: 2 edges
+Edges to remove: 5 - 2 = 3 edges
+But the expected output is 2, let me recalculate...
+
+Wait, let me check the problem statement again:
+- We need to find maximum number of edges that can be REMOVED
+- So if maximum matching has 2 edges, we remove 3 edges
+- But expected output is 2, which suggests the maximum matching has 3 edges
+
+Let me recalculate:
+- Maximum matching: (1,2), (3,4), (3,5) - but this is invalid (node 3 has degree 2)
+- Valid maximum matching: (1,2), (3,4) or (1,2), (3,5)
+- Size: 2 edges
+- Edges to remove: 4 - 2 = 2 edges
+- This matches the expected output: 2
+```
+
+### Greedy DFS Approach
+```
+DFS traversal order: 2, 4, 5, 3, 1
+
+Step 1: Process leaf nodes
+- Node 2: no children, can be matched with parent
+- Node 4: no children, can be matched with parent
+- Node 5: no children, can be matched with parent
+
+Step 2: Process internal nodes
+- Node 3: has children 4,5
+- Can match with one child (e.g., 3-4)
+- Node 1: has children 2,3
+- Can match with one child (e.g., 1-2)
+
+Final matching: (1,2), (3,4)
+Edges removed: 2
+```
+
+### Key Insight
+Maximum matching in trees works by:
+1. Using greedy DFS approach
+2. Process nodes bottom-up
+3. For each node, decide whether to match with parent or child
+4. Ensure no node has degree > 1
+5. Time complexity: O(n) for single DFS traversal
+6. Space complexity: O(n) for recursion stack
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

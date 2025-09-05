@@ -50,6 +50,73 @@ Output:
 - Query 2: Subtree of node 2 contains colors {2, 1, 3} → 3 distinct colors (but output shows 2, need to verify)
 - Query 3: Subtree of node 3 contains color {1} → 1 distinct color
 
+## 🎯 Visual Example
+
+### Input
+```
+n = 5, q = 3
+Colors: [1, 2, 1, 3, 2]
+Edges: [(1,2), (1,3), (2,4), (2,5)]
+Queries: [1, 2, 3]
+```
+
+### Tree Structure
+```
+Node 1 (color 1)
+├── Node 2 (color 2)
+│   ├── Node 4 (color 3)
+│   └── Node 5 (color 2)
+└── Node 3 (color 1)
+
+Tree representation:
+    1(1)
+   / \
+  2(2) 3(1)
+ / \
+4(3) 5(2)
+```
+
+### Subtree Color Analysis
+```
+Query 1: Distinct colors in subtree of node 1
+- Subtree of 1: {1(1), 2(2), 3(1), 4(3), 5(2)}
+- Colors: {1, 2, 1, 3, 2}
+- Distinct colors: {1, 2, 3}
+- Count: 3
+- Result: 3
+
+Query 2: Distinct colors in subtree of node 2
+- Subtree of 2: {2(2), 4(3), 5(2)}
+- Colors: {2, 3, 2}
+- Distinct colors: {2, 3}
+- Count: 2
+- Result: 2
+
+Query 3: Distinct colors in subtree of node 3
+- Subtree of 3: {3(1)}
+- Colors: {1}
+- Distinct colors: {1}
+- Count: 1
+- Result: 1
+```
+
+### Euler Tour Technique
+```
+Euler Tour: [1, 2, 4, 4, 5, 5, 2, 3, 3, 1]
+Entry times: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Exit times:  [9, 6, 3, 3, 5, 5, 6, 8, 8, 9]
+
+Subtree queries become range queries on the Euler Tour array.
+```
+
+### Key Insight
+Distinct values in subtree queries work by:
+1. Using Euler Tour to flatten the tree
+2. Converting subtree queries to range queries
+3. Using segment trees or binary indexed trees for range queries
+4. Time complexity: O(log n) per query after O(n log n) preprocessing
+5. Space complexity: O(n) for Euler Tour array
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

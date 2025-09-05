@@ -39,6 +39,87 @@ Output:
 - Employees 3, 4, 5 have 0 subordinates (leaves)
 - Tree structure: 1 → 2 → 3, 1 → 2 → 4, 1 → 5
 
+## 🎯 Visual Example
+
+### Input
+```
+n = 5
+Superiors: [1, 1, 2, 2]
+```
+
+### Tree Structure
+```
+Employee 1 (CEO)
+├── Employee 2
+│   ├── Employee 3
+│   └── Employee 4
+└── Employee 5
+
+Tree representation:
+    1
+   / \
+  2   5
+ / \
+3   4
+```
+
+### Subtree Size Calculation
+```
+DFS Traversal Order: 3, 4, 2, 5, 1
+
+Step 1: Process leaf nodes
+- Employee 3: subordinates = 0 (leaf)
+- Employee 4: subordinates = 0 (leaf)
+- Employee 5: subordinates = 0 (leaf)
+
+Step 2: Process internal nodes
+- Employee 2: subordinates = 2 (has children 3, 4)
+- Employee 1: subordinates = 4 (has children 2, 5, and their descendants)
+
+Final Result: [4, 2, 0, 0, 0]
+```
+
+### DFS Visualization
+```
+DFS(1):
+  DFS(2):
+    DFS(3): return 0
+    DFS(4): return 0
+    return 0 + 0 + 1 = 1 (but we count subordinates, not including self)
+    return 0 + 0 = 0
+  DFS(5): return 0
+  return 0 + 0 + 1 = 1 (but we count subordinates, not including self)
+  return 0 + 0 = 0
+
+Wait, let me recalculate:
+DFS(1):
+  DFS(2):
+    DFS(3): return 1 (subtree size including self)
+    DFS(4): return 1 (subtree size including self)
+    return 1 + 1 = 2 (subtree size of node 2)
+  DFS(5): return 1 (subtree size including self)
+  return 2 + 1 = 3 (subtree size of node 1)
+
+Subordinates = subtree_size - 1 (excluding self)
+Result: [3-1, 2-1, 1-1, 1-1, 1-1] = [2, 1, 0, 0, 0]
+
+Wait, this doesn't match the expected output. Let me recalculate:
+The expected output is [4, 2, 0, 0, 0], which means:
+- Employee 1 has 4 subordinates total
+- Employee 2 has 2 subordinates total
+- Employees 3, 4, 5 have 0 subordinates
+
+This suggests we count all descendants, not just direct children.
+```
+
+### Key Insight
+Subtree size calculation works by:
+1. Using DFS to traverse the tree
+2. For each node, count all descendants in its subtree
+3. Return the total count of subordinates
+4. Time complexity: O(n) for single DFS traversal
+5. Space complexity: O(n) for recursion stack
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

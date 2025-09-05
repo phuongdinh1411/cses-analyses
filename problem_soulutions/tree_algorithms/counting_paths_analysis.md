@@ -46,6 +46,65 @@ Output:
 - Node 2: 6 paths pass through (1-2, 2-3, 2-4, 1-2-3, 1-2-4, 3-2-4)
 - Node 3: 1 path passes through (2-3)
 
+## 🎯 Visual Example
+
+### Input
+```
+n = 4, q = 3
+Edges: [(1,2), (2,3), (2,4)]
+Queries: [1, 2, 3]
+```
+
+### Tree Structure
+```
+Node 1
+├── Node 2
+│   ├── Node 3
+│   └── Node 4
+
+Tree representation:
+    1
+    |
+    2
+   / \
+  3   4
+```
+
+### Path Counting Analysis
+```
+All possible paths in the tree:
+1. 1-2 (length 1)
+2. 2-3 (length 1)
+3. 2-4 (length 1)
+4. 1-2-3 (length 2)
+5. 1-2-4 (length 2)
+6. 3-2-4 (length 2)
+
+Paths through each node:
+- Node 1: paths 1, 4, 5 → 3 paths
+- Node 2: paths 1, 2, 3, 4, 5, 6 → 6 paths
+- Node 3: path 2 → 1 path
+- Node 4: path 3 → 1 path
+```
+
+### Dynamic Programming Approach
+```
+For each node, count paths that:
+1. Start at the node (paths going down)
+2. End at the node (paths going up)
+3. Pass through the node (paths going up and down)
+
+DP[node] = paths_down[node] + paths_up[node] + paths_through[node]
+```
+
+### Key Insight
+Path counting through nodes works by:
+1. Using DFS to traverse the tree
+2. For each node, count paths in its subtree
+3. Count paths that pass through the node
+4. Time complexity: O(n) for single DFS traversal
+5. Space complexity: O(n) for recursion stack
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

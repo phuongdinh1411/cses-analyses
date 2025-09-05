@@ -43,6 +43,90 @@ Output:
 - Node 4: sum = 2+3+1+0+2 = 8
 - Node 5: sum = 2+3+1+2+0 = 8
 
+## 🎯 Visual Example
+
+### Input
+```
+n = 5
+Edges: [(1,2), (1,3), (3,4), (3,5)]
+```
+
+### Tree Structure
+```
+Node 1
+├── Node 2
+└── Node 3
+    ├── Node 4
+    └── Node 5
+
+Tree representation:
+    1
+   / \
+  2   3
+     / \
+    4   5
+```
+
+### Sum of Distances Calculation
+```
+For each node, sum distances to all other nodes:
+
+Node 1: Sum = 0 + 1 + 1 + 2 + 2 = 6
+- Distance to 1: 0
+- Distance to 2: 1
+- Distance to 3: 1
+- Distance to 4: 2 (path: 1 → 3 → 4)
+- Distance to 5: 2 (path: 1 → 3 → 5)
+
+Node 2: Sum = 1 + 0 + 2 + 3 + 3 = 9
+- Distance to 1: 1
+- Distance to 2: 0
+- Distance to 3: 2 (path: 2 → 1 → 3)
+- Distance to 4: 3 (path: 2 → 1 → 3 → 4)
+- Distance to 5: 3 (path: 2 → 1 → 3 → 5)
+
+Node 3: Sum = 1 + 2 + 0 + 1 + 1 = 5
+- Distance to 1: 1
+- Distance to 2: 2 (path: 3 → 1 → 2)
+- Distance to 3: 0
+- Distance to 4: 1
+- Distance to 5: 1
+
+Node 4: Sum = 2 + 3 + 1 + 0 + 2 = 8
+- Distance to 1: 2 (path: 4 → 3 → 1)
+- Distance to 2: 3 (path: 4 → 3 → 1 → 2)
+- Distance to 3: 1
+- Distance to 4: 0
+- Distance to 5: 2 (path: 4 → 3 → 5)
+
+Node 5: Sum = 2 + 3 + 1 + 2 + 0 = 8
+- Distance to 1: 2 (path: 5 → 3 → 1)
+- Distance to 2: 3 (path: 5 → 3 → 1 → 2)
+- Distance to 3: 1
+- Distance to 4: 2 (path: 5 → 3 → 4)
+- Distance to 5: 0
+```
+
+### Rerooting Technique
+```
+Start with one node (e.g., node 1) and calculate sum of distances.
+Then use rerooting to calculate for other nodes:
+
+When moving from parent to child:
+- Subtract contribution of child's subtree
+- Add contribution of parent's subtree
+- Update distances accordingly
+```
+
+### Key Insight
+Sum of distances calculation works by:
+1. Using rerooting technique
+2. Start with one node and calculate sum of distances
+3. Move to adjacent nodes and update distances
+4. Use dynamic programming to avoid recalculating
+5. Time complexity: O(n) for rerooting
+6. Space complexity: O(n) for storing distances
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

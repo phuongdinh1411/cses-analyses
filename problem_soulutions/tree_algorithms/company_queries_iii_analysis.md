@@ -45,6 +45,73 @@ Output:
 - Query 2: Subtree of employee 2 contains employees 2, 4, 5 (3 employees)
 - Query 3: Subtree of employee 3 contains only employee 3 (1 employee)
 
+## 🎯 Visual Example
+
+### Input
+```
+n = 5, q = 3
+Superiors: [1, 1, 2, 2]
+Queries: [1, 2, 3]
+```
+
+### Tree Structure
+```
+Employee 1 (CEO)
+├── Employee 2
+│   ├── Employee 3
+│   └── Employee 4
+└── Employee 5
+
+Tree representation:
+    1
+   / \
+  2   5
+ / \
+3   4
+```
+
+### Subtree Size Queries
+```
+Query 1: Subtree size of employee 1
+- Subtree of 1: {1, 2, 3, 4, 5}
+- Size: 5
+- Result: 5
+
+Query 2: Subtree size of employee 2
+- Subtree of 2: {2, 3, 4}
+- Size: 3
+- Result: 3
+
+Query 3: Subtree size of employee 3
+- Subtree of 3: {3}
+- Size: 1
+- Result: 1
+```
+
+### DFS Subtree Size Calculation
+```
+DFS Traversal Order: 3, 4, 2, 5, 1
+
+Step 1: Process leaf nodes
+- Employee 3: subtree_size = 1
+- Employee 4: subtree_size = 1
+- Employee 5: subtree_size = 1
+
+Step 2: Process internal nodes
+- Employee 2: subtree_size = 1 + 1 + 1 = 3
+- Employee 1: subtree_size = 3 + 1 + 1 = 5
+
+Final subtree sizes: [5, 3, 1, 1, 1]
+```
+
+### Key Insight
+Subtree size calculation works by:
+1. Using DFS to traverse the tree
+2. For each node, sum up subtree sizes of children
+3. Add 1 for the node itself
+4. Time complexity: O(n) for single DFS traversal
+5. Space complexity: O(n) for recursion stack
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem
