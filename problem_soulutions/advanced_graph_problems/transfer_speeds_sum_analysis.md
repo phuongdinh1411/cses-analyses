@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analy
 
 # Transfer Speeds Sum
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of maximum weight matching in graphs
+- [ ] **Objective 2**: Apply maximum weight bipartite matching algorithms
+- [ ] **Objective 3**: Implement Hungarian algorithm or similar matching algorithms
+- [ ] **Objective 4**: Optimize network flow problems for maximum weight
+- [ ] **Objective 5**: Handle complex network optimization problems with multiple constraints
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Maximum weight matching, bipartite matching, network flow, Hungarian algorithm
+- **Data Structures**: Bipartite graphs, flow networks, matching data structures
+- **Mathematical Concepts**: Graph theory, matching theory, optimization, linear programming
+- **Programming Skills**: Graph representation, matching algorithms, optimization techniques
+- **Related Problems**: School Dance (bipartite matching), Download Speed (network flow), Nearest Shops (optimization)
+
 ## Problem Description
 
 **Problem**: Given a network with n nodes and transfer speeds between them, find the maximum sum of transfer speeds that can be achieved.

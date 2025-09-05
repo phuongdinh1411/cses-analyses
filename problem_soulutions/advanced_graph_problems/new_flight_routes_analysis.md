@@ -7,6 +7,24 @@ permalink: /problem_soulutions/advanced_graph_problems/new_flight_routes_analysi
 
 # New Flight Routes
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of strong connectivity in directed graphs
+- [ ] **Objective 2**: Apply strongly connected components (SCC) analysis for connectivity
+- [ ] **Objective 3**: Implement algorithms to find minimum edges for strong connectivity
+- [ ] **Objective 4**: Optimize connectivity algorithms for large graphs
+- [ ] **Objective 5**: Handle edge cases in connectivity problems (disconnected components, single vertices)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Strongly Connected Components (SCC), Tarjan's algorithm, Kosaraju's algorithm
+- **Data Structures**: Adjacency lists, stacks, visited arrays, SCC data structures
+- **Mathematical Concepts**: Graph theory, connectivity, component analysis
+- **Programming Skills**: DFS implementation, stack operations, graph representation
+- **Related Problems**: Strongly Connected Edges (SCC basics), Planets and Kingdoms (SCC), Building Roads (connectivity)
+
 ## Problem Description
 
 **Problem**: Given a directed graph with n nodes and m edges, find the minimum number of new edges to add so that the graph becomes strongly connected.

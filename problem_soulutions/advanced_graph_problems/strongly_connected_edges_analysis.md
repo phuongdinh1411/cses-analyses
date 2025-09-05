@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/strongly_connected_edges_
 
 # Strongly Connected Edges
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of strongly connected components (SCCs) in directed graphs
+- [ ] **Objective 2**: Apply Tarjan's algorithm or Kosaraju's algorithm to find SCCs
+- [ ] **Objective 3**: Analyze the structure of SCCs to determine connectivity requirements
+- [ ] **Objective 4**: Calculate the minimum number of edges needed to make a graph strongly connected
+- [ ] **Objective 5**: Handle edge cases in SCC analysis (single vertices, disconnected components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Strongly Connected Components (SCC), DFS, graph traversal
+- **Data Structures**: Adjacency lists, stacks, visited arrays
+- **Mathematical Concepts**: Graph theory, connectivity, component analysis
+- **Programming Skills**: DFS implementation, stack operations, graph representation
+- **Related Problems**: Planets and Kingdoms (SCC basics), Building Roads (connectivity), Round Trip (cycle detection)
+
 ## Problem Description
 
 **Problem**: Given a directed graph, find the minimum number of edges to add to make it strongly connected.

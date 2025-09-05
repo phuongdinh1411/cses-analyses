@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_walk_queries
 
 # Fixed Length Walk Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of walks (can repeat vertices and edges) in graphs
+- [ ] **Objective 2**: Apply matrix exponentiation for efficient walk counting
+- [ ] **Objective 3**: Implement dynamic programming for walk queries with fixed lengths
+- [ ] **Objective 4**: Optimize walk query algorithms for multiple queries
+- [ ] **Objective 5**: Handle large walk lengths using modular arithmetic and matrix operations
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Matrix exponentiation, dynamic programming, graph reachability, walk concepts
+- **Data Structures**: Adjacency matrices, matrices, arrays
+- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, walk properties
+- **Programming Skills**: Matrix multiplication, modular arithmetic, dynamic programming
+- **Related Problems**: Fixed Length Path Queries (similar matrix approach), Fixed Length Trail Queries (trail counting), Message Route (reachability)
+
 ## Problem Description
 
 **Problem**: Given a graph, answer queries about walks (can repeat vertices and edges) of fixed length between vertices.

@@ -7,6 +7,24 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_circuit_quer
 
 # Fixed Length Circuit Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of circuits (closed walks) in directed graphs
+- [ ] **Objective 2**: Apply matrix exponentiation for efficient circuit counting
+- [ ] **Objective 3**: Implement modular arithmetic for large circuit counts
+- [ ] **Objective 4**: Optimize matrix operations for multiple circuit queries
+- [ ] **Objective 5**: Handle large circuit lengths using binary exponentiation
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Matrix exponentiation, binary exponentiation, circuit counting, cycle detection
+- **Data Structures**: Adjacency matrices, matrices, arrays
+- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, circuit properties
+- **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
+- **Related Problems**: Fixed Length Cycle Queries (similar matrix approach), Round Trip (cycle detection), Graph Girth (cycle properties)
+
 ## Problem Statement
 Given a directed graph with n nodes and q queries, for each query find the number of circuits of length k starting and ending at node a.
 

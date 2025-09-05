@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_path_queries
 
 # Fixed Length Path Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of path queries and reachability in graphs
+- [ ] **Objective 2**: Apply matrix exponentiation for efficient path counting
+- [ ] **Objective 3**: Implement dynamic programming for path queries with fixed lengths
+- [ ] **Objective 4**: Optimize path query algorithms for multiple queries
+- [ ] **Objective 5**: Handle large path lengths using modular arithmetic and matrix operations
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Matrix exponentiation, dynamic programming, graph reachability
+- **Data Structures**: Adjacency matrices, matrices, arrays
+- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory
+- **Programming Skills**: Matrix multiplication, modular arithmetic, dynamic programming
+- **Related Problems**: Fixed Length Cycle Queries (similar matrix approach), Shortest Routes I (path finding), Message Route (reachability)
+
 ## Problem Description
 
 **Problem**: Given a graph, answer queries about paths of fixed length between vertices.

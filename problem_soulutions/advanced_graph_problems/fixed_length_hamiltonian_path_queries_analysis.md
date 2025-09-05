@@ -7,6 +7,24 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_
 
 # Fixed Length Hamiltonian Path Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of Hamiltonian paths and their properties
+- [ ] **Objective 2**: Apply dynamic programming with bitmasking for Hamiltonian path problems
+- [ ] **Objective 3**: Implement efficient Hamiltonian path detection using state compression
+- [ ] **Objective 4**: Optimize Hamiltonian path algorithms for multiple queries
+- [ ] **Objective 5**: Handle large graphs using advanced DP techniques and pruning
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, bitmasking, Hamiltonian paths, state compression
+- **Data Structures**: Bitmasks, adjacency lists, DP tables
+- **Mathematical Concepts**: Graph theory, Hamiltonian paths, NP-complete problems, combinatorics
+- **Programming Skills**: Bit manipulation, dynamic programming, state transitions
+- **Related Problems**: Fixed Length Path Queries (path counting), Hamiltonian Flights (Hamiltonian paths), Round Trip (cycle detection)
+
 ## Problem Description
 
 **Problem**: Given a graph, answer queries about Hamiltonian paths (paths visiting each vertex exactly once) of fixed length.

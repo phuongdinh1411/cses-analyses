@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/course_schedule_ii_analys
 
 # Course Schedule II - Topological Sorting for Course Prerequisites
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of topological sorting and its applications
+- [ ] **Objective 2**: Apply Kahn's algorithm for topological sorting with cycle detection
+- [ ] **Objective 3**: Implement DFS-based topological sorting with cycle detection
+- [ ] **Objective 4**: Handle cycle detection in directed graphs using topological sorting
+- [ ] **Objective 5**: Apply topological sorting to real-world scheduling problems
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Topological sorting, Kahn's algorithm, DFS, cycle detection
+- **Data Structures**: Adjacency lists, queues, stacks, in-degree arrays
+- **Mathematical Concepts**: Graph theory, directed acyclic graphs (DAGs), ordering
+- **Programming Skills**: DFS implementation, queue operations, graph representation
+- **Related Problems**: Topological Sorting (basic topological sort), Building Teams (cycle detection), Round Trip (cycle detection)
+
 ## 📋 Problem Description
 
 Given n courses and their prerequisites, find a valid order to complete all courses. If it's impossible, return an empty array.

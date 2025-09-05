@@ -7,6 +7,24 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_eulerian_tra
 
 # Fixed Length Eulerian Trail Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of Eulerian trails and their properties
+- [ ] **Objective 2**: Apply matrix exponentiation for efficient Eulerian trail counting
+- [ ] **Objective 3**: Implement modular arithmetic for large Eulerian trail counts
+- [ ] **Objective 4**: Optimize matrix operations for multiple Eulerian trail queries
+- [ ] **Objective 5**: Handle large trail lengths using binary exponentiation
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Matrix exponentiation, binary exponentiation, Eulerian trails, trail counting
+- **Data Structures**: Adjacency matrices, matrices, arrays
+- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, Eulerian properties
+- **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
+- **Related Problems**: Fixed Length Eulerian Circuit Queries (similar matrix approach), Mail Delivery (Eulerian paths), Fixed Length Trail Queries (trail counting)
+
 ## Problem Statement
 Given a directed graph with n nodes and q queries, for each query find the number of Eulerian trails of length k from node a to node b.
 

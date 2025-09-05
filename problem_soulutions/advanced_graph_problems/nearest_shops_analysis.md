@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis
 
 # Nearest Shops - Multi-Source Shortest Path Problem
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of multi-source shortest path problems
+- [ ] **Objective 2**: Apply Dijkstra's algorithm with multiple source vertices
+- [ ] **Objective 3**: Implement efficient multi-source BFS for unweighted graphs
+- [ ] **Objective 4**: Optimize shortest path algorithms for multiple destinations
+- [ ] **Objective 5**: Handle edge cases in multi-source problems (no reachable shops, disconnected components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dijkstra's algorithm, BFS, shortest path algorithms
+- **Data Structures**: Priority queues, adjacency lists, distance arrays
+- **Mathematical Concepts**: Graph theory, shortest path properties, greedy algorithms
+- **Programming Skills**: Priority queue implementation, graph representation, distance tracking
+- **Related Problems**: Shortest Routes I (single-source shortest path), Message Route (BFS), Monsters (multi-source BFS)
+
 ## 📋 Problem Description
 
 Given a graph with shops and customers, find the nearest shop for each customer.

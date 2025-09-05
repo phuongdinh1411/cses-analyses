@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/mst_edge_check_analysis
 
 # MST Edge Check - Determine MST Edge Membership
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of Minimum Spanning Tree (MST) and its properties
+- [ ] **Objective 2**: Apply Kruskal's algorithm with Union-Find data structure for MST construction
+- [ ] **Objective 3**: Implement efficient edge membership checking for MST
+- [ ] **Objective 4**: Optimize MST algorithms for large graphs using Union-Find
+- [ ] **Objective 5**: Handle edge cases in MST construction (disconnected graphs, multiple MSTs)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Kruskal's algorithm, Union-Find (Disjoint Set Union), MST algorithms
+- **Data Structures**: Union-Find data structure, edge lists, adjacency lists
+- **Mathematical Concepts**: Graph theory, spanning trees, greedy algorithms
+- **Programming Skills**: Union-Find implementation, sorting, graph representation
+- **Related Problems**: Road Construction (MST basics), Road Reparation (MST with weights), Building Roads (connectivity)
+
 ## 📋 Problem Description
 
 Given a weighted undirected graph with n nodes and m edges, for each edge determine if it belongs to the minimum spanning tree (MST).

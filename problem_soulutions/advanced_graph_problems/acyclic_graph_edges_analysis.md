@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analy
 
 # Acyclic Graph Edges - Minimum Edges to Remove for Acyclicity
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of feedback arc set and cycle detection
+- [ ] **Objective 2**: Apply DFS-based cycle detection algorithms
+- [ ] **Objective 3**: Implement algorithms to find minimum edges for acyclicity
+- [ ] **Objective 4**: Optimize cycle detection for large directed graphs
+- [ ] **Objective 5**: Handle edge cases in acyclicity problems (trees, disconnected components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: DFS, cycle detection, back edge identification, topological sorting
+- **Data Structures**: Adjacency lists, visited arrays, recursion stacks
+- **Mathematical Concepts**: Graph theory, cycle properties, acyclic graphs
+- **Programming Skills**: DFS implementation, cycle detection, graph representation
+- **Related Problems**: Round Trip (cycle detection), Building Teams (cycle detection), Topological Sorting (acyclic graphs)
+
 ## 📋 Problem Description
 
 Given a directed graph with n nodes and m edges, find the minimum number of edges to remove to make the graph acyclic.

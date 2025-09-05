@@ -7,6 +7,24 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_
 
 # Fixed Length Hamiltonian Trail Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of Hamiltonian trails and their properties
+- [ ] **Objective 2**: Apply matrix exponentiation for efficient Hamiltonian trail counting
+- [ ] **Objective 3**: Implement modular arithmetic for large Hamiltonian trail counts
+- [ ] **Objective 4**: Optimize matrix operations for multiple Hamiltonian trail queries
+- [ ] **Objective 5**: Handle large trail lengths using binary exponentiation
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Matrix exponentiation, binary exponentiation, Hamiltonian trails, trail counting
+- **Data Structures**: Adjacency matrices, matrices, arrays
+- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, Hamiltonian properties
+- **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
+- **Related Problems**: Fixed Length Hamiltonian Path Queries (similar matrix approach), Hamiltonian Flights (Hamiltonian paths), Fixed Length Trail Queries (trail counting)
+
 ## Problem Description
 
 **Problem**: Given a directed graph with n nodes and q queries, for each query find the number of Hamiltonian trails of length k from node a to node b.

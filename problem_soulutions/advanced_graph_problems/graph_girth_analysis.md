@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/graph_girth_analysis
 
 # Graph Girth - Shortest Cycle Length in Undirected Graph
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of graph girth and cycle detection in undirected graphs
+- [ ] **Objective 2**: Apply BFS-based cycle detection algorithms to find shortest cycles
+- [ ] **Objective 3**: Implement efficient cycle detection using parent tracking in BFS
+- [ ] **Objective 4**: Optimize cycle detection by avoiding redundant searches
+- [ ] **Objective 5**: Handle edge cases in cycle detection (trees, disconnected components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: BFS, DFS, cycle detection, graph traversal
+- **Data Structures**: Adjacency lists, queues, visited arrays, parent arrays
+- **Mathematical Concepts**: Graph theory, cycle properties, shortest path concepts
+- **Programming Skills**: BFS implementation, graph representation, queue operations
+- **Related Problems**: Round Trip (cycle detection), Message Route (BFS), Building Roads (connectivity)
+
 ## 📋 Problem Description
 
 Given an undirected graph, find the length of the shortest cycle (girth).

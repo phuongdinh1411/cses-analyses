@@ -7,6 +7,24 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_eulerian_cir
 
 # Fixed Length Eulerian Circuit Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of Eulerian circuits and their properties
+- [ ] **Objective 2**: Apply matrix exponentiation for efficient Eulerian circuit counting
+- [ ] **Objective 3**: Implement modular arithmetic for large Eulerian circuit counts
+- [ ] **Objective 4**: Optimize matrix operations for multiple Eulerian circuit queries
+- [ ] **Objective 5**: Handle large circuit lengths using binary exponentiation
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Matrix exponentiation, binary exponentiation, Eulerian circuits, cycle counting
+- **Data Structures**: Adjacency matrices, matrices, arrays
+- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, Eulerian properties
+- **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
+- **Related Problems**: Fixed Length Cycle Queries (similar matrix approach), Mail Delivery (Eulerian paths), Round Trip (cycle detection)
+
 ## Problem Statement
 Given a directed graph with n nodes and q queries, for each query find the number of Eulerian circuits of length k starting and ending at node a.
 

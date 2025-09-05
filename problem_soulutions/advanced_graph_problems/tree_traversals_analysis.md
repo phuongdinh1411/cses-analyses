@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/tree_traversals_analysis
 
 # Tree Traversals
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the three fundamental tree traversal orders (preorder, inorder, postorder)
+- [ ] **Objective 2**: Implement recursive and iterative tree traversal algorithms
+- [ ] **Objective 3**: Apply tree traversal techniques to different tree structures
+- [ ] **Objective 4**: Optimize tree traversal algorithms for large trees
+- [ ] **Objective 5**: Handle special cases in tree traversal (empty trees, single nodes)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Tree traversal, DFS, recursion, iterative algorithms
+- **Data Structures**: Trees, adjacency lists, stacks, recursion stacks
+- **Mathematical Concepts**: Graph theory, tree properties, traversal orders
+- **Programming Skills**: Recursion, stack operations, tree representation
+- **Related Problems**: Tree Diameter (tree algorithms), Subordinates (tree traversal), Tree Distances I (tree properties)
+
 ## Problem Description
 
 **Problem**: Given a tree with n nodes, find the preorder, inorder, and postorder traversals of the tree.

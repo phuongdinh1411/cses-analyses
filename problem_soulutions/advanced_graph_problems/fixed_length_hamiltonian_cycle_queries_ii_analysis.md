@@ -7,6 +7,24 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_
 
 # Fixed Length Hamiltonian Cycle Queries II
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand advanced Hamiltonian cycle problems with additional constraints
+- [ ] **Objective 2**: Apply matrix exponentiation for efficient Hamiltonian cycle counting with constraints
+- [ ] **Objective 3**: Implement modular arithmetic for large Hamiltonian cycle counts with constraints
+- [ ] **Objective 4**: Optimize matrix operations for multiple Hamiltonian cycle queries with constraints
+- [ ] **Objective 5**: Handle large cycle lengths using binary exponentiation with constraint handling
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Matrix exponentiation, binary exponentiation, Hamiltonian cycles, circuit counting, constraint handling
+- **Data Structures**: Adjacency matrices, matrices, arrays, constraint data structures
+- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, Hamiltonian properties, constraints
+- **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation, constraint handling
+- **Related Problems**: Fixed Length Hamiltonian Cycle Queries (basic version), Hamiltonian Flights (Hamiltonian paths), Fixed Length Circuit Queries (circuit counting)
+
 ## Problem Statement
 Given a directed graph with n nodes and q queries, for each query find the number of Hamiltonian cycles of length k starting and ending at node a, where each cycle must visit exactly k nodes.
 

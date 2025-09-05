@@ -7,6 +7,24 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_trail_querie
 
 # Fixed Length Trail Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of trails (walks that can repeat edges) in graphs
+- [ ] **Objective 2**: Apply matrix exponentiation for efficient trail counting
+- [ ] **Objective 3**: Implement dynamic programming for trail queries with fixed lengths
+- [ ] **Objective 4**: Optimize trail query algorithms for multiple queries
+- [ ] **Objective 5**: Handle large trail lengths using modular arithmetic and matrix operations
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Matrix exponentiation, dynamic programming, graph reachability, trail concepts
+- **Data Structures**: Adjacency matrices, matrices, arrays
+- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, trail properties
+- **Programming Skills**: Matrix multiplication, modular arithmetic, dynamic programming
+- **Related Problems**: Fixed Length Path Queries (similar matrix approach), Fixed Length Walk Queries (walk counting), Message Route (reachability)
+
 ## Problem Description
 
 **Problem**: Given a graph, answer queries about trails (walks that can repeat edges) of fixed length between vertices.

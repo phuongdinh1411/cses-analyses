@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/even_outdegree_edges_anal
 
 # Even Outdegree Edges
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of vertex degrees in directed graphs
+- [ ] **Objective 2**: Analyze the relationship between in-degree and out-degree in directed graphs
+- [ ] **Objective 3**: Apply graph theory principles to determine edge addition requirements
+- [ ] **Objective 4**: Calculate the minimum number of edges needed to achieve even outdegrees
+- [ ] **Objective 5**: Handle special cases in degree analysis (isolated vertices, disconnected components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Graph degree analysis, basic graph theory
+- **Data Structures**: Adjacency lists, degree arrays
+- **Mathematical Concepts**: Graph theory, degree properties, parity analysis
+- **Programming Skills**: Graph representation, degree calculation, array manipulation
+- **Related Problems**: Strongly Connected Edges (graph connectivity), Building Roads (basic graph operations)
+
 ## Problem Description
 
 **Problem**: Given a directed graph, find the minimum number of edges to add so that every vertex has even outdegree.

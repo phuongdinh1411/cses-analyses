@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/prufer_code_analysis
 
 # Prufer Code
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of Prufer codes and their properties
+- [ ] **Objective 2**: Apply the Prufer code construction algorithm for trees
+- [ ] **Objective 3**: Implement efficient tree-to-Prufer code conversion
+- [ ] **Objective 4**: Understand the bijection between labeled trees and Prufer codes
+- [ ] **Objective 5**: Apply Prufer codes to tree counting and enumeration problems
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Tree algorithms, Prufer codes, bijection algorithms
+- **Data Structures**: Trees, adjacency lists, priority queues
+- **Mathematical Concepts**: Graph theory, tree properties, bijections, combinatorics
+- **Programming Skills**: Tree traversal, priority queue operations, tree manipulation
+- **Related Problems**: Tree Traversals (tree algorithms), Tree Diameter (tree properties), Counting Trees (tree enumeration)
+
 ## Problem Description
 
 **Problem**: Given a tree with n vertices, find its Prufer code. The Prufer code is a unique sequence that represents a labeled tree.

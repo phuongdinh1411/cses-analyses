@@ -6,6 +6,24 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_tour_queries
 
 # Fixed Length Tour Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of tours (cycles) in graphs
+- [ ] **Objective 2**: Apply matrix exponentiation for efficient tour counting
+- [ ] **Objective 3**: Implement dynamic programming for tour queries with fixed lengths
+- [ ] **Objective 4**: Optimize tour query algorithms for multiple queries
+- [ ] **Objective 5**: Handle large tour lengths using modular arithmetic and matrix operations
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Matrix exponentiation, dynamic programming, graph reachability, tour concepts
+- **Data Structures**: Adjacency matrices, matrices, arrays
+- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, tour properties
+- **Programming Skills**: Matrix multiplication, modular arithmetic, dynamic programming
+- **Related Problems**: Fixed Length Cycle Queries (similar matrix approach), Fixed Length Circuit Queries (circuit counting), Round Trip (cycle detection)
+
 ## Problem Description
 
 **Problem**: Given a graph, answer queries about tours (cycles) of fixed length starting and ending at specific vertices.

@@ -7,6 +7,24 @@ permalink: /problem_soulutions/advanced_graph_problems/creating_offices_analysis
 
 # Creating Offices
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of facility location problems in trees
+- [ ] **Objective 2**: Apply greedy algorithms for optimal office placement
+- [ ] **Objective 3**: Implement tree traversal algorithms for coverage problems
+- [ ] **Objective 4**: Optimize facility placement using distance-based strategies
+- [ ] **Objective 5**: Handle tree-specific constraints in facility location problems
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Tree traversal, greedy algorithms, facility location, coverage problems
+- **Data Structures**: Trees, adjacency lists, distance arrays
+- **Mathematical Concepts**: Graph theory, tree properties, optimization, greedy strategies
+- **Programming Skills**: Tree traversal, DFS, BFS, greedy algorithm implementation
+- **Related Problems**: Tree Diameter (tree properties), Tree Distances I (tree distances), Nearest Shops (facility location)
+
 ## Problem Statement
 Given a tree with n nodes, you need to place offices at some nodes so that every node is within distance k of at least one office. Find the minimum number of offices needed.
 

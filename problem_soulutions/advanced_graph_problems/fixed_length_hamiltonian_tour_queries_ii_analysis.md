@@ -7,6 +7,24 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_
 
 # Fixed Length Hamiltonian Tour Queries II
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand advanced Hamiltonian tour problems with additional constraints
+- [ ] **Objective 2**: Apply matrix exponentiation for efficient Hamiltonian tour counting with constraints
+- [ ] **Objective 3**: Implement dynamic programming for Hamiltonian tour queries with fixed lengths and constraints
+- [ ] **Objective 4**: Optimize Hamiltonian tour query algorithms for multiple queries with constraints
+- [ ] **Objective 5**: Handle large tour lengths using modular arithmetic and matrix operations with constraint handling
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Matrix exponentiation, dynamic programming, Hamiltonian tours, tour counting, constraint handling
+- **Data Structures**: Adjacency matrices, matrices, arrays, constraint data structures
+- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, Hamiltonian properties, constraints
+- **Programming Skills**: Matrix multiplication, modular arithmetic, dynamic programming, constraint handling
+- **Related Problems**: Fixed Length Hamiltonian Tour Queries (basic version), Hamiltonian Flights (Hamiltonian paths), Fixed Length Tour Queries (tour counting)
+
 ## Problem Description
 
 **Problem**: Given a graph, answer queries about Hamiltonian tours (cycles visiting each vertex exactly once) of fixed length with additional constraints.
