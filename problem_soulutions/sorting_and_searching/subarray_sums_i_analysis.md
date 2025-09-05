@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/subarray_sums_i_analysis
 
 # Subarray Sums I
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand subarray sum problems and prefix sum techniques
+- [ ] **Objective 2**: Apply prefix sums with hash maps to count subarrays with target sum
+- [ ] **Objective 3**: Implement efficient subarray sum counting algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize subarray sum problems using prefix sums, hash maps, and complement searching
+- [ ] **Objective 5**: Handle edge cases in subarray sum problems (no solution, multiple solutions, negative numbers)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Prefix sums, hash maps, subarray problems, target sum problems, complement searching
+- **Data Structures**: Hash maps, prefix sum arrays, sum tracking, complement tracking
+- **Mathematical Concepts**: Prefix sum mathematics, subarray sum theory, complement mathematics, sum analysis
+- **Programming Skills**: Prefix sum implementation, hash map implementation, complement searching, algorithm implementation
+- **Related Problems**: Subarray Sums II (advanced version), Sum of Two Values (similar concept), Subarray problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers and a target sum x, find the number of subarrays that have sum x.

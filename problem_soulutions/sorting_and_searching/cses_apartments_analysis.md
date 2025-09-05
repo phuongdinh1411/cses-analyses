@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/cses_apartments_analysis
 
 # Apartments - Optimal Apartment Distribution
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand bipartite matching problems and optimal assignment strategies
+- [ ] **Objective 2**: Apply greedy algorithms with sorting to maximize matching in bipartite graphs
+- [ ] **Objective 3**: Implement efficient matching algorithms with O(n log n) time complexity
+- [ ] **Objective 4**: Optimize bipartite matching using sorting and two-pointer techniques
+- [ ] **Objective 5**: Handle edge cases in matching problems (no matches, all matches, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Greedy algorithms, bipartite matching, sorting algorithms, two-pointer technique, matching optimization
+- **Data Structures**: Arrays, sorting, two-pointer tracking, matching tracking, range tracking
+- **Mathematical Concepts**: Bipartite graphs, matching theory, optimization problems, range mathematics
+- **Programming Skills**: Sorting implementation, two-pointer technique, greedy algorithm implementation, algorithm implementation
+- **Related Problems**: Room Allocation (interval scheduling), Matching problems, Greedy algorithm problems
+
 ## 📋 Problem Description
 
 There are n applicants and m free apartments. Distribute apartments so that as many applicants as possible get an apartment. Each applicant accepts any apartment whose size is at least aᵢ-k and at most aᵢ+k.

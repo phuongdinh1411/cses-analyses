@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/cses_collecting_numbers_ana
 
 # Collecting Numbers
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand collecting numbers problems and dependency-based collection strategies
+- [ ] **Objective 2**: Apply greedy algorithms with position tracking to minimize collection rounds
+- [ ] **Objective 3**: Implement efficient collection algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize collection problems using position tracking and dependency analysis
+- [ ] **Objective 5**: Handle edge cases in collection problems (sorted arrays, reverse sorted arrays, single element)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Greedy algorithms, position tracking, dependency analysis, collection strategies, round optimization
+- **Data Structures**: Arrays, position tracking, collection tracking, round tracking
+- **Mathematical Concepts**: Collection theory, dependency mathematics, round optimization, position analysis
+- **Programming Skills**: Position tracking, greedy algorithm implementation, collection logic, algorithm implementation
+- **Related Problems**: Collecting Numbers II (variations), Greedy algorithm problems, Collection problems
+
 ## Problem Description
 
 **Problem**: You are given an array containing each number between 1…n exactly once. Collect numbers from 1 to n in increasing order. On each round, go through the array from left to right and collect as many numbers as possible in increasing order. Find the minimum number of rounds needed.

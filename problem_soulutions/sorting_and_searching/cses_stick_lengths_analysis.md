@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/cses_stick_lengths_analysis
 
 # Stick Lengths
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand optimization problems with median-based solutions and cost minimization
+- [ ] **Objective 2**: Apply median selection to minimize total absolute deviation costs
+- [ ] **Objective 3**: Implement efficient optimization algorithms with O(n log n) time complexity
+- [ ] **Objective 4**: Optimize cost minimization problems using sorting and median selection
+- [ ] **Objective 5**: Handle edge cases in optimization problems (single element, all same values, cost overflow)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Sorting algorithms, median selection, optimization problems, cost minimization, absolute deviation
+- **Data Structures**: Arrays, sorting, median tracking, cost tracking
+- **Mathematical Concepts**: Median theory, optimization mathematics, absolute deviation, cost analysis
+- **Programming Skills**: Sorting implementation, median calculation, cost calculation, algorithm implementation
+- **Related Problems**: Optimization problems, Median problems, Cost minimization problems
+
 ## Problem Description
 
 **Problem**: There are n sticks with some lengths. Modify the lengths so that all sticks have equal lengths. You can either lengthen or shorten each stick. Both operations cost x where x is the difference between the new and original length. What is the minimum total cost?

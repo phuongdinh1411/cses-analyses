@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/factory_machines_analysis
 
 # Factory Machines
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand binary search on answer space and parallel processing optimization
+- [ ] **Objective 2**: Apply binary search with validation to find minimum time for parallel task completion
+- [ ] **Objective 3**: Implement efficient binary search algorithms with O(n log(max_time)) time complexity
+- [ ] **Objective 4**: Optimize parallel processing problems using binary search and time calculation
+- [ ] **Objective 5**: Handle edge cases in parallel processing (single machine, single product, time overflow)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Binary search, parallel processing, optimization problems, answer space search, time calculation
+- **Data Structures**: Arrays, binary search tracking, time tracking, product tracking
+- **Mathematical Concepts**: Binary search theory, parallel processing mathematics, time calculations, optimization theory
+- **Programming Skills**: Binary search implementation, time calculation, validation function implementation, algorithm implementation
+- **Related Problems**: Array Division (binary search optimization), Binary search problems, Parallel processing problems
+
 ## Problem Description
 
 **Problem**: There are n machines and k products. Each machine takes a certain time to produce one product. Find the minimum time needed to produce all k products.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/josephus_problem_i_analysis
 
 # Josephus Problem I
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the Josephus problem and circular elimination algorithms
+- [ ] **Objective 2**: Apply mathematical formulas and simulation techniques to solve Josephus problems
+- [ ] **Objective 3**: Implement efficient Josephus algorithms with O(log n) or O(n) time complexity
+- [ ] **Objective 4**: Optimize Josephus problems using mathematical formulas and efficient simulation
+- [ ] **Objective 5**: Handle edge cases in Josephus problems (single person, large n, step size variations)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Josephus problem, circular elimination, mathematical formulas, simulation algorithms, elimination strategies
+- **Data Structures**: Arrays, circular structures, elimination tracking, position tracking
+- **Mathematical Concepts**: Josephus mathematics, circular mathematics, elimination theory, mathematical formulas
+- **Programming Skills**: Circular array implementation, elimination simulation, mathematical formula implementation, algorithm implementation
+- **Related Problems**: Josephus Problem II (generalized version), Circular problems, Mathematical problems
+
 ## Problem Description
 
 **Problem**: There are n people numbered from 1 to n standing in a circle. Starting from person 1, we eliminate every second person until only one person remains. Find the position of the last remaining person.

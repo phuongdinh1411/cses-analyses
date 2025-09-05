@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/sum_of_three_values_analysi
 
 # Sum of Three Values
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand three-sum problems and two-pointer techniques with sorting
+- [ ] **Objective 2**: Apply sorting and two-pointer technique to find three values with target sum
+- [ ] **Objective 3**: Implement efficient three-sum algorithms with O(n²) time complexity
+- [ ] **Objective 4**: Optimize three-sum problems using sorting, two-pointer technique, and duplicate handling
+- [ ] **Objective 5**: Handle edge cases in three-sum problems (no solution, duplicate values, large arrays)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Sorting algorithms, two-pointer technique, three-sum problems, target sum problems, duplicate handling
+- **Data Structures**: Arrays, sorting, two-pointer tracking, sum tracking, index tracking
+- **Mathematical Concepts**: Three-sum mathematics, target sum theory, sorting theory, combination mathematics
+- **Programming Skills**: Sorting implementation, two-pointer technique, duplicate handling, algorithm implementation
+- **Related Problems**: Sum of Two Values (similar concept), Sum of Four Values (extension), Two-pointer problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers and a target sum x, find three distinct indices such that the sum of the values at those indices equals x.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/cses_playlist_analysis
 
 # Playlist - Longest Unique Song Sequence
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand sliding window problems with uniqueness constraints and sequence optimization
+- [ ] **Objective 2**: Apply sliding window technique to find longest contiguous subarray with unique elements
+- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity for uniqueness problems
+- [ ] **Objective 4**: Optimize sliding window problems using hash maps and two-pointer techniques
+- [ ] **Objective 5**: Handle edge cases in sliding window problems (all unique elements, all same elements, empty arrays)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Sliding window technique, two-pointer technique, hash maps, uniqueness tracking, sequence optimization
+- **Data Structures**: Hash maps, sliding window tracking, frequency tracking, uniqueness tracking, sequence tracking
+- **Mathematical Concepts**: Sequence analysis, uniqueness theory, window mathematics, optimization problems
+- **Programming Skills**: Hash map implementation, sliding window implementation, frequency tracking, algorithm implementation
+- **Related Problems**: Longest Substring Without Repeating Characters (similar problem), Sliding window problems, Uniqueness problems
+
 ## 📋 Problem Description
 
 You are given a playlist of a radio station. What is the longest sequence of consecutive songs where each song is unique?

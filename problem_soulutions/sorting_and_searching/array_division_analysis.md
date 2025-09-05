@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/array_division_analysis
 
 # Array Division - Minimize Maximum Subarray Sum
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand binary search on answer space and optimization problems
+- [ ] **Objective 2**: Apply binary search with greedy validation to find optimal solutions
+- [ ] **Objective 3**: Implement efficient binary search algorithms with O(n log(sum)) time complexity
+- [ ] **Objective 4**: Optimize array division problems using binary search and greedy validation
+- [ ] **Objective 5**: Handle edge cases in binary search optimization (single element, all elements, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Binary search, greedy algorithms, optimization problems, answer space search, validation functions
+- **Data Structures**: Arrays, binary search tracking, sum tracking, division tracking
+- **Mathematical Concepts**: Binary search theory, optimization mathematics, sum calculations, division theory
+- **Programming Skills**: Binary search implementation, greedy algorithm implementation, validation function implementation, algorithm implementation
+- **Related Problems**: Factory Machines (binary search optimization), Binary search problems, Optimization problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, divide it into k subarrays such that the maximum sum of any subarray is minimized.

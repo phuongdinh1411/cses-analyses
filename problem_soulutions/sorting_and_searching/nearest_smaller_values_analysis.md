@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/nearest_smaller_values_anal
 
 # Nearest Smaller Values
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand nearest smaller element problems and monotonic stack techniques
+- [ ] **Objective 2**: Apply monotonic stacks to efficiently find nearest smaller elements to the left
+- [ ] **Objective 3**: Implement efficient nearest smaller element algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize nearest element problems using monotonic stacks and position tracking
+- [ ] **Objective 5**: Handle edge cases in nearest element problems (no smaller element, all elements same, single element)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Monotonic stacks, nearest element problems, stack-based algorithms, position tracking, element comparison
+- **Data Structures**: Stacks, monotonic stacks, position tracking, element tracking, comparison tracking
+- **Mathematical Concepts**: Monotonic stack theory, nearest element mathematics, position analysis, element comparison
+- **Programming Skills**: Stack implementation, monotonic stack implementation, position tracking, algorithm implementation
+- **Related Problems**: Next Greater Element (similar concept), Monotonic stack problems, Nearest element problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers, for each position find the nearest position to the left that has a smaller value. If there is no such position, print 0.

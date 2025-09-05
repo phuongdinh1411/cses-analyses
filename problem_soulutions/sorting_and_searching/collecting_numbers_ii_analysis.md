@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_ii_analy
 
 # Collecting Numbers II
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand collecting numbers problems and dependency-based collection strategies
+- [ ] **Objective 2**: Apply greedy algorithms with position tracking to minimize collection rounds
+- [ ] **Objective 3**: Implement efficient collection algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize collection problems using position tracking and dependency analysis
+- [ ] **Objective 5**: Handle edge cases in collection problems (sorted arrays, reverse sorted arrays, single element)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Greedy algorithms, position tracking, dependency analysis, collection strategies, round optimization
+- **Data Structures**: Arrays, position tracking, collection tracking, round tracking
+- **Mathematical Concepts**: Collection theory, dependency mathematics, round optimization, position analysis
+- **Programming Skills**: Position tracking, greedy algorithm implementation, collection logic, algorithm implementation
+- **Related Problems**: Collecting Numbers I (basic version), Greedy algorithm problems, Collection problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers, collect them in increasing order. You can collect a number if you have already collected all numbers smaller than it. Find the minimum number of rounds needed to collect all numbers.

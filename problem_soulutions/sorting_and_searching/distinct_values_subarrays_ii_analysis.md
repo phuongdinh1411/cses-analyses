@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/distinct_values_subarrays_i
 
 # Distinct Values Subarrays II
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand advanced sliding window problems with exact distinct value constraints and subarray counting
+- [ ] **Objective 2**: Apply advanced sliding window technique to count subarrays with exactly k distinct values
+- [ ] **Objective 3**: Implement efficient advanced sliding window algorithms with O(n) time complexity for exact distinct value problems
+- [ ] **Objective 4**: Optimize advanced sliding window problems using hash maps and sophisticated distinct value tracking
+- [ ] **Objective 5**: Handle complex edge cases in advanced sliding window problems (k=1, k=n, all distinct values, no solution)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Advanced sliding window technique, two-pointer technique, exact distinct value counting, hash map usage, advanced subarray counting
+- **Data Structures**: Hash maps, distinct value tracking, sliding window tracking, frequency tracking, window boundaries, advanced tracking
+- **Mathematical Concepts**: Advanced distinct value theory, subarray counting, window mathematics, counting problems, exact counting
+- **Programming Skills**: Advanced hash map implementation, distinct value tracking, window sliding, frequency counting, algorithm implementation
+- **Related Problems**: Distinct Values Subarrays (basic version), Subarray with K Distinct (similar problem), Advanced sliding window problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers, find the number of subarrays that contain exactly k distinct values.

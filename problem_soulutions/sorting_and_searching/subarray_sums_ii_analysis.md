@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/subarray_sums_ii_analysis
 
 # Subarray Sums II
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand advanced subarray sum problems with negative numbers and complex constraints
+- [ ] **Objective 2**: Apply advanced prefix sums with hash maps to count subarrays with target sum including negatives
+- [ ] **Objective 3**: Implement efficient advanced subarray sum counting algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize advanced subarray sum problems using prefix sums, hash maps, and sophisticated complement searching
+- [ ] **Objective 5**: Handle complex edge cases in advanced subarray sum problems (no solution, multiple solutions, negative numbers, large arrays)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Advanced prefix sums, hash maps, advanced subarray problems, target sum problems, advanced complement searching
+- **Data Structures**: Hash maps, prefix sum arrays, advanced sum tracking, complement tracking, negative number handling
+- **Mathematical Concepts**: Advanced prefix sum mathematics, subarray sum theory, negative number mathematics, complement analysis
+- **Programming Skills**: Advanced prefix sum implementation, hash map implementation, advanced complement searching, algorithm implementation
+- **Related Problems**: Subarray Sums I (basic version), Sum of Two Values (similar concept), Advanced subarray problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers and a target sum x, find the number of subarrays that have sum x. The array may contain negative numbers.

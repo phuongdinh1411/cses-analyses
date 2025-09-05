@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/missing_coin_sum_analysis
 
 # Missing Coin Sum
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand coin sum problems and greedy algorithms for finding missing sums
+- [ ] **Objective 2**: Apply greedy algorithms with sorting to find the smallest unattainable sum
+- [ ] **Objective 3**: Implement efficient coin sum algorithms with O(n log n) time complexity
+- [ ] **Objective 4**: Optimize coin sum problems using sorting and greedy selection techniques
+- [ ] **Objective 5**: Handle edge cases in coin sum problems (single coin, all coins same value, large sums)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Greedy algorithms, sorting algorithms, coin sum problems, subset sum problems, missing sum problems
+- **Data Structures**: Arrays, sorting, sum tracking, coin tracking
+- **Mathematical Concepts**: Coin sum theory, subset sum mathematics, greedy mathematics, sum analysis
+- **Programming Skills**: Sorting implementation, greedy algorithm implementation, sum calculation, algorithm implementation
+- **Related Problems**: Coin Change problems, Subset Sum problems, Greedy algorithm problems
+
 ## Problem Description
 
 **Problem**: Given n coins with values a₁, a₂, ..., aₙ, find the smallest sum that cannot be formed using any subset of the coins.

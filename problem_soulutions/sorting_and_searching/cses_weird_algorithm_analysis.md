@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/cses_weird_algorithm_analys
 
 # Weird Algorithm
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand simulation algorithms and the Collatz conjecture problem
+- [ ] **Objective 2**: Apply simulation techniques to trace algorithm execution and sequence generation
+- [ ] **Objective 3**: Implement efficient simulation algorithms with proper sequence tracking
+- [ ] **Objective 4**: Optimize simulation problems using appropriate data structures and loop handling
+- [ ] **Objective 5**: Handle edge cases in simulation problems (large numbers, infinite loops, overflow)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Simulation algorithms, sequence generation, loop handling, algorithm tracing, Collatz conjecture
+- **Data Structures**: Arrays, sequence tracking, number tracking, loop tracking
+- **Mathematical Concepts**: Number theory, sequence mathematics, algorithm analysis, mathematical simulation
+- **Programming Skills**: Simulation implementation, sequence generation, loop handling, algorithm implementation
+- **Related Problems**: Simulation problems, Sequence generation problems, Mathematical problems
+
 ## Problem Description
 
 **Problem**: Consider an algorithm that takes a positive integer n. If n is even, divide it by two. If n is odd, multiply it by three and add one. Repeat until n becomes one. Simulate this algorithm for a given value of n.

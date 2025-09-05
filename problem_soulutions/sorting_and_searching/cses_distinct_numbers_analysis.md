@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/cses_distinct_numbers_analy
 
 # Distinct Numbers
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand distinct value counting problems and set-based approaches
+- [ ] **Objective 2**: Apply hash sets or sorting to efficiently count distinct values in arrays
+- [ ] **Objective 3**: Implement efficient distinct counting algorithms with O(n) or O(n log n) time complexity
+- [ ] **Objective 4**: Optimize distinct value counting using appropriate data structures and algorithms
+- [ ] **Objective 5**: Handle edge cases in distinct counting (empty arrays, single element, all same values)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Hash sets, sorting algorithms, distinct value counting, set operations, counting problems
+- **Data Structures**: Hash sets, arrays, sorting, distinct value tracking, counting structures
+- **Mathematical Concepts**: Set theory, distinct value mathematics, counting theory, hash mathematics
+- **Programming Skills**: Hash set implementation, sorting implementation, counting logic, algorithm implementation
+- **Related Problems**: Distinct value problems, Set problems, Counting problems, Hash set problems
+
 ## Problem Description
 
 **Problem**: You are given a list of n integers. Calculate the number of distinct values in the list.

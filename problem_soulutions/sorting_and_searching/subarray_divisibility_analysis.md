@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/subarray_divisibility_analy
 
 # Subarray Divisibility
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand subarray divisibility problems and modular arithmetic techniques
+- [ ] **Objective 2**: Apply prefix sums with modular arithmetic to count divisible subarrays
+- [ ] **Objective 3**: Implement efficient divisibility counting algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize divisibility problems using prefix sums, modular arithmetic, and hash maps
+- [ ] **Objective 5**: Handle edge cases in divisibility problems (k=1, all elements divisible, no divisible subarrays)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Prefix sums, modular arithmetic, subarray problems, divisibility problems, hash map usage
+- **Data Structures**: Hash maps, prefix sum arrays, modular tracking, divisibility tracking
+- **Mathematical Concepts**: Modular arithmetic, divisibility theory, prefix sum mathematics, remainder analysis
+- **Programming Skills**: Prefix sum implementation, modular arithmetic, hash map implementation, algorithm implementation
+- **Related Problems**: Subarray Sum problems, Modular arithmetic problems, Divisibility problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers and a positive integer k, find the number of subarrays whose sum is divisible by k.

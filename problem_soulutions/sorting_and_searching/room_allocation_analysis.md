@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/room_allocation_analysis
 
 # Room Allocation
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand interval scheduling problems and resource allocation optimization
+- [ ] **Objective 2**: Apply greedy algorithms with priority queues to minimize resource usage
+- [ ] **Objective 3**: Implement efficient room allocation algorithms with O(n log n) time complexity
+- [ ] **Objective 4**: Optimize resource allocation using sorting, priority queues, and greedy selection
+- [ ] **Objective 5**: Handle edge cases in resource allocation (no conflicts, all conflicts, single customer)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Greedy algorithms, interval scheduling, priority queues, resource allocation, optimization problems
+- **Data Structures**: Priority queues, sorting, interval tracking, room tracking, allocation tracking
+- **Mathematical Concepts**: Interval mathematics, resource allocation theory, optimization problems, scheduling theory
+- **Programming Skills**: Priority queue implementation, sorting implementation, interval processing, algorithm implementation
+- **Related Problems**: Movie Festival (interval scheduling), Greedy algorithm problems, Resource allocation problems
+
 ## Problem Description
 
 **Problem**: Given n customers, each with arrival and departure times, assign rooms to customers so that no two customers share a room at the same time. Find the minimum number of rooms needed and assign rooms to each customer.

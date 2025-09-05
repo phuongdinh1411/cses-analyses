@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/nested_ranges_check_analysi
 
 # Nested Ranges Check
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand range containment problems and interval comparison techniques
+- [ ] **Objective 2**: Apply sorting and coordinate compression to efficiently check range containment
+- [ ] **Objective 3**: Implement efficient range containment algorithms with O(n log n) time complexity
+- [ ] **Objective 4**: Optimize range problems using sorting, coordinate compression, and containment checking
+- [ ] **Objective 5**: Handle edge cases in range problems (identical ranges, no containment, all ranges contained)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Sorting algorithms, coordinate compression, range containment, interval comparison, containment checking
+- **Data Structures**: Arrays, sorting, coordinate compression, range tracking, containment tracking
+- **Mathematical Concepts**: Range mathematics, interval theory, containment mathematics, coordinate compression
+- **Programming Skills**: Sorting implementation, coordinate compression, range comparison, algorithm implementation
+- **Related Problems**: Nested Ranges Count (counting version), Range problems, Interval problems
+
 ## Problem Description
 
 **Problem**: Given n ranges [a₁,b₁], [a₂,b₂], ..., [aₙ,bₙ], for each range check if it contains any other range and if it is contained by any other range.

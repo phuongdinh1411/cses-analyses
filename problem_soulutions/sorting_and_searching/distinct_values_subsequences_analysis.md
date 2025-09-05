@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/distinct_values_subsequence
 
 # Distinct Values Subsequences
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand subsequence problems with distinct value constraints and combinatorial counting
+- [ ] **Objective 2**: Apply dynamic programming and combinatorial techniques to count subsequences with exactly k distinct values
+- [ ] **Objective 3**: Implement efficient subsequence counting algorithms with O(n*k) time complexity
+- [ ] **Objective 4**: Optimize subsequence problems using dynamic programming and distinct value tracking
+- [ ] **Objective 5**: Handle edge cases in subsequence problems (k=1, k=n, all distinct values, no solution)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, subsequence problems, combinatorial counting, distinct value tracking, DP optimization
+- **Data Structures**: DP tables, distinct value tracking, subsequence tracking, counting structures
+- **Mathematical Concepts**: Combinatorial mathematics, subsequence theory, distinct value mathematics, counting theory
+- **Programming Skills**: Dynamic programming implementation, subsequence generation, distinct value tracking, algorithm implementation
+- **Related Problems**: Distinct Values Subarrays (similar concept), Subsequence problems, Dynamic programming problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers, find the number of subsequences that contain exactly k distinct values.

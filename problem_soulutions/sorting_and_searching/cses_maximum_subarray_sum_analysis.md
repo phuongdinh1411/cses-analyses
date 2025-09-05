@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/cses_maximum_subarray_sum_a
 
 # Maximum Subarray Sum
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand Kadane's algorithm and dynamic programming approach to maximum subarray problems
+- [ ] **Objective 2**: Apply Kadane's algorithm to efficiently find maximum sum of contiguous subarrays
+- [ ] **Objective 3**: Implement efficient maximum subarray algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize subarray problems using dynamic programming and greedy approaches
+- [ ] **Objective 5**: Handle edge cases in maximum subarray problems (all negative numbers, single element, empty arrays)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Kadane's algorithm, dynamic programming, greedy algorithms, subarray problems, maximum sum problems
+- **Data Structures**: Arrays, dynamic programming tracking, sum tracking, maximum tracking
+- **Mathematical Concepts**: Subarray sums, dynamic programming theory, optimization problems, sum calculations
+- **Programming Skills**: Dynamic programming implementation, greedy algorithm implementation, sum calculations, algorithm implementation
+- **Related Problems**: Subarray Sum problems, Dynamic programming problems, Maximum sum problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers, find the maximum sum of a subarray.

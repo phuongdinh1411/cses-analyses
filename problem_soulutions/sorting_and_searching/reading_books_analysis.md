@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/reading_books_analysis
 
 # Reading Books
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand parallel processing problems and maximum element optimization
+- [ ] **Objective 2**: Apply simple optimization to find minimum time for parallel task completion
+- [ ] **Objective 3**: Implement efficient parallel processing algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize parallel processing problems using maximum element finding and time calculation
+- [ ] **Objective 5**: Handle edge cases in parallel processing (single book, all books same time, large reading times)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Parallel processing, maximum element finding, time optimization, simple optimization problems
+- **Data Structures**: Arrays, maximum tracking, time tracking, book tracking
+- **Mathematical Concepts**: Parallel processing theory, time optimization, maximum element mathematics
+- **Programming Skills**: Maximum element finding, time calculation, simple optimization, algorithm implementation
+- **Related Problems**: Factory Machines (similar concept), Optimization problems, Parallel processing problems
+
 ## Problem Description
 
 **Problem**: Given n books, each with a reading time, find the minimum time needed to read all books. You can read books in parallel, but each book must be read completely before starting another.

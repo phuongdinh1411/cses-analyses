@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysi
 
 # Tasks and Deadlines
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand task scheduling problems and greedy optimization strategies
+- [ ] **Objective 2**: Apply greedy algorithms with sorting to maximize profit in task scheduling
+- [ ] **Objective 3**: Implement efficient task scheduling algorithms with O(n log n) time complexity
+- [ ] **Objective 4**: Optimize task scheduling using sorting, greedy selection, and profit maximization
+- [ ] **Objective 5**: Handle edge cases in task scheduling (impossible deadlines, negative profits, single task)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Greedy algorithms, sorting algorithms, task scheduling, profit optimization, deadline handling
+- **Data Structures**: Arrays, sorting, task tracking, deadline tracking, profit tracking
+- **Mathematical Concepts**: Task scheduling theory, profit optimization, deadline mathematics, greedy mathematics
+- **Programming Skills**: Sorting implementation, greedy algorithm implementation, profit calculation, algorithm implementation
+- **Related Problems**: Greedy algorithm problems, Optimization problems, Scheduling problems
+
 ## Problem Description
 
 **Problem**: Given n tasks, each with a duration and deadline, find the maximum profit that can be obtained. The profit for a task is deadline - completion_time, and completion_time is the sum of durations of all tasks completed before it plus its own duration.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_iv_analy
 
 # Collecting Numbers IV
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand advanced collecting numbers problems with detailed round-by-round collection tracking
+- [ ] **Objective 2**: Apply greedy algorithms with position tracking to find detailed collection order for each round
+- [ ] **Objective 3**: Implement efficient collection algorithms with O(n) time complexity for detailed round tracking
+- [ ] **Objective 4**: Optimize collection problems using position tracking, dependency analysis, and detailed order reconstruction
+- [ ] **Objective 5**: Handle edge cases in collection problems (sorted arrays, reverse sorted arrays, detailed round tracking)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Greedy algorithms, position tracking, dependency analysis, collection strategies, detailed order reconstruction
+- **Data Structures**: Arrays, position tracking, collection tracking, detailed order tracking, round tracking
+- **Mathematical Concepts**: Collection theory, dependency mathematics, detailed order reconstruction, position analysis
+- **Programming Skills**: Position tracking, detailed order reconstruction, greedy algorithm implementation, collection logic, algorithm implementation
+- **Related Problems**: Collecting Numbers III (order only), Collecting Numbers II (rounds only), Collection problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers, you want to collect them in increasing order. You can collect a number if you have already collected all numbers smaller than it. Find the minimum number of rounds needed to collect all numbers, and also find the order in which numbers are collected in each round.

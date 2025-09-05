@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/playlist_analysis
 
 # Playlist
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand sliding window problems with uniqueness constraints and longest segment optimization
+- [ ] **Objective 2**: Apply sliding window technique to find longest contiguous subarray with unique elements
+- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity for uniqueness problems
+- [ ] **Objective 4**: Optimize sliding window problems using hash maps and two-pointer techniques
+- [ ] **Objective 5**: Handle edge cases in sliding window problems (all unique elements, all same elements, empty arrays)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Sliding window technique, two-pointer technique, hash maps, uniqueness tracking, longest segment optimization
+- **Data Structures**: Hash maps, sliding window tracking, frequency tracking, uniqueness tracking, segment tracking
+- **Mathematical Concepts**: Segment analysis, uniqueness theory, window mathematics, optimization problems
+- **Programming Skills**: Hash map implementation, sliding window implementation, frequency tracking, algorithm implementation
+- **Related Problems**: Longest Substring Without Repeating Characters (similar problem), Sliding window problems, Uniqueness problems
+
 ## Problem Description
 
 **Problem**: Given a playlist of n songs, each with a genre, find the longest continuous segment where no song appears more than once.

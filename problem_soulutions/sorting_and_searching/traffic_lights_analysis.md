@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sorting_and_searching/traffic_lights_analysis
 
 # Traffic Lights
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand dynamic segment problems and set-based data structures for range queries
+- [ ] **Objective 2**: Apply sets and binary search to efficiently track longest continuous segments
+- [ ] **Objective 3**: Implement efficient dynamic segment algorithms with O(q log n) time complexity
+- [ ] **Objective 4**: Optimize dynamic segment problems using sets, binary search, and segment tracking
+- [ ] **Objective 5**: Handle edge cases in dynamic segment problems (all lights off, all lights on, single light)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Sets, binary search, dynamic segment problems, range queries, segment tracking
+- **Data Structures**: Sets, binary search trees, segment tracking, light tracking, range tracking
+- **Mathematical Concepts**: Segment mathematics, range theory, dynamic programming, set theory
+- **Programming Skills**: Set implementation, binary search implementation, segment tracking, algorithm implementation
+- **Related Problems**: Dynamic segment problems, Set problems, Range query problems
+
 ## Problem Description
 
 **Problem**: There are n traffic lights on a street. Initially, all lights are green. Then, q events happen: either a light turns red or a light turns green. After each event, find the length of the longest continuous segment of green lights.
