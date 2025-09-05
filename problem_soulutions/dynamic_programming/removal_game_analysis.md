@@ -169,6 +169,210 @@ test_solution()
 - **Base Case**: dp[i][i] = arr[i] for single elements
 - **Optimal Substructure**: Optimal solution can be built from smaller subproblems
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Array: [4, 5, 1, 3]
+```
+
+### Game Play Visualization
+```
+Initial array: [4, 5, 1, 3]
+Player 1 (maximizing): Score = 0
+Player 2 (minimizing): Score = 0
+
+Turn 1 - Player 1:
+Options: Take 4 (left) or 3 (right)
+- Take 4: Score = 4, Remaining: [5, 1, 3]
+- Take 3: Score = 3, Remaining: [4, 5, 1]
+Player 1 chooses 4 (better option)
+Array: [5, 1, 3], Player 1 score = 4
+
+Turn 2 - Player 2:
+Options: Take 5 (left) or 3 (right)
+- Take 5: Score = 5, Remaining: [1, 3]
+- Take 3: Score = 3, Remaining: [5, 1]
+Player 2 chooses 3 (minimizes Player 1's advantage)
+Array: [5, 1], Player 2 score = 3
+
+Turn 3 - Player 1:
+Options: Take 5 (left) or 1 (right)
+- Take 5: Score = 4 + 5 = 9, Remaining: [1]
+- Take 1: Score = 4 + 1 = 5, Remaining: [5]
+Player 1 chooses 5 (better option)
+Array: [1], Player 1 score = 9
+
+Turn 4 - Player 2:
+Only option: Take 1
+Array: [], Player 2 score = 3 + 1 = 4
+
+Final scores:
+Player 1: 9
+Player 2: 4
+Difference: 9 - 4 = 5
+```
+
+### DP State Representation
+```
+dp[left][right] = maximum score difference for subarray arr[left:right+1]
+
+For array [4, 5, 1, 3]:
+dp[0][3] = maximum score difference for entire array [4, 5, 1, 3]
+
+Base cases:
+dp[0][0] = 4 (single element)
+dp[1][1] = 5 (single element)
+dp[2][2] = 1 (single element)
+dp[3][3] = 3 (single element)
+
+Recursive cases:
+dp[0][1] = max(4 - dp[1][1], 5 - dp[0][0]) = max(4 - 5, 5 - 4) = max(-1, 1) = 1
+dp[1][2] = max(5 - dp[2][2], 1 - dp[1][1]) = max(5 - 1, 1 - 5) = max(4, -4) = 4
+dp[2][3] = max(1 - dp[3][3], 3 - dp[2][2]) = max(1 - 3, 3 - 1) = max(-2, 2) = 2
+
+dp[0][2] = max(4 - dp[1][2], 1 - dp[0][1]) = max(4 - 4, 1 - 1) = max(0, 0) = 0
+dp[1][3] = max(5 - dp[2][3], 3 - dp[1][2]) = max(5 - 2, 3 - 4) = max(3, -1) = 3
+
+dp[0][3] = max(4 - dp[1][3], 3 - dp[0][2]) = max(4 - 3, 3 - 0) = max(1, 3) = 3
+```
+
+### DP Table Construction
+```
+Array: [4, 5, 1, 3]
+Index:  0  1  2  3
+
+Step 1: Base cases (single elements)
+dp[0][0] = 4, dp[1][1] = 5, dp[2][2] = 1, dp[3][3] = 3
+
+Step 2: Length 2 subarrays
+dp[0][1] = max(4 - 5, 5 - 4) = max(-1, 1) = 1
+dp[1][2] = max(5 - 1, 1 - 5) = max(4, -4) = 4
+dp[2][3] = max(1 - 3, 3 - 1) = max(-2, 2) = 2
+
+Step 3: Length 3 subarrays
+dp[0][2] = max(4 - 4, 1 - 1) = max(0, 0) = 0
+dp[1][3] = max(5 - 2, 3 - 4) = max(3, -1) = 3
+
+Step 4: Length 4 subarray (entire array)
+dp[0][3] = max(4 - 3, 3 - 0) = max(1, 3) = 3
+
+Final DP Table:
+     0  1  2  3
+0:    4  1  0  3
+1:    -  5  4  3
+2:    -  -  1  2
+3:    -  -  -  3
+```
+
+### Visual DP Table
+```
+Array: [4, 5, 1, 3]
+Index:  0  1  2  3
+
+DP Table (score differences):
+     0  1  2  3
+0:    4  1  0  3
+1:    -  5  4  3
+2:    -  -  1  2
+3:    -  -  -  3
+
+Each cell shows maximum score difference for that subarray
+```
+
+### Game Tree Visualization
+```
+                    [4,5,1,3] (Player 1)
+                   /              \
+            [5,1,3] (4)        [4,5,1] (3)
+            /        \          /        \
+      [1,3] (5)   [5,1] (3)  [5,1] (5)  [4,5] (1)
+      /    \       /    \     /    \     /    \
+   [3] (1) [1] (5) [1] (5) [5] (1) [1] (5) [5] (1) [4] (5) [5] (4)
+
+Optimal path: [4,5,1,3] → [5,1,3] → [5,1] → [1] → []
+Scores: Player 1: 4+5+1 = 10, Player 2: 3+1 = 4
+Difference: 10 - 4 = 6
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Recursive       │ O(2^n)       │ O(n)         │ Try all      │
+│                 │              │              │ moves        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Memoized        │ O(n²)        │ O(n²)        │ Cache        │
+│ Recursion       │              │              │ results      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bottom-up DP    │ O(n²)        │ O(n²)        │ Build from   │
+│                 │              │              │ base cases   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Space-optimized │ O(n²)        │ O(n)         │ Use only     │
+│ DP              │              │              │ current row  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Removal Game Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: array    │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Initialize DP   │
+              │ table           │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Set base cases: │
+              │ dp[i][i] =      │
+              │ arr[i]          │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For length = 2  │
+              │ to n:           │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For left = 0 to │
+              │ n-length:       │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ right = left +  │
+              │ length - 1      │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ dp[left][right] │
+              │ = max(arr[left] │
+              │ - dp[left+1]    │
+              │ [right],        │
+              │ arr[right] -    │
+              │ dp[left][right-1])│
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return dp[0][n-1]│
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Dynamic Programming for Game Theory**

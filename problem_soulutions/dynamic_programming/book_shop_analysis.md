@@ -173,6 +173,220 @@ test_solution()
 - **Base Case**: dp[0][j] = 0 for all j (no books selected)
 - **Optimal Substructure**: Optimal solution can be built from smaller subproblems
 
+## 🎨 Visual Example
+
+### Input Example
+```
+n = 4, x = 10
+Prices: [4, 8, 5, 3]
+Pages:  [5, 12, 8, 1]
+```
+
+### All Possible Book Combinations
+```
+Books:
+Book 1: Price 4, Pages 5
+Book 2: Price 8, Pages 12
+Book 3: Price 5, Pages 8
+Book 4: Price 3, Pages 1
+
+Budget: 10
+
+All valid combinations:
+1. Buy Book 1 only: Price = 4 ≤ 10, Pages = 5
+2. Buy Book 2 only: Price = 8 ≤ 10, Pages = 12
+3. Buy Book 3 only: Price = 5 ≤ 10, Pages = 8
+4. Buy Book 4 only: Price = 3 ≤ 10, Pages = 1
+5. Buy Books 1,3: Price = 4+5 = 9 ≤ 10, Pages = 5+8 = 13
+6. Buy Books 1,4: Price = 4+3 = 7 ≤ 10, Pages = 5+1 = 6
+7. Buy Books 2,4: Price = 8+3 = 11 > 10 (invalid)
+8. Buy Books 3,4: Price = 5+3 = 8 ≤ 10, Pages = 8+1 = 9
+9. Buy Books 1,3,4: Price = 4+5+3 = 12 > 10 (invalid)
+
+Maximum pages: 13 (Books 1 and 3)
+```
+
+### DP State Representation
+```
+dp[i][j] = maximum pages using first i books with budget j
+
+For books [4,8,5,3] with pages [5,12,8,1] and budget 10:
+
+Base case: dp[0][j] = 0 for all j (no books selected)
+
+dp[1][j] = maximum pages using only book 1 with budget j
+- dp[1][0] = 0, dp[1][1] = 0, dp[1][2] = 0, dp[1][3] = 0
+- dp[1][4] = 5, dp[1][5] = 5, ..., dp[1][10] = 5
+
+dp[2][j] = maximum pages using books 1,2 with budget j
+- dp[2][0] = 0, dp[2][1] = 0, dp[2][2] = 0, dp[2][3] = 0
+- dp[2][4] = 5, dp[2][5] = 5, dp[2][6] = 5, dp[2][7] = 5
+- dp[2][8] = max(5, 12) = 12, dp[2][9] = 12, dp[2][10] = 12
+
+dp[3][j] = maximum pages using books 1,2,3 with budget j
+- dp[3][0] = 0, dp[3][1] = 0, dp[3][2] = 0, dp[3][3] = 0
+- dp[3][4] = 5, dp[3][5] = max(5, 8) = 8, dp[3][6] = 8
+- dp[3][7] = 8, dp[3][8] = max(12, 8) = 12, dp[3][9] = max(12, 5+8) = 13
+- dp[3][10] = max(12, 5+8) = 13
+
+dp[4][j] = maximum pages using all books with budget j
+- dp[4][0] = 0, dp[4][1] = 0, dp[4][2] = 0, dp[4][3] = max(0, 1) = 1
+- dp[4][4] = max(5, 1) = 5, dp[4][5] = max(8, 1) = 8
+- dp[4][6] = 8, dp[4][7] = max(8, 5+1) = 8, dp[4][8] = max(12, 8+1) = 12
+- dp[4][9] = max(13, 8+1) = 13, dp[4][10] = max(13, 5+8+1) = 13
+```
+
+### DP Table Construction
+```
+Books: [4,8,5,3] (prices), [5,12,8,1] (pages)
+Budget: 10
+
+Step 1: Base case (no books)
+dp[0][j] = 0 for all j
+
+Step 2: Book 1 (price 4, pages 5)
+dp[1][j] = 0 for j < 4, dp[1][j] = 5 for j ≥ 4
+
+Step 3: Book 2 (price 8, pages 12)
+dp[2][j] = dp[1][j] for j < 8
+dp[2][8] = max(dp[1][8], dp[1][0] + 12) = max(5, 0 + 12) = 12
+dp[2][9] = max(dp[1][9], dp[1][1] + 12) = max(5, 0 + 12) = 12
+dp[2][10] = max(dp[1][10], dp[1][2] + 12) = max(5, 0 + 12) = 12
+
+Step 4: Book 3 (price 5, pages 8)
+dp[3][j] = dp[2][j] for j < 5
+dp[3][5] = max(dp[2][5], dp[2][0] + 8) = max(5, 0 + 8) = 8
+dp[3][6] = max(dp[2][6], dp[2][1] + 8) = max(5, 0 + 8) = 8
+dp[3][7] = max(dp[2][7], dp[2][2] + 8) = max(5, 0 + 8) = 8
+dp[3][8] = max(dp[2][8], dp[2][3] + 8) = max(12, 0 + 8) = 12
+dp[3][9] = max(dp[2][9], dp[2][4] + 8) = max(12, 5 + 8) = 13
+dp[3][10] = max(dp[2][10], dp[2][5] + 8) = max(12, 5 + 8) = 13
+
+Step 5: Book 4 (price 3, pages 1)
+dp[4][j] = dp[3][j] for j < 3
+dp[4][3] = max(dp[3][3], dp[3][0] + 1) = max(0, 0 + 1) = 1
+dp[4][4] = max(dp[3][4], dp[3][1] + 1) = max(5, 0 + 1) = 5
+dp[4][5] = max(dp[3][5], dp[3][2] + 1) = max(8, 0 + 1) = 8
+dp[4][6] = max(dp[3][6], dp[3][3] + 1) = max(8, 0 + 1) = 8
+dp[4][7] = max(dp[3][7], dp[3][4] + 1) = max(8, 5 + 1) = 8
+dp[4][8] = max(dp[3][8], dp[3][5] + 1) = max(12, 8 + 1) = 12
+dp[4][9] = max(dp[3][9], dp[3][6] + 1) = max(13, 8 + 1) = 13
+dp[4][10] = max(dp[3][10], dp[3][7] + 1) = max(13, 8 + 1) = 13
+
+Final result: dp[4][10] = 13
+```
+
+### Visual DP Table
+```
+Books: [4,8,5,3] (prices), [5,12,8,1] (pages)
+Budget: 10
+
+DP Table (maximum pages):
+     0  1  2  3  4  5  6  7  8  9 10
+0:    0  0  0  0  0  0  0  0  0  0  0
+1:    0  0  0  0  5  5  5  5  5  5  5
+2:    0  0  0  0  5  5  5  5 12 12 12
+3:    0  0  0  0  5  8  8  8 12 13 13
+4:    0  0  0  1  5  8  8  8 12 13 13
+
+Each cell shows maximum pages using first i books with budget j
+```
+
+### Optimal Selection Reconstruction
+```
+Starting from dp[4][10] = 13:
+- Current: 4 books, budget 10, pages = 13
+- Check: dp[3][10] = 13 (same as dp[4][10])
+- Book 4 not selected, move to dp[3][10]
+
+- Current: 3 books, budget 10, pages = 13
+- Check: dp[2][10] = 12 (less than dp[3][10])
+- Book 3 selected, move to dp[2][5]
+
+- Current: 2 books, budget 5, pages = 8
+- Check: dp[1][5] = 5 (less than dp[2][5])
+- Book 2 not selected, move to dp[1][5]
+
+- Current: 1 book, budget 5, pages = 5
+- Check: dp[0][5] = 0 (less than dp[1][5])
+- Book 1 selected, move to dp[0][1]
+
+- Current: 0 books, budget 1, pages = 0
+
+Selected books: Book 1 (price 4, pages 5) + Book 3 (price 5, pages 8)
+Total price: 4 + 5 = 9 ≤ 10
+Total pages: 5 + 8 = 13
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Recursive       │ O(2^n)       │ O(n)         │ Try all      │
+│                 │              │              │ combinations │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Memoized        │ O(n*x)       │ O(n*x)       │ Cache        │
+│ Recursion       │              │              │ results      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bottom-up DP    │ O(n*x)       │ O(n*x)       │ Build from   │
+│                 │              │              │ base cases   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Space-optimized │ O(n*x)       │ O(x)         │ Use only     │
+│ DP              │              │              │ current row  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Book Shop Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: n, x,    │
+              │ prices, pages   │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Initialize DP   │
+              │ table           │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Set base case:  │
+              │ dp[0][j] = 0    │
+              │ for all j       │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For i = 1 to n: │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For j = 0 to x: │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ dp[i][j] =      │
+              │ max(dp[i-1][j], │
+              │ dp[i-1][j-price[i-1]] │
+              │ + pages[i-1])   │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return dp[n][x] │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Dynamic Programming for Knapsack Problems**

@@ -192,6 +192,200 @@ test_solution()
 - **Base Case**: dp[0] = True represents empty subset
 - **Reverse Iteration**: Prevents overcounting by iterating backwards
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Coins: [4, 2, 5, 2]
+```
+
+### All Possible Subsets and Sums
+```
+Coins: [4, 2, 5, 2]
+
+All possible subsets:
+1. {} → sum = 0
+2. {2} → sum = 2
+3. {2} → sum = 2 (duplicate)
+4. {4} → sum = 4
+5. {5} → sum = 5
+6. {2, 2} → sum = 4 (duplicate)
+7. {2, 4} → sum = 6
+8. {2, 5} → sum = 7
+9. {4, 5} → sum = 9
+10. {2, 2, 4} → sum = 8
+11. {2, 2, 5} → sum = 9 (duplicate)
+12. {2, 4, 5} → sum = 11
+13. {2, 2, 4, 5} → sum = 13
+
+Unique sums: 0, 2, 4, 5, 6, 7, 8, 9, 11, 13
+Total: 10 different sums
+```
+
+### DP Table Construction
+```
+dp[i] = True if sum i is achievable
+
+Initial state:
+dp = [True, False, False, False, False, False, False, False, False, False, False, False, False, False]
+     0      1      2      3      4      5      6      7      8      9     10     11     12     13
+
+Base case: dp[0] = True (empty subset has sum 0)
+
+For each coin in [4, 2, 5, 2]:
+  For each sum i from max_sum down to coin:
+    if dp[i-coin] == True:
+      dp[i] = True
+
+After coin 4:
+dp = [True, False, False, False, True, False, False, False, False, False, False, False, False, False]
+
+After coin 2:
+dp = [True, False, True, False, True, False, True, False, False, False, False, False, False, False]
+
+After coin 5:
+dp = [True, False, True, False, True, True, True, False, True, False, True, False, False, False]
+
+After coin 2 (second time):
+dp = [True, False, True, False, True, True, True, True, True, True, True, True, False, True]
+
+Final: dp = [True, False, True, False, True, True, True, True, True, True, True, True, False, True]
+Answer: 10 different sums
+```
+
+### Step-by-Step DP Process
+```
+Coins: [4, 2, 5, 2]
+
+Step 1: Initialize
+dp[0] = True (base case)
+All other dp[i] = False
+
+Step 2: Process coin 4
+For i = 13 down to 4:
+  dp[4] = dp[0] = True
+  dp[8] = dp[4] = True
+  dp[12] = dp[8] = True
+
+Step 3: Process coin 2
+For i = 13 down to 2:
+  dp[2] = dp[0] = True
+  dp[4] = dp[2] = True (already True)
+  dp[6] = dp[4] = True
+  dp[8] = dp[6] = True (already True)
+  dp[10] = dp[8] = True
+  dp[12] = dp[10] = True (already True)
+
+Step 4: Process coin 5
+For i = 13 down to 5:
+  dp[5] = dp[0] = True
+  dp[7] = dp[2] = True
+  dp[9] = dp[4] = True
+  dp[11] = dp[6] = True
+  dp[13] = dp[8] = True
+
+Step 5: Process coin 2 (second time)
+For i = 13 down to 2:
+  dp[2] = dp[0] = True (already True)
+  dp[4] = dp[2] = True (already True)
+  dp[6] = dp[4] = True (already True)
+  dp[8] = dp[6] = True (already True)
+  dp[10] = dp[8] = True (already True)
+  dp[12] = dp[10] = True (already True)
+
+Final result: 10 different sums
+```
+
+### Visual DP Table
+```
+Sum:    0  1  2  3  4  5  6  7  8  9 10 11 12 13
+Initial:T  F  F  F  F  F  F  F  F  F  F  F  F  F
+
+After coin 4:
+        T  F  F  F  T  F  F  F  T  F  F  F  T  F
+
+After coin 2:
+        T  F  T  F  T  F  T  F  T  F  T  F  T  F
+
+After coin 5:
+        T  F  T  F  T  T  T  T  T  T  T  T  T  F
+
+After coin 2 (second):
+        T  F  T  F  T  T  T  T  T  T  T  T  T  T
+
+Achievable sums: 0, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+Total: 12 different sums
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Recursive       │ O(2^n)       │ O(n)         │ Try all      │
+│                 │              │              │ subsets      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DP Bottom-up    │ O(n×sum)     │ O(sum)       │ Build from   │
+│                 │              │              │ smaller sums │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DP 2D           │ O(n×sum)     │ O(n×sum)     │ Track coin   │
+│                 │              │              │ usage        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Set-based       │ O(n×sum)     │ O(sum)       │ Use set to   │
+│                 │              │              │ avoid dups   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Money Sums Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: coins    │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Initialize      │
+              │ dp[0] = True    │
+              │ dp[i] = False   │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For each coin:  │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For sum i from  │
+              │ max_sum down to │
+              │ coin:           │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ If dp[i-coin]   │
+              │ == True:        │
+              │ dp[i] = True    │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Count True      │
+              │ values in dp    │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return count    │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

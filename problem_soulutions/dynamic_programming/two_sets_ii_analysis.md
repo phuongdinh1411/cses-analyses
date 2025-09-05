@@ -177,6 +177,91 @@ test_solution()
 - **Base Case**: dp[0] = 1 represents empty subset
 - **Equal Partition**: Target sum is total_sum/2
 
+## 🎨 Visual Example
+
+### Input Example
+```
+n = 7
+```
+
+### All Possible Partitions
+```
+Numbers: [1, 2, 3, 4, 5, 6, 7]
+Total sum: 1+2+3+4+5+6+7 = 28
+Target sum: 28/2 = 14
+
+Valid partitions where both sets sum to 14:
+1. {1, 2, 3, 4, 5, 6, 7} and {} (invalid - one set empty)
+2. {1, 2, 3, 4, 5, 6} and {7} (sums: 21 and 7)
+3. {1, 2, 3, 4, 5, 7} and {6} (sums: 22 and 6)
+4. {1, 2, 3, 4, 6, 7} and {5} (sums: 23 and 5)
+5. {1, 2, 3, 5, 6, 7} and {4} (sums: 24 and 4)
+6. {1, 2, 4, 5, 6, 7} and {3} (sums: 25 and 3)
+7. {1, 3, 4, 5, 6, 7} and {2} (sums: 26 and 2)
+8. {2, 3, 4, 5, 6, 7} and {1} (sums: 27 and 1)
+
+Actually, there are 4 valid ways where both sets have equal sums.
+```
+
+### DP State Representation
+```
+dp[i] = number of ways to make sum i using numbers 1 to n
+
+For n = 7, target = 14:
+dp[0] = 1 (empty subset)
+dp[1] = 1 (using {1})
+dp[2] = 1 (using {2})
+dp[3] = 2 (using {3} or {1,2})
+dp[4] = 3 (using {4}, {1,3}, or {2,2} - but 2,2 not valid)
+dp[5] = 4 (using {5}, {1,4}, {2,3}, or {1,2,2})
+...
+dp[14] = number of ways to make sum 14
+```
+
+### DP Table Construction
+```
+Numbers: [1, 2, 3, 4, 5, 6, 7]
+Target: 14
+
+Step 1: Initialize
+dp[0] = 1
+
+Step 2: Add each number
+Add 1: dp[1] = 1
+Add 2: dp[2] = 1, dp[3] = 1
+Add 3: dp[3] = 2, dp[4] = 1, dp[5] = 1
+Add 4: dp[4] = 3, dp[5] = 2, dp[6] = 2, dp[7] = 1
+Add 5: dp[5] = 4, dp[6] = 3, dp[7] = 3, dp[8] = 2, dp[9] = 1
+Add 6: dp[6] = 5, dp[7] = 4, dp[8] = 4, dp[9] = 3, dp[10] = 2, dp[11] = 1
+Add 7: dp[7] = 6, dp[8] = 5, dp[9] = 5, dp[10] = 4, dp[11] = 3, dp[12] = 2, dp[13] = 1
+
+Final result: dp[14] = number of ways to make sum 14
+```
+
+### Visual DP Table
+```
+Sum:  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14
+Ways: 1  1  1  2  3  4  5  6  5  4  3  2  1  1  4
+
+Each cell shows number of ways to make that sum
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Recursive       │ O(2^n)       │ O(n)         │ Try all      │
+│                 │              │              │ subsets      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bottom-up DP    │ O(n²)        │ O(n²)        │ Build from   │
+│                 │              │              │ base cases   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Space-optimized │ O(n²)        │ O(n)         │ Use only     │
+│ DP              │              │              │ current row  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Dynamic Programming for Partitioning**

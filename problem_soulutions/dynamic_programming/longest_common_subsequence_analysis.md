@@ -161,6 +161,156 @@ test_solution()
 - **Base Case**: dp[0][j] = dp[i][0] = 0 for all i, j
 - **Optimal Substructure**: LCS of prefixes can be built from smaller subproblems
 
+## 🎨 Visual Example
+
+### Input Example
+```
+String 1: "AYXT"
+String 2: "AYZXT"
+```
+
+### All Possible Common Subsequences
+```
+String 1: A Y X T
+String 2: A Y Z X T
+
+All common subsequences:
+1. "A" (length 1)
+2. "Y" (length 1)
+3. "X" (length 1)
+4. "T" (length 1)
+5. "AY" (length 2)
+6. "AX" (length 2)
+7. "AT" (length 2)
+8. "YX" (length 2)
+9. "YT" (length 2)
+10. "XT" (length 2)
+11. "AYX" (length 3)
+12. "AYT" (length 3)
+13. "AXT" (length 3)
+14. "YXT" (length 3)
+15. "AYXT" (length 4)
+
+Longest common subsequence: "AYXT" (length 4)
+```
+
+### DP State Representation
+```
+dp[i][j] = length of LCS of s[0:i] and t[0:j]
+
+For strings "AYXT" and "AYZXT":
+dp[0][j] = 0 for all j (empty string)
+dp[i][0] = 0 for all i (empty string)
+
+dp[1][1] = 1 (LCS of "A" and "A" is "A")
+dp[1][2] = 1 (LCS of "A" and "AY" is "A")
+dp[1][3] = 1 (LCS of "A" and "AYZ" is "A")
+dp[1][4] = 1 (LCS of "A" and "AYZX" is "A")
+dp[1][5] = 1 (LCS of "A" and "AYZXT" is "A")
+
+dp[2][1] = 1 (LCS of "AY" and "A" is "A")
+dp[2][2] = 2 (LCS of "AY" and "AY" is "AY")
+dp[2][3] = 2 (LCS of "AY" and "AYZ" is "AY")
+dp[2][4] = 2 (LCS of "AY" and "AYZX" is "AY")
+dp[2][5] = 2 (LCS of "AY" and "AYZXT" is "AY")
+
+dp[3][1] = 1 (LCS of "AYX" and "A" is "A")
+dp[3][2] = 2 (LCS of "AYX" and "AY" is "AY")
+dp[3][3] = 2 (LCS of "AYX" and "AYZ" is "AY")
+dp[3][4] = 3 (LCS of "AYX" and "AYZX" is "AYX")
+dp[3][5] = 3 (LCS of "AYX" and "AYZXT" is "AYX")
+
+dp[4][1] = 1 (LCS of "AYXT" and "A" is "A")
+dp[4][2] = 2 (LCS of "AYXT" and "AY" is "AY")
+dp[4][3] = 2 (LCS of "AYXT" and "AYZ" is "AY")
+dp[4][4] = 3 (LCS of "AYXT" and "AYZX" is "AYX")
+dp[4][5] = 4 (LCS of "AYXT" and "AYZXT" is "AYXT")
+```
+
+### DP Table Construction
+```
+String 1: "AYXT"
+String 2: "AYZXT"
+
+Step 1: Initialize base cases
+dp[0][j] = 0 for all j
+dp[i][0] = 0 for all i
+
+Step 2: Fill DP table
+dp[1][1] = 1 (A matches A)
+dp[1][2] = 1 (A matches A)
+dp[1][3] = 1 (A matches A)
+dp[1][4] = 1 (A matches A)
+dp[1][5] = 1 (A matches A)
+
+dp[2][1] = 1 (Y doesn't match A, take max of dp[1][1] and dp[2][0])
+dp[2][2] = 2 (Y matches Y, dp[1][1] + 1 = 2)
+dp[2][3] = 2 (Y doesn't match Z, take max of dp[1][3] and dp[2][2])
+dp[2][4] = 2 (Y doesn't match X, take max of dp[1][4] and dp[2][3])
+dp[2][5] = 2 (Y doesn't match T, take max of dp[1][5] and dp[2][4])
+
+dp[3][1] = 1 (X doesn't match A, take max of dp[2][1] and dp[3][0])
+dp[3][2] = 2 (X doesn't match Y, take max of dp[2][2] and dp[3][1])
+dp[3][3] = 2 (X doesn't match Z, take max of dp[2][3] and dp[3][2])
+dp[3][4] = 3 (X matches X, dp[2][3] + 1 = 3)
+dp[3][5] = 3 (X doesn't match T, take max of dp[2][5] and dp[3][4])
+
+dp[4][1] = 1 (T doesn't match A, take max of dp[3][1] and dp[4][0])
+dp[4][2] = 2 (T doesn't match Y, take max of dp[3][2] and dp[4][1])
+dp[4][3] = 2 (T doesn't match Z, take max of dp[3][3] and dp[4][2])
+dp[4][4] = 3 (T doesn't match X, take max of dp[3][4] and dp[4][3])
+dp[4][5] = 4 (T matches T, dp[3][4] + 1 = 4)
+
+Final result: dp[4][5] = 4
+```
+
+### Visual DP Table
+```
+String 1: "AYXT"
+String 2: "AYZXT"
+
+DP Table (LCS lengths):
+     0  1  2  3  4  5
+0:    0  0  0  0  0  0
+1:    0  1  1  1  1  1
+2:    0  1  2  2  2  2
+3:    0  1  2  2  3  3
+4:    0  1  2  2  3  4
+
+Each cell shows length of LCS of corresponding prefixes
+```
+
+### LCS Construction
+```
+String 1: "AYXT"
+String 2: "AYZXT"
+
+LCS: "AYXT" (length 4)
+- A matches A (position 0,0)
+- Y matches Y (position 1,1)
+- X matches X (position 2,3)
+- T matches T (position 3,4)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Recursive       │ O(2^(m+n))   │ O(m+n)       │ Try all      │
+│                 │              │              │ subsequences │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Memoized        │ O(m*n)       │ O(m*n)       │ Cache        │
+│ Recursion       │              │              │ results      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bottom-up DP    │ O(m*n)       │ O(m*n)       │ Build from   │
+│                 │              │              │ base cases   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Space-optimized │ O(m*n)       │ O(min(m,n))  │ Use only     │
+│ DP              │              │              │ current row  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Dynamic Programming for String Problems**
