@@ -594,6 +594,118 @@ print(f"After updating (0,1) to wall: {labyrinth.get_min_walls()}")
 
 **This is a great introduction to grid-based pathfinding and 0-1 BFS!** 🎯
 
+## 🎨 Visual Example
+
+### Input Example
+```
+5×8 labyrinth:
+########
+#..#...#
+####.#.#
+#..#...#
+########
+```
+
+### Grid Visualization
+```
+Row 0: ########
+Row 1: #..#...#
+Row 2: ####.#.#
+Row 3: #..#...#
+Row 4: ########
+
+Legend: # = Wall, . = Floor
+Start: (0,0), End: (4,7)
+```
+
+### 0-1 BFS Process
+```
+Step 1: Start from (0,0)
+- Deque: [(0,0,0)] (row, col, walls)
+- Visited: {(0,0)}
+- Distance: 0
+
+Step 2: Process (0,0)
+- Explore neighbors: (0,1), (1,0)
+- (0,1): Wall, add to back of deque: [(0,1,1)]
+- (1,0): Wall, add to back of deque: [(0,1,1), (1,0,1)]
+- Deque: [(0,1,1), (1,0,1)]
+
+Step 3: Process (0,1) - Wall
+- Explore neighbors: (0,0), (0,2), (1,1)
+- (0,0): Already visited
+- (0,2): Wall, add to back: [(1,0,1), (0,2,2)]
+- (1,1): Floor, add to front: [(1,1,1), (1,0,1), (0,2,2)]
+- Deque: [(1,1,1), (1,0,1), (0,2,2)]
+
+Step 4: Process (1,1) - Floor
+- Explore neighbors: (1,0), (1,2), (0,1), (2,1)
+- (1,0): Wall, add to back: [(1,0,1), (0,2,2), (1,0,2)]
+- (1,2): Floor, add to front: [(1,2,1), (1,0,1), (0,2,2), (1,0,2)]
+- (0,1): Already visited
+- (2,1): Wall, add to back: [(1,0,1), (0,2,2), (1,0,2), (2,1,2)]
+- Deque: [(1,2,1), (1,0,1), (0,2,2), (1,0,2), (2,1,2)]
+
+Continue until reaching (4,7)...
+```
+
+### Optimal Path Visualization
+```
+########
+#S..#...#
+####.#.#
+#..#...E#
+########
+
+Path: S(0,0) → (1,1) → (1,2) → (1,3) → (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → E(4,7)
+
+Walls passed through: 2
+- Wall at (2,7)
+- Wall at (4,7)
+```
+
+### 0-1 BFS vs Dijkstra Comparison
+```
+0-1 BFS (Deque):
+- Weight 0: Add to front of deque
+- Weight 1: Add to back of deque
+- Time: O(n×m)
+- Space: O(n×m)
+
+Dijkstra (Priority Queue):
+- All weights: Add to priority queue
+- Time: O(n×m log(n×m))
+- Space: O(n×m)
+```
+
+### Distance Array Visualization
+```
+Distance array (5×8):
+Row 0: [0,1,2,3,4,5,6,7]
+Row 1: [1,1,1,1,1,1,1,2]
+Row 2: [2,2,2,2,2,2,2,2]
+Row 3: [3,3,3,3,3,3,3,2]
+Row 4: [4,4,4,4,4,4,4,2]
+
+Minimum walls to reach (4,7): 2
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ 0-1 BFS         │ O(n×m)       │ O(n×m)       │ Deque with   │
+│                 │              │              │ front/back   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Dijkstra        │ O(n×m log(n×m))│ O(n×m)     │ Priority     │
+│                 │              │              │ queue        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ BFS with Walls  │ O(n×m)       │ O(n×m)       │ Modified     │
+│                 │              │              │ BFS          │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## Key Insights for Other Problems
 
 ### 1. **Shortest Path with Weighted Edges**

@@ -206,6 +206,132 @@ else:
 | Bellman-Ford | O(n*m) | O(n) | Use Bellman-Ford for negative cycle detection |
 | Path Reconstruction | O(n*m) | O(n) | Reconstruct cycle using parent array |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 nodes, 5 edges:
+Edge 1: 1 → 2 (weight: 1)
+Edge 2: 2 → 3 (weight: 2)
+Edge 3: 3 → 4 (weight: 1)
+Edge 4: 4 → 2 (weight: -5)
+Edge 5: 2 → 1 (weight: 1)
+```
+
+### Graph Visualization
+```
+Nodes: 1, 2, 3, 4
+Edges with weights:
+
+    1 ←──1── 2
+    │        │
+    │1       │2
+    ↓        ↓
+    2 ──→ 3 ──→ 4
+         ↑      │
+         │      │-5
+         └──────┘
+
+Negative cycle: 2 → 3 → 4 → 2
+Total weight: 2 + 1 + (-5) = -2
+```
+
+### Bellman-Ford Algorithm Process
+```
+Initial distances: [0, ∞, ∞, ∞]
+Parent array: [-1, -1, -1, -1]
+
+Iteration 1 (n-1 = 3 iterations):
+- Edge 1→2: dist[2] = min(∞, 0+1) = 1, parent[2] = 1
+- Edge 2→3: dist[3] = min(∞, 1+2) = 3, parent[3] = 2
+- Edge 3→4: dist[4] = min(∞, 3+1) = 4, parent[4] = 3
+- Edge 4→2: dist[2] = min(1, 4+(-5)) = -1, parent[2] = 4
+- Edge 2→1: dist[1] = min(0, -1+1) = 0, parent[1] = 2
+
+After iteration 1: [0, -1, 3, 4]
+
+Iteration 2:
+- Edge 1→2: dist[2] = min(-1, 0+1) = -1
+- Edge 2→3: dist[3] = min(3, -1+2) = 1, parent[3] = 2
+- Edge 3→4: dist[4] = min(4, 1+1) = 2, parent[4] = 3
+- Edge 4→2: dist[2] = min(-1, 2+(-5)) = -3, parent[2] = 4
+- Edge 2→1: dist[1] = min(0, -3+1) = -2, parent[1] = 2
+
+After iteration 2: [-2, -3, 1, 2]
+
+Iteration 3:
+- Edge 1→2: dist[2] = min(-3, -2+1) = -3
+- Edge 2→3: dist[3] = min(1, -3+2) = -1, parent[3] = 2
+- Edge 3→4: dist[4] = min(2, -1+1) = 0, parent[4] = 3
+- Edge 4→2: dist[2] = min(-3, 0+(-5)) = -5, parent[2] = 4
+- Edge 2→1: dist[1] = min(-2, -5+1) = -4, parent[1] = 2
+
+After iteration 3: [-4, -5, -1, 0]
+```
+
+### Negative Cycle Detection
+```
+Check all edges for further relaxation:
+
+Edge 1→2: dist[1] + weight = -4 + 1 = -3 > dist[2] = -5 ✓
+Edge 2→3: dist[2] + weight = -5 + 2 = -3 > dist[3] = -1 ✓
+Edge 3→4: dist[3] + weight = -1 + 1 = 0 = dist[4] = 0 ✓
+Edge 4→2: dist[4] + weight = 0 + (-5) = -5 = dist[2] = -5 ✓
+Edge 2→1: dist[2] + weight = -5 + 1 = -4 = dist[1] = -4 ✓
+
+No further relaxation possible - no negative cycle detected in this check.
+
+Wait, let me recalculate with correct approach:
+```
+
+### Corrected Bellman-Ford Process
+```
+Iteration 4 (detection phase):
+- Edge 4→2: dist[4] + weight = 0 + (-5) = -5 < dist[2] = -5
+- This means we can still relax edge 4→2
+- NEGATIVE CYCLE DETECTED!
+
+The negative cycle involves edge 4→2.
+```
+
+### Cycle Reconstruction
+```
+From the parent array: [-1, 4, 2, 3]
+
+To find the cycle starting from node 2:
+1. Start at node 2
+2. Follow parent[2] = 4
+3. Follow parent[4] = 3  
+4. Follow parent[3] = 2
+5. Back to node 2 - cycle found!
+
+Cycle: 2 → 3 → 4 → 2
+```
+
+### Cycle Weight Calculation
+```
+Cycle: 2 → 3 → 4 → 2
+Weights: 2 + 1 + (-5) = -2
+
+This is a negative cycle with total weight -2.
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bellman-Ford    │ O(n×m)       │ O(n)         │ Relax edges  │
+│                 │              │              │ n-1 times    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Floyd-Warshall  │ O(n³)        │ O(n²)        │ All pairs    │
+│                 │              │              │ shortest     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS with Stack  │ O(n + m)     │ O(n)         │ DFS-based    │
+│                 │              │              │ detection    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

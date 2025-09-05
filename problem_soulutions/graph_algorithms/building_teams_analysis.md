@@ -297,6 +297,122 @@ else:
 | Union-Find | O(n + m * α(n)) | O(n) | Dynamic connectivity |
 | Two-Color BFS | O(n + m) | O(n + m) | Direct team assignment |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+5 pupils, 3 friendships:
+Friendship 1: Pupil 1 ↔ Pupil 2
+Friendship 2: Pupil 1 ↔ Pupil 3
+Friendship 3: Pupil 4 ↔ Pupil 5
+```
+
+### Graph Visualization
+```
+Pupils: 1, 2, 3, 4, 5
+Friendships: (1↔2), (1↔3), (4↔5)
+
+    2 ──── 1 ──── 3
+    │
+    │
+    4 ──── 5
+```
+
+### Bipartite Coloring Process
+```
+Step 1: Start BFS from Pupil 1
+- Queue: [(1, 1)] (pupil, team)
+- Color: [0, 0, 0, 0, 0] (0 = uncolored)
+- Color pupil 1 as team 1: [1, 0, 0, 0, 0]
+
+Step 2: Process Pupil 1 (team 1)
+- Explore neighbors: 2, 3
+- Color pupil 2 as team 2: [1, 2, 0, 0, 0]
+- Color pupil 3 as team 2: [1, 2, 2, 0, 0]
+- Queue: [(2, 2), (3, 2)]
+
+Step 3: Process Pupil 2 (team 2)
+- Explore neighbors: 1
+- Pupil 1 already colored as team 1 ✓
+- Queue: [(3, 2)]
+
+Step 4: Process Pupil 3 (team 2)
+- Explore neighbors: 1
+- Pupil 1 already colored as team 1 ✓
+- Queue: []
+
+Step 5: Start BFS from Pupil 4 (unvisited)
+- Queue: [(4, 1)]
+- Color pupil 4 as team 1: [1, 2, 2, 1, 0]
+- Explore neighbors: 5
+- Color pupil 5 as team 2: [1, 2, 2, 1, 2]
+- Queue: [(5, 2)]
+
+Step 6: Process Pupil 5 (team 2)
+- Explore neighbors: 4
+- Pupil 4 already colored as team 1 ✓
+- Queue: []
+
+Final coloring: [1, 2, 2, 1, 2]
+```
+
+### Team Assignment
+```
+Team 1: Pupils 1, 4
+Team 2: Pupils 2, 3, 5
+
+Verification:
+- Pupil 1 (Team 1) ↔ Pupil 2 (Team 2) ✓
+- Pupil 1 (Team 1) ↔ Pupil 3 (Team 2) ✓
+- Pupil 4 (Team 1) ↔ Pupil 5 (Team 2) ✓
+
+No conflicts - valid bipartition!
+```
+
+### Conflict Detection Example
+```
+If we had friendship (2↔3):
+Graph: 2 ↔ 1 ↔ 3
+       │       │
+       └───────┘
+
+This creates a triangle (1-2-3-1), which is NOT bipartite:
+- If 1 is Team 1, then 2 and 3 must be Team 2
+- But 2 and 3 are friends, so they can't be on the same team
+- CONFLICT! → IMPOSSIBLE
+```
+
+### BFS vs DFS Comparison
+```
+BFS Approach:
+- Level-by-level coloring
+- Natural bipartition detection
+- Queue-based processing
+- Time: O(n + m)
+
+DFS Approach:
+- Depth-first exploration
+- Recursive coloring
+- Stack-based processing
+- Time: O(n + m)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ BFS Bipartition │ O(n + m)     │ O(n + m)     │ Level-by-    │
+│                 │              │              │ level color  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS Bipartition │ O(n + m)     │ O(n)         │ Recursive    │
+│                 │              │              │ coloring     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Union-Find      │ O(n + m·α(n))│ O(n)         │ Dynamic      │
+│                 │              │              │ connectivity │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns
