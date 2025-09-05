@@ -205,6 +205,96 @@ test_solution()
 - **Complete**: Handles all cases including edge cases
 - **Correct**: Follows palindrome properties
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: "AAAACACBA"
+Output: "AAACBCAAA"
+```
+
+### Character Frequency Analysis
+```
+String: A A A A C A C B A
+Count:  A=6, B=1, C=2
+
+Frequency table:
+A: 6 (even) ✓
+B: 1 (odd)  ✓ (only one odd allowed)
+C: 2 (even) ✓
+
+Total odd frequencies: 1 ≤ 1 ✓
+Palindrome is possible!
+```
+
+### Palindrome Construction Process
+```
+Step 1: Extract characters for first half
+- A: 6/2 = 3 copies → "AAA"
+- B: 1 copy (odd) → middle character
+- C: 2/2 = 1 copy → "C"
+
+Step 2: Build first half
+First half: "AAA" + "C" = "AAAC"
+
+Step 3: Add middle character (if odd exists)
+Middle: "B"
+
+Step 4: Mirror first half for second half
+Second half: reverse("AAAC") = "CAAA"
+
+Final palindrome: "AAAC" + "B" + "CAAA" = "AAACBCAAA"
+```
+
+### Verification
+```
+Check if result is palindrome:
+"AAACBCAAA"
+Forward:  A A A C B C A A A
+Backward: A A A C B C A A A
+✓ Reads the same forwards and backwards!
+```
+
+### Impossible Case Example
+```
+Input: "AABCC"
+Frequencies: A=2, B=1, C=2
+Odd frequencies: B=1, C=1 (but C=2 is even, so only B=1 is odd)
+Wait, let me recalculate:
+A=2 (even), B=1 (odd), C=2 (even)
+Only 1 odd frequency → possible
+
+Actually: A=2, B=1, C=2
+Odd frequencies: B=1 (only one) → possible
+Result: "ABCBA"
+
+Let me try a truly impossible case:
+Input: "AABBCC"
+Frequencies: A=2, B=2, C=2
+All even → possible: "ABCABC" → "ABCCBA"
+
+Input: "AABCCD"
+Frequencies: A=2, B=1, C=2, D=1
+Odd frequencies: B=1, D=1 (two odd) → impossible
+Output: "NO SOLUTION"
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Frequency Count │ O(n)         │ O(1)         │ Count        │
+│ + Construct     │              │              │ frequencies  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sort + Check    │ O(n log n)   │ O(n)         │ Sort then    │
+│                 │              │              │ rearrange    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Hash Map        │ O(n)         │ O(k)         │ Count with   │
+│                 │              │              │ hash map     │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Palindrome Properties**

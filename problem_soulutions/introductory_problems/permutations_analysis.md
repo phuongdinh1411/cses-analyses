@@ -165,6 +165,111 @@ test_solution()
 - **Correct**: Produces permutations in lexicographic order
 - **Efficient**: Uses optimized built-in functions
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n = 3
+Output: 6 permutations in lexicographic order
+```
+
+### All Permutations for n=3
+```
+Numbers: [1, 2, 3]
+Total permutations: 3! = 6
+
+1. [1, 2, 3] ← lexicographically first
+2. [1, 3, 2]
+3. [2, 1, 3]
+4. [2, 3, 1]
+5. [3, 1, 2]
+6. [3, 2, 1] ← lexicographically last
+```
+
+### Lexicographic Order Pattern
+```
+For [1, 2, 3]:
+- Start with smallest number: 1
+- Then next smallest: 2, then 3
+- When 1 is exhausted, move to 2
+- Then 3, then back to 1
+- Continue until all arrangements found
+
+Pattern:
+1 _ _ → 1 2 3, 1 3 2
+2 _ _ → 2 1 3, 2 3 1  
+3 _ _ → 3 1 2, 3 2 1
+```
+
+### Generation Process
+```
+Step 1: Start with [1, 2, 3]
+Step 2: Generate next permutation
+- Find rightmost element smaller than next
+- Swap with smallest larger element to right
+- Reverse suffix
+
+Example: [1, 2, 3] → [1, 3, 2]
+- Rightmost smaller: 2 < 3
+- Swap 2 with 3: [1, 3, 2]
+- No suffix to reverse
+
+[1, 3, 2] → [2, 1, 3]
+- Rightmost smaller: 1 < 3
+- Swap 1 with 3: [2, 3, 1]
+- Reverse suffix [3, 1]: [2, 1, 3]
+```
+
+### Backtracking Approach
+```
+Generate all permutations using backtracking:
+
+def backtrack(path, choices):
+    if len(path) == n:
+        result.append(path[:])
+        return
+    
+    for choice in choices:
+        if choice not in path:
+            path.append(choice)
+            backtrack(path, choices)
+            path.pop()
+
+Example trace for n=3:
+path=[], choices=[1,2,3]
+├─ path=[1], choices=[2,3]
+│  ├─ path=[1,2], choices=[3]
+│  │  └─ path=[1,2,3] → add to result
+│  └─ path=[1,3], choices=[2]
+│     └─ path=[1,3,2] → add to result
+├─ path=[2], choices=[1,3]
+│  ├─ path=[2,1], choices=[3]
+│  │  └─ path=[2,1,3] → add to result
+│  └─ path=[2,3], choices=[1]
+│     └─ path=[2,3,1] → add to result
+└─ path=[3], choices=[1,2]
+   ├─ path=[3,1], choices=[2]
+   │  └─ path=[3,1,2] → add to result
+   └─ path=[3,2], choices=[1]
+      └─ path=[3,2,1] → add to result
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Built-in        │ O(n! × n)    │ O(n! × n)    │ Use          │
+│ itertools       │              │              │ library      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Next Permutation│ O(n! × n)    │ O(n)         │ Generate     │
+│                 │              │              │ sequentially │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Backtracking    │ O(n! × n)    │ O(n)         │ Recursive    │
+│                 │              │              │ generation   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Permutation Counting**
