@@ -131,6 +131,85 @@ test_solution()
 - **Handles Large Numbers**: Works for n up to 10⁶
 - **Built-in**: Python's `pow()` function is optimized
 
+## 🎨 Visual Example
+
+### Input Example
+```
+n = 3
+Output: 8
+```
+
+### All Possible Bit Strings
+```
+For n = 3, we have 2³ = 8 possible bit strings:
+
+Position:  2  1  0
+String 0:  0  0  0
+String 1:  0  0  1
+String 2:  0  1  0
+String 3:  0  1  1
+String 4:  1  0  0
+String 5:  1  0  1
+String 6:  1  1  0
+String 7:  1  1  1
+
+Total: 8 bit strings
+```
+
+### Counting Process
+```
+For each position, we have 2 choices (0 or 1):
+
+Position 0: 2 choices
+Position 1: 2 choices  
+Position 2: 2 choices
+
+Total combinations = 2 × 2 × 2 = 2³ = 8
+```
+
+### Binary Exponentiation
+```
+Calculate 2³ using binary exponentiation:
+
+3 in binary: 11₂ = 1×2¹ + 1×2⁰
+
+Step 1: result = 1, base = 2, exp = 3
+Step 2: exp is odd (3), result = 1 × 2 = 2, base = 2² = 4, exp = 1
+Step 3: exp is odd (1), result = 2 × 4 = 8, base = 4² = 16, exp = 0
+Step 4: exp is 0, stop
+
+Result: 2³ = 8
+```
+
+### Modular Arithmetic
+```
+For large n, we need to use modular arithmetic:
+
+Example: n = 10⁶, MOD = 10⁹ + 7
+
+2^(10⁶) % (10⁹ + 7) = ?
+
+Using binary exponentiation with modulo:
+- At each step, take modulo to keep numbers manageable
+- (a × b) % m = ((a % m) × (b % m)) % m
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Naive Power     │ O(n)         │ O(1)         │ Multiply     │
+│                 │              │              │ n times      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Binary Exp      │ O(log n)     │ O(1)         │ Break down   │
+│                 │              │              │ exponent     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Built-in pow()  │ O(log n)     │ O(1)         │ Optimized    │
+│                 │              │              │ implementation│
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Counting Principle**

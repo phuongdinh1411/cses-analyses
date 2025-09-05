@@ -230,6 +230,134 @@ test_solution()
 - **Efficient**: Uses bit manipulation for fast conflict checking
 - **Correct**: Handles all constraints properly
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Empty 8×8 chessboard (all squares available):
+........
+........
+........
+........
+........
+........
+........
+........
+```
+
+### Chessboard Visualization
+```
+8×8 Chessboard with coordinates:
+   0 1 2 3 4 5 6 7
+0  . . . . . . . .
+1  . . . . . . . .
+2  . . . . . . . .
+3  . . . . . . . .
+4  . . . . . . . .
+5  . . . . . . . .
+6  . . . . . . . .
+7  . . . . . . . .
+```
+
+### Queen Placement Process
+```
+Row 0: Try placing queen in each column
+- Column 0: ✓ (no conflicts)
+- Column 1: ✓ (no conflicts)
+- ...
+- Column 7: ✓ (no conflicts)
+
+Row 1: Try placing queen in each column
+- Column 0: ✗ (conflict with row 0, column 0)
+- Column 1: ✗ (conflict with row 0, column 1)
+- Column 2: ✓ (no conflicts)
+- ...
+
+Row 2: Try placing queen in each column
+- Check conflicts with queens in rows 0 and 1
+- Continue until all 8 queens are placed
+```
+
+### Conflict Detection
+```
+Queen at (row, col) conflicts with:
+1. Same column: col
+2. Main diagonal: row + col
+3. Anti-diagonal: row - col + 7
+
+Example: Queen at (2, 3)
+- Column conflicts: column 3
+- Main diagonal: positions where row + col = 5
+- Anti-diagonal: positions where row - col = -1
+```
+
+### Backtracking Example
+```
+Step 1: Place queen at (0, 0)
+Q . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+
+Step 2: Place queen at (1, 2)
+Q . . . . . . .
+. . Q . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+
+Step 3: Try placing queen at (2, 4)
+Q . . . . . . .
+. . Q . . . . .
+. . . . Q . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+
+Continue until all 8 queens are placed...
+```
+
+### Bit Manipulation
+```
+Use bit masks to track conflicts:
+
+Columns:    00000000 (no columns occupied)
+Main diag:  00000000 (no main diagonals occupied)
+Anti-diag:  00000000 (no anti-diagonals occupied)
+
+After placing queen at (0, 0):
+Columns:    00000001 (column 0 occupied)
+Main diag:  00000001 (main diagonal 0 occupied)
+Anti-diag:  10000000 (anti-diagonal 7 occupied)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Backtracking    │ O(8!)        │ O(8)         │ Try all      │
+│                 │              │              │ valid        │
+│                 │              │              │ placements   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bit Manipulation│ O(8!)        │ O(1)         │ Fast conflict│
+│                 │              │              │ checking     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Constraint      │ O(8!)        │ O(8)         │ Prune        │
+│ Propagation     │              │              │ invalid      │
+│                 │              │              │ branches     │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Backtracking Pattern**
