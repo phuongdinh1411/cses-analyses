@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/range_update_queries_analysis/"
 
 # Range Update Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand range update and point query problems with efficient update operations
+- [ ] **Objective 2**: Apply difference arrays or Binary Indexed Trees to handle range updates and point queries
+- [ ] **Objective 3**: Implement efficient range update algorithms with O(log n) update and O(log n) query time
+- [ ] **Objective 4**: Optimize range updates using difference arrays and advanced data structures
+- [ ] **Objective 5**: Handle edge cases in range updates (large ranges, frequent updates, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Range updates, point queries, difference arrays, Binary Indexed Trees, range operations
+- **Data Structures**: Difference arrays, BIT, range update tracking, point query tracking
+- **Mathematical Concepts**: Range operations, difference arrays, update operations, query optimization
+- **Programming Skills**: Difference array implementation, range update processing, point query handling, algorithm implementation
+- **Related Problems**: Dynamic Range Sum Queries (range queries), Range query problems, Update problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, process q queries. Each query is either:

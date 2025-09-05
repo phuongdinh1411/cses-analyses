@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/subarray_minimum_queries_analysis
 
 # Subarray Minimum Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand dynamic range query problems with point updates and range minimum queries
+- [ ] **Objective 2**: Apply Segment Trees to handle point updates and range minimum queries efficiently
+- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and minimum queries
+- [ ] **Objective 4**: Optimize range minimum queries using Segment Trees and efficient range minimum algorithms
+- [ ] **Objective 5**: Handle edge cases in range minimum queries (empty ranges, large updates, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic range queries, Segment Trees, range minimum queries, point updates, range optimization
+- **Data Structures**: Segment trees, range query data structures, minimum tracking, update tracking
+- **Mathematical Concepts**: Range minimum theory, segment tree mathematics, range query optimization
+- **Programming Skills**: Segment tree implementation, range minimum finding, point updates, algorithm implementation
+- **Related Problems**: Pizzeria Queries (range minimum), Static Range Minimum Queries (static range minimum), Range minimum problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, process q queries. Each query is either:

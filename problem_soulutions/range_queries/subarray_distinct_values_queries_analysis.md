@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/subarray_distinct_values_queries_an
 
 # Subarray Distinct Values Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand dynamic range query problems with point updates and distinct value counting
+- [ ] **Objective 2**: Apply coordinate compression and frequency tracking to handle distinct value counting with updates
+- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and distinct count queries
+- [ ] **Objective 4**: Optimize distinct value counting using coordinate compression and advanced data structures
+- [ ] **Objective 5**: Handle edge cases in distinct value counting (large values, coordinate compression, frequency tracking)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic range queries, coordinate compression, distinct value counting, frequency tracking, point updates
+- **Data Structures**: Coordinate compression, frequency tracking, range query data structures, distinct value tracking
+- **Mathematical Concepts**: Distinct value theory, coordinate compression theory, frequency analysis, range query mathematics
+- **Programming Skills**: Coordinate compression, frequency tracking, distinct value counting, update handling, algorithm implementation
+- **Related Problems**: Salary Queries (range counting), Coordinate compression problems, Distinct value problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, process q queries. Each query is either:

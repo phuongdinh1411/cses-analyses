@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/subarray_xor_queries_analysis
 
 # Subarray XOR Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand dynamic range query problems with point updates and bitwise XOR operations
+- [ ] **Objective 2**: Apply Binary Indexed Trees or Segment Trees to handle point updates and range XOR queries
+- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and XOR queries
+- [ ] **Objective 4**: Optimize range XOR queries using advanced data structures and XOR operation properties
+- [ ] **Objective 5**: Handle edge cases in range XOR queries (bitwise operations, large values, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic range queries, Binary Indexed Trees, Segment Trees, bitwise XOR operations, point updates
+- **Data Structures**: BIT, segment trees, range query data structures, XOR tracking, update tracking
+- **Mathematical Concepts**: Bitwise operations, XOR properties, range query mathematics, XOR optimization
+- **Programming Skills**: BIT implementation, segment tree implementation, bitwise XOR operations, range query processing, algorithm implementation
+- **Related Problems**: Subarray OR Queries (bitwise operations), Range XOR Queries (static XOR), Bitwise operation problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, process q queries. Each query is either:

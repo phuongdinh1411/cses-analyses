@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/prefix_sum_queries_analysis
 
 # Prefix Sum Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand dynamic range query problems with point updates and range sum queries
+- [ ] **Objective 2**: Apply Binary Indexed Trees or Segment Trees to handle dynamic prefix sum queries
+- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and sum queries
+- [ ] **Objective 4**: Optimize dynamic range queries using advanced data structures and efficient sum algorithms
+- [ ] **Objective 5**: Handle edge cases in dynamic range queries (large arrays, frequent updates, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Binary Indexed Trees, Segment Trees, dynamic range queries, prefix sums, point updates
+- **Data Structures**: BIT, segment trees, range query data structures, update tracking, sum tracking
+- **Mathematical Concepts**: Range queries, prefix sums, update operations, query optimization
+- **Programming Skills**: BIT implementation, segment tree implementation, range query processing, update handling, algorithm implementation
+- **Related Problems**: Dynamic Range Sum Queries (similar problem), Static Range Sum Queries (basic range queries), Data structure problems
+
 ## Problem Statement
 Given an array of n integers, process q queries. Each query is either:
 1. Update the value at position k to x

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/range_queries/forest_queries_analysis
 
 # Forest Queries - 2D Range Sum Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand 2D range query problems and rectangular region sum calculations
+- [ ] **Objective 2**: Apply 2D prefix sums to efficiently answer rectangular range sum queries
+- [ ] **Objective 3**: Implement efficient 2D range query algorithms with O(1) query time after preprocessing
+- [ ] **Objective 4**: Optimize 2D range queries using prefix sum techniques and mathematical analysis
+- [ ] **Objective 5**: Handle edge cases in 2D range queries (large grids, boundary conditions, coordinate validation)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: 2D prefix sums, rectangular range queries, 2D range sum queries, coordinate geometry
+- **Data Structures**: 2D arrays, prefix sum arrays, coordinate tracking, rectangular region tracking
+- **Mathematical Concepts**: 2D mathematics, coordinate geometry, rectangular regions, prefix sum theory
+- **Programming Skills**: 2D array manipulation, prefix sum calculation, coordinate processing, algorithm implementation
+- **Related Problems**: Static Range Sum Queries (1D range queries), 2D array problems, Coordinate geometry problems
+
 ## 📋 Problem Description
 
 Given a 2D grid of size n×n, process q queries. Each query asks for the sum of values in a rectangular region [y1,x1] to [y2,x2].

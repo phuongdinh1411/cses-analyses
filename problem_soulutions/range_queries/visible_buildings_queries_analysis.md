@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/visible_buildings_queries_analysis
 
 # Visible Buildings Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand visibility problems and line-of-sight calculations in building arrays
+- [ ] **Objective 2**: Apply range query techniques to efficiently count visible buildings in ranges
+- [ ] **Objective 3**: Implement efficient visibility query algorithms with proper line-of-sight calculations
+- [ ] **Objective 4**: Optimize visibility queries using advanced data structures and geometric analysis
+- [ ] **Objective 5**: Handle edge cases in visibility problems (tall buildings, overlapping visibility, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Range queries, visibility problems, line-of-sight calculations, geometric analysis, range optimization
+- **Data Structures**: Range query data structures, visibility tracking, height tracking, geometric data structures
+- **Mathematical Concepts**: Geometric visibility, line-of-sight mathematics, range query theory, geometric optimization
+- **Programming Skills**: Range query processing, visibility calculations, geometric analysis, algorithm implementation
+- **Related Problems**: Range query problems, Geometric problems, Visibility problems, Line-of-sight problems
+
 ## Problem Statement
 Given n buildings with heights, process q queries. Each query asks for the number of visible buildings when looking from building a to building b (buildings are visible if they are not blocked by taller buildings in between).
 

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/range_queries/dynamic_range_sum_queries_analysis
 
 # Dynamic Range Sum Queries - Range Sum with Updates
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand dynamic range query problems and the need for efficient update and query operations
+- [ ] **Objective 2**: Apply Binary Indexed Trees (Fenwick Trees) or Segment Trees to handle dynamic range sum queries
+- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) update and query operations
+- [ ] **Objective 4**: Optimize dynamic range queries using advanced data structures and efficient algorithms
+- [ ] **Objective 5**: Handle edge cases in dynamic range queries (large arrays, frequent updates, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Binary Indexed Trees, Segment Trees, dynamic range queries, range sum queries, update operations
+- **Data Structures**: BIT, segment trees, range query data structures, update tracking, sum tracking
+- **Mathematical Concepts**: Range queries, prefix sums, tree data structures, query optimization, update operations
+- **Programming Skills**: BIT implementation, segment tree implementation, range query processing, update handling, algorithm implementation
+- **Related Problems**: Static Range Sum Queries (basic range queries), Range Update Queries (range updates), Data structure problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, process q queries. Each query is either:

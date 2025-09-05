@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/static_range_minimum_queries_analys
 
 # Static Range Minimum Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand static range query problems and range minimum finding concepts
+- [ ] **Objective 2**: Apply sparse tables or segment trees to efficiently find range minimums
+- [ ] **Objective 3**: Implement efficient static range query algorithms with O(1) or O(log n) query time
+- [ ] **Objective 4**: Optimize range minimum queries using sparse tables and advanced data structures
+- [ ] **Objective 5**: Handle edge cases in range minimum queries (large arrays, boundary conditions, minimum finding)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Static range queries, sparse tables, range minimum queries, segment trees, range optimization
+- **Data Structures**: Sparse tables, segment trees, range query data structures, minimum tracking
+- **Mathematical Concepts**: Range minimum theory, sparse table mathematics, range query optimization
+- **Programming Skills**: Sparse table implementation, range minimum finding, range query processing, algorithm implementation
+- **Related Problems**: Static Range Sum Queries (static range queries), Range minimum problems, Sparse table problems
+
 ## Problem Statement
 Given an array of n integers, process q queries. Each query asks for the minimum value in a range [a,b].
 

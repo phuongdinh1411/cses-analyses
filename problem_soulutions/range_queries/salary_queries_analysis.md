@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/salary_queries_analysis
 
 # Salary Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand dynamic range query problems with point updates and range count queries
+- [ ] **Objective 2**: Apply coordinate compression and Binary Indexed Trees to handle range counting with updates
+- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and count queries
+- [ ] **Objective 4**: Optimize range counting using coordinate compression and advanced data structures
+- [ ] **Objective 5**: Handle edge cases in range counting (large values, coordinate compression, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic range queries, coordinate compression, Binary Indexed Trees, range counting, point updates
+- **Data Structures**: Coordinate compression, BIT, range query data structures, count tracking, update tracking
+- **Mathematical Concepts**: Range counting, coordinate compression theory, range query mathematics, count optimization
+- **Programming Skills**: Coordinate compression, range counting, BIT implementation, update handling, algorithm implementation
+- **Related Problems**: Dynamic Range Sum Queries (range queries), Coordinate compression problems, Range counting problems
+
 ## 📋 Problem Description
 
 Given an array of n integers representing salaries, process q queries. Each query is either:

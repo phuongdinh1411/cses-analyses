@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/pizzeria_queries_analysis
 
 # Pizzeria Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand dynamic range query problems with point updates and range minimum queries
+- [ ] **Objective 2**: Apply Segment Trees to handle point updates and range minimum queries efficiently
+- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and minimum queries
+- [ ] **Objective 4**: Optimize dynamic range queries using Segment Trees and efficient range minimum algorithms
+- [ ] **Objective 5**: Handle edge cases in dynamic range queries (empty ranges, large updates, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Segment Trees, range minimum queries, point updates, dynamic range queries, range optimization
+- **Data Structures**: Segment trees, range query data structures, update tracking, minimum tracking
+- **Mathematical Concepts**: Range queries, minimum finding, update operations, query optimization
+- **Programming Skills**: Segment tree implementation, range minimum queries, point updates, algorithm implementation
+- **Related Problems**: Dynamic Range Sum Queries (range queries), Range minimum problems, Update problems
+
 ## 📋 Problem Description
 
 Given n buildings in a line, each with a pizzeria, process q queries. Each query is either:

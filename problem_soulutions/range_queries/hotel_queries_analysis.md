@@ -6,6 +6,24 @@ permalink: /problem_soulutions/range_queries/hotel_queries_analysis
 
 # Hotel Queries - First Hotel with Sufficient Rooms
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand range query problems for finding first element satisfying a condition
+- [ ] **Objective 2**: Apply Segment Trees or Binary Indexed Trees to find first hotel with sufficient capacity
+- [ ] **Objective 3**: Implement efficient range query algorithms with O(log n) query time for first element search
+- [ ] **Objective 4**: Optimize range queries using advanced data structures and efficient search techniques
+- [ ] **Objective 5**: Handle edge cases in range queries (no solution, large queries, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Segment Trees, Binary Indexed Trees, range queries, first element search, condition-based queries
+- **Data Structures**: Segment trees, BIT, range query data structures, search tracking, condition tracking
+- **Mathematical Concepts**: Range queries, search algorithms, condition satisfaction, query optimization
+- **Programming Skills**: Segment tree implementation, range query processing, condition checking, algorithm implementation
+- **Related Problems**: Dynamic Range Sum Queries (range queries), Range query problems, Search problems
+
 ## 📋 Problem Description
 
 There are n hotels along a highway. For each group of tourists, you want to assign a hotel with the minimum number of rooms that can accommodate the group. Process q queries where each query asks for the first hotel that can accommodate a group of size x.

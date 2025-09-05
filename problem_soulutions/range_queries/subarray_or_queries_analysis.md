@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/subarray_or_queries_analysis
 
 # Subarray OR Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand dynamic range query problems with point updates and bitwise OR operations
+- [ ] **Objective 2**: Apply Segment Trees to handle point updates and range OR queries efficiently
+- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and OR queries
+- [ ] **Objective 4**: Optimize range OR queries using Segment Trees and bitwise operation properties
+- [ ] **Objective 5**: Handle edge cases in range OR queries (bitwise operations, large values, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic range queries, Segment Trees, bitwise OR operations, point updates, range optimization
+- **Data Structures**: Segment trees, range query data structures, bitwise operation tracking, update tracking
+- **Mathematical Concepts**: Bitwise operations, OR properties, range query mathematics, bitwise optimization
+- **Programming Skills**: Segment tree implementation, bitwise OR operations, range query processing, algorithm implementation
+- **Related Problems**: Subarray XOR Queries (bitwise operations), Range XOR Queries (static bitwise), Bitwise operation problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, process q queries. Each query is either:

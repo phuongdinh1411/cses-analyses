@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/range_xor_queries_analysis
 
 # Range Xor Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand static range query problems and XOR operation properties
+- [ ] **Objective 2**: Apply prefix XOR arrays to efficiently compute range XOR queries
+- [ ] **Objective 3**: Implement efficient static range query algorithms with O(1) query time after preprocessing
+- [ ] **Objective 4**: Optimize range XOR queries using prefix XOR techniques and mathematical properties
+- [ ] **Objective 5**: Handle edge cases in range XOR queries (large arrays, XOR properties, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Static range queries, prefix XOR arrays, XOR operations, range query optimization
+- **Data Structures**: Prefix XOR arrays, range query data structures, XOR tracking
+- **Mathematical Concepts**: XOR properties, prefix XOR theory, range query mathematics, XOR optimization
+- **Programming Skills**: XOR operations, prefix XOR calculation, range query processing, algorithm implementation
+- **Related Problems**: Static Range Sum Queries (static range queries), XOR problems, Prefix sum problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, process q queries. Each query asks for the XOR of values in a range [a,b].

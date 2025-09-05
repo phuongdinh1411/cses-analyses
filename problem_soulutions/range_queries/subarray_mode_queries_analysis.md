@@ -7,6 +7,24 @@ permalink: /problem_soulutions/range_queries/subarray_mode_queries_analysis
 
 # Subarray Mode Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand dynamic range query problems with point updates and mode (most frequent value) finding
+- [ ] **Objective 2**: Apply coordinate compression and frequency tracking to handle mode calculation with updates
+- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and mode queries
+- [ ] **Objective 4**: Optimize mode calculation using coordinate compression and advanced frequency tracking
+- [ ] **Objective 5**: Handle edge cases in mode calculation (tie-breaking, large values, coordinate compression, frequency tracking)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic range queries, coordinate compression, mode calculation, frequency tracking, point updates
+- **Data Structures**: Coordinate compression, frequency tracking, range query data structures, mode tracking
+- **Mathematical Concepts**: Mode theory, coordinate compression theory, frequency analysis, range query mathematics
+- **Programming Skills**: Coordinate compression, frequency tracking, mode calculation, update handling, algorithm implementation
+- **Related Problems**: Subarray Distinct Values Queries (distinct counting), Salary Queries (range counting), Mode problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, process q queries. Each query is either:

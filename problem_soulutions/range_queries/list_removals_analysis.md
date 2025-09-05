@@ -6,6 +6,24 @@ permalink: /problem_soulutions/range_queries/list_removals_analysis
 
 # List Removals - K-th Smallest Element with Removal
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand dynamic range query problems with element removal and k-th smallest element finding
+- [ ] **Objective 2**: Apply Segment Trees or Binary Indexed Trees to handle k-th smallest element queries with removal
+- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for k-th element and removal operations
+- [ ] **Objective 4**: Optimize dynamic range queries using advanced data structures and efficient element tracking
+- [ ] **Objective 5**: Handle edge cases in dynamic range queries (empty arrays, invalid k values, element removal tracking)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Segment Trees, Binary Indexed Trees, k-th smallest element, dynamic range queries, element removal
+- **Data Structures**: Segment trees, BIT, range query data structures, element tracking, removal tracking
+- **Mathematical Concepts**: Range queries, k-th element theory, dynamic arrays, query optimization
+- **Programming Skills**: Segment tree implementation, k-th element finding, element removal, algorithm implementation
+- **Related Problems**: Dynamic Range Sum Queries (range queries), K-th element problems, Dynamic array problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, process q queries. Each query asks for the k-th smallest element in the current array, and then removes that element from the array.
