@@ -48,6 +48,141 @@ In a 3×3 empty grid, there are 8 ways to place 2 queens such that they don't at
 7. (1,0) and (2,2) - not attacking
 8. (1,2) and (2,0) - not attacking
 
+### 📊 Visual Example
+
+**Input Grid:**
+```
+   0   1   2
+0 [.] [.] [.]
+1 [.] [.] [.]
+2 [.] [.] [.]
+
+Legend: . = Empty cell, # = Blocked cell
+```
+
+**Queen Attack Pattern:**
+```
+Queen at (1,1) attacks:
+┌─────────────────────────────────────┐
+│ Row 1: (1,0), (1,2)                │
+│ Column 1: (0,1), (2,1)             │
+│ Main diagonal: (0,0), (2,2)        │
+│ Anti-diagonal: (0,2), (2,0)        │
+│ Total: 8 positions                  │
+└─────────────────────────────────────┘
+
+Visual representation:
+   0   1   2
+0 [X] [X] [X]
+1 [X] [Q] [X]
+2 [X] [X] [X]
+Legend: Q = Queen, X = Attacked squares
+```
+
+**Valid Placements for 2 Queens:**
+```
+Total positions: 9
+Total ways to choose 2 positions: C(9,2) = 36
+
+Invalid placements (attacking):
+┌─────────────────────────────────────┐
+│ Same row: (0,0) & (0,1) & (0,2)    │
+│ Same column: (0,0) & (1,0) & (2,0) │
+│ Same diagonal: (0,0) & (1,1) & (2,2)│
+│ Same anti-diagonal: (0,2) & (1,1) & (2,0)│
+└─────────────────────────────────────┘
+
+Valid placements: 36 - 28 = 8
+```
+
+**Backtracking Process:**
+```
+Step 1: Place first queen at (0,0)
+┌─────────────────────────────────────┐
+│ Available positions:                │
+│ (0,1), (0,2), (1,0), (1,1), (1,2), (2,0), (2,1), (2,2)│
+│ (Exclude attacked positions)        │
+└─────────────────────────────────────┘
+
+Step 2: Place second queen at (0,1)
+┌─────────────────────────────────────┐
+│ Available positions:                │
+│ (0,2), (1,0), (1,1), (1,2), (2,0), (2,1), (2,2)│
+│ (Exclude attacked positions)        │
+└─────────────────────────────────────┘
+
+Continue for all valid combinations...
+```
+
+**Algorithm Flowchart:**
+```
+┌─────────────────────────────────────┐
+│ Start: Read grid and k              │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Use backtracking to place queens    │
+│ For each position:                  │
+│   Check if it's safe to place queen │
+│   If safe: place queen and recurse  │
+│   If k queens placed: count++       │
+│   Remove queen (backtrack)          │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Return total count                  │
+└─────────────────────────────────────┘
+```
+
+**Key Insight Visualization:**
+```
+For each position (i,j), queens attack along:
+┌─────────────────────────────────────┐
+│ Row i: all positions (i, k)         │
+│ Column j: all positions (k, j)      │
+│ Main diagonal: i-j = constant       │
+│ Anti-diagonal: i+j = constant       │
+│                                     │
+│ Example: (1,1)                     │
+│ Row 1: (1,0), (1,1), (1,2)         │
+│ Column 1: (0,1), (1,1), (2,1)      │
+│ Main diagonal: i-j = 0             │
+│ Anti-diagonal: i+j = 2             │
+└─────────────────────────────────────┘
+```
+
+**Optimized Approach:**
+```
+Instead of checking all combinations, we can:
+1. Use bitmask to represent row/column/diagonal states
+2. For each row, try placing queen in each column
+3. Update bitmask for attacked positions
+4. Use backtracking with constraint propagation
+
+State: row, col_mask, diag1_mask, diag2_mask
+- row: current row being processed
+- col_mask: columns that are attacked
+- diag1_mask: main diagonals that are attacked
+- diag2_mask: anti-diagonals that are attacked
+```
+
+**Bitmask Representation:**
+```
+For 3×3 grid:
+┌─────────────────────────────────────┐
+│ Columns: 0, 1, 2                   │
+│ Main diagonals: -2, -1, 0, 1, 2    │
+│ Anti-diagonals: 0, 1, 2, 3, 4      │
+│                                     │
+│ Example: Queen at (1,1)            │
+│ col_mask = 1<<1 = 2                │
+│ diag1_mask = 1<<(1-1+2) = 4        │
+│ diag2_mask = 1<<(1+1) = 4          │
+└─────────────────────────────────────┘
+```
+
 ## Solution Progression
 
 ### Approach 1: Generate All Placements - O(n^m × k²)

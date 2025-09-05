@@ -39,6 +39,180 @@ For n = 3 and k = 2, there are 2 valid sequences:
 
 The sequences [1, 1, 2], [1, 2, 2], [2, 1, 1], and [2, 2, 1] are invalid because they have consecutive equal elements.
 
+### 📊 Visual Example
+
+**All Possible Sequences for n=3, k=2:**
+```
+Total possible sequences: 2³ = 8
+
+Sequence 1: [1, 1, 1]
+Consecutive check: 1=1, 1=1 ✗
+Status: Invalid (consecutive 1s)
+
+Sequence 2: [1, 1, 2]
+Consecutive check: 1=1 ✗
+Status: Invalid (consecutive 1s)
+
+Sequence 3: [1, 2, 1]
+Consecutive check: 1≠2, 2≠1 ✓
+Status: Valid ✓
+
+Sequence 4: [1, 2, 2]
+Consecutive check: 1≠2, 2=2 ✗
+Status: Invalid (consecutive 2s)
+
+Sequence 5: [2, 1, 1]
+Consecutive check: 2≠1, 1=1 ✗
+Status: Invalid (consecutive 1s)
+
+Sequence 6: [2, 1, 2]
+Consecutive check: 2≠1, 1≠2 ✓
+Status: Valid ✓
+
+Sequence 7: [2, 2, 1]
+Consecutive check: 2=2 ✗
+Status: Invalid (consecutive 2s)
+
+Sequence 8: [2, 2, 2]
+Consecutive check: 2=2, 2=2 ✗
+Status: Invalid (consecutive 2s)
+```
+
+**Valid Sequences Analysis:**
+```
+Valid sequences: 2 out of 8
+
+┌─────────────────────────────────────┐
+│ [1, 2, 1]:                         │
+│ - Position 0: 1                    │
+│ - Position 1: 2 (≠ 1) ✓            │
+│ - Position 2: 1 (≠ 2) ✓            │
+│ - No consecutive equal elements     │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ [2, 1, 2]:                         │
+│ - Position 0: 2                    │
+│ - Position 1: 1 (≠ 2) ✓            │
+│ - Position 2: 2 (≠ 1) ✓            │
+│ - No consecutive equal elements     │
+└─────────────────────────────────────┘
+```
+
+**Dynamic Programming Approach:**
+```
+State: dp[i][j] = number of valid sequences of length i ending with j
+
+Base case:
+dp[1][j] = 1 for all j from 1 to k
+
+Recurrence:
+dp[i][j] = Σ(dp[i-1][l]) for all l ≠ j
+
+Explanation: To form a sequence of length i ending with j,
+we can append j to any valid sequence of length i-1 that doesn't end with j.
+```
+
+**DP Table for n=3, k=2:**
+```
+     j=1  j=2
+i=1:  1    1
+i=2:  1    1
+i=3:  1    1
+
+Total: dp[3][1] + dp[3][2] = 1 + 1 = 2
+```
+
+**DP State Transitions:**
+```
+For i=2:
+┌─────────────────────────────────────┐
+│ dp[2][1] = dp[1][2] = 1            │
+│ (Append 1 to sequences ending with 2)│
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ dp[2][2] = dp[1][1] = 1            │
+│ (Append 2 to sequences ending with 1)│
+└─────────────────────────────────────┘
+
+For i=3:
+┌─────────────────────────────────────┐
+│ dp[3][1] = dp[2][2] = 1            │
+│ (Append 1 to sequences ending with 2)│
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ dp[3][2] = dp[2][1] = 1            │
+│ (Append 2 to sequences ending with 1)│
+└─────────────────────────────────────┘
+```
+
+**Optimized DP Formula:**
+```
+Let total[i] = total number of valid sequences of length i
+total[i] = dp[i][1] + dp[i][2] + ... + dp[i][k]
+
+For each j:
+dp[i][j] = total[i-1] - dp[i-1][j]
+
+This gives us:
+dp[i][j] = (k-1) * total[i-1] / k
+
+Final answer: total[n] = k * (k-1)^(n-1)
+```
+
+**Mathematical Formula:**
+```
+For n=3, k=2:
+total[3] = 2 * (2-1)^(3-1) = 2 * 1² = 2
+
+General formula:
+total[n] = k * (k-1)^(n-1)
+
+Explanation:
+- First element: k choices
+- Each subsequent element: (k-1) choices (cannot be same as previous)
+- Total: k * (k-1)^(n-1)
+```
+
+**Algorithm Flowchart:**
+```
+┌─────────────────────────────────────┐
+│ Start: Read n and k                 │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ If n == 1: return k                 │
+│ Else: return k * (k-1)^(n-1)        │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Return result modulo 10^9 + 7       │
+└─────────────────────────────────────┘
+```
+
+**Key Insight Visualization:**
+```
+For any valid sequence of length i-1:
+┌─────────────────────────────────────┐
+│ [a₁, a₂, ..., aᵢ₋₁]                │
+│ Last element: aᵢ₋₁                  │
+│ Next element can be: any value ≠ aᵢ₋₁│
+│ Choices: k - 1                      │
+└─────────────────────────────────────┘
+
+Example with k=3:
+┌─────────────────────────────────────┐
+│ [1, 2, 1] (valid sequence)         │
+│ Last element: 1                     │
+│ Next element: 2 or 3 (not 1)        │
+│ New sequences: [1,2,1,2], [1,2,1,3]│
+└─────────────────────────────────────┘
+```
+
 ## Solution Progression
 
 ### Approach 1: Brute Force Generation - O(k^n)
