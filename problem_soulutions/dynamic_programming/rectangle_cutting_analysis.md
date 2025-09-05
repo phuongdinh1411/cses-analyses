@@ -7,6 +7,24 @@ permalink: /problem_soulutions/dynamic_programming/rectangle_cutting_analysis
 
 # Rectangle Cutting
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand geometric DP problems and rectangle cutting optimization
+- [ ] **Objective 2**: Apply DP techniques to solve geometric cutting problems with minimum cuts
+- [ ] **Objective 3**: Implement efficient DP solutions for rectangle cutting and geometric optimization
+- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and geometric calculations
+- [ ] **Objective 5**: Handle edge cases in geometric DP (square inputs, single cuts, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, geometric problems, cutting optimization, rectangle algorithms
+- **Data Structures**: Arrays, DP tables, geometric data structures
+- **Mathematical Concepts**: Geometry, rectangle properties, cutting theory, optimization principles
+- **Programming Skills**: Array manipulation, geometric calculations, iterative programming, DP implementation
+- **Related Problems**: Grid Paths (2D DP), Minimizing Coins (optimization DP), Array Description (constraint DP)
+
 ## Problem Description
 
 **Problem**: Given a rectangle of size a×b, find the minimum number of cuts needed to cut it into squares. You can only cut horizontally or vertically.

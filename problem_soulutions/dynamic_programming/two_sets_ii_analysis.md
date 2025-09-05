@@ -7,6 +7,24 @@ permalink: /problem_soulutions/dynamic_programming/two_sets_ii_analysis
 
 # Two Sets II
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand partition problems and equal sum subset division in DP
+- [ ] **Objective 2**: Apply DP techniques to count ways of dividing sets into equal sum subsets
+- [ ] **Objective 3**: Implement efficient DP solutions for partition counting and subset division
+- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and modular arithmetic
+- [ ] **Objective 5**: Handle edge cases in partition DP (impossible partitions, odd sums, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, partition problems, subset sum, equal sum division
+- **Data Structures**: Arrays, DP tables, partition data structures
+- **Mathematical Concepts**: Partition theory, subset sum, equal sum principles, modular arithmetic
+- **Programming Skills**: Array manipulation, iterative programming, partition techniques, DP implementation
+- **Related Problems**: Two Sets (basic partition), Money Sums (subset sum), Coin Combinations (DP counting)
+
 ## Problem Description
 
 **Problem**: Given a number n, find the number of ways to divide the numbers 1,2,…,n into two sets with equal sums.

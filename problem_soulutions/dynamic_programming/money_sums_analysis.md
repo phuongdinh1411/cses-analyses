@@ -6,6 +6,24 @@ permalink: /problem_soulutions/dynamic_programming/money_sums_analysis
 
 # Money Sums - Find All Possible Sums
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand subset sum problems and achievable sum calculations in DP
+- [ ] **Objective 2**: Apply DP techniques to find all possible sums using boolean DP arrays
+- [ ] **Objective 3**: Implement efficient DP solutions for subset sum enumeration and tracking
+- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and sum enumeration
+- [ ] **Objective 5**: Handle edge cases in subset sum DP (empty subsets, single coins, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, subset sum problems, boolean DP, sum enumeration
+- **Data Structures**: Arrays, boolean DP tables, sum tracking structures
+- **Mathematical Concepts**: Subset theory, sum enumeration, boolean logic, modular arithmetic
+- **Programming Skills**: Array manipulation, boolean operations, iterative programming, DP implementation
+- **Related Problems**: Coin Combinations I (counting DP), Minimizing Coins (optimization DP), Two Sets II (partition problems)
+
 ## 📋 Problem Description
 
 Given n coins with different values, find all possible sums that can be formed using any subset of the coins.

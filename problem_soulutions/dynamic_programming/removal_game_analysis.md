@@ -7,6 +7,24 @@ permalink: /problem_soulutions/dynamic_programming/removal_game_analysis
 
 # Removal Game
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand game theory problems and optimal play strategies in DP
+- [ ] **Objective 2**: Apply DP techniques to solve game theory problems with optimal play
+- [ ] **Objective 3**: Implement efficient DP solutions for game theory and strategic optimization
+- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and game state tracking
+- [ ] **Objective 5**: Handle edge cases in game theory DP (single elements, two elements, optimal strategies)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, game theory, optimal play, strategic optimization
+- **Data Structures**: Arrays, DP tables, game state tracking structures
+- **Mathematical Concepts**: Game theory, optimal strategies, strategic optimization, decision theory
+- **Programming Skills**: Array manipulation, game state calculations, iterative programming, DP implementation
+- **Related Problems**: Rectangle Cutting (optimization DP), Minimizing Coins (optimization DP), Game theory problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers, two players take turns removing elements from either end of the array. Each player wants to maximize their total score. Find the maximum score difference between the first and second player.

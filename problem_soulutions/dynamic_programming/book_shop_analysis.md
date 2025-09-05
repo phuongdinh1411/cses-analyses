@@ -7,6 +7,24 @@ permalink: /problem_soulutions/dynamic_programming/book_shop_analysis
 
 # Book Shop
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand knapsack problems and capacity-constrained optimization
+- [ ] **Objective 2**: Apply DP techniques to solve 0/1 knapsack problems with value maximization
+- [ ] **Objective 3**: Implement efficient DP solutions for knapsack problems with capacity constraints
+- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and capacity tracking
+- [ ] **Objective 5**: Handle edge cases in knapsack DP (zero capacity, single items, impossible solutions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, knapsack problems, 0/1 knapsack, capacity optimization
+- **Data Structures**: Arrays, DP tables, capacity tracking structures
+- **Mathematical Concepts**: Optimization theory, capacity constraints, value maximization, knapsack theory
+- **Programming Skills**: Array manipulation, capacity calculations, iterative programming, DP implementation
+- **Related Problems**: Money Sums (subset problems), Minimizing Coins (optimization DP), Coin Combinations (DP counting)
+
 ## Problem Description
 
 **Problem**: You are in a book shop with n different books. Each book has a price and number of pages. You have a budget of x and want to maximize the total number of pages you can buy. You can buy each book at most once.

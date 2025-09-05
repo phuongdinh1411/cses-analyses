@@ -6,6 +6,24 @@ permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis
 
 # Dice Combinations - Count Ways to Make Sum with Dice
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the fundamental concept of dynamic programming and state transitions
+- [ ] **Objective 2**: Apply bottom-up DP to solve counting problems with recurrence relations
+- [ ] **Objective 3**: Implement efficient DP solutions using iterative approaches and memoization
+- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and modular arithmetic
+- [ ] **Objective 5**: Handle edge cases in DP problems (base cases, boundary conditions, large numbers)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, recurrence relations, memoization, bottom-up DP
+- **Data Structures**: Arrays, DP tables, memoization structures
+- **Mathematical Concepts**: Combinatorics, modular arithmetic, recurrence relations, counting principles
+- **Programming Skills**: Array manipulation, iterative programming, modular arithmetic, DP implementation
+- **Related Problems**: Coin Combinations I (similar DP pattern), Minimizing Coins (DP optimization), Counting Sequences (counting problems)
+
 ## 📋 Problem Description
 
 Count the number of ways to construct sum n by throwing a dice one or more times. Each throw produces an outcome in {1,2,3,4,5,6}.

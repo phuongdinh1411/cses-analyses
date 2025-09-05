@@ -7,6 +7,24 @@ permalink: /problem_soulutions/dynamic_programming/edit_distance_analysis
 
 # Edit Distance
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand string transformation problems and edit distance calculations
+- [ ] **Objective 2**: Apply 2D DP techniques to solve string transformation problems with operations
+- [ ] **Objective 3**: Implement efficient 2D DP solutions for edit distance and string operations
+- [ ] **Objective 4**: Optimize 2D DP solutions using space-efficient techniques and operation tracking
+- [ ] **Objective 5**: Handle edge cases in string DP (empty strings, identical strings, single character differences)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: 2D dynamic programming, string algorithms, edit distance, string transformation
+- **Data Structures**: 2D arrays, DP tables, string data structures
+- **Mathematical Concepts**: String theory, edit distance, transformation operations, optimization principles
+- **Programming Skills**: 2D array manipulation, string processing, iterative programming, DP implementation
+- **Related Problems**: Longest Common Subsequence (string DP), Removing Digits (digit manipulation), String algorithms
+
 ## Problem Description
 
 **Problem**: The edit distance between two strings is the minimum number of operations required to transform one string into the other.

@@ -7,6 +7,24 @@ permalink: /problem_soulutions/dynamic_programming/array_description_analysis
 
 # Array Description
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand constraint satisfaction problems and array filling with constraints
+- [ ] **Objective 2**: Apply DP techniques to solve constraint satisfaction problems with adjacent constraints
+- [ ] **Objective 3**: Implement efficient DP solutions for constraint satisfaction and array filling
+- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and constraint tracking
+- [ ] **Objective 5**: Handle edge cases in constraint DP (single elements, all known, impossible constraints)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, constraint satisfaction, array filling, constraint handling
+- **Data Structures**: Arrays, DP tables, constraint tracking structures
+- **Mathematical Concepts**: Constraint theory, array properties, constraint satisfaction, modular arithmetic
+- **Programming Skills**: Array manipulation, constraint checking, iterative programming, DP implementation
+- **Related Problems**: Counting Sequences (constraint counting), Coin Combinations (DP counting), Constraint problems
+
 ## Problem Description
 
 **Problem**: You are given an array of n integers. Your task is to find the number of ways to fill the array with integers between 1 and m so that the absolute difference between any two adjacent numbers is at most 1.

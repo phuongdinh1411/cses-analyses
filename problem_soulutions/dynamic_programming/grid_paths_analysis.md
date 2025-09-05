@@ -7,6 +7,24 @@ permalink: /problem_soulutions/dynamic_programming/grid_paths_analysis
 
 # Grid Paths
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand 2D dynamic programming and grid path counting with obstacles
+- [ ] **Objective 2**: Apply 2D DP techniques to count paths in grids with movement constraints
+- [ ] **Objective 3**: Implement efficient 2D DP solutions for path counting with obstacle handling
+- [ ] **Objective 4**: Optimize 2D DP solutions using space-efficient techniques and modular arithmetic
+- [ ] **Objective 5**: Handle edge cases in grid DP (blocked start/end, no valid paths, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: 2D dynamic programming, grid algorithms, path counting, obstacle handling
+- **Data Structures**: 2D arrays, DP tables, grid representations
+- **Mathematical Concepts**: Grid theory, path counting, combinatorics, modular arithmetic
+- **Programming Skills**: 2D array manipulation, grid processing, iterative programming, DP implementation
+- **Related Problems**: Minimal Grid Path (2D DP optimization), Labyrinth (grid traversal), Message Route (path finding)
+
 ## Problem Description
 
 **Problem**: Consider an n×n grid whose squares may have traps. It is not allowed to move to a square with a trap. Your task is to calculate the number of paths from the upper-left square to the lower-right square. You can only move right or down.

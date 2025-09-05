@@ -7,6 +7,24 @@ permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analys
 
 # Increasing Subsequence
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand subsequence problems and longest increasing subsequence optimization
+- [ ] **Objective 2**: Apply DP techniques to solve subsequence problems with increasing constraints
+- [ ] **Objective 3**: Implement efficient DP solutions for LIS and subsequence optimization
+- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and subsequence tracking
+- [ ] **Objective 5**: Handle edge cases in subsequence DP (decreasing arrays, single elements, all equal elements)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, subsequence problems, LIS algorithms, subsequence optimization
+- **Data Structures**: Arrays, DP tables, subsequence tracking structures
+- **Mathematical Concepts**: Subsequence theory, increasing sequences, optimization principles, sequence analysis
+- **Programming Skills**: Array manipulation, subsequence calculations, iterative programming, DP implementation
+- **Related Problems**: Longest Common Subsequence (subsequence problems), Edit Distance (string DP), Sequence problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers, find the length of the longest increasing subsequence (LIS). A subsequence is a sequence that can be derived from the array by deleting some elements without changing the order of the remaining elements.

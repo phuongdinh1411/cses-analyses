@@ -6,6 +6,24 @@ permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis
 
 # Removing Digits - Minimum Steps to Zero
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand digit manipulation problems and minimum steps optimization
+- [ ] **Objective 2**: Apply DP techniques to solve digit-based optimization problems
+- [ ] **Objective 3**: Implement efficient DP solutions for digit manipulation and step counting
+- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and digit operations
+- [ ] **Objective 5**: Handle edge cases in digit DP (single digits, zero input, large numbers)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, digit manipulation, optimization problems, step counting
+- **Data Structures**: Arrays, DP tables, digit tracking structures
+- **Mathematical Concepts**: Digit theory, optimization principles, step counting, number theory
+- **Programming Skills**: Array manipulation, digit operations, iterative programming, DP implementation
+- **Related Problems**: Minimizing Coins (optimization DP), Dice Combinations (counting DP), Number manipulation
+
 ## 📋 Problem Description
 
 Given an integer n, find the minimum number of steps to reduce it to 0. In each step, you can subtract any digit from the current number.
