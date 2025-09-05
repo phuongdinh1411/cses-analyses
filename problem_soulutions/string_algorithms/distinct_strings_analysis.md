@@ -6,6 +6,24 @@ permalink: /problem_soulutions/string_algorithms/distinct_strings_analysis
 
 # Distinct Strings - Count Unique Substrings
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand distinct substring counting problems and suffix-based algorithms
+- [ ] **Objective 2**: Apply suffix arrays or suffix automaton to efficiently count unique substrings
+- [ ] **Objective 3**: Implement efficient distinct substring counting algorithms with O(n²) or O(n) time complexity
+- [ ] **Objective 4**: Optimize substring counting using advanced string data structures and algorithms
+- [ ] **Objective 5**: Handle edge cases in substring counting (empty strings, single character, all same characters)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Suffix arrays, suffix automaton, string algorithms, substring counting, suffix tree concepts
+- **Data Structures**: Suffix arrays, suffix automaton, string data structures, substring tracking
+- **Mathematical Concepts**: String theory, substring mathematics, suffix analysis, combinatorial counting
+- **Programming Skills**: String manipulation, suffix array implementation, substring generation, algorithm implementation
+- **Related Problems**: String Matching (pattern finding), String Functions (basic string operations), String algorithms
+
 ## 📋 Problem Description
 
 Given a string, find the number of distinct substrings.

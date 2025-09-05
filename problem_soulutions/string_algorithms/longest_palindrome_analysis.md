@@ -6,6 +6,24 @@ permalink: /problem_soulutions/string_algorithms/longest_palindrome_analysis
 
 # Longest Palindrome - Longest Palindromic Substring
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand palindrome problems and longest palindromic substring detection algorithms
+- [ ] **Objective 2**: Apply Manacher's algorithm or expand around centers approach to find longest palindromes
+- [ ] **Objective 3**: Implement efficient palindrome detection algorithms with O(n) or O(n²) time complexity
+- [ ] **Objective 4**: Optimize palindrome detection using Manacher's algorithm, center expansion, and dynamic programming
+- [ ] **Objective 5**: Handle edge cases in palindrome detection (single character, no palindrome, all same characters)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Manacher's algorithm, palindrome detection, center expansion, dynamic programming, string algorithms
+- **Data Structures**: String data structures, palindrome tracking, center tracking, radius tracking, DP tables
+- **Mathematical Concepts**: Palindrome theory, center expansion mathematics, Manacher's algorithm theory, string analysis
+- **Programming Skills**: Manacher's algorithm implementation, center expansion, palindrome checking, algorithm implementation
+- **Related Problems**: String algorithms, Palindrome problems, String matching problems
+
 ## 📋 Problem Description
 
 Given a string, find the longest palindromic substring.

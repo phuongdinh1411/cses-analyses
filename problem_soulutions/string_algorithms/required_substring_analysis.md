@@ -7,6 +7,24 @@ permalink: /problem_soulutions/string_algorithms/required_substring_analysis
 
 # Required Substring
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand required substring problems and string modification optimization
+- [ ] **Objective 2**: Apply string matching and analysis to find minimum character additions for substring inclusion
+- [ ] **Objective 3**: Implement efficient required substring algorithms with O(n + m) time complexity
+- [ ] **Objective 4**: Optimize string modification using string matching, prefix analysis, and greedy approaches
+- [ ] **Objective 5**: Handle edge cases in required substrings (substring already present, impossible to add, single character)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: String matching, substring analysis, string modification, optimization problems, greedy algorithms
+- **Data Structures**: String data structures, substring tracking, modification tracking, optimization tracking
+- **Mathematical Concepts**: String modification theory, substring mathematics, optimization mathematics, greedy analysis
+- **Programming Skills**: String manipulation, substring matching, modification counting, algorithm implementation
+- **Related Problems**: String Matching (pattern finding), String Functions (basic string operations), Optimization problems
+
 ## 📋 Problem Description
 
 Given a string and a required substring, find the minimum number of characters to add to make the string contain the required substring.

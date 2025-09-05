@@ -6,6 +6,24 @@ permalink: /problem_soulutions/string_algorithms/finding_borders_analysis
 
 # Finding Borders - String Border Detection
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand string border problems and proper prefix/suffix analysis
+- [ ] **Objective 2**: Apply KMP failure function or direct approach to find all borders of a string
+- [ ] **Objective 3**: Implement efficient border finding algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize border detection using KMP failure function, prefix analysis, and suffix analysis
+- [ ] **Objective 5**: Handle edge cases in border finding (no borders, single character, all same characters)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: KMP algorithm, failure function, border detection, prefix analysis, suffix analysis
+- **Data Structures**: Failure function arrays, string data structures, border tracking, prefix tracking, suffix tracking
+- **Mathematical Concepts**: Border theory, prefix mathematics, suffix mathematics, failure function analysis
+- **Programming Skills**: KMP implementation, failure function calculation, border detection, string manipulation, algorithm implementation
+- **Related Problems**: String Functions (similar concept), String Matching (KMP algorithm), String algorithms
+
 ## 📋 Problem Description
 
 Given a string, find all borders of the string. A border is a proper prefix that is also a proper suffix.

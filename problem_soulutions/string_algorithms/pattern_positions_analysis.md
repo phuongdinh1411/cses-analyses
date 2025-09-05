@@ -6,6 +6,24 @@ permalink: /problem_soulutions/string_algorithms/pattern_positions_analysis
 
 # Pattern Positions - Find All Pattern Occurrences
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand pattern position problems and string matching algorithms for occurrence detection
+- [ ] **Objective 2**: Apply KMP algorithm or Z-algorithm to efficiently find all pattern occurrence positions
+- [ ] **Objective 3**: Implement efficient pattern position algorithms with O(n + m) time complexity
+- [ ] **Objective 4**: Optimize pattern matching using failure functions, prefix functions, and preprocessing techniques
+- [ ] **Objective 5**: Handle edge cases in pattern positions (pattern longer than text, no matches, overlapping matches)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: KMP algorithm, Z-algorithm, string matching, pattern matching, failure functions, prefix functions
+- **Data Structures**: Arrays, string data structures, pattern tracking, position tracking, occurrence tracking
+- **Mathematical Concepts**: String matching theory, pattern analysis, failure function mathematics, prefix analysis
+- **Programming Skills**: String manipulation, KMP implementation, Z-algorithm implementation, pattern matching, algorithm implementation
+- **Related Problems**: String Matching (similar concept), String Functions (basic string operations), String algorithms
+
 ## 📋 Problem Description
 
 Given a string and a pattern, find all positions where the pattern occurs in the string.

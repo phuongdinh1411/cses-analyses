@@ -6,6 +6,24 @@ permalink: /problem_soulutions/string_algorithms/string_matching_analysis
 
 # String Matching - Pattern Occurrence Detection
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand string matching problems and pattern occurrence detection algorithms
+- [ ] **Objective 2**: Apply KMP algorithm or Z-algorithm to efficiently find all pattern occurrences
+- [ ] **Objective 3**: Implement efficient string matching algorithms with O(n + m) time complexity
+- [ ] **Objective 4**: Optimize pattern matching using failure functions, prefix functions, and preprocessing
+- [ ] **Objective 5**: Handle edge cases in string matching (pattern longer than text, no matches, multiple matches)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: KMP algorithm, Z-algorithm, string matching, pattern matching, failure functions, prefix functions
+- **Data Structures**: Arrays, string data structures, pattern tracking, occurrence tracking
+- **Mathematical Concepts**: String matching theory, pattern analysis, failure function mathematics, prefix analysis
+- **Programming Skills**: String manipulation, KMP implementation, Z-algorithm implementation, pattern matching, algorithm implementation
+- **Related Problems**: Pattern Positions (similar concept), String Functions (basic string operations), String algorithms
+
 ## 📋 Problem Description
 
 Given a string and a pattern, find all occurrences of the pattern in the string.

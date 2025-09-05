@@ -7,6 +7,24 @@ permalink: /problem_soulutions/string_algorithms/string_automaton_analysis
 
 # String Automaton
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand suffix automaton data structures and their applications in string processing
+- [ ] **Objective 2**: Apply suffix automaton construction and query processing for pattern occurrence counting
+- [ ] **Objective 3**: Implement efficient suffix automaton algorithms with O(n) construction and O(m) query time complexity
+- [ ] **Objective 4**: Optimize string pattern matching using suffix automaton and advanced string data structures
+- [ ] **Objective 5**: Handle edge cases in suffix automaton (empty patterns, single character, all same characters)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Suffix automaton, string algorithms, pattern matching, automaton construction, state transitions
+- **Data Structures**: Suffix automaton, state machines, transition tables, pattern tracking, occurrence counting
+- **Mathematical Concepts**: Automaton theory, string theory, state machine mathematics, pattern analysis
+- **Programming Skills**: Automaton implementation, state machine programming, pattern matching, algorithm implementation
+- **Related Problems**: String Matching (basic pattern matching), Distinct Strings (substring counting), String algorithms
+
 ## 📋 Problem Description
 
 Given a string s, build a suffix automaton and process q queries. Each query asks for the number of occurrences of a pattern in the string.

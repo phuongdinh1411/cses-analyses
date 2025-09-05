@@ -7,6 +7,24 @@ permalink: /problem_soulutions/string_algorithms/finding_periods_analysis
 
 # Finding Periods
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand period finding problems and string repetition analysis
+- [ ] **Objective 2**: Apply string matching algorithms or divisor checking to find smallest periods
+- [ ] **Objective 3**: Implement efficient period finding algorithms with O(n) or O(n log n) time complexity
+- [ ] **Objective 4**: Optimize period detection using string matching, prefix functions, and mathematical analysis
+- [ ] **Objective 5**: Handle edge cases in period finding (no period, single character, all same characters)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: String matching, period analysis, prefix functions, divisor checking, string repetition
+- **Data Structures**: String data structures, prefix arrays, period tracking, repetition tracking
+- **Mathematical Concepts**: Period theory, string repetition mathematics, divisor mathematics, prefix analysis
+- **Programming Skills**: String manipulation, prefix function implementation, period detection, algorithm implementation
+- **Related Problems**: Finding Borders (similar concept), String Functions (basic string operations), String algorithms
+
 ## 📋 Problem Description
 
 Given a string, find the smallest period of the string. A period is the smallest positive integer k such that the string can be written as a repetition of its first k characters.

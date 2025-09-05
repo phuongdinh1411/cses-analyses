@@ -7,6 +7,24 @@ permalink: /problem_soulutions/string_algorithms/word_combinations_analysis
 
 # Word Combinations
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand word combination problems and dynamic programming approaches for string construction
+- [ ] **Objective 2**: Apply dynamic programming with memoization to count ways of constructing strings from words
+- [ ] **Objective 3**: Implement efficient word combination algorithms with O(n * m * k) time complexity
+- [ ] **Objective 4**: Optimize string construction problems using dynamic programming and memoization techniques
+- [ ] **Objective 5**: Handle edge cases in word combinations (empty string, no valid combinations, single word, duplicate words)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, memoization, string construction, word matching, combination counting
+- **Data Structures**: DP tables, memoization tables, string data structures, word tracking, combination tracking
+- **Mathematical Concepts**: Dynamic programming theory, combination mathematics, string construction theory, memoization
+- **Programming Skills**: Dynamic programming implementation, memoization, string matching, combination counting, algorithm implementation
+- **Related Problems**: Dynamic programming problems, String construction problems, Combination problems
+
 ## 📋 Problem Description
 
 Given a string and a list of words, find the number of ways to construct the string by concatenating the words.

@@ -7,6 +7,24 @@ permalink: /problem_soulutions/string_algorithms/string_compression_analysis
 
 # String Compression
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand string compression problems and run-length encoding techniques
+- [ ] **Objective 2**: Apply run-length encoding to compress strings by representing consecutive identical characters
+- [ ] **Objective 3**: Implement efficient string compression algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize string compression using run-length encoding and character counting techniques
+- [ ] **Objective 5**: Handle edge cases in string compression (single character, all different characters, empty string)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Run-length encoding, string compression, character counting, string processing, compression algorithms
+- **Data Structures**: String data structures, character tracking, count tracking, compression tracking
+- **Mathematical Concepts**: Compression theory, run-length mathematics, character frequency analysis, encoding theory
+- **Programming Skills**: String manipulation, character counting, compression implementation, algorithm implementation
+- **Related Problems**: String Functions (basic string operations), String algorithms, Compression problems
+
 ## 📋 Problem Description
 
 Given a string s, find the shortest compressed representation of the string. The compressed string should represent the original string using the minimum number of characters.

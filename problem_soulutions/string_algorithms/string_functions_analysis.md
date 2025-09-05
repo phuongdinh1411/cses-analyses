@@ -7,6 +7,24 @@ permalink: /problem_soulutions/string_algorithms/string_functions_analysis
 
 # String Functions
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand string function problems and KMP failure function applications
+- [ ] **Objective 2**: Apply KMP algorithm's failure function to calculate string function values at specific positions
+- [ ] **Objective 3**: Implement efficient string function algorithms with O(n) preprocessing and O(1) query time complexity
+- [ ] **Objective 4**: Optimize string function calculation using KMP failure function and prefix analysis
+- [ ] **Objective 5**: Handle edge cases in string functions (single character, no proper prefix/suffix, all same characters)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: KMP algorithm, failure function, string functions, prefix analysis, suffix analysis
+- **Data Structures**: Failure function arrays, string data structures, prefix tracking, suffix tracking
+- **Mathematical Concepts**: String function theory, prefix mathematics, suffix mathematics, failure function analysis
+- **Programming Skills**: KMP implementation, failure function calculation, string manipulation, algorithm implementation
+- **Related Problems**: String Matching (KMP algorithm), Finding Borders (similar concept), String algorithms
+
 ## 📋 Problem Description
 
 Given a string s, process q queries. Each query asks for the value of a specific string function at a given position.
