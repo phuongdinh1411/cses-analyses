@@ -8,51 +8,6 @@ permalink: /problem_soulutions/geometry/summary
 
 Welcome to the Geometry section! This category covers computational geometry algorithms and techniques for solving geometric problems.
 
-## Problem Categories
-
-### Basic Geometry
-- [Point Location Test](point_location_test_analysis) - Point position relative to line
-- [Line Segment Intersection](line_segment_intersection_analysis) - Finding intersection points
-- [Polygon Area](polygon_area_analysis) - Computing polygon area
-- [Point in Polygon](point_in_polygon_analysis) - Point containment testing
-
-### Distance Problems
-- [Minimum Euclidean Distance](minimum_euclidean_distance_analysis) - Closest pair of points
-- [Maximum Manhattan Distance](maximum_manhattan_distance_analysis) - Farthest points
-- [All Manhattan Distances](all_manhattan_distances_analysis) - Computing all distances
-
-### Line Problems
-- [Line Segments Trace](line_segments_trace_analysis) - Following line segments
-- [Lines and Queries I](lines_and_queries_i_analysis) - Basic line queries
-- [Lines and Queries II](lines_and_queries_ii_analysis) - Advanced line queries
-
-### Advanced Geometry
-- [Convex Hull](convex_hull_analysis) - Graham scan algorithm
-- [Polygon Lattice Points](polygon_lattice_points_analysis) - Points with integer coordinates
-- [Intersection Points](intersection_points_analysis) - All intersection points
-- [Robot Path](robot_path_analysis) - Path planning
-- [Area of Rectangles](area_of_rectangles_analysis) - Union of rectangles
-
-## Learning Path
-
-### For Beginners (Start Here)
-1. Start with **Point Location Test** for basic geometry
-2. Move to **Line Segment Intersection** for line problems
-3. Try **Polygon Area** for area calculation
-4. Learn point testing with **Point in Polygon**
-
-### Intermediate Level
-1. Master distance with **Minimum Euclidean Distance**
-2. Practice line problems with **Lines and Queries I**
-3. Explore polygon points with **Polygon Lattice Points**
-4. Study convex hulls with **Convex Hull**
-
-### Advanced Level
-1. Challenge yourself with **Area of Rectangles**
-2. Master intersection finding with **Intersection Points**
-3. Solve complex paths with **Robot Path**
-4. Tackle advanced queries with **Lines and Queries II**
-
 ## Key Concepts & Techniques
 
 ### Basic Geometry Operations
@@ -252,6 +207,31 @@ Welcome to the Geometry section! This category covers computational geometry alg
 - **Caching**: Store computed results
   - *When to use*: When calculations are expensive
   - *Example*: Cache geometric calculations, cache intersections
+
+## Problem Categories
+
+### Basic Geometry
+- [Point Location Test](point_location_test_analysis) - Point position relative to line
+- [Line Segment Intersection](line_segment_intersection_analysis) - Finding intersection points
+- [Polygon Area](polygon_area_analysis) - Computing polygon area
+
+### Distance and Location
+- [Minimum Euclidean Distance](minimum_euclidean_distance_analysis) - Closest pair of points
+- [Maximum Manhattan Distance](maximum_manhattan_distance_analysis) - Maximum Manhattan distance
+- [All Manhattan Distances](all_manhattan_distances_analysis) - All Manhattan distances
+- [Point in Polygon](point_in_polygon_analysis) - Point containment test
+
+### Line and Segment Operations
+- [Line Segments Trace](line_segments_trace_analysis) - Following line segments
+- [Lines and Queries I](lines_and_queries_i_analysis) - Basic line queries
+- [Lines and Queries II](lines_and_queries_ii_analysis) - Advanced line queries
+
+### Advanced Geometry
+- [Convex Hull](convex_hull_analysis) - Graham scan algorithm
+- [Polygon Lattice Points](polygon_lattice_points_analysis) - Points with integer coordinates
+- [Intersection Points](intersection_points_analysis) - All intersection points
+- [Robot Path](robot_path_analysis) - Path planning
+- [Area of Rectangles](area_of_rectangles_analysis) - Union of rectangles
 
 ## Detailed Examples and Implementations
 

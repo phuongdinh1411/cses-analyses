@@ -8,55 +8,6 @@ permalink: /problem_soulutions/range_queries/summary
 
 Welcome to the Range Queries section! This category covers efficient data structures and algorithms for handling queries on ranges of data.
 
-## Problem Categories
-
-### Static Range Queries
-- [Static Range Sum Queries](static_range_sum_queries_analysis) - Basic prefix sums
-- [Static Range Minimum Queries](static_range_minimum_queries_analysis) - Sparse table
-- [Range XOR Queries](range_xor_queries_analysis) - XOR over ranges
-- [Range Interval Queries](range_interval_queries_analysis) - Interval-based queries
-
-### Dynamic Range Queries
-- [Dynamic Range Sum Queries](dynamic_range_sum_queries_analysis) - Fenwick tree
-- [Range Update Queries](range_update_queries_analysis) - Lazy propagation
-- [Forest Queries](forest_queries_analysis) - 2D range sums
-- [Hotel Queries](hotel_queries_analysis) - Binary search on segment tree
-
-### Subarray Queries
-- [Subarray Sum Queries](subarray_sum_queries_analysis) - Dynamic subarray sums
-- [Subarray Minimum Queries](subarray_minimum_queries_analysis) - Range minimum
-- [Subarray XOR Queries](subarray_xor_queries_analysis) - XOR operations
-- [Subarray Distinct Values Queries](subarray_distinct_values_queries_analysis) - Distinct elements
-- [Subarray Mode Queries](subarray_mode_queries_analysis) - Most frequent element
-- [Subarray OR Queries](subarray_or_queries_analysis) - Bitwise OR
-
-### Advanced Queries
-- [List Removals](list_removals_analysis) - Dynamic array operations
-- [Salary Queries](salary_queries_analysis) - Range counting
-- [Prefix Sum Queries](prefix_sum_queries_analysis) - Advanced prefix sums
-- [Pizzeria Queries](pizzeria_queries_analysis) - Distance queries
-- [Visible Buildings Queries](visible_buildings_queries_analysis) - Geometric queries
-
-## Learning Path
-
-### For Beginners (Start Here)
-1. Start with **Static Range Sum Queries** for basic concepts
-2. Move to **Static Range Minimum Queries** for RMQ
-3. Try **Dynamic Range Sum Queries** for updates
-4. Learn 2D queries with **Forest Queries**
-
-### Intermediate Level
-1. Master segment trees with **Range Update Queries**
-2. Practice subarray queries with **Subarray Sum Queries**
-3. Explore distinct values with **Subarray Distinct Values Queries**
-4. Study advanced operations with **Subarray OR Queries**
-
-### Advanced Level
-1. Challenge yourself with **Salary Queries**
-2. Master complex queries with **Pizzeria Queries**
-3. Solve geometric problems with **Visible Buildings Queries**
-4. Tackle dynamic operations with **List Removals**
-
 ## Key Concepts & Techniques
 
 ### Data Structures
@@ -235,6 +186,37 @@ Welcome to the Range Queries section! This category covers efficient data struct
 - **Memory Pool**: Reuse allocated memory
   - *When to use*: Frequent allocation/deallocation
   - *Example*: Persistent segment tree with memory pool
+
+## Problem Categories
+
+### Static Range Queries
+- [Static Range Sum Queries](static_range_sum_queries_analysis) - Basic prefix sums
+- [Static Range Minimum Queries](static_range_minimum_queries_analysis) - Sparse table
+- [Range XOR Queries](range_xor_queries_analysis) - XOR over ranges
+
+### Dynamic Range Queries
+- [Dynamic Range Sum Queries](dynamic_range_sum_queries_analysis) - Segment tree
+- [Range Update Queries](range_update_queries_analysis) - Lazy propagation
+- [Range Interval Queries](range_interval_queries_analysis) - Interval operations
+
+### 2D Range Queries
+- [Forest Queries](forest_queries_analysis) - 2D prefix sums
+- [Hotel Queries](hotel_queries_analysis) - 2D range queries
+
+### Subarray Queries
+- [Subarray Sum Queries](subarray_sum_queries_analysis) - Subarray sums
+- [Subarray Distinct Values Queries](subarray_distinct_values_queries_analysis) - Distinct elements
+- [Subarray Minimum Queries](subarray_minimum_queries_analysis) - Minimum in subarray
+- [Subarray Maximums](subarray_maximums_analysis) - Maximum in subarray
+- [Subarray Mode Queries](subarray_mode_queries_analysis) - Most frequent element
+- [Subarray OR Queries](subarray_or_queries_analysis) - Bitwise OR
+
+### Advanced Queries
+- [List Removals](list_removals_analysis) - Dynamic array operations
+- [Salary Queries](salary_queries_analysis) - Range counting
+- [Prefix Sum Queries](prefix_sum_queries_analysis) - Advanced prefix sums
+- [Pizzeria Queries](pizzeria_queries_analysis) - Distance queries
+- [Visible Buildings Queries](visible_buildings_queries_analysis) - Geometric queries
 
 ## Detailed Examples and Implementations
 

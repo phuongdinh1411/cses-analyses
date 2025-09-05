@@ -8,48 +8,6 @@ permalink: /problem_soulutions/tree_algorithms/summary
 
 Welcome to the Tree Algorithms section! This category covers algorithms and techniques for working with tree data structures.
 
-## Problem Categories
-
-### Basic Tree Operations
-- [Subordinates](subordinates_analysis) - Count subtree sizes
-- [Tree Matching](tree_matching_analysis) - Maximum matching in tree
-- [Tree Diameter](tree_diameter_analysis) - Finding longest path
-- [Tree Distances I](tree_distances_i_analysis) - Distance to all nodes
-- [Tree Distances II](tree_distances_ii_analysis) - Sum of distances
-
-### Tree Queries
-- [Company Queries I](company_queries_i_analysis) - Finding ancestors
-- [Company Queries II](company_queries_ii_analysis) - Lowest common ancestor
-- [Company Queries III](company_queries_iii_analysis) - Advanced tree queries
-- [Company Queries IV](company_queries_iv_analysis) - Complex tree operations
-- [Distance Queries](distance_queries_analysis) - Path length queries
-
-### Path Problems
-- [Path Queries](path_queries_analysis) - Sum queries on paths
-- [Path Queries II](path_queries_ii_analysis) - Advanced path operations
-- [Counting Paths](counting_paths_analysis) - Count paths with sum
-- [Distinct Values Queries](distinct_values_queries_analysis) - Unique values on paths
-
-## Learning Path
-
-### For Beginners (Start Here)
-1. Start with **Subordinates** for basic tree traversal
-2. Move to **Tree Diameter** for path finding
-3. Try **Tree Distances I** for distance calculation
-4. Learn queries with **Company Queries I**
-
-### Intermediate Level
-1. Master LCA with **Company Queries II**
-2. Practice path queries with **Path Queries**
-3. Explore distance problems with **Distance Queries**
-4. Study tree matching with **Tree Matching**
-
-### Advanced Level
-1. Challenge yourself with **Company Queries IV**
-2. Master advanced paths with **Path Queries II**
-3. Solve complex counting with **Counting Paths**
-4. Tackle distinct values with **Distinct Values Queries**
-
 ## Key Concepts & Techniques
 
 ### Tree Properties & Representation
@@ -252,6 +210,30 @@ Welcome to the Tree Algorithms section! This category covers algorithms and tech
 - **Lazy Allocation**: Allocate memory on demand
   - *When to use*: Sparse trees
   - *Example*: Dynamic tree construction
+
+## Problem Categories
+
+### Basic Tree Operations
+- [Subordinates](subordinates_analysis) - Count subtree sizes
+- [Tree Matching](tree_matching_analysis) - Maximum matching in tree
+- [Tree Diameter](tree_diameter_analysis) - Finding longest path
+
+### Tree Queries
+- [Company Queries I](company_queries_i_analysis) - Basic company hierarchy
+- [Company Queries II](company_queries_ii_analysis) - LCA queries
+- [Company Queries III](company_queries_iii_analysis) - Advanced queries
+- [Company Queries IV](company_queries_iv_analysis) - Complex operations
+
+### Distance Problems
+- [Tree Distances I](tree_distances_i_analysis) - Distance calculation
+- [Tree Distances II](tree_distances_ii_analysis) - Advanced distances
+- [Distance Queries](distance_queries_analysis) - Path length queries
+
+### Path Problems
+- [Path Queries](path_queries_analysis) - Sum queries on paths
+- [Path Queries II](path_queries_ii_analysis) - Advanced path operations
+- [Counting Paths](counting_paths_analysis) - Count paths with sum
+- [Distinct Values Queries](distinct_values_queries_analysis) - Unique values on paths
 
 ## Detailed Examples and Implementations
 

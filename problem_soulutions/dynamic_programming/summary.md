@@ -8,53 +8,6 @@ permalink: /problem_soulutions/dynamic_programming/summary
 
 Welcome to the Dynamic Programming section! This category covers techniques for solving complex problems by breaking them down into simpler subproblems.
 
-## Problem Categories
-
-### Basic DP Concepts
-- [Dice Combinations](dice_combinations_analysis) - Count ways to get sum with dice
-- [Minimizing Coins](minimizing_coins_analysis) - Coin change problem
-- [Coin Combinations I](coin_combinations_i_analysis) - Unordered combinations
-- [Coin Combinations II](coin_combinations_ii_analysis) - Ordered combinations
-- [Removing Digits](removing_digits_analysis) - Minimize steps to zero
-
-### Grid Problems
-- [Grid Paths](grid_paths_analysis) - Count paths in grid
-- [Minimal Grid Path](minimal_grid_path_analysis) - Find minimum cost path
-- [Rectangle Cutting](rectangle_cutting_analysis) - Minimize cuts
-
-### Sequence Problems
-- [Array Description](array_description_analysis) - Valid array constructions
-- [Increasing Subsequence](increasing_subsequence_analysis) - Longest increasing subsequence
-- [Longest Common Subsequence](longest_common_subsequence_analysis) - LCS problem
-- [Edit Distance](edit_distance_analysis) - String transformation
-
-### Optimization Problems
-- [Book Shop](book_shop_analysis) - Knapsack problem
-- [Money Sums](money_sums_analysis) - Generate possible sums
-- [Counting Towers](counting_towers_analysis) - Count tower arrangements
-- [Removal Game](removal_game_analysis) - Game theory with DP
-- [Two Sets II](two_sets_ii_analysis) - Count equal sum partitions
-
-## Learning Path
-
-### For Beginners (Start Here)
-1. Start with **Dice Combinations** for basic counting
-2. Move to **Minimizing Coins** for optimization
-3. Try **Grid Paths** for 2D DP
-4. Learn knapsack with **Book Shop**
-
-### Intermediate Level
-1. Master sequence problems with **Increasing Subsequence**
-2. Practice string DP with **Edit Distance**
-3. Explore optimization with **Rectangle Cutting**
-4. Study game theory with **Removal Game**
-
-### Advanced Level
-1. Challenge yourself with **Counting Towers**
-2. Master advanced counting with **Two Sets II**
-3. Solve complex array problems with **Array Description**
-4. Tackle string problems with **Longest Common Subsequence**
-
 ## Key Concepts & Techniques
 
 ### DP Fundamentals
@@ -148,6 +101,33 @@ Welcome to the Dynamic Programming section! This category covers techniques for 
 - **Mathematical Formulas**: Direct calculation instead of DP
   - *When to use*: When closed-form solution exists
   - *Example*: Fibonacci with matrix exponentiation
+
+## Problem Categories
+
+### Basic DP Concepts
+- [Dice Combinations](dice_combinations_analysis) - Count ways to get sum with dice
+- [Minimizing Coins](minimizing_coins_analysis) - Coin change problem
+- [Coin Combinations I](coin_combinations_i_analysis) - Unordered combinations
+- [Coin Combinations II](coin_combinations_ii_analysis) - Ordered combinations
+- [Removing Digits](removing_digits_analysis) - Minimize steps to zero
+
+### Grid Problems
+- [Grid Paths](grid_paths_analysis) - Count paths in grid
+- [Minimal Grid Path](minimal_grid_path_analysis) - Find minimum cost path
+- [Rectangle Cutting](rectangle_cutting_analysis) - Minimize cuts
+
+### Sequence Problems
+- [Array Description](array_description_analysis) - Valid array constructions
+- [Increasing Subsequence](increasing_subsequence_analysis) - Longest increasing subsequence
+- [Longest Common Subsequence](longest_common_subsequence_analysis) - LCS problem
+- [Edit Distance](edit_distance_analysis) - String transformation
+
+### Optimization Problems
+- [Book Shop](book_shop_analysis) - Knapsack problem
+- [Money Sums](money_sums_analysis) - Generate possible sums
+- [Counting Towers](counting_towers_analysis) - Count tower arrangements
+- [Removal Game](removal_game_analysis) - Game theory with DP
+- [Two Sets II](two_sets_ii_analysis) - Count equal sum partitions
 
 ## Detailed Examples and Patterns
 

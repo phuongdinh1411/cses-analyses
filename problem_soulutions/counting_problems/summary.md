@@ -8,55 +8,6 @@ permalink: /problem_soulutions/counting_problems/summary
 
 Welcome to the Counting Problems section! This category covers combinatorics and mathematical counting techniques for solving complex enumeration problems.
 
-## Problem Categories
-
-### Basic Counting
-- [Counting Combinations](counting_combinations_analysis) - Basic combination counting
-- [Counting Permutations](counting_permutations_analysis) - Permutation enumeration
-- [Counting Sequences](counting_sequences_analysis) - Sequence counting
-- [Counting Reorders](counting_reorders_analysis) - Reordering problems
-- [Empty String](empty_string_analysis) - String counting
-
-### Grid Problems
-- [Grid Completion](grid_completion_analysis) - Filling grid cells
-- [Grid Paths II](grid_paths_ii_analysis) - Path counting in grids
-- [All Letter Subgrid Count I](all_letter_subgrid_count_i_analysis) - Letter grid counting
-- [All Letter Subgrid Count II](all_letter_subgrid_count_ii_analysis) - Advanced grid counting
-- [Border Subgrid Count I](border_subgrid_count_i_analysis) - Border counting
-- [Border Subgrid Count II](border_subgrid_count_ii_analysis) - Complex border counting
-- [Filled Subgrid Count I](filled_subgrid_count_i_analysis) - Fill counting
-- [Filled Subgrid Count II](filled_subgrid_count_ii_analysis) - Advanced fill counting
-
-### Distribution Problems
-- [Collecting Numbers Distribution](collecting_numbers_distribution_analysis) - Number distribution
-- [Functional Graph Distribution](functional_graph_distribution_analysis) - Graph counting
-- [Tournament Graph Distribution](tournament_graph_distribution_analysis) - Tournament graphs
-
-### Special Counting
-- [Counting Bishops](counting_bishops_analysis) - Chess piece counting
-- [Permutation Inversions](permutation_inversions_analysis) - Inversion counting
-- [Raab Game II](raab_game_ii_analysis) - Game state counting
-
-## Learning Path
-
-### For Beginners (Start Here)
-1. Start with **Counting Combinations** for basic counting
-2. Move to **Counting Permutations** for arrangements
-3. Try **Grid Completion** for grid problems
-4. Learn distributions with **Collecting Numbers Distribution**
-
-### Intermediate Level
-1. Master grid counting with **All Letter Subgrid Count I**
-2. Practice border problems with **Border Subgrid Count I**
-3. Explore inversions with **Permutation Inversions**
-4. Study graph counting with **Functional Graph Distribution**
-
-### Advanced Level
-1. Challenge yourself with **Grid Paths II**
-2. Master advanced counting with **All Letter Subgrid Count II**
-3. Solve complex distributions with **Tournament Graph Distribution**
-4. Tackle game counting with **Raab Game II**
-
 ## Key Concepts & Techniques
 
 ### Combinatorial Principles
@@ -162,6 +113,35 @@ Welcome to the Counting Problems section! This category covers combinatorics and
 - **Statement**: If n+1 objects are placed in n boxes, some box has ≥2 objects
 - **Example**: Prove that in any group of 13 people, two have same birthday month
 - **Implementation**: Use contradiction or direct counting
+
+## Problem Categories
+
+### Basic Counting
+- [Counting Combinations](counting_combinations_analysis) - Basic combination counting
+- [Counting Permutations](counting_permutations_analysis) - Permutation enumeration
+- [Counting Sequences](counting_sequences_analysis) - Sequence counting
+- [Counting Reorders](counting_reorders_analysis) - Reordering problems
+- [Empty String](empty_string_analysis) - String counting
+
+### Grid Problems
+- [Grid Completion](grid_completion_analysis) - Filling grid cells
+- [Grid Paths II](grid_paths_ii_analysis) - Path counting in grids
+- [All Letter Subgrid Count I](all_letter_subgrid_count_i_analysis) - Letter grid counting
+- [All Letter Subgrid Count II](all_letter_subgrid_count_ii_analysis) - Advanced grid counting
+- [Border Subgrid Count I](border_subgrid_count_i_analysis) - Border counting
+- [Border Subgrid Count II](border_subgrid_count_ii_analysis) - Complex border counting
+- [Filled Subgrid Count I](filled_subgrid_count_i_analysis) - Fill counting
+- [Filled Subgrid Count II](filled_subgrid_count_ii_analysis) - Advanced fill counting
+
+### Distribution Problems
+- [Collecting Numbers Distribution](collecting_numbers_distribution_analysis) - Number distribution
+- [Functional Graph Distribution](functional_graph_distribution_analysis) - Graph counting
+- [Tournament Graph Distribution](tournament_graph_distribution_analysis) - Tournament graphs
+
+### Special Counting
+- [Counting Bishops](counting_bishops_analysis) - Chess piece counting
+- [Permutation Inversions](permutation_inversions_analysis) - Inversion counting
+- [Raab Game II](raab_game_ii_analysis) - Game state counting
 
 ## Detailed Examples and Implementations
 
