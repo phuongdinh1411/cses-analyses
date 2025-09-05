@@ -170,6 +170,81 @@ test_solution()
 - **Optimal**: No better solution exists
 - **Complete**: Handles all possible cases
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Array: [3, 2, 5, 1, 7]
+Output: 5 operations
+```
+
+### Array Transformation Process
+```
+Initial array: [3, 2, 5, 1, 7]
+
+Step 1: Check a[1] vs a[0]
+- a[0] = 3, a[1] = 2
+- 2 < 3, need to increase a[1]
+- Increase a[1] by 1: 2 → 3
+- Array: [3, 3, 5, 1, 7]
+- Operations: 1
+
+Step 2: Check a[2] vs a[1]
+- a[1] = 3, a[2] = 5
+- 5 > 3 ✓ (already increasing)
+- No change needed
+- Array: [3, 3, 5, 1, 7]
+- Operations: 1
+
+Step 3: Check a[3] vs a[2]
+- a[2] = 5, a[3] = 1
+- 1 < 5, need to increase a[3]
+- Increase a[3] by 4: 1 → 5
+- Array: [3, 3, 5, 5, 7]
+- Operations: 1 + 4 = 5
+
+Step 4: Check a[4] vs a[3]
+- a[3] = 5, a[4] = 7
+- 7 > 5 ✓ (already increasing)
+- No change needed
+- Array: [3, 3, 5, 5, 7]
+- Operations: 5
+
+Final array: [3, 3, 5, 5, 7] (strictly increasing)
+Total operations: 5
+```
+
+### Greedy Strategy Visualization
+```
+Process from left to right, ensuring each element > previous:
+
+Position: 0  1  2  3  4
+Initial:  3  2  5  1  7
+Step 1:   3  3  5  1  7  (increase a[1] by 1)
+Step 2:   3  3  5  1  7  (no change needed)
+Step 3:   3  3  5  5  7  (increase a[3] by 4)
+Step 4:   3  3  5  5  7  (no change needed)
+
+Each step makes minimum necessary changes.
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Greedy          │ O(n)         │ O(1)         │ Process      │
+│                 │              │              │ left to right│
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n²)        │ O(n)         │ Try all      │
+│                 │              │              │ combinations │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DP              │ O(n)         │ O(n)         │ Track        │
+│                 │              │              │ optimal      │
+│                 │              │              │ changes      │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Greedy Strategy**

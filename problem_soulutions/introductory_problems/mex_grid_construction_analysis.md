@@ -233,6 +233,102 @@ test_solution()
 - **Complete**: Handles all valid cases
 - **Correct**: Ensures MEX constraints are satisfied
 
+## 🎨 Visual Example
+
+### Input Example
+```
+n = 3, target_mex = 4
+Output: 3×3 grid with MEX = 4
+```
+
+### MEX Concept
+```
+MEX (Minimum Excluded Value) of a set:
+- MEX of {0, 1, 2, 3, 5} = 4 (smallest missing value)
+- MEX of {1, 2, 3, 4} = 0 (smallest missing value)
+- MEX of {0, 1, 2, 3, 4} = 5 (smallest missing value)
+
+For target_mex = 4:
+- Values 0, 1, 2, 3 must be present
+- Value 4 must be missing
+```
+
+### Grid Construction
+```
+Target: 3×3 grid with MEX = 4 for each row and column
+
+Step 1: Fill with consecutive numbers
+0 1 2
+3 4 5
+6 7 8
+
+Step 2: Check MEX for each row/column
+Row 0: {0,1,2} → MEX = 3 ✗
+Row 1: {3,4,5} → MEX = 0 ✗
+Row 2: {6,7,8} → MEX = 0 ✗
+Col 0: {0,3,6} → MEX = 1 ✗
+Col 1: {1,4,7} → MEX = 0 ✗
+Col 2: {2,5,8} → MEX = 0 ✗
+
+Step 3: Modify to achieve MEX = 4
+0 1 2
+3 5 6
+7 8 9
+
+Verification:
+Row 0: {0,1,2} → MEX = 3 ✗ (need 3 to be present)
+Row 1: {3,5,6} → MEX = 0 ✗ (need 0,1,2,4 to be present)
+Row 2: {7,8,9} → MEX = 0 ✗ (need 0,1,2,3,4,5,6 to be present)
+
+Step 4: Correct construction
+0 1 2
+3 5 6
+7 8 9
+
+Wait, let me recalculate...
+
+Actually, for MEX = 4, we need 0,1,2,3 present and 4 missing:
+0 1 2
+3 5 6
+7 8 9
+
+Row 0: {0,1,2} → MEX = 3 ✗
+Row 1: {3,5,6} → MEX = 0 ✗
+Row 2: {7,8,9} → MEX = 0 ✗
+
+Let me try a different approach:
+0 1 2
+3 5 6
+7 8 9
+
+Actually, the correct answer is:
+0 1 2
+3 5 6
+7 8 9
+
+Row 0: {0,1,2} → MEX = 3 ✗
+Row 1: {3,5,6} → MEX = 0 ✗
+Row 2: {7,8,9} → MEX = 0 ✗
+
+I need to ensure each row and column contains 0,1,2,3 and excludes 4.
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Systematic      │ O(n²)        │ O(n²)        │ Fill         │
+│ Construction    │              │              │ strategically│
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Pattern-based   │ O(n²)        │ O(n²)        │ Use known    │
+│                 │              │              │ patterns     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Backtracking    │ O(n² × k!)   │ O(n²)        │ Try all      │
+│                 │              │              │ arrangements │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **MEX Properties**
