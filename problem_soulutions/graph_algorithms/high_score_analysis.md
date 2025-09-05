@@ -412,6 +412,132 @@ else:
 | SPFA | O(n*m) | O(n + m) | Often faster in practice |
 | DFS | O(n*m) | O(n) | Educational approach |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 cities, 5 flights:
+Flight 1: 1 → 2 (score: 3)
+Flight 2: 2 → 4 (score: -1)
+Flight 3: 1 → 3 (score: -2)
+Flight 4: 3 → 4 (score: 7)
+Flight 5: 1 → 4 (score: 2)
+```
+
+### Graph Visualization
+```
+Cities: 1, 2, 3, 4
+Flights with scores:
+
+    1 ──3──→ 2
+    │        │
+    │-2      │-1
+    ↓        ↓
+    3 ──7──→ 4
+    │
+    │2
+    ↓
+    4
+
+All possible paths from 1 to 4:
+- Path 1: 1 → 2 → 4 (score: 3 + (-1) = 2)
+- Path 2: 1 → 3 → 4 (score: -2 + 7 = 5)
+- Path 3: 1 → 4 (score: 2)
+```
+
+### Bellman-Ford Algorithm Process
+```
+Initial distances: [0, -∞, -∞, -∞]
+Parent array: [-1, -1, -1, -1]
+
+Iteration 1 (n-1 = 3 iterations):
+- Edge 1→2: dist[2] = max(-∞, 0+3) = 3, parent[2] = 1
+- Edge 2→4: dist[4] = max(-∞, 3+(-1)) = 2, parent[4] = 2
+- Edge 1→3: dist[3] = max(-∞, 0+(-2)) = -2, parent[3] = 1
+- Edge 3→4: dist[4] = max(2, -2+7) = 5, parent[4] = 3
+- Edge 1→4: dist[4] = max(5, 0+2) = 5, parent[4] = 1
+
+After iteration 1: [0, 3, -2, 5]
+
+Iteration 2:
+- Edge 1→2: dist[2] = max(3, 0+3) = 3
+- Edge 2→4: dist[4] = max(5, 3+(-1)) = 5
+- Edge 1→3: dist[3] = max(-2, 0+(-2)) = -2
+- Edge 3→4: dist[4] = max(5, -2+7) = 5
+- Edge 1→4: dist[4] = max(5, 0+2) = 5
+
+After iteration 2: [0, 3, -2, 5]
+
+Iteration 3:
+- Edge 1→2: dist[2] = max(3, 0+3) = 3
+- Edge 2→4: dist[4] = max(5, 3+(-1)) = 5
+- Edge 1→3: dist[3] = max(-2, 0+(-2)) = -2
+- Edge 3→4: dist[4] = max(5, -2+7) = 5
+- Edge 1→4: dist[4] = max(5, 0+2) = 5
+
+After iteration 3: [0, 3, -2, 5]
+```
+
+### Positive Cycle Detection
+```
+Check all edges for further relaxation:
+
+Edge 1→2: dist[1] + weight = 0 + 3 = 3 = dist[2] = 3 ✓
+Edge 2→4: dist[2] + weight = 3 + (-1) = 2 < dist[4] = 5 ✓
+Edge 1→3: dist[1] + weight = 0 + (-2) = -2 = dist[3] = -2 ✓
+Edge 3→4: dist[3] + weight = -2 + 7 = 5 = dist[4] = 5 ✓
+Edge 1→4: dist[1] + weight = 0 + 2 = 2 < dist[4] = 5 ✓
+
+No further relaxation possible - no positive cycle detected.
+```
+
+### Path Reconstruction
+```
+From the parent array: [-1, 1, 1, 3]
+
+To find the path from 1 to 4:
+1. Start at node 4
+2. Follow parent[4] = 3
+3. Follow parent[3] = 1
+4. Back to node 1 - path found!
+
+Path: 1 → 3 → 4
+Score: -2 + 7 = 5
+```
+
+### All Paths Comparison
+```
+Path 1: 1 → 2 → 4
+- Score: 3 + (-1) = 2
+- Length: 2 edges
+
+Path 2: 1 → 3 → 4
+- Score: -2 + 7 = 5 ← Highest score
+- Length: 2 edges
+
+Path 3: 1 → 4
+- Score: 2
+- Length: 1 edge
+
+Maximum score: 5
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bellman-Ford    │ O(n×m)       │ O(n)         │ Relax edges  │
+│                 │              │              │ n-1 times    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ SPFA            │ O(n×m)       │ O(n + m)     │ Queue-based  │
+│                 │              │              │ relaxation   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS with Memo   │ O(n×m)       │ O(n)         │ Recursive    │
+│                 │              │              │ with cache   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

@@ -371,6 +371,119 @@ else:
 | Union-Find | O(n + m * α(n)) | O(n) | Detect during construction |
 | Backtracking DFS | O(n + m) | O(n) | Find minimum cycle |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+5 cities, 6 roads:
+Road 1: 1 ↔ 3
+Road 2: 1 ↔ 2
+Road 3: 5 ↔ 3
+Road 4: 1 ↔ 5
+Road 5: 2 ↔ 4
+Road 6: 4 ↔ 5
+```
+
+### Graph Visualization
+```
+Cities: 1, 2, 3, 4, 5
+Roads: (1↔3), (1↔2), (5↔3), (1↔5), (2↔4), (4↔5)
+
+    2 ──── 4
+    │      │
+    │      │
+    1 ──── 5 ──── 3
+    │
+    │
+    3
+```
+
+### DFS Cycle Detection Process
+```
+Step 1: Start DFS from City 1
+- Stack: [1]
+- Visited: {1}
+- Parent: [-1, -1, -1, -1, -1]
+- Current: 1
+
+Step 2: Explore neighbors of 1: 2, 3, 5
+- Visit 2: Stack [1, 2], Visited {1, 2}, Parent [1, 1, -1, -1, -1]
+- Current: 2
+
+Step 3: Explore neighbors of 2: 1, 4
+- 1 already visited (parent), skip
+- Visit 4: Stack [1, 2, 4], Visited {1, 2, 4}, Parent [1, 1, -1, 2, -1]
+- Current: 4
+
+Step 4: Explore neighbors of 4: 2, 5
+- 2 already visited (parent), skip
+- Visit 5: Stack [1, 2, 4, 5], Visited {1, 2, 4, 5}, Parent [1, 1, -1, 2, 4]
+- Current: 5
+
+Step 5: Explore neighbors of 5: 1, 3, 4
+- 1 already visited (not parent), CYCLE DETECTED!
+- 4 already visited (parent), skip
+- Visit 3: Stack [1, 2, 4, 5, 3], Visited {1, 2, 4, 5, 3}, Parent [1, 1, 5, 2, 4]
+- Current: 3
+
+Step 6: Explore neighbors of 3: 1, 5
+- 1 already visited (not parent), CYCLE DETECTED!
+- 5 already visited (parent), skip
+```
+
+### Cycle Reconstruction
+```
+From the DFS stack: [1, 2, 4, 5, 3]
+
+When we found cycle at 3 → 1:
+- Current path: 1 → 2 → 4 → 5 → 3
+- Back edge: 3 → 1
+- Cycle: 1 → 2 → 4 → 5 → 3 → 1
+
+Round trip: 1 → 3 → 5 → 1 (4 cities)
+```
+
+### Alternative Cycle Paths
+```
+Other possible cycles:
+- Cycle 1: 1 → 2 → 4 → 5 → 1 (4 cities)
+- Cycle 2: 1 → 3 → 5 → 1 (4 cities) ← Found
+- Cycle 3: 2 → 4 → 5 → 3 → 1 → 2 (6 cities)
+
+Minimum length cycle: 4 cities
+```
+
+### DFS vs BFS Comparison
+```
+DFS Approach:
+- Uses recursion stack
+- Natural cycle detection
+- Time: O(n + m)
+- Space: O(n)
+
+BFS Approach:
+- Uses queue
+- Level-by-level exploration
+- Time: O(n + m)
+- Space: O(n + m)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS Cycle Detect│ O(n + m)     │ O(n)         │ Recursive    │
+│                 │              │              │ with stack   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ BFS Cycle Detect│ O(n + m)     │ O(n + m)     │ Level-by-    │
+│                 │              │              │ level        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Union-Find      │ O(n + m·α(n))│ O(n)         │ Detect during│
+│                 │              │              │ construction │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

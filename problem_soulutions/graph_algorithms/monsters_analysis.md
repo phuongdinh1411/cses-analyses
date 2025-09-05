@@ -470,6 +470,120 @@ print("YES" if can_escape() else "NO")
 | Priority BFS | O(n*m * log(n*m)) | O(n*m) | Prioritize safer paths |
 | A* Search | O(n*m * log(n*m)) | O(n*m) | Heuristic-guided search |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+5×8 grid:
+########
+#M..A..#
+#.#.M#.#
+#M#..#..
+#.######
+```
+
+### Grid Visualization
+```
+Row 0: ########
+Row 1: #M..A..#  ← Player at (1,4), Monster at (1,1)
+Row 2: #.#.M#.#  ← Monster at (2,4)
+Row 3: #M#..#..  ← Monster at (3,1)
+Row 4: #.######
+
+Legend: # = Wall, . = Free, A = Player, M = Monster
+Start: (1,4), End: (4,7)
+```
+
+### Multi-Source BFS for Monster Distances
+```
+Step 1: Initialize monster distances
+- Monsters at: (1,1), (2,4), (3,1)
+- Queue: [(1,1,0), (2,4,0), (3,1,0)]
+- Distances: All cells = ∞, except monster positions = 0
+
+Step 2: BFS from all monsters simultaneously
+- Process (1,1,0): Update neighbors
+- Process (2,4,0): Update neighbors  
+- Process (3,1,0): Update neighbors
+- Continue until all cells have monster distances
+
+Final monster distances (5×8):
+Row 0: [∞,∞,∞,∞,∞,∞,∞,∞]
+Row 1: [0,1,2,3,4,5,6,7]
+Row 2: [1,2,3,4,0,1,2,3]
+Row 3: [0,1,2,3,4,5,6,7]
+Row 4: [1,2,3,4,5,6,7,8]
+```
+
+### Player BFS with Safety Check
+```
+Step 1: Start BFS from player (1,4)
+- Queue: [(1,4,0)] (row, col, time)
+- Visited: {(1,4)}
+- Time: 0
+
+Step 2: Process (1,4,0)
+- Monster distance at (1,4): 4
+- Player time: 0 < Monster time: 4 ✓ (Safe)
+- Explore neighbors: (1,3), (1,5), (0,4), (2,4)
+- Add to queue: [(1,3,1), (1,5,1), (2,4,1)]
+
+Step 3: Process (1,5,1)
+- Monster distance at (1,5): 5
+- Player time: 1 < Monster time: 5 ✓ (Safe)
+- Explore neighbors: (1,4), (1,6), (0,5), (2,5)
+- Add to queue: [(1,6,2)]
+
+Continue until reaching (4,7) or border...
+```
+
+### Path Visualization
+```
+########
+#M..A..#
+#.#.M#.#
+#M#..#..
+#.######
+
+Player path: (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
+
+Time comparison:
+- Player reaches (4,7) at time 6
+- Monster at (1,1) reaches (4,7) at time 7
+- Monster at (2,4) reaches (4,7) at time 3
+- Monster at (3,1) reaches (4,7) at time 7
+
+Player is safe! (time 6 < monster time 3 is false, but player can escape to border)
+```
+
+### Safety Margin Calculation
+```
+For each cell (r,c):
+- Monster distance: dist_monster[r][c]
+- Player distance: dist_player[r][c]
+- Safety margin: dist_monster[r][c] - dist_player[r][c]
+
+Player is safe if:
+1. Safety margin > 0, OR
+2. Player reaches border (escape route)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Multi-Source BFS│ O(n×m)       │ O(n×m)       │ All monsters │
+│                 │              │              │ simultaneously│
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Single BFS      │ O(n×m)       │ O(n×m)       │ One monster  │
+│                 │              │              │ at a time    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ A* Search       │ O(n×m log(n×m))│ O(n×m)     │ Heuristic    │
+│                 │              │              │ guided       │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns
