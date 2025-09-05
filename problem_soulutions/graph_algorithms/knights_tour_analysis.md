@@ -310,6 +310,117 @@ test_solution()
 - **Heuristic Guidance**: Reduces search space dramatically
 - **Optimal Algorithm**: Best known approach for knight's tour
 
+## 🎨 Visual Example
+
+### Input Example
+```
+5×5 chessboard
+```
+
+### Knight's Move Pattern
+```
+Knight moves in L-shape:
+- 2 squares in one direction, 1 square perpendicular
+- 8 possible moves from any position
+
+Possible moves from center (2,2):
+   1   2   3   4   5
+1  .   .   .   .   .
+2  .   .   .   .   .
+3  .   .   K   .   .
+4  .   .   .   .   .
+5  .   .   .   .   .
+
+Knight can move to:
+- (0,1), (0,3), (1,0), (1,4)
+- (3,0), (3,4), (4,1), (4,3)
+```
+
+### Warnsdorff's Rule Application
+```
+For each possible move, count valid moves from that position:
+
+From (2,2), possible moves:
+- (0,1): 2 valid moves
+- (0,3): 2 valid moves  
+- (1,0): 3 valid moves
+- (1,4): 3 valid moves
+- (3,0): 3 valid moves
+- (3,4): 3 valid moves
+- (4,1): 2 valid moves
+- (4,3): 2 valid moves
+
+Choose move with minimum valid moves: (0,1) or (0,3) or (4,1) or (4,3)
+```
+
+### Knight's Tour Construction
+```
+Step 1: Start at (0,0)
+Board: 1  .  .  .  .
+       .  .  .  .  .
+       .  .  .  .  .
+       .  .  .  .  .
+       .  .  .  .  .
+
+Step 2: From (0,0), possible moves:
+- (1,2): 3 valid moves
+- (2,1): 3 valid moves
+Choose (1,2) - fewer valid moves
+
+Board: 1  .  .  .  .
+       .  .  2  .  .
+       .  .  .  .  .
+       .  .  .  .  .
+       .  .  .  .  .
+
+Continue until all squares visited...
+```
+
+### Complete Tour Example
+```
+Final 5×5 knight's tour:
+1 14  9 20 23
+24 19  2 15 10
+13  8 25 22 21
+18  3 12  7 16
+11  6 17  4  5
+
+Tour path: (0,0)→(1,2)→(3,1)→(4,3)→(2,4)→(0,3)→(1,1)→(3,0)→(4,2)→(2,3)→(0,4)→(1,2)→(3,3)→(4,1)→(2,0)→(0,1)→(1,3)→(3,4)→(4,2)→(2,1)→(0,0)
+```
+
+### Backtracking Process
+```
+If Warnsdorff's rule leads to dead end:
+1. Backtrack to previous position
+2. Try next best move
+3. Continue until solution found
+
+Example dead end:
+1 14  9 20 23
+24 19  2 15 10
+13  8 25 22 21
+18  3 12  7 16
+11  6 17  4  5
+
+If position 25 has no valid moves, backtrack to position 24
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Backtracking    │ O(8^(n²))    │ O(n²)        │ Exhaustive   │
+│                 │              │              │ search       │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Warnsdorff's    │ O(n²)        │ O(n²)        │ Heuristic    │
+│                 │              │              │ guidance     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Divide & Conquer│ O(n²)        │ O(n²)        │ Split board  │
+│                 │              │              │ into regions │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Knight's Tour**

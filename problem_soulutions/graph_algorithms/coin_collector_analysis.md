@@ -280,6 +280,112 @@ test_solution()
 - **DAG Property**: No cycles allow for optimal substructure
 - **Greedy Choice**: Always choose maximum path to each node
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 nodes, 4 edges:
+Node 1: 1 coin
+Node 2: 2 coins
+Node 3: 3 coins
+Node 4: 4 coins
+
+Edges: (1→2), (2→3), (3→4), (1→4)
+```
+
+### DAG Visualization
+```
+Nodes with coin values:
+1(1) ──→ 2(2) ──→ 3(3) ──→ 4(4)
+│                              │
+└──────────────────────────────┘
+
+All possible paths:
+- Path 1: 1 → 2 → 3 → 4 (coins: 1+2+3+4 = 10)
+- Path 2: 1 → 4 (coins: 1+4 = 5)
+- Path 3: 1 → 2 → 4 (coins: 1+2+4 = 7)
+```
+
+### Topological Sorting
+```
+Step 1: Calculate in-degrees
+- Node 1: in-degree = 0
+- Node 2: in-degree = 1 (from 1)
+- Node 3: in-degree = 1 (from 2)
+- Node 4: in-degree = 2 (from 1, 3)
+
+Step 2: Kahn's algorithm
+- Queue: [1] (in-degree = 0)
+- Process 1: remove from queue, add to result
+- Update in-degrees: 2→0, 4→1
+- Queue: [2]
+- Process 2: remove from queue, add to result
+- Update in-degrees: 3→0
+- Queue: [3]
+- Process 3: remove from queue, add to result
+- Update in-degrees: 4→0
+- Queue: [4]
+- Process 4: remove from queue, add to result
+
+Topological order: [1, 2, 3, 4]
+```
+
+### Dynamic Programming Process
+```
+Step 1: Initialize DP array
+- dp[1] = 1 (coin at node 1)
+- dp[2] = 0 (not processed yet)
+- dp[3] = 0 (not processed yet)
+- dp[4] = 0 (not processed yet)
+
+Step 2: Process nodes in topological order
+- Process node 1: dp[1] = 1
+- Process node 2: dp[2] = max(0, dp[1] + 2) = 3
+- Process node 3: dp[3] = max(0, dp[2] + 3) = 6
+- Process node 4: dp[4] = max(0, dp[1] + 4, dp[3] + 4) = max(0, 5, 10) = 10
+
+Final DP array: [1, 3, 6, 10]
+Maximum coins: 10
+```
+
+### Path Reconstruction
+```
+From DP array: [1, 3, 6, 10]
+
+To find the path that gives maximum coins:
+- Start from node 4 (dp[4] = 10)
+- Check predecessors: 1, 3
+- dp[1] + 4 = 1 + 4 = 5
+- dp[3] + 4 = 6 + 4 = 10 ✓
+- Move to node 3
+- Check predecessors: 2
+- dp[2] + 3 = 3 + 3 = 6 ✓
+- Move to node 2
+- Check predecessors: 1
+- dp[1] + 2 = 1 + 2 = 3 ✓
+- Move to node 1
+- No predecessors
+
+Optimal path: 1 → 2 → 3 → 4
+Total coins: 1 + 2 + 3 + 4 = 10
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DP + Topo Sort  │ O(n + m)     │ O(n + m)     │ Process in   │
+│                 │              │              │ dependency   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS + Memo      │ O(n + m)     │ O(n)         │ Recursive    │
+│                 │              │              │ with cache   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ BFS + DP        │ O(n + m)     │ O(n + m)     │ Level-by-    │
+│                 │              │              │ level        │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Dynamic Programming on DAG**

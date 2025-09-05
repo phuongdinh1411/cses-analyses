@@ -271,6 +271,128 @@ test_solution()
 - **Hierholzer's Algorithm**: Efficiently finds Eulerian circuit
 - **Optimal Algorithm**: Best known approach for De Bruijn sequences
 
+## 🎨 Visual Example
+
+### Input Example
+```
+n = 2 (De Bruijn sequence of order 2)
+```
+
+### All Binary Strings of Length 2
+```
+All possible binary strings of length 2:
+- 00
+- 01
+- 10
+- 11
+
+Total: 2² = 4 strings
+```
+
+### De Bruijn Graph Construction
+```
+Nodes: All binary strings of length (n-1) = 1
+- Node 0
+- Node 1
+
+Edges: Add one bit to get string of length n
+- Edge 0 → 0 (add 0 to get 00)
+- Edge 0 → 1 (add 1 to get 01)
+- Edge 1 → 0 (add 0 to get 10)
+- Edge 1 → 1 (add 1 to get 11)
+
+Graph:
+0 ──0──→ 0
+│        │
+│1       │1
+↓        ↓
+1 ──0──→ 1
+```
+
+### Eulerian Circuit Construction
+```
+Using Hierholzer's algorithm:
+
+Step 1: Start from node 0
+- Current path: [0]
+- Current node: 0
+
+Step 2: From node 0, choose edge 0 → 0
+- Current path: [0, 0]
+- Current node: 0
+
+Step 3: From node 0, choose edge 0 → 1
+- Current path: [0, 0, 1]
+- Current node: 1
+
+Step 4: From node 1, choose edge 1 → 1
+- Current path: [0, 0, 1, 1]
+- Current node: 1
+
+Step 5: From node 1, choose edge 1 → 0
+- Current path: [0, 0, 1, 1, 0]
+- Current node: 0
+
+All edges visited: [0→0, 0→1, 1→1, 1→0]
+```
+
+### Sequence Construction
+```
+From Eulerian circuit: [0, 0, 1, 1, 0]
+
+Extract edge labels:
+- Edge 0→0: label 0
+- Edge 0→1: label 1
+- Edge 1→1: label 1
+- Edge 1→0: label 0
+
+Sequence: 0110
+
+But we need 2ⁿ = 4 characters, so we take first 4: 0110
+```
+
+### Verification
+```
+Check if 0110 contains all binary strings of length 2:
+
+Position 0-1: 01 ✓
+Position 1-2: 11 ✓
+Position 2-3: 10 ✓
+Position 3-0: 00 ✓ (wrapping around)
+
+All strings found: 00, 01, 10, 11
+```
+
+### Alternative Construction
+```
+Another valid De Bruijn sequence: 0011
+
+Check if 0011 contains all binary strings of length 2:
+
+Position 0-1: 00 ✓
+Position 1-2: 01 ✓
+Position 2-3: 11 ✓
+Position 3-0: 10 ✓ (wrapping around)
+
+All strings found: 00, 01, 10, 11
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Hierholzer's    │ O(2^n)       │ O(2^n)       │ Eulerian     │
+│                 │              │              │ circuit      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS + Stack     │ O(2^n)       │ O(2^n)       │ Recursive    │
+│                 │              │              │ construction │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Iterative       │ O(2^n)       │ O(2^n)       │ Iterative    │
+│                 │              │              │ approach     │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **De Bruijn Graph**
