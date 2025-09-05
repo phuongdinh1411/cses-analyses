@@ -244,6 +244,133 @@ test_solution()
 - **Queue Management**: Maintains nodes ready for processing
 - **Optimal Algorithm**: Best known approach for topological sorting
 
+## 🎨 Visual Example
+
+### Input Example
+```
+5 nodes, 4 edges:
+Edge 1: 1 → 2
+Edge 2: 2 → 3
+Edge 3: 1 → 3
+Edge 4: 4 → 5
+```
+
+### Graph Visualization
+```
+Nodes: 1, 2, 3, 4, 5
+Edges: (1→2), (2→3), (1→3), (4→5)
+
+    1 ──→ 2 ──→ 3
+    │     │
+    └─────┘
+    
+    4 ──→ 5
+```
+
+### In-Degree Calculation
+```
+Node 1: 0 incoming edges (in-degree = 0)
+Node 2: 1 incoming edge from 1 (in-degree = 1)
+Node 3: 2 incoming edges from 1,2 (in-degree = 2)
+Node 4: 0 incoming edges (in-degree = 0)
+Node 5: 1 incoming edge from 4 (in-degree = 1)
+
+In-degree array: [0, 1, 2, 0, 1]
+```
+
+### Kahn's Algorithm Process
+```
+Step 1: Initialize
+- Queue: [1, 4] (nodes with in-degree 0)
+- Result: []
+- In-degrees: [0, 1, 2, 0, 1]
+
+Step 2: Process Node 1
+- Remove 1 from queue
+- Add 1 to result: [1]
+- Update neighbors: 2, 3
+  - Node 2: in-degree 1 → 0, add to queue
+  - Node 3: in-degree 2 → 1
+- Queue: [4, 2]
+- In-degrees: [0, 0, 1, 0, 1]
+
+Step 3: Process Node 4
+- Remove 4 from queue
+- Add 4 to result: [1, 4]
+- Update neighbors: 5
+  - Node 5: in-degree 1 → 0, add to queue
+- Queue: [2, 5]
+- In-degrees: [0, 0, 1, 0, 0]
+
+Step 4: Process Node 2
+- Remove 2 from queue
+- Add 2 to result: [1, 4, 2]
+- Update neighbors: 3
+  - Node 3: in-degree 1 → 0, add to queue
+- Queue: [5, 3]
+- In-degrees: [0, 0, 0, 0, 0]
+
+Step 5: Process Node 5
+- Remove 5 from queue
+- Add 5 to result: [1, 4, 2, 5]
+- No neighbors to update
+- Queue: [3]
+
+Step 6: Process Node 3
+- Remove 3 from queue
+- Add 3 to result: [1, 4, 2, 5, 3]
+- No neighbors to update
+- Queue: []
+
+Final result: [1, 4, 2, 5, 3]
+```
+
+### DFS Alternative (Finish Times)
+```
+Step 1: DFS from Node 1
+- Visit 1, explore neighbors: 2, 3
+- DFS from 2, explore neighbors: 3
+- DFS from 3, no neighbors, finish time = 1
+- Back to 2, finish time = 2
+- Back to 1, finish time = 3
+
+Step 2: DFS from Node 4
+- Visit 4, explore neighbors: 5
+- DFS from 5, no neighbors, finish time = 4
+- Back to 4, finish time = 5
+
+Finish times: [3, 2, 1, 5, 4]
+Reverse order: [4, 5, 1, 2, 3] → [1, 4, 2, 5, 3]
+```
+
+### Valid Ordering Verification
+```
+Check if all edges point forward in ordering [1, 4, 2, 5, 3]:
+
+Edge 1→2: 1 comes before 2 ✓
+Edge 2→3: 2 comes before 3 ✓
+Edge 1→3: 1 comes before 3 ✓
+Edge 4→5: 4 comes before 5 ✓
+
+All edges point forward - valid topological ordering!
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Kahn's Algorithm│ O(n + m)     │ O(n + m)     │ In-degree    │
+│                 │              │              │ tracking     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS with Finish │ O(n + m)     │ O(n + m)     │ Finish times │
+│ Times           │              │              │ ordering     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS Recursive   │ O(n + m)     │ O(n)         │ Recursive    │
+│                 │              │              │ traversal    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## Key Insights
 
 ### 1. **Topological Ordering Property**

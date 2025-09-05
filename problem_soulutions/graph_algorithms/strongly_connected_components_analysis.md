@@ -262,6 +262,148 @@ if __name__ == "__main__":
 | Kosaraju's Algorithm | O(n + m) | O(n + m) | Use two DFS traversals |
 | Optimized Kosaraju's | O(n + m) | O(n + m) | Better structure and clarity |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+5 nodes, 5 edges:
+Edge 1: 1 → 2
+Edge 2: 2 → 3
+Edge 3: 3 → 1
+Edge 4: 3 → 4
+Edge 5: 4 → 5
+```
+
+### Original Graph Visualization
+```
+Nodes: 1, 2, 3, 4, 5
+Edges: (1→2), (2→3), (3→1), (3→4), (4→5)
+
+    1 ←──→ 2
+    ↑      ↓
+    └── 3 ──┘
+        ↓
+        4 → 5
+```
+
+### Reversed Graph Visualization
+```
+Reversed edges: (2→1), (3→2), (1→3), (4→3), (5→4)
+
+    1 ←──→ 2
+    ↑      ↑
+    └── 3 ←──┘
+        ↑
+        4 ← 5
+```
+
+### Phase 1: DFS on Original Graph (Finish Times)
+```
+Step 1: DFS from Node 1
+- Visit 1, explore neighbors: 2
+- DFS from 2, explore neighbors: 3
+- DFS from 3, explore neighbors: 1, 4
+- Node 1 already visited, skip
+- DFS from 4, explore neighbors: 5
+- DFS from 5, no neighbors, finish time = 1
+- Back to 4, finish time = 2
+- Back to 3, finish time = 3
+- Back to 2, finish time = 4
+- Back to 1, finish time = 5
+
+Finish times: [5, 4, 3, 2, 1]
+Reverse finish order: [1, 2, 3, 4, 5] → [5, 4, 3, 2, 1]
+```
+
+### Phase 2: DFS on Reversed Graph (SCC Detection)
+```
+Process nodes in reverse finish order: [5, 4, 3, 2, 1]
+
+Step 1: DFS from Node 5 (on reversed graph)
+- Visit 5, explore neighbors: 4
+- DFS from 4, explore neighbors: 3
+- DFS from 3, explore neighbors: 1, 2
+- DFS from 1, explore neighbors: 2
+- DFS from 2, explore neighbors: 1
+- Node 1 already visited, skip
+- All nodes visited in this DFS
+- SCC 1: {5, 4, 3, 2, 1}
+
+Wait, let me recalculate with correct reversed graph:
+- Node 5: neighbors [4]
+- Node 4: neighbors [3]  
+- Node 3: neighbors [1, 2]
+- Node 2: neighbors [1]
+- Node 1: neighbors []
+
+Actually, let me trace this correctly:
+DFS from 5: 5 → 4 → 3 → 1 (no more neighbors)
+DFS from 2: 2 (already visited in previous DFS)
+SCC 1: {5, 4, 3, 1}
+SCC 2: {2}
+```
+
+### Corrected SCC Analysis
+```
+Component 1: {1, 2, 3} - Cycle: 1→2→3→1
+Component 2: {4} - Can reach 5 but can't be reached from 1,2,3
+Component 3: {5} - Can't reach any other nodes
+
+Total SCCs: 3
+```
+
+### Kosaraju's Algorithm Steps
+```
+Phase 1: Get finish times from original graph
+- DFS from unvisited nodes
+- Record finish times
+- Result: [5, 4, 3, 2, 1]
+
+Phase 2: Process in reverse finish order on reversed graph
+- Start DFS from node with highest finish time
+- Each DFS call finds one complete SCC
+- Mark all visited nodes
+- Continue with next unvisited node
+
+Final SCCs:
+- SCC 1: {1, 2, 3}
+- SCC 2: {4}  
+- SCC 3: {5}
+```
+
+### SCC Properties Verification
+```
+SCC 1: {1, 2, 3}
+- 1 can reach 2, 3
+- 2 can reach 3, 1
+- 3 can reach 1, 2
+- All nodes mutually reachable ✓
+
+SCC 2: {4}
+- 4 can reach itself
+- Single node SCC ✓
+
+SCC 3: {5}
+- 5 can reach itself
+- Single node SCC ✓
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Kosaraju's      │ O(n + m)     │ O(n + m)     │ Two DFS      │
+│                 │              │              │ traversals   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Tarjan's        │ O(n + m)     │ O(n + m)     │ Single DFS   │
+│                 │              │              │ with stack   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Path-based      │ O(n + m)     │ O(n + m)     │ Path-based   │
+│                 │              │              │ strong comp  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## Key Insights
 
 ### 1. **Two-Phase DFS Strategy**

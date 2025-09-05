@@ -448,6 +448,130 @@ else:
 | DFS | O(n + m) | O(n) | Find any path |
 | Bidirectional BFS | O(n + m) | O(n) | Faster for long paths |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+5 computers, 5 cables:
+Cable 1: Computer 1 ↔ Computer 2
+Cable 2: Computer 1 ↔ Computer 3
+Cable 3: Computer 1 ↔ Computer 4
+Cable 4: Computer 2 ↔ Computer 3
+Cable 5: Computer 4 ↔ Computer 5
+```
+
+### Graph Visualization
+```
+Computers: 1, 2, 3, 4, 5
+Cables: (1↔2), (1↔3), (1↔4), (2↔3), (4↔5)
+
+    2 ──── 3
+    │      │
+    │      │
+    1 ─────┘
+    │
+    │
+    4 ──── 5
+```
+
+### BFS Traversal Process
+```
+Step 1: Start BFS from Computer 1
+- Queue: [(1, 0)] (computer, distance)
+- Visited: {1}
+- Parent: [None, None, None, None, None]
+
+Step 2: Process Computer 1 (distance = 0)
+- Explore neighbors: 2, 3, 4
+- Add to queue: [(2, 1), (3, 1), (4, 1)]
+- Update parents: [None, 1, 1, 1, None]
+- Queue: [(2, 1), (3, 1), (4, 1)]
+- Visited: {1, 2, 3, 4}
+
+Step 3: Process Computer 2 (distance = 1)
+- Explore neighbors: 1, 3
+- 1 and 3 already visited, skip
+- Queue: [(3, 1), (4, 1)]
+
+Step 4: Process Computer 3 (distance = 1)
+- Explore neighbors: 1, 2
+- 1 and 2 already visited, skip
+- Queue: [(4, 1)]
+
+Step 5: Process Computer 4 (distance = 1)
+- Explore neighbors: 1, 5
+- 1 already visited, skip
+- Add to queue: [(5, 2)]
+- Update parent: [None, 1, 1, 1, 4]
+- Queue: [(5, 2)]
+- Visited: {1, 2, 3, 4, 5}
+
+Step 6: Process Computer 5 (distance = 2)
+- Target reached!
+- Queue: []
+- Visited: {1, 2, 3, 4, 5}
+```
+
+### Path Reconstruction
+```
+From Computer 5, trace back using parent array:
+- Computer 5 → parent = 4
+- Computer 4 → parent = 1
+- Computer 1 → parent = None (start)
+
+Reversed path: 5 → 4 → 1
+Final path: 1 → 4 → 5
+```
+
+### Distance Calculation
+```
+Shortest path from Computer 1 to Computer 5:
+- Path: 1 → 4 → 5
+- Number of computers: 3
+- Distance: 2 (number of cables)
+```
+
+### Alternative Paths
+```
+Other possible paths (but longer):
+- Path 1: 1 → 2 → 3 → 1 → 4 → 5 (length 5)
+- Path 2: 1 → 3 → 2 → 1 → 4 → 5 (length 5)
+- Path 3: 1 → 4 → 5 (length 2) ← Shortest
+
+BFS guarantees shortest path in unweighted graphs.
+```
+
+### BFS vs DFS Comparison
+```
+BFS (Breadth-First Search):
+- Guarantees shortest path
+- Uses queue (FIFO)
+- Explores level by level
+- Time: O(V + E)
+
+DFS (Depth-First Search):
+- May not find shortest path
+- Uses stack (LIFO)
+- Explores depth first
+- Time: O(V + E)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ BFS with Parent │ O(n + m)     │ O(n + m)     │ Store parent │
+│ Tracking        │              │              │ for path     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ BFS with Path   │ O(n + m)     │ O(n + m)     │ Store full   │
+│ Storage         │              │              │ paths        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bidirectional   │ O(n + m)     │ O(n + m)     │ Search from  │
+│ BFS             │              │              │ both ends    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## Key Insights for Other Problems
 
 ### 1. **Shortest Path in Unweighted Graphs**
