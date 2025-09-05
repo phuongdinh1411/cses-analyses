@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/shortest_routes_i_analysis
 
 # Shortest Routes I - Single Source Shortest Paths
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand single-source shortest path problems and Dijkstra's algorithm fundamentals
+- [ ] **Objective 2**: Apply Dijkstra's algorithm with priority queues to find shortest paths in weighted graphs
+- [ ] **Objective 3**: Implement efficient shortest path algorithms with proper data structure usage
+- [ ] **Objective 4**: Optimize shortest path solutions using priority queues and graph representations
+- [ ] **Objective 5**: Handle edge cases in shortest path problems (unreachable nodes, disconnected graphs, large weights)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dijkstra's algorithm, single-source shortest paths, priority queues, graph traversal
+- **Data Structures**: Priority queues, adjacency lists, graph representations, distance arrays
+- **Mathematical Concepts**: Graph theory, shortest path properties, greedy algorithms, optimization
+- **Programming Skills**: Priority queue implementation, graph traversal, distance calculations, algorithm implementation
+- **Related Problems**: Message Route (BFS shortest path), Labyrinth (grid shortest path), Graph traversal basics
+
 ## 📋 Problem Description
 
 There are n cities and m flight connections. Find the shortest route from city 1 to all other cities.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis
 
 # Planets and Kingdoms - Strongly Connected Components
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand strongly connected components and graph decomposition concepts
+- [ ] **Objective 2**: Apply Tarjan's algorithm or Kosaraju's algorithm to find SCCs in directed graphs
+- [ ] **Objective 3**: Implement efficient SCC algorithms with proper component assignment and tracking
+- [ ] **Objective 4**: Optimize SCC solutions using graph representations and component management
+- [ ] **Objective 5**: Handle edge cases in SCC problems (single nodes, disconnected graphs, self-loops)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Tarjan's algorithm, Kosaraju's algorithm, strongly connected components, graph decomposition, SCC algorithms
+- **Data Structures**: Stacks, adjacency lists, component tracking, graph representations, SCC data structures
+- **Mathematical Concepts**: Graph theory, strongly connected components, graph decomposition, DFS properties, graph connectivity
+- **Programming Skills**: Stack implementation, DFS/BFS, graph traversal, component tracking, algorithm implementation
+- **Related Problems**: Strongly Connected Components (SCC algorithms), Building Teams (graph connectivity), Graph decomposition
+
 ## 📋 Problem Description
 
 Given a directed graph with n planets and m teleporters, find all strongly connected components (kingdoms) and assign each planet to a kingdom.

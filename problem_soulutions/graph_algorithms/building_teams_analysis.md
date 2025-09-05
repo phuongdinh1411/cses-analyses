@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/building_teams_analysis
 
 # Building Teams - Bipartite Graph Coloring
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand bipartite graph coloring problems and 2-coloring concepts
+- [ ] **Objective 2**: Apply DFS or BFS to check if a graph is bipartite and perform 2-coloring
+- [ ] **Objective 3**: Implement efficient bipartite graph algorithms with proper color assignment
+- [ ] **Objective 4**: Optimize bipartite graph solutions using graph representations and coloring algorithms
+- [ ] **Objective 5**: Handle edge cases in bipartite coloring (odd cycles, disconnected components, single nodes)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Bipartite graph coloring, DFS/BFS, 2-coloring, graph coloring, cycle detection
+- **Data Structures**: Adjacency lists, color arrays, visited arrays, graph representations
+- **Mathematical Concepts**: Graph theory, bipartite graphs, graph coloring, cycle properties, graph connectivity
+- **Programming Skills**: Graph traversal, color assignment, cycle detection, algorithm implementation
+- **Related Problems**: Strongly Connected Components (graph connectivity), Cycle Finding (cycle detection), Graph coloring
+
 ## 📋 Problem Description
 
 There are n pupils in Uolevi's class, and m friendships between them. Your task is to divide the pupils into two teams in such a way that no two pupils in a team are friends. You can freely choose the sizes of the teams.

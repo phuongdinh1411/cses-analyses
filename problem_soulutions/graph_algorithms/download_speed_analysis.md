@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/download_speed_analysis
 
 # Download Speed - Maximum Network Flow
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand maximum flow problems and network flow concepts
+- [ ] **Objective 2**: Apply Ford-Fulkerson algorithm or Edmonds-Karp algorithm to find maximum flow
+- [ ] **Objective 3**: Implement efficient maximum flow algorithms with proper residual graph handling
+- [ ] **Objective 4**: Optimize maximum flow solutions using graph representations and flow algorithms
+- [ ] **Objective 5**: Handle edge cases in maximum flow problems (no flow paths, capacity constraints, disconnected graphs)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Ford-Fulkerson algorithm, Edmonds-Karp algorithm, maximum flow, residual graphs, flow networks
+- **Data Structures**: Adjacency lists, residual graphs, flow tracking, graph representations
+- **Mathematical Concepts**: Graph theory, flow networks, maximum flow properties, network optimization
+- **Programming Skills**: Graph traversal, flow calculations, residual graph manipulation, algorithm implementation
+- **Related Problems**: School Dance (bipartite matching), Police Chase (flow problems), Network flow algorithms
+
 ## 📋 Problem Description
 
 Given a network with n computers and m connections, find the maximum download speed from computer 1 to computer n. Each connection has a capacity.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/mail_delivery_analysis
 
 # Mail Delivery - Eulerian Circuit Finding
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand Eulerian circuit problems and graph connectivity concepts
+- [ ] **Objective 2**: Apply Hierholzer's algorithm or DFS-based approach to find Eulerian circuits
+- [ ] **Objective 3**: Implement efficient Eulerian circuit algorithms with proper edge tracking
+- [ ] **Objective 4**: Optimize Eulerian circuit solutions using graph representations and circuit construction
+- [ ] **Objective 5**: Handle edge cases in Eulerian circuits (no circuit exists, disconnected components, degree conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Eulerian circuits, Hierholzer's algorithm, DFS-based circuits, graph connectivity, circuit algorithms
+- **Data Structures**: Adjacency lists, edge tracking, circuit data structures, graph representations
+- **Mathematical Concepts**: Graph theory, Eulerian circuits, graph connectivity, degree properties, circuit theory
+- **Programming Skills**: Graph traversal, circuit construction, edge tracking, algorithm implementation
+- **Related Problems**: Teleporters Path (Eulerian trails), De Bruijn Sequence (Eulerian paths), Graph connectivity
+
 ## 📋 Problem Description
 
 Given an undirected graph with n nodes and m edges, find an Eulerian circuit (a path that visits every edge exactly once and returns to the starting node).

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/planets_cycles_analysis
 
 # Planets Cycles - Cycle Detection in Functional Graphs
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand functional graphs and cycle detection in directed graphs
+- [ ] **Objective 2**: Apply DFS or iterative approaches to detect cycles and calculate cycle lengths
+- [ ] **Objective 3**: Implement efficient cycle detection algorithms with proper cycle length calculation
+- [ ] **Objective 4**: Optimize cycle detection using graph representations and cycle tracking
+- [ ] **Objective 5**: Handle edge cases in functional graph cycles (self-loops, multiple cycles, disconnected components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Cycle detection, functional graphs, DFS, graph traversal, cycle length calculation
+- **Data Structures**: Adjacency lists, visited arrays, cycle tracking, graph representations
+- **Mathematical Concepts**: Graph theory, functional graphs, cycle properties, graph connectivity
+- **Programming Skills**: Graph traversal, cycle detection, cycle length calculation, algorithm implementation
+- **Related Problems**: Cycle Finding (negative cycles), Round Trip (cycle detection), Graph connectivity
+
 ## 📋 Problem Description
 
 Given a directed graph with n planets, find the length of the cycle that each planet enters.

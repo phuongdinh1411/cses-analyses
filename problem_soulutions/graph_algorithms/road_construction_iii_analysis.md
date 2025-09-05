@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/road_construction_iii_analysis
 
 # Road Construction III - Advanced Minimum Spanning Tree
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand complex MST problems with sophisticated constraints and advanced requirements
+- [ ] **Objective 2**: Apply advanced MST algorithms with complex constraint handling and optimization techniques
+- [ ] **Objective 3**: Implement efficient advanced MST algorithms with proper constraint validation and optimization
+- [ ] **Objective 4**: Optimize advanced MST solutions using sophisticated Union-Find and constraint handling techniques
+- [ ] **Objective 5**: Handle edge cases in complex MST problems (complex constraints, optimization requirements, large-scale graphs)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Advanced MST algorithms, complex constraint handling, Union-Find optimization, advanced graph algorithms
+- **Data Structures**: Advanced Union-Find, priority queues, complex edge structures, graph representations, constraint systems
+- **Mathematical Concepts**: Advanced graph theory, complex optimization, constraint satisfaction, advanced MST properties
+- **Programming Skills**: Advanced Union-Find, complex constraint validation, advanced MST algorithms, sophisticated algorithm implementation
+- **Related Problems**: Road Construction II (constrained MST), Road Construction (basic MST), Advanced MST algorithms
+
 ## 📋 Problem Description
 
 Given a graph with n cities and m roads, find the minimum cost to build roads so that all cities are connected. Each road has a construction cost.

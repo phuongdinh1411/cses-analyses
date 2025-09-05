@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/planets_queries_ii_analysis
 
 # Planets Queries II - Common Path Intersection
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand path intersection problems and common ancestor concepts in functional graphs
+- [ ] **Objective 2**: Apply binary lifting or cycle detection to find first common planets in paths
+- [ ] **Objective 3**: Implement efficient path intersection algorithms with proper cycle handling
+- [ ] **Objective 4**: Optimize path intersection queries using binary lifting and cycle detection
+- [ ] **Objective 5**: Handle edge cases in path intersection (no intersection, same starting planet, cycles)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Path intersection, binary lifting, cycle detection, functional graphs, query optimization
+- **Data Structures**: Binary lifting tables, cycle tracking, graph representations, query data structures
+- **Mathematical Concepts**: Graph theory, path intersection, cycle properties, query optimization, functional graphs
+- **Programming Skills**: Binary lifting, cycle detection, path intersection, query processing, algorithm implementation
+- **Related Problems**: Planets Queries I (binary lifting), Planets Cycles (cycle detection), Path intersection
+
 ## 📋 Problem Description
 
 Given a directed graph with n planets and q queries, for each query find the first planet that appears in both paths starting from planets a and b.

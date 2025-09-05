@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/building_roads_analysis
 
 # Building Roads - Minimum Connectivity
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand connectivity problems and minimum edge addition concepts
+- [ ] **Objective 2**: Apply DFS or BFS to count connected components in undirected graphs
+- [ ] **Objective 3**: Implement efficient connectivity algorithms with proper component counting
+- [ ] **Objective 4**: Optimize connectivity solutions using Union-Find data structure and graph representations
+- [ ] **Objective 5**: Handle edge cases in connectivity problems (already connected, single component, disconnected graphs)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: DFS, BFS, connected components, Union-Find, graph connectivity, component counting
+- **Data Structures**: Union-Find, adjacency lists, visited arrays, graph representations
+- **Mathematical Concepts**: Graph theory, connected components, connectivity properties, graph connectivity
+- **Programming Skills**: Graph traversal, component counting, Union-Find implementation, algorithm implementation
+- **Related Problems**: Counting Rooms (connected components), Road Construction (MST), Graph connectivity
+
 ## 📋 Problem Description
 
 There are n cities and m roads between them. Your task is to determine the minimum number of new roads that need to be built so that there is a route between any two cities.

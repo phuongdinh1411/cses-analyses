@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/cycle_finding_analysis
 
 # Cycle Finding - Negative Cycle Detection
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand negative cycle detection problems and Bellman-Ford algorithm concepts
+- [ ] **Objective 2**: Apply Bellman-Ford algorithm to detect negative cycles in weighted graphs
+- [ ] **Objective 3**: Implement efficient negative cycle detection algorithms with proper cycle reconstruction
+- [ ] **Objective 4**: Optimize negative cycle detection using graph representations and algorithm optimizations
+- [ ] **Objective 5**: Handle edge cases in negative cycle detection (no cycles, positive cycles, disconnected graphs)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Bellman-Ford algorithm, negative cycle detection, cycle reconstruction, weighted graph algorithms
+- **Data Structures**: Distance arrays, parent arrays, graph representations, cycle tracking
+- **Mathematical Concepts**: Graph theory, negative cycles, shortest path properties, cycle detection
+- **Programming Skills**: Graph traversal, distance calculations, cycle reconstruction, algorithm implementation
+- **Related Problems**: High Score (negative weights), Shortest Routes I (shortest paths), Graph algorithms
+
 ## 📋 Problem Description
 
 Given a directed graph with n nodes and m edges, find a negative cycle if it exists. If there is no negative cycle, print "NO". Otherwise, print "YES" and the nodes in the cycle.

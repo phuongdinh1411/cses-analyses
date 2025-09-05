@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/shortest_routes_ii_analysis
 
 # Shortest Routes II - All Pairs Shortest Paths
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand all-pairs shortest path problems and Floyd-Warshall algorithm fundamentals
+- [ ] **Objective 2**: Apply Floyd-Warshall algorithm to find shortest paths between all pairs of vertices
+- [ ] **Objective 3**: Implement efficient all-pairs shortest path algorithms with proper matrix operations
+- [ ] **Objective 4**: Optimize all-pairs shortest path solutions using space-efficient techniques and matrix operations
+- [ ] **Objective 5**: Handle edge cases in all-pairs shortest paths (negative cycles, unreachable pairs, large graphs)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Floyd-Warshall algorithm, all-pairs shortest paths, dynamic programming, matrix operations
+- **Data Structures**: 2D arrays, adjacency matrices, distance matrices, graph representations
+- **Mathematical Concepts**: Graph theory, shortest path properties, dynamic programming, matrix operations
+- **Programming Skills**: Matrix manipulation, dynamic programming, graph algorithms, algorithm implementation
+- **Related Problems**: Shortest Routes I (single-source shortest paths), High Score (negative weights), Graph algorithms
+
 ## 📋 Problem Description
 
 There are n cities and m flight connections. Your task is to find the shortest route between any two cities.

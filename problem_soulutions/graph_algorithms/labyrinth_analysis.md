@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis
 
 # Labyrinth - Minimum Walls Path Finding
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand grid pathfinding problems and minimum cost path concepts
+- [ ] **Objective 2**: Apply BFS or Dijkstra's algorithm to find minimum cost paths in grids
+- [ ] **Objective 3**: Implement efficient grid pathfinding algorithms with proper cost tracking
+- [ ] **Objective 4**: Optimize grid pathfinding solutions using queue management and cost calculations
+- [ ] **Objective 5**: Handle edge cases in grid pathfinding (no valid path, single cell grids, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: BFS, Dijkstra's algorithm, grid pathfinding, minimum cost paths, grid algorithms
+- **Data Structures**: Queues, 2D arrays, cost arrays, grid representations, pathfinding data structures
+- **Mathematical Concepts**: Graph theory, shortest path properties, grid properties, pathfinding algorithms
+- **Programming Skills**: BFS implementation, grid manipulation, cost calculations, algorithm implementation
+- **Related Problems**: Monsters (grid pathfinding), Message Route (shortest path), Grid algorithms
+
 ## 📋 Problem Description
 
 You are given a map of a labyrinth, and your task is to count the number of walls between the upper-left and lower-right corner.

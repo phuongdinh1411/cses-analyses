@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/knights_tour_analysis
 
 # Knight's Tour - Hamiltonian Path on Chessboard
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand Hamiltonian path problems on grids and knight's tour concepts
+- [ ] **Objective 2**: Apply backtracking or Warnsdorff's algorithm to find knight's tours on chessboards
+- [ ] **Objective 3**: Implement efficient knight's tour algorithms with proper move validation and backtracking
+- [ ] **Objective 4**: Optimize knight's tour solutions using heuristic algorithms and move ordering
+- [ ] **Objective 5**: Handle edge cases in knight's tours (small boards, impossible tours, multiple solutions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Hamiltonian paths, backtracking, Warnsdorff's algorithm, grid algorithms, heuristic search
+- **Data Structures**: 2D arrays, move tracking, backtracking stacks, grid representations
+- **Mathematical Concepts**: Graph theory, Hamiltonian paths, grid properties, backtracking, heuristic algorithms
+- **Programming Skills**: Backtracking implementation, grid manipulation, move validation, algorithm implementation
+- **Related Problems**: Hamiltonian Flights (Hamiltonian paths), Grid algorithms, Backtracking problems
+
 ## 📋 Problem Description
 
 Given a chessboard of size n×n, find a knight's tour (a path where the knight visits every square exactly once).

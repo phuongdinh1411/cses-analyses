@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/giant_pizza_analysis
 
 # Giant Pizza - 2-SAT Problem
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand 2-SAT problems and satisfiability concepts in propositional logic
+- [ ] **Objective 2**: Apply strongly connected components to solve 2-SAT problems with implication graphs
+- [ ] **Objective 3**: Implement efficient 2-SAT algorithms with proper implication graph construction
+- [ ] **Objective 4**: Optimize 2-SAT solutions using SCC algorithms and logical constraint handling
+- [ ] **Objective 5**: Handle edge cases in 2-SAT problems (contradictory constraints, trivial satisfiability, complex implications)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: 2-SAT, strongly connected components, implication graphs, satisfiability algorithms, logical constraints
+- **Data Structures**: Implication graphs, SCC data structures, graph representations, constraint tracking
+- **Mathematical Concepts**: Propositional logic, satisfiability, implication graphs, logical constraints, graph theory
+- **Programming Skills**: Graph construction, SCC algorithms, logical constraint handling, algorithm implementation
+- **Related Problems**: Strongly Connected Components (SCC algorithms), Building Teams (graph coloring), Logical problems
+
 ## 📋 Problem Description
 
 Given a list of pizza toppings preferences where each person likes some toppings and dislikes others, determine if it's possible to make a pizza that satisfies everyone's preferences.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/high_score_analysis
 
 # High Score - Longest Path with Negative Weights
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand longest path problems and negative weight handling in graphs
+- [ ] **Objective 2**: Apply Bellman-Ford algorithm or modified Dijkstra's to handle negative weights
+- [ ] **Objective 3**: Implement efficient longest path algorithms with negative cycle detection
+- [ ] **Objective 4**: Optimize longest path solutions using graph representations and cycle detection
+- [ ] **Objective 5**: Handle edge cases in longest path problems (negative cycles, unreachable destinations, infinite scores)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Bellman-Ford algorithm, negative weight handling, longest path problems, cycle detection
+- **Data Structures**: Distance arrays, graph representations, cycle tracking, path data structures
+- **Mathematical Concepts**: Graph theory, negative weights, longest path properties, cycle detection
+- **Programming Skills**: Graph traversal, distance calculations, cycle detection, algorithm implementation
+- **Related Problems**: Shortest Routes I (shortest paths), Download Speed (flow problems), Graph algorithms
+
 ## 📋 Problem Description
 
 There are n cities and m flight connections. Your task is to find the highest possible score for a route from city 1 to city n.

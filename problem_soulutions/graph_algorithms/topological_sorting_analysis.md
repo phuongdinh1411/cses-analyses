@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/topological_sorting_analysis
 
 # Topological Sorting - Graph Ordering Algorithm
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand topological sorting and DAG ordering concepts
+- [ ] **Objective 2**: Apply Kahn's algorithm or DFS-based approach to find topological orderings
+- [ ] **Objective 3**: Implement efficient topological sorting algorithms with proper cycle detection
+- [ ] **Objective 4**: Optimize topological sorting solutions using graph representations and algorithm optimizations
+- [ ] **Objective 5**: Handle edge cases in topological sorting (cycles, single nodes, disconnected components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Topological sorting, Kahn's algorithm, DFS-based sorting, cycle detection, DAG algorithms
+- **Data Structures**: Queues, stacks, adjacency lists, in-degree tracking, graph representations
+- **Mathematical Concepts**: Graph theory, DAG properties, topological ordering, cycle detection, graph ordering
+- **Programming Skills**: Graph traversal, cycle detection, topological sorting, algorithm implementation
+- **Related Problems**: Cycle Finding (cycle detection), Building Teams (graph coloring), DAG algorithms
+
 ## 📋 Problem Description
 
 Given a directed acyclic graph (DAG) with n nodes and m edges, find a topological ordering of the nodes. A topological ordering is a linear ordering of vertices such that for every directed edge (u, v), vertex u comes before vertex v in the ordering.

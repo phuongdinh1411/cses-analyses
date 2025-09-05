@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/monsters_analysis
 
 # Monsters - Multi-Source BFS Path Finding
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand multi-source BFS problems and competitive pathfinding concepts
+- [ ] **Objective 2**: Apply multi-source BFS to find shortest distances from multiple sources simultaneously
+- [ ] **Objective 3**: Implement efficient multi-source BFS algorithms with proper distance tracking
+- [ ] **Objective 4**: Optimize multi-source BFS solutions using queue management and distance comparisons
+- [ ] **Objective 5**: Handle edge cases in multi-source BFS (no monsters, unreachable destinations, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Multi-source BFS, competitive pathfinding, distance calculations, grid algorithms
+- **Data Structures**: Queues, 2D arrays, distance arrays, grid representations, BFS data structures
+- **Mathematical Concepts**: Graph theory, shortest path properties, competitive algorithms, grid properties
+- **Programming Skills**: BFS implementation, grid manipulation, distance calculations, algorithm implementation
+- **Related Problems**: Labyrinth (grid pathfinding), Message Route (shortest path), Grid algorithms
+
 ## 📋 Problem Description
 
 You are playing a game where you have a grid of size n×m. Each cell is either free (.) or a wall (#). You are initially in the upper-left corner, and you want to reach the lower-right corner. However, there are monsters that move according to a specific pattern.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/hamiltonian_flights_analysis
 
 # Hamiltonian Flights - Path Counting with Bitmask DP
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand Hamiltonian path problems and bitmask dynamic programming concepts
+- [ ] **Objective 2**: Apply bitmask DP to count Hamiltonian paths with proper state representation
+- [ ] **Objective 3**: Implement efficient Hamiltonian path counting algorithms with bitmask optimization
+- [ ] **Objective 4**: Optimize Hamiltonian path solutions using bitmask DP and state compression
+- [ ] **Objective 5**: Handle edge cases in Hamiltonian paths (no paths exist, single node, disconnected components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Hamiltonian paths, bitmask dynamic programming, path counting, state compression, DP optimization
+- **Data Structures**: Bitmask representations, DP tables, graph representations, state tracking
+- **Mathematical Concepts**: Graph theory, Hamiltonian paths, dynamic programming, bitmask operations, path counting
+- **Programming Skills**: Bitmask operations, dynamic programming, path counting, algorithm implementation
+- **Related Problems**: Knight's Tour (Hamiltonian paths), Dynamic programming, Bitmask problems
+
 ## 📋 Problem Description
 
 Given a directed graph with n cities and m flights, count the number of different Hamiltonian paths from city 1 to city n.

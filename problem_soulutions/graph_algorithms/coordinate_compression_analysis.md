@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/coordinate_compression_analysis
 
 # Coordinate Compression - Efficient Coordinate Mapping
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand coordinate compression and efficient coordinate mapping concepts
+- [ ] **Objective 2**: Apply sorting and mapping techniques to compress coordinates while preserving relative order
+- [ ] **Objective 3**: Implement efficient coordinate compression algorithms with proper sorting and mapping
+- [ ] **Objective 4**: Optimize coordinate compression using sorting algorithms and efficient data structures
+- [ ] **Objective 5**: Handle edge cases in coordinate compression (duplicate coordinates, large coordinate ranges, empty sets)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Coordinate compression, sorting algorithms, mapping techniques, data structure optimization
+- **Data Structures**: Arrays, sorting data structures, mapping structures, coordinate tracking
+- **Mathematical Concepts**: Coordinate geometry, sorting theory, mapping theory, optimization
+- **Programming Skills**: Sorting implementation, coordinate manipulation, mapping techniques, algorithm implementation
+- **Related Problems**: Sorting problems, Coordinate problems, Data structure optimization
+
 ## 📋 Problem Description
 
 Given n points in a 2D plane, compress the coordinates so that the relative order is preserved but the coordinates are mapped to consecutive integers starting from 0.

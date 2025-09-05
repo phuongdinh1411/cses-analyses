@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis
 
 # De Bruijn Sequence - Binary String Construction
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand De Bruijn sequences and Eulerian path concepts in graph theory
+- [ ] **Objective 2**: Apply Eulerian path algorithms to construct De Bruijn sequences using graph traversal
+- [ ] **Objective 3**: Implement efficient De Bruijn sequence algorithms with proper graph construction
+- [ ] **Objective 4**: Optimize De Bruijn sequence construction using Eulerian path algorithms and graph representations
+- [ ] **Objective 5**: Handle edge cases in De Bruijn sequences (small orders, large orders, sequence construction)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: De Bruijn sequences, Eulerian paths, graph construction, string algorithms, combinatorial algorithms
+- **Data Structures**: Graph representations, path tracking, string manipulation, Eulerian path data structures
+- **Mathematical Concepts**: Combinatorics, De Bruijn graphs, Eulerian paths, string theory, graph theory
+- **Programming Skills**: Graph construction, Eulerian path algorithms, string manipulation, algorithm implementation
+- **Related Problems**: Teleporters Path (Eulerian paths), String algorithms, Combinatorial problems
+
 ## 📋 Problem Description
 
 Given an integer n, construct a De Bruijn sequence of order n, which is a cyclic sequence of length 2ⁿ containing all possible binary strings of length n as substrings.

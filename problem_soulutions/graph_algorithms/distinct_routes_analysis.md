@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/distinct_routes_analysis
 
 # Distinct Routes - Maximum Edge-Disjoint Paths
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand edge-disjoint paths problems and maximum flow concepts
+- [ ] **Objective 2**: Apply maximum flow algorithms to find maximum edge-disjoint paths
+- [ ] **Objective 3**: Implement efficient edge-disjoint path algorithms with proper flow network construction
+- [ ] **Objective 4**: Optimize edge-disjoint path solutions using flow algorithms and path enumeration
+- [ ] **Objective 5**: Handle edge cases in edge-disjoint paths (no paths exist, single path, multiple components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Maximum flow, edge-disjoint paths, flow networks, path enumeration, flow algorithms
+- **Data Structures**: Flow networks, path tracking, graph representations, flow data structures
+- **Mathematical Concepts**: Graph theory, flow networks, path theory, network connectivity, optimization
+- **Programming Skills**: Flow algorithms, path enumeration, graph connectivity, algorithm implementation
+- **Related Problems**: Download Speed (maximum flow), Police Chase (flow problems), Path enumeration
+
 ## 📋 Problem Description
 
 Given a directed graph with n nodes and m edges, find the maximum number of edge-disjoint paths from node 1 to node n.

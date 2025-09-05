@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/counting_rooms_analysis
 
 # Counting Rooms - Connected Components in Grid
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand connected components in grids and flood fill algorithms
+- [ ] **Objective 2**: Apply DFS or BFS to find connected components in 2D grids
+- [ ] **Objective 3**: Implement efficient connected component algorithms with proper grid traversal
+- [ ] **Objective 4**: Optimize connected component solutions using visited arrays and grid representations
+- [ ] **Objective 5**: Handle edge cases in grid connected components (empty grids, single cells, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: DFS, BFS, connected components, flood fill, grid traversal
+- **Data Structures**: 2D arrays, visited arrays, queues/stacks, grid representations
+- **Mathematical Concepts**: Graph theory, connected components, grid properties, traversal algorithms
+- **Programming Skills**: Grid manipulation, DFS/BFS implementation, visited tracking, algorithm implementation
+- **Related Problems**: Labyrinth (grid traversal), Message Route (graph traversal), Building Roads (connected components)
+
 ## 📋 Problem Description
 
 You are given a map of a building, and your task is to count the number of its rooms. The size of the map is n×m squares, and each square is either floor or wall. You can walk left, right, up, and down through the floor squares.

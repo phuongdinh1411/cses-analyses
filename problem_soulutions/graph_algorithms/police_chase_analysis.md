@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/police_chase_analysis
 
 # Police Chase - Minimum Cut Problem
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand minimum cut problems and network connectivity concepts
+- [ ] **Objective 2**: Apply maximum flow algorithms to find minimum cuts using max-flow min-cut theorem
+- [ ] **Objective 3**: Implement efficient minimum cut algorithms with proper flow network construction
+- [ ] **Objective 4**: Optimize minimum cut solutions using flow algorithms and cut identification
+- [ ] **Objective 5**: Handle edge cases in minimum cut problems (already disconnected, single edge cuts, multiple components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Maximum flow, minimum cut, max-flow min-cut theorem, flow networks, cut algorithms
+- **Data Structures**: Flow networks, cut tracking, graph representations, flow data structures
+- **Mathematical Concepts**: Graph theory, flow networks, cut theory, network connectivity, optimization
+- **Programming Skills**: Flow algorithms, cut identification, graph connectivity, algorithm implementation
+- **Related Problems**: Download Speed (maximum flow), School Dance (flow problems), Network connectivity
+
 ## 📋 Problem Description
 
 Given a network with n computers and m connections, find the minimum number of connections that need to be cut to disconnect computer 1 from computer n.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/message_route_analysis
 
 # Message Route - Shortest Path Finding
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand shortest path problems and path reconstruction concepts
+- [ ] **Objective 2**: Apply BFS to find shortest paths in unweighted graphs with path tracking
+- [ ] **Objective 3**: Implement efficient shortest path algorithms with proper path reconstruction
+- [ ] **Objective 4**: Optimize shortest path solutions using parent tracking and path enumeration
+- [ ] **Objective 5**: Handle edge cases in shortest path problems (no path exists, single node, disconnected graphs)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: BFS, shortest path algorithms, path reconstruction, graph traversal, pathfinding
+- **Data Structures**: Queues, parent arrays, path tracking, graph representations, BFS data structures
+- **Mathematical Concepts**: Graph theory, shortest path properties, path reconstruction, graph traversal
+- **Programming Skills**: BFS implementation, path tracking, graph traversal, algorithm implementation
+- **Related Problems**: Labyrinth (grid pathfinding), Monsters (grid algorithms), Graph traversal
+
 ## 📋 Problem Description
 
 There are n computers numbered 1,2,…,n. The computers are connected through m cables. Your task is to find a route from computer 1 to computer n.

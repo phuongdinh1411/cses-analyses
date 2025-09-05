@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/school_dance_analysis
 
 # School Dance - Maximum Bipartite Matching
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand bipartite matching problems and maximum matching concepts
+- [ ] **Objective 2**: Apply maximum flow algorithms or Hungarian algorithm to solve bipartite matching
+- [ ] **Objective 3**: Implement efficient bipartite matching algorithms with proper graph construction
+- [ ] **Objective 4**: Optimize bipartite matching solutions using flow networks and matching algorithms
+- [ ] **Objective 5**: Handle edge cases in bipartite matching (no matches possible, complete matching, disconnected components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Maximum flow, bipartite matching, Hungarian algorithm, flow networks, matching algorithms
+- **Data Structures**: Bipartite graphs, flow networks, matching data structures, graph representations
+- **Mathematical Concepts**: Graph theory, bipartite graphs, matching theory, flow networks, optimization
+- **Programming Skills**: Graph construction, flow algorithms, matching implementation, algorithm implementation
+- **Related Problems**: Download Speed (maximum flow), Police Chase (flow problems), Bipartite matching
+
 ## 📋 Problem Description
 
 Given n boys and m girls, where each boy can dance with certain girls, find the maximum number of boys and girls that can be matched for dancing.

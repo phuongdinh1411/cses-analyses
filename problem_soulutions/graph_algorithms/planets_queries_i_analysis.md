@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/planets_queries_i_analysis
 
 # Planets Queries I - Binary Lifting for Path Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand binary lifting and path query optimization in functional graphs
+- [ ] **Objective 2**: Apply binary lifting technique to answer k-th ancestor queries efficiently
+- [ ] **Objective 3**: Implement efficient binary lifting algorithms with proper preprocessing and query handling
+- [ ] **Objective 4**: Optimize path queries using binary lifting and sparse table techniques
+- [ ] **Objective 5**: Handle edge cases in binary lifting (large k values, cycles, disconnected components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Binary lifting, sparse tables, path queries, functional graphs, query optimization
+- **Data Structures**: Sparse tables, binary lifting tables, graph representations, query data structures
+- **Mathematical Concepts**: Graph theory, binary representation, logarithmic algorithms, query optimization
+- **Programming Skills**: Binary operations, sparse table construction, query processing, algorithm implementation
+- **Related Problems**: Planets Cycles (functional graphs), Planets Queries II (path intersection), Query optimization
+
 ## 📋 Problem Description
 
 Given a directed graph with n planets and q queries, for each query find the k-th planet in the path starting from planet a.

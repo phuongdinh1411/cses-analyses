@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/road_construction_analysis
 
 # Road Construction - Minimum Spanning Tree
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand minimum spanning tree problems and MST concepts
+- [ ] **Objective 2**: Apply Kruskal's algorithm or Prim's algorithm to find minimum spanning trees
+- [ ] **Objective 3**: Implement efficient MST algorithms with proper Union-Find data structure usage
+- [ ] **Objective 4**: Optimize MST solutions using Union-Find and graph representations
+- [ ] **Objective 5**: Handle edge cases in MST problems (impossible to connect, single node, disconnected components)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Kruskal's algorithm, Prim's algorithm, minimum spanning trees, Union-Find, MST algorithms
+- **Data Structures**: Union-Find, priority queues, edge lists, graph representations
+- **Mathematical Concepts**: Graph theory, minimum spanning trees, greedy algorithms, optimization
+- **Programming Skills**: Union-Find implementation, edge sorting, MST algorithms, algorithm implementation
+- **Related Problems**: Building Roads (connectivity), Road Construction II (MST variations), Graph algorithms
+
 ## 📋 Problem Description
 
 Given a graph with n cities and m roads, find the minimum cost to build roads so that all cities are connected. Each road has a construction cost.

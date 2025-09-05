@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/coin_collector_analysis
 
 # Coin Collector - Maximum Path Sum in DAG
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand maximum path sum problems in DAGs and dynamic programming concepts
+- [ ] **Objective 2**: Apply topological sorting and dynamic programming to find maximum path sums in DAGs
+- [ ] **Objective 3**: Implement efficient DAG algorithms with proper topological ordering and DP
+- [ ] **Objective 4**: Optimize DAG path sum solutions using topological sorting and dynamic programming
+- [ ] **Objective 5**: Handle edge cases in DAG path problems (single nodes, disconnected components, negative values)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Topological sorting, dynamic programming, DAG algorithms, maximum path sum, DP on DAGs
+- **Data Structures**: DAG representations, topological order, DP arrays, graph representations
+- **Mathematical Concepts**: Graph theory, DAG properties, dynamic programming, path optimization, topological ordering
+- **Programming Skills**: Topological sorting, dynamic programming, DAG traversal, algorithm implementation
+- **Related Problems**: Topological Sorting (DAG algorithms), High Score (path optimization), Dynamic programming
+
 ## 📋 Problem Description
 
 Given a directed acyclic graph (DAG) with n nodes and m edges, where each node has a coin value, find the maximum number of coins that can be collected by traversing the graph.

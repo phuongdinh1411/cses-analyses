@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/strongly_connected_components_an
 
 # Strongly Connected Components - Graph Decomposition
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand strongly connected components and graph decomposition concepts
+- [ ] **Objective 2**: Apply Tarjan's algorithm or Kosaraju's algorithm to find SCCs in directed graphs
+- [ ] **Objective 3**: Implement efficient SCC algorithms with proper stack usage and graph traversal
+- [ ] **Objective 4**: Optimize SCC solutions using graph representations and algorithm optimizations
+- [ ] **Objective 5**: Handle edge cases in SCC problems (single nodes, disconnected graphs, self-loops)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Tarjan's algorithm, Kosaraju's algorithm, strongly connected components, graph decomposition
+- **Data Structures**: Stacks, adjacency lists, graph representations, component tracking
+- **Mathematical Concepts**: Graph theory, strongly connected components, graph decomposition, DFS properties
+- **Programming Skills**: Stack implementation, DFS/BFS, graph traversal, algorithm implementation
+- **Related Problems**: Building Teams (graph coloring), Cycle Finding (cycle detection), Graph connectivity
+
 ## 📋 Problem Description
 
 Given a directed graph with n nodes and m edges, find all strongly connected components (SCCs). A strongly connected component is a subset of vertices where every vertex is reachable from every other vertex in the component.

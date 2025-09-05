@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis
 
 # Flight Discount - Shortest Path with Coupon
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand modified shortest path problems and state-space expansion concepts
+- [ ] **Objective 2**: Apply Dijkstra's algorithm with state-space expansion to handle discount constraints
+- [ ] **Objective 3**: Implement efficient modified shortest path algorithms with proper state management
+- [ ] **Objective 4**: Optimize modified shortest path solutions using priority queues and state tracking
+- [ ] **Objective 5**: Handle edge cases in modified shortest paths (no discount needed, impossible paths, large graphs)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dijkstra's algorithm, state-space expansion, modified shortest paths, priority queues, graph algorithms
+- **Data Structures**: Priority queues, state tracking, graph representations, distance arrays, state management
+- **Mathematical Concepts**: Graph theory, shortest path properties, state-space search, optimization, graph algorithms
+- **Programming Skills**: Priority queue implementation, state management, graph traversal, algorithm implementation
+- **Related Problems**: Shortest Routes I (basic shortest paths), High Score (modified shortest paths), Graph algorithms
+
 ## 📋 Problem Description
 
 Given a directed graph with n cities and m flights, find the minimum cost to travel from city 1 to city n. You can use at most one discount coupon that halves the cost of any flight.

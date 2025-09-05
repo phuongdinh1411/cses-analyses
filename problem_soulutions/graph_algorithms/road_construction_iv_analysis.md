@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/road_construction_iv_analysis
 
 # Road Construction IV - Expert Level Minimum Spanning Tree
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand expert-level MST problems with the most sophisticated constraints and requirements
+- [ ] **Objective 2**: Apply expert-level MST algorithms with the most complex constraint handling and optimization techniques
+- [ ] **Objective 3**: Implement efficient expert-level MST algorithms with the most sophisticated constraint validation and optimization
+- [ ] **Objective 4**: Optimize expert-level MST solutions using the most advanced Union-Find and constraint handling techniques
+- [ ] **Objective 5**: Handle edge cases in expert-level MST problems (most complex constraints, highest optimization requirements, largest-scale graphs)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Expert-level MST algorithms, most complex constraint handling, advanced Union-Find optimization, expert graph algorithms
+- **Data Structures**: Expert-level Union-Find, advanced priority queues, most complex edge structures, sophisticated graph representations, advanced constraint systems
+- **Mathematical Concepts**: Expert graph theory, most complex optimization, advanced constraint satisfaction, expert-level MST properties
+- **Programming Skills**: Expert-level Union-Find, most complex constraint validation, expert MST algorithms, most sophisticated algorithm implementation
+- **Related Problems**: Road Construction III (complex MST), Road Construction II (constrained MST), Expert-level MST algorithms
+
 ## 📋 Problem Description
 
 Given a graph with n cities and m roads, find the minimum cost to build roads so that all cities are connected. Each road has a construction cost.

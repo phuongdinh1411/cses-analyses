@@ -6,6 +6,24 @@ permalink: /problem_soulutions/graph_algorithms/road_construction_ii_analysis
 
 # Road Construction II - Minimum Spanning Tree with Constraints
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand advanced MST problems with additional constraints and requirements
+- [ ] **Objective 2**: Apply Kruskal's algorithm or Prim's algorithm with constraint handling for MST problems
+- [ ] **Objective 3**: Implement efficient MST algorithms with proper constraint validation and optimization
+- [ ] **Objective 4**: Optimize MST solutions using Union-Find and advanced constraint handling techniques
+- [ ] **Objective 5**: Handle edge cases in constrained MST problems (impossible constraints, disconnected components, large graphs)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Kruskal's algorithm, Prim's algorithm, minimum spanning trees, Union-Find, constraint handling
+- **Data Structures**: Union-Find, priority queues, edge lists, graph representations, constraint tracking
+- **Mathematical Concepts**: Graph theory, minimum spanning trees, greedy algorithms, optimization, constraint satisfaction
+- **Programming Skills**: Union-Find implementation, constraint validation, MST algorithms, algorithm implementation
+- **Related Problems**: Road Construction (basic MST), Building Roads (connectivity), MST algorithms
+
 ## 📋 Problem Description
 
 Given a graph with n cities and m roads, find the minimum cost to build roads so that all cities are connected. Each road has a construction cost.
