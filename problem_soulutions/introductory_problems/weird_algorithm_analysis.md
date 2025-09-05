@@ -154,6 +154,124 @@ test_solution()
 - **Termination**: Empirically, all tested numbers reach 1
 - **Efficiency**: Most numbers reach 1 relatively quickly
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n = 3
+Output: 3 10 5 16 8 4 2 1
+```
+
+### Algorithm Execution
+```
+Start: n = 3
+
+Step 1: n = 3 (odd)
+3 × 3 + 1 = 10
+
+Step 2: n = 10 (even)
+10 ÷ 2 = 5
+
+Step 3: n = 5 (odd)
+5 × 3 + 1 = 16
+
+Step 4: n = 16 (even)
+16 ÷ 2 = 8
+
+Step 5: n = 8 (even)
+8 ÷ 2 = 4
+
+Step 6: n = 4 (even)
+4 ÷ 2 = 2
+
+Step 7: n = 2 (even)
+2 ÷ 2 = 1
+
+Step 8: n = 1 (terminate)
+```
+
+### Sequence Visualization
+```
+3 → 10 → 5 → 16 → 8 → 4 → 2 → 1
+
+3 (odd)  → 3×3+1 = 10
+10 (even) → 10÷2 = 5
+5 (odd)   → 5×3+1 = 16
+16 (even) → 16÷2 = 8
+8 (even)  → 8÷2 = 4
+4 (even)  → 4÷2 = 2
+2 (even)  → 2÷2 = 1
+1 (stop)
+```
+
+### Different Examples
+```
+n = 1: 1
+n = 2: 2 → 1
+n = 4: 4 → 2 → 1
+n = 5: 5 → 16 → 8 → 4 → 2 → 1
+n = 6: 6 → 3 → 10 → 5 → 16 → 8 → 4 → 2 → 1
+n = 7: 7 → 22 → 11 → 34 → 17 → 52 → 26 → 13 → 40 → 20 → 10 → 5 → 16 → 8 → 4 → 2 → 1
+```
+
+### Pattern Analysis
+```
+Common patterns:
+- Even numbers always decrease (divide by 2)
+- Odd numbers increase (multiply by 3, add 1)
+- Most sequences eventually reach powers of 2
+- Powers of 2 quickly reach 1
+
+Example with n = 6:
+6 → 3 → 10 → 5 → 16 → 8 → 4 → 2 → 1
+↑   ↑   ↑    ↑   ↑    ↑   ↑   ↑   ↑
+even odd even odd even even even even
+```
+
+### Algorithm Flow
+```
+Input: n
+Output: sequence of numbers
+
+while n != 1:
+    print(n, end=" ")
+    if n % 2 == 0:
+        n = n // 2
+    else:
+        n = 3 * n + 1
+print(1)
+```
+
+### Memory Efficiency
+```
+Method 1: Store entire sequence
+sequence = [3, 10, 5, 16, 8, 4, 2, 1]
+print(" ".join(map(str, sequence)))
+
+Method 2: Print as we go (more efficient)
+print(3, end=" ")
+print(10, end=" ")
+print(5, end=" ")
+...
+print(1)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Direct          │ O(k)         │ O(1)         │ Simulate     │
+│ Simulation      │              │              │ step by step │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sequence        │ O(k)         │ O(k)         │ Store all    │
+│ Storage         │              │              │ numbers      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Memoization     │ O(k)         │ O(k)         │ Cache        │
+│                 │              │              │ results      │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Simple Rules**

@@ -153,6 +153,120 @@ test_solution()
 - **Efficient**: Logarithmic time complexity
 - **Correct**: Counts all factors of 5 accurately
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n = 20
+Output: 4 (20! has 4 trailing zeros)
+```
+
+### Factorial Calculation
+```
+20! = 20 × 19 × 18 × ... × 2 × 1
+20! = 2432902008176640000
+Trailing zeros: 4
+```
+
+### Factor Analysis
+```
+Numbers 1 to 20:
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+
+Factors of 2: 2, 4, 6, 8, 10, 12, 14, 16, 18, 20
+- 2: 1 factor of 2
+- 4: 2 factors of 2  
+- 6: 1 factor of 2
+- 8: 3 factors of 2
+- 10: 1 factor of 2
+- 12: 2 factors of 2
+- 14: 1 factor of 2
+- 16: 4 factors of 2
+- 18: 1 factor of 2
+- 20: 2 factors of 2
+Total factors of 2: 1+2+1+3+1+2+1+4+1+2 = 18
+
+Factors of 5: 5, 10, 15, 20
+- 5: 1 factor of 5
+- 10: 1 factor of 5
+- 15: 1 factor of 5  
+- 20: 1 factor of 5
+Total factors of 5: 4
+
+Trailing zeros = min(18, 4) = 4
+```
+
+### Mathematical Formula Application
+```
+For n = 20:
+Factors of 5 = ⌊20/5⌋ + ⌊20/25⌋ + ⌊20/125⌋ + ...
+Factors of 5 = ⌊4⌋ + ⌊0.8⌋ + ⌊0.16⌋ + ...
+Factors of 5 = 4 + 0 + 0 + ... = 4
+
+Factors of 2 = ⌊20/2⌋ + ⌊20/4⌋ + ⌊20/8⌋ + ⌊20/16⌋ + ...
+Factors of 2 = ⌊10⌋ + ⌊5⌋ + ⌊2.5⌋ + ⌊1.25⌋ + ...
+Factors of 2 = 10 + 5 + 2 + 1 + 0 + ... = 18
+
+Trailing zeros = min(18, 4) = 4
+```
+
+### Step-by-Step Process
+```
+Step 1: Count multiples of 5
+Numbers divisible by 5: 5, 10, 15, 20
+Count: 4
+
+Step 2: Count multiples of 25
+Numbers divisible by 25: none (25 > 20)
+Count: 0
+
+Step 3: Count multiples of 125
+Numbers divisible by 125: none (125 > 20)
+Count: 0
+
+Total factors of 5: 4 + 0 + 0 = 4
+```
+
+### Different Examples
+```
+n=5: 5! = 120 → 1 trailing zero
+Factors of 5: ⌊5/5⌋ = 1
+
+n=10: 10! = 3628800 → 2 trailing zeros  
+Factors of 5: ⌊10/5⌋ = 2
+
+n=25: 25! → 6 trailing zeros
+Factors of 5: ⌊25/5⌋ + ⌊25/25⌋ = 5 + 1 = 6
+
+n=100: 100! → 24 trailing zeros
+Factors of 5: ⌊100/5⌋ + ⌊100/25⌋ = 20 + 4 = 24
+```
+
+### Why Only Count Factors of 5
+```
+In any factorial n!:
+- There are always more factors of 2 than 5
+- 10 = 2 × 5, so each trailing zero needs one 2 and one 5
+- Since 2s are abundant, the limiting factor is 5s
+- Therefore, trailing zeros = number of factors of 5
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Mathematical    │ O(log n)     │ O(1)         │ Count        │
+│ Formula         │              │              │ factors of 5 │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n)         │ O(1)         │ Calculate    │
+│                 │              │              │ factorial    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Prime           │ O(n)         │ O(1)         │ Factor       │
+│ Factorization   │              │              │ each number  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Trailing Zeros Source**

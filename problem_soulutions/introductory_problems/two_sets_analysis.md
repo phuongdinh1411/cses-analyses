@@ -208,6 +208,129 @@ test_solution()
 - **Greedy**: Takes largest numbers first
 - **Correct**: Handles all cases properly
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n = 7
+Output: YES (division possible)
+Set 1: [1, 2, 4, 7] (sum = 14)
+Set 2: [3, 5, 6] (sum = 14)
+```
+
+### Sum Analysis
+```
+Numbers: 1, 2, 3, 4, 5, 6, 7
+Total sum = 1+2+3+4+5+6+7 = 28
+Target sum per set = 28/2 = 14
+
+Check if division is possible:
+Total sum = 28 (even) ✓
+Division is possible!
+```
+
+### Greedy Construction Process
+```
+Step 1: Start with largest numbers
+Available: [7, 6, 5, 4, 3, 2, 1]
+Target: 14
+
+Step 2: Build first set greedily
+- Take 7: Set1 = [7], sum = 7
+- Take 6: Set1 = [7,6], sum = 13  
+- Take 5: Set1 = [7,6,5], sum = 18 > 14 ✗
+- Take 4: Set1 = [7,6,4], sum = 17 > 14 ✗
+- Take 3: Set1 = [7,6,3], sum = 16 > 14 ✗
+- Take 2: Set1 = [7,6,2], sum = 15 > 14 ✗
+- Take 1: Set1 = [7,6,1], sum = 14 ✓
+
+Step 3: Build second set with remaining
+Remaining: [5, 4, 3, 2]
+Set2 = [5, 4, 3, 2], sum = 14 ✓
+```
+
+### Alternative Construction
+```
+Method: Start with largest and work backwards
+Available: [7, 6, 5, 4, 3, 2, 1]
+
+Set 1 construction:
+- 7: sum = 7
+- 6: sum = 13
+- 1: sum = 14 ✓
+
+Set 2: remaining [5, 4, 3, 2]
+Sum = 5+4+3+2 = 14 ✓
+
+Final sets:
+Set 1: [7, 6, 1] (sum = 14)
+Set 2: [5, 4, 3, 2] (sum = 14)
+```
+
+### Impossible Case Example
+```
+Input: n = 3
+Numbers: 1, 2, 3
+Total sum = 1+2+3 = 6
+Target sum per set = 6/2 = 3
+
+Check if division is possible:
+Total sum = 6 (even) ✓
+But can we make two sets of sum 3?
+
+Possible sets:
+- Set 1: [1,2], Set 2: [3] → sums: 3, 3 ✓
+- Set 1: [3], Set 2: [1,2] → sums: 3, 3 ✓
+
+Actually, n=3 is possible!
+
+Let me try n=4:
+Numbers: 1, 2, 3, 4
+Total sum = 1+2+3+4 = 10
+Target sum per set = 10/2 = 5
+
+Possible sets:
+- Set 1: [1,4], Set 2: [2,3] → sums: 5, 5 ✓
+
+Let me try n=5:
+Numbers: 1, 2, 3, 4, 5
+Total sum = 1+2+3+4+5 = 15
+Target sum per set = 15/2 = 7.5
+
+Total sum is odd → impossible!
+```
+
+### Mathematical Verification
+```
+For n = 7:
+Total sum = 7×8/2 = 28
+Target sum = 28/2 = 14
+
+Set 1: [1, 2, 4, 7]
+Sum = 1+2+4+7 = 14 ✓
+
+Set 2: [3, 5, 6]  
+Sum = 3+5+6 = 14 ✓
+
+Both sets have equal sum! ✓
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Mathematical    │ O(1)         │ O(1)         │ Check sum    │
+│ Check           │              │              │ parity       │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Greedy          │ O(n)         │ O(n)         │ Build sets   │
+│ Construction    │              │              │ greedily     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Backtracking    │ O(2ⁿ)        │ O(n)         │ Try all      │
+│                 │              │              │ combinations │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Sum Properties**
