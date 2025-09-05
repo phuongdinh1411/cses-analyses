@@ -222,6 +222,109 @@ test_solution()
 - **Boundary Checking**: Ensures intersection lies on segment
 - **Numerical Stability**: Handles floating-point precision
 
+## 🎨 Visual Example
+
+### Input Example
+```
+3 lines:
+1. x = 2 (1x + 0y - 2 = 0)
+2. y = 3 (0x + 1y - 3 = 0)
+3. x + y = 5 (1x + 1y - 5 = 0)
+
+2 queries:
+1. Line segment (0,0) to (4,4)
+2. Line segment (1,1) to (3,3)
+```
+
+### Lines and Segments Visualization
+```
+Y
+5 |     |   \
+4 |     |     \   *
+3 | ----+-------\----
+2 |     |         \ *
+1 |     |           \*
+0 |     |             \
+  +-----+-----+-----+-----+
+    0   1   2   3   4   5  X
+
+Line 1: x = 2 (vertical)
+Line 2: y = 3 (horizontal)
+Line 3: x + y = 5 (diagonal)
+Segment 1: (0,0) to (4,4)
+Segment 2: (1,1) to (3,3)
+```
+
+### Intersection Analysis
+```
+Query 1: Line segment (0,0) to (4,4)
+
+Intersection with Line 1 (x = 2):
+- Parametric form: (0,0) + t(4,4) = (4t, 4t)
+- At x = 2: 4t = 2, so t = 0.5
+- Intersection point: (2, 2)
+- Check bounds: 0 ≤ 0.5 ≤ 1 ✓
+- Intersection exists
+
+Intersection with Line 2 (y = 3):
+- At y = 3: 4t = 3, so t = 0.75
+- Intersection point: (3, 3)
+- Check bounds: 0 ≤ 0.75 ≤ 1 ✓
+- Intersection exists
+
+Intersection with Line 3 (x + y = 5):
+- At x + y = 5: 4t + 4t = 8t = 5, so t = 0.625
+- Intersection point: (2.5, 2.5)
+- Check bounds: 0 ≤ 0.625 ≤ 1 ✓
+- Intersection exists
+
+Total intersections: 3
+```
+
+### Parametric Line Representation
+```
+Line segment from (x1, y1) to (x2, y2):
+x = x1 + t(x2 - x1)
+y = y1 + t(y2 - y1)
+where 0 ≤ t ≤ 1
+
+For segment (0,0) to (4,4):
+x = 0 + t(4 - 0) = 4t
+y = 0 + t(4 - 0) = 4t
+```
+
+### Intersection Calculation
+```
+For line ax + by + c = 0 and segment (x1,y1) to (x2,y2):
+
+Substitute parametric form:
+a(x1 + t(x2-x1)) + b(y1 + t(y2-y1)) + c = 0
+a(x1 + t·dx) + b(y1 + t·dy) + c = 0
+ax1 + a·t·dx + by1 + b·t·dy + c = 0
+t(a·dx + b·dy) + (ax1 + by1 + c) = 0
+
+Solve for t:
+t = -(ax1 + by1 + c) / (a·dx + b·dy)
+
+Check if 0 ≤ t ≤ 1 for intersection
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n×q)       │ O(1)         │ Check all    │
+│                 │              │              │ lines        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Parametric      │ O(n×q)       │ O(1)         │ Use          │
+│ Form            │              │              │ parametric   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Spatial Index   │ O(log n×q)   │ O(n)         │ Use spatial  │
+│                 │              │              │ data structure│
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Line-Line Intersection**

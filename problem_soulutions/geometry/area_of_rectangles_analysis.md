@@ -324,6 +324,108 @@ test_solution()
 - **Coordinate Compression**: Reduces y-coordinate range
 - **Optimal Algorithm**: Best known approach for this problem
 
+## 🎨 Visual Example
+
+### Input Example
+```
+3 rectangles:
+Rectangle 1: (0,0) to (2,2)
+Rectangle 2: (1,1) to (3,3)
+Rectangle 3: (2,0) to (4,2)
+```
+
+### Rectangle Visualization
+```
+Y
+4 |     +---+---+
+3 |     | 2 | 2 |
+2 | +---+---+---+---+
+1 | | 1 | 1+2| 2 | 3 |
+0 | +---+---+---+---+
+  +---+---+---+---+---+
+    0   1   2   3   4  X
+
+Rectangle 1: (0,0) to (2,2) - area 4
+Rectangle 2: (1,1) to (3,3) - area 4
+Rectangle 3: (2,0) to (4,2) - area 4
+```
+
+### Sweep Line Events
+```
+Events (sorted by x-coordinate):
+1. x=0: Start Rectangle 1, y=[0,2]
+2. x=1: Start Rectangle 2, y=[1,3]
+3. x=2: End Rectangle 1, y=[0,2]
+4. x=2: Start Rectangle 3, y=[0,2]
+5. x=3: End Rectangle 2, y=[1,3]
+6. x=4: End Rectangle 3, y=[0,2]
+
+Active intervals at each x:
+x=0: [0,2] → area = 2
+x=1: [0,2], [1,3] → area = 3
+x=2: [1,3], [0,2] → area = 3
+x=3: [0,2] → area = 2
+x=4: [] → area = 0
+```
+
+### Step-by-Step Sweep Line Process
+```
+Step 1: x=0, Start Rectangle 1
+Active intervals: [0,2]
+Area contribution: 2 × 1 = 2
+Total area: 2
+
+Step 2: x=1, Start Rectangle 2
+Active intervals: [0,2], [1,3]
+Merged intervals: [0,3]
+Area contribution: 3 × 1 = 3
+Total area: 2 + 3 = 5
+
+Step 3: x=2, End Rectangle 1, Start Rectangle 3
+Active intervals: [1,3], [0,2]
+Merged intervals: [0,3]
+Area contribution: 3 × 1 = 3
+Total area: 5 + 3 = 8
+
+Step 4: x=3, End Rectangle 2
+Active intervals: [0,2]
+Area contribution: 2 × 1 = 2
+Total area: 8 + 2 = 10
+
+Step 5: x=4, End Rectangle 3
+Active intervals: []
+Area contribution: 0 × 1 = 0
+Total area: 10 + 0 = 10
+```
+
+### Coordinate Compression
+```
+Original y-coordinates: [0, 1, 2, 3]
+Compressed mapping:
+0 → 0
+1 → 1
+2 → 2
+3 → 3
+
+Compressed range: [0, 3] (4 values)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(area)      │ O(1)         │ Check each   │
+│                 │              │              │ point        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sweep Line      │ O(n log n)   │ O(n)         │ Process      │
+│                 │              │              │ events       │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Segment Tree    │ O(n log n)   │ O(n)         │ Maintain     │
+│                 │              │              │ intervals    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Sweep Line Algorithm**

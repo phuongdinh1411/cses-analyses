@@ -263,6 +263,119 @@ test_solution()
 - **Mathematical Optimization**: Proves only 7 points need checking in strip
 - **Optimal Approach**: Best known algorithm for closest pair problem
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 points: (0,0), (1,1), (2,2), (5,5)
+```
+
+### Points Visualization
+```
+Y
+5 |         *
+4 |
+3 |
+2 |     *
+1 |   *
+0 | *
+  +---+---+---+---+---+---+
+    0   1   2   3   4   5  X
+
+Points: (0,0), (1,1), (2,2), (5,5)
+```
+
+### All Pairwise Euclidean Distances
+```
+Distance between (0,0) and (1,1):
+- √((0-1)² + (0-1)²) = √(1 + 1) = √2 ≈ 1.414
+
+Distance between (0,0) and (2,2):
+- √((0-2)² + (0-2)²) = √(4 + 4) = √8 ≈ 2.828
+
+Distance between (0,0) and (5,5):
+- √((0-5)² + (0-5)²) = √(25 + 25) = √50 ≈ 7.071
+
+Distance between (1,1) and (2,2):
+- √((1-2)² + (1-2)²) = √(1 + 1) = √2 ≈ 1.414
+
+Distance between (1,1) and (5,5):
+- √((1-5)² + (1-5)²) = √(16 + 16) = √32 ≈ 5.657
+
+Distance between (2,2) and (5,5):
+- √((2-5)² + (2-5)²) = √(9 + 9) = √18 ≈ 4.243
+
+Minimum distance: √2 ≈ 1.414
+```
+
+### Divide and Conquer Process
+```
+Step 1: Sort points by x-coordinate
+Points: (0,0), (1,1), (2,2), (5,5)
+
+Step 2: Divide at x = 1.5
+Left half: (0,0), (1,1)
+Right half: (2,2), (5,5)
+
+Step 3: Recursively find minimum in each half
+Left minimum: distance between (0,0) and (1,1) = √2
+Right minimum: distance between (2,2) and (5,5) = √18
+
+Step 4: Find minimum across dividing line
+Current minimum: min(√2, √18) = √2
+Strip width: √2
+Points in strip: (1,1), (2,2)
+Check distance: (1,1) to (2,2) = √2
+
+Final minimum: √2
+```
+
+### Strip Search Visualization
+```
+Y
+5 |         *
+4 |
+3 |
+2 |     *   |
+1 |   *     |
+0 | *       |
+  +---+---+---+---+---+---+
+    0   1   2   3   4   5  X
+
+Dividing line at x = 1.5
+Strip: x ∈ [1.5 - √2, 1.5 + √2] ≈ [0.086, 2.914]
+Points in strip: (1,1), (2,2)
+```
+
+### Geometric Properties
+```
+For points in strip, only need to check 7 points ahead:
+- Sort points in strip by y-coordinate
+- For each point, check next 7 points
+- This is proven to be sufficient
+
+Example:
+Strip points: (1,1), (2,2)
+- Point (1,1): check (2,2) → distance = √2
+- Point (2,2): no more points to check
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n²)        │ O(1)         │ Check all    │
+│                 │              │              │ pairs        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Divide & Conquer│ O(n log n)   │ O(n)         │ Split        │
+│                 │              │              │ recursively  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Strip Search    │ O(n log n)   │ O(n)         │ Only check   │
+│                 │              │              │ nearby points│
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Divide and Conquer Strategy**

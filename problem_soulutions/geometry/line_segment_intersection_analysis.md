@@ -234,6 +234,250 @@ test_solution()
 - **Mathematical Foundation**: Based on proven geometric principles
 - **Optimal Algorithm**: Best known approach for this problem
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Test Cases:
+3
+0 0 2 2 1 0 1 2  (Case 1)
+0 0 2 0 1 0 3 0  (Case 2)
+0 0 2 2 2 0 4 2  (Case 3)
+```
+
+### Case 1: General Intersection
+```
+Segments: (0,0)-(2,2) and (1,0)-(1,2)
+
+Coordinate System:
+    y
+    ↑
+    │
+2.0 │     • (1,2)
+    │     │
+    │     │
+1.0 │     │
+    │     │
+    │     │
+0.0 │•────┼────• (2,0)
+    │(0,0)│
+    │     │
+    │     │
+    └─────┼────→ x
+          1.0
+
+Segment 1: (0,0) to (2,2) - diagonal line
+Segment 2: (1,0) to (1,2) - vertical line
+Intersection: (1,1) - YES
+```
+
+### Case 2: Collinear Overlap
+```
+Segments: (0,0)-(2,0) and (1,0)-(3,0)
+
+Coordinate System:
+    y
+    ↑
+    │
+    │
+    │
+0.0 │•────•────•────•
+    │(0,0)│(1,0)│(2,0)│(3,0)
+    │     │     │     │
+    └─────┼─────┼─────┼────→ x
+          1.0   2.0   3.0
+
+Segment 1: (0,0) to (2,0) - horizontal line
+Segment 2: (1,0) to (3,0) - horizontal line
+Overlap: from (1,0) to (2,0) - YES
+```
+
+### Case 3: No Intersection
+```
+Segments: (0,0)-(2,2) and (2,0)-(4,2)
+
+Coordinate System:
+    y
+    ↑
+    │
+2.0 │     •────• (4,2)
+    │     │
+    │     │
+1.0 │     │
+    │     │
+    │     │
+0.0 │•────•────• (4,0)
+    │(0,0)│(2,0)
+    │     │
+    └─────┼─────┼────→ x
+          2.0   4.0
+
+Segment 1: (0,0) to (2,2) - diagonal line
+Segment 2: (2,0) to (4,2) - diagonal line
+No intersection - NO
+```
+
+### Cross Product for Orientation
+```
+Cross Product Formula: (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)
+
+Example: Points A(0,0), B(2,2), C(1,0)
+Cross product: (2-0) * (0-0) - (2-0) * (1-0) = 2 * 0 - 2 * 1 = -2
+
+- Negative: Clockwise (right turn)
+- Positive: Counterclockwise (left turn)
+- Zero: Collinear
+
+Visualization:
+    y
+    ↑
+    │
+2.0 │     •B (2,2)
+    │    /
+    │   /
+    │  /
+    │ /
+    │/
+0.0 │•────•C
+    │A(0,0) (1,0)
+    │
+    └────────────→ x
+
+Vector AB: (2,2)
+Vector AC: (1,0)
+Cross product AB × AC = -2 (negative = clockwise)
+```
+
+### Orientation-Based Intersection Algorithm
+```
+For segments AB and CD to intersect:
+
+Step 1: Check orientations
+- Orientation of A, B, C: O1 = cross_product(A, B, C)
+- Orientation of A, B, D: O2 = cross_product(A, B, D)
+- Orientation of C, D, A: O3 = cross_product(C, D, A)
+- Orientation of C, D, B: O4 = cross_product(C, D, B)
+
+Step 2: General case
+If O1 ≠ O2 and O3 ≠ O4: segments intersect
+
+Step 3: Collinear case
+If O1 = O2 = O3 = O4 = 0: check if segments overlap
+
+Case 1 Example:
+A(0,0), B(2,2), C(1,0), D(1,2)
+O1 = cross_product((0,0), (2,2), (1,0)) = -2
+O2 = cross_product((0,0), (2,2), (1,2)) = 2
+O3 = cross_product((1,0), (1,2), (0,0)) = 2
+O4 = cross_product((1,0), (1,2), (2,2)) = -2
+
+O1 ≠ O2 (-2 ≠ 2) and O3 ≠ O4 (2 ≠ -2) → YES
+```
+
+### Collinear Overlap Detection
+```
+For collinear segments, check if they overlap:
+
+Case 2 Example:
+A(0,0), B(2,0), C(1,0), D(3,0)
+
+All orientations are 0 (collinear):
+O1 = O2 = O3 = O4 = 0
+
+Check overlap:
+- Project onto x-axis: [0,2] and [1,3]
+- Overlap exists if: max(0,1) ≤ min(2,3)
+- max(0,1) = 1, min(2,3) = 2
+- 1 ≤ 2 → YES (overlap from 1 to 2)
+```
+
+### Step-by-Step Intersection Detection
+```
+Case 1: (0,0)-(2,2) and (1,0)-(1,2)
+
+Step 1: Calculate orientations
+O1 = (2-0)*(0-0) - (2-0)*(1-0) = 0 - 2 = -2
+O2 = (2-0)*(2-0) - (2-0)*(1-0) = 4 - 2 = 2
+O3 = (1-1)*(0-1) - (2-0)*(0-1) = 0 - (-2) = 2
+O4 = (1-1)*(2-1) - (2-0)*(2-1) = 0 - 2 = -2
+
+Step 2: Check general case
+O1 ≠ O2 (-2 ≠ 2) ✓
+O3 ≠ O4 (2 ≠ -2) ✓
+→ Segments intersect
+
+Step 3: Find intersection point
+Using parametric equations:
+Line 1: x = t, y = t (0 ≤ t ≤ 2)
+Line 2: x = 1, y = s (0 ≤ s ≤ 2)
+Intersection: t = 1, s = 1 → (1,1)
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Orientation     │ O(1)         │ O(1)         │ Cross        │
+│ Based           │              │              │ product      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Parametric      │ O(1)         │ O(1)         │ Line         │
+│ Equations       │              │              │ equations    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sweep Line      │ O(n log n)   │ O(n)         │ For multiple │
+│ Algorithm       │              │              │ segments     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n²)        │ O(1)         │ Check all    │
+│                 │              │              │ pairs        │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Line Segment Intersection Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: Two      │
+              │ Line Segments   │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Calculate       │
+              │ Orientations    │
+              │ (Cross Products)│
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Check General   │
+              │ Case: O1 ≠ O2   │
+              │ and O3 ≠ O4?    │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Check Collinear │
+              │ Case: All O = 0?│
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Check Overlap   │
+              │ for Collinear   │
+              │ Segments        │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return YES/NO   │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Cross Product for Orientation**

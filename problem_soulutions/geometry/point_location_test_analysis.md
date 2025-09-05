@@ -199,6 +199,100 @@ test_solution()
 - **Segment Bounds**: Checks if collinear point lies within segment
 - **Efficient Algorithm**: Constant time per test case
 
+## 🎨 Visual Example
+
+### Input Example
+```
+3 test cases:
+1. Line: (0,0) to (2,2), Point: (1,1)
+2. Line: (0,0) to (2,2), Point: (3,3)
+3. Line: (0,0) to (2,2), Point: (0,2)
+```
+
+### Line Segment and Points Visualization
+```
+Y
+3 |     * (3,3)
+2 | * (0,2)
+1 |   * (1,1)
+0 | *
+  +---+---+---+---+
+    0   1   2   3  X
+
+Line segment: (0,0) to (2,2)
+Points: (1,1), (3,3), (0,2)
+```
+
+### Cross Product Calculations
+```
+For line segment (0,0) to (2,2) and point (1,1):
+Cross product = (2-0)(1-0) - (2-0)(1-0) = 2×1 - 2×1 = 0
+Result: ON_SEGMENT (collinear and within bounds)
+
+For line segment (0,0) to (2,2) and point (3,3):
+Cross product = (2-0)(3-0) - (2-0)(3-0) = 2×3 - 2×3 = 0
+Result: ON_LINE (collinear but outside bounds)
+
+For line segment (0,0) to (2,2) and point (0,2):
+Cross product = (2-0)(2-0) - (2-0)(0-0) = 2×2 - 2×0 = 4
+Result: LEFT (positive cross product)
+```
+
+### Orientation Visualization
+```
+Y
+3 |     * (3,3) - ON_LINE
+2 | * (0,2) - LEFT
+1 |   * (1,1) - ON_SEGMENT
+0 | *
+  +---+---+---+---+
+    0   1   2   3  X
+
+Line segment: (0,0) to (2,2)
+```
+
+### Cross Product Formula
+```
+For points A(x1,y1), B(x2,y2), C(x3,y3):
+Cross product = (x2-x1)(y3-y1) - (y2-y1)(x3-x1)
+
+If cross product > 0: C is to the LEFT of line AB
+If cross product < 0: C is to the RIGHT of line AB
+If cross product = 0: C is COLLINEAR with line AB
+```
+
+### Segment Bounds Checking
+```
+For collinear points, check if point lies within segment:
+
+Point (1,1) on line (0,0) to (2,2):
+- x-coordinate: 0 ≤ 1 ≤ 2 ✓
+- y-coordinate: 0 ≤ 1 ≤ 2 ✓
+- Result: ON_SEGMENT
+
+Point (3,3) on line (0,0) to (2,2):
+- x-coordinate: 0 ≤ 3 ≤ 2 ✗
+- y-coordinate: 0 ≤ 3 ≤ 2 ✗
+- Result: ON_LINE
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Cross Product   │ O(1)         │ O(1)         │ Use          │
+│                 │              │              │ orientation  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Slope Method    │ O(1)         │ O(1)         │ Compare      │
+│                 │              │              │ slopes       │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Area Method     │ O(1)         │ O(1)         │ Use          │
+│                 │              │              │ triangle     │
+│                 │              │              │ area         │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Cross Product for Orientation**

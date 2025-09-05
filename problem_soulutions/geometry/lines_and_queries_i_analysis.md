@@ -179,6 +179,97 @@ test_solution()
 - **Numerical Stability**: Use epsilon for floating-point comparison
 - **Simple Logic**: Clear and straightforward implementation
 
+## 🎨 Visual Example
+
+### Input Example
+```
+3 lines:
+1. x = 2 (1x + 0y - 2 = 0)
+2. y = 3 (0x + 1y - 3 = 0)
+3. x + y = 5 (1x + 1y - 5 = 0)
+
+2 queries:
+1. Point (2,3)
+2. Point (4,1)
+```
+
+### Lines Visualization
+```
+Y
+5 |     |   \
+4 |     |     \
+3 | ----+-------\----
+2 |     |         \
+1 |     |           \
+0 |     |             \
+  +-----+-----+-----+-----+
+    0   1   2   3   4   5  X
+
+Line 1: x = 2 (vertical)
+Line 2: y = 3 (horizontal)
+Line 3: x + y = 5 (diagonal)
+```
+
+### Query Point Testing
+```
+Query 1: Point (2,3)
+
+Test against Line 1 (x = 2):
+- 1×2 + 0×3 - 2 = 2 + 0 - 2 = 0 ✓
+- Point lies on line 1
+- Result: YES
+
+Query 2: Point (4,1)
+
+Test against Line 1 (x = 2):
+- 1×4 + 0×1 - 2 = 4 + 0 - 2 = 2 ≠ 0 ✗
+
+Test against Line 2 (y = 3):
+- 0×4 + 1×1 - 3 = 0 + 1 - 3 = -2 ≠ 0 ✗
+
+Test against Line 3 (x + y = 5):
+- 1×4 + 1×1 - 5 = 4 + 1 - 5 = 0 ✓
+- Point lies on line 3
+- Result: YES
+```
+
+### Point-Line Equation
+```
+For line ax + by + c = 0 and point (x, y):
+- If ax + by + c = 0: point lies on line
+- If ax + by + c ≠ 0: point doesn't lie on line
+
+Distance from point to line:
+d = |ax + by + c| / √(a² + b²)
+```
+
+### Numerical Precision
+```
+Use epsilon for floating-point comparisons:
+epsilon = 1e-9
+
+if abs(ax + by + c) < epsilon:
+    return "point lies on line"
+else:
+    return "point doesn't lie on line"
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n×q)       │ O(1)         │ Check all    │
+│                 │              │              │ lines        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Early           │ O(n×q)       │ O(1)         │ Stop on      │
+│ Termination     │              │              │ first match  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Spatial Index   │ O(log n×q)   │ O(n)         │ Use spatial  │
+│                 │              │              │ data structure│
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Point-Line Relationship**

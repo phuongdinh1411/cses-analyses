@@ -206,6 +206,94 @@ test_solution()
 - **Position Tracking**: Maintains current position
 - **Segment Matching**: Ensures proper segment following
 
+## 🎨 Visual Example
+
+### Input Example
+```
+3 line segments:
+1. (0,0) to (2,0)
+2. (2,0) to (2,2)
+3. (2,2) to (0,2)
+Start: (0,0), direction: right (0)
+```
+
+### Line Segments Visualization
+```
+Y
+2 | +---+---+
+1 | |   |   |
+0 | +---+---+
+  +---+---+---+
+    0   1   2  X
+
+Line segments:
+1. (0,0) to (2,0) - horizontal
+2. (2,0) to (2,2) - vertical
+3. (2,2) to (0,2) - horizontal
+```
+
+### Tracing Process
+```
+Step 1: Start at (0,0), direction right
+- Follow segment 1: (0,0) to (2,0)
+- Reach (2,0)
+- Direction remains right
+
+Step 2: At (2,0), direction right
+- Follow segment 2: (2,0) to (2,2)
+- Reach (2,2)
+- Direction changes to up
+
+Step 3: At (2,2), direction up
+- Follow segment 3: (2,2) to (0,2)
+- Reach (0,2)
+- Direction changes to left
+
+Final position: (0,2)
+```
+
+### Direction Updates
+```
+Direction mapping:
+0 = right (→)
+1 = up (↑)
+2 = left (←)
+3 = down (↓)
+
+At each endpoint:
+- Calculate direction from current segment
+- Update current direction
+- Continue to next segment
+```
+
+### Path Visualization
+```
+Y
+2 | +---+---+
+1 | |   |   |
+0 | +---+---+
+  +---+---+---+
+    0   1   2  X
+
+Path: (0,0) → (2,0) → (2,2) → (0,2)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sequential      │ O(n)         │ O(1)         │ Follow       │
+│ Following       │              │              │ segments     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Graph Traversal │ O(n)         │ O(n)         │ Build graph  │
+│                 │              │              │ and traverse │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Simulation      │ O(n)         │ O(1)         │ Simulate     │
+│                 │              │              │ movement     │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Line Segment Following**

@@ -332,6 +332,132 @@ test_solution()
 - **Cross Product**: Determines segment orientation and intersection
 - **Optimal Algorithm**: Best known approach for this problem
 
+## 🎨 Visual Example
+
+### Input Example
+```
+3 line segments:
+Segment 1: (0,0) to (4,4)
+Segment 2: (1,1) to (3,3)
+Segment 3: (2,0) to (2,4)
+```
+
+### Line Segment Visualization
+```
+Y
+4 |     |
+3 |   \ | /
+2 |     + (2,2)
+1 |   / | \
+0 | +---+---+---+
+  +---+---+---+---+
+    0   1   2   3   4  X
+
+Segment 1: (0,0) to (4,4) - diagonal
+Segment 2: (1,1) to (3,3) - diagonal
+Segment 3: (2,0) to (2,4) - vertical
+```
+
+### Intersection Points
+```
+Intersection 1: Segment 1 ∩ Segment 2
+- Point: (2,2)
+- Both segments pass through (2,2)
+
+Intersection 2: Segment 1 ∩ Segment 3
+- Point: (2,2)
+- Segment 1: y = x, at x=2, y=2
+- Segment 3: x = 2, at x=2, y=2
+
+Intersection 3: Segment 2 ∩ Segment 3
+- Point: (2,2)
+- Segment 2: y = x, at x=2, y=2
+- Segment 3: x = 2, at x=2, y=2
+
+Total intersections: 3 (all at point (2,2))
+```
+
+### Sweep Line Events
+```
+Events (sorted by x-coordinate):
+1. x=0: Start Segment 1, (0,0) to (4,4)
+2. x=1: Start Segment 2, (1,1) to (3,3)
+3. x=2: Start Segment 3, (2,0) to (2,4)
+4. x=2: End Segment 2, (1,1) to (3,3)
+5. x=4: End Segment 1, (0,0) to (4,4)
+6. x=2: End Segment 3, (2,0) to (2,4)
+
+Active segments at each x:
+x=0: [Segment 1]
+x=1: [Segment 1, Segment 2]
+x=2: [Segment 1, Segment 2, Segment 3] → Check intersections
+x=4: [Segment 1, Segment 3]
+```
+
+### Cross Product Calculation
+```
+For intersection of Segment 1 and Segment 2:
+Segment 1: (0,0) to (4,4)
+Segment 2: (1,1) to (3,3)
+
+Cross product test:
+- Point (1,1) relative to Segment 1: (1-0)(4-0) - (1-0)(4-0) = 0
+- Point (3,3) relative to Segment 1: (3-0)(4-0) - (3-0)(4-0) = 0
+- Both points are collinear with Segment 1
+
+Intersection exists at (2,2)
+```
+
+### Step-by-Step Sweep Line Process
+```
+Step 1: x=0, Start Segment 1
+Active segments: [Segment 1]
+Intersections found: 0
+
+Step 2: x=1, Start Segment 2
+Active segments: [Segment 1, Segment 2]
+Check intersection: Segment 1 ∩ Segment 2
+- Intersection at (2,2)
+- Add to result
+Intersections found: 1
+
+Step 3: x=2, Start Segment 3
+Active segments: [Segment 1, Segment 2, Segment 3]
+Check intersections:
+- Segment 1 ∩ Segment 3: (2,2)
+- Segment 2 ∩ Segment 3: (2,2)
+- Add to result
+Intersections found: 3
+
+Step 4: x=2, End Segment 2
+Active segments: [Segment 1, Segment 3]
+Intersections found: 3
+
+Step 5: x=4, End Segment 1
+Active segments: [Segment 3]
+Intersections found: 3
+
+Step 6: x=2, End Segment 3
+Active segments: []
+Intersections found: 3
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n²)        │ O(1)         │ Check all    │
+│                 │              │              │ pairs        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sweep Line      │ O(n log n + k)│ O(n)        │ Process      │
+│                 │              │              │ events       │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bentley-Ottmann │ O(n log n + k)│ O(n)        │ Advanced     │
+│                 │              │              │ sweep line   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Sweep Line Algorithm**

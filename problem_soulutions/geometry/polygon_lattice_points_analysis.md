@@ -237,6 +237,133 @@ test_solution()
 - **Shoelace Formula**: Efficient area calculation
 - **Optimal Algorithm**: Best known approach for this problem
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 vertices:
+(0,0), (4,0), (4,3), (0,3)
+```
+
+### Polygon Visualization
+```
+Y
+3 | +---+---+---+---+
+2 | |   |   |   |   |
+1 | |   |   |   |   |
+0 | +---+---+---+---+
+  +---+---+---+---+---+
+    0   1   2   3   4  X
+
+Polygon vertices: (0,0), (4,0), (4,3), (0,3)
+```
+
+### Lattice Points
+```
+Interior lattice points (marked with *):
+Y
+3 | +---+---+---+---+
+2 | | * | * | * | * |
+1 | | * | * | * | * |
+0 | +---+---+---+---+
+  +---+---+---+---+---+
+    0   1   2   3   4  X
+
+Interior points: (1,1), (1,2), (2,1), (2,2), (3,1), (3,2)
+Total interior points: 6
+```
+
+### Boundary Points
+```
+Boundary lattice points (marked with +):
+Y
+3 | +---+---+---+---+
+2 | |   |   |   |   |
+1 | |   |   |   |   |
+0 | +---+---+---+---+
+  +---+---+---+---+---+
+    0   1   2   3   4  X
+
+Boundary points: (0,0), (1,0), (2,0), (3,0), (4,0), (4,1), (4,2), (4,3), (3,3), (2,3), (1,3), (0,3), (0,2), (0,1)
+Total boundary points: 14
+```
+
+### Pick's Theorem Application
+```
+Pick's Theorem: A = I + B/2 - 1
+Where:
+- A = Area of polygon
+- I = Number of interior lattice points
+- B = Number of boundary lattice points
+
+Given:
+- A = 12 (4 × 3 rectangle)
+- B = 14 (boundary points)
+- I = ?
+
+Solving: 12 = I + 14/2 - 1
+12 = I + 7 - 1
+12 = I + 6
+I = 12 - 6 = 6
+
+Interior lattice points: 6
+```
+
+### Shoelace Formula
+```
+Area calculation using shoelace formula:
+Vertices: (0,0), (4,0), (4,3), (0,3)
+
+Area = |(0×0 + 4×3 + 4×3 + 0×0) - (0×4 + 0×4 + 3×0 + 3×0)| / 2
+Area = |(0 + 12 + 12 + 0) - (0 + 0 + 0 + 0)| / 2
+Area = |24 - 0| / 2
+Area = 24 / 2 = 12
+```
+
+### GCD for Boundary Points
+```
+For each edge, count lattice points:
+Edge 1: (0,0) to (4,0)
+- dx = 4, dy = 0
+- GCD(4,0) = 4
+- Lattice points: 4 + 1 = 5
+
+Edge 2: (4,0) to (4,3)
+- dx = 0, dy = 3
+- GCD(0,3) = 3
+- Lattice points: 3 + 1 = 4
+
+Edge 3: (4,3) to (0,3)
+- dx = -4, dy = 0
+- GCD(4,0) = 4
+- Lattice points: 4 + 1 = 5
+
+Edge 4: (0,3) to (0,0)
+- dx = 0, dy = -3
+- GCD(0,3) = 3
+- Lattice points: 3 + 1 = 4
+
+Total boundary points: 5 + 4 + 5 + 4 - 4 = 14
+(Subtract 4 because vertices are counted twice)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(area)      │ O(1)         │ Check each   │
+│                 │              │              │ point        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Pick's Theorem  │ O(n)         │ O(1)         │ Use          │
+│                 │              │              │ mathematical │
+│                 │              │              │ relationship │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Ray Casting     │ O(n×area)    │ O(1)         │ Cast rays    │
+│                 │              │              │ from points  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Pick's Theorem**

@@ -215,6 +215,120 @@ test_solution()
 - **Boundary Handling**: Special case for points on edges
 - **Robust Algorithm**: Handles all polygon types
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Polygon: (0,0), (4,0), (4,4), (0,4)
+Query points: (2,2), (5,5), (0,0)
+```
+
+### Polygon and Query Points
+```
+Y
+4 | +---+---+---+---+
+3 | |   |   |   |   |
+2 | |   | * |   |   |  * = (2,2)
+1 | |   |   |   |   |
+0 | +---+---+---+---+
+  +---+---+---+---+---+
+    0   1   2   3   4  X
+
+Polygon: (0,0), (4,0), (4,4), (0,4)
+Query points: (2,2), (5,5), (0,0)
+```
+
+### Ray Casting for Point (2,2)
+```
+Y
+4 | +---+---+---+---+
+3 | |   |   |   |   |
+2 | |   | * |   |   |  * = (2,2)
+1 | |   |   |   |   |
+0 | +---+---+---+---+
+  +---+---+---+---+---+
+    0   1   2   3   4  X
+
+Ray from (2,2) to right:
+- Intersects edge (4,0) to (4,4) at (4,2)
+- Number of intersections: 1 (odd)
+- Result: INSIDE
+```
+
+### Ray Casting for Point (5,5)
+```
+Y
+4 | +---+---+---+---+   *
+3 | |   |   |   |   |   |
+2 | |   |   |   |   |   |
+1 | |   |   |   |   |   |
+0 | +---+---+---+---+   |
+  +---+---+---+---+---+---+
+    0   1   2   3   4   5  X
+
+Ray from (5,5) to left:
+- No intersections with polygon edges
+- Number of intersections: 0 (even)
+- Result: OUTSIDE
+```
+
+### Ray Casting for Point (0,0)
+```
+Y
+4 | +---+---+---+---+
+3 | |   |   |   |   |
+2 | |   |   |   |   |
+1 | |   |   |   |   |
+0 | *---+---+---+---+
+  +---+---+---+---+---+
+    0   1   2   3   4  X
+
+Point (0,0) is on the boundary edge (0,0) to (4,0)
+- Check if point lies on edge
+- Result: BOUNDARY
+```
+
+### Step-by-Step Ray Casting Process
+```
+For point (2,2):
+
+Step 1: Cast ray from (2,2) to right (x = 2, y = 2)
+Step 2: Check intersection with each edge:
+- Edge (0,0) to (4,0): y = 0, no intersection
+- Edge (4,0) to (4,4): x = 4, intersection at (4,2)
+- Edge (4,4) to (0,4): y = 4, no intersection
+- Edge (0,4) to (0,0): x = 0, no intersection
+
+Step 3: Count intersections: 1
+Step 4: 1 is odd, so point is INSIDE
+```
+
+### Boundary Check
+```
+For point (0,0):
+
+Check if point lies on any edge:
+- Edge (0,0) to (4,0): y = 0, point (0,0) has y = 0 ✓
+- Point (0,0) is on this edge
+- Result: BOUNDARY
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Ray Casting     │ O(n)         │ O(1)         │ Cast ray     │
+│                 │              │              │ from point   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Winding Number  │ O(n)         │ O(1)         │ Calculate    │
+│                 │              │              │ winding      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Barycentric     │ O(n)         │ O(1)         │ Use          │
+│ Coordinates     │              │              │ barycentric  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Ray Casting Algorithm**

@@ -203,6 +203,111 @@ test_solution()
 - **Mathematical Optimization**: Uses properties of Manhattan distance
 - **Efficient Approach**: O(n) instead of O(n²)
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 points: (0,0), (1,1), (2,2), (5,5)
+```
+
+### Points Visualization
+```
+Y
+5 |         *
+4 |
+3 |
+2 |     *
+1 |   *
+0 | *
+  +---+---+---+---+---+---+
+    0   1   2   3   4   5  X
+
+Points: (0,0), (1,1), (2,2), (5,5)
+```
+
+### All Pairwise Manhattan Distances
+```
+Distance between (0,0) and (1,1):
+- |0-1| + |0-1| = 1 + 1 = 2
+
+Distance between (0,0) and (2,2):
+- |0-2| + |0-2| = 2 + 2 = 4
+
+Distance between (0,0) and (5,5):
+- |0-5| + |0-5| = 5 + 5 = 10
+
+Distance between (1,1) and (2,2):
+- |1-2| + |1-2| = 1 + 1 = 2
+
+Distance between (1,1) and (5,5):
+- |1-5| + |1-5| = 4 + 4 = 8
+
+Distance between (2,2) and (5,5):
+- |2-5| + |2-5| = 3 + 3 = 6
+
+Maximum distance: 10 (between (0,0) and (5,5))
+```
+
+### Extreme Coordinate Analysis
+```
+X-coordinates: [0, 1, 2, 5]
+- Minimum x: 0
+- Maximum x: 5
+- X-range: 5 - 0 = 5
+
+Y-coordinates: [0, 1, 2, 5]
+- Minimum y: 0
+- Maximum y: 5
+- Y-range: 5 - 0 = 5
+
+Maximum Manhattan distance = X-range + Y-range = 5 + 5 = 10
+```
+
+### Manhattan Distance Visualization
+```
+Y
+5 |         *
+4 |
+3 |
+2 |     *
+1 |   *
+0 | *
+  +---+---+---+---+---+---+
+    0   1   2   3   4   5  X
+
+Manhattan distance from (0,0) to (5,5):
+- Path: (0,0) → (5,0) → (5,5)
+- Distance: 5 + 5 = 10
+```
+
+### Mathematical Insight
+```
+For Manhattan distance: |x₁ - x₂| + |y₁ - y₂|
+
+Maximum occurs when:
+- |x₁ - x₂| is maximized (at extreme x-coordinates)
+- |y₁ - y₂| is maximized (at extreme y-coordinates)
+
+Therefore:
+Maximum distance = (max_x - min_x) + (max_y - min_y)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n²)        │ O(1)         │ Check all    │
+│                 │              │              │ pairs        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Extreme Points  │ O(n)         │ O(1)         │ Find min/max │
+│                 │              │              │ coordinates  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Mathematical    │ O(n)         │ O(1)         │ Use          │
+│ Optimization    │              │              │ properties   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Manhattan Distance Properties**

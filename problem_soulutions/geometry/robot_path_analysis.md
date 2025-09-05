@@ -214,6 +214,116 @@ test_solution()
 - **Visited Tracking**: Prevents revisiting positions
 - **Directional Movement**: 4-directional robot movement
 
+## 🎨 Visual Example
+
+### Input Example
+```
+3 obstacles: (1,1), (2,2), (3,1)
+Target: (4,4)
+Start: (0,0)
+```
+
+### Grid Visualization
+```
+Y
+4 | . . . . T
+3 | . . . . .
+2 | . O . . .
+1 | . O . O .
+0 | S . . . .
+  +---+---+---+---+---+
+    0   1   2   3   4  X
+
+S = Start (0,0)
+T = Target (4,4)
+O = Obstacle
+. = Free space
+```
+
+### BFS Path Finding
+```
+Step 1: Start at (0,0)
+Queue: [(0,0,0)]
+Visited: {(0,0)}
+
+Step 2: Explore neighbors of (0,0)
+- (0,1): free, add to queue
+- (1,0): free, add to queue
+Queue: [(0,1,1), (1,0,1)]
+Visited: {(0,0), (0,1), (1,0)}
+
+Step 3: Explore neighbors of (0,1)
+- (0,2): free, add to queue
+- (1,1): obstacle, skip
+Queue: [(1,0,1), (0,2,2)]
+Visited: {(0,0), (0,1), (1,0), (0,2)}
+
+Step 4: Explore neighbors of (1,0)
+- (1,1): obstacle, skip
+- (2,0): free, add to queue
+Queue: [(0,2,2), (2,0,2)]
+Visited: {(0,0), (0,1), (1,0), (0,2), (2,0)}
+
+Continue until target (4,4) is reached...
+```
+
+### Shortest Path
+```
+Y
+4 | . . . . T
+3 | . . . . .
+2 | . O . . .
+1 | . O . O .
+0 | S . . . .
+  +---+---+---+---+---+
+    0   1   2   3   4  X
+
+Shortest path: (0,0) → (0,1) → (0,2) → (0,3) → (0,4) → (1,4) → (2,4) → (3,4) → (4,4)
+Length: 8 units
+```
+
+### BFS Algorithm
+```
+1. Initialize queue with start position
+2. Mark start as visited
+3. While queue is not empty:
+   a. Dequeue current position
+   b. If current is target, return distance
+   c. For each neighbor:
+      - If not visited and not obstacle:
+        - Mark as visited
+        - Enqueue with distance + 1
+4. Return -1 if target not reachable
+```
+
+### Direction Vectors
+```
+4-directional movement:
+- Right: (1, 0)
+- Up: (0, 1)
+- Left: (-1, 0)
+- Down: (0, -1)
+
+8-directional movement (if allowed):
+- Add diagonals: (1,1), (-1,1), (-1,-1), (1,-1)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ BFS             │ O(area)      │ O(area)      │ Guaranteed   │
+│                 │              │              │ shortest     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Dijkstra        │ O(area log area)│ O(area)   │ Weighted     │
+│                 │              │              │ edges        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ A* Search       │ O(area log area)│ O(area)   │ Heuristic    │
+│                 │              │              │ guided       │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **BFS for Shortest Path**
