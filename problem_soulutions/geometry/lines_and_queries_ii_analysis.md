@@ -7,6 +7,24 @@ permalink: /problem_soulutions/geometry/lines_and_queries_ii_analysis
 
 # Lines and Queries II Analysis
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand line-line intersection queries and geometric intersection counting
+- [ ] **Objective 2**: Apply line intersection algorithms and segment-line intersection testing for query processing
+- [ ] **Objective 3**: Implement efficient algorithms for processing multiple line-segment intersection queries
+- [ ] **Objective 4**: Optimize intersection query processing using geometric properties and coordinate transformations
+- [ ] **Objective 5**: Handle edge cases in line-segment queries (parallel lines, collinear segments, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Line intersection, segment-line intersection, geometric queries, intersection counting
+- **Data Structures**: Line structures, segment structures, query data structures, geometric data structures
+- **Mathematical Concepts**: Line intersection, parametric equations, cross products, coordinate geometry, geometric relationships
+- **Programming Skills**: Line intersection calculations, segment manipulation, query processing, geometric computations
+- **Related Problems**: Line Segment Intersection (intersection algorithms), Lines and Queries I (geometric queries), Point Location Test (geometric relationships)
+
 ## Problem Description
 
 **Problem**: Given a set of lines in 2D space and multiple queries, for each query determine how many lines intersect with a given line segment.

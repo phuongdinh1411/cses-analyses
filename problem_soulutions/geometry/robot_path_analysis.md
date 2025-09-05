@@ -7,6 +7,24 @@ permalink: /problem_soulutions/geometry/robot_path_analysis
 
 # Robot Path Analysis
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand pathfinding problems and obstacle avoidance in geometric environments
+- [ ] **Objective 2**: Apply pathfinding algorithms like A* or Dijkstra's algorithm for obstacle avoidance
+- [ ] **Objective 3**: Implement efficient pathfinding algorithms with obstacle detection and avoidance
+- [ ] **Objective 4**: Optimize pathfinding using geometric properties and coordinate transformations
+- [ ] **Objective 5**: Handle edge cases in pathfinding (no valid path, obstacles blocking all routes, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Pathfinding algorithms, A* algorithm, Dijkstra's algorithm, obstacle avoidance, geometric algorithms
+- **Data Structures**: Priority queues, grids, obstacle maps, path data structures, geometric data structures
+- **Mathematical Concepts**: Distance calculations, path optimization, coordinate geometry, geometric pathfinding
+- **Programming Skills**: Pathfinding implementation, obstacle detection, coordinate manipulation, geometric computations
+- **Related Problems**: Labyrinth (pathfinding), Message Route (shortest path), Grid Paths (path counting), Geometric algorithms
+
 ## Problem Description
 
 **Problem**: Given a robot starting at position (0,0) and a set of obstacles, find the shortest path to reach a target position while avoiding obstacles.

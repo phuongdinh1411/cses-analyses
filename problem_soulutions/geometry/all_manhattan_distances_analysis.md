@@ -7,6 +7,24 @@ permalink: /problem_soulutions/geometry/all_manhattan_distances_analysis
 
 # All Manhattan Distances Analysis
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand Manhattan distance concepts and pairwise distance calculations
+- [ ] **Objective 2**: Apply coordinate separation and sorting techniques to optimize distance calculations
+- [ ] **Objective 3**: Implement efficient algorithms for computing all pairwise Manhattan distances
+- [ ] **Objective 4**: Optimize distance calculations using coordinate transformations and mathematical properties
+- [ ] **Objective 5**: Handle edge cases in distance calculations (single points, collinear points, large coordinate values)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Manhattan distance, coordinate separation, sorting algorithms, distance optimization
+- **Data Structures**: Arrays, coordinate structures, sorting data structures
+- **Mathematical Concepts**: Manhattan distance formula, coordinate geometry, distance properties, optimization
+- **Programming Skills**: Coordinate manipulation, distance calculations, sorting, geometric computations
+- **Related Problems**: Maximum Manhattan Distance (distance optimization), Minimum Euclidean Distance (distance algorithms), Distance problems
+
 ## Problem Description
 
 **Problem**: Given a set of n points in 2D space, find the sum of Manhattan distances between all pairs of points.

@@ -7,6 +7,24 @@ permalink: /problem_soulutions/geometry/lines_and_queries_i_analysis
 
 # Lines and Queries I Analysis
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand line-point relationship queries and geometric containment testing
+- [ ] **Objective 2**: Apply line equation evaluation and point-line distance calculations for query processing
+- [ ] **Objective 3**: Implement efficient algorithms for processing multiple point-line relationship queries
+- [ ] **Objective 4**: Optimize query processing using geometric properties and coordinate transformations
+- [ ] **Objective 5**: Handle edge cases in line-point queries (precision issues, degenerate lines, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Line equations, point-line relationships, geometric queries, query processing
+- **Data Structures**: Line structures, point structures, query data structures, geometric data structures
+- **Mathematical Concepts**: Line equations, point-line distance, coordinate geometry, geometric relationships
+- **Programming Skills**: Line equation evaluation, point manipulation, query processing, geometric computations
+- **Related Problems**: Point in Polygon (geometric queries), Line Segment Intersection (line geometry), Point Location Test (point-line relationships)
+
 ## Problem Description
 
 **Problem**: Given a set of lines in 2D space and multiple queries, for each query determine if a given point lies on any of the lines.

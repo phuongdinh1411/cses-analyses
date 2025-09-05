@@ -7,6 +7,24 @@ permalink: /problem_soulutions/geometry/minimum_euclidean_distance_analysis
 
 # Minimum Euclidean Distance Analysis
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand minimum distance problems and Euclidean distance calculations
+- [ ] **Objective 2**: Apply divide-and-conquer or sweep line algorithms to find minimum Euclidean distances
+- [ ] **Objective 3**: Implement efficient algorithms for finding minimum Euclidean distances between points
+- [ ] **Objective 4**: Optimize minimum distance calculations using geometric properties and coordinate transformations
+- [ ] **Objective 5**: Handle edge cases in minimum distance problems (single points, collinear points, precision issues)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Euclidean distance, divide-and-conquer, sweep line algorithms, distance optimization
+- **Data Structures**: Arrays, coordinate structures, optimization data structures, geometric data structures
+- **Mathematical Concepts**: Euclidean distance formula, coordinate geometry, distance properties, optimization, precision
+- **Programming Skills**: Coordinate manipulation, distance calculations, optimization techniques, geometric computations
+- **Related Problems**: All Manhattan Distances (distance calculations), Maximum Manhattan Distance (distance optimization), Distance algorithms
+
 ## Problem Description
 
 **Problem**: Given a set of n points in 2D plane, find the minimum Euclidean distance between any two points.
