@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/palindrome_reorder_analysis
 
 # Palindrome Reorder
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand palindrome properties and string rearrangement problems
+- [ ] **Objective 2**: Apply character frequency analysis to determine palindrome feasibility
+- [ ] **Objective 3**: Implement efficient palindrome construction algorithms with proper character arrangement
+- [ ] **Objective 4**: Optimize palindrome construction using frequency analysis and string manipulation
+- [ ] **Objective 5**: Handle edge cases in palindrome problems (impossible palindromes, single characters, large strings)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Palindrome properties, character frequency analysis, string rearrangement, string construction
+- **Data Structures**: Character frequency tracking, string manipulation, palindrome construction, character counting
+- **Mathematical Concepts**: Palindrome theory, character frequency analysis, string mathematics, combinatorics
+- **Programming Skills**: String manipulation, character frequency counting, palindrome construction, algorithm implementation
+- **Related Problems**: String problems, Palindrome problems, Character frequency, String manipulation
+
 ## Problem Description
 
 **Problem**: Given a string, determine if it can be rearranged to form a palindrome. If possible, output one such palindrome; otherwise, output "NO SOLUTION".

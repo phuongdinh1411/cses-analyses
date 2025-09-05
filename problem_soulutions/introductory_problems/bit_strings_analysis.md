@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/bit_strings_analysis
 
 # Bit Strings
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand combinatorics and counting principles for binary strings
+- [ ] **Objective 2**: Apply modular arithmetic and exponentiation to calculate large numbers
+- [ ] **Objective 3**: Implement efficient modular exponentiation algorithms with proper overflow handling
+- [ ] **Objective 4**: Optimize counting problems using mathematical formulas and modular arithmetic
+- [ ] **Objective 5**: Handle edge cases in counting problems (large n, modular arithmetic, overflow prevention)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Modular arithmetic, exponentiation, counting principles, combinatorics
+- **Data Structures**: Basic arithmetic operations, modular arithmetic, overflow handling
+- **Mathematical Concepts**: Combinatorics, modular arithmetic, exponentiation, binary counting
+- **Programming Skills**: Modular arithmetic, exponentiation, overflow handling, algorithm implementation
+- **Related Problems**: Counting problems, Modular arithmetic, Exponentiation, Combinatorics
+
 ## Problem Description
 
 **Problem**: Calculate the number of bit strings of length n.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/chessboard_and_queens_analy
 
 # Chessboard and Queens
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the N-Queens problem and backtracking algorithms
+- [ ] **Objective 2**: Apply backtracking with constraint checking to solve N-Queens problems
+- [ ] **Objective 3**: Implement efficient N-Queens algorithms with proper constraint validation
+- [ ] **Objective 4**: Optimize N-Queens solutions using constraint propagation and pruning techniques
+- [ ] **Objective 5**: Handle edge cases in N-Queens problems (blocked squares, large boards, constraint validation)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Backtracking, constraint satisfaction, N-Queens problem, recursive algorithms
+- **Data Structures**: 2D arrays, backtracking stacks, constraint tracking, board representation
+- **Mathematical Concepts**: Combinatorics, constraint satisfaction, backtracking theory, chess rules
+- **Programming Skills**: Recursive backtracking, constraint checking, board manipulation, algorithm implementation
+- **Related Problems**: Backtracking problems, Constraint satisfaction, N-Queens variants, Recursive algorithms
+
 ## Problem Description
 
 **Problem**: Place 8 queens on an 8×8 chessboard so that no two queens threaten each other. Some squares are blocked and cannot be used.

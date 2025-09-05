@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/repetitions_analysis
 
 # Repetitions
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand string analysis and consecutive character counting problems
+- [ ] **Objective 2**: Apply sliding window or linear scanning to find maximum consecutive repetitions
+- [ ] **Objective 3**: Implement efficient string analysis algorithms with proper consecutive character tracking
+- [ ] **Objective 4**: Optimize string analysis using linear scanning and consecutive character counting
+- [ ] **Objective 5**: Handle edge cases in string analysis (single character, no repetitions, large strings)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: String analysis, consecutive character counting, sliding window, linear scanning
+- **Data Structures**: String processing, character tracking, consecutive counting, maximum tracking
+- **Mathematical Concepts**: String mathematics, consecutive analysis, maximum finding, string theory
+- **Programming Skills**: String processing, consecutive character counting, maximum tracking, algorithm implementation
+- **Related Problems**: String problems, Consecutive counting, Maximum finding, String analysis
+
 ## Problem Description
 
 **Problem**: You are given a DNA sequence consisting of characters A, C, G, and T. Find the longest repetition in the sequence. This is a maximum-length substring containing only one type of character.

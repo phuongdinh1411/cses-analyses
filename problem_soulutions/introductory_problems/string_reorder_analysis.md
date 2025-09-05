@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/string_reorder_analysis
 
 # String Reorder
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand lexicographic ordering and string sorting concepts
+- [ ] **Objective 2**: Apply sorting algorithms to find lexicographically smallest string arrangements
+- [ ] **Objective 3**: Implement efficient string sorting algorithms with proper lexicographic ordering
+- [ ] **Objective 4**: Optimize string sorting using character frequency counting and lexicographic ordering
+- [ ] **Objective 5**: Handle edge cases in string sorting (duplicate characters, large strings, lexicographic ordering)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: String sorting, lexicographic ordering, character frequency counting, string arrangement
+- **Data Structures**: String manipulation, character frequency tracking, sorting data structures, lexicographic ordering
+- **Mathematical Concepts**: Lexicographic ordering, string mathematics, sorting theory, character frequency analysis
+- **Programming Skills**: String sorting, character frequency counting, lexicographic ordering, algorithm implementation
+- **Related Problems**: String problems, Sorting problems, Lexicographic ordering, Character frequency
+
 ## Problem Description
 
 **Problem**: Given a string, find the lexicographically smallest string that can be obtained by reordering its characters.

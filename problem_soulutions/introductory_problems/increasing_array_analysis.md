@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/increasing_array_analysis
 
 # Increasing Array
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand array manipulation and greedy optimization problems
+- [ ] **Objective 2**: Apply greedy algorithms to minimize operations for array transformation
+- [ ] **Objective 3**: Implement efficient array manipulation algorithms with proper operation counting
+- [ ] **Objective 4**: Optimize array transformation using greedy strategies and mathematical analysis
+- [ ] **Objective 5**: Handle edge cases in array manipulation (large arrays, edge values, operation overflow)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Greedy algorithms, array manipulation, optimization problems, operation counting
+- **Data Structures**: Arrays, operation tracking, value tracking, array processing
+- **Mathematical Concepts**: Optimization theory, greedy strategies, operation analysis, array mathematics
+- **Programming Skills**: Array manipulation, operation counting, greedy implementation, algorithm implementation
+- **Related Problems**: Array problems, Greedy algorithms, Optimization problems, Array manipulation
+
 ## Problem Description
 
 **Problem**: You are given an array of n integers. You want to modify the array so that it becomes strictly increasing. In one operation, you can increase any element by 1. Find the minimum number of operations needed.

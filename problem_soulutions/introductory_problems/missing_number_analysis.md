@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/missing_number_analysis
 
 # Missing Number
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand array analysis and mathematical formula problems
+- [ ] **Objective 2**: Apply mathematical formulas or XOR operations to find missing elements
+- [ ] **Objective 3**: Implement efficient missing number algorithms with proper mathematical calculations
+- [ ] **Objective 4**: Optimize missing number solutions using mathematical formulas and XOR properties
+- [ ] **Objective 5**: Handle edge cases in missing number problems (single element, large arrays, mathematical precision)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Array analysis, mathematical formulas, XOR operations, missing element detection
+- **Data Structures**: Arrays, mathematical calculations, XOR operations, element tracking
+- **Mathematical Concepts**: Arithmetic series, XOR properties, mathematical formulas, array mathematics
+- **Programming Skills**: Array processing, mathematical calculations, XOR implementation, algorithm implementation
+- **Related Problems**: Array problems, Mathematical formulas, XOR problems, Missing element problems
+
 ## Problem Description
 
 **Problem**: You are given all numbers between 1,2,…,n except one. Your task is to find the missing number.

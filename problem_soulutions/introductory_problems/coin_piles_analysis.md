@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/coin_piles_analysis
 
 # Coin Piles
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand mathematical modeling and constraint satisfaction problems
+- [ ] **Objective 2**: Apply linear algebra and system of equations to solve constraint problems
+- [ ] **Objective 3**: Implement efficient mathematical solution algorithms with proper constraint validation
+- [ ] **Objective 4**: Optimize mathematical problems using algebraic manipulation and constraint analysis
+- [ ] **Objective 5**: Handle edge cases in mathematical problems (large numbers, impossible constraints, boundary conditions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Mathematical modeling, constraint satisfaction, linear algebra, system of equations
+- **Data Structures**: Basic arithmetic operations, constraint tracking, mathematical calculations
+- **Mathematical Concepts**: Linear algebra, system of equations, constraint satisfaction, modular arithmetic
+- **Programming Skills**: Mathematical calculations, constraint validation, algorithm implementation
+- **Related Problems**: Mathematical problems, Constraint satisfaction, Linear algebra, System of equations
+
 ## Problem Description
 
 **Problem**: You have two coin piles containing a and b coins. On each move, you can either remove 1 coin from the left pile and 2 coins from the right pile, or remove 2 coins from the left pile and 1 coin from the right pile. Determine if it's possible to empty both piles.

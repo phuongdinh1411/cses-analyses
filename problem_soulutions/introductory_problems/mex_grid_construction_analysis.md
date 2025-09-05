@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/mex_grid_construction_analy
 
 # Mex Grid Construction
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand MEX (minimum excluded value) concepts and grid construction problems
+- [ ] **Objective 2**: Apply constraint satisfaction and mathematical analysis to construct valid grids
+- [ ] **Objective 3**: Implement efficient grid construction algorithms with proper MEX validation
+- [ ] **Objective 4**: Optimize grid construction using mathematical analysis and constraint satisfaction
+- [ ] **Objective 5**: Handle edge cases in grid construction (impossible constraints, large grids, MEX validation)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: MEX calculation, constraint satisfaction, grid construction, mathematical analysis
+- **Data Structures**: 2D arrays, grid representation, constraint tracking, value tracking
+- **Mathematical Concepts**: MEX theory, constraint satisfaction, grid mathematics, mathematical analysis
+- **Programming Skills**: Grid manipulation, MEX calculation, constraint validation, algorithm implementation
+- **Related Problems**: Grid problems, Constraint satisfaction, MEX problems, Grid construction
+
 ## Problem Description
 
 **Problem**: Construct an n×n grid filled with integers from 0 to n²-1 such that the MEX (minimum excluded value) of each row and each column is equal to a given target value.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/gray_code_analysis
 
 # Gray Code
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand Gray code sequences and bit manipulation concepts
+- [ ] **Objective 2**: Apply bit manipulation and XOR operations to generate Gray code sequences
+- [ ] **Objective 3**: Implement efficient Gray code generation algorithms with proper bit operations
+- [ ] **Objective 4**: Optimize Gray code generation using mathematical formulas and bit manipulation
+- [ ] **Objective 5**: Handle edge cases in Gray code problems (large n, bit overflow, sequence validation)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Gray code generation, bit manipulation, XOR operations, sequence generation
+- **Data Structures**: Bit operations, sequence tracking, binary representation, bit manipulation
+- **Mathematical Concepts**: Binary representation, bit manipulation, Gray code theory, XOR properties
+- **Programming Skills**: Bit operations, XOR implementation, sequence generation, algorithm implementation
+- **Related Problems**: Bit manipulation, Sequence generation, Binary problems, XOR operations
+
 ## Problem Description
 
 **Problem**: Generate a Gray code sequence of length 2ⁿ where consecutive numbers differ by exactly one bit.

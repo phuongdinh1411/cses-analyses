@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/apple_division_analysis
 
 # Apple Division
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand subset generation and partition optimization problems
+- [ ] **Objective 2**: Apply bitmasking or backtracking to generate all possible subsets
+- [ ] **Objective 3**: Implement efficient subset generation algorithms with proper weight calculation
+- [ ] **Objective 4**: Optimize subset generation using bitmasking and mathematical optimization
+- [ ] **Objective 5**: Handle edge cases in subset problems (small n, large weights, equal partitions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Subset generation, bitmasking, backtracking, partition problems, optimization
+- **Data Structures**: Bit manipulation, arrays, subset tracking, weight calculation
+- **Mathematical Concepts**: Combinatorics, subset theory, optimization, partition theory
+- **Programming Skills**: Bit operations, subset generation, weight calculation, algorithm implementation
+- **Related Problems**: Subset problems, Partition problems, Optimization problems, Bitmasking
+
 ## Problem Description
 
 **Problem**: Given n apples with weights w₁, w₂, ..., wₙ, divide them into two groups such that the difference between the total weights of the two groups is minimized.

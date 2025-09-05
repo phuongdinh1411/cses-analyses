@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/knight_moves_grid_analysis
 
 # Knight Moves Grid
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand shortest path problems in grids with special movement patterns
+- [ ] **Objective 2**: Apply BFS to find shortest paths for knight movement in grids
+- [ ] **Objective 3**: Implement efficient BFS algorithms with proper knight movement validation
+- [ ] **Objective 4**: Optimize shortest path algorithms using BFS and grid navigation techniques
+- [ ] **Objective 5**: Handle edge cases in grid pathfinding (impossible paths, boundary conditions, large grids)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: BFS, shortest path algorithms, grid navigation, knight movement patterns
+- **Data Structures**: Queues, 2D arrays, coordinate tracking, visited tracking, distance tracking
+- **Mathematical Concepts**: Graph theory, shortest paths, grid mathematics, coordinate geometry
+- **Programming Skills**: BFS implementation, grid manipulation, coordinate tracking, algorithm implementation
+- **Related Problems**: Grid problems, Shortest path, BFS, Knight movement, Grid navigation
+
 ## Problem Description
 
 **Problem**: Given an n×n grid, find the minimum number of moves for a knight to reach from the top-left corner to the bottom-right corner. A knight moves in an L-shape: 2 squares in one direction and 1 square perpendicular to that direction.

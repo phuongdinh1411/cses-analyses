@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/digit_queries_analysis
 
 # Digit Queries
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand digit sequence analysis and mathematical pattern recognition
+- [ ] **Objective 2**: Apply mathematical formulas to find digits at specific positions in sequences
+- [ ] **Objective 3**: Implement efficient digit query algorithms with proper mathematical calculations
+- [ ] **Objective 4**: Optimize digit queries using mathematical formulas and sequence analysis
+- [ ] **Objective 5**: Handle edge cases in digit queries (large positions, sequence boundaries, mathematical precision)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Digit sequence analysis, mathematical formulas, pattern recognition, query optimization
+- **Data Structures**: Mathematical calculations, sequence tracking, digit manipulation
+- **Mathematical Concepts**: Number theory, sequence analysis, digit patterns, mathematical formulas
+- **Programming Skills**: Mathematical calculations, digit manipulation, sequence analysis, algorithm implementation
+- **Related Problems**: Digit problems, Sequence analysis, Mathematical queries, Pattern recognition
+
 ## Problem Description
 
 **Problem**: Consider the infinite sequence: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ... Find the digit at position k in this sequence.

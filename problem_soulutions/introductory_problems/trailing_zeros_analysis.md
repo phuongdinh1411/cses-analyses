@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/trailing_zeros_analysis
 
 # Trailing Zeros
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand factorial properties and trailing zero counting concepts
+- [ ] **Objective 2**: Apply mathematical formulas to count trailing zeros without computing large factorials
+- [ ] **Objective 3**: Implement efficient trailing zero counting algorithms with proper mathematical calculations
+- [ ] **Objective 4**: Optimize trailing zero counting using mathematical analysis and prime factorization
+- [ ] **Objective 5**: Handle edge cases in factorial problems (large n, mathematical precision, overflow prevention)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Factorial properties, trailing zero counting, mathematical formulas, prime factorization
+- **Data Structures**: Mathematical calculations, prime tracking, factorization tracking, mathematical operations
+- **Mathematical Concepts**: Factorial theory, prime factorization, trailing zero mathematics, mathematical analysis
+- **Programming Skills**: Mathematical calculations, prime factorization, trailing zero counting, algorithm implementation
+- **Related Problems**: Factorial problems, Mathematical formulas, Prime factorization, Trailing zero problems
+
 ## Problem Description
 
 **Problem**: Calculate the number of trailing zeros in n! (n factorial).

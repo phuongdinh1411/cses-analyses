@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/two_sets_analysis
 
 # Two Sets
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand set partitioning and mathematical analysis problems
+- [ ] **Objective 2**: Apply mathematical formulas to determine if equal sum partitioning is possible
+- [ ] **Objective 3**: Implement efficient set partitioning algorithms with proper mathematical analysis
+- [ ] **Objective 4**: Optimize set partitioning using mathematical analysis and greedy strategies
+- [ ] **Objective 5**: Handle edge cases in set partitioning (impossible partitions, large n, mathematical precision)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Set partitioning, mathematical analysis, greedy strategies, equal sum problems
+- **Data Structures**: Set tracking, mathematical calculations, partition tracking, sum tracking
+- **Mathematical Concepts**: Set theory, arithmetic series, partition theory, mathematical analysis
+- **Programming Skills**: Set manipulation, mathematical calculations, partition construction, algorithm implementation
+- **Related Problems**: Set problems, Partition problems, Mathematical analysis, Equal sum problems
+
 ## Problem Description
 
 **Problem**: Divide the numbers 1,2,…,n into two sets of equal sum.

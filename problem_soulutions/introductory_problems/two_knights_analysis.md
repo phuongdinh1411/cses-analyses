@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/two_knights_analysis
 
 # Two Knights
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand combinatorial counting and chess piece placement problems
+- [ ] **Objective 2**: Apply mathematical formulas to count non-attacking knight placements
+- [ ] **Objective 3**: Implement efficient combinatorial counting algorithms with proper mathematical calculations
+- [ ] **Objective 4**: Optimize combinatorial counting using mathematical analysis and chess piece movement patterns
+- [ ] **Objective 5**: Handle edge cases in combinatorial problems (small boards, large boards, mathematical precision)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Combinatorial counting, chess piece placement, mathematical formulas, knight movement patterns
+- **Data Structures**: Mathematical calculations, combinatorial tracking, chess board representation, counting structures
+- **Mathematical Concepts**: Combinatorics, chess mathematics, knight movement theory, counting theory
+- **Programming Skills**: Mathematical calculations, combinatorial counting, chess piece analysis, algorithm implementation
+- **Related Problems**: Combinatorial problems, Chess problems, Mathematical counting, Knight movement problems
+
 ## Problem Description
 
 **Problem**: Count for k=1,2,…,n the number of ways two knights can be placed on a k×k chessboard so that they do not attack each other.

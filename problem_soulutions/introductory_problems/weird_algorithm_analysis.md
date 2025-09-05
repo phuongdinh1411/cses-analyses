@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/weird_algorithm_analysis
 
 # Weird Algorithm
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand simulation algorithms and the Collatz conjecture problem
+- [ ] **Objective 2**: Apply simulation techniques to trace algorithm execution and sequence generation
+- [ ] **Objective 3**: Implement efficient simulation algorithms with proper sequence tracking
+- [ ] **Objective 4**: Optimize simulation algorithms using mathematical analysis and sequence optimization
+- [ ] **Objective 5**: Handle edge cases in simulation problems (large numbers, sequence termination, overflow prevention)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Simulation algorithms, Collatz conjecture, sequence generation, algorithm tracing
+- **Data Structures**: Sequence tracking, number manipulation, simulation tracking, algorithm state tracking
+- **Mathematical Concepts**: Collatz conjecture theory, sequence mathematics, simulation theory, number theory
+- **Programming Skills**: Simulation implementation, sequence generation, number manipulation, algorithm implementation
+- **Related Problems**: Simulation problems, Sequence generation, Mathematical sequences, Algorithm tracing
+
 ## Problem Description
 
 **Problem**: Simulate the Collatz conjecture algorithm. Start with a positive integer n. If n is even, divide by 2; if n is odd, multiply by 3 and add 1. Repeat until n becomes 1.

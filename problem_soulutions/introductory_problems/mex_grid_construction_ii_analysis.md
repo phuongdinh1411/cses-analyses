@@ -6,6 +6,24 @@ permalink: /problem_soulutions/introductory_problems/mex_grid_construction_ii_an
 
 # Mex Grid Construction II
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand advanced MEX concepts and dual constraint grid construction problems
+- [ ] **Objective 2**: Apply advanced constraint satisfaction and mathematical analysis for dual MEX constraints
+- [ ] **Objective 3**: Implement efficient advanced grid construction algorithms with proper dual MEX validation
+- [ ] **Objective 4**: Optimize advanced grid construction using sophisticated mathematical analysis and constraint satisfaction
+- [ ] **Objective 5**: Handle edge cases in advanced grid construction (complex constraints, impossible dual MEX, large grids)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Advanced MEX calculation, dual constraint satisfaction, advanced grid construction, sophisticated mathematical analysis
+- **Data Structures**: Advanced 2D arrays, sophisticated grid representation, dual constraint tracking, advanced value tracking
+- **Mathematical Concepts**: Advanced MEX theory, dual constraint satisfaction, sophisticated grid mathematics, advanced mathematical analysis
+- **Programming Skills**: Advanced grid manipulation, dual MEX calculation, sophisticated constraint validation, advanced algorithm implementation
+- **Related Problems**: Mex Grid Construction (basic MEX), Advanced grid problems, Dual constraint satisfaction, Advanced MEX problems
+
 ## Problem Description
 
 **Problem**: Construct an n×n grid filled with integers such that the MEX (minimum excluded value) of each row is equal to r and the MEX of each column is equal to c, where r and c are given target values.
