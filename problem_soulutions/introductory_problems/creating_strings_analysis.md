@@ -189,6 +189,113 @@ test_solution()
 - **Correct**: Handles duplicates properly
 - **Efficient**: Uses optimized built-in functions
 
+## 🎨 Visual Example
+
+### Input Example
+```
+String: "aabac"
+Output: 20 distinct permutations
+```
+
+### Character Frequency
+```
+String: "aabac"
+Character counts:
+- 'a': 3 occurrences
+- 'b': 1 occurrence  
+- 'c': 1 occurrence
+Total length: 5
+```
+
+### All Permutations
+```
+All 20 distinct permutations of "aabac":
+
+1.  aaabc
+2.  aaacb
+3.  aabac
+4.  aabca
+5.  aacab
+6.  aacba
+7.  abaac
+8.  abaca
+9.  abcaa
+10. acaab
+11. acaba
+12. acbaa
+13. baaac
+14. baaca
+15. bacaa
+16. bcaaa
+17. caaab
+18. caaba
+19. cabaa
+20. cbaaa
+```
+
+### Permutation Generation Process
+```
+Step 1: Sort characters: "aaabc"
+Step 2: Generate all permutations using next_permutation:
+
+Start: aaabc
+1. aaabc → aaacb (swap last two)
+2. aaacb → aabac (swap 'c' with 'b')
+3. aabac → aabca (swap 'a' with 'c')
+4. aabca → aacab (swap 'b' with 'c')
+5. aacab → aacba (swap last two)
+6. aacba → abaac (swap 'c' with 'b')
+7. abaac → abaca (swap 'a' with 'c')
+8. abaca → abcaa (swap 'a' with 'c')
+9. abcaa → acaab (swap 'b' with 'c')
+10. acaab → acaba (swap 'a' with 'b')
+11. acaba → acbaa (swap 'a' with 'b')
+12. acbaa → baaac (swap 'a' with 'b')
+13. baaac → baaca (swap 'a' with 'c')
+14. baaca → bacaa (swap 'a' with 'c')
+15. bacaa → bcaaa (swap 'a' with 'c')
+16. bcaaa → caaab (swap 'b' with 'c')
+17. caaab → caaba (swap 'a' with 'b')
+18. caaba → cabaa (swap 'a' with 'b')
+19. cabaa → cbaaa (swap 'a' with 'b')
+20. cbaaa → (no more permutations)
+```
+
+### Duplicate Handling
+```
+Without duplicate handling, we would get 5! = 120 permutations.
+With duplicates, we get: 5! / (3! × 1! × 1!) = 120 / (6 × 1 × 1) = 20
+
+Formula: n! / (count1! × count2! × ... × countk!)
+Where counti is the frequency of character i.
+```
+
+### Lexicographic Order
+```
+Characters in lexicographic order: a < b < c
+
+Example comparison:
+- "aaabc" < "aaacb" (third character: 'b' < 'c')
+- "aabac" < "aabca" (fourth character: 'a' < 'c')
+- "abaac" < "abaca" (fourth character: 'a' < 'c')
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Built-in        │ O(n! × n)    │ O(n! × n)    │ Use          │
+│ itertools       │              │              │ permutations │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Manual          │ O(n! × n)    │ O(n! × n)    │ Generate     │
+│ Generation      │              │              │ manually     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Recursive       │ O(n! × n)    │ O(n)         │ Backtracking │
+│ Backtracking    │              │              │ approach     │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Permutation Counting**

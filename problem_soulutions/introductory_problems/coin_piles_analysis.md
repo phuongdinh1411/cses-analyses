@@ -152,6 +152,103 @@ test_solution()
 - **Complete**: Handles all possible cases
 - **Efficient**: Constant time per test case
 
+## 🎨 Visual Example
+
+### Input Example
+```
+3 test cases:
+Case 1: a=2, b=1
+Case 2: a=2, b=2  
+Case 3: a=3, b=3
+```
+
+### Move Types
+```
+Two possible moves:
+Move Type 1: Remove 1 from left, 2 from right
+Move Type 2: Remove 2 from left, 1 from right
+
+Each move removes exactly 3 coins total.
+```
+
+### Case Analysis
+```
+Case 1: a=2, b=1
+Initial: [2, 1]
+Total coins: 2 + 1 = 3 ✓ (divisible by 3)
+
+Try Move Type 1: [2-1, 1-2] = [1, -1] ✗ (negative coins)
+Try Move Type 2: [2-2, 1-1] = [0, 0] ✓
+
+Result: YES (possible with 1 move of type 2)
+
+Case 2: a=2, b=2
+Initial: [2, 2]
+Total coins: 2 + 2 = 4 ✗ (not divisible by 3)
+
+Result: NO (impossible)
+
+Case 3: a=3, b=3
+Initial: [3, 3]
+Total coins: 3 + 3 = 6 ✓ (divisible by 3)
+
+Try Move Type 1: [3-1, 3-2] = [2, 1]
+Then Move Type 2: [2-2, 1-1] = [0, 0] ✓
+
+Result: YES (possible with 2 moves)
+```
+
+### Mathematical Analysis
+```
+Let x = number of moves of type (1,2)
+Let y = number of moves of type (2,1)
+
+System of equations:
+a = x + 2y  (coins removed from left pile)
+b = 2x + y  (coins removed from right pile)
+
+Solving:
+x = (2a - b) / 3
+y = (2b - a) / 3
+
+For valid solution:
+- x ≥ 0 and y ≥ 0 (non-negative moves)
+- x and y must be integers
+```
+
+### Constraint Verification
+```
+Constraint: No pile can be more than twice the other
+
+Case 1: a=2, b=1
+- 2 ≤ 2×1 ✓ (2 ≤ 2)
+- 1 ≤ 2×2 ✓ (1 ≤ 4)
+
+Case 2: a=2, b=2  
+- 2 ≤ 2×2 ✓ (2 ≤ 4)
+- 2 ≤ 2×2 ✓ (2 ≤ 4)
+
+Case 3: a=3, b=3
+- 3 ≤ 2×3 ✓ (3 ≤ 6)
+- 3 ≤ 2×3 ✓ (3 ≤ 6)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Mathematical    │ O(1)         │ O(1)         │ Solve        │
+│                 │              │              │ equations    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Simulation      │ O(a+b)       │ O(1)         │ Try all      │
+│                 │              │              │ moves        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ BFS             │ O(a+b)       │ O(a+b)       │ State        │
+│                 │              │              │ exploration  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Total Divisibility**
