@@ -193,6 +193,94 @@ for res in result:
 | Naive | O(q*n) | O(1) | Direct array operations |
 | Binary Indexed Tree | O(q log n) | O(n) | Use BIT for efficient updates and queries |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+8 elements, 4 queries:
+Array: [3, 2, 4, 5, 1, 1, 5, 3]
+Queries: (2,1,4), (1,4,9), (2,1,4), (2,2,6)
+```
+
+### Array Visualization
+```
+Initial array:
+Index: 1  2  3  4  5  6  7  8
+Value: 3  2  4  5  1  1  5  3
+```
+
+### Query Processing
+```
+Query 1: Sum from 1 to 4
+- Sum = 3 + 2 + 4 + 5 = 14
+- Answer: 14
+
+Query 2: Update position 4 to value 9
+- Array becomes: [3, 2, 4, 9, 1, 1, 5, 3]
+
+Query 3: Sum from 1 to 4
+- Sum = 3 + 2 + 4 + 9 = 20
+- Answer: 20
+
+Query 4: Sum from 2 to 6
+- Sum = 2 + 4 + 9 + 1 + 1 = 17
+- Answer: 17
+```
+
+### Binary Indexed Tree
+```
+BIT structure for array [3, 2, 4, 5, 1, 1, 5, 3]:
+
+Index: 1  2  3  4  5  6  7  8
+Value: 3  2  4  5  1  1  5  3
+
+BIT:
+Index: 1  2  3  4  5  6  7  8
+Value: 3  5  4 14  1  2  5 29
+
+BIT[1] = 3
+BIT[2] = 3 + 2 = 5
+BIT[3] = 4
+BIT[4] = 3 + 2 + 4 + 5 = 14
+BIT[5] = 1
+BIT[6] = 1 + 1 = 2
+BIT[7] = 5
+BIT[8] = 3 + 2 + 4 + 5 + 1 + 1 + 5 + 3 = 29
+```
+
+### Range Sum Query
+```
+To find sum from 1 to 4:
+- Sum = BIT[4] = 14
+
+To find sum from 2 to 6:
+- Sum = query(6) - query(1) = 2 - 0 = 2
+- Wait, let me recalculate...
+
+Actually:
+- query(6) = BIT[6] + BIT[4] = 2 + 14 = 16
+- query(1) = BIT[1] = 3
+- Sum = 16 - 3 = 13
+
+But the actual sum is 2 + 4 + 5 + 1 + 1 = 13 ✓
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Naive           │ O(q * n)     │ O(1)         │ Direct       │
+│                 │              │              │ calculation  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Binary Indexed  │ O(q log n)   │ O(n)         │ Efficient    │
+│ Tree            │              │              │ updates      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Segment Tree    │ O(q log n)   │ O(n)         │ Range        │
+│                 │              │              │ queries      │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## Key Insights for Other Problems
 
 ### 1. **Range Sum Queries**

@@ -265,6 +265,108 @@ print(result)
 | Edge-Disjoint Paths via Max Flow | O(n * m * max_flow) | O(n²) | Use max flow for edge-disjoint paths |
 | Optimized Edge-Disjoint Paths | O(n * m * max_flow) | O(n²) | Optimized max flow implementation |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 nodes, 5 edges:
+Edge 1→2
+Edge 2→3
+Edge 3→4
+Edge 1→3
+Edge 2→4
+```
+
+### Graph Visualization
+```
+Directed graph:
+1 ──→ 2 ──→ 3 ──→ 4
+│      │      │      │
+│      │      │      │
+└──────┼──────┘      │
+       └──────────────┘
+
+All edges:
+- 1→2, 2→3, 3→4, 1→3, 2→4
+```
+
+### Edge-Disjoint Paths
+```
+Find maximum number of edge-disjoint paths from 1 to 4:
+
+Path 1: 1 → 2 → 3 → 4
+- Uses edges: 1→2, 2→3, 3→4
+
+Path 2: 1 → 3 → 4
+- Uses edges: 1→3, 3→4 (but 3→4 already used)
+
+Wait, let me recalculate...
+
+Actually, the edge-disjoint paths are:
+- Path 1: 1 → 2 → 3 → 4
+- Path 2: 1 → 3 → 4 (using 1→3 and 3→4)
+
+But 3→4 is shared, so these are not edge-disjoint.
+
+Correct edge-disjoint paths:
+- Path 1: 1 → 2 → 3 → 4
+- Path 2: 1 → 2 → 4 (using 1→2 and 2→4)
+
+Maximum edge-disjoint paths: 2
+```
+
+### Maximum Flow Process
+```
+Convert to flow network (all edges have capacity 1):
+
+Step 1: Find augmenting path 1→2→3→4
+- Flow: 1 unit along path 1→2→3→4
+- Residual capacities: 1→2: 0, 2→3: 0, 3→4: 0
+
+Step 2: Find augmenting path 1→2→4
+- Flow: 1 unit along path 1→2→4
+- Residual capacities: 1→2: 0, 2→4: 0
+
+Step 3: No more augmenting paths
+- Maximum flow: 2
+- Maximum edge-disjoint paths: 2
+```
+
+### Ford-Fulkerson Algorithm
+```
+Using BFS to find augmenting paths:
+
+Step 1: BFS from 1 to 4
+- Path: 1 → 2 → 3 → 4
+- Send 1 unit of flow
+- Update residual graph
+
+Step 2: BFS from 1 to 4
+- Path: 1 → 2 → 4
+- Send 1 unit of flow
+- Update residual graph
+
+Step 3: BFS from 1 to 4
+- No path found
+- Maximum flow: 2
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Ford-Fulkerson  │ O(m * max_flow)│ O(n²)      │ Augmenting   │
+│                 │              │              │ paths        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Dinic's         │ O(n² * m)    │ O(n²)        │ Layered      │
+│                 │              │              │ network      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Push-Relabel    │ O(n² * m)    │ O(n²)        │ Push flow    │
+│                 │              │              │ operations   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

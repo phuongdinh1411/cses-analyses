@@ -268,6 +268,100 @@ print(result)
 | Minimum Cut via Max Flow | O(n * m * max_flow) | O(n²) | Use max flow to find minimum cut |
 | Optimized Minimum Cut | O(n * m * max_flow) | O(n²) | Optimized max flow implementation |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 computers, 5 connections:
+Connection 1-2
+Connection 2-3
+Connection 3-4
+Connection 1-3
+Connection 2-4
+```
+
+### Network Visualization
+```
+Computer network:
+1 ──── 2 ──── 3 ──── 4
+│      │      │      │
+│      │      │      │
+└──────┼──────┘      │
+       └──────────────┘
+
+All connections:
+- 1-2, 2-3, 3-4, 1-3, 2-4
+```
+
+### Maximum Flow Process
+```
+Convert to flow network (all edges have capacity 1):
+
+Step 1: Find augmenting path 1→2→3→4
+- Flow: 1 unit along path 1→2→3→4
+- Residual capacities: 1-2: 0, 2-3: 0, 3-4: 0
+
+Step 2: Find augmenting path 1→3→4
+- Flow: 1 unit along path 1→3→4
+- Residual capacities: 1-3: 0, 3-4: 0
+
+Step 3: No more augmenting paths
+- Maximum flow: 2
+- Minimum cut: 2 edges
+```
+
+### Minimum Cut Analysis
+```
+To disconnect computer 1 from computer 4:
+
+Option 1: Cut edges (1,2) and (3,4)
+- Removes: 1-2, 3-4
+- Result: 1 isolated, 4 isolated
+- Cut size: 2
+
+Option 2: Cut edges (1,3) and (2,4)
+- Removes: 1-3, 2-4
+- Result: 1 isolated, 4 isolated
+- Cut size: 2
+
+Minimum cut: 2 edges
+```
+
+### Ford-Fulkerson Algorithm
+```
+Using BFS to find augmenting paths:
+
+Step 1: BFS from 1 to 4
+- Path: 1 → 2 → 3 → 4
+- Send 1 unit of flow
+- Update residual graph
+
+Step 2: BFS from 1 to 4
+- Path: 1 → 3 → 4
+- Send 1 unit of flow
+- Update residual graph
+
+Step 3: BFS from 1 to 4
+- No path found
+- Maximum flow: 2
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Ford-Fulkerson  │ O(m * max_flow)│ O(n²)      │ Augmenting   │
+│                 │              │              │ paths        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Dinic's         │ O(n² * m)    │ O(n²)        │ Layered      │
+│                 │              │              │ network      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Push-Relabel    │ O(n² * m)    │ O(n²)        │ Push flow    │
+│                 │              │              │ operations   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns
