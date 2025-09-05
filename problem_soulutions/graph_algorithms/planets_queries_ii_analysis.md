@@ -246,6 +246,80 @@ for res in result:
 | Naive Path Comparison | O(q * n) | O(n) | Generate and compare paths |
 | Cycle Detection | O(n log n + q log n) | O(n) | Use Floyd's cycle finding |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+5 planets, 3 queries:
+Teleporters: [2, 3, 4, 5, 3]
+Queries: (1,2), (1,3), (2,4)
+```
+
+### Graph Visualization
+```
+Functional graph:
+1 → 2 → 3 → 4 → 5
+         ↑       │
+         └───────┘
+
+Cycle: 3 → 4 → 5 → 3 (length 3)
+```
+
+### Path Generation
+```
+Path from planet 1: 1 → 2 → 3 → 4 → 5 → 3 → 4 → 5 → ...
+Path from planet 2: 2 → 3 → 4 → 5 → 3 → 4 → 5 → ...
+Path from planet 3: 3 → 4 → 5 → 3 → 4 → 5 → ...
+Path from planet 4: 4 → 5 → 3 → 4 → 5 → 3 → ...
+```
+
+### Query Processing
+```
+Query (1, 2): Find first common planet in paths from 1 and 2
+- Path from 1: [1, 2, 3, 4, 5, 3, 4, 5, ...]
+- Path from 2: [2, 3, 4, 5, 3, 4, 5, ...]
+- First common: 3 (at position 2 in path 1, position 1 in path 2)
+
+Query (1, 3): Find first common planet in paths from 1 and 3
+- Path from 1: [1, 2, 3, 4, 5, 3, 4, 5, ...]
+- Path from 3: [3, 4, 5, 3, 4, 5, ...]
+- First common: 3 (at position 2 in path 1, position 0 in path 3)
+
+Query (2, 4): Find first common planet in paths from 2 and 4
+- Path from 2: [2, 3, 4, 5, 3, 4, 5, ...]
+- Path from 4: [4, 5, 3, 4, 5, 3, ...]
+- No common planet in initial segments
+```
+
+### Floyd's Cycle Finding
+```
+For planet 1:
+- Slow pointer: 1 → 2 → 3 → 4 → 5 → 3
+- Fast pointer: 1 → 3 → 5 → 3 → 5 → 3
+- Meet at planet 3 (cycle entry)
+
+For planet 2:
+- Slow pointer: 2 → 3 → 4 → 5 → 3
+- Fast pointer: 2 → 4 → 3 → 4 → 3
+- Meet at planet 3 (cycle entry)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Floyd's Cycle   │ O(n log n)   │ O(n)         │ Detect       │
+│                 │              │              │ cycles       │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Path Comparison │ O(q * n)     │ O(n)         │ Generate     │
+│                 │              │              │ paths        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Binary Lifting  │ O(n log n)   │ O(n log n)   │ Precompute   │
+│                 │              │              │ ancestors    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns
