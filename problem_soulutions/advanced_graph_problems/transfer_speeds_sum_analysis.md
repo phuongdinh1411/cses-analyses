@@ -34,6 +34,83 @@ Explanation:
 Maximum sum = 10 + 5 + 8 + 12 = 35
 ```
 
+### 📊 Visual Example
+
+**Input Network:**
+```
+    1 ──10── 2 ──5── 3 ──8── 4
+    │        │        │
+    │15      │12      │
+    │        │        │
+    └────────┴────────┘
+```
+
+**Maximum Flow Analysis:**
+```
+Source: 1, Sink: 4
+
+Path 1: 1 → 2 → 3 → 4
+Flow: min(10, 5, 8) = 5
+Residual: 1→2: 5, 2→3: 0, 3→4: 3
+
+Path 2: 1 → 3 → 4
+Flow: min(15, 3) = 3
+Residual: 1→3: 12, 3→4: 0
+
+Path 3: 1 → 2 → 4
+Flow: min(5, 12) = 5
+Residual: 1→2: 0, 2→4: 7
+
+Total flow: 5 + 3 + 5 = 13
+```
+
+**Network Flow Visualization:**
+```
+Initial Capacities:
+    1 ──10── 2 ──5── 3 ──8── 4
+    │        │        │
+    │15      │12      │
+    │        │        │
+    └────────┴────────┘
+
+After Maximum Flow:
+    1 ──0── 2 ──0── 3 ──0── 4
+    │        │        │
+    │12      │7       │
+    │        │        │
+    └────────┴────────┘
+
+Flow paths:
+- 1→2→3→4: flow = 5
+- 1→3→4: flow = 3  
+- 1→2→4: flow = 5
+Total: 13
+```
+
+**Maximum Sum Calculation:**
+```
+Edge utilization:
+- (1,2): 10/10 = 100% → 10
+- (2,3): 5/5 = 100% → 5
+- (3,4): 8/8 = 100% → 8
+- (1,3): 3/15 = 20% → 3
+- (2,4): 5/12 = 42% → 5
+
+Total sum: 10 + 5 + 8 + 3 + 5 = 31
+```
+
+**Alternative Interpretation (Maximum Weight Matching):**
+```
+If this is a matching problem:
+Select edges: (1,2), (3,4), (2,4)
+Sum: 10 + 8 + 12 = 30
+
+Or select: (1,3), (2,4)
+Sum: 15 + 12 = 27
+
+Maximum: 30
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

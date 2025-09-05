@@ -42,6 +42,117 @@ Walk 1→2→3→4 has length 3
 Walk 1→4→1→4 has length 3 (repeating vertices and edges)
 ```
 
+### 📊 Visual Example
+
+**Input Graph:**
+```
+    1 ──── 2 ──── 3 ──── 4
+    │                     │
+    └─────────────────────┘
+```
+
+**Walk Query Analysis:**
+```
+Query 1: 1→4, length 1
+Direct walk: 1 → 4 ✓
+Result: YES
+
+Query 2: 1→4, length 2
+Possible walks:
+- 1 → 2 → 4 ✗ (no edge 2→4)
+- 1 → 4 → 1 → 4 ✗ (length 3, not 2)
+- 1 → 4 → 1 → 4 ✗ (length 3, not 2)
+
+Wait, let me find a length 2 walk:
+- 1 → 2 → 3 → 4 ✗ (length 3, not 2)
+- 1 → 4 → 1 → 4 ✗ (length 3, not 2)
+
+Actually: 1 → 2 → 3 → 4
+This is length 3, not 2.
+
+Let me check: 1 → 4 → 1 → 4
+This is length 3, not 2.
+
+No walk of length 2 from 1 to 4.
+```
+
+**Correct Analysis:**
+```
+Query 1: 1→4, length 1
+Walk: 1 → 4 ✓
+Result: YES
+
+Query 2: 1→4, length 2
+Walk: 1 → 2 → 3 → 4
+Length: 3 edges ✗ (too long)
+
+Alternative: 1 → 4 → 1 → 4
+Length: 3 edges ✗ (too long)
+
+No walk of length 2 from 1 to 4.
+Result: NO
+
+Query 3: 1→4, length 3
+Walk: 1 → 2 → 3 → 4 ✓
+Length: 3 edges ✓
+Result: YES
+```
+
+**Matrix Exponentiation for Walk Counting:**
+```
+Adjacency Matrix A:
+    1  2  3  4
+1 [ 0  1  0  1 ]
+2 [ 1  0  1  0 ]
+3 [ 0  1  0  1 ]
+4 [ 1  0  1  0 ]
+
+A¹ (walks of length 1):
+    1  2  3  4
+1 [ 0  1  0  1 ]  ← A[1][4] = 1 (walk 1→4)
+2 [ 1  0  1  0 ]
+3 [ 0  1  0  1 ]
+4 [ 1  0  1  0 ]
+
+A² (walks of length 2):
+    1  2  3  4
+1 [ 2  0  2  0 ]  ← A[1][4] = 0 (no walk 1→4 of length 2)
+2 [ 0  2  0  2 ]
+3 [ 2  0  2  0 ]
+4 [ 0  2  0  2 ]
+
+A³ (walks of length 3):
+    1  2  3  4
+1 [ 0  4  0  4 ]  ← A[1][4] = 4 (multiple walks 1→4 of length 3)
+2 [ 4  0  4  0 ]
+3 [ 0  4  0  4 ]
+4 [ 4  0  4  0 ]
+```
+
+**Walk vs Path vs Trail:**
+```
+Walk: Vertices and edges can be repeated
+- 1 → 2 → 1 → 4 ✓
+- 1 → 4 → 1 → 4 ✓
+
+Path: No repeated vertices
+- 1 → 2 → 3 → 4 ✓
+- 1 → 2 → 1 → 4 ✗ (repeats vertex 1)
+
+Trail: No repeated edges
+- 1 → 2 → 3 → 4 ✓
+- 1 → 2 → 1 → 2 → 4 ✓ (repeats vertices, not edges)
+```
+
+**Walk Examples:**
+```
+Length 1: 1 → 4
+Length 2: None (no direct path of length 2)
+Length 3: 1 → 2 → 3 → 4
+Length 4: 1 → 2 → 3 → 4 → 1 → 4
+Length 5: 1 → 2 → 3 → 4 → 1 → 2 → 3 → 4
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

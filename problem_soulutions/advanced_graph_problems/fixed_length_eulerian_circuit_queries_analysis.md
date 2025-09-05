@@ -39,6 +39,58 @@ Output:
 1
 ```
 
+### 📊 Visual Example
+
+**Input Graph (Adjacency Matrix):**
+```
+    1 ──→ 2 ──→ 3
+    ↑             │
+    └─────────────┘
+
+Adjacency Matrix:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+```
+
+**Eulerian Circuit Analysis:**
+```
+Query 1: Node 1, length 3
+Eulerian circuit: 1 → 2 → 3 → 1
+Length: 3 edges ✓
+Result: 1
+
+Query 2: Node 2, length 3  
+Eulerian circuit: 2 → 3 → 1 → 2
+Length: 3 edges ✓
+Result: 1
+```
+
+**Matrix Exponentiation for Eulerian Circuits:**
+```
+Adjacency Matrix A:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+
+A³ (paths of length 3):
+    1  2  3
+1 [ 1  0  0 ]  ← A[1][1] = 1 (circuit 1→2→3→1)
+2 [ 0  1  0 ]  ← A[2][2] = 1 (circuit 2→3→1→2)
+3 [ 0  0  1 ]  ← A[3][3] = 1 (circuit 3→1→2→3)
+```
+
+**Eulerian Circuit Properties:**
+```
+For Eulerian Circuit:
+- Must visit every edge exactly once
+- Must start and end at same vertex
+- All vertices must have equal in-degree and out-degree
+- Graph must be strongly connected
+```
+
 ## Solution Progression
 
 ### Approach 1: Matrix Exponentiation for Eulerian Circuits - O(n³ log k)

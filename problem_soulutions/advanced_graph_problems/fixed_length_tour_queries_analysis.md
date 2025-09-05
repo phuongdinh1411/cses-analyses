@@ -42,6 +42,127 @@ Tour 1→2→3→4→1 has length 4 starting at vertex 1
 No tour of length 2 starting at vertex 2
 ```
 
+### 📊 Visual Example
+
+**Input Graph:**
+```
+    1 ──── 2 ──── 3 ──── 4
+    │                     │
+    └─────────────────────┘
+```
+
+**Tour Query Analysis:**
+```
+Query 1: Vertex 1, length 3
+Possible tours:
+- 1 → 2 → 3 → 1 ✗ (no edge 3→1)
+- 1 → 2 → 4 → 1 ✗ (no edge 2→4)
+- 1 → 4 → 3 → 1 ✗ (no edge 4→3)
+
+No tour of length 3 starting at vertex 1.
+Result: NO
+
+Query 2: Vertex 1, length 4
+Tour: 1 → 2 → 3 → 4 → 1 ✓
+Length: 4 edges ✓
+Starts and ends at vertex 1 ✓
+Result: YES
+
+Query 3: Vertex 2, length 2
+Possible tours:
+- 2 → 3 → 2 ✗ (no edge 3→2)
+- 2 → 1 → 2 ✗ (no edge 1→2)
+
+No tour of length 2 starting at vertex 2.
+Result: NO
+```
+
+**Matrix Exponentiation for Tour Counting:**
+```
+Adjacency Matrix A:
+    1  2  3  4
+1 [ 0  1  0  1 ]
+2 [ 1  0  1  0 ]
+3 [ 0  1  0  1 ]
+4 [ 1  0  1  0 ]
+
+A³ (tours of length 3):
+    1  2  3  4
+1 [ 0  0  0  0 ]  ← A[1][1] = 0 (no tour 1→1 of length 3)
+2 [ 0  0  0  0 ]
+3 [ 0  0  0  0 ]
+4 [ 0  0  0  0 ]
+
+A⁴ (tours of length 4):
+    1  2  3  4
+1 [ 2  0  0  0 ]  ← A[1][1] = 2 (tours 1→1 of length 4)
+2 [ 0  2  0  0 ]
+3 [ 0  0  2  0 ]
+4 [ 0  0  0  2 ]
+```
+
+**Tour Properties:**
+```
+For Tour:
+- Must start and end at the same vertex
+- Can repeat vertices and edges
+- Length = number of edges in the tour
+- Graph must be connected
+- No restrictions on vertex/edge repetition
+```
+
+**Tour vs Cycle vs Circuit:**
+```
+Tour: Starts and ends at same vertex (can repeat vertices/edges)
+- 1 → 2 → 3 → 4 → 1 ✓
+- 1 → 2 → 1 → 2 → 1 ✓
+
+Cycle: Simple tour (no repeated vertices except start/end)
+- 1 → 2 → 3 → 4 → 1 ✓
+- 1 → 2 → 1 → 2 → 1 ✗ (repeats vertices)
+
+Circuit: Same as tour (starts and ends at same vertex)
+- 1 → 2 → 3 → 4 → 1 ✓
+- 1 → 2 → 1 → 2 → 1 ✓
+```
+
+**Tour Examples:**
+```
+Length 1: 1 → 1 (self-loop) - if exists
+Length 2: 1 → 2 → 1
+Length 3: None (no direct path of length 3)
+Length 4: 1 → 2 → 3 → 4 → 1
+Length 5: 1 → 2 → 3 → 4 → 1 → 2 → 1
+Length 6: 1 → 2 → 3 → 4 → 1 → 2 → 3 → 1
+```
+
+**Tour Construction Process:**
+```
+Step 1: Start from vertex 1
+Current path: [1]
+
+Step 2: Try to extend path
+Options: 1 → 2, 1 → 4
+Choose: 1 → 2
+Current path: [1, 2]
+
+Step 3: Continue extending
+Options: 2 → 1, 2 → 3
+Choose: 2 → 3
+Current path: [1, 2, 3]
+
+Step 4: Continue extending
+Options: 3 → 2, 3 → 4
+Choose: 3 → 4
+Current path: [1, 2, 3, 4]
+
+Step 5: Complete tour
+Options: 4 → 1, 4 → 3
+Choose: 4 → 1
+Final tour: [1, 2, 3, 4, 1]
+Length: 4 edges
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

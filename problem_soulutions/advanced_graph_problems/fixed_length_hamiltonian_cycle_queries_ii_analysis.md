@@ -39,6 +39,99 @@ Output:
 1
 ```
 
+### 📊 Visual Example
+
+**Input Graph (Adjacency Matrix):**
+```
+    1 ──→ 2 ──→ 3
+    ↑             │
+    └─────────────┘
+
+Adjacency Matrix:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+```
+
+**Hamiltonian Cycle Analysis:**
+```
+Query 1: Node 1, length 3
+Hamiltonian cycle: Must visit exactly 3 nodes
+Cycle: 1 → 2 → 3 → 1
+Length: 3 edges ✓
+Visits exactly 3 nodes: {1, 2, 3} ✓
+Starts and ends at node 1 ✓
+Result: 1
+
+Query 2: Node 2, length 3
+Hamiltonian cycle: 2 → 3 → 1 → 2
+Length: 3 edges ✓
+Visits exactly 3 nodes: {2, 3, 1} ✓
+Starts and ends at node 2 ✓
+Result: 1
+```
+
+**Matrix Exponentiation for Hamiltonian Cycles:**
+```
+Adjacency Matrix A:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+
+A³ (paths of length 3):
+    1  2  3
+1 [ 1  0  0 ]  ← A[1][1] = 1 (Hamiltonian cycle 1→2→3→1)
+2 [ 0  1  0 ]  ← A[2][2] = 1 (Hamiltonian cycle 2→3→1→2)
+3 [ 0  0  1 ]  ← A[3][3] = 1 (Hamiltonian cycle 3→1→2→3)
+```
+
+**Hamiltonian Cycle Properties:**
+```
+For Hamiltonian Cycle:
+- Must start and end at the same vertex
+- Must visit exactly k nodes (where k is the cycle length)
+- No repeated vertices except start/end
+- Length = number of edges in the cycle
+- Graph must be connected
+- Simple cycle (no internal vertex repetition)
+```
+
+**Hamiltonian Cycle vs Regular Cycle:**
+```
+Hamiltonian Cycle: Visits exactly k nodes
+- 1 → 2 → 3 → 1 ✓ (visits exactly 3 nodes)
+- 1 → 2 → 1 ✗ (visits only 2 nodes, not 3)
+
+Regular Cycle: Can visit any number of nodes
+- 1 → 2 → 3 → 1 ✓
+- 1 → 2 → 1 ✓ (visits 2 nodes)
+```
+
+**Hamiltonian Cycle Examples:**
+```
+Length 1: 1 → 1 (self-loop) - if allowed
+Length 2: 1 → 2 → 1
+Length 3: 1 → 2 → 3 → 1
+Length 4: 1 → 2 → 3 → 4 → 1 (if 4 exists)
+Length 5: 1 → 2 → 3 → 4 → 5 → 1 (if 4,5 exist)
+```
+
+**Dynamic Programming for Hamiltonian Cycles:**
+```
+State: dp[mask][last_vertex] = number of Hamiltonian cycles
+- mask: bitmask representing visited vertices
+- last_vertex: last vertex in the cycle
+
+Base case: dp[1<<start][start] = 1
+
+Transition: For each unvisited vertex v:
+dp[mask | (1<<v)][v] += dp[mask][last_vertex] * A[last_vertex][v]
+
+Answer: dp[(1<<k)-1][start_vertex] (exactly k nodes visited)
+```
+
 ## Solution Progression
 
 ### Approach 1: Matrix Exponentiation for Hamiltonian Cycles - O(n³ log k)

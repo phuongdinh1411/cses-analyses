@@ -43,6 +43,126 @@ Trail 1→2→3→4 has length 3
 Trail 1→4→1→4 has length 3 (repeating edge)
 ```
 
+### 📊 Visual Example
+
+**Input Graph:**
+```
+    1 ──── 2 ──── 3 ──── 4
+    │                     │
+    └─────────────────────┘
+```
+
+**Trail Query Analysis:**
+```
+Query 1: 1→4, length 1
+Direct trail: 1 → 4 ✓
+Result: YES
+
+Query 2: 1→4, length 2
+Possible trails:
+- 1 → 2 → 4 ✗ (no edge 2→4)
+- 1 → 4 → 1 → 4 ✗ (length 3, not 2)
+
+Wait, let me find a length 2 trail:
+- 1 → 2 → 3 → 4 ✗ (length 3, not 2)
+- 1 → 4 → 1 → 4 ✗ (length 3, not 2)
+
+Actually: 1 → 2 → 3 → 4
+This is length 3, not 2.
+
+Let me check: 1 → 4 → 1 → 4
+This is length 3, not 2.
+
+No trail of length 2 from 1 to 4.
+```
+
+**Correct Analysis:**
+```
+Query 1: 1→4, length 1
+Trail: 1 → 4 ✓
+Result: YES
+
+Query 2: 1→4, length 2
+Trail: 1 → 2 → 3 → 4
+Length: 3 edges ✗ (too long)
+
+Alternative: 1 → 4 → 1 → 4
+Length: 3 edges ✗ (too long)
+
+No trail of length 2 from 1 to 4.
+Result: NO
+
+Query 3: 1→4, length 3
+Trail: 1 → 2 → 3 → 4 ✓
+Length: 3 edges ✓
+Result: YES
+```
+
+**Matrix Exponentiation for Trail Counting:**
+```
+Adjacency Matrix A:
+    1  2  3  4
+1 [ 0  1  0  1 ]
+2 [ 1  0  1  0 ]
+3 [ 0  1  0  1 ]
+4 [ 1  0  1  0 ]
+
+A¹ (trails of length 1):
+    1  2  3  4
+1 [ 0  1  0  1 ]  ← A[1][4] = 1 (trail 1→4)
+2 [ 1  0  1  0 ]
+3 [ 0  1  0  1 ]
+4 [ 1  0  1  0 ]
+
+A² (trails of length 2):
+    1  2  3  4
+1 [ 2  0  2  0 ]  ← A[1][4] = 0 (no trail 1→4 of length 2)
+2 [ 0  2  0  2 ]
+3 [ 2  0  2  0 ]
+4 [ 0  2  0  2 ]
+
+A³ (trails of length 3):
+    1  2  3  4
+1 [ 0  4  0  4 ]  ← A[1][4] = 4 (multiple trails 1→4 of length 3)
+2 [ 4  0  4  0 ]
+3 [ 0  4  0  4 ]
+4 [ 4  0  4  0 ]
+```
+
+**Trail vs Path vs Walk:**
+```
+Trail: No repeated edges (vertices can be repeated)
+- 1 → 2 → 3 → 4 ✓
+- 1 → 2 → 1 → 2 → 4 ✓ (repeats vertices, not edges)
+
+Path: No repeated vertices
+- 1 → 2 → 3 → 4 ✓
+- 1 → 2 → 1 → 4 ✗ (repeats vertex 1)
+
+Walk: Vertices and edges can be repeated
+- 1 → 2 → 1 → 4 ✓
+- 1 → 4 → 1 → 4 ✓
+```
+
+**Trail Examples:**
+```
+Length 1: 1 → 4
+Length 2: None (no direct path of length 2)
+Length 3: 1 → 2 → 3 → 4
+Length 4: 1 → 2 → 3 → 4 → 1 → 4
+Length 5: 1 → 2 → 3 → 4 → 1 → 2 → 3 → 4
+```
+
+**Trail Properties:**
+```
+For Trail:
+- Can repeat vertices
+- Cannot repeat edges
+- Length = number of edges used
+- Must be connected
+- Can start and end at different vertices
+```
+
 ## Solution Progression
 
 ### Approach 1: Matrix Exponentiation for Trails - O(n³ log k)

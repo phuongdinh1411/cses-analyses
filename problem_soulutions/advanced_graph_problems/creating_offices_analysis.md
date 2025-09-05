@@ -35,6 +35,69 @@ Output:
 2
 ```
 
+### 📊 Visual Example
+
+**Input Tree:**
+```
+    1 ──── 2 ──── 3 ──── 4 ──── 5
+```
+
+**Office Placement with k=2:**
+```
+Option 1: Place office at node 2
+Coverage: 1, 2, 3 (distance ≤ 2)
+Uncovered: 4, 5
+Need another office at node 4
+Total: 2 offices
+
+Option 2: Place office at node 3
+Coverage: 1, 2, 3, 4, 5 (all within distance 2)
+Total: 1 office ✓ (optimal)
+```
+
+**Greedy Algorithm Visualization:**
+```
+Step 1: Find node with maximum coverage
+Node 1: covers {1, 2, 3} (distance ≤ 2)
+Node 2: covers {1, 2, 3, 4} (distance ≤ 2)
+Node 3: covers {1, 2, 3, 4, 5} (distance ≤ 2) ← Best
+Node 4: covers {2, 3, 4, 5} (distance ≤ 2)
+Node 5: covers {3, 4, 5} (distance ≤ 2)
+
+Step 2: Place office at node 3
+All nodes covered: {1, 2, 3, 4, 5}
+Result: 1 office needed
+```
+
+**Distance Coverage Visualization:**
+```
+k = 2 (maximum distance)
+
+From node 3:
+┌─────────────────────────────────────┐
+│ Distance 0: {3}                     │
+│ Distance 1: {2, 4}                  │
+│ Distance 2: {1, 5}                  │
+│ Total coverage: {1, 2, 3, 4, 5}     │
+└─────────────────────────────────────┘
+
+From node 2:
+┌─────────────────────────────────────┐
+│ Distance 0: {2}                     │
+│ Distance 1: {1, 3}                  │
+│ Distance 2: {4}                     │
+│ Total coverage: {1, 2, 3, 4}        │
+└─────────────────────────────────────┘
+```
+
+**Tree Structure Analysis:**
+```
+Tree diameter: 4 (path 1→2→3→4→5)
+Optimal placement: At center (node 3)
+Coverage radius: k = 2
+All nodes within distance 2 of center
+```
+
 ## Solution Progression
 
 ### Approach 1: Greedy Placement - O(n²)

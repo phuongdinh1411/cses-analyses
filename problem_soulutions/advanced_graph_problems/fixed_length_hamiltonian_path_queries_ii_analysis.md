@@ -42,6 +42,123 @@ Hamiltonian path 1→2→3→4 has length 4 from 1 to 4
 No Hamiltonian path of length 2 from 2 to 3
 ```
 
+### 📊 Visual Example
+
+**Input Graph:**
+```
+    1 ──── 2 ──── 3 ──── 4
+    │                     │
+    └─────────────────────┘
+```
+
+**Hamiltonian Path Analysis:**
+```
+Query 1: 1→4, length 3
+Hamiltonian path: Must visit all 4 vertices exactly once
+Possible path: 1 → 2 → 3 → 4
+Length: 3 edges ✓
+Visits vertices: {1, 2, 3, 4} ✓
+But this doesn't end at vertex 4!
+
+Wait, let me check: 1 → 2 → 3 → 4
+This visits 4 vertices with 3 edges, ending at 4.
+This is a Hamiltonian path of length 3 from 1 to 4.
+Result: YES
+
+Query 2: 1→4, length 4
+Hamiltonian path: 1 → 2 → 3 → 4
+Length: 3 edges ✗ (too short)
+Alternative: 1 → 2 → 3 → 4 → 1 → 4
+Length: 5 edges ✗ (too long)
+No Hamiltonian path of length 4 from 1 to 4.
+Result: NO
+
+Query 3: 2→3, length 2
+Hamiltonian path: Must visit all 4 vertices exactly once
+Possible path: 2 → 1 → 4 → 3
+Length: 3 edges ✗ (too long)
+Alternative: 2 → 3
+Length: 1 edge ✗ (too short)
+No Hamiltonian path of length 2 from 2 to 3.
+Result: NO
+```
+
+**Correct Analysis:**
+```
+Query 1: 1→4, length 3
+Hamiltonian path: 1 → 2 → 3 → 4
+Length: 3 edges ✓
+Visits all 4 vertices exactly once ✓
+Result: YES
+
+Query 2: 1→4, length 4
+No Hamiltonian path of length 4 from 1 to 4.
+Result: NO
+
+Query 3: 2→3, length 2
+No Hamiltonian path of length 2 from 2 to 3.
+Result: NO
+```
+
+**Matrix Exponentiation for Hamiltonian Paths:**
+```
+Adjacency Matrix A:
+    1  2  3  4
+1 [ 0  1  0  1 ]
+2 [ 1  0  1  0 ]
+3 [ 0  1  0  1 ]
+4 [ 1  0  1  0 ]
+
+A³ (paths of length 3):
+    1  2  3  4
+1 [ 0  0  0  4 ]  ← A[1][4] = 4 (multiple paths 1→4 of length 3)
+2 [ 0  0  4  0 ]
+3 [ 0  4  0  0 ]
+4 [ 4  0  0  0 ]
+
+A⁴ (paths of length 4):
+    1  2  3  4
+1 [ 8  0  0  0 ]  ← A[1][1] = 8 (multiple paths 1→1 of length 4)
+2 [ 0  8  0  0 ]
+3 [ 0  0  8  0 ]
+4 [ 0  0  0  8 ]
+```
+
+**Hamiltonian Path Properties:**
+```
+For Hamiltonian Path:
+- Must visit every vertex exactly once
+- Can start and end at different vertices
+- Length = number of vertices - 1
+- Graph must be connected
+- No repeated vertices allowed
+```
+
+**Hamiltonian Path vs Regular Path:**
+```
+Hamiltonian Path: Visits all vertices exactly once
+- 1 → 2 → 3 → 4 ✓ (visits all 4 vertices)
+- 1 → 2 → 3 ✗ (doesn't visit vertex 4)
+
+Regular Path: No repeated vertices (can skip vertices)
+- 1 → 2 → 3 → 4 ✓
+- 1 → 2 → 3 ✓ (doesn't need to visit all vertices)
+```
+
+**Dynamic Programming Approach:**
+```
+State: dp[mask][last_vertex] = number of Hamiltonian paths
+- mask: bitmask representing visited vertices
+- last_vertex: last vertex in the path
+
+Base case: dp[1<<start][start] = 1
+
+Transition: For each unvisited vertex v:
+dp[mask | (1<<v)][v] += dp[mask][last_vertex] * A[last_vertex][v]
+
+Answer: dp[(1<<n)-1][end_vertex]
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

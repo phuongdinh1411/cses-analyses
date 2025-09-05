@@ -39,6 +39,85 @@ Output:
 1
 ```
 
+### 📊 Visual Example
+
+**Input Graph (Adjacency Matrix):**
+```
+    1 ──→ 2 ──→ 3
+    ↑             │
+    └─────────────┘
+
+Adjacency Matrix:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+```
+
+**Circuit Analysis:**
+```
+Query 1: Node 1, length 3
+Circuit: 1 → 2 → 3 → 1
+Length: 3 edges ✓
+Starts and ends at node 1 ✓
+Result: 1
+
+Query 2: Node 2, length 3
+Circuit: 2 → 3 → 1 → 2
+Length: 3 edges ✓
+Starts and ends at node 2 ✓
+Result: 1
+```
+
+**Matrix Exponentiation for Circuits:**
+```
+Adjacency Matrix A:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+
+A³ (paths of length 3):
+    1  2  3
+1 [ 1  0  0 ]  ← A[1][1] = 1 (circuit 1→2→3→1)
+2 [ 0  1  0 ]  ← A[2][2] = 1 (circuit 2→3→1→2)
+3 [ 0  0  1 ]  ← A[3][3] = 1 (circuit 3→1→2→3)
+```
+
+**Circuit Properties:**
+```
+For Circuit:
+- Must start and end at the same vertex
+- Can repeat vertices and edges
+- Length = number of edges in the circuit
+- Graph must be connected
+- No restrictions on vertex/edge repetition
+```
+
+**Circuit vs Cycle vs Path:**
+```
+Circuit: Starts and ends at same vertex
+- 1 → 2 → 3 → 1 ✓
+- 1 → 2 → 1 → 2 → 1 ✓
+
+Cycle: Simple circuit (no repeated vertices except start/end)
+- 1 → 2 → 3 → 1 ✓
+- 1 → 2 → 1 → 2 → 1 ✗ (repeats vertices)
+
+Path: No repeated vertices
+- 1 → 2 → 3 ✓
+- 1 → 2 → 1 → 3 ✗ (repeats vertex 1)
+```
+
+**Circuit Examples:**
+```
+Length 1: 1 → 1 (self-loop)
+Length 2: 1 → 2 → 1
+Length 3: 1 → 2 → 3 → 1
+Length 4: 1 → 2 → 3 → 1 → 2 → 1
+Length 5: 1 → 2 → 3 → 1 → 2 → 3 → 1
+```
+
 ## Solution Progression
 
 ### Approach 1: Matrix Exponentiation for Circuits - O(n³ log k)

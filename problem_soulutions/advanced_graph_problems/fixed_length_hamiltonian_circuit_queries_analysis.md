@@ -39,6 +39,99 @@ Output:
 1
 ```
 
+### 📊 Visual Example
+
+**Input Graph (Adjacency Matrix):**
+```
+    1 ──→ 2 ──→ 3
+    ↑             │
+    └─────────────┘
+
+Adjacency Matrix:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+```
+
+**Hamiltonian Circuit Analysis:**
+```
+Query 1: Node 1, length 3
+Hamiltonian circuit: Must visit all 3 nodes exactly once
+Circuit: 1 → 2 → 3 → 1
+Length: 3 edges ✓
+Visits all 3 nodes: {1, 2, 3} ✓
+Starts and ends at node 1 ✓
+Result: 1
+
+Query 2: Node 2, length 3
+Hamiltonian circuit: 2 → 3 → 1 → 2
+Length: 3 edges ✓
+Visits all 3 nodes: {2, 3, 1} ✓
+Starts and ends at node 2 ✓
+Result: 1
+```
+
+**Matrix Exponentiation for Hamiltonian Circuits:**
+```
+Adjacency Matrix A:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+
+A³ (paths of length 3):
+    1  2  3
+1 [ 1  0  0 ]  ← A[1][1] = 1 (Hamiltonian circuit 1→2→3→1)
+2 [ 0  1  0 ]  ← A[2][2] = 1 (Hamiltonian circuit 2→3→1→2)
+3 [ 0  0  1 ]  ← A[3][3] = 1 (Hamiltonian circuit 3→1→2→3)
+```
+
+**Hamiltonian Circuit Properties:**
+```
+For Hamiltonian Circuit:
+- Must start and end at the same vertex
+- Must visit every vertex exactly once
+- No repeated vertices except start/end
+- Length = number of vertices
+- Graph must be connected
+- Simple circuit (no internal vertex repetition)
+```
+
+**Hamiltonian Circuit vs Regular Circuit:**
+```
+Hamiltonian Circuit: Visits all vertices exactly once
+- 1 → 2 → 3 → 1 ✓ (visits all 3 vertices)
+- 1 → 2 → 1 ✗ (doesn't visit vertex 3)
+
+Regular Circuit: Can visit any number of vertices
+- 1 → 2 → 3 → 1 ✓
+- 1 → 2 → 1 ✓ (visits 2 vertices)
+```
+
+**Hamiltonian Circuit Examples:**
+```
+Length 1: 1 → 1 (self-loop) - if allowed
+Length 2: 1 → 2 → 1
+Length 3: 1 → 2 → 3 → 1
+Length 4: 1 → 2 → 3 → 4 → 1 (if 4 exists)
+Length 5: 1 → 2 → 3 → 4 → 5 → 1 (if 4,5 exist)
+```
+
+**Dynamic Programming for Hamiltonian Circuits:**
+```
+State: dp[mask][last_vertex] = number of Hamiltonian circuits
+- mask: bitmask representing visited vertices
+- last_vertex: last vertex in the circuit
+
+Base case: dp[1<<start][start] = 1
+
+Transition: For each unvisited vertex v:
+dp[mask | (1<<v)][v] += dp[mask][last_vertex] * A[last_vertex][v]
+
+Answer: dp[(1<<n)-1][start_vertex] (all vertices visited)
+```
+
 ## Solution Progression
 
 ### Approach 1: Matrix Exponentiation for Hamiltonian Circuits - O(n³ log k)

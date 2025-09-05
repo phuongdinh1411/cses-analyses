@@ -43,6 +43,108 @@ No Hamiltonian tour of length 4 from 1 to 2
 No Hamiltonian tour of length 3 from 2 to 3
 ```
 
+### 📊 Visual Example
+
+**Input Graph:**
+```
+    1 ──── 2 ──── 3 ──── 4
+    │                     │
+    └─────────────────────┘
+```
+
+**Hamiltonian Tour Analysis:**
+```
+Query 1: 1→1, length 4
+Hamiltonian tour: Must visit all 4 vertices exactly once
+Tour: 1 → 2 → 3 → 4 → 1
+Length: 4 edges ✓
+Visits all 4 vertices: {1, 2, 3, 4} ✓
+Starts and ends at vertex 1 ✓
+Result: YES
+
+Query 2: 1→2, length 4
+Hamiltonian tour: Must visit all 4 vertices exactly once
+Possible tour: 1 → 2 → 3 → 4 → 1
+But this ends at vertex 1, not vertex 2 ✗
+No Hamiltonian tour of length 4 from 1 to 2.
+Result: NO
+
+Query 3: 2→3, length 3
+Hamiltonian tour: Must visit all 4 vertices exactly once
+Possible tour: 2 → 1 → 4 → 3
+Length: 3 edges ✓
+Visits all 4 vertices: {2, 1, 4, 3} ✓
+Starts at vertex 2 and ends at vertex 3 ✓
+Result: YES
+```
+
+**Matrix Exponentiation for Hamiltonian Tours:**
+```
+Adjacency Matrix A:
+    1  2  3  4
+1 [ 0  1  0  1 ]
+2 [ 1  0  1  0 ]
+3 [ 0  1  0  1 ]
+4 [ 1  0  1  0 ]
+
+A⁴ (tours of length 4):
+    1  2  3  4
+1 [ 2  0  0  0 ]  ← A[1][1] = 2 (Hamiltonian tours 1→1 of length 4)
+2 [ 0  2  0  0 ]
+3 [ 0  0  2  0 ]
+4 [ 0  0  0  2 ]
+
+A³ (tours of length 3):
+    1  2  3  4
+1 [ 0  0  0  0 ]  ← A[1][4] = 0 (no Hamiltonian tour 1→4 of length 3)
+2 [ 0  0  0  0 ]
+3 [ 0  0  0  0 ]
+4 [ 0  0  0  0 ]
+```
+
+**Hamiltonian Tour Properties:**
+```
+For Hamiltonian Tour:
+- Must visit every vertex exactly once
+- Can start and end at different vertices
+- Length = number of vertices (for cycle) or vertices-1 (for path)
+- Graph must be connected
+- No repeated vertices allowed
+```
+
+**Hamiltonian Tour vs Regular Tour:**
+```
+Hamiltonian Tour: Visits all vertices exactly once
+- 1 → 2 → 3 → 4 → 1 ✓ (visits all 4 vertices)
+- 1 → 2 → 3 → 4 ✓ (visits all 4 vertices)
+
+Regular Tour: Can repeat vertices
+- 1 → 2 → 3 → 4 → 1 ✓
+- 1 → 2 → 1 → 2 → 1 ✓ (repeats vertices)
+```
+
+**Hamiltonian Tour Examples:**
+```
+Length 4 (cycle): 1 → 2 → 3 → 4 → 1
+Length 3 (path): 1 → 2 → 3 → 4
+Length 2 (path): 1 → 2 → 3
+Length 1 (path): 1 → 2
+```
+
+**Dynamic Programming for Hamiltonian Tours:**
+```
+State: dp[mask][last_vertex] = number of Hamiltonian tours
+- mask: bitmask representing visited vertices
+- last_vertex: last vertex in the tour
+
+Base case: dp[1<<start][start] = 1
+
+Transition: For each unvisited vertex v:
+dp[mask | (1<<v)][v] += dp[mask][last_vertex] * A[last_vertex][v]
+
+Answer: dp[(1<<n)-1][end_vertex] (all vertices visited)
+```
+
 ## Solution Progression
 
 ### Approach 1: Matrix Exponentiation for Hamiltonian Tours - O(n³ log k)

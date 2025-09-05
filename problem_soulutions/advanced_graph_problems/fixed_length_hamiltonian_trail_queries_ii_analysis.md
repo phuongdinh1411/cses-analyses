@@ -39,6 +39,110 @@ Output:
 0
 ```
 
+### 📊 Visual Example
+
+**Input Graph (Adjacency Matrix):**
+```
+    1 ──→ 2 ──→ 3
+    ↑             │
+    └─────────────┘
+
+Adjacency Matrix:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+```
+
+**Hamiltonian Trail Analysis:**
+```
+Query 1: 1→2, length 2
+Hamiltonian trail: Must visit exactly 2 nodes
+Possible trail: 1 → 2
+Length: 1 edge ✗ (too short)
+Alternative: 1 → 2 → 3
+Length: 2 edges ✓
+Visits exactly 2 nodes: {1, 2} ✗ (visits 3 nodes)
+No Hamiltonian trail of length 2 from 1 to 2.
+Result: 0
+
+Query 2: 2→3, length 3
+Hamiltonian trail: Must visit exactly 3 nodes
+Possible trail: 2 → 3 → 1
+Length: 2 edges ✗ (too short)
+Alternative: 2 → 3 → 1 → 2
+Length: 3 edges ✓
+Visits exactly 3 nodes: {2, 3, 1} ✓
+But this ends at vertex 2, not vertex 3 ✗
+No Hamiltonian trail of length 3 from 2 to 3.
+Result: 0
+```
+
+**Matrix Exponentiation for Hamiltonian Trails:**
+```
+Adjacency Matrix A:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+
+A² (trails of length 2):
+    1  2  3
+1 [ 0  0  1 ]  ← A[1][3] = 1 (trail 1→2→3)
+2 [ 1  0  0 ]  ← A[2][1] = 1 (trail 2→3→1)
+3 [ 0  1  0 ]  ← A[3][2] = 1 (trail 3→1→2)
+
+A³ (trails of length 3):
+    1  2  3
+1 [ 1  0  0 ]  ← A[1][1] = 1 (trail 1→2→3→1)
+2 [ 0  1  0 ]  ← A[2][2] = 1 (trail 2→3→1→2)
+3 [ 0  0  1 ]  ← A[3][3] = 1 (trail 3→1→2→3)
+```
+
+**Hamiltonian Trail Properties:**
+```
+For Hamiltonian Trail:
+- Must visit exactly k nodes
+- Can start and end at different vertices
+- No repeated vertices allowed
+- Length = number of edges in the trail
+- Graph must be connected
+- Simple trail (no internal vertex repetition)
+```
+
+**Hamiltonian Trail vs Regular Trail:**
+```
+Hamiltonian Trail: Visits exactly k nodes
+- 1 → 2 → 3 ✓ (visits exactly 3 nodes)
+- 1 → 2 ✗ (visits only 2 nodes, not 3)
+
+Regular Trail: Can visit any number of nodes
+- 1 → 2 → 3 ✓
+- 1 → 2 ✓ (visits 2 nodes)
+```
+
+**Hamiltonian Trail Examples:**
+```
+Length 1: 1 → 2 (visits exactly 2 nodes)
+Length 2: 1 → 2 → 3 (visits exactly 3 nodes)
+Length 3: 1 → 2 → 3 → 1 (visits exactly 3 nodes)
+Length 4: 1 → 2 → 3 → 4 → 1 (visits exactly 4 nodes)
+```
+
+**Dynamic Programming for Hamiltonian Trails:**
+```
+State: dp[mask][last_vertex] = number of Hamiltonian trails
+- mask: bitmask representing visited vertices
+- last_vertex: last vertex in the trail
+
+Base case: dp[1<<start][start] = 1
+
+Transition: For each unvisited vertex v:
+dp[mask | (1<<v)][v] += dp[mask][last_vertex] * A[last_vertex][v]
+
+Answer: dp[(1<<k)-1][end_vertex] (exactly k nodes visited)
+```
+
 ## Solution Progression
 
 ### Approach 1: Matrix Exponentiation for Hamiltonian Trails - O(n³ log k)

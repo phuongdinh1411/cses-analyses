@@ -42,6 +42,72 @@ Course 3 requires courses 1 and 2
 Valid order: 0 → 1 → 2 → 3
 ```
 
+### 📊 Visual Example
+
+**Course Prerequisites Graph:**
+```
+    0 (no prerequisites)
+   ╱ ╲
+  ╱   ╲
+ 1     2
+  ╲   ╱
+   ╲ ╱
+    3
+```
+
+**Topological Sorting Process:**
+```
+Step 1: Calculate in-degrees
+Course:  0  1  2  3
+In-degree: 0  1  1  2
+
+Step 2: Start with courses having in-degree 0
+Queue: [0]  ← Only course 0 has no prerequisites
+
+Step 3: Process Queue
+┌─────────────────────────────────────┐
+│ Remove course 0 from queue          │
+│ Result: [0]                         │
+│ Update in-degrees of neighbors:     │
+│ - Course 1: 1-1=0 (add to queue)   │
+│ - Course 2: 1-1=0 (add to queue)   │
+│ Queue: [1, 2]                       │
+└─────────────────────────────────────┘
+
+Step 4: Continue Processing
+┌─────────────────────────────────────┐
+│ Remove course 1 from queue          │
+│ Result: [0, 1]                      │
+│ Update in-degrees of neighbors:     │
+│ - Course 3: 2-1=1                   │
+│ Queue: [2]                          │
+└─────────────────────────────────────┘
+
+Step 5: Final Processing
+┌─────────────────────────────────────┐
+│ Remove course 2 from queue          │
+│ Result: [0, 1, 2]                   │
+│ Update in-degrees of neighbors:     │
+│ - Course 3: 1-1=0 (add to queue)   │
+│ Queue: [3]                          │
+└─────────────────────────────────────┘
+
+Final Result: [0, 1, 2, 3]
+```
+
+**Impossible Case (Cycle):**
+```
+Input: [[1,0],[0,1]]  ← Cycle: 0→1→0
+
+Graph:
+    0 ←──→ 1
+    ↑      │
+    └──────┘
+
+In-degrees: [1, 1]  ← No course with in-degree 0
+Result: []  ← Impossible to complete
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

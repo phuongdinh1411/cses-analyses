@@ -49,6 +49,53 @@ Customer 2 is closest to shop 1 (distance 3)
 Customer 4 is closest to shop 3 (distance 1)
 ```
 
+### 📊 Visual Example
+
+**Input Graph with Shops and Customers:**
+```
+Shops: 🏪 (nodes 1, 3)
+Customers: 👤 (nodes 2, 4)
+
+    1🏪 ──3── 2👤
+    │           │
+    │5          │2
+    │           │
+    4👤 ──1── 3🏪
+```
+
+**Multi-Source Dijkstra Process:**
+```
+Step 1: Initialize with shops as sources
+Queue: [(0,1), (0,3)]  ← (distance, node)
+Distances: [∞, 0, ∞, 0]  ← shops at distance 0
+
+Step 2: Process node 1 (distance 0)
+Neighbors: 2 (weight 3), 4 (weight 5)
+Queue: [(0,3), (3,2), (5,4)]
+Distances: [∞, 0, 3, 0]
+
+Step 3: Process node 3 (distance 0)
+Neighbors: 2 (weight 2), 4 (weight 1)
+Queue: [(1,4), (2,2), (3,2), (5,4)]
+Distances: [∞, 0, 2, 1]  ← Update 2 and 4
+
+Step 4: Process node 4 (distance 1)
+Neighbors: 1 (weight 5), 3 (weight 1)
+Queue: [(2,2), (3,2), (5,4)]
+Distances: [∞, 0, 2, 1]  ← No improvement
+
+Step 5: Process node 2 (distance 2)
+Neighbors: 1 (weight 3), 3 (weight 2)
+Queue: [(3,2), (5,4)]
+Distances: [∞, 0, 2, 1]  ← No improvement
+```
+
+**Final Results:**
+```
+Customer 2: Nearest shop is 3, distance = 2
+Customer 4: Nearest shop is 3, distance = 1
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

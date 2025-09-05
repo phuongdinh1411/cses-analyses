@@ -39,6 +39,119 @@ Output:
 1
 ```
 
+### 📊 Visual Example
+
+**Input Graph (Adjacency Matrix):**
+```
+    1 ──→ 2 ──→ 3
+    ↑             │
+    └─────────────┘
+
+Adjacency Matrix:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+```
+
+**Cycle Analysis:**
+```
+Query 1: Node 1, length 3
+Cycle: 1 → 2 → 3 → 1
+Length: 3 edges ✓
+Starts and ends at node 1 ✓
+No repeated vertices except start/end ✓
+Result: 1
+
+Query 2: Node 2, length 3
+Cycle: 2 → 3 → 1 → 2
+Length: 3 edges ✓
+Starts and ends at node 2 ✓
+No repeated vertices except start/end ✓
+Result: 1
+```
+
+**Matrix Exponentiation for Cycles:**
+```
+Adjacency Matrix A:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+
+A³ (paths of length 3):
+    1  2  3
+1 [ 1  0  0 ]  ← A[1][1] = 1 (cycle 1→2→3→1)
+2 [ 0  1  0 ]  ← A[2][2] = 1 (cycle 2→3→1→2)
+3 [ 0  0  1 ]  ← A[3][3] = 1 (cycle 3→1→2→3)
+```
+
+**Cycle Properties:**
+```
+For Cycle:
+- Must start and end at the same vertex
+- No repeated vertices except start/end
+- Length = number of edges in the cycle
+- Graph must be connected
+- Simple cycle (no internal vertex repetition)
+```
+
+**Cycle vs Circuit vs Path:**
+```
+Cycle: Simple circuit (no repeated vertices except start/end)
+- 1 → 2 → 3 → 1 ✓
+- 1 → 2 → 1 → 2 → 1 ✗ (repeats vertices)
+
+Circuit: Starts and ends at same vertex (can repeat vertices)
+- 1 → 2 → 3 → 1 ✓
+- 1 → 2 → 1 → 2 → 1 ✓
+
+Path: No repeated vertices
+- 1 → 2 → 3 ✓
+- 1 → 2 → 1 → 3 ✗ (repeats vertex 1)
+```
+
+**Cycle Examples:**
+```
+Length 1: 1 → 1 (self-loop) - if allowed
+Length 2: 1 → 2 → 1
+Length 3: 1 → 2 → 3 → 1
+Length 4: 1 → 2 → 3 → 4 → 1 (if 4 exists)
+Length 5: 1 → 2 → 3 → 4 → 5 → 1 (if 4,5 exist)
+```
+
+**Cycle Detection Visualization:**
+```
+DFS Traversal for Cycle Detection:
+┌─────────────────────────────────────┐
+│ Start from node 1                   │
+│ Stack: [1]                          │
+│ Visited: [1]                        │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Visit node 2                        │
+│ Stack: [1, 2]                       │
+│ Visited: [1, 2]                     │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Visit node 3                        │
+│ Stack: [1, 2, 3]                    │
+│ Visited: [1, 2, 3]                  │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Try to visit node 1                 │
+│ CYCLE DETECTED!                     │
+│ Node 1 is in current stack          │
+│ Cycle: 1 → 2 → 3 → 1               │
+└─────────────────────────────────────┘
+```
+
 ## Solution Progression
 
 ### Approach 1: Matrix Exponentiation for Cycles - O(n³ log k)

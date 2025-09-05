@@ -32,6 +32,64 @@ Need to add 2 edges to make graph strongly connected.
 Possible solution: add edges 2→3 and 4→1.
 ```
 
+### 📊 Visual Example
+
+**Input Graph:**
+```
+    1 ──→ 2
+    3 ──→ 4
+```
+
+**Strongly Connected Components (SCCs):**
+```
+SCC 1: {1, 2}  ← Component 1
+SCC 2: {3, 4}  ← Component 2
+
+Condensation Graph:
+SCC1 ──→ SCC2  (no edges between SCCs)
+```
+
+**Strong Connectivity Analysis:**
+```
+Current State:
+- SCC1: {1, 2} (strongly connected)
+- SCC2: {3, 4} (strongly connected)
+- No path from SCC1 to SCC2
+- No path from SCC2 to SCC1
+
+Required Edges:
+- Add edge from SCC1 to SCC2: 2 → 3
+- Add edge from SCC2 to SCC1: 4 → 1
+
+Result: 2 edges needed
+```
+
+**Final Strongly Connected Graph:**
+```
+    1 ──→ 2
+    ↑     │
+    │     ↓
+    4 ←── 3
+```
+
+**SCC Condensation Process:**
+```
+Step 1: Find SCCs using Kosaraju's algorithm
+SCC1 = {1, 2}
+SCC2 = {3, 4}
+
+Step 2: Build condensation graph
+Nodes: {SCC1, SCC2}
+Edges: {} (no edges between SCCs)
+
+Step 3: Count sources and sinks
+Sources: 2 (SCC1, SCC2)
+Sinks: 2 (SCC1, SCC2)
+
+Step 4: Calculate minimum edges
+min_edges = max(sources, sinks) = max(2, 2) = 2
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

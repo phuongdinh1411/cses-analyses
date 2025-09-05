@@ -38,6 +38,99 @@ For query (1,2,2): No Hamiltonian trail of length 2 from node 1 to node 2
 For query (2,3,3): No Hamiltonian trail of length 3 from node 2 to node 3
 ```
 
+### 📊 Visual Example
+
+**Input Graph (Adjacency Matrix):**
+```
+    1 ──→ 2 ──→ 3
+    ↑             │
+    └─────────────┘
+
+Adjacency Matrix:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+```
+
+**Hamiltonian Trail Analysis:**
+```
+Query 1: 1→2, length 2
+Hamiltonian trail: Must visit all 3 vertices exactly once
+Possible trail: 1 → 2 → 3
+Length: 2 edges ✓
+Visits vertices: {1, 2, 3} ✓
+But this doesn't end at vertex 2!
+
+Alternative: 1 → 3 → 2
+Length: 2 edges ✓
+Visits vertices: {1, 3, 2} ✓
+But no edge 1→3 exists!
+
+Result: No valid Hamiltonian trail of length 2 from 1 to 2
+```
+
+**Query 2: 2→3, length 3**
+```
+Hamiltonian trail: Must visit all 3 vertices exactly once
+Possible trail: 2 → 3 → 1 → 2
+Length: 3 edges ✓
+Visits vertices: {2, 3, 1, 2} ✗ (visits 2 twice)
+
+Alternative: 2 → 1 → 3
+Length: 2 edges ✗ (too short)
+No edge 2→1 exists!
+
+Result: No valid Hamiltonian trail of length 3 from 2 to 3
+```
+
+**Matrix Exponentiation for Hamiltonian Trails:**
+```
+Adjacency Matrix A:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+
+A² (paths of length 2):
+    1  2  3
+1 [ 0  0  1 ]  ← A[1][3] = 1 (path 1→2→3)
+2 [ 1  0  0 ]  ← A[2][1] = 1 (path 2→3→1)
+3 [ 0  1  0 ]  ← A[3][2] = 1 (path 3→1→2)
+
+A³ (paths of length 3):
+    1  2  3
+1 [ 1  0  0 ]  ← A[1][1] = 1 (path 1→2→3→1)
+2 [ 0  1  0 ]  ← A[2][2] = 1 (path 2→3→1→2)
+3 [ 0  0  1 ]  ← A[3][3] = 1 (path 3→1→2→3)
+```
+
+**Hamiltonian Trail Properties:**
+```
+For Hamiltonian Trail:
+- Must visit every vertex exactly once
+- Can start and end at different vertices
+- Length = number of vertices - 1
+- Graph must be connected
+- No repeated vertices allowed
+```
+
+**Path vs Trail vs Walk:**
+```
+Path: No repeated vertices
+- 1 → 2 → 3 ✓
+
+Trail: No repeated edges
+- 1 → 2 → 3 → 1 → 2 ✓ (repeated vertices OK)
+
+Walk: Vertices and edges can be repeated
+- 1 → 2 → 1 → 2 → 3 ✓
+
+Hamiltonian: Visits all vertices exactly once
+- 1 → 2 → 3 ✓ (Hamiltonian path)
+- 1 → 2 → 3 → 1 ✓ (Hamiltonian cycle)
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

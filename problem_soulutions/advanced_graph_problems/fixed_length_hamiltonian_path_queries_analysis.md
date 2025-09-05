@@ -43,6 +43,56 @@ Hamiltonian path 1→2→3→4 has length 4 from 1 to 4
 No Hamiltonian path of length 2 from 2 to 3
 ```
 
+### 📊 Visual Example
+
+**Input Graph:**
+```
+    1 ──── 2
+    │      │
+    │      │
+    4 ──── 3
+```
+
+**Hamiltonian Path Analysis:**
+```
+Query 1: 1→4, length 3
+Possible paths: 1→2→3→4 (length 3) ✓
+But this visits 3 vertices, not 4!
+Result: NO (not Hamiltonian)
+
+Query 2: 1→4, length 4  
+Hamiltonian path: 1→2→3→4 (visits all 4 vertices) ✓
+Result: YES
+
+Query 3: 2→3, length 2
+Possible path: 2→3 (length 1) ✗
+Result: NO (length 2 not possible)
+```
+
+**Matrix Exponentiation Visualization:**
+```
+Adjacency Matrix A:
+    1  2  3  4
+1 [ 0  1  0  1 ]
+2 [ 1  0  1  0 ]
+3 [ 0  1  0  1 ]
+4 [ 1  0  1  0 ]
+
+A² (paths of length 2):
+    1  2  3  4
+1 [ 2  0  2  0 ]
+2 [ 0  2  0  2 ]
+3 [ 2  0  2  0 ]
+4 [ 0  2  0  2 ]
+
+A³ (paths of length 3):
+    1  2  3  4
+1 [ 0  4  0  4 ]
+2 [ 4  0  4  0 ]
+3 [ 0  4  0  4 ]
+4 [ 4  0  4  0 ]
+```
+
 ## Solution Progression
 
 ### Approach 1: Matrix Exponentiation for Hamiltonian Paths - O(n³ log k)

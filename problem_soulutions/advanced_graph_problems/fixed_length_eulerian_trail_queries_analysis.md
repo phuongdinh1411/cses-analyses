@@ -39,6 +39,92 @@ Output:
 1
 ```
 
+### 📊 Visual Example
+
+**Input Graph (Adjacency Matrix):**
+```
+    1 ──→ 2 ──→ 3
+    ↑             │
+    └─────────────┘
+
+Adjacency Matrix:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+```
+
+**Eulerian Trail Analysis:**
+```
+Query 1: 1→2, length 2
+Eulerian trail: 1 → 2 → 3 → 1 → 2
+Length: 4 edges ✗ (too long)
+Alternative: 1 → 2 (length 1) ✗ (too short)
+No valid Eulerian trail of length 2 from 1 to 2
+Wait, let me recalculate...
+
+Actually: 1 → 2 → 3 → 1 → 2
+This uses edges: (1,2), (2,3), (3,1), (1,2)
+Length: 4 edges, but visits edge (1,2) twice!
+Not a valid Eulerian trail.
+
+Query 2: 2→3, length 3
+Eulerian trail: 2 → 3 → 1 → 2 → 3
+Length: 4 edges ✗ (too long)
+Alternative: 2 → 3 (length 1) ✗ (too short)
+```
+
+**Correct Analysis:**
+```
+Query 1: 1→2, length 2
+Possible trail: 1 → 2 → 3 → 1 → 2
+But this uses edge (1,2) twice - not valid!
+
+Valid trail: 1 → 2 → 3 → 1 → 2
+Wait, this still uses (1,2) twice...
+
+Actually, let me check the problem again:
+Eulerian trail uses each edge exactly once.
+
+Query 1: 1→2, length 2
+Trail: 1 → 2 → 3 → 1 → 2
+Edges used: (1,2), (2,3), (3,1), (1,2)
+Problem: (1,2) used twice!
+
+No valid Eulerian trail of length 2 from 1 to 2.
+```
+
+**Matrix Exponentiation for Eulerian Trails:**
+```
+Adjacency Matrix A:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+
+A² (paths of length 2):
+    1  2  3
+1 [ 0  0  1 ]  ← A[1][3] = 1 (path 1→2→3)
+2 [ 1  0  0 ]  ← A[2][1] = 1 (path 2→3→1)
+3 [ 0  1  0 ]  ← A[3][2] = 1 (path 3→1→2)
+
+A³ (paths of length 3):
+    1  2  3
+1 [ 1  0  0 ]  ← A[1][1] = 1 (path 1→2→3→1)
+2 [ 0  1  0 ]  ← A[2][2] = 1 (path 2→3→1→2)
+3 [ 0  0  1 ]  ← A[3][3] = 1 (path 3→1→2→3)
+```
+
+**Eulerian Trail Properties:**
+```
+For Eulerian Trail:
+- Must use every edge exactly once
+- Can start and end at different vertices
+- Length = number of edges in graph
+- Graph must be connected
+- At most 2 vertices can have odd degree
+```
+
 ## Solution Progression
 
 ### Approach 1: Matrix Exponentiation for Eulerian Trails - O(n³ log k)

@@ -32,6 +32,81 @@ Explanation:
 Add edge (4, 1) to make the graph strongly connected.
 ```
 
+### 📊 Visual Example
+
+**Input Graph:**
+```
+    1 ──→ 2 ──→ 3 ──→ 4
+```
+
+**Strongly Connected Components (SCCs):**
+```
+SCC 1: {1}
+SCC 2: {2}
+SCC 3: {3}
+SCC 4: {4}
+
+Each vertex is its own SCC (no cycles)
+```
+
+**Condensation Graph:**
+```
+SCC1 ──→ SCC2 ──→ SCC3 ──→ SCC4
+```
+
+**Strong Connectivity Analysis:**
+```
+Current State:
+- 4 separate SCCs
+- No path from SCC4 back to SCC1
+- Graph is not strongly connected
+
+Required:
+- Add edge from SCC4 to SCC1: 4 → 1
+- This creates a cycle: 1 → 2 → 3 → 4 → 1
+- All vertices become reachable from each other
+```
+
+**Solution: Add Edge (4, 1)**
+```
+After adding edge (4, 1):
+    1 ──→ 2 ──→ 3 ──→ 4
+    ↑                   │
+    └───────────────────┘
+
+New SCCs:
+SCC 1: {1, 2, 3, 4} (all vertices strongly connected)
+
+Strong connectivity achieved with 1 edge!
+```
+
+**Algorithm Visualization:**
+```
+Step 1: Find SCCs using Kosaraju's algorithm
+SCCs: {1}, {2}, {3}, {4}
+
+Step 2: Build condensation graph
+Nodes: {SCC1, SCC2, SCC3, SCC4}
+Edges: {(SCC1, SCC2), (SCC2, SCC3), (SCC3, SCC4)}
+
+Step 3: Count sources and sinks
+Sources: 1 (SCC1)
+Sinks: 1 (SCC4)
+
+Step 4: Calculate minimum edges
+min_edges = max(sources, sinks) = max(1, 1) = 1
+```
+
+**General Formula:**
+```
+For strongly connected graph:
+min_edges = max(sources, sinks)
+
+Where:
+- sources = SCCs with in-degree 0
+- sinks = SCCs with out-degree 0
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem
