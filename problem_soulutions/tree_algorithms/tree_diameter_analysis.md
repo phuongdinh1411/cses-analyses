@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/tree_diameter_analysis
 
 # Tree Diameter - Longest Path in Tree
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand tree diameter problems and longest path algorithms in trees
+- [ ] **Objective 2**: Apply DFS-based algorithms to find the diameter of a tree efficiently
+- [ ] **Objective 3**: Implement efficient tree diameter algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize tree diameter calculation using DFS, BFS, and tree traversal techniques
+- [ ] **Objective 5**: Handle edge cases in tree diameter (single node, linear tree, star tree)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: DFS, BFS, tree traversal, tree diameter, longest path algorithms, tree algorithms
+- **Data Structures**: Trees, adjacency lists, tree representation, path tracking, distance tracking
+- **Mathematical Concepts**: Tree theory, graph theory, path mathematics, diameter analysis, tree properties
+- **Programming Skills**: Tree traversal implementation, DFS implementation, BFS implementation, tree algorithms
+- **Related Problems**: Tree Distances (distance calculation), Tree algorithms, Graph algorithms
+
 ## 📋 Problem Description
 
 Given a tree with n nodes, find the diameter of the tree (the longest path between any two nodes).

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/company_queries_iv_analysis
 
 # Company Queries IV - Employees at Exactly K Levels Below
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand tree level query problems and distance-based node counting algorithms
+- [ ] **Objective 2**: Apply BFS or DFS to count nodes at specific distances from a given node
+- [ ] **Objective 3**: Implement efficient level query algorithms with O(n) preprocessing and O(1) query time complexity
+- [ ] **Objective 4**: Optimize level queries using tree traversal, distance calculation, and tree properties
+- [ ] **Objective 5**: Handle edge cases in level queries (k = 0, k > tree height, root node, large trees)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: BFS, DFS, tree traversal, level queries, distance calculation, tree algorithms
+- **Data Structures**: Trees, adjacency lists, level tracking, distance tracking, tree representation
+- **Mathematical Concepts**: Tree theory, level mathematics, distance mathematics, tree properties
+- **Programming Skills**: BFS implementation, DFS implementation, tree traversal, level counting, algorithm implementation
+- **Related Problems**: Company Queries I (ancestor queries), Tree algorithms, Level-based problems
+
 ## 📋 Problem Description
 
 A company has n employees, numbered 1,2,…,n. Each employee except 1 has exactly one superior. Given q queries, for each query find the number of employees that are exactly k levels below an employee.

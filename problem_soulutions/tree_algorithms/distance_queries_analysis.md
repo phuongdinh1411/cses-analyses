@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/distance_queries_analysis
 
 # Distance Queries - Tree Distance Between Two Nodes
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand tree distance query problems and distance calculation algorithms
+- [ ] **Objective 2**: Apply Lowest Common Ancestor (LCA) technique to efficiently calculate tree distances
+- [ ] **Objective 3**: Implement efficient distance query algorithms with O(log n) query time complexity
+- [ ] **Objective 4**: Optimize distance queries using LCA, binary lifting, and tree distance analysis
+- [ ] **Objective 5**: Handle edge cases in distance queries (same node, adjacent nodes, root node, large trees)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Lowest Common Ancestor (LCA), binary lifting, tree traversal, distance calculation, tree algorithms
+- **Data Structures**: Trees, LCA tables, binary lifting tables, distance tracking, tree representation
+- **Mathematical Concepts**: Tree theory, LCA mathematics, distance mathematics, binary lifting theory
+- **Programming Skills**: LCA implementation, binary lifting implementation, tree traversal, algorithm implementation
+- **Related Problems**: Path Queries (path operations), Company Queries (ancestor queries), Tree algorithms
+
 ## 📋 Problem Description
 
 Given a tree with n nodes, answer q queries about the distance between two nodes.

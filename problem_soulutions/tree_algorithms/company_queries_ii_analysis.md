@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/company_queries_ii_analysis
 
 # Company Queries II - Lowest Common Ancestor of Two Employees
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand Lowest Common Ancestor (LCA) query problems and LCA algorithms
+- [ ] **Objective 2**: Apply binary lifting technique to efficiently find LCA of any two nodes in a tree
+- [ ] **Objective 3**: Implement efficient LCA query algorithms with O(log n) query time complexity
+- [ ] **Objective 4**: Optimize LCA queries using binary lifting, sparse tables, and tree preprocessing
+- [ ] **Objective 5**: Handle edge cases in LCA queries (same node, parent-child relationship, root node, large trees)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Lowest Common Ancestor (LCA), binary lifting, tree traversal, sparse tables, tree algorithms
+- **Data Structures**: Trees, LCA tables, binary lifting tables, sparse tables, tree representation
+- **Mathematical Concepts**: Tree theory, LCA mathematics, binary lifting theory, sparse table mathematics
+- **Programming Skills**: LCA implementation, binary lifting implementation, sparse table implementation, algorithm implementation
+- **Related Problems**: Company Queries I (ancestor queries), Distance Queries (distance calculation), Tree algorithms
+
 ## 📋 Problem Description
 
 A company has n employees, numbered 1,2,…,n. Each employee except 1 has exactly one superior. Given q queries, for each query find the lowest common ancestor (LCA) of two employees.

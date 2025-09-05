@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/subtree_queries_analysis
 
 # Subtree Queries - Dynamic Subtree Sum with Updates
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand subtree query problems and dynamic tree operations with updates
+- [ ] **Objective 2**: Apply Euler Tour technique with segment trees or binary indexed trees for subtree queries
+- [ ] **Objective 3**: Implement efficient subtree query algorithms with O(log n) update and query time complexity
+- [ ] **Objective 4**: Optimize subtree operations using Euler Tour, segment trees, and range query data structures
+- [ ] **Objective 5**: Handle edge cases in subtree queries (single node, linear tree, large trees, frequent updates)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Euler Tour technique, segment trees, binary indexed trees, subtree queries, range queries, tree algorithms
+- **Data Structures**: Trees, segment trees, binary indexed trees, Euler Tour arrays, range query structures, tree representation
+- **Mathematical Concepts**: Tree theory, range query mathematics, Euler Tour theory, segment tree mathematics
+- **Programming Skills**: Segment tree implementation, binary indexed tree implementation, Euler Tour implementation, algorithm implementation
+- **Related Problems**: Path Queries (path queries), Range Queries (range query problems), Tree algorithms
+
 ## 📋 Problem Description
 
 Given a tree with n nodes, each node has a value. Process q queries. Each query is either:

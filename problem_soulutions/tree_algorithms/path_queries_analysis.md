@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/path_queries_analysis
 
 # Path Queries - Sum of Values on Path Between Two Nodes
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand tree path query problems and path sum calculation algorithms
+- [ ] **Objective 2**: Apply Lowest Common Ancestor (LCA) technique to efficiently calculate path sums
+- [ ] **Objective 3**: Implement efficient path query algorithms with O(log n) query time complexity
+- [ ] **Objective 4**: Optimize path queries using LCA, binary lifting, and tree path analysis
+- [ ] **Objective 5**: Handle edge cases in path queries (same node, adjacent nodes, root node, large trees)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Lowest Common Ancestor (LCA), binary lifting, tree traversal, path queries, tree algorithms
+- **Data Structures**: Trees, LCA tables, binary lifting tables, path tracking, tree representation
+- **Mathematical Concepts**: Tree theory, LCA mathematics, path mathematics, binary lifting theory
+- **Programming Skills**: LCA implementation, binary lifting implementation, tree traversal, algorithm implementation
+- **Related Problems**: Distance Queries (distance calculation), Company Queries (ancestor queries), Tree algorithms
+
 ## 📋 Problem Description
 
 Given a tree with n nodes, each node has a value. Process q queries. Each query asks for the sum of values on the path between two nodes.

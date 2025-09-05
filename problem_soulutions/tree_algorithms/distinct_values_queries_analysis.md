@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/distinct_values_queries_analysis
 
 # Distinct Values Queries - Distinct Colors in Subtree
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand distinct values query problems and subtree distinct counting algorithms
+- [ ] **Objective 2**: Apply Euler Tour technique with segment trees or binary indexed trees for distinct value queries
+- [ ] **Objective 3**: Implement efficient distinct values query algorithms with O(log n) query time complexity
+- [ ] **Objective 4**: Optimize distinct value queries using Euler Tour, segment trees, and range query data structures
+- [ ] **Objective 5**: Handle edge cases in distinct values queries (single node, all same colors, large trees, frequent queries)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Euler Tour technique, segment trees, binary indexed trees, distinct value counting, subtree queries, tree algorithms
+- **Data Structures**: Trees, segment trees, binary indexed trees, Euler Tour arrays, distinct value tracking, tree representation
+- **Mathematical Concepts**: Tree theory, distinct value mathematics, Euler Tour theory, segment tree mathematics
+- **Programming Skills**: Segment tree implementation, binary indexed tree implementation, Euler Tour implementation, algorithm implementation
+- **Related Problems**: Subtree Queries (subtree operations), Range Queries (range query problems), Tree algorithms
+
 ## 📋 Problem Description
 
 Given a tree with n nodes, each node has a color. Process q queries. Each query asks for the number of distinct colors in the subtree of a node.

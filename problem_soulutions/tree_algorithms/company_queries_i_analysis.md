@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/company_queries_i_analysis
 
 # Company Queries I - K-th Superior of Employee
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand ancestor query problems and binary lifting technique for tree queries
+- [ ] **Objective 2**: Apply binary lifting to efficiently find k-th ancestors in tree structures
+- [ ] **Objective 3**: Implement efficient ancestor query algorithms with O(log n) query time complexity
+- [ ] **Objective 4**: Optimize tree ancestor queries using binary lifting, sparse tables, and preprocessing
+- [ ] **Objective 5**: Handle edge cases in ancestor queries (k > tree height, root node, invalid queries)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Binary lifting, ancestor queries, tree traversal, sparse tables, tree algorithms
+- **Data Structures**: Trees, sparse tables, binary lifting tables, ancestor tracking, query structures
+- **Mathematical Concepts**: Binary representation, tree theory, ancestor mathematics, lifting theory
+- **Programming Skills**: Binary lifting implementation, tree traversal, sparse table implementation, algorithm implementation
+- **Related Problems**: Company Queries II (LCA queries), Tree algorithms, Binary lifting problems
+
 ## 📋 Problem Description
 
 A company has n employees, numbered 1,2,…,n. Each employee except 1 has exactly one superior. Given q queries, for each query find the k-th superior of an employee.

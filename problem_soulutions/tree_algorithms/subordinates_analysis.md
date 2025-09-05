@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/subordinates_analysis
 
 # Subordinates - Tree Subtree Size Calculation
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand tree subtree size calculation problems and hierarchical structure analysis
+- [ ] **Objective 2**: Apply DFS to calculate subtree sizes efficiently for all nodes in a tree
+- [ ] **Objective 3**: Implement efficient subtree size algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize subtree size calculation using DFS, tree traversal, and recursive algorithms
+- [ ] **Objective 5**: Handle edge cases in subtree size calculation (single node, linear tree, star tree, large trees)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: DFS, tree traversal, subtree size calculation, recursive algorithms, tree algorithms
+- **Data Structures**: Trees, adjacency lists, subtree tracking, size tracking, tree representation
+- **Mathematical Concepts**: Tree theory, subtree mathematics, size calculation, recursive mathematics
+- **Programming Skills**: DFS implementation, tree traversal, recursive algorithms, subtree counting, algorithm implementation
+- **Related Problems**: Company Queries III (subtree queries), Tree algorithms, Subtree problems
+
 ## 📋 Problem Description
 
 You are given a company hierarchy with a tree structure. The company has n employees, numbered 1,2,…,n. Each employee except 1 has exactly one superior. Your task is to find for each employee the number of subordinates.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/tree_matching_analysis
 
 # Tree Matching - Maximum Matching in Trees
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand maximum matching problems in trees and matching algorithms
+- [ ] **Objective 2**: Apply dynamic programming or greedy algorithms to find maximum matching in trees
+- [ ] **Objective 3**: Implement efficient tree matching algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize tree matching using dynamic programming, greedy approaches, and tree properties
+- [ ] **Objective 5**: Handle edge cases in tree matching (single node, linear tree, star tree, no matching possible)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Maximum matching, dynamic programming, greedy algorithms, tree algorithms, matching theory
+- **Data Structures**: Trees, adjacency lists, matching tracking, edge tracking, tree representation
+- **Mathematical Concepts**: Matching theory, tree theory, graph theory, optimization mathematics, matching analysis
+- **Programming Skills**: Dynamic programming implementation, tree traversal, matching algorithms, algorithm implementation
+- **Related Problems**: Tree algorithms, Matching problems, Dynamic programming problems
+
 ## 📋 Problem Description
 
 Given a tree with n nodes, find the maximum number of edges that can be removed so that the remaining graph is a matching (each node has degree at most 1).

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/tree_distances_ii_analysis
 
 # Tree Distances II - Sum of Distances from Each Node
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand tree distance problems and sum of distances calculation algorithms
+- [ ] **Objective 2**: Apply dynamic programming with rerooting technique to calculate sum of distances efficiently
+- [ ] **Objective 3**: Implement efficient tree distance algorithms with O(n) time complexity using rerooting
+- [ ] **Objective 4**: Optimize tree distance calculation using dynamic programming, rerooting, and tree properties
+- [ ] **Objective 5**: Handle edge cases in tree distances (single node, linear tree, star tree, large trees)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming on trees, rerooting technique, tree traversal, distance calculation, tree algorithms
+- **Data Structures**: Trees, adjacency lists, DP tables, distance tracking, subtree tracking, tree representation
+- **Mathematical Concepts**: Tree theory, distance mathematics, rerooting theory, dynamic programming mathematics
+- **Programming Skills**: Dynamic programming implementation, tree traversal, rerooting implementation, algorithm implementation
+- **Related Problems**: Tree Distances I (maximum distance), Tree algorithms, Dynamic programming problems
+
 ## 📋 Problem Description
 
 Given a tree with n nodes, find for each node the sum of distances to all other nodes.

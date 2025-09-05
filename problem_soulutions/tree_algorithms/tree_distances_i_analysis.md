@@ -6,6 +6,24 @@ permalink: /problem_soulutions/tree_algorithms/tree_distances_i_analysis
 
 # Tree Distances I - Maximum Distance from Each Node
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand tree distance problems and maximum distance calculation algorithms
+- [ ] **Objective 2**: Apply dynamic programming on trees to find maximum distances from each node
+- [ ] **Objective 3**: Implement efficient tree distance algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize tree distance calculation using dynamic programming, tree traversal, and tree properties
+- [ ] **Objective 5**: Handle edge cases in tree distances (single node, linear tree, star tree, large trees)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming on trees, tree traversal, distance calculation, tree algorithms, DP on trees
+- **Data Structures**: Trees, adjacency lists, DP tables, distance tracking, subtree tracking, tree representation
+- **Mathematical Concepts**: Tree theory, distance mathematics, dynamic programming mathematics, tree properties
+- **Programming Skills**: Dynamic programming implementation, tree traversal, distance calculation, algorithm implementation
+- **Related Problems**: Tree Distances II (sum of distances), Tree algorithms, Dynamic programming problems
+
 ## 📋 Problem Description
 
 Given a tree with n nodes, find for each node the maximum distance to any other node.
