@@ -32,69 +32,6 @@ The Prufer code [2, 3] represents the tree:
 1 -- 2 -- 3 -- 4
 ```
 
-### 📊 Visual Example
-
-**Input Tree:**
-```
-    1 ──── 2 ──── 3 ──── 4
-```
-
-**Prufer Code Construction Process:**
-```
-Step 1: Find leaf with smallest label
-Tree: 1-2-3-4
-Leaves: 1, 4
-Smallest leaf: 1
-Neighbor of 1: 2
-Prufer code: [2]
-Remove edge (1,2)
-
-Step 2: Find leaf with smallest label
-Tree: 2-3-4
-Leaves: 2, 4
-Smallest leaf: 2
-Neighbor of 2: 3
-Prufer code: [2, 3]
-Remove edge (2,3)
-
-Step 3: Only 2 vertices left
-Tree: 3-4
-Stop (only 2 vertices remain)
-
-Final Prufer code: [2, 3]
-```
-
-**Prufer Code Properties:**
-```
-For tree with n vertices:
-- Prufer code has length n-2
-- Each element is a vertex label
-- Represents unique labeled tree
-- Can reconstruct original tree
-```
-
-**Tree Reconstruction from Prufer Code:**
-```
-Prufer code: [2, 3]
-Missing vertices: [1, 4] (not in code)
-
-Step 1: Find smallest missing vertex
-Missing: [1, 4], Smallest: 1
-Connect 1 to first code element: 1-2
-Remaining code: [3]
-
-Step 2: Find smallest missing vertex
-Missing: [4], Smallest: 4
-Connect 4 to next code element: 4-3
-Remaining code: []
-
-Step 3: Connect remaining vertices
-Remaining: 2, 3
-Connect: 2-3
-
-Final tree: 1-2-3-4
-```
-
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

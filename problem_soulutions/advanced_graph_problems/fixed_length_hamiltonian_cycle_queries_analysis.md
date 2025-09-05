@@ -38,61 +38,6 @@ For query (1,3): 1 Hamiltonian cycle of length 3 starting and ending at node 1
 For query (2,3): 1 Hamiltonian cycle of length 3 starting and ending at node 2
 ```
 
-### 📊 Visual Example
-
-**Input Graph (Adjacency Matrix):**
-```
-    1 ──→ 2 ──→ 3
-    ↑             │
-    └─────────────┘
-
-Adjacency Matrix:
-    1  2  3
-1 [ 0  1  0 ]
-2 [ 0  0  1 ]
-3 [ 1  0  0 ]
-```
-
-**Hamiltonian Cycle Analysis:**
-```
-Query 1: Node 1, length 3
-Hamiltonian cycle: 1 → 2 → 3 → 1
-Length: 3 edges ✓
-Visits all 3 vertices exactly once ✓
-Result: 1
-
-Query 2: Node 2, length 3
-Hamiltonian cycle: 2 → 3 → 1 → 2
-Length: 3 edges ✓
-Visits all 3 vertices exactly once ✓
-Result: 1
-```
-
-**Matrix Exponentiation for Hamiltonian Cycles:**
-```
-Adjacency Matrix A:
-    1  2  3
-1 [ 0  1  0 ]
-2 [ 0  0  1 ]
-3 [ 1  0  0 ]
-
-A³ (paths of length 3):
-    1  2  3
-1 [ 1  0  0 ]  ← A[1][1] = 1 (cycle 1→2→3→1)
-2 [ 0  1  0 ]  ← A[2][2] = 1 (cycle 2→3→1→2)
-3 [ 0  0  1 ]  ← A[3][3] = 1 (cycle 3→1→2→3)
-```
-
-**Hamiltonian Cycle Properties:**
-```
-For Hamiltonian Cycle:
-- Must visit every vertex exactly once
-- Must start and end at the same vertex
-- Length = number of vertices
-- Graph must be strongly connected
-- Each vertex has exactly one incoming and one outgoing edge
-```
-
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem
