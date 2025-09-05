@@ -234,6 +234,138 @@ test_solution()
 - **Optimal Algorithm**: Best known approach for this problem
 - **Edge Case Handling**: Properly handles no valid subarray case
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n=5, x=7, arr=[2, -1, 3, 5, -2]
+Output: 3 (longest subarray with sum 7)
+```
+
+### Array Visualization
+```
+Array: [2, -1, 3, 5, -2]
+Index:  0   1  2  3   4
+```
+
+### Prefix Sum Calculation
+```
+Index:  -1   0   1   2   3   4
+Array:  [ ]  [2] [-1] [3] [5] [-2]
+Prefix:  0    2   1   4   9   7
+
+Prefix[0] = 0
+Prefix[1] = 0 + 2 = 2
+Prefix[2] = 2 + (-1) = 1
+Prefix[3] = 1 + 3 = 4
+Prefix[4] = 4 + 5 = 9
+Prefix[5] = 9 + (-2) = 7
+```
+
+### Subarray Sum Analysis
+```
+Target sum: x = 7
+
+For each position i, find earliest j < i where:
+Prefix[i] - Prefix[j] = x
+Prefix[j] = Prefix[i] - x
+
+Position 0: Prefix[0] = 2
+Target: 2 - 7 = -5
+Earliest index with prefix sum -5: not found
+Longest subarray ending at 0: 0
+
+Position 1: Prefix[1] = 1
+Target: 1 - 7 = -6
+Earliest index with prefix sum -6: not found
+Longest subarray ending at 1: 0
+
+Position 2: Prefix[2] = 4
+Target: 4 - 7 = -3
+Earliest index with prefix sum -3: not found
+Longest subarray ending at 2: 0
+
+Position 3: Prefix[3] = 9
+Target: 9 - 7 = 2
+Earliest index with prefix sum 2: 0
+Longest subarray ending at 3: 3 - 0 = 3
+Subarray: arr[1:4] = [-1, 3, 5] → sum = 7, length = 3
+
+Position 4: Prefix[4] = 7
+Target: 7 - 7 = 0
+Earliest index with prefix sum 0: -1
+Longest subarray ending at 4: 4 - (-1) = 5
+Subarray: arr[0:5] = [2, -1, 3, 5, -2] → sum = 7, length = 5
+
+Maximum length: max(0, 0, 0, 3, 5) = 5
+```
+
+### Hash Map Tracking
+```
+Hash map: {prefix_sum → first_index}
+
+Initialize: {0: -1} (empty subarray at index -1)
+
+i=0: prefix=2, target=2-7=-5
+- Longest subarray: 0
+- Update map: {0: -1, 2: 0}
+
+i=1: prefix=1, target=1-7=-6
+- Longest subarray: 0
+- Update map: {0: -1, 2: 0, 1: 1}
+
+i=2: prefix=4, target=4-7=-3
+- Longest subarray: 0
+- Update map: {0: -1, 2: 0, 1: 1, 4: 2}
+
+i=3: prefix=9, target=9-7=2
+- Longest subarray: 3 - 0 = 3
+- Update map: {0: -1, 2: 0, 1: 1, 4: 2, 9: 3}
+
+i=4: prefix=7, target=7-7=0
+- Longest subarray: 4 - (-1) = 5
+- Update map: {0: -1, 2: 0, 1: 1, 4: 2, 9: 3, 7: 4}
+
+Maximum length: 5
+```
+
+### Verification
+```
+Subarray arr[0:5] = [2, -1, 3, 5, -2]
+Sum = 2 + (-1) + 3 + 5 + (-2) = 7 ✓
+Length = 5
+
+This is the longest subarray with sum 7.
+```
+
+### Different Examples
+```
+Example 1: arr=[1, 2, 3, 4, 5], x=9
+- Subarray [2, 3, 4] has sum 9, length 3
+- Subarray [4, 5] has sum 9, length 2
+- Longest: 3
+
+Example 2: arr=[1, -1, 1, -1, 1], x=1
+- Multiple subarrays with sum 1
+- Longest: 5 (entire array)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Prefix Sum +    │ O(n)         │ O(n)         │ Hash map     │
+│ Hash Map        │              │              │ first index  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n²)        │ O(1)         │ Check all    │
+│                 │              │              │ subarrays    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sliding Window  │ O(n)         │ O(1)         │ Only for     │
+│                 │              │              │ positive     │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Prefix Sum Technique**

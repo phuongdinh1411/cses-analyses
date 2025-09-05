@@ -208,6 +208,123 @@ test_solution()
 - **Hash Map**: Tracks frequency of each distinct value
 - **Optimal Algorithm**: Best known approach for this problem
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n=5, k=2, arr=[1, 2, 1, 3, 4]
+Output: 3 (subarrays with exactly 2 distinct values)
+```
+
+### Array Visualization
+```
+Array: [1, 2, 1, 3, 4]
+Index:  0  1  2  3  4
+```
+
+### Subarray Analysis
+```
+Target: exactly k=2 distinct values
+
+Subarray [0:2] = [1, 2] → distinct: {1, 2} → count = 2 ✓
+Subarray [1:3] = [2, 1] → distinct: {1, 2} → count = 2 ✓  
+Subarray [2:4] = [1, 3] → distinct: {1, 3} → count = 2 ✓
+Subarray [0:3] = [1, 2, 1] → distinct: {1, 2} → count = 2 ✓
+Subarray [1:4] = [2, 1, 3] → distinct: {1, 2, 3} → count = 3 ✗
+Subarray [0:4] = [1, 2, 1, 3] → distinct: {1, 2, 3} → count = 3 ✗
+Subarray [2:5] = [1, 3, 4] → distinct: {1, 3, 4} → count = 3 ✗
+
+Valid subarrays: [1,2], [2,1], [1,3]
+Total: 3
+```
+
+### Inclusion-Exclusion Approach
+```
+Count exactly k = Count at most k - Count at most (k-1)
+
+For k=2:
+Count at most 2 - Count at most 1 = Count exactly 2
+
+Count at most 2:
+- [1] → 1 distinct ✓
+- [1,2] → 2 distinct ✓
+- [1,2,1] → 2 distinct ✓
+- [1,2,1,3] → 3 distinct ✗
+- [2] → 1 distinct ✓
+- [2,1] → 2 distinct ✓
+- [2,1,3] → 3 distinct ✗
+- [1] → 1 distinct ✓
+- [1,3] → 2 distinct ✓
+- [1,3,4] → 3 distinct ✗
+- [3] → 1 distinct ✓
+- [3,4] → 2 distinct ✓
+- [4] → 1 distinct ✓
+
+Count at most 2: 8
+
+Count at most 1:
+- [1] → 1 distinct ✓
+- [2] → 1 distinct ✓
+- [1] → 1 distinct ✓
+- [3] → 1 distinct ✓
+- [4] → 1 distinct ✓
+
+Count at most 1: 5
+
+Count exactly 2: 8 - 5 = 3 ✓
+```
+
+### Sliding Window for "At Most K"
+```
+Function: count_at_most_k_distinct(arr, k)
+
+Array: [1, 2, 1, 3, 4], k=2
+
+left=0, right=0: window=[1], distinct=1 ≤ 2 ✓
+left=0, right=1: window=[1,2], distinct=2 ≤ 2 ✓
+left=0, right=2: window=[1,2,1], distinct=2 ≤ 2 ✓
+left=0, right=3: window=[1,2,1,3], distinct=3 > 2 ✗
+  → shrink: left=1, window=[2,1,3], distinct=3 > 2 ✗
+  → shrink: left=2, window=[1,3], distinct=2 ≤ 2 ✓
+left=2, right=4: window=[1,3,4], distinct=3 > 2 ✗
+  → shrink: left=3, window=[3,4], distinct=2 ≤ 2 ✓
+
+Valid windows: [1], [1,2], [1,2,1], [1,3], [3,4]
+Count: 5
+```
+
+### Step-by-Step Process
+```
+Step 1: Count subarrays with at most 2 distinct values
+- Use sliding window technique
+- Expand right pointer, shrink left when needed
+- Count: 8
+
+Step 2: Count subarrays with at most 1 distinct value  
+- Use sliding window technique
+- Count: 5
+
+Step 3: Calculate exactly 2 distinct values
+- Result = 8 - 5 = 3
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Inclusion-      │ O(n)         │ O(n)         │ At most k    │
+│ Exclusion       │              │              │ - at most    │
+│                 │              │              │ (k-1)        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n²)        │ O(n)         │ Check all    │
+│                 │              │              │ subarrays    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Direct Sliding  │ O(n)         │ O(n)         │ Track        │
+│ Window          │              │              │ exactly k    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Inclusion-Exclusion Principle**

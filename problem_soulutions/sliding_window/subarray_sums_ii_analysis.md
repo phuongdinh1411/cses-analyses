@@ -169,6 +169,117 @@ test_solution()
 - **Difference Calculation**: Uses prefix_sum - x to find target subarrays
 - **Optimal Algorithm**: Best known approach for this problem
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n=5, x=7, arr=[2, -1, 3, 5, -2]
+Output: 2 (subarrays with sum 7)
+```
+
+### Array Visualization
+```
+Array: [2, -1, 3, 5, -2]
+Index:  0   1  2  3   4
+```
+
+### Prefix Sum Calculation
+```
+Index:  -1   0   1   2   3   4
+Array:  [ ]  [2] [-1] [3] [5] [-2]
+Prefix:  0    2   1   4   9   7
+
+Prefix[0] = 0
+Prefix[1] = 0 + 2 = 2
+Prefix[2] = 2 + (-1) = 1
+Prefix[3] = 1 + 3 = 4
+Prefix[4] = 4 + 5 = 9
+Prefix[5] = 9 + (-2) = 7
+```
+
+### Subarray Sum Analysis
+```
+Target sum: x = 7
+
+For each position i, find how many j < i have:
+Prefix[i] - Prefix[j] = x
+Prefix[j] = Prefix[i] - x
+
+Position 0: Prefix[0] = 2
+Target: 2 - 7 = -5
+Count of prefix sum -5: 0
+Subarrays ending at 0: 0
+
+Position 1: Prefix[1] = 1  
+Target: 1 - 7 = -6
+Count of prefix sum -6: 0
+Subarrays ending at 1: 0
+
+Position 2: Prefix[2] = 4
+Target: 4 - 7 = -3
+Count of prefix sum -3: 0
+Subarrays ending at 2: 0
+
+Position 3: Prefix[3] = 9
+Target: 9 - 7 = 2
+Count of prefix sum 2: 1 (at position 0)
+Subarrays ending at 3: 1
+Subarray: [1,2] = arr[1:4] = [-1, 3, 5] → sum = 7
+
+Position 4: Prefix[4] = 7
+Target: 7 - 7 = 0
+Count of prefix sum 0: 1 (at position -1)
+Subarrays ending at 4: 1
+Subarray: [0,4] = arr[0:5] = [2, -1, 3, 5, -2] → sum = 7
+
+Total subarrays with sum 7: 2
+```
+
+### Hash Map Tracking
+```
+Hash map: {prefix_sum → count}
+
+Initialize: {0: 1} (empty subarray)
+
+i=0: prefix=2, target=2-7=-5
+- Count subarrays: 0
+- Update map: {0: 1, 2: 1}
+
+i=1: prefix=1, target=1-7=-6  
+- Count subarrays: 0
+- Update map: {0: 1, 2: 1, 1: 1}
+
+i=2: prefix=4, target=4-7=-3
+- Count subarrays: 0
+- Update map: {0: 1, 2: 1, 1: 1, 4: 1}
+
+i=3: prefix=9, target=9-7=2
+- Count subarrays: 1 (map[2] = 1)
+- Update map: {0: 1, 2: 1, 1: 1, 4: 1, 9: 1}
+
+i=4: prefix=7, target=7-7=0
+- Count subarrays: 1 (map[0] = 1)
+- Update map: {0: 1, 2: 1, 1: 1, 4: 1, 9: 1, 7: 1}
+
+Total: 2 subarrays
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Prefix Sum +    │ O(n)         │ O(n)         │ Hash map     │
+│ Hash Map        │              │              │ frequency    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n²)        │ O(1)         │ Check all    │
+│                 │              │              │ subarrays    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sliding Window  │ O(n)         │ O(1)         │ Only for     │
+│                 │              │              │ positive     │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Prefix Sum Technique**
