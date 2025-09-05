@@ -7,6 +7,24 @@ permalink: /problem_soulutions/sliding_window/longest_subarray_with_sum_analysis
 
 # Longest Subarray with Sum Analysis
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand sliding window problems with target sum constraints and length optimization
+- [ ] **Objective 2**: Apply sliding window technique to find longest subarray with specific sum
+- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity for sum-based problems
+- [ ] **Objective 4**: Optimize sliding window problems using two-pointer technique and sum tracking
+- [ ] **Objective 5**: Handle edge cases in sliding window problems (no solution, negative numbers, sum overflow)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Sliding window technique, two-pointer technique, subarray sum problems, window maintenance
+- **Data Structures**: Arrays, sliding window tracking, sum tracking, window boundaries, prefix sums
+- **Mathematical Concepts**: Subarray sums, window mathematics, sum optimization, prefix sum theory
+- **Programming Skills**: Two-pointer implementation, window sliding, sum calculations, algorithm implementation
+- **Related Problems**: Fixed Length Subarray Sum (fixed window), Subarray Sum problems, Sliding window problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers, find the length of the longest subarray with sum x.

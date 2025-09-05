@@ -7,6 +7,24 @@ permalink: /problem_soulutions/sliding_window/subarray_with_given_sum_analysis
 
 # Subarray with Given Sum Analysis
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand subarray sum existence problems and prefix sum techniques for sum detection
+- [ ] **Objective 2**: Apply hash map and prefix sum techniques to efficiently detect subarrays with target sum
+- [ ] **Objective 3**: Implement efficient algorithms with O(n) time complexity using prefix sums and hash maps
+- [ ] **Objective 4**: Optimize subarray sum detection using prefix sum theory and hash map techniques
+- [ ] **Objective 5**: Handle edge cases in subarray sum detection (negative numbers, zero sum, no solution, large arrays)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Prefix sums, hash maps, subarray sum problems, existence problems, prefix sum theory
+- **Data Structures**: Hash maps, prefix sum arrays, sum tracking, existence tracking, frequency tracking
+- **Mathematical Concepts**: Prefix sum theory, subarray sum mathematics, existence theory, hash map mathematics
+- **Programming Skills**: Hash map implementation, prefix sum calculation, sum detection, algorithm implementation
+- **Related Problems**: Subarray Sums I (counting version), Subarray Sum problems, Prefix sum problems, Hash map problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers and a target sum x, find if there exists a subarray with sum x.

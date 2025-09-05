@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sliding_window/subarray_distinct_values_analysis
 
 # Subarray Distinct Values - Count Subarrays with At Most K Distinct
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand sliding window problems with distinct value constraints and subarray counting
+- [ ] **Objective 2**: Apply sliding window technique to count subarrays with at most k distinct values
+- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity for distinct value problems
+- [ ] **Objective 4**: Optimize sliding window problems using hash maps and distinct value tracking
+- [ ] **Objective 5**: Handle edge cases in sliding window problems (k=1, all distinct values, empty arrays)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Sliding window technique, two-pointer technique, distinct value counting, hash map usage, subarray counting
+- **Data Structures**: Hash maps, distinct value tracking, sliding window tracking, frequency tracking, window boundaries
+- **Mathematical Concepts**: Distinct value theory, subarray counting, window mathematics, counting problems
+- **Programming Skills**: Hash map implementation, distinct value tracking, window sliding, frequency counting, algorithm implementation
+- **Related Problems**: Subarray with K Distinct (exact k distinct), Longest Substring Without Repeating Characters (distinct characters), Sliding window problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, find the number of subarrays with at most k distinct values.

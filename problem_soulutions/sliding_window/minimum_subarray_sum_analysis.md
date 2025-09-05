@@ -7,6 +7,24 @@ permalink: /problem_soulutions/sliding_window/minimum_subarray_sum_analysis
 
 # Minimum Subarray Sum Analysis
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand minimum subarray problems and the relationship with maximum subarray problems
+- [ ] **Objective 2**: Apply modified Kadane's algorithm to efficiently find minimum sum of contiguous subarrays
+- [ ] **Objective 3**: Implement efficient minimum subarray algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize minimum subarray problems using dynamic programming and greedy approaches
+- [ ] **Objective 5**: Handle edge cases in minimum subarray problems (all positive numbers, single element, empty arrays)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Modified Kadane's algorithm, dynamic programming, greedy algorithms, subarray problems, minimum sum problems
+- **Data Structures**: Arrays, dynamic programming tracking, sum tracking, minimum tracking
+- **Mathematical Concepts**: Subarray sums, dynamic programming theory, optimization problems, sum calculations
+- **Programming Skills**: Dynamic programming implementation, greedy algorithm implementation, sum calculations, algorithm implementation
+- **Related Problems**: Maximum Subarray Sum (Kadane's algorithm), Subarray Sum problems, Dynamic programming problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers, find the minimum sum of a subarray.

@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sliding_window/subarray_minimums_analysis
 
 # Subarray Minimums Sum
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand subarray minimum problems and the contribution of each element to the total sum
+- [ ] **Objective 2**: Apply stack-based algorithms to efficiently calculate the sum of minimums of all subarrays
+- [ ] **Objective 3**: Implement efficient algorithms with O(n) time complexity using monotonic stacks
+- [ ] **Objective 4**: Optimize subarray minimum problems using stack-based techniques and contribution analysis
+- [ ] **Objective 5**: Handle edge cases in subarray minimum problems (increasing/decreasing arrays, duplicate values)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Monotonic stacks, contribution analysis, subarray problems, stack-based algorithms, range queries
+- **Data Structures**: Stacks, monotonic stacks, range tracking, contribution tracking, element tracking
+- **Mathematical Concepts**: Contribution theory, subarray analysis, stack mathematics, range analysis
+- **Programming Skills**: Stack implementation, monotonic stack usage, contribution calculation, algorithm implementation
+- **Related Problems**: Subarray Maximums Sum (similar problem), Next Smaller Element (stack problems), Range query problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, find the sum of minimums of all subarrays.

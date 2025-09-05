@@ -7,6 +7,24 @@ permalink: /problem_soulutions/sliding_window/sliding_window_advertisement_analy
 
 # Sliding Window Advertisement Analysis
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand fixed-length sliding window problems and maximum sum optimization
+- [ ] **Objective 2**: Apply sliding window technique to efficiently find maximum sum of fixed-length subarrays
+- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity
+- [ ] **Objective 4**: Optimize sliding window problems using two-pointer technique and window maintenance
+- [ ] **Objective 5**: Handle edge cases in sliding window problems (window size, array boundaries, sum overflow)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Sliding window technique, two-pointer technique, subarray problems, window maintenance, maximum sum problems
+- **Data Structures**: Arrays, sliding window tracking, sum tracking, window boundaries, maximum tracking
+- **Mathematical Concepts**: Subarray sums, window mathematics, optimization problems, sum calculations
+- **Programming Skills**: Two-pointer implementation, window sliding, sum calculations, algorithm implementation
+- **Related Problems**: Fixed Length Subarray Sum (similar problem), Maximum Subarray Sum (Kadane's algorithm), Sliding window problems
+
 ## Problem Description
 
 **Problem**: Given an array of n integers and a window size k, find the maximum sum of any subarray of size k.

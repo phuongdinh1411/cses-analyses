@@ -6,6 +6,24 @@ permalink: /problem_soulutions/sliding_window/subarray_sums_i_analysis
 
 # Subarray Sums I - Count Subarrays with Sum X
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand subarray sum counting problems and prefix sum techniques
+- [ ] **Objective 2**: Apply hash map and prefix sum techniques to efficiently count subarrays with target sum
+- [ ] **Objective 3**: Implement efficient algorithms with O(n) time complexity using prefix sums and hash maps
+- [ ] **Objective 4**: Optimize subarray sum counting using prefix sum theory and hash map techniques
+- [ ] **Objective 5**: Handle edge cases in subarray sum counting (negative numbers, zero sum, large arrays)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Prefix sums, hash maps, subarray sum problems, counting problems, prefix sum theory
+- **Data Structures**: Hash maps, prefix sum arrays, sum tracking, count tracking, frequency tracking
+- **Mathematical Concepts**: Prefix sum theory, subarray sum mathematics, counting theory, hash map mathematics
+- **Programming Skills**: Hash map implementation, prefix sum calculation, sum counting, algorithm implementation
+- **Related Problems**: Subarray Sums II (similar problem), Subarray Sum problems, Prefix sum problems, Hash map problems
+
 ## 📋 Problem Description
 
 Given an array of n integers, find the number of subarrays with sum x.

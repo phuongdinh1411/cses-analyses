@@ -7,6 +7,24 @@ permalink: /problem_soulutions/sliding_window/longest_substring_without_repeatin
 
 # Longest Substring Without Repeating Characters Analysis
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand sliding window problems with character uniqueness constraints and string optimization
+- [ ] **Objective 2**: Apply sliding window technique to find longest substring without repeating characters
+- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity for string problems
+- [ ] **Objective 4**: Optimize sliding window problems using hash maps and character frequency tracking
+- [ ] **Objective 5**: Handle edge cases in sliding window problems (empty strings, single characters, all unique characters)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Sliding window technique, two-pointer technique, string processing, character frequency tracking
+- **Data Structures**: Hash maps, character frequency tracking, sliding window tracking, string manipulation
+- **Mathematical Concepts**: String analysis, character uniqueness, window mathematics, optimization problems
+- **Programming Skills**: Hash map implementation, character frequency tracking, window sliding, string processing, algorithm implementation
+- **Related Problems**: Substring problems, Character frequency problems, Sliding window problems, String optimization
+
 ## Problem Description
 
 **Problem**: Given a string, find the length of the longest substring without repeating characters.
