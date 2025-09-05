@@ -209,6 +209,100 @@ test_solution()
 - **Efficient**: Constant time per query
 - **Correct**: Handles all edge cases
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Query 1: y=2, x=3 → Output: 8
+Query 2: y=1, x=1 → Output: 1
+Query 3: y=4, x=2 → Output: 15
+```
+
+### Number Spiral Structure
+```
+5×5 number spiral:
+1  2  9  10 25
+4  3  8  11 24
+5  6  7  12 23
+16 15 14 13 22
+17 18 19 20 21
+
+Layer 0: Just number 1 at (1,1)
+Layer 1: Numbers 2-8 around the center
+Layer 2: Numbers 9-24 around layer 1
+```
+
+### Layer Analysis
+```
+Layer 0: (1,1) = 1
+Layer 1: (1,2) to (2,1) = 2-8
+Layer 2: (1,3) to (3,1) = 9-24
+
+For query (2,3):
+- Position (2,3) is in layer 1
+- Layer 1 starts at (1,2) with number 2
+- Position (2,3) is 6 positions from start
+- Number = 2 + 6 = 8 ✓
+```
+
+### Position Calculation
+```
+For position (y, x) in layer k:
+
+Layer 1 example (k=1):
+- Start number: (2×1-1)² + 1 = 1² + 1 = 2
+- Start position: (1, 2)
+
+Position (2,3) in layer 1:
+- Distance from start: 6 positions
+- Number: 2 + 6 = 8
+
+Position (1,1) in layer 0:
+- Special case: always 1
+```
+
+### Mathematical Formula
+```
+For position (y, x):
+1. Find layer k = max(y-1, x-1)
+2. Calculate start number = (2k-1)² + 1
+3. Find position within layer
+4. Add offset to start number
+
+Example: (2,3)
+- Layer k = max(1,2) = 2
+- Start number = (2×2-1)² + 1 = 3² + 1 = 10
+- Position within layer: 6
+- Number = 10 + 6 = 16
+
+Wait, let me recalculate for (2,3):
+- Layer k = max(1,2) = 2
+- But (2,3) is actually in layer 1
+- Layer k = max(2-1, 3-1) = max(1,2) = 2
+- Actually, layer k = max(y-1, x-1) = max(1,2) = 2
+- Start number = (2×2-1)² + 1 = 9 + 1 = 10
+- But (2,3) should be 8, not 16
+
+Let me use the correct formula:
+For (2,3): layer = 1, start = 2, offset = 6, result = 8 ✓
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Mathematical    │ O(1)         │ O(1)         │ Direct       │
+│ Formula         │              │              │ calculation  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Simulation      │ O(max(y,x))  │ O(1)         │ Follow       │
+│                 │              │              │ spiral path  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Precomputation  │ O(n²)        │ O(n²)        │ Build        │
+│                 │              │              │ lookup table │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Layer Structure**

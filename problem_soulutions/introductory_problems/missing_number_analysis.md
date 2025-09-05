@@ -159,6 +159,89 @@ test_solution()
 - **XOR**: Uses XOR properties to find missing number
 - **Both**: Handle all cases correctly
 
+## 🎨 Visual Example
+
+### Input Example
+```
+n = 5
+Array: [2, 3, 1, 5]
+Missing number: 4
+```
+
+### Sum Formula Approach
+```
+Expected sum of numbers 1 to 5:
+1 + 2 + 3 + 4 + 5 = 15
+
+Actual sum of given numbers:
+2 + 3 + 1 + 5 = 11
+
+Missing number = Expected sum - Actual sum
+Missing number = 15 - 11 = 4
+```
+
+### XOR Approach
+```
+XOR all numbers from 1 to n with all given numbers:
+
+Expected: 1 ⊕ 2 ⊕ 3 ⊕ 4 ⊕ 5 = 1
+Given:    2 ⊕ 3 ⊕ 1 ⊕ 5 = 1
+
+Missing = Expected ⊕ Given = 1 ⊕ 1 = 0
+
+Wait, let me recalculate:
+Expected: 1 ⊕ 2 ⊕ 3 ⊕ 4 ⊕ 5
+= 1 ⊕ 2 = 3
+= 3 ⊕ 3 = 0
+= 0 ⊕ 4 = 4
+= 4 ⊕ 5 = 1
+
+Given: 2 ⊕ 3 ⊕ 1 ⊕ 5
+= 2 ⊕ 3 = 1
+= 1 ⊕ 1 = 0
+= 0 ⊕ 5 = 5
+
+Missing = 1 ⊕ 5 = 4 ✓
+```
+
+### Step-by-Step Process
+```
+Method 1: Sum Formula
+Step 1: Calculate expected sum = n(n+1)/2 = 5×6/2 = 15
+Step 2: Calculate actual sum = 2+3+1+5 = 11
+Step 3: Missing = 15 - 11 = 4
+
+Method 2: XOR
+Step 1: XOR all numbers 1 to 5 = 1
+Step 2: XOR all given numbers = 5
+Step 3: Missing = 1 ⊕ 5 = 4
+```
+
+### Verification
+```
+Check if 4 is indeed missing:
+Given numbers: [2, 3, 1, 5]
+Expected numbers: [1, 2, 3, 4, 5]
+
+Missing number: 4 ✓
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sum Formula     │ O(n)         │ O(1)         │ Mathematical │
+│                 │              │              │ difference   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ XOR             │ O(n)         │ O(1)         │ XOR          │
+│                 │              │              │ properties   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Hash Set        │ O(n)         │ O(n)         │ Lookup       │
+│                 │              │              │ missing      │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Sum Formula**

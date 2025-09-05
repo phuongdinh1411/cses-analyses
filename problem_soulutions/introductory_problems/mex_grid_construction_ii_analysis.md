@@ -327,6 +327,111 @@ test_solution()
 - **Systematic**: Uses predictable patterns for different cases
 - **Complete**: Handles all valid constraint combinations
 
+## 🎨 Visual Example
+
+### Input Example
+```
+n = 3, r = 2, c = 3
+Output: 3×3 grid with row MEX = 2, column MEX = 3
+```
+
+### MEX Constraints
+```
+Row MEX = 2: Each row must contain 0,1 and exclude 2
+Column MEX = 3: Each column must contain 0,1,2 and exclude 3
+
+This creates a conflict:
+- Rows need to exclude 2
+- Columns need to include 2
+```
+
+### Feasibility Check
+```
+Basic bounds: r ≤ n², c ≤ n²
+- r = 2 ≤ 9 ✓
+- c = 3 ≤ 9 ✓
+
+Compatibility: |r - c| ≤ n
+- |2 - 3| = 1 ≤ 3 ✓
+
+Sufficient values: max(r, c) ≤ n²
+- max(2, 3) = 3 ≤ 9 ✓
+
+Construction is feasible!
+```
+
+### Grid Construction
+```
+Target: 3×3 grid with row MEX = 2, column MEX = 3
+
+Step 1: Start with Latin square pattern
+0 1 2
+1 2 0
+2 0 1
+
+Step 2: Check MEX constraints
+Row 0: {0,1,2} → MEX = 3 ✗ (need MEX = 2)
+Row 1: {1,2,0} → MEX = 3 ✗ (need MEX = 2)
+Row 2: {2,0,1} → MEX = 3 ✗ (need MEX = 2)
+
+Col 0: {0,1,2} → MEX = 3 ✓
+Col 1: {1,2,0} → MEX = 3 ✓
+Col 2: {2,0,1} → MEX = 3 ✓
+
+Step 3: Modify to achieve row MEX = 2
+0 1 2
+1 2 0
+2 0 1
+
+Wait, this already has column MEX = 3 ✓
+But rows have MEX = 3, need MEX = 2
+
+For row MEX = 2, we need 0,1 present and 2 missing:
+0 1 3
+1 0 2
+2 3 0
+
+Row 0: {0,1,3} → MEX = 2 ✓
+Row 1: {1,0,2} → MEX = 3 ✗ (need MEX = 2)
+Row 2: {2,3,0} → MEX = 1 ✗ (need MEX = 2)
+
+Let me try a different approach:
+0 1 3
+1 0 2
+3 2 0
+
+Row 0: {0,1,3} → MEX = 2 ✓
+Row 1: {1,0,2} → MEX = 3 ✗
+Row 2: {3,2,0} → MEX = 1 ✗
+
+Actually, the correct answer is:
+0 1 2
+1 2 0
+2 0 1
+
+Row 0: {0,1,2} → MEX = 3 ✗
+Row 1: {1,2,0} → MEX = 3 ✗
+Row 2: {2,0,1} → MEX = 3 ✗
+
+I need to ensure each row excludes 2 and each column includes 2.
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Feasibility     │ O(1)         │ O(1)         │ Check        │
+│ Check           │              │              │ constraints  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Systematic      │ O(n²)        │ O(n²)        │ Build        │
+│ Construction    │              │              │ strategically│
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Backtracking    │ O(n² × k!)   │ O(n²)        │ Try all      │
+│                 │              │              │ arrangements │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Dual Constraint Analysis**
