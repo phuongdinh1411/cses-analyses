@@ -224,6 +224,152 @@ test_solution()
 - **Range Calculation**: Uses left and right boundaries to count valid subarrays
 - **Optimal Algorithm**: Best known approach for this problem
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n=4, arr=[3, 1, 2, 4]
+Output: 23 (sum of maximums of all subarrays)
+```
+
+### Array Visualization
+```
+Array: [3, 1, 2, 4]
+Index:  0  1  2  3
+```
+
+### All Subarrays and Their Maximums
+```
+Subarray [0:1] = [3]           → max = 3
+Subarray [0:2] = [3,1]         → max = 3
+Subarray [0:3] = [3,1,2]       → max = 3
+Subarray [0:4] = [3,1,2,4]     → max = 4
+Subarray [1:2] = [1]           → max = 1
+Subarray [1:3] = [1,2]         → max = 2
+Subarray [1:4] = [1,2,4]       → max = 4
+Subarray [2:3] = [2]           → max = 2
+Subarray [2:4] = [2,4]         → max = 4
+Subarray [3:4] = [4]           → max = 4
+
+Total sum = 3+3+3+4+1+2+4+2+4+4 = 23
+```
+
+### Monotonic Stack Process (Finding Next Larger Elements)
+```
+Array: [3, 1, 2, 4]
+Index:  0  1  2  3
+
+Stack operations for next larger elements:
+Initialize: stack = []
+
+i=0: arr[0]=3
+- Stack empty, push 0
+- Stack: [0]
+- next_larger[0] = -1 (no next larger)
+
+i=1: arr[1]=1
+- arr[stack[-1]] = arr[0] = 3 > 1, continue
+- Stack: [0, 1]
+- next_larger[1] = -1 (no next larger)
+
+i=2: arr[2]=2
+- arr[stack[-1]] = arr[1] = 1 < 2, pop 1
+- next_larger[1] = 2
+- arr[stack[-1]] = arr[0] = 3 > 2, continue
+- Stack: [0, 2]
+- next_larger[2] = -1 (no next larger)
+
+i=3: arr[3]=4
+- arr[stack[-1]] = arr[2] = 2 < 4, pop 2
+- next_larger[2] = 3
+- arr[stack[-1]] = arr[0] = 3 < 4, pop 0
+- next_larger[0] = 3
+- Stack: [3]
+- next_larger[3] = -1 (no next larger)
+
+Result: next_larger = [3, 2, 3, -1]
+```
+
+### Previous Larger Elements
+```
+Array: [3, 1, 2, 4]
+Index:  0  1  2  3
+
+Stack operations for previous larger elements:
+Initialize: stack = []
+
+i=0: arr[0]=3
+- Stack empty, push 0
+- Stack: [0]
+- prev_larger[0] = -1 (no previous larger)
+
+i=1: arr[1]=1
+- arr[stack[-1]] = arr[0] = 3 > 1, continue
+- Stack: [0, 1]
+- prev_larger[1] = 0
+
+i=2: arr[2]=2
+- arr[stack[-1]] = arr[1] = 1 < 2, pop 1
+- arr[stack[-1]] = arr[0] = 3 > 2, continue
+- Stack: [0, 2]
+- prev_larger[2] = 0
+
+i=3: arr[3]=4
+- arr[stack[-1]] = arr[2] = 2 < 4, pop 2
+- arr[stack[-1]] = arr[0] = 3 < 4, pop 0
+- Stack: [3]
+- prev_larger[3] = -1 (no previous larger)
+
+Result: prev_larger = [-1, 0, 0, -1]
+```
+
+### Contribution Analysis
+```
+For each element, count subarrays where it's the maximum:
+
+Element 3 (index 0):
+- prev_larger[0] = -1, next_larger[0] = 3
+- Range where 3 is max: [0, 2] (indices 0, 1, 2)
+- Subarrays: [0:1], [0:2], [0:3] = 3 subarrays
+- Contribution: 3 × 3 = 9
+
+Element 1 (index 1):
+- prev_larger[1] = 0, next_larger[1] = 2
+- Range where 1 is max: [1, 1] (only index 1)
+- Subarrays: [1:2] = 1 subarray
+- Contribution: 1 × 1 = 1
+
+Element 2 (index 2):
+- prev_larger[2] = 0, next_larger[2] = 3
+- Range where 2 is max: [2, 2] (only index 2)
+- Subarrays: [2:3] = 1 subarray
+- Contribution: 1 × 2 = 2
+
+Element 4 (index 3):
+- prev_larger[3] = -1, next_larger[3] = -1
+- Range where 4 is max: [3, 3] (only index 3)
+- Subarrays: [3:4] = 1 subarray
+- Contribution: 1 × 4 = 4
+
+Total: 9 + 1 + 2 + 4 = 16
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Monotonic Stack │ O(n)         │ O(n)         │ Stack for    │
+│                 │              │              │ boundaries   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n³)        │ O(1)         │ Check all    │
+│                 │              │              │ subarrays    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Segment Tree    │ O(n² log n)  │ O(n)         │ Range max    │
+│                 │              │              │ queries      │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Monotonic Stack Technique**

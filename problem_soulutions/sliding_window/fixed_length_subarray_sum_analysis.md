@@ -211,6 +211,123 @@ test_solution()
 - **Optimal Algorithm**: Best known approach for this problem
 - **Edge Case Handling**: Properly handles cases where k > n
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n=5, k=3, arr=[2, 1, 3, 5, 2]
+Output: 10 (maximum sum of subarray of length 3)
+```
+
+### Array Visualization
+```
+Array: [2, 1, 3, 5, 2]
+Index:  0  1  2  3  4
+```
+
+### All Subarrays of Length 3
+```
+Subarray [0:3] = [2, 1, 3]     → sum = 2+1+3 = 6
+Subarray [1:4] = [1, 3, 5]     → sum = 1+3+5 = 9
+Subarray [2:5] = [3, 5, 2]     → sum = 3+5+2 = 10 ← maximum
+
+Maximum sum: 10
+```
+
+### Sliding Window Process
+```
+Window size: k = 3
+Initial window: indices [0, 1, 2]
+
+Step 1: Calculate initial sum
+- Window: [2, 1, 3]
+- Sum: 2 + 1 + 3 = 6
+- Max sum: 6
+
+Step 2: Slide window right
+- Remove: arr[0] = 2
+- Add: arr[3] = 5
+- Window: [1, 3, 5]
+- Sum: 6 - 2 + 5 = 9
+- Max sum: max(6, 9) = 9
+
+Step 3: Slide window right
+- Remove: arr[1] = 1
+- Add: arr[4] = 2
+- Window: [3, 5, 2]
+- Sum: 9 - 1 + 2 = 10
+- Max sum: max(9, 10) = 10
+
+Final result: 10
+```
+
+### Step-by-Step Window Movement
+```
+Initial: left=0, right=2, sum=6, max_sum=6
+
+Step 1: left=0, right=2
+- Window: [2, 1, 3]
+- Sum: 2 + 1 + 3 = 6
+- Max sum: 6
+
+Step 2: left=1, right=3
+- Remove arr[0]=2, add arr[3]=5
+- Window: [1, 3, 5]
+- Sum: 6 - 2 + 5 = 9
+- Max sum: max(6, 9) = 9
+
+Step 3: left=2, right=4
+- Remove arr[1]=1, add arr[4]=2
+- Window: [3, 5, 2]
+- Sum: 9 - 1 + 2 = 10
+- Max sum: max(9, 10) = 10
+
+Final result: 10
+```
+
+### Window States Visualization
+```
+left=0, right=2: [2,1,3]       sum=6  max=6
+left=1, right=3: [1,3,5]       sum=9  max=9
+left=2, right=4: [3,5,2]       sum=10 max=10 ← final
+
+Maximum subarray: [3, 5, 2] with sum 10
+```
+
+### Different Examples
+```
+Example 1: arr=[1, 2, 3, 4, 5], k=2
+- Subarrays: [1,2], [2,3], [3,4], [4,5]
+- Sums: 3, 5, 7, 9
+- Maximum: 9
+
+Example 2: arr=[5, 1, 3, 2, 4], k=3
+- Subarrays: [5,1,3], [1,3,2], [3,2,4]
+- Sums: 9, 6, 9
+- Maximum: 9
+
+Example 3: arr=[1, 1, 1, 1], k=2
+- Subarrays: [1,1], [1,1], [1,1]
+- Sums: 2, 2, 2
+- Maximum: 2
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sliding Window  │ O(n)         │ O(1)         │ Fixed size   │
+│                 │              │              │ window       │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(nk)        │ O(1)         │ Check all    │
+│                 │              │              │ subarrays    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Prefix Sum      │ O(n)         │ O(n)         │ Precompute   │
+│                 │              │              │ sums         │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Sliding Window Technique**

@@ -224,6 +224,146 @@ test_solution()
 - **Range Calculation**: Uses left and right boundaries to count valid subarrays
 - **Optimal Algorithm**: Best known approach for this problem
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n=4, arr=[3, 1, 2, 4]
+Output: 17 (sum of minimums of all subarrays)
+```
+
+### Array Visualization
+```
+Array: [3, 1, 2, 4]
+Index:  0  1  2  3
+```
+
+### All Subarrays and Their Minimums
+```
+Subarray [0:1] = [3]           → min = 3
+Subarray [0:2] = [3,1]         → min = 1
+Subarray [0:3] = [3,1,2]       → min = 1
+Subarray [0:4] = [3,1,2,4]     → min = 1
+Subarray [1:2] = [1]           → min = 1
+Subarray [1:3] = [1,2]         → min = 1
+Subarray [1:4] = [1,2,4]       → min = 1
+Subarray [2:3] = [2]           → min = 2
+Subarray [2:4] = [2,4]         → min = 2
+Subarray [3:4] = [4]           → min = 4
+
+Total sum = 3+1+1+1+1+1+1+2+2+4 = 17
+```
+
+### Monotonic Stack Process (Finding Next Smaller Elements)
+```
+Array: [3, 1, 2, 4]
+Index:  0  1  2  3
+
+Stack operations for next smaller elements:
+Initialize: stack = []
+
+i=0: arr[0]=3
+- Stack empty, push 0
+- Stack: [0]
+- next_smaller[0] = -1 (no next smaller)
+
+i=1: arr[1]=1
+- arr[stack[-1]] = arr[0] = 3 > 1, pop 0
+- next_smaller[0] = 1
+- Stack: [1]
+- next_smaller[1] = -1 (no next smaller)
+
+i=2: arr[2]=2
+- arr[stack[-1]] = arr[1] = 1 < 2, continue
+- Stack: [1, 2]
+- next_smaller[2] = -1 (no next smaller)
+
+i=3: arr[3]=4
+- arr[stack[-1]] = arr[2] = 2 < 4, continue
+- Stack: [1, 2, 3]
+- next_smaller[3] = -1 (no next smaller)
+
+Result: next_smaller = [1, -1, -1, -1]
+```
+
+### Previous Smaller Elements
+```
+Array: [3, 1, 2, 4]
+Index:  0  1  2  3
+
+Stack operations for previous smaller elements:
+Initialize: stack = []
+
+i=0: arr[0]=3
+- Stack empty, push 0
+- Stack: [0]
+- prev_smaller[0] = -1 (no previous smaller)
+
+i=1: arr[1]=1
+- arr[stack[-1]] = arr[0] = 3 > 1, pop 0
+- Stack: [1]
+- prev_smaller[1] = -1 (no previous smaller)
+
+i=2: arr[2]=2
+- arr[stack[-1]] = arr[1] = 1 < 2, continue
+- Stack: [1, 2]
+- prev_smaller[2] = 1
+
+i=3: arr[3]=4
+- arr[stack[-1]] = arr[2] = 2 < 4, continue
+- Stack: [1, 2, 3]
+- prev_smaller[3] = 2
+
+Result: prev_smaller = [-1, -1, 1, 2]
+```
+
+### Contribution Analysis
+```
+For each element, count subarrays where it's the minimum:
+
+Element 3 (index 0):
+- prev_smaller[0] = -1, next_smaller[0] = 1
+- Range where 3 is min: [0, 0] (only index 0)
+- Subarrays: [0:1] = 1 subarray
+- Contribution: 1 × 3 = 3
+
+Element 1 (index 1):
+- prev_smaller[1] = -1, next_smaller[1] = -1
+- Range where 1 is min: [0, 3] (indices 0, 1, 2, 3)
+- Subarrays: [0:2], [0:3], [0:4], [1:2], [1:3], [1:4] = 6 subarrays
+- Contribution: 6 × 1 = 6
+
+Element 2 (index 2):
+- prev_smaller[2] = 1, next_smaller[2] = -1
+- Range where 2 is min: [2, 3] (indices 2, 3)
+- Subarrays: [2:3], [2:4] = 2 subarrays
+- Contribution: 2 × 2 = 4
+
+Element 4 (index 3):
+- prev_smaller[3] = 2, next_smaller[3] = -1
+- Range where 4 is min: [3, 3] (only index 3)
+- Subarrays: [3:4] = 1 subarray
+- Contribution: 1 × 4 = 4
+
+Total: 3 + 6 + 4 + 4 = 17
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Monotonic Stack │ O(n)         │ O(n)         │ Stack for    │
+│                 │              │              │ boundaries   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n³)        │ O(1)         │ Check all    │
+│                 │              │              │ subarrays    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Segment Tree    │ O(n² log n)  │ O(n)         │ Range min    │
+│                 │              │              │ queries      │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Monotonic Stack Technique**
