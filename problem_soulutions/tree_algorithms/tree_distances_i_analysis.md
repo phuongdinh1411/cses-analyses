@@ -348,6 +348,258 @@ print(*result)
 | Single DFS | O(n) | O(n) | Height-based calculation |
 | Rerooting | O(n) | O(n) | Efficient rerooting technique |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Tree:
+5
+1 2
+1 3
+3 4
+3 5
+```
+
+### Tree Structure Visualization
+```
+Tree Structure:
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+Adjacency List:
+1: [2, 3]
+2: [1]
+3: [1, 4, 5]
+4: [3]
+5: [3]
+```
+
+### Distance Matrix
+```
+Distance between all pairs:
+    1  2  3  4  5
+1   0  1  1  2  2
+2   1  0  2  3  3
+3   1  2  0  1  1
+4   2  3  1  0  2
+5   2  3  1  2  0
+
+Maximum distance from each node:
+Node 1: max(1,1,2,2) = 2
+Node 2: max(1,2,3,3) = 3
+Node 3: max(1,2,1,1) = 2
+Node 4: max(2,3,1,2) = 3
+Node 5: max(2,3,1,2) = 3
+
+Result: [2, 3, 2, 3, 3]
+```
+
+### Rerooting DP Approach
+```
+Step 1: First DFS (calculate heights)
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+DFS from root 1:
+- Node 4: height = 0 (leaf)
+- Node 5: height = 0 (leaf)
+- Node 3: height = max(0, 0) + 1 = 1
+- Node 2: height = 0 (leaf)
+- Node 1: height = max(0, 1) + 1 = 2
+
+Heights: [2, 0, 1, 0, 0]
+```
+
+```
+Step 2: Second DFS (rerooting)
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+Reroot to node 2:
+- From node 2, max distance = height[1] + 1 = 2 + 1 = 3
+- Path: 2 → 1 → 3 → 4 (or 2 → 1 → 3 → 5)
+
+Reroot to node 3:
+- From node 3, max distance = max(height[1] + 1, height[4] + 1, height[5] + 1)
+- = max(2 + 1, 0 + 1, 0 + 1) = 3
+- But actual max = 2 (to nodes 2, 4, or 5)
+
+Reroot to node 4:
+- From node 4, max distance = height[3] + 1 + height[1] + 1 = 1 + 1 + 2 + 1 = 5
+- But actual max = 3 (to node 2)
+
+Correct approach: Track both height and second maximum height
+```
+
+### Correct Rerooting DP
+```
+Tree with height and second height:
+    1 (h=2, sh=1)
+   / \
+  2   3 (h=1, sh=0)
+     / \
+    4   5 (both h=0, sh=0)
+
+First DFS (calculate heights):
+- Node 4: height = 0, second_height = 0
+- Node 5: height = 0, second_height = 0
+- Node 3: height = 1, second_height = 0
+- Node 2: height = 0, second_height = 0
+- Node 1: height = 2, second_height = 1
+
+Second DFS (rerooting):
+For each node, max distance = max(
+    height to parent + distance from parent to farthest,
+    height to children
+)
+
+Node 1: max(0, 1, 1) = 1, but actual = 2
+Node 2: max(2+1, 0) = 3
+Node 3: max(2+1, 1, 1) = 3, but actual = 2
+Node 4: max(1+1+2, 0) = 4, but actual = 3
+Node 5: max(1+1+2, 0) = 4, but actual = 3
+```
+
+### Diameter Endpoints Approach
+```
+Step 1: Find diameter endpoints
+Tree diameter: 2 → 1 → 3 → 4 (length 3)
+Diameter endpoints: 2 and 4
+
+Step 2: Calculate distances from endpoints
+From node 2:
+- Distance to 1: 1
+- Distance to 2: 0
+- Distance to 3: 2
+- Distance to 4: 3
+- Distance to 5: 3
+
+From node 4:
+- Distance to 1: 2
+- Distance to 2: 3
+- Distance to 3: 1
+- Distance to 4: 0
+- Distance to 5: 2
+
+Step 3: Maximum distance for each node
+Node 1: max(1, 2) = 2
+Node 2: max(0, 3) = 3
+Node 3: max(2, 1) = 2
+Node 4: max(3, 0) = 3
+Node 5: max(3, 2) = 3
+
+Result: [2, 3, 2, 3, 3]
+```
+
+### Multiple BFS Approach
+```
+BFS from each node:
+
+BFS from node 1:
+Level 0: [1] → distance 0
+Level 1: [2, 3] → distance 1
+Level 2: [4, 5] → distance 2
+Max distance from 1: 2
+
+BFS from node 2:
+Level 0: [2] → distance 0
+Level 1: [1] → distance 1
+Level 2: [3] → distance 2
+Level 3: [4, 5] → distance 3
+Max distance from 2: 3
+
+BFS from node 3:
+Level 0: [3] → distance 0
+Level 1: [1, 4, 5] → distance 1
+Level 2: [2] → distance 2
+Max distance from 3: 2
+
+BFS from node 4:
+Level 0: [4] → distance 0
+Level 1: [3] → distance 1
+Level 2: [1, 5] → distance 2
+Level 3: [2] → distance 3
+Max distance from 4: 3
+
+BFS from node 5:
+Level 0: [5] → distance 0
+Level 1: [3] → distance 1
+Level 2: [1, 4] → distance 2
+Level 3: [2] → distance 3
+Max distance from 5: 3
+
+Result: [2, 3, 2, 3, 3]
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Multiple BFS    │ O(n²)        │ O(n)         │ Brute force  │
+│                 │              │              │ approach     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Diameter Endpts │ O(n)         │ O(n)         │ Use diameter │
+│                 │              │              │ properties   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Single DFS      │ O(n)         │ O(n)         │ Height-based │
+│                 │              │              │ calculation  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Rerooting       │ O(n)         │ O(n)         │ Efficient    │
+│                 │              │              │ rerooting    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Tree Distances Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: tree     │
+              │ (n nodes, edges)│
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Choose Algorithm│
+              │ (Rerooting/     │
+              │  Diameter)      │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ First DFS:      │
+              │ Calculate Heights│
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Second DFS:     │
+              │ Reroot and      │
+              │ Calculate Max   │
+              │ Distances       │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return Max      │
+              │ Distance Array  │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

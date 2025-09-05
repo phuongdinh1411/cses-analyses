@@ -289,6 +289,241 @@ print(diameter)
 | BFS | O(n) | O(n) | Iterative approach |
 | Dynamic Programming | O(n) | O(n) | Store heights for reuse |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Tree:
+5
+1 2
+1 3
+3 4
+3 5
+```
+
+### Tree Structure Visualization
+```
+Tree Structure:
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+Adjacency List:
+1: [2, 3]
+2: [1]
+3: [1, 4, 5]
+4: [3]
+5: [3]
+```
+
+### All Possible Paths
+```
+All paths in the tree:
+- 1 → 2 (length 1)
+- 1 → 3 (length 1)
+- 1 → 3 → 4 (length 2)
+- 1 → 3 → 5 (length 2)
+- 2 → 1 → 3 (length 2)
+- 2 → 1 → 3 → 4 (length 3) ← Longest
+- 2 → 1 → 3 → 5 (length 3) ← Longest
+- 3 → 4 (length 1)
+- 3 → 5 (length 1)
+- 4 → 3 → 5 (length 2)
+
+Diameter: 3 (longest path has 3 edges)
+```
+
+### Two DFS Approach
+```
+Step 1: First DFS from node 1
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+DFS from node 1:
+- Distance to node 1: 0
+- Distance to node 2: 1
+- Distance to node 3: 1
+- Distance to node 4: 2
+- Distance to node 5: 2
+
+Farthest node from 1: node 2 or node 4 or node 5 (all distance 2)
+Choose node 2 as farthest.
+
+Step 2: Second DFS from node 2
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+DFS from node 2:
+- Distance to node 2: 0
+- Distance to node 1: 1
+- Distance to node 3: 2
+- Distance to node 4: 3
+- Distance to node 5: 3
+
+Farthest node from 2: node 4 or node 5 (distance 3)
+Diameter = 3
+```
+
+### Single DFS Approach
+```
+Tree with heights calculated:
+    1 (height 2)
+   / \
+  2   3 (height 1)
+     / \
+    4   5 (both height 0)
+
+DFS Process:
+1. Visit node 4: height = 0, diameter = 0
+2. Visit node 5: height = 0, diameter = 0
+3. Visit node 3: 
+   - height = max(0, 0) + 1 = 1
+   - diameter = max(0, 0, 0 + 0) = 0
+4. Visit node 2: height = 0, diameter = 0
+5. Visit node 1:
+   - height = max(0, 1) + 1 = 2
+   - diameter = max(0, 0, 0 + 1) = 1
+   - But we need to track the actual longest path
+
+Correct Single DFS:
+For each node, calculate:
+- Height: longest path from this node to a leaf
+- Diameter: longest path passing through this node
+
+Node 3: height = 1, diameter = 2 (path 4-3-5)
+Node 1: height = 2, diameter = 3 (path 2-1-3-4 or 2-1-3-5)
+```
+
+### BFS Approach
+```
+Step 1: BFS from node 1
+Queue: [1]
+Distances: {1: 0}
+
+Level 0: [1]
+- Process node 1, add neighbors 2, 3
+- Distances: {1: 0, 2: 1, 3: 1}
+
+Level 1: [2, 3]
+- Process node 2, no new neighbors
+- Process node 3, add neighbors 4, 5
+- Distances: {1: 0, 2: 1, 3: 1, 4: 2, 5: 2}
+
+Farthest nodes: 4, 5 (distance 2)
+Choose node 4.
+
+Step 2: BFS from node 4
+Queue: [4]
+Distances: {4: 0}
+
+Level 0: [4]
+- Process node 4, add neighbor 3
+- Distances: {4: 0, 3: 1}
+
+Level 1: [3]
+- Process node 3, add neighbors 1, 5
+- Distances: {4: 0, 3: 1, 1: 2, 5: 2}
+
+Level 2: [1, 5]
+- Process node 1, add neighbor 2
+- Process node 5, no new neighbors
+- Distances: {4: 0, 3: 1, 1: 2, 5: 2, 2: 3}
+
+Farthest node: 2 (distance 3)
+Diameter = 3
+```
+
+### Dynamic Programming Approach
+```
+Tree with DP values:
+    1 (dp = 3)
+   / \
+  2   3 (dp = 2)
+     / \
+    4   5 (dp = 0)
+
+DP Calculation:
+- dp[node] = longest path in subtree rooted at node
+- For each node, consider:
+  1. Longest path in child subtrees
+  2. Longest path passing through this node
+
+Node 4: dp[4] = 0 (leaf)
+Node 5: dp[5] = 0 (leaf)
+Node 3: dp[3] = max(0, 0, 0+0+1) = 1, but actual longest path = 2
+Node 2: dp[2] = 0 (leaf)
+Node 1: dp[1] = max(0, 1, 0+1+1) = 2, but actual longest path = 3
+
+Correct DP: Track both height and diameter
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Two DFS         │ O(n)         │ O(n)         │ Find farthest│
+│                 │              │              │ nodes        │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Single DFS      │ O(n)         │ O(n)         │ Track heights│
+│                 │              │              │ efficiently  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ BFS             │ O(n)         │ O(n)         │ Iterative    │
+│                 │              │              │ approach     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Dynamic Prog    │ O(n)         │ O(n)         │ Store heights│
+│                 │              │              │ for reuse    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Tree Diameter Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: tree     │
+              │ (n nodes, edges)│
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Choose Algorithm│
+              │ (Two DFS/       │
+              │  Single DFS)    │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ First DFS: Find │
+              │ Farthest Node   │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Second DFS:     │
+              │ Find Farthest   │
+              │ from First      │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return Distance │
+              │ (Diameter)      │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

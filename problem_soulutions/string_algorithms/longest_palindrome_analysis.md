@@ -248,6 +248,225 @@ print(result)
 | Manacher's | O(|s|) | O(|s|) | Use palindrome properties |
 | Dynamic Programming | O(|s|²) | O(|s|²) | Build from subproblems |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+String: "babad"
+```
+
+### All Possible Palindromes
+```
+String: b a b a d
+Index:  0 1 2 3 4
+
+Single characters (always palindromes):
+- "b" at index 0
+- "a" at index 1  
+- "b" at index 2
+- "a" at index 3
+- "d" at index 4
+
+Two characters:
+- "ba" at indices 0-1: b ≠ a ✗
+- "ab" at indices 1-2: a ≠ b ✗
+- "ba" at indices 2-3: b ≠ a ✗
+- "ad" at indices 3-4: a ≠ d ✗
+
+Three characters:
+- "bab" at indices 0-2: b = b ✓ (length 3)
+- "aba" at indices 1-3: a = a ✓ (length 3)
+- "bad" at indices 2-4: b ≠ d ✗
+
+Four characters:
+- "baba" at indices 0-3: b ≠ a ✗
+- "abad" at indices 1-4: a ≠ d ✗
+
+Five characters:
+- "babad" at indices 0-4: b ≠ d ✗
+
+Longest palindromes: "bab" and "aba" (both length 3)
+```
+
+### Expand Around Centers Approach
+```
+String: b a b a d
+Index:  0 1 2 3 4
+
+Center at index 0 (odd length):
+b a b a d
+↑
+Expand: left=0, right=0
+- s[0] = s[0] ✓ → "b" (length 1)
+- left=-1, right=1 → stop (out of bounds)
+
+Center at index 1 (odd length):
+b a b a d
+  ↑
+Expand: left=1, right=1
+- s[1] = s[1] ✓ → "a" (length 1)
+- left=0, right=2: s[0] = s[2] ✓ → "bab" (length 3)
+- left=-1, right=3 → stop (out of bounds)
+
+Center at index 2 (odd length):
+b a b a d
+    ↑
+Expand: left=2, right=2
+- s[2] = s[2] ✓ → "b" (length 1)
+- left=1, right=3: s[1] = s[3] ✓ → "aba" (length 3)
+- left=0, right=4: s[0] ≠ s[4] ✗ → stop
+
+Center at index 3 (odd length):
+b a b a d
+      ↑
+Expand: left=3, right=3
+- s[3] = s[3] ✓ → "a" (length 1)
+- left=2, right=4: s[2] ≠ s[4] ✗ → stop
+
+Center at index 4 (odd length):
+b a b a d
+        ↑
+Expand: left=4, right=4
+- s[4] = s[4] ✓ → "d" (length 1)
+- left=3, right=5 → stop (out of bounds)
+
+Center between 0-1 (even length):
+b a b a d
+↑
+Expand: left=0, right=1
+- s[0] ≠ s[1] ✗ → stop
+
+Center between 1-2 (even length):
+b a b a d
+  ↑
+Expand: left=1, right=2
+- s[1] ≠ s[2] ✗ → stop
+
+Center between 2-3 (even length):
+b a b a d
+    ↑
+Expand: left=2, right=3
+- s[2] ≠ s[3] ✗ → stop
+
+Center between 3-4 (even length):
+b a b a d
+      ↑
+Expand: left=3, right=4
+- s[3] ≠ s[4] ✗ → stop
+
+Result: Longest palindrome is "bab" or "aba" (length 3)
+```
+
+### Manacher's Algorithm Process
+```
+Original: b a b a d
+Transformed: # b # a # b # a # d #
+Index:        0 1 2 3 4 5 6 7 8 9 10 11
+
+Radius array (R):
+Index: 0 1 2 3 4 5 6 7 8 9 10 11
+String: # b # a # b # a # d #
+R:      0 1 0 3 0 1 0 3 0 1 0 0
+
+Explanation:
+- R[1] = 1: "b" is palindrome of radius 1
+- R[3] = 3: "a#b#a" is palindrome of radius 3
+- R[5] = 1: "b" is palindrome of radius 1  
+- R[7] = 3: "a#b#a" is palindrome of radius 3
+- R[9] = 1: "d" is palindrome of radius 1
+
+Longest palindrome: radius 3 → length 3
+Original positions: "bab" or "aba"
+```
+
+### Dynamic Programming Approach
+```
+String: b a b a d
+Index:  0 1 2 3 4
+
+DP Table (dp[i][j] = true if s[i:j+1] is palindrome):
+    0 1 2 3 4
+0   T F T F F
+1     T F T F
+2       T F F
+3         T F
+4           T
+
+Explanation:
+- dp[0][0] = T: "b" is palindrome
+- dp[1][1] = T: "a" is palindrome
+- dp[0][2] = T: "bab" is palindrome (s[0]=s[2] and dp[1][1]=T)
+- dp[2][2] = T: "b" is palindrome
+- dp[1][3] = T: "aba" is palindrome (s[1]=s[3] and dp[2][2]=T)
+- dp[3][3] = T: "a" is palindrome
+- dp[4][4] = T: "d" is palindrome
+
+Longest palindromes: "bab" (indices 0-2) and "aba" (indices 1-3)
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Naive           │ O(n³)        │ O(1)         │ Check all    │
+│                 │              │              │ substrings   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Expand Centers  │ O(n²)        │ O(1)         │ Expand from  │
+│                 │              │              │ each center  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Dynamic Prog    │ O(n²)        │ O(n²)        │ Build from   │
+│                 │              │              │ subproblems  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Manacher's      │ O(n)         │ O(n)         │ Use palindrome│
+│                 │              │              │ properties   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Palindrome Detection Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: string s │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Choose Algorithm│
+              │ (Expand/Manacher)│
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For each center │
+              │ (position)      │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Expand left and │
+              │ right while     │
+              │ characters match│
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Update longest  │
+              │ palindrome      │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return longest  │
+              │ palindrome      │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

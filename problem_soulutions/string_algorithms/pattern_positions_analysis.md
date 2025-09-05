@@ -279,6 +279,241 @@ print(*positions)
 | Boyer-Moore | O(|s| + |p|) | O(|p|) | Use bad character rule |
 | Z-Algorithm | O(|s| + |p|) | O(|s| + |p|) | Use Z-array |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Text:    "ababab"
+Pattern: "ab"
+```
+
+### Naive Pattern Matching Process
+```
+Text:    a b a b a b
+Pattern: a b
+Index:   0 1 2 3 4 5
+
+Step 1: Check position 0
+a b a b a b
+a b
+✓ Match at position 0 (1-indexed: 1)
+
+Step 2: Check position 1
+a b a b a b
+  a b
+✗ No match (a ≠ b)
+
+Step 3: Check position 2
+a b a b a b
+    a b
+✓ Match at position 2 (1-indexed: 3)
+
+Step 4: Check position 3
+a b a b a b
+      a b
+✗ No match (a ≠ b)
+
+Step 5: Check position 4
+a b a b a b
+        a b
+✓ Match at position 4 (1-indexed: 5)
+
+Result: [1, 3, 5]
+```
+
+### KMP Algorithm Process
+```
+Text:    a b a b a b
+Pattern: a b
+LPS:     [0, 0]
+
+Step 1: i=0, j=0
+a b a b a b
+a b
+✓ a=a, i=1, j=1
+
+Step 2: i=1, j=1
+a b a b a b
+a b
+✓ b=b, i=2, j=2
+
+Step 3: j == pattern length (2)
+→ Match found at position 0 (1-indexed: 1)
+→ j = LPS[1] = 0
+
+Step 4: i=2, j=0
+a b a b a b
+    a b
+✓ a=a, i=3, j=1
+
+Step 5: i=3, j=1
+a b a b a b
+    a b
+✓ b=b, i=4, j=2
+
+Step 6: j == pattern length (2)
+→ Match found at position 2 (1-indexed: 3)
+→ j = LPS[1] = 0
+
+Step 7: i=4, j=0
+a b a b a b
+        a b
+✓ a=a, i=5, j=1
+
+Step 8: i=5, j=1
+a b a b a b
+        a b
+✓ b=b, i=6, j=2
+
+Step 9: j == pattern length (2)
+→ Match found at position 4 (1-indexed: 5)
+→ j = LPS[1] = 0
+
+Result: [1, 3, 5]
+```
+
+### Z-Algorithm Process
+```
+Combined String: ab$ababab
+Pattern: ab
+Separator: $
+
+Z-Array Construction:
+Index:  0 1 2 3 4 5 6 7 8
+String: a b $ a b a b a b
+Z:      8 0 0 2 0 2 0 2 0
+
+Explanation:
+- Z[0] = 8: Entire string matches itself
+- Z[1] = 0: "b" doesn't match prefix starting at 0
+- Z[2] = 0: "$" doesn't match prefix starting at 0
+- Z[3] = 2: "ab" matches prefix of length 2
+- Z[4] = 0: "a" doesn't match prefix starting at 0
+- Z[5] = 2: "ab" matches prefix of length 2
+- Z[6] = 0: "a" doesn't match prefix starting at 0
+- Z[7] = 2: "ab" matches prefix of length 2
+- Z[8] = 0: "b" doesn't match prefix starting at 0
+
+Pattern matches found where Z[i] == pattern length (2):
+- Z[3] = 2 → Match at position 3-2-1 = 0 (1-indexed: 1)
+- Z[5] = 2 → Match at position 5-2-1 = 2 (1-indexed: 3)
+- Z[7] = 2 → Match at position 7-2-1 = 4 (1-indexed: 5)
+
+Result: [1, 3, 5]
+```
+
+### Boyer-Moore Algorithm Process
+```
+Text:    a b a b a b
+Pattern: a b
+Index:   0 1 2 3 4 5
+
+Bad Character Table:
+- 'a': 1 (pattern length - 1 - last occurrence of 'a')
+- 'b': 0 (pattern length - 1 - last occurrence of 'b')
+
+Step 1: Start at position 1 (pattern length - 1)
+a b a b a b
+    a b
+Compare from right: b=b ✓, a=a ✓
+→ Match found at position 0 (1-indexed: 1)
+→ Shift by 1
+
+Step 2: Position 2
+a b a b a b
+      a b
+Compare from right: b=b ✓, a=a ✓
+→ Match found at position 2 (1-indexed: 3)
+→ Shift by 1
+
+Step 3: Position 4
+a b a b a b
+          a b
+Compare from right: b=b ✓, a=a ✓
+→ Match found at position 4 (1-indexed: 5)
+→ Shift by 1
+
+Result: [1, 3, 5]
+```
+
+### Pattern Matching Visualization
+```
+Text:    a b a b a b
+Pattern: a b
+         1 2 3 4 5 6  (1-indexed positions)
+
+Matches:
+Position 1: "ab"abab
+Position 3: ab"ab"ab  
+Position 5: abab"ab"
+
+Pattern appears 3 times at positions: 1, 3, 5
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Naive           │ O(n×m)       │ O(1)         │ Check each   │
+│                 │              │              │ position     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ KMP             │ O(n+m)       │ O(m)         │ Use failure  │
+│                 │              │              │ function     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Boyer-Moore     │ O(n+m)       │ O(m)         │ Bad character│
+│                 │              │              │ rule         │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Z-Algorithm     │ O(n+m)       │ O(n+m)       │ Z-array      │
+│                 │              │              │ computation  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Pattern Matching Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: text,    │
+              │ pattern         │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Choose Algorithm│
+              │ (KMP/Z-Algo/    │
+              │  Boyer-Moore)   │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Preprocess      │
+              │ Pattern         │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Search Pattern  │
+              │ in Text         │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Collect All     │
+              │ Match Positions │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return Positions│
+              │ (1-indexed)     │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

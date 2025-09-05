@@ -288,6 +288,255 @@ print((n - 1) - matching_edges)
 | Optimized Greedy | O(n) | O(n) | Most efficient approach |
 | BFS | O(n) | O(n) | Level-based processing |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Tree:
+5
+1 2
+1 3
+3 4
+3 5
+```
+
+### Tree Structure Visualization
+```
+Tree Structure:
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+All edges: (1,2), (1,3), (3,4), (3,5)
+Total edges: 4
+```
+
+### Understanding Maximum Matching
+```
+A matching is a set of edges where no two edges share a common vertex.
+Each node can be incident to at most one edge in the matching.
+
+Possible matchings:
+1. {(1,2), (3,4)} - size 2
+2. {(1,2), (3,5)} - size 2  
+3. {(1,3), (3,4)} - invalid (node 3 has degree 2)
+4. {(1,3), (3,5)} - invalid (node 3 has degree 2)
+5. {(3,4), (3,5)} - invalid (node 3 has degree 2)
+
+Maximum matching size: 2
+Edges to remove: 4 - 2 = 2
+```
+
+### Greedy DFS Approach
+```
+Step 1: Post-order traversal
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+Process nodes in order: 4, 5, 3, 2, 1
+
+Step 2: Process leaf nodes
+Node 4: unmatched, can be matched with parent
+Node 5: unmatched, can be matched with parent
+
+Step 3: Process node 3
+Node 3 has children 4 and 5
+- Both children are unmatched
+- Can match with either child
+- Choose to match with child 4: (3,4)
+- Node 3: matched
+- Node 4: matched
+- Node 5: unmatched
+
+Step 4: Process node 2
+Node 2 is a leaf, unmatched
+- Can be matched with parent 1
+- Node 2: can be matched
+
+Step 5: Process node 1
+Node 1 has children 2 and 3
+- Child 2: unmatched
+- Child 3: matched
+- Can match with child 2: (1,2)
+- Node 1: matched
+- Node 2: matched
+
+Final matching: {(1,2), (3,4)}
+Size: 2
+```
+
+### Dynamic Programming Approach
+```
+DP State: dp[node][matched] = max matching in subtree rooted at node
+- matched = true: node is matched with its parent
+- matched = false: node is not matched with its parent
+
+Tree with DP states:
+    1 (dp[1][false] = 2)
+   / \
+  2   3 (dp[3][false] = 1)
+     / \
+    4   5 (dp[4][false] = 0, dp[5][false] = 0)
+
+DP Calculation:
+Node 4: dp[4][false] = 0, dp[4][true] = 0
+Node 5: dp[5][false] = 0, dp[5][true] = 0
+Node 3: 
+- dp[3][false] = max(dp[4][false] + dp[5][false], 
+                     dp[4][true] + dp[5][false] + 1,
+                     dp[4][false] + dp[5][true] + 1) = 1
+- dp[3][true] = dp[4][false] + dp[5][false] = 0
+Node 2: dp[2][false] = 0, dp[2][true] = 0
+Node 1:
+- dp[1][false] = max(dp[2][false] + dp[3][false],
+                     dp[2][true] + dp[3][false] + 1,
+                     dp[2][false] + dp[3][true] + 1) = 2
+- dp[1][true] = dp[2][false] + dp[3][false] = 1
+
+Result: dp[1][false] = 2
+```
+
+### Step-by-Step Matching Process
+```
+Initial state: All nodes unmatched
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+Step 1: Process node 4
+- Node 4 is leaf, unmatched
+- Can match with parent 3
+- Match (3,4)
+- Node 3: matched
+- Node 4: matched
+
+Step 2: Process node 5
+- Node 5 is leaf, unmatched
+- Parent 3 is already matched
+- Node 5: remains unmatched
+
+Step 3: Process node 2
+- Node 2 is leaf, unmatched
+- Can match with parent 1
+- Match (1,2)
+- Node 1: matched
+- Node 2: matched
+
+Final state:
+    1 (matched)
+   / \
+  2   3 (matched)
+     / \
+    4   5 (unmatched)
+   (matched)
+
+Matching: {(1,2), (3,4)}
+Size: 2
+```
+
+### Alternative Matching
+```
+Alternative approach: Match (1,2) and (3,5)
+
+Step 1: Process node 5
+- Node 5 is leaf, unmatched
+- Can match with parent 3
+- Match (3,5)
+- Node 3: matched
+- Node 5: matched
+
+Step 2: Process node 4
+- Node 4 is leaf, unmatched
+- Parent 3 is already matched
+- Node 4: remains unmatched
+
+Step 3: Process node 2
+- Node 2 is leaf, unmatched
+- Can match with parent 1
+- Match (1,2)
+- Node 1: matched
+- Node 2: matched
+
+Final state:
+    1 (matched)
+   / \
+  2   3 (matched)
+     / \
+    4   5 (matched)
+   (unmatched)
+
+Matching: {(1,2), (3,5)}
+Size: 2
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Greedy DFS      │ O(n)         │ O(n)         │ Bottom-up    │
+│                 │              │              │ matching     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Dynamic Prog    │ O(n)         │ O(n)         │ Optimal      │
+│                 │              │              │ substructure │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Optimized Greedy│ O(n)         │ O(n)         │ Most         │
+│                 │              │              │ efficient    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ BFS             │ O(n)         │ O(n)         │ Level-based  │
+│                 │              │              │ processing   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Tree Matching Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: tree     │
+              │ (n nodes, edges)│
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Choose Algorithm│
+              │ (Greedy DFS/    │
+              │  Dynamic Prog)  │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Post-order DFS  │
+              │ Traversal       │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For each node:  │
+              │ - If leaf and   │
+              │   parent free:  │
+              │   match with    │
+              │   parent        │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return Maximum  │
+              │ Matching Size   │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

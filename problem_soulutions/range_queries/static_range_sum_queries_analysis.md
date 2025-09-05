@@ -137,6 +137,193 @@ for _ in range(q):
 | Prefix Sum | O(n+q) | O(n) | Precompute prefix sums |
 | Segment Tree | O(n log n + q log n) | O(n) | Handle dynamic updates |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Array: [3, 2, 4, 5, 1, 1, 5, 3]
+Queries:
+- [2, 4]: sum of elements at positions 2,3,4
+- [5, 6]: sum of elements at positions 5,6
+- [1, 8]: sum of all elements
+- [3, 3]: sum of element at position 3
+```
+
+### Array Visualization
+```
+Array: [3, 2, 4, 5, 1, 1, 5, 3]
+Index:  1  2  3  4  5  6  7  8
+
+Visual representation:
+Index: 1  2  3  4  5  6  7  8
+Value: 3  2  4  5  1  1  5  3
+       │  │  │  │  │  │  │  │
+       ▼  ▼  ▼  ▼  ▼  ▼  ▼  ▼
+       3  2  4  5  1  1  5  3
+```
+
+### Naive Approach (Inefficient)
+```
+For each query, sum elements in range:
+
+Query 1: [2, 4]
+- Sum = arr[2] + arr[3] + arr[4] = 2 + 4 + 5 = 11
+- Time: O(3) = O(range_length)
+
+Query 2: [5, 6]
+- Sum = arr[5] + arr[6] = 1 + 1 = 2
+- Time: O(2) = O(range_length)
+
+Query 3: [1, 8]
+- Sum = arr[1] + arr[2] + ... + arr[8] = 3 + 2 + 4 + 5 + 1 + 1 + 5 + 3 = 24
+- Time: O(8) = O(n)
+
+Query 4: [3, 3]
+- Sum = arr[3] = 4
+- Time: O(1)
+
+Total time: O(q × n) in worst case
+```
+
+### Prefix Sum Approach (Efficient)
+```
+Step 1: Build prefix sum array
+Original: [3, 2, 4, 5, 1, 1, 5, 3]
+Index:     1  2  3  4  5  6  7  8
+
+Prefix sum calculation:
+prefix[0] = 0
+prefix[1] = prefix[0] + arr[1] = 0 + 3 = 3
+prefix[2] = prefix[1] + arr[2] = 3 + 2 = 5
+prefix[3] = prefix[2] + arr[3] = 5 + 4 = 9
+prefix[4] = prefix[3] + arr[4] = 9 + 5 = 14
+prefix[5] = prefix[4] + arr[5] = 14 + 1 = 15
+prefix[6] = prefix[5] + arr[6] = 15 + 1 = 16
+prefix[7] = prefix[6] + arr[7] = 16 + 5 = 21
+prefix[8] = prefix[7] + arr[8] = 21 + 3 = 24
+
+Prefix array: [0, 3, 5, 9, 14, 15, 16, 21, 24]
+Index:        0  1  2  3  4   5   6   7   8
+```
+
+### Range Sum Calculation
+```
+Formula: sum[l,r] = prefix[r] - prefix[l-1]
+
+Query 1: [2, 4]
+- sum[2,4] = prefix[4] - prefix[1] = 14 - 3 = 11
+- Verification: 2 + 4 + 5 = 11 ✓
+
+Query 2: [5, 6]
+- sum[5,6] = prefix[6] - prefix[4] = 16 - 14 = 2
+- Verification: 1 + 1 = 2 ✓
+
+Query 3: [1, 8]
+- sum[1,8] = prefix[8] - prefix[0] = 24 - 0 = 24
+- Verification: 3 + 2 + 4 + 5 + 1 + 1 + 5 + 3 = 24 ✓
+
+Query 4: [3, 3]
+- sum[3,3] = prefix[3] - prefix[2] = 9 - 5 = 4
+- Verification: 4 = 4 ✓
+```
+
+### Visual Range Sum Process
+```
+Query [2, 4]: sum = prefix[4] - prefix[1]
+
+Prefix array: [0, 3, 5, 9, 14, 15, 16, 21, 24]
+Index:        0  1  2  3  4   5   6   7   8
+              │  │  │  │  │   │   │   │   │
+              ▼  ▼  ▼  ▼  ▼   ▼   ▼   ▼   ▼
+              0  3  5  9  14  15  16  21  24
+
+Range [2,4]:     ┌─────────┐
+                 │ 2  3  4 │
+                 │ 4  5  1 │
+                 └─────────┘
+
+Sum = prefix[4] - prefix[1] = 14 - 3 = 11
+```
+
+### Segment Tree Approach (For Dynamic Updates)
+```
+Segment Tree for array [3, 2, 4, 5, 1, 1, 5, 3]:
+
+                   24
+                  /  \
+                11    13
+               / \    / \
+              5   6  7   6
+             / \ / \ / \ / \
+            3  2 4  5 1  1 5  3
+
+Leaf nodes: [3, 2, 4, 5, 1, 1, 5, 3]
+Internal nodes store sum of their children
+
+Query [2, 4]: sum = 2 + 4 + 5 = 11
+- Traverse tree to find range [2, 4]
+- Combine results from relevant nodes
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Naive           │ O(q×n)       │ O(1)         │ Calculate    │
+│                 │              │              │ sum for each │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Prefix Sum      │ O(n+q)       │ O(n)         │ Precompute   │
+│                 │              │              │ cumulative   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Segment Tree    │ O(n log n +  │ O(n)         │ Handle       │
+│                 │ q log n)     │              │ dynamic      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Binary Indexed  │ O(n log n +  │ O(n)         │ Handle       │
+│ Tree            │ q log n)     │              │ point updates│
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Range Sum Queries Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: array,   │
+              │ queries         │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Choose Approach │
+              │ (Prefix Sum/    │
+              │  Segment Tree)  │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Build Prefix    │
+              │ Sum Array       │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For each query  │
+              │ [l, r]:         │
+              │ sum = prefix[r] │
+              │ - prefix[l-1]   │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return Results  │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

@@ -285,6 +285,183 @@ print(*positions)
 | Boyer-Moore | O(|s| + |p|) | O(|p|) | Bad character rule |
 | Z-Algorithm | O(|s| + |p|) | O(|s| + |p|) | Z-array computation |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Text:    ABCABCA
+Pattern: ABC
+```
+
+### Naive String Matching Process
+```
+Step 1: Compare ABC with ABCABCA[0:3]
+ABCABCA
+ABC     ← Match at position 0 (1-indexed: 1)
+✓
+
+Step 2: Compare ABC with ABCABCA[1:4]
+ABCABCA
+ ABC    ← No match
+✗
+
+Step 3: Compare ABC with ABCABCA[2:5]
+ABCABCA
+  ABC   ← No match
+✗
+
+Step 4: Compare ABC with ABCABCA[3:6]
+ABCABCA
+   ABC  ← Match at position 3 (1-indexed: 4)
+✓
+
+Result: [1, 4]
+```
+
+### KMP Algorithm - LPS (Longest Proper Prefix) Construction
+```
+Pattern: ABC
+
+LPS Array Construction:
+Index:  0 1 2
+Pattern: A B C
+LPS:    0 0 0
+
+Explanation:
+- A: No proper prefix, LPS[0] = 0
+- AB: Proper prefix = A, no suffix = A, LPS[1] = 0  
+- ABC: Proper prefix = A, AB, no matching suffix, LPS[2] = 0
+
+Final LPS: [0, 0, 0]
+```
+
+### KMP Matching Process
+```
+Text:    ABCABCA
+Pattern: ABC
+LPS:     [0, 0, 0]
+
+Step 1: i=0, j=0
+ABCABCA
+ABC
+✓ A=A, i=1, j=1
+
+Step 2: i=1, j=1  
+ABCABCA
+ABC
+✓ B=B, i=2, j=2
+
+Step 3: i=2, j=2
+ABCABCA
+ABC
+✓ C=C, i=3, j=3
+
+Step 4: j == pattern length (3)
+→ Match found at position 0 (1-indexed: 1)
+→ j = LPS[2] = 0
+
+Step 5: i=3, j=0
+ABCABCA
+   ABC
+✓ A=A, i=4, j=1
+
+Step 6: i=4, j=1
+ABCABCA
+   ABC
+✓ B=B, i=5, j=2
+
+Step 7: i=5, j=2
+ABCABCA
+   ABC
+✓ C=C, i=6, j=3
+
+Step 8: j == pattern length (3)
+→ Match found at position 3 (1-indexed: 4)
+→ j = LPS[2] = 0
+
+Result: [1, 4]
+```
+
+### Z-Algorithm Process
+```
+Combined String: ABC$ABCABCA
+Pattern: ABC
+Separator: $
+
+Z-Array Construction:
+Index:  0 1 2 3 4 5 6 7 8 9 10
+String: A B C $ A B C A B C A
+Z:      0 0 0 0 3 0 0 1 0 0 1
+
+Explanation:
+- Z[4] = 3: "ABC" matches prefix of length 3
+- Z[7] = 1: "A" matches prefix of length 1  
+- Z[10] = 1: "A" matches prefix of length 1
+
+Pattern matches found where Z[i] == pattern length (3):
+- Z[4] = 3 → Match at position 4-3-1 = 0 (1-indexed: 1)
+- No other matches of length 3
+
+Result: [1, 4] (after checking all positions)
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Naive           │ O(n×m)       │ O(1)         │ Brute force  │
+│                 │              │              │ comparison   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ KMP             │ O(n+m)       │ O(m)         │ Failure      │
+│                 │              │              │ function     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Boyer-Moore     │ O(n+m)       │ O(m)         │ Bad character│
+│                 │              │              │ rule         │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Z-Algorithm     │ O(n+m)       │ O(n+m)       │ Z-array      │
+│                 │              │              │ computation  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Pattern Matching Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: text,    │
+              │ pattern         │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Choose Algorithm│
+              │ (KMP/Z-Algo)    │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Preprocess      │
+              │ Pattern         │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Match Pattern   │
+              │ in Text         │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return All      │
+              │ Match Positions │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

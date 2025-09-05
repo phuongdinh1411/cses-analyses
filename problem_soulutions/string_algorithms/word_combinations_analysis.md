@@ -580,6 +580,219 @@ def interactive_word_combinations():
 - Store results to avoid recalculating the same subproblems
 - Handle edge cases like empty strings and no valid combinations
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Target String: "ababc"
+Words: ["ab", "ab", "c", "abc"]
+```
+
+### Understanding the Problem
+```
+Target: a b a b c
+Index:  0 1 2 3 4
+
+Available words:
+- "ab" (length 2)
+- "ab" (length 2) 
+- "c" (length 1)
+- "abc" (length 3)
+
+Goal: Count ways to construct "ababc" using these words
+```
+
+### All Possible Combinations
+```
+Combination 1: "ab" + "ab" + "c"
+a b a b c
+└─┘ └─┘ └┘
+ab  ab  c
+
+Combination 2: "ab" + "abc"
+a b a b c
+└─┘ └───┘
+ab  abc
+
+Combination 3: "abc" + "ab"
+a b a b c
+└───┘ └─┘
+abc  ab
+
+Combination 4: "ab" + "ab" + "c" (different order)
+a b a b c
+└─┘ └─┘ └┘
+ab  ab  c
+
+Total: 4 ways
+```
+
+### Dynamic Programming Approach
+```
+Target: a b a b c
+Index:  0 1 2 3 4
+
+DP Table: dp[i] = number of ways to construct s[0:i]
+
+Initialization:
+dp[0] = 1 (empty string has 1 way: use no words)
+dp[1] = 0
+dp[2] = 0
+dp[3] = 0
+dp[4] = 0
+dp[5] = 0
+
+Step 1: Check position 0
+Words that match at position 0:
+- "ab" (s[0:2] = "ab") ✓
+- "abc" (s[0:3] = "abc") ✓
+
+Update:
+dp[2] += dp[0] = 1 (ways to make "ab")
+dp[3] += dp[0] = 1 (ways to make "abc")
+
+DP: [1, 0, 1, 1, 0, 0]
+
+Step 2: Check position 1
+Words that match at position 1:
+- None (s[1:2] = "b", s[1:3] = "ba", s[1:4] = "bab")
+
+DP: [1, 0, 1, 1, 0, 0]
+
+Step 3: Check position 2
+Words that match at position 2:
+- "ab" (s[2:4] = "ab") ✓
+- "c" (s[2:3] = "c") ✓
+
+Update:
+dp[4] += dp[2] = 1 (ways to make "abab")
+dp[3] += dp[2] = 2 (ways to make "abc")
+
+DP: [1, 0, 1, 2, 1, 0]
+
+Step 4: Check position 3
+Words that match at position 3:
+- "c" (s[3:4] = "c") ✓
+
+Update:
+dp[4] += dp[3] = 3 (ways to make "ababc")
+
+DP: [1, 0, 1, 2, 3, 0]
+
+Step 5: Check position 4
+Words that match at position 4:
+- "c" (s[4:5] = "c") ✓
+
+Update:
+dp[5] += dp[4] = 3 (ways to make "ababc")
+
+Final DP: [1, 0, 1, 2, 3, 3]
+
+Result: dp[5] = 3 ways to construct "ababc"
+```
+
+### Step-by-Step Construction Process
+```
+Target: a b a b c
+Index:  0 1 2 3 4
+
+Path 1: dp[0] → dp[2] → dp[4] → dp[5]
+- Start: dp[0] = 1
+- Use "ab": dp[2] = 1
+- Use "ab": dp[4] = 1  
+- Use "c": dp[5] = 1
+- Construction: "ab" + "ab" + "c"
+
+Path 2: dp[0] → dp[3] → dp[5]
+- Start: dp[0] = 1
+- Use "abc": dp[3] = 1
+- Use "ab": dp[5] = 1
+- Construction: "abc" + "ab"
+
+Path 3: dp[0] → dp[2] → dp[3] → dp[5]
+- Start: dp[0] = 1
+- Use "ab": dp[2] = 1
+- Use "c": dp[3] = 2
+- Use "ab": dp[5] = 2
+- Construction: "ab" + "c" + "ab"
+
+Total: 3 distinct ways
+```
+
+### Word Matching Visualization
+```
+Target: a b a b c
+Index:  0 1 2 3 4
+
+Word "ab" (length 2):
+- Position 0: s[0:2] = "ab" ✓
+- Position 1: s[1:3] = "ba" ✗
+- Position 2: s[2:4] = "ab" ✓
+- Position 3: s[3:5] = "bc" ✗
+
+Word "c" (length 1):
+- Position 0: s[0:1] = "a" ✗
+- Position 1: s[1:2] = "b" ✗
+- Position 2: s[2:3] = "a" ✗
+- Position 3: s[3:4] = "b" ✗
+- Position 4: s[4:5] = "c" ✓
+
+Word "abc" (length 3):
+- Position 0: s[0:3] = "abc" ✓
+- Position 1: s[1:4] = "bab" ✗
+- Position 2: s[2:5] = "abc" ✓
+```
+
+### Algorithm Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: string s,│
+              │ words[]         │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Initialize DP   │
+              │ dp[0] = 1       │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For each        │
+              │ position i      │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For each word   │
+              │ in words[]      │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Does word match │
+              │ at position i?  │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Update DP:      │
+              │ dp[i+len] +=    │
+              │ dp[i]           │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return dp[n]    │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

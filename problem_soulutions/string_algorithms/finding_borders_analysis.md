@@ -241,6 +241,202 @@ for border in borders:
 | Z-Algorithm | O(|s|) | O(|s|) | Z-array computation |
 | Rolling Hash | O(|s|) | O(|s|) | Hash-based comparison |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+String: "ababab"
+```
+
+### Understanding Borders
+```
+String: a b a b a b
+Index:  0 1 2 3 4 5
+
+A border is a proper prefix that is also a proper suffix.
+Proper prefix/suffix means it cannot be the entire string.
+
+All possible proper prefixes:
+- Length 1: "a"
+- Length 2: "ab"  
+- Length 3: "aba"
+- Length 4: "abab"
+- Length 5: "ababa"
+
+All possible proper suffixes:
+- Length 1: "b"
+- Length 2: "ab"
+- Length 3: "bab"
+- Length 4: "abab"
+- Length 5: "babab"
+
+Borders (prefix = suffix):
+- Length 2: "ab" = "ab" ✓
+- Length 4: "abab" = "abab" ✓
+- Length 1: "a" ≠ "b" ✗
+- Length 3: "aba" ≠ "bab" ✗
+- Length 5: "ababa" ≠ "babab" ✗
+
+Result: ["ab", "abab"]
+```
+
+### KMP Failure Function Approach
+```
+String: a b a b a b
+Index:  0 1 2 3 4 5
+
+LPS (Longest Proper Prefix) Array Construction:
+Index:  0 1 2 3 4 5
+String: a b a b a b
+LPS:    0 0 1 2 3 4
+
+Step-by-step construction:
+- i=0: No proper prefix, LPS[0] = 0
+- i=1: s[1]='b', s[0]='a', no match, LPS[1] = 0
+- i=2: s[2]='a', s[0]='a', match! LPS[2] = 1
+- i=3: s[3]='b', s[1]='b', match! LPS[3] = 2
+- i=4: s[4]='a', s[2]='a', match! LPS[4] = 3
+- i=5: s[5]='b', s[3]='b', match! LPS[5] = 4
+
+Finding borders using LPS:
+- LPS[5] = 4 → border of length 4: "abab"
+- LPS[4] = 3 → check if LPS[3] = 2 → border of length 2: "ab"
+- LPS[2] = 1 → check if LPS[1] = 0 → no more borders
+
+Result: ["ab", "abab"]
+```
+
+### Z-Algorithm Approach
+```
+String: a b a b a b
+Index:  0 1 2 3 4 5
+
+Z-Array Construction:
+Index:  0 1 2 3 4 5
+String: a b a b a b
+Z:      6 0 4 0 2 0
+
+Explanation:
+- Z[0] = 6: Entire string matches itself
+- Z[1] = 0: "b" doesn't match prefix starting at 0
+- Z[2] = 4: "abab" matches prefix of length 4
+- Z[3] = 0: "b" doesn't match prefix starting at 0
+- Z[4] = 2: "ab" matches prefix of length 2
+- Z[5] = 0: "b" doesn't match prefix starting at 0
+
+Finding borders using Z-array:
+- Z[2] = 4: If Z[2] = 4 and 2 + 4 = 6 (string length), then "abab" is a border
+- Z[4] = 2: If Z[4] = 2 and 4 + 2 = 6 (string length), then "ab" is a border
+
+Result: ["ab", "abab"]
+```
+
+### Direct Comparison Approach
+```
+String: a b a b a b
+Index:  0 1 2 3 4 5
+
+Check each possible border length:
+
+Length 1:
+Prefix: a
+Suffix: b
+a ≠ b ✗
+
+Length 2:
+Prefix: a b
+Suffix: a b
+ab = ab ✓ → Border found: "ab"
+
+Length 3:
+Prefix: a b a
+Suffix: b a b
+aba ≠ bab ✗
+
+Length 4:
+Prefix: a b a b
+Suffix: a b a b
+abab = abab ✓ → Border found: "abab"
+
+Length 5:
+Prefix: a b a b a
+Suffix: b a b a b
+ababa ≠ babab ✗
+
+Result: ["ab", "abab"]
+```
+
+### Border Visualization
+```
+String: a b a b a b
+        ┌─┐     ┌─┐
+        │a│b a b│a│b
+        └─┘     └─┘
+        Border 1: "ab" (length 2)
+
+String: a b a b a b
+        ┌─────┐ ┌─────┐
+        │a b a│b│a b a│b
+        └─────┘ └─────┘
+        Border 2: "abab" (length 4)
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Naive           │ O(n²)        │ O(1)         │ Check all    │
+│                 │              │              │ prefixes     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ KMP             │ O(n)         │ O(n)         │ Use failure  │
+│                 │              │              │ function     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Z-Algorithm     │ O(n)         │ O(n)         │ Use Z-array  │
+│                 │              │              │ computation  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Rolling Hash    │ O(n)         │ O(1)         │ Fast hash    │
+│                 │              │              │ comparison   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Border Finding Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: string s │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Choose Algorithm│
+              │ (KMP/Z-Algo)    │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Build LPS/Z     │
+              │ Array           │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Extract Borders │
+              │ from Array      │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return Borders  │
+              │ in Order        │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

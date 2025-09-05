@@ -282,6 +282,198 @@ print(result)
 | Suffix Automaton | O(|s|) | O(|s|) | Use suffix automaton |
 | Trie | O(|s|²) | O(|s|²) | Use trie |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+String: "abab"
+```
+
+### All Possible Substrings
+```
+String: a b a b
+Index:  0 1 2 3
+
+Length 1 substrings:
+- s[0:1] = "a"
+- s[1:2] = "b"
+- s[2:3] = "a"
+- s[3:4] = "b"
+
+Length 2 substrings:
+- s[0:2] = "ab"
+- s[1:3] = "ba"
+- s[2:4] = "ab"
+
+Length 3 substrings:
+- s[0:3] = "aba"
+- s[1:4] = "bab"
+
+Length 4 substrings:
+- s[0:4] = "abab"
+
+All substrings: ["a", "b", "a", "b", "ab", "ba", "ab", "aba", "bab", "abab"]
+Distinct substrings: ["a", "b", "ab", "ba", "aba", "bab", "abab"]
+Count: 7
+```
+
+### Suffix Array Approach
+```
+String: a b a b
+Index:  0 1 2 3
+
+All suffixes:
+- Suffix 0: "abab"
+- Suffix 1: "bab"
+- Suffix 2: "ab"
+- Suffix 3: "b"
+
+Sorted suffixes:
+- Suffix 2: "ab"
+- Suffix 0: "abab"
+- Suffix 3: "b"
+- Suffix 1: "bab"
+
+Suffix Array: [2, 0, 3, 1]
+
+LCP (Longest Common Prefix) Array:
+- LCP[0] = 0 (no previous suffix)
+- LCP[1] = 2 ("ab" and "abab" share "ab")
+- LCP[2] = 0 ("abab" and "b" share nothing)
+- LCP[3] = 1 ("b" and "bab" share "b")
+
+Counting distinct substrings:
+Total substrings = n*(n+1)/2 = 4*5/2 = 10
+Subtract common prefixes = 0 + 2 + 0 + 1 = 3
+Distinct substrings = 10 - 3 = 7
+```
+
+### Suffix Automaton Construction
+```
+String: a b a b
+Index:  0 1 2 3
+
+Step 1: Add 'a'
+State 0 → State 1 (via 'a')
+States: {0: {}, 1: {}}
+
+Step 2: Add 'b'
+State 1 → State 2 (via 'b')
+States: {0: {'a': 1}, 1: {'b': 2}, 2: {}}
+
+Step 3: Add 'a'
+State 2 → State 3 (via 'a')
+States: {0: {'a': 1}, 1: {'b': 2}, 2: {'a': 3}, 3: {}}
+
+Step 4: Add 'b'
+State 3 → State 4 (via 'b')
+States: {0: {'a': 1}, 1: {'b': 2}, 2: {'a': 3}, 3: {'b': 4}, 4: {}}
+
+Final Automaton:
+     a     b     a     b
+0 ──→ 1 ──→ 2 ──→ 3 ──→ 4
+
+All paths represent all possible substrings:
+- Path 0→1: "a"
+- Path 0→1→2: "ab"
+- Path 0→1→2→3: "aba"
+- Path 0→1→2→3→4: "abab"
+- Path 1→2: "b"
+- Path 1→2→3: "ba"
+- Path 1→2→3→4: "bab"
+- Path 2→3: "a"
+- Path 2→3→4: "ab"
+- Path 3→4: "b"
+
+Total distinct substrings: 7
+```
+
+### Trie Approach
+```
+String: a b a b
+
+Trie Construction:
+        root
+       /    \
+      a      b
+     / \    / \
+    b   a  a   b
+   / \  |  |   |
+  a   b b  b   (end)
+  |   |
+  b   (end)
+  |
+  (end)
+
+All paths from root represent distinct substrings:
+- a → "a"
+- a→b → "ab"
+- a→b→a → "aba"
+- a→b→a→b → "abab"
+- a→b→b → "abb" (not in original string)
+- b → "b"
+- b→a → "ba"
+- b→a→b → "bab"
+- b→b → "bb" (not in original string)
+
+Valid substrings (present in original): 7
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Naive           │ O(n³)        │ O(n³)        │ Generate all │
+│                 │              │              │ substrings   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Suffix Array    │ O(n² log n)  │ O(n²)        │ Use suffix   │
+│                 │              │              │ properties   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Suffix Automaton│ O(n)         │ O(n)         │ Efficient    │
+│                 │              │              │ representation│
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Trie            │ O(n²)        │ O(n²)        │ Store in trie│
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Substring Counting Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: string s │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Choose Algorithm│
+              │ (Suffix Auto/   │
+              │  Suffix Array)  │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Build Data      │
+              │ Structure       │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Count Distinct  │
+              │ Substrings      │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return Count    │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns
