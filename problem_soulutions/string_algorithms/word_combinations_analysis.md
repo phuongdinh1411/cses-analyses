@@ -47,6 +47,62 @@ The string "ababc" can be constructed in 4 ways:
 3. "ab" + "ab" + "c" (different order)
 4. "abc" + "ab"
 
+## 🎯 Visual Example
+
+### Input
+```
+Target string: "ababc"
+Words: ["ab", "ab", "c", "abc"]
+```
+
+### Dynamic Programming Process
+```
+Step 1: Initialize DP array
+- dp[i] = number of ways to construct string[0:i]
+- dp[0] = 1 (empty string has 1 way)
+- dp[1] = dp[2] = ... = dp[5] = 0
+
+Step 2: Fill DP table
+- For each position i from 1 to 5:
+  - For each word in words:
+    - If string[i-len(word):i] == word:
+      - dp[i] += dp[i-len(word)]
+
+Step 3: Process each position
+- Position 1: No words match
+- Position 2: "ab" matches → dp[2] += dp[0] = 1
+- Position 3: "ab" matches → dp[3] += dp[1] = 0
+- Position 4: "ab" matches → dp[4] += dp[2] = 1
+- Position 5: "c" matches → dp[5] += dp[4] = 1
+- Position 5: "abc" matches → dp[5] += dp[2] = 1 + 1 = 2
+
+Final DP array: [1, 0, 1, 0, 1, 2]
+```
+
+### Word Matching Visualization
+```
+String: a b a b c
+Index:  0 1 2 3 4 5
+
+Word "ab" (length 2):
+- Position 2: "ab" matches → dp[2] = 1
+- Position 4: "ab" matches → dp[4] = 1
+
+Word "c" (length 1):
+- Position 5: "c" matches → dp[5] += dp[4] = 1
+
+Word "abc" (length 3):
+- Position 5: "abc" matches → dp[5] += dp[2] = 1 + 1 = 2
+```
+
+### Key Insight
+Dynamic programming works by:
+1. Building solutions incrementally from left to right
+2. For each position, checking all possible word matches
+3. Accumulating ways to reach each position
+4. Time complexity: O(n × m × k) where n = string length, m = number of words, k = average word length
+5. Space complexity: O(n) for DP array
+
 ## Solution Progression
 
 ### Approach 1: Recursive Backtracking - O(n^|s|)

@@ -39,6 +39,57 @@ The string "aaabbbcc" can be compressed as:
 - "cc" → "c2" (2 consecutive 'c's)
 - Final result: "a3b3c2"
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "aaabbbcc"
+```
+
+### Compression Process
+```
+Step 1: Identify consecutive character groups
+- Group 1: "aaa" (3 consecutive 'a's)
+- Group 2: "bbb" (3 consecutive 'b's)
+- Group 3: "cc" (2 consecutive 'c's)
+
+Step 2: Compress each group
+- "aaa" → "a3"
+- "bbb" → "b3"
+- "cc" → "c2"
+
+Step 3: Combine results
+- Final compressed string: "a3b3c2"
+```
+
+### Compression Visualization
+```
+Original: a a a b b b c c
+Index:    0 1 2 3 4 5 6 7
+
+Group 1: a a a
+         a 3
+         ✓ ✓ ✓
+
+Group 2: b b b
+         b 3
+         ✓ ✓ ✓
+
+Group 3: c c
+         c 2
+         ✓ ✓
+
+Compressed: a3b3c2
+```
+
+### Key Insight
+Run-length encoding works by:
+1. Scanning the string from left to right
+2. Counting consecutive identical characters
+3. Replacing each group with character + count
+4. Time complexity: O(n) for single pass
+5. Space complexity: O(n) for output string
+
 ## Solution Progression
 
 ### Approach 1: Simple Run-Length Encoding - O(|s|)

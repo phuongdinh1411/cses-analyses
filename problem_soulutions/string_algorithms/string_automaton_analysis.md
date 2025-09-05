@@ -47,6 +47,62 @@ In the string "abacaba":
 - Pattern "ac" appears 1 time: at position 2-3
 - Pattern "xyz" appears 0 times: not found in the string
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "abacaba"
+Queries: ["aba", "ac", "xyz"]
+```
+
+### Pattern Occurrence Detection Process
+```
+Step 1: Build suffix automaton
+- String: "abacaba"
+- Automaton states represent all possible substrings
+
+Step 2: Process queries
+- Query "aba": Found 2 occurrences
+- Query "ac": Found 1 occurrence
+- Query "xyz": Found 0 occurrences
+```
+
+### Pattern Occurrence Visualization
+```
+String: a b a c a b a
+Index:  0 1 2 3 4 5 6
+
+Pattern "aba":
+- First occurrence: positions 0-2
+- Second occurrence: positions 4-6
+
+Occurrence 1: a b a c a b a
+            a b a
+            ✓ ✓ ✓
+
+Occurrence 2: a b a c a b a
+                    a b a
+                    ✓ ✓ ✓
+
+Pattern "ac":
+- Single occurrence: positions 2-3
+
+Occurrence: a b a c a b a
+              a c
+              ✓ ✓
+
+Pattern "xyz":
+- No occurrences found
+```
+
+### Key Insight
+Suffix automaton works by:
+1. Building a compact representation of all substrings
+2. Allowing efficient pattern matching in O(|p|) time per query
+3. Supporting substring counting and other string operations
+4. Time complexity: O(n) for building automaton
+5. Space complexity: O(n) for automaton states
+
 ## Solution Progression
 
 ### Approach 1: Check Each Pattern - O(q × |s| × |p|)

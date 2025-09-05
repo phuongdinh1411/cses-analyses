@@ -38,6 +38,57 @@ Explanation**:
 - Position 4: ABC"ABC"A (match at index 3, 1-indexed = 4)
 ```
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "ABCABCA"
+Pattern: "ABC"
+```
+
+### KMP Algorithm Process
+```
+Step 1: Build failure function for pattern "ABC"
+- Pattern: A B C
+- Index:  0 1 2
+- failure[0] = 0
+- failure[1] = 0 (no proper prefix-suffix match)
+- failure[2] = 0 (no proper prefix-suffix match)
+
+Step 2: Pattern matching
+- String: A B C A B C A
+- Index:  0 1 2 3 4 5 6
+- Pattern: A B C
+- Index:  0 1 2
+
+Step 3: Matching process
+- Position 0: "ABC" matches → Found at position 1 (1-indexed)
+- Position 3: "ABC" matches → Found at position 4 (1-indexed)
+```
+
+### Pattern Matching Visualization
+```
+String: A B C A B C A
+Index:  0 1 2 3 4 5 6
+
+Pattern "ABC" at position 0:
+A B C A B C A
+A B C
+✓ ✓ ✓ → Match at position 1
+
+Pattern "ABC" at position 3:
+A B C A B C A
+    A B C
+    ✓ ✓ ✓ → Match at position 4
+```
+
+### Key Insight
+KMP algorithm works by:
+1. Building a failure function to avoid redundant comparisons
+2. Using the failure function to skip positions that can't match
+3. Achieving O(n + m) time complexity where n = text length, m = pattern length
+4. Space complexity: O(m) for failure function
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

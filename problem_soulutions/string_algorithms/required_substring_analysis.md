@@ -36,6 +36,53 @@ Output:
 **Explanation**: 
 The string "abab" already contains the required substring "ab" (appears at positions 0-1 and 2-3), so no characters need to be added.
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "abab"
+Required substring: "ab"
+```
+
+### Substring Detection Process
+```
+Step 1: Check if required substring exists
+- String: "abab"
+- Required: "ab"
+- Check all positions for "ab"
+
+Step 2: Find occurrences
+- Position 0: "ab"ab → Match! (positions 0-1)
+- Position 2: ab"ab" → Match! (positions 2-3)
+- Required substring already exists
+```
+
+### Substring Occurrence Visualization
+```
+String: a b a b
+Index:  0 1 2 3
+
+Required substring "ab":
+- First occurrence: positions 0-1
+- Second occurrence: positions 2-3
+
+Occurrence 1: a b a b
+            a b
+            ✓ ✓
+
+Occurrence 2: a b a b
+                a b
+                ✓ ✓
+```
+
+### Key Insight
+Required substring detection works by:
+1. Checking if the required substring already exists in the string
+2. If it exists, no characters need to be added
+3. If it doesn't exist, find the minimum characters to add
+4. Time complexity: O(n × m) for substring search
+5. Space complexity: O(1) for the algorithm
+
 ## Solution Progression
 
 ### Approach 1: Check All Positions - O(|s| × |t|)

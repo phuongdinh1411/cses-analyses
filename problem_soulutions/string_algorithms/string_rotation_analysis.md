@@ -44,6 +44,59 @@ The rotations of "abacaba" are:
 
 The lexicographically smallest is "aabacab".
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "abacaba"
+```
+
+### All Rotations Generation
+```
+Original: a b a c a b a
+Index:    0 1 2 3 4 5 6
+
+Rotation 0: a b a c a b a (original)
+Rotation 1: b a c a b a a (left by 1)
+Rotation 2: a c a b a a b (left by 2)
+Rotation 3: c a b a a b a (left by 3)
+Rotation 4: a b a a b a c (left by 4)
+Rotation 5: b a a b a c a (left by 5)
+Rotation 6: a a b a c a b (left by 6)
+```
+
+### Lexicographical Comparison
+```
+Rotation 0: "abacaba"
+Rotation 1: "bacabaa"
+Rotation 2: "acabaab"
+Rotation 3: "cabaaba"
+Rotation 4: "abaabac"
+Rotation 5: "baabaca"
+Rotation 6: "aabacab" ← Smallest
+```
+
+### Booth's Algorithm Visualization
+```
+String: "abacaba"
+Extended: "abacabaabacaba" (for circular comparison)
+
+Step 1: Initialize i=0, j=1, k=0
+Step 2: Compare characters at positions i+k and j+k
+Step 3: If equal, increment k
+Step 4: If different, update i or j based on comparison
+Step 5: Continue until k reaches string length
+
+Final result: i=6, giving rotation "aabacab"
+```
+
+### Key Insight
+String rotation problem can be solved by:
+1. Generating all rotations and comparing (O(n²))
+2. Using Booth's algorithm for O(n) solution
+3. Finding the lexicographically smallest rotation
+4. Handling circular string comparisons efficiently
+
 ## Solution Progression
 
 ### Approach 1: Generate All Rotations - O(|s|²)

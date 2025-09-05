@@ -36,6 +36,50 @@ The string "abcabcabc" can be written as a repetition of "abc" (3 characters):
 - "abc" + "abc" + "abc" = "abcabcabc"
 - The smallest period is 3, which is the length of the repeating unit "abc"
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "abcabcabc"
+```
+
+### Period Detection Process
+```
+Step 1: Check possible periods
+- Length 1: "a" → "aaaaaaaaa" ≠ "abcabcabc" ✗
+- Length 2: "ab" → "ababababa" ≠ "abcabcabc" ✗
+- Length 3: "abc" → "abcabcabc" = "abcabcabc" ✓
+
+Step 2: Verify period
+- String: "abcabcabc"
+- Period: "abc" (length 3)
+- Repetition: "abc" + "abc" + "abc" = "abcabcabc"
+- Smallest period: 3
+```
+
+### Period Visualization
+```
+String: a b c a b c a b c
+Index:  0 1 2 3 4 5 6 7 8
+
+Period "abc" (length 3):
+a b c a b c a b c
+a b c a b c a b c
+✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓
+
+Repeating unit: "abc"
+Number of repetitions: 3
+Total length: 3 × 3 = 9
+```
+
+### Key Insight
+Period finding works by:
+1. Checking each possible period length from 1 to n
+2. Verifying if the string can be constructed by repeating the first k characters
+3. Using string matching to check if pattern repeats
+4. Time complexity: O(n²) for naive approach
+5. Space complexity: O(1) for the algorithm
+
 ## Solution Progression
 
 ### Approach 1: Naive Period Finding - O(|s|²)

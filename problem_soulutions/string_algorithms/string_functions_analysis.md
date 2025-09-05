@@ -47,6 +47,57 @@ For the string "abacaba":
 - At position 2: substring "ab" has no proper suffix that is also a proper prefix, so function value is 0
 - At position 3: substring "aba" has "a" as both proper suffix and proper prefix, so function value is 1
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "abacaba"
+Queries: [1, 2, 3]
+```
+
+### String Function Calculation Process
+```
+Step 1: Build failure function using KMP
+- String: a b a c a b a
+- Index:  0 1 2 3 4 5 6
+
+Step 2: Calculate function values
+- Position 1: substring "a" → function value = 0
+- Position 2: substring "ab" → function value = 0
+- Position 3: substring "aba" → function value = 1
+```
+
+### Function Value Visualization
+```
+String: a b a c a b a
+Index:  0 1 2 3 4 5 6
+
+Position 1: "a"
+- Proper suffixes: none
+- Proper prefixes: none
+- Function value: 0
+
+Position 2: "ab"
+- Proper suffixes: "b"
+- Proper prefixes: "a"
+- No common suffix-prefix
+- Function value: 0
+
+Position 3: "aba"
+- Proper suffixes: "a", "ba"
+- Proper prefixes: "a", "ab"
+- Common suffix-prefix: "a" (length 1)
+- Function value: 1
+```
+
+### Key Insight
+String function calculation works by:
+1. Using KMP failure function to find longest proper suffix that is also a proper prefix
+2. The failure function value at position k gives the function value
+3. Time complexity: O(n) for building failure function
+4. Space complexity: O(n) for failure function array
+5. Query time: O(1) per query
+
 ## Solution Progression
 
 ### Approach 1: Calculate Function for Each Query - O(q × |s|)

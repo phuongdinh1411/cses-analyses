@@ -36,6 +36,54 @@ Explanation**:
 - Alternative: "aba" is also valid with same length
 ```
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "babad"
+```
+
+### Palindrome Detection Process
+```
+Step 1: Check all possible palindromes
+- Length 1: "b", "a", "b", "a", "d" (all palindromes)
+- Length 2: "ba", "ab", "ba", "ad" (none are palindromes)
+- Length 3: "bab", "aba", "bad" (first two are palindromes)
+- Length 4: "baba", "abad" (none are palindromes)
+- Length 5: "babad" (not a palindrome)
+
+Step 2: Find longest palindrome
+- "bab" (length 3) - centered at index 1
+- "aba" (length 3) - centered at index 2
+- Both are valid longest palindromes
+```
+
+### Palindrome Visualization
+```
+String: b a b a d
+Index:  0 1 2 3 4
+
+Palindrome "bab" (centered at index 1):
+b a b a d
+  ↑
+  b a b
+  ✓ ✓ ✓
+
+Palindrome "aba" (centered at index 2):
+b a b a d
+    ↑
+    a b a
+    ✓ ✓ ✓
+```
+
+### Key Insight
+Expand around centers algorithm works by:
+1. For each position, expand left and right to find longest palindrome
+2. Handle both odd-length (center at character) and even-length (center between characters) palindromes
+3. Time complexity: O(n²) for expand around centers
+4. Space complexity: O(1) for the algorithm
+5. Manacher's algorithm achieves O(n) time complexity
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

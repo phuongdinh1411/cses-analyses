@@ -42,6 +42,55 @@ The rotations of "baabaa" are:
 
 The lexicographically smallest is "aabaab".
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "baabaa"
+```
+
+### Rotation Generation Process
+```
+Step 1: Generate all rotations
+- Rotation 0: "baabaa" (original)
+- Rotation 1: "aabaab" (move first character to end)
+- Rotation 2: "abaaba" (move first 2 characters to end)
+- Rotation 3: "baaaab" (move first 3 characters to end)
+- Rotation 4: "aabaab" (move first 4 characters to end)
+- Rotation 5: "abaaba" (move first 5 characters to end)
+
+Step 2: Find lexicographically smallest
+- "aabaab" < "abaaba" < "baaaab" < "baabaa"
+- Smallest: "aabaab"
+```
+
+### Rotation Visualization
+```
+Original: b a a b a a
+Index:    0 1 2 3 4 5
+
+Rotation 0: b a a b a a
+Rotation 1: a a b a a b
+Rotation 2: a b a a b a
+Rotation 3: b a a a a b
+Rotation 4: a a b a a b
+Rotation 5: a b a a b a
+
+Lexicographic order:
+1. "aabaab" (rotation 1 or 4)
+2. "abaaba" (rotation 2 or 5)
+3. "baaaab" (rotation 3)
+4. "baabaa" (rotation 0)
+```
+
+### Key Insight
+Booth's algorithm works by:
+1. Using string matching to find the lexicographically smallest rotation
+2. Avoiding explicit generation of all rotations
+3. Time complexity: O(n) using Booth's algorithm
+4. Space complexity: O(n) for the algorithm
+5. More efficient than O(n²) naive approach
+
 ## Solution Progression
 
 ### Approach 1: Generate All Rotations - O(|s|²)

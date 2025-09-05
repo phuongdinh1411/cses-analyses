@@ -8,6 +8,41 @@ permalink: /problem_soulutions/string_algorithms/summary
 
 Welcome to the String Algorithms section! This category covers fundamental and advanced algorithms for text processing and pattern matching.
 
+## 🎯 Visual Example
+
+### String Algorithm Techniques Overview
+```
+1. Pattern Matching:
+   Text:    "ababcababc"
+   Pattern: "ababc"
+   Result:  Found at positions 0, 5
+
+2. String Rotation:
+   Original: "abacaba"
+   Rotations: "bacabaa", "acabaab", "cabaaba", ...
+   Minimal:   "aabacab"
+
+3. Palindrome Detection:
+   String: "racecar"
+   Check:  r-a-c-e-c-a-r
+   Result: True (palindrome)
+
+4. String Compression:
+   Input:  "aaabbbcc"
+   Output: "a3b3c2"
+```
+
+### Algorithm Complexity Comparison
+```
+Algorithm          | Time    | Space   | Use Case
+-------------------|---------|---------|------------------
+KMP                | O(n+m)  | O(m)    | Pattern matching
+Z-Algorithm        | O(n+m)  | O(n+m)  | Border detection
+Manacher's         | O(n)    | O(n)    | Palindrome
+Booth's            | O(n)    | O(n)    | Minimal rotation
+Run-length         | O(n)    | O(n)    | Compression
+```
+
 ## Key Concepts & Techniques
 
 ### Basic String Operations

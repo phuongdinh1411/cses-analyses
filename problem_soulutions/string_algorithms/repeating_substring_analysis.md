@@ -38,6 +38,54 @@ In the string "ababab", the substring "abab" appears twice:
 
 This is the longest substring that appears at least twice.
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "ababab"
+```
+
+### Repeating Substring Detection Process
+```
+Step 1: Check all possible substrings
+- Length 1: "a", "b" (both appear multiple times)
+- Length 2: "ab", "ba" (both appear multiple times)
+- Length 3: "aba", "bab" (both appear multiple times)
+- Length 4: "abab" (appears twice)
+- Length 5: "ababa" (appears once)
+
+Step 2: Find longest repeating substring
+- "abab" (length 4) appears twice
+- This is the longest substring that appears at least twice
+```
+
+### Substring Occurrence Visualization
+```
+String: a b a b a b
+Index:  0 1 2 3 4 5
+
+Substring "abab" (length 4):
+- First occurrence: positions 0-3
+- Second occurrence: positions 2-5
+- Overlap: positions 2-3
+
+Occurrence 1: a b a b a b
+            a b a b
+            ✓ ✓ ✓ ✓
+
+Occurrence 2: a b a b a b
+                a b a b
+                ✓ ✓ ✓ ✓
+```
+
+### Key Insight
+Repeating substring detection works by:
+1. Checking all possible substring lengths from longest to shortest
+2. For each length, finding substrings that appear at least twice
+3. Using suffix arrays for efficient detection
+4. Time complexity: O(n²) for naive approach
+5. Space complexity: O(n) for the algorithm
+
 ## Solution Progression
 
 ### Approach 1: Check All Substrings - O(|s|⁴)

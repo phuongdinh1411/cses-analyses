@@ -37,6 +37,51 @@ Explanation**:
 - No other borders exist as they would be the entire string
 ```
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "ababab"
+```
+
+### Border Detection Process
+```
+Step 1: Check all possible borders
+- Length 1: "a" vs "b" → No match
+- Length 2: "ab" vs "ab" → Match! (Border found)
+- Length 3: "aba" vs "bab" → No match
+- Length 4: "abab" vs "abab" → Match! (Border found)
+- Length 5: "ababa" vs "babab" → No match
+
+Step 2: Verify borders
+- Border "ab": prefix "ab" = suffix "ab" ✓
+- Border "abab": prefix "abab" = suffix "abab" ✓
+```
+
+### Border Visualization
+```
+String: a b a b a b
+Index:  0 1 2 3 4 5
+
+Border "ab" (length 2):
+Prefix: a b
+Suffix:         a b
+Match:  ✓ ✓
+
+Border "abab" (length 4):
+Prefix: a b a b
+Suffix:     a b a b
+Match:  ✓ ✓ ✓ ✓
+```
+
+### Key Insight
+Border detection works by:
+1. Checking each possible border length from 1 to n-1
+2. Comparing prefix and suffix of the same length
+3. Using KMP failure function for efficient detection
+4. Time complexity: O(n) using KMP approach
+5. Space complexity: O(n) for failure function
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

@@ -36,6 +36,62 @@ Explanation**:
 - Count: 7 unique substrings
 ```
 
+## 🎯 Visual Example
+
+### Input
+```
+String: "abab"
+```
+
+### Substring Generation Process
+```
+Step 1: Generate all possible substrings
+- Length 1: "a", "b", "a", "b"
+- Length 2: "ab", "ba", "ab"
+- Length 3: "aba", "bab"
+- Length 4: "abab"
+
+Step 2: Identify distinct substrings
+- Length 1: "a", "b" (2 distinct)
+- Length 2: "ab", "ba" (2 distinct)
+- Length 3: "aba", "bab" (2 distinct)
+- Length 4: "abab" (1 distinct)
+
+Total distinct substrings: 2 + 2 + 2 + 1 = 7
+```
+
+### Substring Visualization
+```
+String: a b a b
+Index:  0 1 2 3
+
+Length 1 substrings:
+- Position 0: "a"
+- Position 1: "b"
+- Position 2: "a" (duplicate)
+- Position 3: "b" (duplicate)
+
+Length 2 substrings:
+- Position 0-1: "ab"
+- Position 1-2: "ba"
+- Position 2-3: "ab" (duplicate)
+
+Length 3 substrings:
+- Position 0-2: "aba"
+- Position 1-3: "bab"
+
+Length 4 substrings:
+- Position 0-3: "abab"
+```
+
+### Key Insight
+Suffix array approach works by:
+1. Building suffix array of the string
+2. Using LCP (Longest Common Prefix) array
+3. Counting distinct substrings by subtracting common prefixes
+4. Time complexity: O(n log n) for suffix array construction
+5. Space complexity: O(n) for suffix array and LCP array
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem
