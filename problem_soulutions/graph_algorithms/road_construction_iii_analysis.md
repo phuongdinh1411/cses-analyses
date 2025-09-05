@@ -209,6 +209,88 @@ print(result)
 | Kruskal's Algorithm | O(m log m) | O(n) | Use Kruskal's for minimum spanning tree |
 | Optimized Kruskal's | O(m log m) | O(n) | Optimized Union-Find implementation |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 cities, 4 roads:
+Road 1-2: cost 1
+Road 2-3: cost 2
+Road 3-4: cost 3
+Road 1-4: cost 4
+```
+
+### Graph Visualization
+```
+Cities with road costs:
+1 ──1── 2 ──2── 3 ──3── 4
+│                    │
+│4                   │
+└────────────────────┘
+
+All roads:
+- Road 1-2: cost 1
+- Road 2-3: cost 2
+- Road 3-4: cost 3
+- Road 1-4: cost 4
+```
+
+### Advanced MST Process
+```
+Step 1: Sort edges by cost
+- (1,2): cost 1
+- (2,3): cost 2
+- (3,4): cost 3
+- (1,4): cost 4
+
+Step 2: Process edges with advanced optimization
+- Add (1,2): cost 1, connects 1-2
+- Add (2,3): cost 2, connects 1-2-3
+- Add (3,4): cost 3, connects 1-2-3-4
+- Skip (1,4): cost 4, would create cycle
+
+Final MST: (1,2), (2,3), (3,4)
+Total cost: 1 + 2 + 3 = 6
+```
+
+### Union-Find Operations
+```
+Initial state:
+- Parent: [1, 2, 3, 4]
+- Rank: [0, 0, 0, 0]
+
+After adding (1,2):
+- Union(1,2): parent[1] = 2
+- Parent: [2, 2, 3, 4]
+
+After adding (2,3):
+- Union(2,3): parent[2] = 3
+- Parent: [2, 3, 3, 4]
+
+After adding (3,4):
+- Union(3,4): parent[3] = 4
+- Parent: [2, 3, 4, 4]
+
+All cities connected!
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Kruskal's       │ O(m log m)   │ O(n)         │ Sort edges   │
+│                 │              │              │ by weight    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Prim's          │ O(m log n)   │ O(n)         │ Start from   │
+│                 │              │              │ one vertex   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Boruvka's       │ O(m log n)   │ O(n)         │ Add minimum  │
+│                 │              │              │ edge per     │
+│                 │              │              │ component    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns
