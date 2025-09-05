@@ -35,6 +35,77 @@ After event 2: Lights 1-2, 4-5, 7-8 are green → max length = 3
 After event 3: Lights 1, 4-5, 7-8 are green → max length = 3
 ```
 
+## 📊 Visual Example
+
+### Initial State
+```
+Lights: [G, G, G, G, G, G, G, G]
+Index:   1  2  3  4  5  6  7  8
+All lights are green initially
+```
+
+### Event Processing
+```
+Event 1: Toggle light 3
+┌─────────────────────────────────────┐
+│ Before: [G, G, G, G, G, G, G, G]   │
+│ Toggle light 3: G → R              │
+│ After:  [G, G, R, G, G, G, G, G]   │
+│ Green segments: [1-2], [4-8]       │
+│ Lengths: 2, 5                       │
+│ Max length: 5                       │
+└─────────────────────────────────────┘
+
+Event 2: Toggle light 6
+┌─────────────────────────────────────┐
+│ Before: [G, G, R, G, G, G, G, G]   │
+│ Toggle light 6: G → R              │
+│ After:  [G, G, R, G, G, R, G, G]   │
+│ Green segments: [1-2], [4-5], [7-8]│
+│ Lengths: 2, 2, 2                    │
+│ Max length: 2                       │
+└─────────────────────────────────────┘
+
+Event 3: Toggle light 2
+┌─────────────────────────────────────┐
+│ Before: [G, G, R, G, G, R, G, G]   │
+│ Toggle light 2: G → R              │
+│ After:  [G, R, R, G, G, R, G, G]   │
+│ Green segments: [1], [4-5], [7-8]  │
+│ Lengths: 1, 2, 2                    │
+│ Max length: 2                       │
+└─────────────────────────────────────┘
+```
+
+### Data Structure Approach
+```
+Use a set to track red light positions:
+
+Initial: red_lights = {}
+After event 1: red_lights = {3}
+After event 2: red_lights = {3, 6}
+After event 3: red_lights = {2, 3, 6}
+
+For each query, find longest gap between consecutive red lights:
+- Add boundary positions 0 and n+1
+- Sort all positions
+- Find maximum gap between consecutive positions
+```
+
+### Gap Calculation
+```
+After event 3: red_lights = {2, 3, 6}
+Boundary positions: {0, 2, 3, 6, 9}
+
+Gaps:
+- Between 0 and 2: length = 2 - 0 - 1 = 1
+- Between 2 and 3: length = 3 - 2 - 1 = 0
+- Between 3 and 6: length = 6 - 3 - 1 = 2
+- Between 6 and 9: length = 9 - 6 - 1 = 2
+
+Maximum gap: 2
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

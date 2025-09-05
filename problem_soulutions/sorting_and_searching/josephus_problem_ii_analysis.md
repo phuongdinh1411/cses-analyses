@@ -39,6 +39,80 @@ _, _, _, 4, _, _, _  (eliminate 1)
 Last remaining: 4
 ```
 
+## 📊 Visual Example
+
+### Initial Circle Setup
+```
+People: [1, 2, 3, 4, 5, 6, 7]
+Index:   0  1  2  3  4  5  6
+n = 7 people, k = 3
+```
+
+### Elimination Process
+```
+Round 1: Eliminate every 3rd person starting from 1
+┌─────────────────────────────────────┐
+│ Current: [1, 2, 3, 4, 5, 6, 7]     │
+│ Start from 1, count 3: eliminate 3  │
+│ Remaining: [1, 2, 4, 5, 6, 7]      │
+│ Start from 4, count 3: eliminate 6  │
+│ Remaining: [1, 2, 4, 5, 7]         │
+│ Start from 7, count 3: eliminate 2  │
+│ Remaining: [1, 4, 5, 7]            │
+│ Start from 4, count 3: eliminate 7  │
+│ Remaining: [1, 4, 5]               │
+│ Start from 1, count 3: eliminate 5  │
+│ Remaining: [1, 4]                  │
+└─────────────────────────────────────┘
+
+Round 2: Continue with remaining people
+┌─────────────────────────────────────┐
+│ Current: [1, 4]                    │
+│ Start from 1, count 3: eliminate 1  │
+│ Remaining: [4]                     │
+└─────────────────────────────────────┘
+
+Final result: Person 4 survives
+```
+
+### Step-by-Step Visualization
+```
+Initial: 1 2 3 4 5 6 7
+         ↑
+         Start here
+
+Round 1: 1 2 _ 4 5 _ 7
+         ↑     ↑     ↑
+         Keep  Keep  Keep
+
+Round 2: 1 _ _ 4 _ _ _
+         ↑       ↑
+         Keep    Keep
+
+Round 3: _ _ _ 4 _ _ _
+         ↑
+         Keep (last remaining)
+```
+
+### Mathematical Formula
+```
+For n people and step size k, the last remaining person is:
+J(n,k) = (J(n-1,k) + k) % n
+
+Base case: J(1,k) = 0
+
+For n=7, k=3:
+- J(1,3) = 0
+- J(2,3) = (0 + 3) % 2 = 1
+- J(3,3) = (1 + 3) % 3 = 1
+- J(4,3) = (1 + 3) % 4 = 0
+- J(5,3) = (0 + 3) % 5 = 3
+- J(6,3) = (3 + 3) % 6 = 0
+- J(7,3) = (0 + 3) % 7 = 3
+
+Since we use 1-indexing, the result is 3 + 1 = 4
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

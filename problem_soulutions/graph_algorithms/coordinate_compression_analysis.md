@@ -44,6 +44,64 @@ Output:
 - y-coordinates: 1 → 0, 4 → 1, 5 → 2
 - Relative ordering is preserved in both dimensions
 
+## 🎯 Visual Example
+
+### Input Points
+```
+Points: (2,1), (1,4), (2,1), (3,5), (1,4)
+
+Original coordinates:
+Point 1: (2, 1)
+Point 2: (1, 4)
+Point 3: (2, 1)
+Point 4: (3, 5)
+Point 5: (1, 4)
+```
+
+### Coordinate Compression Process
+```
+Step 1: Extract unique coordinates
+x-coordinates: [1, 2, 3]
+y-coordinates: [1, 4, 5]
+
+Step 2: Sort coordinates
+x-coordinates: [1, 2, 3] → [0, 1, 2]
+y-coordinates: [1, 4, 5] → [0, 1, 2]
+
+Step 3: Create mapping
+x-mapping: {1: 0, 2: 1, 3: 2}
+y-mapping: {1: 0, 4: 1, 5: 2}
+
+Step 4: Apply compression
+Point 1: (2,1) → (1,0)
+Point 2: (1,4) → (0,1)
+Point 3: (2,1) → (1,0)
+Point 4: (3,5) → (2,2)
+Point 5: (1,4) → (0,1)
+```
+
+### Compression Visualization
+```
+Original coordinates:
+(2,1) (1,4) (2,1) (3,5) (1,4)
+
+Compressed coordinates:
+(1,0) (0,1) (1,0) (2,2) (0,1)
+
+Relative ordering preserved:
+- x: 1 < 2 < 3 → 0 < 1 < 2
+- y: 1 < 4 < 5 → 0 < 1 < 2
+```
+
+### Key Insight
+Coordinate compression works by:
+1. Extracting unique coordinate values
+2. Sorting coordinates to determine relative order
+3. Mapping to consecutive integers starting from 0
+4. Preserving relative ordering between points
+5. Time complexity: O(n log n) for sorting
+6. Space complexity: O(n) for mapping
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

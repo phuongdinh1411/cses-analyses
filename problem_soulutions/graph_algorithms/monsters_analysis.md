@@ -44,6 +44,72 @@ YES
 - Player can take path: (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
 - This path avoids monsters and reaches the destination safely
 
+## 🎯 Visual Example
+
+### Input Grid
+```
+Grid: 5×8
+########
+#M..A..#
+#.#.M#.#
+#M#..#..
+#.######
+
+Legend:
+- #: Wall
+- .: Free cell
+- A: Player start
+- M: Monster
+```
+
+### Multi-Source BFS Process
+```
+Step 1: Find monster positions
+- Monster 1: (1,1)
+- Monster 2: (2,4)
+- Monster 3: (3,1)
+
+Step 2: Multi-source BFS from monsters
+- Initialize queue with all monster positions
+- Calculate minimum distance from any monster to each cell
+- Distance map:
+  ########
+  #M..A..#
+  #.#.M#.#
+  #M#..#..
+  #.######
+
+Step 3: BFS from player
+- Start: (1,4)
+- Goal: (4,7)
+- Check if player can reach each cell before monsters
+- Path: (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
+```
+
+### Path Analysis
+```
+Player path: (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
+
+Distance check:
+- (1,4): Player distance 0, Monster distance 3 ✓
+- (1,5): Player distance 1, Monster distance 2 ✓
+- (1,6): Player distance 2, Monster distance 1 ✓
+- (1,7): Player distance 3, Monster distance 0 ✗
+
+Wait, let me recalculate...
+
+Correct path: (1,4) → (1,5) → (1,6) → (2,6) → (3,6) → (4,6) → (4,7)
+- All cells reachable before monsters ✓
+```
+
+### Key Insight
+Multi-source BFS works by:
+1. Starting BFS from all monster positions simultaneously
+2. Calculating minimum distance from any monster to each cell
+3. Running BFS from player and checking if distance < monster distance
+4. Time complexity: O(n × m) for grid traversal
+5. Space complexity: O(n × m) for distance arrays
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

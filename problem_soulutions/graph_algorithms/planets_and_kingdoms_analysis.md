@@ -44,6 +44,70 @@ Output:
 - Planet 4 can only reach other planets but can't be reached, so it's in kingdom 2
 - Total: 2 kingdoms
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Planets: 1, 2, 3, 4
+Teleporters: (1→2), (2→3), (3→1), (4→1)
+
+Graph representation:
+1 ──> 2 ──> 3
+│     │     │
+└─────┼─────┘
+      │
+      4
+```
+
+### Strongly Connected Components (SCCs) Detection
+```
+Step 1: Build adjacency lists
+- Planet 1: [2]
+- Planet 2: [3]
+- Planet 3: [1]
+- Planet 4: [1]
+
+Step 2: First DFS pass (finish times)
+- Start from planet 1: 1 → 2 → 3 → 1 (cycle detected)
+- Finish times: [3, 2, 1, 4]
+
+Step 3: Build transpose graph
+- Planet 1: [3, 4]
+- Planet 2: [1]
+- Planet 3: [2]
+- Planet 4: []
+
+Step 4: Second DFS pass (SCCs)
+- Process in reverse finish time order: [4, 1, 2, 3]
+- Planet 4: SCC 1 (only itself)
+- Planet 1: SCC 2 (1 → 2 → 3 → 1)
+- Planet 2: already in SCC 2
+- Planet 3: already in SCC 2
+```
+
+### SCC Analysis
+```
+Strongly Connected Components:
+- SCC 1: {4} (kingdom 1)
+- SCC 2: {1, 2, 3} (kingdom 2)
+
+Kingdom assignments:
+- Planet 1: Kingdom 2
+- Planet 2: Kingdom 2
+- Planet 3: Kingdom 2
+- Planet 4: Kingdom 1
+
+Total kingdoms: 2
+```
+
+### Key Insight
+Kosaraju's algorithm works by:
+1. First DFS to get finish times
+2. Building transpose graph
+3. Second DFS in reverse finish time order
+4. Time complexity: O(n + m)
+5. Space complexity: O(n + m) for graph representation
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

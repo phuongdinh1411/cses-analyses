@@ -39,6 +39,102 @@ Explanation**:
 - Cannot extend further as song 2 appears again at position 8
 ```
 
+## 🎯 Visual Example
+
+### Input Playlist
+```
+Songs: [1, 2, 1, 3, 2, 7, 4, 2]
+Index:  0  1  2  3  4  5  6  7
+```
+
+### Sliding Window Process
+```
+Step 1: Start with empty window
+Window: []
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+        ^
+        start=0, end=0
+
+Step 2: Add song 1
+Window: [1]
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+        ^
+        start=0, end=0, length=1
+
+Step 3: Add song 2
+Window: [1, 2]
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+        ^  ^
+        start=0, end=1, length=2
+
+Step 4: Try to add song 1 (duplicate!)
+Window: [1, 2, 1]  ← Invalid (duplicate 1)
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+        ^  ^  ^
+        start=0, end=2
+
+Move start to position 3 (after first occurrence of 1)
+Window: [2, 1]
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+           ^  ^
+           start=1, end=2, length=2
+
+Step 5: Add song 3
+Window: [2, 1, 3]
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+           ^  ^  ^
+           start=1, end=3, length=3
+
+Step 6: Try to add song 2 (duplicate!)
+Window: [2, 1, 3, 2]  ← Invalid (duplicate 2)
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+           ^  ^  ^  ^
+           start=1, end=4
+
+Move start to position 5 (after first occurrence of 2)
+Window: [1, 3, 2]
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+              ^  ^  ^
+              start=2, end=4, length=3
+
+Step 7: Add song 7
+Window: [1, 3, 2, 7]
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+              ^  ^  ^  ^
+              start=2, end=5, length=4
+
+Step 8: Add song 4
+Window: [1, 3, 2, 7, 4]  ← Longest so far!
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+              ^  ^  ^  ^  ^
+              start=2, end=6, length=5
+
+Step 9: Try to add song 2 (duplicate!)
+Window: [1, 3, 2, 7, 4, 2]  ← Invalid (duplicate 2)
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+              ^  ^  ^  ^  ^  ^
+              start=2, end=7
+
+Move start to position 5 (after first occurrence of 2 in current window)
+Window: [7, 4, 2]
+Songs:  [1, 2, 1, 3, 2, 7, 4, 2]
+                    ^  ^  ^
+                    start=5, end=7, length=3
+```
+
+### Final Result
+```
+Longest unique sequence: [1, 3, 2, 7, 4]
+Length: 5 songs
+Positions: 2-6 (0-indexed)
+```
+
+### Key Insight
+The sliding window technique efficiently maintains a window of unique songs by:
+1. Expanding the window when adding new unique songs
+2. Contracting the window when duplicates are encountered
+3. Tracking the maximum window size seen so far
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

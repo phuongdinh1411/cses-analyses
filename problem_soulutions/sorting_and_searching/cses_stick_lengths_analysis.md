@@ -28,6 +28,63 @@ Output:
 Explanation: Make all sticks length 2. Cost = |2-2| + |3-2| + |1-2| + |5-2| + |2-2| = 0 + 1 + 1 + 3 + 0 = 5.
 ```
 
+## 📊 Visual Example
+
+### Input Sticks
+```
+Sticks: [2, 3, 1, 5, 2]
+Index:   0  1  2  3  4
+```
+
+### Sorting to Find Median
+```
+Original: [2, 3, 1, 5, 2]
+Sorted:   [1, 2, 2, 3, 5]
+Index:     0  1  2  3  4
+
+Median: arr[n//2] = arr[2] = 2
+```
+
+### Cost Calculation for Target Length 2
+```
+Stick 0: |2 - 2| = 0
+Stick 1: |3 - 2| = 1
+Stick 2: |1 - 2| = 1
+Stick 3: |5 - 2| = 3
+Stick 4: |2 - 2| = 0
+
+Total cost: 0 + 1 + 1 + 3 + 0 = 5
+```
+
+### Visual Representation
+```
+Original lengths: [2, 3, 1, 5, 2]
+Target length:    2
+
+Stick 0: 2 → 2 (cost: 0)
+Stick 1: 3 → 2 (cost: 1) ← shorten
+Stick 2: 1 → 2 (cost: 1) ← lengthen
+Stick 3: 5 → 2 (cost: 3) ← shorten
+Stick 4: 2 → 2 (cost: 0)
+
+Final lengths: [2, 2, 2, 2, 2]
+Total cost: 5
+```
+
+### Why Median is Optimal
+```
+Key Insight: Median minimizes sum of absolute differences
+
+Proof intuition:
+- If we choose a value smaller than median:
+  - More elements are above the target
+  - Sum of differences increases
+- If we choose a value larger than median:
+  - More elements are below the target
+  - Sum of differences increases
+- Median balances the differences optimally
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

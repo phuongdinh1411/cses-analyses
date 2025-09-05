@@ -43,6 +43,62 @@ Output:
 - Path 1 → 4: 1 + 4 = 5
 - Maximum coins: 10 (longest path)
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Nodes: 1, 2, 3, 4
+Coin values: [1, 2, 3, 4]
+Edges: (1→2), (2→3), (3→4), (1→4)
+
+Graph representation:
+1(1) ──> 2(2) ──> 3(3) ──> 4(4)
+│                              │
+└──────────────────────────────┘
+```
+
+### Dynamic Programming Process
+```
+Step 1: Topological sort
+- Order: 1, 2, 3, 4
+
+Step 2: Initialize DP
+- dp[i] = maximum coins collectible ending at node i
+- dp[1] = 1 (coin at node 1)
+
+Step 3: Fill DP table
+- Node 1: dp[1] = 1
+- Node 2: dp[2] = max(dp[1] + 2, 2) = max(1 + 2, 2) = 3
+- Node 3: dp[3] = max(dp[2] + 3, 3) = max(3 + 3, 3) = 6
+- Node 4: dp[4] = max(dp[3] + 4, dp[1] + 4, 4) = max(6 + 4, 1 + 4, 4) = 10
+
+Step 4: Find maximum
+- Maximum coins: max(dp[1], dp[2], dp[3], dp[4]) = 10
+```
+
+### Path Analysis
+```
+Optimal path: 1 → 2 → 3 → 4
+Coin collection:
+- Node 1: 1 coin
+- Node 2: 2 coins
+- Node 3: 3 coins
+- Node 4: 4 coins
+- Total: 1 + 2 + 3 + 4 = 10 coins
+
+Alternative paths:
+- 1 → 4: 1 + 4 = 5 coins
+- 1 → 2 → 3: 1 + 2 + 3 = 6 coins
+```
+
+### Key Insight
+Dynamic programming with topological sort works by:
+1. Processing nodes in topological order
+2. For each node, considering all incoming paths
+3. Taking maximum coins from all possible paths
+4. Time complexity: O(n + m) for DAG traversal
+5. Space complexity: O(n) for DP array
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

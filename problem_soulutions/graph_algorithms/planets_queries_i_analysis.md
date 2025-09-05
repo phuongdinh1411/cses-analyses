@@ -44,6 +44,68 @@ Output:
 - Query 2: Start at planet 1, 2nd planet in path is planet 2 (1 → 2)
 - Query 3: Start at planet 1, 3rd planet in path is planet 1 (1 → 2 → 1)
 
+## 🎯 Visual Example
+
+### Input Graph and Queries
+```
+Planets: 1, 2, 3, 4
+Teleporters: [2, 1, 4, 1]
+Queries: (1,1), (1,2), (1,3)
+
+Graph representation:
+1 ──> 2 ──> 1 ──> 2 ──> 1 ──> ...
+│
+└──> 3 ──> 4 ──> 1 ──> 2 ──> ...
+```
+
+### Binary Lifting Process
+```
+Step 1: Build binary lifting table
+- up[0][i] = teleporter[i] (1 step)
+- up[1][i] = up[0][up[0][i]] (2 steps)
+- up[2][i] = up[1][up[1][i]] (4 steps)
+- up[3][i] = up[2][up[2][i]] (8 steps)
+
+Step 2: Process queries
+
+Query 1: (1,1)
+- Start at planet 1
+- 1st planet in path: 1
+- Result: 1
+
+Query 2: (1,2)
+- Start at planet 1
+- 2nd planet in path: teleporter[1] = 2
+- Result: 2
+
+Query 3: (1,3)
+- Start at planet 1
+- 3rd planet in path: teleporter[teleporter[1]] = teleporter[2] = 1
+- Result: 1
+```
+
+### Path Visualization
+```
+Path from planet 1:
+1 → 2 → 1 → 2 → 1 → 2 → 1 → ...
+
+Positions:
+- Position 1: 1
+- Position 2: 2
+- Position 3: 1
+- Position 4: 2
+- Position 5: 1
+- ...
+```
+
+### Key Insight
+Binary lifting works by:
+1. Precomputing powers of 2 steps for each planet
+2. Using binary representation to find k-th planet
+3. Time complexity: O(log k) per query
+4. Space complexity: O(n × log n) for lifting table
+5. Preprocessing: O(n × log n)
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

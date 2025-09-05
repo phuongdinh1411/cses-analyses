@@ -45,6 +45,55 @@ Output:
 - Query 2: Path from 1: 1→2→3→4→5→3, Path from 3: 3→4→5→3, First common: 3
 - Query 3: Path from 2: 2→3→4→5→3, Path from 4: 4→5→3, No common planet
 
+## 🎯 Visual Example
+
+### Input Graph and Queries
+```
+Planets: 1, 2, 3, 4, 5
+Teleporters: [2, 3, 4, 5, 3]
+Queries: (1,2), (1,3), (2,4)
+
+Graph representation:
+1 ──> 2 ──> 3 ──> 4 ──> 5
+      │              │
+      └──────────────┘
+```
+
+### Path Analysis
+```
+Step 1: Build paths from each planet
+- Path from 1: 1 → 2 → 3 → 4 → 5 → 3 → 4 → 5 → 3 → ...
+- Path from 2: 2 → 3 → 4 → 5 → 3 → 4 → 5 → 3 → ...
+- Path from 3: 3 → 4 → 5 → 3 → 4 → 5 → 3 → ...
+- Path from 4: 4 → 5 → 3 → 4 → 5 → 3 → ...
+- Path from 5: 5 → 3 → 4 → 5 → 3 → ...
+
+Step 2: Process queries
+
+Query 1: (1,2)
+- Path from 1: [1, 2, 3, 4, 5, 3, 4, 5, 3, ...]
+- Path from 2: [2, 3, 4, 5, 3, 4, 5, 3, ...]
+- First common planet: 3 (at position 2 in path 1, position 1 in path 2)
+
+Query 2: (1,3)
+- Path from 1: [1, 2, 3, 4, 5, 3, 4, 5, 3, ...]
+- Path from 3: [3, 4, 5, 3, 4, 5, 3, ...]
+- First common planet: 3 (at position 2 in path 1, position 0 in path 3)
+
+Query 3: (2,4)
+- Path from 2: [2, 3, 4, 5, 3, 4, 5, 3, ...]
+- Path from 4: [4, 5, 3, 4, 5, 3, ...]
+- No common planet in initial segments
+```
+
+### Key Insight
+Path intersection algorithm works by:
+1. Building paths from each starting planet
+2. Finding the first common planet in both paths
+3. Using binary lifting for efficient path traversal
+4. Time complexity: O(q × log n) for queries
+5. Space complexity: O(n × log n) for binary lifting table
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

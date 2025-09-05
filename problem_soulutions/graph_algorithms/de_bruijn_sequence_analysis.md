@@ -36,6 +36,72 @@ Output:
   - 10 (positions 2-3)
   - 11 (positions 3-4, wrapping around)
 
+## 🎯 Visual Example
+
+### Input and Output
+```
+Input: n = 2
+Output: 0011
+
+All possible binary strings of length 2:
+- 00, 01, 10, 11
+```
+
+### De Bruijn Graph Construction
+```
+Step 1: Create nodes (binary strings of length n-1)
+- For n = 2, nodes are strings of length 1: 0, 1
+
+Step 2: Create edges (adding one bit)
+- From 0: add 0 → 00, add 1 → 01
+- From 1: add 0 → 10, add 1 → 11
+
+Graph representation:
+0 ──0──> 0
+│        │
+└──1─────┼──0──> 1
+          │
+          └──1──> 1
+```
+
+### Hierholzer's Algorithm Process
+```
+Step 1: Find Eulerian circuit
+- Start from node 0
+- Path: 0 → 0 → 1 → 1 → 0
+
+Step 2: Extract sequence
+- Take first bit of each edge: 0, 0, 1, 1
+- Sequence: 0011
+
+Step 3: Verify all substrings
+- 00: positions 0-1
+- 01: positions 1-2
+- 10: positions 2-3
+- 11: positions 3-4 (wrapping around)
+```
+
+### Sequence Verification
+```
+De Bruijn sequence: 0011
+
+Substrings of length 2:
+- Position 0-1: 00 ✓
+- Position 1-2: 01 ✓
+- Position 2-3: 10 ✓
+- Position 3-4: 11 ✓ (wrapping around)
+
+All possible binary strings of length 2 are present ✓
+```
+
+### Key Insight
+De Bruijn sequence construction works by:
+1. Building a De Bruijn graph where nodes are (n-1)-bit strings
+2. Finding an Eulerian circuit in the graph
+3. Extracting the sequence from the circuit
+4. Time complexity: O(2^n) for graph construction and traversal
+5. Space complexity: O(2^n) for graph representation
+
 ## Solution Progression
 ### Approach 1: Hierholzer's Algorithm on De Bruijn Graph - O(2^n)
 **Description**: Use Hierholzer's algorithm on the De Bruijn graph.

@@ -30,6 +30,102 @@ Round 1: Collect 1, 2, 3 (all smaller numbers available)
 Round 2: Collect 4, 5 (remaining numbers)
 ```
 
+## 🎯 Visual Example
+
+### Input Array
+```
+Array: [4, 2, 1, 5, 3]
+Index:  0  1  2  3  4
+```
+
+### Position Mapping
+```
+Number: 1  2  3  4  5
+Position: 2  1  4  0  3
+```
+
+### Collection Process
+```
+Round 1: Collect numbers in order 1, 2, 3, 4, 5
+
+Step 1: Collect 1
+Position of 1: 2
+Array: [4, 2, 1, 5, 3]
+        ^  ^  ✓  ^  ^
+        Can collect 1 (no smaller numbers needed)
+
+Step 2: Collect 2
+Position of 2: 1
+Array: [4, 2, 1, 5, 3]
+        ^  ✓  ✓  ^  ^
+        Can collect 2 (1 is already collected)
+
+Step 3: Collect 3
+Position of 3: 4
+Array: [4, 2, 1, 5, 3]
+        ^  ✓  ✓  ^  ✓
+        Can collect 3 (1 and 2 are already collected)
+
+Step 4: Try to collect 4
+Position of 4: 0
+Array: [4, 2, 1, 5, 3]
+        ✓  ✓  ✓  ^  ✓
+        Can collect 4 (1, 2, 3 are already collected)
+
+Step 5: Try to collect 5
+Position of 5: 3
+Array: [4, 2, 1, 5, 3]
+        ✓  ✓  ✓  ✓  ✓
+        Can collect 5 (1, 2, 3, 4 are already collected)
+
+Round 1 Result: All numbers collected in 1 round!
+```
+
+### Alternative Example (Requiring 2 Rounds)
+```
+Array: [4, 2, 1, 5, 3]
+Index:  0  1  2  3  4
+
+Position Mapping:
+Number: 1  2  3  4  5
+Position: 2  1  4  0  3
+
+Collection Analysis:
+- To collect 1, 2, 3, 4, 5 in order
+- Check if positions are in increasing order
+
+Position sequence: 2, 1, 4, 0, 3
+- 1 → 2: position 2 → position 1 (backward jump!)
+- 2 → 3: position 1 → position 4 (forward jump)
+- 3 → 4: position 4 → position 0 (backward jump!)
+- 4 → 5: position 0 → position 3 (forward jump)
+
+Backward jumps: 2 → 1, 4 → 0
+Number of backward jumps: 2
+Minimum rounds needed: 2
+```
+
+### Round-by-Round Collection
+```
+Round 1: Collect 1, 2, 3
+Array: [4, 2, 1, 5, 3]
+        ^  ✓  ✓  ^  ✓
+        Collected: 1, 2, 3
+
+Round 2: Collect 4, 5
+Array: [4, 2, 1, 5, 3]
+        ✓  ✓  ✓  ✓  ✓
+        Collected: 4, 5
+
+Total rounds: 2
+```
+
+### Key Insight
+The algorithm counts backward jumps in the position sequence:
+- Each backward jump requires a new round
+- Forward jumps can be handled in the same round
+- Minimum rounds = 1 + number of backward jumps
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

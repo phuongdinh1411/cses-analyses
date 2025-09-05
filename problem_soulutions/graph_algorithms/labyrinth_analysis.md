@@ -41,6 +41,104 @@ Output:
 - Optimal path: (0,0) → (1,1) → (1,2) → (1,3) → (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
 - Passes through 2 walls: at (2,7) and (4,7)
 
+## 🎯 Visual Example
+
+### Input Labyrinth
+```
+Grid: 5×8
+########
+#..#...#
+####.#.#
+#..#...#
+########
+
+Legend: # = Wall, . = Floor
+Start: (0,0), End: (4,7)
+```
+
+### Grid Visualization
+```
+Row 0: ########
+Row 1: #..#...#
+Row 2: ####.#.#
+Row 3: #..#...#
+Row 4: ########
+
+Floor positions:
+Row 1: (1,1), (1,3), (1,4), (1,5), (1,6)
+Row 2: (2,4), (2,6)
+Row 3: (3,1), (3,3), (3,4), (3,5), (3,6)
+```
+
+### BFS with Priority Queue (0-1 BFS)
+```
+Step 1: Start at (0,0)
+Queue: [(0, (0,0))]  # (walls_passed, position)
+Visited: {(0,0)}
+Distance: {(0,0): 0}
+
+Step 2: Process (0,0) - it's a wall
+Queue: [(1, (1,0))]  # Move down, pass 1 wall
+Visited: {(0,0), (1,0)}
+Distance: {(0,0): 0, (1,0): 1}
+
+Step 3: Process (1,0) - it's a wall
+Queue: [(2, (1,1))]  # Move right, pass 1 more wall
+Visited: {(0,0), (1,0), (1,1)}
+Distance: {(0,0): 0, (1,0): 1, (1,1): 2}
+
+Step 4: Process (1,1) - it's a floor
+Queue: [(2, (1,2)), (2, (1,3))]  # Move right, no walls
+Visited: {(0,0), (1,0), (1,1), (1,2), (1,3)}
+Distance: {(0,0): 0, (1,0): 1, (1,1): 2, (1,2): 2, (1,3): 2}
+
+Step 5: Continue BFS...
+Queue: [(2, (1,4)), (2, (1,5)), (2, (1,6))]
+Visited: {(0,0), (1,0), (1,1), (1,2), (1,3), (1,4), (1,5), (1,6)}
+Distance: All floor positions have distance 2
+
+Step 6: Process (1,6) - try to move to (1,7)
+Queue: [(2, (1,7))]  # (1,7) is a wall, but we can pass through
+Visited: {(0,0), (1,0), (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7)}
+Distance: {(1,7): 3}
+
+Step 7: Process (1,7) - try to move to (2,7)
+Queue: [(3, (2,7))]  # (2,7) is a wall
+Visited: {(0,0), (1,0), (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (2,7)}
+Distance: {(2,7): 4}
+
+Step 8: Process (2,7) - try to move to (3,7)
+Queue: [(4, (3,7))]  # (3,7) is a wall
+Visited: {(0,0), (1,0), (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (2,7), (3,7)}
+Distance: {(3,7): 5}
+
+Step 9: Process (3,7) - try to move to (4,7)
+Queue: [(5, (4,7))]  # (4,7) is a wall
+Visited: {(0,0), (1,0), (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (2,7), (3,7), (4,7)}
+Distance: {(4,7): 6}
+
+Target reached! Minimum walls: 6
+```
+
+### Alternative Path Analysis
+```
+Path 1: (0,0) → (1,0) → (1,1) → (1,2) → (1,3) → (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
+Walls passed: 6
+
+Path 2: (0,0) → (1,0) → (1,1) → (1,3) → (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
+Walls passed: 6
+
+Both paths require passing through 6 walls.
+```
+
+### Key Insight
+The 0-1 BFS algorithm works because:
+1. We use a deque to prioritize moves that don't pass through walls
+2. Floor-to-floor moves have cost 0 (added to front of queue)
+3. Wall-passing moves have cost 1 (added to back of queue)
+4. This ensures we always find the path with minimum walls
+5. Time complexity: O(V + E) where V = cells, E = adjacent cell connections
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

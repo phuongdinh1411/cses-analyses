@@ -42,6 +42,65 @@ Output:
 - Each path visits all 4 cities exactly once
 - Paths must start at city 1 and end at city n
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Cities: 1, 2, 3, 4
+Flights: (1→2), (2→3), (3→4), (1→4)
+
+Graph representation:
+1 ──> 2 ──> 3 ──> 4
+│              │
+└──────────────┘
+```
+
+### Bitmask DP Process
+```
+Step 1: Initialize DP table
+- dp[mask][city] = number of paths ending at city using cities in mask
+- mask: bitmask representing visited cities
+- city: current city
+
+Step 2: Base case
+- dp[1][1] = 1 (start at city 1 with only city 1 visited)
+
+Step 3: Fill DP table
+- For each mask from 1 to 2^n - 1:
+  - For each city in mask:
+    - For each neighbor of city:
+      - If neighbor not in mask:
+        - dp[mask | (1 << neighbor)][neighbor] += dp[mask][city]
+
+Step 4: Calculate paths
+- mask = 2^n - 1 (all cities visited)
+- city = n (end city)
+- Result = dp[mask][n]
+```
+
+### Path Counting Visualization
+```
+Hamiltonian paths from city 1 to city 4:
+
+Path 1: 1 → 2 → 3 → 4
+- Visited: {1, 2, 3, 4}
+- Bitmask: 1111 (binary) = 15 (decimal)
+
+Path 2: 1 → 4 → 2 → 3
+- Visited: {1, 2, 3, 4}
+- Bitmask: 1111 (binary) = 15 (decimal)
+
+Total paths: 2
+```
+
+### Key Insight
+Bitmask DP works by:
+1. Using bitmask to represent visited cities efficiently
+2. Building paths incrementally by adding one city at a time
+3. Avoiding recomputation through memoization
+4. Time complexity: O(n² × 2^n)
+5. Space complexity: O(n × 2^n) for DP table
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

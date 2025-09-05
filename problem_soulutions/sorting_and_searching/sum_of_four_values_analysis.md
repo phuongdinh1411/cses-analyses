@@ -35,6 +35,75 @@ Sum = 1 + 3 + 4 + 6 = 14, but target is 15
 Hmm, let me check the example more carefully...
 ```
 
+## 📊 Visual Example
+
+### Input Array
+```
+Array: [1, 3, 4, 6, 8]
+Index:  0  1  2  3  4
+Target: 15
+```
+
+### Brute Force Approach
+```
+Check all combinations of 4 distinct indices:
+
+Combination (0,1,2,3): arr[0] + arr[1] + arr[2] + arr[3] = 1 + 3 + 4 + 6 = 14 ≠ 15
+Combination (0,1,2,4): arr[0] + arr[1] + arr[2] + arr[4] = 1 + 3 + 4 + 8 = 16 ≠ 15
+Combination (0,1,3,4): arr[0] + arr[1] + arr[3] + arr[4] = 1 + 3 + 6 + 8 = 18 ≠ 15
+Combination (0,2,3,4): arr[0] + arr[2] + arr[3] + arr[4] = 1 + 4 + 6 + 8 = 19 ≠ 15
+Combination (1,2,3,4): arr[1] + arr[2] + arr[3] + arr[4] = 3 + 4 + 6 + 8 = 21 ≠ 15
+
+No solution found with target 15
+```
+
+### Two Pointer Approach (Sorted Array)
+```
+Step 1: Sort array with original indices
+Original: [1, 3, 4, 6, 8]
+Sorted:   [1, 3, 4, 6, 8] (with indices: 0, 1, 2, 3, 4)
+
+Step 2: Fix first two elements, use two pointers for remaining
+For i=0, j=1, arr[i]=1, arr[j]=3:
+┌─────────────────────────────────────┐
+│ Target for remaining: 15 - 1 - 3 = 11│
+│ Two pointers: left=2, right=4       │
+│ arr[2] + arr[4] = 4 + 8 = 12 > 11   │
+│ Move right pointer: left=2, right=3  │
+│ arr[2] + arr[3] = 4 + 6 = 10 < 11   │
+│ Move left pointer: left=3, right=3   │
+│ arr[3] + arr[3] = 6 + 6 = 12 > 11   │
+│ No solution found                    │
+└─────────────────────────────────────┘
+```
+
+### Alternative Example (Correct Target)
+```
+Let's use a different example where solution exists:
+
+Input:
+5 14
+1 3 4 6 8
+
+Target: 14
+
+Combination (0,1,2,3): arr[0] + arr[1] + arr[2] + arr[3] = 1 + 3 + 4 + 6 = 14 = 14 ✓
+
+Found solution: indices 0, 1, 2, 3
+1-indexed: 1, 2, 3, 4
+```
+
+### Key Insight
+```
+For four sum problems:
+- Fix first two elements
+- Use two pointers for remaining two elements
+- Time complexity: O(n³)
+- Space complexity: O(1)
+
+This is more efficient than brute force O(n⁴)
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

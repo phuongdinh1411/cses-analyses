@@ -45,6 +45,66 @@ Output:
 - Path 1 → 4: score = 2
 - Highest score: 5 (path 1 → 3 → 4)
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Cities: 1, 2, 3, 4
+Flights: (1→2,3), (2→4,-1), (1→3,-2), (3→4,7), (1→4,2)
+
+Graph representation:
+1 ──3──> 2 ──(-1)──> 4
+│        │            │
+└──(-2)──┼──7─────────┘
+          │
+          └──2─────┘
+```
+
+### Longest Path Algorithm Process
+```
+Step 1: Initialize distances
+- dist[1] = 0 (source)
+- dist[2] = dist[3] = dist[4] = -∞
+
+Step 2: Bellman-Ford algorithm
+- Iteration 1:
+  - dist[2] = max(dist[2], dist[1] + 3) = max(-∞, 0 + 3) = 3
+  - dist[3] = max(dist[3], dist[1] + (-2)) = max(-∞, 0 + (-2)) = -2
+  - dist[4] = max(dist[4], dist[1] + 2) = max(-∞, 0 + 2) = 2
+
+- Iteration 2:
+  - dist[4] = max(dist[4], dist[2] + (-1)) = max(2, 3 + (-1)) = 2
+  - dist[4] = max(dist[4], dist[3] + 7) = max(2, -2 + 7) = 5
+
+- Iteration 3:
+  - No more updates
+
+Step 3: Check for negative cycles
+- No negative cycles detected
+- Final distance to city 4: 5
+```
+
+### Path Analysis
+```
+Optimal path: 1 → 3 → 4
+Score breakdown:
+- Flight 1→3: -2
+- Flight 3→4: 7
+- Total score: -2 + 7 = 5
+
+Alternative paths:
+- 1 → 2 → 4: 3 + (-1) = 2
+- 1 → 4: 2
+```
+
+### Key Insight
+Bellman-Ford algorithm works by:
+1. Relaxing all edges for n-1 iterations
+2. Finding longest paths by maximizing distances
+3. Detecting negative cycles in final iteration
+4. Time complexity: O(n × m) for n iterations
+5. Space complexity: O(n) for distance array
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

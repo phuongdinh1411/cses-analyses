@@ -45,6 +45,77 @@ Output:
 - Path 3: 1 → 2 → 4 (capacity: min(3,2) = 2)
 - Maximum flow: 2 + 1 + 2 = 5
 
+## 🎯 Visual Example
+
+### Input Network
+```
+Computers: 1, 2, 3, 4
+Connections: (1→2,3), (2→3,2), (3→4,3), (1→3,1), (2→4,2)
+
+Network representation:
+1 ──3──> 2 ──2──> 3 ──3──> 4
+│        │        │
+└──1─────┼──2─────┘
+          └──2─────┘
+```
+
+### Maximum Flow Algorithm Process
+```
+Step 1: Initialize flow network
+- Source: 1, Sink: 4
+- All flows initially 0
+
+Step 2: Find augmenting paths
+
+Path 1: 1 → 2 → 3 → 4
+- Bottleneck: min(3,2,3) = 2
+- Flow: 2
+- Residual graph:
+  1 ──1──> 2 ──0──> 3 ──1──> 4
+  │        │        │
+  └──1─────┼──2─────┘
+            └──2─────┘
+
+Path 2: 1 → 3 → 4
+- Bottleneck: min(1,1) = 1
+- Flow: 1
+- Residual graph:
+  1 ──1──> 2 ──0──> 3 ──0──> 4
+  │        │        │
+  └──0─────┼──2─────┘
+            └──2─────┘
+
+Path 3: 1 → 2 → 4
+- Bottleneck: min(1,2) = 1
+- Flow: 1
+- Residual graph:
+  1 ──0──> 2 ──0──> 3 ──0──> 4
+  │        │        │
+  └──0─────┼──2─────┘
+            └──1─────┘
+
+Step 3: No more augmenting paths
+- Maximum flow: 2 + 1 + 1 = 4
+```
+
+### Flow Analysis
+```
+Maximum flow paths:
+1. 1 → 2 → 3 → 4: flow 2
+2. 1 → 3 → 4: flow 1
+3. 1 → 2 → 4: flow 1
+
+Total maximum flow: 4
+```
+
+### Key Insight
+Maximum flow algorithm works by:
+1. Finding augmenting paths from source to sink
+2. Pushing flow along each path up to bottleneck capacity
+3. Updating residual graph after each path
+4. Time complexity: O(m × f) where f is maximum flow
+5. Space complexity: O(n + m) for graph representation
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

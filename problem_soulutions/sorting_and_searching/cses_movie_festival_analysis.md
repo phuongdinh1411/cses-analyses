@@ -42,6 +42,72 @@ Explanation**:
 - Cannot watch movie [4,9] as it overlaps with both others
 ```
 
+## 📊 Visual Example
+
+### Input Movies
+```
+Movie 1: [3, 5] - ends at 5
+Movie 2: [4, 9] - ends at 9
+Movie 3: [5, 8] - ends at 8
+```
+
+### Timeline Visualization
+```
+Time:  0  1  2  3  4  5  6  7  8  9  10
+       |  |  |  |  |  |  |  |  |  |  |
+Movie 1:    [=====]
+Movie 2:       [=========]
+Movie 3:          [=====]
+
+Overlap Analysis:
+- Movie 1 [3,5] and Movie 2 [4,9]: Overlap at time 4-5
+- Movie 1 [3,5] and Movie 3 [5,8]: Touch at time 5 (no overlap)
+- Movie 2 [4,9] and Movie 3 [5,8]: Overlap at time 5-8
+```
+
+### Greedy Algorithm Process
+```
+Step 1: Sort movies by end time
+Original: [3,5], [4,9], [5,8]
+Sorted:   [3,5], [5,8], [4,9] (by end time: 5, 8, 9)
+
+Step 2: Greedy selection
+┌─────────────────────────────────────┐
+│ Selected: []                        │
+│ Last end time: -∞                   │
+└─────────────────────────────────────┘
+
+Movie 1 [3,5]: start=3 ≥ last_end=-∞ ✓
+┌─────────────────────────────────────┐
+│ Selected: [[3,5]]                   │
+│ Last end time: 5                    │
+└─────────────────────────────────────┘
+
+Movie 3 [5,8]: start=5 ≥ last_end=5 ✓
+┌─────────────────────────────────────┐
+│ Selected: [[3,5], [5,8]]            │
+│ Last end time: 8                    │
+└─────────────────────────────────────┘
+
+Movie 2 [4,9]: start=4 < last_end=8 ✗
+┌─────────────────────────────────────┐
+│ Selected: [[3,5], [5,8]] (unchanged)│
+│ Last end time: 8                    │
+└─────────────────────────────────────┘
+
+Final Result: 2 movies
+```
+
+### Why Greedy Works
+```
+Key Insight: Always pick the movie that ends earliest
+
+If we don't pick the earliest ending movie:
+- We might block future movies that could fit
+- The earliest ending movie doesn't block any more movies than necessary
+- This gives us the maximum number of non-overlapping movies
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

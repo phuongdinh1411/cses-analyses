@@ -42,6 +42,80 @@ Output:
 - This is an Eulerian trail that visits every edge exactly once
 - All vertices have equal in-degree and out-degree
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Nodes: 1, 2, 3, 4
+Edges: (1→2), (2→3), (3→4), (4→1)
+
+Graph representation:
+1 ──> 2 ──> 3 ──> 4
+│                │
+└────────────────┘
+```
+
+### Eulerian Trail Algorithm Process
+```
+Step 1: Check Eulerian trail conditions
+- In-degrees: [1, 1, 1, 1]
+- Out-degrees: [1, 1, 1, 1]
+- All vertices have equal in-degree and out-degree
+- Eulerian trail exists
+
+Step 2: Find starting vertex
+- Any vertex can be starting point (all have equal degrees)
+- Start from vertex 1
+
+Step 3: Hierholzer's algorithm
+- Current path: [1]
+- Available edges: (1→2), (2→3), (3→4), (4→1)
+
+Step 4: Build trail
+- From 1: go to 2
+- Current path: [1, 2]
+- Available edges: (2→3), (3→4), (4→1)
+
+- From 2: go to 3
+- Current path: [1, 2, 3]
+- Available edges: (3→4), (4→1)
+
+- From 3: go to 4
+- Current path: [1, 2, 3, 4]
+- Available edges: (4→1)
+
+- From 4: go to 1
+- Current path: [1, 2, 3, 4, 1]
+- No more edges available
+
+Step 5: Complete trail
+- Eulerian trail: 1 → 2 → 3 → 4 → 1
+- All edges visited exactly once
+```
+
+### Trail Analysis
+```
+Eulerian trail found:
+1 → 2 → 3 → 4 → 1
+
+Edges used:
+- (1→2): visited once
+- (2→3): visited once
+- (3→4): visited once
+- (4→1): visited once
+
+All edges visited exactly once ✓
+```
+
+### Key Insight
+Hierholzer's algorithm works by:
+1. Checking Eulerian trail conditions
+2. Starting from any vertex with odd degree (or any vertex if all even)
+3. Following edges until no more edges available
+4. Backtracking and inserting cycles if needed
+5. Time complexity: O(m) where m is number of edges
+6. Space complexity: O(n + m) for graph representation
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

@@ -41,6 +41,75 @@ Output:
 - Total cost: 1 + 2 + 3 = 6
 - All cities are connected with minimum cost
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Cities: 1, 2, 3, 4
+Roads: (1,2,1), (2,3,2), (3,4,3), (1,4,4)
+
+Graph representation:
+1 ──1── 2 ──2── 3 ──3── 4
+│                    │
+└────────4───────────┘
+```
+
+### Kruskal's Algorithm Process
+```
+Step 1: Sort edges by weight
+Edges: [(1,2,1), (2,3,2), (3,4,3), (1,4,4)]
+
+Step 2: Initialize Union-Find
+Parent: [1, 2, 3, 4] (each city is its own parent)
+Rank: [0, 0, 0, 0]
+
+Step 3: Process edges in order
+
+Edge (1,2,1):
+- Find(1) = 1, Find(2) = 2
+- Different components, add edge
+- Union(1,2): Parent[2] = 1, Rank[1] = 1
+- MST edges: [(1,2,1)]
+- Total cost: 1
+
+Edge (2,3,2):
+- Find(2) = 1, Find(3) = 3
+- Different components, add edge
+- Union(1,3): Parent[3] = 1, Rank[1] = 1
+- MST edges: [(1,2,1), (2,3,2)]
+- Total cost: 1 + 2 = 3
+
+Edge (3,4,3):
+- Find(3) = 1, Find(4) = 4
+- Different components, add edge
+- Union(1,4): Parent[4] = 1, Rank[1] = 2
+- MST edges: [(1,2,1), (2,3,2), (3,4,3)]
+- Total cost: 1 + 2 + 3 = 6
+
+Edge (1,4,4):
+- Find(1) = 1, Find(4) = 1
+- Same component, skip edge
+- MST edges: [(1,2,1), (2,3,2), (3,4,3)]
+- Total cost: 6
+```
+
+### Final MST
+```
+Minimum Spanning Tree:
+1 ──1── 2 ──2── 3 ──3── 4
+
+Total cost: 6
+All cities are connected with minimum cost.
+```
+
+### Key Insight
+Kruskal's algorithm works by:
+1. Sorting edges by weight (greedy approach)
+2. Using Union-Find to detect cycles
+3. Adding edges that connect different components
+4. Time complexity: O(m log m) for sorting + O(m α(n)) for Union-Find
+5. Space complexity: O(n) for Union-Find data structure
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

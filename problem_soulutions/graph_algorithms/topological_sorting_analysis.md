@@ -42,6 +42,80 @@ Output:
 - Node 4 has an edge to node 5, so it must come before node 5
 - Valid orderings include: [1, 4, 2, 5, 3], [4, 1, 2, 5, 3], etc.
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Nodes: 1, 2, 3, 4, 5
+Edges: (1→2), (2→3), (1→3), (4→5)
+
+Graph representation:
+1 ──> 2 ──> 3
+│     │
+└─────┼─────┘
+      │
+      └────────┘
+
+4 ──> 5
+```
+
+### Topological Sorting Process
+```
+Step 1: Build adjacency list and in-degrees
+- Node 1: [2, 3], in-degree: 0
+- Node 2: [3], in-degree: 1
+- Node 3: [], in-degree: 2
+- Node 4: [5], in-degree: 0
+- Node 5: [], in-degree: 1
+
+Step 2: Kahn's algorithm (BFS-based)
+- Queue: [1, 4] (nodes with in-degree 0)
+- Result: []
+
+- Process node 1:
+  - Remove 1 from queue
+  - Add 1 to result: [1]
+  - Update in-degrees: 2→0, 3→1
+  - Add 2 to queue: [4, 2]
+
+- Process node 4:
+  - Remove 4 from queue
+  - Add 4 to result: [1, 4]
+  - Update in-degrees: 5→0
+  - Add 5 to queue: [2, 5]
+
+- Process node 2:
+  - Remove 2 from queue
+  - Add 2 to result: [1, 4, 2]
+  - Update in-degrees: 3→0
+  - Add 3 to queue: [5, 3]
+
+- Process node 5:
+  - Remove 5 from queue
+  - Add 5 to result: [1, 4, 2, 5]
+  - No new nodes to add
+
+- Process node 3:
+  - Remove 3 from queue
+  - Add 3 to result: [1, 4, 2, 5, 3]
+  - No new nodes to add
+
+Step 3: Verify ordering
+- All edges point forward ✓
+- 1 → 2: 1 comes before 2 ✓
+- 2 → 3: 2 comes before 3 ✓
+- 1 → 3: 1 comes before 3 ✓
+- 4 → 5: 4 comes before 5 ✓
+```
+
+### Key Insight
+Kahn's algorithm works by:
+1. Finding nodes with no incoming edges (in-degree 0)
+2. Processing them in BFS order
+3. Updating in-degrees of neighbors
+4. Time complexity: O(n + m)
+5. Space complexity: O(n + m) for graph representation
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

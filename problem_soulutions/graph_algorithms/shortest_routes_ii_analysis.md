@@ -47,6 +47,90 @@ Output:
 - City 1 to City 4: 3 (path: 1 → 2 → 3 → 4, cost: 1 + 1 + 1 = 3)
 - Cities 2, 3, 4 have similar patterns
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Cities: 1, 2, 3, 4
+Flights: (1→2, cost=1), (2→3, cost=1), (3→4, cost=1)
+
+Graph representation:
+1 ──1──> 2 ──1──> 3 ──1──> 4
+```
+
+### Floyd-Warshall Algorithm Process
+```
+Initial distance matrix:
+    1  2  3  4
+1 [ 0  1  ∞  ∞]
+2 [ ∞  0  1  ∞]
+3 [ ∞  ∞  0  1]
+4 [ ∞  ∞  ∞  0]
+
+Step 1: k = 1 (intermediate city 1)
+- No changes (city 1 has no incoming edges)
+
+Step 2: k = 2 (intermediate city 2)
+- Check if d[i][1] + d[1][j] < d[i][j]
+- d[1][3] = min(d[1][3], d[1][2] + d[2][3]) = min(∞, 1 + 1) = 2
+- d[1][4] = min(d[1][4], d[1][2] + d[2][4]) = min(∞, 1 + ∞) = ∞
+
+Updated matrix:
+    1  2  3  4
+1 [ 0  1  2  ∞]
+2 [ ∞  0  1  ∞]
+3 [ ∞  ∞  0  1]
+4 [ ∞  ∞  ∞  0]
+
+Step 3: k = 3 (intermediate city 3)
+- d[1][4] = min(d[1][4], d[1][3] + d[3][4]) = min(∞, 2 + 1) = 3
+- d[2][4] = min(d[2][4], d[2][3] + d[3][4]) = min(∞, 1 + 1) = 2
+
+Updated matrix:
+    1  2  3  4
+1 [ 0  1  2  3]
+2 [ ∞  0  1  2]
+3 [ ∞  ∞  0  1]
+4 [ ∞  ∞  ∞  0]
+
+Step 4: k = 4 (intermediate city 4)
+- No changes (city 4 has no outgoing edges)
+
+Final distance matrix:
+    1  2  3  4
+1 [ 0  1  2  3]
+2 [ ∞  0  1  2]
+3 [ ∞  ∞  0  1]
+4 [ ∞  ∞  ∞  0]
+```
+
+### Path Analysis
+```
+Shortest paths found:
+- 1 → 2: 1 (direct)
+- 1 → 3: 2 (via 2: 1 → 2 → 3)
+- 1 → 4: 3 (via 2,3: 1 → 2 → 3 → 4)
+- 2 → 3: 1 (direct)
+- 2 → 4: 2 (via 3: 2 → 3 → 4)
+- 3 → 4: 1 (direct)
+
+Unreachable paths (∞):
+- 2 → 1: No path exists
+- 3 → 1: No path exists
+- 3 → 2: No path exists
+- 4 → 1: No path exists
+- 4 → 2: No path exists
+- 4 → 3: No path exists
+```
+
+### Key Insight
+Floyd-Warshall algorithm works by:
+1. Using each city as an intermediate point
+2. Checking if going through that city gives a shorter path
+3. Updating distances if a shorter path is found
+4. Time complexity: O(n³) where n = number of cities
+5. Space complexity: O(n²) for the distance matrix
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

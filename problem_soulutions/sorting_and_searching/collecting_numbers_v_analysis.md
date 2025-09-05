@@ -32,6 +32,108 @@ Round 1: Collect 1 at position 3, 2 at position 2
 Round 2: Collect 3 at position 5, 4 at position 1, 5 at position 4
 ```
 
+## 🎯 Visual Example
+
+### Input Array
+```
+Array: [4, 2, 1, 5, 3]
+Index:  0  1  2  3  4
+Position: 1  2  3  4  5 (1-indexed)
+```
+
+### Position Mapping
+```
+Number: 1  2  3  4  5
+Position: 3  2  5  1  4
+```
+
+### Collection Process
+```
+Round 1: Collect numbers in order 1, 2, 3, 4, 5
+
+Step 1: Collect 1
+Position of 1: 3
+Array: [4, 2, 1, 5, 3]
+        ^  ^  ✓  ^  ^
+        Can collect 1 at position 3 (no smaller numbers needed)
+
+Step 2: Collect 2
+Position of 2: 2
+Array: [4, 2, 1, 5, 3]
+        ^  ✓  ✓  ^  ^
+        Can collect 2 at position 2 (1 is already collected)
+
+Step 3: Try to collect 3
+Position of 3: 5
+Array: [4, 2, 1, 5, 3]
+        ^  ✓  ✓  ^  ✓
+        Can collect 3 at position 5 (1 and 2 are already collected)
+
+Step 4: Try to collect 4
+Position of 4: 1
+Array: [4, 2, 1, 5, 3]
+        ✓  ✓  ✓  ^  ✓
+        Can collect 4 at position 1 (1, 2, 3 are already collected)
+
+Step 5: Try to collect 5
+Position of 5: 4
+Array: [4, 2, 1, 5, 3]
+        ✓  ✓  ✓  ✓  ✓
+        Can collect 5 at position 4 (1, 2, 3, 4 are already collected)
+
+Round 1 Result: All numbers collected in 1 round!
+Collection order: [(1,3), (2,2), (3,5), (4,1), (5,4)]
+```
+
+### Alternative Example (Requiring 2 Rounds)
+```
+Array: [4, 2, 1, 5, 3]
+Index:  0  1  2  3  4
+Position: 1  2  3  4  5 (1-indexed)
+
+Position Mapping:
+Number: 1  2  3  4  5
+Position: 3  2  5  1  4
+
+Collection Analysis:
+- To collect 1, 2, 3, 4, 5 in order
+- Check if positions are in increasing order
+
+Position sequence: 3, 2, 5, 1, 4
+- 1 → 2: position 3 → position 2 (backward jump!)
+- 2 → 3: position 2 → position 5 (forward jump)
+- 3 → 4: position 5 → position 1 (backward jump!)
+- 4 → 5: position 1 → position 4 (forward jump)
+
+Backward jumps: 3 → 2, 5 → 1
+Number of backward jumps: 2
+Minimum rounds needed: 2
+```
+
+### Round-by-Round Collection
+```
+Round 1: Collect 1, 2
+Array: [4, 2, 1, 5, 3]
+        ^  ✓  ✓  ^  ^
+        Collected: (1,3), (2,2)
+
+Round 2: Collect 3, 4, 5
+Array: [4, 2, 1, 5, 3]
+        ✓  ✓  ✓  ✓  ✓
+        Collected: (3,5), (4,1), (5,4)
+
+Total rounds: 2
+Round 1: (1,3) (2,2)
+Round 2: (3,5) (4,1) (5,4)
+```
+
+### Key Insight
+The algorithm counts backward jumps in the position sequence:
+- Each backward jump requires a new round
+- Forward jumps can be handled in the same round
+- Minimum rounds = 1 + number of backward jumps
+- Numbers are grouped by their collection round with positions
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

@@ -45,6 +45,66 @@ Output:
 - This visits 4 cities (including the return to start)
 - Each intermediate city is visited exactly once
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Cities: 1, 2, 3, 4, 5
+Roads: (1,3), (1,2), (5,3), (1,5), (2,4), (4,5)
+
+Graph representation:
+1 ── 2 ── 4 ── 5
+│    │    │    │
+└────┼────┼────┘
+     │    │
+     └────┼──── 3
+          │    │
+          └────┘
+```
+
+### Cycle Detection Algorithm Process
+```
+Step 1: Build adjacency list
+- City 1: [2, 3, 5]
+- City 2: [1, 4]
+- City 3: [1, 5]
+- City 4: [2, 5]
+- City 5: [1, 3, 4]
+
+Step 2: DFS to find cycles
+- Start from city 1
+- Path: 1 → 3 → 5 → 1 (cycle found)
+- Cycle length: 3 cities + return = 4 total
+
+Step 3: Verify cycle
+- 1 → 3: road exists ✓
+- 3 → 5: road exists ✓
+- 5 → 1: road exists ✓
+- All intermediate cities visited exactly once ✓
+```
+
+### Cycle Analysis
+```
+Round trip found:
+1 → 3 → 5 → 1
+
+Cities visited:
+- Start: 1
+- Intermediate: 3, 5
+- Return: 1
+
+Total cities on trip: 4
+Each intermediate city visited exactly once ✓
+```
+
+### Key Insight
+Cycle detection algorithm works by:
+1. Using DFS to explore paths from each city
+2. Tracking visited cities to detect cycles
+3. Ensuring cycle has at least 3 cities
+4. Time complexity: O(n + m) for graph traversal
+5. Space complexity: O(n + m) for graph representation
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

@@ -42,6 +42,80 @@ Output:
 - Pupil 4: Team 1
 - Pupil 5: Team 1 (friend of 4)
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Pupils: 1, 2, 3, 4, 5
+Friendships: (1,2), (1,3), (4,5)
+
+Graph representation:
+1 ── 2
+│
+└── 3
+
+4 ── 5
+```
+
+### Bipartite Coloring Process
+```
+Step 1: Initialize colors
+- color[1] = color[2] = color[3] = color[4] = color[5] = -1 (uncolored)
+
+Step 2: BFS coloring
+- Start from pupil 1: color[1] = 1 (Team 1)
+- Queue: [1]
+
+- Process pupil 1:
+  - Neighbors: 2, 3
+  - color[2] = 2 (Team 2)
+  - color[3] = 2 (Team 2)
+  - Queue: [2, 3]
+
+- Process pupil 2:
+  - Neighbors: 1 (already colored)
+  - No new assignments
+
+- Process pupil 3:
+  - Neighbors: 1 (already colored)
+  - No new assignments
+
+- Process pupil 4:
+  - color[4] = 1 (Team 1)
+  - Neighbors: 5
+  - color[5] = 2 (Team 2)
+  - Queue: [5]
+
+- Process pupil 5:
+  - Neighbors: 4 (already colored)
+  - No new assignments
+```
+
+### Team Assignment
+```
+Final team assignments:
+- Pupil 1: Team 1
+- Pupil 2: Team 2
+- Pupil 3: Team 2
+- Pupil 4: Team 1
+- Pupil 5: Team 2
+
+Verification:
+- (1,2): Team 1 ≠ Team 2 ✓
+- (1,3): Team 1 ≠ Team 2 ✓
+- (4,5): Team 1 ≠ Team 2 ✓
+
+All friendships satisfied ✓
+```
+
+### Key Insight
+Bipartite coloring algorithm works by:
+1. Using BFS to traverse the graph
+2. Assigning alternating colors to adjacent vertices
+3. Checking for color conflicts (odd-length cycles)
+4. Time complexity: O(n + m) for graph traversal
+5. Space complexity: O(n + m) for graph representation
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

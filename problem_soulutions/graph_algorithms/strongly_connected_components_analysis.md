@@ -48,6 +48,74 @@ Output:
 - Component 3: Node 5 (can't reach any other nodes)
 - Total: 3 strongly connected components
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Nodes: 1, 2, 3, 4, 5
+Edges: (1→2), (2→3), (3→1), (3→4), (4→5)
+
+Graph representation:
+1 ──> 2 ──> 3 ──> 4 ──> 5
+│     │     │
+└─────┼─────┘
+      │
+      └────────┘
+```
+
+### Strongly Connected Components (SCCs) Detection
+```
+Step 1: Build adjacency lists
+- Node 1: [2]
+- Node 2: [3]
+- Node 3: [1, 4]
+- Node 4: [5]
+- Node 5: []
+
+Step 2: First DFS pass (finish times)
+- Start from node 1: 1 → 2 → 3 → 1 (cycle detected)
+- Finish times: [3, 2, 1, 4, 5]
+
+Step 3: Build transpose graph
+- Node 1: [3]
+- Node 2: [1]
+- Node 3: [2]
+- Node 4: [3]
+- Node 5: [4]
+
+Step 4: Second DFS pass (SCCs)
+- Process in reverse finish time order: [5, 4, 1, 2, 3]
+- Node 5: SCC 1 (only itself)
+- Node 4: SCC 2 (only itself)
+- Node 1: SCC 3 (1 → 2 → 3 → 1)
+- Node 2: already in SCC 3
+- Node 3: already in SCC 3
+```
+
+### SCC Analysis
+```
+Strongly Connected Components:
+- SCC 1: {5}
+- SCC 2: {4}
+- SCC 3: {1, 2, 3}
+
+Component verification:
+- SCC 1: Node 5 can reach itself ✓
+- SCC 2: Node 4 can reach itself ✓
+- SCC 3: All nodes can reach each other ✓
+  - 1 → 2 → 3 → 1
+  - 2 → 3 → 1 → 2
+  - 3 → 1 → 2 → 3
+```
+
+### Key Insight
+Kosaraju's algorithm works by:
+1. First DFS to get finish times
+2. Building transpose graph
+3. Second DFS in reverse finish time order
+4. Time complexity: O(n + m)
+5. Space complexity: O(n + m) for graph representation
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

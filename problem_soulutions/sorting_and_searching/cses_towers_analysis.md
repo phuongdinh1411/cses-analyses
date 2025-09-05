@@ -40,6 +40,88 @@ Explanation**:
 - Cannot stack more cubes as they would violate the size constraint
 ```
 
+## 📊 Visual Example
+
+### Input Cubes
+```
+Cubes: [3, 8, 2, 1, 5]
+Index:  0  1  2  3  4
+```
+
+### Tower Building Process
+```
+Step 1: Process cube 3
+┌─────────────────────────────────────┐
+│ Towers: []                          │
+│ Place cube 3 on new tower          │
+│ Towers: [3]                         │
+└─────────────────────────────────────┘
+
+Step 2: Process cube 8
+┌─────────────────────────────────────┐
+│ Towers: [3]                         │
+│ Cube 8 > 3, cannot stack on tower 1 │
+│ Create new tower for cube 8         │
+│ Towers: [3, 8]                      │
+└─────────────────────────────────────┘
+
+Step 3: Process cube 2
+┌─────────────────────────────────────┐
+│ Towers: [3, 8]                      │
+│ Cube 2 < 3, can stack on tower 1    │
+│ Towers: [3→2, 8]                    │
+└─────────────────────────────────────┘
+
+Step 4: Process cube 1
+┌─────────────────────────────────────┐
+│ Towers: [3→2, 8]                    │
+│ Cube 1 < 2, can stack on tower 1    │
+│ Towers: [3→2→1, 8]                  │
+└─────────────────────────────────────┘
+
+Step 5: Process cube 5
+┌─────────────────────────────────────┐
+│ Towers: [3→2→1, 8]                  │
+│ Cube 5 > 1, cannot stack on tower 1 │
+│ Cube 5 < 8, can stack on tower 2    │
+│ Towers: [3→2→1, 8→5]                │
+└─────────────────────────────────────┘
+```
+
+### Final Tower Configuration
+```
+Tower 1: 3 → 2 → 1
+Tower 2: 8 → 5
+
+Visual representation:
+    ┌─┐
+    │1│ ← Tower 1
+    ├─┤
+    │2│
+    ├─┤
+    │3│
+    └─┘
+
+    ┌─┐
+    │5│ ← Tower 2
+    ├─┤
+    │8│
+    └─┘
+
+Total towers: 2
+```
+
+### Greedy Strategy Explanation
+```
+Key Insight: Always place cube on the leftmost tower where it fits
+
+Why this works:
+- If we place a cube on a tower that's not the leftmost possible:
+  - We might block future cubes that could fit on that tower
+  - The leftmost tower gives us the most flexibility for future cubes
+- This minimizes the number of towers needed
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

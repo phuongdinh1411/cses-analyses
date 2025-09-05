@@ -44,6 +44,72 @@ Output:
 - These paths are edge-disjoint (no shared edges)
 - Maximum edge-disjoint paths: 2
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Nodes: 1, 2, 3, 4
+Edges: (1→2), (2→3), (3→4), (1→3), (2→4)
+
+Graph representation:
+1 ──> 2 ──> 3 ──> 4
+│      │      │
+└──────┼──────┘
+       └──────┘
+```
+
+### Maximum Flow Algorithm Process
+```
+Step 1: Convert to flow network
+- Source: 1, Sink: 4
+- All edge capacities: 1
+- Flow network:
+  1 ──1──> 2 ──1──> 3 ──1──> 4
+  │        │        │
+  └──1─────┼──1─────┘
+           └──1─────┘
+
+Step 2: Find augmenting paths
+
+Path 1: 1 → 2 → 3 → 4
+- Flow: 1
+- Residual graph:
+  1 ──0──> 2 ──0──> 3 ──0──> 4
+  │        │        │
+  └──1─────┼──1─────┘
+           └──1─────┘
+
+Path 2: 1 → 3 → 4
+- Flow: 1
+- Residual graph:
+  1 ──0──> 2 ──0──> 3 ──0──> 4
+  │        │        │
+  └──0─────┼──0─────┘
+           └──1─────┘
+
+Step 3: No more augmenting paths
+- Maximum flow: 2
+- Edge-disjoint paths: 2
+```
+
+### Path Analysis
+```
+Edge-disjoint paths found:
+1. 1 → 2 → 3 → 4
+2. 1 → 3 → 4
+
+Shared edges: None
+Maximum edge-disjoint paths: 2
+```
+
+### Key Insight
+Maximum flow algorithm works by:
+1. Converting to flow network with unit capacities
+2. Finding augmenting paths using BFS/DFS
+3. Updating residual graph after each path
+4. Time complexity: O(m × f) where f is maximum flow
+5. Space complexity: O(n + m) for graph representation
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

@@ -44,6 +44,77 @@ Output:
 - One possible cut: remove edges (1,2) and (3,4)
 - This disconnects computer 1 from computer 4
 
+## 🎯 Visual Example
+
+### Input Network
+```
+Computers: 1, 2, 3, 4
+Connections: (1,2), (2,3), (3,4), (1,3), (2,4)
+
+Network representation:
+1 ── 2 ── 3 ── 4
+│    │    │
+└────┼────┘
+     └────┘
+```
+
+### Minimum Cut Algorithm Process
+```
+Step 1: Convert to flow network
+- Source: 1, Sink: 4
+- All edge capacities: 1
+- Flow network:
+  1 ──1── 2 ──1── 3 ──1── 4
+  │    │    │
+  └──1─┼──1─┘
+       └──1─┘
+
+Step 2: Find maximum flow
+
+Path 1: 1 → 2 → 3 → 4
+- Flow: 1
+- Residual graph:
+  1 ──0── 2 ──0── 3 ──0── 4
+  │    │    │
+  └──1─┼──1─┘
+       └──1─┘
+
+Path 2: 1 → 3 → 4
+- Flow: 1
+- Residual graph:
+  1 ──0── 2 ──0── 3 ──0── 4
+  │    │    │
+  └──0─┼──0─┘
+       └──1─┘
+
+Step 3: No more augmenting paths
+- Maximum flow: 2
+- Minimum cut: 2
+```
+
+### Cut Analysis
+```
+Minimum cut edges:
+1. (1,2) - cuts path 1 → 2 → 3 → 4
+2. (3,4) - cuts path 1 → 3 → 4
+
+After cutting these edges:
+1 ── 2 ── 3 ── 4
+│    │    │
+└────┼────┘
+     └────┘
+
+Computer 1 is disconnected from computer 4.
+```
+
+### Key Insight
+Minimum cut algorithm works by:
+1. Converting to flow network with unit capacities
+2. Finding maximum flow using Ford-Fulkerson
+3. Minimum cut = maximum flow (Max-Flow Min-Cut theorem)
+4. Time complexity: O(m × f) where f is maximum flow
+5. Space complexity: O(n + m) for graph representation
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

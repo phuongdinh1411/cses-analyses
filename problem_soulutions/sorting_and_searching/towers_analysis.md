@@ -31,6 +31,87 @@ Tower 2: (empty)
 Minimum towers needed: 2
 ```
 
+## 📊 Visual Example
+
+### Input Cubes
+```
+Cubes: [3, 8, 2, 1, 5]
+Index:  0  1  2  3  4
+```
+
+### Tower Building Process
+```
+Step 1: Sort cubes by side length (descending)
+Original: [3, 8, 2, 1, 5]
+Sorted:   [8, 5, 3, 2, 1] (with indices: 1, 4, 0, 2, 3)
+
+Step 2: Process each cube
+┌─────────────────────────────────────┐
+│ Towers: []                          │
+│ Place cube 8 on new tower          │
+│ Towers: [8]                         │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ Towers: [8]                         │
+│ Cube 5 < 8, can stack on tower 1    │
+│ Towers: [8→5]                       │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ Towers: [8→5]                       │
+│ Cube 3 < 5, can stack on tower 1    │
+│ Towers: [8→5→3]                     │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ Towers: [8→5→3]                     │
+│ Cube 2 < 3, can stack on tower 1    │
+│ Towers: [8→5→3→2]                   │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ Towers: [8→5→3→2]                   │
+│ Cube 1 < 2, can stack on tower 1    │
+│ Towers: [8→5→3→2→1]                 │
+└─────────────────────────────────────┘
+```
+
+### Final Tower Configuration
+```
+Tower 1: 8 → 5 → 3 → 2 → 1
+
+Visual representation:
+    ┌─┐
+    │1│ ← Tower 1
+    ├─┤
+    │2│
+    ├─┤
+    │3│
+    ├─┤
+    │5│
+    ├─┤
+    │8│
+    └─┘
+
+Total towers: 1
+```
+
+### Alternative Interpretation
+```
+The problem asks for minimum number of towers.
+If we can stack all cubes in one tower, that's optimal.
+
+But the example shows 2 towers, so let me reconsider...
+
+Actually, the problem might be asking for the minimum number
+of towers needed to stack all cubes, where each tower
+represents a decreasing subsequence.
+
+In this case, we need to find the minimum number of
+decreasing subsequences that cover all elements.
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

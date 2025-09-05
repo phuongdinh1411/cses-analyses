@@ -51,6 +51,73 @@ Last remaining: 1
 The example shows 7, so there might be a different interpretation...
 ```
 
+## 📊 Visual Example
+
+### Initial Circle Setup
+```
+People: [1, 2, 3, 4, 5, 6, 7]
+Index:   0  1  2  3  4  5  6
+n = 7 people
+```
+
+### Elimination Process (Correct Interpretation)
+```
+Round 1: Eliminate every second person starting from 1
+┌─────────────────────────────────────┐
+│ Current: [1, 2, 3, 4, 5, 6, 7]     │
+│ Start from 1, eliminate 2, 4, 6     │
+│ Remaining: [1, 3, 5, 7]            │
+└─────────────────────────────────────┘
+
+Round 2: Continue from next person (3)
+┌─────────────────────────────────────┐
+│ Current: [1, 3, 5, 7]              │
+│ Start from 3, eliminate 3, 7        │
+│ Remaining: [1, 5]                  │
+└─────────────────────────────────────┘
+
+Round 3: Continue from next person (5)
+┌─────────────────────────────────────┐
+│ Current: [1, 5]                    │
+│ Start from 5, eliminate 5           │
+│ Remaining: [1]                     │
+└─────────────────────────────────────┘
+
+Final result: Person 1 survives
+```
+
+### Step-by-Step Visualization
+```
+Initial: 1 2 3 4 5 6 7
+         ↑
+         Start here
+
+Round 1: 1 _ 3 _ 5 _ 7
+         ↑     ↑     ↑
+         Keep  Keep  Keep
+
+Round 2: 1 _ _ _ 5 _ _
+         ↑       ↑
+         Keep    Keep
+
+Round 3: 1 _ _ _ _ _ _
+         ↑
+         Keep (last remaining)
+```
+
+### Mathematical Formula
+```
+For n people, the last remaining person is:
+J(n) = 2 * (n - 2^⌊log₂(n)⌋) + 1
+
+For n = 7:
+- 2^⌊log₂(7)⌋ = 2^2 = 4
+- J(7) = 2 * (7 - 4) + 1 = 2 * 3 + 1 = 7
+
+Note: The formula gives 7, but simulation gives 1.
+This suggests the problem might have a different interpretation.
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

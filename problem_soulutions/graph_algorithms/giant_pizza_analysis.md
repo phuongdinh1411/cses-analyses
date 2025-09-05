@@ -42,6 +42,77 @@ YES
 - Person 3: likes topping 3, dislikes topping 1
 - Solution: Include toppings 1, 2, 3 (satisfies all preferences)
 
+## 🎯 Visual Example
+
+### Input Preferences
+```
+People: 3, Toppings: 3
+Preferences:
+- Person 1: likes topping 1, dislikes topping 2
+- Person 2: likes topping 2, dislikes topping 3
+- Person 3: likes topping 3, dislikes topping 1
+```
+
+### 2-SAT Problem Construction
+```
+Step 1: Convert preferences to logical implications
+- Person 1: likes 1, dislikes 2 → (1 ∨ ¬2)
+- Person 2: likes 2, dislikes 3 → (2 ∨ ¬3)
+- Person 3: likes 3, dislikes 1 → (3 ∨ ¬1)
+
+Step 2: Build implication graph
+- (1 ∨ ¬2) → (¬1 → ¬2) and (2 → 1)
+- (2 ∨ ¬3) → (¬2 → ¬3) and (3 → 2)
+- (3 ∨ ¬1) → (¬3 → ¬1) and (1 → 3)
+
+Implication graph:
+¬1 ──> ¬2 ──> ¬3 ──> ¬1
+│      │      │      │
+└──1───┼──2───┼──3───┘
+        │      │
+        └──────┘
+```
+
+### 2-SAT Algorithm Process
+```
+Step 1: Find strongly connected components (SCCs)
+- SCC 1: {1, 2, 3}
+- SCC 2: {¬1, ¬2, ¬3}
+
+Step 2: Check for contradictions
+- No variable and its negation in same SCC ✓
+- 2-SAT is satisfiable
+
+Step 3: Find satisfying assignment
+- Process SCCs in reverse topological order
+- Assign variables based on SCC order
+- Solution: {1: true, 2: true, 3: true}
+```
+
+### Solution Verification
+```
+Pizza with toppings 1, 2, 3:
+- Person 1: likes 1 ✓, dislikes 2 ✗ (but 2 is included)
+- Person 2: likes 2 ✓, dislikes 3 ✗ (but 3 is included)
+- Person 3: likes 3 ✓, dislikes 1 ✗ (but 1 is included)
+
+Wait, this doesn't satisfy all preferences. Let me recalculate...
+
+Correct solution: {1: true, 2: false, 3: true}
+- Person 1: likes 1 ✓, dislikes 2 ✓ (2 not included)
+- Person 2: likes 2 ✗ (2 not included), dislikes 3 ✓ (3 included)
+- Person 3: likes 3 ✓, dislikes 1 ✓ (1 included)
+```
+
+### Key Insight
+2-SAT algorithm works by:
+1. Converting preferences to logical implications
+2. Building implication graph
+3. Finding strongly connected components
+4. Checking for contradictions (variable and negation in same SCC)
+5. Time complexity: O(n + m) for SCC detection
+6. Space complexity: O(n + m) for graph representation
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

@@ -41,6 +41,79 @@ Output:
 - Boy 3 can dance with girls 1, 3
 - Maximum matching: (1,1), (2,2), (3,3) = 3 pairs
 
+## 🎯 Visual Example
+
+### Input Preferences
+```
+Boys: 3, Girls: 3
+Preferences:
+- Boy 1: can dance with girls 1, 2
+- Boy 2: can dance with girls 2, 3
+- Boy 3: can dance with girls 1, 3
+```
+
+### Bipartite Graph Construction
+```
+Step 1: Build bipartite graph
+- Left side: Boys {1, 2, 3}
+- Right side: Girls {1, 2, 3}
+- Edges: (1,1), (1,2), (2,2), (2,3), (3,1), (3,3)
+
+Graph representation:
+Boys    Girls
+1 ────── 1
+│       │
+└───────┼─── 2
+        │   │
+2 ──────┼───┼─── 3
+        │   │
+3 ──────┼───┘
+        │
+        └───── 3
+```
+
+### Maximum Matching Algorithm Process
+```
+Step 1: Initialize matching
+- Matching: {}
+
+Step 2: Find augmenting paths
+- Start from unmatched boy 1
+- Path: 1 → 1 (girl 1 unmatched)
+- Add (1,1) to matching
+
+- Start from unmatched boy 2
+- Path: 2 → 2 (girl 2 unmatched)
+- Add (2,2) to matching
+
+- Start from unmatched boy 3
+- Path: 3 → 3 (girl 3 unmatched)
+- Add (3,3) to matching
+
+Step 3: No more augmenting paths
+- Maximum matching: {(1,1), (2,2), (3,3)}
+- Size: 3
+```
+
+### Matching Analysis
+```
+Maximum matching found:
+- Boy 1 ↔ Girl 1
+- Boy 2 ↔ Girl 2
+- Boy 3 ↔ Girl 3
+
+All boys and girls are matched ✓
+Maximum matching size: 3
+```
+
+### Key Insight
+Maximum bipartite matching algorithm works by:
+1. Building bipartite graph from preferences
+2. Finding augmenting paths using DFS/BFS
+3. Updating matching after each augmenting path
+4. Time complexity: O(n × m) for bipartite matching
+5. Space complexity: O(n + m) for graph representation
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

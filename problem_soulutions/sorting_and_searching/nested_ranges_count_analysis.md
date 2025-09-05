@@ -38,6 +38,67 @@ Range [4,8] contains [3,6] → contains 1 range, contained by 0
 Range [3,6] is contained by [1,6] → contains 0 ranges, contained by 1
 ```
 
+## 🎯 Visual Example
+
+### Input Ranges
+```
+Range 0: [1, 6]
+Range 1: [2, 4]
+Range 2: [4, 8]
+Range 3: [3, 6]
+```
+
+### Range Visualization
+```
+Number line: 1  2  3  4  5  6  7  8
+Range 0:     |--------|
+Range 1:       |--|
+Range 2:           |----|
+Range 3:         |--|
+```
+
+### Containment Analysis
+```
+Range 0 [1,6] vs Range 1 [2,4]:
+- 1 ≤ 2 ✓ and 6 ≥ 4 ✓
+- Range 0 contains Range 1 ✓
+
+Range 0 [1,6] vs Range 2 [4,8]:
+- 1 ≤ 4 ✓ but 6 < 8 ✗
+- Range 0 does not contain Range 2 ✗
+
+Range 0 [1,6] vs Range 3 [3,6]:
+- 1 ≤ 3 ✓ and 6 ≥ 6 ✓
+- Range 0 contains Range 3 ✓
+
+Range 1 [2,4] vs Range 2 [4,8]:
+- 2 ≤ 4 ✓ but 4 < 8 ✗
+- Range 1 does not contain Range 2 ✗
+
+Range 1 [2,4] vs Range 3 [3,6]:
+- 2 ≤ 3 ✓ but 4 < 6 ✗
+- Range 1 does not contain Range 3 ✗
+
+Range 2 [4,8] vs Range 3 [3,6]:
+- 4 ≤ 3 ✗
+- Range 2 does not contain Range 3 ✗
+```
+
+### Results
+```
+Range 0 [1,6]: contains Range 1 and Range 3 → (2, 0)
+Range 1 [2,4]: contained by Range 0 → (0, 1)
+Range 2 [4,8]: contains Range 3 → (1, 0)
+Range 3 [3,6]: contained by Range 0 → (0, 1)
+```
+
+### Key Insight
+The sorting approach enables efficient containment counting by:
+1. Sorting ranges by start position first
+2. Then by end position (descending)
+3. Only checking forward ranges after sorting
+4. Reducing complexity from O(n²) to O(n log n)
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

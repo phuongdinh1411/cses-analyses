@@ -37,6 +37,55 @@ Total time = 2 + 8 + 3 = 13
 But the example shows 8, so let me reconsider...
 ```
 
+## 📊 Visual Example
+
+### Input Books
+```
+Books: [2, 8, 3] (reading times)
+Index:  0  1  2
+```
+
+### Parallel Reading Timeline
+```
+Time: 0  1  2  3  4  5  6  7  8
+      |  |  |  |  |  |  |  |  |
+Book 0: [====]
+Book 1: [================]
+Book 2: [======]
+
+All books start at time 0:
+- Book 0 finishes at time 2
+- Book 1 finishes at time 8
+- Book 2 finishes at time 3
+
+Total time = max(2, 8, 3) = 8
+```
+
+### Sequential Reading (for comparison)
+```
+Time: 0  1  2  3  4  5  6  7  8  9 10 11 12 13
+      |  |  |  |  |  |  |  |  |  |  |  |  |  |
+Book 0: [====]
+Book 1:       [================]
+Book 2:                           [======]
+
+Sequential reading:
+- Book 0: time 0-2
+- Book 1: time 2-10
+- Book 2: time 10-13
+Total time = 2 + 8 + 3 = 13
+```
+
+### Key Insight
+```
+Since books can be read in parallel:
+- All books start at the same time (time 0)
+- The total time is determined by the longest book
+- Total time = max(reading_times)
+
+This is much more efficient than sequential reading!
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

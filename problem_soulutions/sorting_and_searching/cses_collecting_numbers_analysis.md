@@ -31,6 +31,88 @@ Round 2: Collect 2 (position 2)
 Round 3: Collect 3, 4, 5 (positions 5, 1, 4)
 ```
 
+## 📊 Visual Example
+
+### Input Array
+```
+Array: [4, 2, 1, 5, 3]
+Index:  0  1  2  3  4
+```
+
+### Position Tracking
+```
+Step 1: Find positions of each number
+┌─────────────────────────────────────┐
+│ Number 1: position 2               │
+│ Number 2: position 1               │
+│ Number 3: position 4               │
+│ Number 4: position 0               │
+│ Number 5: position 3               │
+└─────────────────────────────────────┘
+```
+
+### Round-by-Round Collection
+```
+Round 1: Collect numbers in order
+┌─────────────────────────────────────┐
+│ Start from position 0              │
+│ Look for number 1: found at position 2│
+│ Collect 1, move to position 2      │
+│ Look for number 2: found at position 1│
+│ Position 1 < 2, need new round     │
+│ Round 1 complete: collected [1]    │
+└─────────────────────────────────────┘
+
+Round 2: Continue from where we left off
+┌─────────────────────────────────────┐
+│ Start from position 2              │
+│ Look for number 2: found at position 1│
+│ Position 1 < 2, need new round     │
+│ Round 2 complete: collected [2]    │
+└─────────────────────────────────────┘
+
+Round 3: Continue from where we left off
+┌─────────────────────────────────────┐
+│ Start from position 1              │
+│ Look for number 3: found at position 4│
+│ Position 4 > 1, collect 3          │
+│ Look for number 4: found at position 0│
+│ Position 0 < 4, need new round     │
+│ Round 3 complete: collected [3]    │
+└─────────────────────────────────────┘
+
+Round 4: Continue from where we left off
+┌─────────────────────────────────────┐
+│ Start from position 0              │
+│ Look for number 4: found at position 0│
+│ Position 0 = 0, collect 4          │
+│ Look for number 5: found at position 3│
+│ Position 3 > 0, collect 5          │
+│ Round 4 complete: collected [4, 5] │
+└─────────────────────────────────────┘
+```
+
+### Alternative Approach: Count Backward Jumps
+```
+Step 1: Track positions
+positions = [2, 1, 4, 0, 3] (for numbers 1, 2, 3, 4, 5)
+
+Step 2: Count when position decreases
+┌─────────────────────────────────────┐
+│ positions[0] = 2 (number 1)        │
+│ positions[1] = 1 (number 2)        │
+│ 1 < 2, so we need a new round      │
+│ positions[2] = 4 (number 3)        │
+│ 4 > 1, so we can continue          │
+│ positions[3] = 0 (number 4)        │
+│ 0 < 4, so we need a new round      │
+│ positions[4] = 3 (number 5)        │
+│ 3 > 0, so we can continue          │
+└─────────────────────────────────────┘
+
+Total rounds = 1 + number of backward jumps = 1 + 2 = 3
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

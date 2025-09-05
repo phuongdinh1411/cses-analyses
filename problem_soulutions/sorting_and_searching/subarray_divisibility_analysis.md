@@ -33,6 +33,73 @@ Subarrays with sum divisible by 3:
 - [4,5] (sum = 9)
 ```
 
+## 📊 Visual Example
+
+### Input Array
+```
+Array: [1, 2, 3, 4, 5]
+Index:  0  1  2  3  4
+k = 3
+```
+
+### Prefix Sum and Modulo
+```
+Step 1: Calculate prefix sums
+┌─────────────────────────────────────┐
+│ prefix[0] = 1                       │
+│ prefix[1] = 1 + 2 = 3               │
+│ prefix[2] = 3 + 3 = 6               │
+│ prefix[3] = 6 + 4 = 10              │
+│ prefix[4] = 10 + 5 = 15             │
+└─────────────────────────────────────┘
+
+Step 2: Calculate modulo k
+┌─────────────────────────────────────┐
+│ prefix[0] % 3 = 1 % 3 = 1          │
+│ prefix[1] % 3 = 3 % 3 = 0          │
+│ prefix[2] % 3 = 6 % 3 = 0          │
+│ prefix[3] % 3 = 10 % 3 = 1         │
+│ prefix[4] % 3 = 15 % 3 = 0         │
+└─────────────────────────────────────┘
+```
+
+### Modulo Frequency Count
+```
+Count occurrences of each remainder:
+remainder_count[0] = 3 (positions 1, 2, 4)
+remainder_count[1] = 2 (positions 0, 3)
+remainder_count[2] = 0
+```
+
+### Subarray Count Calculation
+```
+For remainder 0: C(3,2) = 3 subarrays
+- [1,2]: prefix[1] - prefix[0] = 3 - 1 = 2 ≠ 0
+- [1,2,3]: prefix[2] - prefix[0] = 6 - 1 = 5 ≠ 0
+- [1,2,3,4,5]: prefix[4] - prefix[0] = 15 - 1 = 14 ≠ 0
+
+Wait, let me recalculate...
+For remainder 0: C(3,2) = 3 subarrays
+- [1,2]: prefix[1] - prefix[0] = 3 - 1 = 2 ≠ 0
+- [1,2,3]: prefix[2] - prefix[0] = 6 - 1 = 5 ≠ 0
+- [1,2,3,4,5]: prefix[4] - prefix[0] = 15 - 1 = 14 ≠ 0
+
+Actually, let me check the subarrays directly:
+- [1,2]: sum = 3, 3 % 3 = 0 ✓
+- [3]: sum = 3, 3 % 3 = 0 ✓
+- [1,2,3,4,5]: sum = 15, 15 % 3 = 0 ✓
+- [4,5]: sum = 9, 9 % 3 = 0 ✓
+```
+
+### Key Insight
+```
+If prefix[i] % k = prefix[j] % k, then
+prefix[i] - prefix[j] is divisible by k
+
+This means the subarray from position j+1 to i
+has a sum divisible by k.
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

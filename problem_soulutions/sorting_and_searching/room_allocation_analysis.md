@@ -35,6 +35,91 @@ Customer 3: arrives at 3, departs at 5 → gets room 1 (room 1 is now free)
 Minimum rooms needed: 2
 ```
 
+## 📊 Visual Example
+
+### Input Customers
+```
+Customer 1: arrives at 1, departs at 3
+Customer 2: arrives at 2, departs at 4
+Customer 3: arrives at 3, departs at 5
+```
+
+### Timeline Visualization
+```
+Time: 0  1  2  3  4  5  6
+      |  |  |  |  |  |  |
+Customer 1: [====]
+Customer 2:    [====]
+Customer 3:       [====]
+
+Overlap Analysis:
+- Customer 1 and 2: overlap at time 2-3
+- Customer 2 and 3: overlap at time 3-4
+- Customer 1 and 3: no overlap (touch at time 3)
+```
+
+### Room Allocation Process
+```
+Step 1: Sort customers by arrival time
+Original: [(1,3), (2,4), (3,5)]
+Sorted:   [(1,3), (2,4), (3,5)] (already sorted)
+
+Step 2: Process each customer
+┌─────────────────────────────────────┐
+│ Available rooms: []                 │
+│ Assigned rooms: []                  │
+└─────────────────────────────────────┘
+
+Customer 1 (arrives at 1, departs at 3):
+┌─────────────────────────────────────┐
+│ No available rooms                  │
+│ Create new room 1                   │
+│ Assign room 1 to customer 1         │
+│ Available rooms: []                 │
+│ Assigned rooms: [1]                 │
+└─────────────────────────────────────┘
+
+Customer 2 (arrives at 2, departs at 4):
+┌─────────────────────────────────────┐
+│ No available rooms (room 1 occupied)│
+│ Create new room 2                   │
+│ Assign room 2 to customer 2         │
+│ Available rooms: []                 │
+│ Assigned rooms: [1, 2]              │
+└─────────────────────────────────────┘
+
+Customer 3 (arrives at 3, departs at 5):
+┌─────────────────────────────────────┐
+│ Room 1 becomes available at time 3  │
+│ Assign room 1 to customer 3         │
+│ Available rooms: []                 │
+│ Assigned rooms: [1, 2, 1]           │
+└─────────────────────────────────────┘
+```
+
+### Priority Queue Approach
+```
+Use min-heap to track room availability:
+
+Initial: heap = []
+Customer 1: heap = [(3, 1)] (departure time, room number)
+Customer 2: heap = [(3, 1), (4, 2)]
+Customer 3: heap = [(4, 2), (5, 1)] (room 1 becomes available)
+
+Room assignments: [1, 2, 1]
+Minimum rooms needed: 2
+```
+
+### Why Greedy Works
+```
+Key Insight: Always assign the earliest available room
+
+Benefits:
+- Minimizes the number of rooms needed
+- Ensures optimal room utilization
+- Greedy choice doesn't affect future optimality
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

@@ -40,6 +40,59 @@ Output:
 - Each number represents the step number in the tour
 - The tour visits all 25 squares exactly once
 
+## 🎯 Visual Example
+
+### Input and Output
+```
+Input: n = 5
+Output: 5×5 chessboard with knight's tour
+
+Chessboard positions:
+(0,0) (0,1) (0,2) (0,3) (0,4)
+(1,0) (1,1) (1,2) (1,3) (1,4)
+(2,0) (2,1) (2,2) (2,3) (2,4)
+(3,0) (3,1) (3,2) (3,3) (3,4)
+(4,0) (4,1) (4,2) (4,3) (4,4)
+```
+
+### Knight's Tour Process
+```
+Step 1: Initialize
+- Start at position (0,0)
+- Mark as step 1
+- Available moves: 8 L-shaped moves
+
+Step 2: Knight's moves
+- From (0,0): possible moves to (2,1), (1,2)
+- Choose (2,1) as step 2
+- Continue until all squares visited
+
+Step 3: Tour completion
+- Visit all 25 squares exactly once
+- Return to starting position (if closed tour)
+```
+
+### Tour Visualization
+```
+Final tour on 5×5 board:
+1 14 9 20 23
+24 19 2 15 10
+13 8 25 22 21
+18 3 12 7 16
+11 6 17 4 5
+
+Knight's path:
+(0,0)→(2,1)→(4,2)→(3,4)→(1,3)→(0,1)→(2,0)→(4,1)→(3,3)→(1,4)→(0,2)→(2,3)→(4,4)→(3,2)→(1,1)→(0,3)→(2,4)→(4,3)→(3,1)→(1,0)→(0,4)→(2,2)→(4,0)→(3,1)→(1,2)→(0,0)
+```
+
+### Key Insight
+Knight's tour algorithm works by:
+1. Using backtracking to explore all possible paths
+2. Applying Warnsdorff's rule for better performance
+3. Ensuring each square is visited exactly once
+4. Time complexity: O(8^(n²)) in worst case
+5. Space complexity: O(n²) for the board
+
 ## Solution Progression
 
 ### Approach 1: Backtracking with Warnsdorff's Rule - O(n²)

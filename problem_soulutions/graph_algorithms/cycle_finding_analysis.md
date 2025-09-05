@@ -45,6 +45,74 @@ YES
 - The cycle 2 → 3 → 4 → 2 has total weight: 2 + 1 + (-5) = -2
 - This is a negative cycle, so we output "YES" and the cycle
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Nodes: 1, 2, 3, 4
+Edges: (1→2,1), (2→3,2), (3→4,1), (4→2,-5), (2→1,1)
+
+Graph representation:
+1 ──1──> 2 ──2──> 3 ──1──> 4
+│        │              │
+└──1─────┼──(-5)────────┘
+          │
+          └──────────────┘
+```
+
+### Negative Cycle Detection Process
+```
+Step 1: Initialize distances
+- dist[1] = dist[2] = dist[3] = dist[4] = 0
+
+Step 2: Bellman-Ford algorithm
+- Iteration 1:
+  - dist[2] = min(dist[2], dist[1] + 1) = min(0, 0 + 1) = 1
+  - dist[3] = min(dist[3], dist[2] + 2) = min(0, 1 + 2) = 3
+  - dist[4] = min(dist[4], dist[3] + 1) = min(0, 3 + 1) = 4
+  - dist[2] = min(dist[2], dist[4] + (-5)) = min(1, 4 + (-5)) = -1
+  - dist[1] = min(dist[1], dist[2] + 1) = min(0, -1 + 1) = 0
+
+- Iteration 2:
+  - dist[2] = min(dist[2], dist[1] + 1) = min(-1, 0 + 1) = -1
+  - dist[3] = min(dist[3], dist[2] + 2) = min(3, -1 + 2) = 1
+  - dist[4] = min(dist[4], dist[3] + 1) = min(4, 1 + 1) = 2
+  - dist[2] = min(dist[2], dist[4] + (-5)) = min(-1, 2 + (-5)) = -3
+  - dist[1] = min(dist[1], dist[2] + 1) = min(0, -3 + 1) = -2
+
+- Iteration 3:
+  - dist[2] = min(dist[2], dist[1] + 1) = min(-3, -2 + 1) = -3
+  - dist[3] = min(dist[3], dist[2] + 2) = min(1, -3 + 2) = -1
+  - dist[4] = min(dist[4], dist[3] + 1) = min(2, -1 + 1) = 0
+  - dist[2] = min(dist[2], dist[4] + (-5)) = min(-3, 0 + (-5)) = -5
+  - dist[1] = min(dist[1], dist[2] + 1) = min(-2, -5 + 1) = -4
+
+Step 3: Check for negative cycle
+- Iteration 4: distances still decreasing
+- Negative cycle detected: 2 → 3 → 4 → 2
+```
+
+### Cycle Analysis
+```
+Negative cycle found: 2 → 3 → 4 → 2
+
+Weight calculation:
+- Edge 2→3: 2
+- Edge 3→4: 1
+- Edge 4→2: -5
+- Total weight: 2 + 1 + (-5) = -2
+
+Negative cycle detected ✓
+```
+
+### Key Insight
+Bellman-Ford algorithm works by:
+1. Relaxing all edges for n-1 iterations
+2. Checking if distances can still be improved in n-th iteration
+3. If yes, negative cycle exists
+4. Time complexity: O(n × m) for n iterations
+5. Space complexity: O(n) for distance array
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

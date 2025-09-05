@@ -44,6 +44,86 @@ Output:
 - Number of computers: 3
 - This is the shortest path from computer 1 to computer 5
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Computers: 1, 2, 3, 4, 5
+Cables: (1,2), (1,3), (1,4), (2,3), (5,4)
+
+Graph representation:
+    2 ──── 3
+    │
+    1 ──── 4 ──── 5
+```
+
+### BFS Traversal Process
+```
+Step 1: Initialize BFS from computer 1
+Queue: [1]
+Visited: {1}
+Parent: {1: None}
+Distance: {1: 0}
+
+Step 2: Process computer 1
+Queue: [2, 3, 4] (neighbors of 1)
+Visited: {1, 2, 3, 4}
+Parent: {1: None, 2: 1, 3: 1, 4: 1}
+Distance: {1: 0, 2: 1, 3: 1, 4: 1}
+
+Step 3: Process computer 2
+Queue: [3, 4] (2's neighbor 3 already visited)
+Visited: {1, 2, 3, 4}
+Parent: {1: None, 2: 1, 3: 1, 4: 1}
+Distance: {1: 0, 2: 1, 3: 1, 4: 1}
+
+Step 4: Process computer 3
+Queue: [4] (3's neighbors 1,2 already visited)
+Visited: {1, 2, 3, 4}
+Parent: {1: None, 2: 1, 3: 1, 4: 1}
+Distance: {1: 0, 2: 1, 3: 1, 4: 1}
+
+Step 5: Process computer 4
+Queue: [5] (4's neighbor 5)
+Visited: {1, 2, 3, 4, 5}
+Parent: {1: None, 2: 1, 3: 1, 4: 1, 5: 4}
+Distance: {1: 0, 2: 1, 3: 1, 4: 1, 5: 2}
+
+Step 6: Process computer 5
+Queue: [] (5 is the target)
+Target reached!
+```
+
+### Path Reconstruction
+```
+From computer 5, trace back using parent array:
+- 5 → parent[5] = 4
+- 4 → parent[4] = 1
+- 1 → parent[1] = None (source)
+
+Reversed path: 5 → 4 → 1
+Final path: 1 → 4 → 5
+Distance: 2 (number of edges)
+Computers visited: 3 (including start and end)
+```
+
+### Alternative Paths
+```
+Other possible paths from 1 to 5:
+- 1 → 2 → 3 → (no connection to 5) ✗
+- 1 → 3 → 2 → (no connection to 5) ✗
+- 1 → 4 → 5 ✓ (shortest path)
+
+Shortest path: 1 → 4 → 5 (length = 2)
+```
+
+### Key Insight
+BFS guarantees finding the shortest path in an unweighted graph because:
+1. It explores nodes level by level
+2. First time we reach a node, we've found the shortest path to it
+3. Parent array allows us to reconstruct the actual path
+4. Time complexity: O(V + E) where V = vertices, E = edges
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

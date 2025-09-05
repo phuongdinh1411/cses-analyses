@@ -44,6 +44,68 @@ Output:
 - Path 1→2→3 with discount on flight 1→2: cost (3/2)+1 = 2.5 (rounds to 2)
 - Optimal: Use discount on flight 1→2, then take flight 2→3
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Cities: 1, 2, 3
+Flights: (1→2,3), (2→3,1), (1→3,7), (2→1,5)
+
+Graph representation:
+1 ──3──> 2 ──1──> 3
+│        │        │
+└──7─────┼────────┘
+          └──5─────┘
+```
+
+### Shortest Path with Discount Algorithm
+```
+Step 1: Build graph with discount states
+- State 0: No discount used
+- State 1: Discount used
+
+Step 2: Dijkstra's algorithm with states
+- Priority queue: (cost, city, discount_used)
+- Start: (0, 1, 0)
+
+Step 3: Process states
+- State (0, 1, 0): cost 0, city 1, no discount
+  - Neighbors: (1→2,3), (1→3,7)
+  - Add (3, 2, 0) and (7, 3, 0)
+  - Add (1.5, 2, 1) and (3.5, 3, 1) with discount
+
+- State (1.5, 2, 1): cost 1.5, city 2, discount used
+  - Neighbors: (2→3,1), (2→1,5)
+  - Add (2.5, 3, 1) and (6.5, 1, 1)
+
+- State (2.5, 3, 1): cost 2.5, city 3, discount used
+  - Reached destination with cost 2.5
+  - Round to 2 (integer cost)
+```
+
+### Path Analysis
+```
+Optimal path with discount:
+1 → 2 → 3
+
+Cost breakdown:
+- Flight 1→2: 3 (use discount) → 1.5
+- Flight 2→3: 1 (no discount) → 1
+- Total: 1.5 + 1 = 2.5 → 2 (rounded)
+
+Alternative paths:
+- 1→3 with discount: 7/2 = 3.5 → 4
+- 1→2→3 without discount: 3+1 = 4
+```
+
+### Key Insight
+Dijkstra's algorithm with states works by:
+1. Creating separate states for discount used/not used
+2. Using priority queue to process states in cost order
+3. Applying discount to each flight and considering both options
+4. Time complexity: O(m log n) where m is edges, n is cities
+5. Space complexity: O(n) for distance arrays
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

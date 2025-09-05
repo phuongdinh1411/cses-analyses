@@ -50,6 +50,56 @@ Output:
 - Query 3: Sum of elements from position 1 to 4 = 3+2+4+9 = 20
 - Query 4: Sum of elements from position 2 to 6 = 2+4+9+1+1 = 17
 
+## 🎯 Visual Example
+
+### Input Array and Queries
+```
+Array: [3, 2, 4, 5, 1, 1, 5, 3]
+Queries:
+1. Sum range [1,4]: 3+2+4+5 = 14
+2. Update position 4 to 9
+3. Sum range [1,4]: 3+2+4+9 = 20
+4. Sum range [2,6]: 2+4+9+1+1 = 17
+```
+
+### Binary Indexed Tree (Fenwick Tree) Process
+```
+Step 1: Initialize BIT
+Array: [3, 2, 4, 5, 1, 1, 5, 3]
+BIT:   [0, 3, 5, 4, 14, 1, 2, 5, 24]
+
+Step 2: Process queries
+
+Query 1: Sum range [1,4]
+- Sum(4) = BIT[4] = 14
+- Sum(0) = 0
+- Range sum = 14 - 0 = 14
+
+Query 2: Update position 4 to 9
+- Old value: 5, New value: 9
+- Difference: 9 - 5 = 4
+- Update BIT at position 4: add 4
+- BIT: [0, 3, 5, 4, 18, 1, 2, 5, 28]
+
+Query 3: Sum range [1,4]
+- Sum(4) = BIT[4] = 18
+- Sum(0) = 0
+- Range sum = 18 - 0 = 18
+
+Query 4: Sum range [2,6]
+- Sum(6) = BIT[6] + BIT[4] = 2 + 18 = 20
+- Sum(1) = BIT[1] = 3
+- Range sum = 20 - 3 = 17
+```
+
+### Key Insight
+Binary Indexed Tree works by:
+1. Using binary representation for efficient updates
+2. Each node stores sum of a range ending at that position
+3. Update: O(log n) time complexity
+4. Query: O(log n) time complexity
+5. Space complexity: O(n)
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

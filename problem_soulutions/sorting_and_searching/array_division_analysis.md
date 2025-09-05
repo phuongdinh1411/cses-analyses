@@ -41,6 +41,88 @@ Explanation**:
 - This is the minimum possible maximum sum for k=3
 ```
 
+## 📊 Visual Example
+
+### Input Array
+```
+Array: [2, 4, 7, 3, 5]
+Index:  0  1  2  3  4
+k = 3 (divide into 3 subarrays)
+```
+
+### Binary Search Process
+```
+Search space: [max_element, sum_of_all]
+- Lower bound: max([2,4,7,3,5]) = 7
+- Upper bound: sum([2,4,7,3,5]) = 21
+
+Binary search on possible maximum sums:
+```
+
+### Validation Function Examples
+```
+Test 1: Can we divide with max_sum = 7?
+┌─────────────────────────────────────┐
+│ Current sum: 0, Subarrays: 0        │
+│ Element 2: 0+2=2 ≤ 7 ✓              │
+│ Element 4: 2+4=6 ≤ 7 ✓              │
+│ Element 7: 6+7=13 > 7 ✗             │
+│ Start new subarray: [7]             │
+│ Element 3: 0+3=3 ≤ 7 ✓              │
+│ Element 5: 3+5=8 > 7 ✗              │
+│ Start new subarray: [5]             │
+│ Total subarrays: 3 = k ✓            │
+└─────────────────────────────────────┘
+
+Division: [2,4], [7], [3,5]
+Sums: 6, 7, 8
+Maximum: 7 ✓
+```
+
+```
+Test 2: Can we divide with max_sum = 6?
+┌─────────────────────────────────────┐
+│ Current sum: 0, Subarrays: 0        │
+│ Element 2: 0+2=2 ≤ 6 ✓              │
+│ Element 4: 2+4=6 ≤ 6 ✓              │
+│ Element 7: 6+7=13 > 6 ✗             │
+│ Start new subarray: [7]             │
+│ Element 3: 0+3=3 ≤ 6 ✓              │
+│ Element 5: 3+5=8 > 6 ✗              │
+│ Start new subarray: [5]             │
+│ Total subarrays: 3 = k ✓            │
+└─────────────────────────────────────┘
+
+Division: [2,4], [7], [3,5]
+Sums: 6, 7, 8
+Maximum: 8 > 6 ✗
+```
+
+### Optimal Division Visualization
+```
+Array: [2, 4, 7, 3, 5]
+Index:  0  1  2  3  4
+
+Optimal division (max_sum = 7):
+┌─────────┐ ┌─┐ ┌─────┐
+│ 2   4   │ │7│ │ 3 5 │
+└─────────┘ └─┘ └─────┘
+   Sum: 6   Sum: 7  Sum: 8
+
+Maximum sum: 7
+```
+
+### Why Binary Search Works
+```
+Key Insight: If we can divide with max_sum = X, 
+             we can also divide with max_sum > X
+
+Binary search properties:
+- If validation(X) = true, then validation(X+1) = true
+- If validation(X) = false, then validation(X-1) = false
+- This allows us to binary search for the minimum valid X
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

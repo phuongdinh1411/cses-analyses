@@ -38,6 +38,71 @@ Profit: (12-5) + max(0,10-11) + max(0,15-19) = 7 + 0 + 0 = 7
 Hmm, let me check the example again...
 ```
 
+## 📊 Visual Example
+
+### Input Tasks
+```
+Task 1: duration=6, deadline=10
+Task 2: duration=8, deadline=15
+Task 3: duration=5, deadline=12
+```
+
+### Greedy Strategy: Sort by Duration
+```
+Sort tasks by duration (shortest first):
+Task 3: duration=5, deadline=12
+Task 1: duration=6, deadline=10
+Task 2: duration=8, deadline=15
+```
+
+### Execution Timeline
+```
+Step 1: Execute Task 3 (duration=5)
+┌─────────────────────────────────────┐
+│ Completion time: 5                  │
+│ Profit: max(0, 12 - 5) = 7         │
+│ Total profit: 7                     │
+└─────────────────────────────────────┘
+
+Step 2: Execute Task 1 (duration=6)
+┌─────────────────────────────────────┐
+│ Completion time: 5 + 6 = 11         │
+│ Profit: max(0, 10 - 11) = 0        │
+│ Total profit: 7 + 0 = 7             │
+└─────────────────────────────────────┘
+
+Step 3: Execute Task 2 (duration=8)
+┌─────────────────────────────────────┐
+│ Completion time: 11 + 8 = 19        │
+│ Profit: max(0, 15 - 19) = 0        │
+│ Total profit: 7 + 0 + 0 = 7         │
+└─────────────────────────────────────┘
+```
+
+### Alternative Ordering (by Deadline)
+```
+Sort tasks by deadline (earliest first):
+Task 1: duration=6, deadline=10
+Task 3: duration=5, deadline=12
+Task 2: duration=8, deadline=15
+
+Execution:
+Task 1: completion=6, profit=max(0,10-6)=4
+Task 3: completion=6+5=11, profit=max(0,12-11)=1
+Task 2: completion=11+8=19, profit=max(0,15-19)=0
+Total profit: 4+1+0=5
+```
+
+### Why Duration-First Works
+```
+Key Insight: Always execute shortest tasks first
+
+Intuition:
+- Short tasks finish quickly, leaving more time for other tasks
+- This maximizes the chance of meeting deadlines
+- Greedy choice: pick the task that finishes earliest
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

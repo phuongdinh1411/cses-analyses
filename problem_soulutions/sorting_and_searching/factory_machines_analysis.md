@@ -37,6 +37,69 @@ In 8 time units:
 Total: 2 + 4 + 1 = 7 products ✓
 ```
 
+## 📊 Visual Example
+
+### Input Machines
+```
+Machines: [3, 2, 5] (time per product)
+Index:     0  1  2
+k = 7 products needed
+```
+
+### Binary Search Process
+```
+Search space: [1, max_time_needed]
+- Lower bound: 1 (minimum time)
+- Upper bound: k × min(machine_times) = 7 × 2 = 14
+
+Binary search on possible time values:
+```
+
+### Validation Function Examples
+```
+Test 1: Can we produce 7 products in 8 time units?
+┌─────────────────────────────────────┐
+│ Machine 0 (time=3): 8 // 3 = 2     │
+│ Machine 1 (time=2): 8 // 2 = 4     │
+│ Machine 2 (time=5): 8 // 5 = 1     │
+│ Total products: 2 + 4 + 1 = 7 ✓    │
+└─────────────────────────────────────┘
+
+Test 2: Can we produce 7 products in 7 time units?
+┌─────────────────────────────────────┐
+│ Machine 0 (time=3): 7 // 3 = 2     │
+│ Machine 1 (time=2): 7 // 2 = 3     │
+│ Machine 2 (time=5): 7 // 5 = 1     │
+│ Total products: 2 + 3 + 1 = 6 < 7 ✗│
+└─────────────────────────────────────┘
+```
+
+### Production Timeline Visualization
+```
+Time: 0  1  2  3  4  5  6  7  8
+      |  |  |  |  |  |  |  |  |
+Machine 1 (3): [P1]    [P2]
+Machine 2 (2): [P1] [P2] [P3] [P4]
+Machine 3 (5): [P1]
+
+Products produced by time 8:
+- Machine 1: 2 products (at times 3, 6)
+- Machine 2: 4 products (at times 2, 4, 6, 8)
+- Machine 3: 1 product (at time 5)
+Total: 7 products ✓
+```
+
+### Why Binary Search Works
+```
+Key Insight: If we can produce k products in time T,
+             we can also produce k products in time > T
+
+Binary search properties:
+- If validation(T) = true, then validation(T+1) = true
+- If validation(T) = false, then validation(T-1) = false
+- This allows us to binary search for the minimum valid T
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem

@@ -36,6 +36,63 @@ Output:
 - All planets enter the same cycle of length 3
 - The cycle is: 3 → 4 → 5 → 3
 
+## 🎯 Visual Example
+
+### Input Graph
+```
+Planets: 1, 2, 3, 4, 5
+Teleporters: [2, 3, 4, 5, 3]
+
+Graph representation:
+1 ──> 2 ──> 3 ──> 4 ──> 5
+      │              │
+      └──────────────┘
+```
+
+### Cycle Detection Process
+```
+Step 1: Build functional graph
+- Planet 1 → Planet 2
+- Planet 2 → Planet 3
+- Planet 3 → Planet 4
+- Planet 4 → Planet 5
+- Planet 5 → Planet 3
+
+Step 2: Find cycles using Floyd's algorithm
+
+Cycle detection:
+- Start from planet 1: 1 → 2 → 3 → 4 → 5 → 3 → 4 → 5 → 3 → ...
+- Cycle found: 3 → 4 → 5 → 3 (length 3)
+- All planets enter this cycle
+
+Step 3: Calculate cycle lengths
+- Planet 1: enters cycle at position 3, cycle length = 3
+- Planet 2: enters cycle at position 2, cycle length = 3
+- Planet 3: enters cycle at position 1, cycle length = 3
+- Planet 4: enters cycle at position 1, cycle length = 3
+- Planet 5: enters cycle at position 1, cycle length = 3
+```
+
+### Cycle Visualization
+```
+Path from each planet:
+- Planet 1: 1 → 2 → 3 → 4 → 5 → 3 → 4 → 5 → 3 → ...
+- Planet 2: 2 → 3 → 4 → 5 → 3 → 4 → 5 → 3 → ...
+- Planet 3: 3 → 4 → 5 → 3 → 4 → 5 → 3 → ...
+- Planet 4: 4 → 5 → 3 → 4 → 5 → 3 → ...
+- Planet 5: 5 → 3 → 4 → 5 → 3 → ...
+
+Cycle: 3 → 4 → 5 → 3 (length 3)
+```
+
+### Key Insight
+Floyd's cycle finding algorithm works by:
+1. Using two pointers (slow and fast) to detect cycles
+2. Finding the cycle length efficiently
+3. Time complexity: O(n) for all planets
+4. Space complexity: O(1) for cycle detection
+5. Each planet is processed in O(cycle_length) time
+
 ## 🚀 Solution Progression
 
 ### Step 1: Understanding the Problem

@@ -27,12 +27,57 @@ Output:
 
 Explanation: 
 Indices 1, 2, 4 have values 2, 7, 1
-Sum = 2 + 7 + 1 = 10, wait... let me check the example again
-Actually, indices 1, 2, 4 have values 2, 7, 1
 Sum = 2 + 7 + 1 = 10, but target is 8
 Let me recalculate: indices 1, 2, 4 have values 2, 7, 1
 Sum = 2 + 7 + 1 = 10, but target is 8
 Hmm, let me check the example more carefully...
+```
+
+## 📊 Visual Example
+
+### Input Array
+```
+Array: [2, 7, 5, 1]
+Index:  0  1  2  3
+Target: 8
+```
+
+### Brute Force Approach
+```
+Check all combinations of 3 distinct indices:
+
+Combination (0,1,2): arr[0] + arr[1] + arr[2] = 2 + 7 + 5 = 14 ≠ 8
+Combination (0,1,3): arr[0] + arr[1] + arr[3] = 2 + 7 + 1 = 10 ≠ 8
+Combination (0,2,3): arr[0] + arr[2] + arr[3] = 2 + 5 + 1 = 8 = 8 ✓
+
+Found solution: indices 0, 2, 3
+1-indexed: 1, 3, 4
+```
+
+### Two Pointer Approach (Sorted Array)
+```
+Step 1: Sort array with original indices
+Original: [2, 7, 5, 1]
+Sorted:   [1, 2, 5, 7] (with indices: 3, 0, 2, 1)
+
+Step 2: Fix first element, use two pointers for remaining
+For i=0, arr[i]=1:
+┌─────────────────────────────────────┐
+│ Target for remaining: 8 - 1 = 7     │
+│ Two pointers: left=1, right=3       │
+│ arr[1] + arr[3] = 2 + 7 = 9 > 7     │
+│ Move right pointer: left=1, right=2  │
+│ arr[1] + arr[2] = 2 + 5 = 7 = 7 ✓   │
+│ Solution: indices 3, 0, 2 (1-indexed: 4, 1, 3)│
+└─────────────────────────────────────┘
+```
+
+### Verification
+```
+Original indices: 0, 2, 3
+Values: arr[0] = 2, arr[2] = 5, arr[3] = 1
+Sum: 2 + 5 + 1 = 8 ✓
+1-indexed: 1, 3, 4
 ```
 
 ## 🎯 Solution Progression
