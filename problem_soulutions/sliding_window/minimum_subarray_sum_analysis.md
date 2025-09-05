@@ -203,6 +203,141 @@ test_solution()
 - **Optimal Algorithm**: Best known approach for this problem
 - **Edge Case Handling**: Properly handles all positive arrays
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n=8, arr=[-1, 3, -2, 5, 3, -5, 2, 2]
+Output: -5 (minimum subarray sum)
+```
+
+### Array Visualization
+```
+Array: [-1, 3, -2, 5, 3, -5, 2, 2]
+Index:   0  1   2  3  4   5  6  7
+```
+
+### Modified Kadane's Algorithm Process
+```
+Track minimum sum ending at each position:
+
+i=0: arr[0]=-1
+- min_ending_here = -1
+- min_so_far = -1
+
+i=1: arr[1]=3
+- min_ending_here = min(3, -1+3) = min(3, 2) = 2
+- min_so_far = min(-1, 2) = -1
+
+i=2: arr[2]=-2
+- min_ending_here = min(-2, 2+(-2)) = min(-2, 0) = -2
+- min_so_far = min(-1, -2) = -2
+
+i=3: arr[3]=5
+- min_ending_here = min(5, -2+5) = min(5, 3) = 3
+- min_so_far = min(-2, 3) = -2
+
+i=4: arr[4]=3
+- min_ending_here = min(3, 3+3) = min(3, 6) = 3
+- min_so_far = min(-2, 3) = -2
+
+i=5: arr[5]=-5
+- min_ending_here = min(-5, 3+(-5)) = min(-5, -2) = -5
+- min_so_far = min(-2, -5) = -5
+
+i=6: arr[6]=2
+- min_ending_here = min(2, -5+2) = min(2, -3) = -3
+- min_so_far = min(-5, -3) = -5
+
+i=7: arr[7]=2
+- min_ending_here = min(2, -3+2) = min(2, -1) = -1
+- min_so_far = min(-5, -1) = -5
+
+Final result: -5
+```
+
+### Step-by-Step Process
+```
+Initialize: min_ending_here = 0, min_so_far = ∞
+
+Step 1: i=0, arr[0]=-1
+- min_ending_here = min(-1, 0+(-1)) = -1
+- min_so_far = min(∞, -1) = -1
+
+Step 2: i=1, arr[1]=3
+- min_ending_here = min(3, -1+3) = 2
+- min_so_far = min(-1, 2) = -1
+
+Step 3: i=2, arr[2]=-2
+- min_ending_here = min(-2, 2+(-2)) = -2
+- min_so_far = min(-1, -2) = -2
+
+Step 4: i=3, arr[3]=5
+- min_ending_here = min(5, -2+5) = 3
+- min_so_far = min(-2, 3) = -2
+
+Step 5: i=4, arr[4]=3
+- min_ending_here = min(3, 3+3) = 3
+- min_so_far = min(-2, 3) = -2
+
+Step 6: i=5, arr[5]=-5
+- min_ending_here = min(-5, 3+(-5)) = -5
+- min_so_far = min(-2, -5) = -5 ← new minimum
+
+Step 7: i=6, arr[6]=2
+- min_ending_here = min(2, -5+2) = -3
+- min_so_far = min(-5, -3) = -5
+
+Step 8: i=7, arr[7]=2
+- min_ending_here = min(2, -3+2) = -1
+- min_so_far = min(-5, -1) = -5
+
+Result: -5
+```
+
+### Subarray Analysis
+```
+Minimum subarray: [-5] at index 5
+Sum = -5
+
+Other candidate subarrays:
+- [-2, 5, 3, -5] → sum = 1
+- [3, -5] → sum = -2
+- [-5, 2] → sum = -3
+- [3, -5, 2] → sum = 0
+```
+
+### Different Examples
+```
+Example 1: arr=[1, 2, 3, 4, 5]
+- All positive numbers
+- Minimum subarray: [1] → sum = 1
+
+Example 2: arr=[-2, 1, -3, 4, -1, 2, 1, -5, 4]
+- Mixed positive and negative
+- Minimum subarray: [-5] → sum = -5
+
+Example 3: arr=[-1, -2, -3, -4]
+- All negative numbers
+- Minimum subarray: entire array → sum = -10
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Modified Kadane │ O(n)         │ O(1)         │ Track min    │
+│                 │              │              │ ending here  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n²)        │ O(1)         │ Check all    │
+│                 │              │              │ subarrays    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Divide & Conquer│ O(n log n)   │ O(log n)     │ Split array  │
+│                 │              │              │ recursively  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Modified Kadane's Algorithm**

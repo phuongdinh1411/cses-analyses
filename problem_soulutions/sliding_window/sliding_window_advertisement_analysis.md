@@ -180,6 +180,123 @@ test_solution()
 - **Optimal Algorithm**: Best known approach for this problem
 - **Edge Case Handling**: Properly handles cases where k > n
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n=5, k=3, arr=[1, 2, 3, 4, 5]
+Output: 12 (maximum sum of subarray of size 3)
+```
+
+### Array Visualization
+```
+Array: [1, 2, 3, 4, 5]
+Index:  0  1  2  3  4
+```
+
+### All Subarrays of Size 3
+```
+Subarray [0:3] = [1, 2, 3]     → sum = 1+2+3 = 6
+Subarray [1:4] = [2, 3, 4]     → sum = 2+3+4 = 9
+Subarray [2:5] = [3, 4, 5]     → sum = 3+4+5 = 12 ← maximum
+
+Maximum sum: 12
+```
+
+### Sliding Window Process
+```
+Window size: k = 3
+Initial window: indices [0, 1, 2]
+
+Step 1: Calculate initial sum
+- Window: [1, 2, 3]
+- Sum: 1 + 2 + 3 = 6
+- Max sum: 6
+
+Step 2: Slide window right
+- Remove: arr[0] = 1
+- Add: arr[3] = 4
+- Window: [2, 3, 4]
+- Sum: 6 - 1 + 4 = 9
+- Max sum: max(6, 9) = 9
+
+Step 3: Slide window right
+- Remove: arr[1] = 2
+- Add: arr[4] = 5
+- Window: [3, 4, 5]
+- Sum: 9 - 2 + 5 = 12
+- Max sum: max(9, 12) = 12
+
+Final result: 12
+```
+
+### Step-by-Step Window Movement
+```
+Initial: left=0, right=2, sum=6, max_sum=6
+
+Step 1: left=0, right=2
+- Window: [1, 2, 3]
+- Sum: 1 + 2 + 3 = 6
+- Max sum: 6
+
+Step 2: left=1, right=3
+- Remove arr[0]=1, add arr[3]=4
+- Window: [2, 3, 4]
+- Sum: 6 - 1 + 4 = 9
+- Max sum: max(6, 9) = 9
+
+Step 3: left=2, right=4
+- Remove arr[1]=2, add arr[4]=5
+- Window: [3, 4, 5]
+- Sum: 9 - 2 + 5 = 12
+- Max sum: max(9, 12) = 12
+
+Final result: 12
+```
+
+### Window States Visualization
+```
+left=0, right=2: [1,2,3]       sum=6  max=6
+left=1, right=3: [2,3,4]       sum=9  max=9
+left=2, right=4: [3,4,5]       sum=12 max=12 ← final
+
+Maximum subarray: [3, 4, 5] with sum 12
+```
+
+### Different Examples
+```
+Example 1: arr=[5, 1, 3, 2, 4], k=3
+- Subarrays: [5,1,3], [1,3,2], [3,2,4]
+- Sums: 9, 6, 9
+- Maximum: 9
+
+Example 2: arr=[2, 1, 5, 1, 3, 2], k=3
+- Subarrays: [2,1,5], [1,5,1], [5,1,3], [1,3,2]
+- Sums: 8, 7, 9, 6
+- Maximum: 9
+
+Example 3: arr=[1, 1, 1, 1, 1], k=2
+- Subarrays: [1,1], [1,1], [1,1], [1,1]
+- Sums: 2, 2, 2, 2
+- Maximum: 2
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sliding Window  │ O(n)         │ O(1)         │ Fixed size   │
+│                 │              │              │ window       │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(nk)        │ O(1)         │ Check all    │
+│                 │              │              │ subarrays    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Prefix Sum      │ O(n)         │ O(n)         │ Precompute   │
+│                 │              │              │ sums         │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Sliding Window Technique**
