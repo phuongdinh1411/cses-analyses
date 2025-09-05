@@ -1104,3 +1104,65 @@ print(f"Range query results: {result}")
 ---
 
 **This is a great introduction to minimum window substring algorithms!** 🎯 
+
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: S="ADOBECODEBANC", T="ABC"
+Output: "BANC" (minimum window containing all characters from T)
+```
+
+### Character Frequency Analysis
+```
+Target T="ABC":
+- A: 1 occurrence
+- B: 1 occurrence  
+- C: 1 occurrence
+
+Source S="ADOBECODEBANC":
+A D O B E C O D E B A N C
+0 1 2 3 4 5 6 7 8 9 10 11 12
+```
+
+### Sliding Window Process
+```
+left=0, right=0: "A"           → missing B,C
+left=0, right=1: "AD"          → missing B,C
+left=0, right=2: "ADO"         → missing B,C
+left=0, right=3: "ADOB"        → missing A,C
+left=0, right=4: "ADOBE"       → missing A,C
+left=0, right=5: "ADOBEC"      → missing A → valid window!
+  Try shrinking: left=1 → "DOBEC" → missing A → invalid
+  Keep window: "ADOBEC" (length 6)
+
+left=1, right=6: "DOBECO"      → missing A,C
+left=1, right=7: "DOBECOD"     → missing A,C
+left=1, right=8: "DOBECODE"    → missing A,C
+left=1, right=9: "DOBECODEB"   → missing A,C
+left=1, right=10: "DOBECODEBA" → missing C
+left=1, right=11: "DOBECODEBAN" → missing C
+left=1, right=12: "DOBECODEBANC" → valid window!
+  Try shrinking: left=2 → "OBECODEBANC" → valid
+  Try shrinking: left=3 → "BECODEBANC" → valid
+  Try shrinking: left=4 → "ECODEBANC" → missing B → invalid
+  Keep window: "BECODEBANC" (length 9)
+
+Continue until find minimum...
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sliding Window  │ O(|S|+|T|)   │ O(|S|+|T|)   │ Two pointers │
+│                 │              │              │ + frequency  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(|S|³)      │ O(1)         │ Check all    │
+│                 │              │              │ substrings   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Hash Map        │ O(|S|²)      │ O(|T|)       │ Frequency    │
+│                 │              │              │ tracking     │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
