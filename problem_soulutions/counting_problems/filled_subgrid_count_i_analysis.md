@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/filled_subgrid_count_i_analysis
 
 # Filled Subgrid Count I
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand subgrid analysis and uniformity checking in grids
+- [ ] **Objective 2**: Apply efficient algorithms for counting uniform subgrids
+- [ ] **Objective 3**: Implement optimized subgrid counting using sliding window techniques
+- [ ] **Objective 4**: Optimize subgrid counting using mathematical formulas and pattern analysis
+- [ ] **Objective 5**: Handle edge cases in subgrid counting (small grids, uniform grids, edge cases)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Subgrid algorithms, sliding window, pattern analysis, grid algorithms
+- **Data Structures**: 2D arrays, sliding window data structures, pattern matching structures
+- **Mathematical Concepts**: Grid theory, pattern analysis, combinatorics, uniformity properties
+- **Programming Skills**: 2D array manipulation, sliding window implementation, pattern checking
+- **Related Problems**: All Letter Subgrid Count I (subgrid analysis), Border Subgrid Count I (border analysis), Forest Queries (grid queries)
+
 ## 📋 Problem Description
 
 Given a 2D grid of size n×m, count the number of filled subgrids of size k×k. A subgrid is filled if all cells in it contain the same value.

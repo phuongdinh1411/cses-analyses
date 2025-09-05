@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/tournament_graph_distribution_a
 
 # Tournament Graph Distribution
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand tournament graphs and their acyclic properties
+- [ ] **Objective 2**: Apply graph theory concepts to count valid tournament configurations
+- [ ] **Objective 3**: Implement algorithms for counting acyclic tournament graphs
+- [ ] **Objective 4**: Optimize tournament counting using mathematical formulas and DP
+- [ ] **Objective 5**: Handle edge cases in tournament counting (small tournaments, impossible configurations)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Graph theory, tournament graphs, acyclic graphs, combinatorics, dynamic programming
+- **Data Structures**: Graphs, adjacency matrices, DP tables
+- **Mathematical Concepts**: Graph theory, tournaments, acyclic graphs, combinatorics, modular arithmetic
+- **Programming Skills**: Graph representation, dynamic programming, modular arithmetic
+- **Related Problems**: Building Teams (graph properties), Round Trip (cycle detection), Graph theory problems
+
 ## 📋 Problem Description
 
 Given n teams, count the number of different tournament graphs where each team plays against every other team exactly once, and the result is a valid tournament (no cycles).

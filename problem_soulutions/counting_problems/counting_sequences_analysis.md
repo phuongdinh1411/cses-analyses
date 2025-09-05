@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/counting_sequences_analysis
 
 # Counting Sequences
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand sequence counting with constraints and consecutive element restrictions
+- [ ] **Objective 2**: Apply dynamic programming to count valid sequences with constraints
+- [ ] **Objective 3**: Implement efficient DP algorithms for sequence counting problems
+- [ ] **Objective 4**: Optimize sequence counting using mathematical formulas and DP optimization
+- [ ] **Objective 5**: Handle large sequence counts using modular arithmetic and space optimization
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, sequence algorithms, constraint handling, combinatorics
+- **Data Structures**: Arrays, DP tables, sequence data structures
+- **Mathematical Concepts**: Sequences, combinatorics, modular arithmetic, constraint counting
+- **Programming Skills**: Dynamic programming implementation, sequence generation, modular arithmetic
+- **Related Problems**: Counting Combinations (counting problems), Dice Combinations (DP counting), Coin Combinations I (DP with constraints)
+
 ## 📋 Problem Description
 
 Given integers n and k, count the number of sequences of length n where each element is between 1 and k, and no two consecutive elements are equal.

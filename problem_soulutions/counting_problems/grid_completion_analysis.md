@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/grid_completion_analysis
 
 # Grid Completion
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand Latin square completion and constraint satisfaction problems
+- [ ] **Objective 2**: Apply backtracking algorithms with constraint propagation for grid completion
+- [ ] **Objective 3**: Implement efficient backtracking with pruning for Latin square problems
+- [ ] **Objective 4**: Optimize grid completion using advanced constraint propagation techniques
+- [ ] **Objective 5**: Handle edge cases in grid completion (impossible completions, multiple solutions)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Backtracking, constraint satisfaction, Latin squares, constraint propagation
+- **Data Structures**: 2D arrays, constraint tables, backtracking stacks
+- **Mathematical Concepts**: Latin squares, constraint satisfaction, combinatorics, modular arithmetic
+- **Programming Skills**: Backtracking implementation, constraint checking, grid manipulation
+- **Related Problems**: Chessboard and Queens (backtracking), Permutations (constraint problems), Grid Paths (grid algorithms)
+
 ## 📋 Problem Description
 
 Given a partially filled n×n grid, count the number of ways to complete it with numbers 1 to n in each row and column (Latin square).

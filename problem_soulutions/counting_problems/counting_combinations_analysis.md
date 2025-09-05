@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/counting_combinations_analysis
 
 # Counting Combinations
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of combinations and binomial coefficients
+- [ ] **Objective 2**: Apply the formula C(n,k) = n!/(k!(n-k)!) for combination counting
+- [ ] **Objective 3**: Implement modular arithmetic for large combination calculations
+- [ ] **Objective 4**: Optimize combination calculations using precomputed factorials and modular inverses
+- [ ] **Objective 5**: Handle edge cases in combination counting (k=0, k=n, large numbers)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Combinatorics, binomial coefficients, modular arithmetic, factorial calculations
+- **Data Structures**: Arrays for precomputed factorials, modular inverse tables
+- **Mathematical Concepts**: Factorials, combinations, modular arithmetic, Fermat's little theorem
+- **Programming Skills**: Modular arithmetic, factorial computation, modular inverse calculation
+- **Related Problems**: Counting Permutations (permutation counting), Two Sets II (combination problems), Coin Combinations I (counting problems)
+
 ## 📋 Problem Description
 
 Given integers n and k, count the number of ways to choose k elements from a set of n elements (combinations).

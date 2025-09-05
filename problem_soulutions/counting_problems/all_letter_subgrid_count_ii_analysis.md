@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/all_letter_subgrid_count_ii_ana
 
 # All Letter Subgrid Count II
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand advanced subgrid analysis for variable-sized rectangular subgrids
+- [ ] **Objective 2**: Apply efficient algorithms for counting subgrids with alphabet completeness
+- [ ] **Objective 3**: Implement optimized subgrid counting using advanced sliding window techniques
+- [ ] **Objective 4**: Optimize subgrid counting using mathematical formulas and advanced pattern analysis
+- [ ] **Objective 5**: Handle edge cases in advanced subgrid counting (large grids, missing letters, complex patterns)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Advanced subgrid algorithms, sliding window, set operations, bit manipulation, pattern analysis
+- **Data Structures**: 2D arrays, sets, bitmasks, sliding window data structures, advanced pattern matching
+- **Mathematical Concepts**: Grid theory, set theory, alphabet analysis, combinatorics, advanced pattern analysis
+- **Programming Skills**: 2D array manipulation, set operations, bit manipulation, advanced sliding window, pattern checking
+- **Related Problems**: All Letter Subgrid Count I (basic version), Forest Queries (grid queries), Subarray Distinct Values (sliding window)
+
 ## 📋 Problem Description
 
 Given a 2D grid of size n×m containing letters, count the number of subgrids of any size that contain all letters from 'A' to 'Z' (case insensitive).

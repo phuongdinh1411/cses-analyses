@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/counting_reorders_analysis
 
 # Counting Reorders
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand multinomial coefficients and permutation counting with repeated elements
+- [ ] **Objective 2**: Apply the multinomial coefficient formula for counting distinct permutations
+- [ ] **Objective 3**: Implement efficient algorithms for counting string reorderings
+- [ ] **Objective 4**: Optimize reordering counting using precomputed factorials and modular arithmetic
+- [ ] **Objective 5**: Handle edge cases in reordering counting (single character strings, all unique characters)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Combinatorics, multinomial coefficients, permutation counting, string algorithms
+- **Data Structures**: Strings, arrays for character counting, factorial tables
+- **Mathematical Concepts**: Factorials, multinomial coefficients, permutations with repetition, modular arithmetic
+- **Programming Skills**: String manipulation, character counting, factorial computation, modular arithmetic
+- **Related Problems**: Creating Strings (string permutations), Counting Combinations (combinatorics), String Reorder (string manipulation)
+
 ## 📋 Problem Description
 
 Given a string s, count the number of different strings that can be obtained by reordering the characters of s.

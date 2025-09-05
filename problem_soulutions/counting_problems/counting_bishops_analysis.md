@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/counting_bishops_analysis
 
 # Counting Bishops
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand chess piece placement and attack patterns for bishops
+- [ ] **Objective 2**: Apply backtracking algorithms for counting valid chess piece placements
+- [ ] **Objective 3**: Implement efficient algorithms for counting non-attacking bishop placements
+- [ ] **Objective 4**: Optimize bishop counting using diagonal analysis and mathematical formulas
+- [ ] **Objective 5**: Handle edge cases in bishop counting (large boards, many bishops, impossible placements)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Backtracking, chess algorithms, diagonal analysis, combinatorics
+- **Data Structures**: 2D arrays, chessboard representations, backtracking stacks
+- **Mathematical Concepts**: Chess theory, diagonal properties, combinatorics, modular arithmetic
+- **Programming Skills**: Backtracking implementation, chessboard manipulation, constraint checking
+- **Related Problems**: Chessboard and Queens (chess problems), Raab Game II (queen placement), Permutations (backtracking)
+
 ## 📋 Problem Description
 
 Given a chessboard of size n×n, count the number of ways to place k bishops such that no bishop attacks another bishop.

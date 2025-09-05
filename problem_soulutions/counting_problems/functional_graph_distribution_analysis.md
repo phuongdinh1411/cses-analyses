@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/functional_graph_distribution_a
 
 # Functional Graph Distribution
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand functional graphs and their properties in graph theory
+- [ ] **Objective 2**: Apply combinatorics to count all possible functions from a set to itself
+- [ ] **Objective 3**: Implement efficient algorithms for counting functional graphs
+- [ ] **Objective 4**: Optimize functional graph counting using mathematical formulas and modular arithmetic
+- [ ] **Objective 5**: Handle large functional graph counts using modular arithmetic and optimization
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Graph theory, functional graphs, combinatorics, modular arithmetic
+- **Data Structures**: Arrays, mathematical computation structures
+- **Mathematical Concepts**: Functions, graph theory, combinatorics, modular arithmetic, exponentiation
+- **Programming Skills**: Modular arithmetic, large number handling, mathematical computation
+- **Related Problems**: Counting Combinations (combinatorics), Counting Permutations (counting problems), Graph theory problems
+
 ## 📋 Problem Description
 
 Given n nodes, count the number of different functional graphs (directed graphs where each node has exactly one outgoing edge).

@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/border_subgrid_count_ii_analysi
 
 # Border Subgrid Count II
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand advanced subgrid analysis for variable-sized rectangular subgrids
+- [ ] **Objective 2**: Apply efficient algorithms for counting subgrids with uniform border properties
+- [ ] **Objective 3**: Implement optimized subgrid counting using advanced sliding window techniques
+- [ ] **Objective 4**: Optimize subgrid counting using mathematical formulas and advanced pattern analysis
+- [ ] **Objective 5**: Handle edge cases in advanced subgrid counting (large grids, complex border patterns)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Advanced subgrid algorithms, sliding window, pattern analysis, grid algorithms
+- **Data Structures**: 2D arrays, sliding window data structures, advanced pattern matching structures
+- **Mathematical Concepts**: Grid theory, pattern analysis, combinatorics, advanced border properties
+- **Programming Skills**: 2D array manipulation, advanced sliding window implementation, pattern checking
+- **Related Problems**: Border Subgrid Count I (basic version), All Letter Subgrid Count I (subgrid analysis), Forest Queries (grid queries)
+
 ## 📋 Problem Description
 
 Given a 2D grid of size n×m, count the number of subgrids of any size where all cells on the border have the same value.

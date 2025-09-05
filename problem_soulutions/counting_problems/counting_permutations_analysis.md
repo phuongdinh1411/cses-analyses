@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/counting_permutations_analysis
 
 # Counting Permutations
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of permutations and inversion counting
+- [ ] **Objective 2**: Apply dynamic programming to count permutations with specific properties
+- [ ] **Objective 3**: Implement efficient algorithms for permutation counting with constraints
+- [ ] **Objective 4**: Optimize permutation counting using mathematical formulas and DP
+- [ ] **Objective 5**: Handle large permutation counts using modular arithmetic
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Dynamic programming, permutation algorithms, inversion counting, combinatorics
+- **Data Structures**: Arrays, DP tables, permutation data structures
+- **Mathematical Concepts**: Permutations, inversions, combinatorics, modular arithmetic
+- **Programming Skills**: Dynamic programming implementation, permutation generation, modular arithmetic
+- **Related Problems**: Permutations (basic permutations), Permutation Inversions (inversion counting), Creating Strings (string permutations)
+
 ## 📋 Problem Description
 
 Given an integer n, count the number of permutations of {1, 2, ..., n} that have exactly k inversions.

@@ -7,6 +7,24 @@ permalink: /problem_soulutions/counting_problems/permutation_inversions_analysis
 
 # Permutation Inversions
 
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- [ ] **Objective 1**: Understand the concept of inversions in permutations and their properties
+- [ ] **Objective 2**: Apply merge sort algorithm to count inversions efficiently
+- [ ] **Objective 3**: Implement binary indexed tree (Fenwick tree) for inversion counting
+- [ ] **Objective 4**: Optimize inversion counting algorithms for large permutations
+- [ ] **Objective 5**: Handle edge cases in inversion counting (sorted arrays, reverse sorted arrays)
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Merge sort, binary indexed tree, segment tree, divide and conquer
+- **Data Structures**: Arrays, binary indexed trees, segment trees, merge sort arrays
+- **Mathematical Concepts**: Permutations, inversions, divide and conquer, counting principles
+- **Programming Skills**: Merge sort implementation, binary indexed tree operations, divide and conquer
+- **Related Problems**: Counting Permutations (permutation properties), Sorting algorithms (merge sort), Range Queries (binary indexed tree)
+
 ## 📋 Problem Description
 
 Given a permutation of numbers from 1 to n, count the number of inversions. An inversion is a pair of indices (i,j) where i < j and a[i] > a[j].
