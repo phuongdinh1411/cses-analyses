@@ -236,6 +236,128 @@ test_solution()
 - **Optimal Algorithm**: Best known approach for this problem
 - **Edge Case Handling**: Properly handles empty subarray case
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n=5, x=7, arr=[2, -1, 3, 5, -2]
+Output: YES (subarray with sum 7 exists)
+```
+
+### Array Visualization
+```
+Array: [2, -1, 3, 5, -2]
+Index:  0   1  2  3   4
+```
+
+### Prefix Sum Calculation
+```
+Index:  -1   0   1   2   3   4
+Array:  [ ]  [2] [-1] [3] [5] [-2]
+Prefix:  0    2   1   4   9   7
+
+Prefix[0] = 0
+Prefix[1] = 0 + 2 = 2
+Prefix[2] = 2 + (-1) = 1
+Prefix[3] = 1 + 3 = 4
+Prefix[4] = 4 + 5 = 9
+Prefix[5] = 9 + (-2) = 7
+```
+
+### Subarray Sum Analysis
+```
+Target sum: x = 7
+
+For each position i, check if any j < i has:
+Prefix[i] - Prefix[j] = x
+Prefix[j] = Prefix[i] - x
+
+Position 0: Prefix[0] = 2
+Target: 2 - 7 = -5
+Is -5 in seen sums? No
+Continue
+
+Position 1: Prefix[1] = 1
+Target: 1 - 7 = -6
+Is -6 in seen sums? No
+Continue
+
+Position 2: Prefix[2] = 4
+Target: 4 - 7 = -3
+Is -3 in seen sums? No
+Continue
+
+Position 3: Prefix[3] = 9
+Target: 9 - 7 = 2
+Is 2 in seen sums? Yes! (at position 0)
+Found subarray: arr[1:4] = [-1, 3, 5] → sum = 7
+Return YES
+```
+
+### Hash Set Tracking
+```
+Hash set: {prefix_sums_seen}
+
+Initialize: {0} (empty subarray)
+
+i=0: prefix=2, target=2-7=-5
+- Is -5 in set? No
+- Add 2 to set: {0, 2}
+
+i=1: prefix=1, target=1-7=-6
+- Is -6 in set? No
+- Add 1 to set: {0, 2, 1}
+
+i=2: prefix=4, target=4-7=-3
+- Is -3 in set? No
+- Add 4 to set: {0, 2, 1, 4}
+
+i=3: prefix=9, target=9-7=2
+- Is 2 in set? Yes! ✓
+- Found subarray with sum 7
+- Return YES
+```
+
+### Verification
+```
+Found subarray: arr[1:4] = [-1, 3, 5]
+Sum = (-1) + 3 + 5 = 7 ✓
+
+Alternative subarray: arr[0:5] = [2, -1, 3, 5, -2]
+Sum = 2 + (-1) + 3 + 5 + (-2) = 7 ✓
+```
+
+### Different Examples
+```
+Example 1: arr=[1, 2, 3, 4, 5], x=9
+- Subarray [2, 3, 4] has sum 9
+- Result: YES
+
+Example 2: arr=[1, 2, 3, 4, 5], x=20
+- No subarray has sum 20
+- Result: NO
+
+Example 3: arr=[-1, -2, -3], x=-6
+- Subarray [-1, -2, -3] has sum -6
+- Result: YES
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Prefix Sum +    │ O(n)         │ O(n)         │ Hash set     │
+│ Hash Set        │              │              │ existence    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n²)        │ O(1)         │ Check all    │
+│                 │              │              │ subarrays    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sliding Window  │ O(n)         │ O(1)         │ Only for     │
+│                 │              │              │ positive     │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Prefix Sum Technique**

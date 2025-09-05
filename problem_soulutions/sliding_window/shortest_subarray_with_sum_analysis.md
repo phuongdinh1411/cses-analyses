@@ -236,6 +236,115 @@ test_solution()
 - **Optimal Algorithm**: Best known approach for positive numbers
 - **Edge Case Handling**: Properly handles no valid subarray case
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n=5, x=7, arr=[2, 1, 3, 5, 2]
+Output: 2 (shortest subarray with sum ≥ 7)
+```
+
+### Array Visualization
+```
+Array: [2, 1, 3, 5, 2]
+Index:  0  1  2  3  4
+```
+
+### Sliding Window Process
+```
+Target: sum ≥ 7, find shortest length
+
+left=0, right=0: window=[2], sum=2 < 7
+left=0, right=1: window=[2,1], sum=3 < 7
+left=0, right=2: window=[2,1,3], sum=6 < 7
+left=0, right=3: window=[2,1,3,5], sum=11 ≥ 7 ✓
+  Current length: 4
+  Try to shrink: left=1, window=[1,3,5], sum=9 ≥ 7 ✓
+  Try to shrink: left=2, window=[3,5], sum=8 ≥ 7 ✓
+  Try to shrink: left=3, window=[5], sum=5 < 7 ✗
+  Best so far: length 2
+left=2, right=4: window=[3,5,2], sum=10 ≥ 7 ✓
+  Current length: 3
+  Try to shrink: left=3, window=[5,2], sum=7 ≥ 7 ✓
+  Try to shrink: left=4, window=[2], sum=2 < 7 ✗
+  Best so far: length 2
+
+Shortest length: 2
+```
+
+### Step-by-Step Window Movement
+```
+Initial: left=0, right=0, sum=0, min_len=∞
+
+Step 1: right=0, add arr[0]=2
+- sum=2, window=[2]
+- sum < 7, continue
+
+Step 2: right=1, add arr[1]=1  
+- sum=3, window=[2,1]
+- sum < 7, continue
+
+Step 3: right=2, add arr[2]=3
+- sum=6, window=[2,1,3]
+- sum < 7, continue
+
+Step 4: right=3, add arr[3]=5
+- sum=11, window=[2,1,3,5]
+- sum ≥ 7 ✓, length=4
+- Try shrinking: remove arr[0]=2
+- sum=9, window=[1,3,5], length=3
+- sum ≥ 7 ✓, try shrinking: remove arr[1]=1
+- sum=8, window=[3,5], length=2
+- sum ≥ 7 ✓, try shrinking: remove arr[2]=3
+- sum=5, window=[5], length=1
+- sum < 7 ✗, stop shrinking
+- min_len = min(∞, 2) = 2
+
+Step 5: right=4, add arr[4]=2
+- sum=10, window=[3,5,2]
+- sum ≥ 7 ✓, length=3
+- Try shrinking: remove arr[2]=3
+- sum=7, window=[5,2], length=2
+- sum ≥ 7 ✓, try shrinking: remove arr[3]=5
+- sum=2, window=[2], length=1
+- sum < 7 ✗, stop shrinking
+- min_len = min(2, 2) = 2
+
+Final result: 2
+```
+
+### Window States Visualization
+```
+left=0, right=0: [2]           sum=2  < 7
+left=0, right=1: [2,1]         sum=3  < 7
+left=0, right=2: [2,1,3]       sum=6  < 7
+left=0, right=3: [2,1,3,5]     sum=11 ≥ 7 ✓ length=4
+left=1, right=3: [1,3,5]       sum=9  ≥ 7 ✓ length=3
+left=2, right=3: [3,5]         sum=8  ≥ 7 ✓ length=2 ← shortest
+left=3, right=3: [5]           sum=5  < 7
+left=2, right=4: [3,5,2]       sum=10 ≥ 7 ✓ length=3
+left=3, right=4: [5,2]         sum=7  ≥ 7 ✓ length=2
+left=4, right=4: [2]           sum=2  < 7
+
+Shortest subarray: [3,5] with length 2
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sliding Window  │ O(n)         │ O(1)         │ Two pointers │
+│                 │              │              │ for window   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n²)        │ O(1)         │ Check all    │
+│                 │              │              │ subarrays    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Binary Search   │ O(n log n)   │ O(1)         │ Search for   │
+│                 │              │              │ each length  │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Sliding Window Technique**
