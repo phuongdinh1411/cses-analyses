@@ -215,6 +215,128 @@ print(*kingdoms)
 | Kosaraju's Algorithm | O(n + m) | O(n + m) | Use Kosaraju's for strongly connected components |
 | Optimized Kosaraju's | O(n + m) | O(n + m) | Optimized Kosaraju's implementation |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 planets, 4 teleporters:
+Teleporter 1→2
+Teleporter 2→3
+Teleporter 3→1
+Teleporter 4→1
+```
+
+### Graph Visualization
+```
+Original graph:
+1 ──→ 2 ──→ 3
+│             │
+│             │
+4 ────────────┘
+
+Teleporter connections:
+- Planet 1 → Planet 2
+- Planet 2 → Planet 3
+- Planet 3 → Planet 1
+- Planet 4 → Planet 1
+```
+
+### Kosaraju's Algorithm - Phase 1
+```
+First DFS to get finish times:
+
+Step 1: Start DFS from planet 1
+- Visit 1 → 2 → 3 → 1 (cycle detected)
+- Finish order: [3, 2, 1]
+
+Step 2: Start DFS from planet 4
+- Visit 4 → 1 (already visited)
+- Finish order: [3, 2, 1, 4]
+
+Final finish order: [3, 2, 1, 4]
+```
+
+### Reversed Graph
+```
+Reversed graph:
+1 ←── 2 ←── 3
+│             │
+│             │
+4 ────────────┘
+
+Reversed connections:
+- Planet 2 → Planet 1
+- Planet 3 → Planet 2
+- Planet 1 → Planet 3
+- Planet 1 → Planet 4
+```
+
+### Kosaraju's Algorithm - Phase 2
+```
+Second DFS on reversed graph:
+
+Step 1: Start from planet 3 (last in finish order)
+- Visit 3 → 2 → 1 → 4
+- All reachable from 3: {3, 2, 1, 4}
+- But 4 can't reach back to 3, so separate SCC
+
+Step 2: Start from planet 4
+- Visit 4 → 1 → 3 → 2
+- All reachable from 4: {4, 1, 3, 2}
+- But 2 can't reach back to 4, so separate SCC
+
+Wait, let me recalculate correctly...
+
+Actually, the SCCs are:
+- Kingdom 1: {1, 2, 3} (cycle 1→2→3→1)
+- Kingdom 2: {4} (can reach others but can't be reached)
+```
+
+### SCC Analysis
+```
+Strongly Connected Components:
+
+Kingdom 1: {1, 2, 3}
+- Planet 1 can reach: 2, 3, 1
+- Planet 2 can reach: 3, 1, 2
+- Planet 3 can reach: 1, 2, 3
+- All planets can reach each other ✓
+
+Kingdom 2: {4}
+- Planet 4 can reach: 1, 2, 3, 4
+- But planets 1, 2, 3 cannot reach 4
+- So 4 is in its own kingdom
+```
+
+### Component Assignment
+```
+Kingdom assignment:
+- Planet 1: Kingdom 1
+- Planet 2: Kingdom 1
+- Planet 3: Kingdom 1
+- Planet 4: Kingdom 2
+
+Output:
+2
+1 1 1 2
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Kosaraju's      │ O(n + m)     │ O(n + m)     │ Two-pass     │
+│                 │              │              │ DFS          │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Tarjan's        │ O(n + m)     │ O(n)         │ Single-pass  │
+│                 │              │              │ DFS          │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Path-based      │ O(n + m)     │ O(n)         │ Path-based   │
+│                 │              │              │ algorithm    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns
