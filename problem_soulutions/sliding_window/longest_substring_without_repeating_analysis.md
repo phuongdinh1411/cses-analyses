@@ -234,6 +234,194 @@ test_solution()
 - **Optimal Algorithm**: Best known approach for this problem
 - **Edge Case Handling**: Properly handles empty strings and single characters
 
+## 🎨 Visual Example
+
+### Input Example
+```
+String: "abcabcbb"
+```
+
+### All Possible Substrings
+```
+String: "abcabcbb"
+Index:   01234567
+
+All substrings without repeating characters:
+Length 1: "a", "b", "c", "a", "b", "c", "b", "b"
+Length 2: "ab", "bc", "ca", "ab", "bc", "cb", "bb"
+Length 3: "abc", "bca", "cab", "abc", "bcb", "cbb"
+Length 4: "abca", "bcab", "cabc", "abcb", "bcbb"
+Length 5: "abcab", "bcabc", "abcbb"
+Length 6: "abcabc", "bcabcb"
+Length 7: "abcabcb"
+Length 8: "abcabcbb"
+
+Longest without repeating: "abc" (length 3)
+```
+
+### Sliding Window Process
+```
+String: "abcabcbb"
+Index:   01234567
+
+Step 1: left=0, right=0, window="a"
+char_set = {a}
+max_length = 1
+
+Step 2: left=0, right=1, window="ab"
+char_set = {a, b}
+max_length = 2
+
+Step 3: left=0, right=2, window="abc"
+char_set = {a, b, c}
+max_length = 3
+
+Step 4: left=0, right=3, window="abca"
+char_set = {a, b, c, a} → duplicate 'a' found
+Remove 'a' at left=0: char_set = {b, c, a}
+left = 1, window="bca"
+max_length = 3
+
+Step 5: left=1, right=4, window="bcab"
+char_set = {b, c, a, b} → duplicate 'b' found
+Remove 'b' at left=1: char_set = {c, a, b}
+left = 2, window="cab"
+max_length = 3
+
+Step 6: left=2, right=5, window="cabc"
+char_set = {c, a, b, c} → duplicate 'c' found
+Remove 'c' at left=2: char_set = {a, b, c}
+left = 3, window="abc"
+max_length = 3
+
+Step 7: left=3, right=6, window="abcb"
+char_set = {a, b, c, b} → duplicate 'b' found
+Remove 'a' at left=3: char_set = {b, c, b}
+left = 4, window="cb"
+max_length = 3
+
+Step 8: left=4, right=7, window="cbb"
+char_set = {c, b, b} → duplicate 'b' found
+Remove 'c' at left=4: char_set = {b, b}
+left = 5, window="b"
+max_length = 3
+
+Final result: 3
+```
+
+### Visual Sliding Window
+```
+String: "abcabcbb"
+Index:   01234567
+
+Window progression:
+Step 1: [a]bcabcbb        → length=1, unique
+Step 2: [ab]cabcbb        → length=2, unique
+Step 3: [abc]abcbb        → length=3, unique ← max
+Step 4: a[bca]bcbb        → length=3, unique
+Step 5: ab[cab]cbb        → length=3, unique
+Step 6: abc[abc]bb        → length=3, unique
+Step 7: abca[bc]bb        → length=2, unique
+Step 8: abcab[cb]b        → length=2, unique
+Step 9: abcabc[b]b        → length=1, unique
+
+Maximum length: 3
+```
+
+### Character Set Tracking
+```
+String: "abcabcbb"
+
+Step-by-step character set:
+Step 1: char_set = {a}
+Step 2: char_set = {a, b}
+Step 3: char_set = {a, b, c}
+Step 4: char_set = {a, b, c} → duplicate 'a', remove first 'a'
+Step 5: char_set = {b, c, a} → duplicate 'b', remove first 'b'
+Step 6: char_set = {c, a, b} → duplicate 'c', remove first 'c'
+Step 7: char_set = {a, b, c} → duplicate 'b', remove first 'a'
+Step 8: char_set = {b, c} → duplicate 'b', remove first 'c'
+Step 9: char_set = {b} → duplicate 'b', remove first 'b'
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n³)        │ O(1)         │ Check all    │
+│                 │              │              │ substrings   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Optimized       │ O(n²)        │ O(n)         │ Use hash set │
+│ Brute Force     │              │              │ for each     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sliding Window  │ O(n)         │ O(min(m,n))  │ Two pointers │
+│                 │              │              │ technique    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sliding Window  │ O(n)         │ O(1)         │ Use array    │
+│ (Optimized)     │              │              │ for ASCII    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Longest Substring Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: string   │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Initialize:     │
+              │ left = 0        │
+              │ max_length = 0  │
+              │ char_set = {}   │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For right = 0   │
+              │ to len(s):      │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ While s[right]  │
+              │ in char_set:    │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Remove s[left]  │
+              │ from char_set   │
+              │ left++          │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Add s[right] to │
+              │ char_set        │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ max_length =    │
+              │ max(max_length, │
+              │ right-left+1)   │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return          │
+              │ max_length      │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Sliding Window Technique**

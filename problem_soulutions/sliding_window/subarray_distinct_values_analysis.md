@@ -206,6 +206,174 @@ test_solution()
 - **Window Expansion**: Adds new elements and shrinks when constraint violated
 - **Optimal Algorithm**: Best known approach for this problem
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Array: [1, 2, 1, 3, 4]
+k = 2 (at most 2 distinct values)
+```
+
+### All Valid Subarrays
+```
+Array: [1, 2, 1, 3, 4]
+Index:  0  1  2  3  4
+
+Valid subarrays (at most 2 distinct values):
+Length 1: [1], [2], [1], [3], [4] → 5 subarrays
+Length 2: [1,2], [2,1], [1,3], [3,4] → 4 subarrays
+Length 3: [1,2,1] → 1 subarray
+
+Total: 10 valid subarrays
+
+Invalid subarrays (more than 2 distinct values):
+[1,2,3], [2,1,3], [1,3,4], [2,1,3,4], [1,2,1,3], [1,2,1,3,4]
+```
+
+### Sliding Window Process
+```
+Array: [1, 2, 1, 3, 4]
+Index:  0  1  2  3  4
+k = 2
+
+Step 1: left=0, right=0, window=[1]
+distinct_count = {1: 1}, count = 1
+valid_subarrays = 1
+
+Step 2: left=0, right=1, window=[1,2]
+distinct_count = {1: 1, 2: 1}, count = 2
+valid_subarrays = 1 + 2 = 3
+
+Step 3: left=0, right=2, window=[1,2,1]
+distinct_count = {1: 2, 2: 1}, count = 2
+valid_subarrays = 3 + 3 = 6
+
+Step 4: left=0, right=3, window=[1,2,1,3]
+distinct_count = {1: 2, 2: 1, 3: 1}, count = 3 > k
+Remove elements from left until count ≤ k
+Remove 1: distinct_count = {2: 1, 3: 1}, count = 2
+left = 1, window=[2,1,3]
+valid_subarrays = 6 + 3 = 9
+
+Step 5: left=1, right=4, window=[2,1,3,4]
+distinct_count = {2: 1, 1: 1, 3: 1, 4: 1}, count = 4 > k
+Remove elements from left until count ≤ k
+Remove 2: distinct_count = {1: 1, 3: 1, 4: 1}, count = 3 > k
+Remove 1: distinct_count = {3: 1, 4: 1}, count = 2
+left = 3, window=[3,4]
+valid_subarrays = 9 + 2 = 11
+
+Final result: 11
+```
+
+### Visual Sliding Window
+```
+Array: [1, 2, 1, 3, 4]
+Index:  0  1  2  3  4
+
+Window progression:
+Step 1: [1] 2 1 3 4        → distinct: {1}, count=1, valid=1
+Step 2: [1,2] 1 3 4        → distinct: {1,2}, count=2, valid=3
+Step 3: [1,2,1] 3 4        → distinct: {1,2}, count=2, valid=6
+Step 4: 1 [2,1,3] 4        → distinct: {2,1,3}, count=3>k, shrink
+Step 5: 1 2 1 [3,4]        → distinct: {3,4}, count=2, valid=11
+
+Total valid subarrays: 11
+```
+
+### Distinct Value Counting
+```
+Array: [1, 2, 1, 3, 4]
+
+Step-by-step distinct count:
+Step 1: {1: 1} → count = 1
+Step 2: {1: 1, 2: 1} → count = 2
+Step 3: {1: 2, 2: 1} → count = 2
+Step 4: {1: 2, 2: 1, 3: 1} → count = 3 > k
+Step 5: {2: 1, 3: 1, 4: 1} → count = 3 > k
+Step 6: {3: 1, 4: 1} → count = 2
+```
+
+### Algorithm Comparison Visualization
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n³)        │ O(1)         │ Check all    │
+│                 │              │              │ subarrays    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Optimized       │ O(n²)        │ O(n)         │ Use hash map │
+│ Brute Force     │              │              │ for each     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sliding Window  │ O(n)         │ O(k)         │ Two pointers │
+│                 │              │              │ technique    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Sliding Window  │ O(n)         │ O(1)         │ Use array    │
+│ (Optimized)     │              │              │ for small    │
+│                 │              │              │ values       │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+### Subarray Distinct Values Flowchart
+```
+                    Start
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Input: array, k │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Initialize:     │
+              │ left = 0        │
+              │ count = 0       │
+              │ distinct_count  │
+              │ = {}            │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ For right = 0   │
+              │ to len(arr):    │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Add arr[right]  │
+              │ to distinct_    │
+              │ count           │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ While distinct  │
+              │ count > k:      │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Remove arr[left]│
+              │ from distinct_  │
+              │ count           │
+              │ left++          │
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ count +=        │
+              │ right - left + 1│
+              └─────────────────┘
+                      │
+                      ▼
+              ┌─────────────────┐
+              │ Return count    │
+              └─────────────────┘
+                      │
+                      ▼
+                    End
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Sliding Window Technique**
