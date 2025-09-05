@@ -40,6 +40,133 @@ Output:
 - We need 1 road to connect these 2 components
 - Result: 2 components - 1 = 1 road needed
 
+### 📊 Visual Example
+
+**Input Graph:**
+```
+Cities: 1, 2, 3, 4
+Roads: (1,2), (3,4)
+
+    1 ──── 2    3 ──── 4
+    │      │    │      │
+    └──────┘    └──────┘
+   Component 1  Component 2
+```
+
+**Connected Components Analysis:**
+```
+Component 1: {1, 2}
+- Cities 1 and 2 are connected
+- No connection to other cities
+
+Component 2: {3, 4}
+- Cities 3 and 4 are connected
+- No connection to other cities
+
+Total Components: 2
+```
+
+**Solution Process:**
+```
+Step 1: Identify connected components
+┌─────────────────────────────────────┐
+│ Component 1: {1, 2}                 │
+│ Component 2: {3, 4}                 │
+│ Total: 2 components                 │
+└─────────────────────────────────────┘
+
+Step 2: Calculate minimum roads needed
+┌─────────────────────────────────────┐
+│ Formula: (Number of Components) - 1 │
+│ Calculation: 2 - 1 = 1              │
+│ Result: 1 road needed               │
+└─────────────────────────────────────┘
+
+Step 3: Show the solution
+┌─────────────────────────────────────┐
+│ Add road: 2 ──── 3                  │
+│ Final graph:                        │
+│ 1 ──── 2 ──── 3 ──── 4             │
+│ All cities now connected!           │
+└─────────────────────────────────────┘
+```
+
+**Graph Connectivity Visualization:**
+```
+Before (Disconnected):
+    1 ──── 2    3 ──── 4
+    │      │    │      │
+    └──────┘    └──────┘
+   Component 1  Component 2
+
+After (Connected):
+    1 ──── 2 ──── 3 ──── 4
+    │      │      │      │
+    └──────┴──────┴──────┘
+        Single Component
+
+Added Road: 2 ──── 3
+```
+
+**Algorithm Flowchart:**
+```
+┌─────────────────────────────────────┐
+│ Start: Read n cities, m roads       │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Build adjacency list from roads     │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Count connected components using DFS│
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Calculate: components - 1           │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Return minimum roads needed         │
+└─────────────────────────────────────┘
+```
+
+**DFS Component Counting:**
+```
+DFS from city 1:
+┌─────────────────────────────────────┐
+│ Visit 1 → Visit 2 → Backtrack      │
+│ Component 1: {1, 2}                 │
+└─────────────────────────────────────┘
+
+DFS from city 3:
+┌─────────────────────────────────────┐
+│ Visit 3 → Visit 4 → Backtrack      │
+│ Component 2: {3, 4}                 │
+└─────────────────────────────────────┘
+
+DFS from city 2: Already visited
+DFS from city 4: Already visited
+
+Total Components: 2
+```
+
+**Key Insight Visualization:**
+```
+To connect n components, we need (n-1) edges:
+
+n=1: No edges needed (already connected)
+n=2: 1 edge needed (connect 2 components)
+n=3: 2 edges needed (connect 3 components)
+n=4: 3 edges needed (connect 4 components)
+
+General formula: (n-1) edges
+```
+
 ## 🎯 Solution Progression
 
 ### Step 1: Understanding the Problem
@@ -295,6 +422,122 @@ test_solution()
 | DFS Component Counting | O(n + m) | O(n + m) | Count connected components |
 | BFS Component Counting | O(n + m) | O(n + m) | Iterative component exploration |
 | Union-Find | O(n + m * α(n)) | O(n) | Efficient connectivity queries |
+
+## 🎨 Visual Example
+
+### Input Example
+```
+4 cities, 2 roads:
+Road 1: City 1 ↔ City 2
+Road 2: City 3 ↔ City 4
+```
+
+### Initial Graph Visualization
+```
+Cities: 1, 2, 3, 4
+Roads: (1,2), (3,4)
+
+    1 ──── 2    3 ──── 4
+    │      │    │      │
+    │      │    │      │
+    └──────┘    └──────┘
+   Component 1  Component 2
+```
+
+### Connected Components Analysis
+```
+Component 1: {1, 2}
+- Cities 1 and 2 are connected
+- Can reach each other directly
+
+Component 2: {3, 4}  
+- Cities 3 and 4 are connected
+- Can reach each other directly
+
+Total Components: 2
+```
+
+### DFS Traversal Process
+```
+Step 1: Start DFS from City 1
+- Visit City 1, mark as visited
+- Explore neighbors: City 2
+- Visit City 2, mark as visited
+- No more unvisited neighbors
+- Component 1 complete: {1, 2}
+
+Step 2: Start DFS from City 3 (unvisited)
+- Visit City 3, mark as visited
+- Explore neighbors: City 4
+- Visit City 4, mark as visited
+- No more unvisited neighbors
+- Component 2 complete: {3, 4}
+
+Total Components Found: 2
+```
+
+### Minimum Roads Calculation
+```
+Formula: Minimum roads = (Number of components) - 1
+
+Given:
+- Number of components = 2
+- Minimum roads needed = 2 - 1 = 1
+
+Solution: Build 1 road to connect the 2 components
+```
+
+### Solution Visualization
+```
+After adding 1 road (e.g., between City 2 and City 3):
+
+    1 ──── 2 ──── 3 ──── 4
+    │      │      │      │
+    │      │      │      │
+    └──────┴──────┴──────┘
+        Single Connected Component
+
+Now all cities are connected:
+- 1 can reach 2, 3, 4
+- 2 can reach 1, 3, 4  
+- 3 can reach 1, 2, 4
+- 4 can reach 1, 2, 3
+```
+
+### Union-Find Alternative
+```
+Initial state: Each city is its own component
+Parent: [1, 2, 3, 4] (each city is parent of itself)
+
+Process road (1,2):
+- Union(1, 2): Merge components
+- Parent: [1, 1, 3, 4] (city 2 points to city 1)
+
+Process road (3,4):
+- Union(3, 4): Merge components  
+- Parent: [1, 1, 3, 3] (city 4 points to city 3)
+
+Final components:
+- Component 1: {1, 2} (root = 1)
+- Component 2: {3, 4} (root = 3)
+- Total components: 2
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS Traversal   │ O(n + m)     │ O(n + m)     │ Recursive    │
+│                 │              │              │ exploration  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ BFS Traversal   │ O(n + m)     │ O(n + m)     │ Iterative    │
+│                 │              │              │ exploration  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Union-Find      │ O(n + m·α(n))│ O(n)         │ Efficient    │
+│                 │              │              │ connectivity │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
 
 ## 🎯 Key Insights
 
