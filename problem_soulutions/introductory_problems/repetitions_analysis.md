@@ -181,6 +181,88 @@ test_solution()
 - **Complete**: Handles all cases including edge cases
 - **Simple**: Easy to understand and implement
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: "ATTCGGGA"
+Output: 3 (longest repetition is "GGG")
+```
+
+### String Analysis
+```
+String: A T T C G G G A
+Index:  0 1 2 3 4 5 6 7
+
+Character groups:
+- A (position 0): length 1
+- TT (positions 1-2): length 2
+- C (position 3): length 1
+- GGG (positions 4-6): length 3 ← longest
+- A (position 7): length 1
+```
+
+### Step-by-Step Process
+```
+Initialize: max_length = 1, current_length = 1
+
+i=0: A (start)
+i=1: T ≠ A → reset current_length = 1
+i=2: T = T → current_length = 2, max_length = 2
+i=3: C ≠ T → reset current_length = 1
+i=4: G ≠ C → reset current_length = 1
+i=5: G = G → current_length = 2, max_length = 2
+i=6: G = G → current_length = 3, max_length = 3
+i=7: A ≠ G → reset current_length = 1
+
+Final result: max_length = 3
+```
+
+### Algorithm Visualization
+```
+String: A T T C G G G A
+        │ │ │ │ │ │ │ │
+        │ │ │ │ │ │ │ └─ A (length 1)
+        │ │ │ │ │ │ └─── G (length 3) ← max
+        │ │ │ │ │ └───── G (length 3)
+        │ │ │ │ └─────── G (length 3)
+        │ │ │ └───────── C (length 1)
+        │ │ └─────────── T (length 2)
+        │ └───────────── T (length 2)
+        └─────────────── A (length 1)
+
+Repetitions found:
+- A: 1 occurrence
+- TT: 2 consecutive T's
+- C: 1 occurrence  
+- GGG: 3 consecutive G's ← longest
+- A: 1 occurrence
+```
+
+### Different Examples
+```
+Example 1: "AAAA" → 4 (all A's)
+Example 2: "ABCD" → 1 (no repetitions)
+Example 3: "AABBCC" → 2 (AA, BB, CC all length 2)
+Example 4: "TTTTGGGGG" → 5 (GGGGG is longest)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Single Pass     │ O(n)         │ O(1)         │ Scan once    │
+│                 │              │              │ and track    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Two Pointers    │ O(n)         │ O(1)         │ Expand       │
+│                 │              │              │ windows      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Regex           │ O(n)         │ O(n)         │ Pattern      │
+│                 │              │              │ matching     │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Single Pass Algorithm**

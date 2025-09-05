@@ -149,6 +149,116 @@ test_solution()
 - **Correct**: Handles all cases properly
 - **Clear**: Easy to understand and implement
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: "CAB"
+Output: "ABC"
+```
+
+### Character Analysis
+```
+String: C A B
+ASCII:  67 65 66
+
+Character frequencies:
+- A: 1 occurrence
+- B: 1 occurrence  
+- C: 1 occurrence
+
+Lexicographic order: A < B < C
+```
+
+### Reordering Process
+```
+Original: C A B
+All possible arrangements:
+1. ABC ← lexicographically smallest
+2. ACB
+3. BAC
+4. BCA
+5. CAB
+6. CBA
+
+Result: "ABC"
+```
+
+### Step-by-Step Construction
+```
+Method 1: Direct Sorting
+"CAB" → sorted → "ABC"
+
+Method 2: Frequency Counting
+Step 1: Count frequencies
+- A: 1, B: 1, C: 1
+
+Step 2: Place in lexicographic order
+- A appears 1 time → "A"
+- B appears 1 time → "AB"  
+- C appears 1 time → "ABC"
+
+Result: "ABC"
+```
+
+### More Complex Example
+```
+Input: "BABAC"
+Character frequencies:
+- A: 2 occurrences
+- B: 2 occurrences
+- C: 1 occurrence
+
+Lexicographic order: A < B < C
+
+Construction:
+- A appears 2 times → "AA"
+- B appears 2 times → "AABB"
+- C appears 1 time → "AABBC"
+
+Result: "AABBC"
+```
+
+### Algorithm Visualization
+```
+Input: "BABAC"
+
+Step 1: Count frequencies
+B: 2, A: 2, B: 2, A: 2, C: 1
+Final count: A=2, B=2, C=1
+
+Step 2: Sort characters
+A < B < C
+
+Step 3: Construct result
+A A B B C → "AABBC"
+```
+
+### Different Examples
+```
+Example 1: "CBA" → "ABC"
+Example 2: "AAB" → "AAB" (already sorted)
+Example 3: "ZZZ" → "ZZZ" (all same)
+Example 4: "DCBA" → "ABCD"
+Example 5: "HELLO" → "EHLLO"
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Direct Sort     │ O(n log n)   │ O(n)         │ Sort         │
+│                 │              │              │ characters   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Frequency Count │ O(n)         │ O(1)         │ Count then   │
+│                 │              │              │ construct    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bucket Sort     │ O(n)         │ O(k)         │ Use buckets  │
+│                 │              │              │ for chars    │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Lexicographical Order**

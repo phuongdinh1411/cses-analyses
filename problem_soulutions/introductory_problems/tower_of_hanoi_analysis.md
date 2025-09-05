@@ -168,6 +168,115 @@ test_solution()
 - **Optimal**: Uses minimum number of moves
 - **Correct**: Follows all rules automatically
 
+## 🎨 Visual Example
+
+### Input Example
+```
+Input: n = 3 (3 disks)
+Output: 7 moves to solve
+```
+
+### Initial Setup
+```
+Tower A: [3, 2, 1]  (largest at bottom)
+Tower B: []
+Tower C: []
+
+Goal: Move all disks from A to C
+Rules: 
+- Only move one disk at a time
+- Larger disk cannot be on smaller disk
+```
+
+### Step-by-Step Solution
+```
+Move 1: A → C
+A: [3, 2]    B: []    C: [1]
+
+Move 2: A → B  
+A: [3]       B: [2]   C: [1]
+
+Move 3: C → B
+A: [3]       B: [2,1] C: []
+
+Move 4: A → C
+A: []        B: [2,1] C: [3]
+
+Move 5: B → A
+A: [1]       B: [2]   C: [3]
+
+Move 6: B → C
+A: [1]       B: []    C: [3,2]
+
+Move 7: A → C
+A: []        B: []    C: [3,2,1] ✓
+```
+
+### Recursive Algorithm Visualization
+```
+hanoi(3, A, C, B):
+├─ hanoi(2, A, B, C):
+│  ├─ hanoi(1, A, C, B): move A→C
+│  ├─ move A→B
+│  └─ hanoi(1, C, B, A): move C→B
+├─ move A→C
+└─ hanoi(2, B, C, A):
+   ├─ hanoi(1, B, A, C): move B→A
+   ├─ move B→C
+   └─ hanoi(1, A, C, B): move A→C
+```
+
+### Mathematical Analysis
+```
+For n = 3 disks:
+Total moves = 2³ - 1 = 8 - 1 = 7
+
+Disk movement counts:
+- Disk 1 (smallest): moves 2^(3-1) = 4 times
+- Disk 2 (medium): moves 2^(3-2) = 2 times  
+- Disk 3 (largest): moves 2^(3-3) = 1 time
+
+Total: 4 + 2 + 1 = 7 moves ✓
+```
+
+### Tower States Visualization
+```
+Initial:     After Move 1:  After Move 2:  After Move 3:
+A: [3,2,1]   A: [3,2]      A: [3]         A: [3]
+B: []        B: []         B: [2]         B: [2,1]
+C: []        C: [1]        C: [1]         C: []
+
+After Move 4: After Move 5:  After Move 6:  Final:
+A: []        A: [1]         A: [1]         A: []
+B: [2,1]     B: [2]         B: []          B: []
+C: [3]       C: [3]         C: [3,2]       C: [3,2,1]
+```
+
+### Different Disk Counts
+```
+n=1: 1 move  (2¹-1 = 1)
+n=2: 3 moves (2²-1 = 3)
+n=3: 7 moves (2³-1 = 7)
+n=4: 15 moves (2⁴-1 = 15)
+n=5: 31 moves (2⁵-1 = 31)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Recursive       │ O(2ⁿ)        │ O(n)         │ Divide and   │
+│                 │              │              │ conquer      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Iterative       │ O(2ⁿ)        │ O(n)         │ Simulate     │
+│                 │              │              │ recursion    │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Mathematical    │ O(1)         │ O(1)         │ Direct       │
+│                 │              │              │ formula      │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Recursive Structure**
