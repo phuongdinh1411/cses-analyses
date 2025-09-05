@@ -201,6 +201,119 @@ print(result)
 | Dijkstra with State | O(m log n) | O(n) | Use state to track discount usage |
 | Optimized Dijkstra | O(m log n) | O(n) | Cleaner state management |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+3 cities, 4 flights:
+Flight 1→2: cost 3
+Flight 2→3: cost 1
+Flight 1→3: cost 7
+Flight 2→1: cost 5
+```
+
+### Graph Visualization
+```
+Cities with flight costs:
+1 ──3──→ 2 ──1──→ 3
+│              ↗
+│5           7
+↓            ↗
+2 ←──────────┘
+
+All possible paths from 1 to 3:
+- Path 1: 1 → 2 → 3 (cost: 3 + 1 = 4)
+- Path 2: 1 → 3 (cost: 7)
+- Path 3: 1 → 2 → 1 → 3 (cost: 3 + 5 + 7 = 15)
+```
+
+### Dijkstra with State Process
+```
+State representation: (node, discount_used)
+- State (1, false): at city 1, discount not used
+- State (1, true): at city 1, discount already used
+
+Priority queue: [(cost, node, discount_used)]
+
+Step 1: Start at (1, false) with cost 0
+- Queue: [(0, 1, false)]
+- Distances: dist[1][false] = 0, dist[1][true] = ∞
+
+Step 2: Process (1, false)
+- From city 1, can go to:
+  - City 2: cost 3 (without discount)
+  - City 3: cost 7 (without discount)
+- Queue: [(3, 2, false), (7, 3, false)]
+- Distances: dist[2][false] = 3, dist[3][false] = 7
+
+Step 3: Process (2, false)
+- From city 2, can go to:
+  - City 3: cost 1 (without discount)
+  - City 1: cost 5 (without discount)
+- Queue: [(4, 3, false), (8, 1, false)]
+- Distances: dist[3][false] = 4, dist[1][false] = 8
+
+Step 4: Process (3, false) - reached destination
+- Minimum cost without discount: 4
+```
+
+### Discount Application
+```
+Now consider using discount on each flight:
+
+Option 1: Discount on flight 1→2 (cost becomes 1.5)
+- Path: 1 → 2 → 3
+- Cost: 1.5 + 1 = 2.5 → rounds to 2
+
+Option 2: Discount on flight 2→3 (cost becomes 0.5)
+- Path: 1 → 2 → 3
+- Cost: 3 + 0.5 = 3.5 → rounds to 3
+
+Option 3: Discount on flight 1→3 (cost becomes 3.5)
+- Path: 1 → 3
+- Cost: 3.5 → rounds to 3
+
+Best option: Use discount on flight 1→2
+Final cost: 2
+```
+
+### State-based Dijkstra
+```
+Alternative approach: Use Dijkstra with state tracking
+
+State: (node, discount_used)
+- (1, false): at city 1, discount available
+- (1, true): at city 1, discount used
+
+From (1, false):
+- Can go to (2, false) with cost 3
+- Can go to (2, true) with cost 1.5 (using discount)
+- Can go to (3, false) with cost 7
+- Can go to (3, true) with cost 3.5 (using discount)
+
+From (2, false):
+- Can go to (3, false) with cost 1
+- Can go to (3, true) with cost 0.5 (using discount)
+
+Final result: min(dist[3][false], dist[3][true]) = min(4, 2) = 2
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Dijkstra + State│ O(m log n)   │ O(n)         │ Track        │
+│                 │              │              │ discount     │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Two Dijkstra    │ O(m log n)   │ O(n)         │ Run twice    │
+│                 │              │              │ with/without │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Modified Graph  │ O(m log n)   │ O(n + m)     │ Duplicate    │
+│                 │              │              │ nodes        │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## Key Insights for Other Problems
 
 ### 1. **Dijkstra with State**

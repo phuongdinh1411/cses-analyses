@@ -283,6 +283,153 @@ test_solution()
 - **Stack-based Approach**: Efficiently manages path construction
 - **Edge Management**: Properly removes used edges
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 nodes, 4 edges:
+Edge 1-2
+Edge 2-3
+Edge 3-4
+Edge 4-1
+```
+
+### Graph Visualization
+```
+Undirected graph:
+1 ──── 2
+│      │
+│      │
+4 ──── 3
+
+All edges:
+- Edge 1-2
+- Edge 2-3
+- Edge 3-4
+- Edge 4-1
+```
+
+### Degree Check
+```
+Check if Eulerian circuit exists:
+
+Node 1: degree = 2 (connected to 2 and 4)
+Node 2: degree = 2 (connected to 1 and 3)
+Node 3: degree = 2 (connected to 2 and 4)
+Node 4: degree = 2 (connected to 3 and 1)
+
+All nodes have even degree → Eulerian circuit exists
+```
+
+### Hierholzer's Algorithm Process
+```
+Step 1: Start from node 1
+- Current path: [1]
+- Current node: 1
+- Available edges: 1-2, 1-4
+
+Step 2: Choose edge 1-2
+- Current path: [1, 2]
+- Current node: 2
+- Available edges: 2-3
+
+Step 3: Choose edge 2-3
+- Current path: [1, 2, 3]
+- Current node: 3
+- Available edges: 3-4
+
+Step 4: Choose edge 3-4
+- Current path: [1, 2, 3, 4]
+- Current node: 4
+- Available edges: 4-1
+
+Step 5: Choose edge 4-1
+- Current path: [1, 2, 3, 4, 1]
+- Current node: 1
+- No available edges
+
+Eulerian circuit: 1 → 2 → 3 → 4 → 1
+```
+
+### Stack-based Approach
+```
+Alternative approach using stack:
+
+Step 1: Initialize
+- Stack: [1]
+- Current node: 1
+
+Step 2: From node 1, choose edge 1-2
+- Stack: [1, 2]
+- Current node: 2
+
+Step 3: From node 2, choose edge 2-3
+- Stack: [1, 2, 3]
+- Current node: 3
+
+Step 4: From node 3, choose edge 3-4
+- Stack: [1, 2, 3, 4]
+- Current node: 4
+
+Step 5: From node 4, choose edge 4-1
+- Stack: [1, 2, 3, 4, 1]
+- Current node: 1
+
+Step 6: No more edges from node 1
+- Pop from stack: 1
+- Add to result: [1]
+- Current node: 4
+
+Step 7: No more edges from node 4
+- Pop from stack: 4
+- Add to result: [1, 4]
+- Current node: 3
+
+Continue until stack is empty...
+Final result: [1, 4, 3, 2, 1]
+```
+
+### Edge Management
+```
+Track used edges to avoid revisiting:
+
+Initial edges:
+- 1-2: available
+- 2-3: available
+- 3-4: available
+- 4-1: available
+
+After using edge 1-2:
+- 1-2: used
+- 2-3: available
+- 3-4: available
+- 4-1: available
+
+After using edge 2-3:
+- 1-2: used
+- 2-3: used
+- 3-4: available
+- 4-1: available
+
+Continue until all edges used...
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Hierholzer's    │ O(m)         │ O(m)         │ Stack-based  │
+│                 │              │              │ construction │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS + Stack     │ O(m)         │ O(m)         │ Recursive    │
+│                 │              │              │ with stack   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Fleury's        │ O(m²)        │ O(m)         │ Edge         │
+│                 │              │              │ removal      │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Eulerian Circuit**

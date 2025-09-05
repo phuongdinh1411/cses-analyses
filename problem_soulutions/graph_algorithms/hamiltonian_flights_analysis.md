@@ -175,6 +175,130 @@ print(result)
 | Bitmask DP | O(n * 2^n) | O(n * 2^n) | Use dynamic programming with bitmask |
 | Optimized Bitmask DP | O(n * 2^n) | O(n * 2^n) | Optimized bitmask implementation |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 cities, 4 flights:
+Flight 1→2
+Flight 2→3
+Flight 3→4
+Flight 1→4
+```
+
+### Graph Visualization
+```
+Cities with flights:
+1 ──→ 2 ──→ 3 ──→ 4
+│              ↗
+└──────────────┘
+
+All possible Hamiltonian paths from 1 to 4:
+- Path 1: 1 → 2 → 3 → 4
+- Path 2: 1 → 4 → 2 → 3 (invalid - 4→2 doesn't exist)
+- Path 3: 1 → 4 → 3 → 2 (invalid - 4→3 doesn't exist)
+
+Valid Hamiltonian paths: 1
+```
+
+### Bitmask Representation
+```
+Cities: 1, 2, 3, 4
+Bitmask: 4 bits representing visited cities
+
+Bit positions:
+- Bit 0: City 1
+- Bit 1: City 2
+- Bit 2: City 3
+- Bit 3: City 4
+
+Examples:
+- 0001: Only city 1 visited
+- 0011: Cities 1 and 2 visited
+- 1111: All cities visited
+```
+
+### Dynamic Programming Process
+```
+DP state: dp[mask][last_city] = number of paths
+
+Step 1: Initialize
+- dp[0001][1] = 1 (start at city 1)
+- All other states = 0
+
+Step 2: Process mask 0001
+- From city 1, can go to cities 2 and 4
+- dp[0011][2] += dp[0001][1] = 1
+- dp[1001][4] += dp[0001][1] = 1
+
+Step 3: Process mask 0011
+- From city 2, can go to city 3
+- dp[0111][3] += dp[0011][2] = 1
+
+Step 4: Process mask 0111
+- From city 3, can go to city 4
+- dp[1111][4] += dp[0111][3] = 1
+
+Step 5: Process mask 1001
+- From city 4, no valid moves (no outgoing edges)
+
+Final result: dp[1111][4] = 1
+```
+
+### Path Reconstruction
+```
+To find the actual path:
+- Start from state (1111, 4)
+- Check predecessors: city 3
+- Move to state (0111, 3)
+- Check predecessors: city 2
+- Move to state (0011, 2)
+- Check predecessors: city 1
+- Move to state (0001, 1)
+- No predecessors
+
+Path: 1 → 2 → 3 → 4
+```
+
+### Bitmask Operations
+```
+Key bitmask operations:
+
+1. Check if city i is visited:
+   mask & (1 << (i-1))
+
+2. Mark city i as visited:
+   mask | (1 << (i-1))
+
+3. Check if all cities visited:
+   mask == (1 << n) - 1
+
+4. Count visited cities:
+   bin(mask).count('1')
+
+Example with mask 0111:
+- City 1: 0111 & 0001 = 0001 ✓ (visited)
+- City 2: 0111 & 0010 = 0010 ✓ (visited)
+- City 3: 0111 & 0100 = 0100 ✓ (visited)
+- City 4: 0111 & 1000 = 0000 ✗ (not visited)
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bitmask DP      │ O(n * 2^n)   │ O(n * 2^n)   │ State        │
+│                 │              │              │ compression  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS + Memo      │ O(n * 2^n)   │ O(n * 2^n)   │ Recursive    │
+│                 │              │              │ with cache   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(n!)        │ O(n)         │ Generate all │
+│                 │              │              │ permutations │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## Key Insights for Other Problems
 
 ### 1. **Hamiltonian Path**
