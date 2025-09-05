@@ -314,6 +314,81 @@ for i in range(1, n + 1):
 | Johnson's | O(n² * log(n) + n*m) | O(n²) | Better for sparse graphs |
 | Matrix Multiplication | O(n³ * log(n)) | O(n²) | Educational approach |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 cities, 3 flights:
+Flight 1→2: cost 1
+Flight 2→3: cost 1
+Flight 3→4: cost 1
+```
+
+### Graph Visualization
+```
+Cities with flight costs:
+1 ──1──→ 2 ──1──→ 3 ──1──→ 4
+
+All flights:
+- Flight 1→2: cost 1
+- Flight 2→3: cost 1
+- Flight 3→4: cost 1
+```
+
+### Floyd-Warshall Algorithm Process
+```
+Step 1: Initialize distance matrix
+- dist[1][1] = 0, dist[1][2] = 1, dist[1][3] = ∞, dist[1][4] = ∞
+- dist[2][1] = ∞, dist[2][2] = 0, dist[2][3] = 1, dist[2][4] = ∞
+- dist[3][1] = ∞, dist[3][2] = ∞, dist[3][3] = 0, dist[3][4] = 1
+- dist[4][1] = ∞, dist[4][2] = ∞, dist[4][3] = ∞, dist[4][4] = 0
+
+Step 2: k = 1 (use city 1 as intermediate)
+- dist[2][3] = min(∞, 1 + ∞) = ∞
+- dist[2][4] = min(∞, 1 + ∞) = ∞
+- dist[3][4] = min(∞, ∞ + ∞) = ∞
+
+Step 3: k = 2 (use city 2 as intermediate)
+- dist[1][3] = min(∞, 1 + 1) = 2
+- dist[1][4] = min(∞, 1 + ∞) = ∞
+- dist[3][4] = min(∞, ∞ + ∞) = ∞
+
+Step 4: k = 3 (use city 3 as intermediate)
+- dist[1][4] = min(∞, 2 + 1) = 3
+- dist[2][4] = min(∞, 1 + 1) = 2
+
+Final distance matrix:
+0 1 2 3
+∞ 0 1 2
+∞ ∞ 0 1
+∞ ∞ ∞ 0
+```
+
+### Path Reconstruction
+```
+To find path from city 1 to city 4:
+- dist[1][4] = 3
+- Check intermediate cities: 1→2→3→4
+- Path: 1 → 2 → 3 → 4
+- Cost: 1 + 1 + 1 = 3
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Floyd-Warshall  │ O(n³)        │ O(n²)        │ Dynamic      │
+│                 │              │              │ programming  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Johnson's       │ O(n² log n)  │ O(n²)        │ Bellman-Ford │
+│                 │              │              │ + Dijkstra   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Matrix Mult     │ O(n³ log n)  │ O(n²)        │ Matrix       │
+│                 │              │              │ operations   │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns

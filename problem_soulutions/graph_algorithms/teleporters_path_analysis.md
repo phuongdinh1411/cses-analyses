@@ -266,6 +266,122 @@ print(result)
 | Hierholzer's Algorithm | O(n + m) | O(n + m) | Use Hierholzer's for Eulerian trail |
 | Optimized Hierholzer's | O(n + m) | O(n + m) | Optimized Hierholzer's implementation |
 
+## 🎨 Visual Example
+
+### Input Example
+```
+4 nodes, 4 edges:
+Edge 1→2
+Edge 2→3
+Edge 3→4
+Edge 4→1
+```
+
+### Graph Visualization
+```
+Directed graph:
+1 ──→ 2 ──→ 3 ──→ 4
+│                  │
+└──────────────────┘
+
+All edges:
+- Edge 1→2
+- Edge 2→3
+- Edge 3→4
+- Edge 4→1
+```
+
+### Degree Check
+```
+Check if Eulerian trail exists:
+
+Node 1: in-degree = 1, out-degree = 1
+Node 2: in-degree = 1, out-degree = 1
+Node 3: in-degree = 1, out-degree = 1
+Node 4: in-degree = 1, out-degree = 1
+
+All nodes have equal in-degree and out-degree → Eulerian circuit exists
+```
+
+### Hierholzer's Algorithm Process
+```
+Step 1: Start from node 1
+- Current path: [1]
+- Current node: 1
+- Available edges: 1→2
+
+Step 2: Choose edge 1→2
+- Current path: [1, 2]
+- Current node: 2
+- Available edges: 2→3
+
+Step 3: Choose edge 2→3
+- Current path: [1, 2, 3]
+- Current node: 3
+- Available edges: 3→4
+
+Step 4: Choose edge 3→4
+- Current path: [1, 2, 3, 4]
+- Current node: 4
+- Available edges: 4→1
+
+Step 5: Choose edge 4→1
+- Current path: [1, 2, 3, 4, 1]
+- Current node: 1
+- No available edges
+
+Eulerian trail: 1 → 2 → 3 → 4 → 1
+```
+
+### Stack-based Approach
+```
+Alternative approach using stack:
+
+Step 1: Initialize
+- Stack: [1]
+- Current node: 1
+
+Step 2: From node 1, choose edge 1→2
+- Stack: [1, 2]
+- Current node: 2
+
+Step 3: From node 2, choose edge 2→3
+- Stack: [1, 2, 3]
+- Current node: 3
+
+Step 4: From node 3, choose edge 3→4
+- Stack: [1, 2, 3, 4]
+- Current node: 4
+
+Step 5: From node 4, choose edge 4→1
+- Stack: [1, 2, 3, 4, 1]
+- Current node: 1
+
+Step 6: No more edges from node 1
+- Pop from stack: 1
+- Add to result: [1]
+- Current node: 4
+
+Continue until stack is empty...
+Final result: [1, 4, 3, 2, 1]
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Hierholzer's    │ O(n + m)     │ O(n + m)     │ Stack-based  │
+│                 │              │              │ construction │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ DFS + Stack     │ O(n + m)     │ O(n + m)     │ Recursive    │
+│                 │              │              │ with stack   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Fleury's        │ O(m²)        │ O(m)         │ Edge         │
+│                 │              │              │ removal      │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### Important Concepts and Patterns
