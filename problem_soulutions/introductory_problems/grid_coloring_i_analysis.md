@@ -209,6 +209,85 @@ test_solution()
 - **Efficient**: Uses dynamic programming with memoization
 - **Correct**: Handles all constraints properly
 
+## 🎨 Visual Example
+
+### Input Example
+```
+n = 2, k = 3
+Output: 18 valid colorings
+```
+
+### Grid Visualization
+```
+2×2 grid with 3 colors (0, 1, 2):
+
+Grid structure:
+[0,0] - [0,1]
+  |       |
+[1,0] - [1,1]
+
+Adjacent cells share edges and cannot have same color.
+```
+
+### Valid Colorings
+```
+Some valid colorings for 2×2 grid with 3 colors:
+
+Coloring 1:    Coloring 2:    Coloring 3:
+0 1           0 2           1 0
+2 0           1 0           2 1
+
+Coloring 4:    Coloring 5:    Coloring 6:
+0 1           0 2           1 0
+1 2           2 1           0 2
+
+Total: 18 valid colorings
+```
+
+### Constraint Checking
+```
+For each cell, check adjacent cells:
+
+Cell (0,0): check right (0,1) and down (1,0)
+Cell (0,1): check left (0,0) and down (1,1)  
+Cell (1,0): check right (1,1) and up (0,0)
+Cell (1,1): check left (1,0) and up (0,1)
+
+Constraint: adjacent cells must have different colors
+```
+
+### Dynamic Programming Process
+```
+State: (row, col, prev_row_colors)
+
+For 2×2 grid:
+- Row 0: try all color combinations
+- Row 1: check constraints with row 0
+
+Example state transitions:
+(0,0,0) → try colors 0,1,2
+(0,1,color0) → try colors ≠ color0
+(1,0,color0,color1) → try colors ≠ color0
+(1,1,color0,color1,color2) → try colors ≠ color1
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Brute Force     │ O(k^(n²))    │ O(n²)        │ Try all      │
+│                 │              │              │ combinations │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Dynamic Prog    │ O(n² × k^n)  │ O(n × k^n)   │ State-based  │
+│                 │              │              │ optimization │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Bit Manipulation│ O(n² × k^n)  │ O(n × k^n)   │ Fast         │
+│                 │              │              │ constraint   │
+│                 │              │              │ checking     │
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Graph Coloring**

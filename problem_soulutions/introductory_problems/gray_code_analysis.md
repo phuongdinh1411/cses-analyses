@@ -152,6 +152,79 @@ test_solution()
 - **Complete**: Generates all possible n-bit numbers
 - **Correct**: Ensures consecutive numbers differ by one bit
 
+## 🎨 Visual Example
+
+### Input Example
+```
+n = 2
+Output: 4 numbers (2² = 4)
+```
+
+### Gray Code Generation
+```
+For n = 2, generate Gray code sequence:
+
+Binary  Gray   Binary  Gray
+Index   Code   Value   Code
+0       00     0       00
+1       01     1       01  
+2       10     3       11
+3       11     2       10
+
+Gray code sequence: 0, 1, 3, 2
+```
+
+### Formula Application
+```
+Using formula: gray = i ^ (i >> 1)
+
+i=0: 00 ^ (00 >> 1) = 00 ^ 00 = 00 = 0
+i=1: 01 ^ (01 >> 1) = 01 ^ 00 = 01 = 1
+i=2: 10 ^ (10 >> 1) = 10 ^ 01 = 11 = 3
+i=3: 11 ^ (11 >> 1) = 11 ^ 01 = 10 = 2
+```
+
+### Recursive Construction
+```
+Step 1: Start with n=1
+Gray code for n=1: [0, 1]
+
+Step 2: Reflect and add leading 1
+Original: [0, 1]
+Reflected: [1, 0]
+Add leading 1: [10, 11] = [2, 3]
+
+Step 3: Combine
+Gray code for n=2: [0, 1, 3, 2]
+```
+
+### Bit Difference Verification
+```
+Consecutive pairs differ by exactly one bit:
+
+0 (00) → 1 (01): bit 0 changes
+1 (01) → 3 (11): bit 1 changes  
+3 (11) → 2 (10): bit 0 changes
+
+All consecutive pairs differ by exactly 1 bit ✓
+```
+
+### Algorithm Comparison
+```
+┌─────────────────┬──────────────┬──────────────┬──────────────┐
+│     Approach    │   Time       │    Space     │   Key Idea   │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Formula         │ O(2^n)       │ O(2^n)       │ XOR with     │
+│                 │              │              │ right shift  │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Recursive       │ O(2^n)       │ O(2^n)       │ Reflect and  │
+│                 │              │              │ add bit      │
+├─────────────────┼──────────────┼──────────────┼──────────────┤
+│ Iterative       │ O(2^n)       │ O(2^n)       │ Build        │
+│                 │              │              │ incrementally│
+└─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
 ## 🎯 Key Insights
 
 ### 1. **Gray Code Formula**
