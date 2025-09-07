@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/flight_discount_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand modified shortest path problems and state-space expansion concepts
-- [ ] **Objective 2**: Apply Dijkstra's algorithm with state-space expansion to handle discount constraints
-- [ ] **Objective 3**: Implement efficient modified shortest path algorithms with proper state management
-- [ ] **Objective 4**: Optimize modified shortest path solutions using priority queues and state tracking
-- [ ] **Objective 5**: Handle edge cases in modified shortest paths (no discount needed, impossible paths, large graphs)
+- Understand modified shortest path problems and state-space expansion concepts
+- Apply Dijkstra's algorithm with state-space expansion to handle discount constraints
+- Implement efficient modified shortest path algorithms with proper state management
+- Optimize modified shortest path solutions using priority queues and state tracking
+- Handle edge cases in modified shortest paths (no discount needed, impossible paths, large graphs)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/nested_ranges_count_analysi
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand range containment counting problems and interval analysis techniques
-- [ ] **Objective 2**: Apply sorting and coordinate compression to efficiently count range containments
-- [ ] **Objective 3**: Implement efficient range counting algorithms with O(n log n) time complexity
-- [ ] **Objective 4**: Optimize range counting problems using sorting, coordinate compression, and containment analysis
-- [ ] **Objective 5**: Handle edge cases in range counting (identical ranges, no containment, all ranges contained)
+- Understand range containment counting problems and interval analysis techniques
+- Apply sorting and coordinate compression to efficiently count range containments
+- Implement efficient range counting algorithms with O(n log n) time complexity
+- Optimize range counting problems using sorting, coordinate compression, and containment analysis
+- Handle edge cases in range counting (identical ranges, no containment, all ranges contained)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

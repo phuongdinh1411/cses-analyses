@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sliding_window/subarray_sums_ii_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand advanced subarray sum counting problems with complex constraints and variations
-- [ ] **Objective 2**: Apply advanced hash map and prefix sum techniques to handle complex subarray sum scenarios
-- [ ] **Objective 3**: Implement efficient algorithms with O(n) time complexity for advanced sum counting problems
-- [ ] **Objective 4**: Optimize advanced subarray sum counting using sophisticated prefix sum theory and hash map techniques
-- [ ] **Objective 5**: Handle complex edge cases in advanced subarray sum counting (negative numbers, zero sum, large arrays, multiple solutions)
+- Understand advanced subarray sum counting problems with complex constraints and variations
+- Apply advanced hash map and prefix sum techniques to handle complex subarray sum scenarios
+- Implement efficient algorithms with O(n) time complexity for advanced sum counting problems
+- Optimize advanced subarray sum counting using sophisticated prefix sum theory and hash map techniques
+- Handle complex edge cases in advanced subarray sum counting (negative numbers, zero sum, large arrays, multiple solutions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

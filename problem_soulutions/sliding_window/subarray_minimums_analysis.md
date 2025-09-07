@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sliding_window/subarray_minimums_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subarray minimum problems and the contribution of each element to the total sum
-- [ ] **Objective 2**: Apply stack-based algorithms to efficiently calculate the sum of minimums of all subarrays
-- [ ] **Objective 3**: Implement efficient algorithms with O(n) time complexity using monotonic stacks
-- [ ] **Objective 4**: Optimize subarray minimum problems using stack-based techniques and contribution analysis
-- [ ] **Objective 5**: Handle edge cases in subarray minimum problems (increasing/decreasing arrays, duplicate values)
+- Understand subarray minimum problems and the contribution of each element to the total sum
+- Apply stack-based algorithms to efficiently calculate the sum of minimums of all subarrays
+- Implement efficient algorithms with O(n) time complexity using monotonic stacks
+- Optimize subarray minimum problems using stack-based techniques and contribution analysis
+- Handle edge cases in subarray minimum problems (increasing/decreasing arrays, duplicate values)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

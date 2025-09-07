@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/company_queries_iv_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand tree level query problems and distance-based node counting algorithms
-- [ ] **Objective 2**: Apply BFS or DFS to count nodes at specific distances from a given node
-- [ ] **Objective 3**: Implement efficient level query algorithms with O(n) preprocessing and O(1) query time complexity
-- [ ] **Objective 4**: Optimize level queries using tree traversal, distance calculation, and tree properties
-- [ ] **Objective 5**: Handle edge cases in level queries (k = 0, k > tree height, root node, large trees)
+- Understand tree level query problems and distance-based node counting algorithms
+- Apply BFS or DFS to count nodes at specific distances from a given node
+- Implement efficient level query algorithms with O(n) preprocessing and O(1) query time complexity
+- Optimize level queries using tree traversal, distance calculation, and tree properties
+- Handle edge cases in level queries (k = 0, k > tree height, root node, large trees)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

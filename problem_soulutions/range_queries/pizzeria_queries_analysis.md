@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/pizzeria_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand dynamic range query problems with point updates and range minimum queries
-- [ ] **Objective 2**: Apply Segment Trees to handle point updates and range minimum queries efficiently
-- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and minimum queries
-- [ ] **Objective 4**: Optimize dynamic range queries using Segment Trees and efficient range minimum algorithms
-- [ ] **Objective 5**: Handle edge cases in dynamic range queries (empty ranges, large updates, boundary conditions)
+- Understand dynamic range query problems with point updates and range minimum queries
+- Apply Segment Trees to handle point updates and range minimum queries efficiently
+- Implement efficient dynamic range query algorithms with O(log n) time for updates and minimum queries
+- Optimize dynamic range queries using Segment Trees and efficient range minimum algorithms
+- Handle edge cases in dynamic range queries (empty ranges, large updates, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

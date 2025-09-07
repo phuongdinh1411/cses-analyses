@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/round_trip_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand cycle detection in undirected graphs and simple cycle concepts
-- [ ] **Objective 2**: Apply DFS to detect cycles in undirected graphs with proper back-edge identification
-- [ ] **Objective 3**: Implement efficient cycle detection algorithms with proper cycle reconstruction
-- [ ] **Objective 4**: Optimize cycle detection using graph representations and algorithm optimizations
-- [ ] **Objective 5**: Handle edge cases in cycle detection (no cycles, self-loops, disconnected components)
+- Understand cycle detection in undirected graphs and simple cycle concepts
+- Apply DFS to detect cycles in undirected graphs with proper back-edge identification
+- Implement efficient cycle detection algorithms with proper cycle reconstruction
+- Optimize cycle detection using graph representations and algorithm optimizations
+- Handle edge cases in cycle detection (no cycles, self-loops, disconnected components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

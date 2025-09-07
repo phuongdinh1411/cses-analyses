@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/range_update_queries_analysis/"
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand range update and point query problems with efficient update operations
-- [ ] **Objective 2**: Apply difference arrays or Binary Indexed Trees to handle range updates and point queries
-- [ ] **Objective 3**: Implement efficient range update algorithms with O(log n) update and O(log n) query time
-- [ ] **Objective 4**: Optimize range updates using difference arrays and advanced data structures
-- [ ] **Objective 5**: Handle edge cases in range updates (large ranges, frequent updates, boundary conditions)
+- Understand range update and point query problems with efficient update operations
+- Apply difference arrays or Binary Indexed Trees to handle range updates and point queries
+- Implement efficient range update algorithms with O(log n) update and O(log n) query time
+- Optimize range updates using difference arrays and advanced data structures
+- Handle edge cases in range updates (large ranges, frequent updates, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

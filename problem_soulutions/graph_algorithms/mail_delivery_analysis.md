@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/mail_delivery_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand Eulerian circuit problems and graph connectivity concepts
-- [ ] **Objective 2**: Apply Hierholzer's algorithm or DFS-based approach to find Eulerian circuits
-- [ ] **Objective 3**: Implement efficient Eulerian circuit algorithms with proper edge tracking
-- [ ] **Objective 4**: Optimize Eulerian circuit solutions using graph representations and circuit construction
-- [ ] **Objective 5**: Handle edge cases in Eulerian circuits (no circuit exists, disconnected components, degree conditions)
+- Understand Eulerian circuit problems and graph connectivity concepts
+- Apply Hierholzer's algorithm or DFS-based approach to find Eulerian circuits
+- Implement efficient Eulerian circuit algorithms with proper edge tracking
+- Optimize Eulerian circuit solutions using graph representations and circuit construction
+- Handle edge cases in Eulerian circuits (no circuit exists, disconnected components, degree conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -11,11 +11,11 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of Hamiltonian paths and their properties
-- [ ] **Objective 2**: Apply dynamic programming with bitmasking for Hamiltonian path problems
-- [ ] **Objective 3**: Implement efficient Hamiltonian path detection using state compression
-- [ ] **Objective 4**: Optimize Hamiltonian path algorithms for multiple queries
-- [ ] **Objective 5**: Handle large graphs using advanced DP techniques and pruning
+- Understand the concept of Hamiltonian paths and their properties
+- Apply dynamic programming with bitmasking for Hamiltonian path problems
+- Implement efficient Hamiltonian path detection using state compression
+- Optimize Hamiltonian path algorithms for multiple queries
+- Handle large graphs using advanced DP techniques and pruning
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

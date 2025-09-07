@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/increasing_array_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand array manipulation and greedy optimization problems
-- [ ] **Objective 2**: Apply greedy algorithms to minimize operations for array transformation
-- [ ] **Objective 3**: Implement efficient array manipulation algorithms with proper operation counting
-- [ ] **Objective 4**: Optimize array transformation using greedy strategies and mathematical analysis
-- [ ] **Objective 5**: Handle edge cases in array manipulation (large arrays, edge values, operation overflow)
+- Understand array manipulation and greedy optimization problems
+- Apply greedy algorithms to minimize operations for array transformation
+- Implement efficient array manipulation algorithms with proper operation counting
+- Optimize array transformation using greedy strategies and mathematical analysis
+- Handle edge cases in array manipulation (large arrays, edge values, operation overflow)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

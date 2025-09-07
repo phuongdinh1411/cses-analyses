@@ -11,11 +11,11 @@ permalink: /problem_soulutions/geometry/minimum_euclidean_distance_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand minimum distance problems and Euclidean distance calculations
-- [ ] **Objective 2**: Apply divide-and-conquer or sweep line algorithms to find minimum Euclidean distances
-- [ ] **Objective 3**: Implement efficient algorithms for finding minimum Euclidean distances between points
-- [ ] **Objective 4**: Optimize minimum distance calculations using geometric properties and coordinate transformations
-- [ ] **Objective 5**: Handle edge cases in minimum distance problems (single points, collinear points, precision issues)
+- Understand minimum distance problems and Euclidean distance calculations
+- Apply divide-and-conquer or sweep line algorithms to find minimum Euclidean distances
+- Implement efficient algorithms for finding minimum Euclidean distances between points
+- Optimize minimum distance calculations using geometric properties and coordinate transformations
+- Handle edge cases in minimum distance problems (single points, collinear points, precision issues)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -10,11 +10,11 @@ permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the fundamental concept of dynamic programming and state transitions
-- [ ] **Objective 2**: Apply bottom-up DP to solve counting problems with recurrence relations
-- [ ] **Objective 3**: Implement efficient DP solutions using iterative approaches and memoization
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and modular arithmetic
-- [ ] **Objective 5**: Handle edge cases in DP problems (base cases, boundary conditions, large numbers)
+- Understand the fundamental concept of dynamic programming and state transitions
+- Apply bottom-up DP to solve counting problems with recurrence relations
+- Implement efficient DP solutions using iterative approaches and memoization
+- Optimize DP solutions using space-efficient techniques and modular arithmetic
+- Handle edge cases in DP problems (base cases, boundary conditions, large numbers)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

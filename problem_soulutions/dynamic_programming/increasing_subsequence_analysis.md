@@ -11,11 +11,11 @@ permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analys
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subsequence problems and longest increasing subsequence optimization
-- [ ] **Objective 2**: Apply DP techniques to solve subsequence problems with increasing constraints
-- [ ] **Objective 3**: Implement efficient DP solutions for LIS and subsequence optimization
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and subsequence tracking
-- [ ] **Objective 5**: Handle edge cases in subsequence DP (decreasing arrays, single elements, all equal elements)
+- Understand subsequence problems and longest increasing subsequence optimization
+- Apply DP techniques to solve subsequence problems with increasing constraints
+- Implement efficient DP solutions for LIS and subsequence optimization
+- Optimize DP solutions using space-efficient techniques and subsequence tracking
+- Handle edge cases in subsequence DP (decreasing arrays, single elements, all equal elements)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

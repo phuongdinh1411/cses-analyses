@@ -11,11 +11,11 @@ permalink: /problem_soulutions/sliding_window/sliding_window_advertisement_analy
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand fixed-length sliding window problems and maximum sum optimization
-- [ ] **Objective 2**: Apply sliding window technique to efficiently find maximum sum of fixed-length subarrays
-- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize sliding window problems using two-pointer technique and window maintenance
-- [ ] **Objective 5**: Handle edge cases in sliding window problems (window size, array boundaries, sum overflow)
+- Understand fixed-length sliding window problems and maximum sum optimization
+- Apply sliding window technique to efficiently find maximum sum of fixed-length subarrays
+- Implement efficient sliding window algorithms with O(n) time complexity
+- Optimize sliding window problems using two-pointer technique and window maintenance
+- Handle edge cases in sliding window problems (window size, array boundaries, sum overflow)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

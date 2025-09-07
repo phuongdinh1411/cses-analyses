@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/distinct_values_subarrays_i
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand advanced sliding window problems with exact distinct value constraints and subarray counting
-- [ ] **Objective 2**: Apply advanced sliding window technique to count subarrays with exactly k distinct values
-- [ ] **Objective 3**: Implement efficient advanced sliding window algorithms with O(n) time complexity for exact distinct value problems
-- [ ] **Objective 4**: Optimize advanced sliding window problems using hash maps and sophisticated distinct value tracking
-- [ ] **Objective 5**: Handle complex edge cases in advanced sliding window problems (k=1, k=n, all distinct values, no solution)
+- Understand advanced sliding window problems with exact distinct value constraints and subarray counting
+- Apply advanced sliding window technique to count subarrays with exactly k distinct values
+- Implement efficient advanced sliding window algorithms with O(n) time complexity for exact distinct value problems
+- Optimize advanced sliding window problems using hash maps and sophisticated distinct value tracking
+- Handle complex edge cases in advanced sliding window problems (k=1, k=n, all distinct values, no solution)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

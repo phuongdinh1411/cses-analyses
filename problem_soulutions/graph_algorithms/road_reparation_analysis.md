@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/road_reparation_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand minimum spanning tree problems and road repair optimization concepts
-- [ ] **Objective 2**: Apply Kruskal's algorithm or Prim's algorithm to find minimum cost spanning trees
-- [ ] **Objective 3**: Implement efficient MST algorithms with proper Union-Find data structure usage
-- [ ] **Objective 4**: Optimize MST solutions using Union-Find and graph representations
-- [ ] **Objective 5**: Handle edge cases in MST problems (impossible connectivity, single node, disconnected components)
+- Understand minimum spanning tree problems and road repair optimization concepts
+- Apply Kruskal's algorithm or Prim's algorithm to find minimum cost spanning trees
+- Implement efficient MST algorithms with proper Union-Find data structure usage
+- Optimize MST solutions using Union-Find and graph representations
+- Handle edge cases in MST problems (impossible connectivity, single node, disconnected components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

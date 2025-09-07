@@ -11,11 +11,11 @@ permalink: /problem_soulutions/sliding_window/longest_substring_without_repeatin
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand sliding window problems with character uniqueness constraints and string optimization
-- [ ] **Objective 2**: Apply sliding window technique to find longest substring without repeating characters
-- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity for string problems
-- [ ] **Objective 4**: Optimize sliding window problems using hash maps and character frequency tracking
-- [ ] **Objective 5**: Handle edge cases in sliding window problems (empty strings, single characters, all unique characters)
+- Understand sliding window problems with character uniqueness constraints and string optimization
+- Apply sliding window technique to find longest substring without repeating characters
+- Implement efficient sliding window algorithms with O(n) time complexity for string problems
+- Optimize sliding window problems using hash maps and character frequency tracking
+- Handle edge cases in sliding window problems (empty strings, single characters, all unique characters)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

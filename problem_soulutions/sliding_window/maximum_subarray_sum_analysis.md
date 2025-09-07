@@ -11,11 +11,11 @@ permalink: /problem_soulutions/sliding_window/maximum_subarray_sum_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand Kadane's algorithm and dynamic programming approach to maximum subarray problems
-- [ ] **Objective 2**: Apply Kadane's algorithm to efficiently find maximum sum of contiguous subarrays
-- [ ] **Objective 3**: Implement efficient maximum subarray algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize subarray problems using dynamic programming and greedy approaches
-- [ ] **Objective 5**: Handle edge cases in maximum subarray problems (all negative numbers, single element, empty arrays)
+- Understand Kadane's algorithm and dynamic programming approach to maximum subarray problems
+- Apply Kadane's algorithm to efficiently find maximum sum of contiguous subarrays
+- Implement efficient maximum subarray algorithms with O(n) time complexity
+- Optimize subarray problems using dynamic programming and greedy approaches
+- Handle edge cases in maximum subarray problems (all negative numbers, single element, empty arrays)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

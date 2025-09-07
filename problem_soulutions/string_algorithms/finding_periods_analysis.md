@@ -11,11 +11,11 @@ permalink: /problem_soulutions/string_algorithms/finding_periods_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand period finding problems and string repetition analysis
-- [ ] **Objective 2**: Apply string matching algorithms or divisor checking to find smallest periods
-- [ ] **Objective 3**: Implement efficient period finding algorithms with O(n) or O(n log n) time complexity
-- [ ] **Objective 4**: Optimize period detection using string matching, prefix functions, and mathematical analysis
-- [ ] **Objective 5**: Handle edge cases in period finding (no period, single character, all same characters)
+- Understand period finding problems and string repetition analysis
+- Apply string matching algorithms or divisor checking to find smallest periods
+- Implement efficient period finding algorithms with O(n) or O(n log n) time complexity
+- Optimize period detection using string matching, prefix functions, and mathematical analysis
+- Handle edge cases in period finding (no period, single character, all same characters)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

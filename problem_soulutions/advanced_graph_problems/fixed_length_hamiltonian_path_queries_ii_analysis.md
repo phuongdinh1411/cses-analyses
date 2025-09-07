@@ -10,11 +10,11 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand advanced Hamiltonian path problems with additional constraints
-- [ ] **Objective 2**: Apply dynamic programming with bitmasking for complex Hamiltonian path problems
-- [ ] **Objective 3**: Implement efficient Hamiltonian path detection with state compression
-- [ ] **Objective 4**: Optimize Hamiltonian path algorithms for multiple queries with constraints
-- [ ] **Objective 5**: Handle complex constraints in Hamiltonian path problems using advanced DP techniques
+- Understand advanced Hamiltonian path problems with additional constraints
+- Apply dynamic programming with bitmasking for complex Hamiltonian path problems
+- Implement efficient Hamiltonian path detection with state compression
+- Optimize Hamiltonian path algorithms for multiple queries with constraints
+- Handle complex constraints in Hamiltonian path problems using advanced DP techniques
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

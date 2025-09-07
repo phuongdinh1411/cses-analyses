@@ -11,11 +11,11 @@ permalink: /problem_soulutions/string_algorithms/string_compression_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand string compression problems and run-length encoding techniques
-- [ ] **Objective 2**: Apply run-length encoding to compress strings by representing consecutive identical characters
-- [ ] **Objective 3**: Implement efficient string compression algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize string compression using run-length encoding and character counting techniques
-- [ ] **Objective 5**: Handle edge cases in string compression (single character, all different characters, empty string)
+- Understand string compression problems and run-length encoding techniques
+- Apply run-length encoding to compress strings by representing consecutive identical characters
+- Implement efficient string compression algorithms with O(n) time complexity
+- Optimize string compression using run-length encoding and character counting techniques
+- Handle edge cases in string compression (single character, all different characters, empty string)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

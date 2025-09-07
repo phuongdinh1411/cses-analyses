@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/border_subgrid_count_i_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subgrid analysis and border uniformity checking
-- [ ] **Objective 2**: Apply efficient algorithms for counting subgrids with specific border properties
-- [ ] **Objective 3**: Implement optimized subgrid counting using sliding window techniques
-- [ ] **Objective 4**: Optimize subgrid counting using mathematical formulas and pattern analysis
-- [ ] **Objective 5**: Handle edge cases in subgrid counting (small grids, uniform grids, edge cases)
+- Understand subgrid analysis and border uniformity checking
+- Apply efficient algorithms for counting subgrids with specific border properties
+- Implement optimized subgrid counting using sliding window techniques
+- Optimize subgrid counting using mathematical formulas and pattern analysis
+- Handle edge cases in subgrid counting (small grids, uniform grids, edge cases)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

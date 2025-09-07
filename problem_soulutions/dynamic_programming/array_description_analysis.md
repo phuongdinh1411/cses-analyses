@@ -11,11 +11,11 @@ permalink: /problem_soulutions/dynamic_programming/array_description_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand constraint satisfaction problems and array filling with constraints
-- [ ] **Objective 2**: Apply DP techniques to solve constraint satisfaction problems with adjacent constraints
-- [ ] **Objective 3**: Implement efficient DP solutions for constraint satisfaction and array filling
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and constraint tracking
-- [ ] **Objective 5**: Handle edge cases in constraint DP (single elements, all known, impossible constraints)
+- Understand constraint satisfaction problems and array filling with constraints
+- Apply DP techniques to solve constraint satisfaction problems with adjacent constraints
+- Implement efficient DP solutions for constraint satisfaction and array filling
+- Optimize DP solutions using space-efficient techniques and constraint tracking
+- Handle edge cases in constraint DP (single elements, all known, impossible constraints)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

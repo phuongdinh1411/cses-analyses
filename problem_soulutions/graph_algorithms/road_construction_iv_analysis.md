@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/road_construction_iv_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand expert-level MST problems with the most sophisticated constraints and requirements
-- [ ] **Objective 2**: Apply expert-level MST algorithms with the most complex constraint handling and optimization techniques
-- [ ] **Objective 3**: Implement efficient expert-level MST algorithms with the most sophisticated constraint validation and optimization
-- [ ] **Objective 4**: Optimize expert-level MST solutions using the most advanced Union-Find and constraint handling techniques
-- [ ] **Objective 5**: Handle edge cases in expert-level MST problems (most complex constraints, highest optimization requirements, largest-scale graphs)
+- Understand expert-level MST problems with the most sophisticated constraints and requirements
+- Apply expert-level MST algorithms with the most complex constraint handling and optimization techniques
+- Implement efficient expert-level MST algorithms with the most sophisticated constraint validation and optimization
+- Optimize expert-level MST solutions using the most advanced Union-Find and constraint handling techniques
+- Handle edge cases in expert-level MST problems (most complex constraints, highest optimization requirements, largest-scale graphs)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

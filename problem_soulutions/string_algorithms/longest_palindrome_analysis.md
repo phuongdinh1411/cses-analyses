@@ -10,11 +10,11 @@ permalink: /problem_soulutions/string_algorithms/longest_palindrome_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand palindrome problems and longest palindromic substring detection algorithms
-- [ ] **Objective 2**: Apply Manacher's algorithm or expand around centers approach to find longest palindromes
-- [ ] **Objective 3**: Implement efficient palindrome detection algorithms with O(n) or O(n²) time complexity
-- [ ] **Objective 4**: Optimize palindrome detection using Manacher's algorithm, center expansion, and dynamic programming
-- [ ] **Objective 5**: Handle edge cases in palindrome detection (single character, no palindrome, all same characters)
+- Understand palindrome problems and longest palindromic substring detection algorithms
+- Apply Manacher's algorithm or expand around centers approach to find longest palindromes
+- Implement efficient palindrome detection algorithms with O(n) or O(n²) time complexity
+- Optimize palindrome detection using Manacher's algorithm, center expansion, and dynamic programming
+- Handle edge cases in palindrome detection (single character, no palindrome, all same characters)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

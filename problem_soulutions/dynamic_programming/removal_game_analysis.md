@@ -11,11 +11,11 @@ permalink: /problem_soulutions/dynamic_programming/removal_game_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand game theory problems and optimal play strategies in DP
-- [ ] **Objective 2**: Apply DP techniques to solve game theory problems with optimal play
-- [ ] **Objective 3**: Implement efficient DP solutions for game theory and strategic optimization
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and game state tracking
-- [ ] **Objective 5**: Handle edge cases in game theory DP (single elements, two elements, optimal strategies)
+- Understand game theory problems and optimal play strategies in DP
+- Apply DP techniques to solve game theory problems with optimal play
+- Implement efficient DP solutions for game theory and strategic optimization
+- Optimize DP solutions using space-efficient techniques and game state tracking
+- Handle edge cases in game theory DP (single elements, two elements, optimal strategies)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

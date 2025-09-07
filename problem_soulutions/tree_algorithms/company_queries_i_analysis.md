@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/company_queries_i_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand ancestor query problems and binary lifting technique for tree queries
-- [ ] **Objective 2**: Apply binary lifting to efficiently find k-th ancestors in tree structures
-- [ ] **Objective 3**: Implement efficient ancestor query algorithms with O(log n) query time complexity
-- [ ] **Objective 4**: Optimize tree ancestor queries using binary lifting, sparse tables, and preprocessing
-- [ ] **Objective 5**: Handle edge cases in ancestor queries (k > tree height, root node, invalid queries)
+- Understand ancestor query problems and binary lifting technique for tree queries
+- Apply binary lifting to efficiently find k-th ancestors in tree structures
+- Implement efficient ancestor query algorithms with O(log n) query time complexity
+- Optimize tree ancestor queries using binary lifting, sparse tables, and preprocessing
+- Handle edge cases in ancestor queries (k > tree height, root node, invalid queries)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

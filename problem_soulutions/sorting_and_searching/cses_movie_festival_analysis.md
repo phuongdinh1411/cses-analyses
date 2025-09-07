@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/cses_movie_festival_analysi
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand interval scheduling problems and greedy selection strategies
-- [ ] **Objective 2**: Apply greedy algorithms with earliest end time selection to maximize non-overlapping intervals
-- [ ] **Objective 3**: Implement efficient interval scheduling algorithms with O(n log n) time complexity
-- [ ] **Objective 4**: Optimize interval scheduling using sorting and greedy selection techniques
-- [ ] **Objective 5**: Handle edge cases in interval scheduling (overlapping intervals, single interval, no valid selection)
+- Understand interval scheduling problems and greedy selection strategies
+- Apply greedy algorithms with earliest end time selection to maximize non-overlapping intervals
+- Implement efficient interval scheduling algorithms with O(n log n) time complexity
+- Optimize interval scheduling using sorting and greedy selection techniques
+- Handle edge cases in interval scheduling (overlapping intervals, single interval, no valid selection)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

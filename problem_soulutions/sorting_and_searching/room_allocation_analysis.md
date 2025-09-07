@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/room_allocation_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand interval scheduling problems and resource allocation optimization
-- [ ] **Objective 2**: Apply greedy algorithms with priority queues to minimize resource usage
-- [ ] **Objective 3**: Implement efficient room allocation algorithms with O(n log n) time complexity
-- [ ] **Objective 4**: Optimize resource allocation using sorting, priority queues, and greedy selection
-- [ ] **Objective 5**: Handle edge cases in resource allocation (no conflicts, all conflicts, single customer)
+- Understand interval scheduling problems and resource allocation optimization
+- Apply greedy algorithms with priority queues to minimize resource usage
+- Implement efficient room allocation algorithms with O(n log n) time complexity
+- Optimize resource allocation using sorting, priority queues, and greedy selection
+- Handle edge cases in resource allocation (no conflicts, all conflicts, single customer)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

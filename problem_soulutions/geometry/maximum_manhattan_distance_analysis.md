@@ -11,11 +11,11 @@ permalink: /problem_soulutions/geometry/maximum_manhattan_distance_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand maximum distance problems and Manhattan distance optimization
-- [ ] **Objective 2**: Apply coordinate transformation techniques to find maximum Manhattan distances
-- [ ] **Objective 3**: Implement efficient algorithms for finding maximum Manhattan distances between points
-- [ ] **Objective 4**: Optimize maximum distance calculations using geometric properties and coordinate transformations
-- [ ] **Objective 5**: Handle edge cases in maximum distance problems (single points, collinear points, boundary conditions)
+- Understand maximum distance problems and Manhattan distance optimization
+- Apply coordinate transformation techniques to find maximum Manhattan distances
+- Implement efficient algorithms for finding maximum Manhattan distances between points
+- Optimize maximum distance calculations using geometric properties and coordinate transformations
+- Handle edge cases in maximum distance problems (single points, collinear points, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/raab_game_ii_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the N-Queens problem and queen attack patterns
-- [ ] **Objective 2**: Apply backtracking algorithms for counting valid queen placements
-- [ ] **Objective 3**: Implement efficient algorithms for counting non-attacking queen placements
-- [ ] **Objective 4**: Optimize queen counting using bitmask techniques and constraint propagation
-- [ ] **Objective 5**: Handle edge cases in queen counting (blocked cells, large grids, impossible placements)
+- Understand the N-Queens problem and queen attack patterns
+- Apply backtracking algorithms for counting valid queen placements
+- Implement efficient algorithms for counting non-attacking queen placements
+- Optimize queen counting using bitmask techniques and constraint propagation
+- Handle edge cases in queen counting (blocked cells, large grids, impossible placements)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

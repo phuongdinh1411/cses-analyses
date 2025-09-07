@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/bit_strings_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand combinatorics and counting principles for binary strings
-- [ ] **Objective 2**: Apply modular arithmetic and exponentiation to calculate large numbers
-- [ ] **Objective 3**: Implement efficient modular exponentiation algorithms with proper overflow handling
-- [ ] **Objective 4**: Optimize counting problems using mathematical formulas and modular arithmetic
-- [ ] **Objective 5**: Handle edge cases in counting problems (large n, modular arithmetic, overflow prevention)
+- Understand combinatorics and counting principles for binary strings
+- Apply modular arithmetic and exponentiation to calculate large numbers
+- Implement efficient modular exponentiation algorithms with proper overflow handling
+- Optimize counting problems using mathematical formulas and modular arithmetic
+- Handle edge cases in counting problems (large n, modular arithmetic, overflow prevention)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

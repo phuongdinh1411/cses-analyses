@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/chessboard_and_queens_analy
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the N-Queens problem and backtracking algorithms
-- [ ] **Objective 2**: Apply backtracking with constraint checking to solve N-Queens problems
-- [ ] **Objective 3**: Implement efficient N-Queens algorithms with proper constraint validation
-- [ ] **Objective 4**: Optimize N-Queens solutions using constraint propagation and pruning techniques
-- [ ] **Objective 5**: Handle edge cases in N-Queens problems (blocked squares, large boards, constraint validation)
+- Understand the N-Queens problem and backtracking algorithms
+- Apply backtracking with constraint checking to solve N-Queens problems
+- Implement efficient N-Queens algorithms with proper constraint validation
+- Optimize N-Queens solutions using constraint propagation and pruning techniques
+- Handle edge cases in N-Queens problems (blocked squares, large boards, constraint validation)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

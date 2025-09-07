@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/tower_of_hanoi_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand recursive algorithms and the Tower of Hanoi problem
-- [ ] **Objective 2**: Apply recursive thinking to solve the Tower of Hanoi puzzle
-- [ ] **Objective 3**: Implement efficient recursive algorithms with proper move sequence generation
-- [ ] **Objective 4**: Optimize recursive solutions using mathematical analysis and move optimization
-- [ ] **Objective 5**: Handle edge cases in recursive problems (base cases, large n, move sequence validation)
+- Understand recursive algorithms and the Tower of Hanoi problem
+- Apply recursive thinking to solve the Tower of Hanoi puzzle
+- Implement efficient recursive algorithms with proper move sequence generation
+- Optimize recursive solutions using mathematical analysis and move optimization
+- Handle edge cases in recursive problems (base cases, large n, move sequence validation)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

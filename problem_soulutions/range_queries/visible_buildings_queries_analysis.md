@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/visible_buildings_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand visibility problems and line-of-sight calculations in building arrays
-- [ ] **Objective 2**: Apply range query techniques to efficiently count visible buildings in ranges
-- [ ] **Objective 3**: Implement efficient visibility query algorithms with proper line-of-sight calculations
-- [ ] **Objective 4**: Optimize visibility queries using advanced data structures and geometric analysis
-- [ ] **Objective 5**: Handle edge cases in visibility problems (tall buildings, overlapping visibility, boundary conditions)
+- Understand visibility problems and line-of-sight calculations in building arrays
+- Apply range query techniques to efficiently count visible buildings in ranges
+- Implement efficient visibility query algorithms with proper line-of-sight calculations
+- Optimize visibility queries using advanced data structures and geometric analysis
+- Handle edge cases in visibility problems (tall buildings, overlapping visibility, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

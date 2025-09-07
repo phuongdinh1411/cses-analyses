@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/subtree_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subtree query problems and dynamic tree operations with updates
-- [ ] **Objective 2**: Apply Euler Tour technique with segment trees or binary indexed trees for subtree queries
-- [ ] **Objective 3**: Implement efficient subtree query algorithms with O(log n) update and query time complexity
-- [ ] **Objective 4**: Optimize subtree operations using Euler Tour, segment trees, and range query data structures
-- [ ] **Objective 5**: Handle edge cases in subtree queries (single node, linear tree, large trees, frequent updates)
+- Understand subtree query problems and dynamic tree operations with updates
+- Apply Euler Tour technique with segment trees or binary indexed trees for subtree queries
+- Implement efficient subtree query algorithms with O(log n) update and query time complexity
+- Optimize subtree operations using Euler Tour, segment trees, and range query data structures
+- Handle edge cases in subtree queries (single node, linear tree, large trees, frequent updates)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

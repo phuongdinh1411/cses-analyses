@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/cycle_finding_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand negative cycle detection problems and Bellman-Ford algorithm concepts
-- [ ] **Objective 2**: Apply Bellman-Ford algorithm to detect negative cycles in weighted graphs
-- [ ] **Objective 3**: Implement efficient negative cycle detection algorithms with proper cycle reconstruction
-- [ ] **Objective 4**: Optimize negative cycle detection using graph representations and algorithm optimizations
-- [ ] **Objective 5**: Handle edge cases in negative cycle detection (no cycles, positive cycles, disconnected graphs)
+- Understand negative cycle detection problems and Bellman-Ford algorithm concepts
+- Apply Bellman-Ford algorithm to detect negative cycles in weighted graphs
+- Implement efficient negative cycle detection algorithms with proper cycle reconstruction
+- Optimize negative cycle detection using graph representations and algorithm optimizations
+- Handle edge cases in negative cycle detection (no cycles, positive cycles, disconnected graphs)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

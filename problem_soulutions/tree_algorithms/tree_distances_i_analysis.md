@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/tree_distances_i_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand tree distance problems and maximum distance calculation algorithms
-- [ ] **Objective 2**: Apply dynamic programming on trees to find maximum distances from each node
-- [ ] **Objective 3**: Implement efficient tree distance algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize tree distance calculation using dynamic programming, tree traversal, and tree properties
-- [ ] **Objective 5**: Handle edge cases in tree distances (single node, linear tree, star tree, large trees)
+- Understand tree distance problems and maximum distance calculation algorithms
+- Apply dynamic programming on trees to find maximum distances from each node
+- Implement efficient tree distance algorithms with O(n) time complexity
+- Optimize tree distance calculation using dynamic programming, tree traversal, and tree properties
+- Handle edge cases in tree distances (single node, linear tree, star tree, large trees)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

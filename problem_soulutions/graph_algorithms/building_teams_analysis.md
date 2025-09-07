@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/building_teams_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand bipartite graph coloring problems and 2-coloring concepts
-- [ ] **Objective 2**: Apply DFS or BFS to check if a graph is bipartite and perform 2-coloring
-- [ ] **Objective 3**: Implement efficient bipartite graph algorithms with proper color assignment
-- [ ] **Objective 4**: Optimize bipartite graph solutions using graph representations and coloring algorithms
-- [ ] **Objective 5**: Handle edge cases in bipartite coloring (odd cycles, disconnected components, single nodes)
+- Understand bipartite graph coloring problems and 2-coloring concepts
+- Apply DFS or BFS to check if a graph is bipartite and perform 2-coloring
+- Implement efficient bipartite graph algorithms with proper color assignment
+- Optimize bipartite graph solutions using graph representations and coloring algorithms
+- Handle edge cases in bipartite coloring (odd cycles, disconnected components, single nodes)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

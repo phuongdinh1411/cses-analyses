@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/company_queries_ii_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand Lowest Common Ancestor (LCA) query problems and LCA algorithms
-- [ ] **Objective 2**: Apply binary lifting technique to efficiently find LCA of any two nodes in a tree
-- [ ] **Objective 3**: Implement efficient LCA query algorithms with O(log n) query time complexity
-- [ ] **Objective 4**: Optimize LCA queries using binary lifting, sparse tables, and tree preprocessing
-- [ ] **Objective 5**: Handle edge cases in LCA queries (same node, parent-child relationship, root node, large trees)
+- Understand Lowest Common Ancestor (LCA) query problems and LCA algorithms
+- Apply binary lifting technique to efficiently find LCA of any two nodes in a tree
+- Implement efficient LCA query algorithms with O(log n) query time complexity
+- Optimize LCA queries using binary lifting, sparse tables, and tree preprocessing
+- Handle edge cases in LCA queries (same node, parent-child relationship, root node, large trees)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

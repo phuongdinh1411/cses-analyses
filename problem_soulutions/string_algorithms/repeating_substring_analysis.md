@@ -11,11 +11,11 @@ permalink: /problem_soulutions/string_algorithms/repeating_substring_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand repeating substring problems and longest common substring analysis
-- [ ] **Objective 2**: Apply suffix arrays or optimized substring checking to find longest repeating substrings
-- [ ] **Objective 3**: Implement efficient repeating substring algorithms with O(n²) or O(n log n) time complexity
-- [ ] **Objective 4**: Optimize substring repetition detection using suffix arrays, hashing, and advanced string algorithms
-- [ ] **Objective 5**: Handle edge cases in repeating substrings (no repetition, single character, all same characters)
+- Understand repeating substring problems and longest common substring analysis
+- Apply suffix arrays or optimized substring checking to find longest repeating substrings
+- Implement efficient repeating substring algorithms with O(n²) or O(n log n) time complexity
+- Optimize substring repetition detection using suffix arrays, hashing, and advanced string algorithms
+- Handle edge cases in repeating substrings (no repetition, single character, all same characters)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

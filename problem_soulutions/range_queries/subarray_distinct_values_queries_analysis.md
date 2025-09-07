@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/subarray_distinct_values_queries_an
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand dynamic range query problems with point updates and distinct value counting
-- [ ] **Objective 2**: Apply coordinate compression and frequency tracking to handle distinct value counting with updates
-- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and distinct count queries
-- [ ] **Objective 4**: Optimize distinct value counting using coordinate compression and advanced data structures
-- [ ] **Objective 5**: Handle edge cases in distinct value counting (large values, coordinate compression, frequency tracking)
+- Understand dynamic range query problems with point updates and distinct value counting
+- Apply coordinate compression and frequency tracking to handle distinct value counting with updates
+- Implement efficient dynamic range query algorithms with O(log n) time for updates and distinct count queries
+- Optimize distinct value counting using coordinate compression and advanced data structures
+- Handle edge cases in distinct value counting (large values, coordinate compression, frequency tracking)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

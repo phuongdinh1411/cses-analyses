@@ -11,11 +11,11 @@ permalink: /problem_soulutions/sliding_window/subarray_with_given_sum_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subarray sum existence problems and prefix sum techniques for sum detection
-- [ ] **Objective 2**: Apply hash map and prefix sum techniques to efficiently detect subarrays with target sum
-- [ ] **Objective 3**: Implement efficient algorithms with O(n) time complexity using prefix sums and hash maps
-- [ ] **Objective 4**: Optimize subarray sum detection using prefix sum theory and hash map techniques
-- [ ] **Objective 5**: Handle edge cases in subarray sum detection (negative numbers, zero sum, no solution, large arrays)
+- Understand subarray sum existence problems and prefix sum techniques for sum detection
+- Apply hash map and prefix sum techniques to efficiently detect subarrays with target sum
+- Implement efficient algorithms with O(n) time complexity using prefix sums and hash maps
+- Optimize subarray sum detection using prefix sum theory and hash map techniques
+- Handle edge cases in subarray sum detection (negative numbers, zero sum, no solution, large arrays)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

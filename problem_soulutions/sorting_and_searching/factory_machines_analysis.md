@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/factory_machines_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand binary search on answer space and parallel processing optimization
-- [ ] **Objective 2**: Apply binary search with validation to find minimum time for parallel task completion
-- [ ] **Objective 3**: Implement efficient binary search algorithms with O(n log(max_time)) time complexity
-- [ ] **Objective 4**: Optimize parallel processing problems using binary search and time calculation
-- [ ] **Objective 5**: Handle edge cases in parallel processing (single machine, single product, time overflow)
+- Understand binary search on answer space and parallel processing optimization
+- Apply binary search with validation to find minimum time for parallel task completion
+- Implement efficient binary search algorithms with O(n log(max_time)) time complexity
+- Optimize parallel processing problems using binary search and time calculation
+- Handle edge cases in parallel processing (single machine, single product, time overflow)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

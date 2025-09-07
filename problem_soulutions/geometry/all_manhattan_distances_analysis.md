@@ -11,11 +11,11 @@ permalink: /problem_soulutions/geometry/all_manhattan_distances_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand Manhattan distance concepts and pairwise distance calculations
-- [ ] **Objective 2**: Apply coordinate separation and sorting techniques to optimize distance calculations
-- [ ] **Objective 3**: Implement efficient algorithms for computing all pairwise Manhattan distances
-- [ ] **Objective 4**: Optimize distance calculations using coordinate transformations and mathematical properties
-- [ ] **Objective 5**: Handle edge cases in distance calculations (single points, collinear points, large coordinate values)
+- Understand Manhattan distance concepts and pairwise distance calculations
+- Apply coordinate separation and sorting techniques to optimize distance calculations
+- Implement efficient algorithms for computing all pairwise Manhattan distances
+- Optimize distance calculations using coordinate transformations and mathematical properties
+- Handle edge cases in distance calculations (single points, collinear points, large coordinate values)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

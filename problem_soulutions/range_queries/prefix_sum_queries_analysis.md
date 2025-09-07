@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/prefix_sum_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand dynamic range query problems with point updates and range sum queries
-- [ ] **Objective 2**: Apply Binary Indexed Trees or Segment Trees to handle dynamic prefix sum queries
-- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and sum queries
-- [ ] **Objective 4**: Optimize dynamic range queries using advanced data structures and efficient sum algorithms
-- [ ] **Objective 5**: Handle edge cases in dynamic range queries (large arrays, frequent updates, boundary conditions)
+- Understand dynamic range query problems with point updates and range sum queries
+- Apply Binary Indexed Trees or Segment Trees to handle dynamic prefix sum queries
+- Implement efficient dynamic range query algorithms with O(log n) time for updates and sum queries
+- Optimize dynamic range queries using advanced data structures and efficient sum algorithms
+- Handle edge cases in dynamic range queries (large arrays, frequent updates, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

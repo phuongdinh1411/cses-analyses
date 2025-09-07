@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/empty_string_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand string manipulation and adjacent character removal operations
-- [ ] **Objective 2**: Apply dynamic programming to count different operation sequences
-- [ ] **Objective 3**: Implement backtracking algorithms for counting valid sequences
-- [ ] **Objective 4**: Handle edge cases in string processing (empty strings, no valid operations)
-- [ ] **Objective 5**: Optimize counting algorithms using memoization and DP techniques
+- Understand string manipulation and adjacent character removal operations
+- Apply dynamic programming to count different operation sequences
+- Implement backtracking algorithms for counting valid sequences
+- Handle edge cases in string processing (empty strings, no valid operations)
+- Optimize counting algorithms using memoization and DP techniques
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

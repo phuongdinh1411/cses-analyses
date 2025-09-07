@@ -10,11 +10,11 @@ permalink: /problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analy
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of feedback arc set and cycle detection
-- [ ] **Objective 2**: Apply DFS-based cycle detection algorithms
-- [ ] **Objective 3**: Implement algorithms to find minimum edges for acyclicity
-- [ ] **Objective 4**: Optimize cycle detection for large directed graphs
-- [ ] **Objective 5**: Handle edge cases in acyclicity problems (trees, disconnected components)
+- Understand the concept of feedback arc set and cycle detection
+- Apply DFS-based cycle detection algorithms
+- Implement algorithms to find minimum edges for acyclicity
+- Optimize cycle detection for large directed graphs
+- Handle edge cases in acyclicity problems (trees, disconnected components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

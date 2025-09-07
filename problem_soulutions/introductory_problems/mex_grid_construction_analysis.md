@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/mex_grid_construction_analy
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand MEX (minimum excluded value) concepts and grid construction problems
-- [ ] **Objective 2**: Apply constraint satisfaction and mathematical analysis to construct valid grids
-- [ ] **Objective 3**: Implement efficient grid construction algorithms with proper MEX validation
-- [ ] **Objective 4**: Optimize grid construction using mathematical analysis and constraint satisfaction
-- [ ] **Objective 5**: Handle edge cases in grid construction (impossible constraints, large grids, MEX validation)
+- Understand MEX (minimum excluded value) concepts and grid construction problems
+- Apply constraint satisfaction and mathematical analysis to construct valid grids
+- Implement efficient grid construction algorithms with proper MEX validation
+- Optimize grid construction using mathematical analysis and constraint satisfaction
+- Handle edge cases in grid construction (impossible constraints, large grids, MEX validation)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

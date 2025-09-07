@@ -11,11 +11,11 @@ permalink: /problem_soulutions/dynamic_programming/minimal_grid_path_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand 2D dynamic programming and minimum cost path optimization
-- [ ] **Objective 2**: Apply 2D DP techniques to find minimum cost paths in grids with movement constraints
-- [ ] **Objective 3**: Implement efficient 2D DP solutions for cost optimization and path finding
-- [ ] **Objective 4**: Optimize 2D DP solutions using space-efficient techniques and cost calculations
-- [ ] **Objective 5**: Handle edge cases in grid DP (single cell grids, high cost cells, boundary conditions)
+- Understand 2D dynamic programming and minimum cost path optimization
+- Apply 2D DP techniques to find minimum cost paths in grids with movement constraints
+- Implement efficient 2D DP solutions for cost optimization and path finding
+- Optimize 2D DP solutions using space-efficient techniques and cost calculations
+- Handle edge cases in grid DP (single cell grids, high cost cells, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

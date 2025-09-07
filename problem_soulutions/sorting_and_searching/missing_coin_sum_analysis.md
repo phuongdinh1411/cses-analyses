@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/missing_coin_sum_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand coin sum problems and greedy algorithms for finding missing sums
-- [ ] **Objective 2**: Apply greedy algorithms with sorting to find the smallest unattainable sum
-- [ ] **Objective 3**: Implement efficient coin sum algorithms with O(n log n) time complexity
-- [ ] **Objective 4**: Optimize coin sum problems using sorting and greedy selection techniques
-- [ ] **Objective 5**: Handle edge cases in coin sum problems (single coin, all coins same value, large sums)
+- Understand coin sum problems and greedy algorithms for finding missing sums
+- Apply greedy algorithms with sorting to find the smallest unattainable sum
+- Implement efficient coin sum algorithms with O(n log n) time complexity
+- Optimize coin sum problems using sorting and greedy selection techniques
+- Handle edge cases in coin sum problems (single coin, all coins same value, large sums)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

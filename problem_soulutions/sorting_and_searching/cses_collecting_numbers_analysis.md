@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/cses_collecting_numbers_ana
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand collecting numbers problems and dependency-based collection strategies
-- [ ] **Objective 2**: Apply greedy algorithms with position tracking to minimize collection rounds
-- [ ] **Objective 3**: Implement efficient collection algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize collection problems using position tracking and dependency analysis
-- [ ] **Objective 5**: Handle edge cases in collection problems (sorted arrays, reverse sorted arrays, single element)
+- Understand collecting numbers problems and dependency-based collection strategies
+- Apply greedy algorithms with position tracking to minimize collection rounds
+- Implement efficient collection algorithms with O(n) time complexity
+- Optimize collection problems using position tracking and dependency analysis
+- Handle edge cases in collection problems (sorted arrays, reverse sorted arrays, single element)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

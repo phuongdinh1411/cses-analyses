@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/josephus_problem_ii_analysi
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the generalized Josephus problem with variable step sizes and circular elimination
-- [ ] **Objective 2**: Apply advanced mathematical formulas and simulation techniques to solve generalized Josephus problems
-- [ ] **Objective 3**: Implement efficient generalized Josephus algorithms with O(n) or O(k log n) time complexity
-- [ ] **Objective 4**: Optimize generalized Josephus problems using mathematical formulas and efficient simulation techniques
-- [ ] **Objective 5**: Handle edge cases in generalized Josephus problems (single person, large n, large k, step size variations)
+- Understand the generalized Josephus problem with variable step sizes and circular elimination
+- Apply advanced mathematical formulas and simulation techniques to solve generalized Josephus problems
+- Implement efficient generalized Josephus algorithms with O(n) or O(k log n) time complexity
+- Optimize generalized Josephus problems using mathematical formulas and efficient simulation techniques
+- Handle edge cases in generalized Josephus problems (single person, large n, large k, step size variations)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

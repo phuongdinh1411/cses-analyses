@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/traffic_lights_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand dynamic segment problems and set-based data structures for range queries
-- [ ] **Objective 2**: Apply sets and binary search to efficiently track longest continuous segments
-- [ ] **Objective 3**: Implement efficient dynamic segment algorithms with O(q log n) time complexity
-- [ ] **Objective 4**: Optimize dynamic segment problems using sets, binary search, and segment tracking
-- [ ] **Objective 5**: Handle edge cases in dynamic segment problems (all lights off, all lights on, single light)
+- Understand dynamic segment problems and set-based data structures for range queries
+- Apply sets and binary search to efficiently track longest continuous segments
+- Implement efficient dynamic segment algorithms with O(q log n) time complexity
+- Optimize dynamic segment problems using sets, binary search, and segment tracking
+- Handle edge cases in dynamic segment problems (all lights off, all lights on, single light)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

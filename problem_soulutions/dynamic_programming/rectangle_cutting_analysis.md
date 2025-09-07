@@ -11,11 +11,11 @@ permalink: /problem_soulutions/dynamic_programming/rectangle_cutting_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand geometric DP problems and rectangle cutting optimization
-- [ ] **Objective 2**: Apply DP techniques to solve geometric cutting problems with minimum cuts
-- [ ] **Objective 3**: Implement efficient DP solutions for rectangle cutting and geometric optimization
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and geometric calculations
-- [ ] **Objective 5**: Handle edge cases in geometric DP (square inputs, single cuts, boundary conditions)
+- Understand geometric DP problems and rectangle cutting optimization
+- Apply DP techniques to solve geometric cutting problems with minimum cuts
+- Implement efficient DP solutions for rectangle cutting and geometric optimization
+- Optimize DP solutions using space-efficient techniques and geometric calculations
+- Handle edge cases in geometric DP (square inputs, single cuts, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

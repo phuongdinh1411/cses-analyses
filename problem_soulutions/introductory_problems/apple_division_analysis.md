@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/apple_division_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subset generation and partition optimization problems
-- [ ] **Objective 2**: Apply bitmasking or backtracking to generate all possible subsets
-- [ ] **Objective 3**: Implement efficient subset generation algorithms with proper weight calculation
-- [ ] **Objective 4**: Optimize subset generation using bitmasking and mathematical optimization
-- [ ] **Objective 5**: Handle edge cases in subset problems (small n, large weights, equal partitions)
+- Understand subset generation and partition optimization problems
+- Apply bitmasking or backtracking to generate all possible subsets
+- Implement efficient subset generation algorithms with proper weight calculation
+- Optimize subset generation using bitmasking and mathematical optimization
+- Handle edge cases in subset problems (small n, large weights, equal partitions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

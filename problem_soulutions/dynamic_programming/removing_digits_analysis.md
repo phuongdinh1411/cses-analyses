@@ -10,11 +10,11 @@ permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand digit manipulation problems and minimum steps optimization
-- [ ] **Objective 2**: Apply DP techniques to solve digit-based optimization problems
-- [ ] **Objective 3**: Implement efficient DP solutions for digit manipulation and step counting
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and digit operations
-- [ ] **Objective 5**: Handle edge cases in digit DP (single digits, zero input, large numbers)
+- Understand digit manipulation problems and minimum steps optimization
+- Apply DP techniques to solve digit-based optimization problems
+- Implement efficient DP solutions for digit manipulation and step counting
+- Optimize DP solutions using space-efficient techniques and digit operations
+- Handle edge cases in digit DP (single digits, zero input, large numbers)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

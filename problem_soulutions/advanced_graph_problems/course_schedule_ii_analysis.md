@@ -10,11 +10,11 @@ permalink: /problem_soulutions/advanced_graph_problems/course_schedule_ii_analys
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of topological sorting and its applications
-- [ ] **Objective 2**: Apply Kahn's algorithm for topological sorting with cycle detection
-- [ ] **Objective 3**: Implement DFS-based topological sorting with cycle detection
-- [ ] **Objective 4**: Handle cycle detection in directed graphs using topological sorting
-- [ ] **Objective 5**: Apply topological sorting to real-world scheduling problems
+- Understand the concept of topological sorting and its applications
+- Apply Kahn's algorithm for topological sorting with cycle detection
+- Implement DFS-based topological sorting with cycle detection
+- Handle cycle detection in directed graphs using topological sorting
+- Apply topological sorting to real-world scheduling problems
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

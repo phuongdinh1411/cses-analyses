@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/monsters_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand multi-source BFS problems and competitive pathfinding concepts
-- [ ] **Objective 2**: Apply multi-source BFS to find shortest distances from multiple sources simultaneously
-- [ ] **Objective 3**: Implement efficient multi-source BFS algorithms with proper distance tracking
-- [ ] **Objective 4**: Optimize multi-source BFS solutions using queue management and distance comparisons
-- [ ] **Objective 5**: Handle edge cases in multi-source BFS (no monsters, unreachable destinations, boundary conditions)
+- Understand multi-source BFS problems and competitive pathfinding concepts
+- Apply multi-source BFS to find shortest distances from multiple sources simultaneously
+- Implement efficient multi-source BFS algorithms with proper distance tracking
+- Optimize multi-source BFS solutions using queue management and distance comparisons
+- Handle edge cases in multi-source BFS (no monsters, unreachable destinations, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

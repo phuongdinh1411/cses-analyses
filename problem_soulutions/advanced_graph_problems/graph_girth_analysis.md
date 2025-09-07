@@ -10,11 +10,11 @@ permalink: /problem_soulutions/advanced_graph_problems/graph_girth_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of graph girth and cycle detection in undirected graphs
-- [ ] **Objective 2**: Apply BFS-based cycle detection algorithms to find shortest cycles
-- [ ] **Objective 3**: Implement efficient cycle detection using parent tracking in BFS
-- [ ] **Objective 4**: Optimize cycle detection by avoiding redundant searches
-- [ ] **Objective 5**: Handle edge cases in cycle detection (trees, disconnected components)
+- Understand the concept of graph girth and cycle detection in undirected graphs
+- Apply BFS-based cycle detection algorithms to find shortest cycles
+- Implement efficient cycle detection using parent tracking in BFS
+- Optimize cycle detection by avoiding redundant searches
+- Handle edge cases in cycle detection (trees, disconnected components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

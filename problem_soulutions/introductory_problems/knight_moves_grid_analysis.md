@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/knight_moves_grid_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand shortest path problems in grids with special movement patterns
-- [ ] **Objective 2**: Apply BFS to find shortest paths for knight movement in grids
-- [ ] **Objective 3**: Implement efficient BFS algorithms with proper knight movement validation
-- [ ] **Objective 4**: Optimize shortest path algorithms using BFS and grid navigation techniques
-- [ ] **Objective 5**: Handle edge cases in grid pathfinding (impossible paths, boundary conditions, large grids)
+- Understand shortest path problems in grids with special movement patterns
+- Apply BFS to find shortest paths for knight movement in grids
+- Implement efficient BFS algorithms with proper knight movement validation
+- Optimize shortest path algorithms using BFS and grid navigation techniques
+- Handle edge cases in grid pathfinding (impossible paths, boundary conditions, large grids)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

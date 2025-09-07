@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/cses_stick_lengths_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand optimization problems with median-based solutions and cost minimization
-- [ ] **Objective 2**: Apply median selection to minimize total absolute deviation costs
-- [ ] **Objective 3**: Implement efficient optimization algorithms with O(n log n) time complexity
-- [ ] **Objective 4**: Optimize cost minimization problems using sorting and median selection
-- [ ] **Objective 5**: Handle edge cases in optimization problems (single element, all same values, cost overflow)
+- Understand optimization problems with median-based solutions and cost minimization
+- Apply median selection to minimize total absolute deviation costs
+- Implement efficient optimization algorithms with O(n log n) time complexity
+- Optimize cost minimization problems using sorting and median selection
+- Handle edge cases in optimization problems (single element, all same values, cost overflow)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

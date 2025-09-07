@@ -10,11 +10,11 @@ permalink: /problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analy
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of maximum weight matching in graphs
-- [ ] **Objective 2**: Apply maximum weight bipartite matching algorithms
-- [ ] **Objective 3**: Implement Hungarian algorithm or similar matching algorithms
-- [ ] **Objective 4**: Optimize network flow problems for maximum weight
-- [ ] **Objective 5**: Handle complex network optimization problems with multiple constraints
+- Understand the concept of maximum weight matching in graphs
+- Apply maximum weight bipartite matching algorithms
+- Implement Hungarian algorithm or similar matching algorithms
+- Optimize network flow problems for maximum weight
+- Handle complex network optimization problems with multiple constraints
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

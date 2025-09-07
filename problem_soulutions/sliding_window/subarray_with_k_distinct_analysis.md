@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sliding_window/subarray_with_k_distinct_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand sliding window problems with exact distinct value constraints and subarray counting
-- [ ] **Objective 2**: Apply sliding window technique to count subarrays with exactly k distinct values
-- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity for exact distinct value problems
-- [ ] **Objective 4**: Optimize sliding window problems using hash maps and distinct value tracking
-- [ ] **Objective 5**: Handle edge cases in sliding window problems (k=1, k=n, all distinct values, no solution)
+- Understand sliding window problems with exact distinct value constraints and subarray counting
+- Apply sliding window technique to count subarrays with exactly k distinct values
+- Implement efficient sliding window algorithms with O(n) time complexity for exact distinct value problems
+- Optimize sliding window problems using hash maps and distinct value tracking
+- Handle edge cases in sliding window problems (k=1, k=n, all distinct values, no solution)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

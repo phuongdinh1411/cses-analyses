@@ -11,11 +11,11 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of Hamiltonian cycles and their properties
-- [ ] **Objective 2**: Apply matrix exponentiation for efficient Hamiltonian cycle counting
-- [ ] **Objective 3**: Implement modular arithmetic for large Hamiltonian cycle counts
-- [ ] **Objective 4**: Optimize matrix operations for multiple Hamiltonian cycle queries
-- [ ] **Objective 5**: Handle large cycle lengths using binary exponentiation
+- Understand the concept of Hamiltonian cycles and their properties
+- Apply matrix exponentiation for efficient Hamiltonian cycle counting
+- Implement modular arithmetic for large Hamiltonian cycle counts
+- Optimize matrix operations for multiple Hamiltonian cycle queries
+- Handle large cycle lengths using binary exponentiation
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

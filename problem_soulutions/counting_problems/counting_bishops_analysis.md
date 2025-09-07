@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/counting_bishops_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand chess piece placement and attack patterns for bishops
-- [ ] **Objective 2**: Apply backtracking algorithms for counting valid chess piece placements
-- [ ] **Objective 3**: Implement efficient algorithms for counting non-attacking bishop placements
-- [ ] **Objective 4**: Optimize bishop counting using diagonal analysis and mathematical formulas
-- [ ] **Objective 5**: Handle edge cases in bishop counting (large boards, many bishops, impossible placements)
+- Understand chess piece placement and attack patterns for bishops
+- Apply backtracking algorithms for counting valid chess piece placements
+- Implement efficient algorithms for counting non-attacking bishop placements
+- Optimize bishop counting using diagonal analysis and mathematical formulas
+- Handle edge cases in bishop counting (large boards, many bishops, impossible placements)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -11,11 +11,11 @@ permalink: /problem_soulutions/sliding_window/longest_subarray_with_sum_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand sliding window problems with target sum constraints and length optimization
-- [ ] **Objective 2**: Apply sliding window technique to find longest subarray with specific sum
-- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity for sum-based problems
-- [ ] **Objective 4**: Optimize sliding window problems using two-pointer technique and sum tracking
-- [ ] **Objective 5**: Handle edge cases in sliding window problems (no solution, negative numbers, sum overflow)
+- Understand sliding window problems with target sum constraints and length optimization
+- Apply sliding window technique to find longest subarray with specific sum
+- Implement efficient sliding window algorithms with O(n) time complexity for sum-based problems
+- Optimize sliding window problems using two-pointer technique and sum tracking
+- Handle edge cases in sliding window problems (no solution, negative numbers, sum overflow)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

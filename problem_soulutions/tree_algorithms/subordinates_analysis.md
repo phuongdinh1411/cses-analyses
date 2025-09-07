@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/subordinates_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand tree subtree size calculation problems and hierarchical structure analysis
-- [ ] **Objective 2**: Apply DFS to calculate subtree sizes efficiently for all nodes in a tree
-- [ ] **Objective 3**: Implement efficient subtree size algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize subtree size calculation using DFS, tree traversal, and recursive algorithms
-- [ ] **Objective 5**: Handle edge cases in subtree size calculation (single node, linear tree, star tree, large trees)
+- Understand tree subtree size calculation problems and hierarchical structure analysis
+- Apply DFS to calculate subtree sizes efficiently for all nodes in a tree
+- Implement efficient subtree size algorithms with O(n) time complexity
+- Optimize subtree size calculation using DFS, tree traversal, and recursive algorithms
+- Handle edge cases in subtree size calculation (single node, linear tree, star tree, large trees)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

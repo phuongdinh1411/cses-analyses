@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/topological_sorting_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand topological sorting and DAG ordering concepts
-- [ ] **Objective 2**: Apply Kahn's algorithm or DFS-based approach to find topological orderings
-- [ ] **Objective 3**: Implement efficient topological sorting algorithms with proper cycle detection
-- [ ] **Objective 4**: Optimize topological sorting solutions using graph representations and algorithm optimizations
-- [ ] **Objective 5**: Handle edge cases in topological sorting (cycles, single nodes, disconnected components)
+- Understand topological sorting and DAG ordering concepts
+- Apply Kahn's algorithm or DFS-based approach to find topological orderings
+- Implement efficient topological sorting algorithms with proper cycle detection
+- Optimize topological sorting solutions using graph representations and algorithm optimizations
+- Handle edge cases in topological sorting (cycles, single nodes, disconnected components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

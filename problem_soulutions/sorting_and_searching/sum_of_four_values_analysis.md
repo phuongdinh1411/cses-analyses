@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/sum_of_four_values_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand four-sum problems and advanced two-pointer techniques with sorting
-- [ ] **Objective 2**: Apply sorting and advanced two-pointer technique to find four values with target sum
-- [ ] **Objective 3**: Implement efficient four-sum algorithms with O(n³) time complexity
-- [ ] **Objective 4**: Optimize four-sum problems using sorting, nested loops, two-pointer technique, and duplicate handling
-- [ ] **Objective 5**: Handle edge cases in four-sum problems (no solution, duplicate values, large arrays, complex constraints)
+- Understand four-sum problems and advanced two-pointer techniques with sorting
+- Apply sorting and advanced two-pointer technique to find four values with target sum
+- Implement efficient four-sum algorithms with O(n³) time complexity
+- Optimize four-sum problems using sorting, nested loops, two-pointer technique, and duplicate handling
+- Handle edge cases in four-sum problems (no solution, duplicate values, large arrays, complex constraints)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

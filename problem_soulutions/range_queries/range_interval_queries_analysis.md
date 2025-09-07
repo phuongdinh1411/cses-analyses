@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/range_interval_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand interval query problems and point-in-interval counting concepts
-- [ ] **Objective 2**: Apply coordinate compression and prefix sums to efficiently count intervals containing a point
-- [ ] **Objective 3**: Implement efficient interval query algorithms with O(log n) or O(1) query time
-- [ ] **Objective 4**: Optimize interval queries using coordinate compression and advanced data structures
-- [ ] **Objective 5**: Handle edge cases in interval queries (large coordinates, overlapping intervals, boundary conditions)
+- Understand interval query problems and point-in-interval counting concepts
+- Apply coordinate compression and prefix sums to efficiently count intervals containing a point
+- Implement efficient interval query algorithms with O(log n) or O(1) query time
+- Optimize interval queries using coordinate compression and advanced data structures
+- Handle edge cases in interval queries (large coordinates, overlapping intervals, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

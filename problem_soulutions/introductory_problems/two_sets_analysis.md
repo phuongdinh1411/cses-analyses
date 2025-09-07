@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/two_sets_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand set partitioning and mathematical analysis problems
-- [ ] **Objective 2**: Apply mathematical formulas to determine if equal sum partitioning is possible
-- [ ] **Objective 3**: Implement efficient set partitioning algorithms with proper mathematical analysis
-- [ ] **Objective 4**: Optimize set partitioning using mathematical analysis and greedy strategies
-- [ ] **Objective 5**: Handle edge cases in set partitioning (impossible partitions, large n, mathematical precision)
+- Understand set partitioning and mathematical analysis problems
+- Apply mathematical formulas to determine if equal sum partitioning is possible
+- Implement efficient set partitioning algorithms with proper mathematical analysis
+- Optimize set partitioning using mathematical analysis and greedy strategies
+- Handle edge cases in set partitioning (impossible partitions, large n, mathematical precision)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

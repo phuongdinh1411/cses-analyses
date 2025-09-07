@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/distinct_routes_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand edge-disjoint paths problems and maximum flow concepts
-- [ ] **Objective 2**: Apply maximum flow algorithms to find maximum edge-disjoint paths
-- [ ] **Objective 3**: Implement efficient edge-disjoint path algorithms with proper flow network construction
-- [ ] **Objective 4**: Optimize edge-disjoint path solutions using flow algorithms and path enumeration
-- [ ] **Objective 5**: Handle edge cases in edge-disjoint paths (no paths exist, single path, multiple components)
+- Understand edge-disjoint paths problems and maximum flow concepts
+- Apply maximum flow algorithms to find maximum edge-disjoint paths
+- Implement efficient edge-disjoint path algorithms with proper flow network construction
+- Optimize edge-disjoint path solutions using flow algorithms and path enumeration
+- Handle edge cases in edge-disjoint paths (no paths exist, single path, multiple components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

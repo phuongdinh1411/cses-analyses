@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/company_queries_iii_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand tree subtree size query problems and subtree counting algorithms
-- [ ] **Objective 2**: Apply DFS to calculate subtree sizes efficiently for all nodes
-- [ ] **Objective 3**: Implement efficient subtree size algorithms with O(n) preprocessing and O(1) query time complexity
-- [ ] **Objective 4**: Optimize subtree size calculation using DFS, tree traversal, and tree properties
-- [ ] **Objective 5**: Handle edge cases in subtree size queries (single node, linear tree, star tree, large trees)
+- Understand tree subtree size query problems and subtree counting algorithms
+- Apply DFS to calculate subtree sizes efficiently for all nodes
+- Implement efficient subtree size algorithms with O(n) preprocessing and O(1) query time complexity
+- Optimize subtree size calculation using DFS, tree traversal, and tree properties
+- Handle edge cases in subtree size queries (single node, linear tree, star tree, large trees)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

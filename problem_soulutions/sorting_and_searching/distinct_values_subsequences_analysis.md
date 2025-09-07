@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/distinct_values_subsequence
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subsequence problems with distinct value constraints and combinatorial counting
-- [ ] **Objective 2**: Apply dynamic programming and combinatorial techniques to count subsequences with exactly k distinct values
-- [ ] **Objective 3**: Implement efficient subsequence counting algorithms with O(n*k) time complexity
-- [ ] **Objective 4**: Optimize subsequence problems using dynamic programming and distinct value tracking
-- [ ] **Objective 5**: Handle edge cases in subsequence problems (k=1, k=n, all distinct values, no solution)
+- Understand subsequence problems with distinct value constraints and combinatorial counting
+- Apply dynamic programming and combinatorial techniques to count subsequences with exactly k distinct values
+- Implement efficient subsequence counting algorithms with O(n*k) time complexity
+- Optimize subsequence problems using dynamic programming and distinct value tracking
+- Handle edge cases in subsequence problems (k=1, k=n, all distinct values, no solution)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

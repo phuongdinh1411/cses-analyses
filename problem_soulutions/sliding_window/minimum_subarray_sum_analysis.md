@@ -11,11 +11,11 @@ permalink: /problem_soulutions/sliding_window/minimum_subarray_sum_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand minimum subarray problems and the relationship with maximum subarray problems
-- [ ] **Objective 2**: Apply modified Kadane's algorithm to efficiently find minimum sum of contiguous subarrays
-- [ ] **Objective 3**: Implement efficient minimum subarray algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize minimum subarray problems using dynamic programming and greedy approaches
-- [ ] **Objective 5**: Handle edge cases in minimum subarray problems (all positive numbers, single element, empty arrays)
+- Understand minimum subarray problems and the relationship with maximum subarray problems
+- Apply modified Kadane's algorithm to efficiently find minimum sum of contiguous subarrays
+- Implement efficient minimum subarray algorithms with O(n) time complexity
+- Optimize minimum subarray problems using dynamic programming and greedy approaches
+- Handle edge cases in minimum subarray problems (all positive numbers, single element, empty arrays)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

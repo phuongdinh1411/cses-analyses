@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/static_range_minimum_queries_analys
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand static range query problems and range minimum finding concepts
-- [ ] **Objective 2**: Apply sparse tables or segment trees to efficiently find range minimums
-- [ ] **Objective 3**: Implement efficient static range query algorithms with O(1) or O(log n) query time
-- [ ] **Objective 4**: Optimize range minimum queries using sparse tables and advanced data structures
-- [ ] **Objective 5**: Handle edge cases in range minimum queries (large arrays, boundary conditions, minimum finding)
+- Understand static range query problems and range minimum finding concepts
+- Apply sparse tables or segment trees to efficiently find range minimums
+- Implement efficient static range query algorithms with O(1) or O(log n) query time
+- Optimize range minimum queries using sparse tables and advanced data structures
+- Handle edge cases in range minimum queries (large arrays, boundary conditions, minimum finding)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

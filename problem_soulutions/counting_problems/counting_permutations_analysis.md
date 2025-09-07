@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/counting_permutations_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of permutations and inversion counting
-- [ ] **Objective 2**: Apply dynamic programming to count permutations with specific properties
-- [ ] **Objective 3**: Implement efficient algorithms for permutation counting with constraints
-- [ ] **Objective 4**: Optimize permutation counting using mathematical formulas and DP
-- [ ] **Objective 5**: Handle large permutation counts using modular arithmetic
+- Understand the concept of permutations and inversion counting
+- Apply dynamic programming to count permutations with specific properties
+- Implement efficient algorithms for permutation counting with constraints
+- Optimize permutation counting using mathematical formulas and DP
+- Handle large permutation counts using modular arithmetic
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

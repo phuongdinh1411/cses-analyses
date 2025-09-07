@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/counting_paths_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand tree path counting problems and path analysis algorithms
-- [ ] **Objective 2**: Apply dynamic programming on trees to count paths passing through each node
-- [ ] **Objective 3**: Implement efficient path counting algorithms with O(n) preprocessing and O(1) query time complexity
-- [ ] **Objective 4**: Optimize path counting using dynamic programming, tree properties, and combinatorial analysis
-- [ ] **Objective 5**: Handle edge cases in path counting (single node, linear tree, star tree, large trees)
+- Understand tree path counting problems and path analysis algorithms
+- Apply dynamic programming on trees to count paths passing through each node
+- Implement efficient path counting algorithms with O(n) preprocessing and O(1) query time complexity
+- Optimize path counting using dynamic programming, tree properties, and combinatorial analysis
+- Handle edge cases in path counting (single node, linear tree, star tree, large trees)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/mex_grid_construction_ii_an
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand advanced MEX concepts and dual constraint grid construction problems
-- [ ] **Objective 2**: Apply advanced constraint satisfaction and mathematical analysis for dual MEX constraints
-- [ ] **Objective 3**: Implement efficient advanced grid construction algorithms with proper dual MEX validation
-- [ ] **Objective 4**: Optimize advanced grid construction using sophisticated mathematical analysis and constraint satisfaction
-- [ ] **Objective 5**: Handle edge cases in advanced grid construction (complex constraints, impossible dual MEX, large grids)
+- Understand advanced MEX concepts and dual constraint grid construction problems
+- Apply advanced constraint satisfaction and mathematical analysis for dual MEX constraints
+- Implement efficient advanced grid construction algorithms with proper dual MEX validation
+- Optimize advanced grid construction using sophisticated mathematical analysis and constraint satisfaction
+- Handle edge cases in advanced grid construction (complex constraints, impossible dual MEX, large grids)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

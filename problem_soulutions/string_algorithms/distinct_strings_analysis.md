@@ -10,11 +10,11 @@ permalink: /problem_soulutions/string_algorithms/distinct_strings_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand distinct substring counting problems and suffix-based algorithms
-- [ ] **Objective 2**: Apply suffix arrays or suffix automaton to efficiently count unique substrings
-- [ ] **Objective 3**: Implement efficient distinct substring counting algorithms with O(n²) or O(n) time complexity
-- [ ] **Objective 4**: Optimize substring counting using advanced string data structures and algorithms
-- [ ] **Objective 5**: Handle edge cases in substring counting (empty strings, single character, all same characters)
+- Understand distinct substring counting problems and suffix-based algorithms
+- Apply suffix arrays or suffix automaton to efficiently count unique substrings
+- Implement efficient distinct substring counting algorithms with O(n²) or O(n) time complexity
+- Optimize substring counting using advanced string data structures and algorithms
+- Handle edge cases in substring counting (empty strings, single character, all same characters)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

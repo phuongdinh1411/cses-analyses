@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/reading_books_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand parallel processing problems and maximum element optimization
-- [ ] **Objective 2**: Apply simple optimization to find minimum time for parallel task completion
-- [ ] **Objective 3**: Implement efficient parallel processing algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize parallel processing problems using maximum element finding and time calculation
-- [ ] **Objective 5**: Handle edge cases in parallel processing (single book, all books same time, large reading times)
+- Understand parallel processing problems and maximum element optimization
+- Apply simple optimization to find minimum time for parallel task completion
+- Implement efficient parallel processing algorithms with O(n) time complexity
+- Optimize parallel processing problems using maximum element finding and time calculation
+- Handle edge cases in parallel processing (single book, all books same time, large reading times)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -10,11 +10,11 @@ permalink: /problem_soulutions/advanced_graph_problems/nearest_shops_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of multi-source shortest path problems
-- [ ] **Objective 2**: Apply Dijkstra's algorithm with multiple source vertices
-- [ ] **Objective 3**: Implement efficient multi-source BFS for unweighted graphs
-- [ ] **Objective 4**: Optimize shortest path algorithms for multiple destinations
-- [ ] **Objective 5**: Handle edge cases in multi-source problems (no reachable shops, disconnected components)
+- Understand the concept of multi-source shortest path problems
+- Apply Dijkstra's algorithm with multiple source vertices
+- Implement efficient multi-source BFS for unweighted graphs
+- Optimize shortest path algorithms for multiple destinations
+- Handle edge cases in multi-source problems (no reachable shops, disconnected components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

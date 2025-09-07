@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/all_letter_subgrid_count_i_anal
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subgrid analysis and alphabet completeness checking
-- [ ] **Objective 2**: Apply efficient algorithms for counting subgrids with specific properties
-- [ ] **Objective 3**: Implement optimized subgrid counting using sliding window techniques
-- [ ] **Objective 4**: Optimize subgrid counting using bit manipulation and set operations
-- [ ] **Objective 5**: Handle edge cases in subgrid counting (small grids, missing letters)
+- Understand subgrid analysis and alphabet completeness checking
+- Apply efficient algorithms for counting subgrids with specific properties
+- Implement optimized subgrid counting using sliding window techniques
+- Optimize subgrid counting using bit manipulation and set operations
+- Handle edge cases in subgrid counting (small grids, missing letters)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

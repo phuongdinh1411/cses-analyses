@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/functional_graph_distribution_a
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand functional graphs and their properties in graph theory
-- [ ] **Objective 2**: Apply combinatorics to count all possible functions from a set to itself
-- [ ] **Objective 3**: Implement efficient algorithms for counting functional graphs
-- [ ] **Objective 4**: Optimize functional graph counting using mathematical formulas and modular arithmetic
-- [ ] **Objective 5**: Handle large functional graph counts using modular arithmetic and optimization
+- Understand functional graphs and their properties in graph theory
+- Apply combinatorics to count all possible functions from a set to itself
+- Implement efficient algorithms for counting functional graphs
+- Optimize functional graph counting using mathematical formulas and modular arithmetic
+- Handle large functional graph counts using modular arithmetic and optimization
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

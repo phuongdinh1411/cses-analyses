@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/tree_diameter_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand tree diameter problems and longest path algorithms in trees
-- [ ] **Objective 2**: Apply DFS-based algorithms to find the diameter of a tree efficiently
-- [ ] **Objective 3**: Implement efficient tree diameter algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize tree diameter calculation using DFS, BFS, and tree traversal techniques
-- [ ] **Objective 5**: Handle edge cases in tree diameter (single node, linear tree, star tree)
+- Understand tree diameter problems and longest path algorithms in trees
+- Apply DFS-based algorithms to find the diameter of a tree efficiently
+- Implement efficient tree diameter algorithms with O(n) time complexity
+- Optimize tree diameter calculation using DFS, BFS, and tree traversal techniques
+- Handle edge cases in tree diameter (single node, linear tree, star tree)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

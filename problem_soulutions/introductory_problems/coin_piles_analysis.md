@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/coin_piles_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand mathematical modeling and constraint satisfaction problems
-- [ ] **Objective 2**: Apply linear algebra and system of equations to solve constraint problems
-- [ ] **Objective 3**: Implement efficient mathematical solution algorithms with proper constraint validation
-- [ ] **Objective 4**: Optimize mathematical problems using algebraic manipulation and constraint analysis
-- [ ] **Objective 5**: Handle edge cases in mathematical problems (large numbers, impossible constraints, boundary conditions)
+- Understand mathematical modeling and constraint satisfaction problems
+- Apply linear algebra and system of equations to solve constraint problems
+- Implement efficient mathematical solution algorithms with proper constraint validation
+- Optimize mathematical problems using algebraic manipulation and constraint analysis
+- Handle edge cases in mathematical problems (large numbers, impossible constraints, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

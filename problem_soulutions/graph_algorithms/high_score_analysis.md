@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/high_score_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand longest path problems and negative weight handling in graphs
-- [ ] **Objective 2**: Apply Bellman-Ford algorithm or modified Dijkstra's to handle negative weights
-- [ ] **Objective 3**: Implement efficient longest path algorithms with negative cycle detection
-- [ ] **Objective 4**: Optimize longest path solutions using graph representations and cycle detection
-- [ ] **Objective 5**: Handle edge cases in longest path problems (negative cycles, unreachable destinations, infinite scores)
+- Understand longest path problems and negative weight handling in graphs
+- Apply Bellman-Ford algorithm or modified Dijkstra's to handle negative weights
+- Implement efficient longest path algorithms with negative cycle detection
+- Optimize longest path solutions using graph representations and cycle detection
+- Handle edge cases in longest path problems (negative cycles, unreachable destinations, infinite scores)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

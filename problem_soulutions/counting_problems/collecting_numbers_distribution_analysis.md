@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/collecting_numbers_distribution
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand collection sequences and ordering constraints in combinatorics
-- [ ] **Objective 2**: Apply dynamic programming to count valid collection sequences
-- [ ] **Objective 3**: Implement efficient algorithms for counting constrained collection orders
-- [ ] **Objective 4**: Optimize collection counting using mathematical formulas and DP techniques
-- [ ] **Objective 5**: Handle edge cases in collection counting (duplicate numbers, impossible sequences)
+- Understand collection sequences and ordering constraints in combinatorics
+- Apply dynamic programming to count valid collection sequences
+- Implement efficient algorithms for counting constrained collection orders
+- Optimize collection counting using mathematical formulas and DP techniques
+- Handle edge cases in collection counting (duplicate numbers, impossible sequences)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

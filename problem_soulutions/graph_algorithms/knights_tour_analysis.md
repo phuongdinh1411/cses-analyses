@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/knights_tour_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand Hamiltonian path problems on grids and knight's tour concepts
-- [ ] **Objective 2**: Apply backtracking or Warnsdorff's algorithm to find knight's tours on chessboards
-- [ ] **Objective 3**: Implement efficient knight's tour algorithms with proper move validation and backtracking
-- [ ] **Objective 4**: Optimize knight's tour solutions using heuristic algorithms and move ordering
-- [ ] **Objective 5**: Handle edge cases in knight's tours (small boards, impossible tours, multiple solutions)
+- Understand Hamiltonian path problems on grids and knight's tour concepts
+- Apply backtracking or Warnsdorff's algorithm to find knight's tours on chessboards
+- Implement efficient knight's tour algorithms with proper move validation and backtracking
+- Optimize knight's tour solutions using heuristic algorithms and move ordering
+- Handle edge cases in knight's tours (small boards, impossible tours, multiple solutions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

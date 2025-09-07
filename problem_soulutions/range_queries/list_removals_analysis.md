@@ -10,11 +10,11 @@ permalink: /problem_soulutions/range_queries/list_removals_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand dynamic range query problems with element removal and k-th smallest element finding
-- [ ] **Objective 2**: Apply Segment Trees or Binary Indexed Trees to handle k-th smallest element queries with removal
-- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for k-th element and removal operations
-- [ ] **Objective 4**: Optimize dynamic range queries using advanced data structures and efficient element tracking
-- [ ] **Objective 5**: Handle edge cases in dynamic range queries (empty arrays, invalid k values, element removal tracking)
+- Understand dynamic range query problems with element removal and k-th smallest element finding
+- Apply Segment Trees or Binary Indexed Trees to handle k-th smallest element queries with removal
+- Implement efficient dynamic range query algorithms with O(log n) time for k-th element and removal operations
+- Optimize dynamic range queries using advanced data structures and efficient element tracking
+- Handle edge cases in dynamic range queries (empty arrays, invalid k values, element removal tracking)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

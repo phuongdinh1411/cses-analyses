@@ -11,11 +11,11 @@ permalink: /problem_soulutions/geometry/polygon_lattice_points_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand lattice point counting problems and integer coordinate enumeration
-- [ ] **Objective 2**: Apply Pick's theorem or ray casting algorithms to count lattice points in polygons
-- [ ] **Objective 3**: Implement efficient algorithms for counting lattice points inside polygons
-- [ ] **Objective 4**: Optimize lattice point counting using geometric properties and coordinate transformations
-- [ ] **Objective 5**: Handle edge cases in lattice point counting (degenerate polygons, boundary points, large coordinate values)
+- Understand lattice point counting problems and integer coordinate enumeration
+- Apply Pick's theorem or ray casting algorithms to count lattice points in polygons
+- Implement efficient algorithms for counting lattice points inside polygons
+- Optimize lattice point counting using geometric properties and coordinate transformations
+- Handle edge cases in lattice point counting (degenerate polygons, boundary points, large coordinate values)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

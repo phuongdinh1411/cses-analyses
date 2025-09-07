@@ -10,11 +10,11 @@ permalink: /problem_soulutions/range_queries/forest_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand 2D range query problems and rectangular region sum calculations
-- [ ] **Objective 2**: Apply 2D prefix sums to efficiently answer rectangular range sum queries
-- [ ] **Objective 3**: Implement efficient 2D range query algorithms with O(1) query time after preprocessing
-- [ ] **Objective 4**: Optimize 2D range queries using prefix sum techniques and mathematical analysis
-- [ ] **Objective 5**: Handle edge cases in 2D range queries (large grids, boundary conditions, coordinate validation)
+- Understand 2D range query problems and rectangular region sum calculations
+- Apply 2D prefix sums to efficiently answer rectangular range sum queries
+- Implement efficient 2D range query algorithms with O(1) query time after preprocessing
+- Optimize 2D range queries using prefix sum techniques and mathematical analysis
+- Handle edge cases in 2D range queries (large grids, boundary conditions, coordinate validation)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

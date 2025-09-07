@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/josephus_problem_i_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the Josephus problem and circular elimination algorithms
-- [ ] **Objective 2**: Apply mathematical formulas and simulation techniques to solve Josephus problems
-- [ ] **Objective 3**: Implement efficient Josephus algorithms with O(log n) or O(n) time complexity
-- [ ] **Objective 4**: Optimize Josephus problems using mathematical formulas and efficient simulation
-- [ ] **Objective 5**: Handle edge cases in Josephus problems (single person, large n, step size variations)
+- Understand the Josephus problem and circular elimination algorithms
+- Apply mathematical formulas and simulation techniques to solve Josephus problems
+- Implement efficient Josephus algorithms with O(log n) or O(n) time complexity
+- Optimize Josephus problems using mathematical formulas and efficient simulation
+- Handle edge cases in Josephus problems (single person, large n, step size variations)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

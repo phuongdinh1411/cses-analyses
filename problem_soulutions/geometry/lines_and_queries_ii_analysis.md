@@ -11,11 +11,11 @@ permalink: /problem_soulutions/geometry/lines_and_queries_ii_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand line-line intersection queries and geometric intersection counting
-- [ ] **Objective 2**: Apply line intersection algorithms and segment-line intersection testing for query processing
-- [ ] **Objective 3**: Implement efficient algorithms for processing multiple line-segment intersection queries
-- [ ] **Objective 4**: Optimize intersection query processing using geometric properties and coordinate transformations
-- [ ] **Objective 5**: Handle edge cases in line-segment queries (parallel lines, collinear segments, boundary conditions)
+- Understand line-line intersection queries and geometric intersection counting
+- Apply line intersection algorithms and segment-line intersection testing for query processing
+- Implement efficient algorithms for processing multiple line-segment intersection queries
+- Optimize intersection query processing using geometric properties and coordinate transformations
+- Handle edge cases in line-segment queries (parallel lines, collinear segments, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

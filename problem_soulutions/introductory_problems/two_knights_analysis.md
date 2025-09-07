@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/two_knights_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand combinatorial counting and chess piece placement problems
-- [ ] **Objective 2**: Apply mathematical formulas to count non-attacking knight placements
-- [ ] **Objective 3**: Implement efficient combinatorial counting algorithms with proper mathematical calculations
-- [ ] **Objective 4**: Optimize combinatorial counting using mathematical analysis and chess piece movement patterns
-- [ ] **Objective 5**: Handle edge cases in combinatorial problems (small boards, large boards, mathematical precision)
+- Understand combinatorial counting and chess piece placement problems
+- Apply mathematical formulas to count non-attacking knight placements
+- Implement efficient combinatorial counting algorithms with proper mathematical calculations
+- Optimize combinatorial counting using mathematical analysis and chess piece movement patterns
+- Handle edge cases in combinatorial problems (small boards, large boards, mathematical precision)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

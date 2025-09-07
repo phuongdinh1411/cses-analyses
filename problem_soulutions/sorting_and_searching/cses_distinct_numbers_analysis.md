@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/cses_distinct_numbers_analy
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand distinct value counting problems and set-based approaches
-- [ ] **Objective 2**: Apply hash sets or sorting to efficiently count distinct values in arrays
-- [ ] **Objective 3**: Implement efficient distinct counting algorithms with O(n) or O(n log n) time complexity
-- [ ] **Objective 4**: Optimize distinct value counting using appropriate data structures and algorithms
-- [ ] **Objective 5**: Handle edge cases in distinct counting (empty arrays, single element, all same values)
+- Understand distinct value counting problems and set-based approaches
+- Apply hash sets or sorting to efficiently count distinct values in arrays
+- Implement efficient distinct counting algorithms with O(n) or O(n log n) time complexity
+- Optimize distinct value counting using appropriate data structures and algorithms
+- Handle edge cases in distinct counting (empty arrays, single element, all same values)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

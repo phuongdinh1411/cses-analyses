@@ -11,11 +11,11 @@ permalink: /problem_soulutions/dynamic_programming/longest_common_subsequence_an
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subsequence problems and longest common subsequence calculations
-- [ ] **Objective 2**: Apply 2D DP techniques to solve subsequence problems with string matching
-- [ ] **Objective 3**: Implement efficient 2D DP solutions for LCS and subsequence optimization
-- [ ] **Objective 4**: Optimize 2D DP solutions using space-efficient techniques and subsequence tracking
-- [ ] **Objective 5**: Handle edge cases in string DP (empty strings, no common subsequences, single characters)
+- Understand subsequence problems and longest common subsequence calculations
+- Apply 2D DP techniques to solve subsequence problems with string matching
+- Implement efficient 2D DP solutions for LCS and subsequence optimization
+- Optimize 2D DP solutions using space-efficient techniques and subsequence tracking
+- Handle edge cases in string DP (empty strings, no common subsequences, single characters)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

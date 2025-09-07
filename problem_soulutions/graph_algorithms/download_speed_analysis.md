@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/download_speed_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand maximum flow problems and network flow concepts
-- [ ] **Objective 2**: Apply Ford-Fulkerson algorithm or Edmonds-Karp algorithm to find maximum flow
-- [ ] **Objective 3**: Implement efficient maximum flow algorithms with proper residual graph handling
-- [ ] **Objective 4**: Optimize maximum flow solutions using graph representations and flow algorithms
-- [ ] **Objective 5**: Handle edge cases in maximum flow problems (no flow paths, capacity constraints, disconnected graphs)
+- Understand maximum flow problems and network flow concepts
+- Apply Ford-Fulkerson algorithm or Edmonds-Karp algorithm to find maximum flow
+- Implement efficient maximum flow algorithms with proper residual graph handling
+- Optimize maximum flow solutions using graph representations and flow algorithms
+- Handle edge cases in maximum flow problems (no flow paths, capacity constraints, disconnected graphs)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

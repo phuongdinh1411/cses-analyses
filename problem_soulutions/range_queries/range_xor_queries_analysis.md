@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/range_xor_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand static range query problems and XOR operation properties
-- [ ] **Objective 2**: Apply prefix XOR arrays to efficiently compute range XOR queries
-- [ ] **Objective 3**: Implement efficient static range query algorithms with O(1) query time after preprocessing
-- [ ] **Objective 4**: Optimize range XOR queries using prefix XOR techniques and mathematical properties
-- [ ] **Objective 5**: Handle edge cases in range XOR queries (large arrays, XOR properties, boundary conditions)
+- Understand static range query problems and XOR operation properties
+- Apply prefix XOR arrays to efficiently compute range XOR queries
+- Implement efficient static range query algorithms with O(1) query time after preprocessing
+- Optimize range XOR queries using prefix XOR techniques and mathematical properties
+- Handle edge cases in range XOR queries (large arrays, XOR properties, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

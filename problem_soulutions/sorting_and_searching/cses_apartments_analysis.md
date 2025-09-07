@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/cses_apartments_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand bipartite matching problems and optimal assignment strategies
-- [ ] **Objective 2**: Apply greedy algorithms with sorting to maximize matching in bipartite graphs
-- [ ] **Objective 3**: Implement efficient matching algorithms with O(n log n) time complexity
-- [ ] **Objective 4**: Optimize bipartite matching using sorting and two-pointer techniques
-- [ ] **Objective 5**: Handle edge cases in matching problems (no matches, all matches, boundary conditions)
+- Understand bipartite matching problems and optimal assignment strategies
+- Apply greedy algorithms with sorting to maximize matching in bipartite graphs
+- Implement efficient matching algorithms with O(n log n) time complexity
+- Optimize bipartite matching using sorting and two-pointer techniques
+- Handle edge cases in matching problems (no matches, all matches, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

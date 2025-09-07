@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/counting_sequences_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand sequence counting with constraints and consecutive element restrictions
-- [ ] **Objective 2**: Apply dynamic programming to count valid sequences with constraints
-- [ ] **Objective 3**: Implement efficient DP algorithms for sequence counting problems
-- [ ] **Objective 4**: Optimize sequence counting using mathematical formulas and DP optimization
-- [ ] **Objective 5**: Handle large sequence counts using modular arithmetic and space optimization
+- Understand sequence counting with constraints and consecutive element restrictions
+- Apply dynamic programming to count valid sequences with constraints
+- Implement efficient DP algorithms for sequence counting problems
+- Optimize sequence counting using mathematical formulas and DP optimization
+- Handle large sequence counts using modular arithmetic and space optimization
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

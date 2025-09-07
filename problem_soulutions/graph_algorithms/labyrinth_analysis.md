@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand grid pathfinding problems and minimum cost path concepts
-- [ ] **Objective 2**: Apply BFS or Dijkstra's algorithm to find minimum cost paths in grids
-- [ ] **Objective 3**: Implement efficient grid pathfinding algorithms with proper cost tracking
-- [ ] **Objective 4**: Optimize grid pathfinding solutions using queue management and cost calculations
-- [ ] **Objective 5**: Handle edge cases in grid pathfinding (no valid path, single cell grids, boundary conditions)
+- Understand grid pathfinding problems and minimum cost path concepts
+- Apply BFS or Dijkstra's algorithm to find minimum cost paths in grids
+- Implement efficient grid pathfinding algorithms with proper cost tracking
+- Optimize grid pathfinding solutions using queue management and cost calculations
+- Handle edge cases in grid pathfinding (no valid path, single cell grids, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

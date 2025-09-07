@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/planets_queries_ii_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand path intersection problems and common ancestor concepts in functional graphs
-- [ ] **Objective 2**: Apply binary lifting or cycle detection to find first common planets in paths
-- [ ] **Objective 3**: Implement efficient path intersection algorithms with proper cycle handling
-- [ ] **Objective 4**: Optimize path intersection queries using binary lifting and cycle detection
-- [ ] **Objective 5**: Handle edge cases in path intersection (no intersection, same starting planet, cycles)
+- Understand path intersection problems and common ancestor concepts in functional graphs
+- Apply binary lifting or cycle detection to find first common planets in paths
+- Implement efficient path intersection algorithms with proper cycle handling
+- Optimize path intersection queries using binary lifting and cycle detection
+- Handle edge cases in path intersection (no intersection, same starting planet, cycles)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

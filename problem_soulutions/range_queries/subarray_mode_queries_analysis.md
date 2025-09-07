@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/subarray_mode_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand dynamic range query problems with point updates and mode (most frequent value) finding
-- [ ] **Objective 2**: Apply coordinate compression and frequency tracking to handle mode calculation with updates
-- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and mode queries
-- [ ] **Objective 4**: Optimize mode calculation using coordinate compression and advanced frequency tracking
-- [ ] **Objective 5**: Handle edge cases in mode calculation (tie-breaking, large values, coordinate compression, frequency tracking)
+- Understand dynamic range query problems with point updates and mode (most frequent value) finding
+- Apply coordinate compression and frequency tracking to handle mode calculation with updates
+- Implement efficient dynamic range query algorithms with O(log n) time for updates and mode queries
+- Optimize mode calculation using coordinate compression and advanced frequency tracking
+- Handle edge cases in mode calculation (tie-breaking, large values, coordinate compression, frequency tracking)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

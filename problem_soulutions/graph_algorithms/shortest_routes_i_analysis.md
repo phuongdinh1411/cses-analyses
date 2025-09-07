@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/shortest_routes_i_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand single-source shortest path problems and Dijkstra's algorithm fundamentals
-- [ ] **Objective 2**: Apply Dijkstra's algorithm with priority queues to find shortest paths in weighted graphs
-- [ ] **Objective 3**: Implement efficient shortest path algorithms with proper data structure usage
-- [ ] **Objective 4**: Optimize shortest path solutions using priority queues and graph representations
-- [ ] **Objective 5**: Handle edge cases in shortest path problems (unreachable nodes, disconnected graphs, large weights)
+- Understand single-source shortest path problems and Dijkstra's algorithm fundamentals
+- Apply Dijkstra's algorithm with priority queues to find shortest paths in weighted graphs
+- Implement efficient shortest path algorithms with proper data structure usage
+- Optimize shortest path solutions using priority queues and graph representations
+- Handle edge cases in shortest path problems (unreachable nodes, disconnected graphs, large weights)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/sum_of_three_values_analysi
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand three-sum problems and two-pointer techniques with sorting
-- [ ] **Objective 2**: Apply sorting and two-pointer technique to find three values with target sum
-- [ ] **Objective 3**: Implement efficient three-sum algorithms with O(n²) time complexity
-- [ ] **Objective 4**: Optimize three-sum problems using sorting, two-pointer technique, and duplicate handling
-- [ ] **Objective 5**: Handle edge cases in three-sum problems (no solution, duplicate values, large arrays)
+- Understand three-sum problems and two-pointer techniques with sorting
+- Apply sorting and two-pointer technique to find three values with target sum
+- Implement efficient three-sum algorithms with O(n²) time complexity
+- Optimize three-sum problems using sorting, two-pointer technique, and duplicate handling
+- Handle edge cases in three-sum problems (no solution, duplicate values, large arrays)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

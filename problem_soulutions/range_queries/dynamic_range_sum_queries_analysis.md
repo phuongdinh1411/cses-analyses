@@ -10,11 +10,11 @@ permalink: /problem_soulutions/range_queries/dynamic_range_sum_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand dynamic range query problems and the need for efficient update and query operations
-- [ ] **Objective 2**: Apply Binary Indexed Trees (Fenwick Trees) or Segment Trees to handle dynamic range sum queries
-- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) update and query operations
-- [ ] **Objective 4**: Optimize dynamic range queries using advanced data structures and efficient algorithms
-- [ ] **Objective 5**: Handle edge cases in dynamic range queries (large arrays, frequent updates, boundary conditions)
+- Understand dynamic range query problems and the need for efficient update and query operations
+- Apply Binary Indexed Trees (Fenwick Trees) or Segment Trees to handle dynamic range sum queries
+- Implement efficient dynamic range query algorithms with O(log n) update and query operations
+- Optimize dynamic range queries using advanced data structures and efficient algorithms
+- Handle edge cases in dynamic range queries (large arrays, frequent updates, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/permutation_inversions_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of inversions in permutations and their properties
-- [ ] **Objective 2**: Apply merge sort algorithm to count inversions efficiently
-- [ ] **Objective 3**: Implement binary indexed tree (Fenwick tree) for inversion counting
-- [ ] **Objective 4**: Optimize inversion counting algorithms for large permutations
-- [ ] **Objective 5**: Handle edge cases in inversion counting (sorted arrays, reverse sorted arrays)
+- Understand the concept of inversions in permutations and their properties
+- Apply merge sort algorithm to count inversions efficiently
+- Implement binary indexed tree (Fenwick tree) for inversion counting
+- Optimize inversion counting algorithms for large permutations
+- Handle edge cases in inversion counting (sorted arrays, reverse sorted arrays)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

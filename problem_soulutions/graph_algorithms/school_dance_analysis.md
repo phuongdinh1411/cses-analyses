@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/school_dance_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand bipartite matching problems and maximum matching concepts
-- [ ] **Objective 2**: Apply maximum flow algorithms or Hungarian algorithm to solve bipartite matching
-- [ ] **Objective 3**: Implement efficient bipartite matching algorithms with proper graph construction
-- [ ] **Objective 4**: Optimize bipartite matching solutions using flow networks and matching algorithms
-- [ ] **Objective 5**: Handle edge cases in bipartite matching (no matches possible, complete matching, disconnected components)
+- Understand bipartite matching problems and maximum matching concepts
+- Apply maximum flow algorithms or Hungarian algorithm to solve bipartite matching
+- Implement efficient bipartite matching algorithms with proper graph construction
+- Optimize bipartite matching solutions using flow networks and matching algorithms
+- Handle edge cases in bipartite matching (no matches possible, complete matching, disconnected components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

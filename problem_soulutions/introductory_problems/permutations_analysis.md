@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/permutations_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand permutation generation and lexicographic ordering concepts
-- [ ] **Objective 2**: Apply backtracking or next_permutation to generate all permutations
-- [ ] **Objective 3**: Implement efficient permutation generation algorithms with proper lexicographic ordering
-- [ ] **Objective 4**: Optimize permutation generation using backtracking and lexicographic ordering techniques
-- [ ] **Objective 5**: Handle edge cases in permutation problems (small n, lexicographic ordering, large output)
+- Understand permutation generation and lexicographic ordering concepts
+- Apply backtracking or next_permutation to generate all permutations
+- Implement efficient permutation generation algorithms with proper lexicographic ordering
+- Optimize permutation generation using backtracking and lexicographic ordering techniques
+- Handle edge cases in permutation problems (small n, lexicographic ordering, large output)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

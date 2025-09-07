@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/planets_cycles_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand functional graphs and cycle detection in directed graphs
-- [ ] **Objective 2**: Apply DFS or iterative approaches to detect cycles and calculate cycle lengths
-- [ ] **Objective 3**: Implement efficient cycle detection algorithms with proper cycle length calculation
-- [ ] **Objective 4**: Optimize cycle detection using graph representations and cycle tracking
-- [ ] **Objective 5**: Handle edge cases in functional graph cycles (self-loops, multiple cycles, disconnected components)
+- Understand functional graphs and cycle detection in directed graphs
+- Apply DFS or iterative approaches to detect cycles and calculate cycle lengths
+- Implement efficient cycle detection algorithms with proper cycle length calculation
+- Optimize cycle detection using graph representations and cycle tracking
+- Handle edge cases in functional graph cycles (self-loops, multiple cycles, disconnected components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

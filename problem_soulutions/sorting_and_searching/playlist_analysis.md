@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/playlist_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand sliding window problems with uniqueness constraints and longest segment optimization
-- [ ] **Objective 2**: Apply sliding window technique to find longest contiguous subarray with unique elements
-- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity for uniqueness problems
-- [ ] **Objective 4**: Optimize sliding window problems using hash maps and two-pointer techniques
-- [ ] **Objective 5**: Handle edge cases in sliding window problems (all unique elements, all same elements, empty arrays)
+- Understand sliding window problems with uniqueness constraints and longest segment optimization
+- Apply sliding window technique to find longest contiguous subarray with unique elements
+- Implement efficient sliding window algorithms with O(n) time complexity for uniqueness problems
+- Optimize sliding window problems using hash maps and two-pointer techniques
+- Handle edge cases in sliding window problems (all unique elements, all same elements, empty arrays)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

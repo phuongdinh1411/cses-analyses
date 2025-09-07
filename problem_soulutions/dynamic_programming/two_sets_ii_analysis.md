@@ -11,11 +11,11 @@ permalink: /problem_soulutions/dynamic_programming/two_sets_ii_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand partition problems and equal sum subset division in DP
-- [ ] **Objective 2**: Apply DP techniques to count ways of dividing sets into equal sum subsets
-- [ ] **Objective 3**: Implement efficient DP solutions for partition counting and subset division
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and modular arithmetic
-- [ ] **Objective 5**: Handle edge cases in partition DP (impossible partitions, odd sums, boundary conditions)
+- Understand partition problems and equal sum subset division in DP
+- Apply DP techniques to count ways of dividing sets into equal sum subsets
+- Implement efficient DP solutions for partition counting and subset division
+- Optimize DP solutions using space-efficient techniques and modular arithmetic
+- Handle edge cases in partition DP (impossible partitions, odd sums, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

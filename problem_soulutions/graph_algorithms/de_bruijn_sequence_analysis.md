@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand De Bruijn sequences and Eulerian path concepts in graph theory
-- [ ] **Objective 2**: Apply Eulerian path algorithms to construct De Bruijn sequences using graph traversal
-- [ ] **Objective 3**: Implement efficient De Bruijn sequence algorithms with proper graph construction
-- [ ] **Objective 4**: Optimize De Bruijn sequence construction using Eulerian path algorithms and graph representations
-- [ ] **Objective 5**: Handle edge cases in De Bruijn sequences (small orders, large orders, sequence construction)
+- Understand De Bruijn sequences and Eulerian path concepts in graph theory
+- Apply Eulerian path algorithms to construct De Bruijn sequences using graph traversal
+- Implement efficient De Bruijn sequence algorithms with proper graph construction
+- Optimize De Bruijn sequence construction using Eulerian path algorithms and graph representations
+- Handle edge cases in De Bruijn sequences (small orders, large orders, sequence construction)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

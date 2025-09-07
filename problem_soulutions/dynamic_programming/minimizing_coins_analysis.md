@@ -10,11 +10,11 @@ permalink: /problem_soulutions/dynamic_programming/minimizing_coins_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand optimization problems in dynamic programming and minimum value calculations
-- [ ] **Objective 2**: Apply bottom-up DP to solve optimization problems with recurrence relations
-- [ ] **Objective 3**: Implement efficient DP solutions for finding minimum values and optimal solutions
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and handle impossible cases
-- [ ] **Objective 5**: Handle edge cases in optimization DP (impossible sums, single coin solutions, boundary conditions)
+- Understand optimization problems in dynamic programming and minimum value calculations
+- Apply bottom-up DP to solve optimization problems with recurrence relations
+- Implement efficient DP solutions for finding minimum values and optimal solutions
+- Optimize DP solutions using space-efficient techniques and handle impossible cases
+- Handle edge cases in optimization DP (impossible sums, single coin solutions, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

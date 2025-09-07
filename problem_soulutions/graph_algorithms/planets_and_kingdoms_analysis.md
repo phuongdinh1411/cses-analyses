@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand strongly connected components and graph decomposition concepts
-- [ ] **Objective 2**: Apply Tarjan's algorithm or Kosaraju's algorithm to find SCCs in directed graphs
-- [ ] **Objective 3**: Implement efficient SCC algorithms with proper component assignment and tracking
-- [ ] **Objective 4**: Optimize SCC solutions using graph representations and component management
-- [ ] **Objective 5**: Handle edge cases in SCC problems (single nodes, disconnected graphs, self-loops)
+- Understand strongly connected components and graph decomposition concepts
+- Apply Tarjan's algorithm or Kosaraju's algorithm to find SCCs in directed graphs
+- Implement efficient SCC algorithms with proper component assignment and tracking
+- Optimize SCC solutions using graph representations and component management
+- Handle edge cases in SCC problems (single nodes, disconnected graphs, self-loops)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

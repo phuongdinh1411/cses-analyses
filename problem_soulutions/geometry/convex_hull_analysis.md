@@ -11,11 +11,11 @@ permalink: /problem_soulutions/geometry/convex_hull_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand convex hull concepts and the smallest convex polygon containing all points
-- [ ] **Objective 2**: Apply Graham's scan or Andrew's monotone chain algorithm to compute convex hulls
-- [ ] **Objective 3**: Implement efficient convex hull algorithms with proper point ordering and angle calculations
-- [ ] **Objective 4**: Optimize convex hull solutions using space-efficient techniques and coordinate transformations
-- [ ] **Objective 5**: Handle edge cases in convex hull problems (collinear points, duplicate points, boundary conditions)
+- Understand convex hull concepts and the smallest convex polygon containing all points
+- Apply Graham's scan or Andrew's monotone chain algorithm to compute convex hulls
+- Implement efficient convex hull algorithms with proper point ordering and angle calculations
+- Optimize convex hull solutions using space-efficient techniques and coordinate transformations
+- Handle edge cases in convex hull problems (collinear points, duplicate points, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

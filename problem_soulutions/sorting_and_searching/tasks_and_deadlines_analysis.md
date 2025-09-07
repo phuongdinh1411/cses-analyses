@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysi
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand task scheduling problems and greedy optimization strategies
-- [ ] **Objective 2**: Apply greedy algorithms with sorting to maximize profit in task scheduling
-- [ ] **Objective 3**: Implement efficient task scheduling algorithms with O(n log n) time complexity
-- [ ] **Objective 4**: Optimize task scheduling using sorting, greedy selection, and profit maximization
-- [ ] **Objective 5**: Handle edge cases in task scheduling (impossible deadlines, negative profits, single task)
+- Understand task scheduling problems and greedy optimization strategies
+- Apply greedy algorithms with sorting to maximize profit in task scheduling
+- Implement efficient task scheduling algorithms with O(n log n) time complexity
+- Optimize task scheduling using sorting, greedy selection, and profit maximization
+- Handle edge cases in task scheduling (impossible deadlines, negative profits, single task)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

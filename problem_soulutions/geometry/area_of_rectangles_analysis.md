@@ -11,11 +11,11 @@ permalink: /problem_soulutions/geometry/area_of_rectangles_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand rectangle union problems and area calculation with overlapping regions
-- [ ] **Objective 2**: Apply sweep line algorithm or coordinate compression to compute union areas
-- [ ] **Objective 3**: Implement efficient rectangle union algorithms with proper overlap handling
-- [ ] **Objective 4**: Optimize area calculation using coordinate compression and event-driven processing
-- [ ] **Objective 5**: Handle edge cases in rectangle union (no overlaps, complete overlaps, boundary conditions)
+- Understand rectangle union problems and area calculation with overlapping regions
+- Apply sweep line algorithm or coordinate compression to compute union areas
+- Implement efficient rectangle union algorithms with proper overlap handling
+- Optimize area calculation using coordinate compression and event-driven processing
+- Handle edge cases in rectangle union (no overlaps, complete overlaps, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

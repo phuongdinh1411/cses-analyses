@@ -11,11 +11,11 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand advanced Hamiltonian tour problems with additional constraints
-- [ ] **Objective 2**: Apply matrix exponentiation for efficient Hamiltonian tour counting with constraints
-- [ ] **Objective 3**: Implement dynamic programming for Hamiltonian tour queries with fixed lengths and constraints
-- [ ] **Objective 4**: Optimize Hamiltonian tour query algorithms for multiple queries with constraints
-- [ ] **Objective 5**: Handle large tour lengths using modular arithmetic and matrix operations with constraint handling
+- Understand advanced Hamiltonian tour problems with additional constraints
+- Apply matrix exponentiation for efficient Hamiltonian tour counting with constraints
+- Implement dynamic programming for Hamiltonian tour queries with fixed lengths and constraints
+- Optimize Hamiltonian tour query algorithms for multiple queries with constraints
+- Handle large tour lengths using modular arithmetic and matrix operations with constraint handling
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

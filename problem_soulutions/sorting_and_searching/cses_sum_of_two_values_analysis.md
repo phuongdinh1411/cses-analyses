@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/cses_sum_of_two_values_anal
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand two-sum problems and hash map-based solutions
-- [ ] **Objective 2**: Apply hash maps to efficiently find two values with target sum
-- [ ] **Objective 3**: Implement efficient two-sum algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize two-sum problems using hash maps and complement searching
-- [ ] **Objective 5**: Handle edge cases in two-sum problems (no solution, duplicate values, large arrays)
+- Understand two-sum problems and hash map-based solutions
+- Apply hash maps to efficiently find two values with target sum
+- Implement efficient two-sum algorithms with O(n) time complexity
+- Optimize two-sum problems using hash maps and complement searching
+- Handle edge cases in two-sum problems (no solution, duplicate values, large arrays)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

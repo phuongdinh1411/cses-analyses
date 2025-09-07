@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/coin_collector_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand maximum path sum problems in DAGs and dynamic programming concepts
-- [ ] **Objective 2**: Apply topological sorting and dynamic programming to find maximum path sums in DAGs
-- [ ] **Objective 3**: Implement efficient DAG algorithms with proper topological ordering and DP
-- [ ] **Objective 4**: Optimize DAG path sum solutions using topological sorting and dynamic programming
-- [ ] **Objective 5**: Handle edge cases in DAG path problems (single nodes, disconnected components, negative values)
+- Understand maximum path sum problems in DAGs and dynamic programming concepts
+- Apply topological sorting and dynamic programming to find maximum path sums in DAGs
+- Implement efficient DAG algorithms with proper topological ordering and DP
+- Optimize DAG path sum solutions using topological sorting and dynamic programming
+- Handle edge cases in DAG path problems (single nodes, disconnected components, negative values)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

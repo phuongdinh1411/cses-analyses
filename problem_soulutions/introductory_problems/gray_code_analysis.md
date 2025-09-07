@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/gray_code_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand Gray code sequences and bit manipulation concepts
-- [ ] **Objective 2**: Apply bit manipulation and XOR operations to generate Gray code sequences
-- [ ] **Objective 3**: Implement efficient Gray code generation algorithms with proper bit operations
-- [ ] **Objective 4**: Optimize Gray code generation using mathematical formulas and bit manipulation
-- [ ] **Objective 5**: Handle edge cases in Gray code problems (large n, bit overflow, sequence validation)
+- Understand Gray code sequences and bit manipulation concepts
+- Apply bit manipulation and XOR operations to generate Gray code sequences
+- Implement efficient Gray code generation algorithms with proper bit operations
+- Optimize Gray code generation using mathematical formulas and bit manipulation
+- Handle edge cases in Gray code problems (large n, bit overflow, sequence validation)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/teleporters_path_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand Eulerian trail problems and graph connectivity concepts
-- [ ] **Objective 2**: Apply Hierholzer's algorithm or DFS-based approach to find Eulerian trails
-- [ ] **Objective 3**: Implement efficient Eulerian trail algorithms with proper edge tracking and trail construction
-- [ ] **Objective 4**: Optimize Eulerian trail solutions using graph representations and trail management
-- [ ] **Objective 5**: Handle edge cases in Eulerian trails (no trail exists, disconnected components, degree conditions)
+- Understand Eulerian trail problems and graph connectivity concepts
+- Apply Hierholzer's algorithm or DFS-based approach to find Eulerian trails
+- Implement efficient Eulerian trail algorithms with proper edge tracking and trail construction
+- Optimize Eulerian trail solutions using graph representations and trail management
+- Handle edge cases in Eulerian trails (no trail exists, disconnected components, degree conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

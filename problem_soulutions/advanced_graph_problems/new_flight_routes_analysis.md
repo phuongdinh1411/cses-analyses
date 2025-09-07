@@ -11,11 +11,11 @@ permalink: /problem_soulutions/advanced_graph_problems/new_flight_routes_analysi
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of strong connectivity in directed graphs
-- [ ] **Objective 2**: Apply strongly connected components (SCC) analysis for connectivity
-- [ ] **Objective 3**: Implement algorithms to find minimum edges for strong connectivity
-- [ ] **Objective 4**: Optimize connectivity algorithms for large graphs
-- [ ] **Objective 5**: Handle edge cases in connectivity problems (disconnected components, single vertices)
+- Understand the concept of strong connectivity in directed graphs
+- Apply strongly connected components (SCC) analysis for connectivity
+- Implement algorithms to find minimum edges for strong connectivity
+- Optimize connectivity algorithms for large graphs
+- Handle edge cases in connectivity problems (disconnected components, single vertices)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

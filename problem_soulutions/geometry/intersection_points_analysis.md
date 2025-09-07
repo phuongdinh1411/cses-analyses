@@ -11,11 +11,11 @@ permalink: /problem_soulutions/geometry/intersection_points_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand line segment intersection enumeration and intersection point calculation
-- [ ] **Objective 2**: Apply sweep line algorithm or brute force approach to find all intersection points
-- [ ] **Objective 3**: Implement efficient intersection point algorithms with proper duplicate handling
-- [ ] **Objective 4**: Optimize intersection enumeration using geometric properties and coordinate transformations
-- [ ] **Objective 5**: Handle edge cases in intersection enumeration (no intersections, multiple intersections, collinear segments)
+- Understand line segment intersection enumeration and intersection point calculation
+- Apply sweep line algorithm or brute force approach to find all intersection points
+- Implement efficient intersection point algorithms with proper duplicate handling
+- Optimize intersection enumeration using geometric properties and coordinate transformations
+- Handle edge cases in intersection enumeration (no intersections, multiple intersections, collinear segments)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/coordinate_compression_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand coordinate compression and efficient coordinate mapping concepts
-- [ ] **Objective 2**: Apply sorting and mapping techniques to compress coordinates while preserving relative order
-- [ ] **Objective 3**: Implement efficient coordinate compression algorithms with proper sorting and mapping
-- [ ] **Objective 4**: Optimize coordinate compression using sorting algorithms and efficient data structures
-- [ ] **Objective 5**: Handle edge cases in coordinate compression (duplicate coordinates, large coordinate ranges, empty sets)
+- Understand coordinate compression and efficient coordinate mapping concepts
+- Apply sorting and mapping techniques to compress coordinates while preserving relative order
+- Implement efficient coordinate compression algorithms with proper sorting and mapping
+- Optimize coordinate compression using sorting algorithms and efficient data structures
+- Handle edge cases in coordinate compression (duplicate coordinates, large coordinate ranges, empty sets)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

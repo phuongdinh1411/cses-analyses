@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/repetitions_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand string analysis and consecutive character counting problems
-- [ ] **Objective 2**: Apply sliding window or linear scanning to find maximum consecutive repetitions
-- [ ] **Objective 3**: Implement efficient string analysis algorithms with proper consecutive character tracking
-- [ ] **Objective 4**: Optimize string analysis using linear scanning and consecutive character counting
-- [ ] **Objective 5**: Handle edge cases in string analysis (single character, no repetitions, large strings)
+- Understand string analysis and consecutive character counting problems
+- Apply sliding window or linear scanning to find maximum consecutive repetitions
+- Implement efficient string analysis algorithms with proper consecutive character tracking
+- Optimize string analysis using linear scanning and consecutive character counting
+- Handle edge cases in string analysis (single character, no repetitions, large strings)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

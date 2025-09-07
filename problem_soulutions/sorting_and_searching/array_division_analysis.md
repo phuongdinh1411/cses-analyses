@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/array_division_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand binary search on answer space and optimization problems
-- [ ] **Objective 2**: Apply binary search with greedy validation to find optimal solutions
-- [ ] **Objective 3**: Implement efficient binary search algorithms with O(n log(sum)) time complexity
-- [ ] **Objective 4**: Optimize array division problems using binary search and greedy validation
-- [ ] **Objective 5**: Handle edge cases in binary search optimization (single element, all elements, boundary conditions)
+- Understand binary search on answer space and optimization problems
+- Apply binary search with greedy validation to find optimal solutions
+- Implement efficient binary search algorithms with O(n log(sum)) time complexity
+- Optimize array division problems using binary search and greedy validation
+- Handle edge cases in binary search optimization (single element, all elements, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

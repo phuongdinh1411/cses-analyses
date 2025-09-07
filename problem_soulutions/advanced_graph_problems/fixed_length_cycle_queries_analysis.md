@@ -11,11 +11,11 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_cycle_querie
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of cycle counting in directed graphs
-- [ ] **Objective 2**: Apply matrix exponentiation for efficient cycle counting
-- [ ] **Objective 3**: Implement modular arithmetic for large cycle counts
-- [ ] **Objective 4**: Optimize matrix operations for multiple cycle queries
-- [ ] **Objective 5**: Handle large cycle lengths using binary exponentiation
+- Understand the concept of cycle counting in directed graphs
+- Apply matrix exponentiation for efficient cycle counting
+- Implement modular arithmetic for large cycle counts
+- Optimize matrix operations for multiple cycle queries
+- Handle large cycle lengths using binary exponentiation
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

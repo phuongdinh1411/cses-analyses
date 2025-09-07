@@ -10,11 +10,11 @@ permalink: /problem_soulutions/advanced_graph_problems/mst_edge_check_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of Minimum Spanning Tree (MST) and its properties
-- [ ] **Objective 2**: Apply Kruskal's algorithm with Union-Find data structure for MST construction
-- [ ] **Objective 3**: Implement efficient edge membership checking for MST
-- [ ] **Objective 4**: Optimize MST algorithms for large graphs using Union-Find
-- [ ] **Objective 5**: Handle edge cases in MST construction (disconnected graphs, multiple MSTs)
+- Understand the concept of Minimum Spanning Tree (MST) and its properties
+- Apply Kruskal's algorithm with Union-Find data structure for MST construction
+- Implement efficient edge membership checking for MST
+- Optimize MST algorithms for large graphs using Union-Find
+- Handle edge cases in MST construction (disconnected graphs, multiple MSTs)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

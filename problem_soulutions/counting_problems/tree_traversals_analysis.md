@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/tree_traversals_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand Hamiltonian paths in trees and tree traversal counting
-- [ ] **Objective 2**: Apply dynamic programming to count all possible tree traversals
-- [ ] **Objective 3**: Implement efficient algorithms for counting Hamiltonian paths in trees
-- [ ] **Objective 4**: Optimize tree traversal counting using tree properties and DP techniques
-- [ ] **Objective 5**: Handle edge cases in tree traversal counting (single nodes, linear trees, star graphs)
+- Understand Hamiltonian paths in trees and tree traversal counting
+- Apply dynamic programming to count all possible tree traversals
+- Implement efficient algorithms for counting Hamiltonian paths in trees
+- Optimize tree traversal counting using tree properties and DP techniques
+- Handle edge cases in tree traversal counting (single nodes, linear trees, star graphs)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

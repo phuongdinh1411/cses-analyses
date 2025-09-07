@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/subarray_sums_ii_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand advanced subarray sum problems with negative numbers and complex constraints
-- [ ] **Objective 2**: Apply advanced prefix sums with hash maps to count subarrays with target sum including negatives
-- [ ] **Objective 3**: Implement efficient advanced subarray sum counting algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize advanced subarray sum problems using prefix sums, hash maps, and sophisticated complement searching
-- [ ] **Objective 5**: Handle complex edge cases in advanced subarray sum problems (no solution, multiple solutions, negative numbers, large arrays)
+- Understand advanced subarray sum problems with negative numbers and complex constraints
+- Apply advanced prefix sums with hash maps to count subarrays with target sum including negatives
+- Implement efficient advanced subarray sum counting algorithms with O(n) time complexity
+- Optimize advanced subarray sum problems using prefix sums, hash maps, and sophisticated complement searching
+- Handle complex edge cases in advanced subarray sum problems (no solution, multiple solutions, negative numbers, large arrays)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

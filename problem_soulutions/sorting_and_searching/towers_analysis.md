@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/towers_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand longest decreasing subsequence problems and greedy tower placement strategies
-- [ ] **Objective 2**: Apply greedy algorithms with binary search to minimize tower count
-- [ ] **Objective 3**: Implement efficient tower placement algorithms with O(n log n) time complexity
-- [ ] **Objective 4**: Optimize tower placement using binary search and greedy selection techniques
-- [ ] **Objective 5**: Handle edge cases in tower placement (increasing sequence, decreasing sequence, single cube)
+- Understand longest decreasing subsequence problems and greedy tower placement strategies
+- Apply greedy algorithms with binary search to minimize tower count
+- Implement efficient tower placement algorithms with O(n log n) time complexity
+- Optimize tower placement using binary search and greedy selection techniques
+- Handle edge cases in tower placement (increasing sequence, decreasing sequence, single cube)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -11,11 +11,11 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_eulerian_cir
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of Eulerian circuits and their properties
-- [ ] **Objective 2**: Apply matrix exponentiation for efficient Eulerian circuit counting
-- [ ] **Objective 3**: Implement modular arithmetic for large Eulerian circuit counts
-- [ ] **Objective 4**: Optimize matrix operations for multiple Eulerian circuit queries
-- [ ] **Objective 5**: Handle large circuit lengths using binary exponentiation
+- Understand the concept of Eulerian circuits and their properties
+- Apply matrix exponentiation for efficient Eulerian circuit counting
+- Implement modular arithmetic for large Eulerian circuit counts
+- Optimize matrix operations for multiple Eulerian circuit queries
+- Handle large circuit lengths using binary exponentiation
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -10,11 +10,11 @@ permalink: /problem_soulutions/string_algorithms/string_matching_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand string matching problems and pattern occurrence detection algorithms
-- [ ] **Objective 2**: Apply KMP algorithm or Z-algorithm to efficiently find all pattern occurrences
-- [ ] **Objective 3**: Implement efficient string matching algorithms with O(n + m) time complexity
-- [ ] **Objective 4**: Optimize pattern matching using failure functions, prefix functions, and preprocessing
-- [ ] **Objective 5**: Handle edge cases in string matching (pattern longer than text, no matches, multiple matches)
+- Understand string matching problems and pattern occurrence detection algorithms
+- Apply KMP algorithm or Z-algorithm to efficiently find all pattern occurrences
+- Implement efficient string matching algorithms with O(n + m) time complexity
+- Optimize pattern matching using failure functions, prefix functions, and preprocessing
+- Handle edge cases in string matching (pattern longer than text, no matches, multiple matches)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

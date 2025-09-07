@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/digit_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand digit sequence analysis and mathematical pattern recognition
-- [ ] **Objective 2**: Apply mathematical formulas to find digits at specific positions in sequences
-- [ ] **Objective 3**: Implement efficient digit query algorithms with proper mathematical calculations
-- [ ] **Objective 4**: Optimize digit queries using mathematical formulas and sequence analysis
-- [ ] **Objective 5**: Handle edge cases in digit queries (large positions, sequence boundaries, mathematical precision)
+- Understand digit sequence analysis and mathematical pattern recognition
+- Apply mathematical formulas to find digits at specific positions in sequences
+- Implement efficient digit query algorithms with proper mathematical calculations
+- Optimize digit queries using mathematical formulas and sequence analysis
+- Handle edge cases in digit queries (large positions, sequence boundaries, mathematical precision)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

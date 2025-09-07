@@ -11,11 +11,11 @@ permalink: /problem_soulutions/geometry/lines_and_queries_i_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand line-point relationship queries and geometric containment testing
-- [ ] **Objective 2**: Apply line equation evaluation and point-line distance calculations for query processing
-- [ ] **Objective 3**: Implement efficient algorithms for processing multiple point-line relationship queries
-- [ ] **Objective 4**: Optimize query processing using geometric properties and coordinate transformations
-- [ ] **Objective 5**: Handle edge cases in line-point queries (precision issues, degenerate lines, boundary conditions)
+- Understand line-point relationship queries and geometric containment testing
+- Apply line equation evaluation and point-line distance calculations for query processing
+- Implement efficient algorithms for processing multiple point-line relationship queries
+- Optimize query processing using geometric properties and coordinate transformations
+- Handle edge cases in line-point queries (precision issues, degenerate lines, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

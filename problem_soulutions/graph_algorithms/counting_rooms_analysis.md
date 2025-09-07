@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/counting_rooms_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand connected components in grids and flood fill algorithms
-- [ ] **Objective 2**: Apply DFS or BFS to find connected components in 2D grids
-- [ ] **Objective 3**: Implement efficient connected component algorithms with proper grid traversal
-- [ ] **Objective 4**: Optimize connected component solutions using visited arrays and grid representations
-- [ ] **Objective 5**: Handle edge cases in grid connected components (empty grids, single cells, boundary conditions)
+- Understand connected components in grids and flood fill algorithms
+- Apply DFS or BFS to find connected components in 2D grids
+- Implement efficient connected component algorithms with proper grid traversal
+- Optimize connected component solutions using visited arrays and grid representations
+- Handle edge cases in grid connected components (empty grids, single cells, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

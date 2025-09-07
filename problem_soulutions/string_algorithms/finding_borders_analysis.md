@@ -10,11 +10,11 @@ permalink: /problem_soulutions/string_algorithms/finding_borders_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand string border problems and proper prefix/suffix analysis
-- [ ] **Objective 2**: Apply KMP failure function or direct approach to find all borders of a string
-- [ ] **Objective 3**: Implement efficient border finding algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize border detection using KMP failure function, prefix analysis, and suffix analysis
-- [ ] **Objective 5**: Handle edge cases in border finding (no borders, single character, all same characters)
+- Understand string border problems and proper prefix/suffix analysis
+- Apply KMP failure function or direct approach to find all borders of a string
+- Implement efficient border finding algorithms with O(n) time complexity
+- Optimize border detection using KMP failure function, prefix analysis, and suffix analysis
+- Handle edge cases in border finding (no borders, single character, all same characters)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

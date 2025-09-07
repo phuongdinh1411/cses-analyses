@@ -11,11 +11,11 @@ permalink: /problem_soulutions/dynamic_programming/counting_towers_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand geometric counting problems and tower construction patterns
-- [ ] **Objective 2**: Apply DP techniques to solve geometric counting problems with pattern recognition
-- [ ] **Objective 3**: Implement efficient DP solutions for geometric counting and pattern analysis
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and pattern tracking
-- [ ] **Objective 5**: Handle edge cases in geometric DP (single blocks, two blocks, pattern variations)
+- Understand geometric counting problems and tower construction patterns
+- Apply DP techniques to solve geometric counting problems with pattern recognition
+- Implement efficient DP solutions for geometric counting and pattern analysis
+- Optimize DP solutions using space-efficient techniques and pattern tracking
+- Handle edge cases in geometric DP (single blocks, two blocks, pattern variations)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

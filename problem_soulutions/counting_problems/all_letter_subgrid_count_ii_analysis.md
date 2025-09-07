@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/all_letter_subgrid_count_ii_ana
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand advanced subgrid analysis for variable-sized rectangular subgrids
-- [ ] **Objective 2**: Apply efficient algorithms for counting subgrids with alphabet completeness
-- [ ] **Objective 3**: Implement optimized subgrid counting using advanced sliding window techniques
-- [ ] **Objective 4**: Optimize subgrid counting using mathematical formulas and advanced pattern analysis
-- [ ] **Objective 5**: Handle edge cases in advanced subgrid counting (large grids, missing letters, complex patterns)
+- Understand advanced subgrid analysis for variable-sized rectangular subgrids
+- Apply efficient algorithms for counting subgrids with alphabet completeness
+- Implement optimized subgrid counting using advanced sliding window techniques
+- Optimize subgrid counting using mathematical formulas and advanced pattern analysis
+- Handle edge cases in advanced subgrid counting (large grids, missing letters, complex patterns)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

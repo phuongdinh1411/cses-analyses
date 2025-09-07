@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/distance_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand tree distance query problems and distance calculation algorithms
-- [ ] **Objective 2**: Apply Lowest Common Ancestor (LCA) technique to efficiently calculate tree distances
-- [ ] **Objective 3**: Implement efficient distance query algorithms with O(log n) query time complexity
-- [ ] **Objective 4**: Optimize distance queries using LCA, binary lifting, and tree distance analysis
-- [ ] **Objective 5**: Handle edge cases in distance queries (same node, adjacent nodes, root node, large trees)
+- Understand tree distance query problems and distance calculation algorithms
+- Apply Lowest Common Ancestor (LCA) technique to efficiently calculate tree distances
+- Implement efficient distance query algorithms with O(log n) query time complexity
+- Optimize distance queries using LCA, binary lifting, and tree distance analysis
+- Handle edge cases in distance queries (same node, adjacent nodes, root node, large trees)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

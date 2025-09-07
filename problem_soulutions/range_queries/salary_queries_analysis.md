@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/salary_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand dynamic range query problems with point updates and range count queries
-- [ ] **Objective 2**: Apply coordinate compression and Binary Indexed Trees to handle range counting with updates
-- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and count queries
-- [ ] **Objective 4**: Optimize range counting using coordinate compression and advanced data structures
-- [ ] **Objective 5**: Handle edge cases in range counting (large values, coordinate compression, boundary conditions)
+- Understand dynamic range query problems with point updates and range count queries
+- Apply coordinate compression and Binary Indexed Trees to handle range counting with updates
+- Implement efficient dynamic range query algorithms with O(log n) time for updates and count queries
+- Optimize range counting using coordinate compression and advanced data structures
+- Handle edge cases in range counting (large values, coordinate compression, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

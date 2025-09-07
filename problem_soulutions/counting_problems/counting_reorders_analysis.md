@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/counting_reorders_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand multinomial coefficients and permutation counting with repeated elements
-- [ ] **Objective 2**: Apply the multinomial coefficient formula for counting distinct permutations
-- [ ] **Objective 3**: Implement efficient algorithms for counting string reorderings
-- [ ] **Objective 4**: Optimize reordering counting using precomputed factorials and modular arithmetic
-- [ ] **Objective 5**: Handle edge cases in reordering counting (single character strings, all unique characters)
+- Understand multinomial coefficients and permutation counting with repeated elements
+- Apply the multinomial coefficient formula for counting distinct permutations
+- Implement efficient algorithms for counting string reorderings
+- Optimize reordering counting using precomputed factorials and modular arithmetic
+- Handle edge cases in reordering counting (single character strings, all unique characters)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

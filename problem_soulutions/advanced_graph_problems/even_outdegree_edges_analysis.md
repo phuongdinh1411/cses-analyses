@@ -10,11 +10,11 @@ permalink: /problem_soulutions/advanced_graph_problems/even_outdegree_edges_anal
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of vertex degrees in directed graphs
-- [ ] **Objective 2**: Analyze the relationship between in-degree and out-degree in directed graphs
-- [ ] **Objective 3**: Apply graph theory principles to determine edge addition requirements
-- [ ] **Objective 4**: Calculate the minimum number of edges needed to achieve even outdegrees
-- [ ] **Objective 5**: Handle special cases in degree analysis (isolated vertices, disconnected components)
+- Understand the concept of vertex degrees in directed graphs
+- Analyze the relationship between in-degree and out-degree in directed graphs
+- Apply graph theory principles to determine edge addition requirements
+- Calculate the minimum number of edges needed to achieve even outdegrees
+- Handle special cases in degree analysis (isolated vertices, disconnected components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

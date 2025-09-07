@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/subarray_divisibility_analy
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subarray divisibility problems and modular arithmetic techniques
-- [ ] **Objective 2**: Apply prefix sums with modular arithmetic to count divisible subarrays
-- [ ] **Objective 3**: Implement efficient divisibility counting algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize divisibility problems using prefix sums, modular arithmetic, and hash maps
-- [ ] **Objective 5**: Handle edge cases in divisibility problems (k=1, all elements divisible, no divisible subarrays)
+- Understand subarray divisibility problems and modular arithmetic techniques
+- Apply prefix sums with modular arithmetic to count divisible subarrays
+- Implement efficient divisibility counting algorithms with O(n) time complexity
+- Optimize divisibility problems using prefix sums, modular arithmetic, and hash maps
+- Handle edge cases in divisibility problems (k=1, all elements divisible, no divisible subarrays)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

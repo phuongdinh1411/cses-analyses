@@ -11,11 +11,11 @@ permalink: /problem_soulutions/advanced_graph_problems/creating_offices_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of facility location problems in trees
-- [ ] **Objective 2**: Apply greedy algorithms for optimal office placement
-- [ ] **Objective 3**: Implement tree traversal algorithms for coverage problems
-- [ ] **Objective 4**: Optimize facility placement using distance-based strategies
-- [ ] **Objective 5**: Handle tree-specific constraints in facility location problems
+- Understand the concept of facility location problems in trees
+- Apply greedy algorithms for optimal office placement
+- Implement tree traversal algorithms for coverage problems
+- Optimize facility placement using distance-based strategies
+- Handle tree-specific constraints in facility location problems
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

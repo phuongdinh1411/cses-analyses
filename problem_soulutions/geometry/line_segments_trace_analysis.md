@@ -11,11 +11,11 @@ permalink: /problem_soulutions/geometry/line_segments_trace_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand line segment tracing problems and path following algorithms
-- [ ] **Objective 2**: Apply geometric algorithms for tracing line segments and following paths
-- [ ] **Objective 3**: Implement efficient algorithms for line segment tracing with direction handling
-- [ ] **Objective 4**: Optimize line segment tracing using geometric properties and coordinate transformations
-- [ ] **Objective 5**: Handle edge cases in line segment tracing (disconnected segments, direction changes, boundary conditions)
+- Understand line segment tracing problems and path following algorithms
+- Apply geometric algorithms for tracing line segments and following paths
+- Implement efficient algorithms for line segment tracing with direction handling
+- Optimize line segment tracing using geometric properties and coordinate transformations
+- Handle edge cases in line segment tracing (disconnected segments, direction changes, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

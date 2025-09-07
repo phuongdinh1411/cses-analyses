@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/tournament_graph_distribution_a
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand tournament graphs and their acyclic properties
-- [ ] **Objective 2**: Apply graph theory concepts to count valid tournament configurations
-- [ ] **Objective 3**: Implement algorithms for counting acyclic tournament graphs
-- [ ] **Objective 4**: Optimize tournament counting using mathematical formulas and DP
-- [ ] **Objective 5**: Handle edge cases in tournament counting (small tournaments, impossible configurations)
+- Understand tournament graphs and their acyclic properties
+- Apply graph theory concepts to count valid tournament configurations
+- Implement algorithms for counting acyclic tournament graphs
+- Optimize tournament counting using mathematical formulas and DP
+- Handle edge cases in tournament counting (small tournaments, impossible configurations)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

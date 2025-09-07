@@ -10,11 +10,11 @@ permalink: /problem_soulutions/advanced_graph_problems/prufer_code_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of Prufer codes and their properties
-- [ ] **Objective 2**: Apply the Prufer code construction algorithm for trees
-- [ ] **Objective 3**: Implement efficient tree-to-Prufer code conversion
-- [ ] **Objective 4**: Understand the bijection between labeled trees and Prufer codes
-- [ ] **Objective 5**: Apply Prufer codes to tree counting and enumeration problems
+- Understand the concept of Prufer codes and their properties
+- Apply the Prufer code construction algorithm for trees
+- Implement efficient tree-to-Prufer code conversion
+- Understand the bijection between labeled trees and Prufer codes
+- Apply Prufer codes to tree counting and enumeration problems
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

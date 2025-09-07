@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/cses_weird_algorithm_analys
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand simulation algorithms and the Collatz conjecture problem
-- [ ] **Objective 2**: Apply simulation techniques to trace algorithm execution and sequence generation
-- [ ] **Objective 3**: Implement efficient simulation algorithms with proper sequence tracking
-- [ ] **Objective 4**: Optimize simulation problems using appropriate data structures and loop handling
-- [ ] **Objective 5**: Handle edge cases in simulation problems (large numbers, infinite loops, overflow)
+- Understand simulation algorithms and the Collatz conjecture problem
+- Apply simulation techniques to trace algorithm execution and sequence generation
+- Implement efficient simulation algorithms with proper sequence tracking
+- Optimize simulation problems using appropriate data structures and loop handling
+- Handle edge cases in simulation problems (large numbers, infinite loops, overflow)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

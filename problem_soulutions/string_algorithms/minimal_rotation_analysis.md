@@ -11,11 +11,11 @@ permalink: /problem_soulutions/string_algorithms/minimal_rotation_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand minimal rotation problems and Booth's algorithm for lexicographic optimization
-- [ ] **Objective 2**: Apply Booth's algorithm to efficiently find lexicographically smallest rotation
-- [ ] **Objective 3**: Implement efficient minimal rotation algorithms with O(n) time complexity using Booth's algorithm
-- [ ] **Objective 4**: Optimize string rotation using Booth's algorithm, string doubling, and advanced lexicographic techniques
-- [ ] **Objective 5**: Handle edge cases in minimal rotation (single character, all same characters, already minimal)
+- Understand minimal rotation problems and Booth's algorithm for lexicographic optimization
+- Apply Booth's algorithm to efficiently find lexicographically smallest rotation
+- Implement efficient minimal rotation algorithms with O(n) time complexity using Booth's algorithm
+- Optimize string rotation using Booth's algorithm, string doubling, and advanced lexicographic techniques
+- Handle edge cases in minimal rotation (single character, all same characters, already minimal)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

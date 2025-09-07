@@ -11,11 +11,11 @@ permalink: /problem_soulutions/sliding_window/minimum_window_substring_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand minimum window substring problems and character containment constraints
-- [ ] **Objective 2**: Apply sliding window technique to find minimum window containing all target characters
-- [ ] **Objective 3**: Implement efficient sliding window algorithms with O(n) time complexity for string problems
-- [ ] **Objective 4**: Optimize sliding window problems using hash maps and character frequency tracking
-- [ ] **Objective 5**: Handle edge cases in minimum window problems (no solution, single character, duplicate characters)
+- Understand minimum window substring problems and character containment constraints
+- Apply sliding window technique to find minimum window containing all target characters
+- Implement efficient sliding window algorithms with O(n) time complexity for string problems
+- Optimize sliding window problems using hash maps and character frequency tracking
+- Handle edge cases in minimum window problems (no solution, single character, duplicate characters)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

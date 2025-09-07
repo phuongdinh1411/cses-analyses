@@ -10,11 +10,11 @@ permalink: /problem_soulutions/range_queries/static_range_sum_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand static range query problems and prefix sum concepts
-- [ ] **Objective 2**: Apply prefix sums to efficiently compute range sum queries
-- [ ] **Objective 3**: Implement efficient static range query algorithms with O(1) query time after preprocessing
-- [ ] **Objective 4**: Optimize range sum queries using prefix sum techniques and mathematical analysis
-- [ ] **Objective 5**: Handle edge cases in range sum queries (large arrays, boundary conditions, sum overflow)
+- Understand static range query problems and prefix sum concepts
+- Apply prefix sums to efficiently compute range sum queries
+- Implement efficient static range query algorithms with O(1) query time after preprocessing
+- Optimize range sum queries using prefix sum techniques and mathematical analysis
+- Handle edge cases in range sum queries (large arrays, boundary conditions, sum overflow)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

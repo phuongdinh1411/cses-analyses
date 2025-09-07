@@ -11,11 +11,11 @@ permalink: /problem_soulutions/dynamic_programming/book_shop_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand knapsack problems and capacity-constrained optimization
-- [ ] **Objective 2**: Apply DP techniques to solve 0/1 knapsack problems with value maximization
-- [ ] **Objective 3**: Implement efficient DP solutions for knapsack problems with capacity constraints
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and capacity tracking
-- [ ] **Objective 5**: Handle edge cases in knapsack DP (zero capacity, single items, impossible solutions)
+- Understand knapsack problems and capacity-constrained optimization
+- Apply DP techniques to solve 0/1 knapsack problems with value maximization
+- Implement efficient DP solutions for knapsack problems with capacity constraints
+- Optimize DP solutions using space-efficient techniques and capacity tracking
+- Handle edge cases in knapsack DP (zero capacity, single items, impossible solutions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

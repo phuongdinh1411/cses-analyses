@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/counting_combinations_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of combinations and binomial coefficients
-- [ ] **Objective 2**: Apply the formula C(n,k) = n!/(k!(n-k)!) for combination counting
-- [ ] **Objective 3**: Implement modular arithmetic for large combination calculations
-- [ ] **Objective 4**: Optimize combination calculations using precomputed factorials and modular inverses
-- [ ] **Objective 5**: Handle edge cases in combination counting (k=0, k=n, large numbers)
+- Understand the concept of combinations and binomial coefficients
+- Apply the formula C(n,k) = n!/(k!(n-k)!) for combination counting
+- Implement modular arithmetic for large combination calculations
+- Optimize combination calculations using precomputed factorials and modular inverses
+- Handle edge cases in combination counting (k=0, k=n, large numbers)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

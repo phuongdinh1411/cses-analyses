@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/creating_strings_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand permutation generation and string manipulation problems
-- [ ] **Objective 2**: Apply backtracking or next_permutation to generate all permutations
-- [ ] **Objective 3**: Implement efficient permutation generation algorithms with proper duplicate handling
-- [ ] **Objective 4**: Optimize permutation generation using lexicographic ordering and duplicate elimination
-- [ ] **Objective 5**: Handle edge cases in permutation problems (duplicate characters, large strings, lexicographic ordering)
+- Understand permutation generation and string manipulation problems
+- Apply backtracking or next_permutation to generate all permutations
+- Implement efficient permutation generation algorithms with proper duplicate handling
+- Optimize permutation generation using lexicographic ordering and duplicate elimination
+- Handle edge cases in permutation problems (duplicate characters, large strings, lexicographic ordering)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

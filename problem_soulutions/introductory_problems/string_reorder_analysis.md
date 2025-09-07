@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/string_reorder_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand lexicographic ordering and string sorting concepts
-- [ ] **Objective 2**: Apply sorting algorithms to find lexicographically smallest string arrangements
-- [ ] **Objective 3**: Implement efficient string sorting algorithms with proper lexicographic ordering
-- [ ] **Objective 4**: Optimize string sorting using character frequency counting and lexicographic ordering
-- [ ] **Objective 5**: Handle edge cases in string sorting (duplicate characters, large strings, lexicographic ordering)
+- Understand lexicographic ordering and string sorting concepts
+- Apply sorting algorithms to find lexicographically smallest string arrangements
+- Implement efficient string sorting algorithms with proper lexicographic ordering
+- Optimize string sorting using character frequency counting and lexicographic ordering
+- Handle edge cases in string sorting (duplicate characters, large strings, lexicographic ordering)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

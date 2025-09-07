@@ -11,11 +11,11 @@ permalink: /problem_soulutions/string_algorithms/string_automaton_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand suffix automaton data structures and their applications in string processing
-- [ ] **Objective 2**: Apply suffix automaton construction and query processing for pattern occurrence counting
-- [ ] **Objective 3**: Implement efficient suffix automaton algorithms with O(n) construction and O(m) query time complexity
-- [ ] **Objective 4**: Optimize string pattern matching using suffix automaton and advanced string data structures
-- [ ] **Objective 5**: Handle edge cases in suffix automaton (empty patterns, single character, all same characters)
+- Understand suffix automaton data structures and their applications in string processing
+- Apply suffix automaton construction and query processing for pattern occurrence counting
+- Implement efficient suffix automaton algorithms with O(n) construction and O(m) query time complexity
+- Optimize string pattern matching using suffix automaton and advanced string data structures
+- Handle edge cases in suffix automaton (empty patterns, single character, all same characters)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

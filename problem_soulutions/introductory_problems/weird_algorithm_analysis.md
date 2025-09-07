@@ -10,11 +10,11 @@ permalink: /problem_soulutions/introductory_problems/weird_algorithm_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand simulation algorithms and the Collatz conjecture problem
-- [ ] **Objective 2**: Apply simulation techniques to trace algorithm execution and sequence generation
-- [ ] **Objective 3**: Implement efficient simulation algorithms with proper sequence tracking
-- [ ] **Objective 4**: Optimize simulation algorithms using mathematical analysis and sequence optimization
-- [ ] **Objective 5**: Handle edge cases in simulation problems (large numbers, sequence termination, overflow prevention)
+- Understand simulation algorithms and the Collatz conjecture problem
+- Apply simulation techniques to trace algorithm execution and sequence generation
+- Implement efficient simulation algorithms with proper sequence tracking
+- Optimize simulation algorithms using mathematical analysis and sequence optimization
+- Handle edge cases in simulation problems (large numbers, sequence termination, overflow prevention)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

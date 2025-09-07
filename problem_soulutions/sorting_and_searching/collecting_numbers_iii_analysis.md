@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/collecting_numbers_iii_anal
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand collecting numbers problems with collection order tracking and dependency analysis
-- [ ] **Objective 2**: Apply greedy algorithms with position tracking to find collection order and minimize rounds
-- [ ] **Objective 3**: Implement efficient collection algorithms with O(n) time complexity for order tracking
-- [ ] **Objective 4**: Optimize collection problems using position tracking, dependency analysis, and order reconstruction
-- [ ] **Objective 5**: Handle edge cases in collection problems (sorted arrays, reverse sorted arrays, collection order tracking)
+- Understand collecting numbers problems with collection order tracking and dependency analysis
+- Apply greedy algorithms with position tracking to find collection order and minimize rounds
+- Implement efficient collection algorithms with O(n) time complexity for order tracking
+- Optimize collection problems using position tracking, dependency analysis, and order reconstruction
+- Handle edge cases in collection problems (sorted arrays, reverse sorted arrays, collection order tracking)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

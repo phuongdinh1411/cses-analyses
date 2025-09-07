@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/tree_matching_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand maximum matching problems in trees and matching algorithms
-- [ ] **Objective 2**: Apply dynamic programming or greedy algorithms to find maximum matching in trees
-- [ ] **Objective 3**: Implement efficient tree matching algorithms with O(n) time complexity
-- [ ] **Objective 4**: Optimize tree matching using dynamic programming, greedy approaches, and tree properties
-- [ ] **Objective 5**: Handle edge cases in tree matching (single node, linear tree, star tree, no matching possible)
+- Understand maximum matching problems in trees and matching algorithms
+- Apply dynamic programming or greedy algorithms to find maximum matching in trees
+- Implement efficient tree matching algorithms with O(n) time complexity
+- Optimize tree matching using dynamic programming, greedy approaches, and tree properties
+- Handle edge cases in tree matching (single node, linear tree, star tree, no matching possible)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

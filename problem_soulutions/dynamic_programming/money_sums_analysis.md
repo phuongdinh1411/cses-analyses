@@ -10,11 +10,11 @@ permalink: /problem_soulutions/dynamic_programming/money_sums_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subset sum problems and achievable sum calculations in DP
-- [ ] **Objective 2**: Apply DP techniques to find all possible sums using boolean DP arrays
-- [ ] **Objective 3**: Implement efficient DP solutions for subset sum enumeration and tracking
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and sum enumeration
-- [ ] **Objective 5**: Handle edge cases in subset sum DP (empty subsets, single coins, boundary conditions)
+- Understand subset sum problems and achievable sum calculations in DP
+- Apply DP techniques to find all possible sums using boolean DP arrays
+- Implement efficient DP solutions for subset sum enumeration and tracking
+- Optimize DP solutions using space-efficient techniques and sum enumeration
+- Handle edge cases in subset sum DP (empty subsets, single coins, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

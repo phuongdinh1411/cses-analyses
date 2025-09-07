@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/building_roads_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand connectivity problems and minimum edge addition concepts
-- [ ] **Objective 2**: Apply DFS or BFS to count connected components in undirected graphs
-- [ ] **Objective 3**: Implement efficient connectivity algorithms with proper component counting
-- [ ] **Objective 4**: Optimize connectivity solutions using Union-Find data structure and graph representations
-- [ ] **Objective 5**: Handle edge cases in connectivity problems (already connected, single component, disconnected graphs)
+- Understand connectivity problems and minimum edge addition concepts
+- Apply DFS or BFS to count connected components in undirected graphs
+- Implement efficient connectivity algorithms with proper component counting
+- Optimize connectivity solutions using Union-Find data structure and graph representations
+- Handle edge cases in connectivity problems (already connected, single component, disconnected graphs)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

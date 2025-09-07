@@ -11,11 +11,11 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_circuit_quer
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of circuits (closed walks) in directed graphs
-- [ ] **Objective 2**: Apply matrix exponentiation for efficient circuit counting
-- [ ] **Objective 3**: Implement modular arithmetic for large circuit counts
-- [ ] **Objective 4**: Optimize matrix operations for multiple circuit queries
-- [ ] **Objective 5**: Handle large circuit lengths using binary exponentiation
+- Understand the concept of circuits (closed walks) in directed graphs
+- Apply matrix exponentiation for efficient circuit counting
+- Implement modular arithmetic for large circuit counts
+- Optimize matrix operations for multiple circuit queries
+- Handle large circuit lengths using binary exponentiation
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

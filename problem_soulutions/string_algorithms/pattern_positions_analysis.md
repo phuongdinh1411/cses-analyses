@@ -10,11 +10,11 @@ permalink: /problem_soulutions/string_algorithms/pattern_positions_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand pattern position problems and string matching algorithms for occurrence detection
-- [ ] **Objective 2**: Apply KMP algorithm or Z-algorithm to efficiently find all pattern occurrence positions
-- [ ] **Objective 3**: Implement efficient pattern position algorithms with O(n + m) time complexity
-- [ ] **Objective 4**: Optimize pattern matching using failure functions, prefix functions, and preprocessing techniques
-- [ ] **Objective 5**: Handle edge cases in pattern positions (pattern longer than text, no matches, overlapping matches)
+- Understand pattern position problems and string matching algorithms for occurrence detection
+- Apply KMP algorithm or Z-algorithm to efficiently find all pattern occurrence positions
+- Implement efficient pattern position algorithms with O(n + m) time complexity
+- Optimize pattern matching using failure functions, prefix functions, and preprocessing techniques
+- Handle edge cases in pattern positions (pattern longer than text, no matches, overlapping matches)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

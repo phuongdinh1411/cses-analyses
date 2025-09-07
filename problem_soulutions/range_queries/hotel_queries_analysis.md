@@ -10,11 +10,11 @@ permalink: /problem_soulutions/range_queries/hotel_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand range query problems for finding first element satisfying a condition
-- [ ] **Objective 2**: Apply Segment Trees or Binary Indexed Trees to find first hotel with sufficient capacity
-- [ ] **Objective 3**: Implement efficient range query algorithms with O(log n) query time for first element search
-- [ ] **Objective 4**: Optimize range queries using advanced data structures and efficient search techniques
-- [ ] **Objective 5**: Handle edge cases in range queries (no solution, large queries, boundary conditions)
+- Understand range query problems for finding first element satisfying a condition
+- Apply Segment Trees or Binary Indexed Trees to find first hotel with sufficient capacity
+- Implement efficient range query algorithms with O(log n) query time for first element search
+- Optimize range queries using advanced data structures and efficient search techniques
+- Handle edge cases in range queries (no solution, large queries, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

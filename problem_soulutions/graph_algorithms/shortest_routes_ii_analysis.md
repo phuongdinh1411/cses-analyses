@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/shortest_routes_ii_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand all-pairs shortest path problems and Floyd-Warshall algorithm fundamentals
-- [ ] **Objective 2**: Apply Floyd-Warshall algorithm to find shortest paths between all pairs of vertices
-- [ ] **Objective 3**: Implement efficient all-pairs shortest path algorithms with proper matrix operations
-- [ ] **Objective 4**: Optimize all-pairs shortest path solutions using space-efficient techniques and matrix operations
-- [ ] **Objective 5**: Handle edge cases in all-pairs shortest paths (negative cycles, unreachable pairs, large graphs)
+- Understand all-pairs shortest path problems and Floyd-Warshall algorithm fundamentals
+- Apply Floyd-Warshall algorithm to find shortest paths between all pairs of vertices
+- Implement efficient all-pairs shortest path algorithms with proper matrix operations
+- Optimize all-pairs shortest path solutions using space-efficient techniques and matrix operations
+- Handle edge cases in all-pairs shortest paths (negative cycles, unreachable pairs, large graphs)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/message_route_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand shortest path problems and path reconstruction concepts
-- [ ] **Objective 2**: Apply BFS to find shortest paths in unweighted graphs with path tracking
-- [ ] **Objective 3**: Implement efficient shortest path algorithms with proper path reconstruction
-- [ ] **Objective 4**: Optimize shortest path solutions using parent tracking and path enumeration
-- [ ] **Objective 5**: Handle edge cases in shortest path problems (no path exists, single node, disconnected graphs)
+- Understand shortest path problems and path reconstruction concepts
+- Apply BFS to find shortest paths in unweighted graphs with path tracking
+- Implement efficient shortest path algorithms with proper path reconstruction
+- Optimize shortest path solutions using parent tracking and path enumeration
+- Handle edge cases in shortest path problems (no path exists, single node, disconnected graphs)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

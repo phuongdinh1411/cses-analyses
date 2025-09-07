@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/hamiltonian_flights_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand Hamiltonian path problems and bitmask dynamic programming concepts
-- [ ] **Objective 2**: Apply bitmask DP to count Hamiltonian paths with proper state representation
-- [ ] **Objective 3**: Implement efficient Hamiltonian path counting algorithms with bitmask optimization
-- [ ] **Objective 4**: Optimize Hamiltonian path solutions using bitmask DP and state compression
-- [ ] **Objective 5**: Handle edge cases in Hamiltonian paths (no paths exist, single node, disconnected components)
+- Understand Hamiltonian path problems and bitmask dynamic programming concepts
+- Apply bitmask DP to count Hamiltonian paths with proper state representation
+- Implement efficient Hamiltonian path counting algorithms with bitmask optimization
+- Optimize Hamiltonian path solutions using bitmask DP and state compression
+- Handle edge cases in Hamiltonian paths (no paths exist, single node, disconnected components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -10,11 +10,11 @@ permalink: /problem_soulutions/sorting_and_searching/nested_ranges_check_analysi
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand range containment problems and interval comparison techniques
-- [ ] **Objective 2**: Apply sorting and coordinate compression to efficiently check range containment
-- [ ] **Objective 3**: Implement efficient range containment algorithms with O(n log n) time complexity
-- [ ] **Objective 4**: Optimize range problems using sorting, coordinate compression, and containment checking
-- [ ] **Objective 5**: Handle edge cases in range problems (identical ranges, no containment, all ranges contained)
+- Understand range containment problems and interval comparison techniques
+- Apply sorting and coordinate compression to efficiently check range containment
+- Implement efficient range containment algorithms with O(n log n) time complexity
+- Optimize range problems using sorting, coordinate compression, and containment checking
+- Handle edge cases in range problems (identical ranges, no containment, all ranges contained)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -11,11 +11,11 @@ permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the concept of Hamiltonian tours and their properties
-- [ ] **Objective 2**: Apply matrix exponentiation for efficient Hamiltonian tour counting
-- [ ] **Objective 3**: Implement dynamic programming for Hamiltonian tour queries with fixed lengths
-- [ ] **Objective 4**: Optimize Hamiltonian tour query algorithms for multiple queries
-- [ ] **Objective 5**: Handle large tour lengths using modular arithmetic and matrix operations
+- Understand the concept of Hamiltonian tours and their properties
+- Apply matrix exponentiation for efficient Hamiltonian tour counting
+- Implement dynamic programming for Hamiltonian tour queries with fixed lengths
+- Optimize Hamiltonian tour query algorithms for multiple queries
+- Handle large tour lengths using modular arithmetic and matrix operations
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

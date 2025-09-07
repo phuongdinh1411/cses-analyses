@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/subarray_xor_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand dynamic range query problems with point updates and bitwise XOR operations
-- [ ] **Objective 2**: Apply Binary Indexed Trees or Segment Trees to handle point updates and range XOR queries
-- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and XOR queries
-- [ ] **Objective 4**: Optimize range XOR queries using advanced data structures and XOR operation properties
-- [ ] **Objective 5**: Handle edge cases in range XOR queries (bitwise operations, large values, boundary conditions)
+- Understand dynamic range query problems with point updates and bitwise XOR operations
+- Apply Binary Indexed Trees or Segment Trees to handle point updates and range XOR queries
+- Implement efficient dynamic range query algorithms with O(log n) time for updates and XOR queries
+- Optimize range XOR queries using advanced data structures and XOR operation properties
+- Handle edge cases in range XOR queries (bitwise operations, large values, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

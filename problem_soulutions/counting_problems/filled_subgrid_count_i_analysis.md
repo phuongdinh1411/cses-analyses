@@ -11,11 +11,11 @@ permalink: /problem_soulutions/counting_problems/filled_subgrid_count_i_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand subgrid analysis and uniformity checking in grids
-- [ ] **Objective 2**: Apply efficient algorithms for counting uniform subgrids
-- [ ] **Objective 3**: Implement optimized subgrid counting using sliding window techniques
-- [ ] **Objective 4**: Optimize subgrid counting using mathematical formulas and pattern analysis
-- [ ] **Objective 5**: Handle edge cases in subgrid counting (small grids, uniform grids, edge cases)
+- Understand subgrid analysis and uniformity checking in grids
+- Apply efficient algorithms for counting uniform subgrids
+- Implement optimized subgrid counting using sliding window techniques
+- Optimize subgrid counting using mathematical formulas and pattern analysis
+- Handle edge cases in subgrid counting (small grids, uniform grids, edge cases)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

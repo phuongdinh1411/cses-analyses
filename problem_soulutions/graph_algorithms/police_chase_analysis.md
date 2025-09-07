@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/police_chase_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand minimum cut problems and network connectivity concepts
-- [ ] **Objective 2**: Apply maximum flow algorithms to find minimum cuts using max-flow min-cut theorem
-- [ ] **Objective 3**: Implement efficient minimum cut algorithms with proper flow network construction
-- [ ] **Objective 4**: Optimize minimum cut solutions using flow algorithms and cut identification
-- [ ] **Objective 5**: Handle edge cases in minimum cut problems (already disconnected, single edge cuts, multiple components)
+- Understand minimum cut problems and network connectivity concepts
+- Apply maximum flow algorithms to find minimum cuts using max-flow min-cut theorem
+- Implement efficient minimum cut algorithms with proper flow network construction
+- Optimize minimum cut solutions using flow algorithms and cut identification
+- Handle edge cases in minimum cut problems (already disconnected, single edge cuts, multiple components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

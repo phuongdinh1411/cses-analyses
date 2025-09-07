@@ -11,11 +11,11 @@ permalink: /problem_soulutions/dynamic_programming/coin_combinations_ii_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand the difference between ordered and unordered combinations in DP
-- [ ] **Objective 2**: Apply DP techniques to count unordered combinations and avoid duplicate counting
-- [ ] **Objective 3**: Implement efficient DP solutions for combination counting with order constraints
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and modular arithmetic
-- [ ] **Objective 5**: Handle edge cases in combination DP (impossible sums, single coin types, boundary conditions)
+- Understand the difference between ordered and unordered combinations in DP
+- Apply DP techniques to count unordered combinations and avoid duplicate counting
+- Implement efficient DP solutions for combination counting with order constraints
+- Optimize DP solutions using space-efficient techniques and modular arithmetic
+- Handle edge cases in combination DP (impossible sums, single coin types, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

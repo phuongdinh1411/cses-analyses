@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/path_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand tree path query problems and path sum calculation algorithms
-- [ ] **Objective 2**: Apply Lowest Common Ancestor (LCA) technique to efficiently calculate path sums
-- [ ] **Objective 3**: Implement efficient path query algorithms with O(log n) query time complexity
-- [ ] **Objective 4**: Optimize path queries using LCA, binary lifting, and tree path analysis
-- [ ] **Objective 5**: Handle edge cases in path queries (same node, adjacent nodes, root node, large trees)
+- Understand tree path query problems and path sum calculation algorithms
+- Apply Lowest Common Ancestor (LCA) technique to efficiently calculate path sums
+- Implement efficient path query algorithms with O(log n) query time complexity
+- Optimize path queries using LCA, binary lifting, and tree path analysis
+- Handle edge cases in path queries (same node, adjacent nodes, root node, large trees)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

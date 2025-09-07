@@ -10,11 +10,11 @@ permalink: /problem_soulutions/dynamic_programming/coin_combinations_i_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand counting problems in dynamic programming and distinct way calculations
-- [ ] **Objective 2**: Apply bottom-up DP to solve counting problems with multiple coin types
-- [ ] **Objective 3**: Implement efficient DP solutions for counting distinct combinations and arrangements
-- [ ] **Objective 4**: Optimize DP solutions using space-efficient techniques and modular arithmetic
-- [ ] **Objective 5**: Handle edge cases in counting DP (impossible sums, single coin types, boundary conditions)
+- Understand counting problems in dynamic programming and distinct way calculations
+- Apply bottom-up DP to solve counting problems with multiple coin types
+- Implement efficient DP solutions for counting distinct combinations and arrangements
+- Optimize DP solutions using space-efficient techniques and modular arithmetic
+- Handle edge cases in counting DP (impossible sums, single coin types, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

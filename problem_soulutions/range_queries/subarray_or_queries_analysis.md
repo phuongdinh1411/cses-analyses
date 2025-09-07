@@ -11,11 +11,11 @@ permalink: /problem_soulutions/range_queries/subarray_or_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand dynamic range query problems with point updates and bitwise OR operations
-- [ ] **Objective 2**: Apply Segment Trees to handle point updates and range OR queries efficiently
-- [ ] **Objective 3**: Implement efficient dynamic range query algorithms with O(log n) time for updates and OR queries
-- [ ] **Objective 4**: Optimize range OR queries using Segment Trees and bitwise operation properties
-- [ ] **Objective 5**: Handle edge cases in range OR queries (bitwise operations, large values, boundary conditions)
+- Understand dynamic range query problems with point updates and bitwise OR operations
+- Apply Segment Trees to handle point updates and range OR queries efficiently
+- Implement efficient dynamic range query algorithms with O(log n) time for updates and OR queries
+- Optimize range OR queries using Segment Trees and bitwise operation properties
+- Handle edge cases in range OR queries (bitwise operations, large values, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

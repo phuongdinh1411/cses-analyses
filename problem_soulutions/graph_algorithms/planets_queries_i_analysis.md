@@ -10,11 +10,11 @@ permalink: /problem_soulutions/graph_algorithms/planets_queries_i_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand binary lifting and path query optimization in functional graphs
-- [ ] **Objective 2**: Apply binary lifting technique to answer k-th ancestor queries efficiently
-- [ ] **Objective 3**: Implement efficient binary lifting algorithms with proper preprocessing and query handling
-- [ ] **Objective 4**: Optimize path queries using binary lifting and sparse table techniques
-- [ ] **Objective 5**: Handle edge cases in binary lifting (large k values, cycles, disconnected components)
+- Understand binary lifting and path query optimization in functional graphs
+- Apply binary lifting technique to answer k-th ancestor queries efficiently
+- Implement efficient binary lifting algorithms with proper preprocessing and query handling
+- Optimize path queries using binary lifting and sparse table techniques
+- Handle edge cases in binary lifting (large k values, cycles, disconnected components)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

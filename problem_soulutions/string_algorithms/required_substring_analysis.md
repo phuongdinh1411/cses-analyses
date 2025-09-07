@@ -11,11 +11,11 @@ permalink: /problem_soulutions/string_algorithms/required_substring_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand required substring problems and string modification optimization
-- [ ] **Objective 2**: Apply string matching and analysis to find minimum character additions for substring inclusion
-- [ ] **Objective 3**: Implement efficient required substring algorithms with O(n + m) time complexity
-- [ ] **Objective 4**: Optimize string modification using string matching, prefix analysis, and greedy approaches
-- [ ] **Objective 5**: Handle edge cases in required substrings (substring already present, impossible to add, single character)
+- Understand required substring problems and string modification optimization
+- Apply string matching and analysis to find minimum character additions for substring inclusion
+- Implement efficient required substring algorithms with O(n + m) time complexity
+- Optimize string modification using string matching, prefix analysis, and greedy approaches
+- Handle edge cases in required substrings (substring already present, impossible to add, single character)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

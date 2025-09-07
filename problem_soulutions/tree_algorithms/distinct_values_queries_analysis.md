@@ -10,11 +10,11 @@ permalink: /problem_soulutions/tree_algorithms/distinct_values_queries_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand distinct values query problems and subtree distinct counting algorithms
-- [ ] **Objective 2**: Apply Euler Tour technique with segment trees or binary indexed trees for distinct value queries
-- [ ] **Objective 3**: Implement efficient distinct values query algorithms with O(log n) query time complexity
-- [ ] **Objective 4**: Optimize distinct value queries using Euler Tour, segment trees, and range query data structures
-- [ ] **Objective 5**: Handle edge cases in distinct values queries (single node, all same colors, large trees, frequent queries)
+- Understand distinct values query problems and subtree distinct counting algorithms
+- Apply Euler Tour technique with segment trees or binary indexed trees for distinct value queries
+- Implement efficient distinct values query algorithms with O(log n) query time complexity
+- Optimize distinct value queries using Euler Tour, segment trees, and range query data structures
+- Handle edge cases in distinct values queries (single node, all same colors, large trees, frequent queries)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:

@@ -11,11 +11,11 @@ permalink: /problem_soulutions/dynamic_programming/grid_paths_analysis
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- [ ] **Objective 1**: Understand 2D dynamic programming and grid path counting with obstacles
-- [ ] **Objective 2**: Apply 2D DP techniques to count paths in grids with movement constraints
-- [ ] **Objective 3**: Implement efficient 2D DP solutions for path counting with obstacle handling
-- [ ] **Objective 4**: Optimize 2D DP solutions using space-efficient techniques and modular arithmetic
-- [ ] **Objective 5**: Handle edge cases in grid DP (blocked start/end, no valid paths, boundary conditions)
+- Understand 2D dynamic programming and grid path counting with obstacles
+- Apply 2D DP techniques to count paths in grids with movement constraints
+- Implement efficient 2D DP solutions for path counting with obstacle handling
+- Optimize 2D DP solutions using space-efficient techniques and modular arithmetic
+- Handle edge cases in grid DP (blocked start/end, no valid paths, boundary conditions)
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:
