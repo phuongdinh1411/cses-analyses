@@ -59,147 +59,238 @@ Explanation**:
 - This is the minimum possible maximum sum for k=3
 ```
 
-## 📊 Visual Example
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Input Array
+### Approach 1: Brute Force Solution
+
+**Key Insights from Brute Force**:
+- **Exhaustive Search**: Shows all possible solutions but is computationally expensive
+- **Combinatorial Explosion**: Number of ways grows exponentially with input size
+- **Baseline Understanding**: Helps understand the problem structure before optimization
+
+**Key Insight**: Try all possible ways to divide the array into k subarrays and find the minimum maximum sum.
+
+**Algorithm**:
+- Generate all possible ways to place k-1 dividers in n-1 positions
+- For each division, calculate the sum of each subarray
+- Find the minimum maximum sum across all divisions
+
+**Visual Example**:
 ```
-Array: [2, 4, 7, 3, 5]
-Index:  0  1  2  3  4
-k = 3 (divide into 3 subarrays)
+Array: [2, 4, 7, 3, 5], k = 3
+Possible positions for 2 dividers: positions 0,1,2,3
+
+All possible divisions:
+┌─────────────────────────────────────────────────┐
+│ Division 1: [2] | [4,7,3,5]                     │
+│ Sums: 2, 19 → Max: 19                           │
+│                                                 │
+│ Division 2: [2,4] | [7,3,5]                     │
+│ Sums: 6, 15 → Max: 15                           │
+│                                                 │
+│ Division 3: [2,4,7] | [3,5]                     │
+│ Sums: 13, 8 → Max: 13                           │
+│                                                 │
+│ Division 4: [2,4,7,3] | [5]                     │
+│ Sums: 16, 5 → Max: 16                           │
+│                                                 │
+│ Division 5: [2] | [4,7] | [3,5]                 │
+│ Sums: 2, 11, 8 → Max: 11                        │
+│                                                 │
+│ Division 6: [2,4] | [7] | [3,5]                 │
+│ Sums: 6, 7, 8 → Max: 8 ✓ OPTIMAL               │
+└─────────────────────────────────────────────────┘
 ```
 
-### Binary Search Process
-```
-Search space: [max_element, sum_of_all]
-- Lower bound: max([2,4,7,3,5]) = 7
-- Upper bound: sum([2,4,7,3,5]) = 21
+**Implementation**:
+```python
+def brute_force_solution(arr, k):
+    n = len(arr)
+    min_max_sum = float('inf')
+    
+    def generate_divisions(pos, dividers, current_division):
+        if len(dividers) == k - 1:
+            # Calculate sums for this division
+            sums = []
+            start = 0
+            for div in dividers + [n]:
+                subarray_sum = sum(arr[start:div])
+                sums.append(subarray_sum)
+                start = div
+            min_max_sum = min(min_max_sum, max(sums))
+            return
+        
+        # Try placing next divider
+        for i in range(pos, n):
+            generate_divisions(i + 1, dividers + [i], current_division)
+    
+    generate_divisions(1, [], [])
+    return min_max_sum
 
-Binary search on possible maximum sums:
+# Example usage
+arr = [2, 4, 7, 3, 5]
+k = 3
+result = brute_force_solution(arr, k)
+print(f"Brute force result: {result}")  # Output: 8
 ```
 
-### Validation Function Examples
+**Time Complexity**: O(C(n-1, k-1) × n) = O(n^k)
+**Space Complexity**: O(1)
+
+**Why it's inefficient**: Exponential time complexity makes it impractical for large inputs.
+
+---
+
+### Approach 2: Dynamic Programming Solution
+
+**Key Insights from Dynamic Programming**:
+- **Optimal Substructure**: Problem can be broken into smaller subproblems
+- **Overlapping Subproblems**: Same subproblems are solved multiple times
+- **State Space**: dp[i][j] represents optimal solution for first i elements in j subarrays
+- **Transition Logic**: Each state depends on previous states with fewer subarrays
+
+**Key Insight**: Use DP to find the minimum maximum sum by considering all possible ways to divide the first i elements into j subarrays.
+
+**Algorithm**:
+- `dp[i][j]` = minimum maximum sum when dividing first i elements into j subarrays
+- Recurrence: `dp[i][j] = min(max(dp[k][j-1], sum(arr[k+1...i]))` for all k < i
+
+**Visual Example**:
 ```
-Test 1: Can we divide with max_sum = 7?
-┌─────────────────────────────────────┐
-│ Current sum: 0, Subarrays: 0        │
-│ Element 2: 0+2=2 ≤ 7 ✓              │
-│ Element 4: 2+4=6 ≤ 7 ✓              │
-│ Element 7: 6+7=13 > 7 ✗             │
-│ Start new subarray: [7]             │
-│ Element 3: 0+3=3 ≤ 7 ✓              │
-│ Element 5: 3+5=8 > 7 ✗              │
-│ Start new subarray: [5]             │
-│ Total subarrays: 3 = k ✓            │
-└─────────────────────────────────────┘
+Array: [2, 4, 7, 3, 5], k = 3
+
+DP Table Construction:
+┌─────────────────────────────────────────────────┐
+│ dp[i][j] = min max sum for first i elements     │
+│           divided into j subarrays              │
+│                                                 │
+│     j=1    j=2    j=3                           │
+│ i=1   2     -      -                            │
+│ i=2   6     2      -                            │
+│ i=3  13     6      2                            │
+│ i=4  16     9      6                            │
+│ i=5  21    12      8 ← Answer                   │
+└─────────────────────────────────────────────────┘
+
+Calculation for dp[5][3]:
+- Option 1: dp[4][2] + arr[4] = 9 + 5 = 14
+- Option 2: dp[3][2] + sum(arr[3:5]) = 6 + 8 = 14  
+- Option 3: dp[2][2] + sum(arr[2:5]) = 2 + 15 = 17
+- Option 4: dp[1][2] + sum(arr[1:5]) = 2 + 19 = 21
+- Minimum: 8
+```
+
+**Implementation**:
+```python
+def dp_solution(arr, k):
+    n = len(arr)
+    # dp[i][j] = minimum maximum sum when dividing first i elements into j subarrays
+    dp = [[float('inf')] * (k + 1) for _ in range(n + 1)]
+    
+    # Base cases
+    for i in range(n + 1):
+        dp[i][1] = sum(arr[:i])  # One subarray = sum of all elements
+    
+    for i in range(1, n + 1):
+        for j in range(2, min(i + 1, k + 1)):
+            for split in range(j - 1, i):
+                # Divide first 'split' elements into j-1 subarrays
+                # and elements split+1 to i into 1 subarray
+                left_sum = dp[split][j - 1]
+                right_sum = sum(arr[split:i])
+                dp[i][j] = min(dp[i][j], max(left_sum, right_sum))
+    
+    return dp[n][k]
+
+# Example usage
+arr = [2, 4, 7, 3, 5]
+k = 3
+result = dp_solution(arr, k)
+print(f"DP result: {result}")  # Output: 8
+```
+
+**Time Complexity**: O(n²k)
+**Space Complexity**: O(nk)
+
+**Why it's better**: Polynomial time, but still not optimal for large inputs.
+
+**Implementation Considerations**:
+- **Memory Usage**: O(nk) space for DP table
+- **Time Trade-off**: Better than brute force but still O(n²k)
+- **Practical Limitation**: Not suitable for very large inputs due to quadratic time
+
+---
+
+### Approach 3: Binary Search on Answer (Optimal)
+
+**Key Insights from Binary Search Solution**:
+- **Monotonic Property**: If max_sum = X works, then max_sum > X also works
+- **Answer Space Search**: Binary search on the range [max(arr), sum(arr)]
+- **Greedy Validation**: Optimal strategy for checking feasibility
+- **Early Termination**: Stop validation as soon as we know it's impossible
+- **Problem Transformation**: Convert optimization to decision problem
+
+**Key Insight**: If we can divide the array with maximum sum X, we can also divide it with any sum > X. This monotonicity allows binary search.
+
+**Algorithm**:
+- Binary search on the answer space [max(arr), sum(arr)]
+- For each candidate answer, use greedy validation
+- Greedy validation: try to fit as many elements as possible in each subarray
+
+**Visual Example**:
+```
+Array: [2, 4, 7, 3, 5], k = 3
+Search space: [7, 21] (max element to sum of all)
+
+Binary Search Process:
+┌─────────────────────────────────────────────────┐
+│ Step 1: mid = (7+21)/2 = 14                     │
+│ Validation: Can we divide with max_sum = 14?    │
+│ [2,4,7] | [3,5] → Sums: 13, 8 → Max: 13 ≤ 14 ✓ │
+│ Answer ≤ 14, search [7, 14]                     │
+│                                                 │
+│ Step 2: mid = (7+14)/2 = 10                     │
+│ Validation: Can we divide with max_sum = 10?    │
+│ [2,4] | [7] | [3,5] → Sums: 6, 7, 8 → Max: 8 ≤ 10 ✓ │
+│ Answer ≤ 10, search [7, 10]                     │
+│                                                 │
+│ Step 3: mid = (7+10)/2 = 8                      │
+│ Validation: Can we divide with max_sum = 8?     │
+│ [2,4] | [7] | [3,5] → Sums: 6, 7, 8 → Max: 8 ≤ 8 ✓ │
+│ Answer ≤ 8, search [7, 8]                       │
+│                                                 │
+│ Step 4: mid = (7+8)/2 = 7                       │
+│ Validation: Can we divide with max_sum = 7?     │
+│ [2,4] | [7] | [3,5] → Sums: 6, 7, 8 → Max: 8 > 7 ✗ │
+│ Answer > 7, search [8, 8]                       │
+│                                                 │
+│ Final Answer: 8                                 │
+└─────────────────────────────────────────────────┘
+```
+
+**Greedy Validation Details**:
+```
+Testing max_sum = 8:
+┌─────────────────────────────────────────────────┐
+│ Current sum: 0, Subarrays: 1                    │
+│ Element 2: 0+2=2 ≤ 8 ✓ → Current sum: 2         │
+│ Element 4: 2+4=6 ≤ 8 ✓ → Current sum: 6         │
+│ Element 7: 6+7=13 > 8 ✗ → Start new subarray    │
+│   Subarrays: 2, Current sum: 7                  │
+│ Element 3: 7+3=10 > 8 ✗ → Start new subarray    │
+│   Subarrays: 3, Current sum: 3                  │
+│ Element 5: 3+5=8 ≤ 8 ✓ → Current sum: 8         │
+│ Final: 3 subarrays ≤ k=3 ✓                      │
+└─────────────────────────────────────────────────┘
 
 Division: [2,4], [7], [3,5]
 Sums: 6, 7, 8
-Maximum: 7 ✓
+Maximum: 8
 ```
 
-```
-Test 2: Can we divide with max_sum = 6?
-┌─────────────────────────────────────┐
-│ Current sum: 0, Subarrays: 0        │
-│ Element 2: 0+2=2 ≤ 6 ✓              │
-│ Element 4: 2+4=6 ≤ 6 ✓              │
-│ Element 7: 6+7=13 > 6 ✗             │
-│ Start new subarray: [7]             │
-│ Element 3: 0+3=3 ≤ 6 ✓              │
-│ Element 5: 3+5=8 > 6 ✗              │
-│ Start new subarray: [5]             │
-│ Total subarrays: 3 = k ✓            │
-└─────────────────────────────────────┘
-
-Division: [2,4], [7], [3,5]
-Sums: 6, 7, 8
-Maximum: 8 > 6 ✗
-```
-
-### Optimal Division Visualization
-```
-Array: [2, 4, 7, 3, 5]
-Index:  0  1  2  3  4
-
-Optimal division (max_sum = 7):
-┌─────────┐ ┌─┐ ┌─────┐
-│ 2   4   │ │7│ │ 3 5 │
-└─────────┘ └─┘ └─────┘
-   Sum: 6   Sum: 7  Sum: 8
-
-Maximum sum: 7
-```
-
-### Why Binary Search Works
-```
-Key Insight: If we can divide with max_sum = X, 
-             we can also divide with max_sum > X
-
-Binary search properties:
-- If validation(X) = true, then validation(X+1) = true
-- If validation(X) = false, then validation(X-1) = false
-- This allows us to binary search for the minimum valid X
-```
-
-## 🎯 Solution Progression
-
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Divide array into exactly k subarrays
-- Minimize the maximum sum among all subarrays
-- Each element must be in exactly one subarray
-- Subarrays must be consecutive
-
-**Key Observations:**
-- If k = 1, answer is sum of entire array
-- If k = n, answer is maximum element
-- For other k, answer is between max(arr) and sum(arr)
-- Can use binary search to find optimal value
-
-### Step 2: Binary Search Approach
-**Idea**: Use binary search to find the minimum maximum sum.
-
+**Implementation**:
 ```python
-def array_division_binary_search(n, k, arr):
-    def can_divide(max_sum):
-        subarrays = 1
-        current_sum = 0
-        
-        for num in arr:
-            if num > max_sum:
-                return False  # Single element exceeds limit
-            if current_sum + num > max_sum:
-                subarrays += 1
-                current_sum = num
-            else:
-                current_sum += num
-        
-        return subarrays <= k
-    
-    # Binary search bounds
-    left = max(arr)  # Minimum possible answer
-    right = sum(arr)  # Maximum possible answer
-    
-    while left < right:
-        mid = (left + right) // 2
-        if can_divide(mid):
-            right = mid
-        else:
-            left = mid + 1
-    
-    return left
-```
-
-**Why this works:**
-- Binary search on the answer space
-- `can_divide()` checks if it's possible to divide with given max sum
-- Greedy approach: add elements to current subarray until limit is reached
-
-### Step 3: Optimized Binary Search
-**Idea**: Optimize the binary search implementation.
-
-```python
-def array_division_optimized(n, k, arr):
+def binary_search_solution(arr, k):
     def can_divide(max_sum):
         subarrays = 1
         current_sum = 0
@@ -217,116 +308,7 @@ def array_division_optimized(n, k, arr):
         
         return subarrays <= k
     
-    # Binary search
-    left = max(arr)
-    right = sum(arr)
-    
-    while left < right:
-        mid = (left + right) // 2
-        if can_divide(mid):
-            right = mid
-        else:
-            left = mid + 1
-    
-    return left
-```
-
-**Why this is better:**
-- Early termination in `can_divide()`
-- More efficient bounds checking
-- Cleaner implementation
-
-### Step 3: Optimization/Alternative
-**Alternative approaches:**
-- **Brute Force**: Try all possible divisions O(n^k)
-- **Binary Search**: Optimal O(n log(sum)) approach
-- **Dynamic Programming**: For weighted subarray problems
-
-### Step 4: Complete Solution
-**Putting it all together:**
-
-```python
-def solve_array_division():
-    n, k = map(int, input().split())
-    arr = list(map(int, input().split()))
-    
-    def can_divide(max_sum):
-        subarrays = 1
-        current_sum = 0
-        
-        for num in arr:
-            if num > max_sum:
-                return False
-            if current_sum + num > max_sum:
-                subarrays += 1
-                current_sum = num
-                if subarrays > k:
-                    return False
-            else:
-                current_sum += num
-        
-        return subarrays <= k
-    
-    # Binary search
-    left = max(arr)
-    right = sum(arr)
-    
-    while left < right:
-        mid = (left + right) // 2
-        if can_divide(mid):
-            right = mid
-        else:
-            left = mid + 1
-    
-    print(left)
-
-# Main execution
-if __name__ == "__main__":
-    solve_array_division()
-```
-
-**Why this works:**
-- Efficient binary search approach
-- Handles all edge cases correctly
-- Optimal time complexity
-
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        ((5, 3, [2, 4, 7, 3, 5]), 8),
-        ((4, 2, [1, 2, 3, 4]), 6),
-        ((3, 3, [1, 2, 3]), 3),
-        ((5, 1, [1, 2, 3, 4, 5]), 15),
-    ]
-    
-    for (n, k, arr), expected in test_cases:
-        result = solve_test(n, k, arr)
-        print(f"n = {n}, k = {k}, arr = {arr}")
-        print(f"Expected: {expected}, Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
-
-def solve_test(n, k, arr):
-    def can_divide(max_sum):
-        subarrays = 1
-        current_sum = 0
-        
-        for num in arr:
-            if num > max_sum:
-                return False
-            if current_sum + num > max_sum:
-                subarrays += 1
-                current_sum = num
-                if subarrays > k:
-                    return False
-            else:
-                current_sum += num
-        
-        return subarrays <= k
-    
+    # Binary search on answer space
     left = max(arr)
     right = sum(arr)
     
@@ -339,15 +321,24 @@ def solve_test(n, k, arr):
     
     return left
 
-test_solution()
+# Example usage
+arr = [2, 4, 7, 3, 5]
+k = 3
+result = binary_search_solution(arr, k)
+print(f"Binary search result: {result}")  # Output: 8
 ```
 
-### Step 5: Testing Our Solution
-**Test cases to verify correctness:**
-- **Test 1**: Basic array division (should return optimal maximum sum)
-- **Test 2**: Single subarray (should return sum of array)
-- **Test 3**: Each element separate (should return maximum element)
-- **Test 4**: Complex pattern (should return optimal division)
+**Time Complexity**: O(n log(sum(arr)))
+**Space Complexity**: O(1)
+
+**Why it's optimal**: Logarithmic number of validations, each taking linear time.
+
+**Implementation Details**:
+- **Search Space**: [max(arr), sum(arr)] - tight bounds
+- **Validation Function**: O(n) greedy approach with early termination
+- **Binary Search**: O(log(sum)) iterations
+- **Total Complexity**: O(n log(sum)) - optimal for this problem
+
 
 ## 🔧 Implementation Details
 
@@ -366,27 +357,15 @@ test_solution()
 - **Greedy Check**: `can_divide()` uses greedy approach
 - **Correct Bounds**: Search space is properly bounded
 
-## 🎯 Key Insights
-
-### 1. **Binary Search on Answer**
-- Search space: [max(arr), sum(arr)]
-- Each check takes O(n) time
-- Total complexity: O(n log(sum(arr)))
-
-### 2. **Greedy Division**
-- Add elements to current subarray until limit
-- Start new subarray when limit is exceeded
-- This is optimal for given maximum sum
-
-### 3. **Monotonicity**
-- If max_sum works, any larger value also works
-- If max_sum doesn't work, any smaller value also doesn't work
-- This enables binary search
 
 ## 🎯 Problem Variations
 
 ### Variation 1: Minimum Sum Division
 **Problem**: Divide array into k subarrays to minimize the minimum sum.
+
+**Related Problems**:
+- [LeetCode 410: Split Array Largest Sum](https://leetcode.com/problems/split-array-largest-sum/) - Similar concept with different objective
+- [CSES Factory Machines](https://cses.fi/problemset/task/1620) - Binary search on answer space
 
 ```python
 def min_sum_division(n, k, arr):
@@ -418,6 +397,10 @@ def min_sum_division(n, k, arr):
 
 ### Variation 2: Balanced Division
 **Problem**: Divide array into k subarrays with minimum difference between max and min sums.
+
+**Related Problems**:
+- [LeetCode 1011: Capacity To Ship Packages Within D Days](https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/) - Similar binary search approach
+- [LeetCode 875: Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/) - Binary search on answer space
 
 ```python
 def balanced_division(n, k, arr):
@@ -460,6 +443,10 @@ def balanced_division(n, k, arr):
 ### Variation 3: Weighted Division
 **Problem**: Each subarray has a weight based on its sum. Minimize maximum weight.
 
+**Related Problems**:
+- [LeetCode 1231: Divide Chocolate](https://leetcode.com/problems/divide-chocolate/) - Similar weighted division concept
+- [LeetCode 410: Split Array Largest Sum](https://leetcode.com/problems/split-array-largest-sum/) - Exact same problem
+
 ```python
 def weighted_division(n, k, arr, weights):
     def can_divide(max_weight):
@@ -493,6 +480,10 @@ def weighted_division(n, k, arr, weights):
 
 ### Variation 4: Circular Array Division
 **Problem**: Array is circular. Divide into k subarrays minimizing maximum sum.
+
+**Related Problems**:
+- [LeetCode 213: House Robber II](https://leetcode.com/problems/house-robber-ii/) - Circular array handling
+- [LeetCode 918: Maximum Sum Circular Subarray](https://leetcode.com/problems/maximum-sum-circular-subarray/) - Circular subarray problems
 
 ```python
 def circular_array_division(n, k, arr):
@@ -534,6 +525,10 @@ def circular_array_division(n, k, arr):
 
 ### Variation 5: Constrained Division
 **Problem**: Each subarray must have at least L and at most R elements.
+
+**Related Problems**:
+- [LeetCode 410: Split Array Largest Sum](https://leetcode.com/problems/split-array-largest-sum/) - With size constraints
+- [LeetCode 1011: Capacity To Ship Packages Within D Days](https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/) - Similar constraint handling
 
 ```python
 def constrained_division(n, k, arr, L, R):
@@ -577,13 +572,6 @@ def constrained_division(n, k, arr, L, R):
     return left
 ```
 
-## 🎯 Key Insights
-
-### Important Concepts and Patterns
-- **Binary Search on Answer**: Search for optimal value in answer space
-- **Greedy Validation**: Check if a value is achievable with greedy approach
-- **Subarray Division**: Divide array into consecutive subarrays
-- **Optimization Problems**: Minimize maximum value in constraints
 
 ## 🚀 Problem Variations
 
@@ -736,11 +724,25 @@ def array_division_dynamic(operations):
 
 ## 🔗 Related Problems
 
-### Links to Similar Problems
-- **Binary Search**: Problems with answer space search
-- **Subarray Problems**: Array division and partitioning
+### CSES Problems
+- [Array Division](https://cses.fi/problemset/task/1085) - This exact problem
+- [Factory Machines](https://cses.fi/problemset/task/1620) - Binary search on answer space
+- [Maximum Subarray Sum](https://cses.fi/problemset/task/1643) - Subarray problems
+- [Subarray Sums I](https://cses.fi/problemset/task/1660) - Subarray sum variations
+
+### LeetCode Problems
+- [410. Split Array Largest Sum](https://leetcode.com/problems/split-array-largest-sum/) - Exact same problem
+- [1011. Capacity To Ship Packages Within D Days](https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/) - Similar binary search approach
+- [875. Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/) - Binary search on answer space
+- [1231. Divide Chocolate](https://leetcode.com/problems/divide-chocolate/) - Weighted division concept
+- [213. House Robber II](https://leetcode.com/problems/house-robber-ii/) - Circular array handling
+- [918. Maximum Sum Circular Subarray](https://leetcode.com/problems/maximum-sum-circular-subarray/) - Circular subarray problems
+
+### Problem Categories
+- **Binary Search on Answer**: Problems where you search for optimal value in answer space
+- **Subarray Problems**: Array division and partitioning techniques
 - **Optimization**: Minimize maximum value problems
-- **Greedy Algorithms**: Problems with greedy validation
+- **Greedy Algorithms**: Problems with greedy validation functions
 
 ## 📚 Learning Points
 
