@@ -24,9 +24,9 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Bit manipulation, dynamic programming, state transitions, constraint handling
 - **Related Problems**: Fixed Length Hamiltonian Path Queries (basic version), Hamiltonian Flights (Hamiltonian paths), Round Trip (cycle detection)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a graph, answer queries about Hamiltonian paths (paths visiting each vertex exactly once) of fixed length with additional constraints.
+Given a graph, answer queries about Hamiltonian paths (paths visiting each vertex exactly once) of fixed length with additional constraints.
 
 **Input**: 
 - n, m: number of vertices and edges
@@ -34,7 +34,14 @@ Before attempting this problem, ensure you understand:
 - q: number of queries
 - q lines: u v k (query: is there a Hamiltonian path of length k from u to v?)
 
-**Output**: For each query, print "YES" if Hamiltonian path exists, "NO" otherwise.
+**Output**: 
+- For each query, print "YES" if Hamiltonian path exists, "NO" otherwise
+
+**Constraints**:
+- 1 ≤ n ≤ 20
+- 1 ≤ m ≤ 400
+- 1 ≤ q ≤ 10^5
+- 1 ≤ k ≤ n-1
 
 **Example**:
 ```
@@ -54,7 +61,7 @@ NO
 YES
 NO
 
-Explanation: 
+Explanation**: 
 No Hamiltonian path of length 3 from 1 to 4
 Hamiltonian path 1→2→3→4 has length 4 from 1 to 4
 No Hamiltonian path of length 2 from 2 to 3

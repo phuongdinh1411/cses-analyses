@@ -29,17 +29,15 @@ Before attempting this problem, ensure you understand:
 
 Given integers n and k, count the number of sequences of length n where each element is between 1 and k, and no two consecutive elements are equal.
 
-This is a combinatorics problem where we need to count valid sequences with the constraint that no two consecutive elements can be the same. We can solve this using dynamic programming by tracking the last element of the sequence.
-
 **Input**: 
 - First line: two integers n and k (sequence length and maximum value)
 
 **Output**: 
-- Print the number of valid sequences modulo 10⁹ + 7
+- Print the number of valid sequences modulo 10^9 + 7
 
 **Constraints**:
-- 1 ≤ n ≤ 10⁶
-- 1 ≤ k ≤ 10⁶
+- 1 ≤ n ≤ 10^6
+- 1 ≤ k ≤ 10^6
 
 **Example**:
 ```
@@ -48,14 +46,14 @@ Input:
 
 Output:
 2
-```
 
-**Explanation**: 
+Explanation**: 
 For n = 3 and k = 2, there are 2 valid sequences:
 1. [1, 2, 1] - no consecutive elements are equal
 2. [2, 1, 2] - no consecutive elements are equal
 
 The sequences [1, 1, 2], [1, 2, 2], [2, 1, 1], and [2, 2, 1] are invalid because they have consecutive equal elements.
+```
 
 ### 📊 Visual Example
 

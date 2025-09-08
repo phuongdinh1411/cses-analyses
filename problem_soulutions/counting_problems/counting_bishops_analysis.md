@@ -29,8 +29,6 @@ Before attempting this problem, ensure you understand:
 
 Given a chessboard of size n×n, count the number of ways to place k bishops such that no bishop attacks another bishop.
 
-This is a chess problem where we need to count valid bishop placements on a chessboard. Bishops attack each other if they are on the same diagonal. We can solve this using backtracking or by analyzing the diagonal structure of the chessboard.
-
 **Input**: 
 - First line: two integers n and k (chessboard size and number of bishops)
 
@@ -48,10 +46,10 @@ Input:
 
 Output:
 26
-```
 
-**Explanation**: 
+Explanation**: 
 On a 3×3 chessboard, there are 26 ways to place 2 bishops such that they don't attack each other. Bishops attack along diagonals, so we need to ensure no two bishops are on the same diagonal.
+```
 
 ### 📊 Visual Example
 

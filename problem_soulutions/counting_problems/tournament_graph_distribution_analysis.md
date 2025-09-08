@@ -29,13 +29,11 @@ Before attempting this problem, ensure you understand:
 
 Given n teams, count the number of different tournament graphs where each team plays against every other team exactly once, and the result is a valid tournament (no cycles).
 
-This is a graph theory problem where we need to count the number of valid tournament graphs. A tournament is a directed graph where every pair of vertices is connected by exactly one directed edge, and it must be acyclic (no directed cycles).
-
 **Input**: 
 - First line: integer n (number of teams)
 
 **Output**: 
-- Print the number of different tournament graphs modulo 10⁹ + 7
+- Print the number of different tournament graphs modulo 10^9 + 7
 
 **Constraints**:
 - 1 ≤ n ≤ 20
@@ -47,14 +45,14 @@ Input:
 
 Output:
 2
-```
 
-**Explanation**: 
+Explanation**: 
 For n = 3 teams, there are 2 valid tournament graphs:
 1. Team 1 beats Team 2, Team 2 beats Team 3, Team 1 beats Team 3
 2. Team 1 beats Team 3, Team 3 beats Team 2, Team 1 beats Team 2
 
 Both result in acyclic tournament graphs where each team plays every other team exactly once.
+```
 
 ### 📊 Visual Example
 

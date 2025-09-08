@@ -25,24 +25,26 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
 - **Related Problems**: Fixed Length Cycle Queries (similar matrix approach), Round Trip (cycle detection), Graph Girth (cycle properties)
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a directed graph with n nodes and q queries, for each query find the number of circuits of length k starting and ending at node a.
 
-### Input
-The first input line has two integers n and q: the number of nodes and queries.
-Then there are n lines describing the adjacency matrix. Each line has n integers: 1 if there is an edge, 0 otherwise.
-Finally, there are q lines describing the queries. Each line has two integers a and k: find circuits from a to a of length k.
+**Input**: 
+- n: number of nodes
+- q: number of queries
+- n lines: adjacency matrix (1 if edge exists, 0 otherwise)
+- q lines: a k (find circuits from node a to a of length k)
 
-### Output
-Print the answer to each query modulo 10^9 + 7.
+**Output**: 
+- Answer to each query modulo 10^9 + 7
 
-### Constraints
+**Constraints**:
 - 1 ≤ n ≤ 100
 - 1 ≤ q ≤ 10^5
 - 1 ≤ k ≤ 10^9
 - 1 ≤ a ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 3 2
@@ -55,6 +57,15 @@ Input:
 Output:
 1
 1
+
+Explanation**: 
+Query 1: Circuits from node 1 of length 3
+- Circuit: 1 → 2 → 3 → 1 (length 3)
+- Result: 1
+
+Query 2: Circuits from node 2 of length 3  
+- Circuit: 2 → 3 → 1 → 2 (length 3)
+- Result: 1
 ```
 
 ### 📊 Visual Example
@@ -136,16 +147,165 @@ Length 4: 1 → 2 → 3 → 1 → 2 → 1
 Length 5: 1 → 2 → 3 → 1 → 2 → 3 → 1
 ```
 
-## Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Approach 1: Matrix Exponentiation for Circuits - O(n³ log k)
-**Description**: Use matrix exponentiation to find the number of circuits of length k.
+### Approach 1: Brute Force Circuit Counting (Brute Force)
 
+**Key Insights from Brute Force Approach**:
+- **DFS Traversal**: Use DFS to explore all possible paths
+- **Path Length Tracking**: Keep track of current path length
+- **Circuit Detection**: Check if path returns to starting node
+- **Exhaustive Search**: Try all possible paths of given length
+
+**Key Insight**: Use DFS to explore all possible paths and count circuits of the specified length.
+
+**Algorithm**:
+- For each query, start DFS from the given node
+- Explore all possible paths of the specified length
+- Count paths that return to the starting node
+- Return the count modulo 10^9 + 7
+
+**Visual Example**:
+```
+Graph: 1→2→3→1, Query: node 1, length 3
+
+DFS Traversal:
+┌─────────────────────────────────────┐
+│ Start: node 1, length 0            │
+│ Path: [1]                          │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Visit: node 2, length 1            │
+│ Path: [1, 2]                       │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Visit: node 3, length 2            │
+│ Path: [1, 2, 3]                    │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Visit: node 1, length 3            │
+│ Path: [1, 2, 3, 1]                 │
+│ Circuit found! ✓                   │
+└─────────────────────────────────────┘
+
+Result: 1 circuit
+```
+
+**Implementation**:
 ```python
-def fixed_length_circuit_queries_naive(n, q, adjacency_matrix, queries):
+def brute_force_circuit_queries_solution(n, q, adjacency_matrix, queries):
+    """
+    Find circuits using brute force DFS approach
+    
+    Args:
+        n: number of nodes
+        q: number of queries
+        adjacency_matrix: n×n adjacency matrix
+        queries: list of (a, k) pairs
+    
+    Returns:
+        list: answers to queries modulo 10^9 + 7
+    """
+    MOD = 10**9 + 7
+    
+    def dfs_circuit_count(start, current, length, target_length):
+        """Count circuits using DFS"""
+        if length == target_length:
+            return 1 if current == start else 0
+        
+        count = 0
+        for next_node in range(n):
+            if adjacency_matrix[current][next_node] == 1:
+                count = (count + dfs_circuit_count(start, next_node, length + 1, target_length)) % MOD
+        
+        return count
+    
+    result = []
+    for a, k in queries:
+        # Convert to 0-indexed
+        a = a - 1
+        circuits = dfs_circuit_count(a, a, 0, k)
+        result.append(circuits)
+    
+    return result
+
+# Example usage
+n, q = 3, 2
+adjacency_matrix = [
+    [0, 1, 0],
+    [0, 0, 1],
+    [1, 0, 0]
+]
+queries = [(1, 3), (2, 3)]
+result = brute_force_circuit_queries_solution(n, q, adjacency_matrix, queries)
+print(f"Brute force result: {result}")  # Output: [1, 1]
+```
+
+**Time Complexity**: O(n^k)
+**Space Complexity**: O(k)
+
+**Why it's inefficient**: Exponential time complexity makes it impractical for large k values (up to 10^9).
+
+---
+
+### Approach 2: Matrix Exponentiation (Optimized)
+
+**Key Insights from Matrix Exponentiation**:
+- **Matrix Power**: A^k gives number of walks of length k between any two nodes
+- **Circuit Counting**: A^k[i][i] gives circuits of length k starting and ending at node i
+- **Binary Exponentiation**: Efficiently compute matrix powers using binary exponentiation
+- **Modular Arithmetic**: Handle large numbers with modular arithmetic
+
+**Key Insight**: Use matrix exponentiation to efficiently count circuits of any length.
+
+**Algorithm**:
+- Build adjacency matrix from input
+- Use binary exponentiation to compute A^k
+- Extract diagonal elements A^k[i][i] for circuit counts
+- Return results modulo 10^9 + 7
+
+**Visual Example**:
+```
+Graph: 1→2→3→1
+
+Adjacency Matrix A:
+    1  2  3
+1 [ 0  1  0 ]
+2 [ 0  0  1 ]
+3 [ 1  0  0 ]
+
+A³ (paths of length 3):
+    1  2  3
+1 [ 1  0  0 ]  ← A³[1][1] = 1 (circuit 1→2→3→1)
+2 [ 0  1  0 ]  ← A³[2][2] = 1 (circuit 2→3→1→2)
+3 [ 0  0  1 ]  ← A³[3][3] = 1 (circuit 3→1→2→3)
+```
+
+**Implementation**:
+```python
+def matrix_exponentiation_circuit_queries_solution(n, q, adjacency_matrix, queries):
+    """
+    Find circuits using matrix exponentiation approach
+    
+    Args:
+        n: number of nodes
+        q: number of queries
+        adjacency_matrix: n×n adjacency matrix
+        queries: list of (a, k) pairs
+    
+    Returns:
+        list: answers to queries modulo 10^9 + 7
+    """
     MOD = 10**9 + 7
     
     def matrix_multiply(a, b):
+        """Multiply two matrices with modular arithmetic"""
         result = [[0] * n for _ in range(n)]
         for i in range(n):
             for j in range(n):
@@ -154,6 +314,7 @@ def fixed_length_circuit_queries_naive(n, q, adjacency_matrix, queries):
         return result
     
     def matrix_power(matrix, power):
+        """Compute matrix power using binary exponentiation"""
         # Initialize result as identity matrix
         result = [[0] * n for _ in range(n)]
         for i in range(n):
@@ -181,60 +342,29 @@ def fixed_length_circuit_queries_naive(n, q, adjacency_matrix, queries):
         result.append(circuits)
     
     return result
+
+# Example usage
+n, q = 3, 2
+adjacency_matrix = [
+    [0, 1, 0],
+    [0, 0, 1],
+    [1, 0, 0]
+]
+queries = [(1, 3), (2, 3)]
+result = matrix_exponentiation_circuit_queries_solution(n, q, adjacency_matrix, queries)
+print(f"Matrix exponentiation result: {result}")  # Output: [1, 1]
 ```
 
-**Why this is inefficient**: This counts all walks that start and end at the same node, which includes circuits but also other types of walks.
+**Time Complexity**: O(n³ log k)
+**Space Complexity**: O(n²)
 
-### Improvement 1: Optimized Matrix Exponentiation - O(n³ log k)
-**Description**: Use optimized matrix exponentiation with better implementation.
+**Why it's better**: O(n³ log k) complexity is much faster than exponential DFS and can handle large k values efficiently.
 
-```python
-def fixed_length_circuit_queries_optimized(n, q, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        circuits = powered_matrix[a][a]  # Circuits start and end at same node
-        result.append(circuits)
-    
-    return result
-```
-
-**Why this works:**
-- Uses optimized matrix exponentiation
-- Handles circuit constraints
-- Efficient implementation
-- O(n³ log k) time complexity
+**Implementation Considerations**:
+- **Matrix Multiplication**: Use modular arithmetic to prevent overflow
+- **Binary Exponentiation**: Efficiently compute matrix powers
+- **Circuit Counting**: Extract diagonal elements for circuit counts
+- **Query Processing**: Handle multiple queries efficiently
 
 ### Step 3: Complete Solution
 **Putting it all together:**

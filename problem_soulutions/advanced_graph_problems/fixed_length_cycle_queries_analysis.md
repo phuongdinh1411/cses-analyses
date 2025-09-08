@@ -25,24 +25,26 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
 - **Related Problems**: Fixed Length Path Queries (similar matrix approach), Round Trip (cycle detection), Graph Girth (cycle properties)
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a directed graph with n nodes and q queries, for each query find the number of cycles of length k starting and ending at node a.
 
-### Input
-The first input line has two integers n and q: the number of nodes and queries.
-Then there are n lines describing the adjacency matrix. Each line has n integers: 1 if there is an edge, 0 otherwise.
-Finally, there are q lines describing the queries. Each line has two integers a and k: find cycles from a to a of length k.
+**Input**: 
+- n: number of nodes
+- q: number of queries
+- n lines: adjacency matrix (1 if edge exists, 0 otherwise)
+- q lines: a k (find cycles from node a to a of length k)
 
-### Output
-Print the answer to each query modulo 10^9 + 7.
+**Output**: 
+- Answer to each query modulo 10^9 + 7
 
-### Constraints
+**Constraints**:
 - 1 ≤ n ≤ 100
 - 1 ≤ q ≤ 10^5
 - 1 ≤ k ≤ 10^9
 - 1 ≤ a ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 3 2
@@ -55,6 +57,15 @@ Input:
 Output:
 1
 1
+
+Explanation**: 
+Query 1: Cycles from node 1 of length 3
+- Cycle: 1 → 2 → 3 → 1 (length 3, no repeated vertices)
+- Result: 1
+
+Query 2: Cycles from node 2 of length 3  
+- Cycle: 2 → 3 → 1 → 2 (length 3, no repeated vertices)
+- Result: 1
 ```
 
 ### 📊 Visual Example
@@ -170,10 +181,55 @@ DFS Traversal for Cycle Detection:
 └─────────────────────────────────────┘
 ```
 
-## Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Approach 1: Matrix Exponentiation for Cycles - O(n³ log k)
-**Description**: Use matrix exponentiation to find the number of cycles of length k.
+### Approach 1: Brute Force Cycle Counting (Brute Force)
+
+**Key Insights from Brute Force Approach**:
+- **DFS Traversal**: Use DFS to explore all possible paths
+- **Path Length Tracking**: Keep track of current path length
+- **Cycle Detection**: Check if path returns to starting node without repeated vertices
+- **Exhaustive Search**: Try all possible paths of given length
+
+**Key Insight**: Use DFS to explore all possible paths and count cycles of the specified length.
+
+**Algorithm**:
+- For each query, start DFS from the given node
+- Explore all possible paths of the specified length
+- Count paths that return to the starting node without repeated vertices
+- Return the count modulo 10^9 + 7
+
+**Visual Example**:
+```
+Graph: 1→2→3→1, Query: node 1, length 3
+
+DFS Traversal:
+┌─────────────────────────────────────┐
+│ Start: node 1, length 0            │
+│ Path: [1], visited: {1}            │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Visit: node 2, length 1            │
+│ Path: [1, 2], visited: {1, 2}      │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Visit: node 3, length 2            │
+│ Path: [1, 2, 3], visited: {1, 2, 3}│
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Visit: node 1, length 3            │
+│ Path: [1, 2, 3, 1]                 │
+│ Cycle found! ✓                     │
+└─────────────────────────────────────┘
+
+Result: 1 cycle
+```
 
 ```python
 def fixed_length_cycle_queries_naive(n, q, adjacency_matrix, queries):

@@ -29,8 +29,6 @@ Before attempting this problem, ensure you understand:
 
 Given a 2D grid of size n×m containing letters, count the number of subgrids of size k×k that contain all letters from 'A' to 'Z' (case insensitive).
 
-This is a grid analysis problem where we need to find subgrids that contain all 26 letters of the alphabet. We can solve this by checking all possible k×k subgrids and verifying if they contain all letters A-Z.
-
 **Input**: 
 - First line: three integers n, m, and k (grid dimensions and subgrid size)
 - Next n lines: m characters each (letters in the grid)
@@ -53,9 +51,8 @@ GHI
 
 Output:
 0
-```
 
-**Explanation**: 
+Explanation**: 
 In the 3×3 grid, there are 4 possible 2×2 subgrids:
 1. Top-left: A, B, D, E (missing letters F-Z)
 2. Top-right: B, C, E, F (missing letters A, D, G-Z)
@@ -63,6 +60,7 @@ In the 3×3 grid, there are 4 possible 2×2 subgrids:
 4. Bottom-right: E, F, H, I (missing letters A-D, G, J-Z)
 
 None of these subgrids contain all 26 letters A-Z, so the answer is 0.
+```
 
 ### 📊 Visual Example
 

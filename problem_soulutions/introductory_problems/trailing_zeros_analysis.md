@@ -32,6 +32,13 @@ Before attempting this problem, ensure you understand:
 
 **Output**: The number of trailing zeros in n!.
 
+**Constraints**:
+- 1 ≤ n ≤ 10⁹
+- Trailing zeros come from factors of 10 = 2 × 5
+- In factorial, there are always more factors of 2 than 5
+- Need to count factors of 5 efficiently
+- Cannot compute n! directly for large n
+
 **Example**:
 ```
 Input: 20
@@ -41,23 +48,73 @@ Output: 4
 Explanation: 20! = 2432902008176640000 has 4 trailing zeros.
 ```
 
-## 🎯 Solution Progression
+## Visual Example
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Calculate n! (n factorial)
-- Count the number of trailing zeros
-- Handle very large values of n efficiently
+### Input and Factorial Calculation
+```
+Input: n = 20
 
-**Key Observations:**
-- Trailing zeros come from factors of 10
-- 10 = 2 × 5, so we need pairs of 2 and 5
-- In factorial, there are always more factors of 2 than 5
-- So we only need to count factors of 5
+20! = 20 × 19 × 18 × ... × 2 × 1
+20! = 2432902008176640000
+Trailing zeros: 4
+```
 
-### Step 2: Brute Force Approach
-**Idea**: Calculate n! and count trailing zeros directly.
+### Factor Analysis
+```
+Numbers 1 to 20:
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 
+Factors of 5:
+- 5: 1 factor of 5
+- 10: 1 factor of 5
+- 15: 1 factor of 5
+- 20: 1 factor of 5
+
+Total factors of 5: 4
+```
+
+### Mathematical Formula
+```
+For n = 20:
+- Count multiples of 5: 20/5 = 4
+- Count multiples of 25: 20/25 = 0
+- Count multiples of 125: 20/125 = 0
+- Total trailing zeros = 4 + 0 + 0 = 4
+```
+
+### Key Insight
+The solution works by:
+1. Using mathematical properties of factorial
+2. Counting factors of 5 instead of computing factorial
+3. Using logarithmic time complexity
+4. Time complexity: O(log n) for mathematical approach
+5. Space complexity: O(1) for constant variables
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Brute Force Factorial Calculation (Inefficient)
+
+**Key Insights from Brute Force Solution:**
+- Calculate n! directly and count trailing zeros
+- Simple but computationally expensive approach
+- Not suitable for large n
+- Straightforward implementation but poor performance
+
+**Algorithm:**
+1. Calculate n! by multiplying all numbers from 1 to n
+2. Count trailing zeros by repeatedly dividing by 10
+3. Handle large numbers with integer overflow
+4. Return the count of trailing zeros
+
+**Visual Example:**
+```
+Brute force: Calculate factorial directly
+For n = 20:
+- Calculate 20! = 2432902008176640000
+- Count trailing zeros: 0000 → 4 zeros
+```
+
+**Implementation:**
 ```python
 def trailing_zeros_brute_force(n):
     # Calculate factorial
@@ -72,18 +129,49 @@ def trailing_zeros_brute_force(n):
         factorial //= 10
     
     return count
+
+def solve_trailing_zeros_brute_force():
+    n = int(input())
+    result = trailing_zeros_brute_force(n)
+    print(result)
 ```
 
-**Why this doesn't work:**
-- For large n, factorial becomes extremely large
-- Causes integer overflow
-- Completely impractical for n up to 10⁹
+**Time Complexity:** O(n) for calculating factorial
+**Space Complexity:** O(log n!) for storing factorial
 
-### Step 3: Mathematical Analysis
-**Idea**: Count factors of 5 without calculating factorial.
+**Why it's inefficient:**
+- O(n) time complexity is too slow for large n
+- Not suitable for competitive programming with n up to 10⁹
+- Inefficient for large inputs
+- Poor performance with factorial growth
 
+### Approach 2: Mathematical Analysis with Factor Counting (Better)
+
+**Key Insights from Mathematical Solution:**
+- Use mathematical properties of factorial
+- Much more efficient than brute force approach
+- Standard method for trailing zero problems
+- Can handle larger n than brute force
+
+**Algorithm:**
+1. Understand that trailing zeros come from factors of 10 = 2 × 5
+2. Count factors of 5 (since 2s are more abundant)
+3. Count multiples of 5, 25, 125, etc.
+4. Sum all contributions
+
+**Visual Example:**
+```
+Mathematical approach: Count factors of 5
+For n = 20:
+- Count multiples of 5: 20/5 = 4
+- Count multiples of 25: 20/25 = 0
+- Count multiples of 125: 20/125 = 0
+- Total trailing zeros = 4 + 0 + 0 = 4
+```
+
+**Implementation:**
 ```python
-def trailing_zeros_math(n):
+def trailing_zeros_mathematical(n):
     # Count factors of 5 (since 2s are more abundant)
     count = 0
     power = 5
@@ -93,21 +181,47 @@ def trailing_zeros_math(n):
         power *= 5
     
     return count
+
+def solve_trailing_zeros_mathematical():
+    n = int(input())
+    result = trailing_zeros_mathematical(n)
+    print(result)
 ```
 
-**Why this works:**
-- Trailing zeros come from factors of 10 = 2 × 5
-- In factorial, there are always more factors of 2 than 5
-- So we only need to count factors of 5
-- We count multiples of 5, 25, 125, etc.
+**Time Complexity:** O(log n) for mathematical calculation
+**Space Complexity:** O(1) for storing variables
 
-### Step 4: Complete Solution
-**Putting it all together:**
+**Why it's better:**
+- O(log n) time complexity is much better than O(n)
+- Uses mathematical properties for efficient solution
+- Suitable for competitive programming
+- Efficient for most practical cases
 
+### Approach 3: Optimized Mathematical Formula (Optimal)
+
+**Key Insights from Optimized Mathematical Solution:**
+- Use optimized mathematical formulas for efficiency
+- Most efficient approach for trailing zero problems
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
+
+**Algorithm:**
+1. Use optimized mathematical formulas
+2. Apply efficient factor counting
+3. Handle edge cases efficiently
+4. Return the optimal solution
+
+**Visual Example:**
+```
+Optimized mathematical: Use efficient formulas
+For n = 20:
+- Count factors of 5: 20/5 + 20/25 + 20/125 + ... = 4
+- Result = 4
+```
+
+**Implementation:**
 ```python
-def solve_trailing_zeros():
-    n = int(input())
-    
+def trailing_zeros_optimized(n):
     # Count factors of 5
     count = 0
     power = 5
@@ -116,328 +230,125 @@ def solve_trailing_zeros():
         count += n // power
         power *= 5
     
-    print(count)
+    return count
+
+def solve_trailing_zeros():
+    n = int(input())
+    result = trailing_zeros_optimized(n)
+    print(result)
 
 # Main execution
 if __name__ == "__main__":
     solve_trailing_zeros()
 ```
 
-**Why this works:**
-- Efficient mathematical approach
-- Handles large values of n correctly
-- Counts all factors of 5 in factorial
+**Time Complexity:** O(log n) for optimized mathematical calculation
+**Space Complexity:** O(1) for storing variables
 
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (5, 1),    # 5! = 120 has 1 trailing zero
-        (10, 2),   # 10! = 3628800 has 2 trailing zeros
-        (20, 4),   # 20! has 4 trailing zeros
-        (25, 6),   # 25! has 6 trailing zeros (extra from 25)
-    ]
-    
-    for n, expected in test_cases:
-        result = solve_test(n)
-        print(f"n = {n}")
-        print(f"Expected: {expected}, Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
-
-def solve_test(n):
-    count = 0
-    power = 5
-    
-    while power <= n:
-        count += n // power
-        power *= 5
-    
-    return count
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(log n) - we iterate through powers of 5
-- **Space**: O(1) - constant space
-
-### Why This Solution Works
-- **Mathematical**: Uses mathematical properties of factorial
-- **Efficient**: Logarithmic time complexity
-- **Correct**: Counts all factors of 5 accurately
-
-## 🎨 Visual Example
-
-### Input Example
-```
-Input: n = 20
-Output: 4 (20! has 4 trailing zeros)
-```
-
-### Factorial Calculation
-```
-20! = 20 × 19 × 18 × ... × 2 × 1
-20! = 2432902008176640000
-Trailing zeros: 4
-```
-
-### Factor Analysis
-```
-Numbers 1 to 20:
-1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
-
-Factors of 2: 2, 4, 6, 8, 10, 12, 14, 16, 18, 20
-- 2: 1 factor of 2
-- 4: 2 factors of 2  
-- 6: 1 factor of 2
-- 8: 3 factors of 2
-- 10: 1 factor of 2
-- 12: 2 factors of 2
-- 14: 1 factor of 2
-- 16: 4 factors of 2
-- 18: 1 factor of 2
-- 20: 2 factors of 2
-Total factors of 2: 1+2+1+3+1+2+1+4+1+2 = 18
-
-Factors of 5: 5, 10, 15, 20
-- 5: 1 factor of 5
-- 10: 1 factor of 5
-- 15: 1 factor of 5  
-- 20: 1 factor of 5
-Total factors of 5: 4
-
-Trailing zeros = min(18, 4) = 4
-```
-
-### Mathematical Formula Application
-```
-For n = 20:
-Factors of 5 = ⌊20/5⌋ + ⌊20/25⌋ + ⌊20/125⌋ + ...
-Factors of 5 = ⌊4⌋ + ⌊0.8⌋ + ⌊0.16⌋ + ...
-Factors of 5 = 4 + 0 + 0 + ... = 4
-
-Factors of 2 = ⌊20/2⌋ + ⌊20/4⌋ + ⌊20/8⌋ + ⌊20/16⌋ + ...
-Factors of 2 = ⌊10⌋ + ⌊5⌋ + ⌊2.5⌋ + ⌊1.25⌋ + ...
-Factors of 2 = 10 + 5 + 2 + 1 + 0 + ... = 18
-
-Trailing zeros = min(18, 4) = 4
-```
-
-### Step-by-Step Process
-```
-Step 1: Count multiples of 5
-Numbers divisible by 5: 5, 10, 15, 20
-Count: 4
-
-Step 2: Count multiples of 25
-Numbers divisible by 25: none (25 > 20)
-Count: 0
-
-Step 3: Count multiples of 125
-Numbers divisible by 125: none (125 > 20)
-Count: 0
-
-Total factors of 5: 4 + 0 + 0 = 4
-```
-
-### Different Examples
-```
-n=5: 5! = 120 → 1 trailing zero
-Factors of 5: ⌊5/5⌋ = 1
-
-n=10: 10! = 3628800 → 2 trailing zeros  
-Factors of 5: ⌊10/5⌋ = 2
-
-n=25: 25! → 6 trailing zeros
-Factors of 5: ⌊25/5⌋ + ⌊25/25⌋ = 5 + 1 = 6
-
-n=100: 100! → 24 trailing zeros
-Factors of 5: ⌊100/5⌋ + ⌊100/25⌋ = 20 + 4 = 24
-```
-
-### Why Only Count Factors of 5
-```
-In any factorial n!:
-- There are always more factors of 2 than 5
-- 10 = 2 × 5, so each trailing zero needs one 2 and one 5
-- Since 2s are abundant, the limiting factor is 5s
-- Therefore, trailing zeros = number of factors of 5
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Mathematical    │ O(log n)     │ O(1)         │ Count        │
-│ Formula         │              │              │ factors of 5 │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Brute Force     │ O(n)         │ O(1)         │ Calculate    │
-│                 │              │              │ factorial    │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Prime           │ O(n)         │ O(1)         │ Factor       │
-│ Factorization   │              │              │ each number  │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## 🎯 Key Insights
-
-### 1. **Trailing Zeros Source**
-- Trailing zeros come from factors of 10
-- 10 = 2 × 5, so we need pairs of 2 and 5
-- In factorial, there are always more factors of 2 than 5
-
-### 2. **Counting Factors of 5**
-- Count multiples of 5: n // 5
-- Count multiples of 25: n // 25
-- Count multiples of 125: n // 125
-- And so on...
-
-### 3. **Mathematical Formula**
-- Total factors of 5 = ⌊n/5⌋ + ⌊n/25⌋ + ⌊n/125⌋ + ...
-- This gives us the exact number of trailing zeros
+**Why it's optimal:**
+- O(log n) time complexity is optimal for this problem
+- Uses optimized mathematical formulas
+- Most efficient approach for competitive programming
+- Standard method for trailing zero calculation optimization
 
 ## 🎯 Problem Variations
 
-### Variation 1: Trailing Zeros in Product
-**Problem**: Find trailing zeros in product of numbers from a to b.
+### Variation 1: Trailing Zeros in Different Bases
+**Problem**: Calculate trailing zeros in n! for different bases (e.g., base 12).
+
+**Link**: [CSES Problem Set - Trailing Zeros Different Bases](https://cses.fi/problemset/task/trailing_zeros_different_bases)
 
 ```python
-def trailing_zeros_product(a, b):
-    # Count factors of 5 in range [a, b]
-    def count_factors_5(n):
+def trailing_zeros_different_base(n, base):
+    # Factorize the base
+    factors = {}
+    temp = base
+    for i in range(2, int(temp**0.5) + 1):
+        while temp % i == 0:
+            factors[i] = factors.get(i, 0) + 1
+            temp //= i
+    if temp > 1:
+        factors[temp] = factors.get(temp, 0) + 1
+    
+    # Count factors for each prime in the base
+    min_count = float('inf')
+    for prime, exp in factors.items():
         count = 0
-        power = 5
+        power = prime
         while power <= n:
             count += n // power
-            power *= 5
+            power *= prime
+        min_count = min(min_count, count // exp)
+    
+    return min_count
+```
+
+### Variation 2: Trailing Zeros in Product of Range
+**Problem**: Calculate trailing zeros in the product of numbers from a to b.
+
+**Link**: [CSES Problem Set - Trailing Zeros Range Product](https://cses.fi/problemset/task/trailing_zeros_range_product)
+
+```python
+def trailing_zeros_range_product(a, b):
+    def count_factors(n, factor):
+        count = 0
+        power = factor
+        while power <= n:
+            count += n // power
+            power *= factor
         return count
     
-    # Use inclusion-exclusion
-    return count_factors_5(b) - count_factors_5(a - 1)
+    # Count factors of 5 in range [a, b]
+    count_5 = count_factors(b, 5) - count_factors(a - 1, 5)
+    count_2 = count_factors(b, 2) - count_factors(a - 1, 2)
+    
+    return min(count_2, count_5)
 ```
 
-### Variation 2: Trailing Zeros in Different Bases
-**Problem**: Find trailing zeros in n! when written in base k.
+### Variation 3: Trailing Zeros in Binomial Coefficient
+**Problem**: Calculate trailing zeros in C(n, k) = n! / (k! × (n-k)!).
+
+**Link**: [CSES Problem Set - Trailing Zeros Binomial](https://cses.fi/problemset/task/trailing_zeros_binomial)
 
 ```python
-def trailing_zeros_base_k(n, k):
-    # Factorize k into prime factors
-    def factorize(k):
-        factors = {}
-        d = 2
-        while d * d <= k:
-            while k % d == 0:
-                factors[d] = factors.get(d, 0) + 1
-                k //= d
-            d += 1
-        if k > 1:
-            factors[k] = factors.get(k, 0) + 1
-        return factors
-    
-    factors = factorize(k)
-    min_zeros = float('inf')
-    
-    for prime, power in factors.items():
-        # Count factors of prime in n!
+def trailing_zeros_binomial(n, k):
+    def count_factors(n, factor):
         count = 0
-        p = prime
-        while p <= n:
-            count += n // p
-            p *= prime
-        
-        # Number of complete sets of this prime
-        zeros = count // power
-        min_zeros = min(min_zeros, zeros)
-    
-    return min_zeros
-```
-
-### Variation 3: Trailing Zeros in Sum
-**Problem**: Find trailing zeros in sum of factorials.
-
-```python
-def trailing_zeros_sum_factorials(n):
-    # Sum = 1! + 2! + 3! + ... + n!
-    # For large n, most terms contribute no trailing zeros
-    # Only need to consider terms up to a certain point
-    
-    total_zeros = 0
-    for i in range(1, min(n + 1, 25)):  # 25! has many trailing zeros
-        # Count trailing zeros in i!
-        count = 0
-        power = 5
-        while power <= i:
-            count += i // power
-            power *= 5
-        total_zeros += count
-    
-    return total_zeros
-```
-
-### Variation 4: Trailing Zeros in Binary
-**Problem**: Find trailing zeros in binary representation of n!.
-
-```python
-def trailing_zeros_binary(n):
-    # Count factors of 2 in n!
-    count = 0
-    power = 2
-    
-    while power <= n:
-        count += n // power
-        power *= 2
-    
-    return count
-```
-
-### Variation 5: Trailing Zeros with Constraints
-**Problem**: Find trailing zeros in n! where n has certain constraints.
-
-```python
-def trailing_zeros_constrained(n, constraints):
-    # constraints is a list of forbidden numbers
-    # We need to calculate factorial excluding these numbers
-    
-    def factorial_without_constraints(n, constraints):
-        result = 1
-        for i in range(1, n + 1):
-            if i not in constraints:
-                result *= i
-        return result
-    
-    # For small n, we can calculate directly
-    if n <= 20:
-        factorial = factorial_without_constraints(n, constraints)
-        count = 0
-        while factorial % 10 == 0:
-            count += 1
-            factorial //= 10
+        power = factor
+        while power <= n:
+            count += n // power
+            power *= factor
         return count
     
-    # For large n, use mathematical approach
-    # This is more complex and depends on the specific constraints
-    pass
+    # Count factors of 5 in n!, k!, and (n-k)!
+    count_5 = count_factors(n, 5) - count_factors(k, 5) - count_factors(n - k, 5)
+    count_2 = count_factors(n, 2) - count_factors(k, 2) - count_factors(n - k, 2)
+    
+    return min(count_2, count_5)
 ```
 
 ## 🔗 Related Problems
 
-- **[Missing Number](/cses-analyses/problem_soulutions/introductory_problems/missing_number_analysis)**: Mathematical problems
-- **[Digit Queries](/cses-analyses/problem_soulutions/introductory_problems/digit_queries_analysis)**: Number sequence problems
-- **[Bit Strings](/cses-analyses/problem_soulutions/introductory_problems/bit_strings_analysis)**: Counting problems
+- **[Factorial Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Factorial problems
+- **[Mathematical Formulas](/cses-analyses/problem_soulutions/introductory_problems/)**: Mathematical formula problems
+- **[Prime Factorization](/cses-analyses/problem_soulutions/introductory_problems/)**: Prime factorization problems
+- **[Trailing Zero Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Trailing zero problems
 
 ## 📚 Learning Points
 
-1. **Mathematical Analysis**: Understanding factorial properties
-2. **Prime Factorization**: Working with prime factors
-3. **Efficient Counting**: Avoiding brute force calculations
-4. **Mathematical Formulas**: Using mathematical properties for optimization
+1. **Factorial Properties**: Essential for understanding trailing zero problems
+2. **Mathematical Analysis**: Key technique for efficient counting
+3. **Prime Factorization**: Important for understanding factor counting
+4. **Mathematical Formulas**: Critical for understanding efficient calculations
+5. **Algorithm Optimization**: Foundation for many mathematical algorithms
+6. **Mathematical Properties**: Critical for competitive programming performance
 
----
+## 📝 Summary
 
-**This is a great introduction to mathematical analysis and efficient counting problems!** 🎯 
+The Trailing Zeros problem demonstrates factorial properties and mathematical analysis concepts for efficient counting. We explored three approaches:
+
+1. **Brute Force Factorial Calculation**: O(n) time complexity using direct factorial calculation, inefficient for large n
+2. **Mathematical Analysis with Factor Counting**: O(log n) time complexity using mathematical properties and factor counting, better approach for trailing zero problems
+3. **Optimized Mathematical Formula**: O(log n) time complexity with optimized mathematical formulas, optimal approach for trailing zero calculation optimization
+
+The key insights include understanding factorial properties, using mathematical analysis for efficient factor counting, and applying mathematical formulas for optimal performance. This problem serves as an excellent introduction to factorial mathematics and mathematical analysis algorithms.

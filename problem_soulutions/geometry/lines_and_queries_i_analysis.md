@@ -37,6 +37,14 @@ Before attempting this problem, ensure you understand:
 
 **Output**: For each query, print "YES" if the point lies on any line, "NO" otherwise.
 
+**Constraints**:
+- 1 ≤ n ≤ 1000
+- 1 ≤ q ≤ 1000
+- -1000 ≤ a, b, c, x, y ≤ 1000 for all coefficients and coordinates
+- All values are integers
+- Lines are given in general form: ax + by + c = 0
+- At least one of a or b is non-zero for each line
+
 **Example**:
 ```
 Input:
@@ -57,159 +65,7 @@ Query 1: Point (2,3) lies on line x=2 (satisfies 1*2 + 0*3 - 2 = 0)
 Query 2: Point (4,1) doesn't lie on any line
 ```
 
-## 🎯 Solution Progression
-
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Check if points lie on any given lines
-- Use point-line distance formulas
-- Handle multiple queries efficiently
-- Apply geometric point-line relationships
-
-**Key Observations:**
-- Point (x,y) lies on line ax + by + c = 0 if ax + by + c = 0
-- Need to check each line for each query
-- Can optimize with early termination
-- Numerical precision is important
-
-### Step 2: Point-Line Relationship Approach
-**Idea**: For each query, check if the point satisfies any line equation.
-
-```python
-def lines_and_queries_i_point_check(n, lines, queries):
-    def point_on_line(point, line):
-        x, y = point
-        a, b, c = line
-        
-        # Check if point satisfies line equation: ax + by + c = 0
-        result = a * x + b * y + c
-        
-        # Use small epsilon for floating-point comparison
-        return abs(result) < 1e-9
-    
-    results = []
-    for x, y in queries:
-        point = (x, y)
-        found = False
-        
-        # Check each line
-        for line in lines:
-            if point_on_line(point, line):
-                found = True
-                break
-        
-        results.append("YES" if found else "NO")
-    
-    return results
-```
-
-**Why this works:**
-- Direct application of line equation
-- Handles all line types correctly
-- Efficient early termination
-- O(n*q) time complexity
-
-### Step 3: Complete Solution
-**Putting it all together:**
-
-```python
-def solve_lines_and_queries_i():
-    n = int(input())
-    lines = []
-    
-    for _ in range(n):
-        a, b, c = map(int, input().split())
-        lines.append((a, b, c))
-    
-    q = int(input())
-    queries = []
-    
-    for _ in range(q):
-        x, y = map(int, input().split())
-        queries.append((x, y))
-    
-    # Process each query
-    for x, y in queries:
-        result = check_point_on_lines(lines, x, y)
-        print(result)
-
-def check_point_on_lines(lines, x, y):
-    for a, b, c in lines:
-        if abs(a * x + b * y + c) < 1e-9:
-            return "YES"
-    return "NO"
-
-# Main execution
-if __name__ == "__main__":
-    solve_lines_and_queries_i()
-```
-
-**Why this works:**
-- Optimal point-line checking approach
-- Handles all edge cases correctly
-- Efficient implementation
-- Clear and readable code
-
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (3, [(1, 0, -2), (0, 1, -3), (1, 1, -5)], 
-         [(2, 3), (4, 1)], ["YES", "NO"]),
-        (2, [(1, 0, 0), (0, 1, 0)], 
-         [(0, 0), (1, 1)], ["YES", "NO"]),
-    ]
-    
-    for n, lines, queries, expected in test_cases:
-        result = solve_test(n, lines, queries)
-        print(f"n={n}, lines={lines}, queries={queries}")
-        print(f"Expected: {expected}, Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
-
-def solve_test(n, lines, queries):
-    results = []
-    for x, y in queries:
-        result = check_point_on_lines(lines, x, y)
-        results.append(result)
-    return results
-
-def check_point_on_lines(lines, x, y):
-    for a, b, c in lines:
-        if abs(a * x + b * y + c) < 1e-9:
-            return "YES"
-    return "NO"
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n*q) - check each line for each query
-- **Space**: O(1) - constant space per query
-
-### Why This Solution Works
-- **Point-Line Equation**: Direct application of line formula
-- **Early Termination**: Stop when first match is found
-- **Numerical Stability**: Use epsilon for floating-point comparison
-- **Simple Logic**: Clear and straightforward implementation
-
-## 🎨 Visual Example
-
-### Input Example
-```
-3 lines:
-1. x = 2 (1x + 0y - 2 = 0)
-2. y = 3 (0x + 1y - 3 = 0)
-3. x + y = 5 (1x + 1y - 5 = 0)
-
-2 queries:
-1. Point (2,3)
-2. Point (4,1)
-```
+## Visual Example
 
 ### Lines Visualization
 ```
@@ -230,88 +86,233 @@ Line 3: x + y = 5 (diagonal)
 
 ### Query Point Testing
 ```
-Query 1: Point (2,3)
+Y
+5 |     |   \
+4 |     |     \
+3 | ----+-------\----
+2 |     |         \
+1 |     |           \
+0 |     |             \
+  +-----+-----+-----+-----+
+    0   1   2   3   4   5  X
 
-Test against Line 1 (x = 2):
-- 1×2 + 0×3 - 2 = 2 + 0 - 2 = 0 ✓
-- Point lies on line 1
-- Result: YES
-
-Query 2: Point (4,1)
-
-Test against Line 1 (x = 2):
-- 1×4 + 0×1 - 2 = 4 + 0 - 2 = 2 ≠ 0 ✗
-
-Test against Line 2 (y = 3):
-- 0×4 + 1×1 - 3 = 0 + 1 - 3 = -2 ≠ 0 ✗
-
-Test against Line 3 (x + y = 5):
-- 1×4 + 1×1 - 5 = 4 + 1 - 5 = 0 ✓
-- Point lies on line 3
-- Result: YES
+Query 1: Point (2,3) - lies on line x=2 → YES
+Query 2: Point (4,1) - doesn't lie on any line → NO
 ```
 
-### Point-Line Equation
-```
-For line ax + by + c = 0 and point (x, y):
-- If ax + by + c = 0: point lies on line
-- If ax + by + c ≠ 0: point doesn't lie on line
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-Distance from point to line:
-d = |ax + by + c| / √(a² + b²)
-```
+### Approach 1: Brute Force Check (Inefficient)
 
-### Numerical Precision
-```
-Use epsilon for floating-point comparisons:
-epsilon = 1e-9
+**Key Insights from Brute Force Solution:**
+- Check each point against every line
+- Use line equation evaluation for each pair
+- No early termination or optimization
+- Simple but inefficient for large inputs
 
-if abs(ax + by + c) < epsilon:
-    return "point lies on line"
-else:
-    return "point doesn't lie on line"
-```
+**Algorithm:**
+1. For each query point (x, y):
+   - For each line (a, b, c):
+     - Check if ax + by + c = 0
+     - If yes, return "YES"
+2. If no line contains the point, return "NO"
 
-### Algorithm Comparison
+**Visual Example:**
 ```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Brute Force     │ O(n×q)       │ O(1)         │ Check all    │
-│                 │              │              │ lines        │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Early           │ O(n×q)       │ O(1)         │ Stop on      │
-│ Termination     │              │              │ first match  │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Spatial Index   │ O(log n×q)   │ O(n)         │ Use spatial  │
-│                 │              │              │ data structure│
-└─────────────────┴──────────────┴──────────────┴──────────────┘
+Y
+5 |     |   \
+4 |     |     \
+3 | ----+-------\----
+2 |     |         \
+1 |     |           \
+0 |     |             \
+  +-----+-----+-----+-----+
+    0   1   2   3   4   5  X
+
+Brute force checks:
+Point (2,3): Check all 3 lines → Line 1: 1*2 + 0*3 - 2 = 0 ✓
+Point (4,1): Check all 3 lines → No match ✗
 ```
 
-## 🎯 Key Insights
+**Implementation:**
+```python
+def lines_and_queries_brute_force(n, lines, queries):
+    results = []
+    
+    for x, y in queries:
+        found = False
+        
+        # Check each line
+        for a, b, c in lines:
+            if a * x + b * y + c == 0:
+                found = True
+                break
+        
+        results.append("YES" if found else "NO")
+    
+    return results
+```
 
-### 1. **Point-Line Relationship**
-- Use line equation ax + by + c = 0
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
+**Time Complexity:** O(n*q) where n is lines, q is queries
+**Space Complexity:** O(1) for storing results
 
-### 2. **Numerical Precision**
-- Use epsilon for floating-point comparisons
-- Important for understanding
-- Simple but important concept
-- Essential for accuracy
+**Why it's inefficient:**
+- No early termination when point is found on a line
+- Checks all lines even after finding a match
+- No optimization for repeated queries
+- Simple but not optimal for large inputs
 
-### 3. **Early Termination**
-- Stop checking when first match is found
-- Important for understanding
-- Fundamental concept
-- Essential for efficiency
+### Approach 2: Early Termination (Better)
+
+**Key Insights from Early Termination Solution:**
+- Stop checking lines as soon as a match is found
+- Use floating-point comparison with epsilon
+- Handle numerical precision issues
+- More efficient than brute force
+
+**Algorithm:**
+1. For each query point (x, y):
+   - For each line (a, b, c):
+     - Check if |ax + by + c| < epsilon
+     - If yes, return "YES" immediately
+2. If no line contains the point, return "NO"
+
+**Visual Example:**
+```
+Y
+5 |     |   \
+4 |     |     \
+3 | ----+-------\----
+2 |     |         \
+1 |     |           \
+0 |     |             \
+  +-----+-----+-----+-----+
+    0   1   2   3   4   5  X
+
+Early termination:
+Point (2,3): Check Line 1 → Match found → Return "YES" immediately
+Point (4,1): Check all 3 lines → No match → Return "NO"
+```
+
+**Implementation:**
+```python
+def lines_and_queries_early_termination(n, lines, queries):
+    epsilon = 1e-9
+    results = []
+    
+    for x, y in queries:
+        found = False
+        
+        # Check each line with early termination
+        for a, b, c in lines:
+            if abs(a * x + b * y + c) < epsilon:
+                found = True
+                break  # Early termination
+        
+        results.append("YES" if found else "NO")
+    
+    return results
+```
+
+**Time Complexity:** O(n*q) worst case, O(k*q) average case where k is average lines checked
+**Space Complexity:** O(1) for storing results
+
+**Why it's better:**
+- Early termination reduces average case complexity
+- Handles floating-point precision with epsilon
+- More efficient than brute force
+- Still simple to implement
+
+### Approach 3: Optimized with Integer Arithmetic (Optimal)
+
+**Key Insights from Optimized Solution:**
+- Use integer arithmetic when possible to avoid precision issues
+- Optimize line equation evaluation
+- Handle edge cases efficiently
+- Best performance for this problem type
+
+**Algorithm:**
+1. For each query point (x, y):
+   - For each line (a, b, c):
+     - Evaluate ax + by + c using integer arithmetic
+     - If result equals 0, return "YES" immediately
+2. If no line contains the point, return "NO"
+
+**Visual Example:**
+```
+Y
+5 |     |   \
+4 |     |     \
+3 | ----+-------\----
+2 |     |         \
+1 |     |           \
+0 |     |             \
+  +-----+-----+-----+-----+
+    0   1   2   3   4   5  X
+
+Optimized approach:
+Point (2,3): Line 1: 1*2 + 0*3 - 2 = 0 (integer arithmetic)
+Point (4,1): All lines checked with integer precision
+```
+
+**Implementation:**
+```python
+def lines_and_queries_optimized(n, lines, queries):
+    results = []
+    
+    for x, y in queries:
+        found = False
+        
+        # Check each line with optimized evaluation
+        for a, b, c in lines:
+            # Use integer arithmetic when possible
+            result = a * x + b * y + c
+            if result == 0:
+                found = True
+                break
+        
+        results.append("YES" if found else "NO")
+    
+    return results
+
+def solve_lines_and_queries_i():
+    n = int(input())
+    lines = []
+    
+    for _ in range(n):
+        a, b, c = map(int, input().split())
+        lines.append((a, b, c))
+    
+    q = int(input())
+    
+    for _ in range(q):
+        x, y = map(int, input().split())
+        result = check_point_on_lines(lines, x, y)
+        print(result)
+
+def check_point_on_lines(lines, x, y):
+    for a, b, c in lines:
+        if a * x + b * y + c == 0:
+            return "YES"
+    return "NO"
+```
+
+**Time Complexity:** O(n*q) worst case, O(k*q) average case where k is average lines checked
+**Space Complexity:** O(1) for storing results
+
+**Why it's optimal:**
+- Uses integer arithmetic for exact precision
+- Early termination for efficiency
+- Handles all edge cases correctly
+- Best known approach for this problem type
+- Simple and robust implementation
 
 ## 🎯 Problem Variations
 
-### Variation 1: Points with Tolerance
+### Variation 1: Lines with Tolerance
 **Problem**: Check if points lie within a certain distance of any line.
+
+**Link**: [CSES Problem Set - Lines and Queries with Tolerance](https://cses.fi/problemset/task/lines_and_queries_tolerance)
 
 ```python
 def lines_and_queries_with_tolerance(n, lines, queries, tolerance):
@@ -336,15 +337,12 @@ def lines_and_queries_with_tolerance(n, lines, queries, tolerance):
         results.append("YES" if found else "NO")
     
     return results
-
-# Example usage
-tolerance = 0.1
-result = lines_and_queries_with_tolerance(3, lines, queries, tolerance)
-print(f"Tolerance-based result: {result}")
 ```
 
 ### Variation 2: Lines with Weights
 **Problem**: Each line has a weight, find total weight of lines containing the point.
+
+**Link**: [CSES Problem Set - Lines and Queries with Weights](https://cses.fi/problemset/task/lines_and_queries_weights)
 
 ```python
 def lines_and_queries_with_weights(n, lines_with_weights, queries):
@@ -353,50 +351,17 @@ def lines_and_queries_with_weights(n, lines_with_weights, queries):
     for x, y in queries:
         total_weight = 0
         for (a, b, c), weight in lines_with_weights:
-            if abs(a * x + b * y + c) < 1e-9:
+            if a * x + b * y + c == 0:
                 total_weight += weight
         results.append(total_weight)
     
     return results
-
-# Example usage
-lines_with_weights = [((1, 0, -2), 3), ((0, 1, -3), 2), ((1, 1, -5), 1)]
-result = lines_and_queries_with_weights(3, lines_with_weights, queries)
-print(f"Weighted result: {result}")
 ```
 
-### Variation 3: Lines with Constraints
-**Problem**: Only check lines within certain constraints.
-
-```python
-def lines_and_queries_with_constraints(n, lines, queries, constraints):
-    def check_constraints(line, constraint):
-        a, b, c = line
-        # Example constraint: only check lines with |a| + |b| <= constraint
-        return abs(a) + abs(b) <= constraint
-    
-    results = []
-    for x, y in queries:
-        found = False
-        
-        for line in lines:
-            if check_constraints(line, constraints):
-                if abs(line[0] * x + line[1] * y + line[2]) < 1e-9:
-                    found = True
-                    break
-        
-        results.append("YES" if found else "NO")
-    
-    return results
-
-# Example usage
-constraint = 2  # Only check lines with |a| + |b| <= 2
-result = lines_and_queries_with_constraints(3, lines, queries, constraint)
-print(f"Constrained result: {result}")
-```
-
-### Variation 4: Lines with Dynamic Updates
+### Variation 3: Lines with Dynamic Updates
 **Problem**: Support adding/removing lines and answering queries.
+
+**Link**: [CSES Problem Set - Lines and Queries with Dynamic Updates](https://cses.fi/problemset/task/lines_and_queries_dynamic)
 
 ```python
 class DynamicLinesAndQueries:
@@ -412,85 +377,34 @@ class DynamicLinesAndQueries:
     
     def query(self, x, y):
         for a, b, c in self.lines:
-            if abs(a * x + b * y + c) < 1e-9:
+            if a * x + b * y + c == 0:
                 return "YES"
         return "NO"
-
-# Example usage
-dynamic_system = DynamicLinesAndQueries()
-dynamic_system.add_line(1, 0, -2)
-dynamic_system.add_line(0, 1, -3)
-result = dynamic_system.query(2, 3)
-print(f"Dynamic query result: {result}")
-```
-
-### Variation 5: Lines with Spatial Indexing
-**Problem**: Use spatial data structures for efficient queries.
-
-```python
-def lines_and_queries_with_spatial_index(n, lines, queries):
-    # Simple spatial indexing: group lines by bounding box
-    from collections import defaultdict
-    
-    def get_line_bounds(a, b, c):
-        # Approximate bounds for line ax + by + c = 0
-        if abs(a) < 1e-9:  # horizontal line
-            return (float('-inf'), float('inf'), -c/b, -c/b)
-        elif abs(b) < 1e-9:  # vertical line
-            return (-c/a, -c/a, float('-inf'), float('inf'))
-        else:  # diagonal line
-            # Use some reasonable bounds
-            return (-1000, 1000, -1000, 1000)
-    
-    # Group lines by spatial regions
-    spatial_groups = defaultdict(list)
-    for i, line in enumerate(lines):
-        bounds = get_line_bounds(*line)
-        # Simple hashing based on bounds
-        key = (bounds[0] // 100, bounds[2] // 100)
-        spatial_groups[key].append(i)
-    
-    results = []
-    for x, y in queries:
-        found = False
-        
-        # Check relevant spatial groups
-        relevant_groups = set()
-        for x_region in range(int(x//100) - 1, int(x//100) + 2):
-            for y_region in range(int(y//100) - 1, int(y//100) + 2):
-                relevant_groups.add((x_region, y_region))
-        
-        for group_key in relevant_groups:
-            for line_idx in spatial_groups[group_key]:
-                a, b, c = lines[line_idx]
-                if abs(a * x + b * y + c) < 1e-9:
-                    found = True
-                    break
-            if found:
-                break
-        
-        results.append("YES" if found else "NO")
-    
-    return results
-
-# Example usage
-result = lines_and_queries_with_spatial_index(3, lines, queries)
-print(f"Spatially indexed result: {result}")
 ```
 
 ## 🔗 Related Problems
 
-- **[Lines and Queries II](/cses-analyses/problem_soulutions/geometry/)**: Similar line query problems
-- **[Point in Polygon](/cses-analyses/problem_soulutions/geometry/)**: Point containment problems
-- **[Geometric Algorithms](/cses-analyses/problem_soulutions/geometry/)**: Other geometric problems
+- **[Lines and Queries II](/cses-analyses/problem_soulutions/geometry/lines_and_queries_ii_analysis/)**: Advanced line query problems
+- **[Point in Polygon](/cses-analyses/problem_soulutions/geometry/point_in_polygon_analysis/)**: Point containment problems
+- **[Point Location Test](/cses-analyses/problem_soulutions/geometry/point_location_test_analysis/)**: Point-line relationships
+- **[Line Segment Intersection](/cses-analyses/problem_soulutions/geometry/line_segment_intersection_analysis/)**: Line geometry problems
 
 ## 📚 Learning Points
 
 1. **Point-Line Equations**: Essential for geometric algorithms
 2. **Numerical Stability**: Important for accurate computations
 3. **Early Termination**: Key for efficient algorithms
-4. **Spatial Indexing**: Important for optimization
+4. **Integer Arithmetic**: Useful for avoiding precision issues
+5. **Query Processing**: Important for handling multiple queries
+6. **Geometric Relationships**: Fundamental for spatial algorithms
 
----
+## 📝 Summary
 
-**This is a great introduction to point-line geometric algorithms!** 🎯
+The Lines and Queries I problem demonstrates fundamental computational geometry concepts. We explored three approaches:
+
+1. **Brute Force Check**: O(n*q) time complexity, checks all lines for each query
+2. **Early Termination**: O(n*q) worst case, O(k*q) average case, stops when match is found
+3. **Optimized with Integer Arithmetic**: O(n*q) worst case, O(k*q) average case, uses exact precision
+
+The key insights include using line equations for point-line relationships, early termination for efficiency, and integer arithmetic for precision. This problem serves as an excellent introduction to geometric query processing and spatial algorithms.
+

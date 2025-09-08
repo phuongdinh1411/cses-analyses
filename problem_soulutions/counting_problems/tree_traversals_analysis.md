@@ -29,14 +29,12 @@ Before attempting this problem, ensure you understand:
 
 Given a tree with n nodes, count the number of different ways to traverse the tree starting from any node and visiting each node exactly once.
 
-This is a tree counting problem where we need to count all possible Hamiltonian paths in a tree. Since a tree is a connected acyclic graph, we can use dynamic programming to efficiently count all possible traversals.
-
 **Input**: 
 - First line: integer n (number of nodes)
 - Next n-1 lines: two integers u, v (edges of the tree)
 
 **Output**: 
-- Print one integer: the number of different tree traversals modulo 10⁹ + 7
+- Print one integer: the number of different tree traversals modulo 10^9 + 7
 
 **Constraints**:
 - 1 ≤ n ≤ 100
@@ -51,9 +49,8 @@ Input:
 
 Output:
 6
-```
 
-**Explanation**: 
+Explanation**: 
 In a tree with 3 nodes (1-2-3), there are 6 different ways to traverse:
 1. 1 → 2 → 3
 2. 1 → 3 → 2 (impossible, no direct edge)
@@ -63,6 +60,7 @@ In a tree with 3 nodes (1-2-3), there are 6 different ways to traverse:
 6. 3 → 1 → 2 (impossible, no direct edge)
 
 Actually, there are 4 valid traversals: 1→2→3, 3→2→1, 2→1→3, 2→3→1.
+```
 
 ### 📊 Visual Example
 

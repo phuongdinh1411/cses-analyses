@@ -25,9 +25,9 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
 - **Related Problems**: Fixed Length Hamiltonian Path Queries (similar matrix approach), Hamiltonian Flights (Hamiltonian paths), Fixed Length Trail Queries (trail counting)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a directed graph with n nodes and q queries, for each query find the number of Hamiltonian trails of length k from node a to node b.
+Given a directed graph with n nodes and q queries, for each query find the number of Hamiltonian trails of length k from node a to node b.
 
 **Input**: 
 - n: number of nodes
@@ -35,7 +35,14 @@ Before attempting this problem, ensure you understand:
 - n×n adjacency matrix (1 if edge exists, 0 otherwise)
 - q queries: a b k (find Hamiltonian trails from a to b of length k)
 
-**Output**: Number of Hamiltonian trails for each query, modulo 10^9 + 7.
+**Output**: 
+- Number of Hamiltonian trails for each query, modulo 10^9 + 7
+
+**Constraints**:
+- 1 ≤ n ≤ 100
+- 1 ≤ q ≤ 10^5
+- 1 ≤ k ≤ 10^9
+- 1 ≤ a, b ≤ n
 
 **Example**:
 ```
@@ -51,7 +58,7 @@ Output:
 0
 0
 
-Explanation: 
+Explanation**: 
 For query (1,2,2): No Hamiltonian trail of length 2 from node 1 to node 2
 For query (2,3,3): No Hamiltonian trail of length 3 from node 2 to node 3
 ```

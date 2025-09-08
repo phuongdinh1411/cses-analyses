@@ -25,15 +25,21 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: DFS implementation, stack operations, graph representation
 - **Related Problems**: Strongly Connected Edges (SCC basics), Planets and Kingdoms (SCC), Building Roads (connectivity)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a directed graph with n nodes and m edges, find the minimum number of new edges to add so that the graph becomes strongly connected.
+Given a directed graph with n nodes and m edges, find the minimum number of new edges to add so that the graph becomes strongly connected.
 
 **Input**: 
 - n, m: number of nodes and edges
 - m lines: a b (directed edge from a to b)
 
-**Output**: Minimum number of new edges needed for strong connectivity.
+**Output**: 
+- Minimum number of new edges needed for strong connectivity
+
+**Constraints**:
+- 1 ≤ n ≤ 10^5
+- 1 ≤ m ≤ 2×10^5
+- 1 ≤ a, b ≤ n
 
 **Example**:
 ```
@@ -45,7 +51,7 @@ Input:
 Output:
 2
 
-Explanation: 
+Explanation**: 
 Need to add 2 edges to make graph strongly connected.
 Possible solution: add edges 2→3 and 4→1.
 ```
@@ -108,20 +114,43 @@ Step 4: Calculate minimum edges
 min_edges = max(sources, sinks) = max(2, 2) = 2
 ```
 
-## 🎯 Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find minimum edges to add for strong connectivity
-- Use strongly connected components (SCCs)
-- Apply graph theory concepts
-- Handle condensation graph
+### Approach 1: Brute Force Edge Addition (Brute Force)
 
-**Key Observations:**
-- This is a strong connectivity problem
-- Need to find SCCs first
-- Condensation graph is a DAG
-- Minimum edges = max(sources, sinks)
+**Key Insights from Brute Force Approach**:
+- **Edge Enumeration**: Try all possible edge combinations
+- **Connectivity Check**: Check if graph becomes strongly connected after adding edges
+- **Exhaustive Search**: Try all possible edge additions
+- **Validation**: Verify strong connectivity after each addition
+
+**Key Insight**: Use brute force to try all possible edge combinations and find the minimum number needed.
+
+**Algorithm**:
+- Try all possible combinations of new edges
+- For each combination, check if graph becomes strongly connected
+- Find the combination with minimum number of edges
+- Return the minimum number of edges needed
+
+**Visual Example**:
+```
+Graph: 1→2, 3→4
+
+Brute Force Edge Addition:
+┌─────────────────────────────────────┐
+│ Try 1 edge:                        │
+│ Add 2→3: 1→2→3→4 (not strongly connected)│
+│ Add 4→1: 1→2, 3→4→1 (not strongly connected)│
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ Try 2 edges:                       │
+│ Add 2→3, 4→1: 1→2→3→4→1 ✓         │
+│ Graph becomes strongly connected!   │
+└─────────────────────────────────────┘
+
+Result: 2 edges needed
+```
 
 ### Step 2: Strongly Connected Components Approach
 **Idea**: Use Kosaraju's algorithm to find SCCs and calculate minimum edges needed.

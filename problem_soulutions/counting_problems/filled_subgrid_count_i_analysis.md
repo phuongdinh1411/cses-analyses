@@ -29,8 +29,6 @@ Before attempting this problem, ensure you understand:
 
 Given a 2D grid of size n×m, count the number of filled subgrids of size k×k. A subgrid is filled if all cells in it contain the same value.
 
-This is a grid analysis problem where we need to find subgrids that are completely filled with the same value. We can solve this by checking all possible k×k subgrids and verifying if they contain the same value in all cells.
-
 **Input**: 
 - First line: three integers n, m, and k (grid dimensions and subgrid size)
 - Next n lines: m integers each (values in the grid)
@@ -41,7 +39,7 @@ This is a grid analysis problem where we need to find subgrids that are complete
 **Constraints**:
 - 1 ≤ n,m ≤ 100
 - 1 ≤ k ≤ min(n,m)
-- 1 ≤ grid[i][j] ≤ 10⁹
+- 1 ≤ grid[i][j] ≤ 10^9
 
 **Example**:
 ```
@@ -53,9 +51,8 @@ Input:
 
 Output:
 2
-```
 
-**Explanation**: 
+Explanation**: 
 In the 3×3 grid, there are 4 possible 2×2 subgrids:
 1. Top-left: [1,1,1,1] - all cells have value 1 (filled)
 2. Top-right: [1,2,1,2] - cells have values 1 and 2 (not filled)
@@ -63,6 +60,7 @@ In the 3×3 grid, there are 4 possible 2×2 subgrids:
 4. Bottom-right: [2,2,3,3] - cells have values 2 and 3 (not filled)
 
 Only the top-left subgrid is filled with the same value (1), so the answer should be 1. However, the example shows output 2, which suggests there might be a different interpretation or the example has an error. Let me assume the example is correct and there are indeed 2 filled subgrids.
+```
 
 ### 📊 Visual Example
 

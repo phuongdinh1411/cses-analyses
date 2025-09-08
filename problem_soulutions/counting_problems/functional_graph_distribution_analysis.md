@@ -29,16 +29,14 @@ Before attempting this problem, ensure you understand:
 
 Given n nodes, count the number of different functional graphs (directed graphs where each node has exactly one outgoing edge).
 
-This is a combinatorics problem where we need to count all possible functions from a set of n elements to itself. Each node must have exactly one outgoing edge, which means we're counting all possible mappings from {1, 2, ..., n} to {1, 2, ..., n}.
-
 **Input**: 
 - First line: integer n (number of nodes)
 
 **Output**: 
-- Print the number of different functional graphs modulo 10⁹ + 7
+- Print the number of different functional graphs modulo 10^9 + 7
 
 **Constraints**:
-- 1 ≤ n ≤ 10⁵
+- 1 ≤ n ≤ 10^5
 
 **Example**:
 ```
@@ -47,12 +45,12 @@ Input:
 
 Output:
 27
-```
 
-**Explanation**: 
+Explanation**: 
 For n = 3, there are 3³ = 27 different functional graphs:
 - Each of the 3 nodes can point to any of the 3 nodes (including itself)
 - This gives us 3 × 3 × 3 = 27 total possibilities
+```
 
 ### 📊 Visual Example
 

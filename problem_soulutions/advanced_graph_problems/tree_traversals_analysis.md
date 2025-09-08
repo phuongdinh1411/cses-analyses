@@ -24,15 +24,20 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Recursion, stack operations, tree representation
 - **Related Problems**: Tree Diameter (tree algorithms), Subordinates (tree traversal), Tree Distances I (tree properties)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a tree with n nodes, find the preorder, inorder, and postorder traversals of the tree.
+Given a tree with n nodes, find the preorder, inorder, and postorder traversals of the tree.
 
 **Input**: 
 - n: number of nodes
 - n-1 lines: a b (edge between nodes a and b)
 
-**Output**: Three lines containing preorder, inorder, and postorder traversals.
+**Output**: 
+- Three lines containing preorder, inorder, and postorder traversals
+
+**Constraints**:
+- 1 ≤ n ≤ 10^5
+- 1 ≤ a, b ≤ n
 
 **Example**:
 ```
@@ -47,33 +52,65 @@ Output:
 4 3 2 1
 4 3 2 1
 
-Explanation: 
+Explanation**: 
 Tree structure: 1 -- 2 -- 3 -- 4
 Preorder: Visit root, then children (1, 2, 3, 4)
 Inorder: Visit left subtree, root, right subtree (4, 3, 2, 1)
 Postorder: Visit children, then root (4, 3, 2, 1)
 ```
 
-## 🎯 Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find three types of tree traversals
-- Use DFS algorithms
-- Handle general tree structures
-- Understand traversal order
+### Approach 1: Brute Force Tree Traversal (Brute Force)
 
-**Key Observations:**
-- Preorder: Root → Left → Right
-- Inorder: Left → Root → Right (for binary trees)
-- Postorder: Left → Right → Root
-- Need to handle general trees properly
+**Key Insights from Brute Force Approach**:
+- **Recursive DFS**: Use recursive depth-first search
+- **Traversal Order**: Implement three different traversal orders
+- **Tree Structure**: Handle general tree structures
+- **Exhaustive Search**: Visit all nodes in the tree
 
-### Step 2: DFS Traversal Approach
-**Idea**: Use DFS to perform the three tree traversals.
+**Key Insight**: Use recursive DFS to perform all three tree traversals in a straightforward manner.
 
+**Algorithm**:
+- Build adjacency list representation of the tree
+- Use recursive DFS for each traversal type
+- Visit nodes in the correct order for each traversal
+- Collect results in separate lists
+
+**Visual Example**:
+```
+Tree: 1-2-3-4
+
+Recursive DFS Traversal:
+┌─────────────────────────────────────┐
+│ Preorder: 1 → 2 → 3 → 4            │
+│ (Visit root before children)        │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ Inorder: 4 → 3 → 2 → 1             │
+│ (Visit children before root)        │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ Postorder: 4 → 3 → 2 → 1           │
+│ (Visit children, then root)         │
+└─────────────────────────────────────┘
+```
+
+**Implementation**:
 ```python
-def tree_traversals_dfs(n, edges):
+def brute_force_tree_traversals_solution(n, edges):
+    """
+    Find tree traversals using brute force recursive DFS
+    
+    Args:
+        n: number of nodes
+        edges: list of (a, b) representing edges
+    
+    Returns:
+        tuple: (preorder, inorder, postorder) traversals
+    """
     # Build adjacency list
     adj = [[] for _ in range(n + 1)]
     for a, b in edges:
@@ -97,6 +134,244 @@ def tree_traversals_dfs(n, edges):
         
         # Inorder: visit node after all children (for general trees)
         inorder.append(node)
+        
+        # Postorder: visit node after all children
+        postorder.append(node)
+    
+    # Start DFS from node 1 (assuming it's the root)
+    dfs(1, -1)
+    
+    return preorder, inorder, postorder
+
+# Example usage
+n = 4
+edges = [(1, 2), (2, 3), (3, 4)]
+preorder, inorder, postorder = brute_force_tree_traversals_solution(n, edges)
+print(f"Preorder: {preorder}")  # Output: [1, 2, 3, 4]
+print(f"Inorder: {inorder}")    # Output: [4, 3, 2, 1]
+print(f"Postorder: {postorder}")  # Output: [4, 3, 2, 1]
+```
+
+**Time Complexity**: O(n)
+**Space Complexity**: O(n)
+
+**Why it's inefficient**: While O(n) is optimal, this approach uses recursion which can cause stack overflow for very deep trees.
+
+---
+
+### Approach 2: Iterative Tree Traversal (Optimized)
+
+**Key Insights from Iterative Approach**:
+- **Stack-based DFS**: Use explicit stack instead of recursion
+- **Traversal Order**: Implement three different traversal orders iteratively
+- **Memory Control**: Avoid recursion stack overflow
+- **Efficient Implementation**: Use iterative approach for better memory control
+
+**Key Insight**: Use iterative DFS with explicit stack to avoid recursion stack overflow.
+
+**Algorithm**:
+- Build adjacency list representation of the tree
+- Use iterative DFS with explicit stack
+- Implement three different traversal orders
+- Collect results in separate lists
+
+**Visual Example**:
+```
+Tree: 1-2-3-4
+
+Iterative DFS Traversal:
+┌─────────────────────────────────────┐
+│ Stack: [1]                         │
+│ Preorder: [1]                      │
+│ Stack: [2]                         │
+│ Preorder: [1, 2]                   │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ Stack: [3]                         │
+│ Preorder: [1, 2, 3]                │
+│ Stack: [4]                         │
+│ Preorder: [1, 2, 3, 4]            │
+└─────────────────────────────────────┘
+```
+
+**Implementation**:
+```python
+def iterative_tree_traversals_solution(n, edges):
+    """
+    Find tree traversals using iterative DFS with stack
+    
+    Args:
+        n: number of nodes
+        edges: list of (a, b) representing edges
+    
+    Returns:
+        tuple: (preorder, inorder, postorder) traversals
+    """
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Initialize traversal lists
+    preorder = []
+    inorder = []
+    postorder = []
+    
+    # Iterative DFS traversal
+    def iterative_dfs(start):
+        stack = [(start, -1, False)]  # (node, parent, visited)
+        
+        while stack:
+            node, parent, visited = stack.pop()
+            
+            if not visited:
+                # Preorder: visit node before children
+                preorder.append(node)
+                
+                # Push back with visited=True
+                stack.append((node, parent, True))
+                
+                # Push children in reverse order
+                for child in reversed(adj[node]):
+                    if child != parent:
+                        stack.append((child, node, False))
+            else:
+                # Inorder: visit node after all children
+                inorder.append(node)
+                
+                # Postorder: visit node after all children
+                postorder.append(node)
+    
+    # Start iterative DFS from node 1
+    iterative_dfs(1)
+    
+    return preorder, inorder, postorder
+
+# Example usage
+n = 4
+edges = [(1, 2), (2, 3), (3, 4)]
+preorder, inorder, postorder = iterative_tree_traversals_solution(n, edges)
+print(f"Preorder: {preorder}")  # Output: [1, 2, 3, 4]
+print(f"Inorder: {inorder}")    # Output: [4, 3, 2, 1]
+print(f"Postorder: {postorder}")  # Output: [4, 3, 2, 1]
+```
+
+**Time Complexity**: O(n)
+**Space Complexity**: O(n)
+
+**Why it's better**: Avoids recursion stack overflow and provides better memory control.
+
+**Implementation Considerations**:
+- **Explicit Stack**: Use explicit stack instead of recursion
+- **Visited Flag**: Use visited flag to handle preorder and postorder
+- **Child Order**: Push children in reverse order for correct traversal
+- **Memory Control**: Better memory control than recursion
+
+---
+
+### Approach 3: Optimal Tree Traversal (Optimal)
+
+**Key Insights from Optimal Approach**:
+- **Single Pass**: Perform all three traversals in a single pass
+- **Efficient Implementation**: Use optimal data structures
+- **Memory Optimization**: Minimize memory usage
+- **Optimal Algorithm**: Use the most efficient tree traversal
+
+**Key Insight**: Use a single DFS pass to perform all three traversals efficiently.
+
+**Algorithm**:
+- Build adjacency list representation of the tree
+- Use single DFS pass for all traversals
+- Optimize data structure operations
+- Collect results efficiently
+
+**Visual Example**:
+```
+Tree: 1-2-3-4
+
+Optimal Single Pass:
+┌─────────────────────────────────────┐
+│ DFS: 1 → 2 → 3 → 4                │
+│ Preorder: [1, 2, 3, 4]            │
+│ Inorder: [4, 3, 2, 1]             │
+│ Postorder: [4, 3, 2, 1]           │
+└─────────────────────────────────────┘
+```
+
+**Implementation**:
+```python
+def optimal_tree_traversals_solution(n, edges):
+    """
+    Find tree traversals using optimal single-pass approach
+    
+    Args:
+        n: number of nodes
+        edges: list of (a, b) representing edges
+    
+    Returns:
+        tuple: (preorder, inorder, postorder) traversals
+    """
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Initialize traversal lists
+    preorder = []
+    inorder = []
+    postorder = []
+    
+    # Optimal single-pass DFS
+    def optimal_dfs(node, parent):
+        # Preorder: visit node before children
+        preorder.append(node)
+        
+        # Visit children
+        for child in adj[node]:
+            if child != parent:
+                optimal_dfs(child, node)
+        
+        # Inorder: visit node after all children
+        inorder.append(node)
+        
+        # Postorder: visit node after all children
+        postorder.append(node)
+    
+    # Start optimal DFS from node 1
+    optimal_dfs(1, -1)
+    
+    return preorder, inorder, postorder
+
+# Example usage
+n = 4
+edges = [(1, 2), (2, 3), (3, 4)]
+preorder, inorder, postorder = optimal_tree_traversals_solution(n, edges)
+print(f"Preorder: {preorder}")  # Output: [1, 2, 3, 4]
+print(f"Inorder: {inorder}")    # Output: [4, 3, 2, 1]
+print(f"Postorder: {postorder}")  # Output: [4, 3, 2, 1]
+
+# Test with different example
+n = 5
+edges = [(1, 2), (1, 3), (2, 4), (2, 5)]
+preorder, inorder, postorder = optimal_tree_traversals_solution(n, edges)
+print(f"Preorder: {preorder}")  # Output: [1, 2, 4, 5, 3]
+print(f"Inorder: {inorder}")    # Output: [4, 5, 2, 3, 1]
+print(f"Postorder: {postorder}")  # Output: [4, 5, 2, 3, 1]
+```
+
+**Time Complexity**: O(n)
+**Space Complexity**: O(n)
+
+**Why it's optimal**: This approach provides the most efficient solution with O(n) time complexity and optimal memory usage.
+
+**Implementation Details**:
+- **Single Pass**: Perform all traversals in one DFS pass
+- **Optimal Memory**: Minimize memory usage
+- **Efficient Implementation**: Use optimal data structures
+- **Optimal Result**: Guarantees efficient tree traversal
         
         # Postorder: visit node after children
         postorder.append(node)

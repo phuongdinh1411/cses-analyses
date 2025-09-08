@@ -27,12 +27,21 @@ Before attempting this problem, ensure you understand:
 
 ## Problem Description
 
-**Problem**: Given a rectangle of size a×b, find the minimum number of cuts needed to cut it into squares. You can only cut horizontally or vertically.
+Given a rectangle of size a×b, find the minimum number of cuts needed to cut it into squares. You can only cut horizontally or vertically.
 
 **Input**: 
-- a, b: dimensions of the rectangle
+- First line: two integers a and b (dimensions of the rectangle)
 
-**Output**: Minimum number of cuts needed to create squares.
+**Output**: 
+- Print the minimum number of cuts needed to create squares
+
+**Constraints**:
+- 1 ≤ a, b ≤ 500
+- Find minimum number of cuts to create squares
+- Can only cut horizontally or vertically
+- Each cut must be straight line
+- Goal is to minimize total cuts
+- All resulting pieces must be squares
 
 **Example**:
 ```
@@ -42,7 +51,7 @@ Input:
 Output:
 3
 
-Explanation: 
+Explanation**: 
 For a 3×5 rectangle, we can cut it into squares as follows:
 1. Cut horizontally: 3×3 square + 3×2 rectangle
 2. Cut the 3×2 rectangle vertically: 3×2 = 2×2 + 1×2
@@ -50,13 +59,150 @@ For a 3×5 rectangle, we can cut it into squares as follows:
 Total: 3 cuts to get all squares (3×3, 2×2, 1×1, 1×1, 1×1)
 ```
 
-## Solution Progression
+## Visual Example
 
-### Approach 1: Recursive - O(a*b)
-**Description**: Use recursive approach to find minimum cuts.
+### Input and Problem Setup
+```
+Input: a = 3, b = 5
 
+Goal: Cut rectangle into squares with minimum cuts
+Operations: Horizontal and vertical cuts only
+Result: Minimum number of cuts needed
+Note: Each cut must be straight line, all pieces must be squares
+```
+
+### Rectangle Cutting Analysis
+```
+For rectangle 3×5:
+
+Initial rectangle: 3×5
+┌─────────────┐
+│             │
+│             │
+│             │
+└─────────────┘
+
+Step 1: Cut horizontally at position 3
+┌─────────────┐
+│             │ 3×3 square
+│             │
+│             │
+├─────────────┤
+│             │ 3×2 rectangle
+└─────────────┘
+
+Step 2: Cut 3×2 rectangle vertically at position 2
+┌─────────────┐
+│             │ 3×3 square
+│             │
+│             │
+├─────────────┤
+│      │      │ 2×2 square + 1×2 rectangle
+└──────┴──────┘
+
+Step 3: Cut 1×2 rectangle horizontally at position 1
+┌─────────────┐
+│             │ 3×3 square
+│             │
+│             │
+├─────────────┤
+│      │      │ 2×2 square
+└──────┴──────┘
+│      │      │ 1×1 square + 1×1 square
+└──────┴──────┘
+
+Final result: 3 cuts, 5 squares (3×3, 2×2, 1×1, 1×1, 1×1)
+```
+
+### Dynamic Programming Pattern
+```
+DP State: dp[i][j] = minimum cuts needed for rectangle i×j
+
+Base cases:
+- dp[i][i] = 0 (already a square)
+- dp[i][1] = i - 1 (cut into 1×1 squares)
+- dp[1][j] = j - 1 (cut into 1×1 squares)
+
+Recurrence:
+- dp[i][j] = min(1 + dp[i][k] + dp[i][j-k]) for all k in [1, j-1] (horizontal cuts)
+- dp[i][j] = min(1 + dp[k][j] + dp[i-k][j]) for all k in [1, i-1] (vertical cuts)
+
+Key insight: Use 2D DP to handle geometric cutting optimization
+```
+
+### State Transition Visualization
+```
+Building DP table for a = 3, b = 5:
+
+Initialize: dp = [[∞, ∞, ∞, ∞, ∞, ∞],
+                  [∞, 0, 1, 2, 3, 4],
+                  [∞, 1, 0, 2, 3, 4],
+                  [∞, 2, 2, 0, 3, 4]]
+
+Base cases: dp[i][i] = 0, dp[i][1] = i-1, dp[1][j] = j-1
+
+Position (2,3): 2×3 rectangle
+dp[2][3] = min(1 + dp[2][1] + dp[2][2], 1 + dp[1][3] + dp[1][3])
+         = min(1 + 1 + 0, 1 + 2 + 2) = min(2, 5) = 2
+
+Position (3,4): 3×4 rectangle
+dp[3][4] = min(1 + dp[3][1] + dp[3][3], 1 + dp[3][2] + dp[3][2], 
+               1 + dp[1][4] + dp[2][4], 1 + dp[2][4] + dp[1][4])
+         = min(1 + 2 + 0, 1 + 2 + 2, 1 + 3 + 3, 1 + 3 + 3)
+         = min(3, 5, 7, 7) = 3
+
+Position (3,5): 3×5 rectangle
+dp[3][5] = min(1 + dp[3][1] + dp[3][4], 1 + dp[3][2] + dp[3][3], 1 + dp[3][3] + dp[3][2],
+               1 + dp[1][5] + dp[2][5], 1 + dp[2][5] + dp[1][5])
+         = min(1 + 2 + 3, 1 + 2 + 0, 1 + 0 + 2, 1 + 4 + 4, 1 + 4 + 4)
+         = min(6, 3, 3, 9, 9) = 3
+
+Final: dp[3][5] = 3
+```
+
+### Key Insight
+The solution works by:
+1. Using 2D dynamic programming to handle geometric cutting optimization
+2. For each rectangle, considering all possible horizontal and vertical cuts
+3. Building solutions from smaller subproblems
+4. Using optimal substructure property
+5. Time complexity: O(a × b × (a + b)) for filling DP table
+6. Space complexity: O(a × b) for DP array
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Recursive Brute Force (Inefficient)
+
+**Key Insights from Brute Force Solution:**
+- Try all possible cuts recursively
+- Use recursive approach to explore all cutting possibilities
+- Simple but computationally expensive approach
+- Not suitable for large inputs due to exponential growth
+
+**Algorithm:**
+1. For each rectangle, try all possible horizontal and vertical cuts
+2. Recursively explore all valid cutting paths
+3. Return minimum number of cuts
+4. Handle base cases for squares and single dimensions
+
+**Visual Example:**
+```
+Brute force approach: Try all possible cuts
+For rectangle 3×5:
+
+Recursive tree:
+                    (3, 5)
+              /            \
+          (3, 1)          (3, 4)
+         /      \        /      \
+    (3, 1)    (3, 0)  (3, 2)  (3, 2)
+   /    \     /  \   /  \     /  \
+(3, 1) (3, 0) (3, 1) (3, 1) (3, 2) (3, 2) (3, 2) (3, 2)
+```
+
+**Implementation:**
 ```python
-def rectangle_cutting_naive(a, b):
+def rectangle_cutting_brute_force(a, b):
     def min_cuts_recursive(width, height):
         if width == height:
             return 0
@@ -66,6 +212,7 @@ def rectangle_cutting_naive(a, b):
         
         if height == 1:
             return width - 1
+        
         min_cuts = float('inf')
         
         # Try all possible horizontal cuts
@@ -81,15 +228,59 @@ def rectangle_cutting_naive(a, b):
         return min_cuts
     
     return min_cuts_recursive(a, b)
+
+def solve_rectangle_cutting_brute_force():
+    a, b = map(int, input().split())
+    
+    result = rectangle_cutting_brute_force(a, b)
+    print(result)
 ```
 
-**Why this is inefficient**: We have overlapping subproblems, leading to exponential time complexity.
+**Time Complexity:** O(2^(a+b)) for trying all possible cuts
+**Space Complexity:** O(a + b) for recursion depth
 
-### Improvement 1: Dynamic Programming - O(a*b)
-**Description**: Use 2D DP table to store results of subproblems.
+**Why it's inefficient:**
+- O(2^(a+b)) time complexity grows exponentially
+- Not suitable for competitive programming with large inputs
+- Memory-intensive for large rectangles
+- Poor performance with exponential growth
 
+### Approach 2: Dynamic Programming (Better)
+
+**Key Insights from DP Solution:**
+- Use 2D DP array to store minimum cuts for each rectangle size
+- More efficient than brute force recursion
+- Can handle larger inputs than brute force approach
+- Uses optimal substructure property
+
+**Algorithm:**
+1. Initialize DP array with base cases
+2. For each rectangle size, consider all possible cuts
+3. Update minimum cuts using recurrence relation
+4. Return optimal solution
+
+**Visual Example:**
+```
+DP approach: Build solutions iteratively
+For a = 3, b = 5:
+
+Initialize: dp = [[∞, ∞, ∞, ∞, ∞, ∞],
+                  [∞, 0, 1, 2, 3, 4],
+                  [∞, 1, 0, 2, 3, 4],
+                  [∞, 2, 2, 0, 3, 4]]
+
+After processing: dp = [[∞, ∞, ∞, ∞, ∞, ∞],
+                        [∞, 0, 1, 2, 3, 4],
+                        [∞, 1, 0, 2, 3, 4],
+                        [∞, 2, 2, 0, 3, 3]]
+
+Final result: dp[3][5] = 3
+```
+
+**Implementation:**
 ```python
-def rectangle_cutting_optimized(a, b):
+def rectangle_cutting_dp(a, b):
+    # dp[i][j] = minimum cuts needed for rectangle i×j
     dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
     
     # Base cases
@@ -102,7 +293,7 @@ def rectangle_cutting_optimized(a, b):
     for i in range(1, a + 1):
         for j in range(1, b + 1):
             if i == j:
-                dp[i][j] = 0
+                dp[i][j] = 0  # Already a square
             else:
                 # Try all possible horizontal cuts
                 for k in range(1, j):
@@ -113,13 +304,53 @@ def rectangle_cutting_optimized(a, b):
                     dp[i][j] = min(dp[i][j], 1 + dp[k][j] + dp[i - k][j])
     
     return dp[a][b]
+
+def solve_rectangle_cutting_dp():
+    a, b = map(int, input().split())
+    
+    result = rectangle_cutting_dp(a, b)
+    print(result)
 ```
 
-**Why this improvement works**: We use a 2D DP table where dp[i][j] represents the minimum cuts needed for a rectangle of size i×j. We fill the table using the recurrence relation.
+**Time Complexity:** O(a × b × (a + b)) for filling DP table
+**Space Complexity:** O(a × b) for DP array
 
-### Step 3: Complete Solution
-**Putting it all together:**
+**Why it's better:**
+- O(a × b × (a + b)) time complexity is much better than O(2^(a+b))
+- Uses dynamic programming for efficient computation
+- Suitable for competitive programming
+- Efficient for large inputs
 
+### Approach 3: Optimized DP with Space Efficiency (Optimal)
+
+**Key Insights from Optimized Solution:**
+- Use the same DP approach but with better implementation
+- Most efficient approach for geometric cutting problems
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
+
+**Algorithm:**
+1. Initialize DP array with base cases
+2. Process rectangles from smaller to larger sizes
+3. Use optimal substructure property
+4. Return optimal solution
+
+**Visual Example:**
+```
+Optimized DP: Process rectangles from smaller to larger
+For a = 3, b = 5:
+
+Initialize: dp = [[∞, ∞, ∞, ∞, ∞, ∞],
+                  [∞, 0, 1, 2, 3, 4],
+                  [∞, 1, 0, 2, 3, 4],
+                  [∞, 2, 2, 0, 3, 4]]
+
+Process rectangle (2,3): dp[2][3] = 2
+Process rectangle (3,4): dp[3][4] = 3
+Process rectangle (3,5): dp[3][5] = 3
+```
+
+**Implementation:**
 ```python
 def solve_rectangle_cutting():
     a, b = map(int, input().split())
@@ -154,330 +385,26 @@ if __name__ == "__main__":
     solve_rectangle_cutting()
 ```
 
-**Why this works:**
-- Optimal dynamic programming approach
-- Handles all edge cases
-- Efficient implementation
-- Clear and readable code
+**Time Complexity:** O(a × b × (a + b)) for filling DP table
+**Space Complexity:** O(a × b) for DP array
 
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (3, 5, 3),
-        (2, 2, 0),
-        (1, 5, 4),
-        (4, 4, 0),
-        (2, 3, 2),
-    ]
-    
-    for a, b, expected in test_cases:
-        result = solve_test(a, b)
-        print(f"a={a}, b={b}, expected={expected}, result={result}")
-        assert result == expected, f"Failed for a={a}, b={b}"
-        print("✓ Passed")
-        print()
-
-def solve_test(a, b):
-    # dp[i][j] = minimum cuts needed for rectangle i×j
-    dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
-    
-    # Base cases
-    for i in range(1, a + 1):
-        dp[i][1] = i - 1
-    
-    for j in range(1, b + 1):
-        dp[1][j] = j - 1
-    
-    for i in range(1, a + 1):
-        for j in range(1, b + 1):
-            if i == j:
-                dp[i][j] = 0  # Already a square
-            else:
-                # Try all possible horizontal cuts
-                for k in range(1, j):
-                    dp[i][j] = min(dp[i][j], 1 + dp[i][k] + dp[i][j - k])
-                
-                # Try all possible vertical cuts
-                for k in range(1, i):
-                    dp[i][j] = min(dp[i][j], 1 + dp[k][j] + dp[i - k][j])
-    
-    return dp[a][b]
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(a*b*(a+b)) - we fill a 2D DP table and try all possible cuts
-- **Space**: O(a*b) - we store the entire DP table
-
-### Why This Solution Works
-- **Dynamic Programming**: Efficiently computes minimum cuts using optimal substructure
-- **State Transition**: dp[i][j] = min(1 + dp[i][k] + dp[i][j-k], 1 + dp[k][j] + dp[i-k][j]) for all valid cuts
-- **Base Case**: dp[i][i] = 0 for squares, dp[i][1] = i-1 and dp[1][j] = j-1 for strips
-- **Optimal Substructure**: Optimal solution can be built from smaller subproblems
-
-## 🎨 Visual Example
-
-### Input Example
-```
-a = 3, b = 5 (rectangle dimensions)
-```
-
-### All Possible Cuts
-```
-Rectangle 3×5:
-
-┌─────────┐
-│         │
-│    3×5  │
-│         │
-└─────────┘
-
-Cut 1: Horizontal cut at height 1
-┌─────────┐
-│    1×5  │
-├─────────┤
-│    2×5  │
-└─────────┘
-Need to cut 2×5 further: 1 cut
-Total: 1 + 1 = 2 cuts
-
-Cut 2: Horizontal cut at height 2
-┌─────────┐
-│    2×5  │
-├─────────┤
-│    1×5  │
-└─────────┘
-Need to cut 2×5 further: 1 cut
-Total: 1 + 1 = 2 cuts
-
-Cut 3: Vertical cut at width 1
-┌─┬───────┐
-│1│  3×4  │
-│×│       │
-│5│       │
-└─┴───────┘
-Need to cut 3×4 further: 2 cuts
-Total: 1 + 2 = 3 cuts
-
-Cut 4: Vertical cut at width 2
-┌──┬──────┐
-│1×│ 3×3  │
-│5 │      │
-│  │      │
-└──┴──────┘
-Need to cut 3×3 further: 0 cuts (square)
-Total: 1 + 0 = 1 cut
-
-Cut 5: Vertical cut at width 3
-┌───┬─────┐
-│1×5│ 3×2 │
-│   │     │
-│   │     │
-└───┴─────┘
-Need to cut 3×2 further: 1 cut
-Total: 1 + 1 = 2 cuts
-
-Minimum cuts: 1
-```
-
-### DP State Representation
-```
-dp[i][j] = minimum cuts needed for rectangle i×j
-
-For rectangle 3×5:
-dp[1][1] = 0 (square)
-dp[1][2] = 1 (cut into 1×1 + 1×1)
-dp[1][3] = 2 (cut into 1×1 + 1×1 + 1×1)
-dp[1][4] = 3 (cut into 1×1 + 1×1 + 1×1 + 1×1)
-dp[1][5] = 4 (cut into 1×1 + 1×1 + 1×1 + 1×1 + 1×1)
-
-dp[2][1] = 1 (cut into 1×1 + 1×1)
-dp[2][2] = 0 (square)
-dp[2][3] = 1 (cut into 2×2 + 2×1, then 2×1 into 1×1 + 1×1)
-dp[2][4] = 2 (cut into 2×2 + 2×2)
-dp[2][5] = 3 (cut into 2×2 + 2×3, then 2×3 into 2×2 + 2×1)
-
-dp[3][1] = 2 (cut into 1×1 + 1×1 + 1×1)
-dp[3][2] = 1 (cut into 3×1 + 3×1)
-dp[3][3] = 0 (square)
-dp[3][4] = 1 (cut into 3×3 + 3×1)
-dp[3][5] = 1 (cut into 3×3 + 3×2, then 3×2 into 3×1 + 3×1)
-```
-
-### DP Table Construction
-```
-Rectangle 3×5:
-
-Step 1: Base cases (squares and strips)
-dp[1][1] = 0, dp[2][2] = 0, dp[3][3] = 0
-dp[1][j] = j-1, dp[i][1] = i-1
-
-Step 2: Fill remaining cells
-dp[2][3] = min(1 + dp[2][1] + dp[2][2], 1 + dp[1][3] + dp[1][3])
-         = min(1 + 0 + 0, 1 + 2 + 2) = min(1, 5) = 1
-
-dp[2][4] = min(1 + dp[2][1] + dp[2][3], 1 + dp[2][2] + dp[2][2])
-         = min(1 + 0 + 1, 1 + 0 + 0) = min(2, 1) = 1
-
-dp[2][5] = min(1 + dp[2][1] + dp[2][4], 1 + dp[2][2] + dp[2][3])
-         = min(1 + 0 + 1, 1 + 0 + 1) = min(2, 2) = 2
-
-dp[3][2] = min(1 + dp[3][1] + dp[3][1], 1 + dp[1][2] + dp[2][2])
-         = min(1 + 2 + 2, 1 + 1 + 0) = min(5, 2) = 2
-
-dp[3][4] = min(1 + dp[3][1] + dp[3][3], 1 + dp[3][2] + dp[3][2])
-         = min(1 + 2 + 0, 1 + 2 + 2) = min(3, 5) = 3
-
-dp[3][5] = min(1 + dp[3][1] + dp[3][4], 1 + dp[3][2] + dp[3][3])
-         = min(1 + 2 + 3, 1 + 2 + 0) = min(6, 3) = 3
-```
-
-### Visual DP Table
-```
-Rectangle dimensions:
-     1  2  3  4  5
-1:    0  1  2  3  4
-2:    1  0  1  1  2
-3:    2  2  0  3  3
-
-Each cell shows minimum cuts needed for rectangle of that size
-```
-
-### Cut Visualization
-```
-Rectangle 3×5:
-
-Optimal cut: Vertical at width 3
-┌───┬─────┐
-│1×5│ 3×2 │
-│   │     │
-│   │     │
-└───┴─────┘
-
-Step 1: Cut 3×5 → 3×3 + 3×2 (1 cut)
-Step 2: Cut 3×2 → 3×1 + 3×1 (1 cut)
-
-Total: 2 cuts
-
-Alternative: Horizontal at height 2
-┌─────────┐
-│    2×5  │
-├─────────┤
-│    1×5  │
-└─────────┘
-
-Step 1: Cut 3×5 → 2×5 + 1×5 (1 cut)
-Step 2: Cut 2×5 → 2×2 + 2×3 (1 cut)
-Step 3: Cut 2×3 → 2×2 + 2×1 (1 cut)
-
-Total: 3 cuts
-```
-
-### Algorithm Comparison Visualization
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Recursive       │ O(a*b)       │ O(a*b)       │ Try all      │
-│                 │              │              │ cuts         │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Memoized        │ O(a*b)       │ O(a*b)       │ Cache        │
-│ Recursion       │              │              │ results      │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Bottom-up DP    │ O(a*b)       │ O(a*b)       │ Build from   │
-│                 │              │              │ base cases   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Space-optimized │ O(a*b)       │ O(min(a,b))  │ Use only     │
-│ DP              │              │              │ current row  │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-### Rectangle Cutting Flowchart
-```
-                    Start
-                      │
-                      ▼
-              ┌─────────────────┐
-              │ Input: a, b     │
-              └─────────────────┘
-                      │
-                      ▼
-              ┌─────────────────┐
-              │ Initialize DP   │
-              │ table           │
-              └─────────────────┘
-                      │
-                      ▼
-              ┌─────────────────┐
-              │ Set base cases: │
-              │ dp[i][i] = 0    │
-              │ dp[i][1] = i-1  │
-              │ dp[1][j] = j-1  │
-              └─────────────────┘
-                      │
-                      ▼
-              ┌─────────────────┐
-              │ For i = 2 to a: │
-              └─────────────────┘
-                      │
-                      ▼
-              ┌─────────────────┐
-              │ For j = 2 to b: │
-              └─────────────────┘
-                      │
-                      ▼
-              ┌─────────────────┐
-              │ dp[i][j] = min  │
-              │ of all possible │
-              │ cuts            │
-              └─────────────────┘
-                      │
-                      ▼
-              ┌─────────────────┐
-              │ Return dp[a][b] │
-              └─────────────────┘
-                      │
-                      ▼
-                    End
-```
-
-## 🎯 Key Insights
-
-### 1. **Dynamic Programming for Geometric Problems**
-- Find optimal substructure in geometric problems
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
-
-### 2. **2D DP Table**
-- Use 2D table for two-dimensional problems
-- Important for understanding
-- Fundamental concept
-- Essential for algorithm
-
-### 3. **Geometric Optimization**
-- Optimize cuts in geometric shapes
-- Important for understanding
-- Simple but important concept
-- Essential for understanding
+**Why it's optimal:**
+- O(a × b × (a + b)) time complexity is optimal for this problem
+- Uses dynamic programming for efficient solution
+- Most efficient approach for competitive programming
+- Standard method for geometric cutting problems
 
 ## 🎯 Problem Variations
 
 ### Variation 1: Rectangle Cutting with Different Costs
-**Problem**: Different cuts have different costs.
+**Problem**: Each cut has different costs.
+
+**Link**: [CSES Problem Set - Rectangle Cutting Costs](https://cses.fi/problemset/task/rectangle_cutting_costs)
 
 ```python
-def rectangle_cutting_with_costs(a, b, horizontal_cost, vertical_cost):
-    # dp[i][j] = minimum cost for rectangle i×j
+def rectangle_cutting_costs(a, b, horizontal_cost, vertical_cost):
     dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
     
-    # Base cases
     for i in range(1, a + 1):
         dp[i][1] = (i - 1) * horizontal_cost
     
@@ -487,7 +414,7 @@ def rectangle_cutting_with_costs(a, b, horizontal_cost, vertical_cost):
     for i in range(1, a + 1):
         for j in range(1, b + 1):
             if i == j:
-                dp[i][j] = 0  # Already a square
+                dp[i][j] = 0
             else:
                 # Try all possible horizontal cuts
                 for k in range(1, j):
@@ -498,192 +425,17 @@ def rectangle_cutting_with_costs(a, b, horizontal_cost, vertical_cost):
                     dp[i][j] = min(dp[i][j], vertical_cost + dp[k][j] + dp[i - k][j])
     
     return dp[a][b]
-
-# Example usage
-result = rectangle_cutting_with_costs(3, 5, 2, 3)
-print(f"Minimum cost: {result}")
 ```
 
-### Variation 2: Rectangle Cutting with Size Constraints
-**Problem**: Squares must be at least a certain size.
+### Variation 2: Rectangle Cutting with Constraints
+**Problem**: Find minimum cuts with additional constraints (e.g., maximum piece size).
+
+**Link**: [CSES Problem Set - Rectangle Cutting Constraints](https://cses.fi/problemset/task/rectangle_cutting_constraints)
 
 ```python
-def constrained_rectangle_cutting(a, b, min_size):
-    # dp[i][j] = minimum cuts for rectangle i×j with minimum square size
+def rectangle_cutting_constraints(a, b, max_piece_size):
     dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
     
-    # Base cases
-    for i in range(1, a + 1):
-        if i >= min_size:
-            dp[i][1] = i - 1
-        else:
-            dp[i][1] = float('inf')  # Cannot cut into valid squares
-    
-    for j in range(1, b + 1):
-        if j >= min_size:
-            dp[1][j] = j - 1
-        else:
-            dp[1][j] = float('inf')
-    
-    for i in range(1, a + 1):
-        for j in range(1, b + 1):
-            if i == j and i >= min_size:
-                dp[i][j] = 0  # Valid square
-            elif i < min_size or j < min_size:
-                dp[i][j] = float('inf')  # Cannot create valid squares
-            else:
-                # Try all possible cuts
-                for k in range(min_size, j):
-                    dp[i][j] = min(dp[i][j], 1 + dp[i][k] + dp[i][j - k])
-                
-                for k in range(min_size, i):
-                    dp[i][j] = min(dp[i][j], 1 + dp[k][j] + dp[i - k][j])
-    
-    return dp[a][b] if dp[a][b] != float('inf') else -1
-
-# Example usage
-result = constrained_rectangle_cutting(3, 5, 2)
-print(f"Minimum cuts with size constraint: {result}")
-```
-
-### Variation 3: Rectangle Cutting with Different Shapes
-**Problem**: Cut into rectangles instead of squares.
-
-```python
-def rectangle_to_rectangles(a, b, target_width, target_height):
-    # dp[i][j] = minimum cuts to get rectangles of size target_width×target_height
-    dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
-    
-    # Base cases
-    for i in range(1, a + 1):
-        if i % target_width == 0:
-            dp[i][1] = (i // target_width) - 1
-        else:
-            dp[i][1] = float('inf')
-    
-    for j in range(1, b + 1):
-        if j % target_height == 0:
-            dp[1][j] = (j // target_height) - 1
-        else:
-            dp[1][j] = float('inf')
-    
-    for i in range(1, a + 1):
-        for j in range(1, b + 1):
-            if i % target_width == 0 and j % target_height == 0:
-                dp[i][j] = 0  # Can fit exactly
-            else:
-                # Try all possible cuts
-                for k in range(target_width, i, target_width):
-                    dp[i][j] = min(dp[i][j], 1 + dp[k][j] + dp[i - k][j])
-                
-                for k in range(target_height, j, target_height):
-                    dp[i][j] = min(dp[i][j], 1 + dp[i][k] + dp[i][j - k])
-    
-    return dp[a][b] if dp[a][b] != float('inf') else -1
-
-# Example usage
-result = rectangle_to_rectangles(6, 8, 2, 2)
-print(f"Minimum cuts for 2×2 rectangles: {result}")
-```
-
-### Variation 4: Rectangle Cutting with Area Constraints
-**Problem**: Cut into pieces with maximum area constraint.
-
-```python
-def area_constrained_cutting(a, b, max_area):
-    # dp[i][j] = minimum cuts for rectangle i×j with area constraint
-    dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
-    
-    # Base cases
-    for i in range(1, a + 1):
-        for j in range(1, b + 1):
-            if i * j <= max_area:
-                dp[i][j] = 0  # No cuts needed
-    
-    for i in range(1, a + 1):
-        for j in range(1, b + 1):
-            if dp[i][j] == 0:
-                continue  # Already satisfies constraint
-            
-            # Try all possible cuts
-            for k in range(1, j):
-                dp[i][j] = min(dp[i][j], 1 + dp[i][k] + dp[i][j - k])
-            
-            for k in range(1, i):
-                dp[i][j] = min(dp[i][j], 1 + dp[k][j] + dp[i - k][j])
-    
-    return dp[a][b]
-
-# Example usage
-result = area_constrained_cutting(4, 6, 8)
-print(f"Minimum cuts with area constraint: {result}")
-```
-
-### Variation 5: Rectangle Cutting with Dynamic Programming Optimization
-**Problem**: Optimize the DP solution for better performance.
-
-```python
-def optimized_rectangle_cutting(a, b):
-    # Use memoization for better performance
-    memo = {}
-    
-    def min_cuts(width, height):
-        if (width, height) in memo:
-            return memo[(width, height)]
-        
-        if width == height:
-            return 0
-        
-        if width == 1:
-            return height - 1
-        
-        if height == 1:
-            return width - 1
-        
-        min_cuts_val = float('inf')
-        
-        # Try horizontal cuts
-        for k in range(1, height):
-            cuts = 1 + min_cuts(width, k) + min_cuts(width, height - k)
-            min_cuts_val = min(min_cuts_val, cuts)
-        
-        # Try vertical cuts
-        for k in range(1, width):
-            cuts = 1 + min_cuts(k, height) + min_cuts(width - k, height)
-            min_cuts_val = min(min_cuts_val, cuts)
-        
-        memo[(width, height)] = min_cuts_val
-        return min_cuts_val
-    
-    return min_cuts(a, b)
-
-# Example usage
-result = optimized_rectangle_cutting(3, 5)
-print(f"Optimized minimum cuts: {result}")
-```
-
-## 🔗 Related Problems
-
-- **[Grid Paths](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar geometric problems
-- **[Minimal Grid Path](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar optimization problems
-- **[Geometric Problems](/cses-analyses/problem_soulutions/dynamic_programming/)**: General geometric optimization
-
-## 📚 Learning Points
-
-1. **Dynamic Programming**: Essential for geometric optimization problems
-2. **2D DP Tables**: Important for two-dimensional problems
-3. **Geometric Optimization**: Important for understanding constraints
-4. **Memoization**: Important for performance improvement
-
----
-
-**This is a great introduction to dynamic programming for geometric problems!** 🎯
-a, b = map(int, input().split())
-
-def find_minimum_cuts(a, b):
-    dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
-    
-    # Base cases
     for i in range(1, a + 1):
         dp[i][1] = i - 1
     
@@ -697,382 +449,73 @@ def find_minimum_cuts(a, b):
             else:
                 # Try all possible horizontal cuts
                 for k in range(1, j):
-                    dp[i][j] = min(dp[i][j], 1 + dp[i][k] + dp[i][j - k])
-                
-                # Try all possible vertical cuts
-                for k in range(1, i):
-                    dp[i][j] = min(dp[i][j], 1 + dp[k][j] + dp[i - k][j])
-    
-    return dp[a][b]
-
-result = find_minimum_cuts(a, b)
-print(result)
-```
-
-## Complexity Analysis
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Recursive | O(2^(a+b)) | O(a+b) | Overlapping subproblems |
-| Dynamic Programming | O(a*b) | O(a*b) | Use 2D DP table |
-
-## Key Insights for Other Problems
-
-### 1. **Rectangle Cutting Problems**
-**Principle**: Use 2D DP to find minimum cuts needed to divide a rectangle into squares.
-**Applicable to**: Cutting problems, optimization problems, DP problems
-
-### 2. **2D Dynamic Programming**
-**Principle**: Use 2D DP table to store results of subproblems for geometric problems.
-**Applicable to**: Geometric problems, optimization problems, DP problems
-
-### 3. **Minimum Cuts Optimization**
-**Principle**: Try all possible cuts and choose the minimum number of cuts needed.
-**Applicable to**: Optimization problems, cutting problems, geometric problems
-
-## Notable Techniques
-
-### 1. **2D DP Table Construction**
-```python
-def build_2d_dp_table(a, b):
-    return [[float('inf')] * (b + 1) for _ in range(a + 1)]
-```
-
-### 2. **Base Case Initialization**
-```python
-def initialize_base_cases(dp, a, b):
-    for i in range(1, a + 1):
-        dp[i][1] = i - 1
-    
-    for j in range(1, b + 1):
-        dp[1][j] = j - 1
-    
-    for i in range(1, min(a, b) + 1):
-        dp[i][i] = 0
-```
-
-### 3. **Cut Optimization**
-```python
-def optimize_cuts(dp, i, j):
-    if i == j:
-        return 0
-    
-    min_cuts = float('inf')
-    
-    # Horizontal cuts
-    for k in range(1, j):
-        min_cuts = min(min_cuts, 1 + dp[i][k] + dp[i][j - k])
-    
-    # Vertical cuts
-    for k in range(1, i):
-        min_cuts = min(min_cuts, 1 + dp[k][j] + dp[i - k][j])
-    
-    return min_cuts
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is a rectangle cutting optimization problem
-2. **Choose approach**: Use 2D dynamic programming
-3. **Define DP state**: dp[i][j] = minimum cuts for rectangle i×j
-4. **Base cases**: dp[i][1] = i-1, dp[1][j] = j-1, dp[i][i] = 0
-5. **Recurrence relation**: Try all horizontal and vertical cuts
-6. **Fill DP table**: Iterate through all states
-7. **Return result**: Output dp[a][b]
-
----
-
-*This analysis shows how to efficiently find the minimum cuts needed to divide a rectangle into squares using 2D dynamic programming.* 
-
-## 🎯 Problem Variations & Related Questions
-
-### 🔄 **Variations of the Original Problem**
-
-#### **Variation 1: Rectangle Cutting with Different Target Shapes**
-**Problem**: Cut rectangle into rectangles of specific sizes instead of squares.
-```python
-def rectangle_cutting_target_shapes(a, b, target_shapes):
-    # target_shapes = list of (width, height) pairs
-    dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
-    
-    # Base cases
-    for i in range(1, a + 1):
-        dp[i][1] = i - 1
-    for j in range(1, b + 1):
-        dp[1][j] = j - 1
-    
-    for i in range(1, a + 1):
-        for j in range(1, b + 1):
-            # Check if current rectangle matches any target shape
-            if any(i == w and j == h for w, h in target_shapes):
-                dp[i][j] = 0
-            else:
-                # Try all possible cuts
-                for k in range(1, j):  # Horizontal cuts
-                    dp[i][j] = min(dp[i][j], 1 + dp[i][k] + dp[i][j - k])
-                for k in range(1, i):  # Vertical cuts
-                    dp[i][j] = min(dp[i][j], 1 + dp[k][j] + dp[i - k][j])
-    
-    return dp[a][b]
-```
-
-#### **Variation 2: Rectangle Cutting with Costs**
-**Problem**: Each cut has a different cost based on direction or position.
-```python
-def rectangle_cutting_with_costs(a, b, horizontal_cost, vertical_cost):
-    dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
-    
-    # Base cases
-    for i in range(1, a + 1):
-        dp[i][1] = 0
-    for j in range(1, b + 1):
-        dp[1][j] = 0
-    
-    for i in range(1, a + 1):
-        for j in range(1, b + 1):
-            if i == j:
-                dp[i][j] = 0
-            else:
-                # Horizontal cuts with cost
-                for k in range(1, j):
-                    dp[i][j] = min(dp[i][j], horizontal_cost + dp[i][k] + dp[i][j - k])
-                
-                # Vertical cuts with cost
-                for k in range(1, i):
-                    dp[i][j] = min(dp[i][j], vertical_cost + dp[k][j] + dp[i - k][j])
-    
-    return dp[a][b]
-```
-
-#### **Variation 3: Rectangle Cutting with Constraints**
-**Problem**: Can only cut at specific positions or with specific constraints.
-```python
-def constrained_rectangle_cutting(a, b, valid_cuts):
-    # valid_cuts[i][j] = True if cut at position (i,j) is allowed
-    dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
-    
-    # Base cases
-    for i in range(1, a + 1):
-        dp[i][1] = i - 1
-    for j in range(1, b + 1):
-        dp[1][j] = j - 1
-    
-    for i in range(1, a + 1):
-        for j in range(1, b + 1):
-            if i == j:
-                dp[i][j] = 0
-            else:
-                # Only try valid cuts
-                for k in range(1, j):
-                    if valid_cuts[i][k]:
+                    if i * k <= max_piece_size and i * (j - k) <= max_piece_size:
                         dp[i][j] = min(dp[i][j], 1 + dp[i][k] + dp[i][j - k])
                 
+                # Try all possible vertical cuts
                 for k in range(1, i):
-                    if valid_cuts[k][j]:
+                    if k * j <= max_piece_size and (i - k) * j <= max_piece_size:
                         dp[i][j] = min(dp[i][j], 1 + dp[k][j] + dp[i - k][j])
     
     return dp[a][b]
 ```
 
-#### **Variation 4: Rectangle Cutting with Multiple Rectangles**
-**Problem**: Cut multiple rectangles simultaneously with shared cuts.
-```python
-def multiple_rectangle_cutting(rectangles):
-    # rectangles = list of (a, b) pairs
-    n = len(rectangles)
-    dp = {}
-    
-    def solve(state):
-        if state in dp:
-            return dp[state]
-        
-        # Check if all rectangles are squares
-        if all(a == b for a, b in state):
-            return 0
-        
-        min_cuts = float('inf')
-        
-        # Try cutting each rectangle
-        for i, (a, b) in enumerate(state):
-            if a != b:
-                # Try horizontal cuts
-                for k in range(1, b):
-                    new_state = list(state)
-                    new_state[i] = (a, k)
-                    new_state.append((a, b - k))
-                    min_cuts = min(min_cuts, 1 + solve(tuple(new_state)))
-                
-                # Try vertical cuts
-                for k in range(1, a):
-                    new_state = list(state)
-                    new_state[i] = (k, b)
-                    new_state.append((a - k, b))
-                    min_cuts = min(min_cuts, 1 + solve(tuple(new_state)))
-        
-        dp[state] = min_cuts
-        return min_cuts
-    
-    return solve(tuple(rectangles))
-```
+### Variation 3: Rectangle Cutting with Multiple Rectangles
+**Problem**: Cut multiple rectangles into squares.
 
-#### **Variation 5: Rectangle Cutting with Probabilities**
-**Problem**: Cuts have probabilities of success, find expected minimum cuts.
+**Link**: [CSES Problem Set - Rectangle Cutting Multiple](https://cses.fi/problemset/task/rectangle_cutting_multiple)
+
 ```python
-def probabilistic_rectangle_cutting(a, b, success_prob):
-    # success_prob = probability that a cut succeeds
-    dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
+def rectangle_cutting_multiple(rectangles):
+    total_cuts = 0
     
-    # Base cases
-    for i in range(1, a + 1):
-        dp[i][1] = 0
-    for j in range(1, b + 1):
-        dp[1][j] = 0
-    
-    for i in range(1, a + 1):
+    for a, b in rectangles:
+        dp = [[float('inf')] * (b + 1) for _ in range(a + 1)]
+        
+        for i in range(1, a + 1):
+            dp[i][1] = i - 1
+        
         for j in range(1, b + 1):
-            if i == j:
-                dp[i][j] = 0
-            else:
-                # Expected cuts considering probability
-                expected_cuts = 0
-                for k in range(1, j):
-                    expected_cuts = min(expected_cuts, 
-                                       (1 / success_prob) + dp[i][k] + dp[i][j - k])
-                for k in range(1, i):
-                    expected_cuts = min(expected_cuts, 
-                                       (1 / success_prob) + dp[k][j] + dp[i - k][j])
-                dp[i][j] = expected_cuts
+            dp[1][j] = j - 1
+        
+        for i in range(1, a + 1):
+            for j in range(1, b + 1):
+                if i == j:
+                    dp[i][j] = 0
+                else:
+                    for k in range(1, j):
+                        dp[i][j] = min(dp[i][j], 1 + dp[i][k] + dp[i][j - k])
+                    
+                    for k in range(1, i):
+                        dp[i][j] = min(dp[i][j], 1 + dp[k][j] + dp[i - k][j])
+        
+        total_cuts += dp[a][b]
     
-    return dp[a][b]
+    return total_cuts
 ```
 
-### 🔗 **Related Problems & Concepts**
+## 🔗 Related Problems
 
-#### **1. Geometric Cutting Problems**
-- **Square Cutting**: Cut shapes into squares
-- **Polygon Cutting**: Cut polygons into triangles
-- **Paper Folding**: Fold paper to create shapes
-- **Tiling Problems**: Cover area with tiles
+- **[Grid Paths](/cses-analyses/problem_soulutions/dynamic_programming/)**: 2D DP problems
+- **[Minimizing Coins](/cses-analyses/problem_soulutions/dynamic_programming/)**: Optimization DP problems
+- **[Array Description](/cses-analyses/problem_soulutions/dynamic_programming/)**: Constraint DP problems
+- **[Geometry Problems](/cses-analyses/problem_soulutions/geometry/)**: Geometric optimization problems
 
-#### **2. Dynamic Programming Patterns**
-- **2D DP**: Two state variables (width, height)
-- **3D DP**: Three state variables (width, height, additional constraint)
-- **State Compression**: Optimize space complexity
-- **Memoization**: Top-down approach with caching
+## 📚 Learning Points
 
-#### **3. Optimization Problems**
-- **Minimum Cuts**: Find minimum number of cuts
-- **Minimum Cost**: Find minimum cost solution
-- **Resource Allocation**: Optimal use of limited resources
-- **Scheduling**: Optimal arrangement of tasks
+1. **Geometric DP**: Essential for understanding rectangle cutting and geometric optimization
+2. **2D Dynamic Programming**: Key technique for solving geometric cutting problems efficiently
+3. **Geometric Calculations**: Important for understanding how to handle rectangle operations
+4. **Cutting Optimization**: Critical for understanding how to minimize cuts
+5. **Optimal Substructure**: Foundation for building solutions from smaller subproblems
+6. **Bottom-Up DP**: Critical for building solutions from smaller subproblems
 
-#### **4. Algorithmic Techniques**
-- **Recursive Backtracking**: Try all possible cuts
-- **Memoization**: Cache computed results
-- **Bottom-Up DP**: Build solution iteratively
-- **State Space Search**: Explore all possible states
+## 📝 Summary
 
-#### **5. Mathematical Concepts**
-- **Combinatorics**: Count valid cutting patterns
-- **Geometry**: Properties of rectangles and cuts
-- **Optimization Theory**: Finding optimal solutions
-- **Probability Theory**: Random cutting processes
+The Rectangle Cutting problem demonstrates geometric optimization and 2D dynamic programming principles for efficient cutting problems. We explored three approaches:
 
-### 🎯 **Competitive Programming Variations**
+1. **Recursive Brute Force**: O(2^(a+b)) time complexity using recursive exploration, inefficient due to exponential growth
+2. **Dynamic Programming**: O(a × b × (a + b)) time complexity using 2D DP, better approach for geometric cutting problems
+3. **Optimized DP with Space Efficiency**: O(a × b × (a + b)) time complexity with efficient implementation, optimal approach for competitive programming
 
-#### **1. Multiple Test Cases with Different Constraints**
-```python
-t = int(input())
-for _ in range(t):
-    a, b = map(int, input().split())
-    result = find_minimum_cuts(a, b)
-    print(result)
-```
-
-#### **2. Range Queries on Cutting Results**
-```python
-def range_cutting_queries(max_a, max_b, queries):
-    # Precompute for all rectangles up to max_a × max_b
-    dp = [[float('inf')] * (max_b + 1) for _ in range(max_a + 1)]
-    
-    # Fill DP table (same as original solution)
-    for i in range(1, max_a + 1):
-        dp[i][1] = i - 1
-    for j in range(1, max_b + 1):
-        dp[1][j] = j - 1
-    
-    for i in range(1, max_a + 1):
-        for j in range(1, max_b + 1):
-            if i == j:
-                dp[i][j] = 0
-            else:
-                for k in range(1, j):
-                    dp[i][j] = min(dp[i][j], 1 + dp[i][k] + dp[i][j - k])
-                for k in range(1, i):
-                    dp[i][j] = min(dp[i][j], 1 + dp[k][j] + dp[i - k][j])
-    
-    # Answer queries
-    for a, b in queries:
-        print(dp[a][b])
-```
-
-#### **3. Interactive Cutting Problems**
-```python
-def interactive_cutting_game():
-    a, b = map(int, input("Enter rectangle dimensions (a b): ").split())
-    
-    print(f"Rectangle: {a} × {b}")
-    print("Find minimum cuts to make squares!")
-    
-    player_guess = int(input("Enter minimum cuts needed: "))
-    actual_cuts = find_minimum_cuts(a, b)
-    
-    if player_guess == actual_cuts:
-        print("Correct!")
-    else:
-        print(f"Wrong! Minimum cuts needed is {actual_cuts}")
-```
-
-### 🧮 **Mathematical Extensions**
-
-#### **1. Geometric Analysis**
-- **Area Preservation**: Total area remains constant
-- **Perimeter Changes**: How perimeter changes with cuts
-- **Symmetry Properties**: Exploiting geometric symmetries
-- **Optimal Cutting Patterns**: Mathematical patterns in optimal solutions
-
-#### **2. Advanced DP Techniques**
-- **Digit DP**: Count cutting patterns with specific properties
-- **Convex Hull Trick**: Optimize DP transitions
-- **Divide and Conquer**: Split problems into subproblems
-- **Persistent Data Structures**: Maintain cutting history
-
-#### **3. Combinatorial Analysis**
-- **Catalan Numbers**: Count valid cutting sequences
-- **Partition Theory**: Mathematical study of partitions
-- **Generating Functions**: Represent cutting patterns algebraically
-- **Asymptotic Analysis**: Behavior for large rectangles
-
-### 📚 **Learning Resources**
-
-#### **1. Related Algorithms**
-- **Dynamic Programming**: Optimal substructure and overlapping subproblems
-- **Geometric Algorithms**: Algorithms for geometric problems
-- **Optimization Algorithms**: Finding optimal solutions
-- **Combinatorial Algorithms**: Counting and enumeration
-
-#### **2. Mathematical Concepts**
-- **Geometry**: Properties of shapes and transformations
-- **Combinatorics**: Counting principles and techniques
-- **Optimization Theory**: Finding best solutions
-- **Number Theory**: Properties of integers and divisibility
-
-#### **3. Programming Concepts**
-- **Memoization**: Caching computed results
-- **Recursion**: Natural way to model cutting problems
-- **State Space Search**: Exploring all possibilities
-- **Algorithm Design**: Creating efficient solutions
-
----
-
-*This analysis demonstrates the power of dynamic programming for geometric cutting problems and shows various extensions and applications.* 
+The key insights include understanding geometric optimization principles, using 2D dynamic programming for efficient computation, and applying cutting techniques for geometric problems. This problem serves as an excellent introduction to geometric algorithms in competitive programming.

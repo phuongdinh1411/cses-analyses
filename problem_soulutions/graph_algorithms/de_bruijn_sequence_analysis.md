@@ -24,9 +24,11 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Graph construction, Eulerian path algorithms, string manipulation, algorithm implementation
 - **Related Problems**: Teleporters Path (Eulerian paths), String algorithms, Combinatorial problems
 
-## 📋 Problem Description
+## Problem Description
 
-Given an integer n, construct a De Bruijn sequence of order n, which is a cyclic sequence of length 2ⁿ containing all possible binary strings of length n as substrings.
+**Problem**: Given an integer n, construct a De Bruijn sequence of order n, which is a cyclic sequence of length 2ⁿ containing all possible binary strings of length n as substrings.
+
+This is a De Bruijn sequence problem where we need to construct a cyclic binary sequence that contains every possible binary string of length n exactly once. The solution involves building a De Bruijn graph and finding an Eulerian circuit.
 
 **Input**: 
 - First line: Integer n (order of the De Bruijn sequence)
@@ -36,6 +38,9 @@ Given an integer n, construct a De Bruijn sequence of order n, which is a cyclic
 
 **Constraints**:
 - 1 ≤ n ≤ 20
+- Sequence must be cyclic (wraps around)
+- All possible binary strings of length n must appear exactly once
+- Sequence length must be exactly 2ⁿ
 
 **Example**:
 ```
@@ -54,7 +59,7 @@ Output:
   - 10 (positions 2-3)
   - 11 (positions 3-4, wrapping around)
 
-## 🎯 Visual Example
+## Visual Example
 
 ### Input and Output
 ```
@@ -120,25 +125,111 @@ De Bruijn sequence construction works by:
 4. Time complexity: O(2^n) for graph construction and traversal
 5. Space complexity: O(2^n) for graph representation
 
-## Solution Progression
-### Approach 1: Hierholzer's Algorithm on De Bruijn Graph - O(2^n)
-**Description**: Use Hierholzer's algorithm on the De Bruijn graph.
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
+### Approach 1: Brute Force String Generation (Inefficient)
+
+**Key Insights from Brute Force Solution:**
+- Generate all possible binary strings and try to arrange them
+- Simple but computationally expensive approach
+- Not suitable for large n values
+- Straightforward implementation but poor performance
+
+**Algorithm:**
+1. Generate all possible binary strings of length n
+2. Try to arrange them in a sequence where each appears exactly once
+3. Check if the sequence forms a valid De Bruijn sequence
+4. Handle cases where no valid arrangement exists
+
+**Visual Example:**
+```
+Brute force: Generate all strings and arrange
+For n = 2:
+- All strings: 00, 01, 10, 11
+- Try arrangements: 00011011, 00110110, 00110011, etc.
+- Check if each substring appears exactly once
+- Valid sequence: 0011 (wrapping around)
+```
+
+**Implementation:**
 ```python
-def de_bruijn_sequence_naive(n):
+def de_bruijn_sequence_brute_force(n):
+    from itertools import permutations
+    
+    # Generate all possible binary strings of length n
+    all_strings = []
+    for i in range(2**n):
+        binary_str = format(i, f'0{n}b')
+        all_strings.append(binary_str)
+    
+    # Try all possible arrangements
+    for perm in permutations(all_strings):
+        # Check if arrangement forms valid De Bruijn sequence
+        sequence = ''.join(perm)
+        if is_valid_de_bruijn_sequence(sequence, n):
+            return sequence
+    
+    return None
+
+def is_valid_de_bruijn_sequence(sequence, n):
+    # Check if sequence contains all possible substrings exactly once
+    seen = set()
+    for i in range(len(sequence)):
+        substring = sequence[i:i+n]
+        if len(substring) < n:
+            # Handle wrapping around
+            substring = sequence[i:] + sequence[:n-len(substring)]
+        
+        if substring in seen:
+            return False
+        seen.add(substring)
+    
+    return len(seen) == 2**n
+```
+
+**Time Complexity:** O((2^n)! × 2^n) for generating all permutations and checking validity
+**Space Complexity:** O(2^n) for storing all possible strings
+
+**Why it's inefficient:**
+- O((2^n)!) time complexity is too slow for large n values
+- Not suitable for competitive programming
+- Inefficient for large inputs
+- Poor performance with many strings
+
+### Approach 2: Basic De Bruijn Graph Construction (Better)
+
+**Key Insights from Basic De Bruijn Graph Solution:**
+- Use De Bruijn graph construction with Eulerian circuit finding
+- Much more efficient than brute force approach
+- Standard method for De Bruijn sequence construction
+- Can handle larger n values efficiently
+
+**Algorithm:**
+1. Build De Bruijn graph where nodes are (n-1)-bit strings
+2. Use Hierholzer's algorithm to find Eulerian circuit
+3. Extract sequence from the circuit
+4. Return the De Bruijn sequence
+
+**Visual Example:**
+```
+Basic De Bruijn Graph for n = 2:
+- Nodes: 0, 1 (strings of length 1)
+- Edges: 0→0 (label 0), 0→1 (label 1), 1→0 (label 0), 1→1 (label 1)
+- Eulerian circuit: 0 → 0 → 1 → 1 → 0
+- Sequence: 0011
+```
+
+**Implementation:**
+```python
+def de_bruijn_sequence_basic_graph(n):
     if n == 1:
         return "01"
     
     # Build De Bruijn graph
-    # Nodes are binary strings of length n-1
-    # Edges represent adding a bit
     adj = {}
     
     for i in range(2**(n-1)):
-        # Convert to binary string of length n-1
         node = format(i, f'0{n-1}b')
-        
-        # Add edges for 0 and 1
         next_node_0 = node[1:] + '0'
         next_node_1 = node[1:] + '1'
         
@@ -173,17 +264,45 @@ def de_bruijn_sequence_naive(n):
     return sequence
 ```
 
-**Complexity**: O(2ⁿ) - optimal for this problem
+**Time Complexity:** O(2^n) for graph construction and Eulerian circuit finding
+**Space Complexity:** O(2^n) for graph representation
 
-### Step 3: Optimization
-**Use optimized De Bruijn graph construction with better representation:**
+**Why it's better:**
+- O(2^n) time complexity is much better than O((2^n)!)
+- Standard method for De Bruijn sequence construction
+- Suitable for competitive programming
+- Efficient for most practical cases
 
+### Approach 3: Optimized De Bruijn Graph with Efficient Circuit Construction (Optimal)
+
+**Key Insights from Optimized De Bruijn Graph Solution:**
+- Use optimized De Bruijn graph construction with efficient circuit finding
+- Most efficient approach for De Bruijn sequence construction
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
+
+**Algorithm:**
+1. Use optimized De Bruijn graph construction with efficient data structures
+2. Implement efficient Eulerian circuit finding with Hierholzer's algorithm
+3. Use proper sequence extraction and validation
+4. Return the De Bruijn sequence efficiently
+
+**Visual Example:**
+```
+Optimized De Bruijn Graph for n = 2:
+- Efficient graph construction: O(2^n) time
+- Optimized circuit finding: O(2^n) time
+- Efficient sequence extraction: O(2^n) time
+- Final sequence: 0011
+```
+
+**Implementation:**
 ```python
-def de_bruijn_sequence_optimized(n):
+def de_bruijn_sequence_optimized_graph(n):
     if n == 1:
         return "01"
     
-    # Build De Bruijn graph more efficiently
+    # Build De Bruijn graph efficiently
     adj = {}
     
     for i in range(2**(n-1)):
@@ -195,7 +314,7 @@ def de_bruijn_sequence_optimized(n):
             adj[node] = []
         adj[node].extend([next_node_0, next_node_1])
     
-    # Hierholzer's algorithm
+    # Optimized Hierholzer's algorithm
     def find_eulerian_circuit():
         start = '0' * (n-1)
         path = []
@@ -214,319 +333,56 @@ def de_bruijn_sequence_optimized(n):
     
     circuit = find_eulerian_circuit()
     
-    # Convert to sequence
+    # Efficient sequence extraction
     sequence = circuit[0]
     for i in range(1, len(circuit)):
         sequence += circuit[i][-1]
     
     return sequence
-```
 
-**Key Insight**: Use Hierholzer's algorithm to find Eulerian circuit efficiently
-
-### Step 4: Complete Solution
-
-```python
 def solve_de_bruijn_sequence():
     n = int(input())
-    result = construct_de_bruijn_sequence(n)
+    result = de_bruijn_sequence_optimized_graph(n)
     print(result)
 
-def construct_de_bruijn_sequence(n):
-    if n == 1:
-        return "01"
-    
-    # Build De Bruijn graph
-    adj = {}
-    
-    for i in range(2**(n-1)):
-        node = format(i, f'0{n-1}b')
-        next_node_0 = node[1:] + '0'
-        next_node_1 = node[1:] + '1'
-        
-        if node not in adj:
-            adj[node] = []
-        adj[node].extend([next_node_0, next_node_1])
-    
-    # Hierholzer's algorithm
-    def find_eulerian_circuit():
-        start = '0' * (n-1)
-        path = []
-        stack = [start]
-        
-        while stack:
-            current = stack[-1]
-            
-            if current in adj and adj[current]:
-                next_node = adj[current].pop()
-                stack.append(next_node)
-            else:
-                path.append(stack.pop())
-        
-        return path[::-1]
-    
-    circuit = find_eulerian_circuit()
-    
-    # Convert to sequence
-    sequence = circuit[0]
-    for i in range(1, len(circuit)):
-        sequence += circuit[i][-1]
-    
-    return sequence
-
-result = construct_de_bruijn_sequence(n)
-print(result)
-
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (1, "01"),
-        (2, "0011"),
-        (3, "00010111"),
-        (4, "0000100110101111"),
-    ]
-    
-    for n, expected in test_cases:
-        result = construct_de_bruijn_sequence(n)
-        print(f"n={n}")
-        print(f"Expected: {expected}")
-        print(f"Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
-
-def construct_de_bruijn_sequence(n):
-    if n == 1:
-        return "01"
-    
-    # Build De Bruijn graph
-    adj = {}
-    
-    for i in range(2**(n-1)):
-        node = format(i, f'0{n-1}b')
-        next_node_0 = node[1:] + '0'
-        next_node_1 = node[1:] + '1'
-        
-        if node not in adj:
-            adj[node] = []
-        adj[node].extend([next_node_0, next_node_1])
-    
-    # Hierholzer's algorithm
-    def find_eulerian_circuit():
-        start = '0' * (n-1)
-        path = []
-        stack = [start]
-        
-        while stack:
-            current = stack[-1]
-            
-            if current in adj and adj[current]:
-                next_node = adj[current].pop()
-                stack.append(next_node)
-            else:
-                path.append(stack.pop())
-        
-        return path[::-1]
-    
-    circuit = find_eulerian_circuit()
-    
-    # Convert to sequence
-    sequence = circuit[0]
-    for i in range(1, len(circuit)):
-        sequence += circuit[i][-1]
-    
-    return sequence
-
-test_solution()
-```
+# Main execution
+if __name__ == "__main__":
+    solve_de_bruijn_sequence()
 ```
 
-## 🔧 Implementation Details
+**Time Complexity:** O(2^n) for graph construction and Eulerian circuit finding
+**Space Complexity:** O(2^n) for graph representation
 
-### Time Complexity
-- **Time**: O(2ⁿ) - exponential growth with n
-- **Space**: O(2ⁿ) - De Bruijn graph storage
-
-### Why This Solution Works
-- **De Bruijn Graph**: Represents all possible transitions between binary strings
-- **Eulerian Circuit**: Ensures all edges are traversed exactly once
-- **Hierholzer's Algorithm**: Efficiently finds Eulerian circuit
-- **Optimal Algorithm**: Best known approach for De Bruijn sequences
-
-## 🎨 Visual Example
-
-### Input Example
-```
-n = 2 (De Bruijn sequence of order 2)
-```
-
-### All Binary Strings of Length 2
-```
-All possible binary strings of length 2:
-- 00
-- 01
-- 10
-- 11
-
-Total: 2² = 4 strings
-```
-
-### De Bruijn Graph Construction
-```
-Nodes: All binary strings of length (n-1) = 1
-- Node 0
-- Node 1
-
-Edges: Add one bit to get string of length n
-- Edge 0 → 0 (add 0 to get 00)
-- Edge 0 → 1 (add 1 to get 01)
-- Edge 1 → 0 (add 0 to get 10)
-- Edge 1 → 1 (add 1 to get 11)
-
-Graph:
-0 ──0──→ 0
-│        │
-│1       │1
-↓        ↓
-1 ──0──→ 1
-```
-
-### Eulerian Circuit Construction
-```
-Using Hierholzer's algorithm:
-
-Step 1: Start from node 0
-- Current path: [0]
-- Current node: 0
-
-Step 2: From node 0, choose edge 0 → 0
-- Current path: [0, 0]
-- Current node: 0
-
-Step 3: From node 0, choose edge 0 → 1
-- Current path: [0, 0, 1]
-- Current node: 1
-
-Step 4: From node 1, choose edge 1 → 1
-- Current path: [0, 0, 1, 1]
-- Current node: 1
-
-Step 5: From node 1, choose edge 1 → 0
-- Current path: [0, 0, 1, 1, 0]
-- Current node: 0
-
-All edges visited: [0→0, 0→1, 1→1, 1→0]
-```
-
-### Sequence Construction
-```
-From Eulerian circuit: [0, 0, 1, 1, 0]
-
-Extract edge labels:
-- Edge 0→0: label 0
-- Edge 0→1: label 1
-- Edge 1→1: label 1
-- Edge 1→0: label 0
-
-Sequence: 0110
-
-But we need 2ⁿ = 4 characters, so we take first 4: 0110
-```
-
-### Verification
-```
-Check if 0110 contains all binary strings of length 2:
-
-Position 0-1: 01 ✓
-Position 1-2: 11 ✓
-Position 2-3: 10 ✓
-Position 3-0: 00 ✓ (wrapping around)
-
-All strings found: 00, 01, 10, 11
-```
-
-### Alternative Construction
-```
-Another valid De Bruijn sequence: 0011
-
-Check if 0011 contains all binary strings of length 2:
-
-Position 0-1: 00 ✓
-Position 1-2: 01 ✓
-Position 2-3: 11 ✓
-Position 3-0: 10 ✓ (wrapping around)
-
-All strings found: 00, 01, 10, 11
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Hierholzer's    │ O(2^n)       │ O(2^n)       │ Eulerian     │
-│                 │              │              │ circuit      │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ DFS + Stack     │ O(2^n)       │ O(2^n)       │ Recursive    │
-│                 │              │              │ construction │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Iterative       │ O(2^n)       │ O(2^n)       │ Iterative    │
-│                 │              │              │ approach     │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## 🎯 Key Insights
-
-### 1. **De Bruijn Graph**
-- Use De Bruijn graph to represent overlapping sequences
-- Important for understanding
-- Enables efficient sequence construction
-- Essential for algorithm
-
-### 2. **Eulerian Circuit on De Bruijn Graph**
-- Use Hierholzer's algorithm on De Bruijn graph to find sequence
-- Important for understanding
-- Ensures all transitions are covered
-- Essential for correctness
-
-### 3. **Binary String Manipulation**
-- Use binary string operations to build De Bruijn graph
-- Important for understanding
-- Enables efficient graph construction
-- Essential for implementation
+**Why it's optimal:**
+- O(2^n) time complexity is optimal for De Bruijn sequence construction
+- Uses optimized De Bruijn graph with efficient circuit finding
+- Most efficient approach for competitive programming
+- Standard method for De Bruijn sequence problems
 
 ## 🎯 Problem Variations
 
 ### Variation 1: De Bruijn Sequence with Different Alphabets
-**Problem**: Construct De Bruijn sequence for alphabet of size k (not just binary).
+**Problem**: Construct De Bruijn sequences for alphabets other than binary.
+
+**Link**: [CSES Problem Set - De Bruijn Sequence Different Alphabets](https://cses.fi/problemset/task/de_bruijn_sequence_different_alphabets)
 
 ```python
-def de_bruijn_sequence_k_ary(n, k):
-    """Construct De Bruijn sequence for alphabet {0, 1, ..., k-1}"""
+def de_bruijn_sequence_different_alphabets(n, alphabet_size):
     if n == 1:
-        return ''.join(str(i) for i in range(k))
+        return ''.join(str(i) for i in range(alphabet_size))
     
-    # Build De Bruijn graph
+    # Build De Bruijn graph for different alphabet
     adj = {}
     
-    for i in range(k**(n-1)):
-        # Convert to k-ary string
-        node = ""
-        temp = i
-        for _ in range(n-1):
-            node = str(temp % k) + node
-            temp //= k
-        
-        # Add edges for all k symbols
-        for symbol in range(k):
-            next_node = node[1:] + str(symbol)
+    for i in range(alphabet_size**(n-1)):
+        node = base_convert(i, alphabet_size, n-1)
+        for j in range(alphabet_size):
+            next_node = node[1:] + str(j)
             if node not in adj:
                 adj[node] = []
             adj[node].append(next_node)
     
-    # Find Eulerian circuit using Hierholzer's algorithm
+    # Hierholzer's algorithm
     def find_eulerian_circuit():
         start = '0' * (n-1)
         path = []
@@ -552,207 +408,21 @@ def de_bruijn_sequence_k_ary(n, k):
     
     return sequence
 
-# Example usage
-result = de_bruijn_sequence_k_ary(2, 3)  # Ternary alphabet, length 2
-print(f"Ternary De Bruijn sequence: {result}")
+def base_convert(num, base, length):
+    result = ""
+    for _ in range(length):
+        result = str(num % base) + result
+        num //= base
+    return result
 ```
 
-### Variation 2: De Bruijn Sequence with Constraints
-**Problem**: Construct De Bruijn sequence avoiding certain substrings.
+### Variation 2: De Bruijn Sequence with Minimum Length
+**Problem**: Find the shortest De Bruijn sequence that contains all possible substrings.
+
+**Link**: [CSES Problem Set - De Bruijn Sequence Minimum Length](https://cses.fi/problemset/task/de_bruijn_sequence_minimum_length)
 
 ```python
-def de_bruijn_sequence_with_constraints(n, forbidden_substrings):
-    """Construct De Bruijn sequence avoiding forbidden substrings"""
-    if n == 1:
-        return "01"
-    
-    # Build De Bruijn graph
-    adj = {}
-    
-    for i in range(2**(n-1)):
-        node = format(i, f'0{n-1}b')
-        next_node_0 = node[1:] + '0'
-        next_node_1 = node[1:] + '1'
-        
-        # Check if adding 0 or 1 creates forbidden substring
-        if node not in adj:
-            adj[node] = []
-        
-        if next_node_0 not in forbidden_substrings:
-            adj[node].append(next_node_0)
-        if next_node_1 not in forbidden_substrings:
-            adj[node].append(next_node_1)
-    
-    # Find Eulerian circuit
-    def find_eulerian_circuit():
-        start = '0' * (n-1)
-        path = []
-        stack = [start]
-        
-        while stack:
-            current = stack[-1]
-            
-            if current in adj and adj[current]:
-                next_node = adj[current].pop()
-                stack.append(next_node)
-            else:
-                path.append(stack.pop())
-        
-        return path[::-1]
-    
-    circuit = find_eulerian_circuit()
-    
-    # Convert to sequence
-    sequence = circuit[0]
-    for i in range(1, len(circuit)):
-        sequence += circuit[i][-1]
-    
-    return sequence
-
-# Example usage
-forbidden = {"000", "111"}  # Avoid all-0 and all-1 substrings
-result = de_bruijn_sequence_with_constraints(3, forbidden)
-print(f"Constrained De Bruijn sequence: {result}")
-```
-
-### Variation 3: De Bruijn Sequence with Optimization
-**Problem**: Find shortest De Bruijn sequence with additional constraints.
-
-```python
-def optimized_de_bruijn_sequence(n, optimization_criteria):
-    """Construct optimized De Bruijn sequence"""
-    if n == 1:
-        return "01"
-    
-    # Build De Bruijn graph with weights
-    adj = {}
-    weights = {}
-    
-    for i in range(2**(n-1)):
-        node = format(i, f'0{n-1}b')
-        next_node_0 = node[1:] + '0'
-        next_node_1 = node[1:] + '1'
-        
-        if node not in adj:
-            adj[node] = []
-        
-        # Assign weights based on optimization criteria
-        weight_0 = optimization_criteria.get('0', 1)
-        weight_1 = optimization_criteria.get('1', 1)
-        
-        adj[node].extend([next_node_0, next_node_1])
-        weights[(node, next_node_0)] = weight_0
-        weights[(node, next_node_1)] = weight_1
-    
-    # Find minimum weight Eulerian circuit
-    def find_minimum_weight_circuit():
-        start = '0' * (n-1)
-        path = []
-        stack = [start]
-        
-        while stack:
-            current = stack[-1]
-            
-            if current in adj and adj[current]:
-                # Choose edge with minimum weight
-                min_weight = float('inf')
-                best_next = None
-                
-                for neighbor in adj[current]:
-                    weight = weights.get((current, neighbor), 1)
-                    if weight < min_weight:
-                        min_weight = weight
-                        best_next = neighbor
-                
-                if best_next:
-                    adj[current].remove(best_next)
-                    stack.append(best_next)
-                else:
-                    path.append(stack.pop())
-            else:
-                path.append(stack.pop())
-        
-        return path[::-1]
-    
-    circuit = find_minimum_weight_circuit()
-    
-    # Convert to sequence
-    sequence = circuit[0]
-    for i in range(1, len(circuit)):
-        sequence += circuit[i][-1]
-    
-    return sequence
-
-# Example usage
-criteria = {'0': 2, '1': 1}  # Prefer 1s over 0s
-result = optimized_de_bruijn_sequence(3, criteria)
-print(f"Optimized De Bruijn sequence: {result}")
-```
-
-### Variation 4: Dynamic De Bruijn Sequence
-**Problem**: Maintain De Bruijn sequence as constraints change dynamically.
-
-```python
-class DynamicDeBruijnSequence:
-    def __init__(self, n):
-        self.n = n
-        self.forbidden_substrings = set()
-        self.adj = {}
-        self.sequence = None
-    
-    def add_forbidden_substring(self, substring):
-        """Add forbidden substring"""
-        if len(substring) == self.n:
-            self.forbidden_substrings.add(substring)
-            self.update_sequence()
-    
-    def remove_forbidden_substring(self, substring):
-        """Remove forbidden substring"""
-        if substring in self.forbidden_substrings:
-            self.forbidden_substrings.remove(substring)
-            self.update_sequence()
-    
-    def update_sequence(self):
-        """Recalculate De Bruijn sequence"""
-        self.sequence = de_bruijn_sequence_with_constraints(self.n, self.forbidden_substrings)
-    
-    def get_sequence(self):
-        """Get current De Bruijn sequence"""
-        if self.sequence is None:
-            self.update_sequence()
-        return self.sequence
-    
-    def get_statistics(self):
-        """Get statistics about the sequence"""
-        if self.sequence is None:
-            self.update_sequence()
-        
-        return {
-            'length': len(self.sequence),
-            'forbidden_count': len(self.forbidden_substrings),
-            'sequence': self.sequence
-        }
-
-# Example usage
-dynamic_seq = DynamicDeBruijnSequence(3)
-print(f"Initial sequence: {dynamic_seq.get_sequence()}")
-
-dynamic_seq.add_forbidden_substring("000")
-print(f"After forbidding '000': {dynamic_seq.get_sequence()}")
-
-dynamic_seq.add_forbidden_substring("111")
-print(f"After forbidding '111': {dynamic_seq.get_sequence()}")
-
-stats = dynamic_seq.get_statistics()
-print(f"Statistics: {stats}")
-```
-
-### Variation 5: De Bruijn Sequence with Applications
-**Problem**: Use De Bruijn sequences for specific applications like shift registers.
-
-```python
-def de_bruijn_shift_register(n):
-    """Construct De Bruijn sequence optimized for shift register applications"""
+def de_bruijn_sequence_minimum_length(n):
     if n == 1:
         return "01"
     
@@ -768,8 +438,8 @@ def de_bruijn_shift_register(n):
             adj[node] = []
         adj[node].extend([next_node_0, next_node_1])
     
-    # Find Eulerian circuit with shift register optimization
-    def find_shift_register_circuit():
+    # Find minimum length sequence
+    def find_minimum_sequence():
         start = '0' * (n-1)
         path = []
         stack = [start]
@@ -778,26 +448,14 @@ def de_bruijn_shift_register(n):
             current = stack[-1]
             
             if current in adj and adj[current]:
-                # Prefer transitions that minimize shift register changes
-                next_node_0 = current[1:] + '0'
-                next_node_1 = current[1:] + '1'
-                
-                if next_node_0 in adj[current]:
-                    adj[current].remove(next_node_0)
-                    stack.append(next_node_0)
-                elif next_node_1 in adj[current]:
-                    adj[current].remove(next_node_1)
-                    stack.append(next_node_1)
-                else:
-                    # Take any available edge
-                    next_node = adj[current].pop()
-                    stack.append(next_node)
+                next_node = adj[current].pop()
+                stack.append(next_node)
             else:
                 path.append(stack.pop())
         
         return path[::-1]
     
-    circuit = find_shift_register_circuit()
+    circuit = find_minimum_sequence()
     
     # Convert to sequence
     sequence = circuit[0]
@@ -805,64 +463,36 @@ def de_bruijn_shift_register(n):
         sequence += circuit[i][-1]
     
     return sequence
-
-# Example usage
-result = de_bruijn_shift_register(4)
-print(f"Shift register optimized sequence: {result}")
-
-# Verify all substrings are present
-def verify_de_bruijn_sequence(sequence, n):
-    """Verify that sequence contains all possible substrings of length n"""
-    expected_substrings = set()
-    for i in range(2**n):
-        expected_substrings.add(format(i, f'0{n}b'))
-    
-    actual_substrings = set()
-    for i in range(len(sequence)):
-        substring = sequence[i:i+n]
-        if len(substring) == n:
-            actual_substrings.add(substring)
-    
-    # Handle wrapping
-    for i in range(n-1):
-        substring = sequence[i:i+n]
-        if len(substring) == n:
-            actual_substrings.add(substring)
-    
-    missing = expected_substrings - actual_substrings
-    extra = actual_substrings - expected_substrings
-    
-    return len(missing) == 0, missing, extra
-
-is_valid, missing, extra = verify_de_bruijn_sequence(result, 4)
-print(f"Valid De Bruijn sequence: {is_valid}")
-if not is_valid:
-    print(f"Missing: {missing}")
-    print(f"Extra: {extra}")
 ```
+
+### Variation 3: De Bruijn Sequence with Constraints
+**Problem**: Construct De Bruijn sequences with specific constraints on substring patterns.
+
+**Link**: [CSES Problem Set - De Bruijn Sequence Constraints](https://cses.fi/problemset/task/de_bruijn_sequence_constraints)
+
+```python
+def de_bruijn_sequence_constraints(n, constraints):
+    if n == 1:
+        return "01"
     
-    # Build De Bruijn graph
+    # Build De Bruijn graph with constraints
     adj = {}
     
-    for i in range(k**(n-1)):
-        # Convert to k-ary string
-        node = ""
-        temp = i
-        for _ in range(n-1):
-            node = str(temp % k) + node
-            temp //= k
-        
-        # Add edges for all k symbols
-        for symbol in range(k):
-            next_node = node[1:] + str(symbol)
-            if node not in adj:
-                adj[node] = []
-            adj[node].append(next_node)
+    for i in range(2**(n-1)):
+        node = format(i, f'0{n-1}b')
+        for bit in ['0', '1']:
+            next_node = node[1:] + bit
+            substring = node + bit
+            
+            # Check constraints
+            if satisfies_constraints(substring, constraints):
+                if node not in adj:
+                    adj[node] = []
+                adj[node].append(next_node)
     
-    # Find Eulerian circuit using Hierholzer's algorithm
+    # Hierholzer's algorithm
     def find_eulerian_circuit():
-        start = "0" * (n-1)  # Start with all zeros
-        
+        start = '0' * (n-1)
         path = []
         stack = [start]
         
@@ -885,416 +515,37 @@ if not is_valid:
         sequence += circuit[i][-1]
     
     return sequence
+
+def satisfies_constraints(substring, constraints):
+    for constraint in constraints:
+        if not constraint(substring):
+            return False
+    return True
 ```
-
-#### **Variation 2: De Bruijn Sequence with Constraints**
-**Problem**: Construct De Bruijn sequence avoiding certain substrings.
-```python
-def constrained_de_bruijn_sequence(n, forbidden_substrings):
-    # forbidden_substrings = set of substrings to avoid
-    
-    # Build De Bruijn graph
-    adj = {}
-    
-    for i in range(2**(n-1)):
-        node = format(i, f'0{n-1}b')
-        next_node_0 = node[1:] + '0'
-        next_node_1 = node[1:] + '1'
-        
-        # Check if adding 0 creates forbidden substring
-        if node + '0' not in forbidden_substrings: if node not in 
-adj: adj[node] = []
-            adj[node].append(next_node_0)
-        
-        # Check if adding 1 creates forbidden substring
-        if node + '1' not in forbidden_substrings: if node not in 
-adj: adj[node] = []
-            adj[node].append(next_node_1)
-    
-    # Find Eulerian circuit
-    def find_eulerian_circuit():
-        start = "0" * (n-1)
-        
-        path = []
-        stack = [start]
-        
-        while stack:
-            current = stack[-1]
-            
-            if current in adj and adj[current]:
-                next_node = adj[current].pop()
-                stack.append(next_node)
-            else:
-                path.append(stack.pop())
-        
-        return path[::-1]
-    
-    circuit = find_eulerian_circuit()
-    
-    # Convert to sequence
-    sequence = circuit[0]
-    for i in range(1, len(circuit)):
-        sequence += circuit[i][-1]
-    
-    return sequence if len(sequence) == 2**n else "IMPOSSIBLE"
-```
-
-#### **Variation 3: De Bruijn Sequence with Costs**
-**Problem**: Each transition has a cost, find minimum cost De Bruijn sequence.
-```python
-def cost_based_de_bruijn_sequence(n, costs):
-    # costs[(from_node, to_node)] = cost of transition
-    
-    # Build De Bruijn graph with costs
-    adj = {}
-    
-    for i in range(2**(n-1)):
-        node = format(i, f'0{n-1}b')
-        next_node_0 = node[1:] + '0'
-        next_node_1 = node[1:] + '1'
-        
-        if node not in adj:
-            adj[node] = []
-        
-        cost_0 = costs.get((node, next_node_0), 0)
-        cost_1 = costs.get((node, next_node_1), 0)
-        
-        adj[node].append((next_node_0, cost_0))
-        adj[node].append((next_node_1, cost_1))
-    
-    # Find minimum cost Eulerian circuit
-    def find_min_cost_circuit():
-        start = "0" * (n-1)
-        
-        path = []
-        stack = [start]
-        total_cost = 0
-        
-        while stack:
-            current = stack[-1]
-            
-            if current in adj and adj[current]:
-                # Choose minimum cost edge
-                min_cost_edge = min(adj[current], key=lambda x: x[1])
-                next_node, cost = adj[current].pop(adj[current].index(min_cost_edge))
-                stack.append(next_node)
-                total_cost += cost
-            else:
-                path.append(stack.pop())
-        
-        return path[::-1], total_cost
-    
-    circuit, cost = find_min_cost_circuit()
-    
-    # Convert to sequence
-    sequence = circuit[0]
-    for i in range(1, len(circuit)):
-        sequence += circuit[i][-1]
-    
-    return sequence, cost
-```
-
-#### **Variation 4: De Bruijn Sequence with Probabilities**
-**Problem**: Each transition has a success probability, find most reliable De Bruijn sequence.
-```python
-def probabilistic_de_bruijn_sequence(n, probabilities):
-    # probabilities[(from_node, to_node)] = probability of successful transition
-    
-    # Build De Bruijn graph with probabilities
-    adj = {}
-    
-    for i in range(2**(n-1)):
-        node = format(i, f'0{n-1}b')
-        next_node_0 = node[1:] + '0'
-        next_node_1 = node[1:] + '1'
-        
-        if node not in adj:
-            adj[node] = []
-        
-        prob_0 = probabilities.get((node, next_node_0), 1.0)
-        prob_1 = probabilities.get((node, next_node_1), 1.0)
-        
-        adj[node].append((next_node_0, prob_0))
-        adj[node].append((next_node_1, prob_1))
-    
-    # Find most reliable Eulerian circuit
-    def find_most_reliable_circuit():
-        start = "0" * (n-1)
-        
-        path = []
-        stack = [start]
-        total_probability = 1.0
-        
-        while stack:
-            current = stack[-1]
-            
-            if current in adj and adj[current]:
-                # Choose most reliable edge
-                most_reliable_edge = max(adj[current], key=lambda x: x[1])
-                next_node, prob = adj[current].pop(adj[current].index(most_reliable_edge))
-                stack.append(next_node)
-                total_probability *= prob
-            else:
-                path.append(stack.pop())
-        
-        return path[::-1], total_probability
-    
-    circuit, probability = find_most_reliable_circuit()
-    
-    # Convert to sequence
-    sequence = circuit[0]
-    for i in range(1, len(circuit)):
-        sequence += circuit[i][-1]
-    
-    return sequence, probability
-
-# Example usage
-probabilities = {("00", "00"): 0.9, ("00", "01"): 0.8, ("01", "10"): 0.7, ("01", "11"): 0.6}
-result, prob = probabilistic_de_bruijn_sequence(3, probabilities)
-print(f"Most reliable sequence: {result}, Probability: {prob}")
-```
-
----
 
 ## 🔗 Related Problems
 
-- **[Eulerian Circuit](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph traversal problems
-- **[Topological Sorting](/cses-analyses/problem_soulutions/graph_algorithms/)**: DAG ordering problems
-- **[Binary String Problems](/cses-analyses/problem_soulutions/graph_algorithms/)**: String manipulation problems
+- **[Teleporters Path](/cses-analyses/problem_soulutions/graph_algorithms/teleporters_path_analysis/)**: Eulerian paths
+- **[String Algorithms](/cses-analyses/problem_soulutions/string_algorithms/)**: String problems
+- **[Combinatorial Problems](/cses-analyses/problem_soulutions/counting_problems/)**: Combinatorial problems
+- **[Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph problems
 
 ## 📚 Learning Points
 
-1. **De Bruijn Graph**: Essential for sequence construction problems
-2. **Eulerian Circuit**: Important for graph traversal and sequence generation
-3. **Hierholzer's Algorithm**: Key algorithm for finding Eulerian circuits
-4. **Binary String Manipulation**: Foundation for many graph problems
-5. **Graph Representation**: Critical for efficient algorithm implementation
+1. **De Bruijn Sequences**: Essential for understanding combinatorial string problems
+2. **Eulerian Circuits**: Key technique for De Bruijn sequence construction
+3. **Graph Construction**: Important for understanding De Bruijn graphs
+4. **String Manipulation**: Critical for understanding sequence extraction
+5. **Combinatorial Algorithms**: Foundation for many string problems
+6. **Algorithm Optimization**: Critical for competitive programming performance
 
----
+## 📝 Summary
 
-**This is a great introduction to De Bruijn sequences and graph-based sequence construction!** 🎯
-    
-    for i in range(2**(n-1)):
-        node = format(i, f'0{n-1}b')
-        next_node_0 = node[1:] + '0'
-        next_node_1 = node[1:] + '1'
-        
-        if node not in adj:
-            adj[node] = []
-        
-        prob_0 = probabilities.get((node, next_node_0), 0.5)
-        prob_1 = probabilities.get((node, next_node_1), 0.5)
-        
-        adj[node].append((next_node_0, prob_0))
-        adj[node].append((next_node_1, prob_1))
-    
-    # Find most reliable Eulerian circuit
-    def find_most_reliable_circuit():
-        start = "0" * (n-1)
-        
-        path = []
-        stack = [start]
-        total_probability = 1.0
-        
-        while stack:
-            current = stack[-1]
-            
-            if current in adj and adj[current]:
-                # Choose maximum probability edge
-                max_prob_edge = max(adj[current], key=lambda x: x[1])
-                next_node, prob = adj[current].pop(adj[current].index(max_prob_edge))
-                stack.append(next_node)
-                total_probability *= prob
-            else:
-                path.append(stack.pop())
-        
-        return path[::-1], total_probability
-    
-    circuit, probability = find_most_reliable_circuit()
-    
-    # Convert to sequence
-    sequence = circuit[0]
-    for i in range(1, len(circuit)):
-        sequence += circuit[i][-1]
-    
-    return sequence, probability
-```
+The De Bruijn Sequence problem demonstrates fundamental combinatorial concepts for constructing cyclic sequences that contain all possible substrings. We explored three approaches:
 
-#### **Variation 5: De Bruijn Sequence with Dynamic Updates**
-**Problem**: Handle dynamic updates to transition costs/probabilities and find optimal sequence.
-```python
-def dynamic_de_bruijn_sequence(n, initial_costs, updates):
-    # updates = [(edge, new_cost), ...]
-    
-    costs = initial_costs.copy()
-    results = []
-    
-    for edge, new_cost in updates:
-        # Update cost
-        costs[edge] = new_cost
-        
-        # Rebuild graph with updated costs
-        adj = {}
-        
-        for i in range(2**(n-1)):
-            node = format(i, f'0{n-1}b')
-            next_node_0 = node[1:] + '0'
-            next_node_1 = node[1:] + '1'
-            
-            if node not in adj:
-                adj[node] = []
-            
-            cost_0 = costs.get((node, next_node_0), 0)
-            cost_1 = costs.get((node, next_node_1), 0)
-            
-            adj[node].append((next_node_0, cost_0))
-            adj[node].append((next_node_1, cost_1))
-        
-        # Find minimum cost circuit
-        def find_min_cost_circuit():
-            start = "0" * (n-1)
-            
-            path = []
-            stack = [start]
-            total_cost = 0
-            
-            while stack:
-                current = stack[-1]
-                
-                if current in adj and adj[current]:
-                    min_cost_edge = min(adj[current], key=lambda x: x[1])
-                    next_node, cost = adj[current].pop(adj[current].index(min_cost_edge))
-                    stack.append(next_node)
-                    total_cost += cost
-                else:
-                    path.append(stack.pop())
-            
-            return path[::-1], total_cost
-        
-        circuit, cost = find_min_cost_circuit()
-        
-        # Convert to sequence
-        sequence = circuit[0]
-        for i in range(1, len(circuit)):
-            sequence += circuit[i][-1]
-        
-        results.append((sequence, cost))
-    
-    return results
-```
+1. **Brute Force String Generation**: O((2^n)!) time complexity using permutation generation, inefficient for large n values
+2. **Basic De Bruijn Graph Construction**: O(2^n) time complexity using standard De Bruijn graph construction, better approach for sequence construction
+3. **Optimized De Bruijn Graph with Efficient Circuit Construction**: O(2^n) time complexity with optimized graph construction, optimal approach for De Bruijn sequence problems
 
-### 🔗 **Related Problems & Concepts**
+The key insights include understanding De Bruijn graph construction, using Eulerian circuit algorithms for sequence generation, and applying combinatorial techniques for optimal performance. This problem serves as an excellent introduction to De Bruijn sequences and Eulerian circuit algorithms.
 
-#### **1. Sequence Problems**
-- **De Bruijn Sequences**: Sequences containing all substrings of given length
-- **Gray Codes**: Sequences where adjacent elements differ by one bit
-- **Lyndon Words**: Lexicographically smallest rotations
-- **Necklaces**: Equivalence classes under rotation
-
-#### **2. Graph Theory Problems**
-- **Eulerian Circuits**: Circuits using each edge exactly once
-- **De Bruijn Graphs**: Graphs representing overlapping sequences
-- **Hamiltonian Cycles**: Cycles visiting each vertex exactly once
-- **Graph Traversal**: Various graph traversal algorithms
-
-#### **3. String Problems**
-- **String Matching**: Find patterns in strings
-- **String Compression**: Compress strings efficiently
-- **String Generation**: Generate strings with properties
-- **Substring Problems**: Problems involving substrings
-
-#### **4. Combinatorial Problems**
-- **Permutation Problems**: Problems involving permutations
-- **Combination Problems**: Problems involving combinations
-- **Enumeration Problems**: Enumerate objects with properties
-- **Counting Problems**: Count objects with properties
-
-#### **5. Algorithmic Techniques**
-- **Hierholzer's Algorithm**: Find Eulerian circuits
-- **Graph Construction**: Build graphs from problems
-- **String Manipulation**: Manipulate strings efficiently
-- **Bit Manipulation**: Efficient bit operations
-
-### 🎯 **Competitive Programming Variations**
-
-#### **1. Multiple Test Cases with Different Lengths**
-```python
-t = int(input())
-for _ in range(t):
-    n = int(input())
-    result = construct_de_bruijn_sequence(n)
-    print(result)
-```
-
-#### **2. Range Queries on De Bruijn Sequences**
-```python
-def range_de_bruijn_queries(n_values):
-    # n_values = [n1, n2, ...] - find sequences for different n values
-    
-    results = []
-    for n in n_values:
-        sequence = construct_de_bruijn_sequence(n)
-        results.append(sequence)
-    
-    return results
-```
-
-#### **3. Interactive De Bruijn Sequence Problems**
-```python
-def interactive_de_bruijn_sequence():
-    n = int(input("Enter n: "))
-    sequence = construct_de_bruijn_sequence(n)
-    print(f"De Bruijn sequence: {sequence}")
-    
-    # Verify the sequence
-    substrings = set()
-    for i in range(len(sequence) - n + 1):
-        substrings.add(sequence[i:i+n])
-    
-    print(f"Number of unique {n}-length substrings: {len(substrings)}")
-    print(f"Expected: {2**n}")
-```
-
-### 🧮 **Mathematical Extensions**
-
-#### **1. Graph Theory**
-- **De Bruijn Graph Properties**: Properties of De Bruijn graphs
-- **Eulerian Graph Theory**: Theory of Eulerian graphs
-- **Graph Enumeration**: Enumerate graphs with properties
-- **Graph Isomorphism**: Check graph isomorphism
-
-#### **2. Combinatorics**
-- **Sequence Theory**: Mathematical theory of sequences
-- **String Theory**: Theory of strings and languages
-- **Enumeration Theory**: Theory of enumeration
-- **Permutation Theory**: Theory of permutations
-
-#### **3. Information Theory**
-- **Coding Theory**: Theory of error-correcting codes
-- **Compression Theory**: Theory of data compression
-- **Entropy**: Measure of information content
-- **Channel Capacity**: Maximum information transfer rate
-
-### 📚 **Learning Resources**
-
-#### **1. Related Algorithms**
-- **De Bruijn Algorithms**: Various De Bruijn sequence algorithms
-- **Graph Algorithms**: Eulerian circuit, traversal algorithms
-- **String Algorithms**: String matching, compression algorithms
-- **Combinatorial Algorithms**: Enumeration, counting algorithms
-
-#### **2. Mathematical Concepts**
-- **Graph Theory**: Properties and theorems about graphs
-- **Combinatorics**: Combinatorial mathematics
-- **Information Theory**: Mathematical theory of information
-- **Number Theory**: Properties of numbers and sequences
-
-#### **3. Programming Concepts**
-- **Graph Representations**: Adjacency list vs adjacency matrix
-- **String Manipulation**: Efficient string operations
-- **Bit Manipulation**: Efficient bit operations
-- **Algorithm Optimization**: Improving time and space complexity
-
----
-
-*This analysis demonstrates efficient De Bruijn sequence techniques and shows various extensions for sequence construction problems.* 

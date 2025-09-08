@@ -29,8 +29,6 @@ Before attempting this problem, ensure you understand:
 
 Given a 2D grid of size n×m, count the number of subgrids of size k×k where all cells on the border have the same value.
 
-This is a grid counting problem where we need to find all k×k subgrids that have a uniform border (all border cells have the same value). We can solve this by checking each possible k×k subgrid and verifying if its border is uniform.
-
 **Input**: 
 - First line: three integers n, m, and k (grid dimensions and subgrid size)
 - Next n lines: m integers each (grid values)
@@ -41,7 +39,7 @@ This is a grid counting problem where we need to find all k×k subgrids that hav
 **Constraints**:
 - 1 ≤ n,m ≤ 100
 - 1 ≤ k ≤ min(n,m)
-- 1 ≤ grid[i][j] ≤ 10⁹
+- 1 ≤ grid[i][j] ≤ 10^9
 
 **Example**:
 ```
@@ -53,12 +51,12 @@ Input:
 
 Output:
 2
-```
 
-**Explanation**: 
+Explanation**: 
 In the 3×3 grid, there are 2 subgrids of size 2×2 with uniform borders:
 1. Subgrid from (0,0) to (1,1): border values are all 1
 2. Subgrid from (1,0) to (2,1): border values are all 1
+```
 
 ### 📊 Visual Example
 

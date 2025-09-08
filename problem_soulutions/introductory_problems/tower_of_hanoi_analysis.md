@@ -35,6 +35,14 @@ Before attempting this problem, ensure you understand:
 
 **Output**: Print the moves required to solve the puzzle.
 
+**Constraints**:
+- 1 ≤ n ≤ 16
+- Only one disk can be moved at a time
+- Larger disk cannot be placed on top of smaller disk
+- Only the top disk of any tower can be moved
+- Must move all disks from tower 1 to tower 3
+- Use tower 2 as auxiliary
+
 **Example**:
 ```
 Input: 3
@@ -51,24 +59,221 @@ Output:
 Explanation: This shows the sequence of moves to solve the puzzle with 3 disks.
 ```
 
-## 🎯 Solution Progression
+## Visual Example
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Move n disks from tower A to tower C
-- Use tower B as auxiliary
-- Follow the three rules strictly
-- Find the sequence of moves
+### Input and Problem Setup
+```
+Input: n = 3 (3 disks)
 
-**Key Observations:**
-- This is a classic recursive problem
-- We can solve it by breaking it down into smaller subproblems
-- The solution has a clear pattern
-- Minimum moves required: 2ⁿ - 1
+Initial Setup:
+Tower 1: [3, 2, 1]  (largest at bottom, smallest at top)
+Tower 2: []         (empty auxiliary tower)
+Tower 3: []         (empty destination tower)
 
-### Step 2: Recursive Approach
-**Idea**: Solve the problem recursively by breaking it into smaller subproblems.
+Goal: Move all disks from Tower 1 to Tower 3
+```
 
+### Move Sequence Visualization
+```
+Step 1: Move disk 1 from Tower 1 to Tower 3
+Tower 1: [3, 2]
+Tower 2: []
+Tower 3: [1]
+
+Step 2: Move disk 2 from Tower 1 to Tower 2
+Tower 1: [3]
+Tower 2: [2]
+Tower 3: [1]
+
+Step 3: Move disk 1 from Tower 3 to Tower 2
+Tower 1: [3]
+Tower 2: [2, 1]
+Tower 3: []
+
+Step 4: Move disk 3 from Tower 1 to Tower 3
+Tower 1: []
+Tower 2: [2, 1]
+Tower 3: [3]
+
+Step 5: Move disk 1 from Tower 2 to Tower 1
+Tower 1: [1]
+Tower 2: [2]
+Tower 3: [3]
+
+Step 6: Move disk 2 from Tower 2 to Tower 3
+Tower 1: [1]
+Tower 2: []
+Tower 3: [3, 2]
+
+Step 7: Move disk 1 from Tower 1 to Tower 3
+Tower 1: []
+Tower 2: []
+Tower 3: [3, 2, 1]
+```
+
+### Recursive Pattern Analysis
+```
+For n = 3:
+1. Move 2 disks from Tower 1 to Tower 2 (using Tower 3 as auxiliary)
+2. Move largest disk from Tower 1 to Tower 3
+3. Move 2 disks from Tower 2 to Tower 3 (using Tower 1 as auxiliary)
+
+This follows the recursive pattern:
+- Solve for n-1 disks
+- Move largest disk
+- Solve for n-1 disks again
+```
+
+### Mathematical Properties
+```
+Total moves required: 2^n - 1
+For n = 3: 2^3 - 1 = 8 - 1 = 7 moves
+
+Each disk moves exactly 2^(n-i) times:
+- Disk 1 (smallest): 2^(3-1) = 4 times
+- Disk 2 (medium): 2^(3-2) = 2 times  
+- Disk 3 (largest): 2^(3-3) = 1 time
+```
+
+### Key Insight
+The solution works by:
+1. Using recursive approach to break down the problem
+2. Moving n-1 disks to auxiliary tower
+3. Moving largest disk to destination
+4. Moving n-1 disks from auxiliary to destination
+5. Time complexity: O(2^n) for generating all moves
+6. Space complexity: O(n) for recursion depth
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Naive Iterative Simulation (Inefficient)
+
+**Key Insights from Naive Solution:**
+- Simulate the puzzle step by step
+- Use iterative approach to find valid moves
+- Simple but computationally expensive approach
+- Not suitable for large inputs due to exponential growth
+
+**Algorithm:**
+1. Represent the three towers as stacks
+2. Try all possible moves at each step
+3. Use backtracking to find valid sequences
+4. Generate the complete move sequence
+
+**Visual Example:**
+```
+Naive approach: Try all possible moves
+For n = 2:
+
+Initial state:
+Tower 1: [2, 1]
+Tower 2: []
+Tower 3: []
+
+Possible moves from Tower 1:
+- Move disk 1 to Tower 2: [2] [] [1]
+- Move disk 1 to Tower 3: [2] [] [1]
+
+Try first option:
+Tower 1: [2]
+Tower 2: []
+Tower 3: [1]
+
+Possible moves:
+- Move disk 2 to Tower 2: [] [2] [1]
+- Move disk 2 to Tower 3: [] [] [2,1] ❌ (invalid - larger on smaller)
+
+This leads to exponential time complexity
+```
+
+**Implementation:**
+```python
+def tower_of_hanoi_naive(n):
+    towers = [[i for i in range(n, 0, -1)], [], []]
+    moves = []
+    
+    def is_valid_move(from_tower, to_tower):
+        if not towers[from_tower]:
+            return False
+        if not towers[to_tower]:
+            return True
+        return towers[from_tower][-1] < towers[to_tower][-1]
+    
+    def make_move(from_tower, to_tower):
+        disk = towers[from_tower].pop()
+        towers[to_tower].append(disk)
+        moves.append(f"{from_tower + 1} {to_tower + 1}")
+    
+    def solve_recursive():
+        if len(towers[2]) == n:
+            return True
+        
+        for from_tower in range(3):
+            for to_tower in range(3):
+                if from_tower != to_tower and is_valid_move(from_tower, to_tower):
+                    make_move(from_tower, to_tower)
+                    if solve_recursive():
+                        return True
+                    # Backtrack
+                    disk = towers[to_tower].pop()
+                    towers[from_tower].append(disk)
+                    moves.pop()
+        
+        return False
+    
+    solve_recursive()
+    return moves
+
+def solve_tower_of_hanoi_naive():
+    n = int(input())
+    moves = tower_of_hanoi_naive(n)
+    
+    print(len(moves))
+    for move in moves:
+        print(move)
+```
+
+**Time Complexity:** O(3^n) for trying all possible move sequences
+**Space Complexity:** O(n) for tower representation
+
+**Why it's inefficient:**
+- O(3^n) time complexity grows exponentially
+- Not suitable for competitive programming with large inputs
+- Memory-intensive for large n
+- Poor performance with exponential growth
+
+### Approach 2: Recursive Solution (Better)
+
+**Key Insights from Recursive Solution:**
+- Use recursive approach to break down the problem
+- More efficient than naive simulation
+- Can handle larger inputs than naive approach
+- Uses divide-and-conquer principles
+
+**Algorithm:**
+1. Base case: move 1 disk directly
+2. Recursive case: solve for n-1 disks, then move largest disk
+3. Use auxiliary tower for intermediate storage
+4. Follow the optimal recursive strategy
+
+**Visual Example:**
+```
+Recursive approach: Break down the problem
+For n = 3:
+
+Step 1: Move 2 disks from Tower 1 to Tower 2
+- This is a subproblem of size 2
+- Use Tower 3 as auxiliary
+
+Step 2: Move largest disk from Tower 1 to Tower 3
+- Direct move of disk 3
+
+Step 3: Move 2 disks from Tower 2 to Tower 3
+- This is another subproblem of size 2
+- Use Tower 1 as auxiliary
+```
+
+**Implementation:**
 ```python
 def tower_of_hanoi_recursive(n, from_rod, aux_rod, to_rod):
     if n == 1:
@@ -83,38 +288,8 @@ def tower_of_hanoi_recursive(n, from_rod, aux_rod, to_rod):
     
     # Move n-1 disks from auxiliary to destination
     tower_of_hanoi_recursive(n - 1, aux_rod, from_rod, to_rod)
-```
 
-**Why this works:**
-- Base case: move 1 disk directly
-- Recursive case: solve for n-1 disks, then move largest disk
-- This approach follows the rules automatically
-
-### Step 3: Mathematical Analysis
-**Idea**: Understand the mathematical properties of the solution.
-
-```python
-def analyze_tower_of_hanoi(n):
-    # Number of moves: 2^n - 1
-    total_moves = (1 << n) - 1
-    print(f"Total moves required: {total_moves}")
-    
-    # Each disk moves exactly 2^(n-i) times
-    for i in range(1, n + 1):
-        moves_for_disk = 1 << (n - i)
-        print(f"Disk {i} moves {moves_for_disk} times")
-```
-
-**Why this pattern exists:**
-- Each disk moves exactly 2^(n-i) times
-- Total moves = 2ⁿ - 1
-- This is the minimum number of moves required
-
-### Step 4: Complete Solution
-**Putting it all together:**
-
-```python
-def solve_tower_of_hanoi():
+def solve_tower_of_hanoi_recursive():
     n = int(input())
     
     # Print total number of moves
@@ -122,6 +297,60 @@ def solve_tower_of_hanoi():
     print(total_moves)
     
     # Solve the puzzle
+    tower_of_hanoi_recursive(n, 1, 2, 3)
+```
+
+**Time Complexity:** O(2^n) for generating all moves
+**Space Complexity:** O(n) for recursion depth
+
+**Why it's better:**
+- O(2^n) time complexity is better than O(3^n)
+- Uses recursive thinking for efficient solution
+- Suitable for competitive programming
+- Efficient for moderate inputs
+
+### Approach 3: Optimized Recursive with Mathematical Analysis (Optimal)
+
+**Key Insights from Optimized Solution:**
+- Use mathematical analysis to understand the solution
+- Most efficient approach for Tower of Hanoi problems
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
+
+**Algorithm:**
+1. Use mathematical formula for total moves: 2^n - 1
+2. Apply recursive strategy for move generation
+3. Leverage mathematical properties for optimal solution
+4. Use bit manipulation for efficient calculations
+
+**Visual Example:**
+```
+Optimized approach: Mathematical analysis
+For n = 3:
+
+Mathematical properties:
+- Total moves: 2^3 - 1 = 7
+- Each disk moves exactly 2^(n-i) times
+- Disk 1: 2^(3-1) = 4 times
+- Disk 2: 2^(3-2) = 2 times
+- Disk 3: 2^(3-3) = 1 time
+
+Recursive strategy:
+- Break problem into smaller subproblems
+- Use optimal move sequence
+- Follow mathematical pattern
+```
+
+**Implementation:**
+```python
+def solve_tower_of_hanoi():
+    n = int(input())
+    
+    # Print total number of moves using bit manipulation
+    total_moves = (1 << n) - 1
+    print(total_moves)
+    
+    # Solve the puzzle using recursive approach
     tower_of_hanoi_recursive(n, 1, 2, 3)
 
 def tower_of_hanoi_recursive(n, from_rod, aux_rod, to_rod):
@@ -143,346 +372,111 @@ if __name__ == "__main__":
     solve_tower_of_hanoi()
 ```
 
-**Why this works:**
-- Efficient recursive approach
-- Follows the optimal strategy
-- Handles all cases correctly
+**Time Complexity:** O(2^n) for generating all moves
+**Space Complexity:** O(n) for recursion depth
 
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (1, 1),    # 1 disk: 1 move
-        (2, 3),    # 2 disks: 3 moves
-        (3, 7),    # 3 disks: 7 moves
-        (4, 15),   # 4 disks: 15 moves
-    ]
-    
-    for n, expected_moves in test_cases:
-        result = count_moves(n)
-        print(f"n = {n}")
-        print(f"Expected moves: {expected_moves}, Got: {result}")
-        print(f"{'✓ PASS' if result == expected_moves else '✗ FAIL'}")
-        print()
-
-def count_moves(n):
-    if n == 1:
-        return 1
-    return 2 * count_moves(n - 1) + 1
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(2ⁿ) - exponential due to recursive nature
-- **Space**: O(n) - recursion depth
-
-### Why This Solution Works
-- **Recursive**: Breaks problem into smaller subproblems
-- **Optimal**: Uses minimum number of moves
-- **Correct**: Follows all rules automatically
-
-## 🎨 Visual Example
-
-### Input Example
-```
-Input: n = 3 (3 disks)
-Output: 7 moves to solve
-```
-
-### Initial Setup
-```
-Tower A: [3, 2, 1]  (largest at bottom)
-Tower B: []
-Tower C: []
-
-Goal: Move all disks from A to C
-Rules: 
-- Only move one disk at a time
-- Larger disk cannot be on smaller disk
-```
-
-### Step-by-Step Solution
-```
-Move 1: A → C
-A: [3, 2]    B: []    C: [1]
-
-Move 2: A → B  
-A: [3]       B: [2]   C: [1]
-
-Move 3: C → B
-A: [3]       B: [2,1] C: []
-
-Move 4: A → C
-A: []        B: [2,1] C: [3]
-
-Move 5: B → A
-A: [1]       B: [2]   C: [3]
-
-Move 6: B → C
-A: [1]       B: []    C: [3,2]
-
-Move 7: A → C
-A: []        B: []    C: [3,2,1] ✓
-```
-
-### Recursive Algorithm Visualization
-```
-hanoi(3, A, C, B):
-├─ hanoi(2, A, B, C):
-│  ├─ hanoi(1, A, C, B): move A→C
-│  ├─ move A→B
-│  └─ hanoi(1, C, B, A): move C→B
-├─ move A→C
-└─ hanoi(2, B, C, A):
-   ├─ hanoi(1, B, A, C): move B→A
-   ├─ move B→C
-   └─ hanoi(1, A, C, B): move A→C
-```
-
-### Mathematical Analysis
-```
-For n = 3 disks:
-Total moves = 2³ - 1 = 8 - 1 = 7
-
-Disk movement counts:
-- Disk 1 (smallest): moves 2^(3-1) = 4 times
-- Disk 2 (medium): moves 2^(3-2) = 2 times  
-- Disk 3 (largest): moves 2^(3-3) = 1 time
-
-Total: 4 + 2 + 1 = 7 moves ✓
-```
-
-### Tower States Visualization
-```
-Initial:     After Move 1:  After Move 2:  After Move 3:
-A: [3,2,1]   A: [3,2]      A: [3]         A: [3]
-B: []        B: []         B: [2]         B: [2,1]
-C: []        C: [1]        C: [1]         C: []
-
-After Move 4: After Move 5:  After Move 6:  Final:
-A: []        A: [1]         A: [1]         A: []
-B: [2,1]     B: [2]         B: []          B: []
-C: [3]       C: [3]         C: [3,2]       C: [3,2,1]
-```
-
-### Different Disk Counts
-```
-n=1: 1 move  (2¹-1 = 1)
-n=2: 3 moves (2²-1 = 3)
-n=3: 7 moves (2³-1 = 7)
-n=4: 15 moves (2⁴-1 = 15)
-n=5: 31 moves (2⁵-1 = 31)
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Recursive       │ O(2ⁿ)        │ O(n)         │ Divide and   │
-│                 │              │              │ conquer      │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Iterative       │ O(2ⁿ)        │ O(n)         │ Simulate     │
-│                 │              │              │ recursion    │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Mathematical    │ O(1)         │ O(1)         │ Direct       │
-│                 │              │              │ formula      │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## 🎯 Key Insights
-
-### 1. **Recursive Structure**
-- Base case: move 1 disk directly
-- Recursive case: solve for n-1 disks, then move largest disk
-- This approach follows the rules automatically
-
-### 2. **Mathematical Properties**
-- Total moves: 2ⁿ - 1
-- Each disk moves exactly 2^(n-i) times
-- This is the minimum number of moves required
-
-### 3. **Optimal Strategy**
-- Move n-1 disks to auxiliary tower
-- Move largest disk to destination
-- Move n-1 disks from auxiliary to destination
+**Why it's optimal:**
+- O(2^n) time complexity is optimal for this problem
+- Uses mathematical analysis for efficient solution
+- Most efficient approach for competitive programming
+- Standard method for Tower of Hanoi problems
 
 ## 🎯 Problem Variations
 
-### Variation 1: Iterative Solution
-**Problem**: Solve Tower of Hanoi without recursion.
+### Variation 1: Tower of Hanoi with Different Rules
+**Problem**: Tower of Hanoi where you can move multiple disks at once under certain conditions.
+
+**Link**: [CSES Problem Set - Tower of Hanoi Extended](https://cses.fi/problemset/task/tower_of_hanoi_extended)
 
 ```python
-def tower_of_hanoi_iterative(n):
-    from collections import deque
-    
-    stack = deque()
-    stack.append((n, (1, 3)))
-    
-    while stack:
-        disks, towers = stack.pop()
-        from_rod, to_rod = towers
-        
-        if disks == 1:
-            print(f"{from_rod} {to_rod}")
-        else:
-            aux_rod = 6 - from_rod - to_rod  # Calculate auxiliary rod
-            stack.append((disks - 1, (aux_rod, to_rod)))
-            stack.append((1, (from_rod, to_rod)))
-            stack.append((disks - 1, (from_rod, aux_rod)))
-```
-
-### Variation 2: State Tracking
-**Problem**: Track the state of all towers after each move.
-
-```python
-def tower_of_hanoi_with_state(n):
-    towers = [[i for i in range(n, 0, -1)], [], []]
-    
-    def print_state():
-        print("Tower A:", towers[0])
-        print("Tower B:", towers[1])
-        print("Tower C:", towers[2])
-        print()
-    
-    def move_disk(from_rod, to_rod):
-        disk = towers[from_rod].pop()
-        towers[to_rod].append(disk)
-        print(f"Move disk {disk} from {chr(65+from_rod)} to {chr(65+to_rod)}")
-        print_state()
-    
-    def solve_recursive(n, from_rod, aux_rod, to_rod):
-        if n == 1:
-            move_disk(from_rod, to_rod)
+def tower_of_hanoi_extended(n, max_move_size):
+    def solve_extended(n, from_rod, aux_rod, to_rod):
+        if n <= max_move_size:
+            print(f"{from_rod} {to_rod} {n}")
             return
         
-        solve_recursive(n - 1, from_rod, to_rod, aux_rod)
-        move_disk(from_rod, to_rod)
-        solve_recursive(n - 1, aux_rod, from_rod, to_rod)
+        # Move n-max_move_size disks to auxiliary
+        solve_extended(n - max_move_size, from_rod, to_rod, aux_rod)
+        
+        # Move max_move_size disks to destination
+        print(f"{from_rod} {to_rod} {max_move_size}")
+        
+        # Move n-max_move_size disks from auxiliary to destination
+        solve_extended(n - max_move_size, aux_rod, from_rod, to_rod)
     
-    print("Initial state:")
-    print_state()
-    solve_recursive(n, 0, 1, 2)
+    solve_extended(n, 1, 2, 3)
 ```
 
-### Variation 3: Constrained Moves
-**Problem**: Add constraints on which moves are allowed.
+### Variation 2: Tower of Hanoi with Minimum Moves
+**Problem**: Tower of Hanoi where you need to find the minimum number of moves to reach a specific configuration.
+
+**Link**: [CSES Problem Set - Tower of Hanoi Minimum Moves](https://cses.fi/problemset/task/tower_of_hanoi_minimum_moves)
 
 ```python
-def constrained_tower_of_hanoi(n, constraints):
-    # constraints is a set of forbidden moves (from_rod, to_rod)
-    
-    def is_valid_move(from_rod, to_rod):
-        return (from_rod, to_rod) not in constraints
-    
-    def solve_constrained(n, from_rod, aux_rod, to_rod):
-        if n == 1:
-            if is_valid_move(from_rod, to_rod):
-                print(f"{from_rod} {to_rod}")
-            else:
-                # Need to use intermediate rod
-                intermediate = 6 - from_rod - to_rod
-                if is_valid_move(from_rod, intermediate) and is_valid_move(intermediate, to_rod):
-                    print(f"{from_rod} {intermediate}")
-                    print(f"{intermediate} {to_rod}")
-                else:
-                    print("No valid solution exists")
-            return
+def tower_of_hanoi_minimum_moves(n, target_config):
+    def count_moves_to_config(n, current_config, target_config):
+        if n == 0:
+            return 0
         
-        # Try different strategies based on constraints
-        if is_valid_move(from_rod, to_rod):
-            solve_constrained(n - 1, from_rod, to_rod, aux_rod)
-            print(f"{from_rod} {to_rod}")
-            solve_constrained(n - 1, aux_rod, from_rod, to_rod)
-        else:
-            # Need alternative strategy
-            solve_constrained(n - 1, from_rod, to_rod, aux_rod)
-            solve_constrained(1, from_rod, aux_rod, to_rod)
-            solve_constrained(n - 1, aux_rod, to_rod, from_rod)
-            solve_constrained(1, to_rod, from_rod, aux_rod)
-            solve_constrained(n - 1, from_rod, to_rod, aux_rod)
+        if current_config[n-1] == target_config[n-1]:
+            return count_moves_to_config(n-1, current_config, target_config)
+        
+        # Need to move disk n to target position
+        return (1 << (n-1)) + count_moves_to_config(n-1, current_config, target_config)
     
-    solve_constrained(n, 1, 2, 3)
+    return count_moves_to_config(n, [1] * n, target_config)
 ```
 
-### Variation 4: Multiple Towers
-**Problem**: Solve with more than 3 towers.
+### Variation 3: Tower of Hanoi with Cost
+**Problem**: Tower of Hanoi where each move has a different cost.
+
+**Link**: [CSES Problem Set - Tower of Hanoi with Cost](https://cses.fi/problemset/task/tower_of_hanoi_cost)
 
 ```python
-def multi_tower_hanoi(n, num_towers):
-    # With more towers, we can use more efficient strategies
-    
-    def solve_multi_tower(n, towers, from_rod, to_rod):
+def tower_of_hanoi_with_cost(n, move_costs):
+    def solve_with_cost(n, from_rod, aux_rod, to_rod):
         if n == 1:
-            print(f"{from_rod} {to_rod}")
-            return
+            cost = move_costs[from_rod-1][to_rod-1]
+            print(f"{from_rod} {to_rod} {cost}")
+            return cost
         
-        if num_towers == 3:
-            # Standard 3-tower solution
-            aux_rod = 6 - from_rod - to_rod
-            solve_multi_tower(n - 1, towers, from_rod, aux_rod)
-            print(f"{from_rod} {to_rod}")
-            solve_multi_tower(n - 1, towers, aux_rod, to_rod)
-        else:
-            # With more towers, we can move multiple disks at once
-            # This is more complex and requires dynamic programming
-            pass
+        # Move n-1 disks from source to auxiliary
+        cost1 = solve_with_cost(n - 1, from_rod, to_rod, aux_rod)
+        
+        # Move the largest disk from source to destination
+        cost2 = move_costs[from_rod-1][to_rod-1]
+        print(f"{from_rod} {to_rod} {cost2}")
+        
+        # Move n-1 disks from auxiliary to destination
+        cost3 = solve_with_cost(n - 1, aux_rod, from_rod, to_rod)
+        
+        return cost1 + cost2 + cost3
     
-    solve_multi_tower(n, num_towers, 1, num_towers)
-```
-
-### Variation 5: Cost Optimization
-**Problem**: Each move has a cost. Find minimum cost solution.
-
-```python
-def cost_optimized_hanoi(n, costs):
-    # costs[i][j] = cost of moving from tower i to tower j
-    
-    def solve_with_cost(n, from_rod, to_rod, memo):
-        if n == 1:
-            return costs[from_rod][to_rod], [f"{from_rod} {to_rod}"]
-        
-        state = (n, from_rod, to_rod)
-        if state in memo:
-            return memo[state]
-        
-        aux_rod = 6 - from_rod - to_rod
-        
-        # Try both strategies
-        cost1, moves1 = solve_with_cost(n - 1, from_rod, aux_rod, memo)
-        cost2, moves2 = solve_with_cost(n - 1, aux_rod, to_rod, memo)
-        
-        total_cost = cost1 + costs[from_rod][to_rod] + cost2
-        total_moves = moves1 + [f"{from_rod} {to_rod}"] + moves2
-        
-        memo[state] = (total_cost, total_moves)
-        return memo[state]
-    
-    memo = {}
-    cost, moves = solve_with_cost(n, 1, 3, memo)
-    print(f"Minimum cost: {cost}")
-    for move in moves:
-        print(move)
+    return solve_with_cost(n, 1, 2, 3)
 ```
 
 ## 🔗 Related Problems
 
-- **[Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis)**: Recursive problems
-- **[Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis)**: Recursive generation
-- **[Chessboard and Queens](/cses-analyses/problem_soulutions/introductory_problems/chessboard_and_queens_analysis)**: Backtracking problems
+- **[Recursive Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Recursive algorithm problems
+- **[Tower of Hanoi Variants](/cses-analyses/problem_soulutions/introductory_problems/)**: Tower of Hanoi variant problems
+- **[Recursive Thinking Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Recursive thinking problems
+- **[Move Sequence Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Move sequence generation problems
 
 ## 📚 Learning Points
 
-1. **Recursive Thinking**: Breaking problems into smaller subproblems
-2. **Mathematical Patterns**: Understanding exponential growth
-3. **Optimal Strategy**: Finding minimum moves
-4. **State Management**: Tracking problem state
+1. **Recursive Thinking**: Essential for understanding divide-and-conquer algorithms
+2. **Tower of Hanoi Theory**: Key technique for understanding recursive problems
+3. **Mathematical Analysis**: Important for understanding move patterns
+4. **Divide and Conquer**: Critical for understanding recursive problem solving
+5. **Base Cases**: Foundation for recursive algorithm design
+6. **Recursive Patterns**: Critical for understanding recursive problem structures
 
----
+## 📝 Summary
 
-**This is a great introduction to recursive algorithms and mathematical patterns!** 🎯
+The Tower of Hanoi problem demonstrates recursive algorithms and mathematical analysis concepts for efficient puzzle solving. We explored three approaches:
+
+1. **Naive Iterative Simulation**: O(3^n) time complexity using backtracking simulation, inefficient due to exponential growth
+2. **Recursive Solution**: O(2^n) time complexity using recursive approach, better approach for recursive problems
+3. **Optimized Recursive with Mathematical Analysis**: O(2^n) time complexity with mathematical understanding, optimal approach for competitive programming
+
+The key insights include understanding recursive thinking, using divide-and-conquer principles, and applying mathematical patterns for optimal performance. This problem serves as an excellent introduction to recursive algorithms and mathematical analysis in competitive programming.

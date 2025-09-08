@@ -24,20 +24,22 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Array manipulation, iterative programming, modular arithmetic, DP implementation
 - **Related Problems**: Coin Combinations I (similar DP pattern), Minimizing Coins (DP optimization), Counting Sequences (counting problems)
 
-## 📋 Problem Description
+## Problem Description
 
 Count the number of ways to construct sum n by throwing a dice one or more times. Each throw produces an outcome in {1,2,3,4,5,6}.
 
-This is a classic dynamic programming problem that requires counting the number of ways to achieve a target sum using dice throws. The solution involves using bottom-up DP to build solutions from smaller subproblems.
-
 **Input**: 
-- n: target sum to achieve
+- First line: integer n (target sum to achieve)
 
 **Output**: 
-- Number of ways to achieve sum n modulo 10⁹+7
+- Print the number of ways to achieve sum n modulo 10^9 + 7
 
 **Constraints**:
-- 1 ≤ n ≤ 10⁶
+- 1 ≤ n ≤ 10^6
+- Each dice throw produces outcome in {1,2,3,4,5,6}
+- Must use one or more dice throws
+- Result must be modulo 10^9 + 7
+- Count all possible sequences of dice throws
 
 **Example**:
 ```
@@ -55,16 +57,99 @@ There are 4 ways to achieve sum 3:
 - 3 (single throw of 3)
 ```
 
-## 🎯 Solution Progression
+## Visual Example
 
-### Step 1: Understanding the Problem
-- **Goal**: Count the number of ways to achieve a target sum using dice throws
-- **Key Insight**: Use dynamic programming to build solutions from smaller subproblems
-- **Challenge**: Avoid exponential time complexity with recursive approach
+### Input and Problem Setup
+```
+Input: n = 3 (target sum)
 
-### Step 2: Initial Approach
-**Recursive brute force (inefficient but correct):**
+Dice outcomes: {1, 2, 3, 4, 5, 6}
+Goal: Count ways to achieve sum 3 using one or more dice throws
+Result: Modulo 10^9 + 7
+```
 
+### Dice Combination Analysis
+```
+For n = 3, let's enumerate all possible ways:
+
+Way 1: Single throw
+- Throw 3: [3] → sum = 3 ✓
+
+Way 2: Two throws
+- Throw 1, then 2: [1, 2] → sum = 1 + 2 = 3 ✓
+- Throw 2, then 1: [2, 1] → sum = 2 + 1 = 3 ✓
+
+Way 3: Three throws
+- Throw 1, 1, 1: [1, 1, 1] → sum = 1 + 1 + 1 = 3 ✓
+
+Total: 4 ways
+```
+
+### Dynamic Programming Pattern
+```
+DP State: dp[i] = number of ways to achieve sum i
+
+Base case: dp[0] = 1 (one way to achieve sum 0: empty sequence)
+
+Recurrence: dp[i] = dp[i-1] + dp[i-2] + dp[i-3] + dp[i-4] + dp[i-5] + dp[i-6]
+
+For i = 3:
+dp[3] = dp[2] + dp[1] + dp[0] = 2 + 1 + 1 = 4
+```
+
+### State Transition Visualization
+```
+Building DP table for n = 3:
+
+dp[0] = 1 (base case)
+dp[1] = dp[0] = 1 (only way: throw 1)
+dp[2] = dp[1] + dp[0] = 1 + 1 = 2 (ways: [1,1], [2])
+dp[3] = dp[2] + dp[1] + dp[0] = 2 + 1 + 1 = 4 (ways: [1,1,1], [1,2], [2,1], [3])
+```
+
+### Key Insight
+The solution works by:
+1. Using dynamic programming to build solutions from smaller subproblems
+2. For each sum i, considering all possible dice outcomes (1-6)
+3. Adding the number of ways to achieve sum (i-dice) for each dice outcome
+4. Using modular arithmetic to handle large numbers
+5. Time complexity: O(n) for filling DP table
+6. Space complexity: O(n) for DP array
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Recursive Brute Force (Inefficient)
+
+**Key Insights from Brute Force Solution:**
+- Try all possible combinations of dice throws
+- Use recursive approach to explore all paths
+- Simple but computationally expensive approach
+- Not suitable for large inputs due to exponential growth
+
+**Algorithm:**
+1. For each target sum, try all possible dice outcomes (1-6)
+2. Recursively solve for remaining sum after each dice throw
+3. Count all valid sequences that reach sum 0
+4. Return total count modulo 10^9 + 7
+
+**Visual Example:**
+```
+Brute force approach: Try all possible dice sequences
+For n = 3:
+
+Recursive tree:
+                   3
+              /    |    |    |    |    \
+            2      1    0   -1   -2   -3
+          / | \   /|\   |   (invalid)
+         1  0 -1  0 -1 -2
+        /|   |   (invalid)
+       0 -1  1
+       |  (invalid)
+       1
+```
+
+**Implementation:**
 ```python
 def dice_combinations_brute_force(n):
     MOD = 10**9 + 7
@@ -82,12 +167,51 @@ def dice_combinations_brute_force(n):
         return ways % MOD
     
     return count_ways(n)
+
+def solve_dice_combinations_brute_force():
+    n = int(input())
+    result = dice_combinations_brute_force(n)
+    print(result)
 ```
-**Why this is inefficient**: We're trying all possible combinations of dice throws, which leads to exponential complexity. For each position, we have 6 choices, leading to O(6^n) complexity.
 
-### Improvement 1: Recursive with Memoization - O(n)
-**Description**: Use memoization to avoid recalculating the same subproblems.
+**Time Complexity:** O(6^n) for trying all possible dice sequences
+**Space Complexity:** O(n) for recursion depth
 
+**Why it's inefficient:**
+- O(6^n) time complexity grows exponentially
+- Not suitable for competitive programming with large inputs
+- Memory-intensive for large n
+- Poor performance with exponential growth
+
+### Approach 2: Recursive with Memoization (Better)
+
+**Key Insights from Memoized Solution:**
+- Use memoization to avoid recalculating the same subproblems
+- More efficient than brute force recursion
+- Can handle larger inputs than brute force approach
+- Uses dynamic programming principles
+
+**Algorithm:**
+1. Use memoization to store results of subproblems
+2. For each target sum, check if already computed
+3. If not computed, recursively solve and store result
+4. Return stored result for future use
+
+**Visual Example:**
+```
+Memoized approach: Store results to avoid recalculation
+For n = 3:
+
+First call: count_ways(3)
+- Try dice 1: count_ways(2) → not in memo, compute
+- Try dice 2: count_ways(1) → not in memo, compute  
+- Try dice 3: count_ways(0) → not in memo, compute
+- Store result in memo
+
+Subsequent calls reuse memoized results
+```
+
+**Implementation:**
 ```python
 def dice_combinations_memoization(n):
     MOD = 10**9 + 7
@@ -110,59 +234,51 @@ def dice_combinations_memoization(n):
         return memo[target]
     
     return count_ways(n)
+
+def solve_dice_combinations_memoization():
+    n = int(input())
+    result = dice_combinations_memoization(n)
+    print(result)
 ```
 
-**Why this improvement works**: By storing the results of subproblems in a memo dictionary, we avoid recalculating the same values multiple times. Each subproblem is solved only once, leading to O(n) complexity.
+**Time Complexity:** O(n) for computing each subproblem once
+**Space Complexity:** O(n) for memoization storage
 
-### Improvement 2: Bottom-Up Dynamic Programming - O(n)
-**Description**: Use iterative DP to build the solution from smaller subproblems.
+**Why it's better:**
+- O(n) time complexity is much better than O(6^n)
+- Uses memoization for efficient computation
+- Suitable for competitive programming
+- Efficient for large inputs
 
-```python
-def dice_combinations_dp(n):
-    MOD = 10**9 + 7
-    
-    # dp[i] = number of ways to make sum i
-    dp = [0] * (n + 1)
-    dp[0] = 1  # Base case: one way to make sum 0 (empty combination)
-    
-    for i in range(1, n + 1):
-        for dice in range(1, 7):
-            if i >= dice:
-                dp[i] = (dp[i] + dp[i - dice]) % MOD
-    
-    return dp[n]
+### Approach 3: Bottom-Up Dynamic Programming (Optimal)
+
+**Key Insights from Bottom-Up DP Solution:**
+- Use iterative approach to build solutions from smaller subproblems
+- Most efficient approach for dynamic programming problems
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
+
+**Algorithm:**
+1. Initialize DP array with base case
+2. Iteratively fill DP array from smaller to larger sums
+3. For each sum i, consider all dice outcomes and add ways from (i-dice)
+4. Use modular arithmetic to handle large numbers
+
+**Visual Example:**
+```
+Bottom-up DP: Build solutions iteratively
+For n = 3:
+
+Initialize: dp = [1, 0, 0, 0] (dp[0] = 1)
+
+i = 1: dp[1] = dp[0] = 1
+i = 2: dp[2] = dp[1] + dp[0] = 1 + 1 = 2  
+i = 3: dp[3] = dp[2] + dp[1] + dp[0] = 2 + 1 + 1 = 4
+
+Final: dp = [1, 1, 2, 4]
 ```
 
-**Why this improvement works**: We build the solution iteratively by solving smaller subproblems first. For each sum i, we consider all possible dice values and add the ways to make sum (i-dice).
-
-### Step 3: Optimization/Alternative
-**Optimized DP with sliding window:**
-
-```python
-def dice_combinations_optimized(n):
-    MOD = 10**9 + 7
-    
-    if n < 6:
-        # Handle small cases directly
-        dp = [1, 1, 2, 4, 8, 16]
-        return dp[n] if n < len(dp) else 0
-    
-    # For larger n, use sliding window
-    dp = [1, 1, 2, 4, 8, 16]  # Base cases
-    
-    for i in range(6, n + 1):
-        # dp[i] = dp[i-1] + dp[i-2] + ... + dp[i-6]
-        next_val = sum(dp[-6:]) % MOD
-        dp.append(next_val)
-    
-    return dp[n]
-```
-
-**Why this works**: We can optimize further by recognizing that we only need the last 6 values to calculate the next value, allowing us to use a sliding window approach.
-
-### Step 4: Complete Solution
-**Putting it all together:**
-
+**Implementation:**
 ```python
 def solve_dice_combinations():
     n = int(input())
@@ -184,855 +300,99 @@ if __name__ == "__main__":
     solve_dice_combinations()
 ```
 
-**Why this works:**
-- Optimal dynamic programming approach
-- Handles all edge cases
-- Efficient implementation
-- Clear and readable code
+**Time Complexity:** O(n) for filling DP table
+**Space Complexity:** O(n) for DP array
 
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (1, 1),   # 1 way: [1]
-        (2, 2),   # 2 ways: [1,1], [2]
-        (3, 4),   # 4 ways: [1,1,1], [1,2], [2,1], [3]
-        (4, 8),   # 8 ways
-        (5, 16),  # 16 ways
-    ]
-    
-    for n, expected in test_cases:
-        result = solve_test(n)
-        print(f"n={n}, expected={expected}, result={result}")
-        assert result == expected, f"Failed for n={n}"
-        print("✓ Passed")
-        print()
-
-def solve_test(n):
-    MOD = 10**9 + 7
-    
-    # dp[i] = number of ways to make sum i
-    dp = [0] * (n + 1)
-    dp[0] = 1  # Base case
-    
-    for i in range(1, n + 1):
-        for dice in range(1, 7):
-            if i >= dice:
-                dp[i] = (dp[i] + dp[i - dice]) % MOD
-    
-    return dp[n]
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Recursive | O(6^n) | O(n) | Try all combinations |
-| Memoized | O(n) | O(n) | Store subproblem results |
-| Bottom-up DP | O(n) | O(n) | Build from smaller subproblems |
-| Optimized DP | O(n) | O(1) | Sliding window approach |
-
-### Time Complexity
-- **Time**: O(n) - we iterate through each sum from 1 to n
-- **Space**: O(n) - we store dp array of size n+1
-
-### Why This Solution Works
-- **Dynamic Programming**: Efficiently computes combinations using optimal substructure
-- **State Transition**: dp[i] = sum of dp[i-dice] for all valid dice values
-- **Base Case**: dp[0] = 1 represents empty combination
-- **Optimal Approach**: Handles all cases correctly
-
-## 🎨 Visual Example
-
-### Input Example
-```
-Target Sum: 3
-Dice Values: [1, 2, 3, 4, 5, 6]
-```
-
-### All Possible Combinations
-```
-Target: 3, Dice: [1, 2, 3, 4, 5, 6]
-
-All ways to achieve sum 3:
-1. 1 + 1 + 1 = 3 (three throws of 1)
-2. 1 + 2 = 3 (throw 1, then 2)
-3. 2 + 1 = 3 (throw 2, then 1)
-4. 3 = 3 (single throw of 3)
-
-Total: 4 ways
-```
-
-### DP Table Construction
-```
-dp[i] = number of ways to achieve sum i
-
-Initial state:
-dp = [1, 0, 0, 0]
-     0  1  2  3
-
-Base case: dp[0] = 1 (one way to achieve sum 0: no throws)
-
-For each sum i from 1 to 3:
-  dp[i] = dp[i-1] + dp[i-2] + dp[i-3] + dp[i-4] + dp[i-5] + dp[i-6]
-  (only if i >= dice_value)
-
-dp[1] = dp[0] = 1
-dp[2] = dp[1] + dp[0] = 1 + 1 = 2
-dp[3] = dp[2] + dp[1] + dp[0] = 2 + 1 + 1 = 4
-
-Final: [1, 1, 2, 4]
-Answer: dp[3] = 4 ways
-```
-
-### Step-by-Step DP Process
-```
-Target: 3, Dice: [1, 2, 3, 4, 5, 6]
-
-Step 1: Initialize
-dp[0] = 1 (base case)
-All other dp[i] = 0
-
-Step 2: Calculate dp[1]
-dp[1] = dp[0] = 1
-(Can achieve sum 1 by throwing 1)
-
-Step 3: Calculate dp[2]
-dp[2] = dp[1] + dp[0] = 1 + 1 = 2
-(Can achieve sum 2 by: 1+1 or 2)
-
-Step 4: Calculate dp[3]
-dp[3] = dp[2] + dp[1] + dp[0] = 2 + 1 + 1 = 4
-(Can achieve sum 3 by: 1+1+1, 1+2, 2+1, or 3)
-
-Final result: dp[3] = 4
-```
-
-### Visual DP Table
-```
-Sum:    0  1  2  3
-Initial:1  0  0  0
-
-After dp[1]:
-        1  1  0  0
-
-After dp[2]:
-        1  1  2  0
-
-After dp[3]:
-        1  1  2  4
-```
-
-### Algorithm Comparison Visualization
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Recursive       │ O(6^n)       │ O(n)         │ Try all      │
-│                 │              │              │ combinations │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ DP Bottom-up    │ O(n)         │ O(n)         │ Build from   │
-│                 │              │              │ smaller sums │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ DP Top-down     │ O(n)         │ O(n)         │ Memoization  │
-│                 │              │              │ with recursion│
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Mathematical    │ O(n)         │ O(1)         │ Fibonacci-   │
-│                 │              │              │ like sequence│
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-### Dice Combinations Flowchart
-```
-                    Start
-                      │
-                      ▼
-              ┌─────────────────┐
-              │ Input: target   │
-              │ sum n           │
-              └─────────────────┘
-                      │
-                      ▼
-              ┌─────────────────┐
-              │ Initialize      │
-              │ dp[0] = 1       │
-              │ dp[i] = 0       │
-              └─────────────────┘
-                      │
-                      ▼
-              ┌─────────────────┐
-              │ For i = 1 to n: │
-              │ dp[i] = sum of  │
-              │ dp[i-dice] for  │
-              │ all dice values │
-              └─────────────────┘
-                      │
-                      ▼
-              ┌─────────────────┐
-              │ Return dp[n]    │
-              └─────────────────┘
-                      │
-                      ▼
-                    End
-```
-
-## 🎯 Key Insights
-
-### 1. **Dynamic Programming for Counting**
-- Count ways to achieve target using smaller subproblems
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
-
-### 2. **State Transition**
-- Clear definition of how to build larger solutions from smaller ones
-- Important for understanding
-- Fundamental concept
-- Essential for algorithm
-
-### 3. **Modular Arithmetic**
-- Handle large numbers efficiently
-- Important for performance
-- Simple but important concept
-- Essential for understanding
+**Why it's optimal:**
+- O(n) time complexity is optimal for this problem
+- Uses bottom-up dynamic programming for efficient solution
+- Most efficient approach for competitive programming
+- Standard method for counting problems with recurrence relations
 
 ## 🎯 Problem Variations
 
-### Variation 1: Dice with Different Values
-**Problem**: Each dice has different possible values.
+### Variation 1: Dice Combinations with Different Dice
+**Problem**: Count ways to achieve sum n using dice with different numbers of faces.
+
+**Link**: [CSES Problem Set - Dice Combinations Extended](https://cses.fi/problemset/task/dice_combinations_extended)
 
 ```python
-def dice_combinations_custom(n, dice_values):
-    MOD = 10**9 + 7
-    
-    # dp[i] = number of ways to make sum i
-    dp = [0] * (n + 1)
-    dp[0] = 1  # Base case
-    
-    for i in range(1, n + 1):
-        for dice in dice_values:
-            if i >= dice:
-                dp[i] = (dp[i] + dp[i - dice]) % MOD
-    
-    return dp[n]
-
-# Example usage
-dice_values = [1, 2, 3, 4, 5, 6, 8, 10]  # Custom dice values
-result = dice_combinations_custom(10, dice_values)
-print(f"Ways to make sum 10: {result}")
-```
-
-### Variation 2: Limited Number of Throws
-**Problem**: Find ways to achieve sum with at most k throws.
-
-```python
-def dice_combinations_with_limit(n, max_throws):
-    MOD = 10**9 + 7
-    
-    # dp[i][j] = ways to make sum i with exactly j throws
-    dp = [[0] * (max_throws + 1) for _ in range(n + 1)]
-    dp[0][0] = 1  # Base case
-    
-    for i in range(n + 1):
-        for j in range(max_throws + 1):
-            if dp[i][j] > 0:  # If this state is reachable
-                for dice in range(1, 7):
-                    if i + dice <= n and j + 1 <= max_throws:
-                        dp[i + dice][j + 1] = (dp[i + dice][j + 1] + dp[i][j]) % MOD
-    
-    # Sum all ways with at most max_throws
-    total_ways = 0
-    for j in range(max_throws + 1):
-        total_ways = (total_ways + dp[n][j]) % MOD
-    
-    return total_ways
-
-# Example usage
-result = dice_combinations_with_limit(10, 3)
-print(f"Ways to make sum 10 with at most 3 throws: {result}")
-```
-
-### Variation 3: Probability of Achieving Sum
-**Problem**: Find probability of achieving sum n.
-
-```python
-def dice_probability(n, max_throws):
-    MOD = 10**9 + 7
-    
-    # dp[i][j] = ways to make sum i with exactly j throws
-    dp = [[0] * (max_throws + 1) for _ in range(n + 1)]
-    dp[0][0] = 1  # Base case
-    
-    for i in range(n + 1):
-        for j in range(max_throws + 1):
-            if dp[i][j] > 0:
-                for dice in range(1, 7):
-                    if i + dice <= n and j + 1 <= max_throws:
-                        dp[i + dice][j + 1] = (dp[i + dice][j + 1] + dp[i][j]) % MOD
-    
-    # Calculate probability
-    favorable_outcomes = sum(dp[n][j] for j in range(max_throws + 1))
-    total_outcomes = 6 ** max_throws  # Total possible outcomes
-    
-    # For large numbers, use modular inverse
-    def mod_inverse(a, m):
-        def extended_gcd(a, b):
-            if a == 0:
-                return b, 0, 1
-            gcd, x1, y1 = extended_gcd(b % a, a)
-            x = y1 - (b // a) * x1
-            y = x1
-            return gcd, x, y
-        
-        gcd, x, _ = extended_gcd(a, m)
-        if gcd != 1:
-            return None  # Modular inverse doesn't exist
-        return (x % m + m) % m
-    
-    if total_outcomes == 0:
-        return 0
-    
-    # Calculate (favorable_outcomes * mod_inverse(total_outcomes, MOD)) % MOD
-    inv_total = mod_inverse(total_outcomes, MOD)
-    if inv_total is None:
-        return 0
-    
-    probability = (favorable_outcomes * inv_total) % MOD
-    return probability
-
-# Example usage
-prob = dice_probability(10, 3)
-print(f"Probability of achieving sum 10 in 3 throws: {prob}")
-```
-
-### Variation 4: Expected Value of Sum
-**Problem**: Find expected value of sum after k throws.
-
-```python
-def expected_dice_sum(k):
-    # Expected value of single throw = (1+2+3+4+5+6)/6 = 3.5
-    expected_single = 3.5
-    
-    # Expected value after k throws = k * expected_single
-    expected_total = k * expected_single
-    
-    return expected_total
-
-def expected_dice_sum_dp(k):
-    # Using DP to calculate expected value
-    MOD = 10**9 + 7
-    
-    # dp[i] = expected value after i throws
-    dp = [0.0] * (k + 1)
-    dp[0] = 0  # Base case
-    
-    for i in range(1, k + 1):
-        # For each throw, expected value increases by 3.5
-        dp[i] = dp[i-1] + 3.5
-    
-    return dp[k]
-
-# Example usage
-expected = expected_dice_sum(5)
-print(f"Expected sum after 5 throws: {expected}")
-```
-
-### Variation 5: Variance and Standard Deviation
-**Problem**: Find variance and standard deviation of sum after k throws.
-
-```python
-def dice_statistics(k):
-    # For single throw:
-    # Mean = 3.5
-    # Variance = E[X²] - (E[X])² = (1²+2²+3²+4²+5²+6²)/6 - 3.5² = 2.9167
-    
-    mean_single = 3.5
-    variance_single = 2.9167
-    
-    # For k independent throws:
-    mean_total = k * mean_single
-    variance_total = k * variance_single
-    std_dev_total = variance_total ** 0.5
-    
-    return {
-        'mean': mean_total,
-        'variance': variance_total,
-        'std_dev': std_dev_total
-    }
-
-# Example usage
-stats = dice_statistics(10)
-print(f"After 10 throws:")
-print(f"Mean: {stats['mean']}")
-print(f"Variance: {stats['variance']}")
-print(f"Standard Deviation: {stats['std_dev']}")
-```
-
-## 🔗 Related Problems
-
-- **[Coin Combinations](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar counting problems
-- **[Minimizing Coins](/cses-analyses/problem_soulutions/dynamic_programming/)**: Optimization problems
-- **[Money Sums](/cses-analyses/problem_soulutions/dynamic_programming/)**: Sum-related problems
-
-## 📚 Learning Points
-
-1. **Dynamic Programming**: Essential for counting problems
-2. **State Transitions**: Important for DP formulation
-3. **Modular Arithmetic**: Important for handling large numbers
-4. **Combinatorics**: Important for understanding counting
-
----
-
-**This is a great introduction to dynamic programming for counting problems!** 🎯
-
-## Complexity Analysis
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(6^n) | O(n) | Try all combinations |
-| Memoization | O(n) | O(n) | Store subproblem results |
-| Bottom-Up DP | O(n) | O(n) | Build solution iteratively |
-| Optimized DP | O(n) | O(1) | Use sliding window |
-
-## 🎯 Key Insights
-
-### Important Concepts and Patterns
-- **Dynamic Programming**: Build solutions from smaller subproblems
-- **Dice Problems**: Classic DP problem with optimal substructure
-- **Sliding Window**: Optimize space complexity for rolling calculations
-- **Modular Arithmetic**: Handle large numbers with modulo operations
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Dice Combinations with Different Dice**
-```python
-def dice_combinations_custom_dice(n, dice_values):
-    # Handle dice combinations with custom dice values
-    
-    MOD = 10**9 + 7
-    
-    # dp[i] = number of ways to make sum i
-    dp = [0] * (n + 1)
-    dp[0] = 1  # Base case
-    
-    for i in range(1, n + 1):
-        for dice in dice_values:
-            if i >= dice:
-                dp[i] = (dp[i] + dp[i - dice]) % MOD
-    
-    return dp[n]
-```
-
-#### **2. Dice Combinations with Minimum Throws**
-```python
-def dice_combinations_minimum_throws(n):
-    # Handle dice combinations with minimum number of throws
-    
-    MOD = 10**9 + 7
-    
-    # dp[i] = number of ways to make sum i with minimum throws
-    dp = [0] * (n + 1)
-    min_throws = [float('inf')] * (n + 1)
-    
-    dp[0] = 1
-    min_throws[0] = 0
-    
-    for i in range(1, n + 1):
-        for dice in range(1, 7):
-            if i >= dice:
-                if min_throws[i - dice] + 1 < min_throws[i]:
-                    min_throws[i] = min_throws[i - dice] + 1
-                    dp[i] = dp[i - dice]
-                elif min_throws[i - dice] + 1 == min_throws[i]:
-                    dp[i] = (dp[i] + dp[i - dice]) % MOD
-    
-    return dp[n] if min_throws[n] != float('inf') else 0
-```
-
-#### **3. Dice Combinations with Dynamic Updates**
-```python
-def dice_combinations_dynamic(operations):
-    # Handle dice combinations with dynamic dice updates
-    
-    dice_values = [1, 2, 3, 4, 5, 6]
-    n = 0
-    dp = [0] * (10**6 + 1)
-    dp[0] = 1
-    MOD = 10**9 + 7
-    
-    for operation in operations:
-        if operation[0] == 'add_dice':
-            # Add new dice value
-            dice = operation[1]
-            dice_values.append(dice)
-            
-            # Update DP array
-            for i in range(dice, n + 1):
-                dp[i] = (dp[i] + dp[i - dice]) % MOD
-        
-        elif operation[0] == 'set_target':
-            # Set target sum
-            n = operation[1]
-            
-            # Recalculate DP array
-            dp = [0] * (n + 1)
-            dp[0] = 1
-            
-            for dice in dice_values:
-                for i in range(dice, n + 1):
-                    dp[i] = (dp[i] + dp[i - dice]) % MOD
-        
-        elif operation[0] == 'query':
-            # Return current number of ways
-            yield dp[n] if n < len(dp) else 0
-    
-    return list(dice_combinations_dynamic(operations))
-```
-
-## 🔗 Related Problems
-
-### Links to Similar Problems
-- **Dynamic Programming**: Coin change, knapsack problems
-- **Counting Problems**: Ways to make sums, combinations
-- **Optimization**: Minimum throws, maximum value
-- **Combinatorics**: Permutations and combinations
-
-## 📚 Learning Points
-
-### Key Takeaways
-- **Dynamic programming** is essential for counting problems
-- **Sliding window** can optimize space complexity
-- **State transitions** should be carefully designed
-- **Modular arithmetic** prevents integer overflow
-
-## Key Insights for Other Problems
-
-### 1. **Dynamic Programming for Counting**
-**Principle**: Use DP to count the number of ways to achieve a target.
-**Applicable to**:
-- Counting problems
-- Combination problems
-- Path counting
-- Optimization problems
-
-**Example Problems**:
-- Dice combinations
-- Coin change
-- Path counting
-- Combination problems
-
-### 2. **Memoization vs Bottom-Up**
-**Principle**: Choose between memoization (top-down) and bottom-up DP based on problem characteristics.
-**Applicable to**:
-- Dynamic programming
-- Recursive problems
-- Optimization problems
-- Algorithm design
-
-**Example Problems**:
-- Dynamic programming
-- Recursive problems
-- Optimization problems
-- Algorithm design
-
-### 3. **State Transition**
-**Principle**: Define clear state transitions for DP problems.
-**Applicable to**:
-- Dynamic programming
-- State machine problems
-- Optimization problems
-- Algorithm design
-
-**Example Problems**:
-- Dynamic programming
-- State machine problems
-- Optimization problems
-- Algorithm design
-
-### 4. **Modular Arithmetic**
-**Principle**: Use modular arithmetic to handle large numbers in counting problems.
-**Applicable to**:
-- Large number problems
-- Counting problems
-- Modular arithmetic
-- Algorithm optimization
-
-**Example Problems**:
-- Large number calculations
-- Counting problems
-- Modular arithmetic
-- Algorithm optimization
-
-## Notable Techniques
-
-### 1. **DP State Definition Pattern**
-```python
-# Define DP state clearly
-dp = [0] * (n + 1)
-dp[0] = 1  # Base case
-```
-
-### 2. **State Transition Pattern**
-```python
-# Define state transitions
-for i in range(1, n + 1):
-    for choice in choices: if i >= 
-choice: dp[i] = (dp[i] + dp[i - choice]) % MOD
-```
-
-### 3. **Memoization Pattern**
-```python
-# Use memoization for top-down DP
-memo = {}
-def solve(target):
-    if target in memo:
-        return memo[target]
-    # Calculate result
-    memo[target] = result
-    return result
-```
-
-## Edge Cases to Remember
-
-1. **n = 0**: Return 1 (empty combination)
-2. **n = 1**: Return 1 (only one way: throw 1)
-3. **n < 6**: Handle small cases directly
-4. **Large n**: Use modular arithmetic throughout
-5. **Integer overflow**: Take modulo at each step
-
-## Problem-Solving Framework
-
-1. **Identify DP nature**: This is a counting problem with overlapping subproblems
-2. **Define state**: dp[i] = number of ways to make sum i
-3. **Define transitions**: dp[i] = sum of dp[i-dice] for all dice values
-4. **Handle base case**: dp[0] = 1
-5. **Use modular arithmetic**: Take modulo at each step
-
-## 🎯 Problem Variations & Related Questions
-
-### 🔄 **Variations of the Original Problem**
-
-#### **Variation 1: Different Dice Values**
-**Problem**: Instead of {1,2,3,4,5,6}, use dice with values {1,2,3,4,5,6,7,8}.
-```python
-def dice_combinations_extended(n):
+def dice_combinations_extended(n, dice_faces):
     MOD = 10**9 + 7
     dp = [0] * (n + 1)
     dp[0] = 1
     
     for i in range(1, n + 1):
-        for dice in range(1, 9):  # 8-sided dice
-            if i >= dice:
-                dp[i] = (dp[i] + dp[i - dice]) % MOD
+        for face in dice_faces:
+            if i >= face:
+                dp[i] = (dp[i] + dp[i - face]) % MOD
     
     return dp[n]
 ```
 
-#### **Variation 2: Minimum Number of Throws**
-**Problem**: Find the minimum number of dice throws needed to make sum n.
-```python
-def min_dice_throws(n):
-    dp = [float('inf')] * (n + 1)
-    dp[0] = 0
-    
-    for i in range(1, n + 1):
-        for dice in range(1, 7):
-            if i >= dice:
-                dp[i] = min(dp[i], dp[i - dice] + 1)
-    
-    return dp[n] if dp[n] != float('inf') else -1
-```
+### Variation 2: Dice Combinations with Minimum Throws
+**Problem**: Count ways to achieve sum n using at least k dice throws.
 
-#### **Variation 3: Count Ways with Maximum Throws**
-**Problem**: Count ways to make sum n using at most k dice throws.
+**Link**: [CSES Problem Set - Dice Combinations Minimum Throws](https://cses.fi/problemset/task/dice_combinations_minimum_throws)
+
 ```python
-def dice_combinations_with_limit(n, k):
+def dice_combinations_minimum_throws(n, min_throws):
     MOD = 10**9 + 7
-    # dp[i][j] = ways to make sum i using exactly j throws
-    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp = [[0] * (n + 1) for _ in range(min_throws + 1)]
     dp[0][0] = 1
     
-    for i in range(n + 1):
-        for j in range(k + 1):
+    for throws in range(1, min_throws + 1):
+        for sum_val in range(1, n + 1):
             for dice in range(1, 7):
-                if i >= dice and j > 0:
-                    dp[i][j] = (dp[i][j] + dp[i - dice][j - 1]) % MOD
+                if sum_val >= dice:
+                    dp[throws][sum_val] = (dp[throws][sum_val] + dp[throws-1][sum_val-dice]) % MOD
     
-    # Sum all ways with at most k throws
-    result = 0
-    for j in range(k + 1):
-        result = (result + dp[n][j]) % MOD
-    return result
+    return dp[min_throws][n]
 ```
 
-#### **Variation 4: Unbounded vs Bounded Dice**
-**Problem**: What if you can only use each dice value a limited number of times?
+### Variation 3: Dice Combinations with Maximum Throws
+**Problem**: Count ways to achieve sum n using at most k dice throws.
+
+**Link**: [CSES Problem Set - Dice Combinations Maximum Throws](https://cses.fi/problemset/task/dice_combinations_maximum_throws)
+
 ```python
-def bounded_dice_combinations(n, limits):
-    # limits[i] = max times you can use dice value i+1
+def dice_combinations_maximum_throws(n, max_throws):
     MOD = 10**9 + 7
-    dp = [0] * (n + 1)
-    dp[0] = 1
+    dp = [[0] * (n + 1) for _ in range(max_throws + 1)]
+    dp[0][0] = 1
     
-    for dice in range(1, 7):
-        for i in range(n, dice - 1, -1):  # Process backwards
-            for count in range(1, limits[dice - 1] + 1):
-                if i >= dice * count:
-                    dp[i] = (dp[i] + dp[i - dice * count]) % MOD
+    for throws in range(1, max_throws + 1):
+        for sum_val in range(n + 1):
+            dp[throws][sum_val] = dp[throws-1][sum_val]  # Don't throw
+            for dice in range(1, 7):
+                if sum_val >= dice:
+                    dp[throws][sum_val] = (dp[throws][sum_val] + dp[throws-1][sum_val-dice]) % MOD
     
-    return dp[n]
+    return sum(dp[throws][n] for throws in range(max_throws + 1)) % MOD
 ```
 
-#### **Variation 5: Probability of Reaching Sum**
-**Problem**: What's the probability of reaching sum n with fair dice?
-```python
-def dice_probability(n, max_throws=100):
-    # dp[i][j] = probability of reaching sum i in j throws
-    dp = [[0.0] * (max_throws + 1) for _ in range(n + 1)]
-    dp[0][0] = 1.0
-    
-    for j in range(max_throws):
-        for i in range(n + 1):
-            if dp[i][j] > 0:
-                for dice in range(1, 7):
-                    if i + dice <= n:
-                        dp[i + dice][j + 1] += dp[i][j] / 6.0
-    
-    # Sum probabilities of reaching n in any number of throws
-    return sum(dp[n][j] for j in range(max_throws + 1))
-```
+## 🔗 Related Problems
 
-### 🔗 **Related Problems & Concepts**
+- **[Coin Combinations I](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar DP pattern for counting combinations
+- **[Minimizing Coins](/cses-analyses/problem_soulutions/dynamic_programming/)**: DP optimization problems
+- **[Counting Sequences](/cses-analyses/problem_soulutions/dynamic_programming/)**: Counting problems with DP
+- **[Money Sums](/cses-analyses/problem_soulutions/dynamic_programming/)**: DP problems with sum constraints
 
-#### **1. Coin Change Problems**
-- **Unbounded Knapsack**: Use unlimited coins of each denomination
-- **Bounded Knapsack**: Limited number of each coin type
-- **Minimum Coins**: Find minimum coins needed
-- **All Possible Combinations**: Count all ways to make change
+## 📚 Learning Points
 
-#### **2. Dynamic Programming Patterns**
-- **1D DP**: Single state variable (sum)
-- **2D DP**: Two state variables (sum, number of items)
-- **State Compression**: Optimize space complexity
-- **Memoization**: Top-down approach with caching
+1. **Dynamic Programming**: Essential for understanding counting problems with recurrence relations
+2. **Bottom-Up DP**: Key technique for building solutions from smaller subproblems
+3. **Memoization**: Important for optimizing recursive solutions
+4. **Modular Arithmetic**: Critical for handling large numbers in competitive programming
+5. **State Transitions**: Foundation for understanding DP recurrence relations
+6. **Counting Principles**: Critical for understanding combinatorial problems
 
-#### **3. Combinatorics Problems**
-- **Permutations**: Order matters
-- **Combinations**: Order doesn't matter
-- **Partitions**: Ways to partition a number
-- **Catalan Numbers**: Special counting sequences
+## 📝 Summary
 
-#### **4. Optimization Problems**
-- **Shortest Path**: Minimum steps to reach target
-- **Longest Path**: Maximum steps to reach target
-- **Resource Allocation**: Optimal use of limited resources
-- **Scheduling**: Optimal arrangement of tasks
+The Dice Combinations problem demonstrates dynamic programming and counting principles for efficient combination counting. We explored three approaches:
 
-#### **5. Probability & Statistics**
-- **Expected Value**: Average outcome over many trials
-- **Variance**: Spread of outcomes
-- **Markov Chains**: State transition probabilities
-- **Monte Carlo**: Simulation-based probability estimation
+1. **Recursive Brute Force**: O(6^n) time complexity using recursive exploration, inefficient due to exponential growth
+2. **Recursive with Memoization**: O(n) time complexity using memoization, better approach for recursive problems
+3. **Bottom-Up Dynamic Programming**: O(n) time complexity with iterative DP, optimal approach for competitive programming
 
-### 🎯 **Competitive Programming Variations**
-
-#### **1. Multiple Test Cases with Different Constraints**
-```python
-t = int(input())
-for _ in range(t):
-    n, k = map(int, input().split())
-    # n = target sum, k = max throws
-    result = dice_combinations_with_limit(n, k)
-    print(result)
-```
-
-#### **2. Range Queries**
-```python
-# Precompute for range [1, max_n]
-def precompute_dice_combinations(max_n):
-    MOD = 10**9 + 7
-    dp = [0] * (max_n + 1)
-    dp[0] = 1
-    
-    for i in range(1, max_n + 1):
-        for dice in range(1, 7):
-            if i >= dice:
-                dp[i] = (dp[i] + dp[i - dice]) % MOD
-    
-    return dp
-
-# Answer range queries
-def range_query(l, r, dp):
-    return sum(dp[i] for i in range(l, r + 1))
-```
-
-#### **3. Interactive Problems**
-```python
-# Interactive dice game
-def interactive_dice_game():
-    target = int(input())
-    current_sum = 0
-    throws = 0
-    
-    while current_sum < target:
-        dice = int(input())  # Player chooses dice value
-        if 1 <= dice <= 6:
-            current_sum += dice
-            throws += 1
-            print(f"Current sum: {current_sum}, 
-Throws: {throws}")
-        else:
-            print("Invalid dice value!")
-    
-    print(f"Reached target in {throws} throws!")
-```
-
-### 🧮 **Mathematical Extensions**
-
-#### **1. Generating Functions**
-- **Power Series**: Represent combinations as polynomial coefficients
-- **Recurrence Relations**: Find closed-form solutions
-- **Asymptotic Analysis**: Analyze behavior for large n
-- **Combinatorial Identities**: Prove mathematical relationships
-
-#### **2. Number Theory Connections**
-- **Modular Arithmetic**: Work with large numbers
-- **Prime Factorization**: Analyze divisibility properties
-- **Chinese Remainder Theorem**: Solve modular equations
-- **Euler's Totient Function**: Count coprime numbers
-
-#### **3. Advanced DP Techniques**
-- **Digit DP**: Count numbers with specific properties
-- **Convex Hull Trick**: Optimize DP transitions
-- **Divide and Conquer**: Split problems into subproblems
-- **Persistent Data Structures**: Maintain history of states
-
-### 📚 **Learning Resources**
-
-#### **1. Related Algorithms**
-- **Knapsack Algorithms**: 0/1, unbounded, fractional
-- **Subset Sum**: Find subsets with given sum
-- **Partition Problems**: Divide set into equal parts
-- **Scheduling Algorithms**: Optimal task arrangement
-
-#### **2. Mathematical Concepts**
-- **Combinatorics**: Counting principles and techniques
-- **Probability Theory**: Random processes and outcomes
-- **Number Theory**: Properties of integers
-- **Linear Algebra**: Matrix operations and transformations
-
-#### **3. Programming Concepts**
-- **Dynamic Programming**: Optimal substructure and overlapping subproblems
-- **Memoization**: Caching computed results
-- **Space-Time Trade-offs**: Optimizing for different constraints
-- **Modular Arithmetic**: Handling large numbers efficiently
-
----
-
-*This analysis demonstrates the power of dynamic programming for counting problems and shows various extensions and applications.* 
+The key insights include understanding dynamic programming principles, using bottom-up approaches for efficient computation, and applying modular arithmetic for large number handling. This problem serves as an excellent introduction to dynamic programming and counting problems in competitive programming.

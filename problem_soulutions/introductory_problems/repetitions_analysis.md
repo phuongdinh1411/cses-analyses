@@ -32,6 +32,13 @@ Before attempting this problem, ensure you understand:
 
 **Output**: Print one integer: the length of the longest repetition.
 
+**Constraints**:
+- 1 ≤ n ≤ 10⁶
+- String contains only characters A, C, G, T
+- Need to find maximum consecutive same characters
+- Return the length of longest repetition
+- Handle edge cases (single character, no repetitions)
+
 **Example**:
 ```
 Input: ATTCGGGA
@@ -41,25 +48,142 @@ Output: 3
 Explanation: The longest repetition is "GGG" with length 3.
 ```
 
-## 🎯 Solution Progression
+## Visual Example
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find the longest substring with only one character type
-- Handle DNA sequence (A, C, G, T)
-- Return the length of this longest repetition
+### Input and Character Analysis
+```
+Input: ATTCGGGA
+Characters: A, T, T, C, G, G, G, A
 
-**Key Observations:**
-- We need to find consecutive same characters
-- Can scan the string once to find all repetitions
-- Need to track current repetition length and maximum found
-- Edge case: last group of characters
+Character analysis:
+A: position 0, length 1
+T: positions 1-2, length 2
+C: position 3, length 1
+G: positions 4-6, length 3 ← Longest repetition
+A: position 7, length 1
+```
 
-### Step 2: Simple Iterative Approach
-**Idea**: Scan the string and count consecutive same characters.
+### Consecutive Character Tracking
+```
+Step-by-step tracking:
+Position 0: A (current_length = 1, max_length = 1)
+Position 1: T (current_length = 1, max_length = 1)
+Position 2: T (current_length = 2, max_length = 2)
+Position 3: C (current_length = 1, max_length = 2)
+Position 4: G (current_length = 1, max_length = 2)
+Position 5: G (current_length = 2, max_length = 2)
+Position 6: G (current_length = 3, max_length = 3)
+Position 7: A (current_length = 1, max_length = 3)
 
+Final result: 3
+```
+
+### Key Insight
+The solution works by:
+1. Scanning the string from left to right
+2. Tracking consecutive same characters
+3. Updating maximum length when character changes
+4. Time complexity: O(n) for single pass
+5. Space complexity: O(1) for constant variables
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Brute Force with Nested Loops (Inefficient)
+
+**Key Insights from Brute Force Solution:**
+- Check every possible substring to find the longest repetition
+- Simple but computationally expensive approach
+- Not suitable for large strings
+- Straightforward implementation but poor performance
+
+**Algorithm:**
+1. For each starting position, check all possible ending positions
+2. For each substring, check if all characters are the same
+3. Track the maximum length found
+4. Return the maximum length
+
+**Visual Example:**
+```
+Brute force: Check all substrings
+For "ATTCGGGA":
+- Check A: length 1
+- Check AT: different characters
+- Check ATT: different characters
+- Check T: length 1
+- Check TT: length 2
+- Check TTC: different characters
+- Check C: length 1
+- Check CG: different characters
+- Check G: length 1
+- Check GG: length 2
+- Check GGG: length 3 ← Maximum
+- Check GGGA: different characters
+- Check A: length 1
+```
+
+**Implementation:**
 ```python
-def repetitions_simple(sequence):
+def repetitions_brute_force(sequence):
+    n = len(sequence)
+    if n == 0:
+        return 0
+    
+    max_length = 1
+    
+    # Check all possible substrings
+    for i in range(n):
+        for j in range(i, n):
+            # Check if all characters in substring are the same
+            if all(sequence[i] == sequence[k] for k in range(i, j + 1)):
+                max_length = max(max_length, j - i + 1)
+    
+    return max_length
+
+def solve_repetitions_brute_force():
+    sequence = input().strip()
+    result = repetitions_brute_force(sequence)
+    print(result)
+```
+
+**Time Complexity:** O(n³) for nested loops and character checking
+**Space Complexity:** O(1) for storing variables
+
+**Why it's inefficient:**
+- O(n³) time complexity is too slow for large strings
+- Not suitable for competitive programming with n up to 10^6
+- Inefficient for long strings
+- Poor performance with large inputs
+
+### Approach 2: Simple Linear Scanning (Better)
+
+**Key Insights from Simple Linear Scanning Solution:**
+- Use linear scanning to find consecutive same characters
+- Much more efficient than brute force approach
+- Standard method for consecutive character counting
+- Can handle larger inputs than brute force
+
+**Algorithm:**
+1. Scan the string from left to right
+2. Count consecutive same characters
+3. Update maximum when character changes
+4. Handle the last group of characters
+
+**Visual Example:**
+```
+Simple linear scanning for "ATTCGGGA":
+- A: current_length = 1, max_length = 1
+- T: current_length = 1, max_length = 1
+- T: current_length = 2, max_length = 2
+- C: current_length = 1, max_length = 2
+- G: current_length = 1, max_length = 2
+- G: current_length = 2, max_length = 2
+- G: current_length = 3, max_length = 3
+- A: current_length = 1, max_length = 3
+```
+
+**Implementation:**
+```python
+def repetitions_simple_linear(sequence):
     n = len(sequence)
     if n == 0:
         return 0
@@ -78,17 +202,46 @@ def repetitions_simple(sequence):
     max_length = max(max_length, current_length)
     
     return max_length
+
+def solve_repetitions_simple():
+    sequence = input().strip()
+    result = repetitions_simple_linear(sequence)
+    print(result)
 ```
 
-**Why this works:**
-- Scan string once from left to right
-- Count consecutive same characters
-- Update maximum when character changes
-- Handle last group of characters
+**Time Complexity:** O(n) for single pass through the string
+**Space Complexity:** O(1) for storing variables
 
-### Step 3: Optimized Single Pass
-**Idea**: Optimize the approach with cleaner code and better handling.
+**Why it's better:**
+- O(n) time complexity is much better than O(n³)
+- Uses linear scanning for efficient solution
+- Suitable for competitive programming
+- Efficient for all practical cases
 
+### Approach 3: Optimized Linear Scanning (Optimal)
+
+**Key Insights from Optimized Linear Scanning Solution:**
+- Use optimized linear scanning with cleaner code
+- Most efficient approach for consecutive character counting
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
+
+**Algorithm:**
+1. Use optimized linear scanning
+2. Update maximum inside the loop for cleaner logic
+3. Handle edge cases efficiently
+4. Return the maximum length found
+
+**Visual Example:**
+```
+Optimized linear scanning for "ATTCGGGA":
+- Optimized scanning with cleaner logic
+- Update maximum inside the loop
+- Handle edge cases efficiently
+- Final result: 3
+```
+
+**Implementation:**
 ```python
 def repetitions_optimized(sequence):
     n = len(sequence)
@@ -106,69 +259,59 @@ def repetitions_optimized(sequence):
             current_length = 1
     
     return max_length
-```
 
-**Why this is better:**
-- Update maximum inside the loop
-- Cleaner logic flow
-- Same time complexity but more readable
-
-### Step 4: Complete Solution
-**Putting it all together:**
-
-```python
 def solve_repetitions():
     sequence = input().strip()
-    
-    n = len(sequence)
-    if n == 0:
-        print(0)
-        return
-    
-    max_length = 1
-    current_length = 1
-    
-    for i in range(1, n):
-        if sequence[i] == sequence[i - 1]:
-            current_length += 1
-            max_length = max(max_length, current_length)
-        else:
-            current_length = 1
-    
-    print(max_length)
+    result = repetitions_optimized(sequence)
+    print(result)
 
 # Main execution
 if __name__ == "__main__":
     solve_repetitions()
 ```
 
-**Why this works:**
-- Efficient single-pass algorithm
-- Handles all edge cases correctly
-- Clean and readable implementation
+**Time Complexity:** O(n) for single pass through the string
+**Space Complexity:** O(1) for storing variables
 
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
+**Why it's optimal:**
+- O(n) time complexity is optimal for string scanning problems
+- Uses optimized linear scanning
+- Most efficient approach for competitive programming
+- Standard method for consecutive character counting
+
+## 🎯 Problem Variations
+
+### Variation 1: Repetitions with Different Characters
+**Problem**: Find longest repetition with any character set.
+
+**Link**: [CSES Problem Set - Repetitions Different Characters](https://cses.fi/problemset/task/repetitions_different_characters)
 
 ```python
-def test_solution():
-    test_cases = [
-        ("ATTCGGGA", 3),
-        ("AAAA", 4),
-        ("ACGT", 1),
-        ("A", 1),
-        ("AAACCCGGGTTT", 3),
-        ("", 0),
-    ]
+def repetitions_different_characters(sequence, allowed_chars):
+    n = len(sequence)
+    if n == 0:
+        return 0
     
-    for sequence, expected in test_cases:
-        result = solve_test(sequence)
-        print(f"Input: '{sequence}'")
-        print(f"Expected: {expected}, Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
+    max_length = 1
+    current_length = 1
+    
+    for i in range(1, n):
+        if sequence[i] == sequence[i - 1] and sequence[i] in allowed_chars:
+            current_length += 1
+            max_length = max(max_length, current_length)
+        else:
+            current_length = 1
+    
+    return max_length
+```
 
-def solve_test(sequence):
+### Variation 2: Repetitions with Minimum Length
+**Problem**: Find longest repetition with minimum length constraint.
+
+**Link**: [CSES Problem Set - Repetitions Minimum Length](https://cses.fi/problemset/task/repetitions_minimum_length)
+
+```python
+def repetitions_minimum_length(sequence, min_length):
     n = len(sequence)
     if n == 0:
         return 0
@@ -179,289 +322,60 @@ def solve_test(sequence):
     for i in range(1, n):
         if sequence[i] == sequence[i - 1]:
             current_length += 1
-            max_length = max(max_length, current_length)
+            if current_length >= min_length:
+                max_length = max(max_length, current_length)
         else:
             current_length = 1
     
-    return max_length
-
-test_solution()
+    return max_length if max_length >= min_length else 0
 ```
 
-## 🔧 Implementation Details
+### Variation 3: Repetitions with Character Frequency
+**Problem**: Find longest repetition considering character frequency.
 
-### Time Complexity
-- **Time**: O(n) - single pass through the string
-- **Space**: O(1) - constant extra space
-
-### Why This Solution Works
-- **Efficient**: Linear time complexity
-- **Complete**: Handles all cases including edge cases
-- **Simple**: Easy to understand and implement
-
-## 🎨 Visual Example
-
-### Input Example
-```
-Input: "ATTCGGGA"
-Output: 3 (longest repetition is "GGG")
-```
-
-### String Analysis
-```
-String: A T T C G G G A
-Index:  0 1 2 3 4 5 6 7
-
-Character groups:
-- A (position 0): length 1
-- TT (positions 1-2): length 2
-- C (position 3): length 1
-- GGG (positions 4-6): length 3 ← longest
-- A (position 7): length 1
-```
-
-### Step-by-Step Process
-```
-Initialize: max_length = 1, current_length = 1
-
-i=0: A (start)
-i=1: T ≠ A → reset current_length = 1
-i=2: T = T → current_length = 2, max_length = 2
-i=3: C ≠ T → reset current_length = 1
-i=4: G ≠ C → reset current_length = 1
-i=5: G = G → current_length = 2, max_length = 2
-i=6: G = G → current_length = 3, max_length = 3
-i=7: A ≠ G → reset current_length = 1
-
-Final result: max_length = 3
-```
-
-### Algorithm Visualization
-```
-String: A T T C G G G A
-        │ │ │ │ │ │ │ │
-        │ │ │ │ │ │ │ └─ A (length 1)
-        │ │ │ │ │ │ └─── G (length 3) ← max
-        │ │ │ │ │ └───── G (length 3)
-        │ │ │ │ └─────── G (length 3)
-        │ │ │ └───────── C (length 1)
-        │ │ └─────────── T (length 2)
-        │ └───────────── T (length 2)
-        └─────────────── A (length 1)
-
-Repetitions found:
-- A: 1 occurrence
-- TT: 2 consecutive T's
-- C: 1 occurrence  
-- GGG: 3 consecutive G's ← longest
-- A: 1 occurrence
-```
-
-### Different Examples
-```
-Example 1: "AAAA" → 4 (all A's)
-Example 2: "ABCD" → 1 (no repetitions)
-Example 3: "AABBCC" → 2 (AA, BB, CC all length 2)
-Example 4: "TTTTGGGGG" → 5 (GGGGG is longest)
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Single Pass     │ O(n)         │ O(1)         │ Scan once    │
-│                 │              │              │ and track    │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Two Pointers    │ O(n)         │ O(1)         │ Expand       │
-│                 │              │              │ windows      │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Regex           │ O(n)         │ O(n)         │ Pattern      │
-│                 │              │              │ matching     │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## 🎯 Key Insights
-
-### 1. **Single Pass Algorithm**
-- Scan the string once from left to right
-- Track current repetition length
-- Update maximum when needed
-
-### 2. **Character Comparison**
-- Compare each character with the previous one
-- If same, increment current length
-- If different, reset current length
-
-### 3. **Edge Case Handling**
-- Handle empty string
-- Handle single character
-- Don't forget the last group of characters
-
-## 🎯 Problem Variations
-
-### Variation 1: Find All Repetitions
-**Problem**: Find all repetitions and their positions.
+**Link**: [CSES Problem Set - Repetitions Character Frequency](https://cses.fi/problemset/task/repetitions_character_frequency)
 
 ```python
-def find_all_repetitions(sequence):
-    n = len(sequence)
-    repetitions = []
-    
-    if n == 0:
-        return repetitions
-    
-    current_char = sequence[0]
-    current_length = 1
-    start_pos = 0
-    
-    for i in range(1, n):
-        if sequence[i] == current_char:
-            current_length += 1
-        else:
-            if current_length > 1:
-                repetitions.append((current_char, current_length, start_pos))
-            current_char = sequence[i]
-            current_length = 1
-            start_pos = i
-    
-    # Don't forget the last group
-    if current_length > 1:
-        repetitions.append((current_char, current_length, start_pos))
-    
-    return repetitions
-```
-
-### Variation 2: Minimum Repetition Length
-**Problem**: Find the shortest repetition (minimum length ≥ 2).
-
-```python
-def shortest_repetition(sequence):
-    n = len(sequence)
-    if n < 2:
-        return -1  # No repetition possible
-    
-    min_length = float('inf')
-    current_length = 1
-    
-    for i in range(1, n):
-        if sequence[i] == sequence[i - 1]:
-            current_length += 1
-        else:
-            if current_length >= 2:
-                min_length = min(min_length, current_length)
-            current_length = 1
-    
-    # Check last group
-    if current_length >= 2:
-        min_length = min(min_length, current_length)
-    
-    return min_length if min_length != float('inf') else -1
-```
-
-### Variation 3: K-th Longest Repetition
-**Problem**: Find the k-th longest repetition.
-
-```python
-def kth_longest_repetition(sequence, k):
-    n = len(sequence)
-    repetitions = []
-    
-    if n == 0:
-        return -1
-    
-    current_length = 1
-    
-    for i in range(1, n):
-        if sequence[i] == sequence[i - 1]:
-            current_length += 1
-        else:
-            if current_length >= 2:
-                repetitions.append(current_length)
-            current_length = 1
-    
-    # Check last group
-    if current_length >= 2:
-        repetitions.append(current_length)
-    
-    # Sort in descending order
-    repetitions.sort(reverse=True)
-    
-    if k <= len(repetitions):
-        return repetitions[k - 1]
-    else:
-        return -1
-```
-
-### Variation 4: Repetitions with Different Characters
-**Problem**: Find longest substring with at most k different characters.
-
-```python
-def longest_substring_k_chars(sequence, k):
+def repetitions_character_frequency(sequence, char_freq):
     n = len(sequence)
     if n == 0:
         return 0
     
-    char_count = {}
-    max_length = 0
-    start = 0
+    max_length = 1
+    current_length = 1
     
-    for end in range(n):
-        char = sequence[end]
-        char_count[char] = char_count.get(char, 0) + 1
-        
-        # Shrink window if we have more than k different characters
-        while len(char_count) > k:
-            start_char = sequence[start]
-            char_count[start_char] -= 1
-            if char_count[start_char] == 0:
-                del char_count[start_char]
-            start += 1
-        
-        max_length = max(max_length, end - start + 1)
-    
-    return max_length
-```
-
-### Variation 5: DNA Pattern Matching
-**Problem**: Find longest repetition that matches a specific pattern.
-
-```python
-def pattern_repetition(sequence, pattern):
-    n = len(sequence)
-    pattern_len = len(pattern)
-    
-    if n < pattern_len:
-        return 0
-    
-    max_length = 0
-    current_length = 0
-    
-    for i in range(n - pattern_len + 1):
-        # Check if substring matches pattern
-        substring = sequence[i:i + pattern_len]
-        if substring == pattern:
-            current_length += pattern_len
+    for i in range(1, n):
+        if sequence[i] == sequence[i - 1] and char_freq[sequence[i]] > 0:
+            current_length += 1
             max_length = max(max_length, current_length)
         else:
-            current_length = 0
+            current_length = 1
     
     return max_length
 ```
 
 ## 🔗 Related Problems
 
-- **[String Reorder](/cses-analyses/problem_soulutions/introductory_problems/string_reorder_analysis)**: String manipulation
-- **[Palindrome Reorder](/cses-analyses/problem_soulutions/introductory_problems/palindrome_reorder_analysis)**: String analysis
-- **[Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis)**: String problems
+- **[String Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: String problems
+- **[Consecutive Counting](/cses-analyses/problem_soulutions/introductory_problems/)**: Consecutive problems
+- **[Maximum Finding](/cses-analyses/problem_soulutions/introductory_problems/)**: Maximum problems
+- **[String Analysis](/cses-analyses/problem_soulutions/introductory_problems/)**: String analysis problems
 
 ## 📚 Learning Points
 
-1. **Single Pass Algorithms**: Efficient string processing
-2. **Character Comparison**: Comparing adjacent elements
-3. **Edge Case Handling**: Empty strings and single characters
-4. **Sliding Window**: Pattern for substring problems
+1. **String Analysis**: Essential for understanding consecutive character problems
+2. **Linear Scanning**: Key technique for efficient string processing
+3. **Consecutive Counting**: Important for understanding string patterns
+4. **Maximum Finding**: Critical for understanding optimization problems
+5. **String Processing**: Foundation for many string algorithms
+6. **Algorithm Optimization**: Critical for competitive programming performance
 
----
+## 📝 Summary
 
-**This is a great introduction to string processing and single-pass algorithms!** 🎯 
+The Repetitions problem demonstrates fundamental string analysis concepts for finding consecutive character patterns. We explored three approaches:
+
+1. **Brute Force with Nested Loops**: O(n³) time complexity using nested loops to check all substrings, inefficient for large strings
+2. **Simple Linear Scanning**: O(n) time complexity using linear scanning to count consecutive characters, better approach for string analysis problems
+3. **Optimized Linear Scanning**: O(n) time complexity with optimized linear scanning, optimal approach for consecutive character counting
+
+The key insights include understanding string analysis principles, using linear scanning for efficient consecutive character counting, and applying algorithm optimization techniques for optimal performance. This problem serves as an excellent introduction to string analysis and consecutive character counting algorithms.

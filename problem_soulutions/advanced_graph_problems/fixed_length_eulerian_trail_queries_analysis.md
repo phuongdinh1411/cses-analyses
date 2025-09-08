@@ -25,24 +25,26 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
 - **Related Problems**: Fixed Length Eulerian Circuit Queries (similar matrix approach), Mail Delivery (Eulerian paths), Fixed Length Trail Queries (trail counting)
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a directed graph with n nodes and q queries, for each query find the number of Eulerian trails of length k from node a to node b.
 
-### Input
-The first input line has two integers n and q: the number of nodes and queries.
-Then there are n lines describing the adjacency matrix. Each line has n integers: 1 if there is an edge, 0 otherwise.
-Finally, there are q lines describing the queries. Each line has three integers a, b, and k: find Eulerian trails from a to b of length k.
+**Input**: 
+- n: number of nodes
+- q: number of queries
+- n lines: adjacency matrix (1 if edge exists, 0 otherwise)
+- q lines: a b k (find Eulerian trails from node a to b of length k)
 
-### Output
-Print the answer to each query modulo 10^9 + 7.
+**Output**: 
+- Answer to each query modulo 10^9 + 7
 
-### Constraints
+**Constraints**:
 - 1 ≤ n ≤ 100
 - 1 ≤ q ≤ 10^5
 - 1 ≤ k ≤ 10^9
 - 1 ≤ a,b ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 3 2
@@ -55,6 +57,15 @@ Input:
 Output:
 1
 1
+
+Explanation**: 
+Query 1: Eulerian trails from node 1 to 2 of length 2
+- Trail: 1 → 2 → 3 → 1 → 2 (uses each edge exactly once)
+- Result: 1
+
+Query 2: Eulerian trails from node 2 to 3 of length 3
+- Trail: 2 → 3 → 1 → 2 → 3 (uses each edge exactly once)
+- Result: 1
 ```
 
 ### 📊 Visual Example
@@ -143,7 +154,7 @@ For Eulerian Trail:
 - At most 2 vertices can have odd degree
 ```
 
-## Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
 ### Approach 1: Matrix Exponentiation for Eulerian Trails - O(n³ log k)
 **Description**: Use matrix exponentiation to find the number of Eulerian trails of length k.

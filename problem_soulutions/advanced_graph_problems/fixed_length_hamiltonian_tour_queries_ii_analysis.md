@@ -25,9 +25,9 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Matrix multiplication, modular arithmetic, dynamic programming, constraint handling
 - **Related Problems**: Fixed Length Hamiltonian Tour Queries (basic version), Hamiltonian Flights (Hamiltonian paths), Fixed Length Tour Queries (tour counting)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a graph, answer queries about Hamiltonian tours (cycles visiting each vertex exactly once) of fixed length with additional constraints.
+Given a graph, answer queries about Hamiltonian tours (cycles visiting each vertex exactly once) of fixed length with additional constraints.
 
 **Input**: 
 - n, m: number of vertices and edges
@@ -35,7 +35,14 @@ Before attempting this problem, ensure you understand:
 - q: number of queries
 - q lines: u v k (query: is there a Hamiltonian tour of length k from u to v?)
 
-**Output**: For each query, print "YES" if Hamiltonian tour exists, "NO" otherwise.
+**Output**: 
+- For each query, print "YES" if Hamiltonian tour exists, "NO" otherwise
+
+**Constraints**:
+- 1 ≤ n ≤ 20
+- 1 ≤ m ≤ 400
+- 1 ≤ q ≤ 10^5
+- 1 ≤ k ≤ n
 
 **Example**:
 ```
@@ -55,7 +62,7 @@ YES
 NO
 NO
 
-Explanation: 
+Explanation**: 
 Hamiltonian tour 1→2→3→4→1 has length 4 from 1 to 1
 No Hamiltonian tour of length 4 from 1 to 2
 No Hamiltonian tour of length 3 from 2 to 3

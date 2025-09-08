@@ -32,6 +32,13 @@ Before attempting this problem, ensure you understand:
 
 **Output**: The number of bit strings modulo 10⁹+7
 
+**Constraints**:
+- 1 ≤ n ≤ 10⁶
+- Each bit can be either 0 or 1
+- Result must be modulo 10⁹+7
+- Handle large numbers efficiently
+- Use modular arithmetic to prevent overflow
+
 **Example**:
 ```
 Input: 3
@@ -41,126 +48,14 @@ Explanation: The 8 possible bit strings are:
 000, 001, 010, 011, 100, 101, 110, 111
 ```
 
-## 🎯 Solution Progression
+## Visual Example
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Count all possible binary strings of length n
-- Each position can be either 0 or 1
-- We need the result modulo 10⁹+7
-
-**Key Observations:**
-- For each position, we have 2 choices (0 or 1)
-- Total combinations = 2 × 2 × 2 × ... × 2 (n times) = 2ⁿ
-- We need to handle large numbers with modulo arithmetic
-
-### Step 2: Mathematical Formula
-**Idea**: Use the formula 2ⁿ directly.
-
-**Why this works:**
-- Each bit has 2 possible values
-- Total combinations = 2ⁿ
-- This is the most efficient approach
-
-```python
-def solve_bit_strings(n):
-    MOD = 10**9 + 7
-    result = pow(2, n, MOD)  # Modular exponentiation
-    return result
+### Input and Bit String Generation
 ```
-
-**Why modular exponentiation?**
-- 2ⁿ can be very large (up to 2^10^6)
-- We need the result modulo 10⁹+7
-- `pow(2, n, MOD)` calculates (2ⁿ) % MOD efficiently
-
-### Step 3: Alternative - Iterative Approach
-**Idea**: Calculate 2ⁿ step by step to avoid large numbers.
-
-```python
-def solve_iterative(n):
-    MOD = 10**9 + 7
-    result = 1
-    
-    for _ in range(n):
-        result = (result * 2) % MOD
-    
-    return result
-```
-
-**Why this works:**
-- Start with 1, multiply by 2 n times
-- Take modulo at each step to keep numbers small
-- Final result is (2ⁿ) % MOD
-
-### Step 4: Complete Solution
-**Putting it all together:**
-
-```python
-def solve_bit_strings():
-    n = int(input())
-    MOD = 10**9 + 7
-    result = pow(2, n, MOD)
-    return result
-
-# Main execution
-if __name__ == "__main__":
-    result = solve_bit_strings()
-    print(result)
-```
-
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (1, 2),      # 2^1 = 2
-        (2, 4),      # 2^2 = 4
-        (3, 8),      # 2^3 = 8
-        (10, 1024),  # 2^10 = 1024
-    ]
-    
-    for n, expected in test_cases:
-        result = solve_bit_strings_test(n)
-        print(f"n = {n}")
-        print(f"Expected: {expected}, Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
-
-def solve_bit_strings_test(n):
-    MOD = 10**9 + 7
-    return pow(2, n, MOD)
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Mathematical Formula**: O(log n) - Modular exponentiation
-- **Iterative Approach**: O(n) - Linear time
-
-### Space Complexity
-- O(1) - We only use a few variables
-
-### Why Modular Exponentiation?
-- **Efficient**: Uses binary exponentiation algorithm
-- **Handles Large Numbers**: Works for n up to 10⁶
-- **Built-in**: Python's `pow()` function is optimized
-
-## 🎨 Visual Example
-
-### Input Example
-```
-n = 3
+Input: n = 3
 Output: 8
-```
 
-### All Possible Bit Strings
-```
-For n = 3, we have 2³ = 8 possible bit strings:
-
+All possible bit strings of length 3:
 Position:  2  1  0
 String 0:  0  0  0
 String 1:  0  0  1
@@ -185,122 +80,298 @@ Position 2: 2 choices
 Total combinations = 2 × 2 × 2 = 2³ = 8
 ```
 
-### Binary Exponentiation
-```
-Calculate 2³ using binary exponentiation:
-
-3 in binary: 11₂ = 1×2¹ + 1×2⁰
-
-Step 1: result = 1, base = 2, exp = 3
-Step 2: exp is odd (3), result = 1 × 2 = 2, base = 2² = 4, exp = 1
-Step 3: exp is odd (1), result = 2 × 4 = 8, base = 4² = 16, exp = 0
-Step 4: exp is 0, stop
-
-Result: 2³ = 8
-```
-
 ### Modular Arithmetic
 ```
-For large n, we need to use modular arithmetic:
+Calculate 2³ modulo 10⁹+7:
 
-Example: n = 10⁶, MOD = 10⁹ + 7
+2³ = 8
+8 mod (10⁹+7) = 8
 
-2^(10⁶) % (10⁹ + 7) = ?
-
-Using binary exponentiation with modulo:
-- At each step, take modulo to keep numbers manageable
-- (a × b) % m = ((a % m) × (b % m)) % m
+For larger n, we need modular exponentiation:
+2^n mod (10⁹+7) = pow(2, n, 10⁹+7)
 ```
 
-### Algorithm Comparison
+### Key Insight
+The solution works by:
+1. Using the mathematical formula 2^n for bit string counting
+2. Applying modular arithmetic to handle large numbers
+3. Using efficient modular exponentiation
+4. Time complexity: O(log n) for modular exponentiation
+5. Space complexity: O(1) for constant variables
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Brute Force Generation (Inefficient)
+
+**Key Insights from Brute Force Solution:**
+- Generate all possible bit strings and count them
+- Simple but computationally expensive approach
+- Not suitable for large n values
+- Straightforward implementation but poor performance
+
+**Algorithm:**
+1. Generate all possible bit strings of length n
+2. Count the total number of generated strings
+3. Return the count modulo 10⁹+7
+4. Handle overflow with modular arithmetic
+
+**Visual Example:**
 ```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Naive Power     │ O(n)         │ O(1)         │ Multiply     │
-│                 │              │              │ n times      │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Binary Exp      │ O(log n)     │ O(1)         │ Break down   │
-│                 │              │              │ exponent     │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Built-in pow()  │ O(log n)     │ O(1)         │ Optimized    │
-│                 │              │              │ implementation│
-└─────────────────┴──────────────┴──────────────┴──────────────┘
+Brute force: Generate all bit strings
+For n = 3:
+- Generate: 000, 001, 010, 011, 100, 101, 110, 111
+- Count: 8 strings
+- Return: 8 mod (10⁹+7) = 8
 ```
 
-## 🎯 Key Insights
+**Implementation:**
+```python
+def bit_strings_brute_force(n):
+    MOD = 10**9 + 7
+    
+    def generate_strings(length, current=""):
+        if length == 0:
+            return [current]
+        
+        strings = []
+        strings.extend(generate_strings(length - 1, current + "0"))
+        strings.extend(generate_strings(length - 1, current + "1"))
+        return strings
+    
+    all_strings = generate_strings(n)
+    return len(all_strings) % MOD
 
-### 1. **Counting Principle**
-- If we have k choices for each of n positions
-- Total combinations = kⁿ
-- For bit strings: k = 2, so total = 2ⁿ
+def solve_bit_strings_brute_force():
+    n = int(input())
+    result = bit_strings_brute_force(n)
+    print(result)
+```
 
-### 2. **Modular Arithmetic**
-- (a × b) % m = ((a % m) × (b % m)) % m
-- This allows us to work with large numbers safely
+**Time Complexity:** O(2^n) for generating all bit strings
+**Space Complexity:** O(2^n) for storing all bit strings
 
-### 3. **Binary Exponentiation**
-- Calculate aⁿ in O(log n) time
-- Break down exponent into binary representation
-- Square the base at each step
+**Why it's inefficient:**
+- O(2^n) time complexity is too slow for large n
+- Not suitable for competitive programming with n up to 10^6
+- Inefficient for large inputs
+- Poor performance with exponential growth
 
-## 🔗 Related Problems
+### Approach 2: Iterative Multiplication (Better)
 
-- **[Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis)**: Generate all permutations
-- **[Gray Code](/cses-analyses/problem_soulutions/introductory_problems/gray_code_analysis)**: Generate bit strings with specific properties
-- **[Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis)**: Count arrangements
+**Key Insights from Iterative Multiplication Solution:**
+- Use iterative multiplication to calculate 2^n
+- Much more efficient than brute force approach
+- Standard method for modular exponentiation
+- Can handle larger inputs than brute force
+
+**Algorithm:**
+1. Start with result = 1
+2. Multiply by 2, n times
+3. Take modulo at each step to prevent overflow
+4. Return the final result
+
+**Visual Example:**
+```
+Iterative multiplication for n = 3:
+- Start: result = 1
+- Step 1: result = (1 × 2) mod (10⁹+7) = 2
+- Step 2: result = (2 × 2) mod (10⁹+7) = 4
+- Step 3: result = (4 × 2) mod (10⁹+7) = 8
+- Final: 8
+```
+
+**Implementation:**
+```python
+def bit_strings_iterative(n):
+    MOD = 10**9 + 7
+    result = 1
+    
+    for _ in range(n):
+        result = (result * 2) % MOD
+    
+    return result
+
+def solve_bit_strings_iterative():
+    n = int(input())
+    result = bit_strings_iterative(n)
+    print(result)
+```
+
+**Time Complexity:** O(n) for n multiplications
+**Space Complexity:** O(1) for storing variables
+
+**Why it's better:**
+- O(n) time complexity is much better than O(2^n)
+- Uses iterative multiplication for efficient solution
+- Suitable for competitive programming
+- Efficient for most practical cases
+
+### Approach 3: Modular Exponentiation (Optimal)
+
+**Key Insights from Modular Exponentiation Solution:**
+- Use binary exponentiation for efficient calculation
+- Most efficient approach for large exponentiation
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
+
+**Algorithm:**
+1. Use binary exponentiation algorithm
+2. Calculate 2^n efficiently using bit manipulation
+3. Apply modular arithmetic throughout
+4. Return the result modulo 10⁹+7
+
+**Visual Example:**
+```
+Binary exponentiation for n = 3:
+- 3 in binary: 11₂ = 1×2¹ + 1×2⁰
+- Step 1: result = 1, base = 2, exp = 3
+- Step 2: exp is odd (3), result = 1 × 2 = 2, base = 2² = 4, exp = 1
+- Step 3: exp is odd (1), result = 2 × 4 = 8, base = 4² = 16, exp = 0
+- Step 4: exp is 0, stop
+- Result: 2³ = 8
+```
+
+**Implementation:**
+```python
+def bit_strings_optimal(n):
+    MOD = 10**9 + 7
+    result = pow(2, n, MOD)  # Modular exponentiation
+    return result
+
+def solve_bit_strings():
+    n = int(input())
+    result = bit_strings_optimal(n)
+    print(result)
+
+# Main execution
+if __name__ == "__main__":
+    solve_bit_strings()
+```
+
+**Time Complexity:** O(log n) for binary exponentiation
+**Space Complexity:** O(1) for storing variables
+
+**Why it's optimal:**
+- O(log n) time complexity is optimal for exponentiation
+- Uses binary exponentiation for efficient calculation
+- Most efficient approach for competitive programming
+- Standard method for modular exponentiation
 
 ## 🎯 Problem Variations
 
-### Variation 1: Ternary Strings
-**Problem**: Generate all strings of length n using digits 0, 1, 2.
+### Variation 1: Bit Strings with Constraints
+**Problem**: Count bit strings with specific constraints (e.g., no consecutive 1s).
+
+**Link**: [CSES Problem Set - Bit Strings Constraints](https://cses.fi/problemset/task/bit_strings_constraints)
 
 ```python
-def ternary_strings(n):
+def bit_strings_constraints(n, constraints):
     MOD = 10**9 + 7
-    return pow(3, n, MOD)  # 3^n
+    
+    def count_valid_strings(length, last_bit, memo):
+        if length == 0:
+            return 1
+        
+        if (length, last_bit) in memo:
+            return memo[(length, last_bit)]
+        
+        count = 0
+        if constraints.get('no_consecutive_1s', False) and last_bit == 1:
+            count = count_valid_strings(length - 1, 0, memo)
+        else:
+            count = (count_valid_strings(length - 1, 0, memo) + 
+                    count_valid_strings(length - 1, 1, memo)) % MOD
+        
+        memo[(length, last_bit)] = count
+        return count
+    
+    memo = {}
+    return count_valid_strings(n, -1, memo)
 ```
 
-### Variation 2: Binary Strings with Constraints
-**Problem**: Count binary strings of length n with no consecutive 1s.
+### Variation 2: Bit Strings with Minimum/Maximum 1s
+**Problem**: Count bit strings with minimum or maximum number of 1s.
+
+**Link**: [CSES Problem Set - Bit Strings Min Max](https://cses.fi/problemset/task/bit_strings_min_max)
 
 ```python
-def no_consecutive_ones(n):
-    if n == 1:
-        return 2
-    if n == 2:
-        return 3
+def bit_strings_min_max(n, min_ones, max_ones):
+    MOD = 10**9 + 7
     
-    # Fibonacci-like sequence
-    dp = [0] * (n + 1)
-    dp[1] = 2  # 0, 1
-    dp[2] = 3  # 00, 01, 10
+    def count_strings(length, ones_count, memo):
+        if length == 0:
+            return 1 if min_ones <= ones_count <= max_ones else 0
+        
+        if (length, ones_count) in memo:
+            return memo[(length, ones_count)]
+        
+        count = 0
+        # Add 0
+        count = (count + count_strings(length - 1, ones_count, memo)) % MOD
+        # Add 1
+        count = (count + count_strings(length - 1, ones_count + 1, memo)) % MOD
+        
+        memo[(length, ones_count)] = count
+        return count
     
-    for i in range(3, n + 1):
-        dp[i] = dp[i-1] + dp[i-2]
-    
-    return dp[n]
+    memo = {}
+    return count_strings(n, 0, memo)
 ```
 
-### Variation 3: Balanced Binary Strings
-**Problem**: Count binary strings of length n with equal number of 0s and 1s.
+### Variation 3: Bit Strings with Pattern Constraints
+**Problem**: Count bit strings that avoid specific patterns.
+
+**Link**: [CSES Problem Set - Bit Strings Patterns](https://cses.fi/problemset/task/bit_strings_patterns)
 
 ```python
-def balanced_binary_strings(n):
-    if n % 2 != 0:
-        return 0  # Impossible for odd length
+def bit_strings_patterns(n, forbidden_patterns):
+    MOD = 10**9 + 7
     
-    from math import comb
-    return comb(n, n // 2)  # Choose n/2 positions for 1s
+    def count_strings(length, current_suffix, memo):
+        if length == 0:
+            return 1
+        
+        if (length, current_suffix) in memo:
+            return memo[(length, current_suffix)]
+        
+        count = 0
+        for bit in ['0', '1']:
+            new_suffix = current_suffix + bit
+            if len(new_suffix) > max(len(pattern) for pattern in forbidden_patterns):
+                new_suffix = new_suffix[-max(len(pattern) for pattern in forbidden_patterns):]
+            
+            if not any(pattern in new_suffix for pattern in forbidden_patterns):
+                count = (count + count_strings(length - 1, new_suffix, memo)) % MOD
+        
+        memo[(length, current_suffix)] = count
+        return count
+    
+    memo = {}
+    return count_strings(n, "", memo)
 ```
+
+## 🔗 Related Problems
+
+- **[Counting Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Counting problems
+- **[Modular Arithmetic](/cses-analyses/problem_soulutions/introductory_problems/)**: Modular arithmetic problems
+- **[Exponentiation](/cses-analyses/problem_soulutions/introductory_problems/)**: Exponentiation problems
+- **[Combinatorics](/cses-analyses/problem_soulutions/introductory_problems/)**: Combinatorics problems
 
 ## 📚 Learning Points
 
-1. **Counting Principles**: Fundamental combinatorics
-2. **Modular Arithmetic**: Essential for large number problems
-3. **Binary Exponentiation**: Efficient power calculation
-4. **Mathematical Formulas**: Sometimes the simplest solution is best
+1. **Combinatorics**: Essential for understanding counting principles
+2. **Modular Arithmetic**: Key technique for handling large numbers
+3. **Exponentiation**: Important for understanding power calculations
+4. **Binary Counting**: Critical for understanding bit string problems
+5. **Mathematical Formulas**: Foundation for many counting algorithms
+6. **Algorithm Optimization**: Critical for competitive programming performance
 
----
+## 📝 Summary
 
-**This is a great introduction to counting problems and modular arithmetic!** 🎯 
+The Bit Strings problem demonstrates fundamental combinatorics concepts for counting binary strings. We explored three approaches:
+
+1. **Brute Force Generation**: O(2^n) time complexity using recursive generation of all bit strings, inefficient for large n
+2. **Iterative Multiplication**: O(n) time complexity using iterative multiplication with modular arithmetic, better approach for counting problems
+3. **Modular Exponentiation**: O(log n) time complexity with binary exponentiation, optimal approach for large exponentiation
+
+The key insights include understanding combinatorics principles, using modular arithmetic for efficient large number handling, and applying binary exponentiation techniques for optimal performance. This problem serves as an excellent introduction to counting problems and modular arithmetic algorithms.

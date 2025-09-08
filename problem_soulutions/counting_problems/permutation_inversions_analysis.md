@@ -29,8 +29,6 @@ Before attempting this problem, ensure you understand:
 
 Given a permutation of numbers from 1 to n, count the number of inversions. An inversion is a pair of indices (i,j) where i < j and a[i] > a[j].
 
-This is a classic algorithmic problem where we need to count the number of inversions in a permutation. An inversion occurs when a larger element appears before a smaller element. We can solve this using merge sort, binary indexed tree, or segment tree.
-
 **Input**: 
 - First line: integer n (size of the permutation)
 - Second line: n integers (the permutation)
@@ -39,7 +37,7 @@ This is a classic algorithmic problem where we need to count the number of inver
 - Print one integer: the number of inversions
 
 **Constraints**:
-- 1 ≤ n ≤ 2⋅10⁵
+- 1 ≤ n ≤ 2×10^5
 - The input is a valid permutation of 1 to n
 
 **Example**:
@@ -50,15 +48,15 @@ Input:
 
 Output:
 3
-```
 
-**Explanation**: 
+Explanation**: 
 In the permutation [3, 1, 4, 2], there are 3 inversions:
 1. (0, 1): 3 > 1 (indices 0 and 1)
 2. (0, 3): 3 > 2 (indices 0 and 3)
 3. (2, 3): 4 > 2 (indices 2 and 3)
 
 These are the pairs where a larger element appears before a smaller element.
+```
 
 ### 📊 Visual Example
 

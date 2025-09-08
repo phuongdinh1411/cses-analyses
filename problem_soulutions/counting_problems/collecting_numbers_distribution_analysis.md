@@ -29,18 +29,16 @@ Before attempting this problem, ensure you understand:
 
 Given n numbers, count the number of different ways to collect them in order, where each collection step must pick the smallest available number.
 
-This is a combinatorics problem where we need to count the number of valid collection sequences. The constraint is that at each step, we must pick the smallest available number, which means we can only collect numbers in non-decreasing order.
-
 **Input**: 
 - First line: integer n (number of elements)
 - Second line: n integers (the numbers to collect)
 
 **Output**: 
-- Print the number of different collection orders modulo 10⁹ + 7
+- Print the number of different collection orders modulo 10^9 + 7
 
 **Constraints**:
-- 1 ≤ n ≤ 10⁵
-- 1 ≤ a_i ≤ 10⁹
+- 1 ≤ n ≤ 10^5
+- 1 ≤ a_i ≤ 10^9
 
 **Example**:
 ```
@@ -50,15 +48,15 @@ Input:
 
 Output:
 1
-```
 
-**Explanation**: 
+Explanation**: 
 For the numbers [3, 1, 2], there is only 1 valid collection order:
 1. First collect 1 (smallest available)
 2. Then collect 2 (smallest available after 1)
 3. Finally collect 3 (smallest available after 1 and 2)
 
 The order must be [1, 2, 3] because we must always pick the smallest available number.
+```
 
 ### 📊 Visual Example
 

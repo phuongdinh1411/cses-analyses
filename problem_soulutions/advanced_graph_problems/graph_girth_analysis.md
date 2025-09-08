@@ -82,12 +82,40 @@ Level 1: [2, 4]
 Level 2: [3, 3]  ← Cycle detected!
 ```
 
-## 🎯 Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Step 1: Understanding the Problem
-- **Goal**: Find the shortest cycle length (girth) in an undirected graph
-- **Key Insight**: Use BFS from each vertex to detect cycles and find minimum length
-- **Challenge**: Efficiently detect cycles and find the shortest one
+### Approach 1: Brute Force Cycle Detection (Brute Force)
+
+**Key Insights from Brute Force Approach**:
+- **DFS Traversal**: Use DFS to explore all possible paths
+- **Cycle Detection**: Check if we revisit a vertex during traversal
+- **Path Tracking**: Keep track of current path to detect cycles
+- **Exhaustive Search**: Try all possible paths from each vertex
+
+**Key Insight**: Use DFS to explore all possible paths and detect cycles by checking for revisited vertices.
+
+**Algorithm**:
+- For each vertex, start DFS traversal
+- Keep track of current path and visited vertices
+- If we encounter a visited vertex that's not the parent, we found a cycle
+- Calculate cycle length and keep track of minimum
+
+**Visual Example**:
+```
+Graph: 1-2-3-4-1
+
+DFS from vertex 1:
+┌─────────────────────────────────────┐
+│ Start: 1, path: [1]                │
+│ Visit: 2, path: [1, 2]             │
+│ Visit: 3, path: [1, 2, 3]          │
+│ Visit: 4, path: [1, 2, 3, 4]       │
+│ Visit: 1, path: [1, 2, 3, 4, 1]    │
+│ Cycle found! Length: 4             │
+└─────────────────────────────────────┘
+
+Result: 4
+```
 
 ### 🧠 Problem Analysis Flowchart
 
@@ -153,16 +181,293 @@ BFS from Node 1:
 └─────────────────────────────────────┘
 ```
 
-### Step 2: Initial Approach
-**DFS approach (inefficient but correct):**
-
-### Step 3: Optimization/Alternative
-**BFS approach:**
-
+**Implementation**:
 ```python
-def graph_girth_bfs(n, edges):
+def brute_force_graph_girth_solution(n, m, edges):
+    """
+    Find graph girth using brute force DFS approach
+    
+    Args:
+        n: number of vertices
+        m: number of edges
+        edges: list of (a, b) representing edges
+    
+    Returns:
+        int: length of shortest cycle, or -1 if no cycle exists
+    """
     # Build adjacency list
     adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    min_cycle = float('inf')
+    
+    def dfs_cycle_detection(start, current, parent, path_length, visited):
+        nonlocal min_cycle
+        
+        visited[current] = True
+        
+        for neighbor in adj[current]:
+            if neighbor == parent:
+                continue
+            
+            if visited[neighbor]:
+                # Cycle detected
+                cycle_length = path_length + 1
+                min_cycle = min(min_cycle, cycle_length)
+            else:
+                dfs_cycle_detection(start, neighbor, current, path_length + 1, visited)
+        
+        visited[current] = False
+    
+    # Try DFS from each vertex
+    for start in range(1, n + 1):
+        visited = [False] * (n + 1)
+        dfs_cycle_detection(start, start, -1, 0, visited)
+    
+    return min_cycle if min_cycle != float('inf') else -1
+
+# Example usage
+n, m = 4, 4
+edges = [(1, 2), (2, 3), (3, 4), (4, 1)]
+result = brute_force_graph_girth_solution(n, m, edges)
+print(f"Brute force result: {result}")  # Output: 4
+```
+
+**Time Complexity**: O(n * (n + m))
+**Space Complexity**: O(n)
+
+**Why it's inefficient**: O(n * (n + m)) complexity is too slow for large graphs.
+
+---
+
+### Approach 2: BFS Cycle Detection (Optimized)
+
+**Key Insights from BFS Cycle Detection**:
+- **BFS Traversal**: Use BFS to find shortest paths
+- **Parent Tracking**: Keep track of parent vertices to avoid back edges
+- **Cross Edge Detection**: Detect cycles when we encounter already visited vertices
+- **Level-based Search**: BFS naturally finds shortest paths
+
+**Key Insight**: Use BFS to find shortest cycles by detecting cross edges during traversal.
+
+**Algorithm**:
+- For each vertex, start BFS traversal
+- Keep track of parent and distance for each vertex
+- If we encounter a visited vertex that's not the parent, we found a cycle
+- Calculate cycle length using distances
+
+**Visual Example**:
+```
+Graph: 1-2-3-4-1
+
+BFS from vertex 1:
+┌─────────────────────────────────────┐
+│ Level 0: [1]                        │
+│ Parent: {1: None}                   │
+│ Distance: {1: 0}                    │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Level 1: [2, 4]                     │
+│ Parent: {1: None, 2: 1, 4: 1}      │
+│ Distance: {1: 0, 2: 1, 4: 1}       │
+└─────────────────────────────────────┘
+              │
+              ▼
+┌─────────────────────────────────────┐
+│ Level 2: [3]                        │
+│ Cross edge: 3 reached from both 2,4 │
+│ Cycle length = 1 + 1 + 1 = 3        │
+└─────────────────────────────────────┘
+
+Result: 3
+```
+
+**Implementation**:
+```python
+def bfs_graph_girth_solution(n, m, edges):
+    """
+    Find graph girth using BFS cycle detection
+    
+    Args:
+        n: number of vertices
+        m: number of edges
+        edges: list of (a, b) representing edges
+    
+    Returns:
+        int: length of shortest cycle, or -1 if no cycle exists
+    """
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    min_cycle = float('inf')
+    
+    def bfs_cycle_detection(start):
+        nonlocal min_cycle
+        
+        from collections import deque
+        queue = deque([(start, -1, 0)])  # (node, parent, distance)
+        visited = {start: 0}
+        parent = {start: -1}
+        
+        while queue:
+            current, par, dist = queue.popleft()
+            
+            for neighbor in adj[current]:
+                if neighbor == par:
+                    continue
+                
+                if neighbor in visited:
+                    # Cross edge detected - cycle found
+                    cycle_length = dist + visited[neighbor] + 1
+                    min_cycle = min(min_cycle, cycle_length)
+                else:
+                    visited[neighbor] = dist + 1
+                    parent[neighbor] = current
+                    queue.append((neighbor, current, dist + 1))
+    
+    # Try BFS from each vertex
+    for start in range(1, n + 1):
+        bfs_cycle_detection(start)
+    
+    return min_cycle if min_cycle != float('inf') else -1
+
+# Example usage
+n, m = 4, 4
+edges = [(1, 2), (2, 3), (3, 4), (4, 1)]
+result = bfs_graph_girth_solution(n, m, edges)
+print(f"BFS result: {result}")  # Output: 4
+```
+
+**Time Complexity**: O(n * (n + m))
+**Space Complexity**: O(n)
+
+**Why it's better**: BFS naturally finds shortest paths and is more efficient for cycle detection.
+
+**Implementation Considerations**:
+- **BFS Queue**: Use deque for efficient queue operations
+- **Parent Tracking**: Avoid back edges by tracking parents
+- **Cross Edge Detection**: Detect cycles when visiting already visited vertices
+- **Distance Calculation**: Use distances to calculate cycle length
+
+---
+
+### Approach 3: Optimal BFS with Early Termination (Optimal)
+
+**Key Insights from Optimal BFS Approach**:
+- **Early Termination**: Stop BFS when we find a cycle
+- **Optimized BFS**: Use more efficient BFS implementation
+- **Cycle Length Tracking**: Keep track of minimum cycle length
+- **Graph Properties**: Leverage undirected graph properties
+
+**Key Insight**: Use optimized BFS with early termination to find the shortest cycle efficiently.
+
+**Algorithm**:
+- For each vertex, start BFS traversal
+- Use early termination when cycle is found
+- Keep track of minimum cycle length
+- Optimize BFS implementation
+
+**Visual Example**:
+```
+Graph: 1-2-3-4-1
+
+Optimal BFS from vertex 1:
+┌─────────────────────────────────────┐
+│ Level 0: [1]                        │
+│ Level 1: [2, 4]                     │
+│ Level 2: [3]                        │
+│ Cross edge detected: 3              │
+│ Cycle length = 3                    │
+│ Early termination ✓                 │
+└─────────────────────────────────────┘
+
+Result: 3
+```
+
+**Implementation**:
+```python
+def optimal_graph_girth_solution(n, m, edges):
+    """
+    Find graph girth using optimal BFS with early termination
+    
+    Args:
+        n: number of vertices
+        m: number of edges
+        edges: list of (a, b) representing edges
+    
+    Returns:
+        int: length of shortest cycle, or -1 if no cycle exists
+    """
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    min_cycle = float('inf')
+    
+    def optimal_bfs_cycle_detection(start):
+        nonlocal min_cycle
+        
+        from collections import deque
+        queue = deque([(start, -1, 0)])  # (node, parent, distance)
+        visited = {start: 0}
+        
+        while queue:
+            current, par, dist = queue.popleft()
+            
+            # Early termination if we already found a shorter cycle
+            if dist >= min_cycle:
+                break
+            
+            for neighbor in adj[current]:
+                if neighbor == par:
+                    continue
+                
+                if neighbor in visited:
+                    # Cross edge detected - cycle found
+                    cycle_length = dist + visited[neighbor] + 1
+                    min_cycle = min(min_cycle, cycle_length)
+                else:
+                    visited[neighbor] = dist + 1
+                    queue.append((neighbor, current, dist + 1))
+    
+    # Try BFS from each vertex
+    for start in range(1, n + 1):
+        optimal_bfs_cycle_detection(start)
+    
+    return min_cycle if min_cycle != float('inf') else -1
+
+# Example usage
+n, m = 4, 4
+edges = [(1, 2), (2, 3), (3, 4), (4, 1)]
+result = optimal_graph_girth_solution(n, m, edges)
+print(f"Optimal result: {result}")  # Output: 4
+
+# Test with different example
+n, m = 3, 3
+edges = [(1, 2), (2, 3), (3, 1)]
+result = optimal_graph_girth_solution(n, m, edges)
+print(f"Optimal result: {result}")  # Output: 3
+```
+
+**Time Complexity**: O(n * (n + m))
+**Space Complexity**: O(n)
+
+**Why it's optimal**: This approach provides the most efficient solution with early termination and optimized BFS.
+
+**Implementation Details**:
+- **Early Termination**: Stop BFS when cycle length exceeds current minimum
+- **Optimized BFS**: Use efficient queue operations
+- **Cycle Detection**: Detect cross edges during BFS traversal
+- **Optimal Result**: Guarantees finding the shortest cycle
     for a, b in edges:
         adj[a].append(b)
         adj[b].append(a)

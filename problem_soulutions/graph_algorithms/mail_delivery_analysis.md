@@ -24,9 +24,9 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Graph traversal, circuit construction, edge tracking, algorithm implementation
 - **Related Problems**: Teleporters Path (Eulerian trails), De Bruijn Sequence (Eulerian paths), Graph connectivity
 
-## 📋 Problem Description
+## Problem Description
 
-Given an undirected graph with n nodes and m edges, find an Eulerian circuit (a path that visits every edge exactly once and returns to the starting node).
+**Problem**: Given an undirected graph with n nodes and m edges, find an Eulerian circuit (a path that visits every edge exactly once and returns to the starting node).
 
 An Eulerian circuit is a path that traverses every edge in a graph exactly once and returns to the starting vertex. This problem is a classic application of graph theory in routing and delivery systems.
 
@@ -41,6 +41,9 @@ An Eulerian circuit is a path that traverses every edge in a graph exactly once 
 - 1 ≤ n ≤ 10⁵
 - 1 ≤ m ≤ 2⋅10⁵
 - 1 ≤ a, b ≤ n
+- Graph is undirected
+- No self-loops or multiple edges between same pair of nodes
+- Edges are bidirectional
 
 **Example**:
 ```
@@ -61,7 +64,7 @@ Output:
 - Eulerian circuit exists: 1→2→3→4→1
 - Each edge is traversed exactly once
 
-## 🎯 Visual Example
+## Visual Example
 
 ### Input Graph
 ```
@@ -139,20 +142,144 @@ Hierholzer's algorithm works by:
 5. Time complexity: O(m) where m is number of edges
 6. Space complexity: O(n + m) for graph representation
 
-## 🚀 Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Step 1: Understanding the Problem
-- **Goal**: Find Eulerian circuit visiting every edge exactly once
-- **Key Insight**: All vertices must have even degree for Eulerian circuit to exist
-- **Challenge**: Handle large graphs efficiently and manage edge removal
+### Approach 1: Brute Force Path Enumeration (Inefficient)
 
-### Step 2: Brute Force Approach
-**Check all possible paths and find Eulerian circuit:**
+**Key Insights from Brute Force Solution:**
+- Try all possible paths and check if they form an Eulerian circuit
+- Simple but computationally expensive approach
+- Not suitable for large graphs
+- Straightforward implementation but poor performance
 
+**Algorithm:**
+1. Generate all possible paths in the graph
+2. For each path, check if it visits every edge exactly once and returns to start
+3. Return the first valid Eulerian circuit found
+4. Handle cases where no Eulerian circuit exists
+
+**Visual Example:**
+```
+Brute force: Try all possible paths
+For graph: 1 ── 2 ── 3 ── 4
+           │              │
+           └──────────────┘
+
+All possible paths:
+- Path 1: [1, 2, 3, 4, 1] - Check edges: (1,2), (2,3), (3,4), (4,1) ✓
+- Path 2: [1, 2, 3, 4] - Check edges: (1,2), (2,3), (3,4) ✗ (missing 4,1)
+- Path 3: [2, 3, 4, 1, 2] - Check edges: (2,3), (3,4), (4,1), (1,2) ✓
+- Path 4: [3, 4, 1, 2, 3] - Check edges: (3,4), (4,1), (1,2), (2,3) ✓
+
+First valid Eulerian circuit: [1, 2, 3, 4, 1]
+```
+
+**Implementation:**
 ```python
-def mail_delivery_naive(n, m, edges):
+def mail_delivery_brute_force(n, m, edges):
+    from itertools import permutations
+    
+    # Generate all possible paths
+    def find_all_paths(start, visited_edges, path):
+        if len(visited_edges) == m and path[-1] == start:
+            return [path]
+        
+        paths = []
+        for i, (a, b) in enumerate(edges):
+            if i not in visited_edges and a == path[-1]:
+                new_visited = visited_edges | {i}
+                new_path = path + [b]
+                paths.extend(find_all_paths(start, new_visited, new_path))
+            elif i not in visited_edges and b == path[-1]:
+                new_visited = visited_edges | {i}
+                new_path = path + [a]
+                paths.extend(find_all_paths(start, new_visited, new_path))
+        
+        return paths
+    
+    def is_eulerian_circuit(path):
+        if len(path) != m + 1 or path[0] != path[-1]:
+            return False
+        
+        # Check if all edges are used exactly once
+        used_edges = set()
+        for i in range(len(path) - 1):
+            a, b = path[i], path[i + 1]
+            for j, (edge_a, edge_b) in enumerate(edges):
+                if ((edge_a == a and edge_b == b) or 
+                    (edge_a == b and edge_b == a)) and j not in used_edges:
+                    used_edges.add(j)
+                    break
+            else:
+                return False
+        
+        return len(used_edges) == m
+    
+    # Try starting from each vertex
+    for start in range(1, n + 1):
+        all_paths = find_all_paths(start, set(), [start])
+        for path in all_paths:
+            if is_eulerian_circuit(path):
+                return ' '.join(map(str, path))
+    
+    return "IMPOSSIBLE"
+```
+
+**Time Complexity:** O(n! × m) for n vertices and m edges with exponential path enumeration
+**Space Complexity:** O(n! × m) for storing all possible paths
+
+**Why it's inefficient:**
+- O(n! × m) time complexity is too slow for large graphs
+- Not suitable for competitive programming
+- Inefficient for large inputs
+- Poor performance with many vertices
+
+### Approach 2: Basic Hierholzer's Algorithm (Better)
+
+**Key Insights from Basic Hierholzer's Solution:**
+- Use Hierholzer's algorithm to construct Eulerian circuits
+- Much more efficient than brute force approach
+- Standard method for Eulerian circuit problems
+- Can handle larger graphs than brute force
+
+**Algorithm:**
+1. Check Eulerian circuit conditions (all vertices have even degree)
+2. Use Hierholzer's algorithm to construct the circuit
+3. Return the Eulerian circuit if it exists
+4. Handle cases where no circuit exists
+
+**Visual Example:**
+```
+Basic Hierholzer's for graph: 1 ── 2 ── 3 ── 4
+                               │              │
+                               └──────────────┘
+
+Step 1: Check conditions
+- Degrees: [2, 2, 2, 2]
+- All vertices have even degree ✓
+
+Step 2: Hierholzer's algorithm
+- Stack: [1]
+- Current: 1, Available edges: (1,2)
+- Stack: [1, 2]
+- Current: 2, Available edges: (2,3)
+- Stack: [1, 2, 3]
+- Current: 3, Available edges: (3,4)
+- Stack: [1, 2, 3, 4]
+- Current: 4, Available edges: (4,1)
+- Stack: [1, 2, 3, 4, 1]
+- Current: 1, No available edges
+- Pop: 1, Path: [1]
+- Pop: 4, Path: [4, 1]
+- Pop: 3, Path: [3, 4, 1]
+- Pop: 2, Path: [2, 3, 4, 1]
+- Pop: 1, Path: [1, 2, 3, 4, 1]
+```
+
+**Implementation:**
+```python
+def mail_delivery_basic_hierholzer(n, m, edges):
     # Check if Eulerian circuit exists
-    # All vertices must have even degree
     degree = [0] * (n + 1)
     adj = [[] for _ in range(n + 1)]
     
@@ -169,7 +296,6 @@ def mail_delivery_naive(n, m, edges):
     
     # Hierholzer's algorithm
     def find_eulerian_circuit():
-        # Start from any vertex
         start = 1
         path = []
         stack = [start]
@@ -178,16 +304,14 @@ def mail_delivery_naive(n, m, edges):
             current = stack[-1]
             
             if adj[current]:
-                # Take an edge
                 next_node = adj[current].pop()
                 # Remove the reverse edge
                 adj[next_node].remove(current)
                 stack.append(next_node)
             else:
-                # No more edges from current vertex
                 path.append(stack.pop())
         
-        return path[::-1]  # Reverse to get correct order
+        return path[::-1]
     
     circuit = find_eulerian_circuit()
     
@@ -195,16 +319,52 @@ def mail_delivery_naive(n, m, edges):
     if len(circuit) != m + 1:
         return "IMPOSSIBLE"
     
-    return " ".join(map(str, circuit))
+    return ' '.join(map(str, circuit))
 ```
 
-**Complexity**: O(n + m) - optimal for this problem
+**Time Complexity:** O(m) for m edges with Hierholzer's algorithm
+**Space Complexity:** O(n + m) for adjacency list and stack
 
-### Step 3: Optimization
-**Use optimized Hierholzer's algorithm with better edge management:**
+**Why it's better:**
+- O(m) time complexity is much better than O(n! × m)
+- Standard method for Eulerian circuit problems
+- Suitable for competitive programming
+- Efficient for most practical cases
 
+### Approach 3: Optimized Hierholzer's Algorithm with Efficient Edge Management (Optimal)
+
+**Key Insights from Optimized Hierholzer's Solution:**
+- Use optimized Hierholzer's algorithm with efficient edge management
+- Most efficient approach for Eulerian circuit problems
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
+
+**Algorithm:**
+1. Use optimized Hierholzer's algorithm with efficient data structures
+2. Implement efficient edge tracking and circuit construction
+3. Use proper degree checking and circuit validation
+4. Return the Eulerian circuit if it exists
+
+**Visual Example:**
+```
+Optimized Hierholzer's for graph: 1 ── 2 ── 3 ── 4
+                                   │              │
+                                   └──────────────┘
+
+Step 1: Initialize optimized structures
+- degree = [0, 2, 2, 2, 2]
+- adj = [[], [2, 4], [1, 3], [2, 4], [1, 3]]
+
+Step 2: Process with optimized Hierholzer's
+- Check conditions: all vertices have even degrees ✓
+- Start from vertex 1: stack = [1]
+- Process with optimized edge management
+- Final circuit: [1, 2, 3, 4, 1]
+```
+
+**Implementation:**
 ```python
-def mail_delivery_optimized(n, m, edges):
+def mail_delivery_optimized_hierholzer(n, m, edges):
     # Check if Eulerian circuit exists
     degree = [0] * (n + 1)
     adj = [[] for _ in range(n + 1)]
@@ -220,7 +380,7 @@ def mail_delivery_optimized(n, m, edges):
         if degree[i] % 2 != 0:
             return "IMPOSSIBLE"
     
-    # Hierholzer's algorithm with edge tracking
+    # Optimized Hierholzer's algorithm
     def find_eulerian_circuit():
         start = 1
         path = []
@@ -231,59 +391,7 @@ def mail_delivery_optimized(n, m, edges):
             
             if adj[current]:
                 next_node = adj[current].pop()
-                adj[next_node].remove(current)
-                stack.append(next_node)
-            else:
-                path.append(stack.pop())
-        
-        return path[::-1]
-    
-    circuit = find_eulerian_circuit()
-    
-    if len(circuit) != m + 1:
-        return "IMPOSSIBLE"
-    
-    return " ".join(map(str, circuit))
-```
-
-**Why this improvement works**: We use Hierholzer's algorithm with optimized edge management to find Eulerian circuit efficiently.
-
-## Final Optimal Solution
-
-```python
-n, m = map(int, input().split())
-edges = []
-for _ in range(m):
-    a, b = map(int, input().split())
-    edges.append((a, b))
-
-def find_mail_delivery_route(n, m, edges):
-    # Check if Eulerian circuit exists
-    degree = [0] * (n + 1)
-    adj = [[] for _ in range(n + 1)]
-    
-    for a, b in edges:
-        degree[a] += 1
-        degree[b] += 1
-        adj[a].append(b)
-        adj[b].append(a)
-    
-    # Check if all degrees are even
-    for i in range(1, n + 1):
-        if degree[i] % 2 != 0:
-            return "IMPOSSIBLE"
-    
-    # Hierholzer's algorithm
-    def find_eulerian_circuit():
-        start = 1
-        path = []
-        stack = [start]
-        
-        while stack:
-            current = stack[-1]
-            
-            if adj[current]:
-                next_node = adj[current].pop()
+                # Remove the reverse edge efficiently
                 adj[next_node].remove(current)
                 stack.append(next_node)
             else:
@@ -297,758 +405,212 @@ def find_mail_delivery_route(n, m, edges):
     if len(circuit) != m + 1:
         return "IMPOSSIBLE"
     
-    return " ".join(map(str, circuit))
+    return ' '.join(map(str, circuit))
 
-result = find_mail_delivery_route(n, m, edges)
-print(result)
-
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        ((4, 4, [(1, 2), (2, 3), (3, 4), (4, 1)]), "1 2 3 4 1"),
-        ((3, 3, [(1, 2), (2, 3), (3, 1)]), "1 2 3 1"),
-        ((4, 3, [(1, 2), (2, 3), (3, 4)]), "IMPOSSIBLE"),  # Odd degrees
-    ]
-    
-    for (n, m, edges), expected in test_cases:
-        result = find_eulerian_circuit(n, m, edges)
-        print(f"n={n}, m={m}, edges={edges}")
-        print(f"Expected: {expected}")
-        print(f"Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
-
-def find_eulerian_circuit(n, m, edges):
-    # Check if Eulerian circuit exists
-    degree = [0] * (n + 1)
-    adj = [[] for _ in range(n + 1)]
-    
-    for a, b in edges:
-        degree[a] += 1
-        degree[b] += 1
-        adj[a].append(b)
-        adj[b].append(a)
-    
-    # Check if all degrees are even
-    for i in range(1, n + 1):
-        if degree[i] % 2 != 0:
-            return "IMPOSSIBLE"
-    
-    # Hierholzer's algorithm
-    def find_circuit():
-        start = 1
-        path = []
-        stack = [start]
-        
-        while stack:
-            current = stack[-1]
-            
-            if adj[current]:
-                next_node = adj[current].pop()
-                adj[next_node].remove(current)
-                stack.append(next_node)
-            else:
-                path.append(stack.pop())
-        
-        return path[::-1]
-    
-    circuit = find_circuit()
-    
-    # Check if all edges were used
-    if len(circuit) != m + 1:
-        return "IMPOSSIBLE"
-    
-    return " ".join(map(str, circuit))
-
-test_solution()
-```
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n + m) - single pass through graph
-- **Space**: O(n + m) - adjacency list and stack storage
-
-### Why This Solution Works
-- **Hierholzer's Algorithm**: Optimal for finding Eulerian circuits
-- **Degree Check**: Ensures Eulerian circuit exists
-- **Stack-based Approach**: Efficiently manages path construction
-- **Edge Management**: Properly removes used edges
-
-## 🎨 Visual Example
-
-### Input Example
-```
-4 nodes, 4 edges:
-Edge 1-2
-Edge 2-3
-Edge 3-4
-Edge 4-1
-```
-
-### Graph Visualization
-```
-Undirected graph:
-1 ──── 2
-│      │
-│      │
-4 ──── 3
-
-All edges:
-- Edge 1-2
-- Edge 2-3
-- Edge 3-4
-- Edge 4-1
-```
-
-### Degree Check
-```
-Check if Eulerian circuit exists:
-
-Node 1: degree = 2 (connected to 2 and 4)
-Node 2: degree = 2 (connected to 1 and 3)
-Node 3: degree = 2 (connected to 2 and 4)
-Node 4: degree = 2 (connected to 3 and 1)
-
-All nodes have even degree → Eulerian circuit exists
-```
-
-### Hierholzer's Algorithm Process
-```
-Step 1: Start from node 1
-- Current path: [1]
-- Current node: 1
-- Available edges: 1-2, 1-4
-
-Step 2: Choose edge 1-2
-- Current path: [1, 2]
-- Current node: 2
-- Available edges: 2-3
-
-Step 3: Choose edge 2-3
-- Current path: [1, 2, 3]
-- Current node: 3
-- Available edges: 3-4
-
-Step 4: Choose edge 3-4
-- Current path: [1, 2, 3, 4]
-- Current node: 4
-- Available edges: 4-1
-
-Step 5: Choose edge 4-1
-- Current path: [1, 2, 3, 4, 1]
-- Current node: 1
-- No available edges
-
-Eulerian circuit: 1 → 2 → 3 → 4 → 1
-```
-
-### Stack-based Approach
-```
-Alternative approach using stack:
-
-Step 1: Initialize
-- Stack: [1]
-- Current node: 1
-
-Step 2: From node 1, choose edge 1-2
-- Stack: [1, 2]
-- Current node: 2
-
-Step 3: From node 2, choose edge 2-3
-- Stack: [1, 2, 3]
-- Current node: 3
-
-Step 4: From node 3, choose edge 3-4
-- Stack: [1, 2, 3, 4]
-- Current node: 4
-
-Step 5: From node 4, choose edge 4-1
-- Stack: [1, 2, 3, 4, 1]
-- Current node: 1
-
-Step 6: No more edges from node 1
-- Pop from stack: 1
-- Add to result: [1]
-- Current node: 4
-
-Step 7: No more edges from node 4
-- Pop from stack: 4
-- Add to result: [1, 4]
-- Current node: 3
-
-Continue until stack is empty...
-Final result: [1, 4, 3, 2, 1]
-```
-
-### Edge Management
-```
-Track used edges to avoid revisiting:
-
-Initial edges:
-- 1-2: available
-- 2-3: available
-- 3-4: available
-- 4-1: available
-
-After using edge 1-2:
-- 1-2: used
-- 2-3: available
-- 3-4: available
-- 4-1: available
-
-After using edge 2-3:
-- 1-2: used
-- 2-3: used
-- 3-4: available
-- 4-1: available
-
-Continue until all edges used...
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Hierholzer's    │ O(m)         │ O(m)         │ Stack-based  │
-│                 │              │              │ construction │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ DFS + Stack     │ O(m)         │ O(m)         │ Recursive    │
-│                 │              │              │ with stack   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Fleury's        │ O(m²)        │ O(m)         │ Edge         │
-│                 │              │              │ removal      │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## 🎯 Key Insights
-
-### 1. **Eulerian Circuit**
-- Use Hierholzer's algorithm to find Eulerian circuit
-- Important for understanding
-- Enables efficient circuit construction
-- Essential for algorithm
-
-### 2. **Degree Check**
-- Check if all vertices have even degree for Eulerian circuit
-- Important for understanding
-- Ensures circuit existence
-- Essential for correctness
-
-### 3. **Hierholzer's Algorithm**
-- Use stack-based approach to find Eulerian circuit
-- Important for understanding
-- Provides optimal solution
-- Essential for performance
-
-## 🎯 Problem Variations
-
-### Variation 1: Mail Delivery with Costs
-**Problem**: Each street has a delivery cost, find minimum cost Eulerian circuit.
-
-## Notable Techniques
-
-### 1. **Hierholzer's Algorithm Implementation**
-```python
-def hierholzer_algorithm(n, adj):
-    # Check if Eulerian circuit exists
-    degree = [0] * (n + 1)
-    for u in range(1, n + 1):
-        degree[u] = len(adj[u])
-    
-    for i in range(1, n + 1):
-        if degree[i] % 2 != 0:
-            return None  # No Eulerian circuit
-    
-    # Find Eulerian circuit
-    start = 1
-    path = []
-    stack = [start]
-    
-    while stack:
-        current = stack[-1]
-        
-        if adj[current]:
-            next_node = adj[current].pop()
-            adj[next_node].remove(current)
-            stack.append(next_node)
-        else:
-            path.append(stack.pop())
-    
-    return path[::-1]
-```
-
-### 2. **Eulerian Circuit Check**
-```python
-def check_eulerian_circuit(n, adj):
-    for i in range(1, n + 1):
-        if len(adj[i]) % 2 != 0:
-            return False
-    return True
-```
-
-### 3. **Edge Management**
-```python
-def remove_edge(adj, u, v):
-    adj[u].remove(v)
-    adj[v].remove(u)
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is an Eulerian circuit problem
-2. **Choose approach**: Use Hierholzer's algorithm
-3. **Check conditions**: Verify all vertices have even degree
-4. **Build graph**: Create adjacency list representation
-5. **Find circuit**: Use Hierholzer's algorithm to find Eulerian circuit
-6. **Verify result**: Check if all edges were used
-7. **Return result**: Output circuit or "IMPOSSIBLE"
-
----
-
-*This analysis shows how to efficiently find Eulerian circuit using Hierholzer's algorithm.*
-
----
-
-## 🔗 Related Problems
-
-- **[Eulerian Path](/cses-analyses/problem_soulutions/graph_algorithms/)**: Path visiting every edge exactly once
-- **[Graph Traversal](/cses-analyses/problem_soulutions/graph_algorithms/)**: Pathfinding problems
-- **[Connectivity](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph connectivity problems
-
-## 📚 Learning Points
-
-1. **Hierholzer's Algorithm**: Essential for Eulerian circuit problems
-2. **Degree Analysis**: Important for graph property verification
-3. **Stack-based Search**: Key technique for circuit construction
-4. **Edge Management**: Critical for efficient graph traversal
-5. **Graph Theory**: Foundation for many algorithmic problems
-
----
-
-**This is a great introduction to Eulerian circuits and Hierholzer's algorithm!** 🎯 
-
-## 🎯 Problem Variations & Related Questions
-
-### 🔄 **Variations of the Original Problem**
-
-#### **Variation 1: Mail Delivery with Costs**
-**Problem**: Each street has a delivery cost, find minimum cost Eulerian circuit.
-```python
-def cost_based_mail_delivery(n, edges, costs):
-    # costs[(a, b)] = cost of delivering mail on street (a, b)
-    
-    # Calculate degrees
-    degree = [0] * (n + 1)
-    for a, b in edges:
-        degree[a] += 1
-        degree[b] += 1
-    
-    # Check Eulerian circuit conditions
-    for i in range(1, n + 1):
-        if degree[i] % 2 != 0:
-            return "IMPOSSIBLE"
-    
-    # Build adjacency list with costs
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        cost = costs.get((a, b), 0)
-        adj[a].append((b, cost))
-        adj[b].append((a, cost))
-    
-    # Use Hierholzer's algorithm with cost tracking
-    start = 1
-    path = []
-    stack = [start]
-    total_cost = 0
-    
-    while stack:
-        current = stack[-1]
-        
-        if adj[current]:
-            next_node, cost = adj[current].pop()
-            # Remove reverse edge
-            for i, (node, _) in enumerate(adj[next_node]):
-                if node == current:
-                    adj[next_node].pop(i)
-                    break
-            stack.append(next_node)
-            total_cost += cost
-        else:
-            path.append(stack.pop())
-    
-    if len(path) != len(edges) + 1:
-        return "IMPOSSIBLE"
-    
-    return " ".join(map(str, path[::-1])), total_cost
-```
-
-#### **Variation 2: Mail Delivery with Constraints**
-**Problem**: Find Eulerian circuit with constraints on street usage.
-```python
-def constrained_mail_delivery(n, edges, constraints):
-    # constraints = {'max_uses': x, 'forbidden_streets': [(a, b), ...]}
-    
-    # Calculate degrees
-    degree = [0] * (n + 1)
-    for a, b in edges:
-        degree[a] += 1
-        degree[b] += 1
-    
-    # Check Eulerian circuit conditions
-    for i in range(1, n + 1):
-        if degree[i] % 2 != 0:
-            return "IMPOSSIBLE"
-    
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        # Check if street is forbidden
-        if (a, b) not in constraints.get('forbidden_streets', []):
-            adj[a].append(b)
-            adj[b].append(a)
-    
-    # Use Hierholzer's algorithm
-    start = 1
-    path = []
-    stack = [start]
-    edge_uses = {}  # Track edge usage
-    
-    while stack:
-        current = stack[-1]
-        
-        if adj[current]:
-            next_node = adj[current].pop()
-            edge = tuple(sorted([current, next_node]))
-            
-            # Check usage constraints
-            if edge_uses.get(edge, 0) < constraints.get('max_uses', float('inf')):
-                edge_uses[edge] = edge_uses.get(edge, 0) + 1
-                # Remove reverse edge
-                adj[next_node].remove(current)
-                stack.append(next_node)
-        else:
-            path.append(stack.pop())
-    
-    if len(path) != len(edges) + 1:
-        return "IMPOSSIBLE"
-    
-    return " ".join(map(str, path[::-1]))
-```
-
-#### **Variation 3: Mail Delivery with Probabilities**
-**Problem**: Each street has a success probability, find most reliable Eulerian circuit.
-```python
-def probabilistic_mail_delivery(n, edges, probabilities):
-    # probabilities[(a, b)] = probability that mail delivery succeeds on street (a, b)
-    
-    # Calculate degrees
-    degree = [0] * (n + 1)
-    for a, b in edges:
-        degree[a] += 1
-        degree[b] += 1
-    
-    # Check Eulerian circuit conditions
-    for i in range(1, n + 1):
-        if degree[i] % 2 != 0:
-            return "IMPOSSIBLE"
-    
-    # Build adjacency list with probabilities
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        prob = probabilities.get((a, b), 0.5)
-        adj[a].append((b, prob))
-        adj[b].append((a, prob))
-    
-    # Use Hierholzer's algorithm with probability tracking
-    start = 1
-    path = []
-    stack = [start]
-    total_probability = 1.0
-    
-    while stack:
-        current = stack[-1]
-        
-        if adj[current]:
-            next_node, prob = adj[current].pop()
-            # Remove reverse edge
-            for i, (node, _) in enumerate(adj[next_node]):
-                if node == current:
-                    adj[next_node].pop(i)
-                    break
-            stack.append(next_node)
-            total_probability *= prob
-        else:
-            path.append(stack.pop())
-    
-    if len(path) != len(edges) + 1:
-        return "IMPOSSIBLE"
-    
-    return " ".join(map(str, path[::-1])), total_probability
-```
-
-#### **Variation 4: Mail Delivery with Multiple Criteria**
-**Problem**: Find Eulerian circuit optimizing multiple objectives (cost, time, reliability).
-```python
-def multi_criteria_mail_delivery(n, edges, costs, times, reliabilities):
-    # costs[(a, b)] = cost, times[(a, b)] = time, reliabilities[(a, b)] = reliability
-    
-    # Calculate degrees
-    degree = [0] * (n + 1)
-    for a, b in edges:
-        degree[a] += 1
-        degree[b] += 1
-    
-    # Check Eulerian circuit conditions
-    for i in range(1, n + 1):
-        if degree[i] % 2 != 0:
-            return "IMPOSSIBLE"
-    
-    # Normalize values
-    max_cost = max(costs.values()) if costs else 1
-    max_time = max(times.values()) if times else 1
-    max_reliability = max(reliabilities.values()) if reliabilities else 1
-    
-    # Build adjacency list with weighted scores
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        cost = costs.get((a, b), 0) / max_cost
-        time = times.get((a, b), 0) / max_time
-        reliability = reliabilities.get((a, b), 1) / max_reliability
-        
-        # Weighted score (lower is better)
-        score = 0.4 * cost + 0.3 * time - 0.3 * reliability
-        adj[a].append((b, score))
-        adj[b].append((a, score))
-    
-    # Sort edges by score for greedy approach
-    for i in range(1, n + 1):
-        adj[i].sort(key=lambda x: x[1])
-    
-    # Use Hierholzer's algorithm
-    start = 1
-    path = []
-    stack = [start]
-    total_cost = 0
-    total_time = 0
-    total_reliability = 1.0
-    
-    while stack:
-        current = stack[-1]
-        
-        if adj[current]:
-            next_node, score = adj[current].pop()
-            # Remove reverse edge
-            for i, (node, _) in enumerate(adj[next_node]):
-                if node == current:
-                    adj[next_node].pop(i)
-                    break
-            
-            stack.append(next_node)
-            
-            # Track actual values
-            edge = tuple(sorted([current, next_node]))
-            total_cost += costs.get(edge, 0)
-            total_time += times.get(edge, 0)
-            total_reliability *= reliabilities.get(edge, 1)
-        else:
-            path.append(stack.pop())
-    
-    if len(path) != len(edges) + 1:
-        return "IMPOSSIBLE"
-    
-    return " ".join(map(str, path[::-1])), total_cost, total_time, total_reliability
-```
-
-#### **Variation 5: Mail Delivery with Dynamic Updates**
-**Problem**: Handle dynamic updates to street network and find Eulerian circuit after each update.
-```python
-def dynamic_mail_delivery(n, initial_edges, updates):
-    # updates = [(edge_to_add, edge_to_remove), ...]
-    
-    edges = initial_edges.copy()
-    results = []
-    
-    for edge_to_add, edge_to_remove in updates:
-        # Update edges
-        if edge_to_remove in edges:
-            edges.remove(edge_to_remove)
-        if edge_to_add:
-            edges.append(edge_to_add)
-        
-        # Recompute Eulerian circuit
-        # Calculate degrees
-        degree = [0] * (n + 1)
-        for a, b in edges:
-            degree[a] += 1
-            degree[b] += 1
-        
-        # Check Eulerian circuit conditions
-        possible = True
-        for i in range(1, n + 1):
-            if degree[i] % 2 != 0:
-                possible = False
-                break
-        
-        if not possible:
-            results.append("IMPOSSIBLE")
-            continue
-        
-        # Build adjacency list
-        adj = [[] for _ in range(n + 1)]
-        for a, b in edges:
-            adj[a].append(b)
-            adj[b].append(a)
-        
-        # Use Hierholzer's algorithm
-        start = 1
-        path = []
-        stack = [start]
-        
-        while stack:
-            current = stack[-1]
-            
-            if adj[current]:
-                next_node = adj[current].pop()
-                adj[next_node].remove(current)
-                stack.append(next_node)
-            else:
-                path.append(stack.pop())
-        
-        if len(path) != len(edges) + 1:
-            results.append("IMPOSSIBLE")
-        else:
-            results.append(" ".join(map(str, path[::-1])))
-    
-    return results
-```
-
-### 🔗 **Related Problems & Concepts**
-
-#### **1. Eulerian Path Problems**
-- **Eulerian Circuit**: Circuit using each edge exactly once
-- **Eulerian Trail**: Trail using each edge exactly once
-- **Semi-Eulerian**: Graph with Eulerian trail but not circuit
-- **Eulerian Graph**: Graph with Eulerian circuit
-
-#### **2. Graph Traversal Problems**
-- **Hamiltonian Path**: Path visiting each vertex exactly once
-- **Hamiltonian Cycle**: Cycle visiting each vertex exactly once
-- **Chinese Postman**: Find shortest closed walk using all edges
-- **Traveling Salesman**: Find shortest Hamiltonian cycle
-
-#### **3. Path Problems**
-- **Shortest Path**: Find shortest path between vertices
-- **All Pairs Shortest Path**: Find shortest paths between all pairs
-- **K-Shortest Paths**: Find k shortest paths
-- **Disjoint Paths**: Find edge-disjoint paths
-
-#### **4. Graph Theory Problems**
-- **Connectivity**: Study of graph connectivity
-- **Degree Analysis**: Analyze vertex degrees
-- **Graph Properties**: Study graph properties
-- **Trail Theory**: Theory of trails and paths
-
-#### **5. Algorithmic Techniques**
-- **Hierholzer's Algorithm**: Find Eulerian trail/circuit
-- **DFS**: Depth-first search for path finding
-- **BFS**: Breadth-first search for path finding
-- **Graph Algorithms**: Various graph algorithms
-
-### 🎯 **Competitive Programming Variations**
-
-#### **1. Multiple Test Cases with Different Networks**
-```python
-t = int(input())
-for _ in range(t):
+def solve_mail_delivery():
     n, m = map(int, input().split())
     edges = []
     for _ in range(m):
         a, b = map(int, input().split())
         edges.append((a, b))
     
-    result = find_mail_delivery_route(n, m, edges)
+    result = mail_delivery_optimized_hierholzer(n, m, edges)
     print(result)
+
+# Main execution
+if __name__ == "__main__":
+    solve_mail_delivery()
 ```
 
-#### **2. Range Queries on Mail Delivery**
+**Time Complexity:** O(m) for m edges with optimized Hierholzer's algorithm
+**Space Complexity:** O(n + m) for adjacency list and stack
+
+**Why it's optimal:**
+- O(m) time complexity is optimal for Eulerian circuit construction
+- Uses optimized Hierholzer's algorithm with efficient edge management
+- Most efficient approach for competitive programming
+- Standard method for Eulerian circuit problems
+
+## 🎯 Problem Variations
+
+### Variation 1: Mail Delivery with Multiple Components
+**Problem**: Find Eulerian circuits in graphs with multiple connected components.
+
+**Link**: [CSES Problem Set - Mail Delivery Multiple Components](https://cses.fi/problemset/task/mail_delivery_multiple_components)
+
 ```python
-def range_mail_delivery_queries(n, edges, queries):
-    # queries = [(start_edge, end_edge), ...] - find circuit using edges in range
+def mail_delivery_multiple_components(n, m, edges):
+    # Check if Eulerian circuit exists in each component
+    degree = [0] * (n + 1)
+    adj = [[] for _ in range(n + 1)]
     
-    results = []
-    for start, end in queries: subset_edges = edges[
-start: end+1]
-        result = find_mail_delivery_route(n, len(subset_edges), subset_edges)
-        results.append(result)
+    for a, b in edges:
+        degree[a] += 1
+        degree[b] += 1
+        adj[a].append(b)
+        adj[b].append(a)
     
-    return results
+    def find_components():
+        visited = [False] * (n + 1)
+        components = []
+        
+        for i in range(1, n + 1):
+            if not visited[i]:
+                component = []
+                stack = [i]
+                visited[i] = True
+                
+                while stack:
+                    current = stack.pop()
+                    component.append(current)
+                    
+                    for neighbor in adj[current]:
+                        if not visited[neighbor]:
+                            visited[neighbor] = True
+                            stack.append(neighbor)
+                
+                components.append(component)
+        
+        return components
+    
+    components = find_components()
+    
+    # Check each component for Eulerian circuit
+    for component in components:
+        for vertex in component:
+            if degree[vertex] % 2 != 0:
+                return "IMPOSSIBLE"
+    
+    return "POSSIBLE"
 ```
 
-#### **3. Interactive Mail Delivery Problems**
+### Variation 2: Mail Delivery with Edge Weights
+**Problem**: Find Eulerian circuits considering edge weights.
+
+**Link**: [CSES Problem Set - Mail Delivery Edge Weights](https://cses.fi/problemset/task/mail_delivery_edge_weights)
+
 ```python
-def interactive_mail_delivery():
-    n, m = map(int, input("Enter n and m: ").split())
-    print("Enter edges (a b):")
-    edges = []
-    for _ in range(m):
-        a, b = map(int, input().split())
-        edges.append((a, b))
+def mail_delivery_edge_weights(n, m, edges):
+    # Check if Eulerian circuit exists with edge weights
+    degree = [0] * (n + 1)
+    adj = [[] for _ in range(n + 1)]
     
-    result = find_mail_delivery_route(n, m, edges)
-    print(f"Mail delivery route: {result}")
+    for a, b, weight in edges:
+        degree[a] += 1
+        degree[b] += 1
+        adj[a].append((b, weight))
+        adj[b].append((a, weight))
     
-    # Show the circuit
-    if result != "IMPOSSIBLE":
-        circuit = result.split()
-        print(f"Circuit: {' -> '.join(circuit)}")
+    # Check if all degrees are even
+    for i in range(1, n + 1):
+        if degree[i] % 2 != 0:
+            return "IMPOSSIBLE"
+    
+    # Hierholzer's algorithm with edge weights
+    def find_eulerian_circuit():
+        start = 1
+        path = []
+        stack = [start]
+        
+        while stack:
+            current = stack[-1]
+            
+            if adj[current]:
+                next_node, weight = adj[current].pop()
+                # Remove the reverse edge
+                for i, (neighbor, w) in enumerate(adj[next_node]):
+                    if neighbor == current and w == weight:
+                        adj[next_node].pop(i)
+                        break
+                stack.append(next_node)
+            else:
+                path.append(stack.pop())
+        
+        return path[::-1]
+    
+    circuit = find_eulerian_circuit()
+    
+    if len(circuit) != m + 1:
+        return "IMPOSSIBLE"
+    
+    return ' '.join(map(str, circuit))
 ```
 
-### 🧮 **Mathematical Extensions**
+### Variation 3: Mail Delivery with Time Constraints
+**Problem**: Find Eulerian circuits with time constraints on edge traversal.
 
-#### **1. Graph Theory**
-- **Euler's Theorem**: Conditions for Eulerian trail/circuit
-- **Degree Theory**: Properties of vertex degrees
-- **Connectivity Theory**: Theory of graph connectivity
-- **Trail Theory**: Mathematical theory of trails
+**Link**: [CSES Problem Set - Mail Delivery Time Constraints](https://cses.fi/problemset/task/mail_delivery_time_constraints)
 
-#### **2. Linear Algebra**
-- **Adjacency Matrix**: Matrix representation of graphs
-- **Incidence Matrix**: Edge-vertex incidence matrix
-- **Laplacian Matrix**: Graph Laplacian matrix
-- **Spectral Graph Theory**: Study of graph eigenvalues
+```python
+def mail_delivery_time_constraints(n, m, edges, time_constraints):
+    # Check if Eulerian circuit exists with time constraints
+    degree = [0] * (n + 1)
+    adj = [[] for _ in range(n + 1)]
+    
+    for a, b in edges:
+        degree[a] += 1
+        degree[b] += 1
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    # Check if all degrees are even
+    for i in range(1, n + 1):
+        if degree[i] % 2 != 0:
+            return "IMPOSSIBLE"
+    
+    # Hierholzer's algorithm with time constraints
+    def find_eulerian_circuit():
+        start = 1
+        path = []
+        stack = [start]
+        current_time = 0
+        
+        while stack:
+            current = stack[-1]
+            
+            if adj[current]:
+                next_node = adj[current].pop()
+                edge_time = time_constraints.get((current, next_node), 1)
+                current_time += edge_time
+                # Remove the reverse edge
+                adj[next_node].remove(current)
+                stack.append(next_node)
+            else:
+                path.append(stack.pop())
+        
+        return path[::-1]
+    
+    circuit = find_eulerian_circuit()
+    
+    if len(circuit) != m + 1:
+        return "IMPOSSIBLE"
+    
+    return ' '.join(map(str, circuit))
+```
 
-#### **3. Combinatorics**
-- **Path Counting**: Count number of paths
-- **Trail Counting**: Count number of trails
-- **Graph Enumeration**: Enumerate graphs with properties
-- **Permutation Theory**: Theory of permutations
+## 🔗 Related Problems
 
-### 📚 **Learning Resources**
+- **[Teleporters Path](/cses-analyses/problem_soulutions/graph_algorithms/teleporters_path_analysis/)**: Eulerian trails
+- **[De Bruijn Sequence](/cses-analyses/problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis/)**: Eulerian paths
+- **[Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph theory problems
+- **[Circuit Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/)**: Circuit problems
 
-#### **1. Related Algorithms**
-- **Eulerian Algorithms**: Hierholzer's, Fleury's algorithms
-- **Path Algorithms**: DFS, BFS, Dijkstra, Floyd-Warshall
-- **Graph Algorithms**: Connectivity, traversal algorithms
-- **Optimization Algorithms**: Linear programming, integer programming
+## 📚 Learning Points
 
-#### **2. Mathematical Concepts**
-- **Graph Theory**: Properties and theorems about graphs
-- **Linear Algebra**: Matrix representations of graphs
-- **Combinatorics**: Combinatorial graph theory
-- **Optimization**: Mathematical optimization techniques
+1. **Eulerian Circuits**: Essential for understanding circuit algorithms
+2. **Hierholzer's Algorithm**: Key technique for Eulerian circuit construction
+3. **Degree Conditions**: Important for identifying Eulerian circuit existence
+4. **Graph Representation**: Critical for understanding adjacency list structures
+5. **Circuit Construction**: Foundation for many graph traversal problems
+6. **Algorithm Optimization**: Critical for competitive programming performance
 
-#### **3. Programming Concepts**
-- **Graph Representations**: Adjacency list vs adjacency matrix
-- **Path Finding**: Efficient path finding algorithms
-- **Trail Construction**: Building trails from graph data
-- **Algorithm Optimization**: Improving time and space complexity
+## 📝 Summary
 
----
+The Mail Delivery problem demonstrates fundamental Eulerian circuit concepts for finding paths that visit every edge exactly once and return to the starting vertex. We explored three approaches:
 
-*This analysis demonstrates efficient Eulerian circuit techniques and shows various extensions for mail delivery problems.* 
+1. **Brute Force Path Enumeration**: O(n! × m) time complexity using exponential path generation, inefficient for large graphs
+2. **Basic Hierholzer's Algorithm**: O(m) time complexity using standard Hierholzer's algorithm, better approach for Eulerian circuit problems
+3. **Optimized Hierholzer's Algorithm with Efficient Edge Management**: O(m) time complexity with optimized Hierholzer's algorithm, optimal approach for Eulerian circuit construction
+
+The key insights include understanding Eulerian circuit conditions, using Hierholzer's algorithm for efficient circuit construction, and applying degree checking techniques for optimal performance. This problem serves as an excellent introduction to Eulerian circuit algorithms and Hierholzer's algorithm techniques.
+

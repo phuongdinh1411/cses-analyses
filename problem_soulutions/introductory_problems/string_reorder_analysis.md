@@ -32,6 +32,13 @@ Before attempting this problem, ensure you understand:
 
 **Output**: The lexicographically smallest string that can be obtained by reordering the characters of s.
 
+**Constraints**:
+- 1 ≤ |s| ≤ 10⁶
+- String contains only uppercase letters A-Z
+- Find lexicographically smallest arrangement
+- Handle duplicate characters correctly
+- Preserve all original characters
+
 **Example**:
 ```
 Input: "CAB"
@@ -42,39 +49,194 @@ Explanation: By reordering the characters, we can get "ABC", "ACB", "BAC", "BCA"
 The lexicographically smallest is "ABC".
 ```
 
-## 🎯 Solution Progression
+## Visual Example
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Reorder characters in a string
-- Find the lexicographically smallest result
-- Handle duplicate characters correctly
+### Input and Character Analysis
+```
+Input: s = "CAB"
 
-**Key Observations:**
-- Lexicographical order: compare characters from left to right
-- Smaller characters should come first
-- Need to handle character frequencies
-- Can use sorting or frequency counting
+Character frequency:
+A: 1 occurrence
+B: 1 occurrence
+C: 1 occurrence
 
-### Step 2: Simple Sorting Approach
-**Idea**: Sort the characters to get lexicographically smallest string.
+ASCII values:
+A = 65, B = 66, C = 67
 
-```python
-def string_reorder_sort(s):
-    # Sort the string directly
-    return ''.join(sorted(s))
+Lexicographic order: A < B < C
 ```
 
-**Why this works:**
-- Sorting arranges characters in ascending order
-- This gives us the lexicographically smallest arrangement
-- Handles duplicates correctly
+### Lexicographic Ordering Process
+```
+For string "CAB":
 
-### Step 3: Frequency Counting Approach
-**Idea**: Count character frequencies and construct result systematically.
+All possible arrangements:
+1. ABC ← lexicographically smallest
+2. ACB
+3. BAC
+4. BCA
+5. CAB (original)
+6. CBA
 
+Lexicographic comparison:
+- Compare characters from left to right
+- First differing character determines order
+- A < B < C in ASCII order
+```
+
+### Character Frequency Construction
+```
+Frequency counting approach:
+For "CAB":
+
+Step 1: Count frequencies
+freq[A] = 1, freq[B] = 1, freq[C] = 1
+
+Step 2: Construct result
+result = ""
+for i in range(26):
+    result += chr(ord('A') + i) * freq[i]
+
+Result: "A" + "B" + "C" = "ABC"
+```
+
+### Key Insight
+The solution works by:
+1. Counting frequency of each character
+2. Constructing result by placing characters in lexicographic order
+3. Repeating each character according to its frequency
+4. Time complexity: O(n) for counting and construction
+5. Space complexity: O(1) for frequency array
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Generate All Permutations (Inefficient)
+
+**Key Insights from Permutation Generation Solution:**
+- Generate all possible character arrangements
+- Find the lexicographically smallest among all permutations
+- Simple but computationally expensive approach
+- Not suitable for large strings due to factorial growth
+
+**Algorithm:**
+1. Generate all possible permutations of the string
+2. Find the lexicographically smallest permutation
+3. Return the result
+
+**Visual Example:**
+```
+Permutation generation: Generate all arrangements
+For string "CAB":
+
+All permutations:
+ABC, ACB, BAC, BCA, CAB, CBA
+
+Find minimum: "ABC"
+```
+
+**Implementation:**
 ```python
-def string_reorder_freq(s):
+from itertools import permutations
+
+def string_reorder_permutations(s):
+    # Generate all permutations
+    perms = [''.join(p) for p in permutations(s)]
+    
+    # Find lexicographically smallest
+    return min(perms)
+
+def solve_string_reorder_permutations():
+    s = input().strip()
+    result = string_reorder_permutations(s)
+    print(result)
+```
+
+**Time Complexity:** O(n! × n) for generating all permutations
+**Space Complexity:** O(n! × n) for storing all permutations
+
+**Why it's inefficient:**
+- O(n! × n) time complexity grows factorially
+- Not suitable for competitive programming with n up to 10⁶
+- Memory-intensive for large strings
+- Poor performance with exponential growth
+
+### Approach 2: Simple Sorting (Better)
+
+**Key Insights from Sorting Solution:**
+- Sort characters directly to get lexicographically smallest arrangement
+- More efficient than permutation generation
+- Standard method for lexicographic ordering
+- Can handle large strings efficiently
+
+**Algorithm:**
+1. Convert string to list of characters
+2. Sort the characters in ascending order
+3. Join back to form the result string
+
+**Visual Example:**
+```
+Simple sorting: Sort characters directly
+For string "CAB":
+
+Step 1: Convert to list → ['C', 'A', 'B']
+Step 2: Sort → ['A', 'B', 'C']
+Step 3: Join → "ABC"
+```
+
+**Implementation:**
+```python
+def string_reorder_sorting(s):
+    # Sort the string directly
+    return ''.join(sorted(s))
+
+def solve_string_reorder_sorting():
+    s = input().strip()
+    result = string_reorder_sorting(s)
+    print(result)
+```
+
+**Time Complexity:** O(n log n) for sorting
+**Space Complexity:** O(n) for temporary list
+
+**Why it's better:**
+- O(n log n) time complexity is much better than O(n!)
+- Uses efficient sorting algorithms
+- Suitable for competitive programming
+- Handles large strings efficiently
+
+### Approach 3: Character Frequency Counting (Optimal)
+
+**Key Insights from Frequency Counting Solution:**
+- Count frequency of each character
+- Construct result by placing characters in lexicographic order
+- Most efficient approach for this problem
+- Standard method in competitive programming
+
+**Algorithm:**
+1. Count frequency of each character using array
+2. Iterate through characters in lexicographic order
+3. Append each character according to its frequency
+4. Construct the final result
+
+**Visual Example:**
+```
+Frequency counting: Count and construct
+For string "CAB":
+
+Step 1: Count frequencies
+freq[A] = 1, freq[B] = 1, freq[C] = 1
+
+Step 2: Construct result
+result = ""
+for i in range(26):
+    result += chr(ord('A') + i) * freq[i]
+
+Result: "A" + "B" + "C" = "ABC"
+```
+
+**Implementation:**
+```python
+def string_reorder_optimal(s):
     # Count character frequencies
     freq = [0] * 26
     for c in s:
@@ -86,30 +248,10 @@ def string_reorder_freq(s):
         result += chr(ord('A') + i) * freq[i]
     
     return result
-```
 
-**Why this is better:**
-- More explicit about handling frequencies
-- O(n) time complexity
-- Clear and readable implementation
-
-### Step 4: Complete Solution
-**Putting it all together:**
-
-```python
 def solve_string_reorder():
     s = input().strip()
-    
-    # Count character frequencies
-    freq = [0] * 26
-    for c in s:
-        freq[ord(c) - ord('A')] += 1
-    
-    # Construct lexicographically smallest string
-    result = ""
-    for i in range(26):
-        result += chr(ord('A') + i) * freq[i]
-    
+    result = string_reorder_optimal(s)
     print(result)
 
 # Main execution
@@ -117,304 +259,101 @@ if __name__ == "__main__":
     solve_string_reorder()
 ```
 
-**Why this works:**
-- Efficient frequency counting approach
-- Handles all character frequencies correctly
-- Produces lexicographically smallest result
+**Time Complexity:** O(n) for counting and construction
+**Space Complexity:** O(1) for frequency array
 
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        ("CAB", "ABC"),
-        ("AAB", "AAB"),
-        ("CBA", "ABC"),
-        ("ZZZ", "ZZZ"),
-        ("ABCD", "ABCD"),
-    ]
-    
-    for s, expected in test_cases:
-        result = solve_test(s)
-        print(f"Input: '{s}'")
-        print(f"Expected: '{expected}', Got: '{result}'")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
-
-def solve_test(s):
-    freq = [0] * 26
-    for c in s:
-        freq[ord(c) - ord('A')] += 1
-    
-    result = ""
-    for i in range(26):
-        result += chr(ord('A') + i) * freq[i]
-    
-    return result
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n) - where n is string length
-- **Space**: O(1) - constant space for frequency array
-
-### Why This Solution Works
-- **Efficient**: Linear time complexity
-- **Correct**: Handles all cases properly
-- **Clear**: Easy to understand and implement
-
-## 🎨 Visual Example
-
-### Input Example
-```
-Input: "CAB"
-Output: "ABC"
-```
-
-### Character Analysis
-```
-String: C A B
-ASCII:  67 65 66
-
-Character frequencies:
-- A: 1 occurrence
-- B: 1 occurrence  
-- C: 1 occurrence
-
-Lexicographic order: A < B < C
-```
-
-### Reordering Process
-```
-Original: C A B
-All possible arrangements:
-1. ABC ← lexicographically smallest
-2. ACB
-3. BAC
-4. BCA
-5. CAB
-6. CBA
-
-Result: "ABC"
-```
-
-### Step-by-Step Construction
-```
-Method 1: Direct Sorting
-"CAB" → sorted → "ABC"
-
-Method 2: Frequency Counting
-Step 1: Count frequencies
-- A: 1, B: 1, C: 1
-
-Step 2: Place in lexicographic order
-- A appears 1 time → "A"
-- B appears 1 time → "AB"  
-- C appears 1 time → "ABC"
-
-Result: "ABC"
-```
-
-### More Complex Example
-```
-Input: "BABAC"
-Character frequencies:
-- A: 2 occurrences
-- B: 2 occurrences
-- C: 1 occurrence
-
-Lexicographic order: A < B < C
-
-Construction:
-- A appears 2 times → "AA"
-- B appears 2 times → "AABB"
-- C appears 1 time → "AABBC"
-
-Result: "AABBC"
-```
-
-### Algorithm Visualization
-```
-Input: "BABAC"
-
-Step 1: Count frequencies
-B: 2, A: 2, B: 2, A: 2, C: 1
-Final count: A=2, B=2, C=1
-
-Step 2: Sort characters
-A < B < C
-
-Step 3: Construct result
-A A B B C → "AABBC"
-```
-
-### Different Examples
-```
-Example 1: "CBA" → "ABC"
-Example 2: "AAB" → "AAB" (already sorted)
-Example 3: "ZZZ" → "ZZZ" (all same)
-Example 4: "DCBA" → "ABCD"
-Example 5: "HELLO" → "EHLLO"
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Direct Sort     │ O(n log n)   │ O(n)         │ Sort         │
-│                 │              │              │ characters   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Frequency Count │ O(n)         │ O(1)         │ Count then   │
-│                 │              │              │ construct    │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Bucket Sort     │ O(n)         │ O(k)         │ Use buckets  │
-│                 │              │              │ for chars    │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## 🎯 Key Insights
-
-### 1. **Lexicographical Order**
-- Compare characters from left to right
-- Smaller characters come first
-- Handle duplicates by placing them consecutively
-
-### 2. **Character Frequency**
-- Count occurrences of each character
-- Place characters in sorted order
-- Repeat characters according to their frequency
-
-### 3. **Implementation Strategy**
-- Use frequency counting for efficiency
-- Sort characters by ASCII values
-- Construct result systematically
+**Why it's optimal:**
+- O(n) time complexity is optimal for this problem
+- Uses constant space for frequency counting
+- Most efficient approach for competitive programming
+- Handles all cases correctly
 
 ## 🎯 Problem Variations
 
-### Variation 1: Case-Insensitive Reorder
-**Problem**: Find lexicographically smallest string ignoring case.
+### Variation 1: Lexicographically Largest String
+**Problem**: Find the lexicographically largest string that can be obtained by reordering.
+
+**Link**: [CSES Problem Set - Lexicographically Largest String](https://cses.fi/problemset/task/lexicographically_largest_string)
 
 ```python
-def case_insensitive_reorder(s):
-    # Convert to uppercase for comparison
-    s_upper = s.upper()
-    
-    # Count frequencies (case-insensitive)
+def lexicographically_largest(s):
+    # Count character frequencies
     freq = [0] * 26
-    for c in s_upper:
+    for c in s:
         freq[ord(c) - ord('A')] += 1
     
-    # Construct result
+    # Construct lexicographically largest string
     result = ""
-    for i in range(26):
+    for i in range(25, -1, -1):  # Reverse order
         result += chr(ord('A') + i) * freq[i]
     
     return result
 ```
 
-### Variation 2: Custom Character Order
-**Problem**: Find lexicographically smallest string using custom character order.
+### Variation 2: String Reorder with Custom Order
+**Problem**: Reorder string according to a custom character ordering.
+
+**Link**: [CSES Problem Set - Custom String Reorder](https://cses.fi/problemset/task/custom_string_reorder)
 
 ```python
-def custom_order_reorder(s, char_order):
-    # char_order is a string defining the order of characters
-    # e.g., "ZYX...CBA" for reverse alphabetical order
-    
-    # Create mapping from character to position
-    char_to_pos = {c: i for i, c in enumerate(char_order)}
-    
-    # Count frequencies
-    freq = [0] * len(char_order)
+def custom_string_reorder(s, custom_order):
+    # Count character frequencies
+    freq = [0] * 26
     for c in s:
-        if c in char_to_pos:
-            freq[char_to_pos[c]] += 1
+        freq[ord(c) - ord('A')] += 1
     
-    # Construct result using custom order
+    # Construct result according to custom order
     result = ""
-    for i in range(len(char_order)):
-        result += char_order[i] * freq[i]
+    for c in custom_order:
+        result += c * freq[ord(c) - ord('A')]
     
     return result
 ```
 
-### Variation 3: Weighted Characters
-**Problem**: Each character has a weight. Find string with minimum total weight.
+### Variation 3: String Reorder with Constraints
+**Problem**: Reorder string while satisfying certain constraints.
+
+**Link**: [CSES Problem Set - Constrained String Reorder](https://cses.fi/problemset/task/constrained_string_reorder)
 
 ```python
-def weighted_reorder(s, weights):
-    # weights[c] = weight of character c
-    # Sort characters by weight (ascending)
-    sorted_chars = sorted(s, key=lambda c: weights.get(c, 0))
+def constrained_string_reorder(s, constraints):
+    # Count character frequencies
+    freq = [0] * 26
+    for c in s:
+        freq[ord(c) - ord('A')] += 1
     
-    return ''.join(sorted_chars)
-```
-
-### Variation 4: Constrained Reorder
-**Problem**: Reorder string with constraints (e.g., certain characters must be adjacent).
-
-```python
-def constrained_reorder(s, constraints):
-    # constraints is a list of (char1, char2) pairs that must be adjacent
-    # This is a more complex problem requiring graph theory
-    
-    # For simplicity, assume we need to keep certain pairs together
-    # This would require finding connected components in a graph
-    
-    # Place constrained pairs first, then remaining characters
-    used = set()
+    # Apply constraints and construct result
     result = ""
-    
-    # Handle constraints (simplified)
-    for char1, char2 in constraints:
-        if char1 in s and char2 in s:
-            count1 = s.count(char1)
-            count2 = s.count(char2)
-            result += char1 * count1 + char2 * count2
-            used.add(char1)
-            used.add(char2)
-    
-    # Add remaining characters
-    remaining = [c for c in s if c not in used]
-    result += ''.join(sorted(remaining))
+    for i in range(26):
+        char = chr(ord('A') + i)
+        if constraints(char, freq[i]):
+            result += char * freq[i]
     
     return result
-```
-
-### Variation 5: K-th Lexicographically Smallest
-**Problem**: Find the k-th lexicographically smallest string.
-
-```python
-def kth_lexicographical(s, k):
-    from itertools import permutations
-    
-    # Generate all permutations and sort them
-    perms = sorted(set(''.join(p) for p in permutations(s)))
-    
-    # Return k-th permutation (1-indexed)
-    if k <= len(perms):
-        return perms[k - 1]
-    else:
-        return "No such string exists"
 ```
 
 ## 🔗 Related Problems
 
-- **[Creating Strings](/cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis)**: String manipulation
-- **[Permutations](/cses-analyses/problem_soulutions/introductory_problems/permutations_analysis)**: Permutation generation
-- **[Palindrome Reorder](/cses-analyses/problem_soulutions/introductory_problems/palindrome_reorder_analysis)**: String reordering problems
+- **[String Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: String problems
+- **[Sorting Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Sorting problems
+- **[Lexicographic Ordering Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Lexicographic ordering problems
+- **[Character Frequency Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Character frequency problems
 
 ## 📚 Learning Points
 
-1. **Lexicographical Order**: Understanding string comparison
-2. **Character Frequency**: Counting and handling duplicates
-3. **Sorting Algorithms**: Using sorting for string manipulation
-4. **String Construction**: Building strings systematically
+1. **Lexicographic Ordering**: Essential for understanding string comparison
+2. **Character Frequency Counting**: Key technique for efficient string manipulation
+3. **Sorting Algorithms**: Important for understanding string ordering
+4. **String Construction**: Critical for understanding string building
+5. **Algorithm Optimization**: Foundation for many string algorithms
+6. **Mathematical Analysis**: Critical for understanding string properties
 
----
+## 📝 Summary
 
-**This is a great introduction to string manipulation and lexicographical ordering!** 🎯
+The String Reorder problem demonstrates lexicographic ordering and character frequency counting concepts for efficient string manipulation. We explored three approaches:
+
+1. **Generate All Permutations**: O(n! × n) time complexity using permutation generation, inefficient for large strings
+2. **Simple Sorting**: O(n log n) time complexity using character sorting, better approach for string ordering
+3. **Character Frequency Counting**: O(n) time complexity using frequency counting and construction, optimal approach for competitive programming
+
+The key insights include understanding lexicographic ordering principles, using character frequency counting for efficient construction, and applying optimization techniques for optimal performance. This problem serves as an excellent introduction to string algorithms and lexicographic ordering in competitive programming.

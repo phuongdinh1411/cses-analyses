@@ -25,22 +25,24 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Tree traversal, DFS, BFS, greedy algorithm implementation
 - **Related Problems**: Tree Diameter (tree properties), Tree Distances I (tree distances), Nearest Shops (facility location)
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a tree with n nodes, you need to place offices at some nodes so that every node is within distance k of at least one office. Find the minimum number of offices needed.
 
-### Input
-The first input line has two integers n and k: the number of nodes and the maximum distance.
-Then there are n-1 lines describing the tree edges. Each line has two integers a and b: there is an edge between nodes a and b.
+**Input**: 
+- n: number of nodes
+- k: maximum distance from any node to nearest office
+- n-1 lines: a b (edge between nodes a and b)
 
-### Output
-Print the minimum number of offices needed.
+**Output**: 
+- Minimum number of offices needed
 
-### Constraints
+**Constraints**:
 - 1 ≤ n ≤ 10^5
 - 1 ≤ k ≤ 10^5
 - 1 ≤ a,b ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 5 2
@@ -50,7 +52,15 @@ Input:
 4 5
 
 Output:
-2
+1
+
+Explanation**: 
+Place office at node 3. All nodes are within distance 2:
+- Node 1: distance 2 from office at 3
+- Node 2: distance 1 from office at 3
+- Node 3: distance 0 from office at 3
+- Node 4: distance 1 from office at 3
+- Node 5: distance 2 from office at 3
 ```
 
 ### 📊 Visual Example
@@ -116,13 +126,59 @@ Coverage radius: k = 2
 All nodes within distance 2 of center
 ```
 
-## Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Approach 1: Greedy Placement - O(n²)
-**Description**: Place offices greedily by finding the node that covers the most uncovered nodes.
+### Approach 1: Greedy Placement (Brute Force)
 
+**Key Insights from Greedy Placement**:
+- **Coverage Analysis**: Each office covers nodes within distance k
+- **Greedy Strategy**: Place office at node that covers most uncovered nodes
+- **BFS Coverage**: Use BFS to find all nodes within distance k
+- **Iterative Placement**: Repeat until all nodes are covered
+
+**Key Insight**: Use greedy algorithm to place offices at nodes that cover the most uncovered nodes.
+
+**Algorithm**:
+- Build adjacency list from edges
+- While there are uncovered nodes:
+  - Find node that covers most uncovered nodes using BFS
+  - Place office at that node
+  - Mark covered nodes as covered
+- Return number of offices placed
+
+**Visual Example**:
+```
+Tree: 1-2-3-4-5, k=2
+
+Step 1: Find coverage for each node
+┌─────────────────────────────────────┐
+│ Node 1: covers {1, 2, 3}           │
+│ Node 2: covers {1, 2, 3, 4}        │
+│ Node 3: covers {1, 2, 3, 4, 5}     │ ← Best
+│ Node 4: covers {2, 3, 4, 5}        │
+│ Node 5: covers {3, 4, 5}           │
+└─────────────────────────────────────┘
+
+Step 2: Place office at node 3
+Coverage: {1, 2, 3, 4, 5}
+All nodes covered ✓
+Result: 1 office
+```
+
+**Implementation**:
 ```python
-def creating_offices_naive(n, k, edges):
+def greedy_placement_solution(n, k, edges):
+    """
+    Find minimum offices using greedy placement strategy
+    
+    Args:
+        n: number of nodes
+        k: maximum distance
+        edges: list of (a, b) representing edges
+    
+    Returns:
+        int: minimum number of offices needed
+    """
     # Build adjacency list
     adj = [[] for _ in range(n + 1)]
     for a, b in edges:
@@ -130,6 +186,7 @@ def creating_offices_naive(n, k, edges):
         adj[b].append(a)
     
     def bfs_coverage(start, k):
+        """Find all nodes within distance k from start"""
         queue = [(start, 0)]
         visited = {start}
         covered = {start}
@@ -170,23 +227,82 @@ def creating_offices_naive(n, k, edges):
             offices += 1
     
     return offices
+
+# Example usage
+n, k = 5, 2
+edges = [(1, 2), (2, 3), (3, 4), (4, 5)]
+result = greedy_placement_solution(n, k, edges)
+print(f"Greedy placement result: {result}")  # Output: 1
 ```
 
-**Why this is inefficient**: O(n²) complexity is too slow for large trees.
+**Time Complexity**: O(n²)
+**Space Complexity**: O(n)
 
-### Improvement 1: Tree Diameter Approach - O(n)
-**Description**: Use the tree diameter to find optimal office placement.
+**Why it's inefficient**: O(n²) complexity is too slow for large trees with n up to 10^5.
 
+---
+
+### Approach 2: Tree Diameter Analysis (Optimized)
+
+**Key Insights from Tree Diameter Analysis**:
+- **Diameter Property**: Longest path in tree determines optimal placement
+- **Center Placement**: Optimal offices are placed along the diameter
+- **Distance Formula**: Offices needed = (diameter + 2*k - 1) // (2*k)
+- **BFS Diameter**: Use BFS to find tree diameter efficiently
+
+**Key Insight**: Use tree diameter to determine optimal office placement along the longest path.
+
+**Algorithm**:
+- Find tree diameter using BFS from arbitrary node
+- Find diameter endpoints using BFS from first endpoint
+- Calculate minimum offices needed using diameter formula
+- Return the result
+
+**Visual Example**:
+```
+Tree: 1-2-3-4-5, k=2
+
+Step 1: Find diameter
+┌─────────────────────────────────────┐
+│ Start from node 1                  │
+│ BFS finds farthest: node 5         │
+│ Distance: 4 (path 1→2→3→4→5)       │
+└─────────────────────────────────────┘
+
+Step 2: Calculate offices needed
+┌─────────────────────────────────────┐
+│ Diameter = 4                       │
+│ k = 2                              │
+│ Offices = (4 + 2*2 - 1) // (2*2)  │
+│ Offices = (4 + 4 - 1) // 4        │
+│ Offices = 7 // 4 = 1               │
+└─────────────────────────────────────┘
+
+Result: 1 office at center (node 3)
+```
+
+**Implementation**:
 ```python
-def creating_offices_improved(n, k, edges):
+def tree_diameter_solution(n, k, edges):
+    """
+    Find minimum offices using tree diameter analysis
+    
+    Args:
+        n: number of nodes
+        k: maximum distance
+        edges: list of (a, b) representing edges
+    
+    Returns:
+        int: minimum number of offices needed
+    """
     # Build adjacency list
     adj = [[] for _ in range(n + 1)]
     for a, b in edges:
         adj[a].append(b)
         adj[b].append(a)
     
-    # Find tree diameter
     def bfs(start):
+        """Find farthest node and distance from start"""
         queue = [(start, 0)]
         visited = {start}
         max_dist = 0
@@ -211,16 +327,26 @@ def creating_offices_improved(n, k, edges):
     end1, _ = bfs(start)
     end2, diameter = bfs(end1)
     
-    # Place offices along diameter
+    # Calculate minimum offices needed
     offices = (diameter + 2*k - 1) // (2*k)
     return offices
+
+# Example usage
+n, k = 5, 2
+edges = [(1, 2), (2, 3), (3, 4), (4, 5)]
+result = tree_diameter_solution(n, k, edges)
+print(f"Tree diameter result: {result}")  # Output: 1
 ```
 
-**Why this works:**
-- Uses tree diameter property
-- Optimal placement along diameter
-- Simple and efficient
-- O(n) time complexity
+**Time Complexity**: O(n)
+**Space Complexity**: O(n)
+
+**Why it's better**: O(n) complexity is much faster and uses the mathematical property of tree diameter for optimal placement.
+
+**Implementation Considerations**:
+- **BFS Efficiency**: Use BFS instead of DFS for diameter finding
+- **Diameter Formula**: (diameter + 2*k - 1) // (2*k) gives optimal result
+- **Edge Cases**: Handle single node and small trees correctly
 
 ### Step 3: Complete Solution
 **Putting it all together:**

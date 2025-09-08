@@ -29,13 +29,11 @@ Before attempting this problem, ensure you understand:
 
 Given a string s, count the number of different strings that can be obtained by reordering the characters of s.
 
-This is a combinatorics problem where we need to count the number of distinct permutations of a string with repeated characters. We can solve this efficiently using the multinomial coefficient formula, which accounts for the fact that identical characters are indistinguishable.
-
 **Input**: 
 - First line: string s (the input string)
 
 **Output**: 
-- Print the number of different reorderings modulo 10⁹ + 7
+- Print the number of different reorderings modulo 10^9 + 7
 
 **Constraints**:
 - 1 ≤ |s| ≤ 100
@@ -47,15 +45,15 @@ aab
 
 Output:
 3
-```
 
-**Explanation**: 
+Explanation**: 
 The string "aab" can be reordered in 3 different ways:
 1. "aab" (original)
 2. "aba" (swap second and third characters)
 3. "baa" (swap first and second characters)
 
 Note that "aab" and "aab" are considered the same since the two 'a's are identical.
+```
 
 ### 📊 Visual Example
 

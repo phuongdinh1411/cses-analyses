@@ -29,14 +29,12 @@ Before attempting this problem, ensure you understand:
 
 Given a partially filled n×n grid, count the number of ways to complete it with numbers 1 to n in each row and column (Latin square).
 
-This is a Latin square completion problem where we need to fill the empty cells (marked as 0) with numbers 1 to n such that each number appears exactly once in each row and each column. We can solve this using backtracking with constraint propagation.
-
 **Input**: 
 - First line: integer n (size of the grid)
 - Next n lines: n integers each (0 for empty cell, 1 to n for filled cells)
 
 **Output**: 
-- Print the number of ways to complete the grid modulo 10⁹ + 7
+- Print the number of ways to complete the grid modulo 10^9 + 7
 
 **Constraints**:
 - 1 ≤ n ≤ 8
@@ -51,14 +49,14 @@ Input:
 
 Output:
 2
-```
 
-**Explanation**: 
+Explanation**: 
 For the 3×3 grid, there are 2 ways to complete it as a Latin square:
 1. Fill (0,2) with 3, (1,0) with 2, (1,1) with 3, (1,2) with 1, (2,0) with 3, (2,1) with 1
 2. Fill (0,2) with 3, (1,0) with 3, (1,1) with 1, (1,2) with 2, (2,0) with 2, (2,1) with 3
 
 Both result in valid Latin squares where each number 1, 2, 3 appears exactly once in each row and column.
+```
 
 ### 📊 Visual Example
 

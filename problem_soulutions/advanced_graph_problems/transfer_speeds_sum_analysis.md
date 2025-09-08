@@ -24,16 +24,23 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Graph representation, matching algorithms, optimization techniques
 - **Related Problems**: School Dance (bipartite matching), Download Speed (network flow), Nearest Shops (optimization)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a network with n nodes and transfer speeds between them, find the maximum sum of transfer speeds that can be achieved.
+Given a network with n nodes and transfer speeds between them, find the maximum sum of transfer speeds that can be achieved.
 
 **Input**: 
 - n: number of nodes
 - m: number of connections
 - m lines: a b speed (connection from a to b with speed)
 
-**Output**: Maximum sum of transfer speeds.
+**Output**: 
+- Maximum sum of transfer speeds
+
+**Constraints**:
+- 1 ≤ n ≤ 100
+- 1 ≤ m ≤ 1000
+- 1 ≤ a, b ≤ n
+- 1 ≤ speed ≤ 10^6
 
 **Example**:
 ```
@@ -48,7 +55,7 @@ Input:
 Output:
 35
 
-Explanation: 
+Explanation**: 
 Maximum sum = 10 + 5 + 8 + 12 = 35
 ```
 
@@ -129,20 +136,49 @@ Sum: 15 + 12 = 27
 Maximum: 30
 ```
 
-## 🎯 Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find maximum sum of transfer speeds
-- Use graph algorithms
-- Apply maximum flow or matching
-- Optimize network utilization
+### Approach 1: Brute Force Path Enumeration (Brute Force)
 
-**Key Observations:**
-- This is a maximum flow problem
-- Need to find optimal path allocation
-- Can use Ford-Fulkerson algorithm
-- Network flow optimization
+**Key Insights from Brute Force Approach**:
+- **Path Enumeration**: Try all possible paths from source to sink
+- **Flow Calculation**: Calculate flow for each path
+- **Sum Accumulation**: Accumulate flow values
+- **Exhaustive Search**: Try all possible path combinations
+
+**Key Insight**: Use brute force to enumerate all possible paths and calculate the maximum flow.
+
+**Algorithm**:
+- Enumerate all possible paths from source to sink
+- Calculate flow for each path
+- Accumulate flow values
+- Return maximum flow
+
+**Visual Example**:
+```
+Network: 1-2(10), 2-3(5), 3-4(8), 1-3(15), 2-4(12)
+
+Brute Force Path Enumeration:
+┌─────────────────────────────────────┐
+│ Path 1: 1→2→3→4                    │
+│ Flow: min(10, 5, 8) = 5            │
+│ Sum: 5                             │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ Path 2: 1→3→4                      │
+│ Flow: min(15, 8) = 8               │
+│ Sum: 5 + 8 = 13                    │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ Path 3: 1→2→4                      │
+│ Flow: min(10, 12) = 10             │
+│ Sum: 13 + 10 = 23                  │
+└─────────────────────────────────────┘
+
+Result: 23
+```
 
 ### Step 2: Maximum Flow Approach
 **Idea**: Use maximum flow algorithm to find optimal transfer speeds.

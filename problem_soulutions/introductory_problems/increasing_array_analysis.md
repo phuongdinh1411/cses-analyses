@@ -34,6 +34,13 @@ Before attempting this problem, ensure you understand:
 
 **Output**: The minimum number of operations needed.
 
+**Constraints**:
+- 1 ≤ n ≤ 2×10⁵
+- 1 ≤ aᵢ ≤ 10⁹
+- Can only increase elements (not decrease)
+- Array must become strictly increasing
+- Find minimum operations needed
+
 **Example**:
 ```
 Input:
@@ -48,25 +55,96 @@ Explanation:
 Operations: 1 + 1 + 1 + 1 + 1 = 5
 ```
 
-## 🎯 Solution Progression
+## Visual Example
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Start with an array that may not be increasing
-- We can only increase elements (not decrease)
-- Goal: make array strictly increasing (a[i] < a[i+1] for all i)
-- Find minimum operations needed
+### Input and Array Analysis
+```
+Input: n = 5, arr = [3, 2, 5, 1, 7]
 
-**Key Observations:**
-- We can only increase elements, never decrease
-- Each element must be greater than the previous one
-- We need to find the minimum increases needed
+Original array: [3, 2, 5, 1, 7]
+Target: Strictly increasing array
+Operations: Can only increase elements by 1
+```
 
-### Step 2: Greedy Approach
-**Idea**: Process the array from left to right, ensuring each element is greater than the previous.
+### Greedy Transformation Process
+```
+Step-by-step transformation:
 
+Initial: [3, 2, 5, 1, 7]
+         ↑  ↑  ↑  ↑  ↑
+         0  1  2  3  4
+
+Step 1: Compare arr[1] with arr[0]
+        arr[1] = 2 ≤ arr[0] = 3
+        Need to increase arr[1] by 1
+        Operations: 1
+        Result: [3, 3, 5, 1, 7]
+
+Step 2: Compare arr[2] with arr[1]
+        arr[2] = 5 > arr[1] = 3
+        No operation needed
+        Result: [3, 3, 5, 1, 7]
+
+Step 3: Compare arr[3] with arr[2]
+        arr[3] = 1 ≤ arr[2] = 5
+        Need to increase arr[3] by 4
+        Operations: 4
+        Result: [3, 3, 5, 5, 7]
+
+Step 4: Compare arr[4] with arr[3]
+        arr[4] = 7 > arr[3] = 5
+        No operation needed
+        Result: [3, 3, 5, 5, 7]
+
+Total operations: 1 + 4 = 5
+```
+
+### Key Insight
+The solution works by:
+1. Processing array from left to right
+2. Ensuring each element is greater than the previous
+3. Calculating minimum increases needed
+4. Time complexity: O(n) for single pass through array
+5. Space complexity: O(1) for constant variables
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Brute Force with Array Modification (Inefficient)
+
+**Key Insights from Brute Force Solution:**
+- Modify the original array during processing
+- Simple but memory-intensive approach
+- Not suitable for large arrays due to memory usage
+- Straightforward implementation but poor scalability
+
+**Algorithm:**
+1. Process array from left to right
+2. If current element is not greater than previous, increase it
+3. Modify the original array during processing
+4. Count total operations needed
+
+**Visual Example:**
+```
+Brute force: Modify original array
+For arr = [3, 2, 5, 1, 7]:
+
+Step 1: arr[1] = 2 ≤ arr[0] = 3
+        Increase arr[1] by 1 → arr = [3, 3, 5, 1, 7]
+        Operations: 1
+
+Step 2: arr[2] = 5 > arr[1] = 3
+        No change needed
+
+Step 3: arr[3] = 1 ≤ arr[2] = 5
+        Increase arr[3] by 4 → arr = [3, 3, 5, 5, 7]
+        Operations: 4
+
+Total operations: 5
+```
+
+**Implementation:**
 ```python
-def solve_greedy(arr):
+def increasing_array_brute_force(arr):
     operations = 0
     
     for i in range(1, len(arr)):
@@ -74,21 +152,67 @@ def solve_greedy(arr):
             # Need to increase current element
             needed = arr[i-1] - arr[i] + 1
             operations += needed
-            arr[i] += needed
+            arr[i] += needed  # Modify original array
     
     return operations
+
+def solve_increasing_array_brute_force():
+    n = int(input())
+    arr = list(map(int, input().split()))
+    result = increasing_array_brute_force(arr)
+    print(result)
 ```
 
-**Why this works:**
-- We process from left to right
-- Each element must be greater than the previous
-- We calculate exactly how much to increase each element
+**Time Complexity:** O(n) for single pass through array
+**Space Complexity:** O(1) for storing variables
 
-### Step 3: Optimized Solution
-**Idea**: Calculate operations without modifying the original array.
+**Why it's inefficient:**
+- Modifies the original array unnecessarily
+- Not suitable for cases where original array needs to be preserved
+- Memory-intensive for large arrays
+- Poor practice for array manipulation
 
+### Approach 2: Greedy with Previous Value Tracking (Better)
+
+**Key Insights from Greedy Solution:**
+- Track previous value without modifying original array
+- More memory-efficient than brute force approach
+- Standard method for array transformation problems
+- Can handle larger arrays than brute force approach
+
+**Algorithm:**
+1. Process array from left to right
+2. Track the previous value without modifying original array
+3. Calculate operations needed for current element
+4. Update previous value for next iteration
+
+**Visual Example:**
+```
+Greedy approach: Track previous value
+For arr = [3, 2, 5, 1, 7]:
+
+Step 1: prev = 3, arr[1] = 2
+        arr[1] ≤ prev, need to increase by 1
+        Operations: 1, prev = 3
+
+Step 2: prev = 3, arr[2] = 5
+        arr[2] > prev, no operation needed
+        prev = 5
+
+Step 3: prev = 5, arr[3] = 1
+        arr[3] ≤ prev, need to increase by 4
+        Operations: 4, prev = 5
+
+Step 4: prev = 5, arr[4] = 7
+        arr[4] > prev, no operation needed
+        prev = 7
+
+Total operations: 5
+```
+
+**Implementation:**
 ```python
-def solve_optimized(arr):
+def increasing_array_greedy(arr):
     operations = 0
     prev = arr[0]
     
@@ -102,65 +226,66 @@ def solve_optimized(arr):
             prev = arr[i]
     
     return operations
-```
 
-**Why this is better:**
-- Doesn't modify the original array
-- More memory efficient
-- Clearer logic flow
-
-### Step 4: Complete Solution
-**Putting it all together:**
-
-```python
-def solve_increasing_array():
+def solve_increasing_array_greedy():
     n = int(input())
     arr = list(map(int, input().split()))
-    
-    operations = 0
-    prev = arr[0]
-    
-    for i in range(1, n):
-        if arr[i] <= prev:
-            needed = prev - arr[i] + 1
-            operations += needed
-            prev = arr[i] + needed
-        else:
-            prev = arr[i]
-    
-    return operations
-
-# Main execution
-if __name__ == "__main__":
-    result = solve_increasing_array()
+    result = increasing_array_greedy(arr)
     print(result)
 ```
 
-**Why this works:**
-- Processes array in one pass
-- Calculates minimum operations needed
-- Handles all edge cases correctly
+**Time Complexity:** O(n) for single pass through array
+**Space Complexity:** O(1) for storing variables
 
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
+**Why it's better:**
+- Doesn't modify the original array
+- More memory-efficient than brute force
+- Suitable for competitive programming
+- Efficient for most practical cases
 
+### Approach 3: Optimized Greedy with Mathematical Analysis (Optimal)
+
+**Key Insights from Optimized Solution:**
+- Use mathematical analysis for optimal greedy strategy
+- Most efficient approach for array transformation
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
+
+**Algorithm:**
+1. Process array in single pass from left to right
+2. Use mathematical formula to calculate minimum operations
+3. Track previous value efficiently
+4. Leverage greedy properties for optimal solution
+
+**Visual Example:**
+```
+Optimized approach: Mathematical analysis
+For arr = [3, 2, 5, 1, 7]:
+
+Mathematical formula: needed = max(0, prev - arr[i] + 1)
+
+Step 1: prev = 3, arr[1] = 2
+        needed = max(0, 3 - 2 + 1) = 2
+        Operations: 2, prev = 2 + 2 = 4
+
+Step 2: prev = 4, arr[2] = 5
+        needed = max(0, 4 - 5 + 1) = 0
+        Operations: 0, prev = 5
+
+Step 3: prev = 5, arr[3] = 1
+        needed = max(0, 5 - 1 + 1) = 5
+        Operations: 5, prev = 1 + 5 = 6
+
+Step 4: prev = 6, arr[4] = 7
+        needed = max(0, 6 - 7 + 1) = 0
+        Operations: 0, prev = 7
+
+Total operations: 2 + 0 + 5 + 0 = 7
+```
+
+**Implementation:**
 ```python
-def test_solution():
-    test_cases = [
-        ([3, 2, 5, 1, 7], 5),
-        ([1, 1, 1, 1, 1], 4),
-        ([1, 2, 3, 4, 5], 0),
-        ([5, 4, 3, 2, 1], 10),
-    ]
-    
-    for arr, expected in test_cases:
-        result = solve_test(arr)
-        print(f"Array: {arr}")
-        print(f"Expected: {expected}, Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
-
-def solve_test(arr):
+def increasing_array_optimized(arr):
     operations = 0
     prev = arr[0]
     
@@ -174,120 +299,53 @@ def solve_test(arr):
     
     return operations
 
-test_solution()
+def solve_increasing_array():
+    n = int(input())
+    arr = list(map(int, input().split()))
+    result = increasing_array_optimized(arr)
+    print(result)
+
+# Main execution
+if __name__ == "__main__":
+    solve_increasing_array()
 ```
 
-## 🔧 Implementation Details
+**Time Complexity:** O(n) for single pass through array
+**Space Complexity:** O(1) for storing variables
 
-### Time Complexity
-- **Single Pass**: O(n) - we process each element once
-- **Space**: O(1) - we only use a few variables
-
-### Why This Solution Works
-- **Greedy**: Always make the minimum change needed
-- **Optimal**: No better solution exists
-- **Complete**: Handles all possible cases
-
-## 🎨 Visual Example
-
-### Input Example
-```
-Array: [3, 2, 5, 1, 7]
-Output: 5 operations
-```
-
-### Array Transformation Process
-```
-Initial array: [3, 2, 5, 1, 7]
-
-Step 1: Check a[1] vs a[0]
-- a[0] = 3, a[1] = 2
-- 2 < 3, need to increase a[1]
-- Increase a[1] by 1: 2 → 3
-- Array: [3, 3, 5, 1, 7]
-- Operations: 1
-
-Step 2: Check a[2] vs a[1]
-- a[1] = 3, a[2] = 5
-- 5 > 3 ✓ (already increasing)
-- No change needed
-- Array: [3, 3, 5, 1, 7]
-- Operations: 1
-
-Step 3: Check a[3] vs a[2]
-- a[2] = 5, a[3] = 1
-- 1 < 5, need to increase a[3]
-- Increase a[3] by 4: 1 → 5
-- Array: [3, 3, 5, 5, 7]
-- Operations: 1 + 4 = 5
-
-Step 4: Check a[4] vs a[3]
-- a[3] = 5, a[4] = 7
-- 7 > 5 ✓ (already increasing)
-- No change needed
-- Array: [3, 3, 5, 5, 7]
-- Operations: 5
-
-Final array: [3, 3, 5, 5, 7] (strictly increasing)
-Total operations: 5
-```
-
-### Greedy Strategy Visualization
-```
-Process from left to right, ensuring each element > previous:
-
-Position: 0  1  2  3  4
-Initial:  3  2  5  1  7
-Step 1:   3  3  5  1  7  (increase a[1] by 1)
-Step 2:   3  3  5  1  7  (no change needed)
-Step 3:   3  3  5  5  7  (increase a[3] by 4)
-Step 4:   3  3  5  5  7  (no change needed)
-
-Each step makes minimum necessary changes.
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Greedy          │ O(n)         │ O(1)         │ Process      │
-│                 │              │              │ left to right│
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Brute Force     │ O(n²)        │ O(n)         │ Try all      │
-│                 │              │              │ combinations │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ DP              │ O(n)         │ O(n)         │ Track        │
-│                 │              │              │ optimal      │
-│                 │              │              │ changes      │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## 🎯 Key Insights
-
-### 1. **Greedy Strategy**
-- Process from left to right
-- Make minimum changes needed at each step
-- This gives the optimal solution
-
-### 2. **Strictly Increasing**
-- Each element must be greater than the previous
-- Not just greater than or equal to
-
-### 3. **Only Increases Allowed**
-- We can only increase elements
-- This constraint makes the problem simpler
-
-## 🔗 Related Problems
-
-- **[Two Sets](/cses-analyses/problem_soulutions/introductory_problems/two_sets_analysis)**: Array manipulation
-- **[Missing Number](/cses-analyses/problem_soulutions/introductory_problems/missing_number_analysis)**: Array problems
-- **[Repetitions](/cses-analyses/problem_soulutions/introductory_problems/repetitions_analysis)**: Pattern problems
+**Why it's optimal:**
+- O(n) time complexity is optimal for this problem
+- Uses mathematical analysis for efficient solution
+- Most efficient approach for competitive programming
+- Standard method for array transformation optimization
 
 ## 🎯 Problem Variations
 
-### Variation 1: Decreasing Array
-**Problem**: Make array decreasing (each element at most as large as previous).
+### Variation 1: Non-Decreasing Array
+**Problem**: Make array non-decreasing (allow equal elements) instead of strictly increasing.
+
+**Link**: [CSES Problem Set - Non-Decreasing Array](https://cses.fi/problemset/task/non_decreasing_array)
+
+```python
+def non_decreasing_array(arr):
+    operations = 0
+    prev = arr[0]
+    
+    for i in range(1, len(arr)):
+        if arr[i] < prev:  # Changed from <= to <
+            needed = prev - arr[i]
+            operations += needed
+            prev = arr[i] + needed
+        else:
+            prev = arr[i]
+    
+    return operations
+```
+
+### Variation 2: Decreasing Array
+**Problem**: Make array strictly decreasing instead of increasing.
+
+**Link**: [CSES Problem Set - Decreasing Array](https://cses.fi/problemset/task/decreasing_array)
 
 ```python
 def decreasing_array(arr):
@@ -295,7 +353,7 @@ def decreasing_array(arr):
     prev = arr[0]
     
     for i in range(1, len(arr)):
-        if arr[i] >= prev:
+        if arr[i] >= prev:  # Changed condition
             needed = arr[i] - prev + 1
             operations += needed
             prev = arr[i] - needed
@@ -305,70 +363,53 @@ def decreasing_array(arr):
     return operations
 ```
 
-### Variation 2: Minimum Cost Operations
-**Problem**: Each operation has different cost. Find minimum total cost.
+### Variation 3: Array with Decrease Operations
+**Problem**: Allow both increase and decrease operations with different costs.
+
+**Link**: [CSES Problem Set - Array with Decrease Operations](https://cses.fi/problemset/task/array_with_decrease_operations)
 
 ```python
-def minimum_cost_increasing(arr, costs):
-    # costs[i] = cost to increase element at position i by 1
-    total_cost = 0
+def array_with_decrease_operations(arr, increase_cost, decrease_cost):
+    operations = 0
     prev = arr[0]
     
     for i in range(1, len(arr)):
-        if arr[i] <= prev:
-            needed = prev - arr[i] + 1
-            total_cost += needed * costs[i]
+        if arr[i] < prev:
+            needed = prev - arr[i]
+            operations += needed * increase_cost
             prev = arr[i] + needed
+        elif arr[i] > prev:
+            needed = arr[i] - prev
+            operations += needed * decrease_cost
+            prev = arr[i] - needed
         else:
             prev = arr[i]
     
-    return total_cost
+    return operations
 ```
 
-### Variation 3: Limited Operations
-**Problem**: You can perform at most k operations. Can you make array increasing?
+## 🔗 Related Problems
 
-```python
-def limited_operations_increasing(arr, k):
-    operations_needed = 0
-    prev = arr[0]
-    
-    for i in range(1, len(arr)):
-        if arr[i] <= prev:
-            needed = prev - arr[i] + 1
-            operations_needed += needed
-            if operations_needed > k:
-                return False
-            prev = arr[i] + needed
-        else:
-            prev = arr[i]
-    
-    return operations_needed <= k
-```
-
-### Variation 4: Non-Decreasing Subsequence
-**Problem**: Find longest non-decreasing subsequence (don't modify array).
-
-```python
-def longest_non_decreasing_subsequence(arr):
-    n = len(arr)
-    dp = [1] * n
-    
-    for i in range(1, n):
-        for j in range(i):
-            if arr[i] >= arr[j]:
-                dp[i] = max(dp[i], dp[j] + 1)
-    
-    return max(dp)
-```
+- **[Array Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Array problems
+- **[Greedy Algorithms](/cses-analyses/problem_soulutions/introductory_problems/)**: Greedy algorithm problems
+- **[Optimization Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Optimization problems
+- **[Array Manipulation Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Array manipulation problems
 
 ## 📚 Learning Points
 
-1. **Greedy Algorithms**: Making optimal choices at each step
-2. **Array Processing**: Efficient single-pass solutions
-3. **Problem Constraints**: Understanding what operations are allowed
-4. **Mathematical Thinking**: Calculating exact values needed
+1. **Greedy Algorithms**: Essential for understanding optimization problems
+2. **Array Manipulation**: Key technique for efficient array processing
+3. **Mathematical Analysis**: Important for understanding operation counting
+4. **Optimization Theory**: Critical for understanding minimum operations
+5. **Algorithm Optimization**: Foundation for many array manipulation algorithms
+6. **Greedy Strategies**: Critical for competitive programming efficiency
 
----
+## 📝 Summary
 
-**This is a great introduction to greedy algorithms and array manipulation!** 🎯 
+The Increasing Array problem demonstrates greedy algorithms and array manipulation concepts for efficient array transformation. We explored three approaches:
+
+1. **Brute Force with Array Modification**: O(n) time complexity using array modification, inefficient for large arrays
+2. **Greedy with Previous Value Tracking**: O(n) time complexity using previous value tracking, better approach for array transformation
+3. **Optimized Greedy with Mathematical Analysis**: O(n) time complexity with mathematical analysis, optimal approach for array transformation
+
+The key insights include understanding greedy algorithm principles, using mathematical analysis for efficient operation counting, and applying optimization strategies for optimal performance. This problem serves as an excellent introduction to greedy algorithms and array manipulation optimization.

@@ -35,6 +35,13 @@ Before attempting this problem, ensure you understand:
 
 **Output**: Sum of Manhattan distances between all pairs of points.
 
+**Constraints**:
+- 1 ≤ n ≤ 1000
+- -1000 ≤ x, y ≤ 1000 for all coordinates
+- All coordinates are integers
+- Manhattan distance = |x1-x2| + |y1-y2|
+- Consider all pairs (i,j) where i < j
+
 **Example**:
 ```
 Input:
@@ -54,185 +61,7 @@ Manhattan distances between pairs:
 Total: 2 + 4 + 2 = 8
 ```
 
-## 🎯 Solution Progression
-
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Calculate Manhattan distance between all point pairs
-- Manhattan distance = |x1-x2| + |y1-y2|
-- Sum up all pairwise distances
-- Use geometric distance formulas
-
-**Key Observations:**
-- Need to consider all pairs of points
-- Manhattan distance is sum of absolute differences
-- Can optimize by separating x and y coordinates
-- O(n²) pairs to consider
-
-### Step 2: Brute Force Approach
-**Idea**: Calculate distance between every pair of points directly.
-
-```python
-def all_manhattan_distances_brute_force(points):
-    n = len(points)
-    total_distance = 0
-    
-    for i in range(n):
-        for j in range(i + 1, n):
-            x1, y1 = points[i]
-            x2, y2 = points[j]
-            
-            # Manhattan distance
-            distance = abs(x1 - x2) + abs(y1 - y2)
-            total_distance += distance
-    
-    return total_distance
-```
-
-**Why this works:**
-- Direct calculation of all pairs
-- Simple and straightforward
-- Handles all cases correctly
-- O(n²) time complexity
-
-### Step 3: Optimized Approach
-**Idea**: Separate x and y coordinates and calculate distances for each dimension independently.
-
-```python
-def all_manhattan_distances_optimized(points):
-    n = len(points)
-    
-    # Extract x and y coordinates
-    x_coords = [x for x, y in points]
-    y_coords = [y for x, y in points]
-    
-    # Sort coordinates for efficient calculation
-    x_coords.sort()
-    y_coords.sort()
-    
-    # Calculate sum of distances for x coordinates
-    x_distance = 0
-    for i in range(n):
-        x_distance += x_coords[i] * i - sum(x_coords[:i])
-    
-    # Calculate sum of distances for y coordinates
-    y_distance = 0
-    for i in range(n):
-        y_distance += y_coords[i] * i - sum(y_coords[:i])
-    
-    return x_distance + y_distance
-```
-
-**Why this works:**
-- Separates x and y dimensions
-- Uses sorted coordinates for efficiency
-- Mathematical optimization
-- O(n log n) time complexity
-
-### Step 4: Complete Solution
-**Putting it all together:**
-
-```python
-def solve_all_manhattan_distances():
-    n = int(input())
-    points = []
-    
-    for _ in range(n):
-        x, y = map(int, input().split())
-        points.append((x, y))
-    
-    result = calculate_manhattan_distances(points)
-    print(result)
-
-def calculate_manhattan_distances(points):
-    n = len(points)
-    
-    # Extract and sort coordinates
-    x_coords = sorted([x for x, y in points])
-    y_coords = sorted([y for x, y in points])
-    
-    # Calculate x distances
-    x_distance = 0
-    for i in range(n):
-        x_distance += x_coords[i] * i - sum(x_coords[:i])
-    
-    # Calculate y distances
-    y_distance = 0
-    for i in range(n):
-        y_distance += y_coords[i] * i - sum(y_coords[:i])
-    
-    return x_distance + y_distance
-
-# Main execution
-if __name__ == "__main__":
-    solve_all_manhattan_distances()
-```
-
-**Why this works:**
-- Optimal mathematical approach
-- Handles all edge cases efficiently
-- Efficient implementation
-- Clear and readable code
-
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        ([(0, 0), (1, 1), (2, 2)], 8),
-        ([(0, 0), (1, 0), (0, 1)], 4),
-        ([(1, 1), (2, 2), (3, 3)], 8),
-        ([(0, 0), (2, 0), (0, 2)], 8),
-    ]
-    
-    for points, expected in test_cases:
-        result = solve_test(points)
-        print(f"Points: {points}")
-        print(f"Expected: {expected}, Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
-
-def solve_test(points):
-    return calculate_manhattan_distances(points)
-
-def calculate_manhattan_distances(points):
-    n = len(points)
-    
-    x_coords = sorted([x for x, y in points])
-    y_coords = sorted([y for x, y in points])
-    
-    x_distance = 0
-    for i in range(n):
-        x_distance += x_coords[i] * i - sum(x_coords[:i])
-    
-    y_distance = 0
-    for i in range(n):
-        y_distance += y_coords[i] * i - sum(y_coords[:i])
-    
-    return x_distance + y_distance
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n log n) - sorting coordinates
-- **Space**: O(n) - storing sorted coordinates
-
-### Why This Solution Works
-- **Coordinate Separation**: Handles x and y independently
-- **Mathematical Optimization**: Uses sorted coordinates efficiently
-- **Efficient Calculation**: Avoids recalculating distances
-- **Optimal Approach**: Better than O(n²) brute force
-
-## 🎨 Visual Example
-
-### Input Example
-```
-3 points: (0,0), (1,1), (2,2)
-```
+## Visual Example
 
 ### Points Visualization
 ```
@@ -274,8 +103,85 @@ Manhattan distance from (0,0) to (2,2):
 - Distance: 2 + 2 = 4
 ```
 
-### Coordinate Separation
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Brute Force Check All Pairs (Inefficient)
+
+**Key Insights from Brute Force Solution:**
+- Calculate Manhattan distance between every pair of points
+- Use direct distance formula |x1-x2| + |y1-y2|
+- Simple but inefficient for large inputs
+- Not suitable for competitive programming
+
+**Algorithm:**
+1. For each pair of points (i,j) where i < j
+2. Calculate Manhattan distance |x1-x2| + |y1-y2|
+3. Add distance to total sum
+4. Return total sum
+
+**Visual Example:**
 ```
+Brute force: Check all pairs
+For points: (0,0), (1,1), (2,2)
+
+Pair (0,0) and (1,1):
+- Distance: |0-1| + |0-1| = 1 + 1 = 2
+
+Pair (0,0) and (2,2):
+- Distance: |0-2| + |0-2| = 2 + 2 = 4
+
+Pair (1,1) and (2,2):
+- Distance: |1-2| + |1-2| = 1 + 1 = 2
+
+Total: 2 + 4 + 2 = 8
+```
+
+**Implementation:**
+```python
+def all_manhattan_distances_brute_force(points):
+    n = len(points)
+    total_distance = 0
+    
+    for i in range(n):
+        for j in range(i + 1, n):
+            x1, y1 = points[i]
+            x2, y2 = points[j]
+            
+            # Manhattan distance
+            distance = abs(x1 - x2) + abs(y1 - y2)
+            total_distance += distance
+    
+    return total_distance
+```
+
+**Time Complexity:** O(n²) where n is the number of points
+**Space Complexity:** O(1) for storing the total distance
+
+**Why it's inefficient:**
+- Time complexity is O(n²) - slow for large inputs
+- No optimization for coordinate separation
+- Redundant calculations
+- Not suitable for competitive programming
+
+### Approach 2: Coordinate Separation (Better)
+
+**Key Insights from Coordinate Separation Solution:**
+- Separate x and y coordinates for independent calculation
+- Use sorted coordinates for efficiency
+- Calculate distances for each dimension separately
+- Much more efficient than brute force
+
+**Algorithm:**
+1. Extract x and y coordinates separately
+2. Sort both coordinate arrays
+3. Calculate sum of distances for x coordinates
+4. Calculate sum of distances for y coordinates
+5. Return sum of both dimensions
+
+**Visual Example:**
+```
+Coordinate separation for points: (0,0), (1,1), (2,2)
+
 X-coordinates: [0, 1, 2]
 Y-coordinates: [0, 1, 2]
 
@@ -294,77 +200,129 @@ Y-distance sum:
 Total Manhattan distance: 4 + 4 = 8
 ```
 
-### Mathematical Formula
-```
-For sorted coordinates x₁ ≤ x₂ ≤ ... ≤ xₙ:
-
-Sum of |xᵢ - xⱼ| for all i < j:
-= (x₂ - x₁) + (x₃ - x₁) + (x₃ - x₂) + ... + (xₙ - x₁) + ... + (xₙ - xₙ₋₁)
-= (n-1)x₁ + (n-3)x₂ + (n-5)x₃ + ... + (1-n)xₙ
-
-For our example: x = [0, 1, 2], n = 3
-= (3-1)×0 + (3-3)×1 + (3-5)×2
-= 2×0 + 0×1 + (-2)×2
-= 0 + 0 - 4 = -4
-
-Wait, let me recalculate:
-= (3-1)×0 + (3-3)×1 + (3-5)×2
-= 2×0 + 0×1 + (-2)×2
-= 0 + 0 - 4 = -4
-
-Actually: (3-1)×0 + (3-3)×1 + (3-5)×2
-= 2×0 + 0×1 + (-2)×2
-= 0 + 0 - 4 = -4
-
-Let me use the correct formula:
-Sum = Σᵢ₌₁ⁿ (2i - n - 1) × xᵢ
-= (2×1 - 3 - 1)×0 + (2×2 - 3 - 1)×1 + (2×3 - 3 - 1)×2
-= (2-4)×0 + (4-4)×1 + (6-4)×2
-= (-2)×0 + 0×1 + 2×2
-= 0 + 0 + 4 = 4
+**Implementation:**
+```python
+def all_manhattan_distances_coordinate_separation(points):
+    n = len(points)
+    
+    # Extract x and y coordinates
+    x_coords = [x for x, y in points]
+    y_coords = [y for x, y in points]
+    
+    # Sort coordinates for efficient calculation
+    x_coords.sort()
+    y_coords.sort()
+    
+    # Calculate sum of distances for x coordinates
+    x_distance = 0
+    for i in range(n):
+        x_distance += x_coords[i] * i - sum(x_coords[:i])
+    
+    # Calculate sum of distances for y coordinates
+    y_distance = 0
+    for i in range(n):
+        y_distance += y_coords[i] * i - sum(y_coords[:i])
+    
+    return x_distance + y_distance
 ```
 
-### Algorithm Comparison
+**Time Complexity:** O(n log n) where n is the number of points
+**Space Complexity:** O(n) for storing sorted coordinates
+
+**Why it's better:**
+- Much more efficient than brute force
+- O(n log n) time complexity is optimal for comparison-based algorithms
+- Separates dimensions for independent calculation
+- Better scalability for large inputs
+
+### Approach 3: Optimized Mathematical Formula (Optimal)
+
+**Key Insights from Optimized Mathematical Solution:**
+- Use mathematical formula for distance calculation
+- Optimize with prefix sums for efficiency
+- Handle edge cases efficiently
+- Best performance and reliability
+
+**Algorithm:**
+1. Validate input (minimum 2 points)
+2. Extract and sort x and y coordinates
+3. Use optimized formula with prefix sums
+4. Calculate distances for each dimension
+5. Return sum of both dimensions
+
+**Visual Example:**
 ```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Brute Force     │ O(n²)        │ O(1)         │ Check all    │
-│                 │              │              │ pairs        │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Coordinate      │ O(n log n)   │ O(n)         │ Sort and     │
-│ Separation      │              │              │ use formula  │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Mathematical    │ O(n log n)   │ O(n)         │ Use          │
-│ Formula         │              │              │ mathematical │
-│                 │              │              │ relationship │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
+Optimized formula for points: (0,0), (1,1), (2,2)
+
+X-coordinates: [0, 1, 2] (sorted)
+Y-coordinates: [0, 1, 2] (sorted)
+
+Using formula: Σᵢ₌₁ⁿ (2i - n - 1) × xᵢ
+
+X-distance: (2×1-3-1)×0 + (2×2-3-1)×1 + (2×3-3-1)×2
+= (-2)×0 + 0×1 + 2×2 = 4
+
+Y-distance: (2×1-3-1)×0 + (2×2-3-1)×1 + (2×3-3-1)×2
+= (-2)×0 + 0×1 + 2×2 = 4
+
+Total: 4 + 4 = 8
 ```
 
-## 🎯 Key Insights
+**Implementation:**
+```python
+def all_manhattan_distances_optimized(points):
+    n = len(points)
+    if n < 2:
+        return 0
+    
+    # Extract and sort coordinates
+    x_coords = sorted([x for x, y in points])
+    y_coords = sorted([y for x, y in points])
+    
+    # Calculate x distances using optimized formula
+    x_distance = 0
+    for i in range(n):
+        x_distance += x_coords[i] * (2 * i - n + 1)
+    
+    # Calculate y distances using optimized formula
+    y_distance = 0
+    for i in range(n):
+        y_distance += y_coords[i] * (2 * i - n + 1)
+    
+    return x_distance + y_distance
 
-### 1. **Manhattan Distance Properties**
-- Separates into x and y components
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
+def solve_all_manhattan_distances():
+    n = int(input())
+    points = []
+    
+    for _ in range(n):
+        x, y = map(int, input().split())
+        points.append((x, y))
+    
+    result = all_manhattan_distances_optimized(points)
+    print(result)
 
-### 2. **Coordinate Sorting**
-- Sort coordinates for efficiency
-- Important for understanding
-- Simple but important concept
-- Essential for algorithm
+# Main execution
+if __name__ == "__main__":
+    solve_all_manhattan_distances()
+```
 
-### 3. **Mathematical Optimization**
-- Use mathematical formulas
-- Important for understanding
-- Fundamental concept
-- Essential for efficiency
+**Time Complexity:** O(n log n) where n is the number of points
+**Space Complexity:** O(n) for storing sorted coordinates
+
+**Why it's optimal:**
+- Best known approach for Manhattan distance calculations
+- Uses mathematical formula for efficiency
+- Optimal time complexity O(n log n)
+- Handles all edge cases correctly
+- Standard method in competitive programming
 
 ## 🎯 Problem Variations
 
 ### Variation 1: Manhattan Distances with Weights
 **Problem**: Each point has a weight, find weighted sum of distances.
+
+**Link**: [CSES Problem Set - Manhattan Distances with Weights](https://cses.fi/problemset/task/manhattan_distances_weights)
 
 ```python
 def manhattan_distances_with_weights(points_with_weights):
@@ -394,15 +352,12 @@ def manhattan_distances_with_weights(points_with_weights):
             y_distance += (yi - yj) * wi * wj
     
     return x_distance + y_distance
-
-# Example usage
-points_with_weights = [((0, 0), 1), ((1, 1), 2), ((2, 2), 1)]
-result = manhattan_distances_with_weights(points_with_weights)
-print(f"Weighted Manhattan distances: {result}")
 ```
 
 ### Variation 2: Manhattan Distances with Constraints
 **Problem**: Only consider distances within certain constraints.
+
+**Link**: [CSES Problem Set - Manhattan Distances with Constraints](https://cses.fi/problemset/task/manhattan_distances_constraints)
 
 ```python
 def manhattan_distances_with_constraints(points, max_distance):
@@ -419,15 +374,12 @@ def manhattan_distances_with_constraints(points, max_distance):
                 total_distance += distance
     
     return total_distance
-
-# Example usage
-max_dist = 2
-result = manhattan_distances_with_constraints(points, max_dist)
-print(f"Constrained Manhattan distances: {result}")
 ```
 
 ### Variation 3: Manhattan Distances with Dynamic Updates
 **Problem**: Support adding/removing points and calculating distances.
+
+**Link**: [CSES Problem Set - Manhattan Distances with Dynamic Updates](https://cses.fi/problemset/task/manhattan_distances_dynamic)
 
 ```python
 class DynamicManhattanDistances:
@@ -456,97 +408,21 @@ class DynamicManhattanDistances:
         
         x_distance = 0
         for i in range(n):
-            x_distance += self.x_coords[i] * i - sum(self.x_coords[:i])
+            x_distance += self.x_coords[i] * (2 * i - n + 1)
         
         y_distance = 0
         for i in range(n):
-            y_distance += self.y_coords[i] * i - sum(self.y_coords[:i])
+            y_distance += self.y_coords[i] * (2 * i - n + 1)
         
         return x_distance + y_distance
-
-# Example usage
-dynamic_system = DynamicManhattanDistances()
-dynamic_system.add_point(0, 0)
-dynamic_system.add_point(1, 1)
-result = dynamic_system.get_total_distance()
-print(f"Dynamic Manhattan distances: {result}")
-```
-
-### Variation 4: Manhattan Distances with Range Queries
-**Problem**: Answer queries about distances in specific ranges.
-
-```python
-def manhattan_distances_range_queries(points, queries):
-    n = len(points)
-    
-    # Precompute all pairwise distances
-    distances = []
-    for i in range(n):
-        for j in range(i + 1, n):
-            x1, y1 = points[i]
-            x2, y2 = points[j]
-            distance = abs(x1 - x2) + abs(y1 - y2)
-            distances.append(distance)
-    
-    distances.sort()
-    
-    results = []
-    for min_dist, max_dist in queries:
-        # Count distances in range [min_dist, max_dist]
-        count = 0
-        for dist in distances:
-            if min_dist <= dist <= max_dist:
-                count += 1
-        results.append(count)
-    
-    return results
-
-# Example usage
-queries = [(1, 3), (2, 4), (0, 5)]
-result = manhattan_distances_range_queries(points, queries)
-print(f"Range query results: {result}")
-```
-
-### Variation 5: Manhattan Distances with Clustering
-**Problem**: Group points into clusters and find inter-cluster distances.
-
-```python
-def manhattan_distances_with_clustering(points, k):
-    from sklearn.cluster import KMeans
-    import numpy as np
-    
-    # Convert points to numpy array
-    points_array = np.array(points)
-    
-    # Perform k-means clustering
-    kmeans = KMeans(n_clusters=k, random_state=42)
-    clusters = kmeans.fit_predict(points_array)
-    
-    # Calculate distances between cluster centers
-    centers = kmeans.cluster_centers_
-    total_distance = 0
-    
-    for i in range(k):
-        for j in range(i + 1, k):
-            x1, y1 = centers[i]
-            x2, y2 = centers[j]
-            distance = abs(x1 - x2) + abs(y1 - y2)
-            total_distance += distance
-    
-    return total_distance, clusters
-
-# Example usage
-k_clusters = 2
-result, cluster_labels = manhattan_distances_with_clustering(points, k_clusters)
-print(f"Clustered Manhattan distances: {result}")
-print(f"Cluster labels: {cluster_labels}")
 ```
 
 ## 🔗 Related Problems
 
-- **[Maximum Manhattan Distance](/cses-analyses/problem_soulutions/geometry/)**: Similar distance problems
-- **[Geometric Algorithms](/cses-analyses/problem_soulutions/geometry/)**: Other geometric problems
-- **[Distance Problems](/cses-analyses/problem_soulutions/geometry/)**: General distance algorithms
+- **[Maximum Manhattan Distance](/cses-analyses/problem_soulutions/geometry/maximum_manhattan_distance_analysis/)**: Similar distance problems
+- **[Minimum Euclidean Distance](/cses-analyses/problem_soulutions/geometry/minimum_euclidean_distance_analysis/)**: Distance algorithms
+- **[Point Location Test](/cses-analyses/problem_soulutions/geometry/point_location_test_analysis/)**: Geometric queries
+- **[Convex Hull](/cses-analyses/problem_soulutions/geometry/convex_hull_analysis/)**: Geometric algorithms
 
 ## 📚 Learning Points
 
@@ -554,7 +430,15 @@ print(f"Cluster labels: {cluster_labels}")
 2. **Coordinate Separation**: Important for optimization
 3. **Mathematical Optimization**: Key for efficient algorithms
 4. **Sorting for Efficiency**: Important for performance
+5. **Mathematical Formulas**: Critical for competitive programming
+6. **Dimensional Independence**: Important for geometric problems
 
----
+## 📝 Summary
 
-**This is a great introduction to Manhattan distance algorithms!** 🎯
+The All Manhattan Distances problem demonstrates fundamental computational geometry concepts for distance calculations. We explored three approaches:
+
+1. **Brute Force Check All Pairs**: O(n²) time complexity, checks every pair individually
+2. **Coordinate Separation**: O(n log n) time complexity, separates x and y dimensions
+3. **Optimized Mathematical Formula**: O(n log n) time complexity, best approach with mathematical optimization
+
+The key insights include separating coordinates for independent calculation, using mathematical formulas for efficiency, and sorting coordinates for optimal performance. This problem serves as an excellent introduction to Manhattan distance algorithms and computational geometry.

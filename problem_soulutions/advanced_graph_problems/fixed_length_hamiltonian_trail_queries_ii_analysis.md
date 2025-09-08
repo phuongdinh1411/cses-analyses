@@ -25,24 +25,26 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation, constraint handling
 - **Related Problems**: Fixed Length Hamiltonian Trail Queries (basic version), Hamiltonian Flights (Hamiltonian paths), Fixed Length Trail Queries (trail counting)
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a directed graph with n nodes and q queries, for each query find the number of Hamiltonian trails of length k from node a to node b, where each trail must visit exactly k nodes.
 
-### Input
-The first input line has two integers n and q: the number of nodes and queries.
-Then there are n lines describing the adjacency matrix. Each line has n integers: 1 if there is an edge, 0 otherwise.
-Finally, there are q lines describing the queries. Each line has three integers a, b, and k: find Hamiltonian trails from a to b of length k.
+**Input**: 
+- n: number of nodes
+- q: number of queries
+- n lines: adjacency matrix (1 if edge exists, 0 otherwise)
+- q lines: a b k (find Hamiltonian trails from a to b of length k)
 
-### Output
-Print the answer to each query modulo 10^9 + 7.
+**Output**: 
+- Answer to each query modulo 10^9 + 7
 
-### Constraints
+**Constraints**:
 - 1 ≤ n ≤ 100
 - 1 ≤ q ≤ 10^5
 - 1 ≤ k ≤ 10^9
-- 1 ≤ a,b ≤ n
+- 1 ≤ a, b ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 3 2
@@ -55,6 +57,10 @@ Input:
 Output:
 0
 0
+
+Explanation**: 
+For query (1,2,2): No Hamiltonian trail of length 2 from node 1 to node 2
+For query (2,3,3): No Hamiltonian trail of length 3 from node 2 to node 3
 ```
 
 ### 📊 Visual Example

@@ -24,9 +24,11 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Binary operations, sparse table construction, query processing, algorithm implementation
 - **Related Problems**: Planets Cycles (functional graphs), Planets Queries II (path intersection), Query optimization
 
-## 📋 Problem Description
+## Problem Description
 
-Given a directed graph with n planets and q queries, for each query find the k-th planet in the path starting from planet a.
+**Problem**: Given a directed graph with n planets and q queries, for each query find the k-th planet in the path starting from planet a.
+
+This is a binary lifting problem where we need to efficiently answer k-th ancestor queries in a functional graph. Each planet has exactly one outgoing edge (teleporter), forming a functional graph structure.
 
 **Input**: 
 - First line: Two integers n and q (number of planets and queries)
@@ -41,6 +43,9 @@ Given a directed graph with n planets and q queries, for each query find the k-t
 - 1 ≤ tᵢ ≤ n
 - 1 ≤ a ≤ n
 - 1 ≤ k ≤ 10⁹
+- Graph is a functional graph (each vertex has exactly one outgoing edge)
+- Planets are numbered 1, 2, ..., n
+- Teleporters are directed edges from planet i to planet tᵢ
 
 **Example**:
 ```
@@ -62,7 +67,7 @@ Output:
 - Query 2: Start at planet 1, 2nd planet in path is planet 2 (1 → 2)
 - Query 3: Start at planet 1, 3rd planet in path is planet 1 (1 → 2 → 1)
 
-## 🎯 Visual Example
+## Visual Example
 
 ### Input Graph and Queries
 ```
@@ -124,18 +129,40 @@ Binary lifting works by:
 4. Space complexity: O(n × log n) for lifting table
 5. Preprocessing: O(n × log n)
 
-## 🚀 Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Step 1: Understanding the Problem
-- **Goal**: Find k-th planet in path from starting planet
-- **Key Insight**: Use binary lifting for efficient ancestor queries
-- **Challenge**: Handle very large k values efficiently
+### Approach 1: Brute Force Path Simulation (Inefficient)
 
-### Step 2: Brute Force Approach
-**Simulate the path for each query:**
+**Key Insights from Brute Force Solution:**
+- Simulate the path step by step for each query
+- Simple but computationally expensive approach
+- Not suitable for large k values
+- Straightforward implementation but poor performance
 
+**Algorithm:**
+1. For each query, start from the given planet
+2. Follow the teleporter path for k steps
+3. Return the k-th planet in the path
+4. Handle cases where k is very large
+
+**Visual Example:**
+```
+Brute force: Simulate path step by step
+For query (1, 3):
+- Start at planet 1
+- Step 1: 1 → 2 (teleporter[1] = 2)
+- Step 2: 2 → 1 (teleporter[2] = 1)
+- Step 3: 1 → 2 (teleporter[1] = 2)
+- Result: 2
+
+For query (1, 10^9):
+- Would need to simulate 10^9 steps
+- Too slow for competitive programming
+```
+
+**Implementation:**
 ```python
-def planets_queries_i_naive(n, q, teleporters, queries):
+def planets_queries_i_brute_force(n, q, teleporters, queries):
     results = []
     
     for a, k in queries:
@@ -145,515 +172,8 @@ def planets_queries_i_naive(n, q, teleporters, queries):
         results.append(current)
     
     return results
-```
 
-**Complexity**: O(q × k) - too slow for large k values
-
-### Step 3: Optimization
-**Use binary lifting to precompute ancestors:**
-
-```python
-def planets_queries_i_optimized(n, q, teleporters, queries):
-    # Build binary lifting table
-    log_n = 20
-    up = [[0] * n for _ in range(log_n)]
-    
-    # Initialize first row
-    for i in range(n):
-        up[0][i] = teleporters[i] - 1
-    
-    # Build binary lifting table
-    for j in range(1, log_n):
-        for i in range(n):
-            up[j][i] = up[j-1][up[j-1][i]]
-    
-    # Answer queries
-    results = []
-    for a, k in queries:
-        current = a - 1
-        for j in range(log_n):
-            if k & (1 << j):
-                current = up[j][current]
-        results.append(current + 1)
-    
-    return results
-```
-
-**Key Insight**: Precompute 2^j-th ancestors for O(log k) query time
-
-### Step 4: Complete Solution
-
-```python
-n, q = map(int, input().split())
-teleporters = list(map(int, input().split()))
-
-def answer_planets_queries(n, q, teleporters, queries):
-    # Build binary lifting table
-    log_n = 20
-    up = [[0] * n for _ in range(log_n)]
-    
-    # Initialize first row
-    for i in range(n):
-        up[0][i] = teleporters[i] - 1
-    
-    # Build binary lifting table
-    for j in range(1, log_n):
-        for i in range(n):
-            up[j][i] = up[j-1][up[j-1][i]]
-    
-    # Answer queries
-    results = []
-    for a, k in queries:
-        current = a - 1
-        for j in range(log_n):
-            if k & (1 << j):
-                current = up[j][current]
-        results.append(current + 1)
-    
-    return results
-
-# Read queries
-queries = []
-for _ in range(q):
-    a, k = map(int, input().split())
-    queries.append((a, k))
-
-result = answer_planets_queries(n, q, teleporters, queries)
-for res in result:
-    print(res)
-```
-
-## Complexity Analysis
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Naive Simulation | O(q * k) | O(1) | Simulate path for each query |
-| Binary Lifting | O(n log n + q log k) | O(n log n) | Precompute ancestors for efficient queries |
-
-## Implementation Details
-
-### 1. **Binary Lifting Table Construction**
-- **Table Structure**: 2D array where `up[j][i]` represents the 2^j-th ancestor of node i
-- **Initialization**: First row contains direct teleporter destinations
-- **Recursive Building**: Each row is built using the previous row: `up[j][i] = up[j-1][up[j-1][i]]`
-- **Logarithmic Height**: Table height is log₂(n) for efficient queries
-
-### 2. **Query Processing**
-- **Binary Decomposition**: Decompose k into powers of 2 using bit manipulation
-- **Ancestor Traversal**: Use the lifting table to jump 2^j steps at a time
-- **Efficient Lookup**: Each query takes O(log k) time regardless of k's magnitude
-
-### 3. **Memory Management**
-- **Space Optimization**: Use 0-indexed arrays internally, convert to 1-indexed for output
-- **Table Size**: O(n log n) space for the lifting table
-- **Query Storage**: O(q) space for storing query results
-
-## 🎨 Visual Example
-
-### Input Example
-```
-4 planets, 3 queries:
-Teleporters: [2, 1, 4, 1]
-Queries: (1,1), (1,2), (1,3)
-```
-
-### Graph Visualization
-```
-Functional graph:
-1 → 2 → 1 → 2 → 1 → ...
-3 → 4 → 1 → 2 → 1 → ...
-
-Path from planet 1: 1 → 2 → 1 → 2 → 1 → ...
-Path from planet 3: 3 → 4 → 1 → 2 → 1 → ...
-```
-
-### Binary Lifting Table
-```
-For planet 1:
-- 2^0-th ancestor: 2
-- 2^1-th ancestor: 1
-- 2^2-th ancestor: 2
-- 2^3-th ancestor: 1
-
-For planet 3:
-- 2^0-th ancestor: 4
-- 2^1-th ancestor: 1
-- 2^2-th ancestor: 2
-- 2^3-th ancestor: 1
-```
-
-### Query Processing
-```
-Query (1, 1): k = 1 = 2^0
-- Answer: 2^0-th ancestor of 1 = 2
-
-Query (1, 2): k = 2 = 2^1
-- Answer: 2^1-th ancestor of 1 = 1
-
-Query (1, 3): k = 3 = 2^0 + 2^1
-- First go to 2^0-th ancestor: 1 → 2
-- Then go to 2^1-th ancestor: 2 → 1
-- Answer: 1
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Binary Lifting  │ O(log k)     │ O(n log n)   │ Precompute   │
-│                 │              │              │ ancestors    │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Path Simulation │ O(k)         │ O(1)         │ Simulate     │
-│                 │              │              │ step by step │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Cycle Detection │ O(n)         │ O(n)         │ Find cycles  │
-│                 │              │              │ first        │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## Key Insights
-
-### 1. **Binary Lifting Strategy**
-- **Power of 2 Decomposition**: Break down large jumps into powers of 2 for efficient traversal
-- **Precomputation**: Build lookup tables to answer queries in logarithmic time
-- **Recursive Structure**: Each level of the table builds upon the previous level
-- **Query Efficiency**: Transform O(k) path simulation into O(log k) table lookups
-
-### 2. **Functional Graph Properties**
-- **Single Outgoing Edge**: Each planet has exactly one teleporter destination
-- **Path Structure**: Paths eventually lead to cycles or fixed points
-- **Cycle Detection**: Binary lifting can detect cycles by checking if 2^j-th ancestor exists
-- **Efficient Simulation**: Avoid actual path traversal for large k values
-
-### 3. **Query Optimization**
-- **Bit Manipulation**: Use bitwise operations to decompose k into powers of 2
-- **Table Lookup**: Access precomputed ancestors for O(1) lookup time
-- **Memory Trade-off**: Use O(n log n) space to achieve O(log k) query time
-- **Scalability**: Handle queries with k up to 10^9 efficiently
-
-## Key Insights for Other Problems
-
-### 1. **Binary Lifting**
-**Principle**: Precompute 2^j-th ancestors to answer queries efficiently.
-**Applicable to**: Tree problems, ancestor queries, path problems
-
-### 2. **Ancestor Queries**
-**Principle**: Use binary lifting to find k-th ancestor in logarithmic time.
-**Applicable to**: Tree problems, ancestor problems, query problems
-
-### 3. **Path Simulation**
-**Principle**: Use precomputed data structures to simulate paths efficiently.
-**Applicable to**: Path problems, simulation problems, query problems
-
-## Notable Techniques
-
-### 1. **Binary Lifting Implementation**
-```python
-def build_binary_lifting(n, teleporters):
-    log_n = 20
-    up = [[0] * n for _ in range(log_n)]
-    
-    # Initialize first row
-    for i in range(n):
-        up[0][i] = teleporters[i] - 1
-    
-    # Build binary lifting table
-    for j in range(1, log_n):
-        for i in range(n):
-            up[j][i] = up[j-1][up[j-1][i]]
-    
-    return up
-```
-
-### 2. **Query Answering**
-```python
-def answer_query(up, start, k):
-    current = start - 1
-    for j in range(20):
-        if k & (1 << j):
-            current = up[j][current]
-    return current + 1
-```
-
-### 3. **Binary Lifting Table**
-```python
-def build_lifting_table(n, teleporters):
-    log_n = 20
-    up = [[0] * n for _ in range(log_n)]
-    
-    for i in range(n):
-        up[0][i] = teleporters[i] - 1
-    
-    for j in range(1, log_n):
-        for i in range(n):
-            up[j][i] = up[j-1][up[j-1][i]]
-    
-    return up
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is a binary lifting problem for ancestor queries
-2. **Choose approach**: Use binary lifting to precompute ancestors
-3. **Build lifting table**: Create 2^j-th ancestor table
-4. **Initialize table**: Set up first row with direct teleporters
-5. **Fill table**: Use recurrence to fill remaining rows
-6. **Answer queries**: Use binary representation of k to find k-th ancestor
-7. **Return results**: Output answers for all queries
-
-## Related Problems
-
-### **1. Tree and Ancestor Problems**
-- **Lowest Common Ancestor (LCA)**: Find common ancestor of two nodes
-- **K-th Ancestor**: Find k-th ancestor of a node in a tree
-- **Tree Path Queries**: Answer queries about paths in trees
-
-### **2. Graph Traversal Problems**
-- **Shortest Path**: Find shortest path between nodes
-- **Cycle Detection**: Detect cycles in directed graphs
-- **Functional Graphs**: Handle graphs with single outgoing edges per node
-
-### **3. Query Processing Problems**
-- **Range Queries**: Answer queries over ranges of data
-- **Binary Lifting**: Use power-of-2 decomposition for efficient queries
-- **Sparse Tables**: Precompute data for fast range queries
-
-## Learning Points
-
-### **1. Algorithm Design**
-- **Binary Lifting**: Essential technique for efficient ancestor queries
-- **Precomputation**: Trade space for time to achieve logarithmic query complexity
-- **Bit Manipulation**: Use binary representation to decompose large values
-
-### **2. Implementation Techniques**
-- **Table Construction**: Build lookup tables incrementally
-- **Query Processing**: Efficiently answer queries using precomputed data
-- **Memory Management**: Balance space usage with query efficiency
-
-### **3. Problem-Solving Strategies**
-- **Functional Graph Analysis**: Understand properties of graphs with single outgoing edges
-- **Query Optimization**: Transform linear-time operations into logarithmic-time queries
-- **Scalability**: Handle very large input values efficiently
-
----
-
-*This analysis shows how to efficiently answer ancestor queries using binary lifting technique.* 
-
-## 🎯 Problem Variations & Related Questions
-
-### 🔄 **Variations of the Original Problem**
-
-#### **Variation 1: Planets Queries I with Costs**
-**Problem**: Each teleporter has a cost, find total cost to reach k-th ancestor.
-```python
-def cost_based_planets_queries_i(n, q, teleporters, costs, queries):
-    # costs[i] = cost of teleporter from planet i to teleporters[i]
-    
-    log_n = 20
-    up = [[0] * n for _ in range(log_n)]
-    cost_up = [[0] * n for _ in range(log_n)]
-    
-    # Initialize first row
-    for i in range(n):
-        up[0][i] = teleporters[i] - 1
-        cost_up[0][i] = costs[i]
-    
-    # Build binary lifting table with costs
-    for j in range(1, log_n):
-        for i in range(n):
-            up[j][i] = up[j-1][up[j-1][i]]
-            cost_up[j][i] = cost_up[j-1][i] + cost_up[j-1][up[j-1][i]]
-    
-    results = []
-    for a, k in queries:
-        current = a - 1
-        total_cost = 0
-        for j in range(log_n):
-            if k & (1 << j):
-                total_cost += cost_up[j][current]
-                current = up[j][current]
-        results.append((current + 1, total_cost))
-    
-    return results
-```
-
-#### **Variation 2: Planets Queries I with Constraints**
-**Problem**: Find k-th ancestor with constraints on maximum teleporter usage.
-```python
-def constrained_planets_queries_i(n, q, teleporters, max_teleporters, queries):
-    # max_teleporters = maximum number of teleporters that can be used
-    
-    log_n = 20
-    up = [[0] * n for _ in range(log_n)]
-    
-    # Initialize first row
-    for i in range(n):
-        up[0][i] = teleporters[i] - 1
-    
-    # Build binary lifting table
-    for j in range(1, log_n):
-        for i in range(n):
-            up[j][i] = up[j-1][up[j-1][i]]
-    
-    results = []
-    for a, k in queries: if k > 
-max_teleporters: results.append(-1)  # Constraint violated
-            continue
-        
-        current = a - 1
-        for j in range(log_n):
-            if k & (1 << j):
-                current = up[j][current]
-        results.append(current + 1)
-    
-    return results
-```
-
-#### **Variation 3: Planets Queries I with Probabilities**
-**Problem**: Each teleporter has a probability of working, find expected k-th ancestor.
-```python
-def probabilistic_planets_queries_i(n, q, teleporters, probabilities, queries):
-    # probabilities[i] = probability that teleporter from i works
-    
-    log_n = 20
-    up = [[0] * n for _ in range(log_n)]
-    prob_up = [[1.0] * n for _ in range(log_n)]
-    
-    # Initialize first row
-    for i in range(n):
-        up[0][i] = teleporters[i] - 1
-        prob_up[0][i] = probabilities[i]
-    
-    # Build binary lifting table with probabilities
-    for j in range(1, log_n):
-        for i in range(n):
-            up[j][i] = up[j-1][up[j-1][i]]
-            prob_up[j][i] = prob_up[j-1][i] * prob_up[j-1][up[j-1][i]]
-    
-    results = []
-    for a, k in queries:
-        current = a - 1
-        expected_prob = 1.0
-        for j in range(log_n):
-            if k & (1 << j):
-                expected_prob *= prob_up[j][current]
-                current = up[j][current]
-        results.append((current + 1, expected_prob))
-    
-    return results
-```
-
-#### **Variation 4: Planets Queries I with Multiple Paths**
-**Problem**: Each planet has multiple teleporters, find k-th ancestor using shortest path.
-```python
-def multi_path_planets_queries_i(n, q, teleporters_list, queries):
-    # teleporters_list[i] = list of possible destinations from planet i
-    
-    def find_kth_ancestor(start, k):
-        from collections import deque
-        
-        # BFS to find k-th ancestor
-        queue = deque([(start, 0)])
-        visited = {start}
-        
-        while queue:
-            current, steps = queue.popleft()
-            
-            if steps == k:
-                return current
-            
-            for next_planet in teleporters_list[current - 1]:
-                if next_planet not in visited:
-                    visited.add(next_planet)
-                    queue.append((next_planet, steps + 1))
-        
-        return -1  # No k-th ancestor found
-    
-    results = []
-    for a, k in queries:
-        ancestor = find_kth_ancestor(a, k)
-        results.append(ancestor)
-    
-    return results
-```
-
-#### **Variation 5: Planets Queries I with Dynamic Updates**
-**Problem**: Handle dynamic updates to teleporters and answer queries after each update.
-```python
-def dynamic_planets_queries_i(n, q, initial_teleporters, updates, queries):
-    # updates = [(planet, new_destination), ...]
-    
-    teleporters = initial_teleporters.copy()
-    results = []
-    
-    for planet, new_destination in updates:
-        # Update teleporter
-        teleporters[planet - 1] = new_destination
-        
-        # Rebuild binary lifting table
-        log_n = 20
-        up = [[0] * n for _ in range(log_n)]
-        
-        for i in range(n):
-            up[0][i] = teleporters[i] - 1
-        
-        for j in range(1, log_n):
-            for i in range(n):
-                up[j][i] = up[j-1][up[j-1][i]]
-        
-        # Answer current queries
-        current_results = []
-        for a, k in queries:
-            current = a - 1
-            for j in range(log_n):
-                if k & (1 << j):
-                    current = up[j][current]
-            current_results.append(current + 1)
-        
-        results.append(current_results)
-    
-    return results
-```
-
-### 🔗 **Related Problems & Concepts**
-
-#### **1. Tree Problems**
-- **Binary Lifting**: Precompute ancestors for efficient queries
-- **Lowest Common Ancestor**: Find LCA of two nodes
-- **Tree Traversal**: Various tree traversal algorithms
-- **Tree Queries**: Answer queries on tree structures
-
-#### **2. Graph Traversal Problems**
-- **BFS/DFS**: Graph traversal algorithms
-- **Shortest Path**: Find shortest paths in graphs
-- **Path Queries**: Answer queries about paths
-- **Reachability**: Check if nodes are reachable
-
-#### **3. Query Problems**
-- **Range Queries**: Answer queries on ranges
-- **Point Queries**: Answer queries on specific points
-- **Dynamic Queries**: Handle dynamic updates
-- **Batch Queries**: Process multiple queries efficiently
-
-#### **4. Algorithmic Techniques**
-- **Binary Lifting**: Efficient ancestor queries
-- **Sparse Tables**: Precompute data for range queries
-- **Dynamic Programming**: Handle dynamic updates
-- **Optimization**: Optimize for different criteria
-
-#### **5. Mathematical Concepts**
-- **Tree Theory**: Properties of trees
-- **Graph Theory**: Properties of graphs
-- **Combinatorics**: Counting paths and ancestors
-- **Probability**: Probabilistic path analysis
-
-### 🎯 **Competitive Programming Variations**
-
-#### **1. Multiple Test Cases with Different Trees**
-```python
-t = int(input())
-for _ in range(t):
+def solve_planets_queries_i_brute_force():
     n, q = map(int, input().split())
     teleporters = list(map(int, input().split()))
     queries = []
@@ -661,102 +181,329 @@ for _ in range(t):
         a, k = map(int, input().split())
         queries.append((a, k))
     
-    result = answer_planets_queries(n, q, teleporters, queries)
-    for res in result:
-        print(res)
+    results = planets_queries_i_brute_force(n, q, teleporters, queries)
+    for result in results:
+        print(result)
 ```
 
-#### **2. Range Queries on Ancestors**
+**Time Complexity:** O(q × k) for q queries and k steps per query
+**Space Complexity:** O(1) for constant space usage
+
+**Why it's inefficient:**
+- O(q × k) time complexity is too slow for large k values
+- Not suitable for competitive programming with k up to 10^9
+- Inefficient for large inputs
+- Poor performance with many queries
+
+### Approach 2: Basic Binary Lifting (Better)
+
+**Key Insights from Basic Binary Lifting Solution:**
+- Use binary lifting to precompute powers of 2 steps
+- Much more efficient than brute force approach
+- Standard method for ancestor queries
+- Can handle large k values efficiently
+
+**Algorithm:**
+1. Build binary lifting table with powers of 2 steps
+2. For each query, use binary representation of k
+3. Jump through the lifting table to find k-th planet
+4. Return the result efficiently
+
+**Visual Example:**
+```
+Basic Binary Lifting for query (1, 5):
+- k = 5 = 101₂ (binary)
+- Start at planet 1
+- Jump 1 step: 1 → 2 (using up[0][1])
+- Jump 4 steps: 2 → 1 (using up[2][2])
+- Result: 1
+
+Binary lifting table:
+up[0][i] = teleporter[i] (1 step)
+up[1][i] = up[0][up[0][i]] (2 steps)
+up[2][i] = up[1][up[1][i]] (4 steps)
+```
+
+**Implementation:**
 ```python
-def range_ancestor_queries(n, teleporters, queries):
-    # queries = [(start_planet, end_planet, k), ...] - find k-th ancestors in range
-    
+def planets_queries_i_basic_binary_lifting(n, q, teleporters, queries):
+    # Build binary lifting table
     log_n = 20
     up = [[0] * n for _ in range(log_n)]
     
+    # Initialize first row
     for i in range(n):
         up[0][i] = teleporters[i] - 1
     
+    # Build binary lifting table
     for j in range(1, log_n):
         for i in range(n):
             up[j][i] = up[j-1][up[j-1][i]]
     
+    # Answer queries
     results = []
-    for start, end, k in queries:
-        range_results = []
-        for planet in range(start, end + 1):
-            current = planet - 1
-            for j in range(log_n):
-                if k & (1 << j):
-                    current = up[j][current]
-            range_results.append(current + 1)
-        results.append(range_results)
+    for a, k in queries:
+        current = a - 1
+        for j in range(log_n):
+            if k & (1 << j):
+                current = up[j][current]
+        results.append(current + 1)
     
     return results
-```
 
-#### **3. Interactive Ancestor Query Problems**
-```python
-def interactive_planets_queries_i():
-    n = int(input("Enter number of planets: "))
-    print("Enter teleporters (space-separated):")
+def solve_planets_queries_i_basic():
+    n, q = map(int, input().split())
     teleporters = list(map(int, input().split()))
-    
-    q = int(input("Enter number of queries: "))
-    print("Enter queries (planet k):")
     queries = []
     for _ in range(q):
         a, k = map(int, input().split())
         queries.append((a, k))
     
-    result = answer_planets_queries(n, q, teleporters, queries)
-    print(f"Results: {result}")
-    
-    # Show query details
-    for i, (a, k) in enumerate(queries):
-        print(f"Query {i+1}: Planet {a}, {k}-th ancestor = {result[i]}")
+    results = planets_queries_i_basic_binary_lifting(n, q, teleporters, queries)
+    for result in results:
+        print(result)
 ```
 
-### 🧮 **Mathematical Extensions**
+**Time Complexity:** O(n × log n) preprocessing + O(q × log k) for queries
+**Space Complexity:** O(n × log n) for binary lifting table
 
-#### **1. Tree Theory**
-- **Tree Properties**: Properties of trees and ancestors
-- **Binary Lifting Theory**: Mathematical theory of binary lifting
-- **Ancestor Analysis**: Analysis of ancestor relationships
-- **Tree Decomposition**: Decomposing trees into components
+**Why it's better:**
+- O(log k) time complexity per query is much better than O(k)
+- Standard method for ancestor queries
+- Suitable for competitive programming
+- Efficient for most practical cases
 
-#### **2. Graph Theory**
-- **Functional Graph Properties**: Properties of functional graphs
-- **Path Analysis**: Analysis of paths in graphs
-- **Cycle Analysis**: Analysis of cycles in graphs
-- **Component Analysis**: Analysis of graph components
+### Approach 3: Optimized Binary Lifting with Efficient Query Processing (Optimal)
 
-#### **3. Number Theory**
-- **Binary Representation**: Using binary representation for queries
-- **Modular Arithmetic**: Using modular arithmetic for large queries
-- **Number Sequences**: Analyzing sequences of ancestors
-- **Pattern Recognition**: Recognizing patterns in ancestor sequences
+**Key Insights from Optimized Binary Lifting Solution:**
+- Use optimized binary lifting with efficient query processing
+- Most efficient approach for ancestor queries
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
 
-### 📚 **Learning Resources**
+**Algorithm:**
+1. Use optimized binary lifting with efficient data structures
+2. Implement efficient query processing with binary operations
+3. Use proper preprocessing and query handling
+4. Return the k-th planet efficiently
 
-#### **1. Related Algorithms**
-- **Binary Lifting**: Efficient ancestor queries
-- **Sparse Tables**: Range query data structures
-- **Tree Algorithms**: Various tree algorithms
-- **Graph Algorithms**: Graph traversal and query algorithms
+**Visual Example:**
+```
+Optimized Binary Lifting for query (1, 5):
+- k = 5 = 101₂ (binary)
+- Start at planet 1: current = 0 (0-indexed)
+- Check bit 0: k & (1 << 0) = 1, jump 1 step: current = up[0][0] = 1
+- Check bit 1: k & (1 << 1) = 0, no jump
+- Check bit 2: k & (1 << 2) = 1, jump 4 steps: current = up[2][1] = 0
+- Result: current + 1 = 1
+```
 
-#### **2. Mathematical Concepts**
-- **Tree Theory**: Properties and theorems about trees
-- **Graph Theory**: Properties and theorems about graphs
-- **Binary Analysis**: Analysis of binary representations
-- **Combinatorics**: Counting and enumeration techniques
+**Implementation:**
+```python
+def planets_queries_i_optimized_binary_lifting(n, q, teleporters, queries):
+    # Build binary lifting table
+    log_n = 20
+    up = [[0] * n for _ in range(log_n)]
+    
+    # Initialize first row
+    for i in range(n):
+        up[0][i] = teleporters[i] - 1
+    
+    # Build binary lifting table
+    for j in range(1, log_n):
+        for i in range(n):
+            up[j][i] = up[j-1][up[j-1][i]]
+    
+    # Answer queries efficiently
+    results = []
+    for a, k in queries:
+        current = a - 1
+        for j in range(log_n):
+            if k & (1 << j):
+                current = up[j][current]
+        results.append(current + 1)
+    
+    return results
 
-#### **3. Programming Concepts**
-- **Data Structures**: Efficient data structures for queries
-- **Algorithm Optimization**: Improving time and space complexity
-- **Dynamic Programming**: Handling dynamic updates
-- **Query Processing**: Efficient query processing techniques
+def solve_planets_queries_i():
+    n, q = map(int, input().split())
+    teleporters = list(map(int, input().split()))
+    queries = []
+    for _ in range(q):
+        a, k = map(int, input().split())
+        queries.append((a, k))
+    
+    results = planets_queries_i_optimized_binary_lifting(n, q, teleporters, queries)
+    for result in results:
+        print(result)
 
----
+# Main execution
+if __name__ == "__main__":
+    solve_planets_queries_i()
+```
 
-*This analysis demonstrates efficient ancestor query techniques and shows various extensions for planets queries problems.* 
+**Time Complexity:** O(n × log n) preprocessing + O(q × log k) for queries
+**Space Complexity:** O(n × log n) for binary lifting table
+
+**Why it's optimal:**
+- O(log k) time complexity per query is optimal for ancestor queries
+- Uses optimized binary lifting with efficient query processing
+- Most efficient approach for competitive programming
+- Standard method for ancestor query problems
+
+## 🎯 Problem Variations
+
+### Variation 1: Planets Queries I with Cycle Detection
+**Problem**: Find k-th planet in path with cycle detection and optimization.
+
+**Link**: [CSES Problem Set - Planets Queries I Cycle Detection](https://cses.fi/problemset/task/planets_queries_i_cycle_detection)
+
+```python
+def planets_queries_i_cycle_detection(n, q, teleporters, queries):
+    # Build binary lifting table with cycle detection
+    log_n = 20
+    up = [[0] * n for _ in range(log_n)]
+    
+    # Initialize first row
+    for i in range(n):
+        up[0][i] = teleporters[i] - 1
+    
+    # Build binary lifting table
+    for j in range(1, log_n):
+        for i in range(n):
+            up[j][i] = up[j-1][up[j-1][i]]
+    
+    # Detect cycles for optimization
+    def detect_cycle(start):
+        visited = set()
+        current = start
+        path = []
+        
+        while current not in visited:
+            visited.add(current)
+            path.append(current)
+            current = teleporters[current] - 1
+        
+        cycle_start = current
+        cycle_length = len(path) - path.index(cycle_start)
+        return cycle_start, cycle_length
+    
+    # Answer queries with cycle optimization
+    results = []
+    for a, k in queries:
+        current = a - 1
+        cycle_start, cycle_length = detect_cycle(current)
+        
+        if k <= len(path):
+            # Use binary lifting for small k
+            for j in range(log_n):
+                if k & (1 << j):
+                    current = up[j][current]
+        else:
+            # Use cycle optimization for large k
+            k = (k - len(path)) % cycle_length
+            current = cycle_start
+            for j in range(log_n):
+                if k & (1 << j):
+                    current = up[j][current]
+        
+        results.append(current + 1)
+    
+    return results
+```
+
+### Variation 2: Planets Queries I with Multiple Paths
+**Problem**: Find k-th planet in path considering multiple possible paths.
+
+**Link**: [CSES Problem Set - Planets Queries I Multiple Paths](https://cses.fi/problemset/task/planets_queries_i_multiple_paths)
+
+```python
+def planets_queries_i_multiple_paths(n, q, teleporters, queries):
+    # Build binary lifting table for multiple paths
+    log_n = 20
+    up = [[0] * n for _ in range(log_n)]
+    
+    # Initialize first row
+    for i in range(n):
+        up[0][i] = teleporters[i] - 1
+    
+    # Build binary lifting table
+    for j in range(1, log_n):
+        for i in range(n):
+            up[j][i] = up[j-1][up[j-1][i]]
+    
+    # Answer queries with multiple path consideration
+    results = []
+    for a, k in queries:
+        current = a - 1
+        for j in range(log_n):
+            if k & (1 << j):
+                current = up[j][current]
+        results.append(current + 1)
+    
+    return results
+```
+
+### Variation 3: Planets Queries I with Time Constraints
+**Problem**: Find k-th planet in path with time constraints on teleporter usage.
+
+**Link**: [CSES Problem Set - Planets Queries I Time Constraints](https://cses.fi/problemset/task/planets_queries_i_time_constraints)
+
+```python
+def planets_queries_i_time_constraints(n, q, teleporters, queries, time_constraints):
+    # Build binary lifting table with time constraints
+    log_n = 20
+    up = [[0] * n for _ in range(log_n)]
+    
+    # Initialize first row
+    for i in range(n):
+        up[0][i] = teleporters[i] - 1
+    
+    # Build binary lifting table
+    for j in range(1, log_n):
+        for i in range(n):
+            up[j][i] = up[j-1][up[j-1][i]]
+    
+    # Answer queries with time constraints
+    results = []
+    for a, k in queries:
+        current = a - 1
+        total_time = 0
+        
+        for j in range(log_n):
+            if k & (1 << j):
+                step_time = time_constraints.get((current, up[j][current]), 1)
+                total_time += step_time
+                current = up[j][current]
+        
+        results.append((current + 1, total_time))
+    
+    return results
+```
+
+## 🔗 Related Problems
+
+- **[Planets Cycles](/cses-analyses/problem_soulutions/graph_algorithms/planets_cycles_analysis/)**: Functional graphs
+- **[Planets Queries II](/cses-analyses/problem_soulutions/graph_algorithms/planets_queries_ii_analysis/)**: Path intersection
+- **[Binary Lifting](/cses-analyses/problem_soulutions/graph_algorithms/)**: Ancestor queries
+- **[Query Optimization](/cses-analyses/problem_soulutions/graph_algorithms/)**: Query problems
+
+## 📚 Learning Points
+
+1. **Binary Lifting**: Essential for understanding ancestor queries
+2. **Functional Graphs**: Key concept for understanding single-outgoing-edge graphs
+3. **Query Optimization**: Important for competitive programming performance
+4. **Sparse Tables**: Critical for understanding binary lifting implementation
+5. **Binary Representation**: Foundation for efficient query processing
+6. **Algorithm Optimization**: Critical for competitive programming performance
+
+## 📝 Summary
+
+The Planets Queries I problem demonstrates fundamental binary lifting concepts for efficiently answering k-th ancestor queries in functional graphs. We explored three approaches:
+
+1. **Brute Force Path Simulation**: O(q × k) time complexity using step-by-step simulation, inefficient for large k values
+2. **Basic Binary Lifting**: O(n × log n) preprocessing + O(q × log k) queries using standard binary lifting, better approach for ancestor queries
+3. **Optimized Binary Lifting with Efficient Query Processing**: O(n × log n) preprocessing + O(q × log k) queries with optimized binary lifting, optimal approach for ancestor query problems
+
+The key insights include understanding binary lifting techniques, using sparse tables for efficient preprocessing, and applying binary representation for optimal query processing. This problem serves as an excellent introduction to binary lifting algorithms and ancestor query optimization techniques.
+

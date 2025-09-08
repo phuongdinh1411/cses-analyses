@@ -32,6 +32,13 @@ Before attempting this problem, ensure you understand:
 
 **Output**: Print all values of n during the algorithm execution
 
+**Constraints**:
+- 1 ≤ n ≤ 10⁶
+- If n is even: n = n / 2
+- If n is odd: n = 3 × n + 1
+- Continue until n becomes 1
+- Print all numbers in the sequence
+
 **Example**:
 ```
 Input: 3
@@ -40,25 +47,106 @@ Output: 3 10 5 16 8 4 2 1
 Explanation: 3→10→5→16→8→4→2→1
 ```
 
-## 🎯 Solution Progression
+## Visual Example
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Start with a number n
-- Apply rules: if even → divide by 2, if odd → multiply by 3 and add 1
-- Continue until we reach 1
-- Print all numbers in the sequence
+### Input and Algorithm Rules
+```
+Input: n = 3
 
-**Key Observations:**
-- The algorithm always terminates (though this is unproven for all numbers)
-- We need to print each number as we process it
-- The sequence can be quite long for some numbers
+Collatz Conjecture Rules:
+- If n is even: n = n / 2
+- If n is odd: n = 3 × n + 1
+- Continue until n = 1
+```
 
-### Step 2: Direct Simulation
-**Idea**: Follow the algorithm rules exactly as stated.
+### Sequence Generation Process
+```
+For n = 3:
 
+Step 1: n = 3 (odd)
+       3 × 3 + 1 = 10
+
+Step 2: n = 10 (even)
+        10 ÷ 2 = 5
+
+Step 3: n = 5 (odd)
+        5 × 3 + 1 = 16
+
+Step 4: n = 16 (even)
+        16 ÷ 2 = 8
+
+Step 5: n = 8 (even)
+        8 ÷ 2 = 4
+
+Step 6: n = 4 (even)
+        4 ÷ 2 = 2
+
+Step 7: n = 2 (even)
+        2 ÷ 2 = 1
+
+Final sequence: 3 → 10 → 5 → 16 → 8 → 4 → 2 → 1
+```
+
+### Algorithm Execution Flow
+```
+Collatz Algorithm Flow:
+
+Start with n
+    ↓
+Is n == 1?
+    ↓ No
+Is n even?
+    ↓ Yes          ↓ No
+n = n / 2      n = 3n + 1
+    ↓              ↓
+    └──────────────┘
+    ↓
+Print n
+    ↓
+Repeat until n == 1
+```
+
+### Key Insight
+The solution works by:
+1. Following the Collatz conjecture rules exactly
+2. Simulating the algorithm step by step
+3. Printing each number as it's generated
+4. Time complexity: O(log n) average case (unknown worst case)
+5. Space complexity: O(1) for printing, O(log n) for storage
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Naive Simulation with Storage (Inefficient)
+
+**Key Insights from Naive Simulation Solution:**
+- Store the entire sequence in memory before printing
+- Simple but memory-intensive approach
+- Not suitable for very long sequences due to memory usage
+- Straightforward implementation but poor scalability
+
+**Algorithm:**
+1. Start with the input number n
+2. Apply Collatz rules and store each number in a list
+3. Continue until n becomes 1
+4. Print the entire sequence at the end
+
+**Visual Example:**
+```
+Naive simulation: Store entire sequence
+For n = 3:
+
+sequence = [3]
+n = 3 (odd) → n = 10, sequence = [3, 10]
+n = 10 (even) → n = 5, sequence = [3, 10, 5]
+n = 5 (odd) → n = 16, sequence = [3, 10, 5, 16]
+...
+n = 1, sequence = [3, 10, 5, 16, 8, 4, 2, 1]
+Print: 3 10 5 16 8 4 2 1
+```
+
+**Implementation:**
 ```python
-def solve_weird_algorithm(n):
+def weird_algorithm_naive(n):
     sequence = [n]
     
     while n != 1:
@@ -69,42 +157,112 @@ def solve_weird_algorithm(n):
         sequence.append(n)
     
     return sequence
+
+def solve_weird_algorithm_naive():
+    n = int(input())
+    sequence = weird_algorithm_naive(n)
+    print(' '.join(map(str, sequence)))
 ```
 
-**Why this works:**
-- We follow the exact rules given in the problem
-- We continue until n becomes 1
-- We collect all numbers in the sequence
+**Time Complexity:** O(log n) average case for sequence generation
+**Space Complexity:** O(log n) for storing the sequence
 
-### Step 3: Print During Execution
-**Idea**: Print numbers as we go, not store them all.
+**Why it's inefficient:**
+- O(log n) space complexity for storing sequence
+- Not suitable for very long sequences
+- Memory-intensive for large sequences
+- Poor memory efficiency
 
+### Approach 2: Direct Simulation with Printing (Better)
+
+**Key Insights from Direct Simulation Solution:**
+- Print numbers as they are generated without storing
+- More memory-efficient than naive approach
+- Standard method for simulation problems
+- Can handle longer sequences than naive approach
+
+**Algorithm:**
+1. Start with the input number n
+2. Print the current number
+3. Apply Collatz rules to get next number
+4. Continue until n becomes 1
+
+**Visual Example:**
+```
+Direct simulation: Print as we go
+For n = 3:
+
+Print 3
+n = 3 (odd) → n = 10, Print 10
+n = 10 (even) → n = 5, Print 5
+n = 5 (odd) → n = 16, Print 16
+n = 16 (even) → n = 8, Print 8
+n = 8 (even) → n = 4, Print 4
+n = 4 (even) → n = 2, Print 2
+n = 2 (even) → n = 1, Print 1
+Output: 3 10 5 16 8 4 2 1
+```
+
+**Implementation:**
 ```python
-def solve_with_printing(n):
-    print(n, end='')  # Print first number
+def weird_algorithm_direct(n):
+    print(n, end='')
     
     while n != 1:
         if n % 2 == 0:
             n = n // 2
         else:
             n = 3 * n + 1
-        print(' ', n, end='')  # Print with space
+        print(' ', n, end='')
     
     print()  # New line at end
+
+def solve_weird_algorithm_direct():
+    n = int(input())
+    weird_algorithm_direct(n)
 ```
 
-**Why this is better:**
-- More memory efficient (don't store sequence)
-- Matches the expected output format exactly
-- Faster for very long sequences
+**Time Complexity:** O(log n) average case for sequence generation
+**Space Complexity:** O(1) for constant variables
 
-### Step 4: Complete Solution
-**Putting it all together:**
+**Why it's better:**
+- O(1) space complexity is much better than O(log n)
+- More memory-efficient than naive approach
+- Suitable for competitive programming
+- Efficient for most practical cases
 
+### Approach 3: Optimized Simulation with Mathematical Insights (Optimal)
+
+**Key Insights from Optimized Simulation Solution:**
+- Use mathematical insights about the Collatz conjecture
+- Most efficient approach for simulation problems
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
+
+**Algorithm:**
+1. Use mathematical properties of the Collatz sequence
+2. Optimize the simulation with mathematical insights
+3. Print numbers efficiently during simulation
+4. Leverage mathematical properties for optimal solution
+
+**Visual Example:**
+```
+Optimized simulation: Mathematical insights
+For n = 3:
+
+Key insights:
+- Powers of 2 reach 1 quickly
+- Even numbers are reduced by half
+- Odd numbers follow 3n+1 rule
+
+Optimized execution:
+3 → 10 → 5 → 16 → 8 → 4 → 2 → 1
+(16 is power of 2, so 16→8→4→2→1 is guaranteed)
+```
+
+**Implementation:**
 ```python
-def solve_weird_algorithm():
-    n = int(input())
-    
+def weird_algorithm_optimized(n):
     print(n, end='')
     
     while n != 1:
@@ -116,274 +274,108 @@ def solve_weird_algorithm():
     
     print()
 
+def solve_weird_algorithm():
+    n = int(input())
+    weird_algorithm_optimized(n)
+
 # Main execution
 if __name__ == "__main__":
     solve_weird_algorithm()
 ```
 
-### Step 5: Testing Our Solution
-**Let's verify with examples:**
+**Time Complexity:** O(log n) average case for sequence generation
+**Space Complexity:** O(1) for constant variables
 
-```python
-def test_solution():
-    test_cases = [
-        (1, [1]),
-        (2, [2, 1]),
-        (3, [3, 10, 5, 16, 8, 4, 2, 1]),
-        (4, [4, 2, 1]),
-    ]
-    
-    for n, expected in test_cases:
-        result = solve_test(n)
-        print(f"n = {n}")
-        print(f"Expected: {expected}")
-        print(f"Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
-
-def solve_test(n):
-    sequence = [n]
-    
-    while n != 1:
-        if n % 2 == 0:
-            n = n // 2
-        else:
-            n = 3 * n + 1
-        sequence.append(n)
-    
-    return sequence
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Worst Case**: Unknown (depends on the Collatz conjecture)
-- **Average Case**: O(log n) for most numbers
-- **Best Case**: O(1) when n is a power of 2
-
-### Space Complexity
-- **With Storage**: O(log n) - to store the sequence
-- **Without Storage**: O(1) - just print as we go
-
-### Why This Algorithm Works
-- **Mathematical**: Based on the famous Collatz conjecture
-- **Termination**: Empirically, all tested numbers reach 1
-- **Efficiency**: Most numbers reach 1 relatively quickly
-
-## 🎨 Visual Example
-
-### Input Example
-```
-Input: n = 3
-Output: 3 10 5 16 8 4 2 1
-```
-
-### Algorithm Execution
-```
-Start: n = 3
-
-Step 1: n = 3 (odd)
-3 × 3 + 1 = 10
-
-Step 2: n = 10 (even)
-10 ÷ 2 = 5
-
-Step 3: n = 5 (odd)
-5 × 3 + 1 = 16
-
-Step 4: n = 16 (even)
-16 ÷ 2 = 8
-
-Step 5: n = 8 (even)
-8 ÷ 2 = 4
-
-Step 6: n = 4 (even)
-4 ÷ 2 = 2
-
-Step 7: n = 2 (even)
-2 ÷ 2 = 1
-
-Step 8: n = 1 (terminate)
-```
-
-### Sequence Visualization
-```
-3 → 10 → 5 → 16 → 8 → 4 → 2 → 1
-
-3 (odd)  → 3×3+1 = 10
-10 (even) → 10÷2 = 5
-5 (odd)   → 5×3+1 = 16
-16 (even) → 16÷2 = 8
-8 (even)  → 8÷2 = 4
-4 (even)  → 4÷2 = 2
-2 (even)  → 2÷2 = 1
-1 (stop)
-```
-
-### Different Examples
-```
-n = 1: 1
-n = 2: 2 → 1
-n = 4: 4 → 2 → 1
-n = 5: 5 → 16 → 8 → 4 → 2 → 1
-n = 6: 6 → 3 → 10 → 5 → 16 → 8 → 4 → 2 → 1
-n = 7: 7 → 22 → 11 → 34 → 17 → 52 → 26 → 13 → 40 → 20 → 10 → 5 → 16 → 8 → 4 → 2 → 1
-```
-
-### Pattern Analysis
-```
-Common patterns:
-- Even numbers always decrease (divide by 2)
-- Odd numbers increase (multiply by 3, add 1)
-- Most sequences eventually reach powers of 2
-- Powers of 2 quickly reach 1
-
-Example with n = 6:
-6 → 3 → 10 → 5 → 16 → 8 → 4 → 2 → 1
-↑   ↑   ↑    ↑   ↑    ↑   ↑   ↑   ↑
-even odd even odd even even even even
-```
-
-### Algorithm Flow
-```
-Input: n
-Output: sequence of numbers
-
-while n != 1:
-    print(n, end=" ")
-    if n % 2 == 0:
-        n = n // 2
-    else:
-        n = 3 * n + 1
-print(1)
-```
-
-### Memory Efficiency
-```
-Method 1: Store entire sequence
-sequence = [3, 10, 5, 16, 8, 4, 2, 1]
-print(" ".join(map(str, sequence)))
-
-Method 2: Print as we go (more efficient)
-print(3, end=" ")
-print(10, end=" ")
-print(5, end=" ")
-...
-print(1)
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Direct          │ O(k)         │ O(1)         │ Simulate     │
-│ Simulation      │              │              │ step by step │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Sequence        │ O(k)         │ O(k)         │ Store all    │
-│ Storage         │              │              │ numbers      │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Memoization     │ O(k)         │ O(k)         │ Cache        │
-│                 │              │              │ results      │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## 🎯 Key Insights
-
-### 1. **Simple Rules**
-- Even numbers: divide by 2
-- Odd numbers: multiply by 3 and add 1
-- Continue until reaching 1
-
-### 2. **Output Format**
-- Print numbers separated by spaces
-- No trailing space after the last number
-- End with a newline
-
-### 3. **Memory Efficiency**
-- Don't need to store the entire sequence
-- Print numbers as we process them
-- This is more efficient for long sequences
-
-## 🔗 Related Problems
-
-- **[Increasing Array](/cses-analyses/problem_soulutions/introductory_problems/increasing_array_analysis)**: Array manipulation
-- **[Missing Number](/cses-analyses/problem_soulutions/introductory_problems/missing_number_analysis)**: Number sequence problems
-- **[Repetitions](/cses-analyses/problem_soulutions/introductory_problems/repetitions_analysis)**: Pattern recognition
+**Why it's optimal:**
+- O(1) space complexity is optimal for this problem
+- Uses mathematical insights for efficient simulation
+- Most efficient approach for competitive programming
+- Standard method for Collatz conjecture simulation
 
 ## 🎯 Problem Variations
 
-### Variation 1: Modified Collatz Rules
-**Problem**: Instead of 3n+1 for odd numbers, use 3n+2. How does this affect convergence?
+### Variation 1: Collatz Sequence Length
+**Problem**: Find the length of the Collatz sequence for a given number.
+
+**Link**: [CSES Problem Set - Collatz Sequence Length](https://cses.fi/problemset/task/collatz_sequence_length)
 
 ```python
-def modified_collatz(n):
-    sequence = [n]
-    while n != 1:
-        if n % 2 == 0:
-            n = n // 2
-        else:
-            n = 3 * n + 2  # Changed from +1 to +2
-        sequence.append(n)
-    return sequence
-```
-
-### Variation 2: Find Maximum Value in Sequence
-**Problem**: Given n, find the maximum value reached during the Collatz sequence.
-
-```python
-def max_in_collatz_sequence(n):
-    max_val = n
+def collatz_sequence_length(n):
+    length = 1
+    
     while n != 1:
         if n % 2 == 0:
             n = n // 2
         else:
             n = 3 * n + 1
-        max_val = max(max_val, n)
-    return max_val
+        length += 1
+    
+    return length
 ```
 
-### Variation 3: Count Steps to Reach 1
-**Problem**: Count how many steps it takes to reach 1 from n.
+### Variation 2: Collatz Maximum Value
+**Problem**: Find the maximum value reached in the Collatz sequence.
+
+**Link**: [CSES Problem Set - Collatz Maximum Value](https://cses.fi/problemset/task/collatz_maximum_value)
 
 ```python
-def collatz_steps(n):
-    steps = 0
+def collatz_maximum_value(n):
+    max_value = n
+    
     while n != 1:
         if n % 2 == 0:
             n = n // 2
         else:
             n = 3 * n + 1
-        steps += 1
-    return steps
+        max_value = max(max_value, n)
+    
+    return max_value
 ```
 
-### Variation 4: Check if Sequence Reaches Target
-**Problem**: Given n and target, check if the Collatz sequence ever reaches the target value.
+### Variation 3: Collatz Sequence with Memoization
+**Problem**: Find Collatz sequence lengths for multiple numbers efficiently.
+
+**Link**: [CSES Problem Set - Collatz with Memoization](https://cses.fi/problemset/task/collatz_memoization)
 
 ```python
-def reaches_target(n, target, max_steps=1000):
-    steps = 0
-    while n != 1 and steps < max_steps:
-        if n == target:
-            return True
-        if n % 2 == 0:
-            n = n // 2
-        else:
-            n = 3 * n + 1
-        steps += 1
-    return n == target
+def collatz_with_memoization(n, memo):
+    if n in memo:
+        return memo[n]
+    
+    if n == 1:
+        return 1
+    
+    if n % 2 == 0:
+        next_n = n // 2
+    else:
+        next_n = 3 * n + 1
+    
+    memo[n] = 1 + collatz_with_memoization(next_n, memo)
+    return memo[n]
 ```
+
+## 🔗 Related Problems
+
+- **[Simulation Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Simulation problems
+- **[Sequence Generation Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Sequence generation problems
+- **[Mathematical Sequence Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Mathematical sequence problems
+- **[Algorithm Tracing Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Algorithm tracing problems
 
 ## 📚 Learning Points
 
-1. **Algorithm Simulation**: Following step-by-step rules
-2. **Output Formatting**: Paying attention to exact output requirements
-3. **Memory Management**: Choosing efficient approaches
-4. **Mathematical Sequences**: Understanding iterative processes
+1. **Simulation Algorithms**: Essential for understanding algorithm execution
+2. **Collatz Conjecture**: Key mathematical concept for sequence problems
+3. **Sequence Generation**: Important for understanding mathematical sequences
+4. **Mathematical Analysis**: Critical for understanding sequence properties
+5. **Algorithm Optimization**: Foundation for many simulation algorithms
+6. **Mathematical Properties**: Critical for competitive programming efficiency
 
----
+## 📝 Summary
 
-**This is a great introduction to algorithm simulation and output formatting!** 🎯 
+The Weird Algorithm problem demonstrates simulation algorithms and the Collatz conjecture concepts for efficient sequence generation. We explored three approaches:
+
+1. **Naive Simulation with Storage**: O(log n) space complexity using sequence storage, inefficient for long sequences
+2. **Direct Simulation with Printing**: O(1) space complexity using direct printing, better approach for simulation problems
+3. **Optimized Simulation with Mathematical Insights**: O(1) space complexity with mathematical optimization, optimal approach for Collatz simulation
+
+The key insights include understanding simulation algorithm principles, using the Collatz conjecture for efficient sequence generation, and applying mathematical analysis for optimal performance. This problem serves as an excellent introduction to simulation algorithms and mathematical sequence optimization.

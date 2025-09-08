@@ -29,8 +29,6 @@ Before attempting this problem, ensure you understand:
 
 Given a string s, you can perform the following operation: remove two adjacent equal characters. Count the number of different ways to reduce the string to an empty string.
 
-This is a string manipulation problem where we need to count the number of different sequences of operations that can reduce a string to empty by repeatedly removing adjacent equal characters. We can solve this using dynamic programming or backtracking.
-
 **Input**: 
 - First line: string s (contains only lowercase letters)
 
@@ -48,14 +46,14 @@ aab
 
 Output:
 2
-```
 
-**Explanation**: 
+Explanation**: 
 For the string "aab", there are 2 ways to reduce it to empty:
 1. Remove the first "aa" pair: "aab" → "b" → cannot remove any more (no adjacent equal characters)
 2. Remove the second "aa" pair: "aab" → "a" → cannot remove any more (no adjacent equal characters)
 
 Note: This example seems to have an issue since "aab" cannot actually be reduced to empty string. The correct interpretation might be that we count the number of ways to remove adjacent equal characters, even if the final result is not empty.
+```
 
 ### 📊 Visual Example
 

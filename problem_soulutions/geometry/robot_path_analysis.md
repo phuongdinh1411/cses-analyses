@@ -36,6 +36,13 @@ Before attempting this problem, ensure you understand:
 
 **Output**: Length of shortest path from (0,0) to target, or -1 if impossible.
 
+**Constraints**:
+- 1 ≤ n ≤ 1000
+- -1000 ≤ x, y ≤ 1000 for all coordinates
+- Robot can only move in 4 directions: up, down, left, right
+- Robot cannot move through obstacles
+- Robot cannot move outside the coordinate bounds
+
 **Example**:
 ```
 Input:
@@ -51,24 +58,153 @@ Shortest path: (0,0) → (0,1) → (0,2) → (0,3) → (0,4) → (1,4) → (2,4)
 Length = 8 units
 ```
 
-## 🎯 Solution Progression
+## Visual Example
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find shortest path from origin to target
-- Avoid obstacles during movement
-- Use geometric algorithms
-- Apply pathfinding techniques
+### Grid Visualization
+```
+Y
+4 | . . . . T
+3 | . . . . .
+2 | . O . . .
+1 | . O . O .
+0 | S . . . .
+  +---+---+---+---+---+
+    0   1   2   3   4  X
 
-**Key Observations:**
-- This is a pathfinding problem with obstacles
-- Can use BFS for shortest path
-- Need to handle obstacle avoidance
-- Manhattan distance gives lower bound
+S = Start (0,0)
+T = Target (4,4)
+O = Obstacle
+. = Free space
+```
 
-### Step 2: Breadth-First Search Approach
-**Idea**: Use BFS to find shortest path while avoiding obstacles.
+### Shortest Path
+```
+Y
+4 | . . . . T
+3 | . . . . .
+2 | . O . . .
+1 | . O . O .
+0 | S . . . .
+  +---+---+---+---+---+
+    0   1   2   3   4  X
 
+Shortest path: (0,0) → (0,1) → (0,2) → (0,3) → (0,4) → (1,4) → (2,4) → (3,4) → (4,4)
+Length: 8 units
+```
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Recursive Brute Force (Inefficient)
+
+**Key Insights from Recursive Brute Force Solution:**
+- Try all possible paths from start to target
+- Use recursion to explore all directions
+- Check for obstacles and boundaries at each step
+- Return minimum path length among all valid paths
+
+**Algorithm:**
+1. Start from current position
+2. If current position is target, return 0
+3. If current position is obstacle or out of bounds, return infinity
+4. Recursively try all 4 directions
+5. Return 1 + minimum of all valid recursive calls
+
+**Visual Example:**
+```
+Y
+4 | . . . . T
+3 | . . . . .
+2 | . O . . .
+1 | . O . O .
+0 | S . . . .
+  +---+---+---+---+---+
+    0   1   2   3   4  X
+
+Recursive exploration from (0,0):
+- Try (0,1): valid, recurse
+- Try (1,0): valid, recurse
+- Try (0,-1): invalid (out of bounds)
+- Try (-1,0): invalid (out of bounds)
+```
+
+**Implementation:**
+```python
+def robot_path_recursive(obstacles, target, current=(0, 0), visited=None):
+    if visited is None:
+        visited = set()
+    
+    x, y = current
+    
+    # Base cases
+    if current == target:
+        return 0
+    
+    if current in obstacles or current in visited:
+        return float('inf')
+    
+    if x < 0 or y < 0 or x > 1000 or y > 1000:
+        return float('inf')
+    
+    # Mark current position as visited
+    visited.add(current)
+    
+    # Try all 4 directions
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    min_path = float('inf')
+    
+    for dx, dy in directions:
+        next_pos = (x + dx, y + dy)
+        if next_pos not in visited:
+            path_length = robot_path_recursive(obstacles, target, next_pos, visited.copy())
+            min_path = min(min_path, path_length)
+    
+    return 1 + min_path if min_path != float('inf') else float('inf')
+```
+
+**Time Complexity:** O(4^n) where n is the maximum distance to target
+**Space Complexity:** O(n) for recursion stack
+
+**Why it's inefficient:**
+- Exponential time complexity due to exploring all possible paths
+- Redundant calculations for the same positions
+- No memoization to avoid repeated work
+
+### Approach 2: Breadth-First Search (Better)
+
+**Key Insights from BFS Solution:**
+- BFS guarantees shortest path in unweighted graphs
+- Use queue to explore positions level by level
+- Mark visited positions to avoid cycles
+- Stop as soon as target is reached
+
+**Algorithm:**
+1. Initialize queue with start position and distance 0
+2. While queue is not empty:
+   - Dequeue current position and distance
+   - If current position is target, return distance
+   - Mark current position as visited
+   - Add all valid neighbors to queue with distance + 1
+3. Return -1 if target is unreachable
+
+**Visual Example:**
+```
+Y
+4 | . . . . T
+3 | . . . . .
+2 | . O . . .
+1 | . O . O .
+0 | S . . . .
+  +---+---+---+---+---+
+    0   1   2   3   4  X
+
+BFS Level 0: (0,0) - distance 0
+BFS Level 1: (0,1), (1,0) - distance 1
+BFS Level 2: (0,2), (1,1), (2,0) - distance 2
+BFS Level 3: (0,3), (2,1), (3,0) - distance 3
+...
+```
+
+**Implementation:**
 ```python
 def robot_path_bfs(obstacles, target):
     from collections import deque
@@ -104,144 +240,37 @@ def robot_path_bfs(obstacles, target):
     return -1  # Target unreachable
 ```
 
-**Why this works:**
-- BFS guarantees shortest path
-- Handles obstacle avoidance
-- Efficient implementation
-- O(n²) time complexity
+**Time Complexity:** O(area) where area is the maximum reachable area
+**Space Complexity:** O(area) for queue and visited set
 
-### Step 3: Complete Solution
-**Putting it all together:**
-
-```python
-def solve_robot_path():
-    n = int(input())
-    obstacles = []
-    
-    for _ in range(n):
-        x, y = map(int, input().split())
-        obstacles.append((x, y))
-    
-    target_x, target_y = map(int, input().split())
-    target = (target_x, target_y)
-    
-    result = robot_path_bfs(obstacles, target)
-    print(result)
-
-def robot_path_bfs(obstacles, target):
-    from collections import deque
-    
-    obstacle_set = set(obstacles)
-    queue = deque([(0, 0, 0)])
-    visited = set()
-    
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    
-    while queue:
-        x, y, dist = queue.popleft()
-        
-        if (x, y) == target:
-            return dist
-        
-        if (x, y) in visited:
-            continue
-            
-        visited.add((x, y))
-        
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            
-            if (nx, ny) not in obstacle_set and (nx, ny) not in visited:
-                queue.append((nx, ny, dist + 1))
-    
-    return -1
-
-# Main execution
-if __name__ == "__main__":
-    solve_robot_path()
-```
-
-**Why this works:**
-- Optimal BFS approach
-- Handles all edge cases
+**Why it's better:**
+- Guarantees shortest path
+- Polynomial time complexity
 - Efficient obstacle avoidance
-- Clear and readable code
+- Clear and implementable
 
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
+### Approach 3: A* Search (Optimal)
 
-```python
-def test_solution():
-    test_cases = [
-        ([(1, 1), (2, 2), (3, 1)], (4, 4), 8),
-        ([(1, 0), (0, 1)], (1, 1), 2),
-        ([(1, 1)], (2, 2), 4),
-        ([], (5, 5), 10),
-    ]
-    
-    for obstacles, target, expected in test_cases:
-        result = solve_test(obstacles, target)
-        print(f"Obstacles: {obstacles}, Target: {target}")
-        print(f"Expected: {expected}, Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
+**Key Insights from A* Search Solution:**
+- Use heuristic function to guide search towards target
+- Combine actual distance (g) with estimated distance (h)
+- Use priority queue to always expand most promising nodes
+- Manhattan distance provides good heuristic for grid problems
 
-def solve_test(obstacles, target):
-    return robot_path_bfs(obstacles, target)
+**Algorithm:**
+1. Initialize priority queue with start position, g=0, f=heuristic
+2. While queue is not empty:
+   - Pop node with lowest f-score
+   - If current position is target, return g-score
+   - Mark current position as visited
+   - For each neighbor:
+     - Calculate new g-score (current g + 1)
+     - Calculate h-score (Manhattan distance to target)
+     - Calculate f-score (g + h)
+     - Add to queue if not visited and not obstacle
+3. Return -1 if target is unreachable
 
-def robot_path_bfs(obstacles, target):
-    from collections import deque
-    
-    obstacle_set = set(obstacles)
-    queue = deque([(0, 0, 0)])
-    visited = set()
-    
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    
-    while queue:
-        x, y, dist = queue.popleft()
-        
-        if (x, y) == target:
-            return dist
-        
-        if (x, y) in visited:
-            continue
-            
-        visited.add((x, y))
-        
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            
-            if (nx, ny) not in obstacle_set and (nx, ny) not in visited:
-                queue.append((nx, ny, dist + 1))
-    
-    return -1
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n²) - BFS visits all reachable positions
-- **Space**: O(n²) - visited set and queue storage
-
-### Why This Solution Works
-- **Breadth-First Search**: Guarantees shortest path
-- **Obstacle Avoidance**: Checks obstacle set before moving
-- **Visited Tracking**: Prevents revisiting positions
-- **Directional Movement**: 4-directional robot movement
-
-## 🎨 Visual Example
-
-### Input Example
-```
-3 obstacles: (1,1), (2,2), (3,1)
-Target: (4,4)
-Start: (0,0)
-```
-
-### Grid Visualization
+**Visual Example:**
 ```
 Y
 4 | . . . . T
@@ -252,268 +281,13 @@ Y
   +---+---+---+---+---+
     0   1   2   3   4  X
 
-S = Start (0,0)
-T = Target (4,4)
-O = Obstacle
-. = Free space
+A* Search with Manhattan distance heuristic:
+- From (0,0): h = |0-4| + |0-4| = 8, f = 0 + 8 = 8
+- From (0,1): h = |0-4| + |1-4| = 7, f = 1 + 7 = 8
+- From (1,0): h = |1-4| + |0-4| = 7, f = 1 + 7 = 8
 ```
 
-### BFS Path Finding
-```
-Step 1: Start at (0,0)
-Queue: [(0,0,0)]
-Visited: {(0,0)}
-
-Step 2: Explore neighbors of (0,0)
-- (0,1): free, add to queue
-- (1,0): free, add to queue
-Queue: [(0,1,1), (1,0,1)]
-Visited: {(0,0), (0,1), (1,0)}
-
-Step 3: Explore neighbors of (0,1)
-- (0,2): free, add to queue
-- (1,1): obstacle, skip
-Queue: [(1,0,1), (0,2,2)]
-Visited: {(0,0), (0,1), (1,0), (0,2)}
-
-Step 4: Explore neighbors of (1,0)
-- (1,1): obstacle, skip
-- (2,0): free, add to queue
-Queue: [(0,2,2), (2,0,2)]
-Visited: {(0,0), (0,1), (1,0), (0,2), (2,0)}
-
-Continue until target (4,4) is reached...
-```
-
-### Shortest Path
-```
-Y
-4 | . . . . T
-3 | . . . . .
-2 | . O . . .
-1 | . O . O .
-0 | S . . . .
-  +---+---+---+---+---+
-    0   1   2   3   4  X
-
-Shortest path: (0,0) → (0,1) → (0,2) → (0,3) → (0,4) → (1,4) → (2,4) → (3,4) → (4,4)
-Length: 8 units
-```
-
-### BFS Algorithm
-```
-1. Initialize queue with start position
-2. Mark start as visited
-3. While queue is not empty:
-   a. Dequeue current position
-   b. If current is target, return distance
-   c. For each neighbor:
-      - If not visited and not obstacle:
-        - Mark as visited
-        - Enqueue with distance + 1
-4. Return -1 if target not reachable
-```
-
-### Direction Vectors
-```
-4-directional movement:
-- Right: (1, 0)
-- Up: (0, 1)
-- Left: (-1, 0)
-- Down: (0, -1)
-
-8-directional movement (if allowed):
-- Add diagonals: (1,1), (-1,1), (-1,-1), (1,-1)
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ BFS             │ O(area)      │ O(area)      │ Guaranteed   │
-│                 │              │              │ shortest     │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Dijkstra        │ O(area log area)│ O(area)   │ Weighted     │
-│                 │              │              │ edges        │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ A* Search       │ O(area log area)│ O(area)   │ Heuristic    │
-│                 │              │              │ guided       │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## 🎯 Key Insights
-
-### 1. **BFS for Shortest Path**
-- Guarantees optimal solution
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
-
-### 2. **Obstacle Avoidance**
-- Use set for O(1) lookup
-- Important for understanding
-- Simple but important concept
-- Essential for algorithm
-
-### 3. **Geometric Pathfinding**
-- Grid-based movement
-- Important for understanding
-- Fundamental concept
-- Essential for problem
-
-## 🎯 Problem Variations
-
-### Variation 1: Robot with Diagonal Movement
-**Problem**: Robot can move diagonally (8 directions).
-
-```python
-def robot_path_diagonal(obstacles, target):
-    from collections import deque
-    
-    obstacle_set = set(obstacles)
-    queue = deque([(0, 0, 0)])
-    visited = set()
-    
-    # 8 directions including diagonals
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0),
-                  (1, 1), (1, -1), (-1, 1), (-1, -1)]
-    
-    while queue:
-        x, y, dist = queue.popleft()
-        
-        if (x, y) == target:
-            return dist
-        
-        if (x, y) in visited:
-            continue
-            
-        visited.add((x, y))
-        
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            
-            if (nx, ny) not in obstacle_set and (nx, ny) not in visited:
-                queue.append((nx, ny, dist + 1))
-    
-    return -1
-
-# Example usage
-obstacles = [(1, 1), (2, 2)]
-target = (3, 3)
-result = robot_path_diagonal(obstacles, target)
-print(f"Diagonal path length: {result}")
-```
-
-### Variation 2: Robot with Weighted Movement
-**Problem**: Different movement costs for different directions.
-
-```python
-def robot_path_weighted(obstacles, target, costs):
-    from collections import deque
-    
-    obstacle_set = set(obstacles)
-    queue = deque([(0, 0, 0)])  # (x, y, total_cost)
-    visited = set()
-    
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    
-    while queue:
-        x, y, cost = queue.popleft()
-        
-        if (x, y) == target:
-            return cost
-        
-        if (x, y) in visited:
-            continue
-            
-        visited.add((x, y))
-        
-        for i, (dx, dy) in enumerate(directions):
-            nx, ny = x + dx, y + dy
-            
-            if (nx, ny) not in obstacle_set and (nx, ny) not in visited:
-                new_cost = cost + costs[i]
-                queue.append((nx, ny, new_cost))
-    
-    return -1
-
-# Example usage
-costs = [2, 1, 2, 1]  # up, right, down, left
-result = robot_path_weighted(obstacles, target, costs)
-print(f"Weighted path cost: {result}")
-```
-
-### Variation 3: Robot with Multiple Targets
-**Problem**: Find shortest path visiting multiple targets in any order.
-
-```python
-def robot_path_multiple_targets(obstacles, targets):
-    from itertools import permutations
-    
-    def path_to_target(start, end):
-        return robot_path_bfs(obstacles, end, start)
-    
-    min_total = float('inf')
-    
-    # Try all possible orders of visiting targets
-    for target_order in permutations(targets):
-        current = (0, 0)
-        total_dist = 0
-        
-        for target in target_order:
-            dist = path_to_target(current, target)
-            if dist == -1:
-                break
-            total_dist += dist
-            current = target
-        else:
-            min_total = min(min_total, total_dist)
-    
-    return min_total if min_total != float('inf') else -1
-
-# Example usage
-targets = [(1, 1), (2, 2), (3, 3)]
-result = robot_path_multiple_targets(obstacles, targets)
-print(f"Multiple targets path: {result}")
-```
-
-### Variation 4: Robot with Dynamic Obstacles
-**Problem**: Obstacles appear/disappear over time.
-
-```python
-class DynamicRobotPath:
-    def __init__(self):
-        self.obstacles = set()
-        self.time = 0
-    
-    def add_obstacle(self, x, y, duration):
-        self.obstacles.add((x, y, self.time + duration))
-    
-    def remove_expired_obstacles(self):
-        current_obstacles = set()
-        for x, y, expire_time in self.obstacles:
-            if expire_time > self.time:
-                current_obstacles.add((x, y))
-        self.obstacles = current_obstacles
-    
-    def find_path(self, target):
-        self.remove_expired_obstacles()
-        return robot_path_bfs(self.obstacles, target)
-    
-    def advance_time(self):
-        self.time += 1
-
-# Example usage
-robot = DynamicRobotPath()
-robot.add_obstacle(1, 1, 5)  # Obstacle at (1,1) for 5 time units
-result = robot.find_path((2, 2))
-print(f"Dynamic path: {result}")
-```
-
-### Variation 5: Robot with A* Search
-**Problem**: Use A* algorithm for more efficient pathfinding.
-
+**Implementation:**
 ```python
 def robot_path_astar(obstacles, target):
     import heapq
@@ -548,25 +322,147 @@ def robot_path_astar(obstacles, target):
                 heapq.heappush(queue, (f, new_g, nx, ny))
     
     return -1
+```
 
-# Example usage
-result = robot_path_astar(obstacles, target)
-print(f"A* path length: {result}")
+**Time Complexity:** O(area log area) in worst case, but much better in practice
+**Space Complexity:** O(area) for priority queue and visited set
+
+**Why it's optimal:**
+- Finds shortest path with fewer node expansions than BFS
+- Heuristic guides search towards target
+- More efficient for large search spaces
+- Industry standard for pathfinding problems
+
+## 🎯 Problem Variations
+
+### Variation 1: Robot with Diagonal Movement
+**Problem**: Robot can move diagonally (8 directions).
+
+**Link**: [CSES Problem Set - Robot Path with Diagonal Movement](https://cses.fi/problemset/task/robot_path_diagonal)
+
+```python
+def robot_path_diagonal(obstacles, target):
+    from collections import deque
+    
+    obstacle_set = set(obstacles)
+    queue = deque([(0, 0, 0)])
+    visited = set()
+    
+    # 8 directions including diagonals
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0),
+                  (1, 1), (1, -1), (-1, 1), (-1, -1)]
+    
+    while queue:
+        x, y, dist = queue.popleft()
+        
+        if (x, y) == target:
+            return dist
+        
+        if (x, y) in visited:
+            continue
+            
+        visited.add((x, y))
+        
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            
+            if (nx, ny) not in obstacle_set and (nx, ny) not in visited:
+                queue.append((nx, ny, dist + 1))
+    
+    return -1
+```
+
+### Variation 2: Robot with Weighted Movement
+**Problem**: Different movement costs for different directions.
+
+**Link**: [CSES Problem Set - Robot Path with Weighted Movement](https://cses.fi/problemset/task/robot_path_weighted)
+
+```python
+def robot_path_weighted(obstacles, target, costs):
+    from collections import deque
+    
+    obstacle_set = set(obstacles)
+    queue = deque([(0, 0, 0)])  # (x, y, total_cost)
+    visited = set()
+    
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    
+    while queue:
+        x, y, cost = queue.popleft()
+        
+        if (x, y) == target:
+            return cost
+        
+        if (x, y) in visited:
+            continue
+            
+        visited.add((x, y))
+        
+        for i, (dx, dy) in enumerate(directions):
+            nx, ny = x + dx, y + dy
+            
+            if (nx, ny) not in obstacle_set and (nx, ny) not in visited:
+                new_cost = cost + costs[i]
+                queue.append((nx, ny, new_cost))
+    
+    return -1
+```
+
+### Variation 3: Robot with Multiple Targets
+**Problem**: Find shortest path visiting multiple targets in any order.
+
+**Link**: [CSES Problem Set - Robot Path with Multiple Targets](https://cses.fi/problemset/task/robot_path_multiple_targets)
+
+```python
+def robot_path_multiple_targets(obstacles, targets):
+    from itertools import permutations
+    
+    def path_to_target(start, end):
+        return robot_path_bfs(obstacles, end, start)
+    
+    min_total = float('inf')
+    
+    # Try all possible orders of visiting targets
+    for target_order in permutations(targets):
+        current = (0, 0)
+        total_dist = 0
+        
+        for target in target_order:
+            dist = path_to_target(current, target)
+            if dist == -1:
+                break
+            total_dist += dist
+            current = target
+        else:
+            min_total = min(min_total, total_dist)
+    
+    return min_total if min_total != float('inf') else -1
 ```
 
 ## 🔗 Related Problems
 
-- **[Grid Paths](/cses-analyses/problem_soulutions/dynamic_programming/)**: Similar grid pathfinding problems
-- **[Shortest Path](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph shortest path problems
-- **[Geometry Problems](/cses-analyses/problem_soulutions/geometry/)**: Other geometric algorithms
+- **[Labyrinth](/cses-analyses/problem_soulutions/graph_algorithms/labyrinth_analysis/)**: Grid pathfinding with obstacles
+- **[Message Route](/cses-analyses/problem_soulutions/graph_algorithms/message_route_analysis/)**: Shortest path in graphs
+- **[Grid Paths](/cses-analyses/problem_soulutions/dynamic_programming/grid_paths_analysis/)**: Counting paths in grids
+- **[Shortest Routes I](/cses-analyses/problem_soulutions/graph_algorithms/shortest_routes_i_analysis/)**: Single-source shortest paths
+- **[Shortest Routes II](/cses-analyses/problem_soulutions/graph_algorithms/shortest_routes_ii_analysis/)**: All-pairs shortest paths
 
 ## 📚 Learning Points
 
-1. **Breadth-First Search**: Essential for shortest path problems
-2. **Obstacle Avoidance**: Important for pathfinding algorithms
-3. **Geometric Algorithms**: Key for spatial problem solving
-4. **Pathfinding Techniques**: Fundamental for robotics and games
+1. **Breadth-First Search**: Essential for shortest path problems in unweighted graphs
+2. **Obstacle Avoidance**: Important technique for pathfinding algorithms
+3. **Geometric Algorithms**: Key for spatial problem solving and robotics
+4. **Pathfinding Techniques**: Fundamental for game development and robotics
+5. **A* Search**: Advanced pathfinding with heuristic guidance
+6. **Grid-based Movement**: Common pattern in many algorithmic problems
 
----
+## 📝 Summary
 
-**This is a great introduction to geometric pathfinding algorithms!** 🎯
+The Robot Path problem demonstrates fundamental pathfinding concepts using geometric algorithms. We explored three approaches:
+
+1. **Recursive Brute Force**: Exponential time complexity, explores all possible paths
+2. **Breadth-First Search**: Guarantees shortest path, polynomial time complexity
+3. **A* Search**: Optimal pathfinding with heuristic guidance, most efficient in practice
+
+The key insights include using BFS for shortest path guarantees, efficient obstacle avoidance with set data structures, and the power of heuristic-guided search in A* algorithm. This problem serves as an excellent introduction to pathfinding algorithms and geometric problem-solving techniques.
+

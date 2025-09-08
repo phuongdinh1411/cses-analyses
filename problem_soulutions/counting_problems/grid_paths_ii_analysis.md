@@ -29,14 +29,12 @@ Before attempting this problem, ensure you understand:
 
 Given an n×n grid with some blocked cells, count the number of paths from the top-left corner to the bottom-right corner, moving only right or down.
 
-This is a dynamic programming problem where we need to count the number of valid paths in a grid with obstacles. We can only move right or down, and we need to avoid blocked cells. We can solve this using dynamic programming or memoization.
-
 **Input**: 
 - First line: integer n (size of the grid)
 - Next n lines: n characters each ('.' for empty cell, '#' for blocked cell)
 
 **Output**: 
-- Print the number of valid paths modulo 10⁹ + 7
+- Print the number of valid paths modulo 10^9 + 7
 
 **Constraints**:
 - 1 ≤ n ≤ 1000
@@ -51,14 +49,14 @@ Input:
 
 Output:
 2
-```
 
-**Explanation**: 
+Explanation**: 
 In the 3×3 grid, there are 2 valid paths from (0,0) to (2,2):
 1. Right → Right → Down → Down: (0,0) → (0,1) → (0,2) → (1,2) → (2,2)
 2. Down → Down → Right → Right: (0,0) → (1,0) → (2,0) → (2,1) → (2,2)
 
 Both paths avoid the blocked cell at (1,1) and reach the destination.
+```
 
 ### 📊 Visual Example
 

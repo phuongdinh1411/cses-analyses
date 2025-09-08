@@ -28,8 +28,6 @@ Before attempting this problem, ensure you understand:
 
 Given a graph with shops and customers, find the nearest shop for each customer.
 
-This is a classic multi-source shortest path problem that requires finding the shortest distance from each customer to the nearest shop. The solution involves using Dijkstra's algorithm with multiple sources or BFS for unweighted graphs.
-
 **Input**: 
 - n: number of nodes (shops and customers)
 - m: number of edges
@@ -41,10 +39,10 @@ This is a classic multi-source shortest path problem that requires finding the s
 - For each customer, find the nearest shop and distance
 
 **Constraints**:
-- 1 ≤ n ≤ 10⁵
-- 1 ≤ m ≤ 2×10⁵
+- 1 ≤ n ≤ 10^5
+- 1 ≤ m ≤ 2×10^5
 - 1 ≤ k ≤ n
-- 1 ≤ w ≤ 10⁹
+- 1 ≤ w ≤ 10^9
 
 **Example**:
 ```
@@ -114,12 +112,45 @@ Customer 2: Nearest shop is 3, distance = 2
 Customer 4: Nearest shop is 3, distance = 1
 ```
 
-## 🎯 Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Step 1: Understanding the Problem
-- **Goal**: Find the nearest shop for each customer using shortest path algorithms
-- **Key Insight**: Use multi-source shortest path algorithms like Dijkstra's or BFS
-- **Challenge**: Efficiently handle multiple sources and find nearest shop for each customer
+### Approach 1: Brute Force Single-Source Dijkstra (Brute Force)
+
+**Key Insights from Brute Force Approach**:
+- **Single-Source Dijkstra**: Run Dijkstra's algorithm from each shop
+- **Distance Comparison**: Compare distances from all shops to find nearest
+- **Exhaustive Search**: Try all possible shop-customer combinations
+- **Multiple Dijkstra Runs**: Run Dijkstra k times (once per shop)
+
+**Key Insight**: Use brute force by running Dijkstra's algorithm from each shop and comparing distances.
+
+**Algorithm**:
+- For each shop, run Dijkstra's algorithm
+- Calculate shortest distances to all customers
+- For each customer, find the shop with minimum distance
+- Return nearest shop and distance for each customer
+
+**Visual Example**:
+```
+Graph: 1🏪-3-2👤, 2👤-2-3🏪, 3🏪-1-4👤, 1🏪-5-4👤
+
+Brute Force Approach:
+┌─────────────────────────────────────┐
+│ Dijkstra from shop 1:              │
+│ Distances: [0, 3, 5, 5]            │
+│ Nearest to 2: shop 1 (dist 3)      │
+│ Nearest to 4: shop 1 (dist 5)      │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│ Dijkstra from shop 3:              │
+│ Distances: [5, 2, 0, 1]            │
+│ Nearest to 2: shop 3 (dist 2) ✓    │
+│ Nearest to 4: shop 3 (dist 1) ✓    │
+└─────────────────────────────────────┘
+
+Result: Customer 2 → shop 3 (dist 2), Customer 4 → shop 3 (dist 1)
+```
 
 ### Step 2: Initial Approach
 **Brute force approach (inefficient but correct):**

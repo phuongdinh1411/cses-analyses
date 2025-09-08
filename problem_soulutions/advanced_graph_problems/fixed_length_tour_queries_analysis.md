@@ -24,9 +24,9 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Matrix multiplication, modular arithmetic, dynamic programming
 - **Related Problems**: Fixed Length Cycle Queries (similar matrix approach), Fixed Length Circuit Queries (circuit counting), Round Trip (cycle detection)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a graph, answer queries about tours (cycles) of fixed length starting and ending at specific vertices.
+Given a graph, answer queries about tours (cycles) of fixed length starting and ending at specific vertices.
 
 **Input**: 
 - n, m: number of vertices and edges
@@ -34,7 +34,14 @@ Before attempting this problem, ensure you understand:
 - q: number of queries
 - q lines: u k (query: is there a tour of length k starting and ending at vertex u?)
 
-**Output**: For each query, print "YES" if tour exists, "NO" otherwise.
+**Output**: 
+- For each query, print "YES" if tour exists, "NO" otherwise
+
+**Constraints**:
+- 1 ≤ n ≤ 100
+- 1 ≤ m ≤ 1000
+- 1 ≤ q ≤ 10^5
+- 1 ≤ k ≤ 10^9
 
 **Example**:
 ```
@@ -54,7 +61,7 @@ NO
 YES
 NO
 
-Explanation: 
+Explanation**: 
 No tour of length 3 starting at vertex 1
 Tour 1→2→3→4→1 has length 4 starting at vertex 1
 No tour of length 2 starting at vertex 2

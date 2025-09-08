@@ -29,8 +29,6 @@ Before attempting this problem, ensure you understand:
 
 Given a 2D grid of size n×m containing letters, count the number of subgrids of any size that contain all letters from 'A' to 'Z' (case insensitive).
 
-This is a grid counting problem where we need to find all rectangular subgrids that contain all 26 letters of the alphabet. We can solve this by checking all possible rectangular subgrids and verifying if they contain all letters.
-
 **Input**: 
 - First line: two integers n and m (grid dimensions)
 - Next n lines: m characters each (letters in the grid)
@@ -52,10 +50,10 @@ GHI
 
 Output:
 0
-```
 
-**Explanation**: 
+Explanation**: 
 In the 3×3 grid, there are no subgrids that contain all 26 letters A-Z. The grid only contains 9 different letters (A, B, C, D, E, F, G, H, I), which is less than the required 26 letters.
+```
 
 ### 📊 Visual Example
 

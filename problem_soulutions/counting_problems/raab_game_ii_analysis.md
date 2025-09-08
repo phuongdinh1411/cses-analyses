@@ -29,8 +29,6 @@ Before attempting this problem, ensure you understand:
 
 Given a 2D grid of size n×m, count the number of ways to place exactly k queens on the grid such that no queen attacks another queen.
 
-This is a classic N-Queens problem variant where we need to count the number of valid queen placements on a grid with blocked cells. Queens attack each other if they are in the same row, column, or diagonal. We can solve this using backtracking or bitmask techniques.
-
 **Input**: 
 - First line: three integers n, m, and k (grid dimensions and number of queens)
 - Next n lines: m characters each ('.' for empty, '#' for blocked)
@@ -53,9 +51,8 @@ Input:
 
 Output:
 8
-```
 
-**Explanation**: 
+Explanation**: 
 In a 3×3 empty grid, there are 8 ways to place 2 queens such that they don't attack each other:
 1. (0,0) and (1,2) - not attacking
 2. (0,0) and (2,1) - not attacking
@@ -65,6 +62,7 @@ In a 3×3 empty grid, there are 8 ways to place 2 queens such that they don't at
 6. (0,2) and (2,1) - not attacking
 7. (1,0) and (2,2) - not attacking
 8. (1,2) and (2,0) - not attacking
+```
 
 ### 📊 Visual Example
 

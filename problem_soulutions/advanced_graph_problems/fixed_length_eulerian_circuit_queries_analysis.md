@@ -25,24 +25,26 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
 - **Related Problems**: Fixed Length Cycle Queries (similar matrix approach), Mail Delivery (Eulerian paths), Round Trip (cycle detection)
 
-## Problem Statement
+## 📋 Problem Description
+
 Given a directed graph with n nodes and q queries, for each query find the number of Eulerian circuits of length k starting and ending at node a.
 
-### Input
-The first input line has two integers n and q: the number of nodes and queries.
-Then there are n lines describing the adjacency matrix. Each line has n integers: 1 if there is an edge, 0 otherwise.
-Finally, there are q lines describing the queries. Each line has two integers a and k: find Eulerian circuits from a to a of length k.
+**Input**: 
+- n: number of nodes
+- q: number of queries
+- n lines: adjacency matrix (1 if edge exists, 0 otherwise)
+- q lines: a k (find Eulerian circuits from node a to a of length k)
 
-### Output
-Print the answer to each query modulo 10^9 + 7.
+**Output**: 
+- Answer to each query modulo 10^9 + 7
 
-### Constraints
+**Constraints**:
 - 1 ≤ n ≤ 100
 - 1 ≤ q ≤ 10^5
 - 1 ≤ k ≤ 10^9
 - 1 ≤ a ≤ n
 
-### Example
+**Example**:
 ```
 Input:
 3 2
@@ -55,6 +57,15 @@ Input:
 Output:
 1
 1
+
+Explanation**: 
+Query 1: Eulerian circuits from node 1 of length 3
+- Eulerian circuit: 1 → 2 → 3 → 1 (uses each edge exactly once)
+- Result: 1
+
+Query 2: Eulerian circuits from node 2 of length 3  
+- Eulerian circuit: 2 → 3 → 1 → 2 (uses each edge exactly once)
+- Result: 1
 ```
 
 ### 📊 Visual Example

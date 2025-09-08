@@ -25,9 +25,9 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
 - **Related Problems**: Fixed Length Cycle Queries (similar matrix approach), Hamiltonian Flights (Hamiltonian paths), Round Trip (cycle detection)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a directed graph with n nodes and q queries, for each query find the number of Hamiltonian cycles of length k starting and ending at node a.
+Given a directed graph with n nodes and q queries, for each query find the number of Hamiltonian cycles of length k starting and ending at node a.
 
 **Input**: 
 - n: number of nodes
@@ -35,7 +35,14 @@ Before attempting this problem, ensure you understand:
 - n×n adjacency matrix (1 if edge exists, 0 otherwise)
 - q queries: a k (find Hamiltonian cycles from a to a of length k)
 
-**Output**: Number of Hamiltonian cycles for each query, modulo 10^9 + 7.
+**Output**: 
+- Number of Hamiltonian cycles for each query, modulo 10^9 + 7
+
+**Constraints**:
+- 1 ≤ n ≤ 100
+- 1 ≤ q ≤ 10^5
+- 1 ≤ k ≤ 10^9
+- 1 ≤ a ≤ n
 
 **Example**:
 ```
@@ -51,12 +58,12 @@ Output:
 1
 1
 
-Explanation: 
+Explanation**: 
 For query (1,3): 1 Hamiltonian cycle of length 3 starting and ending at node 1
 For query (2,3): 1 Hamiltonian cycle of length 3 starting and ending at node 2
 ```
 
-## 🎯 Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
 ### Step 1: Understanding the Problem
 **What are we trying to do?**

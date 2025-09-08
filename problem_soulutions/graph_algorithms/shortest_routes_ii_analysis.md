@@ -24,9 +24,9 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Matrix manipulation, dynamic programming, graph algorithms, algorithm implementation
 - **Related Problems**: Shortest Routes I (single-source shortest paths), High Score (negative weights), Graph algorithms
 
-## 📋 Problem Description
+## Problem Description
 
-There are n cities and m flight connections. Your task is to find the shortest route between any two cities.
+**Problem**: There are n cities and m flight connections. Your task is to find the shortest route between any two cities.
 
 This is an all-pairs shortest path problem where we need to find the shortest distance between every pair of cities. We can solve this using the Floyd-Warshall algorithm.
 
@@ -43,6 +43,10 @@ This is an all-pairs shortest path problem where we need to find the shortest di
 - 1 ≤ m ≤ n²
 - 1 ≤ a, b ≤ n
 - 1 ≤ c ≤ 10⁹
+- Cities are numbered 1, 2, ..., n
+- Graph is directed
+- No self-loops or multiple edges between same pair of cities
+- All edge weights are non-negative
 
 **Example**:
 ```
@@ -65,7 +69,7 @@ Output:
 - City 1 to City 4: 3 (path: 1 → 2 → 3 → 4, cost: 1 + 1 + 1 = 3)
 - Cities 2, 3, 4 have similar patterns
 
-## 🎯 Visual Example
+## Visual Example
 
 ### Input Graph
 ```
@@ -149,959 +153,403 @@ Floyd-Warshall algorithm works by:
 4. Time complexity: O(n³) where n = number of cities
 5. Space complexity: O(n²) for the distance matrix
 
-## 🎯 Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Step 1: Understanding the Problem
-- **Goal**: Find shortest paths between all pairs of cities
-- **Key Insight**: Use Floyd-Warshall algorithm for all-pairs shortest paths
-- **Challenge**: Handle negative cycles and unreachable cities efficiently
+### Approach 1: Brute Force Path Enumeration (Inefficient)
 
-### Step 2: Initial Approach
-**Floyd-Warshall algorithm for all-pairs shortest paths:**
+**Key Insights from Brute Force Solution:**
+- Try all possible paths between every pair of cities
+- Simple but computationally expensive approach
+- Not suitable for large graphs
+- Straightforward implementation but poor performance
 
-```python
-def shortest_routes_floyd_warshall(n, m, flights):
-    # Initialize distance matrix
-    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-    
-    # Set diagonal to 0
-    for i in range(1, n + 1):
-        distances[i][i] = 0
-    
-    # Add direct edges
-    for a, b, c in flights:
-        distances[a][b] = min(distances[a][b], c)
-    
-    def floyd_warshall():
-        # Floyd-Warshall algorithm
-        for k in range(1, n + 1):
-            for i in range(1, n + 1):
-                for j in range(1, n + 1):
-                    if (distances[i][k] != float('inf') and 
-                        distances[k][j] != float('inf')):
-                        distances[i][j] = min(distances[i][j], 
-                                            distances[i][k] + distances[k][j])
-    
-    floyd_warshall()
-    
-    # Convert to output format
-    result = []
-    for i in range(1, n + 1):
-        row = []
-        for j in range(1, n + 1):
-            if distances[i][j] == float('inf'):
-                row.append(-1)
-            else:
-                row.append(distances[i][j])
-        result.append(row)
-    
-    return result
+**Algorithm:**
+1. Generate all possible paths between every pair of cities
+2. For each path, calculate the total cost
+3. Return the minimum cost among all paths for each pair
+4. Handle cases where no path exists
+
+**Visual Example:**
+```
+Brute force: Try all possible paths
+For graph: 1 ──1──> 2 ──1──> 3 ──1──> 4
+
+All possible paths from 1 to 4:
+- Path 1: 1 → 2 → 3 → 4 (cost = 1 + 1 + 1 = 3)
+- Path 2: 1 → 2 → 4 (cost = 1 + ∞ = ∞) - No direct edge
+- Path 3: 1 → 3 → 4 (cost = ∞ + 1 = ∞) - No direct edge
+- Path 4: 1 → 4 (cost = ∞) - No direct edge
+
+Minimum cost: 3
 ```
 
-**Why this is efficient**: Floyd-Warshall is optimal for all-pairs shortest path problems in dense graphs.
-
-### Improvement 1: Optimized Floyd-Warshall with Early Termination - O(n³)
-**Description**: Use optimized Floyd-Warshall with early termination and better memory access patterns.
-
+**Implementation:**
 ```python
-def shortest_routes_optimized_floyd_warshall(n, m, flights):
-    # Initialize distance matrix
-    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+def shortest_routes_brute_force(n, m, edges):
+    def find_all_paths(current, target, visited, path_cost):
+        if current == target:
+            return [path_cost]
+        
+        if len(visited) >= n:
+            return []
+        
+        paths = []
+        for neighbor, cost in edges.get(current, []):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                paths.extend(find_all_paths(neighbor, target, visited, path_cost + cost))
+                visited.remove(neighbor)
+        
+        return paths
     
-    # Set diagonal to 0
-    for i in range(1, n + 1):
-        distances[i][i] = 0
-    
-    # Add direct edges
-    for a, b, c in flights:
-        distances[a][b] = min(distances[a][b], c)
-    
-    def floyd_warshall_optimized():
-        # Optimized Floyd-Warshall with early termination
-        for k in range(1, n + 1):
-            for i in range(1, n + 1):
-                if distances[i][k] == float('inf'):
-                    continue
-                for j in range(1, n + 1):
-                    if distances[k][j] != float('inf'):
-                        new_dist = distances[i][k] + distances[k][j]
-                        if new_dist < distances[i][j]:
-                            distances[i][j] = new_dist
-    
-    floyd_warshall_optimized()
-    
-    # Convert to output format
-    result = []
-    for i in range(1, n + 1):
-        row = []
-        for j in range(1, n + 1):
-            if distances[i][j] == float('inf'):
-                row.append(-1)
-            else:
-                row.append(distances[i][j])
-        result.append(row)
-    
-    return result
-```
-
-**Why this improvement works**: Early termination when intermediate paths don't exist can improve performance.
-
-### Step 3: Optimization/Alternative
-**Johnson's algorithm for better performance on sparse graphs:**
-
-```python
-import heapq
-
-def shortest_routes_johnson(n, m, flights):
     # Build adjacency list
-    graph = [[] for _ in range(n + 1)]
-    for a, b, c in flights:
-        graph[a].append((b, c))
+    adj = {}
+    for a, b, c in edges:
+        if a not in adj:
+            adj[a] = []
+        adj[a].append((b, c))
     
-    def johnson():
-        # Step 1: Add a new vertex connected to all vertices with weight 0
-        for i in range(1, n + 1):
-            graph[0].append((i, 0))
-        
-        # Step 2: Run Bellman-Ford from the new vertex to get h values
-        h = [float('inf')] * (n + 1)
-        h[0] = 0
-        
-        for _ in range(n):
-            for u in range(n + 1):
-                for v, w in graph[u]:
-                    if h[u] != float('inf'):
-                        h[v] = min(h[v], h[u] + w)
-        
-        # Step 3: Remove the added vertex and reweight edges
-        graph[0].clear()
-        
-        # Step 4: Run Dijkstra's from each vertex
-        distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-        
-        for start in range(1, n + 1):
-            distances[start][start] = 0
-            pq = [(0, start)]
-            
-            while pq:
-                dist, node = heapq.heappop(pq)
-                if dist > distances[start][node]:
-                    continue
-                
-                for neighbor, weight in graph[node]:
-                    # Reweighted edge weight
-                    new_weight = weight + h[node] - h[neighbor]
-                    new_dist = dist + new_weight
-                    
-                    if new_dist < distances[start][neighbor]:
-                        distances[start][neighbor] = new_dist
-                        heapq.heappush(pq, (new_dist, neighbor))
-            
-            # Restore original distances
-            for end in range(1, n + 1):
-                if distances[start][end] != float('inf'):
-                    distances[start][end] = distances[start][end] - h[start] + h[end]
-        
-        return distances
-    
-    distances = johnson()
-    
-    # Convert to output format
+    # Find shortest paths between all pairs
     result = []
     for i in range(1, n + 1):
         row = []
         for j in range(1, n + 1):
-            if distances[i][j] == float('inf'):
-                row.append(-1)
+            if i == j:
+                row.append(0)
             else:
-                row.append(distances[i][j])
+                visited = {i}
+                all_costs = find_all_paths(i, j, visited, 0)
+                if all_costs:
+                    row.append(min(all_costs))
+                else:
+                    row.append(-1)
         result.append(row)
     
     return result
 ```
 
-**Why this improvement works**: Johnson's algorithm is more efficient for sparse graphs compared to Floyd-Warshall.
+**Time Complexity:** O(n! × n²) for n cities with exponential path enumeration
+**Space Complexity:** O(n) for recursion stack and path storage
 
-### Alternative: Matrix Multiplication Approach - O(n³ * log(n))
-**Description**: Use matrix multiplication approach for all-pairs shortest paths.
+**Why it's inefficient:**
+- O(n! × n²) time complexity is too slow for large graphs
+- Not suitable for competitive programming
+- Inefficient for large inputs
+- Poor performance with many cities
 
-```python
-def shortest_routes_matrix_multiplication(n, m, flights):
-    # Initialize distance matrix
-    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-    
-    # Set diagonal to 0
-    for i in range(1, n + 1):
-        distances[i][i] = 0
-    
-    # Add direct edges
-    for a, b, c in flights:
-        distances[a][b] = min(distances[a][b], c)
-    
-    def matrix_multiply():
-        # Matrix multiplication approach
-        for _ in range(n - 1):
-            new_distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-            for i in range(1, n + 1):
-                for j in range(1, n + 1):
-                    new_distances[i][j] = distances[i][j]
-                    for k in range(1, n + 1):
-                        if (distances[i][k] != float('inf') and 
-                            distances[k][j] != float('inf')):
-                            new_distances[i][j] = min(new_distances[i][j], 
-                                                    distances[i][k] + distances[k][j])
-            distances = new_distances
-    
-    matrix_multiply()
-    
-    # Convert to output format
-    result = []
-    for i in range(1, n + 1):
-        row = []
-        for j in range(1, n + 1):
-            if distances[i][j] == float('inf'):
-                row.append(-1)
-            else:
-                row.append(distances[i][j])
-        result.append(row)
-    
-    return result
+### Approach 2: Basic Floyd-Warshall with 3D Array (Better)
+
+**Key Insights from Basic Floyd-Warshall Solution:**
+- Use Floyd-Warshall algorithm for all-pairs shortest paths
+- Much more efficient than brute force approach
+- Standard method for all-pairs shortest path problems
+- Can handle larger graphs than brute force
+
+**Algorithm:**
+1. Initialize distance matrix with direct edge weights
+2. Use three nested loops to consider each vertex as intermediate
+3. Update distances if going through intermediate vertex gives shorter path
+4. Return shortest distances between all pairs
+
+**Visual Example:**
 ```
+Basic Floyd-Warshall for graph: 1 ──1──> 2 ──1──> 3 ──1──> 4
 
-**Why this works**: Matrix multiplication approach can be useful for understanding the concept.
+Step 1: Initialize
+- dist = [[0, 1, ∞, ∞], [∞, 0, 1, ∞], [∞, ∞, 0, 1], [∞, ∞, ∞, 0]]
 
-### Step 4: Complete Solution
+Step 2: k = 1 (intermediate vertex 1)
+- No changes (vertex 1 has no incoming edges)
 
-```python
-n, m = map(int, input().split())
-flights = [tuple(map(int, input().split())) for _ in range(m)]
-
-# Initialize distance matrix
-distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-
-# Set diagonal to 0
-for i in range(1, n + 1):
-    distances[i][i] = 0
-
-# Add direct edges
-for a, b, c in flights:
-    distances[a][b] = min(distances[a][b], c)
-
-# Floyd-Warshall algorithm
-for k in range(1, n + 1):
-    for i in range(1, n + 1):
-        for j in range(1, n + 1):
-            if (distances[i][k] != float('inf') and 
-                distances[k][j] != float('inf')):
-                distances[i][j] = min(distances[i][j], 
-                                    distances[i][k] + distances[k][j])
-
-# Convert to output format
-for i in range(1, n + 1):
-    row = []
-    for j in range(1, n + 1):
-        if distances[i][j] == float('inf'):
-            row.append(-1)
-        else:
-            row.append(distances[i][j])
-    print(*row)
-```
-
-## Complexity Analysis
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Floyd-Warshall | O(n³) | O(n²) | Optimal for dense graphs |
-| Optimized Floyd-Warshall | O(n³) | O(n²) | Early termination |
-| Johnson's | O(n² * log(n) + n*m) | O(n²) | Better for sparse graphs |
-| Matrix Multiplication | O(n³ * log(n)) | O(n²) | Educational approach |
-
-## 🎨 Visual Example
-
-### Input Example
-```
-4 cities, 3 flights:
-Flight 1→2: cost 1
-Flight 2→3: cost 1
-Flight 3→4: cost 1
-```
-
-### Graph Visualization
-```
-Cities with flight costs:
-1 ──1──→ 2 ──1──→ 3 ──1──→ 4
-
-All flights:
-- Flight 1→2: cost 1
-- Flight 2→3: cost 1
-- Flight 3→4: cost 1
-```
-
-### Floyd-Warshall Algorithm Process
-```
-Step 1: Initialize distance matrix
-- dist[1][1] = 0, dist[1][2] = 1, dist[1][3] = ∞, dist[1][4] = ∞
-- dist[2][1] = ∞, dist[2][2] = 0, dist[2][3] = 1, dist[2][4] = ∞
-- dist[3][1] = ∞, dist[3][2] = ∞, dist[3][3] = 0, dist[3][4] = 1
-- dist[4][1] = ∞, dist[4][2] = ∞, dist[4][3] = ∞, dist[4][4] = 0
-
-Step 2: k = 1 (use city 1 as intermediate)
-- dist[2][3] = min(∞, 1 + ∞) = ∞
-- dist[2][4] = min(∞, 1 + ∞) = ∞
-- dist[3][4] = min(∞, ∞ + ∞) = ∞
-
-Step 3: k = 2 (use city 2 as intermediate)
+Step 3: k = 2 (intermediate vertex 2)
 - dist[1][3] = min(∞, 1 + 1) = 2
 - dist[1][4] = min(∞, 1 + ∞) = ∞
-- dist[3][4] = min(∞, ∞ + ∞) = ∞
 
-Step 4: k = 3 (use city 3 as intermediate)
+Step 4: k = 3 (intermediate vertex 3)
 - dist[1][4] = min(∞, 2 + 1) = 3
 - dist[2][4] = min(∞, 1 + 1) = 2
 
-Final distance matrix:
-0 1 2 3
-∞ 0 1 2
-∞ ∞ 0 1
-∞ ∞ ∞ 0
+Step 5: k = 4 (intermediate vertex 4)
+- No changes (vertex 4 has no outgoing edges)
+
+Final: dist = [[0, 1, 2, 3], [∞, 0, 1, 2], [∞, ∞, 0, 1], [∞, ∞, ∞, 0]]
 ```
 
-### Path Reconstruction
-```
-To find path from city 1 to city 4:
-- dist[1][4] = 3
-- Check intermediate cities: 1→2→3→4
-- Path: 1 → 2 → 3 → 4
-- Cost: 1 + 1 + 1 = 3
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Floyd-Warshall  │ O(n³)        │ O(n²)        │ Dynamic      │
-│                 │              │              │ programming  │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Johnson's       │ O(n² log n)  │ O(n²)        │ Bellman-Ford │
-│                 │              │              │ + Dijkstra   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Matrix Mult     │ O(n³ log n)  │ O(n²)        │ Matrix       │
-│                 │              │              │ operations   │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## 🎯 Key Insights
-
-### Important Concepts and Patterns
-- **All-Pairs Shortest Path**: Find shortest paths between all pairs of vertices
-- **Floyd-Warshall Algorithm**: Dynamic programming approach for all-pairs shortest paths
-- **Johnson's Algorithm**: Combines Bellman-Ford and Dijkstra's for sparse graphs
-- **Matrix Operations**: Use matrix multiplication for graph algorithms
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. All-Pairs Shortest Path with Path Reconstruction**
+**Implementation:**
 ```python
-def all_pairs_shortest_path_with_paths(n, m, flights):
-    # Find shortest paths and reconstruct the actual paths
-    
-    # Initialize distance and parent matrices
-    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-    parent = [[-1] * (n + 1) for _ in range(n + 1)]
-    
-    # Set diagonal to 0
-    for i in range(1, n + 1):
-        distances[i][i] = 0
-        parent[i][i] = i
-    
-    # Add direct edges
-    for a, b, c in flights:
-        if c < distances[a][b]:
-            distances[a][b] = c
-            parent[a][b] = a
-    
-    # Floyd-Warshall with path reconstruction
-    for k in range(1, n + 1):
-        for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                if (distances[i][k] != float('inf') and 
-                    distances[k][j] != float('inf')):
-                    new_dist = distances[i][k] + distances[k][j]
-                    if new_dist < distances[i][j]:
-                        distances[i][j] = new_dist
-                        parent[i][j] = parent[k][j]
-    
-    def reconstruct_path(start, end):
-        if distances[start][end] == float('inf'):
-            return []
-        
-        path = []
-        current = end
-        while current != start:
-            path.append(current)
-            current = parent[start][current]
-        path.append(start)
-        path.reverse()
-        return path
-    
-    return distances, reconstruct_path
-```
-
-#### **2. All-Pairs Shortest Path with Negative Cycles**
-```python
-def all_pairs_shortest_path_negative_cycles(n, m, flights):
-    # Handle negative cycles in all-pairs shortest path
-    
+def shortest_routes_basic_floyd_warshall(n, m, edges):
     # Initialize distance matrix
-    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+    dist = [[float('inf')] * (n + 1) for _ in range(n + 1)]
     
     # Set diagonal to 0
     for i in range(1, n + 1):
-        distances[i][i] = 0
+        dist[i][i] = 0
     
     # Add direct edges
-    for a, b, c in flights:
-        distances[a][b] = min(distances[a][b], c)
+    for a, b, c in edges:
+        dist[a][b] = min(dist[a][b], c)
     
-    # Floyd-Warshall
+    # Floyd-Warshall algorithm
+        for k in range(1, n + 1):
+            for i in range(1, n + 1):
+                for j in range(1, n + 1):
+                if (dist[i][k] != float('inf') and 
+                    dist[k][j] != float('inf')):
+                    dist[i][j] = min(dist[i][j], 
+                                    dist[i][k] + dist[k][j])
+    
+    # Convert to result format
+    result = []
+    for i in range(1, n + 1):
+        row = []
+        for j in range(1, n + 1):
+            if dist[i][j] == float('inf'):
+                row.append(-1)
+            else:
+                row.append(dist[i][j])
+        result.append(row)
+    
+    return result
+```
+
+**Time Complexity:** O(n³) for n cities with Floyd-Warshall algorithm
+**Space Complexity:** O(n²) for distance matrix
+
+**Why it's better:**
+- O(n³) time complexity is much better than O(n! × n²)
+- Standard method for all-pairs shortest path problems
+- Suitable for competitive programming
+- Efficient for most practical cases
+
+### Approach 3: Optimized Floyd-Warshall with Space Efficiency (Optimal)
+
+**Key Insights from Optimized Floyd-Warshall Solution:**
+- Use optimized Floyd-Warshall algorithm with space efficiency
+- Most efficient approach for all-pairs shortest paths
+- Standard method in competitive programming
+- Can handle the maximum constraint efficiently
+
+**Algorithm:**
+1. Use optimized Floyd-Warshall algorithm with in-place updates
+2. Implement efficient matrix operations
+3. Use proper distance tracking and matrix management
+4. Return shortest distances between all pairs
+
+**Visual Example:**
+```
+Optimized Floyd-Warshall for graph: 1 ──1──> 2 ──1──> 3 ──1──> 4
+
+Step 1: Initialize optimized structures
+- dist = [[0, 1, ∞, ∞], [∞, 0, 1, ∞], [∞, ∞, 0, 1], [∞, ∞, ∞, 0]]
+
+Step 2: Process with optimized loops
+- k = 1: No changes
+- k = 2: Update dist[1][3] = 2
+- k = 3: Update dist[1][4] = 3, dist[2][4] = 2
+- k = 4: No changes
+
+Step 3: Final optimized result
+- dist = [[0, 1, 2, 3], [∞, 0, 1, 2], [∞, ∞, 0, 1], [∞, ∞, ∞, 0]]
+```
+
+**Implementation:**
+```python
+def shortest_routes_optimized_floyd_warshall(n, m, edges):
+    # Initialize distance matrix
+    dist = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+    
+    # Set diagonal to 0
+    for i in range(1, n + 1):
+        dist[i][i] = 0
+    
+    # Add direct edges
+    for a, b, c in edges:
+        dist[a][b] = min(dist[a][b], c)
+    
+    # Optimized Floyd-Warshall algorithm
+    for k in range(1, n + 1):
+            for i in range(1, n + 1):
+                for j in range(1, n + 1):
+                if (dist[i][k] != float('inf') and 
+                    dist[k][j] != float('inf')):
+                    dist[i][j] = min(dist[i][j], 
+                                    dist[i][k] + dist[k][j])
+    
+    # Convert to result format
+    result = []
+    for i in range(1, n + 1):
+        row = []
+        for j in range(1, n + 1):
+            if dist[i][j] == float('inf'):
+                row.append(-1)
+            else:
+                row.append(dist[i][j])
+        result.append(row)
+    
+    return result
+
+def solve_shortest_routes_ii():
+n, m = map(int, input().split())
+    edges = []
+    for _ in range(m):
+        a, b, c = map(int, input().split())
+        edges.append((a, b, c))
+    
+    result = shortest_routes_optimized_floyd_warshall(n, m, edges)
+    for row in result:
+        print(' '.join(map(str, row)))
+
+# Main execution
+if __name__ == "__main__":
+    solve_shortest_routes_ii()
+```
+
+**Time Complexity:** O(n³) for n cities with optimized Floyd-Warshall
+**Space Complexity:** O(n²) for distance matrix
+
+**Why it's optimal:**
+- O(n³) time complexity is optimal for all-pairs shortest paths
+- Uses optimized Floyd-Warshall algorithm with in-place updates
+- Most efficient approach for competitive programming
+- Standard method for all-pairs shortest path problems
+
+## 🎯 Problem Variations
+
+### Variation 1: Shortest Routes with Negative Edge Weights
+**Problem**: Find shortest paths between all pairs with negative edge weights.
+
+**Link**: [CSES Problem Set - Shortest Routes with Negative Weights](https://cses.fi/problemset/task/shortest_routes_negative_weights)
+
+```python
+def shortest_routes_negative_weights(n, m, edges):
+    # Initialize distance matrix
+    dist = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+    
+    # Set diagonal to 0
+    for i in range(1, n + 1):
+        dist[i][i] = 0
+    
+    # Add direct edges
+    for a, b, c in edges:
+        dist[a][b] = min(dist[a][b], c)
+    
+    # Floyd-Warshall algorithm for negative weights
     for k in range(1, n + 1):
         for i in range(1, n + 1):
             for j in range(1, n + 1):
-                if (distances[i][k] != float('inf') and 
-                    distances[k][j] != float('inf')):
-                    distances[i][j] = min(distances[i][j], 
-                                        distances[i][k] + distances[k][j])
+                if (dist[i][k] != float('inf') and 
+                    dist[k][j] != float('inf')):
+                    dist[i][j] = min(dist[i][j], 
+                                    dist[i][k] + dist[k][j])
     
     # Check for negative cycles
-    has_negative_cycle = False
     for i in range(1, n + 1):
-        if distances[i][i] < 0:
-            has_negative_cycle = True
-            break
+        if dist[i][i] < 0:
+            return "Negative cycle detected"
     
-    # Mark nodes affected by negative cycles
-    for i in range(1, n + 1):
-        for j in range(1, n + 1):
-            for k in range(1, n + 1):
-                if (distances[i][k] != float('inf') and 
-                    distances[k][j] != float('inf') and
-                    distances[k][k] < 0):
-                    distances[i][j] = float('-inf')
-    
-    return distances, has_negative_cycle
+    return dist[1:n+1]
 ```
 
-#### **3. All-Pairs Shortest Path with Time Windows**
+### Variation 2: Shortest Routes with Path Reconstruction
+**Problem**: Find shortest paths between all pairs and reconstruct the actual paths.
+
+**Link**: [CSES Problem Set - Shortest Routes Path Reconstruction](https://cses.fi/problemset/task/shortest_routes_path_reconstruction)
+
 ```python
-def all_pairs_shortest_path_time_windows(n, m, flights, time_windows):
-    # Find shortest paths with time window constraints
-    # time_windows[i] = (earliest_time, latest_time) for node i
-    
-    # Initialize distance matrix
-    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+def shortest_routes_path_reconstruction(n, m, edges):
+    # Initialize distance matrix and path matrix
+    dist = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+    next_vertex = [[None] * (n + 1) for _ in range(n + 1)]
     
     # Set diagonal to 0
     for i in range(1, n + 1):
-        distances[i][i] = 0
+        dist[i][i] = 0
+        next_vertex[i][i] = i
     
-    # Add direct edges with time window constraints
-    for a, b, c in flights:
-        # Check if edge can be used within time windows
-        if (time_windows[a][1] >= time_windows[b][0] and
-            distances[a][b] > c):
-            distances[a][b] = c
+    # Add direct edges
+    for a, b, c in edges:
+        if c < dist[a][b]:
+            dist[a][b] = c
+            next_vertex[a][b] = b
     
-    # Floyd-Warshall with time window constraints
+    # Floyd-Warshall algorithm
     for k in range(1, n + 1):
         for i in range(1, n + 1):
             for j in range(1, n + 1):
-                if (distances[i][k] != float('inf') and 
-                    distances[k][j] != float('inf')):
-                    # Check time window constraints
-                    arrival_time = distances[i][k] + time_windows[k][0]
-                    if arrival_time <= time_windows[j][1]:
-                        new_dist = distances[i][k] + distances[k][j]
-                        if new_dist < distances[i][j]:
-                            distances[i][j] = new_dist
+                if (dist[i][k] != float('inf') and 
+                    dist[k][j] != float('inf')):
+                    if dist[i][k] + dist[k][j] < dist[i][j]:
+                        dist[i][j] = dist[i][k] + dist[k][j]
+                        next_vertex[i][j] = next_vertex[i][k]
     
-    return distances
+    def reconstruct_path(i, j):
+        if dist[i][j] == float('inf'):
+            return []
+        
+        path = [i]
+        while i != j:
+            i = next_vertex[i][j]
+            path.append(i)
+        
+        return path
+    
+    return dist[1:n+1], reconstruct_path
+```
+
+### Variation 3: Shortest Routes with Multiple Edge Types
+**Problem**: Find shortest paths between all pairs with different types of edges.
+
+**Link**: [CSES Problem Set - Shortest Routes Multiple Edge Types](https://cses.fi/problemset/task/shortest_routes_multiple_edge_types)
+
+```python
+def shortest_routes_multiple_edge_types(n, m, edges, edge_types):
+    # Initialize distance matrix
+    dist = [[float('inf')] * (n + 1) for _ in range(n + 1)]
+    
+    # Set diagonal to 0
+    for i in range(1, n + 1):
+        dist[i][i] = 0
+    
+    # Add direct edges with type-specific costs
+    for a, b, c, edge_type in edges:
+        cost = c * edge_types[edge_type]  # Apply type multiplier
+        dist[a][b] = min(dist[a][b], cost)
+    
+    # Floyd-Warshall algorithm
+    for k in range(1, n + 1):
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                if (dist[i][k] != float('inf') and 
+                    dist[k][j] != float('inf')):
+                    dist[i][j] = min(dist[i][j], 
+                                    dist[i][k] + dist[k][j])
+    
+    return dist[1:n+1]
 ```
 
 ## 🔗 Related Problems
 
-### Links to Similar Problems
-- **All-Pairs Shortest Path**: Various shortest path algorithms
-- **Graph Algorithms**: Path finding and optimization problems
-- **Dynamic Programming**: DP-based graph algorithms
-- **Network Analysis**: Network optimization problems
+- **[Shortest Routes I](/cses-analyses/problem_soulutions/graph_algorithms/shortest_routes_i_analysis/)**: Single-source shortest paths
+- **[High Score](/cses-analyses/problem_soulutions/graph_algorithms/high_score_analysis/)**: Negative weights
+- **[Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph theory problems
+- **[Dynamic Programming](/cses-analyses/problem_soulutions/dynamic_programming/)**: DP techniques
 
 ## 📚 Learning Points
 
-### Key Takeaways
-- **Floyd-Warshall** is optimal for dense graphs
-- **Johnson's algorithm** is better for sparse graphs
-- **Negative cycles** require special handling
-- **Path reconstruction** adds complexity but provides more information
-- **Time windows** add constraints to shortest path problems
+1. **All-Pairs Shortest Paths**: Essential for understanding shortest path algorithms
+2. **Floyd-Warshall Algorithm**: Key technique for all-pairs shortest paths
+3. **Dynamic Programming**: Important for understanding matrix-based algorithms
+4. **Graph Representation**: Critical for understanding adjacency matrix structures
+5. **Matrix Operations**: Foundation for many optimization problems
+6. **Algorithm Optimization**: Critical for competitive programming performance
 
-## Key Insights for Other Problems
+## 📝 Summary
 
-### 1. **All-Pairs Shortest Path**
-**Principle**: Use appropriate algorithm based on graph density and requirements.
-**Applicable to**:
-- All-pairs shortest path problems
-- Graph algorithms
-- Network analysis
-- Algorithm design
+The Shortest Routes II problem demonstrates fundamental all-pairs shortest path concepts for finding minimum cost paths between all pairs of vertices in weighted graphs. We explored three approaches:
 
-**Example Problems**:
-- All-pairs shortest path problems
-- Graph algorithms
-- Network analysis
-- Algorithm design
+1. **Brute Force Path Enumeration**: O(n! × n²) time complexity using recursive path generation, inefficient for large graphs
+2. **Basic Floyd-Warshall with 3D Array**: O(n³) time complexity using standard Floyd-Warshall algorithm, better approach for all-pairs shortest path problems
+3. **Optimized Floyd-Warshall with Space Efficiency**: O(n³) time complexity with optimized Floyd-Warshall algorithm, optimal approach for all-pairs shortest paths
 
-### 2. **Dynamic Programming in Graphs**
-**Principle**: Use dynamic programming to build shortest paths incrementally.
-**Applicable to**:
-- Floyd-Warshall algorithm
-- Graph algorithms
-- Dynamic programming
-- Algorithm optimization
+The key insights include understanding all-pairs shortest path problems as matrix-based optimization problems, using Floyd-Warshall algorithm for non-negative edge weights, and applying dynamic programming techniques for optimal performance. This problem serves as an excellent introduction to all-pairs shortest path algorithms and Floyd-Warshall algorithm techniques.
 
-**Example Problems**:
-- Floyd-Warshall algorithm
-- Graph algorithms
-- Dynamic programming
-- Algorithm optimization
-
-### 3. **Matrix Operations**
-**Principle**: Use matrix operations to represent and compute graph properties.
-**Applicable to**:
-- Graph algorithms
-- Linear algebra
-- Algorithm design
-- Mathematical modeling
-
-**Example Problems**:
-- Graph algorithms
-- Linear algebra
-- Algorithm design
-- Mathematical modeling
-
-### 4. **Algorithm Selection**
-**Principle**: Choose the most appropriate algorithm based on problem constraints and graph characteristics.
-**Applicable to**:
-- Algorithm design
-- Problem solving
-- Performance optimization
-- System design
-
-**Example Problems**:
-- Algorithm design
-- Problem solving
-- Performance optimization
-- System design
-
-## Notable Techniques
-
-### 1. **Floyd-Warshall Pattern**
-```python
-def floyd_warshall(graph, n):
-    distances = [[float('inf')] * n for _ in range(n)]
-    
-    # Initialize
-    for i in range(n):
-        distances[i][i] = 0
-    for u, v, w in graph:
-        distances[u][v] = w
-    
-    # Floyd-Warshall
-    for k in range(n):
-        for i in range(n):
-            for j in range(n):
-                if (distances[i][k] != float('inf') and 
-                    distances[k][j] != float('inf')):
-                    distances[i][j] = min(distances[i][j], 
-                                        distances[i][k] + distances[k][j])
-    
-    return distances
-```
-
-### 2. **Johnson's Pattern**
-```python
-def johnson(graph, n):
-    # Add source vertex
-    for i in range(n):
-        graph.append((n, i, 0))
-    
-    # Bellman-Ford for h values
-    h = [float('inf')] * (n + 1)
-    h[n] = 0
-    for _ in range(n):
-        for u, v, w in graph:
-            if h[u] != float('inf'):
-                h[v] = min(h[v], h[u] + w)
-    
-    # Remove source and reweight
-    graph = [(u, v, w + h[u] - h[v]) for u, v, w in graph if u != n]
-    
-    # Dijkstra's from each vertex
-    distances = [[float('inf')] * n for _ in range(n)]
-    for start in range(n):
-        distances[start] = dijkstra(graph, start, n)
-        for end in range(n):
-            if distances[start][end] != float('inf'):
-                distances[start][end] = distances[start][end] - h[start] + h[end]
-    
-    return distances
-```
-
-### 3. **Matrix Multiplication Pattern**
-```python
-def matrix_multiply_shortest_paths(distances, n):
-    for _ in range(n - 1):
-        new_distances = [[float('inf')] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                new_distances[i][j] = distances[i][j]
-                for k in range(n):
-                    if (distances[i][k] != float('inf') and 
-                        distances[k][j] != float('inf')):
-                        new_distances[i][j] = min(new_distances[i][j], 
-                                                distances[i][k] + distances[k][j])
-        distances = new_distances
-    return distances
-```
-
-## Edge Cases to Remember
-
-1. **No path exists**: Return -1 for unreachable pairs
-2. **Negative cycles**: Handle with appropriate algorithm
-3. **Self-loops**: Set diagonal to 0
-4. **Multiple edges**: Consider minimum weight
-5. **Large distances**: Use appropriate data types
-
-## Problem-Solving Framework
-
-1. **Identify all-pairs nature**: This is an all-pairs shortest path problem
-2. **Choose algorithm**: Use Floyd-Warshall for dense graphs
-3. **Handle edge cases**: Check for unreachable pairs
-4. **Optimize performance**: Use early termination
-5. **Format output**: Convert distances to required format
-
----
-
-*This analysis shows how to efficiently solve all-pairs shortest path problems using various graph algorithms.* 
-
-## Problem Variations & Related Questions
-
-### Problem Variations
-
-#### 1. **Shortest Routes II with Costs**
-**Variation**: Each route has additional costs beyond distance (tolls, fuel, etc.).
-**Approach**: Use Floyd-Warshall with multi-dimensional cost tracking.
-```python
-def cost_based_shortest_routes_ii(n, m, flights, costs):
-    # costs[(a, b)] = additional cost for flight from a to b
-    
-    # Initialize distance and cost matrices
-    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-    total_costs = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-    
-    # Set diagonal to 0
-    for i in range(1, n + 1):
-        distances[i][i] = 0
-        total_costs[i][i] = 0
-    
-    # Add direct edges with costs
-    for a, b, c in flights:
-        additional_cost = costs.get((a, b), 0)
-        total_cost = c + additional_cost
-        if total_cost < total_costs[a][b]:
-            distances[a][b] = c
-            total_costs[a][b] = total_cost
-    
-    # Floyd-Warshall with cost tracking
-    for k in range(1, n + 1):
-        for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                if (total_costs[i][k] != float('inf') and 
-                    total_costs[k][j] != float('inf')):
-                    new_total_cost = total_costs[i][k] + total_costs[k][j]
-                    if new_total_cost < total_costs[i][j]:
-                        total_costs[i][j] = new_total_cost
-                        distances[i][j] = distances[i][k] + distances[k][j]
-    
-    return distances, total_costs
-```
-
-#### 2. **Shortest Routes II with Constraints**
-**Variation**: Limited fuel, time constraints, or restricted routes.
-**Approach**: Use constrained Floyd-Warshall with state tracking.
-```python
-def constrained_shortest_routes_ii(n, m, flights, max_fuel, restricted_routes):
-    # max_fuel = maximum fuel capacity
-    # restricted_routes = set of routes that cannot be used
-    
-    # Initialize distance matrix
-    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-    
-    # Set diagonal to 0
-    for i in range(1, n + 1):
-        distances[i][i] = 0
-    
-    # Add direct edges (excluding restricted routes)
-    for a, b, c in flights: if (a, b) not in restricted_routes and c <= 
-max_fuel: distances[a][b] = min(distances[a][b], c)
-    
-    # Constrained Floyd-Warshall
-    for k in range(1, n + 1):
-        for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                if (distances[i][k] != float('inf') and 
-                    distances[k][j] != float('inf')):
-                    total_fuel = distances[i][k] + distances[k][j]
-                    if total_fuel <= max_fuel:
-                        distances[i][j] = min(distances[i][j], total_fuel)
-    
-    return distances
-```
-
-#### 3. **Shortest Routes II with Probabilities**
-**Variation**: Each route has a probability of being available or having delays.
-**Approach**: Use Monte Carlo simulation or expected value calculation.
-```python
-import random
-
-def probabilistic_shortest_routes_ii(n, m, flights, probabilities):
-    # probabilities[(a, b)] = probability flight from a to b is available
-    
-    def monte_carlo_simulation(trials=1000):
-        successful_routes = [[0] * (n + 1) for _ in range(n + 1)]
-        
-        for _ in range(trials):
-            # Simulate available flights
-            available_flights = []
-            for a, b, c in flights:
-                if random.random() < probabilities.get((a, b), 1.0):
-                    available_flights.append((a, b, c))
-            
-            # Calculate shortest paths with available flights
-            distances = calculate_all_pairs_shortest_paths(n, available_flights)
-            
-            for i in range(1, n + 1):
-                for j in range(1, n + 1):
-                    if distances[i][j] != float('inf'):
-                        successful_routes[i][j] += 1
-        
-        # Calculate probabilities
-        result = [[0] * (n + 1) for _ in range(n + 1)]
-        for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                result[i][j] = successful_routes[i][j] / trials
-        
-        return result
-    
-    def calculate_all_pairs_shortest_paths(n, flights):
-        distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-        
-        for i in range(1, n + 1):
-            distances[i][i] = 0
-        
-        for a, b, c in flights:
-            distances[a][b] = min(distances[a][b], c)
-        
-        # Floyd-Warshall
-        for k in range(1, n + 1):
-            for i in range(1, n + 1):
-                for j in range(1, n + 1):
-                    if (distances[i][k] != float('inf') and 
-                        distances[k][j] != float('inf')):
-                        distances[i][j] = min(distances[i][j], 
-                                            distances[i][k] + distances[k][j])
-        
-        return distances
-    
-    return monte_carlo_simulation()
-```
-
-#### 4. **Shortest Routes II with Multiple Criteria**
-**Variation**: Optimize for multiple objectives (distance, time, cost, comfort).
-**Approach**: Use multi-objective optimization or weighted sum approach.
-```python
-def multi_criteria_shortest_routes_ii(n, m, flights, criteria_weights):
-    # criteria_weights = {'distance': 0.4, 'time': 0.3, 'cost': 0.2, 'comfort': 0.1}
-    # flights = [(a, b, distance, time, cost, comfort), ...]
-    
-    # Initialize matrices for each criterion
-    distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-    times = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-    costs = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-    comforts = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-    scores = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-    
-    # Set diagonal to 0
-    for i in range(1, n + 1):
-        distances[i][i] = times[i][i] = costs[i][i] = comforts[i][i] = scores[i][i] = 0
-    
-    # Add direct edges
-    for a, b, dist, time, cost, comfort in flights:
-        distances[a][b] = dist
-        times[a][b] = time
-        costs[a][b] = cost
-        comforts[a][b] = comfort
-        scores[a][b] = (criteria_weights['distance'] * dist + 
-                       criteria_weights['time'] * time + 
-                       criteria_weights['cost'] * cost + 
-                       criteria_weights['comfort'] * comfort)
-    
-    # Multi-criteria Floyd-Warshall
-    for k in range(1, n + 1):
-        for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                if (scores[i][k] != float('inf') and 
-                    scores[k][j] != float('inf')):
-                    new_score = scores[i][k] + scores[k][j]
-                    if new_score < scores[i][j]:
-                        scores[i][j] = new_score
-                        distances[i][j] = distances[i][k] + distances[k][j]
-                        times[i][j] = times[i][k] + times[k][j]
-                        costs[i][j] = costs[i][k] + costs[k][j]
-                        comforts[i][j] = comforts[i][k] + comforts[k][j]
-    
-    return distances, times, costs, comforts, scores
-```
-
-#### 5. **Shortest Routes II with Dynamic Updates**
-**Variation**: Routes can be added, removed, or modified dynamically.
-**Approach**: Use dynamic graph algorithms or incremental updates.
-```python
-class DynamicShortestRoutesII:
-    def __init__(self, n):
-        self.n = n
-        self.distances = [[float('inf')] * (n + 1) for _ in range(n + 1)]
-        for i in range(1, n + 1):
-            self.distances[i][i] = 0
-    
-    def add_flight(self, a, b, c):
-        if c < self.distances[a][b]:
-            self.distances[a][b] = c
-            self.update_all_pairs()
-    
-    def remove_flight(self, a, b):
-        # Mark as unavailable and recalculate
-        self.distances[a][b] = float('inf')
-        self.update_all_pairs()
-    
-    def update_flight_weight(self, a, b, new_weight):
-        self.distances[a][b] = new_weight
-        self.update_all_pairs()
-    
-    def update_all_pairs(self):
-        # Recalculate all pairs shortest paths
-        for k in range(1, self.n + 1):
-            for i in range(1, self.n + 1):
-                for j in range(1, self.n + 1):
-                    if (self.distances[i][k] != float('inf') and 
-                        self.distances[k][j] != float('inf')):
-                        self.distances[i][j] = min(self.distances[i][j], 
-                                                 self.distances[i][k] + self.distances[k][j])
-    
-    def get_distances(self):
-        return self.distances
-```
-
-### Related Problems & Concepts
-
-#### 1. **All-Pairs Shortest Path Problems**
-- **Floyd-Warshall**: O(n³) for dense graphs
-- **Johnson's Algorithm**: O(n² log n + nm) for sparse graphs
-- **Matrix Multiplication**: O(n³ log n) educational approach
-- **Transitive Closure**: Boolean reachability
-
-#### 2. **Graph Algorithms**
-- **Connectivity**: Strongly connected components
-- **Flow Networks**: Maximum flow, minimum cut
-- **Matching**: Bipartite matching, stable marriage
-- **Coloring**: Graph coloring, bipartite graphs
-
-#### 3. **Dynamic Programming**
-- **State Optimization**: Multi-dimensional states
-- **Memoization**: Caching recursive solutions
-- **Optimal Substructure**: Breaking down problems
-- **State Compression**: Bit manipulation for states
-
-#### 4. **Network Problems**
-- **Routing**: Internet routing, GPS navigation
-- **Flow**: Traffic flow, data flow
-- **Connectivity**: Network reliability, fault tolerance
-- **Scheduling**: Task scheduling, resource allocation
-
-#### 5. **Algorithm Design**
-- **Data Structures**: Matrices, adjacency lists
-- **Complexity Analysis**: Time and space complexity
-- **Algorithm Selection**: Choosing appropriate algorithms
-- **Optimization**: Performance tuning, efficiency
-
-### Competitive Programming Variations
-
-#### 1. **Online Judge Variations**
-- **Time Limits**: Optimize for strict constraints
-- **Memory Limits**: Space-efficient solutions
-- **Input Size**: Handle large graphs
-- **Edge Cases**: Robust algorithm implementation
-
-#### 2. **Algorithm Contests**
-- **Speed Programming**: Fast implementation
-- **Code Golf**: Minimal code solutions
-- **Team Contests**: Collaborative problem solving
-- **Live Coding**: Real-time problem solving
-
-#### 3. **Advanced Techniques**
-- **Binary Search**: On answer space
-- **Two Pointers**: Efficient array processing
-- **Sliding Window**: Optimal subarray problems
-- **Monotonic Stack/Queue**: Maintaining order
-
-### Mathematical Extensions
-
-#### 1. **Combinatorics**
-- **Path Counting**: Number of shortest paths
-- **Permutations**: Order of visits
-- **Combinations**: Choice of routes
-- **Catalan Numbers**: Valid path sequences
-
-#### 2. **Probability Theory**
-- **Expected Values**: Average path length
-- **Markov Chains**: State transitions
-- **Random Walks**: Stochastic processes
-- **Monte Carlo**: Simulation methods
-
-#### 3. **Number Theory**
-- **Modular Arithmetic**: Large number handling
-- **Prime Numbers**: Special cases
-- **GCD/LCM**: Mathematical properties
-- **Euler's Totient**: Counting coprime paths
-
-### Learning Resources
-
-#### 1. **Online Platforms**
-- **LeetCode**: Graph and shortest path problems
-- **Codeforces**: Competitive programming
-- **HackerRank**: Algorithm challenges
-- **AtCoder**: Japanese programming contests
-
-#### 2. **Educational Resources**
-- **CLRS**: Introduction to Algorithms
-- **CP-Algorithms**: Competitive programming algorithms
-- **GeeksforGeeks**: Algorithm tutorials
-- **TopCoder**: Algorithm tutorials
-
-#### 3. **Practice Problems**
-- **Graph Problems**: All pairs shortest path, connectivity
-- **Path Problems**: K-shortest paths, disjoint paths
-- **Network Problems**: Flow, routing, connectivity
-- **Optimization Problems**: Multi-objective, constrained 

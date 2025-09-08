@@ -29,16 +29,14 @@ Before attempting this problem, ensure you understand:
 
 Given integers n and k, count the number of ways to choose k elements from a set of n elements (combinations).
 
-This is a combinatorics problem where we need to calculate the number of ways to choose k elements from a set of n elements without considering order. This is the classic "n choose k" problem, which can be solved using the binomial coefficient formula with modular arithmetic.
-
 **Input**: 
 - First line: two integers n and k (total number of elements and number to choose)
 
 **Output**: 
-- Print the number of combinations modulo 10⁹ + 7
+- Print the number of combinations modulo 10^9 + 7
 
 **Constraints**:
-- 1 ≤ n ≤ 10⁶
+- 1 ≤ n ≤ 10^6
 - 0 ≤ k ≤ n
 
 **Example**:
@@ -48,11 +46,11 @@ Input:
 
 Output:
 10
-```
 
-**Explanation**: 
+Explanation**: 
 From a set of 5 elements, we can choose 2 elements in C(5,2) = 10 ways:
 - {1,2}, {1,3}, {1,4}, {1,5}, {2,3}, {2,4}, {2,5}, {3,4}, {3,5}, {4,5}
+```
 
 ### 📊 Visual Example
 

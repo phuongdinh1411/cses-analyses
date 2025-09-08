@@ -25,9 +25,9 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Matrix multiplication, modular arithmetic, dynamic programming
 - **Related Problems**: Fixed Length Path Queries (similar matrix approach), Fixed Length Walk Queries (walk counting), Message Route (reachability)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a graph, answer queries about trails (walks that can repeat edges) of fixed length between vertices.
+Given a graph, answer queries about trails (walks that can repeat edges) of fixed length between vertices.
 
 **Input**: 
 - n, m: number of vertices and edges
@@ -35,7 +35,14 @@ Before attempting this problem, ensure you understand:
 - q: number of queries
 - q lines: u v k (query: is there a trail of length k from u to v?)
 
-**Output**: For each query, print "YES" if trail exists, "NO" otherwise.
+**Output**: 
+- For each query, print "YES" if trail exists, "NO" otherwise
+
+**Constraints**:
+- 1 ≤ n ≤ 100
+- 1 ≤ m ≤ 1000
+- 1 ≤ q ≤ 10^5
+- 1 ≤ k ≤ 10^9
 
 **Example**:
 ```
@@ -55,7 +62,7 @@ YES
 YES
 YES
 
-Explanation: 
+Explanation**: 
 Trail 1→4 has length 1 (direct edge)
 Trail 1→2→3→4 has length 3
 Trail 1→4→1→4 has length 3 (repeating edge)
@@ -181,7 +188,7 @@ For Trail:
 - Can start and end at different vertices
 ```
 
-## Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
 ### Approach 1: Matrix Exponentiation for Trails - O(n³ log k)
 **Description**: Use matrix exponentiation to find the number of trails of length k.

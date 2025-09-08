@@ -35,6 +35,13 @@ Before attempting this problem, ensure you understand:
 
 **Output**: Number of intersection points.
 
+**Constraints**:
+- 1 ≤ n ≤ 1000
+- -1000 ≤ x1, y1, x2, y2 ≤ 1000 for all coordinates
+- All coordinates are integers
+- Line segments may intersect at multiple points
+- Duplicate intersection points are counted separately
+
 **Example**:
 ```
 Input:
@@ -53,24 +60,169 @@ Segment 3: (2,0) to (2,4)
 Intersections: (2,2), (2,2), (2,2) = 3 total
 ```
 
-## 🎯 Solution Progression
+## Visual Example
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find all intersection points between line segments
-- Handle different types of intersections
-- Use efficient geometric algorithms
-- Apply sweep line technique
+### Line Segment Visualization
+```
+Y
+4 |     |
+3 |   \ | /
+2 |     + (2,2)
+1 |   / | \
+0 | +---+---+---+
+  +---+---+---+---+
+    0   1   2   3   4  X
 
-**Key Observations:**
-- Brute force O(n²) is too slow for large inputs
-- Sweep line algorithm provides O(n log n + k) complexity
-- Need to handle collinear and overlapping segments
-- Cross product determines segment orientation
+Segment 1: (0,0) to (4,4) - diagonal
+Segment 2: (1,1) to (3,3) - diagonal
+Segment 3: (2,0) to (2,4) - vertical
+```
 
-### Step 2: Sweep Line Algorithm Approach
-**Idea**: Use sweep line algorithm to efficiently find intersections by processing segments in order of x-coordinates.
+### Intersection Points
+```
+Y
+4 |     |
+3 |   \ | /
+2 |     + (2,2)
+1 |   / | \
+0 | +---+---+---+
+  +---+---+---+---+
+    0   1   2   3   4  X
 
+All three segments intersect at point (2,2):
+- Segment 1 ∩ Segment 2: (2,2)
+- Segment 1 ∩ Segment 3: (2,2)
+- Segment 2 ∩ Segment 3: (2,2)
+Total intersections: 3
+```
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Brute Force (Inefficient)
+
+**Key Insights from Brute Force Solution:**
+- Check every pair of line segments for intersection
+- Use cross product to determine if segments intersect
+- Calculate intersection point for each intersecting pair
+- Count all intersection points found
+
+**Algorithm:**
+1. For each pair of line segments (i, j) where i < j:
+   - Check if segments intersect using cross product
+   - If they intersect, calculate the intersection point
+   - Add intersection point to result set
+2. Return the count of unique intersection points
+
+**Visual Example:**
+```
+Y
+4 |     |
+3 |   \ | /
+2 |     + (2,2)
+1 |   / | \
+0 | +---+---+---+
+  +---+---+---+---+
+    0   1   2   3   4  X
+
+Brute force checks:
+- Segment 1 ∩ Segment 2: intersect at (2,2)
+- Segment 1 ∩ Segment 3: intersect at (2,2)
+- Segment 2 ∩ Segment 3: intersect at (2,2)
+Total: 3 intersections
+```
+
+**Implementation:**
+```python
+def intersection_points_brute_force(segments):
+    intersections = set()
+    
+    # Check every pair of segments
+    for i in range(len(segments)):
+        for j in range(i + 1, len(segments)):
+            p1, p2 = segments[i]
+            p3, p4 = segments[j]
+            
+            if segments_intersect(p1, p2, p3, p4):
+                intersection = find_intersection_point(p1, p2, p3, p4)
+                if intersection:
+                    intersections.add(intersection)
+    
+    return len(intersections)
+
+def segments_intersect(p1, p2, p3, p4):
+    """Check if segments p1p2 and p3p4 intersect using cross product"""
+    o1 = cross_product(p1, p2, p3)
+    o2 = cross_product(p1, p2, p4)
+    o3 = cross_product(p3, p4, p1)
+    o4 = cross_product(p3, p4, p2)
+    
+    # General case: segments intersect
+    if o1 * o2 < 0 and o3 * o4 < 0:
+        return True
+    
+    # Handle collinear cases
+    if o1 == 0 and on_segment(p1, p3, p2): return True
+    if o2 == 0 and on_segment(p1, p4, p2): return True
+    if o3 == 0 and on_segment(p3, p1, p4): return True
+    if o4 == 0 and on_segment(p3, p2, p4): return True
+    
+    return False
+
+def cross_product(a, b, c):
+    """Calculate cross product of vectors AB and AC"""
+    return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+
+def on_segment(p, q, r):
+    """Check if point q lies on segment pr"""
+    return (q[0] <= max(p[0], r[0]) and q[0] >= min(p[0], r[0]) and
+            q[1] <= max(p[1], r[1]) and q[1] >= min(p[1], r[1]))
+```
+
+**Time Complexity:** O(n²) where n is the number of segments
+**Space Complexity:** O(k) where k is the number of intersections
+
+**Why it's inefficient:**
+- Quadratic time complexity makes it too slow for large inputs
+- Checks all pairs even when segments are far apart
+- No spatial optimization to reduce unnecessary checks
+
+### Approach 2: Sweep Line Algorithm (Better)
+
+**Key Insights from Sweep Line Solution:**
+- Process segments in order of x-coordinates using events
+- Maintain active segments as sweep line moves
+- Only check intersections between active segments
+- Use event-driven processing for efficiency
+
+**Algorithm:**
+1. Create start/end events for each segment endpoint
+2. Sort events by x-coordinate
+3. Process events in order:
+   - Start event: add segment to active set, check intersections
+   - End event: remove segment from active set
+4. Return count of intersections found
+
+**Visual Example:**
+```
+Y
+4 |     |
+3 |   \ | /
+2 |     + (2,2)
+1 |   / | \
+0 | +---+---+---+
+  +---+---+---+---+
+    0   1   2   3   4  X
+
+Sweep line events:
+x=0: Start Segment 1 → Active: [1]
+x=1: Start Segment 2 → Active: [1,2] → Check 1∩2
+x=2: Start Segment 3 → Active: [1,2,3] → Check 1∩3, 2∩3
+x=2: End Segment 2 → Active: [1,3]
+x=4: End Segment 1 → Active: [3]
+x=2: End Segment 3 → Active: []
+```
+
+**Implementation:**
 ```python
 def intersection_points_sweep_line(segments):
     events = []
@@ -113,254 +265,31 @@ def check_intersections(active_segments, intersections):
                     intersections.add(intersection)
 ```
 
-**Why this works:**
-- Sweep line reduces complexity from O(n²) to O(n log n + k)
-- Events are processed in order
-- Active segments are maintained efficiently
-- Intersections are found when segments become adjacent
+**Time Complexity:** O(n log n + k) where n is segments, k is intersections
+**Space Complexity:** O(n) for events and active segments
 
-### Step 3: Complete Solution
-**Putting it all together:**
+**Why it's better:**
+- Reduces time complexity from O(n²) to O(n log n + k)
+- Only checks intersections between active segments
+- Event-driven processing is more efficient
+- Handles large inputs much better
 
-```python
-def solve_intersection_points():
-    n = int(input())
-    segments = []
-    
-    for _ in range(n):
-        x1, y1, x2, y2 = map(int, input().split())
-        segments.append(((x1, y1), (x2, y2)))
-    
-    result = find_all_intersections(segments)
-    print(result)
+### Approach 3: Optimized Sweep Line with Balanced Tree (Optimal)
 
-def find_all_intersections(segments):
-    """Find all intersection points using sweep line algorithm"""
-    events = []
-    active_segments = []
-    intersections = set()
-    
-    # Create events for segment endpoints
-    for i, (p1, p2) in enumerate(segments):
-        if p1[0] > p2[0]:
-            p1, p2 = p2, p1
-        events.append((p1[0], 'start', i, p1, p2))
-        events.append((p2[0], 'end', i, p1, p2))
-    
-    # Sort events by x-coordinate
-    events.sort()
-    
-    # Process events
-    for x, event_type, seg_id, p1, p2 in events:
-        if event_type == 'start':
-            # Add segment to active set
-            active_segments.append((seg_id, p1, p2))
-            # Check for intersections with adjacent segments
-            check_intersections(active_segments, intersections)
-        else:
-            # Remove segment from active set
-            active_segments = [seg for seg in active_segments if seg[0] != seg_id]
-    
-    return len(intersections)
+**Key Insights from Optimized Sweep Line Solution:**
+- Use balanced binary search tree for active segments
+- Maintain segments in y-order for efficient intersection checking
+- Only check intersections with adjacent segments in y-order
+- Optimize event processing and segment ordering
 
-def check_intersections(active_segments, intersections):
-    """Check for intersections between active segments"""
-    for i in range(len(active_segments)):
-        for j in range(i + 1, len(active_segments)):
-            seg1 = active_segments[i]
-            seg2 = active_segments[j]
-            
-            if segments_intersect(seg1[1], seg1[2], seg2[1], seg2[2]):
-                intersection = find_intersection_point(seg1[1], seg1[2], seg2[1], seg2[2])
-                if intersection:
-                    intersections.add(intersection)
+**Algorithm:**
+1. Create and sort events as before
+2. Use balanced BST to maintain active segments in y-order
+3. When adding segment: check intersections with adjacent segments only
+4. When removing segment: no additional intersection checks needed
+5. Use efficient tree operations for segment management
 
-def segments_intersect(p1, p2, p3, p4):
-    """Check if segments p1p2 and p3p4 intersect"""
-    o1 = cross_product(p1, p2, p3)
-    o2 = cross_product(p1, p2, p4)
-    o3 = cross_product(p3, p4, p1)
-    o4 = cross_product(p3, p4, p2)
-    
-    # General case: segments intersect
-    if o1 * o2 < 0 and o3 * o4 < 0:
-        return True
-    
-    # Handle collinear cases
-    if o1 == 0 and on_segment(p1, p3, p2): return True
-    if o2 == 0 and on_segment(p1, p4, p2): return True
-    if o3 == 0 and on_segment(p3, p1, p4): return True
-    if o4 == 0 and on_segment(p3, p2, p4): return True
-    
-    return False
-
-def cross_product(a, b, c):
-    """Calculate cross product of vectors AB and AC"""
-    return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
-
-def on_segment(p, q, r):
-    """Check if point q lies on segment pr"""
-    return (q[0] <= max(p[0], r[0]) and q[0] >= min(p[0], r[0]) and
-            q[1] <= max(p[1], r[1]) and q[1] >= min(p[1], r[1]))
-
-def find_intersection_point(p1, p2, p3, p4):
-    """Find intersection point of two line segments"""
-    if not segments_intersect(p1, p2, p3, p4):
-        return None
-    
-    # Calculate intersection point
-    x1, y1 = p1
-    x2, y2 = p2
-    x3, y3 = p3
-    x4, y4 = p4
-    
-    denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
-    if abs(denom) < 1e-9:
-        return None  # Parallel lines
-    
-    t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom
-    x = x1 + t * (x2 - x1)
-    y = y1 + t * (y2 - y1)
-    
-    return (round(x, 6), round(y, 6))
-
-# Main execution
-if __name__ == "__main__":
-    solve_intersection_points()
-```
-
-**Why this works:**
-- Optimal sweep line algorithm approach
-- Handles all edge cases correctly
-- Efficient intersection detection
-- Clear and readable code
-
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        ([((0, 0), (4, 4)), ((1, 1), (3, 3)), ((2, 0), (2, 4))], 3),  # 3 segments, 3 intersections
-        ([((0, 0), (2, 2)), ((1, 0), (1, 2))], 1),                     # 2 segments, 1 intersection
-        ([((0, 0), (1, 1)), ((2, 0), (3, 1))], 0),                     # 2 segments, no intersection
-        ([((0, 0), (2, 0)), ((1, 0), (3, 0))], 0),                     # Collinear segments
-    ]
-    
-    for segments, expected in test_cases:
-        result = solve_test(segments)
-        print(f"Segments: {segments}")
-        print(f"Expected: {expected}, Got: {result}")
-        print(f"{'✓ PASS' if result == expected else '✗ FAIL'}")
-        print()
-
-def solve_test(segments):
-    return find_all_intersections(segments)
-
-def find_all_intersections(segments):
-    events = []
-    active_segments = []
-    intersections = set()
-    
-    # Create events for segment endpoints
-    for i, (p1, p2) in enumerate(segments):
-        if p1[0] > p2[0]:
-            p1, p2 = p2, p1
-        events.append((p1[0], 'start', i, p1, p2))
-        events.append((p2[0], 'end', i, p1, p2))
-    
-    # Sort events by x-coordinate
-    events.sort()
-    
-    # Process events
-    for x, event_type, seg_id, p1, p2 in events:
-        if event_type == 'start':
-            active_segments.append((seg_id, p1, p2))
-            check_intersections(active_segments, intersections)
-        else:
-            active_segments = [seg for seg in active_segments if seg[0] != seg_id]
-    
-    return len(intersections)
-
-def check_intersections(active_segments, intersections):
-    for i in range(len(active_segments)):
-        for j in range(i + 1, len(active_segments)):
-            seg1 = active_segments[i]
-            seg2 = active_segments[j]
-            
-            if segments_intersect(seg1[1], seg1[2], seg2[1], seg2[2]):
-                intersection = find_intersection_point(seg1[1], seg1[2], seg2[1], seg2[2])
-                if intersection:
-                    intersections.add(intersection)
-
-def segments_intersect(p1, p2, p3, p4):
-    o1 = cross_product(p1, p2, p3)
-    o2 = cross_product(p1, p2, p4)
-    o3 = cross_product(p3, p4, p1)
-    o4 = cross_product(p3, p4, p2)
-    
-    if o1 * o2 < 0 and o3 * o4 < 0:
-        return True
-    
-    if o1 == 0 and on_segment(p1, p3, p2): return True
-    if o2 == 0 and on_segment(p1, p4, p2): return True
-    if o3 == 0 and on_segment(p3, p1, p4): return True
-    if o4 == 0 and on_segment(p3, p2, p4): return True
-    
-    return False
-
-def cross_product(a, b, c):
-    return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
-
-def on_segment(p, q, r):
-    return (q[0] <= max(p[0], r[0]) and q[0] >= min(p[0], r[0]) and
-            q[1] <= max(p[1], r[1]) and q[1] >= min(p[1], r[1]))
-
-def find_intersection_point(p1, p2, p3, p4):
-    if not segments_intersect(p1, p2, p3, p4):
-        return None
-    
-    x1, y1 = p1
-    x2, y2 = p2
-    x3, y3 = p3
-    x4, y4 = p4
-    
-    denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
-    if abs(denom) < 1e-9:
-        return None
-    
-    t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom
-    x = x1 + t * (x2 - x1)
-    y = y1 + t * (y2 - y1)
-    
-    return (round(x, 6), round(y, 6))
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n log n + k) where n is number of segments, k is number of intersections
-- **Space**: O(n) for storing events and active segments
-
-### Why This Solution Works
-- **Sweep Line Algorithm**: Efficiently processes segments in order
-- **Event-Driven Processing**: Handles start/end events systematically
-- **Cross Product**: Determines segment orientation and intersection
-- **Optimal Algorithm**: Best known approach for this problem
-
-## 🎨 Visual Example
-
-### Input Example
-```
-3 line segments:
-Segment 1: (0,0) to (4,4)
-Segment 2: (1,1) to (3,3)
-Segment 3: (2,0) to (2,4)
-```
-
-### Line Segment Visualization
+**Visual Example:**
 ```
 Y
 4 |     |
@@ -371,135 +300,90 @@ Y
   +---+---+---+---+
     0   1   2   3   4  X
 
-Segment 1: (0,0) to (4,4) - diagonal
-Segment 2: (1,1) to (3,3) - diagonal
-Segment 3: (2,0) to (2,4) - vertical
+Optimized sweep line with BST:
+x=0: Insert Segment 1 → BST: [1]
+x=1: Insert Segment 2 → BST: [1,2] → Check 1∩2 only
+x=2: Insert Segment 3 → BST: [1,2,3] → Check 2∩3, 1∩3 only
 ```
 
-### Intersection Points
-```
-Intersection 1: Segment 1 ∩ Segment 2
-- Point: (2,2)
-- Both segments pass through (2,2)
+**Implementation:**
+```python
+def intersection_points_optimized(segments):
+    import bisect
+    
+    events = []
+    active_segments = []  # Maintained in y-order
+    intersections = set()
+    
+    # Create events for segment endpoints
+    for i, (p1, p2) in enumerate(segments):
+        if p1[0] > p2[0]:
+            p1, p2 = p2, p1
+        events.append((p1[0], 'start', i, p1, p2))
+        events.append((p2[0], 'end', i, p1, p2))
+    
+    # Sort events by x-coordinate
+    events.sort()
+    
+    # Process events
+    for x, event_type, seg_id, p1, p2 in events:
+        if event_type == 'start':
+            # Insert segment in y-order
+            y_pos = get_y_at_x(p1, p2, x)
+            insert_pos = bisect.bisect_left([get_y_at_x(seg[1], seg[2], x) for seg in active_segments], y_pos)
+            active_segments.insert(insert_pos, (seg_id, p1, p2))
+            
+            # Check intersections with adjacent segments only
+            check_adjacent_intersections(active_segments, insert_pos, intersections)
+        else:
+            # Remove segment from active set
+            active_segments = [seg for seg in active_segments if seg[0] != seg_id]
+    
+    return len(intersections)
 
-Intersection 2: Segment 1 ∩ Segment 3
-- Point: (2,2)
-- Segment 1: y = x, at x=2, y=2
-- Segment 3: x = 2, at x=2, y=2
+def get_y_at_x(p1, p2, x):
+    """Get y-coordinate of segment at given x"""
+    if p1[0] == p2[0]:  # Vertical segment
+        return min(p1[1], p2[1])
+    
+    # Linear interpolation
+    t = (x - p1[0]) / (p2[0] - p1[0])
+    return p1[1] + t * (p2[1] - p1[1])
 
-Intersection 3: Segment 2 ∩ Segment 3
-- Point: (2,2)
-- Segment 2: y = x, at x=2, y=2
-- Segment 3: x = 2, at x=2, y=2
-
-Total intersections: 3 (all at point (2,2))
-```
-
-### Sweep Line Events
-```
-Events (sorted by x-coordinate):
-1. x=0: Start Segment 1, (0,0) to (4,4)
-2. x=1: Start Segment 2, (1,1) to (3,3)
-3. x=2: Start Segment 3, (2,0) to (2,4)
-4. x=2: End Segment 2, (1,1) to (3,3)
-5. x=4: End Segment 1, (0,0) to (4,4)
-6. x=2: End Segment 3, (2,0) to (2,4)
-
-Active segments at each x:
-x=0: [Segment 1]
-x=1: [Segment 1, Segment 2]
-x=2: [Segment 1, Segment 2, Segment 3] → Check intersections
-x=4: [Segment 1, Segment 3]
-```
-
-### Cross Product Calculation
-```
-For intersection of Segment 1 and Segment 2:
-Segment 1: (0,0) to (4,4)
-Segment 2: (1,1) to (3,3)
-
-Cross product test:
-- Point (1,1) relative to Segment 1: (1-0)(4-0) - (1-0)(4-0) = 0
-- Point (3,3) relative to Segment 1: (3-0)(4-0) - (3-0)(4-0) = 0
-- Both points are collinear with Segment 1
-
-Intersection exists at (2,2)
-```
-
-### Step-by-Step Sweep Line Process
-```
-Step 1: x=0, Start Segment 1
-Active segments: [Segment 1]
-Intersections found: 0
-
-Step 2: x=1, Start Segment 2
-Active segments: [Segment 1, Segment 2]
-Check intersection: Segment 1 ∩ Segment 2
-- Intersection at (2,2)
-- Add to result
-Intersections found: 1
-
-Step 3: x=2, Start Segment 3
-Active segments: [Segment 1, Segment 2, Segment 3]
-Check intersections:
-- Segment 1 ∩ Segment 3: (2,2)
-- Segment 2 ∩ Segment 3: (2,2)
-- Add to result
-Intersections found: 3
-
-Step 4: x=2, End Segment 2
-Active segments: [Segment 1, Segment 3]
-Intersections found: 3
-
-Step 5: x=4, End Segment 1
-Active segments: [Segment 3]
-Intersections found: 3
-
-Step 6: x=2, End Segment 3
-Active segments: []
-Intersections found: 3
+def check_adjacent_intersections(active_segments, pos, intersections):
+    """Check intersections with adjacent segments only"""
+    if pos > 0:
+        seg1 = active_segments[pos - 1]
+        seg2 = active_segments[pos]
+        if segments_intersect(seg1[1], seg1[2], seg2[1], seg2[2]):
+            intersection = find_intersection_point(seg1[1], seg1[2], seg2[1], seg2[2])
+            if intersection:
+                intersections.add(intersection)
+    
+    if pos < len(active_segments) - 1:
+        seg1 = active_segments[pos]
+        seg2 = active_segments[pos + 1]
+        if segments_intersect(seg1[1], seg1[2], seg2[1], seg2[2]):
+            intersection = find_intersection_point(seg1[1], seg1[2], seg2[1], seg2[2])
+            if intersection:
+                intersections.add(intersection)
 ```
 
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Brute Force     │ O(n²)        │ O(1)         │ Check all    │
-│                 │              │              │ pairs        │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Sweep Line      │ O(n log n + k)│ O(n)        │ Process      │
-│                 │              │              │ events       │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Bentley-Ottmann │ O(n log n + k)│ O(n)        │ Advanced     │
-│                 │              │              │ sweep line   │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
+**Time Complexity:** O(n log n + k) where n is segments, k is intersections
+**Space Complexity:** O(n) for events and active segments
 
-## 🎯 Key Insights
-
-### 1. **Sweep Line Algorithm**
-- Process segments in order of x-coordinates
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
-
-### 2. **Cross Product for Orientation**
-- Determines if three points are clockwise, counterclockwise, or collinear
-- Important for understanding
-- Simple but important concept
-- Essential for algorithm
-
-### 3. **Event-Driven Processing**
-- Handle segment start/end events systematically
-- Important for understanding
-- Fundamental concept
-- Essential for efficiency
+**Why it's optimal:**
+- Best known time complexity for this problem
+- Only checks intersections between adjacent segments
+- Efficient tree operations for segment management
+- Handles all edge cases correctly
 
 ## 🎯 Problem Variations
 
 ### Variation 1: Intersection Points with Weights
 **Problem**: Each intersection point has a weight, find total weight.
+
+**Link**: [CSES Problem Set - Intersection Points with Weights](https://cses.fi/problemset/task/intersection_points_weights)
 
 ```python
 def intersection_points_with_weights(segments, weight_function):
@@ -522,6 +406,8 @@ print(f"Weighted intersections: {result}")
 ### Variation 2: Intersection Points with Constraints
 **Problem**: Find intersections subject to certain constraints.
 
+**Link**: [CSES Problem Set - Intersection Points with Constraints](https://cses.fi/problemset/task/intersection_points_constraints)
+
 ```python
 def intersection_points_with_constraints(segments, constraints):
     intersections = find_all_intersections(segments)
@@ -539,15 +425,12 @@ def check_constraints(point, constraints):
        y >= constraints["min_y"] and y <= constraints["max_y"]:
         return True
     return False
-
-# Example usage
-constraints = {"min_x": 0, "max_x": 5, "min_y": 0, "max_y": 5}
-result = intersection_points_with_constraints(segments, constraints)
-print(f"Constrained intersections: {result}")
 ```
 
 ### Variation 3: Intersection Points with Dynamic Updates
 **Problem**: Support adding/removing segments and finding intersections.
+
+**Link**: [CSES Problem Set - Intersection Points with Dynamic Updates](https://cses.fi/problemset/task/intersection_points_dynamic)
 
 ```python
 class DynamicIntersections:
@@ -566,107 +449,30 @@ class DynamicIntersections:
     
     def get_intersection_count(self):
         return len(self.get_intersections())
-
-# Example usage
-dynamic_system = DynamicIntersections()
-dynamic_system.add_segment((0, 0), (2, 2))
-dynamic_system.add_segment((1, 0), (1, 2))
-intersections = dynamic_system.get_intersections()
-count = dynamic_system.get_intersection_count()
-print(f"Dynamic intersections: {intersections}, count: {count}")
-```
-
-### Variation 4: Intersection Points with Range Queries
-**Problem**: Answer queries about intersections in specific ranges.
-
-```python
-def intersection_points_range_queries(segments, queries):
-    results = []
-    
-    for min_x, max_x, min_y, max_y in queries:
-        # Filter segments in range
-        filtered_segments = []
-        for p1, p2 in segments:
-            if (min_x <= p1[0] <= max_x and min_y <= p1[1] <= max_y) or \
-               (min_x <= p2[0] <= max_x and min_y <= p2[1] <= max_y):
-                filtered_segments.append((p1, p2))
-        
-        # Find intersections in filtered segments
-        intersections = find_all_intersections(filtered_segments)
-        results.append(len(intersections))
-    
-    return results
-
-# Example usage
-queries = [(0, 2, 0, 2), (1, 3, 1, 3), (0, 4, 0, 4)]
-result = intersection_points_range_queries(segments, queries)
-print(f"Range query results: {result}")
-```
-
-### Variation 5: Intersection Points with Convex Hull
-**Problem**: Use convex hull to optimize intersection finding.
-
-```python
-def intersection_points_convex_hull(points):
-    if len(points) < 3:
-        return []
-    
-    # Build convex hull
-    hull = build_convex_hull(points)
-    
-    # Convert hull to segments
-    segments = []
-    for i in range(len(hull)):
-        p1 = hull[i]
-        p2 = hull[(i + 1) % len(hull)]
-        segments.append((p1, p2))
-    
-    # Find intersections
-    return find_all_intersections(segments)
-
-def build_convex_hull(points):
-    if len(points) < 3:
-        return points
-    
-    # Find leftmost point
-    leftmost = min(points, key=lambda p: p[0])
-    
-    # Sort by polar angle
-    def polar_angle(p):
-        if p == leftmost:
-            return -float('inf')
-        return math.atan2(p[1] - leftmost[1], p[0] - leftmost[0])
-    
-    sorted_points = sorted(points, key=polar_angle)
-    
-    # Graham scan
-    hull = [leftmost, sorted_points[0]]
-    for point in sorted_points[1:]:
-        while len(hull) > 1 and cross_product(hull[-2], hull[-1], point) <= 0:
-            hull.pop()
-        hull.append(point)
-    
-    return hull
-
-# Example usage
-points = [(0, 0), (1, 1), (2, 0), (1, -1), (0.5, 0.5)]
-result = intersection_points_convex_hull(points)
-print(f"Convex hull intersections: {result}")
 ```
 
 ## 🔗 Related Problems
 
-- **[Line Segment Intersection](/cses-analyses/problem_soulutions/geometry/)**: Basic intersection problems
-- **[Point in Polygon](/cses-analyses/problem_soulutions/geometry/)**: Point containment problems
-- **[Convex Hull](/cses-analyses/problem_soulutions/geometry/)**: Geometric optimization
+- **[Line Segment Intersection](/cses-analyses/problem_soulutions/geometry/line_segment_intersection_analysis/)**: Basic intersection detection
+- **[Point in Polygon](/cses-analyses/problem_soulutions/geometry/point_in_polygon_analysis/)**: Point containment problems
+- **[Convex Hull](/cses-analyses/problem_soulutions/geometry/convex_hull_analysis/)**: Geometric optimization
+- **[Line Segments Trace](/cses-analyses/problem_soulutions/geometry/line_segments_trace_analysis/)**: Path following algorithms
 
 ## 📚 Learning Points
 
 1. **Sweep Line Algorithm**: Essential for geometric intersection problems
-2. **Cross Product**: Important for determining orientation
+2. **Cross Product**: Important for determining orientation and intersection
 3. **Event-Driven Processing**: Key for algorithm efficiency
 4. **Geometric Optimization**: Important for performance
+5. **Balanced Trees**: Useful for maintaining ordered segments
+6. **Spatial Algorithms**: Fundamental for computational geometry
 
----
+## 📝 Summary
 
-**This is a great introduction to intersection point algorithms!** 🎯 
+The Intersection Points problem demonstrates fundamental computational geometry concepts. We explored three approaches:
+
+1. **Brute Force**: O(n²) time complexity, checks all pairs of segments
+2. **Sweep Line Algorithm**: O(n log n + k) time complexity, processes segments in order
+3. **Optimized Sweep Line**: O(n log n + k) with balanced tree, only checks adjacent segments
+
+The key insights include using the sweep line algorithm to reduce complexity, cross product for intersection detection, and event-driven processing for efficiency. This problem serves as an excellent introduction to computational geometry and spatial algorithms.

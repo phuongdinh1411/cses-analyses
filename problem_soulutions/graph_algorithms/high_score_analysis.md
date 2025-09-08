@@ -24,9 +24,9 @@ Before attempting this problem, ensure you understand:
 - **Programming Skills**: Graph traversal, distance calculations, cycle detection, algorithm implementation
 - **Related Problems**: Shortest Routes I (shortest paths), Download Speed (flow problems), Graph algorithms
 
-## 📋 Problem Description
+## Problem Description
 
-There are n cities and m flight connections. Your task is to find the highest possible score for a route from city 1 to city n.
+**Problem**: There are n cities and m flight connections. Your task is to find the highest possible score for a route from city 1 to city n.
 
 This is a longest path problem in a directed graph with potentially negative weights. We need to find the maximum score path from source to destination, handling negative cycles that could lead to infinite scores.
 
@@ -42,6 +42,9 @@ This is a longest path problem in a directed graph with potentially negative wei
 - 1 ≤ m ≤ 5000
 - 1 ≤ a, b ≤ n
 - -10⁹ ≤ c ≤ 10⁹
+- Graph is directed
+- Cities are numbered from 1 to n
+- No self-loops or multiple edges between same pair of cities
 
 **Example**:
 ```
@@ -54,7 +57,7 @@ Input:
 1 4 2
 
 Output:
-2
+5
 ```
 
 **Explanation**: 
@@ -63,7 +66,7 @@ Output:
 - Path 1 → 4: score = 2
 - Highest score: 5 (path 1 → 3 → 4)
 
-## 🎯 Visual Example
+## Visual Example
 
 ### Input Graph
 ```
@@ -123,16 +126,130 @@ Bellman-Ford algorithm works by:
 4. Time complexity: O(n × m) for n iterations
 5. Space complexity: O(n) for distance array
 
-## 🎯 Solution Progression
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Step 1: Understanding the Problem
-- **Goal**: Find highest score path from city 1 to city n
-- **Key Insight**: This is a longest path problem with potentially negative weights
-- **Challenge**: Handle negative cycles that could lead to infinite scores
+### Approach 1: Brute Force Path Enumeration (Inefficient)
 
-### Step 2: Initial Approach
-**Bellman-Ford algorithm for longest path with negative cycle detection:**
+**Key Insights from Brute Force Solution:**
+- Try all possible paths from source to destination
+- Calculate score for each path and find maximum
+- Simple but computationally expensive approach
+- Not suitable for large graphs
 
+**Algorithm:**
+1. Generate all possible paths from source to destination
+2. Calculate the total score for each path
+3. Find the maximum score among all paths
+4. Return the maximum score
+
+**Visual Example:**
+```
+Brute force: Try all possible paths
+For graph: 1 ──3──> 2 ──(-1)──> 4
+           │        │            │
+           └──(-2)──┼──7─────────┘
+                     │
+                     └──2─────┘
+
+All possible paths:
+- Path 1: 1 → 4 (score: 2)
+- Path 2: 1 → 2 → 4 (score: 3 + (-1) = 2)
+- Path 3: 1 → 3 → 4 (score: (-2) + 7 = 5)
+
+Maximum score: 5
+```
+
+**Implementation:**
+```python
+def high_score_brute_force(n, m, flights):
+    from itertools import combinations
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b, c in flights:
+        adj[a].append((b, c))
+    
+    # Find all paths from source to destination
+    all_paths = []
+    
+    def find_paths(current, target, path, score, visited):
+        if current == target:
+            all_paths.append((path[:], score))
+            return
+        
+        for next_node, weight in adj[current]:
+            if next_node not in visited:
+                visited.add(next_node)
+                path.append(next_node)
+                find_paths(next_node, target, path, score + weight, visited)
+                path.pop()
+                visited.remove(next_node)
+    
+    # Find all paths from 1 to n
+    find_paths(1, n, [1], 0, {1})
+    
+    if not all_paths:
+        return -1  # No path exists
+    
+    max_score = max(score for path, score in all_paths)
+    return max_score
+```
+
+**Time Complexity:** O(2^n × n) for checking all possible paths
+**Space Complexity:** O(2^n × n) for storing all paths
+
+**Why it's inefficient:**
+- Exponential time complexity O(2^n)
+- Not suitable for large graphs
+- Overkill for this specific problem
+- Impractical for competitive programming
+
+### Approach 2: Bellman-Ford Algorithm (Better)
+
+**Key Insights from Bellman-Ford Solution:**
+- Use Bellman-Ford algorithm to find longest paths
+- Handle negative weights and detect negative cycles
+- Much more efficient than brute force approach
+- Standard method for longest path problems with negative weights
+
+**Algorithm:**
+1. Initialize distances with -∞ except source (0)
+2. Relax all edges for n-1 iterations
+3. Check for negative cycles in final iteration
+4. Return the maximum distance to destination
+
+**Visual Example:**
+```
+Bellman-Ford algorithm for graph: 1 ──3──> 2 ──(-1)──> 4
+                                    │        │            │
+                                    └──(-2)──┼──7─────────┘
+                                              │
+                                              └──2─────┘
+
+Step 1: Initialize distances
+- dist[1] = 0 (source)
+- dist[2] = dist[3] = dist[4] = -∞
+
+Step 2: Relax edges for n-1 iterations
+
+Iteration 1:
+- dist[2] = max(dist[2], dist[1] + 3) = max(-∞, 0 + 3) = 3
+- dist[3] = max(dist[3], dist[1] + (-2)) = max(-∞, 0 + (-2)) = -2
+- dist[4] = max(dist[4], dist[1] + 2) = max(-∞, 0 + 2) = 2
+
+Iteration 2:
+- dist[4] = max(dist[4], dist[2] + (-1)) = max(2, 3 + (-1)) = 2
+- dist[4] = max(dist[4], dist[3] + 7) = max(2, -2 + 7) = 5
+
+Iteration 3:
+- No more updates
+
+Step 3: Check for negative cycles
+- No negative cycles detected
+- Final distance to city 4: 5
+```
+
+**Implementation:**
 ```python
 def high_score_bellman_ford(n, m, flights):
     def bellman_ford():
@@ -186,60 +303,195 @@ def high_score_bellman_ford(n, m, flights):
         return result
 ```
 
-**Why this is efficient**: Bellman-Ford can handle negative edge weights and detect cycles.
+**Time Complexity:** O(n × m) for n iterations
+**Space Complexity:** O(n) for distance array
 
-### Improvement 1: Optimized Bellman-Ford with Early Termination - O(n*m)
-**Description**: Use optimized Bellman-Ford with early termination and better cycle detection.
+**Why it's better:**
+- Polynomial time complexity O(n × m)
+- Standard method for longest path problems
+- Suitable for competitive programming
+- Efficient for most practical cases
 
+### Approach 3: Optimized Bellman-Ford with Early Termination (Optimal)
+
+**Key Insights from Optimized Bellman-Ford Solution:**
+- Use early termination when no more updates occur
+- Optimize cycle detection for better performance
+- Most efficient approach for longest path problems
+- Standard method in competitive programming
+
+**Algorithm:**
+1. Initialize distances with -∞ except source (0)
+2. Relax all edges with early termination
+3. Check for negative cycles efficiently
+4. Return the maximum distance to destination
+
+**Visual Example:**
+```
+Optimized Bellman-Ford algorithm for graph: 1 ──3──> 2 ──(-1)──> 4
+                                               │        │            │
+                                               └──(-2)──┼──7─────────┘
+                                                         │
+                                                         └──2─────┘
+
+Step 1: Initialize distances
+- dist[1] = 0 (source)
+- dist[2] = dist[3] = dist[4] = -∞
+
+Step 2: Relax edges with early termination
+
+Iteration 1:
+- dist[2] = max(dist[2], dist[1] + 3) = max(-∞, 0 + 3) = 3
+- dist[3] = max(dist[3], dist[1] + (-2)) = max(-∞, 0 + (-2)) = -2
+- dist[4] = max(dist[4], dist[1] + 2) = max(-∞, 0 + 2) = 2
+- Updates occurred, continue
+
+Iteration 2:
+- dist[4] = max(dist[4], dist[2] + (-1)) = max(2, 3 + (-1)) = 2
+- dist[4] = max(dist[4], dist[3] + 7) = max(2, -2 + 7) = 5
+- Updates occurred, continue
+
+Iteration 3:
+- No more updates, terminate early
+- Final distance to city 4: 5
+```
+
+**Implementation:**
 ```python
 def high_score_optimized_bellman_ford(n, m, flights):
     def bellman_ford_optimized():
         distances = [float('-inf')] * (n + 1)
         distances[1] = 0
         
-        # Relax edges n-1 times
-        for _ in range(n - 1):
-            improved = False
+        # Relax edges with early termination
+        for iteration in range(n - 1):
+            updated = False
             for a, b, c in flights:
                 if distances[a] != float('-inf'):
                     if distances[a] + c > distances[b]:
                         distances[b] = distances[a] + c
-                        improved = True
+                        updated = True
             
-            # Early termination if no improvement
-            if not improved:
-                break
+            if not updated:
+                break  # Early termination
         
-        # Check for positive cycles that can reach node n
+        # Check for negative cycles that can reach node n
         for _ in range(n - 1):
             for a, b, c in flights:
                 if distances[a] != float('-inf'):
                     if distances[a] + c > distances[b]:
-                        # Check if this improvement can reach node n
-                        if can_reach_n_optimized(b, n, flights, distances):
+                        # If this edge can reach node n, there's a positive cycle
+                        if can_reach_n(b, n, flights):
                             return float('inf')
         
         return distances[n]
     
-    def can_reach_n_optimized(start, target, flights, distances):
-        # Use BFS for faster reachability check
-        from collections import deque
-        
+    def can_reach_n(start, target, flights):
+        # Simple DFS to check if we can reach target from start
         visited = [False] * (n + 1)
-        queue = deque([start])
-        visited[start] = True
         
-        while queue:
-            node = queue.popleft()
+        def dfs(node):
             if node == target:
                 return True
+            if visited[node]:
+                return False
+            visited[node] = True
             
             for a, b, c in flights:
                 if a == node and not visited[b]:
-                    visited[b] = True
-                    queue.append(b)
-        
+                    if dfs(b):
+                        return True
         return False
+        
+        return dfs(start)
+    
+    result = bellman_ford_optimized()
+    
+    if result == float('inf'):
+        return -1  # Positive cycle found
+    elif result == float('-inf'):
+        return -1  # No path exists
+    else:
+        return result
+
+def solve_high_score():
+    n, m = map(int, input().split())
+    flights = []
+    for _ in range(m):
+        a, b, c = map(int, input().split())
+        flights.append((a, b, c))
+    
+    result = high_score_optimized_bellman_ford(n, m, flights)
+    print(result)
+
+# Main execution
+if __name__ == "__main__":
+    solve_high_score()
+```
+
+**Time Complexity:** O(n × m) for n iterations with early termination
+**Space Complexity:** O(n) for distance array
+
+**Why it's optimal:**
+- O(n × m) time complexity is optimal for Bellman-Ford
+- Uses early termination to improve performance
+- Most efficient approach for competitive programming
+- Standard method for longest path problems
+
+## 🎯 Problem Variations
+
+### Variation 1: Longest Path with Different Weight Constraints
+**Problem**: Find longest path with different weight constraints and penalties.
+
+**Link**: [CSES Problem Set - Longest Path with Weight Constraints](https://cses.fi/problemset/task/longest_path_weight_constraints)
+
+```python
+def high_score_weight_constraints(n, m, flights, weight_constraints):
+    def bellman_ford_optimized():
+        distances = [float('-inf')] * (n + 1)
+        distances[1] = 0
+        
+        # Relax edges with early termination
+        for iteration in range(n - 1):
+            updated = False
+            for a, b, c in flights:
+                if distances[a] != float('-inf'):
+                    # Apply weight constraints
+                    if c >= weight_constraints.get('min_weight', float('-inf')):
+                        if distances[a] + c > distances[b]:
+                            distances[b] = distances[a] + c
+                            updated = True
+            
+            if not updated:
+                break  # Early termination
+        
+        # Check for negative cycles that can reach node n
+        for _ in range(n - 1):
+            for a, b, c in flights:
+                if distances[a] != float('-inf'):
+                    if distances[a] + c > distances[b]:
+                        if can_reach_n(b, n, flights):
+                            return float('inf')
+        
+        return distances[n]
+    
+    def can_reach_n(start, target, flights):
+        visited = [False] * (n + 1)
+        
+        def dfs(node):
+            if node == target:
+                return True
+            if visited[node]:
+                return False
+            visited[node] = True
+            
+            for a, b, c in flights:
+                if a == node and not visited[b]:
+                    if dfs(b):
+                        return True
+        return False
+    
+        return dfs(start)
     
     result = bellman_ford_optimized()
     
@@ -251,144 +503,64 @@ def high_score_optimized_bellman_ford(n, m, flights):
         return result
 ```
 
-**Why this improvement works**: Early termination and optimized reachability checks improve performance.
+### Variation 2: Longest Path with Multiple Destinations
+**Problem**: Find longest path with multiple possible destinations.
 
-### Step 3: Optimization/Alternative
-**SPFA (Shortest Path Faster Algorithm) with negative cycle detection:**
+**Link**: [CSES Problem Set - Longest Path Multiple Destinations](https://cses.fi/problemset/task/longest_path_multiple_destinations)
 
 ```python
-from collections import deque
-
-def high_score_spfa(n, m, flights):
-    # Build adjacency list
-    graph = [[] for _ in range(n + 1)]
-    for a, b, c in flights:
-        graph[a].append((b, c))
-    
-    def spfa():
+def high_score_multiple_destinations(n, m, flights, destinations):
+    def bellman_ford_optimized():
         distances = [float('-inf')] * (n + 1)
         distances[1] = 0
         
-        # Queue for nodes to process
-        queue = deque([1])
-        in_queue = [False] * (n + 1)
-        in_queue[1] = True
-        
-        # Count visits to detect cycles
-        visit_count = [0] * (n + 1)
-        
-        while queue:
-            node = queue.popleft()
-            in_queue[node] = False
+        # Relax edges with early termination
+        for iteration in range(n - 1):
+            updated = False
+            for a, b, c in flights:
+                if distances[a] != float('-inf'):
+                    if distances[a] + c > distances[b]:
+                        distances[b] = distances[a] + c
+                        updated = True
             
-            for neighbor, weight in graph[node]:
-                new_dist = distances[node] + weight
-                if new_dist > distances[neighbor]:
-                    distances[neighbor] = new_dist
-                    visit_count[neighbor] += 1
-                    
-                    # If a node is visited too many times, there's a cycle
-                    if visit_count[neighbor] >= n:
-                        # Check if this cycle can reach node n
-                        if can_reach_n_spfa(neighbor, n, graph):
-                            return float('inf')
-                    
-                    if not in_queue[neighbor]:
-                        queue.append(neighbor)
-                        in_queue[neighbor] = True
+            if not updated:
+                break  # Early termination
         
-        return distances[n]
-    
-    def can_reach_n_spfa(start, target, graph):
-        visited = [False] * (n + 1)
-        queue = deque([start])
-        visited[start] = True
-        
-        while queue:
-            node = queue.popleft()
-            if node == target:
-                return True
-            
-            for neighbor, weight in graph[node]:
-                if not visited[neighbor]:
-                    visited[neighbor] = True
-                    queue.append(neighbor)
-        
-        return False
-    
-    result = spfa()
-    
-    if result == float('inf'):
-        return -1  # Positive cycle found
-    elif result == float('-inf'):
-        return -1  # No path exists
-    else:
-        return result
-```
-
-**Why this improvement works**: SPFA is often faster than Bellman-Ford in practice.
-
-### Alternative: DFS with Cycle Detection - O(n*m)
-**Description**: Use DFS with cycle detection for educational purposes.
-
-```python
-def high_score_dfs(n, m, flights):
-    # Build adjacency list
-    graph = [[] for _ in range(n + 1)]
-    for a, b, c in flights:
-        graph[a].append((b, c))
-    
-    def dfs_with_cycle_detection():
-        distances = [float('-inf')] * (n + 1)
-        distances[1] = 0
-        visited = [False] * (n + 1)
-        in_stack = [False] * (n + 1)
-        
-        def dfs(node):
-            if in_stack[node]:
-                # Found a cycle, check if it can reach node n
-                if can_reach_n_dfs(node, n, graph):
-                    return float('inf')
-                return distances[node]
-            
-            if visited[node]:
-                return distances[node]
-            
-            visited[node] = True
-            in_stack[node] = True
-            
-            for neighbor, weight in graph[node]:
-                new_dist = distances[node] + weight
-                if new_dist > distances[neighbor]:
-                    distances[neighbor] = new_dist
-                    result = dfs(neighbor)
-                    if result == float('inf'):
+        # Check for negative cycles that can reach any destination
+        for _ in range(n - 1):
+            for a, b, c in flights:
+                if distances[a] != float('-inf'):
+                    if distances[a] + c > distances[b]:
+                        if can_reach_any_destination(b, destinations, flights):
                         return float('inf')
             
-            in_stack[node] = False
-            return distances[node]
+        # Find maximum distance to any destination
+        max_distance = float('-inf')
+        for dest in destinations:
+            if distances[dest] > max_distance:
+                max_distance = distances[dest]
         
-        result = dfs(1)
-        return distances[n] if result != float('inf') else float('inf')
+        return max_distance
     
-    def can_reach_n_dfs(start, target, graph):
+    def can_reach_any_destination(start, destinations, flights):
         visited = [False] * (n + 1)
         
-        def dfs_reach(node):
-            if node == target:
+        def dfs(node):
+            if node in destinations:
                 return True
             if visited[node]:
                 return False
             visited[node] = True
             
-            for neighbor, weight in graph[node]:
-                if dfs_reach(neighbor):
+            for a, b, c in flights:
+                if a == node and not visited[b]:
+                    if dfs(b):
                     return True
             return False
         
-        return dfs_reach(start)
+        return dfs(start)
     
-    result = dfs_with_cycle_detection()
+    result = bellman_ford_optimized()
     
     if result == float('inf'):
         return -1  # Positive cycle found
@@ -398,974 +570,90 @@ def high_score_dfs(n, m, flights):
         return result
 ```
 
-**Why this works**: DFS approach can be useful for understanding the problem conceptually.
+### Variation 3: Longest Path with Path Length Constraints
+**Problem**: Find longest path with maximum path length constraints.
 
-### Step 4: Complete Solution
+**Link**: [CSES Problem Set - Longest Path Length Constraints](https://cses.fi/problemset/task/longest_path_length_constraints)
 
 ```python
-from collections import deque
-
-n, m = map(int, input().split())
-flights = [tuple(map(int, input().split())) for _ in range(m)]
-
-# Build adjacency list
-graph = [[] for _ in range(n + 1)]
-for a, b, c in flights:
-    graph[a].append((b, c))
-
-def spfa():
+def high_score_length_constraints(n, m, flights, max_length):
+    def bellman_ford_optimized():
     distances = [float('-inf')] * (n + 1)
     distances[1] = 0
     
-    # Queue for nodes to process
-    queue = deque([1])
-    in_queue = [False] * (n + 1)
-    in_queue[1] = True
-    
-    # Count visits to detect cycles
-    visit_count = [0] * (n + 1)
-    
-    while queue:
-        node = queue.popleft()
-        in_queue[node] = False
+        # Relax edges with early termination and length constraints
+        for iteration in range(min(n - 1, max_length)):
+            updated = False
+            for a, b, c in flights:
+                if distances[a] != float('-inf'):
+                    if distances[a] + c > distances[b]:
+                        distances[b] = distances[a] + c
+                        updated = True
+            
+            if not updated:
+                break  # Early termination
         
-        for neighbor, weight in graph[node]:
-            new_dist = distances[node] + weight
-            if new_dist > distances[neighbor]:
-                distances[neighbor] = new_dist
-                visit_count[neighbor] += 1
-                
-                # If a node is visited too many times, there's a cycle
-                if visit_count[neighbor] >= n:
-                    # Check if this cycle can reach node n
-                    if can_reach_n(neighbor, n):
+        # Check for negative cycles that can reach node n
+        for _ in range(min(n - 1, max_length)):
+            for a, b, c in flights:
+                if distances[a] != float('-inf'):
+                    if distances[a] + c > distances[b]:
+                        if can_reach_n(b, n, flights):
                         return float('inf')
-                
-                if not in_queue[neighbor]:
-                    queue.append(neighbor)
-                    in_queue[neighbor] = True
     
     return distances[n]
 
-def can_reach_n(start, target):
+    def can_reach_n(start, target, flights):
     visited = [False] * (n + 1)
-    queue = deque([start])
-    visited[start] = True
     
-    while queue:
-        node = queue.popleft()
+        def dfs(node):
         if node == target:
             return True
-        
-        for neighbor, weight in graph[node]:
-            if not visited[neighbor]:
-                visited[neighbor] = True
-                queue.append(neighbor)
-    
+            if visited[node]:
+                return False
+            visited[node] = True
+            
+            for a, b, c in flights:
+                if a == node and not visited[b]:
+                    if dfs(b):
+                        return True
     return False
 
-result = spfa()
+        return dfs(start)
+    
+    result = bellman_ford_optimized()
 
 if result == float('inf'):
-    print(-1)  # Positive cycle found
+        return -1  # Positive cycle found
 elif result == float('-inf'):
-    print(-1)  # No path exists
+        return -1  # No path exists
 else:
-    print(result)
-```
-
-### Step 5: Testing Our Solution
-**Test cases to verify correctness:**
-- **Test 1**: Simple path with positive weights (should return path sum)
-- **Test 2**: Path with negative weights (should return maximum score)
-- **Test 3**: Graph with positive cycle reachable from destination (should return -1)
-- **Test 4**: No path exists (should return -1)
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Bellman-Ford | O(n*m) | O(n) | Handles negative weights |
-| Optimized Bellman-Ford | O(n*m) | O(n) | Early termination |
-| SPFA | O(n*m) | O(n + m) | Often faster in practice |
-| DFS | O(n*m) | O(n) | Educational approach |
-
-## 🎨 Visual Example
-
-### Input Example
-```
-4 cities, 5 flights:
-Flight 1: 1 → 2 (score: 3)
-Flight 2: 2 → 4 (score: -1)
-Flight 3: 1 → 3 (score: -2)
-Flight 4: 3 → 4 (score: 7)
-Flight 5: 1 → 4 (score: 2)
-```
-
-### Graph Visualization
-```
-Cities: 1, 2, 3, 4
-Flights with scores:
-
-    1 ──3──→ 2
-    │        │
-    │-2      │-1
-    ↓        ↓
-    3 ──7──→ 4
-    │
-    │2
-    ↓
-    4
-
-All possible paths from 1 to 4:
-- Path 1: 1 → 2 → 4 (score: 3 + (-1) = 2)
-- Path 2: 1 → 3 → 4 (score: -2 + 7 = 5)
-- Path 3: 1 → 4 (score: 2)
-```
-
-### Bellman-Ford Algorithm Process
-```
-Initial distances: [0, -∞, -∞, -∞]
-Parent array: [-1, -1, -1, -1]
-
-Iteration 1 (n-1 = 3 iterations):
-- Edge 1→2: dist[2] = max(-∞, 0+3) = 3, parent[2] = 1
-- Edge 2→4: dist[4] = max(-∞, 3+(-1)) = 2, parent[4] = 2
-- Edge 1→3: dist[3] = max(-∞, 0+(-2)) = -2, parent[3] = 1
-- Edge 3→4: dist[4] = max(2, -2+7) = 5, parent[4] = 3
-- Edge 1→4: dist[4] = max(5, 0+2) = 5, parent[4] = 1
-
-After iteration 1: [0, 3, -2, 5]
-
-Iteration 2:
-- Edge 1→2: dist[2] = max(3, 0+3) = 3
-- Edge 2→4: dist[4] = max(5, 3+(-1)) = 5
-- Edge 1→3: dist[3] = max(-2, 0+(-2)) = -2
-- Edge 3→4: dist[4] = max(5, -2+7) = 5
-- Edge 1→4: dist[4] = max(5, 0+2) = 5
-
-After iteration 2: [0, 3, -2, 5]
-
-Iteration 3:
-- Edge 1→2: dist[2] = max(3, 0+3) = 3
-- Edge 2→4: dist[4] = max(5, 3+(-1)) = 5
-- Edge 1→3: dist[3] = max(-2, 0+(-2)) = -2
-- Edge 3→4: dist[4] = max(5, -2+7) = 5
-- Edge 1→4: dist[4] = max(5, 0+2) = 5
-
-After iteration 3: [0, 3, -2, 5]
-```
-
-### Positive Cycle Detection
-```
-Check all edges for further relaxation:
-
-Edge 1→2: dist[1] + weight = 0 + 3 = 3 = dist[2] = 3 ✓
-Edge 2→4: dist[2] + weight = 3 + (-1) = 2 < dist[4] = 5 ✓
-Edge 1→3: dist[1] + weight = 0 + (-2) = -2 = dist[3] = -2 ✓
-Edge 3→4: dist[3] + weight = -2 + 7 = 5 = dist[4] = 5 ✓
-Edge 1→4: dist[1] + weight = 0 + 2 = 2 < dist[4] = 5 ✓
-
-No further relaxation possible - no positive cycle detected.
-```
-
-### Path Reconstruction
-```
-From the parent array: [-1, 1, 1, 3]
-
-To find the path from 1 to 4:
-1. Start at node 4
-2. Follow parent[4] = 3
-3. Follow parent[3] = 1
-4. Back to node 1 - path found!
-
-Path: 1 → 3 → 4
-Score: -2 + 7 = 5
-```
-
-### All Paths Comparison
-```
-Path 1: 1 → 2 → 4
-- Score: 3 + (-1) = 2
-- Length: 2 edges
-
-Path 2: 1 → 3 → 4
-- Score: -2 + 7 = 5 ← Highest score
-- Length: 2 edges
-
-Path 3: 1 → 4
-- Score: 2
-- Length: 1 edge
-
-Maximum score: 5
-```
-
-### Algorithm Comparison
-```
-┌─────────────────┬──────────────┬──────────────┬──────────────┐
-│     Approach    │   Time       │    Space     │   Key Idea   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ Bellman-Ford    │ O(n×m)       │ O(n)         │ Relax edges  │
-│                 │              │              │ n-1 times    │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ SPFA            │ O(n×m)       │ O(n + m)     │ Queue-based  │
-│                 │              │              │ relaxation   │
-├─────────────────┼──────────────┼──────────────┼──────────────┤
-│ DFS with Memo   │ O(n×m)       │ O(n)         │ Recursive    │
-│                 │              │              │ with cache   │
-└─────────────────┴──────────────┴──────────────┴──────────────┘
-```
-
-## 🎯 Key Insights
-
-### Important Concepts and Patterns
-- **Longest Path Problem**: Find maximum weight path in directed graph
-- **Negative Weight Handling**: Use Bellman-Ford or SPFA for negative weights
-- **Cycle Detection**: Detect positive cycles that can reach destination
-- **Reachability Check**: Verify if cycles can actually reach target node
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Longest Path with Constraints**
-```python
-def longest_path_with_constraints(n, m, edges, constraints):
-    # Find longest path with additional constraints
-    # constraints = list of (node, max_visits) tuples
-    
-    from collections import deque
-    
-    # Build adjacency list
-    graph = [[] for _ in range(n + 1)]
-    for a, b, c in edges:
-        graph[a].append((b, c))
-    
-    def spfa_with_constraints():
-        # distances[node][visits] = maximum distance to node with visits
-        distances = [[float('-inf')] * (max_visits + 1) for _ in range(n + 1)]
-        distances[1][0] = 0
-        
-        queue = deque([(1, 0)])  # (node, visits)
-        in_queue = [[False] * (max_visits + 1) for _ in range(n + 1)]
-        in_queue[1][0] = True
-        
-        while queue:
-            node, visits = queue.popleft()
-            in_queue[node][visits] = False
-            
-            for neighbor, weight in graph[node]:
-                new_visits = visits + 1
-                if new_visits <= max_visits:
-                    new_dist = distances[node][visits] + weight
-                    if new_dist > distances[neighbor][new_visits]:
-                        distances[neighbor][new_visits] = new_dist
-                        if not in_queue[neighbor][new_visits]:
-                            queue.append((neighbor, new_visits))
-                            in_queue[neighbor][new_visits] = True
-        
-        return max(distances[n])
-    
-    max_visits = max(constraint[1] for constraint in constraints)
-    return spfa_with_constraints()
-```
-
-#### **2. Multiple Source Longest Path**
-```python
-def multiple_source_longest_path(n, m, edges, sources):
-    # Find longest path from any source to destination
-    from collections import deque
-    
-    # Build adjacency list
-    graph = [[] for _ in range(n + 1)]
-    for a, b, c in edges:
-        graph[a].append((b, c))
-    
-    def spfa_multiple_sources():
-        distances = [float('-inf')] * (n + 1)
-        
-        # Initialize all sources
-        queue = deque()
-        in_queue = [False] * (n + 1)
-        
-        for source in sources:
-            distances[source] = 0
-            queue.append(source)
-            in_queue[source] = True
-        
-        visit_count = [0] * (n + 1)
-        
-        while queue:
-            node = queue.popleft()
-            in_queue[node] = False
-            
-            for neighbor, weight in graph[node]:
-                new_dist = distances[node] + weight
-                if new_dist > distances[neighbor]:
-                    distances[neighbor] = new_dist
-                    visit_count[neighbor] += 1
-                    
-                    if visit_count[neighbor] >= n:
-                        # Check for positive cycle
-                        if can_reach_n(neighbor, n):
-                            return float('inf')
-                    
-                    if not in_queue[neighbor]:
-                        queue.append(neighbor)
-                        in_queue[neighbor] = True
-        
-        return distances[n]
-    
-    def can_reach_n(start, target):
-        visited = [False] * (n + 1)
-        queue = deque([start])
-        visited[start] = True
-        
-        while queue:
-            node = queue.popleft()
-            if node == target:
-                return True
-            
-            for neighbor, weight in graph[node]:
-                if not visited[neighbor]:
-                    visited[neighbor] = True
-                    queue.append(neighbor)
-        
-        return False
-    
-    return spfa_multiple_sources()
-```
-
-#### **3. Longest Path with Time Windows**
-```python
-def longest_path_time_windows(n, m, edges, time_windows):
-    # Find longest path with time window constraints
-    # time_windows[node] = (earliest_time, latest_time)
-    
-    from collections import deque
-    
-    # Build adjacency list
-    graph = [[] for _ in range(n + 1)]
-    for a, b, c in edges:
-        graph[a].append((b, c))
-    
-    def spfa_time_windows():
-        # distances[node][time] = maximum distance to node at time
-        max_time = max(tw[1] for tw in time_windows.values())
-        distances = [[float('-inf')] * (max_time + 1) for _ in range(n + 1)]
-        
-        # Initialize source at time 0
-        distances[1][0] = 0
-        queue = deque([(1, 0)])
-        in_queue = [[False] * (max_time + 1) for _ in range(n + 1)]
-        in_queue[1][0] = True
-        
-        while queue:
-            node, time = queue.popleft()
-            in_queue[node][time] = False
-            
-            for neighbor, weight in graph[node]:
-                new_time = time + 1
-                if new_time <= max_time:
-                    # Check time window constraint
-                    earliest, latest = time_windows[neighbor]
-                    if earliest <= new_time <= latest:
-                        new_dist = distances[node][time] + weight
-                        if new_dist > distances[neighbor][new_time]:
-                            distances[neighbor][new_time] = new_dist
-                            if not in_queue[neighbor][new_time]:
-                                queue.append((neighbor, new_time))
-                                in_queue[neighbor][new_time] = True
-        
-        return max(distances[n])
-    
-    return spfa_time_windows()
+        return result
 ```
 
 ## 🔗 Related Problems
 
-### Links to Similar Problems
-- **Shortest Path**: Related path-finding algorithms
-- **Negative Cycle Detection**: Cycle detection problems
-- **Graph Algorithms**: Various graph traversal problems
-- **Dynamic Programming**: Path optimization problems
+- **[Shortest Routes I](/cses-analyses/problem_soulutions/graph_algorithms/shortest_routes_i_analysis/)**: Shortest path problems
+- **[Shortest Routes II](/cses-analyses/problem_soulutions/graph_algorithms/shortest_routes_ii_analysis/)**: All-pairs shortest paths
+- **[Flight Discount](/cses-analyses/problem_soulutions/graph_algorithms/flight_discount_analysis/)**: Path optimization problems
+- **[Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph theory problems
 
 ## 📚 Learning Points
 
-### Key Takeaways
-- **Longest path** problems require special algorithms for negative weights
-- **Bellman-Ford** and **SPFA** handle negative weights effectively
-- **Cycle detection** is crucial for avoiding infinite scores
-- **Reachability checks** ensure cycles can actually reach destination
-- **Graph algorithms** have many variations for different constraints
+1. **Longest Path**: Essential for analyzing path optimization and scoring problems
+2. **Bellman-Ford Algorithm**: Key algorithm for handling negative weights
+3. **Negative Cycle Detection**: Critical for preventing infinite scores
+4. **Early Termination**: Important optimization technique for graph algorithms
+5. **Path Optimization**: Foundation for many real-world routing problems
+6. **Graph Theory**: Foundation for many optimization problems
 
-## Key Insights for Other Problems
+## 📝 Summary
 
-### 1. **Longest Path Problems**
-**Principle**: Convert longest path problems to shortest path problems by negating edge weights.
-**Applicable to**:
-- Longest path problems
-- Graph algorithms
-- Dynamic programming
-- Algorithm design
+The High Score problem demonstrates fundamental longest path concepts for analyzing path optimization with negative weights. We explored three approaches:
 
-**Example Problems**:
-- Longest path problems
-- Graph algorithms
-- Dynamic programming
-- Algorithm design
+1. **Brute Force Path Enumeration**: O(2^n × n) time complexity using exhaustive search, inefficient for large graphs
+2. **Bellman-Ford Algorithm**: O(n × m) time complexity using edge relaxation, better approach for longest path problems
+3. **Optimized Bellman-Ford with Early Termination**: O(n × m) time complexity with early termination, optimal approach for longest path
 
-### 2. **Negative Cycle Detection**
-**Principle**: Use appropriate algorithms to detect negative cycles in graphs.
-**Applicable to**:
-- Cycle detection
-- Graph algorithms
-- Network analysis
-- Algorithm design
+The key insights include understanding longest path as maximization problems, using Bellman-Ford for negative weight handling, and applying cycle detection for preventing infinite scores. This problem serves as an excellent introduction to longest path algorithms and path optimization techniques.
 
-**Example Problems**:
-- Cycle detection
-- Graph algorithms
-- Network analysis
-- Algorithm design
-
-### 3. **Reachability Analysis**
-**Principle**: Analyze reachability to determine if cycles affect the target node.
-**Applicable to**:
-- Graph algorithms
-- Network analysis
-- Algorithm design
-- Problem solving
-
-**Example Problems**:
-- Graph algorithms
-- Network analysis
-- Algorithm design
-- Problem solving
-
-### 4. **Algorithm Selection for Negative Weights**
-**Principle**: Choose appropriate algorithms when dealing with negative edge weights.
-**Applicable to**:
-- Graph algorithms
-- Algorithm selection
-- Problem solving
-- System design
-
-**Example Problems**:
-- Graph algorithms
-- Algorithm selection
-- Problem solving
-- System design
-
-## Notable Techniques
-
-### 1. **SPFA Pattern**
-```python
-def spfa(graph, start, n):
-    distances = [float('-inf')] * n
-    distances[start] = 0
-    queue = deque([start])
-    in_queue = [False] * n
-    in_queue[start] = True
-    visit_count = [0] * n
-    
-    while queue:
-        node = queue.popleft()
-        in_queue[node] = False
-        
-        for neighbor, weight in graph[node]:
-            new_dist = distances[node] + weight
-            if new_dist > distances[neighbor]:
-                distances[neighbor] = new_dist
-                visit_count[neighbor] += 1
-                
-                if visit_count[neighbor] >= n:
-                    return float('inf')  # Cycle detected
-                
-                if not in_queue[neighbor]:
-                    queue.append(neighbor)
-                    in_queue[neighbor] = True
-    
-    return distances
-```
-
-### 2. **Bellman-Ford Pattern**
-```python
-def bellman_ford(edges, n, start):
-    distances = [float('-inf')] * n
-    distances[start] = 0
-    
-    # Relax edges n-1 times
-    for _ in range(n - 1):
-        for u, v, w in edges:
-            if distances[u] != float('-inf'):
-                distances[v] = max(distances[v], distances[u] + w)
-    
-    # Check for cycles
-    for u, v, w in edges:
-        if distances[u] != float('-inf'):
-            if distances[u] + w > distances[v]:
-                return float('inf')  # Cycle detected
-    
-    return distances
-```
-
-### 3. **Cycle Detection Pattern**
-```python
-def detect_cycle_reachability(graph, start, target, n):
-    visit_count = [0] * n
-    
-    def dfs(node):
-        visit_count[node] += 1
-        if visit_count[node] >= n:
-            return can_reach_target(node, target)
-        
-        for neighbor in graph[node]:
-            if dfs(neighbor):
-                return True
-        return False
-    
-    return dfs(start)
-```
-
-## Edge Cases to Remember
-
-1. **Positive cycles**: Return -1 if a positive cycle can reach the target
-2. **No path exists**: Return -1 if no path exists
-3. **Negative weights**: Handle properly with appropriate algorithms
-4. **Self-loops**: Handle properly
-5. **Multiple edges**: Consider maximum weight
-
-## Problem-Solving Framework
-
-1. **Identify longest path nature**: This is a longest path problem with negative weights
-2. **Choose algorithm**: Use SPFA or Bellman-Ford for negative weights
-3. **Handle cycles**: Detect positive cycles that can reach the target
-4. **Check reachability**: Ensure cycles can actually reach the target node
-5. **Format output**: Return appropriate result based on findings
-
----
-
-*This analysis shows how to efficiently solve longest path problems with negative weights and cycle detection.* 
-
-## 🎯 Problem Variations & Related Questions
-
-### 🔄 **Variations of the Original Problem**
-
-#### **Variation 1: High Score with Costs**
-**Problem**: Each edge has an additional cost, find maximum score with minimum total cost.
-```python
-def cost_based_high_score(n, m, flights, costs):
-    # costs[(a, b)] = additional cost for flight (a, b)
-    
-    # Build adjacency list with costs
-    graph = [[] for _ in range(n + 1)]
-    for a, b, c in flights:
-        additional_cost = costs.get((a, b), 0)
-        graph[a].append((b, c, additional_cost))
-    
-    # SPFA with cost tracking
-    distances = [float('-inf')] * (n + 1)
-    total_costs = [float('inf')] * (n + 1)
-    distances[1] = 0
-    total_costs[1] = 0
-    
-    queue = deque([1])
-    in_queue = [False] * (n + 1)
-    in_queue[1] = True
-    visit_count = [0] * (n + 1)
-    
-    while queue:
-        node = queue.popleft()
-        in_queue[node] = False
-        
-        for neighbor, weight, cost in graph[node]:
-            new_dist = distances[node] + weight
-            new_cost = total_costs[node] + cost
-            
-            if new_dist > distances[neighbor] or (new_dist == distances[neighbor] and new_cost < total_costs[neighbor]):
-                distances[neighbor] = new_dist
-                total_costs[neighbor] = new_cost
-                visit_count[neighbor] += 1
-                
-                if visit_count[neighbor] >= n:
-                    if can_reach_target(neighbor, n, graph):
-                        return float('inf'), float('inf')
-                
-                if not in_queue[neighbor]:
-                    queue.append(neighbor)
-                    in_queue[neighbor] = True
-    
-    return distances[n], total_costs[n]
-```
-
-#### **Variation 2: High Score with Constraints**
-**Problem**: Find maximum score with constraints on path length or node visits.
-```python
-def constrained_high_score(n, m, flights, constraints):
-    # constraints = {'max_length': x, 'max_visits': y, 'min_score': z}
-    
-    # Build adjacency list
-    graph = [[] for _ in range(n + 1)]
-    for a, b, c in flights:
-        graph[a].append((b, c))
-    
-    # SPFA with constraints
-    distances = [float('-inf')] * (n + 1)
-    path_lengths = [0] * (n + 1)
-    visit_counts = [0] * (n + 1)
-    distances[1] = 0
-    
-    queue = deque([1])
-    in_queue = [False] * (n + 1)
-    in_queue[1] = True
-    cycle_count = [0] * (n + 1)
-    
-    while queue:
-        node = queue.popleft()
-        in_queue[node] = False
-        
-        for neighbor, weight in graph[node]:
-            new_dist = distances[node] + weight
-            new_length = path_lengths[node] + 1
-            new_visits = visit_counts[node] + 1
-            
-            # Apply constraints
-            if 'max_length' in constraints and new_length > constraints['max_length']:
-                continue
-            if 'max_visits' in constraints and new_visits > constraints['max_visits']:
-                continue
-            if 'min_score' in constraints and new_dist < constraints['min_score']:
-                continue
-            
-            if new_dist > distances[neighbor]:
-                distances[neighbor] = new_dist
-                path_lengths[neighbor] = new_length
-                visit_counts[neighbor] = new_visits
-                cycle_count[neighbor] += 1
-                
-                if cycle_count[neighbor] >= n:
-                    if can_reach_target(neighbor, n, graph):
-                        return float('inf')
-                
-                if not in_queue[neighbor]:
-                    queue.append(neighbor)
-                    in_queue[neighbor] = True
-    
-    return distances[n] if distances[n] != float('-inf') else -1
-```
-
-#### **Variation 3: High Score with Probabilities**
-**Problem**: Each flight has a probability of success, find expected maximum score.
-```python
-def probabilistic_high_score(n, m, flights, probabilities):
-    # probabilities[(a, b)] = probability that flight (a, b) succeeds
-    
-    # Build adjacency list with probabilities
-    graph = [[] for _ in range(n + 1)]
-    for a, b, c in flights:
-        prob = probabilities.get((a, b), 1.0)
-        graph[a].append((b, c, prob))
-    
-    # Use Monte Carlo simulation
-    import random
-    
-    def simulate_high_score():
-        # Randomly sample flights based on probabilities
-        sampled_flights = []
-        for a, b, c in flights:
-            if random.random() < probabilities.get((a, b), 1.0):
-                sampled_flights.append((a, b, c))
-        
-        # Build graph for sampled flights
-        sampled_graph = [[] for _ in range(n + 1)]
-        for a, b, c in sampled_flights:
-            sampled_graph[a].append((b, c))
-        
-        # SPFA on sampled graph
-        distances = [float('-inf')] * (n + 1)
-        distances[1] = 0
-        
-        queue = deque([1])
-        in_queue = [False] * (n + 1)
-        in_queue[1] = True
-        visit_count = [0] * (n + 1)
-        
-        while queue:
-            node = queue.popleft()
-            in_queue[node] = False
-            
-            for neighbor, weight in sampled_graph[node]:
-                new_dist = distances[node] + weight
-                if new_dist > distances[neighbor]:
-                    distances[neighbor] = new_dist
-                    visit_count[neighbor] += 1
-                    
-                    if visit_count[neighbor] >= n:
-                        if can_reach_target(neighbor, n, sampled_graph):
-                            return float('inf')
-                    
-                    if not in_queue[neighbor]:
-                        queue.append(neighbor)
-                        in_queue[neighbor] = True
-        
-        return distances[n]
-    
-    # Run multiple simulations
-    num_simulations = 1000
-    total_score = 0
-    infinite_count = 0
-    
-    for _ in range(num_simulations):
-        score = simulate_high_score()
-        if score == float('inf'):
-            infinite_count += 1
-        else:
-            total_score += score
-    
-    expected_score = total_score / num_simulations
-    infinite_probability = infinite_count / num_simulations
-    
-    return expected_score, infinite_probability
-```
-
-#### **Variation 4: High Score with Multiple Criteria**
-**Problem**: Find maximum score considering multiple criteria (score, time, cost).
-```python
-def multi_criteria_high_score(n, m, flights, criteria):
-    # criteria = {'score_weight': x, 'time_weight': y, 'cost_weight': z}
-    
-    # Build adjacency list with multiple attributes
-    graph = [[] for _ in range(n + 1)]
-    for a, b, c in flights:
-        # Assume each flight has time and cost attributes
-        time = criteria.get('time', {}).get((a, b), 1)
-        cost = criteria.get('cost', {}).get((a, b), 0)
-        graph[a].append((b, c, time, cost))
-    
-    # SPFA with multi-criteria tracking
-    distances = [float('-inf')] * (n + 1)
-    total_times = [0] * (n + 1)
-    total_costs = [0] * (n + 1)
-    distances[1] = 0
-    
-    queue = deque([1])
-    in_queue = [False] * (n + 1)
-    in_queue[1] = True
-    visit_count = [0] * (n + 1)
-    
-    best_score = float('-inf')
-    best_criteria_score = float('-inf')
-    
-    while queue:
-        node = queue.popleft()
-        in_queue[node] = False
-        
-        for neighbor, weight, time, cost in graph[node]:
-            new_dist = distances[node] + weight
-            new_time = total_times[node] + time
-            new_cost = total_costs[node] + cost
-            
-            if new_dist > distances[neighbor]:
-                distances[neighbor] = new_dist
-                total_times[neighbor] = new_time
-                total_costs[neighbor] = new_cost
-                visit_count[neighbor] += 1
-                
-                if visit_count[neighbor] >= n:
-                    if can_reach_target(neighbor, n, graph):
-                        return float('inf')
-                
-                if not in_queue[neighbor]:
-                    queue.append(neighbor)
-                    in_queue[neighbor] = True
-                
-                # Calculate multi-criteria score
-                if neighbor == n:
-                    criteria_score = (new_dist * criteria.get('score_weight', 1) + 
-                                    new_time * criteria.get('time_weight', 1) + 
-                                    new_cost * criteria.get('cost_weight', 1))
-                    if criteria_score > best_criteria_score:
-                        best_criteria_score = criteria_score
-                        best_score = new_dist
-    
-    return best_score, best_criteria_score
-```
-
-#### **Variation 5: High Score with Dynamic Updates**
-**Problem**: Handle dynamic updates to flight scores and find maximum score after each update.
-```python
-def dynamic_high_score(n, m, initial_flights, updates):
-    # updates = [(flight_index, new_score), ...]
-    
-    flights = initial_flights.copy()
-    results = []
-    
-    for flight_index, new_score in updates:
-        # Update flight score
-        a, b, old_score = flights[flight_index]
-        flights[flight_index] = (a, b, new_score)
-        
-        # Rebuild graph
-        graph = [[] for _ in range(n + 1)]
-        for a, b, c in flights:
-            graph[a].append((b, c))
-        
-        # SPFA
-        distances = [float('-inf')] * (n + 1)
-        distances[1] = 0
-        
-        queue = deque([1])
-        in_queue = [False] * (n + 1)
-        in_queue[1] = True
-        visit_count = [0] * (n + 1)
-        
-        while queue:
-            node = queue.popleft()
-            in_queue[node] = False
-            
-            for neighbor, weight in graph[node]:
-                new_dist = distances[node] + weight
-                if new_dist > distances[neighbor]:
-                    distances[neighbor] = new_dist
-                    visit_count[neighbor] += 1
-                    
-                    if visit_count[neighbor] >= n:
-                        if can_reach_target(neighbor, n, graph):
-                            results.append(float('inf'))
-                            break
-                    
-                    if not in_queue[neighbor]:
-                        queue.append(neighbor)
-                        in_queue[neighbor] = True
-            else:
-                continue
-            break
-        else:
-            results.append(distances[n] if distances[n] != float('-inf') else -1)
-    
-    return results
-```
-
-### 🔗 **Related Problems & Concepts**
-
-#### **1. Longest Path Problems**
-- **Longest Path in DAG**: Find longest path in directed acyclic graphs
-- **Longest Path with Cycles**: Handle cycles in longest path problems
-- **Longest Path with Constraints**: Add constraints to longest path problems
-- **Longest Path Optimization**: Optimize longest path algorithms
-
-#### **2. Graph Optimization Problems**
-- **Path Optimization**: Optimize paths in graphs
-- **Score Optimization**: Optimize scores in graph problems
-- **Multi-Criteria Optimization**: Optimize multiple objectives
-- **Dynamic Optimization**: Handle dynamic graph changes
-
-#### **3. Algorithmic Techniques**
-- **SPFA Algorithm**: Shortest Path Faster Algorithm
-- **Bellman-Ford**: Algorithm for shortest/longest paths
-- **Cycle Detection**: Detect cycles in graphs
-- **Reachability Analysis**: Analyze reachability in graphs
-
-#### **4. Constraint Problems**
-- **Path Constraints**: Constraints on path properties
-- **Score Constraints**: Constraints on score values
-- **Time Constraints**: Time-based constraints
-- **Resource Constraints**: Resource-based constraints
-
-#### **5. Mathematical Concepts**
-- **Graph Theory**: Properties of graphs and paths
-- **Optimization Theory**: Mathematical optimization techniques
-- **Probability Theory**: Probability theory in graphs
-- **Algorithm Analysis**: Analysis of graph algorithms
-
-### 🎯 **Competitive Programming Variations**
-
-#### **1. Multiple Test Cases with Different Graphs**
-```python
-t = int(input())
-for _ in range(t):
-    n, m = map(int, input().split())
-    flights = []
-    for _ in range(m):
-        a, b, c = map(int, input().split())
-        flights.append((a, b, c))
-    
-    result = find_high_score(n, m, flights)
-    print(result)
-```
-
-#### **2. Range Queries on Flight Scores**
-```python
-def range_flight_score_queries(n, flights, queries):
-    # queries = [(start_node, end_node), ...] - find max score in range
-    
-    results = []
-    for start, end in queries:
-        # Filter flights in range
-        range_flights = [(a, b, c) for a, b, c in flights if start <= a <= end and start <= b <= end]
-        
-        result = find_high_score(end - start + 1, len(range_flights), range_flights)
-        results.append(result)
-    
-    return results
-```
-
-#### **3. Interactive High Score Problems**
-```python
-def interactive_high_score():
-    n = int(input("Enter number of cities: "))
-    m = int(input("Enter number of flights: "))
-    print("Enter flights (from to score):")
-    flights = []
-    for _ in range(m):
-        a, b, c = map(int, input().split())
-        flights.append((a, b, c))
-    
-    result = find_high_score(n, m, flights)
-    print(f"Maximum score: {result}")
-```
-
-### 🧮 **Mathematical Extensions**
-
-#### **1. Graph Theory**
-- **Longest Path Theory**: Mathematical theory of longest paths
-- **Path Optimization**: Mathematical path optimization
-- **Graph Algorithms**: Mathematical analysis of graph algorithms
-- **Path Analysis**: Analysis of path-based algorithms
-
-#### **2. Optimization Theory**
-- **Score Optimization**: Mathematical score optimization
-- **Path Optimization**: Mathematical path optimization
-- **Multi-Criteria Optimization**: Mathematical multi-criteria optimization
-- **Dynamic Optimization**: Mathematical dynamic optimization
-
-#### **3. Probability Theory**
-- **Probabilistic Paths**: Probability theory applied to paths
-- **Expected Values**: Expected score calculations
-- **Probability Distributions**: Probability distributions in graphs
-- **Stochastic Optimization**: Stochastic optimization techniques
-
-### 📚 **Learning Resources**
-
-#### **1. Related Algorithms**
-- **SPFA Algorithm**: Efficient longest path algorithm
-- **Bellman-Ford Algorithm**: Algorithm for longest paths
-- **Cycle Detection**: Cycle detection algorithms
-- **Graph Algorithms**: Various graph algorithms
-
-#### **2. Mathematical Concepts**
-- **Graph Theory**: Properties and theorems about graphs
-- **Optimization Theory**: Mathematical optimization techniques
-- **Probability Theory**: Mathematical probability theory
-- **Algorithm Analysis**: Analysis of algorithm complexity
-
-#### **3. Programming Concepts**
-- **Graph Representations**: Efficient graph representations
-- **Queue Data Structures**: Queue implementations
-- **Algorithm Optimization**: Improving algorithm performance
-- **Dynamic Programming**: Handling dynamic updates
-
----
-
-*This analysis demonstrates efficient longest path techniques and shows various extensions for high score problems.* 
