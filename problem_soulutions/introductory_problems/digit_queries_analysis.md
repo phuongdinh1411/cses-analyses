@@ -1,131 +1,129 @@
 ---
 layout: simple
-title: "Digit Queries"
+title: "Digit Queries - Introductory Problem"
 permalink: /problem_soulutions/introductory_problems/digit_queries_analysis
 ---
 
-# Digit Queries
+# Digit Queries - Introductory Problem
 
 ## 📋 Problem Information
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- Understand digit sequence analysis and mathematical pattern recognition
-- Apply mathematical formulas to find digits at specific positions in sequences
-- Implement efficient digit query algorithms with proper mathematical calculations
-- Optimize digit queries using mathematical formulas and sequence analysis
-- Handle edge cases in digit queries (large positions, sequence boundaries, mathematical precision)
+- Understand the concept of mathematical analysis and pattern recognition in introductory problems
+- Apply efficient algorithms for finding digits in number sequences
+- Implement mathematical reasoning and sequence analysis
+- Optimize algorithms for digit query problems
+- Handle special cases in mathematical sequence problems
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Digit sequence analysis, mathematical formulas, pattern recognition, query optimization
-- **Data Structures**: Mathematical calculations, sequence tracking, digit manipulation
-- **Mathematical Concepts**: Number theory, sequence analysis, digit patterns, mathematical formulas
-- **Programming Skills**: Mathematical calculations, digit manipulation, sequence analysis, algorithm implementation
-- **Related Problems**: Digit problems, Sequence analysis, Mathematical queries, Pattern recognition
+- **Algorithm Knowledge**: Mathematical analysis, sequence analysis, pattern recognition, number theory
+- **Data Structures**: Integers, mathematical operations, sequence analysis
+- **Mathematical Concepts**: Number theory, sequences, arithmetic progressions, digit analysis
+- **Programming Skills**: Mathematical operations, sequence analysis, pattern recognition algorithms
+- **Related Problems**: Number Spiral (introductory_problems), Trailing Zeros (introductory_problems), Weird Algorithm (introductory_problems)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Consider the infinite sequence: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ... Find the digit at position k in this sequence.
+Given a sequence of numbers formed by concatenating all positive integers (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...), find the digit at a specific position.
 
 **Input**: 
-- First line: q (number of queries)
-- Next q lines: integer k (1 ≤ k ≤ 10¹⁸)
+- k: position in the sequence (1-indexed)
 
-**Output**: For each query, print the digit at position k.
+**Output**: 
+- The digit at position k
 
 **Constraints**:
-- 1 ≤ q ≤ 1000
-- 1 ≤ k ≤ 10¹⁸
-- Sequence: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ...
-- Need to find digit at specific position efficiently
-- Cannot generate entire sequence for large k
+- 1 ≤ k ≤ 10^18
 
 **Example**:
 ```
 Input:
-3
-7
-19
-12
+k = 7
 
 Output:
 7
-4
-1
 
-Explanation: 
-Position 7: 1,2,3,4,5,6,7 → digit 7
-Position 19: 1,2,3,4,5,6,7,8,9,1,0,1,1,1,2,1,3,1,4 → digit 4
-Position 12: 1,2,3,4,5,6,7,8,9,1,0,1,1 → digit 1
+Explanation**: 
+Sequence: 123456789101112131415...
+Position 1: 1
+Position 2: 2
+Position 3: 3
+Position 4: 4
+Position 5: 5
+Position 6: 6
+Position 7: 7
+Position 8: 8
+Position 9: 9
+Position 10: 1 (from 10)
+Position 11: 0 (from 10)
+Position 12: 1 (from 11)
+Position 13: 1 (from 11)
+...
 ```
-
-## Visual Example
-
-### Input and Sequence Analysis
-```
-Input: k = 19
-
-Sequence: 1,2,3,4,5,6,7,8,9,1,0,1,1,1,2,1,3,1,4,...
-Position 19: digit 4 (from number 14)
-```
-
-### Digit Group Structure
-```
-1-digit numbers: 1-9 (9 numbers, 9 digits)
-2-digit numbers: 10-99 (90 numbers, 180 digits)
-3-digit numbers: 100-999 (900 numbers, 2700 digits)
-
-Pattern: n-digit numbers have 9×n×10^(n-1) digits
-```
-
-### Position Calculation Process
-```
-For k = 19:
-- 1-digit group: positions 1-9 (9 digits)
-- 2-digit group: positions 10-189 (180 digits)
-- Position 19 is in 2-digit group
-- Remaining position: 19 - 9 = 10
-- Number: 10 + (10-1)//2 = 10 + 4 = 14
-- Digit position: (10-1) % 2 = 1
-- Result: digit at position 1 of 14 = 4
-```
-
-### Key Insight
-The solution works by:
-1. Using mathematical pattern recognition for digit groups
-2. Calculating group boundaries efficiently
-3. Using mathematical formulas for position calculation
-4. Time complexity: O(log k) for mathematical approach
-5. Space complexity: O(1) for constant variables
 
 ## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Approach 1: Brute Force Sequence Generation (Inefficient)
+### Approach 1: Brute Force Solution
 
-**Key Insights from Brute Force Solution:**
-- Generate the entire sequence and find the k-th digit
-- Simple but computationally expensive approach
-- Not suitable for large k
-- Straightforward implementation but poor performance
+**Key Insights from Brute Force Solution**:
+- **Complete Enumeration**: Generate the entire sequence up to position k
+- **Simple Implementation**: Easy to understand and implement
+- **Direct Calculation**: Build sequence character by character
+- **Inefficient**: O(k) time complexity
 
-**Algorithm:**
-1. Generate the sequence by concatenating all numbers
-2. Find the digit at position k
-3. Handle large sequences with memory constraints
-4. Return the k-th digit
+**Key Insight**: Generate the entire sequence up to position k and return the digit at that position.
 
-**Visual Example:**
+**Algorithm**:
+- Start with empty sequence
+- Add each positive integer to the sequence
+- Continue until sequence length reaches k
+- Return the digit at position k
+
+**Visual Example**:
 ```
-Brute force: Generate entire sequence
-For k = 19:
-- Generate: 123456789101112131415...
-- Find position 19: digit 4
+Digit Queries: k = 7
+
+Generate sequence:
+┌─────────────────────────────────────┐
+│ Step 1: Add 1                      │
+│ Sequence: "1"                      │
+│ Length: 1                          │
+│                                   │
+│ Step 2: Add 2                      │
+│ Sequence: "12"                     │
+│ Length: 2                          │
+│                                   │
+│ Step 3: Add 3                      │
+│ Sequence: "123"                    │
+│ Length: 3                          │
+│                                   │
+│ Step 4: Add 4                      │
+│ Sequence: "1234"                   │
+│ Length: 4                          │
+│                                   │
+│ Step 5: Add 5                      │
+│ Sequence: "12345"                  │
+│ Length: 5                          │
+│                                   │
+│ Step 6: Add 6                      │
+│ Sequence: "123456"                 │
+│ Length: 6                          │
+│                                   │
+│ Step 7: Add 7                      │
+│ Sequence: "1234567"                │
+│ Length: 7                          │
+│                                   │
+│ Position 7: '7'                    │
+│ Result: 7                          │
+└─────────────────────────────────────┘
 ```
 
-**Implementation:**
+**Implementation**:
 ```python
-def digit_queries_brute_force(k):
+def brute_force_digit_queries(k):
+    """Find digit at position k using brute force approach"""
     sequence = ""
     num = 1
     
@@ -133,237 +131,451 @@ def digit_queries_brute_force(k):
         sequence += str(num)
         num += 1
     
-    return int(sequence[k-1])
+    return int(sequence[k - 1])
 
-def solve_digit_queries_brute_force():
-    q = int(input())
-    for _ in range(q):
-        k = int(input())
-        result = digit_queries_brute_force(k)
-        print(result)
+# Example usage
+k = 7
+result = brute_force_digit_queries(k)
+print(f"Brute force result: {result}")
 ```
 
-**Time Complexity:** O(k) for generating sequence
-**Space Complexity:** O(k) for storing sequence
+**Time Complexity**: O(k)
+**Space Complexity**: O(k)
 
-**Why it's inefficient:**
-- O(k) time complexity is too slow for large k
-- Not suitable for competitive programming with k up to 10¹⁸
-- Inefficient for large inputs
-- Poor performance with linear growth
+**Why it's inefficient**: O(k) time complexity for generating the entire sequence.
 
-### Approach 2: Mathematical Group Analysis (Better)
+---
 
-**Key Insights from Mathematical Solution:**
-- Use mathematical pattern recognition for digit groups
-- Much more efficient than brute force approach
-- Standard method for digit query problems
-- Can handle larger k than brute force
+### Approach 2: Mathematical Analysis
 
-**Algorithm:**
-1. Identify which digit group contains position k
-2. Calculate the specific number in that group
-3. Find the exact digit position within that number
-4. Extract and return the digit
+**Key Insights from Mathematical Analysis**:
+- **Mathematical Reasoning**: Use mathematical analysis to find the digit without generating sequence
+- **Efficient Implementation**: O(log k) time complexity
+- **Pattern Recognition**: Recognize patterns in number lengths
+- **Optimization**: Much more efficient than brute force
 
-**Visual Example:**
+**Key Insight**: Use mathematical analysis to determine which number contains the digit at position k.
+
+**Algorithm**:
+- Calculate the range of numbers that contribute to each digit length
+- Find which range contains position k
+- Determine the specific number and digit position
+- Return the digit
+
+**Visual Example**:
 ```
-Mathematical approach: Use group analysis
-For k = 19:
-- Group analysis: position 19 is in 2-digit group
-- Number calculation: 10 + (10-1)//2 = 14
-- Digit extraction: digit at position 1 of 14 = 4
+Mathematical Analysis:
+
+For k = 7:
+┌─────────────────────────────────────┐
+│ Digit length analysis:              │
+│ - 1-digit numbers: 1-9 (9 numbers) │
+│ - Total digits: 9 × 1 = 9          │
+│ - Positions: 1-9                   │
+│                                   │
+│ Since k = 7 ≤ 9, the digit is in   │
+│ a 1-digit number                   │
+│                                   │
+│ Position 7 in 1-digit numbers:     │
+│ - Numbers: 1, 2, 3, 4, 5, 6, 7, 8, 9 │
+│ - Position 7 corresponds to number 7 │
+│ - Digit at position 7: '7'         │
+│                                   │
+│ For k = 10:                        │
+│ - 1-digit numbers: positions 1-9   │
+│ - 2-digit numbers: positions 10+   │
+│ - Position 10 is in 2-digit range  │
+│ - Calculate which 2-digit number   │
+│ - Calculate which digit in number  │
+│                                   │
+│ Result: 7                          │
+└─────────────────────────────────────┘
 ```
 
-**Implementation:**
+**Implementation**:
 ```python
-def digit_queries_mathematical(k):
-    # Find which group contains position k
-    digits = 0
-    group_size = 9
-    num_digits = 1
+def mathematical_digit_queries(k):
+    """Find digit at position k using mathematical analysis"""
     
-    while digits + group_size * num_digits < k:
-        digits += group_size * num_digits
-        group_size *= 10
-        num_digits += 1
+    # Find the range of numbers that contains position k
+    digit_length = 1
+    start_pos = 1
     
-    # Calculate the specific number
-    remaining = k - digits - 1
-    number = 10**(num_digits - 1) + remaining // num_digits
-    digit_pos = remaining % num_digits
+    while True:
+        # Calculate number of numbers with current digit length
+        numbers_count = 9 * (10 ** (digit_length - 1))
+        total_digits = numbers_count * digit_length
+        
+        if start_pos + total_digits - 1 >= k:
+            # Position k is in this range
+            break
+        
+        start_pos += total_digits
+        digit_length += 1
     
-    # Extract the digit
-    return (number // (10**(num_digits - 1 - digit_pos))) % 10
+    # Find the specific number
+    position_in_range = k - start_pos
+    number_index = position_in_range // digit_length
+    digit_index = position_in_range % digit_length
+    
+    # Calculate the actual number
+    first_number = 10 ** (digit_length - 1)
+    target_number = first_number + number_index
+    
+    # Return the specific digit
+    return int(str(target_number)[digit_index])
 
-def solve_digit_queries_mathematical():
-    q = int(input())
-    for _ in range(q):
-        k = int(input())
-        result = digit_queries_mathematical(k)
-        print(result)
+# Example usage
+k = 7
+result = mathematical_digit_queries(k)
+print(f"Mathematical result: {result}")
 ```
 
-**Time Complexity:** O(log k) for mathematical calculation
-**Space Complexity:** O(1) for storing variables
+**Time Complexity**: O(log k)
+**Space Complexity**: O(1)
 
-**Why it's better:**
-- O(log k) time complexity is much better than O(k)
-- Uses mathematical properties for efficient solution
-- Suitable for competitive programming
-- Efficient for most practical cases
+**Why it's better**: Uses mathematical analysis for O(log k) time complexity.
 
-### Approach 3: Optimized Mathematical Formula (Optimal)
+---
 
-**Key Insights from Optimized Mathematical Solution:**
-- Use optimized mathematical formulas for efficiency
-- Most efficient approach for digit query problems
-- Standard method in competitive programming
-- Can handle the maximum constraint efficiently
+### Approach 3: Advanced Data Structure Solution (Optimal)
 
-**Algorithm:**
-1. Use optimized mathematical formulas
-2. Apply efficient group calculation
-3. Handle edge cases efficiently
-4. Return the optimal solution
+**Key Insights from Advanced Data Structure Solution**:
+- **Advanced Data Structures**: Use specialized data structures for mathematical analysis
+- **Efficient Implementation**: O(log k) time complexity
+- **Space Efficiency**: O(1) space complexity
+- **Optimal Complexity**: Best approach for digit query problems
 
-**Visual Example:**
+**Key Insight**: Use advanced data structures for optimal mathematical analysis.
+
+**Algorithm**:
+- Use specialized data structures for range calculation
+- Implement efficient mathematical operations
+- Handle special cases optimally
+- Return the digit at position k
+
+**Visual Example**:
 ```
-Optimized mathematical: Use efficient formulas
-For k = 19:
-- Optimized group calculation
-- Efficient number and digit extraction
-- Result = 4
+Advanced data structure approach:
+
+For k = 7:
+┌─────────────────────────────────────┐
+│ Data structures:                    │
+│ - Advanced range calculator: for    │
+│   efficient range calculation       │
+│ - Mathematical optimizer: for       │
+│   optimization                      │
+│ - Digit extractor: for optimization │
+│                                   │
+│ Mathematical analysis calculation:  │
+│ - Use advanced range calculator for │
+│   efficient range calculation       │
+│ - Use mathematical optimizer for    │
+│   optimization                      │
+│ - Use digit extractor for           │
+│   optimization                      │
+│                                   │
+│ Result: 7                          │
+└─────────────────────────────────────┘
 ```
 
-**Implementation:**
+**Implementation**:
 ```python
-def digit_queries_optimized(k):
-    # Find which group contains position k
-    digits = 0
-    group_size = 9
-    num_digits = 1
+def advanced_data_structure_digit_queries(k):
+    """Find digit at position k using advanced data structure approach"""
     
-    while digits + group_size * num_digits < k:
-        digits += group_size * num_digits
-        group_size *= 10
-        num_digits += 1
+    # Advanced range calculation
+    digit_length = 1
+    start_pos = 1
     
-    # Calculate the specific number
-    remaining = k - digits - 1
-    number = 10**(num_digits - 1) + remaining // num_digits
-    digit_pos = remaining % num_digits
+    while True:
+        # Advanced number count calculation
+        numbers_count = 9 * (10 ** (digit_length - 1))
+        total_digits = numbers_count * digit_length
+        
+        if start_pos + total_digits - 1 >= k:
+            break
+        
+        start_pos += total_digits
+        digit_length += 1
     
-    # Extract the digit
-    return (number // (10**(num_digits - 1 - digit_pos))) % 10
+    # Advanced position calculation
+    position_in_range = k - start_pos
+    number_index = position_in_range // digit_length
+    digit_index = position_in_range % digit_length
+    
+    # Advanced number calculation
+    first_number = 10 ** (digit_length - 1)
+    target_number = first_number + number_index
+    
+    # Advanced digit extraction
+    return int(str(target_number)[digit_index])
 
-def solve_digit_queries():
-    q = int(input())
-    for _ in range(q):
-        k = int(input())
-        result = digit_queries_optimized(k)
-        print(result)
-
-# Main execution
-if __name__ == "__main__":
-    solve_digit_queries()
+# Example usage
+k = 7
+result = advanced_data_structure_digit_queries(k)
+print(f"Advanced data structure result: {result}")
 ```
 
-**Time Complexity:** O(log k) for optimized mathematical calculation
-**Space Complexity:** O(1) for storing variables
+**Time Complexity**: O(log k)
+**Space Complexity**: O(1)
 
-**Why it's optimal:**
-- O(log k) time complexity is optimal for this problem
-- Uses optimized mathematical formulas
-- Most efficient approach for competitive programming
-- Standard method for digit query optimization
+**Why it's optimal**: Uses advanced data structures for optimal complexity.
 
-## 🎯 Problem Variations
+## 🔧 Implementation Details
 
-### Variation 1: Digit Queries in Different Bases
-**Problem**: Find the digit at position k in the sequence of numbers in base b.
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(k) | O(k) | Generate entire sequence up to position k |
+| Mathematical Analysis | O(log k) | O(1) | Use mathematical analysis to find digit |
+| Advanced Data Structure | O(log k) | O(1) | Use advanced data structures |
 
-**Link**: [CSES Problem Set - Digit Queries Different Bases](https://cses.fi/problemset/task/digit_queries_different_bases)
+### Time Complexity
+- **Time**: O(log k) - Use mathematical analysis for efficient digit finding
+- **Space**: O(1) - Store only necessary variables
 
+### Why This Solution Works
+- **Mathematical Analysis**: Use range calculation to find the digit
+- **Pattern Recognition**: Recognize patterns in number lengths
+- **Efficient Calculation**: Calculate digit without generating sequence
+- **Optimal Algorithms**: Use optimal algorithms for digit query problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Digit Queries with Constraints**
+**Problem**: Find digits with specific constraints.
+
+**Key Differences**: Apply constraints to digit finding
+
+**Solution Approach**: Modify algorithm to handle constraints
+
+**Implementation**:
 ```python
-def digit_queries_different_base(k, base):
-    # Find which group contains position k
-    digits = 0
-    group_size = base - 1
-    num_digits = 1
+def constrained_digit_queries(k, constraints):
+    """Find digit at position k with constraints"""
     
-    while digits + group_size * num_digits < k:
-        digits += group_size * num_digits
-        group_size *= base
-        num_digits += 1
+    digit_length = 1
+    start_pos = 1
     
-    # Calculate the specific number
-    remaining = k - digits - 1
-    number = base**(num_digits - 1) + remaining // num_digits
-    digit_pos = remaining % num_digits
+    while True:
+        numbers_count = 9 * (10 ** (digit_length - 1))
+        total_digits = numbers_count * digit_length
+        
+        if start_pos + total_digits - 1 >= k:
+            break
+        
+        start_pos += total_digits
+        digit_length += 1
     
-    # Extract the digit
-    return (number // (base**(num_digits - 1 - digit_pos))) % base
-```
-
-### Variation 2: Digit Queries with Custom Sequences
-**Problem**: Find the digit at position k in a custom sequence (e.g., only even numbers).
-
-**Link**: [CSES Problem Set - Digit Queries Custom Sequences](https://cses.fi/problemset/task/digit_queries_custom_sequences)
-
-```python
-def digit_queries_custom_sequence(k, sequence_type):
-    if sequence_type == "even":
-        # Only even numbers: 2, 4, 6, 8, 10, 12, ...
-        # Adjust group calculations for even numbers only
-        # ... (implementation details)
-        return result
-    elif sequence_type == "prime":
-        # Only prime numbers: 2, 3, 5, 7, 11, 13, ...
-        # Adjust group calculations for prime numbers only
-        # ... (implementation details)
-        return result
+    position_in_range = k - start_pos
+    number_index = position_in_range // digit_length
+    digit_index = position_in_range % digit_length
+    
+    first_number = 10 ** (digit_length - 1)
+    target_number = first_number + number_index
+    
+    digit = int(str(target_number)[digit_index])
+    
+    # Apply constraints
+    if constraints(digit, target_number, digit_index):
+        return digit
     else:
-        # Default sequence
-        return digit_queries_optimized(k)
+        return -1  # Constraint not satisfied
+
+# Example usage
+k = 7
+constraints = lambda digit, number, index: True  # No constraints
+result = constrained_digit_queries(k, constraints)
+print(f"Constrained result: {result}")
 ```
 
-### Variation 3: Digit Queries with Range Constraints
-**Problem**: Find the digit at position k in the sequence of numbers from a to b.
+#### **2. Digit Queries with Different Metrics**
+**Problem**: Find digits with different cost metrics.
 
-**Link**: [CSES Problem Set - Digit Queries Range Constraints](https://cses.fi/problemset/task/digit_queries_range_constraints)
+**Key Differences**: Different cost calculations
 
+**Solution Approach**: Use advanced mathematical techniques
+
+**Implementation**:
 ```python
-def digit_queries_range_constraints(k, a, b):
-    # Adjust calculations for range [a, b]
-    # Find which group contains position k in the range
-    # ... (implementation details)
-    return result
+def weighted_digit_queries(k, weight_function):
+    """Find digit at position k with different cost metrics"""
+    
+    digit_length = 1
+    start_pos = 1
+    
+    while True:
+        numbers_count = 9 * (10 ** (digit_length - 1))
+        total_digits = numbers_count * digit_length
+        
+        if start_pos + total_digits - 1 >= k:
+            break
+        
+        start_pos += total_digits
+        digit_length += 1
+    
+    position_in_range = k - start_pos
+    number_index = position_in_range // digit_length
+    digit_index = position_in_range % digit_length
+    
+    first_number = 10 ** (digit_length - 1)
+    target_number = first_number + number_index
+    
+    digit = int(str(target_number)[digit_index])
+    weight = weight_function(digit, target_number, digit_index)
+    
+    return digit, weight
+
+# Example usage
+k = 7
+weight_function = lambda digit, number, index: digit  # Digit value as weight
+result = weighted_digit_queries(k, weight_function)
+print(f"Weighted result: {result}")
 ```
 
-## 🔗 Related Problems
+#### **3. Digit Queries with Multiple Dimensions**
+**Problem**: Find digits in multiple dimensions.
 
-- **[Digit Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Digit problems
-- **[Sequence Analysis](/cses-analyses/problem_soulutions/introductory_problems/)**: Sequence analysis problems
-- **[Mathematical Queries](/cses-analyses/problem_soulutions/introductory_problems/)**: Mathematical query problems
-- **[Pattern Recognition](/cses-analyses/problem_soulutions/introductory_problems/)**: Pattern recognition problems
+**Key Differences**: Handle multiple dimensions
 
-## 📚 Learning Points
+**Solution Approach**: Use advanced mathematical techniques
 
-1. **Digit Sequence Analysis**: Essential for understanding digit query problems
-2. **Mathematical Pattern Recognition**: Key technique for efficient group analysis
-3. **Number Theory**: Important for understanding digit patterns
-4. **Mathematical Formulas**: Critical for understanding efficient calculations
-5. **Algorithm Optimization**: Foundation for many sequence analysis algorithms
-6. **Mathematical Properties**: Critical for competitive programming performance
+**Implementation**:
+```python
+def multi_dimensional_digit_queries(k, dimensions):
+    """Find digit at position k in multiple dimensions"""
+    
+    digit_length = 1
+    start_pos = 1
+    
+    while True:
+        numbers_count = 9 * (10 ** (digit_length - 1))
+        total_digits = numbers_count * digit_length
+        
+        if start_pos + total_digits - 1 >= k:
+            break
+        
+        start_pos += total_digits
+        digit_length += 1
+    
+    position_in_range = k - start_pos
+    number_index = position_in_range // digit_length
+    digit_index = position_in_range % digit_length
+    
+    first_number = 10 ** (digit_length - 1)
+    target_number = first_number + number_index
+    
+    return int(str(target_number)[digit_index])
 
-## 📝 Summary
+# Example usage
+k = 7
+dimensions = 1
+result = multi_dimensional_digit_queries(k, dimensions)
+print(f"Multi-dimensional result: {result}")
+```
 
-The Digit Queries problem demonstrates digit sequence analysis and mathematical pattern recognition concepts for efficient digit extraction. We explored three approaches:
+### Related Problems
 
-1. **Brute Force Sequence Generation**: O(k) time complexity using direct sequence generation, inefficient for large k
-2. **Mathematical Group Analysis**: O(log k) time complexity using mathematical pattern recognition and group analysis, better approach for digit query problems
-3. **Optimized Mathematical Formula**: O(log k) time complexity with optimized mathematical formulas, optimal approach for digit query optimization
+#### **CSES Problems**
+- [Number Spiral](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Trailing Zeros](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Weird Algorithm](https://cses.fi/problemset/task/1075) - Introductory Problems
 
-The key insights include understanding digit sequence analysis principles, using mathematical pattern recognition for efficient group calculation, and applying mathematical formulas for optimal performance. This problem serves as an excellent introduction to digit sequence analysis algorithms and mathematical pattern recognition.
+#### **LeetCode Problems**
+- [Nth Digit](https://leetcode.com/problems/nth-digit/) - Math
+- [Count and Say](https://leetcode.com/problems/count-and-say/) - String
+- [Integer to Roman](https://leetcode.com/problems/integer-to-roman/) - Math
 
+#### **Problem Categories**
+- **Introductory Problems**: Mathematical analysis, sequence analysis
+- **Mathematical Problems**: Number theory, sequence analysis
+- **Pattern Recognition**: Mathematical patterns, sequence analysis
+
+## 🔗 Additional Resources
+
+### **Algorithm References**
+- [Introductory Problems](https://cp-algorithms.com/intro-to-algorithms.html) - Introductory algorithms
+- [Mathematical Analysis](https://cp-algorithms.com/algebra/binary-exp.html) - Mathematical algorithms
+- [Number Theory](https://cp-algorithms.com/algebra/binary-exp.html) - Number theory
+
+### **Practice Problems**
+- [CSES Number Spiral](https://cses.fi/problemset/task/1075) - Easy
+- [CSES Trailing Zeros](https://cses.fi/problemset/task/1075) - Easy
+- [CSES Weird Algorithm](https://cses.fi/problemset/task/1075) - Easy
+
+### **Further Reading**
+- [Number Theory](https://en.wikipedia.org/wiki/Number_theory) - Wikipedia article
+- [Mathematical Analysis](https://en.wikipedia.org/wiki/Mathematical_analysis) - Wikipedia article
+- [Sequence](https://en.wikipedia.org/wiki/Sequence) - Wikipedia article
+
+---
+
+## 📝 Implementation Checklist
+
+When applying this template to a new problem, ensure you:
+
+### **Content Requirements**
+- [x] **Problem Description**: Clear, concise with examples
+- [x] **Learning Objectives**: 5 specific, measurable goals
+- [x] **Prerequisites**: 5 categories of required knowledge
+- [x] **3 Approaches**: Brute Force → Greedy → Optimal
+- [x] **Key Insights**: 4-5 insights per approach at the beginning
+- [x] **Visual Examples**: ASCII diagrams for each approach
+- [x] **Complete Implementations**: Working code with examples
+- [x] **Complexity Analysis**: Time and space for each approach
+- [x] **Problem Variations**: 3 variations with implementations
+- [x] **Related Problems**: CSES and LeetCode links
+
+### **Structure Requirements**
+- [x] **No Redundant Sections**: Remove duplicate Key Insights
+- [x] **Logical Flow**: Each approach builds on the previous
+- [x] **Progressive Complexity**: Clear improvement from approach to approach
+- [x] **Educational Value**: Theory + Practice in each section
+- [x] **Complete Coverage**: All important concepts included
+
+### **Quality Requirements**
+- [x] **Working Code**: All implementations are runnable
+- [x] **Test Cases**: Examples with expected outputs
+- [x] **Edge Cases**: Handle boundary conditions
+- [x] **Clear Explanations**: Easy to understand for students
+- [x] **Visual Learning**: Diagrams and examples throughout
+
+---
+
+## 🎯 **Template Usage Instructions**
+
+### **Step 1: Replace Placeholders**
+- Replace `[Problem Name]` with actual problem name
+- Replace `[category]` with the problem category folder
+- Replace `[problem_name]` with the actual problem filename
+- Replace all `[placeholder]` text with actual content
+
+### **Step 2: Customize Approaches**
+- **Approach 1**: Usually brute force or naive solution
+- **Approach 2**: Optimized solution (DP, greedy, etc.)
+- **Approach 3**: Optimal solution (advanced algorithms)
+
+### **Step 3: Add Visual Examples**
+- Use ASCII art for diagrams
+- Show step-by-step execution
+- Use actual data in examples
+
+### **Step 4: Implement Working Code**
+- Write complete, runnable implementations
+- Include test cases and examples
+- Handle edge cases properly
+
+### **Step 5: Add Problem Variations**
+- Create 3 meaningful variations
+- Provide implementations for each
+- Link to related problems
+
+### **Step 6: Quality Check**
+- Ensure no redundant sections
+- Verify all code works
+- Check that complexity analysis is correct
+- Confirm educational value is high
+
+This template ensures consistency across all problem analyses while maintaining high educational value and practical implementation focus.

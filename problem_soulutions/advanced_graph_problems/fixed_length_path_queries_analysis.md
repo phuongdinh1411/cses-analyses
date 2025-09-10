@@ -1,242 +1,339 @@
 ---
 layout: simple
-title: "Fixed Length Path Queries"
+title: "Fixed Length Path Queries - Graph Theory Problem"
 permalink: /problem_soulutions/advanced_graph_problems/fixed_length_path_queries_analysis
 ---
 
-# Fixed Length Path Queries
+# Fixed Length Path Queries - Graph Theory Problem
 
 ## 📋 Problem Information
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- Understand the concept of path queries and reachability in graphs
-- Apply matrix exponentiation for efficient path counting
-- Implement dynamic programming for path queries with fixed lengths
-- Optimize path query algorithms for multiple queries
-- Handle large path lengths using modular arithmetic and matrix operations
+- Understand the concept of fixed length paths in directed graphs
+- Apply graph theory principles to determine path existence
+- Implement algorithms for finding paths of specific lengths
+- Optimize graph traversal for multiple path queries
+- Handle special cases in path analysis
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Matrix exponentiation, dynamic programming, graph reachability
-- **Data Structures**: Adjacency matrices, matrices, arrays
-- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory
-- **Programming Skills**: Matrix multiplication, modular arithmetic, dynamic programming
-- **Related Problems**: Fixed Length Cycle Queries (similar matrix approach), Shortest Routes I (path finding), Message Route (reachability)
+- **Algorithm Knowledge**: Graph theory, path algorithms, graph traversal, dynamic programming
+- **Data Structures**: Adjacency lists, matrices, dynamic programming tables
+- **Mathematical Concepts**: Graph theory, path properties, combinatorial optimization
+- **Programming Skills**: Graph representation, DFS, BFS, matrix operations
+- **Related Problems**: Fixed Length Hamiltonian Path Queries (similar approach), Round Trip (cycle detection), Graph Girth (cycle properties)
 
 ## 📋 Problem Description
 
-Given a graph, answer queries about paths of fixed length between vertices.
+Given a directed graph with n nodes and q queries, for each query determine if there exists a path of length k from node a to node b.
 
 **Input**: 
-- n, m: number of vertices and edges
-- m lines: a b (edge between vertices a and b)
+- n: number of nodes
 - q: number of queries
-- q lines: u v k (query: is there a path of length k from u to v?)
+- n lines: adjacency matrix (1 if edge exists, 0 otherwise)
+- q lines: a b k (check for path from node a to b of length k)
 
 **Output**: 
-- For each query, print "YES" if path exists, "NO" otherwise
+- Answer to each query (1 if exists, 0 otherwise)
 
 **Constraints**:
 - 1 ≤ n ≤ 100
-- 1 ≤ m ≤ 1000
 - 1 ≤ q ≤ 10^5
 - 1 ≤ k ≤ 10^9
+- 1 ≤ a,b ≤ n
 
 **Example**:
 ```
 Input:
-4 4
-1 2
-2 3
-3 4
-1 4
-3
-1 4 1
-1 4 2
-1 4 3
+3 2
+0 1 1
+1 0 1
+1 1 0
+1 3 2
+2 1 1
 
 Output:
-YES
-NO
-YES
+1
+1
 
 Explanation**: 
-Path 1→4 has length 1 (direct edge)
-No path of length 2 from 1 to 4
-Path 1→2→3→4 has length 3
+Query 1: Path of length 2 from node 1 to 3
+Path: 1→2→3 (length 2)
+Answer: 1
+
+Query 2: Path of length 1 from node 2 to 1
+Path: 2→1 (direct edge)
+Answer: 1
 ```
 
 ## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Approach 1: Brute Force Path Enumeration (Brute Force)
+### Approach 1: Brute Force Solution
 
-**Key Insights from Brute Force Approach**:
-- **Path Enumeration**: Try all possible paths of given length
-- **DFS Traversal**: Use DFS to explore all possible paths
-- **Length Tracking**: Keep track of current path length
-- **Exhaustive Search**: Try all possible path combinations
+**Key Insights from Brute Force Solution**:
+- **Exhaustive Search**: Try all possible paths of length k
+- **DFS Traversal**: Use depth-first search to explore all paths
+- **Exponential Growth**: Number of paths grows exponentially with k
+- **Baseline Understanding**: Provides correct answer but impractical for large k
 
-**Key Insight**: Use brute force DFS to enumerate all possible paths and check if any has the required length.
+**Key Insight**: Use DFS to explore all possible paths of length k from start to end.
 
 **Algorithm**:
-- For each query, start DFS from source vertex
-- Keep track of current path length
-- If path length equals required length and reaches target, return YES
-- If no such path found, return NO
+- Start DFS from node a
+- Explore all paths of length exactly k
+- Return 1 if any path reaches node b, 0 otherwise
 
 **Visual Example**:
 ```
-Graph: 1-2-3-4, 1-4
+Graph: 1→2→3, 1→3, 2→1, k=2, start=1, end=3
 
-Query: 1→4, length 3
+DFS exploration:
 ┌─────────────────────────────────────┐
-│ DFS from 1:                        │
-│ Path: 1 (length 0)                 │
-│ Path: 1→2 (length 1)               │
-│ Path: 1→2→3 (length 2)             │
-│ Path: 1→2→3→4 (length 3) ✓        │
-│ Found path of length 3!            │
+│ Start at 1, depth=0                │
+│ ├─ Go to 2, depth=1                │
+│ │  └─ Go to 3, depth=2 ✓ (found!)  │
+│ └─ Go to 3, depth=1                │
+│    └─ No more edges                │
 └─────────────────────────────────────┘
 
-Result: YES
+Path found: 1→2→3 (length 2)
+Result: 1
 ```
 
 **Implementation**:
 ```python
-def brute_force_path_queries_solution(n, m, edges, queries):
+def brute_force_solution(n, adj_matrix, queries):
     """
-    Find fixed length paths using brute force DFS
+    Find path existence using brute force DFS approach
     
     Args:
-        n: number of vertices
-        m: number of edges
-        edges: list of (a, b) representing edges
-        queries: list of (u, v, k) representing queries
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, b, k) queries
     
     Returns:
-        list: "YES" or "NO" for each query
+        list: answers to queries
     """
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        adj[a].append(b)
-        adj[b].append(a)
-    
-    def dfs_path_exists(start, end, target_length, current_length, visited):
-        if current_length == target_length:
+    def has_path(start, end, k):
+        """Check if path of length k exists from start to end using DFS"""
+        if k == 0:
             return start == end
         
-        if current_length > target_length:
+        if k == 1:
+            return adj_matrix[start][end] == 1
+        
+        # DFS to find path of length k
+        def dfs(current, remaining_length):
+            if remaining_length == 0:
+                return current == end
+            
+            for next_node in range(n):
+                if adj_matrix[current][next_node] == 1:
+                    if dfs(next_node, remaining_length - 1):
+                        return True
             return False
         
-        for neighbor in adj[start]:
-            if neighbor not in visited:
-                visited.add(neighbor)
-                if dfs_path_exists(neighbor, end, target_length, current_length + 1, visited):
-                    return True
-                visited.remove(neighbor)
-        
-        return False
+        return dfs(start, k)
     
     results = []
-    for u, v, k in queries:
-        visited = {u}
-        if dfs_path_exists(u, v, k, 0, visited):
-            results.append("YES")
-        else:
-            results.append("NO")
+    for a, b, k in queries:
+        result = 1 if has_path(a - 1, b - 1, k) else 0  # Convert to 0-indexed
+        results.append(result)
     
     return results
 
 # Example usage
-n, m = 4, 4
-edges = [(1, 2), (2, 3), (3, 4), (1, 4)]
-queries = [(1, 4, 1), (1, 4, 2), (1, 4, 3)]
-result = brute_force_path_queries_solution(n, m, edges, queries)
-print(f"Brute force result: {result}")  # Output: ['YES', 'NO', 'YES']
+n = 3
+adj_matrix = [
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0]
+]
+queries = [(1, 3, 2), (2, 1, 1)]
+result = brute_force_solution(n, adj_matrix, queries)
+print(f"Brute force result: {result}")  # Output: [1, 1]
 ```
 
-**Time Complexity**: O(q * n^k)
-**Space Complexity**: O(n)
+**Time Complexity**: O(n^k)
+**Space Complexity**: O(k)
 
-**Why it's inefficient**: O(q * n^k) complexity is exponential and too slow for large k values.
+**Why it's inefficient**: Exponential time complexity makes it impractical for large k.
 
 ---
 
-### Approach 2: Matrix Exponentiation (Optimized)
+### Approach 2: Dynamic Programming Solution
 
-**Key Insights from Matrix Exponentiation Approach**:
-- **Matrix Power**: Use adjacency matrix exponentiation
-- **Path Counting**: Matrix power gives number of paths of given length
-- **Efficient Computation**: Use binary exponentiation for large powers
-- **Query Processing**: Precompute matrix powers for efficient queries
+**Key Insights from Dynamic Programming Solution**:
+- **State Definition**: dp[i][j][k] = can reach node j from node i in exactly k steps
+- **State Transition**: dp[i][j][k] = OR of dp[i][l][k-1] AND adj[l][j] for all l
+- **Matrix Multiplication**: Use adjacency matrix powers for path counting
+- **Memoization**: Cache results to avoid recomputation
 
-**Key Insight**: Use matrix exponentiation to efficiently compute paths of any length.
+**Key Insight**: Use dynamic programming to compute path existence for all pairs and lengths.
 
 **Algorithm**:
-- Build adjacency matrix from graph
-- Use matrix exponentiation to compute A^k
-- A^k[i][j] gives number of paths of length k from i to j
-- For each query, check if A^k[u][v] > 0
+- Use DP to compute path existence for all (i,j,k) combinations
+- For each query, return precomputed result
+- Use matrix operations for efficient computation
 
 **Visual Example**:
 ```
-Graph: 1-2-3-4, 1-4
+Graph: 1→2→3, 1→3, 2→1, k=2
 
-Adjacency Matrix A:
-    1  2  3  4
-1 [ 0  1  0  1 ]
-2 [ 1  0  1  0 ]
-3 [ 0  1  0  1 ]
-4 [ 1  0  1  0 ]
+DP table for length 2:
+┌─────────────────────────────────────┐
+│ dp[1][3][2] = dp[1][2][1] & adj[2][3] │
+│ dp[1][3][2] = 1 & 1 = 1 ✓          │
+│ dp[2][1][2] = dp[2][3][1] & adj[3][1] │
+│ dp[2][1][2] = 1 & 1 = 1 ✓          │
+└─────────────────────────────────────┘
 
-A^3:
-    1  2  3  4
-1 [ 0  2  0  2 ]
-2 [ 2  0  2  0 ]
-3 [ 0  2  0  2 ]
-4 [ 2  0  2  0 ]
-
-Query 1→4, length 3: A^3[0][3] = 2 > 0 → YES
+Path exists for both queries
+Result: [1, 1]
 ```
 
 **Implementation**:
 ```python
-def matrix_exponentiation_path_queries_solution(n, m, edges, queries):
+def dp_solution(n, adj_matrix, queries):
     """
-    Find fixed length paths using matrix exponentiation
+    Find path existence using dynamic programming
     
     Args:
-        n: number of vertices
-        m: number of edges
-        edges: list of (a, b) representing edges
-        queries: list of (u, v, k) representing queries
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, b, k) queries
     
     Returns:
-        list: "YES" or "NO" for each query
+        list: answers to queries
     """
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
+    # Find maximum k value
+    max_k = max(k for _, _, k in queries)
     
-    def matrix_multiply(a, b):
+    # DP table: dp[i][j][k] = can reach node j from node i in exactly k steps
+    dp = [[[False] * (max_k + 1) for _ in range(n)] for _ in range(n)]
+    
+    # Base case: paths of length 0
+    for i in range(n):
+        dp[i][i][0] = True
+    
+    # Base case: paths of length 1
+    for i in range(n):
+        for j in range(n):
+            dp[i][j][1] = (adj_matrix[i][j] == 1)
+    
+    # Fill DP table
+    for k in range(2, max_k + 1):
+        for i in range(n):
+            for j in range(n):
+                for l in range(n):
+                    if dp[i][l][k-1] and adj_matrix[l][j] == 1:
+                        dp[i][j][k] = True
+                        break
+    
+    # Answer queries
+    results = []
+    for a, b, k in queries:
+        if k <= max_k:
+            result = 1 if dp[a-1][b-1][k] else 0  # Convert to 0-indexed
+        else:
+            result = 0
+        results.append(result)
+    
+    return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0]
+]
+queries = [(1, 3, 2), (2, 1, 1)]
+result = dp_solution(n, adj_matrix, queries)
+print(f"DP result: {result}")  # Output: [1, 1]
+```
+
+**Time Complexity**: O(n³ × max_k)
+**Space Complexity**: O(n² × max_k)
+
+**Why it's better**: Much faster than brute force, but still limited by max_k.
+
+**Implementation Considerations**:
+- **Matrix Operations**: Use adjacency matrix for efficient edge checking
+- **State Transitions**: Check all intermediate nodes for path construction
+- **Memory Management**: Use 3D DP table for state storage
+
+---
+
+### Approach 3: Matrix Exponentiation Solution (Optimal)
+
+**Key Insights from Matrix Exponentiation Solution**:
+- **Matrix Powers**: Use adjacency matrix powers for path counting
+- **Binary Exponentiation**: Compute matrix powers efficiently
+- **Logarithmic Time**: O(log k) time per query
+- **Efficient Storage**: Store only necessary matrix powers
+
+**Key Insight**: Use matrix exponentiation to compute adjacency matrix powers for efficient path queries.
+
+**Algorithm**:
+- Compute adjacency matrix powers using binary exponentiation
+- For each query, use appropriate matrix power to check path existence
+- Return 1 if path exists, 0 otherwise
+
+**Visual Example**:
+```
+Graph: 1→2→3, 1→3, 2→1
+
+Adjacency matrix A:
+┌─────────────────────────────────────┐
+│ A = [0 1 1]                        │
+│     [1 0 1]                        │
+│     [1 1 0]                        │
+└─────────────────────────────────────┘
+
+A² = A × A:
+┌─────────────────────────────────────┐
+│ A² = [2 1 1]                       │
+│      [1 2 1]                       │
+│      [1 1 2]                       │
+└─────────────────────────────────────┘
+
+Query 1: A²[0][2] = 1 ✓ (path of length 2)
+Query 2: A[1][0] = 1 ✓ (path of length 1)
+```
+
+**Implementation**:
+```python
+def matrix_exponentiation_solution(n, adj_matrix, queries):
+    """
+    Find path existence using matrix exponentiation
+    
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, b, k) queries
+    
+    Returns:
+        list: answers to queries
+    """
+    def matrix_multiply(A, B):
+        """Multiply two n×n matrices"""
         result = [[0] * n for _ in range(n)]
         for i in range(n):
             for j in range(n):
                 for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
+                    result[i][j] += A[i][k] * B[k][j]
         return result
     
     def matrix_power(matrix, power):
+        """Compute matrix^power using binary exponentiation"""
         if power == 0:
-            # Identity matrix
-            result = [[0] * n for _ in range(n)]
+            # Return identity matrix
+            identity = [[0] * n for _ in range(n)]
             for i in range(n):
-                result[i][i] = 1
-            return result
+                identity[i][i] = 1
+            return identity
         
         if power == 1:
             return matrix
@@ -247,864 +344,193 @@ def matrix_exponentiation_path_queries_solution(n, m, edges, queries):
         else:
             return matrix_multiply(matrix, matrix_power(matrix, power - 1))
     
+    # Find unique k values
+    unique_k_values = sorted(set(k for _, _, k in queries))
+    
+    # Precompute matrix powers
+    matrix_powers = {}
+    for k in unique_k_values:
+        matrix_powers[k] = matrix_power(adj_matrix, k)
+    
+    # Answer queries
     results = []
-    for u, v, k in queries:
-        matrix_k = matrix_power(adj_matrix, k)
-        if matrix_k[u-1][v-1] > 0:
-            results.append("YES")
+    for a, b, k in queries:
+        if k in matrix_powers:
+            result = 1 if matrix_powers[k][a-1][b-1] > 0 else 0  # Convert to 0-indexed
         else:
-            results.append("NO")
+            result = 0
+        results.append(result)
     
     return results
 
 # Example usage
-n, m = 4, 4
-edges = [(1, 2), (2, 3), (3, 4), (1, 4)]
-queries = [(1, 4, 1), (1, 4, 2), (1, 4, 3)]
-result = matrix_exponentiation_path_queries_solution(n, m, edges, queries)
-print(f"Matrix exponentiation result: {result}")  # Output: ['YES', 'NO', 'YES']
+n = 3
+adj_matrix = [
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0]
+]
+queries = [(1, 3, 2), (2, 1, 1)]
+result = matrix_exponentiation_solution(n, adj_matrix, queries)
+print(f"Matrix exponentiation result: {result}")  # Output: [1, 1]
 ```
 
-**Time Complexity**: O(q * n^3 * log k)
-**Space Complexity**: O(n^2)
+**Time Complexity**: O(n³ × log(max_k) + q)
+**Space Complexity**: O(n² × unique_k_values)
 
-**Why it's better**: O(q * n^3 * log k) is much better than exponential brute force for large k values.
+**Why it's optimal**: O(log k) time per query after O(n³ × log(max_k)) preprocessing, making it efficient for large k values.
 
-**Implementation Considerations**:
-- **Matrix Multiplication**: Use efficient matrix multiplication
-- **Binary Exponentiation**: Use binary exponentiation for large powers
-- **Memory Management**: Store matrix powers efficiently
-- **Query Processing**: Process queries efficiently
+**Implementation Details**:
+- **Binary Exponentiation**: Compute matrix powers efficiently
+- **Query Optimization**: Answer queries in constant time
+- **Memory Efficiency**: Store only necessary matrix powers
+- **Matrix Operations**: Use efficient matrix multiplication
 
----
+## 🔧 Implementation Details
 
-### Approach 3: Optimal Matrix Exponentiation (Optimal)
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(n^k) | O(k) | Exhaustive DFS search |
+| Dynamic Programming | O(n³ × max_k) | O(n² × max_k) | Use DP for all path lengths |
+| Matrix Exponentiation | O(n³ × log(max_k) + q) | O(n² × unique_k_values) | Use matrix powers for O(log k) queries |
 
-**Key Insights from Optimal Approach**:
-- **Optimized Matrix Operations**: Use optimized matrix multiplication
-- **Memory Optimization**: Minimize memory usage
-- **Query Optimization**: Optimize query processing
-- **Optimal Algorithm**: Use the most efficient matrix exponentiation
+### Time Complexity
+- **Time**: O(n³ × log(max_k) + q) - Precompute matrix powers, then O(1) per query
+- **Space**: O(n² × unique_k_values) - Store matrix powers
 
-**Key Insight**: Use optimized matrix exponentiation with efficient memory management.
+### Why This Solution Works
+- **Matrix Exponentiation**: Use adjacency matrix powers for path counting
+- **Binary Exponentiation**: Compute matrix powers efficiently
+- **Query Optimization**: Answer queries in constant time
+- **Efficient Storage**: Store only necessary matrix powers
 
-**Algorithm**:
-- Build adjacency matrix efficiently
-- Use optimized matrix multiplication
-- Implement efficient binary exponentiation
-- Process queries optimally
+## 🚀 Problem Variations
 
-**Visual Example**:
-```
-Graph: 1-2-3-4, 1-4
+### Extended Problems with Detailed Code Examples
 
-Optimal Matrix Exponentiation:
-┌─────────────────────────────────────┐
-│ A^1: Direct edges                  │
-│ A^2: Paths of length 2             │
-│ A^3: Paths of length 3             │
-│ Efficient computation using        │
-│ binary exponentiation              │
-└─────────────────────────────────────┘
-```
+#### **1. Weighted Path Queries**
+**Problem**: Find if there exists a path of length k with total weight w.
+
+**Key Differences**: Edges have weights, consider total weight
+
+**Solution Approach**: Use weighted adjacency matrix with matrix exponentiation
 
 **Implementation**:
 ```python
-def optimal_path_queries_solution(n, m, edges, queries):
+def weighted_path_queries(n, adj_matrix, weights, queries):
     """
-    Find fixed length paths using optimal matrix exponentiation
+    Find weighted path existence using matrix exponentiation
     
     Args:
-        n: number of vertices
-        m: number of edges
-        edges: list of (a, b) representing edges
-        queries: list of (u, v, k) representing queries
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        weights: weight matrix
+        queries: list of (a, b, k, w) queries
     
     Returns:
-        list: "YES" or "NO" for each query
+        list: answers to queries
     """
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
-    
-    def optimized_matrix_multiply(a, b):
+    def matrix_multiply(A, B):
+        """Multiply two n×n matrices"""
         result = [[0] * n for _ in range(n)]
         for i in range(n):
             for j in range(n):
-                if a[i][j]:  # Only multiply if non-zero
-                    for k in range(n):
-                        result[i][k] += a[i][j] * b[j][k]
+                for k in range(n):
+                    result[i][j] += A[i][k] * B[k][j]
         return result
     
-    def optimized_matrix_power(matrix, power):
+    def matrix_power(matrix, power):
+        """Compute matrix^power using binary exponentiation"""
         if power == 0:
-            result = [[0] * n for _ in range(n)]
+            # Return identity matrix
+            identity = [[0] * n for _ in range(n)]
             for i in range(n):
-                result[i][i] = 1
-            return result
+                identity[i][i] = 1
+            return identity
         
         if power == 1:
             return matrix
         
         if power % 2 == 0:
-            half_power = optimized_matrix_power(matrix, power // 2)
-            return optimized_matrix_multiply(half_power, half_power)
+            half_power = matrix_power(matrix, power // 2)
+            return matrix_multiply(half_power, half_power)
         else:
-            return optimized_matrix_multiply(matrix, optimized_matrix_power(matrix, power - 1))
+            return matrix_multiply(matrix, matrix_power(matrix, power - 1))
     
+    # Create weighted adjacency matrix
+    weighted_adj = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            if adj_matrix[i][j] == 1:
+                weighted_adj[i][j] = weights[i][j]
+    
+    # Find unique k values
+    unique_k_values = sorted(set(k for _, _, k, _ in queries))
+    
+    # Precompute matrix powers
+    matrix_powers = {}
+    for k in unique_k_values:
+        matrix_powers[k] = matrix_power(weighted_adj, k)
+    
+    # Answer queries
     results = []
-    for u, v, k in queries:
-        matrix_k = optimized_matrix_power(adj_matrix, k)
-        if matrix_k[u-1][v-1] > 0:
-            results.append("YES")
+    for a, b, k, w in queries:
+        if k in matrix_powers:
+            result = 1 if matrix_powers[k][a-1][b-1] == w else 0  # Convert to 0-indexed
         else:
-            results.append("NO")
+            result = 0
+        results.append(result)
     
     return results
 
 # Example usage
-n, m = 4, 4
-edges = [(1, 2), (2, 3), (3, 4), (1, 4)]
-queries = [(1, 4, 1), (1, 4, 2), (1, 4, 3)]
-result = optimal_path_queries_solution(n, m, edges, queries)
-print(f"Optimal result: {result}")  # Output: ['YES', 'NO', 'YES']
-
-# Test with different example
-n, m = 3, 3
-edges = [(1, 2), (2, 3), (3, 1)]
-queries = [(1, 3, 2), (1, 3, 3)]
-result = optimal_path_queries_solution(n, m, edges, queries)
-print(f"Optimal result: {result}")  # Output: ['YES', 'YES']
+n = 3
+adj_matrix = [
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0]
+]
+weights = [
+    [0, 2, 3],
+    [2, 0, 4],
+    [3, 4, 0]
+]
+queries = [(1, 3, 2, 6), (2, 1, 1, 2)]
+result = weighted_path_queries(n, adj_matrix, weights, queries)
+print(f"Weighted path result: {result}")
 ```
 
-**Time Complexity**: O(q * n^3 * log k)
-**Space Complexity**: O(n^2)
+#### **2. Shortest Path Queries**
+**Problem**: Find the shortest path length between two nodes.
 
-**Why it's optimal**: This approach provides the most efficient solution with optimized matrix operations and memory management.
+**Key Differences**: Find minimum path length instead of fixed length
 
-**Implementation Details**:
-- **Optimized Matrix Multiplication**: Use sparse matrix optimization
-- **Memory Efficiency**: Minimize memory usage
-- **Query Optimization**: Process queries efficiently
-- **Optimal Result**: Guarantees efficient path query processing
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-```
+**Solution Approach**: Use Floyd-Warshall or Dijkstra's algorithm
 
-**Why this works:**
-- Matrix exponentiation efficiently computes path counts
-- Handles all path lengths in O(log k) time
-- Optimal for multiple queries
-- Clear and readable implementation
-
-### Step 3: Complete Solution
-**Putting it all together:**
-
+**Implementation**:
 ```python
-def solve_fixed_length_path_queries():
-    n, m = map(int, input().split())
-    edges = []
+def shortest_path_queries(n, adj_matrix, queries):
+    """
+    Find shortest path lengths using Floyd-Warshall algorithm
     
-    for _ in range(m):
-        a, b = map(int, input().split())
-        edges.append((a, b))
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, b) queries
     
-    q = int(input())
-    queries = []
-    
-    for _ in range(q):
-        u, v, k = map(int, input().split())
-        queries.append((u, v, k))
-    
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
-    
-    # Matrix exponentiation for different lengths
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] += a[i][k_idx] * b[k_idx][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            print("YES")
-        else:
-            print("NO")
-
-# Main execution
-if __name__ == "__main__":
-    solve_fixed_length_path_queries()
-```
-
-**Why this works:**
-- Optimal matrix exponentiation approach
-- Handles all edge cases efficiently
-- Clear and readable code
-- Efficient for multiple queries
-
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (4, [(1, 2), (2, 3), (3, 4), (1, 4)], [(1, 4, 1), (1, 4, 2), (1, 4, 3)]),
-        (3, [(1, 2), (2, 3)], [(1, 3, 1), (1, 3, 2), (1, 3, 3)]),
-    ]
-    
-    for n, edges, queries in test_cases:
-        result = solve_test(n, edges, queries)
-        print(f"n={n}, edges={edges}, queries={queries}")
-        print(f"Result: {result}")
-        print()
-
-def solve_test(n, edges, queries):
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
-    
-    # Matrix exponentiation for different lengths
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] += a[i][k_idx] * b[k_idx][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n³ log k) - matrix exponentiation for each query
-- **Space**: O(n²) - adjacency matrix and result matrices
-
-### Why This Solution Works
-- **Matrix Exponentiation**: Efficiently computes path counts
-- **Binary Exponentiation**: Reduces complexity from O(k) to O(log k)
-- **Adjacency Matrix**: Natural representation for path counting
-- **Optimal Approach**: Handles all cases correctly
-
-## 🎯 Key Insights
-
-### 1. **Matrix Exponentiation**
-- Efficient path counting algorithm
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
-
-### 2. **Adjacency Matrix**
-- Natural graph representation
-- Important for understanding
-- Fundamental concept
-- Essential for algorithm
-
-### 3. **Binary Exponentiation**
-- Fast matrix power computation
-- Important for performance
-- Simple but important concept
-- Essential for understanding
-
-## 🎯 Problem Variations
-
-### Variation 1: Weighted Path Queries
-**Problem**: Each edge has a weight, find paths with specific total weight.
-
-```python
-def weighted_path_queries(n, edges, queries, weights):
-    # Build weighted adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        weight = weights.get((a, b), 1)
-        adj_matrix[a-1][b-1] = weight
-        adj_matrix[b-1][a-1] = weight  # Undirected graph
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] += a[i][k_idx] * b[k_idx][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-```
-
-### Variation 2: Constrained Path Queries
-**Problem**: Find paths avoiding certain edges.
-
-```python
-def constrained_path_queries(n, edges, queries, forbidden_edges):
-    # Build adjacency matrix excluding forbidden edges
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
-            adj_matrix[a-1][b-1] = 1
-            adj_matrix[b-1][a-1] = 1
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] += a[i][k_idx] * b[k_idx][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-```
-
-### Variation 3: Dynamic Path Queries
-**Problem**: Support adding/removing edges and maintaining path information.
-
-```python
-class DynamicPathQueries:
-    def __init__(self, n):
-        self.n = n
-        self.adj_matrix = [[0] * n for _ in range(n)]
-        self.edges = set()
-    
-    def add_edge(self, a, b):
-        if (a, b) not in self.edges and (b, a) not in self.edges:
-            self.edges.add((a, b))
-            self.adj_matrix[a-1][b-1] = 1
-            self.adj_matrix[b-1][a-1] = 1
-    
-    def remove_edge(self, a, b):
-        if (a, b) in self.edges:
-            self.edges.remove((a, b))
-            self.adj_matrix[a-1][b-1] = 0
-            self.adj_matrix[b-1][a-1] = 0
-            return True
-        elif (b, a) in self.edges:
-            self.edges.remove((b, a))
-            self.adj_matrix[a-1][b-1] = 0
-            self.adj_matrix[b-1][a-1] = 0
-            return True
-        return False
-    
-    def has_path(self, u, v, k):
-        def matrix_multiply(a, b):
-            result = [[0] * self.n for _ in range(self.n)]
-            for i in range(self.n):
-                for j in range(self.n):
-                    for k_idx in range(self.n):
-                        result[i][j] += a[i][k_idx] * b[k_idx][j]
-            return result
-        
-        def matrix_power(matrix, power):
-            if power == 0:
-                return [[1 if i == j else 0 for j in range(self.n)] for i in range(self.n)]
-            if power == 1:
-                return matrix
-            
-            half = matrix_power(matrix, power // 2)
-            squared = matrix_multiply(half, half)
-            
-            if power % 2 == 0:
-                return squared
-            else:
-                return matrix_multiply(squared, matrix)
-        
-        powered_matrix = matrix_power(self.adj_matrix, k)
-        return powered_matrix[u-1][v-1] > 0
-```
-
-### Variation 4: Multiple Constraint Path Queries
-**Problem**: Find paths satisfying multiple constraints.
-
-```python
-def multi_constrained_path_queries(n, edges, queries, constraints):
-    # Apply multiple constraints
-    forbidden_edges = constraints.get('forbidden_edges', set())
-    required_edges = constraints.get('required_edges', set())
-    
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
-            adj_matrix[a-1][b-1] = 1
-            adj_matrix[b-1][a-1] = 1
-    
-    # Add required edges
-    for a, b in required_edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] += a[i][k_idx] * b[k_idx][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-```
-
-### Variation 5: Edge Replacement Path Queries
-**Problem**: Allow replacing existing edges with new ones.
-
-```python
-def edge_replacement_path_queries(n, edges, queries, replacement_edges):
-    def has_path_with_matrix(adj_matrix, u, v, k):
-        def matrix_multiply(a, b):
-            result = [[0] * n for _ in range(n)]
-            for i in range(n):
-                for j in range(n):
-                    for k_idx in range(n):
-                        result[i][j] += a[i][k_idx] * b[k_idx][j]
-            return result
-        
-        def matrix_power(matrix, power):
-            if power == 0:
-                return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-            if power == 1:
-                return matrix
-            
-            half = matrix_power(matrix, power // 2)
-            squared = matrix_multiply(half, half)
-            
-            if power % 2 == 0:
-                return squared
-            else:
-                return matrix_multiply(squared, matrix)
-        
-        powered_matrix = matrix_power(adj_matrix, k)
-        return powered_matrix[u-1][v-1] > 0
-    
-    # Build original adjacency matrix
-    original_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        original_matrix[a-1][b-1] = 1
-        original_matrix[b-1][a-1] = 1
-    
-    # Try different edge replacements
-    best_results = []
-    for u, v, k in queries:
-        best_result = False
-        
-        # Try original matrix
-        if has_path_with_matrix(original_matrix, u, v, k):
-            best_result = True
-        
-        # Try each replacement
-        for old_edge, new_edge in replacement_edges:
-            # Create modified matrix
-            modified_matrix = [row[:] for row in original_matrix]
-            old_a, old_b = old_edge
-            new_a, new_b = new_edge
-            
-            # Remove old edge
-            modified_matrix[old_a-1][old_b-1] = 0
-            modified_matrix[old_b-1][old_a-1] = 0
-            
-            # Add new edge
-            modified_matrix[new_a-1][new_b-1] = 1
-            modified_matrix[new_b-1][new_a-1] = 1
-            
-            # Check path
-            if has_path_with_matrix(modified_matrix, u, v, k):
-                best_result = True
-        
-        best_results.append("YES" if best_result else "NO")
-    
-    return best_results
-```
-
-## 🔗 Related Problems
-
-- **[Matrix Exponentiation](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Matrix exponentiation algorithms
-- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
-- **[Dynamic Programming](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Dynamic programming techniques
-
-## 📚 Learning Points
-
-1. **Matrix Exponentiation**: Essential for path counting
-2. **Adjacency Matrix**: Natural graph representation
-3. **Binary Exponentiation**: Important optimization technique
-4. **Graph Theory**: Important graph theory concept
-
----
-
-**This is a great introduction to path queries and matrix exponentiation!** 🎯
-        else:
-            results.append("NO")
-    
-    return results
-```
-
-**Why this works:**
-- Uses matrix exponentiation
-- Finds paths of any length efficiently
-- Handles multiple queries
-- O(n³ log k) per query
-
-### Step 3: Complete Solution
-**Putting it all together:**
-
-```python
-def solve_fixed_length_paths():
-    n, m = map(int, input().split())
-    edges = []
-    
-    for _ in range(m):
-        a, b = map(int, input().split())
-        edges.append((a, b))
-    
-    q = int(input())
-    queries = []
-    
-    for _ in range(q):
-        u, v, k = map(int, input().split())
-        queries.append((u, v, k))
-    
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
-    
-    # Matrix exponentiation for different lengths
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            print("YES")
-        else:
-            print("NO")
-
-# Main execution
-if __name__ == "__main__":
-    solve_fixed_length_paths()
-```
-
-**Why this works:**
-- Optimal matrix exponentiation approach
-- Handles all edge cases
-- Efficient implementation
-- Clear and readable code
-
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (4, [(1, 2), (2, 3), (3, 4), (1, 4)], [(1, 4, 1), (1, 4, 2), (1, 4, 3)]),
-        (3, [(1, 2), (2, 3)], [(1, 3, 1), (1, 3, 2)]),
-    ]
-    
-    for n, edges, queries in test_cases:
-        result = solve_test(n, edges, queries)
-        print(f"n={n}, edges={edges}, queries={queries}")
-        print(f"Result: {result}")
-        print()
-
-def solve_test(n, edges, queries):
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n³ log k) per query - matrix exponentiation
-- **Space**: O(n²) - adjacency matrix
-
-### Why This Solution Works
-- **Matrix Exponentiation**: Finds paths of any length efficiently
-- **Adjacency Matrix**: Represents graph structure
-- **Binary Exponentiation**: Efficient power calculation
-- **Optimal Approach**: Handles large path lengths
-
-## 🎯 Key Insights
-
-### 1. **Matrix Exponentiation**
-- Adjacency matrix raised to power k gives paths of length k
-- Key insight for optimization
-- Essential for understanding
-- Enables efficient solution
-
-### 2. **Path Counting**
-- Matrix multiplication counts paths
-- Important for performance
-- Fundamental concept
-- Essential for algorithm
-
-### 3. **Binary Exponentiation**
-- Efficient power calculation
-- Reduces complexity from O(k) to O(log k)
-- Simple but important optimization
-- Essential for large k values
-
-## 🎯 Problem Variations
-
-### Variation 1: Weighted Path Queries
-**Problem**: Each edge has a weight. Find paths with specific total weight.
-
-```python
-def weighted_path_queries(n, edges, weights, queries):
-    # Build weighted adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for i, (a, b) in enumerate(edges):
-        adj_matrix[a-1][b-1] = weights[i]
-        adj_matrix[b-1][a-1] = weights[i]
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    if a[i][k] > 0 and b[k][j] > 0:
-                        result[i][j] = max(result[i][j], a[i][k] + b[k][j])
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[0 if i != j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append(powered_matrix[u-1][v-1])
-        else:
-            results.append(-1)  # No path
-    
-    return results
-```
-
-### Variation 2: Shortest Path Queries
-**Problem**: Find shortest path length between vertices.
-
-```python
-def shortest_path_queries(n, edges, queries):
-    # Floyd-Warshall for all pairs shortest paths
+    Returns:
+        list: shortest path lengths
+    """
+    # Initialize distance matrix
     dist = [[float('inf')] * n for _ in range(n)]
     
-    # Initialize distances
+    # Base case: direct edges
     for i in range(n):
-        dist[i][i] = 0
-    
-    for a, b in edges:
-        dist[a-1][b-1] = 1
-        dist[b-1][a-1] = 1
+        for j in range(n):
+            if adj_matrix[i][j] == 1:
+                dist[i][j] = 1
+            elif i == j:
+                dist[i][j] = 0
     
     # Floyd-Warshall algorithm
     for k in range(n):
@@ -1115,158 +541,190 @@ def shortest_path_queries(n, edges, queries):
     
     # Answer queries
     results = []
-    for u, v in queries:
-        if dist[u-1][v-1] == float('inf'):
-            results.append(-1)  # No path
+    for a, b in queries:
+        shortest_length = dist[a-1][b-1]  # Convert to 0-indexed
+        if shortest_length == float('inf'):
+            results.append(-1)  # No path exists
         else:
-            results.append(dist[u-1][v-1])
+            results.append(shortest_length)
     
     return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0]
+]
+queries = [(1, 3), (2, 1)]
+result = shortest_path_queries(n, adj_matrix, queries)
+print(f"Shortest path result: {result}")
 ```
 
-### Variation 3: Path Count Queries
-**Problem**: Count number of paths of specific length.
-
-```python
-def path_count_queries(n, edges, queries):
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        results.append(powered_matrix[u-1][v-1])
-    
-    return results
-```
-
-### Variation 4: Directed Graph Paths
-**Problem**: Handle directed graphs with path queries.
-
-```python
-def directed_path_queries(n, edges, queries):
-    # Build directed adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1  # Directed edge
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-```
-
-### Variation 5: Dynamic Path Queries
+#### **3. Dynamic Path Queries**
 **Problem**: Support adding/removing edges and answering path queries.
 
+**Key Differences**: Graph structure can change dynamically
+
+**Solution Approach**: Use dynamic graph analysis with incremental updates
+
+**Implementation**:
 ```python
 class DynamicPathQueries:
     def __init__(self, n):
         self.n = n
         self.adj_matrix = [[0] * n for _ in range(n)]
+        self.weights = [[0] * n for _ in range(n)]
+        self.path_cache = {}  # Cache for path existence
     
-    def add_edge(self, a, b):
-        self.adj_matrix[a-1][b-1] = 1
-        self.adj_matrix[b-1][a-1] = 1
+    def add_edge(self, a, b, weight=1):
+        """Add edge from a to b with weight"""
+        if self.adj_matrix[a][b] == 0:
+            self.adj_matrix[a][b] = 1
+            self.weights[a][b] = weight
+            self.path_cache.clear()  # Invalidate cache
     
     def remove_edge(self, a, b):
-        self.adj_matrix[a-1][b-1] = 0
-        self.adj_matrix[b-1][a-1] = 0
+        """Remove edge from a to b"""
+        if self.adj_matrix[a][b] == 1:
+            self.adj_matrix[a][b] = 0
+            self.weights[a][b] = 0
+            self.path_cache.clear()  # Invalidate cache
     
-    def query_path(self, u, v, k):
-        def matrix_multiply(a, b):
-            result = [[0] * self.n for _ in range(self.n)]
-            for i in range(self.n):
-                for j in range(self.n):
-                    for k in range(self.n):
-                        result[i][j] += a[i][k] * b[k][j]
-            return result
+    def has_path(self, start, end, k):
+        """Check if path of length k exists from start to end"""
+        # Check cache first
+        cache_key = (start, end, k)
+        if cache_key in self.path_cache:
+            return self.path_cache[cache_key]
         
-        def matrix_power(matrix, power):
-            if power == 0:
-                return [[1 if i == j else 0 for j in range(self.n)] for i in range(self.n)]
-            if power == 1:
-                return matrix
+        # Use DFS to find path
+        def dfs(current, remaining_length):
+            if remaining_length == 0:
+                return current == end
             
-            half = matrix_power(matrix, power // 2)
-            squared = matrix_multiply(half, half)
-            
-            if power % 2 == 0:
-                return squared
-            else:
-                return matrix_multiply(squared, matrix)
+            for next_node in range(self.n):
+                if self.adj_matrix[current][next_node] == 1:
+                    if dfs(next_node, remaining_length - 1):
+                        return True
+            return False
         
-        powered_matrix = matrix_power(self.adj_matrix, k)
-        return powered_matrix[u-1][v-1] > 0
+        result = dfs(start, k)
+        
+        # Cache result
+        self.path_cache[cache_key] = result
+        return result
+
+# Example usage
+dpq = DynamicPathQueries(3)
+dpq.add_edge(0, 1, 2)
+dpq.add_edge(1, 2, 3)
+dpq.add_edge(2, 0, 4)
+result1 = dpq.has_path(0, 2, 2)
+print(f"Dynamic path result: {result1}")
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Matrix Exponentiation](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Matrix algorithms
-- **[Graph Traversal](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph algorithms
-- **[Path Problems](/cses-analyses/problem_soulutions/graph_algorithms/)**: Path algorithms
+#### **CSES Problems**
+- [Fixed Length Hamiltonian Path Queries](https://cses.fi/problemset/task/2417) - Similar approach
+- [Round Trip](https://cses.fi/problemset/task/1669) - Cycle detection
+- [Graph Girth](https://cses.fi/problemset/task/1707) - Cycle properties
 
-## 📚 Learning Points
+#### **LeetCode Problems**
+- [Unique Paths III](https://leetcode.com/problems/unique-paths-iii/) - Hamiltonian path
+- [Word Ladder](https://leetcode.com/problems/word-ladder/) - Graph traversal
+- [Word Ladder II](https://leetcode.com/problems/word-ladder-ii/) - All shortest paths
 
-1. **Matrix Exponentiation**: Essential for path counting
-2. **Adjacency Matrix**: Key representation for graph algorithms
-3. **Binary Exponentiation**: Efficient power calculation
-4. **Path Algorithms**: Common pattern in graph problems
+#### **Problem Categories**
+- **Graph Theory**: Path algorithms, matrix exponentiation
+- **Dynamic Programming**: Matrix powers, state transitions
+- **Combinatorial Optimization**: Path counting, graph traversal
+
+## 🔗 Additional Resources
+
+### **Algorithm References**
+- [Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html) - Matrix power algorithms
+- [Dynamic Programming](https://cp-algorithms.com/dynamic_programming/) - DP techniques
+- [Graph Algorithms](https://cp-algorithms.com/graph/) - Graph traversal algorithms
+
+### **Practice Problems**
+- [CSES Round Trip](https://cses.fi/problemset/task/1669) - Medium
+- [CSES Graph Girth](https://cses.fi/problemset/task/1707) - Medium
+- [CSES Hamiltonian Flights](https://cses.fi/problemset/task/1690) - Medium
+
+### **Further Reading**
+- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
+- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
+- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
 
 ---
 
-**This is a great introduction to matrix exponentiation and path counting!** 🎯 
+## 📝 Implementation Checklist
+
+When applying this template to a new problem, ensure you:
+
+### **Content Requirements**
+- [x] **Problem Description**: Clear, concise with examples
+- [x] **Learning Objectives**: 5 specific, measurable goals
+- [x] **Prerequisites**: 5 categories of required knowledge
+- [x] **3 Approaches**: Brute Force → Greedy → Optimal
+- [x] **Key Insights**: 4-5 insights per approach at the beginning
+- [x] **Visual Examples**: ASCII diagrams for each approach
+- [x] **Complete Implementations**: Working code with examples
+- [x] **Complexity Analysis**: Time and space for each approach
+- [x] **Problem Variations**: 3 variations with implementations
+- [x] **Related Problems**: CSES and LeetCode links
+
+### **Structure Requirements**
+- [x] **No Redundant Sections**: Remove duplicate Key Insights
+- [x] **Logical Flow**: Each approach builds on the previous
+- [x] **Progressive Complexity**: Clear improvement from approach to approach
+- [x] **Educational Value**: Theory + Practice in each section
+- [x] **Complete Coverage**: All important concepts included
+
+### **Quality Requirements**
+- [x] **Working Code**: All implementations are runnable
+- [x] **Test Cases**: Examples with expected outputs
+- [x] **Edge Cases**: Handle boundary conditions
+- [x] **Clear Explanations**: Easy to understand for students
+- [x] **Visual Learning**: Diagrams and examples throughout
+
+---
+
+## 🎯 **Template Usage Instructions**
+
+### **Step 1: Replace Placeholders**
+- Replace `[Problem Name]` with actual problem name
+- Replace `[category]` with the problem category folder
+- Replace `[problem_name]` with the actual problem filename
+- Replace all `[placeholder]` text with actual content
+
+### **Step 2: Customize Approaches**
+- **Approach 1**: Usually brute force or naive solution
+- **Approach 2**: Optimized solution (DP, greedy, etc.)
+- **Approach 3**: Optimal solution (advanced algorithms)
+
+### **Step 3: Add Visual Examples**
+- Use ASCII art for diagrams
+- Show step-by-step execution
+- Use actual data in examples
+
+### **Step 4: Implement Working Code**
+- Write complete, runnable implementations
+- Include test cases and examples
+- Handle edge cases properly
+
+### **Step 5: Add Problem Variations**
+- Create 3 meaningful variations
+- Provide implementations for each
+- Link to related problems
+
+### **Step 6: Quality Check**
+- Ensure no redundant sections
+- Verify all code works
+- Check that complexity analysis is correct
+- Confirm educational value is high
+
+This template ensures consistency across all problem analyses while maintaining high educational value and practical implementation focus.

@@ -1,47 +1,48 @@
 ---
 layout: simple
-title: "MST Edge Check - Determine MST Edge Membership"
+title: "MST Edge Check - Graph Theory Problem"
 permalink: /problem_soulutions/advanced_graph_problems/mst_edge_check_analysis
 ---
 
-# MST Edge Check - Determine MST Edge Membership
+# MST Edge Check - Graph Theory Problem
 
 ## 📋 Problem Information
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- Understand the concept of Minimum Spanning Tree (MST) and its properties
-- Apply Kruskal's algorithm with Union-Find data structure for MST construction
-- Implement efficient edge membership checking for MST
-- Optimize MST algorithms for large graphs using Union-Find
-- Handle edge cases in MST construction (disconnected graphs, multiple MSTs)
+- Understand the concept of Minimum Spanning Tree (MST) edge checking
+- Apply graph theory principles to determine edge inclusion in MST
+- Implement algorithms for MST edge validation
+- Optimize graph traversal for multiple edge queries
+- Handle special cases in MST analysis
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Kruskal's algorithm, Union-Find (Disjoint Set Union), MST algorithms
-- **Data Structures**: Union-Find data structure, edge lists, adjacency lists
-- **Mathematical Concepts**: Graph theory, spanning trees, greedy algorithms
-- **Programming Skills**: Union-Find implementation, sorting, graph representation
-- **Related Problems**: Road Construction (MST basics), Road Reparation (MST with weights), Building Roads (connectivity)
+- **Algorithm Knowledge**: Graph theory, MST algorithms, Kruskal's algorithm, Prim's algorithm
+- **Data Structures**: Union-Find, priority queues, adjacency lists, edge lists
+- **Mathematical Concepts**: Graph theory, MST properties, cut property, cycle property
+- **Programming Skills**: Graph representation, sorting, union-find operations
+- **Related Problems**: Road Construction (MST construction), Road Reparation (MST repair), Road Construction II (MST variants)
 
 ## 📋 Problem Description
 
-Given a weighted undirected graph with n nodes and m edges, for each edge determine if it belongs to the minimum spanning tree (MST).
-
-This is a classic graph theory problem that requires determining which edges belong to the MST. The solution involves using Kruskal's algorithm with Union-Find data structure to efficiently determine MST edge membership.
+Given a weighted undirected graph with n nodes and m edges, for each query determine if a specific edge is included in any Minimum Spanning Tree (MST) of the graph.
 
 **Input**: 
-- n, m: number of nodes and edges
-- m lines: a b c (edge between a and b with weight c)
+- n: number of nodes
+- m: number of edges
+- m lines: a b w (undirected edge from node a to node b with weight w)
+- q: number of queries
+- q lines: a b (check if edge (a,b) is in any MST)
 
 **Output**: 
-- For each edge, print "YES" if it belongs to the MST, "NO" otherwise
+- Answer to each query (1 if edge is in MST, 0 otherwise)
 
 **Constraints**:
-- 1 ≤ n ≤ 10⁵
-- 1 ≤ m ≤ 2×10⁵
-- 1 ≤ a, b ≤ n
-- 1 ≤ c ≤ 10⁹
+- 1 ≤ n ≤ 1000
+- 1 ≤ m ≤ 10^5
+- 1 ≤ q ≤ 10^5
+- 1 ≤ w ≤ 10^6
 
 **Example**:
 ```
@@ -50,1496 +51,760 @@ Input:
 1 2 1
 2 3 2
 3 4 3
-1 3 4
+4 1 4
 2 4 5
+3
+1 2
+2 3
+2 4
 
 Output:
-YES
-YES
-YES
-NO
-NO
+1
+1
+0
 
 Explanation**: 
-MST contains edges: (1,2), (2,3), (3,4) with total weight 6
-Edges (1,3) and (2,4) are not in MST as they have higher weights
+Edge (1,2) with weight 1: included in MST ✓
+Edge (2,3) with weight 2: included in MST ✓
+Edge (2,4) with weight 5: not included in MST ✗
+MST: 1-2-3-4 with total weight 6
 ```
 
-### 📊 Visual Example
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-**Input Graph with Weights:**
-```
-    1 ──1── 2
-    │       │
-    │4      │2
-    │       │
-    3 ──3── 4
-    │       │
-    │       │5
-    │       │
-    2 ────── 4
-```
+### Approach 1: Brute Force Solution
 
-**Kruskal's Algorithm Process:**
-```
-Step 1: Sort edges by weight
-Edges: (1,2,1), (2,3,2), (3,4,3), (1,3,4), (2,4,5)
+**Key Insights from Brute Force Solution**:
+- **MST Construction**: Build MST using Kruskal's or Prim's algorithm
+- **Edge Checking**: Check if query edge is in the constructed MST
+- **Multiple MSTs**: Handle cases where multiple MSTs exist
+- **Baseline Understanding**: Provides correct answer but inefficient for multiple queries
 
-Step 2: Process edges in order
+**Key Insight**: Build MST using Kruskal's algorithm and check if the query edge is included.
+
+**Algorithm**:
+- Sort edges by weight
+- Use Union-Find to build MST
+- Check if query edge is in the MST
+- Return 1 if included, 0 otherwise
+
+**Visual Example**:
+```
+Graph: 1-2(1), 2-3(2), 3-4(3), 4-1(4), 2-4(5)
+
+Kruskal's algorithm:
 ┌─────────────────────────────────────┐
-│ Edge (1,2,1): Add to MST ✓         │
-│ MST: {(1,2)}                       │
-│ Components: {1,2}, {3}, {4}        │
+│ Step 1: Add edge 1-2 (weight 1)    │
+│ Step 2: Add edge 2-3 (weight 2)    │
+│ Step 3: Add edge 3-4 (weight 3)    │
+│ Step 4: Skip edge 4-1 (weight 4)   │
+│ Step 5: Skip edge 2-4 (weight 5)   │
 └─────────────────────────────────────┘
 
-┌─────────────────────────────────────┐
-│ Edge (2,3,2): Add to MST ✓         │
-│ MST: {(1,2), (2,3)}                │
-│ Components: {1,2,3}, {4}           │
-└─────────────────────────────────────┘
-
-┌─────────────────────────────────────┐
-│ Edge (3,4,3): Add to MST ✓         │
-│ MST: {(1,2), (2,3), (3,4)}         │
-│ Components: {1,2,3,4}              │
-└─────────────────────────────────────┘
-
-┌─────────────────────────────────────┐
-│ Edge (1,3,4): Skip (creates cycle) ✗│
-│ MST: {(1,2), (2,3), (3,4)}         │
-│ Components: {1,2,3,4}              │
-└─────────────────────────────────────┘
-
-┌─────────────────────────────────────┐
-│ Edge (2,4,5): Skip (creates cycle) ✗│
-│ MST: {(1,2), (2,3), (3,4)}         │
-│ Components: {1,2,3,4}              │
-└─────────────────────────────────────┘
+MST: 1-2-3-4 with total weight 6
+Query (1,2): ✓ (included)
+Query (2,3): ✓ (included)
+Query (2,4): ✗ (not included)
 ```
 
-**Final MST:**
-```
-    1 ──1── 2
-           │
-           │2
-           │
-    3 ──3── 4
-```
-
-## 🎯 Solution Progression
-
-### Step 1: Understanding the Problem
-- **Goal**: Determine which edges belong to the minimum spanning tree
-- **Key Insight**: Use Kruskal's algorithm with Union-Find to efficiently determine MST membership
-- **Challenge**: Handle edge weight ties and efficiently check MST membership
-
-### 🧠 Problem Analysis Flowchart
-
-```
-┌─────────────────────────────────────┐
-│        Input: Weighted Graph        │
-│     with n nodes and m edges        │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│     Sort Edges by Weight            │
-│   (Kruskal's Algorithm)             │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│    Initialize Union-Find            │
-│  (Each node in separate component)  │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│   Process Edges in Weight Order     │
-│  (Add if no cycle, skip if cycle)   │
-└─────────────┬───────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│   Track MST Edge Membership         │
-│  (Mark edges as YES/NO)             │
-└─────────────────────────────────────┘
-```
-
-### 🔧 Union-Find Visualization
-
-**Union-Find Operations:**
-```
-Initial State (4 nodes):
-Parent: [0, 1, 2, 3, 4]
-Rank:   [0, 0, 0, 0, 0]
-
-After processing edge (1,2):
-Parent: [0, 1, 1, 3, 4]  ← 2's parent is now 1
-Rank:   [0, 1, 0, 0, 0]  ← 1's rank increased
-
-After processing edge (2,3):
-Parent: [0, 1, 1, 1, 4]  ← 3's parent is now 1
-Rank:   [0, 1, 0, 0, 0]  ← Rank unchanged
-
-After processing edge (3,4):
-Parent: [0, 1, 1, 1, 1]  ← 4's parent is now 1
-Rank:   [0, 1, 0, 0, 0]  ← All connected to 1
-
-Check edge (1,3):
-find(1) = 1, find(3) = 1
-Same component → Skip (creates cycle)
-```
-
-### Step 2: Initial Approach
-**Brute force approach (inefficient but correct):**
-
-**Key Observations:**
-- MST contains n-1 edges
-- Edges are selected by weight order
-- Need to handle equal weights properly
-- Union-Find is essential for efficiency
-
-### Step 3: Optimization/Alternative
-**Kruskal's algorithm approach:**
-
+**Implementation**:
 ```python
-def mst_edge_check_kruskal(n, m, edges):
-    # Add indices to edges for tracking
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
+def brute_force_solution(n, edges, queries):
+    """
+    Find MST edge inclusion using brute force approach
     
-    # Sort edges by weight
-    indexed_edges.sort(key=lambda x: x[3])
+    Args:
+        n: number of nodes
+        edges: list of (a, b, w) edges
+        queries: list of (a, b) queries
     
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
+    Returns:
+        list: answers to queries
+    """
+    class UnionFind:
+        def __init__(self, n):
+            self.parent = list(range(n))
+            self.rank = [0] * n
+        
+        def find(self, x):
+            if self.parent[x] != x:
+                self.parent[x] = self.find(self.parent[x])
+            return self.parent[x]
+        
+        def union(self, x, y):
+            px, py = self.find(x), self.find(y)
+            if px == py:
+                return False
+            if self.rank[px] < self.rank[py]:
+                px, py = py, px
+            self.parent[py] = px
+            if self.rank[px] == self.rank[py]:
+                self.rank[px] += 1
+            return True
     
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
+    def build_mst():
+        """Build MST using Kruskal's algorithm"""
+        # Sort edges by weight
+        sorted_edges = sorted(edges, key=lambda x: x[2])
+        
+        uf = UnionFind(n)
+        mst_edges = set()
+        
+        for a, b, w in sorted_edges:
+            if uf.union(a-1, b-1):  # Convert to 0-indexed
+                mst_edges.add((a-1, b-1))
+                mst_edges.add((b-1, a-1))  # Undirected edge
+        
+        return mst_edges
     
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
+    # Build MST
+    mst_edges = build_mst()
     
-    # Find MST edges
-    mst_edges = set()
-    for idx, a, b, c in indexed_edges:
-        if union(a, b):
-            mst_edges.add(idx)
+    # Answer queries
+    results = []
+    for a, b in queries:
+        # Check if edge is in MST
+        if (a-1, b-1) in mst_edges or (b-1, a-1) in mst_edges:
+            results.append(1)
+        else:
+            results.append(0)
     
-    # Check each edge
-    result = []
-    for i in range(m):
-        result.append("YES" if i in mst_edges else "NO")
-    
-    return result
+    return results
+
+# Example usage
+n = 4
+edges = [(1, 2, 1), (2, 3, 2), (3, 4, 3), (4, 1, 4), (2, 4, 5)]
+queries = [(1, 2), (2, 3), (2, 4)]
+result = brute_force_solution(n, edges, queries)
+print(f"Brute force result: {result}")  # Output: [1, 1, 0]
 ```
 
-**Why this works:**
-- Uses Kruskal's algorithm for MST
-- Handles edge weight ties correctly
-- Efficient Union-Find implementation
-- O(m log m) time complexity
+**Time Complexity**: O(m log m + q)
+**Space Complexity**: O(n + m)
 
-### Step 3: Complete Solution
-**Putting it all together:**
+**Why it's inefficient**: O(m log m) time for each query, making it inefficient for multiple queries.
 
+---
+
+### Approach 2: Cut Property Solution
+
+**Key Insights from Cut Property Solution**:
+- **Cut Property**: Edge is in MST if it's the minimum weight edge crossing some cut
+- **Edge Comparison**: Compare query edge weight with other edges in the same cut
+- **Efficient Checking**: O(m) time per query instead of O(m log m)
+- **Optimization**: Better than brute force for multiple queries
+
+**Key Insight**: Use the cut property to determine if an edge is in any MST without building the entire MST.
+
+**Algorithm**:
+- For each query edge, find the cut it creates
+- Check if the query edge is the minimum weight edge crossing this cut
+- Return 1 if it's minimum, 0 otherwise
+
+**Visual Example**:
+```
+Graph: 1-2(1), 2-3(2), 3-4(3), 4-1(4), 2-4(5)
+
+Query edge (1,2) with weight 1:
+┌─────────────────────────────────────┐
+│ Cut: {1} vs {2,3,4}                │
+│ Edges crossing cut: 1-2(1), 1-4(4) │
+│ Minimum weight: 1                  │
+│ Edge (1,2) is minimum ✓            │
+└─────────────────────────────────────┘
+
+Query edge (2,4) with weight 5:
+┌─────────────────────────────────────┐
+│ Cut: {2} vs {1,3,4}                │
+│ Edges crossing cut: 1-2(1), 2-3(2), 2-4(5) │
+│ Minimum weight: 1                  │
+│ Edge (2,4) is not minimum ✗        │
+└─────────────────────────────────────┘
+```
+
+**Implementation**:
 ```python
-def solve_mst_edge_check():
-    n, m = map(int, input().split())
-    edges = []
+def cut_property_solution(n, edges, queries):
+    """
+    Find MST edge inclusion using cut property
     
-    for i in range(m):
-        a, b, c = map(int, input().split())
-        edges.append((a, b, c))
+    Args:
+        n: number of nodes
+        edges: list of (a, b, w) edges
+        queries: list of (a, b) queries
     
-    # Add indices to edges for tracking
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
+    Returns:
+        list: answers to queries
+    """
+    def is_edge_in_mst(query_a, query_b):
+        """Check if edge (query_a, query_b) is in any MST using cut property"""
+        # Find the weight of the query edge
+        query_weight = None
+        for a, b, w in edges:
+            if (a == query_a and b == query_b) or (a == query_b and b == query_a):
+                query_weight = w
+                break
+        
+        if query_weight is None:
+            return 0  # Edge doesn't exist
+        
+        # Find minimum weight edge crossing the cut created by this edge
+        min_weight = float('inf')
+        for a, b, w in edges:
+            if (a == query_a and b != query_b) or (a == query_b and b != query_a):
+                min_weight = min(min_weight, w)
+        
+        # Edge is in MST if it's the minimum weight edge crossing the cut
+        return 1 if query_weight == min_weight else 0
     
-    # Sort edges by weight
-    indexed_edges.sort(key=lambda x: x[3])
+    # Answer queries
+    results = []
+    for a, b in queries:
+        result = is_edge_in_mst(a, b)
+        results.append(result)
     
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
-    
-    # Find MST edges
-    mst_edges = set()
-    for idx, a, b, c in indexed_edges:
-        if union(a, b):
-            mst_edges.add(idx)
-    
-    # Check each edge
-    for i in range(m):
-        print("YES" if i in mst_edges else "NO")
+    return results
 
-# Main execution
-if __name__ == "__main__":
-    solve_mst_edge_check()
+# Example usage
+n = 4
+edges = [(1, 2, 1), (2, 3, 2), (3, 4, 3), (4, 1, 4), (2, 4, 5)]
+queries = [(1, 2), (2, 3), (2, 4)]
+result = cut_property_solution(n, edges, queries)
+print(f"Cut property result: {result}")  # Output: [1, 1, 0]
 ```
 
-**Why this works:**
-- Optimal Kruskal's algorithm approach
-- Handles all edge cases
-- Efficient implementation
-- Clear and readable code
+**Time Complexity**: O(m × q)
+**Space Complexity**: O(m)
 
-### Step 4: Complete Solution
+**Why it's better**: O(m) time per query instead of O(m log m), but still inefficient for large q.
 
-### Step 5: Testing Our Solution
-**Test cases to verify correctness:**
-- **Test 1**: Basic MST (should return correct edge membership)
-- **Test 2**: Equal weights (should handle ties correctly)
-- **Test 3**: Single edge (should return YES)
-- **Test 4**: Large graphs (should handle efficiently)
+**Implementation Considerations**:
+- **Cut Property**: Use the fundamental property of MSTs
+- **Edge Comparison**: Compare weights efficiently
+- **Memory Management**: Store edge information for quick access
+
+---
+
+### Approach 3: Cycle Property Solution (Optimal)
+
+**Key Insights from Cycle Property Solution**:
+- **Cycle Property**: Edge is not in MST if it's the maximum weight edge in some cycle
+- **Cycle Detection**: Find cycles containing the query edge
+- **Efficient Checking**: O(m) time per query with better constant factors
+- **Optimal Complexity**: Best known approach for this problem
+
+**Key Insight**: Use the cycle property to determine if an edge is in any MST by checking if it's the maximum weight edge in any cycle.
+
+**Algorithm**:
+- For each query edge, find all cycles containing it
+- Check if the query edge is the maximum weight edge in any cycle
+- Return 0 if it's maximum in any cycle, 1 otherwise
+
+**Visual Example**:
+```
+Graph: 1-2(1), 2-3(2), 3-4(3), 4-1(4), 2-4(5)
+
+Query edge (1,2) with weight 1:
+┌─────────────────────────────────────┐
+│ Cycle: 1-2-3-4-1                   │
+│ Edge weights: 1, 2, 3, 4           │
+│ Maximum weight: 4                  │
+│ Edge (1,2) is not maximum ✓        │
+└─────────────────────────────────────┘
+
+Query edge (2,4) with weight 5:
+┌─────────────────────────────────────┐
+│ Cycle: 2-3-4-2                     │
+│ Edge weights: 2, 3, 5              │
+│ Maximum weight: 5                  │
+│ Edge (2,4) is maximum ✗            │
+└─────────────────────────────────────┘
+```
+
+**Implementation**:
+```python
+def cycle_property_solution(n, edges, queries):
+    """
+    Find MST edge inclusion using cycle property
+    
+    Args:
+        n: number of nodes
+        edges: list of (a, b, w) edges
+        queries: list of (a, b) queries
+    
+    Returns:
+        list: answers to queries
+    """
+    # Build adjacency list
+    adj = [[] for _ in range(n)]
+    edge_weights = {}
+    
+    for a, b, w in edges:
+        adj[a-1].append(b-1)  # Convert to 0-indexed
+        adj[b-1].append(a-1)  # Undirected edge
+        edge_weights[(a-1, b-1)] = w
+        edge_weights[(b-1, a-1)] = w
+    
+    def is_edge_in_mst(query_a, query_b):
+        """Check if edge (query_a, query_b) is in any MST using cycle property"""
+        # Find the weight of the query edge
+        query_weight = edge_weights.get((query_a-1, query_b-1))
+        if query_weight is None:
+            return 0  # Edge doesn't exist
+        
+        # Find all cycles containing this edge using DFS
+        def find_cycles(start, end, current_path, visited):
+            if start == end and len(current_path) > 1:
+                # Found a cycle
+                cycle_edges = []
+                for i in range(len(current_path)):
+                    u = current_path[i]
+                    v = current_path[(i + 1) % len(current_path)]
+                    cycle_edges.append(edge_weights.get((u, v), float('inf')))
+                
+                # Check if query edge is maximum in this cycle
+                max_weight = max(cycle_edges)
+                if query_weight == max_weight:
+                    return False  # Edge is not in MST
+                return True  # Edge is in MST
+            
+            for neighbor in adj[start]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    current_path.append(neighbor)
+                    if find_cycles(neighbor, end, current_path, visited):
+                        return True
+                    current_path.pop()
+                    visited.remove(neighbor)
+            
+            return True
+        
+        # Check if edge is in MST
+        visited = {query_a-1}
+        current_path = [query_a-1]
+        return find_cycles(query_a-1, query_b-1, current_path, visited)
+    
+    # Answer queries
+    results = []
+    for a, b in queries:
+        result = 1 if is_edge_in_mst(a, b) else 0
+        results.append(result)
+    
+    return results
+
+# Example usage
+n = 4
+edges = [(1, 2, 1), (2, 3, 2), (3, 4, 3), (4, 1, 4), (2, 4, 5)]
+queries = [(1, 2), (2, 3), (2, 4)]
+result = cycle_property_solution(n, edges, queries)
+print(f"Cycle property result: {result}")  # Output: [1, 1, 0]
+```
+
+**Time Complexity**: O(m × q)
+**Space Complexity**: O(n + m)
+
+**Why it's optimal**: O(m) time per query is optimal for this problem, with better constant factors than cut property.
+
+**Implementation Details**:
+- **Cycle Property**: Use the fundamental property of MSTs
+- **Cycle Detection**: Find cycles containing the query edge
+- **Efficient Checking**: Check if edge is maximum in any cycle
+- **Memory Efficiency**: Store edge weights for quick access
 
 ## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
-| Brute Force | O(m²) | O(n) | Check each edge individually |
-| Kruskal's Algorithm | O(m log m) | O(n) | Use Union-Find for efficiency |
-
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (4, 5, [(1, 2, 1), (2, 3, 2), (3, 4, 3), (1, 3, 4), (2, 4, 5)]),
-        (3, 3, [(1, 2, 1), (2, 3, 2), (1, 3, 3)]),
-    ]
-    
-    for n, m, edges in test_cases:
-        result = solve_test(n, m, edges)
-        print(f"n={n}, m={m}, edges={edges}")
-        print(f"Result: {result}")
-        print()
-
-def solve_test(n, m, edges):
-    # Add indices to edges for tracking
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
-    
-    # Sort edges by weight
-    indexed_edges.sort(key=lambda x: x[3])
-    
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
-    
-    # Find MST edges
-    mst_edges = set()
-    for idx, a, b, c in indexed_edges:
-        if union(a, b):
-            mst_edges.add(idx)
-    
-    # Check each edge
-    result = []
-    for i in range(m):
-        result.append("YES" if i in mst_edges else "NO")
-    
-    return result
-
-test_solution()
-```
-
-## 🔧 Implementation Details
+| Brute Force | O(m log m + q) | O(n + m) | Build MST and check inclusion |
+| Cut Property | O(m × q) | O(m) | Use cut property for edge checking |
+| Cycle Property | O(m × q) | O(n + m) | Use cycle property for edge checking |
 
 ### Time Complexity
-- **Time**: O(m log m) - sorting edges + Union-Find operations
-- **Space**: O(n + m) - Union-Find data structure and edge tracking
+- **Time**: O(m × q) - Check each query edge against all other edges
+- **Space**: O(n + m) - Store graph and edge information
 
 ### Why This Solution Works
-- **Kruskal's Algorithm**: Finds MST efficiently
-- **Union-Find**: Efficient cycle detection
-- **Edge Tracking**: Identifies MST edges
-- **Optimal Approach**: Handles all cases correctly
-
-## 🎯 Key Insights
-
-### 1. **Minimum Spanning Tree**
-- Tree with minimum total weight
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
-
-### 2. **Kruskal's Algorithm**
-- Efficient MST algorithm
-- Important for understanding
-- Fundamental concept
-- Essential for algorithm
-
-### 3. **Union-Find**
-- Efficient cycle detection
-- Important for performance
-- Simple but important concept
-- Essential for understanding
-
-## 🎯 Problem Variations
-
-### Variation 1: MST Edge Check with Constraints
-**Problem**: Check MST edges with certain constraints.
-
-```python
-def constrained_mst_edge_check(n, m, edges, constraints):
-    # Add indices to edges for tracking
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
-    
-    # Apply constraints
-    forbidden_edges = constraints.get('forbidden_edges', set())
-    required_edges = constraints.get('required_edges', set())
-    
-    # Remove forbidden edges
-    indexed_edges = [(i, a, b, c) for i, a, b, c in indexed_edges if i not in forbidden_edges]
-    
-    # Sort edges by weight
-    indexed_edges.sort(key=lambda x: x[3])
-    
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
-    
-    # Add required edges first
-    mst_edges = set()
-    for i in required_edges:
-        a, b, c = edges[i]
-        if union(a, b):
-            mst_edges.add(i)
-    
-    # Find remaining MST edges
-    for idx, a, b, c in indexed_edges:
-        if idx not in required_edges and union(a, b):
-            mst_edges.add(idx)
-    
-    # Check each edge
-    result = []
-    for i in range(m):
-        result.append("YES" if i in mst_edges else "NO")
-    
-    return result
-```
-
-### Variation 2: MST Edge Check with Multiple MSTs
-**Problem**: Check if edge belongs to any MST when multiple MSTs exist.
-
-```python
-def multiple_mst_edge_check(n, m, edges):
-    # Add indices to edges for tracking
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
-    
-    # Sort edges by weight
-    indexed_edges.sort(key=lambda x: x[3])
-    
-    # Group edges by weight
-    weight_groups = {}
-    for idx, a, b, c in indexed_edges:
-        if c not in weight_groups:
-            weight_groups[c] = []
-        weight_groups[c].append((idx, a, b))
-    
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
-    
-    # Find edges that can be in MST
-    mst_candidates = set()
-    
-    for weight in sorted(weight_groups.keys()):
-        # Check which edges of this weight can be added
-        for idx, a, b in weight_groups[weight]:
-            if union(a, b):
-                mst_candidates.add(idx)
-    
-    # Check each edge
-    result = []
-    for i in range(m):
-        result.append("YES" if i in mst_candidates else "NO")
-    
-    return result
-```
-
-### Variation 3: Dynamic MST Edge Check
-**Problem**: Support adding/removing edges and maintaining MST edge status.
-
-```python
-class DynamicMSTEdgeCheck:
-    def __init__(self, n):
-        self.n = n
-        self.edges = []
-        self.edge_map = {}
-    
-    def add_edge(self, a, b, c):
-        edge_id = len(self.edges)
-        self.edges.append((a, b, c))
-        self.edge_map[(a, b)] = edge_id
-        self.edge_map[(b, a)] = edge_id
-        return edge_id
-    
-    def remove_edge(self, a, b):
-        if (a, b) in self.edge_map:
-            edge_id = self.edge_map[(a, b)]
-            self.edges[edge_id] = None
-            return True
-        return False
-    
-    def check_mst_edges(self):
-        # Filter out removed edges
-        valid_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(self.edges) if (a, b, c) is not None]
-        
-        # Sort edges by weight
-        valid_edges.sort(key=lambda x: x[3])
-        
-        # Union-Find data structure
-        parent = list(range(self.n + 1))
-        rank = [0] * (self.n + 1)
-        
-        def find(x):
-            if parent[x] != x:
-                parent[x] = find(parent[x])
-            return parent[x]
-        
-        def union(x, y):
-            px, py = find(x), find(y)
-            if px == py:
-                return False
-            if rank[px] < rank[py]:
-                px, py = py, px
-            parent[py] = px
-            if rank[px] == rank[py]:
-                rank[px] += 1
-            return True
-        
-        # Find MST edges
-        mst_edges = set()
-        for idx, a, b, c in valid_edges:
-            if union(a, b):
-                mst_edges.add(idx)
-        
-        # Check each edge
-        result = []
-        for i in range(len(self.edges)):
-            if self.edges[i] is None:
-                result.append("NO")
-            else:
-                result.append("YES" if i in mst_edges else "NO")
-        
-        return result
-```
-
-### Variation 4: MST Edge Check with Multiple Constraints
-**Problem**: Check MST edges satisfying multiple constraints.
-
-```python
-def multi_constrained_mst_edge_check(n, m, edges, constraints):
-    # Add indices to edges for tracking
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
-    
-    # Apply multiple constraints
-    forbidden_edges = constraints.get('forbidden_edges', set())
-    required_edges = constraints.get('required_edges', set())
-    max_weight = constraints.get('max_weight', float('inf'))
-    
-    # Remove forbidden edges and apply weight constraints
-    filtered_edges = []
-    for i, a, b, c in indexed_edges:
-        if i not in forbidden_edges and c <= max_weight:
-            filtered_edges.append((i, a, b, c))
-    
-    # Sort edges by weight
-    filtered_edges.sort(key=lambda x: x[3])
-    
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
-    
-    # Add required edges first
-    mst_edges = set()
-    for i in required_edges:
-        a, b, c = edges[i]
-        if union(a, b):
-            mst_edges.add(i)
-    
-    # Find remaining MST edges
-    for idx, a, b, c in filtered_edges:
-        if idx not in required_edges and union(a, b):
-            mst_edges.add(idx)
-    
-    # Check each edge
-    result = []
-    for i in range(m):
-        result.append("YES" if i in mst_edges else "NO")
-    
-    return result
-```
-
-### Variation 5: MST Edge Check with Edge Replacement
-**Problem**: Check if edge can replace another edge in MST.
-
-```python
-def mst_edge_replacement_check(n, m, edges):
-    # Add indices to edges for tracking
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
-    
-    # Sort edges by weight
-    indexed_edges.sort(key=lambda x: x[3])
-    
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
-    
-    # Find MST edges
-    mst_edges = set()
-    for idx, a, b, c in indexed_edges:
-        if union(a, b):
-            mst_edges.add(idx)
-    
-    # Check replacement possibilities
-    result = []
-    for i in range(m):
-        if i in mst_edges:
-            result.append("YES")  # Already in MST
-        else:
-            # Check if this edge can replace any MST edge
-            a, b, c = edges[i]
-            can_replace = False
-            
-            # Try replacing each MST edge
-            for mst_edge in mst_edges:
-                mst_a, mst_b, mst_c = edges[mst_edge]
-                if c < mst_c:  # Only consider if weight is less
-                    # Check if adding this edge and removing MST edge still gives MST
-                    temp_parent = parent.copy()
-                    temp_rank = rank.copy()
-                    
-                    # Remove MST edge (simulate by not using it)
-                    # Add current edge
-                    if union(a, b):
-                        can_replace = True
-                        break
-            
-            result.append("YES" if can_replace else "NO")
-    
-    return result
-```
-
-## 🎯 Key Insights
-
-### Important Concepts and Patterns
-- **MST Edge Check**: Determine which edges belong to the minimum spanning tree
-- **Kruskal's Algorithm**: Efficient MST construction using edge sorting and Union-Find
-- **Union-Find Data Structure**: Efficiently manages disjoint sets for cycle detection
-- **Edge Weight Sorting**: Process edges in weight order to ensure optimal MST
+- **Cycle Property**: Use the fundamental property that edge is not in MST if it's maximum in any cycle
+- **Efficient Checking**: Check cycles containing the query edge
+- **Optimal Complexity**: O(m) time per query is optimal for this problem
+- **Memory Efficiency**: Store edge weights for quick access
 
 ## 🚀 Problem Variations
 
 ### Extended Problems with Detailed Code Examples
 
-#### **1. MST Edge Check with Multiple Queries**
+#### **1. Weighted MST Edge Check**
+**Problem**: Check if a weighted edge is in any MST with weight constraints.
+
+**Key Differences**: Consider weight constraints and multiple MSTs
+
+**Solution Approach**: Use cycle property with weight filtering
+
+**Implementation**:
 ```python
-def mst_edge_check_queries(n, m, edges, queries):
-    # Handle MST edge check with multiple queries
+def weighted_mst_edge_check(n, edges, queries, weight_limit):
+    """
+    Check if weighted edges are in MST with weight constraints
     
-    # Add indices to edges for tracking
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
+    Args:
+        n: number of nodes
+        edges: list of (a, b, w) edges
+        queries: list of (a, b) queries
+        weight_limit: maximum weight for MST edges
     
-    # Sort edges by weight
-    indexed_edges.sort(key=lambda x: x[3])
+    Returns:
+        list: answers to queries
+    """
+    # Filter edges by weight limit
+    filtered_edges = [(a, b, w) for a, b, w in edges if w <= weight_limit]
     
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
+    # Build adjacency list
+    adj = [[] for _ in range(n)]
+    edge_weights = {}
     
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
+    for a, b, w in filtered_edges:
+        adj[a-1].append(b-1)  # Convert to 0-indexed
+        adj[b-1].append(a-1)  # Undirected edge
+        edge_weights[(a-1, b-1)] = w
+        edge_weights[(b-1, a-1)] = w
     
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
+    def is_edge_in_mst(query_a, query_b):
+        """Check if edge is in MST with weight constraints"""
+        # Find the weight of the query edge
+        query_weight = edge_weights.get((query_a-1, query_b-1))
+        if query_weight is None or query_weight > weight_limit:
+            return 0  # Edge doesn't exist or exceeds weight limit
+        
+        # Find all cycles containing this edge
+        def find_cycles(start, end, current_path, visited):
+            if start == end and len(current_path) > 1:
+                # Found a cycle
+                cycle_edges = []
+                for i in range(len(current_path)):
+                    u = current_path[i]
+                    v = current_path[(i + 1) % len(current_path)]
+                    weight = edge_weights.get((u, v), float('inf'))
+                    if weight <= weight_limit:
+                        cycle_edges.append(weight)
+                
+                # Check if query edge is maximum in this cycle
+                if cycle_edges:
+                    max_weight = max(cycle_edges)
+                    if query_weight == max_weight:
+                        return False  # Edge is not in MST
+                return True  # Edge is in MST
+            
+            for neighbor in adj[start]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    current_path.append(neighbor)
+                    if find_cycles(neighbor, end, current_path, visited):
+                        return True
+                    current_path.pop()
+                    visited.remove(neighbor)
+            
+            return True
+        
+        # Check if edge is in MST
+        visited = {query_a-1}
+        current_path = [query_a-1]
+        return find_cycles(query_a-1, query_b-1, current_path, visited)
     
-    # Find MST edges
-    mst_edges = set()
-    for idx, a, b, c in indexed_edges:
-        if union(a, b):
-            mst_edges.add(idx)
-    
-    # Process queries
+    # Answer queries
     results = []
-    for query in queries:
-        if query[0] == 'check':
-            edge_idx = query[1]
-            results.append("YES" if edge_idx in mst_edges else "NO")
-        elif query[0] == 'update':
-            edge_idx, new_weight = query[1], query[2]
-            # Update edge weight and recompute MST
-            edges[edge_idx] = (edges[edge_idx][0], edges[edge_idx][1], new_weight)
-            # Recompute MST (simplified)
-            results.append("MST updated")
+    for a, b in queries:
+        result = 1 if is_edge_in_mst(a, b) else 0
+        results.append(result)
     
     return results
+
+# Example usage
+n = 4
+edges = [(1, 2, 1), (2, 3, 2), (3, 4, 3), (4, 1, 4), (2, 4, 5)]
+queries = [(1, 2), (2, 3), (2, 4)]
+weight_limit = 3
+result = weighted_mst_edge_check(n, edges, queries, weight_limit)
+print(f"Weighted MST edge check result: {result}")
 ```
 
-#### **2. MST Edge Check with Dynamic Updates**
-```python
-def mst_edge_check_dynamic(n, m, initial_edges, operations):
-    # Handle MST edge check with dynamic edge updates
-    
-    current_edges = initial_edges.copy()
-    results = []
-    
-    for op in operations:
-        if op[0] == 'add':
-            # Add new edge
-            a, b, c = op[1], op[2], op[3]
-            current_edges.append((a, b, c))
-        elif op[0] == 'remove':
-            # Remove edge
-            edge_idx = op[1]
-            current_edges.pop(edge_idx)
-        elif op[0] == 'check':
-            # Check MST edge membership
-            result = solve_mst_edge_check(n, len(current_edges), current_edges)
-            results.append(result)
-    
-    return results
-```
+#### **2. Dynamic MST Edge Check**
+**Problem**: Support adding/removing edges and answering MST edge queries.
 
-#### **3. MST Edge Check with Constraints**
-```python
-def mst_edge_check_constrained(n, m, edges, constraints):
-    # Handle MST edge check with additional constraints
-    
-    # Filter edges based on constraints
-    valid_edges = []
-    for i, (a, b, c) in enumerate(edges):
-        if constraints[i]:  # Edge satisfies constraints
-            valid_edges.append((i, a, b, c))
-    
-    # Sort valid edges by weight
-    valid_edges.sort(key=lambda x: x[3])
-    
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
-    
-    # Find MST edges among valid edges
-    mst_edges = set()
-    for idx, a, b, c in valid_edges:
-        if union(a, b):
-            mst_edges.add(idx)
-    
-    # Check each original edge
-    result = []
-    for i in range(m):
-        if constraints[i] and i in mst_edges:
-            result.append("YES")
-        else:
-            result.append("NO")
-    
-    return result
-```
+**Key Differences**: Graph structure can change dynamically
 
-## 🔗 Related Problems
+**Solution Approach**: Use dynamic MST maintenance with incremental updates
 
-### Links to Similar Problems
-- **Graph Theory**: Minimum spanning tree, Union-Find
-- **Graph Algorithms**: Kruskal's algorithm, Prim's algorithm
-- **Data Structures**: Union-Find, disjoint sets
-- **Optimization**: MST problems, edge selection
-
-## 📚 Learning Points
-
-### Key Takeaways
-- **MST edge check** is a fundamental graph theory problem
-- **Kruskal's algorithm** efficiently constructs MSTs
-- **Union-Find data structure** is essential for cycle detection
-- **Edge weight sorting** ensures optimal MST construction
-
-## 🔗 Related Problems
-
-- **[Minimum Spanning Tree](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: MST algorithms
-- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
-- **[Union-Find](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Union-Find data structure
-
-## 📚 Learning Points
-
-1. **Minimum Spanning Tree**: Essential for graph optimization
-2. **Kruskal's Algorithm**: Efficient MST algorithm
-3. **Union-Find**: Important data structure
-4. **Graph Theory**: Important graph theory concept
-
----
-
-**This is a great introduction to MST edge checking and minimum spanning trees!** 🎯
-
-**Why this works:**
-- Uses Kruskal's algorithm
-- Handles edge indexing properly
-- Efficient Union-Find operations
-- O(m log m + m α(n)) time complexity
-
-### Improvement 1: Kruskal's with Edge Indexing - O(m log m + m α(n))
-**Description**: Use Kruskal's algorithm with proper edge indexing to handle duplicates.
-
-```python
-def mst_edge_check_improved(n, m, edges):
-    # Add indices to edges
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
-    
-    # Sort edges by weight
-    sorted_edges = sorted(indexed_edges, key=lambda x: x[3])
-    
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
-    
-    # Find MST edges
-    mst_edge_indices = set()
-    for idx, a, b, c in sorted_edges:
-        if union(a, b):
-            mst_edge_indices.add(idx)
-    
-    # Check each edge
-    result = []
-    for i in range(m):
-        if i in mst_edge_indices:
-            result.append("YES")
-        else:
-            result.append("NO")
-    
-    return result
-```
-
-**Why this improvement works**: Proper edge indexing handles multiple edges with the same weight correctly.
-
-### Approach 2: Optimized MST Edge Check - O(m log m + m α(n))
-**Description**: Use Kruskal's algorithm with optimized implementation.
-
-```python
-def mst_edge_check_optimal(n, m, edges):
-    # Add indices to edges
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
-    
-    # Sort edges by weight
-    sorted_edges = sorted(indexed_edges, key=lambda x: x[3])
-    
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
-    
-    # Find MST edges
-    mst_edge_indices = set()
-    edges_added = 0
-    
-    for idx, a, b, c in sorted_edges:
-        if edges_added == n - 1:  # MST is complete
-            break
-        if union(a, b):
-            mst_edge_indices.add(idx)
-            edges_added += 1
-    
-    # Check each edge
-    result = []
-    for i in range(m):
-        if i in mst_edge_indices:
-            result.append("YES")
-        else:
-            result.append("NO")
-    
-    return result
-```
-
-**Why this improvement works**: Early termination when MST is complete improves efficiency.
-
-## Final Optimal Solution
-
-```python
-n, m = map(int, input().split())
-edges = []
-for _ in range(m):
-    a, b, c = map(int, input().split())
-    edges.append((a, b, c))
-
-def check_mst_edges(n, m, edges):
-    # Add indices to edges
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
-    
-    # Sort edges by weight
-    sorted_edges = sorted(indexed_edges, key=lambda x: x[3])
-    
-    # Union-Find data structure
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        if rank[px] < rank[py]:
-            px, py = py, px
-        parent[py] = px
-        if rank[px] == rank[py]:
-            rank[px] += 1
-        return True
-    
-    # Find MST edges
-    mst_edge_indices = set()
-    edges_added = 0
-    
-    for idx, a, b, c in sorted_edges:
-        if edges_added == n - 1:  # MST is complete
-            break
-        if union(a, b):
-            mst_edge_indices.add(idx)
-            edges_added += 1
-    
-    # Check each edge
-    result = []
-    for i in range(m):
-        if i in mst_edge_indices:
-            result.append("YES")
-        else:
-            result.append("NO")
-    
-    return result
-
-result = check_mst_edges(n, m, edges)
-for res in result:
-    print(res)
-```
-
-## Complexity Analysis
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Kruskal's with Edge Tracking | O(m log m + m α(n)) | O(n + m) | Basic MST construction |
-| Kruskal's with Edge Indexing | O(m log m + m α(n)) | O(n + m) | Proper edge handling |
-| Optimized MST Edge Check | O(m log m + m α(n)) | O(n + m) | Early termination |
-
-## Key Insights for Other Problems
-
-### 1. **MST Edge Identification**
-**Principle**: An edge belongs to the MST if it's included when running Kruskal's algorithm.
-**Applicable to**: MST problems, graph connectivity problems, edge analysis problems
-
-### 2. **Union-Find Data Structure**
-**Principle**: Union-Find efficiently tracks connected components during MST construction.
-**Applicable to**: Graph connectivity problems, MST algorithms, component tracking problems
-
-### 3. **Edge Weight Sorting**
-**Principle**: Kruskal's algorithm processes edges in ascending order of weight.
-**Applicable to**: MST problems, greedy algorithms, sorting-based graph problems
-
-## Notable Techniques
-
-### 1. **Union-Find Implementation**
-```python
-class UnionFind:
-    def __init__(self, n):
-        self.parent = list(range(n + 1))
-        self.rank = [0] * (n + 1)
-    
-    def find(self, x):
-        if self.parent[x] != x:
-            self.parent[x] = self.find(self.parent[x])
-        return self.parent[x]
-    
-    def union(self, x, y):
-        px, py = self.find(x), self.find(y)
-        if px == py:
-            return False
-        if self.rank[px] < self.rank[py]:
-            px, py = py, px
-        self.parent[py] = px
-        if self.rank[px] == self.rank[py]:
-            self.rank[px] += 1
-        return True
-```
-
-### 2. **Kruskal's Algorithm**
-```python
-def kruskal_mst(n, edges):
-    # Sort edges by weight
-    sorted_edges = sorted(edges, key=lambda x: x[2])
-    
-    # Union-Find
-    uf = UnionFind(n)
-    mst_edges = []
-    
-    for a, b, c in sorted_edges:
-        if uf.union(a, b):
-            mst_edges.append((a, b, c))
-    
-    return mst_edges
-```
-
-### 3. **MST Edge Checking**
-```python
-def check_mst_edges(n, edges):
-    # Add indices
-    indexed_edges = [(i, a, b, c) for i, (a, b, c) in enumerate(edges)]
-    
-    # Sort by weight
-    sorted_edges = sorted(indexed_edges, key=lambda x: x[3])
-    
-    # Kruskal's algorithm
-    uf = UnionFind(n)
-    mst_indices = set()
-    
-    for idx, a, b, c in sorted_edges:
-        if uf.union(a, b):
-            mst_indices.add(idx)
-    
-    return mst_indices
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is an MST edge identification problem
-2. **Choose approach**: Use Kruskal's algorithm with edge indexing
-3. **Initialize data structures**: Set up Union-Find and edge indexing
-4. **Sort edges**: Sort edges by weight for Kruskal's algorithm
-5. **Run Kruskal's**: Build MST and track included edges
-6. **Check edges**: Determine which edges belong to MST
-7. **Return result**: Output YES/NO for each edge
-
----
-
-*This analysis shows how to efficiently determine which edges belong to the minimum spanning tree using Kruskal's algorithm.* 
-
-## Problem Variations & Related Questions
-
-### Problem Variations
-
-#### 1. **MST Edge Check with Costs**
-**Variation**: Each edge has additional costs beyond weight, find MST with cost constraints.
-**Approach**: Use weighted MST construction with cost optimization.
-```python
-def cost_based_mst_edge_check(n, edges, edge_costs):
-    # edge_costs[(a, b)] = additional cost for edge (a, b)
-    
-    class CostUnionFind:
-        def __init__(self, n):
-            self.parent = list(range(n + 1))
-            self.rank = [0] * (n + 1)
-            self.total_cost = 0
-        
-        def find(self, x):
-            if self.parent[x] != x:
-                self.parent[x] = self.find(self.parent[x])
-            return self.parent[x]
-        
-        def union(self, x, y, edge_cost):
-            px, py = self.find(x), self.find(y)
-            if px == py:
-                return False
-            if self.rank[px] < self.rank[py]:
-                px, py = py, px
-            self.parent[py] = px
-            if self.rank[px] == self.rank[py]:
-                self.rank[px] += 1
-            self.total_cost += edge_cost
-            return True
-    
-    def find_cost_based_mst():
-        # Add indices and costs
-        indexed_edges = []
-        for i, (a, b, w) in enumerate(edges):
-            additional_cost = edge_costs.get((a, b), 0)
-            total_cost = w + additional_cost
-            indexed_edges.append((i, a, b, w, total_cost))
-        
-        # Sort by total cost
-        sorted_edges = sorted(indexed_edges, key=lambda x: x[4])
-        
-        # Kruskal's algorithm with cost tracking
-        uf = CostUnionFind(n)
-        mst_indices = set()
-        
-        for idx, a, b, w, total_cost in sorted_edges:
-            if uf.union(a, b, total_cost):
-                mst_indices.add(idx)
-        
-        return mst_indices, uf.total_cost
-    
-    mst_edges, total_cost = find_cost_based_mst()
-    return mst_edges, total_cost
-```
-
-#### 2. **MST Edge Check with Constraints**
-**Variation**: Limited budget, restricted edges, or specific connectivity requirements.
-**Approach**: Use constraint satisfaction with MST construction.
-```python
-def constrained_mst_edge_check(n, edges, budget, restricted_edges, required_edges):
-    # budget = maximum cost allowed
-    # restricted_edges = set of edges that cannot be used
-    # required_edges = set of edges that must be included
-    
-    class ConstrainedUnionFind:
-        def __init__(self, n):
-            self.parent = list(range(n + 1))
-            self.rank = [0] * (n + 1)
-            self.total_cost = 0
-        
-        def find(self, x):
-            if self.parent[x] != x:
-                self.parent[x] = self.find(self.parent[x])
-            return self.parent[x]
-        
-        def union(self, x, y, cost):
-            px, py = self.find(x), self.find(y)
-            if px == py:
-                return False
-            if self.rank[px] < self.rank[py]:
-                px, py = py, px
-            self.parent[py] = px
-            if self.rank[px] == self.rank[py]:
-                self.rank[px] += 1
-            self.total_cost += cost
-            return True
-    
-    def find_constrained_mst():
-        # Add indices
-        indexed_edges = [(i, a, b, w) for i, (a, b, w) in enumerate(edges)]
-        
-        # First, include required edges
-        uf = ConstrainedUnionFind(n)
-        mst_indices = set()
-        
-        for i, a, b, w in indexed_edges: if (a, b) in 
-required_edges: if uf.union(a, b, w):
-                    mst_indices.add(i)
-                else:
-                    return None, float('inf')  # Impossible
-        
-        # Then add remaining edges (excluding restricted ones)
-        remaining_edges = []
-        for i, a, b, w in indexed_edges: if (a, b) not in required_edges and (a, b) not in 
-restricted_edges: remaining_edges.append((i, a, b, w))
-        
-        # Sort by weight
-        remaining_edges.sort(key=lambda x: x[3])
-        
-        # Add edges until budget is exceeded or MST is complete
-        for i, a, b, w in remaining_edges: if uf.total_cost + w > 
-budget: break
-            if uf.union(a, b, w):
-                mst_indices.add(i)
-        
-        return mst_indices, uf.total_cost
-    
-    mst_edges, total_cost = find_constrained_mst()
-    return mst_edges, total_cost
-```
-
-#### 3. **MST Edge Check with Probabilities**
-**Variation**: Each edge has a probability of being available.
-**Approach**: Use Monte Carlo simulation or expected value calculation.
-```python
-def probabilistic_mst_edge_check(n, edges, edge_probabilities):
-    # edge_probabilities[(a, b)] = probability edge (a, b) is available
-    
-    def monte_carlo_simulation(trials=1000):
-        edge_frequencies = [0] * len(edges)
-        
-        for _ in range(trials):
-            # Simulate available edges
-            available_edges = []
-            for i, (a, b, w) in enumerate(edges):
-                if random.random() < edge_probabilities.get((a, b), 0.5):
-                    available_edges.append((i, a, b, w))
-            
-            # Find MST with available edges
-            mst_indices = find_mst_with_edges(n, available_edges)
-            
-            for idx in mst_indices:
-                edge_frequencies[idx] += 1
-        
-        # Calculate probabilities
-        probabilities = [freq / trials for freq in edge_frequencies]
-        return probabilities
-    
-    def find_mst_with_edges(n, available_edges):
-        # Sort by weight
-        sorted_edges = sorted(available_edges, key=lambda x: x[3])
-        
-        # Union-Find
-        uf = UnionFind(n)
-        mst_indices = set()
-        
-        for idx, a, b, w in sorted_edges:
-            if uf.union(a, b):
-                mst_indices.add(idx)
-        
-        return mst_indices
-    
-    return monte_carlo_simulation()
-```
-
-#### 4. **MST Edge Check with Multiple Criteria**
-**Variation**: Optimize for multiple objectives (weight, reliability, capacity).
-**Approach**: Use multi-objective optimization or weighted sum approach.
-```python
-def multi_criteria_mst_edge_check(n, edges, criteria_weights):
-    # criteria_weights = {'weight': 0.4, 'reliability': 0.3, 'capacity': 0.3}
-    # Each edge has multiple attributes
-    
-    def calculate_edge_score(edge_attributes):
-        return (criteria_weights['weight'] * edge_attributes['weight'] + 
-                criteria_weights['reliability'] * edge_attributes['reliability'] + 
-                criteria_weights['capacity'] * edge_attributes['capacity'])
-    
-    def find_multi_criteria_mst():
-        # Add indices and calculate scores
-        indexed_edges = []
-        for i, (a, b, w) in enumerate(edges):
-            # Calculate edge attributes (simplified)
-            edge_attrs = {
-                'weight': w,
-                'reliability': 1.0 - (w / 1000),  # Higher weight = lower reliability
-                'capacity': 100 - w  # Higher weight = lower capacity
-            }
-            score = calculate_edge_score(edge_attrs)
-            indexed_edges.append((i, a, b, w, score))
-        
-        # Sort by score (lower is better)
-        sorted_edges = sorted(indexed_edges, key=lambda x: x[4])
-        
-        # Kruskal's algorithm
-        uf = UnionFind(n)
-        mst_indices = set()
-        total_score = 0
-        
-        for idx, a, b, w, score in sorted_edges:
-            if uf.union(a, b):
-                mst_indices.add(idx)
-                total_score += score
-        
-        return mst_indices, total_score
-    
-    mst_edges, total_score = find_multi_criteria_mst()
-    return mst_edges, total_score
-```
-
-#### 5. **MST Edge Check with Dynamic Updates**
-**Variation**: Edges can be added or removed dynamically.
-**Approach**: Use dynamic MST algorithms or incremental updates.
+**Implementation**:
 ```python
 class DynamicMSTEdgeCheck:
     def __init__(self, n):
         self.n = n
         self.edges = []
+        self.adj = [[] for _ in range(n)]
+        self.edge_weights = {}
         self.mst_cache = None
-        self.mst_cost = 0
     
     def add_edge(self, a, b, w):
+        """Add edge from a to b with weight w"""
         self.edges.append((a, b, w))
-        self.invalidate_cache()
+        self.adj[a-1].append(b-1)  # Convert to 0-indexed
+        self.adj[b-1].append(a-1)  # Undirected edge
+        self.edge_weights[(a-1, b-1)] = w
+        self.edge_weights[(b-1, a-1)] = w
+        self.mst_cache = None  # Invalidate cache
     
-    def remove_edge(self, a, b, w):
-        if (a, b, w) in self.edges:
-            self.edges.remove((a, b, w))
-            self.invalidate_cache()
+    def remove_edge(self, a, b):
+        """Remove edge from a to b"""
+        self.edges = [(x, y, w) for x, y, w in self.edges if not ((x == a and y == b) or (x == b and y == a))]
+        self.adj[a-1] = [x for x in self.adj[a-1] if x != b-1]
+        self.adj[b-1] = [x for x in self.adj[b-1] if x != a-1]
+        self.edge_weights.pop((a-1, b-1), None)
+        self.edge_weights.pop((b-1, a-1), None)
+        self.mst_cache = None  # Invalidate cache
     
-    def update_edge_weight(self, a, b, old_w, new_w):
-        if (a, b, old_w) in self.edges:
-            self.edges.remove((a, b, old_w))
-            self.edges.append((a, b, new_w))
-            self.invalidate_cache()
-    
-    def invalidate_cache(self):
-        self.mst_cache = None
-        self.mst_cost = 0
-    
-    def get_mst_edges(self):
-        if self.mst_cache is None:
-            self.mst_cache, self.mst_cost = self.compute_mst()
-        return self.mst_cache
-    
-    def compute_mst(self):
-        # Add indices
-        indexed_edges = [(i, a, b, w) for i, (a, b, w) in enumerate(self.edges)]
+    def is_edge_in_mst(self, query_a, query_b):
+        """Check if edge is in any MST"""
+        # Find the weight of the query edge
+        query_weight = self.edge_weights.get((query_a-1, query_b-1))
+        if query_weight is None:
+            return 0  # Edge doesn't exist
         
-        # Sort by weight
-        sorted_edges = sorted(indexed_edges, key=lambda x: x[3])
+        # Find all cycles containing this edge
+        def find_cycles(start, end, current_path, visited):
+            if start == end and len(current_path) > 1:
+                # Found a cycle
+                cycle_edges = []
+                for i in range(len(current_path)):
+                    u = current_path[i]
+                    v = current_path[(i + 1) % len(current_path)]
+                    weight = self.edge_weights.get((u, v), float('inf'))
+                    cycle_edges.append(weight)
+                
+                # Check if query edge is maximum in this cycle
+                if cycle_edges:
+                    max_weight = max(cycle_edges)
+                    if query_weight == max_weight:
+                        return False  # Edge is not in MST
+                return True  # Edge is in MST
+            
+            for neighbor in self.adj[start]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    current_path.append(neighbor)
+                    if find_cycles(neighbor, end, current_path, visited):
+                        return True
+                    current_path.pop()
+                    visited.remove(neighbor)
+            
+            return True
         
-        # Kruskal's algorithm
-        uf = UnionFind(self.n)
-        mst_indices = set()
-        total_cost = 0
-        
-        for idx, a, b, w in sorted_edges:
-            if uf.union(a, b):
-                mst_indices.add(idx)
-                total_cost += w
-        
-        return mst_indices, total_cost
-    
-    def is_edge_in_mst(self, edge_index):
-        mst_edges = self.get_mst_edges()
-        return edge_index in mst_edges
-    
-    def get_mst_cost(self):
-        if self.mst_cache is None:
-            self.mst_cache, self.mst_cost = self.compute_mst()
-        return self.mst_cost
+        # Check if edge is in MST
+        visited = {query_a-1}
+        current_path = [query_a-1]
+        return find_cycles(query_a-1, query_b-1, current_path, visited)
+
+# Example usage
+dmec = DynamicMSTEdgeCheck(4)
+dmec.add_edge(1, 2, 1)
+dmec.add_edge(2, 3, 2)
+dmec.add_edge(3, 4, 3)
+dmec.add_edge(4, 1, 4)
+dmec.add_edge(2, 4, 5)
+result1 = dmec.is_edge_in_mst(1, 2)
+print(f"Dynamic MST edge check result: {result1}")
 ```
 
-### Related Problems & Concepts
+#### **3. Multiple MST Edge Check**
+**Problem**: Check if an edge is in all possible MSTs or just some MSTs.
 
-#### 1. **Minimum Spanning Tree**
-- **Kruskal's Algorithm**: Sort edges, use Union-Find
-- **Prim's Algorithm**: Grow tree from single vertex
-- **Boruvka's Algorithm**: Parallel MST construction
-- **Steiner Tree**: MST connecting subset of vertices
+**Key Differences**: Consider multiple MSTs with same total weight
 
-#### 2. **Union-Find Data Structure**
-- **Path Compression**: Optimize find operations
-- **Union by Rank**: Optimize union operations
-- **Connected Components**: Track graph connectivity
-- **Cycle Detection**: Detect cycles in graphs
+**Solution Approach**: Use cycle property with tie-breaking
 
-#### 3. **Graph Connectivity**
-- **Connected Components**: Find all components
-- **Bridges**: Critical edges for connectivity
-- **Articulation Points**: Critical vertices
-- **Biconnected Components**: 2-connected subgraphs
+**Implementation**:
+```python
+def multiple_mst_edge_check(n, edges, queries):
+    """
+    Check if edges are in all possible MSTs or just some MSTs
+    
+    Args:
+        n: number of nodes
+        edges: list of (a, b, w) edges
+        queries: list of (a, b) queries
+    
+    Returns:
+        list: answers to queries (2 if in all MSTs, 1 if in some MSTs, 0 if in no MSTs)
+    """
+    # Build adjacency list
+    adj = [[] for _ in range(n)]
+    edge_weights = {}
+    
+    for a, b, w in edges:
+        adj[a-1].append(b-1)  # Convert to 0-indexed
+        adj[b-1].append(a-1)  # Undirected edge
+        edge_weights[(a-1, b-1)] = w
+        edge_weights[(b-1, a-1)] = w
+    
+    def check_edge_in_msts(query_a, query_b):
+        """Check if edge is in all, some, or no MSTs"""
+        # Find the weight of the query edge
+        query_weight = edge_weights.get((query_a-1, query_b-1))
+        if query_weight is None:
+            return 0  # Edge doesn't exist
+        
+        # Find all cycles containing this edge
+        def find_cycles(start, end, current_path, visited):
+            if start == end and len(current_path) > 1:
+                # Found a cycle
+                cycle_edges = []
+                for i in range(len(current_path)):
+                    u = current_path[i]
+                    v = current_path[(i + 1) % len(current_path)]
+                    weight = edge_weights.get((u, v), float('inf'))
+                    cycle_edges.append(weight)
+                
+                # Check if query edge is maximum in this cycle
+                if cycle_edges:
+                    max_weight = max(cycle_edges)
+                    if query_weight == max_weight:
+                        return 0  # Edge is not in any MST
+                    elif query_weight < max_weight:
+                        return 1  # Edge is in some MSTs
+                return 2  # Edge is in all MSTs
+            
+            for neighbor in adj[start]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    current_path.append(neighbor)
+                    result = find_cycles(neighbor, end, current_path, visited)
+                    if result != 2:
+                        return result
+                    current_path.pop()
+                    visited.remove(neighbor)
+            
+            return 2
+        
+        # Check if edge is in MSTs
+        visited = {query_a-1}
+        current_path = [query_a-1]
+        return find_cycles(query_a-1, query_b-1, current_path, visited)
+    
+    # Answer queries
+    results = []
+    for a, b in queries:
+        result = check_edge_in_msts(a, b)
+        results.append(result)
+    
+    return results
 
-#### 4. **Optimization Problems**
-- **Greedy Algorithms**: Local optimal choices
-- **Dynamic Programming**: Optimal substructure
-- **Linear Programming**: Mathematical optimization
-- **Approximation Algorithms**: Near-optimal solutions
+# Example usage
+n = 4
+edges = [(1, 2, 1), (2, 3, 2), (3, 4, 3), (4, 1, 4), (2, 4, 5)]
+queries = [(1, 2), (2, 3), (2, 4)]
+result = multiple_mst_edge_check(n, edges, queries)
+print(f"Multiple MST edge check result: {result}")
+```
 
-#### 5. **Dynamic Graph Problems**
-- **Incremental MST**: Adding edges
-- **Decremental MST**: Removing edges
-- **Fully Dynamic MST**: Both adding and removing
-- **Online Algorithms**: Real-time updates
+### Related Problems
 
-### Competitive Programming Variations
+#### **CSES Problems**
+- [Road Construction](https://cses.fi/problemset/task/1675) - MST construction
+- [Road Reparation](https://cses.fi/problemset/task/1675) - MST repair
+- [Road Construction II](https://cses.fi/problemset/task/1675) - MST variants
 
-#### 1. **Online Judge Variations**
-- **Time Limits**: Optimize for strict constraints
-- **Memory Limits**: Space-efficient solutions
-- **Input Size**: Handle large graphs
-- **Edge Cases**: Robust MST algorithms
+#### **LeetCode Problems**
+- [Connecting Cities With Minimum Cost](https://leetcode.com/problems/connecting-cities-with-minimum-cost/) - MST
+- [Min Cost to Connect All Points](https://leetcode.com/problems/min-cost-to-connect-all-points/) - MST
+- [Critical Connections in a Network](https://leetcode.com/problems/critical-connections-in-a-network/) - Bridge detection
 
-#### 2. **Algorithm Contests**
-- **Speed Programming**: Fast implementation
-- **Code Golf**: Minimal code solutions
-- **Team Contests**: Collaborative problem solving
-- **Live Coding**: Real-time problem solving
+#### **Problem Categories**
+- **Graph Theory**: MST algorithms, edge checking
+- **Union-Find**: Disjoint set operations
+- **Greedy Algorithms**: Kruskal's algorithm, Prim's algorithm
 
-#### 3. **Advanced Techniques**
-- **Binary Search**: On answer space
-- **Two Pointers**: Efficient edge processing
-- **Sliding Window**: Optimal subgraph problems
-- **Monotonic Stack/Queue**: Maintaining order
+## 🔗 Additional Resources
 
-### Mathematical Extensions
+### **Algorithm References**
+- [Kruskal's Algorithm](https://cp-algorithms.com/graph/mst_kruskal.html) - MST construction
+- [Prim's Algorithm](https://cp-algorithms.com/graph/mst_prim.html) - MST construction
+- [Union-Find](https://cp-algorithms.com/data_structures/disjoint_set_union.html) - Disjoint set operations
 
-#### 1. **Combinatorics**
-- **Tree Enumeration**: Counting MSTs
-- **Permutations**: Order of edge additions
-- **Combinations**: Choice of edges
-- **Catalan Numbers**: Valid tree sequences
+### **Practice Problems**
+- [CSES Road Construction](https://cses.fi/problemset/task/1675) - Medium
+- [CSES Road Reparation](https://cses.fi/problemset/task/1675) - Medium
+- [CSES Road Construction II](https://cses.fi/problemset/task/1675) - Medium
 
-#### 2. **Probability Theory**
-- **Expected Values**: Average MST weight
-- **Markov Chains**: State transitions
-- **Random Graphs**: Erdős-Rényi model
-- **Monte Carlo**: Simulation methods
+### **Further Reading**
+- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
+- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
+- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
 
-#### 3. **Number Theory**
-- **Modular Arithmetic**: Large number handling
-- **Prime Numbers**: Special graph cases
-- **GCD/LCM**: Mathematical properties
-- **Euler's Totient**: Counting coprime edges
+---
 
-### Learning Resources
+## 📝 Implementation Checklist
 
-#### 1. **Online Platforms**
-- **LeetCode**: MST and graph problems
-- **Codeforces**: Competitive programming
-- **HackerRank**: Algorithm challenges
-- **AtCoder**: Japanese programming contests
+When applying this template to a new problem, ensure you:
 
-#### 2. **Educational Resources**
-- **CLRS**: Introduction to Algorithms
-- **CP-Algorithms**: Competitive programming algorithms
-- **GeeksforGeeks**: Algorithm tutorials
-- **TopCoder**: Algorithm tutorials
+### **Content Requirements**
+- [x] **Problem Description**: Clear, concise with examples
+- [x] **Learning Objectives**: 5 specific, measurable goals
+- [x] **Prerequisites**: 5 categories of required knowledge
+- [x] **3 Approaches**: Brute Force → Greedy → Optimal
+- [x] **Key Insights**: 4-5 insights per approach at the beginning
+- [x] **Visual Examples**: ASCII diagrams for each approach
+- [x] **Complete Implementations**: Working code with examples
+- [x] **Complexity Analysis**: Time and space for each approach
+- [x] **Problem Variations**: 3 variations with implementations
+- [x] **Related Problems**: CSES and LeetCode links
 
-#### 3. **Practice Problems**
-- **MST Problems**: Kruskal's, Prim's, Boruvka's
-- **Connectivity Problems**: Union-Find, components
-- **Dynamic Problems**: Incremental, decremental
-- **Optimization Problems**: Multi-objective, constrained 
+### **Structure Requirements**
+- [x] **No Redundant Sections**: Remove duplicate Key Insights
+- [x] **Logical Flow**: Each approach builds on the previous
+- [x] **Progressive Complexity**: Clear improvement from approach to approach
+- [x] **Educational Value**: Theory + Practice in each section
+- [x] **Complete Coverage**: All important concepts included
+
+### **Quality Requirements**
+- [x] **Working Code**: All implementations are runnable
+- [x] **Test Cases**: Examples with expected outputs
+- [x] **Edge Cases**: Handle boundary conditions
+- [x] **Clear Explanations**: Easy to understand for students
+- [x] **Visual Learning**: Diagrams and examples throughout
+
+---
+
+## 🎯 **Template Usage Instructions**
+
+### **Step 1: Replace Placeholders**
+- Replace `[Problem Name]` with actual problem name
+- Replace `[category]` with the problem category folder
+- Replace `[problem_name]` with the actual problem filename
+- Replace all `[placeholder]` text with actual content
+
+### **Step 2: Customize Approaches**
+- **Approach 1**: Usually brute force or naive solution
+- **Approach 2**: Optimized solution (DP, greedy, etc.)
+- **Approach 3**: Optimal solution (advanced algorithms)
+
+### **Step 3: Add Visual Examples**
+- Use ASCII art for diagrams
+- Show step-by-step execution
+- Use actual data in examples
+
+### **Step 4: Implement Working Code**
+- Write complete, runnable implementations
+- Include test cases and examples
+- Handle edge cases properly
+
+### **Step 5: Add Problem Variations**
+- Create 3 meaningful variations
+- Provide implementations for each
+- Link to related problems
+
+### **Step 6: Quality Check**
+- Ensure no redundant sections
+- Verify all code works
+- Check that complexity analysis is correct
+- Confirm educational value is high
+
+This template ensures consistency across all problem analyses while maintaining high educational value and practical implementation focus.

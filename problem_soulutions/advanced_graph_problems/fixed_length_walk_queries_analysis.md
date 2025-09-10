@@ -1,1531 +1,730 @@
 ---
 layout: simple
-title: "Fixed Length Walk Queries"
+title: "Fixed Length Walk Queries - Graph Theory Problem"
 permalink: /problem_soulutions/advanced_graph_problems/fixed_length_walk_queries_analysis
 ---
 
-# Fixed Length Walk Queries
+# Fixed Length Walk Queries - Graph Theory Problem
 
 ## 📋 Problem Information
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- Understand the concept of walks (can repeat vertices and edges) in graphs
-- Apply matrix exponentiation for efficient walk counting
-- Implement dynamic programming for walk queries with fixed lengths
-- Optimize walk query algorithms for multiple queries
-- Handle large walk lengths using modular arithmetic and matrix operations
+- Understand the concept of fixed length walks in directed graphs
+- Apply graph theory principles to determine walk existence
+- Implement algorithms for finding walks of specific lengths
+- Optimize graph traversal for multiple walk queries
+- Handle special cases in walk analysis
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Matrix exponentiation, dynamic programming, graph reachability, walk concepts
-- **Data Structures**: Adjacency matrices, matrices, arrays
-- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, walk properties
-- **Programming Skills**: Matrix multiplication, modular arithmetic, dynamic programming
-- **Related Problems**: Fixed Length Path Queries (similar matrix approach), Fixed Length Trail Queries (trail counting), Message Route (reachability)
+- **Algorithm Knowledge**: Graph theory, walk algorithms, graph traversal, dynamic programming
+- **Data Structures**: Adjacency lists, matrices, dynamic programming tables
+- **Mathematical Concepts**: Graph theory, walk properties, combinatorial optimization
+- **Programming Skills**: Graph representation, DFS, BFS, matrix operations
+- **Related Problems**: Fixed Length Path Queries (similar approach), Round Trip (cycle detection), Graph Girth (cycle properties)
 
 ## 📋 Problem Description
 
-Given a graph, answer queries about walks (can repeat vertices and edges) of fixed length between vertices.
+Given a directed graph with n nodes and q queries, for each query determine if there exists a walk of length k from node a to node b.
 
 **Input**: 
-- n, m: number of vertices and edges
-- m lines: a b (edge between vertices a and b)
+- n: number of nodes
 - q: number of queries
-- q lines: u v k (query: is there a walk of length k from u to v?)
+- n lines: adjacency matrix (1 if edge exists, 0 otherwise)
+- q lines: a b k (check for walk from node a to b of length k)
 
 **Output**: 
-- For each query, print "YES" if walk exists, "NO" otherwise
+- Answer to each query (1 if exists, 0 otherwise)
 
 **Constraints**:
 - 1 ≤ n ≤ 100
-- 1 ≤ m ≤ 1000
 - 1 ≤ q ≤ 10^5
 - 1 ≤ k ≤ 10^9
+- 1 ≤ a,b ≤ n
 
 **Example**:
 ```
 Input:
-4 4
-1 2
-2 3
-3 4
-1 4
-3
-1 4 1
-1 4 2
-1 4 3
+3 2
+0 1 1
+1 0 1
+1 1 0
+1 3 2
+2 1 1
 
 Output:
-YES
-YES
-YES
+1
+1
 
 Explanation**: 
-Walk 1→4 has length 1 (direct edge)
-Walk 1→2→3→4 has length 3
-Walk 1→4→1→4 has length 3 (repeating vertices and edges)
-```
+Query 1: Walk of length 2 from node 1 to 3
+Walk: 1→2→3 (length 2)
+Answer: 1
 
-### 📊 Visual Example
-
-**Input Graph:**
-```
-    1 ──── 2 ──── 3 ──── 4
-    │                     │
-    └─────────────────────┘
-```
-
-**Walk Query Analysis:**
-```
-Query 1: 1→4, length 1
-Direct walk: 1 → 4 ✓
-Result: YES
-
-Query 2: 1→4, length 2
-Possible walks:
-- 1 → 2 → 4 ✗ (no edge 2→4)
-- 1 → 4 → 1 → 4 ✗ (length 3, not 2)
-- 1 → 4 → 1 → 4 ✗ (length 3, not 2)
-
-Wait, let me find a length 2 walk:
-- 1 → 2 → 3 → 4 ✗ (length 3, not 2)
-- 1 → 4 → 1 → 4 ✗ (length 3, not 2)
-
-Actually: 1 → 2 → 3 → 4
-This is length 3, not 2.
-
-Let me check: 1 → 4 → 1 → 4
-This is length 3, not 2.
-
-No walk of length 2 from 1 to 4.
-```
-
-**Correct Analysis:**
-```
-Query 1: 1→4, length 1
-Walk: 1 → 4 ✓
-Result: YES
-
-Query 2: 1→4, length 2
-Walk: 1 → 2 → 3 → 4
-Length: 3 edges ✗ (too long)
-
-Alternative: 1 → 4 → 1 → 4
-Length: 3 edges ✗ (too long)
-
-No walk of length 2 from 1 to 4.
-Result: NO
-
-Query 3: 1→4, length 3
-Walk: 1 → 2 → 3 → 4 ✓
-Length: 3 edges ✓
-Result: YES
-```
-
-**Matrix Exponentiation for Walk Counting:**
-```
-Adjacency Matrix A:
-    1  2  3  4
-1 [ 0  1  0  1 ]
-2 [ 1  0  1  0 ]
-3 [ 0  1  0  1 ]
-4 [ 1  0  1  0 ]
-
-A¹ (walks of length 1):
-    1  2  3  4
-1 [ 0  1  0  1 ]  ← A[1][4] = 1 (walk 1→4)
-2 [ 1  0  1  0 ]
-3 [ 0  1  0  1 ]
-4 [ 1  0  1  0 ]
-
-A² (walks of length 2):
-    1  2  3  4
-1 [ 2  0  2  0 ]  ← A[1][4] = 0 (no walk 1→4 of length 2)
-2 [ 0  2  0  2 ]
-3 [ 2  0  2  0 ]
-4 [ 0  2  0  2 ]
-
-A³ (walks of length 3):
-    1  2  3  4
-1 [ 0  4  0  4 ]  ← A[1][4] = 4 (multiple walks 1→4 of length 3)
-2 [ 4  0  4  0 ]
-3 [ 0  4  0  4 ]
-4 [ 4  0  4  0 ]
-```
-
-**Walk vs Path vs Trail:**
-```
-Walk: Vertices and edges can be repeated
-- 1 → 2 → 1 → 4 ✓
-- 1 → 4 → 1 → 4 ✓
-
-Path: No repeated vertices
-- 1 → 2 → 3 → 4 ✓
-- 1 → 2 → 1 → 4 ✗ (repeats vertex 1)
-
-Trail: No repeated edges
-- 1 → 2 → 3 → 4 ✓
-- 1 → 2 → 1 → 2 → 4 ✓ (repeats vertices, not edges)
-```
-
-**Walk Examples:**
-```
-Length 1: 1 → 4
-Length 2: None (no direct path of length 2)
-Length 3: 1 → 2 → 3 → 4
-Length 4: 1 → 2 → 3 → 4 → 1 → 4
-Length 5: 1 → 2 → 3 → 4 → 1 → 2 → 3 → 4
+Query 2: Walk of length 1 from node 2 to 1
+Walk: 2→1 (direct edge)
+Answer: 1
 ```
 
 ## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Step 1: Understanding the Problem
-**What are we trying to do?**
-- Find walks of specific lengths
-- Use graph algorithms and matrix exponentiation
-- Handle multiple queries efficiently
-- Apply dynamic programming concepts
+### Approach 1: Brute Force Solution
 
-**Key Observations:**
-- This is a walk counting problem
-- Can use adjacency matrix exponentiation
-- Walks can repeat vertices and edges
-- Matrix multiplication is key
+**Key Insights from Brute Force Solution**:
+- **Exhaustive Search**: Try all possible walks of length k
+- **DFS Traversal**: Use depth-first search to explore all walks
+- **Exponential Growth**: Number of walks grows exponentially with k
+- **Baseline Understanding**: Provides correct answer but impractical for large k
 
-### Step 2: Matrix Exponentiation Approach
-**Idea**: Use adjacency matrix exponentiation to find walks of different lengths.
+**Key Insight**: Use DFS to explore all possible walks of length k from start to end.
 
-```python
-def fixed_length_walk_queries(n, edges, queries):
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
-    
-    # Matrix exponentiation for different lengths
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
+**Algorithm**:
+- Start DFS from node a
+- Explore all walks of length exactly k
+- Return 1 if any walk reaches node b, 0 otherwise
+
+**Visual Example**:
+```
+Graph: 1→2→3, 1→3, 2→1, k=2, start=1, end=3
+
+DFS exploration:
+┌─────────────────────────────────────┐
+│ Start at 1, depth=0                │
+│ ├─ Go to 2, depth=1                │
+│ │  └─ Go to 3, depth=2 ✓ (found!)  │
+│ └─ Go to 3, depth=1                │
+│    └─ No more edges                │
+└─────────────────────────────────────┘
+
+Walk found: 1→2→3 (length 2)
+Result: 1
 ```
 
-**Why this works:**
-- Uses matrix exponentiation for efficient walk counting
-- Handles walk detection correctly
-- Efficient implementation
-- O(n³ log k) time complexity
-
-### Step 3: Complete Solution
-**Putting it all together:**
-
+**Implementation**:
 ```python
-def solve_fixed_length_walk_queries():
-    n, m = map(int, input().split())
-    edges = []
+def brute_force_solution(n, adj_matrix, queries):
+    """
+    Find walk existence using brute force DFS approach
     
-    for _ in range(m):
-        a, b = map(int, input().split())
-        edges.append((a, b))
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, b, k) queries
     
-    q = int(input())
-    queries = []
-    for _ in range(q):
-        u, v, k = map(int, input().split())
-        queries.append((u, v, k))
-    
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
-    
-    # Matrix exponentiation for different lengths
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] += a[i][k_idx] * b[k_idx][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
+    Returns:
+        list: answers to queries
+    """
+    def has_walk(start, end, k):
+        """Check if walk of length k exists from start to end using DFS"""
+        if k == 0:
+            return start == end
         
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
+        if k == 1:
+            return adj_matrix[start][end] == 1
         
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            print("YES")
-        else:
-            print("NO")
-
-# Main execution
-if __name__ == "__main__":
-    solve_fixed_length_walk_queries()
-```
-
-**Why this works:**
-- Optimal matrix exponentiation approach
-- Handles all edge cases
-- Efficient implementation
-- Clear and readable code
-
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (4, [(1, 2), (2, 3), (3, 4), (1, 4)], [(1, 4, 1), (1, 4, 2), (1, 4, 3)]),
-        (3, [(1, 2), (2, 3), (3, 1)], [(1, 3, 2), (2, 1, 2), (3, 2, 2)]),
-    ]
-    
-    for n, edges, queries in test_cases:
-        result = solve_test(n, edges, queries)
-        print(f"n={n}, edges={edges}, queries={queries}")
-        print(f"Result: {result}")
-        print()
-
-def solve_test(n, edges, queries):
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
-    
-    # Matrix exponentiation for different lengths
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] += a[i][k_idx] * b[k_idx][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n³ log k) - matrix exponentiation for each query
-- **Space**: O(n²) - adjacency matrix and result matrices
-
-### Why This Solution Works
-- **Matrix Exponentiation**: Efficiently computes walk counts
-- **Walk Detection**: Counts walks allowing vertex/edge repetition
-- **Binary Exponentiation**: Reduces complexity from O(k) to O(log k)
-- **Optimal Approach**: Handles all cases correctly
-
-## 🎯 Key Insights
-
-### 1. **Walk Detection**
-- Walks can repeat vertices and edges
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
-
-### 2. **Matrix Exponentiation**
-- Efficient walk counting algorithm
-- Important for understanding
-- Fundamental concept
-- Essential for algorithm
-
-### 3. **Binary Exponentiation**
-- Fast matrix power computation
-- Important for performance
-- Simple but important concept
-- Essential for understanding
-
-## 🎯 Problem Variations
-
-### Variation 1: Walks with Weights
-**Problem**: Each edge has a weight, find weighted walks.
-
-```python
-def weighted_walk_queries(n, edges, queries, weights):
-    # Build weighted adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = weights.get((a, b), 1)
-        adj_matrix[b-1][a-1] = weights.get((b, a), 1)
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] += a[i][k_idx] * b[k_idx][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-```
-
-### Variation 2: Walks with Constraints
-**Problem**: Find walks avoiding certain edges.
-
-```python
-def constrained_walk_queries(n, edges, queries, forbidden_edges):
-    # Build adjacency matrix excluding forbidden edges
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
-            adj_matrix[a-1][b-1] = 1
-            adj_matrix[b-1][a-1] = 1
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] += a[i][k_idx] * b[k_idx][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-```
-
-### Variation 3: Dynamic Walks
-**Problem**: Support adding/removing edges and maintaining walk counts.
-
-```python
-class DynamicWalkQueries:
-    def __init__(self, n):
-        self.n = n
-        self.adj_matrix = [[0] * n for _ in range(n)]
-        self.edges = set()
-    
-    def add_edge(self, a, b):
-        if (a, b) not in self.edges and (b, a) not in self.edges:
-            self.edges.add((a, b))
-            self.adj_matrix[a-1][b-1] = 1
-            self.adj_matrix[b-1][a-1] = 1
-    
-    def remove_edge(self, a, b):
-        if (a, b) in self.edges:
-            self.edges.remove((a, b))
-            self.adj_matrix[a-1][b-1] = 0
-            self.adj_matrix[b-1][a-1] = 0
-            return True
-        elif (b, a) in self.edges:
-            self.edges.remove((b, a))
-            self.adj_matrix[a-1][b-1] = 0
-            self.adj_matrix[b-1][a-1] = 0
-            return True
-        return False
-    
-    def has_walk(self, u, v, k):
-        def matrix_multiply(a, b):
-            result = [[0] * self.n for _ in range(self.n)]
-            for i in range(self.n):
-                for j in range(self.n):
-                    for k_idx in range(self.n):
-                        result[i][j] += a[i][k_idx] * b[k_idx][j]
-            return result
-        
-        def matrix_power(matrix, power):
-            if power == 0:
-                # Identity matrix
-                return [[1 if i == j else 0 for j in range(self.n)] for i in range(self.n)]
-            if power == 1:
-                return matrix
+        # DFS to find walk of length k
+        def dfs(current, remaining_length):
+            if remaining_length == 0:
+                return current == end
             
-            half = matrix_power(matrix, power // 2)
-            squared = matrix_multiply(half, half)
-            
-            if power % 2 == 0:
-                return squared
-            else:
-                return matrix_multiply(squared, matrix)
+            for next_node in range(n):
+                if adj_matrix[current][next_node] == 1:
+                    if dfs(next_node, remaining_length - 1):
+                        return True
+            return False
         
-        powered_matrix = matrix_power(self.adj_matrix, k)
-        return powered_matrix[u-1][v-1] > 0
-```
-
-### Variation 4: Walks with Multiple Constraints
-**Problem**: Find walks satisfying multiple constraints.
-
-```python
-def multi_constrained_walk_queries(n, edges, queries, constraints):
-    # Apply multiple constraints
-    forbidden_edges = constraints.get('forbidden_edges', set())
-    required_edges = constraints.get('required_edges', set())
+        return dfs(start, k)
     
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
-            adj_matrix[a-1][b-1] = 1
-            adj_matrix[b-1][a-1] = 1
-    
-    # Add required edges
-    for a, b in required_edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] += a[i][k_idx] * b[k_idx][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
     results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
+    for a, b, k in queries:
+        result = 1 if has_walk(a - 1, b - 1, k) else 0  # Convert to 0-indexed
+        results.append(result)
     
     return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0]
+]
+queries = [(1, 3, 2), (2, 1, 1)]
+result = brute_force_solution(n, adj_matrix, queries)
+print(f"Brute force result: {result}")  # Output: [1, 1]
 ```
 
-### Variation 5: Walks with Edge Replacement
-**Problem**: Allow replacing existing edges with new ones.
+**Time Complexity**: O(n^k)
+**Space Complexity**: O(k)
 
-```python
-def edge_replacement_walk_queries(n, edges, queries, replacement_edges):
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] += a[i][k_idx] * b[k_idx][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Try different edge replacements
-    best_results = []
-    for u, v, k in queries:
-        best_has_walk = False
-        
-        # Try original edges
-        adj_matrix = [[0] * n for _ in range(n)]
-        for a, b in edges:
-            adj_matrix[a-1][b-1] = 1
-            adj_matrix[b-1][a-1] = 1
-        
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            best_has_walk = True
-        
-        # Try each replacement
-        for old_edge, new_edge in replacement_edges:
-            # Create modified edges
-            modified_edges = [e for e in edges if e != old_edge and (e[1], e[0]) != old_edge]
-            modified_edges.append(new_edge)
-            
-            # Build modified matrix
-            modified_matrix = [[0] * n for _ in range(n)]
-            for a, b in modified_edges:
-                modified_matrix[a-1][b-1] = 1
-                modified_matrix[b-1][a-1] = 1
-            
-            # Check if walk exists
-            powered_matrix = matrix_power(modified_matrix, k)
-            if powered_matrix[u-1][v-1] > 0:
-                best_has_walk = True
-        
-        best_results.append("YES" if best_has_walk else "NO")
-    
-    return best_results
-```
-
-## 🔗 Related Problems
-
-- **[Walk Detection](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Walk detection algorithms
-- **[Matrix Exponentiation](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Matrix exponentiation algorithms
-- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
-
-## 📚 Learning Points
-
-1. **Walk Detection**: Essential for path analysis
-2. **Matrix Exponentiation**: Efficient walk counting
-3. **Binary Exponentiation**: Important optimization technique
-4. **Graph Theory**: Important graph theory concept
+**Why it's inefficient**: Exponential time complexity makes it impractical for large k.
 
 ---
 
-**This is a great introduction to walk detection and matrix exponentiation!** 🎯
-        else:
-            results.append("NO")
-    
-    return results
+### Approach 2: Dynamic Programming Solution
+
+**Key Insights from Dynamic Programming Solution**:
+- **State Definition**: dp[i][j][k] = can reach node j from node i in exactly k steps
+- **State Transition**: dp[i][j][k] = OR of dp[i][l][k-1] AND adj[l][j] for all l
+- **Matrix Multiplication**: Use adjacency matrix powers for walk counting
+- **Memoization**: Cache results to avoid recomputation
+
+**Key Insight**: Use dynamic programming to compute walk existence for all pairs and lengths.
+
+**Algorithm**:
+- Use DP to compute walk existence for all (i,j,k) combinations
+- For each query, return precomputed result
+- Use matrix operations for efficient computation
+
+**Visual Example**:
+```
+Graph: 1→2→3, 1→3, 2→1, k=2
+
+DP table for length 2:
+┌─────────────────────────────────────┐
+│ dp[1][3][2] = dp[1][2][1] & adj[2][3] │
+│ dp[1][3][2] = 1 & 1 = 1 ✓          │
+│ dp[2][1][2] = dp[2][3][1] & adj[3][1] │
+│ dp[2][1][2] = 1 & 1 = 1 ✓          │
+└─────────────────────────────────────┘
+
+Walk exists for both queries
+Result: [1, 1]
 ```
 
-**Why this works:**
-- Uses matrix exponentiation efficiently
-- Finds walks of any length correctly
-- Handles multiple queries
-- O(n³ log k) per query
-
-### Step 3: Complete Solution
-**Putting it all together:**
-
+**Implementation**:
 ```python
-def solve_fixed_length_walk_queries():
-    n, m = map(int, input().split())
-    edges = []
+def dp_solution(n, adj_matrix, queries):
+    """
+    Find walk existence using dynamic programming
     
-    for _ in range(m):
-        a, b = map(int, input().split())
-        edges.append((a, b))
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, b, k) queries
     
-    q = int(input())
-    queries = []
-    for _ in range(q):
-        u, v, k = map(int, input().split())
-        queries.append((u, v, k))
+    Returns:
+        list: answers to queries
+    """
+    # Find maximum k value
+    max_k = max(k for _, _, k in queries)
     
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
+    # DP table: dp[i][j][k] = can reach node j from node i in exactly k steps
+    dp = [[[False] * (max_k + 1) for _ in range(n)] for _ in range(n)]
     
-    # Matrix exponentiation for different lengths
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
+    # Base case: walks of length 0
+    for i in range(n):
+        dp[i][i][0] = True
+    
+    # Base case: walks of length 1
+    for i in range(n):
+        for j in range(n):
+            dp[i][j][1] = (adj_matrix[i][j] == 1)
+    
+    # Fill DP table
+    for k in range(2, max_k + 1):
         for i in range(n):
             for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            print("YES")
-        else:
-            print("NO")
-
-# Main execution
-if __name__ == "__main__":
-    solve_fixed_length_walk_queries()
-```
-
-**Why this works:**
-- Optimal matrix exponentiation approach
-- Handles all edge cases
-- Efficient implementation
-- Clear and readable code
-
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (4, [(1, 2), (2, 3), (3, 4), (1, 4)], [(1, 4, 1), (1, 4, 2), (1, 4, 3)]),
-        (3, [(1, 2), (2, 3)], [(1, 3, 2), (1, 3, 3)]),
-    ]
-    
-    for n, edges, queries in test_cases:
-        result = solve_test(n, edges, queries)
-        print(f"n={n}, edges={edges}, queries={queries}")
-        print(f"Results: {result}")
-        print()
-
-def solve_test(n, edges, queries):
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
-    
-    # Matrix exponentiation for different lengths
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
+                for l in range(n):
+                    if dp[i][l][k-1] and adj_matrix[l][j] == 1:
+                        dp[i][j][k] = True
+                        break
     
     # Answer queries
     results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
+    for a, b, k in queries:
+        if k <= max_k:
+            result = 1 if dp[a-1][b-1][k] else 0  # Convert to 0-indexed
         else:
-            results.append("NO")
+            result = 0
+        results.append(result)
     
     return results
 
-test_solution()
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0]
+]
+queries = [(1, 3, 2), (2, 1, 1)]
+result = dp_solution(n, adj_matrix, queries)
+print(f"DP result: {result}")  # Output: [1, 1]
 ```
+
+**Time Complexity**: O(n³ × max_k)
+**Space Complexity**: O(n² × max_k)
+
+**Why it's better**: Much faster than brute force, but still limited by max_k.
+
+**Implementation Considerations**:
+- **Matrix Operations**: Use adjacency matrix for efficient edge checking
+- **State Transitions**: Check all intermediate nodes for walk construction
+- **Memory Management**: Use 3D DP table for state storage
+
+---
+
+### Approach 3: Matrix Exponentiation Solution (Optimal)
+
+**Key Insights from Matrix Exponentiation Solution**:
+- **Matrix Powers**: Use adjacency matrix powers for walk counting
+- **Binary Exponentiation**: Compute matrix powers efficiently
+- **Logarithmic Time**: O(log k) time per query
+- **Efficient Storage**: Store only necessary matrix powers
+
+**Key Insight**: Use matrix exponentiation to compute adjacency matrix powers for efficient walk queries.
+
+**Algorithm**:
+- Compute adjacency matrix powers using binary exponentiation
+- For each query, use appropriate matrix power to check walk existence
+- Return 1 if walk exists, 0 otherwise
+
+**Visual Example**:
+```
+Graph: 1→2→3, 1→3, 2→1
+
+Adjacency matrix A:
+┌─────────────────────────────────────┐
+│ A = [0 1 1]                        │
+│     [1 0 1]                        │
+│     [1 1 0]                        │
+└─────────────────────────────────────┘
+
+A² = A × A:
+┌─────────────────────────────────────┐
+│ A² = [2 1 1]                       │
+│      [1 2 1]                       │
+│      [1 1 2]                       │
+└─────────────────────────────────────┘
+
+Query 1: A²[0][2] = 1 ✓ (walk of length 2)
+Query 2: A[1][0] = 1 ✓ (walk of length 1)
+```
+
+**Implementation**:
+```python
+def matrix_exponentiation_solution(n, adj_matrix, queries):
+    """
+    Find walk existence using matrix exponentiation
+    
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, b, k) queries
+    
+    Returns:
+        list: answers to queries
+    """
+    def matrix_multiply(A, B):
+        """Multiply two n×n matrices"""
+        result = [[0] * n for _ in range(n)]
+        for i in range(n):
+            for j in range(n):
+                for k in range(n):
+                    result[i][j] += A[i][k] * B[k][j]
+        return result
+    
+    def matrix_power(matrix, power):
+        """Compute matrix^power using binary exponentiation"""
+        if power == 0:
+            # Return identity matrix
+            identity = [[0] * n for _ in range(n)]
+            for i in range(n):
+                identity[i][i] = 1
+            return identity
+        
+        if power == 1:
+            return matrix
+        
+        if power % 2 == 0:
+            half_power = matrix_power(matrix, power // 2)
+            return matrix_multiply(half_power, half_power)
+        else:
+            return matrix_multiply(matrix, matrix_power(matrix, power - 1))
+    
+    # Find unique k values
+    unique_k_values = sorted(set(k for _, _, k in queries))
+    
+    # Precompute matrix powers
+    matrix_powers = {}
+    for k in unique_k_values:
+        matrix_powers[k] = matrix_power(adj_matrix, k)
+    
+    # Answer queries
+    results = []
+    for a, b, k in queries:
+        if k in matrix_powers:
+            result = 1 if matrix_powers[k][a-1][b-1] > 0 else 0  # Convert to 0-indexed
+        else:
+            result = 0
+        results.append(result)
+    
+    return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0]
+]
+queries = [(1, 3, 2), (2, 1, 1)]
+result = matrix_exponentiation_solution(n, adj_matrix, queries)
+print(f"Matrix exponentiation result: {result}")  # Output: [1, 1]
+```
+
+**Time Complexity**: O(n³ × log(max_k) + q)
+**Space Complexity**: O(n² × unique_k_values)
+
+**Why it's optimal**: O(log k) time per query after O(n³ × log(max_k)) preprocessing, making it efficient for large k values.
+
+**Implementation Details**:
+- **Binary Exponentiation**: Compute matrix powers efficiently
+- **Query Optimization**: Answer queries in constant time
+- **Memory Efficiency**: Store only necessary matrix powers
+- **Matrix Operations**: Use efficient matrix multiplication
 
 ## 🔧 Implementation Details
 
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(n^k) | O(k) | Exhaustive DFS search |
+| Dynamic Programming | O(n³ × max_k) | O(n² × max_k) | Use DP for all walk lengths |
+| Matrix Exponentiation | O(n³ × log(max_k) + q) | O(n² × unique_k_values) | Use matrix powers for O(log k) queries |
+
 ### Time Complexity
-- **Time**: O(n³ log k) - matrix exponentiation
-- **Space**: O(n²) - adjacency matrix
+- **Time**: O(n³ × log(max_k) + q) - Precompute matrix powers, then O(1) per query
+- **Space**: O(n² × unique_k_values) - Store matrix powers
 
 ### Why This Solution Works
-- **Matrix Exponentiation**: Finds walks efficiently
-- **Binary Exponentiation**: Handles large k values
-- **Walk Counting**: Counts all possible walks
-- **Optimal Approach**: Handles all cases correctly
+- **Matrix Exponentiation**: Use adjacency matrix powers for walk counting
+- **Binary Exponentiation**: Compute matrix powers efficiently
+- **Query Optimization**: Answer queries in constant time
+- **Efficient Storage**: Store only necessary matrix powers
 
-## 🎯 Key Insights
+## 🚀 Problem Variations
 
-### 1. **Walk Properties**
-- Can repeat vertices and edges
-- Essential for walk counting
-- Key optimization technique
-- Enables efficient solution
+### Extended Problems with Detailed Code Examples
 
-### 2. **Matrix Exponentiation**
-- Adjacency matrix raised to power k
-- Important for understanding
-- Fundamental concept
-- Essential for algorithm
+#### **1. Weighted Walk Queries**
+**Problem**: Find if there exists a walk of length k with total weight w.
 
-### 3. **Binary Exponentiation**
-- Efficient power calculation
-- Important for performance
-- Simple but important concept
-- Essential for understanding
+**Key Differences**: Edges have weights, consider total weight
 
-## 🎯 Problem Variations
+**Solution Approach**: Use weighted adjacency matrix with matrix exponentiation
 
-### Variation 1: Walk with Constraints
-**Problem**: Find walks avoiding certain edges.
-
+**Implementation**:
 ```python
-def constrained_walk_queries(n, edges, queries, forbidden_edges):
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
-            adj_matrix[a-1][b-1] = 1
-            adj_matrix[b-1][a-1] = 1  # Undirected graph
+def weighted_walk_queries(n, adj_matrix, weights, queries):
+    """
+    Find weighted walk existence using matrix exponentiation
     
-    def matrix_multiply(a, b):
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        weights: weight matrix
+        queries: list of (a, b, k, w) queries
+    
+    Returns:
+        list: answers to queries
+    """
+    def matrix_multiply(A, B):
+        """Multiply two n×n matrices"""
         result = [[0] * n for _ in range(n)]
         for i in range(n):
             for j in range(n):
                 for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
+                    result[i][j] += A[i][k] * B[k][j]
         return result
     
     def matrix_power(matrix, power):
+        """Compute matrix^power using binary exponentiation"""
         if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+            # Return identity matrix
+            identity = [[0] * n for _ in range(n)]
+            for i in range(n):
+                identity[i][i] = 1
+            return identity
+        
         if power == 1:
             return matrix
         
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
         if power % 2 == 0:
-            return squared
+            half_power = matrix_power(matrix, power // 2)
+            return matrix_multiply(half_power, half_power)
         else:
-            return matrix_multiply(squared, matrix)
+            return matrix_multiply(matrix, matrix_power(matrix, power - 1))
+    
+    # Create weighted adjacency matrix
+    weighted_adj = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            if adj_matrix[i][j] == 1:
+                weighted_adj[i][j] = weights[i][j]
+    
+    # Find unique k values
+    unique_k_values = sorted(set(k for _, _, k, _ in queries))
+    
+    # Precompute matrix powers
+    matrix_powers = {}
+    for k in unique_k_values:
+        matrix_powers[k] = matrix_power(weighted_adj, k)
     
     # Answer queries
     results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
+    for a, b, k, w in queries:
+        if k in matrix_powers:
+            result = 1 if matrix_powers[k][a-1][b-1] == w else 0  # Convert to 0-indexed
         else:
-            results.append("NO")
+            result = 0
+        results.append(result)
     
     return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0]
+]
+weights = [
+    [0, 2, 3],
+    [2, 0, 4],
+    [3, 4, 0]
+]
+queries = [(1, 3, 2, 6), (2, 1, 1, 2)]
+result = weighted_walk_queries(n, adj_matrix, weights, queries)
+print(f"Weighted walk result: {result}")
 ```
 
-### Variation 2: Weighted Walk Queries
-**Problem**: Each edge has a weight, find walks with specific total weight.
+#### **2. Shortest Walk Queries**
+**Problem**: Find the shortest walk length between two nodes.
 
+**Key Differences**: Find minimum walk length instead of fixed length
+
+**Solution Approach**: Use Floyd-Warshall or Dijkstra's algorithm
+
+**Implementation**:
 ```python
-def weighted_walk_queries(n, edges, weights, queries):
-    # Build weighted adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        weight = weights.get((a, b), 1)
-        adj_matrix[a-1][b-1] = weight
-        adj_matrix[b-1][a-1] = weight
+def shortest_walk_queries(n, adj_matrix, queries):
+    """
+    Find shortest walk lengths using Floyd-Warshall algorithm
     
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, b) queries
+    
+    Returns:
+        list: shortest walk lengths
+    """
+    # Initialize distance matrix
+    dist = [[float('inf')] * n for _ in range(n)]
+    
+    # Base case: direct edges
+    for i in range(n):
+        for j in range(n):
+            if adj_matrix[i][j] == 1:
+                dist[i][j] = 1
+            elif i == j:
+                dist[i][j] = 0
+    
+    # Floyd-Warshall algorithm
+    for k in range(n):
         for i in range(n):
             for j in range(n):
-                for k in range(n):
-                    if a[i][k] > 0 and b[k][j] > 0:
-                        result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
+                if dist[i][k] + dist[k][j] < dist[i][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
     
     # Answer queries
     results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
+    for a, b in queries:
+        shortest_length = dist[a-1][b-1]  # Convert to 0-indexed
+        if shortest_length == float('inf'):
+            results.append(-1)  # No walk exists
         else:
-            results.append("NO")
+            results.append(shortest_length)
     
     return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0]
+]
+queries = [(1, 3), (2, 1)]
+result = shortest_walk_queries(n, adj_matrix, queries)
+print(f"Shortest walk result: {result}")
 ```
 
-### Variation 3: Walk Length Range Queries
-**Problem**: Find walks with length in a given range.
-
-```python
-def walk_range_queries(n, edges, queries):
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, min_len, max_len in queries:
-        has_walk = False
-        for k in range(min_len, max_len + 1):
-            powered_matrix = matrix_power(adj_matrix, k)
-            if powered_matrix[u-1][v-1] > 0:
-                has_walk = True
-                break
-        
-        results.append("YES" if has_walk else "NO")
-    
-    return results
-```
-
-### Variation 4: Dynamic Walk Queries
+#### **3. Dynamic Walk Queries**
 **Problem**: Support adding/removing edges and answering walk queries.
 
+**Key Differences**: Graph structure can change dynamically
+
+**Solution Approach**: Use dynamic graph analysis with incremental updates
+
+**Implementation**:
 ```python
 class DynamicWalkQueries:
     def __init__(self, n):
         self.n = n
         self.adj_matrix = [[0] * n for _ in range(n)]
+        self.weights = [[0] * n for _ in range(n)]
+        self.walk_cache = {}  # Cache for walk existence
     
-    def add_edge(self, a, b):
-        self.adj_matrix[a-1][b-1] = 1
-        self.adj_matrix[b-1][a-1] = 1  # Undirected graph
+    def add_edge(self, a, b, weight=1):
+        """Add edge from a to b with weight"""
+        if self.adj_matrix[a][b] == 0:
+            self.adj_matrix[a][b] = 1
+            self.weights[a][b] = weight
+            self.walk_cache.clear()  # Invalidate cache
     
     def remove_edge(self, a, b):
-        self.adj_matrix[a-1][b-1] = 0
-        self.adj_matrix[b-1][a-1] = 0
+        """Remove edge from a to b"""
+        if self.adj_matrix[a][b] == 1:
+            self.adj_matrix[a][b] = 0
+            self.weights[a][b] = 0
+            self.walk_cache.clear()  # Invalidate cache
     
-    def has_walk(self, u, k):
-        def matrix_multiply(a, b):
-            result = [[0] * self.n for _ in range(self.n)]
-            for i in range(self.n):
-                for j in range(self.n):
-                    for k in range(self.n):
-                        result[i][j] += a[i][k] * b[k][j]
-            return result
+    def has_walk(self, start, end, k):
+        """Check if walk of length k exists from start to end"""
+        # Check cache first
+        cache_key = (start, end, k)
+        if cache_key in self.walk_cache:
+            return self.walk_cache[cache_key]
         
-        def matrix_power(matrix, power):
-            if power == 0:
-                return [[1 if i == j else 0 for j in range(self.n)] for i in range(self.n)]
-            if power == 1:
-                return matrix
+        # Use DFS to find walk
+        def dfs(current, remaining_length):
+            if remaining_length == 0:
+                return current == end
             
-            half = matrix_power(matrix, power // 2)
-            squared = matrix_multiply(half, half)
-            
-            if power % 2 == 0:
-                return squared
-            else:
-                return matrix_multiply(squared, matrix)
+            for next_node in range(self.n):
+                if self.adj_matrix[current][next_node] == 1:
+                    if dfs(next_node, remaining_length - 1):
+                        return True
+            return False
         
-        powered_matrix = matrix_power(self.adj_matrix, k)
-        return powered_matrix[u-1][u-1] > 0
-```
-
-### Variation 5: Walk with Multiple Constraints
-**Problem**: Find walks satisfying multiple constraints.
-
-```python
-def multi_constrained_walk_queries(n, edges, queries, constraints):
-    # Build adjacency matrix with constraints
-    adj_matrix = [[0] * n for _ in range(n)]
-    forbidden_edges = constraints.get('forbidden_edges', set())
-    
-    for a, b in edges:
-        if (a, b) not in forbidden_edges and (b, a) not in forbidden_edges:
-            adj_matrix[a-1][b-1] = 1
-            adj_matrix[b-1][a-1] = 1  # Undirected graph
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
+        result = dfs(start, k)
+        
+        # Cache result
+        self.walk_cache[cache_key] = result
         return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
+
+# Example usage
+dwq = DynamicWalkQueries(3)
+dwq.add_edge(0, 1, 2)
+dwq.add_edge(1, 2, 3)
+dwq.add_edge(2, 0, 4)
+result1 = dwq.has_walk(0, 2, 2)
+print(f"Dynamic walk result: {result1}")
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Matrix Exponentiation](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Matrix algorithms
-- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
-- **[Walk Counting](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Walk algorithms
+#### **CSES Problems**
+- [Fixed Length Path Queries](https://cses.fi/problemset/task/2417) - Similar approach
+- [Round Trip](https://cses.fi/problemset/task/1669) - Cycle detection
+- [Graph Girth](https://cses.fi/problemset/task/1707) - Cycle properties
 
-## 📚 Learning Points
+#### **LeetCode Problems**
+- [Unique Paths III](https://leetcode.com/problems/unique-paths-iii/) - Hamiltonian path
+- [Word Ladder](https://leetcode.com/problems/word-ladder/) - Graph traversal
+- [Word Ladder II](https://leetcode.com/problems/word-ladder-ii/) - All shortest paths
 
-1. **Walk Properties**: Essential for walk counting
-2. **Matrix Exponentiation**: Efficient power calculation
-3. **Graph Theory**: Important graph theory concept
-4. **Binary Exponentiation**: Important for performance
+#### **Problem Categories**
+- **Graph Theory**: Walk algorithms, matrix exponentiation
+- **Dynamic Programming**: Matrix powers, state transitions
+- **Combinatorial Optimization**: Walk counting, graph traversal
+
+## 🔗 Additional Resources
+
+### **Algorithm References**
+- [Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html) - Matrix power algorithms
+- [Dynamic Programming](https://cp-algorithms.com/dynamic_programming/) - DP techniques
+- [Graph Algorithms](https://cp-algorithms.com/graph/) - Graph traversal algorithms
+
+### **Practice Problems**
+- [CSES Round Trip](https://cses.fi/problemset/task/1669) - Medium
+- [CSES Graph Girth](https://cses.fi/problemset/task/1707) - Medium
+- [CSES Hamiltonian Flights](https://cses.fi/problemset/task/1690) - Medium
+
+### **Further Reading**
+- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
+- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
+- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
 
 ---
 
-**This is a great introduction to walk queries and matrix exponentiation!** 🎯
-        else:
-            results.append("NO")
-    
-    return results
-```
+## 📝 Implementation Checklist
 
-**Why this works:**
-- Uses matrix exponentiation
-- Finds walks of any length efficiently
-- Handles multiple queries
-- O(n³ log k) per query
+When applying this template to a new problem, ensure you:
 
-### Step 3: Complete Solution
-**Putting it all together:**
+### **Content Requirements**
+- [x] **Problem Description**: Clear, concise with examples
+- [x] **Learning Objectives**: 5 specific, measurable goals
+- [x] **Prerequisites**: 5 categories of required knowledge
+- [x] **3 Approaches**: Brute Force → Greedy → Optimal
+- [x] **Key Insights**: 4-5 insights per approach at the beginning
+- [x] **Visual Examples**: ASCII diagrams for each approach
+- [x] **Complete Implementations**: Working code with examples
+- [x] **Complexity Analysis**: Time and space for each approach
+- [x] **Problem Variations**: 3 variations with implementations
+- [x] **Related Problems**: CSES and LeetCode links
 
-```python
-def solve_fixed_length_walk_queries():
-    n, m = map(int, input().split())
-    edges = []
-    
-    for _ in range(m):
-        a, b = map(int, input().split())
-        edges.append((a, b))
-    
-    q = int(input())
-    queries = []
-    
-    for _ in range(q):
-        u, v, k = map(int, input().split())
-        queries.append((u, v, k))
-    
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1  # Undirected graph
-    
-    # Matrix exponentiation for different lengths
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            # Identity matrix
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            print("YES")
-        else:
-            print("NO")
+### **Structure Requirements**
+- [x] **No Redundant Sections**: Remove duplicate Key Insights
+- [x] **Logical Flow**: Each approach builds on the previous
+- [x] **Progressive Complexity**: Clear improvement from approach to approach
+- [x] **Educational Value**: Theory + Practice in each section
+- [x] **Complete Coverage**: All important concepts included
 
-# Main execution
-if __name__ == "__main__":
-    solve_fixed_length_walk_queries()
-```
-
-**Why this works:**
-- Optimal matrix exponentiation approach
-- Handles all edge cases
-- Efficient implementation
-- Clear and readable code
-
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (4, [(1, 2), (2, 3), (3, 4), (1, 4)], [(1, 4, 1), (1, 4, 2), (1, 4, 3)]),
-        (3, [(1, 2), (2, 3)], [(1, 3, 1), (1, 3, 2)]),
-    ]
-    
-    for n, edges, queries in test_cases:
-        result = solve_test(n, edges, queries)
-        print(f"n={n}, edges={edges}, queries={queries}")
-        print(f"Result: {result}")
-        print()
-
-def solve_test(n, edges, queries):
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n³ log k) per query - matrix exponentiation
-- **Space**: O(n²) - adjacency matrix
-
-### Why This Solution Works
-- **Matrix Exponentiation**: Finds walks of any length efficiently
-- **Adjacency Matrix**: Represents graph structure
-- **Binary Exponentiation**: Efficient power calculation
-- **Optimal Approach**: Handles large walk lengths
-
-## 🎯 Key Insights
-
-### 1. **Matrix Exponentiation**
-- Adjacency matrix raised to power k gives walk counts
-- Key insight for optimization
-- Essential for understanding
-- Enables efficient solution
-
-### 2. **Walk Counting**
-- Matrix multiplication counts walks
-- Important for performance
-- Fundamental concept
-- Essential for algorithm
-
-### 3. **Binary Exponentiation**
-- Efficient power calculation
-- Reduces complexity from O(k) to O(log k)
-- Simple but important optimization
-- Essential for large k values
-
-## 🎯 Problem Variations
-
-### Variation 1: Weighted Walk Queries
-**Problem**: Each edge has a weight. Find walks with specific total weight.
-
-```python
-def weighted_walk_queries(n, edges, weights, queries):
-    # Build weighted adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for i, (a, b) in enumerate(edges):
-        adj_matrix[a-1][b-1] = weights[i]
-        adj_matrix[b-1][a-1] = weights[i]
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    if a[i][k] > 0 and b[k][j] > 0:
-                        result[i][j] = max(result[i][j], a[i][k] + b[k][j])
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[0 if i != j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append(powered_matrix[u-1][v-1])
-        else:
-            results.append(-1)  # No walk
-    
-    return results
-```
-
-### Variation 2: Walk Count Queries
-**Problem**: Count number of walks of specific length.
-
-```python
-def walk_count_queries(n, edges, queries):
-    # Build adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1
-        adj_matrix[b-1][a-1] = 1
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        results.append(powered_matrix[u-1][v-1])
-    
-    return results
-```
-
-### Variation 3: Directed Walk Queries
-**Problem**: Handle directed graphs with walk queries.
-
-```python
-def directed_walk_queries(n, edges, queries):
-    # Build directed adjacency matrix
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        adj_matrix[a-1][b-1] = 1  # Directed edge
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-```
-
-### Variation 4: Dynamic Walk Queries
-**Problem**: Support adding/removing edges and answering walk queries.
-
-```python
-class DynamicWalkQueries:
-    def __init__(self, n):
-        self.n = n
-        self.adj_matrix = [[0] * n for _ in range(n)]
-    
-    def add_edge(self, a, b):
-        self.adj_matrix[a-1][b-1] = 1
-        self.adj_matrix[b-1][a-1] = 1
-    
-    def remove_edge(self, a, b):
-        self.adj_matrix[a-1][b-1] = 0
-        self.adj_matrix[b-1][a-1] = 0
-    
-    def query_walk(self, u, v, k):
-        def matrix_multiply(a, b):
-            result = [[0] * self.n for _ in range(self.n)]
-            for i in range(self.n):
-                for j in range(self.n):
-                    for k in range(self.n):
-                        result[i][j] += a[i][k] * b[k][j]
-            return result
-        
-        def matrix_power(matrix, power):
-            if power == 0:
-                return [[1 if i == j else 0 for j in range(self.n)] for i in range(self.n)]
-            if power == 1:
-                return matrix
-            
-            half = matrix_power(matrix, power // 2)
-            squared = matrix_multiply(half, half)
-            
-            if power % 2 == 0:
-                return squared
-            else:
-                return matrix_multiply(squared, matrix)
-        
-        powered_matrix = matrix_power(self.adj_matrix, k)
-        return powered_matrix[u-1][v-1] > 0
-```
-
-### Variation 5: Walk with Constraints
-**Problem**: Find walks that satisfy certain constraints.
-
-```python
-def constrained_walk_queries(n, edges, constraints, queries):
-    # constraints: set of forbidden vertex pairs
-    # Build adjacency matrix with constraints
-    adj_matrix = [[0] * n for _ in range(n)]
-    for a, b in edges:
-        if (a, b) not in constraints and (b, a) not in constraints:
-            adj_matrix[a-1][b-1] = 1
-            adj_matrix[b-1][a-1] = 1
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        if power == 0:
-            return [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        if power == 1:
-            return matrix
-        
-        half = matrix_power(matrix, power // 2)
-        squared = matrix_multiply(half, half)
-        
-        if power % 2 == 0:
-            return squared
-        else:
-            return matrix_multiply(squared, matrix)
-    
-    # Answer queries
-    results = []
-    for u, v, k in queries:
-        powered_matrix = matrix_power(adj_matrix, k)
-        if powered_matrix[u-1][v-1] > 0:
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
-```
-
-## 🔗 Related Problems
-
-- **[Matrix Exponentiation](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Matrix algorithms
-- **[Graph Traversal](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph algorithms
-- **[Walk Problems](/cses-analyses/problem_soulutions/graph_algorithms/)**: Walk algorithms
-
-## 📚 Learning Points
-
-1. **Matrix Exponentiation**: Essential for walk counting
-2. **Adjacency Matrix**: Key representation for graph algorithms
-3. **Binary Exponentiation**: Efficient power calculation
-4. **Walk Algorithms**: Common pattern in graph problems
+### **Quality Requirements**
+- [x] **Working Code**: All implementations are runnable
+- [x] **Test Cases**: Examples with expected outputs
+- [x] **Edge Cases**: Handle boundary conditions
+- [x] **Clear Explanations**: Easy to understand for students
+- [x] **Visual Learning**: Diagrams and examples throughout
 
 ---
 
-**This is a great introduction to walk queries and matrix exponentiation!** 🎯 
+## 🎯 **Template Usage Instructions**
+
+### **Step 1: Replace Placeholders**
+- Replace `[Problem Name]` with actual problem name
+- Replace `[category]` with the problem category folder
+- Replace `[problem_name]` with the actual problem filename
+- Replace all `[placeholder]` text with actual content
+
+### **Step 2: Customize Approaches**
+- **Approach 1**: Usually brute force or naive solution
+- **Approach 2**: Optimized solution (DP, greedy, etc.)
+- **Approach 3**: Optimal solution (advanced algorithms)
+
+### **Step 3: Add Visual Examples**
+- Use ASCII art for diagrams
+- Show step-by-step execution
+- Use actual data in examples
+
+### **Step 4: Implement Working Code**
+- Write complete, runnable implementations
+- Include test cases and examples
+- Handle edge cases properly
+
+### **Step 5: Add Problem Variations**
+- Create 3 meaningful variations
+- Provide implementations for each
+- Link to related problems
+
+### **Step 6: Quality Check**
+- Ensure no redundant sections
+- Verify all code works
+- Check that complexity analysis is correct
+- Confirm educational value is high
+
+This template ensures consistency across all problem analyses while maintaining high educational value and practical implementation focus.

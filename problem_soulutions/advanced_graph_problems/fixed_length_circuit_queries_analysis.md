@@ -1,11 +1,10 @@
 ---
 layout: simple
-title: "Fixed Length Circuit Queries"
+title: "Fixed Length Circuit Queries - Matrix Exponentiation Problem"
 permalink: /problem_soulutions/advanced_graph_problems/fixed_length_circuit_queries_analysis
 ---
 
-
-# Fixed Length Circuit Queries
+# Fixed Length Circuit Queries - Matrix Exponentiation Problem
 
 ## 📋 Problem Information
 
@@ -52,276 +51,274 @@ Input:
 0 0 1
 1 0 0
 1 3
-2 3
+2 2
 
 Output:
 1
-1
+0
 
 Explanation**: 
-Query 1: Circuits from node 1 of length 3
-- Circuit: 1 → 2 → 3 → 1 (length 3)
-- Result: 1
+Query 1: Circuits of length 3 from node 1 to 1
+Path: 1→2→3→1 (circuit of length 3)
+Answer: 1
 
-Query 2: Circuits from node 2 of length 3  
-- Circuit: 2 → 3 → 1 → 2 (length 3)
-- Result: 1
-```
-
-### 📊 Visual Example
-
-**Input Graph (Adjacency Matrix):**
-```
-    1 ──→ 2 ──→ 3
-    ↑             │
-    └─────────────┘
-
-Adjacency Matrix:
-    1  2  3
-1 [ 0  1  0 ]
-2 [ 0  0  1 ]
-3 [ 1  0  0 ]
-```
-
-**Circuit Analysis:**
-```
-Query 1: Node 1, length 3
-Circuit: 1 → 2 → 3 → 1
-Length: 3 edges ✓
-Starts and ends at node 1 ✓
-Result: 1
-
-Query 2: Node 2, length 3
-Circuit: 2 → 3 → 1 → 2
-Length: 3 edges ✓
-Starts and ends at node 2 ✓
-Result: 1
-```
-
-**Matrix Exponentiation for Circuits:**
-```
-Adjacency Matrix A:
-    1  2  3
-1 [ 0  1  0 ]
-2 [ 0  0  1 ]
-3 [ 1  0  0 ]
-
-A³ (paths of length 3):
-    1  2  3
-1 [ 1  0  0 ]  ← A[1][1] = 1 (circuit 1→2→3→1)
-2 [ 0  1  0 ]  ← A[2][2] = 1 (circuit 2→3→1→2)
-3 [ 0  0  1 ]  ← A[3][3] = 1 (circuit 3→1→2→3)
-```
-
-**Circuit Properties:**
-```
-For Circuit:
-- Must start and end at the same vertex
-- Can repeat vertices and edges
-- Length = number of edges in the circuit
-- Graph must be connected
-- No restrictions on vertex/edge repetition
-```
-
-**Circuit vs Cycle vs Path:**
-```
-Circuit: Starts and ends at same vertex
-- 1 → 2 → 3 → 1 ✓
-- 1 → 2 → 1 → 2 → 1 ✓
-
-Cycle: Simple circuit (no repeated vertices except start/end)
-- 1 → 2 → 3 → 1 ✓
-- 1 → 2 → 1 → 2 → 1 ✗ (repeats vertices)
-
-Path: No repeated vertices
-- 1 → 2 → 3 ✓
-- 1 → 2 → 1 → 3 ✗ (repeats vertex 1)
-```
-
-**Circuit Examples:**
-```
-Length 1: 1 → 1 (self-loop)
-Length 2: 1 → 2 → 1
-Length 3: 1 → 2 → 3 → 1
-Length 4: 1 → 2 → 3 → 1 → 2 → 1
-Length 5: 1 → 2 → 3 → 1 → 2 → 3 → 1
+Query 2: Circuits of length 2 from node 2 to 2
+No circuit of length 2 exists from node 2
+Answer: 0
 ```
 
 ## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Approach 1: Brute Force Circuit Counting (Brute Force)
+### Approach 1: Brute Force Solution
 
-**Key Insights from Brute Force Approach**:
-- **DFS Traversal**: Use DFS to explore all possible paths
-- **Path Length Tracking**: Keep track of current path length
-- **Circuit Detection**: Check if path returns to starting node
-- **Exhaustive Search**: Try all possible paths of given length
+**Key Insights from Brute Force Solution**:
+- **Exhaustive Search**: Try all possible paths of length k
+- **Path Validation**: For each path, check if it forms a circuit
+- **Combinatorial Explosion**: n^k possible paths to explore
+- **Baseline Understanding**: Provides correct answer but impractical
 
-**Key Insight**: Use DFS to explore all possible paths and count circuits of the specified length.
+**Key Insight**: Generate all possible paths of length k and count those that form circuits.
 
 **Algorithm**:
-- For each query, start DFS from the given node
-- Explore all possible paths of the specified length
-- Count paths that return to the starting node
-- Return the count modulo 10^9 + 7
+- Generate all possible paths of length k starting from node a
+- For each path, check if it ends at node a (forms a circuit)
+- Count valid circuits and return the result
 
 **Visual Example**:
 ```
-Graph: 1→2→3→1, Query: node 1, length 3
+Graph: 1→2→3→1, k=3, start=1
 
-DFS Traversal:
+All possible paths of length 3 from node 1:
 ┌─────────────────────────────────────┐
-│ Start: node 1, length 0            │
-│ Path: [1]                          │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Visit: node 2, length 1            │
-│ Path: [1, 2]                       │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Visit: node 3, length 2            │
-│ Path: [1, 2, 3]                    │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Visit: node 1, length 3            │
-│ Path: [1, 2, 3, 1]                 │
-│ Circuit found! ✓                   │
+│ Path 1: 1→2→3→1 ✓ (circuit)        │
+│ Path 2: 1→2→3→2 ✗ (not circuit)    │
+│ Path 3: 1→2→3→3 ✗ (not circuit)    │
+│ Path 4: 1→2→1→2 ✗ (not circuit)    │
+│ Path 5: 1→2→1→3 ✗ (not circuit)    │
+│ Path 6: 1→2→1→1 ✗ (not circuit)    │
+│ ... (all other paths)               │
 └─────────────────────────────────────┘
 
-Result: 1 circuit
+Valid circuits: 1
+Result: 1
 ```
 
 **Implementation**:
 ```python
-def brute_force_circuit_queries_solution(n, q, adjacency_matrix, queries):
+def brute_force_solution(n, adj_matrix, queries):
     """
-    Find circuits using brute force DFS approach
+    Find circuit counts using brute force approach
     
     Args:
         n: number of nodes
-        q: number of queries
-        adjacency_matrix: n×n adjacency matrix
-        queries: list of (a, k) pairs
+        adj_matrix: adjacency matrix
+        queries: list of (a, k) queries
     
     Returns:
-        list: answers to queries modulo 10^9 + 7
+        list: answers to queries
     """
-    MOD = 10**9 + 7
-    
-    def dfs_circuit_count(start, current, length, target_length):
-        """Count circuits using DFS"""
-        if length == target_length:
-            return 1 if current == start else 0
+    def count_circuits(start, k):
+        """Count circuits of length k starting from start"""
+        def dfs(node, remaining_length):
+            if remaining_length == 0:
+                return 1 if node == start else 0
+            
+            count = 0
+            for neighbor in range(n):
+                if adj_matrix[node][neighbor] == 1:
+                    count += dfs(neighbor, remaining_length - 1)
+            return count
         
-        count = 0
-        for next_node in range(n):
-            if adjacency_matrix[current][next_node] == 1:
-                count = (count + dfs_circuit_count(start, next_node, length + 1, target_length)) % MOD
-        
-        return count
+        return dfs(start, k)
     
-    result = []
+    results = []
     for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        circuits = dfs_circuit_count(a, a, 0, k)
-        result.append(circuits)
+        result = count_circuits(a - 1, k)  # Convert to 0-indexed
+        results.append(result)
     
-    return result
+    return results
 
 # Example usage
-n, q = 3, 2
-adjacency_matrix = [
+n = 3
+adj_matrix = [
     [0, 1, 0],
     [0, 0, 1],
     [1, 0, 0]
 ]
-queries = [(1, 3), (2, 3)]
-result = brute_force_circuit_queries_solution(n, q, adjacency_matrix, queries)
-print(f"Brute force result: {result}")  # Output: [1, 1]
+queries = [(1, 3), (2, 2)]
+result = brute_force_solution(n, adj_matrix, queries)
+print(f"Brute force result: {result}")  # Output: [1, 0]
 ```
 
-**Time Complexity**: O(n^k)
+**Time Complexity**: O(n^k × q)
 **Space Complexity**: O(k)
 
-**Why it's inefficient**: Exponential time complexity makes it impractical for large k values (up to 10^9).
+**Why it's inefficient**: Exponential time complexity makes it impractical for large k.
 
 ---
 
-### Approach 2: Matrix Exponentiation (Optimized)
+### Approach 2: Dynamic Programming Solution
 
-**Key Insights from Matrix Exponentiation**:
-- **Matrix Power**: A^k gives number of walks of length k between any two nodes
-- **Circuit Counting**: A^k[i][i] gives circuits of length k starting and ending at node i
-- **Binary Exponentiation**: Efficiently compute matrix powers using binary exponentiation
-- **Modular Arithmetic**: Handle large numbers with modular arithmetic
+**Key Insights from Dynamic Programming Solution**:
+- **State Definition**: dp[i][j][k] = number of paths from i to j of length k
+- **State Transition**: dp[i][j][k] = sum of dp[i][m][k-1] * adj_matrix[m][j]
+- **Base Case**: dp[i][j][0] = 1 if i == j, else 0
+- **Memory Optimization**: Use 2D arrays instead of 3D
 
-**Key Insight**: Use matrix exponentiation to efficiently count circuits of any length.
+**Key Insight**: Use dynamic programming to count paths of different lengths efficiently.
 
 **Algorithm**:
-- Build adjacency matrix from input
-- Use binary exponentiation to compute A^k
-- Extract diagonal elements A^k[i][i] for circuit counts
-- Return results modulo 10^9 + 7
+- Initialize DP table for paths of length 0
+- For each length from 1 to k, compute paths using previous lengths
+- Return dp[start][start][k] for circuit count
+
+**Visual Example**:
+```
+Graph: 1→2→3→1, k=3, start=1
+
+DP table for paths of length k from node 1:
+┌─────────────────────────────────────┐
+│ k=0: [1, 0, 0] (only self-loops)   │
+│ k=1: [0, 1, 0] (1→2)               │
+│ k=2: [0, 0, 1] (1→2→3)             │
+│ k=3: [1, 0, 0] (1→2→3→1) ✓         │
+└─────────────────────────────────────┘
+
+Circuit count: dp[1][1][3] = 1
+```
+
+**Implementation**:
+```python
+def dp_solution(n, adj_matrix, queries):
+    """
+    Find circuit counts using dynamic programming
+    
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, k) queries
+    
+    Returns:
+        list: answers to queries
+    """
+    def count_circuits(start, k):
+        """Count circuits of length k starting from start"""
+        # dp[i][j] = number of paths from start to j of length i
+        dp = [[0] * n for _ in range(k + 1)]
+        
+        # Base case: paths of length 0
+        dp[0][start] = 1
+        
+        # Fill DP table
+        for length in range(1, k + 1):
+            for j in range(n):
+                for m in range(n):
+                    if adj_matrix[m][j] == 1:
+                        dp[length][j] += dp[length - 1][m]
+        
+        return dp[k][start]
+    
+    results = []
+    for a, k in queries:
+        result = count_circuits(a - 1, k)  # Convert to 0-indexed
+        results.append(result)
+    
+    return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 0],
+    [0, 0, 1],
+    [1, 0, 0]
+]
+queries = [(1, 3), (2, 2)]
+result = dp_solution(n, adj_matrix, queries)
+print(f"DP result: {result}")  # Output: [1, 0]
+```
+
+**Time Complexity**: O(n³ × k × q)
+**Space Complexity**: O(n × k)
+
+**Why it's better**: Much faster than brute force, but still not optimal for large k.
+
+**Implementation Considerations**:
+- **State Transition**: Use matrix multiplication for state updates
+- **Memory Management**: Use 2D arrays instead of 3D
+- **Modular Arithmetic**: Apply modulo to prevent overflow
+
+---
+
+### Approach 3: Matrix Exponentiation Solution (Optimal)
+
+**Key Insights from Matrix Exponentiation Solution**:
+- **Matrix Power**: Adjacency matrix raised to power k gives path counts
+- **Binary Exponentiation**: Compute matrix powers efficiently
+- **Modular Arithmetic**: Handle large numbers with modulo operations
+- **Query Optimization**: Precompute matrix powers for multiple queries
+
+**Key Insight**: The number of circuits of length k from node a to a is the (a,a) entry of the adjacency matrix raised to power k.
+
+**Algorithm**:
+- Raise adjacency matrix to power k using binary exponentiation
+- Return the (a,a) entry of the resulting matrix
+- Apply modular arithmetic throughout
 
 **Visual Example**:
 ```
 Graph: 1→2→3→1
 
-Adjacency Matrix A:
-    1  2  3
-1 [ 0  1  0 ]
-2 [ 0  0  1 ]
-3 [ 1  0  0 ]
+Adjacency matrix A:
+┌─────────────────────────────────────┐
+│ A = [0, 1, 0]                      │
+│     [0, 0, 1]                      │
+│     [1, 0, 0]                      │
+└─────────────────────────────────────┘
 
-A³ (paths of length 3):
-    1  2  3
-1 [ 1  0  0 ]  ← A³[1][1] = 1 (circuit 1→2→3→1)
-2 [ 0  1  0 ]  ← A³[2][2] = 1 (circuit 2→3→1→2)
-3 [ 0  0  1 ]  ← A³[3][3] = 1 (circuit 3→1→2→3)
+A³ = A × A × A:
+┌─────────────────────────────────────┐
+│ A³ = [1, 0, 0]                     │
+│      [0, 1, 0]                     │
+│      [0, 0, 1]                     │
+└─────────────────────────────────────┘
+
+Circuits of length 3 from node 1: A³[1][1] = 1
 ```
 
 **Implementation**:
 ```python
-def matrix_exponentiation_circuit_queries_solution(n, q, adjacency_matrix, queries):
+def matrix_exponentiation_solution(n, adj_matrix, queries):
     """
-    Find circuits using matrix exponentiation approach
+    Find circuit counts using matrix exponentiation
     
     Args:
         n: number of nodes
-        q: number of queries
-        adjacency_matrix: n×n adjacency matrix
-        queries: list of (a, k) pairs
+        adj_matrix: adjacency matrix
+        queries: list of (a, k) queries
     
     Returns:
-        list: answers to queries modulo 10^9 + 7
+        list: answers to queries
     """
     MOD = 10**9 + 7
     
-    def matrix_multiply(a, b):
+    def matrix_multiply(A, B):
         """Multiply two matrices with modular arithmetic"""
         result = [[0] * n for _ in range(n)]
         for i in range(n):
             for j in range(n):
                 for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
+                    result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % MOD
         return result
     
     def matrix_power(matrix, power):
-        """Compute matrix power using binary exponentiation"""
-        # Initialize result as identity matrix
+        """Compute matrix^power using binary exponentiation"""
         result = [[0] * n for _ in range(n)]
+        # Initialize result as identity matrix
         for i in range(n):
             result[i][i] = 1
         
-        # Binary exponentiation
-        base = matrix
+        base = [row[:] for row in matrix]
+        
         while power > 0:
             if power % 2 == 1:
                 result = matrix_multiply(result, base)
@@ -330,1578 +327,373 @@ def matrix_exponentiation_circuit_queries_solution(n, q, adjacency_matrix, queri
         
         return result
     
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        circuits = powered_matrix[a][a]  # Circuits start and end at same node
-        result.append(circuits)
+    def count_circuits(start, k):
+        """Count circuits of length k starting from start"""
+        powered_matrix = matrix_power(adj_matrix, k)
+        return powered_matrix[start][start]
     
-    return result
+    results = []
+    for a, k in queries:
+        result = count_circuits(a - 1, k)  # Convert to 0-indexed
+        results.append(result)
+    
+    return results
 
 # Example usage
-n, q = 3, 2
-adjacency_matrix = [
+n = 3
+adj_matrix = [
     [0, 1, 0],
     [0, 0, 1],
     [1, 0, 0]
 ]
-queries = [(1, 3), (2, 3)]
-result = matrix_exponentiation_circuit_queries_solution(n, q, adjacency_matrix, queries)
-print(f"Matrix exponentiation result: {result}")  # Output: [1, 1]
+queries = [(1, 3), (2, 2)]
+result = matrix_exponentiation_solution(n, adj_matrix, queries)
+print(f"Matrix exponentiation result: {result}")  # Output: [1, 0]
 ```
 
-**Time Complexity**: O(n³ log k)
+**Time Complexity**: O(n³ × log k × q)
 **Space Complexity**: O(n²)
 
-**Why it's better**: O(n³ log k) complexity is much faster than exponential DFS and can handle large k values efficiently.
+**Why it's optimal**: O(log k) complexity for each query using binary exponentiation, making it efficient for large k values.
 
-**Implementation Considerations**:
-- **Matrix Multiplication**: Use modular arithmetic to prevent overflow
-- **Binary Exponentiation**: Efficiently compute matrix powers
-- **Circuit Counting**: Extract diagonal elements for circuit counts
-- **Query Processing**: Handle multiple queries efficiently
-
-### Step 3: Complete Solution
-**Putting it all together:**
-
-```python
-def solve_fixed_length_circuit_queries():
-    n, q = map(int, input().split())
-    adjacency_matrix = []
-    
-    for _ in range(n):
-        row = list(map(int, input().split()))
-        adjacency_matrix.append(row)
-    
-    queries = []
-    for _ in range(q):
-        a, k = map(int, input().split())
-        queries.append((a, k))
-    
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        circuits = powered_matrix[a][a]  # Circuits start and end at same node
-        print(circuits)
-
-# Main execution
-if __name__ == "__main__":
-    solve_fixed_length_circuit_queries()
-```
-
-**Why this works:**
-- Optimal matrix exponentiation approach
-- Handles all edge cases
-- Efficient implementation
-- Clear and readable code
-
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (3, [[0, 1, 0], [0, 0, 1], [1, 0, 0]], [(1, 3), (2, 3)]),
-        (4, [[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]], [(1, 4), (2, 4)]),
-    ]
-    
-    for n, adjacency_matrix, queries in test_cases:
-        result = solve_test(n, adjacency_matrix, queries)
-        print(f"n={n}, adjacency_matrix={adjacency_matrix}, queries={queries}")
-        print(f"Result: {result}")
-        print()
-
-def solve_test(n, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        circuits = powered_matrix[a][a]  # Circuits start and end at same node
-        result.append(circuits)
-    
-    return result
-
-test_solution()
-```
+**Implementation Details**:
+- **Binary Exponentiation**: Compute matrix powers in O(log k) time
+- **Modular Arithmetic**: Apply modulo operations to prevent overflow
+- **Matrix Multiplication**: Use efficient matrix multiplication
+- **Query Optimization**: Handle multiple queries efficiently
 
 ## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n³ log k) - matrix exponentiation for each query
-- **Space**: O(n²) - adjacency matrix and result matrices
-
-### Why This Solution Works
-- **Matrix Exponentiation**: Efficiently computes path counts
-- **Circuits**: Counts circuits starting and ending at the same node
-- **Binary Exponentiation**: Reduces complexity from O(k) to O(log k)
-- **Optimal Approach**: Handles all cases correctly
-
-## 🎯 Key Insights
-
-### 1. **Circuits**
-- Paths that start and end at the same node
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
-
-### 2. **Matrix Exponentiation**
-- Efficient path counting algorithm
-- Important for understanding
-- Fundamental concept
-- Essential for algorithm
-
-### 3. **Binary Exponentiation**
-- Fast matrix power computation
-- Important for performance
-- Simple but important concept
-- Essential for understanding
-
-## 🎯 Problem Variations
-
-### Variation 1: Circuits with Weights
-**Problem**: Each edge has a weight, find weighted circuits.
-
-```python
-def weighted_circuit_queries(n, adjacency_matrix, queries, weights):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        circuits = powered_matrix[a][a]  # Circuits start and end at same node
-        result.append(circuits)
-    
-    return result
-```
-
-### Variation 2: Circuits with Constraints
-**Problem**: Find circuits avoiding certain edges.
-
-```python
-def constrained_circuit_queries(n, adjacency_matrix, queries, forbidden_edges):
-    MOD = 10**9 + 7
-    
-    # Remove forbidden edges
-    modified_matrix = [row[:] for row in adjacency_matrix]
-    for a, b in forbidden_edges:
-        modified_matrix[a-1][b-1] = 0
-        modified_matrix[b-1][a-1] = 0
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(modified_matrix, k)
-        circuits = powered_matrix[a][a]  # Circuits start and end at same node
-        result.append(circuits)
-    
-    return result
-```
-
-### Variation 3: Dynamic Circuits
-**Problem**: Support adding/removing edges and maintaining circuit counts.
-
-```python
-class DynamicCircuitQueries:
-    def __init__(self, n):
-        self.n = n
-        self.adjacency_matrix = [[0] * n for _ in range(n)]
-        self.edges = set()
-    
-    def add_edge(self, a, b):
-        if (a, b) not in self.edges and (b, a) not in self.edges:
-            self.edges.add((a, b))
-            self.adjacency_matrix[a-1][b-1] = 1
-            self.adjacency_matrix[b-1][a-1] = 1
-    
-    def remove_edge(self, a, b):
-        if (a, b) in self.edges:
-            self.edges.remove((a, b))
-            self.adjacency_matrix[a-1][b-1] = 0
-            self.adjacency_matrix[b-1][a-1] = 0
-            return True
-        elif (b, a) in self.edges:
-            self.edges.remove((b, a))
-            self.adjacency_matrix[a-1][b-1] = 0
-            self.adjacency_matrix[b-1][a-1] = 0
-            return True
-        return False
-    
-    def get_circuits(self, a, k):
-        MOD = 10**9 + 7
-        
-        def matrix_multiply(a, b):
-            result = [[0] * self.n for _ in range(self.n)]
-            for i in range(self.n):
-                for j in range(self.n):
-                    for k_idx in range(self.n):
-                        result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-            return result
-        
-        def matrix_power(matrix, power):
-            # Initialize result as identity matrix
-            result = [[0] * self.n for _ in range(self.n)]
-            for i in range(self.n):
-                result[i][i] = 1
-            
-            # Binary exponentiation
-            base = matrix
-            while power > 0:
-                if power % 2 == 1:
-                    result = matrix_multiply(result, base)
-                base = matrix_multiply(base, base)
-                power //= 2
-            
-            return result
-        
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(self.adjacency_matrix, k)
-        circuits = powered_matrix[a][a]  # Circuits start and end at same node
-        return circuits
-```
-
-### Variation 4: Circuits with Multiple Constraints
-**Problem**: Find circuits satisfying multiple constraints.
-
-```python
-def multi_constrained_circuit_queries(n, adjacency_matrix, queries, constraints):
-    MOD = 10**9 + 7
-    
-    # Apply multiple constraints
-    forbidden_edges = constraints.get('forbidden_edges', set())
-    required_edges = constraints.get('required_edges', set())
-    
-    # Remove forbidden edges
-    modified_matrix = [row[:] for row in adjacency_matrix]
-    for a, b in forbidden_edges:
-        modified_matrix[a-1][b-1] = 0
-        modified_matrix[b-1][a-1] = 0
-    
-    # Add required edges
-    for a, b in required_edges:
-        modified_matrix[a-1][b-1] = 1
-        modified_matrix[b-1][a-1] = 1
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(modified_matrix, k)
-        circuits = powered_matrix[a][a]  # Circuits start and end at same node
-        result.append(circuits)
-    
-    return result
-```
-
-### Variation 5: Circuits with Edge Replacement
-**Problem**: Allow replacing existing edges with new ones.
-
-```python
-def edge_replacement_circuit_queries(n, adjacency_matrix, queries, replacement_edges):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Try different edge replacements
-    best_results = []
-    for a, k in queries:
-        best_count = 0
-        
-        # Try original matrix
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        original_count = powered_matrix[a-1][a-1]
-        best_count = max(best_count, original_count)
-        
-        # Try each replacement
-        for old_edge, new_edge in replacement_edges:
-            # Create modified matrix
-            modified_matrix = [row[:] for row in adjacency_matrix]
-            old_a, old_b = old_edge
-            new_a, new_b = new_edge
-            
-            # Remove old edge
-            modified_matrix[old_a-1][old_b-1] = 0
-            modified_matrix[old_b-1][old_a-1] = 0
-            
-            # Add new edge
-            modified_matrix[new_a-1][new_b-1] = 1
-            modified_matrix[new_b-1][new_a-1] = 1
-            
-            # Calculate circuits
-            powered_matrix = matrix_power(modified_matrix, k)
-            circuit_count = powered_matrix[a-1][a-1]
-            best_count = max(best_count, circuit_count)
-        
-        best_results.append(best_count)
-    
-    return best_results
-```
-
-## 🔗 Related Problems
-
-- **[Hamiltonian Circuits](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Hamiltonian circuit algorithms
-- **[Matrix Exponentiation](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Matrix exponentiation algorithms
-- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
-
-## 📚 Learning Points
-
-1. **Circuits**: Essential for circuit analysis
-2. **Matrix Exponentiation**: Efficient path counting
-3. **Binary Exponentiation**: Important optimization technique
-4. **Graph Theory**: Important graph theory concept
-
----
-
-**This is a great introduction to circuits and matrix exponentiation!** 🎯
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        circuits = powered_matrix[a][a]  # Circuits start and end at same node
-        result.append(circuits)
-    
-    return result
-```
-
-**Why this works:**
-- Uses optimized matrix exponentiation
-- Handles large values of k efficiently
-- Modular arithmetic for large numbers
-- O(n³ log k) time complexity
-
-### Step 3: Complete Solution
-**Putting it all together:**
-
-```python
-def solve_fixed_length_circuit_queries():
-    n, q = map(int, input().split())
-    
-    # Read adjacency matrix
-    adjacency_matrix = []
-    for _ in range(n):
-        row = list(map(int, input().split()))
-        adjacency_matrix.append(row)
-    
-    # Read queries
-    queries = []
-    for _ in range(q):
-        a, k = map(int, input().split())
-        queries.append((a, k))
-    
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        circuits = powered_matrix[a][a]  # Circuits start and end at same node
-        print(circuits)
-
-# Main execution
-if __name__ == "__main__":
-    solve_fixed_length_circuit_queries()
-```
-
-**Why this works:**
-- Optimal matrix exponentiation approach
-- Handles all edge cases
-- Efficient implementation
-- Clear and readable code
-
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (3, [[0, 1, 0], [0, 0, 1], [1, 0, 0]], [(1, 3), (2, 3)]),
-        (2, [[0, 1], [1, 0]], [(1, 2), (2, 2)]),
-    ]
-    
-    for n, adjacency_matrix, queries in test_cases:
-        result = solve_test(n, adjacency_matrix, queries)
-        print(f"n={n}, adjacency_matrix={adjacency_matrix}, queries={queries}")
-        print(f"Results: {result}")
-        print()
-
-def solve_test(n, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    results = []
-    for a, k in queries:
-        a = a - 1
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        circuits = powered_matrix[a][a]
-        results.append(circuits)
-    
-    return results
-
-test_solution()
-```
-
-## 🔧 Implementation Details
-
-### Time Complexity
-- **Time**: O(n³ log k) - matrix exponentiation
-- **Space**: O(n²) - adjacency matrix
-
-### Why This Solution Works
-- **Matrix Exponentiation**: Finds circuits efficiently
-- **Binary Exponentiation**: Handles large k values
-- **Modular Arithmetic**: Prevents overflow
-- **Optimal Approach**: Handles all cases correctly
-
-## 🎯 Key Insights
-
-### 1. **Matrix Exponentiation**
-- Adjacency matrix raised to power k
-- Essential for circuit counting
-- Key optimization technique
-- Enables efficient solution
-
-### 2. **Circuit Counting**
-- Matrix multiplication counts walks
-- Important for understanding
-- Fundamental concept
-- Essential for algorithm
-
-### 3. **Binary Exponentiation**
-- Efficient power calculation
-- Important for performance
-- Simple but important concept
-- Essential for understanding
-
-## 🎯 Problem Variations
-
-### Variation 1: Circuit with Constraints
-**Problem**: Find circuits avoiding certain edges.
-
-```python
-def constrained_circuit_queries(n, adjacency_matrix, queries, forbidden_edges):
-    MOD = 10**9 + 7
-    
-    # Remove forbidden edges from adjacency matrix
-    constrained_matrix = [row[:] for row in adjacency_matrix]
-    for a, b in forbidden_edges:
-        constrained_matrix[a-1][b-1] = 0
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    results = []
-    for a, k in queries:
-        a = a - 1
-        powered_matrix = matrix_power(constrained_matrix, k)
-        circuits = powered_matrix[a][a]
-        results.append(circuits)
-    
-    return results
-```
-
-### Variation 2: Weighted Circuit Queries
-**Problem**: Each edge has a weight, find circuits with specific total weight.
-
-```python
-def weighted_circuit_queries(n, adjacency_matrix, weights, queries):
-    MOD = 10**9 + 7
-    
-    # Build weighted adjacency matrix
-    weighted_matrix = [[0] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(n):
-            if adjacency_matrix[i][j] == 1:
-                weighted_matrix[i][j] = weights[i][j]
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    if a[i][k] > 0 and b[k][j] > 0:
-                        result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    results = []
-    for a, k in queries:
-        a = a - 1
-        powered_matrix = matrix_power(weighted_matrix, k)
-        circuits = powered_matrix[a][a]
-        results.append(circuits)
-    
-    return results
-```
-
-### Variation 3: Circuit Length Range Queries
-**Problem**: Find circuits with length in a given range.
-
-```python
-def circuit_range_queries(n, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    results = []
-    for a, min_len, max_len in queries:
-        a = a - 1
-        total_circuits = 0
-        
-        for k in range(min_len, max_len + 1):
-            powered_matrix = matrix_power(adjacency_matrix, k)
-            circuits = powered_matrix[a][a]
-            total_circuits = (total_circuits + circuits) % MOD
-        
-        results.append(total_circuits)
-    
-    return results
-```
-
-### Variation 4: Dynamic Circuit Queries
-**Problem**: Support adding/removing edges and answering circuit queries.
-
-```python
-class DynamicCircuitQueries:
-    def __init__(self, n):
-        self.n = n
-        self.adjacency_matrix = [[0] * n for _ in range(n)]
-    
-    def add_edge(self, a, b):
-        self.adjacency_matrix[a-1][b-1] = 1
-    
-    def remove_edge(self, a, b):
-        self.adjacency_matrix[a-1][b-1] = 0
-    
-    def get_circuits(self, a, k):
-        MOD = 10**9 + 7
-        
-        def matrix_multiply(a, b):
-            result = [[0] * self.n for _ in range(self.n)]
-            for i in range(self.n):
-                for j in range(self.n):
-                    for k in range(self.n):
-                        result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-            return result
-        
-        def matrix_power(matrix, power):
-            result = [[0] * self.n for _ in range(self.n)]
-            for i in range(self.n):
-                result[i][i] = 1
-            
-            base = matrix
-            while power > 0:
-                if power % 2 == 1:
-                    result = matrix_multiply(result, base)
-                base = matrix_multiply(base, base)
-                power //= 2
-            
-            return result
-        
-        a = a - 1
-        powered_matrix = matrix_power(self.adjacency_matrix, k)
-        return powered_matrix[a][a]
-```
-
-### Variation 5: Circuit with Multiple Constraints
-**Problem**: Find circuits satisfying multiple constraints.
-
-```python
-def multi_constrained_circuit_queries(n, adjacency_matrix, queries, constraints):
-    MOD = 10**9 + 7
-    
-    # Apply multiple constraints
-    constrained_matrix = [row[:] for row in adjacency_matrix]
-    
-    # Remove forbidden edges
-    for a, b in constraints.get('forbidden_edges', []):
-        constrained_matrix[a-1][b-1] = 0
-    
-    # Apply capacity constraints
-    for a, b, capacity in constraints.get('capacity_limits', []):
-        constrained_matrix[a-1][b-1] = min(constrained_matrix[a-1][b-1], capacity)
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    results = []
-    for a, k in queries:
-        a = a - 1
-        powered_matrix = matrix_power(constrained_matrix, k)
-        circuits = powered_matrix[a][a]
-        results.append(circuits)
-    
-    return results
-```
-
-## 🔗 Related Problems
-
-- **[Matrix Exponentiation](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Matrix algorithms
-- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
-- **[Circuit Counting](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Circuit algorithms
-
-## 📚 Learning Points
-
-1. **Matrix Exponentiation**: Essential for circuit counting
-2. **Binary Exponentiation**: Efficient power calculation
-3. **Circuit Properties**: Important graph theory concept
-4. **Modular Arithmetic**: Important for large numbers
-
----
-
-**This is a great introduction to circuit queries and matrix exponentiation!** 🎯
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Handle edge case: circuits of length 0
-        if k == 0:
-            result.append(1)  # Empty circuit
-        else:
-            # Calculate matrix power
-            powered_matrix = matrix_power(adjacency_matrix, k)
-            circuits = powered_matrix[a][a]
-            result.append(circuits)
-    
-    return result
-```
-
-**Why this improvement works**: Handles the edge case for circuits of length 0.
-
-### Approach 2: Correct Circuit Counting - O(n³ log k)
-**Description**: Use matrix exponentiation with proper circuit handling.
-
-```python
-def fixed_length_circuit_queries_correct(n, q, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Handle edge cases for circuits
-        if k == 0:
-            # Empty circuit (staying at the same node)
-            result.append(1)
-        elif k == 1:
-            # Self-loop
-            circuits = adjacency_matrix[a][a]
-            result.append(circuits)
-        else:
-            # Calculate matrix power
-            powered_matrix = matrix_power(adjacency_matrix, k)
-            circuits = powered_matrix[a][a]
-            result.append(circuits)
-    
-    return result
-```
-
-**Why this improvement works**: Properly handles all edge cases for circuit counting.
-
-## Final Optimal Solution
-
-```python
-n, q = map(int, input().split())
-adjacency_matrix = []
-for _ in range(n):
-    row = list(map(int, input().split()))
-    adjacency_matrix.append(row)
-queries = []
-for _ in range(q):
-    a, k = map(int, input().split())
-    queries.append((a, k))
-
-def process_fixed_length_circuit_queries(n, q, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Handle edge cases for circuits
-        if k == 0:
-            # Empty circuit (staying at the same node)
-            result.append(1)
-        elif k == 1:
-            # Self-loop
-            circuits = adjacency_matrix[a][a]
-            result.append(circuits)
-        else:
-            # Calculate matrix power
-            powered_matrix = matrix_power(adjacency_matrix, k)
-            circuits = powered_matrix[a][a]
-            result.append(circuits)
-    
-    return result
-
-result = process_fixed_length_circuit_queries(n, q, adjacency_matrix, queries)
-for res in result:
-    print(res)
-```
-
-## Complexity Analysis
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
-| Matrix Exponentiation | O(n³ log k) | O(n²) | Matrix power for circuit counting |
-| Optimized Matrix Exponentiation | O(n³ log k) | O(n²) | Binary exponentiation with edge cases |
-| Correct Circuit Counting | O(n³ log k) | O(n²) | Proper edge case handling |
+| Brute Force | O(n^k × q) | O(k) | Exhaustive search of all paths |
+| Dynamic Programming | O(n³ × k × q) | O(n × k) | Count paths using DP |
+| Matrix Exponentiation | O(n³ × log k × q) | O(n²) | Use matrix powers for path counting |
 
-## Key Insights for Other Problems
+### Time Complexity
+- **Time**: O(n³ × log k × q) - Matrix exponentiation with binary exponentiation
+- **Space**: O(n²) - Matrix storage
 
-### 1. **Circuit Counting with Matrix Exponentiation**
-**Principle**: The diagonal elements of the k-th power of the adjacency matrix give the number of circuits of length k.
-**Applicable to**: Circuit counting problems, graph analysis problems, matrix problems
+### Why This Solution Works
+- **Matrix Power Property**: Adjacency matrix^k gives path counts of length k
+- **Binary Exponentiation**: Efficiently compute large matrix powers
+- **Modular Arithmetic**: Handle large numbers with modulo operations
+- **Query Optimization**: Process multiple queries efficiently
 
-### 2. **Self-Loop Handling**
-**Principle**: Circuits of length 1 are self-loops in the adjacency matrix.
-**Applicable to**: Graph theory problems, circuit detection problems, matrix analysis problems
+## 🚀 Problem Variations
 
-### 3. **Empty Circuit Definition**
-**Principle**: An empty circuit (length 0) represents staying at the same node.
-**Applicable to**: Graph theory problems, circuit analysis problems, path counting problems
+### Extended Problems with Detailed Code Examples
 
-## Notable Techniques
+#### **1. Fixed Length Path Queries**
+**Problem**: Find number of paths of length k from node a to node b.
 
-### 1. **Matrix Multiplication**
+**Key Differences**: Paths instead of circuits, different start and end nodes
+
+**Solution Approach**: Use same matrix exponentiation but return (a,b) entry
+
+**Implementation**:
 ```python
-def matrix_multiply(a, b, n, MOD):
-    result = [[0] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(n):
-            for k in range(n):
-                result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-    return result
-```
-
-### 2. **Binary Matrix Exponentiation**
-```python
-def matrix_power(matrix, power, n, MOD):
-    # Initialize result as identity matrix
-    result = [[0] * n for _ in range(n)]
-    for i in range(n):
-        result[i][i] = 1
+def fixed_length_path_queries(n, adj_matrix, queries):
+    """
+    Find path counts using matrix exponentiation
     
-    # Binary exponentiation
-    base = matrix
-    while power > 0:
-        if power % 2 == 1:
-            result = matrix_multiply(result, base, n, MOD)
-        base = matrix_multiply(base, base, n, MOD)
-        power //= 2
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, b, k) queries
     
-    return result
-```
-
-### 3. **Circuit Counting**
-```python
-def count_circuits(adjacency_matrix, node, length, n, MOD):
-    if length == 0:
-        return 1  # Empty circuit
-    elif length == 1:
-        return adjacency_matrix[node][node]  # Self-loop
-    else:
-        powered_matrix = matrix_power(adjacency_matrix, length, n, MOD)
-        return powered_matrix[node][node]  # Diagonal element
-```
-
-### 4. **Query Processing**
-```python
-def process_circuit_queries(n, q, adjacency_matrix, queries, MOD):
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Handle edge cases
-        if k == 0:
-            circuits = 1
-        elif k == 1:
-            circuits = adjacency_matrix[a][a]
-        else:
-            powered_matrix = matrix_power(adjacency_matrix, k, n, MOD)
-            circuits = powered_matrix[a][a]
-        
-        result.append(circuits)
-    
-    return result
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is a circuit counting problem using matrix exponentiation
-2. **Choose approach**: Use matrix exponentiation with proper edge case handling
-3. **Initialize data structure**: Use adjacency matrix representation
-4. **Implement matrix multiplication**: Multiply matrices with modular arithmetic
-5. **Implement matrix power**: Use binary exponentiation for efficiency
-6. **Handle edge cases**: Check for k=0, k=1 cases
-7. **Process queries**: Calculate circuits for each query using diagonal elements
-8. **Return result**: Output circuit counts for all queries
-
----
-
-*This analysis shows how to efficiently count circuits of fixed length using matrix exponentiation with proper edge case handling.* 
-
-## Problem Variations & Related Questions
-
-### Problem Variations
-
-#### 1. **Fixed Length Circuit Queries with Costs**
-**Variation**: Each edge has a cost, find minimum cost circuits of length k.
-**Approach**: Use weighted matrix exponentiation with cost tracking.
-```python
-def cost_based_fixed_length_circuit_queries(n, q, adjacency_matrix, edge_costs, queries):
+    Returns:
+        list: answers to queries
+    """
     MOD = 10**9 + 7
     
-    def weighted_matrix_multiply(a, b):
-        result = [[float('inf')] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    if a[i][k] != float('inf') and b[k][j] != float('inf'):
-                        new_cost = a[i][k] + b[k][j]
-                        if new_cost < result[i][j]:
-                            result[i][j] = new_cost
-        return result
-    
-    def weighted_matrix_power(matrix, power):
-        # Initialize result as identity matrix (0 cost for self-loops)
-        result = [[float('inf')] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 0
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = weighted_matrix_multiply(result, base)
-            base = weighted_matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Build weighted adjacency matrix
-    weighted_matrix = [[float('inf')] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(n):
-            if adjacency_matrix[i][j] == 1:
-                weighted_matrix[i][j] = edge_costs.get((i, j), 1)
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        a = a - 1  # Convert to 0-indexed
-        
-        if k == 0:
-            min_cost = 0
-        elif k == 1:
-            min_cost = weighted_matrix[a][a] if weighted_matrix[a][a] != float('inf') else -1
-        else:
-            powered_matrix = weighted_matrix_power(weighted_matrix, k)
-            min_cost = powered_matrix[a][a] if powered_matrix[a][a] != float('inf') else -1
-        
-        result.append(min_cost)
-    
-    return result
-```
-
-#### 2. **Fixed Length Circuit Queries with Constraints**
-**Variation**: Limited budget, restricted edges, or specific circuit requirements.
-**Approach**: Use constraint satisfaction with matrix exponentiation.
-```python
-def constrained_fixed_length_circuit_queries(n, q, adjacency_matrix, budget, restricted_edges, queries):
-    MOD = 10**9 + 7
-    
-    def constrained_matrix_multiply(a, b):
+    def matrix_multiply(A, B):
+        """Multiply two matrices with modular arithmetic"""
         result = [[0] * n for _ in range(n)]
         for i in range(n):
             for j in range(n):
                 for k in range(n):
-                    # Check if edge (i,k) and (k,j) are not restricted
-                    if (i, k) not in restricted_edges and (k, j) not in restricted_edges:
-                        result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
+                    result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % MOD
         return result
     
-    def constrained_matrix_power(matrix, power):
-        # Initialize result as identity matrix
+    def matrix_power(matrix, power):
+        """Compute matrix^power using binary exponentiation"""
         result = [[0] * n for _ in range(n)]
         for i in range(n):
             result[i][i] = 1
         
-        # Binary exponentiation
-        base = matrix
+        base = [row[:] for row in matrix]
+        
         while power > 0:
             if power % 2 == 1:
-                result = constrained_matrix_multiply(result, base)
-            base = constrained_matrix_multiply(base, base)
+                result = matrix_multiply(result, base)
+            base = matrix_multiply(base, base)
             power //= 2
         
         return result
     
-    # Process queries
-    result = []
-    for a, k in queries:
-        a = a - 1  # Convert to 0-indexed
-        
-        if k == 0:
-            circuits = 1
-        elif k == 1:
-            circuits = adjacency_matrix[a][a] if (a, a) not in restricted_edges else 0
-        else:
-            powered_matrix = constrained_matrix_power(adjacency_matrix, k)
-            circuits = powered_matrix[a][a]
-        
-        result.append(circuits)
+    def count_paths(start, end, k):
+        """Count paths of length k from start to end"""
+        powered_matrix = matrix_power(adj_matrix, k)
+        return powered_matrix[start][end]
     
-    return result
+    results = []
+    for a, b, k in queries:
+        result = count_paths(a - 1, b - 1, k)  # Convert to 0-indexed
+        results.append(result)
+    
+    return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 0],
+    [0, 0, 1],
+    [1, 0, 0]
+]
+queries = [(1, 3, 2), (2, 1, 3)]
+result = fixed_length_path_queries(n, adj_matrix, queries)
+print(f"Fixed length path result: {result}")
 ```
 
-#### 3. **Fixed Length Circuit Queries with Probabilities**
-**Variation**: Each edge has a probability, find expected number of circuits.
-**Approach**: Use probabilistic matrix exponentiation or Monte Carlo simulation.
+#### **2. Weighted Graph Circuit Queries**
+**Problem**: Find number of circuits of length k with total weight w.
+
+**Key Differences**: Edges have weights, consider total weight
+
+**Solution Approach**: Use 3D DP with weight dimension
+
+**Implementation**:
 ```python
-def probabilistic_fixed_length_circuit_queries(n, q, adjacency_matrix, edge_probabilities, queries):
+def weighted_circuit_queries(n, adj_matrix, weights, queries):
+    """
+    Find weighted circuit counts using 3D DP
+    
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        weights: weight matrix
+        queries: list of (a, k, w) queries
+    
+    Returns:
+        list: answers to queries
+    """
     MOD = 10**9 + 7
     
-    def probabilistic_matrix_multiply(a, b):
-        result = [[0.0] * n for _ in range(n)]
-        for i in range(n):
+    def count_weighted_circuits(start, k, target_weight):
+        """Count circuits of length k with total weight target_weight"""
+        # dp[i][j][w] = number of paths from start to j of length i with weight w
+        max_weight = target_weight + 1
+        dp = [[[0] * max_weight for _ in range(n)] for _ in range(k + 1)]
+        
+        # Base case: paths of length 0
+        dp[0][start][0] = 1
+        
+        # Fill DP table
+        for length in range(1, k + 1):
             for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def probabilistic_matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0.0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1.0
+                for w in range(max_weight):
+                    for m in range(n):
+                        if adj_matrix[m][j] == 1:
+                            edge_weight = weights[m][j]
+                            if w >= edge_weight:
+                                dp[length][j][w] = (dp[length][j][w] + dp[length - 1][m][w - edge_weight]) % MOD
         
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = probabilistic_matrix_multiply(result, base)
-            base = probabilistic_matrix_multiply(base, base)
-            power //= 2
-        
-        return result
+        return dp[k][start][target_weight]
     
-    # Build probabilistic adjacency matrix
-    prob_matrix = [[0.0] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(n):
-            if adjacency_matrix[i][j] == 1:
-                prob_matrix[i][j] = edge_probabilities.get((i, j), 0.5)
+    results = []
+    for a, k, w in queries:
+        result = count_weighted_circuits(a - 1, k, w)  # Convert to 0-indexed
+        results.append(result)
     
-    # Process queries
-    result = []
-    for a, k in queries:
-        a = a - 1  # Convert to 0-indexed
-        
-        if k == 0:
-            expected_circuits = 1.0
-        elif k == 1:
-            expected_circuits = prob_matrix[a][a]
-        else:
-            powered_matrix = probabilistic_matrix_power(prob_matrix, k)
-            expected_circuits = powered_matrix[a][a]
-        
-        result.append(expected_circuits)
-    
-    return result
+    return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 0],
+    [0, 0, 1],
+    [1, 0, 0]
+]
+weights = [
+    [0, 2, 0],
+    [0, 0, 3],
+    [1, 0, 0]
+]
+queries = [(1, 3, 6), (2, 2, 5)]
+result = weighted_circuit_queries(n, adj_matrix, weights, queries)
+print(f"Weighted circuit result: {result}")
 ```
 
-#### 4. **Fixed Length Circuit Queries with Multiple Criteria**
-**Variation**: Optimize for multiple objectives (circuit count, cost, probability).
-**Approach**: Use multi-objective optimization or weighted sum approach.
-```python
-def multi_criteria_fixed_length_circuit_queries(n, q, adjacency_matrix, criteria_weights, queries):
-    # criteria_weights = {'count': 0.4, 'cost': 0.3, 'probability': 0.3}
-    
-    def calculate_circuit_score(circuit_attributes):
-        return (criteria_weights['count'] * circuit_attributes['count'] + 
-                criteria_weights['cost'] * circuit_attributes['cost'] + 
-                criteria_weights['probability'] * circuit_attributes['probability'])
-    
-    def multi_criteria_matrix_multiply(a, b):
-        result = [[{'count': 0, 'cost': 0, 'probability': 0.0} for _ in range(n)] for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    # Combine attributes
-                    new_count = a[i][k]['count'] * b[k][j]['count']
-                    new_cost = a[i][k]['cost'] + b[k][j]['cost']
-                    new_prob = a[i][k]['probability'] * b[k][j]['probability']
-                    
-                    result[i][j]['count'] += new_count
-                    result[i][j]['cost'] = min(result[i][j]['cost'], new_cost) if result[i][j]['cost'] > 0 else new_cost
-                    result[i][j]['probability'] += new_prob
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        a = a - 1  # Convert to 0-indexed
-        
-        if k == 0:
-            circuit_attrs = {'count': 1, 'cost': 0, 'probability': 1.0}
-        elif k == 1:
-            circuit_attrs = {
-                'count': adjacency_matrix[a][a],
-                'cost': 1 if adjacency_matrix[a][a] else 0,
-                'probability': 0.5 if adjacency_matrix[a][a] else 0.0
-            }
-        else:
-            # Simplified for demonstration
-            circuit_attrs = {'count': 1, 'cost': k, 'probability': 0.5}
-        
-        score = calculate_circuit_score(circuit_attrs)
-        result.append(score)
-    
-    return result
-```
+#### **3. Dynamic Graph Circuit Queries**
+**Problem**: Support adding/removing edges and answering circuit queries.
 
-#### 5. **Fixed Length Circuit Queries with Dynamic Updates**
-**Variation**: Graph structure can be modified dynamically.
-**Approach**: Use dynamic graph algorithms or incremental updates.
+**Key Differences**: Graph structure can change dynamically
+
+**Solution Approach**: Use dynamic matrix updates with lazy evaluation
+
+**Implementation**:
 ```python
-class DynamicFixedLengthCircuitQueries:
+class DynamicCircuitQueries:
     def __init__(self, n):
         self.n = n
-        self.adjacency_matrix = [[0] * n for _ in range(n)]
-        self.circuit_cache = {}
+        self.adj_matrix = [[0] * n for _ in range(n)]
+        self.matrix_cache = {}  # Cache for matrix powers
+        self.MOD = 10**9 + 7
     
     def add_edge(self, a, b):
-        self.adjacency_matrix[a][b] = 1
-        self.invalidate_cache()
+        """Add edge from a to b"""
+        self.adj_matrix[a][b] = 1
+        self.matrix_cache.clear()  # Invalidate cache
     
     def remove_edge(self, a, b):
-        self.adjacency_matrix[a][b] = 0
-        self.invalidate_cache()
+        """Remove edge from a to b"""
+        self.adj_matrix[a][b] = 0
+        self.matrix_cache.clear()  # Invalidate cache
     
-    def invalidate_cache(self):
-        self.circuit_cache.clear()
-    
-    def get_circuit_count(self, node, length, MOD=10**9 + 7):
-        cache_key = (node, length)
-        if cache_key in self.circuit_cache:
-            return self.circuit_cache[cache_key]
-        
-        if length == 0:
-            result = 1
-        elif length == 1:
-            result = self.adjacency_matrix[node][node]
-        else:
-            powered_matrix = self.matrix_power(self.adjacency_matrix, length, MOD)
-            result = powered_matrix[node][node]
-        
-        self.circuit_cache[cache_key] = result
-        return result
-    
-    def matrix_multiply(self, a, b, MOD):
+    def matrix_multiply(self, A, B):
+        """Multiply two matrices with modular arithmetic"""
         result = [[0] * self.n for _ in range(self.n)]
         for i in range(self.n):
             for j in range(self.n):
                 for k in range(self.n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
+                    result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % self.MOD
         return result
     
-    def matrix_power(self, matrix, power, MOD):
+    def matrix_power(self, power):
+        """Compute matrix^power using binary exponentiation with caching"""
+        if power in self.matrix_cache:
+            return self.matrix_cache[power]
+        
         result = [[0] * self.n for _ in range(self.n)]
         for i in range(self.n):
             result[i][i] = 1
         
-        base = matrix
+        base = [row[:] for row in self.adj_matrix]
+        
         while power > 0:
             if power % 2 == 1:
-                result = self.matrix_multiply(result, base, MOD)
-            base = self.matrix_multiply(base, base, MOD)
+                result = self.matrix_multiply(result, base)
+            base = self.matrix_multiply(base, base)
             power //= 2
         
+        self.matrix_cache[power] = result
         return result
+    
+    def count_circuits(self, start, k):
+        """Count circuits of length k starting from start"""
+        powered_matrix = self.matrix_power(k)
+        return powered_matrix[start][start]
+
+# Example usage
+dcq = DynamicCircuitQueries(3)
+dcq.add_edge(0, 1)
+dcq.add_edge(1, 2)
+dcq.add_edge(2, 0)
+result1 = dcq.count_circuits(0, 3)
+print(f"Dynamic circuit result: {result1}")
 ```
 
-### Related Problems & Concepts
+### Related Problems
 
-#### 1. **Circuit Counting Problems**
-- **Hamiltonian Circuits**: Circuits visiting each node once
-- **Eulerian Circuits**: Circuits using each edge once
-- **Simple Circuits**: Circuits without repeated nodes
-- **Directed Circuits**: Circuits in directed graphs
+#### **CSES Problems**
+- [Fixed Length Cycle Queries](https://cses.fi/problemset/task/2417) - Similar matrix approach
+- [Round Trip](https://cses.fi/problemset/task/1669) - Cycle detection
+- [Graph Girth](https://cses.fi/problemset/task/1707) - Cycle properties
 
-#### 2. **Matrix Problems**
-- **Matrix Exponentiation**: Fast matrix power computation
-- **Adjacency Matrix**: Graph representation
-- **Transition Matrix**: State transition probabilities
-- **Markov Chains**: Probabilistic state transitions
+#### **LeetCode Problems**
+- [Number of Ways to Arrive at Destination](https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/) - Path counting
+- [Unique Paths](https://leetcode.com/problems/unique-paths/) - Path counting
+- [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) - Path counting with obstacles
 
-#### 3. **Graph Theory Problems**
-- **Path Counting**: Count paths between nodes
-- **Walk Counting**: Count walks of given length
-- **Cycle Detection**: Find cycles in graphs
-- **Connectivity**: Graph connectivity analysis
+#### **Problem Categories**
+- **Matrix Exponentiation**: Matrix powers, binary exponentiation
+- **Graph Theory**: Circuits, cycles, paths
+- **Dynamic Programming**: State transitions, path counting
 
-#### 4. **Dynamic Programming Problems**
-- **State Transitions**: Dynamic state changes
-- **Memoization**: Caching computed results
-- **Optimal Substructure**: Breaking into subproblems
-- **Overlapping Subproblems**: Reusing solutions
+## 🔗 Additional Resources
 
-#### 5. **Query Processing Problems**
-- **Range Queries**: Querying ranges of data
-- **Point Queries**: Querying specific points
-- **Batch Queries**: Processing multiple queries
-- **Online Queries**: Real-time query processing
+### **Algorithm References**
+- [Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html) - Binary exponentiation
+- [Graph Theory](https://cp-algorithms.com/graph/) - Graph algorithms
+- [Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html) - Modular operations
 
-### Competitive Programming Variations
+### **Practice Problems**
+- [CSES Fixed Length Cycle Queries](https://cses.fi/problemset/task/2417) - Medium
+- [CSES Round Trip](https://cses.fi/problemset/task/1669) - Medium
+- [CSES Graph Girth](https://cses.fi/problemset/task/1707) - Medium
 
-#### 1. **Online Judge Variations**
-- **Time Limits**: Optimize for strict constraints
-- **Memory Limits**: Space-efficient solutions
-- **Input Size**: Handle large matrices
-- **Edge Cases**: Robust matrix operations
+### **Further Reading**
+- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
+- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
+- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
 
-#### 2. **Algorithm Contests**
-- **Speed Programming**: Fast implementation
-- **Code Golf**: Minimal code solutions
-- **Team Contests**: Collaborative problem solving
-- **Live Coding**: Real-time problem solving
+---
 
-#### 3. **Advanced Techniques**
-- **Binary Search**: On answer space
-- **Two Pointers**: Efficient matrix traversal
-- **Sliding Window**: Optimal submatrix problems
-- **Monotonic Stack/Queue**: Maintaining order
+## 📝 Implementation Checklist
 
-### Mathematical Extensions
+When applying this template to a new problem, ensure you:
 
-#### 1. **Linear Algebra**
-- **Matrix Operations**: Multiplication, exponentiation
-- **Eigenvalues**: Matrix spectral properties
-- **Determinants**: Matrix determinants
-- **Inverses**: Matrix inverses
+### **Content Requirements**
+- [x] **Problem Description**: Clear, concise with examples
+- [x] **Learning Objectives**: 5 specific, measurable goals
+- [x] **Prerequisites**: 5 categories of required knowledge
+- [x] **3 Approaches**: Brute Force → Greedy → Optimal
+- [x] **Key Insights**: 4-5 insights per approach at the beginning
+- [x] **Visual Examples**: ASCII diagrams for each approach
+- [x] **Complete Implementations**: Working code with examples
+- [x] **Complexity Analysis**: Time and space for each approach
+- [x] **Problem Variations**: 3 variations with implementations
+- [x] **Related Problems**: CSES and LeetCode links
 
-#### 2. **Probability Theory**
-- **Expected Values**: Average circuit counts
-- **Markov Chains**: State transition probabilities
-- **Random Walks**: Probabilistic graph traversal
-- **Monte Carlo**: Simulation methods
+### **Structure Requirements**
+- [x] **No Redundant Sections**: Remove duplicate Key Insights
+- [x] **Logical Flow**: Each approach builds on the previous
+- [x] **Progressive Complexity**: Clear improvement from approach to approach
+- [x] **Educational Value**: Theory + Practice in each section
+- [x] **Complete Coverage**: All important concepts included
 
-#### 3. **Number Theory**
-- **Modular Arithmetic**: Large number handling
-- **Prime Numbers**: Special matrix cases
-- **GCD/LCM**: Mathematical properties
-- **Euler's Totient**: Counting coprime circuits
+### **Quality Requirements**
+- [x] **Working Code**: All implementations are runnable
+- [x] **Test Cases**: Examples with expected outputs
+- [x] **Edge Cases**: Handle boundary conditions
+- [x] **Clear Explanations**: Easy to understand for students
+- [x] **Visual Learning**: Diagrams and examples throughout
 
-### Learning Resources
+---
 
-#### 1. **Online Platforms**
-- **LeetCode**: Matrix and graph problems
-- **Codeforces**: Competitive programming
-- **HackerRank**: Algorithm challenges
-- **AtCoder**: Japanese programming contests
+## 🎯 **Template Usage Instructions**
 
-#### 2. **Educational Resources**
-- **CLRS**: Introduction to Algorithms
-- **CP-Algorithms**: Competitive programming algorithms
-- **GeeksforGeeks**: Algorithm tutorials
-- **TopCoder**: Algorithm tutorials
+### **Step 1: Replace Placeholders**
+- Replace `[Problem Name]` with actual problem name
+- Replace `[category]` with the problem category folder
+- Replace `[problem_name]` with the actual problem filename
+- Replace all `[placeholder]` text with actual content
 
-#### 3. **Practice Problems**
-- **Matrix Problems**: Exponentiation, multiplication
-- **Graph Problems**: Circuit counting, path finding
-- **Dynamic Problems**: State transitions, caching
-- **Query Problems**: Range queries, batch processing 
+### **Step 2: Customize Approaches**
+- **Approach 1**: Usually brute force or naive solution
+- **Approach 2**: Optimized solution (DP, greedy, etc.)
+- **Approach 3**: Optimal solution (advanced algorithms)
+
+### **Step 3: Add Visual Examples**
+- Use ASCII art for diagrams
+- Show step-by-step execution
+- Use actual data in examples
+
+### **Step 4: Implement Working Code**
+- Write complete, runnable implementations
+- Include test cases and examples
+- Handle edge cases properly
+
+### **Step 5: Add Problem Variations**
+- Create 3 meaningful variations
+- Provide implementations for each
+- Link to related problems
+
+### **Step 6: Quality Check**
+- Ensure no redundant sections
+- Verify all code works
+- Check that complexity analysis is correct
+- Confirm educational value is high
+
+This template ensures consistency across all problem analyses while maintaining high educational value and practical implementation focus.

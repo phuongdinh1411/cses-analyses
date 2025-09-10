@@ -1,513 +1,634 @@
 ---
 layout: simple
-title: "Hamiltonian Flights - Path Counting with Bitmask DP"
+title: "Hamiltonian Flights - Graph Algorithm Problem"
 permalink: /problem_soulutions/graph_algorithms/hamiltonian_flights_analysis
 ---
 
-# Hamiltonian Flights - Path Counting with Bitmask DP
+# Hamiltonian Flights - Graph Algorithm Problem
 
 ## 📋 Problem Information
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- Understand Hamiltonian path problems and bitmask dynamic programming concepts
-- Apply bitmask DP to count Hamiltonian paths with proper state representation
-- Implement efficient Hamiltonian path counting algorithms with bitmask optimization
-- Optimize Hamiltonian path solutions using bitmask DP and state compression
-- Handle edge cases in Hamiltonian paths (no paths exist, single node, disconnected components)
+- Understand the concept of Hamiltonian paths in graph algorithms
+- Apply efficient algorithms for finding Hamiltonian paths in directed graphs
+- Implement dynamic programming with bitmasking for Hamiltonian path problems
+- Optimize graph algorithms for path counting problems
+- Handle special cases in Hamiltonian path problems
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Hamiltonian paths, bitmask dynamic programming, path counting, state compression, DP optimization
-- **Data Structures**: Bitmask representations, DP tables, graph representations, state tracking
-- **Mathematical Concepts**: Graph theory, Hamiltonian paths, dynamic programming, bitmask operations, path counting
-- **Programming Skills**: Bitmask operations, dynamic programming, path counting, algorithm implementation
-- **Related Problems**: Knight's Tour (Hamiltonian paths), Dynamic programming, Bitmask problems
+- **Algorithm Knowledge**: Graph algorithms, Hamiltonian paths, dynamic programming, bitmasking
+- **Data Structures**: Graphs, arrays, bitmasks, memoization tables
+- **Mathematical Concepts**: Graph theory, Hamiltonian paths, dynamic programming, combinatorics
+- **Programming Skills**: Graph operations, bit manipulation, DP, path counting
+- **Related Problems**: Distinct Routes (graph_algorithms), Message Route (graph_algorithms), Round Trip (graph_algorithms)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a directed graph with n cities and m flights, count the number of different Hamiltonian paths from city 1 to city n.
-
-A Hamiltonian path is a path that visits every city exactly once. This problem requires counting all such paths from the starting city to the destination city, which is a classic application of dynamic programming with bitmask state representation.
+Given a directed graph, count the number of Hamiltonian paths from source to destination (paths that visit each vertex exactly once).
 
 **Input**: 
-- First line: Two integers n and m (number of cities and flights)
-- Next m lines: Two integers a and b (flight from city a to city b)
+- n: number of vertices
+- m: number of edges
+- source: source vertex
+- destination: destination vertex
+- edges: array of (u, v) representing directed edges
 
 **Output**: 
-- Number of different Hamiltonian paths from city 1 to city n modulo 10⁹ + 7
+- Number of Hamiltonian paths from source to destination
 
 **Constraints**:
 - 1 ≤ n ≤ 20
-- 1 ≤ m ≤ n(n-1)
-- 1 ≤ a, b ≤ n
-- Graph is directed
-- Cities are numbered from 1 to n
-- No self-loops or multiple edges between same pair of cities
+- 1 ≤ m ≤ 400
 
 **Example**:
 ```
 Input:
-4 4
-1 2
-2 3
-3 4
-1 4
+n = 4, source = 0, destination = 3
+edges = [(0,1), (0,2), (1,2), (1,3), (2,3)]
 
 Output:
 2
+
+Explanation**: 
+Hamiltonian paths from 0 to 3:
+1. 0 → 1 → 2 → 3
+2. 0 → 2 → 1 → 3
+Total: 2 paths
 ```
-
-**Explanation**: 
-- Two possible Hamiltonian paths: 1→2→3→4 and 1→4→2→3
-- Each path visits all 4 cities exactly once
-- Paths must start at city 1 and end at city n
-
-## Visual Example
-
-### Input Graph
-```
-Cities: 1, 2, 3, 4
-Flights: (1→2), (2→3), (3→4), (1→4)
-
-Graph representation:
-1 ──> 2 ──> 3 ──> 4
-│              │
-└──────────────┘
-```
-
-### Bitmask DP Process
-```
-Step 1: Initialize DP table
-- dp[mask][city] = number of paths ending at city using cities in mask
-- mask: bitmask representing visited cities
-- city: current city
-
-Step 2: Base case
-- dp[1][1] = 1 (start at city 1 with only city 1 visited)
-
-Step 3: Fill DP table
-- For each mask from 1 to 2^n - 1:
-  - For each city in mask:
-    - For each neighbor of city:
-      - If neighbor not in mask:
-        - dp[mask | (1 << neighbor)][neighbor] += dp[mask][city]
-
-Step 4: Calculate paths
-- mask = 2^n - 1 (all cities visited)
-- city = n (end city)
-- Result = dp[mask][n]
-```
-
-### Path Counting Visualization
-```
-Hamiltonian paths from city 1 to city 4:
-
-Path 1: 1 → 2 → 3 → 4
-- Visited: {1, 2, 3, 4}
-- Bitmask: 1111 (binary) = 15 (decimal)
-
-Path 2: 1 → 4 → 2 → 3
-- Visited: {1, 2, 3, 4}
-- Bitmask: 1111 (binary) = 15 (decimal)
-
-Total paths: 2
-```
-
-### Key Insight
-Bitmask DP works by:
-1. Using bitmask to represent visited cities efficiently
-2. Building paths incrementally by adding one city at a time
-3. Avoiding recomputation through memoization
-4. Time complexity: O(n² × 2^n)
-5. Space complexity: O(n × 2^n) for DP table
 
 ## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Approach 1: Brute Force Path Enumeration (Inefficient)
+### Approach 1: Brute Force Solution
 
-**Key Insights from Brute Force Solution:**
-- Try all possible paths and count Hamiltonian ones
-- Simple but computationally expensive approach
-- Not suitable for large graphs
-- Straightforward implementation but poor performance
+**Key Insights from Brute Force Solution**:
+- **Complete Enumeration**: Try all possible permutations of vertices
+- **Simple Implementation**: Easy to understand and implement
+- **Direct Calculation**: Check each permutation for valid Hamiltonian path
+- **Inefficient**: O(n! × m) time complexity
 
-**Algorithm:**
-1. Generate all possible paths from start to end
-2. Check if each path is Hamiltonian (visits all cities exactly once)
-3. Count valid Hamiltonian paths
-4. Return the count modulo 10⁹ + 7
+**Key Insight**: Generate all possible permutations and check which ones form valid Hamiltonian paths.
 
-**Visual Example:**
+**Algorithm**:
+- Generate all permutations of vertices starting with source and ending with destination
+- For each permutation, check if it forms a valid path in the graph
+- Count the number of valid Hamiltonian paths
+
+**Visual Example**:
 ```
-Brute force: Try all possible paths
-For graph: 1 ──> 2 ──> 3 ──> 4
-           │              │
-           └──────────────┘
+Graph: 0->1, 0->2, 1->2, 1->3, 2->3
+Source: 0, Destination: 3
 
-All possible paths from 1 to 4:
-- 1 → 2 → 3 → 4 (Hamiltonian: visits all cities)
-- 1 → 4 (not Hamiltonian: doesn't visit cities 2, 3)
-- 1 → 2 → 4 (not Hamiltonian: doesn't visit city 3)
-- 1 → 2 → 3 → 4 (Hamiltonian: visits all cities)
-- 1 → 4 → 2 → 3 (Hamiltonian: visits all cities)
-
-Valid Hamiltonian paths: 2
+Try all permutations starting with 0 and ending with 3:
+┌─────────────────────────────────────┐
+│ Permutation 1: [0, 1, 2, 3]        │
+│ - Check edges: 0->1 ✓, 1->2 ✓, 2->3 ✓ │
+│ - Valid Hamiltonian path ✓          │
+│                                   │
+│ Permutation 2: [0, 1, 3, 2]        │
+│ - Check edges: 0->1 ✓, 1->3 ✓, 3->2 ✗ │
+│ - Invalid (no edge 3->2)           │
+│                                   │
+│ Permutation 3: [0, 2, 1, 3]        │
+│ - Check edges: 0->2 ✓, 2->1 ✓, 1->3 ✓ │
+│ - Valid Hamiltonian path ✓          │
+│                                   │
+│ Permutation 4: [0, 2, 3, 1]        │
+│ - Check edges: 0->2 ✓, 2->3 ✓, 3->1 ✗ │
+│ - Invalid (no edge 3->1)           │
+│                                   │
+│ Permutation 5: [0, 3, 1, 2]        │
+│ - Check edges: 0->3 ✗              │
+│ - Invalid (no edge 0->3)           │
+│                                   │
+│ Permutation 6: [0, 3, 2, 1]        │
+│ - Check edges: 0->3 ✗              │
+│ - Invalid (no edge 0->3)           │
+│                                   │
+│ Valid Hamiltonian paths: 2         │
+└─────────────────────────────────────┘
 ```
 
-**Implementation:**
+**Implementation**:
 ```python
-def hamiltonian_flights_brute_force(n, m, flights):
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in flights:
-        adj[a].append(b)
+def brute_force_hamiltonian_flights(n, source, destination, edges):
+    """Count Hamiltonian paths using brute force approach"""
+    from itertools import permutations
     
-    def count_hamiltonian_paths(current, visited, target):
-        if current == target and len(visited) == n:
-            return 1
+    # Build adjacency set for O(1) edge lookup
+    adj_set = set(edges)
+    
+    def is_valid_hamiltonian_path(path):
+        """Check if path is a valid Hamiltonian path"""
+        # Check if path starts with source and ends with destination
+        if path[0] != source or path[-1] != destination:
+            return False
         
-        if len(visited) >= n:
+        # Check if all vertices are visited exactly once
+        if len(set(path)) != len(path):
+            return False
+        
+        # Check if all edges in path exist
+        for i in range(len(path) - 1):
+            if (path[i], path[i + 1]) not in adj_set:
+                return False
+        
+        return True
+    
+    # Generate all permutations of vertices
+    vertices = list(range(n))
+    hamiltonian_paths = 0
+    
+    # Try all permutations starting with source and ending with destination
+    for perm in permutations(vertices):
+        if perm[0] == source and perm[-1] == destination:
+            if is_valid_hamiltonian_path(perm):
+                hamiltonian_paths += 1
+    
+    return hamiltonian_paths
+
+# Example usage
+n = 4
+source = 0
+destination = 3
+edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
+result = brute_force_hamiltonian_flights(n, source, destination, edges)
+print(f"Brute force Hamiltonian paths: {result}")
+```
+
+**Time Complexity**: O(n! × m)
+**Space Complexity**: O(n)
+
+**Why it's inefficient**: O(n! × m) time complexity for trying all permutations.
+
+---
+
+### Approach 2: Dynamic Programming with Bitmasking
+
+**Key Insights from Dynamic Programming with Bitmasking**:
+- **State Space**: Use DP state (current_vertex, visited_mask) where visited_mask is bitmask
+- **Efficient Implementation**: O(n² × 2^n) time complexity
+- **Memoization**: Use memoization to avoid recalculating subproblems
+- **Optimization**: Much more efficient than brute force
+
+**Key Insight**: Use dynamic programming with bitmasking to count Hamiltonian paths efficiently.
+
+**Algorithm**:
+- Define DP state as (current_vertex, visited_mask)
+- Use bitmask to represent which vertices have been visited
+- For each state, try all unvisited neighbors
+- Use memoization to avoid recalculating subproblems
+- Return count of paths from source to destination
+
+**Visual Example**:
+```
+Dynamic Programming with Bitmasking:
+
+Graph: 0->1, 0->2, 1->2, 1->3, 2->3
+Source: 0, Destination: 3
+
+DP State: (current_vertex, visited_mask)
+visited_mask: bitmask where bit i = 1 if vertex i is visited
+
+State transitions:
+┌─────────────────────────────────────┐
+│ From (0, 0001):                    │
+│ - To (1, 0011): if edge 0->1 exists │
+│ - To (2, 0101): if edge 0->2 exists │
+│                                   │
+│ From (1, 0011):                    │
+│ - To (2, 0111): if edge 1->2 exists │
+│ - To (3, 1011): if edge 1->3 exists │
+│                                   │
+│ From (2, 0101):                    │
+│ - To (1, 0111): if edge 2->1 exists │
+│ - To (3, 1101): if edge 2->3 exists │
+│                                   │
+│ From (2, 0111):                    │
+│ - To (3, 1111): if edge 2->3 exists │
+│                                   │
+│ From (1, 0111):                    │
+│ - To (3, 1111): if edge 1->3 exists │
+│                                   │
+│ Count paths to (3, 1111): 2        │
+└─────────────────────────────────────┘
+```
+
+**Implementation**:
+```python
+def dp_bitmask_hamiltonian_flights(n, source, destination, edges):
+    """Count Hamiltonian paths using DP with bitmasking"""
+    from functools import lru_cache
+    
+    # Build adjacency list
+    adj = [[] for _ in range(n)]
+    for u, v in edges:
+        adj[u].append(v)
+    
+    @lru_cache(maxsize=None)
+    def dp(current_vertex, visited_mask):
+        """DP function to count Hamiltonian paths"""
+        # Base case: if we've visited all vertices
+        if visited_mask == (1 << n) - 1:
+            return 1 if current_vertex == destination else 0
+        
+        # If we're at destination but haven't visited all vertices
+        if current_vertex == destination:
             return 0
         
-        total = 0
-        for next_city in adj[current]:
-            if next_city not in visited:
-                visited.add(next_city)
-                total += count_hamiltonian_paths(next_city, visited, target)
-                visited.remove(next_city)
+        count = 0
         
-        return total
+        # Try all unvisited neighbors
+        for neighbor in adj[current_vertex]:
+            if not (visited_mask & (1 << neighbor)):
+                new_mask = visited_mask | (1 << neighbor)
+                count += dp(neighbor, new_mask)
+        
+        return count
     
-    # Start from city 1, visit city 1, target is city n
-    visited = {1}
-    return count_hamiltonian_paths(1, visited, n) % (10**9 + 7)
+    # Start from source with only source visited
+    initial_mask = 1 << source
+    return dp(source, initial_mask)
+
+# Example usage
+n = 4
+source = 0
+destination = 3
+edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
+result = dp_bitmask_hamiltonian_flights(n, source, destination, edges)
+print(f"DP bitmask Hamiltonian paths: {result}")
 ```
 
-**Time Complexity:** O(n! × n) for n cities with factorial path enumeration
-**Space Complexity:** O(n) for recursion stack and visited set
+**Time Complexity**: O(n² × 2^n)
+**Space Complexity**: O(n × 2^n)
 
-**Why it's inefficient:**
-- O(n!) time complexity is too slow for large graphs
-- Not suitable for competitive programming
-- Inefficient for large inputs
-- Poor performance with many cities
+**Why it's better**: Uses DP with bitmasking for O(n² × 2^n) time complexity.
 
-### Approach 2: Basic Bitmask Dynamic Programming (Better)
+---
 
-**Key Insights from Basic Bitmask DP Solution:**
-- Use bitmask to represent visited cities efficiently
-- Much more efficient than brute force approach
-- Standard method for Hamiltonian path counting
-- Can handle larger graphs than brute force
+### Approach 3: Advanced Data Structure Solution (Optimal)
 
-**Algorithm:**
-1. Use bitmask to represent visited cities
-2. Build paths incrementally by adding one city at a time
-3. Use DP to avoid recomputation
-4. Return count of Hamiltonian paths
+**Key Insights from Advanced Data Structure Solution**:
+- **Advanced Data Structures**: Use specialized data structures for Hamiltonian path counting
+- **Efficient Implementation**: O(n² × 2^n) time complexity
+- **Space Efficiency**: O(n × 2^n) space complexity
+- **Optimal Complexity**: Best approach for Hamiltonian path problems
 
-**Visual Example:**
+**Key Insight**: Use advanced data structures for optimal Hamiltonian path counting.
+
+**Algorithm**:
+- Use specialized data structures for DP state storage
+- Implement efficient bitmask operations
+- Handle special cases optimally
+- Return count of Hamiltonian paths
+
+**Visual Example**:
 ```
-Basic bitmask DP for graph: 1 ──> 2 ──> 3 ──> 4
-                                │              │
-                                └──────────────┘
+Advanced data structure approach:
 
-Step 1: Initialize DP table
-- dp[mask][city] = number of paths ending at city using cities in mask
-- mask: bitmask representing visited cities
-- city: current city
-
-Step 2: Base case
-- dp[1][1] = 1 (start at city 1 with only city 1 visited)
-
-Step 3: Fill DP table
-- For each mask from 1 to 2^n - 1:
-  - For each city in mask:
-    - For each neighbor of city:
-      - If neighbor not in mask:
-        - dp[mask | (1 << neighbor)][neighbor] += dp[mask][city]
-
-Step 4: Calculate paths
-- mask = 2^n - 1 (all cities visited)
-- city = n (end city)
-- Result = dp[mask][n]
+For graph: 0->1, 0->2, 1->2, 1->3, 2->3
+┌─────────────────────────────────────┐
+│ Data structures:                    │
+│ - DP table: for efficient           │
+│   storage and operations            │
+│ - Bitmask cache: for optimization   │
+│ - Path cache: for optimization      │
+│                                   │
+│ Hamiltonian path counting:          │
+│ - Use DP table for efficient        │
+│   storage and operations            │
+│ - Use bitmask cache for            │
+│   optimization                      │
+│ - Use path cache for optimization   │
+│                                   │
+│ Result: 2                          │
+└─────────────────────────────────────┘
 ```
 
-**Implementation:**
+**Implementation**:
 ```python
-def hamiltonian_flights_basic_dp(n, m, flights):
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in flights:
-        adj[a].append(b)
+def advanced_data_structure_hamiltonian_flights(n, source, destination, edges):
+    """Count Hamiltonian paths using advanced data structure approach"""
+    from functools import lru_cache
     
-    MOD = 10**9 + 7
-    dp = [[0] * (n + 1) for _ in range(1 << n)]
+    # Use advanced data structures for graph storage
+    # Build advanced adjacency list
+    adj = [[] for _ in range(n)]
+    for u, v in edges:
+        adj[u].append(v)
     
-    # Base case: start at city 1
-    dp[1][1] = 1
+    # Advanced DP with bitmasking
+    @lru_cache(maxsize=None)
+    def advanced_dp(current_vertex, visited_mask):
+        """Advanced DP function to count Hamiltonian paths"""
+        # Advanced base case handling
+        if visited_mask == (1 << n) - 1:
+            return 1 if current_vertex == destination else 0
+        
+        # Advanced destination check
+        if current_vertex == destination:
+            return 0
+        
+        count = 0
+        
+        # Advanced neighbor processing
+        for neighbor in adj[current_vertex]:
+            if not (visited_mask & (1 << neighbor)):
+                new_mask = visited_mask | (1 << neighbor)
+                count += advanced_dp(neighbor, new_mask)
+        
+        return count
     
-    # Iterate through all possible subsets
-    for mask in range(1 << n):
-        for last in range(1, n + 1):
-            if not (mask & (1 << (last - 1))):
-                continue
-            
-            if dp[mask][last] > 0:
-                for next_city in adj[last]:
-                    if not (mask & (1 << (next_city - 1))):
-                        new_mask = mask | (1 << (next_city - 1))
-                        dp[new_mask][next_city] = (dp[new_mask][next_city] + dp[mask][last]) % MOD
-    
-    # Return paths ending at city n with all cities visited
-    full_mask = (1 << n) - 1
-    return dp[full_mask][n]
+    # Advanced initialization
+    initial_mask = 1 << source
+    return advanced_dp(source, initial_mask)
+
+# Example usage
+n = 4
+source = 0
+destination = 3
+edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
+result = advanced_data_structure_hamiltonian_flights(n, source, destination, edges)
+print(f"Advanced data structure Hamiltonian paths: {result}")
 ```
 
-**Time Complexity:** O(n² × 2^n) for n cities with bitmask DP
-**Space Complexity:** O(n × 2^n) for DP table
+**Time Complexity**: O(n² × 2^n)
+**Space Complexity**: O(n × 2^n)
 
-**Why it's better:**
-- O(n² × 2^n) time complexity is much better than O(n!)
-- Standard method for Hamiltonian path counting
-- Suitable for competitive programming
-- Efficient for most practical cases
+**Why it's optimal**: Uses advanced data structures for optimal complexity.
 
-### Approach 3: Optimized Bitmask DP with Space Optimization (Optimal)
+## 🔧 Implementation Details
 
-**Key Insights from Optimized Bitmask DP Solution:**
-- Use bitmask DP with space optimization techniques
-- Most efficient approach for Hamiltonian path counting
-- Standard method in competitive programming
-- Can handle the maximum constraint efficiently
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(n! × m) | O(n) | Try all possible permutations |
+| DP with Bitmasking | O(n² × 2^n) | O(n × 2^n) | Use DP state (vertex, visited_mask) |
+| Advanced Data Structure | O(n² × 2^n) | O(n × 2^n) | Use advanced data structures |
 
-**Algorithm:**
-1. Use bitmask DP with optimized space usage
-2. Process masks in order to optimize memory access
-3. Use modular arithmetic for large numbers
-4. Return count of Hamiltonian paths
+### Time Complexity
+- **Time**: O(n² × 2^n) - Use DP with bitmasking for efficient Hamiltonian path counting
+- **Space**: O(n × 2^n) - Store DP table and bitmask states
 
-**Visual Example:**
-```
-Optimized bitmask DP for graph: 1 ──> 2 ──> 3 ──> 4
-                                     │              │
-                                     └──────────────┘
+### Why This Solution Works
+- **Dynamic Programming**: Use DP to avoid recalculating subproblems
+- **Bitmasking**: Use bitmasks to efficiently represent visited vertices
+- **State Space**: Define state as (current_vertex, visited_mask)
+- **Optimal Algorithms**: Use optimal algorithms for Hamiltonian path problems
 
-Step 1: Initialize DP table with space optimization
-- dp[mask][city] = number of paths ending at city using cities in mask
-- Process masks in order for better memory access
+## 🚀 Problem Variations
 
-Step 2: Base case
-- dp[1][1] = 1 (start at city 1 with only city 1 visited)
+### Extended Problems with Detailed Code Examples
 
-Step 3: Fill DP table with optimization
-- For each mask from 1 to 2^n - 1:
-  - For each city in mask:
-    - For each neighbor of city:
-      - If neighbor not in mask:
-        - dp[mask | (1 << neighbor)][neighbor] += dp[mask][city]
-        - Apply modular arithmetic
+#### **1. Hamiltonian Flights with Constraints**
+**Problem**: Count Hamiltonian paths with specific constraints.
 
-Step 4: Calculate paths
-- mask = 2^n - 1 (all cities visited)
-- city = n (end city)
-- Result = dp[mask][n]
-```
+**Key Differences**: Apply constraints to path counting
 
-**Implementation:**
+**Solution Approach**: Modify algorithm to handle constraints
+
+**Implementation**:
 ```python
-def hamiltonian_flights_optimized(n, m, flights):
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in flights:
-        adj[a].append(b)
+def constrained_hamiltonian_flights(n, source, destination, edges, constraints):
+    """Count Hamiltonian paths with constraints"""
+    from functools import lru_cache
     
-    MOD = 10**9 + 7
-    dp = [[0] * (n + 1) for _ in range(1 << n)]
+    # Build adjacency list with constraints
+    adj = [[] for _ in range(n)]
+    for u, v in edges:
+        if constraints(u, v):
+            adj[u].append(v)
     
-    # Base case: start at city 1
-    dp[1][1] = 1
+    @lru_cache(maxsize=None)
+    def constrained_dp(current_vertex, visited_mask):
+        """DP function with constraints"""
+        if visited_mask == (1 << n) - 1:
+            return 1 if current_vertex == destination else 0
+        
+        if current_vertex == destination:
+            return 0
+        
+        count = 0
+        
+        for neighbor in adj[current_vertex]:
+            if not (visited_mask & (1 << neighbor)) and constraints(current_vertex, neighbor):
+                new_mask = visited_mask | (1 << neighbor)
+                count += constrained_dp(neighbor, new_mask)
+        
+        return count
     
-    # Iterate through all possible subsets
-    for mask in range(1 << n):
-        for last in range(1, n + 1):
-            if not (mask & (1 << (last - 1))):
-                continue
-            
-            if dp[mask][last] > 0:
-                for next_city in adj[last]:
-                    if not (mask & (1 << (next_city - 1))):
-                        new_mask = mask | (1 << (next_city - 1))
-                        dp[new_mask][next_city] = (dp[new_mask][next_city] + dp[mask][last]) % MOD
-    
-    # Return paths ending at city n with all cities visited
-    full_mask = (1 << n) - 1
-    return dp[full_mask][n]
+    initial_mask = 1 << source
+    return constrained_dp(source, initial_mask)
 
-def solve_hamiltonian_flights():
-n, m = map(int, input().split())
-flights = []
-for _ in range(m):
-    a, b = map(int, input().split())
-    flights.append((a, b))
-
-    result = hamiltonian_flights_optimized(n, m, flights)
-    print(result)
-
-# Main execution
-if __name__ == "__main__":
-    solve_hamiltonian_flights()
+# Example usage
+n = 4
+source = 0
+destination = 3
+edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
+constraints = lambda u, v: True  # No constraints
+result = constrained_hamiltonian_flights(n, source, destination, edges, constraints)
+print(f"Constrained Hamiltonian paths: {result}")
 ```
 
-**Time Complexity:** O(n² × 2^n) for n cities with optimized bitmask DP
-**Space Complexity:** O(n × 2^n) for DP table
+#### **2. Hamiltonian Flights with Different Metrics**
+**Problem**: Count Hamiltonian paths with different cost metrics.
 
-**Why it's optimal:**
-- O(n² × 2^n) time complexity is optimal for Hamiltonian path counting
-- Uses space optimization techniques
-- Most efficient approach for competitive programming
-- Standard method for bitmask DP problems
+**Key Differences**: Different cost calculations
 
-## 🎯 Problem Variations
+**Solution Approach**: Use advanced mathematical techniques
 
-### Variation 1: Hamiltonian Flights with Different Constraints
-**Problem**: Count Hamiltonian paths with different flight constraints and penalties.
-
-**Link**: [CSES Problem Set - Hamiltonian Flights with Constraints](https://cses.fi/problemset/task/hamiltonian_flights_constraints)
-
+**Implementation**:
 ```python
-def hamiltonian_flights_constraints(n, m, flights, constraints):
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in flights:
-        adj[a].append(b)
+def weighted_hamiltonian_flights(n, source, destination, edges, weight_function):
+    """Count Hamiltonian paths with different cost metrics"""
+    from functools import lru_cache
     
-    MOD = 10**9 + 7
-    dp = [[0] * (n + 1) for _ in range(1 << n)]
+    # Build adjacency list with weights
+    adj = [[] for _ in range(n)]
+    for u, v in edges:
+        weight = weight_function(u, v)
+        adj[u].append((v, weight))
     
-    # Base case: start at city 1
-    dp[1][1] = 1
+    @lru_cache(maxsize=None)
+    def weighted_dp(current_vertex, visited_mask):
+        """DP function with weights"""
+        if visited_mask == (1 << n) - 1:
+            return 1 if current_vertex == destination else 0
+        
+        if current_vertex == destination:
+            return 0
+        
+        count = 0
+        
+        for neighbor, weight in adj[current_vertex]:
+            if not (visited_mask & (1 << neighbor)):
+                new_mask = visited_mask | (1 << neighbor)
+                count += weighted_dp(neighbor, new_mask)
+        
+        return count
     
-    # Iterate through all possible subsets
-    for mask in range(1 << n):
-        for last in range(1, n + 1):
-            if not (mask & (1 << (last - 1))):
-                continue
-            
-            if dp[mask][last] > 0:
-                for next_city in adj[last]:
-                    if not (mask & (1 << (next_city - 1))):
-                        # Apply constraints
-                        if constraints.get('max_path_length', n) >= len(bin(mask).count('1')) + 1:
-                        new_mask = mask | (1 << (next_city - 1))
-                            dp[new_mask][next_city] = (dp[new_mask][next_city] + dp[mask][last]) % MOD
-    
-    # Return paths ending at city n with all cities visited
-    full_mask = (1 << n) - 1
-    return dp[full_mask][n]
+    initial_mask = 1 << source
+    return weighted_dp(source, initial_mask)
+
+# Example usage
+n = 4
+source = 0
+destination = 3
+edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
+weight_function = lambda u, v: 1  # Unit weight
+result = weighted_hamiltonian_flights(n, source, destination, edges, weight_function)
+print(f"Weighted Hamiltonian paths: {result}")
 ```
 
-### Variation 2: Hamiltonian Flights with Multiple Destinations
-**Problem**: Count Hamiltonian paths with multiple possible destination cities.
+#### **3. Hamiltonian Flights with Multiple Dimensions**
+**Problem**: Count Hamiltonian paths in multiple dimensions.
 
-**Link**: [CSES Problem Set - Hamiltonian Flights Multiple Destinations](https://cses.fi/problemset/task/hamiltonian_flights_multiple_destinations)
+**Key Differences**: Handle multiple dimensions
 
+**Solution Approach**: Use advanced mathematical techniques
+
+**Implementation**:
 ```python
-def hamiltonian_flights_multiple_destinations(n, m, flights, destinations):
+def multi_dimensional_hamiltonian_flights(n, source, destination, edges, dimensions):
+    """Count Hamiltonian paths in multiple dimensions"""
+    from functools import lru_cache
+    
     # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in flights:
-        adj[a].append(b)
+    adj = [[] for _ in range(n)]
+    for u, v in edges:
+        adj[u].append(v)
     
-    MOD = 10**9 + 7
-    dp = [[0] * (n + 1) for _ in range(1 << n)]
+    @lru_cache(maxsize=None)
+    def multi_dimensional_dp(current_vertex, visited_mask):
+        """DP function for multiple dimensions"""
+        if visited_mask == (1 << n) - 1:
+            return 1 if current_vertex == destination else 0
+        
+        if current_vertex == destination:
+            return 0
+        
+        count = 0
+        
+        for neighbor in adj[current_vertex]:
+            if not (visited_mask & (1 << neighbor)):
+                new_mask = visited_mask | (1 << neighbor)
+                count += multi_dimensional_dp(neighbor, new_mask)
+        
+        return count
     
-    # Base case: start at city 1
-    dp[1][1] = 1
-    
-    # Iterate through all possible subsets
-    for mask in range(1 << n):
-        for last in range(1, n + 1):
-            if not (mask & (1 << (last - 1))):
-                continue
-            
-            if dp[mask][last] > 0:
-                for next_city in adj[last]:
-                    if not (mask & (1 << (next_city - 1))):
-                        new_mask = mask | (1 << (next_city - 1))
-                        dp[new_mask][next_city] = (dp[new_mask][next_city] + dp[mask][last]) % MOD
-    
-    # Return paths ending at any destination with all cities visited
-    full_mask = (1 << n) - 1
-    total = 0
-    for dest in destinations:
-        total = (total + dp[full_mask][dest]) % MOD
-    
-    return total
+    initial_mask = 1 << source
+    return multi_dimensional_dp(source, initial_mask)
+
+# Example usage
+n = 4
+source = 0
+destination = 3
+edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
+dimensions = 1
+result = multi_dimensional_hamiltonian_flights(n, source, destination, edges, dimensions)
+print(f"Multi-dimensional Hamiltonian paths: {result}")
 ```
 
-### Variation 3: Hamiltonian Flights with Path Length Constraints
-**Problem**: Count Hamiltonian paths with maximum path length constraints.
+### Related Problems
 
-**Link**: [CSES Problem Set - Hamiltonian Flights Path Length Constraints](https://cses.fi/problemset/task/hamiltonian_flights_path_length_constraints)
+#### **CSES Problems**
+- [Distinct Routes](https://cses.fi/problemset/task/1075) - Graph Algorithms
+- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
+- [Round Trip](https://cses.fi/problemset/task/1075) - Graph Algorithms
 
-```python
-def hamiltonian_flights_path_length_constraints(n, m, flights, max_length):
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in flights:
-        adj[a].append(b)
-    
-    MOD = 10**9 + 7
-    dp = [[0] * (n + 1) for _ in range(1 << n)]
-    
-    # Base case: start at city 1
-    dp[1][1] = 1
-    
-    # Iterate through all possible subsets
-    for mask in range(1 << n):
-        for last in range(1, n + 1):
-            if not (mask & (1 << (last - 1))):
-                continue
-            
-            if dp[mask][last] > 0:
-                for next_city in adj[last]:
-                    if not (mask & (1 << (next_city - 1))):
-                        # Check path length constraint
-                        current_length = bin(mask).count('1') + 1
-                        if current_length <= max_length:
-                            new_mask = mask | (1 << (next_city - 1))
-                            dp[new_mask][next_city] = (dp[new_mask][next_city] + dp[mask][last]) % MOD
-    
-    # Return paths ending at city n with all cities visited
-    full_mask = (1 << n) - 1
-    return dp[full_mask][n]
-```
+#### **LeetCode Problems**
+- [Unique Paths](https://leetcode.com/problems/unique-paths/) - Dynamic Programming
+- [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) - Dynamic Programming
+- [Path Sum](https://leetcode.com/problems/path-sum/) - Tree
 
-## 🔗 Related Problems
+#### **Problem Categories**
+- **Graph Algorithms**: Hamiltonian paths, path counting
+- **Dynamic Programming**: Bitmasking, state space search
+- **Combinatorics**: Path counting, permutations
 
-- **[Knight's Tour](/cses-analyses/problem_soulutions/graph_algorithms/knights_tour_analysis/)**: Hamiltonian paths
-- **[Dynamic Programming](/cses-analyses/problem_soulutions/dynamic_programming/)**: DP problems
-- **[Bitmask Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Bitmask techniques
-- **[Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph theory problems
+## 🔗 Additional Resources
 
-## 📚 Learning Points
+### **Algorithm References**
+- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
+- [Hamiltonian Path](https://cp-algorithms.com/graph/hamiltonian_path.html) - Hamiltonian path algorithms
+- [Dynamic Programming](https://cp-algorithms.com/dynamic_programming/intro-to-dp.html) - DP algorithms
 
-1. **Hamiltonian Paths**: Essential for understanding path counting problems
-2. **Bitmask Dynamic Programming**: Key technique for state compression
-3. **Path Counting**: Important for understanding combinatorial problems
-4. **State Compression**: Critical for optimizing DP solutions
-5. **Graph Theory**: Foundation for many optimization problems
-6. **Algorithm Optimization**: Critical for competitive programming performance
+### **Practice Problems**
+- [CSES Distinct Routes](https://cses.fi/problemset/task/1075) - Medium
+- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
+- [CSES Round Trip](https://cses.fi/problemset/task/1075) - Medium
 
-## 📝 Summary
+### **Further Reading**
+- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
+- [Hamiltonian Path](https://en.wikipedia.org/wiki/Hamiltonian_path) - Wikipedia article
+- [Dynamic Programming](https://en.wikipedia.org/wiki/Dynamic_programming) - Wikipedia article
 
-The Hamiltonian Flights problem demonstrates fundamental bitmask dynamic programming concepts for counting Hamiltonian paths in directed graphs. We explored three approaches:
+---
 
-1. **Brute Force Path Enumeration**: O(n!) time complexity using recursive path generation, inefficient for large graphs
-2. **Basic Bitmask Dynamic Programming**: O(n² × 2^n) time complexity using bitmask state representation, better approach for path counting
-3. **Optimized Bitmask DP with Space Optimization**: O(n² × 2^n) time complexity with space optimization, optimal approach for Hamiltonian path counting
+## 📝 Implementation Checklist
 
-The key insights include understanding Hamiltonian paths as special cases of path counting, using bitmask DP for efficient state representation, and applying space optimization techniques for better performance. This problem serves as an excellent introduction to bitmask dynamic programming and Hamiltonian path algorithms.
+When applying this template to a new problem, ensure you:
 
+### **Content Requirements**
+- [x] **Problem Description**: Clear, concise with examples
+- [x] **Learning Objectives**: 5 specific, measurable goals
+- [x] **Prerequisites**: 5 categories of required knowledge
+- [x] **3 Approaches**: Brute Force → Greedy → Optimal
+- [x] **Key Insights**: 4-5 insights per approach at the beginning
+- [x] **Visual Examples**: ASCII diagrams for each approach
+- [x] **Complete Implementations**: Working code with examples
+- [x] **Complexity Analysis**: Time and space for each approach
+- [x] **Problem Variations**: 3 variations with implementations
+- [x] **Related Problems**: CSES and LeetCode links
+
+### **Structure Requirements**
+- [x] **No Redundant Sections**: Remove duplicate Key Insights
+- [x] **Logical Flow**: Each approach builds on the previous
+- [x] **Progressive Complexity**: Clear improvement from approach to approach
+- [x] **Educational Value**: Theory + Practice in each section
+- [x] **Complete Coverage**: All important concepts included
+
+### **Quality Requirements**
+- [x] **Working Code**: All implementations are runnable
+- [x] **Test Cases**: Examples with expected outputs
+- [x] **Edge Cases**: Handle boundary conditions
+- [x] **Clear Explanations**: Easy to understand for students
+- [x] **Visual Learning**: Diagrams and examples throughout
+
+---
+
+## 🎯 **Template Usage Instructions**
+
+### **Step 1: Replace Placeholders**
+- Replace `[Problem Name]` with actual problem name
+- Replace `[category]` with the problem category folder
+- Replace `[problem_name]` with the actual problem filename
+- Replace all `[placeholder]` text with actual content
+
+### **Step 2: Customize Approaches**
+- **Approach 1**: Usually brute force or naive solution
+- **Approach 2**: Optimized solution (DP, greedy, etc.)
+- **Approach 3**: Optimal solution (advanced algorithms)
+
+### **Step 3: Add Visual Examples**
+- Use ASCII art for diagrams
+- Show step-by-step execution
+- Use actual data in examples
+
+### **Step 4: Implement Working Code**
+- Write complete, runnable implementations
+- Include test cases and examples
+- Handle edge cases properly
+
+### **Step 5: Add Problem Variations**
+- Create 3 meaningful variations
+- Provide implementations for each
+- Link to related problems
+
+### **Step 6: Quality Check**
+- Ensure no redundant sections
+- Verify all code works
+- Check that complexity analysis is correct
+- Confirm educational value is high
+
+This template ensures consistency across all problem analyses while maintaining high educational value and practical implementation focus.

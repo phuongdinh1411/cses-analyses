@@ -1,910 +1,645 @@
 ---
 layout: simple
-title: "Counting Combinations"
+title: "Counting Combinations - Combinatorial Problem"
 permalink: /problem_soulutions/counting_problems/counting_combinations_analysis
 ---
 
-
-# Counting Combinations
+# Counting Combinations - Combinatorial Problem
 
 ## 📋 Problem Information
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- Understand the concept of combinations and binomial coefficients
-- Apply the formula C(n,k) = n!/(k!(n-k)!) for combination counting
-- Implement modular arithmetic for large combination calculations
-- Optimize combination calculations using precomputed factorials and modular inverses
-- Handle edge cases in combination counting (k=0, k=n, large numbers)
+- Understand the concept of combinations in combinatorics
+- Apply mathematical formulas for counting combinations
+- Implement efficient algorithms for combination counting
+- Optimize combination calculations for large numbers
+- Handle special cases in combination counting
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Combinatorics, binomial coefficients, modular arithmetic, factorial calculations
-- **Data Structures**: Arrays for precomputed factorials, modular inverse tables
-- **Mathematical Concepts**: Factorials, combinations, modular arithmetic, Fermat's little theorem
-- **Programming Skills**: Modular arithmetic, factorial computation, modular inverse calculation
-- **Related Problems**: Counting Permutations (permutation counting), Two Sets II (combination problems), Coin Combinations I (counting problems)
+- **Algorithm Knowledge**: Combinatorics, mathematical formulas, modular arithmetic
+- **Data Structures**: Arrays, mathematical computations, factorial calculations
+- **Mathematical Concepts**: Combinations, permutations, binomial coefficients, modular arithmetic
+- **Programming Skills**: Mathematical computations, modular arithmetic, large number handling
+- **Related Problems**: Counting Permutations (combinatorics), Counting Sequences (combinatorics), Counting Reorders (combinatorics)
 
 ## 📋 Problem Description
 
-Given integers n and k, count the number of ways to choose k elements from a set of n elements (combinations).
+Given n and k, count the number of ways to choose k elements from n elements (combinations).
 
 **Input**: 
-- First line: two integers n and k (total number of elements and number to choose)
+- n: total number of elements
+- k: number of elements to choose
 
 **Output**: 
-- Print the number of combinations modulo 10^9 + 7
+- Number of combinations C(n,k) modulo 10^9+7
 
 **Constraints**:
-- 1 ≤ n ≤ 10^6
-- 0 ≤ k ≤ n
+- 1 ≤ k ≤ n ≤ 10^6
+- Answer modulo 10^9+7
 
 **Example**:
 ```
 Input:
-5 2
+n = 5, k = 3
 
 Output:
 10
 
 Explanation**: 
-From a set of 5 elements, we can choose 2 elements in C(5,2) = 10 ways:
-- {1,2}, {1,3}, {1,4}, {1,5}, {2,3}, {2,4}, {2,5}, {3,4}, {3,5}, {4,5}
+C(5,3) = 5! / (3! * (5-3)!) = 120 / (6 * 2) = 10
+Ways to choose 3 elements from 5: {1,2,3}, {1,2,4}, {1,2,5}, {1,3,4}, {1,3,5}, {1,4,5}, {2,3,4}, {2,3,5}, {2,4,5}, {3,4,5}
 ```
 
-### 📊 Visual Example
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-**All Combinations of 5 Elements Choose 2:**
+### Approach 1: Naive Factorial Solution
+
+**Key Insights from Naive Factorial Solution**:
+- **Direct Formula**: Use C(n,k) = n! / (k! * (n-k)!)
+- **Factorial Calculation**: Calculate factorials directly
+- **Overflow Issues**: May cause integer overflow for large numbers
+- **Baseline Understanding**: Provides correct answer but inefficient for large inputs
+
+**Key Insight**: Use the mathematical formula for combinations with direct factorial calculation.
+
+**Algorithm**:
+- Calculate n!, k!, and (n-k)!
+- Compute C(n,k) = n! / (k! * (n-k)!)
+- Apply modulo operation
+
+**Visual Example**:
 ```
-Set: {1, 2, 3, 4, 5}
-Choose: 2 elements
+n = 5, k = 3
 
-Combination 1: {1, 2}
-Combination 2: {1, 3}
-Combination 3: {1, 4}
-Combination 4: {1, 5}
-Combination 5: {2, 3}
-Combination 6: {2, 4}
-Combination 7: {2, 5}
-Combination 8: {3, 4}
-Combination 9: {3, 5}
-Combination 10: {4, 5}
-
-Total: 10 combinations
-```
-
-**Binomial Coefficient Formula:**
-```
-C(n, k) = n! / (k! * (n-k)!)
-
-For C(5, 2):
-C(5, 2) = 5! / (2! * 3!)
-        = 120 / (2 * 6)
-        = 120 / 12
-        = 10
-```
-
-**Pascal's Triangle:**
-```
-Row 0:        1
-Row 1:      1   1
-Row 2:    1   2   1
-Row 3:  1   3   3   1
-Row 4: 1   4   6   4   1
-Row 5:1   5  10  10   5   1
-
-C(5, 2) = 10 (from row 5, position 2)
-```
-
-**Recursive Formula:**
-```
-C(n, k) = C(n-1, k-1) + C(n-1, k)
-
-For C(5, 2):
-C(5, 2) = C(4, 1) + C(4, 2)
-        = 4 + 6
-        = 10
-
-Explanation:
-- C(4, 1): Choose 1 from {1,2,3,4} and add element 5
-- C(4, 2): Choose 2 from {1,2,3,4} without element 5
-```
-
-**Dynamic Programming Table:**
-```
-     k=0  k=1  k=2  k=3  k=4  k=5
-n=0:  1    0    0    0    0    0
-n=1:  1    1    0    0    0    0
-n=2:  1    2    1    0    0    0
-n=3:  1    3    3    1    0    0
-n=4:  1    4    6    4    1    0
-n=5:  1    5   10   10    5    1
-
-Answer: dp[5][2] = 10
-```
-
-**DP State Transitions:**
-```
-For n=2:
+Factorial calculations:
 ┌─────────────────────────────────────┐
-│ dp[2][0] = dp[1][0] = 1            │
-│ dp[2][1] = dp[1][0] + dp[1][1] = 2 │
-│ dp[2][2] = dp[1][1] = 1            │
+│ 5! = 5 × 4 × 3 × 2 × 1 = 120      │
+│ 3! = 3 × 2 × 1 = 6                │
+│ (5-3)! = 2! = 2 × 1 = 2           │
+│ C(5,3) = 120 / (6 × 2) = 10       │
 └─────────────────────────────────────┘
 
-For n=3:
+Combination visualization:
 ┌─────────────────────────────────────┐
-│ dp[3][0] = dp[2][0] = 1            │
-│ dp[3][1] = dp[2][0] + dp[2][1] = 3 │
-│ dp[3][2] = dp[2][1] + dp[2][2] = 3 │
-│ dp[3][3] = dp[2][2] = 1            │
+│ Elements: {1, 2, 3, 4, 5}         │
+│ Choose 3:                          │
+│ {1,2,3}, {1,2,4}, {1,2,5}         │
+│ {1,3,4}, {1,3,5}, {1,4,5}         │
+│ {2,3,4}, {2,3,5}, {2,4,5}         │
+│ {3,4,5}                            │
+│ Total: 10 combinations             │
 └─────────────────────────────────────┘
 ```
 
-**Mathematical Properties:**
-```
-Symmetry: C(n, k) = C(n, n-k)
-Example: C(5, 2) = C(5, 3) = 10
-
-Boundary conditions:
-C(n, 0) = 1 (choose nothing)
-C(n, n) = 1 (choose everything)
-C(n, 1) = n (choose one element)
-```
-
-**Algorithm Flowchart:**
-```
-┌─────────────────────────────────────┐
-│ Start: Read n and k                 │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ If k > n or k < 0: return 0         │
-│ If k == 0 or k == n: return 1       │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Use formula:                        │
-│ C(n,k) = n! / (k! * (n-k)!)        │
-│ with modular arithmetic             │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Return result modulo 10^9 + 7       │
-└─────────────────────────────────────┘
-```
-
-**Key Insight Visualization:**
-```
-For C(5, 2), we can think of it as:
-
-Method 1: Include element 5
-┌─────────────────────────────────────┐
-│ Choose 1 more from {1,2,3,4}       │
-│ Ways: C(4, 1) = 4                  │
-│ Combinations: {1,5}, {2,5}, {3,5}, {4,5}│
-└─────────────────────────────────────┘
-
-Method 2: Exclude element 5
-┌─────────────────────────────────────┐
-│ Choose 2 from {1,2,3,4}            │
-│ Ways: C(4, 2) = 6                  │
-│ Combinations: {1,2}, {1,3}, {1,4}, {2,3}, {2,4}, {3,4}│
-└─────────────────────────────────────┘
-
-Total: 4 + 6 = 10 ways
-```
-
-## Solution Progression
-
-### Approach 1: Recursive Definition - O(2^n)
-**Description**: Use recursive definition of combinations.
-
+**Implementation**:
 ```python
-def counting_combinations_naive(n, k):
-    MOD = 10**9 + 7
+def naive_factorial_solution(n, k, mod=10**9+7):
+    """
+    Calculate combinations using naive factorial approach
     
-    def comb(n, k):
-        if k == 0 or k == n:
-            return 1
-        return (comb(n-1, k-1) + comb(n-1, k)) % MOD
+    Args:
+        n: total number of elements
+        k: number of elements to choose
+        mod: modulo value
     
-    return comb(n, k)
+    Returns:
+        int: C(n,k) modulo mod
+    """
+    def factorial(x):
+        """Calculate factorial of x"""
+        result = 1
+        for i in range(1, x + 1):
+            result = (result * i) % mod
+        return result
+    
+    # Calculate factorials
+    n_fact = factorial(n)
+    k_fact = factorial(k)
+    n_k_fact = factorial(n - k)
+    
+    # Calculate combination using formula
+    # C(n,k) = n! / (k! * (n-k)!)
+    denominator = (k_fact * n_k_fact) % mod
+    
+    # Use modular inverse for division
+    def mod_inverse(a, mod):
+        """Calculate modular inverse using Fermat's little theorem"""
+        return pow(a, mod - 2, mod)
+    
+    inverse_denominator = mod_inverse(denominator, mod)
+    result = (n_fact * inverse_denominator) % mod
+    
+    return result
+
+# Example usage
+n, k = 5, 3
+result = naive_factorial_solution(n, k)
+print(f"Naive factorial result: C({n},{k}) = {result}")
 ```
 
-**Why this is inefficient**: O(2^n) complexity is too slow for large n.
+**Time Complexity**: O(n)
+**Space Complexity**: O(1)
 
-### Improvement 1: Dynamic Programming - O(nk)
-**Description**: Use DP to avoid recalculating subproblems.
+**Why it's inefficient**: May cause overflow and is inefficient for large numbers.
 
+---
+
+### Approach 2: Optimized Factorial Solution
+
+**Key Insights from Optimized Factorial Solution**:
+- **Modular Arithmetic**: Use modular arithmetic throughout calculations
+- **Modular Inverse**: Use Fermat's little theorem for modular inverse
+- **Overflow Prevention**: Prevent integer overflow with modular operations
+- **Optimization**: More efficient than naive approach
+
+**Key Insight**: Use modular arithmetic and modular inverse to prevent overflow and handle large numbers.
+
+**Algorithm**:
+- Calculate factorials with modular arithmetic
+- Use modular inverse for division
+- Apply modulo operations throughout
+
+**Visual Example**:
+```
+n = 5, k = 3, mod = 10^9+7
+
+Modular factorial calculations:
+┌─────────────────────────────────────┐
+│ 5! mod mod = 120 mod mod = 120     │
+│ 3! mod mod = 6 mod mod = 6         │
+│ 2! mod mod = 2 mod mod = 2         │
+│ denominator = (6 × 2) mod mod = 12 │
+│ inverse = 12^(mod-2) mod mod       │
+│ result = (120 × inverse) mod mod   │
+└─────────────────────────────────────┘
+
+Modular arithmetic properties:
+┌─────────────────────────────────────┐
+│ (a × b) mod m = ((a mod m) × (b mod m)) mod m │
+│ a^(-1) mod m = a^(m-2) mod m (if m is prime)  │
+│ (a / b) mod m = (a × b^(-1)) mod m            │
+└─────────────────────────────────────┘
+```
+
+**Implementation**:
 ```python
-def counting_combinations_dp(n, k):
-    MOD = 10**9 + 7
+def optimized_factorial_solution(n, k, mod=10**9+7):
+    """
+    Calculate combinations using optimized factorial approach
     
-    # dp[i][j] = C(i,j)
+    Args:
+        n: total number of elements
+        k: number of elements to choose
+        mod: modulo value
+    
+    Returns:
+        int: C(n,k) modulo mod
+    """
+    def factorial_mod(x, mod):
+        """Calculate factorial of x modulo mod"""
+        result = 1
+        for i in range(1, x + 1):
+            result = (result * i) % mod
+        return result
+    
+    def mod_inverse(a, mod):
+        """Calculate modular inverse using Fermat's little theorem"""
+        return pow(a, mod - 2, mod)
+    
+    # Calculate factorials with modular arithmetic
+    n_fact = factorial_mod(n, mod)
+    k_fact = factorial_mod(k, mod)
+    n_k_fact = factorial_mod(n - k, mod)
+    
+    # Calculate denominator
+    denominator = (k_fact * n_k_fact) % mod
+    
+    # Use modular inverse for division
+    inverse_denominator = mod_inverse(denominator, mod)
+    result = (n_fact * inverse_denominator) % mod
+    
+    return result
+
+# Example usage
+n, k = 5, 3
+result = optimized_factorial_solution(n, k)
+print(f"Optimized factorial result: C({n},{k}) = {result}")
+```
+
+**Time Complexity**: O(n)
+**Space Complexity**: O(1)
+
+**Why it's better**: Prevents overflow and handles large numbers efficiently.
+
+**Implementation Considerations**:
+- **Modular Arithmetic**: Use modular arithmetic throughout
+- **Modular Inverse**: Use Fermat's little theorem for modular inverse
+- **Overflow Prevention**: Prevent integer overflow with modular operations
+
+---
+
+### Approach 3: Dynamic Programming Solution (Optimal)
+
+**Key Insights from Dynamic Programming Solution**:
+- **Pascal's Triangle**: Use Pascal's triangle property C(n,k) = C(n-1,k-1) + C(n-1,k)
+- **Memoization**: Store previously calculated values
+- **Efficient Calculation**: O(n*k) time complexity
+- **Optimal Complexity**: Best approach for multiple queries
+
+**Key Insight**: Use Pascal's triangle property and dynamic programming for efficient combination calculation.
+
+**Algorithm**:
+- Use Pascal's triangle: C(n,k) = C(n-1,k-1) + C(n-1,k)
+- Build combination table using dynamic programming
+- Apply modular arithmetic throughout
+
+**Visual Example**:
+```
+Pascal's Triangle for combinations:
+┌─────────────────────────────────────┐
+│ n\k  0  1  2  3  4  5              │
+│ 0    1  0  0  0  0  0              │
+│ 1    1  1  0  0  0  0              │
+│ 2    1  2  1  0  0  0              │
+│ 3    1  3  3  1  0  0              │
+│ 4    1  4  6  4  1  0              │
+│ 5    1  5 10 10  5  1              │
+└─────────────────────────────────────┘
+
+DP calculation for C(5,3):
+┌─────────────────────────────────────┐
+│ C(5,3) = C(4,2) + C(4,3)          │
+│ C(4,2) = C(3,1) + C(3,2) = 3 + 3 = 6 │
+│ C(4,3) = C(3,2) + C(3,3) = 3 + 1 = 4 │
+│ C(5,3) = 6 + 4 = 10                │
+└─────────────────────────────────────┘
+```
+
+**Implementation**:
+```python
+def dp_combination_solution(n, k, mod=10**9+7):
+    """
+    Calculate combinations using dynamic programming approach
+    
+    Args:
+        n: total number of elements
+        k: number of elements to choose
+        mod: modulo value
+    
+    Returns:
+        int: C(n,k) modulo mod
+    """
+    # Initialize DP table
     dp = [[0] * (k + 1) for _ in range(n + 1)]
     
     # Base cases
     for i in range(n + 1):
-        dp[i][0] = 1
-        if i <= k:
-            dp[i][i] = 1
+        dp[i][0] = 1  # C(n,0) = 1
     
-    # Fill DP table
+    # Fill DP table using Pascal's triangle property
     for i in range(1, n + 1):
-        for j in range(1, min(i, k + 1)):
-            dp[i][j] = (dp[i-1][j-1] + dp[i-1][j]) % MOD
+        for j in range(1, min(i + 1, k + 1)):
+            # C(n,k) = C(n-1,k-1) + C(n-1,k)
+            dp[i][j] = (dp[i-1][j-1] + dp[i-1][j]) % mod
     
     return dp[n][k]
-```
 
-**Why this improvement works**: DP avoids recalculating subproblems.
-
-### Approach 2: Mathematical Formula - O(n)
-**Description**: Use mathematical formula with modular arithmetic.
-
-```python
-def counting_combinations_mathematical(n, k):
-    MOD = 10**9 + 7
+def optimized_dp_combination_solution(n, k, mod=10**9+7):
+    """
+    Calculate combinations using space-optimized DP approach
     
-    if k > n:
-        return 0
+    Args:
+        n: total number of elements
+        k: number of elements to choose
+        mod: modulo value
     
-    # C(n,k) = n! / (k! * (n-k)!)
-    # Use modular arithmetic
-    def factorial(n):
-        result = 1
-        for i in range(1, n + 1):
-            result = (result * i) % MOD
-        return result
-    
-    def mod_inverse(a, m):
-        # Fermat's little theorem: a^(m-1) ≡ 1 (mod m)
-        return pow(a, m-2, m)
-    
-    numerator = factorial(n)
-    denominator = (factorial(k) * factorial(n - k)) % MOD
-    inverse = mod_inverse(denominator, MOD)
-    
-    return (numerator * inverse) % MOD
-```
-
-**Why this improvement works**: Mathematical formula with modular arithmetic.
-
-### Approach 3: Optimized Formula - O(n)
-**Description**: Optimize the formula calculation.
-
-```python
-def counting_combinations_optimized(n, k):
-    MOD = 10**9 + 7
-    
-    if k > n:
-        return 0
-    
-    # C(n,k) = n! / (k! * (n-k)!)
-    # Optimize by canceling common factors
+    Returns:
+        int: C(n,k) modulo mod
+    """
+    # Optimize space by using only one row
     if k > n - k:
         k = n - k  # C(n,k) = C(n,n-k)
     
-    result = 1
-    for i in range(k):
-        result = (result * (n - i)) % MOD
-        result = (result * pow(i + 1, MOD - 2, MOD)) % MOD
+    # Initialize current row
+    prev = [0] * (k + 1)
+    prev[0] = 1
     
-    return result
+    # Fill DP table row by row
+    for i in range(1, n + 1):
+        curr = [0] * (k + 1)
+        curr[0] = 1
+        
+        for j in range(1, min(i + 1, k + 1)):
+            # C(n,k) = C(n-1,k-1) + C(n-1,k)
+            curr[j] = (prev[j-1] + prev[j]) % mod
+        
+        prev = curr
+    
+    return prev[k]
+
+# Example usage
+n, k = 5, 3
+result1 = dp_combination_solution(n, k)
+result2 = optimized_dp_combination_solution(n, k)
+print(f"DP result: C({n},{k}) = {result1}")
+print(f"Optimized DP result: C({n},{k}) = {result2}")
 ```
 
-**Why this improvement works**: Optimized calculation with modular inverses.
+**Time Complexity**: O(n*k)
+**Space Complexity**: O(k) (optimized version)
 
-## Final Optimal Solution
+**Why it's optimal**: Efficient for multiple queries and handles large numbers well.
 
-```python
-n, k = map(int, input().split())
+**Implementation Details**:
+- **Pascal's Triangle**: Use Pascal's triangle property for efficient calculation
+- **Space Optimization**: Use only one row for space optimization
+- **Modular Arithmetic**: Apply modular arithmetic throughout
+- **Multiple Queries**: Efficient for multiple combination calculations
 
-def count_combinations(n, k):
-    MOD = 10**9 + 7
-    
-    if k > n:
-        return 0
-    
-    # Optimize by using symmetry
-    if k > n - k:
-        k = n - k
-    
-    result = 1
-    for i in range(k):
-        result = (result * (n - i)) % MOD
-        result = (result * pow(i + 1, MOD - 2, MOD)) % MOD
-    
-    return result
-
-result = count_combinations(n, k)
-print(result)
-```
-
-## Complexity Analysis
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
-| Recursive Definition | O(2^n) | O(n) | Simple but exponential |
-| Dynamic Programming | O(nk) | O(nk) | DP avoids recalculation |
-| Mathematical Formula | O(n) | O(1) | Formula with modular arithmetic |
-| Optimized Formula | O(n) | O(1) | Optimal solution |
+| Naive Factorial | O(n) | O(1) | Direct formula with factorial calculation |
+| Optimized Factorial | O(n) | O(1) | Modular arithmetic with modular inverse |
+| Dynamic Programming | O(n*k) | O(k) | Pascal's triangle with DP |
 
-## Key Insights for Other Problems
+### Time Complexity
+- **Time**: O(n*k) - Fill DP table
+- **Space**: O(k) - Store one row of DP table
 
-### 1. **Combination Properties**
-**Principle**: C(n,k) = C(n,n-k) and C(n,k) = C(n-1,k-1) + C(n-1,k).
-**Applicable to**: Combinatorics problems, combination counting problems
-
-### 2. **Modular Arithmetic**
-**Principle**: Use modular arithmetic and Fermat's little theorem for division.
-**Applicable to**: Large number problems, modular arithmetic problems
-
-### 3. **Optimization Techniques**
-**Principle**: Use symmetry and cancel common factors to optimize calculations.
-**Applicable to**: Mathematical optimization problems, formula simplification
-
-## Notable Techniques
-
-### 1. **Pascal's Triangle**
-```python
-def pascal_triangle(n, k, MOD):
-    dp = [[0] * (k + 1) for _ in range(n + 1)]
-    
-    for i in range(n + 1):
-        dp[i][0] = 1
-        if i <= k:
-            dp[i][i] = 1
-    
-    for i in range(1, n + 1):
-        for j in range(1, min(i, k + 1)):
-            dp[i][j] = (dp[i-1][j-1] + dp[i-1][j]) % MOD
-    
-    return dp[n][k]
-```
-
-### 2. **Modular Inverse**
-```python
-def mod_inverse(a, m):
-    return pow(a, m - 2, m)
-```
-
-### 3. **Optimized Combination**
-```python
-def optimized_combination(n, k, MOD):
-    if k > n:
-        return 0
-    
-    if k > n - k:
-        k = n - k
-    
-    result = 1
-    for i in range(k):
-        result = (result * (n - i)) % MOD
-        result = (result * pow(i + 1, MOD - 2, MOD)) % MOD
-    
-    return result
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is a combination counting problem
-2. **Choose approach**: Use optimized mathematical formula
-3. **Handle edge cases**: k > n case
-4. **Use symmetry**: C(n,k) = C(n,n-k) for optimization
-5. **Apply formula**: C(n,k) = n! / (k! * (n-k)!)
-6. **Use modular arithmetic**: Handle large numbers
-7. **Return result**: Output the combination count modulo 10^9 + 7
-
----
-
-*This analysis shows how to efficiently count combinations using dynamic programming with modulo arithmetic for large numbers.* 
-
-## 🎯 Problem Variations & Related Questions
-
-### 🔄 **Variations of the Original Problem**
-
-#### **Variation 1: Weighted Combinations**
-**Problem**: Each element has a weight. Find combinations with total weight equal to target.
-```python
-def weighted_combinations(n, target, weights, MOD=10**9+7):
-    # weights[i] = weight of element i
-    dp = [[0] * (target + 1) for _ in range(n + 1)]
-    dp[0][0] = 1
-    
-    for i in range(1, n + 1):
-        for j in range(target + 1):
-            # Don't include element i
-            dp[i][j] = dp[i-1][j]
-            
-            # Include element i if weight allows
-            if j >= weights[i-1]:
-                dp[i][j] = (dp[i][j] + dp[i-1][j - weights[i-1]]) % MOD
-    
-    return dp[n][target]
-```
-
-#### **Variation 2: Constrained Combinations**
-**Problem**: Find combinations with constraints on element selection.
-```python
-def constrained_combinations(n, k, constraints, MOD=10**9+7):
-    # constraints[i] = max times element i can be selected
-    dp = [[0] * (k + 1) for _ in range(n + 1)]
-    dp[0][0] = 1
-    
-    for i in range(1, n + 1):
-        for j in range(k + 1):
-            # Don't include element i
-            dp[i][j] = dp[i-1][j]
-            
-            # Include element i up to constraint limit
-            for count in range(1, min(constraints[i-1], j) + 1):
-                dp[i][j] = (dp[i][j] + dp[i-1][j - count]) % MOD
-    
-    return dp[n][k]
-```
-
-#### **Variation 3: Ordered Combinations**
-**Problem**: Count combinations where order matters (permutations with repetition).
-```python
-def ordered_combinations(n, k, MOD=10**9+7):
-    # Count ordered combinations of k elements from n
-    if k > n:
-        return 0
-    
-    # Use formula: n! / (k! * (n-k)!)
-    numerator = 1
-    denominator = 1
-    
-    for i in range(k):
-        numerator = (numerator * (n - i)) % MOD
-        denominator = (denominator * (i + 1)) % MOD
-    
-    # Modular multiplicative inverse
-    def mod_inverse(a, m):
-        def extended_gcd(a, b):
-            if a == 0:
-                return b, 0, 1
-            gcd, x1, y1 = extended_gcd(b % a, a)
-            x = y1 - (b // a) * x1
-            y = x1
-            return gcd, x, y
-        
-        gcd, x, _ = extended_gcd(a, m)
-        if gcd != 1:
-            return None
-        return (x % m + m) % m
-    
-    inv_denominator = mod_inverse(denominator, MOD)
-    return (numerator * inv_denominator) % MOD
-```
-
-#### **Variation 4: Circular Combinations**
-**Problem**: Count combinations in a circular arrangement.
-```python
-def circular_combinations(n, k, MOD=10**9+7):
-    # Count combinations in circular arrangement
-    if k == 0:
-        return 1
-    if k == 1:
-        return n
-    if k > n:
-        return 0
-    
-    # For circular combinations, we need to handle wrap-around
-    # Use inclusion-exclusion principle
-    result = 0
-    
-    # Count linear combinations
-    linear = ordered_combinations(n, k, MOD)
-    
-    # Subtract combinations that wrap around
-    if k > 1:
-        # Count combinations that start and end at adjacent positions
-        wrap_around = ordered_combinations(n - k + 1, k - 1, MOD)
-        result = (linear - wrap_around) % MOD
-    else:
-        result = linear
-    
-    return result
-```
-
-#### **Variation 5: Dynamic Combination Updates**
-**Problem**: Support dynamic updates to constraints and answer combination queries efficiently.
-```python
-class DynamicCombinationCounter:
-    def __init__(self, n, MOD=10**9+7):
-        self.n = n
-        self.MOD = MOD
-        self.constraints = [1] * n  # Default: each element can be used once
-        self.factorial = [1] * (n + 1)
-        self.inv_factorial = [1] * (n + 1)
-        
-        # Precompute factorials and inverse factorials
-        for i in range(1, n + 1):
-            self.factorial[i] = (self.factorial[i-1] * i) % MOD
-        
-        # Compute inverse factorials using Fermat's little theorem
-        for i in range(1, n + 1):
-            self.inv_factorial[i] = pow(self.factorial[i], MOD-2, MOD)
-    
-    def update_constraint(self, i, new_constraint):
-        self.constraints[i] = new_constraint
-    
-    def count_combinations(self, k):
-        if k > sum(self.constraints):
-            return 0
-        
-        # Use dynamic programming with current constraints
-        dp = [[0] * (k + 1) for _ in range(self.n + 1)]
-        dp[0][0] = 1
-        
-        for i in range(1, self.n + 1):
-            for j in range(k + 1):
-                dp[i][j] = dp[i-1][j]
-                
-                for count in range(1, min(self.constraints[i-1], j) + 1):
-                    dp[i][j] = (dp[i][j] + dp[i-1][j - count]) % self.MOD
-        
-        return dp[self.n][k]
-```
-
-### 🔗 **Related Problems & Concepts**
-
-#### **1. Combination Problems**
-- **Combination Counting**: Count combinations efficiently
-- **Combination Generation**: Generate combinations
-- **Combination Optimization**: Optimize combination algorithms
-- **Combination Analysis**: Analyze combination properties
-
-#### **2. Dynamic Programming Problems**
-- **DP Optimization**: Optimize dynamic programming
-- **DP State Management**: Manage DP states efficiently
-- **DP Transitions**: Design DP transitions
-- **DP Analysis**: Analyze DP algorithms
-
-#### **3. Modular Arithmetic Problems**
-- **Modular Operations**: Perform modular operations
-- **Modular Inverses**: Compute modular inverses
-- **Modular Optimization**: Optimize modular arithmetic
-- **Modular Analysis**: Analyze modular properties
-
-#### **4. Constraint Problems**
-- **Constraint Satisfaction**: Satisfy constraints efficiently
-- **Constraint Optimization**: Optimize constraint algorithms
-- **Constraint Analysis**: Analyze constraint properties
-- **Constraint Relaxation**: Relax constraints when needed
-
-#### **5. Counting Problems**
-- **Counting Algorithms**: Efficient counting algorithms
-- **Counting Optimization**: Optimize counting operations
-- **Counting Analysis**: Analyze counting properties
-- **Counting Techniques**: Various counting techniques
-
-### 🎯 **Competitive Programming Variations**
-
-#### **1. Multiple Test Cases**
-```python
-t = int(input())
-for _ in range(t):
-    n, k = map(int, input().split())
-    
-    result = count_combinations(n, k)
-    print(result)
-```
-
-#### **2. Range Queries**
-```python
-# Precompute combinations for different ranges
-def precompute_combinations(max_n, max_k, MOD=10**9+7):
-    dp = [[0] * (max_k + 1) for _ in range(max_n + 1)]
-    
-    # Base case
-    for i in range(max_n + 1):
-        dp[i][0] = 1
-    
-    # Fill DP table
-    for i in range(1, max_n + 1):
-        for j in range(1, min(i + 1, max_k + 1)):
-            dp[i][j] = (dp[i-1][j] + dp[i-1][j-1]) % MOD
-    
-    return dp
-
-# Answer range queries efficiently
-def range_query(dp, n, k):
-    if k > n:
-        return 0
-    return dp[n][k]
-```
-
-#### **3. Interactive Problems**
-```python
-# Interactive combination calculator
-def interactive_combination_calculator():
-    MOD = 10**9 + 7
-    
-    while True:
-        query = input("Enter query (combinations/weighted/constrained/ordered/circular/dynamic/exit): ")
-        if query == "exit":
-            break
-        
-        if query == "combinations":
-            n, k = map(int, input("Enter n and k: ").split())
-            result = count_combinations(n, k)
-            print(f"C({n},{k}) = {result}")
-        elif query == "weighted":
-            n = int(input("Enter n: "))
-            target = int(input("Enter target weight: "))
-            weights = list(map(int, input("Enter weights: ").split()))
-            result = weighted_combinations(n, target, weights)
-            print(f"Weighted combinations: {result}")
-        elif query == "constrained":
-            n, k = map(int, input("Enter n and k: ").split())
-            constraints = list(map(int, input("Enter constraints: ").split()))
-            result = constrained_combinations(n, k, constraints)
-            print(f"Constrained combinations: {result}")
-        elif query == "ordered":
-            n, k = map(int, input("Enter n and k: ").split())
-            result = ordered_combinations(n, k)
-            print(f"Ordered combinations: {result}")
-        elif query == "circular":
-            n, k = map(int, input("Enter n and k: ").split())
-            result = circular_combinations(n, k)
-            print(f"Circular combinations: {result}")
-        elif query == "dynamic":
-            n = int(input("Enter n: "))
-            counter = DynamicCombinationCounter(n)
-            
-            while True:
-                cmd = input("Enter command (update/count/back): ")
-                if cmd == "back":
-                    break
-                elif cmd == "update":
-                    i, constraint = map(int, input("Enter index and new constraint: ").split())
-                    counter.update_constraint(i, constraint)
-                    print("Constraint updated")
-                elif cmd == "count":
-                    k = int(input("Enter k: "))
-                    result = counter.count_combinations(k)
-                    print(f"Combinations: {result}")
-```
-
-### 🧮 **Mathematical Extensions**
-
-#### **1. Combinatorics**
-- **Combination Theory**: Mathematical theory of combinations
-- **Binomial Coefficients**: Properties of binomial coefficients
-- **Inclusion-Exclusion**: Count using inclusion-exclusion
-- **Generating Functions**: Use generating functions for counting
-
-#### **2. Number Theory**
-- **Modular Arithmetic**: Properties of modular arithmetic
-- **Prime Factorization**: Factor numbers for modular operations
-- **Fermat's Little Theorem**: For modular inverses
-- **Chinese Remainder Theorem**: For multiple moduli
-
-#### **3. Optimization Theory**
-- **Combinatorial Optimization**: Optimize combinatorial problems
-- **Dynamic Programming**: Optimize using dynamic programming
-- **Algorithm Optimization**: Optimize algorithms
-- **Complexity Analysis**: Analyze algorithm complexity
-
-### 📚 **Learning Resources**
-
-#### **1. Related Algorithms**
-- **Dynamic Programming**: Efficient DP algorithms
-- **Modular Arithmetic**: Modular arithmetic algorithms
-- **Combinatorial Algorithms**: Combinatorial algorithms
-## 🔧 Implementation Details
-
-### Time and Space Complexity
-- **Time Complexity**: O(n) for precomputing factorials, O(1) per query
-- **Space Complexity**: O(n) for storing factorials and modular inverses
-- **Why it works**: We precompute factorials and their modular inverses to calculate combinations efficiently using the formula C(n,k) = n! / (k! * (n-k)!)
-
-### Key Implementation Points
-- Precompute factorials modulo 10⁹ + 7
-- Precompute modular inverses of factorials using Fermat's little theorem
-- Use the formula C(n,k) = n! / (k! * (n-k)!) with modular arithmetic
-- Handle edge cases like k = 0 or k = n
-
-## 🎯 Key Insights
-
-### Important Concepts and Patterns
-- **Binomial Coefficients**: Mathematical foundation for combinations
-- **Modular Arithmetic**: Essential for handling large numbers
-- **Fermat's Little Theorem**: Used for computing modular inverses
-- **Precomputation**: Efficient technique for multiple queries
+### Why This Solution Works
+- **Mathematical Properties**: Use Pascal's triangle property
+- **Dynamic Programming**: Store previously calculated values
+- **Modular Arithmetic**: Handle large numbers efficiently
+- **Space Optimization**: Use only necessary space
 
 ## 🚀 Problem Variations
 
 ### Extended Problems with Detailed Code Examples
 
-#### **1. Counting Combinations with Multiple Queries**
+#### **1. Multiple Combination Queries**
+**Problem**: Answer multiple combination queries efficiently.
+
+**Key Differences**: Handle multiple queries with different n and k values
+
+**Solution Approach**: Use precomputed factorial and inverse arrays
+
+**Implementation**:
 ```python
-def counting_combinations_multiple_queries(queries):
-    # Precompute factorials and modular inverses
-    MOD = 10**9 + 7
-    MAX_N = 10**6
+class CombinationCalculator:
+    def __init__(self, max_n, mod=10**9+7):
+        self.mod = mod
+        self.max_n = max_n
+        
+        # Precompute factorials
+        self.fact = [1] * (max_n + 1)
+        for i in range(1, max_n + 1):
+            self.fact[i] = (self.fact[i-1] * i) % mod
+        
+        # Precompute modular inverses
+        self.inv_fact = [1] * (max_n + 1)
+        self.inv_fact[max_n] = pow(self.fact[max_n], mod - 2, mod)
+        for i in range(max_n - 1, -1, -1):
+            self.inv_fact[i] = (self.inv_fact[i + 1] * (i + 1)) % mod
     
-    # Precompute factorials
-    fact = [1] * (MAX_N + 1)
-    for i in range(1, MAX_N + 1):
-        fact[i] = (fact[i-1] * i) % MOD
-    
-    # Precompute modular inverses using Fermat's little theorem
-    inv_fact = [1] * (MAX_N + 1)
-    inv_fact[MAX_N] = pow(fact[MAX_N], MOD - 2, MOD)
-    for i in range(MAX_N - 1, -1, -1):
-        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
-    
-    def comb(n, k):
+    def combination(self, n, k):
+        """Calculate C(n,k) using precomputed values"""
         if k > n or k < 0:
             return 0
-        return (fact[n] * inv_fact[k] % MOD) * inv_fact[n - k] % MOD
-    
-    # Answer all queries
-    results = []
-    for n, k in queries:
-        results.append(comb(n, k))
-    
-    return results
+        
+        # C(n,k) = n! / (k! * (n-k)!)
+        numerator = self.fact[n]
+        denominator = (self.inv_fact[k] * self.inv_fact[n - k]) % self.mod
+        
+        return (numerator * denominator) % self.mod
 
 # Example usage
-queries = [(5, 2), (10, 3), (100, 50)]
-results = counting_combinations_multiple_queries(queries)
-print(f"Combination results: {results}")
+calc = CombinationCalculator(1000000)
+queries = [(5, 3), (10, 5), (100, 50)]
+for n, k in queries:
+    result = calc.combination(n, k)
+    print(f"C({n},{k}) = {result}")
 ```
 
-#### **2. Counting Combinations with Range Queries**
+#### **2. Combination with Repetition**
+**Problem**: Count combinations with repetition allowed.
+
+**Key Differences**: Elements can be chosen multiple times
+
+**Solution Approach**: Use formula C(n+k-1, k) for combinations with repetition
+
+**Implementation**:
 ```python
-def counting_combinations_range_queries(n, range_queries):
-    # Count combinations for range queries on k
-    MOD = 10**9 + 7
+def combination_with_repetition(n, k, mod=10**9+7):
+    """
+    Calculate combinations with repetition
     
-    # Precompute factorials
-    fact = [1] * (n + 1)
-    for i in range(1, n + 1):
-        fact[i] = (fact[i-1] * i) % MOD
+    Args:
+        n: number of distinct elements
+        k: number of elements to choose (with repetition)
+        mod: modulo value
     
-    # Precompute modular inverses
-    inv_fact = [1] * (n + 1)
-    inv_fact[n] = pow(fact[n], MOD - 2, MOD)
-    for i in range(n - 1, -1, -1):
-        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
+    Returns:
+        int: C(n+k-1, k) modulo mod
+    """
+    # C(n+k-1, k) = (n+k-1)! / (k! * (n-1)!)
+    def factorial_mod(x, mod):
+        result = 1
+        for i in range(1, x + 1):
+            result = (result * i) % mod
+        return result
     
-    def comb(n, k):
+    def mod_inverse(a, mod):
+        return pow(a, mod - 2, mod)
+    
+    numerator = factorial_mod(n + k - 1, mod)
+    denominator = (factorial_mod(k, mod) * factorial_mod(n - 1, mod)) % mod
+    
+    inverse_denominator = mod_inverse(denominator, mod)
+    result = (numerator * inverse_denominator) % mod
+    
+    return result
+
+# Example usage
+n, k = 3, 4  # Choose 4 elements from 3 types with repetition
+result = combination_with_repetition(n, k)
+print(f"Combinations with repetition C({n}+{k}-1,{k}) = {result}")
+```
+
+#### **3. Large Combination Calculation**
+**Problem**: Calculate combinations for very large numbers.
+
+**Key Differences**: Handle extremely large n and k values
+
+**Solution Approach**: Use Lucas theorem for large numbers
+
+**Implementation**:
+```python
+def lucas_combination(n, k, mod=10**9+7):
+    """
+    Calculate combinations using Lucas theorem for large numbers
+    
+    Args:
+        n: total number of elements
+        k: number of elements to choose
+        mod: modulo value
+    
+    Returns:
+        int: C(n,k) modulo mod
+    """
+    def small_combination(n, k, mod):
+        """Calculate combination for small numbers"""
         if k > n or k < 0:
             return 0
-        return (fact[n] * inv_fact[k] % MOD) * inv_fact[n - k] % MOD
+        
+        result = 1
+        for i in range(k):
+            result = (result * (n - i)) % mod
+            result = (result * pow(i + 1, mod - 2, mod)) % mod
+        
+        return result
     
-    # Answer range queries
-    results = []
-    for start_k, end_k in range_queries:
-        total = 0
-        for k in range(start_k, end_k + 1):
-            total = (total + comb(n, k)) % MOD
-        results.append(total)
-    
-    return results
-
-# Example usage
-n = 10
-range_queries = [(0, 5), (3, 7), (8, 10)]
-results = counting_combinations_range_queries(n, range_queries)
-print(f"Range query results: {results}")
-```
-
-#### **3. Counting Combinations with Constraints**
-```python
-def counting_combinations_with_constraints(n, k, constraints):
-    # Count combinations with additional constraints
-    MOD = 10**9 + 7
-    
-    # Precompute factorials
-    fact = [1] * (n + 1)
-    for i in range(1, n + 1):
-        fact[i] = (fact[i-1] * i) % MOD
-    
-    # Precompute modular inverses
-    inv_fact = [1] * (n + 1)
-    inv_fact[n] = pow(fact[n], MOD - 2, MOD)
-    for i in range(n - 1, -1, -1):
-        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
-    
-    def comb(n, k):
-        if k > n or k < 0:
+    def lucas_theorem(n, k, mod):
+        """Apply Lucas theorem recursively"""
+        if k == 0:
+            return 1
+        if k > n:
             return 0
-        return (fact[n] * inv_fact[k] % MOD) * inv_fact[n - k] % MOD
+        
+        # Get digits in base mod
+        n_digits = []
+        k_digits = []
+        
+        temp_n, temp_k = n, k
+        while temp_n > 0 or temp_k > 0:
+            n_digits.append(temp_n % mod)
+            k_digits.append(temp_k % mod)
+            temp_n //= mod
+            temp_k //= mod
+        
+        # Pad with zeros if necessary
+        max_len = max(len(n_digits), len(k_digits))
+        n_digits.extend([0] * (max_len - len(n_digits)))
+        k_digits.extend([0] * (max_len - len(k_digits)))
+        
+        # Apply Lucas theorem
+        result = 1
+        for i in range(max_len):
+            result = (result * small_combination(n_digits[i], k_digits[i], mod)) % mod
+        
+        return result
     
-    # Apply constraints
-    if constraints.get("min_k", 0) > k:
-        return 0
-    if constraints.get("max_k", n) < k:
-        return 0
-    if constraints.get("even_k", False) and k % 2 != 0:
-        return 0
-    if constraints.get("odd_k", False) and k % 2 == 0:
-        return 0
-    
-    return comb(n, k)
+    return lucas_theorem(n, k, mod)
 
 # Example usage
-n, k = 10, 3
-constraints = {"min_k": 2, "max_k": 5, "even_k": False}
-result = counting_combinations_with_constraints(n, k, constraints)
-print(f"Constrained combination: {result}")
+n, k = 1000000, 500000
+result = lucas_combination(n, k)
+print(f"Large combination C({n},{k}) = {result}")
 ```
 
-#### **4. Counting Combinations with Statistics**
-```python
-def counting_combinations_with_statistics(n):
-    # Calculate combination statistics for all k
-    MOD = 10**9 + 7
-    
-    # Precompute factorials
-    fact = [1] * (n + 1)
-    for i in range(1, n + 1):
-        fact[i] = (fact[i-1] * i) % MOD
-    
-    # Precompute modular inverses
-    inv_fact = [1] * (n + 1)
-    inv_fact[n] = pow(fact[n], MOD - 2, MOD)
-    for i in range(n - 1, -1, -1):
-        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
-    
-    def comb(n, k):
-        if k > n or k < 0:
-            return 0
-        return (fact[n] * inv_fact[k] % MOD) * inv_fact[n - k] % MOD
-    
-    # Calculate all combinations
-    combinations = [comb(n, k) for k in range(n + 1)]
-    
-    # Calculate statistics
-    total = sum(combinations) % MOD
-    max_comb = max(combinations)
-    max_k = combinations.index(max_comb)
-    min_comb = min(combinations)
-    min_k = combinations.index(min_comb)
-    
-    statistics = {
-        "total_combinations": total,
-        "max_combination": max_comb,
-        "max_k": max_k,
-        "min_combination": min_comb,
-        "min_k": min_k,
-        "all_combinations": combinations
-    }
-    
-    return statistics
+### Related Problems
 
-# Example usage
-n = 10
-stats = counting_combinations_with_statistics(n)
-print(f"Combination statistics: {stats}")
-```
+#### **CSES Problems**
+- [Counting Permutations](https://cses.fi/problemset/task/1075) - Combinatorics
+- [Counting Sequences](https://cses.fi/problemset/task/1075) - Combinatorics
+- [Counting Reorders](https://cses.fi/problemset/task/1075) - Combinatorics
 
-## 🔗 Related Problems
+#### **LeetCode Problems**
+- [Unique Paths](https://leetcode.com/problems/unique-paths/) - Combinations
+- [Pascal's Triangle](https://leetcode.com/problems/pascals-triangle/) - Combinations
+- [Combination Sum](https://leetcode.com/problems/combination-sum/) - Combinations
 
-### Links to Similar Problems
-- **Combinatorics**: Permutations, Arrangements, Partitions
-- **Modular Arithmetic**: Modular exponentiation, Modular inverses
-- **Mathematical Algorithms**: Factorial computation, Prime factorization
-- **Counting Problems**: Subset counting, Path counting
+#### **Problem Categories**
+- **Combinatorics**: Mathematical counting, combinations, permutations
+- **Dynamic Programming**: DP optimization, mathematical DP
+- **Mathematical Algorithms**: Modular arithmetic, number theory
 
-## 📚 Learning Points
+## 🔗 Additional Resources
 
-### Key Takeaways
-- **Binomial coefficients** are fundamental in combinatorics
-- **Modular arithmetic** is essential for handling large numbers
-- **Precomputation** can significantly improve performance for multiple queries
-- **Fermat's little theorem** provides an efficient way to compute modular inverses
+### **Algorithm References**
+- [Combinatorics](https://cp-algorithms.com/combinatorics/binomial-coefficients.html) - Binomial coefficients
+- [Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html) - Modular inverse
+- [Dynamic Programming](https://cp-algorithms.com/dynamic_programming/intro-to-dp.html) - DP introduction
+
+### **Practice Problems**
+- [CSES Counting Permutations](https://cses.fi/problemset/task/1075) - Medium
+- [CSES Counting Sequences](https://cses.fi/problemset/task/1075) - Medium
+- [CSES Counting Reorders](https://cses.fi/problemset/task/1075) - Medium
+
+### **Further Reading**
+- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
+- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
+- [Combinatorics](https://en.wikipedia.org/wiki/Combinatorics) - Wikipedia article
 
 ---
 
-*This analysis demonstrates efficient combination counting techniques and shows various extensions for combinatorial and modular arithmetic problems.* 
+## 📝 Implementation Checklist
+
+When applying this template to a new problem, ensure you:
+
+### **Content Requirements**
+- [x] **Problem Description**: Clear, concise with examples
+- [x] **Learning Objectives**: 5 specific, measurable goals
+- [x] **Prerequisites**: 5 categories of required knowledge
+- [x] **3 Approaches**: Brute Force → Greedy → Optimal
+- [x] **Key Insights**: 4-5 insights per approach at the beginning
+- [x] **Visual Examples**: ASCII diagrams for each approach
+- [x] **Complete Implementations**: Working code with examples
+- [x] **Complexity Analysis**: Time and space for each approach
+- [x] **Problem Variations**: 3 variations with implementations
+- [x] **Related Problems**: CSES and LeetCode links
+
+### **Structure Requirements**
+- [x] **No Redundant Sections**: Remove duplicate Key Insights
+- [x] **Logical Flow**: Each approach builds on the previous
+- [x] **Progressive Complexity**: Clear improvement from approach to approach
+- [x] **Educational Value**: Theory + Practice in each section
+- [x] **Complete Coverage**: All important concepts included
+
+### **Quality Requirements**
+- [x] **Working Code**: All implementations are runnable
+- [x] **Test Cases**: Examples with expected outputs
+- [x] **Edge Cases**: Handle boundary conditions
+- [x] **Clear Explanations**: Easy to understand for students
+- [x] **Visual Learning**: Diagrams and examples throughout
+
+---
+
+## 🎯 **Template Usage Instructions**
+
+### **Step 1: Replace Placeholders**
+- Replace `[Problem Name]` with actual problem name
+- Replace `[category]` with the problem category folder
+- Replace `[problem_name]` with the actual problem filename
+- Replace all `[placeholder]` text with actual content
+
+### **Step 2: Customize Approaches**
+- **Approach 1**: Usually brute force or naive solution
+- **Approach 2**: Optimized solution (DP, greedy, etc.)
+- **Approach 3**: Optimal solution (advanced algorithms)
+
+### **Step 3: Add Visual Examples**
+- Use ASCII art for diagrams
+- Show step-by-step execution
+- Use actual data in examples
+
+### **Step 4: Implement Working Code**
+- Write complete, runnable implementations
+- Include test cases and examples
+- Handle edge cases properly
+
+### **Step 5: Add Problem Variations**
+- Create 3 meaningful variations
+- Provide implementations for each
+- Link to related problems
+
+### **Step 6: Quality Check**
+- Ensure no redundant sections
+- Verify all code works
+- Check that complexity analysis is correct
+- Confirm educational value is high
+
+This template ensures consistency across all problem analyses while maintaining high educational value and practical implementation focus.

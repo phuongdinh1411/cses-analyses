@@ -1,17 +1,16 @@
 ---
 layout: simple
-title: "Fixed Length Cycle Queries"
+title: "Fixed Length Cycle Queries - Matrix Exponentiation Problem"
 permalink: /problem_soulutions/advanced_graph_problems/fixed_length_cycle_queries_analysis
 ---
 
-
-# Fixed Length Cycle Queries
+# Fixed Length Cycle Queries - Matrix Exponentiation Problem
 
 ## 📋 Problem Information
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- Understand the concept of cycle counting in directed graphs
+- Understand the concept of cycles in directed graphs
 - Apply matrix exponentiation for efficient cycle counting
 - Implement modular arithmetic for large cycle counts
 - Optimize matrix operations for multiple cycle queries
@@ -19,11 +18,11 @@ By the end of this problem, you should be able to:
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Matrix exponentiation, binary exponentiation, cycle detection
+- **Algorithm Knowledge**: Matrix exponentiation, binary exponentiation, cycle counting, graph theory
 - **Data Structures**: Adjacency matrices, matrices, arrays
-- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, cycles
+- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, cycle properties
 - **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
-- **Related Problems**: Fixed Length Path Queries (similar matrix approach), Round Trip (cycle detection), Graph Girth (cycle properties)
+- **Related Problems**: Fixed Length Circuit Queries (similar matrix approach), Round Trip (cycle detection), Graph Girth (cycle properties)
 
 ## 📋 Problem Description
 
@@ -52,205 +51,274 @@ Input:
 0 0 1
 1 0 0
 1 3
-2 3
+2 2
 
 Output:
 1
-1
+0
 
 Explanation**: 
-Query 1: Cycles from node 1 of length 3
-- Cycle: 1 → 2 → 3 → 1 (length 3, no repeated vertices)
-- Result: 1
+Query 1: Cycles of length 3 from node 1 to 1
+Path: 1→2→3→1 (cycle of length 3)
+Answer: 1
 
-Query 2: Cycles from node 2 of length 3  
-- Cycle: 2 → 3 → 1 → 2 (length 3, no repeated vertices)
-- Result: 1
-```
-
-### 📊 Visual Example
-
-**Input Graph (Adjacency Matrix):**
-```
-    1 ──→ 2 ──→ 3
-    ↑             │
-    └─────────────┘
-
-Adjacency Matrix:
-    1  2  3
-1 [ 0  1  0 ]
-2 [ 0  0  1 ]
-3 [ 1  0  0 ]
-```
-
-**Cycle Analysis:**
-```
-Query 1: Node 1, length 3
-Cycle: 1 → 2 → 3 → 1
-Length: 3 edges ✓
-Starts and ends at node 1 ✓
-No repeated vertices except start/end ✓
-Result: 1
-
-Query 2: Node 2, length 3
-Cycle: 2 → 3 → 1 → 2
-Length: 3 edges ✓
-Starts and ends at node 2 ✓
-No repeated vertices except start/end ✓
-Result: 1
-```
-
-**Matrix Exponentiation for Cycles:**
-```
-Adjacency Matrix A:
-    1  2  3
-1 [ 0  1  0 ]
-2 [ 0  0  1 ]
-3 [ 1  0  0 ]
-
-A³ (paths of length 3):
-    1  2  3
-1 [ 1  0  0 ]  ← A[1][1] = 1 (cycle 1→2→3→1)
-2 [ 0  1  0 ]  ← A[2][2] = 1 (cycle 2→3→1→2)
-3 [ 0  0  1 ]  ← A[3][3] = 1 (cycle 3→1→2→3)
-```
-
-**Cycle Properties:**
-```
-For Cycle:
-- Must start and end at the same vertex
-- No repeated vertices except start/end
-- Length = number of edges in the cycle
-- Graph must be connected
-- Simple cycle (no internal vertex repetition)
-```
-
-**Cycle vs Circuit vs Path:**
-```
-Cycle: Simple circuit (no repeated vertices except start/end)
-- 1 → 2 → 3 → 1 ✓
-- 1 → 2 → 1 → 2 → 1 ✗ (repeats vertices)
-
-Circuit: Starts and ends at same vertex (can repeat vertices)
-- 1 → 2 → 3 → 1 ✓
-- 1 → 2 → 1 → 2 → 1 ✓
-
-Path: No repeated vertices
-- 1 → 2 → 3 ✓
-- 1 → 2 → 1 → 3 ✗ (repeats vertex 1)
-```
-
-**Cycle Examples:**
-```
-Length 1: 1 → 1 (self-loop) - if allowed
-Length 2: 1 → 2 → 1
-Length 3: 1 → 2 → 3 → 1
-Length 4: 1 → 2 → 3 → 4 → 1 (if 4 exists)
-Length 5: 1 → 2 → 3 → 4 → 5 → 1 (if 4,5 exist)
-```
-
-**Cycle Detection Visualization:**
-```
-DFS Traversal for Cycle Detection:
-┌─────────────────────────────────────┐
-│ Start from node 1                   │
-│ Stack: [1]                          │
-│ Visited: [1]                        │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Visit node 2                        │
-│ Stack: [1, 2]                       │
-│ Visited: [1, 2]                     │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Visit node 3                        │
-│ Stack: [1, 2, 3]                    │
-│ Visited: [1, 2, 3]                  │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Try to visit node 1                 │
-│ CYCLE DETECTED!                     │
-│ Node 1 is in current stack          │
-│ Cycle: 1 → 2 → 3 → 1               │
-└─────────────────────────────────────┘
+Query 2: Cycles of length 2 from node 2 to 2
+No cycle of length 2 exists from node 2
+Answer: 0
 ```
 
 ## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Approach 1: Brute Force Cycle Counting (Brute Force)
+### Approach 1: Brute Force Solution
 
-**Key Insights from Brute Force Approach**:
-- **DFS Traversal**: Use DFS to explore all possible paths
-- **Path Length Tracking**: Keep track of current path length
-- **Cycle Detection**: Check if path returns to starting node without repeated vertices
-- **Exhaustive Search**: Try all possible paths of given length
+**Key Insights from Brute Force Solution**:
+- **Exhaustive Search**: Try all possible paths of length k
+- **Path Validation**: For each path, check if it forms a cycle
+- **Combinatorial Explosion**: n^k possible paths to explore
+- **Baseline Understanding**: Provides correct answer but impractical
 
-**Key Insight**: Use DFS to explore all possible paths and count cycles of the specified length.
+**Key Insight**: Generate all possible paths of length k and count those that form cycles.
 
 **Algorithm**:
-- For each query, start DFS from the given node
-- Explore all possible paths of the specified length
-- Count paths that return to the starting node without repeated vertices
-- Return the count modulo 10^9 + 7
+- Generate all possible paths of length k starting from node a
+- For each path, check if it ends at node a (forms a cycle)
+- Count valid cycles and return the result
 
 **Visual Example**:
 ```
-Graph: 1→2→3→1, Query: node 1, length 3
+Graph: 1→2→3→1, k=3, start=1
 
-DFS Traversal:
+All possible paths of length 3 from node 1:
 ┌─────────────────────────────────────┐
-│ Start: node 1, length 0            │
-│ Path: [1], visited: {1}            │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Visit: node 2, length 1            │
-│ Path: [1, 2], visited: {1, 2}      │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Visit: node 3, length 2            │
-│ Path: [1, 2, 3], visited: {1, 2, 3}│
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Visit: node 1, length 3            │
-│ Path: [1, 2, 3, 1]                 │
-│ Cycle found! ✓                     │
+│ Path 1: 1→2→3→1 ✓ (cycle)          │
+│ Path 2: 1→2→3→2 ✗ (not cycle)      │
+│ Path 3: 1→2→3→3 ✗ (not cycle)      │
+│ Path 4: 1→2→1→2 ✗ (not cycle)      │
+│ Path 5: 1→2→1→3 ✗ (not cycle)      │
+│ Path 6: 1→2→1→1 ✗ (not cycle)      │
+│ ... (all other paths)               │
 └─────────────────────────────────────┘
 
-Result: 1 cycle
+Valid cycles: 1
+Result: 1
 ```
 
+**Implementation**:
 ```python
-def fixed_length_cycle_queries_naive(n, q, adjacency_matrix, queries):
+def brute_force_solution(n, adj_matrix, queries):
+    """
+    Find cycle counts using brute force approach
+    
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, k) queries
+    
+    Returns:
+        list: answers to queries
+    """
+    def count_cycles(start, k):
+        """Count cycles of length k starting from start"""
+        def dfs(node, remaining_length):
+            if remaining_length == 0:
+                return 1 if node == start else 0
+            
+            count = 0
+            for neighbor in range(n):
+                if adj_matrix[node][neighbor] == 1:
+                    count += dfs(neighbor, remaining_length - 1)
+            return count
+        
+        return dfs(start, k)
+    
+    results = []
+    for a, k in queries:
+        result = count_cycles(a - 1, k)  # Convert to 0-indexed
+        results.append(result)
+    
+    return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 0],
+    [0, 0, 1],
+    [1, 0, 0]
+]
+queries = [(1, 3), (2, 2)]
+result = brute_force_solution(n, adj_matrix, queries)
+print(f"Brute force result: {result}")  # Output: [1, 0]
+```
+
+**Time Complexity**: O(n^k × q)
+**Space Complexity**: O(k)
+
+**Why it's inefficient**: Exponential time complexity makes it impractical for large k.
+
+---
+
+### Approach 2: Dynamic Programming Solution
+
+**Key Insights from Dynamic Programming Solution**:
+- **State Definition**: dp[i][j][k] = number of paths from i to j of length k
+- **State Transition**: dp[i][j][k] = sum of dp[i][m][k-1] * adj_matrix[m][j]
+- **Base Case**: dp[i][j][0] = 1 if i == j, else 0
+- **Memory Optimization**: Use 2D arrays instead of 3D
+
+**Key Insight**: Use dynamic programming to count paths of different lengths efficiently.
+
+**Algorithm**:
+- Initialize DP table for paths of length 0
+- For each length from 1 to k, compute paths using previous lengths
+- Return dp[start][start][k] for cycle count
+
+**Visual Example**:
+```
+Graph: 1→2→3→1, k=3, start=1
+
+DP table for paths of length k from node 1:
+┌─────────────────────────────────────┐
+│ k=0: [1, 0, 0] (only self-loops)   │
+│ k=1: [0, 1, 0] (1→2)               │
+│ k=2: [0, 0, 1] (1→2→3)             │
+│ k=3: [1, 0, 0] (1→2→3→1) ✓         │
+└─────────────────────────────────────┘
+
+Cycle count: dp[1][1][3] = 1
+```
+
+**Implementation**:
+```python
+def dp_solution(n, adj_matrix, queries):
+    """
+    Find cycle counts using dynamic programming
+    
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, k) queries
+    
+    Returns:
+        list: answers to queries
+    """
+    def count_cycles(start, k):
+        """Count cycles of length k starting from start"""
+        # dp[i][j] = number of paths from start to j of length i
+        dp = [[0] * n for _ in range(k + 1)]
+        
+        # Base case: paths of length 0
+        dp[0][start] = 1
+        
+        # Fill DP table
+        for length in range(1, k + 1):
+            for j in range(n):
+                for m in range(n):
+                    if adj_matrix[m][j] == 1:
+                        dp[length][j] += dp[length - 1][m]
+        
+        return dp[k][start]
+    
+    results = []
+    for a, k in queries:
+        result = count_cycles(a - 1, k)  # Convert to 0-indexed
+        results.append(result)
+    
+    return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 0],
+    [0, 0, 1],
+    [1, 0, 0]
+]
+queries = [(1, 3), (2, 2)]
+result = dp_solution(n, adj_matrix, queries)
+print(f"DP result: {result}")  # Output: [1, 0]
+```
+
+**Time Complexity**: O(n³ × k × q)
+**Space Complexity**: O(n × k)
+
+**Why it's better**: Much faster than brute force, but still not optimal for large k.
+
+**Implementation Considerations**:
+- **State Transition**: Use matrix multiplication for state updates
+- **Memory Management**: Use 2D arrays instead of 3D
+- **Modular Arithmetic**: Apply modulo to prevent overflow
+
+---
+
+### Approach 3: Matrix Exponentiation Solution (Optimal)
+
+**Key Insights from Matrix Exponentiation Solution**:
+- **Matrix Power**: Adjacency matrix raised to power k gives path counts
+- **Binary Exponentiation**: Compute matrix powers efficiently
+- **Modular Arithmetic**: Handle large numbers with modulo operations
+- **Query Optimization**: Precompute matrix powers for multiple queries
+
+**Key Insight**: The number of cycles of length k from node a to a is the (a,a) entry of the adjacency matrix raised to power k.
+
+**Algorithm**:
+- Raise adjacency matrix to power k using binary exponentiation
+- Return the (a,a) entry of the resulting matrix
+- Apply modular arithmetic throughout
+
+**Visual Example**:
+```
+Graph: 1→2→3→1
+
+Adjacency matrix A:
+┌─────────────────────────────────────┐
+│ A = [0, 1, 0]                      │
+│     [0, 0, 1]                      │
+│     [1, 0, 0]                      │
+└─────────────────────────────────────┘
+
+A³ = A × A × A:
+┌─────────────────────────────────────┐
+│ A³ = [1, 0, 0]                     │
+│      [0, 1, 0]                     │
+│      [0, 0, 1]                     │
+└─────────────────────────────────────┘
+
+Cycles of length 3 from node 1: A³[1][1] = 1
+```
+
+**Implementation**:
+```python
+def matrix_exponentiation_solution(n, adj_matrix, queries):
+    """
+    Find cycle counts using matrix exponentiation
+    
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, k) queries
+    
+    Returns:
+        list: answers to queries
+    """
     MOD = 10**9 + 7
     
-    def matrix_multiply(a, b):
+    def matrix_multiply(A, B):
+        """Multiply two matrices with modular arithmetic"""
         result = [[0] * n for _ in range(n)]
         for i in range(n):
             for j in range(n):
                 for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
+                    result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % MOD
         return result
     
     def matrix_power(matrix, power):
-        # Initialize result as identity matrix
+        """Compute matrix^power using binary exponentiation"""
         result = [[0] * n for _ in range(n)]
+        # Initialize result as identity matrix
         for i in range(n):
             result[i][i] = 1
         
-        # Binary exponentiation
-        base = matrix
+        base = [row[:] for row in matrix]
+        
         while power > 0:
             if power % 2 == 1:
                 result = matrix_multiply(result, base)
@@ -259,253 +327,103 @@ def fixed_length_cycle_queries_naive(n, q, adjacency_matrix, queries):
         
         return result
     
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        cycles = powered_matrix[a][a]  # Cycles start and end at same node
-        result.append(cycles)
+    def count_cycles(start, k):
+        """Count cycles of length k starting from start"""
+        powered_matrix = matrix_power(adj_matrix, k)
+        return powered_matrix[start][start]
     
-    return result
+    results = []
+    for a, k in queries:
+        result = count_cycles(a - 1, k)  # Convert to 0-indexed
+        results.append(result)
+    
+    return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 0],
+    [0, 0, 1],
+    [1, 0, 0]
+]
+queries = [(1, 3), (2, 2)]
+result = matrix_exponentiation_solution(n, adj_matrix, queries)
+print(f"Matrix exponentiation result: {result}")  # Output: [1, 0]
 ```
 
-**Why this is inefficient**: This counts all walks that start and end at the same node, which includes cycles but also other types of walks.
+**Time Complexity**: O(n³ × log k × q)
+**Space Complexity**: O(n²)
 
-### Improvement 1: Optimized Matrix Exponentiation - O(n³ log k)
-**Description**: Use optimized matrix exponentiation with better implementation.
+**Why it's optimal**: O(log k) complexity for each query using binary exponentiation, making it efficient for large k values.
 
-```python
-def fixed_length_cycle_queries_optimized(n, q, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        cycles = powered_matrix[a][a]  # Cycles start and end at same node
-        result.append(cycles)
-    
-    return result
-```
-
-**Why this works:**
-- Uses optimized matrix exponentiation
-- Handles cycle constraints
-- Efficient implementation
-- O(n³ log k) time complexity
-
-### Step 3: Complete Solution
-**Putting it all together:**
-
-```python
-def solve_fixed_length_cycle_queries():
-    n, q = map(int, input().split())
-    adjacency_matrix = []
-    
-    for _ in range(n):
-        row = list(map(int, input().split()))
-        adjacency_matrix.append(row)
-    
-    queries = []
-    for _ in range(q):
-        a, k = map(int, input().split())
-        queries.append((a, k))
-    
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        cycles = powered_matrix[a][a]  # Cycles start and end at same node
-        print(cycles)
-
-# Main execution
-if __name__ == "__main__":
-    solve_fixed_length_cycle_queries()
-```
-
-**Why this works:**
-- Optimal matrix exponentiation approach
-- Handles all edge cases
-- Efficient implementation
-- Clear and readable code
-
-### Step 4: Testing Our Solution
-**Let's verify with examples:**
-
-```python
-def test_solution():
-    test_cases = [
-        (3, [[0, 1, 0], [0, 0, 1], [1, 0, 0]], [(1, 3), (2, 3)]),
-        (4, [[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]], [(1, 4), (2, 4)]),
-    ]
-    
-    for n, adjacency_matrix, queries in test_cases:
-        result = solve_test(n, adjacency_matrix, queries)
-        print(f"n={n}, adjacency_matrix={adjacency_matrix}, queries={queries}")
-        print(f"Result: {result}")
-        print()
-
-def solve_test(n, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        cycles = powered_matrix[a][a]  # Cycles start and end at same node
-        result.append(cycles)
-    
-    return result
-
-test_solution()
-```
+**Implementation Details**:
+- **Binary Exponentiation**: Compute matrix powers in O(log k) time
+- **Modular Arithmetic**: Apply modulo operations to prevent overflow
+- **Matrix Multiplication**: Use efficient matrix multiplication
+- **Query Optimization**: Handle multiple queries efficiently
 
 ## 🔧 Implementation Details
 
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(n^k × q) | O(k) | Exhaustive search of all paths |
+| Dynamic Programming | O(n³ × k × q) | O(n × k) | Count paths using DP |
+| Matrix Exponentiation | O(n³ × log k × q) | O(n²) | Use matrix powers for path counting |
+
 ### Time Complexity
-- **Time**: O(n³ log k) - matrix exponentiation for each query
-- **Space**: O(n²) - adjacency matrix and result matrices
+- **Time**: O(n³ × log k × q) - Matrix exponentiation with binary exponentiation
+- **Space**: O(n²) - Matrix storage
 
 ### Why This Solution Works
-- **Matrix Exponentiation**: Efficiently computes path counts
-- **Cycles**: Counts cycles starting and ending at the same node
-- **Binary Exponentiation**: Reduces complexity from O(k) to O(log k)
-- **Optimal Approach**: Handles all cases correctly
+- **Matrix Power Property**: Adjacency matrix^k gives path counts of length k
+- **Binary Exponentiation**: Efficiently compute large matrix powers
+- **Modular Arithmetic**: Handle large numbers with modulo operations
+- **Query Optimization**: Process multiple queries efficiently
 
-## 🎯 Key Insights
+## 🚀 Problem Variations
 
-### 1. **Cycles**
-- Paths that start and end at the same node
-- Essential for understanding
-- Key optimization technique
-- Enables efficient solution
+### Extended Problems with Detailed Code Examples
 
-### 2. **Matrix Exponentiation**
-- Efficient path counting algorithm
-- Important for understanding
-- Fundamental concept
-- Essential for algorithm
+#### **1. Fixed Length Path Queries**
+**Problem**: Find number of paths of length k from node a to node b.
 
-### 3. **Binary Exponentiation**
-- Fast matrix power computation
-- Important for performance
-- Simple but important concept
-- Essential for understanding
+**Key Differences**: Paths instead of cycles, different start and end nodes
 
-## 🎯 Problem Variations
+**Solution Approach**: Use same matrix exponentiation but return (a,b) entry
 
-### Variation 1: Cycles with Weights
-**Problem**: Each edge has a weight, find weighted cycles.
-
+**Implementation**:
 ```python
-def weighted_cycle_queries(n, adjacency_matrix, queries, weights):
+def fixed_length_path_queries(n, adj_matrix, queries):
+    """
+    Find path counts using matrix exponentiation
+    
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        queries: list of (a, b, k) queries
+    
+    Returns:
+        list: answers to queries
+    """
     MOD = 10**9 + 7
     
-    def matrix_multiply(a, b):
+    def matrix_multiply(A, B):
+        """Multiply two matrices with modular arithmetic"""
         result = [[0] * n for _ in range(n)]
         for i in range(n):
             for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
+                for k in range(n):
+                    result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % MOD
         return result
     
     def matrix_power(matrix, power):
-        # Initialize result as identity matrix
+        """Compute matrix^power using binary exponentiation"""
         result = [[0] * n for _ in range(n)]
         for i in range(n):
             result[i][i] = 1
         
-        # Binary exponentiation
-        base = matrix
+        base = [row[:] for row in matrix]
+        
         while power > 0:
             if power % 2 == 1:
                 result = matrix_multiply(result, base)
@@ -514,914 +432,268 @@ def weighted_cycle_queries(n, adjacency_matrix, queries, weights):
         
         return result
     
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        cycles = powered_matrix[a][a]  # Cycles start and end at same node
-        result.append(cycles)
+    def count_paths(start, end, k):
+        """Count paths of length k from start to end"""
+        powered_matrix = matrix_power(adj_matrix, k)
+        return powered_matrix[start][end]
     
-    return result
+    results = []
+    for a, b, k in queries:
+        result = count_paths(a - 1, b - 1, k)  # Convert to 0-indexed
+        results.append(result)
+    
+    return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 0],
+    [0, 0, 1],
+    [1, 0, 0]
+]
+queries = [(1, 3, 2), (2, 1, 3)]
+result = fixed_length_path_queries(n, adj_matrix, queries)
+print(f"Fixed length path result: {result}")
 ```
 
-### Variation 2: Cycles with Constraints
-**Problem**: Find cycles avoiding certain edges.
+#### **2. Weighted Graph Cycle Queries**
+**Problem**: Find number of cycles of length k with total weight w.
 
+**Key Differences**: Edges have weights, consider total weight
+
+**Solution Approach**: Use 3D DP with weight dimension
+
+**Implementation**:
 ```python
-def constrained_cycle_queries(n, adjacency_matrix, queries, forbidden_edges):
+def weighted_cycle_queries(n, adj_matrix, weights, queries):
+    """
+    Find weighted cycle counts using 3D DP
+    
+    Args:
+        n: number of nodes
+        adj_matrix: adjacency matrix
+        weights: weight matrix
+        queries: list of (a, k, w) queries
+    
+    Returns:
+        list: answers to queries
+    """
     MOD = 10**9 + 7
     
-    # Remove forbidden edges
-    modified_matrix = [row[:] for row in adjacency_matrix]
-    for a, b in forbidden_edges:
-        modified_matrix[a-1][b-1] = 0
-        modified_matrix[b-1][a-1] = 0
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
+    def count_weighted_cycles(start, k, target_weight):
+        """Count cycles of length k with total weight target_weight"""
+        # dp[i][j][w] = number of paths from start to j of length i with weight w
+        max_weight = target_weight + 1
+        dp = [[[0] * max_weight for _ in range(n)] for _ in range(k + 1)]
+        
+        # Base case: paths of length 0
+        dp[0][start][0] = 1
+        
+        # Fill DP table
+        for length in range(1, k + 1):
             for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
+                for w in range(max_weight):
+                    for m in range(n):
+                        if adj_matrix[m][j] == 1:
+                            edge_weight = weights[m][j]
+                            if w >= edge_weight:
+                                dp[length][j][w] = (dp[length][j][w] + dp[length - 1][m][w - edge_weight]) % MOD
         
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
+        return dp[k][start][target_weight]
     
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(modified_matrix, k)
-        cycles = powered_matrix[a][a]  # Cycles start and end at same node
-        result.append(cycles)
+    results = []
+    for a, k, w in queries:
+        result = count_weighted_cycles(a - 1, k, w)  # Convert to 0-indexed
+        results.append(result)
     
-    return result
+    return results
+
+# Example usage
+n = 3
+adj_matrix = [
+    [0, 1, 0],
+    [0, 0, 1],
+    [1, 0, 0]
+]
+weights = [
+    [0, 2, 0],
+    [0, 0, 3],
+    [1, 0, 0]
+]
+queries = [(1, 3, 6), (2, 2, 5)]
+result = weighted_cycle_queries(n, adj_matrix, weights, queries)
+print(f"Weighted cycle result: {result}")
 ```
 
-### Variation 3: Dynamic Cycles
-**Problem**: Support adding/removing edges and maintaining cycle counts.
+#### **3. Dynamic Graph Cycle Queries**
+**Problem**: Support adding/removing edges and answering cycle queries.
 
+**Key Differences**: Graph structure can change dynamically
+
+**Solution Approach**: Use dynamic matrix updates with lazy evaluation
+
+**Implementation**:
 ```python
 class DynamicCycleQueries:
     def __init__(self, n):
         self.n = n
-        self.adjacency_matrix = [[0] * n for _ in range(n)]
-        self.edges = set()
+        self.adj_matrix = [[0] * n for _ in range(n)]
+        self.matrix_cache = {}  # Cache for matrix powers
+        self.MOD = 10**9 + 7
     
     def add_edge(self, a, b):
-        if (a, b) not in self.edges and (b, a) not in self.edges:
-            self.edges.add((a, b))
-            self.adjacency_matrix[a-1][b-1] = 1
-            self.adjacency_matrix[b-1][a-1] = 1
+        """Add edge from a to b"""
+        self.adj_matrix[a][b] = 1
+        self.matrix_cache.clear()  # Invalidate cache
     
     def remove_edge(self, a, b):
-        if (a, b) in self.edges:
-            self.edges.remove((a, b))
-            self.adjacency_matrix[a-1][b-1] = 0
-            self.adjacency_matrix[b-1][a-1] = 0
-            return True
-        elif (b, a) in self.edges:
-            self.edges.remove((b, a))
-            self.adjacency_matrix[a-1][b-1] = 0
-            self.adjacency_matrix[b-1][a-1] = 0
-            return True
-        return False
+        """Remove edge from a to b"""
+        self.adj_matrix[a][b] = 0
+        self.matrix_cache.clear()  # Invalidate cache
     
-    def get_cycles(self, a, k):
-        MOD = 10**9 + 7
-        
-        def matrix_multiply(a, b):
-            result = [[0] * self.n for _ in range(self.n)]
-            for i in range(self.n):
-                for j in range(self.n):
-                    for k_idx in range(self.n):
-                        result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-            return result
-        
-        def matrix_power(matrix, power):
-            # Initialize result as identity matrix
-            result = [[0] * self.n for _ in range(self.n)]
-            for i in range(self.n):
-                result[i][i] = 1
-            
-            # Binary exponentiation
-            base = matrix
-            while power > 0:
-                if power % 2 == 1:
-                    result = matrix_multiply(result, base)
-                base = matrix_multiply(base, base)
-                power //= 2
-            
-            return result
-        
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(self.adjacency_matrix, k)
-        cycles = powered_matrix[a][a]  # Cycles start and end at same node
-        return cycles
-```
-
-### Variation 4: Cycles with Multiple Constraints
-**Problem**: Find cycles satisfying multiple constraints.
-
-```python
-def multi_constrained_cycle_queries(n, adjacency_matrix, queries, constraints):
-    MOD = 10**9 + 7
-    
-    # Apply multiple constraints
-    forbidden_edges = constraints.get('forbidden_edges', set())
-    required_edges = constraints.get('required_edges', set())
-    
-    # Remove forbidden edges
-    modified_matrix = [row[:] for row in adjacency_matrix]
-    for a, b in forbidden_edges:
-        modified_matrix[a-1][b-1] = 0
-        modified_matrix[b-1][a-1] = 0
-    
-    # Add required edges
-    for a, b in required_edges:
-        modified_matrix[a-1][b-1] = 1
-        modified_matrix[b-1][a-1] = 1
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Calculate matrix power
-        powered_matrix = matrix_power(modified_matrix, k)
-        cycles = powered_matrix[a][a]  # Cycles start and end at same node
-        result.append(cycles)
-    
-    return result
-```
-
-### Variation 5: Cycles with Edge Replacement
-**Problem**: Allow replacing existing edges with new ones.
-
-```python
-def edge_replacement_cycle_queries(n, adjacency_matrix, queries, replacement_edges):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k_idx in range(n):
-                    result[i][j] = (result[i][j] + a[i][k_idx] * b[k_idx][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Try different edge replacements
-    best_results = []
-    for a, k in queries:
-        best_count = 0
-        
-        # Try original matrix
-        powered_matrix = matrix_power(adjacency_matrix, k)
-        original_count = powered_matrix[a-1][a-1]
-        best_count = max(best_count, original_count)
-        
-        # Try each replacement
-        for old_edge, new_edge in replacement_edges:
-            # Create modified matrix
-            modified_matrix = [row[:] for row in adjacency_matrix]
-            old_a, old_b = old_edge
-            new_a, new_b = new_edge
-            
-            # Remove old edge
-            modified_matrix[old_a-1][old_b-1] = 0
-            modified_matrix[old_b-1][old_a-1] = 0
-            
-            # Add new edge
-            modified_matrix[new_a-1][new_b-1] = 1
-            modified_matrix[new_b-1][new_a-1] = 1
-            
-            # Calculate cycles
-            powered_matrix = matrix_power(modified_matrix, k)
-            cycle_count = powered_matrix[a-1][a-1]
-            best_count = max(best_count, cycle_count)
-        
-        best_results.append(best_count)
-    
-    return best_results
-```
-
-## 🔗 Related Problems
-
-- **[Hamiltonian Cycles](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Hamiltonian cycle algorithms
-- **[Matrix Exponentiation](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Matrix exponentiation algorithms
-- **[Graph Theory](/cses-analyses/problem_soulutions/advanced_graph_problems/)**: Graph theory concepts
-
-## 📚 Learning Points
-
-1. **Cycles**: Essential for cycle analysis
-2. **Matrix Exponentiation**: Efficient path counting
-3. **Binary Exponentiation**: Important optimization technique
-4. **Graph Theory**: Important graph theory concept
-
----
-
-**This is a great introduction to cycles and matrix exponentiation!** 🎯
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Handle edge case: cycles of length 0
-        if k == 0:
-            result.append(1)  # Empty cycle
-        else:
-            # Calculate matrix power
-            powered_matrix = matrix_power(adjacency_matrix, k)
-            cycles = powered_matrix[a][a]
-            result.append(cycles)
-    
-    return result
-```
-
-**Why this improvement works**: Handles the edge case for cycles of length 0.
-
-### Approach 2: Correct Cycle Counting - O(n³ log k)
-**Description**: Use matrix exponentiation with proper cycle handling.
-
-```python
-def fixed_length_cycle_queries_correct(n, q, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Handle edge cases for cycles
-        if k == 0:
-            # Empty cycle (staying at the same node)
-            result.append(1)
-        elif k == 1:
-            # Self-loop
-            cycles = adjacency_matrix[a][a]
-            result.append(cycles)
-        else:
-            # Calculate matrix power
-            powered_matrix = matrix_power(adjacency_matrix, k)
-            cycles = powered_matrix[a][a]
-            result.append(cycles)
-    
-    return result
-```
-
-**Why this improvement works**: Properly handles all edge cases for cycle counting.
-
-## Final Optimal Solution
-
-```python
-n, q = map(int, input().split())
-adjacency_matrix = []
-for _ in range(n):
-    row = list(map(int, input().split()))
-    adjacency_matrix.append(row)
-queries = []
-for _ in range(q):
-    a, k = map(int, input().split())
-    queries.append((a, k))
-
-def process_fixed_length_cycle_queries(n, q, adjacency_matrix, queries):
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Handle edge cases for cycles
-        if k == 0:
-            # Empty cycle (staying at the same node)
-            result.append(1)
-        elif k == 1:
-            # Self-loop
-            cycles = adjacency_matrix[a][a]
-            result.append(cycles)
-        else:
-            # Calculate matrix power
-            powered_matrix = matrix_power(adjacency_matrix, k)
-            cycles = powered_matrix[a][a]
-            result.append(cycles)
-    
-    return result
-
-result = process_fixed_length_cycle_queries(n, q, adjacency_matrix, queries)
-for res in result:
-    print(res)
-```
-
-## Complexity Analysis
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Matrix Exponentiation | O(n³ log k) | O(n²) | Matrix power for cycle counting |
-| Optimized Matrix Exponentiation | O(n³ log k) | O(n²) | Binary exponentiation with edge cases |
-| Correct Cycle Counting | O(n³ log k) | O(n²) | Proper edge case handling |
-
-## Key Insights for Other Problems
-
-### 1. **Cycle Counting with Matrix Exponentiation**
-**Principle**: The diagonal elements of the k-th power of the adjacency matrix give the number of cycles of length k.
-**Applicable to**: Cycle counting problems, graph analysis problems, matrix problems
-
-### 2. **Self-Loop Handling**
-**Principle**: Cycles of length 1 are self-loops in the adjacency matrix.
-**Applicable to**: Graph theory problems, cycle detection problems, matrix analysis problems
-
-### 3. **Empty Cycle Definition**
-**Principle**: An empty cycle (length 0) represents staying at the same node.
-**Applicable to**: Graph theory problems, cycle analysis problems, path counting problems
-
-## Notable Techniques
-
-### 1. **Matrix Multiplication**
-```python
-def matrix_multiply(a, b, n, MOD):
-    result = [[0] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(n):
-            for k in range(n):
-                result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-    return result
-```
-
-### 2. **Binary Matrix Exponentiation**
-```python
-def matrix_power(matrix, power, n, MOD):
-    # Initialize result as identity matrix
-    result = [[0] * n for _ in range(n)]
-    for i in range(n):
-        result[i][i] = 1
-    
-    # Binary exponentiation
-    base = matrix
-    while power > 0:
-        if power % 2 == 1:
-            result = matrix_multiply(result, base, n, MOD)
-        base = matrix_multiply(base, base, n, MOD)
-        power //= 2
-    
-    return result
-```
-
-### 3. **Cycle Counting**
-```python
-def count_cycles(adjacency_matrix, node, length, n, MOD):
-    if length == 0:
-        return 1  # Empty cycle
-    elif length == 1:
-        return adjacency_matrix[node][node]  # Self-loop
-    else:
-        powered_matrix = matrix_power(adjacency_matrix, length, n, MOD)
-        return powered_matrix[node][node]  # Diagonal element
-```
-
-### 4. **Query Processing**
-```python
-def process_cycle_queries(n, q, adjacency_matrix, queries, MOD):
-    result = []
-    for a, k in queries:
-        # Convert to 0-indexed
-        a = a - 1
-        
-        # Handle edge cases
-        if k == 0:
-            cycles = 1
-        elif k == 1:
-            cycles = adjacency_matrix[a][a]
-        else:
-            powered_matrix = matrix_power(adjacency_matrix, k, n, MOD)
-            cycles = powered_matrix[a][a]
-        
-        result.append(cycles)
-    
-    return result
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is a cycle counting problem using matrix exponentiation
-2. **Choose approach**: Use matrix exponentiation with proper edge case handling
-3. **Initialize data structure**: Use adjacency matrix representation
-4. **Implement matrix multiplication**: Multiply matrices with modular arithmetic
-5. **Implement matrix power**: Use binary exponentiation for efficiency
-6. **Handle edge cases**: Check for k=0, k=1 cases
-7. **Process queries**: Calculate cycles for each query using diagonal elements
-8. **Return result**: Output cycle counts for all queries
-
----
-
-*This analysis shows how to efficiently count cycles of fixed length using matrix exponentiation with proper edge case handling.* 
-
-## Problem Variations & Related Questions
-
-### Problem Variations
-
-#### 1. **Fixed Length Cycle Queries with Costs**
-**Variation**: Each edge has a cost, find minimum cost cycles of length k.
-**Approach**: Use weighted matrix exponentiation with cost tracking.
-```python
-def cost_based_fixed_length_cycle_queries(n, q, adjacency_matrix, edge_costs, queries):
-    MOD = 10**9 + 7
-    
-    def weighted_matrix_multiply(a, b):
-        result = [[float('inf')] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    if a[i][k] != float('inf') and b[k][j] != float('inf'):
-                        new_cost = a[i][k] + b[k][j]
-                        if new_cost < result[i][j]:
-                            result[i][j] = new_cost
-        return result
-    
-    def weighted_matrix_power(matrix, power):
-        # Initialize result as identity matrix (0 cost for self-loops)
-        result = [[float('inf')] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 0
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = weighted_matrix_multiply(result, base)
-            base = weighted_matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Build weighted adjacency matrix
-    weighted_matrix = [[float('inf')] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(n):
-            if adjacency_matrix[i][j] == 1:
-                weighted_matrix[i][j] = edge_costs.get((i, j), 1)
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        a = a - 1  # Convert to 0-indexed
-        
-        if k == 0:
-            min_cost = 0
-        elif k == 1:
-            min_cost = weighted_matrix[a][a] if weighted_matrix[a][a] != float('inf') else -1
-        else:
-            powered_matrix = weighted_matrix_power(weighted_matrix, k)
-            min_cost = powered_matrix[a][a] if powered_matrix[a][a] != float('inf') else -1
-        
-        result.append(min_cost)
-    
-    return result
-```
-
-#### 2. **Fixed Length Cycle Queries with Constraints**
-**Variation**: Limited budget, restricted edges, or specific cycle requirements.
-**Approach**: Use constraint satisfaction with matrix exponentiation.
-```python
-def constrained_fixed_length_cycle_queries(n, q, adjacency_matrix, budget, restricted_edges, queries):
-    MOD = 10**9 + 7
-    
-    def constrained_matrix_multiply(a, b):
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    # Check if edge (i,k) and (k,j) are not restricted
-                    if (i, k) not in restricted_edges and (k, j) not in restricted_edges:
-                        result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
-        return result
-    
-    def constrained_matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = constrained_matrix_multiply(result, base)
-            base = constrained_matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        a = a - 1  # Convert to 0-indexed
-        
-        if k == 0:
-            cycles = 1
-        elif k == 1:
-            cycles = adjacency_matrix[a][a] if (a, a) not in restricted_edges else 0
-        else:
-            powered_matrix = constrained_matrix_power(adjacency_matrix, k)
-            cycles = powered_matrix[a][a]
-        
-        result.append(cycles)
-    
-    return result
-```
-
-#### 3. **Fixed Length Cycle Queries with Probabilities**
-**Variation**: Each edge has a probability, find expected number of cycles.
-**Approach**: Use probabilistic matrix exponentiation or Monte Carlo simulation.
-```python
-def probabilistic_fixed_length_cycle_queries(n, q, adjacency_matrix, edge_probabilities, queries):
-    MOD = 10**9 + 7
-    
-    def probabilistic_matrix_multiply(a, b):
-        result = [[0.0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-    
-    def probabilistic_matrix_power(matrix, power):
-        # Initialize result as identity matrix
-        result = [[0.0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1.0
-        
-        # Binary exponentiation
-        base = matrix
-        while power > 0:
-            if power % 2 == 1:
-                result = probabilistic_matrix_multiply(result, base)
-            base = probabilistic_matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    # Build probabilistic adjacency matrix
-    prob_matrix = [[0.0] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(n):
-            if adjacency_matrix[i][j] == 1:
-                prob_matrix[i][j] = edge_probabilities.get((i, j), 0.5)
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        a = a - 1  # Convert to 0-indexed
-        
-        if k == 0:
-            expected_cycles = 1.0
-        elif k == 1:
-            expected_cycles = prob_matrix[a][a]
-        else:
-            powered_matrix = probabilistic_matrix_power(prob_matrix, k)
-            expected_cycles = powered_matrix[a][a]
-        
-        result.append(expected_cycles)
-    
-    return result
-```
-
-#### 4. **Fixed Length Cycle Queries with Multiple Criteria**
-**Variation**: Optimize for multiple objectives (cycle count, cost, probability).
-**Approach**: Use multi-objective optimization or weighted sum approach.
-```python
-def multi_criteria_fixed_length_cycle_queries(n, q, adjacency_matrix, criteria_weights, queries):
-    # criteria_weights = {'count': 0.4, 'cost': 0.3, 'probability': 0.3}
-    
-    def calculate_cycle_score(cycle_attributes):
-        return (criteria_weights['count'] * cycle_attributes['count'] + 
-                criteria_weights['cost'] * cycle_attributes['cost'] + 
-                criteria_weights['probability'] * cycle_attributes['probability'])
-    
-    def multi_criteria_matrix_multiply(a, b):
-        result = [[{'count': 0, 'cost': 0, 'probability': 0.0} for _ in range(n)] for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    # Combine attributes
-                    new_count = a[i][k]['count'] * b[k][j]['count']
-                    new_cost = a[i][k]['cost'] + b[k][j]['cost']
-                    new_prob = a[i][k]['probability'] * b[k][j]['probability']
-                    
-                    result[i][j]['count'] += new_count
-                    result[i][j]['cost'] = min(result[i][j]['cost'], new_cost) if result[i][j]['cost'] > 0 else new_cost
-                    result[i][j]['probability'] += new_prob
-        
-        return result
-    
-    # Process queries
-    result = []
-    for a, k in queries:
-        a = a - 1  # Convert to 0-indexed
-        
-        if k == 0:
-            cycle_attrs = {'count': 1, 'cost': 0, 'probability': 1.0}
-        elif k == 1:
-            cycle_attrs = {
-                'count': adjacency_matrix[a][a],
-                'cost': 1 if adjacency_matrix[a][a] else 0,
-                'probability': 0.5 if adjacency_matrix[a][a] else 0.0
-            }
-        else:
-            # Simplified for demonstration
-            cycle_attrs = {'count': 1, 'cost': k, 'probability': 0.5}
-        
-        score = calculate_cycle_score(cycle_attrs)
-        result.append(score)
-    
-    return result
-```
-
-#### 5. **Fixed Length Cycle Queries with Dynamic Updates**
-**Variation**: Graph structure can be modified dynamically.
-**Approach**: Use dynamic graph algorithms or incremental updates.
-```python
-class DynamicFixedLengthCycleQueries:
-    def __init__(self, n):
-        self.n = n
-        self.adjacency_matrix = [[0] * n for _ in range(n)]
-        self.cycle_cache = {}
-    
-    def add_edge(self, a, b):
-        self.adjacency_matrix[a][b] = 1
-        self.invalidate_cache()
-    
-    def remove_edge(self, a, b):
-        self.adjacency_matrix[a][b] = 0
-        self.invalidate_cache()
-    
-    def invalidate_cache(self):
-        self.cycle_cache.clear()
-    
-    def get_cycle_count(self, node, length, MOD=10**9 + 7):
-        cache_key = (node, length)
-        if cache_key in self.cycle_cache:
-            return self.cycle_cache[cache_key]
-        
-        if length == 0:
-            result = 1
-        elif length == 1:
-            result = self.adjacency_matrix[node][node]
-        else:
-            powered_matrix = self.matrix_power(self.adjacency_matrix, length, MOD)
-            result = powered_matrix[node][node]
-        
-        self.cycle_cache[cache_key] = result
-        return result
-    
-    def matrix_multiply(self, a, b, MOD):
+    def matrix_multiply(self, A, B):
+        """Multiply two matrices with modular arithmetic"""
         result = [[0] * self.n for _ in range(self.n)]
         for i in range(self.n):
             for j in range(self.n):
                 for k in range(self.n):
-                    result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % MOD
+                    result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % self.MOD
         return result
     
-    def matrix_power(self, matrix, power, MOD):
+    def matrix_power(self, power):
+        """Compute matrix^power using binary exponentiation with caching"""
+        if power in self.matrix_cache:
+            return self.matrix_cache[power]
+        
         result = [[0] * self.n for _ in range(self.n)]
         for i in range(self.n):
             result[i][i] = 1
         
-        base = matrix
+        base = [row[:] for row in self.adj_matrix]
+        
         while power > 0:
             if power % 2 == 1:
-                result = self.matrix_multiply(result, base, MOD)
-            base = self.matrix_multiply(base, base, MOD)
+                result = self.matrix_multiply(result, base)
+            base = self.matrix_multiply(base, base)
             power //= 2
         
+        self.matrix_cache[power] = result
         return result
+    
+    def count_cycles(self, start, k):
+        """Count cycles of length k starting from start"""
+        powered_matrix = self.matrix_power(k)
+        return powered_matrix[start][start]
+
+# Example usage
+dcq = DynamicCycleQueries(3)
+dcq.add_edge(0, 1)
+dcq.add_edge(1, 2)
+dcq.add_edge(2, 0)
+result1 = dcq.count_cycles(0, 3)
+print(f"Dynamic cycle result: {result1}")
 ```
 
-### Related Problems & Concepts
+### Related Problems
 
-#### 1. **Cycle Counting Problems**
-- **Hamiltonian Cycles**: Cycles visiting each node once
-- **Eulerian Cycles**: Cycles using each edge once
-- **Simple Cycles**: Cycles without repeated nodes
-- **Directed Cycles**: Cycles in directed graphs
+#### **CSES Problems**
+- [Fixed Length Circuit Queries](https://cses.fi/problemset/task/2417) - Similar matrix approach
+- [Round Trip](https://cses.fi/problemset/task/1669) - Cycle detection
+- [Graph Girth](https://cses.fi/problemset/task/1707) - Cycle properties
 
-#### 2. **Matrix Problems**
-- **Matrix Exponentiation**: Fast matrix power computation
-- **Adjacency Matrix**: Graph representation
-- **Transition Matrix**: State transition probabilities
-- **Markov Chains**: Probabilistic state transitions
+#### **LeetCode Problems**
+- [Number of Ways to Arrive at Destination](https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/) - Path counting
+- [Unique Paths](https://leetcode.com/problems/unique-paths/) - Path counting
+- [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) - Path counting with obstacles
 
-#### 3. **Graph Theory Problems**
-- **Path Counting**: Count paths between nodes
-- **Walk Counting**: Count walks of given length
-- **Cycle Detection**: Find cycles in graphs
-- **Connectivity**: Graph connectivity analysis
+#### **Problem Categories**
+- **Matrix Exponentiation**: Matrix powers, binary exponentiation
+- **Graph Theory**: Cycles, circuits, paths
+- **Dynamic Programming**: State transitions, path counting
 
-#### 4. **Dynamic Programming Problems**
-- **State Transitions**: Dynamic state changes
-- **Memoization**: Caching computed results
-- **Optimal Substructure**: Breaking into subproblems
-- **Overlapping Subproblems**: Reusing solutions
+## 🔗 Additional Resources
 
-#### 5. **Query Processing Problems**
-- **Range Queries**: Querying ranges of data
-- **Point Queries**: Querying specific points
-- **Batch Queries**: Processing multiple queries
-- **Online Queries**: Real-time query processing
+### **Algorithm References**
+- [Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html) - Binary exponentiation
+- [Graph Theory](https://cp-algorithms.com/graph/) - Graph algorithms
+- [Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html) - Modular operations
 
-### Competitive Programming Variations
+### **Practice Problems**
+- [CSES Fixed Length Circuit Queries](https://cses.fi/problemset/task/2417) - Medium
+- [CSES Round Trip](https://cses.fi/problemset/task/1669) - Medium
+- [CSES Graph Girth](https://cses.fi/problemset/task/1707) - Medium
 
-#### 1. **Online Judge Variations**
-- **Time Limits**: Optimize for strict constraints
-- **Memory Limits**: Space-efficient solutions
-- **Input Size**: Handle large matrices
-- **Edge Cases**: Robust matrix operations
+### **Further Reading**
+- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
+- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
+- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
 
-#### 2. **Algorithm Contests**
-- **Speed Programming**: Fast implementation
-- **Code Golf**: Minimal code solutions
-- **Team Contests**: Collaborative problem solving
-- **Live Coding**: Real-time problem solving
+---
 
-#### 3. **Advanced Techniques**
-- **Binary Search**: On answer space
-- **Two Pointers**: Efficient matrix traversal
-- **Sliding Window**: Optimal submatrix problems
-- **Monotonic Stack/Queue**: Maintaining order
+## 📝 Implementation Checklist
 
-### Mathematical Extensions
+When applying this template to a new problem, ensure you:
 
-#### 1. **Linear Algebra**
-- **Matrix Operations**: Multiplication, exponentiation
-- **Eigenvalues**: Matrix spectral properties
-- **Determinants**: Matrix determinants
-- **Inverses**: Matrix inverses
+### **Content Requirements**
+- [x] **Problem Description**: Clear, concise with examples
+- [x] **Learning Objectives**: 5 specific, measurable goals
+- [x] **Prerequisites**: 5 categories of required knowledge
+- [x] **3 Approaches**: Brute Force → Greedy → Optimal
+- [x] **Key Insights**: 4-5 insights per approach at the beginning
+- [x] **Visual Examples**: ASCII diagrams for each approach
+- [x] **Complete Implementations**: Working code with examples
+- [x] **Complexity Analysis**: Time and space for each approach
+- [x] **Problem Variations**: 3 variations with implementations
+- [x] **Related Problems**: CSES and LeetCode links
 
-#### 2. **Probability Theory**
-- **Expected Values**: Average cycle counts
-- **Markov Chains**: State transition probabilities
-- **Random Walks**: Probabilistic graph traversal
-- **Monte Carlo**: Simulation methods
+### **Structure Requirements**
+- [x] **No Redundant Sections**: Remove duplicate Key Insights
+- [x] **Logical Flow**: Each approach builds on the previous
+- [x] **Progressive Complexity**: Clear improvement from approach to approach
+- [x] **Educational Value**: Theory + Practice in each section
+- [x] **Complete Coverage**: All important concepts included
 
-#### 3. **Number Theory**
-- **Modular Arithmetic**: Large number handling
-- **Prime Numbers**: Special matrix cases
-- **GCD/LCM**: Mathematical properties
-- **Euler's Totient**: Counting coprime cycles
+### **Quality Requirements**
+- [x] **Working Code**: All implementations are runnable
+- [x] **Test Cases**: Examples with expected outputs
+- [x] **Edge Cases**: Handle boundary conditions
+- [x] **Clear Explanations**: Easy to understand for students
+- [x] **Visual Learning**: Diagrams and examples throughout
 
-### Learning Resources
+---
 
-#### 1. **Online Platforms**
-- **LeetCode**: Matrix and graph problems
-- **Codeforces**: Competitive programming
-- **HackerRank**: Algorithm challenges
-- **AtCoder**: Japanese programming contests
+## 🎯 **Template Usage Instructions**
 
-#### 2. **Educational Resources**
-- **CLRS**: Introduction to Algorithms
-- **CP-Algorithms**: Competitive programming algorithms
-- **GeeksforGeeks**: Algorithm tutorials
-- **TopCoder**: Algorithm tutorials
+### **Step 1: Replace Placeholders**
+- Replace `[Problem Name]` with actual problem name
+- Replace `[category]` with the problem category folder
+- Replace `[problem_name]` with the actual problem filename
+- Replace all `[placeholder]` text with actual content
 
-#### 3. **Practice Problems**
-- **Matrix Problems**: Exponentiation, multiplication
-- **Graph Problems**: Cycle counting, path finding
-- **Dynamic Problems**: State transitions, caching
-- **Query Problems**: Range queries, batch processing 
+### **Step 2: Customize Approaches**
+- **Approach 1**: Usually brute force or naive solution
+- **Approach 2**: Optimized solution (DP, greedy, etc.)
+- **Approach 3**: Optimal solution (advanced algorithms)
+
+### **Step 3: Add Visual Examples**
+- Use ASCII art for diagrams
+- Show step-by-step execution
+- Use actual data in examples
+
+### **Step 4: Implement Working Code**
+- Write complete, runnable implementations
+- Include test cases and examples
+- Handle edge cases properly
+
+### **Step 5: Add Problem Variations**
+- Create 3 meaningful variations
+- Provide implementations for each
+- Link to related problems
+
+### **Step 6: Quality Check**
+- Ensure no redundant sections
+- Verify all code works
+- Check that complexity analysis is correct
+- Confirm educational value is high
+
+This template ensures consistency across all problem analyses while maintaining high educational value and practical implementation focus.

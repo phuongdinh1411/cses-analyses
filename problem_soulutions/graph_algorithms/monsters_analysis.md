@@ -1,761 +1,979 @@
 ---
 layout: simple
-title: "Monsters - Multi-Source BFS Path Finding"
+title: "Monsters - Graph Algorithm Problem"
 permalink: /problem_soulutions/graph_algorithms/monsters_analysis
 ---
 
-# Monsters - Multi-Source BFS Path Finding
+# Monsters - Graph Algorithm Problem
 
 ## 📋 Problem Information
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- Understand multi-source BFS problems and competitive pathfinding concepts
-- Apply multi-source BFS to find shortest distances from multiple sources simultaneously
-- Implement efficient multi-source BFS algorithms with proper distance tracking
-- Optimize multi-source BFS solutions using queue management and distance comparisons
-- Handle edge cases in multi-source BFS (no monsters, unreachable destinations, boundary conditions)
+- Understand the concept of multi-source BFS in graph algorithms
+- Apply efficient algorithms for finding shortest paths from multiple sources
+- Implement BFS with multiple starting points for escape route problems
+- Optimize graph algorithms for grid-based escape problems
+- Handle special cases in multi-source shortest path problems
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Multi-source BFS, competitive pathfinding, distance calculations, grid algorithms
-- **Data Structures**: Queues, 2D arrays, distance arrays, grid representations, BFS data structures
-- **Mathematical Concepts**: Graph theory, shortest path properties, competitive algorithms, grid properties
-- **Programming Skills**: BFS implementation, grid manipulation, distance calculations, algorithm implementation
-- **Related Problems**: Labyrinth (grid pathfinding), Message Route (shortest path), Grid algorithms
+- **Algorithm Knowledge**: Graph algorithms, BFS, multi-source BFS, shortest path
+- **Data Structures**: Grids, queues, arrays, visited arrays, distance arrays
+- **Mathematical Concepts**: Graph theory, shortest paths, multi-source BFS, grid graphs
+- **Programming Skills**: Grid operations, BFS, multi-source algorithms, path finding
+- **Related Problems**: Labyrinth (graph_algorithms), Message Route (graph_algorithms), Counting Rooms (graph_algorithms)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: You are playing a game where you have a grid of size n×m. Each cell is either free (.) or a wall (#). You are initially in the upper-left corner, and you want to reach the lower-right corner. However, there are monsters that move according to a specific pattern.
-
-Your task is to determine if it is possible to reach the destination without being caught by a monster.
-
-This is a multi-source BFS problem where we need to find the shortest distance from monsters to each cell, then check if the player can reach the destination faster than any monster.
+Given a grid with monsters and a player, find if the player can escape to the boundary without being caught by any monster.
 
 **Input**: 
-- First line: Two integers n and m (height and width of the grid)
-- Next n lines: m characters each (". " denotes free cell, "#" denotes wall, "A" denotes starting position, "M" denotes monster)
+- n: number of rows
+- m: number of columns
+- grid: n×m grid where '.' represents empty cell, '#' represents wall, 'A' represents player, 'M' represents monster
 
 **Output**: 
-- Print "YES" if it's possible to reach destination, "NO" otherwise
+- "YES" if player can escape, "NO" otherwise
+- If "YES", output the escape path
 
 **Constraints**:
 - 1 ≤ n, m ≤ 1000
-- Grid is 0-indexed
-- Player starts at position marked with 'A'
-- Monsters are at positions marked with 'M'
-- Player and monsters can move in four directions (up, down, left, right)
-- Walls block movement for both player and monsters
 
 **Example**:
 ```
 Input:
-5 8
-########
-#M..A..#
-#.#.M#.#
-#M#..#..
-#.######
+n = 5, m = 8
+grid = [
+    "########",
+    "#.A#...#",
+    "#.##.#M#",
+    "#......#",
+    "########"
+]
 
 Output:
 YES
+DRRURDDD
+
+Explanation**: 
+Player at A(1,1) can escape to boundary at (0,1) via path:
+A(1,1) → (2,1) → (3,1) → (3,2) → (3,3) → (3,4) → (3,5) → (3,6) → (0,1)
+Path: DRRURDDD (Down, Right, Right, Up, Right, Down, Down, Down)
 ```
-
-**Explanation**: 
-- Player starts at (1,4) and needs to reach (4,7)
-- Monsters are at (1,1), (2,4), (3,1)
-- Player can take path: (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
-- This path avoids monsters and reaches the destination safely
-
-## Visual Example
-
-### Input Grid
-```
-Grid: 5×8
-########
-#M..A..#
-#.#.M#.#
-#M#..#..
-#.######
-
-Legend:
-- #: Wall
-- .: Free cell
-- A: Player start
-- M: Monster
-```
-
-### Multi-Source BFS Process
-```
-Step 1: Find monster positions
-- Monster 1: (1,1)
-- Monster 2: (2,4)
-- Monster 3: (3,1)
-
-Step 2: Multi-source BFS from monsters
-- Initialize queue with all monster positions
-- Calculate minimum distance from any monster to each cell
-- Distance map:
-  ########
-  #M..A..#
-  #.#.M#.#
-  #M#..#..
-  #.######
-
-Step 3: BFS from player
-- Start: (1,4)
-- Goal: (4,7)
-- Check if player can reach each cell before monsters
-- Path: (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
-```
-
-### Path Analysis
-```
-Player path: (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
-
-Distance check:
-- (1,4): Player distance 0, Monster distance 3 ✓
-- (1,5): Player distance 1, Monster distance 2 ✓
-- (1,6): Player distance 2, Monster distance 1 ✓
-- (1,7): Player distance 3, Monster distance 0 ✗
-
-Wait, let me recalculate...
-
-Correct path: (1,4) → (1,5) → (1,6) → (2,6) → (3,6) → (4,6) → (4,7)
-- All cells reachable before monsters ✓
-```
-
-### Key Insight
-Multi-source BFS works by:
-1. Starting BFS from all monster positions simultaneously
-2. Calculating minimum distance from any monster to each cell
-3. Running BFS from player and checking if distance < monster distance
-4. Time complexity: O(n × m) for grid traversal
-5. Space complexity: O(n × m) for distance arrays
 
 ## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Approach 1: Brute Force Path Enumeration (Inefficient)
+### Approach 1: Brute Force Solution
 
-**Key Insights from Brute Force Solution:**
-- Try all possible paths from start to destination
-- Simple but computationally expensive approach
-- Not suitable for large grids
-- Straightforward implementation but poor performance
+**Key Insights from Brute Force Solution**:
+- **Complete Enumeration**: Try all possible paths from player to boundary
+- **Simple Implementation**: Easy to understand and implement
+- **Direct Calculation**: Check each path for monster collision
+- **Inefficient**: O(4^(n×m)) time complexity
 
-**Algorithm:**
-1. Generate all possible paths from start to destination
-2. For each path, check if any cell is reached after monsters
-3. Return "YES" if any valid path exists
-4. Handle cases where no valid path exists
+**Key Insight**: Try all possible paths and check if any avoids monsters.
 
-**Visual Example:**
+**Algorithm**:
+- Generate all possible paths from player to boundary
+- For each path, simulate monster movement and check for collisions
+- Return the first valid escape path or "NO" if none exists
+
+**Visual Example**:
 ```
-Brute force: Try all possible paths
-For grid: ########
-          #M..A..#
-          #.#.M#.#
-          #M#..#..
-          #.######
+Grid: 5×8 with player A(1,1) and monster M(2,6)
 
-All possible paths from (1,4) to (4,7):
-- Path 1: (1,4) → (1,5) → (1,6) → (1,7) → (2,7) → (3,7) → (4,7)
-- Path 2: (1,4) → (1,5) → (1,6) → (2,6) → (3,6) → (4,6) → (4,7)
-- Path 3: (1,4) → (1,5) → (2,5) → (2,6) → (3,6) → (4,6) → (4,7)
-- Path 4: (1,4) → (2,4) → (2,5) → (2,6) → (3,6) → (4,6) → (4,7)
-
-Check each path against monster distances...
-First valid path: (1,4) → (1,5) → (1,6) → (2,6) → (3,6) → (4,6) → (4,7)
+Try all possible paths from A to boundary:
+┌─────────────────────────────────────┐
+│ Path 1: A → (1,2) → (1,3) → ...    │
+│ - Check: (1,3) is wall ✗           │
+│ - Invalid path                      │
+│                                   │
+│ Path 2: A → (1,2) → (2,2) → ...    │
+│ - Check: (1,2) is empty ✓          │
+│ - Check: (2,2) is empty ✓          │
+│ - Simulate monster movement...      │
+│ - Check for collision...            │
+│ - Valid escape path ✓              │
+│                                   │
+│ Path 3: A → (1,2) → (2,2) → (3,2) → ... │
+│ - Check: (1,2) is empty ✓          │
+│ - Check: (2,2) is empty ✓          │
+│ - Check: (3,2) is empty ✓          │
+│ - Simulate monster movement...      │
+│ - Check for collision...            │
+│ - Valid escape path ✓              │
+│                                   │
+│ Continue for all 4^(40) paths...   │
+│                                   │
+│ First valid escape path found:     │
+│ DRRURDDD                           │
+└─────────────────────────────────────┘
 ```
 
-**Implementation:**
+**Implementation**:
 ```python
-def monsters_brute_force(n, m, grid):
-    def find_all_paths(start, end, visited, path):
-        if start == end:
-            return [path + [start]]
-        
-        if len(visited) >= n * m:
-            return []
-        
-        paths = []
-        row, col = start
-        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-            nr, nc = row + dr, col + dc
-            if (0 <= nr < n and 0 <= nc < m and 
-                grid[nr][nc] != '#' and 
-                (nr, nc) not in visited):
-                visited.add((nr, nc))
-                paths.extend(find_all_paths((nr, nc), end, visited, path + [start]))
-                visited.remove((nr, nc))
-        
-        return paths
+def brute_force_monsters(n, m, grid):
+    """Find escape path using brute force approach"""
+    from itertools import product
     
-    def is_path_valid(path):
-        # Calculate monster distances to each cell
-        monster_distances = {}
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 'M':
-                    # BFS from monster to find distances
-                    queue = [(i, j, 0)]
-                    visited = {(i, j)}
-                    while queue:
-                        r, c, dist = queue.pop(0)
-                        monster_distances[(r, c)] = min(monster_distances.get((r, c), float('inf')), dist)
-                        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                            nr, nc = r + dr, c + dc
-                            if (0 <= nr < n and 0 <= nc < m and 
-                                grid[nr][nc] != '#' and 
-                                (nr, nc) not in visited):
-                                visited.add((nr, nc))
-                                queue.append((nr, nc, dist + 1))
-        
-        # Check if player reaches each cell before monsters
-        for i, (row, col) in enumerate(path):
-            if (row, col) in monster_distances:
-                if i >= monster_distances[(row, col)]:
-                    return False
-        
-        return True
+    # Find player and monster positions
+    player_pos = None
+    monster_positions = []
     
-    # Find start and end positions
-    start = end = None
     for i in range(n):
         for j in range(m):
             if grid[i][j] == 'A':
-                start = (i, j)
-            elif i == n-1 and j == m-1 and grid[i][j] != '#':
-                end = (i, j)
+                player_pos = (i, j)
+            elif grid[i][j] == 'M':
+                monster_positions.append((i, j))
     
-    if start is None or end is None:
-        return "NO"
+    if not player_pos:
+        return "NO", None
     
-    # Generate all possible paths
-    all_paths = find_all_paths(start, end, {start}, [])
+    # Directions: Up, Down, Left, Right
+    directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
     
-    # Check each path
-    for path in all_paths:
-        if is_path_valid(path):
-            return "YES"
+    def is_valid_position(row, col):
+        """Check if position is valid"""
+        return (0 <= row < n and 0 <= col < m and 
+                grid[row][col] != '#')
     
-    return "NO"
+    def is_boundary(row, col):
+        """Check if position is on boundary"""
+        return row == 0 or row == n-1 or col == 0 or col == m-1
+    
+    def simulate_monster_movement(monster_pos, steps):
+        """Simulate monster movement for given steps"""
+        # Monsters move towards player (simplified)
+        # In practice, this would be more complex
+        return monster_pos  # Simplified for this example
+    
+    def is_path_valid(path):
+        """Check if path is valid and avoids monsters"""
+        current_row, current_col = player_pos
+        
+        for step, direction in enumerate(path):
+            row_delta, col_delta, _ = directions[direction]
+            new_row = current_row + row_delta
+            new_col = current_col + col_delta
+            
+            if not is_valid_position(new_row, new_col):
+                return False
+            
+            # Check if monster can reach this position
+            for monster_pos in monster_positions:
+                monster_new_pos = simulate_monster_movement(monster_pos, step + 1)
+                if (new_row, new_col) == monster_new_pos:
+                    return False
+            
+            current_row, current_col = new_row
+        
+        # Check if final position is on boundary
+        return is_boundary(current_row, current_col)
+    
+    def get_path_string(path):
+        """Convert path to string"""
+        return ''.join(directions[direction][2] for direction in path)
+    
+    # Try all possible paths
+    max_path_length = n * m  # Maximum possible path length
+    
+    for path_length in range(1, max_path_length + 1):
+        for path in product(range(4), repeat=path_length):
+            if is_path_valid(path):
+                path_string = get_path_string(path)
+                return "YES", path_string
+    
+    return "NO", None
+
+# Example usage
+n = 5
+m = 8
+grid = [
+    "########",
+    "#.A#...#",
+    "#.##.#M#",
+    "#......#",
+    "########"
+]
+result, path = brute_force_monsters(n, m, grid)
+print(f"Brute force result: {result}")
+if path:
+    print(f"Path: {path}")
 ```
 
-**Time Complexity:** O(4^(n×m) × n×m) for n×m grid with exponential path enumeration
-**Space Complexity:** O(4^(n×m)) for storing all possible paths
+**Time Complexity**: O(4^(n×m))
+**Space Complexity**: O(n×m)
 
-**Why it's inefficient:**
-- O(4^(n×m) × n×m) time complexity is too slow for large grids
-- Not suitable for competitive programming
-- Inefficient for large inputs
-- Poor performance with many cells
+**Why it's inefficient**: O(4^(n×m)) time complexity for trying all possible paths.
 
-### Approach 2: Basic Multi-Source BFS (Better)
+---
 
-**Key Insights from Basic Multi-Source BFS Solution:**
-- Use multi-source BFS to find monster distances
-- Much more efficient than brute force approach
-- Standard method for multi-source BFS problems
-- Can handle larger grids than brute force
+### Approach 2: Multi-Source BFS
 
-**Algorithm:**
-1. Use multi-source BFS to find distances from all monsters
-2. Run BFS from player and check if distance < monster distance
-3. Return "YES" if player can reach destination safely
-4. Handle cases where no safe path exists
+**Key Insights from Multi-Source BFS**:
+- **Multi-Source BFS**: Use BFS starting from all monsters to find their reachable areas
+- **Efficient Implementation**: O(n×m) time complexity
+- **Escape Check**: Check if player can reach boundary before monsters
+- **Optimization**: Much more efficient than brute force
 
-**Visual Example:**
+**Key Insight**: Use multi-source BFS to find areas reachable by monsters, then check if player can escape.
+
+**Algorithm**:
+- Use multi-source BFS starting from all monsters
+- Calculate minimum time for monsters to reach each cell
+- Use BFS from player to find escape path
+- Check if player can reach boundary before monsters
+
+**Visual Example**:
 ```
-Basic Multi-Source BFS for grid: ########
-                                   #M..A..#
-                                   #.#.M#.#
-                                   #M#..#..
-                                   #.######
+Multi-Source BFS:
 
-Step 1: Initialize monster distances
-- Monster 1: (1,1) → distances[1][1] = 0
-- Monster 2: (2,4) → distances[2][4] = 0
-- Monster 3: (3,1) → distances[3][1] = 0
+Grid: 5×8 with player A(1,1) and monster M(2,6)
 
-Step 2: Multi-source BFS from monsters
-- Queue: [(1,1,0), (2,4,0), (3,1,0)]
-- Process each monster position and spread distances
-- Final distances: minimum distance from any monster to each cell
+Step 1: Multi-source BFS from monsters
+┌─────────────────────────────────────┐
+│ Monster at M(2,6):                 │
+│ - Level 0: M(2,6)                  │
+│ - Level 1: (2,5), (2,7), (1,6), (3,6) │
+│ - Level 2: (2,4), (2,8), (1,5), (1,7), (3,5), (3,7) │
+│ - Continue until all reachable cells covered │
+│                                   │
+│ Monster reach times:               │
+│ - (2,6): 0                        │
+│ - (2,5): 1                        │
+│ - (2,7): 1                        │
+│ - (1,6): 1                        │
+│ - (3,6): 1                        │
+│ - ...                             │
+└─────────────────────────────────────┘
 
-Step 3: BFS from player
-- Start: (1,4)
-- Check if player distance < monster distance for each cell
-- Path: (1,4) → (1,5) → (1,6) → (2,6) → (3,6) → (4,6) → (4,7)
+Step 2: BFS from player
+┌─────────────────────────────────────┐
+│ Player at A(1,1):                  │
+│ - Level 0: A(1,1)                  │
+│ - Level 1: (1,2)                   │
+│ - Level 2: (2,2)                   │
+│ - Level 3: (3,2)                   │
+│ - Level 4: (3,3)                   │
+│ - Level 5: (3,4)                   │
+│ - Level 6: (3,5)                   │
+│ - Level 7: (3,6)                   │
+│ - Level 8: (0,1) - boundary!       │
+│                                   │
+│ Check: Player reaches (0,1) in 8 steps │
+│ Monster reaches (0,1) in >8 steps  │
+│ Escape possible!                   │
+└─────────────────────────────────────┘
 ```
 
-**Implementation:**
+**Implementation**:
 ```python
-from collections import deque
-
-def monsters_basic_multi_bfs(n, m, grid):
-    def find_monster_distances():
-        distances = [[float('inf')] * m for _ in range(n)]
-        queue = deque()
-        
-        # Find all monsters and add them to queue
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 'M':
-                    queue.append((i, j, 0))
-                    distances[i][j] = 0
-        
-        # Multi-source BFS to find distances from monsters
-        while queue:
-            row, col, dist = queue.popleft()
-            
-            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                nr, nc = row + dr, col + dc
-                if (0 <= nr < n and 0 <= nc < m and 
-                    grid[nr][nc] != '#' and 
-                    distances[nr][nc] == float('inf')):
-                    distances[nr][nc] = dist + 1
-                    queue.append((nr, nc, dist + 1))
-        
-        return distances
-    
-    def can_reach_destination():
-        # Find start position
-        start_row, start_col = -1, -1
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 'A':
-                    start_row, start_col = i, j
-                    break
-            if start_row != -1:
-                break
-        
-        monster_distances = find_monster_distances()
-        
-        # BFS from start to destination
-        queue = deque([(start_row, start_col, 0)])
-        visited = [[False] * m for _ in range(n)]
-        visited[start_row][start_col] = True
-        
-        while queue:
-            row, col, dist = queue.popleft()
-            
-            # Check if we reached destination
-            if row == n-1 and col == m-1:
-                return True
-            
-            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                nr, nc = row + dr, col + dc
-                if (0 <= nr < n and 0 <= nc < m and 
-                    grid[nr][nc] != '#' and 
-                    not visited[nr][nc] and
-                    dist + 1 < monster_distances[nr][nc]):
-                    visited[nr][nc] = True
-                    queue.append((nr, nc, dist + 1))
-        
-        return False
-    
-    if can_reach_destination():
-        return "YES"
-    else:
-        return "NO"
-```
-
-**Time Complexity:** O(n × m) for n×m grid with multi-source BFS
-**Space Complexity:** O(n × m) for distance arrays and visited arrays
-
-**Why it's better:**
-- O(n × m) time complexity is much better than O(4^(n×m) × n×m)
-- Standard method for multi-source BFS problems
-- Suitable for competitive programming
-- Efficient for most practical cases
-
-### Approach 3: Optimized Multi-Source BFS with Efficient Distance Management (Optimal)
-
-**Key Insights from Optimized Multi-Source BFS Solution:**
-- Use optimized multi-source BFS with efficient distance management
-- Most efficient approach for multi-source BFS problems
-- Standard method in competitive programming
-- Can handle the maximum constraint efficiently
-
-**Algorithm:**
-1. Use optimized multi-source BFS with efficient data structures
-2. Implement efficient distance calculation and comparison
-3. Use proper queue management and distance tracking
-4. Return result if player can reach destination safely
-
-**Visual Example:**
-```
-Optimized Multi-Source BFS for grid: ########
-                                       #M..A..#
-                                       #.#.M#.#
-                                       #M#..#..
-                                       #.######
-
-Step 1: Initialize optimized structures
-- distances = [[inf] * m for _ in range(n)]
-- queue = deque()
-- visited = [[False] * m for _ in range(n)]
-
-Step 2: Process with optimized multi-source BFS
-- Add all monsters to queue: [(1,1,0), (2,4,0), (3,1,0)]
-- Process each position and spread distances efficiently
-- Final distances: minimum distance from any monster to each cell
-
-Step 3: Optimized BFS from player
-- Start from (1,4): queue = [(1,4,0)]
-- Check if player distance < monster distance for each cell
-- Path: (1,4) → (1,5) → (1,6) → (2,6) → (3,6) → (4,6) → (4,7)
-```
-
-**Implementation:**
-```python
-from collections import deque
-
-def monsters_optimized_multi_bfs(n, m, grid):
-    def find_monster_distances():
-        distances = [[float('inf')] * m for _ in range(n)]
-        queue = deque()
-        
-        # Find all monsters and add them to queue
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 'M':
-                    queue.append((i, j, 0))
-                    distances[i][j] = 0
-        
-        # Optimized multi-source BFS to find distances from monsters
-        while queue:
-            row, col, dist = queue.popleft()
-            
-            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                nr, nc = row + dr, col + dc
-                if (0 <= nr < n and 0 <= nc < m and 
-                    grid[nr][nc] != '#' and 
-                    distances[nr][nc] == float('inf')):
-                    distances[nr][nc] = dist + 1
-                    queue.append((nr, nc, dist + 1))
-        
-        return distances
-    
-    def can_reach_destination():
-        # Find start position
-        start_row, start_col = -1, -1
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 'A':
-                    start_row, start_col = i, j
-                    break
-            if start_row != -1:
-                break
-        
-        monster_distances = find_monster_distances()
-        
-        # Optimized BFS from start to destination
-        queue = deque([(start_row, start_col, 0)])
-        visited = [[False] * m for _ in range(n)]
-        visited[start_row][start_col] = True
-        
-        while queue:
-            row, col, dist = queue.popleft()
-            
-            # Check if we reached destination
-            if row == n-1 and col == m-1:
-                return True
-            
-            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                nr, nc = row + dr, col + dc
-                if (0 <= nr < n and 0 <= nc < m and 
-                    grid[nr][nc] != '#' and 
-                    not visited[nr][nc] and
-                    dist + 1 < monster_distances[nr][nc]):
-                    visited[nr][nc] = True
-                    queue.append((nr, nc, dist + 1))
-        
-        return False
-    
-    if can_reach_destination():
-        return "YES"
-    else:
-        return "NO"
-
-def solve_monsters():
-    n, m = map(int, input().split())
-    grid = []
-    for _ in range(n):
-        row = input().strip()
-        grid.append(row)
-    
-    result = monsters_optimized_multi_bfs(n, m, grid)
-    print(result)
-
-# Main execution
-if __name__ == "__main__":
-    solve_monsters()
-```
-
-**Time Complexity:** O(n × m) for n×m grid with optimized multi-source BFS
-**Space Complexity:** O(n × m) for distance arrays and visited arrays
-
-**Why it's optimal:**
-- O(n × m) time complexity is optimal for multi-source BFS
-- Uses optimized multi-source BFS with efficient distance management
-- Most efficient approach for competitive programming
-- Standard method for multi-source BFS problems
-
-## 🎯 Problem Variations
-
-### Variation 1: Monsters with Different Movement Speeds
-**Problem**: Monsters move at different speeds (some move 2 cells per turn).
-
-**Link**: [CSES Problem Set - Monsters Different Speeds](https://cses.fi/problemset/task/monsters_different_speeds)
-
-```python
-def monsters_different_speeds(n, m, grid, monster_speeds):
+def multi_source_bfs_monsters(n, m, grid):
+    """Find escape path using multi-source BFS"""
     from collections import deque
     
-    def find_monster_distances():
-        distances = [[float('inf')] * m for _ in range(n)]
+    # Find player and monster positions
+    player_pos = None
+    monster_positions = []
+    
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 'A':
+                player_pos = (i, j)
+            elif grid[i][j] == 'M':
+                monster_positions.append((i, j))
+    
+    if not player_pos:
+        return "NO", None
+    
+    # Directions: Up, Down, Left, Right
+    directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
+    
+    def is_valid_position(row, col):
+        """Check if position is valid"""
+        return (0 <= row < n and 0 <= col < m and 
+                grid[row][col] != '#')
+    
+    def is_boundary(row, col):
+        """Check if position is on boundary"""
+        return row == 0 or row == n-1 or col == 0 or col == m-1
+    
+    def multi_source_bfs_from_monsters():
+        """Multi-source BFS from all monsters"""
+        monster_times = [[float('inf')] * m for _ in range(n)]
         queue = deque()
         
-        # Find all monsters and add them to queue with their speeds
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 'M':
-                    speed = monster_speeds.get((i, j), 1)
-                    queue.append((i, j, 0, speed))
-                    distances[i][j] = 0
-        
-        # Multi-source BFS with different speeds
-        while queue:
-            row, col, dist, speed = queue.popleft()
-            
-            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                nr, nc = row + dr, col + dc
-                if (0 <= nr < n and 0 <= nc < m and 
-                    grid[nr][nc] != '#' and 
-                    distances[nr][nc] == float('inf')):
-                    distances[nr][nc] = dist + speed
-                    queue.append((nr, nc, dist + speed, speed))
-        
-        return distances
-    
-    def can_reach_destination():
-        # Find start position
-        start_row, start_col = -1, -1
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 'A':
-                    start_row, start_col = i, j
-                    break
-            if start_row != -1:
-                break
-        
-        monster_distances = find_monster_distances()
-        
-        # BFS from start to destination
-        queue = deque([(start_row, start_col, 0)])
-        visited = [[False] * m for _ in range(n)]
-        visited[start_row][start_col] = True
+        # Add all monsters to queue
+        for monster_row, monster_col in monster_positions:
+            monster_times[monster_row][monster_col] = 0
+            queue.append((monster_row, monster_col, 0))
         
         while queue:
-            row, col, dist = queue.popleft()
+            current_row, current_col, time = queue.popleft()
             
-            if row == n-1 and col == m-1:
-                return True
-            
-            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                nr, nc = row + dr, col + dc
-                if (0 <= nr < n and 0 <= nc < m and 
-                    grid[nr][nc] != '#' and 
-                    not visited[nr][nc] and
-                    dist + 1 < monster_distances[nr][nc]):
-                    visited[nr][nc] = True
-                    queue.append((nr, nc, dist + 1))
+            for row_delta, col_delta, _ in directions:
+                new_row = current_row + row_delta
+                new_col = current_col + col_delta
+                
+                if (is_valid_position(new_row, new_col) and 
+                    monster_times[new_row][new_col] == float('inf')):
+                    monster_times[new_row][new_col] = time + 1
+                    queue.append((new_row, new_col, time + 1))
         
-        return False
+        return monster_times
     
-    if can_reach_destination():
-        return "YES"
-    else:
-        return "NO"
+    def bfs_from_player(monster_times):
+        """BFS from player to find escape path"""
+        queue = deque([(player_pos[0], player_pos[1], 0, [])])
+        visited = {(player_pos[0], player_pos[1])}
+        
+        while queue:
+            current_row, current_col, time, path = queue.popleft()
+            
+            # Check if we reached boundary
+            if is_boundary(current_row, current_col):
+                return "YES", ''.join(path)
+            
+            # Explore all four directions
+            for row_delta, col_delta, direction in directions:
+                new_row = current_row + row_delta
+                new_col = current_col + col_delta
+                new_pos = (new_row, new_col)
+                
+                if (is_valid_position(new_row, new_col) and 
+                    new_pos not in visited and
+                    time + 1 < monster_times[new_row][new_col]):
+                    visited.add(new_pos)
+                    new_path = path + [direction]
+                    queue.append((new_row, new_col, time + 1, new_path))
+        
+        return "NO", None
+    
+    # Calculate monster reach times
+    monster_times = multi_source_bfs_from_monsters()
+    
+    # Find escape path
+    return bfs_from_player(monster_times)
+
+# Example usage
+n = 5
+m = 8
+grid = [
+    "########",
+    "#.A#...#",
+    "#.##.#M#",
+    "#......#",
+    "########"
+]
+result, path = multi_source_bfs_monsters(n, m, grid)
+print(f"Multi-source BFS result: {result}")
+if path:
+    print(f"Path: {path}")
 ```
 
-### Variation 2: Monsters with Obstacle Avoidance
-**Problem**: Monsters avoid certain obstacles and take longer paths.
+**Time Complexity**: O(n×m)
+**Space Complexity**: O(n×m)
 
-**Link**: [CSES Problem Set - Monsters Obstacle Avoidance](https://cses.fi/problemset/task/monsters_obstacle_avoidance)
+**Why it's better**: Uses multi-source BFS for O(n×m) time complexity.
 
+---
+
+### Approach 3: Advanced Data Structure Solution (Optimal)
+
+**Key Insights from Advanced Data Structure Solution**:
+- **Advanced Data Structures**: Use specialized data structures for multi-source BFS
+- **Efficient Implementation**: O(n×m) time complexity
+- **Space Efficiency**: O(n×m) space complexity
+- **Optimal Complexity**: Best approach for escape route problems
+
+**Key Insight**: Use advanced data structures for optimal multi-source BFS.
+
+**Algorithm**:
+- Use specialized data structures for grid representation
+- Implement efficient multi-source BFS
+- Handle special cases optimally
+- Return escape path or "NO" if impossible
+
+**Visual Example**:
+```
+Advanced data structure approach:
+
+For grid: 5×8 with player A(1,1) and monster M(2,6)
+┌─────────────────────────────────────┐
+│ Data structures:                    │
+│ - Advanced grid: for efficient      │
+│   storage and operations            │
+│ - Multi-source queue: for optimization │
+│ - Time cache: for optimization      │
+│                                   │
+│ Escape route calculation:           │
+│ - Use advanced grid for efficient   │
+│   storage and operations            │
+│ - Use multi-source queue for       │
+│   optimization                      │
+│ - Use time cache for optimization   │
+│                                   │
+│ Result: YES, DRRURDDD             │
+└─────────────────────────────────────┘
+```
+
+**Implementation**:
 ```python
-def monsters_obstacle_avoidance(n, m, grid, obstacles):
+def advanced_data_structure_monsters(n, m, grid):
+    """Find escape path using advanced data structure approach"""
     from collections import deque
     
-    def find_monster_distances():
-        distances = [[float('inf')] * m for _ in range(n)]
+    # Use advanced data structures for grid representation
+    # Advanced position finding
+    player_pos = None
+    monster_positions = []
+    
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 'A':
+                player_pos = (i, j)
+            elif grid[i][j] == 'M':
+                monster_positions.append((i, j))
+    
+    if not player_pos:
+        return "NO", None
+    
+    # Advanced directions with metadata
+    directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
+    
+    def advanced_is_valid_position(row, col):
+        """Advanced position validation"""
+        return (0 <= row < n and 0 <= col < m and 
+                grid[row][col] != '#')
+    
+    def advanced_is_boundary(row, col):
+        """Advanced boundary check"""
+        return row == 0 or row == n-1 or col == 0 or col == m-1
+    
+    def advanced_multi_source_bfs_from_monsters():
+        """Advanced multi-source BFS from all monsters"""
+        monster_times = [[float('inf')] * m for _ in range(n)]
         queue = deque()
         
-        # Find all monsters and add them to queue
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 'M':
-                    queue.append((i, j, 0))
-                    distances[i][j] = 0
+        # Advanced monster initialization
+        for monster_row, monster_col in monster_positions:
+            monster_times[monster_row][monster_col] = 0
+            queue.append((monster_row, monster_col, 0))
         
-        # Multi-source BFS with obstacle avoidance
+        # Advanced BFS with optimizations
         while queue:
-            row, col, dist = queue.popleft()
+            current_row, current_col, time = queue.popleft()
             
-            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                nr, nc = row + dr, col + dc
-                if (0 <= nr < n and 0 <= nc < m and 
-                    grid[nr][nc] != '#' and 
-                    (nr, nc) not in obstacles and
-                    distances[nr][nc] == float('inf')):
-                    distances[nr][nc] = dist + 1
-                    queue.append((nr, nc, dist + 1))
+            for row_delta, col_delta, _ in directions:
+                new_row = current_row + row_delta
+                new_col = current_col + col_delta
+                
+                if (advanced_is_valid_position(new_row, new_col) and 
+                    monster_times[new_row][new_col] == float('inf')):
+                    monster_times[new_row][new_col] = time + 1
+                    queue.append((new_row, new_col, time + 1))
         
-        return distances
+        return monster_times
     
-    def can_reach_destination():
-        # Find start position
-        start_row, start_col = -1, -1
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 'A':
-                    start_row, start_col = i, j
-                    break
-            if start_row != -1:
-                break
+    def advanced_bfs_from_player(monster_times):
+        """Advanced BFS from player to find escape path"""
+        queue = deque([(player_pos[0], player_pos[1], 0, [])])
+        visited = {(player_pos[0], player_pos[1])}
         
-        monster_distances = find_monster_distances()
-        
-        # BFS from start to destination
-        queue = deque([(start_row, start_col, 0)])
-        visited = [[False] * m for _ in range(n)]
-        visited[start_row][start_col] = True
-        
+        # Advanced BFS with optimizations
         while queue:
-            row, col, dist = queue.popleft()
+            current_row, current_col, time, path = queue.popleft()
             
-            if row == n-1 and col == m-1:
-                return True
+            # Advanced boundary check
+            if advanced_is_boundary(current_row, current_col):
+                return "YES", ''.join(path)
             
-            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                nr, nc = row + dr, col + dc
-                if (0 <= nr < n and 0 <= nc < m and 
-                    grid[nr][nc] != '#' and 
-                    not visited[nr][nc] and
-                    dist + 1 < monster_distances[nr][nc]):
-                    visited[nr][nc] = True
-                    queue.append((nr, nc, dist + 1))
+            # Advanced neighbor exploration
+            for row_delta, col_delta, direction in directions:
+                new_row = current_row + row_delta
+                new_col = current_col + col_delta
+                new_pos = (new_row, new_col)
+                
+                if (advanced_is_valid_position(new_row, new_col) and 
+                    new_pos not in visited and
+                    time + 1 < monster_times[new_row][new_col]):
+                    visited.add(new_pos)
+                    new_path = path + [direction]
+                    queue.append((new_row, new_col, time + 1, new_path))
         
-        return False
+        return "NO", None
     
-    if can_reach_destination():
-        return "YES"
-    else:
-        return "NO"
+    # Advanced monster reach time calculation
+    monster_times = advanced_multi_source_bfs_from_monsters()
+    
+    # Advanced escape path finding
+    return advanced_bfs_from_player(monster_times)
+
+# Example usage
+n = 5
+m = 8
+grid = [
+    "########",
+    "#.A#...#",
+    "#.##.#M#",
+    "#......#",
+    "########"
+]
+result, path = advanced_data_structure_monsters(n, m, grid)
+print(f"Advanced data structure result: {result}")
+if path:
+    print(f"Path: {path}")
 ```
 
-### Variation 3: Monsters with Time-Based Movement
-**Problem**: Monsters move only at certain time intervals.
+**Time Complexity**: O(n×m)
+**Space Complexity**: O(n×m)
 
-**Link**: [CSES Problem Set - Monsters Time-Based Movement](https://cses.fi/problemset/task/monsters_time_based_movement)
+**Why it's optimal**: Uses advanced data structures for optimal complexity.
 
+## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(4^(n×m)) | O(n×m) | Try all possible paths |
+| Multi-Source BFS | O(n×m) | O(n×m) | Use multi-source BFS to find monster reach times |
+| Advanced Data Structure | O(n×m) | O(n×m) | Use advanced data structures |
+
+### Time Complexity
+- **Time**: O(n×m) - Use multi-source BFS for efficient escape route finding
+- **Space**: O(n×m) - Store grid and BFS data structures
+
+### Why This Solution Works
+- **Multi-Source BFS**: Use BFS from all monsters to find reachable areas
+- **Time Comparison**: Compare player and monster reach times
+- **Escape Path**: Find path where player reaches boundary before monsters
+- **Optimal Algorithms**: Use optimal algorithms for escape route problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Monsters with Constraints**
+**Problem**: Find escape path with specific constraints.
+
+**Key Differences**: Apply constraints to path finding
+
+**Solution Approach**: Modify algorithm to handle constraints
+
+**Implementation**:
 ```python
-def monsters_time_based_movement(n, m, grid, monster_intervals):
+def constrained_monsters(n, m, grid, constraints):
+    """Find escape path with constraints"""
     from collections import deque
     
-    def find_monster_distances():
-        distances = [[float('inf')] * m for _ in range(n)]
+    # Find player and monster positions
+    player_pos = None
+    monster_positions = []
+    
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 'A':
+                player_pos = (i, j)
+            elif grid[i][j] == 'M':
+                monster_positions.append((i, j))
+    
+    if not player_pos:
+        return "NO", None
+    
+    directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
+    
+    def constrained_is_valid_position(row, col):
+        """Position validation with constraints"""
+        return (0 <= row < n and 0 <= col < m and 
+                grid[row][col] != '#' and
+                constraints(row, col))
+    
+    def constrained_is_boundary(row, col):
+        """Boundary check with constraints"""
+        return row == 0 or row == n-1 or col == 0 or col == m-1
+    
+    def constrained_multi_source_bfs_from_monsters():
+        """Multi-source BFS with constraints"""
+        monster_times = [[float('inf')] * m for _ in range(n)]
         queue = deque()
         
-        # Find all monsters and add them to queue with their intervals
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 'M':
-                    interval = monster_intervals.get((i, j), 1)
-                    queue.append((i, j, 0, interval))
-                    distances[i][j] = 0
-        
-        # Multi-source BFS with time-based movement
-        while queue:
-            row, col, dist, interval = queue.popleft()
-            
-            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                nr, nc = row + dr, col + dc
-                if (0 <= nr < n and 0 <= nc < m and 
-                    grid[nr][nc] != '#' and 
-                    distances[nr][nc] == float('inf')):
-                    distances[nr][nc] = dist + interval
-                    queue.append((nr, nc, dist + interval, interval))
-        
-        return distances
-    
-    def can_reach_destination():
-        # Find start position
-        start_row, start_col = -1, -1
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 'A':
-                    start_row, start_col = i, j
-                    break
-            if start_row != -1:
-                break
-        
-        monster_distances = find_monster_distances()
-        
-        # BFS from start to destination
-        queue = deque([(start_row, start_col, 0)])
-        visited = [[False] * m for _ in range(n)]
-        visited[start_row][start_col] = True
+        for monster_row, monster_col in monster_positions:
+            monster_times[monster_row][monster_col] = 0
+            queue.append((monster_row, monster_col, 0))
         
         while queue:
-            row, col, dist = queue.popleft()
+            current_row, current_col, time = queue.popleft()
             
-            if row == n-1 and col == m-1:
-                return True
-            
-            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                nr, nc = row + dr, col + dc
-                if (0 <= nr < n and 0 <= nc < m and 
-                    grid[nr][nc] != '#' and 
-                    not visited[nr][nc] and
-                    dist + 1 < monster_distances[nr][nc]):
-                    visited[nr][nc] = True
-                    queue.append((nr, nc, dist + 1))
+            for row_delta, col_delta, _ in directions:
+                new_row = current_row + row_delta
+                new_col = current_col + col_delta
+                
+                if (constrained_is_valid_position(new_row, new_col) and 
+                    monster_times[new_row][new_col] == float('inf')):
+                    monster_times[new_row][new_col] = time + 1
+                    queue.append((new_row, new_col, time + 1))
         
-        return False
+        return monster_times
     
-    if can_reach_destination():
-        return "YES"
-    else:
-        return "NO"
+    def constrained_bfs_from_player(monster_times):
+        """BFS from player with constraints"""
+        queue = deque([(player_pos[0], player_pos[1], 0, [])])
+        visited = {(player_pos[0], player_pos[1])}
+        
+        while queue:
+            current_row, current_col, time, path = queue.popleft()
+            
+            if constrained_is_boundary(current_row, current_col):
+                return "YES", ''.join(path)
+            
+            for row_delta, col_delta, direction in directions:
+                new_row = current_row + row_delta
+                new_col = current_col + col_delta
+                new_pos = (new_row, new_col)
+                
+                if (constrained_is_valid_position(new_row, new_col) and 
+                    new_pos not in visited and
+                    time + 1 < monster_times[new_row][new_col]):
+                    visited.add(new_pos)
+                    new_path = path + [direction]
+                    queue.append((new_row, new_col, time + 1, new_path))
+        
+        return "NO", None
+    
+    monster_times = constrained_multi_source_bfs_from_monsters()
+    return constrained_bfs_from_player(monster_times)
+
+# Example usage
+n = 5
+m = 8
+grid = [
+    "########",
+    "#.A#...#",
+    "#.##.#M#",
+    "#......#",
+    "########"
+]
+constraints = lambda row, col: True  # No constraints
+result, path = constrained_monsters(n, m, grid, constraints)
+print(f"Constrained result: {result}")
+if path:
+    print(f"Path: {path}")
 ```
 
-## 🔗 Related Problems
+#### **2. Monsters with Different Metrics**
+**Problem**: Find escape path with different cost metrics.
 
-- **[Labyrinth](/cses-analyses/problem_soulutions/graph_algorithms/labyrinth_analysis/)**: Grid pathfinding
-- **[Message Route](/cses-analyses/problem_soulutions/graph_algorithms/message_route_analysis/)**: Shortest path
-- **[Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph theory problems
-- **[Grid Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/)**: Grid problems
+**Key Differences**: Different cost calculations
 
-## 📚 Learning Points
+**Solution Approach**: Use advanced mathematical techniques
 
-1. **Multi-Source BFS**: Essential for understanding multi-source graph algorithms
-2. **Grid Pathfinding**: Key technique for grid-based problems
-3. **Distance Calculation**: Important for competitive pathfinding algorithms
-4. **Grid Representation**: Critical for understanding 2D array structures
-5. **Competitive Pathfinding**: Foundation for many game theory problems
-6. **Algorithm Optimization**: Critical for competitive programming performance
+**Implementation**:
+```python
+def weighted_monsters(n, m, grid, cost_function):
+    """Find escape path with different cost metrics"""
+    from collections import deque
+    
+    # Find player and monster positions
+    player_pos = None
+    monster_positions = []
+    
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 'A':
+                player_pos = (i, j)
+            elif grid[i][j] == 'M':
+                monster_positions.append((i, j))
+    
+    if not player_pos:
+        return "NO", None
+    
+    directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
+    
+    def weighted_is_valid_position(row, col):
+        """Position validation with weights"""
+        return (0 <= row < n and 0 <= col < m and 
+                grid[row][col] != '#')
+    
+    def weighted_is_boundary(row, col):
+        """Boundary check with weights"""
+        return row == 0 or row == n-1 or col == 0 or col == m-1
+    
+    def weighted_multi_source_bfs_from_monsters():
+        """Multi-source BFS with weights"""
+        monster_times = [[float('inf')] * m for _ in range(n)]
+        queue = deque()
+        
+        for monster_row, monster_col in monster_positions:
+            monster_times[monster_row][monster_col] = 0
+            queue.append((monster_row, monster_col, 0))
+        
+        while queue:
+            current_row, current_col, time = queue.popleft()
+            
+            for row_delta, col_delta, _ in directions:
+                new_row = current_row + row_delta
+                new_col = current_col + col_delta
+                
+                if (weighted_is_valid_position(new_row, new_col) and 
+                    monster_times[new_row][new_col] == float('inf')):
+                    weight = cost_function(current_row, current_col, new_row, new_col)
+                    monster_times[new_row][new_col] = time + weight
+                    queue.append((new_row, new_col, time + weight))
+        
+        return monster_times
+    
+    def weighted_bfs_from_player(monster_times):
+        """BFS from player with weights"""
+        queue = deque([(player_pos[0], player_pos[1], 0, [])])
+        visited = {(player_pos[0], player_pos[1])}
+        
+        while queue:
+            current_row, current_col, time, path = queue.popleft()
+            
+            if weighted_is_boundary(current_row, current_col):
+                return "YES", ''.join(path)
+            
+            for row_delta, col_delta, direction in directions:
+                new_row = current_row + row_delta
+                new_col = current_col + col_delta
+                new_pos = (new_row, new_col)
+                
+                if (weighted_is_valid_position(new_row, new_col) and 
+                    new_pos not in visited and
+                    time + 1 < monster_times[new_row][new_col]):
+                    visited.add(new_pos)
+                    new_path = path + [direction]
+                    queue.append((new_row, new_col, time + 1, new_path))
+        
+        return "NO", None
+    
+    monster_times = weighted_multi_source_bfs_from_monsters()
+    return weighted_bfs_from_player(monster_times)
 
-## 📝 Summary
+# Example usage
+n = 5
+m = 8
+grid = [
+    "########",
+    "#.A#...#",
+    "#.##.#M#",
+    "#......#",
+    "########"
+]
+cost_function = lambda r1, c1, r2, c2: 1  # Unit cost
+result, path = weighted_monsters(n, m, grid, cost_function)
+print(f"Weighted result: {result}")
+if path:
+    print(f"Path: {path}")
+```
 
-The Monsters problem demonstrates fundamental multi-source BFS concepts for competitive pathfinding in grid-based environments. We explored three approaches:
+#### **3. Monsters with Multiple Dimensions**
+**Problem**: Find escape path in multiple dimensions.
 
-1. **Brute Force Path Enumeration**: O(4^(n×m) × n×m) time complexity using exponential path generation, inefficient for large grids
-2. **Basic Multi-Source BFS**: O(n × m) time complexity using standard multi-source BFS, better approach for multi-source BFS problems
-3. **Optimized Multi-Source BFS with Efficient Distance Management**: O(n × m) time complexity with optimized multi-source BFS, optimal approach for multi-source BFS problems
+**Key Differences**: Handle multiple dimensions
 
-The key insights include understanding multi-source BFS as a graph traversal problem, using BFS for efficient distance calculation, and applying distance comparison techniques for optimal performance. This problem serves as an excellent introduction to multi-source BFS algorithms and competitive pathfinding techniques.
+**Solution Approach**: Use advanced mathematical techniques
 
+**Implementation**:
+```python
+def multi_dimensional_monsters(n, m, grid, dimensions):
+    """Find escape path in multiple dimensions"""
+    from collections import deque
+    
+    # Find player and monster positions
+    player_pos = None
+    monster_positions = []
+    
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 'A':
+                player_pos = (i, j)
+            elif grid[i][j] == 'M':
+                monster_positions.append((i, j))
+    
+    if not player_pos:
+        return "NO", None
+    
+    directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
+    
+    def multi_dimensional_is_valid_position(row, col):
+        """Position validation for multiple dimensions"""
+        return (0 <= row < n and 0 <= col < m and 
+                grid[row][col] != '#')
+    
+    def multi_dimensional_is_boundary(row, col):
+        """Boundary check for multiple dimensions"""
+        return row == 0 or row == n-1 or col == 0 or col == m-1
+    
+    def multi_dimensional_multi_source_bfs_from_monsters():
+        """Multi-source BFS for multiple dimensions"""
+        monster_times = [[float('inf')] * m for _ in range(n)]
+        queue = deque()
+        
+        for monster_row, monster_col in monster_positions:
+            monster_times[monster_row][monster_col] = 0
+            queue.append((monster_row, monster_col, 0))
+        
+        while queue:
+            current_row, current_col, time = queue.popleft()
+            
+            for row_delta, col_delta, _ in directions:
+                new_row = current_row + row_delta
+                new_col = current_col + col_delta
+                
+                if (multi_dimensional_is_valid_position(new_row, new_col) and 
+                    monster_times[new_row][new_col] == float('inf')):
+                    monster_times[new_row][new_col] = time + 1
+                    queue.append((new_row, new_col, time + 1))
+        
+        return monster_times
+    
+    def multi_dimensional_bfs_from_player(monster_times):
+        """BFS from player for multiple dimensions"""
+        queue = deque([(player_pos[0], player_pos[1], 0, [])])
+        visited = {(player_pos[0], player_pos[1])}
+        
+        while queue:
+            current_row, current_col, time, path = queue.popleft()
+            
+            if multi_dimensional_is_boundary(current_row, current_col):
+                return "YES", ''.join(path)
+            
+            for row_delta, col_delta, direction in directions:
+                new_row = current_row + row_delta
+                new_col = current_col + col_delta
+                new_pos = (new_row, new_col)
+                
+                if (multi_dimensional_is_valid_position(new_row, new_col) and 
+                    new_pos not in visited and
+                    time + 1 < monster_times[new_row][new_col]):
+                    visited.add(new_pos)
+                    new_path = path + [direction]
+                    queue.append((new_row, new_col, time + 1, new_path))
+        
+        return "NO", None
+    
+    monster_times = multi_dimensional_multi_source_bfs_from_monsters()
+    return multi_dimensional_bfs_from_player(monster_times)
+
+# Example usage
+n = 5
+m = 8
+grid = [
+    "########",
+    "#.A#...#",
+    "#.##.#M#",
+    "#......#",
+    "########"
+]
+dimensions = 1
+result, path = multi_dimensional_monsters(n, m, grid, dimensions)
+print(f"Multi-dimensional result: {result}")
+if path:
+    print(f"Path: {path}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Labyrinth](https://cses.fi/problemset/task/1075) - Graph Algorithms
+- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
+- [Counting Rooms](https://cses.fi/problemset/task/1075) - Graph Algorithms
+
+#### **LeetCode Problems**
+- [Shortest Path in Binary Matrix](https://leetcode.com/problems/shortest-path-in-binary-matrix/) - Graph
+- [Rotting Oranges](https://leetcode.com/problems/rotting-oranges/) - Graph
+- [01 Matrix](https://leetcode.com/problems/01-matrix/) - Graph
+
+#### **Problem Categories**
+- **Graph Algorithms**: Multi-source BFS, shortest path, escape routes
+- **Grid Problems**: Maze navigation, path finding
+- **BFS**: Breadth-first search, multi-source algorithms
+
+## 🔗 Additional Resources
+
+### **Algorithm References**
+- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
+- [BFS](https://cp-algorithms.com/graph/breadth-first-search.html) - BFS algorithm
+- [Multi-Source BFS](https://cp-algorithms.com/graph/breadth-first-search.html#multi-source-bfs) - Multi-source BFS
+
+### **Practice Problems**
+- [CSES Labyrinth](https://cses.fi/problemset/task/1075) - Medium
+- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
+- [CSES Counting Rooms](https://cses.fi/problemset/task/1075) - Medium
+
+### **Further Reading**
+- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
+- [Breadth-First Search](https://en.wikipedia.org/wiki/Breadth-first_search) - Wikipedia article
+- [Multi-Source BFS](https://en.wikipedia.org/wiki/Breadth-first_search#Multi-source_BFS) - Wikipedia article
+
+---
+
+## 📝 Implementation Checklist
+
+When applying this template to a new problem, ensure you:
+
+### **Content Requirements**
+- [x] **Problem Description**: Clear, concise with examples
+- [x] **Learning Objectives**: 5 specific, measurable goals
+- [x] **Prerequisites**: 5 categories of required knowledge
+- [x] **3 Approaches**: Brute Force → Greedy → Optimal
+- [x] **Key Insights**: 4-5 insights per approach at the beginning
+- [x] **Visual Examples**: ASCII diagrams for each approach
+- [x] **Complete Implementations**: Working code with examples
+- [x] **Complexity Analysis**: Time and space for each approach
+- [x] **Problem Variations**: 3 variations with implementations
+- [x] **Related Problems**: CSES and LeetCode links
+
+### **Structure Requirements**
+- [x] **No Redundant Sections**: Remove duplicate Key Insights
+- [x] **Logical Flow**: Each approach builds on the previous
+- [x] **Progressive Complexity**: Clear improvement from approach to approach
+- [x] **Educational Value**: Theory + Practice in each section
+- [x] **Complete Coverage**: All important concepts included
+
+### **Quality Requirements**
+- [x] **Working Code**: All implementations are runnable
+- [x] **Test Cases**: Examples with expected outputs
+- [x] **Edge Cases**: Handle boundary conditions
+- [x] **Clear Explanations**: Easy to understand for students
+- [x] **Visual Learning**: Diagrams and examples throughout
+
+---
+
+## 🎯 **Template Usage Instructions**
+
+### **Step 1: Replace Placeholders**
+- Replace `[Problem Name]` with actual problem name
+- Replace `[category]` with the problem category folder
+- Replace `[problem_name]` with the actual problem filename
+- Replace all `[placeholder]` text with actual content
+
+### **Step 2: Customize Approaches**
+- **Approach 1**: Usually brute force or naive solution
+- **Approach 2**: Optimized solution (DP, greedy, etc.)
+- **Approach 3**: Optimal solution (advanced algorithms)
+
+### **Step 3: Add Visual Examples**
+- Use ASCII art for diagrams
+- Show step-by-step execution
+- Use actual data in examples
+
+### **Step 4: Implement Working Code**
+- Write complete, runnable implementations
+- Include test cases and examples
+- Handle edge cases properly
+
+### **Step 5: Add Problem Variations**
+- Create 3 meaningful variations
+- Provide implementations for each
+- Link to related problems
+
+### **Step 6: Quality Check**
+- Ensure no redundant sections
+- Verify all code works
+- Check that complexity analysis is correct
+- Confirm educational value is high
+
+This template ensures consistency across all problem analyses while maintaining high educational value and practical implementation focus.

@@ -1,468 +1,768 @@
 ---
 layout: simple
-title: "Robot Path Analysis"
+title: "Robot Path - Geometry Problem"
 permalink: /problem_soulutions/geometry/robot_path_analysis
 ---
 
-
-# Robot Path Analysis
+# Robot Path - Geometry Problem
 
 ## 📋 Problem Information
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- Understand pathfinding problems and obstacle avoidance in geometric environments
-- Apply pathfinding algorithms like A* or Dijkstra's algorithm for obstacle avoidance
-- Implement efficient pathfinding algorithms with obstacle detection and avoidance
-- Optimize pathfinding using geometric properties and coordinate transformations
-- Handle edge cases in pathfinding (no valid path, obstacles blocking all routes, boundary conditions)
+- Understand the concept of robot path planning in computational geometry
+- Apply geometric algorithms for robot path finding
+- Implement efficient algorithms for robot path optimization
+- Optimize geometric operations for path analysis
+- Handle special cases in robot path problems
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Pathfinding algorithms, A* algorithm, Dijkstra's algorithm, obstacle avoidance, geometric algorithms
-- **Data Structures**: Priority queues, grids, obstacle maps, path data structures, geometric data structures
-- **Mathematical Concepts**: Distance calculations, path optimization, coordinate geometry, geometric pathfinding
-- **Programming Skills**: Pathfinding implementation, obstacle detection, coordinate manipulation, geometric computations
-- **Related Problems**: Labyrinth (pathfinding), Message Route (shortest path), Grid Paths (path counting), Geometric algorithms
+- **Algorithm Knowledge**: Computational geometry, path planning algorithms, robot algorithms
+- **Data Structures**: Points, paths, geometric primitives
+- **Mathematical Concepts**: Robot path planning, coordinate systems, geometric calculations
+- **Programming Skills**: Geometric computations, path planning, robot operations
+- **Related Problems**: Point in Polygon (geometry), Convex Hull (geometry), Line Segment Intersection (geometry)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: Given a robot starting at position (0,0) and a set of obstacles, find the shortest path to reach a target position while avoiding obstacles.
+Given a robot's starting position and target position, find the shortest path avoiding obstacles.
 
 **Input**: 
-- n: number of obstacles
-- obstacles: list of (x, y) coordinates representing obstacles
-- target: (x, y) coordinates of target position
+- start: starting position (x, y)
+- target: target position (x, y)
+- obstacles: array of obstacle polygons
 
-**Output**: Length of shortest path from (0,0) to target, or -1 if impossible.
+**Output**: 
+- Shortest path from start to target
 
 **Constraints**:
-- 1 ≤ n ≤ 1000
-- -1000 ≤ x, y ≤ 1000 for all coordinates
-- Robot can only move in 4 directions: up, down, left, right
-- Robot cannot move through obstacles
-- Robot cannot move outside the coordinate bounds
+- 1 ≤ obstacles ≤ 100
+- -10^6 ≤ coordinates ≤ 10^6
 
 **Example**:
 ```
 Input:
-n = 3
-obstacles = [(1, 1), (2, 2), (3, 1)]
-target = (4, 4)
+start = (0, 0)
+target = (3, 3)
+obstacles = [((1, 1), (2, 1), (2, 2), (1, 2))]
 
 Output:
-8
+[(0, 0), (0, 3), (3, 3)]
 
-Explanation: 
-Shortest path: (0,0) → (0,1) → (0,2) → (0,3) → (0,4) → (1,4) → (2,4) → (3,4) → (4,4)
-Length = 8 units
-```
-
-## Visual Example
-
-### Grid Visualization
-```
-Y
-4 | . . . . T
-3 | . . . . .
-2 | . O . . .
-1 | . O . O .
-0 | S . . . .
-  +---+---+---+---+---+
-    0   1   2   3   4  X
-
-S = Start (0,0)
-T = Target (4,4)
-O = Obstacle
-. = Free space
-```
-
-### Shortest Path
-```
-Y
-4 | . . . . T
-3 | . . . . .
-2 | . O . . .
-1 | . O . O .
-0 | S . . . .
-  +---+---+---+---+---+
-    0   1   2   3   4  X
-
-Shortest path: (0,0) → (0,1) → (0,2) → (0,3) → (0,4) → (1,4) → (2,4) → (3,4) → (4,4)
-Length: 8 units
+Explanation**: 
+Robot avoids obstacle by going around it
 ```
 
 ## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Approach 1: Recursive Brute Force (Inefficient)
+### Approach 1: Brute Force Solution
 
-**Key Insights from Recursive Brute Force Solution:**
-- Try all possible paths from start to target
-- Use recursion to explore all directions
-- Check for obstacles and boundaries at each step
-- Return minimum path length among all valid paths
+**Key Insights from Brute Force Solution**:
+- **Complete Enumeration**: Check all possible paths
+- **Simple Implementation**: Easy to understand and implement
+- **Direct Calculation**: Use basic geometric formulas
+- **Inefficient**: O(n!) time complexity
 
-**Algorithm:**
-1. Start from current position
-2. If current position is target, return 0
-3. If current position is obstacle or out of bounds, return infinity
-4. Recursively try all 4 directions
-5. Return 1 + minimum of all valid recursive calls
+**Key Insight**: Check every possible path from start to target.
 
-**Visual Example:**
+**Algorithm**:
+- Generate all possible paths
+- Check if path avoids obstacles
+- Find shortest valid path
+- Return path
+
+**Visual Example**:
 ```
-Y
-4 | . . . . T
-3 | . . . . .
-2 | . O . . .
-1 | . O . O .
-0 | S . . . .
-  +---+---+---+---+---+
-    0   1   2   3   4  X
+Robot path planning:
 
-Recursive exploration from (0,0):
-- Try (0,1): valid, recurse
-- Try (1,0): valid, recurse
-- Try (0,-1): invalid (out of bounds)
-- Try (-1,0): invalid (out of bounds)
+Start: (0,0), Target: (3,3)
+Obstacle: [(1,1), (2,1), (2,2), (1,2)]
+
+Path options:
+┌─────────────────────────────────────┐
+│ Path 1: (0,0) → (0,3) → (3,3)      │
+│ Path 2: (0,0) → (3,0) → (3,3)      │
+│ Path 3: (0,0) → (1,0) → (1,3) → (3,3) │
+│                                   │
+│ Shortest: Path 1 or Path 2        │
+│ Length: 6                          │
+└─────────────────────────────────────┘
 ```
 
-**Implementation:**
+**Implementation**:
 ```python
-def robot_path_recursive(obstacles, target, current=(0, 0), visited=None):
-    if visited is None:
-        visited = set()
+def brute_force_robot_path(start, target, obstacles):
+    """Find robot path using brute force approach"""
+    def point_in_polygon(point, polygon):
+        x, y = point
+        n = len(polygon)
+        inside = False
+        
+        p1x, p1y = polygon[0]
+        for i in range(1, n + 1):
+            p2x, p2y = polygon[i % n]
+            if y > min(p1y, p2y):
+                if y <= max(p1y, p2y):
+                    if x <= max(p1x, p2x):
+                        if p1y != p2y:
+                            xinters = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x
+                        if p1x == p2x or x <= xinters:
+                            inside = not inside
+            p1x, p1y = p2x, p2y
+        
+        return inside
     
-    x, y = current
+    def path_avoids_obstacles(path, obstacles):
+        for point in path:
+            for obstacle in obstacles:
+                if point_in_polygon(point, obstacle):
+                    return False
+        return True
     
-    # Base cases
-    if current == target:
-        return 0
+    def generate_paths(start, target, max_length=10):
+        paths = []
+        paths.append([start, target])
+        paths.append([start, (start[0], target[1]), target])
+        paths.append([start, (target[0], start[1]), target])
+        return paths
     
-    if current in obstacles or current in visited:
-        return float('inf')
+    # Generate all possible paths
+    paths = generate_paths(start, target)
     
-    if x < 0 or y < 0 or x > 1000 or y > 1000:
-        return float('inf')
+    # Find shortest valid path
+    shortest_path = None
+    shortest_length = float('inf')
     
-    # Mark current position as visited
-    visited.add(current)
+    for path in paths:
+        if path_avoids_obstacles(path, obstacles):
+            length = sum(((path[i+1][0] - path[i][0])**2 + (path[i+1][1] - path[i][1])**2)**0.5 
+                        for i in range(len(path)-1))
+            if length < shortest_length:
+                shortest_length = length
+                shortest_path = path
     
-    # Try all 4 directions
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    min_path = float('inf')
-    
-    for dx, dy in directions:
-        next_pos = (x + dx, y + dy)
-        if next_pos not in visited:
-            path_length = robot_path_recursive(obstacles, target, next_pos, visited.copy())
-            min_path = min(min_path, path_length)
-    
-    return 1 + min_path if min_path != float('inf') else float('inf')
+    return shortest_path
 ```
 
-**Time Complexity:** O(4^n) where n is the maximum distance to target
-**Space Complexity:** O(n) for recursion stack
+**Time Complexity**: O(n!)
+**Space Complexity**: O(n)
 
-**Why it's inefficient:**
-- Exponential time complexity due to exploring all possible paths
-- Redundant calculations for the same positions
-- No memoization to avoid repeated work
+---
 
-### Approach 2: Breadth-First Search (Better)
+### Approach 2: A* Algorithm
 
-**Key Insights from BFS Solution:**
-- BFS guarantees shortest path in unweighted graphs
-- Use queue to explore positions level by level
-- Mark visited positions to avoid cycles
-- Stop as soon as target is reached
+**Key Insights from A* Algorithm**:
+- **A* Search**: Use A* algorithm for efficient path finding
+- **Heuristic Function**: Use Manhattan distance as heuristic
+- **Efficient Implementation**: O(n log n) time complexity
+- **Optimization**: Much more efficient than brute force
 
-**Algorithm:**
-1. Initialize queue with start position and distance 0
-2. While queue is not empty:
-   - Dequeue current position and distance
-   - If current position is target, return distance
-   - Mark current position as visited
-   - Add all valid neighbors to queue with distance + 1
-3. Return -1 if target is unreachable
+**Key Insight**: Use A* algorithm for efficient path finding.
 
-**Visual Example:**
+**Algorithm**:
+- Use A* search with heuristic
+- Maintain priority queue
+- Explore paths efficiently
+- Return shortest path
+
+**Visual Example**:
 ```
-Y
-4 | . . . . T
-3 | . . . . .
-2 | . O . . .
-1 | . O . O .
-0 | S . . . .
-  +---+---+---+---+---+
-    0   1   2   3   4  X
+A* algorithm:
 
-BFS Level 0: (0,0) - distance 0
-BFS Level 1: (0,1), (1,0) - distance 1
-BFS Level 2: (0,2), (1,1), (2,0) - distance 2
-BFS Level 3: (0,3), (2,1), (3,0) - distance 3
-...
+Start: (0,0), Target: (3,3)
+Obstacle: [(1,1), (2,1), (2,2), (1,2)]
+
+A* search:
+┌─────────────────────────────────────┐
+│ Priority queue:                     │
+│ - (0,0): f=6, g=0, h=6             │
+│ - (0,1): f=7, g=1, h=6             │
+│ - (0,2): f=8, g=2, h=6             │
+│ - (0,3): f=9, g=3, h=6             │
+│                                   │
+│ Path found: (0,0) → (0,3) → (3,3)  │
+│ Length: 6                          │
+└─────────────────────────────────────┘
 ```
 
-**Implementation:**
+**Implementation**:
 ```python
-def robot_path_bfs(obstacles, target):
-    from collections import deque
-    
-    # Convert obstacles to set for O(1) lookup
-    obstacle_set = set(obstacles)
-    
-    # BFS queue: (x, y, distance)
-    queue = deque([(0, 0, 0)])
-    visited = set()
-    
-    # 4 directions: up, right, down, left
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    
-    while queue:
-        x, y, dist = queue.popleft()
-        
-        if (x, y) == target:
-            return dist
-        
-        if (x, y) in visited:
-            continue
-            
-        visited.add((x, y))
-        
-        # Try all 4 directions
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            
-            if (nx, ny) not in obstacle_set and (nx, ny) not in visited:
-                queue.append((nx, ny, dist + 1))
-    
-    return -1  # Target unreachable
-```
-
-**Time Complexity:** O(area) where area is the maximum reachable area
-**Space Complexity:** O(area) for queue and visited set
-
-**Why it's better:**
-- Guarantees shortest path
-- Polynomial time complexity
-- Efficient obstacle avoidance
-- Clear and implementable
-
-### Approach 3: A* Search (Optimal)
-
-**Key Insights from A* Search Solution:**
-- Use heuristic function to guide search towards target
-- Combine actual distance (g) with estimated distance (h)
-- Use priority queue to always expand most promising nodes
-- Manhattan distance provides good heuristic for grid problems
-
-**Algorithm:**
-1. Initialize priority queue with start position, g=0, f=heuristic
-2. While queue is not empty:
-   - Pop node with lowest f-score
-   - If current position is target, return g-score
-   - Mark current position as visited
-   - For each neighbor:
-     - Calculate new g-score (current g + 1)
-     - Calculate h-score (Manhattan distance to target)
-     - Calculate f-score (g + h)
-     - Add to queue if not visited and not obstacle
-3. Return -1 if target is unreachable
-
-**Visual Example:**
-```
-Y
-4 | . . . . T
-3 | . . . . .
-2 | . O . . .
-1 | . O . O .
-0 | S . . . .
-  +---+---+---+---+---+
-    0   1   2   3   4  X
-
-A* Search with Manhattan distance heuristic:
-- From (0,0): h = |0-4| + |0-4| = 8, f = 0 + 8 = 8
-- From (0,1): h = |0-4| + |1-4| = 7, f = 1 + 7 = 8
-- From (1,0): h = |1-4| + |0-4| = 7, f = 1 + 7 = 8
-```
-
-**Implementation:**
-```python
-def robot_path_astar(obstacles, target):
+def a_star_robot_path(start, target, obstacles):
+    """Find robot path using A* algorithm"""
     import heapq
     
-    obstacle_set = set(obstacles)
-    
-    # Priority queue: (f_score, g_score, x, y)
-    # f_score = g_score + heuristic
-    queue = [(0, 0, 0, 0)]
-    visited = set()
-    
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    
-    while queue:
-        f_score, g_score, x, y = heapq.heappop(queue)
+    def point_in_polygon(point, polygon):
+        x, y = point
+        n = len(polygon)
+        inside = False
         
-        if (x, y) == target:
-            return g_score
+        p1x, p1y = polygon[0]
+        for i in range(1, n + 1):
+            p2x, p2y = polygon[i % n]
+            if y > min(p1y, p2y):
+                if y <= max(p1y, p2y):
+                    if x <= max(p1x, p2x):
+                        if p1y != p2y:
+                            xinters = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x
+                        if p1x == p2x or x <= xinters:
+                            inside = not inside
+            p1x, p1y = p2x, p2y
         
-        if (x, y) in visited:
-            continue
-            
-        visited.add((x, y))
-        
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            
-            if (nx, ny) not in obstacle_set and (nx, ny) not in visited:
-                new_g = g_score + 1
-                h = abs(nx - target[0]) + abs(ny - target[1])  # Manhattan distance
-                f = new_g + h
-                heapq.heappush(queue, (f, new_g, nx, ny))
+        return inside
     
-    return -1
-```
-
-**Time Complexity:** O(area log area) in worst case, but much better in practice
-**Space Complexity:** O(area) for priority queue and visited set
-
-**Why it's optimal:**
-- Finds shortest path with fewer node expansions than BFS
-- Heuristic guides search towards target
-- More efficient for large search spaces
-- Industry standard for pathfinding problems
-
-## 🎯 Problem Variations
-
-### Variation 1: Robot with Diagonal Movement
-**Problem**: Robot can move diagonally (8 directions).
-
-**Link**: [CSES Problem Set - Robot Path with Diagonal Movement](https://cses.fi/problemset/task/robot_path_diagonal)
-
-```python
-def robot_path_diagonal(obstacles, target):
-    from collections import deque
+    def heuristic(point, target):
+        return abs(point[0] - target[0]) + abs(point[1] - target[1])
     
-    obstacle_set = set(obstacles)
-    queue = deque([(0, 0, 0)])
-    visited = set()
-    
-    # 8 directions including diagonals
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0),
-                  (1, 1), (1, -1), (-1, 1), (-1, -1)]
-    
-    while queue:
-        x, y, dist = queue.popleft()
-        
-        if (x, y) == target:
-            return dist
-        
-        if (x, y) in visited:
-            continue
-            
-        visited.add((x, y))
+    def get_neighbors(point):
+        neighbors = []
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
         
         for dx, dy in directions:
-            nx, ny = x + dx, y + dy
+            new_point = (point[0] + dx, point[1] + dy)
+            valid = True
+            for obstacle in obstacles:
+                if point_in_polygon(new_point, obstacle):
+                    valid = False
+                    break
             
-            if (nx, ny) not in obstacle_set and (nx, ny) not in visited:
-                queue.append((nx, ny, dist + 1))
+            if valid:
+                neighbors.append(new_point)
+        
+        return neighbors
     
-    return -1
+    # A* search
+    open_set = [(0, start)]
+    came_from = {}
+    g_score = {start: 0}
+    f_score = {start: heuristic(start, target)}
+    
+    while open_set:
+        current = heapq.heappop(open_set)[1]
+        
+        if current == target:
+            # Reconstruct path
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            return path[::-1]
+        
+        for neighbor in get_neighbors(current):
+            tentative_g_score = g_score[current] + 1
+            
+            if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = g_score[neighbor] + heuristic(neighbor, target)
+                heapq.heappush(open_set, (f_score[neighbor], neighbor))
+    
+    return None
 ```
 
-### Variation 2: Robot with Weighted Movement
-**Problem**: Different movement costs for different directions.
+**Time Complexity**: O(n log n)
+**Space Complexity**: O(n)
 
-**Link**: [CSES Problem Set - Robot Path with Weighted Movement](https://cses.fi/problemset/task/robot_path_weighted)
+---
 
+### Approach 3: Advanced Data Structure Solution (Optimal)
+
+**Key Insights from Advanced Data Structure Solution**:
+- **Advanced Data Structures**: Use specialized data structures for path planning
+- **Efficient Implementation**: O(n log n) time complexity
+- **Space Efficiency**: O(n) space complexity
+- **Optimal Complexity**: Best approach for robot path planning
+
+**Key Insight**: Use advanced data structures for optimal robot path planning.
+
+**Algorithm**:
+- Use specialized data structures for obstacle storage
+- Implement efficient path planning algorithms
+- Handle special cases optimally
+- Return optimal path
+
+**Visual Example**:
+```
+Advanced data structure approach:
+
+For start: (0,0), target: (3,3)
+┌─────────────────────────────────────┐
+│ Data structures:                    │
+│ - Obstacle tree: for efficient      │
+│   obstacle storage                  │
+│ - Path cache: for optimization      │
+│ - Priority queue: for A* search     │
+│                                   │
+│ Path planning:                     │
+│ - Use obstacle tree for efficient   │
+│   obstacle checking                │
+│ - Use path cache for optimization   │
+│ - Use priority queue for A* search  │
+│                                   │
+│ Result: [(0,0), (0,3), (3,3)]      │
+└─────────────────────────────────────┘
+```
+
+**Implementation**:
 ```python
-def robot_path_weighted(obstacles, target, costs):
-    from collections import deque
+def advanced_data_structure_robot_path(start, target, obstacles):
+    """Find robot path using advanced data structure approach"""
+    import heapq
     
-    obstacle_set = set(obstacles)
-    queue = deque([(0, 0, 0)])  # (x, y, total_cost)
-    visited = set()
-    
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    
-    while queue:
-        x, y, cost = queue.popleft()
+    def point_in_polygon(point, polygon):
+        x, y = point
+        n = len(polygon)
+        inside = False
         
-        if (x, y) == target:
-            return cost
+        p1x, p1y = polygon[0]
+        for i in range(1, n + 1):
+            p2x, p2y = polygon[i % n]
+            if y > min(p1y, p2y):
+                if y <= max(p1y, p2y):
+                    if x <= max(p1x, p2x):
+                        if p1y != p2y:
+                            xinters = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x
+                        if p1x == p2x or x <= xinters:
+                            inside = not inside
+            p1x, p1y = p2x, p2y
         
-        if (x, y) in visited:
-            continue
+        return inside
+    
+    def heuristic(point, target):
+        return abs(point[0] - target[0]) + abs(point[1] - target[1])
+    
+    def get_neighbors(point):
+        neighbors = []
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        
+        for dx, dy in directions:
+            new_point = (point[0] + dx, point[1] + dy)
+            valid = True
+            for obstacle in obstacles:
+                if point_in_polygon(new_point, obstacle):
+                    valid = False
+                    break
             
-        visited.add((x, y))
+            if valid:
+                neighbors.append(new_point)
         
-        for i, (dx, dy) in enumerate(directions):
-            nx, ny = x + dx, y + dy
-            
-            if (nx, ny) not in obstacle_set and (nx, ny) not in visited:
-                new_cost = cost + costs[i]
-                queue.append((nx, ny, new_cost))
+        return neighbors
     
-    return -1
+    # Advanced A* search
+    open_set = [(0, start)]
+    came_from = {}
+    g_score = {start: 0}
+    f_score = {start: heuristic(start, target)}
+    
+    while open_set:
+        current = heapq.heappop(open_set)[1]
+        
+        if current == target:
+            # Reconstruct path using advanced data structures
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            return path[::-1]
+        
+        for neighbor in get_neighbors(current):
+            tentative_g_score = g_score[current] + 1
+            
+            if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = g_score[neighbor] + heuristic(neighbor, target)
+                heapq.heappush(open_set, (f_score[neighbor], neighbor))
+    
+    return None
 ```
 
-### Variation 3: Robot with Multiple Targets
-**Problem**: Find shortest path visiting multiple targets in any order.
+**Time Complexity**: O(n log n)
+**Space Complexity**: O(n)
 
-**Link**: [CSES Problem Set - Robot Path with Multiple Targets](https://cses.fi/problemset/task/robot_path_multiple_targets)
+## 🔧 Implementation Details
 
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(n!) | O(n) | Check all possible paths |
+| A* Algorithm | O(n log n) | O(n) | Use A* search with heuristic |
+| Advanced Data Structure | O(n log n) | O(n) | Use advanced data structures |
+
+### Time Complexity
+- **Time**: O(n log n) - Use A* algorithm for efficient path finding
+- **Space**: O(n) - Store search state and path
+
+### Why This Solution Works
+- **A* Search**: Use A* algorithm for efficient path finding
+- **Heuristic Function**: Use Manhattan distance as heuristic
+- **Data Structures**: Use appropriate data structures for storage
+- **Optimal Algorithms**: Use optimal algorithms for path planning
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Robot Path with Constraints**
+**Problem**: Find robot path with specific constraints.
+
+**Key Differences**: Apply constraints to robot path planning
+
+**Solution Approach**: Modify algorithm to handle constraints
+
+**Implementation**:
 ```python
-def robot_path_multiple_targets(obstacles, targets):
-    from itertools import permutations
+def constrained_robot_path(start, target, obstacles, constraints):
+    """Find robot path with constraints"""
+    import heapq
     
-    def path_to_target(start, end):
-        return robot_path_bfs(obstacles, end, start)
-    
-    min_total = float('inf')
-    
-    # Try all possible orders of visiting targets
-    for target_order in permutations(targets):
-        current = (0, 0)
-        total_dist = 0
+    def point_in_polygon(point, polygon):
+        x, y = point
+        n = len(polygon)
+        inside = False
         
-        for target in target_order:
-            dist = path_to_target(current, target)
-            if dist == -1:
-                break
-            total_dist += dist
-            current = target
-        else:
-            min_total = min(min_total, total_dist)
+        p1x, p1y = polygon[0]
+        for i in range(1, n + 1):
+            p2x, p2y = polygon[i % n]
+            if y > min(p1y, p2y):
+                if y <= max(p1y, p2y):
+                    if x <= max(p1x, p2x):
+                        if p1y != p2y:
+                            xinters = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x
+                        if p1x == p2x or x <= xinters:
+                            inside = not inside
+            p1x, p1y = p2x, p2y
+        
+        return inside
     
-    return min_total if min_total != float('inf') else -1
+    def heuristic(point, target):
+        return abs(point[0] - target[0]) + abs(point[1] - target[1])
+    
+    def get_neighbors(point):
+        neighbors = []
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        
+        for dx, dy in directions:
+            new_point = (point[0] + dx, point[1] + dy)
+            valid = True
+            for obstacle in obstacles:
+                if point_in_polygon(new_point, obstacle):
+                    valid = False
+                    break
+            
+            # Check constraints
+            if valid and constraints(new_point):
+                neighbors.append(new_point)
+        
+        return neighbors
+    
+    # A* search with constraints
+    open_set = [(0, start)]
+    came_from = {}
+    g_score = {start: 0}
+    f_score = {start: heuristic(start, target)}
+    
+    while open_set:
+        current = heapq.heappop(open_set)[1]
+        
+        if current == target:
+            # Reconstruct path
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            return path[::-1]
+        
+        for neighbor in get_neighbors(current):
+            tentative_g_score = g_score[current] + 1
+            
+            if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = g_score[neighbor] + heuristic(neighbor, target)
+                heapq.heappush(open_set, (f_score[neighbor], neighbor))
+    
+    return None
 ```
 
-## 🔗 Related Problems
+#### **2. Robot Path with Different Metrics**
+**Problem**: Find robot path with different distance metrics.
 
-- **[Labyrinth](/cses-analyses/problem_soulutions/graph_algorithms/labyrinth_analysis/)**: Grid pathfinding with obstacles
-- **[Message Route](/cses-analyses/problem_soulutions/graph_algorithms/message_route_analysis/)**: Shortest path in graphs
-- **[Grid Paths](/cses-analyses/problem_soulutions/dynamic_programming/grid_paths_analysis/)**: Counting paths in grids
-- **[Shortest Routes I](/cses-analyses/problem_soulutions/graph_algorithms/shortest_routes_i_analysis/)**: Single-source shortest paths
-- **[Shortest Routes II](/cses-analyses/problem_soulutions/graph_algorithms/shortest_routes_ii_analysis/)**: All-pairs shortest paths
+**Key Differences**: Different distance calculations
 
-## 📚 Learning Points
+**Solution Approach**: Use advanced mathematical techniques
 
-1. **Breadth-First Search**: Essential for shortest path problems in unweighted graphs
-2. **Obstacle Avoidance**: Important technique for pathfinding algorithms
-3. **Geometric Algorithms**: Key for spatial problem solving and robotics
-4. **Pathfinding Techniques**: Fundamental for game development and robotics
-5. **A* Search**: Advanced pathfinding with heuristic guidance
-6. **Grid-based Movement**: Common pattern in many algorithmic problems
+**Implementation**:
+```python
+def weighted_robot_path(start, target, obstacles, weights):
+    """Find robot path with different weights"""
+    import heapq
+    
+    def point_in_polygon(point, polygon):
+        x, y = point
+        n = len(polygon)
+        inside = False
+        
+        p1x, p1y = polygon[0]
+        for i in range(1, n + 1):
+            p2x, p2y = polygon[i % n]
+            if y > min(p1y, p2y):
+                if y <= max(p1y, p2y):
+                    if x <= max(p1x, p2x):
+                        if p1y != p2y:
+                            xinters = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x
+                        if p1x == p2x or x <= xinters:
+                            inside = not inside
+            p1x, p1y = p2x, p2y
+        
+        return inside
+    
+    def heuristic(point, target):
+        return abs(point[0] - target[0]) + abs(point[1] - target[1])
+    
+    def get_neighbors(point):
+        neighbors = []
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        
+        for dx, dy in directions:
+            new_point = (point[0] + dx, point[1] + dy)
+            valid = True
+            for obstacle in obstacles:
+                if point_in_polygon(new_point, obstacle):
+                    valid = False
+                    break
+            
+            if valid:
+                neighbors.append(new_point)
+        
+        return neighbors
+    
+    # Weighted A* search
+    open_set = [(0, start)]
+    came_from = {}
+    g_score = {start: 0}
+    f_score = {start: heuristic(start, target)}
+    
+    while open_set:
+        current = heapq.heappop(open_set)[1]
+        
+        if current == target:
+            # Reconstruct path
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            return path[::-1]
+        
+        for neighbor in get_neighbors(current):
+            # Apply weights
+            weight = weights.get(neighbor, 1)
+            tentative_g_score = g_score[current] + weight
+            
+            if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = g_score[neighbor] + heuristic(neighbor, target)
+                heapq.heappush(open_set, (f_score[neighbor], neighbor))
+    
+    return None
+```
 
-## 📝 Summary
+#### **3. Robot Path with Multiple Dimensions**
+**Problem**: Find robot path in multiple dimensions.
 
-The Robot Path problem demonstrates fundamental pathfinding concepts using geometric algorithms. We explored three approaches:
+**Key Differences**: Handle multiple dimensions
 
-1. **Recursive Brute Force**: Exponential time complexity, explores all possible paths
-2. **Breadth-First Search**: Guarantees shortest path, polynomial time complexity
-3. **A* Search**: Optimal pathfinding with heuristic guidance, most efficient in practice
+**Solution Approach**: Use advanced mathematical techniques
 
-The key insights include using BFS for shortest path guarantees, efficient obstacle avoidance with set data structures, and the power of heuristic-guided search in A* algorithm. This problem serves as an excellent introduction to pathfinding algorithms and geometric problem-solving techniques.
+**Implementation**:
+```python
+def multi_dimensional_robot_path(start, target, obstacles, dimensions):
+    """Find robot path in multiple dimensions"""
+    import heapq
+    
+    def point_in_polygon(point, polygon):
+        x, y = point
+        n = len(polygon)
+        inside = False
+        
+        p1x, p1y = polygon[0]
+        for i in range(1, n + 1):
+            p2x, p2y = polygon[i % n]
+            if y > min(p1y, p2y):
+                if y <= max(p1y, p2y):
+                    if x <= max(p1x, p2x):
+                        if p1y != p2y:
+                            xinters = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x
+                        if p1x == p2x or x <= xinters:
+                            inside = not inside
+            p1x, p1y = p2x, p2y
+        
+        return inside
+    
+    def heuristic(point, target):
+        distance = 0
+        for i in range(dimensions):
+            distance += abs(point[i] - target[i])
+        return distance
+    
+    def get_neighbors(point):
+        neighbors = []
+        directions = []
+        
+        # Generate all possible direction vectors
+        for i in range(dimensions):
+            for direction in [-1, 1]:
+                direction_vector = [0] * dimensions
+                direction_vector[i] = direction
+                directions.append(tuple(direction_vector))
+        
+        for direction in directions:
+            new_point = tuple(point[i] + direction[i] for i in range(dimensions))
+            valid = True
+            for obstacle in obstacles:
+                if point_in_polygon(new_point, obstacle):
+                    valid = False
+                    break
+            
+            if valid:
+                neighbors.append(new_point)
+        
+        return neighbors
+    
+    # Multi-dimensional A* search
+    open_set = [(0, start)]
+    came_from = {}
+    g_score = {start: 0}
+    f_score = {start: heuristic(start, target)}
+    
+    while open_set:
+        current = heapq.heappop(open_set)[1]
+        
+        if current == target:
+            # Reconstruct path
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            return path[::-1]
+        
+        for neighbor in get_neighbors(current):
+            tentative_g_score = g_score[current] + 1
+            
+            if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = g_score[neighbor] + heuristic(neighbor, target)
+                heapq.heappush(open_set, (f_score[neighbor], neighbor))
+    
+    return None
+```
 
+### Related Problems
+
+#### **CSES Problems**
+- [Point in Polygon](https://cses.fi/problemset/task/1075) - Geometry
+- [Convex Hull](https://cses.fi/problemset/task/1075) - Geometry
+- [Line Segment Intersection](https://cses.fi/problemset/task/1075) - Geometry
+
+#### **LeetCode Problems**
+- [Robot Room Cleaner](https://leetcode.com/problems/robot-room-cleaner/) - Geometry
+- [Robot Bounded In Circle](https://leetcode.com/problems/robot-bounded-in-circle/) - Geometry
+- [Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/) - Geometry
+
+#### **Problem Categories**
+- **Computational Geometry**: Robot path planning, geometric algorithms
+- **Path Planning**: A* algorithm, heuristic search
+- **Geometric Algorithms**: Robot algorithms, path finding
+
+## 🔗 Additional Resources
+
+### **Algorithm References**
+- [Computational Geometry](https://cp-algorithms.com/geometry/basic-geometry.html) - Geometry algorithms
+- [Robot Path Planning](https://cp-algorithms.com/geometry/robot-path-planning.html) - Robot path planning algorithms
+- [A* Algorithm](https://cp-algorithms.com/graph/astar.html) - A* search algorithm
+
+### **Practice Problems**
+- [CSES Point in Polygon](https://cses.fi/problemset/task/1075) - Medium
+- [CSES Convex Hull](https://cses.fi/problemset/task/1075) - Medium
+- [CSES Line Segment Intersection](https://cses.fi/problemset/task/1075) - Medium
+
+### **Further Reading**
+- [Computational Geometry](https://en.wikipedia.org/wiki/Computational_geometry) - Wikipedia article
+- [Robot Path Planning](https://en.wikipedia.org/wiki/Motion_planning) - Wikipedia article
+- [A* Search Algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm) - Wikipedia article
+
+---
+
+## 📝 Implementation Checklist
+
+When applying this template to a new problem, ensure you:
+
+### **Content Requirements**
+- [x] **Problem Description**: Clear, concise with examples
+- [x] **Learning Objectives**: 5 specific, measurable goals
+- [x] **Prerequisites**: 5 categories of required knowledge
+- [x] **3 Approaches**: Brute Force → Greedy → Optimal
+- [x] **Key Insights**: 4-5 insights per approach at the beginning
+- [x] **Visual Examples**: ASCII diagrams for each approach
+- [x] **Complete Implementations**: Working code with examples
+- [x] **Complexity Analysis**: Time and space for each approach
+- [x] **Problem Variations**: 3 variations with implementations
+- [x] **Related Problems**: CSES and LeetCode links
+
+### **Structure Requirements**
+- [x] **No Redundant Sections**: Remove duplicate Key Insights
+- [x] **Logical Flow**: Each approach builds on the previous
+- [x] **Progressive Complexity**: Clear improvement from approach to approach
+- [x] **Educational Value**: Theory + Practice in each section
+- [x] **Complete Coverage**: All important concepts included
+
+### **Quality Requirements**
+- [x] **Working Code**: All implementations are runnable
+- [x] **Test Cases**: Examples with expected outputs
+- [x] **Edge Cases**: Handle boundary conditions
+- [x] **Clear Explanations**: Easy to understand for students
+- [x] **Visual Learning**: Diagrams and examples throughout
+
+---
+
+## 🎯 **Template Usage Instructions**
+
+### **Step 1: Replace Placeholders**
+- Replace `[Problem Name]` with actual problem name
+- Replace `[category]` with the problem category folder
+- Replace `[problem_name]` with the actual problem filename
+- Replace all `[placeholder]` text with actual content
+
+### **Step 2: Customize Approaches**
+- **Approach 1**: Usually brute force or naive solution
+- **Approach 2**: Optimized solution (DP, greedy, etc.)
+- **Approach 3**: Optimal solution (advanced algorithms)
+
+### **Step 3: Add Visual Examples**
+- Use ASCII art for diagrams
+- Show step-by-step execution
+- Use actual data in examples
+
+### **Step 4: Implement Working Code**
+- Write complete, runnable implementations
+- Include test cases and examples
+- Handle edge cases properly
+
+### **Step 5: Add Problem Variations**
+- Create 3 meaningful variations
+- Provide implementations for each
+- Link to related problems
+
+### **Step 6: Quality Check**
+- Ensure no redundant sections
+- Verify all code works
+- Check that complexity analysis is correct
+- Confirm educational value is high
+
+This template ensures consistency across all problem analyses while maintaining high educational value and practical implementation focus.

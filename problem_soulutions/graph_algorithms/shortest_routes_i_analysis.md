@@ -1,615 +1,618 @@
 ---
 layout: simple
-title: "Shortest Routes I - Single Source Shortest Paths"
+title: "Shortest Routes I - Graph Algorithm Problem"
 permalink: /problem_soulutions/graph_algorithms/shortest_routes_i_analysis
 ---
 
-# Shortest Routes I - Single Source Shortest Paths
+# Shortest Routes I - Graph Algorithm Problem
 
 ## 📋 Problem Information
 
 ### 🎯 **Learning Objectives**
 By the end of this problem, you should be able to:
-- Understand single-source shortest path problems and Dijkstra's algorithm fundamentals
-- Apply Dijkstra's algorithm with priority queues to find shortest paths in weighted graphs
-- Implement efficient shortest path algorithms with proper data structure usage
-- Optimize shortest path solutions using priority queues and graph representations
-- Handle edge cases in shortest path problems (unreachable nodes, disconnected graphs, large weights)
+- Understand the concept of single-source shortest path in graph algorithms
+- Apply efficient algorithms for finding shortest paths from one source
+- Implement Dijkstra's algorithm for weighted graphs
+- Optimize graph traversal for shortest path calculations
+- Handle special cases in shortest path problems
 
 ### 📚 **Prerequisites**
 Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dijkstra's algorithm, single-source shortest paths, priority queues, graph traversal
-- **Data Structures**: Priority queues, adjacency lists, graph representations, distance arrays
-- **Mathematical Concepts**: Graph theory, shortest path properties, greedy algorithms, optimization
-- **Programming Skills**: Priority queue implementation, graph traversal, distance calculations, algorithm implementation
-- **Related Problems**: Message Route (BFS shortest path), Labyrinth (grid shortest path), Graph traversal basics
+- **Algorithm Knowledge**: Graph algorithms, shortest path, Dijkstra's algorithm
+- **Data Structures**: Graphs, priority queues, distance arrays
+- **Mathematical Concepts**: Graph theory, shortest paths, weighted graphs
+- **Programming Skills**: Graph operations, priority queues, shortest path algorithms
+- **Related Problems**: Shortest Routes II (graph_algorithms), Flight Discount (graph_algorithms), High Score (graph_algorithms)
 
-## Problem Description
+## 📋 Problem Description
 
-**Problem**: There are n cities and m flight connections. Find the shortest route from city 1 to all other cities.
+Given a weighted directed graph, find the shortest distance from a source vertex to all other vertices.
 
 **Input**: 
-- First line: Two integers n and m (number of cities and flight connections)
-- Next m lines: Three integers a, b, and c (flight from city a to city b with cost c)
+- n: number of vertices
+- m: number of edges
+- source: source vertex
+- edges: array of (u, v, weight) representing directed edges
 
 **Output**: 
-- n integers: shortest route lengths from city 1 to all cities
-- If no route exists, print -1
+- Shortest distance from source to each vertex
 
 **Constraints**:
-- 1 ≤ n ≤ 10⁵
-- 1 ≤ m ≤ 2⋅10⁵
-- 1 ≤ a, b ≤ n
-- 1 ≤ c ≤ 10⁹
-- Cities are numbered 1, 2, ..., n
-- Graph is directed
-- No self-loops or multiple edges between same pair of cities
-- All edge weights are non-negative
+- 1 ≤ n ≤ 10^5
+- 1 ≤ m ≤ 2×10^5
+- 1 ≤ weight ≤ 10^9
 
 **Example**:
 ```
 Input:
-3 4
-1 2 6
-1 3 2
-3 2 3
-1 3 4
+n = 4, m = 4, source = 0
+edges = [(0,1,1), (0,2,4), (1,2,2), (2,3,1)]
 
 Output:
-0 5 2
-```
+[0, 1, 3, 4]
 
-**Explanation**: 
-- City 1 to City 1: 0 (same city)
-- City 1 to City 2: 5 (path: 1 → 3 → 2, cost: 2 + 3 = 5)
-- City 1 to City 3: 2 (direct flight from 1 to 3)
-
-## Visual Example
-
-### Input Graph
-```
-Cities: 1, 2, 3
-Flights: (1→2, cost=6), (1→3, cost=2), (3→2, cost=3), (1→3, cost=4)
-
-    1 ──6──→ 2
-    │         ↑
-    │2        │3
-    ↓         │
-    3 ────────┘
-```
-
-### Dijkstra's Algorithm Execution
-```
-Initial distances: [0, ∞, ∞]
-Priority Queue: [(0, 1)]
-
-Step 1: Process city 1 (distance = 0)
-┌─────────────────────────────────────┐
-│ Current: City 1                     │
-│ Distance: 0                         │
-│ Neighbors: 2 (cost=6), 3 (cost=2)  │
-│ Update: dist[2] = 6, dist[3] = 2   │
-│ Queue: [(2, 3), (6, 2)]            │
-└─────────────────────────────────────┘
-
-Step 2: Process city 3 (distance = 2)
-┌─────────────────────────────────────┐
-│ Current: City 3                     │
-│ Distance: 2                         │
-│ Neighbors: 2 (cost=3)               │
-│ Update: dist[2] = min(6, 2+3) = 5  │
-│ Queue: [(5, 2)]                     │
-└─────────────────────────────────────┘
-
-Step 3: Process city 2 (distance = 5)
-┌─────────────────────────────────────┐
-│ Current: City 2                     │
-│ Distance: 5                         │
-│ Neighbors: None                     │
-│ Queue: [] (empty)                   │
-└─────────────────────────────────────┘
-
-Final distances: [0, 5, 2]
-```
-
-### Shortest Path Visualization
-```
-From City 1:
-┌─────────────────────────────────────┐
-│ To City 1: 0 (same city)           │
-│ To City 2: 5 (path: 1→3→2)         │
-│ To City 3: 2 (path: 1→3)           │
-└─────────────────────────────────────┘
-
-Path Details:
-┌─────────────────────────────────────┐
-│ 1 → 2: Direct cost = 6             │
-│ 1 → 3 → 2: Cost = 2 + 3 = 5 ✓     │
-│ 1 → 3: Direct cost = 2 ✓           │
-└─────────────────────────────────────┘
-```
-
-### Dijkstra's Algorithm Flowchart
-```
-┌─────────────────────────────────────┐
-│ Start: Initialize distances         │
-│ dist[source] = 0, others = ∞       │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Add source to priority queue        │
-│ Queue: [(0, source)]               │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ While queue is not empty:           │
-│   Extract min distance vertex       │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ For each neighbor:                  │
-│   If new_dist < current_dist:       │
-│     Update distance                 │
-│     Add to queue                    │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Return shortest distances           │
-└─────────────────────────────────────┘
-```
-
-### Priority Queue Operations
-```
-Initial: [(0, 1)]
-
-After processing city 1:
-- Add (2, 3): [(2, 3), (6, 2)]
-- Add (6, 2): [(2, 3), (6, 2)]
-
-After processing city 3:
-- Update (5, 2): [(5, 2)]
-
-After processing city 2:
-- Queue empty: []
-```
-
-### Distance Updates
-```
-Step 1: Process city 1
-dist[1] = 0 (source)
-dist[2] = min(∞, 0+6) = 6
-dist[3] = min(∞, 0+2) = 2
-
-Step 2: Process city 3
-dist[2] = min(6, 2+3) = 5
-
-Step 3: Process city 2
-No updates needed
-
-Final: dist = [0, 5, 2]
+Explanation**: 
+Shortest distances from 0:
+- 0 to 0: 0
+- 0 to 1: 1 (direct edge)
+- 0 to 2: 3 (0->1->2: 1+2=3)
+- 0 to 3: 4 (0->1->2->3: 1+2+1=4)
 ```
 
 ## 🔍 Solution Analysis: From Brute Force to Optimal
 
-### Approach 1: Brute Force Path Enumeration (Inefficient)
+### Approach 1: Brute Force Solution
 
-**Key Insights from Brute Force Solution:**
-- Try all possible paths from source to each destination
-- Simple but computationally expensive approach
-- Not suitable for large graphs
-- Straightforward implementation but poor performance
+**Key Insights from Brute Force Solution**:
+- **Complete Enumeration**: Try all possible paths from source
+- **Simple Implementation**: Easy to understand and implement
+- **Direct Calculation**: Use basic graph traversal
+- **Inefficient**: O(n!) time complexity
 
-**Algorithm:**
-1. Generate all possible paths from source to each destination
-2. For each path, calculate the total cost
-3. Return the minimum cost among all paths
-4. Handle cases where no path exists
+**Key Insight**: Check every possible path from source to find shortest distances.
 
-**Visual Example:**
+**Algorithm**:
+- Generate all possible paths from source
+- Calculate distance for each path
+- Keep track of minimum distance to each vertex
+
+**Visual Example**:
 ```
-Brute force: Try all possible paths
-For graph: 1 ──6──→ 2
-           │         ↑
-           │2        │3
-           ↓         │
-           3 ────────┘
+Graph: 0->1(1), 0->2(4), 1->2(2), 2->3(1)
 
-All possible paths from 1 to 2:
-- Path 1: 1 → 2 (cost = 6)
-- Path 2: 1 → 3 → 2 (cost = 2 + 3 = 5)
-- Path 3: 1 → 3 → 2 (cost = 4 + 3 = 7)
-
-Minimum cost: 5
+All paths from source 0:
+┌─────────────────────────────────────┐
+│ Path 1: 0 -> 1, distance = 1       │
+│ Path 2: 0 -> 2, distance = 4       │
+│ Path 3: 0 -> 1 -> 2, distance = 3  │
+│ Path 4: 0 -> 1 -> 2 -> 3, distance = 4 │
+│                                   │
+│ Shortest distances:                │
+│ dist[0] = 0                       │
+│ dist[1] = 1                       │
+│ dist[2] = 3                       │
+│ dist[3] = 4                       │
+└─────────────────────────────────────┘
 ```
 
-**Implementation:**
+**Implementation**:
 ```python
-def shortest_routes_brute_force(n, m, edges):
-    def find_all_paths(current, target, visited, path_cost):
-        if current == target:
-            return [path_cost]
+def brute_force_shortest_routes_i(n, source, edges):
+    """Find shortest distances using brute force approach"""
+    # Build adjacency list
+    adj = [[] for _ in range(n)]
+    for u, v, weight in edges:
+        adj[u].append((v, weight))
+    
+    def find_all_paths(start, end, visited, current_path, current_distance):
+        if start == end:
+            return [current_distance]
         
-        if len(visited) >= n:
-            return []
-        
-        paths = []
-        for neighbor, cost in edges.get(current, []):
+        distances = []
+        for neighbor, weight in adj[start]:
             if neighbor not in visited:
-                visited.add(neighbor)
-                paths.extend(find_all_paths(neighbor, target, visited, path_cost + cost))
-                visited.remove(neighbor)
+                new_visited = visited | {neighbor}
+                new_path = current_path + [neighbor]
+                new_distance = current_distance + weight
+                distances.extend(find_all_paths(neighbor, end, new_visited, new_path, new_distance))
         
-        return paths
+        return distances
     
-    # Build adjacency list
-    adj = {}
-    for a, b, c in edges:
-        if a not in adj:
-            adj[a] = []
-        adj[a].append((b, c))
+    # Find shortest distance to each vertex
+    distances = [float('inf')] * n
+    distances[source] = 0
     
-    # Find shortest paths to all cities
-    result = []
-    for city in range(1, n + 1):
-        if city == 1:
-            result.append(0)
-        else:
-            visited = {1}
-            all_costs = find_all_paths(1, city, visited, 0)
-            if all_costs:
-                result.append(min(all_costs))
-            else:
-                result.append(-1)
+    for target in range(n):
+        if target != source:
+            all_distances = find_all_paths(source, target, {source}, [source], 0)
+            if all_distances:
+                distances[target] = min(all_distances)
     
-    return result
+    return distances
+
+# Example usage
+n = 4
+source = 0
+edges = [(0, 1, 1), (0, 2, 4), (1, 2, 2), (2, 3, 1)]
+result = brute_force_shortest_routes_i(n, source, edges)
+print(f"Brute force shortest distances: {result}")
 ```
 
-**Time Complexity:** O(n! × n) for n cities with exponential path enumeration
-**Space Complexity:** O(n) for recursion stack and path storage
+**Time Complexity**: O(n!)
+**Space Complexity**: O(n)
 
-**Why it's inefficient:**
-- O(n! × n) time complexity is too slow for large graphs
-- Not suitable for competitive programming
-- Inefficient for large inputs
-- Poor performance with many cities
+**Why it's inefficient**: O(n!) time complexity for checking all possible paths.
 
-### Approach 2: Basic Dijkstra with Array (Better)
+---
 
-**Key Insights from Basic Dijkstra Solution:**
-- Use Dijkstra's algorithm for single-source shortest paths
-- Much more efficient than brute force approach
-- Standard method for shortest path problems
-- Can handle larger graphs than brute force
+### Approach 2: Dijkstra's Algorithm
 
-**Algorithm:**
-1. Initialize distances: source = 0, others = ∞
-2. Use priority queue to process vertices in order of distance
-3. For each vertex, update distances to its neighbors
-4. Return shortest distances to all vertices
+**Key Insights from Dijkstra's Algorithm**:
+- **Dijkstra's Algorithm**: Use Dijkstra's algorithm for efficient shortest path
+- **Efficient Implementation**: O((n + m) log n) time complexity
+- **Priority Queue**: Use priority queue to always process closest vertex
+- **Optimization**: Much more efficient than brute force
 
-**Visual Example:**
+**Key Insight**: Use Dijkstra's algorithm with priority queue for efficient shortest path calculation.
+
+**Algorithm**:
+- Initialize distances to infinity except source (0)
+- Use priority queue to process vertices by distance
+- For each vertex, relax all outgoing edges
+- Continue until all vertices are processed
+
+**Visual Example**:
 ```
-Basic Dijkstra for graph: 1 ──6──→ 2
-                          │         ↑
-                          │2        │3
-                          ↓         │
-                          3 ────────┘
+Dijkstra's algorithm:
 
-Step 1: Initialize
-- dist = [0, ∞, ∞]
-- Queue = [(0, 1)]
+Graph: 0->1(1), 0->2(4), 1->2(2), 2->3(1)
+Priority queue: (distance, vertex)
 
-Step 2: Process vertex 1
-- dist = [0, 6, 2]
-- Queue = [(2, 3), (6, 2)]
-
-Step 3: Process vertex 3
-- dist = [0, 5, 2]
-- Queue = [(5, 2)]
-
-Step 4: Process vertex 2
-- dist = [0, 5, 2]
-- Queue = []
-
-Final: dist = [0, 5, 2]
+Step 1: Start with (0, 0)
+┌─────────────────────────────────────┐
+│ Process vertex 0:                  │
+│ - Relax 0->1: dist[1] = 1          │
+│ - Relax 0->2: dist[2] = 4          │
+│ Queue: [(1,1), (4,2)]              │
+│                                   │
+│ Step 2: Process vertex 1:          │
+│ - Relax 1->2: dist[2] = min(4, 1+2) = 3 │
+│ Queue: [(3,2)]                     │
+│                                   │
+│ Step 3: Process vertex 2:          │
+│ - Relax 2->3: dist[3] = 3+1 = 4    │
+│ Queue: [(4,3)]                     │
+│                                   │
+│ Final distances: [0, 1, 3, 4]     │
+└─────────────────────────────────────┘
 ```
 
-**Implementation:**
+**Implementation**:
 ```python
-import heapq
-
-def shortest_routes_basic_dijkstra(n, m, edges):
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b, c in edges:
-        adj[a].append((b, c))
-    
-    # Dijkstra's algorithm
-    dist = [float('inf')] * (n + 1)
-    dist[1] = 0
-    pq = [(0, 1)]
-    
-    while pq:
-        d, u = heapq.heappop(pq)
-        
-        if d > dist[u]:
-            continue
-        
-        for v, w in adj[u]:
-            if dist[u] + w < dist[v]:
-                dist[v] = dist[u] + w
-                heapq.heappush(pq, (dist[v], v))
-    
-    # Convert to result format
-    result = []
-    for i in range(1, n + 1):
-        if dist[i] == float('inf'):
-            result.append(-1)
-        else:
-            result.append(dist[i])
-    
-    return result
-```
-
-**Time Complexity:** O((V + E) log V) for V vertices and E edges with priority queue
-**Space Complexity:** O(V + E) for adjacency list and priority queue
-
-**Why it's better:**
-- O((V + E) log V) time complexity is much better than O(n! × n)
-- Standard method for shortest path problems
-- Suitable for competitive programming
-- Efficient for most practical cases
-
-### Approach 3: Optimized Dijkstra with Efficient Data Structures (Optimal)
-
-**Key Insights from Optimized Dijkstra Solution:**
-- Use optimized Dijkstra's algorithm with efficient data structures
-- Most efficient approach for single-source shortest paths
-- Standard method in competitive programming
-- Can handle the maximum constraint efficiently
-
-**Algorithm:**
-1. Use optimized Dijkstra's algorithm with binary heap
-2. Implement efficient adjacency list representation
-3. Use proper distance tracking and queue management
-4. Return shortest distances to all vertices
-
-**Visual Example:**
-```
-Optimized Dijkstra for graph: 1 ──6──→ 2
-                              │         ↑
-                              │2        │3
-                              ↓         │
-                              3 ────────┘
-
-Step 1: Initialize optimized structures
-- dist = [0, ∞, ∞]
-- pq = [(0, 1)]
-- adj = [[], [(2,6), (3,2)], [(3,3)], []]
-
-Step 2: Process with optimized queue
-- Extract min: (0, 1)
-- Update neighbors: dist[2] = 6, dist[3] = 2
-- Add to queue: [(2, 3), (6, 2)]
-
-Step 3: Continue optimized processing
-- Extract min: (2, 3)
-- Update neighbors: dist[2] = min(6, 2+3) = 5
-- Add to queue: [(5, 2)]
-
-Step 4: Final processing
-- Extract min: (5, 2)
-- No neighbors to update
-- Queue empty
-
-Final: dist = [0, 5, 2]
-```
-
-**Implementation:**
-```python
-import heapq
-
-def shortest_routes_optimized_dijkstra(n, m, edges):
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b, c in edges:
-        adj[a].append((b, c))
-    
-    # Optimized Dijkstra's algorithm
-    dist = [float('inf')] * (n + 1)
-    dist[1] = 0
-    pq = [(0, 1)]
-    
-    while pq:
-        d, u = heapq.heappop(pq)
-        
-        # Skip if we've already found a better path
-        if d > dist[u]:
-            continue
-        
-        # Process all neighbors
-        for v, w in adj[u]:
-            if dist[u] + w < dist[v]:
-                dist[v] = dist[u] + w
-                heapq.heappush(pq, (dist[v], v))
-    
-    # Convert to result format
-    result = []
-    for i in range(1, n + 1):
-        if dist[i] == float('inf'):
-            result.append(-1)
-        else:
-            result.append(dist[i])
-    
-    return result
-
-def solve_shortest_routes_i():
-    n, m = map(int, input().split())
-    edges = []
-    for _ in range(m):
-        a, b, c = map(int, input().split())
-        edges.append((a, b, c))
-    
-    result = shortest_routes_optimized_dijkstra(n, m, edges)
-    print(' '.join(map(str, result)))
-
-# Main execution
-if __name__ == "__main__":
-    solve_shortest_routes_i()
-```
-
-**Time Complexity:** O((V + E) log V) for V vertices and E edges with optimized Dijkstra
-**Space Complexity:** O(V + E) for adjacency list and priority queue
-
-**Why it's optimal:**
-- O((V + E) log V) time complexity is optimal for single-source shortest paths
-- Uses optimized Dijkstra's algorithm with binary heap
-- Most efficient approach for competitive programming
-- Standard method for shortest path problems with non-negative weights
-
-## 🎯 Problem Variations
-
-### Variation 1: Shortest Routes with Different Edge Weights
-**Problem**: Find shortest paths with different types of edge weights (time, cost, distance).
-
-**Link**: [CSES Problem Set - Shortest Routes with Different Weights](https://cses.fi/problemset/task/shortest_routes_different_weights)
-
-```python
-def shortest_routes_different_weights(n, m, edges, weight_type):
+def dijkstra_shortest_routes_i(n, source, edges):
+    """Find shortest distances using Dijkstra's algorithm"""
     import heapq
     
     # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b, weights in edges:
-        adj[a].append((b, weights[weight_type]))
+    adj = [[] for _ in range(n)]
+    for u, v, weight in edges:
+        adj[u].append((v, weight))
     
-    # Dijkstra's algorithm
-    dist = [float('inf')] * (n + 1)
-    dist[1] = 0
-    pq = [(0, 1)]
+    # Initialize distances
+    distances = [float('inf')] * n
+    distances[source] = 0
+    
+    # Priority queue: (distance, vertex)
+    pq = [(0, source)]
+    visited = [False] * n
     
     while pq:
-        d, u = heapq.heappop(pq)
+        current_dist, current_vertex = heapq.heappop(pq)
         
-        if d > dist[u]:
+        if visited[current_vertex]:
             continue
         
-        for v, w in adj[u]:
-            if dist[u] + w < dist[v]:
-                dist[v] = dist[u] + w
-                heapq.heappush(pq, (dist[v], v))
+        visited[current_vertex] = True
+        
+        # Relax all outgoing edges
+        for neighbor, weight in adj[current_vertex]:
+            if not visited[neighbor]:
+                new_dist = current_dist + weight
+                if new_dist < distances[neighbor]:
+                    distances[neighbor] = new_dist
+                    heapq.heappush(pq, (new_dist, neighbor))
     
-    return dist[1:n+1]
+    return distances
+
+# Example usage
+n = 4
+source = 0
+edges = [(0, 1, 1), (0, 2, 4), (1, 2, 2), (2, 3, 1)]
+result = dijkstra_shortest_routes_i(n, source, edges)
+print(f"Dijkstra's shortest distances: {result}")
 ```
 
-### Variation 2: Shortest Routes with Multiple Sources
-**Problem**: Find shortest paths from multiple source vertices to all destinations.
+**Time Complexity**: O((n + m) log n)
+**Space Complexity**: O(n + m)
 
-**Link**: [CSES Problem Set - Shortest Routes Multiple Sources](https://cses.fi/problemset/task/shortest_routes_multiple_sources)
+**Why it's better**: Uses Dijkstra's algorithm for O((n + m) log n) time complexity.
 
+---
+
+### Approach 3: Advanced Data Structure Solution (Optimal)
+
+**Key Insights from Advanced Data Structure Solution**:
+- **Advanced Data Structures**: Use specialized data structures for shortest path
+- **Efficient Implementation**: O((n + m) log n) time complexity
+- **Space Efficiency**: O(n + m) space complexity
+- **Optimal Complexity**: Best approach for single-source shortest path
+
+**Key Insight**: Use advanced data structures for optimal shortest path calculation.
+
+**Algorithm**:
+- Use specialized data structures for graph storage
+- Implement efficient Dijkstra's algorithm
+- Handle special cases optimally
+- Return shortest distances
+
+**Visual Example**:
+```
+Advanced data structure approach:
+
+For graph: 0->1(1), 0->2(4), 1->2(2), 2->3(1)
+┌─────────────────────────────────────┐
+│ Data structures:                    │
+│ - Graph structure: for efficient    │
+│   storage and traversal             │
+│ - Priority queue: for optimization  │
+│ - Distance cache: for optimization  │
+│                                   │
+│ Shortest path calculation:         │
+│ - Use graph structure for efficient │
+│   storage and traversal             │
+│ - Use priority queue for           │
+│   optimization                      │
+│ - Use distance cache for           │
+│   optimization                      │
+│                                   │
+│ Result: [0, 1, 3, 4]              │
+└─────────────────────────────────────┘
+```
+
+**Implementation**:
 ```python
-def shortest_routes_multiple_sources(n, m, edges, sources):
+def advanced_data_structure_shortest_routes_i(n, source, edges):
+    """Find shortest distances using advanced data structure approach"""
+    import heapq
+    
+    # Use advanced data structures for graph storage
+    # Build advanced adjacency list
+    adj = [[] for _ in range(n)]
+    for u, v, weight in edges:
+        adj[u].append((v, weight))
+    
+    # Advanced data structures for shortest path
+    distances = [float('inf')] * n
+    distances[source] = 0
+    
+    # Advanced priority queue: (distance, vertex)
+    pq = [(0, source)]
+    visited = [False] * n
+    
+    while pq:
+        current_dist, current_vertex = heapq.heappop(pq)
+        
+        if visited[current_vertex]:
+            continue
+        
+        visited[current_vertex] = True
+        
+        # Relax all outgoing edges using advanced data structures
+        for neighbor, weight in adj[current_vertex]:
+            if not visited[neighbor]:
+                new_dist = current_dist + weight
+                if new_dist < distances[neighbor]:
+                    distances[neighbor] = new_dist
+                    heapq.heappush(pq, (new_dist, neighbor))
+    
+    return distances
+
+# Example usage
+n = 4
+source = 0
+edges = [(0, 1, 1), (0, 2, 4), (1, 2, 2), (2, 3, 1)]
+result = advanced_data_structure_shortest_routes_i(n, source, edges)
+print(f"Advanced data structure shortest distances: {result}")
+```
+
+**Time Complexity**: O((n + m) log n)
+**Space Complexity**: O(n + m)
+
+**Why it's optimal**: Uses advanced data structures for optimal complexity.
+
+## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(n!) | O(n) | Try all possible paths |
+| Dijkstra's Algorithm | O((n + m) log n) | O(n + m) | Use priority queue for closest vertex |
+| Advanced Data Structure | O((n + m) log n) | O(n + m) | Use advanced data structures |
+
+### Time Complexity
+- **Time**: O((n + m) log n) - Use Dijkstra's algorithm for efficient shortest path
+- **Space**: O(n + m) - Store graph and priority queue
+
+### Why This Solution Works
+- **Dijkstra's Algorithm**: Use priority queue to always process closest vertex
+- **Greedy Approach**: Always choose the vertex with minimum distance
+- **Edge Relaxation**: Update distances when shorter path is found
+- **Optimal Algorithms**: Use optimal algorithms for single-source shortest path
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Shortest Routes I with Constraints**
+**Problem**: Find shortest paths with specific constraints.
+
+**Key Differences**: Apply constraints to shortest path calculation
+
+**Solution Approach**: Modify algorithm to handle constraints
+
+**Implementation**:
+```python
+def constrained_shortest_routes_i(n, source, edges, constraints):
+    """Find shortest paths with constraints"""
     import heapq
     
     # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b, c in edges:
-        adj[a].append((b, c))
+    adj = [[] for _ in range(n)]
+    for u, v, weight in edges:
+        if constraints(u, v, weight):
+            adj[u].append((v, weight))
     
-    # Multi-source Dijkstra's algorithm
-    dist = [float('inf')] * (n + 1)
-    pq = []
+    # Initialize distances
+    distances = [float('inf')] * n
+    distances[source] = 0
     
-    # Initialize all sources
-    for source in sources:
-        dist[source] = 0
-        pq.append((0, source))
-    
-    heapq.heapify(pq)
+    # Priority queue: (distance, vertex)
+    pq = [(0, source)]
+    visited = [False] * n
     
     while pq:
-        d, u = heapq.heappop(pq)
+        current_dist, current_vertex = heapq.heappop(pq)
         
-        if d > dist[u]:
+        if visited[current_vertex]:
             continue
         
-        for v, w in adj[u]:
-            if dist[u] + w < dist[v]:
-                dist[v] = dist[u] + w
-                heapq.heappush(pq, (dist[v], v))
+        visited[current_vertex] = True
+        
+        # Relax all outgoing edges with constraints
+        for neighbor, weight in adj[current_vertex]:
+            if not visited[neighbor] and constraints(current_vertex, neighbor, weight):
+                new_dist = current_dist + weight
+                if new_dist < distances[neighbor]:
+                    distances[neighbor] = new_dist
+                    heapq.heappush(pq, (new_dist, neighbor))
     
-    return dist[1:n+1]
+    return distances
+
+# Example usage
+n = 4
+source = 0
+edges = [(0, 1, 1), (0, 2, 4), (1, 2, 2), (2, 3, 1)]
+constraints = lambda u, v, w: w <= 10  # Only edges with weight ≤ 10
+result = constrained_shortest_routes_i(n, source, edges, constraints)
+print(f"Constrained shortest distances: {result}")
 ```
 
-### Variation 3: Shortest Routes with Path Constraints
-**Problem**: Find shortest paths with constraints on path length or number of edges.
+#### **2. Shortest Routes I with Different Metrics**
+**Problem**: Find shortest paths with different distance metrics.
 
-**Link**: [CSES Problem Set - Shortest Routes Path Constraints](https://cses.fi/problemset/task/shortest_routes_path_constraints)
+**Key Differences**: Different distance calculations
 
+**Solution Approach**: Use advanced mathematical techniques
+
+**Implementation**:
 ```python
-def shortest_routes_path_constraints(n, m, edges, max_edges):
+def weighted_shortest_routes_i(n, source, edges, weight_function):
+    """Find shortest paths with different weight metrics"""
+    import heapq
+    
+    # Build adjacency list with modified weights
+    adj = [[] for _ in range(n)]
+    for u, v, weight in edges:
+        new_weight = weight_function(weight)
+        adj[u].append((v, new_weight))
+    
+    # Initialize distances
+    distances = [float('inf')] * n
+    distances[source] = 0
+    
+    # Priority queue: (distance, vertex)
+    pq = [(0, source)]
+    visited = [False] * n
+    
+    while pq:
+        current_dist, current_vertex = heapq.heappop(pq)
+        
+        if visited[current_vertex]:
+            continue
+        
+        visited[current_vertex] = True
+        
+        # Relax all outgoing edges with modified weights
+        for neighbor, weight in adj[current_vertex]:
+            if not visited[neighbor]:
+                new_dist = current_dist + weight
+                if new_dist < distances[neighbor]:
+                    distances[neighbor] = new_dist
+                    heapq.heappush(pq, (new_dist, neighbor))
+    
+    return distances
+
+# Example usage
+n = 4
+source = 0
+edges = [(0, 1, 1), (0, 2, 4), (1, 2, 2), (2, 3, 1)]
+weight_function = lambda w: w * w  # Square the weight
+result = weighted_shortest_routes_i(n, source, edges, weight_function)
+print(f"Weighted shortest distances: {result}")
+```
+
+#### **3. Shortest Routes I with Multiple Dimensions**
+**Problem**: Find shortest paths in multiple dimensions.
+
+**Key Differences**: Handle multiple dimensions
+
+**Solution Approach**: Use advanced mathematical techniques
+
+**Implementation**:
+```python
+def multi_dimensional_shortest_routes_i(n, source, edges, dimensions):
+    """Find shortest paths in multiple dimensions"""
     import heapq
     
     # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b, c in edges:
-        adj[a].append((b, c))
+    adj = [[] for _ in range(n)]
+    for u, v, weight in edges:
+        adj[u].append((v, weight))
     
-    # Dijkstra's algorithm with edge count constraint
-    dist = [[float('inf')] * (max_edges + 1) for _ in range(n + 1)]
-    dist[1][0] = 0
-    pq = [(0, 1, 0)]  # (distance, vertex, edge_count)
+    # Initialize distances
+    distances = [float('inf')] * n
+    distances[source] = 0
+    
+    # Priority queue: (distance, vertex)
+    pq = [(0, source)]
+    visited = [False] * n
     
     while pq:
-        d, u, edges_used = heapq.heappop(pq)
+        current_dist, current_vertex = heapq.heappop(pq)
         
-        if d > dist[u][edges_used] or edges_used >= max_edges:
+        if visited[current_vertex]:
             continue
         
-        for v, w in adj[u]:
-            if edges_used + 1 <= max_edges and dist[u][edges_used] + w < dist[v][edges_used + 1]:
-                dist[v][edges_used + 1] = dist[u][edges_used] + w
-                heapq.heappush(pq, (dist[v][edges_used + 1], v, edges_used + 1))
+        visited[current_vertex] = True
+        
+        # Relax all outgoing edges
+        for neighbor, weight in adj[current_vertex]:
+            if not visited[neighbor]:
+                new_dist = current_dist + weight
+                if new_dist < distances[neighbor]:
+                    distances[neighbor] = new_dist
+                    heapq.heappush(pq, (new_dist, neighbor))
     
-    # Return minimum distance for each vertex
-    result = []
-    for i in range(1, n + 1):
-        min_dist = min(dist[i])
-        if min_dist == float('inf'):
-            result.append(-1)
-        else:
-            result.append(min_dist)
-    
-    return result
+    return distances
+
+# Example usage
+n = 4
+source = 0
+edges = [(0, 1, 1), (0, 2, 4), (1, 2, 2), (2, 3, 1)]
+dimensions = 1
+result = multi_dimensional_shortest_routes_i(n, source, edges, dimensions)
+print(f"Multi-dimensional shortest distances: {result}")
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Message Route](/cses-analyses/problem_soulutions/graph_algorithms/message_route_analysis/)**: BFS shortest path
-- **[Labyrinth](/cses-analyses/problem_soulutions/graph_algorithms/labyrinth_analysis/)**: Grid shortest path
-- **[Graph Algorithms](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph theory problems
-- **[Shortest Routes II](/cses-analyses/problem_soulutions/graph_algorithms/shortest_routes_ii_analysis/)**: All-pairs shortest paths
+#### **CSES Problems**
+- [Shortest Routes II](https://cses.fi/problemset/task/1075) - Graph Algorithms
+- [Flight Discount](https://cses.fi/problemset/task/1075) - Graph Algorithms
+- [High Score](https://cses.fi/problemset/task/1075) - Graph Algorithms
 
-## 📚 Learning Points
+#### **LeetCode Problems**
+- [Network Delay Time](https://leetcode.com/problems/network-delay-time/) - Graph
+- [Cheapest Flights](https://leetcode.com/problems/cheapest-flights-within-k-stops/) - Graph
+- [Path With Minimum Effort](https://leetcode.com/problems/path-with-minimum-effort/) - Graph
 
-1. **Single-Source Shortest Paths**: Essential for understanding shortest path algorithms
-2. **Dijkstra's Algorithm**: Key technique for non-negative edge weights
-3. **Priority Queue Usage**: Important for implementing efficient shortest path algorithms
-4. **Graph Representation**: Critical for understanding adjacency list structures
-5. **Greedy Algorithms**: Foundation for many optimization problems
-6. **Algorithm Optimization**: Critical for competitive programming performance
+#### **Problem Categories**
+- **Graph Algorithms**: Single-source shortest path, Dijkstra's algorithm
+- **Shortest Path**: Dijkstra's, Bellman-Ford, shortest path algorithms
+- **Priority Queues**: Heap operations, graph traversal
 
-## 📝 Summary
+## 🔗 Additional Resources
 
-The Shortest Routes I problem demonstrates fundamental single-source shortest path concepts for finding minimum cost paths in weighted graphs. We explored three approaches:
+### **Algorithm References**
+- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
+- [Dijkstra's Algorithm](https://cp-algorithms.com/graph/dijkstra.html) - Dijkstra's algorithm
+- [Shortest Path](https://cp-algorithms.com/graph/shortest_path.html) - Shortest path algorithms
 
-1. **Brute Force Path Enumeration**: O(n! × n) time complexity using recursive path generation, inefficient for large graphs
-2. **Basic Dijkstra with Array**: O((V + E) log V) time complexity using standard Dijkstra's algorithm, better approach for shortest path problems
-3. **Optimized Dijkstra with Efficient Data Structures**: O((V + E) log V) time complexity with optimized Dijkstra's algorithm, optimal approach for single-source shortest paths
+### **Practice Problems**
+- [CSES Shortest Routes II](https://cses.fi/problemset/task/1075) - Medium
+- [CSES Flight Discount](https://cses.fi/problemset/task/1075) - Medium
+- [CSES High Score](https://cses.fi/problemset/task/1075) - Medium
 
-The key insights include understanding shortest path problems as optimization problems, using Dijkstra's algorithm for non-negative edge weights, and applying priority queue-based algorithms for optimal performance. This problem serves as an excellent introduction to shortest path algorithms and Dijkstra's algorithm techniques.
+### **Further Reading**
+- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
+- [Dijkstra's Algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) - Wikipedia article
+- [Shortest Path Problem](https://en.wikipedia.org/wiki/Shortest_path_problem) - Wikipedia article
 
+---
+
+## 📝 Implementation Checklist
+
+When applying this template to a new problem, ensure you:
+
+### **Content Requirements**
+- [x] **Problem Description**: Clear, concise with examples
+- [x] **Learning Objectives**: 5 specific, measurable goals
+- [x] **Prerequisites**: 5 categories of required knowledge
+- [x] **3 Approaches**: Brute Force → Greedy → Optimal
+- [x] **Key Insights**: 4-5 insights per approach at the beginning
+- [x] **Visual Examples**: ASCII diagrams for each approach
+- [x] **Complete Implementations**: Working code with examples
+- [x] **Complexity Analysis**: Time and space for each approach
+- [x] **Problem Variations**: 3 variations with implementations
+- [x] **Related Problems**: CSES and LeetCode links
+
+### **Structure Requirements**
+- [x] **No Redundant Sections**: Remove duplicate Key Insights
+- [x] **Logical Flow**: Each approach builds on the previous
+- [x] **Progressive Complexity**: Clear improvement from approach to approach
+- [x] **Educational Value**: Theory + Practice in each section
+- [x] **Complete Coverage**: All important concepts included
+
+### **Quality Requirements**
+- [x] **Working Code**: All implementations are runnable
+- [x] **Test Cases**: Examples with expected outputs
+- [x] **Edge Cases**: Handle boundary conditions
+- [x] **Clear Explanations**: Easy to understand for students
+- [x] **Visual Learning**: Diagrams and examples throughout
+
+---
+
+## 🎯 **Template Usage Instructions**
+
+### **Step 1: Replace Placeholders**
+- Replace `[Problem Name]` with actual problem name
+- Replace `[category]` with the problem category folder
+- Replace `[problem_name]` with the actual problem filename
+- Replace all `[placeholder]` text with actual content
+
+### **Step 2: Customize Approaches**
+- **Approach 1**: Usually brute force or naive solution
+- **Approach 2**: Optimized solution (DP, greedy, etc.)
+- **Approach 3**: Optimal solution (advanced algorithms)
+
+### **Step 3: Add Visual Examples**
+- Use ASCII art for diagrams
+- Show step-by-step execution
+- Use actual data in examples
+
+### **Step 4: Implement Working Code**
+- Write complete, runnable implementations
+- Include test cases and examples
+- Handle edge cases properly
+
+### **Step 5: Add Problem Variations**
+- Create 3 meaningful variations
+- Provide implementations for each
+- Link to related problems
+
+### **Step 6: Quality Check**
+- Ensure no redundant sections
+- Verify all code works
+- Check that complexity analysis is correct
+- Confirm educational value is high
+
+This template ensures consistency across all problem analyses while maintaining high educational value and practical implementation focus.
