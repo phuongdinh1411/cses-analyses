@@ -58,228 +58,141 @@ In the permutation [3, 1, 4, 2], there are 3 inversions:
 These are the pairs where a larger element appears before a smaller element.
 ```
 
-### 📊 Visual Example
+## 🔍 Solution Analysis: From Brute Force to Optimal
 
-**Input Permutation:**
+### Approach 1: Brute Force - Check All Pairs
+
+**Key Insights from Brute Force Approach**:
+- **Exhaustive Pair Checking**: Check all possible pairs (i,j) where i < j
+- **Inversion Detection**: Count pairs where a[i] > a[j]
+- **Complete Coverage**: Guaranteed to find all inversions
+- **Simple Implementation**: Nested loops approach
+
+**Key Insight**: Systematically check all possible pairs of indices to count inversions where a larger element appears before a smaller element.
+
+**Algorithm**:
+- Use nested loops to check all pairs (i,j) where i < j
+- Count pairs where a[i] > a[j]
+- Return the total count
+
+**Visual Example**:
 ```
-Position: 0  1  2  3
-Value:    3  1  4  2
-```
+Permutation: [3, 1, 4, 2]
 
-**Inversion Analysis:**
-```
-Check all pairs (i,j) where i < j:
-
-Pair (0,1): a[0]=3, a[1]=1
-┌─────────────────────────────────────┐
-│ 3 > 1 ✓ (inversion found)          │
-│ Count: 1                            │
-└─────────────────────────────────────┘
-
-Pair (0,2): a[0]=3, a[2]=4
-┌─────────────────────────────────────┐
-│ 3 < 4 ✗ (not an inversion)         │
-│ Count: 1                            │
-└─────────────────────────────────────┘
-
-Pair (0,3): a[0]=3, a[3]=2
-┌─────────────────────────────────────┐
-│ 3 > 2 ✓ (inversion found)          │
-│ Count: 2                            │
-└─────────────────────────────────────┘
-
-Pair (1,2): a[1]=1, a[2]=4
-┌─────────────────────────────────────┐
-│ 1 < 4 ✗ (not an inversion)         │
-│ Count: 2                            │
-└─────────────────────────────────────┘
-
-Pair (1,3): a[1]=1, a[3]=2
-┌─────────────────────────────────────┐
-│ 1 < 2 ✗ (not an inversion)         │
-│ Count: 2                            │
-└─────────────────────────────────────┘
-
-Pair (2,3): a[2]=4, a[3]=2
-┌─────────────────────────────────────┐
-│ 4 > 2 ✓ (inversion found)          │
-│ Count: 3                            │
-└─────────────────────────────────────┘
+All possible pairs (i,j) where i < j:
+1. (0,1): a[0]=3, a[1]=1 → 3 > 1 ✓ (inversion)
+2. (0,2): a[0]=3, a[2]=4 → 3 < 4 ✗
+3. (0,3): a[0]=3, a[3]=2 → 3 > 2 ✓ (inversion)
+4. (1,2): a[1]=1, a[2]=4 → 1 < 4 ✗
+5. (1,3): a[1]=1, a[3]=2 → 1 < 2 ✗
+6. (2,3): a[2]=4, a[3]=2 → 4 > 2 ✓ (inversion)
 
 Total inversions: 3
 ```
 
-**Merge Sort Approach:**
-```
-Divide the array into two halves and count inversions:
-┌─────────────────────────────────────┐
-│ Left half: [3, 1]                  │
-│ Right half: [4, 2]                 │
-│                                     │
-│ Inversions within left: 1          │
-│ Inversions within right: 1         │
-│ Inversions across: 1               │
-│ Total: 1 + 1 + 1 = 3              │
-└─────────────────────────────────────┘
-```
-
-**Merge Sort Process:**
-```
-Step 1: Divide
-┌─────────────────────────────────────┐
-│ [3, 1, 4, 2]                       │
-│         │                           │
-│    [3, 1]    [4, 2]                │
-│       │         │                   │
-│    [3] [1]   [4] [2]               │
-└─────────────────────────────────────┘
-
-Step 2: Merge and count inversions
-┌─────────────────────────────────────┐
-│ Merge [3] and [1]:                 │
-│ - 3 > 1, so 3 goes after 1        │
-│ - Inversion count: 1               │
-│ - Result: [1, 3]                   │
-└─────────────────────────────────────┘
-
-┌─────────────────────────────────────┐
-│ Merge [4] and [2]:                 │
-│ - 4 > 2, so 4 goes after 2        │
-│ - Inversion count: 1               │
-│ - Result: [2, 4]                   │
-└─────────────────────────────────────┘
-
-┌─────────────────────────────────────┐
-│ Merge [1, 3] and [2, 4]:           │
-│ - 1 < 2, so 1 goes first           │
-│ - 3 > 2, so 2 goes next            │
-│ - Inversion count: 1 (3 > 2)       │
-│ - Result: [1, 2, 3, 4]             │
-└─────────────────────────────────────┘
-```
-
-**Binary Indexed Tree Approach:**
-```
-Coordinate compression and BIT:
-┌─────────────────────────────────────┐
-│ Original: [3, 1, 4, 2]             │
-│ Compressed: [2, 0, 3, 1]           │
-│                                     │
-│ Process from right to left:        │
-│ - Element 2: query(0) = 0          │
-│ - Element 4: query(2) = 0          │
-│ - Element 1: query(1) = 1          │
-│ - Element 3: query(3) = 2          │
-│ Total: 0 + 0 + 1 + 2 = 3          │
-└─────────────────────────────────────┘
-```
-
-**Algorithm Flowchart:**
-```
-┌─────────────────────────────────────┐
-│ Start: Read permutation            │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Use merge sort to count inversions │
-│ while sorting the array            │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│ Return total inversion count       │
-└─────────────────────────────────────┘
-```
-
-**Key Insight Visualization:**
-```
-During merge sort, when we merge two sorted halves:
-┌─────────────────────────────────────┐
-│ Left: [1, 3] (sorted)              │
-│ Right: [2, 4] (sorted)             │
-│                                     │
-│ When 3 > 2:                        │
-│ - All elements after 3 in left     │
-│   are also > 2                     │
-│ - Inversion count += 1             │
-│ - This counts all inversions       │
-│   between left and right           │
-└─────────────────────────────────────┘
-
-Example:
-┌─────────────────────────────────────┐
-│ Left: [1, 3]                       │
-│ Right: [2, 4]                      │
-│                                     │
-│ Merge: 1 < 2, so 1 goes first      │
-│ Merge: 3 > 2, so 2 goes next       │
-│ - Inversion: (3, 2)                │
-│ - Count: 1                         │
-│                                     │
-│ Continue: 3 < 4, so 3 goes next    │
-│ Continue: 4 goes last              │
-└─────────────────────────────────────┘
-```
-
-**Time Complexity Analysis:**
-```
-Brute Force: O(n²)
-- Check all n(n-1)/2 pairs
-- For each pair, compare values
-
-Merge Sort: O(n log n)
-- Divide: O(log n) levels
-- Merge: O(n) work per level
-- Total: O(n log n)
-
-Binary Indexed Tree: O(n log n)
-- Coordinate compression: O(n log n)
-- BIT operations: O(log n) per element
-- Total: O(n log n)
-```
-
-## Solution Progression
-
-### Approach 1: Check All Pairs - O(n²)
-**Description**: Check all possible pairs of indices to count inversions.
-
+**Implementation**:
 ```python
-def permutation_inversions_naive(n, arr):
+def brute_force_inversions(arr):
+    """
+    Count inversions using brute force approach
+    
+    Args:
+        arr: list of integers (permutation)
+    
+    Returns:
+        int: number of inversions
+    """
+    n = len(arr)
     count = 0
     
+    # Check all possible pairs
     for i in range(n):
         for j in range(i + 1, n):
             if arr[i] > arr[j]:
                 count += 1
     
     return count
+
+# Example usage
+arr = [3, 1, 4, 2]
+result = brute_force_inversions(arr)
+print(f"Brute force result: {result}")  # Output: 3
 ```
 
-**Why this is inefficient**: We need to check all possible pairs, leading to O(n²) time complexity.
+**Time Complexity**: O(n²) - Check all pairs
+**Space Complexity**: O(1) - Constant extra space
 
-### Improvement 1: Merge Sort with Inversion Counting - O(n log n)
-**Description**: Use merge sort to count inversions efficiently.
+**Why it's inefficient**: Quadratic time complexity makes it slow for large inputs.
 
+---
+
+### Approach 2: Optimized - Merge Sort with Inversion Counting
+
+**Key Insights from Optimized Approach**:
+- **Divide and Conquer**: Use merge sort's divide and conquer approach
+- **Inversion Counting**: Count inversions during the merge process
+- **Efficient Merging**: Count cross-inversions between left and right halves
+- **Recursive Solution**: Solve subproblems recursively
+
+**Key Insight**: Use merge sort's merge process to count inversions efficiently by counting cross-inversions between sorted halves.
+
+**Algorithm**:
+- Divide the array into two halves
+- Recursively count inversions in each half
+- Count cross-inversions during merge
+- Return total inversions
+
+**Visual Example**:
+```
+Permutation: [3, 1, 4, 2]
+
+Step 1: Divide
+Left: [3, 1], Right: [4, 2]
+
+Step 2: Recursively sort and count
+Left: [1, 3] (1 inversion: 3 > 1)
+Right: [2, 4] (1 inversion: 4 > 2)
+
+Step 3: Merge and count cross-inversions
+Merge [1, 3] and [2, 4]:
+- 1 < 2 → Take 1, no cross-inversions
+- 3 > 2 → Take 2, cross-inversion: 3 > 2
+- 3 < 4 → Take 3, no cross-inversions
+- Take 4
+
+Result: [1, 2, 3, 4]
+Total inversions: 1 + 1 + 1 = 3
+```
+
+**Implementation**:
 ```python
-def permutation_inversions_merge_sort(n, arr):
+def optimized_inversions(arr):
+    """
+    Count inversions using merge sort approach
+    
+    Args:
+        arr: list of integers (permutation)
+    
+    Returns:
+        int: number of inversions
+    """
     def merge_sort_and_count(arr):
         if len(arr) <= 1:
             return arr, 0
         
         mid = len(arr) // 2
-        left, left_inversions = merge_sort_and_count(arr[:mid])
-        right, right_inversions = merge_sort_and_count(arr[mid:])
+        left, left_inv = merge_sort_and_count(arr[:mid])
+        right, right_inv = merge_sort_and_count(arr[mid:])
         
-        merged, split_inversions = merge_and_count(left, right)
-        total_inversions = left_inversions + right_inversions + split_inversions
+        merged, cross_inv = merge_and_count(left, right)
+        total_inv = left_inv + right_inv + cross_inv
         
-        return merged, total_inversions
+        return merged, total_inv
     
     def merge_and_count(left, right):
         merged = []
-        inversions = 0
         i = j = 0
+        cross_inversions = 0
         
         while i < len(left) and j < len(right):
             if left[i] <= right[j]:
@@ -287,824 +200,153 @@ def permutation_inversions_merge_sort(n, arr):
                 i += 1
             else:
                 merged.append(right[j])
-                inversions += len(left) - i
+                cross_inversions += len(left) - i
                 j += 1
         
         merged.extend(left[i:])
         merged.extend(right[j:])
         
-        return merged, inversions
+        return merged, cross_inversions
     
-    _, count = merge_sort_and_count(arr)
-    return count
+    _, total_inversions = merge_sort_and_count(arr)
+    return total_inversions
+
+# Example usage
+arr = [3, 1, 4, 2]
+result = optimized_inversions(arr)
+print(f"Optimized result: {result}")  # Output: 3
 ```
 
-**Why this improvement works**: Merge sort allows us to count inversions in O(n log n) time by counting split inversions during merging.
+**Time Complexity**: O(n log n) - Merge sort complexity
+**Space Complexity**: O(n) - For temporary arrays during merge
 
-## Final Optimal Solution
+**Why it's better**: Much more efficient than brute force, using divide and conquer.
 
+---
+
+### Approach 3: Optimal - Binary Indexed Tree (Fenwick Tree)
+
+**Key Insights from Optimal Approach**:
+- **Coordinate Compression**: Map values to compressed coordinates
+- **Binary Indexed Tree**: Use BIT for efficient range queries
+- **Right-to-Left Processing**: Process elements from right to left
+- **Efficient Counting**: Count smaller elements to the right efficiently
+
+**Key Insight**: Use coordinate compression and Binary Indexed Tree to efficiently count inversions by processing elements from right to left and counting smaller elements to the right.
+
+**Algorithm**:
+- Compress coordinates to handle large values
+- Process elements from right to left
+- For each element, count smaller elements to the right using BIT
+- Update BIT with current element
+
+**Visual Example**:
+```
+Permutation: [3, 1, 4, 2]
+
+Step 1: Coordinate compression
+Original: [3, 1, 4, 2]
+Compressed: [2, 0, 3, 1] (sorted: [1, 2, 3, 4] → [0, 1, 2, 3])
+
+Step 2: Process from right to left
+BIT: [0, 0, 0, 0]
+
+i=3: arr[3]=2, compressed=1
+- Count smaller elements to right: 0
+- Update BIT[1] = 1
+- BIT: [0, 1, 0, 0]
+
+i=2: arr[2]=4, compressed=3
+- Count smaller elements to right: 1 (element 2)
+- Update BIT[3] = 1
+- BIT: [0, 1, 0, 1]
+
+i=1: arr[1]=1, compressed=0
+- Count smaller elements to right: 0
+- Update BIT[0] = 1
+- BIT: [1, 1, 0, 1]
+
+i=0: arr[0]=3, compressed=2
+- Count smaller elements to right: 2 (elements 1 and 2)
+- Update BIT[2] = 1
+- BIT: [1, 1, 1, 1]
+
+Total inversions: 0 + 1 + 0 + 2 = 3
+```
+
+**Implementation**:
 ```python
-n = int(input())
-arr = list(map(int, input().split()))
-
-def count_inversions(n, arr):
-    def merge_sort_and_count(arr):
-        if len(arr) <= 1:
-            return arr, 0
-        
-        mid = len(arr) // 2
-        left, left_inversions = merge_sort_and_count(arr[:mid])
-        right, right_inversions = merge_sort_and_count(arr[mid:])
-        
-        merged, split_inversions = merge_and_count(left, right)
-        total_inversions = left_inversions + right_inversions + split_inversions
-        
-        return merged, total_inversions
+def optimal_inversions(arr):
+    """
+    Count inversions using Binary Indexed Tree
     
-    def merge_and_count(left, right):
-        merged = []
-        inversions = 0
-        i = j = 0
-        
-        while i < len(left) and j < len(right):
-            if left[i] <= right[j]:
-                merged.append(left[i])
-                i += 1
-            else:
-                merged.append(right[j])
-                inversions += len(left) - i
-                j += 1
-        
-        merged.extend(left[i:])
-        merged.extend(right[j:])
-        
-        return merged, inversions
+    Args:
+        arr: list of integers (permutation)
     
-    _, count = merge_sort_and_count(arr)
-    return count
+    Returns:
+        int: number of inversions
+    """
+    # Coordinate compression
+    sorted_arr = sorted(arr)
+    compressed = {}
+    for i, val in enumerate(sorted_arr):
+        compressed[val] = i
+    
+    # Binary Indexed Tree implementation
+    class BIT:
+        def __init__(self, size):
+            self.size = size
+            self.tree = [0] * (size + 1)
+        
+        def update(self, idx, delta):
+            while idx <= self.size:
+                self.tree[idx] += delta
+                idx += idx & -idx
+        
+        def query(self, idx):
+            result = 0
+            while idx > 0:
+                result += self.tree[idx]
+                idx -= idx & -idx
+            return result
+    
+    n = len(arr)
+    bit = BIT(n)
+    inversions = 0
+    
+    # Process from right to left
+    for i in range(n - 1, -1, -1):
+        compressed_val = compressed[arr[i]] + 1  # 1-indexed
+        inversions += bit.query(compressed_val - 1)
+        bit.update(compressed_val, 1)
+    
+    return inversions
 
-result = count_inversions(n, arr)
-print(result)
+# Example usage
+arr = [3, 1, 4, 2]
+result = optimal_inversions(arr)
+print(f"Optimal result: {result}")  # Output: 3
 ```
 
-## Complexity Analysis
+**Time Complexity**: O(n log n) - Coordinate compression + BIT operations
+**Space Complexity**: O(n) - For BIT and coordinate mapping
+
+**Why it's optimal**: Efficient algorithm using advanced data structures for optimal performance.
+
+## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |
 |----------|----------------|------------------|-------------|
-| Naive | O(n²) | O(1) | Check all pairs |
-| Merge Sort | O(n log n) | O(n) | Use merge sort to count inversions |
+| Brute Force | O(n²) | O(1) | Check all pairs |
+| Merge Sort | O(n log n) | O(n) | Divide and conquer |
+| Binary Indexed Tree | O(n log n) | O(n) | Coordinate compression + BIT |
 
-## Key Insights for Other Problems
+### Time Complexity
+- **Time**: O(n log n) - Optimal for inversion counting
+- **Space**: O(n) - For auxiliary data structures
 
-### 1. **Inversion Counting Problems**
-**Principle**: Use divide and conquer algorithms to count inversions efficiently.
-**Applicable to**: Sorting problems, counting problems, divide and conquer problems
-
-### 2. **Merge Sort for Counting**
-**Principle**: Use merge sort to count inversions during the merging process.
-**Applicable to**: Sorting problems, counting problems, merge sort applications
-
-### 3. **Split Inversion Counting**
-**Principle**: Count inversions that span across the divide point during merging.
-**Applicable to**: Divide and conquer problems, counting problems, merge sort variations
-
-## Notable Techniques
-
-### 1. **Merge Sort with Inversion Counting**
-```python
-def merge_sort_with_inversions(arr):
-    if len(arr) <= 1:
-        return arr, 0
-    
-    mid = len(arr) // 2
-    left, left_inv = merge_sort_with_inversions(arr[:mid])
-    right, right_inv = merge_sort_with_inversions(arr[mid:])
-    
-    merged, split_inv = merge_and_count(left, right)
-    return merged, left_inv + right_inv + split_inv
-```
-
-### 2. **Merge and Count Inversions**
-```python
-def merge_and_count(left, right):
-    merged = []
-    inversions = 0
-    i = j = 0
-    
-    while i < len(left) and j < len(right):
-        if left[i] <= right[j]:
-            merged.append(left[i])
-            i += 1
-        else:
-            merged.append(right[j])
-            inversions += len(left) - i
-            j += 1
-    
-    merged.extend(left[i:])
-    merged.extend(right[j:])
-    
-    return merged, inversions
-```
-
-### 3. **Inversion Check**
-```python
-def count_inversions_naive(arr):
-    count = 0
-    for i in range(len(arr)):
-        for j in range(i + 1, len(arr)):
-            if arr[i] > arr[j]:
-                count += 1
-    return count
-```
-
-## Problem-Solving Framework
-
-1. **Identify problem type**: This is an inversion counting problem
-2. **Choose approach**: Use merge sort to count inversions efficiently
-3. **Implement merge sort**: Modify merge sort to count split inversions
-4. **Count inversions**: Track inversions during the merging process
-5. **Return result**: Sum up all inversions (left + right + split)
-
----
-
-*This analysis shows how to efficiently count permutation inversions using merge sort with inversion counting and binary indexed trees.* 
-
-## 🎯 Problem Variations & Related Questions
-
-### 🔄 **Variations of the Original Problem**
-
-#### **Variation 1: Weighted Permutation Inversions**
-**Problem**: Each inversion has a weight. Find total weight of all inversions.
-```python
-def weighted_permutation_inversions(arr, weights):
-    # weights[i] = weight of element arr[i]
-    n = len(arr)
-    total_weight = 0
-    
-    def merge_sort_with_weights(left, right):
-        if left >= right:
-            return 0
-        
-        mid = (left + right) // 2
-        weight = merge_sort_with_weights(left, mid)
-        weight += merge_sort_with_weights(mid + 1, right)
-        weight += merge_with_weights(left, mid, right)
-        return weight
-    
-    def merge_with_weights(left, mid, right):
-        i, j, k = left, mid + 1, 0
-        temp = [0] * (right - left + 1)
-        weight = 0
-        
-        while i <= mid and j <= right:
-            if arr[i] <= arr[j]:
-                temp[k] = arr[i]
-                i += 1
-            else:
-                temp[k] = arr[j]
-                # Count inversions and add weights
-                for x in range(i, mid + 1):
-                    weight += weights[arr[x]-1] * weights[arr[j]-1]
-                j += 1
-            k += 1
-        
-        while i <= mid:
-            temp[k] = arr[i]
-            i += 1
-            k += 1
-        
-        while j <= right:
-            temp[k] = arr[j]
-            j += 1
-            k += 1
-        
-        for i in range(k):
-            arr[left + i] = temp[i]
-        
-        return weight
-    
-    return merge_sort_with_weights(0, n - 1)
-```
-
-#### **Variation 2: Constrained Permutation Inversions**
-**Problem**: Count inversions only if elements are within a certain distance.
-```python
-def constrained_permutation_inversions(arr, max_distance):
-    n = len(arr)
-    inversions = 0
-    
-    for i in range(n):
-        for j in range(i + 1, min(i + max_distance + 1, n)):
-            if arr[i] > arr[j]:
-                inversions += 1
-    
-    return inversions
-```
-
-#### **Variation 3: Circular Permutation Inversions**
-**Problem**: Handle circular permutations where the array wraps around.
-```python
-def circular_permutation_inversions(arr):
-    n = len(arr)
-    # Create circular array by duplicating
-    circular_arr = arr + arr
-    inversions = 0
-    
-    # Count inversions for each starting position
-    for start in range(n):
-        current_arr = circular_arr[start:start + n]
-        inversions += count_inversions(current_arr)
-    
-    return inversions
-
-def count_inversions(arr):
-    n = len(arr)
-    inversions = 0
-    
-    def merge_sort(left, right):
-        if left >= right:
-            return 0
-        
-        mid = (left + right) // 2
-        inv = merge_sort(left, mid)
-        inv += merge_sort(mid + 1, right)
-        inv += merge(left, mid, right)
-        return inv
-    
-    def merge(left, mid, right):
-        i, j, k = left, mid + 1, 0
-        temp = [0] * (right - left + 1)
-        inv = 0
-        
-        while i <= mid and j <= right:
-            if arr[i] <= arr[j]:
-                temp[k] = arr[i]
-                i += 1
-            else:
-                temp[k] = arr[j]
-                inv += mid - i + 1
-                j += 1
-            k += 1
-        
-        while i <= mid:
-            temp[k] = arr[i]
-            i += 1
-            k += 1
-        
-        while j <= right:
-            temp[k] = arr[j]
-            j += 1
-            k += 1
-        
-        for i in range(k):
-            arr[left + i] = temp[i]
-        
-        return inv
-    
-    return merge_sort(0, n - 1)
-```
-
-#### **Variation 4: Range-Based Permutation Inversions**
-**Problem**: Count inversions in a specific range of the permutation.
-```python
-def range_permutation_inversions(arr, start, end):
-    # Count inversions in arr[start:end+1]
-    range_arr = arr[start:end+1]
-    return count_inversions(range_arr)
-
-def count_inversions(arr):
-    n = len(arr)
-    inversions = 0
-    
-    def merge_sort(left, right):
-        if left >= right:
-            return 0
-        
-        mid = (left + right) // 2
-        inv = merge_sort(left, mid)
-        inv += merge_sort(mid + 1, right)
-        inv += merge(left, mid, right)
-        return inv
-    
-    def merge(left, mid, right):
-        i, j, k = left, mid + 1, 0
-        temp = [0] * (right - left + 1)
-        inv = 0
-        
-        while i <= mid and j <= right:
-            if arr[i] <= arr[j]:
-                temp[k] = arr[i]
-                i += 1
-            else:
-                temp[k] = arr[j]
-                inv += mid - i + 1
-                j += 1
-            k += 1
-        
-        while i <= mid:
-            temp[k] = arr[i]
-            i += 1
-            k += 1
-        
-        while j <= right:
-            temp[k] = arr[j]
-            j += 1
-            k += 1
-        
-        for i in range(k):
-            arr[left + i] = temp[i]
-        
-        return inv
-    
-    return merge_sort(0, n - 1)
-```
-
-#### **Variation 5: Dynamic Permutation Inversion Updates**
-**Problem**: Support dynamic updates to the permutation and answer inversion queries efficiently.
-```python
-class DynamicInversionCounter:
-    def __init__(self, arr):
-        self.n = len(arr)
-        self.arr = arr[:]
-        self.inversions = self._count_inversions()
-    
-    def _count_inversions(self):
-        inversions = 0
-        
-        def merge_sort(left, right):
-            if left >= right:
-                return 0
-            
-            mid = (left + right) // 2
-            inv = merge_sort(left, mid)
-            inv += merge_sort(mid + 1, right)
-            inv += merge(left, mid, right)
-            return inv
-        
-        def merge(left, mid, right):
-            i, j, k = left, mid + 1, 0
-            temp = [0] * (right - left + 1)
-            inv = 0
-            
-            while i <= mid and j <= right:
-                if self.arr[i] <= self.arr[j]:
-                    temp[k] = self.arr[i]
-                    i += 1
-                else:
-                    temp[k] = self.arr[j]
-                    inv += mid - i + 1
-                    j += 1
-                k += 1
-            
-            while i <= mid:
-                temp[k] = self.arr[i]
-                i += 1
-                k += 1
-            
-            while j <= right:
-                temp[k] = self.arr[j]
-                j += 1
-                k += 1
-            
-            for i in range(k):
-                self.arr[left + i] = temp[i]
-            
-            return inv
-        
-        return merge_sort(0, self.n - 1)
-    
-    def swap_elements(self, i, j):
-        if i != j:
-            # Update inversions after swap
-            self.inversions = self._count_inversions()
-    
-    def get_inversion_count(self):
-        return self.inversions
-```
-
-### 🔗 **Related Problems & Concepts**
-
-#### **1. Permutation Problems**
-- **Permutation Analysis**: Analyze permutation properties
-- **Permutation Generation**: Generate permutations
-- **Permutation Optimization**: Optimize permutation algorithms
-- **Permutation Counting**: Count permutation properties
-
-#### **2. Inversion Problems**
-- **Inversion Counting**: Count inversions efficiently
-- **Inversion Analysis**: Analyze inversion properties
-- **Inversion Optimization**: Optimize inversion algorithms
-- **Inversion Patterns**: Find inversion patterns
-
-#### **3. Sorting Problems**
-- **Merge Sort**: Efficient sorting with inversion counting
-- **Sorting Analysis**: Analyze sorting algorithms
-- **Sorting Optimization**: Optimize sorting operations
-- **Sorting Patterns**: Find sorting patterns
-
-#### **4. Array Problems**
-- **Array Traversal**: Traverse arrays efficiently
-- **Array Manipulation**: Manipulate arrays
-- **Array Analysis**: Analyze array properties
-- **Array Optimization**: Optimize array operations
-
-#### **5. Counting Problems**
-- **Counting Algorithms**: Efficient counting algorithms
-- **Counting Optimization**: Optimize counting operations
-- **Counting Analysis**: Analyze counting properties
-- **Counting Techniques**: Various counting techniques
-
-### 🎯 **Competitive Programming Variations**
-
-#### **1. Multiple Test Cases**
-```python
-t = int(input())
-for _ in range(t):
-    n = int(input())
-    arr = list(map(int, input().split()))
-    
-    result = count_permutation_inversions(arr)
-    print(result)
-```
-
-#### **2. Range Queries**
-```python
-# Precompute inversions for different array segments
-def precompute_inversions(arr):
-    n = len(arr)
-    inversions = {}
-    
-    for start in range(n):
-        for end in range(start, n):
-            segment = arr[start:end+1]
-            inv = count_inversions(segment)
-            inversions[(start, end)] = inv
-    
-    return inversions
-
-# Answer range queries efficiently
-def range_query(inversions, start, end):
-    return inversions.get((start, end), 0)
-```
-
-#### **3. Interactive Problems**
-```python
-# Interactive inversion analyzer
-def interactive_inversion_analyzer():
-    n = int(input("Enter array length: "))
-    arr = list(map(int, input("Enter array: ").split()))
-    
-    print("Array:", arr)
-    
-    while True:
-        query = input("Enter query (inversions/weighted/constrained/circular/range/dynamic/exit): ")
-        if query == "exit":
-            break
-        
-        if query == "inversions":
-            result = count_permutation_inversions(arr)
-            print(f"Inversions: {result}")
-        elif query == "weighted":
-            weights = list(map(int, input("Enter weights: ").split()))
-            result = weighted_permutation_inversions(arr, weights)
-            print(f"Weighted inversions: {result}")
-        elif query == "constrained":
-            max_dist = int(input("Enter max distance: "))
-            result = constrained_permutation_inversions(arr, max_dist)
-            print(f"Constrained inversions: {result}")
-        elif query == "circular":
-            result = circular_permutation_inversions(arr)
-            print(f"Circular inversions: {result}")
-        elif query == "range":
-            start, end = map(int, input("Enter start and end: ").split())
-            result = range_permutation_inversions(arr, start, end)
-            print(f"Range inversions: {result}")
-        elif query == "dynamic":
-            counter = DynamicInversionCounter(arr)
-            print(f"Initial inversions: {counter.get_inversion_count()}")
-            
-            while True:
-                cmd = input("Enter command (swap/count/back): ")
-                if cmd == "back":
-                    break
-                elif cmd == "swap":
-                    i, j = map(int, input("Enter indices to swap: ").split())
-                    counter.swap_elements(i, j)
-                    print("Elements swapped")
-                elif cmd == "count":
-                    result = counter.get_inversion_count()
-                    print(f"Current inversions: {result}")
-```
-
-### 🧮 **Mathematical Extensions**
-
-#### **1. Combinatorics**
-- **Permutation Theory**: Mathematical theory of permutations
-- **Inversion Theory**: Properties of inversions
-- **Sorting Theory**: Mathematical properties of sorting
-- **Inclusion-Exclusion**: Count using inclusion-exclusion
-
-#### **2. Number Theory**
-- **Permutation Patterns**: Mathematical patterns in permutations
-- **Inversion Sequences**: Sequences of inversion counts
-- **Modular Arithmetic**: Permutation operations with modular arithmetic
-- **Number Sequences**: Sequences in permutation counting
-
-#### **3. Optimization Theory**
-- **Permutation Optimization**: Optimize permutation operations
-- **Inversion Optimization**: Optimize inversion counting
-- **Algorithm Optimization**: Optimize algorithms
-- **Complexity Analysis**: Analyze algorithm complexity
-
-### 📚 **Learning Resources**
-
-#### **1. Related Algorithms**
-## 🔧 Implementation Details
-
-### Time and Space Complexity
-- **Time Complexity**: O(n²) for the naive approach, O(n log n) for merge sort approach
-- **Space Complexity**: O(n) for storing the array and temporary arrays
-- **Why it works**: We use merge sort to count inversions during the merging process
-
-### Key Implementation Points
-- Use merge sort to count inversions efficiently
-- Count inversions during the merge step
-- Handle edge cases like single elements
-- Optimize by using binary indexed tree for dynamic updates
-
-## 🎯 Key Insights
-
-### Important Concepts and Patterns
-- **Merge Sort**: Essential for counting inversions efficiently
-- **Binary Indexed Tree**: Useful for dynamic inversion counting
-- **Permutation Analysis**: Understanding inversion properties
-- **Divide and Conquer**: Breaking down the problem into smaller parts
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Permutation Inversions with Range Queries**
-```python
-def permutation_inversions_range_queries(n, arr, queries):
-    # Count inversions for range queries
-    results = []
-    
-    for query in queries:
-        l, r = query
-        # Extract subarray
-        subarray = arr[l:r+1]
-        
-        # Count inversions in subarray using merge sort
-        def merge_sort_count(arr):
-            if len(arr) <= 1:
-                return arr, 0
-            
-            mid = len(arr) // 2
-            left, left_inversions = merge_sort_count(arr[:mid])
-            right, right_inversions = merge_sort_count(arr[mid:])
-            
-            merged, split_inversions = merge(left, right)
-            total_inversions = left_inversions + right_inversions + split_inversions
-            
-            return merged, total_inversions
-        
-        def merge(left, right):
-            result = []
-            i = j = 0
-            inversions = 0
-            
-            while i < len(left) and j < len(right):
-                if left[i] <= right[j]:
-                    result.append(left[i])
-                    i += 1
-                else:
-                    result.append(right[j])
-                    inversions += len(left) - i
-                    j += 1
-            
-            result.extend(left[i:])
-            result.extend(right[j:])
-            
-            return result, inversions
-        
-        _, inversions = merge_sort_count(subarray)
-        results.append(inversions)
-    
-    return results
-
-# Example usage
-n = 5
-arr = [3, 1, 4, 2, 5]
-queries = [(0, 2), (1, 3), (0, 4)]
-results = permutation_inversions_range_queries(n, arr, queries)
-for i, count in enumerate(results):
-    print(f"Query {i} inversions: {count}")
-```
-
-#### **2. Permutation Inversions with Updates**
-```python
-def permutation_inversions_with_updates(n, arr, updates):
-    # Count inversions with dynamic updates
-    results = []
-    
-    def count_inversions(arr):
-        def merge_sort_count(arr):
-            if len(arr) <= 1:
-                return arr, 0
-            
-            mid = len(arr) // 2
-            left, left_inversions = merge_sort_count(arr[:mid])
-            right, right_inversions = merge_sort_count(arr[mid:])
-            
-            merged, split_inversions = merge(left, right)
-            total_inversions = left_inversions + right_inversions + split_inversions
-            
-            return merged, total_inversions
-        
-        def merge(left, right):
-            result = []
-            i = j = 0
-            inversions = 0
-            
-            while i < len(left) and j < len(right):
-                if left[i] <= right[j]:
-                    result.append(left[i])
-                    i += 1
-                else:
-                    result.append(right[j])
-                    inversions += len(left) - i
-                    j += 1
-            
-            result.extend(left[i:])
-            result.extend(right[j:])
-            
-            return result, inversions
-        
-        _, inversions = merge_sort_count(arr)
-        return inversions
-    
-    # Initial count
-    current_inversions = count_inversions(arr)
-    results.append(current_inversions)
-    
-    # Process updates
-    for update in updates:
-        pos, new_value = update
-        arr[pos] = new_value
-        current_inversions = count_inversions(arr)
-        results.append(current_inversions)
-    
-    return results
-
-# Example usage
-n = 4
-arr = [3, 1, 4, 2]
-updates = [(1, 5), (2, 1)]
-results = permutation_inversions_with_updates(n, arr, updates)
-for i, count in enumerate(results):
-    print(f"After update {i} inversions: {count}")
-```
-
-#### **3. Permutation Inversions with Multiple Arrays**
-```python
-def permutation_inversions_multiple_arrays(arrays):
-    # Count inversions for multiple arrays
-    results = {}
-    
-    for i, arr in enumerate(arrays):
-        def merge_sort_count(arr):
-            if len(arr) <= 1:
-                return arr, 0
-            
-            mid = len(arr) // 2
-            left, left_inversions = merge_sort_count(arr[:mid])
-            right, right_inversions = merge_sort_count(arr[mid:])
-            
-            merged, split_inversions = merge(left, right)
-            total_inversions = left_inversions + right_inversions + split_inversions
-            
-            return merged, total_inversions
-        
-        def merge(left, right):
-            result = []
-            i = j = 0
-            inversions = 0
-            
-            while i < len(left) and j < len(right):
-                if left[i] <= right[j]:
-                    result.append(left[i])
-                    i += 1
-                else:
-                    result.append(right[j])
-                    inversions += len(left) - i
-                    j += 1
-            
-            result.extend(left[i:])
-            result.extend(right[j:])
-            
-            return result, inversions
-        
-        _, inversions = merge_sort_count(arr)
-        results[i] = inversions
-    
-    return results
-
-# Example usage
-arrays = [
-    [3, 1, 4, 2],
-    [1, 2, 3, 4],
-    [4, 3, 2, 1]
-]
-results = permutation_inversions_multiple_arrays(arrays)
-for i, count in results.items():
-    print(f"Array {i} inversions: {count}")
-```
-
-#### **4. Permutation Inversions with Statistics**
-```python
-def permutation_inversions_with_statistics(n, arr):
-    # Count inversions and provide statistics
-    def merge_sort_count(arr):
-        if len(arr) <= 1:
-            return arr, 0
-        
-        mid = len(arr) // 2
-        left, left_inversions = merge_sort_count(arr[:mid])
-        right, right_inversions = merge_sort_count(arr[mid:])
-        
-        merged, split_inversions = merge(left, right)
-        total_inversions = left_inversions + right_inversions + split_inversions
-        
-        return merged, total_inversions
-    
-    def merge(left, right):
-        result = []
-        i = j = 0
-        inversions = 0
-        
-        while i < len(left) and j < len(right):
-            if left[i] <= right[j]:
-                result.append(left[i])
-                i += 1
-            else:
-                result.append(right[j])
-                inversions += len(left) - i
-                j += 1
-        
-        result.extend(left[i:])
-        result.extend(right[j:])
-        
-        return result, inversions
-    
-    _, total_inversions = merge_sort_count(arr)
-    
-    # Calculate statistics
-    max_possible_inversions = n * (n - 1) // 2
-    inversion_rate = total_inversions / max_possible_inversions if max_possible_inversions > 0 else 0
-    
-    # Count inversions for each element
-    element_inversions = [0] * n
-    for i in range(n):
-        for j in range(i + 1, n):
-            if arr[i] > arr[j]:
-                element_inversions[i] += 1
-    
-    statistics = {
-        "total_inversions": total_inversions,
-        "array_size": n,
-        "max_possible_inversions": max_possible_inversions,
-        "inversion_rate": inversion_rate,
-        "element_inversions": element_inversions,
-        "max_element_inversions": max(element_inversions) if element_inversions else 0
-    }
-    
-    return total_inversions, statistics
-
-# Example usage
-n = 4
-arr = [3, 1, 4, 2]
-count, stats = permutation_inversions_with_statistics(n, arr)
-print(f"Total inversions: {count}")
-print(f"Statistics: {stats}")
-```
-
-## 🔗 Related Problems
-
-### Links to Similar Problems
-- **Sorting Algorithms**: Merge sort, Quick sort
-- **Data Structures**: Binary indexed tree, Segment tree
-- **Combinatorics**: Permutation counting, Arrangement counting
-- **Divide and Conquer**: Merge sort, Binary search
-
-## 📚 Learning Points
-
-### Key Takeaways
-- **Merge sort** is essential for counting inversions efficiently
-- **Binary indexed tree** is useful for dynamic inversion counting
-- **Permutation analysis** requires understanding inversion properties
-- **Divide and conquer** helps break down complex problems
-
----
-
-*This analysis demonstrates efficient permutation inversion counting techniques and shows various extensions for permutation and sorting problems.* 
+### Why This Solution Works
+- **Inversion Definition**: Count pairs where larger element appears before smaller element
+- **Efficient Counting**: Use divide and conquer or advanced data structures
+- **Coordinate Compression**: Handle large values efficiently
+- **Optimal Approach**: Binary Indexed Tree provides best practical performance
