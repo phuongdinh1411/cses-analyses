@@ -300,6 +300,139 @@ print(f"Optimal result: {result}")  # Output: 5
 - **Dynamic Programming**: Use previous results to compute current result efficiently
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Maximum Subarray Product**
+**Problem**: Find the contiguous subarray within an array that has the largest product.
+
+**Key Differences**: Uses multiplication instead of addition, requires handling negative numbers differently
+
+**Solution Approach**: Track both maximum and minimum products at each position
+
+**Implementation**:
+```python
+def max_subarray_product(arr):
+    """
+    Find maximum subarray product using dynamic programming
+    """
+    if not arr:
+        return 0
+    
+    max_prod = min_prod = result = arr[0]
+    
+    for i in range(1, len(arr)):
+        if arr[i] < 0:
+            max_prod, min_prod = min_prod, max_prod
+        
+        max_prod = max(arr[i], max_prod * arr[i])
+        min_prod = min(arr[i], min_prod * arr[i])
+        result = max(result, max_prod)
+    
+    return result
+
+# Example usage
+arr = [2, 3, -2, 4]
+result = max_subarray_product(arr)
+print(f"Maximum subarray product: {result}")  # Output: 6
+```
+
+#### **2. Maximum Sum Circular Subarray**
+**Problem**: Find the maximum sum of a non-empty subarray of a circular array.
+
+**Key Differences**: Array is circular, need to consider wraparound cases
+
+**Solution Approach**: Use Kadane's algorithm for both linear and circular cases
+
+**Implementation**:
+```python
+def max_sum_circular_subarray(arr):
+    """
+    Find maximum sum in circular subarray
+    """
+    def kadane(arr):
+        current_sum = max_sum = arr[0]
+        for i in range(1, len(arr)):
+            current_sum = max(arr[i], current_sum + arr[i])
+            max_sum = max(max_sum, current_sum)
+        return max_sum
+    
+    # Case 1: Maximum sum in linear array
+    linear_max = kadane(arr)
+    
+    # Case 2: Maximum sum in circular array
+    total_sum = sum(arr)
+    inverted_arr = [-x for x in arr]
+    circular_max = total_sum + kadane(inverted_arr)
+    
+    return max(linear_max, circular_max) if circular_max != 0 else linear_max
+
+# Example usage
+arr = [5, -3, 5]
+result = max_sum_circular_subarray(arr)
+print(f"Maximum circular subarray sum: {result}")  # Output: 10
+```
+
+#### **3. Maximum Sum of K Non-Overlapping Subarrays**
+**Problem**: Find the maximum sum of k non-overlapping contiguous subarrays.
+
+**Key Differences**: Need to find k separate subarrays instead of one
+
+**Solution Approach**: Use dynamic programming with 2D state
+
+**Implementation**:
+```python
+def max_sum_k_subarrays(arr, k):
+    """
+    Find maximum sum of k non-overlapping subarrays
+    """
+    n = len(arr)
+    if k > n:
+        return 0
+    
+    # dp[i][j] = maximum sum of j subarrays ending at position i
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    
+    for j in range(1, k + 1):
+        for i in range(j, n + 1):
+            # Option 1: Don't include current element
+            dp[i][j] = dp[i-1][j]
+            
+            # Option 2: Include current element in j-th subarray
+            current_sum = 0
+            for l in range(i, 0, -1):
+                current_sum += arr[l-1]
+                dp[i][j] = max(dp[i][j], dp[l-1][j-1] + current_sum)
+    
+    return dp[n][k]
+
+# Example usage
+arr = [1, 2, 1, 2, 6, 7, 5, 1]
+k = 2
+result = max_sum_k_subarrays(arr, k)
+print(f"Maximum sum of {k} subarrays: {result}")  # Output: 23
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Maximum Subarray Sum](https://cses.fi/problemset/task/1643) - Find maximum sum of contiguous subarray
+- [Maximum Subarray Sum II](https://cses.fi/problemset/task/1644) - Find maximum sum of subarray with length constraints
+- [Subarray Sums I](https://cses.fi/problemset/task/1661) - Count subarrays with given sum
+- [Subarray Sums II](https://cses.fi/problemset/task/1662) - Count subarrays with given sum (with constraints)
+
+#### **LeetCode Problems**
+- [Maximum Subarray](https://leetcode.com/problems/maximum-subarray/) - Classic Kadane's algorithm problem
+- [Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/) - Maximum subarray product
+- [Maximum Sum Circular Subarray](https://leetcode.com/problems/maximum-sum-circular-subarray/) - Circular array variant
+- [Maximum Sum of 3 Non-Overlapping Subarrays](https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/) - Multiple subarrays
+
+#### **Problem Categories**
+- **Dynamic Programming**: Maximum subarray sum, maximum product subarray, circular subarray
+- **Sliding Window**: Subarray with given sum, longest subarray with sum
+- **Array Processing**: Subarray sums, subarray distinct values, subarray maximums
+
 ## 🚀 Key Takeaways
 
 - **Kadane's Algorithm**: The standard approach for maximum subarray sum problems

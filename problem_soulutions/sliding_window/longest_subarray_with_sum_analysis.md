@@ -333,6 +333,142 @@ print(f"Optimal result: {result}")  # Output: 5
 - **First Occurrence**: Store only first occurrence of each prefix sum to get maximum length
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Longest Subarray with Sum At Most Target**
+**Problem**: Find the length of the longest subarray with sum at most target.
+
+**Key Differences**: At most target instead of exactly target
+
+**Solution Approach**: Use sliding window with sum tracking
+
+**Implementation**:
+```python
+def longest_subarray_sum_at_most(arr, target):
+    """
+    Find length of longest subarray with sum at most target
+    """
+    n = len(arr)
+    left = 0
+    current_sum = 0
+    max_length = 0
+    
+    for right in range(n):
+        current_sum += arr[right]
+        
+        # Shrink window if sum exceeds target
+        while current_sum > target and left <= right:
+            current_sum -= arr[left]
+            left += 1
+        
+        # Update maximum length
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+target = 8
+result = longest_subarray_sum_at_most(arr, target)
+print(f"Longest subarray with sum <= {target}: {result}")  # Output: 3
+```
+
+#### **2. Longest Subarray with Sum At Least Target**
+**Problem**: Find the length of the longest subarray with sum at least target.
+
+**Key Differences**: At least target instead of exactly target
+
+**Solution Approach**: Use sliding window with sum tracking
+
+**Implementation**:
+```python
+def longest_subarray_sum_at_least(arr, target):
+    """
+    Find length of longest subarray with sum at least target
+    """
+    n = len(arr)
+    left = 0
+    current_sum = 0
+    max_length = 0
+    
+    for right in range(n):
+        current_sum += arr[right]
+        
+        # Try to expand window while sum is at least target
+        while current_sum >= target and left <= right:
+            max_length = max(max_length, right - left + 1)
+            current_sum -= arr[left]
+            left += 1
+    
+    return max_length
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+target = 6
+result = longest_subarray_sum_at_least(arr, target)
+print(f"Longest subarray with sum >= {target}: {result}")  # Output: 3
+```
+
+#### **3. Longest Subarray with Sum in Range**
+**Problem**: Find the length of the longest subarray with sum in range [min_sum, max_sum].
+
+**Key Differences**: Sum must be within a range instead of exact value
+
+**Solution Approach**: Use sliding window with range checking
+
+**Implementation**:
+```python
+def longest_subarray_sum_in_range(arr, min_sum, max_sum):
+    """
+    Find length of longest subarray with sum in range [min_sum, max_sum]
+    """
+    n = len(arr)
+    left = 0
+    current_sum = 0
+    max_length = 0
+    
+    for right in range(n):
+        current_sum += arr[right]
+        
+        # Shrink window if sum exceeds max_sum
+        while current_sum > max_sum and left <= right:
+            current_sum -= arr[left]
+            left += 1
+        
+        # Check if current sum is in valid range
+        if min_sum <= current_sum <= max_sum:
+            max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+min_sum, max_sum = 4, 8
+result = longest_subarray_sum_in_range(arr, min_sum, max_sum)
+print(f"Longest subarray with sum in [{min_sum}, {max_sum}]: {result}")  # Output: 3
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Longest Subarray with Sum](https://cses.fi/problemset/task/2101) - Find longest subarray with given sum
+- [Subarray Sums I](https://cses.fi/problemset/task/2102) - Count subarrays with given sum
+- [Subarray Sums II](https://cses.fi/problemset/task/2103) - Count subarrays with given sum (advanced)
+
+#### **LeetCode Problems**
+- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Count subarrays with sum k
+- [Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) - Minimum length subarray with sum >= target
+- [Maximum Size Subarray Sum Equals k](https://leetcode.com/problems/maximum-size-subarray-sum-equals-k/) - Maximum length subarray with sum k
+- [Continuous Subarray Sum](https://leetcode.com/problems/continuous-subarray-sum/) - Subarray sum with modulo
+
+#### **Problem Categories**
+- **Hash Map**: Prefix sum tracking, efficient lookups, frequency counting
+- **Sliding Window**: Variable-size windows, sum optimization, window management
+- **Array Processing**: Subarray analysis, sum calculation, range queries
+- **Two Pointers**: Left and right pointer technique, window expansion and contraction
+
 ## 🚀 Key Takeaways
 
 - **Hash Map Technique**: The standard approach for subarray sum problems

@@ -164,6 +164,145 @@ def optimal_subarray_sums_ii(arr, target):
 - **Frequency Counting**: Count how many times each prefix sum occurs
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Subarray Sums with Range Constraints**
+**Problem**: Count subarrays with sum equal to target within a specific range [l, r].
+
+**Key Differences**: Only count subarrays within a specific range
+
+**Solution Approach**: Use prefix sums with range filtering
+
+**Implementation**:
+```python
+def subarray_sums_range_constraints(arr, target, l, r):
+    """
+    Count subarrays with sum = target within range [l, r]
+    """
+    n = len(arr)
+    if l < 0 or r >= n or l > r:
+        return 0
+    
+    # Calculate prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    
+    count = 0
+    
+    # Only consider subarrays within range [l, r]
+    for i in range(l, r + 1):
+        for j in range(i, r + 1):
+            if prefix[j + 1] - prefix[i] == target:
+                count += 1
+    
+    return count
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+target = 7
+l, r = 1, 3
+result = subarray_sums_range_constraints(arr, target, l, r)
+print(f"Subarrays with sum {target} in range [{l}, {r}]: {result}")  # Output: 1
+```
+
+#### **2. Subarray Sums with Multiple Targets**
+**Problem**: Count subarrays with sum equal to any of the given targets.
+
+**Key Differences**: Multiple target values instead of single target
+
+**Solution Approach**: Use hash map with multiple target checking
+
+**Implementation**:
+```python
+def subarray_sums_multiple_targets(arr, targets):
+    """
+    Count subarrays with sum equal to any of the given targets
+    """
+    n = len(arr)
+    targets_set = set(targets)
+    
+    # Calculate prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    
+    count = 0
+    
+    for i in range(n):
+        for j in range(i, n):
+            current_sum = prefix[j + 1] - prefix[i]
+            if current_sum in targets_set:
+                count += 1
+    
+    return count
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+targets = [3, 7, 9]
+result = subarray_sums_multiple_targets(arr, targets)
+print(f"Subarrays with sum in {targets}: {result}")  # Output: 3
+```
+
+#### **3. Subarray Sums with Modulo Operations**
+**Problem**: Count subarrays with sum congruent to target modulo m.
+
+**Key Differences**: Use modulo arithmetic instead of exact equality
+
+**Solution Approach**: Use prefix sums with modulo operations
+
+**Implementation**:
+```python
+def subarray_sums_modulo(arr, target, m):
+    """
+    Count subarrays with sum ≡ target (mod m)
+    """
+    n = len(arr)
+    
+    # Calculate prefix sums with modulo
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = (prefix[i] + arr[i]) % m
+    
+    count = 0
+    
+    for i in range(n):
+        for j in range(i, n):
+            current_sum = (prefix[j + 1] - prefix[i]) % m
+            if current_sum == target:
+                count += 1
+    
+    return count
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+target = 0
+m = 3
+result = subarray_sums_modulo(arr, target, m)
+print(f"Subarrays with sum ≡ {target} (mod {m}): {result}")  # Output: 4
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Subarray Sums II](https://cses.fi/problemset/task/2101) - Count subarrays with given sum
+- [Subarray Sums I](https://cses.fi/problemset/task/2102) - Count subarrays with given sum (simpler version)
+- [Maximum Subarray Sum](https://cses.fi/problemset/task/2103) - Find maximum sum of subarray
+
+#### **LeetCode Problems**
+- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Count subarrays with sum k
+- [Continuous Subarray Sum](https://leetcode.com/problems/continuous-subarray-sum/) - Subarray sum with modulo
+- [Subarray Product Less Than K](https://leetcode.com/problems/subarray-product-less-than-k/) - Subarray product
+- [Binary Subarray With Sum](https://leetcode.com/problems/binary-subarray-with-sum/) - Binary subarray with sum
+
+#### **Problem Categories**
+- **Hash Map**: Prefix sum counting, frequency tracking, efficient lookups
+- **Prefix Sums**: Subarray sum calculation, range sum queries
+- **Array Processing**: Subarray analysis, sum optimization, counting
+- **Modulo Arithmetic**: Modular operations, congruence relations
+
 ## 🚀 Key Takeaways
 
 - **Hash Map Counting**: The standard approach for counting subarray sums

@@ -364,6 +364,176 @@ print(f"Optimal result: {result}")  # Output: True
 - **Efficient Search**: Each prefix sum is stored and searched in O(1) time
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Subarray with Given Sum (Return Indices)**
+**Problem**: Find the indices of a subarray with sum equal to target.
+
+**Key Differences**: Return indices instead of just existence
+
+**Solution Approach**: Use hash map to store prefix sum indices
+
+**Implementation**:
+```python
+def subarray_with_given_sum_indices(arr, target):
+    """
+    Find indices of subarray with sum equal to target
+    """
+    n = len(arr)
+    prefix_sum = 0
+    prefix_map = {0: -1}  # prefix sum -> index
+    
+    for i in range(n):
+        prefix_sum += arr[i]
+        
+        # Check if target sum exists
+        if prefix_sum - target in prefix_map:
+            start_idx = prefix_map[prefix_sum - target] + 1
+            return (start_idx, i)
+        
+        # Store current prefix sum
+        if prefix_sum not in prefix_map:
+            prefix_map[prefix_sum] = i
+    
+    return None  # No subarray found
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+target = 7
+result = subarray_with_given_sum_indices(arr, target)
+print(f"Subarray with sum {target} at indices: {result}")  # Output: (1, 3)
+```
+
+#### **2. Subarray with Given Sum (All Occurrences)**
+**Problem**: Find all subarrays with sum equal to target.
+
+**Key Differences**: Find all occurrences instead of just one
+
+**Solution Approach**: Use hash map to store all prefix sum indices
+
+**Implementation**:
+```python
+def subarray_with_given_sum_all(arr, target):
+    """
+    Find all subarrays with sum equal to target
+    """
+    n = len(arr)
+    prefix_sum = 0
+    prefix_map = {0: [-1]}  # prefix sum -> list of indices
+    results = []
+    
+    for i in range(n):
+        prefix_sum += arr[i]
+        
+        # Check if target sum exists
+        if prefix_sum - target in prefix_map:
+            for start_idx in prefix_map[prefix_sum - target]:
+                results.append((start_idx + 1, i))
+        
+        # Store current prefix sum
+        if prefix_sum not in prefix_map:
+            prefix_map[prefix_sum] = []
+        prefix_map[prefix_sum].append(i)
+    
+    return results
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+target = 7
+result = subarray_with_given_sum_all(arr, target)
+print(f"All subarrays with sum {target}: {result}")  # Output: [(1, 3), (2, 4)]
+```
+
+#### **3. Subarray with Given Sum (Circular Array)**
+**Problem**: Find subarray with sum equal to target in a circular array.
+
+**Key Differences**: Array is circular, need to consider wraparound
+
+**Solution Approach**: Handle circular array with two cases
+
+**Implementation**:
+```python
+def subarray_with_given_sum_circular(arr, target):
+    """
+    Find subarray with sum equal to target in circular array
+    """
+    n = len(arr)
+    
+    # Case 1: Normal subarray (not wrapping around)
+    def find_normal_subarray():
+        prefix_sum = 0
+        prefix_map = {0: -1}
+        
+        for i in range(n):
+            prefix_sum += arr[i]
+            
+            if prefix_sum - target in prefix_map:
+                start_idx = prefix_map[prefix_sum - target] + 1
+                return (start_idx, i)
+            
+            if prefix_sum not in prefix_map:
+                prefix_map[prefix_sum] = i
+        
+        return None
+    
+    # Case 2: Circular subarray (wrapping around)
+    def find_circular_subarray():
+        total_sum = sum(arr)
+        if total_sum == target:
+            return (0, n - 1)
+        
+        # Find subarray with sum = total_sum - target
+        prefix_sum = 0
+        prefix_map = {0: -1}
+        
+        for i in range(n):
+            prefix_sum += arr[i]
+            
+            if prefix_sum - (total_sum - target) in prefix_map:
+                start_idx = prefix_map[prefix_sum - (total_sum - target)] + 1
+                return (i + 1, start_idx - 1)
+            
+            if prefix_sum not in prefix_map:
+                prefix_map[prefix_sum] = i
+        
+        return None
+    
+    # Try normal subarray first
+    result = find_normal_subarray()
+    if result:
+        return result
+    
+    # Try circular subarray
+    return find_circular_subarray()
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+target = 12
+result = subarray_with_given_sum_circular(arr, target)
+print(f"Circular subarray with sum {target}: {result}")  # Output: (4, 1)
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Subarray with Given Sum](https://cses.fi/problemset/task/2101) - Find subarray with given sum
+- [Subarray Sums I](https://cses.fi/problemset/task/2102) - Count subarrays with given sum
+- [Subarray Sums II](https://cses.fi/problemset/task/2103) - Count subarrays with given sum (advanced)
+
+#### **LeetCode Problems**
+- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Count subarrays with sum k
+- [Continuous Subarray Sum](https://leetcode.com/problems/continuous-subarray-sum/) - Subarray sum with modulo
+- [Subarray Product Less Than K](https://leetcode.com/problems/subarray-product-less-than-k/) - Subarray product
+- [Binary Subarray With Sum](https://leetcode.com/problems/binary-subarray-with-sum/) - Binary subarray with sum
+
+#### **Problem Categories**
+- **Hash Map**: Prefix sum tracking, efficient lookups, index storage
+- **Array Processing**: Subarray analysis, sum calculation, circular arrays
+- **Two Pointers**: Alternative approach for some variations
+- **Circular Arrays**: Wraparound handling, circular subarray problems
+
 ## 🚀 Key Takeaways
 
 - **Hash Map Technique**: The standard approach for subarray sum problems

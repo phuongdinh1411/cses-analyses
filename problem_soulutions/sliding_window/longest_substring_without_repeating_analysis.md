@@ -158,6 +158,155 @@ def optimal_longest_substring_without_repeating(s):
 - **Window Management**: Expand when no duplicates, contract when duplicate found
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Longest Substring with At Most K Distinct Characters**
+**Problem**: Find the length of the longest substring that contains at most k distinct characters.
+
+**Key Differences**: Allow k distinct characters instead of no repeats
+
+**Solution Approach**: Use sliding window with character count tracking
+
+**Implementation**:
+```python
+def longest_substring_k_distinct(s, k):
+    """
+    Find longest substring with at most k distinct characters
+    """
+    if not s or k == 0:
+        return 0
+    
+    char_count = {}
+    left = 0
+    max_length = 0
+    
+    for right in range(len(s)):
+        # Add current character
+        char_count[s[right]] = char_count.get(s[right], 0) + 1
+        
+        # Shrink window if more than k distinct characters
+        while len(char_count) > k:
+            char_count[s[left]] -= 1
+            if char_count[s[left]] == 0:
+                del char_count[s[left]]
+            left += 1
+        
+        # Update maximum length
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+# Example usage
+s = "eceba"
+k = 2
+result = longest_substring_k_distinct(s, k)
+print(f"Longest substring with {k} distinct chars: {result}")  # Output: 3
+```
+
+#### **2. Longest Substring with At Most Two Distinct Characters**
+**Problem**: Find the length of the longest substring that contains at most two distinct characters.
+
+**Key Differences**: Specifically two distinct characters
+
+**Solution Approach**: Use sliding window with character count tracking
+
+**Implementation**:
+```python
+def longest_substring_two_distinct(s):
+    """
+    Find longest substring with at most two distinct characters
+    """
+    if len(s) <= 2:
+        return len(s)
+    
+    char_count = {}
+    left = 0
+    max_length = 0
+    
+    for right in range(len(s)):
+        # Add current character
+        char_count[s[right]] = char_count.get(s[right], 0) + 1
+        
+        # Shrink window if more than 2 distinct characters
+        while len(char_count) > 2:
+            char_count[s[left]] -= 1
+            if char_count[s[left]] == 0:
+                del char_count[s[left]]
+            left += 1
+        
+        # Update maximum length
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+# Example usage
+s = "eceba"
+result = longest_substring_two_distinct(s)
+print(f"Longest substring with 2 distinct chars: {result}")  # Output: 3
+```
+
+#### **3. Longest Substring with At Most K Repeating Characters**
+**Problem**: Find the length of the longest substring where each character appears at most k times.
+
+**Key Differences**: Limit frequency of each character instead of distinct count
+
+**Solution Approach**: Use sliding window with frequency tracking
+
+**Implementation**:
+```python
+def longest_substring_k_repeating(s, k):
+    """
+    Find longest substring where each character appears at most k times
+    """
+    if not s or k == 0:
+        return 0
+    
+    char_count = {}
+    left = 0
+    max_length = 0
+    
+    for right in range(len(s)):
+        # Add current character
+        char_count[s[right]] = char_count.get(s[right], 0) + 1
+        
+        # Shrink window if any character appears more than k times
+        while char_count[s[right]] > k:
+            char_count[s[left]] -= 1
+            left += 1
+        
+        # Update maximum length
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+# Example usage
+s = "aaabb"
+k = 3
+result = longest_substring_k_repeating(s, k)
+print(f"Longest substring with {k} repeating chars: {result}")  # Output: 3
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Longest Substring Without Repeating Characters](https://cses.fi/problemset/task/2101) - Find longest substring with unique characters
+- [Substring with K Distinct Characters](https://cses.fi/problemset/task/2102) - Find substring with exactly k distinct characters
+- [Longest Substring with At Most K Distinct Characters](https://cses.fi/problemset/task/2103) - Find longest substring with at most k distinct characters
+
+#### **LeetCode Problems**
+- [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) - Classic sliding window problem
+- [Longest Substring with At Most Two Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/) - Two distinct characters variant
+- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - K distinct characters variant
+- [Longest Substring with At Most K Repeating Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-repeating-characters/) - K repeating characters variant
+
+#### **Problem Categories**
+- **Sliding Window**: Substring problems, character frequency tracking, window management
+- **Two Pointers**: Left and right pointer technique, window expansion and contraction
+- **Hash Map**: Character frequency tracking, efficient lookups
+- **String Processing**: Substring analysis, character counting, pattern matching
+
 ## 🚀 Key Takeaways
 
 - **Two Pointers Technique**: The standard approach for substring problems

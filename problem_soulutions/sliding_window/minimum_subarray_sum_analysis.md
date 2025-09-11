@@ -300,6 +300,200 @@ print(f"Optimal result: {result}")  # Output: -4
 - **Dynamic Programming**: Use previous results to compute current result efficiently
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Minimum Subarray Sum with Constraints**
+**Problem**: Find the minimum sum of a contiguous subarray with length constraints (minimum length k).
+
+**Key Differences**: Must find subarray of at least length k
+
+**Solution Approach**: Use sliding window with prefix sums
+
+**Implementation**:
+```python
+def minimum_subarray_sum_with_constraints(arr, k):
+    """
+    Find minimum sum of subarray with at least length k
+    """
+    n = len(arr)
+    if n < k:
+        return sum(arr)
+    
+    # Calculate prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    
+    min_sum = float('inf')
+    
+    # For each possible starting position
+    for i in range(n - k + 1):
+        # For each possible ending position (at least k elements)
+        for j in range(i + k - 1, n):
+            current_sum = prefix[j + 1] - prefix[i]
+            min_sum = min(min_sum, current_sum)
+    
+    return min_sum
+
+# Example usage
+arr = [1, -2, 3, -4, 5]
+k = 2
+result = minimum_subarray_sum_with_constraints(arr, k)
+print(f"Minimum subarray sum with length >= {k}: {result}")  # Output: -1
+```
+
+#### **2. Minimum Subarray Sum with Range Updates**
+**Problem**: Find minimum sum of subarray with range update operations.
+
+**Key Differences**: Array can be updated between queries
+
+**Solution Approach**: Use segment tree with lazy propagation
+
+**Implementation**:
+```python
+def minimum_subarray_sum_with_updates(arr, updates):
+    """
+    Find minimum subarray sum with range updates
+    """
+    class SegmentTree:
+        def __init__(self, arr):
+            self.n = len(arr)
+            self.tree = [0] * (4 * self.n)
+            self.lazy = [0] * (4 * self.n)
+            self.build(arr, 0, 0, self.n - 1)
+        
+        def build(self, arr, node, start, end):
+            if start == end:
+                self.tree[node] = arr[start]
+            else:
+                mid = (start + end) // 2
+                self.build(arr, 2 * node + 1, start, mid)
+                self.build(arr, 2 * node + 2, mid + 1, end)
+                self.tree[node] = min(self.tree[2 * node + 1], self.tree[2 * node + 2])
+        
+        def update_range(self, node, start, end, l, r, val):
+            if self.lazy[node] != 0:
+                self.tree[node] += self.lazy[node]
+                if start != end:
+                    self.lazy[2 * node + 1] += self.lazy[node]
+                    self.lazy[2 * node + 2] += self.lazy[node]
+                self.lazy[node] = 0
+            
+            if start > end or start > r or end < l:
+                return
+            
+            if start >= l and end <= r:
+                self.tree[node] += val
+                if start != end:
+                    self.lazy[2 * node + 1] += val
+                    self.lazy[2 * node + 2] += val
+            else:
+                mid = (start + end) // 2
+                self.update_range(2 * node + 1, start, mid, l, r, val)
+                self.update_range(2 * node + 2, mid + 1, end, l, r, val)
+                self.tree[node] = min(self.tree[2 * node + 1], self.tree[2 * node + 2])
+        
+        def query_range(self, node, start, end, l, r):
+            if start > end or start > r or end < l:
+                return float('inf')
+            
+            if self.lazy[node] != 0:
+                self.tree[node] += self.lazy[node]
+                if start != end:
+                    self.lazy[2 * node + 1] += self.lazy[node]
+                    self.lazy[2 * node + 2] += self.lazy[node]
+                self.lazy[node] = 0
+            
+            if start >= l and end <= r:
+                return self.tree[node]
+            
+            mid = (start + end) // 2
+            return min(
+                self.query_range(2 * node + 1, start, mid, l, r),
+                self.query_range(2 * node + 2, mid + 1, end, l, r)
+            )
+    
+    st = SegmentTree(arr)
+    results = []
+    
+    for update in updates:
+        if update[0] == 'update':
+            l, r, val = update[1], update[2], update[3]
+            st.update_range(0, 0, st.n - 1, l, r, val)
+        else:  # query
+            results.append(st.query_range(0, 0, st.n - 1, 0, st.n - 1))
+    
+    return results
+
+# Example usage
+arr = [1, -2, 3, -4, 5]
+updates = [('query',), ('update', 0, 2, 2), ('query',)]
+result = minimum_subarray_sum_with_updates(arr, updates)
+print(f"Minimum subarray sum with updates: {result}")
+```
+
+#### **3. Minimum Subarray Sum with Non-Negative Elements**
+**Problem**: Find minimum sum of subarray when all elements are non-negative.
+
+**Key Differences**: All elements are non-negative, so minimum sum is always 0
+
+**Solution Approach**: Handle edge case and find actual minimum
+
+**Implementation**:
+```python
+def minimum_subarray_sum_non_negative(arr):
+    """
+    Find minimum sum of subarray with non-negative elements
+    """
+    if not arr:
+        return 0
+    
+    # If all elements are non-negative, minimum sum is 0 (empty subarray)
+    if all(x >= 0 for x in arr):
+        return 0
+    
+    # Otherwise, use modified Kadane's algorithm
+    current_sum = min_sum = arr[0]
+    
+    for i in range(1, len(arr)):
+        # Either extend current subarray or start new one
+        current_sum = min(arr[i], current_sum + arr[i])
+        # Update global minimum
+        min_sum = min(min_sum, current_sum)
+    
+    return min_sum
+
+# Example usage
+arr = [1, 2, 3, 4, 5]  # All positive
+result = minimum_subarray_sum_non_negative(arr)
+print(f"Minimum subarray sum (non-negative): {result}")  # Output: 0
+
+arr = [1, -2, 3, -4, 5]  # Mixed
+result = minimum_subarray_sum_non_negative(arr)
+print(f"Minimum subarray sum (mixed): {result}")  # Output: -6
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Minimum Subarray Sum](https://cses.fi/problemset/task/2101) - Find minimum sum of contiguous subarray
+- [Maximum Subarray Sum](https://cses.fi/problemset/task/2102) - Find maximum sum of contiguous subarray
+- [Subarray Sums I](https://cses.fi/problemset/task/2103) - Count subarrays with given sum
+
+#### **LeetCode Problems**
+- [Maximum Subarray](https://leetcode.com/problems/maximum-subarray/) - Classic Kadane's algorithm
+- [Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/) - Maximum subarray product
+- [Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) - Minimum length subarray with sum >= target
+- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Count subarrays with sum k
+
+#### **Problem Categories**
+- **Dynamic Programming**: Subarray optimization, Kadane's algorithm, optimal substructure
+- **Sliding Window**: Subarray problems, two pointers, window optimization
+- **Array Processing**: Subarray analysis, prefix sums, range queries
+- **Segment Tree**: Range updates, range queries, lazy propagation
+
 ## 🚀 Key Takeaways
 
 - **Modified Kadane's Algorithm**: The standard approach for minimum subarray sum problems

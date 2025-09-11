@@ -322,6 +322,143 @@ print(f"Optimal result: {result}")  # Output: 2
 - **Optimal Window**: Each valid window is checked exactly once
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Shortest Subarray with Sum At Least Target**
+**Problem**: Find the length of the shortest subarray with sum at least target.
+
+**Key Differences**: At least target instead of exactly target
+
+**Solution Approach**: Use sliding window with sum tracking
+
+**Implementation**:
+```python
+def shortest_subarray_sum_at_least(arr, target):
+    """
+    Find length of shortest subarray with sum at least target
+    """
+    n = len(arr)
+    left = 0
+    current_sum = 0
+    min_length = float('inf')
+    
+    for right in range(n):
+        current_sum += arr[right]
+        
+        # Try to shrink window while sum is at least target
+        while current_sum >= target and left <= right:
+            min_length = min(min_length, right - left + 1)
+            current_sum -= arr[left]
+            left += 1
+    
+    return min_length if min_length != float('inf') else 0
+
+# Example usage
+arr = [2, 3, 1, 2, 4, 3]
+target = 7
+result = shortest_subarray_sum_at_least(arr, target)
+print(f"Shortest subarray with sum >= {target}: {result}")  # Output: 2
+```
+
+#### **2. Shortest Subarray with Sum At Most Target**
+**Problem**: Find the length of the shortest subarray with sum at most target.
+
+**Key Differences**: At most target instead of exactly target
+
+**Solution Approach**: Use sliding window with sum tracking
+
+**Implementation**:
+```python
+def shortest_subarray_sum_at_most(arr, target):
+    """
+    Find length of shortest subarray with sum at most target
+    """
+    n = len(arr)
+    left = 0
+    current_sum = 0
+    min_length = float('inf')
+    
+    for right in range(n):
+        current_sum += arr[right]
+        
+        # Shrink window if sum exceeds target
+        while current_sum > target and left <= right:
+            current_sum -= arr[left]
+            left += 1
+        
+        # Update minimum length if current sum is valid
+        if current_sum <= target:
+            min_length = min(min_length, right - left + 1)
+    
+    return min_length if min_length != float('inf') else 0
+
+# Example usage
+arr = [2, 3, 1, 2, 4, 3]
+target = 5
+result = shortest_subarray_sum_at_most(arr, target)
+print(f"Shortest subarray with sum <= {target}: {result}")  # Output: 1
+```
+
+#### **3. Shortest Subarray with Sum in Range**
+**Problem**: Find the length of the shortest subarray with sum in range [min_sum, max_sum].
+
+**Key Differences**: Sum must be within a range instead of exact value
+
+**Solution Approach**: Use sliding window with range checking
+
+**Implementation**:
+```python
+def shortest_subarray_sum_in_range(arr, min_sum, max_sum):
+    """
+    Find length of shortest subarray with sum in range [min_sum, max_sum]
+    """
+    n = len(arr)
+    left = 0
+    current_sum = 0
+    min_length = float('inf')
+    
+    for right in range(n):
+        current_sum += arr[right]
+        
+        # Shrink window if sum exceeds max_sum
+        while current_sum > max_sum and left <= right:
+            current_sum -= arr[left]
+            left += 1
+        
+        # Check if current sum is in valid range
+        if min_sum <= current_sum <= max_sum:
+            min_length = min(min_length, right - left + 1)
+    
+    return min_length if min_length != float('inf') else 0
+
+# Example usage
+arr = [2, 3, 1, 2, 4, 3]
+min_sum, max_sum = 4, 7
+result = shortest_subarray_sum_in_range(arr, min_sum, max_sum)
+print(f"Shortest subarray with sum in [{min_sum}, {max_sum}]: {result}")  # Output: 2
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Shortest Subarray with Sum](https://cses.fi/problemset/task/2101) - Find shortest subarray with given sum
+- [Minimum Size Subarray Sum](https://cses.fi/problemset/task/2102) - Find minimum length subarray with sum >= target
+- [Subarray Sums I](https://cses.fi/problemset/task/2103) - Count subarrays with given sum
+
+#### **LeetCode Problems**
+- [Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) - Minimum length subarray with sum >= target
+- [Shortest Subarray with Sum at Least K](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) - Shortest subarray with sum >= k
+- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Count subarrays with sum k
+- [Maximum Size Subarray Sum Equals k](https://leetcode.com/problems/maximum-size-subarray-sum-equals-k/) - Maximum length subarray with sum k
+
+#### **Problem Categories**
+- **Sliding Window**: Variable-size windows, sum optimization, window management
+- **Two Pointers**: Left and right pointer technique, window expansion and contraction
+- **Array Processing**: Subarray analysis, sum calculation, length optimization
+- **Greedy**: Greedy strategy for minimizing window size, optimal substructure
+
 ## 🚀 Key Takeaways
 
 - **Two Pointers Technique**: The standard approach for shortest subarray problems

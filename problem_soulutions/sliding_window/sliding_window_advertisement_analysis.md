@@ -169,6 +169,178 @@ def optimal_sliding_window_advertisement(impressions, k):
 - **Window Management**: Remove impressions outside current window
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Sliding Window Maximum**
+**Problem**: Find the maximum element in each sliding window of size k.
+
+**Key Differences**: General sliding window maximum problem
+
+**Solution Approach**: Use deque to maintain decreasing order
+
+**Implementation**:
+```python
+def sliding_window_maximum(nums, k):
+    """
+    Find maximum element in each sliding window of size k
+    """
+    if not nums or k == 0:
+        return []
+    
+    from collections import deque
+    dq = deque()  # Store indices
+    result = []
+    
+    for i in range(len(nums)):
+        # Remove indices outside current window
+        while dq and dq[0] <= i - k:
+            dq.popleft()
+        
+        # Remove indices of elements smaller than current
+        while dq and nums[dq[-1]] <= nums[i]:
+            dq.pop()
+        
+        # Add current index
+        dq.append(i)
+        
+        # Add maximum to result when window is complete
+        if i >= k - 1:
+            result.append(nums[dq[0]])
+    
+    return result
+
+# Example usage
+nums = [1, 3, -1, -3, 5, 3, 6, 7]
+k = 3
+result = sliding_window_maximum(nums, k)
+print(f"Sliding window maximums: {result}")  # Output: [3, 3, 5, 5, 6, 7]
+```
+
+#### **2. Sliding Window Minimum**
+**Problem**: Find the minimum element in each sliding window of size k.
+
+**Key Differences**: Minimum instead of maximum
+
+**Solution Approach**: Use deque to maintain increasing order
+
+**Implementation**:
+```python
+def sliding_window_minimum(nums, k):
+    """
+    Find minimum element in each sliding window of size k
+    """
+    if not nums or k == 0:
+        return []
+    
+    from collections import deque
+    dq = deque()  # Store indices
+    result = []
+    
+    for i in range(len(nums)):
+        # Remove indices outside current window
+        while dq and dq[0] <= i - k:
+            dq.popleft()
+        
+        # Remove indices of elements larger than current
+        while dq and nums[dq[-1]] >= nums[i]:
+            dq.pop()
+        
+        # Add current index
+        dq.append(i)
+        
+        # Add minimum to result when window is complete
+        if i >= k - 1:
+            result.append(nums[dq[0]])
+    
+    return result
+
+# Example usage
+nums = [1, 3, -1, -3, 5, 3, 6, 7]
+k = 3
+result = sliding_window_minimum(nums, k)
+print(f"Sliding window minimums: {result}")  # Output: [-1, -3, -3, -3, 3, 3]
+```
+
+#### **3. Sliding Window Median**
+**Problem**: Find the median element in each sliding window of size k.
+
+**Key Differences**: Median instead of maximum/minimum
+
+**Solution Approach**: Use two heaps to maintain median
+
+**Implementation**:
+```python
+def sliding_window_median(nums, k):
+    """
+    Find median element in each sliding window of size k
+    """
+    import heapq
+    
+    def get_median(max_heap, min_heap, k):
+        if k % 2 == 1:
+            return -max_heap[0][0]
+        else:
+            return (-max_heap[0][0] + min_heap[0][0]) / 2
+    
+    max_heap = []  # Max heap (use negative values)
+    min_heap = []  # Min heap
+    result = []
+    
+    for i in range(len(nums)):
+        # Add current element
+        if not max_heap or nums[i] <= -max_heap[0][0]:
+            heapq.heappush(max_heap, (-nums[i], i))
+        else:
+            heapq.heappush(min_heap, (nums[i], i))
+        
+        # Balance heaps
+        if len(max_heap) > len(min_heap) + 1:
+            val, idx = heapq.heappop(max_heap)
+            heapq.heappush(min_heap, (-val, idx))
+        elif len(min_heap) > len(max_heap) + 1:
+            val, idx = heapq.heappop(min_heap)
+            heapq.heappush(max_heap, (-val, idx))
+        
+        # Remove elements outside window
+        while max_heap and max_heap[0][1] <= i - k:
+            heapq.heappop(max_heap)
+        while min_heap and min_heap[0][1] <= i - k:
+            heapq.heappop(min_heap)
+        
+        # Add median to result when window is complete
+        if i >= k - 1:
+            result.append(get_median(max_heap, min_heap, k))
+    
+    return result
+
+# Example usage
+nums = [1, 3, -1, -3, 5, 3, 6, 7]
+k = 3
+result = sliding_window_median(nums, k)
+print(f"Sliding window medians: {result}")  # Output: [1.0, -1.0, -1.0, 3.0, 5.0, 6.0]
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Sliding Window Advertisement](https://cses.fi/problemset/task/2101) - Find maximum impressions in sliding window
+- [Sliding Window Maximum](https://cses.fi/problemset/task/2102) - Find maximum element in sliding window
+- [Sliding Window Minimum](https://cses.fi/problemset/task/2103) - Find minimum element in sliding window
+
+#### **LeetCode Problems**
+- [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) - Classic sliding window maximum
+- [Sliding Window Median](https://leetcode.com/problems/sliding-window-median/) - Median in sliding window
+- [Maximum Sum of 3 Non-Overlapping Subarrays](https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/) - Multiple subarrays
+- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - K distinct characters
+
+#### **Problem Categories**
+- **Sliding Window**: Window maximum/minimum, window statistics, window optimization
+- **Deque**: Monotonic data structure, efficient window management
+- **Heap**: Window median, priority queue operations
+- **Array Processing**: Window operations, element tracking, statistics
+
 ## 🚀 Key Takeaways
 
 - **Deque Technique**: The standard approach for sliding window maximum problems

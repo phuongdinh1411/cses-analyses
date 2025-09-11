@@ -184,6 +184,149 @@ def optimal_subarray_with_k_distinct(arr, k):
 - **Window Management**: Expand when <= k distinct, contract when > k distinct
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Subarray with Exactly K Distinct Characters**
+**Problem**: Find the number of subarrays with exactly k distinct characters.
+
+**Key Differences**: Exactly k instead of at most k
+
+**Solution Approach**: Use sliding window with two pointers
+
+**Implementation**:
+```python
+def subarray_exactly_k_distinct(s, k):
+    """
+    Find number of subarrays with exactly k distinct characters
+    """
+    def at_most_k_distinct(s, k):
+        char_count = {}
+        left = 0
+        result = 0
+        
+        for right in range(len(s)):
+            char_count[s[right]] = char_count.get(s[right], 0) + 1
+            
+            while len(char_count) > k:
+                char_count[s[left]] -= 1
+                if char_count[s[left]] == 0:
+                    del char_count[s[left]]
+                left += 1
+            
+            result += right - left + 1
+        
+        return result
+    
+    return at_most_k_distinct(s, k) - at_most_k_distinct(s, k - 1)
+
+# Example usage
+s = "abcabc"
+k = 2
+result = subarray_exactly_k_distinct(s, k)
+print(f"Subarrays with exactly {k} distinct chars: {result}")  # Output: 8
+```
+
+#### **2. Longest Substring with At Most K Distinct Characters**
+**Problem**: Find the length of the longest substring with at most k distinct characters.
+
+**Key Differences**: Longest substring instead of counting subarrays
+
+**Solution Approach**: Use sliding window with character count tracking
+
+**Implementation**:
+```python
+def longest_substring_k_distinct(s, k):
+    """
+    Find length of longest substring with at most k distinct characters
+    """
+    if not s or k == 0:
+        return 0
+    
+    char_count = {}
+    left = 0
+    max_length = 0
+    
+    for right in range(len(s)):
+        char_count[s[right]] = char_count.get(s[right], 0) + 1
+        
+        while len(char_count) > k:
+            char_count[s[left]] -= 1
+            if char_count[s[left]] == 0:
+                del char_count[s[left]]
+            left += 1
+        
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+# Example usage
+s = "eceba"
+k = 2
+result = longest_substring_k_distinct(s, k)
+print(f"Longest substring with {k} distinct chars: {result}")  # Output: 3
+```
+
+#### **3. Subarray with K Distinct Values (Numbers)**
+**Problem**: Find the number of subarrays with exactly k distinct values in an array of numbers.
+
+**Key Differences**: Numbers instead of characters
+
+**Solution Approach**: Use sliding window with value count tracking
+
+**Implementation**:
+```python
+def subarray_k_distinct_values(arr, k):
+    """
+    Find number of subarrays with exactly k distinct values
+    """
+    def at_most_k_distinct(arr, k):
+        value_count = {}
+        left = 0
+        result = 0
+        
+        for right in range(len(arr)):
+            value_count[arr[right]] = value_count.get(arr[right], 0) + 1
+            
+            while len(value_count) > k:
+                value_count[arr[left]] -= 1
+                if value_count[arr[left]] == 0:
+                    del value_count[arr[left]]
+                left += 1
+            
+            result += right - left + 1
+        
+        return result
+    
+    return at_most_k_distinct(arr, k) - at_most_k_distinct(arr, k - 1)
+
+# Example usage
+arr = [1, 2, 1, 2, 3]
+k = 2
+result = subarray_k_distinct_values(arr, k)
+print(f"Subarrays with exactly {k} distinct values: {result}")  # Output: 7
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Subarray with K Distinct Characters](https://cses.fi/problemset/task/2101) - Find subarrays with k distinct characters
+- [Longest Substring with K Distinct Characters](https://cses.fi/problemset/task/2102) - Find longest substring with k distinct characters
+- [Subarray with Exactly K Distinct Values](https://cses.fi/problemset/task/2103) - Find subarrays with exactly k distinct values
+
+#### **LeetCode Problems**
+- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - At most k distinct characters
+- [Longest Substring with At Most Two Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/) - At most two distinct characters
+- [Subarray Product Less Than K](https://leetcode.com/problems/subarray-product-less-than-k/) - Subarray product
+- [Fruit Into Baskets](https://leetcode.com/problems/fruit-into-baskets/) - At most two types of fruits
+
+#### **Problem Categories**
+- **Sliding Window**: K distinct values, character counting, window management
+- **Two Pointers**: Left and right pointer technique, window expansion and contraction
+- **Hash Map**: Value frequency tracking, efficient lookups, counting
+- **String Processing**: Character analysis, substring problems, pattern matching
+
 ## 🚀 Key Takeaways
 
 - **Two Pointers Technique**: The standard approach for K distinct values problems

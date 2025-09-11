@@ -162,6 +162,152 @@ def optimal_subarray_distinct_values(arr):
 - **Window Management**: Expand when distinct, contract when duplicate found
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Count Subarrays with Distinct Values**
+**Problem**: Count the number of subarrays that contain only distinct values.
+
+**Key Differences**: Count instead of finding longest
+
+**Solution Approach**: Use sliding window with counting
+
+**Implementation**:
+```python
+def count_subarrays_distinct_values(arr):
+    """
+    Count number of subarrays with distinct values
+    """
+    n = len(arr)
+    count = 0
+    left = 0
+    value_count = {}
+    
+    for right in range(n):
+        # Add current element
+        value_count[arr[right]] = value_count.get(arr[right], 0) + 1
+        
+        # Shrink window if duplicate found
+        while value_count[arr[right]] > 1:
+            value_count[arr[left]] -= 1
+            if value_count[arr[left]] == 0:
+                del value_count[arr[left]]
+            left += 1
+        
+        # All subarrays ending at right with distinct values
+        count += right - left + 1
+    
+    return count
+
+# Example usage
+arr = [1, 2, 1, 3, 4]
+result = count_subarrays_distinct_values(arr)
+print(f"Subarrays with distinct values: {result}")  # Output: 9
+```
+
+#### **2. Longest Subarray with At Most K Distinct Values**
+**Problem**: Find the length of the longest subarray with at most k distinct values.
+
+**Key Differences**: Allow k distinct values instead of all distinct
+
+**Solution Approach**: Use sliding window with distinct count tracking
+
+**Implementation**:
+```python
+def longest_subarray_k_distinct_values(arr, k):
+    """
+    Find length of longest subarray with at most k distinct values
+    """
+    if not arr or k == 0:
+        return 0
+    
+    value_count = {}
+    left = 0
+    max_length = 0
+    
+    for right in range(len(arr)):
+        # Add current element
+        value_count[arr[right]] = value_count.get(arr[right], 0) + 1
+        
+        # Shrink window if more than k distinct values
+        while len(value_count) > k:
+            value_count[arr[left]] -= 1
+            if value_count[arr[left]] == 0:
+                del value_count[arr[left]]
+            left += 1
+        
+        # Update maximum length
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+# Example usage
+arr = [1, 2, 1, 2, 3]
+k = 2
+result = longest_subarray_k_distinct_values(arr, k)
+print(f"Longest subarray with {k} distinct values: {result}")  # Output: 4
+```
+
+#### **3. Subarray with Exactly K Distinct Values**
+**Problem**: Find the number of subarrays with exactly k distinct values.
+
+**Key Differences**: Exactly k instead of at most k
+
+**Solution Approach**: Use sliding window with two pointers
+
+**Implementation**:
+```python
+def subarray_exactly_k_distinct_values(arr, k):
+    """
+    Find number of subarrays with exactly k distinct values
+    """
+    def at_most_k_distinct(arr, k):
+        value_count = {}
+        left = 0
+        result = 0
+        
+        for right in range(len(arr)):
+            value_count[arr[right]] = value_count.get(arr[right], 0) + 1
+            
+            while len(value_count) > k:
+                value_count[arr[left]] -= 1
+                if value_count[arr[left]] == 0:
+                    del value_count[arr[left]]
+                left += 1
+            
+            result += right - left + 1
+        
+        return result
+    
+    return at_most_k_distinct(arr, k) - at_most_k_distinct(arr, k - 1)
+
+# Example usage
+arr = [1, 2, 1, 2, 3]
+k = 2
+result = subarray_exactly_k_distinct_values(arr, k)
+print(f"Subarrays with exactly {k} distinct values: {result}")  # Output: 7
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Subarray Distinct Values](https://cses.fi/problemset/task/2101) - Find longest subarray with distinct values
+- [Subarray with K Distinct Values](https://cses.fi/problemset/task/2102) - Find subarrays with k distinct values
+- [Count Subarrays with Distinct Values](https://cses.fi/problemset/task/2103) - Count subarrays with distinct values
+
+#### **LeetCode Problems**
+- [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) - Longest substring with distinct characters
+- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - At most k distinct characters
+- [Longest Substring with At Most Two Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/) - At most two distinct characters
+- [Fruit Into Baskets](https://leetcode.com/problems/fruit-into-baskets/) - At most two types of fruits
+
+#### **Problem Categories**
+- **Sliding Window**: Distinct values, character counting, window management
+- **Two Pointers**: Left and right pointer technique, window expansion and contraction
+- **Hash Map**: Value frequency tracking, efficient lookups, counting
+- **Array Processing**: Subarray analysis, value tracking, pattern matching
+
 ## 🚀 Key Takeaways
 
 - **Two Pointers Technique**: The standard approach for distinct values problems

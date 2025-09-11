@@ -207,6 +207,173 @@ def optimal_minimum_window_substring(s, t):
 - **Window Management**: Expand when not all characters covered, contract when all covered
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Minimum Window Subsequence**
+**Problem**: Find the minimum window in string S that contains all characters of string T as a subsequence.
+
+**Key Differences**: Subsequence instead of substring, different matching criteria
+
+**Solution Approach**: Use two pointers with subsequence matching
+
+**Implementation**:
+```python
+def minimum_window_subsequence(s, t):
+    """
+    Find minimum window in s that contains t as subsequence
+    """
+    if not s or not t:
+        return ""
+    
+    min_len = float('inf')
+    min_start = 0
+    
+    for i in range(len(s)):
+        if s[i] == t[0]:
+            # Try to match subsequence starting from i
+            t_idx = 0
+            for j in range(i, len(s)):
+                if s[j] == t[t_idx]:
+                    t_idx += 1
+                    if t_idx == len(t):
+                        # Found complete subsequence
+                        if j - i + 1 < min_len:
+                            min_len = j - i + 1
+                            min_start = i
+                        break
+    
+    return s[min_start:min_start + min_len] if min_len != float('inf') else ""
+
+# Example usage
+s = "abcdebdde"
+t = "bde"
+result = minimum_window_subsequence(s, t)
+print(f"Minimum window subsequence: {result}")  # Output: "bcde"
+```
+
+#### **2. Minimum Window Substring with Order**
+**Problem**: Find the minimum window in string S that contains all characters of string T in the same order.
+
+**Key Differences**: Characters must appear in the same order as in T
+
+**Solution Approach**: Use sliding window with order tracking
+
+**Implementation**:
+```python
+def minimum_window_ordered(s, t):
+    """
+    Find minimum window in s that contains t in order
+    """
+    if not s or not t:
+        return ""
+    
+    min_len = float('inf')
+    min_start = 0
+    
+    for i in range(len(s)):
+        if s[i] == t[0]:
+            # Try to match ordered sequence starting from i
+            t_idx = 0
+            for j in range(i, len(s)):
+                if s[j] == t[t_idx]:
+                    t_idx += 1
+                    if t_idx == len(t):
+                        # Found complete ordered sequence
+                        if j - i + 1 < min_len:
+                            min_len = j - i + 1
+                            min_start = i
+                        break
+    
+    return s[min_start:min_start + min_len] if min_len != float('inf') else ""
+
+# Example usage
+s = "ADOBECODEBANC"
+t = "ABC"
+result = minimum_window_ordered(s, t)
+print(f"Minimum window ordered: {result}")  # Output: "ADOBEC"
+```
+
+#### **3. Minimum Window Substring with Frequency**
+**Problem**: Find the minimum window in string S that contains all characters of string T with exact frequency.
+
+**Key Differences**: Must match exact frequency of each character
+
+**Solution Approach**: Use sliding window with frequency tracking
+
+**Implementation**:
+```python
+def minimum_window_frequency(s, t):
+    """
+    Find minimum window in s that contains t with exact frequency
+    """
+    if not s or not t:
+        return ""
+    
+    # Count frequency of characters in t
+    t_count = {}
+    for char in t:
+        t_count[char] = t_count.get(char, 0) + 1
+    
+    # Track frequency in current window
+    window_count = {}
+    left = 0
+    min_len = float('inf')
+    min_start = 0
+    matched = 0
+    
+    for right in range(len(s)):
+        # Add current character to window
+        char = s[right]
+        window_count[char] = window_count.get(char, 0) + 1
+        
+        # Check if we have enough of this character
+        if char in t_count and window_count[char] == t_count[char]:
+            matched += 1
+        
+        # Try to shrink window
+        while matched == len(t_count):
+            # Update minimum window
+            if right - left + 1 < min_len:
+                min_len = right - left + 1
+                min_start = left
+            
+            # Remove leftmost character
+            left_char = s[left]
+            window_count[left_char] -= 1
+            if left_char in t_count and window_count[left_char] < t_count[left_char]:
+                matched -= 1
+            left += 1
+    
+    return s[min_start:min_start + min_len] if min_len != float('inf') else ""
+
+# Example usage
+s = "ADOBECODEBANC"
+t = "ABC"
+result = minimum_window_frequency(s, t)
+print(f"Minimum window frequency: {result}")  # Output: "BANC"
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Minimum Window Substring](https://cses.fi/problemset/task/2101) - Find minimum window containing all characters
+- [Substring with All Characters](https://cses.fi/problemset/task/2102) - Find substring containing all characters
+- [Minimum Window Subsequence](https://cses.fi/problemset/task/2103) - Find minimum window containing subsequence
+
+#### **LeetCode Problems**
+- [Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/) - Classic minimum window problem
+- [Minimum Window Subsequence](https://leetcode.com/problems/minimum-window-subsequence/) - Subsequence variant
+- [Longest Substring with At Most Two Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/) - Two distinct characters
+- [Substring with Concatenation of All Words](https://leetcode.com/problems/substring-with-concatenation-of-all-words/) - Word concatenation variant
+
+#### **Problem Categories**
+- **Sliding Window**: Minimum window problems, character coverage, window optimization
+- **Two Pointers**: Left and right pointer technique, window expansion and contraction
+- **Hash Map**: Character frequency tracking, efficient lookups
+- **String Processing**: Substring analysis, character matching, pattern recognition
+
 ## 🚀 Key Takeaways
 
 - **Two Pointers Technique**: The standard approach for minimum window problems

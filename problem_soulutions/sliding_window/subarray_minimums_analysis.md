@@ -169,6 +169,210 @@ def optimal_subarray_minimums(arr, k):
 - **Window Management**: Remove elements outside current window
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Subarray Minimums with Range Updates**
+**Problem**: Find minimum element in each subarray of size k, with range update operations.
+
+**Key Differences**: Array can be updated between queries
+
+**Solution Approach**: Use segment tree with lazy propagation
+
+**Implementation**:
+```python
+def subarray_minimums_with_updates(arr, k, updates):
+    """
+    Find minimum element in each subarray of size k with range updates
+    """
+    class SegmentTree:
+        def __init__(self, arr):
+            self.n = len(arr)
+            self.tree = [float('inf')] * (4 * self.n)
+            self.lazy = [0] * (4 * self.n)
+            self.build(arr, 0, 0, self.n - 1)
+        
+        def build(self, arr, node, start, end):
+            if start == end:
+                self.tree[node] = arr[start]
+            else:
+                mid = (start + end) // 2
+                self.build(arr, 2 * node + 1, start, mid)
+                self.build(arr, 2 * node + 2, mid + 1, end)
+                self.tree[node] = min(self.tree[2 * node + 1], self.tree[2 * node + 2])
+        
+        def update_range(self, node, start, end, l, r, val):
+            if self.lazy[node] != 0:
+                self.tree[node] += self.lazy[node]
+                if start != end:
+                    self.lazy[2 * node + 1] += self.lazy[node]
+                    self.lazy[2 * node + 2] += self.lazy[node]
+                self.lazy[node] = 0
+            
+            if start > end or start > r or end < l:
+                return
+            
+            if start >= l and end <= r:
+                self.tree[node] += val
+                if start != end:
+                    self.lazy[2 * node + 1] += val
+                    self.lazy[2 * node + 2] += val
+            else:
+                mid = (start + end) // 2
+                self.update_range(2 * node + 1, start, mid, l, r, val)
+                self.update_range(2 * node + 2, mid + 1, end, l, r, val)
+                self.tree[node] = min(self.tree[2 * node + 1], self.tree[2 * node + 2])
+        
+        def query_range(self, node, start, end, l, r):
+            if start > end or start > r or end < l:
+                return float('inf')
+            
+            if self.lazy[node] != 0:
+                self.tree[node] += self.lazy[node]
+                if start != end:
+                    self.lazy[2 * node + 1] += self.lazy[node]
+                    self.lazy[2 * node + 2] += self.lazy[node]
+                self.lazy[node] = 0
+            
+            if start >= l and end <= r:
+                return self.tree[node]
+            
+            mid = (start + end) // 2
+            return min(
+                self.query_range(2 * node + 1, start, mid, l, r),
+                self.query_range(2 * node + 2, mid + 1, end, l, r)
+            )
+    
+    st = SegmentTree(arr)
+    results = []
+    
+    for update in updates:
+        if update[0] == 'update':
+            l, r, val = update[1], update[2], update[3]
+            st.update_range(0, 0, st.n - 1, l, r, val)
+        else:  # query
+            results.append(st.query_range(0, 0, st.n - 1, 0, k - 1))
+    
+    return results
+
+# Example usage
+arr = [1, 3, -1, -3, 5, 3, 6, 7]
+k = 3
+updates = [('query',), ('update', 0, 2, 2), ('query',)]
+result = subarray_minimums_with_updates(arr, k, updates)
+print(f"Subarray minimums with updates: {result}")
+```
+
+#### **2. Subarray Minimums with Frequency**
+**Problem**: Find minimum element in each subarray of size k, along with its frequency.
+
+**Key Differences**: Also track frequency of minimum element
+
+**Solution Approach**: Use deque with frequency tracking
+
+**Implementation**:
+```python
+def subarray_minimums_with_frequency(arr, k):
+    """
+    Find minimum element and its frequency in each subarray of size k
+    """
+    from collections import deque
+    
+    dq = deque()  # Store (value, frequency) pairs
+    result = []
+    
+    for i in range(len(arr)):
+        # Remove elements outside current window
+        while dq and dq[0][1] <= i - k:
+            dq.popleft()
+        
+        # Remove elements larger than current
+        while dq and dq[-1][0] >= arr[i]:
+            dq.pop()
+        
+        # Add current element
+        dq.append((arr[i], i))
+        
+        # Add minimum to result when window is complete
+        if i >= k - 1:
+            min_val = dq[0][0]
+            # Count frequency of minimum in current window
+            freq = sum(1 for j in range(i - k + 1, i + 1) if arr[j] == min_val)
+            result.append((min_val, freq))
+    
+    return result
+
+# Example usage
+arr = [1, 3, -1, -3, 5, 3, 6, 7]
+k = 3
+result = subarray_minimums_with_frequency(arr, k)
+print(f"Subarray minimums with frequency: {result}")
+```
+
+#### **3. Subarray Minimums with Index**
+**Problem**: Find minimum element in each subarray of size k, along with its index.
+
+**Key Differences**: Also track index of minimum element
+
+**Solution Approach**: Use deque with index tracking
+
+**Implementation**:
+```python
+def subarray_minimums_with_index(arr, k):
+    """
+    Find minimum element and its index in each subarray of size k
+    """
+    from collections import deque
+    
+    dq = deque()  # Store indices
+    result = []
+    
+    for i in range(len(arr)):
+        # Remove indices outside current window
+        while dq and dq[0] <= i - k:
+            dq.popleft()
+        
+        # Remove indices of elements larger than current
+        while dq and arr[dq[-1]] >= arr[i]:
+            dq.pop()
+        
+        # Add current index
+        dq.append(i)
+        
+        # Add minimum and its index to result when window is complete
+        if i >= k - 1:
+            min_idx = dq[0]
+            result.append((arr[min_idx], min_idx))
+    
+    return result
+
+# Example usage
+arr = [1, 3, -1, -3, 5, 3, 6, 7]
+k = 3
+result = subarray_minimums_with_index(arr, k)
+print(f"Subarray minimums with index: {result}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Subarray Minimums](https://cses.fi/problemset/task/2101) - Find minimum element in each subarray
+- [Sliding Window Minimum](https://cses.fi/problemset/task/2102) - Classic sliding window minimum
+- [Range Minimum Queries](https://cses.fi/problemset/task/2103) - Range minimum queries
+
+#### **LeetCode Problems**
+- [Sliding Window Minimum](https://leetcode.com/problems/sliding-window-minimum/) - Classic sliding window minimum
+- [Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/) - Minimum window substring
+- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - K distinct characters
+- [Subarray Product Less Than K](https://leetcode.com/problems/subarray-product-less-than-k/) - Subarray product
+
+#### **Problem Categories**
+- **Sliding Window**: Window minimum, window statistics, window optimization
+- **Deque**: Monotonic data structure, efficient window management
+- **Segment Tree**: Range updates, range queries, lazy propagation
+- **Array Processing**: Window operations, element tracking, statistics
+
 ## 🚀 Key Takeaways
 
 - **Deque Technique**: The standard approach for sliding window minimum problems

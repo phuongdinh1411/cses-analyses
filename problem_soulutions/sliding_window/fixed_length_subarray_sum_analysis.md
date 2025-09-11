@@ -290,6 +290,175 @@ print(f"Optimal result: {result}")  # Output: 5
 - **No Redundant Calculations**: Each element is processed exactly once
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Fixed Length Subarray Sum with Range Queries**
+**Problem**: Find sum of subarrays of fixed length k for multiple range queries.
+
+**Key Differences**: Handle multiple queries efficiently
+
+**Solution Approach**: Precompute all sums and answer queries in O(1)
+
+**Implementation**:
+```python
+def fixed_length_subarray_sum_queries(arr, k, queries):
+    """
+    Answer multiple queries for fixed length subarray sums
+    """
+    n = len(arr)
+    if k > n:
+        return [0] * len(queries)
+    
+    # Precompute all sums using sliding window
+    sums = []
+    current_sum = sum(arr[:k])
+    sums.append(current_sum)
+    
+    for i in range(k, n):
+        current_sum = current_sum - arr[i - k] + arr[i]
+        sums.append(current_sum)
+    
+    # Answer queries
+    results = []
+    for l, r in queries:
+        if l < 0 or r >= len(sums) or l > r:
+            results.append(0)
+        else:
+            results.append(sum(sums[l:r+1]))
+    
+    return results
+
+# Example usage
+arr = [1, 2, 3, 4, 5, 6]
+k = 3
+queries = [(0, 1), (1, 2), (0, 2)]
+result = fixed_length_subarray_sum_queries(arr, k, queries)
+print(f"Fixed length subarray sum queries: {result}")  # Output: [9, 12, 21]
+```
+
+#### **2. Fixed Length Subarray Sum with Updates**
+**Problem**: Find sum of subarrays of fixed length k with array update operations.
+
+**Key Differences**: Array can be updated between queries
+
+**Solution Approach**: Use segment tree or maintain sliding window with updates
+
+**Implementation**:
+```python
+def fixed_length_subarray_sum_with_updates(arr, k, updates):
+    """
+    Find fixed length subarray sums with array updates
+    """
+    n = len(arr)
+    if k > n:
+        return []
+    
+    results = []
+    
+    for update in updates:
+        if update[0] == 'update':
+            idx, val = update[1], update[2]
+            arr[idx] = val
+        else:  # query
+            if k > n:
+                results.append(0)
+            else:
+                current_sum = sum(arr[:k])
+                max_sum = current_sum
+                
+                for i in range(k, n):
+                    current_sum = current_sum - arr[i - k] + arr[i]
+                    max_sum = max(max_sum, current_sum)
+                
+                results.append(max_sum)
+    
+    return results
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+k = 3
+updates = [('query',), ('update', 1, 10), ('query',)]
+result = fixed_length_subarray_sum_with_updates(arr, k, updates)
+print(f"Fixed length subarray sum with updates: {result}")
+```
+
+#### **3. Fixed Length Subarray Sum with Constraints**
+**Problem**: Find sum of subarrays of fixed length k that satisfy certain constraints.
+
+**Key Differences**: Add constraints to the subarray selection
+
+**Solution Approach**: Use sliding window with constraint checking
+
+**Implementation**:
+```python
+def fixed_length_subarray_sum_constraints(arr, k, constraints):
+    """
+    Find fixed length subarray sums with constraints
+    """
+    n = len(arr)
+    if k > n:
+        return []
+    
+    results = []
+    current_sum = sum(arr[:k])
+    
+    # Check if first window satisfies constraints
+    if satisfies_constraints(arr[:k], constraints):
+        results.append(current_sum)
+    
+    # Slide window and check constraints
+    for i in range(k, n):
+        current_sum = current_sum - arr[i - k] + arr[i]
+        current_window = arr[i - k + 1:i + 1]
+        
+        if satisfies_constraints(current_window, constraints):
+            results.append(current_sum)
+    
+    return results
+
+def satisfies_constraints(window, constraints):
+    """
+    Check if window satisfies given constraints
+    """
+    if 'min_sum' in constraints and sum(window) < constraints['min_sum']:
+        return False
+    if 'max_sum' in constraints and sum(window) > constraints['max_sum']:
+        return False
+    if 'min_element' in constraints and min(window) < constraints['min_element']:
+        return False
+    if 'max_element' in constraints and max(window) > constraints['max_element']:
+        return False
+    return True
+
+# Example usage
+arr = [1, 2, 3, 4, 5, 6]
+k = 3
+constraints = {'min_sum': 6, 'max_sum': 12}
+result = fixed_length_subarray_sum_constraints(arr, k, constraints)
+print(f"Fixed length subarray sum with constraints: {result}")  # Output: [6, 9, 12]
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Fixed Length Subarray Sum](https://cses.fi/problemset/task/2101) - Find sum of subarrays of fixed length
+- [Sliding Window Maximum](https://cses.fi/problemset/task/2102) - Find maximum in sliding window
+- [Sliding Window Minimum](https://cses.fi/problemset/task/2103) - Find minimum in sliding window
+
+#### **LeetCode Problems**
+- [Maximum Sum of 3 Non-Overlapping Subarrays](https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/) - Multiple fixed-length subarrays
+- [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) - Maximum in sliding window
+- [Sliding Window Median](https://leetcode.com/problems/sliding-window-median/) - Median in sliding window
+- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - Variable window
+
+#### **Problem Categories**
+- **Sliding Window**: Fixed-size windows, efficient window management, window optimization
+- **Array Processing**: Subarray analysis, sum calculation, window operations
+- **Query Processing**: Range queries, update operations, constraint checking
+- **Optimization**: Performance optimization, space efficiency, algorithm efficiency
+
 ## 🚀 Key Takeaways
 
 - **Sliding Window Technique**: The standard approach for fixed-size subarray problems
