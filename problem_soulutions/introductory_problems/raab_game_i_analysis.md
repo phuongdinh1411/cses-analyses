@@ -307,7 +307,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for game theory problems
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Raab Game with Different Move Options
 **Problem**: Raab game where players can remove 1, 2, 3, or 4 stones.
@@ -359,12 +361,24 @@ def raab_game_last_stone(piles):
     return nim_sum != 0
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Game Theory Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Game theory problems
-- **[Nim Games Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Nim games problems
-- **[Winning Strategy Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Winning strategy problems
-- **[Optimal Play Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Optimal play problems
+#### **CSES Problems**
+- [Raab Game I](https://cses.fi/problemset/task/1097) - Basic game theory problem
+- [Raab Game II](https://cses.fi/problemset/task/1098) - Advanced game theory problem
+- [Nim Game](https://cses.fi/problemset/task/1730) - Classic nim game problem
+
+#### **LeetCode Problems**
+- [Nim Game](https://leetcode.com/problems/nim-game/) - Basic nim game
+- [Stone Game](https://leetcode.com/problems/stone-game/) - Stone game with optimal play
+- [Stone Game II](https://leetcode.com/problems/stone-game-ii/) - Advanced stone game
+- [Stone Game III](https://leetcode.com/problems/stone-game-iii/) - Stone game with different rules
+
+#### **Problem Categories**
+- **Game Theory**: Winning strategies, optimal play, game analysis, mathematical games
+- **Nim Games**: Grundy numbers, XOR properties, impartial games, winning conditions
+- **Mathematical Analysis**: Game patterns, mathematical optimization, strategic analysis
+- **Algorithm Design**: Game algorithms, mathematical algorithms, strategic optimization
 
 ## 📚 Learning Points
 

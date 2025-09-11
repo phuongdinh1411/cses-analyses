@@ -292,7 +292,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for Collatz conjecture simulation
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Collatz Sequence Length
 **Problem**: Find the length of the Collatz sequence for a given number.
@@ -354,12 +356,24 @@ def collatz_with_memoization(n, memo):
     return memo[n]
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Simulation Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Simulation problems
-- **[Sequence Generation Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Sequence generation problems
-- **[Mathematical Sequence Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Mathematical sequence problems
-- **[Algorithm Tracing Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Algorithm tracing problems
+#### **CSES Problems**
+- [Weird Algorithm](https://cses.fi/problemset/task/1068) - Basic Collatz sequence simulation
+- [Number Spiral](https://cses.fi/problemset/task/1071) - Mathematical sequence problems
+- [Two Knights](https://cses.fi/problemset/task/1072) - Mathematical counting problems
+
+#### **LeetCode Problems**
+- [Collatz Conjecture](https://leetcode.com/problems/collatz-conjecture/) - Collatz sequence problems
+- [Happy Number](https://leetcode.com/problems/happy-number/) - Mathematical sequence simulation
+- [Ugly Number](https://leetcode.com/problems/ugly-number/) - Mathematical sequence problems
+- [Power of Two](https://leetcode.com/problems/power-of-two/) - Mathematical sequence analysis
+
+#### **Problem Categories**
+- **Mathematical Sequences**: Collatz conjecture, sequence generation, mathematical simulation
+- **Simulation**: Algorithm tracing, sequence simulation, mathematical processes
+- **Number Theory**: Mathematical properties, sequence analysis, mathematical optimization
+- **Algorithm Design**: Simulation algorithms, mathematical algorithms, sequence processing
 
 ## 📚 Learning Points
 

@@ -268,7 +268,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Handles all cases correctly
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Lexicographically Largest String
 **Problem**: Find the lexicographically largest string that can be obtained by reordering.
@@ -332,12 +334,24 @@ def constrained_string_reorder(s, constraints):
     return result
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[String Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: String problems
-- **[Sorting Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Sorting problems
-- **[Lexicographic Ordering Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Lexicographic ordering problems
-- **[Character Frequency Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Character frequency problems
+#### **CSES Problems**
+- [String Reorder](https://cses.fi/problemset/task/1754) - Basic string reordering
+- [Creating Strings](https://cses.fi/problemset/task/1622) - String generation problems
+- [Palindrome Reorder](https://cses.fi/problemset/task/1755) - String manipulation problems
+
+#### **LeetCode Problems**
+- [Custom Sort String](https://leetcode.com/problems/custom-sort-string/) - Sort string according to custom order
+- [Sort Characters By Frequency](https://leetcode.com/problems/sort-characters-by-frequency/) - Sort characters by frequency
+- [Reorder Data in Log Files](https://leetcode.com/problems/reorder-data-in-log-files/) - Reorder log entries
+- [Sort Array By Parity](https://leetcode.com/problems/sort-array-by-parity/) - Sort array by parity
+
+#### **Problem Categories**
+- **String Manipulation**: Character frequency counting, string construction, lexicographic ordering
+- **Sorting**: Character sorting, frequency-based sorting, custom ordering
+- **Lexicographic Ordering**: String comparison, alphabetical ordering, dictionary ordering
+- **Algorithm Design**: String algorithms, sorting algorithms, frequency analysis
 
 ## 📚 Learning Points
 

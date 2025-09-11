@@ -279,7 +279,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for consecutive character counting
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Repetitions with Different Characters
 **Problem**: Find longest repetition with any character set.
@@ -354,12 +356,24 @@ def repetitions_character_frequency(sequence, char_freq):
     return max_length
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[String Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: String problems
-- **[Consecutive Counting](/cses-analyses/problem_soulutions/introductory_problems/)**: Consecutive problems
-- **[Maximum Finding](/cses-analyses/problem_soulutions/introductory_problems/)**: Maximum problems
-- **[String Analysis](/cses-analyses/problem_soulutions/introductory_problems/)**: String analysis problems
+#### **CSES Problems**
+- [Repetitions](https://cses.fi/problemset/task/1069) - Find longest repetition
+- [Palindrome Reorder](https://cses.fi/problemset/task/1755) - String manipulation problems
+- [Creating Strings](https://cses.fi/problemset/task/1622) - String generation problems
+
+#### **LeetCode Problems**
+- [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) - Find longest consecutive sequence
+- [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) - Find longest substring without repeats
+- [Longest Palindromic Substring](https://leetcode.com/problems/longest-palindromic-substring/) - Find longest palindrome
+- [Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix/) - Find longest common prefix
+
+#### **Problem Categories**
+- **String Processing**: Consecutive character counting, string analysis, pattern recognition
+- **Linear Scanning**: Efficient string traversal, consecutive element counting, maximum finding
+- **String Analysis**: Character frequency, string patterns, consecutive sequences
+- **Algorithm Design**: Linear algorithms, string optimization, pattern matching
 
 ## 📚 Learning Points
 

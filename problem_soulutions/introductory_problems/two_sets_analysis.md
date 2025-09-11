@@ -331,7 +331,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for set partitioning optimization
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Two Sets with Different Sum Requirements
 **Problem**: Divide numbers into two sets with different sum requirements (e.g., one set has sum k, other has sum total-k).
@@ -405,12 +407,24 @@ def two_sets_size_constraints(n, k):
     return result
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Set Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Set problems
-- **[Partition Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Partition problems
-- **[Mathematical Analysis](/cses-analyses/problem_soulutions/introductory_problems/)**: Mathematical analysis problems
-- **[Equal Sum Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Equal sum problems
+#### **CSES Problems**
+- [Two Sets](https://cses.fi/problemset/task/1092) - Basic two sets partitioning
+- [Two Sets II](https://cses.fi/problemset/task/1093) - Advanced two sets with counting
+- [Apple Division](https://cses.fi/problemset/task/1623) - Set partitioning optimization
+
+#### **LeetCode Problems**
+- [Partition Equal Subset Sum](https://leetcode.com/problems/partition-equal-subset-sum/) - Check if array can be partitioned into equal sum subsets
+- [Partition to K Equal Sum Subsets](https://leetcode.com/problems/partition-to-k-equal-sum-subsets/) - Partition into k equal sum subsets
+- [Target Sum](https://leetcode.com/problems/target-sum/) - Find ways to assign signs to get target sum
+- [Subset Sum](https://leetcode.com/problems/subset-sum/) - Check if subset with given sum exists
+
+#### **Problem Categories**
+- **Set Partitioning**: Equal sum partitioning, set construction, mathematical analysis
+- **Mathematical Analysis**: Sum calculations, feasibility checking, arithmetic series
+- **Greedy Algorithms**: Optimal set construction, greedy strategies, mathematical optimization
+- **Combinatorics**: Partition counting, set enumeration, mathematical combinations
 
 ## 📚 Learning Points
 

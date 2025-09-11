@@ -319,7 +319,9 @@ if __name__ == "__main__":
 - Standard method for permutation generation
 - Leverages Python's optimized algorithms
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Permutations with Repetition
 **Problem**: Generate all permutations when elements can be repeated.
@@ -378,12 +380,24 @@ def next_permutation(arr):
     return True
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Permutation Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Permutation problems
-- **[Backtracking Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Backtracking problems
-- **[Lexicographic Ordering Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Lexicographic ordering problems
-- **[Combinatorics Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Combinatorics problems
+#### **CSES Problems**
+- [Permutations](https://cses.fi/problemset/task/1070) - Generate all permutations
+- [Creating Strings](https://cses.fi/problemset/task/1622) - Generate permutations of string
+- [Chessboard and Queens](https://cses.fi/problemset/task/1624) - Permutation with constraints
+
+#### **LeetCode Problems**
+- [Permutations](https://leetcode.com/problems/permutations/) - Generate all permutations
+- [Permutations II](https://leetcode.com/problems/permutations-ii/) - Permutations with duplicates
+- [Next Permutation](https://leetcode.com/problems/next-permutation/) - Find next lexicographical permutation
+- [Permutation Sequence](https://leetcode.com/problems/permutation-sequence/) - Kth permutation
+
+#### **Problem Categories**
+- **Combinatorics**: Permutation generation, factorial calculations, arrangement counting
+- **Backtracking**: Recursive generation, constraint satisfaction, systematic exploration
+- **Lexicographic Ordering**: Systematic arrangement, ordered generation, sequence analysis
+- **Algorithm Design**: Recursive algorithms, iterative generation, optimization techniques
 
 ## 📚 Learning Points
 

@@ -311,7 +311,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for spiral calculation optimization
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Number Spiral with Different Starting Patterns
 **Problem**: Number spiral with different starting patterns (e.g., starting from center).
@@ -391,12 +393,24 @@ def number_spiral_different_shapes(y, x, shape):
         return number_spiral_optimized(y, x)
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Mathematical Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Mathematical problems
-- **[Pattern Recognition](/cses-analyses/problem_soulutions/introductory_problems/)**: Pattern recognition problems
-- **[Coordinate Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Coordinate problems
-- **[Spiral Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Spiral problems
+#### **CSES Problems**
+- [Number Spiral](https://cses.fi/problemset/task/1071) - Basic number spiral problem
+- [Number Spiral II](https://cses.fi/problemset/task/1072) - Advanced number spiral variations
+- [Grid Paths](https://cses.fi/problemset/task/1078) - Grid path problems
+
+#### **LeetCode Problems**
+- [Spiral Matrix](https://leetcode.com/problems/spiral-matrix/) - Generate spiral matrix
+- [Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii/) - Generate spiral matrix with numbers
+- [Spiral Matrix III](https://leetcode.com/problems/spiral-matrix-iii/) - Spiral matrix with different starting point
+- [Spiral Matrix IV](https://leetcode.com/problems/spiral-matrix-iv/) - Spiral matrix with linked list
+
+#### **Problem Categories**
+- **Mathematical Patterns**: Spiral generation, pattern recognition, coordinate calculations
+- **Grid Problems**: 2D array manipulation, coordinate geometry, spatial algorithms
+- **Number Theory**: Mathematical sequences, arithmetic progressions, geometric patterns
+- **Algorithm Design**: Pattern-based algorithms, mathematical optimization, coordinate systems
 
 ## 📚 Learning Points
 

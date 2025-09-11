@@ -251,7 +251,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for trailing zero calculation optimization
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Trailing Zeros in Different Bases
 **Problem**: Calculate trailing zeros in n! for different bases (e.g., base 12).
@@ -327,12 +329,24 @@ def trailing_zeros_binomial(n, k):
     return min(count_2, count_5)
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Factorial Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Factorial problems
-- **[Mathematical Formulas](/cses-analyses/problem_soulutions/introductory_problems/)**: Mathematical formula problems
-- **[Prime Factorization](/cses-analyses/problem_soulutions/introductory_problems/)**: Prime factorization problems
-- **[Trailing Zero Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Trailing zero problems
+#### **CSES Problems**
+- [Trailing Zeros](https://cses.fi/problemset/task/1618) - Count trailing zeros in factorial
+- [Factorial](https://cses.fi/problemset/task/1083) - Calculate factorial
+- [Prime Factorization](https://cses.fi/problemset/task/1081) - Prime factorization problems
+
+#### **LeetCode Problems**
+- [Factorial Trailing Zeroes](https://leetcode.com/problems/factorial-trailing-zeroes/) - Count trailing zeros
+- [Preimage Size of Factorial Zeroes Function](https://leetcode.com/problems/preimage-size-of-factorial-zeroes-function/) - Find numbers with k trailing zeros
+- [Count Primes](https://leetcode.com/problems/count-primes/) - Count prime numbers
+- [Ugly Number](https://leetcode.com/problems/ugly-number/) - Check if number has only 2,3,5 factors
+
+#### **Problem Categories**
+- **Number Theory**: Factorial properties, prime factorization, mathematical analysis
+- **Mathematical Formulas**: Efficient counting, mathematical optimization, formula derivation
+- **Prime Numbers**: Prime factorization, factor counting, mathematical properties
+- **Algorithm Design**: Mathematical algorithms, optimization techniques, efficient calculations
 
 ## 📚 Learning Points
 

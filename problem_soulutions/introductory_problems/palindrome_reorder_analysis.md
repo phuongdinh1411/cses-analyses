@@ -318,7 +318,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for palindrome construction optimization
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Palindrome with Lowercase Letters
 **Problem**: Handle both uppercase and lowercase letters in palindrome construction.
@@ -398,12 +400,24 @@ def minimum_insertions_palindrome(s):
     return max(0, odd_count - 1)
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[String Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: String problems
-- **[Palindrome Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Palindrome problems
-- **[Character Frequency Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Character frequency problems
-- **[String Manipulation Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: String manipulation problems
+#### **CSES Problems**
+- [Palindrome Reorder](https://cses.fi/problemset/task/1755) - Basic palindrome reordering
+- [Palindrome Check](https://cses.fi/problemset/task/1754) - Check if string can be palindrome
+- [String Matching](https://cses.fi/problemset/task/1753) - String matching problems
+
+#### **LeetCode Problems**
+- [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/) - Check if string is palindrome
+- [Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/) - Partition string into palindromes
+- [Longest Palindromic Substring](https://leetcode.com/problems/longest-palindromic-substring/) - Find longest palindrome
+- [Palindrome Number](https://leetcode.com/problems/palindrome-number/) - Check if number is palindrome
+
+#### **Problem Categories**
+- **String Manipulation**: Character frequency, string construction, palindrome properties
+- **Combinatorics**: Permutation counting, character arrangement, frequency analysis
+- **Greedy Algorithms**: Optimal character placement, palindrome construction strategies
+- **Character Analysis**: Frequency counting, character distribution, string properties
 
 ## 📚 Learning Points
 

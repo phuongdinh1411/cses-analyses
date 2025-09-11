@@ -400,7 +400,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for MEX grid construction problems
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: MEX Grid with Different Constraints
 **Problem**: MEX grid where rows and columns have different target MEX values.
@@ -463,12 +465,24 @@ def mex_grid_minimum_sum(n, target_mex):
     return grid
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Grid Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Grid construction problems
-- **[Constraint Satisfaction Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Constraint satisfaction problems
-- **[MEX Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: MEX calculation problems
-- **[Grid Construction Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Grid construction problems
+#### **CSES Problems**
+- [MEX Grid Construction](https://cses.fi/problemset/task/1625) - Basic MEX grid construction
+- [MEX Grid Construction II](https://cses.fi/problemset/task/1626) - Advanced MEX grid construction
+- [Grid Coloring I](https://cses.fi/problemset/task/1627) - Grid coloring problems
+
+#### **LeetCode Problems**
+- [Sudoku Solver](https://leetcode.com/problems/sudoku-solver/) - Grid constraint satisfaction
+- [Valid Sudoku](https://leetcode.com/problems/valid-sudoku/) - Grid validation
+- [N-Queens](https://leetcode.com/problems/n-queens/) - Grid placement problems
+- [Word Search](https://leetcode.com/problems/word-search/) - Grid search problems
+
+#### **Problem Categories**
+- **Grid Construction**: MEX theory, constraint satisfaction, systematic grid building
+- **Constraint Satisfaction**: Grid constraints, mathematical analysis, optimization
+- **MEX Theory**: Minimum excluded value, mathematical analysis, grid patterns
+- **Algorithm Design**: Grid algorithms, constraint algorithms, mathematical optimization
 
 ## 📚 Learning Points
 

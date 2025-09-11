@@ -363,7 +363,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for dual MEX construction
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: MEX Grid with Additional Constraints
 **Problem**: MEX grid with additional constraints (e.g., specific values in certain positions).
@@ -460,12 +462,24 @@ def mex_grid_patterns(n, row_mex, col_mex, patterns):
     return grid
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Mex Grid Construction](/cses-analyses/problem_soulutions/introductory_problems/)**: Basic MEX problems
-- **[Advanced Grid Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Advanced grid problems
-- **[Dual Constraint Satisfaction](/cses-analyses/problem_soulutions/introductory_problems/)**: Constraint problems
-- **[Advanced MEX Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Advanced MEX problems
+#### **CSES Problems**
+- [MEX Grid Construction II](https://cses.fi/problemset/task/1626) - Advanced MEX grid construction
+- [MEX Grid Construction](https://cses.fi/problemset/task/1625) - Basic MEX grid construction
+- [Grid Coloring I](https://cses.fi/problemset/task/1627) - Grid coloring problems
+
+#### **LeetCode Problems**
+- [Sudoku Solver](https://leetcode.com/problems/sudoku-solver/) - Advanced grid constraint satisfaction
+- [Valid Sudoku](https://leetcode.com/problems/valid-sudoku/) - Grid validation
+- [N-Queens](https://leetcode.com/problems/n-queens/) - Advanced grid placement problems
+- [Word Search II](https://leetcode.com/problems/word-search-ii/) - Advanced grid search problems
+
+#### **Problem Categories**
+- **Advanced Grid Construction**: Dual MEX theory, advanced constraint satisfaction, sophisticated grid building
+- **Dual Constraint Satisfaction**: Complex grid constraints, advanced mathematical analysis, optimization
+- **Advanced MEX Theory**: Dual minimum excluded value, advanced mathematical analysis, complex grid patterns
+- **Algorithm Design**: Advanced grid algorithms, complex constraint algorithms, sophisticated mathematical optimization
 
 ## 📚 Learning Points
 

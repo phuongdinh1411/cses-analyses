@@ -337,7 +337,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for knight counting optimization
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Two Knights with Different Movement Patterns
 **Problem**: Two knights with different movement patterns (e.g., one moves like a knight, other like a bishop).
@@ -485,12 +487,24 @@ def two_knights_different_colors(n, color1_moves, color2_moves):
     return results
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Combinatorial Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Combinatorial problems
-- **[Chess Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Chess problems
-- **[Mathematical Counting](/cses-analyses/problem_soulutions/introductory_problems/)**: Mathematical counting problems
-- **[Knight Movement Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Knight movement problems
+#### **CSES Problems**
+- [Two Knights](https://cses.fi/problemset/task/1072) - Basic two knights placement
+- [Chessboard and Queens](https://cses.fi/problemset/task/1624) - Chess piece placement problems
+- [Knight Moves](https://cses.fi/problemset/task/1073) - Knight movement problems
+
+#### **LeetCode Problems**
+- [N-Queens](https://leetcode.com/problems/n-queens/) - Chess piece placement
+- [N-Queens II](https://leetcode.com/problems/n-queens-ii/) - Count valid queen placements
+- [Knight Probability in Chessboard](https://leetcode.com/problems/knight-probability-in-chessboard/) - Knight movement probability
+- [Minimum Knight Moves](https://leetcode.com/problems/minimum-knight-moves/) - Minimum knight moves
+
+#### **Problem Categories**
+- **Combinatorics**: Chess piece placement, mathematical counting, combinatorial analysis
+- **Chess Mathematics**: Knight movement, attack patterns, piece placement strategies
+- **Mathematical Counting**: Efficient counting formulas, combinatorial optimization, mathematical analysis
+- **Algorithm Design**: Counting algorithms, mathematical algorithms, optimization techniques
 
 ## 📚 Learning Points
 

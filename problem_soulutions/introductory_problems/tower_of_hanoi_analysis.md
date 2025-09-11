@@ -381,7 +381,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for Tower of Hanoi problems
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Tower of Hanoi with Different Rules
 **Problem**: Tower of Hanoi where you can move multiple disks at once under certain conditions.
@@ -455,12 +457,24 @@ def tower_of_hanoi_with_cost(n, move_costs):
     return solve_with_cost(n, 1, 2, 3)
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Recursive Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Recursive algorithm problems
-- **[Tower of Hanoi Variants](/cses-analyses/problem_soulutions/introductory_problems/)**: Tower of Hanoi variant problems
-- **[Recursive Thinking Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Recursive thinking problems
-- **[Move Sequence Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Move sequence generation problems
+#### **CSES Problems**
+- [Tower of Hanoi](https://cses.fi/problemset/task/2165) - Basic Tower of Hanoi problem
+- [Chessboard and Queens](https://cses.fi/problemset/task/1624) - Recursive backtracking problems
+- [Creating Strings](https://cses.fi/problemset/task/1622) - Recursive string generation
+
+#### **LeetCode Problems**
+- [Tower of Hanoi](https://leetcode.com/problems/tower-of-hanoi/) - Classic Tower of Hanoi problem
+- [Generate Parentheses](https://leetcode.com/problems/generate-parentheses/) - Recursive generation
+- [Permutations](https://leetcode.com/problems/permutations/) - Recursive permutation generation
+- [Subsets](https://leetcode.com/problems/subsets/) - Recursive subset generation
+
+#### **Problem Categories**
+- **Recursive Algorithms**: Divide-and-conquer, recursive thinking, recursive problem solving
+- **Mathematical Sequences**: Move counting, pattern recognition, mathematical analysis
+- **Divide and Conquer**: Problem decomposition, recursive structure, base case handling
+- **Algorithm Design**: Recursive algorithms, mathematical algorithms, sequence generation
 
 ## 📚 Learning Points
 
