@@ -1,0 +1,306 @@
+---
+layout: simple
+title: "Missing Coin Sum"
+permalink: /problem_soulutions/sorting_and_searching/missing_coin_sum_analysis
+---
+
+# Missing Coin Sum
+
+## 📋 Problem Information
+
+### 🎯 **Learning Objectives**
+By the end of this problem, you should be able to:
+- Understand the concept of greedy algorithms and their applications
+- Apply sorting algorithms for finding optimal solutions
+- Implement efficient solutions for coin sum problems
+- Optimize solutions for large inputs with proper complexity analysis
+- Handle edge cases in greedy algorithms
+
+### 📚 **Prerequisites**
+Before attempting this problem, ensure you understand:
+- **Algorithm Knowledge**: Sorting, greedy algorithms, optimization, mathematical reasoning
+- **Data Structures**: Arrays, sorting algorithms
+- **Mathematical Concepts**: Greedy choice property, optimization theory, coin problems
+- **Programming Skills**: Algorithm implementation, complexity analysis, sorting
+- **Related Problems**: Stick Lengths (optimization), Array Division (optimization), Collecting Numbers (greedy)
+
+## 📋 Problem Description
+
+You have n coins with values 1, 2, 3, ..., n. You want to select a subset of these coins such that you can make any sum from 1 to some maximum value using the selected coins.
+
+Find the smallest sum that cannot be made using the selected coins.
+
+**Input**: 
+- First line: integer n (number of coins)
+- Second line: n integers a[1], a[2], ..., a[n] (values of available coins)
+
+**Output**: 
+- Print one integer: the smallest sum that cannot be made
+
+**Constraints**:
+- 1 ≤ n ≤ 2×10⁵
+- 1 ≤ a[i] ≤ 10⁹
+
+**Example**:
+```
+Input:
+4
+1 2 3 5
+
+Output:
+12
+
+Explanation**: 
+Available coins: [1, 2, 3, 5]
+
+Using coins [1, 2, 3]:
+- Can make: 1, 2, 3, 1+2=3, 1+3=4, 2+3=5, 1+2+3=6
+- Cannot make: 7, 8, 9, 10, 11, 12, ...
+
+Using coins [1, 2, 3, 5]:
+- Can make: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+- Cannot make: 12 (smallest missing sum)
+```
+
+## 🔍 Solution Analysis: From Brute Force to Optimal
+
+### Approach 1: Brute Force - Check All Possible Sums
+
+**Key Insights from Brute Force Approach**:
+- **Exhaustive Search**: Check all possible sums from 1 to some maximum
+- **Complete Coverage**: Guaranteed to find the smallest missing sum
+- **Simple Implementation**: Straightforward nested loops approach
+- **Inefficient**: Exponential time complexity
+
+**Key Insight**: For each possible sum, check if it can be made using the available coins.
+
+**Algorithm**:
+- For each sum from 1 to some maximum:
+  - Check if the sum can be made using available coins
+  - Return the first sum that cannot be made
+
+**Visual Example**:
+```
+Available coins: [1, 2, 3, 5]
+
+Check sum 1: Can make with coin 1 ✓
+Check sum 2: Can make with coin 2 ✓
+Check sum 3: Can make with coin 3 ✓
+Check sum 4: Can make with coins 1+3 ✓
+Check sum 5: Can make with coin 5 ✓
+Check sum 6: Can make with coins 1+2+3 ✓
+Check sum 7: Can make with coins 2+5 ✓
+Check sum 8: Can make with coins 3+5 ✓
+Check sum 9: Can make with coins 1+3+5 ✓
+Check sum 10: Can make with coins 2+3+5 ✓
+Check sum 11: Can make with coins 1+2+3+5 ✓
+Check sum 12: Cannot make ✗
+
+Smallest missing sum: 12
+```
+
+**Implementation**:
+```python
+def brute_force_missing_coin_sum(coins):
+    """
+    Find smallest missing sum using brute force approach
+    
+    Args:
+        coins: list of available coin values
+    
+    Returns:
+        int: smallest sum that cannot be made
+    """
+    def can_make_sum(target, coins):
+        """Check if target sum can be made using coins"""
+        if target == 0:
+            return True
+        if not coins or target < 0:
+            return False
+        
+        # Try using the first coin or not using it
+        return (can_make_sum(target - coins[0], coins[1:]) or 
+                can_make_sum(target, coins[1:]))
+    
+    # Check sums starting from 1
+    sum_to_check = 1
+    while True:
+        if not can_make_sum(sum_to_check, coins):
+            return sum_to_check
+        sum_to_check += 1
+
+# Example usage
+coins = [1, 2, 3, 5]
+result = brute_force_missing_coin_sum(coins)
+print(f"Brute force result: {result}")  # Output: 12
+```
+
+**Time Complexity**: O(2^n × S) - Exponential in number of coins
+**Space Complexity**: O(n) - For recursive calls
+
+**Why it's inefficient**: Exponential time complexity makes it impractical for large inputs.
+
+---
+
+### Approach 2: Optimized - Dynamic Programming
+
+**Key Insights from Optimized Approach**:
+- **Dynamic Programming**: Use DP to avoid recalculating subproblems
+- **Efficient Calculation**: Calculate all possible sums in O(n × S) time
+- **Better Complexity**: Achieve O(n × S) time complexity
+- **Memory Trade-off**: Use more memory for better time complexity
+
+**Key Insight**: Use dynamic programming to efficiently calculate all possible sums.
+
+**Algorithm**:
+- Create a DP array to track which sums can be made
+- For each coin, update the DP array
+- Find the first sum that cannot be made
+
+**Visual Example**:
+```
+Available coins: [1, 2, 3, 5]
+DP array: [True, False, False, False, False, False, False, False, False, False, False, False]
+
+After coin 1: [True, True, False, False, False, False, False, False, False, False, False, False]
+After coin 2: [True, True, True, True, False, False, False, False, False, False, False, False]
+After coin 3: [True, True, True, True, True, True, True, False, False, False, False, False]
+After coin 5: [True, True, True, True, True, True, True, True, True, True, True, False]
+
+First False at index 12 → smallest missing sum: 12
+```
+
+**Implementation**:
+```python
+def optimized_missing_coin_sum(coins):
+    """
+    Find smallest missing sum using dynamic programming
+    
+    Args:
+        coins: list of available coin values
+    
+    Returns:
+        int: smallest sum that cannot be made
+    """
+    # Sort coins for better performance
+    coins.sort()
+    
+    # DP array to track which sums can be made
+    max_sum = sum(coins) + 1
+    dp = [False] * max_sum
+    dp[0] = True
+    
+    # For each coin, update the DP array
+    for coin in coins:
+        for sum_val in range(max_sum - 1, coin - 1, -1):
+            if dp[sum_val - coin]:
+                dp[sum_val] = True
+    
+    # Find the first sum that cannot be made
+    for sum_val in range(1, max_sum):
+        if not dp[sum_val]:
+            return sum_val
+    
+    return max_sum
+
+# Example usage
+coins = [1, 2, 3, 5]
+result = optimized_missing_coin_sum(coins)
+print(f"Optimized result: {result}")  # Output: 12
+```
+
+**Time Complexity**: O(n × S) - Where S is the sum of all coins
+**Space Complexity**: O(S) - For DP array
+
+**Why it's better**: Much more efficient than brute force with dynamic programming.
+
+---
+
+### Approach 3: Optimal - Greedy Algorithm
+
+**Key Insights from Optimal Approach**:
+- **Greedy Choice**: Always use the smallest available coin first
+- **Mathematical Insight**: If we can make sums 1 to k, and we have a coin of value k+1, we can make sums 1 to 2k+1
+- **Optimal Complexity**: Achieve O(n log n) time complexity
+- **Efficient Implementation**: No need for DP array
+
+**Key Insight**: Sort coins and use greedy approach to find the smallest missing sum.
+
+**Algorithm**:
+- Sort the coins in ascending order
+- Keep track of the maximum sum that can be made
+- For each coin, if it's greater than max_sum + 1, return max_sum + 1
+- Otherwise, update max_sum to max_sum + coin
+
+**Visual Example**:
+```
+Available coins: [1, 2, 3, 5]
+Sorted: [1, 2, 3, 5]
+
+max_sum = 0
+Coin 1: 1 ≤ 0 + 1 ✓ → max_sum = 0 + 1 = 1
+Coin 2: 2 ≤ 1 + 1 ✓ → max_sum = 1 + 2 = 3
+Coin 3: 3 ≤ 3 + 1 ✓ → max_sum = 3 + 3 = 6
+Coin 5: 5 ≤ 6 + 1 ✓ → max_sum = 6 + 5 = 11
+
+All coins processed → return 11 + 1 = 12
+```
+
+**Implementation**:
+```python
+def optimal_missing_coin_sum(coins):
+    """
+    Find smallest missing sum using greedy algorithm
+    
+    Args:
+        coins: list of available coin values
+    
+    Returns:
+        int: smallest sum that cannot be made
+    """
+    # Sort coins in ascending order
+    coins.sort()
+    
+    max_sum = 0
+    
+    # Process each coin
+    for coin in coins:
+        # If current coin is greater than max_sum + 1,
+        # then max_sum + 1 cannot be made
+        if coin > max_sum + 1:
+            return max_sum + 1
+        
+        # Otherwise, we can make sums up to max_sum + coin
+        max_sum += coin
+    
+    # If all coins are processed, the smallest missing sum is max_sum + 1
+    return max_sum + 1
+
+# Example usage
+coins = [1, 2, 3, 5]
+result = optimal_missing_coin_sum(coins)
+print(f"Optimal result: {result}")  # Output: 12
+```
+
+**Time Complexity**: O(n log n) - Sorting dominates
+**Space Complexity**: O(1) - Constant extra space
+
+**Why it's optimal**: Achieves the best possible time complexity with mathematical insight.
+
+## 🔧 Implementation Details
+
+| Approach | Time Complexity | Space Complexity | Key Insight |
+|----------|----------------|------------------|-------------|
+| Brute Force | O(2^n × S) | O(n) | Check all possible sums |
+| Dynamic Programming | O(n × S) | O(S) | Use DP to avoid recalculations |
+| Greedy Algorithm | O(n log n) | O(1) | Use mathematical insight |
+
+### Time Complexity
+- **Time**: O(n log n) - Greedy algorithm provides optimal time complexity
+- **Space**: O(1) - Constant extra space for greedy approach
+
+### Why This Solution Works
+- **Greedy Choice**: Always using the smallest available coin first is optimal
+- **Mathematical Insight**: The greedy approach is mathematically proven to be correct
+- **Efficient Implementation**: No need for complex data structures
+- **Optimal Approach**: Greedy algorithm provides the most efficient solution for this problem
