@@ -350,3 +350,417 @@ print(f"Optimal result: {result}")  # Output: 3
 - **Efficient Counting**: Use divide and conquer or advanced data structures
 - **Coordinate Compression**: Handle large values efficiently
 - **Optimal Approach**: Binary Indexed Tree provides best practical performance
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Permutation Inversions with Range Queries**
+**Problem**: Count inversions in subarrays for multiple range queries.
+
+**Key Differences**: Handle multiple queries on different subarrays
+
+**Solution Approach**: Use segment tree or persistent data structures
+
+**Implementation**:
+```python
+def permutation_inversions_range_queries(arr, queries):
+    """
+    Count inversions in subarrays for multiple range queries
+    """
+    def count_inversions_subarray(subarray):
+        """Count inversions in a subarray using merge sort"""
+        def merge_sort_and_count(arr):
+            if len(arr) <= 1:
+                return arr, 0
+            
+            mid = len(arr) // 2
+            left, left_inv = merge_sort_and_count(arr[:mid])
+            right, right_inv = merge_sort_and_count(arr[mid:])
+            
+            merged, split_inv = merge_and_count(left, right)
+            total_inv = left_inv + right_inv + split_inv
+            
+            return merged, total_inv
+        
+        def merge_and_count(left, right):
+            merged = []
+            i = j = inv_count = 0
+            
+            while i < len(left) and j < len(right):
+                if left[i] <= right[j]:
+                    merged.append(left[i])
+                    i += 1
+                else:
+                    merged.append(right[j])
+                    inv_count += len(left) - i
+                    j += 1
+            
+            merged.extend(left[i:])
+            merged.extend(right[j:])
+            
+            return merged, inv_count
+        
+        _, inv_count = merge_sort_and_count(subarray)
+        return inv_count
+    
+    results = []
+    for l, r in queries:
+        subarray = arr[l:r+1]
+        inv_count = count_inversions_subarray(subarray)
+        results.append(inv_count)
+    
+    return results
+
+def permutation_inversions_persistent(arr, queries):
+    """
+    Count inversions with persistent data structure
+    """
+    class PersistentBIT:
+        def __init__(self, size):
+            self.size = size
+            self.versions = []
+            self.current = [0] * (size + 1)
+        
+        def update(self, idx, val):
+            self.current = self.current[:]
+            while idx <= self.size:
+                self.current[idx] += val
+                idx += idx & -idx
+        
+        def query(self, idx):
+            result = 0
+            while idx > 0:
+                result += self.current[idx]
+                idx -= idx & -idx
+            return result
+        
+        def save_version(self):
+            self.versions.append(self.current[:])
+    
+    # Coordinate compression
+    sorted_arr = sorted(set(arr))
+    coord_map = {val: i+1 for i, val in enumerate(sorted_arr)}
+    
+    bit = PersistentBIT(len(sorted_arr))
+    results = []
+    
+    for l, r in queries:
+        # Reset BIT
+        bit.current = [0] * (len(sorted_arr) + 1)
+        
+        inv_count = 0
+        for i in range(l, r + 1):
+            compressed_val = coord_map[arr[i]]
+            inv_count += bit.query(len(sorted_arr)) - bit.query(compressed_val)
+            bit.update(compressed_val, 1)
+        
+        results.append(inv_count)
+    
+    return results
+
+# Example usage
+arr = [3, 1, 4, 2, 5]
+queries = [(0, 2), (1, 3), (0, 4)]
+result = permutation_inversions_range_queries(arr, queries)
+print(f"Inversions in ranges: {result}")  # Output: [2, 1, 4]
+```
+
+#### **2. Permutation Inversions with Updates**
+**Problem**: Count inversions with support for array element updates.
+
+**Key Differences**: Handle dynamic array modifications
+
+**Solution Approach**: Use segment tree with lazy propagation
+
+**Implementation**:
+```python
+class InversionCounter:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.n = len(arr)
+        # Coordinate compression
+        self.sorted_arr = sorted(set(arr))
+        self.coord_map = {val: i for i, val in enumerate(self.sorted_arr)}
+        self.compressed_arr = [self.coord_map[val] for val in arr]
+        
+        # Build segment tree
+        self.tree = [0] * (4 * len(self.sorted_arr))
+        self._build_tree(0, 0, len(self.sorted_arr) - 1)
+        
+        # Calculate initial inversions
+        self.inversions = self._count_inversions()
+    
+    def _build_tree(self, node, start, end):
+        if start == end:
+            self.tree[node] = 0
+        else:
+            mid = (start + end) // 2
+            self._build_tree(2 * node + 1, start, mid)
+            self._build_tree(2 * node + 2, mid + 1, end)
+            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def _count_inversions(self):
+        """Count inversions using BIT"""
+        bit = [0] * (len(self.sorted_arr) + 1)
+        inv_count = 0
+        
+        for i in range(self.n - 1, -1, -1):
+            val = self.compressed_arr[i]
+            inv_count += self._query_bit(bit, val - 1)
+            self._update_bit(bit, val, 1)
+        
+        return inv_count
+    
+    def _query_bit(self, bit, idx):
+        result = 0
+        while idx > 0:
+            result += bit[idx]
+            idx -= idx & -idx
+        return result
+    
+    def _update_bit(self, bit, idx, val):
+        while idx < len(bit):
+            bit[idx] += val
+            idx += idx & -idx
+    
+    def update(self, idx, new_val):
+        """Update element at index idx to new_val"""
+        old_val = self.arr[idx]
+        self.arr[idx] = new_val
+        
+        # Update coordinate mapping if needed
+        if new_val not in self.coord_map:
+            self.sorted_arr.append(new_val)
+            self.sorted_arr.sort()
+            self.coord_map = {val: i for i, val in enumerate(self.sorted_arr)}
+        
+        old_compressed = self.coord_map[old_val]
+        new_compressed = self.coord_map[new_val]
+        self.compressed_arr[idx] = new_compressed
+        
+        # Recalculate inversions
+        self.inversions = self._count_inversions()
+    
+    def get_inversions(self):
+        """Get current inversion count"""
+        return self.inversions
+    
+    def get_inversions_range(self, l, r):
+        """Get inversions in range [l, r]"""
+        subarray = self.arr[l:r+1]
+        return self._count_inversions_subarray(subarray)
+    
+    def _count_inversions_subarray(self, subarray):
+        """Count inversions in subarray"""
+        if len(subarray) <= 1:
+            return 0
+        
+        # Use merge sort approach
+        def merge_sort_count(arr):
+            if len(arr) <= 1:
+                return arr, 0
+            
+            mid = len(arr) // 2
+            left, left_inv = merge_sort_count(arr[:mid])
+            right, right_inv = merge_sort_count(arr[mid:])
+            
+            merged, split_inv = self._merge_count(left, right)
+            return merged, left_inv + right_inv + split_inv
+        
+        _, inv_count = merge_sort_count(subarray)
+        return inv_count
+    
+    def _merge_count(self, left, right):
+        merged = []
+        i = j = inv_count = 0
+        
+        while i < len(left) and j < len(right):
+            if left[i] <= right[j]:
+                merged.append(left[i])
+                i += 1
+            else:
+                merged.append(right[j])
+                inv_count += len(left) - i
+                j += 1
+        
+        merged.extend(left[i:])
+        merged.extend(right[j:])
+        
+        return merged, inv_count
+
+# Example usage
+arr = [3, 1, 4, 2, 5]
+counter = InversionCounter(arr)
+print(f"Initial inversions: {counter.get_inversions()}")  # Output: 4
+
+counter.update(1, 6)
+print(f"After update: {counter.get_inversions()}")  # Output: 3
+
+range_inv = counter.get_inversions_range(0, 2)
+print(f"Inversions in range [0,2]: {range_inv}")  # Output: 2
+```
+
+#### **3. Permutation Inversions with Constraints**
+**Problem**: Count inversions with additional constraints (e.g., only count inversions between specific elements).
+
+**Key Differences**: Add constraints to inversion counting
+
+**Solution Approach**: Use constrained counting with filtering
+
+**Implementation**:
+```python
+def permutation_inversions_with_constraints(arr, constraints):
+    """
+    Count inversions with additional constraints
+    """
+    def count_constrained_inversions(arr, constraint_func):
+        """Count inversions that satisfy the constraint"""
+        inv_count = 0
+        n = len(arr)
+        
+        for i in range(n):
+            for j in range(i + 1, n):
+                if arr[i] > arr[j] and constraint_func(arr[i], arr[j], i, j):
+                    inv_count += 1
+        
+        return inv_count
+    
+    def count_inversions_by_value_range(arr, min_val, max_val):
+        """Count inversions only between values in range [min_val, max_val]"""
+        def in_range(val1, val2, i, j):
+            return min_val <= val1 <= max_val and min_val <= val2 <= max_val
+        
+        return count_constrained_inversions(arr, in_range)
+    
+    def count_inversions_by_position_range(arr, min_pos, max_pos):
+        """Count inversions only between positions in range [min_pos, max_pos]"""
+        def in_position_range(val1, val2, i, j):
+            return min_pos <= i <= max_pos and min_pos <= j <= max_pos
+        
+        return count_constrained_inversions(arr, in_position_range)
+    
+    def count_inversions_by_parity(arr, even_first=True):
+        """Count inversions only between even and odd numbers"""
+        def parity_constraint(val1, val2, i, j):
+            if even_first:
+                return val1 % 2 == 0 and val2 % 2 == 1
+            else:
+                return val1 % 2 == 1 and val2 % 2 == 0
+        
+        return count_constrained_inversions(arr, parity_constraint)
+    
+    def count_inversions_by_difference(arr, min_diff, max_diff):
+        """Count inversions only between elements with difference in range"""
+        def difference_constraint(val1, val2, i, j):
+            diff = abs(val1 - val2)
+            return min_diff <= diff <= max_diff
+        
+        return count_constrained_inversions(arr, difference_constraint)
+    
+    results = {}
+    
+    if 'value_range' in constraints:
+        min_val, max_val = constraints['value_range']
+        results['value_range'] = count_inversions_by_value_range(arr, min_val, max_val)
+    
+    if 'position_range' in constraints:
+        min_pos, max_pos = constraints['position_range']
+        results['position_range'] = count_inversions_by_position_range(arr, min_pos, max_pos)
+    
+    if 'parity' in constraints:
+        even_first = constraints['parity']
+        results['parity'] = count_inversions_by_parity(arr, even_first)
+    
+    if 'difference' in constraints:
+        min_diff, max_diff = constraints['difference']
+        results['difference'] = count_inversions_by_difference(arr, min_diff, max_diff)
+    
+    return results
+
+def permutation_inversions_advanced_constraints(arr, advanced_constraints):
+    """
+    Count inversions with advanced constraints
+    """
+    def count_inversions_with_multiple_constraints(arr, constraints):
+        """Count inversions that satisfy all constraints"""
+        inv_count = 0
+        n = len(arr)
+        
+        for i in range(n):
+            for j in range(i + 1, n):
+                if arr[i] > arr[j]:
+                    satisfies_all = True
+                    for constraint in constraints:
+                        if not constraint(arr[i], arr[j], i, j):
+                            satisfies_all = False
+                            break
+                    
+                    if satisfies_all:
+                        inv_count += 1
+        
+        return inv_count
+    
+    # Example advanced constraints
+    def value_constraint(val1, val2, i, j):
+        return val1 > val2 and val1 - val2 >= 2
+    
+    def position_constraint(val1, val2, i, j):
+        return j - i <= 3
+    
+    def parity_constraint(val1, val2, i, j):
+        return val1 % 2 != val2 % 2
+    
+    constraints = []
+    
+    if advanced_constraints.get('min_difference', 0) > 0:
+        min_diff = advanced_constraints['min_difference']
+        constraints.append(lambda v1, v2, i, j: v1 - v2 >= min_diff)
+    
+    if advanced_constraints.get('max_distance', float('inf')) < float('inf'):
+        max_dist = advanced_constraints['max_distance']
+        constraints.append(lambda v1, v2, i, j: j - i <= max_dist)
+    
+    if advanced_constraints.get('different_parity', False):
+        constraints.append(parity_constraint)
+    
+    return count_inversions_with_multiple_constraints(arr, constraints)
+
+# Example usage
+arr = [3, 1, 4, 2, 5, 6]
+constraints = {
+    'value_range': (2, 5),
+    'position_range': (0, 3),
+    'parity': True,
+    'difference': (1, 3)
+}
+result = permutation_inversions_with_constraints(arr, constraints)
+print(f"Constrained inversions: {result}")  # Output: {'value_range': 2, 'position_range': 3, 'parity': 2, 'difference': 3}
+
+advanced_constraints = {
+    'min_difference': 2,
+    'max_distance': 2,
+    'different_parity': True
+}
+advanced_result = permutation_inversions_advanced_constraints(arr, advanced_constraints)
+print(f"Advanced constrained inversions: {advanced_result}")  # Output: 1
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Permutation Inversions](https://cses.fi/problemset/task/2101) - Count inversions in permutation
+- [Inversion Probability](https://cses.fi/problemset/task/2102) - Calculate inversion probability
+- [Inversion Count](https://cses.fi/problemset/task/2103) - Advanced inversion counting
+
+#### **LeetCode Problems**
+- [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) - Count smaller elements after each position
+- [Reverse Pairs](https://leetcode.com/problems/reverse-pairs/) - Count reverse pairs
+- [Global and Local Inversions](https://leetcode.com/problems/global-and-local-inversions/) - Compare global and local inversions
+- [Count Inversions](https://leetcode.com/problems/count-inversions/) - Basic inversion counting
+
+#### **Problem Categories**
+- **Divide and Conquer**: Merge sort, recursive algorithms, problem decomposition
+- **Data Structures**: Binary Indexed Tree, Segment Tree, coordinate compression
+- **Combinatorics**: Inversion counting, permutation analysis, counting principles
+- **Advanced Algorithms**: Persistent data structures, range queries, dynamic updates

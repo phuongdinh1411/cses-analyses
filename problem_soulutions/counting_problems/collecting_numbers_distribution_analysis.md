@@ -310,3 +310,156 @@ print(f"Optimal result: {result}")  # Output: 1
 - **Single Valid Order**: There's exactly one valid collection order (sorted order)
 - **Efficient Validation**: Check validity without generating all permutations
 - **Optimal Approach**: Direct validation after sorting
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Collecting Numbers with Duplicates**
+**Problem**: Count valid collection orders when numbers can have duplicates.
+
+**Key Differences**: Handle duplicate values in the array
+
+**Solution Approach**: Use multiset counting and factorial calculations
+
+**Implementation**:
+```python
+def collecting_numbers_duplicates(arr):
+    """
+    Count valid collection orders with duplicate numbers
+    """
+    from collections import Counter
+    from math import factorial
+    
+    # Count frequency of each number
+    freq = Counter(arr)
+    
+    # Total permutations considering duplicates
+    total_permutations = factorial(len(arr))
+    for count in freq.values():
+        total_permutations //= factorial(count)
+    
+    # Only sorted order is valid
+    return 1 if arr == sorted(arr) else 0
+
+# Example usage
+arr = [1, 2, 2, 3, 3, 3]
+result = collecting_numbers_duplicates(arr)
+print(f"Valid collection orders with duplicates: {result}")  # Output: 1
+```
+
+#### **2. Collecting Numbers with Constraints**
+**Problem**: Count valid collection orders with additional constraints (e.g., certain numbers must be collected first).
+
+**Key Differences**: Add additional ordering constraints
+
+**Solution Approach**: Use constraint satisfaction and backtracking
+
+**Implementation**:
+```python
+def collecting_numbers_constraints(arr, constraints):
+    """
+    Count valid collection orders with additional constraints
+    """
+    def is_valid_order(order):
+        # Check basic constraint (smallest available)
+        for i in range(len(order)):
+            if order[i] != min(order[i:]):
+                return False
+        
+        # Check additional constraints
+        for constraint in constraints:
+            if not constraint(order):
+                return False
+        
+        return True
+    
+    def count_valid_orders(arr, used, current_order):
+        if len(current_order) == len(arr):
+            return 1 if is_valid_order(current_order) else 0
+        
+        count = 0
+        for i in range(len(arr)):
+            if not used[i]:
+                used[i] = True
+                current_order.append(arr[i])
+                count += count_valid_orders(arr, used, current_order)
+                current_order.pop()
+                used[i] = False
+        
+        return count
+    
+    return count_valid_orders(arr, [False] * len(arr), [])
+
+# Example usage
+arr = [1, 2, 3, 4]
+constraints = [lambda order: order[0] == 1]  # Must start with 1
+result = collecting_numbers_constraints(arr, constraints)
+print(f"Valid orders with constraints: {result}")  # Output: 1
+```
+
+#### **3. Collecting Numbers with Probability**
+**Problem**: Calculate the probability of getting a valid collection order when numbers are randomly arranged.
+
+**Key Differences**: Calculate probability instead of counting
+
+**Solution Approach**: Use probability theory and counting
+
+**Implementation**:
+```python
+def collecting_numbers_probability(arr):
+    """
+    Calculate probability of valid collection order
+    """
+    from math import factorial
+    
+    n = len(arr)
+    total_permutations = factorial(n)
+    
+    # Only one permutation is valid (sorted order)
+    valid_permutations = 1
+    
+    probability = valid_permutations / total_permutations
+    return probability
+
+def collecting_numbers_expected_moves(arr):
+    """
+    Calculate expected number of moves to collect all numbers
+    """
+    n = len(arr)
+    # In sorted order, we need exactly n moves
+    # In any other order, we need more moves
+    sorted_arr = sorted(arr)
+    
+    if arr == sorted_arr:
+        return n
+    else:
+        # Calculate expected moves for random arrangement
+        return n * (n + 1) // 2
+
+# Example usage
+arr = [3, 1, 2, 4]
+prob = collecting_numbers_probability(arr)
+expected = collecting_numbers_expected_moves(arr)
+print(f"Probability of valid order: {prob}")  # Output: 0.0417
+print(f"Expected moves: {expected}")  # Output: 10
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Collecting Numbers](https://cses.fi/problemset/task/2216) - Count valid collection orders
+- [Collecting Numbers II](https://cses.fi/problemset/task/2217) - Advanced collection with constraints
+- [Permutations](https://cses.fi/problemset/task/1070) - Generate permutations
+
+#### **LeetCode Problems**
+- [Next Permutation](https://leetcode.com/problems/next-permutation/) - Find next lexicographical permutation
+- [Permutations](https://leetcode.com/problems/permutations/) - Generate all permutations
+- [Permutations II](https://leetcode.com/problems/permutations-ii/) - Permutations with duplicates
+- [Permutation Sequence](https://leetcode.com/problems/permutation-sequence/) - Kth permutation
+
+#### **Problem Categories**
+- **Combinatorics**: Permutations, counting, factorial calculations
+- **Greedy**: Optimal collection strategy, constraint satisfaction
+- **Sorting**: Order validation, sorted array properties
+- **Probability**: Expected value calculations, probability theory

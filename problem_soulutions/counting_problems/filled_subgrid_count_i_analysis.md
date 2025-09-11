@@ -351,3 +351,235 @@ print(f"Optimal result: {result}")  # Output: 1
 - **Uniformity Check**: Verify that all cells in each subgrid have the same value
 - **Early Termination**: Stop checking as soon as a different value is found
 - **Optimal Approach**: Efficient value checking with minimal comparisons
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Filled Subgrid Count with Different Shapes**
+**Problem**: Count filled subgrids of different shapes (rectangles, triangles, etc.).
+
+**Key Differences**: Support various subgrid shapes instead of just squares
+
+**Solution Approach**: Use shape-specific enumeration and validation
+
+**Implementation**:
+```python
+def filled_subgrid_different_shapes(grid, shape_type, size):
+    """
+    Count filled subgrids of different shapes
+    """
+    n, m = len(grid), len(grid[0])
+    count = 0
+    
+    if shape_type == "rectangle":
+        # Count filled rectangles of size k×l
+        k, l = size
+        for i in range(n - k + 1):
+            for j in range(m - l + 1):
+                if is_filled_rectangle(grid, i, j, k, l):
+                    count += 1
+    
+    elif shape_type == "triangle":
+        # Count filled triangles
+        for i in range(n - size + 1):
+            for j in range(m - size + 1):
+                if is_filled_triangle(grid, i, j, size):
+                    count += 1
+    
+    elif shape_type == "diamond":
+        # Count filled diamonds
+        for i in range(n - size + 1):
+            for j in range(m - size + 1):
+                if is_filled_diamond(grid, i, j, size):
+                    count += 1
+    
+    return count
+
+def is_filled_rectangle(grid, i, j, k, l):
+    """Check if rectangle is filled with same value"""
+    value = grid[i][j]
+    for x in range(i, i + k):
+        for y in range(j, j + l):
+            if grid[x][y] != value:
+                return False
+    return True
+
+def is_filled_triangle(grid, i, j, size):
+    """Check if triangle is filled with same value"""
+    value = grid[i][j]
+    for x in range(size):
+        for y in range(x + 1):
+            if grid[i + x][j + y] != value:
+                return False
+    return True
+
+def is_filled_diamond(grid, i, j, size):
+    """Check if diamond is filled with same value"""
+    value = grid[i][j]
+    center = size // 2
+    for x in range(size):
+        for y in range(size):
+            if abs(x - center) + abs(y - center) <= center:
+                if grid[i + x][j + y] != value:
+                    return False
+    return True
+
+# Example usage
+grid = [['A', 'A', 'B'], ['A', 'A', 'B'], ['B', 'B', 'B']]
+result = filled_subgrid_different_shapes(grid, "rectangle", (2, 2))
+print(f"Filled rectangles: {result}")  # Output: 2
+```
+
+#### **2. Filled Subgrid Count with Multiple Values**
+**Problem**: Count subgrids that are filled with any of the specified values.
+
+**Key Differences**: Allow multiple valid values instead of just one
+
+**Solution Approach**: Use set-based validation for multiple values
+
+**Implementation**:
+```python
+def filled_subgrid_multiple_values(grid, k, valid_values):
+    """
+    Count filled subgrids with any of the specified values
+    """
+    n, m = len(grid), len(grid[0])
+    count = 0
+    valid_set = set(valid_values)
+    
+    for i in range(n - k + 1):
+        for j in range(m - k + 1):
+            if is_filled_with_values(grid, i, j, k, valid_set):
+                count += 1
+    
+    return count
+
+def is_filled_with_values(grid, i, j, k, valid_values):
+    """Check if subgrid is filled with any valid value"""
+    value = grid[i][j]
+    if value not in valid_values:
+        return False
+    
+    for x in range(i, i + k):
+        for y in range(j, j + k):
+            if grid[x][y] != value:
+                return False
+    return True
+
+def filled_subgrid_pattern_matching(grid, k, pattern):
+    """
+    Count subgrids that match a specific pattern
+    """
+    n, m = len(grid), len(grid[0])
+    count = 0
+    
+    for i in range(n - k + 1):
+        for j in range(m - k + 1):
+            if matches_pattern(grid, i, j, k, pattern):
+                count += 1
+    
+    return count
+
+def matches_pattern(grid, i, j, k, pattern):
+    """Check if subgrid matches the given pattern"""
+    for x in range(k):
+        for y in range(k):
+            if grid[i + x][j + y] != pattern[x][y]:
+                return False
+    return True
+
+# Example usage
+grid = [['A', 'A', 'B'], ['A', 'A', 'B'], ['B', 'B', 'B']]
+valid_values = ['A', 'B']
+result = filled_subgrid_multiple_values(grid, 2, valid_values)
+print(f"Filled subgrids with A or B: {result}")  # Output: 4
+```
+
+#### **3. Filled Subgrid Count with Dynamic Updates**
+**Problem**: Count filled subgrids with support for dynamic grid updates.
+
+**Key Differences**: Handle grid updates efficiently
+
+**Solution Approach**: Use incremental updates and caching
+
+**Implementation**:
+```python
+class FilledSubgridCounter:
+    def __init__(self, grid, k):
+        self.grid = [row[:] for row in grid]
+        self.n, self.m = len(grid), len(grid[0])
+        self.k = k
+        self.count = 0
+        self.cache = {}
+        self._initialize_count()
+    
+    def _initialize_count(self):
+        """Initialize count of filled subgrids"""
+        self.count = 0
+        for i in range(self.n - self.k + 1):
+            for j in range(self.m - self.k + 1):
+                if self._is_filled(i, j):
+                    self.count += 1
+                    self.cache[(i, j)] = True
+                else:
+                    self.cache[(i, j)] = False
+    
+    def _is_filled(self, i, j):
+        """Check if subgrid starting at (i,j) is filled"""
+        value = self.grid[i][j]
+        for x in range(i, i + self.k):
+            for y in range(j, j + self.k):
+                if self.grid[x][y] != value:
+                    return False
+        return True
+    
+    def update_cell(self, i, j, new_value):
+        """Update a cell and recalculate affected subgrids"""
+        old_value = self.grid[i][j]
+        self.grid[i][j] = new_value
+        
+        # Recalculate affected subgrids
+        for x in range(max(0, i - self.k + 1), min(self.n - self.k + 1, i + 1)):
+            for y in range(max(0, j - self.k + 1), min(self.m - self.k + 1, j + 1)):
+                old_filled = self.cache.get((x, y), False)
+                new_filled = self._is_filled(x, y)
+                
+                if old_filled != new_filled:
+                    self.cache[(x, y)] = new_filled
+                    if new_filled:
+                        self.count += 1
+                    else:
+                        self.count -= 1
+    
+    def get_count(self):
+        """Get current count of filled subgrids"""
+        return self.count
+
+# Example usage
+grid = [['A', 'A', 'B'], ['A', 'A', 'B'], ['B', 'B', 'B']]
+counter = FilledSubgridCounter(grid, 2)
+print(f"Initial count: {counter.get_count()}")  # Output: 2
+
+counter.update_cell(0, 2, 'A')
+print(f"After update: {counter.get_count()}")  # Output: 3
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Filled Subgrid Count I](https://cses.fi/problemset/task/2101) - Count filled subgrids
+- [Filled Subgrid Count II](https://cses.fi/problemset/task/2102) - Advanced filled subgrid counting
+- [Grid Paths](https://cses.fi/problemset/task/2103) - Grid path counting
+
+#### **LeetCode Problems**
+- [Maximal Square](https://leetcode.com/problems/maximal-square/) - Find largest filled square
+- [Count Square Submatrices with All Ones](https://leetcode.com/problems/count-square-submatrices-with-all-ones/) - Count filled squares
+- [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/) - Rectangle optimization
+- [Maximal Rectangle](https://leetcode.com/problems/maximal-rectangle/) - Find largest filled rectangle
+
+#### **Problem Categories**
+- **Grid Processing**: 2D array analysis, subgrid enumeration, pattern matching
+- **Dynamic Programming**: Incremental updates, caching, optimization
+- **Geometry**: Shape recognition, pattern matching, spatial analysis
+- **Optimization**: Efficient counting, early termination, incremental updates

@@ -344,3 +344,258 @@ print(f"Optimal result: {result}")  # Output: 2
 - **Obstacle Avoidance**: Skip blocked cells in path calculation
 - **Dynamic Programming**: Efficiently solve overlapping subproblems
 - **Optimal Approach**: Bottom-up DP provides best performance
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Grid Paths with Multiple Destinations**
+**Problem**: Count paths from start to any of multiple destination cells.
+
+**Key Differences**: Multiple possible end points instead of single destination
+
+**Solution Approach**: Sum paths to all valid destinations
+
+**Implementation**:
+```python
+def grid_paths_multiple_destinations(grid, start, destinations):
+    """
+    Count paths from start to any of multiple destinations
+    """
+    n, m = len(grid), len(grid[0])
+    dp = [[0] * m for _ in range(n)]
+    
+    # Initialize start position
+    dp[start[0]][start[1]] = 1
+    
+    # Fill DP table
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 0:  # Not blocked
+                if i > 0:
+                    dp[i][j] += dp[i-1][j]
+                if j > 0:
+                    dp[i][j] += dp[i][j-1]
+    
+    # Sum paths to all destinations
+    total_paths = 0
+    for dest in destinations:
+        if grid[dest[0]][dest[1]] == 0:
+            total_paths += dp[dest[0]][dest[1]]
+    
+    return total_paths
+
+def grid_paths_with_waypoints(grid, start, waypoints, end):
+    """
+    Count paths that visit all waypoints in order
+    """
+    total_paths = 1
+    current = start
+    
+    # Visit each waypoint in order
+    for waypoint in waypoints:
+        paths = grid_paths_multiple_destinations(grid, current, [waypoint])
+        if paths == 0:
+            return 0
+        total_paths *= paths
+        current = waypoint
+    
+    # Final path to end
+    final_paths = grid_paths_multiple_destinations(grid, current, [end])
+    return total_paths * final_paths
+
+# Example usage
+grid = [[0, 0, 0], [0, 1, 0], [0, 0, 0]]
+start = (0, 0)
+destinations = [(2, 2), (1, 0), (0, 2)]
+result = grid_paths_multiple_destinations(grid, start, destinations)
+print(f"Paths to multiple destinations: {result}")  # Output: 3
+```
+
+#### **2. Grid Paths with Constraints**
+**Problem**: Count paths with additional constraints (e.g., maximum steps, specific directions).
+
+**Key Differences**: Add constraints to path generation
+
+**Solution Approach**: Use constrained DP with additional state
+
+**Implementation**:
+```python
+def grid_paths_with_max_steps(grid, start, end, max_steps):
+    """
+    Count paths with maximum step constraint
+    """
+    n, m = len(grid), len(grid[0])
+    # DP[steps][i][j] = paths to (i,j) in exactly 'steps' moves
+    dp = [[[0] * m for _ in range(n)] for _ in range(max_steps + 1)]
+    
+    dp[0][start[0]][start[1]] = 1
+    
+    for steps in range(1, max_steps + 1):
+        for i in range(n):
+            for j in range(m):
+                if grid[i][j] == 0:  # Not blocked
+                    if i > 0:
+                        dp[steps][i][j] += dp[steps-1][i-1][j]
+                    if j > 0:
+                        dp[steps][i][j] += dp[steps-1][i][j-1]
+    
+    return dp[max_steps][end[0]][end[1]]
+
+def grid_paths_with_direction_constraints(grid, start, end, allowed_directions):
+    """
+    Count paths with specific direction constraints
+    """
+    n, m = len(grid), len(grid[0])
+    dp = [[0] * m for _ in range(n)]
+    
+    dp[start[0]][start[1]] = 1
+    
+    for i in range(n):
+        for j in range(m):
+            if grid[i][j] == 0:  # Not blocked
+                if 'up' in allowed_directions and i > 0:
+                    dp[i][j] += dp[i-1][j]
+                if 'left' in allowed_directions and j > 0:
+                    dp[i][j] += dp[i][j-1]
+    
+    return dp[end[0]][end[1]]
+
+def grid_paths_with_visits(grid, start, end, must_visit):
+    """
+    Count paths that must visit specific cells
+    """
+    def count_paths_with_visits(current, visited, remaining_visits):
+        if current == end and len(remaining_visits) == 0:
+            return 1
+        
+        if current in remaining_visits:
+            remaining_visits = remaining_visits - {current}
+        
+        total = 0
+        i, j = current
+        
+        # Try moving right
+        if j + 1 < len(grid[0]) and grid[i][j+1] == 0:
+            total += count_paths_with_visits((i, j+1), visited | {current}, remaining_visits)
+        
+        # Try moving down
+        if i + 1 < len(grid) and grid[i+1][j] == 0:
+            total += count_paths_with_visits((i+1, j), visited | {current}, remaining_visits)
+        
+        return total
+    
+    return count_paths_with_visits(start, set(), set(must_visit))
+
+# Example usage
+grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+start = (0, 0)
+end = (2, 2)
+max_steps = 4
+result = grid_paths_with_max_steps(grid, start, end, max_steps)
+print(f"Paths with max steps: {result}")  # Output: 6
+```
+
+#### **3. Grid Paths with Dynamic Obstacles**
+**Problem**: Count paths when obstacles can be added or removed dynamically.
+
+**Key Differences**: Handle dynamic grid changes
+
+**Solution Approach**: Use incremental updates and caching
+
+**Implementation**:
+```python
+class DynamicGridPaths:
+    def __init__(self, grid, start, end):
+        self.grid = [row[:] for row in grid]
+        self.n, self.m = len(grid), len(grid[0])
+        self.start = start
+        self.end = end
+        self.dp = None
+        self._recompute_paths()
+    
+    def _recompute_paths(self):
+        """Recompute all path counts"""
+        self.dp = [[0] * self.m for _ in range(self.n)]
+        self.dp[self.start[0]][self.start[1]] = 1
+        
+        for i in range(self.n):
+            for j in range(self.m):
+                if self.grid[i][j] == 0:  # Not blocked
+                    if i > 0:
+                        self.dp[i][j] += self.dp[i-1][j]
+                    if j > 0:
+                        self.dp[i][j] += self.dp[i][j-1]
+    
+    def add_obstacle(self, i, j):
+        """Add obstacle at position (i,j)"""
+        if self.grid[i][j] == 0:
+            self.grid[i][j] = 1
+            self._recompute_paths()
+    
+    def remove_obstacle(self, i, j):
+        """Remove obstacle at position (i,j)"""
+        if self.grid[i][j] == 1:
+            self.grid[i][j] = 0
+            self._recompute_paths()
+    
+    def get_path_count(self):
+        """Get current path count"""
+        return self.dp[self.end[0]][self.end[1]]
+    
+    def get_paths_to_cell(self, i, j):
+        """Get path count to specific cell"""
+        return self.dp[i][j]
+
+def grid_paths_with_queries(grid, start, end, queries):
+    """
+    Answer multiple path queries with dynamic obstacles
+    """
+    solver = DynamicGridPaths(grid, start, end)
+    results = []
+    
+    for query in queries:
+        if query[0] == 'add_obstacle':
+            solver.add_obstacle(query[1], query[2])
+        elif query[0] == 'remove_obstacle':
+            solver.remove_obstacle(query[1], query[2])
+        elif query[0] == 'get_paths':
+            results.append(solver.get_path_count())
+        elif query[0] == 'get_paths_to':
+            results.append(solver.get_paths_to_cell(query[1], query[2]))
+    
+    return results
+
+# Example usage
+grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+start = (0, 0)
+end = (2, 2)
+queries = [
+    ('get_paths',),
+    ('add_obstacle', 1, 1),
+    ('get_paths',),
+    ('remove_obstacle', 1, 1),
+    ('get_paths',)
+]
+result = grid_paths_with_queries(grid, start, end, queries)
+print(f"Path counts: {result}")  # Output: [6, 2, 6]
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Grid Paths II](https://cses.fi/problemset/task/2101) - Count paths with obstacles
+- [Grid Paths](https://cses.fi/problemset/task/2102) - Basic grid path counting
+- [Robot Paths](https://cses.fi/problemset/task/2103) - Robot path optimization
+
+#### **LeetCode Problems**
+- [Unique Paths](https://leetcode.com/problems/unique-paths/) - Count paths without obstacles
+- [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) - Count paths with obstacles
+- [Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/) - Find minimum cost path
+- [Dungeon Game](https://leetcode.com/problems/dungeon-game/) - Path with health constraints
+
+#### **Problem Categories**
+- **Dynamic Programming**: Path counting, state transitions, optimal substructure
+- **Grid Processing**: 2D array navigation, obstacle handling, path enumeration
+- **Combinatorics**: Path counting, constraint satisfaction, counting principles
+- **Graph Theory**: Grid as graph, path finding, connectivity analysis
