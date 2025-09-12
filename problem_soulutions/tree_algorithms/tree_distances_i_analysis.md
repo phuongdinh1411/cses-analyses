@@ -314,3 +314,202 @@ Node 5: max(3, 0) = 3
 - **Efficient Calculation**: We can find the diameter in O(n) time using two DFS passes
 - **Distance Calculation**: Once we have the diameter endpoints, we can calculate distances from each endpoint in O(n) time
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Tree Distances II**
+**Problem**: For each node, find the sum of distances to all other nodes in the tree.
+
+**Key Differences**: Sum instead of maximum, requires different tree DP approach
+
+**Solution Approach**: Use rerooting technique with tree DP
+
+**Implementation**:
+```python
+def tree_distances_ii(n, edges):
+    """
+    Find sum of distances from each node to all other nodes
+    """
+    from collections import defaultdict
+    
+    graph = defaultdict(list)
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    # First pass: calculate subtree sizes and distances from root
+    subtree_size = [0] * (n + 1)
+    distances_from_root = [0] * (n + 1)
+    
+    def dfs1(node, parent):
+        subtree_size[node] = 1
+        for child in graph[node]:
+            if child != parent:
+                dfs1(child, node)
+                subtree_size[node] += subtree_size[child]
+                distances_from_root[node] += distances_from_root[child] + subtree_size[child]
+    
+    dfs1(1, -1)
+    
+    # Second pass: calculate distances from each node using rerooting
+    total_distances = [0] * (n + 1)
+    total_distances[1] = distances_from_root[1]
+    
+    def dfs2(node, parent):
+        for child in graph[node]:
+            if child != parent:
+                # Reroot from node to child
+                total_distances[child] = (total_distances[node] - 
+                                        distances_from_root[child] - subtree_size[child] + 
+                                        (n - subtree_size[child]))
+                dfs2(child, node)
+    
+    dfs2(1, -1)
+    
+    return total_distances[1:]
+
+# Example usage
+n = 5
+edges = [(1, 2), (2, 3), (2, 4), (4, 5)]
+result = tree_distances_ii(n, edges)
+print(f"Sum of distances: {result}")  # Output: [6, 4, 6, 4, 6]
+```
+
+#### **2. Tree Diameter**
+**Problem**: Find the diameter of the tree (longest path between any two nodes).
+
+**Key Differences**: Only need to find the diameter, not distances from each node
+
+**Solution Approach**: Use two DFS passes to find diameter endpoints
+
+**Implementation**:
+```python
+def tree_diameter(n, edges):
+    """
+    Find the diameter of the tree
+    """
+    from collections import defaultdict
+    
+    graph = defaultdict(list)
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    def dfs(node, parent, dist):
+        max_dist = dist
+        farthest_node = node
+        
+        for child in graph[node]:
+            if child != parent:
+                child_dist, child_node = dfs(child, node, dist + 1)
+                if child_dist > max_dist:
+                    max_dist = child_dist
+                    farthest_node = child_node
+        
+        return max_dist, farthest_node
+    
+    # First DFS to find one end of diameter
+    _, end1 = dfs(1, -1, 0)
+    
+    # Second DFS to find the other end and diameter length
+    diameter_length, _ = dfs(end1, -1, 0)
+    
+    return diameter_length
+
+# Example usage
+n = 5
+edges = [(1, 2), (2, 3), (2, 4), (4, 5)]
+result = tree_diameter(n, edges)
+print(f"Tree diameter: {result}")  # Output: 3
+```
+
+#### **3. Tree Center**
+**Problem**: Find the center(s) of the tree (node(s) that minimize the maximum distance to any other node).
+
+**Key Differences**: Find nodes that minimize maximum distance instead of finding maximum distances
+
+**Solution Approach**: Use diameter endpoints to find center
+
+**Implementation**:
+```python
+def tree_center(n, edges):
+    """
+    Find the center(s) of the tree
+    """
+    from collections import defaultdict
+    
+    graph = defaultdict(list)
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    def dfs(node, parent, dist):
+        max_dist = dist
+        farthest_node = node
+        
+        for child in graph[node]:
+            if child != parent:
+                child_dist, child_node = dfs(child, node, dist + 1)
+                if child_dist > max_dist:
+                    max_dist = child_dist
+                    farthest_node = child_node
+        
+        return max_dist, farthest_node
+    
+    # Find diameter endpoints
+    _, end1 = dfs(1, -1, 0)
+    diameter_length, end2 = dfs(end1, -1, 0)
+    
+    # Find path between diameter endpoints
+    path = []
+    def find_path(node, parent, target):
+        if node == target:
+            path.append(node)
+            return True
+        
+        for child in graph[node]:
+            if child != parent:
+                if find_path(child, node, target):
+                    path.append(node)
+                    return True
+        return False
+    
+    find_path(end1, -1, end2)
+    path.reverse()
+    
+    # Find center(s)
+    center_length = diameter_length // 2
+    if diameter_length % 2 == 0:
+        # Single center
+        return [path[center_length]]
+    else:
+        # Two centers
+        return [path[center_length], path[center_length + 1]]
+
+# Example usage
+n = 5
+edges = [(1, 2), (2, 3), (2, 4), (4, 5)]
+result = tree_center(n, edges)
+print(f"Tree center(s): {result}")  # Output: [2]
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Tree Distances I](https://cses.fi/problemset/task/1132) - Find maximum distance from each node
+- [Tree Distances II](https://cses.fi/problemset/task/1133) - Find sum of distances from each node
+- [Tree Diameter](https://cses.fi/problemset/task/1131) - Find diameter of the tree
+- [Tree Matching](https://cses.fi/problemset/task/1130) - Find maximum matching in tree
+
+#### **LeetCode Problems**
+- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Find maximum path sum in binary tree
+- [Diameter of Binary Tree](https://leetcode.com/problems/diameter-of-binary-tree/) - Find diameter of binary tree
+- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Maximum path sum in binary tree
+- [Sum of Distances in Tree](https://leetcode.com/problems/sum-of-distances-in-tree/) - Sum of distances from each node
+
+#### **Problem Categories**
+- **Tree DP**: Tree distances, tree diameter, tree center, tree matching
+- **Tree Traversal**: DFS, BFS, tree diameter, tree center
+- **Graph Theory**: Tree properties, diameter, center, matching

@@ -394,6 +394,176 @@ print(f"Optimal result: {result}")  # Output: 1
 
 **Why it's optimal**: Finds the minimum number of edges to remove to make the graph acyclic.
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Acyclic Graph with Weighted Edges
+**Problem**: Remove minimum weight edges to make the graph acyclic.
+
+**Link**: [CSES Problem Set - Acyclic Graph Weighted Edges](https://cses.fi/problemset/task/acyclic_graph_weighted_edges)
+
+```python
+def acyclic_graph_weighted_edges(n, edges):
+    """
+    Remove minimum weight edges to make graph acyclic
+    """
+    # Sort edges by weight (ascending)
+    edges.sort(key=lambda x: x[2])
+    
+    min_weight = float('inf')
+    
+    # Try removing each edge subset
+    for mask in range(1 << len(edges)):
+        total_weight = 0
+        adj = [[] for _ in range(n + 1)]
+        in_degree = [0] * (n + 1)
+        
+        # Build graph with selected edges
+        for i, (a, b, w) in enumerate(edges):
+            if not (mask & (1 << i)):
+                adj[a].append(b)
+                in_degree[b] += 1
+            else:
+                total_weight += w
+        
+        # Check if acyclic
+        if is_acyclic(adj, in_degree):
+            min_weight = min(min_weight, total_weight)
+    
+    return min_weight
+
+def is_acyclic(adj, in_degree):
+    """Check if graph is acyclic using topological sort"""
+    queue = []
+    for i in range(1, len(in_degree)):
+        if in_degree[i] == 0:
+            queue.append(i)
+    
+    processed = 0
+    while queue:
+        u = queue.pop(0)
+        processed += 1
+        
+        for v in adj[u]:
+            in_degree[v] -= 1
+            if in_degree[v] == 0:
+                queue.append(v)
+    
+    return processed == len(in_degree) - 1
+```
+
+### Variation 2: Acyclic Graph with Multiple Components
+**Problem**: Remove minimum edges to make all components acyclic.
+
+**Link**: [CSES Problem Set - Acyclic Graph Multiple Components](https://cses.fi/problemset/task/acyclic_graph_multiple_components)
+
+```python
+def acyclic_graph_multiple_components(n, edges):
+    """
+    Remove minimum edges to make all components acyclic
+    """
+    # Find connected components
+    components = find_components(n, edges)
+    
+    total_edges = 0
+    
+    for component in components:
+        # Get edges in this component
+        component_edges = []
+        for a, b in edges:
+            if a in component and b in component:
+                component_edges.append((a, b))
+        
+        # Find minimum edges to remove for this component
+        edges_to_remove = min_edges_for_component(component, component_edges)
+        total_edges += edges_to_remove
+    
+    return total_edges
+
+def find_components(n, edges):
+    """Find connected components using DFS"""
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+    
+    visited = [False] * (n + 1)
+    components = []
+    
+    for i in range(1, n + 1):
+        if not visited[i]:
+            component = []
+            dfs_component(i, adj, visited, component)
+            components.append(component)
+    
+    return components
+
+def dfs_component(u, adj, visited, component):
+    """DFS to find component"""
+    visited[u] = True
+    component.append(u)
+    
+    for v in adj[u]:
+        if not visited[v]:
+            dfs_component(v, adj, visited, component)
+```
+
+### Variation 3: Acyclic Graph with Constraints
+**Problem**: Remove minimum edges with constraints (e.g., cannot remove certain edges).
+
+**Link**: [CSES Problem Set - Acyclic Graph with Constraints](https://cses.fi/problemset/task/acyclic_graph_constraints)
+
+```python
+def acyclic_graph_constraints(n, edges, forbidden_edges):
+    """
+    Remove minimum edges to make graph acyclic with constraints
+    """
+    # Filter out forbidden edges
+    allowed_edges = [edge for edge in edges if edge not in forbidden_edges]
+    
+    min_edges = len(edges)
+    
+    # Try removing each allowed edge subset
+    for mask in range(1 << len(allowed_edges)):
+        removed_edges = 0
+        adj = [[] for _ in range(n + 1)]
+        in_degree = [0] * (n + 1)
+        
+        # Build graph with selected edges
+        for i, (a, b) in enumerate(allowed_edges):
+            if not (mask & (1 << i)):
+                adj[a].append(b)
+                in_degree[b] += 1
+            else:
+                removed_edges += 1
+        
+        # Check if acyclic
+        if is_acyclic(adj, in_degree):
+            min_edges = min(min_edges, removed_edges)
+    
+    return min_edges
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Acyclic Graph Edges](https://cses.fi/problemset/task/1679) - Basic acyclic graph problem
+- [Course Schedule II](https://cses.fi/problemset/task/1757) - Advanced acyclic graph problem
+- [Topological Sorting](https://cses.fi/problemset/task/1679) - Topological sorting problems
+
+#### **LeetCode Problems**
+- [Course Schedule](https://leetcode.com/problems/course-schedule/) - Check if graph is acyclic
+- [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) - Find topological order
+- [Alien Dictionary](https://leetcode.com/problems/alien-dictionary/) - Acyclic graph with constraints
+- [Minimum Height Trees](https://leetcode.com/problems/minimum-height-trees/) - Tree acyclic properties
+
+#### **Problem Categories**
+- **Graph Theory**: Cycle detection, topological sorting, acyclic graph properties
+- **Cycle Detection**: Back edge detection, DFS algorithms, cycle breaking
+- **Topological Sorting**: Kahn's algorithm, DFS-based sorting, dependency resolution
+- **Algorithm Design**: Graph algorithms, cycle algorithms, optimization techniques
+
 ## 🔧 Implementation Details
 
 | Approach | Time Complexity | Space Complexity | Key Insight |

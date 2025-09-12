@@ -498,7 +498,9 @@ test_solution()
 - Simple but important concept
 - Essential for understanding
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Course Schedule with Weights
 **Problem**: Each course has a completion time, find minimum total time.
@@ -720,11 +722,24 @@ def priority_course_schedule(n, prerequisites, priorities):
     return result if len(result) == n else []
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Topological Sorting](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph algorithms
-- **[Kahn's Algorithm](/cses-analyses/problem_soulutions/graph_algorithms/)**: Topological sorting
-- **[Cycle Detection](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph algorithms
+#### **CSES Problems**
+- [Course Schedule II](https://cses.fi/problemset/task/1757) - Advanced course scheduling
+- [Topological Sorting](https://cses.fi/problemset/task/1679) - Basic topological sorting
+- [Acyclic Graph Edges](https://cses.fi/problemset/task/1679) - Acyclic graph problems
+
+#### **LeetCode Problems**
+- [Course Schedule](https://leetcode.com/problems/course-schedule/) - Check if courses can be completed
+- [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) - Find course order
+- [Alien Dictionary](https://leetcode.com/problems/alien-dictionary/) - Topological sorting with constraints
+- [Minimum Height Trees](https://leetcode.com/problems/minimum-height-trees/) - Tree topological properties
+
+#### **Problem Categories**
+- **Topological Sorting**: Kahn's algorithm, DFS-based sorting, dependency resolution
+- **Graph Theory**: Cycle detection, acyclic graphs, dependency graphs
+- **Course Scheduling**: Prerequisite management, course ordering, dependency resolution
+- **Algorithm Design**: Graph algorithms, sorting algorithms, cycle detection algorithms
 
 ## 📚 Learning Points
 
@@ -921,7 +936,9 @@ test_solution()
 - Enables efficient solution
 - Fundamental concept
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Course Schedule with Weights
 **Problem**: Each course has a duration. Find minimum time to complete all courses.
@@ -1155,11 +1172,24 @@ def course_schedule_with_deadlines(n, prerequisites, durations, deadlines):
     return result if len(result) == n else []
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Acyclic Graph Edges](/cses-analyses/problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis)**: Cycle detection
-- **[Topological Sorting](/cses-analyses/problem_soulutions/graph_algorithms/topological_sorting_analysis)**: Graph ordering
-- **[Graph Problems](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph algorithms
+#### **CSES Problems**
+- [Course Schedule II](https://cses.fi/problemset/task/1757) - Advanced course scheduling
+- [Acyclic Graph Edges](https://cses.fi/problemset/task/1679) - Cycle detection problems
+- [Topological Sorting](https://cses.fi/problemset/task/1679) - Basic topological sorting
+
+#### **LeetCode Problems**
+- [Course Schedule](https://leetcode.com/problems/course-schedule/) - Check if courses can be completed
+- [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) - Find course order
+- [Alien Dictionary](https://leetcode.com/problems/alien-dictionary/) - Topological sorting with constraints
+- [Minimum Height Trees](https://leetcode.com/problems/minimum-height-trees/) - Tree topological properties
+
+#### **Problem Categories**
+- **Topological Sorting**: Kahn's algorithm, DFS-based sorting, dependency resolution
+- **Graph Theory**: Cycle detection, acyclic graphs, dependency graphs
+- **Course Scheduling**: Prerequisite management, course ordering, dependency resolution
+- **Algorithm Design**: Graph algorithms, sorting algorithms, cycle detection algorithms
 
 ## 📚 Learning Points
 

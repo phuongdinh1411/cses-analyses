@@ -189,7 +189,215 @@ def optimal_distinct_strings(text, pattern):
 - **Space**: O([complexity]) - [Explanation]
 
 ### Why This Solution Works
-- **[Reason 1]**: [Explanation]
-- **[Reason 2]**: [Explanation]
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+- **String Hashing**: Use polynomial hashing to efficiently compare strings
+- **Rolling Hash**: Update hash values in O(1) time when sliding window
+- **Collision Handling**: Use multiple hash functions to reduce collision probability
+- **Optimal Approach**: O(n) time complexity is optimal for this problem
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. Count Distinct Substrings**
+**Problem**: Count the number of distinct substrings in a string.
+
+**Key Differences**: Count instead of just checking existence
+
+**Solution Approach**: Use rolling hash to count unique substrings
+
+**Implementation**:
+```python
+def count_distinct_substrings(s):
+    """
+    Count number of distinct substrings using rolling hash
+    """
+    n = len(s)
+    distinct_substrings = set()
+    
+    for length in range(1, n + 1):
+        # Rolling hash for substrings of current length
+        base = 26
+        mod = 10**9 + 7
+        hash_val = 0
+        power = 1
+        
+        # Calculate hash for first substring
+        for i in range(length):
+            hash_val = (hash_val * base + ord(s[i]) - ord('a')) % mod
+            if i < length - 1:
+                power = (power * base) % mod
+        
+        distinct_substrings.add(hash_val)
+        
+        # Rolling hash for remaining substrings
+        for i in range(length, n):
+            # Remove leftmost character
+            hash_val = (hash_val - (ord(s[i - length]) - ord('a')) * power) % mod
+            # Add rightmost character
+            hash_val = (hash_val * base + ord(s[i]) - ord('a')) % mod
+            distinct_substrings.add(hash_val)
+    
+    return len(distinct_substrings)
+
+# Example usage
+s = "abc"
+result = count_distinct_substrings(s)
+print(f"Distinct substrings: {result}")  # Output: 6
+```
+
+#### **2. Longest Common Substring**
+**Problem**: Find the longest common substring between two strings.
+
+**Key Differences**: Compare two strings instead of one
+
+**Solution Approach**: Use binary search with rolling hash
+
+**Implementation**:
+```python
+def longest_common_substring(s1, s2):
+    """
+    Find longest common substring using binary search and rolling hash
+    """
+    def has_common_substring(length):
+        # Hash all substrings of given length in s1
+        base = 26
+        mod = 10**9 + 7
+        hashes_s1 = set()
+        
+        if length > len(s1):
+            return False
+        
+        # Calculate hash for first substring
+        hash_val = 0
+        power = 1
+        for i in range(length):
+            hash_val = (hash_val * base + ord(s1[i]) - ord('a')) % mod
+            if i < length - 1:
+                power = (power * base) % mod
+        
+        hashes_s1.add(hash_val)
+        
+        # Rolling hash for remaining substrings
+        for i in range(length, len(s1)):
+            hash_val = (hash_val - (ord(s1[i - length]) - ord('a')) * power) % mod
+            hash_val = (hash_val * base + ord(s1[i]) - ord('a')) % mod
+            hashes_s1.add(hash_val)
+        
+        # Check if any substring of s2 matches
+        if length > len(s2):
+            return False
+        
+        hash_val = 0
+        for i in range(length):
+            hash_val = (hash_val * base + ord(s2[i]) - ord('a')) % mod
+        
+        if hash_val in hashes_s1:
+            return True
+        
+        for i in range(length, len(s2)):
+            hash_val = (hash_val - (ord(s2[i - length]) - ord('a')) * power) % mod
+            hash_val = (hash_val * base + ord(s2[i]) - ord('a')) % mod
+            if hash_val in hashes_s1:
+                return True
+        
+        return False
+    
+    # Binary search for maximum length
+    left, right = 0, min(len(s1), len(s2))
+    result = 0
+    
+    while left <= right:
+        mid = (left + right) // 2
+        if has_common_substring(mid):
+            result = mid
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    return result
+
+# Example usage
+s1 = "abcdef"
+s2 = "defghi"
+result = longest_common_substring(s1, s2)
+print(f"Longest common substring length: {result}")  # Output: 3
+```
+
+#### **3. String Matching with Wildcards**
+**Problem**: Find all occurrences of a pattern in text where pattern may contain wildcards.
+
+**Key Differences**: Pattern contains wildcards that match any character
+
+**Solution Approach**: Use rolling hash with special handling for wildcards
+
+**Implementation**:
+```python
+def string_matching_wildcards(text, pattern):
+    """
+    Find all occurrences of pattern with wildcards in text
+    """
+    n, m = len(text), len(pattern)
+    if m > n:
+        return []
+    
+    base = 26
+    mod = 10**9 + 7
+    results = []
+    
+    # Calculate hash for pattern (wildcards = 0)
+    pattern_hash = 0
+    for i in range(m):
+        if pattern[i] != '*':
+            pattern_hash = (pattern_hash * base + ord(pattern[i]) - ord('a')) % mod
+        # Wildcards contribute 0 to hash
+    
+    # Calculate hash for first substring of text
+    text_hash = 0
+    power = 1
+    for i in range(m):
+        text_hash = (text_hash * base + ord(text[i]) - ord('a')) % mod
+        if i < m - 1:
+            power = (power * base) % mod
+    
+    # Check first substring
+    if text_hash == pattern_hash:
+        results.append(0)
+    
+    # Rolling hash for remaining substrings
+    for i in range(m, n):
+        # Remove leftmost character
+        text_hash = (text_hash - (ord(text[i - m]) - ord('a')) * power) % mod
+        # Add rightmost character
+        text_hash = (text_hash * base + ord(text[i]) - ord('a')) % mod
+        
+        if text_hash == pattern_hash:
+            results.append(i - m + 1)
+    
+    return results
+
+# Example usage
+text = "abacaba"
+pattern = "a*a"
+result = string_matching_wildcards(text, pattern)
+print(f"Pattern occurrences: {result}")  # Output: [0, 4]
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Distinct Strings](https://cses.fi/problemset/task/2101) - Count distinct substrings
+- [String Matching](https://cses.fi/problemset/task/1753) - Find pattern in text
+- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+- [Finding Periods](https://cses.fi/problemset/task/1733) - Find periods of string
+
+#### **LeetCode Problems**
+- [Longest Common Substring](https://leetcode.com/problems/longest-common-substring/) - Find longest common substring
+- [Repeated String Match](https://leetcode.com/problems/repeated-string-match/) - String matching with repetition
+- [Wildcard Matching](https://leetcode.com/problems/wildcard-matching/) - Pattern matching with wildcards
+- [Regular Expression Matching](https://leetcode.com/problems/regular-expression-matching/) - Pattern matching with regex
+
+#### **Problem Categories**
+- **String Hashing**: Distinct strings, string matching, rolling hash
+- **Pattern Matching**: KMP, Z-algorithm, string matching with wildcards
+- **String Processing**: Borders, periods, palindromes, anagrams
+- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata

@@ -168,6 +168,163 @@ def optimal_static_range_sum_queries(arr, queries):
 - **Fast Queries**: Answer each query in O(1) time
 - **Optimal Approach**: O(n + q) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+#### **1. 2D Range Sum Queries**
+**Problem**: Given a 2D matrix, answer queries for sum of elements in a rectangular region.
+
+**Key Differences**: 2D instead of 1D, requires 2D prefix sums
+
+**Solution Approach**: Use 2D prefix sum array
+
+**Implementation**:
+```python
+def range_sum_2d(matrix, queries):
+    """
+    Answer 2D range sum queries using 2D prefix sums
+    """
+    rows, cols = len(matrix), len(matrix[0])
+    
+    # Build 2D prefix sum array
+    prefix = [[0] * (cols + 1) for _ in range(rows + 1)]
+    for i in range(rows):
+        for j in range(cols):
+            prefix[i + 1][j + 1] = (prefix[i][j + 1] + 
+                                   prefix[i + 1][j] - 
+                                   prefix[i][j] + 
+                                   matrix[i][j])
+    
+    results = []
+    for x1, y1, x2, y2 in queries:
+        # Calculate sum using 2D prefix sums
+        sum_val = (prefix[x2][y2] - 
+                  prefix[x1 - 1][y2] - 
+                  prefix[x2][y1 - 1] + 
+                  prefix[x1 - 1][y1 - 1])
+        results.append(sum_val)
+    
+    return results
+
+# Example usage
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+queries = [(1, 1, 2, 2), (1, 1, 3, 3)]
+result = range_sum_2d(matrix, queries)
+print(f"2D range sums: {result}")  # Output: [12, 45]
+```
+
+#### **2. Range XOR Queries**
+**Problem**: Answer queries for XOR of elements in a range.
+
+**Key Differences**: XOR operation instead of sum
+
+**Solution Approach**: Use prefix XOR array
+
+**Implementation**:
+```python
+def range_xor_queries(arr, queries):
+    """
+    Answer range XOR queries using prefix XOR
+    """
+    n = len(arr)
+    
+    # Build prefix XOR array
+    prefix_xor = [0] * (n + 1)
+    for i in range(n):
+        prefix_xor[i + 1] = prefix_xor[i] ^ arr[i]
+    
+    results = []
+    for l, r in queries:
+        # Calculate XOR using prefix XOR
+        xor_result = prefix_xor[r] ^ prefix_xor[l - 1]
+        results.append(xor_result)
+    
+    return results
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+queries = [(1, 3), (2, 4), (1, 5)]
+result = range_xor_queries(arr, queries)
+print(f"Range XOR results: {result}")  # Output: [0, 5, 1]
+```
+
+#### **3. Range Maximum Queries**
+**Problem**: Answer queries for maximum element in a range.
+
+**Key Differences**: Maximum instead of sum, requires different data structure
+
+**Solution Approach**: Use sparse table for O(1) queries
+
+**Implementation**:
+```python
+def range_maximum_queries(arr, queries):
+    """
+    Answer range maximum queries using sparse table
+    """
+    n = len(arr)
+    
+    # Build sparse table
+    log_n = 0
+    while (1 << log_n) <= n:
+        log_n += 1
+    
+    st = [[0] * log_n for _ in range(n)]
+    
+    # Initialize for length 1
+    for i in range(n):
+        st[i][0] = arr[i]
+    
+    # Fill sparse table
+    for j in range(1, log_n):
+        for i in range(n - (1 << j) + 1):
+            st[i][j] = max(st[i][j-1], st[i + (1 << (j-1))][j-1])
+    
+    results = []
+    for l, r in queries:
+        # Convert to 0-indexed
+        l -= 1
+        r -= 1
+        
+        # Find largest power of 2 that fits in range
+        length = r - l + 1
+        k = 0
+        while (1 << (k + 1)) <= length:
+            k += 1
+        
+        # Query maximum using sparse table
+        max_val = max(st[l][k], st[r - (1 << k) + 1][k])
+        results.append(max_val)
+    
+    return results
+
+# Example usage
+arr = [1, 3, 2, 4, 5]
+queries = [(1, 3), (2, 4), (1, 5)]
+result = range_maximum_queries(arr, queries)
+print(f"Range maximums: {result}")  # Output: [3, 4, 5]
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Static Range Sum Queries](https://cses.fi/problemset/task/1646) - Basic prefix sum queries
+- [Static Range Minimum Queries](https://cses.fi/problemset/task/1647) - Range minimum queries with sparse table
+- [Range XOR Queries](https://cses.fi/problemset/task/1650) - Range XOR queries with prefix XOR
+- [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) - Range sum with updates using segment tree
+
+#### **LeetCode Problems**
+- [Range Sum Query - Immutable](https://leetcode.com/problems/range-sum-query-immutable/) - Basic prefix sum
+- [Range Sum Query 2D - Immutable](https://leetcode.com/problems/range-sum-query-2d-immutable/) - 2D prefix sum
+- [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/) - Range sum with updates
+- [Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) - 2D range sum with updates
+
+#### **Problem Categories**
+- **Prefix Sums**: Static range sum, 2D range sum, range XOR, range AND/OR
+- **Sparse Table**: Range minimum/maximum, range GCD, range AND/OR
+- **Segment Tree**: Dynamic range queries, range updates, custom operations
+- **Binary Indexed Tree**: Point updates with range queries, inversion counting
+
 ## 🚀 Key Takeaways
 
 - **Prefix Sum Technique**: The standard approach for static range sum queries

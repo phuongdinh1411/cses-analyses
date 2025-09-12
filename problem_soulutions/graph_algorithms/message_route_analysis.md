@@ -389,7 +389,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for shortest path problems
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Message Route with Weights
 **Problem**: Find shortest path considering cable weights.
@@ -564,12 +566,24 @@ def message_route_constraints(n, m, cables, constraints):
         return f"{len(path)}\n{' '.join(map(str, path))}"
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Labyrinth](/cses-analyses/problem_soulutions/graph_algorithms/labyrinth_analysis/)**: Grid pathfinding
-- **[Monsters](/cses-analyses/problem_soulutions/graph_algorithms/monsters_analysis/)**: Grid algorithms
-- **[Graph Traversal](/cses-analyses/problem_soulutions/graph_algorithms/)**: Graph traversal problems
-- **[Shortest Path](/cses-analyses/problem_soulutions/graph_algorithms/)**: Shortest path problems
+#### **CSES Problems**
+- [Message Route](https://cses.fi/problemset/task/1667) - Basic shortest path problem
+- [Labyrinth](https://cses.fi/problemset/task/1193) - Grid pathfinding problems
+- [Monsters](https://cses.fi/problemset/task/1194) - Grid algorithms with obstacles
+
+#### **LeetCode Problems**
+- [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) - BFS traversal
+- [Word Ladder](https://leetcode.com/problems/word-ladder/) - Shortest path in word graph
+- [Shortest Path in Binary Matrix](https://leetcode.com/problems/shortest-path-in-binary-matrix/) - Grid shortest path
+- [Network Delay Time](https://leetcode.com/problems/network-delay-time/) - Shortest path with weights
+
+#### **Problem Categories**
+- **Graph Traversal**: BFS algorithms, shortest path, path reconstruction, parent tracking
+- **Shortest Path**: Unweighted graphs, pathfinding, route optimization, network algorithms
+- **Grid Algorithms**: 2D pathfinding, obstacle avoidance, grid traversal, spatial algorithms
+- **Algorithm Design**: BFS algorithms, graph algorithms, pathfinding algorithms, network optimization
 
 ## 📚 Learning Points
 
