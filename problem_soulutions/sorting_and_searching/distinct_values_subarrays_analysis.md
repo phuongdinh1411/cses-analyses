@@ -556,6 +556,364 @@ def distinct_values_subarrays_constraints_optimized(arr, k, min_length, max_sum)
     return count
 ```
 
+## Problem Variations
+
+### **Variation 1: Distinct Values Subarrays with Dynamic Updates**
+**Problem**: Handle dynamic array updates while maintaining distinct subarray counts efficiently.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+from collections import defaultdict
+import bisect
+
+class DynamicDistinctSubarrays:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.distinct_count = 0
+        self._calculate_distinct_count()
+    
+    def _calculate_distinct_count(self):
+        """Calculate total number of distinct subarrays."""
+        self.distinct_count = 0
+        seen = set()
+        
+        for i in range(self.n):
+            current_set = set()
+            for j in range(i, self.n):
+                current_set.add(self.arr[j])
+                subarray_tuple = tuple(sorted(current_set))
+                if subarray_tuple not in seen:
+                    seen.add(subarray_tuple)
+                    self.distinct_count += 1
+    
+    def update_value(self, index, new_value):
+        """Update array value and recalculate distinct count."""
+        if 0 <= index < self.n:
+            self.arr[index] = new_value
+            self._calculate_distinct_count()
+    
+    def add_element(self, value):
+        """Add new element to the array."""
+        self.arr.append(value)
+        self.n += 1
+        self._calculate_distinct_count()
+    
+    def remove_element(self, index):
+        """Remove element at index from the array."""
+        if 0 <= index < self.n:
+            del self.arr[index]
+            self.n -= 1
+            self._calculate_distinct_count()
+    
+    def get_distinct_count(self):
+        """Get current distinct subarray count."""
+        return self.distinct_count
+    
+    def get_distinct_subarrays(self):
+        """Get all distinct subarrays."""
+        seen = set()
+        distinct_subarrays = []
+        
+        for i in range(self.n):
+            current_set = set()
+            for j in range(i, self.n):
+                current_set.add(self.arr[j])
+                subarray_tuple = tuple(sorted(current_set))
+                if subarray_tuple not in seen:
+                    seen.add(subarray_tuple)
+                    distinct_subarrays.append(list(current_set))
+        
+        return distinct_subarrays
+
+# Example usage
+arr = [1, 2, 1, 3]
+dynamic_counter = DynamicDistinctSubarrays(arr)
+print(f"Initial distinct count: {dynamic_counter.get_distinct_count()}")
+
+# Update a value
+dynamic_counter.update_value(1, 4)
+print(f"After update: {dynamic_counter.get_distinct_count()}")
+
+# Add element
+dynamic_counter.add_element(2)
+print(f"After adding 2: {dynamic_counter.get_distinct_count()}")
+```
+
+### **Variation 2: Distinct Values Subarrays with Different Operations**
+**Problem**: Handle different types of operations on distinct subarrays (range queries, size constraints).
+
+**Approach**: Use advanced data structures for efficient range operations and size-based filtering.
+
+```python
+class AdvancedDistinctSubarrays:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.n = len(arr)
+    
+    def get_distinct_subarrays_in_range(self, left, right):
+        """Get distinct subarrays in range [left, right]."""
+        if left < 0 or right >= self.n or left > right:
+            return 0
+        
+        seen = set()
+        count = 0
+        
+        for i in range(left, right + 1):
+            current_set = set()
+            for j in range(i, right + 1):
+                current_set.add(self.arr[j])
+                subarray_tuple = tuple(sorted(current_set))
+                if subarray_tuple not in seen:
+                    seen.add(subarray_tuple)
+                    count += 1
+        
+        return count
+    
+    def get_distinct_subarrays_with_size(self, min_size, max_size):
+        """Get distinct subarrays with size constraints."""
+        seen = set()
+        count = 0
+        
+        for i in range(self.n):
+            current_set = set()
+            for j in range(i, self.n):
+                current_set.add(self.arr[j])
+                if min_size <= len(current_set) <= max_size:
+                    subarray_tuple = tuple(sorted(current_set))
+                    if subarray_tuple not in seen:
+                        seen.add(subarray_tuple)
+                        count += 1
+        
+        return count
+    
+    def get_distinct_subarrays_with_values(self, required_values):
+        """Get distinct subarrays containing specific values."""
+        seen = set()
+        count = 0
+        
+        for i in range(self.n):
+            current_set = set()
+            for j in range(i, self.n):
+                current_set.add(self.arr[j])
+                if all(val in current_set for val in required_values):
+                    subarray_tuple = tuple(sorted(current_set))
+                    if subarray_tuple not in seen:
+                        seen.add(subarray_tuple)
+                        count += 1
+        
+        return count
+    
+    def get_distinct_subarrays_with_sum(self, target_sum):
+        """Get distinct subarrays with specific sum."""
+        seen = set()
+        count = 0
+        
+        for i in range(self.n):
+            current_set = set()
+            current_sum = 0
+            for j in range(i, self.n):
+                current_set.add(self.arr[j])
+                current_sum += self.arr[j]
+                if current_sum == target_sum:
+                    subarray_tuple = tuple(sorted(current_set))
+                    if subarray_tuple not in seen:
+                        seen.add(subarray_tuple)
+                        count += 1
+        
+        return count
+    
+    def get_distinct_subarrays_with_pattern(self, pattern_func):
+        """Get distinct subarrays matching a pattern."""
+        seen = set()
+        count = 0
+        
+        for i in range(self.n):
+            current_set = set()
+            for j in range(i, self.n):
+                current_set.add(self.arr[j])
+                if pattern_func(current_set):
+                    subarray_tuple = tuple(sorted(current_set))
+                    if subarray_tuple not in seen:
+                        seen.add(subarray_tuple)
+                        count += 1
+        
+        return count
+
+# Example usage
+arr = [1, 2, 1, 3, 2, 4]
+advanced_counter = AdvancedDistinctSubarrays(arr)
+
+print(f"Distinct in range [1, 4]: {advanced_counter.get_distinct_subarrays_in_range(1, 4)}")
+print(f"Distinct with size [2, 3]: {advanced_counter.get_distinct_subarrays_with_size(2, 3)}")
+print(f"Distinct containing [1, 2]: {advanced_counter.get_distinct_subarrays_with_values([1, 2])}")
+print(f"Distinct with sum 5: {advanced_counter.get_distinct_subarrays_with_sum(5)}")
+
+# Test pattern matching
+even_size_pattern = lambda s: len(s) % 2 == 0
+print(f"Distinct with even size: {advanced_counter.get_distinct_subarrays_with_pattern(even_size_pattern)}")
+```
+
+### **Variation 3: Distinct Values Subarrays with Constraints**
+**Problem**: Handle distinct subarrays with additional constraints (value ranges, frequency limits, etc.).
+
+**Approach**: Use constraint satisfaction with advanced filtering and optimization.
+
+```python
+class ConstrainedDistinctSubarrays:
+    def __init__(self, arr, constraints=None):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.constraints = constraints or {}
+    
+    def _is_valid_subarray(self, subarray_set):
+        """Check if subarray satisfies constraints."""
+        if 'min_size' in self.constraints and len(subarray_set) < self.constraints['min_size']:
+            return False
+        if 'max_size' in self.constraints and len(subarray_set) > self.constraints['max_size']:
+            return False
+        if 'min_value' in self.constraints and min(subarray_set) < self.constraints['min_value']:
+            return False
+        if 'max_value' in self.constraints and max(subarray_set) > self.constraints['max_value']:
+            return False
+        if 'allowed_values' in self.constraints:
+            if not all(val in self.constraints['allowed_values'] for val in subarray_set):
+                return False
+        if 'forbidden_values' in self.constraints:
+            if any(val in self.constraints['forbidden_values'] for val in subarray_set):
+                return False
+        return True
+    
+    def get_distinct_with_constraints(self):
+        """Get distinct subarrays satisfying constraints."""
+        seen = set()
+        count = 0
+        
+        for i in range(self.n):
+            current_set = set()
+            for j in range(i, self.n):
+                current_set.add(self.arr[j])
+                if self._is_valid_subarray(current_set):
+                    subarray_tuple = tuple(sorted(current_set))
+                    if subarray_tuple not in seen:
+                        seen.add(subarray_tuple)
+                        count += 1
+        
+        return count
+    
+    def get_distinct_with_frequency_constraints(self, max_frequency):
+        """Get distinct subarrays with frequency constraints."""
+        seen = set()
+        count = 0
+        
+        for i in range(self.n):
+            current_set = set()
+            frequency_map = defaultdict(int)
+            for j in range(i, self.n):
+                current_set.add(self.arr[j])
+                frequency_map[self.arr[j]] += 1
+                
+                # Check frequency constraints
+                if all(freq <= max_frequency for freq in frequency_map.values()):
+                    subarray_tuple = tuple(sorted(current_set))
+                    if subarray_tuple not in seen:
+                        seen.add(subarray_tuple)
+                        count += 1
+        
+        return count
+    
+    def get_distinct_with_sum_constraints(self, min_sum, max_sum):
+        """Get distinct subarrays with sum constraints."""
+        seen = set()
+        count = 0
+        
+        for i in range(self.n):
+            current_set = set()
+            current_sum = 0
+            for j in range(i, self.n):
+                current_set.add(self.arr[j])
+                current_sum += self.arr[j]
+                if min_sum <= current_sum <= max_sum:
+                    subarray_tuple = tuple(sorted(current_set))
+                    if subarray_tuple not in seen:
+                        seen.add(subarray_tuple)
+                        count += 1
+        
+        return count
+    
+    def get_distinct_with_parity_constraints(self, parity_type):
+        """Get distinct subarrays with parity constraints."""
+        seen = set()
+        count = 0
+        
+        for i in range(self.n):
+            current_set = set()
+            for j in range(i, self.n):
+                current_set.add(self.arr[j])
+                
+                # Check parity constraints
+                if parity_type == 'even':
+                    if all(val % 2 == 0 for val in current_set):
+                        subarray_tuple = tuple(sorted(current_set))
+                        if subarray_tuple not in seen:
+                            seen.add(subarray_tuple)
+                            count += 1
+                elif parity_type == 'odd':
+                    if all(val % 2 == 1 for val in current_set):
+                        subarray_tuple = tuple(sorted(current_set))
+                        if subarray_tuple not in seen:
+                            seen.add(subarray_tuple)
+                            count += 1
+                elif parity_type == 'mixed':
+                    if any(val % 2 == 0 for val in current_set) and any(val % 2 == 1 for val in current_set):
+                        subarray_tuple = tuple(sorted(current_set))
+                        if subarray_tuple not in seen:
+                            seen.add(subarray_tuple)
+                            count += 1
+        
+        return count
+    
+    def get_distinct_with_mathematical_constraints(self, constraint_func):
+        """Get distinct subarrays with custom mathematical constraints."""
+        seen = set()
+        count = 0
+        
+        for i in range(self.n):
+            current_set = set()
+            for j in range(i, self.n):
+                current_set.add(self.arr[j])
+                if constraint_func(current_set):
+                    subarray_tuple = tuple(sorted(current_set))
+                    if subarray_tuple not in seen:
+                        seen.add(subarray_tuple)
+                        count += 1
+        
+        return count
+
+# Example usage
+arr = [1, 2, 3, 2, 1, 4, 5, 6]
+constraints = {
+    'min_size': 2,
+    'max_size': 4,
+    'min_value': 1,
+    'max_value': 5,
+    'forbidden_values': {6}
+}
+
+constrained_counter = ConstrainedDistinctSubarrays(arr, constraints)
+print(f"Constrained distinct count: {constrained_counter.get_distinct_with_constraints()}")
+print(f"Distinct with frequency <= 1: {constrained_counter.get_distinct_with_frequency_constraints(1)}")
+print(f"Distinct with sum [3, 8]: {constrained_counter.get_distinct_with_sum_constraints(3, 8)}")
+print(f"Distinct with even parity: {constrained_counter.get_distinct_with_parity_constraints('even')}")
+
+# Test custom mathematical constraint
+def custom_constraint(subarray_set):
+    return len(subarray_set) == 2 and sum(subarray_set) % 3 == 0
+
+print(f"Distinct with custom constraint: {constrained_counter.get_distinct_with_mathematical_constraints(custom_constraint)}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

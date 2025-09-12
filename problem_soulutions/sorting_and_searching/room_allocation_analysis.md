@@ -664,6 +664,1000 @@ result = room_allocation_constraints(customers, min_stay_duration, max_capacity_
 print(f"Room assignments with constraints: {result}")  # Output: [1, 2, 1, 3]
 ```
 
+## Problem Variations
+
+### **Variation 1: Room Allocation with Dynamic Updates**
+**Problem**: Handle dynamic room allocation updates (add/remove/update customers) while maintaining efficient room assignment calculations.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+from collections import defaultdict
+import bisect
+import heapq
+
+class DynamicRoomAllocation:
+    def __init__(self, customers):
+        self.customers = customers[:]
+        self.n = len(customers)
+        self.room_assignments = self._compute_room_assignments()
+        self.min_rooms = self._compute_min_rooms()
+    
+    def _compute_room_assignments(self):
+        """Compute room assignments using priority queue."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            if available_rooms and available_rooms[0][0] <= arrival:
+                # Reuse existing room
+                dep_time, room_id = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+            else:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def _compute_min_rooms(self):
+        """Compute minimum number of rooms needed."""
+        return len(set(self.room_assignments))
+    
+    def add_customer(self, arrival, departure):
+        """Add a new customer to the allocation."""
+        self.customers.append((arrival, departure))
+        self.n += 1
+        self.room_assignments = self._compute_room_assignments()
+        self.min_rooms = self._compute_min_rooms()
+    
+    def remove_customer(self, index):
+        """Remove a customer at the specified index."""
+        if 0 <= index < self.n:
+            del self.customers[index]
+            self.n -= 1
+            self.room_assignments = self._compute_room_assignments()
+            self.min_rooms = self._compute_min_rooms()
+    
+    def update_customer(self, index, new_arrival, new_departure):
+        """Update a customer at the specified index."""
+        if 0 <= index < self.n:
+            self.customers[index] = (new_arrival, new_departure)
+            self.room_assignments = self._compute_room_assignments()
+            self.min_rooms = self._compute_min_rooms()
+    
+    def get_room_assignments(self):
+        """Get current room assignments."""
+        return self.room_assignments
+    
+    def get_min_rooms(self):
+        """Get minimum number of rooms needed."""
+        return self.min_rooms
+    
+    def get_room_utilization(self):
+        """Get room utilization statistics."""
+        if not self.customers:
+            return {
+                'total_rooms': 0,
+                'utilized_rooms': 0,
+                'utilization_rate': 0,
+                'average_occupancy': 0
+            }
+        
+        total_rooms = self.min_rooms
+        utilized_rooms = len(set(self.room_assignments))
+        utilization_rate = utilized_rooms / total_rooms if total_rooms > 0 else 0
+        
+        # Calculate average occupancy
+        room_occupancy = defaultdict(int)
+        for room_id in self.room_assignments:
+            room_occupancy[room_id] += 1
+        average_occupancy = sum(room_occupancy.values()) / len(room_occupancy) if room_occupancy else 0
+        
+        return {
+            'total_rooms': total_rooms,
+            'utilized_rooms': utilized_rooms,
+            'utilization_rate': utilization_rate,
+            'average_occupancy': average_occupancy
+        }
+    
+    def get_room_assignments_with_constraints(self, constraints):
+        """Get room assignments considering constraints."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            # Check constraints
+            if arrival in constraints:
+                required_room = constraints[arrival]
+                if required_room <= len(available_rooms):
+                    # Assign to specific room
+                    assignments.append(required_room)
+                    continue
+            
+            if available_rooms and available_rooms[0][0] <= arrival:
+                # Reuse existing room
+                dep_time, room_id = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+            else:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def get_room_assignments_with_time_range(self, start_time, end_time):
+        """Get room assignments for customers in time range."""
+        result = []
+        for i, (arrival, departure) in enumerate(self.customers):
+            if arrival < end_time and departure > start_time:
+                result.append((i, arrival, departure, self.room_assignments[i]))
+        return result
+    
+    def get_room_assignments_with_constraints_func(self, constraint_func):
+        """Get room assignments that satisfy custom constraints."""
+        result = []
+        for i, (arrival, departure) in enumerate(self.customers):
+            if constraint_func(arrival, departure):
+                result.append((i, arrival, departure, self.room_assignments[i]))
+        return result
+    
+    def get_allocation_statistics(self):
+        """Get statistics about the room allocation."""
+        if not self.customers:
+            return {
+                'total_customers': 0,
+                'min_rooms': 0,
+                'average_stay_duration': 0,
+                'total_events': 0,
+                'time_span': 0
+            }
+        
+        total_customers = self.n
+        min_rooms = self.min_rooms
+        
+        # Calculate average stay duration
+        total_stay_duration = sum(departure - arrival for arrival, departure in self.customers)
+        average_stay_duration = total_stay_duration / total_customers
+        
+        # Calculate time span
+        all_times = []
+        for arrival, departure in self.customers:
+            all_times.extend([arrival, departure])
+        time_span = max(all_times) - min(all_times) if all_times else 0
+        
+        return {
+            'total_customers': total_customers,
+            'min_rooms': min_rooms,
+            'average_stay_duration': average_stay_duration,
+            'total_events': len(all_times),
+            'time_span': time_span
+        }
+    
+    def get_allocation_patterns(self):
+        """Get patterns in room allocation."""
+        patterns = {
+            'consecutive_assignments': 0,
+            'alternating_pattern': 0,
+            'peak_usage': 0,
+            'quiet_usage': 0
+        }
+        
+        for i in range(1, len(self.room_assignments)):
+            if self.room_assignments[i] == self.room_assignments[i-1]:
+                patterns['consecutive_assignments'] += 1
+            
+            if i > 1:
+                if (self.room_assignments[i] != self.room_assignments[i-1] and 
+                    self.room_assignments[i-1] != self.room_assignments[i-2]):
+                    patterns['alternating_pattern'] += 1
+        
+        return patterns
+    
+    def get_optimal_allocation_strategy(self):
+        """Get optimal allocation strategy based on customer patterns."""
+        if not self.customers:
+            return {
+                'recommended_rooms': 0,
+                'peak_time': 0,
+                'efficiency_rate': 0
+            }
+        
+        # Find peak time
+        all_times = []
+        for arrival, departure in self.customers:
+            all_times.extend([arrival, departure])
+        
+        sorted_times = sorted(all_times)
+        current_customers = 0
+        max_customers = 0
+        peak_time = 0
+        
+        for time in sorted_times:
+            if time in [arrival for arrival, _ in self.customers]:
+                current_customers += 1
+            else:
+                current_customers -= 1
+            
+            if current_customers > max_customers:
+                max_customers = current_customers
+                peak_time = time
+        
+        # Calculate efficiency rate
+        total_customer_time = sum(departure - arrival for arrival, departure in self.customers)
+        time_span = max(all_times) - min(all_times)
+        efficiency_rate = total_customer_time / (time_span * self.min_rooms) if time_span > 0 and self.min_rooms > 0 else 0
+        
+        return {
+            'recommended_rooms': self.min_rooms,
+            'peak_time': peak_time,
+            'efficiency_rate': efficiency_rate
+        }
+
+# Example usage
+customers = [(1, 3), (2, 4), (3, 5), (1, 6)]
+dynamic_allocation = DynamicRoomAllocation(customers)
+print(f"Initial room assignments: {dynamic_allocation.get_room_assignments()}")
+print(f"Initial min rooms: {dynamic_allocation.get_min_rooms()}")
+
+# Add a customer
+dynamic_allocation.add_customer(4, 7)
+print(f"After adding customer: {dynamic_allocation.get_room_assignments()}")
+
+# Update a customer
+dynamic_allocation.update_customer(1, 2, 5)
+print(f"After updating customer: {dynamic_allocation.get_room_assignments()}")
+
+# Get room utilization
+print(f"Room utilization: {dynamic_allocation.get_room_utilization()}")
+
+# Get room assignments with constraints
+constraints = {1: 1, 3: 2}  # Customer 1 must get room 1, customer 3 must get room 2
+print(f"Constrained assignments: {dynamic_allocation.get_room_assignments_with_constraints(constraints)}")
+
+# Get room assignments in time range
+print(f"Assignments in range [2, 5]: {dynamic_allocation.get_room_assignments_with_time_range(2, 5)}")
+
+# Get room assignments with constraints function
+def constraint_func(arrival, departure):
+    return departure - arrival >= 2
+
+print(f"Assignments with constraints: {dynamic_allocation.get_room_assignments_with_constraints_func(constraint_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_allocation.get_allocation_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_allocation.get_allocation_patterns()}")
+
+# Get optimal allocation strategy
+print(f"Optimal allocation strategy: {dynamic_allocation.get_optimal_allocation_strategy()}")
+```
+
+### **Variation 2: Room Allocation with Different Operations**
+**Problem**: Handle different types of operations on room allocation (weighted customers, priority-based selection, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of room allocation queries.
+
+```python
+class AdvancedRoomAllocation:
+    def __init__(self, customers, weights=None, priorities=None):
+        self.customers = customers[:]
+        self.n = len(customers)
+        self.weights = weights or [1] * self.n
+        self.priorities = priorities or [1] * self.n
+        self.room_assignments = self._compute_room_assignments()
+        self.min_rooms = self._compute_min_rooms()
+        self.weighted_min_rooms = self._compute_weighted_min_rooms()
+    
+    def _compute_room_assignments(self):
+        """Compute room assignments using priority queue."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            if available_rooms and available_rooms[0][0] <= arrival:
+                # Reuse existing room
+                dep_time, room_id = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+            else:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def _compute_min_rooms(self):
+        """Compute minimum number of rooms needed."""
+        return len(set(self.room_assignments))
+    
+    def _compute_weighted_min_rooms(self):
+        """Compute minimum weighted rooms needed."""
+        if not self.customers:
+            return 0
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Priority queue: (departure_time, room_id, weight)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for i, (arrival, departure) in enumerate(sorted_customers):
+            if available_rooms and available_rooms[0][0] <= arrival:
+                # Reuse existing room
+                dep_time, room_id, weight = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id, weight + self.weights[i]))
+                assignments.append(room_id + 1)
+            else:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id, self.weights[i]))
+                assignments.append(room_id + 1)
+        
+        return len(set(assignments))
+    
+    def get_room_assignments(self):
+        """Get current room assignments."""
+        return self.room_assignments
+    
+    def get_min_rooms(self):
+        """Get minimum number of rooms needed."""
+        return self.min_rooms
+    
+    def get_weighted_min_rooms(self):
+        """Get minimum weighted rooms needed."""
+        return self.weighted_min_rooms
+    
+    def get_room_assignments_with_priority(self, priority_func):
+        """Get room assignments considering priority."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by priority
+        sorted_customers = sorted(enumerate(self.customers), 
+                                key=lambda x: priority_func(x[1][0], x[1][1], self.weights[x[0]], self.priorities[x[0]]), 
+                                reverse=True)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = [0] * self.n
+        
+        for original_idx, (arrival, departure) in sorted_customers:
+            if available_rooms and available_rooms[0][0] <= arrival:
+                # Reuse existing room
+                dep_time, room_id = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments[original_idx] = room_id + 1
+            else:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments[original_idx] = room_id + 1
+        
+        return assignments
+    
+    def get_room_assignments_with_optimization(self, optimization_func):
+        """Get room assignments using custom optimization function."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by optimization function
+        sorted_customers = sorted(enumerate(self.customers), 
+                                key=lambda x: optimization_func(x[1][0], x[1][1], self.weights[x[0]], self.priorities[x[0]]), 
+                                reverse=True)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = [0] * self.n
+        
+        for original_idx, (arrival, departure) in sorted_customers:
+            if available_rooms and available_rooms[0][0] <= arrival:
+                # Reuse existing room
+                dep_time, room_id = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments[original_idx] = room_id + 1
+            else:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments[original_idx] = room_id + 1
+        
+        return assignments
+    
+    def get_room_assignments_with_constraints(self, constraint_func):
+        """Get room assignments that satisfy custom constraints."""
+        result = []
+        for i, (arrival, departure) in enumerate(self.customers):
+            if constraint_func(arrival, departure, self.weights[i], self.priorities[i]):
+                result.append((i, arrival, departure, self.room_assignments[i]))
+        return result
+    
+    def get_room_assignments_with_multiple_criteria(self, criteria_list):
+        """Get room assignments that satisfy multiple criteria."""
+        result = []
+        for i, (arrival, departure) in enumerate(self.customers):
+            satisfies_all_criteria = True
+            for criterion in criteria_list:
+                if not criterion(arrival, departure, self.weights[i], self.priorities[i]):
+                    satisfies_all_criteria = False
+                    break
+            
+            if satisfies_all_criteria:
+                result.append((i, arrival, departure, self.room_assignments[i]))
+        
+        return result
+    
+    def get_room_assignments_with_alternatives(self, alternatives):
+        """Get room assignments considering alternative times."""
+        result = []
+        
+        for i, (arrival, departure) in enumerate(self.customers):
+            # Check original customer
+            result.append((i, arrival, departure, self.room_assignments[i], 'original'))
+            
+            # Check alternative times
+            if i in alternatives:
+                for alt_arrival, alt_departure in alternatives[i]:
+                    result.append((i, alt_arrival, alt_departure, self.room_assignments[i], 'alternative'))
+        
+        return result
+    
+    def get_room_assignments_with_adaptive_criteria(self, adaptive_func):
+        """Get room assignments using adaptive criteria."""
+        result = []
+        
+        for i, (arrival, departure) in enumerate(self.customers):
+            if adaptive_func(arrival, departure, self.weights[i], self.priorities[i], result):
+                result.append((i, arrival, departure, self.room_assignments[i]))
+        
+        return result
+    
+    def get_allocation_optimization(self):
+        """Get optimal allocation configuration."""
+        strategies = [
+            ('min_rooms', self.get_min_rooms),
+            ('weighted_min_rooms', self.get_weighted_min_rooms),
+        ]
+        
+        best_strategy = None
+        best_value = float('inf')
+        
+        for strategy_name, strategy_func in strategies:
+            current_value = strategy_func()
+            if current_value < best_value:
+                best_value = current_value
+                best_strategy = (strategy_name, current_value)
+        
+        return best_strategy
+
+# Example usage
+customers = [(1, 3), (2, 4), (3, 5), (1, 6)]
+weights = [2, 1, 3, 1]
+priorities = [1, 2, 1, 3]
+advanced_allocation = AdvancedRoomAllocation(customers, weights, priorities)
+
+print(f"Min rooms: {advanced_allocation.get_min_rooms()}")
+print(f"Weighted min rooms: {advanced_allocation.get_weighted_min_rooms()}")
+
+# Get room assignments with priority
+def priority_func(arrival, departure, weight, priority):
+    return (departure - arrival) * weight * priority
+
+print(f"Priority-based assignments: {advanced_allocation.get_room_assignments_with_priority(priority_func)}")
+
+# Get room assignments with optimization
+def optimization_func(arrival, departure, weight, priority):
+    return (departure - arrival) * weight + priority
+
+print(f"Optimization-based assignments: {advanced_allocation.get_room_assignments_with_optimization(optimization_func)}")
+
+# Get room assignments with constraints
+def constraint_func(arrival, departure, weight, priority):
+    return departure - arrival >= 2 and weight > 1
+
+print(f"Constrained assignments: {advanced_allocation.get_room_assignments_with_constraints(constraint_func)}")
+
+# Get room assignments with multiple criteria
+def criterion1(arrival, departure, weight, priority):
+    return departure - arrival >= 2
+
+def criterion2(arrival, departure, weight, priority):
+    return weight > 1
+
+criteria_list = [criterion1, criterion2]
+print(f"Multiple criteria assignments: {advanced_allocation.get_room_assignments_with_multiple_criteria(criteria_list)}")
+
+# Get room assignments with alternatives
+alternatives = {1: [(1, 5), (3, 6)], 3: [(2, 7), (4, 8)]}
+print(f"Alternative assignments: {advanced_allocation.get_room_assignments_with_alternatives(alternatives)}")
+
+# Get room assignments with adaptive criteria
+def adaptive_func(arrival, departure, weight, priority, current_result):
+    return departure - arrival >= 2 and len(current_result) < 3
+
+print(f"Adaptive criteria assignments: {advanced_allocation.get_room_assignments_with_adaptive_criteria(adaptive_func)}")
+
+# Get allocation optimization
+print(f"Allocation optimization: {advanced_allocation.get_allocation_optimization()}")
+```
+
+### **Variation 3: Room Allocation with Constraints**
+**Problem**: Handle room allocation with additional constraints (capacity limits, time constraints, resource constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedRoomAllocation:
+    def __init__(self, customers, constraints=None):
+        self.customers = customers[:]
+        self.n = len(customers)
+        self.constraints = constraints or {}
+        self.room_assignments = self._compute_room_assignments()
+        self.min_rooms = self._compute_min_rooms()
+    
+    def _compute_room_assignments(self):
+        """Compute room assignments using priority queue."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            if available_rooms and available_rooms[0][0] <= arrival:
+                # Reuse existing room
+                dep_time, room_id = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+            else:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def _compute_min_rooms(self):
+        """Compute minimum number of rooms needed."""
+        return len(set(self.room_assignments))
+    
+    def get_room_assignments_with_capacity_constraints(self, capacity_limit):
+        """Get room assignments considering capacity constraints."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Priority queue: (departure_time, room_id, current_capacity)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            # Check if any room can accommodate this customer
+            found_room = False
+            for i, (dep_time, room_id, capacity) in enumerate(available_rooms):
+                if dep_time <= arrival and capacity < capacity_limit:
+                    # Assign to this room
+                    available_rooms[i] = (departure, room_id, capacity + 1)
+                    assignments.append(room_id + 1)
+                    found_room = True
+                    break
+            
+            if not found_room:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id, 1))
+                assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def get_room_assignments_with_time_constraints(self, time_limit):
+        """Get room assignments considering time constraints."""
+        if not self.customers:
+            return []
+        
+        # Filter customers within time limit
+        filtered_customers = [(arrival, departure) for arrival, departure in self.customers 
+                            if arrival <= time_limit]
+        
+        if not filtered_customers:
+            return []
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(filtered_customers)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            if available_rooms and available_rooms[0][0] <= arrival:
+                # Reuse existing room
+                dep_time, room_id = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+            else:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def get_room_assignments_with_resource_constraints(self, resource_limits, resource_consumption):
+        """Get room assignments considering resource constraints."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Priority queue: (departure_time, room_id, current_resources)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            # Check if any room can accommodate this customer
+            found_room = False
+            for i, (dep_time, room_id, current_resources) in enumerate(available_rooms):
+                if dep_time <= arrival:
+                    # Check resource constraints
+                    can_accommodate = True
+                    for j, consumption in enumerate(resource_consumption.get(arrival, [0] * len(resource_limits))):
+                        if current_resources[j] + consumption > resource_limits[j]:
+                            can_accommodate = False
+                            break
+                    
+                    if can_accommodate:
+                        # Assign to this room
+                        new_resources = current_resources[:]
+                        for j, consumption in enumerate(resource_consumption.get(arrival, [0] * len(resource_limits))):
+                            new_resources[j] += consumption
+                        available_rooms[i] = (departure, room_id, new_resources)
+                        assignments.append(room_id + 1)
+                        found_room = True
+                        break
+            
+            if not found_room:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                initial_resources = [0] * len(resource_limits)
+                for j, consumption in enumerate(resource_consumption.get(arrival, [0] * len(resource_limits))):
+                    initial_resources[j] += consumption
+                heapq.heappush(available_rooms, (departure, room_id, initial_resources))
+                assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def get_room_assignments_with_mathematical_constraints(self, constraint_func):
+        """Get room assignments that satisfies custom mathematical constraints."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            if constraint_func(arrival, departure):
+                if available_rooms and available_rooms[0][0] <= arrival:
+                    # Reuse existing room
+                    dep_time, room_id = heapq.heappop(available_rooms)
+                    heapq.heappush(available_rooms, (departure, room_id))
+                    assignments.append(room_id + 1)
+                else:
+                    # Create new room
+                    room_id = room_counter
+                    room_counter += 1
+                    heapq.heappush(available_rooms, (departure, room_id))
+                    assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def get_room_assignments_with_range_constraints(self, range_constraints):
+        """Get room assignments that satisfies range constraints."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            # Check if customer satisfies all range constraints
+            satisfies_constraints = True
+            for constraint in range_constraints:
+                if not constraint(arrival, departure):
+                    satisfies_constraints = False
+                    break
+            
+            if satisfies_constraints:
+                if available_rooms and available_rooms[0][0] <= arrival:
+                    # Reuse existing room
+                    dep_time, room_id = heapq.heappop(available_rooms)
+                    heapq.heappush(available_rooms, (departure, room_id))
+                    assignments.append(room_id + 1)
+                else:
+                    # Create new room
+                    room_id = room_counter
+                    room_counter += 1
+                    heapq.heappush(available_rooms, (departure, room_id))
+                    assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def get_room_assignments_with_optimization_constraints(self, optimization_func):
+        """Get room assignments using custom optimization constraints."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by optimization function
+        sorted_customers = sorted(self.customers, key=lambda x: optimization_func(x[0], x[1]), reverse=True)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            if available_rooms and available_rooms[0][0] <= arrival:
+                # Reuse existing room
+                dep_time, room_id = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+            else:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def get_room_assignments_with_multiple_constraints(self, constraints_list):
+        """Get room assignments that satisfies multiple constraints."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            # Check if customer satisfies all constraints
+            satisfies_all_constraints = True
+            for constraint in constraints_list:
+                if not constraint(arrival, departure):
+                    satisfies_all_constraints = False
+                    break
+            
+            if satisfies_all_constraints:
+                if available_rooms and available_rooms[0][0] <= arrival:
+                    # Reuse existing room
+                    dep_time, room_id = heapq.heappop(available_rooms)
+                    heapq.heappush(available_rooms, (departure, room_id))
+                    assignments.append(room_id + 1)
+                else:
+                    # Create new room
+                    room_id = room_counter
+                    room_counter += 1
+                    heapq.heappush(available_rooms, (departure, room_id))
+                    assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def get_room_assignments_with_priority_constraints(self, priority_func):
+        """Get room assignments with priority-based constraints."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by priority
+        sorted_customers = sorted(self.customers, key=lambda x: priority_func(x[0], x[1]), reverse=True)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            if available_rooms and available_rooms[0][0] <= arrival:
+                # Reuse existing room
+                dep_time, room_id = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+            else:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def get_room_assignments_with_adaptive_constraints(self, adaptive_func):
+        """Get room assignments with adaptive constraints."""
+        if not self.customers:
+            return []
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Priority queue: (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            # Check adaptive constraints
+            if adaptive_func(arrival, departure, assignments):
+                if available_rooms and available_rooms[0][0] <= arrival:
+                    # Reuse existing room
+                    dep_time, room_id = heapq.heappop(available_rooms)
+                    heapq.heappush(available_rooms, (departure, room_id))
+                    assignments.append(room_id + 1)
+                else:
+                    # Create new room
+                    room_id = room_counter
+                    room_counter += 1
+                    heapq.heappush(available_rooms, (departure, room_id))
+                    assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def get_optimal_allocation_strategy(self):
+        """Get optimal allocation strategy considering all constraints."""
+        strategies = [
+            ('capacity_constraints', self.get_room_assignments_with_capacity_constraints),
+            ('time_constraints', self.get_room_assignments_with_time_constraints),
+            ('resource_constraints', self.get_room_assignments_with_resource_constraints),
+        ]
+        
+        best_strategy = None
+        best_rooms = float('inf')
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'capacity_constraints':
+                    current_assignments = strategy_func(2)  # Capacity of 2
+                elif strategy_name == 'time_constraints':
+                    current_assignments = strategy_func(10)  # Time limit of 10
+                elif strategy_name == 'resource_constraints':
+                    resource_limits = [100, 50]
+                    resource_consumption = {arrival: [10, 5] for arrival, _ in self.customers}
+                    current_assignments = strategy_func(resource_limits, resource_consumption)
+                
+                current_rooms = len(set(current_assignments))
+                if current_rooms < best_rooms:
+                    best_rooms = current_rooms
+                    best_strategy = (strategy_name, current_assignments, current_rooms)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'min_stay_duration': 1,
+    'max_capacity': 10
+}
+
+customers = [(1, 3), (2, 4), (3, 5), (1, 6)]
+constrained_allocation = ConstrainedRoomAllocation(customers, constraints)
+
+print("Capacity-constrained assignments:", constrained_allocation.get_room_assignments_with_capacity_constraints(2))
+
+print("Time-constrained assignments:", constrained_allocation.get_room_assignments_with_time_constraints(5))
+
+# Resource constraints
+resource_limits = [100, 50]
+resource_consumption = {arrival: [10, 5] for arrival, _ in customers}
+print("Resource-constrained assignments:", constrained_allocation.get_room_assignments_with_resource_constraints(resource_limits, resource_consumption))
+
+# Mathematical constraints
+def custom_constraint(arrival, departure):
+    return departure - arrival >= 2
+
+print("Mathematical constraint assignments:", constrained_allocation.get_room_assignments_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(arrival, departure):
+    return departure - arrival >= 2
+
+range_constraints = [range_constraint]
+print("Range-constrained assignments:", constrained_allocation.get_room_assignments_with_range_constraints(range_constraints))
+
+# Multiple constraints
+def constraint1(arrival, departure):
+    return departure - arrival >= 2
+
+def constraint2(arrival, departure):
+    return arrival >= 1
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints assignments:", constrained_allocation.get_room_assignments_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(arrival, departure):
+    return departure - arrival
+
+print("Priority-constrained assignments:", constrained_allocation.get_room_assignments_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(arrival, departure, current_assignments):
+    return departure - arrival >= 2 and len(current_assignments) < 4
+
+print("Adaptive constraint assignments:", constrained_allocation.get_room_assignments_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_allocation.get_optimal_allocation_strategy()
+print(f"Optimal strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

@@ -491,6 +491,213 @@ def apartments_time_windows(applicants, apartments, k):
     return assignments
 ```
 
+## Problem Variations
+
+### **Variation 1: Apartments with Multiple Criteria**
+**Problem**: Assign apartments to applicants considering both size and price constraints.
+
+**Approach**: Sort by multiple criteria and use advanced matching algorithms.
+
+```python
+def apartments_multiple_criteria(apartments, applicants, size_tolerance, price_tolerance):
+    """
+    Assign apartments considering both size and price constraints.
+    
+    Args:
+        apartments: List of (size, price) tuples
+        applicants: List of (desired_size, max_price) tuples
+        size_tolerance: Maximum size difference allowed
+        price_tolerance: Maximum price difference allowed
+    
+    Returns:
+        Maximum number of assignments
+    """
+    # Sort apartments by size, then by price
+    apartments.sort(key=lambda x: (x[0], x[1]))
+    applicants.sort(key=lambda x: (x[0], x[1]))
+    
+    assignments = 0
+    used_apartments = set()
+    
+    for desired_size, max_price in applicants:
+        for i, (size, price) in enumerate(apartments):
+            if i in used_apartments:
+                continue
+            
+            size_diff = abs(size - desired_size)
+            price_diff = abs(price - max_price)
+            
+            if size_diff <= size_tolerance and price_diff <= price_tolerance:
+                used_apartments.add(i)
+                assignments += 1
+                break
+    
+    return assignments
+
+# Example usage
+apartments = [(50, 1000), (60, 1200), (70, 1100), (80, 1300)]
+applicants = [(55, 1150), (65, 1250), (75, 1050)]
+assignments = apartments_multiple_criteria(apartments, applicants, 10, 100)
+print(f"Maximum assignments: {assignments}")
+```
+
+### **Variation 2: Apartments with Dynamic Updates**
+**Problem**: Handle dynamic apartment availability and applicant arrivals.
+
+**Approach**: Use balanced binary search trees for efficient updates and queries.
+
+```python
+import bisect
+from collections import defaultdict
+
+class DynamicApartmentSystem:
+    def __init__(self, k):
+        self.k = k
+        self.available_apartments = []  # Sorted list
+        self.assignments = 0
+    
+    def add_apartment(self, size):
+        """Add a new apartment to the system."""
+        bisect.insort(self.available_apartments, size)
+    
+    def remove_apartment(self, size):
+        """Remove an apartment from the system."""
+        if size in self.available_apartments:
+            self.available_apartments.remove(size)
+    
+    def assign_apartment(self, desired_size):
+        """Try to assign an apartment to an applicant."""
+        # Find the best apartment using binary search
+        left = 0
+        right = len(self.available_apartments)
+        best_apartment = None
+        best_diff = float('inf')
+        
+        # Binary search for the closest apartment
+        while left < right:
+            mid = (left + right) // 2
+            size = self.available_apartments[mid]
+            diff = abs(size - desired_size)
+            
+            if diff <= self.k:
+                if diff < best_diff:
+                    best_diff = diff
+                    best_apartment = size
+                
+                # Try to find a better match
+                if size < desired_size:
+                    left = mid + 1
+                else:
+                    right = mid
+            elif size < desired_size:
+                left = mid + 1
+            else:
+                right = mid
+        
+        if best_apartment is not None:
+            self.available_apartments.remove(best_apartment)
+            self.assignments += 1
+            return True
+        
+        return False
+    
+    def get_assignments(self):
+        """Get the total number of assignments made."""
+        return self.assignments
+
+# Example usage
+system = DynamicApartmentSystem(5)
+system.add_apartment(50)
+system.add_apartment(60)
+system.add_apartment(70)
+
+print(system.assign_apartment(55))  # True
+print(system.assign_apartment(65))  # True
+print(system.assign_apartment(80))  # False
+print(f"Total assignments: {system.get_assignments()}")
+```
+
+### **Variation 3: Apartments with Constraints**
+**Problem**: Assign apartments with additional constraints like location preferences.
+
+**Approach**: Use constraint satisfaction with backtracking or advanced matching algorithms.
+
+```python
+def apartments_with_constraints(apartments, applicants, size_tolerance, constraints):
+    """
+    Assign apartments with additional constraints.
+    
+    Args:
+        apartments: List of (size, location, amenities) tuples
+        applicants: List of (desired_size, preferred_locations, required_amenities) tuples
+        size_tolerance: Maximum size difference allowed
+        constraints: Dictionary of additional constraints
+    
+    Returns:
+        List of (applicant_index, apartment_index) assignments
+    """
+    n_applicants = len(applicants)
+    n_apartments = len(apartments)
+    
+    # Create compatibility matrix
+    compatibility = [[False] * n_apartments for _ in range(n_applicants)]
+    
+    for i, (desired_size, preferred_locations, required_amenities) in enumerate(applicants):
+        for j, (size, location, amenities) in enumerate(apartments):
+            # Check size constraint
+            if abs(size - desired_size) > size_tolerance:
+                continue
+            
+            # Check location preference
+            if preferred_locations and location not in preferred_locations:
+                continue
+            
+            # Check required amenities
+            if required_amenities and not all(amenity in amenities for amenity in required_amenities):
+                continue
+            
+            compatibility[i][j] = True
+    
+    # Use maximum bipartite matching
+    def dfs(applicant, visited, match):
+        for apartment in range(n_apartments):
+            if compatibility[applicant][apartment] and apartment not in visited:
+                visited.add(apartment)
+                if match[apartment] == -1 or dfs(match[apartment], visited, match):
+                    match[apartment] = applicant
+                    return True
+        return False
+    
+    # Find maximum matching
+    match = [-1] * n_apartments
+    assignments = []
+    
+    for applicant in range(n_applicants):
+        visited = set()
+        if dfs(applicant, visited, match):
+            apartment = match.index(applicant)
+            assignments.append((applicant, apartment))
+    
+    return assignments
+
+# Example usage
+apartments = [
+    (50, "downtown", ["parking", "gym"]),
+    (60, "suburb", ["parking"]),
+    (70, "downtown", ["gym", "pool"]),
+    (80, "suburb", ["parking", "gym", "pool"])
+]
+
+applicants = [
+    (55, ["downtown"], ["parking"]),
+    (65, ["suburb", "downtown"], ["gym"]),
+    (75, ["downtown"], ["gym", "pool"])
+]
+
+assignments = apartments_with_constraints(apartments, applicants, 10, {})
+print(f"Assignments: {assignments}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

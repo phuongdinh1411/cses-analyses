@@ -447,6 +447,401 @@ def count_constrained_subsequences_optimized(combo, freq, min_length, max_sum):
     return count
 ```
 
+## Problem Variations
+
+### **Variation 1: Distinct Values Subsequences with Dynamic Updates**
+**Problem**: Handle dynamic array updates while maintaining distinct subsequence counts efficiently.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+from collections import defaultdict
+import bisect
+
+class DynamicDistinctSubsequences:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.distinct_count = 0
+        self._calculate_distinct_count()
+    
+    def _calculate_distinct_count(self):
+        """Calculate total number of distinct subsequences."""
+        self.distinct_count = 0
+        seen = set()
+        
+        # Generate all possible subsequences
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            # Create a tuple of distinct values
+            distinct_tuple = tuple(sorted(set(subsequence)))
+            if distinct_tuple not in seen:
+                seen.add(distinct_tuple)
+                self.distinct_count += 1
+    
+    def update_value(self, index, new_value):
+        """Update array value and recalculate distinct count."""
+        if 0 <= index < self.n:
+            self.arr[index] = new_value
+            self._calculate_distinct_count()
+    
+    def add_element(self, value):
+        """Add new element to the array."""
+        self.arr.append(value)
+        self.n += 1
+        self._calculate_distinct_count()
+    
+    def remove_element(self, index):
+        """Remove element at index from the array."""
+        if 0 <= index < self.n:
+            del self.arr[index]
+            self.n -= 1
+            self._calculate_distinct_count()
+    
+    def get_distinct_count(self):
+        """Get current distinct subsequence count."""
+        return self.distinct_count
+    
+    def get_distinct_subsequences(self):
+        """Get all distinct subsequences."""
+        seen = set()
+        distinct_subsequences = []
+        
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            distinct_tuple = tuple(sorted(set(subsequence)))
+            if distinct_tuple not in seen:
+                seen.add(distinct_tuple)
+                distinct_subsequences.append(list(distinct_tuple))
+        
+        return distinct_subsequences
+
+# Example usage
+arr = [1, 2, 1, 3]
+dynamic_counter = DynamicDistinctSubsequences(arr)
+print(f"Initial distinct count: {dynamic_counter.get_distinct_count()}")
+
+# Update a value
+dynamic_counter.update_value(1, 4)
+print(f"After update: {dynamic_counter.get_distinct_count()}")
+
+# Add element
+dynamic_counter.add_element(2)
+print(f"After adding 2: {dynamic_counter.get_distinct_count()}")
+```
+
+### **Variation 2: Distinct Values Subsequences with Different Operations**
+**Problem**: Handle different types of operations on distinct subsequences (size constraints, value filtering).
+
+**Approach**: Use advanced data structures for efficient size-based filtering and value constraints.
+
+```python
+class AdvancedDistinctSubsequences:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.n = len(arr)
+    
+    def get_distinct_subsequences_with_size(self, min_size, max_size):
+        """Get distinct subsequences with size constraints."""
+        seen = set()
+        count = 0
+        
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            distinct_set = set(subsequence)
+            if min_size <= len(distinct_set) <= max_size:
+                distinct_tuple = tuple(sorted(distinct_set))
+                if distinct_tuple not in seen:
+                    seen.add(distinct_tuple)
+                    count += 1
+        
+        return count
+    
+    def get_distinct_subsequences_with_values(self, required_values):
+        """Get distinct subsequences containing specific values."""
+        seen = set()
+        count = 0
+        
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            distinct_set = set(subsequence)
+            if all(val in distinct_set for val in required_values):
+                distinct_tuple = tuple(sorted(distinct_set))
+                if distinct_tuple not in seen:
+                    seen.add(distinct_tuple)
+                    count += 1
+        
+        return count
+    
+    def get_distinct_subsequences_with_sum(self, target_sum):
+        """Get distinct subsequences with specific sum."""
+        seen = set()
+        count = 0
+        
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            distinct_set = set(subsequence)
+            if sum(distinct_set) == target_sum:
+                distinct_tuple = tuple(sorted(distinct_set))
+                if distinct_tuple not in seen:
+                    seen.add(distinct_tuple)
+                    count += 1
+        
+        return count
+    
+    def get_distinct_subsequences_with_pattern(self, pattern_func):
+        """Get distinct subsequences matching a pattern."""
+        seen = set()
+        count = 0
+        
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            distinct_set = set(subsequence)
+            if pattern_func(distinct_set):
+                distinct_tuple = tuple(sorted(distinct_set))
+                if distinct_tuple not in seen:
+                    seen.add(distinct_tuple)
+                    count += 1
+        
+        return count
+    
+    def get_distinct_subsequences_with_length(self, target_length):
+        """Get distinct subsequences with specific length."""
+        seen = set()
+        count = 0
+        
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            if len(subsequence) == target_length:
+                distinct_tuple = tuple(sorted(set(subsequence)))
+                if distinct_tuple not in seen:
+                    seen.add(distinct_tuple)
+                    count += 1
+        
+        return count
+
+# Example usage
+arr = [1, 2, 1, 3, 2, 4]
+advanced_counter = AdvancedDistinctSubsequences(arr)
+
+print(f"Distinct with size [2, 3]: {advanced_counter.get_distinct_subsequences_with_size(2, 3)}")
+print(f"Distinct containing [1, 2]: {advanced_counter.get_distinct_subsequences_with_values([1, 2])}")
+print(f"Distinct with sum 5: {advanced_counter.get_distinct_subsequences_with_sum(5)}")
+print(f"Distinct with length 3: {advanced_counter.get_distinct_subsequences_with_length(3)}")
+
+# Test pattern matching
+even_size_pattern = lambda s: len(s) % 2 == 0
+print(f"Distinct with even size: {advanced_counter.get_distinct_subsequences_with_pattern(even_size_pattern)}")
+```
+
+### **Variation 3: Distinct Values Subsequences with Constraints**
+**Problem**: Handle distinct subsequences with additional constraints (value ranges, frequency limits, mathematical constraints).
+
+**Approach**: Use constraint satisfaction with advanced filtering and optimization.
+
+```python
+class ConstrainedDistinctSubsequences:
+    def __init__(self, arr, constraints=None):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.constraints = constraints or {}
+    
+    def _is_valid_subsequence(self, subsequence, distinct_set):
+        """Check if subsequence satisfies constraints."""
+        if 'min_size' in self.constraints and len(distinct_set) < self.constraints['min_size']:
+            return False
+        if 'max_size' in self.constraints and len(distinct_set) > self.constraints['max_size']:
+            return False
+        if 'min_length' in self.constraints and len(subsequence) < self.constraints['min_length']:
+            return False
+        if 'max_length' in self.constraints and len(subsequence) > self.constraints['max_length']:
+            return False
+        if 'min_value' in self.constraints and min(distinct_set) < self.constraints['min_value']:
+            return False
+        if 'max_value' in self.constraints and max(distinct_set) > self.constraints['max_value']:
+            return False
+        if 'allowed_values' in self.constraints:
+            if not all(val in self.constraints['allowed_values'] for val in distinct_set):
+                return False
+        if 'forbidden_values' in self.constraints:
+            if any(val in self.constraints['forbidden_values'] for val in distinct_set):
+                return False
+        return True
+    
+    def get_distinct_with_constraints(self):
+        """Get distinct subsequences satisfying constraints."""
+        seen = set()
+        count = 0
+        
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            distinct_set = set(subsequence)
+            if self._is_valid_subsequence(subsequence, distinct_set):
+                distinct_tuple = tuple(sorted(distinct_set))
+                if distinct_tuple not in seen:
+                    seen.add(distinct_tuple)
+                    count += 1
+        
+        return count
+    
+    def get_distinct_with_frequency_constraints(self, max_frequency):
+        """Get distinct subsequences with frequency constraints."""
+        seen = set()
+        count = 0
+        
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            # Check frequency constraints
+            frequency_map = defaultdict(int)
+            for val in subsequence:
+                frequency_map[val] += 1
+            
+            if all(freq <= max_frequency for freq in frequency_map.values()):
+                distinct_set = set(subsequence)
+                distinct_tuple = tuple(sorted(distinct_set))
+                if distinct_tuple not in seen:
+                    seen.add(distinct_tuple)
+                    count += 1
+        
+        return count
+    
+    def get_distinct_with_sum_constraints(self, min_sum, max_sum):
+        """Get distinct subsequences with sum constraints."""
+        seen = set()
+        count = 0
+        
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            distinct_set = set(subsequence)
+            subsequence_sum = sum(distinct_set)
+            if min_sum <= subsequence_sum <= max_sum:
+                distinct_tuple = tuple(sorted(distinct_set))
+                if distinct_tuple not in seen:
+                    seen.add(distinct_tuple)
+                    count += 1
+        
+        return count
+    
+    def get_distinct_with_parity_constraints(self, parity_type):
+        """Get distinct subsequences with parity constraints."""
+        seen = set()
+        count = 0
+        
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            distinct_set = set(subsequence)
+            
+            # Check parity constraints
+            if parity_type == 'even':
+                if all(val % 2 == 0 for val in distinct_set):
+                    distinct_tuple = tuple(sorted(distinct_set))
+                    if distinct_tuple not in seen:
+                        seen.add(distinct_tuple)
+                        count += 1
+            elif parity_type == 'odd':
+                if all(val % 2 == 1 for val in distinct_set):
+                    distinct_tuple = tuple(sorted(distinct_set))
+                    if distinct_tuple not in seen:
+                        seen.add(distinct_tuple)
+                        count += 1
+            elif parity_type == 'mixed':
+                if any(val % 2 == 0 for val in distinct_set) and any(val % 2 == 1 for val in distinct_set):
+                    distinct_tuple = tuple(sorted(distinct_set))
+                    if distinct_tuple not in seen:
+                        seen.add(distinct_tuple)
+                        count += 1
+        
+        return count
+    
+    def get_distinct_with_mathematical_constraints(self, constraint_func):
+        """Get distinct subsequences with custom mathematical constraints."""
+        seen = set()
+        count = 0
+        
+        for mask in range(1, 1 << self.n):
+            subsequence = []
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subsequence.append(self.arr[i])
+            
+            distinct_set = set(subsequence)
+            if constraint_func(distinct_set):
+                distinct_tuple = tuple(sorted(distinct_set))
+                if distinct_tuple not in seen:
+                    seen.add(distinct_tuple)
+                    count += 1
+        
+        return count
+
+# Example usage
+arr = [1, 2, 3, 2, 1, 4, 5, 6]
+constraints = {
+    'min_size': 2,
+    'max_size': 4,
+    'min_length': 2,
+    'max_length': 5,
+    'min_value': 1,
+    'max_value': 5,
+    'forbidden_values': {6}
+}
+
+constrained_counter = ConstrainedDistinctSubsequences(arr, constraints)
+print(f"Constrained distinct count: {constrained_counter.get_distinct_with_constraints()}")
+print(f"Distinct with frequency <= 1: {constrained_counter.get_distinct_with_frequency_constraints(1)}")
+print(f"Distinct with sum [3, 8]: {constrained_counter.get_distinct_with_sum_constraints(3, 8)}")
+print(f"Distinct with even parity: {constrained_counter.get_distinct_with_parity_constraints('even')}")
+
+# Test custom mathematical constraint
+def custom_constraint(distinct_set):
+    return len(distinct_set) == 2 and sum(distinct_set) % 3 == 0
+
+print(f"Distinct with custom constraint: {constrained_counter.get_distinct_with_mathematical_constraints(custom_constraint)}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

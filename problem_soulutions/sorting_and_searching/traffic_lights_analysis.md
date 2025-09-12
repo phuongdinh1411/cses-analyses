@@ -523,6 +523,757 @@ def traffic_lights_time_constraints(road_length, queries):
     return result
 ```
 
+## Problem Variations
+
+### **Variation 1: Traffic Lights with Dynamic Updates**
+**Problem**: Handle dynamic traffic light updates (add/remove/update traffic lights) while maintaining optimal road segment tracking.
+
+**Approach**: Use efficient data structures and algorithms for dynamic traffic light management.
+
+```python
+from collections import defaultdict
+import bisect
+
+class DynamicTrafficLights:
+    def __init__(self, road_length):
+        self.road_length = road_length
+        self.traffic_lights = set()
+        self.segments = [road_length]  # Initially one segment of full length
+        self.max_segment_length = road_length
+        self._update_segments()
+    
+    def _update_segments(self):
+        """Update the road segments based on current traffic lights."""
+        if not self.traffic_lights:
+            self.segments = [self.road_length]
+            self.max_segment_length = self.road_length
+            return
+        
+        # Sort traffic lights
+        sorted_lights = sorted(self.traffic_lights)
+        
+        # Calculate segments
+        self.segments = []
+        prev_light = 0
+        
+        for light in sorted_lights:
+            if light > prev_light:
+                self.segments.append(light - prev_light)
+            prev_light = light
+        
+        # Add final segment
+        if prev_light < self.road_length:
+            self.segments.append(self.road_length - prev_light)
+        
+        self.max_segment_length = max(self.segments) if self.segments else 0
+    
+    def add_traffic_light(self, position):
+        """Add a new traffic light at the specified position."""
+        if 0 <= position <= self.road_length and position not in self.traffic_lights:
+            self.traffic_lights.add(position)
+            self._update_segments()
+        return self.max_segment_length
+    
+    def remove_traffic_light(self, position):
+        """Remove a traffic light at the specified position."""
+        if position in self.traffic_lights:
+            self.traffic_lights.remove(position)
+            self._update_segments()
+        return self.max_segment_length
+    
+    def update_traffic_light(self, old_position, new_position):
+        """Update a traffic light position."""
+        if old_position in self.traffic_lights and 0 <= new_position <= self.road_length:
+            self.traffic_lights.remove(old_position)
+            self.traffic_lights.add(new_position)
+            self._update_segments()
+        return self.max_segment_length
+    
+    def get_max_segment_length(self):
+        """Get current maximum segment length."""
+        return self.max_segment_length
+    
+    def get_segments(self):
+        """Get current road segments."""
+        return self.segments
+    
+    def get_traffic_lights(self):
+        """Get current traffic light positions."""
+        return sorted(self.traffic_lights)
+    
+    def get_segments_with_constraints(self, constraint_func):
+        """Get segments that satisfy custom constraints."""
+        result = []
+        for segment in self.segments:
+            if constraint_func(segment):
+                result.append(segment)
+        return result
+    
+    def get_segments_in_range(self, min_length, max_length):
+        """Get segments with length in specified range."""
+        result = []
+        for segment in self.segments:
+            if min_length <= segment <= max_length:
+                result.append(segment)
+        return result
+    
+    def get_segments_with_capacity(self, capacity_func):
+        """Get segments based on capacity function."""
+        result = []
+        for segment in self.segments:
+            capacity = capacity_func(segment)
+            result.append((segment, capacity))
+        return result
+    
+    def get_traffic_statistics(self):
+        """Get statistics about traffic lights and segments."""
+        if not self.traffic_lights:
+            return {
+                'total_traffic_lights': 0,
+                'total_segments': 1,
+                'average_segment_length': self.road_length,
+                'max_segment_length': self.road_length,
+                'min_segment_length': self.road_length
+            }
+        
+        total_traffic_lights = len(self.traffic_lights)
+        total_segments = len(self.segments)
+        average_segment_length = sum(self.segments) / total_segments
+        max_segment_length = max(self.segments)
+        min_segment_length = min(self.segments)
+        
+        return {
+            'total_traffic_lights': total_traffic_lights,
+            'total_segments': total_segments,
+            'average_segment_length': average_segment_length,
+            'max_segment_length': max_segment_length,
+            'min_segment_length': min_segment_length
+        }
+    
+    def get_traffic_patterns(self):
+        """Get patterns in traffic light arrangement."""
+        patterns = {
+            'long_segments': 0,
+            'short_segments': 0,
+            'balanced_segments': 0,
+            'efficient_segments': 0
+        }
+        
+        if not self.segments:
+            return patterns
+        
+        avg_length = sum(self.segments) / len(self.segments)
+        
+        for segment in self.segments:
+            if segment > avg_length * 1.5:
+                patterns['long_segments'] += 1
+            elif segment < avg_length * 0.5:
+                patterns['short_segments'] += 1
+            else:
+                patterns['balanced_segments'] += 1
+            
+            if segment >= 5:  # Efficient if length >= 5
+                patterns['efficient_segments'] += 1
+        
+        return patterns
+    
+    def get_optimal_traffic_strategy(self):
+        """Get optimal traffic light arrangement strategy."""
+        if not self.traffic_lights:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'utilization_rate': 0
+            }
+        
+        # Calculate efficiency rate
+        total_possible_segments = len(self.traffic_lights) + 1
+        efficiency_rate = (total_possible_segments - len(self.segments)) / total_possible_segments if total_possible_segments > 0 else 0
+        
+        # Calculate utilization rate
+        total_road_length = self.road_length
+        total_segment_length = sum(self.segments)
+        utilization_rate = total_segment_length / total_road_length if total_road_length > 0 else 0
+        
+        # Determine recommended strategy
+        if efficiency_rate > 0.3:
+            recommended_strategy = 'balanced_arrangement'
+        elif utilization_rate > 0.9:
+            recommended_strategy = 'minimal_lights'
+        else:
+            recommended_strategy = 'optimal_segmentation'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'utilization_rate': utilization_rate
+        }
+
+# Example usage
+road_length = 10
+dynamic_traffic = DynamicTrafficLights(road_length)
+print(f"Initial max segment: {dynamic_traffic.get_max_segment_length()}")
+
+# Add traffic lights
+dynamic_traffic.add_traffic_light(3)
+print(f"After adding light at 3: {dynamic_traffic.get_max_segment_length()}")
+
+dynamic_traffic.add_traffic_light(7)
+print(f"After adding light at 7: {dynamic_traffic.get_max_segment_length()}")
+
+# Update a traffic light
+dynamic_traffic.update_traffic_light(3, 4)
+print(f"After updating light: {dynamic_traffic.get_max_segment_length()}")
+
+# Remove a traffic light
+dynamic_traffic.remove_traffic_light(7)
+print(f"After removing light: {dynamic_traffic.get_max_segment_length()}")
+
+# Get segments with constraints
+def constraint_func(segment):
+    return segment >= 3
+
+print(f"Long segments: {dynamic_traffic.get_segments_with_constraints(constraint_func)}")
+
+# Get segments in range
+print(f"Segments in range [2, 6]: {dynamic_traffic.get_segments_in_range(2, 6)}")
+
+# Get segments with capacity
+def capacity_func(segment):
+    return segment * 2  # Capacity is 2x segment length
+
+print(f"Segments with capacity: {dynamic_traffic.get_segments_with_capacity(capacity_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_traffic.get_traffic_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_traffic.get_traffic_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_traffic.get_optimal_traffic_strategy()}")
+```
+
+### **Variation 2: Traffic Lights with Different Operations**
+**Problem**: Handle different types of operations on traffic light management (weighted segments, priority-based selection, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of traffic light management queries.
+
+```python
+class AdvancedTrafficLights:
+    def __init__(self, road_length, weights=None, priorities=None):
+        self.road_length = road_length
+        self.traffic_lights = set()
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.segments = [road_length]
+        self.max_segment_length = road_length
+        self._update_segments()
+    
+    def _update_segments(self):
+        """Update the road segments using advanced algorithms."""
+        if not self.traffic_lights:
+            self.segments = [self.road_length]
+            self.max_segment_length = self.road_length
+            return
+        
+        # Sort traffic lights
+        sorted_lights = sorted(self.traffic_lights)
+        
+        # Calculate segments with weights and priorities
+        self.segments = []
+        prev_light = 0
+        
+        for light in sorted_lights:
+            if light > prev_light:
+                segment_length = light - prev_light
+                weight = self.weights.get(light, 1)
+                priority = self.priorities.get(light, 1)
+                self.segments.append({
+                    'length': segment_length,
+                    'weight': weight,
+                    'priority': priority,
+                    'weighted_length': segment_length * weight * priority
+                })
+            prev_light = light
+        
+        # Add final segment
+        if prev_light < self.road_length:
+            segment_length = self.road_length - prev_light
+            self.segments.append({
+                'length': segment_length,
+                'weight': 1,
+                'priority': 1,
+                'weighted_length': segment_length
+            })
+        
+        self.max_segment_length = max(seg['length'] for seg in self.segments) if self.segments else 0
+    
+    def get_segments(self):
+        """Get current segments."""
+        return self.segments
+    
+    def get_weighted_segments(self):
+        """Get segments with weights applied."""
+        result = []
+        for segment in self.segments:
+            weighted_segment = segment.copy()
+            weighted_segment['efficiency'] = segment['weighted_length'] / segment['length']
+            result.append(weighted_segment)
+        return result
+    
+    def get_segments_with_priority(self, priority_func):
+        """Get segments considering priority."""
+        result = []
+        for segment in self.segments:
+            priority = priority_func(segment)
+            result.append((segment, priority))
+        
+        # Sort by priority
+        result.sort(key=lambda x: x[1], reverse=True)
+        return result
+    
+    def get_segments_with_optimization(self, optimization_func):
+        """Get segments using custom optimization function."""
+        result = []
+        for segment in self.segments:
+            score = optimization_func(segment)
+            result.append((segment, score))
+        
+        # Sort by optimization score
+        result.sort(key=lambda x: x[1], reverse=True)
+        return result
+    
+    def get_segments_with_constraints(self, constraint_func):
+        """Get segments that satisfy custom constraints."""
+        result = []
+        for segment in self.segments:
+            if constraint_func(segment):
+                result.append(segment)
+        return result
+    
+    def get_segments_with_multiple_criteria(self, criteria_list):
+        """Get segments that satisfy multiple criteria."""
+        result = []
+        for segment in self.segments:
+            satisfies_all_criteria = True
+            for criterion in criteria_list:
+                if not criterion(segment):
+                    satisfies_all_criteria = False
+                    break
+            if satisfies_all_criteria:
+                result.append(segment)
+        return result
+    
+    def get_segments_with_alternatives(self, alternatives):
+        """Get segments considering alternative traffic light arrangements."""
+        result = []
+        
+        # Check original segments
+        for segment in self.segments:
+            result.append((segment, 'original'))
+        
+        # Check alternative arrangements
+        for alt_lights in alternatives:
+            # Create temporary segments with alternative traffic lights
+            temp_segments = self._create_segments_with_lights(alt_lights)
+            result.append((temp_segments, f'alternative_{alt_lights}'))
+        
+        return result
+    
+    def _create_segments_with_lights(self, traffic_lights):
+        """Create segments with given traffic lights."""
+        if not traffic_lights:
+            return [{'length': self.road_length, 'weight': 1, 'priority': 1, 'weighted_length': self.road_length}]
+        
+        sorted_lights = sorted(traffic_lights)
+        segments = []
+        prev_light = 0
+        
+        for light in sorted_lights:
+            if light > prev_light:
+                segment_length = light - prev_light
+                weight = self.weights.get(light, 1)
+                priority = self.priorities.get(light, 1)
+                segments.append({
+                    'length': segment_length,
+                    'weight': weight,
+                    'priority': priority,
+                    'weighted_length': segment_length * weight * priority
+                })
+            prev_light = light
+        
+        # Add final segment
+        if prev_light < self.road_length:
+            segment_length = self.road_length - prev_light
+            segments.append({
+                'length': segment_length,
+                'weight': 1,
+                'priority': 1,
+                'weighted_length': segment_length
+            })
+        
+        return segments
+    
+    def get_segments_with_adaptive_criteria(self, adaptive_func):
+        """Get segments using adaptive criteria."""
+        result = []
+        for segment in self.segments:
+            if adaptive_func(segment, result):
+                result.append(segment)
+        return result
+    
+    def get_traffic_optimization(self):
+        """Get optimal traffic light configuration."""
+        strategies = [
+            ('segments', lambda: len(self.segments)),
+            ('weighted_segments', lambda: len(self.get_weighted_segments())),
+            ('max_segment', lambda: self.max_segment_length),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            current_value = strategy_func()
+            if current_value > best_value:
+                best_value = current_value
+                best_strategy = (strategy_name, current_value)
+        
+        return best_strategy
+
+# Example usage
+road_length = 10
+weights = {3: 2, 7: 1, 5: 3}
+priorities = {3: 1, 7: 2, 5: 1}
+advanced_traffic = AdvancedTrafficLights(road_length, weights, priorities)
+
+# Add traffic lights
+advanced_traffic.traffic_lights.add(3)
+advanced_traffic.traffic_lights.add(7)
+advanced_traffic._update_segments()
+
+print(f"Segments: {len(advanced_traffic.get_segments())}")
+print(f"Weighted segments: {len(advanced_traffic.get_weighted_segments())}")
+
+# Get segments with priority
+def priority_func(segment):
+    return segment['weighted_length'] / segment['length']
+
+print(f"Segments with priority: {advanced_traffic.get_segments_with_priority(priority_func)}")
+
+# Get segments with optimization
+def optimization_func(segment):
+    return segment['length'] * segment['weight'] * segment['priority']
+
+print(f"Segments with optimization: {advanced_traffic.get_segments_with_optimization(optimization_func)}")
+
+# Get segments with constraints
+def constraint_func(segment):
+    return segment['length'] >= 3 and segment['weight'] > 1
+
+print(f"Segments with constraints: {advanced_traffic.get_segments_with_constraints(constraint_func)}")
+
+# Get segments with multiple criteria
+def criterion1(segment):
+    return segment['length'] >= 3
+
+def criterion2(segment):
+    return segment['weight'] > 1
+
+criteria_list = [criterion1, criterion2]
+print(f"Segments with multiple criteria: {advanced_traffic.get_segments_with_multiple_criteria(criteria_list)}")
+
+# Get segments with alternatives
+alternatives = [[2, 6, 8], [1, 4, 9]]
+print(f"Segments with alternatives: {advanced_traffic.get_segments_with_alternatives(alternatives)}")
+
+# Get segments with adaptive criteria
+def adaptive_func(segment, current_result):
+    return segment['length'] >= 3 and len(current_result) < 3
+
+print(f"Segments with adaptive criteria: {advanced_traffic.get_segments_with_adaptive_criteria(adaptive_func)}")
+
+# Get traffic optimization
+print(f"Traffic optimization: {advanced_traffic.get_traffic_optimization()}")
+```
+
+### **Variation 3: Traffic Lights with Constraints**
+**Problem**: Handle traffic light management with additional constraints (capacity limits, time constraints, weight constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedTrafficLights:
+    def __init__(self, road_length, constraints=None):
+        self.road_length = road_length
+        self.traffic_lights = set()
+        self.constraints = constraints or {}
+        self.segments = [road_length]
+        self.max_segment_length = road_length
+        self._update_segments()
+    
+    def _update_segments(self):
+        """Update the road segments considering constraints."""
+        if not self.traffic_lights:
+            self.segments = [self.road_length]
+            self.max_segment_length = self.road_length
+            return
+        
+        # Sort traffic lights
+        sorted_lights = sorted(self.traffic_lights)
+        
+        # Calculate segments considering constraints
+        self.segments = []
+        prev_light = 0
+        
+        for light in sorted_lights:
+            if light > prev_light:
+                segment_length = light - prev_light
+                if self._can_create_segment(segment_length):
+                    self.segments.append(segment_length)
+            prev_light = light
+        
+        # Add final segment
+        if prev_light < self.road_length:
+            segment_length = self.road_length - prev_light
+            if self._can_create_segment(segment_length):
+                self.segments.append(segment_length)
+        
+        self.max_segment_length = max(self.segments) if self.segments else 0
+    
+    def _can_create_segment(self, segment_length):
+        """Check if a segment can be created considering constraints."""
+        # Length constraint
+        if 'min_length' in self.constraints:
+            if segment_length < self.constraints['min_length']:
+                return False
+        
+        if 'max_length' in self.constraints:
+            if segment_length > self.constraints['max_length']:
+                return False
+        
+        # Capacity constraint
+        if 'max_capacity' in self.constraints:
+            if len(self.segments) >= self.constraints['max_capacity']:
+                return False
+        
+        return True
+    
+    def get_segments_with_capacity_constraints(self, capacity_limits):
+        """Get segments considering capacity constraints."""
+        result = []
+        current_capacity = 0
+        
+        for segment in self.segments:
+            # Check capacity constraints
+            if current_capacity + segment <= capacity_limits:
+                result.append(segment)
+                current_capacity += segment
+        
+        return result
+    
+    def get_segments_with_length_constraints(self, length_limits):
+        """Get segments considering length constraints."""
+        result = []
+        
+        for segment in self.segments:
+            # Check length constraints
+            if length_limits[0] <= segment <= length_limits[1]:
+                result.append(segment)
+        
+        return result
+    
+    def get_segments_with_time_constraints(self, time_constraints):
+        """Get segments considering time constraints."""
+        result = []
+        
+        for segment in self.segments:
+            # Check time constraints
+            satisfies_constraints = True
+            for constraint in time_constraints:
+                if not constraint(segment):
+                    satisfies_constraints = False
+                    break
+            
+            if satisfies_constraints:
+                result.append(segment)
+        
+        return result
+    
+    def get_segments_with_mathematical_constraints(self, constraint_func):
+        """Get segments that satisfy custom mathematical constraints."""
+        result = []
+        
+        for segment in self.segments:
+            if constraint_func(segment):
+                result.append(segment)
+        
+        return result
+    
+    def get_segments_with_range_constraints(self, range_constraints):
+        """Get segments that satisfy range constraints."""
+        result = []
+        
+        for segment in self.segments:
+            # Check if segment satisfies all range constraints
+            satisfies_constraints = True
+            for constraint in range_constraints:
+                if not constraint(segment):
+                    satisfies_constraints = False
+                    break
+            
+            if satisfies_constraints:
+                result.append(segment)
+        
+        return result
+    
+    def get_segments_with_optimization_constraints(self, optimization_func):
+        """Get segments using custom optimization constraints."""
+        # Sort segments by optimization function
+        all_segments = []
+        for segment in self.segments:
+            score = optimization_func(segment)
+            all_segments.append((segment, score))
+        
+        # Sort by optimization score
+        all_segments.sort(key=lambda x: x[1], reverse=True)
+        
+        return [segment for segment, _ in all_segments]
+    
+    def get_segments_with_multiple_constraints(self, constraints_list):
+        """Get segments that satisfy multiple constraints."""
+        result = []
+        
+        for segment in self.segments:
+            # Check if segment satisfies all constraints
+            satisfies_all_constraints = True
+            for constraint in constraints_list:
+                if not constraint(segment):
+                    satisfies_all_constraints = False
+                    break
+            
+            if satisfies_all_constraints:
+                result.append(segment)
+        
+        return result
+    
+    def get_segments_with_priority_constraints(self, priority_func):
+        """Get segments with priority-based constraints."""
+        # Sort segments by priority
+        all_segments = []
+        for segment in self.segments:
+            priority = priority_func(segment)
+            all_segments.append((segment, priority))
+        
+        # Sort by priority
+        all_segments.sort(key=lambda x: x[1], reverse=True)
+        
+        return [segment for segment, _ in all_segments]
+    
+    def get_segments_with_adaptive_constraints(self, adaptive_func):
+        """Get segments with adaptive constraints."""
+        result = []
+        
+        for segment in self.segments:
+            # Check adaptive constraints
+            if adaptive_func(segment, result):
+                result.append(segment)
+        
+        return result
+    
+    def get_optimal_traffic_strategy(self):
+        """Get optimal traffic light arrangement strategy considering all constraints."""
+        strategies = [
+            ('capacity_constraints', self.get_segments_with_capacity_constraints),
+            ('length_constraints', self.get_segments_with_length_constraints),
+            ('time_constraints', self.get_segments_with_time_constraints),
+        ]
+        
+        best_strategy = None
+        best_count = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'capacity_constraints':
+                    current_count = len(strategy_func(20))  # Capacity limit of 20
+                elif strategy_name == 'length_constraints':
+                    current_count = len(strategy_func((2, 8)))  # Length between 2 and 8
+                elif strategy_name == 'time_constraints':
+                    time_constraints = [lambda segment: segment >= 3]
+                    current_count = len(strategy_func(time_constraints))
+                
+                if current_count > best_count:
+                    best_count = current_count
+                    best_strategy = (strategy_name, current_count)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'min_length': 2,
+    'max_length': 8,
+    'max_capacity': 5
+}
+
+road_length = 10
+constrained_traffic = ConstrainedTrafficLights(road_length, constraints)
+
+# Add traffic lights
+constrained_traffic.traffic_lights.add(3)
+constrained_traffic.traffic_lights.add(7)
+constrained_traffic._update_segments()
+
+print("Capacity-constrained segments:", len(constrained_traffic.get_segments_with_capacity_constraints(20)))
+
+print("Length-constrained segments:", len(constrained_traffic.get_segments_with_length_constraints((2, 8))))
+
+# Time constraints
+time_constraints = [lambda segment: segment >= 3]
+print("Time-constrained segments:", len(constrained_traffic.get_segments_with_time_constraints(time_constraints)))
+
+# Mathematical constraints
+def custom_constraint(segment):
+    return segment >= 3 and segment <= 6
+
+print("Mathematical constraint segments:", len(constrained_traffic.get_segments_with_mathematical_constraints(custom_constraint)))
+
+# Range constraints
+def range_constraint(segment):
+    return 2 <= segment <= 8
+
+range_constraints = [range_constraint]
+print("Range-constrained segments:", len(constrained_traffic.get_segments_with_range_constraints(range_constraints)))
+
+# Multiple constraints
+def constraint1(segment):
+    return segment >= 3
+
+def constraint2(segment):
+    return segment <= 6
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints segments:", len(constrained_traffic.get_segments_with_multiple_constraints(constraints_list)))
+
+# Priority constraints
+def priority_func(segment):
+    return segment
+
+print("Priority-constrained segments:", len(constrained_traffic.get_segments_with_priority_constraints(priority_func)))
+
+# Adaptive constraints
+def adaptive_func(segment, current_result):
+    return segment >= 3 and len(current_result) < 3
+
+print("Adaptive constraint segments:", len(constrained_traffic.get_segments_with_adaptive_constraints(adaptive_func)))
+
+# Optimal strategy
+optimal = constrained_traffic.get_optimal_traffic_strategy()
+print(f"Optimal strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

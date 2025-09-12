@@ -537,6 +537,749 @@ result = nearest_smaller_values_constraints(arr, min_difference, max_distance)
 print(f"Nearest smaller values with constraints: {result}")  # Output: [-1, -1, 1, -1, 3, 4, 1, 6]
 ```
 
+## Problem Variations
+
+### **Variation 1: Nearest Smaller Values with Dynamic Updates**
+**Problem**: Handle dynamic array updates (add/remove/update elements) while maintaining efficient nearest smaller value queries.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+from collections import defaultdict
+import bisect
+
+class DynamicNearestSmallerValues:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.nearest_smaller = self._compute_nearest_smaller()
+    
+    def _compute_nearest_smaller(self):
+        """Compute nearest smaller values using monotonic stack."""
+        result = [-1] * self.n
+        stack = []
+        
+        for i in range(self.n):
+            # Remove elements that are not smaller than current element
+            while stack and self.arr[stack[-1]] >= self.arr[i]:
+                stack.pop()
+            
+            # The top of stack is the nearest smaller element
+            if stack:
+                result[i] = stack[-1]
+            
+            # Push current index to stack
+            stack.append(i)
+        
+        return result
+    
+    def update_value(self, index, new_value):
+        """Update array value and recalculate nearest smaller values."""
+        if 0 <= index < self.n:
+            self.arr[index] = new_value
+            self.nearest_smaller = self._compute_nearest_smaller()
+    
+    def add_element(self, value):
+        """Add new element to the array."""
+        self.arr.append(value)
+        self.n += 1
+        self.nearest_smaller = self._compute_nearest_smaller()
+    
+    def remove_element(self, index):
+        """Remove element at index from the array."""
+        if 0 <= index < self.n:
+            del self.arr[index]
+            self.n -= 1
+            self.nearest_smaller = self._compute_nearest_smaller()
+    
+    def get_nearest_smaller(self, index):
+        """Get nearest smaller value for element at index."""
+        if 0 <= index < self.n:
+            return self.nearest_smaller[index]
+        return -1
+    
+    def get_all_nearest_smaller(self):
+        """Get all nearest smaller values."""
+        return self.nearest_smaller
+    
+    def get_nearest_smaller_range(self, left, right):
+        """Get nearest smaller values for range [left, right]."""
+        if left < 0 or right >= self.n or left > right:
+            return []
+        
+        # Extract subarray
+        subarray = self.arr[left:right+1]
+        
+        # Find nearest smaller values for this subarray
+        result = [-1] * len(subarray)
+        stack = []
+        
+        for i in range(len(subarray)):
+            # Remove elements that are not smaller than current element
+            while stack and subarray[stack[-1]] >= subarray[i]:
+                stack.pop()
+            
+            # The top of stack is the nearest smaller element
+            if stack:
+                result[i] = stack[-1] + left  # Adjust for original array indices
+            
+            # Push current index to stack
+            stack.append(i)
+        
+        return result
+    
+    def get_nearest_smaller_with_value(self, target_value):
+        """Get nearest smaller values for elements with specific value."""
+        result = []
+        for i in range(self.n):
+            if self.arr[i] == target_value:
+                result.append(self.nearest_smaller[i])
+        return result
+    
+    def get_nearest_smaller_with_constraint(self, constraint_func):
+        """Get nearest smaller values for elements that satisfy constraint."""
+        result = []
+        for i in range(self.n):
+            if constraint_func(self.arr[i]):
+                result.append((i, self.nearest_smaller[i]))
+        return result
+    
+    def get_nearest_smaller_statistics(self):
+        """Get statistics about nearest smaller values."""
+        if not self.arr:
+            return {
+                'total_elements': 0,
+                'elements_with_smaller': 0,
+                'elements_without_smaller': 0,
+                'average_distance': 0,
+                'max_distance': 0
+            }
+        
+        elements_with_smaller = sum(1 for x in self.nearest_smaller if x != -1)
+        elements_without_smaller = self.n - elements_with_smaller
+        
+        distances = []
+        for i in range(self.n):
+            if self.nearest_smaller[i] != -1:
+                distances.append(i - self.nearest_smaller[i])
+        
+        return {
+            'total_elements': self.n,
+            'elements_with_smaller': elements_with_smaller,
+            'elements_without_smaller': elements_without_smaller,
+            'average_distance': sum(distances) / len(distances) if distances else 0,
+            'max_distance': max(distances) if distances else 0
+        }
+    
+    def get_nearest_smaller_patterns(self):
+        """Get patterns in nearest smaller values."""
+        patterns = {
+            'consecutive_smaller': 0,
+            'alternating_pattern': 0,
+            'monotonic_increasing': 0,
+            'monotonic_decreasing': 0
+        }
+        
+        for i in range(1, self.n):
+            if self.nearest_smaller[i] == i - 1:
+                patterns['consecutive_smaller'] += 1
+            
+            if i > 1:
+                if (self.nearest_smaller[i] != -1 and 
+                    self.nearest_smaller[i-1] != -1 and
+                    self.nearest_smaller[i] != self.nearest_smaller[i-1]):
+                    patterns['alternating_pattern'] += 1
+        
+        return patterns
+
+# Example usage
+arr = [2, 5, 1, 4, 8, 3, 2, 5]
+dynamic_nsv = DynamicNearestSmallerValues(arr)
+print(f"Initial nearest smaller: {dynamic_nsv.get_all_nearest_smaller()}")
+
+# Update a value
+dynamic_nsv.update_value(1, 1)
+print(f"After update: {dynamic_nsv.get_all_nearest_smaller()}")
+
+# Add element
+dynamic_nsv.add_element(0)
+print(f"After adding 0: {dynamic_nsv.get_all_nearest_smaller()}")
+
+# Get nearest smaller for specific index
+print(f"Nearest smaller for index 3: {dynamic_nsv.get_nearest_smaller(3)}")
+
+# Get nearest smaller for range
+print(f"Nearest smaller for range [2, 5]: {dynamic_nsv.get_nearest_smaller_range(2, 5)}")
+
+# Get nearest smaller with value constraint
+print(f"Nearest smaller for value 2: {dynamic_nsv.get_nearest_smaller_with_value(2)}")
+
+# Get nearest smaller with custom constraint
+def constraint_func(x):
+    return x > 3
+
+print(f"Nearest smaller for elements > 3: {dynamic_nsv.get_nearest_smaller_with_constraint(constraint_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_nsv.get_nearest_smaller_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_nsv.get_nearest_smaller_patterns()}")
+```
+
+### **Variation 2: Nearest Smaller Values with Different Operations**
+**Problem**: Handle different types of operations on nearest smaller values (nearest greater, nearest equal, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of nearest element queries.
+
+```python
+class AdvancedNearestSmallerValues:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.nearest_smaller = self._compute_nearest_smaller()
+        self.nearest_greater = self._compute_nearest_greater()
+        self.nearest_equal = self._compute_nearest_equal()
+    
+    def _compute_nearest_smaller(self):
+        """Compute nearest smaller values using monotonic stack."""
+        result = [-1] * self.n
+        stack = []
+        
+        for i in range(self.n):
+            while stack and self.arr[stack[-1]] >= self.arr[i]:
+                stack.pop()
+            
+            if stack:
+                result[i] = stack[-1]
+            
+            stack.append(i)
+        
+        return result
+    
+    def _compute_nearest_greater(self):
+        """Compute nearest greater values using monotonic stack."""
+        result = [-1] * self.n
+        stack = []
+        
+        for i in range(self.n):
+            while stack and self.arr[stack[-1]] <= self.arr[i]:
+                stack.pop()
+            
+            if stack:
+                result[i] = stack[-1]
+            
+            stack.append(i)
+        
+        return result
+    
+    def _compute_nearest_equal(self):
+        """Compute nearest equal values using hash map."""
+        result = [-1] * self.n
+        value_to_indices = defaultdict(list)
+        
+        for i in range(self.n):
+            value_to_indices[self.arr[i]].append(i)
+        
+        for i in range(self.n):
+            indices = value_to_indices[self.arr[i]]
+            # Find the nearest equal element to the left
+            for j in reversed(indices):
+                if j < i:
+                    result[i] = j
+                    break
+        
+        return result
+    
+    def get_nearest_smaller(self, index):
+        """Get nearest smaller value for element at index."""
+        return self.nearest_smaller[index] if 0 <= index < self.n else -1
+    
+    def get_nearest_greater(self, index):
+        """Get nearest greater value for element at index."""
+        return self.nearest_greater[index] if 0 <= index < self.n else -1
+    
+    def get_nearest_equal(self, index):
+        """Get nearest equal value for element at index."""
+        return self.nearest_equal[index] if 0 <= index < self.n else -1
+    
+    def get_nearest_smaller_or_equal(self, index):
+        """Get nearest smaller or equal value for element at index."""
+        smaller = self.nearest_smaller[index]
+        equal = self.nearest_equal[index]
+        
+        if smaller == -1 and equal == -1:
+            return -1
+        elif smaller == -1:
+            return equal
+        elif equal == -1:
+            return smaller
+        else:
+            return max(smaller, equal)  # Return the closer one
+    
+    def get_nearest_greater_or_equal(self, index):
+        """Get nearest greater or equal value for element at index."""
+        greater = self.nearest_greater[index]
+        equal = self.nearest_equal[index]
+        
+        if greater == -1 and equal == -1:
+            return -1
+        elif greater == -1:
+            return equal
+        elif equal == -1:
+            return greater
+        else:
+            return max(greater, equal)  # Return the closer one
+    
+    def get_nearest_with_tolerance(self, index, tolerance):
+        """Get nearest value within tolerance for element at index."""
+        target_value = self.arr[index]
+        result = -1
+        min_distance = float('inf')
+        
+        for i in range(self.n):
+            if i != index and abs(self.arr[i] - target_value) <= tolerance:
+                distance = abs(i - index)
+                if distance < min_distance:
+                    min_distance = distance
+                    result = i
+        
+        return result
+    
+    def get_nearest_with_constraint(self, index, constraint_func):
+        """Get nearest value that satisfies constraint for element at index."""
+        target_value = self.arr[index]
+        result = -1
+        min_distance = float('inf')
+        
+        for i in range(self.n):
+            if i != index and constraint_func(self.arr[i], target_value):
+                distance = abs(i - index)
+                if distance < min_distance:
+                    min_distance = distance
+                    result = i
+        
+        return result
+    
+    def get_nearest_with_priority(self, index, priority_func):
+        """Get nearest value with highest priority for element at index."""
+        target_value = self.arr[index]
+        result = -1
+        max_priority = float('-inf')
+        
+        for i in range(self.n):
+            if i != index:
+                priority = priority_func(self.arr[i], target_value, abs(i - index))
+                if priority > max_priority:
+                    max_priority = priority
+                    result = i
+        
+        return result
+    
+    def get_nearest_with_multiple_criteria(self, index, criteria_list):
+        """Get nearest value that satisfies multiple criteria."""
+        target_value = self.arr[index]
+        candidates = []
+        
+        for i in range(self.n):
+            if i != index:
+                satisfies_all = True
+                for criterion in criteria_list:
+                    if not criterion(self.arr[i], target_value, abs(i - index)):
+                        satisfies_all = False
+                        break
+                
+                if satisfies_all:
+                    candidates.append((i, abs(i - index)))
+        
+        if not candidates:
+            return -1
+        
+        # Return the closest candidate
+        candidates.sort(key=lambda x: x[1])
+        return candidates[0][0]
+    
+    def get_nearest_with_optimization(self, index, optimization_func):
+        """Get nearest value using custom optimization function."""
+        target_value = self.arr[index]
+        result = -1
+        best_score = float('-inf')
+        
+        for i in range(self.n):
+            if i != index:
+                score = optimization_func(self.arr[i], target_value, abs(i - index))
+                if score > best_score:
+                    best_score = score
+                    result = i
+        
+        return result
+    
+    def get_nearest_with_alternatives(self, index, alternatives):
+        """Get nearest value considering alternative values."""
+        target_value = self.arr[index]
+        result = -1
+        min_distance = float('inf')
+        
+        for i in range(self.n):
+            if i != index:
+                # Check original value
+                if self.arr[i] == target_value:
+                    distance = abs(i - index)
+                    if distance < min_distance:
+                        min_distance = distance
+                        result = i
+                
+                # Check alternative values
+                if i in alternatives:
+                    for alt_value in alternatives[i]:
+                        if alt_value == target_value:
+                            distance = abs(i - index)
+                            if distance < min_distance:
+                                min_distance = distance
+                                result = i
+        
+        return result
+
+# Example usage
+arr = [2, 5, 1, 4, 8, 3, 2, 5]
+advanced_nsv = AdvancedNearestSmallerValues(arr)
+
+print(f"Nearest smaller: {advanced_nsv.get_all_nearest_smaller()}")
+print(f"Nearest greater: {advanced_nsv.get_all_nearest_greater()}")
+print(f"Nearest equal: {advanced_nsv.get_all_nearest_equal()}")
+
+# Get nearest smaller or equal
+print(f"Nearest smaller or equal for index 3: {advanced_nsv.get_nearest_smaller_or_equal(3)}")
+
+# Get nearest greater or equal
+print(f"Nearest greater or equal for index 3: {advanced_nsv.get_nearest_greater_or_equal(3)}")
+
+# Get nearest with tolerance
+print(f"Nearest with tolerance 2 for index 3: {advanced_nsv.get_nearest_with_tolerance(3, 2)}")
+
+# Get nearest with constraint
+def constraint_func(value, target):
+    return value < target and value > 0
+
+print(f"Nearest with constraint for index 3: {advanced_nsv.get_nearest_with_constraint(3, constraint_func)}")
+
+# Get nearest with priority
+def priority_func(value, target, distance):
+    return value / (distance + 1)  # Higher value, closer distance = higher priority
+
+print(f"Nearest with priority for index 3: {advanced_nsv.get_nearest_with_priority(3, priority_func)}")
+
+# Get nearest with multiple criteria
+def criterion1(value, target, distance):
+    return value < target
+
+def criterion2(value, target, distance):
+    return distance <= 3
+
+criteria_list = [criterion1, criterion2]
+print(f"Nearest with multiple criteria for index 3: {advanced_nsv.get_nearest_with_multiple_criteria(3, criteria_list)}")
+
+# Get nearest with optimization
+def optimization_func(value, target, distance):
+    return value - distance  # Higher value, closer distance = better score
+
+print(f"Nearest with optimization for index 3: {advanced_nsv.get_nearest_with_optimization(3, optimization_func)}")
+
+# Get nearest with alternatives
+alternatives = {1: [2, 3], 4: [1, 2]}
+print(f"Nearest with alternatives for index 3: {advanced_nsv.get_nearest_with_alternatives(3, alternatives)}")
+```
+
+### **Variation 3: Nearest Smaller Values with Constraints**
+**Problem**: Handle nearest smaller values with additional constraints (time limits, resource constraints, mathematical constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedNearestSmallerValues:
+    def __init__(self, arr, constraints=None):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.constraints = constraints or {}
+        self.nearest_smaller = self._compute_nearest_smaller()
+    
+    def _compute_nearest_smaller(self):
+        """Compute nearest smaller values using monotonic stack."""
+        result = [-1] * self.n
+        stack = []
+        
+        for i in range(self.n):
+            while stack and self.arr[stack[-1]] >= self.arr[i]:
+                stack.pop()
+            
+            if stack:
+                result[i] = stack[-1]
+            
+            stack.append(i)
+        
+        return result
+    
+    def get_nearest_smaller_with_time_constraints(self, index, time_limit):
+        """Get nearest smaller value considering time constraints."""
+        if index < 0 or index >= self.n:
+            return -1
+        
+        target_value = self.arr[index]
+        result = -1
+        min_distance = float('inf')
+        
+        for i in range(self.n):
+            if i != index and self.arr[i] < target_value:
+                distance = abs(i - index)
+                # Simulate time constraint (distance represents time)
+                if distance <= time_limit and distance < min_distance:
+                    min_distance = distance
+                    result = i
+        
+        return result
+    
+    def get_nearest_smaller_with_resource_constraints(self, index, resource_limits, resource_consumption):
+        """Get nearest smaller value considering resource constraints."""
+        if index < 0 or index >= self.n:
+            return -1
+        
+        target_value = self.arr[index]
+        result = -1
+        min_distance = float('inf')
+        
+        for i in range(self.n):
+            if i != index and self.arr[i] < target_value:
+                distance = abs(i - index)
+                
+                # Check resource constraints
+                can_use_element = True
+                for j, consumption in enumerate(resource_consumption[i]):
+                    if consumption > resource_limits[j]:
+                        can_use_element = False
+                        break
+                
+                if can_use_element and distance < min_distance:
+                    min_distance = distance
+                    result = i
+        
+        return result
+    
+    def get_nearest_smaller_with_mathematical_constraints(self, index, constraint_func):
+        """Get nearest smaller value that satisfies custom mathematical constraints."""
+        if index < 0 or index >= self.n:
+            return -1
+        
+        target_value = self.arr[index]
+        result = -1
+        min_distance = float('inf')
+        
+        for i in range(self.n):
+            if i != index and self.arr[i] < target_value:
+                if constraint_func(self.arr[i], target_value, abs(i - index)):
+                    distance = abs(i - index)
+                    if distance < min_distance:
+                        min_distance = distance
+                        result = i
+        
+        return result
+    
+    def get_nearest_smaller_with_range_constraints(self, index, range_constraints):
+        """Get nearest smaller value that satisfies range constraints."""
+        if index < 0 or index >= self.n:
+            return -1
+        
+        target_value = self.arr[index]
+        result = -1
+        min_distance = float('inf')
+        
+        for i in range(self.n):
+            if i != index and self.arr[i] < target_value:
+                # Check if element satisfies all range constraints
+                satisfies_constraints = True
+                for constraint in range_constraints:
+                    if not constraint(self.arr[i], target_value, abs(i - index)):
+                        satisfies_constraints = False
+                        break
+                
+                if satisfies_constraints:
+                    distance = abs(i - index)
+                    if distance < min_distance:
+                        min_distance = distance
+                        result = i
+        
+        return result
+    
+    def get_nearest_smaller_with_optimization_constraints(self, index, optimization_func):
+        """Get nearest smaller value using custom optimization constraints."""
+        if index < 0 or index >= self.n:
+            return -1
+        
+        target_value = self.arr[index]
+        result = -1
+        best_score = float('-inf')
+        
+        for i in range(self.n):
+            if i != index and self.arr[i] < target_value:
+                score = optimization_func(self.arr[i], target_value, abs(i - index))
+                if score > best_score:
+                    best_score = score
+                    result = i
+        
+        return result
+    
+    def get_nearest_smaller_with_multiple_constraints(self, index, constraints_list):
+        """Get nearest smaller value that satisfies multiple constraints."""
+        if index < 0 or index >= self.n:
+            return -1
+        
+        target_value = self.arr[index]
+        result = -1
+        min_distance = float('inf')
+        
+        for i in range(self.n):
+            if i != index and self.arr[i] < target_value:
+                # Check if element satisfies all constraints
+                satisfies_all_constraints = True
+                for constraint in constraints_list:
+                    if not constraint(self.arr[i], target_value, abs(i - index)):
+                        satisfies_all_constraints = False
+                        break
+                
+                if satisfies_all_constraints:
+                    distance = abs(i - index)
+                    if distance < min_distance:
+                        min_distance = distance
+                        result = i
+        
+        return result
+    
+    def get_nearest_smaller_with_priority_constraints(self, index, priority_func):
+        """Get nearest smaller value with priority-based constraints."""
+        if index < 0 or index >= self.n:
+            return -1
+        
+        target_value = self.arr[index]
+        result = -1
+        max_priority = float('-inf')
+        
+        for i in range(self.n):
+            if i != index and self.arr[i] < target_value:
+                priority = priority_func(self.arr[i], target_value, abs(i - index))
+                if priority > max_priority:
+                    max_priority = priority
+                    result = i
+        
+        return result
+    
+    def get_nearest_smaller_with_adaptive_constraints(self, index, adaptive_func):
+        """Get nearest smaller value with adaptive constraints."""
+        if index < 0 or index >= self.n:
+            return -1
+        
+        target_value = self.arr[index]
+        result = -1
+        min_distance = float('inf')
+        
+        for i in range(self.n):
+            if i != index and self.arr[i] < target_value:
+                # Check adaptive constraints
+                if adaptive_func(self.arr[i], target_value, abs(i - index), result):
+                    distance = abs(i - index)
+                    if distance < min_distance:
+                        min_distance = distance
+                        result = i
+        
+        return result
+    
+    def get_optimal_nearest_smaller_strategy(self, index):
+        """Get optimal nearest smaller value strategy considering all constraints."""
+        strategies = [
+            ('time_constraints', self.get_nearest_smaller_with_time_constraints),
+            ('resource_constraints', self.get_nearest_smaller_with_resource_constraints),
+            ('mathematical_constraints', self.get_nearest_smaller_with_mathematical_constraints),
+        ]
+        
+        best_strategy = None
+        best_result = -1
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'time_constraints':
+                    current_result = strategy_func(index, 5)  # 5 time units
+                elif strategy_name == 'resource_constraints':
+                    resource_limits = [100, 50]
+                    resource_consumption = {i: [10, 5] for i in range(self.n)}
+                    current_result = strategy_func(index, resource_limits, resource_consumption)
+                elif strategy_name == 'mathematical_constraints':
+                    def constraint_func(value, target, distance):
+                        return value > 0 and distance <= 3
+                    current_result = strategy_func(index, constraint_func)
+                
+                if current_result != -1:
+                    best_result = current_result
+                    best_strategy = (strategy_name, current_result)
+                    break
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'min_value': 1,
+    'max_distance': 3
+}
+
+arr = [2, 5, 1, 4, 8, 3, 2, 5]
+constrained_nsv = ConstrainedNearestSmallerValues(arr, constraints)
+
+print("Time-constrained nearest smaller:", constrained_nsv.get_nearest_smaller_with_time_constraints(3, 3))
+
+# Resource constraints
+resource_limits = [100, 50]
+resource_consumption = {i: [10, 5] for i in range(len(arr))}
+print("Resource-constrained nearest smaller:", constrained_nsv.get_nearest_smaller_with_resource_constraints(3, resource_limits, resource_consumption))
+
+# Mathematical constraints
+def custom_constraint(value, target, distance):
+    return value > 0 and distance <= 3
+
+print("Mathematical constraint nearest smaller:", constrained_nsv.get_nearest_smaller_with_mathematical_constraints(3, custom_constraint))
+
+# Range constraints
+def range_constraint(value, target, distance):
+    return value > 0 and distance <= 3
+
+range_constraints = [range_constraint]
+print("Range-constrained nearest smaller:", constrained_nsv.get_nearest_smaller_with_range_constraints(3, range_constraints))
+
+# Multiple constraints
+def constraint1(value, target, distance):
+    return value > 0
+
+def constraint2(value, target, distance):
+    return distance <= 3
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints nearest smaller:", constrained_nsv.get_nearest_smaller_with_multiple_constraints(3, constraints_list))
+
+# Priority constraints
+def priority_func(value, target, distance):
+    return value / (distance + 1)
+
+print("Priority-constrained nearest smaller:", constrained_nsv.get_nearest_smaller_with_priority_constraints(3, priority_func))
+
+# Adaptive constraints
+def adaptive_func(value, target, distance, current_result):
+    return value > 0 and distance <= 3
+
+print("Adaptive constraint nearest smaller:", constrained_nsv.get_nearest_smaller_with_adaptive_constraints(3, adaptive_func))
+
+# Optimal strategy
+optimal = constrained_nsv.get_optimal_nearest_smaller_strategy(3)
+print(f"Optimal strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

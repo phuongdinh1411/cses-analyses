@@ -481,6 +481,481 @@ def collecting_numbers_weights(arr, weights):
     return dp[(1 << n) - 1]
 ```
 
+## Problem Variations
+
+### **Variation 1: Collecting Numbers with Dynamic Updates**
+**Problem**: Handle dynamic array updates while maintaining optimal collection strategy.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+import bisect
+from collections import defaultdict
+
+class DynamicCollectingNumbers:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.position_map = {val: i for i, val in enumerate(arr)}
+        self.sorted_values = sorted(arr)
+        self.passes = 0
+        self._calculate_passes()
+    
+    def _calculate_passes(self):
+        """Calculate the number of passes needed to collect all numbers."""
+        self.passes = 0
+        collected = set()
+        
+        for val in self.sorted_values:
+            if val not in collected:
+                self.passes += 1
+                # Collect consecutive numbers
+                current = val
+                while current in self.position_map and current not in collected:
+                    collected.add(current)
+                    current += 1
+    
+    def update_value(self, index, new_value):
+        """Update array value and recalculate passes."""
+        old_value = self.arr[index]
+        self.arr[index] = new_value
+        
+        # Update position map
+        del self.position_map[old_value]
+        self.position_map[new_value] = index
+        
+        # Update sorted values
+        self.sorted_values.remove(old_value)
+        bisect.insort(self.sorted_values, new_value)
+        
+        # Recalculate passes
+        self._calculate_passes()
+    
+    def add_number(self, value):
+        """Add a new number to the array."""
+        self.arr.append(value)
+        self.n += 1
+        self.position_map[value] = self.n - 1
+        bisect.insort(self.sorted_values, value)
+        self._calculate_passes()
+    
+    def remove_number(self, value):
+        """Remove a number from the array."""
+        if value in self.position_map:
+            index = self.position_map[value]
+            del self.arr[index]
+            del self.position_map[value]
+            self.sorted_values.remove(value)
+            self.n -= 1
+            
+            # Update position map for remaining elements
+            new_position_map = {}
+            for i, val in enumerate(self.arr):
+                new_position_map[val] = i
+            self.position_map = new_position_map
+            
+            self._calculate_passes()
+    
+    def get_passes(self):
+        """Get the current number of passes needed."""
+        return self.passes
+    
+    def get_collection_order(self):
+        """Get the order in which numbers should be collected."""
+        collection_order = []
+        collected = set()
+        
+        for val in self.sorted_values:
+            if val not in collected:
+                # Collect consecutive numbers
+                current = val
+                while current in self.position_map and current not in collected:
+                    collection_order.append(current)
+                    collected.add(current)
+                    current += 1
+        
+        return collection_order
+
+# Example usage
+arr = [4, 1, 2, 3, 5]
+collector = DynamicCollectingNumbers(arr)
+print(f"Initial passes: {collector.get_passes()}")
+print(f"Collection order: {collector.get_collection_order()}")
+
+# Update a value
+collector.update_value(0, 6)
+print(f"After update: {collector.get_passes()}")
+
+# Add a number
+collector.add_number(7)
+print(f"After adding 7: {collector.get_passes()}")
+```
+
+### **Variation 2: Collecting Numbers with Different Operations**
+**Problem**: Collect numbers with different collection rules (backwards, skip patterns, etc.).
+
+**Approach**: Adapt the greedy strategy for different collection patterns.
+
+```python
+def collecting_numbers_backwards(arr):
+    """
+    Collect numbers in descending order (backwards).
+    
+    Args:
+        arr: List of integers
+    
+    Returns:
+        Number of passes needed
+    """
+    position_map = {val: i for i, val in enumerate(arr)}
+    sorted_values = sorted(arr, reverse=True)  # Descending order
+    
+    passes = 0
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            passes += 1
+            # Collect consecutive numbers in descending order
+            current = val
+            while current in position_map and current not in collected:
+                collected.add(current)
+                current -= 1  # Go backwards
+    
+    return passes
+
+def collecting_numbers_skip_pattern(arr, skip):
+    """
+    Collect numbers with a skip pattern.
+    
+    Args:
+        arr: List of integers
+        skip: Number to skip between collections
+    
+    Returns:
+        Number of passes needed
+    """
+    position_map = {val: i for i, val in enumerate(arr)}
+    sorted_values = sorted(arr)
+    
+    passes = 0
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            passes += 1
+            # Collect numbers with skip pattern
+            current = val
+            while current in position_map and current not in collected:
+                collected.add(current)
+                current += skip  # Skip by 'skip' amount
+    
+    return passes
+
+def collecting_numbers_alternating(arr):
+    """
+    Collect numbers in alternating order (even, odd, even, odd...).
+    
+    Args:
+        arr: List of integers
+    
+    Returns:
+        Number of passes needed
+    """
+    position_map = {val: i for i, val in enumerate(arr)}
+    even_numbers = sorted([val for val in arr if val % 2 == 0])
+    odd_numbers = sorted([val for val in arr if val % 2 == 1])
+    
+    passes = 0
+    collected = set()
+    
+    # Alternate between even and odd
+    i, j = 0, 0
+    while i < len(even_numbers) or j < len(odd_numbers):
+        passes += 1
+        
+        # Collect even numbers
+        if i < len(even_numbers):
+            val = even_numbers[i]
+            if val not in collected:
+                collected.add(val)
+                i += 1
+        
+        # Collect odd numbers
+        if j < len(odd_numbers):
+            val = odd_numbers[j]
+            if val not in collected:
+                collected.add(val)
+                j += 1
+    
+    return passes
+
+def collecting_numbers_weighted(arr, weights):
+    """
+    Collect numbers considering their weights (collect lighter numbers first).
+    
+    Args:
+        arr: List of integers
+        weights: Dictionary mapping values to weights
+    
+    Returns:
+        Number of passes needed
+    """
+    position_map = {val: i for i, val in enumerate(arr)}
+    # Sort by weight (lighter first)
+    sorted_values = sorted(arr, key=lambda x: weights.get(x, 0))
+    
+    passes = 0
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            passes += 1
+            # Collect consecutive numbers
+            current = val
+            while current in position_map and current not in collected:
+                collected.add(current)
+                current += 1
+    
+    return passes
+
+def collecting_numbers_constrained(arr, constraints):
+    """
+    Collect numbers with additional constraints.
+    
+    Args:
+        arr: List of integers
+        constraints: Dictionary with constraints like:
+            - max_per_pass: Maximum numbers to collect per pass
+            - min_value: Minimum value to collect
+            - max_value: Maximum value to collect
+    
+    Returns:
+        Number of passes needed
+    """
+    position_map = {val: i for i, val in enumerate(arr)}
+    sorted_values = sorted(arr)
+    
+    passes = 0
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            # Check constraints
+            if 'min_value' in constraints and val < constraints['min_value']:
+                continue
+            if 'max_value' in constraints and val > constraints['max_value']:
+                continue
+            
+            passes += 1
+            numbers_in_pass = 0
+            
+            # Collect consecutive numbers
+            current = val
+            while (current in position_map and 
+                   current not in collected and 
+                   numbers_in_pass < constraints.get('max_per_pass', float('inf'))):
+                collected.add(current)
+                current += 1
+                numbers_in_pass += 1
+    
+    return passes
+
+# Example usage
+arr = [4, 1, 2, 3, 5, 6, 7, 8]
+
+print(f"Backwards collection: {collecting_numbers_backwards(arr)}")
+print(f"Skip pattern (skip 2): {collecting_numbers_skip_pattern(arr, 2)}")
+print(f"Alternating collection: {collecting_numbers_alternating(arr)}")
+
+weights = {1: 3, 2: 1, 3: 2, 4: 4, 5: 1, 6: 2, 7: 3, 8: 1}
+print(f"Weighted collection: {collecting_numbers_weighted(arr, weights)}")
+
+constraints = {'max_per_pass': 2, 'min_value': 2, 'max_value': 6}
+print(f"Constrained collection: {collecting_numbers_constrained(arr, constraints)}")
+```
+
+### **Variation 3: Collecting Numbers with Constraints**
+**Problem**: Collect numbers with additional constraints like time limits, capacity limits, etc.
+
+**Approach**: Use constraint satisfaction with backtracking or advanced optimization.
+
+```python
+def collecting_numbers_with_capacity(arr, capacity):
+    """
+    Collect numbers with capacity constraints per pass.
+    
+    Args:
+        arr: List of integers
+        capacity: Maximum capacity per pass
+    
+    Returns:
+        Number of passes needed
+    """
+    position_map = {val: i for i, val in enumerate(arr)}
+    sorted_values = sorted(arr)
+    
+    passes = 0
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            passes += 1
+            current_capacity = 0
+            current = val
+            
+            # Collect consecutive numbers within capacity
+            while (current in position_map and 
+                   current not in collected and 
+                   current_capacity < capacity):
+                collected.add(current)
+                current += 1
+                current_capacity += 1
+    
+    return passes
+
+def collecting_numbers_with_time_limit(arr, time_limit, collection_time):
+    """
+    Collect numbers with time constraints.
+    
+    Args:
+        arr: List of integers
+        time_limit: Maximum time per pass
+        collection_time: Time required to collect each number
+    
+    Returns:
+        Number of passes needed
+    """
+    position_map = {val: i for i, val in enumerate(arr)}
+    sorted_values = sorted(arr)
+    
+    passes = 0
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            passes += 1
+            current_time = 0
+            current = val
+            
+            # Collect consecutive numbers within time limit
+            while (current in position_map and 
+                   current not in collected and 
+                   current_time + collection_time <= time_limit):
+                collected.add(current)
+                current += 1
+                current_time += collection_time
+    
+    return passes
+
+def collecting_numbers_with_priority(arr, priorities):
+    """
+    Collect numbers based on priority levels.
+    
+    Args:
+        arr: List of integers
+        priorities: Dictionary mapping values to priority levels
+    
+    Returns:
+        Number of passes needed
+    """
+    position_map = {val: i for i, val in enumerate(arr)}
+    # Sort by priority (higher priority first)
+    sorted_values = sorted(arr, key=lambda x: priorities.get(x, 0), reverse=True)
+    
+    passes = 0
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            passes += 1
+            # Collect consecutive numbers
+            current = val
+            while current in position_map and current not in collected:
+                collected.add(current)
+                current += 1
+    
+    return passes
+
+def collecting_numbers_with_penalty(arr, penalties):
+    """
+    Collect numbers considering collection penalties.
+    
+    Args:
+        arr: List of integers
+        penalties: Dictionary mapping values to penalty costs
+    
+    Returns:
+        Tuple of (passes, total_penalty)
+    """
+    position_map = {val: i for i, val in enumerate(arr)}
+    sorted_values = sorted(arr)
+    
+    passes = 0
+    collected = set()
+    total_penalty = 0
+    
+    for val in sorted_values:
+        if val not in collected:
+            passes += 1
+            # Collect consecutive numbers
+            current = val
+            while current in position_map and current not in collected:
+                collected.add(current)
+                total_penalty += penalties.get(current, 0)
+                current += 1
+    
+    return passes, total_penalty
+
+def collecting_numbers_optimal_schedule(arr, schedule_constraints):
+    """
+    Find optimal schedule for collecting numbers.
+    
+    Args:
+        arr: List of integers
+        schedule_constraints: Dictionary with scheduling constraints
+    
+    Returns:
+        Optimal collection schedule
+    """
+    position_map = {val: i for i, val in enumerate(arr)}
+    sorted_values = sorted(arr)
+    
+    schedule = []
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            pass_numbers = []
+            current = val
+            
+            # Collect consecutive numbers
+            while current in position_map and current not in collected:
+                pass_numbers.append(current)
+                collected.add(current)
+                current += 1
+            
+            schedule.append(pass_numbers)
+    
+    return schedule
+
+# Example usage
+arr = [4, 1, 2, 3, 5, 6, 7, 8]
+
+print(f"Capacity constraint (capacity=3): {collecting_numbers_with_capacity(arr, 3)}")
+print(f"Time constraint (limit=5, time=2): {collecting_numbers_with_time_limit(arr, 5, 2)}")
+
+priorities = {1: 3, 2: 1, 3: 2, 4: 4, 5: 1, 6: 2, 7: 3, 8: 1}
+print(f"Priority-based collection: {collecting_numbers_with_priority(arr, priorities)}")
+
+penalties = {1: 2, 2: 1, 3: 3, 4: 1, 5: 2, 6: 1, 7: 3, 8: 2}
+passes, penalty = collecting_numbers_with_penalty(arr, penalties)
+print(f"Penalty-based collection: {passes} passes, {penalty} total penalty")
+
+schedule = collecting_numbers_optimal_schedule(arr, {})
+print(f"Optimal schedule: {schedule}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

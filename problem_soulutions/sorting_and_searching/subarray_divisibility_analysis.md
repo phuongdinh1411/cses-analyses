@@ -654,6 +654,863 @@ print(f"Divisible subarrays with constraints: {result}")  # Output: 2
 
 ### Related Problems
 
+## Problem Variations
+
+### **Variation 1: Subarray Divisibility with Dynamic Updates**
+**Problem**: Handle dynamic array updates (add/remove/update elements) while maintaining efficient subarray divisibility calculations.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+from collections import defaultdict
+import bisect
+
+class DynamicSubarrayDivisibility:
+    def __init__(self, arr, k):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.k = k
+        self.prefix_sums = self._compute_prefix_sums()
+        self.divisible_count = self._compute_divisible_count()
+    
+    def _compute_prefix_sums(self):
+        """Compute prefix sums of the array."""
+        prefix = [0] * (self.n + 1)
+        for i in range(self.n):
+            prefix[i + 1] = prefix[i] + self.arr[i]
+        return prefix
+    
+    def _compute_divisible_count(self):
+        """Compute count of divisible subarrays using modular arithmetic."""
+        if self.n == 0:
+            return 0
+        
+        # Count remainders
+        remainder_count = defaultdict(int)
+        count = 0
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                count += remainder_count[remainder]
+            remainder_count[remainder] += 1
+        
+        return count
+    
+    def add_element(self, value, index=None):
+        """Add a new element to the array."""
+        if index is None:
+            index = self.n
+        self.arr.insert(index, value)
+        self.n += 1
+        self.prefix_sums = self._compute_prefix_sums()
+        self.divisible_count = self._compute_divisible_count()
+    
+    def remove_element(self, index):
+        """Remove element at specified index."""
+        if 0 <= index < self.n:
+            del self.arr[index]
+            self.n -= 1
+            self.prefix_sums = self._compute_prefix_sums()
+            self.divisible_count = self._compute_divisible_count()
+    
+    def update_element(self, index, new_value):
+        """Update element at specified index."""
+        if 0 <= index < self.n:
+            self.arr[index] = new_value
+            self.prefix_sums = self._compute_prefix_sums()
+            self.divisible_count = self._compute_divisible_count()
+    
+    def get_divisible_count(self):
+        """Get current count of divisible subarrays."""
+        return self.divisible_count
+    
+    def get_divisible_subarrays(self):
+        """Get all divisible subarrays."""
+        if self.n == 0:
+            return []
+        
+        result = []
+        remainder_count = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    result.append((prev_idx, i - 1))
+            remainder_count[remainder].append(i)
+        
+        return result
+    
+    def get_divisible_subarrays_in_range(self, left, right):
+        """Get divisible subarrays in specified range."""
+        if left < 0 or right >= self.n or left > right:
+            return []
+        
+        # Extract subarray
+        subarray = self.arr[left:right+1]
+        
+        # Calculate prefix sums for subarray
+        prefix = [0] * (len(subarray) + 1)
+        for i in range(len(subarray)):
+            prefix[i + 1] = prefix[i] + subarray[i]
+        
+        # Find divisible subarrays
+        result = []
+        remainder_count = defaultdict(list)
+        
+        for i in range(len(subarray) + 1):
+            remainder = prefix[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    result.append((left + prev_idx, left + i - 1))
+            remainder_count[remainder].append(i)
+        
+        return result
+    
+    def get_divisible_subarrays_with_constraints(self, constraint_func):
+        """Get divisible subarrays that satisfy custom constraints."""
+        result = []
+        remainder_count = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    if constraint_func(prev_idx, i - 1, self.arr[prev_idx:i]):
+                        result.append((prev_idx, i - 1))
+            remainder_count[remainder].append(i)
+        
+        return result
+    
+    def get_divisibility_statistics(self):
+        """Get statistics about subarray divisibility."""
+        if self.n == 0:
+            return {
+                'total_subarrays': 0,
+                'divisible_subarrays': 0,
+                'divisibility_rate': 0,
+                'average_subarray_length': 0,
+                'remainder_distribution': {}
+            }
+        
+        total_subarrays = self.n * (self.n + 1) // 2
+        divisible_subarrays = self.divisible_count
+        divisibility_rate = divisible_subarrays / total_subarrays if total_subarrays > 0 else 0
+        
+        # Calculate average subarray length
+        total_length = sum((i + 1) * (self.n - i) for i in range(self.n))
+        average_subarray_length = total_length / total_subarrays if total_subarrays > 0 else 0
+        
+        # Calculate remainder distribution
+        remainder_distribution = defaultdict(int)
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            remainder_distribution[remainder] += 1
+        
+        return {
+            'total_subarrays': total_subarrays,
+            'divisible_subarrays': divisible_subarrays,
+            'divisibility_rate': divisibility_rate,
+            'average_subarray_length': average_subarray_length,
+            'remainder_distribution': dict(remainder_distribution)
+        }
+    
+    def get_divisibility_patterns(self):
+        """Get patterns in subarray divisibility."""
+        patterns = {
+            'consecutive_divisible': 0,
+            'alternating_pattern': 0,
+            'clustered_divisible': 0,
+            'uniform_distribution': 0
+        }
+        
+        divisible_subarrays = self.get_divisible_subarrays()
+        
+        for i in range(1, len(divisible_subarrays)):
+            if (divisible_subarrays[i][0] == divisible_subarrays[i-1][1] + 1):
+                patterns['consecutive_divisible'] += 1
+            
+            if i > 1:
+                if (divisible_subarrays[i][0] != divisible_subarrays[i-1][1] + 1 and 
+                    divisible_subarrays[i-1][0] != divisible_subarrays[i-2][1] + 1):
+                    patterns['alternating_pattern'] += 1
+        
+        return patterns
+    
+    def get_optimal_divisibility_strategy(self):
+        """Get optimal strategy for maximizing divisibility."""
+        if self.n == 0:
+            return {
+                'recommended_k': 0,
+                'max_divisibility': 0,
+                'efficiency_rate': 0
+            }
+        
+        # Try different k values
+        best_k = self.k
+        max_divisibility = self.divisible_count
+        
+        for test_k in range(1, min(self.n + 1, 20)):  # Test up to 20
+            if test_k == self.k:
+                continue
+            
+            # Calculate divisibility for this k
+            remainder_count = defaultdict(int)
+            count = 0
+            
+            for i in range(self.n + 1):
+                remainder = self.prefix_sums[i] % test_k
+                if remainder in remainder_count:
+                    count += remainder_count[remainder]
+                remainder_count[remainder] += 1
+            
+            if count > max_divisibility:
+                max_divisibility = count
+                best_k = test_k
+        
+        # Calculate efficiency rate
+        total_subarrays = self.n * (self.n + 1) // 2
+        efficiency_rate = max_divisibility / total_subarrays if total_subarrays > 0 else 0
+        
+        return {
+            'recommended_k': best_k,
+            'max_divisibility': max_divisibility,
+            'efficiency_rate': efficiency_rate
+        }
+
+# Example usage
+arr = [3, 1, 2, 7, 4]
+k = 5
+dynamic_divisibility = DynamicSubarrayDivisibility(arr, k)
+print(f"Initial divisible count: {dynamic_divisibility.get_divisible_count()}")
+
+# Add an element
+dynamic_divisibility.add_element(6)
+print(f"After adding element: {dynamic_divisibility.get_divisible_count()}")
+
+# Update an element
+dynamic_divisibility.update_element(2, 8)
+print(f"After updating element: {dynamic_divisibility.get_divisible_count()}")
+
+# Get divisible subarrays
+print(f"Divisible subarrays: {dynamic_divisibility.get_divisible_subarrays()}")
+
+# Get divisible subarrays in range
+print(f"Divisible subarrays in range [1, 3]: {dynamic_divisibility.get_divisible_subarrays_in_range(1, 3)}")
+
+# Get divisible subarrays with constraints
+def constraint_func(start, end, subarray):
+    return end - start >= 1
+
+print(f"Divisible subarrays with constraints: {dynamic_divisibility.get_divisible_subarrays_with_constraints(constraint_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_divisibility.get_divisibility_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_divisibility.get_divisibility_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_divisibility.get_optimal_divisibility_strategy()}")
+```
+
+### **Variation 2: Subarray Divisibility with Different Operations**
+**Problem**: Handle different types of operations on subarray divisibility (weighted elements, priority-based selection, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of subarray divisibility queries.
+
+```python
+class AdvancedSubarrayDivisibility:
+    def __init__(self, arr, k, weights=None, priorities=None):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.k = k
+        self.weights = weights or [1] * self.n
+        self.priorities = priorities or [1] * self.n
+        self.prefix_sums = self._compute_prefix_sums()
+        self.divisible_count = self._compute_divisible_count()
+        self.weighted_divisible_count = self._compute_weighted_divisible_count()
+    
+    def _compute_prefix_sums(self):
+        """Compute prefix sums of the array."""
+        prefix = [0] * (self.n + 1)
+        for i in range(self.n):
+            prefix[i + 1] = prefix[i] + self.arr[i]
+        return prefix
+    
+    def _compute_divisible_count(self):
+        """Compute count of divisible subarrays using modular arithmetic."""
+        if self.n == 0:
+            return 0
+        
+        # Count remainders
+        remainder_count = defaultdict(int)
+        count = 0
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                count += remainder_count[remainder]
+            remainder_count[remainder] += 1
+        
+        return count
+    
+    def _compute_weighted_divisible_count(self):
+        """Compute weighted count of divisible subarrays."""
+        if self.n == 0:
+            return 0
+        
+        # Count remainders with weights
+        remainder_count = defaultdict(int)
+        weighted_count = 0
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                weighted_count += remainder_count[remainder] * self.weights[i-1] if i > 0 else 0
+            remainder_count[remainder] += 1
+        
+        return weighted_count
+    
+    def get_divisible_count(self):
+        """Get current count of divisible subarrays."""
+        return self.divisible_count
+    
+    def get_weighted_divisible_count(self):
+        """Get current weighted count of divisible subarrays."""
+        return self.weighted_divisible_count
+    
+    def get_divisible_subarrays_with_priority(self, priority_func):
+        """Get divisible subarrays considering priority."""
+        if self.n == 0:
+            return []
+        
+        result = []
+        remainder_count = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    subarray = self.arr[prev_idx:i]
+                    priority = priority_func(prev_idx, i - 1, subarray, self.weights[prev_idx:i], self.priorities[prev_idx:i])
+                    result.append((prev_idx, i - 1, priority))
+            remainder_count[remainder].append(i)
+        
+        # Sort by priority
+        result.sort(key=lambda x: x[2], reverse=True)
+        return result
+    
+    def get_divisible_subarrays_with_optimization(self, optimization_func):
+        """Get divisible subarrays using custom optimization function."""
+        if self.n == 0:
+            return []
+        
+        result = []
+        remainder_count = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    subarray = self.arr[prev_idx:i]
+                    score = optimization_func(prev_idx, i - 1, subarray, self.weights[prev_idx:i], self.priorities[prev_idx:i])
+                    result.append((prev_idx, i - 1, score))
+            remainder_count[remainder].append(i)
+        
+        # Sort by optimization score
+        result.sort(key=lambda x: x[2], reverse=True)
+        return result
+    
+    def get_divisible_subarrays_with_constraints(self, constraint_func):
+        """Get divisible subarrays that satisfy custom constraints."""
+        result = []
+        remainder_count = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    subarray = self.arr[prev_idx:i]
+                    if constraint_func(prev_idx, i - 1, subarray, self.weights[prev_idx:i], self.priorities[prev_idx:i]):
+                        result.append((prev_idx, i - 1))
+            remainder_count[remainder].append(i)
+        
+        return result
+    
+    def get_divisible_subarrays_with_multiple_criteria(self, criteria_list):
+        """Get divisible subarrays that satisfy multiple criteria."""
+        result = []
+        remainder_count = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    subarray = self.arr[prev_idx:i]
+                    satisfies_all_criteria = True
+                    for criterion in criteria_list:
+                        if not criterion(prev_idx, i - 1, subarray, self.weights[prev_idx:i], self.priorities[prev_idx:i]):
+                            satisfies_all_criteria = False
+                            break
+                    
+                    if satisfies_all_criteria:
+                        result.append((prev_idx, i - 1))
+            remainder_count[remainder].append(i)
+        
+        return result
+    
+    def get_divisible_subarrays_with_alternatives(self, alternatives):
+        """Get divisible subarrays considering alternative values."""
+        result = []
+        
+        # Check original array
+        original_result = self.get_divisible_subarrays()
+        for start, end in original_result:
+            result.append((start, end, 'original'))
+        
+        # Check alternative values
+        for i, alt_values in alternatives.items():
+            if 0 <= i < self.n:
+                for alt_value in alt_values:
+                    # Create temporary array with alternative value
+                    temp_arr = self.arr[:]
+                    temp_arr[i] = alt_value
+                    
+                    # Calculate divisibility for this alternative
+                    temp_prefix = [0] * (self.n + 1)
+                    for j in range(self.n):
+                        temp_prefix[j + 1] = temp_prefix[j] + temp_arr[j]
+                    
+                    remainder_count = defaultdict(list)
+                    for j in range(self.n + 1):
+                        remainder = temp_prefix[j] % self.k
+                        if remainder in remainder_count:
+                            for prev_idx in remainder_count[remainder]:
+                                result.append((prev_idx, j - 1, f'alternative_{alt_value}'))
+                        remainder_count[remainder].append(j)
+        
+        return result
+    
+    def get_divisible_subarrays_with_adaptive_criteria(self, adaptive_func):
+        """Get divisible subarrays using adaptive criteria."""
+        result = []
+        remainder_count = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    subarray = self.arr[prev_idx:i]
+                    if adaptive_func(prev_idx, i - 1, subarray, self.weights[prev_idx:i], self.priorities[prev_idx:i], result):
+                        result.append((prev_idx, i - 1))
+            remainder_count[remainder].append(i)
+        
+        return result
+    
+    def get_divisibility_optimization(self):
+        """Get optimal divisibility configuration."""
+        strategies = [
+            ('divisible_count', self.get_divisible_count),
+            ('weighted_divisible_count', self.get_weighted_divisible_count),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            current_value = strategy_func()
+            if current_value > best_value:
+                best_value = current_value
+                best_strategy = (strategy_name, current_value)
+        
+        return best_strategy
+
+# Example usage
+arr = [3, 1, 2, 7, 4]
+k = 5
+weights = [2, 1, 3, 1, 2]
+priorities = [1, 2, 1, 3, 1]
+advanced_divisibility = AdvancedSubarrayDivisibility(arr, k, weights, priorities)
+
+print(f"Divisible count: {advanced_divisibility.get_divisible_count()}")
+print(f"Weighted divisible count: {advanced_divisibility.get_weighted_divisible_count()}")
+
+# Get divisible subarrays with priority
+def priority_func(start, end, subarray, weights, priorities):
+    return sum(weights) * sum(priorities)
+
+print(f"Divisible subarrays with priority: {advanced_divisibility.get_divisible_subarrays_with_priority(priority_func)}")
+
+# Get divisible subarrays with optimization
+def optimization_func(start, end, subarray, weights, priorities):
+    return sum(subarray) * sum(weights) + sum(priorities)
+
+print(f"Divisible subarrays with optimization: {advanced_divisibility.get_divisible_subarrays_with_optimization(optimization_func)}")
+
+# Get divisible subarrays with constraints
+def constraint_func(start, end, subarray, weights, priorities):
+    return end - start >= 1 and sum(weights) > 2
+
+print(f"Divisible subarrays with constraints: {advanced_divisibility.get_divisible_subarrays_with_constraints(constraint_func)}")
+
+# Get divisible subarrays with multiple criteria
+def criterion1(start, end, subarray, weights, priorities):
+    return end - start >= 1
+
+def criterion2(start, end, subarray, weights, priorities):
+    return sum(weights) > 2
+
+criteria_list = [criterion1, criterion2]
+print(f"Divisible subarrays with multiple criteria: {advanced_divisibility.get_divisible_subarrays_with_multiple_criteria(criteria_list)}")
+
+# Get divisible subarrays with alternatives
+alternatives = {1: [3, 5], 3: [6, 8]}
+print(f"Divisible subarrays with alternatives: {advanced_divisibility.get_divisible_subarrays_with_alternatives(alternatives)}")
+
+# Get divisible subarrays with adaptive criteria
+def adaptive_func(start, end, subarray, weights, priorities, current_result):
+    return end - start >= 1 and len(current_result) < 5
+
+print(f"Divisible subarrays with adaptive criteria: {advanced_divisibility.get_divisible_subarrays_with_adaptive_criteria(adaptive_func)}")
+
+# Get divisibility optimization
+print(f"Divisibility optimization: {advanced_divisibility.get_divisibility_optimization()}")
+```
+
+### **Variation 3: Subarray Divisibility with Constraints**
+**Problem**: Handle subarray divisibility with additional constraints (cost limits, length constraints, resource constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedSubarrayDivisibility:
+    def __init__(self, arr, k, constraints=None):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.k = k
+        self.constraints = constraints or {}
+        self.prefix_sums = self._compute_prefix_sums()
+        self.divisible_count = self._compute_divisible_count()
+    
+    def _compute_prefix_sums(self):
+        """Compute prefix sums of the array."""
+        prefix = [0] * (self.n + 1)
+        for i in range(self.n):
+            prefix[i + 1] = prefix[i] + self.arr[i]
+        return prefix
+    
+    def _compute_divisible_count(self):
+        """Compute count of divisible subarrays using modular arithmetic."""
+        if self.n == 0:
+            return 0
+        
+        # Count remainders
+        remainder_count = defaultdict(int)
+        count = 0
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                count += remainder_count[remainder]
+            remainder_count[remainder] += 1
+        
+        return count
+    
+    def get_divisible_count_with_cost_constraints(self, cost_limit):
+        """Get divisible count considering cost constraints."""
+        if self.n == 0:
+            return 0
+        
+        remainder_count = defaultdict(int)
+        count = 0
+        total_cost = 0
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                # Calculate cost for this subarray
+                cost = remainder_count[remainder] * (i - 1)  # Simple cost model
+                if total_cost + cost <= cost_limit:
+                    count += remainder_count[remainder]
+                    total_cost += cost
+            remainder_count[remainder] += 1
+        
+        return count
+    
+    def get_divisible_count_with_length_constraints(self, min_length, max_length):
+        """Get divisible count considering length constraints."""
+        if self.n == 0:
+            return 0
+        
+        remainder_count = defaultdict(int)
+        count = 0
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    subarray_length = i - prev_idx
+                    if min_length <= subarray_length <= max_length:
+                        count += 1
+            remainder_count[remainder].append(i)
+        
+        return count
+    
+    def get_divisible_count_with_resource_constraints(self, resource_limits, resource_consumption):
+        """Get divisible count considering resource constraints."""
+        if self.n == 0:
+            return 0
+        
+        remainder_count = defaultdict(int)
+        count = 0
+        current_resources = [0] * len(resource_limits)
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    # Check resource constraints
+                    can_afford = True
+                    for j, consumption in enumerate(resource_consumption.get(prev_idx, [0] * len(resource_limits))):
+                        if current_resources[j] + consumption > resource_limits[j]:
+                            can_afford = False
+                            break
+                    
+                    if can_afford:
+                        count += 1
+                        for j, consumption in enumerate(resource_consumption.get(prev_idx, [0] * len(resource_limits))):
+                            current_resources[j] += consumption
+            remainder_count[remainder] += 1
+        
+        return count
+    
+    def get_divisible_count_with_mathematical_constraints(self, constraint_func):
+        """Get divisible count that satisfies custom mathematical constraints."""
+        if self.n == 0:
+            return 0
+        
+        remainder_count = defaultdict(int)
+        count = 0
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    if constraint_func(prev_idx, i - 1, self.arr[prev_idx:i]):
+                        count += 1
+            remainder_count[remainder] += 1
+        
+        return count
+    
+    def get_divisible_count_with_range_constraints(self, range_constraints):
+        """Get divisible count that satisfies range constraints."""
+        if self.n == 0:
+            return 0
+        
+        remainder_count = defaultdict(int)
+        count = 0
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    # Check if subarray satisfies all range constraints
+                    satisfies_constraints = True
+                    for constraint in range_constraints:
+                        if not constraint(prev_idx, i - 1, self.arr[prev_idx:i]):
+                            satisfies_constraints = False
+                            break
+                    
+                    if satisfies_constraints:
+                        count += 1
+            remainder_count[remainder] += 1
+        
+        return count
+    
+    def get_divisible_count_with_optimization_constraints(self, optimization_func):
+        """Get divisible count using custom optimization constraints."""
+        if self.n == 0:
+            return 0
+        
+        # Sort subarrays by optimization function
+        all_subarrays = []
+        remainder_count = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    subarray = self.arr[prev_idx:i]
+                    score = optimization_func(prev_idx, i - 1, subarray)
+                    all_subarrays.append((prev_idx, i - 1, score))
+            remainder_count[remainder].append(i)
+        
+        # Sort by optimization score
+        all_subarrays.sort(key=lambda x: x[2], reverse=True)
+        
+        return len(all_subarrays)
+    
+    def get_divisible_count_with_multiple_constraints(self, constraints_list):
+        """Get divisible count that satisfies multiple constraints."""
+        if self.n == 0:
+            return 0
+        
+        remainder_count = defaultdict(int)
+        count = 0
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    # Check if subarray satisfies all constraints
+                    satisfies_all_constraints = True
+                    for constraint in constraints_list:
+                        if not constraint(prev_idx, i - 1, self.arr[prev_idx:i]):
+                            satisfies_all_constraints = False
+                            break
+                    
+                    if satisfies_all_constraints:
+                        count += 1
+            remainder_count[remainder] += 1
+        
+        return count
+    
+    def get_divisible_count_with_priority_constraints(self, priority_func):
+        """Get divisible count with priority-based constraints."""
+        if self.n == 0:
+            return 0
+        
+        # Sort subarrays by priority
+        all_subarrays = []
+        remainder_count = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    subarray = self.arr[prev_idx:i]
+                    priority = priority_func(prev_idx, i - 1, subarray)
+                    all_subarrays.append((prev_idx, i - 1, priority))
+            remainder_count[remainder].append(i)
+        
+        # Sort by priority
+        all_subarrays.sort(key=lambda x: x[2], reverse=True)
+        
+        return len(all_subarrays)
+    
+    def get_divisible_count_with_adaptive_constraints(self, adaptive_func):
+        """Get divisible count with adaptive constraints."""
+        if self.n == 0:
+            return 0
+        
+        remainder_count = defaultdict(int)
+        count = 0
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix_sums[i] % self.k
+            if remainder in remainder_count:
+                for prev_idx in remainder_count[remainder]:
+                    # Check adaptive constraints
+                    if adaptive_func(prev_idx, i - 1, self.arr[prev_idx:i], count):
+                        count += 1
+            remainder_count[remainder] += 1
+        
+        return count
+    
+    def get_optimal_divisibility_strategy(self):
+        """Get optimal divisibility strategy considering all constraints."""
+        strategies = [
+            ('cost_constraints', self.get_divisible_count_with_cost_constraints),
+            ('length_constraints', self.get_divisible_count_with_length_constraints),
+            ('resource_constraints', self.get_divisible_count_with_resource_constraints),
+        ]
+        
+        best_strategy = None
+        best_count = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'cost_constraints':
+                    current_count = strategy_func(100)  # Cost limit of 100
+                elif strategy_name == 'length_constraints':
+                    current_count = strategy_func(1, 5)  # Length between 1 and 5
+                elif strategy_name == 'resource_constraints':
+                    resource_limits = [100, 50]
+                    resource_consumption = {i: [10, 5] for i in range(self.n)}
+                    current_count = strategy_func(resource_limits, resource_consumption)
+                
+                if current_count > best_count:
+                    best_count = current_count
+                    best_strategy = (strategy_name, current_count)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'max_cost': 100,
+    'min_length': 1,
+    'max_length': 5
+}
+
+arr = [3, 1, 2, 7, 4]
+k = 5
+constrained_divisibility = ConstrainedSubarrayDivisibility(arr, k, constraints)
+
+print("Cost-constrained divisible count:", constrained_divisibility.get_divisible_count_with_cost_constraints(100))
+
+print("Length-constrained divisible count:", constrained_divisibility.get_divisible_count_with_length_constraints(1, 5))
+
+# Resource constraints
+resource_limits = [100, 50]
+resource_consumption = {i: [10, 5] for i in range(len(arr))}
+print("Resource-constrained divisible count:", constrained_divisibility.get_divisible_count_with_resource_constraints(resource_limits, resource_consumption))
+
+# Mathematical constraints
+def custom_constraint(start, end, subarray):
+    return end - start >= 1 and sum(subarray) > 5
+
+print("Mathematical constraint divisible count:", constrained_divisibility.get_divisible_count_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(start, end, subarray):
+    return end - start >= 1
+
+range_constraints = [range_constraint]
+print("Range-constrained divisible count:", constrained_divisibility.get_divisible_count_with_range_constraints(range_constraints))
+
+# Multiple constraints
+def constraint1(start, end, subarray):
+    return end - start >= 1
+
+def constraint2(start, end, subarray):
+    return sum(subarray) > 5
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints divisible count:", constrained_divisibility.get_divisible_count_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(start, end, subarray):
+    return sum(subarray)
+
+print("Priority-constrained divisible count:", constrained_divisibility.get_divisible_count_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(start, end, subarray, current_count):
+    return end - start >= 1 and current_count < 10
+
+print("Adaptive constraint divisible count:", constrained_divisibility.get_divisible_count_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_divisibility.get_optimal_divisibility_strategy()
+print(f"Optimal strategy: {optimal}")
+```
+
+### Related Problems
+
 #### **CSES Problems**
 - [Subarray Divisibility](https://cses.fi/problemset/task/1662) - Basic subarray divisibility problem
 - [Subarray Sums I](https://cses.fi/problemset/task/1661) - Subarray sum problems

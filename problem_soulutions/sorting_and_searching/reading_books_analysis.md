@@ -600,6 +600,782 @@ print(f"Person 1: books {person1_books}, time {time1}")
 print(f"Person 2: books {person2_books}, time {time2}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Reading Books with Dynamic Updates**
+**Problem**: Handle dynamic book updates (add/remove/update books) while maintaining efficient minimum time calculations.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+from collections import defaultdict
+import bisect
+
+class DynamicReadingBooks:
+    def __init__(self, books):
+        self.books = books[:]
+        self.n = len(books)
+        self.min_time = self._compute_min_time()
+    
+    def _compute_min_time(self):
+        """Compute minimum time using mathematical formula."""
+        if self.n == 0:
+            return 0
+        
+        total_time = sum(self.books)
+        max_book = max(self.books)
+        
+        # Minimum time is max of (total_time / 2) and max_book
+        return max(total_time // 2, max_book)
+    
+    def add_book(self, book_time):
+        """Add a new book to the collection."""
+        self.books.append(book_time)
+        self.n += 1
+        self.min_time = self._compute_min_time()
+    
+    def remove_book(self, index):
+        """Remove a book at the specified index."""
+        if 0 <= index < self.n:
+            del self.books[index]
+            self.n -= 1
+            self.min_time = self._compute_min_time()
+    
+    def update_book(self, index, new_time):
+        """Update a book at the specified index."""
+        if 0 <= index < self.n:
+            self.books[index] = new_time
+            self.min_time = self._compute_min_time()
+    
+    def get_min_time(self):
+        """Get current minimum time."""
+        return self.min_time
+    
+    def get_optimal_distribution(self):
+        """Get optimal book distribution between two people."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books in descending order for optimal distribution
+        sorted_books = sorted(enumerate(self.books), key=lambda x: x[1], reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        
+        for book_idx, book_time in sorted_books:
+            if person1_time <= person2_time:
+                person1_books.append(book_idx)
+                person1_time += book_time
+            else:
+                person2_books.append(book_idx)
+                person2_time += book_time
+        
+        return person1_books, person2_books, person1_time, person2_time
+    
+    def get_books_with_time_range(self, min_time, max_time):
+        """Get books within specific time range."""
+        result = []
+        for i, book_time in enumerate(self.books):
+            if min_time <= book_time <= max_time:
+                result.append((i, book_time))
+        return result
+    
+    def get_books_with_constraints(self, constraint_func):
+        """Get books that satisfy custom constraints."""
+        result = []
+        for i, book_time in enumerate(self.books):
+            if constraint_func(book_time, i):
+                result.append((i, book_time))
+        return result
+    
+    def get_reading_statistics(self):
+        """Get statistics about the book collection."""
+        if not self.books:
+            return {
+                'total_books': 0,
+                'total_time': 0,
+                'min_time': 0,
+                'max_time': 0,
+                'average_time': 0,
+                'min_time_required': 0
+            }
+        
+        total_time = sum(self.books)
+        min_book_time = min(self.books)
+        max_book_time = max(self.books)
+        average_time = total_time / self.n
+        min_time_required = self.min_time
+        
+        return {
+            'total_books': self.n,
+            'total_time': total_time,
+            'min_time': min_book_time,
+            'max_time': max_book_time,
+            'average_time': average_time,
+            'min_time_required': min_time_required
+        }
+    
+    def get_reading_patterns(self):
+        """Get patterns in the book collection."""
+        patterns = {
+            'consecutive_similar': 0,
+            'alternating_pattern': 0,
+            'increasing_pattern': 0,
+            'decreasing_pattern': 0
+        }
+        
+        for i in range(1, self.n):
+            if abs(self.books[i] - self.books[i-1]) <= 1:
+                patterns['consecutive_similar'] += 1
+            
+            if i > 1:
+                if (self.books[i] > self.books[i-1] and 
+                    self.books[i-1] > self.books[i-2]):
+                    patterns['increasing_pattern'] += 1
+                elif (self.books[i] < self.books[i-1] and 
+                      self.books[i-1] < self.books[i-2]):
+                    patterns['decreasing_pattern'] += 1
+        
+        return patterns
+    
+    def get_optimal_distribution_with_constraints(self, constraints):
+        """Get optimal distribution considering constraints."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books in descending order for optimal distribution
+        sorted_books = sorted(enumerate(self.books), key=lambda x: x[1], reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        
+        for book_idx, book_time in sorted_books:
+            if book_idx in constraints:
+                required_person = constraints[book_idx]
+                
+                if required_person == 1:
+                    person1_books.append(book_idx)
+                    person1_time += book_time
+                else:  # required_person == 2
+                    person2_books.append(book_idx)
+                    person2_time += book_time
+            else:
+                # No constraint, assign to person with less time
+                if person1_time <= person2_time:
+                    person1_books.append(book_idx)
+                    person1_time += book_time
+                else:
+                    person2_books.append(book_idx)
+                    person2_time += book_time
+        
+        return person1_books, person2_books, person1_time, person2_time
+
+# Example usage
+books = [2, 3, 1, 4, 2]
+dynamic_reader = DynamicReadingBooks(books)
+print(f"Initial min time: {dynamic_reader.get_min_time()}")
+
+# Add a book
+dynamic_reader.add_book(5)
+print(f"After adding book: {dynamic_reader.get_min_time()}")
+
+# Update a book
+dynamic_reader.update_book(1, 6)
+print(f"After updating book: {dynamic_reader.get_min_time()}")
+
+# Get optimal distribution
+person1_books, person2_books, time1, time2 = dynamic_reader.get_optimal_distribution()
+print(f"Person 1: books {person1_books}, time {time1}")
+print(f"Person 2: books {person2_books}, time {time2}")
+
+# Get books with time range
+print(f"Books with time 2-4: {dynamic_reader.get_books_with_time_range(2, 4)}")
+
+# Get books with constraints
+def constraint_func(book_time, index):
+    return book_time >= 3 and index % 2 == 0
+
+print(f"Books with constraints: {dynamic_reader.get_books_with_constraints(constraint_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_reader.get_reading_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_reader.get_reading_patterns()}")
+
+# Get optimal distribution with constraints
+constraints = {0: 1, 2: 2}  # Book 0 must be read by person 1, book 2 by person 2
+person1_books, person2_books, time1, time2 = dynamic_reader.get_optimal_distribution_with_constraints(constraints)
+print(f"Constrained distribution - Person 1: {person1_books}, time {time1}")
+print(f"Constrained distribution - Person 2: {person2_books}, time {time2}")
+```
+
+### **Variation 2: Reading Books with Different Operations**
+**Problem**: Handle different types of operations on book collections (weighted books, priority-based selection, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of book reading queries.
+
+```python
+class AdvancedReadingBooks:
+    def __init__(self, books, weights=None, priorities=None):
+        self.books = books[:]
+        self.n = len(books)
+        self.weights = weights or [1] * self.n
+        self.priorities = priorities or [1] * self.n
+        self.min_time = self._compute_min_time()
+        self.weighted_min_time = self._compute_weighted_min_time()
+    
+    def _compute_min_time(self):
+        """Compute minimum time using mathematical formula."""
+        if self.n == 0:
+            return 0
+        
+        total_time = sum(self.books)
+        max_book = max(self.books)
+        
+        return max(total_time // 2, max_book)
+    
+    def _compute_weighted_min_time(self):
+        """Compute minimum time considering weights."""
+        if self.n == 0:
+            return 0
+        
+        total_weighted_time = sum(book * weight for book, weight in zip(self.books, self.weights))
+        max_weighted_book = max(book * weight for book, weight in zip(self.books, self.weights))
+        
+        return max(total_weighted_time // 2, max_weighted_book)
+    
+    def get_min_time(self):
+        """Get current minimum time."""
+        return self.min_time
+    
+    def get_weighted_min_time(self):
+        """Get current minimum weighted time."""
+        return self.weighted_min_time
+    
+    def get_optimal_distribution_with_priority(self, priority_func):
+        """Get optimal distribution considering priority."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books by priority
+        sorted_books = sorted(enumerate(self.books), key=lambda x: priority_func(x[1], self.weights[x[0]], self.priorities[x[0]]), reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        
+        for book_idx, book_time in sorted_books:
+            if person1_time <= person2_time:
+                person1_books.append(book_idx)
+                person1_time += book_time
+            else:
+                person2_books.append(book_idx)
+                person2_time += book_time
+        
+        return person1_books, person2_books, person1_time, person2_time
+    
+    def get_optimal_distribution_with_optimization(self, optimization_func):
+        """Get optimal distribution using custom optimization function."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books by optimization function
+        sorted_books = sorted(enumerate(self.books), key=lambda x: optimization_func(x[1], self.weights[x[0]], self.priorities[x[0]]), reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        
+        for book_idx, book_time in sorted_books:
+            if person1_time <= person2_time:
+                person1_books.append(book_idx)
+                person1_time += book_time
+            else:
+                person2_books.append(book_idx)
+                person2_time += book_time
+        
+        return person1_books, person2_books, person1_time, person2_time
+    
+    def get_books_with_constraints(self, constraint_func):
+        """Get books that satisfy custom constraints."""
+        result = []
+        for i, book_time in enumerate(self.books):
+            if constraint_func(book_time, self.weights[i], self.priorities[i]):
+                result.append((i, book_time))
+        return result
+    
+    def get_books_with_multiple_criteria(self, criteria_list):
+        """Get books that satisfy multiple criteria."""
+        result = []
+        for i, book_time in enumerate(self.books):
+            satisfies_all_criteria = True
+            for criterion in criteria_list:
+                if not criterion(book_time, self.weights[i], self.priorities[i]):
+                    satisfies_all_criteria = False
+                    break
+            
+            if satisfies_all_criteria:
+                result.append((i, book_time))
+        
+        return result
+    
+    def get_books_with_alternatives(self, alternatives):
+        """Get books considering alternative reading times."""
+        result = []
+        
+        for i, book_time in enumerate(self.books):
+            # Check original book
+            result.append((i, book_time, 'original'))
+            
+            # Check alternative reading times
+            if i in alternatives:
+                for alt_time in alternatives[i]:
+                    result.append((i, alt_time, 'alternative'))
+        
+        return result
+    
+    def get_books_with_adaptive_criteria(self, adaptive_func):
+        """Get books using adaptive criteria."""
+        result = []
+        
+        for i, book_time in enumerate(self.books):
+            if adaptive_func(book_time, self.weights[i], self.priorities[i], result):
+                result.append((i, book_time))
+        
+        return result
+    
+    def get_reading_optimization(self):
+        """Get optimal reading configuration."""
+        strategies = [
+            ('min_time', self.get_min_time),
+            ('weighted_min_time', self.get_weighted_min_time),
+        ]
+        
+        best_strategy = None
+        best_value = float('inf')
+        
+        for strategy_name, strategy_func in strategies:
+            current_value = strategy_func()
+            if current_value < best_value:
+                best_value = current_value
+                best_strategy = (strategy_name, current_value)
+        
+        return best_strategy
+
+# Example usage
+books = [2, 3, 1, 4, 2]
+weights = [1, 2, 1, 3, 1]
+priorities = [1, 2, 1, 3, 1]
+advanced_reader = AdvancedReadingBooks(books, weights, priorities)
+
+print(f"Min time: {advanced_reader.get_min_time()}")
+print(f"Weighted min time: {advanced_reader.get_weighted_min_time()}")
+
+# Get optimal distribution with priority
+def priority_func(book_time, weight, priority):
+    return book_time * weight * priority
+
+person1_books, person2_books, time1, time2 = advanced_reader.get_optimal_distribution_with_priority(priority_func)
+print(f"Priority-based distribution - Person 1: {person1_books}, time {time1}")
+print(f"Priority-based distribution - Person 2: {person2_books}, time {time2}")
+
+# Get optimal distribution with optimization
+def optimization_func(book_time, weight, priority):
+    return book_time * weight + priority
+
+person1_books, person2_books, time1, time2 = advanced_reader.get_optimal_distribution_with_optimization(optimization_func)
+print(f"Optimization-based distribution - Person 1: {person1_books}, time {time1}")
+print(f"Optimization-based distribution - Person 2: {person2_books}, time {time2}")
+
+# Get books with constraints
+def constraint_func(book_time, weight, priority):
+    return book_time >= 2 and weight > 1
+
+print(f"Books with constraints: {advanced_reader.get_books_with_constraints(constraint_func)}")
+
+# Get books with multiple criteria
+def criterion1(book_time, weight, priority):
+    return book_time >= 2
+
+def criterion2(book_time, weight, priority):
+    return weight > 1
+
+criteria_list = [criterion1, criterion2]
+print(f"Books with multiple criteria: {advanced_reader.get_books_with_multiple_criteria(criteria_list)}")
+
+# Get books with alternatives
+alternatives = {1: [2, 4], 3: [3, 5]}
+print(f"Books with alternatives: {advanced_reader.get_books_with_alternatives(alternatives)}")
+
+# Get books with adaptive criteria
+def adaptive_func(book_time, weight, priority, current_result):
+    return book_time >= 2 and len(current_result) < 3
+
+print(f"Books with adaptive criteria: {advanced_reader.get_books_with_adaptive_criteria(adaptive_func)}")
+
+# Get reading optimization
+print(f"Reading optimization: {advanced_reader.get_reading_optimization()}")
+```
+
+### **Variation 3: Reading Books with Constraints**
+**Problem**: Handle reading books with additional constraints (time limits, resource constraints, mathematical constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedReadingBooks:
+    def __init__(self, books, constraints=None):
+        self.books = books[:]
+        self.n = len(books)
+        self.constraints = constraints or {}
+        self.min_time = self._compute_min_time()
+    
+    def _compute_min_time(self):
+        """Compute minimum time using mathematical formula."""
+        if self.n == 0:
+            return 0
+        
+        total_time = sum(self.books)
+        max_book = max(self.books)
+        
+        return max(total_time // 2, max_book)
+    
+    def get_optimal_distribution_with_time_constraints(self, time_limit):
+        """Get optimal distribution considering time constraints."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books in descending order for optimal distribution
+        sorted_books = sorted(enumerate(self.books), key=lambda x: x[1], reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        
+        for book_idx, book_time in sorted_books:
+            # Check if book can be assigned within time limit
+            if person1_time + book_time <= time_limit and person1_time <= person2_time:
+                person1_books.append(book_idx)
+                person1_time += book_time
+            elif person2_time + book_time <= time_limit:
+                person2_books.append(book_idx)
+                person2_time += book_time
+            else:
+                # Cannot assign book within time limit
+                break
+        
+        return person1_books, person2_books, person1_time, person2_time
+    
+    def get_optimal_distribution_with_resource_constraints(self, resource_limits, resource_consumption):
+        """Get optimal distribution considering resource constraints."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books in descending order for optimal distribution
+        sorted_books = sorted(enumerate(self.books), key=lambda x: x[1], reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        person1_resources = [0] * len(resource_limits)
+        person2_resources = [0] * len(resource_limits)
+        
+        for book_idx, book_time in sorted_books:
+            # Check resource constraints for person 1
+            can_assign_person1 = True
+            for j, consumption in enumerate(resource_consumption[book_idx]):
+                if person1_resources[j] + consumption > resource_limits[j]:
+                    can_assign_person1 = False
+                    break
+            
+            # Check resource constraints for person 2
+            can_assign_person2 = True
+            for j, consumption in enumerate(resource_consumption[book_idx]):
+                if person2_resources[j] + consumption > resource_limits[j]:
+                    can_assign_person2 = False
+                    break
+            
+            # Assign to person with less time if both can handle it
+            if can_assign_person1 and can_assign_person2:
+                if person1_time <= person2_time:
+                    person1_books.append(book_idx)
+                    person1_time += book_time
+                    for j, consumption in enumerate(resource_consumption[book_idx]):
+                        person1_resources[j] += consumption
+                else:
+                    person2_books.append(book_idx)
+                    person2_time += book_time
+                    for j, consumption in enumerate(resource_consumption[book_idx]):
+                        person2_resources[j] += consumption
+            elif can_assign_person1:
+                person1_books.append(book_idx)
+                person1_time += book_time
+                for j, consumption in enumerate(resource_consumption[book_idx]):
+                    person1_resources[j] += consumption
+            elif can_assign_person2:
+                person2_books.append(book_idx)
+                person2_time += book_time
+                for j, consumption in enumerate(resource_consumption[book_idx]):
+                    person2_resources[j] += consumption
+        
+        return person1_books, person2_books, person1_time, person2_time
+    
+    def get_optimal_distribution_with_mathematical_constraints(self, constraint_func):
+        """Get optimal distribution that satisfies custom mathematical constraints."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books in descending order for optimal distribution
+        sorted_books = sorted(enumerate(self.books), key=lambda x: x[1], reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        
+        for book_idx, book_time in sorted_books:
+            # Check mathematical constraints
+            if constraint_func(book_time, person1_time, person2_time):
+                if person1_time <= person2_time:
+                    person1_books.append(book_idx)
+                    person1_time += book_time
+                else:
+                    person2_books.append(book_idx)
+                    person2_time += book_time
+        
+        return person1_books, person2_books, person1_time, person2_time
+    
+    def get_optimal_distribution_with_range_constraints(self, range_constraints):
+        """Get optimal distribution that satisfies range constraints."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books in descending order for optimal distribution
+        sorted_books = sorted(enumerate(self.books), key=lambda x: x[1], reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        
+        for book_idx, book_time in sorted_books:
+            # Check if book satisfies all range constraints
+            satisfies_constraints = True
+            for constraint in range_constraints:
+                if not constraint(book_time, person1_time, person2_time):
+                    satisfies_constraints = False
+                    break
+            
+            if satisfies_constraints:
+                if person1_time <= person2_time:
+                    person1_books.append(book_idx)
+                    person1_time += book_time
+                else:
+                    person2_books.append(book_idx)
+                    person2_time += book_time
+        
+        return person1_books, person2_books, person1_time, person2_time
+    
+    def get_optimal_distribution_with_optimization_constraints(self, optimization_func):
+        """Get optimal distribution using custom optimization constraints."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books by optimization function
+        sorted_books = sorted(enumerate(self.books), key=lambda x: optimization_func(x[1]), reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        
+        for book_idx, book_time in sorted_books:
+            if person1_time <= person2_time:
+                person1_books.append(book_idx)
+                person1_time += book_time
+            else:
+                person2_books.append(book_idx)
+                person2_time += book_time
+        
+        return person1_books, person2_books, person1_time, person2_time
+    
+    def get_optimal_distribution_with_multiple_constraints(self, constraints_list):
+        """Get optimal distribution that satisfies multiple constraints."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books in descending order for optimal distribution
+        sorted_books = sorted(enumerate(self.books), key=lambda x: x[1], reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        
+        for book_idx, book_time in sorted_books:
+            # Check if book satisfies all constraints
+            satisfies_all_constraints = True
+            for constraint in constraints_list:
+                if not constraint(book_time, person1_time, person2_time):
+                    satisfies_all_constraints = False
+                    break
+            
+            if satisfies_all_constraints:
+                if person1_time <= person2_time:
+                    person1_books.append(book_idx)
+                    person1_time += book_time
+                else:
+                    person2_books.append(book_idx)
+                    person2_time += book_time
+        
+        return person1_books, person2_books, person1_time, person2_time
+    
+    def get_optimal_distribution_with_priority_constraints(self, priority_func):
+        """Get optimal distribution with priority-based constraints."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books by priority
+        sorted_books = sorted(enumerate(self.books), key=lambda x: priority_func(x[1]), reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        
+        for book_idx, book_time in sorted_books:
+            if person1_time <= person2_time:
+                person1_books.append(book_idx)
+                person1_time += book_time
+            else:
+                person2_books.append(book_idx)
+                person2_time += book_time
+        
+        return person1_books, person2_books, person1_time, person2_time
+    
+    def get_optimal_distribution_with_adaptive_constraints(self, adaptive_func):
+        """Get optimal distribution with adaptive constraints."""
+        if self.n == 0:
+            return [], [], 0, 0
+        
+        # Sort books in descending order for optimal distribution
+        sorted_books = sorted(enumerate(self.books), key=lambda x: x[1], reverse=True)
+        
+        person1_books = []
+        person2_books = []
+        person1_time = 0
+        person2_time = 0
+        
+        for book_idx, book_time in sorted_books:
+            # Check adaptive constraints
+            if adaptive_func(book_time, person1_time, person2_time, person1_books, person2_books):
+                if person1_time <= person2_time:
+                    person1_books.append(book_idx)
+                    person1_time += book_time
+                else:
+                    person2_books.append(book_idx)
+                    person2_time += book_time
+        
+        return person1_books, person2_books, person1_time, person2_time
+    
+    def get_optimal_reading_strategy(self):
+        """Get optimal reading strategy considering all constraints."""
+        strategies = [
+            ('time_constraints', self.get_optimal_distribution_with_time_constraints),
+            ('resource_constraints', self.get_optimal_distribution_with_resource_constraints),
+            ('mathematical_constraints', self.get_optimal_distribution_with_mathematical_constraints),
+        ]
+        
+        best_strategy = None
+        best_time = float('inf')
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'time_constraints':
+                    person1_books, person2_books, time1, time2 = strategy_func(10)  # 10 time units
+                elif strategy_name == 'resource_constraints':
+                    resource_limits = [100, 50]
+                    resource_consumption = {i: [10, 5] for i in range(self.n)}
+                    person1_books, person2_books, time1, time2 = strategy_func(resource_limits, resource_consumption)
+                elif strategy_name == 'mathematical_constraints':
+                    def constraint_func(book_time, person1_time, person2_time):
+                        return book_time >= 2 and person1_time + person2_time < 20
+                    person1_books, person2_books, time1, time2 = strategy_func(constraint_func)
+                
+                max_time = max(time1, time2)
+                if max_time < best_time:
+                    best_time = max_time
+                    best_strategy = (strategy_name, person1_books, person2_books, time1, time2)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'min_time': 1,
+    'max_time': 10
+}
+
+books = [2, 3, 1, 4, 2]
+constrained_reader = ConstrainedReadingBooks(books, constraints)
+
+print("Time-constrained optimal distribution:", constrained_reader.get_optimal_distribution_with_time_constraints(8))
+
+# Resource constraints
+resource_limits = [100, 50]
+resource_consumption = {i: [10, 5] for i in range(len(books))}
+print("Resource-constrained optimal distribution:", constrained_reader.get_optimal_distribution_with_resource_constraints(resource_limits, resource_consumption))
+
+# Mathematical constraints
+def custom_constraint(book_time, person1_time, person2_time):
+    return book_time >= 2 and person1_time + person2_time < 15
+
+print("Mathematical constraint optimal distribution:", constrained_reader.get_optimal_distribution_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(book_time, person1_time, person2_time):
+    return book_time >= 2 and person1_time + person2_time < 15
+
+range_constraints = [range_constraint]
+print("Range-constrained optimal distribution:", constrained_reader.get_optimal_distribution_with_range_constraints(range_constraints))
+
+# Multiple constraints
+def constraint1(book_time, person1_time, person2_time):
+    return book_time >= 2
+
+def constraint2(book_time, person1_time, person2_time):
+    return person1_time + person2_time < 15
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints optimal distribution:", constrained_reader.get_optimal_distribution_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(book_time):
+    return book_time
+
+print("Priority-constrained optimal distribution:", constrained_reader.get_optimal_distribution_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(book_time, person1_time, person2_time, person1_books, person2_books):
+    return book_time >= 2 and len(person1_books) + len(person2_books) < 4
+
+print("Adaptive constraint optimal distribution:", constrained_reader.get_optimal_distribution_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_reader.get_optimal_reading_strategy()
+print(f"Optimal strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

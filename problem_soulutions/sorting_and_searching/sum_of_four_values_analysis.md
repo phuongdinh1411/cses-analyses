@@ -564,6 +564,821 @@ class SumOfFourValuesWithUpdates:
 
 ### Related Problems
 
+## Problem Variations
+
+### **Variation 1: Sum of Four Values with Dynamic Updates**
+**Problem**: Handle dynamic array updates (add/remove/update elements) while maintaining efficient sum of four values calculations.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+from collections import defaultdict
+import bisect
+
+class DynamicSumOfFourValues:
+    def __init__(self, arr, target):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.target = target
+        self.sorted_arr = self._create_sorted_array()
+        self.quadruplets = self._compute_quadruplets()
+    
+    def _create_sorted_array(self):
+        """Create sorted array with original indices."""
+        indexed_arr = [(self.arr[i], i) for i in range(self.n)]
+        indexed_arr.sort()
+        return indexed_arr
+    
+    def _compute_quadruplets(self):
+        """Compute all quadruplets that sum to target."""
+        results = []
+        
+        for i in range(len(self.sorted_arr) - 3):
+            for j in range(i + 1, len(self.sorted_arr) - 2):
+                left = j + 1
+                right = len(self.sorted_arr) - 1
+                
+                while left < right:
+                    current_sum = (self.sorted_arr[i][0] + self.sorted_arr[j][0] + 
+                                 self.sorted_arr[left][0] + self.sorted_arr[right][0])
+                    
+                    if current_sum == self.target:
+                        indices = [self.sorted_arr[i][1], self.sorted_arr[j][1], 
+                                 self.sorted_arr[left][1], self.sorted_arr[right][1]]
+                        results.append(indices)
+                        left += 1
+                        right -= 1
+                    elif current_sum < self.target:
+                        left += 1
+                    else:
+                        right -= 1
+        
+        return results
+    
+    def add_element(self, value, index=None):
+        """Add a new element to the array."""
+        if index is None:
+            index = self.n
+        self.arr.insert(index, value)
+        self.n += 1
+        self.sorted_arr = self._create_sorted_array()
+        self.quadruplets = self._compute_quadruplets()
+    
+    def remove_element(self, index):
+        """Remove element at specified index."""
+        if 0 <= index < self.n:
+            del self.arr[index]
+            self.n -= 1
+            self.sorted_arr = self._create_sorted_array()
+            self.quadruplets = self._compute_quadruplets()
+    
+    def update_element(self, index, new_value):
+        """Update element at specified index."""
+        if 0 <= index < self.n:
+            self.arr[index] = new_value
+            self.sorted_arr = self._create_sorted_array()
+            self.quadruplets = self._compute_quadruplets()
+    
+    def get_quadruplets(self):
+        """Get current quadruplets that sum to target."""
+        return self.quadruplets
+    
+    def get_quadruplets_count(self):
+        """Get count of quadruplets that sum to target."""
+        return len(self.quadruplets)
+    
+    def get_quadruplets_with_constraints(self, constraint_func):
+        """Get quadruplets that satisfy custom constraints."""
+        result = []
+        for indices in self.quadruplets:
+            if constraint_func(indices, [self.arr[i] for i in indices]):
+                result.append(indices)
+        return result
+    
+    def get_quadruplets_in_range(self, start_idx, end_idx):
+        """Get quadruplets where all indices are in specified range."""
+        result = []
+        for indices in self.quadruplets:
+            if all(start_idx <= idx <= end_idx for idx in indices):
+                result.append(indices)
+        return result
+    
+    def get_quadruplets_with_distance_constraint(self, min_distance):
+        """Get quadruplets with minimum distance between indices."""
+        result = []
+        for indices in self.quadruplets:
+            valid = True
+            for i in range(len(indices)):
+                for j in range(i + 1, len(indices)):
+                    if abs(indices[i] - indices[j]) < min_distance:
+                        valid = False
+                        break
+                if not valid:
+                    break
+            if valid:
+                result.append(indices)
+        return result
+    
+    def get_quadruplet_statistics(self):
+        """Get statistics about quadruplets."""
+        if not self.quadruplets:
+            return {
+                'total_quadruplets': 0,
+                'average_sum': 0,
+                'index_distribution': {},
+                'value_distribution': {}
+            }
+        
+        total_quadruplets = len(self.quadruplets)
+        average_sum = self.target  # All quadruplets sum to target
+        
+        # Calculate index distribution
+        index_distribution = defaultdict(int)
+        for indices in self.quadruplets:
+            for idx in indices:
+                index_distribution[idx] += 1
+        
+        # Calculate value distribution
+        value_distribution = defaultdict(int)
+        for indices in self.quadruplets:
+            for idx in indices:
+                value_distribution[self.arr[idx]] += 1
+        
+        return {
+            'total_quadruplets': total_quadruplets,
+            'average_sum': average_sum,
+            'index_distribution': dict(index_distribution),
+            'value_distribution': dict(value_distribution)
+        }
+    
+    def get_quadruplet_patterns(self):
+        """Get patterns in quadruplets."""
+        patterns = {
+            'consecutive_indices': 0,
+            'alternating_pattern': 0,
+            'clustered_indices': 0,
+            'uniform_distribution': 0
+        }
+        
+        for indices in self.quadruplets:
+            sorted_indices = sorted(indices)
+            # Check for consecutive indices
+            consecutive_count = 0
+            for i in range(1, len(sorted_indices)):
+                if sorted_indices[i] == sorted_indices[i-1] + 1:
+                    consecutive_count += 1
+            patterns['consecutive_indices'] += consecutive_count
+            
+            # Check for alternating pattern
+            if len(sorted_indices) >= 4:
+                alternating = True
+                for i in range(2, len(sorted_indices)):
+                    if (sorted_indices[i] - sorted_indices[i-1]) != (sorted_indices[i-1] - sorted_indices[i-2]):
+                        alternating = False
+                        break
+                if alternating:
+                    patterns['alternating_pattern'] += 1
+        
+        return patterns
+    
+    def get_optimal_target_strategy(self):
+        """Get optimal strategy for target sum operations."""
+        if self.n < 4:
+            return {
+                'recommended_target': 0,
+                'max_quadruplets': 0,
+                'efficiency_rate': 0
+            }
+        
+        # Try different target values
+        best_target = self.target
+        max_quadruplets = len(self.quadruplets)
+        
+        # Test targets around current target
+        for test_target in range(max(1, self.target - 20), self.target + 21):
+            if test_target == self.target:
+                continue
+            
+            # Calculate quadruplets for this target
+            test_quadruplets = []
+            for i in range(len(self.sorted_arr) - 3):
+                for j in range(i + 1, len(self.sorted_arr) - 2):
+                    left = j + 1
+                    right = len(self.sorted_arr) - 1
+                    
+                    while left < right:
+                        current_sum = (self.sorted_arr[i][0] + self.sorted_arr[j][0] + 
+                                     self.sorted_arr[left][0] + self.sorted_arr[right][0])
+                        
+                        if current_sum == test_target:
+                            indices = [self.sorted_arr[i][1], self.sorted_arr[j][1], 
+                                     self.sorted_arr[left][1], self.sorted_arr[right][1]]
+                            test_quadruplets.append(indices)
+                            left += 1
+                            right -= 1
+                        elif current_sum < test_target:
+                            left += 1
+                        else:
+                            right -= 1
+            
+            if len(test_quadruplets) > max_quadruplets:
+                max_quadruplets = len(test_quadruplets)
+                best_target = test_target
+        
+        # Calculate efficiency rate
+        total_possible = self.n * (self.n - 1) * (self.n - 2) * (self.n - 3) // 24
+        efficiency_rate = max_quadruplets / total_possible if total_possible > 0 else 0
+        
+        return {
+            'recommended_target': best_target,
+            'max_quadruplets': max_quadruplets,
+            'efficiency_rate': efficiency_rate
+        }
+
+# Example usage
+arr = [1, 2, 3, 4, 5, 6, 7, 8]
+target = 20
+dynamic_four_sum = DynamicSumOfFourValues(arr, target)
+print(f"Initial quadruplets: {dynamic_four_sum.get_quadruplets_count()}")
+
+# Add an element
+dynamic_four_sum.add_element(9)
+print(f"After adding element: {dynamic_four_sum.get_quadruplets_count()}")
+
+# Update an element
+dynamic_four_sum.update_element(2, 10)
+print(f"After updating element: {dynamic_four_sum.get_quadruplets_count()}")
+
+# Get quadruplets with constraints
+def constraint_func(indices, values):
+    return all(v > 2 for v in values)
+
+print(f"Quadruplets with constraints: {dynamic_four_sum.get_quadruplets_with_constraints(constraint_func)}")
+
+# Get quadruplets in range
+print(f"Quadruplets in range [0, 5]: {dynamic_four_sum.get_quadruplets_in_range(0, 5)}")
+
+# Get quadruplets with distance constraint
+print(f"Quadruplets with distance constraint: {dynamic_four_sum.get_quadruplets_with_distance_constraint(2)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_four_sum.get_quadruplet_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_four_sum.get_quadruplet_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_four_sum.get_optimal_target_strategy()}")
+```
+
+### **Variation 2: Sum of Four Values with Different Operations**
+**Problem**: Handle different types of operations on sum of four values (weighted elements, priority-based selection, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of sum of four values queries.
+
+```python
+class AdvancedSumOfFourValues:
+    def __init__(self, arr, target, weights=None, priorities=None):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.target = target
+        self.weights = weights or [1] * self.n
+        self.priorities = priorities or [1] * self.n
+        self.sorted_arr = self._create_sorted_array()
+        self.quadruplets = self._compute_quadruplets()
+        self.weighted_quadruplets = self._compute_weighted_quadruplets()
+    
+    def _create_sorted_array(self):
+        """Create sorted array with original indices."""
+        indexed_arr = [(self.arr[i], i) for i in range(self.n)]
+        indexed_arr.sort()
+        return indexed_arr
+    
+    def _compute_quadruplets(self):
+        """Compute all quadruplets that sum to target."""
+        results = []
+        
+        for i in range(len(self.sorted_arr) - 3):
+            for j in range(i + 1, len(self.sorted_arr) - 2):
+                left = j + 1
+                right = len(self.sorted_arr) - 1
+                
+                while left < right:
+                    current_sum = (self.sorted_arr[i][0] + self.sorted_arr[j][0] + 
+                                 self.sorted_arr[left][0] + self.sorted_arr[right][0])
+                    
+                    if current_sum == self.target:
+                        indices = [self.sorted_arr[i][1], self.sorted_arr[j][1], 
+                                 self.sorted_arr[left][1], self.sorted_arr[right][1]]
+                        results.append(indices)
+                        left += 1
+                        right -= 1
+                    elif current_sum < self.target:
+                        left += 1
+                    else:
+                        right -= 1
+        
+        return results
+    
+    def _compute_weighted_quadruplets(self):
+        """Compute weighted quadruplets that sum to target."""
+        results = []
+        
+        for i in range(len(self.sorted_arr) - 3):
+            for j in range(i + 1, len(self.sorted_arr) - 2):
+                left = j + 1
+                right = len(self.sorted_arr) - 1
+                
+                while left < right:
+                    current_sum = (self.sorted_arr[i][0] + self.sorted_arr[j][0] + 
+                                 self.sorted_arr[left][0] + self.sorted_arr[right][0])
+                    
+                    if current_sum == self.target:
+                        indices = [self.sorted_arr[i][1], self.sorted_arr[j][1], 
+                                 self.sorted_arr[left][1], self.sorted_arr[right][1]]
+                        weighted_sum = sum(self.weights[idx] for idx in indices)
+                        results.append((indices, weighted_sum))
+                        left += 1
+                        right -= 1
+                    elif current_sum < self.target:
+                        left += 1
+                    else:
+                        right -= 1
+        
+        return results
+    
+    def get_quadruplets(self):
+        """Get current quadruplets that sum to target."""
+        return self.quadruplets
+    
+    def get_weighted_quadruplets(self):
+        """Get current weighted quadruplets that sum to target."""
+        return self.weighted_quadruplets
+    
+    def get_quadruplets_with_priority(self, priority_func):
+        """Get quadruplets considering priority."""
+        result = []
+        for indices in self.quadruplets:
+            values = [self.arr[i] for i in indices]
+            weights = [self.weights[i] for i in indices]
+            priorities = [self.priorities[i] for i in indices]
+            priority = priority_func(indices, values, weights, priorities)
+            result.append((indices, priority))
+        
+        # Sort by priority
+        result.sort(key=lambda x: x[1], reverse=True)
+        return result
+    
+    def get_quadruplets_with_optimization(self, optimization_func):
+        """Get quadruplets using custom optimization function."""
+        result = []
+        for indices in self.quadruplets:
+            values = [self.arr[i] for i in indices]
+            weights = [self.weights[i] for i in indices]
+            priorities = [self.priorities[i] for i in indices]
+            score = optimization_func(indices, values, weights, priorities)
+            result.append((indices, score))
+        
+        # Sort by optimization score
+        result.sort(key=lambda x: x[1], reverse=True)
+        return result
+    
+    def get_quadruplets_with_constraints(self, constraint_func):
+        """Get quadruplets that satisfy custom constraints."""
+        result = []
+        for indices in self.quadruplets:
+            values = [self.arr[i] for i in indices]
+            weights = [self.weights[i] for i in indices]
+            priorities = [self.priorities[i] for i in indices]
+            if constraint_func(indices, values, weights, priorities):
+                result.append(indices)
+        return result
+    
+    def get_quadruplets_with_multiple_criteria(self, criteria_list):
+        """Get quadruplets that satisfy multiple criteria."""
+        result = []
+        for indices in self.quadruplets:
+            values = [self.arr[i] for i in indices]
+            weights = [self.weights[i] for i in indices]
+            priorities = [self.priorities[i] for i in indices]
+            satisfies_all_criteria = True
+            for criterion in criteria_list:
+                if not criterion(indices, values, weights, priorities):
+                    satisfies_all_criteria = False
+                    break
+            if satisfies_all_criteria:
+                result.append(indices)
+        return result
+    
+    def get_quadruplets_with_alternatives(self, alternatives):
+        """Get quadruplets considering alternative values."""
+        result = []
+        
+        # Check original array
+        for indices in self.quadruplets:
+            result.append((indices, 'original'))
+        
+        # Check alternative values
+        for i, alt_values in alternatives.items():
+            if 0 <= i < self.n:
+                for alt_value in alt_values:
+                    # Create temporary array with alternative value
+                    temp_arr = self.arr[:]
+                    temp_arr[i] = alt_value
+                    
+                    # Calculate quadruplets for this alternative
+                    temp_sorted = [(temp_arr[j], j) for j in range(self.n)]
+                    temp_sorted.sort()
+                    
+                    for j in range(len(temp_sorted) - 3):
+                        for k in range(j + 1, len(temp_sorted) - 2):
+                            left = k + 1
+                            right = len(temp_sorted) - 1
+                            
+                            while left < right:
+                                current_sum = (temp_sorted[j][0] + temp_sorted[k][0] + 
+                                             temp_sorted[left][0] + temp_sorted[right][0])
+                                
+                                if current_sum == self.target:
+                                    indices = [temp_sorted[j][1], temp_sorted[k][1], 
+                                             temp_sorted[left][1], temp_sorted[right][1]]
+                                    result.append((indices, f'alternative_{alt_value}'))
+                                    left += 1
+                                    right -= 1
+                                elif current_sum < self.target:
+                                    left += 1
+                                else:
+                                    right -= 1
+        
+        return result
+    
+    def get_quadruplets_with_adaptive_criteria(self, adaptive_func):
+        """Get quadruplets using adaptive criteria."""
+        result = []
+        for indices in self.quadruplets:
+            values = [self.arr[i] for i in indices]
+            weights = [self.weights[i] for i in indices]
+            priorities = [self.priorities[i] for i in indices]
+            if adaptive_func(indices, values, weights, priorities, result):
+                result.append(indices)
+        return result
+    
+    def get_quadruplet_optimization(self):
+        """Get optimal quadruplet configuration."""
+        strategies = [
+            ('quadruplets', lambda: len(self.quadruplets)),
+            ('weighted_quadruplets', lambda: len(self.weighted_quadruplets)),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            current_value = strategy_func()
+            if current_value > best_value:
+                best_value = current_value
+                best_strategy = (strategy_name, current_value)
+        
+        return best_strategy
+
+# Example usage
+arr = [1, 2, 3, 4, 5, 6, 7, 8]
+target = 20
+weights = [2, 1, 3, 1, 2, 1, 3, 1]
+priorities = [1, 2, 1, 3, 1, 2, 1, 3]
+advanced_four_sum = AdvancedSumOfFourValues(arr, target, weights, priorities)
+
+print(f"Quadruplets: {len(advanced_four_sum.get_quadruplets())}")
+print(f"Weighted quadruplets: {len(advanced_four_sum.get_weighted_quadruplets())}")
+
+# Get quadruplets with priority
+def priority_func(indices, values, weights, priorities):
+    return sum(weights) * sum(priorities)
+
+print(f"Quadruplets with priority: {advanced_four_sum.get_quadruplets_with_priority(priority_func)}")
+
+# Get quadruplets with optimization
+def optimization_func(indices, values, weights, priorities):
+    return sum(values) * sum(weights) + sum(priorities)
+
+print(f"Quadruplets with optimization: {advanced_four_sum.get_quadruplets_with_optimization(optimization_func)}")
+
+# Get quadruplets with constraints
+def constraint_func(indices, values, weights, priorities):
+    return all(v > 2 for v in values) and sum(weights) > 5
+
+print(f"Quadruplets with constraints: {advanced_four_sum.get_quadruplets_with_constraints(constraint_func)}")
+
+# Get quadruplets with multiple criteria
+def criterion1(indices, values, weights, priorities):
+    return all(v > 2 for v in values)
+
+def criterion2(indices, values, weights, priorities):
+    return sum(weights) > 5
+
+criteria_list = [criterion1, criterion2]
+print(f"Quadruplets with multiple criteria: {advanced_four_sum.get_quadruplets_with_multiple_criteria(criteria_list)}")
+
+# Get quadruplets with alternatives
+alternatives = {1: [3, 5], 3: [6, 8]}
+print(f"Quadruplets with alternatives: {advanced_four_sum.get_quadruplets_with_alternatives(alternatives)}")
+
+# Get quadruplets with adaptive criteria
+def adaptive_func(indices, values, weights, priorities, current_result):
+    return all(v > 2 for v in values) and len(current_result) < 5
+
+print(f"Quadruplets with adaptive criteria: {advanced_four_sum.get_quadruplets_with_adaptive_criteria(adaptive_func)}")
+
+# Get quadruplet optimization
+print(f"Quadruplet optimization: {advanced_four_sum.get_quadruplet_optimization()}")
+```
+
+### **Variation 3: Sum of Four Values with Constraints**
+**Problem**: Handle sum of four values with additional constraints (cost limits, distance constraints, resource constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedSumOfFourValues:
+    def __init__(self, arr, target, constraints=None):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.target = target
+        self.constraints = constraints or {}
+        self.sorted_arr = self._create_sorted_array()
+        self.quadruplets = self._compute_quadruplets()
+    
+    def _create_sorted_array(self):
+        """Create sorted array with original indices."""
+        indexed_arr = [(self.arr[i], i) for i in range(self.n)]
+        indexed_arr.sort()
+        return indexed_arr
+    
+    def _compute_quadruplets(self):
+        """Compute all quadruplets that sum to target."""
+        results = []
+        
+        for i in range(len(self.sorted_arr) - 3):
+            for j in range(i + 1, len(self.sorted_arr) - 2):
+                left = j + 1
+                right = len(self.sorted_arr) - 1
+                
+                while left < right:
+                    current_sum = (self.sorted_arr[i][0] + self.sorted_arr[j][0] + 
+                                 self.sorted_arr[left][0] + self.sorted_arr[right][0])
+                    
+                    if current_sum == self.target:
+                        indices = [self.sorted_arr[i][1], self.sorted_arr[j][1], 
+                                 self.sorted_arr[left][1], self.sorted_arr[right][1]]
+                        results.append(indices)
+                        left += 1
+                        right -= 1
+                    elif current_sum < self.target:
+                        left += 1
+                    else:
+                        right -= 1
+        
+        return results
+    
+    def get_quadruplets_with_cost_constraints(self, cost_limit):
+        """Get quadruplets considering cost constraints."""
+        result = []
+        total_cost = 0
+        
+        for indices in self.quadruplets:
+            # Calculate cost for this quadruplet
+            cost = sum(abs(self.arr[i]) for i in indices)  # Simple cost model
+            if total_cost + cost <= cost_limit:
+                result.append(indices)
+                total_cost += cost
+        
+        return result
+    
+    def get_quadruplets_with_distance_constraints(self, min_distance, max_distance):
+        """Get quadruplets considering distance constraints."""
+        result = []
+        
+        for indices in self.quadruplets:
+            # Check distance constraints
+            valid = True
+            for i in range(len(indices)):
+                for j in range(i + 1, len(indices)):
+                    distance = abs(indices[i] - indices[j])
+                    if distance < min_distance or distance > max_distance:
+                        valid = False
+                        break
+                if not valid:
+                    break
+            
+            if valid:
+                result.append(indices)
+        
+        return result
+    
+    def get_quadruplets_with_resource_constraints(self, resource_limits, resource_consumption):
+        """Get quadruplets considering resource constraints."""
+        result = []
+        current_resources = [0] * len(resource_limits)
+        
+        for indices in self.quadruplets:
+            # Check resource constraints
+            can_afford = True
+            for idx in indices:
+                consumption = resource_consumption.get(idx, [0] * len(resource_limits))
+                for j, res_consumption in enumerate(consumption):
+                    if current_resources[j] + res_consumption > resource_limits[j]:
+                        can_afford = False
+                        break
+                if not can_afford:
+                    break
+            
+            if can_afford:
+                result.append(indices)
+                for idx in indices:
+                    consumption = resource_consumption.get(idx, [0] * len(resource_limits))
+                    for j, res_consumption in enumerate(consumption):
+                        current_resources[j] += res_consumption
+        
+        return result
+    
+    def get_quadruplets_with_mathematical_constraints(self, constraint_func):
+        """Get quadruplets that satisfy custom mathematical constraints."""
+        result = []
+        
+        for indices in self.quadruplets:
+            values = [self.arr[i] for i in indices]
+            if constraint_func(indices, values):
+                result.append(indices)
+        
+        return result
+    
+    def get_quadruplets_with_range_constraints(self, range_constraints):
+        """Get quadruplets that satisfy range constraints."""
+        result = []
+        
+        for indices in self.quadruplets:
+            # Check if quadruplet satisfies all range constraints
+            satisfies_constraints = True
+            for constraint in range_constraints:
+                if not constraint(indices, [self.arr[i] for i in indices]):
+                    satisfies_constraints = False
+                    break
+            
+            if satisfies_constraints:
+                result.append(indices)
+        
+        return result
+    
+    def get_quadruplets_with_optimization_constraints(self, optimization_func):
+        """Get quadruplets using custom optimization constraints."""
+        # Sort quadruplets by optimization function
+        all_quadruplets = []
+        for indices in self.quadruplets:
+            values = [self.arr[i] for i in indices]
+            score = optimization_func(indices, values)
+            all_quadruplets.append((indices, score))
+        
+        # Sort by optimization score
+        all_quadruplets.sort(key=lambda x: x[1], reverse=True)
+        
+        return [indices for indices, _ in all_quadruplets]
+    
+    def get_quadruplets_with_multiple_constraints(self, constraints_list):
+        """Get quadruplets that satisfy multiple constraints."""
+        result = []
+        
+        for indices in self.quadruplets:
+            values = [self.arr[i] for i in indices]
+            # Check if quadruplet satisfies all constraints
+            satisfies_all_constraints = True
+            for constraint in constraints_list:
+                if not constraint(indices, values):
+                    satisfies_all_constraints = False
+                    break
+            
+            if satisfies_all_constraints:
+                result.append(indices)
+        
+        return result
+    
+    def get_quadruplets_with_priority_constraints(self, priority_func):
+        """Get quadruplets with priority-based constraints."""
+        # Sort quadruplets by priority
+        all_quadruplets = []
+        for indices in self.quadruplets:
+            values = [self.arr[i] for i in indices]
+            priority = priority_func(indices, values)
+            all_quadruplets.append((indices, priority))
+        
+        # Sort by priority
+        all_quadruplets.sort(key=lambda x: x[1], reverse=True)
+        
+        return [indices for indices, _ in all_quadruplets]
+    
+    def get_quadruplets_with_adaptive_constraints(self, adaptive_func):
+        """Get quadruplets with adaptive constraints."""
+        result = []
+        
+        for indices in self.quadruplets:
+            values = [self.arr[i] for i in indices]
+            # Check adaptive constraints
+            if adaptive_func(indices, values, result):
+                result.append(indices)
+        
+        return result
+    
+    def get_optimal_quadruplet_strategy(self):
+        """Get optimal quadruplet strategy considering all constraints."""
+        strategies = [
+            ('cost_constraints', self.get_quadruplets_with_cost_constraints),
+            ('distance_constraints', self.get_quadruplets_with_distance_constraints),
+            ('resource_constraints', self.get_quadruplets_with_resource_constraints),
+        ]
+        
+        best_strategy = None
+        best_count = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'cost_constraints':
+                    current_count = len(strategy_func(100))  # Cost limit of 100
+                elif strategy_name == 'distance_constraints':
+                    current_count = len(strategy_func(1, 10))  # Distance between 1 and 10
+                elif strategy_name == 'resource_constraints':
+                    resource_limits = [100, 50]
+                    resource_consumption = {i: [10, 5] for i in range(self.n)}
+                    current_count = len(strategy_func(resource_limits, resource_consumption))
+                
+                if current_count > best_count:
+                    best_count = current_count
+                    best_strategy = (strategy_name, current_count)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'max_cost': 100,
+    'min_distance': 1,
+    'max_distance': 10
+}
+
+arr = [1, 2, 3, 4, 5, 6, 7, 8]
+target = 20
+constrained_four_sum = ConstrainedSumOfFourValues(arr, target, constraints)
+
+print("Cost-constrained quadruplets:", len(constrained_four_sum.get_quadruplets_with_cost_constraints(100)))
+
+print("Distance-constrained quadruplets:", len(constrained_four_sum.get_quadruplets_with_distance_constraints(1, 10)))
+
+# Resource constraints
+resource_limits = [100, 50]
+resource_consumption = {i: [10, 5] for i in range(len(arr))}
+print("Resource-constrained quadruplets:", len(constrained_four_sum.get_quadruplets_with_resource_constraints(resource_limits, resource_consumption)))
+
+# Mathematical constraints
+def custom_constraint(indices, values):
+    return all(v > 2 for v in values) and len(set(indices)) == 4
+
+print("Mathematical constraint quadruplets:", len(constrained_four_sum.get_quadruplets_with_mathematical_constraints(custom_constraint)))
+
+# Range constraints
+def range_constraint(indices, values):
+    return all(0 <= idx < len(arr) for idx in indices)
+
+range_constraints = [range_constraint]
+print("Range-constrained quadruplets:", len(constrained_four_sum.get_quadruplets_with_range_constraints(range_constraints)))
+
+# Multiple constraints
+def constraint1(indices, values):
+    return all(v > 2 for v in values)
+
+def constraint2(indices, values):
+    return len(set(indices)) == 4
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints quadruplets:", len(constrained_four_sum.get_quadruplets_with_multiple_constraints(constraints_list)))
+
+# Priority constraints
+def priority_func(indices, values):
+    return sum(values)
+
+print("Priority-constrained quadruplets:", len(constrained_four_sum.get_quadruplets_with_priority_constraints(priority_func)))
+
+# Adaptive constraints
+def adaptive_func(indices, values, current_result):
+    return all(v > 2 for v in values) and len(current_result) < 10
+
+print("Adaptive constraint quadruplets:", len(constrained_four_sum.get_quadruplets_with_adaptive_constraints(adaptive_func)))
+
+# Optimal strategy
+optimal = constrained_four_sum.get_optimal_quadruplet_strategy()
+print(f"Optimal strategy: {optimal}")
+```
+
+### Related Problems
+
 #### **CSES Problems**
 - [Sum of Four Values](https://cses.fi/problemset/task/1642) - Basic four values problem
 - [Sum of Two Values](https://cses.fi/problemset/task/1640) - Two values variant

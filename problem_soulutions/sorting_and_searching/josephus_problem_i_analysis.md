@@ -210,125 +210,625 @@ def optimal_josephus_problem_i(arr):
 - **Optimal Algorithm**: Mathematical formula provides O(1) solution
 - **Optimal Approach**: Mathematical approach is the most efficient for large inputs
 
-## 🚀 Problem Variations
+## Problem Variations
 
-### Extended Problems with Detailed Code Examples
+### **Variation 1: Josephus Problem with Dynamic Updates**
+**Problem**: Handle dynamic updates (add/remove people, change step size) while maintaining efficient survivor calculation.
 
-### Variation 1: Josephus Problem with Different Step Size
-**Problem**: Eliminate every k-th person instead of every second person.
-
-**Link**: [CSES Problem Set - Josephus Problem Different Step](https://cses.fi/problemset/task/josephus_different_step)
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
 
 ```python
-def josephus_different_step(n, k):
-    """
-    Josephus problem with step size k
-    """
-    if n == 1:
-        return 1
-    
-    # Recursive formula: J(n,k) = (J(n-1,k) + k) % n
-    # If result is 0, it means the last person is at position n
-    result = (josephus_different_step(n - 1, k) + k) % n
-    return result if result != 0 else n
+from collections import defaultdict
+import bisect
 
-def josephus_different_step_iterative(n, k):
-    """
-    Iterative version for better performance
-    """
-    result = 0
-    for i in range(2, n + 1):
-        result = (result + k) % i
-    return result + 1
+class DynamicJosephusProblem:
+    def __init__(self, n, k):
+        self.n = n
+        self.k = k
+        self.people = list(range(1, n + 1))
+        self.eliminated = set()
+        self.current_index = 0
+    
+    def add_person(self, position):
+        """Add a new person at the specified position."""
+        self.people.insert(position - 1, len(self.people) + 1)
+        self.n += 1
+        # Adjust current index if necessary
+        if position <= self.current_index + 1:
+            self.current_index += 1
+    
+    def remove_person(self, person_id):
+        """Remove a person from the circle."""
+        if person_id in self.people:
+            position = self.people.index(person_id)
+            self.people.pop(position)
+            self.n -= 1
+            # Adjust current index if necessary
+            if position < self.current_index:
+                self.current_index -= 1
+            elif position == self.current_index and self.current_index >= len(self.people):
+                self.current_index = 0
+    
+    def update_step_size(self, new_k):
+        """Update the step size for elimination."""
+        self.k = new_k
+    
+    def get_survivor_simulation(self):
+        """Get survivor using simulation approach."""
+        if self.n == 0:
+            return None
+        
+        people = self.people[:]
+        current_index = 0
+        
+        while len(people) > 1:
+            # Find the next person to eliminate
+            current_index = (current_index + self.k - 1) % len(people)
+            people.pop(current_index)
+        
+        return people[0] if people else None
+    
+    def get_survivor_mathematical(self):
+        """Get survivor using mathematical formula."""
+        if self.n == 0:
+            return None
+        
+        # Use the Josephus formula: J(n,k) = (J(n-1,k) + k) % n
+        result = 0
+        for i in range(2, self.n + 1):
+            result = (result + self.k) % i
+        
+        # Convert to 1-based indexing and map to actual person ID
+        survivor_position = result + 1
+        if survivor_position <= len(self.people):
+            return self.people[survivor_position - 1]
+        return None
+    
+    def get_elimination_sequence(self):
+        """Get the complete elimination sequence."""
+        if self.n == 0:
+            return []
+        
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        
+        while len(people) > 1:
+            # Find the next person to eliminate
+            current_index = (current_index + self.k - 1) % len(people)
+            eliminated_person = people.pop(current_index)
+            elimination_sequence.append(eliminated_person)
+        
+        return elimination_sequence
+    
+    def get_survivors_at_step(self, target_count):
+        """Get survivors when there are target_count people left."""
+        if self.n == 0 or target_count <= 0:
+            return []
+        
+        people = self.people[:]
+        current_index = 0
+        
+        while len(people) > target_count:
+            # Find the next person to eliminate
+            current_index = (current_index + self.k - 1) % len(people)
+            people.pop(current_index)
+        
+        return people
+    
+    def get_elimination_time(self, person_id):
+        """Get the step when a specific person is eliminated."""
+        if person_id not in self.people:
+            return -1
+        
+        people = self.people[:]
+        current_index = 0
+        step = 0
+        
+        while len(people) > 1:
+            step += 1
+            # Find the next person to eliminate
+            current_index = (current_index + self.k - 1) % len(people)
+            eliminated_person = people.pop(current_index)
+            
+            if eliminated_person == person_id:
+                return step
+        
+        return -1  # Person survived
+
+# Example usage
+josephus = DynamicJosephusProblem(7, 2)
+print(f"Initial survivor: {josephus.get_survivor_mathematical()}")
+
+# Add a person
+josephus.add_person(3)
+print(f"After adding person: {josephus.get_survivor_mathematical()}")
+
+# Remove a person
+josephus.remove_person(4)
+print(f"After removing person 4: {josephus.get_survivor_mathematical()}")
+
+# Update step size
+josephus.update_step_size(3)
+print(f"With step size 3: {josephus.get_survivor_mathematical()}")
+
+# Get elimination sequence
+print(f"Elimination sequence: {josephus.get_elimination_sequence()}")
 ```
 
-### Variation 2: Josephus Problem with Multiple Survivors
-**Problem**: Find the positions of the last m survivors instead of just one.
+### **Variation 2: Josephus Problem with Different Operations**
+**Problem**: Handle different types of operations on Josephus problem (multiple survivors, different elimination patterns, priority-based elimination).
 
-**Link**: [CSES Problem Set - Josephus Problem Multiple Survivors](https://cses.fi/problemset/task/josephus_multiple_survivors)
+**Approach**: Use advanced data structures for efficient multiple survivor tracking and pattern analysis.
 
 ```python
-def josephus_multiple_survivors(n, k, m):
-    """
-    Find positions of last m survivors
-    """
-    # Simulate the process to find all survivors
-    people = list(range(1, n + 1))
-    current_index = 0
+class AdvancedJosephusProblem:
+    def __init__(self, n, k):
+        self.n = n
+        self.k = k
+        self.people = list(range(1, n + 1))
+        self.priorities = [1] * n  # Default priority for all people
+        self.elimination_patterns = []
     
-    while len(people) > m:
-        # Find the next person to eliminate
-        current_index = (current_index + k - 1) % len(people)
-        people.pop(current_index)
+    def set_priorities(self, priorities):
+        """Set priorities for people (higher priority = eliminated later)."""
+        self.priorities = priorities[:]
     
-    return people
+    def get_multiple_survivors(self, survivor_count):
+        """Get multiple survivors using priority-based elimination."""
+        if survivor_count <= 0 or survivor_count >= self.n:
+            return self.people[:]
+        
+        # Create list of (person_id, priority) tuples
+        people_with_priority = [(self.people[i], self.priorities[i]) for i in range(self.n)]
+        
+        # Sort by priority (higher priority first)
+        people_with_priority.sort(key=lambda x: x[1], reverse=True)
+        
+        # Simulate elimination with priority consideration
+        current_index = 0
+        while len(people_with_priority) > survivor_count:
+            # Find the next person to eliminate (lowest priority among candidates)
+            elimination_candidates = []
+            for i in range(len(people_with_priority)):
+                if i != current_index:
+                    elimination_candidates.append((i, people_with_priority[i][1]))
+            
+            # Select the person with lowest priority
+            if elimination_candidates:
+                elimination_candidates.sort(key=lambda x: x[1])
+                person_to_eliminate = elimination_candidates[0][0]
+                people_with_priority.pop(person_to_eliminate)
+                
+                # Adjust current index
+                if person_to_eliminate < current_index:
+                    current_index -= 1
+                elif person_to_eliminate == current_index and current_index >= len(people_with_priority):
+                    current_index = 0
+            else:
+                break
+        
+        return [person[0] for person in people_with_priority]
+    
+    def get_elimination_with_patterns(self, pattern_func):
+        """Get elimination sequence based on custom patterns."""
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        
+        while len(people) > 1:
+            # Use pattern function to determine next person to eliminate
+            next_index = pattern_func(people, current_index, self.k)
+            eliminated_person = people.pop(next_index)
+            elimination_sequence.append(eliminated_person)
+            current_index = next_index % len(people)
+        
+        return elimination_sequence
+    
+    def get_alternating_elimination(self, k1, k2):
+        """Alternate between two step sizes."""
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        use_k1 = True
+        
+        while len(people) > 1:
+            k = k1 if use_k1 else k2
+            current_index = (current_index + k - 1) % len(people)
+            eliminated_person = people.pop(current_index)
+            elimination_sequence.append(eliminated_person)
+            use_k1 = not use_k1  # Alternate step size
+        
+        return people[0] if people else None, elimination_sequence
+    
+    def get_elimination_with_skip(self, k, skip_count):
+        """Eliminate every k-th person, but skip skip_count people after each elimination."""
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        
+        while len(people) > 1:
+            # Find the next person to eliminate
+            current_index = (current_index + k - 1) % len(people)
+            eliminated_person = people.pop(current_index)
+            elimination_sequence.append(eliminated_person)
+            
+            # Skip skip_count people
+            current_index = (current_index + skip_count) % len(people)
+        
+        return people[0] if people else None, elimination_sequence
+    
+    def get_elimination_with_reversal(self, k, reverse_every):
+        """Reverse elimination direction every reverse_every eliminations."""
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        direction = 1  # 1 for forward, -1 for backward
+        elimination_count = 0
+        
+        while len(people) > 1:
+            # Find the next person to eliminate
+            if direction == 1:
+                current_index = (current_index + k - 1) % len(people)
+            else:
+                current_index = (current_index - k + 1) % len(people)
+            
+            eliminated_person = people.pop(current_index)
+            elimination_sequence.append(eliminated_person)
+            elimination_count += 1
+            
+            # Reverse direction if needed
+            if elimination_count % reverse_every == 0:
+                direction *= -1
+        
+        return people[0] if people else None, elimination_sequence
+    
+    def get_elimination_with_weights(self, weights):
+        """Eliminate people based on weights (higher weight = more likely to survive)."""
+        if len(weights) != self.n:
+            weights = [1] * self.n
+        
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        
+        while len(people) > 1:
+            # Calculate weighted probabilities for elimination
+            total_weight = sum(weights[i] for i in range(len(people)))
+            
+            # Find the next person to eliminate (weighted selection)
+            target_weight = (current_index + self.k - 1) % total_weight
+            cumulative_weight = 0
+            
+            for i in range(len(people)):
+                cumulative_weight += weights[i]
+                if cumulative_weight > target_weight:
+                    eliminated_person = people.pop(i)
+                    elimination_sequence.append(eliminated_person)
+                    current_index = i % len(people)
+                    break
+        
+        return people[0] if people else None, elimination_sequence
+    
+    def analyze_elimination_patterns(self):
+        """Analyze patterns in the elimination sequence."""
+        elimination_sequence = self.get_elimination_sequence()
+        
+        patterns = {
+            'total_eliminations': len(elimination_sequence),
+            'elimination_order': elimination_sequence,
+            'survivor': elimination_sequence[-1] if elimination_sequence else None,
+            'first_eliminated': elimination_sequence[0] if elimination_sequence else None,
+            'last_eliminated': elimination_sequence[-1] if elimination_sequence else None
+        }
+        
+        return patterns
+    
+    def get_elimination_sequence(self):
+        """Get the complete elimination sequence."""
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        
+        while len(people) > 1:
+            current_index = (current_index + self.k - 1) % len(people)
+            eliminated_person = people.pop(current_index)
+            elimination_sequence.append(eliminated_person)
+        
+        return elimination_sequence
 
-def josephus_multiple_survivors_optimized(n, k, m):
-    """
-    Optimized version using mathematical approach
-    """
-    # For small m, we can use the mathematical formula
-    # and work backwards to find all survivors
-    survivors = []
-    
-    # Start with the last survivor
-    last_survivor = josephus_different_step(n, k)
-    survivors.append(last_survivor)
-    
-    # Find previous survivors by working backwards
-    current_n = n
-    for _ in range(m - 1):
-        # Find the previous survivor
-        prev_survivor = josephus_different_step(current_n - 1, k)
-        survivors.append(prev_survivor)
-        current_n -= 1
-    
-    return sorted(survivors)
+# Example usage
+advanced_josephus = AdvancedJosephusProblem(7, 2)
+
+# Set priorities
+priorities = [3, 1, 5, 2, 4, 1, 3]
+advanced_josephus.set_priorities(priorities)
+print(f"Multiple survivors (3): {advanced_josephus.get_multiple_survivors(3)}")
+
+# Alternating elimination
+survivor, sequence = advanced_josephus.get_alternating_elimination(2, 3)
+print(f"Alternating elimination survivor: {survivor}")
+
+# Elimination with skip
+survivor, sequence = advanced_josephus.get_elimination_with_skip(2, 1)
+print(f"Elimination with skip survivor: {survivor}")
+
+# Elimination with reversal
+survivor, sequence = advanced_josephus.get_elimination_with_reversal(2, 3)
+print(f"Elimination with reversal survivor: {survivor}")
+
+# Weighted elimination
+weights = [2, 1, 3, 1, 2, 1, 3]
+survivor, sequence = advanced_josephus.get_elimination_with_weights(weights)
+print(f"Weighted elimination survivor: {survivor}")
+
+# Pattern analysis
+patterns = advanced_josephus.analyze_elimination_patterns()
+print(f"Elimination patterns: {patterns}")
 ```
 
-### Variation 3: Josephus Problem with Dynamic Step Size
-**Problem**: The step size changes after each elimination (e.g., increases by 1).
+### **Variation 3: Josephus Problem with Constraints**
+**Problem**: Handle Josephus problem with additional constraints (time limits, safety requirements, group elimination, circular constraints).
 
-**Link**: [CSES Problem Set - Josephus Problem Dynamic Step](https://cses.fi/problemset/task/josephus_dynamic_step)
+**Approach**: Use constraint satisfaction with advanced scheduling and optimization.
 
 ```python
-def josephus_dynamic_step(n, initial_k, step_increase):
-    """
-    Josephus problem with dynamic step size
-    """
-    people = list(range(1, n + 1))
-    current_index = 0
-    current_k = initial_k
+class ConstrainedJosephusProblem:
+    def __init__(self, n, k, constraints=None):
+        self.n = n
+        self.k = k
+        self.people = list(range(1, n + 1))
+        self.constraints = constraints or {}
+        self.elimination_history = []
     
-    while len(people) > 1:
-        # Find the next person to eliminate
-        current_index = (current_index + current_k - 1) % len(people)
-        people.pop(current_index)
+    def add_person_with_constraints(self, person_id, time_limit, safety_rating, group_id):
+        """Add person with various constraints."""
+        person = {
+            'id': person_id,
+            'time_limit': time_limit,
+            'safety_rating': safety_rating,
+            'group_id': group_id
+        }
+        self.people.append(person)
+        self.n += 1
+        return person_id
+    
+    def can_eliminate_person(self, person, current_time):
+        """Check if a person can be eliminated based on constraints."""
+        # Time constraint
+        if person['time_limit'] < current_time:
+            return False
         
-        # Increase step size for next round
-        current_k += step_increase
+        # Safety constraint
+        if person['safety_rating'] < self.constraints.get('min_safety_rating', 1):
+            return False
+        
+        # Group constraint
+        if self.constraints.get('eliminate_groups_together', False):
+            # Check if all group members can be eliminated together
+            group_members = [p for p in self.people if p['group_id'] == person['group_id']]
+            if len(group_members) > 1:
+                return all(self.can_eliminate_person(member, current_time) for member in group_members)
+        
+        return True
     
-    return people[0]
+    def get_elimination_with_time_constraints(self, time_limit):
+        """Get elimination sequence considering time constraints."""
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        current_time = 0
+        
+        while len(people) > 1 and current_time < time_limit:
+            # Find the next person to eliminate
+            attempts = 0
+            while attempts < len(people):
+                current_index = (current_index + self.k - 1) % len(people)
+                person = people[current_index]
+                
+                if self.can_eliminate_person(person, current_time):
+                    eliminated_person = people.pop(current_index)
+                    elimination_sequence.append(eliminated_person)
+                    current_time += 1
+                    break
+                
+                attempts += 1
+            
+            if attempts >= len(people):
+                break  # No one can be eliminated
+        
+        return elimination_sequence, people
+    
+    def get_elimination_with_safety_constraints(self):
+        """Get elimination sequence considering safety requirements."""
+        # Sort people by safety rating (lower rating = eliminated first)
+        people = sorted(self.people, key=lambda x: x['safety_rating'])
+        elimination_sequence = []
+        current_index = 0
+        
+        while len(people) > 1:
+            # Find the next person to eliminate
+            current_index = (current_index + self.k - 1) % len(people)
+            eliminated_person = people.pop(current_index)
+            elimination_sequence.append(eliminated_person)
+        
+        return elimination_sequence, people
+    
+    def get_elimination_with_group_constraints(self):
+        """Get elimination sequence considering group constraints."""
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        
+        while len(people) > 1:
+            # Find the next person to eliminate
+            current_index = (current_index + self.k - 1) % len(people)
+            person = people[current_index]
+            
+            # Check if we need to eliminate the entire group
+            if self.constraints.get('eliminate_groups_together', False):
+                group_members = [p for p in people if p['group_id'] == person['group_id']]
+                if len(group_members) > 1:
+                    # Eliminate entire group
+                    for member in group_members:
+                        if member in people:
+                            people.remove(member)
+                            elimination_sequence.append(member)
+                else:
+                    # Eliminate single person
+                    eliminated_person = people.pop(current_index)
+                    elimination_sequence.append(eliminated_person)
+            else:
+                # Normal elimination
+                eliminated_person = people.pop(current_index)
+                elimination_sequence.append(eliminated_person)
+        
+        return elimination_sequence, people
+    
+    def get_elimination_with_circular_constraints(self, max_eliminations_per_round):
+        """Get elimination sequence with circular constraints."""
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        round_count = 0
+        
+        while len(people) > 1:
+            round_count += 1
+            eliminations_this_round = 0
+            
+            while len(people) > 1 and eliminations_this_round < max_eliminations_per_round:
+                # Find the next person to eliminate
+                current_index = (current_index + self.k - 1) % len(people)
+                eliminated_person = people.pop(current_index)
+                elimination_sequence.append(eliminated_person)
+                eliminations_this_round += 1
+            
+            # Move to next round
+            current_index = current_index % len(people)
+        
+        return elimination_sequence, people
+    
+    def get_elimination_with_priority_constraints(self, priority_function):
+        """Get elimination sequence with priority-based constraints."""
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        
+        while len(people) > 1:
+            # Calculate priorities for all people
+            priorities = [priority_function(person, current_index) for person in people]
+            
+            # Find the person with lowest priority to eliminate
+            min_priority = min(priorities)
+            min_priority_indices = [i for i, p in enumerate(priorities) if p == min_priority]
+            
+            # Among people with minimum priority, use the k-th one
+            if len(min_priority_indices) >= self.k:
+                person_to_eliminate = min_priority_indices[self.k - 1]
+            else:
+                person_to_eliminate = min_priority_indices[0]
+            
+            eliminated_person = people.pop(person_to_eliminate)
+            elimination_sequence.append(eliminated_person)
+            current_index = person_to_eliminate % len(people)
+        
+        return elimination_sequence, people
+    
+    def get_elimination_with_resource_constraints(self, resource_limits, resource_consumption):
+        """Get elimination sequence considering resource constraints."""
+        people = self.people[:]
+        elimination_sequence = []
+        current_index = 0
+        resources_used = [0] * len(resource_limits)
+        
+        while len(people) > 1:
+            # Find the next person to eliminate
+            current_index = (current_index + self.k - 1) % len(people)
+            person = people[current_index]
+            
+            # Check resource constraints
+            can_eliminate = True
+            for i, consumption in enumerate(resource_consumption[person['id'] - 1]):
+                if resources_used[i] + consumption > resource_limits[i]:
+                    can_eliminate = False
+                    break
+            
+            if can_eliminate:
+                # Consume resources and eliminate person
+                for i, consumption in enumerate(resource_consumption[person['id'] - 1]):
+                    resources_used[i] += consumption
+                
+                eliminated_person = people.pop(current_index)
+                elimination_sequence.append(eliminated_person)
+            else:
+                # Skip this person and try next
+                current_index = (current_index + 1) % len(people)
+        
+        return elimination_sequence, people
+    
+    def get_optimal_elimination_strategy(self):
+        """Get optimal elimination strategy considering all constraints."""
+        strategies = [
+            ('time_constraints', self.get_elimination_with_time_constraints),
+            ('safety_constraints', self.get_elimination_with_safety_constraints),
+            ('group_constraints', self.get_elimination_with_group_constraints),
+            ('circular_constraints', self.get_elimination_with_circular_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = float('inf')
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'time_constraints':
+                    elimination_sequence, survivors = strategy_func(100)  # 100 time units
+                elif strategy_name == 'circular_constraints':
+                    elimination_sequence, survivors = strategy_func(3)  # 3 eliminations per round
+                else:
+                    elimination_sequence, survivors = strategy_func()
+                
+                # Score based on number of survivors (lower is better)
+                score = len(survivors)
+                if score < best_score:
+                    best_score = score
+                    best_strategy = (strategy_name, elimination_sequence, survivors)
+            except:
+                continue
+        
+        return best_strategy
 
-def josephus_dynamic_step_optimized(n, initial_k, step_increase):
-    """
-    Optimized version using mathematical approach
-    """
-    # For dynamic step size, we need to simulate
-    # as there's no simple mathematical formula
-    people = list(range(1, n + 1))
-    current_index = 0
-    current_k = initial_k
-    
-    while len(people) > 1:
-        # Find the next person to eliminate
-        current_index = (current_index + current_k - 1) % len(people)
-        people.pop(current_index)
-        
-        # Increase step size for next round
-        current_k += step_increase
-    
-    return people[0]
+# Example usage
+constraints = {
+    'min_safety_rating': 2,
+    'eliminate_groups_together': True,
+    'max_eliminations_per_round': 2
+}
+
+constrained_josephus = ConstrainedJosephusProblem(7, 2, constraints)
+
+# Add people with constraints
+person1 = constrained_josephus.add_person_with_constraints(1, 20, 3, 1)
+person2 = constrained_josephus.add_person_with_constraints(2, 15, 2, 1)
+person3 = constrained_josephus.add_person_with_constraints(3, 25, 4, 2)
+
+print("Time-constrained elimination:", constrained_josephus.get_elimination_with_time_constraints(10))
+print("Safety-constrained elimination:", constrained_josephus.get_elimination_with_safety_constraints())
+print("Group-constrained elimination:", constrained_josephus.get_elimination_with_group_constraints())
+
+# Priority-based elimination
+def priority_func(person, current_index):
+    return person['safety_rating'] + person['time_limit']
+
+print("Priority-constrained elimination:", constrained_josephus.get_elimination_with_priority_constraints(priority_func))
+
+# Resource-constrained elimination
+resource_limits = [100, 50]
+resource_consumption = [[10, 5], [15, 8], [12, 6]]
+print("Resource-constrained elimination:", constrained_josephus.get_elimination_with_resource_constraints(resource_limits, resource_consumption))
+
+# Optimal strategy
+optimal = constrained_josephus.get_optimal_elimination_strategy()
+print(f"Optimal strategy: {optimal}")
 ```
 
 ### Related Problems

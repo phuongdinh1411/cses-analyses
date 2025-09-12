@@ -453,6 +453,415 @@ def array_division_dynamic_weights(arr, weights, k):
     return left
 ```
 
+## Problem Variations
+
+### **Variation 1: Array Division with Dynamic Updates**
+**Problem**: Handle dynamic array updates while maintaining optimal division.
+
+**Approach**: Use segment trees or other dynamic data structures for efficient updates.
+
+```python
+class DynamicArrayDivision:
+    def __init__(self, arr, k):
+        self.arr = arr[:]
+        self.k = k
+        self.n = len(arr)
+        self.segment_tree = [0] * (4 * self.n)
+        self._build_segment_tree(0, 0, self.n - 1)
+    
+    def _build_segment_tree(self, node, start, end):
+        """Build segment tree for range sum queries."""
+        if start == end:
+            self.segment_tree[node] = self.arr[start]
+        else:
+            mid = (start + end) // 2
+            self._build_segment_tree(2 * node + 1, start, mid)
+            self._build_segment_tree(2 * node + 2, mid + 1, end)
+            self.segment_tree[node] = self.segment_tree[2 * node + 1] + self.segment_tree[2 * node + 2]
+    
+    def update(self, index, new_value):
+        """Update array element and segment tree."""
+        self.arr[index] = new_value
+        self._update_segment_tree(0, 0, self.n - 1, index, new_value)
+    
+    def _update_segment_tree(self, node, start, end, index, new_value):
+        """Update segment tree after array modification."""
+        if start == end:
+            self.segment_tree[node] = new_value
+        else:
+            mid = (start + end) // 2
+            if index <= mid:
+                self._update_segment_tree(2 * node + 1, start, mid, index, new_value)
+            else:
+                self._update_segment_tree(2 * node + 2, mid + 1, end, index, new_value)
+            self.segment_tree[node] = self.segment_tree[2 * node + 1] + self.segment_tree[2 * node + 2]
+    
+    def get_range_sum(self, left, right):
+        """Get sum of elements in range [left, right]."""
+        return self._query_segment_tree(0, 0, self.n - 1, left, right)
+    
+    def _query_segment_tree(self, node, start, end, left, right):
+        """Query segment tree for range sum."""
+        if right < start or left > end:
+            return 0
+        if left <= start and end <= right:
+            return self.segment_tree[node]
+        
+        mid = (start + end) // 2
+        left_sum = self._query_segment_tree(2 * node + 1, start, mid, left, right)
+        right_sum = self._query_segment_tree(2 * node + 2, mid + 1, end, left, right)
+        return left_sum + right_sum
+    
+    def can_divide_with_max_sum(self, max_sum):
+        """Check if array can be divided into k subarrays with max sum <= max_sum."""
+        subarrays = 1
+        current_sum = 0
+        
+        for i in range(self.n):
+            if current_sum + self.arr[i] > max_sum:
+                subarrays += 1
+                current_sum = self.arr[i]
+                if subarrays > self.k:
+                    return False
+            else:
+                current_sum += self.arr[i]
+        
+        return True
+    
+    def get_minimum_max_sum(self):
+        """Get minimum possible maximum sum after dividing into k subarrays."""
+        left = max(self.arr)
+        right = sum(self.arr)
+        
+        while left < right:
+            mid = (left + right) // 2
+            if self.can_divide_with_max_sum(mid):
+                right = mid
+            else:
+                left = mid + 1
+        
+        return left
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+k = 3
+divider = DynamicArrayDivision(arr, k)
+print(f"Initial minimum max sum: {divider.get_minimum_max_sum()}")
+
+# Update an element
+divider.update(2, 10)
+print(f"After update: {divider.get_minimum_max_sum()}")
+```
+
+### **Variation 2: Array Division with Different Operations**
+**Problem**: Divide array into k subarrays optimizing for different operations (product, XOR, etc.).
+
+**Approach**: Adapt the binary search approach for different operations.
+
+```python
+def array_division_product(arr, k):
+    """
+    Divide array into k subarrays to minimize maximum product.
+    
+    Args:
+        arr: List of positive integers
+        k: Number of subarrays
+    
+    Returns:
+        Minimum possible maximum product
+    """
+    def can_divide_with_max_product(max_product):
+        """Check if array can be divided with max product <= max_product."""
+        subarrays = 1
+        current_product = 1
+        
+        for num in arr:
+            if current_product * num > max_product:
+                subarrays += 1
+                current_product = num
+                if subarrays > k:
+                    return False
+            else:
+                current_product *= num
+        
+        return True
+    
+    # Binary search on the maximum product
+    left = max(arr)
+    right = 1
+    for num in arr:
+        right *= num
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide_with_max_product(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+
+def array_division_xor(arr, k):
+    """
+    Divide array into k subarrays to minimize maximum XOR.
+    
+    Args:
+        arr: List of integers
+        k: Number of subarrays
+    
+    Returns:
+        Minimum possible maximum XOR
+    """
+    def can_divide_with_max_xor(max_xor):
+        """Check if array can be divided with max XOR <= max_xor."""
+        subarrays = 1
+        current_xor = 0
+        
+        for num in arr:
+            if current_xor ^ num > max_xor:
+                subarrays += 1
+                current_xor = num
+                if subarrays > k:
+                    return False
+            else:
+                current_xor ^= num
+        
+        return True
+    
+    # Binary search on the maximum XOR
+    left = max(arr)
+    right = 0
+    for num in arr:
+        right ^= num
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide_with_max_xor(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+
+def array_division_median(arr, k):
+    """
+    Divide array into k subarrays to minimize maximum median.
+    
+    Args:
+        arr: List of integers
+        k: Number of subarrays
+    
+    Returns:
+        Minimum possible maximum median
+    """
+    def get_median(subarray):
+        """Get median of a subarray."""
+        sorted_sub = sorted(subarray)
+        n = len(sorted_sub)
+        if n % 2 == 0:
+            return (sorted_sub[n//2 - 1] + sorted_sub[n//2]) / 2
+        else:
+            return sorted_sub[n//2]
+    
+    def can_divide_with_max_median(max_median):
+        """Check if array can be divided with max median <= max_median."""
+        subarrays = 1
+        current_subarray = []
+        
+        for num in arr:
+            current_subarray.append(num)
+            median = get_median(current_subarray)
+            
+            if median > max_median:
+                subarrays += 1
+                current_subarray = [num]
+                if subarrays > k:
+                    return False
+        
+        return True
+    
+    # Binary search on the maximum median
+    left = min(arr)
+    right = max(arr)
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide_with_max_median(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+k = 3
+
+print(f"Minimum max product: {array_division_product(arr, k)}")
+print(f"Minimum max XOR: {array_division_xor(arr, k)}")
+print(f"Minimum max median: {array_division_median(arr, k)}")
+```
+
+### **Variation 3: Array Division with Constraints**
+**Problem**: Divide array into k subarrays with additional constraints (size limits, value restrictions).
+
+**Approach**: Use constraint satisfaction with backtracking or advanced optimization.
+
+```python
+def array_division_with_constraints(arr, k, constraints):
+    """
+    Divide array into k subarrays with additional constraints.
+    
+    Args:
+        arr: List of integers
+        k: Number of subarrays
+        constraints: Dictionary with constraints like:
+            - min_size: Minimum subarray size
+            - max_size: Maximum subarray size
+            - min_sum: Minimum subarray sum
+            - max_sum: Maximum subarray sum
+            - allowed_values: Set of allowed values in subarrays
+    
+    Returns:
+        List of subarrays if possible, None otherwise
+    """
+    def is_valid_subarray(subarray, constraints):
+        """Check if subarray satisfies constraints."""
+        if 'min_size' in constraints and len(subarray) < constraints['min_size']:
+            return False
+        if 'max_size' in constraints and len(subarray) > constraints['max_size']:
+            return False
+        
+        subarray_sum = sum(subarray)
+        if 'min_sum' in constraints and subarray_sum < constraints['min_sum']:
+            return False
+        if 'max_sum' in constraints and subarray_sum > constraints['max_sum']:
+            return False
+        
+        if 'allowed_values' in constraints:
+            if not all(val in constraints['allowed_values'] for val in subarray):
+                return False
+        
+        return True
+    
+    def backtrack(index, current_subarrays, current_subarray):
+        """Backtrack to find valid division."""
+        if index == len(arr):
+            if len(current_subarrays) == k and is_valid_subarray(current_subarray, constraints):
+                return current_subarrays + [current_subarray]
+            return None
+        
+        # Try adding current element to current subarray
+        new_subarray = current_subarray + [arr[index]]
+        if is_valid_subarray(new_subarray, constraints):
+            result = backtrack(index + 1, current_subarrays, new_subarray)
+            if result is not None:
+                return result
+        
+        # Try starting a new subarray
+        if len(current_subarrays) < k and len(current_subarray) > 0:
+            if is_valid_subarray(current_subarray, constraints):
+                result = backtrack(index, current_subarrays + [current_subarray], [arr[index]])
+                if result is not None:
+                    return result
+        
+        return None
+    
+    return backtrack(0, [], [])
+
+def array_division_balanced(arr, k):
+    """
+    Divide array into k subarrays with balanced sizes.
+    
+    Args:
+        arr: List of integers
+        k: Number of subarrays
+    
+    Returns:
+        List of subarrays with balanced sizes
+    """
+    n = len(arr)
+    base_size = n // k
+    extra = n % k
+    
+    subarrays = []
+    start = 0
+    
+    for i in range(k):
+        # First 'extra' subarrays get one extra element
+        size = base_size + (1 if i < extra else 0)
+        end = start + size
+        subarrays.append(arr[start:end])
+        start = end
+    
+    return subarrays
+
+def array_division_weighted(arr, k, weights):
+    """
+    Divide array into k subarrays considering element weights.
+    
+    Args:
+        arr: List of integers
+        k: Number of subarrays
+        weights: List of weights for each element
+    
+    Returns:
+        Minimum possible maximum weighted sum
+    """
+    def can_divide_with_max_weighted_sum(max_weighted_sum):
+        """Check if array can be divided with max weighted sum <= max_weighted_sum."""
+        subarrays = 1
+        current_weighted_sum = 0
+        
+        for i, (num, weight) in enumerate(zip(arr, weights)):
+            if current_weighted_sum + num * weight > max_weighted_sum:
+                subarrays += 1
+                current_weighted_sum = num * weight
+                if subarrays > k:
+                    return False
+            else:
+                current_weighted_sum += num * weight
+        
+        return True
+    
+    # Binary search on the maximum weighted sum
+    left = max(num * weight for num, weight in zip(arr, weights))
+    right = sum(num * weight for num, weight in zip(arr, weights))
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide_with_max_weighted_sum(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+
+# Example usage
+arr = [1, 2, 3, 4, 5, 6, 7, 8]
+k = 3
+
+# Test with constraints
+constraints = {
+    'min_size': 2,
+    'max_size': 4,
+    'min_sum': 3,
+    'max_sum': 15
+}
+
+result = array_division_with_constraints(arr, k, constraints)
+print(f"Division with constraints: {result}")
+
+# Test balanced division
+balanced = array_division_balanced(arr, k)
+print(f"Balanced division: {balanced}")
+
+# Test weighted division
+weights = [1, 2, 1, 2, 1, 2, 1, 2]
+min_weighted_sum = array_division_weighted(arr, k, weights)
+print(f"Minimum max weighted sum: {min_weighted_sum}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

@@ -478,6 +478,770 @@ class SumOfTwoValuesWithUpdates:
 
 ### Related Problems
 
+## Problem Variations
+
+### **Variation 1: Sum of Two Values with Dynamic Updates**
+**Problem**: Handle dynamic array updates (add/remove/update elements) while maintaining efficient sum of two values calculations.
+
+**Approach**: Use balanced binary search trees or hash maps for efficient updates and queries.
+
+```python
+from collections import defaultdict
+import bisect
+
+class DynamicSumOfTwoValues:
+    def __init__(self, arr, target):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.target = target
+        self.sorted_arr = self._create_sorted_array()
+        self.pairs = self._compute_pairs()
+    
+    def _create_sorted_array(self):
+        """Create sorted array with original indices."""
+        indexed_arr = [(self.arr[i], i) for i in range(self.n)]
+        indexed_arr.sort()
+        return indexed_arr
+    
+    def _compute_pairs(self):
+        """Compute all pairs that sum to target."""
+        results = []
+        left = 0
+        right = len(self.sorted_arr) - 1
+        
+        while left < right:
+            current_sum = self.sorted_arr[left][0] + self.sorted_arr[right][0]
+            
+            if current_sum == self.target:
+                indices = [self.sorted_arr[left][1], self.sorted_arr[right][1]]
+                results.append(indices)
+                left += 1
+                right -= 1
+            elif current_sum < self.target:
+                left += 1
+            else:
+                right -= 1
+        
+        return results
+    
+    def add_element(self, value, index=None):
+        """Add a new element to the array."""
+        if index is None:
+            index = self.n
+        self.arr.insert(index, value)
+        self.n += 1
+        self.sorted_arr = self._create_sorted_array()
+        self.pairs = self._compute_pairs()
+    
+    def remove_element(self, index):
+        """Remove element at specified index."""
+        if 0 <= index < self.n:
+            del self.arr[index]
+            self.n -= 1
+            self.sorted_arr = self._create_sorted_array()
+            self.pairs = self._compute_pairs()
+    
+    def update_element(self, index, new_value):
+        """Update element at specified index."""
+        if 0 <= index < self.n:
+            self.arr[index] = new_value
+            self.sorted_arr = self._create_sorted_array()
+            self.pairs = self._compute_pairs()
+    
+    def get_pairs(self):
+        """Get current pairs that sum to target."""
+        return self.pairs
+    
+    def get_pairs_count(self):
+        """Get count of pairs that sum to target."""
+        return len(self.pairs)
+    
+    def get_pairs_with_constraints(self, constraint_func):
+        """Get pairs that satisfy custom constraints."""
+        result = []
+        for indices in self.pairs:
+            if constraint_func(indices, [self.arr[i] for i in indices]):
+                result.append(indices)
+        return result
+    
+    def get_pairs_in_range(self, start_idx, end_idx):
+        """Get pairs where all indices are in specified range."""
+        result = []
+        for indices in self.pairs:
+            if all(start_idx <= idx <= end_idx for idx in indices):
+                result.append(indices)
+        return result
+    
+    def get_pairs_with_distance_constraint(self, min_distance):
+        """Get pairs with minimum distance between indices."""
+        result = []
+        for indices in self.pairs:
+            if abs(indices[0] - indices[1]) >= min_distance:
+                result.append(indices)
+        return result
+    
+    def get_pair_statistics(self):
+        """Get statistics about pairs."""
+        if not self.pairs:
+            return {
+                'total_pairs': 0,
+                'average_sum': 0,
+                'index_distribution': {},
+                'value_distribution': {}
+            }
+        
+        total_pairs = len(self.pairs)
+        average_sum = self.target  # All pairs sum to target
+        
+        # Calculate index distribution
+        index_distribution = defaultdict(int)
+        for indices in self.pairs:
+            for idx in indices:
+                index_distribution[idx] += 1
+        
+        # Calculate value distribution
+        value_distribution = defaultdict(int)
+        for indices in self.pairs:
+            for idx in indices:
+                value_distribution[self.arr[idx]] += 1
+        
+        return {
+            'total_pairs': total_pairs,
+            'average_sum': average_sum,
+            'index_distribution': dict(index_distribution),
+            'value_distribution': dict(value_distribution)
+        }
+    
+    def get_pair_patterns(self):
+        """Get patterns in pairs."""
+        patterns = {
+            'consecutive_indices': 0,
+            'alternating_pattern': 0,
+            'clustered_indices': 0,
+            'uniform_distribution': 0
+        }
+        
+        for indices in self.pairs:
+            sorted_indices = sorted(indices)
+            # Check for consecutive indices
+            if sorted_indices[1] == sorted_indices[0] + 1:
+                patterns['consecutive_indices'] += 1
+            
+            # Check for alternating pattern
+            if len(self.pairs) > 1:
+                for i in range(1, len(self.pairs)):
+                    if (self.pairs[i][0] != self.pairs[i-1][1] and 
+                        self.pairs[i][1] != self.pairs[i-1][0]):
+                        patterns['alternating_pattern'] += 1
+        
+        return patterns
+    
+    def get_optimal_target_strategy(self):
+        """Get optimal strategy for target sum operations."""
+        if self.n < 2:
+            return {
+                'recommended_target': 0,
+                'max_pairs': 0,
+                'efficiency_rate': 0
+            }
+        
+        # Try different target values
+        best_target = self.target
+        max_pairs = len(self.pairs)
+        
+        # Test targets around current target
+        for test_target in range(max(1, self.target - 20), self.target + 21):
+            if test_target == self.target:
+                continue
+            
+            # Calculate pairs for this target
+            test_pairs = []
+            left = 0
+            right = len(self.sorted_arr) - 1
+            
+            while left < right:
+                current_sum = self.sorted_arr[left][0] + self.sorted_arr[right][0]
+                
+                if current_sum == test_target:
+                    indices = [self.sorted_arr[left][1], self.sorted_arr[right][1]]
+                    test_pairs.append(indices)
+                    left += 1
+                    right -= 1
+                elif current_sum < test_target:
+                    left += 1
+                else:
+                    right -= 1
+            
+            if len(test_pairs) > max_pairs:
+                max_pairs = len(test_pairs)
+                best_target = test_target
+        
+        # Calculate efficiency rate
+        total_possible = self.n * (self.n - 1) // 2
+        efficiency_rate = max_pairs / total_possible if total_possible > 0 else 0
+        
+        return {
+            'recommended_target': best_target,
+            'max_pairs': max_pairs,
+            'efficiency_rate': efficiency_rate
+        }
+
+# Example usage
+arr = [1, 2, 3, 4, 5, 6, 7, 8]
+target = 9
+dynamic_two_sum = DynamicSumOfTwoValues(arr, target)
+print(f"Initial pairs: {dynamic_two_sum.get_pairs_count()}")
+
+# Add an element
+dynamic_two_sum.add_element(9)
+print(f"After adding element: {dynamic_two_sum.get_pairs_count()}")
+
+# Update an element
+dynamic_two_sum.update_element(2, 10)
+print(f"After updating element: {dynamic_two_sum.get_pairs_count()}")
+
+# Get pairs with constraints
+def constraint_func(indices, values):
+    return all(v > 2 for v in values)
+
+print(f"Pairs with constraints: {dynamic_two_sum.get_pairs_with_constraints(constraint_func)}")
+
+# Get pairs in range
+print(f"Pairs in range [0, 5]: {dynamic_two_sum.get_pairs_in_range(0, 5)}")
+
+# Get pairs with distance constraint
+print(f"Pairs with distance constraint: {dynamic_two_sum.get_pairs_with_distance_constraint(2)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_two_sum.get_pair_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_two_sum.get_pair_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_two_sum.get_optimal_target_strategy()}")
+```
+
+### **Variation 2: Sum of Two Values with Different Operations**
+**Problem**: Handle different types of operations on sum of two values (weighted elements, priority-based selection, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of sum of two values queries.
+
+```python
+class AdvancedSumOfTwoValues:
+    def __init__(self, arr, target, weights=None, priorities=None):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.target = target
+        self.weights = weights or [1] * self.n
+        self.priorities = priorities or [1] * self.n
+        self.sorted_arr = self._create_sorted_array()
+        self.pairs = self._compute_pairs()
+        self.weighted_pairs = self._compute_weighted_pairs()
+    
+    def _create_sorted_array(self):
+        """Create sorted array with original indices."""
+        indexed_arr = [(self.arr[i], i) for i in range(self.n)]
+        indexed_arr.sort()
+        return indexed_arr
+    
+    def _compute_pairs(self):
+        """Compute all pairs that sum to target."""
+        results = []
+        left = 0
+        right = len(self.sorted_arr) - 1
+        
+        while left < right:
+            current_sum = self.sorted_arr[left][0] + self.sorted_arr[right][0]
+            
+            if current_sum == self.target:
+                indices = [self.sorted_arr[left][1], self.sorted_arr[right][1]]
+                results.append(indices)
+                left += 1
+                right -= 1
+            elif current_sum < self.target:
+                left += 1
+            else:
+                right -= 1
+        
+        return results
+    
+    def _compute_weighted_pairs(self):
+        """Compute weighted pairs that sum to target."""
+        results = []
+        left = 0
+        right = len(self.sorted_arr) - 1
+        
+        while left < right:
+            current_sum = self.sorted_arr[left][0] + self.sorted_arr[right][0]
+            
+            if current_sum == self.target:
+                indices = [self.sorted_arr[left][1], self.sorted_arr[right][1]]
+                weighted_sum = sum(self.weights[idx] for idx in indices)
+                results.append((indices, weighted_sum))
+                left += 1
+                right -= 1
+            elif current_sum < self.target:
+                left += 1
+            else:
+                right -= 1
+        
+        return results
+    
+    def get_pairs(self):
+        """Get current pairs that sum to target."""
+        return self.pairs
+    
+    def get_weighted_pairs(self):
+        """Get current weighted pairs that sum to target."""
+        return self.weighted_pairs
+    
+    def get_pairs_with_priority(self, priority_func):
+        """Get pairs considering priority."""
+        result = []
+        for indices in self.pairs:
+            values = [self.arr[i] for i in indices]
+            weights = [self.weights[i] for i in indices]
+            priorities = [self.priorities[i] for i in indices]
+            priority = priority_func(indices, values, weights, priorities)
+            result.append((indices, priority))
+        
+        # Sort by priority
+        result.sort(key=lambda x: x[1], reverse=True)
+        return result
+    
+    def get_pairs_with_optimization(self, optimization_func):
+        """Get pairs using custom optimization function."""
+        result = []
+        for indices in self.pairs:
+            values = [self.arr[i] for i in indices]
+            weights = [self.weights[i] for i in indices]
+            priorities = [self.priorities[i] for i in indices]
+            score = optimization_func(indices, values, weights, priorities)
+            result.append((indices, score))
+        
+        # Sort by optimization score
+        result.sort(key=lambda x: x[1], reverse=True)
+        return result
+    
+    def get_pairs_with_constraints(self, constraint_func):
+        """Get pairs that satisfy custom constraints."""
+        result = []
+        for indices in self.pairs:
+            values = [self.arr[i] for i in indices]
+            weights = [self.weights[i] for i in indices]
+            priorities = [self.priorities[i] for i in indices]
+            if constraint_func(indices, values, weights, priorities):
+                result.append(indices)
+        return result
+    
+    def get_pairs_with_multiple_criteria(self, criteria_list):
+        """Get pairs that satisfy multiple criteria."""
+        result = []
+        for indices in self.pairs:
+            values = [self.arr[i] for i in indices]
+            weights = [self.weights[i] for i in indices]
+            priorities = [self.priorities[i] for i in indices]
+            satisfies_all_criteria = True
+            for criterion in criteria_list:
+                if not criterion(indices, values, weights, priorities):
+                    satisfies_all_criteria = False
+                    break
+            if satisfies_all_criteria:
+                result.append(indices)
+        return result
+    
+    def get_pairs_with_alternatives(self, alternatives):
+        """Get pairs considering alternative values."""
+        result = []
+        
+        # Check original array
+        for indices in self.pairs:
+            result.append((indices, 'original'))
+        
+        # Check alternative values
+        for i, alt_values in alternatives.items():
+            if 0 <= i < self.n:
+                for alt_value in alt_values:
+                    # Create temporary array with alternative value
+                    temp_arr = self.arr[:]
+                    temp_arr[i] = alt_value
+                    
+                    # Calculate pairs for this alternative
+                    temp_sorted = [(temp_arr[j], j) for j in range(self.n)]
+                    temp_sorted.sort()
+                    
+                    left = 0
+                    right = len(temp_sorted) - 1
+                    
+                    while left < right:
+                        current_sum = temp_sorted[left][0] + temp_sorted[right][0]
+                        
+                        if current_sum == self.target:
+                            indices = [temp_sorted[left][1], temp_sorted[right][1]]
+                            result.append((indices, f'alternative_{alt_value}'))
+                            left += 1
+                            right -= 1
+                        elif current_sum < self.target:
+                            left += 1
+                        else:
+                            right -= 1
+        
+        return result
+    
+    def get_pairs_with_adaptive_criteria(self, adaptive_func):
+        """Get pairs using adaptive criteria."""
+        result = []
+        for indices in self.pairs:
+            values = [self.arr[i] for i in indices]
+            weights = [self.weights[i] for i in indices]
+            priorities = [self.priorities[i] for i in indices]
+            if adaptive_func(indices, values, weights, priorities, result):
+                result.append(indices)
+        return result
+    
+    def get_pair_optimization(self):
+        """Get optimal pair configuration."""
+        strategies = [
+            ('pairs', lambda: len(self.pairs)),
+            ('weighted_pairs', lambda: len(self.weighted_pairs)),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            current_value = strategy_func()
+            if current_value > best_value:
+                best_value = current_value
+                best_strategy = (strategy_name, current_value)
+        
+        return best_strategy
+
+# Example usage
+arr = [1, 2, 3, 4, 5, 6, 7, 8]
+target = 9
+weights = [2, 1, 3, 1, 2, 1, 3, 1]
+priorities = [1, 2, 1, 3, 1, 2, 1, 3]
+advanced_two_sum = AdvancedSumOfTwoValues(arr, target, weights, priorities)
+
+print(f"Pairs: {len(advanced_two_sum.get_pairs())}")
+print(f"Weighted pairs: {len(advanced_two_sum.get_weighted_pairs())}")
+
+# Get pairs with priority
+def priority_func(indices, values, weights, priorities):
+    return sum(weights) * sum(priorities)
+
+print(f"Pairs with priority: {advanced_two_sum.get_pairs_with_priority(priority_func)}")
+
+# Get pairs with optimization
+def optimization_func(indices, values, weights, priorities):
+    return sum(values) * sum(weights) + sum(priorities)
+
+print(f"Pairs with optimization: {advanced_two_sum.get_pairs_with_optimization(optimization_func)}")
+
+# Get pairs with constraints
+def constraint_func(indices, values, weights, priorities):
+    return all(v > 2 for v in values) and sum(weights) > 3
+
+print(f"Pairs with constraints: {advanced_two_sum.get_pairs_with_constraints(constraint_func)}")
+
+# Get pairs with multiple criteria
+def criterion1(indices, values, weights, priorities):
+    return all(v > 2 for v in values)
+
+def criterion2(indices, values, weights, priorities):
+    return sum(weights) > 3
+
+criteria_list = [criterion1, criterion2]
+print(f"Pairs with multiple criteria: {advanced_two_sum.get_pairs_with_multiple_criteria(criteria_list)}")
+
+# Get pairs with alternatives
+alternatives = {1: [3, 5], 3: [6, 8]}
+print(f"Pairs with alternatives: {advanced_two_sum.get_pairs_with_alternatives(alternatives)}")
+
+# Get pairs with adaptive criteria
+def adaptive_func(indices, values, weights, priorities, current_result):
+    return all(v > 2 for v in values) and len(current_result) < 5
+
+print(f"Pairs with adaptive criteria: {advanced_two_sum.get_pairs_with_adaptive_criteria(adaptive_func)}")
+
+# Get pair optimization
+print(f"Pair optimization: {advanced_two_sum.get_pair_optimization()}")
+```
+
+### **Variation 3: Sum of Two Values with Constraints**
+**Problem**: Handle sum of two values with additional constraints (cost limits, distance constraints, resource constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedSumOfTwoValues:
+    def __init__(self, arr, target, constraints=None):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.target = target
+        self.constraints = constraints or {}
+        self.sorted_arr = self._create_sorted_array()
+        self.pairs = self._compute_pairs()
+    
+    def _create_sorted_array(self):
+        """Create sorted array with original indices."""
+        indexed_arr = [(self.arr[i], i) for i in range(self.n)]
+        indexed_arr.sort()
+        return indexed_arr
+    
+    def _compute_pairs(self):
+        """Compute all pairs that sum to target."""
+        results = []
+        left = 0
+        right = len(self.sorted_arr) - 1
+        
+        while left < right:
+            current_sum = self.sorted_arr[left][0] + self.sorted_arr[right][0]
+            
+            if current_sum == self.target:
+                indices = [self.sorted_arr[left][1], self.sorted_arr[right][1]]
+                results.append(indices)
+                left += 1
+                right -= 1
+            elif current_sum < self.target:
+                left += 1
+            else:
+                right -= 1
+        
+        return results
+    
+    def get_pairs_with_cost_constraints(self, cost_limit):
+        """Get pairs considering cost constraints."""
+        result = []
+        total_cost = 0
+        
+        for indices in self.pairs:
+            # Calculate cost for this pair
+            cost = sum(abs(self.arr[i]) for i in indices)  # Simple cost model
+            if total_cost + cost <= cost_limit:
+                result.append(indices)
+                total_cost += cost
+        
+        return result
+    
+    def get_pairs_with_distance_constraints(self, min_distance, max_distance):
+        """Get pairs considering distance constraints."""
+        result = []
+        
+        for indices in self.pairs:
+            # Check distance constraints
+            distance = abs(indices[0] - indices[1])
+            if min_distance <= distance <= max_distance:
+                result.append(indices)
+        
+        return result
+    
+    def get_pairs_with_resource_constraints(self, resource_limits, resource_consumption):
+        """Get pairs considering resource constraints."""
+        result = []
+        current_resources = [0] * len(resource_limits)
+        
+        for indices in self.pairs:
+            # Check resource constraints
+            can_afford = True
+            for idx in indices:
+                consumption = resource_consumption.get(idx, [0] * len(resource_limits))
+                for j, res_consumption in enumerate(consumption):
+                    if current_resources[j] + res_consumption > resource_limits[j]:
+                        can_afford = False
+                        break
+                if not can_afford:
+                    break
+            
+            if can_afford:
+                result.append(indices)
+                for idx in indices:
+                    consumption = resource_consumption.get(idx, [0] * len(resource_limits))
+                    for j, res_consumption in enumerate(consumption):
+                        current_resources[j] += res_consumption
+        
+        return result
+    
+    def get_pairs_with_mathematical_constraints(self, constraint_func):
+        """Get pairs that satisfy custom mathematical constraints."""
+        result = []
+        
+        for indices in self.pairs:
+            values = [self.arr[i] for i in indices]
+            if constraint_func(indices, values):
+                result.append(indices)
+        
+        return result
+    
+    def get_pairs_with_range_constraints(self, range_constraints):
+        """Get pairs that satisfy range constraints."""
+        result = []
+        
+        for indices in self.pairs:
+            # Check if pair satisfies all range constraints
+            satisfies_constraints = True
+            for constraint in range_constraints:
+                if not constraint(indices, [self.arr[i] for i in indices]):
+                    satisfies_constraints = False
+                    break
+            
+            if satisfies_constraints:
+                result.append(indices)
+        
+        return result
+    
+    def get_pairs_with_optimization_constraints(self, optimization_func):
+        """Get pairs using custom optimization constraints."""
+        # Sort pairs by optimization function
+        all_pairs = []
+        for indices in self.pairs:
+            values = [self.arr[i] for i in indices]
+            score = optimization_func(indices, values)
+            all_pairs.append((indices, score))
+        
+        # Sort by optimization score
+        all_pairs.sort(key=lambda x: x[1], reverse=True)
+        
+        return [indices for indices, _ in all_pairs]
+    
+    def get_pairs_with_multiple_constraints(self, constraints_list):
+        """Get pairs that satisfy multiple constraints."""
+        result = []
+        
+        for indices in self.pairs:
+            values = [self.arr[i] for i in indices]
+            # Check if pair satisfies all constraints
+            satisfies_all_constraints = True
+            for constraint in constraints_list:
+                if not constraint(indices, values):
+                    satisfies_all_constraints = False
+                    break
+            
+            if satisfies_all_constraints:
+                result.append(indices)
+        
+        return result
+    
+    def get_pairs_with_priority_constraints(self, priority_func):
+        """Get pairs with priority-based constraints."""
+        # Sort pairs by priority
+        all_pairs = []
+        for indices in self.pairs:
+            values = [self.arr[i] for i in indices]
+            priority = priority_func(indices, values)
+            all_pairs.append((indices, priority))
+        
+        # Sort by priority
+        all_pairs.sort(key=lambda x: x[1], reverse=True)
+        
+        return [indices for indices, _ in all_pairs]
+    
+    def get_pairs_with_adaptive_constraints(self, adaptive_func):
+        """Get pairs with adaptive constraints."""
+        result = []
+        
+        for indices in self.pairs:
+            values = [self.arr[i] for i in indices]
+            # Check adaptive constraints
+            if adaptive_func(indices, values, result):
+                result.append(indices)
+        
+        return result
+    
+    def get_optimal_pair_strategy(self):
+        """Get optimal pair strategy considering all constraints."""
+        strategies = [
+            ('cost_constraints', self.get_pairs_with_cost_constraints),
+            ('distance_constraints', self.get_pairs_with_distance_constraints),
+            ('resource_constraints', self.get_pairs_with_resource_constraints),
+        ]
+        
+        best_strategy = None
+        best_count = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'cost_constraints':
+                    current_count = len(strategy_func(100))  # Cost limit of 100
+                elif strategy_name == 'distance_constraints':
+                    current_count = len(strategy_func(1, 10))  # Distance between 1 and 10
+                elif strategy_name == 'resource_constraints':
+                    resource_limits = [100, 50]
+                    resource_consumption = {i: [10, 5] for i in range(self.n)}
+                    current_count = len(strategy_func(resource_limits, resource_consumption))
+                
+                if current_count > best_count:
+                    best_count = current_count
+                    best_strategy = (strategy_name, current_count)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'max_cost': 100,
+    'min_distance': 1,
+    'max_distance': 10
+}
+
+arr = [1, 2, 3, 4, 5, 6, 7, 8]
+target = 9
+constrained_two_sum = ConstrainedSumOfTwoValues(arr, target, constraints)
+
+print("Cost-constrained pairs:", len(constrained_two_sum.get_pairs_with_cost_constraints(100)))
+
+print("Distance-constrained pairs:", len(constrained_two_sum.get_pairs_with_distance_constraints(1, 10)))
+
+# Resource constraints
+resource_limits = [100, 50]
+resource_consumption = {i: [10, 5] for i in range(len(arr))}
+print("Resource-constrained pairs:", len(constrained_two_sum.get_pairs_with_resource_constraints(resource_limits, resource_consumption)))
+
+# Mathematical constraints
+def custom_constraint(indices, values):
+    return all(v > 2 for v in values) and len(set(indices)) == 2
+
+print("Mathematical constraint pairs:", len(constrained_two_sum.get_pairs_with_mathematical_constraints(custom_constraint)))
+
+# Range constraints
+def range_constraint(indices, values):
+    return all(0 <= idx < len(arr) for idx in indices)
+
+range_constraints = [range_constraint]
+print("Range-constrained pairs:", len(constrained_two_sum.get_pairs_with_range_constraints(range_constraints)))
+
+# Multiple constraints
+def constraint1(indices, values):
+    return all(v > 2 for v in values)
+
+def constraint2(indices, values):
+    return len(set(indices)) == 2
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints pairs:", len(constrained_two_sum.get_pairs_with_multiple_constraints(constraints_list)))
+
+# Priority constraints
+def priority_func(indices, values):
+    return sum(values)
+
+print("Priority-constrained pairs:", len(constrained_two_sum.get_pairs_with_priority_constraints(priority_func)))
+
+# Adaptive constraints
+def adaptive_func(indices, values, current_result):
+    return all(v > 2 for v in values) and len(current_result) < 10
+
+print("Adaptive constraint pairs:", len(constrained_two_sum.get_pairs_with_adaptive_constraints(adaptive_func)))
+
+# Optimal strategy
+optimal = constrained_two_sum.get_optimal_pair_strategy()
+print(f"Optimal strategy: {optimal}")
+```
+
+### Related Problems
+
 #### **CSES Problems**
 - [Sum of Two Values](https://cses.fi/problemset/task/1640) - Basic sum of two values problem
 - [Sum of Three Values](https://cses.fi/problemset/task/1641) - Three values variant

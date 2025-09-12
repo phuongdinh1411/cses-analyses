@@ -595,6 +595,840 @@ result = playlist_constraints(songs, min_length, max_sum)
 print(f"Longest distinct subarray with constraints: {result}")  # Output: 4
 ```
 
+## Problem Variations
+
+### **Variation 1: Playlist with Dynamic Updates**
+**Problem**: Handle dynamic playlist updates (add/remove/update songs) while maintaining efficient longest distinct subarray queries.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+from collections import defaultdict
+import bisect
+
+class DynamicPlaylist:
+    def __init__(self, songs):
+        self.songs = songs[:]
+        self.n = len(songs)
+        self.max_length = self._compute_max_length()
+    
+    def _compute_max_length(self):
+        """Compute longest subarray with distinct elements using sliding window."""
+        if self.n == 0:
+            return 0
+        
+        seen = set()
+        left = 0
+        max_length = 0
+        
+        for right in range(self.n):
+            # Remove elements from left until current element is unique
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            # Add current element to the window
+            seen.add(self.songs[right])
+            
+            # Update maximum length
+            max_length = max(max_length, right - left + 1)
+            
+            # Early termination if we can't improve
+            if max_length == self.n:
+                break
+        
+        return max_length
+    
+    def add_song(self, song):
+        """Add a new song to the playlist."""
+        self.songs.append(song)
+        self.n += 1
+        self.max_length = self._compute_max_length()
+    
+    def remove_song(self, index):
+        """Remove a song at the specified index."""
+        if 0 <= index < self.n:
+            del self.songs[index]
+            self.n -= 1
+            self.max_length = self._compute_max_length()
+    
+    def update_song(self, index, new_song):
+        """Update a song at the specified index."""
+        if 0 <= index < self.n:
+            self.songs[index] = new_song
+            self.max_length = self._compute_max_length()
+    
+    def get_max_length(self):
+        """Get current maximum length of distinct subarray."""
+        return self.max_length
+    
+    def get_longest_distinct_subarray(self):
+        """Get the actual longest distinct subarray."""
+        if self.n == 0:
+            return []
+        
+        seen = set()
+        left = 0
+        max_length = 0
+        best_left = 0
+        best_right = 0
+        
+        for right in range(self.n):
+            # Remove elements from left until current element is unique
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            # Add current element to the window
+            seen.add(self.songs[right])
+            
+            # Update maximum length and best indices
+            if right - left + 1 > max_length:
+                max_length = right - left + 1
+                best_left = left
+                best_right = right
+        
+        return self.songs[best_left:best_right + 1]
+    
+    def get_distinct_subarrays_count(self):
+        """Get count of all distinct subarrays."""
+        if self.n == 0:
+            return 0
+        
+        count = 0
+        for i in range(self.n):
+            seen = set()
+            for j in range(i, self.n):
+                if self.songs[j] in seen:
+                    break
+                seen.add(self.songs[j])
+                count += 1
+        
+        return count
+    
+    def get_distinct_subarrays_with_length(self, target_length):
+        """Get all distinct subarrays with specific length."""
+        result = []
+        
+        for i in range(self.n - target_length + 1):
+            subarray = self.songs[i:i + target_length]
+            if len(set(subarray)) == target_length:
+                result.append(subarray)
+        
+        return result
+    
+    def get_distinct_subarrays_with_constraints(self, constraint_func):
+        """Get distinct subarrays that satisfy custom constraints."""
+        result = []
+        
+        for i in range(self.n):
+            seen = set()
+            for j in range(i, self.n):
+                if self.songs[j] in seen:
+                    break
+                seen.add(self.songs[j])
+                
+                if constraint_func(self.songs[i:j + 1]):
+                    result.append(self.songs[i:j + 1])
+        
+        return result
+    
+    def get_playlist_statistics(self):
+        """Get statistics about the playlist."""
+        if not self.songs:
+            return {
+                'total_songs': 0,
+                'unique_songs': 0,
+                'max_distinct_length': 0,
+                'average_distinct_length': 0,
+                'song_frequency': {}
+            }
+        
+        unique_songs = len(set(self.songs))
+        song_frequency = {}
+        for song in self.songs:
+            song_frequency[song] = song_frequency.get(song, 0) + 1
+        
+        # Calculate average distinct length
+        total_distinct_length = 0
+        count = 0
+        
+        for i in range(self.n):
+            seen = set()
+            for j in range(i, self.n):
+                if self.songs[j] in seen:
+                    break
+                seen.add(self.songs[j])
+                total_distinct_length += len(seen)
+                count += 1
+        
+        average_distinct_length = total_distinct_length / count if count > 0 else 0
+        
+        return {
+            'total_songs': self.n,
+            'unique_songs': unique_songs,
+            'max_distinct_length': self.max_length,
+            'average_distinct_length': average_distinct_length,
+            'song_frequency': song_frequency
+        }
+    
+    def get_playlist_patterns(self):
+        """Get patterns in the playlist."""
+        patterns = {
+            'consecutive_distinct': 0,
+            'alternating_pattern': 0,
+            'repetitive_pattern': 0,
+            'unique_pattern': 0
+        }
+        
+        for i in range(1, self.n):
+            if self.songs[i] != self.songs[i-1]:
+                patterns['consecutive_distinct'] += 1
+            
+            if i > 1:
+                if (self.songs[i] == self.songs[i-2] and 
+                    self.songs[i] != self.songs[i-1]):
+                    patterns['alternating_pattern'] += 1
+        
+        return patterns
+
+# Example usage
+songs = [1, 2, 1, 3, 2, 1, 3, 4]
+dynamic_playlist = DynamicPlaylist(songs)
+print(f"Initial max length: {dynamic_playlist.get_max_length()}")
+
+# Add a song
+dynamic_playlist.add_song(5)
+print(f"After adding song: {dynamic_playlist.get_max_length()}")
+
+# Update a song
+dynamic_playlist.update_song(1, 6)
+print(f"After updating song: {dynamic_playlist.get_max_length()}")
+
+# Get longest distinct subarray
+print(f"Longest distinct subarray: {dynamic_playlist.get_longest_distinct_subarray()}")
+
+# Get distinct subarrays count
+print(f"Distinct subarrays count: {dynamic_playlist.get_distinct_subarrays_count()}")
+
+# Get distinct subarrays with length
+print(f"Distinct subarrays with length 3: {dynamic_playlist.get_distinct_subarrays_with_length(3)}")
+
+# Get distinct subarrays with constraints
+def constraint_func(subarray):
+    return len(subarray) >= 2 and sum(subarray) > 5
+
+print(f"Distinct subarrays with constraints: {dynamic_playlist.get_distinct_subarrays_with_constraints(constraint_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_playlist.get_playlist_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_playlist.get_playlist_patterns()}")
+```
+
+### **Variation 2: Playlist with Different Operations**
+**Problem**: Handle different types of operations on playlists (weighted songs, priority-based selection, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of playlist queries.
+
+```python
+class AdvancedPlaylist:
+    def __init__(self, songs, weights=None, priorities=None):
+        self.songs = songs[:]
+        self.n = len(songs)
+        self.weights = weights or [1] * self.n
+        self.priorities = priorities or [1] * self.n
+        self.max_length = self._compute_max_length()
+        self.weighted_max_length = self._compute_weighted_max_length()
+    
+    def _compute_max_length(self):
+        """Compute longest subarray with distinct elements."""
+        if self.n == 0:
+            return 0
+        
+        seen = set()
+        left = 0
+        max_length = 0
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            max_length = max(max_length, right - left + 1)
+        
+        return max_length
+    
+    def _compute_weighted_max_length(self):
+        """Compute longest subarray with distinct elements considering weights."""
+        if self.n == 0:
+            return 0
+        
+        seen = set()
+        left = 0
+        max_weighted_length = 0
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            current_weighted_length = sum(self.weights[left:right + 1])
+            max_weighted_length = max(max_weighted_length, current_weighted_length)
+        
+        return max_weighted_length
+    
+    def get_max_length(self):
+        """Get current maximum length of distinct subarray."""
+        return self.max_length
+    
+    def get_weighted_max_length(self):
+        """Get current maximum weighted length of distinct subarray."""
+        return self.weighted_max_length
+    
+    def get_longest_distinct_subarray_with_priority(self, priority_func):
+        """Get longest distinct subarray considering priority."""
+        if self.n == 0:
+            return []
+        
+        seen = set()
+        left = 0
+        max_priority = 0
+        best_subarray = []
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            subarray = self.songs[left:right + 1]
+            priority = priority_func(subarray, self.weights[left:right + 1], self.priorities[left:right + 1])
+            
+            if priority > max_priority:
+                max_priority = priority
+                best_subarray = subarray
+        
+        return best_subarray
+    
+    def get_longest_distinct_subarray_with_optimization(self, optimization_func):
+        """Get longest distinct subarray using custom optimization function."""
+        if self.n == 0:
+            return []
+        
+        seen = set()
+        left = 0
+        max_score = 0
+        best_subarray = []
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            subarray = self.songs[left:right + 1]
+            score = optimization_func(subarray, self.weights[left:right + 1], self.priorities[left:right + 1])
+            
+            if score > max_score:
+                max_score = score
+                best_subarray = subarray
+        
+        return best_subarray
+    
+    def get_distinct_subarrays_with_constraints(self, constraint_func):
+        """Get distinct subarrays that satisfy custom constraints."""
+        result = []
+        
+        for i in range(self.n):
+            seen = set()
+            for j in range(i, self.n):
+                if self.songs[j] in seen:
+                    break
+                seen.add(self.songs[j])
+                
+                subarray = self.songs[i:j + 1]
+                if constraint_func(subarray, self.weights[i:j + 1], self.priorities[i:j + 1]):
+                    result.append(subarray)
+        
+        return result
+    
+    def get_distinct_subarrays_with_multiple_criteria(self, criteria_list):
+        """Get distinct subarrays that satisfy multiple criteria."""
+        result = []
+        
+        for i in range(self.n):
+            seen = set()
+            for j in range(i, self.n):
+                if self.songs[j] in seen:
+                    break
+                seen.add(self.songs[j])
+                
+                subarray = self.songs[i:j + 1]
+                satisfies_all_criteria = True
+                
+                for criterion in criteria_list:
+                    if not criterion(subarray, self.weights[i:j + 1], self.priorities[i:j + 1]):
+                        satisfies_all_criteria = False
+                        break
+                
+                if satisfies_all_criteria:
+                    result.append(subarray)
+        
+        return result
+    
+    def get_distinct_subarrays_with_alternatives(self, alternatives):
+        """Get distinct subarrays considering alternative songs."""
+        result = []
+        
+        for i in range(self.n):
+            seen = set()
+            for j in range(i, self.n):
+                if self.songs[j] in seen:
+                    break
+                seen.add(self.songs[j])
+                
+                # Check original subarray
+                subarray = self.songs[i:j + 1]
+                result.append((subarray, 'original'))
+                
+                # Check alternative subarrays
+                if j in alternatives:
+                    for alt_song in alternatives[j]:
+                        alt_subarray = self.songs[i:j] + [alt_song]
+                        if len(set(alt_subarray)) == len(alt_subarray):
+                            result.append((alt_subarray, 'alternative'))
+        
+        return result
+    
+    def get_distinct_subarrays_with_adaptive_criteria(self, adaptive_func):
+        """Get distinct subarrays using adaptive criteria."""
+        result = []
+        
+        for i in range(self.n):
+            seen = set()
+            for j in range(i, self.n):
+                if self.songs[j] in seen:
+                    break
+                seen.add(self.songs[j])
+                
+                subarray = self.songs[i:j + 1]
+                if adaptive_func(subarray, self.weights[i:j + 1], self.priorities[i:j + 1], result):
+                    result.append(subarray)
+        
+        return result
+    
+    def get_playlist_optimization(self):
+        """Get optimal playlist configuration."""
+        strategies = [
+            ('max_length', self.get_max_length),
+            ('weighted_max_length', self.get_weighted_max_length),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            current_value = strategy_func()
+            if current_value > best_value:
+                best_value = current_value
+                best_strategy = (strategy_name, current_value)
+        
+        return best_strategy
+
+# Example usage
+songs = [1, 2, 1, 3, 2, 1, 3, 4]
+weights = [2, 1, 3, 1, 2, 1, 3, 2]
+priorities = [1, 2, 1, 3, 2, 1, 3, 1]
+advanced_playlist = AdvancedPlaylist(songs, weights, priorities)
+
+print(f"Max length: {advanced_playlist.get_max_length()}")
+print(f"Weighted max length: {advanced_playlist.get_weighted_max_length()}")
+
+# Get longest distinct subarray with priority
+def priority_func(subarray, weights, priorities):
+    return len(subarray) * sum(priorities)
+
+print(f"Longest distinct subarray with priority: {advanced_playlist.get_longest_distinct_subarray_with_priority(priority_func)}")
+
+# Get longest distinct subarray with optimization
+def optimization_func(subarray, weights, priorities):
+    return len(subarray) * sum(weights) + sum(priorities)
+
+print(f"Longest distinct subarray with optimization: {advanced_playlist.get_longest_distinct_subarray_with_optimization(optimization_func)}")
+
+# Get distinct subarrays with constraints
+def constraint_func(subarray, weights, priorities):
+    return len(subarray) >= 2 and sum(weights) > 5
+
+print(f"Distinct subarrays with constraints: {advanced_playlist.get_distinct_subarrays_with_constraints(constraint_func)}")
+
+# Get distinct subarrays with multiple criteria
+def criterion1(subarray, weights, priorities):
+    return len(subarray) >= 2
+
+def criterion2(subarray, weights, priorities):
+    return sum(weights) > 5
+
+criteria_list = [criterion1, criterion2]
+print(f"Distinct subarrays with multiple criteria: {advanced_playlist.get_distinct_subarrays_with_multiple_criteria(criteria_list)}")
+
+# Get distinct subarrays with alternatives
+alternatives = {2: [5, 6], 5: [7, 8]}
+print(f"Distinct subarrays with alternatives: {advanced_playlist.get_distinct_subarrays_with_alternatives(alternatives)}")
+
+# Get distinct subarrays with adaptive criteria
+def adaptive_func(subarray, weights, priorities, current_result):
+    return len(subarray) >= 2 and len(current_result) < 5
+
+print(f"Distinct subarrays with adaptive criteria: {advanced_playlist.get_distinct_subarrays_with_adaptive_criteria(adaptive_func)}")
+
+# Get playlist optimization
+print(f"Playlist optimization: {advanced_playlist.get_playlist_optimization()}")
+```
+
+### **Variation 3: Playlist with Constraints**
+**Problem**: Handle playlist with additional constraints (time limits, resource constraints, mathematical constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedPlaylist:
+    def __init__(self, songs, constraints=None):
+        self.songs = songs[:]
+        self.n = len(songs)
+        self.constraints = constraints or {}
+        self.max_length = self._compute_max_length()
+    
+    def _compute_max_length(self):
+        """Compute longest subarray with distinct elements."""
+        if self.n == 0:
+            return 0
+        
+        seen = set()
+        left = 0
+        max_length = 0
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            max_length = max(max_length, right - left + 1)
+        
+        return max_length
+    
+    def get_longest_distinct_subarray_with_time_constraints(self, time_limit):
+        """Get longest distinct subarray considering time constraints."""
+        if self.n == 0:
+            return []
+        
+        seen = set()
+        left = 0
+        max_length = 0
+        best_subarray = []
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            subarray = self.songs[left:right + 1]
+            
+            # Simulate time constraint (length represents time)
+            if len(subarray) <= time_limit and len(subarray) > max_length:
+                max_length = len(subarray)
+                best_subarray = subarray
+        
+        return best_subarray
+    
+    def get_longest_distinct_subarray_with_resource_constraints(self, resource_limits, resource_consumption):
+        """Get longest distinct subarray considering resource constraints."""
+        if self.n == 0:
+            return []
+        
+        seen = set()
+        left = 0
+        max_length = 0
+        best_subarray = []
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            subarray = self.songs[left:right + 1]
+            
+            # Check resource constraints
+            can_use_subarray = True
+            for j, consumption in enumerate(resource_consumption[left:right + 1]):
+                if consumption > resource_limits[j]:
+                    can_use_subarray = False
+                    break
+            
+            if can_use_subarray and len(subarray) > max_length:
+                max_length = len(subarray)
+                best_subarray = subarray
+        
+        return best_subarray
+    
+    def get_longest_distinct_subarray_with_mathematical_constraints(self, constraint_func):
+        """Get longest distinct subarray that satisfies custom mathematical constraints."""
+        if self.n == 0:
+            return []
+        
+        seen = set()
+        left = 0
+        max_length = 0
+        best_subarray = []
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            subarray = self.songs[left:right + 1]
+            
+            if constraint_func(subarray, len(subarray)):
+                if len(subarray) > max_length:
+                    max_length = len(subarray)
+                    best_subarray = subarray
+        
+        return best_subarray
+    
+    def get_longest_distinct_subarray_with_range_constraints(self, range_constraints):
+        """Get longest distinct subarray that satisfies range constraints."""
+        if self.n == 0:
+            return []
+        
+        seen = set()
+        left = 0
+        max_length = 0
+        best_subarray = []
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            subarray = self.songs[left:right + 1]
+            
+            # Check if subarray satisfies all range constraints
+            satisfies_constraints = True
+            for constraint in range_constraints:
+                if not constraint(subarray, len(subarray)):
+                    satisfies_constraints = False
+                    break
+            
+            if satisfies_constraints and len(subarray) > max_length:
+                max_length = len(subarray)
+                best_subarray = subarray
+        
+        return best_subarray
+    
+    def get_longest_distinct_subarray_with_optimization_constraints(self, optimization_func):
+        """Get longest distinct subarray using custom optimization constraints."""
+        if self.n == 0:
+            return []
+        
+        seen = set()
+        left = 0
+        max_score = 0
+        best_subarray = []
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            subarray = self.songs[left:right + 1]
+            score = optimization_func(subarray, len(subarray))
+            
+            if score > max_score:
+                max_score = score
+                best_subarray = subarray
+        
+        return best_subarray
+    
+    def get_longest_distinct_subarray_with_multiple_constraints(self, constraints_list):
+        """Get longest distinct subarray that satisfies multiple constraints."""
+        if self.n == 0:
+            return []
+        
+        seen = set()
+        left = 0
+        max_length = 0
+        best_subarray = []
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            subarray = self.songs[left:right + 1]
+            
+            # Check if subarray satisfies all constraints
+            satisfies_all_constraints = True
+            for constraint in constraints_list:
+                if not constraint(subarray, len(subarray)):
+                    satisfies_all_constraints = False
+                    break
+            
+            if satisfies_all_constraints and len(subarray) > max_length:
+                max_length = len(subarray)
+                best_subarray = subarray
+        
+        return best_subarray
+    
+    def get_longest_distinct_subarray_with_priority_constraints(self, priority_func):
+        """Get longest distinct subarray with priority-based constraints."""
+        if self.n == 0:
+            return []
+        
+        seen = set()
+        left = 0
+        max_priority = 0
+        best_subarray = []
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            subarray = self.songs[left:right + 1]
+            priority = priority_func(subarray, len(subarray))
+            
+            if priority > max_priority:
+                max_priority = priority
+                best_subarray = subarray
+        
+        return best_subarray
+    
+    def get_longest_distinct_subarray_with_adaptive_constraints(self, adaptive_func):
+        """Get longest distinct subarray with adaptive constraints."""
+        if self.n == 0:
+            return []
+        
+        seen = set()
+        left = 0
+        max_length = 0
+        best_subarray = []
+        
+        for right in range(self.n):
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            seen.add(self.songs[right])
+            subarray = self.songs[left:right + 1]
+            
+            # Check adaptive constraints
+            if adaptive_func(subarray, len(subarray), best_subarray):
+                if len(subarray) > max_length:
+                    max_length = len(subarray)
+                    best_subarray = subarray
+        
+        return best_subarray
+    
+    def get_optimal_playlist_strategy(self):
+        """Get optimal playlist strategy considering all constraints."""
+        strategies = [
+            ('time_constraints', self.get_longest_distinct_subarray_with_time_constraints),
+            ('resource_constraints', self.get_longest_distinct_subarray_with_resource_constraints),
+            ('mathematical_constraints', self.get_longest_distinct_subarray_with_mathematical_constraints),
+        ]
+        
+        best_strategy = None
+        best_length = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'time_constraints':
+                    current_result = strategy_func(5)  # 5 time units
+                elif strategy_name == 'resource_constraints':
+                    resource_limits = [100, 50]
+                    resource_consumption = {i: [10, 5] for i in range(self.n)}
+                    current_result = strategy_func(resource_limits, resource_consumption)
+                elif strategy_name == 'mathematical_constraints':
+                    def constraint_func(subarray, length):
+                        return length >= 2 and sum(subarray) > 5
+                    current_result = strategy_func(constraint_func)
+                
+                if len(current_result) > best_length:
+                    best_length = len(current_result)
+                    best_strategy = (strategy_name, current_result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'min_length': 2,
+    'max_length': 10
+}
+
+songs = [1, 2, 1, 3, 2, 1, 3, 4]
+constrained_playlist = ConstrainedPlaylist(songs, constraints)
+
+print("Time-constrained longest distinct subarray:", constrained_playlist.get_longest_distinct_subarray_with_time_constraints(5))
+
+# Resource constraints
+resource_limits = [100, 50]
+resource_consumption = {i: [10, 5] for i in range(len(songs))}
+print("Resource-constrained longest distinct subarray:", constrained_playlist.get_longest_distinct_subarray_with_resource_constraints(resource_limits, resource_consumption))
+
+# Mathematical constraints
+def custom_constraint(subarray, length):
+    return length >= 2 and sum(subarray) > 5
+
+print("Mathematical constraint longest distinct subarray:", constrained_playlist.get_longest_distinct_subarray_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(subarray, length):
+    return length >= 2 and sum(subarray) > 5
+
+range_constraints = [range_constraint]
+print("Range-constrained longest distinct subarray:", constrained_playlist.get_longest_distinct_subarray_with_range_constraints(range_constraints))
+
+# Multiple constraints
+def constraint1(subarray, length):
+    return length >= 2
+
+def constraint2(subarray, length):
+    return sum(subarray) > 5
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints longest distinct subarray:", constrained_playlist.get_longest_distinct_subarray_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(subarray, length):
+    return length * sum(subarray)
+
+print("Priority-constrained longest distinct subarray:", constrained_playlist.get_longest_distinct_subarray_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(subarray, length, current_best):
+    return length >= 2 and (not current_best or length > len(current_best))
+
+print("Adaptive constraint longest distinct subarray:", constrained_playlist.get_longest_distinct_subarray_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_playlist.get_optimal_playlist_strategy()
+print(f"Optimal strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

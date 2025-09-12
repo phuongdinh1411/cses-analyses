@@ -502,6 +502,309 @@ def concert_tickets_dynamic_pricing(tickets, customers, current_time):
     return result
 ```
 
+## Problem Variations
+
+### **Variation 1: Concert Tickets with Dynamic Updates**
+**Problem**: Handle dynamic ticket availability and customer requests in real-time.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+import bisect
+from collections import defaultdict
+
+class DynamicConcertTickets:
+    def __init__(self, tickets):
+        self.tickets = sorted(tickets)
+        self.available_tickets = self.tickets[:]
+        self.sold_tickets = set()
+    
+    def add_tickets(self, new_tickets):
+        """Add new tickets to the system."""
+        for ticket in new_tickets:
+            bisect.insort(self.available_tickets, ticket)
+    
+    def remove_tickets(self, tickets_to_remove):
+        """Remove tickets from the system."""
+        for ticket in tickets_to_remove:
+            if ticket in self.available_tickets:
+                self.available_tickets.remove(ticket)
+    
+    def sell_ticket(self, max_price):
+        """Sell the most expensive ticket that doesn't exceed max_price."""
+        # Find the largest ticket <= max_price
+        index = bisect.bisect_right(self.available_tickets, max_price) - 1
+        
+        if index >= 0:
+            ticket_price = self.available_tickets[index]
+            self.available_tickets.pop(index)
+            self.sold_tickets.add(ticket_price)
+            return ticket_price
+        
+        return -1
+    
+    def get_available_tickets(self):
+        """Get all available tickets."""
+        return self.available_tickets[:]
+    
+    def get_sold_tickets(self):
+        """Get all sold tickets."""
+        return list(self.sold_tickets)
+    
+    def get_total_revenue(self):
+        """Get total revenue from sold tickets."""
+        return sum(self.sold_tickets)
+
+# Example usage
+tickets = [5, 3, 7, 8, 5]
+system = DynamicConcertTickets(tickets)
+
+print(f"Available tickets: {system.get_available_tickets()}")
+print(f"Sold ticket for max price 6: {system.sell_ticket(6)}")
+print(f"Sold ticket for max price 4: {system.sell_ticket(4)}")
+print(f"Available tickets: {system.get_available_tickets()}")
+print(f"Total revenue: {system.get_total_revenue()}")
+```
+
+### **Variation 2: Concert Tickets with Different Operations**
+**Problem**: Handle different types of ticket operations (reservations, cancellations, upgrades).
+
+**Approach**: Use advanced data structures to handle multiple operation types efficiently.
+
+```python
+class AdvancedConcertTickets:
+    def __init__(self, tickets):
+        self.tickets = sorted(tickets)
+        self.available_tickets = self.tickets[:]
+        self.reserved_tickets = {}  # customer_id -> ticket_price
+        self.sold_tickets = set()
+        self.customer_id_counter = 0
+    
+    def reserve_ticket(self, max_price):
+        """Reserve a ticket for a customer."""
+        index = bisect.bisect_right(self.available_tickets, max_price) - 1
+        
+        if index >= 0:
+            ticket_price = self.available_tickets[index]
+            self.available_tickets.pop(index)
+            customer_id = self.customer_id_counter
+            self.customer_id_counter += 1
+            self.reserved_tickets[customer_id] = ticket_price
+            return customer_id, ticket_price
+        
+        return -1, -1
+    
+    def confirm_reservation(self, customer_id):
+        """Confirm a reserved ticket."""
+        if customer_id in self.reserved_tickets:
+            ticket_price = self.reserved_tickets[customer_id]
+            del self.reserved_tickets[customer_id]
+            self.sold_tickets.add(ticket_price)
+            return ticket_price
+        
+        return -1
+    
+    def cancel_reservation(self, customer_id):
+        """Cancel a reserved ticket."""
+        if customer_id in self.reserved_tickets:
+            ticket_price = self.reserved_tickets[customer_id]
+            del self.reserved_tickets[customer_id]
+            bisect.insort(self.available_tickets, ticket_price)
+            return True
+        
+        return False
+    
+    def upgrade_ticket(self, customer_id, new_max_price):
+        """Upgrade a reserved ticket to a better one."""
+        if customer_id in self.reserved_tickets:
+            old_ticket = self.reserved_tickets[customer_id]
+            
+            # Find a better ticket
+            index = bisect.bisect_right(self.available_tickets, new_max_price) - 1
+            
+            if index >= 0 and self.available_tickets[index] > old_ticket:
+                new_ticket = self.available_tickets[index]
+                self.available_tickets.pop(index)
+                bisect.insort(self.available_tickets, old_ticket)
+                self.reserved_tickets[customer_id] = new_ticket
+                return new_ticket
+        
+        return -1
+    
+    def get_reservation_status(self, customer_id):
+        """Get the status of a reservation."""
+        if customer_id in self.reserved_tickets:
+            return self.reserved_tickets[customer_id]
+        return -1
+
+# Example usage
+tickets = [5, 3, 7, 8, 5, 10, 2]
+system = AdvancedConcertTickets(tickets)
+
+# Reserve tickets
+customer1, ticket1 = system.reserve_ticket(6)
+customer2, ticket2 = system.reserve_ticket(4)
+print(f"Customer {customer1} reserved ticket {ticket1}")
+print(f"Customer {customer2} reserved ticket {ticket2}")
+
+# Upgrade ticket
+new_ticket = system.upgrade_ticket(customer1, 8)
+print(f"Customer {customer1} upgraded to ticket {new_ticket}")
+
+# Confirm reservation
+confirmed = system.confirm_reservation(customer1)
+print(f"Customer {customer1} confirmed ticket {confirmed}")
+```
+
+### **Variation 3: Concert Tickets with Constraints**
+**Problem**: Handle ticket sales with additional constraints (VIP sections, group discounts, time limits).
+
+**Approach**: Use constraint satisfaction with advanced optimization algorithms.
+
+```python
+class ConstrainedConcertTickets:
+    def __init__(self, tickets, constraints):
+        self.tickets = sorted(tickets)
+        self.available_tickets = self.tickets[:]
+        self.sold_tickets = set()
+        self.constraints = constraints
+        self.customer_history = {}  # customer_id -> [purchases]
+        self.customer_id_counter = 0
+    
+    def sell_ticket_with_constraints(self, max_price, customer_id=None, group_size=1):
+        """Sell ticket with various constraints."""
+        if customer_id is None:
+            customer_id = self.customer_id_counter
+            self.customer_id_counter += 1
+        
+        # Check customer purchase limit
+        if 'max_purchases_per_customer' in self.constraints:
+            if customer_id in self.customer_history:
+                if len(self.customer_history[customer_id]) >= self.constraints['max_purchases_per_customer']:
+                    return -1
+        
+        # Check group discount eligibility
+        discount = 0
+        if 'group_discount_threshold' in self.constraints and group_size >= self.constraints['group_discount_threshold']:
+            discount = self.constraints.get('group_discount_percent', 0)
+        
+        # Find suitable ticket
+        adjusted_max_price = max_price * (1 + discount / 100)
+        index = bisect.bisect_right(self.available_tickets, adjusted_max_price) - 1
+        
+        if index >= 0:
+            ticket_price = self.available_tickets[index]
+            
+            # Apply discount
+            final_price = ticket_price * (1 - discount / 100)
+            
+            # Check minimum price constraint
+            if 'min_ticket_price' in self.constraints and final_price < self.constraints['min_ticket_price']:
+                return -1
+            
+            self.available_tickets.pop(index)
+            self.sold_tickets.add(ticket_price)
+            
+            # Update customer history
+            if customer_id not in self.customer_history:
+                self.customer_history[customer_id] = []
+            self.customer_history[customer_id].append((ticket_price, final_price, group_size))
+            
+            return ticket_price, final_price
+        
+        return -1, -1
+    
+    def sell_vip_ticket(self, max_price, customer_id=None):
+        """Sell VIP ticket with special constraints."""
+        if 'vip_tickets' not in self.constraints:
+            return -1, -1
+        
+        vip_tickets = sorted(self.constraints['vip_tickets'])
+        index = bisect.bisect_right(vip_tickets, max_price) - 1
+        
+        if index >= 0:
+            ticket_price = vip_tickets[index]
+            
+            # Check VIP eligibility
+            if 'vip_eligibility' in self.constraints:
+                if customer_id and customer_id in self.customer_history:
+                    total_spent = sum(purchase[1] for purchase in self.customer_history[customer_id])
+                    if total_spent < self.constraints['vip_eligibility']['min_total_spent']:
+                        return -1, -1
+            
+            # Remove from VIP tickets
+            self.constraints['vip_tickets'].remove(ticket_price)
+            self.sold_tickets.add(ticket_price)
+            
+            # Update customer history
+            if customer_id not in self.customer_history:
+                self.customer_history[customer_id] = []
+            self.customer_history[customer_id].append((ticket_price, ticket_price, 1))
+            
+            return ticket_price, ticket_price
+        
+        return -1, -1
+    
+    def get_customer_stats(self, customer_id):
+        """Get statistics for a customer."""
+        if customer_id in self.customer_history:
+            purchases = self.customer_history[customer_id]
+            total_spent = sum(purchase[1] for purchase in purchases)
+            total_tickets = len(purchases)
+            return {
+                'total_spent': total_spent,
+                'total_tickets': total_tickets,
+                'average_price': total_spent / total_tickets if total_tickets > 0 else 0,
+                'purchases': purchases
+            }
+        return None
+    
+    def get_revenue_analysis(self):
+        """Get detailed revenue analysis."""
+        total_revenue = sum(self.sold_tickets)
+        total_tickets_sold = len(self.sold_tickets)
+        average_price = total_revenue / total_tickets_sold if total_tickets_sold > 0 else 0
+        
+        return {
+            'total_revenue': total_revenue,
+            'total_tickets_sold': total_tickets_sold,
+            'average_price': average_price,
+            'available_tickets': len(self.available_tickets)
+        }
+
+# Example usage
+tickets = [5, 3, 7, 8, 5, 10, 2, 15, 12]
+constraints = {
+    'max_purchases_per_customer': 3,
+    'group_discount_threshold': 2,
+    'group_discount_percent': 10,
+    'min_ticket_price': 2,
+    'vip_tickets': [20, 25, 30],
+    'vip_eligibility': {'min_total_spent': 20}
+}
+
+system = ConstrainedConcertTickets(tickets, constraints)
+
+# Regular ticket sales
+ticket1, price1 = system.sell_ticket_with_constraints(6, customer_id=1)
+print(f"Customer 1 bought ticket {ticket1} for {price1}")
+
+# Group ticket sale
+ticket2, price2 = system.sell_ticket_with_constraints(8, customer_id=2, group_size=3)
+print(f"Customer 2 bought ticket {ticket2} for {price2} (group discount)")
+
+# VIP ticket sale
+vip_ticket, vip_price = system.sell_vip_ticket(25, customer_id=1)
+print(f"Customer 1 bought VIP ticket {vip_ticket} for {vip_price}")
+
+# Get statistics
+stats = system.get_customer_stats(1)
+print(f"Customer 1 stats: {stats}")
+
+revenue = system.get_revenue_analysis()
+print(f"Revenue analysis: {revenue}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

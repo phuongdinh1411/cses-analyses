@@ -396,6 +396,309 @@ class DistinctNumbersWithUpdates:
         return self.frequency_map.get(value, 0)
 ```
 
+## Problem Variations
+
+### **Variation 1: Distinct Numbers with Dynamic Updates**
+**Problem**: Handle dynamic array updates while maintaining distinct count efficiently.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+import bisect
+from collections import defaultdict
+
+class DynamicDistinctNumbers:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.frequency_map = defaultdict(int)
+        self.distinct_count = 0
+        
+        # Initialize frequency map and distinct count
+        for num in arr:
+            if self.frequency_map[num] == 0:
+                self.distinct_count += 1
+            self.frequency_map[num] += 1
+    
+    def update_value(self, index, new_value):
+        """Update array value and maintain distinct count."""
+        old_value = self.arr[index]
+        self.arr[index] = new_value
+        
+        # Update frequency map
+        self.frequency_map[old_value] -= 1
+        if self.frequency_map[old_value] == 0:
+            self.distinct_count -= 1
+            del self.frequency_map[old_value]
+        
+        if self.frequency_map[new_value] == 0:
+            self.distinct_count += 1
+        self.frequency_map[new_value] += 1
+    
+    def add_element(self, value):
+        """Add new element to the array."""
+        self.arr.append(value)
+        if self.frequency_map[value] == 0:
+            self.distinct_count += 1
+        self.frequency_map[value] += 1
+    
+    def remove_element(self, value):
+        """Remove element from the array."""
+        if value in self.arr and self.frequency_map[value] > 0:
+            self.arr.remove(value)
+            self.frequency_map[value] -= 1
+            if self.frequency_map[value] == 0:
+                self.distinct_count -= 1
+                del self.frequency_map[value]
+    
+    def get_distinct_count(self):
+        """Get current distinct count."""
+        return self.distinct_count
+    
+    def get_frequency(self, value):
+        """Get frequency of a specific value."""
+        return self.frequency_map.get(value, 0)
+    
+    def get_most_frequent(self):
+        """Get the most frequent element."""
+        if not self.frequency_map:
+            return None
+        return max(self.frequency_map.items(), key=lambda x: x[1])
+    
+    def get_distinct_elements(self):
+        """Get all distinct elements."""
+        return list(self.frequency_map.keys())
+
+# Example usage
+arr = [1, 2, 3, 2, 1, 4]
+distinct_counter = DynamicDistinctNumbers(arr)
+print(f"Initial distinct count: {distinct_counter.get_distinct_count()}")
+print(f"Distinct elements: {distinct_counter.get_distinct_elements()}")
+
+# Update a value
+distinct_counter.update_value(0, 5)
+print(f"After update: {distinct_counter.get_distinct_count()}")
+
+# Add element
+distinct_counter.add_element(6)
+print(f"After adding 6: {distinct_counter.get_distinct_count()}")
+
+# Remove element
+distinct_counter.remove_element(2)
+print(f"After removing 2: {distinct_counter.get_distinct_count()}")
+```
+
+### **Variation 2: Distinct Numbers with Different Operations**
+**Problem**: Handle different types of operations on distinct numbers (range queries, frequency analysis).
+
+**Approach**: Use advanced data structures for efficient range operations and frequency tracking.
+
+```python
+class AdvancedDistinctNumbers:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.frequency_map = defaultdict(int)
+        self.distinct_count = 0
+        
+        # Initialize
+        for num in arr:
+            if self.frequency_map[num] == 0:
+                self.distinct_count += 1
+            self.frequency_map[num] += 1
+    
+    def get_distinct_in_range(self, left, right):
+        """Get distinct count in range [left, right]."""
+        if left < 0 or right >= len(self.arr) or left > right:
+            return 0
+        
+        range_frequency = defaultdict(int)
+        distinct_in_range = 0
+        
+        for i in range(left, right + 1):
+            num = self.arr[i]
+            if range_frequency[num] == 0:
+                distinct_in_range += 1
+            range_frequency[num] += 1
+        
+        return distinct_in_range
+    
+    def get_frequency_in_range(self, left, right, value):
+        """Get frequency of value in range [left, right]."""
+        if left < 0 or right >= len(self.arr) or left > right:
+            return 0
+        
+        count = 0
+        for i in range(left, right + 1):
+            if self.arr[i] == value:
+                count += 1
+        
+        return count
+    
+    def get_most_frequent_in_range(self, left, right):
+        """Get most frequent element in range [left, right]."""
+        if left < 0 or right >= len(self.arr) or left > right:
+            return None
+        
+        range_frequency = defaultdict(int)
+        for i in range(left, right + 1):
+            range_frequency[self.arr[i]] += 1
+        
+        if not range_frequency:
+            return None
+        
+        return max(range_frequency.items(), key=lambda x: x[1])
+    
+    def get_distinct_elements_in_range(self, left, right):
+        """Get all distinct elements in range [left, right]."""
+        if left < 0 or right >= len(self.arr) or left > right:
+            return []
+        
+        distinct_set = set()
+        for i in range(left, right + 1):
+            distinct_set.add(self.arr[i])
+        
+        return list(distinct_set)
+    
+    def get_frequency_distribution(self):
+        """Get frequency distribution of all elements."""
+        return dict(self.frequency_map)
+    
+    def get_elements_by_frequency(self, min_frequency=1):
+        """Get elements with frequency >= min_frequency."""
+        return [num for num, freq in self.frequency_map.items() if freq >= min_frequency]
+
+# Example usage
+arr = [1, 2, 3, 2, 1, 4, 2, 5, 1]
+advanced_counter = AdvancedDistinctNumbers(arr)
+
+print(f"Total distinct count: {advanced_counter.get_distinct_count()}")
+print(f"Distinct in range [2, 6]: {advanced_counter.get_distinct_in_range(2, 6)}")
+print(f"Frequency of 2 in range [1, 5]: {advanced_counter.get_frequency_in_range(1, 5, 2)}")
+print(f"Most frequent in range [0, 4]: {advanced_counter.get_most_frequent_in_range(0, 4)}")
+print(f"Distinct elements in range [3, 7]: {advanced_counter.get_distinct_elements_in_range(3, 7)}")
+print(f"Elements with frequency >= 2: {advanced_counter.get_elements_by_frequency(2)}")
+```
+
+### **Variation 3: Distinct Numbers with Constraints**
+**Problem**: Handle distinct numbers with additional constraints (value ranges, frequency limits, etc.).
+
+**Approach**: Use constraint satisfaction with advanced filtering and optimization.
+
+```python
+class ConstrainedDistinctNumbers:
+    def __init__(self, arr, constraints=None):
+        self.arr = arr[:]
+        self.frequency_map = defaultdict(int)
+        self.distinct_count = 0
+        self.constraints = constraints or {}
+        
+        # Initialize with constraints
+        for num in arr:
+            if self._is_valid_number(num):
+                if self.frequency_map[num] == 0:
+                    self.distinct_count += 1
+                self.frequency_map[num] += 1
+    
+    def _is_valid_number(self, num):
+        """Check if number satisfies constraints."""
+        if 'min_value' in self.constraints and num < self.constraints['min_value']:
+            return False
+        if 'max_value' in self.constraints and num > self.constraints['max_value']:
+            return False
+        if 'allowed_values' in self.constraints and num not in self.constraints['allowed_values']:
+            return False
+        if 'forbidden_values' in self.constraints and num in self.constraints['forbidden_values']:
+            return False
+        return True
+    
+    def add_element_with_constraints(self, value):
+        """Add element if it satisfies constraints."""
+        if self._is_valid_number(value):
+            if self.frequency_map[value] == 0:
+                self.distinct_count += 1
+            self.frequency_map[value] += 1
+            self.arr.append(value)
+            return True
+        return False
+    
+    def get_distinct_with_frequency_limit(self, max_frequency):
+        """Get distinct count considering frequency limit."""
+        count = 0
+        for num, freq in self.frequency_map.items():
+            if freq <= max_frequency:
+                count += 1
+        return count
+    
+    def get_distinct_in_value_range(self, min_val, max_val):
+        """Get distinct count in value range [min_val, max_val]."""
+        count = 0
+        for num in self.frequency_map.keys():
+            if min_val <= num <= max_val:
+                count += 1
+        return count
+    
+    def get_distinct_with_pattern(self, pattern_func):
+        """Get distinct count for numbers matching pattern."""
+        count = 0
+        for num in self.frequency_map.keys():
+            if pattern_func(num):
+                count += 1
+        return count
+    
+    def get_distinct_by_category(self, category_func):
+        """Get distinct count grouped by category."""
+        categories = defaultdict(int)
+        for num in self.frequency_map.keys():
+            category = category_func(num)
+            categories[category] += 1
+        return dict(categories)
+    
+    def get_distinct_with_operations(self, operations):
+        """Get distinct count after applying operations."""
+        result = set()
+        for num in self.frequency_map.keys():
+            current = num
+            for op in operations:
+                if op == 'square':
+                    current = current ** 2
+                elif op == 'double':
+                    current = current * 2
+                elif op == 'increment':
+                    current = current + 1
+                elif op == 'modulo':
+                    current = current % 10
+            result.add(current)
+        return len(result)
+
+# Example usage
+arr = [1, 2, 3, 2, 1, 4, 5, 6, 7, 8, 9, 10]
+constraints = {
+    'min_value': 2,
+    'max_value': 8,
+    'forbidden_values': {5}
+}
+
+constrained_counter = ConstrainedDistinctNumbers(arr, constraints)
+print(f"Constrained distinct count: {constrained_counter.get_distinct_count()}")
+
+# Test frequency limit
+print(f"Distinct with frequency <= 1: {constrained_counter.get_distinct_with_frequency_limit(1)}")
+
+# Test value range
+print(f"Distinct in range [3, 7]: {constrained_counter.get_distinct_in_value_range(3, 7)}")
+
+# Test pattern matching
+even_pattern = lambda x: x % 2 == 0
+print(f"Distinct even numbers: {constrained_counter.get_distinct_with_pattern(even_pattern)}")
+
+# Test categorization
+category_func = lambda x: 'small' if x < 5 else 'large'
+print(f"Distinct by category: {constrained_counter.get_distinct_by_category(category_func)}")
+
+# Test operations
+operations = ['square', 'modulo']
+print(f"Distinct after operations: {constrained_counter.get_distinct_with_operations(operations)}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

@@ -611,6 +611,846 @@ print(f"Subarray sums equal to {target} with constraints: {result}")  # Output: 
 
 ### Related Problems
 
+## Problem Variations
+
+### **Variation 1: Subarray Sums II with Dynamic Updates**
+**Problem**: Handle dynamic array updates (add/remove/update elements) while maintaining efficient subarray sum with target calculations.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+
+```python
+from collections import defaultdict
+import bisect
+
+class DynamicSubarraySumsII:
+    def __init__(self, arr, target):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.target = target
+        self.prefix_sums = self._compute_prefix_sums()
+        self.count = self._compute_count()
+        self.count_map = self._compute_count_map()
+    
+    def _compute_prefix_sums(self):
+        """Compute prefix sums of the array."""
+        prefix = [0] * (self.n + 1)
+        for i in range(self.n):
+            prefix[i + 1] = prefix[i] + self.arr[i]
+        return prefix
+    
+    def _compute_count_map(self):
+        """Compute count map for prefix sums."""
+        count_map = defaultdict(int)
+        for i in range(self.n + 1):
+            count_map[self.prefix_sums[i]] += 1
+        return count_map
+    
+    def _compute_count(self):
+        """Compute count of subarrays with sum equal to target."""
+        count_map = defaultdict(int)
+        count = 0
+        
+        for i in range(self.n + 1):
+            # Look for prefix_sum - target
+            if self.prefix_sums[i] - self.target in count_map:
+                count += count_map[self.prefix_sums[i] - self.target]
+            
+            # Add current prefix sum to map
+            count_map[self.prefix_sums[i]] += 1
+        
+        return count
+    
+    def add_element(self, value, index=None):
+        """Add a new element to the array."""
+        if index is None:
+            index = self.n
+        self.arr.insert(index, value)
+        self.n += 1
+        self.prefix_sums = self._compute_prefix_sums()
+        self.count_map = self._compute_count_map()
+        self.count = self._compute_count()
+    
+    def remove_element(self, index):
+        """Remove element at specified index."""
+        if 0 <= index < self.n:
+            del self.arr[index]
+            self.n -= 1
+            self.prefix_sums = self._compute_prefix_sums()
+            self.count_map = self._compute_count_map()
+            self.count = self._compute_count()
+    
+    def update_element(self, index, new_value):
+        """Update element at specified index."""
+        if 0 <= index < self.n:
+            self.arr[index] = new_value
+            self.prefix_sums = self._compute_prefix_sums()
+            self.count_map = self._compute_count_map()
+            self.count = self._compute_count()
+    
+    def get_count(self):
+        """Get current count of subarrays with sum equal to target."""
+        return self.count
+    
+    def get_subarrays_with_target(self):
+        """Get all subarrays with sum equal to target."""
+        result = []
+        count_map = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            # Look for prefix_sum - target
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    result.append((prev_idx, i - 1))
+            
+            # Add current prefix sum to map
+            count_map[self.prefix_sums[i]].append(i)
+        
+        return result
+    
+    def get_subarrays_with_target_in_range(self, left, right):
+        """Get subarrays with target sum in specified range."""
+        if left < 0 or right >= self.n or left > right:
+            return []
+        
+        # Extract subarray
+        subarray = self.arr[left:right+1]
+        
+        # Calculate prefix sums for subarray
+        prefix = [0] * (len(subarray) + 1)
+        for i in range(len(subarray)):
+            prefix[i + 1] = prefix[i] + subarray[i]
+        
+        # Find subarrays with target sum
+        result = []
+        count_map = defaultdict(list)
+        
+        for i in range(len(subarray) + 1):
+            # Look for prefix_sum - target
+            if prefix[i] - self.target in count_map:
+                for prev_idx in count_map[prefix[i] - self.target]:
+                    result.append((left + prev_idx, left + i - 1))
+            
+            # Add current prefix sum to map
+            count_map[prefix[i]].append(i)
+        
+        return result
+    
+    def get_subarrays_with_target_constraints(self, constraint_func):
+        """Get subarrays with target sum that satisfy custom constraints."""
+        result = []
+        count_map = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            # Look for prefix_sum - target
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    if constraint_func(prev_idx, i - 1, self.arr[prev_idx:i]):
+                        result.append((prev_idx, i - 1))
+            
+            # Add current prefix sum to map
+            count_map[self.prefix_sums[i]].append(i)
+        
+        return result
+    
+    def get_subarray_statistics(self):
+        """Get statistics about subarray sums with target."""
+        if self.n == 0:
+            return {
+                'total_subarrays': 0,
+                'target_subarrays': 0,
+                'target_rate': 0,
+                'average_length': 0,
+                'prefix_distribution': {}
+            }
+        
+        total_subarrays = self.n * (self.n + 1) // 2
+        target_subarrays = self.count
+        target_rate = target_subarrays / total_subarrays if total_subarrays > 0 else 0
+        
+        # Calculate average length of target subarrays
+        target_subarrays_list = self.get_subarrays_with_target()
+        if target_subarrays_list:
+            total_length = sum(end - start + 1 for start, end in target_subarrays_list)
+            average_length = total_length / len(target_subarrays_list)
+        else:
+            average_length = 0
+        
+        return {
+            'total_subarrays': total_subarrays,
+            'target_subarrays': target_subarrays,
+            'target_rate': target_rate,
+            'average_length': average_length,
+            'prefix_distribution': dict(self.count_map)
+        }
+    
+    def get_subarray_patterns(self):
+        """Get patterns in subarray sums with target."""
+        patterns = {
+            'consecutive_target': 0,
+            'alternating_pattern': 0,
+            'clustered_target': 0,
+            'uniform_distribution': 0
+        }
+        
+        target_subarrays = self.get_subarrays_with_target()
+        
+        for i in range(1, len(target_subarrays)):
+            if (target_subarrays[i][0] == target_subarrays[i-1][1] + 1):
+                patterns['consecutive_target'] += 1
+            
+            if i > 1:
+                if (target_subarrays[i][0] != target_subarrays[i-1][1] + 1 and 
+                    target_subarrays[i-1][0] != target_subarrays[i-2][1] + 1):
+                    patterns['alternating_pattern'] += 1
+        
+        return patterns
+    
+    def get_optimal_target_strategy(self):
+        """Get optimal strategy for target sum operations."""
+        if self.n == 0:
+            return {
+                'recommended_target': 0,
+                'max_count': 0,
+                'efficiency_rate': 0
+            }
+        
+        # Try different target values
+        best_target = self.target
+        max_count = self.count
+        
+        # Test targets around current target
+        for test_target in range(max(1, self.target - 10), self.target + 11):
+            if test_target == self.target:
+                continue
+            
+            # Calculate count for this target
+            count_map = defaultdict(int)
+            count = 0
+            
+            for i in range(self.n + 1):
+                if self.prefix_sums[i] - test_target in count_map:
+                    count += count_map[self.prefix_sums[i] - test_target]
+                count_map[self.prefix_sums[i]] += 1
+            
+            if count > max_count:
+                max_count = count
+                best_target = test_target
+        
+        # Calculate efficiency rate
+        total_subarrays = self.n * (self.n + 1) // 2
+        efficiency_rate = max_count / total_subarrays if total_subarrays > 0 else 0
+        
+        return {
+            'recommended_target': best_target,
+            'max_count': max_count,
+            'efficiency_rate': efficiency_rate
+        }
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+target = 9
+dynamic_sums_ii = DynamicSubarraySumsII(arr, target)
+print(f"Initial count: {dynamic_sums_ii.get_count()}")
+
+# Add an element
+dynamic_sums_ii.add_element(6)
+print(f"After adding element: {dynamic_sums_ii.get_count()}")
+
+# Update an element
+dynamic_sums_ii.update_element(2, 7)
+print(f"After updating element: {dynamic_sums_ii.get_count()}")
+
+# Get subarrays with target
+print(f"Subarrays with target {target}: {dynamic_sums_ii.get_subarrays_with_target()}")
+
+# Get subarrays with target in range
+print(f"Subarrays with target in range [1, 3]: {dynamic_sums_ii.get_subarrays_with_target_in_range(1, 3)}")
+
+# Get subarrays with target constraints
+def constraint_func(start, end, subarray):
+    return end - start >= 1
+
+print(f"Subarrays with target constraints: {dynamic_sums_ii.get_subarrays_with_target_constraints(constraint_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_sums_ii.get_subarray_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_sums_ii.get_subarray_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_sums_ii.get_optimal_target_strategy()}")
+```
+
+### **Variation 2: Subarray Sums II with Different Operations**
+**Problem**: Handle different types of operations on subarray sums with target (weighted elements, priority-based selection, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of subarray sum with target queries.
+
+```python
+class AdvancedSubarraySumsII:
+    def __init__(self, arr, target, weights=None, priorities=None):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.target = target
+        self.weights = weights or [1] * self.n
+        self.priorities = priorities or [1] * self.n
+        self.prefix_sums = self._compute_prefix_sums()
+        self.weighted_prefix_sums = self._compute_weighted_prefix_sums()
+        self.count = self._compute_count()
+        self.weighted_count = self._compute_weighted_count()
+    
+    def _compute_prefix_sums(self):
+        """Compute prefix sums of the array."""
+        prefix = [0] * (self.n + 1)
+        for i in range(self.n):
+            prefix[i + 1] = prefix[i] + self.arr[i]
+        return prefix
+    
+    def _compute_weighted_prefix_sums(self):
+        """Compute weighted prefix sums of the array."""
+        prefix = [0] * (self.n + 1)
+        for i in range(self.n):
+            prefix[i + 1] = prefix[i] + self.arr[i] * self.weights[i]
+        return prefix
+    
+    def _compute_count(self):
+        """Compute count of subarrays with sum equal to target."""
+        count_map = defaultdict(int)
+        count = 0
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                count += count_map[self.prefix_sums[i] - self.target]
+            count_map[self.prefix_sums[i]] += 1
+        
+        return count
+    
+    def _compute_weighted_count(self):
+        """Compute weighted count of subarrays with sum equal to target."""
+        count_map = defaultdict(int)
+        weighted_count = 0
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                weighted_count += count_map[self.prefix_sums[i] - self.target] * self.weights[i-1] if i > 0 else 0
+            count_map[self.prefix_sums[i]] += 1
+        
+        return weighted_count
+    
+    def get_count(self):
+        """Get current count of subarrays with sum equal to target."""
+        return self.count
+    
+    def get_weighted_count(self):
+        """Get current weighted count of subarrays with sum equal to target."""
+        return self.weighted_count
+    
+    def get_subarrays_with_priority(self, priority_func):
+        """Get subarrays with target sum considering priority."""
+        result = []
+        count_map = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    subarray = self.arr[prev_idx:i]
+                    priority = priority_func(prev_idx, i - 1, subarray, self.weights[prev_idx:i], self.priorities[prev_idx:i])
+                    result.append((prev_idx, i - 1, priority))
+            count_map[self.prefix_sums[i]].append(i)
+        
+        # Sort by priority
+        result.sort(key=lambda x: x[2], reverse=True)
+        return result
+    
+    def get_subarrays_with_optimization(self, optimization_func):
+        """Get subarrays with target sum using custom optimization function."""
+        result = []
+        count_map = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    subarray = self.arr[prev_idx:i]
+                    score = optimization_func(prev_idx, i - 1, subarray, self.weights[prev_idx:i], self.priorities[prev_idx:i])
+                    result.append((prev_idx, i - 1, score))
+            count_map[self.prefix_sums[i]].append(i)
+        
+        # Sort by optimization score
+        result.sort(key=lambda x: x[2], reverse=True)
+        return result
+    
+    def get_subarrays_with_constraints(self, constraint_func):
+        """Get subarrays with target sum that satisfy custom constraints."""
+        result = []
+        count_map = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    subarray = self.arr[prev_idx:i]
+                    if constraint_func(prev_idx, i - 1, subarray, self.weights[prev_idx:i], self.priorities[prev_idx:i]):
+                        result.append((prev_idx, i - 1))
+            count_map[self.prefix_sums[i]].append(i)
+        
+        return result
+    
+    def get_subarrays_with_multiple_criteria(self, criteria_list):
+        """Get subarrays with target sum that satisfy multiple criteria."""
+        result = []
+        count_map = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    subarray = self.arr[prev_idx:i]
+                    satisfies_all_criteria = True
+                    for criterion in criteria_list:
+                        if not criterion(prev_idx, i - 1, subarray, self.weights[prev_idx:i], self.priorities[prev_idx:i]):
+                            satisfies_all_criteria = False
+                            break
+                    
+                    if satisfies_all_criteria:
+                        result.append((prev_idx, i - 1))
+            count_map[self.prefix_sums[i]].append(i)
+        
+        return result
+    
+    def get_subarrays_with_alternatives(self, alternatives):
+        """Get subarrays with target sum considering alternative values."""
+        result = []
+        
+        # Check original array
+        original_result = self.get_subarrays_with_target()
+        for start, end in original_result:
+            result.append((start, end, 'original'))
+        
+        # Check alternative values
+        for i, alt_values in alternatives.items():
+            if 0 <= i < self.n:
+                for alt_value in alt_values:
+                    # Create temporary array with alternative value
+                    temp_arr = self.arr[:]
+                    temp_arr[i] = alt_value
+                    
+                    # Calculate prefix sums for this alternative
+                    temp_prefix = [0] * (self.n + 1)
+                    for j in range(self.n):
+                        temp_prefix[j + 1] = temp_prefix[j] + temp_arr[j]
+                    
+                    # Find subarrays with target sum for this alternative
+                    temp_count_map = defaultdict(list)
+                    for j in range(self.n + 1):
+                        if temp_prefix[j] - self.target in temp_count_map:
+                            for prev_idx in temp_count_map[temp_prefix[j] - self.target]:
+                                result.append((prev_idx, j - 1, f'alternative_{alt_value}'))
+                        temp_count_map[temp_prefix[j]].append(j)
+        
+        return result
+    
+    def get_subarrays_with_adaptive_criteria(self, adaptive_func):
+        """Get subarrays with target sum using adaptive criteria."""
+        result = []
+        count_map = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    subarray = self.arr[prev_idx:i]
+                    if adaptive_func(prev_idx, i - 1, subarray, self.weights[prev_idx:i], self.priorities[prev_idx:i], result):
+                        result.append((prev_idx, i - 1))
+            count_map[self.prefix_sums[i]].append(i)
+        
+        return result
+    
+    def get_subarray_optimization(self):
+        """Get optimal subarray configuration."""
+        strategies = [
+            ('count', self.get_count),
+            ('weighted_count', self.get_weighted_count),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            current_value = strategy_func()
+            if current_value > best_value:
+                best_value = current_value
+                best_strategy = (strategy_name, current_value)
+        
+        return best_strategy
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+target = 9
+weights = [2, 1, 3, 1, 2]
+priorities = [1, 2, 1, 3, 1]
+advanced_sums_ii = AdvancedSubarraySumsII(arr, target, weights, priorities)
+
+print(f"Count: {advanced_sums_ii.get_count()}")
+print(f"Weighted count: {advanced_sums_ii.get_weighted_count()}")
+
+# Get subarrays with priority
+def priority_func(start, end, subarray, weights, priorities):
+    return sum(weights) * sum(priorities)
+
+print(f"Subarrays with priority: {advanced_sums_ii.get_subarrays_with_priority(priority_func)}")
+
+# Get subarrays with optimization
+def optimization_func(start, end, subarray, weights, priorities):
+    return sum(subarray) * sum(weights) + sum(priorities)
+
+print(f"Subarrays with optimization: {advanced_sums_ii.get_subarrays_with_optimization(optimization_func)}")
+
+# Get subarrays with constraints
+def constraint_func(start, end, subarray, weights, priorities):
+    return end - start >= 1 and sum(weights) > 2
+
+print(f"Subarrays with constraints: {advanced_sums_ii.get_subarrays_with_constraints(constraint_func)}")
+
+# Get subarrays with multiple criteria
+def criterion1(start, end, subarray, weights, priorities):
+    return end - start >= 1
+
+def criterion2(start, end, subarray, weights, priorities):
+    return sum(weights) > 2
+
+criteria_list = [criterion1, criterion2]
+print(f"Subarrays with multiple criteria: {advanced_sums_ii.get_subarrays_with_multiple_criteria(criteria_list)}")
+
+# Get subarrays with alternatives
+alternatives = {1: [3, 5], 3: [6, 8]}
+print(f"Subarrays with alternatives: {advanced_sums_ii.get_subarrays_with_alternatives(alternatives)}")
+
+# Get subarrays with adaptive criteria
+def adaptive_func(start, end, subarray, weights, priorities, current_result):
+    return end - start >= 1 and len(current_result) < 5
+
+print(f"Subarrays with adaptive criteria: {advanced_sums_ii.get_subarrays_with_adaptive_criteria(adaptive_func)}")
+
+# Get subarray optimization
+print(f"Subarray optimization: {advanced_sums_ii.get_subarray_optimization()}")
+```
+
+### **Variation 3: Subarray Sums II with Constraints**
+**Problem**: Handle subarray sums with target and additional constraints (cost limits, length constraints, resource constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedSubarraySumsII:
+    def __init__(self, arr, target, constraints=None):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.target = target
+        self.constraints = constraints or {}
+        self.prefix_sums = self._compute_prefix_sums()
+        self.count = self._compute_count()
+    
+    def _compute_prefix_sums(self):
+        """Compute prefix sums of the array."""
+        prefix = [0] * (self.n + 1)
+        for i in range(self.n):
+            prefix[i + 1] = prefix[i] + self.arr[i]
+        return prefix
+    
+    def _compute_count(self):
+        """Compute count of subarrays with sum equal to target."""
+        count_map = defaultdict(int)
+        count = 0
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                count += count_map[self.prefix_sums[i] - self.target]
+            count_map[self.prefix_sums[i]] += 1
+        
+        return count
+    
+    def get_count_with_cost_constraints(self, cost_limit):
+        """Get count considering cost constraints."""
+        if self.n == 0:
+            return 0
+        
+        count_map = defaultdict(int)
+        count = 0
+        total_cost = 0
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                # Calculate cost for this subarray
+                cost = count_map[self.prefix_sums[i] - self.target] * (i - 1)  # Simple cost model
+                if total_cost + cost <= cost_limit:
+                    count += count_map[self.prefix_sums[i] - self.target]
+                    total_cost += cost
+            count_map[self.prefix_sums[i]] += 1
+        
+        return count
+    
+    def get_count_with_length_constraints(self, min_length, max_length):
+        """Get count considering length constraints."""
+        if self.n == 0:
+            return 0
+        
+        count_map = defaultdict(list)
+        count = 0
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    subarray_length = i - prev_idx
+                    if min_length <= subarray_length <= max_length:
+                        count += 1
+            count_map[self.prefix_sums[i]].append(i)
+        
+        return count
+    
+    def get_count_with_resource_constraints(self, resource_limits, resource_consumption):
+        """Get count considering resource constraints."""
+        if self.n == 0:
+            return 0
+        
+        count_map = defaultdict(list)
+        count = 0
+        current_resources = [0] * len(resource_limits)
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    # Check resource constraints
+                    can_afford = True
+                    for j, consumption in enumerate(resource_consumption.get(prev_idx, [0] * len(resource_limits))):
+                        if current_resources[j] + consumption > resource_limits[j]:
+                            can_afford = False
+                            break
+                    
+                    if can_afford:
+                        count += 1
+                        for j, consumption in enumerate(resource_consumption.get(prev_idx, [0] * len(resource_limits))):
+                            current_resources[j] += consumption
+            count_map[self.prefix_sums[i]].append(i)
+        
+        return count
+    
+    def get_count_with_mathematical_constraints(self, constraint_func):
+        """Get count that satisfies custom mathematical constraints."""
+        if self.n == 0:
+            return 0
+        
+        count_map = defaultdict(list)
+        count = 0
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    if constraint_func(prev_idx, i - 1, self.arr[prev_idx:i]):
+                        count += 1
+            count_map[self.prefix_sums[i]].append(i)
+        
+        return count
+    
+    def get_count_with_range_constraints(self, range_constraints):
+        """Get count that satisfies range constraints."""
+        if self.n == 0:
+            return 0
+        
+        count_map = defaultdict(list)
+        count = 0
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    # Check if subarray satisfies all range constraints
+                    satisfies_constraints = True
+                    for constraint in range_constraints:
+                        if not constraint(prev_idx, i - 1, self.arr[prev_idx:i]):
+                            satisfies_constraints = False
+                            break
+                    
+                    if satisfies_constraints:
+                        count += 1
+            count_map[self.prefix_sums[i]].append(i)
+        
+        return count
+    
+    def get_count_with_optimization_constraints(self, optimization_func):
+        """Get count using custom optimization constraints."""
+        if self.n == 0:
+            return 0
+        
+        # Sort subarrays by optimization function
+        all_subarrays = []
+        count_map = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    subarray = self.arr[prev_idx:i]
+                    score = optimization_func(prev_idx, i - 1, subarray)
+                    all_subarrays.append((prev_idx, i - 1, score))
+            count_map[self.prefix_sums[i]].append(i)
+        
+        # Sort by optimization score
+        all_subarrays.sort(key=lambda x: x[2], reverse=True)
+        
+        return len(all_subarrays)
+    
+    def get_count_with_multiple_constraints(self, constraints_list):
+        """Get count that satisfies multiple constraints."""
+        if self.n == 0:
+            return 0
+        
+        count_map = defaultdict(list)
+        count = 0
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    # Check if subarray satisfies all constraints
+                    satisfies_all_constraints = True
+                    for constraint in constraints_list:
+                        if not constraint(prev_idx, i - 1, self.arr[prev_idx:i]):
+                            satisfies_all_constraints = False
+                            break
+                    
+                    if satisfies_all_constraints:
+                        count += 1
+            count_map[self.prefix_sums[i]].append(i)
+        
+        return count
+    
+    def get_count_with_priority_constraints(self, priority_func):
+        """Get count with priority-based constraints."""
+        if self.n == 0:
+            return 0
+        
+        # Sort subarrays by priority
+        all_subarrays = []
+        count_map = defaultdict(list)
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    subarray = self.arr[prev_idx:i]
+                    priority = priority_func(prev_idx, i - 1, subarray)
+                    all_subarrays.append((prev_idx, i - 1, priority))
+            count_map[self.prefix_sums[i]].append(i)
+        
+        # Sort by priority
+        all_subarrays.sort(key=lambda x: x[2], reverse=True)
+        
+        return len(all_subarrays)
+    
+    def get_count_with_adaptive_constraints(self, adaptive_func):
+        """Get count with adaptive constraints."""
+        if self.n == 0:
+            return 0
+        
+        count_map = defaultdict(list)
+        count = 0
+        
+        for i in range(self.n + 1):
+            if self.prefix_sums[i] - self.target in count_map:
+                for prev_idx in count_map[self.prefix_sums[i] - self.target]:
+                    # Check adaptive constraints
+                    if adaptive_func(prev_idx, i - 1, self.arr[prev_idx:i], count):
+                        count += 1
+            count_map[self.prefix_sums[i]].append(i)
+        
+        return count
+    
+    def get_optimal_target_strategy(self):
+        """Get optimal target strategy considering all constraints."""
+        strategies = [
+            ('cost_constraints', self.get_count_with_cost_constraints),
+            ('length_constraints', self.get_count_with_length_constraints),
+            ('resource_constraints', self.get_count_with_resource_constraints),
+        ]
+        
+        best_strategy = None
+        best_count = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'cost_constraints':
+                    current_count = strategy_func(100)  # Cost limit of 100
+                elif strategy_name == 'length_constraints':
+                    current_count = strategy_func(1, 5)  # Length between 1 and 5
+                elif strategy_name == 'resource_constraints':
+                    resource_limits = [100, 50]
+                    resource_consumption = {i: [10, 5] for i in range(self.n)}
+                    current_count = strategy_func(resource_limits, resource_consumption)
+                
+                if current_count > best_count:
+                    best_count = current_count
+                    best_strategy = (strategy_name, current_count)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'max_cost': 100,
+    'min_length': 1,
+    'max_length': 5
+}
+
+arr = [1, 2, 3, 4, 5]
+target = 9
+constrained_sums_ii = ConstrainedSubarraySumsII(arr, target, constraints)
+
+print("Cost-constrained count:", constrained_sums_ii.get_count_with_cost_constraints(100))
+
+print("Length-constrained count:", constrained_sums_ii.get_count_with_length_constraints(1, 5))
+
+# Resource constraints
+resource_limits = [100, 50]
+resource_consumption = {i: [10, 5] for i in range(len(arr))}
+print("Resource-constrained count:", constrained_sums_ii.get_count_with_resource_constraints(resource_limits, resource_consumption))
+
+# Mathematical constraints
+def custom_constraint(start, end, subarray):
+    return end - start >= 1 and sum(subarray) > 5
+
+print("Mathematical constraint count:", constrained_sums_ii.get_count_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(start, end, subarray):
+    return end - start >= 1
+
+range_constraints = [range_constraint]
+print("Range-constrained count:", constrained_sums_ii.get_count_with_range_constraints(range_constraints))
+
+# Multiple constraints
+def constraint1(start, end, subarray):
+    return end - start >= 1
+
+def constraint2(start, end, subarray):
+    return sum(subarray) > 5
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints count:", constrained_sums_ii.get_count_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(start, end, subarray):
+    return sum(subarray)
+
+print("Priority-constrained count:", constrained_sums_ii.get_count_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(start, end, subarray, current_count):
+    return end - start >= 1 and current_count < 10
+
+print("Adaptive constraint count:", constrained_sums_ii.get_count_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_sums_ii.get_optimal_target_strategy()
+print(f"Optimal strategy: {optimal}")
+```
+
+### Related Problems
+
 #### **CSES Problems**
 - [Subarray Sums II](https://cses.fi/problemset/task/1662) - Basic subarray sum with target problem
 - [Subarray Sums I](https://cses.fi/problemset/task/1661) - Subarray sum problems

@@ -566,6 +566,986 @@ print(f"Total movies scheduled: {scheduled_count}")
 print(f"Screen utilization: {festival.get_screen_utilization():.2%}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Movie Festival II with Dynamic Updates**
+**Problem**: Handle dynamic movie updates (add/remove movies) while maintaining efficient optimal scheduling queries for multiple screens.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries with priority queue management.
+
+```python
+from collections import defaultdict
+import bisect
+import heapq
+
+class DynamicMovieFestivalII:
+    def __init__(self, movies, k):
+        self.movies = sorted(movies, key=lambda x: x['end_time'])
+        self.n = len(movies)
+        self.k = k
+        self.max_movies = 0
+        self.scheduled_movies = []
+        self.screen_assignments = {}
+        self._calculate_optimal_schedule()
+    
+    def _calculate_optimal_schedule(self):
+        """Calculate optimal movie schedule using greedy approach with multiple screens."""
+        if not self.movies or self.k <= 0:
+            self.max_movies = 0
+            self.scheduled_movies = []
+            self.screen_assignments = {}
+            return
+        
+        # Priority queue: (end_time, screen_id)
+        screen_end_times = []
+        for i in range(self.k):
+            heapq.heappush(screen_end_times, (0, i))
+        
+        self.scheduled_movies = []
+        self.screen_assignments = {}
+        total_movies = 0
+        
+        for movie in self.movies:
+            # Find screen with earliest end time
+            earliest_end, screen_id = heapq.heappop(screen_end_times)
+            
+            if earliest_end <= movie['start_time']:
+                # Can schedule this movie
+                heapq.heappush(screen_end_times, (movie['end_time'], screen_id))
+                self.scheduled_movies.append(movie)
+                self.screen_assignments[movie['id']] = screen_id
+                total_movies += 1
+            else:
+                # Put back the screen end time
+                heapq.heappush(screen_end_times, (earliest_end, screen_id))
+        
+        self.max_movies = total_movies
+    
+    def add_movie(self, movie):
+        """Add a new movie to the festival."""
+        bisect.insort(self.movies, movie, key=lambda x: x['end_time'])
+        self.n += 1
+        self._calculate_optimal_schedule()
+    
+    def remove_movie(self, movie_id):
+        """Remove a movie from the festival."""
+        self.movies = [m for m in self.movies if m['id'] != movie_id]
+        self.n = len(self.movies)
+        self._calculate_optimal_schedule()
+    
+    def update_movie(self, movie_id, new_movie):
+        """Update a movie in the festival."""
+        self.remove_movie(movie_id)
+        self.add_movie(new_movie)
+    
+    def update_screen_count(self, new_k):
+        """Update the number of screens."""
+        self.k = new_k
+        self._calculate_optimal_schedule()
+    
+    def get_max_movies(self):
+        """Get current maximum number of movies that can be watched."""
+        return self.max_movies
+    
+    def get_scheduled_movies(self):
+        """Get the actual scheduled movies."""
+        return self.scheduled_movies
+    
+    def get_screen_assignments(self):
+        """Get screen assignments for scheduled movies."""
+        return self.screen_assignments
+    
+    def get_movies_by_screen(self, screen_id):
+        """Get movies scheduled on a specific screen."""
+        screen_movies = []
+        for movie in self.scheduled_movies:
+            if self.screen_assignments.get(movie['id']) == screen_id:
+                screen_movies.append(movie)
+        return screen_movies
+    
+    def get_screen_utilization(self):
+        """Get utilization statistics for each screen."""
+        screen_stats = {}
+        for i in range(self.k):
+            screen_movies = self.get_movies_by_screen(i)
+            total_duration = sum(movie['end_time'] - movie['start_time'] for movie in screen_movies)
+            screen_stats[i] = {
+                'movie_count': len(screen_movies),
+                'total_duration': total_duration,
+                'utilization_rate': total_duration / 24.0 if total_duration > 0 else 0.0  # Assuming 24-hour day
+            }
+        return screen_stats
+    
+    def get_movies_in_time_range(self, start_time, end_time):
+        """Get movies that can be watched in a specific time range."""
+        available_movies = []
+        screen_end_times = [0] * self.k
+        
+        for movie in self.movies:
+            if movie['start_time'] >= start_time and movie['end_time'] <= end_time:
+                # Find available screen
+                best_screen = -1
+                earliest_end = float('inf')
+                
+                for i in range(self.k):
+                    if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                        earliest_end = screen_end_times[i]
+                        best_screen = i
+                
+                if best_screen != -1:
+                    screen_end_times[best_screen] = movie['end_time']
+                    available_movies.append(movie)
+        
+        return available_movies
+    
+    def get_movies_by_genre(self, genre):
+        """Get movies of a specific genre that can be watched."""
+        genre_movies = [m for m in self.movies if m.get('genre') == genre]
+        genre_movies.sort(key=lambda x: x['end_time'])
+        
+        # Use greedy approach for genre movies
+        screen_end_times = [0] * self.k
+        scheduled_genre_movies = []
+        
+        for movie in genre_movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_genre_movies.append(movie)
+        
+        return scheduled_genre_movies
+    
+    def get_movies_by_rating(self, min_rating):
+        """Get movies with minimum rating that can be watched."""
+        rated_movies = [m for m in self.movies if m.get('rating', 0) >= min_rating]
+        rated_movies.sort(key=lambda x: x['end_time'])
+        
+        # Use greedy approach for rated movies
+        screen_end_times = [0] * self.k
+        scheduled_rated_movies = []
+        
+        for movie in rated_movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_rated_movies.append(movie)
+        
+        return scheduled_rated_movies
+    
+    def get_movies_with_breaks(self, break_duration):
+        """Get movies that can be watched with breaks between them."""
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in self.movies:
+            # Find available screen with break consideration
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] + break_duration <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return scheduled_movies
+    
+    def get_movies_with_preferences(self, preferences):
+        """Get movies that match user preferences."""
+        preferred_movies = []
+        
+        for movie in self.movies:
+            matches_preferences = True
+            
+            if 'genres' in preferences:
+                if movie.get('genre') not in preferences['genres']:
+                    matches_preferences = False
+            
+            if 'min_rating' in preferences:
+                if movie.get('rating', 0) < preferences['min_rating']:
+                    matches_preferences = False
+            
+            if 'max_duration' in preferences:
+                duration = movie['end_time'] - movie['start_time']
+                if duration > preferences['max_duration']:
+                    matches_preferences = False
+            
+            if matches_preferences:
+                preferred_movies.append(movie)
+        
+        preferred_movies.sort(key=lambda x: x['end_time'])
+        
+        # Use greedy approach for preferred movies
+        screen_end_times = [0] * self.k
+        scheduled_preferred_movies = []
+        
+        for movie in preferred_movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_preferred_movies.append(movie)
+        
+        return scheduled_preferred_movies
+    
+    def get_festival_statistics(self):
+        """Get statistics about the movie festival."""
+        if not self.movies:
+            return {
+                'total_movies': 0,
+                'max_watchable': 0,
+                'total_duration': 0,
+                'average_duration': 0,
+                'genres': {},
+                'ratings': [],
+                'screen_utilization': {}
+            }
+        
+        total_duration = sum(movie['end_time'] - movie['start_time'] for movie in self.movies)
+        genres = {}
+        ratings = []
+        
+        for movie in self.movies:
+            genre = movie.get('genre', 'Unknown')
+            genres[genre] = genres.get(genre, 0) + 1
+            
+            rating = movie.get('rating', 0)
+            if rating > 0:
+                ratings.append(rating)
+        
+        screen_utilization = self.get_screen_utilization()
+        
+        return {
+            'total_movies': len(self.movies),
+            'max_watchable': self.max_movies,
+            'total_duration': total_duration,
+            'average_duration': total_duration / len(self.movies),
+            'genres': genres,
+            'ratings': ratings,
+            'screen_utilization': screen_utilization
+        }
+
+# Example usage
+movies = [
+    {'id': 1, 'start_time': 1, 'end_time': 3, 'genre': 'Action', 'rating': 8.5},
+    {'id': 2, 'start_time': 2, 'end_time': 4, 'genre': 'Comedy', 'rating': 7.2},
+    {'id': 3, 'start_time': 4, 'end_time': 6, 'genre': 'Drama', 'rating': 9.1},
+    {'id': 4, 'start_time': 5, 'end_time': 7, 'genre': 'Action', 'rating': 8.8},
+    {'id': 5, 'start_time': 6, 'end_time': 8, 'genre': 'Thriller', 'rating': 8.0}
+]
+
+dynamic_festival_ii = DynamicMovieFestivalII(movies, 2)
+print(f"Initial max movies: {dynamic_festival_ii.get_max_movies()}")
+
+# Add a movie
+new_movie = {'id': 6, 'start_time': 8, 'end_time': 10, 'genre': 'Horror', 'rating': 7.5}
+dynamic_festival_ii.add_movie(new_movie)
+print(f"After adding movie: {dynamic_festival_ii.get_max_movies()}")
+
+# Update screen count
+dynamic_festival_ii.update_screen_count(3)
+print(f"With 3 screens: {dynamic_festival_ii.get_max_movies()}")
+
+# Get screen assignments
+print(f"Screen assignments: {dynamic_festival_ii.get_screen_assignments()}")
+
+# Get movies by screen
+print(f"Movies on screen 0: {dynamic_festival_ii.get_movies_by_screen(0)}")
+
+# Get screen utilization
+print(f"Screen utilization: {dynamic_festival_ii.get_screen_utilization()}")
+
+# Get movies in time range
+print(f"Movies in range [1, 5]: {dynamic_festival_ii.get_movies_in_time_range(1, 5)}")
+
+# Get movies by genre
+print(f"Action movies: {dynamic_festival_ii.get_movies_by_genre('Action')}")
+
+# Get movies by rating
+print(f"Movies with rating >= 8.0: {dynamic_festival_ii.get_movies_by_rating(8.0)}")
+
+# Get movies with breaks
+print(f"Movies with 1-hour breaks: {dynamic_festival_ii.get_movies_with_breaks(1)}")
+
+# Get movies with preferences
+preferences = {'genres': ['Action', 'Drama'], 'min_rating': 8.0, 'max_duration': 3}
+print(f"Preferred movies: {dynamic_festival_ii.get_movies_with_preferences(preferences)}")
+
+# Get statistics
+print(f"Festival statistics: {dynamic_festival_ii.get_festival_statistics()}")
+```
+
+### **Variation 2: Movie Festival II with Different Operations**
+**Problem**: Handle different types of operations on movie festival II (weighted movies, advanced constraints, optimization functions).
+
+**Approach**: Use advanced data structures for efficient multi-screen and constraint-based queries.
+
+```python
+class AdvancedMovieFestivalII:
+    def __init__(self, movies, k):
+        self.movies = sorted(movies, key=lambda x: x['end_time'])
+        self.n = len(movies)
+        self.k = k
+    
+    def get_movies_weighted(self, weights):
+        """Get maximum weighted movies that can be watched."""
+        if len(weights) != self.n:
+            weights = [1] * self.n
+        
+        # Create weighted movies
+        weighted_movies = [(self.movies[i], weights[i]) for i in range(self.n)]
+        weighted_movies.sort(key=lambda x: x[0]['end_time'])
+        
+        # Use dynamic programming approach
+        dp = [0] * (self.n + 1)
+        
+        for i in range(1, self.n + 1):
+            movie, weight = weighted_movies[i - 1]
+            
+            # Don't watch this movie
+            dp[i] = dp[i - 1]
+            
+            # Watch this movie
+            # Find the last movie that doesn't conflict
+            last_compatible = -1
+            for j in range(i - 1, -1, -1):
+                if weighted_movies[j][0]['end_time'] <= movie['start_time']:
+                    last_compatible = j
+                    break
+            
+            if last_compatible != -1:
+                dp[i] = max(dp[i], dp[last_compatible + 1] + weight)
+        
+        return dp[self.n]
+    
+    def get_movies_with_breaks(self, break_duration):
+        """Get maximum movies that can be watched with breaks between them."""
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in self.movies:
+            # Find available screen with break consideration
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] + break_duration <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_preferences(self, preferences):
+        """Get maximum movies that match user preferences."""
+        preferred_movies = []
+        
+        for movie in self.movies:
+            matches_preferences = True
+            
+            if 'genres' in preferences:
+                if movie.get('genre') not in preferences['genres']:
+                    matches_preferences = False
+            
+            if 'min_rating' in preferences:
+                if movie.get('rating', 0) < preferences['min_rating']:
+                    matches_preferences = False
+            
+            if 'max_duration' in preferences:
+                duration = movie['end_time'] - movie['start_time']
+                if duration > preferences['max_duration']:
+                    matches_preferences = False
+            
+            if matches_preferences:
+                preferred_movies.append(movie)
+        
+        preferred_movies.sort(key=lambda x: x['end_time'])
+        
+        # Use greedy approach for preferred movies
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in preferred_movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_priority(self, priority_func):
+        """Get maximum movies using priority-based selection."""
+        # Sort movies by priority
+        prioritized_movies = sorted(self.movies, key=priority_func, reverse=True)
+        
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in prioritized_movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_constraints(self, constraints):
+        """Get maximum movies that satisfy various constraints."""
+        filtered_movies = []
+        
+        for movie in self.movies:
+            satisfies_constraints = True
+            
+            if 'min_duration' in constraints:
+                duration = movie['end_time'] - movie['start_time']
+                if duration < constraints['min_duration']:
+                    satisfies_constraints = False
+            
+            if 'max_duration' in constraints:
+                duration = movie['end_time'] - movie['start_time']
+                if duration > constraints['max_duration']:
+                    satisfies_constraints = False
+            
+            if 'time_range' in constraints:
+                start_range, end_range = constraints['time_range']
+                if movie['start_time'] < start_range or movie['end_time'] > end_range:
+                    satisfies_constraints = False
+            
+            if satisfies_constraints:
+                filtered_movies.append(movie)
+        
+        filtered_movies.sort(key=lambda x: x['end_time'])
+        
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in filtered_movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_optimization(self, optimization_func):
+        """Get maximum movies using custom optimization function."""
+        # Sort movies by optimization function
+        optimized_movies = sorted(self.movies, key=optimization_func)
+        
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in optimized_movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_alternatives(self, alternatives):
+        """Get maximum movies considering alternative scheduling."""
+        # Create all possible movie combinations
+        all_combinations = []
+        
+        for movie in self.movies:
+            # Add original movie
+            all_combinations.append(movie)
+            
+            # Add alternative versions if available
+            if movie['id'] in alternatives:
+                for alt_movie in alternatives[movie['id']]:
+                    all_combinations.append(alt_movie)
+        
+        # Sort by end time
+        all_combinations.sort(key=lambda x: x['end_time'])
+        
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in all_combinations:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_screen_capacities(self, screen_capacities):
+        """Get maximum movies considering screen capacities."""
+        if len(screen_capacities) != self.k:
+            screen_capacities = [1] * self.k
+        
+        screen_end_times = [0] * self.k
+        screen_capacities_remaining = screen_capacities[:]
+        scheduled_movies = []
+        
+        for movie in self.movies:
+            # Find the best screen (earliest end time with available capacity)
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_capacities_remaining[i] > 0 and screen_end_times[i] <= movie['start_time']:
+                    if screen_end_times[i] < earliest_end:
+                        earliest_end = screen_end_times[i]
+                        best_screen = i
+            
+            if best_screen != -1:
+                # Assign movie to best screen
+                screen_end_times[best_screen] = movie['end_time']
+                screen_capacities_remaining[best_screen] -= 1
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+
+# Example usage
+movies = [
+    {'id': 1, 'start_time': 1, 'end_time': 3, 'genre': 'Action', 'rating': 8.5},
+    {'id': 2, 'start_time': 2, 'end_time': 4, 'genre': 'Comedy', 'rating': 7.2},
+    {'id': 3, 'start_time': 4, 'end_time': 6, 'genre': 'Drama', 'rating': 9.1},
+    {'id': 4, 'start_time': 5, 'end_time': 7, 'genre': 'Action', 'rating': 8.8},
+    {'id': 5, 'start_time': 6, 'end_time': 8, 'genre': 'Thriller', 'rating': 8.0}
+]
+
+advanced_festival_ii = AdvancedMovieFestivalII(movies, 2)
+
+# Weighted movies
+weights = [2, 1, 3, 1, 2]
+print(f"Weighted movies: {advanced_festival_ii.get_movies_weighted(weights)}")
+
+# Movies with breaks
+print(f"Movies with 1-hour breaks: {advanced_festival_ii.get_movies_with_breaks(1)}")
+
+# Movies with preferences
+preferences = {'genres': ['Action', 'Drama'], 'min_rating': 8.0, 'max_duration': 3}
+print(f"Preferred movies: {advanced_festival_ii.get_movies_with_preferences(preferences)}")
+
+# Priority-based selection
+def priority_func(movie):
+    return movie.get('rating', 0)
+
+print(f"Priority-based movies: {advanced_festival_ii.get_movies_with_priority(priority_func)}")
+
+# Movies with constraints
+constraints = {'min_duration': 2, 'max_duration': 4, 'time_range': (1, 8)}
+print(f"Constrained movies: {advanced_festival_ii.get_movies_with_constraints(constraints)}")
+
+# Optimization-based selection
+def optimization_func(movie):
+    return movie['end_time'] - movie['start_time']  # Sort by duration
+
+print(f"Optimized movies: {advanced_festival_ii.get_movies_with_optimization(optimization_func)}")
+
+# Movies with alternatives
+alternatives = {
+    1: [{'id': 1, 'start_time': 1, 'end_time': 2, 'genre': 'Action', 'rating': 8.5}],
+    2: [{'id': 2, 'start_time': 2, 'end_time': 3, 'genre': 'Comedy', 'rating': 7.2}]
+}
+print(f"Movies with alternatives: {advanced_festival_ii.get_movies_with_alternatives(alternatives)}")
+
+# Movies with screen capacities
+screen_capacities = [2, 1]  # Screen 0 can show 2 movies, Screen 1 can show 1 movie
+print(f"Movies with screen capacities: {advanced_festival_ii.get_movies_with_screen_capacities(screen_capacities)}")
+```
+
+### **Variation 3: Movie Festival II with Constraints**
+**Problem**: Handle movie festival II with additional constraints (time limits, resource constraints, mathematical constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedMovieFestivalII:
+    def __init__(self, movies, k, constraints=None):
+        self.movies = sorted(movies, key=lambda x: x['end_time'])
+        self.n = len(movies)
+        self.k = k
+        self.constraints = constraints or {}
+    
+    def get_movies_with_time_constraints(self, time_limit):
+        """Get maximum movies that can be watched within time limit."""
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        total_time = 0
+        
+        for movie in self.movies:
+            if total_time >= time_limit:
+                break
+            
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                movie_duration = movie['end_time'] - movie['start_time']
+                
+                if total_time + movie_duration <= time_limit:
+                    screen_end_times[best_screen] = movie['end_time']
+                    scheduled_movies.append(movie)
+                    total_time += movie_duration
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_resource_constraints(self, resource_limits, resource_consumption):
+        """Get maximum movies considering resource constraints."""
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        resources_used = [0] * len(resource_limits)
+        
+        for movie in self.movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                # Check resource constraints
+                can_watch_movie = True
+                for i, consumption in enumerate(resource_consumption[movie['id']]):
+                    if resources_used[i] + consumption > resource_limits[i]:
+                        can_watch_movie = False
+                        break
+                
+                if can_watch_movie:
+                    # Consume resources and add movie
+                    for i, consumption in enumerate(resource_consumption[movie['id']]):
+                        resources_used[i] += consumption
+                    screen_end_times[best_screen] = movie['end_time']
+                    scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_mathematical_constraints(self, constraint_func):
+        """Get maximum movies that satisfy custom mathematical constraints."""
+        filtered_movies = [movie for movie in self.movies if constraint_func(movie)]
+        filtered_movies.sort(key=lambda x: x['end_time'])
+        
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in filtered_movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_range_constraints(self, range_constraints):
+        """Get maximum movies that satisfy range constraints."""
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in self.movies:
+            # Check if movie satisfies all range constraints
+            satisfies_constraints = True
+            for constraint in range_constraints:
+                if not constraint(movie):
+                    satisfies_constraints = False
+                    break
+            
+            if not satisfies_constraints:
+                continue
+            
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_optimization_constraints(self, optimization_func):
+        """Get maximum movies using custom optimization constraints."""
+        # Sort movies by optimization function
+        optimized_movies = sorted(self.movies, key=optimization_func)
+        
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in optimized_movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_multiple_constraints(self, constraints_list):
+        """Get maximum movies that satisfy multiple constraints."""
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in self.movies:
+            # Check if movie satisfies all constraints
+            satisfies_all_constraints = True
+            for constraint in constraints_list:
+                if not constraint(movie):
+                    satisfies_all_constraints = False
+                    break
+            
+            if not satisfies_all_constraints:
+                continue
+            
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_priority_constraints(self, priority_func):
+        """Get maximum movies with priority-based constraints."""
+        # Sort movies by priority
+        prioritized_movies = sorted(self.movies, key=priority_func, reverse=True)
+        
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in prioritized_movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                screen_end_times[best_screen] = movie['end_time']
+                scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_movies_with_adaptive_constraints(self, adaptive_func):
+        """Get maximum movies with adaptive constraints."""
+        screen_end_times = [0] * self.k
+        scheduled_movies = []
+        
+        for movie in self.movies:
+            # Find available screen
+            best_screen = -1
+            earliest_end = float('inf')
+            
+            for i in range(self.k):
+                if screen_end_times[i] <= movie['start_time'] and screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+            
+            if best_screen != -1:
+                # Check adaptive constraints
+                if adaptive_func(movie, scheduled_movies, screen_end_times[best_screen]):
+                    screen_end_times[best_screen] = movie['end_time']
+                    scheduled_movies.append(movie)
+        
+        return len(scheduled_movies)
+    
+    def get_optimal_movie_strategy(self):
+        """Get optimal movie strategy considering all constraints."""
+        strategies = [
+            ('time_constraints', self.get_movies_with_time_constraints),
+            ('resource_constraints', self.get_movies_with_resource_constraints),
+            ('mathematical_constraints', self.get_movies_with_mathematical_constraints),
+        ]
+        
+        best_strategy = None
+        best_movies = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'time_constraints':
+                    current_movies = strategy_func(10)  # 10 time units
+                elif strategy_name == 'resource_constraints':
+                    resource_limits = [100, 50]
+                    resource_consumption = {1: [10, 5], 2: [15, 8], 3: [12, 6], 4: [20, 10], 5: [8, 4]}
+                    current_movies = strategy_func(resource_limits, resource_consumption)
+                elif strategy_name == 'mathematical_constraints':
+                    def constraint_func(movie):
+                        return movie.get('rating', 0) >= 8.0
+                    current_movies = strategy_func(constraint_func)
+                
+                if current_movies > best_movies:
+                    best_movies = current_movies
+                    best_strategy = (strategy_name, current_movies)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'min_rating': 8.0,
+    'max_duration': 3,
+    'time_range': (1, 8)
+}
+
+movies = [
+    {'id': 1, 'start_time': 1, 'end_time': 3, 'genre': 'Action', 'rating': 8.5},
+    {'id': 2, 'start_time': 2, 'end_time': 4, 'genre': 'Comedy', 'rating': 7.2},
+    {'id': 3, 'start_time': 4, 'end_time': 6, 'genre': 'Drama', 'rating': 9.1},
+    {'id': 4, 'start_time': 5, 'end_time': 7, 'genre': 'Action', 'rating': 8.8},
+    {'id': 5, 'start_time': 6, 'end_time': 8, 'genre': 'Thriller', 'rating': 8.0}
+]
+
+constrained_festival_ii = ConstrainedMovieFestivalII(movies, 2, constraints)
+
+print("Time-constrained movies:", constrained_festival_ii.get_movies_with_time_constraints(8))
+
+# Resource constraints
+resource_limits = [100, 50]
+resource_consumption = {1: [10, 5], 2: [15, 8], 3: [12, 6], 4: [20, 10], 5: [8, 4]}
+print("Resource-constrained movies:", constrained_festival_ii.get_movies_with_resource_constraints(resource_limits, resource_consumption))
+
+# Mathematical constraints
+def custom_constraint(movie):
+    return movie.get('rating', 0) >= 8.0
+
+print("Mathematical constraint movies:", constrained_festival_ii.get_movies_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(movie):
+    return movie.get('rating', 0) >= 8.0 and movie['end_time'] - movie['start_time'] <= 3
+
+range_constraints = [range_constraint]
+print("Range-constrained movies:", constrained_festival_ii.get_movies_with_range_constraints(range_constraints))
+
+# Multiple constraints
+def constraint1(movie):
+    return movie.get('rating', 0) >= 8.0
+
+def constraint2(movie):
+    return movie['end_time'] - movie['start_time'] <= 3
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints movies:", constrained_festival_ii.get_movies_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(movie):
+    return movie.get('rating', 0)
+
+print("Priority-constrained movies:", constrained_festival_ii.get_movies_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(movie, scheduled_movies, last_end_time):
+    return movie.get('rating', 0) >= 8.0 and len(scheduled_movies) < 3
+
+print("Adaptive constraint movies:", constrained_festival_ii.get_movies_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_festival_ii.get_optimal_movie_strategy()
+print(f"Optimal strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

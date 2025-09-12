@@ -326,8 +326,193 @@ print(f"Optimal result: {result}")  # Output: 2
 - **Optimal Approach**: Position analysis provides the most efficient solution for collection problems
 - **Space**: O([complexity]) - [Explanation]
 
-### Why This Solution Works
-- **[Reason 1]**: [Explanation]
-- **[Reason 2]**: [Explanation]
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+## Problem Variations
+
+### **Variation 1: Collecting Numbers II with Dynamic Updates**
+**Problem**: Handle dynamic array updates while maintaining optimal collection strategy for advanced collecting.
+
+**Approach**: Use balanced binary search trees or segment trees for efficient updates and position tracking.
+
+```python
+import bisect
+from collections import defaultdict
+
+class DynamicCollectingNumbersII:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.position_map = {val: i for i, val in enumerate(arr)}
+        self.sorted_values = sorted(arr)
+        self.rounds = 0
+        self._calculate_rounds()
+    
+    def _calculate_rounds(self):
+        """Calculate the number of rounds needed to collect all numbers."""
+        self.rounds = 0
+        collected = set()
+        
+        for val in self.sorted_values:
+            if val not in collected:
+                self.rounds += 1
+                # Collect consecutive numbers
+                current = val
+                while current in self.position_map and current not in collected:
+                    collected.add(current)
+                    current += 1
+    
+    def update_value(self, index, new_value):
+        """Update array value and recalculate rounds."""
+        old_value = self.arr[index]
+        self.arr[index] = new_value
+        
+        # Update position map
+        del self.position_map[old_value]
+        self.position_map[new_value] = index
+        
+        # Update sorted values
+        self.sorted_values.remove(old_value)
+        bisect.insort(self.sorted_values, new_value)
+        
+        # Recalculate rounds
+        self._calculate_rounds()
+    
+    def get_rounds(self):
+        """Get the current number of rounds needed."""
+        return self.rounds
+
+# Example usage
+arr = [4, 1, 2, 3, 5]
+collector = DynamicCollectingNumbersII(arr)
+print(f"Initial rounds: {collector.get_rounds()}")
+
+# Update a value
+collector.update_value(0, 6)
+print(f"After update: {collector.get_rounds()}")
+```
+
+### **Variation 2: Collecting Numbers II with Different Operations**
+**Problem**: Collect numbers with different collection rules and advanced strategies.
+
+**Approach**: Adapt the greedy strategy for different collection patterns and optimization goals.
+
+```python
+def collecting_numbers_ii_backwards(arr):
+    """Collect numbers in descending order (backwards) with advanced strategy."""
+    position_map = {val: i for i, val in enumerate(arr)}
+    sorted_values = sorted(arr, reverse=True)  # Descending order
+    
+    rounds = 0
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            rounds += 1
+            # Collect consecutive numbers in descending order
+            current = val
+            while current in position_map and current not in collected:
+                collected.add(current)
+                current -= 1  # Go backwards
+    
+    return rounds
+
+def collecting_numbers_ii_skip_pattern(arr, skip):
+    """Collect numbers with a skip pattern and advanced optimization."""
+    position_map = {val: i for i, val in enumerate(arr)}
+    sorted_values = sorted(arr)
+    
+    rounds = 0
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            rounds += 1
+            # Collect numbers with skip pattern
+            current = val
+            while current in position_map and current not in collected:
+                collected.add(current)
+                current += skip  # Skip by 'skip' amount
+    
+    return rounds
+
+# Example usage
+arr = [4, 1, 2, 3, 5, 6, 7, 8]
+print(f"Backwards collection: {collecting_numbers_ii_backwards(arr)}")
+print(f"Skip pattern (skip 2): {collecting_numbers_ii_skip_pattern(arr, 2)}")
+```
+
+### **Variation 3: Collecting Numbers II with Advanced Constraints**
+**Problem**: Collect numbers with advanced constraints like time limits, capacity limits, and optimization goals.
+
+**Approach**: Use advanced constraint satisfaction with backtracking or optimization algorithms.
+
+```python
+def collecting_numbers_ii_with_capacity(arr, capacity):
+    """Collect numbers with capacity constraints per round."""
+    position_map = {val: i for i, val in enumerate(arr)}
+    sorted_values = sorted(arr)
+    
+    rounds = 0
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            rounds += 1
+            current_capacity = 0
+            current = val
+            
+            # Collect consecutive numbers within capacity
+            while (current in position_map and 
+                   current not in collected and 
+                   current_capacity < capacity):
+                collected.add(current)
+                current += 1
+                current_capacity += 1
+    
+    return rounds
+
+def collecting_numbers_ii_with_priority(arr, priorities):
+    """Collect numbers based on priority levels with advanced optimization."""
+    position_map = {val: i for i, val in enumerate(arr)}
+    # Sort by priority (higher priority first)
+    sorted_values = sorted(arr, key=lambda x: priorities.get(x, 0), reverse=True)
+    
+    rounds = 0
+    collected = set()
+    
+    for val in sorted_values:
+        if val not in collected:
+            rounds += 1
+            # Collect consecutive numbers
+            current = val
+            while current in position_map and current not in collected:
+                collected.add(current)
+                current += 1
+    
+    return rounds
+
+# Example usage
+arr = [4, 1, 2, 3, 5, 6, 7, 8]
+print(f"Capacity constraint (capacity=3): {collecting_numbers_ii_with_capacity(arr, 3)}")
+
+priorities = {1: 3, 2: 1, 3: 2, 4: 4, 5: 1, 6: 2, 7: 3, 8: 1}
+print(f"Priority-based collection: {collecting_numbers_ii_with_priority(arr, priorities)}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Collecting Numbers](https://cses.fi/problemset/task/2216) - Basic collecting numbers problem
+- [Collecting Numbers II](https://cses.fi/problemset/task/2217) - Advanced collecting numbers problem
+- [Stick Lengths](https://cses.fi/problemset/task/1074) - Optimization with sorting
+
+#### **LeetCode Problems**
+- [Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/) - Find longest increasing sequence
+- [Russian Doll Envelopes](https://leetcode.com/problems/russian-doll-envelopes/) - Nested sequence problem
+- [Maximum Length of Pair Chain](https://leetcode.com/problems/maximum-length-of-pair-chain/) - Chain formation problem
+- [Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/) - Interval scheduling
+
+#### **Problem Categories**
+- **Greedy Algorithms**: Optimal local choices, sorting-based optimization, sequence problems
+- **Sorting**: Array sorting, coordinate compression, position tracking
+- **Sequence Analysis**: Position sequences, pass counting, order analysis
+- **Algorithm Design**: Greedy strategies, sorting algorithms, optimization techniques
