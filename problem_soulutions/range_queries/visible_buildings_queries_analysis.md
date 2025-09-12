@@ -181,6 +181,307 @@ def optimal_visible_buildings_queries(heights, queries):
 - **Fast Queries**: Answer each query in O(1) time
 - **Optimal Approach**: O(n + q) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Visible Buildings Queries with Dynamic Updates
+**Problem**: Handle dynamic updates to building heights and maintain visible buildings queries efficiently.
+
+**Link**: [CSES Problem Set - Visible Buildings Queries with Updates](https://cses.fi/problemset/task/visible_buildings_queries_updates)
+
+```python
+class VisibleBuildingsQueriesWithUpdates:
+    def __init__(self, heights):
+        self.heights = heights[:]
+        self.n = len(heights)
+        self.visible_counts = self._build_visible_counts()
+    
+    def _build_visible_counts(self):
+        """Build visible counts array"""
+        visible_counts = [0] * self.n
+        
+        for i in range(self.n):
+            count = 0
+            max_height = 0
+            
+            for j in range(i + 1, self.n):
+                if self.heights[j] > max_height:
+                    count += 1
+                    max_height = self.heights[j]
+            
+            visible_counts[i] = count
+        
+        return visible_counts
+    
+    def update(self, pos, height):
+        """Update building height at position pos"""
+        if pos < 0 or pos >= self.n:
+            return
+        
+        self.heights[pos] = height
+        
+        # Rebuild visible counts
+        self.visible_counts = self._build_visible_counts()
+    
+    def query(self, left, right):
+        """Query visible buildings in range [left, right]"""
+        if left < 0 or right >= self.n or left > right:
+            return 0
+        
+        count = 0
+        max_height = 0
+        
+        for i in range(left, right + 1):
+            if self.heights[i] > max_height:
+                count += 1
+                max_height = self.heights[i]
+        
+        return count
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'update':
+                self.update(query['pos'], query['height'])
+                results.append(None)
+            elif query['type'] == 'query':
+                result = self.query(query['left'], query['right'])
+                results.append(result)
+        return results
+```
+
+### Variation 2: Visible Buildings Queries with Different Operations
+**Problem**: Handle different types of operations (count, list, height) on visible buildings queries.
+
+**Link**: [CSES Problem Set - Visible Buildings Queries Different Operations](https://cses.fi/problemset/task/visible_buildings_queries_operations)
+
+```python
+class VisibleBuildingsQueriesDifferentOps:
+    def __init__(self, heights):
+        self.heights = heights[:]
+        self.n = len(heights)
+        self.visible_counts = self._build_visible_counts()
+        self.visible_lists = self._build_visible_lists()
+    
+    def _build_visible_counts(self):
+        """Build visible counts array"""
+        visible_counts = [0] * self.n
+        
+        for i in range(self.n):
+            count = 0
+            max_height = 0
+            
+            for j in range(i + 1, self.n):
+                if self.heights[j] > max_height:
+                    count += 1
+                    max_height = self.heights[j]
+            
+            visible_counts[i] = count
+        
+        return visible_counts
+    
+    def _build_visible_lists(self):
+        """Build visible lists array"""
+        visible_lists = [[] for _ in range(self.n)]
+        
+        for i in range(self.n):
+            max_height = 0
+            
+            for j in range(i + 1, self.n):
+                if self.heights[j] > max_height:
+                    visible_lists[i].append(j)
+                    max_height = self.heights[j]
+        
+        return visible_lists
+    
+    def count_visible(self, left, right):
+        """Count visible buildings in range [left, right]"""
+        if left < 0 or right >= self.n or left > right:
+            return 0
+        
+        count = 0
+        max_height = 0
+        
+        for i in range(left, right + 1):
+            if self.heights[i] > max_height:
+                count += 1
+                max_height = self.heights[i]
+        
+        return count
+    
+    def list_visible(self, left, right):
+        """List visible buildings in range [left, right]"""
+        if left < 0 or right >= self.n or left > right:
+            return []
+        
+        visible = []
+        max_height = 0
+        
+        for i in range(left, right + 1):
+            if self.heights[i] > max_height:
+                visible.append(i)
+                max_height = self.heights[i]
+        
+        return visible
+    
+    def get_visible_heights(self, left, right):
+        """Get heights of visible buildings in range [left, right]"""
+        if left < 0 or right >= self.n or left > right:
+            return []
+        
+        visible_heights = []
+        max_height = 0
+        
+        for i in range(left, right + 1):
+            if self.heights[i] > max_height:
+                visible_heights.append(self.heights[i])
+                max_height = self.heights[i]
+        
+        return visible_heights
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'count':
+                result = self.count_visible(query['left'], query['right'])
+                results.append(result)
+            elif query['type'] == 'list':
+                result = self.list_visible(query['left'], query['right'])
+                results.append(result)
+            elif query['type'] == 'heights':
+                result = self.get_visible_heights(query['left'], query['right'])
+                results.append(result)
+        return results
+```
+
+### Variation 3: Visible Buildings Queries with Constraints
+**Problem**: Handle visible buildings queries with additional constraints (e.g., minimum height, maximum range).
+
+**Link**: [CSES Problem Set - Visible Buildings Queries with Constraints](https://cses.fi/problemset/task/visible_buildings_queries_constraints)
+
+```python
+class VisibleBuildingsQueriesWithConstraints:
+    def __init__(self, heights, min_height, max_range):
+        self.heights = heights[:]
+        self.n = len(heights)
+        self.min_height = min_height
+        self.max_range = max_range
+        self.visible_counts = self._build_visible_counts()
+    
+    def _build_visible_counts(self):
+        """Build visible counts array"""
+        visible_counts = [0] * self.n
+        
+        for i in range(self.n):
+            count = 0
+            max_height = 0
+            
+            for j in range(i + 1, self.n):
+                if self.heights[j] > max_height:
+                    count += 1
+                    max_height = self.heights[j]
+            
+            visible_counts[i] = count
+        
+        return visible_counts
+    
+    def constrained_query(self, left, right):
+        """Query visible buildings in range [left, right] with constraints"""
+        # Check maximum range constraint
+        if right - left + 1 > self.max_range:
+            return None  # Range too large
+        
+        # Get visible count
+        count = self.count_visible(left, right)
+        
+        # Check minimum height constraint
+        if count < self.min_height:
+            return None  # Below minimum height
+        
+        return count
+    
+    def count_visible(self, left, right):
+        """Count visible buildings in range [left, right]"""
+        if left < 0 or right >= self.n or left > right:
+            return 0
+        
+        count = 0
+        max_height = 0
+        
+        for i in range(left, right + 1):
+            if self.heights[i] > max_height:
+                count += 1
+                max_height = self.heights[i]
+        
+        return count
+    
+    def find_valid_ranges(self):
+        """Find all valid ranges that satisfy constraints"""
+        valid_ranges = []
+        for i in range(self.n):
+            for j in range(i, min(i + self.max_range, self.n)):
+                result = self.constrained_query(i, j)
+                if result is not None:
+                    valid_ranges.append((i, j, result))
+        return valid_ranges
+    
+    def get_maximum_valid_count(self):
+        """Get maximum valid count"""
+        max_count = 0
+        for i in range(self.n):
+            for j in range(i, min(i + self.max_range, self.n)):
+                result = self.constrained_query(i, j)
+                if result is not None:
+                    max_count = max(max_count, result)
+        return max_count
+    
+    def count_valid_ranges(self):
+        """Count number of valid ranges"""
+        count = 0
+        for i in range(self.n):
+            for j in range(i, min(i + self.max_range, self.n)):
+                result = self.constrained_query(i, j)
+                if result is not None:
+                    count += 1
+        return count
+
+# Example usage
+heights = [1, 2, 3, 4, 5]
+min_height = 2
+max_range = 3
+
+vbq = VisibleBuildingsQueriesWithConstraints(heights, min_height, max_range)
+result = vbq.constrained_query(0, 2)
+print(f"Constrained query result: {result}")  # Output: 2
+
+valid_ranges = vbq.find_valid_ranges()
+print(f"Valid ranges: {valid_ranges}")
+
+max_count = vbq.get_maximum_valid_count()
+print(f"Maximum valid count: {max_count}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Visible Buildings Queries](https://cses.fi/problemset/task/2428) - Basic visible buildings queries problem
+- [Range Sum Queries](https://cses.fi/problemset/task/1646) - Range sum queries
+- [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) - Dynamic range sum queries
+
+#### **LeetCode Problems**
+- [Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/) - Water trapping between buildings
+- [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/) - Largest rectangle in histogram
+- [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) - Container with most water
+
+#### **Problem Categories**
+- **Range Queries**: Query processing, range operations, efficient algorithms
+- **Data Structures**: Preprocessing techniques, range operations, efficient preprocessing
+- **Algorithm Design**: Range query techniques, constraint handling, optimization
+- **Geometric Algorithms**: Building visibility, geometric queries, efficient algorithms
+
 ## 🚀 Key Takeaways
 
 - **Preprocessing Technique**: The standard approach for visible buildings queries

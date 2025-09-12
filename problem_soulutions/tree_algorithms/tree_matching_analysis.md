@@ -335,3 +335,444 @@ print(f"Optimal result: {result}")  # Output: 2
 - **Optimal Substructure**: Maximum matching in subtree can be computed from children
 - **State Definition**: Two states per node (matched/unmatched) capture all possibilities
 - **Optimal Approach**: Tree DP provides the most efficient and elegant solution
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Tree Matching with Dynamic Updates
+**Problem**: Handle dynamic updates to the tree structure and maintain maximum matching efficiently.
+
+**Link**: [CSES Problem Set - Tree Matching with Updates](https://cses.fi/problemset/task/tree_matching_updates)
+
+```python
+class TreeMatchingWithUpdates:
+    def __init__(self, n, edges):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.matching_count = 0
+        self.matched = [False] * n
+        self.parent = [-1] * n
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_matching()
+    
+    def _calculate_matching(self):
+        """Calculate maximum matching using tree DP"""
+        def dfs(node, parent):
+            self.parent[node] = parent
+            unmatched_children = 0
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node)
+                    if not self.matched[child]:
+                        unmatched_children += 1
+            
+            # If we have unmatched children, match with one of them
+            if unmatched_children > 0:
+                self.matched[node] = True
+                self.matching_count += 1
+        
+        dfs(0, -1)
+    
+    def add_edge(self, u, v):
+        """Add edge between nodes u and v"""
+        self.adj[u].append(v)
+        self.adj[v].append(u)
+        
+        # Recalculate matching
+        self._reset_matching()
+        self._calculate_matching()
+    
+    def remove_edge(self, u, v):
+        """Remove edge between nodes u and v"""
+        if v in self.adj[u]:
+            self.adj[u].remove(v)
+        if u in self.adj[v]:
+            self.adj[v].remove(u)
+        
+        # Recalculate matching
+        self._reset_matching()
+        self._calculate_matching()
+    
+    def _reset_matching(self):
+        """Reset matching state"""
+        self.matching_count = 0
+        self.matched = [False] * self.n
+        self.parent = [-1] * self.n
+    
+    def get_matching_count(self):
+        """Get current maximum matching count"""
+        return self.matching_count
+    
+    def get_matched_nodes(self):
+        """Get list of matched nodes"""
+        return [i for i in range(self.n) if self.matched[i]]
+    
+    def get_unmatched_nodes(self):
+        """Get list of unmatched nodes"""
+        return [i for i in range(self.n) if not self.matched[i]]
+    
+    def get_matching_edges(self):
+        """Get list of edges in the matching"""
+        matching_edges = []
+        for i in range(self.n):
+            if self.matched[i]:
+                for child in self.adj[i]:
+                    if child != self.parent[i] and not self.matched[child]:
+                        matching_edges.append((i, child))
+                        break
+        return matching_edges
+    
+    def get_matching_statistics(self):
+        """Get comprehensive matching statistics"""
+        return {
+            'matching_count': self.matching_count,
+            'matched_nodes_count': sum(self.matched),
+            'unmatched_nodes_count': self.n - sum(self.matched),
+            'matching_ratio': self.matching_count / (self.n - 1) if self.n > 1 else 0,
+            'matched_nodes': self.get_matched_nodes(),
+            'unmatched_nodes': self.get_unmatched_nodes(),
+            'matching_edges': self.get_matching_edges()
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'add_edge':
+                self.add_edge(query['u'], query['v'])
+                results.append(None)
+            elif query['type'] == 'remove_edge':
+                self.remove_edge(query['u'], query['v'])
+                results.append(None)
+            elif query['type'] == 'matching_count':
+                result = self.get_matching_count()
+                results.append(result)
+            elif query['type'] == 'matched_nodes':
+                result = self.get_matched_nodes()
+                results.append(result)
+            elif query['type'] == 'unmatched_nodes':
+                result = self.get_unmatched_nodes()
+                results.append(result)
+            elif query['type'] == 'matching_edges':
+                result = self.get_matching_edges()
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_matching_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 2: Tree Matching with Different Operations
+**Problem**: Handle different types of operations (find, analyze, compare) on tree matching.
+
+**Link**: [CSES Problem Set - Tree Matching Different Operations](https://cses.fi/problemset/task/tree_matching_operations)
+
+```python
+class TreeMatchingDifferentOps:
+    def __init__(self, n, edges):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.matching_count = 0
+        self.matched = [False] * n
+        self.parent = [-1] * n
+        self.depths = [0] * n
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_matching()
+    
+    def _calculate_matching(self):
+        """Calculate maximum matching using tree DP"""
+        def dfs(node, parent, depth):
+            self.parent[node] = parent
+            self.depths[node] = depth
+            unmatched_children = 0
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node, depth + 1)
+                    if not self.matched[child]:
+                        unmatched_children += 1
+            
+            # If we have unmatched children, match with one of them
+            if unmatched_children > 0:
+                self.matched[node] = True
+                self.matching_count += 1
+        
+        dfs(0, -1, 0)
+    
+    def get_matching_count(self):
+        """Get current maximum matching count"""
+        return self.matching_count
+    
+    def get_matched_nodes(self):
+        """Get list of matched nodes"""
+        return [i for i in range(self.n) if self.matched[i]]
+    
+    def get_unmatched_nodes(self):
+        """Get list of unmatched nodes"""
+        return [i for i in range(self.n) if not self.matched[i]]
+    
+    def get_matching_edges(self):
+        """Get list of edges in the matching"""
+        matching_edges = []
+        for i in range(self.n):
+            if self.matched[i]:
+                for child in self.adj[i]:
+                    if child != self.parent[i] and not self.matched[child]:
+                        matching_edges.append((i, child))
+                        break
+        return matching_edges
+    
+    def get_depth_statistics(self):
+        """Get depth statistics for matched and unmatched nodes"""
+        matched_depths = [self.depths[i] for i in range(self.n) if self.matched[i]]
+        unmatched_depths = [self.depths[i] for i in range(self.n) if not self.matched[i]]
+        
+        return {
+            'matched_avg_depth': sum(matched_depths) / len(matched_depths) if matched_depths else 0,
+            'unmatched_avg_depth': sum(unmatched_depths) / len(unmatched_depths) if unmatched_depths else 0,
+            'matched_max_depth': max(matched_depths) if matched_depths else 0,
+            'unmatched_max_depth': max(unmatched_depths) if unmatched_depths else 0,
+            'matched_min_depth': min(matched_depths) if matched_depths else 0,
+            'unmatched_min_depth': min(unmatched_depths) if unmatched_depths else 0
+        }
+    
+    def get_matching_by_depth(self):
+        """Get matching statistics grouped by depth"""
+        depth_groups = {}
+        for i in range(self.n):
+            depth = self.depths[i]
+            if depth not in depth_groups:
+                depth_groups[depth] = {'matched': 0, 'unmatched': 0}
+            
+            if self.matched[i]:
+                depth_groups[depth]['matched'] += 1
+            else:
+                depth_groups[depth]['unmatched'] += 1
+        
+        return depth_groups
+    
+    def get_matching_statistics(self):
+        """Get comprehensive matching statistics"""
+        return {
+            'matching_count': self.matching_count,
+            'matched_nodes_count': sum(self.matched),
+            'unmatched_nodes_count': self.n - sum(self.matched),
+            'matching_ratio': self.matching_count / (self.n - 1) if self.n > 1 else 0,
+            'matched_nodes': self.get_matched_nodes(),
+            'unmatched_nodes': self.get_unmatched_nodes(),
+            'matching_edges': self.get_matching_edges(),
+            'depth_statistics': self.get_depth_statistics(),
+            'matching_by_depth': self.get_matching_by_depth()
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'matching_count':
+                result = self.get_matching_count()
+                results.append(result)
+            elif query['type'] == 'matched_nodes':
+                result = self.get_matched_nodes()
+                results.append(result)
+            elif query['type'] == 'unmatched_nodes':
+                result = self.get_unmatched_nodes()
+                results.append(result)
+            elif query['type'] == 'matching_edges':
+                result = self.get_matching_edges()
+                results.append(result)
+            elif query['type'] == 'depth_statistics':
+                result = self.get_depth_statistics()
+                results.append(result)
+            elif query['type'] == 'matching_by_depth':
+                result = self.get_matching_by_depth()
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_matching_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 3: Tree Matching with Constraints
+**Problem**: Handle tree matching with additional constraints (e.g., minimum depth, maximum depth, depth range).
+
+**Link**: [CSES Problem Set - Tree Matching with Constraints](https://cses.fi/problemset/task/tree_matching_constraints)
+
+```python
+class TreeMatchingWithConstraints:
+    def __init__(self, n, edges, min_depth, max_depth):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.matching_count = 0
+        self.matched = [False] * n
+        self.parent = [-1] * n
+        self.depths = [0] * n
+        self.min_depth = min_depth
+        self.max_depth = max_depth
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_matching()
+    
+    def _calculate_matching(self):
+        """Calculate maximum matching using tree DP with constraints"""
+        def dfs(node, parent, depth):
+            self.parent[node] = parent
+            self.depths[node] = depth
+            unmatched_children = 0
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node, depth + 1)
+                    if not self.matched[child]:
+                        unmatched_children += 1
+            
+            # If we have unmatched children and depth constraints are satisfied
+            if unmatched_children > 0 and self.min_depth <= depth <= self.max_depth:
+                self.matched[node] = True
+                self.matching_count += 1
+        
+        dfs(0, -1, 0)
+    
+    def get_matching_count(self):
+        """Get current maximum matching count"""
+        return self.matching_count
+    
+    def get_matched_nodes(self):
+        """Get list of matched nodes"""
+        return [i for i in range(self.n) if self.matched[i]]
+    
+    def get_unmatched_nodes(self):
+        """Get list of unmatched nodes"""
+        return [i for i in range(self.n) if not self.matched[i]]
+    
+    def get_matching_edges(self):
+        """Get list of edges in the matching"""
+        matching_edges = []
+        for i in range(self.n):
+            if self.matched[i]:
+                for child in self.adj[i]:
+                    if child != self.parent[i] and not self.matched[child]:
+                        matching_edges.append((i, child))
+                        break
+        return matching_edges
+    
+    def get_constrained_matching_count(self):
+        """Get matching count considering depth constraints"""
+        constrained_count = 0
+        for i in range(self.n):
+            if self.matched[i] and self.min_depth <= self.depths[i] <= self.max_depth:
+                constrained_count += 1
+        return constrained_count
+    
+    def get_valid_nodes_for_matching(self):
+        """Get nodes that satisfy depth constraints"""
+        return [i for i in range(self.n) if self.min_depth <= self.depths[i] <= self.max_depth]
+    
+    def get_constrained_matching_edges(self):
+        """Get matching edges considering depth constraints"""
+        constrained_edges = []
+        for i in range(self.n):
+            if self.matched[i] and self.min_depth <= self.depths[i] <= self.max_depth:
+                for child in self.adj[i]:
+                    if child != self.parent[i] and not self.matched[child]:
+                        constrained_edges.append((i, child))
+                        break
+        return constrained_edges
+    
+    def get_constrained_statistics(self):
+        """Get comprehensive statistics considering depth constraints"""
+        valid_nodes = self.get_valid_nodes_for_matching()
+        constrained_edges = self.get_constrained_matching_edges()
+        
+        return {
+            'total_matching_count': self.matching_count,
+            'constrained_matching_count': len(constrained_edges),
+            'valid_nodes_count': len(valid_nodes),
+            'matching_ratio': len(constrained_edges) / (self.n - 1) if self.n > 1 else 0,
+            'constrained_ratio': len(constrained_edges) / len(valid_nodes) if valid_nodes else 0,
+            'min_depth': self.min_depth,
+            'max_depth': self.max_depth,
+            'valid_nodes': valid_nodes,
+            'constrained_edges': constrained_edges
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'matching_count':
+                result = self.get_matching_count()
+                results.append(result)
+            elif query['type'] == 'matched_nodes':
+                result = self.get_matched_nodes()
+                results.append(result)
+            elif query['type'] == 'unmatched_nodes':
+                result = self.get_unmatched_nodes()
+                results.append(result)
+            elif query['type'] == 'matching_edges':
+                result = self.get_matching_edges()
+                results.append(result)
+            elif query['type'] == 'constrained_matching_count':
+                result = self.get_constrained_matching_count()
+                results.append(result)
+            elif query['type'] == 'valid_nodes_for_matching':
+                result = self.get_valid_nodes_for_matching()
+                results.append(result)
+            elif query['type'] == 'constrained_matching_edges':
+                result = self.get_constrained_matching_edges()
+                results.append(result)
+            elif query['type'] == 'constrained_statistics':
+                result = self.get_constrained_statistics()
+                results.append(result)
+        return results
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (1, 3), (3, 4)]
+min_depth = 1
+max_depth = 3
+
+tm = TreeMatchingWithConstraints(n, edges, min_depth, max_depth)
+result = tm.get_constrained_matching_count()
+print(f"Constrained matching count result: {result}")
+
+valid_nodes = tm.get_valid_nodes_for_matching()
+print(f"Valid nodes: {valid_nodes}")
+
+statistics = tm.get_constrained_statistics()
+print(f"Constrained statistics: {statistics}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Tree Matching](https://cses.fi/problemset/task/1130) - Basic tree matching problem
+- [Subordinates](https://cses.fi/problemset/task/1674) - Tree DP and subtree analysis
+- [Tree Diameter](https://cses.fi/problemset/task/1131) - Tree traversal and analysis
+
+#### **LeetCode Problems**
+- [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) - Tree traversal by levels
+- [Path Sum](https://leetcode.com/problems/path-sum/) - Path queries in tree
+- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Path analysis in tree
+
+#### **Problem Categories**
+- **Tree DP**: Dynamic programming on trees, matching algorithms
+- **Tree Traversal**: DFS, BFS, tree processing
+- **Tree Queries**: Tree analysis, tree operations
+- **Tree Algorithms**: Tree properties, tree analysis, tree operations

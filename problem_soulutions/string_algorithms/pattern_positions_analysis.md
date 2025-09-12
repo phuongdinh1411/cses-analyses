@@ -354,3 +354,530 @@ print(f"Optimal result: {result}")  # Output: [2, 7]
 - **No Backtracking**: Never need to backtrack in the text
 - **Optimal Complexity**: Guaranteed linear time in all cases
 - **Optimal Approach**: KMP algorithm provides the best theoretical and practical performance
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Pattern Positions with Dynamic Updates
+**Problem**: Handle dynamic updates to text and pattern strings and maintain pattern position queries efficiently.
+
+**Link**: [CSES Problem Set - Pattern Positions with Updates](https://cses.fi/problemset/task/pattern_positions_updates)
+
+```python
+class PatternPositionsWithUpdates:
+    def __init__(self, text, pattern):
+        self.text = list(text)
+        self.pattern = list(pattern)
+        self.n = len(self.text)
+        self.m = len(self.pattern)
+        self.lps = self._build_lps()
+        self.positions = self._find_all_positions()
+    
+    def _build_lps(self):
+        """Build Longest Proper Prefix which is also Suffix array"""
+        lps = [0] * self.m
+        length = 0
+        i = 1
+        
+        while i < self.m:
+            if self.pattern[i] == self.pattern[length]:
+                length += 1
+                lps[i] = length
+                i += 1
+            else:
+                if length != 0:
+                    length = lps[length - 1]
+                else:
+                    lps[i] = 0
+                    i += 1
+        
+        return lps
+    
+    def _find_all_positions(self):
+        """Find all positions where pattern occurs in text"""
+        positions = []
+        i = j = 0  # i for text, j for pattern
+        
+        while i < self.n:
+            if self.text[i] == self.pattern[j]:
+                i += 1
+                j += 1
+            
+            if j == self.m:
+                positions.append(i - j)
+                j = self.lps[j - 1]
+            elif i < self.n and self.text[i] != self.pattern[j]:
+                if j != 0:
+                    j = self.lps[j - 1]
+                else:
+                    i += 1
+        
+        return positions
+    
+    def update_text(self, pos, char):
+        """Update character in text at position pos"""
+        if pos < 0 or pos >= self.n:
+            return
+        
+        self.text[pos] = char
+        self.positions = self._find_all_positions()
+    
+    def update_pattern(self, pos, char):
+        """Update character in pattern at position pos"""
+        if pos < 0 or pos >= self.m:
+            return
+        
+        self.pattern[pos] = char
+        self.lps = self._build_lps()
+        self.positions = self._find_all_positions()
+    
+    def get_positions(self):
+        """Get all positions where pattern occurs in text"""
+        return self.positions.copy()
+    
+    def count_occurrences(self):
+        """Count number of occurrences of pattern in text"""
+        return len(self.positions)
+    
+    def find_next_occurrence(self, start_pos):
+        """Find next occurrence of pattern starting from start_pos"""
+        for pos in self.positions:
+            if pos >= start_pos:
+                return pos
+        return -1
+    
+    def find_previous_occurrence(self, end_pos):
+        """Find previous occurrence of pattern ending before end_pos"""
+        for pos in reversed(self.positions):
+            if pos < end_pos:
+                return pos
+        return -1
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'update_text':
+                self.update_text(query['pos'], query['char'])
+                results.append(None)
+            elif query['type'] == 'update_pattern':
+                self.update_pattern(query['pos'], query['char'])
+                results.append(None)
+            elif query['type'] == 'positions':
+                result = self.get_positions()
+                results.append(result)
+            elif query['type'] == 'count':
+                result = self.count_occurrences()
+                results.append(result)
+            elif query['type'] == 'next':
+                result = self.find_next_occurrence(query['start_pos'])
+                results.append(result)
+            elif query['type'] == 'previous':
+                result = self.find_previous_occurrence(query['end_pos'])
+                results.append(result)
+        return results
+```
+
+### Variation 2: Pattern Positions with Different Operations
+**Problem**: Handle different types of operations (find, count, analyze) on pattern matching.
+
+**Link**: [CSES Problem Set - Pattern Positions Different Operations](https://cses.fi/problemset/task/pattern_positions_operations)
+
+```python
+class PatternPositionsDifferentOps:
+    def __init__(self, text, pattern):
+        self.text = list(text)
+        self.pattern = list(pattern)
+        self.n = len(self.text)
+        self.m = len(self.pattern)
+        self.lps = self._build_lps()
+        self.positions = self._find_all_positions()
+    
+    def _build_lps(self):
+        """Build Longest Proper Prefix which is also Suffix array"""
+        lps = [0] * self.m
+        length = 0
+        i = 1
+        
+        while i < self.m:
+            if self.pattern[i] == self.pattern[length]:
+                length += 1
+                lps[i] = length
+                i += 1
+            else:
+                if length != 0:
+                    length = lps[length - 1]
+                else:
+                    lps[i] = 0
+                    i += 1
+        
+        return lps
+    
+    def _find_all_positions(self):
+        """Find all positions where pattern occurs in text"""
+        positions = []
+        i = j = 0  # i for text, j for pattern
+        
+        while i < self.n:
+            if self.text[i] == self.pattern[j]:
+                i += 1
+                j += 1
+            
+            if j == self.m:
+                positions.append(i - j)
+                j = self.lps[j - 1]
+            elif i < self.n and self.text[i] != self.pattern[j]:
+                if j != 0:
+                    j = self.lps[j - 1]
+                else:
+                    i += 1
+        
+        return positions
+    
+    def get_positions(self):
+        """Get all positions where pattern occurs in text"""
+        return self.positions.copy()
+    
+    def count_occurrences(self):
+        """Count number of occurrences of pattern in text"""
+        return len(self.positions)
+    
+    def find_next_occurrence(self, start_pos):
+        """Find next occurrence of pattern starting from start_pos"""
+        for pos in self.positions:
+            if pos >= start_pos:
+                return pos
+        return -1
+    
+    def find_previous_occurrence(self, end_pos):
+        """Find previous occurrence of pattern ending before end_pos"""
+        for pos in reversed(self.positions):
+            if pos < end_pos:
+                return pos
+        return -1
+    
+    def find_overlapping_occurrences(self):
+        """Find all overlapping occurrences of pattern in text"""
+        overlapping = []
+        
+        for i in range(len(self.positions) - 1):
+            current_pos = self.positions[i]
+            next_pos = self.positions[i + 1]
+            
+            if next_pos < current_pos + self.m:
+                overlapping.append({
+                    'first': current_pos,
+                    'second': next_pos,
+                    'overlap': current_pos + self.m - next_pos
+                })
+        
+        return overlapping
+    
+    def find_non_overlapping_occurrences(self):
+        """Find all non-overlapping occurrences of pattern in text"""
+        non_overlapping = []
+        last_end = -1
+        
+        for pos in self.positions:
+            if pos > last_end:
+                non_overlapping.append(pos)
+                last_end = pos + self.m - 1
+        
+        return non_overlapping
+    
+    def analyze_pattern_distribution(self):
+        """Analyze distribution of pattern occurrences"""
+        if not self.positions:
+            return {
+                'total_occurrences': 0,
+                'overlapping_occurrences': 0,
+                'non_overlapping_occurrences': 0,
+                'average_gap': 0,
+                'min_gap': 0,
+                'max_gap': 0
+            }
+        
+        overlapping = self.find_overlapping_occurrences()
+        non_overlapping = self.find_non_overlapping_occurrences()
+        
+        gaps = []
+        for i in range(len(self.positions) - 1):
+            gap = self.positions[i + 1] - self.positions[i]
+            gaps.append(gap)
+        
+        return {
+            'total_occurrences': len(self.positions),
+            'overlapping_occurrences': len(overlapping),
+            'non_overlapping_occurrences': len(non_overlapping),
+            'average_gap': sum(gaps) / len(gaps) if gaps else 0,
+            'min_gap': min(gaps) if gaps else 0,
+            'max_gap': max(gaps) if gaps else 0
+        }
+    
+    def get_pattern_statistics(self):
+        """Get comprehensive statistics about pattern matching"""
+        distribution = self.analyze_pattern_distribution()
+        
+        return {
+            'pattern': ''.join(self.pattern),
+            'text_length': self.n,
+            'pattern_length': self.m,
+            'distribution': distribution,
+            'positions': self.positions,
+            'overlapping': self.find_overlapping_occurrences(),
+            'non_overlapping': self.find_non_overlapping_occurrences()
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'positions':
+                result = self.get_positions()
+                results.append(result)
+            elif query['type'] == 'count':
+                result = self.count_occurrences()
+                results.append(result)
+            elif query['type'] == 'next':
+                result = self.find_next_occurrence(query['start_pos'])
+                results.append(result)
+            elif query['type'] == 'previous':
+                result = self.find_previous_occurrence(query['end_pos'])
+                results.append(result)
+            elif query['type'] == 'overlapping':
+                result = self.find_overlapping_occurrences()
+                results.append(result)
+            elif query['type'] == 'non_overlapping':
+                result = self.find_non_overlapping_occurrences()
+                results.append(result)
+            elif query['type'] == 'analyze':
+                result = self.analyze_pattern_distribution()
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_pattern_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 3: Pattern Positions with Constraints
+**Problem**: Handle pattern position queries with additional constraints (e.g., minimum gap, maximum gap, frequency).
+
+**Link**: [CSES Problem Set - Pattern Positions with Constraints](https://cses.fi/problemset/task/pattern_positions_constraints)
+
+```python
+class PatternPositionsWithConstraints:
+    def __init__(self, text, pattern, min_gap, max_gap, min_frequency):
+        self.text = list(text)
+        self.pattern = list(pattern)
+        self.n = len(self.text)
+        self.m = len(self.pattern)
+        self.min_gap = min_gap
+        self.max_gap = max_gap
+        self.min_frequency = min_frequency
+        self.lps = self._build_lps()
+        self.positions = self._find_all_positions()
+    
+    def _build_lps(self):
+        """Build Longest Proper Prefix which is also Suffix array"""
+        lps = [0] * self.m
+        length = 0
+        i = 1
+        
+        while i < self.m:
+            if self.pattern[i] == self.pattern[length]:
+                length += 1
+                lps[i] = length
+                i += 1
+            else:
+                if length != 0:
+                    length = lps[length - 1]
+                else:
+                    lps[i] = 0
+                    i += 1
+        
+        return lps
+    
+    def _find_all_positions(self):
+        """Find all positions where pattern occurs in text"""
+        positions = []
+        i = j = 0  # i for text, j for pattern
+        
+        while i < self.n:
+            if self.text[i] == self.pattern[j]:
+                i += 1
+                j += 1
+            
+            if j == self.m:
+                positions.append(i - j)
+                j = self.lps[j - 1]
+            elif i < self.n and self.text[i] != self.pattern[j]:
+                if j != 0:
+                    j = self.lps[j - 1]
+                else:
+                    i += 1
+        
+        return positions
+    
+    def constrained_position_query(self, start_pos, end_pos):
+        """Query pattern positions with constraints"""
+        if start_pos < 0 or end_pos >= self.n or start_pos > end_pos:
+            return []
+        
+        valid_positions = []
+        
+        for pos in self.positions:
+            if start_pos <= pos <= end_pos:
+                valid_positions.append(pos)
+        
+        # Check gap constraints
+        if len(valid_positions) < 2:
+            return valid_positions
+        
+        constrained_positions = [valid_positions[0]]
+        
+        for i in range(1, len(valid_positions)):
+            gap = valid_positions[i] - valid_positions[i - 1]
+            if self.min_gap <= gap <= self.max_gap:
+                constrained_positions.append(valid_positions[i])
+        
+        # Check frequency constraint
+        if len(constrained_positions) < self.min_frequency:
+            return []
+        
+        return constrained_positions
+    
+    def find_valid_occurrences(self):
+        """Find all valid occurrences that satisfy constraints"""
+        valid_occurrences = []
+        
+        if len(self.positions) < self.min_frequency:
+            return valid_occurrences
+        
+        # Check gap constraints
+        constrained_positions = [self.positions[0]]
+        
+        for i in range(1, len(self.positions)):
+            gap = self.positions[i] - self.positions[i - 1]
+            if self.min_gap <= gap <= self.max_gap:
+                constrained_positions.append(self.positions[i])
+        
+        # Check frequency constraint
+        if len(constrained_positions) >= self.min_frequency:
+            valid_occurrences = constrained_positions
+        
+        return valid_occurrences
+    
+    def get_longest_valid_sequence(self):
+        """Get longest valid sequence of pattern occurrences"""
+        valid_occurrences = self.find_valid_occurrences()
+        
+        if not valid_occurrences:
+            return []
+        
+        longest_sequence = []
+        current_sequence = [valid_occurrences[0]]
+        
+        for i in range(1, len(valid_occurrences)):
+            gap = valid_occurrences[i] - valid_occurrences[i - 1]
+            
+            if self.min_gap <= gap <= self.max_gap:
+                current_sequence.append(valid_occurrences[i])
+            else:
+                if len(current_sequence) > len(longest_sequence):
+                    longest_sequence = current_sequence.copy()
+                current_sequence = [valid_occurrences[i]]
+        
+        if len(current_sequence) > len(longest_sequence):
+            longest_sequence = current_sequence
+        
+        return longest_sequence
+    
+    def get_shortest_valid_sequence(self):
+        """Get shortest valid sequence of pattern occurrences"""
+        valid_occurrences = self.find_valid_occurrences()
+        
+        if not valid_occurrences:
+            return []
+        
+        shortest_sequence = valid_occurrences[:self.min_frequency]
+        
+        for i in range(self.min_frequency, len(valid_occurrences)):
+            for j in range(i - self.min_frequency + 1):
+                sequence = valid_occurrences[j:i + 1]
+                if len(sequence) >= self.min_frequency:
+                    if len(sequence) < len(shortest_sequence):
+                        shortest_sequence = sequence
+        
+        return shortest_sequence
+    
+    def count_valid_occurrences(self):
+        """Count number of valid occurrences"""
+        return len(self.find_valid_occurrences())
+    
+    def get_constraint_statistics(self):
+        """Get statistics about valid occurrences"""
+        valid_occurrences = self.find_valid_occurrences()
+        
+        if not valid_occurrences:
+            return {
+                'count': 0,
+                'min_gap': 0,
+                'max_gap': 0,
+                'avg_gap': 0,
+                'longest_sequence': 0,
+                'shortest_sequence': 0
+            }
+        
+        gaps = []
+        for i in range(len(valid_occurrences) - 1):
+            gap = valid_occurrences[i + 1] - valid_occurrences[i]
+            gaps.append(gap)
+        
+        longest_sequence = self.get_longest_valid_sequence()
+        shortest_sequence = self.get_shortest_valid_sequence()
+        
+        return {
+            'count': len(valid_occurrences),
+            'min_gap': min(gaps) if gaps else 0,
+            'max_gap': max(gaps) if gaps else 0,
+            'avg_gap': sum(gaps) / len(gaps) if gaps else 0,
+            'longest_sequence': len(longest_sequence),
+            'shortest_sequence': len(shortest_sequence)
+        }
+
+# Example usage
+text = "abacabacabac"
+pattern = "aba"
+min_gap = 2
+max_gap = 6
+min_frequency = 2
+
+pp = PatternPositionsWithConstraints(text, pattern, min_gap, max_gap, min_frequency)
+result = pp.constrained_position_query(0, 11)
+print(f"Constrained position query result: {result}")
+
+valid_occurrences = pp.find_valid_occurrences()
+print(f"Valid occurrences: {valid_occurrences}")
+
+longest_sequence = pp.get_longest_valid_sequence()
+print(f"Longest valid sequence: {longest_sequence}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Pattern Positions](https://cses.fi/problemset/task/1753) - Basic pattern positions problem
+- [String Matching](https://cses.fi/problemset/task/1753) - String matching
+- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+
+#### **LeetCode Problems**
+- [Find All Anagrams in a String](https://leetcode.com/problems/find-all-anagrams-in-a-string/) - Find all anagram positions
+- [Repeated String Match](https://leetcode.com/problems/repeated-string-match/) - String matching with repetition
+- [Wildcard Matching](https://leetcode.com/problems/wildcard-matching/) - Pattern matching with wildcards
+
+#### **Problem Categories**
+- **KMP Algorithm**: String matching, pattern detection, failure function
+- **Pattern Matching**: KMP, Z-algorithm, string matching algorithms
+- **String Processing**: Borders, periods, palindromes, string transformations
+- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata

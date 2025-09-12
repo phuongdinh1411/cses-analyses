@@ -302,3 +302,480 @@ print(f"Optimal result: {result}")  # Output: 6
 - **Optimal Approach**: Single pass through suffixes provides the most efficient solution for substring counting problems
 - **[Reason 3]**: [Explanation]
 - **Optimal Approach**: [Final explanation]
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Distinct Substrings with Dynamic Updates
+**Problem**: Handle dynamic updates to string characters and maintain distinct substring count efficiently.
+
+**Link**: [CSES Problem Set - Distinct Substrings with Updates](https://cses.fi/problemset/task/distinct_substrings_updates)
+
+```python
+class DistinctSubstringsWithUpdates:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+        self.distinct_count = self._calculate_distinct_count()
+    
+    def _build_suffix_array(self):
+        """Build suffix array using efficient algorithm"""
+        suffixes = []
+        for i in range(self.n):
+            suffixes.append((self.s[i:], i))
+        
+        suffixes.sort()
+        return [suffix[1] for suffix in suffixes]
+    
+    def _build_lcp_array(self):
+        """Build LCP array from suffix array"""
+        lcp = [0] * self.n
+        rank = [0] * self.n
+        
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        
+        h = 0
+        for i in range(self.n):
+            if rank[i] > 0:
+                j = self.suffix_array[rank[i] - 1]
+                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
+                    h += 1
+                lcp[rank[i]] = h
+                if h > 0:
+                    h -= 1
+        
+        return lcp
+    
+    def _calculate_distinct_count(self):
+        """Calculate distinct substring count using suffix array"""
+        total_substrings = self.n * (self.n + 1) // 2
+        sum_lcp = sum(self.lcp_array)
+        return total_substrings - sum_lcp
+    
+    def update(self, pos, char):
+        """Update character at position pos"""
+        if pos < 0 or pos >= self.n:
+            return
+        
+        self.s[pos] = char
+        
+        # Rebuild suffix array, LCP array, and distinct count
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+        self.distinct_count = self._calculate_distinct_count()
+    
+    def get_distinct_count(self):
+        """Get current distinct substring count"""
+        return self.distinct_count
+    
+    def get_substring_count(self, start, length):
+        """Get count of specific substring"""
+        if start < 0 or start + length > self.n:
+            return 0
+        
+        substring = ''.join(self.s[start:start + length])
+        count = 0
+        
+        for i in range(self.n - length + 1):
+            if ''.join(self.s[i:i + length]) == substring:
+                count += 1
+        
+        return count
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'update':
+                self.update(query['pos'], query['char'])
+                results.append(None)
+            elif query['type'] == 'count':
+                result = self.get_distinct_count()
+                results.append(result)
+            elif query['type'] == 'substring_count':
+                result = self.get_substring_count(query['start'], query['length'])
+                results.append(result)
+        return results
+```
+
+### Variation 2: Distinct Substrings with Different Operations
+**Problem**: Handle different types of operations (count, analyze, find) on distinct substrings.
+
+**Link**: [CSES Problem Set - Distinct Substrings Different Operations](https://cses.fi/problemset/task/distinct_substrings_operations)
+
+```python
+class DistinctSubstringsDifferentOps:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+        self.distinct_count = self._calculate_distinct_count()
+    
+    def _build_suffix_array(self):
+        """Build suffix array using efficient algorithm"""
+        suffixes = []
+        for i in range(self.n):
+            suffixes.append((self.s[i:], i))
+        
+        suffixes.sort()
+        return [suffix[1] for suffix in suffixes]
+    
+    def _build_lcp_array(self):
+        """Build LCP array from suffix array"""
+        lcp = [0] * self.n
+        rank = [0] * self.n
+        
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        
+        h = 0
+        for i in range(self.n):
+            if rank[i] > 0:
+                j = self.suffix_array[rank[i] - 1]
+                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
+                    h += 1
+                lcp[rank[i]] = h
+                if h > 0:
+                    h -= 1
+        
+        return lcp
+    
+    def _calculate_distinct_count(self):
+        """Calculate distinct substring count using suffix array"""
+        total_substrings = self.n * (self.n + 1) // 2
+        sum_lcp = sum(self.lcp_array)
+        return total_substrings - sum_lcp
+    
+    def get_distinct_count(self):
+        """Get current distinct substring count"""
+        return self.distinct_count
+    
+    def get_substring_count(self, start, length):
+        """Get count of specific substring"""
+        if start < 0 or start + length > self.n:
+            return 0
+        
+        substring = ''.join(self.s[start:start + length])
+        count = 0
+        
+        for i in range(self.n - length + 1):
+            if ''.join(self.s[i:i + length]) == substring:
+                count += 1
+        
+        return count
+    
+    def find_longest_repeating_substring(self):
+        """Find longest repeating substring"""
+        if not self.lcp_array:
+            return None
+        
+        max_lcp = max(self.lcp_array)
+        if max_lcp == 0:
+            return None
+        
+        # Find position with maximum LCP
+        max_pos = self.lcp_array.index(max_lcp)
+        start_pos = self.suffix_array[max_pos]
+        
+        return {
+            'substring': ''.join(self.s[start_pos:start_pos + max_lcp]),
+            'length': max_lcp,
+            'start': start_pos,
+            'count': self.get_substring_count(start_pos, max_lcp)
+        }
+    
+    def find_most_frequent_substring(self, min_length=1):
+        """Find most frequent substring of given minimum length"""
+        frequency_map = {}
+        
+        for length in range(min_length, self.n + 1):
+            for start in range(self.n - length + 1):
+                substring = ''.join(self.s[start:start + length])
+                if substring not in frequency_map:
+                    frequency_map[substring] = 0
+                frequency_map[substring] += 1
+        
+        if not frequency_map:
+            return None
+        
+        most_frequent = max(frequency_map, key=frequency_map.get)
+        return {
+            'substring': most_frequent,
+            'frequency': frequency_map[most_frequent],
+            'length': len(most_frequent)
+        }
+    
+    def analyze_substring_distribution(self):
+        """Analyze distribution of substrings by length"""
+        distribution = {}
+        
+        for length in range(1, self.n + 1):
+            distinct_count = 0
+            total_count = 0
+            
+            for start in range(self.n - length + 1):
+                substring = ''.join(self.s[start:start + length])
+                total_count += 1
+            
+            # Count distinct substrings of this length
+            seen = set()
+            for start in range(self.n - length + 1):
+                substring = ''.join(self.s[start:start + length])
+                seen.add(substring)
+            
+            distinct_count = len(seen)
+            distribution[length] = {
+                'distinct': distinct_count,
+                'total': total_count,
+                'ratio': distinct_count / total_count if total_count > 0 else 0
+            }
+        
+        return distribution
+    
+    def get_substring_statistics(self):
+        """Get comprehensive statistics about substrings"""
+        distribution = self.analyze_substring_distribution()
+        
+        total_distinct = sum(info['distinct'] for info in distribution.values())
+        total_substrings = sum(info['total'] for info in distribution.values())
+        
+        return {
+            'total_distinct': total_distinct,
+            'total_substrings': total_substrings,
+            'distinct_ratio': total_distinct / total_substrings if total_substrings > 0 else 0,
+            'distribution': distribution,
+            'longest_repeating': self.find_longest_repeating_substring(),
+            'most_frequent': self.find_most_frequent_substring()
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'count':
+                result = self.get_distinct_count()
+                results.append(result)
+            elif query['type'] == 'substring_count':
+                result = self.get_substring_count(query['start'], query['length'])
+                results.append(result)
+            elif query['type'] == 'longest_repeating':
+                result = self.find_longest_repeating_substring()
+                results.append(result)
+            elif query['type'] == 'most_frequent':
+                result = self.find_most_frequent_substring(query.get('min_length', 1))
+                results.append(result)
+            elif query['type'] == 'analyze':
+                result = self.analyze_substring_distribution()
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_substring_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 3: Distinct Substrings with Constraints
+**Problem**: Handle distinct substring queries with additional constraints (e.g., minimum length, maximum length, frequency).
+
+**Link**: [CSES Problem Set - Distinct Substrings with Constraints](https://cses.fi/problemset/task/distinct_substrings_constraints)
+
+```python
+class DistinctSubstringsWithConstraints:
+    def __init__(self, s, min_length, max_length, min_frequency):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.min_length = min_length
+        self.max_length = max_length
+        self.min_frequency = min_frequency
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+        self.distinct_count = self._calculate_distinct_count()
+    
+    def _build_suffix_array(self):
+        """Build suffix array using efficient algorithm"""
+        suffixes = []
+        for i in range(self.n):
+            suffixes.append((self.s[i:], i))
+        
+        suffixes.sort()
+        return [suffix[1] for suffix in suffixes]
+    
+    def _build_lcp_array(self):
+        """Build LCP array from suffix array"""
+        lcp = [0] * self.n
+        rank = [0] * self.n
+        
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        
+        h = 0
+        for i in range(self.n):
+            if rank[i] > 0:
+                j = self.suffix_array[rank[i] - 1]
+                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
+                    h += 1
+                lcp[rank[i]] = h
+                if h > 0:
+                    h -= 1
+        
+        return lcp
+    
+    def _calculate_distinct_count(self):
+        """Calculate distinct substring count using suffix array"""
+        total_substrings = self.n * (self.n + 1) // 2
+        sum_lcp = sum(self.lcp_array)
+        return total_substrings - sum_lcp
+    
+    def constrained_distinct_count(self):
+        """Count distinct substrings that satisfy constraints"""
+        distinct_substrings = set()
+        
+        for length in range(self.min_length, min(self.max_length + 1, self.n + 1)):
+            for start in range(self.n - length + 1):
+                substring = ''.join(self.s[start:start + length])
+                
+                # Check frequency constraint
+                frequency = 0
+                for i in range(self.n - length + 1):
+                    if ''.join(self.s[i:i + length]) == substring:
+                        frequency += 1
+                
+                if frequency >= self.min_frequency:
+                    distinct_substrings.add(substring)
+        
+        return len(distinct_substrings)
+    
+    def find_valid_substrings(self):
+        """Find all valid substrings that satisfy constraints"""
+        valid_substrings = []
+        
+        for length in range(self.min_length, min(self.max_length + 1, self.n + 1)):
+            for start in range(self.n - length + 1):
+                substring = ''.join(self.s[start:start + length])
+                
+                # Check frequency constraint
+                frequency = 0
+                for i in range(self.n - length + 1):
+                    if ''.join(self.s[i:i + length]) == substring:
+                        frequency += 1
+                
+                if frequency >= self.min_frequency:
+                    valid_substrings.append({
+                        'substring': substring,
+                        'start': start,
+                        'length': length,
+                        'frequency': frequency
+                    })
+        
+        return valid_substrings
+    
+    def get_longest_valid_substring(self):
+        """Get longest valid substring that satisfies constraints"""
+        valid_substrings = self.find_valid_substrings()
+        
+        if not valid_substrings:
+            return None
+        
+        longest = max(valid_substrings, key=lambda x: x['length'])
+        return longest
+    
+    def get_most_frequent_valid_substring(self):
+        """Get most frequent valid substring that satisfies constraints"""
+        valid_substrings = self.find_valid_substrings()
+        
+        if not valid_substrings:
+            return None
+        
+        most_frequent = max(valid_substrings, key=lambda x: x['frequency'])
+        return most_frequent
+    
+    def get_lexicographically_smallest_valid(self):
+        """Get lexicographically smallest valid substring"""
+        valid_substrings = self.find_valid_substrings()
+        
+        if not valid_substrings:
+            return None
+        
+        smallest = min(valid_substrings, key=lambda x: x['substring'])
+        return smallest
+    
+    def get_lexicographically_largest_valid(self):
+        """Get lexicographically largest valid substring"""
+        valid_substrings = self.find_valid_substrings()
+        
+        if not valid_substrings:
+            return None
+        
+        largest = max(valid_substrings, key=lambda x: x['substring'])
+        return largest
+    
+    def count_valid_substrings(self):
+        """Count number of valid substrings"""
+        return len(self.find_valid_substrings())
+    
+    def get_constraint_statistics(self):
+        """Get statistics about valid substrings"""
+        valid_substrings = self.find_valid_substrings()
+        
+        if not valid_substrings:
+            return {
+                'count': 0,
+                'min_length': 0,
+                'max_length': 0,
+                'avg_length': 0,
+                'min_frequency': 0,
+                'max_frequency': 0,
+                'avg_frequency': 0
+            }
+        
+        lengths = [sub['length'] for sub in valid_substrings]
+        frequencies = [sub['frequency'] for sub in valid_substrings]
+        
+        return {
+            'count': len(valid_substrings),
+            'min_length': min(lengths),
+            'max_length': max(lengths),
+            'avg_length': sum(lengths) / len(lengths),
+            'min_frequency': min(frequencies),
+            'max_frequency': max(frequencies),
+            'avg_frequency': sum(frequencies) / len(frequencies)
+        }
+
+# Example usage
+s = "abacaba"
+min_length = 2
+max_length = 4
+min_frequency = 2
+
+ds = DistinctSubstringsWithConstraints(s, min_length, max_length, min_frequency)
+result = ds.constrained_distinct_count()
+print(f"Constrained distinct count: {result}")
+
+valid_substrings = ds.find_valid_substrings()
+print(f"Valid substrings: {valid_substrings}")
+
+longest = ds.get_longest_valid_substring()
+print(f"Longest valid substring: {longest}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Distinct Substrings](https://cses.fi/problemset/task/2105) - Basic distinct substrings problem
+- [String Matching](https://cses.fi/problemset/task/1753) - String matching
+- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+
+#### **LeetCode Problems**
+- [Longest Common Substring](https://leetcode.com/problems/longest-common-substring/) - Find longest common substring
+- [Repeated String Match](https://leetcode.com/problems/repeated-string-match/) - String matching with repetition
+- [Wildcard Matching](https://leetcode.com/problems/wildcard-matching/) - Pattern matching with wildcards
+
+#### **Problem Categories**
+- **Suffix Arrays**: String processing, substring counting, lexicographical comparison
+- **Pattern Matching**: KMP, Z-algorithm, string matching algorithms
+- **String Processing**: Borders, periods, palindromes, string transformations
+- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata

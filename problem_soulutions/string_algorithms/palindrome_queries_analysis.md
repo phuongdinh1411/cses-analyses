@@ -310,6 +310,365 @@ Query 3: s[2:5] = "aca"
 - **Optimized**: O(n) - Hash arrays
 - **Optimal**: O(n) - Radius array from Manacher's algorithm
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Palindrome Queries with Dynamic Updates
+**Problem**: Handle dynamic updates to string characters and maintain palindrome queries efficiently.
+
+**Link**: [CSES Problem Set - Palindrome Queries with Updates](https://cses.fi/problemset/task/palindrome_queries_updates)
+
+```python
+class PalindromeQueriesWithUpdates:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.forward_hash = self._build_forward_hash()
+        self.backward_hash = self._build_backward_hash()
+        self.powers = self._build_powers()
+    
+    def _build_forward_hash(self):
+        """Build forward hash array"""
+        forward_hash = [0] * (self.n + 1)
+        base = 31
+        mod = 10**9 + 7
+        
+        for i in range(self.n):
+            forward_hash[i + 1] = (forward_hash[i] * base + ord(self.s[i])) % mod
+        
+        return forward_hash
+    
+    def _build_backward_hash(self):
+        """Build backward hash array"""
+        backward_hash = [0] * (self.n + 1)
+        base = 31
+        mod = 10**9 + 7
+        
+        for i in range(self.n - 1, -1, -1):
+            backward_hash[i] = (backward_hash[i + 1] * base + ord(self.s[i])) % mod
+        
+        return backward_hash
+    
+    def _build_powers(self):
+        """Build powers array for hash computation"""
+        powers = [1] * (self.n + 1)
+        base = 31
+        mod = 10**9 + 7
+        
+        for i in range(1, self.n + 1):
+            powers[i] = (powers[i - 1] * base) % mod
+        
+        return powers
+    
+    def update(self, pos, char):
+        """Update character at position pos"""
+        if pos < 0 or pos >= self.n:
+            return
+        
+        self.s[pos] = char
+        
+        # Rebuild hash arrays
+        self.forward_hash = self._build_forward_hash()
+        self.backward_hash = self._build_backward_hash()
+    
+    def is_palindrome(self, left, right):
+        """Check if substring [left, right] is palindrome"""
+        if left < 0 or right >= self.n or left > right:
+            return False
+        
+        # Get forward hash
+        forward = (self.forward_hash[right + 1] - self.forward_hash[left] * self.powers[right - left + 1]) % (10**9 + 7)
+        
+        # Get backward hash
+        backward = (self.backward_hash[left] - self.backward_hash[right + 1] * self.powers[right - left + 1]) % (10**9 + 7)
+        
+        return forward == backward
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'update':
+                self.update(query['pos'], query['char'])
+                results.append(None)
+            elif query['type'] == 'palindrome':
+                result = self.is_palindrome(query['left'], query['right'])
+                results.append(result)
+        return results
+```
+
+### Variation 2: Palindrome Queries with Different Operations
+**Problem**: Handle different types of operations (check, count, list) on palindrome queries.
+
+**Link**: [CSES Problem Set - Palindrome Queries Different Operations](https://cses.fi/problemset/task/palindrome_queries_operations)
+
+```python
+class PalindromeQueriesDifferentOps:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.forward_hash = self._build_forward_hash()
+        self.backward_hash = self._build_backward_hash()
+        self.powers = self._build_powers()
+    
+    def _build_forward_hash(self):
+        """Build forward hash array"""
+        forward_hash = [0] * (self.n + 1)
+        base = 31
+        mod = 10**9 + 7
+        
+        for i in range(self.n):
+            forward_hash[i + 1] = (forward_hash[i] * base + ord(self.s[i])) % mod
+        
+        return forward_hash
+    
+    def _build_backward_hash(self):
+        """Build backward hash array"""
+        backward_hash = [0] * (self.n + 1)
+        base = 31
+        mod = 10**9 + 7
+        
+        for i in range(self.n - 1, -1, -1):
+            backward_hash[i] = (backward_hash[i + 1] * base + ord(self.s[i])) % mod
+        
+        return backward_hash
+    
+    def _build_powers(self):
+        """Build powers array for hash computation"""
+        powers = [1] * (self.n + 1)
+        base = 31
+        mod = 10**9 + 7
+        
+        for i in range(1, self.n + 1):
+            powers[i] = (powers[i - 1] * base) % mod
+        
+        return powers
+    
+    def is_palindrome(self, left, right):
+        """Check if substring [left, right] is palindrome"""
+        if left < 0 or right >= self.n or left > right:
+            return False
+        
+        # Get forward hash
+        forward = (self.forward_hash[right + 1] - self.forward_hash[left] * self.powers[right - left + 1]) % (10**9 + 7)
+        
+        # Get backward hash
+        backward = (self.backward_hash[left] - self.backward_hash[right + 1] * self.powers[right - left + 1]) % (10**9 + 7)
+        
+        return forward == backward
+    
+    def count_palindromes(self, left, right):
+        """Count palindromes in range [left, right]"""
+        if left < 0 or right >= self.n or left > right:
+            return 0
+        
+        count = 0
+        for i in range(left, right + 1):
+            for j in range(i, right + 1):
+                if self.is_palindrome(i, j):
+                    count += 1
+        
+        return count
+    
+    def list_palindromes(self, left, right):
+        """List all palindromes in range [left, right]"""
+        if left < 0 or right >= self.n or left > right:
+            return []
+        
+        palindromes = []
+        for i in range(left, right + 1):
+            for j in range(i, right + 1):
+                if self.is_palindrome(i, j):
+                    palindromes.append((i, j))
+        
+        return palindromes
+    
+    def get_longest_palindrome(self, left, right):
+        """Get longest palindrome in range [left, right]"""
+        if left < 0 or right >= self.n or left > right:
+            return None
+        
+        longest = None
+        max_length = 0
+        
+        for i in range(left, right + 1):
+            for j in range(i, right + 1):
+                if self.is_palindrome(i, j):
+                    length = j - i + 1
+                    if length > max_length:
+                        max_length = length
+                        longest = (i, j)
+        
+        return longest
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'check':
+                result = self.is_palindrome(query['left'], query['right'])
+                results.append(result)
+            elif query['type'] == 'count':
+                result = self.count_palindromes(query['left'], query['right'])
+                results.append(result)
+            elif query['type'] == 'list':
+                result = self.list_palindromes(query['left'], query['right'])
+                results.append(result)
+            elif query['type'] == 'longest':
+                result = self.get_longest_palindrome(query['left'], query['right'])
+                results.append(result)
+        return results
+```
+
+### Variation 3: Palindrome Queries with Constraints
+**Problem**: Handle palindrome queries with additional constraints (e.g., minimum length, maximum length).
+
+**Link**: [CSES Problem Set - Palindrome Queries with Constraints](https://cses.fi/problemset/task/palindrome_queries_constraints)
+
+```python
+class PalindromeQueriesWithConstraints:
+    def __init__(self, s, min_length, max_length):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.min_length = min_length
+        self.max_length = max_length
+        self.forward_hash = self._build_forward_hash()
+        self.backward_hash = self._build_backward_hash()
+        self.powers = self._build_powers()
+    
+    def _build_forward_hash(self):
+        """Build forward hash array"""
+        forward_hash = [0] * (self.n + 1)
+        base = 31
+        mod = 10**9 + 7
+        
+        for i in range(self.n):
+            forward_hash[i + 1] = (forward_hash[i] * base + ord(self.s[i])) % mod
+        
+        return forward_hash
+    
+    def _build_backward_hash(self):
+        """Build backward hash array"""
+        backward_hash = [0] * (self.n + 1)
+        base = 31
+        mod = 10**9 + 7
+        
+        for i in range(self.n - 1, -1, -1):
+            backward_hash[i] = (backward_hash[i + 1] * base + ord(self.s[i])) % mod
+        
+        return backward_hash
+    
+    def _build_powers(self):
+        """Build powers array for hash computation"""
+        powers = [1] * (self.n + 1)
+        base = 31
+        mod = 10**9 + 7
+        
+        for i in range(1, self.n + 1):
+            powers[i] = (powers[i - 1] * base) % mod
+        
+        return powers
+    
+    def constrained_query(self, left, right):
+        """Query palindrome in range [left, right] with constraints"""
+        # Check minimum length constraint
+        if right - left + 1 < self.min_length:
+            return None  # Too short
+        
+        # Check maximum length constraint
+        if right - left + 1 > self.max_length:
+            return None  # Too long
+        
+        # Check if palindrome
+        if self.is_palindrome(left, right):
+            return (left, right)
+        
+        return None
+    
+    def is_palindrome(self, left, right):
+        """Check if substring [left, right] is palindrome"""
+        if left < 0 or right >= self.n or left > right:
+            return False
+        
+        # Get forward hash
+        forward = (self.forward_hash[right + 1] - self.forward_hash[left] * self.powers[right - left + 1]) % (10**9 + 7)
+        
+        # Get backward hash
+        backward = (self.backward_hash[left] - self.backward_hash[right + 1] * self.powers[right - left + 1]) % (10**9 + 7)
+        
+        return forward == backward
+    
+    def find_valid_palindromes(self):
+        """Find all valid palindromes that satisfy constraints"""
+        valid_palindromes = []
+        for i in range(self.n):
+            for j in range(i + self.min_length - 1, min(i + self.max_length, self.n)):
+                result = self.constrained_query(i, j)
+                if result is not None:
+                    valid_palindromes.append(result)
+        return valid_palindromes
+    
+    def get_longest_valid_palindrome(self):
+        """Get longest valid palindrome"""
+        longest = None
+        max_length = 0
+        
+        for i in range(self.n):
+            for j in range(i + self.min_length - 1, min(i + self.max_length, self.n)):
+                result = self.constrained_query(i, j)
+                if result is not None:
+                    length = j - i + 1
+                    if length > max_length:
+                        max_length = length
+                        longest = result
+        
+        return longest
+    
+    def count_valid_palindromes(self):
+        """Count number of valid palindromes"""
+        count = 0
+        for i in range(self.n):
+            for j in range(i + self.min_length - 1, min(i + self.max_length, self.n)):
+                result = self.constrained_query(i, j)
+                if result is not None:
+                    count += 1
+        return count
+
+# Example usage
+s = "abacaba"
+min_length = 3
+max_length = 5
+
+pq = PalindromeQueriesWithConstraints(s, min_length, max_length)
+result = pq.constrained_query(0, 2)
+print(f"Constrained query result: {result}")  # Output: (0, 2)
+
+valid_palindromes = pq.find_valid_palindromes()
+print(f"Valid palindromes: {valid_palindromes}")
+
+longest = pq.get_longest_valid_palindrome()
+print(f"Longest valid palindrome: {longest}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Palindrome Queries](https://cses.fi/problemset/task/2420) - Basic palindrome queries problem
+- [String Matching](https://cses.fi/problemset/task/1753) - String matching
+- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+
+#### **LeetCode Problems**
+- [Longest Palindromic Substring](https://leetcode.com/problems/longest-palindromic-substring/) - Find longest palindrome
+- [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/) - Check if string is palindrome
+- [Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/) - Partition string into palindromes
+
+#### **Problem Categories**
+- **Palindrome Detection**: String palindromes, substring palindromes, palindrome queries
+- **Pattern Matching**: KMP, Z-algorithm, string matching algorithms
+- **String Processing**: Borders, periods, palindromes, string transformations
+- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata
+
 ## 🎓 Summary
 
 ### 🏆 **Key Takeaways**

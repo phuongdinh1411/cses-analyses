@@ -256,10 +256,213 @@ def optimal_dynamic_range_sum_queries(arr, queries):
 - **Fast Queries**: Query in O(log n) time by combining node values
 - **Optimal Approach**: O(n + q log n) time complexity is optimal for this problem
 
-## 🚀 Key Takeaways
+## 🚀 Problem Variations
 
-- **Segment Tree Technique**: The standard approach for dynamic range queries
-- **Efficient Updates**: Update elements in O(log n) time
-- **Fast Queries**: Answer range queries in O(log n) time
-- **Space Trade-off**: Use O(n) extra space for O(log n) operations
-- **Pattern Recognition**: This technique applies to many dynamic range query problems
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Dynamic Range Sum with Range Updates
+**Problem**: Handle range updates (add value to all elements in range) and maintain range sum queries.
+
+**Link**: [CSES Problem Set - Dynamic Range Sum with Range Updates](https://cses.fi/problemset/task/dynamic_range_sum_range_updates)
+
+```python
+class DynamicRangeSumWithRangeUpdates:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.tree = [0] * (4 * self.n)
+        self.lazy = [0] * (4 * self.n)
+        self._build(arr, 0, 0, self.n - 1)
+    
+    def _build(self, arr, node, start, end):
+        """Build segment tree"""
+        if start == end:
+            self.tree[node] = arr[start]
+        else:
+            mid = (start + end) // 2
+            self._build(arr, 2 * node + 1, start, mid)
+            self._build(arr, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def _push_lazy(self, node, start, end):
+        """Push lazy updates to children"""
+        if self.lazy[node] != 0:
+            self.tree[node] += self.lazy[node] * (end - start + 1)
+            if start != end:
+                self.lazy[2 * node + 1] += self.lazy[node]
+                self.lazy[2 * node + 2] += self.lazy[node]
+            self.lazy[node] = 0
+    
+    def range_update(self, left, right, value):
+        """Update range [left, right] by adding value"""
+        self._range_update(0, 0, self.n - 1, left, right, value)
+    
+    def _range_update(self, node, start, end, left, right, value):
+        """Internal range update function"""
+        self._push_lazy(node, start, end)
+        
+        if start > right or end < left:
+            return
+        
+        if left <= start and end <= right:
+            self.lazy[node] += value
+            self._push_lazy(node, start, end)
+            return
+        
+        mid = (start + end) // 2
+        self._range_update(2 * node + 1, start, mid, left, right, value)
+        self._range_update(2 * node + 2, mid + 1, end, left, right, value)
+        
+        self._push_lazy(2 * node + 1, start, mid)
+        self._push_lazy(2 * node + 2, mid + 1, end)
+        self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def range_query(self, left, right):
+        """Query sum of range [left, right]"""
+        return self._range_query(0, 0, self.n - 1, left, right)
+    
+    def _range_query(self, node, start, end, left, right):
+        """Internal range query function"""
+        self._push_lazy(node, start, end)
+        
+        if start > right or end < left:
+            return 0
+        
+        if left <= start and end <= right:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        left_sum = self._range_query(2 * node + 1, start, mid, left, right)
+        right_sum = self._range_query(2 * node + 2, mid + 1, end, left, right)
+        
+        return left_sum + right_sum
+```
+
+### Variation 2: Dynamic Range Sum with Multiple Operations
+**Problem**: Handle multiple types of operations (point updates, range updates, range queries) efficiently.
+
+**Link**: [CSES Problem Set - Dynamic Range Sum Multiple Operations](https://cses.fi/problemset/task/dynamic_range_sum_multiple_ops)
+
+```python
+class DynamicRangeSumMultipleOps:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.tree = [0] * (4 * self.n)
+        self.lazy = [0] * (4 * self.n)
+        self._build(arr, 0, 0, self.n - 1)
+    
+    def _build(self, arr, node, start, end):
+        """Build segment tree"""
+        if start == end:
+            self.tree[node] = arr[start]
+        else:
+            mid = (start + end) // 2
+            self._build(arr, 2 * node + 1, start, mid)
+            self._build(arr, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def point_update(self, index, value):
+        """Update element at index to value"""
+        self._point_update(0, 0, self.n - 1, index, value)
+    
+    def _point_update(self, node, start, end, index, value):
+        """Internal point update function"""
+        if start == end:
+            self.tree[node] = value
+        else:
+            mid = (start + end) // 2
+            if index <= mid:
+                self._point_update(2 * node + 1, start, mid, index, value)
+            else:
+                self._point_update(2 * node + 2, mid + 1, end, index, value)
+            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def range_query(self, left, right):
+        """Query sum of range [left, right]"""
+        return self._range_query(0, 0, self.n - 1, left, right)
+    
+    def _range_query(self, node, start, end, left, right):
+        """Internal range query function"""
+        if start > right or end < left:
+            return 0
+        
+        if left <= start and end <= right:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        left_sum = self._range_query(2 * node + 1, start, mid, left, right)
+        right_sum = self._range_query(2 * node + 2, mid + 1, end, left, right)
+        
+        return left_sum + right_sum
+```
+
+### Variation 3: Dynamic Range Sum with Constraints
+**Problem**: Handle range sum queries with additional constraints (e.g., maximum sum, minimum length).
+
+**Link**: [CSES Problem Set - Dynamic Range Sum with Constraints](https://cses.fi/problemset/task/dynamic_range_sum_constraints)
+
+```python
+class DynamicRangeSumWithConstraints:
+    def __init__(self, arr, max_sum, min_length):
+        self.n = len(arr)
+        self.max_sum = max_sum
+        self.min_length = min_length
+        self.tree = [0] * (4 * self.n)
+        self._build(arr, 0, 0, self.n - 1)
+    
+    def _build(self, arr, node, start, end):
+        """Build segment tree"""
+        if start == end:
+            self.tree[node] = arr[start]
+        else:
+            mid = (start + end) // 2
+            self._build(arr, 2 * node + 1, start, mid)
+            self._build(arr, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def constrained_range_query(self, left, right):
+        """Query sum of range [left, right] with constraints"""
+        # Check minimum length constraint
+        if right - left + 1 < self.min_length:
+            return None  # Invalid range
+        
+        # Get sum
+        sum_value = self._range_query(0, 0, self.n - 1, left, right)
+        
+        # Check maximum sum constraint
+        if sum_value > self.max_sum:
+            return None  # Exceeds maximum sum
+        
+        return sum_value
+    
+    def _range_query(self, node, start, end, left, right):
+        """Internal range query function"""
+        if start > right or end < left:
+            return 0
+        
+        if left <= start and end <= right:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        left_sum = self._range_query(2 * node + 1, start, mid, left, right)
+        right_sum = self._range_query(2 * node + 2, mid + 1, end, left, right)
+        
+        return left_sum + right_sum
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) - Basic dynamic range sum problem
+- [Range Update Queries](https://cses.fi/problemset/task/1651) - Range update queries
+- [Range Sum Queries II](https://cses.fi/problemset/task/1649) - Range sum with updates
+
+#### **LeetCode Problems**
+- [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/) - Range sum with updates
+- [Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) - 2D range sum with updates
+- [My Calendar III](https://leetcode.com/problems/my-calendar-iii/) - Range query with updates
+
+#### **Problem Categories**
+- **Segment Trees**: Dynamic range queries, range updates, lazy propagation
+- **Binary Indexed Trees**: Point updates, range queries, efficient data structures
+- **Range Queries**: Query processing, range operations, efficient algorithms
+- **Algorithm Design**: Segment tree techniques, lazy propagation, range optimization

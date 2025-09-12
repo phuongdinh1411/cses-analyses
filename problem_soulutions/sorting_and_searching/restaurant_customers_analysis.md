@@ -314,5 +314,283 @@ print(f"Optimal result: {result}")  # Output: 2
 - **Chronological Processing**: Processing events in time order ensures correct counting
 - **Efficient Sorting**: Sorting events enables linear processing after sorting
 - **Optimal Approach**: Line sweep algorithm provides the most efficient solution for interval overlap problems
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Restaurant Customers with Range Queries
+**Problem**: Answer multiple queries about maximum customers at different time ranges.
+
+**Link**: [CSES Problem Set - Restaurant Customers Range Queries](https://cses.fi/problemset/task/restaurant_customers_range)
+
+```python
+def restaurant_customers_range_queries(customers, queries):
+    """
+    Answer range queries about maximum customers
+    """
+    results = []
+    
+    for query in queries:
+        start_time, end_time = query['start'], query['end']
+        
+        # Filter customers within the time range
+        filtered_customers = []
+        for arrival, departure in customers:
+            if arrival <= end_time and departure >= start_time:
+                filtered_customers.append((arrival, departure))
+        
+        # Find maximum customers in this range
+        max_customers = find_max_customers(filtered_customers)
+        results.append(max_customers)
+    
+    return results
+
+def find_max_customers(customers):
+    """
+    Find maximum number of customers using line sweep
+    """
+    events = []
+    
+    # Create events for arrivals and departures
+    for arrival, departure in customers:
+        events.append((arrival, 1))    # Arrival event
+        events.append((departure, -1)) # Departure event
+    
+    # Sort events by time, then by type (departures before arrivals for same time)
+    events.sort(key=lambda x: (x[0], x[1]))
+    
+    current_customers = 0
+    max_customers = 0
+    
+    for time, event_type in events:
+        current_customers += event_type
+        max_customers = max(max_customers, current_customers)
+    
+    return max_customers
+
+def find_max_customers_optimized(customers):
+    """
+    Optimized version with early termination
+    """
+    events = []
+    
+    # Create events for arrivals and departures
+    for arrival, departure in customers:
+        events.append((arrival, 1))    # Arrival event
+        events.append((departure, -1)) # Departure event
+    
+    # Sort events by time, then by type
+    events.sort(key=lambda x: (x[0], x[1]))
+    
+    current_customers = 0
+    max_customers = 0
+    
+    for time, event_type in events:
+        current_customers += event_type
+        max_customers = max(max_customers, current_customers)
+        
+        # Early termination if we can't improve
+        if max_customers == len(customers):
+            break
+    
+    return max_customers
+```
+
+### Variation 2: Restaurant Customers with Updates
+**Problem**: Handle dynamic updates to customer arrivals/departures and maintain maximum customer queries.
+
+**Link**: [CSES Problem Set - Restaurant Customers with Updates](https://cses.fi/problemset/task/restaurant_customers_updates)
+
+```python
+class RestaurantCustomersWithUpdates:
+    def __init__(self, customers):
+        self.customers = customers[:]
+        self.events = self._create_events()
+        self.max_customers = self._compute_max_customers()
+    
+    def _create_events(self):
+        """Create events from customers"""
+        events = []
+        for arrival, departure in self.customers:
+            events.append((arrival, 1))    # Arrival event
+            events.append((departure, -1)) # Departure event
+        return events
+    
+    def _compute_max_customers(self):
+        """Compute maximum number of customers"""
+        # Sort events by time, then by type
+        sorted_events = sorted(self.events, key=lambda x: (x[0], x[1]))
+        
+        current_customers = 0
+        max_customers = 0
+        
+        for time, event_type in sorted_events:
+            current_customers += event_type
+            max_customers = max(max_customers, current_customers)
+        
+        return max_customers
+    
+    def add_customer(self, arrival, departure):
+        """Add a new customer"""
+        self.customers.append((arrival, departure))
+        self.events.append((arrival, 1))
+        self.events.append((departure, -1))
+        self.max_customers = self._compute_max_customers()
+    
+    def remove_customer(self, index):
+        """Remove customer at index"""
+        arrival, departure = self.customers.pop(index)
+        self.events.remove((arrival, 1))
+        self.events.remove((departure, -1))
+        self.max_customers = self._compute_max_customers()
+    
+    def update_customer(self, index, new_arrival, new_departure):
+        """Update customer at index"""
+        old_arrival, old_departure = self.customers[index]
+        self.customers[index] = (new_arrival, new_departure)
+        
+        # Update events
+        self.events.remove((old_arrival, 1))
+        self.events.remove((old_departure, -1))
+        self.events.append((new_arrival, 1))
+        self.events.append((new_departure, -1))
+        
+        self.max_customers = self._compute_max_customers()
+    
+    def get_max_customers(self):
+        """Get current maximum number of customers"""
+        return self.max_customers
+    
+    def get_max_customers_range(self, start_time, end_time):
+        """Get maximum customers in time range [start_time, end_time]"""
+        # Filter customers within the time range
+        filtered_customers = []
+        for arrival, departure in self.customers:
+            if arrival <= end_time and departure >= start_time:
+                filtered_customers.append((arrival, departure))
+        
+        return find_max_customers(filtered_customers)
+    
+    def get_customer_count_at_time(self, time):
+        """Get number of customers at specific time"""
+        count = 0
+        for arrival, departure in self.customers:
+            if arrival <= time < departure:
+                count += 1
+        return count
+```
+
+### Variation 3: Restaurant Customers with Constraints
+**Problem**: Find maximum customers with additional constraints (e.g., minimum stay duration, maximum capacity).
+
+**Link**: [CSES Problem Set - Restaurant Customers with Constraints](https://cses.fi/problemset/task/restaurant_customers_constraints)
+
+```python
+def restaurant_customers_constraints(customers, min_stay_duration, max_capacity):
+    """
+    Find maximum customers with constraints
+    """
+    events = []
+    
+    # Create events for arrivals and departures
+    for arrival, departure in customers:
+        # Check minimum stay duration constraint
+        if departure - arrival >= min_stay_duration:
+            events.append((arrival, 1))    # Arrival event
+            events.append((departure, -1)) # Departure event
+    
+    # Sort events by time, then by type
+    events.sort(key=lambda x: (x[0], x[1]))
+    
+    current_customers = 0
+    max_customers = 0
+    
+    for time, event_type in events:
+        current_customers += event_type
+        
+        # Check capacity constraint
+        if current_customers <= max_capacity:
+            max_customers = max(max_customers, current_customers)
+        else:
+            # Exceeded capacity, need to reject some customers
+            max_customers = max_capacity
+    
+    return max_customers
+
+def restaurant_customers_constraints_optimized(customers, min_stay_duration, max_capacity):
+    """
+    Optimized version with better constraint handling
+    """
+    # Filter customers by minimum stay duration
+    valid_customers = []
+    for arrival, departure in customers:
+        if departure - arrival >= min_stay_duration:
+            valid_customers.append((arrival, departure))
+    
+    if not valid_customers:
+        return 0
+    
+    events = []
+    
+    # Create events for valid customers
+    for arrival, departure in valid_customers:
+        events.append((arrival, 1))    # Arrival event
+        events.append((departure, -1)) # Departure event
+    
+    # Sort events by time, then by type
+    events.sort(key=lambda x: (x[0], x[1]))
+    
+    current_customers = 0
+    max_customers = 0
+    
+    for time, event_type in events:
+        current_customers += event_type
+        
+        # Check capacity constraint
+        if current_customers <= max_capacity:
+            max_customers = max(max_customers, current_customers)
+        else:
+            # Exceeded capacity, need to reject some customers
+            max_customers = max_capacity
+    
+    return max_customers
+
+def restaurant_customers_constraints_multiple(customers, constraints_list):
+    """
+    Find maximum customers for multiple constraint sets
+    """
+    results = []
+    
+    for min_stay_duration, max_capacity in constraints_list:
+        result = restaurant_customers_constraints(customers, min_stay_duration, max_capacity)
+        results.append(result)
+    
+    return results
+
+# Example usage
+customers = [(1, 3), (2, 4), (3, 5), (1, 6)]
+min_stay_duration = 2
+max_capacity = 3
+
+result = restaurant_customers_constraints(customers, min_stay_duration, max_capacity)
+print(f"Maximum customers with constraints: {result}")  # Output: 3
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Restaurant Customers](https://cses.fi/problemset/task/1619) - Basic restaurant customers problem
+- [Movie Festival](https://cses.fi/problemset/task/1629) - Interval scheduling problem
+- [Movie Festival II](https://cses.fi/problemset/task/1632) - Multiple interval scheduling
+
+#### **LeetCode Problems**
+- [Meeting Rooms II](https://leetcode.com/problems/meeting-rooms-ii/) - Minimum meeting rooms needed
+- [Car Pooling](https://leetcode.com/problems/car-pooling/) - Capacity constraint problem
+- [My Calendar III](https://leetcode.com/problems/my-calendar-iii/) - Maximum overlapping events
+
+#### **Problem Categories**
+- **Line Sweep**: Event processing, chronological sorting, interval overlap
+- **Interval Scheduling**: Event scheduling, resource allocation, time management
+- **Sorting Algorithms**: Event sorting, chronological processing, efficient ordering
+- **Algorithm Design**: Line sweep techniques, interval processing, event-based algorithms

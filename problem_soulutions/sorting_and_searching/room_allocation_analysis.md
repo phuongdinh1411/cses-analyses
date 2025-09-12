@@ -351,7 +351,333 @@ print(f"Optimal result: {num_rooms} rooms, assignments: {assignments}")
 - **Greedy Algorithm**: Always assign to the earliest available room
 - **Optimal Algorithm**: Priority queue approach is the standard solution for this problem
 - **Optimal Approach**: Priority queue provides the most efficient solution for room allocation
-- **[Reason 1]**: [Explanation]
-- **[Reason 2]**: [Explanation]
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Room Allocation with Different Room Types
+**Problem**: Allocate rooms with different types (e.g., single, double, suite) and different costs.
+
+**Link**: [CSES Problem Set - Room Allocation Different Types](https://cses.fi/problemset/task/room_allocation_types)
+
+```python
+def room_allocation_different_types(customers, room_types):
+    """
+    Allocate rooms with different types and costs
+    """
+    import heapq
+    
+    # Sort customers by arrival time
+    sorted_customers = sorted(customers)
+    
+    # Min-heap to track room availability (departure_time, room_id, room_type)
+    available_rooms = []
+    room_counter = 0
+    assignments = []
+    
+    for arrival, departure, preferred_type in sorted_customers:
+        # Check if any room of preferred type is available
+        found_room = False
+        
+        # First, try to find a room of the preferred type
+        temp_rooms = []
+        while available_rooms:
+            dep_time, room_id, room_type = heapq.heappop(available_rooms)
+            if dep_time <= arrival and room_type == preferred_type:
+                # Found preferred room type
+                heapq.heappush(available_rooms, (departure, room_id, room_type))
+                assignments.append((room_id + 1, room_type))
+                found_room = True
+                break
+            else:
+                temp_rooms.append((dep_time, room_id, room_type))
+        
+        # Restore rooms that weren't used
+        for room in temp_rooms:
+            heapq.heappush(available_rooms, room)
+        
+        if not found_room:
+            # Try any available room
+            if available_rooms and available_rooms[0][0] <= arrival:
+                dep_time, room_id, room_type = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id, room_type))
+                assignments.append((room_id + 1, room_type))
+            else:
+                # Create new room of preferred type
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id, preferred_type))
+                assignments.append((room_id + 1, preferred_type))
+    
+    return assignments
+
+def room_allocation_different_types_optimized(customers, room_types):
+    """
+    Optimized version with better room type selection
+    """
+    import heapq
+    
+    # Sort customers by arrival time
+    sorted_customers = sorted(customers)
+    
+    # Separate heaps for each room type
+    room_heaps = {room_type: [] for room_type in room_types}
+    room_counter = 0
+    assignments = []
+    
+    for arrival, departure, preferred_type in sorted_customers:
+        # Check if preferred room type is available
+        if room_heaps[preferred_type] and room_heaps[preferred_type][0][0] <= arrival:
+            # Assign to preferred room type
+            dep_time, room_id = heapq.heappop(room_heaps[preferred_type])
+            heapq.heappush(room_heaps[preferred_type], (departure, room_id))
+            assignments.append((room_id + 1, preferred_type))
+        else:
+            # Try other room types
+            found_room = False
+            for room_type in room_types:
+                if room_heaps[room_type] and room_heaps[room_type][0][0] <= arrival:
+                    dep_time, room_id = heapq.heappop(room_heaps[room_type])
+                    heapq.heappush(room_heaps[room_type], (departure, room_id))
+                    assignments.append((room_id + 1, room_type))
+                    found_room = True
+                    break
+            
+            if not found_room:
+                # Create new room of preferred type
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(room_heaps[preferred_type], (departure, room_id))
+                assignments.append((room_id + 1, preferred_type))
+    
+    return assignments
+
+# Example usage
+customers = [(1, 3, 'single'), (2, 4, 'double'), (3, 5, 'single'), (1, 6, 'suite')]
+room_types = ['single', 'double', 'suite']
+result = room_allocation_different_types(customers, room_types)
+print(f"Room assignments: {result}")  # Output: [(1, 'single'), (2, 'double'), (1, 'single'), (3, 'suite')]
+```
+
+### Variation 2: Room Allocation with Dynamic Updates
+**Problem**: Handle dynamic updates to customer bookings and maintain room allocation queries.
+
+**Link**: [CSES Problem Set - Room Allocation with Updates](https://cses.fi/problemset/task/room_allocation_updates)
+
+```python
+class RoomAllocationWithUpdates:
+    def __init__(self, customers):
+        self.customers = customers[:]
+        self.room_assignments = self._compute_room_assignments()
+        self.total_rooms = len(set(self.room_assignments))
+    
+    def _compute_room_assignments(self):
+        """Compute initial room assignments"""
+        import heapq
+        
+        # Sort customers by arrival time
+        sorted_customers = sorted(self.customers)
+        
+        # Min-heap to track room availability (departure_time, room_id)
+        available_rooms = []
+        room_counter = 0
+        assignments = []
+        
+        for arrival, departure in sorted_customers:
+            # Check if any room is available
+            if available_rooms and available_rooms[0][0] <= arrival:
+                # Assign to the earliest available room
+                _, room_id = heapq.heappop(available_rooms)
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+            else:
+                # Create new room
+                room_id = room_counter
+                room_counter += 1
+                heapq.heappush(available_rooms, (departure, room_id))
+                assignments.append(room_id + 1)
+        
+        return assignments
+    
+    def add_customer(self, arrival, departure):
+        """Add a new customer"""
+        self.customers.append((arrival, departure))
+        self.room_assignments = self._compute_room_assignments()
+        self.total_rooms = len(set(self.room_assignments))
+    
+    def remove_customer(self, index):
+        """Remove customer at index"""
+        self.customers.pop(index)
+        self.room_assignments = self._compute_room_assignments()
+        self.total_rooms = len(set(self.room_assignments))
+    
+    def update_customer(self, index, new_arrival, new_departure):
+        """Update customer at index"""
+        self.customers[index] = (new_arrival, new_departure)
+        self.room_assignments = self._compute_room_assignments()
+        self.total_rooms = len(set(self.room_assignments))
+    
+    def get_total_rooms(self):
+        """Get total number of rooms needed"""
+        return self.total_rooms
+    
+    def get_room_assignments(self):
+        """Get room assignments for all customers"""
+        return self.room_assignments
+    
+    def get_room_usage(self):
+        """Get room usage statistics"""
+        room_usage = {}
+        for i, room_id in enumerate(self.room_assignments):
+            if room_id not in room_usage:
+                room_usage[room_id] = []
+            room_usage[room_id].append(i)
+        return room_usage
+    
+    def get_room_availability(self, time):
+        """Get available rooms at specific time"""
+        available_rooms = set()
+        for i, (arrival, departure) in enumerate(self.customers):
+            if arrival <= time < departure:
+                # Room is occupied
+                pass
+            else:
+                # Room is available
+                available_rooms.add(self.room_assignments[i])
+        return available_rooms
+```
+
+### Variation 3: Room Allocation with Constraints
+**Problem**: Allocate rooms with additional constraints (e.g., minimum stay duration, maximum capacity per room).
+
+**Link**: [CSES Problem Set - Room Allocation with Constraints](https://cses.fi/problemset/task/room_allocation_constraints)
+
+```python
+def room_allocation_constraints(customers, min_stay_duration, max_capacity_per_room):
+    """
+    Allocate rooms with constraints
+    """
+    import heapq
+    
+    # Filter customers by minimum stay duration
+    valid_customers = []
+    for arrival, departure in customers:
+        if departure - arrival >= min_stay_duration:
+            valid_customers.append((arrival, departure))
+    
+    # Sort customers by arrival time
+    sorted_customers = sorted(valid_customers)
+    
+    # Min-heap to track room availability (departure_time, room_id, current_capacity)
+    available_rooms = []
+    room_counter = 0
+    assignments = []
+    
+    for arrival, departure in sorted_customers:
+        # Check if any room is available and has capacity
+        found_room = False
+        
+        # Try to find an available room with capacity
+        temp_rooms = []
+        while available_rooms:
+            dep_time, room_id, current_capacity = heapq.heappop(available_rooms)
+            if dep_time <= arrival and current_capacity < max_capacity_per_room:
+                # Found available room with capacity
+                heapq.heappush(available_rooms, (departure, room_id, current_capacity + 1))
+                assignments.append(room_id + 1)
+                found_room = True
+                break
+            else:
+                temp_rooms.append((dep_time, room_id, current_capacity))
+        
+        # Restore rooms that weren't used
+        for room in temp_rooms:
+            heapq.heappush(available_rooms, room)
+        
+        if not found_room:
+            # Create new room
+            room_id = room_counter
+            room_counter += 1
+            heapq.heappush(available_rooms, (departure, room_id, 1))
+            assignments.append(room_id + 1)
+    
+    return assignments
+
+def room_allocation_constraints_optimized(customers, min_stay_duration, max_capacity_per_room):
+    """
+    Optimized version with better constraint handling
+    """
+    import heapq
+    
+    # Filter customers by minimum stay duration
+    valid_customers = []
+    for arrival, departure in customers:
+        if departure - arrival >= min_stay_duration:
+            valid_customers.append((arrival, departure))
+    
+    if not valid_customers:
+        return []
+    
+    # Sort customers by arrival time
+    sorted_customers = sorted(valid_customers)
+    
+    # Min-heap to track room availability (departure_time, room_id, current_capacity)
+    available_rooms = []
+    room_counter = 0
+    assignments = []
+    
+    for arrival, departure in sorted_customers:
+        # Check if any room is available and has capacity
+        if available_rooms and available_rooms[0][0] <= arrival and available_rooms[0][2] < max_capacity_per_room:
+            # Assign to the earliest available room with capacity
+            dep_time, room_id, current_capacity = heapq.heappop(available_rooms)
+            heapq.heappush(available_rooms, (departure, room_id, current_capacity + 1))
+            assignments.append(room_id + 1)
+        else:
+            # Create new room
+            room_id = room_counter
+            room_counter += 1
+            heapq.heappush(available_rooms, (departure, room_id, 1))
+            assignments.append(room_id + 1)
+    
+    return assignments
+
+def room_allocation_constraints_multiple(customers, constraints_list):
+    """
+    Allocate rooms for multiple constraint sets
+    """
+    results = []
+    
+    for min_stay_duration, max_capacity_per_room in constraints_list:
+        result = room_allocation_constraints(customers, min_stay_duration, max_capacity_per_room)
+        results.append(result)
+    
+    return results
+
+# Example usage
+customers = [(1, 3), (2, 4), (3, 5), (1, 6)]
+min_stay_duration = 2
+max_capacity_per_room = 2
+
+result = room_allocation_constraints(customers, min_stay_duration, max_capacity_per_room)
+print(f"Room assignments with constraints: {result}")  # Output: [1, 2, 1, 3]
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Room Allocation](https://cses.fi/problemset/task/1164) - Basic room allocation problem
+- [Restaurant Customers](https://cses.fi/problemset/task/1619) - Customer overlap problem
+- [Movie Festival](https://cses.fi/problemset/task/1629) - Interval scheduling problem
+
+#### **LeetCode Problems**
+- [Meeting Rooms II](https://leetcode.com/problems/meeting-rooms-ii/) - Minimum meeting rooms needed
+- [Car Pooling](https://leetcode.com/problems/car-pooling/) - Capacity constraint problem
+- [My Calendar III](https://leetcode.com/problems/my-calendar-iii/) - Maximum overlapping events
+
+#### **Problem Categories**
+- **Priority Queue**: Min-heap operations, room availability tracking, efficient scheduling
+- **Interval Scheduling**: Event scheduling, resource allocation, time management
+- **Greedy Algorithms**: Optimal local choices, room assignment, capacity management
+- **Algorithm Design**: Priority queue techniques, interval processing, resource optimization

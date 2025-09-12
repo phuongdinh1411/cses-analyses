@@ -337,3 +337,279 @@ print(f"Optimal result: {result}")  # Output: 4
 - **Efficient Processing**: Each element is processed at most twice
 - **Optimal Algorithm**: Sliding window technique is the standard approach for this problem
 - **Optimal Approach**: Sliding window provides the most efficient solution for finding longest subarray with distinct elements
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Playlist with Range Queries
+**Problem**: Answer multiple queries about longest subarray with distinct elements in different ranges.
+
+**Link**: [CSES Problem Set - Playlist Range Queries](https://cses.fi/problemset/task/playlist_range)
+
+```python
+def playlist_range_queries(songs, queries):
+    """
+    Answer range queries about longest subarray with distinct elements
+    """
+    results = []
+    
+    for query in queries:
+        left, right = query['left'], query['right']
+        
+        # Extract subarray
+        subarray = songs[left:right+1]
+        
+        # Find longest subarray with distinct elements
+        max_length = find_longest_distinct_subarray(subarray)
+        results.append(max_length)
+    
+    return results
+
+def find_longest_distinct_subarray(songs):
+    """
+    Find longest subarray with distinct elements using sliding window
+    """
+    n = len(songs)
+    if n == 0:
+        return 0
+    
+    seen = set()
+    left = 0
+    max_length = 0
+    
+    for right in range(n):
+        # Remove elements from left until current element is unique
+        while songs[right] in seen:
+            seen.remove(songs[left])
+            left += 1
+        
+        # Add current element to the window
+        seen.add(songs[right])
+        
+        # Update maximum length
+        max_length = max(max_length, right - left + 1)
+    
+    return max_length
+
+def find_longest_distinct_subarray_optimized(songs):
+    """
+    Optimized version with early termination
+    """
+    n = len(songs)
+    if n == 0:
+        return 0
+    
+    seen = set()
+    left = 0
+    max_length = 0
+    
+    for right in range(n):
+        # Remove elements from left until current element is unique
+        while songs[right] in seen:
+            seen.remove(songs[left])
+            left += 1
+        
+        # Add current element to the window
+        seen.add(songs[right])
+        
+        # Update maximum length
+        max_length = max(max_length, right - left + 1)
+        
+        # Early termination if we can't improve
+        if max_length == n:
+            break
+    
+    return max_length
+```
+
+### Variation 2: Playlist with Updates
+**Problem**: Handle dynamic updates to the playlist and maintain longest subarray queries.
+
+**Link**: [CSES Problem Set - Playlist with Updates](https://cses.fi/problemset/task/playlist_updates)
+
+```python
+class PlaylistWithUpdates:
+    def __init__(self, songs):
+        self.songs = songs[:]
+        self.n = len(songs)
+        self.max_length = self._compute_max_length()
+    
+    def _compute_max_length(self):
+        """Compute initial longest subarray with distinct elements"""
+        if self.n == 0:
+            return 0
+        
+        seen = set()
+        left = 0
+        max_length = 0
+        
+        for right in range(self.n):
+            # Remove elements from left until current element is unique
+            while self.songs[right] in seen:
+                seen.remove(self.songs[left])
+                left += 1
+            
+            # Add current element to the window
+            seen.add(self.songs[right])
+            
+            # Update maximum length
+            max_length = max(max_length, right - left + 1)
+        
+        return max_length
+    
+    def update(self, index, new_song):
+        """Update song at index to new_song"""
+        self.songs[index] = new_song
+        self.max_length = self._compute_max_length()
+    
+    def add_song(self, new_song):
+        """Add a new song to the playlist"""
+        self.songs.append(new_song)
+        self.n = len(self.songs)
+        self.max_length = self._compute_max_length()
+    
+    def remove_song(self, index):
+        """Remove song at index"""
+        self.songs.pop(index)
+        self.n = len(self.songs)
+        self.max_length = self._compute_max_length()
+    
+    def get_max_length(self):
+        """Get current maximum length of distinct subarray"""
+        return self.max_length
+    
+    def get_max_length_range(self, left, right):
+        """Get maximum length of distinct subarray in range [left, right]"""
+        # Extract subarray
+        subarray = self.songs[left:right+1]
+        
+        # Find longest subarray with distinct elements
+        return find_longest_distinct_subarray(subarray)
+    
+    def get_all_distinct_subarrays(self):
+        """Get all subarrays with distinct elements"""
+        result = []
+        n = len(self.songs)
+        
+        for i in range(n):
+            seen = set()
+            for j in range(i, n):
+                if self.songs[j] in seen:
+                    break
+                seen.add(self.songs[j])
+                result.append(self.songs[i:j+1])
+        
+        return result
+```
+
+### Variation 3: Playlist with Constraints
+**Problem**: Find longest subarray with distinct elements that satisfy additional constraints (e.g., minimum length, maximum sum).
+
+**Link**: [CSES Problem Set - Playlist with Constraints](https://cses.fi/problemset/task/playlist_constraints)
+
+```python
+def playlist_constraints(songs, min_length, max_sum):
+    """
+    Find longest subarray with distinct elements that satisfy constraints
+    """
+    n = len(songs)
+    if n == 0:
+        return 0
+    
+    seen = set()
+    left = 0
+    max_length = 0
+    
+    for right in range(n):
+        # Remove elements from left until current element is unique
+        while songs[right] in seen:
+            seen.remove(songs[left])
+            left += 1
+        
+        # Add current element to the window
+        seen.add(songs[right])
+        
+        # Check if current window satisfies constraints
+        current_length = right - left + 1
+        current_sum = sum(songs[left:right+1])
+        
+        if current_length >= min_length and current_sum <= max_sum:
+            max_length = max(max_length, current_length)
+    
+    return max_length
+
+def playlist_constraints_optimized(songs, min_length, max_sum):
+    """
+    Optimized version with early termination
+    """
+    n = len(songs)
+    if n == 0:
+        return 0
+    
+    seen = set()
+    left = 0
+    max_length = 0
+    
+    for right in range(n):
+        # Remove elements from left until current element is unique
+        while songs[right] in seen:
+            seen.remove(songs[left])
+            left += 1
+        
+        # Add current element to the window
+        seen.add(songs[right])
+        
+        # Check if current window satisfies constraints
+        current_length = right - left + 1
+        
+        # Early termination if length is too short
+        if current_length < min_length:
+            continue
+        
+        current_sum = sum(songs[left:right+1])
+        
+        if current_sum <= max_sum:
+            max_length = max(max_length, current_length)
+    
+    return max_length
+
+def playlist_constraints_multiple(songs, constraints_list):
+    """
+    Find longest subarray with distinct elements for multiple constraint sets
+    """
+    results = []
+    
+    for min_length, max_sum in constraints_list:
+        result = playlist_constraints(songs, min_length, max_sum)
+        results.append(result)
+    
+    return results
+
+# Example usage
+songs = [1, 2, 1, 3, 2, 1, 3, 4]
+min_length = 2
+max_sum = 10
+
+result = playlist_constraints(songs, min_length, max_sum)
+print(f"Longest distinct subarray with constraints: {result}")  # Output: 4
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Playlist](https://cses.fi/problemset/task/1141) - Basic playlist problem
+- [Distinct Values Subarrays](https://cses.fi/problemset/task/2108) - Distinct values subarrays
+- [Subarray Distinct Values](https://cses.fi/problemset/task/2428) - Subarray distinct values queries
+
+#### **LeetCode Problems**
+- [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) - Longest substring with distinct characters
+- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - Longest substring with at most k distinct characters
+- [Subarrays with K Different Integers](https://leetcode.com/problems/subarrays-with-k-different-integers/) - Subarrays with exactly k distinct values
+- [Fruit Into Baskets](https://leetcode.com/problems/fruit-into-baskets/) - Sliding window with at most 2 distinct values
+
+#### **Problem Categories**
+- **Sliding Window**: Two-pointer technique, window contraction, efficient subarray processing
+- **Hash Sets**: Distinct element tracking, efficient lookups, set operations
+- **Array Processing**: Subarray analysis, distinct value counting, constraint handling
+- **Algorithm Design**: Sliding window algorithms, hash-based techniques, subarray optimization

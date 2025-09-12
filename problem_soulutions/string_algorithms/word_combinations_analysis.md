@@ -271,7 +271,371 @@ Final result: dp[0] = [["cat", "sand", "dog"], ["cats", "and", "dog"]]
 3. **Memoization**: Crucial optimization technique for avoiding redundant calculations
 4. **Backtracking**: Useful for exploring all possible combinations
 
-### 🚀 **Next Steps**
-1. **Practice**: Implement word break algorithms with different approaches
-2. **Advanced Topics**: Learn about more complex string segmentation problems
-3. **Related Problems**: Solve more DP and backtracking problems
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Word Combinations with Dynamic Dictionary
+**Problem**: Handle dynamic updates to dictionary and maintain word combination queries efficiently.
+
+**Link**: [CSES Problem Set - Word Combinations with Dynamic Dictionary](https://cses.fi/problemset/task/word_combinations_dynamic_dict)
+
+```python
+class WordCombinationsWithDynamicDict:
+    def __init__(self, s, dictionary):
+        self.s = s
+        self.dictionary = set(dictionary)
+        self.n = len(s)
+        self.dp = {}
+        self.memo = {}
+    
+    def add_word(self, word):
+        """Add new word to dictionary"""
+        self.dictionary.add(word)
+        self.memo.clear()  # Clear memoization cache
+    
+    def remove_word(self, word):
+        """Remove word from dictionary"""
+        if word in self.dictionary:
+            self.dictionary.remove(word)
+            self.memo.clear()  # Clear memoization cache
+    
+    def word_break(self, s):
+        """Check if string can be segmented into dictionary words"""
+        if s in self.memo:
+            return self.memo[s]
+        
+        if not s:
+            self.memo[s] = True
+            return True
+        
+        for i in range(1, len(s) + 1):
+            if s[:i] in self.dictionary and self.word_break(s[i:]):
+                self.memo[s] = True
+                return True
+        
+        self.memo[s] = False
+        return False
+    
+    def get_all_combinations(self, s):
+        """Get all possible word combinations"""
+        if s in self.memo:
+            return self.memo[s]
+        
+        if not s:
+            return [[]]
+        
+        result = []
+        for i in range(1, len(s) + 1):
+            word = s[:i]
+            if word in self.dictionary:
+                for combination in self.get_all_combinations(s[i:]):
+                    result.append([word] + combination)
+        
+        self.memo[s] = result
+        return result
+    
+    def count_combinations(self, s):
+        """Count number of possible word combinations"""
+        if s in self.memo:
+            return len(self.memo[s]) if isinstance(self.memo[s], list) else (1 if self.memo[s] else 0)
+        
+        if not s:
+            return 1
+        
+        count = 0
+        for i in range(1, len(s) + 1):
+            word = s[:i]
+            if word in self.dictionary:
+                count += self.count_combinations(s[i:])
+        
+        self.memo[s] = count
+        return count
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'add_word':
+                self.add_word(query['word'])
+                results.append(None)
+            elif query['type'] == 'remove_word':
+                self.remove_word(query['word'])
+                results.append(None)
+            elif query['type'] == 'word_break':
+                result = self.word_break(query['s'])
+                results.append(result)
+            elif query['type'] == 'combinations':
+                result = self.get_all_combinations(query['s'])
+                results.append(result)
+            elif query['type'] == 'count':
+                result = self.count_combinations(query['s'])
+                results.append(result)
+        return results
+```
+
+### Variation 2: Word Combinations with Different Operations
+**Problem**: Handle different types of operations (break, segment, optimize) on word combinations.
+
+**Link**: [CSES Problem Set - Word Combinations Different Operations](https://cses.fi/problemset/task/word_combinations_operations)
+
+```python
+class WordCombinationsDifferentOps:
+    def __init__(self, s, dictionary):
+        self.s = s
+        self.dictionary = set(dictionary)
+        self.n = len(s)
+        self.memo = {}
+    
+    def word_break(self, s):
+        """Check if string can be segmented into dictionary words"""
+        if s in self.memo:
+            return self.memo[s]
+        
+        if not s:
+            self.memo[s] = True
+            return True
+        
+        for i in range(1, len(s) + 1):
+            if s[:i] in self.dictionary and self.word_break(s[i:]):
+                self.memo[s] = True
+                return True
+        
+        self.memo[s] = False
+        return False
+    
+    def get_all_combinations(self, s):
+        """Get all possible word combinations"""
+        if s in self.memo:
+            return self.memo[s]
+        
+        if not s:
+            return [[]]
+        
+        result = []
+        for i in range(1, len(s) + 1):
+            word = s[:i]
+            if word in self.dictionary:
+                for combination in self.get_all_combinations(s[i:]):
+                    result.append([word] + combination)
+        
+        self.memo[s] = result
+        return result
+    
+    def get_minimum_segments(self, s):
+        """Get minimum number of segments"""
+        if s in self.memo:
+            return self.memo[s]
+        
+        if not s:
+            return 0
+        
+        min_segments = float('inf')
+        for i in range(1, len(s) + 1):
+            word = s[:i]
+            if word in self.dictionary:
+                segments = 1 + self.get_minimum_segments(s[i:])
+                min_segments = min(min_segments, segments)
+        
+        self.memo[s] = min_segments if min_segments != float('inf') else -1
+        return self.memo[s]
+    
+    def get_maximum_segments(self, s):
+        """Get maximum number of segments"""
+        if s in self.memo:
+            return self.memo[s]
+        
+        if not s:
+            return 0
+        
+        max_segments = -1
+        for i in range(1, len(s) + 1):
+            word = s[:i]
+            if word in self.dictionary:
+                segments = 1 + self.get_maximum_segments(s[i:])
+                max_segments = max(max_segments, segments)
+        
+        self.memo[s] = max_segments
+        return max_segments
+    
+    def get_optimal_combination(self, s):
+        """Get optimal word combination (minimum segments)"""
+        if not s:
+            return []
+        
+        min_segments = self.get_minimum_segments(s)
+        if min_segments == -1:
+            return None
+        
+        # Find combination with minimum segments
+        for i in range(1, len(s) + 1):
+            word = s[:i]
+            if word in self.dictionary:
+                remaining_segments = self.get_minimum_segments(s[i:])
+                if remaining_segments != -1 and 1 + remaining_segments == min_segments:
+                    combination = self.get_optimal_combination(s[i:])
+                    if combination is not None:
+                        return [word] + combination
+        
+        return None
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'word_break':
+                result = self.word_break(query['s'])
+                results.append(result)
+            elif query['type'] == 'combinations':
+                result = self.get_all_combinations(query['s'])
+                results.append(result)
+            elif query['type'] == 'min_segments':
+                result = self.get_minimum_segments(query['s'])
+                results.append(result)
+            elif query['type'] == 'max_segments':
+                result = self.get_maximum_segments(query['s'])
+                results.append(result)
+            elif query['type'] == 'optimal':
+                result = self.get_optimal_combination(query['s'])
+                results.append(result)
+        return results
+```
+
+### Variation 3: Word Combinations with Constraints
+**Problem**: Handle word combination queries with additional constraints (e.g., maximum segments, minimum word length).
+
+**Link**: [CSES Problem Set - Word Combinations with Constraints](https://cses.fi/problemset/task/word_combinations_constraints)
+
+```python
+class WordCombinationsWithConstraints:
+    def __init__(self, s, dictionary, max_segments, min_word_length):
+        self.s = s
+        self.dictionary = set(dictionary)
+        self.n = len(s)
+        self.max_segments = max_segments
+        self.min_word_length = min_word_length
+        self.memo = {}
+    
+    def constrained_word_break(self, s, segments_used):
+        """Check if string can be segmented with constraints"""
+        if (s, segments_used) in self.memo:
+            return self.memo[(s, segments_used)]
+        
+        if not s:
+            self.memo[(s, segments_used)] = True
+            return True
+        
+        if segments_used >= self.max_segments:
+            self.memo[(s, segments_used)] = False
+            return False
+        
+        for i in range(self.min_word_length, len(s) + 1):
+            word = s[:i]
+            if word in self.dictionary and self.constrained_word_break(s[i:], segments_used + 1):
+                self.memo[(s, segments_used)] = True
+                return True
+        
+        self.memo[(s, segments_used)] = False
+        return False
+    
+    def get_constrained_combinations(self, s, segments_used):
+        """Get all possible word combinations with constraints"""
+        if (s, segments_used) in self.memo:
+            return self.memo[(s, segments_used)]
+        
+        if not s:
+            return [[]]
+        
+        if segments_used >= self.max_segments:
+            return []
+        
+        result = []
+        for i in range(self.min_word_length, len(s) + 1):
+            word = s[:i]
+            if word in self.dictionary:
+                for combination in self.get_constrained_combinations(s[i:], segments_used + 1):
+                    result.append([word] + combination)
+        
+        self.memo[(s, segments_used)] = result
+        return result
+    
+    def find_valid_combinations(self):
+        """Find all valid combinations that satisfy constraints"""
+        return self.get_constrained_combinations(self.s, 0)
+    
+    def get_optimal_constrained_combination(self):
+        """Get optimal combination with minimum segments under constraints"""
+        min_segments = float('inf')
+        best_combination = None
+        
+        for combination in self.find_valid_combinations():
+            if len(combination) < min_segments:
+                min_segments = len(combination)
+                best_combination = combination
+        
+        return best_combination
+    
+    def count_valid_combinations(self):
+        """Count number of valid combinations"""
+        return len(self.find_valid_combinations())
+    
+    def get_combination_statistics(self):
+        """Get statistics about valid combinations"""
+        combinations = self.find_valid_combinations()
+        if not combinations:
+            return {
+                'count': 0,
+                'min_segments': 0,
+                'max_segments': 0,
+                'avg_segments': 0
+            }
+        
+        segment_counts = [len(combo) for combo in combinations]
+        return {
+            'count': len(combinations),
+            'min_segments': min(segment_counts),
+            'max_segments': max(segment_counts),
+            'avg_segments': sum(segment_counts) / len(segment_counts)
+        }
+
+# Example usage
+s = "catsanddog"
+dictionary = ["cat", "cats", "and", "sand", "dog"]
+max_segments = 3
+min_word_length = 2
+
+wc = WordCombinationsWithConstraints(s, dictionary, max_segments, min_word_length)
+result = wc.constrained_word_break(s, 0)
+print(f"Constrained word break result: {result}")
+
+valid_combinations = wc.find_valid_combinations()
+print(f"Valid combinations: {valid_combinations}")
+
+optimal = wc.get_optimal_constrained_combination()
+print(f"Optimal constrained combination: {optimal}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Word Combinations](https://cses.fi/problemset/task/1731) - Basic word combinations problem
+- [String Matching](https://cses.fi/problemset/task/1753) - String matching
+- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+
+#### **LeetCode Problems**
+- [Word Break](https://leetcode.com/problems/word-break/) - Check if string can be segmented
+- [Word Break II](https://leetcode.com/problems/word-break-ii/) - Find all possible combinations
+- [Concatenated Words](https://leetcode.com/problems/concatenated-words/) - Find concatenated words
+
+#### **Problem Categories**
+- **Dynamic Programming**: Word break, string segmentation, combination counting
+- **Backtracking**: All possible combinations, recursive exploration
+- **String Processing**: Dictionary matching, word segmentation, string analysis
+- **Advanced String Algorithms**: String matching, pattern recognition, string processing
+
+## 🚀 Key Takeaways
+
+- **Word Break Algorithm**: Essential for string segmentation problems
+- **Dynamic Programming**: Essential for finding all possible solutions efficiently
+- **Memoization**: Crucial optimization technique for avoiding redundant calculations
+- **Backtracking**: Useful for exploring all possible combinations

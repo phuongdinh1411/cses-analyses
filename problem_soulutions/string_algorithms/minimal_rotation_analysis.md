@@ -267,15 +267,355 @@ Continue until we find the minimal rotation starting position.
 - **Optimized**: O(n) - Suffix array storage
 - **Optimal**: O(n) - Doubled string storage
 
-## 🎓 Summary
+## 🚀 Problem Variations
 
-### 🏆 **Key Takeaways**
-1. **String Rotation**: Important concept in string processing
-2. **Booth's Algorithm**: Essential for finding minimal rotations efficiently
-3. **Lexicographical Ordering**: Fundamental concept for string comparison
-4. **Doubled String Technique**: Useful for handling circular problems
+### Extended Problems with Detailed Code Examples
 
-### 🚀 **Next Steps**
-1. **Practice**: Implement minimal rotation algorithms with different approaches
-2. **Advanced Topics**: Learn about more complex string rotation problems
-3. **Related Problems**: Solve more string processing and ordering problems
+### Variation 1: Minimal Rotation with Dynamic Updates
+**Problem**: Handle dynamic updates to string characters and maintain minimal rotation queries efficiently.
+
+**Link**: [CSES Problem Set - Minimal Rotation with Updates](https://cses.fi/problemset/task/minimal_rotation_updates)
+
+```python
+class MinimalRotationWithUpdates:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.min_rotation = self._find_minimal_rotation()
+    
+    def _find_minimal_rotation(self):
+        """Find minimal rotation using Booth's algorithm"""
+        if not self.s:
+            return 0
+        
+        # Double the string to handle circular nature
+        doubled = self.s + self.s
+        n = len(self.s)
+        
+        # Initialize failure function
+        failure = [0] * (2 * n)
+        
+        # Find minimal rotation
+        min_rotation = 0
+        for i in range(1, 2 * n):
+            j = failure[i - 1]
+            while j > 0 and doubled[i] != doubled[j]:
+                j = failure[j - 1]
+            
+            if doubled[i] == doubled[j]:
+                j += 1
+            
+            failure[i] = j
+            
+            # Update minimal rotation
+            if i >= n and failure[i] == n:
+                min_rotation = i - n + 1
+                break
+        
+        return min_rotation
+    
+    def update(self, pos, char):
+        """Update character at position pos"""
+        if pos < 0 or pos >= self.n:
+            return
+        
+        self.s[pos] = char
+        
+        # Recalculate minimal rotation
+        self.min_rotation = self._find_minimal_rotation()
+    
+    def get_minimal_rotation(self):
+        """Get current minimal rotation"""
+        return self.min_rotation
+    
+    def get_rotated_string(self):
+        """Get string rotated to minimal position"""
+        if not self.s:
+            return ""
+        
+        rotated = self.s[self.min_rotation:] + self.s[:self.min_rotation]
+        return ''.join(rotated)
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'update':
+                self.update(query['pos'], query['char'])
+                results.append(None)
+            elif query['type'] == 'rotation':
+                result = self.get_minimal_rotation()
+                results.append(result)
+            elif query['type'] == 'string':
+                result = self.get_rotated_string()
+                results.append(result)
+        return results
+```
+
+### Variation 2: Minimal Rotation with Different Operations
+**Problem**: Handle different types of operations (rotation, comparison, sorting) on string rotations.
+
+**Link**: [CSES Problem Set - Minimal Rotation Different Operations](https://cses.fi/problemset/task/minimal_rotation_operations)
+
+```python
+class MinimalRotationDifferentOps:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.min_rotation = self._find_minimal_rotation()
+        self.all_rotations = self._generate_all_rotations()
+    
+    def _find_minimal_rotation(self):
+        """Find minimal rotation using Booth's algorithm"""
+        if not self.s:
+            return 0
+        
+        # Double the string to handle circular nature
+        doubled = self.s + self.s
+        n = len(self.s)
+        
+        # Initialize failure function
+        failure = [0] * (2 * n)
+        
+        # Find minimal rotation
+        min_rotation = 0
+        for i in range(1, 2 * n):
+            j = failure[i - 1]
+            while j > 0 and doubled[i] != doubled[j]:
+                j = failure[j - 1]
+            
+            if doubled[i] == doubled[j]:
+                j += 1
+            
+            failure[i] = j
+            
+            # Update minimal rotation
+            if i >= n and failure[i] == n:
+                min_rotation = i - n + 1
+                break
+        
+        return min_rotation
+    
+    def _generate_all_rotations(self):
+        """Generate all possible rotations"""
+        rotations = []
+        for i in range(self.n):
+            rotated = self.s[i:] + self.s[:i]
+            rotations.append(''.join(rotated))
+        return rotations
+    
+    def get_minimal_rotation(self):
+        """Get minimal rotation index"""
+        return self.min_rotation
+    
+    def get_all_rotations(self):
+        """Get all possible rotations"""
+        return self.all_rotations.copy()
+    
+    def compare_rotations(self, i, j):
+        """Compare two rotations"""
+        if i < 0 or i >= self.n or j < 0 or j >= self.n:
+            return 0
+        
+        rotation_i = self.all_rotations[i]
+        rotation_j = self.all_rotations[j]
+        
+        if rotation_i < rotation_j:
+            return -1
+        elif rotation_i > rotation_j:
+            return 1
+        else:
+            return 0
+    
+    def sort_rotations(self):
+        """Sort all rotations lexicographically"""
+        return sorted(self.all_rotations)
+    
+    def find_rotation_rank(self, rotation):
+        """Find rank of a specific rotation"""
+        sorted_rotations = self.sort_rotations()
+        try:
+            return sorted_rotations.index(rotation)
+        except ValueError:
+            return -1
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'minimal':
+                result = self.get_minimal_rotation()
+                results.append(result)
+            elif query['type'] == 'all':
+                result = self.get_all_rotations()
+                results.append(result)
+            elif query['type'] == 'compare':
+                result = self.compare_rotations(query['i'], query['j'])
+                results.append(result)
+            elif query['type'] == 'sort':
+                result = self.sort_rotations()
+                results.append(result)
+            elif query['type'] == 'rank':
+                result = self.find_rotation_rank(query['rotation'])
+                results.append(result)
+        return results
+```
+
+### Variation 3: Minimal Rotation with Constraints
+**Problem**: Handle minimal rotation queries with additional constraints (e.g., minimum length, maximum rotations).
+
+**Link**: [CSES Problem Set - Minimal Rotation with Constraints](https://cses.fi/problemset/task/minimal_rotation_constraints)
+
+```python
+class MinimalRotationWithConstraints:
+    def __init__(self, s, min_length, max_rotations):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.min_length = min_length
+        self.max_rotations = max_rotations
+        self.min_rotation = self._find_minimal_rotation()
+    
+    def _find_minimal_rotation(self):
+        """Find minimal rotation using Booth's algorithm"""
+        if not self.s or len(self.s) < self.min_length:
+            return 0
+        
+        # Double the string to handle circular nature
+        doubled = self.s + self.s
+        n = len(self.s)
+        
+        # Initialize failure function
+        failure = [0] * (2 * n)
+        
+        # Find minimal rotation
+        min_rotation = 0
+        for i in range(1, 2 * n):
+            j = failure[i - 1]
+            while j > 0 and doubled[i] != doubled[j]:
+                j = failure[j - 1]
+            
+            if doubled[i] == doubled[j]:
+                j += 1
+            
+            failure[i] = j
+            
+            # Update minimal rotation
+            if i >= n and failure[i] == n:
+                min_rotation = i - n + 1
+                break
+        
+        return min_rotation
+    
+    def constrained_query(self, start, end):
+        """Query minimal rotation in range [start, end] with constraints"""
+        # Check minimum length constraint
+        if end - start + 1 < self.min_length:
+            return None  # Too short
+        
+        # Check maximum rotations constraint
+        if end - start + 1 > self.max_rotations:
+            return None  # Too many rotations
+        
+        # Get substring
+        substring = self.s[start:end+1]
+        
+        # Find minimal rotation for substring
+        if not substring:
+            return None
+        
+        # Double the substring to handle circular nature
+        doubled = substring + substring
+        n = len(substring)
+        
+        # Initialize failure function
+        failure = [0] * (2 * n)
+        
+        # Find minimal rotation
+        min_rotation = 0
+        for i in range(1, 2 * n):
+            j = failure[i - 1]
+            while j > 0 and doubled[i] != doubled[j]:
+                j = failure[j - 1]
+            
+            if doubled[i] == doubled[j]:
+                j += 1
+            
+            failure[i] = j
+            
+            # Update minimal rotation
+            if i >= n and failure[i] == n:
+                min_rotation = i - n + 1
+                break
+        
+        return min_rotation
+    
+    def find_valid_ranges(self):
+        """Find all valid ranges that satisfy constraints"""
+        valid_ranges = []
+        for i in range(self.n):
+            for j in range(i + self.min_length - 1, min(i + self.max_rotations, self.n)):
+                result = self.constrained_query(i, j)
+                if result is not None:
+                    valid_ranges.append((i, j, result))
+        return valid_ranges
+    
+    def get_maximum_valid_rotation(self):
+        """Get maximum valid rotation"""
+        max_rotation = 0
+        for i in range(self.n):
+            for j in range(i + self.min_length - 1, min(i + self.max_rotations, self.n)):
+                result = self.constrained_query(i, j)
+                if result is not None:
+                    max_rotation = max(max_rotation, result)
+        return max_rotation
+    
+    def count_valid_ranges(self):
+        """Count number of valid ranges"""
+        count = 0
+        for i in range(self.n):
+            for j in range(i + self.min_length - 1, min(i + self.max_rotations, self.n)):
+                result = self.constrained_query(i, j)
+                if result is not None:
+                    count += 1
+        return count
+
+# Example usage
+s = "abacaba"
+min_length = 3
+max_rotations = 5
+
+mr = MinimalRotationWithConstraints(s, min_length, max_rotations)
+result = mr.constrained_query(0, 2)
+print(f"Constrained query result: {result}")  # Output: 0
+
+valid_ranges = mr.find_valid_ranges()
+print(f"Valid ranges: {valid_ranges}")
+
+max_rotation = mr.get_maximum_valid_rotation()
+print(f"Maximum valid rotation: {max_rotation}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Minimal Rotation](https://cses.fi/problemset/task/1110) - Basic minimal rotation problem
+- [String Matching](https://cses.fi/problemset/task/1753) - String matching
+- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+
+#### **LeetCode Problems**
+- [Rotate String](https://leetcode.com/problems/rotate-string/) - Check if string is rotation
+- [Repeated String Match](https://leetcode.com/problems/repeated-string-match/) - String matching with repetition
+- [String Rotation](https://leetcode.com/problems/string-rotation/) - String rotation problems
+
+#### **Problem Categories**
+- **String Rotation**: Minimal rotation, string comparison, circular strings
+- **Pattern Matching**: KMP, Z-algorithm, string matching algorithms
+- **String Processing**: Borders, periods, palindromes, string transformations
+- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata
+
+## 🚀 Key Takeaways
+
+- **String Rotation**: Important concept in string processing
+- **Booth's Algorithm**: Essential for finding minimal rotations efficiently
+- **Lexicographical Ordering**: Fundamental concept for string comparison
+- **Doubled String Technique**: Useful for handling circular problems

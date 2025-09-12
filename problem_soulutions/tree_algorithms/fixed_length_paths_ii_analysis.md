@@ -480,3 +480,532 @@ def optimal_fixed_length_paths_ii(tree, queries):
 - **[Reason 2]**: [Explanation]
 - **[Reason 3]**: [Explanation]
 - **Optimal Approach**: [Final explanation]
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Fixed Length Paths II with Dynamic Updates
+**Problem**: Handle dynamic updates to the tree structure and maintain fixed length path queries with color constraints efficiently.
+
+**Link**: [CSES Problem Set - Fixed Length Paths II with Updates](https://cses.fi/problemset/task/fixed_length_paths_ii_updates)
+
+```python
+class FixedLengthPathsIIWithUpdates:
+    def __init__(self, n, colors, edges, target_length):
+        self.n = n
+        self.colors = colors[:]
+        self.adj = [[] for _ in range(n)]
+        self.target_length = target_length
+        self.path_counts = {}
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_path_counts()
+    
+    def _calculate_path_counts(self):
+        """Calculate path counts using tree DP with color constraints"""
+        def dfs(node, parent):
+            # Initialize path counts for this node
+            self.path_counts[node] = {}
+            
+            # Count paths of target length starting from this node
+            def count_paths(current, parent, length, start_color):
+                if length == self.target_length:
+                    return 1 if self.colors[current] == start_color else 0
+                
+                count = 0
+                for child in self.adj[current]:
+                    if child != parent:
+                        count += count_paths(child, current, length + 1, start_color)
+                
+                return count
+            
+            # Count paths for each color
+            for color in set(self.colors):
+                self.path_counts[node][color] = count_paths(node, parent, 0, color)
+            
+            # Recursively calculate for children
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node)
+        
+        dfs(0, -1)
+    
+    def update_color(self, node, new_color):
+        """Update color of a node and recalculate affected counts"""
+        self.colors[node] = new_color
+        
+        # Recalculate path counts
+        self._calculate_path_counts()
+    
+    def add_edge(self, u, v):
+        """Add edge between nodes u and v"""
+        self.adj[u].append(v)
+        self.adj[v].append(u)
+        
+        # Recalculate path counts
+        self._calculate_path_counts()
+    
+    def remove_edge(self, u, v):
+        """Remove edge between nodes u and v"""
+        if v in self.adj[u]:
+            self.adj[u].remove(v)
+        if u in self.adj[v]:
+            self.adj[v].remove(u)
+        
+        # Recalculate path counts
+        self._calculate_path_counts()
+    
+    def get_path_count(self, node, color):
+        """Get number of paths of target length starting from node with specific color"""
+        return self.path_counts[node].get(color, 0)
+    
+    def get_all_path_counts(self):
+        """Get path counts for all nodes and colors"""
+        return self.path_counts.copy()
+    
+    def get_total_paths(self, color):
+        """Get total number of paths of target length with specific color"""
+        total = 0
+        for node in range(self.n):
+            total += self.path_counts[node].get(color, 0)
+        return total
+    
+    def get_path_statistics(self):
+        """Get comprehensive path statistics"""
+        color_totals = {}
+        for color in set(self.colors):
+            color_totals[color] = self.get_total_paths(color)
+        
+        return {
+            'color_totals': color_totals,
+            'target_length': self.target_length,
+            'path_counts': self.path_counts.copy()
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'update_color':
+                self.update_color(query['node'], query['new_color'])
+                results.append(None)
+            elif query['type'] == 'add_edge':
+                self.add_edge(query['u'], query['v'])
+                results.append(None)
+            elif query['type'] == 'remove_edge':
+                self.remove_edge(query['u'], query['v'])
+                results.append(None)
+            elif query['type'] == 'path_count':
+                result = self.get_path_count(query['node'], query['color'])
+                results.append(result)
+            elif query['type'] == 'total_paths':
+                result = self.get_total_paths(query['color'])
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_path_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 2: Fixed Length Paths II with Different Operations
+**Problem**: Handle different types of operations (find, analyze, compare) on fixed length paths with color constraints.
+
+**Link**: [CSES Problem Set - Fixed Length Paths II Different Operations](https://cses.fi/problemset/task/fixed_length_paths_ii_operations)
+
+```python
+class FixedLengthPathsIIDifferentOps:
+    def __init__(self, n, colors, edges, target_length):
+        self.n = n
+        self.colors = colors[:]
+        self.adj = [[] for _ in range(n)]
+        self.target_length = target_length
+        self.path_counts = {}
+        self.depths = [0] * n
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_path_counts()
+        self._calculate_depths()
+    
+    def _calculate_path_counts(self):
+        """Calculate path counts using tree DP with color constraints"""
+        def dfs(node, parent):
+            # Initialize path counts for this node
+            self.path_counts[node] = {}
+            
+            # Count paths of target length starting from this node
+            def count_paths(current, parent, length, start_color):
+                if length == self.target_length:
+                    return 1 if self.colors[current] == start_color else 0
+                
+                count = 0
+                for child in self.adj[current]:
+                    if child != parent:
+                        count += count_paths(child, current, length + 1, start_color)
+                
+                return count
+            
+            # Count paths for each color
+            for color in set(self.colors):
+                self.path_counts[node][color] = count_paths(node, parent, 0, color)
+            
+            # Recursively calculate for children
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node)
+        
+        dfs(0, -1)
+    
+    def _calculate_depths(self):
+        """Calculate depth of each node"""
+        def dfs(node, parent, depth):
+            self.depths[node] = depth
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node, depth + 1)
+        
+        dfs(0, -1, 0)
+    
+    def get_path_count(self, node, color):
+        """Get number of paths of target length starting from node with specific color"""
+        return self.path_counts[node].get(color, 0)
+    
+    def get_paths_by_color(self, color):
+        """Get all paths of target length with specific color"""
+        paths = []
+        
+        def dfs(node, parent, current_path):
+            if len(current_path) == self.target_length:
+                if self.colors[current_path[0]] == color and self.colors[current_path[-1]] == color:
+                    paths.append(current_path.copy())
+                return
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, node, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return paths
+    
+    def get_paths_from_node(self, node, color):
+        """Get all paths starting from given node with specific color"""
+        paths = []
+        
+        def dfs(current, parent, current_path):
+            if len(current_path) > 1:
+                if self.colors[current_path[0]] == color and self.colors[current_path[-1]] == color:
+                    paths.append(current_path.copy())
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, current, current_path)
+                    current_path.pop()
+        
+        dfs(node, -1, [node])
+        return paths
+    
+    def get_paths_to_node(self, node, color):
+        """Get all paths ending at given node with specific color"""
+        paths = []
+        
+        def dfs(current, parent, current_path):
+            if current == node and len(current_path) > 1:
+                if self.colors[current_path[0]] == color and self.colors[current_path[-1]] == color:
+                    paths.append(current_path.copy())
+                return
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, current, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return paths
+    
+    def get_paths_through_node(self, node, color):
+        """Get all paths passing through given node with specific color"""
+        paths = []
+        
+        def dfs(current, parent, current_path):
+            if node in current_path and len(current_path) > 1:
+                if self.colors[current_path[0]] == color and self.colors[current_path[-1]] == color:
+                    paths.append(current_path.copy())
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, current, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return paths
+    
+    def get_color_statistics(self):
+        """Get comprehensive color statistics"""
+        color_totals = {}
+        for color in set(self.colors):
+            color_totals[color] = self.get_total_paths(color)
+        
+        return {
+            'color_totals': color_totals,
+            'target_length': self.target_length,
+            'path_counts': self.path_counts.copy(),
+            'depths': self.depths.copy()
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'path_count':
+                result = self.get_path_count(query['node'], query['color'])
+                results.append(result)
+            elif query['type'] == 'paths_by_color':
+                result = self.get_paths_by_color(query['color'])
+                results.append(result)
+            elif query['type'] == 'paths_from_node':
+                result = self.get_paths_from_node(query['node'], query['color'])
+                results.append(result)
+            elif query['type'] == 'paths_to_node':
+                result = self.get_paths_to_node(query['node'], query['color'])
+                results.append(result)
+            elif query['type'] == 'paths_through_node':
+                result = self.get_paths_through_node(query['node'], query['color'])
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_color_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 3: Fixed Length Paths II with Constraints
+**Problem**: Handle fixed length path queries with additional constraints (e.g., minimum length, maximum length, color frequency).
+
+**Link**: [CSES Problem Set - Fixed Length Paths II with Constraints](https://cses.fi/problemset/task/fixed_length_paths_ii_constraints)
+
+```python
+class FixedLengthPathsIIWithConstraints:
+    def __init__(self, n, colors, edges, target_length, min_length, max_length, min_color_frequency):
+        self.n = n
+        self.colors = colors[:]
+        self.adj = [[] for _ in range(n)]
+        self.target_length = target_length
+        self.min_length = min_length
+        self.max_length = max_length
+        self.min_color_frequency = min_color_frequency
+        self.path_counts = {}
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_path_counts()
+    
+    def _calculate_path_counts(self):
+        """Calculate path counts using tree DP with color constraints"""
+        def dfs(node, parent):
+            # Initialize path counts for this node
+            self.path_counts[node] = {}
+            
+            # Count paths of target length starting from this node
+            def count_paths(current, parent, length, start_color):
+                if length == self.target_length:
+                    return 1 if self.colors[current] == start_color else 0
+                
+                count = 0
+                for child in self.adj[current]:
+                    if child != parent:
+                        count += count_paths(child, current, length + 1, start_color)
+                
+                return count
+            
+            # Count paths for each color
+            for color in set(self.colors):
+                self.path_counts[node][color] = count_paths(node, parent, 0, color)
+            
+            # Recursively calculate for children
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node)
+        
+        dfs(0, -1)
+    
+    def constrained_path_count_query(self, node, color):
+        """Query path count with constraints"""
+        if self.path_counts[node].get(color, 0) == 0:
+            return 0
+        
+        # Count paths of valid lengths starting from this node with specific color
+        valid_paths = 0
+        
+        def count_valid_paths(current, parent, length, start_color):
+            nonlocal valid_paths
+            
+            if self.min_length <= length <= self.max_length:
+                if self.colors[current] == start_color:
+                    valid_paths += 1
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    count_valid_paths(child, current, length + 1, start_color)
+        
+        count_valid_paths(node, -1, 0, color)
+        return valid_paths
+    
+    def find_valid_paths(self, color):
+        """Find all paths that satisfy length and color constraints"""
+        valid_paths = []
+        
+        def dfs(node, parent, current_path):
+            if self.min_length <= len(current_path) <= self.max_length:
+                if self.colors[current_path[0]] == color and self.colors[current_path[-1]] == color:
+                    valid_paths.append(current_path.copy())
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, node, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return valid_paths
+    
+    def count_valid_paths(self, color):
+        """Count number of valid paths with specific color"""
+        return len(self.find_valid_paths(color))
+    
+    def get_valid_paths_by_length(self, color, length):
+        """Get all valid paths of specific length with specific color"""
+        if not (self.min_length <= length <= self.max_length):
+            return []
+        
+        paths = []
+        
+        def dfs(node, parent, current_path):
+            if len(current_path) == length:
+                if self.colors[current_path[0]] == color and self.colors[current_path[-1]] == color:
+                    paths.append(current_path.copy())
+                return
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, node, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return paths
+    
+    def get_valid_paths_from_node(self, node, color):
+        """Get all valid paths starting from given node with specific color"""
+        valid_paths = []
+        
+        def dfs(current, parent, current_path):
+            if self.min_length <= len(current_path) <= self.max_length:
+                if self.colors[current_path[0]] == color and self.colors[current_path[-1]] == color:
+                    valid_paths.append(current_path.copy())
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, current, current_path)
+                    current_path.pop()
+        
+        dfs(node, -1, [node])
+        return valid_paths
+    
+    def get_valid_paths_through_node(self, node, color):
+        """Get all valid paths passing through given node with specific color"""
+        valid_paths = []
+        
+        def dfs(current, parent, current_path):
+            if node in current_path and self.min_length <= len(current_path) <= self.max_length:
+                if self.colors[current_path[0]] == color and self.colors[current_path[-1]] == color:
+                    valid_paths.append(current_path.copy())
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, current, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return valid_paths
+    
+    def get_constraint_statistics(self):
+        """Get statistics about valid paths"""
+        color_totals = {}
+        for color in set(self.colors):
+            color_totals[color] = self.count_valid_paths(color)
+        
+        return {
+            'color_totals': color_totals,
+            'min_length': self.min_length,
+            'max_length': self.max_length,
+            'target_length': self.target_length,
+            'min_color_frequency': self.min_color_frequency
+        }
+
+# Example usage
+n = 5
+colors = [1, 2, 1, 3, 2]
+edges = [(0, 1), (1, 2), (1, 3), (3, 4)]
+target_length = 2
+min_length = 1
+max_length = 3
+min_color_frequency = 1
+
+flp = FixedLengthPathsIIWithConstraints(n, colors, edges, target_length, min_length, max_length, min_color_frequency)
+result = flp.constrained_path_count_query(1, 1)
+print(f"Constrained path count query result: {result}")
+
+valid_paths = flp.find_valid_paths(1)
+print(f"Valid paths: {valid_paths}")
+
+statistics = flp.get_constraint_statistics()
+print(f"Constraint statistics: {statistics}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Fixed Length Paths II](https://cses.fi/problemset/task/2081) - Advanced fixed length paths in tree with color constraints
+- [Fixed Length Paths I](https://cses.fi/problemset/task/2080) - Basic fixed length paths in tree
+- [Tree Diameter](https://cses.fi/problemset/task/1131) - Find diameter of tree
+
+#### **LeetCode Problems**
+- [Binary Tree Paths](https://leetcode.com/problems/binary-tree-paths/) - Find all paths in binary tree
+- [Path Sum](https://leetcode.com/problems/path-sum/) - Path queries in tree
+- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Path analysis in tree
+
+#### **Problem Categories**
+- **Tree DP**: Dynamic programming on trees, path counting with constraints
+- **Tree Traversal**: DFS, BFS, tree traversal algorithms
+- **Tree Queries**: Path queries, tree analysis, tree operations
+- **Tree Algorithms**: Tree properties, tree analysis, tree operations

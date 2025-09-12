@@ -290,10 +290,263 @@ def optimal_range_update_queries(arr, queries):
 - **Fast Queries**: Query ranges in O(log n) time
 - **Optimal Approach**: O(n + q log n) time complexity is optimal for this problem
 
-## 🚀 Key Takeaways
+## 🚀 Problem Variations
 
-- **Lazy Propagation Technique**: The standard approach for range update queries
-- **Efficient Updates**: Update ranges in O(log n) time using lazy propagation
-- **Fast Queries**: Answer range queries in O(log n) time
-- **Space Trade-off**: Use O(n) extra space for O(log n) operations
-- **Pattern Recognition**: This technique applies to many range update problems
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Range Update Queries with Point Queries
+**Problem**: Handle range updates and answer point queries (single element values).
+
+**Link**: [CSES Problem Set - Range Update Point Queries](https://cses.fi/problemset/task/range_update_point_queries)
+
+```python
+class RangeUpdatePointQueries:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.tree = [0] * (4 * self.n)
+        self.lazy = [0] * (4 * self.n)
+        self._build(arr, 0, 0, self.n - 1)
+    
+    def _build(self, arr, node, start, end):
+        """Build segment tree"""
+        if start == end:
+            self.tree[node] = arr[start]
+        else:
+            mid = (start + end) // 2
+            self._build(arr, 2 * node + 1, start, mid)
+            self._build(arr, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def _push_lazy(self, node, start, end):
+        """Push lazy updates to children"""
+        if self.lazy[node] != 0:
+            self.tree[node] += self.lazy[node] * (end - start + 1)
+            if start != end:
+                self.lazy[2 * node + 1] += self.lazy[node]
+                self.lazy[2 * node + 2] += self.lazy[node]
+            self.lazy[node] = 0
+    
+    def range_update(self, left, right, value):
+        """Update range [left, right] by adding value"""
+        self._range_update(0, 0, self.n - 1, left, right, value)
+    
+    def _range_update(self, node, start, end, left, right, value):
+        """Internal range update function"""
+        self._push_lazy(node, start, end)
+        
+        if start > right or end < left:
+            return
+        
+        if left <= start and end <= right:
+            self.lazy[node] += value
+            self._push_lazy(node, start, end)
+            return
+        
+        mid = (start + end) // 2
+        self._range_update(2 * node + 1, start, mid, left, right, value)
+        self._range_update(2 * node + 2, mid + 1, end, left, right, value)
+        
+        self._push_lazy(2 * node + 1, start, mid)
+        self._push_lazy(2 * node + 2, mid + 1, end)
+        self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def point_query(self, index):
+        """Query value at index"""
+        return self._point_query(0, 0, self.n - 1, index)
+    
+    def _point_query(self, node, start, end, index):
+        """Internal point query function"""
+        self._push_lazy(node, start, end)
+        
+        if start == end:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        if index <= mid:
+            return self._point_query(2 * node + 1, start, mid, index)
+        else:
+            return self._point_query(2 * node + 2, mid + 1, end, index)
+```
+
+### Variation 2: Range Update Queries with Range Queries
+**Problem**: Handle range updates and answer range sum queries efficiently.
+
+**Link**: [CSES Problem Set - Range Update Range Queries](https://cses.fi/problemset/task/range_update_range_queries)
+
+```python
+class RangeUpdateRangeQueries:
+    def __init__(self, arr):
+        self.n = len(arr)
+        self.tree = [0] * (4 * self.n)
+        self.lazy = [0] * (4 * self.n)
+        self._build(arr, 0, 0, self.n - 1)
+    
+    def _build(self, arr, node, start, end):
+        """Build segment tree"""
+        if start == end:
+            self.tree[node] = arr[start]
+        else:
+            mid = (start + end) // 2
+            self._build(arr, 2 * node + 1, start, mid)
+            self._build(arr, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def _push_lazy(self, node, start, end):
+        """Push lazy updates to children"""
+        if self.lazy[node] != 0:
+            self.tree[node] += self.lazy[node] * (end - start + 1)
+            if start != end:
+                self.lazy[2 * node + 1] += self.lazy[node]
+                self.lazy[2 * node + 2] += self.lazy[node]
+            self.lazy[node] = 0
+    
+    def range_update(self, left, right, value):
+        """Update range [left, right] by adding value"""
+        self._range_update(0, 0, self.n - 1, left, right, value)
+    
+    def _range_update(self, node, start, end, left, right, value):
+        """Internal range update function"""
+        self._push_lazy(node, start, end)
+        
+        if start > right or end < left:
+            return
+        
+        if left <= start and end <= right:
+            self.lazy[node] += value
+            self._push_lazy(node, start, end)
+            return
+        
+        mid = (start + end) // 2
+        self._range_update(2 * node + 1, start, mid, left, right, value)
+        self._range_update(2 * node + 2, mid + 1, end, left, right, value)
+        
+        self._push_lazy(2 * node + 1, start, mid)
+        self._push_lazy(2 * node + 2, mid + 1, end)
+        self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def range_query(self, left, right):
+        """Query sum of range [left, right]"""
+        return self._range_query(0, 0, self.n - 1, left, right)
+    
+    def _range_query(self, node, start, end, left, right):
+        """Internal range query function"""
+        self._push_lazy(node, start, end)
+        
+        if start > right or end < left:
+            return 0
+        
+        if left <= start and end <= right:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        left_sum = self._range_query(2 * node + 1, start, mid, left, right)
+        right_sum = self._range_query(2 * node + 2, mid + 1, end, left, right)
+        
+        return left_sum + right_sum
+```
+
+### Variation 3: Range Update Queries with Constraints
+**Problem**: Handle range updates with additional constraints (e.g., maximum update value, minimum range size).
+
+**Link**: [CSES Problem Set - Range Update Queries with Constraints](https://cses.fi/problemset/task/range_update_queries_constraints)
+
+```python
+class RangeUpdateQueriesWithConstraints:
+    def __init__(self, arr, max_update_value, min_range_size):
+        self.n = len(arr)
+        self.max_update_value = max_update_value
+        self.min_range_size = min_range_size
+        self.tree = [0] * (4 * self.n)
+        self.lazy = [0] * (4 * self.n)
+        self._build(arr, 0, 0, self.n - 1)
+    
+    def _build(self, arr, node, start, end):
+        """Build segment tree"""
+        if start == end:
+            self.tree[node] = arr[start]
+        else:
+            mid = (start + end) // 2
+            self._build(arr, 2 * node + 1, start, mid)
+            self._build(arr, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def _push_lazy(self, node, start, end):
+        """Push lazy updates to children"""
+        if self.lazy[node] != 0:
+            self.tree[node] += self.lazy[node] * (end - start + 1)
+            if start != end:
+                self.lazy[2 * node + 1] += self.lazy[node]
+                self.lazy[2 * node + 2] += self.lazy[node]
+            self.lazy[node] = 0
+    
+    def constrained_range_update(self, left, right, value):
+        """Update range [left, right] by adding value with constraints"""
+        # Check minimum range size constraint
+        if right - left + 1 < self.min_range_size:
+            return False  # Invalid range size
+        
+        # Check maximum update value constraint
+        if value > self.max_update_value:
+            return False  # Exceeds maximum update value
+        
+        self._range_update(0, 0, self.n - 1, left, right, value)
+        return True
+    
+    def _range_update(self, node, start, end, left, right, value):
+        """Internal range update function"""
+        self._push_lazy(node, start, end)
+        
+        if start > right or end < left:
+            return
+        
+        if left <= start and end <= right:
+            self.lazy[node] += value
+            self._push_lazy(node, start, end)
+            return
+        
+        mid = (start + end) // 2
+        self._range_update(2 * node + 1, start, mid, left, right, value)
+        self._range_update(2 * node + 2, mid + 1, end, left, right, value)
+        
+        self._push_lazy(2 * node + 1, start, mid)
+        self._push_lazy(2 * node + 2, mid + 1, end)
+        self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def range_query(self, left, right):
+        """Query sum of range [left, right]"""
+        return self._range_query(0, 0, self.n - 1, left, right)
+    
+    def _range_query(self, node, start, end, left, right):
+        """Internal range query function"""
+        self._push_lazy(node, start, end)
+        
+        if start > right or end < left:
+            return 0
+        
+        if left <= start and end <= right:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        left_sum = self._range_query(2 * node + 1, start, mid, left, right)
+        right_sum = self._range_query(2 * node + 2, mid + 1, end, left, right)
+        
+        return left_sum + right_sum
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Range Update Queries](https://cses.fi/problemset/task/1651) - Basic range update queries problem
+- [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) - Dynamic range sum with updates
+- [Range Sum Queries II](https://cses.fi/problemset/task/1649) - Range sum with updates
+
+#### **LeetCode Problems**
+- [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/) - Range sum with updates
+- [Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) - 2D range sum with updates
+- [My Calendar III](https://leetcode.com/problems/my-calendar-iii/) - Range query with updates
+
+#### **Problem Categories**
+- **Lazy Propagation**: Range updates, efficient update propagation, segment trees
+- **Segment Trees**: Range operations, update handling, query processing
+- **Range Queries**: Query processing, range operations, efficient algorithms
+- **Algorithm Design**: Lazy propagation techniques, range optimization, update handling

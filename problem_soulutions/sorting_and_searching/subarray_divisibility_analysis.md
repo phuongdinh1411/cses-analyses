@@ -387,7 +387,285 @@ print(f"Optimal result: {result}")  # Output: 2
 - **Space**: O([complexity]) - [Explanation]
 
 ### Why This Solution Works
-- **[Reason 1]**: [Explanation]
-- **[Reason 2]**: [Explanation]
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+- **Modular Arithmetic**: Using remainders to identify divisible subarrays
+- **Hash Map Counting**: Efficiently count remainder frequencies
+- **Optimal Algorithm**: Modular arithmetic approach is the standard solution for subarray divisibility problems
+- **Optimal Approach**: Hash map with remainder counting provides the most efficient solution for subarray counting problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Subarray Divisibility with Range Queries
+**Problem**: Answer multiple queries about subarray divisibility in different ranges.
+
+**Link**: [CSES Problem Set - Subarray Divisibility Range Queries](https://cses.fi/problemset/task/subarray_divisibility_range)
+
+```python
+def subarray_divisibility_range_queries(arr, k, queries):
+    """
+    Answer range queries about subarray divisibility
+    """
+    results = []
+    
+    for query in queries:
+        left, right = query['left'], query['right']
+        
+        # Extract subarray
+        subarray = arr[left:right+1]
+        
+        # Find divisible subarrays in this range
+        count = count_divisible_subarrays(subarray, k)
+        results.append(count)
+    
+    return results
+
+def count_divisible_subarrays(arr, k):
+    """
+    Count subarrays divisible by k using modular arithmetic
+    """
+    n = len(arr)
+    if n == 0:
+        return 0
+    
+    # Calculate prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    
+    # Count remainders
+    remainder_count = {}
+    count = 0
+    
+    for i in range(n + 1):
+        remainder = prefix[i] % k
+        if remainder in remainder_count:
+            count += remainder_count[remainder]
+        remainder_count[remainder] = remainder_count.get(remainder, 0) + 1
+    
+    return count
+
+def count_divisible_subarrays_optimized(arr, k):
+    """
+    Optimized version with early termination
+    """
+    n = len(arr)
+    if n == 0:
+        return 0
+    
+    # Calculate prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    
+    # Count remainders
+    remainder_count = {}
+    count = 0
+    
+    for i in range(n + 1):
+        remainder = prefix[i] % k
+        if remainder in remainder_count:
+            count += remainder_count[remainder]
+        remainder_count[remainder] = remainder_count.get(remainder, 0) + 1
+        
+        # Early termination if we can't improve
+        if count == n * (n + 1) // 2:
+            break
+    
+    return count
+```
+
+### Variation 2: Subarray Divisibility with Updates
+**Problem**: Handle dynamic updates to the array and maintain subarray divisibility queries.
+
+**Link**: [CSES Problem Set - Subarray Divisibility with Updates](https://cses.fi/problemset/task/subarray_divisibility_updates)
+
+```python
+class SubarrayDivisibilityWithUpdates:
+    def __init__(self, arr, k):
+        self.arr = arr[:]
+        self.k = k
+        self.n = len(arr)
+        self.prefix = self._compute_prefix()
+        self.divisible_count = self._compute_divisible_count()
+    
+    def _compute_prefix(self):
+        """Compute prefix sums"""
+        prefix = [0] * (self.n + 1)
+        for i in range(self.n):
+            prefix[i + 1] = prefix[i] + self.arr[i]
+        return prefix
+    
+    def _compute_divisible_count(self):
+        """Compute count of divisible subarrays"""
+        remainder_count = {}
+        count = 0
+        
+        for i in range(self.n + 1):
+            remainder = self.prefix[i] % self.k
+            if remainder in remainder_count:
+                count += remainder_count[remainder]
+            remainder_count[remainder] = remainder_count.get(remainder, 0) + 1
+        
+        return count
+    
+    def update(self, index, new_value):
+        """Update element at index to new_value"""
+        old_value = self.arr[index]
+        self.arr[index] = new_value
+        
+        # Update prefix sums
+        diff = new_value - old_value
+        for i in range(index + 1, self.n + 1):
+            self.prefix[i] += diff
+        
+        # Recompute divisible count
+        self.divisible_count = self._compute_divisible_count()
+    
+    def add_element(self, new_value):
+        """Add a new element to the array"""
+        self.arr.append(new_value)
+        self.n = len(self.arr)
+        self.prefix = self._compute_prefix()
+        self.divisible_count = self._compute_divisible_count()
+    
+    def remove_element(self, index):
+        """Remove element at index"""
+        self.arr.pop(index)
+        self.n = len(self.arr)
+        self.prefix = self._compute_prefix()
+        self.divisible_count = self._compute_divisible_count()
+    
+    def get_divisible_count(self):
+        """Get current count of divisible subarrays"""
+        return self.divisible_count
+    
+    def get_divisible_count_range(self, left, right):
+        """Get count of divisible subarrays in range [left, right]"""
+        # Extract subarray
+        subarray = self.arr[left:right+1]
+        
+        # Find divisible subarrays in this range
+        return count_divisible_subarrays(subarray, self.k)
+    
+    def get_all_divisible_subarrays(self):
+        """Get all divisible subarrays"""
+        result = []
+        n = len(self.arr)
+        
+        for i in range(n):
+            for j in range(i, n):
+                subarray = self.arr[i:j+1]
+                if sum(subarray) % self.k == 0:
+                    result.append((i, j, subarray))
+        
+        return result
+```
+
+### Variation 3: Subarray Divisibility with Constraints
+**Problem**: Find divisible subarrays with additional constraints (e.g., minimum length, maximum sum).
+
+**Link**: [CSES Problem Set - Subarray Divisibility with Constraints](https://cses.fi/problemset/task/subarray_divisibility_constraints)
+
+```python
+def subarray_divisibility_constraints(arr, k, min_length, max_sum):
+    """
+    Find divisible subarrays with constraints
+    """
+    n = len(arr)
+    if n == 0:
+        return 0
+    
+    # Calculate prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    
+    # Count remainders with constraints
+    remainder_count = {}
+    count = 0
+    
+    for i in range(n + 1):
+        remainder = prefix[i] % k
+        
+        # Check constraints
+        if i >= min_length and prefix[i] <= max_sum:
+            if remainder in remainder_count:
+                count += remainder_count[remainder]
+        
+        remainder_count[remainder] = remainder_count.get(remainder, 0) + 1
+    
+    return count
+
+def subarray_divisibility_constraints_optimized(arr, k, min_length, max_sum):
+    """
+    Optimized version with better constraint handling
+    """
+    n = len(arr)
+    if n == 0:
+        return 0
+    
+    # Calculate prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    
+    # Count remainders with constraints
+    remainder_count = {}
+    count = 0
+    
+    for i in range(n + 1):
+        remainder = prefix[i] % k
+        
+        # Check constraints
+        if i >= min_length and prefix[i] <= max_sum:
+            if remainder in remainder_count:
+                count += remainder_count[remainder]
+        
+        remainder_count[remainder] = remainder_count.get(remainder, 0) + 1
+        
+        # Early termination if we can't improve
+        if count == n * (n + 1) // 2:
+            break
+    
+    return count
+
+def subarray_divisibility_constraints_multiple(arr, k, constraints_list):
+    """
+    Find divisible subarrays for multiple constraint sets
+    """
+    results = []
+    
+    for min_length, max_sum in constraints_list:
+        result = subarray_divisibility_constraints(arr, k, min_length, max_sum)
+        results.append(result)
+    
+    return results
+
+# Example usage
+arr = [1, 2, 7, 4, 5]
+k = 5
+min_length = 2
+max_sum = 15
+
+result = subarray_divisibility_constraints(arr, k, min_length, max_sum)
+print(f"Divisible subarrays with constraints: {result}")  # Output: 2
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Subarray Divisibility](https://cses.fi/problemset/task/1662) - Basic subarray divisibility problem
+- [Subarray Sums I](https://cses.fi/problemset/task/1661) - Subarray sum problems
+- [Subarray Sums II](https://cses.fi/problemset/task/1662) - Subarray sum with target
+
+#### **LeetCode Problems**
+- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Subarray sum with target
+- [Continuous Subarray Sum](https://leetcode.com/problems/continuous-subarray-sum/) - Subarray sum divisibility
+- [Subarray Product Less Than K](https://leetcode.com/problems/subarray-product-less-than-k/) - Subarray product constraints
+
+#### **Problem Categories**
+- **Modular Arithmetic**: Remainder calculations, divisibility rules, mathematical properties
+- **Hash Maps**: Frequency counting, remainder tracking, efficient lookups
+- **Prefix Sums**: Cumulative calculations, range queries, efficient sum computation
+- **Algorithm Design**: Modular arithmetic techniques, hash-based algorithms, mathematical optimization

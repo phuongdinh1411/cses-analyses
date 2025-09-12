@@ -313,7 +313,503 @@ Substrings of length 3:
 3. **Query Optimization**: Precomputation can significantly improve query performance
 4. **Substring Processing**: Efficient techniques for handling substring operations
 
-### 🚀 **Next Steps**
-1. **Practice**: Implement suffix array construction algorithms
-2. **Advanced Topics**: Learn about advanced string data structures
-3. **Related Problems**: Solve more string processing and query problems
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Substring Order II with Dynamic Updates
+**Problem**: Handle dynamic updates to string characters and maintain substring order queries efficiently.
+
+**Link**: [CSES Problem Set - Substring Order II with Updates](https://cses.fi/problemset/task/substring_order_ii_updates)
+
+```python
+class SubstringOrderIIWithUpdates:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+        self.rank = self._build_rank()
+    
+    def _build_suffix_array(self):
+        """Build suffix array using efficient algorithm"""
+        suffixes = []
+        for i in range(self.n):
+            suffixes.append((self.s[i:], i))
+        
+        suffixes.sort()
+        return [suffix[1] for suffix in suffixes]
+    
+    def _build_lcp_array(self):
+        """Build LCP array from suffix array"""
+        lcp = [0] * self.n
+        rank = [0] * self.n
+        
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        
+        h = 0
+        for i in range(self.n):
+            if rank[i] > 0:
+                j = self.suffix_array[rank[i] - 1]
+                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
+                    h += 1
+                lcp[rank[i]] = h
+                if h > 0:
+                    h -= 1
+        
+        return lcp
+    
+    def _build_rank(self):
+        """Build rank array from suffix array"""
+        rank = [0] * self.n
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        return rank
+    
+    def update(self, pos, char):
+        """Update character at position pos"""
+        if pos < 0 or pos >= self.n:
+            return
+        
+        self.s[pos] = char
+        
+        # Rebuild suffix array, LCP array, and rank
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+        self.rank = self._build_rank()
+    
+    def get_substring_order(self, start, length):
+        """Get order of substring starting at position start with given length"""
+        if start < 0 or start + length > self.n:
+            return -1
+        
+        return self.rank[start] + 1  # 1-indexed
+    
+    def get_substring_rank(self, start, length):
+        """Get rank of substring starting at position start with given length"""
+        if start < 0 or start + length > self.n:
+            return -1
+        
+        return self.rank[start]
+    
+    def compare_substrings(self, start1, length1, start2, length2):
+        """Compare two substrings lexicographically"""
+        if start1 < 0 or start1 + length1 > self.n or start2 < 0 or start2 + length2 > self.n:
+            return 0
+        
+        # Compare using suffix array ranks
+        rank1 = self.rank[start1]
+        rank2 = self.rank[start2]
+        
+        if rank1 < rank2:
+            return -1
+        elif rank1 > rank2:
+            return 1
+        else:
+            return 0
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'update':
+                self.update(query['pos'], query['char'])
+                results.append(None)
+            elif query['type'] == 'order':
+                result = self.get_substring_order(query['start'], query['length'])
+                results.append(result)
+            elif query['type'] == 'rank':
+                result = self.get_substring_rank(query['start'], query['length'])
+                results.append(result)
+            elif query['type'] == 'compare':
+                result = self.compare_substrings(query['start1'], query['length1'], query['start2'], query['length2'])
+                results.append(result)
+        return results
+```
+
+### Variation 2: Substring Order II with Different Operations
+**Problem**: Handle different types of operations (order, rank, compare, analyze) on substring ordering.
+
+**Link**: [CSES Problem Set - Substring Order II Different Operations](https://cses.fi/problemset/task/substring_order_ii_operations)
+
+```python
+class SubstringOrderIIDifferentOps:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+        self.rank = self._build_rank()
+    
+    def _build_suffix_array(self):
+        """Build suffix array using efficient algorithm"""
+        suffixes = []
+        for i in range(self.n):
+            suffixes.append((self.s[i:], i))
+        
+        suffixes.sort()
+        return [suffix[1] for suffix in suffixes]
+    
+    def _build_lcp_array(self):
+        """Build LCP array from suffix array"""
+        lcp = [0] * self.n
+        rank = [0] * self.n
+        
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        
+        h = 0
+        for i in range(self.n):
+            if rank[i] > 0:
+                j = self.suffix_array[rank[i] - 1]
+                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
+                    h += 1
+                lcp[rank[i]] = h
+                if h > 0:
+                    h -= 1
+        
+        return lcp
+    
+    def _build_rank(self):
+        """Build rank array from suffix array"""
+        rank = [0] * self.n
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        return rank
+    
+    def get_substring_order(self, start, length):
+        """Get order of substring starting at position start with given length"""
+        if start < 0 or start + length > self.n:
+            return -1
+        
+        return self.rank[start] + 1  # 1-indexed
+    
+    def get_substring_rank(self, start, length):
+        """Get rank of substring starting at position start with given length"""
+        if start < 0 or start + length > self.n:
+            return -1
+        
+        return self.rank[start]
+    
+    def compare_substrings(self, start1, length1, start2, length2):
+        """Compare two substrings lexicographically"""
+        if start1 < 0 or start1 + length1 > self.n or start2 < 0 or start2 + length2 > self.n:
+            return 0
+        
+        # Compare using suffix array ranks
+        rank1 = self.rank[start1]
+        rank2 = self.rank[start2]
+        
+        if rank1 < rank2:
+            return -1
+        elif rank1 > rank2:
+            return 1
+        else:
+            return 0
+    
+    def get_lexicographically_smallest(self, length):
+        """Get lexicographically smallest substring of given length"""
+        if length <= 0 or length > self.n:
+            return None
+        
+        best_start = self.suffix_array[0]
+        for i in range(1, self.n):
+            if self.suffix_array[i] + length <= self.n:
+                current_start = self.suffix_array[i]
+                if ''.join(self.s[current_start:current_start + length]) < ''.join(self.s[best_start:best_start + length]):
+                    best_start = current_start
+        
+        return best_start
+    
+    def get_lexicographically_largest(self, length):
+        """Get lexicographically largest substring of given length"""
+        if length <= 0 or length > self.n:
+            return None
+        
+        best_start = self.suffix_array[0]
+        for i in range(1, self.n):
+            if self.suffix_array[i] + length <= self.n:
+                current_start = self.suffix_array[i]
+                if ''.join(self.s[current_start:current_start + length]) > ''.join(self.s[best_start:best_start + length]):
+                    best_start = current_start
+        
+        return best_start
+    
+    def analyze_substring_distribution(self, length):
+        """Analyze distribution of substrings of given length"""
+        if length <= 0 or length > self.n:
+            return {}
+        
+        distribution = {}
+        for i in range(self.n - length + 1):
+            substring = ''.join(self.s[i:i + length])
+            if substring not in distribution:
+                distribution[substring] = {
+                    'count': 0,
+                    'positions': [],
+                    'rank': self.rank[i]
+                }
+            distribution[substring]['count'] += 1
+            distribution[substring]['positions'].append(i)
+        
+        return distribution
+    
+    def get_substring_statistics(self, length):
+        """Get statistics about substrings of given length"""
+        distribution = self.analyze_substring_distribution(length)
+        
+        if not distribution:
+            return {
+                'total_substrings': 0,
+                'unique_substrings': 0,
+                'most_frequent': None,
+                'least_frequent': None,
+                'average_frequency': 0
+            }
+        
+        frequencies = [info['count'] for info in distribution.values()]
+        most_frequent = max(distribution, key=lambda x: distribution[x]['count'])
+        least_frequent = min(distribution, key=lambda x: distribution[x]['count'])
+        
+        return {
+            'total_substrings': sum(frequencies),
+            'unique_substrings': len(distribution),
+            'most_frequent': most_frequent,
+            'least_frequent': least_frequent,
+            'average_frequency': sum(frequencies) / len(frequencies)
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'order':
+                result = self.get_substring_order(query['start'], query['length'])
+                results.append(result)
+            elif query['type'] == 'rank':
+                result = self.get_substring_rank(query['start'], query['length'])
+                results.append(result)
+            elif query['type'] == 'compare':
+                result = self.compare_substrings(query['start1'], query['length1'], query['start2'], query['length2'])
+                results.append(result)
+            elif query['type'] == 'smallest':
+                result = self.get_lexicographically_smallest(query['length'])
+                results.append(result)
+            elif query['type'] == 'largest':
+                result = self.get_lexicographically_largest(query['length'])
+                results.append(result)
+            elif query['type'] == 'analyze':
+                result = self.analyze_substring_distribution(query['length'])
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_substring_statistics(query['length'])
+                results.append(result)
+        return results
+```
+
+### Variation 3: Substring Order II with Constraints
+**Problem**: Handle substring order queries with additional constraints (e.g., minimum length, maximum length, frequency).
+
+**Link**: [CSES Problem Set - Substring Order II with Constraints](https://cses.fi/problemset/task/substring_order_ii_constraints)
+
+```python
+class SubstringOrderIIWithConstraints:
+    def __init__(self, s, min_length, max_length, min_frequency):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.min_length = min_length
+        self.max_length = max_length
+        self.min_frequency = min_frequency
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+        self.rank = self._build_rank()
+    
+    def _build_suffix_array(self):
+        """Build suffix array using efficient algorithm"""
+        suffixes = []
+        for i in range(self.n):
+            suffixes.append((self.s[i:], i))
+        
+        suffixes.sort()
+        return [suffix[1] for suffix in suffixes]
+    
+    def _build_lcp_array(self):
+        """Build LCP array from suffix array"""
+        lcp = [0] * self.n
+        rank = [0] * self.n
+        
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        
+        h = 0
+        for i in range(self.n):
+            if rank[i] > 0:
+                j = self.suffix_array[rank[i] - 1]
+                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
+                    h += 1
+                lcp[rank[i]] = h
+                if h > 0:
+                    h -= 1
+        
+        return lcp
+    
+    def _build_rank(self):
+        """Build rank array from suffix array"""
+        rank = [0] * self.n
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        return rank
+    
+    def constrained_query(self, start, length):
+        """Query substring order with constraints"""
+        # Check minimum length constraint
+        if length < self.min_length:
+            return None  # Too short
+        
+        # Check maximum length constraint
+        if length > self.max_length:
+            return None  # Too long
+        
+        # Check bounds
+        if start < 0 or start + length > self.n:
+            return None
+        
+        # Check frequency constraint
+        substring = ''.join(self.s[start:start + length])
+        frequency = 0
+        for i in range(self.n - length + 1):
+            if ''.join(self.s[i:i + length]) == substring:
+                frequency += 1
+        
+        if frequency < self.min_frequency:
+            return None  # Too infrequent
+        
+        return self.rank[start] + 1  # 1-indexed
+    
+    def find_valid_substrings(self):
+        """Find all valid substrings that satisfy constraints"""
+        valid_substrings = []
+        
+        for length in range(self.min_length, min(self.max_length + 1, self.n + 1)):
+            for start in range(self.n - length + 1):
+                result = self.constrained_query(start, length)
+                if result is not None:
+                    substring = ''.join(self.s[start:start + length])
+                    valid_substrings.append((start, length, result, substring))
+        
+        return valid_substrings
+    
+    def get_lexicographically_smallest_valid(self):
+        """Get lexicographically smallest valid substring"""
+        valid_substrings = self.find_valid_substrings()
+        
+        if not valid_substrings:
+            return None
+        
+        smallest = min(valid_substrings, key=lambda x: x[3])  # Compare by substring
+        return smallest
+    
+    def get_lexicographically_largest_valid(self):
+        """Get lexicographically largest valid substring"""
+        valid_substrings = self.find_valid_substrings()
+        
+        if not valid_substrings:
+            return None
+        
+        largest = max(valid_substrings, key=lambda x: x[3])  # Compare by substring
+        return largest
+    
+    def get_highest_ranked_valid(self):
+        """Get highest ranked valid substring"""
+        valid_substrings = self.find_valid_substrings()
+        
+        if not valid_substrings:
+            return None
+        
+        highest = max(valid_substrings, key=lambda x: x[2])  # Compare by rank
+        return highest
+    
+    def get_lowest_ranked_valid(self):
+        """Get lowest ranked valid substring"""
+        valid_substrings = self.find_valid_substrings()
+        
+        if not valid_substrings:
+            return None
+        
+        lowest = min(valid_substrings, key=lambda x: x[2])  # Compare by rank
+        return lowest
+    
+    def count_valid_substrings(self):
+        """Count number of valid substrings"""
+        return len(self.find_valid_substrings())
+    
+    def get_constraint_statistics(self):
+        """Get statistics about valid substrings"""
+        valid_substrings = self.find_valid_substrings()
+        
+        if not valid_substrings:
+            return {
+                'count': 0,
+                'min_length': 0,
+                'max_length': 0,
+                'avg_length': 0,
+                'min_rank': 0,
+                'max_rank': 0,
+                'avg_rank': 0
+            }
+        
+        lengths = [length for _, length, _, _ in valid_substrings]
+        ranks = [rank for _, _, rank, _ in valid_substrings]
+        
+        return {
+            'count': len(valid_substrings),
+            'min_length': min(lengths),
+            'max_length': max(lengths),
+            'avg_length': sum(lengths) / len(lengths),
+            'min_rank': min(ranks),
+            'max_rank': max(ranks),
+            'avg_rank': sum(ranks) / len(ranks)
+        }
+
+# Example usage
+s = "abacaba"
+min_length = 2
+max_length = 4
+min_frequency = 2
+
+so = SubstringOrderIIWithConstraints(s, min_length, max_length, min_frequency)
+result = so.constrained_query(0, 2)
+print(f"Constrained query result: {result}")
+
+valid_substrings = so.find_valid_substrings()
+print(f"Valid substrings: {valid_substrings}")
+
+smallest = so.get_lexicographically_smallest_valid()
+print(f"Lexicographically smallest valid substring: {smallest}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Substring Order II](https://cses.fi/problemset/task/2109) - Basic substring order II problem
+- [String Matching](https://cses.fi/problemset/task/1753) - String matching
+- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+
+#### **LeetCode Problems**
+- [Longest Common Substring](https://leetcode.com/problems/longest-common-substring/) - Find longest common substring
+- [Repeated String Match](https://leetcode.com/problems/repeated-string-match/) - String matching with repetition
+- [Wildcard Matching](https://leetcode.com/problems/wildcard-matching/) - Pattern matching with wildcards
+
+#### **Problem Categories**
+- **Suffix Arrays**: String processing, substring ordering, lexicographical comparison
+- **Pattern Matching**: KMP, Z-algorithm, string matching algorithms
+- **String Processing**: Borders, periods, palindromes, string transformations
+- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata
+
+## 🚀 Key Takeaways
+
+- **Suffix Arrays**: Essential for efficient string processing and ordering
+- **Lexicographical Ordering**: Important concept for string comparison
+- **Query Optimization**: Precomputation can significantly improve query performance
+- **Substring Processing**: Efficient techniques for handling substring operations

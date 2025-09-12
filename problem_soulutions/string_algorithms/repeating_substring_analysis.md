@@ -310,7 +310,438 @@ Longest repeating substring: "abab" (length 4)
 3. **Suffix Arrays**: Powerful data structure for string processing problems
 4. **LCP Arrays**: Reveal repeating patterns and common prefixes efficiently
 
-### 🚀 **Next Steps**
-1. **Practice**: Implement suffix array construction algorithms
-2. **Advanced Topics**: Learn about suffix automata and advanced string algorithms
-3. **Related Problems**: Solve more string processing problems using these techniques
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Repeating Substring with Dynamic Updates
+**Problem**: Handle dynamic updates to string characters and maintain repeating substring queries efficiently.
+
+**Link**: [CSES Problem Set - Repeating Substring with Updates](https://cses.fi/problemset/task/repeating_substring_updates)
+
+```python
+class RepeatingSubstringWithUpdates:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+    
+    def _build_suffix_array(self):
+        """Build suffix array using efficient algorithm"""
+        suffixes = []
+        for i in range(self.n):
+            suffixes.append((self.s[i:], i))
+        
+        suffixes.sort()
+        return [suffix[1] for suffix in suffixes]
+    
+    def _build_lcp_array(self):
+        """Build LCP array from suffix array"""
+        lcp = [0] * self.n
+        rank = [0] * self.n
+        
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        
+        h = 0
+        for i in range(self.n):
+            if rank[i] > 0:
+                j = self.suffix_array[rank[i] - 1]
+                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
+                    h += 1
+                lcp[rank[i]] = h
+                if h > 0:
+                    h -= 1
+        
+        return lcp
+    
+    def update(self, pos, char):
+        """Update character at position pos"""
+        if pos < 0 or pos >= self.n:
+            return
+        
+        self.s[pos] = char
+        
+        # Rebuild suffix array and LCP array
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+    
+    def find_longest_repeating_substring(self):
+        """Find longest repeating substring"""
+        if not self.lcp_array:
+            return ""
+        
+        max_lcp = max(self.lcp_array)
+        if max_lcp == 0:
+            return ""
+        
+        # Find position with maximum LCP
+        max_pos = self.lcp_array.index(max_lcp)
+        start = self.suffix_array[max_pos]
+        
+        return ''.join(self.s[start:start + max_lcp])
+    
+    def find_all_repeating_substrings(self, min_length=2):
+        """Find all repeating substrings with minimum length"""
+        repeating_substrings = []
+        
+        for i in range(1, self.n):
+            if self.lcp_array[i] >= min_length:
+                start = self.suffix_array[i]
+                substring = ''.join(self.s[start:start + self.lcp_array[i]])
+                repeating_substrings.append(substring)
+        
+        return list(set(repeating_substrings))  # Remove duplicates
+    
+    def count_repeating_substrings(self, min_length=2):
+        """Count number of repeating substrings"""
+        count = 0
+        seen = set()
+        
+        for i in range(1, self.n):
+            if self.lcp_array[i] >= min_length:
+                start = self.suffix_array[i]
+                substring = ''.join(self.s[start:start + self.lcp_array[i]])
+                if substring not in seen:
+                    seen.add(substring)
+                    count += 1
+        
+        return count
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'update':
+                self.update(query['pos'], query['char'])
+                results.append(None)
+            elif query['type'] == 'longest':
+                result = self.find_longest_repeating_substring()
+                results.append(result)
+            elif query['type'] == 'all':
+                result = self.find_all_repeating_substrings(query.get('min_length', 2))
+                results.append(result)
+            elif query['type'] == 'count':
+                result = self.count_repeating_substrings(query.get('min_length', 2))
+                results.append(result)
+        return results
+```
+
+### Variation 2: Repeating Substring with Different Operations
+**Problem**: Handle different types of operations (find, count, analyze) on repeating substrings.
+
+**Link**: [CSES Problem Set - Repeating Substring Different Operations](https://cses.fi/problemset/task/repeating_substring_operations)
+
+```python
+class RepeatingSubstringDifferentOps:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+    
+    def _build_suffix_array(self):
+        """Build suffix array using efficient algorithm"""
+        suffixes = []
+        for i in range(self.n):
+            suffixes.append((self.s[i:], i))
+        
+        suffixes.sort()
+        return [suffix[1] for suffix in suffixes]
+    
+    def _build_lcp_array(self):
+        """Build LCP array from suffix array"""
+        lcp = [0] * self.n
+        rank = [0] * self.n
+        
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        
+        h = 0
+        for i in range(self.n):
+            if rank[i] > 0:
+                j = self.suffix_array[rank[i] - 1]
+                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
+                    h += 1
+                lcp[rank[i]] = h
+                if h > 0:
+                    h -= 1
+        
+        return lcp
+    
+    def find_longest_repeating_substring(self):
+        """Find longest repeating substring"""
+        if not self.lcp_array:
+            return ""
+        
+        max_lcp = max(self.lcp_array)
+        if max_lcp == 0:
+            return ""
+        
+        # Find position with maximum LCP
+        max_pos = self.lcp_array.index(max_lcp)
+        start = self.suffix_array[max_pos]
+        
+        return ''.join(self.s[start:start + max_lcp])
+    
+    def find_shortest_repeating_substring(self, min_length=2):
+        """Find shortest repeating substring"""
+        shortest_length = float('inf')
+        shortest_substring = ""
+        
+        for i in range(1, self.n):
+            if self.lcp_array[i] >= min_length and self.lcp_array[i] < shortest_length:
+                shortest_length = self.lcp_array[i]
+                start = self.suffix_array[i]
+                shortest_substring = ''.join(self.s[start:start + self.lcp_array[i]])
+        
+        return shortest_substring if shortest_length != float('inf') else ""
+    
+    def find_most_frequent_repeating_substring(self, min_length=2):
+        """Find most frequent repeating substring"""
+        frequency = {}
+        
+        for i in range(1, self.n):
+            if self.lcp_array[i] >= min_length:
+                start = self.suffix_array[i]
+                substring = ''.join(self.s[start:start + self.lcp_array[i]])
+                frequency[substring] = frequency.get(substring, 0) + 1
+        
+        if not frequency:
+            return ""
+        
+        return max(frequency, key=frequency.get)
+    
+    def analyze_repeating_patterns(self):
+        """Analyze repeating patterns in the string"""
+        patterns = {}
+        
+        for i in range(1, self.n):
+            if self.lcp_array[i] > 0:
+                start = self.suffix_array[i]
+                substring = ''.join(self.s[start:start + self.lcp_array[i]])
+                
+                if substring not in patterns:
+                    patterns[substring] = {
+                        'length': len(substring),
+                        'frequency': 0,
+                        'positions': []
+                    }
+                
+                patterns[substring]['frequency'] += 1
+                patterns[substring]['positions'].append(start)
+        
+        return patterns
+    
+    def get_repeating_substring_statistics(self):
+        """Get statistics about repeating substrings"""
+        patterns = self.analyze_repeating_patterns()
+        
+        if not patterns:
+            return {
+                'total_patterns': 0,
+                'longest_length': 0,
+                'shortest_length': 0,
+                'most_frequent': None,
+                'average_frequency': 0
+            }
+        
+        lengths = [pattern['length'] for pattern in patterns.values()]
+        frequencies = [pattern['frequency'] for pattern in patterns.values()]
+        
+        most_frequent = max(patterns, key=lambda x: patterns[x]['frequency'])
+        
+        return {
+            'total_patterns': len(patterns),
+            'longest_length': max(lengths),
+            'shortest_length': min(lengths),
+            'most_frequent': most_frequent,
+            'average_frequency': sum(frequencies) / len(frequencies)
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'longest':
+                result = self.find_longest_repeating_substring()
+                results.append(result)
+            elif query['type'] == 'shortest':
+                result = self.find_shortest_repeating_substring(query.get('min_length', 2))
+                results.append(result)
+            elif query['type'] == 'most_frequent':
+                result = self.find_most_frequent_repeating_substring(query.get('min_length', 2))
+                results.append(result)
+            elif query['type'] == 'analyze':
+                result = self.analyze_repeating_patterns()
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_repeating_substring_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 3: Repeating Substring with Constraints
+**Problem**: Handle repeating substring queries with additional constraints (e.g., minimum frequency, maximum length).
+
+**Link**: [CSES Problem Set - Repeating Substring with Constraints](https://cses.fi/problemset/task/repeating_substring_constraints)
+
+```python
+class RepeatingSubstringWithConstraints:
+    def __init__(self, s, min_frequency, max_length):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.min_frequency = min_frequency
+        self.max_length = max_length
+        self.suffix_array = self._build_suffix_array()
+        self.lcp_array = self._build_lcp_array()
+    
+    def _build_suffix_array(self):
+        """Build suffix array using efficient algorithm"""
+        suffixes = []
+        for i in range(self.n):
+            suffixes.append((self.s[i:], i))
+        
+        suffixes.sort()
+        return [suffix[1] for suffix in suffixes]
+    
+    def _build_lcp_array(self):
+        """Build LCP array from suffix array"""
+        lcp = [0] * self.n
+        rank = [0] * self.n
+        
+        for i in range(self.n):
+            rank[self.suffix_array[i]] = i
+        
+        h = 0
+        for i in range(self.n):
+            if rank[i] > 0:
+                j = self.suffix_array[rank[i] - 1]
+                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
+                    h += 1
+                lcp[rank[i]] = h
+                if h > 0:
+                    h -= 1
+        
+        return lcp
+    
+    def constrained_query(self, min_length=2):
+        """Query repeating substrings with constraints"""
+        valid_substrings = []
+        
+        for i in range(1, self.n):
+            if self.lcp_array[i] >= min_length and self.lcp_array[i] <= self.max_length:
+                start = self.suffix_array[i]
+                substring = ''.join(self.s[start:start + self.lcp_array[i]])
+                
+                # Count frequency
+                frequency = 1
+                for j in range(i + 1, self.n):
+                    if self.lcp_array[j] >= len(substring):
+                        # Check if it's the same substring
+                        other_start = self.suffix_array[j]
+                        other_substring = ''.join(self.s[other_start:other_start + len(substring)])
+                        if other_substring == substring:
+                            frequency += 1
+                    else:
+                        break
+                
+                if frequency >= self.min_frequency:
+                    valid_substrings.append((substring, frequency))
+        
+        return valid_substrings
+    
+    def find_valid_repeating_substrings(self, min_length=2):
+        """Find all valid repeating substrings that satisfy constraints"""
+        return self.constrained_query(min_length)
+    
+    def get_longest_valid_repeating_substring(self, min_length=2):
+        """Get longest valid repeating substring"""
+        valid_substrings = self.find_valid_repeating_substrings(min_length)
+        
+        if not valid_substrings:
+            return None
+        
+        longest = max(valid_substrings, key=lambda x: len(x[0]))
+        return longest
+    
+    def get_most_frequent_valid_repeating_substring(self, min_length=2):
+        """Get most frequent valid repeating substring"""
+        valid_substrings = self.find_valid_repeating_substrings(min_length)
+        
+        if not valid_substrings:
+            return None
+        
+        most_frequent = max(valid_substrings, key=lambda x: x[1])
+        return most_frequent
+    
+    def count_valid_repeating_substrings(self, min_length=2):
+        """Count number of valid repeating substrings"""
+        return len(self.find_valid_repeating_substrings(min_length))
+    
+    def get_constraint_statistics(self, min_length=2):
+        """Get statistics about valid repeating substrings"""
+        valid_substrings = self.find_valid_repeating_substrings(min_length)
+        
+        if not valid_substrings:
+            return {
+                'count': 0,
+                'longest_length': 0,
+                'shortest_length': 0,
+                'max_frequency': 0,
+                'min_frequency': 0,
+                'avg_frequency': 0
+            }
+        
+        lengths = [len(substring) for substring, _ in valid_substrings]
+        frequencies = [freq for _, freq in valid_substrings]
+        
+        return {
+            'count': len(valid_substrings),
+            'longest_length': max(lengths),
+            'shortest_length': min(lengths),
+            'max_frequency': max(frequencies),
+            'min_frequency': min(frequencies),
+            'avg_frequency': sum(frequencies) / len(frequencies)
+        }
+
+# Example usage
+s = "abacaba"
+min_frequency = 2
+max_length = 4
+
+rs = RepeatingSubstringWithConstraints(s, min_frequency, max_length)
+result = rs.constrained_query(2)
+print(f"Constrained query result: {result}")
+
+valid_substrings = rs.find_valid_repeating_substrings(2)
+print(f"Valid repeating substrings: {valid_substrings}")
+
+longest = rs.get_longest_valid_repeating_substring(2)
+print(f"Longest valid repeating substring: {longest}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Repeating Substring](https://cses.fi/problemset/task/2106) - Basic repeating substring problem
+- [String Matching](https://cses.fi/problemset/task/1753) - String matching
+- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+
+#### **LeetCode Problems**
+- [Longest Repeating Substring](https://leetcode.com/problems/longest-repeating-substring/) - Find longest repeating substring
+- [Repeated String Match](https://leetcode.com/problems/repeated-string-match/) - String matching with repetition
+- [Repeated Substring Pattern](https://leetcode.com/problems/repeated-substring-pattern/) - Check if string has repeated pattern
+
+#### **Problem Categories**
+- **Suffix Arrays**: String processing, repeating patterns, LCP arrays
+- **Pattern Matching**: KMP, Z-algorithm, string matching algorithms
+- **String Processing**: Borders, periods, palindromes, string transformations
+- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata
+
+## 🚀 Key Takeaways
+
+- **Repeating Patterns**: Important concept in string analysis and pattern recognition
+- **Suffix Arrays**: Powerful data structure for string processing problems
+- **LCP Arrays**: Reveal repeating patterns and common prefixes efficiently

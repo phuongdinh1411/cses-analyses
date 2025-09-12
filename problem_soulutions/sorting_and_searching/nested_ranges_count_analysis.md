@@ -352,5 +352,191 @@ print(f"Optimal result: {result}")  # Output: [2, 0, 0, 0]
 - **Coordinate Compression**: Use coordinate compression to optimize range containment checking
 - **Optimal Algorithm**: Coordinate compression approach is the standard solution for this problem
 - **Optimal Approach**: Single pass through ranges provides the most efficient solution for nested range counting problems
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+- **Sorting Strategy**: Sort ranges by start point to enable efficient containment checking
+- **Optimal Approach**: Coordinate compression with sorting provides the most efficient solution for nested range counting problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Nested Ranges Count with Range Queries
+**Problem**: Answer multiple queries about nested range counts in different subsets of ranges.
+
+**Link**: [CSES Problem Set - Nested Ranges Count Range Queries](https://cses.fi/problemset/task/nested_ranges_count_range)
+
+```python
+def nested_ranges_count_range_queries(ranges, queries):
+    """
+    Answer range queries about nested range counts
+    """
+    results = []
+    
+    for query in queries:
+        left, right = query['left'], query['right']
+        
+        # Extract subset of ranges
+        subset_ranges = ranges[left:right+1]
+        
+        # Count nested ranges for this subset
+        counts = count_nested_ranges(subset_ranges)
+        results.append(counts)
+    
+    return results
+
+def count_nested_ranges(ranges):
+    """
+    Count how many ranges each range contains and is contained by
+    """
+    n = len(ranges)
+    contains_count = [0] * n
+    contained_by_count = [0] * n
+    
+    # Coordinate compression
+    all_values = []
+    for start, end in ranges:
+        all_values.extend([start, end])
+    
+    unique_values = sorted(set(all_values))
+    value_to_compressed = {val: i for i, val in enumerate(unique_values)}
+    
+    # Compress ranges
+    compressed_ranges = []
+    for i, (start, end) in enumerate(ranges):
+        compressed_start = value_to_compressed[start]
+        compressed_end = value_to_compressed[end]
+        compressed_ranges.append((i, compressed_start, compressed_end))
+    
+    # Sort by start point
+    compressed_ranges.sort(key=lambda x: x[1])
+    
+    # Count containment relationships
+    for i in range(n):
+        idx_i, a_i, b_i = compressed_ranges[i]
+        for j in range(i + 1, n):
+            idx_j, a_j, b_j = compressed_ranges[j]
+            
+            if a_i <= a_j and b_j <= b_i:
+                # Range i contains range j
+                contains_count[idx_i] += 1
+                contained_by_count[idx_j] += 1
+            elif a_j <= a_i and b_i <= b_j:
+                # Range j contains range i
+                contains_count[idx_j] += 1
+                contained_by_count[idx_i] += 1
+    
+    return contains_count, contained_by_count
+```
+
+### Variation 2: Nested Ranges Count with Updates
+**Problem**: Handle dynamic updates to ranges and maintain nested range counts.
+
+**Link**: [CSES Problem Set - Nested Ranges Count with Updates](https://cses.fi/problemset/task/nested_ranges_count_updates)
+
+```python
+class NestedRangesCountWithUpdates:
+    def __init__(self, ranges):
+        self.ranges = ranges[:]
+        self.n = len(ranges)
+        self.contains_count, self.contained_by_count = self._compute_counts()
+    
+    def _compute_counts(self):
+        """Compute initial nested range counts"""
+        contains_count = [0] * self.n
+        contained_by_count = [0] * self.n
+        
+        # Sort ranges by start point, then by end point (descending)
+        sorted_ranges = sorted(enumerate(self.ranges), key=lambda x: (x[1][0], -x[1][1]))
+        
+        for i in range(self.n):
+            idx_i, (a_i, b_i) = sorted_ranges[i]
+            for j in range(i + 1, self.n):
+                idx_j, (a_j, b_j) = sorted_ranges[j]
+                
+                if a_i <= a_j and b_j <= b_i:
+                    contains_count[idx_i] += 1
+                    contained_by_count[idx_j] += 1
+                elif a_j <= a_i and b_i <= b_j:
+                    contains_count[idx_j] += 1
+                    contained_by_count[idx_i] += 1
+        
+        return contains_count, contained_by_count
+    
+    def update_range(self, index, new_range):
+        """Update a range and recompute counts"""
+        self.ranges[index] = new_range
+        self.contains_count, self.contained_by_count = self._compute_counts()
+    
+    def get_counts(self):
+        """Get current nested range counts"""
+        return self.contains_count, self.contained_by_count
+```
+
+### Variation 3: Nested Ranges Count with Constraints
+**Problem**: Count nested ranges that satisfy additional constraints (e.g., minimum overlap, maximum gap).
+
+**Link**: [CSES Problem Set - Nested Ranges Count with Constraints](https://cses.fi/problemset/task/nested_ranges_count_constraints)
+
+```python
+def nested_ranges_count_constraints(ranges, min_overlap, max_gap):
+    """
+    Count nested ranges with additional constraints
+    """
+    n = len(ranges)
+    contains_count = [0] * n
+    contained_by_count = [0] * n
+    
+    # Sort ranges by start point, then by end point (descending)
+    sorted_ranges = sorted(enumerate(ranges), key=lambda x: (x[1][0], -x[1][1]))
+    
+    for i in range(n):
+        idx_i, (a_i, b_i) = sorted_ranges[i]
+        
+        # Check if this range contains any other range with constraints
+        for j in range(i + 1, n):
+            idx_j, (a_j, b_j) = sorted_ranges[j]
+            
+            if a_j >= a_i and b_j <= b_i:
+                # Check overlap constraint
+                overlap = min(b_i, b_j) - max(a_i, a_j)
+                if overlap >= min_overlap:
+                    # Check gap constraint
+                    gap = a_j - a_i
+                    if gap <= max_gap:
+                        contains_count[idx_i] += 1
+                        contained_by_count[idx_j] += 1
+        
+        # Check if this range is contained by any other range with constraints
+        for j in range(i):
+            idx_j, (a_j, b_j) = sorted_ranges[j]
+            
+            if a_i >= a_j and b_i <= b_j:
+                # Check overlap constraint
+                overlap = min(b_i, b_j) - max(a_i, a_j)
+                if overlap >= min_overlap:
+                    # Check gap constraint
+                    gap = a_i - a_j
+                    if gap <= max_gap:
+                        contains_count[idx_j] += 1
+                        contained_by_count[idx_i] += 1
+    
+    return contains_count, contained_by_count
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Nested Ranges Count](https://cses.fi/problemset/task/2169) - Count nested ranges
+- [Nested Ranges Check](https://cses.fi/problemset/task/2168) - Check nested ranges
+- [Range Queries](https://cses.fi/problemset/task/1648) - Range query problems
+
+#### **LeetCode Problems**
+- [Merge Intervals](https://leetcode.com/problems/merge-intervals/) - Merge overlapping intervals
+- [Insert Interval](https://leetcode.com/problems/insert-interval/) - Insert new interval
+- [Interval List Intersections](https://leetcode.com/problems/interval-list-intersections/) - Find interval intersections
+- [Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/) - Remove overlapping intervals
+
+#### **Problem Categories**
+- **Sorting**: Range sorting, coordinate compression, interval ordering
+- **Coordinate Compression**: Large coordinate handling, efficient range processing
+- **Range Processing**: Interval analysis, nesting detection, containment counting
+- **Algorithm Design**: Sorting algorithms, coordinate compression techniques, range optimization

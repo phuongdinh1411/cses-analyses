@@ -358,3 +358,635 @@ print(f"Optimal result: {result}")  # Output: "bab"
 - **Mirror Property**: Use information from previously computed palindromes
 - **Linear Expansion**: Each character is processed at most once
 - **Optimal Approach**: Manacher's algorithm provides the best theoretical performance
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Longest Palindrome with Dynamic Updates
+**Problem**: Handle dynamic updates to string characters and maintain longest palindrome information efficiently.
+
+**Link**: [CSES Problem Set - Longest Palindrome with Updates](https://cses.fi/problemset/task/longest_palindrome_updates)
+
+```python
+class LongestPalindromeWithUpdates:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.transformed = self._transform_string()
+        self.palindrome_lengths = self._manacher_algorithm()
+        self.longest_palindrome = self._find_longest_palindrome()
+    
+    def _transform_string(self):
+        """Transform string for Manacher's algorithm"""
+        if not self.s:
+            return ['#', '$']
+        
+        transformed = ['#']
+        for char in self.s:
+            transformed.append(char)
+            transformed.append('#')
+        transformed.append('$')
+        
+        return transformed
+    
+    def _manacher_algorithm(self):
+        """Manacher's algorithm to find palindrome lengths"""
+        n = len(self.transformed)
+        P = [0] * n
+        center = 0
+        right = 0
+        
+        for i in range(1, n - 1):
+            # Mirror position
+            mirror = 2 * center - i
+            
+            if i < right:
+                P[i] = min(right - i, P[mirror])
+            
+            # Expand around center i
+            try:
+                while (i + P[i] + 1 < n and 
+                       i - P[i] - 1 >= 0 and 
+                       self.transformed[i + P[i] + 1] == self.transformed[i - P[i] - 1]):
+                    P[i] += 1
+            except IndexError:
+                pass
+            
+            # Update center and right boundary if necessary
+            if i + P[i] > right:
+                center = i
+                right = i + P[i]
+        
+        return P
+    
+    def _find_longest_palindrome(self):
+        """Find the longest palindrome from palindrome lengths"""
+        max_length = 0
+        center_index = 0
+        
+        for i in range(len(self.palindrome_lengths)):
+            if self.palindrome_lengths[i] > max_length:
+                max_length = self.palindrome_lengths[i]
+                center_index = i
+        
+        if max_length == 0:
+            return None
+        
+        # Convert back to original string coordinates
+        start = (center_index - max_length) // 2
+        end = (center_index + max_length) // 2
+        
+        return {
+            'palindrome': ''.join(self.s[start:end]),
+            'start': start,
+            'end': end,
+            'length': max_length
+        }
+    
+    def update(self, pos, char):
+        """Update character at position pos"""
+        if pos < 0 or pos >= self.n:
+            return
+        
+        self.s[pos] = char
+        
+        # Rebuild transformed string, palindrome lengths, and longest palindrome
+        self.transformed = self._transform_string()
+        self.palindrome_lengths = self._manacher_algorithm()
+        self.longest_palindrome = self._find_longest_palindrome()
+    
+    def get_longest_palindrome(self):
+        """Get the longest palindrome"""
+        return self.longest_palindrome
+    
+    def get_palindrome_at_position(self, pos):
+        """Get palindrome centered at position pos"""
+        if pos < 0 or pos >= self.n:
+            return None
+        
+        # Convert to transformed string position
+        transformed_pos = 2 * pos + 1
+        length = self.palindrome_lengths[transformed_pos]
+        
+        if length == 0:
+            return None
+        
+        start = (transformed_pos - length) // 2
+        end = (transformed_pos + length) // 2
+        
+        return {
+            'palindrome': ''.join(self.s[start:end]),
+            'start': start,
+            'end': end,
+            'length': length
+        }
+    
+    def get_all_palindromes(self):
+        """Get all palindromes in the string"""
+        palindromes = []
+        
+        for i in range(len(self.palindrome_lengths)):
+            if self.palindrome_lengths[i] > 0:
+                start = (i - self.palindrome_lengths[i]) // 2
+                end = (i + self.palindrome_lengths[i]) // 2
+                
+                palindromes.append({
+                    'palindrome': ''.join(self.s[start:end]),
+                    'start': start,
+                    'end': end,
+                    'length': self.palindrome_lengths[i]
+                })
+        
+        return palindromes
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'update':
+                self.update(query['pos'], query['char'])
+                results.append(None)
+            elif query['type'] == 'longest':
+                result = self.get_longest_palindrome()
+                results.append(result)
+            elif query['type'] == 'palindrome_at':
+                result = self.get_palindrome_at_position(query['pos'])
+                results.append(result)
+            elif query['type'] == 'all_palindromes':
+                result = self.get_all_palindromes()
+                results.append(result)
+        return results
+```
+
+### Variation 2: Longest Palindrome with Different Operations
+**Problem**: Handle different types of operations (find, analyze, compare) on palindrome detection.
+
+**Link**: [CSES Problem Set - Longest Palindrome Different Operations](https://cses.fi/problemset/task/longest_palindrome_operations)
+
+```python
+class LongestPalindromeDifferentOps:
+    def __init__(self, s):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.transformed = self._transform_string()
+        self.palindrome_lengths = self._manacher_algorithm()
+        self.longest_palindrome = self._find_longest_palindrome()
+    
+    def _transform_string(self):
+        """Transform string for Manacher's algorithm"""
+        if not self.s:
+            return ['#', '$']
+        
+        transformed = ['#']
+        for char in self.s:
+            transformed.append(char)
+            transformed.append('#')
+        transformed.append('$')
+        
+        return transformed
+    
+    def _manacher_algorithm(self):
+        """Manacher's algorithm to find palindrome lengths"""
+        n = len(self.transformed)
+        P = [0] * n
+        center = 0
+        right = 0
+        
+        for i in range(1, n - 1):
+            # Mirror position
+            mirror = 2 * center - i
+            
+            if i < right:
+                P[i] = min(right - i, P[mirror])
+            
+            # Expand around center i
+            try:
+                while (i + P[i] + 1 < n and 
+                       i - P[i] - 1 >= 0 and 
+                       self.transformed[i + P[i] + 1] == self.transformed[i - P[i] - 1]):
+                    P[i] += 1
+            except IndexError:
+                pass
+            
+            # Update center and right boundary if necessary
+            if i + P[i] > right:
+                center = i
+                right = i + P[i]
+        
+        return P
+    
+    def _find_longest_palindrome(self):
+        """Find the longest palindrome from palindrome lengths"""
+        max_length = 0
+        center_index = 0
+        
+        for i in range(len(self.palindrome_lengths)):
+            if self.palindrome_lengths[i] > max_length:
+                max_length = self.palindrome_lengths[i]
+                center_index = i
+        
+        if max_length == 0:
+            return None
+        
+        # Convert back to original string coordinates
+        start = (center_index - max_length) // 2
+        end = (center_index + max_length) // 2
+        
+        return {
+            'palindrome': ''.join(self.s[start:end]),
+            'start': start,
+            'end': end,
+            'length': max_length
+        }
+    
+    def get_longest_palindrome(self):
+        """Get the longest palindrome"""
+        return self.longest_palindrome
+    
+    def get_palindrome_at_position(self, pos):
+        """Get palindrome centered at position pos"""
+        if pos < 0 or pos >= self.n:
+            return None
+        
+        # Convert to transformed string position
+        transformed_pos = 2 * pos + 1
+        length = self.palindrome_lengths[transformed_pos]
+        
+        if length == 0:
+            return None
+        
+        start = (transformed_pos - length) // 2
+        end = (transformed_pos + length) // 2
+        
+        return {
+            'palindrome': ''.join(self.s[start:end]),
+            'start': start,
+            'end': end,
+            'length': length
+        }
+    
+    def get_all_palindromes(self):
+        """Get all palindromes in the string"""
+        palindromes = []
+        
+        for i in range(len(self.palindrome_lengths)):
+            if self.palindrome_lengths[i] > 0:
+                start = (i - self.palindrome_lengths[i]) // 2
+                end = (i + self.palindrome_lengths[i]) // 2
+                
+                palindromes.append({
+                    'palindrome': ''.join(self.s[start:end]),
+                    'start': start,
+                    'end': end,
+                    'length': self.palindrome_lengths[i]
+                })
+        
+        return palindromes
+    
+    def find_palindromes_of_length(self, target_length):
+        """Find all palindromes of specific length"""
+        palindromes = []
+        
+        for i in range(len(self.palindrome_lengths)):
+            if self.palindrome_lengths[i] == target_length:
+                start = (i - self.palindrome_lengths[i]) // 2
+                end = (i + self.palindrome_lengths[i]) // 2
+                
+                palindromes.append({
+                    'palindrome': ''.join(self.s[start:end]),
+                    'start': start,
+                    'end': end,
+                    'length': self.palindrome_lengths[i]
+                })
+        
+        return palindromes
+    
+    def find_palindromes_in_range(self, start_pos, end_pos):
+        """Find all palindromes within a specific range"""
+        palindromes = []
+        
+        for i in range(len(self.palindrome_lengths)):
+            if self.palindrome_lengths[i] > 0:
+                start = (i - self.palindrome_lengths[i]) // 2
+                end = (i + self.palindrome_lengths[i]) // 2
+                
+                if start >= start_pos and end <= end_pos:
+                    palindromes.append({
+                        'palindrome': ''.join(self.s[start:end]),
+                        'start': start,
+                        'end': end,
+                        'length': self.palindrome_lengths[i]
+                    })
+        
+        return palindromes
+    
+    def analyze_palindrome_distribution(self):
+        """Analyze distribution of palindromes by length"""
+        distribution = {}
+        
+        for i in range(len(self.palindrome_lengths)):
+            length = self.palindrome_lengths[i]
+            if length > 0:
+                if length not in distribution:
+                    distribution[length] = {
+                        'count': 0,
+                        'palindromes': [],
+                        'positions': []
+                    }
+                
+                distribution[length]['count'] += 1
+                start = (i - length) // 2
+                end = (i + length) // 2
+                distribution[length]['palindromes'].append(''.join(self.s[start:end]))
+                distribution[length]['positions'].append((start, end))
+        
+        return distribution
+    
+    def get_palindrome_statistics(self):
+        """Get comprehensive statistics about palindromes"""
+        distribution = self.analyze_palindrome_distribution()
+        all_palindromes = self.get_all_palindromes()
+        
+        if not all_palindromes:
+            return {
+                'total_palindromes': 0,
+                'longest_length': 0,
+                'shortest_length': 0,
+                'average_length': 0,
+                'distribution': {}
+            }
+        
+        lengths = [p['length'] for p in all_palindromes]
+        
+        return {
+            'total_palindromes': len(all_palindromes),
+            'longest_length': max(lengths),
+            'shortest_length': min(lengths),
+            'average_length': sum(lengths) / len(lengths),
+            'distribution': distribution,
+            'longest_palindrome': self.get_longest_palindrome()
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'longest':
+                result = self.get_longest_palindrome()
+                results.append(result)
+            elif query['type'] == 'palindrome_at':
+                result = self.get_palindrome_at_position(query['pos'])
+                results.append(result)
+            elif query['type'] == 'all_palindromes':
+                result = self.get_all_palindromes()
+                results.append(result)
+            elif query['type'] == 'palindromes_of_length':
+                result = self.find_palindromes_of_length(query['length'])
+                results.append(result)
+            elif query['type'] == 'palindromes_in_range':
+                result = self.find_palindromes_in_range(query['start'], query['end'])
+                results.append(result)
+            elif query['type'] == 'analyze':
+                result = self.analyze_palindrome_distribution()
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_palindrome_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 3: Longest Palindrome with Constraints
+**Problem**: Handle palindrome queries with additional constraints (e.g., minimum length, maximum length, frequency).
+
+**Link**: [CSES Problem Set - Longest Palindrome with Constraints](https://cses.fi/problemset/task/longest_palindrome_constraints)
+
+```python
+class LongestPalindromeWithConstraints:
+    def __init__(self, s, min_length, max_length, min_frequency):
+        self.s = list(s)
+        self.n = len(self.s)
+        self.min_length = min_length
+        self.max_length = max_length
+        self.min_frequency = min_frequency
+        self.transformed = self._transform_string()
+        self.palindrome_lengths = self._manacher_algorithm()
+        self.longest_palindrome = self._find_longest_palindrome()
+    
+    def _transform_string(self):
+        """Transform string for Manacher's algorithm"""
+        if not self.s:
+            return ['#', '$']
+        
+        transformed = ['#']
+        for char in self.s:
+            transformed.append(char)
+            transformed.append('#')
+        transformed.append('$')
+        
+        return transformed
+    
+    def _manacher_algorithm(self):
+        """Manacher's algorithm to find palindrome lengths"""
+        n = len(self.transformed)
+        P = [0] * n
+        center = 0
+        right = 0
+        
+        for i in range(1, n - 1):
+            # Mirror position
+            mirror = 2 * center - i
+            
+            if i < right:
+                P[i] = min(right - i, P[mirror])
+            
+            # Expand around center i
+            try:
+                while (i + P[i] + 1 < n and 
+                       i - P[i] - 1 >= 0 and 
+                       self.transformed[i + P[i] + 1] == self.transformed[i - P[i] - 1]):
+                    P[i] += 1
+            except IndexError:
+                pass
+            
+            # Update center and right boundary if necessary
+            if i + P[i] > right:
+                center = i
+                right = i + P[i]
+        
+        return P
+    
+    def _find_longest_palindrome(self):
+        """Find the longest palindrome from palindrome lengths"""
+        max_length = 0
+        center_index = 0
+        
+        for i in range(len(self.palindrome_lengths)):
+            if self.palindrome_lengths[i] > max_length:
+                max_length = self.palindrome_lengths[i]
+                center_index = i
+        
+        if max_length == 0:
+            return None
+        
+        # Convert back to original string coordinates
+        start = (center_index - max_length) // 2
+        end = (center_index + max_length) // 2
+        
+        return {
+            'palindrome': ''.join(self.s[start:end]),
+            'start': start,
+            'end': end,
+            'length': max_length
+        }
+    
+    def constrained_palindrome_query(self):
+        """Query palindromes with constraints"""
+        valid_palindromes = []
+        
+        for i in range(len(self.palindrome_lengths)):
+            length = self.palindrome_lengths[i]
+            
+            # Check length constraints
+            if length < self.min_length or length > self.max_length:
+                continue
+            
+            # Check frequency constraint (how many times the palindrome appears)
+            start = (i - length) // 2
+            end = (i + length) // 2
+            palindrome = ''.join(self.s[start:end])
+            frequency = self._count_palindrome_frequency(palindrome)
+            
+            if frequency < self.min_frequency:
+                continue
+            
+            valid_palindromes.append({
+                'palindrome': palindrome,
+                'start': start,
+                'end': end,
+                'length': length,
+                'frequency': frequency
+            })
+        
+        return valid_palindromes
+    
+    def _count_palindrome_frequency(self, palindrome):
+        """Count how many times a palindrome appears in the string"""
+        count = 0
+        palindrome_length = len(palindrome)
+        
+        for i in range(self.n - palindrome_length + 1):
+            if ''.join(self.s[i:i + palindrome_length]) == palindrome:
+                count += 1
+        
+        return count
+    
+    def find_valid_palindromes(self):
+        """Find all valid palindromes that satisfy constraints"""
+        return self.constrained_palindrome_query()
+    
+    def get_longest_valid_palindrome(self):
+        """Get longest valid palindrome that satisfies constraints"""
+        valid_palindromes = self.find_valid_palindromes()
+        
+        if not valid_palindromes:
+            return None
+        
+        longest = max(valid_palindromes, key=lambda x: x['length'])
+        return longest
+    
+    def get_shortest_valid_palindrome(self):
+        """Get shortest valid palindrome that satisfies constraints"""
+        valid_palindromes = self.find_valid_palindromes()
+        
+        if not valid_palindromes:
+            return None
+        
+        shortest = min(valid_palindromes, key=lambda x: x['length'])
+        return shortest
+    
+    def get_most_frequent_valid_palindrome(self):
+        """Get most frequent valid palindrome that satisfies constraints"""
+        valid_palindromes = self.find_valid_palindromes()
+        
+        if not valid_palindromes:
+            return None
+        
+        most_frequent = max(valid_palindromes, key=lambda x: x['frequency'])
+        return most_frequent
+    
+    def get_least_frequent_valid_palindrome(self):
+        """Get least frequent valid palindrome that satisfies constraints"""
+        valid_palindromes = self.find_valid_palindromes()
+        
+        if not valid_palindromes:
+            return None
+        
+        least_frequent = min(valid_palindromes, key=lambda x: x['frequency'])
+        return least_frequent
+    
+    def count_valid_palindromes(self):
+        """Count number of valid palindromes"""
+        return len(self.find_valid_palindromes())
+    
+    def get_constraint_statistics(self):
+        """Get statistics about valid palindromes"""
+        valid_palindromes = self.find_valid_palindromes()
+        
+        if not valid_palindromes:
+            return {
+                'count': 0,
+                'min_length': 0,
+                'max_length': 0,
+                'avg_length': 0,
+                'min_frequency': 0,
+                'max_frequency': 0,
+                'avg_frequency': 0
+            }
+        
+        lengths = [p['length'] for p in valid_palindromes]
+        frequencies = [p['frequency'] for p in valid_palindromes]
+        
+        return {
+            'count': len(valid_palindromes),
+            'min_length': min(lengths),
+            'max_length': max(lengths),
+            'avg_length': sum(lengths) / len(lengths),
+            'min_frequency': min(frequencies),
+            'max_frequency': max(frequencies),
+            'avg_frequency': sum(frequencies) / len(frequencies)
+        }
+
+# Example usage
+s = "abacaba"
+min_length = 2
+max_length = 4
+min_frequency = 2
+
+lp = LongestPalindromeWithConstraints(s, min_length, max_length, min_frequency)
+result = lp.constrained_palindrome_query()
+print(f"Constrained palindrome query result: {result}")
+
+valid_palindromes = lp.find_valid_palindromes()
+print(f"Valid palindromes: {valid_palindromes}")
+
+longest = lp.get_longest_valid_palindrome()
+print(f"Longest valid palindrome: {longest}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Longest Palindrome](https://cses.fi/problemset/task/1111) - Basic longest palindrome problem
+- [Palindrome Queries](https://cses.fi/problemset/task/2420) - Palindrome queries
+- [String Matching](https://cses.fi/problemset/task/1753) - String matching
+
+#### **LeetCode Problems**
+- [Longest Palindromic Substring](https://leetcode.com/problems/longest-palindromic-substring/) - Find longest palindromic substring
+- [Palindromic Substrings](https://leetcode.com/problems/palindromic-substrings/) - Count palindromic substrings
+- [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/) - Check if string is palindrome
+
+#### **Problem Categories**
+- **Manacher's Algorithm**: Palindrome detection, string processing, symmetry properties
+- **String Processing**: Palindromes, string transformations, pattern matching
+- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata

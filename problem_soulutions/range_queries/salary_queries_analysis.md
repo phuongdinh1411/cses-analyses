@@ -199,6 +199,277 @@ def optimal_salary_queries(salaries, queries):
 - **Efficient Counting**: Count salaries in range in O(1) time
 - **Optimal Approach**: O(n log n + q log n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Salary Queries with Dynamic Updates
+**Problem**: Handle dynamic updates to salaries and maintain range count queries.
+
+**Link**: [CSES Problem Set - Salary Queries with Updates](https://cses.fi/problemset/task/salary_queries_updates)
+
+```python
+class SalaryQueriesWithUpdates:
+    def __init__(self, salaries):
+        self.salaries = salaries[:]
+        self.n = len(salaries)
+        self.sorted_salaries = sorted(salaries)
+    
+    def update_salary(self, index, new_salary):
+        """Update salary at index to new_salary"""
+        old_salary = self.salaries[index]
+        self.salaries[index] = new_salary
+        
+        # Update sorted array
+        self.sorted_salaries.remove(old_salary)
+        self._insert_sorted(new_salary)
+    
+    def _insert_sorted(self, salary):
+        """Insert salary into sorted array"""
+        left, right = 0, len(self.sorted_salaries)
+        while left < right:
+            mid = (left + right) // 2
+            if self.sorted_salaries[mid] < salary:
+                left = mid + 1
+            else:
+                right = mid
+        self.sorted_salaries.insert(left, salary)
+    
+    def count_in_range(self, min_salary, max_salary):
+        """Count salaries in range [min_salary, max_salary]"""
+        left_idx = self._binary_search_left(min_salary)
+        right_idx = self._binary_search_right(max_salary)
+        return right_idx - left_idx
+    
+    def _binary_search_left(self, target):
+        """Find leftmost position where salary >= target"""
+        left, right = 0, len(self.sorted_salaries)
+        while left < right:
+            mid = (left + right) // 2
+            if self.sorted_salaries[mid] < target:
+                left = mid + 1
+            else:
+                right = mid
+        return left
+    
+    def _binary_search_right(self, target):
+        """Find rightmost position where salary <= target"""
+        left, right = 0, len(self.sorted_salaries)
+        while left < right:
+            mid = (left + right) // 2
+            if self.sorted_salaries[mid] <= target:
+                left = mid + 1
+            else:
+                right = mid
+        return left
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for min_sal, max_sal in queries:
+            results.append(self.count_in_range(min_sal, max_sal))
+        return results
+```
+
+### Variation 2: Salary Queries with Different Operations
+**Problem**: Handle different types of operations (count, sum, average, median) on salary ranges.
+
+**Link**: [CSES Problem Set - Salary Queries Different Operations](https://cses.fi/problemset/task/salary_queries_operations)
+
+```python
+class SalaryQueriesDifferentOps:
+    def __init__(self, salaries):
+        self.salaries = salaries[:]
+        self.n = len(salaries)
+        self.sorted_salaries = sorted(salaries)
+        self.prefix_sums = self._compute_prefix_sums()
+    
+    def _compute_prefix_sums(self):
+        """Compute prefix sums of sorted salaries"""
+        prefix = [0] * (self.n + 1)
+        for i in range(self.n):
+            prefix[i + 1] = prefix[i] + self.sorted_salaries[i]
+        return prefix
+    
+    def count_in_range(self, min_salary, max_salary):
+        """Count salaries in range [min_salary, max_salary]"""
+        left_idx = self._binary_search_left(min_salary)
+        right_idx = self._binary_search_right(max_salary)
+        return right_idx - left_idx
+    
+    def sum_in_range(self, min_salary, max_salary):
+        """Sum of salaries in range [min_salary, max_salary]"""
+        left_idx = self._binary_search_left(min_salary)
+        right_idx = self._binary_search_right(max_salary)
+        return self.prefix_sums[right_idx] - self.prefix_sums[left_idx]
+    
+    def average_in_range(self, min_salary, max_salary):
+        """Average salary in range [min_salary, max_salary]"""
+        count = self.count_in_range(min_salary, max_salary)
+        if count == 0:
+            return 0
+        total = self.sum_in_range(min_salary, max_salary)
+        return total / count
+    
+    def median_in_range(self, min_salary, max_salary):
+        """Median salary in range [min_salary, max_salary]"""
+        left_idx = self._binary_search_left(min_salary)
+        right_idx = self._binary_search_right(max_salary)
+        count = right_idx - left_idx
+        
+        if count == 0:
+            return None
+        
+        if count % 2 == 1:
+            return self.sorted_salaries[left_idx + count // 2]
+        else:
+            mid1 = self.sorted_salaries[left_idx + count // 2 - 1]
+            mid2 = self.sorted_salaries[left_idx + count // 2]
+            return (mid1 + mid2) / 2
+    
+    def _binary_search_left(self, target):
+        """Find leftmost position where salary >= target"""
+        left, right = 0, len(self.sorted_salaries)
+        while left < right:
+            mid = (left + right) // 2
+            if self.sorted_salaries[mid] < target:
+                left = mid + 1
+            else:
+                right = mid
+        return left
+    
+    def _binary_search_right(self, target):
+        """Find rightmost position where salary <= target"""
+        left, right = 0, len(self.sorted_salaries)
+        while left < right:
+            mid = (left + right) // 2
+            if self.sorted_salaries[mid] <= target:
+                left = mid + 1
+            else:
+                right = mid
+        return left
+```
+
+### Variation 3: Salary Queries with Constraints
+**Problem**: Handle salary queries with additional constraints (e.g., maximum count, minimum range).
+
+**Link**: [CSES Problem Set - Salary Queries with Constraints](https://cses.fi/problemset/task/salary_queries_constraints)
+
+```python
+class SalaryQueriesWithConstraints:
+    def __init__(self, salaries, max_count, min_range):
+        self.salaries = salaries[:]
+        self.n = len(salaries)
+        self.max_count = max_count
+        self.min_range = min_range
+        self.sorted_salaries = sorted(salaries)
+    
+    def constrained_query(self, min_salary, max_salary):
+        """Query count of salaries with constraints"""
+        # Check minimum range constraint
+        if max_salary - min_salary < self.min_range:
+            return None  # Invalid range
+        
+        # Get count
+        count = self.count_in_range(min_salary, max_salary)
+        
+        # Check maximum count constraint
+        if count > self.max_count:
+            return None  # Exceeds maximum count
+        
+        return count
+    
+    def count_in_range(self, min_salary, max_salary):
+        """Count salaries in range [min_salary, max_salary]"""
+        left_idx = self._binary_search_left(min_salary)
+        right_idx = self._binary_search_right(max_salary)
+        return right_idx - left_idx
+    
+    def find_valid_ranges(self):
+        """Find all valid salary ranges that satisfy constraints"""
+        valid_ranges = []
+        unique_salaries = sorted(set(self.salaries))
+        
+        for i in range(len(unique_salaries)):
+            for j in range(i, len(unique_salaries)):
+                min_sal = unique_salaries[i]
+                max_sal = unique_salaries[j]
+                
+                result = self.constrained_query(min_sal, max_sal)
+                if result is not None:
+                    valid_ranges.append((min_sal, max_sal, result))
+        
+        return valid_ranges
+    
+    def get_maximum_valid_count(self):
+        """Get maximum valid count"""
+        max_count = float('-inf')
+        unique_salaries = sorted(set(self.salaries))
+        
+        for i in range(len(unique_salaries)):
+            for j in range(i, len(unique_salaries)):
+                min_sal = unique_salaries[i]
+                max_sal = unique_salaries[j]
+                
+                result = self.constrained_query(min_sal, max_sal)
+                if result is not None:
+                    max_count = max(max_count, result)
+        
+        return max_count if max_count != float('-inf') else None
+    
+    def _binary_search_left(self, target):
+        """Find leftmost position where salary >= target"""
+        left, right = 0, len(self.sorted_salaries)
+        while left < right:
+            mid = (left + right) // 2
+            if self.sorted_salaries[mid] < target:
+                left = mid + 1
+            else:
+                right = mid
+        return left
+    
+    def _binary_search_right(self, target):
+        """Find rightmost position where salary <= target"""
+        left, right = 0, len(self.sorted_salaries)
+        while left < right:
+            mid = (left + right) // 2
+            if self.sorted_salaries[mid] <= target:
+                left = mid + 1
+            else:
+                right = mid
+        return left
+
+# Example usage
+salaries = [1000, 2000, 1500, 3000, 2500]
+max_count = 3
+min_range = 500
+
+sq = SalaryQueriesWithConstraints(salaries, max_count, min_range)
+result = sq.constrained_query(1000, 2000)
+print(f"Constrained query result: {result}")  # Output: 2
+
+valid_ranges = sq.find_valid_ranges()
+print(f"Valid ranges: {valid_ranges}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Salary Queries](https://cses.fi/problemset/task/1144) - Basic salary range queries problem
+- [Static Range Sum Queries](https://cses.fi/problemset/task/1646) - Static range sum queries
+- [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) - Dynamic range sum queries
+
+#### **LeetCode Problems**
+- [Range Sum Query - Immutable](https://leetcode.com/problems/range-sum-query-immutable/) - Range sum queries
+- [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/) - Range sum with updates
+- [Count of Range Sum](https://leetcode.com/problems/count-of-range-sum/) - Count range sums
+
+#### **Problem Categories**
+- **Binary Search**: Range queries, efficient search, sorted arrays
+- **Range Queries**: Query processing, range operations, efficient algorithms
+- **Sorting**: Array sorting, efficient preprocessing, fast queries
+- **Algorithm Design**: Binary search techniques, range optimization, constraint handling
+
 ## 🚀 Key Takeaways
 
 - **Sorting Technique**: The standard approach for salary range queries

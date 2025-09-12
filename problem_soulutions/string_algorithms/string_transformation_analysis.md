@@ -322,6 +322,449 @@ Minimum transformations: 2
 - **Optimized**: O(n × m) - Queue and visited set
 - **Optimal**: O(n²) - DP table and memoization cache
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: String Transformation with Dynamic Rules
+**Problem**: Handle dynamic updates to transformation rules and maintain string transformation queries efficiently.
+
+**Link**: [CSES Problem Set - String Transformation with Dynamic Rules](https://cses.fi/problemset/task/string_transformation_dynamic_rules)
+
+```python
+class StringTransformationWithDynamicRules:
+    def __init__(self, start, target, rules):
+        self.start = start
+        self.target = target
+        self.rules = rules.copy()
+        self.cache = {}
+    
+    def add_rule(self, pattern, replacement):
+        """Add new transformation rule"""
+        self.rules.append((pattern, replacement))
+        self.cache.clear()  # Clear cache when rules change
+    
+    def remove_rule(self, pattern, replacement):
+        """Remove transformation rule"""
+        if (pattern, replacement) in self.rules:
+            self.rules.remove((pattern, replacement))
+            self.cache.clear()  # Clear cache when rules change
+    
+    def can_transform(self, start, target):
+        """Check if start can be transformed to target"""
+        if start == target:
+            return True
+        
+        if (start, target) in self.cache:
+            return self.cache[(start, target)]
+        
+        # BFS to find transformation path
+        queue = [start]
+        visited = {start}
+        
+        while queue:
+            current = queue.pop(0)
+            
+            if current == target:
+                self.cache[(start, target)] = True
+                return True
+            
+            # Apply all rules
+            for pattern, replacement in self.rules:
+                if pattern in current:
+                    new_string = current.replace(pattern, replacement, 1)
+                    if new_string not in visited:
+                        visited.add(new_string)
+                        queue.append(new_string)
+        
+        self.cache[(start, target)] = False
+        return False
+    
+    def get_transformation_path(self, start, target):
+        """Get transformation path from start to target"""
+        if start == target:
+            return [start]
+        
+        # BFS to find transformation path
+        queue = [(start, [start])]
+        visited = {start}
+        
+        while queue:
+            current, path = queue.pop(0)
+            
+            if current == target:
+                return path
+            
+            # Apply all rules
+            for pattern, replacement in self.rules:
+                if pattern in current:
+                    new_string = current.replace(pattern, replacement, 1)
+                    if new_string not in visited:
+                        visited.add(new_string)
+                        queue.append((new_string, path + [new_string]))
+        
+        return None
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'add_rule':
+                self.add_rule(query['pattern'], query['replacement'])
+                results.append(None)
+            elif query['type'] == 'remove_rule':
+                self.remove_rule(query['pattern'], query['replacement'])
+                results.append(None)
+            elif query['type'] == 'can_transform':
+                result = self.can_transform(query['start'], query['target'])
+                results.append(result)
+            elif query['type'] == 'path':
+                result = self.get_transformation_path(query['start'], query['target'])
+                results.append(result)
+        return results
+```
+
+### Variation 2: String Transformation with Different Operations
+**Problem**: Handle different types of operations (transform, reverse, optimize) on string transformations.
+
+**Link**: [CSES Problem Set - String Transformation Different Operations](https://cses.fi/problemset/task/string_transformation_operations)
+
+```python
+class StringTransformationDifferentOps:
+    def __init__(self, start, target, rules):
+        self.start = start
+        self.target = target
+        self.rules = rules.copy()
+        self.cache = {}
+    
+    def can_transform(self, start, target):
+        """Check if start can be transformed to target"""
+        if start == target:
+            return True
+        
+        if (start, target) in self.cache:
+            return self.cache[(start, target)]
+        
+        # BFS to find transformation path
+        queue = [start]
+        visited = {start}
+        
+        while queue:
+            current = queue.pop(0)
+            
+            if current == target:
+                self.cache[(start, target)] = True
+                return True
+            
+            # Apply all rules
+            for pattern, replacement in self.rules:
+                if pattern in current:
+                    new_string = current.replace(pattern, replacement, 1)
+                    if new_string not in visited:
+                        visited.add(new_string)
+                        queue.append(new_string)
+        
+        self.cache[(start, target)] = False
+        return False
+    
+    def get_transformation_path(self, start, target):
+        """Get transformation path from start to target"""
+        if start == target:
+            return [start]
+        
+        # BFS to find transformation path
+        queue = [(start, [start])]
+        visited = {start}
+        
+        while queue:
+            current, path = queue.pop(0)
+            
+            if current == target:
+                return path
+            
+            # Apply all rules
+            for pattern, replacement in self.rules:
+                if pattern in current:
+                    new_string = current.replace(pattern, replacement, 1)
+                    if new_string not in visited:
+                        visited.add(new_string)
+                        queue.append((new_string, path + [new_string]))
+        
+        return None
+    
+    def reverse_transformation(self, start, target):
+        """Get reverse transformation path from target to start"""
+        if start == target:
+            return [target]
+        
+        # BFS to find reverse transformation path
+        queue = [(target, [target])]
+        visited = {target}
+        
+        while queue:
+            current, path = queue.pop(0)
+            
+            if current == start:
+                return path
+            
+            # Apply all rules in reverse
+            for pattern, replacement in self.rules:
+                if replacement in current:
+                    new_string = current.replace(replacement, pattern, 1)
+                    if new_string not in visited:
+                        visited.add(new_string)
+                        queue.append((new_string, path + [new_string]))
+        
+        return None
+    
+    def optimize_transformation(self, start, target):
+        """Get optimized transformation path with minimum steps"""
+        if start == target:
+            return [start]
+        
+        # BFS to find shortest transformation path
+        queue = [(start, [start])]
+        visited = {start}
+        
+        while queue:
+            current, path = queue.pop(0)
+            
+            if current == target:
+                return path
+            
+            # Apply all rules
+            for pattern, replacement in self.rules:
+                if pattern in current:
+                    new_string = current.replace(pattern, replacement, 1)
+                    if new_string not in visited:
+                        visited.add(new_string)
+                        queue.append((new_string, path + [new_string]))
+        
+        return None
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'can_transform':
+                result = self.can_transform(query['start'], query['target'])
+                results.append(result)
+            elif query['type'] == 'path':
+                result = self.get_transformation_path(query['start'], query['target'])
+                results.append(result)
+            elif query['type'] == 'reverse':
+                result = self.reverse_transformation(query['start'], query['target'])
+                results.append(result)
+            elif query['type'] == 'optimize':
+                result = self.optimize_transformation(query['start'], query['target'])
+                results.append(result)
+        return results
+```
+
+### Variation 3: String Transformation with Constraints
+**Problem**: Handle string transformation queries with additional constraints (e.g., maximum steps, minimum cost).
+
+**Link**: [CSES Problem Set - String Transformation with Constraints](https://cses.fi/problemset/task/string_transformation_constraints)
+
+```python
+class StringTransformationWithConstraints:
+    def __init__(self, start, target, rules, max_steps, min_cost):
+        self.start = start
+        self.target = target
+        self.rules = rules.copy()
+        self.max_steps = max_steps
+        self.min_cost = min_cost
+        self.cache = {}
+    
+    def constrained_transform(self, start, target):
+        """Transform start to target with constraints"""
+        if start == target:
+            return True
+        
+        if (start, target) in self.cache:
+            return self.cache[(start, target)]
+        
+        # BFS to find transformation path with constraints
+        queue = [(start, 0, 0)]  # (current, steps, cost)
+        visited = {(start, 0, 0)}
+        
+        while queue:
+            current, steps, cost = queue.pop(0)
+            
+            if current == target:
+                self.cache[(start, target)] = True
+                return True
+            
+            # Check constraints
+            if steps >= self.max_steps or cost < self.min_cost:
+                continue
+            
+            # Apply all rules
+            for pattern, replacement in self.rules:
+                if pattern in current:
+                    new_string = current.replace(pattern, replacement, 1)
+                    new_cost = cost + 1  # Assume cost of 1 per transformation
+                    
+                    if (new_string, steps + 1, new_cost) not in visited:
+                        visited.add((new_string, steps + 1, new_cost))
+                        queue.append((new_string, steps + 1, new_cost))
+        
+        self.cache[(start, target)] = False
+        return False
+    
+    def get_constrained_path(self, start, target):
+        """Get constrained transformation path from start to target"""
+        if start == target:
+            return [start]
+        
+        # BFS to find constrained transformation path
+        queue = [(start, [start], 0, 0)]  # (current, path, steps, cost)
+        visited = {(start, 0, 0)}
+        
+        while queue:
+            current, path, steps, cost = queue.pop(0)
+            
+            if current == target:
+                return path
+            
+            # Check constraints
+            if steps >= self.max_steps or cost < self.min_cost:
+                continue
+            
+            # Apply all rules
+            for pattern, replacement in self.rules:
+                if pattern in current:
+                    new_string = current.replace(pattern, replacement, 1)
+                    new_cost = cost + 1  # Assume cost of 1 per transformation
+                    
+                    if (new_string, steps + 1, new_cost) not in visited:
+                        visited.add((new_string, steps + 1, new_cost))
+                        queue.append((new_string, path + [new_string], steps + 1, new_cost))
+        
+        return None
+    
+    def find_valid_transformations(self):
+        """Find all valid transformations that satisfy constraints"""
+        valid_transformations = []
+        
+        # Generate all possible strings from start
+        queue = [self.start]
+        visited = {self.start}
+        
+        while queue:
+            current = queue.pop(0)
+            
+            # Check if current can be transformed to target with constraints
+            if self.constrained_transform(current, self.target):
+                valid_transformations.append(current)
+            
+            # Apply all rules to generate new strings
+            for pattern, replacement in self.rules:
+                if pattern in current:
+                    new_string = current.replace(pattern, replacement, 1)
+                    if new_string not in visited:
+                        visited.add(new_string)
+                        queue.append(new_string)
+        
+        return valid_transformations
+    
+    def get_optimal_transformation(self):
+        """Get optimal transformation with minimum steps and cost"""
+        if self.start == self.target:
+            return [self.start]
+        
+        # BFS to find optimal transformation path
+        queue = [(self.start, [self.start], 0, 0)]  # (current, path, steps, cost)
+        visited = {(self.start, 0, 0)}
+        best_path = None
+        best_cost = float('inf')
+        
+        while queue:
+            current, path, steps, cost = queue.pop(0)
+            
+            if current == self.target:
+                if cost < best_cost:
+                    best_cost = cost
+                    best_path = path
+                continue
+            
+            # Check constraints
+            if steps >= self.max_steps or cost < self.min_cost:
+                continue
+            
+            # Apply all rules
+            for pattern, replacement in self.rules:
+                if pattern in current:
+                    new_string = current.replace(pattern, replacement, 1)
+                    new_cost = cost + 1  # Assume cost of 1 per transformation
+                    
+                    if (new_string, steps + 1, new_cost) not in visited:
+                        visited.add((new_string, steps + 1, new_cost))
+                        queue.append((new_string, path + [new_string], steps + 1, new_cost))
+        
+        return best_path
+    
+    def count_valid_transformations(self):
+        """Count number of valid transformations"""
+        count = 0
+        
+        # Generate all possible strings from start
+        queue = [self.start]
+        visited = {self.start}
+        
+        while queue:
+            current = queue.pop(0)
+            
+            # Check if current can be transformed to target with constraints
+            if self.constrained_transform(current, self.target):
+                count += 1
+            
+            # Apply all rules to generate new strings
+            for pattern, replacement in self.rules:
+                if pattern in current:
+                    new_string = current.replace(pattern, replacement, 1)
+                    if new_string not in visited:
+                        visited.add(new_string)
+                        queue.append(new_string)
+        
+        return count
+
+# Example usage
+start = "abc"
+target = "def"
+rules = [("ab", "de"), ("bc", "ef")]
+max_steps = 5
+min_cost = 1
+
+st = StringTransformationWithConstraints(start, target, rules, max_steps, min_cost)
+result = st.constrained_transform(start, target)
+print(f"Constrained transformation result: {result}")
+
+valid_transformations = st.find_valid_transformations()
+print(f"Valid transformations: {valid_transformations}")
+
+optimal_path = st.get_optimal_transformation()
+print(f"Optimal transformation path: {optimal_path}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [String Transformation](https://cses.fi/problemset/task/2428) - Basic string transformation problem
+- [String Matching](https://cses.fi/problemset/task/1753) - String matching
+- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+
+#### **LeetCode Problems**
+- [Word Ladder](https://leetcode.com/problems/word-ladder/) - String transformation with word ladder
+- [Word Ladder II](https://leetcode.com/problems/word-ladder-ii/) - Find all transformation paths
+- [Edit Distance](https://leetcode.com/problems/edit-distance/) - String transformation with edit operations
+
+#### **Problem Categories**
+- **String Transformation**: String conversion, rule-based transformations, transformation paths
+- **Graph Algorithms**: BFS, DFS, shortest path algorithms
+- **Dynamic Programming**: Transformation optimization, state management
+- **Advanced String Algorithms**: String matching, pattern recognition, string processing
+
 ## 🎓 Summary
 
 ### 🏆 **Key Takeaways**

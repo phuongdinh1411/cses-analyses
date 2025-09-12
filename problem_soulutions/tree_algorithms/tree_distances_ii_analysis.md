@@ -269,3 +269,451 @@ Node 5: 3 + 2 + 3 + 1 + 0 = 9
 - **Rerooting**: Use rerooting technique to calculate distances from each node efficiently
 - **Efficient Calculation**: Calculate distances from each node in O(1) time using precomputed values
 - **Optimal Approach**: O(n) time complexity is optimal for this problem
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Tree Distances II with Dynamic Updates
+**Problem**: Handle dynamic updates to the tree structure and maintain distance calculations efficiently.
+
+**Link**: [CSES Problem Set - Tree Distances II with Updates](https://cses.fi/problemset/task/tree_distances_ii_updates)
+
+```python
+class TreeDistancesIIWithUpdates:
+    def __init__(self, n, edges):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.subtree_sizes = [0] * n
+        self.distances = [0] * n
+        self.parent = [-1] * n
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_distances()
+    
+    def _calculate_distances(self):
+        """Calculate distances using tree DP with rerooting"""
+        # First DFS: calculate subtree sizes and distances from root
+        self._dfs1(0, -1)
+        
+        # Second DFS: calculate distances from each node using rerooting
+        self._dfs2(0, -1)
+    
+    def _dfs1(self, node, parent):
+        """First DFS to calculate subtree sizes and distances from root"""
+        self.parent[node] = parent
+        self.subtree_sizes[node] = 1
+        self.distances[node] = 0
+        
+        for child in self.adj[node]:
+            if child != parent:
+                self._dfs1(child, node)
+                self.subtree_sizes[node] += self.subtree_sizes[child]
+                self.distances[node] += self.distances[child] + self.subtree_sizes[child]
+    
+    def _dfs2(self, node, parent):
+        """Second DFS to calculate distances from each node using rerooting"""
+        if parent != -1:
+            # Reroot from parent to current node
+            self.distances[node] = self.distances[parent] - self.subtree_sizes[node] + (self.n - self.subtree_sizes[node])
+        
+        for child in self.adj[node]:
+            if child != parent:
+                self._dfs2(child, node)
+    
+    def add_edge(self, u, v):
+        """Add edge between nodes u and v"""
+        self.adj[u].append(v)
+        self.adj[v].append(u)
+        
+        # Recalculate distances
+        self._calculate_distances()
+    
+    def remove_edge(self, u, v):
+        """Remove edge between nodes u and v"""
+        if v in self.adj[u]:
+            self.adj[u].remove(v)
+        if u in self.adj[v]:
+            self.adj[v].remove(u)
+        
+        # Recalculate distances
+        self._calculate_distances()
+    
+    def get_distance_sum(self, node):
+        """Get sum of distances from node to all other nodes"""
+        return self.distances[node]
+    
+    def get_all_distance_sums(self):
+        """Get distance sums for all nodes"""
+        return self.distances.copy()
+    
+    def get_subtree_size(self, node):
+        """Get subtree size of a node"""
+        return self.subtree_sizes[node]
+    
+    def get_all_subtree_sizes(self):
+        """Get subtree sizes for all nodes"""
+        return self.subtree_sizes.copy()
+    
+    def get_distance_statistics(self):
+        """Get comprehensive distance statistics"""
+        return {
+            'total_distance_sum': sum(self.distances),
+            'max_distance_sum': max(self.distances),
+            'min_distance_sum': min(self.distances),
+            'avg_distance_sum': sum(self.distances) / self.n,
+            'distance_sums': self.distances.copy(),
+            'subtree_sizes': self.subtree_sizes.copy()
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'add_edge':
+                self.add_edge(query['u'], query['v'])
+                results.append(None)
+            elif query['type'] == 'remove_edge':
+                self.remove_edge(query['u'], query['v'])
+                results.append(None)
+            elif query['type'] == 'distance_sum':
+                result = self.get_distance_sum(query['node'])
+                results.append(result)
+            elif query['type'] == 'all_distance_sums':
+                result = self.get_all_distance_sums()
+                results.append(result)
+            elif query['type'] == 'subtree_size':
+                result = self.get_subtree_size(query['node'])
+                results.append(result)
+            elif query['type'] == 'all_subtree_sizes':
+                result = self.get_all_subtree_sizes()
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_distance_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 2: Tree Distances II with Different Operations
+**Problem**: Handle different types of operations (find, analyze, compare) on tree distance calculations.
+
+**Link**: [CSES Problem Set - Tree Distances II Different Operations](https://cses.fi/problemset/task/tree_distances_ii_operations)
+
+```python
+class TreeDistancesIIDifferentOps:
+    def __init__(self, n, edges):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.subtree_sizes = [0] * n
+        self.distances = [0] * n
+        self.parent = [-1] * n
+        self.depths = [0] * n
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_distances()
+    
+    def _calculate_distances(self):
+        """Calculate distances using tree DP with rerooting"""
+        # First DFS: calculate subtree sizes and distances from root
+        self._dfs1(0, -1, 0)
+        
+        # Second DFS: calculate distances from each node using rerooting
+        self._dfs2(0, -1)
+    
+    def _dfs1(self, node, parent, depth):
+        """First DFS to calculate subtree sizes and distances from root"""
+        self.parent[node] = parent
+        self.depths[node] = depth
+        self.subtree_sizes[node] = 1
+        self.distances[node] = 0
+        
+        for child in self.adj[node]:
+            if child != parent:
+                self._dfs1(child, node, depth + 1)
+                self.subtree_sizes[node] += self.subtree_sizes[child]
+                self.distances[node] += self.distances[child] + self.subtree_sizes[child]
+    
+    def _dfs2(self, node, parent):
+        """Second DFS to calculate distances from each node using rerooting"""
+        if parent != -1:
+            # Reroot from parent to current node
+            self.distances[node] = self.distances[parent] - self.subtree_sizes[node] + (self.n - self.subtree_sizes[node])
+        
+        for child in self.adj[node]:
+            if child != parent:
+                self._dfs2(child, node)
+    
+    def get_distance_sum(self, node):
+        """Get sum of distances from node to all other nodes"""
+        return self.distances[node]
+    
+    def get_all_distance_sums(self):
+        """Get distance sums for all nodes"""
+        return self.distances.copy()
+    
+    def get_subtree_size(self, node):
+        """Get subtree size of a node"""
+        return self.subtree_sizes[node]
+    
+    def get_all_subtree_sizes(self):
+        """Get subtree sizes for all nodes"""
+        return self.subtree_sizes.copy()
+    
+    def get_depth(self, node):
+        """Get depth of a node"""
+        return self.depths[node]
+    
+    def get_all_depths(self):
+        """Get depths for all nodes"""
+        return self.depths.copy()
+    
+    def get_distance_by_depth(self):
+        """Get distance sums grouped by depth"""
+        depth_groups = {}
+        for i in range(self.n):
+            depth = self.depths[i]
+            if depth not in depth_groups:
+                depth_groups[depth] = []
+            depth_groups[depth].append(self.distances[i])
+        
+        return depth_groups
+    
+    def get_distance_statistics(self):
+        """Get comprehensive distance statistics"""
+        return {
+            'total_distance_sum': sum(self.distances),
+            'max_distance_sum': max(self.distances),
+            'min_distance_sum': min(self.distances),
+            'avg_distance_sum': sum(self.distances) / self.n,
+            'distance_sums': self.distances.copy(),
+            'subtree_sizes': self.subtree_sizes.copy(),
+            'depths': self.depths.copy(),
+            'distance_by_depth': self.get_distance_by_depth()
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'distance_sum':
+                result = self.get_distance_sum(query['node'])
+                results.append(result)
+            elif query['type'] == 'all_distance_sums':
+                result = self.get_all_distance_sums()
+                results.append(result)
+            elif query['type'] == 'subtree_size':
+                result = self.get_subtree_size(query['node'])
+                results.append(result)
+            elif query['type'] == 'all_subtree_sizes':
+                result = self.get_all_subtree_sizes()
+                results.append(result)
+            elif query['type'] == 'depth':
+                result = self.get_depth(query['node'])
+                results.append(result)
+            elif query['type'] == 'all_depths':
+                result = self.get_all_depths()
+                results.append(result)
+            elif query['type'] == 'distance_by_depth':
+                result = self.get_distance_by_depth()
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_distance_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 3: Tree Distances II with Constraints
+**Problem**: Handle tree distance calculations with additional constraints (e.g., minimum depth, maximum depth, depth range).
+
+**Link**: [CSES Problem Set - Tree Distances II with Constraints](https://cses.fi/problemset/task/tree_distances_ii_constraints)
+
+```python
+class TreeDistancesIIWithConstraints:
+    def __init__(self, n, edges, min_depth, max_depth):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.subtree_sizes = [0] * n
+        self.distances = [0] * n
+        self.parent = [-1] * n
+        self.depths = [0] * n
+        self.min_depth = min_depth
+        self.max_depth = max_depth
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_distances()
+    
+    def _calculate_distances(self):
+        """Calculate distances using tree DP with rerooting"""
+        # First DFS: calculate subtree sizes and distances from root
+        self._dfs1(0, -1, 0)
+        
+        # Second DFS: calculate distances from each node using rerooting
+        self._dfs2(0, -1)
+    
+    def _dfs1(self, node, parent, depth):
+        """First DFS to calculate subtree sizes and distances from root"""
+        self.parent[node] = parent
+        self.depths[node] = depth
+        self.subtree_sizes[node] = 1
+        self.distances[node] = 0
+        
+        for child in self.adj[node]:
+            if child != parent:
+                self._dfs1(child, node, depth + 1)
+                self.subtree_sizes[node] += self.subtree_sizes[child]
+                self.distances[node] += self.distances[child] + self.subtree_sizes[child]
+    
+    def _dfs2(self, node, parent):
+        """Second DFS to calculate distances from each node using rerooting"""
+        if parent != -1:
+            # Reroot from parent to current node
+            self.distances[node] = self.distances[parent] - self.subtree_sizes[node] + (self.n - self.subtree_sizes[node])
+        
+        for child in self.adj[node]:
+            if child != parent:
+                self._dfs2(child, node)
+    
+    def get_distance_sum(self, node):
+        """Get sum of distances from node to all other nodes"""
+        return self.distances[node]
+    
+    def get_all_distance_sums(self):
+        """Get distance sums for all nodes"""
+        return self.distances.copy()
+    
+    def get_constrained_distance_sum(self, node):
+        """Get sum of distances from node to nodes within depth constraints"""
+        if not (self.min_depth <= self.depths[node] <= self.max_depth):
+            return 0
+        
+        constrained_sum = 0
+        for i in range(self.n):
+            if self.min_depth <= self.depths[i] <= self.max_depth:
+                # Calculate distance between node and i
+                distance = self._get_distance(node, i)
+                constrained_sum += distance
+        
+        return constrained_sum
+    
+    def _get_distance(self, node1, node2):
+        """Get distance between two nodes"""
+        # Find LCA
+        lca = self._get_lca(node1, node2)
+        return self.depths[node1] + self.depths[node2] - 2 * self.depths[lca]
+    
+    def _get_lca(self, node1, node2):
+        """Get lowest common ancestor of two nodes"""
+        # Make sure node1 is deeper
+        if self.depths[node1] < self.depths[node2]:
+            node1, node2 = node2, node1
+        
+        # Bring node1 to same depth as node2
+        while self.depths[node1] > self.depths[node2]:
+            node1 = self.parent[node1]
+        
+        # Find LCA
+        while node1 != node2:
+            node1 = self.parent[node1]
+            node2 = self.parent[node2]
+        
+        return node1
+    
+    def get_valid_nodes(self):
+        """Get nodes that satisfy depth constraints"""
+        return [i for i in range(self.n) if self.min_depth <= self.depths[i] <= self.max_depth]
+    
+    def get_all_constrained_distance_sums(self):
+        """Get constrained distance sums for all nodes"""
+        constrained_sums = []
+        for i in range(self.n):
+            constrained_sums.append(self.get_constrained_distance_sum(i))
+        return constrained_sums
+    
+    def get_constrained_statistics(self):
+        """Get comprehensive statistics considering depth constraints"""
+        valid_nodes = self.get_valid_nodes()
+        constrained_sums = self.get_all_constrained_distance_sums()
+        
+        return {
+            'total_distance_sum': sum(self.distances),
+            'constrained_distance_sum': sum(constrained_sums),
+            'valid_nodes_count': len(valid_nodes),
+            'max_constrained_sum': max(constrained_sums),
+            'min_constrained_sum': min(constrained_sums),
+            'avg_constrained_sum': sum(constrained_sums) / len(constrained_sums) if constrained_sums else 0,
+            'min_depth': self.min_depth,
+            'max_depth': self.max_depth,
+            'valid_nodes': valid_nodes,
+            'constrained_sums': constrained_sums
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'distance_sum':
+                result = self.get_distance_sum(query['node'])
+                results.append(result)
+            elif query['type'] == 'all_distance_sums':
+                result = self.get_all_distance_sums()
+                results.append(result)
+            elif query['type'] == 'constrained_distance_sum':
+                result = self.get_constrained_distance_sum(query['node'])
+                results.append(result)
+            elif query['type'] == 'valid_nodes':
+                result = self.get_valid_nodes()
+                results.append(result)
+            elif query['type'] == 'all_constrained_sums':
+                result = self.get_all_constrained_distance_sums()
+                results.append(result)
+            elif query['type'] == 'constrained_statistics':
+                result = self.get_constrained_statistics()
+                results.append(result)
+        return results
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (1, 3), (3, 4)]
+min_depth = 1
+max_depth = 3
+
+td = TreeDistancesIIWithConstraints(n, edges, min_depth, max_depth)
+result = td.get_constrained_distance_sum(1)
+print(f"Constrained distance sum result: {result}")
+
+valid_nodes = td.get_valid_nodes()
+print(f"Valid nodes: {valid_nodes}")
+
+statistics = td.get_constrained_statistics()
+print(f"Constrained statistics: {statistics}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Tree Distances II](https://cses.fi/problemset/task/1133) - Basic tree distance calculations
+- [Tree Distances I](https://cses.fi/problemset/task/1132) - Tree distance calculations
+- [Tree Diameter](https://cses.fi/problemset/task/1131) - Tree diameter calculation
+
+#### **LeetCode Problems**
+- [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) - Tree traversal by levels
+- [Path Sum](https://leetcode.com/problems/path-sum/) - Path queries in tree
+- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Path analysis in tree
+
+#### **Problem Categories**
+- **Tree DP**: Dynamic programming on trees, distance calculations
+- **Tree Traversal**: DFS, BFS, tree processing
+- **Tree Queries**: Tree analysis, tree operations
+- **Tree Algorithms**: Tree properties, tree analysis, tree operations

@@ -404,3 +404,576 @@ Centroid Decomposition:
 1. **Practice**: Implement path counting algorithms with different approaches
 2. **Advanced Topics**: Learn about more complex tree path problems
 3. **Related Problems**: Solve more tree DP and centroid decomposition problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Fixed Length Paths I with Dynamic Updates
+**Problem**: Handle dynamic updates to the tree structure and maintain fixed length path queries efficiently.
+
+**Link**: [CSES Problem Set - Fixed Length Paths I with Updates](https://cses.fi/problemset/task/fixed_length_paths_i_updates)
+
+```python
+class FixedLengthPathsIWithUpdates:
+    def __init__(self, n, edges, target_length):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.target_length = target_length
+        self.path_counts = [0] * n
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_path_counts()
+    
+    def _calculate_path_counts(self):
+        """Calculate path counts using tree DP"""
+        def dfs(node, parent):
+            # Initialize with current node
+            self.path_counts[node] = 0
+            
+            # Count paths of target length starting from this node
+            def count_paths(current, parent, length):
+                if length == self.target_length:
+                    return 1
+                
+                count = 0
+                for child in self.adj[current]:
+                    if child != parent:
+                        count += count_paths(child, current, length + 1)
+                
+                return count
+            
+            self.path_counts[node] = count_paths(node, parent, 0)
+            
+            # Recursively calculate for children
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node)
+        
+        dfs(0, -1)
+    
+    def add_edge(self, u, v):
+        """Add edge between nodes u and v"""
+        self.adj[u].append(v)
+        self.adj[v].append(u)
+        
+        # Recalculate path counts
+        self._calculate_path_counts()
+    
+    def remove_edge(self, u, v):
+        """Remove edge between nodes u and v"""
+        if v in self.adj[u]:
+            self.adj[u].remove(v)
+        if u in self.adj[v]:
+            self.adj[v].remove(u)
+        
+        # Recalculate path counts
+        self._calculate_path_counts()
+    
+    def get_path_count(self, node):
+        """Get number of paths of target length starting from node"""
+        return self.path_counts[node]
+    
+    def get_all_path_counts(self):
+        """Get path counts for all nodes"""
+        return self.path_counts.copy()
+    
+    def get_total_paths(self):
+        """Get total number of paths of target length"""
+        return sum(self.path_counts)
+    
+    def get_max_path_count(self):
+        """Get maximum path count among all nodes"""
+        return max(self.path_counts)
+    
+    def get_min_path_count(self):
+        """Get minimum path count among all nodes"""
+        return min(self.path_counts)
+    
+    def get_path_statistics(self):
+        """Get comprehensive path statistics"""
+        return {
+            'total_paths': self.get_total_paths(),
+            'max_path_count': self.get_max_path_count(),
+            'min_path_count': self.get_min_path_count(),
+            'target_length': self.target_length,
+            'path_counts': self.path_counts.copy()
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'add_edge':
+                self.add_edge(query['u'], query['v'])
+                results.append(None)
+            elif query['type'] == 'remove_edge':
+                self.remove_edge(query['u'], query['v'])
+                results.append(None)
+            elif query['type'] == 'path_count':
+                result = self.get_path_count(query['node'])
+                results.append(result)
+            elif query['type'] == 'all_path_counts':
+                result = self.get_all_path_counts()
+                results.append(result)
+            elif query['type'] == 'total_paths':
+                result = self.get_total_paths()
+                results.append(result)
+            elif query['type'] == 'max_path_count':
+                result = self.get_max_path_count()
+                results.append(result)
+            elif query['type'] == 'min_path_count':
+                result = self.get_min_path_count()
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_path_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 2: Fixed Length Paths I with Different Operations
+**Problem**: Handle different types of operations (find, analyze, compare) on fixed length paths.
+
+**Link**: [CSES Problem Set - Fixed Length Paths I Different Operations](https://cses.fi/problemset/task/fixed_length_paths_i_operations)
+
+```python
+class FixedLengthPathsIDifferentOps:
+    def __init__(self, n, edges, target_length):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.target_length = target_length
+        self.path_counts = [0] * n
+        self.depths = [0] * n
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_path_counts()
+        self._calculate_depths()
+    
+    def _calculate_path_counts(self):
+        """Calculate path counts using tree DP"""
+        def dfs(node, parent):
+            # Initialize with current node
+            self.path_counts[node] = 0
+            
+            # Count paths of target length starting from this node
+            def count_paths(current, parent, length):
+                if length == self.target_length:
+                    return 1
+                
+                count = 0
+                for child in self.adj[current]:
+                    if child != parent:
+                        count += count_paths(child, current, length + 1)
+                
+                return count
+            
+            self.path_counts[node] = count_paths(node, parent, 0)
+            
+            # Recursively calculate for children
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node)
+        
+        dfs(0, -1)
+    
+    def _calculate_depths(self):
+        """Calculate depth of each node"""
+        def dfs(node, parent, depth):
+            self.depths[node] = depth
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node, depth + 1)
+        
+        dfs(0, -1, 0)
+    
+    def get_path_count(self, node):
+        """Get number of paths of target length starting from node"""
+        return self.path_counts[node]
+    
+    def get_paths_by_length(self, length):
+        """Get all paths of specific length"""
+        paths = []
+        
+        def dfs(node, parent, current_path):
+            if len(current_path) == length:
+                paths.append(current_path.copy())
+                return
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, node, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return paths
+    
+    def get_paths_from_node(self, node):
+        """Get all paths starting from given node"""
+        paths = []
+        
+        def dfs(current, parent, current_path):
+            if len(current_path) > 1:
+                paths.append(current_path.copy())
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, current, current_path)
+                    current_path.pop()
+        
+        dfs(node, -1, [node])
+        return paths
+    
+    def get_paths_to_node(self, node):
+        """Get all paths ending at given node"""
+        paths = []
+        
+        def dfs(current, parent, current_path):
+            if current == node and len(current_path) > 1:
+                paths.append(current_path.copy())
+                return
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, current, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return paths
+    
+    def get_paths_through_node(self, node):
+        """Get all paths passing through given node"""
+        paths = []
+        
+        def dfs(current, parent, current_path):
+            if node in current_path and len(current_path) > 1:
+                paths.append(current_path.copy())
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, current, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return paths
+    
+    def get_longest_path(self):
+        """Get longest path in the tree"""
+        longest_path = []
+        max_length = 0
+        
+        def dfs(node, parent, current_path):
+            nonlocal longest_path, max_length
+            
+            if len(current_path) > max_length:
+                max_length = len(current_path)
+                longest_path = current_path.copy()
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, node, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return longest_path, max_length - 1
+    
+    def get_shortest_path(self, start, end):
+        """Get shortest path between two nodes"""
+        from collections import deque
+        
+        queue = deque([(start, [start])])
+        visited = {start}
+        
+        while queue:
+            node, path = queue.popleft()
+            
+            if node == end:
+                return path
+            
+            for neighbor in self.adj[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append((neighbor, path + [neighbor]))
+        
+        return []
+    
+    def get_path_statistics(self):
+        """Get comprehensive path statistics"""
+        longest_path, max_length = self.get_longest_path()
+        
+        return {
+            'total_paths': sum(self.path_counts),
+            'max_path_count': max(self.path_counts),
+            'min_path_count': min(self.path_counts),
+            'longest_path_length': max_length,
+            'longest_path': longest_path,
+            'target_length': self.target_length,
+            'path_counts': self.path_counts.copy(),
+            'depths': self.depths.copy()
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'path_count':
+                result = self.get_path_count(query['node'])
+                results.append(result)
+            elif query['type'] == 'paths_by_length':
+                result = self.get_paths_by_length(query['length'])
+                results.append(result)
+            elif query['type'] == 'paths_from_node':
+                result = self.get_paths_from_node(query['node'])
+                results.append(result)
+            elif query['type'] == 'paths_to_node':
+                result = self.get_paths_to_node(query['node'])
+                results.append(result)
+            elif query['type'] == 'paths_through_node':
+                result = self.get_paths_through_node(query['node'])
+                results.append(result)
+            elif query['type'] == 'longest_path':
+                result = self.get_longest_path()
+                results.append(result)
+            elif query['type'] == 'shortest_path':
+                result = self.get_shortest_path(query['start'], query['end'])
+                results.append(result)
+            elif query['type'] == 'statistics':
+                result = self.get_path_statistics()
+                results.append(result)
+        return results
+```
+
+### Variation 3: Fixed Length Paths I with Constraints
+**Problem**: Handle fixed length path queries with additional constraints (e.g., minimum length, maximum length).
+
+**Link**: [CSES Problem Set - Fixed Length Paths I with Constraints](https://cses.fi/problemset/task/fixed_length_paths_i_constraints)
+
+```python
+class FixedLengthPathsIWithConstraints:
+    def __init__(self, n, edges, target_length, min_length, max_length):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.target_length = target_length
+        self.min_length = min_length
+        self.max_length = max_length
+        self.path_counts = [0] * n
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_path_counts()
+    
+    def _calculate_path_counts(self):
+        """Calculate path counts using tree DP"""
+        def dfs(node, parent):
+            # Initialize with current node
+            self.path_counts[node] = 0
+            
+            # Count paths of target length starting from this node
+            def count_paths(current, parent, length):
+                if length == self.target_length:
+                    return 1
+                
+                count = 0
+                for child in self.adj[current]:
+                    if child != parent:
+                        count += count_paths(child, current, length + 1)
+                
+                return count
+            
+            self.path_counts[node] = count_paths(node, parent, 0)
+            
+            # Recursively calculate for children
+            for child in self.adj[node]:
+                if child != parent:
+                    dfs(child, node)
+        
+        dfs(0, -1)
+    
+    def constrained_path_count_query(self, node):
+        """Query path count with constraints"""
+        if self.path_counts[node] == 0:
+            return 0
+        
+        # Count paths of valid lengths starting from this node
+        valid_paths = 0
+        
+        def count_valid_paths(current, parent, length):
+            nonlocal valid_paths
+            
+            if self.min_length <= length <= self.max_length:
+                valid_paths += 1
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    count_valid_paths(child, current, length + 1)
+        
+        count_valid_paths(node, -1, 0)
+        return valid_paths
+    
+    def find_valid_paths(self):
+        """Find all paths that satisfy length constraints"""
+        valid_paths = []
+        
+        def dfs(node, parent, current_path):
+            if self.min_length <= len(current_path) <= self.max_length:
+                valid_paths.append(current_path.copy())
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, node, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return valid_paths
+    
+    def count_valid_paths(self):
+        """Count number of valid paths"""
+        return len(self.find_valid_paths())
+    
+    def get_valid_paths_by_length(self, length):
+        """Get all valid paths of specific length"""
+        if not (self.min_length <= length <= self.max_length):
+            return []
+        
+        paths = []
+        
+        def dfs(node, parent, current_path):
+            if len(current_path) == length:
+                paths.append(current_path.copy())
+                return
+            
+            for child in self.adj[node]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, node, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return paths
+    
+    def get_valid_paths_from_node(self, node):
+        """Get all valid paths starting from given node"""
+        valid_paths = []
+        
+        def dfs(current, parent, current_path):
+            if self.min_length <= len(current_path) <= self.max_length:
+                valid_paths.append(current_path.copy())
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, current, current_path)
+                    current_path.pop()
+        
+        dfs(node, -1, [node])
+        return valid_paths
+    
+    def get_valid_paths_through_node(self, node):
+        """Get all valid paths passing through given node"""
+        valid_paths = []
+        
+        def dfs(current, parent, current_path):
+            if node in current_path and self.min_length <= len(current_path) <= self.max_length:
+                valid_paths.append(current_path.copy())
+            
+            for child in self.adj[current]:
+                if child != parent:
+                    current_path.append(child)
+                    dfs(child, current, current_path)
+                    current_path.pop()
+        
+        for start in range(self.n):
+            dfs(start, -1, [start])
+        
+        return valid_paths
+    
+    def get_constraint_statistics(self):
+        """Get statistics about valid paths"""
+        valid_paths = self.find_valid_paths()
+        
+        if not valid_paths:
+            return {
+                'valid_paths_count': 0,
+                'min_length': self.min_length,
+                'max_length': self.max_length,
+                'target_length': self.target_length,
+                'valid_paths': []
+            }
+        
+        lengths = [len(path) for path in valid_paths]
+        
+        return {
+            'valid_paths_count': len(valid_paths),
+            'min_length': self.min_length,
+            'max_length': self.max_length,
+            'target_length': self.target_length,
+            'min_valid_length': min(lengths),
+            'max_valid_length': max(lengths),
+            'avg_valid_length': sum(lengths) / len(lengths),
+            'valid_paths': valid_paths
+        }
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (1, 3), (3, 4)]
+target_length = 2
+min_length = 1
+max_length = 3
+
+flp = FixedLengthPathsIWithConstraints(n, edges, target_length, min_length, max_length)
+result = flp.constrained_path_count_query(1)
+print(f"Constrained path count query result: {result}")
+
+valid_paths = flp.find_valid_paths()
+print(f"Valid paths: {valid_paths}")
+
+statistics = flp.get_constraint_statistics()
+print(f"Constraint statistics: {statistics}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Fixed Length Paths I](https://cses.fi/problemset/task/2080) - Basic fixed length paths in tree
+- [Fixed Length Paths II](https://cses.fi/problemset/task/2081) - Advanced fixed length paths in tree
+- [Tree Diameter](https://cses.fi/problemset/task/1131) - Find diameter of tree
+
+#### **LeetCode Problems**
+- [Binary Tree Paths](https://leetcode.com/problems/binary-tree-paths/) - Find all paths in binary tree
+- [Path Sum](https://leetcode.com/problems/path-sum/) - Path queries in tree
+- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Path analysis in tree
+
+#### **Problem Categories**
+- **Tree DP**: Dynamic programming on trees, path counting
+- **Tree Traversal**: DFS, BFS, tree traversal algorithms
+- **Tree Queries**: Path queries, tree analysis, tree operations
+- **Tree Algorithms**: Tree properties, tree analysis, tree operations

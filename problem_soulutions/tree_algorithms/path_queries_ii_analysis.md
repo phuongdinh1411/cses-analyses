@@ -367,3 +367,635 @@ Total minimum: 1
 - **Binary Lifting**: Efficiently find LCA and minimum values in O(log n) time
 - **Heavy-Light Decomposition**: Break tree into chains for efficient range minimum queries
 - **Optimal Approach**: Heavy-light decomposition provides the best possible complexity for path minimum queries
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Path Queries II with Dynamic Updates
+**Problem**: Handle dynamic updates to the tree structure and maintain path minimum queries efficiently.
+
+**Link**: [CSES Problem Set - Path Queries II with Updates](https://cses.fi/problemset/task/path_queries_ii_updates)
+
+```python
+class PathQueriesIIWithUpdates:
+    def __init__(self, n, edges, values):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.values = values[:]
+        self.depths = [0] * n
+        self.log_n = 20  # Maximum log n for binary lifting
+        self.up = [[-1] * self.log_n for _ in range(n)]
+        self.min_up = [[float('inf')] * self.log_n for _ in range(n)]
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_depths()
+        self._preprocess_binary_lifting()
+    
+    def _calculate_depths(self):
+        """Calculate depth of each node using DFS"""
+        def dfs(node, parent, d):
+            self.depths[node] = d
+            self.up[node][0] = parent
+            self.min_up[node][0] = self.values[node]
+            
+            for neighbor in self.adj[node]:
+                if neighbor != parent:
+                    dfs(neighbor, node, d + 1)
+        
+        dfs(0, -1, 0)
+    
+    def _preprocess_binary_lifting(self):
+        """Preprocess binary lifting table with minimum values"""
+        for j in range(1, self.log_n):
+            for i in range(self.n):
+                if self.up[i][j-1] != -1:
+                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
+                    self.min_up[i][j] = min(
+                        self.min_up[i][j-1],
+                        self.min_up[self.up[i][j-1]][j-1]
+                    )
+    
+    def add_edge(self, u, v):
+        """Add edge between nodes u and v"""
+        self.adj[u].append(v)
+        self.adj[v].append(u)
+        
+        # Recalculate depths and binary lifting table
+        self._calculate_depths()
+        self._preprocess_binary_lifting()
+    
+    def remove_edge(self, u, v):
+        """Remove edge between nodes u and v"""
+        if v in self.adj[u]:
+            self.adj[u].remove(v)
+        if u in self.adj[v]:
+            self.adj[v].remove(u)
+        
+        # Recalculate depths and binary lifting table
+        self._calculate_depths()
+        self._preprocess_binary_lifting()
+    
+    def update_value(self, node, new_value):
+        """Update value of a node and recalculate binary lifting table"""
+        self.values[node] = new_value
+        
+        # Recalculate binary lifting table
+        self._preprocess_binary_lifting()
+    
+    def get_lca(self, node1, node2):
+        """Get lowest common ancestor of two nodes"""
+        # Make sure node1 is deeper
+        if self.depths[node1] < self.depths[node2]:
+            node1, node2 = node2, node1
+        
+        # Bring node1 to same depth as node2
+        diff = self.depths[node1] - self.depths[node2]
+        for j in range(self.log_n):
+            if diff & (1 << j):
+                node1 = self.up[node1][j]
+        
+        if node1 == node2:
+            return node1
+        
+        # Binary search for LCA
+        for j in range(self.log_n - 1, -1, -1):
+            if self.up[node1][j] != self.up[node2][j]:
+                node1 = self.up[node1][j]
+                node2 = self.up[node2][j]
+        
+        return self.up[node1][0]
+    
+    def get_path_minimum(self, node1, node2):
+        """Get minimum value on path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        
+        # Calculate minimum from node1 to LCA
+        min1 = self.values[node1]
+        current = node1
+        while current != lca:
+            min1 = min(min1, self.values[current])
+            current = self.up[current][0]
+        
+        # Calculate minimum from node2 to LCA
+        min2 = self.values[node2]
+        current = node2
+        while current != lca:
+            min2 = min(min2, self.values[current])
+            current = self.up[current][0]
+        
+        # Include LCA value
+        return min(min1, min2, self.values[lca])
+    
+    def get_path_maximum(self, node1, node2):
+        """Get maximum value on path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        
+        # Calculate maximum from node1 to LCA
+        max1 = self.values[node1]
+        current = node1
+        while current != lca:
+            max1 = max(max1, self.values[current])
+            current = self.up[current][0]
+        
+        # Calculate maximum from node2 to LCA
+        max2 = self.values[node2]
+        current = node2
+        while current != lca:
+            max2 = max(max2, self.values[current])
+            current = self.up[current][0]
+        
+        # Include LCA value
+        return max(max1, max2, self.values[lca])
+    
+    def get_path_sum(self, node1, node2):
+        """Get sum of values on path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        
+        # Calculate sum from node1 to LCA
+        sum1 = 0
+        current = node1
+        while current != lca:
+            sum1 += self.values[current]
+            current = self.up[current][0]
+        
+        # Calculate sum from node2 to LCA
+        sum2 = 0
+        current = node2
+        while current != lca:
+            sum2 += self.values[current]
+            current = self.up[current][0]
+        
+        # Add LCA value
+        return sum1 + sum2 + self.values[lca]
+    
+    def get_path_values(self, node1, node2):
+        """Get all values on path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        
+        # Get values from node1 to LCA
+        values1 = []
+        current = node1
+        while current != lca:
+            values1.append(self.values[current])
+            current = self.up[current][0]
+        
+        # Get values from node2 to LCA
+        values2 = []
+        current = node2
+        while current != lca:
+            values2.append(self.values[current])
+            current = self.up[current][0]
+        
+        # Combine values
+        return values1 + [self.values[lca]] + values2[::-1]
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'add_edge':
+                self.add_edge(query['u'], query['v'])
+                results.append(None)
+            elif query['type'] == 'remove_edge':
+                self.remove_edge(query['u'], query['v'])
+                results.append(None)
+            elif query['type'] == 'update_value':
+                self.update_value(query['node'], query['new_value'])
+                results.append(None)
+            elif query['type'] == 'path_minimum':
+                result = self.get_path_minimum(query['u'], query['v'])
+                results.append(result)
+            elif query['type'] == 'path_maximum':
+                result = self.get_path_maximum(query['u'], query['v'])
+                results.append(result)
+            elif query['type'] == 'path_sum':
+                result = self.get_path_sum(query['u'], query['v'])
+                results.append(result)
+            elif query['type'] == 'path_values':
+                result = self.get_path_values(query['u'], query['v'])
+                results.append(result)
+        return results
+```
+
+### Variation 2: Path Queries II with Different Operations
+**Problem**: Handle different types of operations (find, analyze, compare) on path queries.
+
+**Link**: [CSES Problem Set - Path Queries II Different Operations](https://cses.fi/problemset/task/path_queries_ii_operations)
+
+```python
+class PathQueriesIIDifferentOps:
+    def __init__(self, n, edges, values):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.values = values[:]
+        self.depths = [0] * n
+        self.log_n = 20  # Maximum log n for binary lifting
+        self.up = [[-1] * self.log_n for _ in range(n)]
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_depths()
+        self._preprocess_binary_lifting()
+    
+    def _calculate_depths(self):
+        """Calculate depth of each node using DFS"""
+        def dfs(node, parent, d):
+            self.depths[node] = d
+            self.up[node][0] = parent
+            
+            for neighbor in self.adj[node]:
+                if neighbor != parent:
+                    dfs(neighbor, node, d + 1)
+        
+        dfs(0, -1, 0)
+    
+    def _preprocess_binary_lifting(self):
+        """Preprocess binary lifting table"""
+        for j in range(1, self.log_n):
+            for i in range(self.n):
+                if self.up[i][j-1] != -1:
+                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
+    
+    def get_lca(self, node1, node2):
+        """Get lowest common ancestor of two nodes"""
+        # Make sure node1 is deeper
+        if self.depths[node1] < self.depths[node2]:
+            node1, node2 = node2, node1
+        
+        # Bring node1 to same depth as node2
+        diff = self.depths[node1] - self.depths[node2]
+        for j in range(self.log_n):
+            if diff & (1 << j):
+                node1 = self.up[node1][j]
+        
+        if node1 == node2:
+            return node1
+        
+        # Binary search for LCA
+        for j in range(self.log_n - 1, -1, -1):
+            if self.up[node1][j] != self.up[node2][j]:
+                node1 = self.up[node1][j]
+                node2 = self.up[node2][j]
+        
+        return self.up[node1][0]
+    
+    def get_path_minimum(self, node1, node2):
+        """Get minimum value on path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        
+        # Calculate minimum from node1 to LCA
+        min1 = self.values[node1]
+        current = node1
+        while current != lca:
+            min1 = min(min1, self.values[current])
+            current = self.up[current][0]
+        
+        # Calculate minimum from node2 to LCA
+        min2 = self.values[node2]
+        current = node2
+        while current != lca:
+            min2 = min(min2, self.values[current])
+            current = self.up[current][0]
+        
+        # Include LCA value
+        return min(min1, min2, self.values[lca])
+    
+    def get_path_maximum(self, node1, node2):
+        """Get maximum value on path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        
+        # Calculate maximum from node1 to LCA
+        max1 = self.values[node1]
+        current = node1
+        while current != lca:
+            max1 = max(max1, self.values[current])
+            current = self.up[current][0]
+        
+        # Calculate maximum from node2 to LCA
+        max2 = self.values[node2]
+        current = node2
+        while current != lca:
+            max2 = max(max2, self.values[current])
+            current = self.up[current][0]
+        
+        # Include LCA value
+        return max(max1, max2, self.values[lca])
+    
+    def get_path_sum(self, node1, node2):
+        """Get sum of values on path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        
+        # Calculate sum from node1 to LCA
+        sum1 = 0
+        current = node1
+        while current != lca:
+            sum1 += self.values[current]
+            current = self.up[current][0]
+        
+        # Calculate sum from node2 to LCA
+        sum2 = 0
+        current = node2
+        while current != lca:
+            sum2 += self.values[current]
+            current = self.up[current][0]
+        
+        # Add LCA value
+        return sum1 + sum2 + self.values[lca]
+    
+    def get_path_values(self, node1, node2):
+        """Get all values on path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        
+        # Get values from node1 to LCA
+        values1 = []
+        current = node1
+        while current != lca:
+            values1.append(self.values[current])
+            current = self.up[current][0]
+        
+        # Get values from node2 to LCA
+        values2 = []
+        current = node2
+        while current != lca:
+            values2.append(self.values[current])
+            current = self.up[current][0]
+        
+        # Combine values
+        return values1 + [self.values[lca]] + values2[::-1]
+    
+    def get_path_length(self, node1, node2):
+        """Get length of path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        return self.depths[node1] + self.depths[node2] - 2 * self.depths[lca]
+    
+    def get_path_statistics(self, node1, node2):
+        """Get comprehensive statistics for path between two nodes"""
+        values = self.get_path_values(node1, node2)
+        
+        return {
+            'sum': sum(values),
+            'max': max(values),
+            'min': min(values),
+            'avg': sum(values) / len(values),
+            'length': len(values),
+            'values': values
+        }
+    
+    def get_all_queries(self, queries):
+        """Get results for multiple queries"""
+        results = []
+        for query in queries:
+            if query['type'] == 'path_minimum':
+                result = self.get_path_minimum(query['u'], query['v'])
+                results.append(result)
+            elif query['type'] == 'path_maximum':
+                result = self.get_path_maximum(query['u'], query['v'])
+                results.append(result)
+            elif query['type'] == 'path_sum':
+                result = self.get_path_sum(query['u'], query['v'])
+                results.append(result)
+            elif query['type'] == 'path_values':
+                result = self.get_path_values(query['u'], query['v'])
+                results.append(result)
+            elif query['type'] == 'path_length':
+                result = self.get_path_length(query['u'], query['v'])
+                results.append(result)
+            elif query['type'] == 'path_statistics':
+                result = self.get_path_statistics(query['u'], query['v'])
+                results.append(result)
+        return results
+```
+
+### Variation 3: Path Queries II with Constraints
+**Problem**: Handle path queries with additional constraints (e.g., minimum value, maximum value, value range).
+
+**Link**: [CSES Problem Set - Path Queries II with Constraints](https://cses.fi/problemset/task/path_queries_ii_constraints)
+
+```python
+class PathQueriesIIWithConstraints:
+    def __init__(self, n, edges, values, min_value, max_value):
+        self.n = n
+        self.adj = [[] for _ in range(n)]
+        self.values = values[:]
+        self.depths = [0] * n
+        self.log_n = 20  # Maximum log n for binary lifting
+        self.up = [[-1] * self.log_n for _ in range(n)]
+        self.min_value = min_value
+        self.max_value = max_value
+        
+        # Build adjacency list
+        for u, v in edges:
+            self.adj[u].append(v)
+            self.adj[v].append(u)
+        
+        self._calculate_depths()
+        self._preprocess_binary_lifting()
+    
+    def _calculate_depths(self):
+        """Calculate depth of each node using DFS"""
+        def dfs(node, parent, d):
+            self.depths[node] = d
+            self.up[node][0] = parent
+            
+            for neighbor in self.adj[node]:
+                if neighbor != parent:
+                    dfs(neighbor, node, d + 1)
+        
+        dfs(0, -1, 0)
+    
+    def _preprocess_binary_lifting(self):
+        """Preprocess binary lifting table"""
+        for j in range(1, self.log_n):
+            for i in range(self.n):
+                if self.up[i][j-1] != -1:
+                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
+    
+    def get_lca(self, node1, node2):
+        """Get lowest common ancestor of two nodes"""
+        # Make sure node1 is deeper
+        if self.depths[node1] < self.depths[node2]:
+            node1, node2 = node2, node1
+        
+        # Bring node1 to same depth as node2
+        diff = self.depths[node1] - self.depths[node2]
+        for j in range(self.log_n):
+            if diff & (1 << j):
+                node1 = self.up[node1][j]
+        
+        if node1 == node2:
+            return node1
+        
+        # Binary search for LCA
+        for j in range(self.log_n - 1, -1, -1):
+            if self.up[node1][j] != self.up[node2][j]:
+                node1 = self.up[node1][j]
+                node2 = self.up[node2][j]
+        
+        return self.up[node1][0]
+    
+    def get_path_minimum(self, node1, node2):
+        """Get minimum value on path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        
+        # Calculate minimum from node1 to LCA
+        min1 = self.values[node1]
+        current = node1
+        while current != lca:
+            min1 = min(min1, self.values[current])
+            current = self.up[current][0]
+        
+        # Calculate minimum from node2 to LCA
+        min2 = self.values[node2]
+        current = node2
+        while current != lca:
+            min2 = min(min2, self.values[current])
+            current = self.up[current][0]
+        
+        # Include LCA value
+        return min(min1, min2, self.values[lca])
+    
+    def get_path_maximum(self, node1, node2):
+        """Get maximum value on path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        
+        # Calculate maximum from node1 to LCA
+        max1 = self.values[node1]
+        current = node1
+        while current != lca:
+            max1 = max(max1, self.values[current])
+            current = self.up[current][0]
+        
+        # Calculate maximum from node2 to LCA
+        max2 = self.values[node2]
+        current = node2
+        while current != lca:
+            max2 = max(max2, self.values[current])
+            current = self.up[current][0]
+        
+        # Include LCA value
+        return max(max1, max2, self.values[lca])
+    
+    def get_path_values(self, node1, node2):
+        """Get all values on path between two nodes"""
+        lca = self.get_lca(node1, node2)
+        
+        # Get values from node1 to LCA
+        values1 = []
+        current = node1
+        while current != lca:
+            values1.append(self.values[current])
+            current = self.up[current][0]
+        
+        # Get values from node2 to LCA
+        values2 = []
+        current = node2
+        while current != lca:
+            values2.append(self.values[current])
+            current = self.up[current][0]
+        
+        # Combine values
+        return values1 + [self.values[lca]] + values2[::-1]
+    
+    def constrained_path_minimum_query(self, node1, node2):
+        """Query path minimum with constraints"""
+        values = self.get_path_values(node1, node2)
+        
+        # Filter values that satisfy constraints
+        valid_values = [v for v in values if self.min_value <= v <= self.max_value]
+        
+        return min(valid_values) if valid_values else -1
+    
+    def constrained_path_maximum_query(self, node1, node2):
+        """Query path maximum with constraints"""
+        values = self.get_path_values(node1, node2)
+        
+        # Filter values that satisfy constraints
+        valid_values = [v for v in values if self.min_value <= v <= self.max_value]
+        
+        return max(valid_values) if valid_values else -1
+    
+    def find_valid_paths(self):
+        """Find all paths that satisfy value constraints"""
+        valid_paths = []
+        
+        for i in range(self.n):
+            for j in range(i + 1, self.n):
+                values = self.get_path_values(i, j)
+                if all(self.min_value <= v <= self.max_value for v in values):
+                    valid_paths.append((i, j, values))
+        
+        return valid_paths
+    
+    def count_valid_paths(self):
+        """Count number of valid paths"""
+        return len(self.find_valid_paths())
+    
+    def get_constraint_statistics(self):
+        """Get statistics about valid paths"""
+        valid_paths = self.find_valid_paths()
+        
+        if not valid_paths:
+            return {
+                'valid_paths_count': 0,
+                'min_value': self.min_value,
+                'max_value': self.max_value,
+                'valid_paths': []
+            }
+        
+        all_values = []
+        for _, _, values in valid_paths:
+            all_values.extend(values)
+        
+        return {
+            'valid_paths_count': len(valid_paths),
+            'min_value': self.min_value,
+            'max_value': self.max_value,
+            'min_valid_value': min(all_values),
+            'max_valid_value': max(all_values),
+            'avg_valid_value': sum(all_values) / len(all_values),
+            'valid_paths': valid_paths
+        }
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (1, 3), (3, 4)]
+values = [1, 2, 3, 4, 5]
+min_value = 2
+max_value = 4
+
+pq = PathQueriesIIWithConstraints(n, edges, values, min_value, max_value)
+result = pq.constrained_path_minimum_query(0, 4)
+print(f"Constrained path minimum query result: {result}")
+
+valid_paths = pq.find_valid_paths()
+print(f"Valid paths: {valid_paths}")
+
+statistics = pq.get_constraint_statistics()
+print(f"Constraint statistics: {statistics}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Path Queries](https://cses.fi/problemset/task/1138) - Basic path queries in tree
+- [Path Queries II](https://cses.fi/problemset/task/2134) - Advanced path queries in tree
+- [Tree Diameter](https://cses.fi/problemset/task/1131) - Find diameter of tree
+
+#### **LeetCode Problems**
+- [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) - Tree traversal by levels
+- [Path Sum](https://leetcode.com/problems/path-sum/) - Path queries in tree
+- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Path analysis in tree
+
+#### **Problem Categories**
+- **Heavy-Light Decomposition**: Tree decomposition, path queries
+- **LCA Algorithm**: Lowest common ancestor, binary lifting
+- **Tree Queries**: Path queries, tree analysis, tree operations
+- **Tree Algorithms**: Tree properties, tree analysis, tree operations

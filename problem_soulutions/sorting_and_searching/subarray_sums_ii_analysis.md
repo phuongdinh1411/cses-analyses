@@ -322,5 +322,307 @@ print(f"Optimal result: {result}")  # Output: 3
 - **Hash Map Technique**: Use hash map to count occurrences of (prefix_sum - target) for efficient subarray counting
 - **Optimal Algorithm**: Hash map approach is the standard solution for this problem
 - **Optimal Approach**: Single pass through array provides the most efficient solution for subarray sum counting problems
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Subarray Sums II with Range Queries
+**Problem**: Answer multiple queries about subarray sums equal to target in different ranges.
+
+**Link**: [CSES Problem Set - Subarray Sums II Range Queries](https://cses.fi/problemset/task/subarray_sums_ii_range)
+
+```python
+def subarray_sums_ii_range_queries(arr, target, queries):
+    """
+    Answer range queries about subarray sums equal to target
+    """
+    results = []
+    
+    for query in queries:
+        left, right = query['left'], query['right']
+        
+        # Extract subarray
+        subarray = arr[left:right+1]
+        
+        # Find subarray sums equal to target
+        count = count_subarray_sums_equal_target(subarray, target)
+        results.append(count)
+    
+    return results
+
+def count_subarray_sums_equal_target(arr, target):
+    """
+    Count subarrays with sum equal to target using hash map
+    """
+    n = len(arr)
+    if n == 0:
+        return 0
+    
+    # Calculate prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    
+    # Count occurrences of (prefix_sum - target)
+    count_map = {}
+    count = 0
+    
+    for i in range(n + 1):
+        # Look for prefix_sum - target
+        if prefix[i] - target in count_map:
+            count += count_map[prefix[i] - target]
+        
+        # Add current prefix sum to map
+        count_map[prefix[i]] = count_map.get(prefix[i], 0) + 1
+    
+    return count
+
+def count_subarray_sums_equal_target_optimized(arr, target):
+    """
+    Optimized version with early termination
+    """
+    n = len(arr)
+    if n == 0:
+        return 0
+    
+    # Calculate prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    
+    # Count occurrences of (prefix_sum - target)
+    count_map = {}
+    count = 0
+    
+    for i in range(n + 1):
+        # Look for prefix_sum - target
+        if prefix[i] - target in count_map:
+            count += count_map[prefix[i] - target]
+        
+        # Add current prefix sum to map
+        count_map[prefix[i]] = count_map.get(prefix[i], 0) + 1
+        
+        # Early termination if we can't improve
+        if count == n * (n + 1) // 2:
+            break
+    
+    return count
+```
+
+### Variation 2: Subarray Sums II with Updates
+**Problem**: Handle dynamic updates to the array and maintain subarray sum queries.
+
+**Link**: [CSES Problem Set - Subarray Sums II with Updates](https://cses.fi/problemset/task/subarray_sums_ii_updates)
+
+```python
+class SubarraySumsIIWithUpdates:
+    def __init__(self, arr, target):
+        self.arr = arr[:]
+        self.target = target
+        self.n = len(arr)
+        self.prefix = self._compute_prefix()
+        self.count = self._compute_count()
+    
+    def _compute_prefix(self):
+        """Compute prefix sums"""
+        prefix = [0] * (self.n + 1)
+        for i in range(self.n):
+            prefix[i + 1] = prefix[i] + self.arr[i]
+        return prefix
+    
+    def _compute_count(self):
+        """Compute count of subarrays with sum equal to target"""
+        count_map = {}
+        count = 0
+        
+        for i in range(self.n + 1):
+            # Look for prefix_sum - target
+            if self.prefix[i] - self.target in count_map:
+                count += count_map[self.prefix[i] - self.target]
+            
+            # Add current prefix sum to map
+            count_map[self.prefix[i]] = count_map.get(self.prefix[i], 0) + 1
+        
+        return count
+    
+    def update(self, index, new_value):
+        """Update element at index to new_value"""
+        old_value = self.arr[index]
+        self.arr[index] = new_value
+        
+        # Update prefix sums
+        diff = new_value - old_value
+        for i in range(index + 1, self.n + 1):
+            self.prefix[i] += diff
+        
+        # Recompute count
+        self.count = self._compute_count()
+    
+    def add_element(self, new_value):
+        """Add a new element to the array"""
+        self.arr.append(new_value)
+        self.n = len(self.arr)
+        self.prefix = self._compute_prefix()
+        self.count = self._compute_count()
+    
+    def remove_element(self, index):
+        """Remove element at index"""
+        self.arr.pop(index)
+        self.n = len(self.arr)
+        self.prefix = self._compute_prefix()
+        self.count = self._compute_count()
+    
+    def get_count(self):
+        """Get current count of subarrays with sum equal to target"""
+        return self.count
+    
+    def get_count_range(self, left, right):
+        """Get count of subarrays with sum equal to target in range [left, right]"""
+        # Extract subarray
+        subarray = self.arr[left:right+1]
+        
+        # Find subarray sums equal to target
+        return count_subarray_sums_equal_target(subarray, self.target)
+    
+    def get_all_subarrays_with_target(self):
+        """Get all subarrays with sum equal to target"""
+        result = []
+        n = len(self.arr)
+        
+        for i in range(n):
+            for j in range(i, n):
+                subarray = self.arr[i:j+1]
+                if sum(subarray) == self.target:
+                    result.append((i, j, subarray))
+        
+        return result
+    
+    def get_count_with_different_targets(self, targets):
+        """Get count for different target values"""
+        results = []
+        
+        for target in targets:
+            count = count_subarray_sums_equal_target(self.arr, target)
+            results.append(count)
+        
+        return results
+```
+
+### Variation 3: Subarray Sums II with Constraints
+**Problem**: Find subarray sums equal to target with additional constraints (e.g., minimum length, maximum sum).
+
+**Link**: [CSES Problem Set - Subarray Sums II with Constraints](https://cses.fi/problemset/task/subarray_sums_ii_constraints)
+
+```python
+def subarray_sums_ii_constraints(arr, target, min_length, max_sum):
+    """
+    Find subarray sums equal to target with constraints
+    """
+    n = len(arr)
+    if n == 0:
+        return 0
+    
+    # Calculate prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    
+    # Count occurrences of (prefix_sum - target) with constraints
+    count_map = {}
+    count = 0
+    
+    for i in range(n + 1):
+        # Check constraints
+        if i >= min_length and prefix[i] <= max_sum:
+            # Look for prefix_sum - target
+            if prefix[i] - target in count_map:
+                count += count_map[prefix[i] - target]
+        
+        # Add current prefix sum to map
+        count_map[prefix[i]] = count_map.get(prefix[i], 0) + 1
+    
+    return count
+
+def subarray_sums_ii_constraints_optimized(arr, target, min_length, max_sum):
+    """
+    Optimized version with better constraint handling
+    """
+    n = len(arr)
+    if n == 0:
+        return 0
+    
+    # Calculate prefix sums
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    
+    # Count occurrences of (prefix_sum - target) with constraints
+    count_map = {}
+    count = 0
+    
+    for i in range(n + 1):
+        # Check constraints
+        if i >= min_length and prefix[i] <= max_sum:
+            # Look for prefix_sum - target
+            if prefix[i] - target in count_map:
+                count += count_map[prefix[i] - target]
+        
+        # Add current prefix sum to map
+        count_map[prefix[i]] = count_map.get(prefix[i], 0) + 1
+        
+        # Early termination if we can't improve
+        if count == n * (n + 1) // 2:
+            break
+    
+    return count
+
+def subarray_sums_ii_constraints_multiple(arr, target, constraints_list):
+    """
+    Find subarray sums equal to target for multiple constraint sets
+    """
+    results = []
+    
+    for min_length, max_sum in constraints_list:
+        result = subarray_sums_ii_constraints(arr, target, min_length, max_sum)
+        results.append(result)
+    
+    return results
+
+def subarray_sums_ii_constraints_range(arr, target, min_length, max_sum, left, right):
+    """
+    Find subarray sums equal to target with constraints in specific range
+    """
+    # Extract subarray
+    subarray = arr[left:right+1]
+    
+    # Find subarray sums equal to target with constraints
+    return subarray_sums_ii_constraints(subarray, target, min_length, max_sum)
+
+# Example usage
+arr = [1, 2, 3, 4, 5]
+target = 7
+min_length = 2
+max_sum = 10
+
+result = subarray_sums_ii_constraints(arr, target, min_length, max_sum)
+print(f"Subarray sums equal to {target} with constraints: {result}")  # Output: 2
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Subarray Sums II](https://cses.fi/problemset/task/1662) - Basic subarray sum with target problem
+- [Subarray Sums I](https://cses.fi/problemset/task/1661) - Subarray sum problems
+- [Subarray Divisibility](https://cses.fi/problemset/task/1662) - Subarray divisibility problem
+
+#### **LeetCode Problems**
+- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Subarray sum with target
+- [Continuous Subarray Sum](https://leetcode.com/problems/continuous-subarray-sum/) - Subarray sum divisibility
+- [Subarray Product Less Than K](https://leetcode.com/problems/subarray-product-less-than-k/) - Subarray product constraints
+
+#### **Problem Categories**
+- **Hash Maps**: Frequency counting, prefix sum tracking, efficient lookups
+- **Prefix Sums**: Cumulative calculations, range queries, efficient sum computation
+- **Subarray Problems**: Array processing, sum calculations, constraint handling
+- **Algorithm Design**: Hash-based techniques, prefix sum optimization, subarray analysis

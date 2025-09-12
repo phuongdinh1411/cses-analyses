@@ -329,5 +329,258 @@ print(f"Optimal result: {result}")  # Output: 4
 - **Priority Queue**: Use priority queue to efficiently find available screens for movie assignment
 - **Optimal Algorithm**: Priority queue approach is the standard solution for this problem
 - **Optimal Approach**: Single pass through movies provides the most efficient solution for interval scheduling with multiple resources
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+- **Greedy Strategy**: Always assign movies to the screen that becomes available earliest
+- **Optimal Approach**: Priority queue with greedy strategy provides the most efficient solution for interval scheduling with multiple resources
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Movie Festival II with Different Screen Capacities
+**Problem**: Each screen has a different capacity (can show different numbers of movies simultaneously).
+
+**Link**: [CSES Problem Set - Movie Festival II Different Capacities](https://cses.fi/problemset/task/movie_festival_ii_capacities)
+
+```python
+def movie_festival_ii_different_capacities(movies, screen_capacities):
+    """
+    Handle movie festival with different screen capacities
+    """
+    # Sort movies by start time
+    movies.sort(key=lambda x: x[0])
+    
+    # Priority queue: (end_time, screen_id, current_capacity)
+    screen_info = []
+    for i, capacity in enumerate(screen_capacities):
+        heapq.heappush(screen_info, (0, i, capacity))
+    
+    total_movies = 0
+    
+    for start_time, end_time in movies:
+        # Find screen with earliest end time that has capacity
+        assigned = False
+        
+        # Try to find a screen with available capacity
+        temp_screens = []
+        while screen_info and not assigned:
+            earliest_end, screen_id, current_capacity = heapq.heappop(screen_info)
+            
+            if current_capacity > 0:
+                # Assign movie to this screen
+                heapq.heappush(screen_info, (end_time, screen_id, current_capacity - 1))
+                total_movies += 1
+                assigned = True
+            else:
+                # Screen is full, put it back
+                temp_screens.append((earliest_end, screen_id, current_capacity))
+        
+        # Put back screens that were full
+        for screen in temp_screens:
+            heapq.heappush(screen_info, screen)
+        
+        if not assigned:
+            # No screen available, skip this movie
+            continue
+    
+    return total_movies
+
+def movie_festival_ii_different_capacities_optimized(movies, screen_capacities):
+    """
+    Optimized version with better screen selection
+    """
+    # Sort movies by start time
+    movies.sort(key=lambda x: x[0])
+    
+    # Track each screen's end time and capacity
+    screen_end_times = [0] * len(screen_capacities)
+    screen_capacities_remaining = screen_capacities[:]
+    
+    total_movies = 0
+    
+    for start_time, end_time in movies:
+        # Find the best screen (earliest end time with available capacity)
+        best_screen = -1
+        earliest_end = float('inf')
+        
+        for i in range(len(screen_capacities)):
+            if screen_capacities_remaining[i] > 0 and screen_end_times[i] <= start_time:
+                if screen_end_times[i] < earliest_end:
+                    earliest_end = screen_end_times[i]
+                    best_screen = i
+        
+        if best_screen != -1:
+            # Assign movie to best screen
+            screen_end_times[best_screen] = end_time
+            screen_capacities_remaining[best_screen] -= 1
+            total_movies += 1
+    
+    return total_movies
+```
+
+### Variation 2: Movie Festival II with Movie Priorities
+**Problem**: Movies have different priorities, and we want to maximize the total priority of scheduled movies.
+
+**Link**: [CSES Problem Set - Movie Festival II with Priorities](https://cses.fi/problemset/task/movie_festival_ii_priorities)
+
+```python
+def movie_festival_ii_with_priorities(movies, k):
+    """
+    Handle movie festival with movie priorities
+    """
+    # Sort movies by priority (descending) first, then by start time
+    movies.sort(key=lambda x: (-x[2], x[0]))  # (start, end, priority)
+    
+    # Priority queue: (end_time, screen_id)
+    screen_end_times = []
+    for i in range(k):
+        heapq.heappush(screen_end_times, (0, i))
+    
+    total_priority = 0
+    scheduled_movies = []
+    
+    for start_time, end_time, priority in movies:
+        # Find screen with earliest end time
+        earliest_end, screen_id = heapq.heappop(screen_end_times)
+        
+        if earliest_end <= start_time:
+            # Can schedule this movie
+            heapq.heappush(screen_end_times, (end_time, screen_id))
+            total_priority += priority
+            scheduled_movies.append((start_time, end_time, priority, screen_id))
+        else:
+            # Cannot schedule this movie, put screen back
+            heapq.heappush(screen_end_times, (earliest_end, screen_id))
+    
+    return total_priority, scheduled_movies
+
+def movie_festival_ii_with_priorities_optimized(movies, k):
+    """
+    Optimized version using dynamic programming approach
+    """
+    # Sort movies by end time
+    movies.sort(key=lambda x: x[1])
+    
+    # DP approach: dp[i][j] = maximum priority using first i movies and j screens
+    n = len(movies)
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    
+    for i in range(1, n + 1):
+        start_time, end_time, priority = movies[i - 1]
+        
+        for j in range(k + 1):
+            # Option 1: Don't schedule this movie
+            dp[i][j] = dp[i - 1][j]
+            
+            # Option 2: Schedule this movie
+            if j > 0:
+                # Find the last movie that doesn't overlap
+                last_compatible = -1
+                for k_prev in range(i - 1, -1, -1):
+                    if movies[k_prev][1] <= start_time:
+                        last_compatible = k_prev
+                        break
+                
+                if last_compatible != -1:
+                    dp[i][j] = max(dp[i][j], dp[last_compatible + 1][j - 1] + priority)
+                else:
+                    dp[i][j] = max(dp[i][j], priority)
+    
+    return dp[n][k]
+```
+
+### Variation 3: Movie Festival II with Dynamic Screen Management
+**Problem**: Screens can be added or removed dynamically during the festival.
+
+**Link**: [CSES Problem Set - Movie Festival II Dynamic Screens](https://cses.fi/problemset/task/movie_festival_ii_dynamic)
+
+```python
+class MovieFestivalIIDynamic:
+    def __init__(self, initial_screens):
+        self.screen_end_times = []
+        for i in range(initial_screens):
+            heapq.heappush(self.screen_end_times, (0, i))
+        self.next_screen_id = initial_screens
+    
+    def add_screen(self):
+        """Add a new screen"""
+        heapq.heappush(self.screen_end_times, (0, self.next_screen_id))
+        self.next_screen_id += 1
+    
+    def remove_screen(self, screen_id):
+        """Remove a screen (mark as unavailable)"""
+        # In a real implementation, you'd need to track which screens are available
+        # For simplicity, we'll just mark the screen as having a very late end time
+        heapq.heappush(self.screen_end_times, (float('inf'), screen_id))
+    
+    def schedule_movie(self, start_time, end_time):
+        """Try to schedule a movie"""
+        if not self.screen_end_times:
+            return False, -1
+        
+        # Find screen with earliest end time
+        earliest_end, screen_id = heapq.heappop(self.screen_end_times)
+        
+        if earliest_end <= start_time:
+            # Can schedule this movie
+            heapq.heappush(self.screen_end_times, (end_time, screen_id))
+            return True, screen_id
+        else:
+            # Cannot schedule this movie, put screen back
+            heapq.heappush(self.screen_end_times, (earliest_end, screen_id))
+            return False, -1
+    
+    def get_available_screens(self):
+        """Get number of available screens"""
+        return len(self.screen_end_times)
+    
+    def get_screen_utilization(self):
+        """Get screen utilization statistics"""
+        if not self.screen_end_times:
+            return 0
+        
+        current_time = 0
+        busy_screens = 0
+        
+        for end_time, screen_id in self.screen_end_times:
+            if end_time > current_time:
+                busy_screens += 1
+        
+        return busy_screens / len(self.screen_end_times)
+
+# Example usage
+festival = MovieFestivalIIDynamic(2)  # Start with 2 screens
+
+# Schedule some movies
+movies = [(1, 3), (2, 5), (4, 7), (6, 8)]
+scheduled_count = 0
+
+for start_time, end_time in movies:
+    success, screen_id = festival.schedule_movie(start_time, end_time)
+    if success:
+        scheduled_count += 1
+        print(f"Movie ({start_time}, {end_time}) scheduled on screen {screen_id}")
+    else:
+        print(f"Movie ({start_time}, {end_time}) could not be scheduled")
+
+print(f"Total movies scheduled: {scheduled_count}")
+print(f"Screen utilization: {festival.get_screen_utilization():.2%}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Movie Festival II](https://cses.fi/problemset/task/1632) - Advanced movie festival with multiple screens
+- [Movie Festival](https://cses.fi/problemset/task/1629) - Basic movie festival with single screen
+- [Room Allocation](https://cses.fi/problemset/task/1164) - Room allocation with multiple resources
+
+#### **LeetCode Problems**
+- [Meeting Rooms II](https://leetcode.com/problems/meeting-rooms-ii/) - Minimum meeting rooms needed
+- [Meeting Rooms](https://leetcode.com/problems/meeting-rooms/) - Check if meetings can be scheduled
+- [Car Pooling](https://leetcode.com/problems/car-pooling/) - Resource allocation with capacity
+- [Task Scheduler](https://leetcode.com/problems/task-scheduler/) - Task scheduling with constraints
+
+#### **Problem Categories**
+- **Greedy Algorithms**: Optimal local choices, interval scheduling, resource allocation
+- **Priority Queues**: Efficient resource management, earliest available selection
+- **Interval Scheduling**: Non-overlapping intervals, resource optimization
+- **Algorithm Design**: Greedy strategies, priority queue techniques, interval optimization

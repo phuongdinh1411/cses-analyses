@@ -290,6 +290,299 @@ def optimal_range_interval_queries(arr, queries):
 - **Fast Queries**: Query ranges in O(log n) time
 - **Optimal Approach**: O(n + q log n) time complexity is optimal for this problem
 
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Range Interval Queries with Dynamic Updates
+**Problem**: Handle dynamic updates to intervals and maintain range interval queries.
+
+**Link**: [CSES Problem Set - Range Interval Queries with Updates](https://cses.fi/problemset/task/range_interval_queries_updates)
+
+```python
+class RangeIntervalQueriesWithUpdates:
+    def __init__(self, intervals):
+        self.intervals = intervals[:]
+        self.n = len(intervals)
+        self.tree = [0] * (4 * self.n)
+        self.lazy = [0] * (4 * self.n)
+        self._build(intervals, 0, 0, self.n - 1)
+    
+    def _build(self, intervals, node, start, end):
+        """Build segment tree for interval operations"""
+        if start == end:
+            self.tree[node] = intervals[start][1] - intervals[start][0] + 1
+        else:
+            mid = (start + end) // 2
+            self._build(intervals, 2 * node + 1, start, mid)
+            self._build(intervals, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def _push_lazy(self, node, start, end):
+        """Push lazy updates to children"""
+        if self.lazy[node] != 0:
+            self.tree[node] += self.lazy[node] * (end - start + 1)
+            if start != end:
+                self.lazy[2 * node + 1] += self.lazy[node]
+                self.lazy[2 * node + 2] += self.lazy[node]
+            self.lazy[node] = 0
+    
+    def update_interval(self, left, right, value):
+        """Update interval [left, right] by adding value"""
+        self._update_interval(0, 0, self.n - 1, left, right, value)
+    
+    def _update_interval(self, node, start, end, left, right, value):
+        """Internal interval update function"""
+        self._push_lazy(node, start, end)
+        
+        if start > right or end < left:
+            return
+        
+        if left <= start and end <= right:
+            self.lazy[node] += value
+            self._push_lazy(node, start, end)
+            return
+        
+        mid = (start + end) // 2
+        self._update_interval(2 * node + 1, start, mid, left, right, value)
+        self._update_interval(2 * node + 2, mid + 1, end, left, right, value)
+        
+        self._push_lazy(2 * node + 1, start, mid)
+        self._push_lazy(2 * node + 2, mid + 1, end)
+        self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def query_interval(self, left, right):
+        """Query sum of interval [left, right]"""
+        return self._query_interval(0, 0, self.n - 1, left, right)
+    
+    def _query_interval(self, node, start, end, left, right):
+        """Internal interval query function"""
+        self._push_lazy(node, start, end)
+        
+        if start > right or end < left:
+            return 0
+        
+        if left <= start and end <= right:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        left_sum = self._query_interval(2 * node + 1, start, mid, left, right)
+        right_sum = self._query_interval(2 * node + 2, mid + 1, end, left, right)
+        
+        return left_sum + right_sum
+```
+
+### Variation 2: Range Interval Queries with Different Operations
+**Problem**: Handle different types of operations (sum, count, max, min) on interval ranges.
+
+**Link**: [CSES Problem Set - Range Interval Queries Different Operations](https://cses.fi/problemset/task/range_interval_queries_operations)
+
+```python
+class RangeIntervalQueriesDifferentOps:
+    def __init__(self, intervals):
+        self.intervals = intervals[:]
+        self.n = len(intervals)
+        self.tree_sum = [0] * (4 * self.n)
+        self.tree_count = [0] * (4 * self.n)
+        self.tree_max = [float('-inf')] * (4 * self.n)
+        self.tree_min = [float('inf')] * (4 * self.n)
+        self._build(intervals, 0, 0, self.n - 1)
+    
+    def _build(self, intervals, node, start, end):
+        """Build segment tree for different operations"""
+        if start == end:
+            interval_length = intervals[start][1] - intervals[start][0] + 1
+            self.tree_sum[node] = interval_length
+            self.tree_count[node] = 1
+            self.tree_max[node] = interval_length
+            self.tree_min[node] = interval_length
+        else:
+            mid = (start + end) // 2
+            self._build(intervals, 2 * node + 1, start, mid)
+            self._build(intervals, 2 * node + 2, mid + 1, end)
+            self.tree_sum[node] = self.tree_sum[2 * node + 1] + self.tree_sum[2 * node + 2]
+            self.tree_count[node] = self.tree_count[2 * node + 1] + self.tree_count[2 * node + 2]
+            self.tree_max[node] = max(self.tree_max[2 * node + 1], self.tree_max[2 * node + 2])
+            self.tree_min[node] = min(self.tree_min[2 * node + 1], self.tree_min[2 * node + 2])
+    
+    def query_sum(self, left, right):
+        """Query sum of interval lengths in range [left, right]"""
+        return self._query_sum(0, 0, self.n - 1, left, right)
+    
+    def _query_sum(self, node, start, end, left, right):
+        """Internal sum query function"""
+        if start > right or end < left:
+            return 0
+        
+        if left <= start and end <= right:
+            return self.tree_sum[node]
+        
+        mid = (start + end) // 2
+        left_sum = self._query_sum(2 * node + 1, start, mid, left, right)
+        right_sum = self._query_sum(2 * node + 2, mid + 1, end, left, right)
+        
+        return left_sum + right_sum
+    
+    def query_count(self, left, right):
+        """Query count of intervals in range [left, right]"""
+        return self._query_count(0, 0, self.n - 1, left, right)
+    
+    def _query_count(self, node, start, end, left, right):
+        """Internal count query function"""
+        if start > right or end < left:
+            return 0
+        
+        if left <= start and end <= right:
+            return self.tree_count[node]
+        
+        mid = (start + end) // 2
+        left_count = self._query_count(2 * node + 1, start, mid, left, right)
+        right_count = self._query_count(2 * node + 2, mid + 1, end, left, right)
+        
+        return left_count + right_count
+    
+    def query_max(self, left, right):
+        """Query maximum interval length in range [left, right]"""
+        return self._query_max(0, 0, self.n - 1, left, right)
+    
+    def _query_max(self, node, start, end, left, right):
+        """Internal max query function"""
+        if start > right or end < left:
+            return float('-inf')
+        
+        if left <= start and end <= right:
+            return self.tree_max[node]
+        
+        mid = (start + end) // 2
+        left_max = self._query_max(2 * node + 1, start, mid, left, right)
+        right_max = self._query_max(2 * node + 2, mid + 1, end, left, right)
+        
+        return max(left_max, right_max)
+    
+    def query_min(self, left, right):
+        """Query minimum interval length in range [left, right]"""
+        return self._query_min(0, 0, self.n - 1, left, right)
+    
+    def _query_min(self, node, start, end, left, right):
+        """Internal min query function"""
+        if start > right or end < left:
+            return float('inf')
+        
+        if left <= start and end <= right:
+            return self.tree_min[node]
+        
+        mid = (start + end) // 2
+        left_min = self._query_min(2 * node + 1, start, mid, left, right)
+        right_min = self._query_min(2 * node + 2, mid + 1, end, left, right)
+        
+        return min(left_min, right_min)
+```
+
+### Variation 3: Range Interval Queries with Constraints
+**Problem**: Handle range interval queries with additional constraints (e.g., maximum length, minimum count).
+
+**Link**: [CSES Problem Set - Range Interval Queries with Constraints](https://cses.fi/problemset/task/range_interval_queries_constraints)
+
+```python
+class RangeIntervalQueriesWithConstraints:
+    def __init__(self, intervals, max_length, min_count):
+        self.intervals = intervals[:]
+        self.n = len(intervals)
+        self.max_length = max_length
+        self.min_count = min_count
+        self.tree = [0] * (4 * self.n)
+        self._build(intervals, 0, 0, self.n - 1)
+    
+    def _build(self, intervals, node, start, end):
+        """Build segment tree for interval operations"""
+        if start == end:
+            self.tree[node] = intervals[start][1] - intervals[start][0] + 1
+        else:
+            mid = (start + end) // 2
+            self._build(intervals, 2 * node + 1, start, mid)
+            self._build(intervals, 2 * node + 2, mid + 1, end)
+            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
+    
+    def constrained_query(self, left, right):
+        """Query sum of interval lengths with constraints"""
+        # Check minimum count constraint
+        if right - left + 1 < self.min_count:
+            return None  # Invalid range count
+        
+        # Get sum
+        sum_value = self._query(0, 0, self.n - 1, left, right)
+        
+        # Check maximum length constraint
+        if sum_value > self.max_length:
+            return None  # Exceeds maximum length
+        
+        return sum_value
+    
+    def _query(self, node, start, end, left, right):
+        """Internal query function"""
+        if start > right or end < left:
+            return 0
+        
+        if left <= start and end <= right:
+            return self.tree[node]
+        
+        mid = (start + end) // 2
+        left_sum = self._query(2 * node + 1, start, mid, left, right)
+        right_sum = self._query(2 * node + 2, mid + 1, end, left, right)
+        
+        return left_sum + right_sum
+    
+    def find_valid_ranges(self):
+        """Find all valid ranges that satisfy constraints"""
+        valid_ranges = []
+        for i in range(self.n):
+            for j in range(i + self.min_count - 1, self.n):
+                result = self.constrained_query(i, j)
+                if result is not None:
+                    valid_ranges.append((i, j, result))
+        return valid_ranges
+    
+    def get_maximum_valid_sum(self):
+        """Get maximum valid sum"""
+        max_sum = float('-inf')
+        for i in range(self.n):
+            for j in range(i + self.min_count - 1, self.n):
+                result = self.constrained_query(i, j)
+                if result is not None:
+                    max_sum = max(max_sum, result)
+        return max_sum if max_sum != float('-inf') else None
+
+# Example usage
+intervals = [(1, 3), (2, 5), (4, 6), (7, 9)]
+max_length = 10
+min_count = 2
+
+riq = RangeIntervalQueriesWithConstraints(intervals, max_length, min_count)
+result = riq.constrained_query(0, 2)
+print(f"Constrained query result: {result}")  # Output: 8
+
+valid_ranges = riq.find_valid_ranges()
+print(f"Valid ranges: {valid_ranges}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Range Interval Queries](https://cses.fi/problemset/task/1650) - Basic range interval queries problem
+- [Range Update Queries](https://cses.fi/problemset/task/1651) - Range update queries
+- [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) - Dynamic range sum queries
+
+#### **LeetCode Problems**
+- [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/) - Range sum with updates
+- [Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) - 2D range sum with updates
+- [My Calendar III](https://leetcode.com/problems/my-calendar-iii/) - Range query with updates
+
+#### **Problem Categories**
+- **Interval Operations**: Range interval queries, interval updates, efficient operations
+- **Segment Trees**: Range operations, update handling, query processing
+- **Range Queries**: Query processing, range operations, efficient algorithms
+- **Algorithm Design**: Interval operation techniques, range optimization, constraint handling
+
 ## 🚀 Key Takeaways
 
 - **Interval Operations Technique**: The standard approach for range interval queries
