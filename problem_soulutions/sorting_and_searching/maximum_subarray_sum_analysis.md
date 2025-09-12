@@ -315,3 +315,173 @@ print(f"Optimal result: {result}")  # Output: 9
 - **Local Decision**: At each step, make optimal local decision
 - **Global Tracking**: Maintain global maximum throughout the process
 - **Optimal Approach**: Kadane's algorithm provides the best possible time complexity
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Maximum Subarray Sum with Constraints
+**Problem**: Find maximum subarray sum with additional constraints (e.g., minimum length, maximum length).
+
+**Link**: [CSES Problem Set - Maximum Subarray Sum with Constraints](https://cses.fi/problemset/task/maximum_subarray_sum_constraints)
+
+```python
+def maximum_subarray_sum_constraints(arr, min_length, max_length):
+    """
+    Find maximum subarray sum with length constraints
+    """
+    n = len(arr)
+    max_sum = float('-inf')
+    
+    # Use sliding window approach
+    for start in range(n):
+        current_sum = 0
+        for end in range(start, min(start + max_length, n)):
+            current_sum += arr[end]
+            
+            # Check if subarray meets length requirements
+            if end - start + 1 >= min_length:
+                max_sum = max(max_sum, current_sum)
+    
+    return max_sum
+
+def maximum_subarray_sum_constraints_optimized(arr, min_length, max_length):
+    """
+    Optimized version using prefix sums
+    """
+    n = len(arr)
+    prefix_sums = [0] * (n + 1)
+    
+    # Calculate prefix sums
+    for i in range(n):
+        prefix_sums[i + 1] = prefix_sums[i] + arr[i]
+    
+    max_sum = float('-inf')
+    
+    # Check all valid subarrays
+    for start in range(n):
+        for end in range(start + min_length - 1, min(start + max_length, n)):
+            subarray_sum = prefix_sums[end + 1] - prefix_sums[start]
+            max_sum = max(max_sum, subarray_sum)
+    
+    return max_sum
+```
+
+### Variation 2: Maximum Subarray Sum with Updates
+**Problem**: Handle dynamic updates to the array and maintain maximum subarray sum.
+
+**Link**: [CSES Problem Set - Maximum Subarray Sum with Updates](https://cses.fi/problemset/task/maximum_subarray_sum_updates)
+
+```python
+class MaximumSubarraySumWithUpdates:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.n = len(arr)
+        self.max_sum = self._calculate_max_sum()
+    
+    def _calculate_max_sum(self):
+        """Calculate maximum subarray sum using Kadane's algorithm"""
+        max_ending_here = max_so_far = self.arr[0]
+        
+        for i in range(1, self.n):
+            max_ending_here = max(self.arr[i], max_ending_here + self.arr[i])
+            max_so_far = max(max_so_far, max_ending_here)
+        
+        return max_so_far
+    
+    def update(self, index, new_value):
+        """Update element at index to new_value"""
+        self.arr[index] = new_value
+        self.max_sum = self._calculate_max_sum()
+    
+    def get_max_sum(self):
+        """Get current maximum subarray sum"""
+        return self.max_sum
+    
+    def get_max_sum_range(self, start, end):
+        """Get maximum subarray sum in range [start, end]"""
+        max_ending_here = max_so_far = self.arr[start]
+        
+        for i in range(start + 1, end + 1):
+            max_ending_here = max(self.arr[i], max_ending_here + self.arr[i])
+            max_so_far = max(max_so_far, max_ending_here)
+        
+        return max_so_far
+```
+
+### Variation 3: Maximum Subarray Sum with Circular Array
+**Problem**: Find maximum subarray sum in a circular array (array is circular).
+
+**Link**: [CSES Problem Set - Maximum Subarray Sum Circular](https://cses.fi/problemset/task/maximum_subarray_sum_circular)
+
+```python
+def maximum_subarray_sum_circular(arr):
+    """
+    Find maximum subarray sum in circular array
+    """
+    n = len(arr)
+    
+    # Case 1: Maximum subarray doesn't wrap around
+    max_sum_no_wrap = kadane_algorithm(arr)
+    
+    # Case 2: Maximum subarray wraps around
+    # This means the minimum subarray is in the middle
+    # So max_sum = total_sum - min_sum
+    
+    total_sum = sum(arr)
+    min_sum = kadane_algorithm([-x for x in arr])  # Find minimum subarray
+    max_sum_wrap = total_sum + min_sum  # Add because we negated
+    
+    # Handle edge case where all elements are negative
+    if max_sum_wrap == 0:
+        return max_sum_no_wrap
+    
+    return max(max_sum_no_wrap, max_sum_wrap)
+
+def kadane_algorithm(arr):
+    """Standard Kadane's algorithm"""
+    max_ending_here = max_so_far = arr[0]
+    
+    for i in range(1, len(arr)):
+        max_ending_here = max(arr[i], max_ending_here + arr[i])
+        max_so_far = max(max_so_far, max_ending_here)
+    
+    return max_so_far
+
+def maximum_subarray_sum_circular_optimized(arr):
+    """
+    Optimized version for circular array
+    """
+    n = len(arr)
+    
+    # Calculate maximum subarray sum without wrapping
+    max_sum_no_wrap = kadane_algorithm(arr)
+    
+    # Calculate total sum and minimum subarray sum
+    total_sum = sum(arr)
+    min_sum = kadane_algorithm([-x for x in arr])
+    
+    # Maximum sum with wrapping
+    max_sum_wrap = total_sum + min_sum if min_sum != 0 else max_sum_no_wrap
+    
+    return max(max_sum_no_wrap, max_sum_wrap)
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Maximum Subarray Sum](https://cses.fi/problemset/task/1643) - Basic maximum subarray sum problem
+- [Maximum Subarray Sum II](https://cses.fi/problemset/task/1644) - Advanced maximum subarray sum problem
+- [Subarray Sums I](https://cses.fi/problemset/task/1660) - Subarray sum queries
+
+#### **LeetCode Problems**
+- [Maximum Subarray](https://leetcode.com/problems/maximum-subarray/) - Basic maximum subarray sum
+- [Maximum Sum Circular Subarray](https://leetcode.com/problems/maximum-sum-circular-subarray/) - Circular array variant
+- [Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/) - Maximum product variant
+- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Subarray sum with target
+
+#### **Problem Categories**
+- **Dynamic Programming**: Kadane's algorithm, optimal substructure, local decisions
+- **Array Processing**: Subarray problems, prefix sums, sliding window techniques
+- **Optimization**: Maximum sum problems, constraint satisfaction, optimization algorithms
+- **Algorithm Design**: Dynamic programming algorithms, greedy strategies, optimization techniques

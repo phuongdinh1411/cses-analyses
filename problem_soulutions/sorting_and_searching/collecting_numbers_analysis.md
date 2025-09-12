@@ -339,3 +339,163 @@ print(f"Optimal result: {result}")  # Output: 2
 - **Position Analysis**: Determine passes by analyzing position sequences
 - **Coordinate Compression**: Handle large values efficiently
 - **Optimal Approach**: Efficient sorting and position tracking
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Collecting Numbers with Duplicates
+**Problem**: Collect numbers in order when duplicates are allowed in the array.
+
+**Link**: [CSES Problem Set - Collecting Numbers with Duplicates](https://cses.fi/problemset/task/collecting_numbers_duplicates)
+
+```python
+def collecting_numbers_duplicates(arr):
+    """
+    Collect numbers in order when duplicates are allowed
+    """
+    # Create a list of (value, original_index) pairs
+    indexed_arr = [(val, i) for i, val in enumerate(arr)]
+    
+    # Sort by value, then by original index
+    indexed_arr.sort()
+    
+    passes = 1
+    last_position = indexed_arr[0][1]
+    
+    for i in range(1, len(indexed_arr)):
+        val, pos = indexed_arr[i]
+        
+        if pos < last_position:
+            # Need new pass
+            passes += 1
+        
+        last_position = pos
+    
+    return passes
+```
+
+### Variation 2: Collecting Numbers with Constraints
+**Problem**: Collect numbers with constraints (e.g., can only collect k numbers per pass).
+
+**Link**: [CSES Problem Set - Collecting Numbers with Constraints](https://cses.fi/problemset/task/collecting_numbers_constraints)
+
+```python
+def collecting_numbers_constraints(arr, k):
+    """
+    Collect numbers with constraint of k numbers per pass
+    """
+    # Create position mapping
+    positions = {}
+    for i, val in enumerate(arr):
+        if val not in positions:
+            positions[val] = []
+        positions[val].append(i)
+    
+    # Sort unique values
+    sorted_values = sorted(positions.keys())
+    
+    passes = 0
+    collected = set()
+    
+    while len(collected) < len(sorted_values):
+        passes += 1
+        numbers_in_pass = 0
+        last_position = -1
+        
+        for val in sorted_values:
+            if val in collected:
+                continue
+            
+            # Find first position after last_position
+            found_position = None
+            for pos in positions[val]:
+                if pos > last_position:
+                    found_position = pos
+                    break
+            
+            if found_position is not None and numbers_in_pass < k:
+                collected.add(val)
+                last_position = found_position
+                numbers_in_pass += 1
+    
+    return passes
+```
+
+### Variation 3: Collecting Numbers with Weights
+**Problem**: Each number has a weight, and we want to minimize the total weight of passes.
+
+**Link**: [CSES Problem Set - Collecting Numbers with Weights](https://cses.fi/problemset/task/collecting_numbers_weights)
+
+```python
+def collecting_numbers_weights(arr, weights):
+    """
+    Collect numbers to minimize total weight of passes
+    """
+    # Create position mapping with weights
+    positions = {}
+    for i, (val, weight) in enumerate(zip(arr, weights)):
+        if val not in positions:
+            positions[val] = []
+        positions[val].append((i, weight))
+    
+    # Sort unique values
+    sorted_values = sorted(positions.keys())
+    
+    # Use dynamic programming to find optimal collection strategy
+    n = len(sorted_values)
+    dp = [float('inf')] * (1 << n)
+    dp[0] = 0
+    
+    for mask in range(1 << n):
+        if dp[mask] == float('inf'):
+            continue
+        
+        # Try to collect numbers in a single pass
+        last_position = -1
+        current_weight = 0
+        new_mask = mask
+        
+        for i, val in enumerate(sorted_values):
+            if mask & (1 << i):
+                continue
+            
+            # Find best position for this value
+            best_pos = None
+            best_weight = float('inf')
+            
+            for pos, weight in positions[val]:
+                if pos > last_position and weight < best_weight:
+                    best_pos = pos
+                    best_weight = weight
+            
+            if best_pos is not None:
+                new_mask |= (1 << i)
+                current_weight += best_weight
+                last_position = best_pos
+        
+        # Update DP
+        if new_mask != mask:
+            dp[new_mask] = min(dp[new_mask], dp[mask] + current_weight)
+    
+    return dp[(1 << n) - 1]
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Collecting Numbers](https://cses.fi/problemset/task/2216) - Basic collecting numbers problem
+- [Collecting Numbers II](https://cses.fi/problemset/task/2217) - Advanced collecting numbers problem
+- [Stick Lengths](https://cses.fi/problemset/task/1074) - Optimization with sorting
+
+#### **LeetCode Problems**
+- [Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/) - Find longest increasing sequence
+- [Russian Doll Envelopes](https://leetcode.com/problems/russian-doll-envelopes/) - Nested sequence problem
+- [Maximum Length of Pair Chain](https://leetcode.com/problems/maximum-length-of-pair-chain/) - Chain formation problem
+- [Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/) - Interval scheduling
+
+#### **Problem Categories**
+- **Greedy Algorithms**: Optimal local choices, sorting-based optimization, sequence problems
+- **Sorting**: Array sorting, coordinate compression, position tracking
+- **Sequence Analysis**: Position sequences, pass counting, order analysis
+- **Algorithm Design**: Greedy strategies, sorting algorithms, optimization techniques

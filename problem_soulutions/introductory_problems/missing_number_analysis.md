@@ -260,7 +260,9 @@ if __name__ == "__main__":
 - Most efficient approach for competitive programming
 - Standard method for missing number optimization
 
-## 🎯 Problem Variations
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
 
 ### Variation 1: Missing Number with Duplicates
 **Problem**: Find the missing number when duplicates are allowed in the array.
@@ -316,12 +318,24 @@ def missing_number_sorted(n, arr):
     return left + 1
 ```
 
-## 🔗 Related Problems
+### Related Problems
 
-- **[Array Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Array problems
-- **[Mathematical Formulas](/cses-analyses/problem_soulutions/introductory_problems/)**: Mathematical formula problems
-- **[XOR Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: XOR problems
-- **[Missing Element Problems](/cses-analyses/problem_soulutions/introductory_problems/)**: Missing element problems
+#### **CSES Problems**
+- [Missing Number](https://cses.fi/problemset/task/1083) - Basic missing number problem
+- [Number Spiral](https://cses.fi/problemset/task/1071) - Mathematical sequence problems
+- [Two Sets](https://cses.fi/problemset/task/1092) - Set partitioning problems
+
+#### **LeetCode Problems**
+- [Missing Number](https://leetcode.com/problems/missing-number/) - Find missing number in array
+- [First Missing Positive](https://leetcode.com/problems/first-missing-positive/) - Find first missing positive integer
+- [Find All Numbers Disappeared in an Array](https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/) - Find all missing numbers
+- [Single Number](https://leetcode.com/problems/single-number/) - Find single missing number using XOR
+
+#### **Problem Categories**
+- **Array Analysis**: Missing element detection, array manipulation, mathematical analysis
+- **Mathematical Formulas**: Sum calculations, arithmetic series, mathematical optimization
+- **XOR Operations**: Bitwise operations, mathematical properties, efficient algorithms
+- **Algorithm Design**: Array algorithms, mathematical algorithms, optimization techniques
 
 ## 📚 Learning Points
 

@@ -343,5 +343,180 @@ print(f"Optimal result: {result}")  # Output: [3, 8, -1]
 - **Binary Search Efficiency**: Eliminates linear search through sorted data
 - **Data Structure Choice**: Multiset provides optimal operations for this problem
 - **Optimal Approach**: Binary search with sorted data provides the best balance of efficiency and correctness
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Concert Tickets with Multiple Categories
+**Problem**: Tickets have different categories (VIP, Regular, Student) with different pricing rules.
+
+**Link**: [CSES Problem Set - Concert Tickets Multiple Categories](https://cses.fi/problemset/task/concert_tickets_categories)
+
+```python
+def concert_tickets_categories(tickets, customers):
+    """
+    Handle concert tickets with multiple categories
+    """
+    # Separate tickets by category
+    vip_tickets = []
+    regular_tickets = []
+    student_tickets = []
+    
+    for ticket in tickets:
+        if ticket['category'] == 'VIP':
+            vip_tickets.append(ticket['price'])
+        elif ticket['category'] == 'Regular':
+            regular_tickets.append(ticket['price'])
+        else:  # Student
+            student_tickets.append(ticket['price'])
+    
+    # Sort each category
+    vip_tickets.sort()
+    regular_tickets.sort()
+    student_tickets.sort()
+    
+    result = []
+    
+    for customer in customers:
+        budget = customer['budget']
+        category = customer['preferred_category']
+        
+        # Find best ticket in preferred category
+        if category == 'VIP':
+            tickets_list = vip_tickets
+        elif category == 'Regular':
+            tickets_list = regular_tickets
+        else:
+            tickets_list = student_tickets
+        
+        # Binary search for best ticket
+        index = bisect_right(tickets_list, budget) - 1
+        
+        if index >= 0:
+            ticket_price = tickets_list.pop(index)
+            result.append(ticket_price)
+        else:
+            # Try other categories as fallback
+            all_tickets = vip_tickets + regular_tickets + student_tickets
+            all_tickets.sort()
+            index = bisect_right(all_tickets, budget) - 1
+            
+            if index >= 0:
+                ticket_price = all_tickets.pop(index)
+                result.append(ticket_price)
+            else:
+                result.append(-1)
+    
+    return result
+```
+
+### Variation 2: Concert Tickets with Time Constraints
+**Problem**: Tickets have time windows, and customers have arrival times.
+
+**Link**: [CSES Problem Set - Concert Tickets Time Constraints](https://cses.fi/problemset/task/concert_tickets_time)
+
+```python
+def concert_tickets_time_constraints(tickets, customers):
+    """
+    Handle concert tickets with time window constraints
+    """
+    # Create events for ticket availability and customer arrivals
+    events = []
+    
+    for ticket in tickets:
+        events.append((ticket['start_time'], 'ticket_available', ticket))
+        events.append((ticket['end_time'], 'ticket_unavailable', ticket))
+    
+    for customer in customers:
+        events.append((customer['arrival_time'], 'customer_arrives', customer))
+    
+    # Sort events by time
+    events.sort()
+    
+    available_tickets = []
+    result = []
+    
+    for time, event_type, data in events:
+        if event_type == 'ticket_available':
+            available_tickets.append(data['price'])
+            available_tickets.sort()
+        
+        elif event_type == 'ticket_unavailable':
+            if data['price'] in available_tickets:
+                available_tickets.remove(data['price'])
+        
+        elif event_type == 'customer_arrives':
+            # Find best affordable ticket
+            budget = data['budget']
+            index = bisect_right(available_tickets, budget) - 1
+            
+            if index >= 0:
+                ticket_price = available_tickets.pop(index)
+                result.append(ticket_price)
+            else:
+                result.append(-1)
+    
+    return result
+```
+
+### Variation 3: Concert Tickets with Dynamic Pricing
+**Problem**: Ticket prices change based on demand and time remaining.
+
+**Link**: [CSES Problem Set - Concert Tickets Dynamic Pricing](https://cses.fi/problemset/task/concert_tickets_dynamic)
+
+```python
+def concert_tickets_dynamic_pricing(tickets, customers, current_time):
+    """
+    Handle concert tickets with dynamic pricing
+    """
+    def calculate_dynamic_price(base_price, demand_factor, time_factor):
+        """Calculate dynamic price based on demand and time"""
+        return int(base_price * demand_factor * time_factor)
+    
+    # Calculate current prices for all tickets
+    current_tickets = []
+    for ticket in tickets:
+        demand_factor = 1.0 + (ticket['demand'] / 100.0)
+        time_factor = 1.0 + (ticket['time_remaining'] / 100.0)
+        current_price = calculate_dynamic_price(ticket['base_price'], demand_factor, time_factor)
+        current_tickets.append(current_price)
+    
+    # Sort current prices
+    current_tickets.sort()
+    
+    result = []
+    
+    for customer in customers:
+        budget = customer['budget']
+        
+        # Binary search for best affordable ticket
+        index = bisect_right(current_tickets, budget) - 1
+        
+        if index >= 0:
+            ticket_price = current_tickets.pop(index)
+            result.append(ticket_price)
+        else:
+            result.append(-1)
+    
+    return result
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Concert Tickets](https://cses.fi/problemset/task/1091) - Basic concert tickets problem
+- [Apartments](https://cses.fi/problemset/task/1084) - Similar matching problem
+- [Ferris Wheel](https://cses.fi/problemset/task/1090) - Two-pointer optimization
+
+#### **LeetCode Problems**
+- [Two Sum](https://leetcode.com/problems/two-sum/) - Find pairs with target sum
+- [3Sum](https://leetcode.com/problems/3sum/) - Find triplets with zero sum
+- [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) - Two-pointer optimization
+- [Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/) - Two-pointer water trapping
+
+#### **Problem Categories**
+- **Binary Search**: Efficient searching, sorted array algorithms, upper bound operations
+- **Greedy Algorithms**: Optimal local choices, matching problems, resource allocation
+- **Sorting**: Array sorting, binary search, efficient data structures
+- **Algorithm Design**: Binary search algorithms, greedy strategies, optimization techniques

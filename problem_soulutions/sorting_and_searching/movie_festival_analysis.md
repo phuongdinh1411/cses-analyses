@@ -300,3 +300,207 @@ print(f"Optimal result: {result}")  # Output: 2
 - **Optimal Substructure**: Optimal solution contains optimal solutions to subproblems
 - **Mathematical Proof**: The greedy algorithm is proven to give the maximum number of movies
 - **Optimal Approach**: Greedy by end time provides the best theoretical and practical performance
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Movie Festival with Weights
+**Problem**: Each movie has a weight (priority/score), and we want to maximize total weight instead of count.
+
+**Link**: [CSES Problem Set - Movie Festival with Weights](https://cses.fi/problemset/task/movie_festival_weights)
+
+```python
+def movie_festival_weights(movies):
+    """
+    Find maximum total weight of non-overlapping movies
+    """
+    # Sort movies by end time
+    movies.sort(key=lambda x: x['end_time'])
+    
+    # Dynamic programming approach
+    n = len(movies)
+    dp = [0] * (n + 1)
+    
+    for i in range(1, n + 1):
+        # Option 1: Don't include current movie
+        dp[i] = dp[i - 1]
+        
+        # Option 2: Include current movie
+        # Find the last movie that doesn't overlap
+        last_compatible = -1
+        for j in range(i - 1, -1, -1):
+            if movies[j]['end_time'] <= movies[i - 1]['start_time']:
+                last_compatible = j
+                break
+        
+        if last_compatible != -1:
+            dp[i] = max(dp[i], dp[last_compatible + 1] + movies[i - 1]['weight'])
+        else:
+            dp[i] = max(dp[i], movies[i - 1]['weight'])
+    
+    return dp[n]
+
+def movie_festival_weights_optimized(movies):
+    """
+    Optimized version using binary search
+    """
+    # Sort movies by end time
+    movies.sort(key=lambda x: x['end_time'])
+    
+    n = len(movies)
+    dp = [0] * (n + 1)
+    
+    for i in range(1, n + 1):
+        # Option 1: Don't include current movie
+        dp[i] = dp[i - 1]
+        
+        # Option 2: Include current movie
+        # Binary search for last compatible movie
+        left, right = 0, i - 1
+        last_compatible = -1
+        
+        while left <= right:
+            mid = (left + right) // 2
+            if movies[mid]['end_time'] <= movies[i - 1]['start_time']:
+                last_compatible = mid
+                left = mid + 1
+            else:
+                right = mid - 1
+        
+        if last_compatible != -1:
+            dp[i] = max(dp[i], dp[last_compatible + 1] + movies[i - 1]['weight'])
+        else:
+            dp[i] = max(dp[i], movies[i - 1]['weight'])
+    
+    return dp[n]
+```
+
+### Variation 2: Movie Festival with Multiple Theaters
+**Problem**: There are multiple theaters, and we want to maximize total movies across all theaters.
+
+**Link**: [CSES Problem Set - Movie Festival Multiple Theaters](https://cses.fi/problemset/task/movie_festival_multiple_theaters)
+
+```python
+def movie_festival_multiple_theaters(movies, num_theaters):
+    """
+    Find maximum movies across multiple theaters
+    """
+    # Sort movies by end time
+    movies.sort(key=lambda x: x['end_time'])
+    
+    # Track end times for each theater
+    theater_end_times = [0] * num_theaters
+    total_movies = 0
+    
+    for movie in movies:
+        # Find theater with earliest end time
+        best_theater = 0
+        for i in range(1, num_theaters):
+            if theater_end_times[i] < theater_end_times[best_theater]:
+                best_theater = i
+        
+        # Check if movie can be scheduled in this theater
+        if theater_end_times[best_theater] <= movie['start_time']:
+            theater_end_times[best_theater] = movie['end_time']
+            total_movies += 1
+    
+    return total_movies
+
+def movie_festival_multiple_theaters_optimized(movies, num_theaters):
+    """
+    Optimized version using priority queue
+    """
+    import heapq
+    
+    # Sort movies by end time
+    movies.sort(key=lambda x: x['end_time'])
+    
+    # Use min-heap to track theater end times
+    theater_heap = [0] * num_theaters
+    heapq.heapify(theater_heap)
+    
+    total_movies = 0
+    
+    for movie in movies:
+        # Get theater with earliest end time
+        earliest_end = heapq.heappop(theater_heap)
+        
+        # Check if movie can be scheduled
+        if earliest_end <= movie['start_time']:
+            heapq.heappush(theater_heap, movie['end_time'])
+            total_movies += 1
+        else:
+            # Put back the theater end time
+            heapq.heappush(theater_heap, earliest_end)
+    
+    return total_movies
+```
+
+### Variation 3: Movie Festival with Dynamic Scheduling
+**Problem**: Movies can be added or removed dynamically, and we need to maintain optimal scheduling.
+
+**Link**: [CSES Problem Set - Movie Festival Dynamic Scheduling](https://cses.fi/problemset/task/movie_festival_dynamic)
+
+```python
+class MovieFestivalDynamic:
+    def __init__(self):
+        self.movies = []
+        self.scheduled_movies = []
+        self.max_movies = 0
+    
+    def add_movie(self, start_time, end_time):
+        """Add a new movie to the festival"""
+        movie = {'start_time': start_time, 'end_time': end_time}
+        self.movies.append(movie)
+        self._update_schedule()
+    
+    def remove_movie(self, start_time, end_time):
+        """Remove a movie from the festival"""
+        movie = {'start_time': start_time, 'end_time': end_time}
+        if movie in self.movies:
+            self.movies.remove(movie)
+            self._update_schedule()
+    
+    def _update_schedule(self):
+        """Update the optimal schedule"""
+        # Sort movies by end time
+        sorted_movies = sorted(self.movies, key=lambda x: x['end_time'])
+        
+        self.scheduled_movies = []
+        last_end_time = 0
+        
+        for movie in sorted_movies:
+            if movie['start_time'] >= last_end_time:
+                self.scheduled_movies.append(movie)
+                last_end_time = movie['end_time']
+        
+        self.max_movies = len(self.scheduled_movies)
+    
+    def get_max_movies(self):
+        """Get current maximum number of movies"""
+        return self.max_movies
+    
+    def get_scheduled_movies(self):
+        """Get current scheduled movies"""
+        return self.scheduled_movies
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Movie Festival](https://cses.fi/problemset/task/1629) - Basic movie festival problem
+- [Movie Festival II](https://cses.fi/problemset/task/1630) - Advanced movie festival problem
+- [Tasks and Deadlines](https://cses.fi/problemset/task/1630) - Similar scheduling problem
+
+#### **LeetCode Problems**
+- [Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/) - Remove minimum intervals
+- [Meeting Rooms](https://leetcode.com/problems/meeting-rooms/) - Check if meetings can be scheduled
+- [Meeting Rooms II](https://leetcode.com/problems/meeting-rooms-ii/) - Minimum rooms needed
+- [Minimum Number of Arrows to Burst Balloons](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/) - Similar interval problem
+
+#### **Problem Categories**
+- **Greedy Algorithms**: Optimal local choices, interval scheduling, activity selection
+- **Interval Problems**: Non-overlapping intervals, scheduling optimization, time management
+- **Sorting**: Array sorting, interval sorting, end-time optimization
+- **Algorithm Design**: Greedy strategies, interval algorithms, scheduling optimization

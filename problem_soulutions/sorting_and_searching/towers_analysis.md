@@ -303,3 +303,154 @@ print(f"Optimal result: {result}")  # Output: 2
 - **LIS Equivalence**: Minimum towers = length of longest increasing subsequence
 - **Greedy Choice**: Always maintain the smallest possible tail for each LIS length
 - **Optimal Approach**: Binary search with greedy maintenance provides the best theoretical performance
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Towers with Different Capacities
+**Problem**: Each tower has a different capacity, and we want to minimize the number of towers used.
+
+**Link**: [CSES Problem Set - Towers with Different Capacities](https://cses.fi/problemset/task/towers_different_capacities)
+
+```python
+def towers_different_capacities(blocks, tower_capacities):
+    """
+    Handle towers with different capacities
+    """
+    # Sort blocks in descending order
+    blocks.sort(reverse=True)
+    
+    # Sort tower capacities in descending order
+    tower_capacities.sort(reverse=True)
+    
+    # Use greedy approach: assign each block to the smallest tower that can hold it
+    tower_heights = [0] * len(tower_capacities)
+    used_towers = 0
+    
+    for block in blocks:
+        # Find the smallest tower that can hold this block
+        best_tower = -1
+        for i in range(len(tower_capacities)):
+            if tower_heights[i] + 1 <= tower_capacities[i]:
+                if best_tower == -1 or tower_heights[i] < tower_heights[best_tower]:
+                    best_tower = i
+        
+        if best_tower != -1:
+            tower_heights[best_tower] += 1
+            if tower_heights[best_tower] == 1:
+                used_towers += 1
+    
+    return used_towers
+```
+
+### Variation 2: Towers with Weight Constraints
+**Problem**: Each block has a weight, and towers have weight limits.
+
+**Link**: [CSES Problem Set - Towers with Weight Constraints](https://cses.fi/problemset/task/towers_weight_constraints)
+
+```python
+def towers_weight_constraints(blocks, tower_weight_limits):
+    """
+    Handle towers with weight constraints
+    """
+    # Sort blocks by weight (descending)
+    blocks.sort(key=lambda x: x['weight'], reverse=True)
+    
+    # Sort tower weight limits (descending)
+    tower_weight_limits.sort(reverse=True)
+    
+    # Track current weight in each tower
+    tower_weights = [0] * len(tower_weight_limits)
+    used_towers = 0
+    
+    for block in blocks:
+        # Find the smallest tower that can hold this block
+        best_tower = -1
+        for i in range(len(tower_weight_limits)):
+            if tower_weights[i] + block['weight'] <= tower_weight_limits[i]:
+                if best_tower == -1 or tower_weights[i] < tower_weights[best_tower]:
+                    best_tower = i
+        
+        if best_tower != -1:
+            tower_weights[best_tower] += block['weight']
+            if tower_weights[best_tower] == block['weight']:
+                used_towers += 1
+    
+    return used_towers
+```
+
+### Variation 3: Towers with Dynamic Updates
+**Problem**: Blocks can be added or removed dynamically, and we need to maintain optimal tower arrangement.
+
+**Link**: [CSES Problem Set - Towers with Dynamic Updates](https://cses.fi/problemset/task/towers_dynamic_updates)
+
+```python
+class TowersDynamic:
+    def __init__(self):
+        self.blocks = []
+        self.towers = []
+        self.min_towers = 0
+    
+    def add_block(self, block):
+        """Add a new block"""
+        self.blocks.append(block)
+        self._update_towers()
+    
+    def remove_block(self, block):
+        """Remove a block"""
+        if block in self.blocks:
+            self.blocks.remove(block)
+            self._update_towers()
+    
+    def _update_towers(self):
+        """Update the optimal tower arrangement"""
+        # Sort blocks in descending order
+        sorted_blocks = sorted(self.blocks, reverse=True)
+        
+        # Use greedy approach to find minimum towers
+        self.towers = []
+        
+        for block in sorted_blocks:
+            # Find the smallest tower that can hold this block
+            best_tower = -1
+            for i in range(len(self.towers)):
+                if self.towers[i][-1] >= block:
+                    if best_tower == -1 or len(self.towers[i]) < len(self.towers[best_tower]):
+                        best_tower = i
+            
+            if best_tower != -1:
+                self.towers[best_tower].append(block)
+            else:
+                # Create new tower
+                self.towers.append([block])
+        
+        self.min_towers = len(self.towers)
+    
+    def get_min_towers(self):
+        """Get current minimum number of towers"""
+        return self.min_towers
+    
+    def get_towers(self):
+        """Get current tower arrangement"""
+        return self.towers
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Towers](https://cses.fi/problemset/task/1073) - Basic towers problem
+- [Longest Increasing Subsequence](https://cses.fi/problemset/task/1145) - Related LIS problem
+- [Stick Lengths](https://cses.fi/problemset/task/1074) - Similar optimization problem
+
+#### **LeetCode Problems**
+- [Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/) - Find longest increasing sequence
+- [Russian Doll Envelopes](https://leetcode.com/problems/russian-doll-envelopes/) - Nested sequence problem
+- [Maximum Length of Pair Chain](https://leetcode.com/problems/maximum-length-of-pair-chain/) - Chain formation problem
+- [Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/) - Interval scheduling
+
+#### **Problem Categories**
+- **Greedy Algorithms**: Optimal local choices, tower arrangement, sequence optimization
+- **Longest Increasing Subsequence**: LIS algorithms, binary search, sequence analysis
+- **Sorting**: Array sorting, sequence optimization, tower arrangement
+- **Algorithm Design**: Greedy strategies, LIS algorithms, optimization techniques

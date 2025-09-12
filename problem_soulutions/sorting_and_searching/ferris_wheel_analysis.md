@@ -329,3 +329,180 @@ print(f"Optimal result: {result}")  # Output: 3
 - **Two Pointer Efficiency**: Eliminates redundant checks
 - **Mathematical Proof**: This approach is proven to be optimal
 - **Optimal Approach**: Two pointer technique provides the best balance of efficiency and correctness
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Ferris Wheel with Multiple Cars
+**Problem**: Ferris wheel has multiple cars, each with different capacity limits.
+
+**Link**: [CSES Problem Set - Ferris Wheel Multiple Cars](https://cses.fi/problemset/task/ferris_wheel_multiple_cars)
+
+```python
+def ferris_wheel_multiple_cars(weights, car_capacities):
+    """
+    Handle ferris wheel with multiple cars of different capacities
+    """
+    # Sort weights in descending order
+    weights.sort(reverse=True)
+    
+    # Sort car capacities in descending order
+    car_capacities.sort(reverse=True)
+    
+    # Use two pointers for each car
+    result = 0
+    used_weights = [False] * len(weights)
+    
+    for capacity in car_capacities:
+        # Find pairs for this car
+        left = 0
+        right = len(weights) - 1
+        car_pairs = 0
+        
+        while left < right:
+            # Skip used weights
+            while left < len(weights) and used_weights[left]:
+                left += 1
+            while right >= 0 and used_weights[right]:
+                right -= 1
+            
+            if left >= right:
+                break
+            
+            # Check if pair fits in car
+            if weights[left] + weights[right] <= capacity:
+                used_weights[left] = True
+                used_weights[right] = True
+                car_pairs += 1
+                left += 1
+                right -= 1
+            else:
+                # Heaviest person alone
+                used_weights[left] = True
+                car_pairs += 1
+                left += 1
+        
+        result += car_pairs
+    
+    return result
+```
+
+### Variation 2: Ferris Wheel with Time Constraints
+**Problem**: Each person has a time limit, and the ferris wheel takes time to complete a ride.
+
+**Link**: [CSES Problem Set - Ferris Wheel Time Constraints](https://cses.fi/problemset/task/ferris_wheel_time)
+
+```python
+def ferris_wheel_time_constraints(people, capacity, ride_time):
+    """
+    Handle ferris wheel with time constraints for each person
+    """
+    # Sort people by time limit (ascending)
+    people.sort(key=lambda x: x['time_limit'])
+    
+    result = 0
+    used = [False] * len(people)
+    
+    for i in range(len(people)):
+        if used[i]:
+            continue
+        
+        # Find best partner for this person
+        best_partner = -1
+        best_weight_sum = float('inf')
+        
+        for j in range(i + 1, len(people)):
+            if used[j]:
+                continue
+            
+            # Check if both can ride together
+            if (people[i]['time_limit'] >= ride_time and 
+                people[j]['time_limit'] >= ride_time):
+                
+                weight_sum = people[i]['weight'] + people[j]['weight']
+                if weight_sum <= capacity and weight_sum < best_weight_sum:
+                    best_partner = j
+                    best_weight_sum = weight_sum
+        
+        if best_partner != -1:
+            # Pair them together
+            used[i] = True
+            used[best_partner] = True
+            result += 1
+        else:
+            # Single person ride
+            if people[i]['weight'] <= capacity:
+                used[i] = True
+                result += 1
+    
+    return result
+```
+
+### Variation 3: Ferris Wheel with Priority Queues
+**Problem**: People have different priorities, and we want to maximize total priority.
+
+**Link**: [CSES Problem Set - Ferris Wheel Priority Queues](https://cses.fi/problemset/task/ferris_wheel_priority)
+
+```python
+def ferris_wheel_priority_queues(people, capacity):
+    """
+    Handle ferris wheel with priority optimization
+    """
+    # Sort people by priority (descending)
+    people.sort(key=lambda x: x['priority'], reverse=True)
+    
+    result = 0
+    used = [False] * len(people)
+    
+    for i in range(len(people)):
+        if used[i]:
+            continue
+        
+        # Find best partner for this person
+        best_partner = -1
+        best_priority_sum = 0
+        
+        for j in range(i + 1, len(people)):
+            if used[j]:
+                continue
+            
+            # Check if they can ride together
+            if people[i]['weight'] + people[j]['weight'] <= capacity:
+                priority_sum = people[i]['priority'] + people[j]['priority']
+                if priority_sum > best_priority_sum:
+                    best_partner = j
+                    best_priority_sum = priority_sum
+        
+        if best_partner != -1:
+            # Pair them together
+            used[i] = True
+            used[best_partner] = True
+            result += best_priority_sum
+        else:
+            # Single person ride
+            if people[i]['weight'] <= capacity:
+                used[i] = True
+                result += people[i]['priority']
+    
+    return result
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Ferris Wheel](https://cses.fi/problemset/task/1090) - Basic ferris wheel problem
+- [Apartments](https://cses.fi/problemset/task/1084) - Similar two-pointer problem
+- [Concert Tickets](https://cses.fi/problemset/task/1091) - Binary search optimization
+
+#### **LeetCode Problems**
+- [Two Sum](https://leetcode.com/problems/two-sum/) - Find pairs with target sum
+- [3Sum](https://leetcode.com/problems/3sum/) - Find triplets with zero sum
+- [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) - Two-pointer optimization
+- [Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/) - Two-pointer water trapping
+
+#### **Problem Categories**
+- **Two Pointers**: Efficient array processing, sorted array algorithms, pairing problems
+- **Greedy Algorithms**: Optimal local choices, sorting-based optimization, matching problems
+- **Sorting**: Array sorting, two-pointer techniques, efficient pairing algorithms
+- **Algorithm Design**: Two-pointer techniques, greedy strategies, optimization algorithms

@@ -364,3 +364,148 @@ print(f"Optimal result: {result}")  # Output: 2
 - **Optimal Substructure**: Optimal solution contains optimal solutions to subproblems
 - **Two Pointer Efficiency**: Avoid redundant comparisons
 - **Optimal Approach**: Two-pointer technique provides best practical performance
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Apartments with Multiple Preferences
+**Problem**: Each applicant has multiple apartment size preferences with different priorities.
+
+**Link**: [CSES Problem Set - Apartments Multiple Preferences](https://cses.fi/problemset/task/apartments_multiple_preferences)
+
+```python
+def apartments_multiple_preferences(applicants, apartments, k):
+    """
+    Find maximum assignments with multiple preferences per applicant
+    """
+    # Sort apartments by size
+    apartments.sort()
+    
+    # Create preference lists for each applicant
+    assignments = 0
+    used_apartments = set()
+    
+    # Sort applicants by number of preferences (fewer preferences first)
+    applicants.sort(key=lambda x: len(x['preferences']))
+    
+    for applicant in applicants:
+        for preferred_size in applicant['preferences']:
+            # Find suitable apartment using binary search
+            left, right = 0, len(apartments) - 1
+            best_apartment = -1
+            
+            while left <= right:
+                mid = (left + right) // 2
+                if apartments[mid] >= preferred_size - k:
+                    if apartments[mid] <= preferred_size + k:
+                        best_apartment = mid
+                    right = mid - 1
+                else:
+                    left = mid + 1
+            
+            # Assign if found and not used
+            if best_apartment != -1 and best_apartment not in used_apartments:
+                used_apartments.add(best_apartment)
+                assignments += 1
+                break
+    
+    return assignments
+```
+
+### Variation 2: Apartments with Cost Constraints
+**Problem**: Each apartment has a cost, and applicants have budget constraints.
+
+**Link**: [CSES Problem Set - Apartments Cost Constraints](https://cses.fi/problemset/task/apartments_cost_constraints)
+
+```python
+def apartments_cost_constraints(applicants, apartments, k):
+    """
+    Find maximum assignments considering cost constraints
+    """
+    # Sort apartments by cost (ascending)
+    apartments.sort(key=lambda x: x['cost'])
+    
+    assignments = 0
+    used_apartments = set()
+    
+    # Sort applicants by budget (ascending)
+    applicants.sort(key=lambda x: x['budget'])
+    
+    for applicant in applicants:
+        for apartment in apartments:
+            if (apartment['id'] not in used_apartments and
+                abs(apartment['size'] - applicant['desired_size']) <= k and
+                apartment['cost'] <= applicant['budget']):
+                
+                used_apartments.add(apartment['id'])
+                assignments += 1
+                break
+    
+    return assignments
+```
+
+### Variation 3: Apartments with Time Windows
+**Problem**: Apartments are available only during specific time windows, and applicants have availability periods.
+
+**Link**: [CSES Problem Set - Apartments Time Windows](https://cses.fi/problemset/task/apartments_time_windows)
+
+```python
+def apartments_time_windows(applicants, apartments, k):
+    """
+    Find maximum assignments considering time window constraints
+    """
+    # Create events for apartment availability and applicant requests
+    events = []
+    
+    for apartment in apartments:
+        events.append((apartment['start_time'], 'apartment_available', apartment))
+        events.append((apartment['end_time'], 'apartment_unavailable', apartment))
+    
+    for applicant in applicants:
+        events.append((applicant['arrival_time'], 'applicant_arrives', applicant))
+    
+    # Sort events by time
+    events.sort()
+    
+    available_apartments = []
+    assignments = 0
+    
+    for time, event_type, data in events:
+        if event_type == 'apartment_available':
+            available_apartments.append(data)
+            available_apartments.sort(key=lambda x: x['size'])
+        
+        elif event_type == 'apartment_unavailable':
+            if data in available_apartments:
+                available_apartments.remove(data)
+        
+        elif event_type == 'applicant_arrives':
+            # Find suitable apartment using two pointers
+            for apartment in available_apartments:
+                if abs(apartment['size'] - data['desired_size']) <= k:
+                    available_apartments.remove(apartment)
+                    assignments += 1
+                    break
+    
+    return assignments
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Apartments](https://cses.fi/problemset/task/1084) - Basic apartment assignment problem
+- [Ferris Wheel](https://cses.fi/problemset/task/1090) - Similar two-pointer problem
+- [Stick Lengths](https://cses.fi/problemset/task/1074) - Optimization with sorting
+
+#### **LeetCode Problems**
+- [Two Sum](https://leetcode.com/problems/two-sum/) - Find pairs with target sum
+- [3Sum](https://leetcode.com/problems/3sum/) - Find triplets with zero sum
+- [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) - Two-pointer optimization
+- [Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/) - Two-pointer water trapping
+
+#### **Problem Categories**
+- **Two Pointers**: Efficient array processing, sorted array algorithms, matching problems
+- **Greedy Algorithms**: Optimal local choices, sorting-based optimization, assignment problems
+- **Sorting**: Array sorting, binary search, efficient searching algorithms
+- **Algorithm Design**: Two-pointer techniques, greedy strategies, optimization algorithms

@@ -317,7 +317,193 @@ print(f"Optimal result: {result}")  # Output: 8
 - **Monotonic Property**: If time T produces enough products, then time T+1 also produces enough
 - **Optimal Algorithm**: Binary search approach is the standard solution for this problem
 - **Optimal Approach**: Binary search provides the most efficient solution for optimization problems with monotonic properties
-- **[Reason 1]**: [Explanation]
-- **[Reason 2]**: [Explanation]
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Factory Machines with Different Speeds
+**Problem**: Machines have different speeds that can change over time.
+
+**Link**: [CSES Problem Set - Factory Machines Different Speeds](https://cses.fi/problemset/task/factory_machines_speeds)
+
+```python
+def factory_machines_different_speeds(machines, target, time_intervals):
+    """
+    Handle machines with changing speeds over time
+    """
+    def can_produce_target(time_limit):
+        """Check if target can be produced within time_limit"""
+        total_products = 0
+        
+        for machine in machines:
+            machine_products = 0
+            current_time = 0
+            
+            for speed, duration in time_intervals[machine['id']]:
+                if current_time >= time_limit:
+                    break
+                
+                # Calculate products in this time interval
+                interval_end = min(current_time + duration, time_limit)
+                interval_duration = interval_end - current_time
+                machine_products += (interval_duration * speed) // machine['base_time']
+                current_time = interval_end
+            
+            total_products += machine_products
+            
+            if total_products >= target:
+                return True
+        
+        return total_products >= target
+    
+    # Binary search on time
+    left = 1
+    right = max(machine['base_time'] for machine in machines) * target
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_produce_target(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+```
+
+### Variation 2: Factory Machines with Maintenance
+**Problem**: Machines require maintenance after producing certain number of products.
+
+**Link**: [CSES Problem Set - Factory Machines with Maintenance](https://cses.fi/problemset/task/factory_machines_maintenance)
+
+```python
+def factory_machines_maintenance(machines, target, maintenance_threshold, maintenance_time):
+    """
+    Handle machines that require maintenance
+    """
+    def can_produce_target(time_limit):
+        """Check if target can be produced within time_limit considering maintenance"""
+        total_products = 0
+        
+        for machine in machines:
+            machine_products = 0
+            current_time = 0
+            products_since_maintenance = 0
+            
+            while current_time < time_limit:
+                # Calculate time until next maintenance
+                products_until_maintenance = maintenance_threshold - products_since_maintenance
+                time_until_maintenance = products_until_maintenance * machine['base_time']
+                
+                # Calculate time available in current cycle
+                time_available = min(time_until_maintenance, time_limit - current_time)
+                
+                if time_available <= 0:
+                    break
+                
+                # Calculate products in this cycle
+                cycle_products = time_available // machine['base_time']
+                machine_products += cycle_products
+                products_since_maintenance += cycle_products
+                current_time += time_available
+                
+                # Check if maintenance is needed
+                if products_since_maintenance >= maintenance_threshold:
+                    # Perform maintenance
+                    current_time += maintenance_time
+                    products_since_maintenance = 0
+                    
+                    if current_time >= time_limit:
+                        break
+            
+            total_products += machine_products
+            
+            if total_products >= target:
+                return True
+        
+        return total_products >= target
+    
+    # Binary search on time
+    left = 1
+    right = max(machine['base_time'] for machine in machines) * target * 2  # Account for maintenance
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_produce_target(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+```
+
+### Variation 3: Factory Machines with Resource Constraints
+**Problem**: Machines consume resources and have limited resource availability.
+
+**Link**: [CSES Problem Set - Factory Machines Resource Constraints](https://cses.fi/problemset/task/factory_machines_resources)
+
+```python
+def factory_machines_resource_constraints(machines, target, resources, resource_consumption):
+    """
+    Handle machines with resource consumption constraints
+    """
+    def can_produce_target(time_limit):
+        """Check if target can be produced within resource constraints"""
+        total_products = 0
+        total_resource_consumed = 0
+        
+        for machine in machines:
+            # Calculate maximum products this machine can produce
+            max_products = time_limit // machine['base_time']
+            
+            # Calculate resource consumption
+            resource_needed = max_products * resource_consumption[machine['id']]
+            
+            # Check if we have enough resources
+            if total_resource_consumed + resource_needed <= resources:
+                total_products += max_products
+                total_resource_consumed += resource_needed
+            else:
+                # Use remaining resources
+                remaining_resources = resources - total_resource_consumed
+                products_with_remaining = remaining_resources // resource_consumption[machine['id']]
+                total_products += products_with_remaining
+                break
+            
+            if total_products >= target:
+                return True
+        
+        return total_products >= target
+    
+    # Binary search on time
+    left = 1
+    right = max(machine['base_time'] for machine in machines) * target
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_produce_target(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Factory Machines](https://cses.fi/problemset/task/1620) - Basic factory machines problem
+- [Array Division](https://cses.fi/problemset/task/1085) - Similar binary search optimization
+- [Stick Lengths](https://cses.fi/problemset/task/1074) - Optimization with sorting
+
+#### **LeetCode Problems**
+- [Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/) - Binary search on eating speed
+- [Capacity To Ship Packages Within D Days](https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/) - Binary search on capacity
+- [Minimize Maximum Distance to Gas Station](https://leetcode.com/problems/minimize-maximum-distance-to-gas-station/) - Binary search optimization
+- [Split Array Largest Sum](https://leetcode.com/problems/split-array-largest-sum/) - Binary search on sum
+
+#### **Problem Categories**
+- **Binary Search**: Answer space search, optimization problems, monotonic functions
+- **Optimization**: Resource allocation, time optimization, constraint satisfaction
+- **Mathematical Analysis**: Monotonic properties, function analysis, optimization theory
+- **Algorithm Design**: Binary search algorithms, optimization techniques, constraint algorithms

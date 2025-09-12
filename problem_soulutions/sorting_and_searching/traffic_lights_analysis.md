@@ -349,3 +349,195 @@ print(f"Optimal result: {result}")  # Output: [5, 3, 3]
 - **Binary Search**: Use binary search for efficient insertion
 - **Optimal Algorithm**: Multiset approach is the standard solution for this problem
 - **Optimal Approach**: Multiset provides the most efficient solution for dynamic segment tracking
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Traffic Lights with Different Colors
+**Problem**: Traffic lights have different colors, and we want to find the longest segment of each color.
+
+**Link**: [CSES Problem Set - Traffic Lights Different Colors](https://cses.fi/problemset/task/traffic_lights_colors)
+
+```python
+def traffic_lights_different_colors(road_length, queries):
+    """
+    Handle traffic lights with different colors
+    """
+    from collections import defaultdict
+    
+    # Track traffic lights by color
+    traffic_lights = defaultdict(list)  # color -> list of positions
+    segments = defaultdict(list)  # color -> list of segment lengths
+    
+    # Initialize with road endpoints
+    for color in ['red', 'green', 'blue']:
+        traffic_lights[color] = [0, road_length]
+        segments[color] = [road_length]
+    
+    result = []
+    
+    for query in queries:
+        pos, color = query['position'], query['color']
+        
+        # Find insertion point using binary search
+        lights = traffic_lights[color]
+        insert_idx = bisect.bisect_left(lights, pos)
+        
+        if insert_idx > 0 and insert_idx < len(lights):
+            # Get the segment that will be split
+            left_pos = lights[insert_idx - 1]
+            right_pos = lights[insert_idx]
+            old_segment_length = right_pos - left_pos
+            
+            # Remove old segment length
+            segments[color].remove(old_segment_length)
+            
+            # Add two new segment lengths
+            left_segment_length = pos - left_pos
+            right_segment_length = right_pos - pos
+            segments[color].append(left_segment_length)
+            segments[color].append(right_segment_length)
+            
+            # Insert new traffic light
+            lights.insert(insert_idx, pos)
+        
+        # Find maximum segment length for this color
+        max_length = max(segments[color])
+        result.append(max_length)
+    
+    return result
+```
+
+### Variation 2: Traffic Lights with Dynamic Removal
+**Problem**: Traffic lights can be added or removed dynamically.
+
+**Link**: [CSES Problem Set - Traffic Lights Dynamic Removal](https://cses.fi/problemset/task/traffic_lights_dynamic)
+
+```python
+class TrafficLightsDynamic:
+    def __init__(self, road_length):
+        self.road_length = road_length
+        self.traffic_lights = [0, road_length]  # Sorted list
+        self.segments = [road_length]  # Multiset of segment lengths
+    
+    def add_traffic_light(self, pos):
+        """Add a traffic light at position pos"""
+        if pos in self.traffic_lights:
+            return max(self.segments)  # Already exists
+        
+        # Find insertion point
+        insert_idx = bisect.bisect_left(self.traffic_lights, pos)
+        
+        if insert_idx > 0 and insert_idx < len(self.traffic_lights):
+            # Get the segment that will be split
+            left_pos = self.traffic_lights[insert_idx - 1]
+            right_pos = self.traffic_lights[insert_idx]
+            old_segment_length = right_pos - left_pos
+            
+            # Remove old segment length
+            self.segments.remove(old_segment_length)
+            
+            # Add two new segment lengths
+            left_segment_length = pos - left_pos
+            right_segment_length = right_pos - pos
+            self.segments.append(left_segment_length)
+            self.segments.append(right_segment_length)
+            
+            # Insert new traffic light
+            self.traffic_lights.insert(insert_idx, pos)
+        
+        return max(self.segments)
+    
+    def remove_traffic_light(self, pos):
+        """Remove a traffic light at position pos"""
+        if pos not in self.traffic_lights or pos in [0, self.road_length]:
+            return max(self.segments)  # Cannot remove endpoints
+        
+        # Find position in list
+        idx = bisect.bisect_left(self.traffic_lights, pos)
+        
+        if idx > 0 and idx < len(self.traffic_lights) - 1:
+            # Get adjacent positions
+            left_pos = self.traffic_lights[idx - 1]
+            right_pos = self.traffic_lights[idx + 1]
+            
+            # Remove two segment lengths
+            left_segment_length = pos - left_pos
+            right_segment_length = right_pos - pos
+            self.segments.remove(left_segment_length)
+            self.segments.remove(right_segment_length)
+            
+            # Add merged segment length
+            merged_segment_length = right_pos - left_pos
+            self.segments.append(merged_segment_length)
+            
+            # Remove traffic light
+            self.traffic_lights.pop(idx)
+        
+        return max(self.segments)
+    
+    def get_max_segment_length(self):
+        """Get current maximum segment length"""
+        return max(self.segments)
+```
+
+### Variation 3: Traffic Lights with Time Constraints
+**Problem**: Traffic lights have time constraints, and we want to find the longest segment at each time.
+
+**Link**: [CSES Problem Set - Traffic Lights Time Constraints](https://cses.fi/problemset/task/traffic_lights_time)
+
+```python
+def traffic_lights_time_constraints(road_length, queries):
+    """
+    Handle traffic lights with time constraints
+    """
+    # Create events for traffic light changes
+    events = []
+    
+    for query in queries:
+        if query['type'] == 'add':
+            events.append((query['time'], 'add', query['position']))
+        else:  # remove
+            events.append((query['time'], 'remove', query['position']))
+    
+    # Sort events by time
+    events.sort()
+    
+    # Initialize traffic lights system
+    traffic_system = TrafficLightsDynamic(road_length)
+    
+    result = []
+    current_time = 0
+    
+    for time, event_type, pos in events:
+        # Process all events up to current time
+        if event_type == 'add':
+            max_length = traffic_system.add_traffic_light(pos)
+        else:  # remove
+            max_length = traffic_system.remove_traffic_light(pos)
+        
+        result.append((time, max_length))
+        current_time = time
+    
+    return result
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Traffic Lights](https://cses.fi/problemset/task/1163) - Basic traffic lights problem
+- [Stick Lengths](https://cses.fi/problemset/task/1074) - Similar optimization problem
+- [Array Division](https://cses.fi/problemset/task/1085) - Similar binary search optimization
+
+#### **LeetCode Problems**
+- [Insert Interval](https://leetcode.com/problems/insert-interval/) - Insert and merge intervals
+- [Merge Intervals](https://leetcode.com/problems/merge-intervals/) - Merge overlapping intervals
+- [My Calendar I](https://leetcode.com/problems/my-calendar-i/) - Calendar booking system
+- [My Calendar II](https://leetcode.com/problems/my-calendar-ii/) - Calendar with double booking
+
+#### **Problem Categories**
+- **Binary Search**: Efficient insertion, sorted array maintenance, search optimization
+- **Data Structures**: Multiset operations, segment tracking, dynamic updates
+- **Interval Problems**: Segment management, interval insertion, dynamic intervals
+- **Algorithm Design**: Binary search algorithms, data structure design, optimization techniques

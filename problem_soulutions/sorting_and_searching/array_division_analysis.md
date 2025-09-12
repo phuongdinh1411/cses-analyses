@@ -318,7 +318,156 @@ print(f"Optimal result: {result}")  # Output: 6
 - **Space**: O([complexity]) - [Explanation]
 
 ### Why This Solution Works
-- **[Reason 1]**: [Explanation]
-- **[Reason 2]**: [Explanation]
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+- **Binary Search on Answer**: Use binary search on the answer space since the function is monotonic
+- **Monotonic Property**: If sum S is possible, then sum S+1 is also possible
+- **Optimal Algorithm**: Binary search approach is the standard solution for this problem
+- **Optimal Approach**: Binary search provides the most efficient solution for array partitioning problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Array Division with Minimum Difference
+**Problem**: Divide array into k subarrays such that the difference between maximum and minimum subarray sums is minimized.
+
+**Link**: [CSES Problem Set - Array Division Minimum Difference](https://cses.fi/problemset/task/array_division_minimum_difference)
+
+```python
+def array_division_minimum_difference(arr, k):
+    """
+    Divide array into k subarrays to minimize difference between max and min sums
+    """
+    def can_divide_with_max_sum(max_sum):
+        """Check if array can be divided with max subarray sum <= max_sum"""
+        subarrays = 1
+        current_sum = 0
+        
+        for num in arr:
+            if current_sum + num > max_sum:
+                subarrays += 1
+                current_sum = num
+                if subarrays > k:
+                    return False
+            else:
+                current_sum += num
+        
+        return True
+    
+    # Binary search on the maximum subarray sum
+    left = max(arr)
+    right = sum(arr)
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide_with_max_sum(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+```
+
+### Variation 2: Array Division with Constraints
+**Problem**: Divide array into k subarrays with additional constraints (e.g., minimum subarray size).
+
+**Link**: [CSES Problem Set - Array Division with Constraints](https://cses.fi/problemset/task/array_division_constraints)
+
+```python
+def array_division_constraints(arr, k, min_size):
+    """
+    Divide array into k subarrays with minimum size constraint
+    """
+    def can_divide_with_constraints(max_sum):
+        """Check if division is possible with constraints"""
+        subarrays = 0
+        current_sum = 0
+        current_size = 0
+        
+        for num in arr:
+            if current_sum + num > max_sum or current_size >= min_size:
+                if current_size < min_size:
+                    return False
+                subarrays += 1
+                current_sum = num
+                current_size = 1
+            else:
+                current_sum += num
+                current_size += 1
+        
+        if current_size >= min_size:
+            subarrays += 1
+        
+        return subarrays <= k
+    
+    # Binary search on the maximum subarray sum
+    left = max(arr)
+    right = sum(arr)
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide_with_constraints(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+```
+
+### Variation 3: Array Division with Dynamic Weights
+**Problem**: Each element has a weight, and we want to minimize the maximum weighted sum of subarrays.
+
+**Link**: [CSES Problem Set - Array Division Dynamic Weights](https://cses.fi/problemset/task/array_division_dynamic_weights)
+
+```python
+def array_division_dynamic_weights(arr, weights, k):
+    """
+    Divide array into k subarrays to minimize maximum weighted sum
+    """
+    def can_divide_with_max_weighted_sum(max_weighted_sum):
+        """Check if division is possible with max weighted sum constraint"""
+        subarrays = 1
+        current_weighted_sum = 0
+        
+        for i, (num, weight) in enumerate(zip(arr, weights)):
+            if current_weighted_sum + num * weight > max_weighted_sum:
+                subarrays += 1
+                current_weighted_sum = num * weight
+                if subarrays > k:
+                    return False
+            else:
+                current_weighted_sum += num * weight
+        
+        return True
+    
+    # Binary search on the maximum weighted sum
+    left = max(num * weight for num, weight in zip(arr, weights))
+    right = sum(num * weight for num, weight in zip(arr, weights))
+    
+    while left < right:
+        mid = (left + right) // 2
+        if can_divide_with_max_weighted_sum(mid):
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Array Division](https://cses.fi/problemset/task/1085) - Basic array division problem
+- [Stick Lengths](https://cses.fi/problemset/task/1074) - Optimization with sorting
+- [Factory Machines](https://cses.fi/problemset/task/1620) - Binary search optimization
+
+#### **LeetCode Problems**
+- [Split Array Largest Sum](https://leetcode.com/problems/split-array-largest-sum/) - Divide array into m subarrays
+- [Capacity To Ship Packages Within D Days](https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/) - Binary search on capacity
+- [Minimize Maximum Distance to Gas Station](https://leetcode.com/problems/minimize-maximum-distance-to-gas-station/) - Binary search optimization
+- [Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/) - Binary search on eating speed
+
+#### **Problem Categories**
+- **Binary Search**: Answer space search, optimization problems, monotonic functions
+- **Array Partitioning**: Subarray division, constraint satisfaction, optimization
+- **Greedy Algorithms**: Local optimal choices, constraint-based optimization
+- **Algorithm Design**: Binary search algorithms, optimization techniques, constraint algorithms

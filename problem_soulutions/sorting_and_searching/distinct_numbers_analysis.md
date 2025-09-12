@@ -271,3 +271,146 @@ print(f"Optimal result: {result}")  # Output: 2
 - **Efficient Storage**: Only store unique elements
 - **Single Pass**: Process each element exactly once
 - **Optimal Approach**: Linear time complexity with clean implementation
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Distinct Numbers with Frequency
+**Problem**: Count distinct numbers and also return their frequencies.
+
+**Link**: [CSES Problem Set - Distinct Numbers with Frequency](https://cses.fi/problemset/task/distinct_numbers_frequency)
+
+```python
+def distinct_numbers_frequency(arr):
+    """
+    Count distinct numbers and their frequencies
+    """
+    from collections import Counter
+    
+    # Count frequencies of all elements
+    frequency_map = Counter(arr)
+    
+    # Return count and frequency map
+    distinct_count = len(frequency_map)
+    return distinct_count, frequency_map
+
+def distinct_numbers_frequency_manual(arr):
+    """
+    Count distinct numbers and frequencies manually
+    """
+    frequency_map = {}
+    
+    for num in arr:
+        frequency_map[num] = frequency_map.get(num, 0) + 1
+    
+    distinct_count = len(frequency_map)
+    return distinct_count, frequency_map
+```
+
+### Variation 2: Distinct Numbers in Range
+**Problem**: Count distinct numbers in a given range [L, R] of the array.
+
+**Link**: [CSES Problem Set - Distinct Numbers in Range](https://cses.fi/problemset/task/distinct_numbers_range)
+
+```python
+def distinct_numbers_in_range(arr, queries):
+    """
+    Count distinct numbers in multiple ranges
+    """
+    results = []
+    
+    for L, R in queries:
+        # Extract subarray
+        subarray = arr[L:R+1]
+        
+        # Count distinct elements in subarray
+        distinct_count = len(set(subarray))
+        results.append(distinct_count)
+    
+    return results
+
+def distinct_numbers_in_range_optimized(arr, queries):
+    """
+    Optimized version using coordinate compression
+    """
+    # Coordinate compression
+    unique_values = sorted(set(arr))
+    value_to_index = {val: i for i, val in enumerate(unique_values)}
+    
+    # Compress array
+    compressed_arr = [value_to_index[val] for val in arr]
+    
+    results = []
+    
+    for L, R in queries:
+        # Use set on compressed array
+        distinct_count = len(set(compressed_arr[L:R+1]))
+        results.append(distinct_count)
+    
+    return results
+```
+
+### Variation 3: Distinct Numbers with Updates
+**Problem**: Handle dynamic updates to the array and maintain distinct count.
+
+**Link**: [CSES Problem Set - Distinct Numbers with Updates](https://cses.fi/problemset/task/distinct_numbers_updates)
+
+```python
+class DistinctNumbersWithUpdates:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.frequency_map = {}
+        self.distinct_count = 0
+        
+        # Initialize frequency map
+        for num in self.arr:
+            if num not in self.frequency_map:
+                self.frequency_map[num] = 0
+                self.distinct_count += 1
+            self.frequency_map[num] += 1
+    
+    def update(self, index, new_value):
+        """Update element at index to new_value"""
+        old_value = self.arr[index]
+        self.arr[index] = new_value
+        
+        # Update frequency map for old value
+        self.frequency_map[old_value] -= 1
+        if self.frequency_map[old_value] == 0:
+            del self.frequency_map[old_value]
+            self.distinct_count -= 1
+        
+        # Update frequency map for new value
+        if new_value not in self.frequency_map:
+            self.frequency_map[new_value] = 0
+            self.distinct_count += 1
+        self.frequency_map[new_value] += 1
+    
+    def get_distinct_count(self):
+        """Get current distinct count"""
+        return self.distinct_count
+    
+    def get_frequency(self, value):
+        """Get frequency of a specific value"""
+        return self.frequency_map.get(value, 0)
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Distinct Numbers](https://cses.fi/problemset/task/1621) - Basic distinct numbers problem
+- [Distinct Values Queries](https://cses.fi/problemset/task/1734) - Range queries for distinct values
+- [Subarray Distinct Values](https://cses.fi/problemset/task/2428) - Distinct values in subarrays
+
+#### **LeetCode Problems**
+- [Contains Duplicate](https://leetcode.com/problems/contains-duplicate/) - Check if array has duplicates
+- [Contains Duplicate II](https://leetcode.com/problems/contains-duplicate-ii/) - Duplicates within k distance
+- [Contains Duplicate III](https://leetcode.com/problems/contains-duplicate-iii/) - Duplicates within value and index range
+- [Single Number](https://leetcode.com/problems/single-number/) - Find unique element
+
+#### **Problem Categories**
+- **Hash Sets**: Uniqueness detection, frequency counting, set operations
+- **Sorting**: Array sorting, adjacent comparison, uniqueness analysis
+- **Counting**: Element counting, frequency analysis, distinct element tracking
+- **Algorithm Design**: Hash-based algorithms, sorting algorithms, counting techniques

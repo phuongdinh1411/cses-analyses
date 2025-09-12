@@ -309,3 +309,243 @@ print(f"Optimal result: {result}")  # Output: (4, 1, 3)
 - **Sorting Enables Two Pointers**: Sorted array allows efficient two-pointer search
 - **Position Preservation**: Maintain original positions for correct output
 - **Optimal Approach**: Two-pointer technique provides the best balance of efficiency and simplicity
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Sum of Three Values with Multiple Solutions
+**Problem**: Find all triplets of indices that sum to the target value.
+
+**Link**: [CSES Problem Set - Sum of Three Values Multiple Solutions](https://cses.fi/problemset/task/sum_of_three_values_multiple)
+
+```python
+def sum_of_three_values_multiple_solutions(arr, target):
+    """
+    Find all triplets of indices that sum to target
+    """
+    # Create indexed array for position preservation
+    indexed_arr = [(arr[i], i) for i in range(len(arr))]
+    indexed_arr.sort()
+    
+    results = set()
+    
+    for i in range(len(indexed_arr) - 2):
+        left = i + 1
+        right = len(indexed_arr) - 1
+        
+        while left < right:
+            current_sum = indexed_arr[i][0] + indexed_arr[left][0] + indexed_arr[right][0]
+            
+            if current_sum == target:
+                # Found a triplet
+                triplet = tuple(sorted([indexed_arr[i][1], indexed_arr[left][1], indexed_arr[right][1]]))
+                results.add(triplet)
+                left += 1
+                right -= 1
+            elif current_sum < target:
+                left += 1
+            else:
+                right -= 1
+    
+    return list(results)
+
+def sum_of_three_values_multiple_solutions_optimized(arr, target):
+    """
+    Optimized version avoiding duplicate triplets
+    """
+    # Create indexed array for position preservation
+    indexed_arr = [(arr[i], i) for i in range(len(arr))]
+    indexed_arr.sort()
+    
+    results = []
+    
+    for i in range(len(indexed_arr) - 2):
+        # Skip duplicates for first element
+        if i > 0 and indexed_arr[i][0] == indexed_arr[i-1][0]:
+            continue
+        
+        left = i + 1
+        right = len(indexed_arr) - 1
+        
+        while left < right:
+            current_sum = indexed_arr[i][0] + indexed_arr[left][0] + indexed_arr[right][0]
+            
+            if current_sum == target:
+                # Found a triplet
+                triplet = [indexed_arr[i][1], indexed_arr[left][1], indexed_arr[right][1]]
+                results.append(triplet)
+                
+                # Skip duplicates for second element
+                while left < right and indexed_arr[left][0] == indexed_arr[left+1][0]:
+                    left += 1
+                # Skip duplicates for third element
+                while left < right and indexed_arr[right][0] == indexed_arr[right-1][0]:
+                    right -= 1
+                
+                left += 1
+                right -= 1
+            elif current_sum < target:
+                left += 1
+            else:
+                right -= 1
+    
+    return results
+```
+
+### Variation 2: Sum of Three Values with Constraints
+**Problem**: Find triplets that sum to target with additional constraints (e.g., indices must be at least k apart).
+
+**Link**: [CSES Problem Set - Sum of Three Values with Constraints](https://cses.fi/problemset/task/sum_of_three_values_constraints)
+
+```python
+def sum_of_three_values_constraints(arr, target, min_distance):
+    """
+    Find triplets that sum to target with minimum distance constraint
+    """
+    # Create indexed array for position preservation
+    indexed_arr = [(arr[i], i) for i in range(len(arr))]
+    indexed_arr.sort()
+    
+    results = []
+    
+    for i in range(len(indexed_arr) - 2):
+        left = i + 1
+        right = len(indexed_arr) - 1
+        
+        while left < right:
+            current_sum = indexed_arr[i][0] + indexed_arr[left][0] + indexed_arr[right][0]
+            
+            if current_sum == target:
+                # Check distance constraints
+                indices = [indexed_arr[i][1], indexed_arr[left][1], indexed_arr[right][1]]
+                if (abs(indices[0] - indices[1]) >= min_distance and
+                    abs(indices[1] - indices[2]) >= min_distance and
+                    abs(indices[0] - indices[2]) >= min_distance):
+                    results.append(indices)
+                
+                left += 1
+                right -= 1
+            elif current_sum < target:
+                left += 1
+            else:
+                right -= 1
+    
+    return results
+```
+
+### Variation 3: Sum of Three Values with Dynamic Updates
+**Problem**: Handle dynamic updates to the array and maintain three-sum queries.
+
+**Link**: [CSES Problem Set - Sum of Three Values with Updates](https://cses.fi/problemset/task/sum_of_three_values_updates)
+
+```python
+class SumOfThreeValuesWithUpdates:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.value_to_indices = {}
+        self._build_index_map()
+    
+    def _build_index_map(self):
+        """Build the value to indices mapping"""
+        self.value_to_indices = {}
+        for i, num in enumerate(self.arr):
+            if num not in self.value_to_indices:
+                self.value_to_indices[num] = []
+            self.value_to_indices[num].append(i)
+    
+    def update(self, index, new_value):
+        """Update element at index to new_value"""
+        old_value = self.arr[index]
+        self.arr[index] = new_value
+        
+        # Remove old value from map
+        if old_value in self.value_to_indices:
+            self.value_to_indices[old_value].remove(index)
+            if not self.value_to_indices[old_value]:
+                del self.value_to_indices[old_value]
+        
+        # Add new value to map
+        if new_value not in self.value_to_indices:
+            self.value_to_indices[new_value] = []
+        self.value_to_indices[new_value].append(index)
+    
+    def find_three_sum(self, target):
+        """Find triplet that sums to target"""
+        # Create indexed array for position preservation
+        indexed_arr = [(self.arr[i], i) for i in range(len(self.arr))]
+        indexed_arr.sort()
+        
+        for i in range(len(indexed_arr) - 2):
+            left = i + 1
+            right = len(indexed_arr) - 1
+            
+            while left < right:
+                current_sum = indexed_arr[i][0] + indexed_arr[left][0] + indexed_arr[right][0]
+                
+                if current_sum == target:
+                    return [indexed_arr[i][1], indexed_arr[left][1], indexed_arr[right][1]]
+                elif current_sum < target:
+                    left += 1
+                else:
+                    right -= 1
+        
+        return None
+    
+    def find_all_three_sums(self, target):
+        """Find all triplets that sum to target"""
+        # Create indexed array for position preservation
+        indexed_arr = [(self.arr[i], i) for i in range(len(self.arr))]
+        indexed_arr.sort()
+        
+        results = []
+        
+        for i in range(len(indexed_arr) - 2):
+            # Skip duplicates for first element
+            if i > 0 and indexed_arr[i][0] == indexed_arr[i-1][0]:
+                continue
+            
+            left = i + 1
+            right = len(indexed_arr) - 1
+            
+            while left < right:
+                current_sum = indexed_arr[i][0] + indexed_arr[left][0] + indexed_arr[right][0]
+                
+                if current_sum == target:
+                    triplet = [indexed_arr[i][1], indexed_arr[left][1], indexed_arr[right][1]]
+                    results.append(triplet)
+                    
+                    # Skip duplicates
+                    while left < right and indexed_arr[left][0] == indexed_arr[left+1][0]:
+                        left += 1
+                    while left < right and indexed_arr[right][0] == indexed_arr[right-1][0]:
+                        right -= 1
+                    
+                    left += 1
+                    right -= 1
+                elif current_sum < target:
+                    left += 1
+                else:
+                    right -= 1
+        
+        return results
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Sum of Three Values](https://cses.fi/problemset/task/1641) - Basic three values problem
+- [Sum of Two Values](https://cses.fi/problemset/task/1640) - Two values variant
+- [Sum of Four Values](https://cses.fi/problemset/task/1642) - Four values variant
+
+#### **LeetCode Problems**
+- [3Sum](https://leetcode.com/problems/3sum/) - Basic three sum problem
+- [3Sum Closest](https://leetcode.com/problems/3sum-closest/) - Find closest three sum
+- [3Sum Smaller](https://leetcode.com/problems/3sum-smaller/) - Count smaller three sums
+- [4Sum](https://leetcode.com/problems/4sum/) - Four sum problem
+
+#### **Problem Categories**
+- **Two Pointers**: Sorted array algorithms, efficient triplet finding, pointer techniques
+- **Hash Maps**: Key-value lookups, complement search, efficient searching
+- **Array Processing**: Element searching, triplet finding, index manipulation
+- **Algorithm Design**: Two-pointer techniques, hash-based algorithms, search optimization

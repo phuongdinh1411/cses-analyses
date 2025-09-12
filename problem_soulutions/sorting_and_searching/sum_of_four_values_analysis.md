@@ -308,3 +308,275 @@ print(f"Optimal result: {result}")  # Output: [1, 2, 3, 4]
 - **Sorting**: Enables two-pointer technique and reduces search space
 - **Optimal Algorithm**: Two-pointer approach is the standard solution for this problem
 - **Optimal Approach**: Two-pointer technique provides the most efficient solution for multi-sum problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Sum of Four Values with Multiple Solutions
+**Problem**: Find all quadruplets of indices that sum to the target value.
+
+**Link**: [CSES Problem Set - Sum of Four Values Multiple Solutions](https://cses.fi/problemset/task/sum_of_four_values_multiple)
+
+```python
+def sum_of_four_values_multiple_solutions(arr, target):
+    """
+    Find all quadruplets of indices that sum to target
+    """
+    # Create indexed array for position preservation
+    indexed_arr = [(arr[i], i) for i in range(len(arr))]
+    indexed_arr.sort()
+    
+    results = set()
+    
+    for i in range(len(indexed_arr) - 3):
+        for j in range(i + 1, len(indexed_arr) - 2):
+            left = j + 1
+            right = len(indexed_arr) - 1
+            
+            while left < right:
+                current_sum = (indexed_arr[i][0] + indexed_arr[j][0] + 
+                             indexed_arr[left][0] + indexed_arr[right][0])
+                
+                if current_sum == target:
+                    # Found a quadruplet
+                    quadruplet = tuple(sorted([indexed_arr[i][1], indexed_arr[j][1], 
+                                             indexed_arr[left][1], indexed_arr[right][1]]))
+                    results.add(quadruplet)
+                    left += 1
+                    right -= 1
+                elif current_sum < target:
+                    left += 1
+                else:
+                    right -= 1
+    
+    return list(results)
+
+def sum_of_four_values_multiple_solutions_optimized(arr, target):
+    """
+    Optimized version avoiding duplicate quadruplets
+    """
+    # Create indexed array for position preservation
+    indexed_arr = [(arr[i], i) for i in range(len(arr))]
+    indexed_arr.sort()
+    
+    results = []
+    
+    for i in range(len(indexed_arr) - 3):
+        # Skip duplicates for first element
+        if i > 0 and indexed_arr[i][0] == indexed_arr[i-1][0]:
+            continue
+        
+        for j in range(i + 1, len(indexed_arr) - 2):
+            # Skip duplicates for second element
+            if j > i + 1 and indexed_arr[j][0] == indexed_arr[j-1][0]:
+                continue
+            
+            left = j + 1
+            right = len(indexed_arr) - 1
+            
+            while left < right:
+                current_sum = (indexed_arr[i][0] + indexed_arr[j][0] + 
+                             indexed_arr[left][0] + indexed_arr[right][0])
+                
+                if current_sum == target:
+                    # Found a quadruplet
+                    quadruplet = [indexed_arr[i][1], indexed_arr[j][1], 
+                                indexed_arr[left][1], indexed_arr[right][1]]
+                    results.append(quadruplet)
+                    
+                    # Skip duplicates for third element
+                    while left < right and indexed_arr[left][0] == indexed_arr[left+1][0]:
+                        left += 1
+                    # Skip duplicates for fourth element
+                    while left < right and indexed_arr[right][0] == indexed_arr[right-1][0]:
+                        right -= 1
+                    
+                    left += 1
+                    right -= 1
+                elif current_sum < target:
+                    left += 1
+                else:
+                    right -= 1
+    
+    return results
+```
+
+### Variation 2: Sum of Four Values with Constraints
+**Problem**: Find quadruplets that sum to target with additional constraints (e.g., indices must be at least k apart).
+
+**Link**: [CSES Problem Set - Sum of Four Values with Constraints](https://cses.fi/problemset/task/sum_of_four_values_constraints)
+
+```python
+def sum_of_four_values_constraints(arr, target, min_distance):
+    """
+    Find quadruplets that sum to target with minimum distance constraint
+    """
+    # Create indexed array for position preservation
+    indexed_arr = [(arr[i], i) for i in range(len(arr))]
+    indexed_arr.sort()
+    
+    results = []
+    
+    for i in range(len(indexed_arr) - 3):
+        for j in range(i + 1, len(indexed_arr) - 2):
+            left = j + 1
+            right = len(indexed_arr) - 1
+            
+            while left < right:
+                current_sum = (indexed_arr[i][0] + indexed_arr[j][0] + 
+                             indexed_arr[left][0] + indexed_arr[right][0])
+                
+                if current_sum == target:
+                    # Check distance constraints
+                    indices = [indexed_arr[i][1], indexed_arr[j][1], 
+                             indexed_arr[left][1], indexed_arr[right][1]]
+                    
+                    # Check if all pairs have minimum distance
+                    valid = True
+                    for k in range(len(indices)):
+                        for l in range(k + 1, len(indices)):
+                            if abs(indices[k] - indices[l]) < min_distance:
+                                valid = False
+                                break
+                        if not valid:
+                            break
+                    
+                    if valid:
+                        results.append(indices)
+                    
+                    left += 1
+                    right -= 1
+                elif current_sum < target:
+                    left += 1
+                else:
+                    right -= 1
+    
+    return results
+```
+
+### Variation 3: Sum of Four Values with Dynamic Updates
+**Problem**: Handle dynamic updates to the array and maintain four-sum queries.
+
+**Link**: [CSES Problem Set - Sum of Four Values with Updates](https://cses.fi/problemset/task/sum_of_four_values_updates)
+
+```python
+class SumOfFourValuesWithUpdates:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.value_to_indices = {}
+        self._build_index_map()
+    
+    def _build_index_map(self):
+        """Build the value to indices mapping"""
+        self.value_to_indices = {}
+        for i, num in enumerate(self.arr):
+            if num not in self.value_to_indices:
+                self.value_to_indices[num] = []
+            self.value_to_indices[num].append(i)
+    
+    def update(self, index, new_value):
+        """Update element at index to new_value"""
+        old_value = self.arr[index]
+        self.arr[index] = new_value
+        
+        # Remove old value from map
+        if old_value in self.value_to_indices:
+            self.value_to_indices[old_value].remove(index)
+            if not self.value_to_indices[old_value]:
+                del self.value_to_indices[old_value]
+        
+        # Add new value to map
+        if new_value not in self.value_to_indices:
+            self.value_to_indices[new_value] = []
+        self.value_to_indices[new_value].append(index)
+    
+    def find_four_sum(self, target):
+        """Find quadruplet that sums to target"""
+        # Create indexed array for position preservation
+        indexed_arr = [(self.arr[i], i) for i in range(len(self.arr))]
+        indexed_arr.sort()
+        
+        for i in range(len(indexed_arr) - 3):
+            for j in range(i + 1, len(indexed_arr) - 2):
+                left = j + 1
+                right = len(indexed_arr) - 1
+                
+                while left < right:
+                    current_sum = (indexed_arr[i][0] + indexed_arr[j][0] + 
+                                 indexed_arr[left][0] + indexed_arr[right][0])
+                    
+                    if current_sum == target:
+                        return [indexed_arr[i][1], indexed_arr[j][1], 
+                               indexed_arr[left][1], indexed_arr[right][1]]
+                    elif current_sum < target:
+                        left += 1
+                    else:
+                        right -= 1
+        
+        return None
+    
+    def find_all_four_sums(self, target):
+        """Find all quadruplets that sum to target"""
+        # Create indexed array for position preservation
+        indexed_arr = [(self.arr[i], i) for i in range(len(self.arr))]
+        indexed_arr.sort()
+        
+        results = []
+        
+        for i in range(len(indexed_arr) - 3):
+            # Skip duplicates for first element
+            if i > 0 and indexed_arr[i][0] == indexed_arr[i-1][0]:
+                continue
+            
+            for j in range(i + 1, len(indexed_arr) - 2):
+                # Skip duplicates for second element
+                if j > i + 1 and indexed_arr[j][0] == indexed_arr[j-1][0]:
+                    continue
+                
+                left = j + 1
+                right = len(indexed_arr) - 1
+                
+                while left < right:
+                    current_sum = (indexed_arr[i][0] + indexed_arr[j][0] + 
+                                 indexed_arr[left][0] + indexed_arr[right][0])
+                    
+                    if current_sum == target:
+                        quadruplet = [indexed_arr[i][1], indexed_arr[j][1], 
+                                    indexed_arr[left][1], indexed_arr[right][1]]
+                        results.append(quadruplet)
+                        
+                        # Skip duplicates
+                        while left < right and indexed_arr[left][0] == indexed_arr[left+1][0]:
+                            left += 1
+                        while left < right and indexed_arr[right][0] == indexed_arr[right-1][0]:
+                            right -= 1
+                        
+                        left += 1
+                        right -= 1
+                    elif current_sum < target:
+                        left += 1
+                    else:
+                        right -= 1
+        
+        return results
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Sum of Four Values](https://cses.fi/problemset/task/1642) - Basic four values problem
+- [Sum of Two Values](https://cses.fi/problemset/task/1640) - Two values variant
+- [Sum of Three Values](https://cses.fi/problemset/task/1641) - Three values variant
+
+#### **LeetCode Problems**
+- [4Sum](https://leetcode.com/problems/4sum/) - Basic four sum problem
+- [4Sum II](https://leetcode.com/problems/4sum-ii/) - Four sum with four arrays
+- [3Sum](https://leetcode.com/problems/3sum/) - Three sum problem
+- [Two Sum](https://leetcode.com/problems/two-sum/) - Two sum problem
+
+#### **Problem Categories**
+- **Two Pointers**: Sorted array algorithms, efficient quadruplet finding, pointer techniques
+- **Hash Maps**: Key-value lookups, complement search, efficient searching
+- **Array Processing**: Element searching, quadruplet finding, index manipulation
+- **Algorithm Design**: Two-pointer techniques, hash-based algorithms, search optimization

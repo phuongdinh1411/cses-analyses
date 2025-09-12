@@ -342,5 +342,235 @@ print(f"Optimal result: {result}")  # Output: 8
 - **Sliding Window**: Use sliding window technique to efficiently count subarrays with exactly k distinct values
 - **Optimal Algorithm**: Sliding window approach is the standard solution for this problem
 - **Optimal Approach**: Two-pointer technique provides the most efficient solution for subarray counting problems
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+- **Hash Map Tracking**: Efficiently tracks distinct values and their frequencies
+- **Optimal Approach**: Sliding window with hash map provides the most efficient solution for subarray counting problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Distinct Values Subarrays with Range Queries
+**Problem**: Answer multiple queries about subarrays with exactly k distinct values in different ranges.
+
+**Link**: [CSES Problem Set - Distinct Values Subarrays Range Queries](https://cses.fi/problemset/task/distinct_values_subarrays_range)
+
+```python
+def distinct_values_subarrays_range_queries(arr, queries):
+    """
+    Answer range queries about subarrays with exactly k distinct values
+    """
+    results = []
+    
+    for query in queries:
+        left, right, k = query['left'], query['right'], query['k']
+        
+        # Extract subarray
+        subarray = arr[left:right+1]
+        
+        # Count subarrays with exactly k distinct values
+        count = 0
+        n = len(subarray)
+        
+        for i in range(n):
+            distinct_count = {}
+            for j in range(i, n):
+                distinct_count[subarray[j]] = distinct_count.get(subarray[j], 0) + 1
+                
+                if len(distinct_count) == k:
+                    count += 1
+                elif len(distinct_count) > k:
+                    break
+        
+        results.append(count)
+    
+    return results
+
+def distinct_values_subarrays_range_queries_optimized(arr, queries):
+    """
+    Optimized version using sliding window for each query
+    """
+    results = []
+    
+    for query in queries:
+        left, right, k = query['left'], query['right'], query['k']
+        
+        # Extract subarray
+        subarray = arr[left:right+1]
+        
+        # Use sliding window approach
+        count = 0
+        n = len(subarray)
+        distinct_count = {}
+        window_left = 0
+        
+        for window_right in range(n):
+            # Add current element to window
+            distinct_count[subarray[window_right]] = distinct_count.get(subarray[window_right], 0) + 1
+            
+            # Contract window from left while we have more than k distinct values
+            while len(distinct_count) > k:
+                distinct_count[subarray[window_left]] -= 1
+                if distinct_count[subarray[window_left]] == 0:
+                    del distinct_count[subarray[window_left]]
+                window_left += 1
+            
+            # Count subarrays ending at window_right with exactly k distinct values
+            if len(distinct_count) == k:
+                count += 1
+        
+        results.append(count)
+    
+    return results
+```
+
+### Variation 2: Distinct Values Subarrays with Updates
+**Problem**: Handle dynamic updates to the array and maintain subarray counts with exactly k distinct values.
+
+**Link**: [CSES Problem Set - Distinct Values Subarrays with Updates](https://cses.fi/problemset/task/distinct_values_subarrays_updates)
+
+```python
+class DistinctValuesSubarraysWithUpdates:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.n = len(arr)
+    
+    def update(self, index, new_value):
+        """Update element at index to new_value"""
+        self.arr[index] = new_value
+    
+    def count_subarrays_with_k_distinct(self, k):
+        """Count subarrays with exactly k distinct values"""
+        count = 0
+        distinct_count = {}
+        left = 0
+        
+        for right in range(self.n):
+            # Add current element to window
+            distinct_count[self.arr[right]] = distinct_count.get(self.arr[right], 0) + 1
+            
+            # Contract window from left while we have more than k distinct values
+            while len(distinct_count) > k:
+                distinct_count[self.arr[left]] -= 1
+                if distinct_count[self.arr[left]] == 0:
+                    del distinct_count[self.arr[left]]
+                left += 1
+            
+            # Count subarrays ending at right with exactly k distinct values
+            if len(distinct_count) == k:
+                count += 1
+        
+        return count
+    
+    def count_subarrays_range(self, left, right, k):
+        """Count subarrays with exactly k distinct values in range [left, right]"""
+        count = 0
+        distinct_count = {}
+        window_left = left
+        
+        for window_right in range(left, right + 1):
+            # Add current element to window
+            distinct_count[self.arr[window_right]] = distinct_count.get(self.arr[window_right], 0) + 1
+            
+            # Contract window from left while we have more than k distinct values
+            while len(distinct_count) > k:
+                distinct_count[self.arr[window_left]] -= 1
+                if distinct_count[self.arr[window_left]] == 0:
+                    del distinct_count[self.arr[window_left]]
+                window_left += 1
+            
+            # Count subarrays ending at window_right with exactly k distinct values
+            if len(distinct_count) == k:
+                count += 1
+        
+        return count
+```
+
+### Variation 3: Distinct Values Subarrays with Constraints
+**Problem**: Find subarrays with exactly k distinct values that satisfy additional constraints (e.g., minimum length, maximum sum).
+
+**Link**: [CSES Problem Set - Distinct Values Subarrays with Constraints](https://cses.fi/problemset/task/distinct_values_subarrays_constraints)
+
+```python
+def distinct_values_subarrays_constraints(arr, k, min_length, max_sum):
+    """
+    Find subarrays with exactly k distinct values that satisfy constraints
+    """
+    count = 0
+    distinct_count = {}
+    left = 0
+    
+    for right in range(len(arr)):
+        # Add current element to window
+        distinct_count[arr[right]] = distinct_count.get(arr[right], 0) + 1
+        
+        # Contract window from left while we have more than k distinct values
+        while len(distinct_count) > k:
+            distinct_count[arr[left]] -= 1
+            if distinct_count[arr[left]] == 0:
+                del distinct_count[arr[left]]
+            left += 1
+        
+        # Check if current window satisfies constraints
+        if len(distinct_count) == k:
+            window_length = right - left + 1
+            window_sum = sum(arr[left:right+1])
+            
+            if window_length >= min_length and window_sum <= max_sum:
+                count += 1
+    
+    return count
+
+def distinct_values_subarrays_constraints_optimized(arr, k, min_length, max_sum):
+    """
+    Optimized version with early termination
+    """
+    count = 0
+    distinct_count = {}
+    left = 0
+    
+    for right in range(len(arr)):
+        # Add current element to window
+        distinct_count[arr[right]] = distinct_count.get(arr[right], 0) + 1
+        
+        # Contract window from left while we have more than k distinct values
+        while len(distinct_count) > k:
+            distinct_count[arr[left]] -= 1
+            if distinct_count[arr[left]] == 0:
+                del distinct_count[arr[left]]
+            left += 1
+        
+        # Check if current window satisfies constraints
+        if len(distinct_count) == k:
+            window_length = right - left + 1
+            
+            # Early termination if window is too short
+            if window_length < min_length:
+                continue
+            
+            # Calculate window sum
+            window_sum = sum(arr[left:right+1])
+            
+            if window_sum <= max_sum:
+                count += 1
+    
+    return count
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Distinct Values Subarrays](https://cses.fi/problemset/task/2108) - Basic distinct values subarrays problem
+- [Distinct Values Subarrays II](https://cses.fi/problemset/task/2109) - Advanced distinct values subarrays problem
+- [Subarray Distinct Values](https://cses.fi/problemset/task/2428) - Subarray distinct values queries
+
+#### **LeetCode Problems**
+- [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) - Sliding window with distinct characters
+- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - Sliding window with k distinct characters
+- [Subarrays with K Different Integers](https://leetcode.com/problems/subarrays-with-k-different-integers/) - Subarrays with exactly k distinct values
+- [Fruit Into Baskets](https://leetcode.com/problems/fruit-into-baskets/) - Sliding window with at most 2 distinct values
+
+#### **Problem Categories**
+- **Sliding Window**: Two-pointer technique, window contraction, efficient subarray processing
+- **Hash Maps**: Frequency counting, distinct value tracking, efficient lookups
+- **Array Processing**: Subarray analysis, distinct value counting, range queries
+- **Algorithm Design**: Sliding window algorithms, hash-based techniques, subarray optimization

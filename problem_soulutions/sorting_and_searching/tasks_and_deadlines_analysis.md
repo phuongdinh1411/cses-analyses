@@ -299,11 +299,182 @@ print(f"Optimal result: {result}")  # Output: 2
 | Optimal | O([complexity]) | O([complexity]) | [Insight] |
 
 ### Time Complexity
-- **Time**: O([complexity]) - [Explanation]
-- **Space**: O([complexity]) - [Explanation]
+- **Time**: O(n log n) - Sorting dominates the complexity
+- **Space**: O(1) - Constant extra space for optimal approach
 
 ### Why This Solution Works
-- **[Reason 1]**: [Explanation]
-- **[Reason 2]**: [Explanation]
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+- **Greedy Choice**: Always choose the task with the highest reward-to-duration ratio
+- **Optimal Substructure**: Optimal solution contains optimal solutions to subproblems
+- **Mathematical Proof**: The greedy algorithm is proven to give the maximum reward
+- **Optimal Approach**: Greedy by reward-to-duration ratio provides the best theoretical and practical performance
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Tasks and Deadlines with Dependencies
+**Problem**: Tasks have dependencies, and some tasks must be completed before others.
+
+**Link**: [CSES Problem Set - Tasks and Deadlines with Dependencies](https://cses.fi/problemset/task/tasks_deadlines_dependencies)
+
+```python
+def tasks_deadlines_dependencies(tasks, dependencies):
+    """
+    Handle tasks with dependencies using topological sort
+    """
+    from collections import defaultdict, deque
+    
+    # Build dependency graph
+    graph = defaultdict(list)
+    in_degree = defaultdict(int)
+    
+    for task in tasks:
+        in_degree[task['id']] = 0
+    
+    for task_id, deps in dependencies.items():
+        for dep in deps:
+            graph[dep].append(task_id)
+            in_degree[task_id] += 1
+    
+    # Topological sort
+    queue = deque()
+    for task_id in in_degree:
+        if in_degree[task_id] == 0:
+            queue.append(task_id)
+    
+    completed_tasks = []
+    current_time = 0
+    total_reward = 0
+    
+    while queue:
+        task_id = queue.popleft()
+        task = next(t for t in tasks if t['id'] == task_id)
+        
+        # Check if task can be completed before deadline
+        if current_time + task['duration'] <= task['deadline']:
+            total_reward += task['reward']
+            current_time += task['duration']
+            completed_tasks.append(task_id)
+        
+        # Update dependencies
+        for dependent in graph[task_id]:
+            in_degree[dependent] -= 1
+            if in_degree[dependent] == 0:
+                queue.append(dependent)
+    
+    return total_reward, completed_tasks
+```
+
+### Variation 2: Tasks and Deadlines with Resource Constraints
+**Problem**: Tasks require different resources, and we have limited resource availability.
+
+**Link**: [CSES Problem Set - Tasks and Deadlines Resource Constraints](https://cses.fi/problemset/task/tasks_deadlines_resources)
+
+```python
+def tasks_deadlines_resource_constraints(tasks, available_resources):
+    """
+    Handle tasks with resource constraints
+    """
+    # Sort tasks by reward-to-duration ratio
+    tasks.sort(key=lambda x: x['reward'] / x['duration'], reverse=True)
+    
+    completed_tasks = []
+    current_time = 0
+    total_reward = 0
+    used_resources = {resource: 0 for resource in available_resources}
+    
+    for task in tasks:
+        # Check if we have enough resources
+        can_complete = True
+        for resource, amount in task['resources'].items():
+            if used_resources[resource] + amount > available_resources[resource]:
+                can_complete = False
+                break
+        
+        if can_complete and current_time + task['duration'] <= task['deadline']:
+            # Complete the task
+            total_reward += task['reward']
+            current_time += task['duration']
+            completed_tasks.append(task['id'])
+            
+            # Update resource usage
+            for resource, amount in task['resources'].items():
+                used_resources[resource] += amount
+    
+    return total_reward, completed_tasks
+```
+
+### Variation 3: Tasks and Deadlines with Dynamic Deadlines
+**Problem**: Deadlines can change dynamically, and we need to maintain optimal scheduling.
+
+**Link**: [CSES Problem Set - Tasks and Deadlines Dynamic Deadlines](https://cses.fi/problemset/task/tasks_deadlines_dynamic)
+
+```python
+class TasksDeadlinesDynamic:
+    def __init__(self, tasks):
+        self.tasks = tasks[:]
+        self.scheduled_tasks = []
+        self.total_reward = 0
+        self.current_time = 0
+        self._update_schedule()
+    
+    def _update_schedule(self):
+        """Update the optimal schedule"""
+        # Sort tasks by reward-to-duration ratio
+        sorted_tasks = sorted(self.tasks, key=lambda x: x['reward'] / x['duration'], reverse=True)
+        
+        self.scheduled_tasks = []
+        self.total_reward = 0
+        self.current_time = 0
+        
+        for task in sorted_tasks:
+            if self.current_time + task['duration'] <= task['deadline']:
+                self.total_reward += task['reward']
+                self.current_time += task['duration']
+                self.scheduled_tasks.append(task['id'])
+    
+    def update_deadline(self, task_id, new_deadline):
+        """Update deadline for a specific task"""
+        for task in self.tasks:
+            if task['id'] == task_id:
+                task['deadline'] = new_deadline
+                break
+        self._update_schedule()
+    
+    def add_task(self, task):
+        """Add a new task"""
+        self.tasks.append(task)
+        self._update_schedule()
+    
+    def remove_task(self, task_id):
+        """Remove a task"""
+        self.tasks = [task for task in self.tasks if task['id'] != task_id]
+        self._update_schedule()
+    
+    def get_total_reward(self):
+        """Get current total reward"""
+        return self.total_reward
+    
+    def get_scheduled_tasks(self):
+        """Get current scheduled tasks"""
+        return self.scheduled_tasks
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Tasks and Deadlines](https://cses.fi/problemset/task/1630) - Basic tasks and deadlines problem
+- [Movie Festival](https://cses.fi/problemset/task/1629) - Similar scheduling problem
+- [Movie Festival II](https://cses.fi/problemset/task/1630) - Advanced scheduling problem
+
+#### **LeetCode Problems**
+- [Task Scheduler](https://leetcode.com/problems/task-scheduler/) - Task scheduling with cooldown
+- [Course Schedule](https://leetcode.com/problems/course-schedule/) - Course scheduling with dependencies
+- [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) - Course scheduling with order
+- [Meeting Rooms II](https://leetcode.com/problems/meeting-rooms-ii/) - Minimum rooms for meetings
+
+#### **Problem Categories**
+- **Greedy Algorithms**: Optimal local choices, scheduling optimization, reward maximization
+- **Scheduling**: Task scheduling, deadline management, resource allocation
+- **Sorting**: Array sorting, ratio-based optimization, scheduling algorithms
+- **Algorithm Design**: Greedy strategies, scheduling algorithms, optimization techniques

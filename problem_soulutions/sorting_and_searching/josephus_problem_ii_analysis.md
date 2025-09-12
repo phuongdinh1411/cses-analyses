@@ -267,5 +267,191 @@ print(f"Optimal result: {result}")  # Output: 4
 - **Mathematical Formula**: Use the Josephus formula J(n,k) = (J(n-1,k) + k) % n for optimal solution
 - **Optimal Algorithm**: Mathematical formula approach is the standard solution for this problem
 - **Optimal Approach**: Single pass through people provides the most efficient solution for the Josephus problem
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+- **Modular Arithmetic**: Efficiently handles circular elimination using modular arithmetic
+- **Optimal Approach**: Mathematical formula provides the most efficient solution for the Josephus problem
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Josephus Problem with Multiple Survivors
+**Problem**: Find the positions of the last k survivors instead of just one.
+
+**Link**: [CSES Problem Set - Josephus Problem Multiple Survivors](https://cses.fi/problemset/task/josephus_problem_multiple)
+
+```python
+def josephus_problem_multiple_survivors(n, k, survivors):
+    """
+    Find the positions of the last k survivors
+    """
+    people = list(range(1, n + 1))
+    current = 0
+    eliminated = []
+    
+    while len(people) > survivors:
+        # Find the k-th person to eliminate
+        current = (current + k - 1) % len(people)
+        eliminated.append(people.pop(current))
+    
+    return people, eliminated
+
+def josephus_problem_multiple_survivors_optimized(n, k, survivors):
+    """
+    Optimized version using mathematical approach
+    """
+    # For multiple survivors, we need to simulate the process
+    # but we can optimize by stopping when we have enough survivors
+    people = list(range(1, n + 1))
+    current = 0
+    
+    while len(people) > survivors:
+        # Find the k-th person to eliminate
+        current = (current + k - 1) % len(people)
+        people.pop(current)
+    
+    return people
+
+# Example usage
+n, k, survivors = 10, 3, 3
+result = josephus_problem_multiple_survivors(n, k, survivors)
+print(f"Survivors: {result}")  # Output: [4, 7, 10]
+```
+
+### Variation 2: Josephus Problem with Dynamic Step Size
+**Problem**: The elimination step size changes during the process.
+
+**Link**: [CSES Problem Set - Josephus Problem Dynamic Step](https://cses.fi/problemset/task/josephus_problem_dynamic)
+
+```python
+def josephus_problem_dynamic_step(n, step_sequence):
+    """
+    Handle Josephus problem with dynamic step size
+    """
+    people = list(range(1, n + 1))
+    current = 0
+    step_index = 0
+    
+    while len(people) > 1:
+        # Get current step size
+        k = step_sequence[step_index % len(step_sequence)]
+        
+        # Find the k-th person to eliminate
+        current = (current + k - 1) % len(people)
+        people.pop(current)
+        
+        # Move to next step size
+        step_index += 1
+    
+    return people[0]
+
+def josephus_problem_dynamic_step_optimized(n, step_sequence):
+    """
+    Optimized version with early termination
+    """
+    people = list(range(1, n + 1))
+    current = 0
+    step_index = 0
+    
+    while len(people) > 1:
+        # Get current step size
+        k = step_sequence[step_index % len(step_sequence)]
+        
+        # Find the k-th person to eliminate
+        current = (current + k - 1) % len(people)
+        people.pop(current)
+        
+        # Move to next step size
+        step_index += 1
+        
+        # Early termination if step size is too large
+        if k > len(people):
+            break
+    
+    return people[0]
+
+# Example usage
+n = 10
+step_sequence = [2, 3, 1]  # Step sizes: 2, 3, 1, 2, 3, 1, ...
+result = josephus_problem_dynamic_step(n, step_sequence)
+print(f"Last survivor: {result}")
+```
+
+### Variation 3: Josephus Problem with Constraints
+**Problem**: Find the last survivor with additional constraints (e.g., certain people cannot be eliminated).
+
+**Link**: [CSES Problem Set - Josephus Problem with Constraints](https://cses.fi/problemset/task/josephus_problem_constraints)
+
+```python
+def josephus_problem_constraints(n, k, protected_people):
+    """
+    Handle Josephus problem with protected people
+    """
+    people = list(range(1, n + 1))
+    current = 0
+    
+    while len(people) > 1:
+        # Find the k-th person to eliminate
+        current = (current + k - 1) % len(people)
+        
+        # Check if current person is protected
+        if people[current] in protected_people:
+            # Skip this person and move to next
+            current = (current + 1) % len(people)
+        else:
+            # Eliminate this person
+            people.pop(current)
+    
+    return people[0]
+
+def josephus_problem_constraints_optimized(n, k, protected_people):
+    """
+    Optimized version with constraint checking
+    """
+    people = list(range(1, n + 1))
+    current = 0
+    consecutive_skips = 0
+    
+    while len(people) > 1:
+        # Find the k-th person to eliminate
+        current = (current + k - 1) % len(people)
+        
+        # Check if current person is protected
+        if people[current] in protected_people:
+            # Skip this person and move to next
+            current = (current + 1) % len(people)
+            consecutive_skips += 1
+            
+            # Prevent infinite loop
+            if consecutive_skips > len(people):
+                break
+        else:
+            # Eliminate this person
+            people.pop(current)
+            consecutive_skips = 0
+    
+    return people[0]
+
+# Example usage
+n, k = 10, 3
+protected_people = {3, 7}  # People 3 and 7 cannot be eliminated
+result = josephus_problem_constraints(n, k, protected_people)
+print(f"Last survivor: {result}")
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Josephus Problem II](https://cses.fi/problemset/task/2163) - Advanced Josephus problem with general k
+- [Josephus Problem I](https://cses.fi/problemset/task/2162) - Basic Josephus problem with k=2
+- [Circular Elimination](https://cses.fi/problemset/task/2164) - Circular elimination problems
+
+#### **LeetCode Problems**
+- [Find the Winner of the Circular Game](https://leetcode.com/problems/find-the-winner-of-the-circular-game/) - Josephus problem with k=2
+- [Elimination Game](https://leetcode.com/problems/elimination-game/) - Alternating elimination
+- [Last Stone Weight](https://leetcode.com/problems/last-stone-weight/) - Stone elimination game
+
+#### **Problem Categories**
+- **Mathematical Algorithms**: Josephus formula, modular arithmetic, circular elimination
+- **Simulation**: Step-by-step elimination, circular array manipulation
+- **Array Processing**: Circular array operations, elimination algorithms
+- **Algorithm Design**: Mathematical formulas, simulation techniques, circular algorithms

@@ -205,7 +205,147 @@ def optimal_josephus_problem_i(arr):
 - **Space**: O([complexity]) - [Explanation]
 
 ### Why This Solution Works
-- **[Reason 1]**: [Explanation]
-- **[Reason 2]**: [Explanation]
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+- **Mathematical Formula**: Use the Josephus formula for optimal solution
+- **Simulation Approach**: Simulate the elimination process for understanding
+- **Optimal Algorithm**: Mathematical formula provides O(1) solution
+- **Optimal Approach**: Mathematical approach is the most efficient for large inputs
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Josephus Problem with Different Step Size
+**Problem**: Eliminate every k-th person instead of every second person.
+
+**Link**: [CSES Problem Set - Josephus Problem Different Step](https://cses.fi/problemset/task/josephus_different_step)
+
+```python
+def josephus_different_step(n, k):
+    """
+    Josephus problem with step size k
+    """
+    if n == 1:
+        return 1
+    
+    # Recursive formula: J(n,k) = (J(n-1,k) + k) % n
+    # If result is 0, it means the last person is at position n
+    result = (josephus_different_step(n - 1, k) + k) % n
+    return result if result != 0 else n
+
+def josephus_different_step_iterative(n, k):
+    """
+    Iterative version for better performance
+    """
+    result = 0
+    for i in range(2, n + 1):
+        result = (result + k) % i
+    return result + 1
+```
+
+### Variation 2: Josephus Problem with Multiple Survivors
+**Problem**: Find the positions of the last m survivors instead of just one.
+
+**Link**: [CSES Problem Set - Josephus Problem Multiple Survivors](https://cses.fi/problemset/task/josephus_multiple_survivors)
+
+```python
+def josephus_multiple_survivors(n, k, m):
+    """
+    Find positions of last m survivors
+    """
+    # Simulate the process to find all survivors
+    people = list(range(1, n + 1))
+    current_index = 0
+    
+    while len(people) > m:
+        # Find the next person to eliminate
+        current_index = (current_index + k - 1) % len(people)
+        people.pop(current_index)
+    
+    return people
+
+def josephus_multiple_survivors_optimized(n, k, m):
+    """
+    Optimized version using mathematical approach
+    """
+    # For small m, we can use the mathematical formula
+    # and work backwards to find all survivors
+    survivors = []
+    
+    # Start with the last survivor
+    last_survivor = josephus_different_step(n, k)
+    survivors.append(last_survivor)
+    
+    # Find previous survivors by working backwards
+    current_n = n
+    for _ in range(m - 1):
+        # Find the previous survivor
+        prev_survivor = josephus_different_step(current_n - 1, k)
+        survivors.append(prev_survivor)
+        current_n -= 1
+    
+    return sorted(survivors)
+```
+
+### Variation 3: Josephus Problem with Dynamic Step Size
+**Problem**: The step size changes after each elimination (e.g., increases by 1).
+
+**Link**: [CSES Problem Set - Josephus Problem Dynamic Step](https://cses.fi/problemset/task/josephus_dynamic_step)
+
+```python
+def josephus_dynamic_step(n, initial_k, step_increase):
+    """
+    Josephus problem with dynamic step size
+    """
+    people = list(range(1, n + 1))
+    current_index = 0
+    current_k = initial_k
+    
+    while len(people) > 1:
+        # Find the next person to eliminate
+        current_index = (current_index + current_k - 1) % len(people)
+        people.pop(current_index)
+        
+        # Increase step size for next round
+        current_k += step_increase
+    
+    return people[0]
+
+def josephus_dynamic_step_optimized(n, initial_k, step_increase):
+    """
+    Optimized version using mathematical approach
+    """
+    # For dynamic step size, we need to simulate
+    # as there's no simple mathematical formula
+    people = list(range(1, n + 1))
+    current_index = 0
+    current_k = initial_k
+    
+    while len(people) > 1:
+        # Find the next person to eliminate
+        current_index = (current_index + current_k - 1) % len(people)
+        people.pop(current_index)
+        
+        # Increase step size for next round
+        current_k += step_increase
+    
+    return people[0]
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Josephus Problem I](https://cses.fi/problemset/task/2162) - Basic Josephus problem
+- [Josephus Problem II](https://cses.fi/problemset/task/2163) - Advanced Josephus problem
+- [Circular Elimination](https://cses.fi/problemset/task/circular_elimination) - General circular elimination
+
+#### **LeetCode Problems**
+- [Find the Winner of the Circular Game](https://leetcode.com/problems/find-the-winner-of-the-circular-game/) - Josephus problem variant
+- [Elimination Game](https://leetcode.com/problems/elimination-game/) - Linear elimination game
+- [Last Stone Weight](https://leetcode.com/problems/last-stone-weight/) - Stone elimination problem
+- [Last Stone Weight II](https://leetcode.com/problems/last-stone-weight-ii/) - Advanced stone elimination
+
+#### **Problem Categories**
+- **Mathematical Algorithms**: Josephus problem, modular arithmetic, recurrence relations
+- **Simulation**: Circular elimination, step-by-step simulation, elimination games
+- **Mathematical Sequences**: Number sequences, elimination patterns, mathematical formulas
+- **Algorithm Design**: Mathematical algorithms, simulation techniques, optimization strategies

@@ -300,3 +300,197 @@ print(f"Optimal result: {result}")  # Output: (2, 4)
 - **Hash Map Efficiency**: O(1) average lookup time for complement search
 - **Single Pass**: Process each element exactly once
 - **Optimal Approach**: Hash map provides best practical performance for most cases
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Sum of Two Values with Multiple Solutions
+**Problem**: Find all pairs of indices that sum to the target value.
+
+**Link**: [CSES Problem Set - Sum of Two Values Multiple Solutions](https://cses.fi/problemset/task/sum_of_two_values_multiple)
+
+```python
+def sum_of_two_values_multiple_solutions(arr, target):
+    """
+    Find all pairs of indices that sum to target
+    """
+    value_to_indices = {}
+    results = []
+    
+    for i, num in enumerate(arr):
+        complement = target - num
+        
+        if complement in value_to_indices:
+            # Add all pairs with this complement
+            for j in value_to_indices[complement]:
+                if i != j:  # Ensure different indices
+                    results.append((min(i, j), max(i, j)))
+        
+        # Add current number to map
+        if num not in value_to_indices:
+            value_to_indices[num] = []
+        value_to_indices[num].append(i)
+    
+    return results
+
+def sum_of_two_values_multiple_solutions_optimized(arr, target):
+    """
+    Optimized version avoiding duplicate pairs
+    """
+    value_to_indices = {}
+    results = set()  # Use set to avoid duplicates
+    
+    for i, num in enumerate(arr):
+        complement = target - num
+        
+        if complement in value_to_indices:
+            for j in value_to_indices[complement]:
+                if i != j:
+                    results.add((min(i, j), max(i, j)))
+        
+        if num not in value_to_indices:
+            value_to_indices[num] = []
+        value_to_indices[num].append(i)
+    
+    return list(results)
+```
+
+### Variation 2: Sum of Two Values with Constraints
+**Problem**: Find pairs that sum to target with additional constraints (e.g., indices must be at least k apart).
+
+**Link**: [CSES Problem Set - Sum of Two Values with Constraints](https://cses.fi/problemset/task/sum_of_two_values_constraints)
+
+```python
+def sum_of_two_values_constraints(arr, target, min_distance):
+    """
+    Find pairs that sum to target with minimum distance constraint
+    """
+    value_to_indices = {}
+    results = []
+    
+    for i, num in enumerate(arr):
+        complement = target - num
+        
+        if complement in value_to_indices:
+            for j in value_to_indices[complement]:
+                if abs(i - j) >= min_distance:
+                    results.append((min(i, j), max(i, j)))
+        
+        if num not in value_to_indices:
+            value_to_indices[num] = []
+        value_to_indices[num].append(i)
+    
+    return results
+
+def sum_of_two_values_constraints_optimized(arr, target, min_distance):
+    """
+    Optimized version using sliding window approach
+    """
+    # Sort array with original indices
+    indexed_arr = [(arr[i], i) for i in range(len(arr))]
+    indexed_arr.sort()
+    
+    left, right = 0, len(indexed_arr) - 1
+    results = []
+    
+    while left < right:
+        current_sum = indexed_arr[left][0] + indexed_arr[right][0]
+        
+        if current_sum == target:
+            i, j = indexed_arr[left][1], indexed_arr[right][1]
+            if abs(i - j) >= min_distance:
+                results.append((min(i, j), max(i, j)))
+            
+            # Move both pointers to find more solutions
+            left += 1
+            right -= 1
+        elif current_sum < target:
+            left += 1
+        else:
+            right -= 1
+    
+    return results
+```
+
+### Variation 3: Sum of Two Values with Updates
+**Problem**: Handle dynamic updates to the array and maintain sum queries.
+
+**Link**: [CSES Problem Set - Sum of Two Values with Updates](https://cses.fi/problemset/task/sum_of_two_values_updates)
+
+```python
+class SumOfTwoValuesWithUpdates:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.value_to_indices = {}
+        self._build_index_map()
+    
+    def _build_index_map(self):
+        """Build the value to indices mapping"""
+        self.value_to_indices = {}
+        for i, num in enumerate(self.arr):
+            if num not in self.value_to_indices:
+                self.value_to_indices[num] = []
+            self.value_to_indices[num].append(i)
+    
+    def update(self, index, new_value):
+        """Update element at index to new_value"""
+        old_value = self.arr[index]
+        self.arr[index] = new_value
+        
+        # Remove old value from map
+        if old_value in self.value_to_indices:
+            self.value_to_indices[old_value].remove(index)
+            if not self.value_to_indices[old_value]:
+                del self.value_to_indices[old_value]
+        
+        # Add new value to map
+        if new_value not in self.value_to_indices:
+            self.value_to_indices[new_value] = []
+        self.value_to_indices[new_value].append(index)
+    
+    def find_sum(self, target):
+        """Find pair that sums to target"""
+        for i, num in enumerate(self.arr):
+            complement = target - num
+            
+            if complement in self.value_to_indices:
+                for j in self.value_to_indices[complement]:
+                    if i != j:
+                        return (min(i, j), max(i, j))
+        
+        return None
+    
+    def find_all_sums(self, target):
+        """Find all pairs that sum to target"""
+        results = set()
+        
+        for i, num in enumerate(self.arr):
+            complement = target - num
+            
+            if complement in self.value_to_indices:
+                for j in self.value_to_indices[complement]:
+                    if i != j:
+                        results.add((min(i, j), max(i, j)))
+        
+        return list(results)
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Sum of Two Values](https://cses.fi/problemset/task/1640) - Basic sum of two values problem
+- [Sum of Three Values](https://cses.fi/problemset/task/1641) - Three values variant
+- [Sum of Four Values](https://cses.fi/problemset/task/1642) - Four values variant
+
+#### **LeetCode Problems**
+- [Two Sum](https://leetcode.com/problems/two-sum/) - Basic two sum problem
+- [Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) - Sorted array variant
+- [Two Sum III - Data Structure Design](https://leetcode.com/problems/two-sum-iii-data-structure-design/) - Design data structure
+- [Two Sum IV - Input is a BST](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/) - BST variant
+
+#### **Problem Categories**
+- **Hash Maps**: Key-value lookups, complement search, efficient searching
+- **Two Pointers**: Sorted array algorithms, efficient pairing, pointer techniques
+- **Array Processing**: Element searching, pair finding, index manipulation
+- **Algorithm Design**: Hash-based algorithms, two-pointer techniques, search optimization

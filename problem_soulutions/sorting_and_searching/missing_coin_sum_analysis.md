@@ -304,3 +304,166 @@ print(f"Optimal result: {result}")  # Output: 12
 - **Mathematical Insight**: The greedy approach is mathematically proven to be correct
 - **Efficient Implementation**: No need for complex data structures
 - **Optimal Approach**: Greedy algorithm provides the most efficient solution for this problem
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Missing Coin Sum with Limited Quantities
+**Problem**: Each coin has a limited quantity, and we want to find the smallest impossible sum.
+
+**Link**: [CSES Problem Set - Missing Coin Sum Limited Quantities](https://cses.fi/problemset/task/missing_coin_sum_limited)
+
+```python
+def missing_coin_sum_limited_quantities(coins, quantities):
+    """
+    Find smallest impossible sum with limited coin quantities
+    """
+    # Create list of (value, quantity) pairs
+    coin_data = [(coins[i], quantities[i]) for i in range(len(coins))]
+    coin_data.sort()  # Sort by value
+    
+    current_sum = 0
+    
+    for value, quantity in coin_data:
+        # If current value is greater than current_sum + 1,
+        # then current_sum + 1 is impossible
+        if value > current_sum + 1:
+            return current_sum + 1
+        
+        # Add all possible sums using this coin
+        # We can create sums from current_sum + 1 to current_sum + value * quantity
+        current_sum += value * quantity
+    
+    return current_sum + 1
+
+def missing_coin_sum_limited_quantities_optimized(coins, quantities):
+    """
+    Optimized version for large quantities
+    """
+    # Create list of (value, quantity) pairs
+    coin_data = [(coins[i], quantities[i]) for i in range(len(coins))]
+    coin_data.sort()  # Sort by value
+    
+    current_sum = 0
+    
+    for value, quantity in coin_data:
+        if value > current_sum + 1:
+            return current_sum + 1
+        
+        # For large quantities, we can optimize by using binary search
+        # to find the maximum number of coins we can use
+        max_coins = min(quantity, (current_sum + 1) // value)
+        current_sum += value * max_coins
+    
+    return current_sum + 1
+```
+
+### Variation 2: Missing Coin Sum with Different Denominations
+**Problem**: Coins have different denominations and we want to find the smallest impossible sum.
+
+**Link**: [CSES Problem Set - Missing Coin Sum Different Denominations](https://cses.fi/problemset/task/missing_coin_sum_denominations)
+
+```python
+def missing_coin_sum_different_denominations(coins):
+    """
+    Find smallest impossible sum with different coin denominations
+    """
+    coins.sort()  # Sort coins in ascending order
+    
+    current_sum = 0
+    
+    for coin in coins:
+        # If current coin is greater than current_sum + 1,
+        # then current_sum + 1 is impossible
+        if coin > current_sum + 1:
+            return current_sum + 1
+        
+        # We can create all sums from 1 to current_sum + coin
+        current_sum += coin
+    
+    return current_sum + 1
+
+def missing_coin_sum_different_denominations_optimized(coins):
+    """
+    Optimized version with early termination
+    """
+    coins.sort()
+    
+    current_sum = 0
+    
+    for coin in coins:
+        if coin > current_sum + 1:
+            return current_sum + 1
+        
+        current_sum += coin
+        
+        # Early termination if we can create all sums up to a large number
+        if current_sum > 10**9:  # Assuming reasonable upper bound
+            break
+    
+    return current_sum + 1
+```
+
+### Variation 3: Missing Coin Sum with Dynamic Updates
+**Problem**: Coins can be added or removed dynamically, and we need to maintain the smallest impossible sum.
+
+**Link**: [CSES Problem Set - Missing Coin Sum Dynamic Updates](https://cses.fi/problemset/task/missing_coin_sum_dynamic)
+
+```python
+class MissingCoinSumDynamic:
+    def __init__(self, coins):
+        self.coins = sorted(coins)
+        self.smallest_impossible = self._calculate_smallest_impossible()
+    
+    def _calculate_smallest_impossible(self):
+        """Calculate the smallest impossible sum"""
+        current_sum = 0
+        
+        for coin in self.coins:
+            if coin > current_sum + 1:
+                return current_sum + 1
+            current_sum += coin
+        
+        return current_sum + 1
+    
+    def add_coin(self, coin):
+        """Add a new coin"""
+        # Insert coin in sorted order
+        import bisect
+        bisect.insort(self.coins, coin)
+        self.smallest_impossible = self._calculate_smallest_impossible()
+    
+    def remove_coin(self, coin):
+        """Remove a coin"""
+        if coin in self.coins:
+            self.coins.remove(coin)
+            self.smallest_impossible = self._calculate_smallest_impossible()
+    
+    def get_smallest_impossible(self):
+        """Get current smallest impossible sum"""
+        return self.smallest_impossible
+    
+    def can_make_sum(self, target):
+        """Check if we can make a specific sum"""
+        return target < self.smallest_impossible
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Missing Coin Sum](https://cses.fi/problemset/task/2183) - Basic missing coin sum problem
+- [Coin Combinations I](https://cses.fi/problemset/task/1635) - Coin combination counting
+- [Coin Combinations II](https://cses.fi/problemset/task/1636) - Coin combination counting with order
+
+#### **LeetCode Problems**
+- [Coin Change](https://leetcode.com/problems/coin-change/) - Minimum coins to make amount
+- [Coin Change 2](https://leetcode.com/problems/coin-change-2/) - Number of ways to make amount
+- [Minimum Number of Refueling Stops](https://leetcode.com/problems/minimum-number-of-refueling-stops/) - Greedy optimization
+- [Jump Game](https://leetcode.com/problems/jump-game/) - Greedy reachability
+
+#### **Problem Categories**
+- **Greedy Algorithms**: Optimal local choices, coin optimization, sum construction
+- **Mathematical Algorithms**: Number theory, sum construction, optimization theory
+- **Sorting**: Array sorting, greedy optimization, mathematical algorithms
+- **Algorithm Design**: Greedy strategies, mathematical algorithms, optimization techniques

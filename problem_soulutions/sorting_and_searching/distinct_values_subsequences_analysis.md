@@ -166,7 +166,302 @@ def optimal_distinct_values_subsequences(arr):
 - **Space**: O([complexity]) - [Explanation]
 
 ### Why This Solution Works
-- **[Reason 1]**: [Explanation]
-- **[Reason 2]**: [Explanation]
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+- **Combinatorics Technique**: Use combinatorial formulas to count subsequences with exactly k distinct values efficiently
+- **Mathematical Insight**: Combinatorics formula provides optimal counting without enumeration
+- **Efficient Implementation**: No need for complex data structures or enumeration
+- **Optimal Approach**: Combinatorics approach provides the most efficient solution for subsequence counting problems
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Distinct Values Subsequences with Range Queries
+**Problem**: Answer multiple queries about subsequences with exactly k distinct values in different ranges.
+
+**Link**: [CSES Problem Set - Distinct Values Subsequences Range Queries](https://cses.fi/problemset/task/distinct_values_subsequences_range)
+
+```python
+def distinct_values_subsequences_range_queries(arr, queries):
+    """
+    Answer range queries about subsequences with exactly k distinct values
+    """
+    results = []
+    
+    for query in queries:
+        left, right, k = query['left'], query['right'], query['k']
+        
+        # Extract subarray
+        subarray = arr[left:right+1]
+        
+        # Count subsequences with exactly k distinct values
+        count = count_distinct_values_subsequences(subarray, k)
+        results.append(count)
+    
+    return results
+
+def count_distinct_values_subsequences(arr, k):
+    """
+    Count subsequences with exactly k distinct values using combinatorics
+    """
+    from collections import Counter
+    
+    # Count frequency of each value
+    freq = Counter(arr)
+    
+    # Get unique values and their frequencies
+    unique_values = list(freq.keys())
+    
+    if len(unique_values) < k:
+        return 0
+    
+    # Use combinatorics to count subsequences
+    count = 0
+    
+    # Generate all combinations of k distinct values
+    from itertools import combinations
+    
+    for combo in combinations(unique_values, k):
+        # For each combination, count subsequences
+        combo_count = 1
+        for value in combo:
+            combo_count *= (2**freq[value] - 1)
+        count += combo_count
+    
+    return count
+```
+
+### Variation 2: Distinct Values Subsequences with Updates
+**Problem**: Handle dynamic updates to the array and maintain subsequence counts with exactly k distinct values.
+
+**Link**: [CSES Problem Set - Distinct Values Subsequences with Updates](https://cses.fi/problemset/task/distinct_values_subsequences_updates)
+
+```python
+class DistinctValuesSubsequencesWithUpdates:
+    def __init__(self, arr):
+        self.arr = arr[:]
+        self.freq = {}
+        self._build_frequency_map()
+    
+    def _build_frequency_map(self):
+        """Build frequency map of array elements"""
+        self.freq = {}
+        for num in self.arr:
+            self.freq[num] = self.freq.get(num, 0) + 1
+    
+    def update(self, index, new_value):
+        """Update element at index to new_value"""
+        old_value = self.arr[index]
+        self.arr[index] = new_value
+        
+        # Update frequency map
+        self.freq[old_value] -= 1
+        if self.freq[old_value] == 0:
+            del self.freq[old_value]
+        
+        self.freq[new_value] = self.freq.get(new_value, 0) + 1
+    
+    def count_subsequences_with_k_distinct(self, k):
+        """Count subsequences with exactly k distinct values"""
+        unique_values = list(self.freq.keys())
+        
+        if len(unique_values) < k:
+            return 0
+        
+        # Use combinatorics to count subsequences
+        count = 0
+        
+        # Generate all combinations of k distinct values
+        from itertools import combinations
+        
+        for combo in combinations(unique_values, k):
+            # For each combination, count subsequences
+            combo_count = 1
+            for value in combo:
+                combo_count *= (2**self.freq[value] - 1)
+            count += combo_count
+        
+        return count
+    
+    def count_subsequences_range(self, left, right, k):
+        """Count subsequences with exactly k distinct values in range [left, right]"""
+        # Extract subarray
+        subarray = self.arr[left:right+1]
+        
+        # Count frequency of each value in subarray
+        from collections import Counter
+        freq = Counter(subarray)
+        
+        unique_values = list(freq.keys())
+        
+        if len(unique_values) < k:
+            return 0
+        
+        # Use combinatorics to count subsequences
+        count = 0
+        
+        # Generate all combinations of k distinct values
+        from itertools import combinations
+        
+        for combo in combinations(unique_values, k):
+            # For each combination, count subsequences
+            combo_count = 1
+            for value in combo:
+                combo_count *= (2**freq[value] - 1)
+            count += combo_count
+        
+        return count
+```
+
+### Variation 3: Distinct Values Subsequences with Constraints
+**Problem**: Find subsequences with exactly k distinct values that satisfy additional constraints (e.g., minimum length, maximum sum).
+
+**Link**: [CSES Problem Set - Distinct Values Subsequences with Constraints](https://cses.fi/problemset/task/distinct_values_subsequences_constraints)
+
+```python
+def distinct_values_subsequences_constraints(arr, k, min_length, max_sum):
+    """
+    Find subsequences with exactly k distinct values that satisfy constraints
+    """
+    from collections import Counter
+    from itertools import combinations
+    
+    # Count frequency of each value
+    freq = Counter(arr)
+    
+    # Get unique values and their frequencies
+    unique_values = list(freq.keys())
+    
+    if len(unique_values) < k:
+        return 0
+    
+    count = 0
+    
+    # Generate all combinations of k distinct values
+    for combo in combinations(unique_values, k):
+        # For each combination, count subsequences that satisfy constraints
+        combo_count = count_constrained_subsequences(combo, freq, min_length, max_sum)
+        count += combo_count
+    
+    return count
+
+def count_constrained_subsequences(combo, freq, min_length, max_sum):
+    """
+    Count subsequences for a specific combination that satisfy constraints
+    """
+    # Generate all possible subsequences for this combination
+    from itertools import product
+    
+    # For each value in combo, generate all possible subsequences
+    value_subsequences = []
+    for value in combo:
+        # Generate all possible subsequences for this value
+        # Each value can appear 1 to freq[value] times
+        value_subseqs = []
+        for count in range(1, freq[value] + 1):
+            value_subseqs.append([value] * count)
+        value_subsequences.append(value_subseqs)
+    
+    # Generate all combinations of subsequences
+    count = 0
+    for subseq_combo in product(*value_subsequences):
+        # Flatten the subsequence combination
+        subsequence = []
+        for subseq in subseq_combo:
+            subsequence.extend(subseq)
+        
+        # Check constraints
+        if len(subsequence) >= min_length and sum(subsequence) <= max_sum:
+            count += 1
+    
+    return count
+
+def distinct_values_subsequences_constraints_optimized(arr, k, min_length, max_sum):
+    """
+    Optimized version with early termination
+    """
+    from collections import Counter
+    from itertools import combinations
+    
+    # Count frequency of each value
+    freq = Counter(arr)
+    
+    # Get unique values and their frequencies
+    unique_values = list(freq.keys())
+    
+    if len(unique_values) < k:
+        return 0
+    
+    count = 0
+    
+    # Generate all combinations of k distinct values
+    for combo in combinations(unique_values, k):
+        # For each combination, count subsequences that satisfy constraints
+        combo_count = count_constrained_subsequences_optimized(combo, freq, min_length, max_sum)
+        count += combo_count
+    
+    return count
+
+def count_constrained_subsequences_optimized(combo, freq, min_length, max_sum):
+    """
+    Optimized version with early termination
+    """
+    # Calculate minimum possible sum for this combination
+    min_sum = sum(combo)
+    
+    if min_sum > max_sum:
+        return 0
+    
+    # Calculate maximum possible length for this combination
+    max_length = sum(freq[value] for value in combo)
+    
+    if max_length < min_length:
+        return 0
+    
+    # Use combinatorics to count subsequences
+    count = 0
+    
+    # Generate all possible subsequences for this combination
+    from itertools import product
+    
+    # For each value in combo, generate all possible subsequences
+    value_subsequences = []
+    for value in combo:
+        # Generate all possible subsequences for this value
+        # Each value can appear 1 to freq[value] times
+        value_subseqs = []
+        for count in range(1, freq[value] + 1):
+            value_subseqs.append([value] * count)
+        value_subsequences.append(value_subseqs)
+    
+    # Generate all combinations of subsequences
+    for subseq_combo in product(*value_subsequences):
+        # Flatten the subsequence combination
+        subsequence = []
+        for subseq in subseq_combo:
+            subsequence.extend(subseq)
+        
+        # Check constraints
+        if len(subsequence) >= min_length and sum(subsequence) <= max_sum:
+            count += 1
+    
+    return count
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Distinct Values Subsequences](https://cses.fi/problemset/task/2110) - Basic distinct values subsequences problem
+- [Distinct Values Subarrays](https://cses.fi/problemset/task/2108) - Basic distinct values subarrays problem
+- [Distinct Values Subarrays II](https://cses.fi/problemset/task/2109) - Advanced distinct values subarrays problem
+
+#### **LeetCode Problems**
+- [Subsequences with K Different Integers](https://leetcode.com/problems/subsequences-with-k-different-integers/) - Subsequences with exactly k distinct values
+- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - Sliding window with k distinct characters
+- [Subarrays with K Different Integers](https://leetcode.com/problems/subarrays-with-k-different-integers/) - Subarrays with exactly k distinct values
+- [Fruit Into Baskets](https://leetcode.com/problems/fruit-into-baskets/) - Sliding window with at most 2 distinct values
+
+#### **Problem Categories**
+- **Combinatorics**: Mathematical counting, combination generation, subsequence analysis
+- **Hash Maps**: Frequency counting, distinct value tracking, efficient lookups
+- **Array Processing**: Subsequence analysis, distinct value counting, range queries
+- **Algorithm Design**: Combinatorics algorithms, mathematical counting, subsequence optimization

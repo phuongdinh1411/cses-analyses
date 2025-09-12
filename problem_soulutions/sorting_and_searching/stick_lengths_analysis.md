@@ -287,5 +287,188 @@ print(f"Optimal result: {result}")  # Output: 5
 - **Mathematical Proof**: Median is the optimal target length for this problem
 - **Efficient Algorithm**: Quick select finds median in O(n) time
 - **Optimal Approach**: Quick select provides the most efficient solution for finding the median
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+
+## 🚀 Problem Variations
+
+### Extended Problems with Detailed Code Examples
+
+### Variation 1: Stick Lengths with Different Costs
+**Problem**: Each stick has different costs for increasing and decreasing its length.
+
+**Link**: [CSES Problem Set - Stick Lengths Different Costs](https://cses.fi/problemset/task/stick_lengths_different_costs)
+
+```python
+def stick_lengths_different_costs(sticks, increase_costs, decrease_costs):
+    """
+    Find minimum cost with different costs for increasing/decreasing
+    """
+    def calculate_cost(target):
+        """Calculate cost to make all sticks target length"""
+        total_cost = 0
+        for i, stick in enumerate(sticks):
+            if stick < target:
+                # Need to increase
+                total_cost += (target - stick) * increase_costs[i]
+            elif stick > target:
+                # Need to decrease
+                total_cost += (stick - target) * decrease_costs[i]
+        return total_cost
+    
+    # Binary search on target length
+    left = min(sticks)
+    right = max(sticks)
+    
+    while left < right:
+        mid = (left + right) // 2
+        cost_mid = calculate_cost(mid)
+        cost_mid_plus_1 = calculate_cost(mid + 1)
+        
+        if cost_mid < cost_mid_plus_1:
+            right = mid
+        else:
+            left = mid + 1
+    
+    return calculate_cost(left)
+```
+
+### Variation 2: Stick Lengths with Constraints
+**Problem**: Sticks can only be modified within certain limits (e.g., maximum increase/decrease).
+
+**Link**: [CSES Problem Set - Stick Lengths with Constraints](https://cses.fi/problemset/task/stick_lengths_constraints)
+
+```python
+def stick_lengths_constraints(sticks, max_increase, max_decrease):
+    """
+    Find minimum cost with modification constraints
+    """
+    def is_feasible(target):
+        """Check if target is achievable with constraints"""
+        for stick in sticks:
+            if stick < target:
+                if target - stick > max_increase:
+                    return False
+            elif stick > target:
+                if stick - target > max_decrease:
+                    return False
+        return True
+    
+    def calculate_cost(target):
+        """Calculate cost to make all sticks target length"""
+        if not is_feasible(target):
+            return float('inf')
+        
+        total_cost = 0
+        for stick in sticks:
+            total_cost += abs(stick - target)
+        return total_cost
+    
+    # Find feasible range
+    min_feasible = max(min(sticks), max(sticks) - max_decrease)
+    max_feasible = min(max(sticks), min(sticks) + max_increase)
+    
+    min_cost = float('inf')
+    for target in range(min_feasible, max_feasible + 1):
+        cost = calculate_cost(target)
+        min_cost = min(min_cost, cost)
+    
+    return min_cost if min_cost != float('inf') else -1
+```
+
+### Variation 3: Stick Lengths with Multiple Targets
+**Problem**: Find the minimum cost to make all sticks one of k possible target lengths.
+
+**Link**: [CSES Problem Set - Stick Lengths Multiple Targets](https://cses.fi/problemset/task/stick_lengths_multiple_targets)
+
+```python
+def stick_lengths_multiple_targets(sticks, k):
+    """
+    Find minimum cost to make all sticks one of k target lengths
+    """
+    def calculate_cost(targets):
+        """Calculate cost for given target lengths"""
+        total_cost = 0
+        for stick in sticks:
+            min_cost = float('inf')
+            for target in targets:
+                min_cost = min(min_cost, abs(stick - target))
+            total_cost += min_cost
+        return total_cost
+    
+    # Use dynamic programming approach
+    n = len(sticks)
+    sorted_sticks = sorted(sticks)
+    
+    # DP[i][j] = minimum cost to assign first i sticks to j targets
+    dp = [[float('inf')] * (k + 1) for _ in range(n + 1)]
+    dp[0][0] = 0
+    
+    for i in range(1, n + 1):
+        for j in range(1, min(i, k) + 1):
+            # Try all possible target lengths for stick i-1
+            for target in sorted_sticks:
+                cost = abs(sorted_sticks[i-1] - target)
+                dp[i][j] = min(dp[i][j], dp[i-1][j-1] + cost)
+    
+    return dp[n][k]
+
+def stick_lengths_multiple_targets_optimized(sticks, k):
+    """
+    Optimized version using clustering approach
+    """
+    # Sort sticks
+    sorted_sticks = sorted(sticks)
+    n = len(sorted_sticks)
+    
+    # Use k-means clustering approach
+    # Initialize targets as evenly spaced values
+    targets = []
+    for i in range(k):
+        targets.append(sorted_sticks[i * n // k])
+    
+    # Iteratively improve targets
+    for _ in range(100):  # Maximum iterations
+        # Assign each stick to closest target
+        assignments = [[] for _ in range(k)]
+        for stick in sorted_sticks:
+            closest_target = min(range(k), key=lambda i: abs(stick - targets[i]))
+            assignments[closest_target].append(stick)
+        
+        # Update targets to be medians of assigned sticks
+        new_targets = []
+        for assignment in assignments:
+            if assignment:
+                new_targets.append(sorted(assignment)[len(assignment) // 2])
+            else:
+                new_targets.append(0)
+        
+        if new_targets == targets:
+            break
+        targets = new_targets
+    
+    # Calculate final cost
+    total_cost = 0
+    for stick in sorted_sticks:
+        min_cost = min(abs(stick - target) for target in targets)
+        total_cost += min_cost
+    
+    return total_cost
+```
+
+### Related Problems
+
+#### **CSES Problems**
+- [Stick Lengths](https://cses.fi/problemset/task/1074) - Basic stick lengths problem
+- [Array Division](https://cses.fi/problemset/task/1085) - Similar optimization problem
+- [Nearest Smaller Values](https://cses.fi/problemset/task/1645) - Optimization with constraints
+
+#### **LeetCode Problems**
+- [Minimum Moves to Equal Array Elements](https://leetcode.com/problems/minimum-moves-to-equal-array-elements/) - Make array elements equal
+- [Minimum Moves to Equal Array Elements II](https://leetcode.com/problems/minimum-moves-to-equal-array-elements-ii/) - Median-based optimization
+- [Minimum Cost to Move Chips to The Same Position](https://leetcode.com/problems/minimum-cost-to-move-chips-to-the-same-position/) - Chip movement optimization
+- [Minimum Operations to Make Array Equal](https://leetcode.com/problems/minimum-operations-to-make-array-equal/) - Array equalization
+
+#### **Problem Categories**
+- **Optimization**: Median-based optimization, cost minimization, constraint satisfaction
+- **Mathematical Algorithms**: Median finding, absolute difference minimization, optimization theory
+- **Sorting**: Array sorting, median calculation, optimization algorithms
+- **Algorithm Design**: Optimization algorithms, mathematical algorithms, constraint algorithms
