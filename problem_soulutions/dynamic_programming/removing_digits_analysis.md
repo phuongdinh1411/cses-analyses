@@ -4,7 +4,7 @@ title: "Removing Digits - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/removing_digits_analysis
 ---
 
-# Removing Digits - Dynamic Programming Problem
+# Removing Digits
 
 ## 📋 Problem Information
 

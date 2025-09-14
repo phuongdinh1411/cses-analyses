@@ -4,7 +4,7 @@ title: "Point Location Test - Geometry Problem"
 permalink: /problem_soulutions/geometry/point_location_test_analysis
 ---
 
-# Point Location Test - Geometry Problem
+# Point Location Test
 
 ## 📋 Problem Information
 

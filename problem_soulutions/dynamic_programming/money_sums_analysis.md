@@ -4,7 +4,7 @@ title: "Money Sums - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/money_sums_analysis
 ---
 
-# Money Sums - Dynamic Programming Problem
+# Money Sums
 
 ## 📋 Problem Information
 

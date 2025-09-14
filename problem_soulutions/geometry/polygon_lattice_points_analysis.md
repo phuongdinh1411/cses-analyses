@@ -4,7 +4,7 @@ title: "Polygon Lattice Points - Geometry Problem"
 permalink: /problem_soulutions/geometry/polygon_lattice_points_analysis
 ---
 
-# Polygon Lattice Points - Geometry Problem
+# Polygon Lattice Points
 
 ## 📋 Problem Information
 

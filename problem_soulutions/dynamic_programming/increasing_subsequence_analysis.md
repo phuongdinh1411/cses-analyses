@@ -4,7 +4,7 @@ title: "Increasing Subsequence - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/increasing_subsequence_analysis
 ---
 
-# Increasing Subsequence - Dynamic Programming Problem
+# Increasing Subsequence
 
 ## 📋 Problem Information
 

@@ -4,7 +4,7 @@ title: "Book Shop - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/book_shop_analysis
 ---
 
-# Book Shop - Dynamic Programming Problem
+# Book Shop
 
 ## 📋 Problem Information
 

@@ -4,7 +4,7 @@ title: "Robot Path - Geometry Problem"
 permalink: /problem_soulutions/geometry/robot_path_analysis
 ---
 
-# Robot Path - Geometry Problem
+# Robot Path
 
 ## 📋 Problem Information
 

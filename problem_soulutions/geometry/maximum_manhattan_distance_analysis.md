@@ -4,7 +4,7 @@ title: "Maximum Manhattan Distance - Geometry Problem"
 permalink: /problem_soulutions/geometry/maximum_manhattan_distance_analysis
 ---
 
-# Maximum Manhattan Distance - Geometry Problem
+# Maximum Manhattan Distance
 
 ## 📋 Problem Information
 

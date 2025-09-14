@@ -4,7 +4,7 @@ title: "Minimum Euclidean Distance - Geometry Problem"
 permalink: /problem_soulutions/geometry/minimum_euclidean_distance_analysis
 ---
 
-# Minimum Euclidean Distance - Geometry Problem
+# Minimum Euclidean Distance
 
 ## 📋 Problem Information
 

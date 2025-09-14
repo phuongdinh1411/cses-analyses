@@ -4,7 +4,7 @@ title: "Minimal Grid Path - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/minimal_grid_path_analysis
 ---
 
-# Minimal Grid Path - Dynamic Programming Problem
+# Minimal Grid Path
 
 ## 📋 Problem Information
 

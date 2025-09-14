@@ -4,7 +4,7 @@ title: "Two Sets II - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/two_sets_ii_analysis
 ---
 
-# Two Sets II - Dynamic Programming Problem
+# Two Sets II
 
 ## 📋 Problem Information
 

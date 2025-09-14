@@ -4,7 +4,7 @@ title: "Array Description - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/array_description_analysis
 ---
 
-# Array Description - Dynamic Programming Problem
+# Array Description
 
 ## 📋 Problem Information
 

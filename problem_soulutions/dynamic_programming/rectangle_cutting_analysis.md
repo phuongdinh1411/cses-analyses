@@ -4,7 +4,7 @@ title: "Rectangle Cutting - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/rectangle_cutting_analysis
 ---
 
-# Rectangle Cutting - Dynamic Programming Problem
+# Rectangle Cutting
 
 ## 📋 Problem Information
 

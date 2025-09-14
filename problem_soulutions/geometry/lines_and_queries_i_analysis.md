@@ -4,7 +4,7 @@ title: "Lines and Queries I - Geometry Problem"
 permalink: /problem_soulutions/geometry/lines_and_queries_i_analysis
 ---
 
-# Lines and Queries I - Geometry Problem
+# Lines and Queries I
 
 ## 📋 Problem Information
 

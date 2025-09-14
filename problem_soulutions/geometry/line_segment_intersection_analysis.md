@@ -4,7 +4,7 @@ title: "Line Segment Intersection - Geometry Problem"
 permalink: /problem_soulutions/geometry/line_segment_intersection_analysis
 ---
 
-# Line Segment Intersection - Geometry Problem
+# Line Segment Intersection
 
 ## 📋 Problem Information
 

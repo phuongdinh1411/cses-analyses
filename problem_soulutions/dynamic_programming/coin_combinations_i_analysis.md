@@ -4,7 +4,7 @@ title: "Coin Combinations I - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/coin_combinations_i_analysis
 ---
 
-# Coin Combinations I - Dynamic Programming Problem
+# Coin Combinations I
 
 ## 📋 Problem Information
 

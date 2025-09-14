@@ -4,7 +4,7 @@ title: "Counting Towers - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/counting_towers_analysis
 ---
 
-# Counting Towers - Dynamic Programming Problem
+# Counting Towers
 
 ## 📋 Problem Information
 

@@ -4,7 +4,7 @@ title: "Grid Paths - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/grid_paths_analysis
 ---
 
-# Grid Paths - Dynamic Programming Problem
+# Grid Paths
 
 ## 📋 Problem Information
 

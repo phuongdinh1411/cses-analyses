@@ -4,7 +4,7 @@ title: "Edit Distance - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/edit_distance_analysis
 ---
 
-# Edit Distance - Dynamic Programming Problem
+# Edit Distance
 
 ## 📋 Problem Information
 

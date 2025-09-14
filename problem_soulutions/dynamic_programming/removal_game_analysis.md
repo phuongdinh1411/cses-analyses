@@ -4,7 +4,7 @@ title: "Removal Game - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/removal_game_analysis
 ---
 
-# Removal Game - Dynamic Programming Problem
+# Removal Game
 
 ## 📋 Problem Information
 

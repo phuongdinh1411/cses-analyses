@@ -4,7 +4,7 @@ title: "Intersection Points - Geometry Problem"
 permalink: /problem_soulutions/geometry/intersection_points_analysis
 ---
 
-# Intersection Points - Geometry Problem
+# Intersection Points
 
 ## 📋 Problem Information
 

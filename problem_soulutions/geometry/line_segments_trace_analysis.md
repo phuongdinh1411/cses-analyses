@@ -4,7 +4,7 @@ title: "Line Segments Trace - Geometry Problem"
 permalink: /problem_soulutions/geometry/line_segments_trace_analysis
 ---
 
-# Line Segments Trace - Geometry Problem
+# Line Segments Trace
 
 ## 📋 Problem Information
 

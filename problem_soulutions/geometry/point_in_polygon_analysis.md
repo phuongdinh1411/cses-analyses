@@ -4,7 +4,7 @@ title: "Point in Polygon - Geometry Problem"
 permalink: /problem_soulutions/geometry/point_in_polygon_analysis
 ---
 
-# Point in Polygon - Geometry Problem
+# Point in Polygon
 
 ## 📋 Problem Information
 

@@ -4,7 +4,7 @@ title: "Polygon Area - Geometry Problem"
 permalink: /problem_soulutions/geometry/polygon_area_analysis
 ---
 
-# Polygon Area - Geometry Problem
+# Polygon Area
 
 ## 📋 Problem Information
 

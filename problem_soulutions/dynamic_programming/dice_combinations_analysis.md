@@ -4,7 +4,7 @@ title: "Dice Combinations - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/dice_combinations_analysis
 ---
 
-# Dice Combinations - Dynamic Programming Problem
+# Dice Combinations
 
 ## 📋 Problem Information
 

@@ -4,7 +4,7 @@ title: "Convex Hull - Geometry Problem"
 permalink: /problem_soulutions/geometry/convex_hull_analysis
 ---
 
-# Convex Hull - Geometry Problem
+# Convex Hull
 
 ## 📋 Problem Information
 

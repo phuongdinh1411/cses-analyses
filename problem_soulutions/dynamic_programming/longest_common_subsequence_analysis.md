@@ -4,7 +4,7 @@ title: "Longest Common Subsequence - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/longest_common_subsequence_analysis
 ---
 
-# Longest Common Subsequence - Dynamic Programming Problem
+# Longest Common Subsequence
 
 ## 📋 Problem Information
 

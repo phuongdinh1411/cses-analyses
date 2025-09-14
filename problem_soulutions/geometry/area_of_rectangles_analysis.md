@@ -4,7 +4,7 @@ title: "Area of Rectangles - Geometry Problem"
 permalink: /problem_soulutions/geometry/area_of_rectangles_analysis
 ---
 
-# Area of Rectangles - Geometry Problem
+# Area of Rectangles
 
 ## 📋 Problem Information
 

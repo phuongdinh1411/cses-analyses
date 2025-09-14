@@ -4,7 +4,7 @@ title: "Minimizing Coins - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming/minimizing_coins_analysis
 ---
 
-# Minimizing Coins - Dynamic Programming Problem
+# Minimizing Coins
 
 ## 📋 Problem Information
 

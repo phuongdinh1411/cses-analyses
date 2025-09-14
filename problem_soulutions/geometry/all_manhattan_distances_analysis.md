@@ -4,7 +4,7 @@ title: "All Manhattan Distances - Geometry Problem"
 permalink: /problem_soulutions/geometry/all_manhattan_distances_analysis
 ---
 
-# All Manhattan Distances - Geometry Problem
+# All Manhattan Distances
 
 ## 📋 Problem Information
 
