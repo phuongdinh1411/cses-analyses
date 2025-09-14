@@ -262,8 +262,6 @@ Rerooting          | O(n)    | O(n)    | All-node queries
 ### Tree Queries
 - [Company Queries I](company_queries_i_analysis) - Basic company hierarchy
 - [Company Queries II](company_queries_ii_analysis) - LCA queries
-- [Company Queries III](company_queries_iii_analysis) - Advanced queries
-- [Company Queries IV](company_queries_iv_analysis) - Complex operations
 
 ### Distance Problems
 - [Tree Distances I](tree_distances_i_analysis) - Distance calculation
@@ -274,7 +272,6 @@ Rerooting          | O(n)    | O(n)    | All-node queries
 - [Path Queries](path_queries_analysis) - Sum queries on paths
 - [Path Queries II](path_queries_ii_analysis) - Advanced path operations
 - [Counting Paths](counting_paths_analysis) - Count paths with sum
-- [Distinct Values Queries](distinct_values_queries_analysis) - Unique values on paths
 
 ## Detailed Examples and Implementations
 
