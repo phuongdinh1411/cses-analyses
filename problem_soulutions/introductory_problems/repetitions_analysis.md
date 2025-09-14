@@ -356,6 +356,975 @@ def repetitions_character_frequency(sequence, char_freq):
     return max_length
 ```
 
+## Problem Variations
+
+### **Variation 1: Repetitions with Dynamic Updates**
+**Problem**: Handle dynamic string updates (add/remove/update characters) while finding the longest repetition efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic string management.
+
+```python
+from collections import defaultdict
+
+class DynamicRepetitions:
+    def __init__(self, string=""):
+        self.string = string
+        self.char_count = defaultdict(int)
+        for char in self.string:
+            self.char_count[char] += 1
+        self._update_repetition_info()
+    
+    def _update_repetition_info(self):
+        """Update repetition feasibility information."""
+        self.total_chars = len(self.string)
+        self.unique_chars = len(self.char_count)
+        self.max_repetition = self._calculate_max_repetition()
+    
+    def _calculate_max_repetition(self):
+        """Calculate maximum consecutive repetition."""
+        if not self.string:
+            return 0
+        
+        max_repetition = 1
+        current_repetition = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == self.string[i-1]:
+                current_repetition += 1
+                max_repetition = max(max_repetition, current_repetition)
+            else:
+                current_repetition = 1
+        
+        return max_repetition
+    
+    def add_character(self, char, position=None):
+        """Add character to the string."""
+        if position is None:
+            self.string += char
+        else:
+            self.string = self.string[:position] + char + self.string[position:]
+        
+        self.char_count[char] += 1
+        self._update_repetition_info()
+    
+    def remove_character(self, position):
+        """Remove character from the string."""
+        if 0 <= position < len(self.string):
+            char = self.string[position]
+            self.string = self.string[:position] + self.string[position+1:]
+            self.char_count[char] -= 1
+            if self.char_count[char] == 0:
+                del self.char_count[char]
+            self._update_repetition_info()
+    
+    def update_character(self, position, new_char):
+        """Update character in the string."""
+        if 0 <= position < len(self.string):
+            old_char = self.string[position]
+            self.string = self.string[:position] + new_char + self.string[position+1:]
+            
+            self.char_count[old_char] -= 1
+            if self.char_count[old_char] == 0:
+                del self.char_count[old_char]
+            
+            self.char_count[new_char] += 1
+            self._update_repetition_info()
+    
+    def get_longest_repetition(self):
+        """Get the longest consecutive repetition."""
+        return self.max_repetition
+    
+    def get_repetitions_with_constraints(self, constraint_func):
+        """Get repetitions that satisfy custom constraints."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                if constraint_func(current_char, current_count):
+                    result.append((current_char, current_count))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        if constraint_func(current_char, current_count):
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_repetitions_in_range(self, min_length, max_length):
+        """Get repetitions within specified length range."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                if min_length <= current_count <= max_length:
+                    result.append((current_char, current_count))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        if min_length <= current_count <= max_length:
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_repetitions_with_pattern(self, pattern_func):
+        """Get repetitions matching specified pattern."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                if pattern_func(current_char, current_count):
+                    result.append((current_char, current_count))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        if pattern_func(current_char, current_count):
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_string_statistics(self):
+        """Get statistics about the string."""
+        if not self.string:
+            return {
+                'total_chars': 0,
+                'unique_chars': 0,
+                'max_repetition': 0,
+                'char_distribution': {}
+            }
+        
+        return {
+            'total_chars': self.total_chars,
+            'unique_chars': self.unique_chars,
+            'max_repetition': self.max_repetition,
+            'char_distribution': dict(self.char_count)
+        }
+    
+    def get_repetition_patterns(self):
+        """Get patterns in repetitions."""
+        patterns = {
+            'single_char_repetition': 0,
+            'multiple_char_repetitions': 0,
+            'high_frequency_chars': 0,
+            'low_frequency_chars': 0
+        }
+        
+        if not self.string:
+            return patterns
+        
+        # Check for single character repetition
+        if len(self.char_count) == 1:
+            patterns['single_char_repetition'] = 1
+        
+        # Check for multiple character repetitions
+        if len(self.char_count) > 1:
+            patterns['multiple_char_repetitions'] = 1
+        
+        # Check for high frequency characters
+        max_freq = max(self.char_count.values())
+        if max_freq > len(self.string) * 0.5:
+            patterns['high_frequency_chars'] = 1
+        
+        # Check for low frequency characters
+        min_freq = min(self.char_count.values())
+        if min_freq < len(self.string) * 0.1:
+            patterns['low_frequency_chars'] = 1
+        
+        return patterns
+    
+    def get_optimal_repetition_strategy(self):
+        """Get optimal strategy for repetition finding."""
+        if not self.string:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'repetition_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.unique_chars / self.total_chars if self.total_chars > 0 else 0
+        
+        # Calculate repetition feasibility
+        repetition_feasibility = 1.0 if self.max_repetition > 0 else 0.0
+        
+        # Determine recommended strategy
+        if self.max_repetition <= 10:
+            recommended_strategy = 'simple_scan'
+        elif self.unique_chars == 1:
+            recommended_strategy = 'single_char_optimization'
+        else:
+            recommended_strategy = 'advanced_scan'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'repetition_feasibility': repetition_feasibility
+        }
+
+# Example usage
+string = "AAABBBCCCC"
+dynamic_repetitions = DynamicRepetitions(string)
+print(f"Max repetition: {dynamic_repetitions.max_repetition}")
+print(f"Longest repetition: {dynamic_repetitions.get_longest_repetition()}")
+
+# Add character
+dynamic_repetitions.add_character('D')
+print(f"After adding D: {dynamic_repetitions.max_repetition}")
+
+# Remove character
+dynamic_repetitions.remove_character(0)
+print(f"After removing first character: {dynamic_repetitions.max_repetition}")
+
+# Update character
+dynamic_repetitions.update_character(0, 'E')
+print(f"After updating first character to E: {dynamic_repetitions.max_repetition}")
+
+# Get repetitions with constraints
+def constraint_func(char, count):
+    return count >= 3
+
+print(f"Repetitions with count >= 3: {dynamic_repetitions.get_repetitions_with_constraints(constraint_func)}")
+
+# Get repetitions in range
+print(f"Repetitions in range 2-4: {dynamic_repetitions.get_repetitions_in_range(2, 4)}")
+
+# Get repetitions with pattern
+def pattern_func(char, count):
+    return char in 'ABC'
+
+print(f"Repetitions with pattern: {dynamic_repetitions.get_repetitions_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_repetitions.get_string_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_repetitions.get_repetition_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_repetitions.get_optimal_repetition_strategy()}")
+```
+
+### **Variation 2: Repetitions with Different Operations**
+**Problem**: Handle different types of repetition operations (weighted characters, priority-based selection, advanced string analysis).
+
+**Approach**: Use advanced data structures for efficient different types of repetition operations.
+
+```python
+class AdvancedRepetitions:
+    def __init__(self, string="", weights=None, priorities=None):
+        self.string = string
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.char_count = defaultdict(int)
+        for char in self.string:
+            self.char_count[char] += 1
+        self._update_repetition_info()
+    
+    def _update_repetition_info(self):
+        """Update repetition feasibility information."""
+        self.total_chars = len(self.string)
+        self.unique_chars = len(self.char_count)
+        self.max_repetition = self._calculate_max_repetition()
+    
+    def _calculate_max_repetition(self):
+        """Calculate maximum consecutive repetition."""
+        if not self.string:
+            return 0
+        
+        max_repetition = 1
+        current_repetition = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == self.string[i-1]:
+                current_repetition += 1
+                max_repetition = max(max_repetition, current_repetition)
+            else:
+                current_repetition = 1
+        
+        return max_repetition
+    
+    def get_weighted_repetitions(self):
+        """Get repetitions with weights and priorities applied."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                weight = self.weights.get(current_char, 1)
+                priority = self.priorities.get(current_char, 1)
+                weighted_repetition = {
+                    'char': current_char,
+                    'count': current_count,
+                    'weight': weight,
+                    'priority': priority,
+                    'weighted_score': current_count * weight * priority
+                }
+                result.append(weighted_repetition)
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        weight = self.weights.get(current_char, 1)
+        priority = self.priorities.get(current_char, 1)
+        weighted_repetition = {
+            'char': current_char,
+            'count': current_count,
+            'weight': weight,
+            'priority': priority,
+            'weighted_score': current_count * weight * priority
+        }
+        result.append(weighted_repetition)
+        
+        return result
+    
+    def get_repetitions_with_priority(self, priority_func):
+        """Get repetitions considering priority."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                priority = priority_func(current_char, current_count, self.weights, self.priorities)
+                result.append((current_char, current_count, priority))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        priority = priority_func(current_char, current_count, self.weights, self.priorities)
+        result.append((current_char, current_count, priority))
+        
+        # Sort by priority
+        result.sort(key=lambda x: x[2], reverse=True)
+        return result
+    
+    def get_repetitions_with_optimization(self, optimization_func):
+        """Get repetitions using custom optimization function."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                score = optimization_func(current_char, current_count, self.weights, self.priorities)
+                result.append((current_char, current_count, score))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        score = optimization_func(current_char, current_count, self.weights, self.priorities)
+        result.append((current_char, current_count, score))
+        
+        # Sort by optimization score
+        result.sort(key=lambda x: x[2], reverse=True)
+        return result
+    
+    def get_repetitions_with_constraints(self, constraint_func):
+        """Get repetitions that satisfy custom constraints."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                if constraint_func(current_char, current_count, self.weights, self.priorities):
+                    result.append((current_char, current_count))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        if constraint_func(current_char, current_count, self.weights, self.priorities):
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_repetitions_with_multiple_criteria(self, criteria_list):
+        """Get repetitions that satisfy multiple criteria."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                satisfies_all_criteria = True
+                for criterion in criteria_list:
+                    if not criterion(current_char, current_count, self.weights, self.priorities):
+                        satisfies_all_criteria = False
+                        break
+                
+                if satisfies_all_criteria:
+                    result.append((current_char, current_count))
+                
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(current_char, current_count, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_repetitions_with_alternatives(self, alternatives):
+        """Get repetitions considering alternative weights/priorities."""
+        result = []
+        
+        # Check original repetitions
+        original_repetitions = self.get_weighted_repetitions()
+        result.append((original_repetitions, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedRepetitions(self.string, alt_weights, alt_priorities)
+            temp_repetitions = temp_instance.get_weighted_repetitions()
+            result.append((temp_repetitions, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_repetitions_with_adaptive_criteria(self, adaptive_func):
+        """Get repetitions using adaptive criteria."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                if adaptive_func(current_char, current_count, self.weights, self.priorities, result):
+                    result.append((current_char, current_count))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        if adaptive_func(current_char, current_count, self.weights, self.priorities, result):
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_repetition_optimization(self):
+        """Get optimal repetition configuration."""
+        strategies = [
+            ('weighted_repetitions', lambda: len(self.get_weighted_repetitions())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+string = "AAABBBCCCC"
+weights = {char: ord(char) - ord('A') + 1 for char in string}  # Weight based on character position
+priorities = {char: string.count(char) for char in string}  # Priority based on frequency
+advanced_repetitions = AdvancedRepetitions(string, weights, priorities)
+
+print(f"Weighted repetitions: {len(advanced_repetitions.get_weighted_repetitions())}")
+
+# Get repetitions with priority
+def priority_func(char, count, weights, priorities):
+    return count * weights.get(char, 1) + priorities.get(char, 1)
+
+print(f"Repetitions with priority: {len(advanced_repetitions.get_repetitions_with_priority(priority_func))}")
+
+# Get repetitions with optimization
+def optimization_func(char, count, weights, priorities):
+    return count * weights.get(char, 1) * priorities.get(char, 1)
+
+print(f"Repetitions with optimization: {len(advanced_repetitions.get_repetitions_with_optimization(optimization_func))}")
+
+# Get repetitions with constraints
+def constraint_func(char, count, weights, priorities):
+    return count >= 3 and weights.get(char, 1) >= 2
+
+print(f"Repetitions with constraints: {len(advanced_repetitions.get_repetitions_with_constraints(constraint_func))}")
+
+# Get repetitions with multiple criteria
+def criterion1(char, count, weights, priorities):
+    return count >= 3
+
+def criterion2(char, count, weights, priorities):
+    return weights.get(char, 1) >= 2
+
+criteria_list = [criterion1, criterion2]
+print(f"Repetitions with multiple criteria: {len(advanced_repetitions.get_repetitions_with_multiple_criteria(criteria_list))}")
+
+# Get repetitions with alternatives
+alternatives = [({char: 1 for char in string}, {char: 1 for char in string}), ({char: len(char) for char in string}, {char: char.count('A') + 1 for char in string})]
+print(f"Repetitions with alternatives: {len(advanced_repetitions.get_repetitions_with_alternatives(alternatives))}")
+
+# Get repetitions with adaptive criteria
+def adaptive_func(char, count, weights, priorities, current_result):
+    return count >= 3 and len(current_result) < 5
+
+print(f"Repetitions with adaptive criteria: {len(advanced_repetitions.get_repetitions_with_adaptive_criteria(adaptive_func))}")
+
+# Get repetition optimization
+print(f"Repetition optimization: {advanced_repetitions.get_repetition_optimization()}")
+```
+
+### **Variation 3: Repetitions with Constraints**
+**Problem**: Handle repetition finding with additional constraints (length limits, character constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedRepetitions:
+    def __init__(self, string="", constraints=None):
+        self.string = string
+        self.constraints = constraints or {}
+        self.char_count = defaultdict(int)
+        for char in self.string:
+            self.char_count[char] += 1
+        self._update_repetition_info()
+    
+    def _update_repetition_info(self):
+        """Update repetition feasibility information."""
+        self.total_chars = len(self.string)
+        self.unique_chars = len(self.char_count)
+        self.max_repetition = self._calculate_max_repetition()
+    
+    def _calculate_max_repetition(self):
+        """Calculate maximum consecutive repetition."""
+        if not self.string:
+            return 0
+        
+        max_repetition = 1
+        current_repetition = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == self.string[i-1]:
+                current_repetition += 1
+                max_repetition = max(max_repetition, current_repetition)
+            else:
+                current_repetition = 1
+        
+        return max_repetition
+    
+    def _is_valid_repetition(self, char, count):
+        """Check if repetition is valid considering constraints."""
+        # Length constraints
+        if 'min_length' in self.constraints:
+            if count < self.constraints['min_length']:
+                return False
+        
+        if 'max_length' in self.constraints:
+            if count > self.constraints['max_length']:
+                return False
+        
+        # Character constraints
+        if 'forbidden_chars' in self.constraints:
+            if char in self.constraints['forbidden_chars']:
+                return False
+        
+        if 'required_chars' in self.constraints:
+            if char not in self.constraints['required_chars']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(char, count):
+                    return False
+        
+        return True
+    
+    def get_repetitions_with_length_constraints(self, min_length, max_length):
+        """Get repetitions considering length constraints."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                if min_length <= current_count <= max_length:
+                    result.append((current_char, current_count))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        if min_length <= current_count <= max_length:
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_repetitions_with_character_constraints(self, character_constraints):
+        """Get repetitions considering character constraints."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                satisfies_constraints = True
+                for constraint in character_constraints:
+                    if not constraint(current_char, current_count):
+                        satisfies_constraints = False
+                        break
+                
+                if satisfies_constraints:
+                    result.append((current_char, current_count))
+                
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        satisfies_constraints = True
+        for constraint in character_constraints:
+            if not constraint(current_char, current_count):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_repetitions_with_pattern_constraints(self, pattern_constraints):
+        """Get repetitions considering pattern constraints."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                satisfies_pattern = True
+                for constraint in pattern_constraints:
+                    if not constraint(current_char, current_count):
+                        satisfies_pattern = False
+                        break
+                
+                if satisfies_pattern:
+                    result.append((current_char, current_count))
+                
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(current_char, current_count):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_repetitions_with_mathematical_constraints(self, constraint_func):
+        """Get repetitions that satisfy custom mathematical constraints."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                if constraint_func(current_char, current_count):
+                    result.append((current_char, current_count))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        if constraint_func(current_char, current_count):
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_repetitions_with_optimization_constraints(self, optimization_func):
+        """Get repetitions using custom optimization constraints."""
+        if not self.string:
+            return []
+        
+        # Calculate optimization score for each repetition
+        all_repetitions = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                score = optimization_func(current_char, current_count)
+                all_repetitions.append((current_char, current_count, score))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        score = optimization_func(current_char, current_count)
+        all_repetitions.append((current_char, current_count, score))
+        
+        # Sort by optimization score
+        all_repetitions.sort(key=lambda x: x[2], reverse=True)
+        
+        return [(char, count) for char, count, _ in all_repetitions]
+    
+    def get_repetitions_with_multiple_constraints(self, constraints_list):
+        """Get repetitions that satisfy multiple constraints."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                satisfies_all_constraints = True
+                for constraint in constraints_list:
+                    if not constraint(current_char, current_count):
+                        satisfies_all_constraints = False
+                        break
+                
+                if satisfies_all_constraints:
+                    result.append((current_char, current_count))
+                
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(current_char, current_count):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_repetitions_with_priority_constraints(self, priority_func):
+        """Get repetitions with priority-based constraints."""
+        if not self.string:
+            return []
+        
+        # Sort repetitions by priority
+        all_repetitions = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                priority = priority_func(current_char, current_count)
+                all_repetitions.append((current_char, current_count, priority))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        priority = priority_func(current_char, current_count)
+        all_repetitions.append((current_char, current_count, priority))
+        
+        # Sort by priority
+        all_repetitions.sort(key=lambda x: x[2], reverse=True)
+        
+        return [(char, count) for char, count, _ in all_repetitions]
+    
+    def get_repetitions_with_adaptive_constraints(self, adaptive_func):
+        """Get repetitions with adaptive constraints."""
+        if not self.string:
+            return []
+        
+        result = []
+        current_char = self.string[0]
+        current_count = 1
+        
+        for i in range(1, len(self.string)):
+            if self.string[i] == current_char:
+                current_count += 1
+            else:
+                if adaptive_func(current_char, current_count, result):
+                    result.append((current_char, current_count))
+                current_char = self.string[i]
+                current_count = 1
+        
+        # Check last repetition
+        if adaptive_func(current_char, current_count, result):
+            result.append((current_char, current_count))
+        
+        return result
+    
+    def get_optimal_repetition_strategy(self):
+        """Get optimal repetition strategy considering all constraints."""
+        strategies = [
+            ('length_constraints', self.get_repetitions_with_length_constraints),
+            ('character_constraints', self.get_repetitions_with_character_constraints),
+            ('pattern_constraints', self.get_repetitions_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_count = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'length_constraints':
+                    current_count = len(strategy_func(1, 10))
+                elif strategy_name == 'character_constraints':
+                    character_constraints = [lambda c, count: count >= 2]
+                    current_count = len(strategy_func(character_constraints))
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda c, count: c in 'ABC']
+                    current_count = len(strategy_func(pattern_constraints))
+                
+                if current_count > best_count:
+                    best_count = current_count
+                    best_strategy = (strategy_name, current_count)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'min_length': 2,
+    'max_length': 10,
+    'forbidden_chars': ['X', 'Y', 'Z'],
+    'required_chars': ['A', 'B', 'C'],
+    'pattern_constraints': [lambda c, count: count >= 2]
+}
+
+string = "AAABBBCCCC"
+constrained_repetitions = ConstrainedRepetitions(string, constraints)
+
+print("Length-constrained repetitions:", len(constrained_repetitions.get_repetitions_with_length_constraints(2, 10)))
+
+print("Character-constrained repetitions:", len(constrained_repetitions.get_repetitions_with_character_constraints([lambda c, count: count >= 2])))
+
+print("Pattern-constrained repetitions:", len(constrained_repetitions.get_repetitions_with_pattern_constraints([lambda c, count: c in 'ABC'])))
+
+# Mathematical constraints
+def custom_constraint(char, count):
+    return count >= 3 and char in 'ABC'
+
+print("Mathematical constraint repetitions:", len(constrained_repetitions.get_repetitions_with_mathematical_constraints(custom_constraint)))
+
+# Range constraints
+def range_constraint(char, count):
+    return 2 <= count <= 10
+
+range_constraints = [range_constraint]
+print("Range-constrained repetitions:", len(constrained_repetitions.get_repetitions_with_length_constraints(2, 10)))
+
+# Multiple constraints
+def constraint1(char, count):
+    return count >= 2
+
+def constraint2(char, count):
+    return char in 'ABC'
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints repetitions:", len(constrained_repetitions.get_repetitions_with_multiple_constraints(constraints_list)))
+
+# Priority constraints
+def priority_func(char, count):
+    return count + ord(char) - ord('A')
+
+print("Priority-constrained repetitions:", len(constrained_repetitions.get_repetitions_with_priority_constraints(priority_func)))
+
+# Adaptive constraints
+def adaptive_func(char, count, current_result):
+    return count >= 2 and len(current_result) < 5
+
+print("Adaptive constraint repetitions:", len(constrained_repetitions.get_repetitions_with_adaptive_constraints(adaptive_func)))
+
+# Optimal strategy
+optimal = constrained_repetitions.get_optimal_repetition_strategy()
+print(f"Optimal repetition strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

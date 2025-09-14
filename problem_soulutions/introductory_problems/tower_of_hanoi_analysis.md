@@ -457,6 +457,719 @@ def tower_of_hanoi_with_cost(n, move_costs):
     return solve_with_cost(n, 1, 2, 3)
 ```
 
+## Problem Variations
+
+### **Variation 1: Tower of Hanoi with Dynamic Updates**
+**Problem**: Handle dynamic disk updates (add/remove/update disks) while maintaining optimal Tower of Hanoi solution efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic disk management.
+
+```python
+from collections import defaultdict
+
+class DynamicTowerOfHanoi:
+    def __init__(self, n_disks=0):
+        self.n_disks = n_disks
+        self.towers = {'A': list(range(n_disks, 0, -1)), 'B': [], 'C': []}
+        self.move_count = 0
+        self._update_hanoi_info()
+    
+    def _update_hanoi_info(self):
+        """Update Tower of Hanoi feasibility information."""
+        self.total_disks = sum(len(tower) for tower in self.towers.values())
+        self.min_moves = self._calculate_min_moves()
+        self.solution_feasibility = self._calculate_solution_feasibility()
+    
+    def _calculate_min_moves(self):
+        """Calculate minimum moves required."""
+        return (2 ** self.n_disks) - 1 if self.n_disks > 0 else 0
+    
+    def _calculate_solution_feasibility(self):
+        """Calculate solution feasibility."""
+        if self.n_disks == 0:
+            return 1.0
+        
+        # Check if all disks are on one tower
+        non_empty_towers = sum(1 for tower in self.towers.values() if tower)
+        return 1.0 if non_empty_towers <= 1 else 0.0
+    
+    def add_disk(self, size, tower='A'):
+        """Add disk to specified tower."""
+        if tower in self.towers:
+            self.towers[tower].append(size)
+            self.n_disks = max(self.n_disks, size)
+            self._update_hanoi_info()
+    
+    def remove_disk(self, tower):
+        """Remove top disk from specified tower."""
+        if tower in self.towers and self.towers[tower]:
+            disk = self.towers[tower].pop()
+            self._update_hanoi_info()
+            return disk
+        return None
+    
+    def move_disk(self, from_tower, to_tower):
+        """Move top disk from one tower to another."""
+        if (from_tower in self.towers and to_tower in self.towers and 
+            self.towers[from_tower] and 
+            (not self.towers[to_tower] or self.towers[from_tower][-1] < self.towers[to_tower][-1])):
+            
+            disk = self.towers[from_tower].pop()
+            self.towers[to_tower].append(disk)
+            self.move_count += 1
+            self._update_hanoi_info()
+            return True
+        return False
+    
+    def solve_hanoi(self, n=None, source='A', destination='C', auxiliary='B'):
+        """Solve Tower of Hanoi recursively."""
+        if n is None:
+            n = self.n_disks
+        
+        if n == 0:
+            return []
+        
+        moves = []
+        
+        # Move n-1 disks from source to auxiliary
+        moves.extend(self.solve_hanoi(n-1, source, auxiliary, destination))
+        
+        # Move the largest disk from source to destination
+        if self.move_disk(source, destination):
+            moves.append(f"Move disk from {source} to {destination}")
+        
+        # Move n-1 disks from auxiliary to destination
+        moves.extend(self.solve_hanoi(n-1, auxiliary, destination, source))
+        
+        return moves
+    
+    def get_solution_with_constraints(self, constraint_func):
+        """Get solution that satisfies custom constraints."""
+        if not self.towers['A']:
+            return []
+        
+        if constraint_func(self.towers, self.move_count):
+            return self.solve_hanoi()
+        else:
+            return []
+    
+    def get_solution_in_range(self, min_moves, max_moves):
+        """Get solution within specified move range."""
+        if min_moves <= self.min_moves <= max_moves:
+            return self.solve_hanoi()
+        else:
+            return []
+    
+    def get_solution_with_pattern(self, pattern_func):
+        """Get solution matching specified pattern."""
+        if pattern_func(self.towers, self.move_count):
+            return self.solve_hanoi()
+        else:
+            return []
+    
+    def get_tower_statistics(self):
+        """Get statistics about the towers."""
+        return {
+            'total_disks': self.total_disks,
+            'n_disks': self.n_disks,
+            'min_moves': self.min_moves,
+            'move_count': self.move_count,
+            'solution_feasibility': self.solution_feasibility,
+            'tower_distribution': {tower: len(disks) for tower, disks in self.towers.items()}
+        }
+    
+    def get_hanoi_patterns(self):
+        """Get patterns in Tower of Hanoi."""
+        patterns = {
+            'all_disks_on_source': 0,
+            'all_disks_on_destination': 0,
+            'disks_distributed': 0,
+            'optimal_solution_possible': 0
+        }
+        
+        # Check if all disks are on source tower
+        if len(self.towers['A']) == self.n_disks and not self.towers['B'] and not self.towers['C']:
+            patterns['all_disks_on_source'] = 1
+        
+        # Check if all disks are on destination tower
+        if len(self.towers['C']) == self.n_disks and not self.towers['A'] and not self.towers['B']:
+            patterns['all_disks_on_destination'] = 1
+        
+        # Check if disks are distributed across towers
+        non_empty_towers = sum(1 for tower in self.towers.values() if tower)
+        if non_empty_towers > 1:
+            patterns['disks_distributed'] = 1
+        
+        # Check if optimal solution is possible
+        if self.solution_feasibility == 1.0:
+            patterns['optimal_solution_possible'] = 1
+        
+        return patterns
+    
+    def get_optimal_hanoi_strategy(self):
+        """Get optimal strategy for Tower of Hanoi."""
+        if self.n_disks == 0:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'solution_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.solution_feasibility
+        
+        # Calculate solution feasibility
+        solution_feasibility = self.solution_feasibility
+        
+        # Determine recommended strategy
+        if self.n_disks <= 3:
+            recommended_strategy = 'recursive_solution'
+        elif self.n_disks <= 10:
+            recommended_strategy = 'iterative_solution'
+        else:
+            recommended_strategy = 'optimized_solution'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'solution_feasibility': solution_feasibility
+        }
+
+# Example usage
+n_disks = 3
+dynamic_hanoi = DynamicTowerOfHanoi(n_disks)
+print(f"Min moves: {dynamic_hanoi.min_moves}")
+print(f"Solution feasibility: {dynamic_hanoi.solution_feasibility}")
+
+# Add disk
+dynamic_hanoi.add_disk(4, 'A')
+print(f"After adding disk 4: {dynamic_hanoi.min_moves}")
+
+# Remove disk
+removed_disk = dynamic_hanoi.remove_disk('A')
+print(f"After removing disk {removed_disk}: {dynamic_hanoi.min_moves}")
+
+# Move disk
+dynamic_hanoi.move_disk('A', 'B')
+print(f"After moving disk: {dynamic_hanoi.move_count}")
+
+# Get solution with constraints
+def constraint_func(towers, move_count):
+    return move_count <= 10
+
+print(f"Solution with constraints: {len(dynamic_hanoi.get_solution_with_constraints(constraint_func))}")
+
+# Get solution in range
+print(f"Solution in range 5-15: {len(dynamic_hanoi.get_solution_in_range(5, 15))}")
+
+# Get solution with pattern
+def pattern_func(towers, move_count):
+    return len(towers['A']) > 0
+
+print(f"Solution with pattern: {len(dynamic_hanoi.get_solution_with_pattern(pattern_func))}")
+
+# Get statistics
+print(f"Statistics: {dynamic_hanoi.get_tower_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_hanoi.get_hanoi_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_hanoi.get_optimal_hanoi_strategy()}")
+```
+
+### **Variation 2: Tower of Hanoi with Different Operations**
+**Problem**: Handle different types of Tower of Hanoi operations (weighted disks, priority-based moves, advanced tower analysis).
+
+**Approach**: Use advanced data structures for efficient different types of Tower of Hanoi operations.
+
+```python
+class AdvancedTowerOfHanoi:
+    def __init__(self, n_disks=0, weights=None, priorities=None):
+        self.n_disks = n_disks
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.towers = {'A': list(range(n_disks, 0, -1)), 'B': [], 'C': []}
+        self.move_count = 0
+        self._update_hanoi_info()
+    
+    def _update_hanoi_info(self):
+        """Update Tower of Hanoi feasibility information."""
+        self.total_disks = sum(len(tower) for tower in self.towers.values())
+        self.min_moves = self._calculate_min_moves()
+        self.solution_feasibility = self._calculate_solution_feasibility()
+    
+    def _calculate_min_moves(self):
+        """Calculate minimum moves required."""
+        return (2 ** self.n_disks) - 1 if self.n_disks > 0 else 0
+    
+    def _calculate_solution_feasibility(self):
+        """Calculate solution feasibility."""
+        if self.n_disks == 0:
+            return 1.0
+        
+        # Check if all disks are on one tower
+        non_empty_towers = sum(1 for tower in self.towers.values() if tower)
+        return 1.0 if non_empty_towers <= 1 else 0.0
+    
+    def get_weighted_solution(self):
+        """Get solution with weights and priorities applied."""
+        if not self.towers['A']:
+            return []
+        
+        # Create weighted solution
+        weighted_moves = []
+        temp_towers = {tower: tower_disks[:] for tower, tower_disks in self.towers.items()}
+        
+        # Calculate weighted moves
+        for tower, disks in temp_towers.items():
+            for disk in disks:
+                weight = self.weights.get(disk, 1)
+                priority = self.priorities.get(disk, 1)
+                weighted_score = weight * priority
+                weighted_moves.append((disk, tower, weighted_score))
+        
+        # Sort by weighted score
+        weighted_moves.sort(key=lambda x: x[2], reverse=True)
+        
+        return weighted_moves
+    
+    def get_solution_with_priority(self, priority_func):
+        """Get solution considering priority."""
+        if not self.towers['A']:
+            return []
+        
+        # Create priority-based solution
+        priority_moves = []
+        for tower, disks in self.towers.items():
+            for disk in disks:
+                priority = priority_func(disk, tower, self.weights, self.priorities)
+                priority_moves.append((disk, tower, priority))
+        
+        # Sort by priority
+        priority_moves.sort(key=lambda x: x[2], reverse=True)
+        return priority_moves
+    
+    def get_solution_with_optimization(self, optimization_func):
+        """Get solution using custom optimization function."""
+        if not self.towers['A']:
+            return []
+        
+        # Create optimization-based solution
+        optimized_moves = []
+        for tower, disks in self.towers.items():
+            for disk in disks:
+                score = optimization_func(disk, tower, self.weights, self.priorities)
+                optimized_moves.append((disk, tower, score))
+        
+        # Sort by optimization score
+        optimized_moves.sort(key=lambda x: x[2], reverse=True)
+        return optimized_moves
+    
+    def get_solution_with_constraints(self, constraint_func):
+        """Get solution that satisfies custom constraints."""
+        if not self.towers['A']:
+            return []
+        
+        if constraint_func(self.towers, self.move_count, self.weights, self.priorities):
+            return self.get_weighted_solution()
+        else:
+            return []
+    
+    def get_solution_with_multiple_criteria(self, criteria_list):
+        """Get solution that satisfies multiple criteria."""
+        if not self.towers['A']:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.towers, self.move_count, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_solution()
+        else:
+            return []
+    
+    def get_solution_with_alternatives(self, alternatives):
+        """Get solution considering alternative weights/priorities."""
+        result = []
+        
+        # Check original solution
+        original_solution = self.get_weighted_solution()
+        result.append((original_solution, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedTowerOfHanoi(self.n_disks, alt_weights, alt_priorities)
+            temp_solution = temp_instance.get_weighted_solution()
+            result.append((temp_solution, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_solution_with_adaptive_criteria(self, adaptive_func):
+        """Get solution using adaptive criteria."""
+        if not self.towers['A']:
+            return []
+        
+        if adaptive_func(self.towers, self.move_count, self.weights, self.priorities, []):
+            return self.get_weighted_solution()
+        else:
+            return []
+    
+    def get_hanoi_optimization(self):
+        """Get optimal Tower of Hanoi configuration."""
+        strategies = [
+            ('weighted_solution', lambda: len(self.get_weighted_solution())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n_disks = 3
+weights = {disk: disk * 2 for disk in range(1, n_disks + 1)}  # Weight based on disk size
+priorities = {disk: n_disks - disk + 1 for disk in range(1, n_disks + 1)}  # Priority based on disk size
+advanced_hanoi = AdvancedTowerOfHanoi(n_disks, weights, priorities)
+
+print(f"Weighted solution: {len(advanced_hanoi.get_weighted_solution())}")
+
+# Get solution with priority
+def priority_func(disk, tower, weights, priorities):
+    return weights.get(disk, 1) + priorities.get(disk, 1)
+
+print(f"Solution with priority: {len(advanced_hanoi.get_solution_with_priority(priority_func))}")
+
+# Get solution with optimization
+def optimization_func(disk, tower, weights, priorities):
+    return weights.get(disk, 1) * priorities.get(disk, 1)
+
+print(f"Solution with optimization: {len(advanced_hanoi.get_solution_with_optimization(optimization_func))}")
+
+# Get solution with constraints
+def constraint_func(towers, move_count, weights, priorities):
+    return move_count <= 10 and len(towers['A']) > 0
+
+print(f"Solution with constraints: {len(advanced_hanoi.get_solution_with_constraints(constraint_func))}")
+
+# Get solution with multiple criteria
+def criterion1(towers, move_count, weights, priorities):
+    return move_count <= 10
+
+def criterion2(towers, move_count, weights, priorities):
+    return len(towers['A']) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Solution with multiple criteria: {len(advanced_hanoi.get_solution_with_multiple_criteria(criteria_list))}")
+
+# Get solution with alternatives
+alternatives = [({disk: 1 for disk in range(1, n_disks + 1)}, {disk: 1 for disk in range(1, n_disks + 1)}), ({disk: disk*3 for disk in range(1, n_disks + 1)}, {disk: disk+1 for disk in range(1, n_disks + 1)})]
+print(f"Solution with alternatives: {len(advanced_hanoi.get_solution_with_alternatives(alternatives))}")
+
+# Get solution with adaptive criteria
+def adaptive_func(towers, move_count, weights, priorities, current_result):
+    return move_count <= 10 and len(current_result) < 5
+
+print(f"Solution with adaptive criteria: {len(advanced_hanoi.get_solution_with_adaptive_criteria(adaptive_func))}")
+
+# Get hanoi optimization
+print(f"Hanoi optimization: {advanced_hanoi.get_hanoi_optimization()}")
+```
+
+### **Variation 3: Tower of Hanoi with Constraints**
+**Problem**: Handle Tower of Hanoi with additional constraints (move limits, disk constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedTowerOfHanoi:
+    def __init__(self, n_disks=0, constraints=None):
+        self.n_disks = n_disks
+        self.constraints = constraints or {}
+        self.towers = {'A': list(range(n_disks, 0, -1)), 'B': [], 'C': []}
+        self.move_count = 0
+        self._update_hanoi_info()
+    
+    def _update_hanoi_info(self):
+        """Update Tower of Hanoi feasibility information."""
+        self.total_disks = sum(len(tower) for tower in self.towers.values())
+        self.min_moves = self._calculate_min_moves()
+        self.solution_feasibility = self._calculate_solution_feasibility()
+    
+    def _calculate_min_moves(self):
+        """Calculate minimum moves required."""
+        return (2 ** self.n_disks) - 1 if self.n_disks > 0 else 0
+    
+    def _calculate_solution_feasibility(self):
+        """Calculate solution feasibility."""
+        if self.n_disks == 0:
+            return 1.0
+        
+        # Check if all disks are on one tower
+        non_empty_towers = sum(1 for tower in self.towers.values() if tower)
+        return 1.0 if non_empty_towers <= 1 else 0.0
+    
+    def _is_valid_move(self, from_tower, to_tower):
+        """Check if move is valid considering constraints."""
+        # Basic move validation
+        if (from_tower not in self.towers or to_tower not in self.towers or 
+            not self.towers[from_tower] or 
+            (self.towers[to_tower] and self.towers[from_tower][-1] >= self.towers[to_tower][-1])):
+            return False
+        
+        # Move count constraints
+        if 'max_moves' in self.constraints:
+            if self.move_count >= self.constraints['max_moves']:
+                return False
+        
+        # Disk constraints
+        if 'forbidden_disks' in self.constraints:
+            if self.towers[from_tower][-1] in self.constraints['forbidden_disks']:
+                return False
+        
+        if 'required_disks' in self.constraints:
+            if self.towers[from_tower][-1] not in self.constraints['required_disks']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(self.towers, self.move_count):
+                    return False
+        
+        return True
+    
+    def get_solution_with_move_constraints(self, max_moves):
+        """Get solution considering move constraints."""
+        if not self.towers['A']:
+            return []
+        
+        if self.min_moves <= max_moves:
+            return self.solve_hanoi()
+        else:
+            return []
+    
+    def get_solution_with_disk_constraints(self, disk_constraints):
+        """Get solution considering disk constraints."""
+        if not self.towers['A']:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in disk_constraints:
+            if not constraint(self.towers, self.move_count):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self.solve_hanoi()
+        else:
+            return []
+    
+    def get_solution_with_pattern_constraints(self, pattern_constraints):
+        """Get solution considering pattern constraints."""
+        if not self.towers['A']:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.towers, self.move_count):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self.solve_hanoi()
+        else:
+            return []
+    
+    def get_solution_with_mathematical_constraints(self, constraint_func):
+        """Get solution that satisfies custom mathematical constraints."""
+        if not self.towers['A']:
+            return []
+        
+        if constraint_func(self.towers, self.move_count):
+            return self.solve_hanoi()
+        else:
+            return []
+    
+    def get_solution_with_optimization_constraints(self, optimization_func):
+        """Get solution using custom optimization constraints."""
+        if not self.towers['A']:
+            return []
+        
+        # Calculate optimization score for solution
+        score = optimization_func(self.towers, self.move_count)
+        
+        if score > 0:
+            return self.solve_hanoi()
+        else:
+            return []
+    
+    def get_solution_with_multiple_constraints(self, constraints_list):
+        """Get solution that satisfies multiple constraints."""
+        if not self.towers['A']:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.towers, self.move_count):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self.solve_hanoi()
+        else:
+            return []
+    
+    def get_solution_with_priority_constraints(self, priority_func):
+        """Get solution with priority-based constraints."""
+        if not self.towers['A']:
+            return []
+        
+        # Calculate priority for solution
+        priority = priority_func(self.towers, self.move_count)
+        
+        if priority > 0:
+            return self.solve_hanoi()
+        else:
+            return []
+    
+    def get_solution_with_adaptive_constraints(self, adaptive_func):
+        """Get solution with adaptive constraints."""
+        if not self.towers['A']:
+            return []
+        
+        if adaptive_func(self.towers, self.move_count, []):
+            return self.solve_hanoi()
+        else:
+            return []
+    
+    def solve_hanoi(self, n=None, source='A', destination='C', auxiliary='B'):
+        """Solve Tower of Hanoi recursively."""
+        if n is None:
+            n = self.n_disks
+        
+        if n == 0:
+            return []
+        
+        moves = []
+        
+        # Move n-1 disks from source to auxiliary
+        moves.extend(self.solve_hanoi(n-1, source, auxiliary, destination))
+        
+        # Move the largest disk from source to destination
+        if self._is_valid_move(source, destination):
+            disk = self.towers[source].pop()
+            self.towers[destination].append(disk)
+            self.move_count += 1
+            moves.append(f"Move disk {disk} from {source} to {destination}")
+        
+        # Move n-1 disks from auxiliary to destination
+        moves.extend(self.solve_hanoi(n-1, auxiliary, destination, source))
+        
+        return moves
+    
+    def get_optimal_hanoi_strategy(self):
+        """Get optimal Tower of Hanoi strategy considering all constraints."""
+        strategies = [
+            ('move_constraints', self.get_solution_with_move_constraints),
+            ('disk_constraints', self.get_solution_with_disk_constraints),
+            ('pattern_constraints', self.get_solution_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'move_constraints':
+                    result = strategy_func(100)
+                elif strategy_name == 'disk_constraints':
+                    disk_constraints = [lambda t, mc: len(t['A']) > 0]
+                    result = strategy_func(disk_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda t, mc: mc <= 10]
+                    result = strategy_func(pattern_constraints)
+                
+                if len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'max_moves': 10,
+    'forbidden_disks': [1, 2],
+    'required_disks': [3],
+    'pattern_constraints': [lambda t, mc: mc <= 10]
+}
+
+n_disks = 3
+constrained_hanoi = ConstrainedTowerOfHanoi(n_disks, constraints)
+
+print("Move-constrained solution:", len(constrained_hanoi.get_solution_with_move_constraints(10)))
+
+print("Disk-constrained solution:", len(constrained_hanoi.get_solution_with_disk_constraints([lambda t, mc: len(t['A']) > 0])))
+
+print("Pattern-constrained solution:", len(constrained_hanoi.get_solution_with_pattern_constraints([lambda t, mc: mc <= 10])))
+
+# Mathematical constraints
+def custom_constraint(towers, move_count):
+    return move_count <= 10 and len(towers['A']) > 0
+
+print("Mathematical constraint solution:", len(constrained_hanoi.get_solution_with_mathematical_constraints(custom_constraint)))
+
+# Range constraints
+def range_constraint(towers, move_count):
+    return 5 <= move_count <= 15
+
+range_constraints = [range_constraint]
+print("Range-constrained solution:", len(constrained_hanoi.get_solution_with_move_constraints(15)))
+
+# Multiple constraints
+def constraint1(towers, move_count):
+    return move_count <= 10
+
+def constraint2(towers, move_count):
+    return len(towers['A']) > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints solution:", len(constrained_hanoi.get_solution_with_multiple_constraints(constraints_list)))
+
+# Priority constraints
+def priority_func(towers, move_count):
+    return move_count + len(towers['A'])
+
+print("Priority-constrained solution:", len(constrained_hanoi.get_solution_with_priority_constraints(priority_func)))
+
+# Adaptive constraints
+def adaptive_func(towers, move_count, current_result):
+    return move_count <= 10 and len(current_result) < 5
+
+print("Adaptive constraint solution:", len(constrained_hanoi.get_solution_with_adaptive_constraints(adaptive_func)))
+
+# Optimal strategy
+optimal = constrained_hanoi.get_optimal_hanoi_strategy()
+print(f"Optimal hanoi strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

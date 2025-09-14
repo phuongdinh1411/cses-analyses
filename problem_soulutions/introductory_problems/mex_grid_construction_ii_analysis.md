@@ -462,6 +462,726 @@ def mex_grid_patterns(n, row_mex, col_mex, patterns):
     return grid
 ```
 
+## Problem Variations
+
+### **Variation 1: MEX Grid Construction II with Dynamic Updates**
+**Problem**: Handle dynamic grid updates (add/remove/update values) while maintaining dual MEX constraints.
+
+**Approach**: Use efficient data structures and algorithms for dynamic dual MEX grid management.
+
+```python
+from collections import defaultdict
+import itertools
+
+class DynamicMEXGridII:
+    def __init__(self, n, row_mex, col_mex):
+        self.n = n
+        self.row_mex = row_mex
+        self.col_mex = col_mex
+        self.grid = [[0] * n for _ in range(n)]
+        self._construct_grid()
+    
+    def _construct_grid(self):
+        """Construct dual MEX grid using systematic approach."""
+        for i in range(self.n):
+            for j in range(self.n):
+                # Use dual MEX construction formula
+                self.grid[i][j] = (i * self.col_mex + j * self.row_mex) % max(self.row_mex, self.col_mex)
+    
+    def update_value(self, row, col, new_value):
+        """Update value at specified position."""
+        if 0 <= row < self.n and 0 <= col < self.n:
+            self.grid[row][col] = new_value
+    
+    def add_row(self, values):
+        """Add new row to grid."""
+        if len(values) == self.n:
+            self.grid.append(values[:])
+            self.n += 1
+    
+    def remove_row(self, row_index):
+        """Remove row from grid."""
+        if 0 <= row_index < self.n:
+            self.grid.pop(row_index)
+            self.n -= 1
+    
+    def add_column(self, values):
+        """Add new column to grid."""
+        if len(values) == self.n:
+            for i in range(self.n):
+                self.grid[i].append(values[i])
+    
+    def remove_column(self, col_index):
+        """Remove column from grid."""
+        if 0 <= col_index < self.n:
+            for i in range(self.n):
+                self.grid[i].pop(col_index)
+    
+    def get_grid(self):
+        """Get current grid."""
+        return self.grid
+    
+    def get_dual_mex_values(self):
+        """Get dual MEX values for all rows and columns."""
+        row_mex = []
+        col_mex = []
+        
+        # Calculate row MEX values
+        for i in range(self.n):
+            row_values = set(self.grid[i])
+            mex = 0
+            while mex in row_values:
+                mex += 1
+            row_mex.append(mex)
+        
+        # Calculate column MEX values
+        for j in range(self.n):
+            col_values = set(self.grid[i][j] for i in range(self.n))
+            mex = 0
+            while mex in col_values:
+                mex += 1
+            col_mex.append(mex)
+        
+        return row_mex, col_mex
+    
+    def get_grid_with_constraints(self, constraint_func):
+        """Get grid that satisfies custom constraints."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                if constraint_func(i, j, self.grid[i][j]):
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_in_range(self, start_row, end_row, start_col, end_col):
+        """Get grid values within specified range."""
+        result = []
+        for i in range(start_row, end_row + 1):
+            for j in range(start_col, end_col + 1):
+                if 0 <= i < self.n and 0 <= j < self.n:
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_with_pattern(self, pattern_func):
+        """Get grid values matching specified pattern."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                if pattern_func(i, j, self.grid[i][j]):
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_statistics(self):
+        """Get statistics about grid values."""
+        if not self.grid:
+            return {
+                'total_cells': 0,
+                'average_value': 0,
+                'value_distribution': {},
+                'dual_mex_distribution': {}
+            }
+        
+        total_cells = self.n * self.n
+        all_values = [self.grid[i][j] for i in range(self.n) for j in range(self.n)]
+        average_value = sum(all_values) / total_cells
+        
+        # Calculate value distribution
+        value_distribution = defaultdict(int)
+        for val in all_values:
+            value_distribution[val] += 1
+        
+        # Calculate dual MEX distribution
+        row_mex, col_mex = self.get_dual_mex_values()
+        dual_mex_distribution = defaultdict(int)
+        for mex in row_mex + col_mex:
+            dual_mex_distribution[mex] += 1
+        
+        return {
+            'total_cells': total_cells,
+            'average_value': average_value,
+            'value_distribution': dict(value_distribution),
+            'dual_mex_distribution': dict(dual_mex_distribution)
+        }
+    
+    def get_grid_patterns(self):
+        """Get patterns in grid values."""
+        patterns = {
+            'dual_latin_square': 0,
+            'constant_rows': 0,
+            'constant_columns': 0,
+            'dual_arithmetic_sequences': 0
+        }
+        
+        if self.n < 2:
+            return patterns
+        
+        # Check for dual Latin square pattern
+        is_dual_latin_square = True
+        for i in range(self.n):
+            row_values = set(self.grid[i])
+            if len(row_values) != self.n:
+                is_dual_latin_square = False
+                break
+        if is_dual_latin_square:
+            patterns['dual_latin_square'] = 1
+        
+        # Check for constant rows
+        for i in range(self.n):
+            if len(set(self.grid[i])) == 1:
+                patterns['constant_rows'] += 1
+        
+        # Check for constant columns
+        for j in range(self.n):
+            col_values = set(self.grid[i][j] for i in range(self.n))
+            if len(col_values) == 1:
+                patterns['constant_columns'] += 1
+        
+        # Check for dual arithmetic sequences
+        for i in range(self.n):
+            row_diff = self.grid[i][1] - self.grid[i][0] if self.n > 1 else 0
+            is_arithmetic = True
+            for j in range(1, self.n):
+                if self.grid[i][j] - self.grid[i][j-1] != row_diff:
+                    is_arithmetic = False
+                    break
+            if is_arithmetic:
+                patterns['dual_arithmetic_sequences'] += 1
+        
+        return patterns
+    
+    def get_optimal_grid_strategy(self):
+        """Get optimal strategy for dual MEX grid construction."""
+        if not self.grid:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'dual_mex_consistency': 0
+            }
+        
+        # Calculate efficiency rate
+        row_mex, col_mex = self.get_dual_mex_values()
+        target_achieved = sum(1 for mex in row_mex if mex == self.row_mex) + sum(1 for mex in col_mex if mex == self.col_mex)
+        total_mex = len(row_mex) + len(col_mex)
+        efficiency_rate = target_achieved / total_mex if total_mex > 0 else 0
+        
+        # Calculate dual MEX consistency
+        all_mex = row_mex + col_mex
+        dual_mex_consistency = 1.0 - (max(all_mex) - min(all_mex)) / max(all_mex) if max(all_mex) > 0 else 1.0
+        
+        # Determine recommended strategy
+        if efficiency_rate > 0.8:
+            recommended_strategy = 'dual_systematic_construction'
+        elif dual_mex_consistency > 0.7:
+            recommended_strategy = 'dual_mathematical_optimization'
+        else:
+            recommended_strategy = 'dual_brute_force'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'dual_mex_consistency': dual_mex_consistency
+        }
+
+# Example usage
+n = 4
+row_mex = 3
+col_mex = 4
+dynamic_grid_ii = DynamicMEXGridII(n, row_mex, col_mex)
+print(f"Initial dual MEX grid: {dynamic_grid_ii.get_grid()}")
+
+# Update value
+dynamic_grid_ii.update_value(0, 0, 2)
+print(f"After updating (0,0) to 2: {dynamic_grid_ii.get_grid()}")
+
+# Add row
+dynamic_grid_ii.add_row([1, 2, 0, 3])
+print(f"After adding row: {dynamic_grid_ii.get_grid()}")
+
+# Remove row
+dynamic_grid_ii.remove_row(1)
+print(f"After removing row 1: {dynamic_grid_ii.get_grid()}")
+
+# Get dual MEX values
+row_mex_vals, col_mex_vals = dynamic_grid_ii.get_dual_mex_values()
+print(f"Row MEX values: {row_mex_vals}")
+print(f"Column MEX values: {col_mex_vals}")
+
+# Get grid with constraints
+def constraint_func(row, col, value):
+    return value > 1
+
+print(f"Grid values > 1: {len(dynamic_grid_ii.get_grid_with_constraints(constraint_func))}")
+
+# Get grid in range
+print(f"Grid in range (0,0) to (1,1): {len(dynamic_grid_ii.get_grid_in_range(0, 1, 0, 1))}")
+
+# Get grid with pattern
+def pattern_func(row, col, value):
+    return row % 2 == 0
+
+print(f"Grid at even rows: {len(dynamic_grid_ii.get_grid_with_pattern(pattern_func))}")
+
+# Get statistics
+print(f"Statistics: {dynamic_grid_ii.get_grid_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_grid_ii.get_grid_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_grid_ii.get_optimal_grid_strategy()}")
+```
+
+### **Variation 2: MEX Grid Construction II with Different Operations**
+**Problem**: Handle different types of dual MEX grid operations (weighted values, priority-based selection, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of dual MEX grid operations.
+
+```python
+class AdvancedMEXGridII:
+    def __init__(self, n, row_mex, col_mex, weights=None, priorities=None):
+        self.n = n
+        self.row_mex = row_mex
+        self.col_mex = col_mex
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.grid = [[0] * n for _ in range(n)]
+        self._construct_grid()
+    
+    def _construct_grid(self):
+        """Construct dual MEX grid using advanced algorithms."""
+        for i in range(self.n):
+            for j in range(self.n):
+                base_value = (i * self.col_mex + j * self.row_mex) % max(self.row_mex, self.col_mex)
+                weight = self.weights.get((i, j), 1)
+                priority = self.priorities.get((i, j), 1)
+                self.grid[i][j] = (base_value * weight + priority) % max(self.row_mex, self.col_mex)
+    
+    def get_weighted_grid(self):
+        """Get grid with weights and priorities applied."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                weighted_cell = {
+                    'position': (i, j),
+                    'value': self.grid[i][j],
+                    'weight': self.weights.get((i, j), 1),
+                    'priority': self.priorities.get((i, j), 1),
+                    'weighted_value': self.grid[i][j] * self.weights.get((i, j), 1) * self.priorities.get((i, j), 1)
+                }
+                result.append(weighted_cell)
+        return result
+    
+    def get_grid_with_priority(self, priority_func):
+        """Get grid considering priority."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                priority = priority_func(i, j, self.grid[i][j], self.weights, self.priorities)
+                result.append((i, j, self.grid[i][j], priority))
+        
+        # Sort by priority
+        result.sort(key=lambda x: x[3], reverse=True)
+        return result
+    
+    def get_grid_with_optimization(self, optimization_func):
+        """Get grid using custom optimization function."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                score = optimization_func(i, j, self.grid[i][j], self.weights, self.priorities)
+                result.append((i, j, self.grid[i][j], score))
+        
+        # Sort by optimization score
+        result.sort(key=lambda x: x[3], reverse=True)
+        return result
+    
+    def get_grid_with_constraints(self, constraint_func):
+        """Get grid that satisfies custom constraints."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                if constraint_func(i, j, self.grid[i][j], self.weights, self.priorities):
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_with_multiple_criteria(self, criteria_list):
+        """Get grid that satisfies multiple criteria."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                satisfies_all_criteria = True
+                for criterion in criteria_list:
+                    if not criterion(i, j, self.grid[i][j], self.weights, self.priorities):
+                        satisfies_all_criteria = False
+                        break
+                if satisfies_all_criteria:
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_with_alternatives(self, alternatives):
+        """Get grid considering alternative weights/priorities."""
+        result = []
+        
+        # Check original grid
+        original_grid = self.get_weighted_grid()
+        result.append((original_grid, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedMEXGridII(self.n, self.row_mex, self.col_mex, alt_weights, alt_priorities)
+            temp_grid = temp_instance.get_weighted_grid()
+            result.append((temp_grid, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_grid_with_adaptive_criteria(self, adaptive_func):
+        """Get grid using adaptive criteria."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                if adaptive_func(i, j, self.grid[i][j], self.weights, self.priorities, result):
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_optimization(self):
+        """Get optimal dual MEX grid configuration."""
+        strategies = [
+            ('weighted_grid', lambda: len(self.get_weighted_grid())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 4
+row_mex = 3
+col_mex = 4
+weights = {(i, j): i + j + 1 for i in range(n) for j in range(n)}  # Higher positions have higher weights
+priorities = {(i, j): n - i + n - j for i in range(n) for j in range(n)}  # Lower positions have higher priority
+advanced_grid_ii = AdvancedMEXGridII(n, row_mex, col_mex, weights, priorities)
+
+print(f"Weighted dual MEX grid: {len(advanced_grid_ii.get_weighted_grid())}")
+
+# Get grid with priority
+def priority_func(row, col, value, weights, priorities):
+    return value * weights.get((row, col), 1) + priorities.get((row, col), 1)
+
+print(f"Grid with priority: {len(advanced_grid_ii.get_grid_with_priority(priority_func))}")
+
+# Get grid with optimization
+def optimization_func(row, col, value, weights, priorities):
+    return value * weights.get((row, col), 1) * priorities.get((row, col), 1)
+
+print(f"Grid with optimization: {len(advanced_grid_ii.get_grid_with_optimization(optimization_func))}")
+
+# Get grid with constraints
+def constraint_func(row, col, value, weights, priorities):
+    return value <= 2 and weights.get((row, col), 1) <= 5
+
+print(f"Grid with constraints: {len(advanced_grid_ii.get_grid_with_constraints(constraint_func))}")
+
+# Get grid with multiple criteria
+def criterion1(row, col, value, weights, priorities):
+    return value <= 2
+
+def criterion2(row, col, value, weights, priorities):
+    return weights.get((row, col), 1) <= 5
+
+criteria_list = [criterion1, criterion2]
+print(f"Grid with multiple criteria: {len(advanced_grid_ii.get_grid_with_multiple_criteria(criteria_list))}")
+
+# Get grid with alternatives
+alternatives = [({(i, j): 1 for i in range(n) for j in range(n)}, {(i, j): 1 for i in range(n) for j in range(n)}), ({(i, j): i*2 for i in range(n) for j in range(n)}, {(i, j): j+1 for i in range(n) for j in range(n)})]
+print(f"Grid with alternatives: {len(advanced_grid_ii.get_grid_with_alternatives(alternatives))}")
+
+# Get grid with adaptive criteria
+def adaptive_func(row, col, value, weights, priorities, current_result):
+    return value <= 2 and len(current_result) < 10
+
+print(f"Grid with adaptive criteria: {len(advanced_grid_ii.get_grid_with_adaptive_criteria(adaptive_func))}")
+
+# Get grid optimization
+print(f"Grid optimization: {advanced_grid_ii.get_grid_optimization()}")
+```
+
+### **Variation 3: MEX Grid Construction II with Constraints**
+**Problem**: Handle dual MEX grid construction with additional constraints (value limits, pattern constraints, mathematical constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedMEXGridII:
+    def __init__(self, n, row_mex, col_mex, constraints=None):
+        self.n = n
+        self.row_mex = row_mex
+        self.col_mex = col_mex
+        self.constraints = constraints or {}
+        self.grid = [[0] * n for _ in range(n)]
+        self._construct_grid()
+    
+    def _construct_grid(self):
+        """Construct dual MEX grid considering constraints."""
+        for i in range(self.n):
+            for j in range(self.n):
+                base_value = (i * self.col_mex + j * self.row_mex) % max(self.row_mex, self.col_mex)
+                
+                # Check constraints
+                if self._is_valid_value(i, j, base_value):
+                    self.grid[i][j] = base_value
+                else:
+                    # Try to find alternative value
+                    alternative_value = self._find_alternative_value(i, j)
+                    self.grid[i][j] = alternative_value
+    
+    def _is_valid_value(self, row, col, value):
+        """Check if value is valid considering constraints."""
+        # Value constraints
+        if 'max_value' in self.constraints:
+            if value > self.constraints['max_value']:
+                return False
+        
+        if 'min_value' in self.constraints:
+            if value < self.constraints['min_value']:
+                return False
+        
+        # Position constraints
+        if 'forbidden_positions' in self.constraints:
+            if (row, col) in self.constraints['forbidden_positions']:
+                return False
+        
+        if 'allowed_positions' in self.constraints:
+            if (row, col) not in self.constraints['allowed_positions']:
+                return False
+        
+        # Dual MEX constraints
+        if 'dual_mex_constraints' in self.constraints:
+            # Check if current value satisfies dual MEX constraints
+            pass  # Implementation depends on specific constraint
+        
+        return True
+    
+    def _find_alternative_value(self, row, col):
+        """Find alternative value that satisfies constraints."""
+        # Try different values
+        for value in range(max(self.row_mex, self.col_mex)):
+            if self._is_valid_value(row, col, value):
+                return value
+        return 0  # Default fallback
+    
+    def get_grid_with_value_constraints(self, max_value, min_value):
+        """Get grid considering value constraints."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                if min_value <= self.grid[i][j] <= max_value:
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_with_position_constraints(self, position_constraints):
+        """Get grid considering position constraints."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                satisfies_constraints = True
+                for constraint in position_constraints:
+                    if not constraint(i, j):
+                        satisfies_constraints = False
+                        break
+                if satisfies_constraints:
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_with_pattern_constraints(self, pattern_constraints):
+        """Get grid considering pattern constraints."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                satisfies_pattern = True
+                for constraint in pattern_constraints:
+                    if not constraint(i, j, self.grid[i][j]):
+                        satisfies_pattern = False
+                        break
+                if satisfies_pattern:
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_with_mathematical_constraints(self, constraint_func):
+        """Get grid that satisfies custom mathematical constraints."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                if constraint_func(i, j, self.grid[i][j]):
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_with_range_constraints(self, range_constraints):
+        """Get grid that satisfies range constraints."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                satisfies_constraints = True
+                for constraint in range_constraints:
+                    if not constraint(i, j, self.grid[i][j]):
+                        satisfies_constraints = False
+                        break
+                if satisfies_constraints:
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_with_optimization_constraints(self, optimization_func):
+        """Get grid using custom optimization constraints."""
+        # Sort grid by optimization function
+        all_cells = []
+        for i in range(self.n):
+            for j in range(self.n):
+                score = optimization_func(i, j, self.grid[i][j])
+                all_cells.append((i, j, self.grid[i][j], score))
+        
+        # Sort by optimization score
+        all_cells.sort(key=lambda x: x[3], reverse=True)
+        
+        return [(i, j, value) for i, j, value, _ in all_cells]
+    
+    def get_grid_with_multiple_constraints(self, constraints_list):
+        """Get grid that satisfies multiple constraints."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                satisfies_all_constraints = True
+                for constraint in constraints_list:
+                    if not constraint(i, j, self.grid[i][j]):
+                        satisfies_all_constraints = False
+                        break
+                if satisfies_all_constraints:
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_grid_with_priority_constraints(self, priority_func):
+        """Get grid with priority-based constraints."""
+        # Sort grid by priority
+        all_cells = []
+        for i in range(self.n):
+            for j in range(self.n):
+                priority = priority_func(i, j, self.grid[i][j])
+                all_cells.append((i, j, self.grid[i][j], priority))
+        
+        # Sort by priority
+        all_cells.sort(key=lambda x: x[3], reverse=True)
+        
+        return [(i, j, value) for i, j, value, _ in all_cells]
+    
+    def get_grid_with_adaptive_constraints(self, adaptive_func):
+        """Get grid with adaptive constraints."""
+        result = []
+        for i in range(self.n):
+            for j in range(self.n):
+                if adaptive_func(i, j, self.grid[i][j], result):
+                    result.append((i, j, self.grid[i][j]))
+        return result
+    
+    def get_optimal_grid_strategy(self):
+        """Get optimal dual MEX grid strategy considering all constraints."""
+        strategies = [
+            ('value_constraints', self.get_grid_with_value_constraints),
+            ('position_constraints', self.get_grid_with_position_constraints),
+            ('pattern_constraints', self.get_grid_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_count = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'value_constraints':
+                    current_count = len(strategy_func(2, 0))
+                elif strategy_name == 'position_constraints':
+                    position_constraints = [lambda i, j: i % 2 == 0]
+                    current_count = len(strategy_func(position_constraints))
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda i, j, value: value <= 2]
+                    current_count = len(strategy_func(pattern_constraints))
+                
+                if current_count > best_count:
+                    best_count = current_count
+                    best_strategy = (strategy_name, current_count)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'max_value': 2,
+    'min_value': 0,
+    'forbidden_positions': [(0, 0), (1, 1)],
+    'allowed_positions': [(i, j) for i in range(4) for j in range(4)],
+}
+
+n = 4
+row_mex = 3
+col_mex = 4
+constrained_grid_ii = ConstrainedMEXGridII(n, row_mex, col_mex, constraints)
+
+print("Value-constrained dual MEX grid:", len(constrained_grid_ii.get_grid_with_value_constraints(2, 0)))
+
+print("Position-constrained dual MEX grid:", len(constrained_grid_ii.get_grid_with_position_constraints([lambda i, j: i % 2 == 0])))
+
+print("Pattern-constrained dual MEX grid:", len(constrained_grid_ii.get_grid_with_pattern_constraints([lambda i, j, value: value <= 2])))
+
+# Mathematical constraints
+def custom_constraint(row, col, value):
+    return value <= 2 and (row + col) % 2 == 0
+
+print("Mathematical constraint dual MEX grid:", len(constrained_grid_ii.get_grid_with_mathematical_constraints(custom_constraint)))
+
+# Range constraints
+def range_constraint(row, col, value):
+    return 0 <= value <= 2 and 0 <= row <= 2
+
+range_constraints = [range_constraint]
+print("Range-constrained dual MEX grid:", len(constrained_grid_ii.get_grid_with_range_constraints(range_constraints)))
+
+# Multiple constraints
+def constraint1(row, col, value):
+    return value <= 2
+
+def constraint2(row, col, value):
+    return row % 2 == 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints dual MEX grid:", len(constrained_grid_ii.get_grid_with_multiple_constraints(constraints_list)))
+
+# Priority constraints
+def priority_func(row, col, value):
+    return value + row + col
+
+print("Priority-constrained dual MEX grid:", len(constrained_grid_ii.get_grid_with_priority_constraints(priority_func)))
+
+# Adaptive constraints
+def adaptive_func(row, col, value, current_result):
+    return value <= 2 and len(current_result) < 8
+
+print("Adaptive constraint dual MEX grid:", len(constrained_grid_ii.get_grid_with_adaptive_constraints(adaptive_func)))
+
+# Optimal strategy
+optimal = constrained_grid_ii.get_optimal_grid_strategy()
+print(f"Optimal dual MEX strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

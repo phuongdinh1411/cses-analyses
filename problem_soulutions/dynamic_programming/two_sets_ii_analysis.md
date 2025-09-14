@@ -585,6 +585,801 @@ result = multi_partition_two_sets_ii(n, num_partitions)
 print(f"Multi-partition two sets II: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Two Sets II with Dynamic Updates**
+**Problem**: Handle dynamic number updates (add/remove/update numbers) while maintaining optimal two sets partitioning calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic number management.
+
+```python
+from collections import defaultdict
+
+class DynamicTwoSetsII:
+    def __init__(self, n=None):
+        self.n = n or 0
+        self.numbers = []
+        self._update_two_sets_info()
+    
+    def _update_two_sets_info(self):
+        """Update two sets feasibility information."""
+        self.two_sets_feasibility = self._calculate_two_sets_feasibility()
+    
+    def _calculate_two_sets_feasibility(self):
+        """Calculate two sets feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can partition numbers 1 to n into two equal sum sets
+        total_sum = self.n * (self.n + 1) // 2
+        return 1.0 if total_sum % 2 == 0 else 0.0
+    
+    def update_n(self, new_n):
+        """Update the value of n."""
+        self.n = new_n
+        self._update_two_sets_info()
+    
+    def add_number(self, number):
+        """Add a number to the set."""
+        if 1 <= number <= self.n:
+            self.numbers.append(number)
+            self._update_two_sets_info()
+    
+    def remove_number(self, number):
+        """Remove a number from the set."""
+        if number in self.numbers:
+            self.numbers.remove(number)
+            self._update_two_sets_info()
+    
+    def find_partition_count(self):
+        """Find number of ways to partition into two equal sum sets using dynamic programming."""
+        if not self.two_sets_feasibility:
+            return 0
+        
+        if self.n == 0:
+            return 0
+        
+        target_sum = self.n * (self.n + 1) // 4  # Half of total sum
+        
+        # DP table: dp[i][j] = number of ways to make sum j using first i numbers
+        dp = [[0 for _ in range(target_sum + 1)] for _ in range(self.n + 1)]
+        dp[0][0] = 1
+        
+        # Fill DP table
+        for i in range(1, self.n + 1):
+            for j in range(target_sum + 1):
+                # Don't take number i
+                dp[i][j] = dp[i-1][j]
+                
+                # Take number i
+                if j >= i:
+                    dp[i][j] = (dp[i][j] + dp[i-1][j-i]) % (10**9 + 7)
+        
+        return dp[self.n][target_sum]
+    
+    def find_partition_ways(self):
+        """Find actual ways to partition into two equal sum sets."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        if self.n == 0:
+            return []
+        
+        target_sum = self.n * (self.n + 1) // 4
+        
+        # DP table: dp[i][j] = number of ways to make sum j using first i numbers
+        dp = [[0 for _ in range(target_sum + 1)] for _ in range(self.n + 1)]
+        dp[0][0] = 1
+        
+        # Fill DP table
+        for i in range(1, self.n + 1):
+            for j in range(target_sum + 1):
+                dp[i][j] = dp[i-1][j]
+                if j >= i:
+                    dp[i][j] = (dp[i][j] + dp[i-1][j-i]) % (10**9 + 7)
+        
+        # Backtrack to find one valid partition
+        if dp[self.n][target_sum] == 0:
+            return []
+        
+        set1 = []
+        set2 = []
+        current_sum = target_sum
+        
+        for i in range(self.n, 0, -1):
+            if current_sum >= i and dp[i-1][current_sum - i] > 0:
+                set1.append(i)
+                current_sum -= i
+            else:
+                set2.append(i)
+        
+        return [set1, set2]
+    
+    def get_two_sets_with_constraints(self, constraint_func):
+        """Get two sets that satisfies custom constraints."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        partition_count = self.find_partition_count()
+        if constraint_func(partition_count, self.n):
+            return self.find_partition_ways()
+        else:
+            return []
+    
+    def get_two_sets_in_range(self, min_count, max_count):
+        """Get two sets within specified count range."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        result = self.find_partition_count()
+        if min_count <= result <= max_count:
+            return self.find_partition_ways()
+        else:
+            return []
+    
+    def get_two_sets_with_pattern(self, pattern_func):
+        """Get two sets matching specified pattern."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        partition_count = self.find_partition_count()
+        if pattern_func(partition_count, self.n):
+            return self.find_partition_ways()
+        else:
+            return []
+    
+    def get_two_sets_statistics(self):
+        """Get statistics about the two sets."""
+        if not self.two_sets_feasibility:
+            return {
+                'n': 0,
+                'two_sets_feasibility': 0,
+                'partition_count': 0
+            }
+        
+        partition_count = self.find_partition_count()
+        return {
+            'n': self.n,
+            'two_sets_feasibility': self.two_sets_feasibility,
+            'partition_count': partition_count
+        }
+    
+    def get_two_sets_patterns(self):
+        """Get patterns in two sets."""
+        patterns = {
+            'has_even_sum': 0,
+            'has_valid_n': 0,
+            'optimal_partition_possible': 0,
+            'has_large_n': 0
+        }
+        
+        if not self.two_sets_feasibility:
+            return patterns
+        
+        # Check if has even sum
+        total_sum = self.n * (self.n + 1) // 2
+        if total_sum % 2 == 0:
+            patterns['has_even_sum'] = 1
+        
+        # Check if has valid n
+        if self.n > 0:
+            patterns['has_valid_n'] = 1
+        
+        # Check if optimal partition is possible
+        if self.two_sets_feasibility == 1.0:
+            patterns['optimal_partition_possible'] = 1
+        
+        # Check if has large n
+        if self.n > 100:
+            patterns['has_large_n'] = 1
+        
+        return patterns
+    
+    def get_optimal_two_sets_strategy(self):
+        """Get optimal strategy for two sets partitioning."""
+        if not self.two_sets_feasibility:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'two_sets_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.two_sets_feasibility
+        
+        # Calculate two sets feasibility
+        two_sets_feasibility = self.two_sets_feasibility
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'dynamic_programming'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_dp'
+        else:
+            recommended_strategy = 'advanced_optimization'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'two_sets_feasibility': two_sets_feasibility
+        }
+
+# Example usage
+n = 7
+dynamic_two_sets = DynamicTwoSetsII(n)
+print(f"Two sets feasibility: {dynamic_two_sets.two_sets_feasibility}")
+
+# Update n
+dynamic_two_sets.update_n(8)
+print(f"After updating n: {dynamic_two_sets.n}")
+
+# Add number
+dynamic_two_sets.add_number(5)
+print(f"After adding number 5: {dynamic_two_sets.numbers}")
+
+# Remove number
+dynamic_two_sets.remove_number(5)
+print(f"After removing number 5: {dynamic_two_sets.numbers}")
+
+# Find partition count
+partition_count = dynamic_two_sets.find_partition_count()
+print(f"Partition count: {partition_count}")
+
+# Find partition ways
+ways = dynamic_two_sets.find_partition_ways()
+print(f"Partition ways: {ways}")
+
+# Get two sets with constraints
+def constraint_func(partition_count, n):
+    return partition_count > 0 and n > 0
+
+print(f"Two sets with constraints: {dynamic_two_sets.get_two_sets_with_constraints(constraint_func)}")
+
+# Get two sets in range
+print(f"Two sets in range 0-100: {dynamic_two_sets.get_two_sets_in_range(0, 100)}")
+
+# Get two sets with pattern
+def pattern_func(partition_count, n):
+    return partition_count > 0 and n > 0
+
+print(f"Two sets with pattern: {dynamic_two_sets.get_two_sets_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_two_sets.get_two_sets_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_two_sets.get_two_sets_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_two_sets.get_optimal_two_sets_strategy()}")
+```
+
+### **Variation 2: Two Sets II with Different Operations**
+**Problem**: Handle different types of two sets operations (weighted numbers, priority-based selection, advanced partitioning analysis).
+
+**Approach**: Use advanced data structures for efficient different types of two sets operations.
+
+```python
+class AdvancedTwoSetsII:
+    def __init__(self, n=None, weights=None, priorities=None):
+        self.n = n or 0
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.partitions = []
+        self._update_two_sets_info()
+    
+    def _update_two_sets_info(self):
+        """Update two sets feasibility information."""
+        self.two_sets_feasibility = self._calculate_two_sets_feasibility()
+    
+    def _calculate_two_sets_feasibility(self):
+        """Calculate two sets feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can partition numbers 1 to n into two equal sum sets
+        total_sum = self.n * (self.n + 1) // 2
+        return 1.0 if total_sum % 2 == 0 else 0.0
+    
+    def find_partition_count(self):
+        """Find number of ways to partition into two equal sum sets using dynamic programming."""
+        if not self.two_sets_feasibility:
+            return 0
+        
+        if self.n == 0:
+            return 0
+        
+        target_sum = self.n * (self.n + 1) // 4
+        
+        # DP table: dp[i][j] = number of ways to make sum j using first i numbers
+        dp = [[0 for _ in range(target_sum + 1)] for _ in range(self.n + 1)]
+        dp[0][0] = 1
+        
+        # Fill DP table
+        for i in range(1, self.n + 1):
+            for j in range(target_sum + 1):
+                dp[i][j] = dp[i-1][j]
+                if j >= i:
+                    dp[i][j] = (dp[i][j] + dp[i-1][j-i]) % (10**9 + 7)
+        
+        return dp[self.n][target_sum]
+    
+    def get_weighted_two_sets(self):
+        """Get two sets with weights and priorities applied."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        if self.n == 0:
+            return []
+        
+        # Create weighted partitioning options
+        partitioning_options = []
+        for i in range(1, self.n + 1):
+            weight = self.weights.get(i, 1)
+            priority = self.priorities.get(i, 1)
+            weighted_score = i * weight * priority
+            partitioning_options.append((i, weighted_score))
+        
+        # Sort by weighted score (descending for maximization)
+        partitioning_options.sort(key=lambda x: x[1], reverse=True)
+        
+        # Create two sets based on weighted scores
+        set1 = []
+        set2 = []
+        for i, (number, score) in enumerate(partitioning_options):
+            if i % 2 == 0:
+                set1.append(number)
+            else:
+                set2.append(number)
+        
+        return [set1, set2]
+    
+    def get_two_sets_with_priority(self, priority_func):
+        """Get two sets considering priority."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        # Create priority-based partitioning options
+        priority_options = []
+        for i in range(1, self.n + 1):
+            priority = priority_func(i, self.weights, self.priorities)
+            priority_options.append((i, priority))
+        
+        # Sort by priority (descending for maximization)
+        priority_options.sort(key=lambda x: x[1], reverse=True)
+        
+        # Create two sets based on priority
+        set1 = []
+        set2 = []
+        for i, (number, priority) in enumerate(priority_options):
+            if i % 2 == 0:
+                set1.append(number)
+            else:
+                set2.append(number)
+        
+        return [set1, set2]
+    
+    def get_two_sets_with_optimization(self, optimization_func):
+        """Get two sets using custom optimization function."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        # Create optimization-based partitioning options
+        optimized_options = []
+        for i in range(1, self.n + 1):
+            score = optimization_func(i, self.weights, self.priorities)
+            optimized_options.append((i, score))
+        
+        # Sort by optimization score (descending for maximization)
+        optimized_options.sort(key=lambda x: x[1], reverse=True)
+        
+        # Create two sets based on optimization
+        set1 = []
+        set2 = []
+        for i, (number, score) in enumerate(optimized_options):
+            if i % 2 == 0:
+                set1.append(number)
+            else:
+                set2.append(number)
+        
+        return [set1, set2]
+    
+    def get_two_sets_with_constraints(self, constraint_func):
+        """Get two sets that satisfies custom constraints."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        if constraint_func(self.n, self.weights, self.priorities):
+            return self.get_weighted_two_sets()
+        else:
+            return []
+    
+    def get_two_sets_with_multiple_criteria(self, criteria_list):
+        """Get two sets that satisfies multiple criteria."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.n, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_two_sets()
+        else:
+            return []
+    
+    def get_two_sets_with_alternatives(self, alternatives):
+        """Get two sets considering alternative weights/priorities."""
+        result = []
+        
+        # Check original two sets
+        original_sets = self.get_weighted_two_sets()
+        result.append((original_sets, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedTwoSetsII(self.n, alt_weights, alt_priorities)
+            temp_sets = temp_instance.get_weighted_two_sets()
+            result.append((temp_sets, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_two_sets_with_adaptive_criteria(self, adaptive_func):
+        """Get two sets using adaptive criteria."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        if adaptive_func(self.n, self.weights, self.priorities, []):
+            return self.get_weighted_two_sets()
+        else:
+            return []
+    
+    def get_two_sets_optimization(self):
+        """Get optimal two sets configuration."""
+        strategies = [
+            ('weighted_sets', lambda: len(self.get_weighted_two_sets())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 7
+weights = {i: i * 2 for i in range(1, n + 1)}  # Weight based on number value
+priorities = {i: 1 for i in range(1, n + 1)}  # Equal priority
+advanced_two_sets = AdvancedTwoSetsII(n, weights, priorities)
+
+print(f"Weighted two sets: {advanced_two_sets.get_weighted_two_sets()}")
+
+# Get two sets with priority
+def priority_func(number, weights, priorities):
+    return weights.get(number, 1) + priorities.get(number, 1)
+
+print(f"Two sets with priority: {advanced_two_sets.get_two_sets_with_priority(priority_func)}")
+
+# Get two sets with optimization
+def optimization_func(number, weights, priorities):
+    return weights.get(number, 1) * priorities.get(number, 1)
+
+print(f"Two sets with optimization: {advanced_two_sets.get_two_sets_with_optimization(optimization_func)}")
+
+# Get two sets with constraints
+def constraint_func(n, weights, priorities):
+    return n > 0
+
+print(f"Two sets with constraints: {advanced_two_sets.get_two_sets_with_constraints(constraint_func)}")
+
+# Get two sets with multiple criteria
+def criterion1(n, weights, priorities):
+    return n > 0
+
+def criterion2(n, weights, priorities):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Two sets with multiple criteria: {advanced_two_sets.get_two_sets_with_multiple_criteria(criteria_list)}")
+
+# Get two sets with alternatives
+alternatives = [({i: 1 for i in range(1, n + 1)}, {i: 1 for i in range(1, n + 1)}), ({i: i*3 for i in range(1, n + 1)}, {i: 2 for i in range(1, n + 1)})]
+print(f"Two sets with alternatives: {advanced_two_sets.get_two_sets_with_alternatives(alternatives)}")
+
+# Get two sets with adaptive criteria
+def adaptive_func(n, weights, priorities, current_result):
+    return n > 0 and len(current_result) < 10
+
+print(f"Two sets with adaptive criteria: {advanced_two_sets.get_two_sets_with_adaptive_criteria(adaptive_func)}")
+
+# Get two sets optimization
+print(f"Two sets optimization: {advanced_two_sets.get_two_sets_optimization()}")
+```
+
+### **Variation 3: Two Sets II with Constraints**
+**Problem**: Handle two sets partitioning with additional constraints (number limits, partitioning constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedTwoSetsII:
+    def __init__(self, n=None, constraints=None):
+        self.n = n or 0
+        self.constraints = constraints or {}
+        self.partitions = []
+        self._update_two_sets_info()
+    
+    def _update_two_sets_info(self):
+        """Update two sets feasibility information."""
+        self.two_sets_feasibility = self._calculate_two_sets_feasibility()
+    
+    def _calculate_two_sets_feasibility(self):
+        """Calculate two sets feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can partition numbers 1 to n into two equal sum sets
+        total_sum = self.n * (self.n + 1) // 2
+        return 1.0 if total_sum % 2 == 0 else 0.0
+    
+    def _is_valid_number(self, number):
+        """Check if number is valid considering constraints."""
+        # Number constraints
+        if 'allowed_numbers' in self.constraints:
+            if number not in self.constraints['allowed_numbers']:
+                return False
+        
+        if 'forbidden_numbers' in self.constraints:
+            if number in self.constraints['forbidden_numbers']:
+                return False
+        
+        # Range constraints
+        if 'max_number' in self.constraints:
+            if number > self.constraints['max_number']:
+                return False
+        
+        if 'min_number' in self.constraints:
+            if number < self.constraints['min_number']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(number, self.n):
+                    return False
+        
+        return True
+    
+    def get_two_sets_with_number_constraints(self, min_numbers, max_numbers):
+        """Get two sets considering number count constraints."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        if min_numbers <= self.n <= max_numbers:
+            return self._calculate_constrained_two_sets()
+        else:
+            return []
+    
+    def get_two_sets_with_partitioning_constraints(self, partitioning_constraints):
+        """Get two sets considering partitioning constraints."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in partitioning_constraints:
+            if not constraint(self.n):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self._calculate_constrained_two_sets()
+        else:
+            return []
+    
+    def get_two_sets_with_pattern_constraints(self, pattern_constraints):
+        """Get two sets considering pattern constraints."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.n):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self._calculate_constrained_two_sets()
+        else:
+            return []
+    
+    def get_two_sets_with_mathematical_constraints(self, constraint_func):
+        """Get two sets that satisfies custom mathematical constraints."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        if constraint_func(self.n):
+            return self._calculate_constrained_two_sets()
+        else:
+            return []
+    
+    def get_two_sets_with_optimization_constraints(self, optimization_func):
+        """Get two sets using custom optimization constraints."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        # Calculate optimization score for two sets
+        score = optimization_func(self.n)
+        
+        if score > 0:
+            return self._calculate_constrained_two_sets()
+        else:
+            return []
+    
+    def get_two_sets_with_multiple_constraints(self, constraints_list):
+        """Get two sets that satisfies multiple constraints."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.n):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self._calculate_constrained_two_sets()
+        else:
+            return []
+    
+    def get_two_sets_with_priority_constraints(self, priority_func):
+        """Get two sets with priority-based constraints."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        # Calculate priority for two sets
+        priority = priority_func(self.n)
+        
+        if priority > 0:
+            return self._calculate_constrained_two_sets()
+        else:
+            return []
+    
+    def get_two_sets_with_adaptive_constraints(self, adaptive_func):
+        """Get two sets with adaptive constraints."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        if adaptive_func(self.n, []):
+            return self._calculate_constrained_two_sets()
+        else:
+            return []
+    
+    def _calculate_constrained_two_sets(self):
+        """Calculate two sets considering all constraints."""
+        if not self.two_sets_feasibility:
+            return []
+        
+        if self.n == 0:
+            return []
+        
+        # Find valid numbers
+        valid_numbers = []
+        for i in range(1, self.n + 1):
+            if self._is_valid_number(i):
+                valid_numbers.append(i)
+        
+        # Create two sets for valid numbers
+        set1 = []
+        set2 = []
+        for i, number in enumerate(valid_numbers):
+            if i % 2 == 0:
+                set1.append(number)
+            else:
+                set2.append(number)
+        
+        return [set1, set2]
+    
+    def get_optimal_two_sets_strategy(self):
+        """Get optimal two sets strategy considering all constraints."""
+        strategies = [
+            ('number_constraints', self.get_two_sets_with_number_constraints),
+            ('partitioning_constraints', self.get_two_sets_with_partitioning_constraints),
+            ('pattern_constraints', self.get_two_sets_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'number_constraints':
+                    result = strategy_func(1, 1000)
+                elif strategy_name == 'partitioning_constraints':
+                    partitioning_constraints = [lambda n: n > 0]
+                    result = strategy_func(partitioning_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda n: n > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_numbers': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    'forbidden_numbers': [11, 12, 13, 14, 15],
+    'max_number': 10,
+    'min_number': 1,
+    'pattern_constraints': [lambda number, n: number > 0 and number <= n]
+}
+
+n = 7
+constrained_two_sets = ConstrainedTwoSetsII(n, constraints)
+
+print("Number-constrained two sets:", constrained_two_sets.get_two_sets_with_number_constraints(1, 10))
+
+print("Partitioning-constrained two sets:", constrained_two_sets.get_two_sets_with_partitioning_constraints([lambda n: n > 0]))
+
+print("Pattern-constrained two sets:", constrained_two_sets.get_two_sets_with_pattern_constraints([lambda n: n > 0]))
+
+# Mathematical constraints
+def custom_constraint(n):
+    return n > 0
+
+print("Mathematical constraint two sets:", constrained_two_sets.get_two_sets_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(n):
+    return 1 <= n <= 100
+
+range_constraints = [range_constraint]
+print("Range-constrained two sets:", constrained_two_sets.get_two_sets_with_number_constraints(1, 10))
+
+# Multiple constraints
+def constraint1(n):
+    return n > 0
+
+def constraint2(n):
+    return n % 2 == 0 or n % 2 == 1  # Always true
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints two sets:", constrained_two_sets.get_two_sets_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(n):
+    return n + n * (n + 1) // 2
+
+print("Priority-constrained two sets:", constrained_two_sets.get_two_sets_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(n, current_result):
+    return n > 0 and len(current_result) < 10
+
+print("Adaptive constraint two sets:", constrained_two_sets.get_two_sets_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_two_sets.get_optimal_two_sets_strategy()
+print(f"Optimal two sets strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

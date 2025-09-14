@@ -587,6 +587,837 @@ result = multi_destination_grid_paths(n, destinations)
 print(f"Multi-destination grid paths: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Grid Paths with Dynamic Updates**
+**Problem**: Handle dynamic grid updates (add/remove/update obstacles) while maintaining optimal path counting efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic grid management.
+
+```python
+from collections import defaultdict
+
+class DynamicGridPaths:
+    def __init__(self, rows=None, cols=None, obstacles=None):
+        self.rows = rows or 0
+        self.cols = cols or 0
+        self.obstacles = obstacles or set()
+        self.paths = []
+        self._update_grid_paths_info()
+    
+    def _update_grid_paths_info(self):
+        """Update grid paths feasibility information."""
+        self.grid_paths_feasibility = self._calculate_grid_paths_feasibility()
+    
+    def _calculate_grid_paths_feasibility(self):
+        """Calculate grid paths feasibility."""
+        if self.rows <= 0 or self.cols <= 0:
+            return 0.0
+        
+        # Check if we can find paths in the grid
+        return 1.0 if self.rows > 0 and self.cols > 0 else 0.0
+    
+    def update_grid_size(self, new_rows, new_cols):
+        """Update grid dimensions."""
+        self.rows = new_rows
+        self.cols = new_cols
+        self._update_grid_paths_info()
+    
+    def add_obstacle(self, row, col):
+        """Add obstacle at position (row, col)."""
+        self.obstacles.add((row, col))
+    
+    def remove_obstacle(self, row, col):
+        """Remove obstacle at position (row, col)."""
+        self.obstacles.discard((row, col))
+    
+    def count_paths(self):
+        """Count number of paths from (0,0) to (rows-1, cols-1) using dynamic programming."""
+        if not self.grid_paths_feasibility:
+            return 0
+        
+        # DP table: dp[i][j] = number of paths to reach (i, j)
+        dp = [[0 for _ in range(self.cols)] for _ in range(self.rows)]
+        
+        # Base case: one path to reach (0, 0)
+        if (0, 0) not in self.obstacles:
+            dp[0][0] = 1
+        
+        # Fill DP table
+        for i in range(self.rows):
+            for j in range(self.cols):
+                if (i, j) in self.obstacles:
+                    dp[i][j] = 0
+                    continue
+                
+                if i == 0 and j == 0:
+                    continue
+                
+                # Can come from top or left
+                if i > 0:
+                    dp[i][j] += dp[i-1][j]
+                if j > 0:
+                    dp[i][j] += dp[i][j-1]
+        
+        return dp[self.rows-1][self.cols-1]
+    
+    def get_paths_with_constraints(self, constraint_func):
+        """Get paths that satisfies custom constraints."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        count = self.count_paths()
+        if constraint_func(count, self.rows, self.cols):
+            return self._generate_paths()
+        else:
+            return []
+    
+    def get_paths_in_range(self, min_paths, max_paths):
+        """Get paths within specified count range."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        count = self.count_paths()
+        if min_paths <= count <= max_paths:
+            return self._generate_paths()
+        else:
+            return []
+    
+    def get_paths_with_pattern(self, pattern_func):
+        """Get paths matching specified pattern."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        count = self.count_paths()
+        if pattern_func(count, self.rows, self.cols):
+            return self._generate_paths()
+        else:
+            return []
+    
+    def _generate_paths(self):
+        """Generate all possible paths from (0,0) to (rows-1, cols-1)."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        paths = []
+        
+        def backtrack(row, col, current_path):
+            if row == self.rows - 1 and col == self.cols - 1:
+                paths.append(current_path[:])
+                return
+            
+            if (row, col) in self.obstacles:
+                return
+            
+            # Move right
+            if col + 1 < self.cols:
+                current_path.append((row, col + 1))
+                backtrack(row, col + 1, current_path)
+                current_path.pop()
+            
+            # Move down
+            if row + 1 < self.rows:
+                current_path.append((row + 1, col))
+                backtrack(row + 1, col, current_path)
+                current_path.pop()
+        
+        backtrack(0, 0, [(0, 0)])
+        return paths
+    
+    def get_grid_paths_statistics(self):
+        """Get statistics about the grid paths."""
+        if not self.grid_paths_feasibility:
+            return {
+                'rows': 0,
+                'cols': 0,
+                'grid_paths_feasibility': 0,
+                'path_count': 0
+            }
+        
+        count = self.count_paths()
+        return {
+            'rows': self.rows,
+            'cols': self.cols,
+            'grid_paths_feasibility': self.grid_paths_feasibility,
+            'path_count': count
+        }
+    
+    def get_grid_paths_patterns(self):
+        """Get patterns in grid paths."""
+        patterns = {
+            'paths_exist': 0,
+            'has_valid_grid': 0,
+            'optimal_paths_possible': 0,
+            'has_large_grid': 0
+        }
+        
+        if not self.grid_paths_feasibility:
+            return patterns
+        
+        # Check if paths exist
+        if self.grid_paths_feasibility == 1.0:
+            patterns['paths_exist'] = 1
+        
+        # Check if has valid grid
+        if self.rows > 0 and self.cols > 0:
+            patterns['has_valid_grid'] = 1
+        
+        # Check if optimal paths are possible
+        if self.grid_paths_feasibility == 1.0:
+            patterns['optimal_paths_possible'] = 1
+        
+        # Check if has large grid
+        if self.rows > 10 or self.cols > 10:
+            patterns['has_large_grid'] = 1
+        
+        return patterns
+    
+    def get_optimal_grid_paths_strategy(self):
+        """Get optimal strategy for grid paths counting."""
+        if not self.grid_paths_feasibility:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'grid_paths_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.grid_paths_feasibility
+        
+        # Calculate grid paths feasibility
+        grid_paths_feasibility = self.grid_paths_feasibility
+        
+        # Determine recommended strategy
+        if self.rows <= 20 and self.cols <= 20:
+            recommended_strategy = 'dynamic_programming'
+        elif self.rows <= 100 and self.cols <= 100:
+            recommended_strategy = 'optimized_dp'
+        else:
+            recommended_strategy = 'advanced_optimization'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'grid_paths_feasibility': grid_paths_feasibility
+        }
+
+# Example usage
+rows = 3
+cols = 3
+obstacles = {(1, 1)}  # Obstacle at center
+dynamic_grid_paths = DynamicGridPaths(rows, cols, obstacles)
+print(f"Grid paths feasibility: {dynamic_grid_paths.grid_paths_feasibility}")
+
+# Update grid size
+dynamic_grid_paths.update_grid_size(4, 4)
+print(f"After updating grid size: {dynamic_grid_paths.rows}x{dynamic_grid_paths.cols}")
+
+# Add obstacle
+dynamic_grid_paths.add_obstacle(2, 2)
+print(f"Added obstacle at (2, 2)")
+
+# Count paths
+count = dynamic_grid_paths.count_paths()
+print(f"Number of paths: {count}")
+
+# Get paths with constraints
+def constraint_func(count, rows, cols):
+    return count > 0 and rows > 0 and cols > 0
+
+print(f"Paths with constraints: {len(dynamic_grid_paths.get_paths_with_constraints(constraint_func))}")
+
+# Get paths in range
+print(f"Paths in range 1-100: {len(dynamic_grid_paths.get_paths_in_range(1, 100))}")
+
+# Get paths with pattern
+def pattern_func(count, rows, cols):
+    return count > 0 and rows > 0 and cols > 0
+
+print(f"Paths with pattern: {len(dynamic_grid_paths.get_paths_with_pattern(pattern_func))}")
+
+# Get statistics
+print(f"Statistics: {dynamic_grid_paths.get_grid_paths_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_grid_paths.get_grid_paths_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_grid_paths.get_optimal_grid_paths_strategy()}")
+```
+
+### **Variation 2: Grid Paths with Different Operations**
+**Problem**: Handle different types of grid path operations (weighted paths, priority-based path finding, advanced grid analysis).
+
+**Approach**: Use advanced data structures for efficient different types of grid path operations.
+
+```python
+class AdvancedGridPaths:
+    def __init__(self, rows=None, cols=None, weights=None, priorities=None):
+        self.rows = rows or 0
+        self.cols = cols or 0
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.paths = []
+        self._update_grid_paths_info()
+    
+    def _update_grid_paths_info(self):
+        """Update grid paths feasibility information."""
+        self.grid_paths_feasibility = self._calculate_grid_paths_feasibility()
+    
+    def _calculate_grid_paths_feasibility(self):
+        """Calculate grid paths feasibility."""
+        if self.rows <= 0 or self.cols <= 0:
+            return 0.0
+        
+        # Check if we can find paths in the grid
+        return 1.0 if self.rows > 0 and self.cols > 0 else 0.0
+    
+    def count_paths(self):
+        """Count number of paths from (0,0) to (rows-1, cols-1) using dynamic programming."""
+        if not self.grid_paths_feasibility:
+            return 0
+        
+        # DP table: dp[i][j] = number of paths to reach (i, j)
+        dp = [[0 for _ in range(self.cols)] for _ in range(self.rows)]
+        
+        # Base case: one path to reach (0, 0)
+        dp[0][0] = 1
+        
+        # Fill DP table
+        for i in range(self.rows):
+            for j in range(self.cols):
+                if i == 0 and j == 0:
+                    continue
+                
+                # Can come from top or left
+                if i > 0:
+                    dp[i][j] += dp[i-1][j]
+                if j > 0:
+                    dp[i][j] += dp[i][j-1]
+        
+        return dp[self.rows-1][self.cols-1]
+    
+    def get_weighted_paths(self):
+        """Get paths with weights and priorities applied."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        # Create weighted grid
+        weighted_grid = []
+        for i in range(self.rows):
+            row = []
+            for j in range(self.cols):
+                weight = self.weights.get((i, j), 1)
+                priority = self.priorities.get((i, j), 1)
+                weighted_score = weight * priority
+                row.append(weighted_score)
+            weighted_grid.append(row)
+        
+        # Generate paths with weighted scores
+        paths = []
+        
+        def backtrack(row, col, current_path, current_score):
+            if row == self.rows - 1 and col == self.cols - 1:
+                paths.append((current_path[:], current_score))
+                return
+            
+            # Move right
+            if col + 1 < self.cols:
+                new_score = current_score + weighted_grid[row][col + 1]
+                current_path.append((row, col + 1))
+                backtrack(row, col + 1, current_path, new_score)
+                current_path.pop()
+            
+            # Move down
+            if row + 1 < self.rows:
+                new_score = current_score + weighted_grid[row + 1][col]
+                current_path.append((row + 1, col))
+                backtrack(row + 1, col, current_path, new_score)
+                current_path.pop()
+        
+        backtrack(0, 0, [(0, 0)], weighted_grid[0][0])
+        return paths
+    
+    def get_paths_with_priority(self, priority_func):
+        """Get paths considering priority."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        # Create priority-based weights
+        priority_weights = {}
+        for i in range(self.rows):
+            for j in range(self.cols):
+                priority = priority_func((i, j), self.weights, self.priorities)
+                priority_weights[(i, j)] = priority
+        
+        # Generate paths with priority weights
+        paths = []
+        
+        def backtrack(row, col, current_path, current_priority):
+            if row == self.rows - 1 and col == self.cols - 1:
+                paths.append((current_path[:], current_priority))
+                return
+            
+            # Move right
+            if col + 1 < self.cols:
+                new_priority = current_priority + priority_weights.get((row, col + 1), 1)
+                current_path.append((row, col + 1))
+                backtrack(row, col + 1, current_path, new_priority)
+                current_path.pop()
+            
+            # Move down
+            if row + 1 < self.rows:
+                new_priority = current_priority + priority_weights.get((row + 1, col), 1)
+                current_path.append((row + 1, col))
+                backtrack(row + 1, col, current_path, new_priority)
+                current_path.pop()
+        
+        backtrack(0, 0, [(0, 0)], priority_weights.get((0, 0), 1))
+        return paths
+    
+    def get_paths_with_optimization(self, optimization_func):
+        """Get paths using custom optimization function."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        # Create optimization-based weights
+        optimized_weights = {}
+        for i in range(self.rows):
+            for j in range(self.cols):
+                score = optimization_func((i, j), self.weights, self.priorities)
+                optimized_weights[(i, j)] = score
+        
+        # Generate paths with optimized weights
+        paths = []
+        
+        def backtrack(row, col, current_path, current_score):
+            if row == self.rows - 1 and col == self.cols - 1:
+                paths.append((current_path[:], current_score))
+                return
+            
+            # Move right
+            if col + 1 < self.cols:
+                new_score = current_score + optimized_weights.get((row, col + 1), 1)
+                current_path.append((row, col + 1))
+                backtrack(row, col + 1, current_path, new_score)
+                current_path.pop()
+            
+            # Move down
+            if row + 1 < self.rows:
+                new_score = current_score + optimized_weights.get((row + 1, col), 1)
+                current_path.append((row + 1, col))
+                backtrack(row + 1, col, current_path, new_score)
+                current_path.pop()
+        
+        backtrack(0, 0, [(0, 0)], optimized_weights.get((0, 0), 1))
+        return paths
+    
+    def get_paths_with_constraints(self, constraint_func):
+        """Get paths that satisfies custom constraints."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        if constraint_func(self.rows, self.cols, self.weights, self.priorities):
+            return self.get_weighted_paths()
+        else:
+            return []
+    
+    def get_paths_with_multiple_criteria(self, criteria_list):
+        """Get paths that satisfies multiple criteria."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.rows, self.cols, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_paths()
+        else:
+            return []
+    
+    def get_paths_with_alternatives(self, alternatives):
+        """Get paths considering alternative weights/priorities."""
+        result = []
+        
+        # Check original paths
+        original_paths = self.get_weighted_paths()
+        result.append((original_paths, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedGridPaths(self.rows, self.cols, alt_weights, alt_priorities)
+            temp_paths = temp_instance.get_weighted_paths()
+            result.append((temp_paths, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_paths_with_adaptive_criteria(self, adaptive_func):
+        """Get paths using adaptive criteria."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        if adaptive_func(self.rows, self.cols, self.weights, self.priorities, []):
+            return self.get_weighted_paths()
+        else:
+            return []
+    
+    def get_grid_paths_optimization(self):
+        """Get optimal grid paths configuration."""
+        strategies = [
+            ('weighted_paths', lambda: len(self.get_weighted_paths())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+rows = 3
+cols = 3
+weights = {(i, j): (i + j + 1) for i in range(rows) for j in range(cols)}  # Weight based on position
+priorities = {(i, j): (i * j + 1) for i in range(rows) for j in range(cols)}  # Priority based on position
+advanced_grid_paths = AdvancedGridPaths(rows, cols, weights, priorities)
+
+print(f"Weighted paths: {len(advanced_grid_paths.get_weighted_paths())}")
+
+# Get paths with priority
+def priority_func(position, weights, priorities):
+    return weights.get(position, 1) + priorities.get(position, 1)
+
+print(f"Paths with priority: {len(advanced_grid_paths.get_paths_with_priority(priority_func))}")
+
+# Get paths with optimization
+def optimization_func(position, weights, priorities):
+    return weights.get(position, 1) * priorities.get(position, 1)
+
+print(f"Paths with optimization: {len(advanced_grid_paths.get_paths_with_optimization(optimization_func))}")
+
+# Get paths with constraints
+def constraint_func(rows, cols, weights, priorities):
+    return rows > 0 and cols > 0
+
+print(f"Paths with constraints: {len(advanced_grid_paths.get_paths_with_constraints(constraint_func))}")
+
+# Get paths with multiple criteria
+def criterion1(rows, cols, weights, priorities):
+    return rows > 0
+
+def criterion2(rows, cols, weights, priorities):
+    return cols > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Paths with multiple criteria: {len(advanced_grid_paths.get_paths_with_multiple_criteria(criteria_list))}")
+
+# Get paths with alternatives
+alternatives = [({(i, j): 1 for i in range(rows) for j in range(cols)}, {(i, j): 1 for i in range(rows) for j in range(cols)}), ({(i, j): (i+j)*2 for i in range(rows) for j in range(cols)}, {(i, j): (i*j)+1 for i in range(rows) for j in range(cols)})]
+print(f"Paths with alternatives: {advanced_grid_paths.get_paths_with_alternatives(alternatives)}")
+
+# Get paths with adaptive criteria
+def adaptive_func(rows, cols, weights, priorities, current_result):
+    return rows > 0 and cols > 0 and len(current_result) < 5
+
+print(f"Paths with adaptive criteria: {len(advanced_grid_paths.get_paths_with_adaptive_criteria(adaptive_func))}")
+
+# Get grid paths optimization
+print(f"Grid paths optimization: {advanced_grid_paths.get_grid_paths_optimization()}")
+```
+
+### **Variation 3: Grid Paths with Constraints**
+**Problem**: Handle grid path counting with additional constraints (grid limits, movement constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedGridPaths:
+    def __init__(self, rows=None, cols=None, constraints=None):
+        self.rows = rows or 0
+        self.cols = cols or 0
+        self.constraints = constraints or {}
+        self.paths = []
+        self._update_grid_paths_info()
+    
+    def _update_grid_paths_info(self):
+        """Update grid paths feasibility information."""
+        self.grid_paths_feasibility = self._calculate_grid_paths_feasibility()
+    
+    def _calculate_grid_paths_feasibility(self):
+        """Calculate grid paths feasibility."""
+        if self.rows <= 0 or self.cols <= 0:
+            return 0.0
+        
+        # Check if we can find paths in the grid
+        return 1.0 if self.rows > 0 and self.cols > 0 else 0.0
+    
+    def _is_valid_move(self, from_pos, to_pos):
+        """Check if move is valid considering constraints."""
+        # Movement constraints
+        if 'allowed_moves' in self.constraints:
+            if (from_pos, to_pos) not in self.constraints['allowed_moves']:
+                return False
+        
+        if 'forbidden_moves' in self.constraints:
+            if (from_pos, to_pos) in self.constraints['forbidden_moves']:
+                return False
+        
+        # Position constraints
+        if 'allowed_positions' in self.constraints:
+            if to_pos not in self.constraints['allowed_positions']:
+                return False
+        
+        if 'forbidden_positions' in self.constraints:
+            if to_pos in self.constraints['forbidden_positions']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(from_pos, to_pos):
+                    return False
+        
+        return True
+    
+    def get_paths_with_grid_constraints(self, min_rows, max_rows, min_cols, max_cols):
+        """Get paths considering grid size constraints."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        if min_rows <= self.rows <= max_rows and min_cols <= self.cols <= max_cols:
+            return self._generate_constrained_paths()
+        else:
+            return []
+    
+    def get_paths_with_movement_constraints(self, movement_constraints):
+        """Get paths considering movement constraints."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in movement_constraints:
+            if not constraint(self.rows, self.cols):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self._generate_constrained_paths()
+        else:
+            return []
+    
+    def get_paths_with_pattern_constraints(self, pattern_constraints):
+        """Get paths considering pattern constraints."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.rows, self.cols):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self._generate_constrained_paths()
+        else:
+            return []
+    
+    def get_paths_with_mathematical_constraints(self, constraint_func):
+        """Get paths that satisfies custom mathematical constraints."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        if constraint_func(self.rows, self.cols):
+            return self._generate_constrained_paths()
+        else:
+            return []
+    
+    def get_paths_with_optimization_constraints(self, optimization_func):
+        """Get paths using custom optimization constraints."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        # Calculate optimization score for paths
+        score = optimization_func(self.rows, self.cols)
+        
+        if score > 0:
+            return self._generate_constrained_paths()
+        else:
+            return []
+    
+    def get_paths_with_multiple_constraints(self, constraints_list):
+        """Get paths that satisfies multiple constraints."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.rows, self.cols):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self._generate_constrained_paths()
+        else:
+            return []
+    
+    def get_paths_with_priority_constraints(self, priority_func):
+        """Get paths with priority-based constraints."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        # Calculate priority for paths
+        priority = priority_func(self.rows, self.cols)
+        
+        if priority > 0:
+            return self._generate_constrained_paths()
+        else:
+            return []
+    
+    def get_paths_with_adaptive_constraints(self, adaptive_func):
+        """Get paths with adaptive constraints."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        if adaptive_func(self.rows, self.cols, []):
+            return self._generate_constrained_paths()
+        else:
+            return []
+    
+    def _generate_constrained_paths(self):
+        """Generate all possible paths considering constraints."""
+        if not self.grid_paths_feasibility:
+            return []
+        
+        paths = []
+        
+        def backtrack(row, col, current_path):
+            if row == self.rows - 1 and col == self.cols - 1:
+                paths.append(current_path[:])
+                return
+            
+            # Move right
+            if col + 1 < self.cols:
+                from_pos = (row, col)
+                to_pos = (row, col + 1)
+                if self._is_valid_move(from_pos, to_pos):
+                    current_path.append(to_pos)
+                    backtrack(row, col + 1, current_path)
+                    current_path.pop()
+            
+            # Move down
+            if row + 1 < self.rows:
+                from_pos = (row, col)
+                to_pos = (row + 1, col)
+                if self._is_valid_move(from_pos, to_pos):
+                    current_path.append(to_pos)
+                    backtrack(row + 1, col, current_path)
+                    current_path.pop()
+        
+        backtrack(0, 0, [(0, 0)])
+        return paths
+    
+    def get_optimal_grid_paths_strategy(self):
+        """Get optimal grid paths strategy considering all constraints."""
+        strategies = [
+            ('grid_constraints', self.get_paths_with_grid_constraints),
+            ('movement_constraints', self.get_paths_with_movement_constraints),
+            ('pattern_constraints', self.get_paths_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'grid_constraints':
+                    result = strategy_func(0, 1000, 0, 1000)
+                elif strategy_name == 'movement_constraints':
+                    movement_constraints = [lambda rows, cols: rows > 0 and cols > 0]
+                    result = strategy_func(movement_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda rows, cols: rows > 0 and cols > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_moves': [((0, 0), (0, 1)), ((0, 0), (1, 0)), ((0, 1), (0, 2)), ((0, 1), (1, 1)), ((1, 0), (1, 1)), ((1, 0), (2, 0)), ((0, 2), (1, 2)), ((1, 1), (1, 2)), ((1, 1), (2, 1)), ((2, 0), (2, 1)), ((1, 2), (2, 2)), ((2, 1), (2, 2))],
+    'forbidden_moves': [],
+    'allowed_positions': [(i, j) for i in range(3) for j in range(3)],
+    'forbidden_positions': [],
+    'pattern_constraints': [lambda from_pos, to_pos: from_pos[0] <= to_pos[0] and from_pos[1] <= to_pos[1]]
+}
+
+rows = 3
+cols = 3
+constrained_grid_paths = ConstrainedGridPaths(rows, cols, constraints)
+
+print("Grid-constrained paths:", len(constrained_grid_paths.get_paths_with_grid_constraints(1, 10, 1, 10)))
+
+print("Movement-constrained paths:", len(constrained_grid_paths.get_paths_with_movement_constraints([lambda rows, cols: rows > 0 and cols > 0])))
+
+print("Pattern-constrained paths:", len(constrained_grid_paths.get_paths_with_pattern_constraints([lambda rows, cols: rows > 0 and cols > 0])))
+
+# Mathematical constraints
+def custom_constraint(rows, cols):
+    return rows > 0 and cols > 0
+
+print("Mathematical constraint paths:", len(constrained_grid_paths.get_paths_with_mathematical_constraints(custom_constraint)))
+
+# Range constraints
+def range_constraint(rows, cols):
+    return 1 <= rows <= 10 and 1 <= cols <= 10
+
+range_constraints = [range_constraint]
+print("Range-constrained paths:", len(constrained_grid_paths.get_paths_with_grid_constraints(1, 10, 1, 10)))
+
+# Multiple constraints
+def constraint1(rows, cols):
+    return rows > 0
+
+def constraint2(rows, cols):
+    return cols > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints paths:", len(constrained_grid_paths.get_paths_with_multiple_constraints(constraints_list)))
+
+# Priority constraints
+def priority_func(rows, cols):
+    return rows + cols
+
+print("Priority-constrained paths:", len(constrained_grid_paths.get_paths_with_priority_constraints(priority_func)))
+
+# Adaptive constraints
+def adaptive_func(rows, cols, current_result):
+    return rows > 0 and cols > 0 and len(current_result) < 5
+
+print("Adaptive constraint paths:", len(constrained_grid_paths.get_paths_with_adaptive_constraints(adaptive_func)))
+
+# Optimal strategy
+optimal = constrained_grid_paths.get_optimal_grid_paths_strategy()
+print(f"Optimal grid paths strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

@@ -639,6 +639,796 @@ result1 = dtpc.get_prufer_code()
 print(f"Dynamic tree Prufer code result: {result1}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Prufer Code with Dynamic Updates**
+**Problem**: Handle dynamic tree updates (add/remove/update vertices) while maintaining Prufer code calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic tree management with Prufer code generation.
+
+```python
+from collections import defaultdict, deque
+import heapq
+
+class DynamicPruferCode:
+    def __init__(self, n=None, edges=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.graph = defaultdict(list)
+        self._update_prufer_info()
+    
+    def _update_prufer_info(self):
+        """Update Prufer code information."""
+        self.prufer_code = self._calculate_prufer_code()
+    
+    def _calculate_prufer_code(self):
+        """Calculate Prufer code from tree edges."""
+        if self.n <= 2:
+            return []
+        
+        # Build adjacency list
+        adj = defaultdict(list)
+        degree = defaultdict(int)
+        
+        for u, v in self.edges:
+            adj[u].append(v)
+            adj[v].append(u)
+            degree[u] += 1
+            degree[v] += 1
+        
+        # Find leaves (vertices with degree 1)
+        leaves = []
+        for i in range(self.n):
+            if degree[i] == 1:
+                leaves.append(i)
+        
+        prufer_code = []
+        
+        # Process n-2 times
+        for _ in range(self.n - 2):
+            # Get the smallest leaf
+            leaf = min(leaves)
+            leaves.remove(leaf)
+            
+            # Find its neighbor
+            neighbor = adj[leaf][0]
+            prufer_code.append(neighbor)
+            
+            # Update degree and add new leaf if needed
+            degree[neighbor] -= 1
+            if degree[neighbor] == 1:
+                leaves.append(neighbor)
+        
+        return prufer_code
+    
+    def update_tree(self, new_n, new_edges):
+        """Update the tree with new vertices and edges."""
+        self.n = new_n
+        self.edges = new_edges
+        self._build_graph()
+        self._update_prufer_info()
+    
+    def add_edge(self, u, v):
+        """Add an edge to the tree."""
+        if 0 <= u < self.n and 0 <= v < self.n and (u, v) not in self.edges and (v, u) not in self.edges:
+            self.edges.append((u, v))
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+            self._update_prufer_info()
+    
+    def remove_edge(self, u, v):
+        """Remove an edge from the tree."""
+        if (u, v) in self.edges:
+            self.edges.remove((u, v))
+            self.graph[u].remove(v)
+            self.graph[v].remove(u)
+            self._update_prufer_info()
+        elif (v, u) in self.edges:
+            self.edges.remove((v, u))
+            self.graph[u].remove(v)
+            self.graph[v].remove(u)
+            self._update_prufer_info()
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+    
+    def get_prufer_code(self):
+        """Get the current Prufer code."""
+        return self.prufer_code
+    
+    def get_prufer_code_with_priorities(self, priorities):
+        """Get Prufer code considering vertex priorities."""
+        if not self.prufer_code:
+            return []
+        
+        # Calculate weighted Prufer code based on priorities
+        weighted_prufer = []
+        for vertex in self.prufer_code:
+            priority = priorities.get(vertex, 1)
+            weighted_prufer.append((vertex, priority))
+        
+        return weighted_prufer
+    
+    def get_prufer_code_with_constraints(self, constraint_func):
+        """Get Prufer code that satisfies custom constraints."""
+        if not self.prufer_code:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.prufer_code):
+            return self.prufer_code
+        else:
+            return []
+    
+    def get_prufer_code_in_range(self, min_length, max_length):
+        """Get Prufer code within specified length range."""
+        if not self.prufer_code:
+            return []
+        
+        if min_length <= len(self.prufer_code) <= max_length:
+            return self.prufer_code
+        else:
+            return []
+    
+    def get_prufer_code_with_pattern(self, pattern_func):
+        """Get Prufer code matching specified pattern."""
+        if not self.prufer_code:
+            return []
+        
+        if pattern_func(self.n, self.edges, self.prufer_code):
+            return self.prufer_code
+        else:
+            return []
+    
+    def get_prufer_statistics(self):
+        """Get statistics about the Prufer code."""
+        return {
+            'n': self.n,
+            'edge_count': len(self.edges),
+            'prufer_length': len(self.prufer_code),
+            'expected_length': max(0, self.n - 2),
+            'is_valid_tree': len(self.edges) == self.n - 1
+        }
+    
+    def get_prufer_patterns(self):
+        """Get patterns in Prufer code."""
+        patterns = {
+            'has_edges': 0,
+            'has_valid_tree': 0,
+            'optimal_prufer_possible': 0,
+            'has_large_tree': 0
+        }
+        
+        # Check if has edges
+        if len(self.edges) > 0:
+            patterns['has_edges'] = 1
+        
+        # Check if has valid tree
+        if len(self.edges) == self.n - 1:
+            patterns['has_valid_tree'] = 1
+        
+        # Check if optimal Prufer is possible
+        if len(self.prufer_code) == self.n - 2:
+            patterns['optimal_prufer_possible'] = 1
+        
+        # Check if has large tree
+        if self.n > 100:
+            patterns['has_large_tree'] = 1
+        
+        return patterns
+    
+    def get_optimal_prufer_strategy(self):
+        """Get optimal strategy for Prufer code management."""
+        if not self.prufer_code:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'prufer_length': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = len(self.prufer_code) / max(1, self.n - 2)
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'greedy_prufer'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_prufer'
+        else:
+            recommended_strategy = 'advanced_prufer_generation'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'prufer_length': len(self.prufer_code)
+        }
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (2, 3), (3, 4)]
+dynamic_prufer = DynamicPruferCode(n, edges)
+print(f"Prufer code: {dynamic_prufer.prufer_code}")
+
+# Update tree
+dynamic_prufer.update_tree(6, [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5)])
+print(f"After updating tree: n={dynamic_prufer.n}, prufer_code={dynamic_prufer.prufer_code}")
+
+# Add edge
+dynamic_prufer.add_edge(5, 0)
+print(f"After adding edge (5,0): {dynamic_prufer.edges}")
+
+# Remove edge
+dynamic_prufer.remove_edge(5, 0)
+print(f"After removing edge (5,0): {dynamic_prufer.edges}")
+
+# Get Prufer code
+prufer = dynamic_prufer.get_prufer_code()
+print(f"Prufer code: {prufer}")
+
+# Get Prufer code with priorities
+priorities = {i: i for i in range(n)}
+priority_prufer = dynamic_prufer.get_prufer_code_with_priorities(priorities)
+print(f"Prufer code with priorities: {priority_prufer}")
+
+# Get Prufer code with constraints
+def constraint_func(n, edges, prufer_code):
+    return len(prufer_code) > 0 and n > 0
+
+print(f"Prufer code with constraints: {dynamic_prufer.get_prufer_code_with_constraints(constraint_func)}")
+
+# Get Prufer code in range
+print(f"Prufer code in range 1-5: {dynamic_prufer.get_prufer_code_in_range(1, 5)}")
+
+# Get Prufer code with pattern
+def pattern_func(n, edges, prufer_code):
+    return len(prufer_code) > 0 and n > 0
+
+print(f"Prufer code with pattern: {dynamic_prufer.get_prufer_code_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_prufer.get_prufer_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_prufer.get_prufer_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_prufer.get_optimal_prufer_strategy()}")
+```
+
+### **Variation 2: Prufer Code with Different Operations**
+**Problem**: Handle different types of Prufer code operations (weighted codes, priority-based selection, advanced code analysis).
+
+**Approach**: Use advanced data structures for efficient different types of Prufer code operations.
+
+```python
+class AdvancedPruferCode:
+    def __init__(self, n=None, edges=None, weights=None, priorities=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.graph = defaultdict(list)
+        self._update_prufer_info()
+    
+    def _update_prufer_info(self):
+        """Update Prufer code information."""
+        self.prufer_code = self._calculate_prufer_code()
+    
+    def _calculate_prufer_code(self):
+        """Calculate Prufer code from tree edges."""
+        if self.n <= 2:
+            return []
+        
+        # Build adjacency list
+        adj = defaultdict(list)
+        degree = defaultdict(int)
+        
+        for u, v in self.edges:
+            adj[u].append(v)
+            adj[v].append(u)
+            degree[u] += 1
+            degree[v] += 1
+        
+        # Find leaves (vertices with degree 1)
+        leaves = []
+        for i in range(self.n):
+            if degree[i] == 1:
+                leaves.append(i)
+        
+        prufer_code = []
+        
+        # Process n-2 times
+        for _ in range(self.n - 2):
+            # Get the smallest leaf
+            leaf = min(leaves)
+            leaves.remove(leaf)
+            
+            # Find its neighbor
+            neighbor = adj[leaf][0]
+            prufer_code.append(neighbor)
+            
+            # Update degree and add new leaf if needed
+            degree[neighbor] -= 1
+            if degree[neighbor] == 1:
+                leaves.append(neighbor)
+        
+        return prufer_code
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+    
+    def get_prufer_code(self):
+        """Get the current Prufer code."""
+        return self.prufer_code
+    
+    def get_weighted_prufer_code(self):
+        """Get Prufer code with weights and priorities applied."""
+        if not self.prufer_code:
+            return []
+        
+        # Calculate weighted Prufer code based on vertex weights and priorities
+        weighted_prufer = []
+        for vertex in self.prufer_code:
+            vertex_weight = self.weights.get(vertex, 1)
+            vertex_priority = self.priorities.get(vertex, 1)
+            weighted_score = vertex_weight * vertex_priority
+            weighted_prufer.append((vertex, weighted_score))
+        
+        return weighted_prufer
+    
+    def get_prufer_code_with_priority(self, priority_func):
+        """Get Prufer code considering priority."""
+        if not self.prufer_code:
+            return []
+        
+        # Calculate priority-based Prufer code
+        priority_prufer = []
+        for vertex in self.prufer_code:
+            priority = priority_func(vertex, self.weights, self.priorities)
+            priority_prufer.append((vertex, priority))
+        
+        return priority_prufer
+    
+    def get_prufer_code_with_optimization(self, optimization_func):
+        """Get Prufer code using custom optimization function."""
+        if not self.prufer_code:
+            return []
+        
+        # Calculate optimization-based Prufer code
+        optimized_prufer = []
+        for vertex in self.prufer_code:
+            score = optimization_func(vertex, self.weights, self.priorities)
+            optimized_prufer.append((vertex, score))
+        
+        return optimized_prufer
+    
+    def get_prufer_code_with_constraints(self, constraint_func):
+        """Get Prufer code that satisfies custom constraints."""
+        if not self.prufer_code:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.weights, self.priorities, self.prufer_code):
+            return self.get_weighted_prufer_code()
+        else:
+            return []
+    
+    def get_prufer_code_with_multiple_criteria(self, criteria_list):
+        """Get Prufer code that satisfies multiple criteria."""
+        if not self.prufer_code:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.n, self.edges, self.weights, self.priorities, self.prufer_code):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_prufer_code()
+        else:
+            return []
+    
+    def get_prufer_code_with_alternatives(self, alternatives):
+        """Get Prufer code considering alternative weights/priorities."""
+        result = []
+        
+        # Check original Prufer code
+        original_prufer = self.get_weighted_prufer_code()
+        result.append((original_prufer, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedPruferCode(self.n, self.edges, alt_weights, alt_priorities)
+            temp_prufer = temp_instance.get_weighted_prufer_code()
+            result.append((temp_prufer, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_prufer_code_with_adaptive_criteria(self, adaptive_func):
+        """Get Prufer code using adaptive criteria."""
+        if not self.prufer_code:
+            return []
+        
+        if adaptive_func(self.n, self.edges, self.weights, self.priorities, self.prufer_code, []):
+            return self.get_weighted_prufer_code()
+        else:
+            return []
+    
+    def get_prufer_code_optimization(self):
+        """Get optimal Prufer code configuration."""
+        strategies = [
+            ('weighted_prufer', lambda: len(self.get_weighted_prufer_code())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (2, 3), (3, 4)]
+weights = {i: i + 1 for i in range(n)}  # Weight based on vertex number
+priorities = {i: i for i in range(n)}  # Priority based on vertex number
+advanced_prufer = AdvancedPruferCode(n, edges, weights, priorities)
+
+print(f"Weighted Prufer code: {advanced_prufer.get_weighted_prufer_code()}")
+
+# Get Prufer code with priority
+def priority_func(vertex, weights, priorities):
+    return priorities.get(vertex, 1) + weights.get(vertex, 1)
+
+print(f"Prufer code with priority: {advanced_prufer.get_prufer_code_with_priority(priority_func)}")
+
+# Get Prufer code with optimization
+def optimization_func(vertex, weights, priorities):
+    return weights.get(vertex, 1) + priorities.get(vertex, 1)
+
+print(f"Prufer code with optimization: {advanced_prufer.get_prufer_code_with_optimization(optimization_func)}")
+
+# Get Prufer code with constraints
+def constraint_func(n, edges, weights, priorities, prufer_code):
+    return len(prufer_code) > 0 and n > 0
+
+print(f"Prufer code with constraints: {advanced_prufer.get_prufer_code_with_constraints(constraint_func)}")
+
+# Get Prufer code with multiple criteria
+def criterion1(n, edges, weights, priorities, prufer_code):
+    return len(edges) > 0
+
+def criterion2(n, edges, weights, priorities, prufer_code):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Prufer code with multiple criteria: {advanced_prufer.get_prufer_code_with_multiple_criteria(criteria_list)}")
+
+# Get Prufer code with alternatives
+alternatives = [({i: 1 for i in range(n)}, {i: 1 for i in range(n)}), ({i: (i + 1)*3 for i in range(n)}, {i: 2 for i in range(n)})]
+print(f"Prufer code with alternatives: {advanced_prufer.get_prufer_code_with_alternatives(alternatives)}")
+
+# Get Prufer code with adaptive criteria
+def adaptive_func(n, edges, weights, priorities, prufer_code, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print(f"Prufer code with adaptive criteria: {advanced_prufer.get_prufer_code_with_adaptive_criteria(adaptive_func)}")
+
+# Get Prufer code optimization
+print(f"Prufer code optimization: {advanced_prufer.get_prufer_code_optimization()}")
+```
+
+### **Variation 3: Prufer Code with Constraints**
+**Problem**: Handle Prufer code calculation with additional constraints (length limits, code constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedPruferCode:
+    def __init__(self, n=None, edges=None, constraints=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.constraints = constraints or {}
+        self.graph = defaultdict(list)
+        self._update_prufer_info()
+    
+    def _update_prufer_info(self):
+        """Update Prufer code information."""
+        self.prufer_code = self._calculate_prufer_code()
+    
+    def _calculate_prufer_code(self):
+        """Calculate Prufer code from tree edges."""
+        if self.n <= 2:
+            return []
+        
+        # Build adjacency list
+        adj = defaultdict(list)
+        degree = defaultdict(int)
+        
+        for u, v in self.edges:
+            adj[u].append(v)
+            adj[v].append(u)
+            degree[u] += 1
+            degree[v] += 1
+        
+        # Find leaves (vertices with degree 1)
+        leaves = []
+        for i in range(self.n):
+            if degree[i] == 1:
+                leaves.append(i)
+        
+        prufer_code = []
+        
+        # Process n-2 times
+        for _ in range(self.n - 2):
+            # Get the smallest leaf
+            leaf = min(leaves)
+            leaves.remove(leaf)
+            
+            # Find its neighbor
+            neighbor = adj[leaf][0]
+            prufer_code.append(neighbor)
+            
+            # Update degree and add new leaf if needed
+            degree[neighbor] -= 1
+            if degree[neighbor] == 1:
+                leaves.append(neighbor)
+        
+        return prufer_code
+    
+    def _is_valid_edge(self, u, v):
+        """Check if edge is valid considering constraints."""
+        # Edge constraints
+        if 'allowed_edges' in self.constraints:
+            if (u, v) not in self.constraints['allowed_edges'] and (v, u) not in self.constraints['allowed_edges']:
+                return False
+        
+        if 'forbidden_edges' in self.constraints:
+            if (u, v) in self.constraints['forbidden_edges'] or (v, u) in self.constraints['forbidden_edges']:
+                return False
+        
+        # Vertex constraints
+        if 'max_vertex' in self.constraints:
+            if u > self.constraints['max_vertex'] or v > self.constraints['max_vertex']:
+                return False
+        
+        if 'min_vertex' in self.constraints:
+            if u < self.constraints['min_vertex'] or v < self.constraints['min_vertex']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(u, v, self.n, self.edges, self.prufer_code):
+                    return False
+        
+        return True
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            if self._is_valid_edge(u, v):
+                self.graph[u].append(v)
+                self.graph[v].append(u)
+    
+    def get_prufer_code(self):
+        """Get the current Prufer code."""
+        return self.prufer_code
+    
+    def get_prufer_code_with_length_constraints(self, min_length, max_length):
+        """Get Prufer code considering length constraints."""
+        if not self.prufer_code:
+            return []
+        
+        if min_length <= len(self.prufer_code) <= max_length:
+            return self.prufer_code
+        else:
+            return []
+    
+    def get_prufer_code_with_code_constraints(self, code_constraints):
+        """Get Prufer code considering code constraints."""
+        if not self.prufer_code:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in code_constraints:
+            if not constraint(self.n, self.edges, self.prufer_code):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self.prufer_code
+        else:
+            return []
+    
+    def get_prufer_code_with_pattern_constraints(self, pattern_constraints):
+        """Get Prufer code considering pattern constraints."""
+        if not self.prufer_code:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.n, self.edges, self.prufer_code):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self.prufer_code
+        else:
+            return []
+    
+    def get_prufer_code_with_mathematical_constraints(self, constraint_func):
+        """Get Prufer code that satisfies custom mathematical constraints."""
+        if not self.prufer_code:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.prufer_code):
+            return self.prufer_code
+        else:
+            return []
+    
+    def get_prufer_code_with_optimization_constraints(self, optimization_func):
+        """Get Prufer code using custom optimization constraints."""
+        if not self.prufer_code:
+            return []
+        
+        # Calculate optimization score for Prufer code
+        score = optimization_func(self.n, self.edges, self.prufer_code)
+        
+        if score > 0:
+            return self.prufer_code
+        else:
+            return []
+    
+    def get_prufer_code_with_multiple_constraints(self, constraints_list):
+        """Get Prufer code that satisfies multiple constraints."""
+        if not self.prufer_code:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.n, self.edges, self.prufer_code):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self.prufer_code
+        else:
+            return []
+    
+    def get_prufer_code_with_priority_constraints(self, priority_func):
+        """Get Prufer code with priority-based constraints."""
+        if not self.prufer_code:
+            return []
+        
+        # Calculate priority for Prufer code
+        priority = priority_func(self.n, self.edges, self.prufer_code)
+        
+        if priority > 0:
+            return self.prufer_code
+        else:
+            return []
+    
+    def get_prufer_code_with_adaptive_constraints(self, adaptive_func):
+        """Get Prufer code with adaptive constraints."""
+        if not self.prufer_code:
+            return []
+        
+        if adaptive_func(self.n, self.edges, self.prufer_code, []):
+            return self.prufer_code
+        else:
+            return []
+    
+    def get_optimal_prufer_code_strategy(self):
+        """Get optimal Prufer code strategy considering all constraints."""
+        strategies = [
+            ('length_constraints', self.get_prufer_code_with_length_constraints),
+            ('code_constraints', self.get_prufer_code_with_code_constraints),
+            ('pattern_constraints', self.get_prufer_code_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'length_constraints':
+                    result = strategy_func(0, 1000)
+                elif strategy_name == 'code_constraints':
+                    code_constraints = [lambda n, edges, prufer_code: len(edges) > 0]
+                    result = strategy_func(code_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda n, edges, prufer_code: len(edges) > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_edges': [(0, 1), (1, 2), (2, 3), (3, 4)],
+    'forbidden_edges': [(0, 2), (1, 3)],
+    'max_vertex': 10,
+    'min_vertex': 0,
+    'pattern_constraints': [lambda u, v, n, edges, prufer_code: u >= 0 and v >= 0 and u < n and v < n]
+}
+
+n = 5
+edges = [(0, 1), (1, 2), (2, 3), (3, 4)]
+constrained_prufer = ConstrainedPruferCode(n, edges, constraints)
+
+print("Length-constrained Prufer code:", constrained_prufer.get_prufer_code_with_length_constraints(1, 5))
+
+print("Code-constrained Prufer code:", constrained_prufer.get_prufer_code_with_code_constraints([lambda n, edges, prufer_code: len(edges) > 0]))
+
+print("Pattern-constrained Prufer code:", constrained_prufer.get_prufer_code_with_pattern_constraints([lambda n, edges, prufer_code: len(edges) > 0]))
+
+# Mathematical constraints
+def custom_constraint(n, edges, prufer_code):
+    return len(prufer_code) > 0 and n > 0
+
+print("Mathematical constraint Prufer code:", constrained_prufer.get_prufer_code_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(n, edges, prufer_code):
+    return 1 <= len(prufer_code) <= 20
+
+range_constraints = [range_constraint]
+print("Range-constrained Prufer code:", constrained_prufer.get_prufer_code_with_length_constraints(1, 20))
+
+# Multiple constraints
+def constraint1(n, edges, prufer_code):
+    return len(edges) > 0
+
+def constraint2(n, edges, prufer_code):
+    return len(prufer_code) > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints Prufer code:", constrained_prufer.get_prufer_code_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(n, edges, prufer_code):
+    return n + len(edges) + len(prufer_code)
+
+print("Priority-constrained Prufer code:", constrained_prufer.get_prufer_code_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(n, edges, prufer_code, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print("Adaptive constraint Prufer code:", constrained_prufer.get_prufer_code_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_prufer.get_optimal_prufer_code_strategy()
+print(f"Optimal Prufer code strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

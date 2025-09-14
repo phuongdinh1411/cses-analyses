@@ -601,6 +601,827 @@ result = multi_type_book_shop(n, x, book_types, prices, pages)
 print(f"Multi-type book shop: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Book Shop with Dynamic Updates**
+**Problem**: Handle dynamic book updates (add/remove/update books) while maintaining optimal book selection efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic book management.
+
+```python
+from collections import defaultdict
+
+class DynamicBookShop:
+    def __init__(self, books=None, budget=None):
+        self.books = books or []
+        self.budget = budget or 0
+        self.selected_books = []
+        self._update_book_shop_info()
+    
+    def _update_book_shop_info(self):
+        """Update book shop feasibility information."""
+        self.total_books = len(self.books)
+        self.total_cost = sum(book.get('price', 0) for book in self.books)
+        self.book_shop_feasibility = self._calculate_book_shop_feasibility()
+    
+    def _calculate_book_shop_feasibility(self):
+        """Calculate book shop selection feasibility."""
+        if self.total_books == 0 or self.budget <= 0:
+            return 0.0
+        
+        # Check if we can select any books within budget
+        min_price = min(book.get('price', 0) for book in self.books) if self.books else 0
+        return 1.0 if min_price <= self.budget else 0.0
+    
+    def add_book(self, book, position=None):
+        """Add book to the shop."""
+        if position is None:
+            self.books.append(book)
+        else:
+            self.books.insert(position, book)
+        
+        self._update_book_shop_info()
+    
+    def remove_book(self, position):
+        """Remove book from the shop."""
+        if 0 <= position < len(self.books):
+            self.books.pop(position)
+            self._update_book_shop_info()
+    
+    def update_book(self, position, new_book):
+        """Update book in the shop."""
+        if 0 <= position < len(self.books):
+            self.books[position] = new_book
+            self._update_book_shop_info()
+    
+    def select_books(self):
+        """Select optimal books within budget using dynamic programming."""
+        if not self.books or self.budget <= 0:
+            return []
+        
+        n = len(self.books)
+        dp = [[0 for _ in range(self.budget + 1)] for _ in range(n + 1)]
+        
+        # Fill DP table
+        for i in range(1, n + 1):
+            price = self.books[i-1].get('price', 0)
+            pages = self.books[i-1].get('pages', 0)
+            
+            for w in range(self.budget + 1):
+                if price <= w:
+                    dp[i][w] = max(dp[i-1][w], dp[i-1][w-price] + pages)
+                else:
+                    dp[i][w] = dp[i-1][w]
+        
+        # Reconstruct selected books
+        selected = []
+        w = self.budget
+        
+        for i in range(n, 0, -1):
+            if dp[i][w] != dp[i-1][w]:
+                selected.append(self.books[i-1])
+                w -= self.books[i-1].get('price', 0)
+        
+        return selected
+    
+    def get_selection_with_constraints(self, constraint_func):
+        """Get book selection that satisfies custom constraints."""
+        if not self.books:
+            return []
+        
+        selected = self.select_books()
+        if constraint_func(selected, self.books, self.budget):
+            return selected
+        else:
+            return []
+    
+    def get_selection_in_range(self, min_pages, max_pages):
+        """Get book selection within specified page range."""
+        if not self.books:
+            return []
+        
+        selected = self.select_books()
+        total_pages = sum(book.get('pages', 0) for book in selected)
+        
+        if min_pages <= total_pages <= max_pages:
+            return selected
+        else:
+            return []
+    
+    def get_selection_with_pattern(self, pattern_func):
+        """Get book selection matching specified pattern."""
+        if not self.books:
+            return []
+        
+        selected = self.select_books()
+        if pattern_func(selected, self.books, self.budget):
+            return selected
+        else:
+            return []
+    
+    def get_book_shop_statistics(self):
+        """Get statistics about the book shop."""
+        if not self.books:
+            return {
+                'total_books': 0,
+                'total_cost': 0,
+                'book_shop_feasibility': 0,
+                'budget': 0
+            }
+        
+        selected = self.select_books()
+        return {
+            'total_books': self.total_books,
+            'total_cost': self.total_cost,
+            'book_shop_feasibility': self.book_shop_feasibility,
+            'budget': self.budget,
+            'selected_books': len(selected),
+            'total_pages': sum(book.get('pages', 0) for book in selected),
+            'total_price': sum(book.get('price', 0) for book in selected)
+        }
+    
+    def get_book_shop_patterns(self):
+        """Get patterns in book shop selection."""
+        patterns = {
+            'within_budget': 0,
+            'exceeds_budget': 0,
+            'optimal_selection_possible': 0,
+            'has_expensive_books': 0
+        }
+        
+        if not self.books:
+            return patterns
+        
+        # Check if within budget
+        if self.total_cost <= self.budget:
+            patterns['within_budget'] = 1
+        
+        # Check if exceeds budget
+        if self.total_cost > self.budget:
+            patterns['exceeds_budget'] = 1
+        
+        # Check if optimal selection is possible
+        if self.book_shop_feasibility == 1.0:
+            patterns['optimal_selection_possible'] = 1
+        
+        # Check if has expensive books
+        max_price = max(book.get('price', 0) for book in self.books)
+        if max_price > self.budget:
+            patterns['has_expensive_books'] = 1
+        
+        return patterns
+    
+    def get_optimal_book_shop_strategy(self):
+        """Get optimal strategy for book shop selection."""
+        if not self.books:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'book_shop_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.book_shop_feasibility
+        
+        # Calculate book shop feasibility
+        book_shop_feasibility = self.book_shop_feasibility
+        
+        # Determine recommended strategy
+        if self.total_books <= 20:
+            recommended_strategy = 'dynamic_programming'
+        elif self.total_books <= 100:
+            recommended_strategy = 'optimized_dp'
+        else:
+            recommended_strategy = 'advanced_optimization'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'book_shop_feasibility': book_shop_feasibility
+        }
+
+# Example usage
+books = [
+    {'title': 'Book1', 'price': 10, 'pages': 100},
+    {'title': 'Book2', 'price': 20, 'pages': 200},
+    {'title': 'Book3', 'price': 15, 'pages': 150}
+]
+budget = 30
+dynamic_book_shop = DynamicBookShop(books, budget)
+print(f"Book shop feasibility: {dynamic_book_shop.book_shop_feasibility}")
+
+# Add book
+dynamic_book_shop.add_book({'title': 'Book4', 'price': 25, 'pages': 250})
+print(f"After adding Book4: {dynamic_book_shop.total_books}")
+
+# Remove book
+dynamic_book_shop.remove_book(0)
+print(f"After removing first book: {dynamic_book_shop.total_books}")
+
+# Update book
+dynamic_book_shop.update_book(0, {'title': 'UpdatedBook', 'price': 12, 'pages': 120})
+print(f"After updating first book: {dynamic_book_shop.books[0]['title']}")
+
+# Select books
+selected = dynamic_book_shop.select_books()
+print(f"Selected books: {[book['title'] for book in selected]}")
+
+# Get selection with constraints
+def constraint_func(selected, books, budget):
+    return len(selected) > 0 and sum(book.get('price', 0) for book in selected) <= budget
+
+print(f"Selection with constraints: {[book['title'] for book in dynamic_book_shop.get_selection_with_constraints(constraint_func)]}")
+
+# Get selection in range
+print(f"Selection in range 200-400 pages: {[book['title'] for book in dynamic_book_shop.get_selection_in_range(200, 400)]}")
+
+# Get selection with pattern
+def pattern_func(selected, books, budget):
+    return len(selected) > 0 and all(book.get('pages', 0) > 0 for book in selected)
+
+print(f"Selection with pattern: {[book['title'] for book in dynamic_book_shop.get_selection_with_pattern(pattern_func)]}")
+
+# Get statistics
+print(f"Statistics: {dynamic_book_shop.get_book_shop_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_book_shop.get_book_shop_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_book_shop.get_optimal_book_shop_strategy()}")
+```
+
+### **Variation 2: Book Shop with Different Operations**
+**Problem**: Handle different types of book shop operations (weighted books, priority-based selection, advanced book analysis).
+
+**Approach**: Use advanced data structures for efficient different types of book shop operations.
+
+```python
+class AdvancedBookShop:
+    def __init__(self, books=None, budget=None, weights=None, priorities=None):
+        self.books = books or []
+        self.budget = budget or 0
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.selected_books = []
+        self._update_book_shop_info()
+    
+    def _update_book_shop_info(self):
+        """Update book shop feasibility information."""
+        self.total_books = len(self.books)
+        self.total_cost = sum(book.get('price', 0) for book in self.books)
+        self.book_shop_feasibility = self._calculate_book_shop_feasibility()
+    
+    def _calculate_book_shop_feasibility(self):
+        """Calculate book shop selection feasibility."""
+        if self.total_books == 0 or self.budget <= 0:
+            return 0.0
+        
+        # Check if we can select any books within budget
+        min_price = min(book.get('price', 0) for book in self.books) if self.books else 0
+        return 1.0 if min_price <= self.budget else 0.0
+    
+    def select_books(self):
+        """Select optimal books within budget using dynamic programming."""
+        if not self.books or self.budget <= 0:
+            return []
+        
+        n = len(self.books)
+        dp = [[0 for _ in range(self.budget + 1)] for _ in range(n + 1)]
+        
+        # Fill DP table
+        for i in range(1, n + 1):
+            price = self.books[i-1].get('price', 0)
+            pages = self.books[i-1].get('pages', 0)
+            
+            for w in range(self.budget + 1):
+                if price <= w:
+                    dp[i][w] = max(dp[i-1][w], dp[i-1][w-price] + pages)
+                else:
+                    dp[i][w] = dp[i-1][w]
+        
+        # Reconstruct selected books
+        selected = []
+        w = self.budget
+        
+        for i in range(n, 0, -1):
+            if dp[i][w] != dp[i-1][w]:
+                selected.append(self.books[i-1])
+                w -= self.books[i-1].get('price', 0)
+        
+        return selected
+    
+    def get_weighted_selection(self):
+        """Get book selection with weights and priorities applied."""
+        if not self.books:
+            return []
+        
+        # Create weighted books
+        weighted_books = []
+        for book in self.books:
+            weight = self.weights.get(book.get('title', ''), 1)
+            priority = self.priorities.get(book.get('title', ''), 1)
+            weighted_score = book.get('pages', 0) * weight * priority
+            weighted_books.append((book, weighted_score))
+        
+        # Sort by weighted score
+        weighted_books.sort(key=lambda x: x[1], reverse=True)
+        
+        # Select books within budget
+        selected = []
+        total_cost = 0
+        
+        for book, score in weighted_books:
+            if total_cost + book.get('price', 0) <= self.budget:
+                selected.append(book)
+                total_cost += book.get('price', 0)
+        
+        return selected
+    
+    def get_selection_with_priority(self, priority_func):
+        """Get book selection considering priority."""
+        if not self.books:
+            return []
+        
+        # Create priority-based books
+        priority_books = []
+        for book in self.books:
+            priority = priority_func(book, self.weights, self.priorities)
+            priority_books.append((book, priority))
+        
+        # Sort by priority
+        priority_books.sort(key=lambda x: x[1], reverse=True)
+        
+        # Select books within budget
+        selected = []
+        total_cost = 0
+        
+        for book, priority in priority_books:
+            if total_cost + book.get('price', 0) <= self.budget:
+                selected.append(book)
+                total_cost += book.get('price', 0)
+        
+        return selected
+    
+    def get_selection_with_optimization(self, optimization_func):
+        """Get book selection using custom optimization function."""
+        if not self.books:
+            return []
+        
+        # Create optimization-based books
+        optimized_books = []
+        for book in self.books:
+            score = optimization_func(book, self.weights, self.priorities)
+            optimized_books.append((book, score))
+        
+        # Sort by optimization score
+        optimized_books.sort(key=lambda x: x[1], reverse=True)
+        
+        # Select books within budget
+        selected = []
+        total_cost = 0
+        
+        for book, score in optimized_books:
+            if total_cost + book.get('price', 0) <= self.budget:
+                selected.append(book)
+                total_cost += book.get('price', 0)
+        
+        return selected
+    
+    def get_selection_with_constraints(self, constraint_func):
+        """Get book selection that satisfies custom constraints."""
+        if not self.books:
+            return []
+        
+        if constraint_func(self.books, self.weights, self.priorities):
+            return self.get_weighted_selection()
+        else:
+            return []
+    
+    def get_selection_with_multiple_criteria(self, criteria_list):
+        """Get book selection that satisfies multiple criteria."""
+        if not self.books:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.books, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_selection()
+        else:
+            return []
+    
+    def get_selection_with_alternatives(self, alternatives):
+        """Get book selection considering alternative weights/priorities."""
+        result = []
+        
+        # Check original selection
+        original_selection = self.get_weighted_selection()
+        result.append((original_selection, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedBookShop(self.books, self.budget, alt_weights, alt_priorities)
+            temp_selection = temp_instance.get_weighted_selection()
+            result.append((temp_selection, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_selection_with_adaptive_criteria(self, adaptive_func):
+        """Get book selection using adaptive criteria."""
+        if not self.books:
+            return []
+        
+        if adaptive_func(self.books, self.weights, self.priorities, []):
+            return self.get_weighted_selection()
+        else:
+            return []
+    
+    def get_book_shop_optimization(self):
+        """Get optimal book shop configuration."""
+        strategies = [
+            ('weighted_selection', lambda: len(self.get_weighted_selection())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+books = [
+    {'title': 'Book1', 'price': 10, 'pages': 100},
+    {'title': 'Book2', 'price': 20, 'pages': 200},
+    {'title': 'Book3', 'price': 15, 'pages': 150}
+]
+budget = 30
+weights = {'Book1': 2, 'Book2': 3, 'Book3': 1}  # Weight based on book title
+priorities = {'Book1': 1, 'Book2': 2, 'Book3': 1}  # Priority based on book title
+advanced_book_shop = AdvancedBookShop(books, budget, weights, priorities)
+
+print(f"Weighted selection: {[book['title'] for book in advanced_book_shop.get_weighted_selection()]}")
+
+# Get selection with priority
+def priority_func(book, weights, priorities):
+    return weights.get(book.get('title', ''), 1) + priorities.get(book.get('title', ''), 1)
+
+print(f"Selection with priority: {[book['title'] for book in advanced_book_shop.get_selection_with_priority(priority_func)]}")
+
+# Get selection with optimization
+def optimization_func(book, weights, priorities):
+    return book.get('pages', 0) * weights.get(book.get('title', ''), 1) * priorities.get(book.get('title', ''), 1)
+
+print(f"Selection with optimization: {[book['title'] for book in advanced_book_shop.get_selection_with_optimization(optimization_func)]}")
+
+# Get selection with constraints
+def constraint_func(books, weights, priorities):
+    return len(books) > 0 and all(book.get('price', 0) > 0 for book in books)
+
+print(f"Selection with constraints: {[book['title'] for book in advanced_book_shop.get_selection_with_constraints(constraint_func)]}")
+
+# Get selection with multiple criteria
+def criterion1(books, weights, priorities):
+    return len(books) > 0
+
+def criterion2(books, weights, priorities):
+    return all(book.get('price', 0) > 0 for book in books)
+
+criteria_list = [criterion1, criterion2]
+print(f"Selection with multiple criteria: {[book['title'] for book in advanced_book_shop.get_selection_with_multiple_criteria(criteria_list)]}")
+
+# Get selection with alternatives
+alternatives = [({'Book1': 1, 'Book2': 1, 'Book3': 1}, {'Book1': 1, 'Book2': 1, 'Book3': 1}), ({'Book1': 3, 'Book2': 2, 'Book3': 1}, {'Book1': 2, 'Book2': 1, 'Book3': 1})]
+print(f"Selection with alternatives: {advanced_book_shop.get_selection_with_alternatives(alternatives)}")
+
+# Get selection with adaptive criteria
+def adaptive_func(books, weights, priorities, current_result):
+    return len(books) > 0 and len(current_result) < 5
+
+print(f"Selection with adaptive criteria: {[book['title'] for book in advanced_book_shop.get_selection_with_adaptive_criteria(adaptive_func)]}")
+
+# Get book shop optimization
+print(f"Book shop optimization: {advanced_book_shop.get_book_shop_optimization()}")
+```
+
+### **Variation 3: Book Shop with Constraints**
+**Problem**: Handle book shop selection with additional constraints (budget limits, category constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedBookShop:
+    def __init__(self, books=None, budget=None, constraints=None):
+        self.books = books or []
+        self.budget = budget or 0
+        self.constraints = constraints or {}
+        self.selected_books = []
+        self._update_book_shop_info()
+    
+    def _update_book_shop_info(self):
+        """Update book shop feasibility information."""
+        self.total_books = len(self.books)
+        self.total_cost = sum(book.get('price', 0) for book in self.books)
+        self.book_shop_feasibility = self._calculate_book_shop_feasibility()
+    
+    def _calculate_book_shop_feasibility(self):
+        """Calculate book shop selection feasibility."""
+        if self.total_books == 0 or self.budget <= 0:
+            return 0.0
+        
+        # Check if we can select any books within budget
+        min_price = min(book.get('price', 0) for book in self.books) if self.books else 0
+        return 1.0 if min_price <= self.budget else 0.0
+    
+    def _is_valid_selection(self, selection):
+        """Check if selection is valid considering constraints."""
+        # Budget constraints
+        if 'min_budget' in self.constraints:
+            total_cost = sum(book.get('price', 0) for book in selection)
+            if total_cost < self.constraints['min_budget']:
+                return False
+        
+        if 'max_budget' in self.constraints:
+            total_cost = sum(book.get('price', 0) for book in selection)
+            if total_cost > self.constraints['max_budget']:
+                return False
+        
+        # Category constraints
+        if 'forbidden_categories' in self.constraints:
+            if any(book.get('category', '') in self.constraints['forbidden_categories'] for book in selection):
+                return False
+        
+        if 'required_categories' in self.constraints:
+            selection_categories = {book.get('category', '') for book in selection}
+            if not all(cat in selection_categories for cat in self.constraints['required_categories']):
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(selection):
+                    return False
+        
+        return True
+    
+    def get_selection_with_budget_constraints(self, min_budget, max_budget):
+        """Get book selection considering budget constraints."""
+        if not self.books:
+            return []
+        
+        selected = self.select_books()
+        total_cost = sum(book.get('price', 0) for book in selected)
+        
+        if min_budget <= total_cost <= max_budget and self._is_valid_selection(selected):
+            return selected
+        else:
+            return []
+    
+    def get_selection_with_category_constraints(self, category_constraints):
+        """Get book selection considering category constraints."""
+        if not self.books:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in category_constraints:
+            if not constraint(self.books):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            selected = self.select_books()
+            if self._is_valid_selection(selected):
+                return selected
+        
+        return []
+    
+    def get_selection_with_pattern_constraints(self, pattern_constraints):
+        """Get book selection considering pattern constraints."""
+        if not self.books:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.books):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            selected = self.select_books()
+            if self._is_valid_selection(selected):
+                return selected
+        
+        return []
+    
+    def get_selection_with_mathematical_constraints(self, constraint_func):
+        """Get book selection that satisfies custom mathematical constraints."""
+        if not self.books:
+            return []
+        
+        if constraint_func(self.books):
+            selected = self.select_books()
+            if self._is_valid_selection(selected):
+                return selected
+        
+        return []
+    
+    def get_selection_with_optimization_constraints(self, optimization_func):
+        """Get book selection using custom optimization constraints."""
+        if not self.books:
+            return []
+        
+        # Calculate optimization score for selection
+        score = optimization_func(self.books)
+        
+        if score > 0:
+            selected = self.select_books()
+            if self._is_valid_selection(selected):
+                return selected
+        
+        return []
+    
+    def get_selection_with_multiple_constraints(self, constraints_list):
+        """Get book selection that satisfies multiple constraints."""
+        if not self.books:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.books):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            selected = self.select_books()
+            if self._is_valid_selection(selected):
+                return selected
+        
+        return []
+    
+    def get_selection_with_priority_constraints(self, priority_func):
+        """Get book selection with priority-based constraints."""
+        if not self.books:
+            return []
+        
+        # Calculate priority for selection
+        priority = priority_func(self.books)
+        
+        if priority > 0:
+            selected = self.select_books()
+            if self._is_valid_selection(selected):
+                return selected
+        
+        return []
+    
+    def get_selection_with_adaptive_constraints(self, adaptive_func):
+        """Get book selection with adaptive constraints."""
+        if not self.books:
+            return []
+        
+        if adaptive_func(self.books, []):
+            selected = self.select_books()
+            if self._is_valid_selection(selected):
+                return selected
+        
+        return []
+    
+    def select_books(self):
+        """Select optimal books within budget using dynamic programming."""
+        if not self.books or self.budget <= 0:
+            return []
+        
+        n = len(self.books)
+        dp = [[0 for _ in range(self.budget + 1)] for _ in range(n + 1)]
+        
+        # Fill DP table
+        for i in range(1, n + 1):
+            price = self.books[i-1].get('price', 0)
+            pages = self.books[i-1].get('pages', 0)
+            
+            for w in range(self.budget + 1):
+                if price <= w:
+                    dp[i][w] = max(dp[i-1][w], dp[i-1][w-price] + pages)
+                else:
+                    dp[i][w] = dp[i-1][w]
+        
+        # Reconstruct selected books
+        selected = []
+        w = self.budget
+        
+        for i in range(n, 0, -1):
+            if dp[i][w] != dp[i-1][w]:
+                selected.append(self.books[i-1])
+                w -= self.books[i-1].get('price', 0)
+        
+        return selected
+    
+    def get_optimal_book_shop_strategy(self):
+        """Get optimal book shop strategy considering all constraints."""
+        strategies = [
+            ('budget_constraints', self.get_selection_with_budget_constraints),
+            ('category_constraints', self.get_selection_with_category_constraints),
+            ('pattern_constraints', self.get_selection_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'budget_constraints':
+                    result = strategy_func(0, 1000)
+                elif strategy_name == 'category_constraints':
+                    category_constraints = [lambda books: len(books) > 0]
+                    result = strategy_func(category_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda books: all(book.get('price', 0) > 0 for book in books)]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'min_budget': 10,
+    'max_budget': 50,
+    'forbidden_categories': ['fiction'],
+    'required_categories': ['non-fiction'],
+    'pattern_constraints': [lambda selection: len(selection) > 0 and all(book.get('pages', 0) > 0 for book in selection)]
+}
+
+books = [
+    {'title': 'Book1', 'price': 10, 'pages': 100, 'category': 'non-fiction'},
+    {'title': 'Book2', 'price': 20, 'pages': 200, 'category': 'fiction'},
+    {'title': 'Book3', 'price': 15, 'pages': 150, 'category': 'non-fiction'}
+]
+budget = 30
+constrained_book_shop = ConstrainedBookShop(books, budget, constraints)
+
+print("Budget-constrained selection:", [book['title'] for book in constrained_book_shop.get_selection_with_budget_constraints(10, 50)])
+
+print("Category-constrained selection:", [book['title'] for book in constrained_book_shop.get_selection_with_category_constraints([lambda books: len(books) > 0])])
+
+print("Pattern-constrained selection:", [book['title'] for book in constrained_book_shop.get_selection_with_pattern_constraints([lambda books: all(book.get('price', 0) > 0 for book in books)])])
+
+# Mathematical constraints
+def custom_constraint(books):
+    return len(books) > 0 and all(book.get('price', 0) > 0 for book in books)
+
+print("Mathematical constraint selection:", [book['title'] for book in constrained_book_shop.get_selection_with_mathematical_constraints(custom_constraint)])
+
+# Range constraints
+def range_constraint(books):
+    return all(5 <= book.get('price', 0) <= 50 for book in books)
+
+range_constraints = [range_constraint]
+print("Range-constrained selection:", [book['title'] for book in constrained_book_shop.get_selection_with_budget_constraints(5, 50)])
+
+# Multiple constraints
+def constraint1(books):
+    return len(books) > 0
+
+def constraint2(books):
+    return all(book.get('price', 0) > 0 for book in books)
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints selection:", [book['title'] for book in constrained_book_shop.get_selection_with_multiple_constraints(constraints_list)])
+
+# Priority constraints
+def priority_func(books):
+    return len(books) + sum(1 for book in books if book.get('pages', 0) > 0)
+
+print("Priority-constrained selection:", [book['title'] for book in constrained_book_shop.get_selection_with_priority_constraints(priority_func)])
+
+# Adaptive constraints
+def adaptive_func(books, current_result):
+    return len(books) > 0 and len(current_result) < 5
+
+print("Adaptive constraint selection:", [book['title'] for book in constrained_book_shop.get_selection_with_adaptive_constraints(adaptive_func)])
+
+# Optimal strategy
+optimal = constrained_book_shop.get_optimal_book_shop_strategy()
+print(f"Optimal book shop strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

@@ -894,6 +894,840 @@ result = constrained_new_flight_routes(n, edges, constraints)
 print(f"Constrained new flight routes result: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: New Flight Routes with Dynamic Updates**
+**Problem**: Handle dynamic graph updates (add/remove/update flight routes) while maintaining new flight route calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic graph management with new flight route detection.
+
+```python
+from collections import defaultdict, deque
+import heapq
+
+class DynamicNewFlightRoutes:
+    def __init__(self, n=None, edges=None, new_routes=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.new_routes = new_routes or []
+        self.graph = defaultdict(list)
+        self._update_flight_route_info()
+    
+    def _update_flight_route_info(self):
+        """Update flight route information."""
+        self.flight_routes = self._calculate_new_flight_routes()
+    
+    def _calculate_new_flight_routes(self):
+        """Calculate new flight routes using BFS."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return []
+        
+        # Build existing graph
+        existing_graph = defaultdict(list)
+        for u, v in self.edges:
+            existing_graph[u].append(v)
+            existing_graph[v].append(u)
+        
+        # Find new routes (pairs of cities not directly connected)
+        new_routes = []
+        for u in range(self.n):
+            for v in range(u + 1, self.n):
+                # Check if there's no direct connection
+                if v not in existing_graph[u]:
+                    # Check if there's a path between u and v
+                    if not self._has_path(existing_graph, u, v):
+                        new_routes.append((u, v))
+        
+        return new_routes
+    
+    def _has_path(self, graph, start, end):
+        """Check if there's a path between start and end using BFS."""
+        if start == end:
+            return True
+        
+        visited = set()
+        queue = deque([start])
+        visited.add(start)
+        
+        while queue:
+            u = queue.popleft()
+            for v in graph[u]:
+                if v == end:
+                    return True
+                if v not in visited:
+                    visited.add(v)
+                    queue.append(v)
+        
+        return False
+    
+    def update_graph(self, new_n, new_edges, new_routes=None):
+        """Update the graph with new vertices, edges, and routes."""
+        self.n = new_n
+        self.edges = new_edges
+        if new_routes is not None:
+            self.new_routes = new_routes
+        self._build_graph()
+        self._update_flight_route_info()
+    
+    def add_route(self, u, v):
+        """Add a new flight route."""
+        if 0 <= u < self.n and 0 <= v < self.n and (u, v) not in self.edges and (v, u) not in self.edges:
+            self.edges.append((u, v))
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+            self._update_flight_route_info()
+    
+    def remove_route(self, u, v):
+        """Remove a flight route."""
+        if (u, v) in self.edges:
+            self.edges.remove((u, v))
+            self.graph[u].remove(v)
+            self.graph[v].remove(u)
+            self._update_flight_route_info()
+        elif (v, u) in self.edges:
+            self.edges.remove((v, u))
+            self.graph[u].remove(v)
+            self.graph[v].remove(u)
+            self._update_flight_route_info()
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+    
+    def get_new_flight_routes(self):
+        """Get all new flight routes."""
+        return self.flight_routes
+    
+    def get_new_flight_routes_with_priorities(self, priorities):
+        """Get new flight routes considering city priorities."""
+        if not self.flight_routes:
+            return []
+        
+        # Calculate weighted new flight routes based on priorities
+        weighted_routes = []
+        for u, v in self.flight_routes:
+            city_priority = priorities.get(u, 1) + priorities.get(v, 1)
+            weighted_routes.append((u, v, city_priority))
+        
+        return weighted_routes
+    
+    def get_new_flight_routes_with_constraints(self, constraint_func):
+        """Get new flight routes that satisfies custom constraints."""
+        if not self.flight_routes:
+            return []
+        
+        filtered_routes = []
+        for u, v in self.flight_routes:
+            if constraint_func(u, v, self.n, self.edges, self.flight_routes):
+                filtered_routes.append((u, v))
+        
+        return filtered_routes
+    
+    def get_new_flight_routes_in_range(self, min_distance, max_distance):
+        """Get new flight routes within specified distance range."""
+        if not self.flight_routes:
+            return []
+        
+        filtered_routes = []
+        for u, v in self.flight_routes:
+            # Calculate distance between cities (simplified as |u - v|)
+            distance = abs(u - v)
+            if min_distance <= distance <= max_distance:
+                filtered_routes.append((u, v))
+        
+        return filtered_routes
+    
+    def get_new_flight_routes_with_pattern(self, pattern_func):
+        """Get new flight routes matching specified pattern."""
+        if not self.flight_routes:
+            return []
+        
+        filtered_routes = []
+        for u, v in self.flight_routes:
+            if pattern_func(u, v, self.n, self.edges, self.flight_routes):
+                filtered_routes.append((u, v))
+        
+        return filtered_routes
+    
+    def get_flight_route_statistics(self):
+        """Get statistics about the flight routes."""
+        return {
+            'n': self.n,
+            'existing_routes': len(self.edges),
+            'new_routes': len(self.flight_routes),
+            'total_possible_routes': self.n * (self.n - 1) // 2,
+            'coverage_rate': len(self.edges) / max(1, self.n * (self.n - 1) // 2)
+        }
+    
+    def get_flight_route_patterns(self):
+        """Get patterns in flight routes."""
+        patterns = {
+            'has_routes': 0,
+            'has_valid_graph': 0,
+            'optimal_route_coverage': 0,
+            'has_large_graph': 0
+        }
+        
+        # Check if has routes
+        if len(self.edges) > 0:
+            patterns['has_routes'] = 1
+        
+        # Check if has valid graph
+        if self.n > 0:
+            patterns['has_valid_graph'] = 1
+        
+        # Check if optimal route coverage is possible
+        if len(self.edges) == self.n * (self.n - 1) // 2:
+            patterns['optimal_route_coverage'] = 1
+        
+        # Check if has large graph
+        if self.n > 100:
+            patterns['has_large_graph'] = 1
+        
+        return patterns
+    
+    def get_optimal_flight_route_strategy(self):
+        """Get optimal strategy for flight route management."""
+        if not self.flight_routes:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'coverage_rate': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = len(self.edges) / max(1, self.n * (self.n - 1) // 2)
+        
+        # Calculate coverage rate
+        coverage_rate = len(self.edges) / max(1, self.n * (self.n - 1) // 2)
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'bfs_flight_route'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_bfs'
+        else:
+            recommended_strategy = 'advanced_flight_route_detection'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'coverage_rate': coverage_rate
+        }
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 0)]
+new_routes = [(0, 2), (1, 3), (2, 4), (0, 3), (1, 4)]
+dynamic_routes = DynamicNewFlightRoutes(n, edges, new_routes)
+print(f"New flight routes: {dynamic_routes.flight_routes}")
+
+# Update graph
+dynamic_routes.update_graph(6, [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 0)], [(0, 2), (1, 3), (2, 4), (3, 5), (4, 0), (1, 4)])
+print(f"After updating graph: n={dynamic_routes.n}, new_routes={dynamic_routes.flight_routes}")
+
+# Add route
+dynamic_routes.add_route(0, 2)
+print(f"After adding route (0,2): {dynamic_routes.edges}")
+
+# Remove route
+dynamic_routes.remove_route(0, 2)
+print(f"After removing route (0,2): {dynamic_routes.edges}")
+
+# Get new flight routes
+routes = dynamic_routes.get_new_flight_routes()
+print(f"New flight routes: {routes}")
+
+# Get new flight routes with priorities
+priorities = {i: i for i in range(n)}
+priority_routes = dynamic_routes.get_new_flight_routes_with_priorities(priorities)
+print(f"New flight routes with priorities: {priority_routes}")
+
+# Get new flight routes with constraints
+def constraint_func(u, v, n, edges, flight_routes):
+    return u >= 0 and v >= 0 and u < n and v < n
+
+print(f"New flight routes with constraints: {dynamic_routes.get_new_flight_routes_with_constraints(constraint_func)}")
+
+# Get new flight routes in range
+print(f"New flight routes in range 1-3: {dynamic_routes.get_new_flight_routes_in_range(1, 3)}")
+
+# Get new flight routes with pattern
+def pattern_func(u, v, n, edges, flight_routes):
+    return u >= 0 and v >= 0 and u < n and v < n
+
+print(f"New flight routes with pattern: {dynamic_routes.get_new_flight_routes_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_routes.get_flight_route_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_routes.get_flight_route_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_routes.get_optimal_flight_route_strategy()}")
+```
+
+### **Variation 2: New Flight Routes with Different Operations**
+**Problem**: Handle different types of new flight route operations (weighted routes, priority-based selection, advanced route analysis).
+
+**Approach**: Use advanced data structures for efficient different types of new flight route operations.
+
+```python
+class AdvancedNewFlightRoutes:
+    def __init__(self, n=None, edges=None, new_routes=None, weights=None, priorities=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.new_routes = new_routes or []
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.graph = defaultdict(list)
+        self._update_flight_route_info()
+    
+    def _update_flight_route_info(self):
+        """Update flight route information."""
+        self.flight_routes = self._calculate_new_flight_routes()
+    
+    def _calculate_new_flight_routes(self):
+        """Calculate new flight routes using BFS."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return []
+        
+        # Build existing graph
+        existing_graph = defaultdict(list)
+        for u, v in self.edges:
+            existing_graph[u].append(v)
+            existing_graph[v].append(u)
+        
+        # Find new routes (pairs of cities not directly connected)
+        new_routes = []
+        for u in range(self.n):
+            for v in range(u + 1, self.n):
+                # Check if there's no direct connection
+                if v not in existing_graph[u]:
+                    # Check if there's a path between u and v
+                    if not self._has_path(existing_graph, u, v):
+                        new_routes.append((u, v))
+        
+        return new_routes
+    
+    def _has_path(self, graph, start, end):
+        """Check if there's a path between start and end using BFS."""
+        if start == end:
+            return True
+        
+        visited = set()
+        queue = deque([start])
+        visited.add(start)
+        
+        while queue:
+            u = queue.popleft()
+            for v in graph[u]:
+                if v == end:
+                    return True
+                if v not in visited:
+                    visited.add(v)
+                    queue.append(v)
+        
+        return False
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+    
+    def get_new_flight_routes(self):
+        """Get all new flight routes."""
+        return self.flight_routes
+    
+    def get_weighted_new_flight_routes(self):
+        """Get new flight routes with weights and priorities applied."""
+        if not self.flight_routes:
+            return []
+        
+        # Calculate weighted new flight routes based on edge weights and city priorities
+        weighted_routes = []
+        for u, v in self.flight_routes:
+            edge_weight = self.weights.get((u, v), 1)
+            city_priority = self.priorities.get(u, 1) + self.priorities.get(v, 1)
+            weighted_score = edge_weight * city_priority
+            weighted_routes.append((u, v, weighted_score))
+        
+        return weighted_routes
+    
+    def get_new_flight_routes_with_priority(self, priority_func):
+        """Get new flight routes considering priority."""
+        if not self.flight_routes:
+            return []
+        
+        # Calculate priority-based new flight routes
+        priority_routes = []
+        for u, v in self.flight_routes:
+            priority = priority_func(u, v, self.weights, self.priorities)
+            priority_routes.append((u, v, priority))
+        
+        return priority_routes
+    
+    def get_new_flight_routes_with_optimization(self, optimization_func):
+        """Get new flight routes using custom optimization function."""
+        if not self.flight_routes:
+            return []
+        
+        # Calculate optimization-based new flight routes
+        optimized_routes = []
+        for u, v in self.flight_routes:
+            score = optimization_func(u, v, self.weights, self.priorities)
+            optimized_routes.append((u, v, score))
+        
+        return optimized_routes
+    
+    def get_new_flight_routes_with_constraints(self, constraint_func):
+        """Get new flight routes that satisfies custom constraints."""
+        if not self.flight_routes:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.weights, self.priorities, self.flight_routes):
+            return self.get_weighted_new_flight_routes()
+        else:
+            return []
+    
+    def get_new_flight_routes_with_multiple_criteria(self, criteria_list):
+        """Get new flight routes that satisfies multiple criteria."""
+        if not self.flight_routes:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.n, self.edges, self.weights, self.priorities, self.flight_routes):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_new_flight_routes()
+        else:
+            return []
+    
+    def get_new_flight_routes_with_alternatives(self, alternatives):
+        """Get new flight routes considering alternative weights/priorities."""
+        result = []
+        
+        # Check original new flight routes
+        original_routes = self.get_weighted_new_flight_routes()
+        result.append((original_routes, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedNewFlightRoutes(self.n, self.edges, self.new_routes, alt_weights, alt_priorities)
+            temp_routes = temp_instance.get_weighted_new_flight_routes()
+            result.append((temp_routes, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_new_flight_routes_with_adaptive_criteria(self, adaptive_func):
+        """Get new flight routes using adaptive criteria."""
+        if not self.flight_routes:
+            return []
+        
+        if adaptive_func(self.n, self.edges, self.weights, self.priorities, self.flight_routes, []):
+            return self.get_weighted_new_flight_routes()
+        else:
+            return []
+    
+    def get_new_flight_routes_optimization(self):
+        """Get optimal new flight routes configuration."""
+        strategies = [
+            ('weighted_routes', lambda: len(self.get_weighted_new_flight_routes())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 0)]
+new_routes = [(0, 2), (1, 3), (2, 4), (0, 3), (1, 4)]
+weights = {(u, v): (u + v) * 2 for u, v in new_routes}  # Weight based on city sum
+priorities = {i: i for i in range(n)}  # Priority based on city number
+advanced_routes = AdvancedNewFlightRoutes(n, edges, new_routes, weights, priorities)
+
+print(f"Weighted new flight routes: {advanced_routes.get_weighted_new_flight_routes()}")
+
+# Get new flight routes with priority
+def priority_func(u, v, weights, priorities):
+    return priorities.get(u, 1) + priorities.get(v, 1) + weights.get((u, v), 1)
+
+print(f"New flight routes with priority: {advanced_routes.get_new_flight_routes_with_priority(priority_func)}")
+
+# Get new flight routes with optimization
+def optimization_func(u, v, weights, priorities):
+    return weights.get((u, v), 1) + priorities.get(u, 1) + priorities.get(v, 1)
+
+print(f"New flight routes with optimization: {advanced_routes.get_new_flight_routes_with_optimization(optimization_func)}")
+
+# Get new flight routes with constraints
+def constraint_func(n, edges, weights, priorities, flight_routes):
+    return len(flight_routes) > 0 and n > 0
+
+print(f"New flight routes with constraints: {advanced_routes.get_new_flight_routes_with_constraints(constraint_func)}")
+
+# Get new flight routes with multiple criteria
+def criterion1(n, edges, weights, priorities, flight_routes):
+    return len(edges) > 0
+
+def criterion2(n, edges, weights, priorities, flight_routes):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"New flight routes with multiple criteria: {advanced_routes.get_new_flight_routes_with_multiple_criteria(criteria_list)}")
+
+# Get new flight routes with alternatives
+alternatives = [({(u, v): 1 for u, v in new_routes}, {i: 1 for i in range(n)}), ({(u, v): (u + v)*3 for u, v in new_routes}, {i: 2 for i in range(n)})]
+print(f"New flight routes with alternatives: {advanced_routes.get_new_flight_routes_with_alternatives(alternatives)}")
+
+# Get new flight routes with adaptive criteria
+def adaptive_func(n, edges, weights, priorities, flight_routes, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print(f"New flight routes with adaptive criteria: {advanced_routes.get_new_flight_routes_with_adaptive_criteria(adaptive_func)}")
+
+# Get new flight routes optimization
+print(f"New flight routes optimization: {advanced_routes.get_new_flight_routes_optimization()}")
+```
+
+### **Variation 3: New Flight Routes with Constraints**
+**Problem**: Handle new flight route calculation with additional constraints (distance limits, route constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedNewFlightRoutes:
+    def __init__(self, n=None, edges=None, new_routes=None, constraints=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.new_routes = new_routes or []
+        self.constraints = constraints or {}
+        self.graph = defaultdict(list)
+        self._update_flight_route_info()
+    
+    def _update_flight_route_info(self):
+        """Update flight route information."""
+        self.flight_routes = self._calculate_new_flight_routes()
+    
+    def _calculate_new_flight_routes(self):
+        """Calculate new flight routes using BFS."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return []
+        
+        # Build existing graph
+        existing_graph = defaultdict(list)
+        for u, v in self.edges:
+            existing_graph[u].append(v)
+            existing_graph[v].append(u)
+        
+        # Find new routes (pairs of cities not directly connected)
+        new_routes = []
+        for u in range(self.n):
+            for v in range(u + 1, self.n):
+                # Check if there's no direct connection
+                if v not in existing_graph[u]:
+                    # Check if there's a path between u and v
+                    if not self._has_path(existing_graph, u, v):
+                        new_routes.append((u, v))
+        
+        return new_routes
+    
+    def _has_path(self, graph, start, end):
+        """Check if there's a path between start and end using BFS."""
+        if start == end:
+            return True
+        
+        visited = set()
+        queue = deque([start])
+        visited.add(start)
+        
+        while queue:
+            u = queue.popleft()
+            for v in graph[u]:
+                if v == end:
+                    return True
+                if v not in visited:
+                    visited.add(v)
+                    queue.append(v)
+        
+        return False
+    
+    def _is_valid_route(self, u, v):
+        """Check if route is valid considering constraints."""
+        # Route constraints
+        if 'allowed_routes' in self.constraints:
+            if (u, v) not in self.constraints['allowed_routes'] and (v, u) not in self.constraints['allowed_routes']:
+                return False
+        
+        if 'forbidden_routes' in self.constraints:
+            if (u, v) in self.constraints['forbidden_routes'] or (v, u) in self.constraints['forbidden_routes']:
+                return False
+        
+        # Distance constraints
+        if 'max_distance' in self.constraints:
+            distance = abs(u - v)
+            if distance > self.constraints['max_distance']:
+                return False
+        
+        if 'min_distance' in self.constraints:
+            distance = abs(u - v)
+            if distance < self.constraints['min_distance']:
+                return False
+        
+        # City constraints
+        if 'max_city' in self.constraints:
+            if u > self.constraints['max_city'] or v > self.constraints['max_city']:
+                return False
+        
+        if 'min_city' in self.constraints:
+            if u < self.constraints['min_city'] or v < self.constraints['min_city']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(u, v, self.n, self.edges, self.flight_routes):
+                    return False
+        
+        return True
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            if self._is_valid_route(u, v):
+                self.graph[u].append(v)
+                self.graph[v].append(u)
+    
+    def get_new_flight_routes(self):
+        """Get all new flight routes."""
+        return self.flight_routes
+    
+    def get_new_flight_routes_with_distance_constraints(self, min_distance, max_distance):
+        """Get new flight routes considering distance constraints."""
+        if not self.flight_routes:
+            return []
+        
+        filtered_routes = []
+        for u, v in self.flight_routes:
+            distance = abs(u - v)
+            if min_distance <= distance <= max_distance:
+                filtered_routes.append((u, v))
+        
+        return filtered_routes
+    
+    def get_new_flight_routes_with_route_constraints(self, route_constraints):
+        """Get new flight routes considering route constraints."""
+        if not self.flight_routes:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in route_constraints:
+            if not constraint(self.n, self.edges, self.flight_routes):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self.flight_routes
+        else:
+            return []
+    
+    def get_new_flight_routes_with_pattern_constraints(self, pattern_constraints):
+        """Get new flight routes considering pattern constraints."""
+        if not self.flight_routes:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.n, self.edges, self.flight_routes):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self.flight_routes
+        else:
+            return []
+    
+    def get_new_flight_routes_with_mathematical_constraints(self, constraint_func):
+        """Get new flight routes that satisfies custom mathematical constraints."""
+        if not self.flight_routes:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.flight_routes):
+            return self.flight_routes
+        else:
+            return []
+    
+    def get_new_flight_routes_with_optimization_constraints(self, optimization_func):
+        """Get new flight routes using custom optimization constraints."""
+        if not self.flight_routes:
+            return []
+        
+        # Calculate optimization score for new flight routes
+        score = optimization_func(self.n, self.edges, self.flight_routes)
+        
+        if score > 0:
+            return self.flight_routes
+        else:
+            return []
+    
+    def get_new_flight_routes_with_multiple_constraints(self, constraints_list):
+        """Get new flight routes that satisfies multiple constraints."""
+        if not self.flight_routes:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.n, self.edges, self.flight_routes):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self.flight_routes
+        else:
+            return []
+    
+    def get_new_flight_routes_with_priority_constraints(self, priority_func):
+        """Get new flight routes with priority-based constraints."""
+        if not self.flight_routes:
+            return []
+        
+        # Calculate priority for new flight routes
+        priority = priority_func(self.n, self.edges, self.flight_routes)
+        
+        if priority > 0:
+            return self.flight_routes
+        else:
+            return []
+    
+    def get_new_flight_routes_with_adaptive_constraints(self, adaptive_func):
+        """Get new flight routes with adaptive constraints."""
+        if not self.flight_routes:
+            return []
+        
+        if adaptive_func(self.n, self.edges, self.flight_routes, []):
+            return self.flight_routes
+        else:
+            return []
+    
+    def get_optimal_new_flight_routes_strategy(self):
+        """Get optimal new flight routes strategy considering all constraints."""
+        strategies = [
+            ('distance_constraints', self.get_new_flight_routes_with_distance_constraints),
+            ('route_constraints', self.get_new_flight_routes_with_route_constraints),
+            ('pattern_constraints', self.get_new_flight_routes_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'distance_constraints':
+                    result = strategy_func(0, 1000)
+                elif strategy_name == 'route_constraints':
+                    route_constraints = [lambda n, edges, flight_routes: len(edges) > 0]
+                    result = strategy_func(route_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda n, edges, flight_routes: len(edges) > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_routes': [(0, 2), (1, 3), (2, 4), (0, 3), (1, 4)],
+    'forbidden_routes': [(0, 4), (1, 2)],
+    'max_distance': 4,
+    'min_distance': 1,
+    'max_city': 10,
+    'min_city': 0,
+    'pattern_constraints': [lambda u, v, n, edges, flight_routes: u >= 0 and v >= 0 and u < n and v < n]
+}
+
+n = 5
+edges = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 0)]
+new_routes = [(0, 2), (1, 3), (2, 4), (0, 3), (1, 4)]
+constrained_routes = ConstrainedNewFlightRoutes(n, edges, new_routes, constraints)
+
+print("Distance-constrained new flight routes:", constrained_routes.get_new_flight_routes_with_distance_constraints(1, 3))
+
+print("Route-constrained new flight routes:", constrained_routes.get_new_flight_routes_with_route_constraints([lambda n, edges, flight_routes: len(edges) > 0]))
+
+print("Pattern-constrained new flight routes:", constrained_routes.get_new_flight_routes_with_pattern_constraints([lambda n, edges, flight_routes: len(edges) > 0]))
+
+# Mathematical constraints
+def custom_constraint(n, edges, flight_routes):
+    return len(flight_routes) > 0 and n > 0
+
+print("Mathematical constraint new flight routes:", constrained_routes.get_new_flight_routes_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(n, edges, flight_routes):
+    return 1 <= len(flight_routes) <= 20
+
+range_constraints = [range_constraint]
+print("Range-constrained new flight routes:", constrained_routes.get_new_flight_routes_with_distance_constraints(1, 20))
+
+# Multiple constraints
+def constraint1(n, edges, flight_routes):
+    return len(edges) > 0
+
+def constraint2(n, edges, flight_routes):
+    return len(flight_routes) > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints new flight routes:", constrained_routes.get_new_flight_routes_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(n, edges, flight_routes):
+    return n + len(edges) + len(flight_routes)
+
+print("Priority-constrained new flight routes:", constrained_routes.get_new_flight_routes_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(n, edges, flight_routes, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print("Adaptive constraint new flight routes:", constrained_routes.get_new_flight_routes_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_routes.get_optimal_new_flight_routes_strategy()
+print(f"Optimal new flight routes strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

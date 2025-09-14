@@ -758,6 +758,867 @@ result = range_constraint_array_description(n, m, array, ranges)
 print(f"Range constraint array description: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Array Description with Dynamic Updates**
+**Problem**: Handle dynamic array updates (add/remove/update elements) while maintaining optimal array description generation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic array management.
+
+```python
+from collections import defaultdict
+
+class DynamicArrayDescription:
+    def __init__(self, array=None, constraints=None):
+        self.array = array or []
+        self.constraints = constraints or {}
+        self.valid_descriptions = []
+        self._update_array_description_info()
+    
+    def _update_array_description_info(self):
+        """Update array description feasibility information."""
+        self.array_length = len(self.array)
+        self.array_description_feasibility = self._calculate_array_description_feasibility()
+    
+    def _calculate_array_description_feasibility(self):
+        """Calculate array description feasibility."""
+        if self.array_length == 0:
+            return 0.0
+        
+        # Check if we can generate valid descriptions
+        if not self.array or any(x < 0 for x in self.array):
+            return 0.0
+        
+        return 1.0
+    
+    def add_element(self, element, position=None):
+        """Add element to the array."""
+        if position is None:
+            self.array.append(element)
+        else:
+            self.array.insert(position, element)
+        
+        self._update_array_description_info()
+    
+    def remove_element(self, position):
+        """Remove element from the array."""
+        if 0 <= position < len(self.array):
+            self.array.pop(position)
+            self._update_array_description_info()
+    
+    def update_element(self, position, new_element):
+        """Update element in the array."""
+        if 0 <= position < len(self.array):
+            self.array[position] = new_element
+            self._update_array_description_info()
+    
+    def generate_descriptions(self):
+        """Generate all valid array descriptions."""
+        if not self.array:
+            return []
+        
+        n = len(self.array)
+        descriptions = []
+        
+        def backtrack(index, current_desc):
+            if index == n:
+                descriptions.append(current_desc[:])
+                return
+            
+            if self.array[index] == 0:
+                # Try all possible values
+                for value in range(1, n + 1):
+                    if self._is_valid_value(current_desc, index, value):
+                        current_desc.append(value)
+                        backtrack(index + 1, current_desc)
+                        current_desc.pop()
+            else:
+                # Use the given value
+                if self._is_valid_value(current_desc, index, self.array[index]):
+                    current_desc.append(self.array[index])
+                    backtrack(index + 1, current_desc)
+                    current_desc.pop()
+        
+        backtrack(0, [])
+        return descriptions
+    
+    def _is_valid_value(self, current_desc, index, value):
+        """Check if value is valid at given position."""
+        if index == 0:
+            return True
+        
+        # Check constraint: adjacent elements differ by at most 1
+        if abs(value - current_desc[-1]) > 1:
+            return False
+        
+        return True
+    
+    def get_descriptions_with_constraints(self, constraint_func):
+        """Get descriptions that satisfies custom constraints."""
+        if not self.array:
+            return []
+        
+        descriptions = self.generate_descriptions()
+        valid_descriptions = []
+        
+        for desc in descriptions:
+            if constraint_func(desc, self.array):
+                valid_descriptions.append(desc)
+        
+        return valid_descriptions
+    
+    def get_descriptions_in_range(self, min_length, max_length):
+        """Get descriptions within specified length range."""
+        if not self.array:
+            return []
+        
+        descriptions = self.generate_descriptions()
+        valid_descriptions = []
+        
+        for desc in descriptions:
+            if min_length <= len(desc) <= max_length:
+                valid_descriptions.append(desc)
+        
+        return valid_descriptions
+    
+    def get_descriptions_with_pattern(self, pattern_func):
+        """Get descriptions matching specified pattern."""
+        if not self.array:
+            return []
+        
+        descriptions = self.generate_descriptions()
+        valid_descriptions = []
+        
+        for desc in descriptions:
+            if pattern_func(desc, self.array):
+                valid_descriptions.append(desc)
+        
+        return valid_descriptions
+    
+    def get_array_statistics(self):
+        """Get statistics about the array."""
+        if not self.array:
+            return {
+                'array_length': 0,
+                'array_description_feasibility': 0,
+                'zero_count': 0
+            }
+        
+        descriptions = self.generate_descriptions()
+        return {
+            'array_length': self.array_length,
+            'array_description_feasibility': self.array_description_feasibility,
+            'zero_count': self.array.count(0),
+            'description_count': len(descriptions),
+            'max_value': max(self.array) if self.array else 0,
+            'min_value': min(self.array) if self.array else 0
+        }
+    
+    def get_array_description_patterns(self):
+        """Get patterns in array descriptions."""
+        patterns = {
+            'has_zeros': 0,
+            'all_positive': 0,
+            'valid_descriptions_exist': 0,
+            'optimal_description_possible': 0
+        }
+        
+        if not self.array:
+            return patterns
+        
+        # Check if has zeros
+        if 0 in self.array:
+            patterns['has_zeros'] = 1
+        
+        # Check if all positive
+        if all(x > 0 for x in self.array):
+            patterns['all_positive'] = 1
+        
+        # Check if valid descriptions exist
+        descriptions = self.generate_descriptions()
+        if descriptions:
+            patterns['valid_descriptions_exist'] = 1
+        
+        # Check if optimal description is possible
+        if self.array_description_feasibility == 1.0:
+            patterns['optimal_description_possible'] = 1
+        
+        return patterns
+    
+    def get_optimal_array_description_strategy(self):
+        """Get optimal strategy for array description generation."""
+        if not self.array:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'array_description_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.array_description_feasibility
+        
+        # Calculate array description feasibility
+        array_description_feasibility = self.array_description_feasibility
+        
+        # Determine recommended strategy
+        if self.array_length <= 10:
+            recommended_strategy = 'backtracking'
+        elif self.array_length <= 50:
+            recommended_strategy = 'dynamic_programming'
+        else:
+            recommended_strategy = 'optimized_dp'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'array_description_feasibility': array_description_feasibility
+        }
+
+# Example usage
+array = [0, 2, 0, 1]
+dynamic_array_description = DynamicArrayDescription(array)
+print(f"Array description feasibility: {dynamic_array_description.array_description_feasibility}")
+
+# Add element
+dynamic_array_description.add_element(3)
+print(f"After adding 3: {dynamic_array_description.array}")
+
+# Remove element
+dynamic_array_description.remove_element(0)
+print(f"After removing first element: {dynamic_array_description.array}")
+
+# Update element
+dynamic_array_description.update_element(0, 4)
+print(f"After updating first element to 4: {dynamic_array_description.array[0]}")
+
+# Generate descriptions
+descriptions = dynamic_array_description.generate_descriptions()
+print(f"Descriptions: {descriptions}")
+
+# Get descriptions with constraints
+def constraint_func(desc, array):
+    return len(desc) == len(array) and all(x > 0 for x in desc)
+
+print(f"Descriptions with constraints: {dynamic_array_description.get_descriptions_with_constraints(constraint_func)}")
+
+# Get descriptions in range
+print(f"Descriptions in range 3-5: {dynamic_array_description.get_descriptions_in_range(3, 5)}")
+
+# Get descriptions with pattern
+def pattern_func(desc, array):
+    return len(desc) > 0 and all(x > 0 for x in desc)
+
+print(f"Descriptions with pattern: {dynamic_array_description.get_descriptions_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_array_description.get_array_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_array_description.get_array_description_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_array_description.get_optimal_array_description_strategy()}")
+```
+
+### **Variation 2: Array Description with Different Operations**
+**Problem**: Handle different types of array description operations (weighted elements, priority-based generation, advanced array analysis).
+
+**Approach**: Use advanced data structures for efficient different types of array description operations.
+
+```python
+class AdvancedArrayDescription:
+    def __init__(self, array=None, weights=None, priorities=None):
+        self.array = array or []
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.valid_descriptions = []
+        self._update_array_description_info()
+    
+    def _update_array_description_info(self):
+        """Update array description feasibility information."""
+        self.array_length = len(self.array)
+        self.array_description_feasibility = self._calculate_array_description_feasibility()
+    
+    def _calculate_array_description_feasibility(self):
+        """Calculate array description feasibility."""
+        if self.array_length == 0:
+            return 0.0
+        
+        # Check if we can generate valid descriptions
+        if not self.array or any(x < 0 for x in self.array):
+            return 0.0
+        
+        return 1.0
+    
+    def generate_descriptions(self):
+        """Generate all valid array descriptions."""
+        if not self.array:
+            return []
+        
+        n = len(self.array)
+        descriptions = []
+        
+        def backtrack(index, current_desc):
+            if index == n:
+                descriptions.append(current_desc[:])
+                return
+            
+            if self.array[index] == 0:
+                # Try all possible values
+                for value in range(1, n + 1):
+                    if self._is_valid_value(current_desc, index, value):
+                        current_desc.append(value)
+                        backtrack(index + 1, current_desc)
+                        current_desc.pop()
+            else:
+                # Use the given value
+                if self._is_valid_value(current_desc, index, self.array[index]):
+                    current_desc.append(self.array[index])
+                    backtrack(index + 1, current_desc)
+                    current_desc.pop()
+        
+        backtrack(0, [])
+        return descriptions
+    
+    def _is_valid_value(self, current_desc, index, value):
+        """Check if value is valid at given position."""
+        if index == 0:
+            return True
+        
+        # Check constraint: adjacent elements differ by at most 1
+        if abs(value - current_desc[-1]) > 1:
+            return False
+        
+        return True
+    
+    def get_weighted_descriptions(self):
+        """Get descriptions with weights and priorities applied."""
+        if not self.array:
+            return []
+        
+        descriptions = self.generate_descriptions()
+        
+        # Create weighted descriptions
+        weighted_descriptions = []
+        for desc in descriptions:
+            total_weight = 0
+            total_priority = 0
+            
+            for i, value in enumerate(desc):
+                weight = self.weights.get(value, 1)
+                priority = self.priorities.get(value, 1)
+                total_weight += weight
+                total_priority += priority
+            
+            weighted_score = total_weight * total_priority
+            weighted_descriptions.append((desc, weighted_score))
+        
+        # Sort by weighted score
+        weighted_descriptions.sort(key=lambda x: x[1], reverse=True)
+        return weighted_descriptions
+    
+    def get_descriptions_with_priority(self, priority_func):
+        """Get descriptions considering priority."""
+        if not self.array:
+            return []
+        
+        descriptions = self.generate_descriptions()
+        
+        # Create priority-based descriptions
+        priority_descriptions = []
+        for desc in descriptions:
+            priority = priority_func(desc, self.weights, self.priorities)
+            priority_descriptions.append((desc, priority))
+        
+        # Sort by priority
+        priority_descriptions.sort(key=lambda x: x[1], reverse=True)
+        return priority_descriptions
+    
+    def get_descriptions_with_optimization(self, optimization_func):
+        """Get descriptions using custom optimization function."""
+        if not self.array:
+            return []
+        
+        descriptions = self.generate_descriptions()
+        
+        # Create optimization-based descriptions
+        optimized_descriptions = []
+        for desc in descriptions:
+            score = optimization_func(desc, self.weights, self.priorities)
+            optimized_descriptions.append((desc, score))
+        
+        # Sort by optimization score
+        optimized_descriptions.sort(key=lambda x: x[1], reverse=True)
+        return optimized_descriptions
+    
+    def get_descriptions_with_constraints(self, constraint_func):
+        """Get descriptions that satisfies custom constraints."""
+        if not self.array:
+            return []
+        
+        if constraint_func(self.array, self.weights, self.priorities):
+            return self.get_weighted_descriptions()
+        else:
+            return []
+    
+    def get_descriptions_with_multiple_criteria(self, criteria_list):
+        """Get descriptions that satisfies multiple criteria."""
+        if not self.array:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.array, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_descriptions()
+        else:
+            return []
+    
+    def get_descriptions_with_alternatives(self, alternatives):
+        """Get descriptions considering alternative weights/priorities."""
+        result = []
+        
+        # Check original descriptions
+        original_descriptions = self.get_weighted_descriptions()
+        result.append((original_descriptions, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedArrayDescription(self.array, alt_weights, alt_priorities)
+            temp_descriptions = temp_instance.get_weighted_descriptions()
+            result.append((temp_descriptions, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_descriptions_with_adaptive_criteria(self, adaptive_func):
+        """Get descriptions using adaptive criteria."""
+        if not self.array:
+            return []
+        
+        if adaptive_func(self.array, self.weights, self.priorities, []):
+            return self.get_weighted_descriptions()
+        else:
+            return []
+    
+    def get_array_description_optimization(self):
+        """Get optimal array description configuration."""
+        strategies = [
+            ('weighted_descriptions', lambda: len(self.get_weighted_descriptions())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+array = [0, 2, 0, 1]
+weights = {num: num * 2 for num in range(1, 10)}  # Weight based on number value
+priorities = {num: num // 2 for num in range(1, 10)}  # Priority based on number value
+advanced_array_description = AdvancedArrayDescription(array, weights, priorities)
+
+print(f"Weighted descriptions: {advanced_array_description.get_weighted_descriptions()}")
+
+# Get descriptions with priority
+def priority_func(desc, weights, priorities):
+    return sum(weights.get(x, 1) + priorities.get(x, 1) for x in desc)
+
+print(f"Descriptions with priority: {advanced_array_description.get_descriptions_with_priority(priority_func)}")
+
+# Get descriptions with optimization
+def optimization_func(desc, weights, priorities):
+    return sum(weights.get(x, 1) * priorities.get(x, 1) for x in desc)
+
+print(f"Descriptions with optimization: {advanced_array_description.get_descriptions_with_optimization(optimization_func)}")
+
+# Get descriptions with constraints
+def constraint_func(array, weights, priorities):
+    return len(array) > 0 and all(x >= 0 for x in array)
+
+print(f"Descriptions with constraints: {advanced_array_description.get_descriptions_with_constraints(constraint_func)}")
+
+# Get descriptions with multiple criteria
+def criterion1(array, weights, priorities):
+    return len(array) > 0
+
+def criterion2(array, weights, priorities):
+    return all(x >= 0 for x in array)
+
+criteria_list = [criterion1, criterion2]
+print(f"Descriptions with multiple criteria: {advanced_array_description.get_descriptions_with_multiple_criteria(criteria_list)}")
+
+# Get descriptions with alternatives
+alternatives = [({num: 1 for num in range(1, 10)}, {num: 1 for num in range(1, 10)}), ({num: num*3 for num in range(1, 10)}, {num: num+1 for num in range(1, 10)})]
+print(f"Descriptions with alternatives: {advanced_array_description.get_descriptions_with_alternatives(alternatives)}")
+
+# Get descriptions with adaptive criteria
+def adaptive_func(array, weights, priorities, current_result):
+    return len(array) > 0 and len(current_result) < 5
+
+print(f"Descriptions with adaptive criteria: {advanced_array_description.get_descriptions_with_adaptive_criteria(adaptive_func)}")
+
+# Get array description optimization
+print(f"Array description optimization: {advanced_array_description.get_array_description_optimization()}")
+```
+
+### **Variation 3: Array Description with Constraints**
+**Problem**: Handle array description generation with additional constraints (length limits, value constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedArrayDescription:
+    def __init__(self, array=None, constraints=None):
+        self.array = array or []
+        self.constraints = constraints or {}
+        self.valid_descriptions = []
+        self._update_array_description_info()
+    
+    def _update_array_description_info(self):
+        """Update array description feasibility information."""
+        self.array_length = len(self.array)
+        self.array_description_feasibility = self._calculate_array_description_feasibility()
+    
+    def _calculate_array_description_feasibility(self):
+        """Calculate array description feasibility."""
+        if self.array_length == 0:
+            return 0.0
+        
+        # Check if we can generate valid descriptions
+        if not self.array or any(x < 0 for x in self.array):
+            return 0.0
+        
+        return 1.0
+    
+    def _is_valid_description(self, description):
+        """Check if description is valid considering constraints."""
+        # Length constraints
+        if 'min_length' in self.constraints:
+            if len(description) < self.constraints['min_length']:
+                return False
+        
+        if 'max_length' in self.constraints:
+            if len(description) > self.constraints['max_length']:
+                return False
+        
+        # Value constraints
+        if 'forbidden_values' in self.constraints:
+            if any(val in self.constraints['forbidden_values'] for val in description):
+                return False
+        
+        if 'required_values' in self.constraints:
+            if not all(val in description for val in self.constraints['required_values']):
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(description):
+                    return False
+        
+        return True
+    
+    def get_descriptions_with_length_constraints(self, min_length, max_length):
+        """Get descriptions considering length constraints."""
+        if not self.array:
+            return []
+        
+        descriptions = self.generate_descriptions()
+        valid_descriptions = []
+        
+        for desc in descriptions:
+            if min_length <= len(desc) <= max_length and self._is_valid_description(desc):
+                valid_descriptions.append(desc)
+        
+        return valid_descriptions
+    
+    def get_descriptions_with_value_constraints(self, value_constraints):
+        """Get descriptions considering value constraints."""
+        if not self.array:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in value_constraints:
+            if not constraint(self.array):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            descriptions = self.generate_descriptions()
+            valid_descriptions = []
+            
+            for desc in descriptions:
+                if self._is_valid_description(desc):
+                    valid_descriptions.append(desc)
+            
+            return valid_descriptions
+        
+        return []
+    
+    def get_descriptions_with_pattern_constraints(self, pattern_constraints):
+        """Get descriptions considering pattern constraints."""
+        if not self.array:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.array):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            descriptions = self.generate_descriptions()
+            valid_descriptions = []
+            
+            for desc in descriptions:
+                if self._is_valid_description(desc):
+                    valid_descriptions.append(desc)
+            
+            return valid_descriptions
+        
+        return []
+    
+    def get_descriptions_with_mathematical_constraints(self, constraint_func):
+        """Get descriptions that satisfies custom mathematical constraints."""
+        if not self.array:
+            return []
+        
+        if constraint_func(self.array):
+            descriptions = self.generate_descriptions()
+            valid_descriptions = []
+            
+            for desc in descriptions:
+                if self._is_valid_description(desc):
+                    valid_descriptions.append(desc)
+            
+            return valid_descriptions
+        
+        return []
+    
+    def get_descriptions_with_optimization_constraints(self, optimization_func):
+        """Get descriptions using custom optimization constraints."""
+        if not self.array:
+            return []
+        
+        # Calculate optimization score for descriptions
+        score = optimization_func(self.array)
+        
+        if score > 0:
+            descriptions = self.generate_descriptions()
+            valid_descriptions = []
+            
+            for desc in descriptions:
+                if self._is_valid_description(desc):
+                    valid_descriptions.append(desc)
+            
+            return valid_descriptions
+        
+        return []
+    
+    def get_descriptions_with_multiple_constraints(self, constraints_list):
+        """Get descriptions that satisfies multiple constraints."""
+        if not self.array:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.array):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            descriptions = self.generate_descriptions()
+            valid_descriptions = []
+            
+            for desc in descriptions:
+                if self._is_valid_description(desc):
+                    valid_descriptions.append(desc)
+            
+            return valid_descriptions
+        
+        return []
+    
+    def get_descriptions_with_priority_constraints(self, priority_func):
+        """Get descriptions with priority-based constraints."""
+        if not self.array:
+            return []
+        
+        # Calculate priority for descriptions
+        priority = priority_func(self.array)
+        
+        if priority > 0:
+            descriptions = self.generate_descriptions()
+            valid_descriptions = []
+            
+            for desc in descriptions:
+                if self._is_valid_description(desc):
+                    valid_descriptions.append(desc)
+            
+            return valid_descriptions
+        
+        return []
+    
+    def get_descriptions_with_adaptive_constraints(self, adaptive_func):
+        """Get descriptions with adaptive constraints."""
+        if not self.array:
+            return []
+        
+        if adaptive_func(self.array, []):
+            descriptions = self.generate_descriptions()
+            valid_descriptions = []
+            
+            for desc in descriptions:
+                if self._is_valid_description(desc):
+                    valid_descriptions.append(desc)
+            
+            return valid_descriptions
+        
+        return []
+    
+    def generate_descriptions(self):
+        """Generate all valid array descriptions."""
+        if not self.array:
+            return []
+        
+        n = len(self.array)
+        descriptions = []
+        
+        def backtrack(index, current_desc):
+            if index == n:
+                descriptions.append(current_desc[:])
+                return
+            
+            if self.array[index] == 0:
+                # Try all possible values
+                for value in range(1, n + 1):
+                    if self._is_valid_value(current_desc, index, value):
+                        current_desc.append(value)
+                        backtrack(index + 1, current_desc)
+                        current_desc.pop()
+            else:
+                # Use the given value
+                if self._is_valid_value(current_desc, index, self.array[index]):
+                    current_desc.append(self.array[index])
+                    backtrack(index + 1, current_desc)
+                    current_desc.pop()
+        
+        backtrack(0, [])
+        return descriptions
+    
+    def _is_valid_value(self, current_desc, index, value):
+        """Check if value is valid at given position."""
+        if index == 0:
+            return True
+        
+        # Check constraint: adjacent elements differ by at most 1
+        if abs(value - current_desc[-1]) > 1:
+            return False
+        
+        return True
+    
+    def get_optimal_array_description_strategy(self):
+        """Get optimal array description strategy considering all constraints."""
+        strategies = [
+            ('length_constraints', self.get_descriptions_with_length_constraints),
+            ('value_constraints', self.get_descriptions_with_value_constraints),
+            ('pattern_constraints', self.get_descriptions_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'length_constraints':
+                    result = strategy_func(1, 1000)
+                elif strategy_name == 'value_constraints':
+                    value_constraints = [lambda arr: len(arr) > 0]
+                    result = strategy_func(value_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda arr: all(x >= 0 for x in arr)]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'min_length': 3,
+    'max_length': 10,
+    'forbidden_values': [0, -1],
+    'required_values': [1],
+    'pattern_constraints': [lambda desc: len(desc) > 0 and all(x > 0 for x in desc)]
+}
+
+array = [0, 2, 0, 1, 0]
+constrained_array_description = ConstrainedArrayDescription(array, constraints)
+
+print("Length-constrained descriptions:", constrained_array_description.get_descriptions_with_length_constraints(3, 10))
+
+print("Value-constrained descriptions:", constrained_array_description.get_descriptions_with_value_constraints([lambda arr: len(arr) > 0]))
+
+print("Pattern-constrained descriptions:", constrained_array_description.get_descriptions_with_pattern_constraints([lambda arr: all(x >= 0 for x in arr)]))
+
+# Mathematical constraints
+def custom_constraint(arr):
+    return len(arr) > 0 and all(x >= 0 for x in arr)
+
+print("Mathematical constraint descriptions:", constrained_array_description.get_descriptions_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(arr):
+    return all(0 <= x <= 10 for x in arr)
+
+range_constraints = [range_constraint]
+print("Range-constrained descriptions:", constrained_array_description.get_descriptions_with_length_constraints(1, 10))
+
+# Multiple constraints
+def constraint1(arr):
+    return len(arr) > 0
+
+def constraint2(arr):
+    return all(x >= 0 for x in arr)
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints descriptions:", constrained_array_description.get_descriptions_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(arr):
+    return len(arr) + sum(1 for x in arr if x > 0)
+
+print("Priority-constrained descriptions:", constrained_array_description.get_descriptions_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(arr, current_result):
+    return len(arr) > 0 and len(current_result) < 5
+
+print("Adaptive constraint descriptions:", constrained_array_description.get_descriptions_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_array_description.get_optimal_array_description_strategy()
+print(f"Optimal array description strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

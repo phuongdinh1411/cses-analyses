@@ -545,6 +545,294 @@ def acyclic_graph_constraints(n, edges, forbidden_edges):
     return min_edges
 ```
 
+## Problem Variations
+
+### **Variation 1: Acyclic Graph Edges with Dynamic Updates**
+**Problem**: Handle dynamic graph updates (add/remove/update edges) while maintaining acyclic graph property efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic graph management with cycle detection.
+
+```python
+from collections import defaultdict, deque
+
+class DynamicAcyclicGraphEdges:
+    def __init__(self, n=None, edges=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.graph = defaultdict(list)
+        self.in_degree = defaultdict(int)
+        self._update_acyclic_graph_info()
+    
+    def _update_acyclic_graph_info(self):
+        """Update acyclic graph feasibility information."""
+        self.acyclic_graph_feasibility = self._calculate_acyclic_graph_feasibility()
+    
+    def _calculate_acyclic_graph_feasibility(self):
+        """Calculate acyclic graph feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if graph can be acyclic
+        return 1.0 if self.n > 0 else 0.0
+    
+    def update_graph(self, new_n, new_edges):
+        """Update the graph with new vertices and edges."""
+        self.n = new_n
+        self.edges = new_edges
+        self._build_graph()
+        self._update_acyclic_graph_info()
+    
+    def add_edge(self, u, v):
+        """Add an edge to the graph."""
+        if 1 <= u <= self.n and 1 <= v <= self.n:
+            self.edges.append((u, v))
+            self.graph[u].append(v)
+            self.in_degree[v] += 1
+            self._update_acyclic_graph_info()
+    
+    def remove_edge(self, u, v):
+        """Remove an edge from the graph."""
+        if (u, v) in self.edges:
+            self.edges.remove((u, v))
+            self.graph[u].remove(v)
+            self.in_degree[v] -= 1
+            if self.in_degree[v] == 0:
+                del self.in_degree[v]
+            self._update_acyclic_graph_info()
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        self.in_degree = defaultdict(int)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+            self.in_degree[v] += 1
+    
+    def is_acyclic(self):
+        """Check if the graph is acyclic using topological sort."""
+        if not self.acyclic_graph_feasibility:
+            return False
+        
+        # Kahn's algorithm for topological sort
+        in_degree_copy = self.in_degree.copy()
+        queue = deque()
+        
+        # Find all vertices with no incoming edges
+        for i in range(1, self.n + 1):
+            if in_degree_copy[i] == 0:
+                queue.append(i)
+        
+        visited_count = 0
+        
+        while queue:
+            u = queue.popleft()
+            visited_count += 1
+            
+            for v in self.graph[u]:
+                in_degree_copy[v] -= 1
+                if in_degree_copy[v] == 0:
+                    queue.append(v)
+        
+        # If we visited all vertices, the graph is acyclic
+        return visited_count == self.n
+    
+    def find_cycle(self):
+        """Find a cycle in the graph if it exists."""
+        if not self.acyclic_graph_feasibility:
+            return []
+        
+        # DFS to detect cycle
+        WHITE, GRAY, BLACK = 0, 1, 2
+        color = {i: WHITE for i in range(1, self.n + 1)}
+        parent = {}
+        cycle = []
+        
+        def dfs_visit(u):
+            color[u] = GRAY
+            
+            for v in self.graph[u]:
+                if color[v] == WHITE:
+                    parent[v] = u
+                    if dfs_visit(v):
+                        return True
+                elif color[v] == GRAY:
+                    # Found a back edge, cycle detected
+                    cycle.append(v)
+                    curr = u
+                    while curr != v:
+                        cycle.append(curr)
+                        curr = parent[curr]
+                    cycle.append(v)
+                    return True
+            
+            color[u] = BLACK
+            return False
+        
+        for i in range(1, self.n + 1):
+            if color[i] == WHITE:
+                if dfs_visit(i):
+                    return cycle[::-1]  # Reverse to get correct order
+        
+        return []
+    
+    def get_acyclic_graph_with_constraints(self, constraint_func):
+        """Get acyclic graph that satisfies custom constraints."""
+        if not self.acyclic_graph_feasibility:
+            return []
+        
+        if self.is_acyclic() and constraint_func(self.n, self.edges):
+            return self.edges
+        else:
+            return []
+    
+    def get_acyclic_graph_in_range(self, min_edges, max_edges):
+        """Get acyclic graph within specified edge count range."""
+        if not self.acyclic_graph_feasibility:
+            return []
+        
+        if min_edges <= len(self.edges) <= max_edges and self.is_acyclic():
+            return self.edges
+        else:
+            return []
+    
+    def get_acyclic_graph_with_pattern(self, pattern_func):
+        """Get acyclic graph matching specified pattern."""
+        if not self.acyclic_graph_feasibility:
+            return []
+        
+        if self.is_acyclic() and pattern_func(self.n, self.edges):
+            return self.edges
+        else:
+            return []
+    
+    def get_acyclic_graph_statistics(self):
+        """Get statistics about the acyclic graph."""
+        if not self.acyclic_graph_feasibility:
+            return {
+                'n': 0,
+                'acyclic_graph_feasibility': 0,
+                'is_acyclic': False,
+                'edge_count': 0
+            }
+        
+        return {
+            'n': self.n,
+            'acyclic_graph_feasibility': self.acyclic_graph_feasibility,
+            'is_acyclic': self.is_acyclic(),
+            'edge_count': len(self.edges)
+        }
+    
+    def get_acyclic_graph_patterns(self):
+        """Get patterns in acyclic graph."""
+        patterns = {
+            'has_edges': 0,
+            'has_valid_graph': 0,
+            'optimal_acyclic_possible': 0,
+            'has_large_graph': 0
+        }
+        
+        if not self.acyclic_graph_feasibility:
+            return patterns
+        
+        # Check if has edges
+        if len(self.edges) > 0:
+            patterns['has_edges'] = 1
+        
+        # Check if has valid graph
+        if self.n > 0:
+            patterns['has_valid_graph'] = 1
+        
+        # Check if optimal acyclic is possible
+        if self.acyclic_graph_feasibility == 1.0:
+            patterns['optimal_acyclic_possible'] = 1
+        
+        # Check if has large graph
+        if self.n > 100:
+            patterns['has_large_graph'] = 1
+        
+        return patterns
+    
+    def get_optimal_acyclic_graph_strategy(self):
+        """Get optimal strategy for acyclic graph management."""
+        if not self.acyclic_graph_feasibility:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'acyclic_graph_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.acyclic_graph_feasibility
+        
+        # Calculate acyclic graph feasibility
+        acyclic_graph_feasibility = self.acyclic_graph_feasibility
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'topological_sort'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_dfs'
+        else:
+            recommended_strategy = 'advanced_cycle_detection'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'acyclic_graph_feasibility': acyclic_graph_feasibility
+        }
+
+# Example usage
+n = 5
+edges = [(1, 2), (2, 3), (3, 4), (4, 5)]
+dynamic_acyclic_graph = DynamicAcyclicGraphEdges(n, edges)
+print(f"Acyclic graph feasibility: {dynamic_acyclic_graph.acyclic_graph_feasibility}")
+
+# Update graph
+dynamic_acyclic_graph.update_graph(6, [(1, 2), (2, 3), (3, 4), (4, 5), (5, 6)])
+print(f"After updating graph: n={dynamic_acyclic_graph.n}, edges={dynamic_acyclic_graph.edges}")
+
+# Add edge
+dynamic_acyclic_graph.add_edge(6, 1)
+print(f"After adding edge (6,1): {dynamic_acyclic_graph.edges}")
+
+# Remove edge
+dynamic_acyclic_graph.remove_edge(6, 1)
+print(f"After removing edge (6,1): {dynamic_acyclic_graph.edges}")
+
+# Check if acyclic
+is_acyclic = dynamic_acyclic_graph.is_acyclic()
+print(f"Is acyclic: {is_acyclic}")
+
+# Find cycle
+cycle = dynamic_acyclic_graph.find_cycle()
+print(f"Cycle found: {cycle}")
+
+# Get acyclic graph with constraints
+def constraint_func(n, edges):
+    return len(edges) > 0 and n > 0
+
+print(f"Acyclic graph with constraints: {dynamic_acyclic_graph.get_acyclic_graph_with_constraints(constraint_func)}")
+
+# Get acyclic graph in range
+print(f"Acyclic graph in range 1-10: {dynamic_acyclic_graph.get_acyclic_graph_in_range(1, 10)}")
+
+# Get acyclic graph with pattern
+def pattern_func(n, edges):
+    return len(edges) > 0 and n > 0
+
+print(f"Acyclic graph with pattern: {dynamic_acyclic_graph.get_acyclic_graph_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_acyclic_graph.get_acyclic_graph_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_acyclic_graph.get_acyclic_graph_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_acyclic_graph.get_optimal_acyclic_graph_strategy()}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

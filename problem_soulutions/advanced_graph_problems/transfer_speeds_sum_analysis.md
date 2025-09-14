@@ -930,6 +930,811 @@ result = constrained_flow_network(n, edges, node_capacities, source, sink)
 print(f"Constrained flow network result: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Transfer Speeds Sum with Dynamic Updates**
+**Problem**: Handle dynamic graph updates (add/remove/update edges) while maintaining transfer speeds sum calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic graph management with transfer speed optimization.
+
+```python
+from collections import defaultdict, deque
+import heapq
+
+class DynamicTransferSpeedsSum:
+    def __init__(self, n=None, edges=None, speeds=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.speeds = speeds or {}
+        self.graph = defaultdict(list)
+        self._update_transfer_info()
+    
+    def _update_transfer_info(self):
+        """Update transfer speeds information."""
+        self.transfer_speeds_sum = self._calculate_transfer_speeds_sum()
+    
+    def _calculate_transfer_speeds_sum(self):
+        """Calculate transfer speeds sum using dynamic programming."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return 0
+        
+        # Build adjacency list with speeds
+        adj = defaultdict(list)
+        for u, v in self.edges:
+            speed = self.speeds.get((u, v), 1)
+            adj[u].append((v, speed))
+            adj[v].append((u, speed))
+        
+        # Calculate maximum transfer speeds sum using DFS
+        max_sum = 0
+        visited = set()
+        
+        def dfs(node, current_sum):
+            nonlocal max_sum
+            visited.add(node)
+            max_sum = max(max_sum, current_sum)
+            
+            for neighbor, speed in adj[node]:
+                if neighbor not in visited:
+                    dfs(neighbor, current_sum + speed)
+            
+            visited.remove(node)
+        
+        # Try starting from each node
+        for start in range(self.n):
+            visited.clear()
+            dfs(start, 0)
+        
+        return max_sum
+    
+    def update_graph(self, new_n, new_edges, new_speeds=None):
+        """Update the graph with new vertices, edges, and speeds."""
+        self.n = new_n
+        self.edges = new_edges
+        if new_speeds is not None:
+            self.speeds = new_speeds
+        self._build_graph()
+        self._update_transfer_info()
+    
+    def add_edge(self, u, v, speed):
+        """Add an edge with speed to the graph."""
+        if 0 <= u < self.n and 0 <= v < self.n:
+            self.edges.append((u, v))
+            self.speeds[(u, v)] = speed
+            self.speeds[(v, u)] = speed
+            self.graph[u].append((v, speed))
+            self.graph[v].append((u, speed))
+            self._update_transfer_info()
+    
+    def remove_edge(self, u, v):
+        """Remove an edge from the graph."""
+        if (u, v) in self.edges:
+            self.edges.remove((u, v))
+            if (u, v) in self.speeds:
+                del self.speeds[(u, v)]
+            if (v, u) in self.speeds:
+                del self.speeds[(v, u)]
+            self.graph[u] = [(v, s) for v, s in self.graph[u] if v != v]
+            self.graph[v] = [(u, s) for u, s in self.graph[v] if u != u]
+            self._update_transfer_info()
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            speed = self.speeds.get((u, v), 1)
+            self.graph[u].append((v, speed))
+            self.graph[v].append((u, speed))
+    
+    def get_transfer_speeds_sum(self):
+        """Get the current transfer speeds sum."""
+        return self.transfer_speeds_sum
+    
+    def get_transfer_speeds_sum_with_priorities(self, priorities):
+        """Get transfer speeds sum considering vertex priorities."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        # Calculate weighted transfer speeds sum based on priorities
+        weighted_sum = 0
+        for (u, v), speed in self.speeds.items():
+            if u < v:  # Avoid double counting
+                edge_priority = priorities.get(u, 1) + priorities.get(v, 1)
+                weighted_sum += speed * edge_priority
+        
+        return weighted_sum
+    
+    def get_transfer_speeds_sum_with_constraints(self, constraint_func):
+        """Get transfer speeds sum that satisfies custom constraints."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        if constraint_func(self.n, self.edges, self.speeds, self.transfer_speeds_sum):
+            return self.transfer_speeds_sum
+        else:
+            return 0
+    
+    def get_transfer_speeds_sum_in_range(self, min_sum, max_sum):
+        """Get transfer speeds sum within specified range."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        if min_sum <= self.transfer_speeds_sum <= max_sum:
+            return self.transfer_speeds_sum
+        else:
+            return 0
+    
+    def get_transfer_speeds_sum_with_pattern(self, pattern_func):
+        """Get transfer speeds sum matching specified pattern."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        if pattern_func(self.n, self.edges, self.speeds, self.transfer_speeds_sum):
+            return self.transfer_speeds_sum
+        else:
+            return 0
+    
+    def get_transfer_statistics(self):
+        """Get statistics about the transfer speeds."""
+        return {
+            'n': self.n,
+            'edge_count': len(self.edges),
+            'transfer_speeds_sum': self.transfer_speeds_sum,
+            'average_speed': sum(self.speeds.values()) / max(1, len(self.speeds)),
+            'max_speed': max(self.speeds.values()) if self.speeds else 0,
+            'min_speed': min(self.speeds.values()) if self.speeds else 0
+        }
+    
+    def get_transfer_patterns(self):
+        """Get patterns in transfer speeds."""
+        patterns = {
+            'has_edges': 0,
+            'has_valid_graph': 0,
+            'optimal_transfer_possible': 0,
+            'has_large_graph': 0
+        }
+        
+        # Check if has edges
+        if len(self.edges) > 0:
+            patterns['has_edges'] = 1
+        
+        # Check if has valid graph
+        if self.n > 0:
+            patterns['has_valid_graph'] = 1
+        
+        # Check if optimal transfer is possible
+        if self.transfer_speeds_sum > 0:
+            patterns['optimal_transfer_possible'] = 1
+        
+        # Check if has large graph
+        if self.n > 100:
+            patterns['has_large_graph'] = 1
+        
+        return patterns
+    
+    def get_optimal_transfer_strategy(self):
+        """Get optimal strategy for transfer speeds management."""
+        if not self.transfer_speeds_sum:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'transfer_speeds_sum': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.transfer_speeds_sum / max(1, sum(self.speeds.values()))
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'dfs_transfer_search'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_dfs'
+        else:
+            recommended_strategy = 'advanced_transfer_optimization'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'transfer_speeds_sum': self.transfer_speeds_sum
+        }
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (2, 3), (3, 4)]
+speeds = {(0, 1): 10, (1, 2): 20, (2, 3): 15, (3, 4): 25}
+dynamic_transfer = DynamicTransferSpeedsSum(n, edges, speeds)
+print(f"Transfer speeds sum: {dynamic_transfer.transfer_speeds_sum}")
+
+# Update graph
+dynamic_transfer.update_graph(6, [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5)], {(0, 1): 10, (1, 2): 20, (2, 3): 15, (3, 4): 25, (4, 5): 30})
+print(f"After updating graph: n={dynamic_transfer.n}, transfer_speeds_sum={dynamic_transfer.transfer_speeds_sum}")
+
+# Add edge
+dynamic_transfer.add_edge(5, 0, 35)
+print(f"After adding edge (5,0) with speed 35: {dynamic_transfer.edges}")
+
+# Remove edge
+dynamic_transfer.remove_edge(5, 0)
+print(f"After removing edge (5,0): {dynamic_transfer.edges}")
+
+# Get transfer speeds sum
+transfer_sum = dynamic_transfer.get_transfer_speeds_sum()
+print(f"Transfer speeds sum: {transfer_sum}")
+
+# Get transfer speeds sum with priorities
+priorities = {i: i for i in range(n)}
+priority_sum = dynamic_transfer.get_transfer_speeds_sum_with_priorities(priorities)
+print(f"Transfer speeds sum with priorities: {priority_sum}")
+
+# Get transfer speeds sum with constraints
+def constraint_func(n, edges, speeds, transfer_speeds_sum):
+    return transfer_speeds_sum > 0 and n > 0
+
+print(f"Transfer speeds sum with constraints: {dynamic_transfer.get_transfer_speeds_sum_with_constraints(constraint_func)}")
+
+# Get transfer speeds sum in range
+print(f"Transfer speeds sum in range 50-200: {dynamic_transfer.get_transfer_speeds_sum_in_range(50, 200)}")
+
+# Get transfer speeds sum with pattern
+def pattern_func(n, edges, speeds, transfer_speeds_sum):
+    return transfer_speeds_sum > 0 and n > 0
+
+print(f"Transfer speeds sum with pattern: {dynamic_transfer.get_transfer_speeds_sum_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_transfer.get_transfer_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_transfer.get_transfer_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_transfer.get_optimal_transfer_strategy()}")
+```
+
+### **Variation 2: Transfer Speeds Sum with Different Operations**
+**Problem**: Handle different types of transfer speed operations (weighted speeds, priority-based selection, advanced speed analysis).
+
+**Approach**: Use advanced data structures for efficient different types of transfer speed operations.
+
+```python
+class AdvancedTransferSpeedsSum:
+    def __init__(self, n=None, edges=None, speeds=None, weights=None, priorities=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.speeds = speeds or {}
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.graph = defaultdict(list)
+        self._update_transfer_info()
+    
+    def _update_transfer_info(self):
+        """Update transfer speeds information."""
+        self.transfer_speeds_sum = self._calculate_transfer_speeds_sum()
+    
+    def _calculate_transfer_speeds_sum(self):
+        """Calculate transfer speeds sum using dynamic programming."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return 0
+        
+        # Build adjacency list with speeds
+        adj = defaultdict(list)
+        for u, v in self.edges:
+            speed = self.speeds.get((u, v), 1)
+            adj[u].append((v, speed))
+            adj[v].append((u, speed))
+        
+        # Calculate maximum transfer speeds sum using DFS
+        max_sum = 0
+        visited = set()
+        
+        def dfs(node, current_sum):
+            nonlocal max_sum
+            visited.add(node)
+            max_sum = max(max_sum, current_sum)
+            
+            for neighbor, speed in adj[node]:
+                if neighbor not in visited:
+                    dfs(neighbor, current_sum + speed)
+            
+            visited.remove(node)
+        
+        # Try starting from each node
+        for start in range(self.n):
+            visited.clear()
+            dfs(start, 0)
+        
+        return max_sum
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            speed = self.speeds.get((u, v), 1)
+            self.graph[u].append((v, speed))
+            self.graph[v].append((u, speed))
+    
+    def get_transfer_speeds_sum(self):
+        """Get the current transfer speeds sum."""
+        return self.transfer_speeds_sum
+    
+    def get_weighted_transfer_speeds_sum(self):
+        """Get transfer speeds sum with weights and priorities applied."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        # Calculate weighted transfer speeds sum based on edge weights and vertex priorities
+        weighted_sum = 0
+        for (u, v), speed in self.speeds.items():
+            if u < v:  # Avoid double counting
+                edge_weight = self.weights.get((u, v), 1)
+                vertex_priority = self.priorities.get(u, 1) + self.priorities.get(v, 1)
+                weighted_score = speed * edge_weight * vertex_priority
+                weighted_sum += weighted_score
+        
+        return weighted_sum
+    
+    def get_transfer_speeds_sum_with_priority(self, priority_func):
+        """Get transfer speeds sum considering priority."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        # Calculate priority-based transfer speeds sum
+        priority_sum = 0
+        for (u, v), speed in self.speeds.items():
+            if u < v:  # Avoid double counting
+                priority = priority_func(u, v, speed, self.weights, self.priorities)
+                priority_sum += speed * priority
+        
+        return priority_sum
+    
+    def get_transfer_speeds_sum_with_optimization(self, optimization_func):
+        """Get transfer speeds sum using custom optimization function."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        # Calculate optimization-based transfer speeds sum
+        optimized_sum = 0
+        for (u, v), speed in self.speeds.items():
+            if u < v:  # Avoid double counting
+                score = optimization_func(u, v, speed, self.weights, self.priorities)
+                optimized_sum += speed * score
+        
+        return optimized_sum
+    
+    def get_transfer_speeds_sum_with_constraints(self, constraint_func):
+        """Get transfer speeds sum that satisfies custom constraints."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        if constraint_func(self.n, self.edges, self.speeds, self.weights, self.priorities, self.transfer_speeds_sum):
+            return self.get_weighted_transfer_speeds_sum()
+        else:
+            return 0
+    
+    def get_transfer_speeds_sum_with_multiple_criteria(self, criteria_list):
+        """Get transfer speeds sum that satisfies multiple criteria."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.n, self.edges, self.speeds, self.weights, self.priorities, self.transfer_speeds_sum):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_transfer_speeds_sum()
+        else:
+            return 0
+    
+    def get_transfer_speeds_sum_with_alternatives(self, alternatives):
+        """Get transfer speeds sum considering alternative weights/priorities."""
+        result = []
+        
+        # Check original transfer speeds sum
+        original_sum = self.get_weighted_transfer_speeds_sum()
+        result.append((original_sum, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedTransferSpeedsSum(self.n, self.edges, self.speeds, alt_weights, alt_priorities)
+            temp_sum = temp_instance.get_weighted_transfer_speeds_sum()
+            result.append((temp_sum, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_transfer_speeds_sum_with_adaptive_criteria(self, adaptive_func):
+        """Get transfer speeds sum using adaptive criteria."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        if adaptive_func(self.n, self.edges, self.speeds, self.weights, self.priorities, self.transfer_speeds_sum, []):
+            return self.get_weighted_transfer_speeds_sum()
+        else:
+            return 0
+    
+    def get_transfer_speeds_sum_optimization(self):
+        """Get optimal transfer speeds sum configuration."""
+        strategies = [
+            ('weighted_sum', lambda: self.get_weighted_transfer_speeds_sum()),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (2, 3), (3, 4)]
+speeds = {(0, 1): 10, (1, 2): 20, (2, 3): 15, (3, 4): 25}
+weights = {(u, v): (u + v) * 2 for u, v in edges}  # Weight based on vertex sum
+priorities = {i: i for i in range(n)}  # Priority based on vertex number
+advanced_transfer = AdvancedTransferSpeedsSum(n, edges, speeds, weights, priorities)
+
+print(f"Weighted transfer speeds sum: {advanced_transfer.get_weighted_transfer_speeds_sum()}")
+
+# Get transfer speeds sum with priority
+def priority_func(u, v, speed, weights, priorities):
+    return priorities.get(u, 1) + priorities.get(v, 1) + weights.get((u, v), 1)
+
+print(f"Transfer speeds sum with priority: {advanced_transfer.get_transfer_speeds_sum_with_priority(priority_func)}")
+
+# Get transfer speeds sum with optimization
+def optimization_func(u, v, speed, weights, priorities):
+    return weights.get((u, v), 1) + priorities.get(u, 1) + priorities.get(v, 1)
+
+print(f"Transfer speeds sum with optimization: {advanced_transfer.get_transfer_speeds_sum_with_optimization(optimization_func)}")
+
+# Get transfer speeds sum with constraints
+def constraint_func(n, edges, speeds, weights, priorities, transfer_speeds_sum):
+    return transfer_speeds_sum > 0 and n > 0
+
+print(f"Transfer speeds sum with constraints: {advanced_transfer.get_transfer_speeds_sum_with_constraints(constraint_func)}")
+
+# Get transfer speeds sum with multiple criteria
+def criterion1(n, edges, speeds, weights, priorities, transfer_speeds_sum):
+    return len(edges) > 0
+
+def criterion2(n, edges, speeds, weights, priorities, transfer_speeds_sum):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Transfer speeds sum with multiple criteria: {advanced_transfer.get_transfer_speeds_sum_with_multiple_criteria(criteria_list)}")
+
+# Get transfer speeds sum with alternatives
+alternatives = [({(u, v): 1 for u, v in edges}, {i: 1 for i in range(n)}), ({(u, v): (u + v)*3 for u, v in edges}, {i: 2 for i in range(n)})]
+print(f"Transfer speeds sum with alternatives: {advanced_transfer.get_transfer_speeds_sum_with_alternatives(alternatives)}")
+
+# Get transfer speeds sum with adaptive criteria
+def adaptive_func(n, edges, speeds, weights, priorities, transfer_speeds_sum, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print(f"Transfer speeds sum with adaptive criteria: {advanced_transfer.get_transfer_speeds_sum_with_adaptive_criteria(adaptive_func)}")
+
+# Get transfer speeds sum optimization
+print(f"Transfer speeds sum optimization: {advanced_transfer.get_transfer_speeds_sum_optimization()}")
+```
+
+### **Variation 3: Transfer Speeds Sum with Constraints**
+**Problem**: Handle transfer speeds sum calculation with additional constraints (speed limits, transfer constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedTransferSpeedsSum:
+    def __init__(self, n=None, edges=None, speeds=None, constraints=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.speeds = speeds or {}
+        self.constraints = constraints or {}
+        self.graph = defaultdict(list)
+        self._update_transfer_info()
+    
+    def _update_transfer_info(self):
+        """Update transfer speeds information."""
+        self.transfer_speeds_sum = self._calculate_transfer_speeds_sum()
+    
+    def _calculate_transfer_speeds_sum(self):
+        """Calculate transfer speeds sum using dynamic programming."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return 0
+        
+        # Build adjacency list with speeds
+        adj = defaultdict(list)
+        for u, v in self.edges:
+            speed = self.speeds.get((u, v), 1)
+            adj[u].append((v, speed))
+            adj[v].append((u, speed))
+        
+        # Calculate maximum transfer speeds sum using DFS
+        max_sum = 0
+        visited = set()
+        
+        def dfs(node, current_sum):
+            nonlocal max_sum
+            visited.add(node)
+            max_sum = max(max_sum, current_sum)
+            
+            for neighbor, speed in adj[node]:
+                if neighbor not in visited:
+                    dfs(neighbor, current_sum + speed)
+            
+            visited.remove(node)
+        
+        # Try starting from each node
+        for start in range(self.n):
+            visited.clear()
+            dfs(start, 0)
+        
+        return max_sum
+    
+    def _is_valid_edge(self, u, v, speed):
+        """Check if edge is valid considering constraints."""
+        # Edge constraints
+        if 'allowed_edges' in self.constraints:
+            if (u, v) not in self.constraints['allowed_edges'] and (v, u) not in self.constraints['allowed_edges']:
+                return False
+        
+        if 'forbidden_edges' in self.constraints:
+            if (u, v) in self.constraints['forbidden_edges'] or (v, u) in self.constraints['forbidden_edges']:
+                return False
+        
+        # Speed constraints
+        if 'max_speed' in self.constraints:
+            if speed > self.constraints['max_speed']:
+                return False
+        
+        if 'min_speed' in self.constraints:
+            if speed < self.constraints['min_speed']:
+                return False
+        
+        # Vertex constraints
+        if 'max_vertex' in self.constraints:
+            if u > self.constraints['max_vertex'] or v > self.constraints['max_vertex']:
+                return False
+        
+        if 'min_vertex' in self.constraints:
+            if u < self.constraints['min_vertex'] or v < self.constraints['min_vertex']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(u, v, speed, self.n, self.edges, self.speeds, self.transfer_speeds_sum):
+                    return False
+        
+        return True
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            speed = self.speeds.get((u, v), 1)
+            if self._is_valid_edge(u, v, speed):
+                self.graph[u].append((v, speed))
+                self.graph[v].append((u, speed))
+    
+    def get_transfer_speeds_sum(self):
+        """Get the current transfer speeds sum."""
+        return self.transfer_speeds_sum
+    
+    def get_transfer_speeds_sum_with_speed_constraints(self, min_speed, max_speed):
+        """Get transfer speeds sum considering speed constraints."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        # Filter speeds within range
+        filtered_speeds = {edge: speed for edge, speed in self.speeds.items() 
+                          if min_speed <= speed <= max_speed}
+        
+        if not filtered_speeds:
+            return 0
+        
+        # Calculate sum with filtered speeds
+        return sum(filtered_speeds.values())
+    
+    def get_transfer_speeds_sum_with_transfer_constraints(self, transfer_constraints):
+        """Get transfer speeds sum considering transfer constraints."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        satisfies_constraints = True
+        for constraint in transfer_constraints:
+            if not constraint(self.n, self.edges, self.speeds, self.transfer_speeds_sum):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self.transfer_speeds_sum
+        else:
+            return 0
+    
+    def get_transfer_speeds_sum_with_pattern_constraints(self, pattern_constraints):
+        """Get transfer speeds sum considering pattern constraints."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.n, self.edges, self.speeds, self.transfer_speeds_sum):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self.transfer_speeds_sum
+        else:
+            return 0
+    
+    def get_transfer_speeds_sum_with_mathematical_constraints(self, constraint_func):
+        """Get transfer speeds sum that satisfies custom mathematical constraints."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        if constraint_func(self.n, self.edges, self.speeds, self.transfer_speeds_sum):
+            return self.transfer_speeds_sum
+        else:
+            return 0
+    
+    def get_transfer_speeds_sum_with_optimization_constraints(self, optimization_func):
+        """Get transfer speeds sum using custom optimization constraints."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        # Calculate optimization score for transfer speeds sum
+        score = optimization_func(self.n, self.edges, self.speeds, self.transfer_speeds_sum)
+        
+        if score > 0:
+            return self.transfer_speeds_sum
+        else:
+            return 0
+    
+    def get_transfer_speeds_sum_with_multiple_constraints(self, constraints_list):
+        """Get transfer speeds sum that satisfies multiple constraints."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.n, self.edges, self.speeds, self.transfer_speeds_sum):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self.transfer_speeds_sum
+        else:
+            return 0
+    
+    def get_transfer_speeds_sum_with_priority_constraints(self, priority_func):
+        """Get transfer speeds sum with priority-based constraints."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        # Calculate priority for transfer speeds sum
+        priority = priority_func(self.n, self.edges, self.speeds, self.transfer_speeds_sum)
+        
+        if priority > 0:
+            return self.transfer_speeds_sum
+        else:
+            return 0
+    
+    def get_transfer_speeds_sum_with_adaptive_constraints(self, adaptive_func):
+        """Get transfer speeds sum with adaptive constraints."""
+        if not self.transfer_speeds_sum:
+            return 0
+        
+        if adaptive_func(self.n, self.edges, self.speeds, self.transfer_speeds_sum, []):
+            return self.transfer_speeds_sum
+        else:
+            return 0
+    
+    def get_optimal_transfer_speeds_sum_strategy(self):
+        """Get optimal transfer speeds sum strategy considering all constraints."""
+        strategies = [
+            ('speed_constraints', self.get_transfer_speeds_sum_with_speed_constraints),
+            ('transfer_constraints', self.get_transfer_speeds_sum_with_transfer_constraints),
+            ('pattern_constraints', self.get_transfer_speeds_sum_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'speed_constraints':
+                    result = strategy_func(0, 1000)
+                elif strategy_name == 'transfer_constraints':
+                    transfer_constraints = [lambda n, edges, speeds, transfer_speeds_sum: len(edges) > 0]
+                    result = strategy_func(transfer_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda n, edges, speeds, transfer_speeds_sum: len(edges) > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and result > best_score:
+                    best_score = result
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_edges': [(0, 1), (1, 2), (2, 3), (3, 4)],
+    'forbidden_edges': [(0, 3), (1, 4)],
+    'max_speed': 100,
+    'min_speed': 5,
+    'max_vertex': 10,
+    'min_vertex': 0,
+    'pattern_constraints': [lambda u, v, speed, n, edges, speeds, transfer_speeds_sum: u >= 0 and v >= 0 and u < n and v < n]
+}
+
+n = 5
+edges = [(0, 1), (1, 2), (2, 3), (3, 4)]
+speeds = {(0, 1): 10, (1, 2): 20, (2, 3): 15, (3, 4): 25}
+constrained_transfer = ConstrainedTransferSpeedsSum(n, edges, speeds, constraints)
+
+print("Speed-constrained transfer speeds sum:", constrained_transfer.get_transfer_speeds_sum_with_speed_constraints(10, 30))
+
+print("Transfer-constrained transfer speeds sum:", constrained_transfer.get_transfer_speeds_sum_with_transfer_constraints([lambda n, edges, speeds, transfer_speeds_sum: len(edges) > 0]))
+
+print("Pattern-constrained transfer speeds sum:", constrained_transfer.get_transfer_speeds_sum_with_pattern_constraints([lambda n, edges, speeds, transfer_speeds_sum: len(edges) > 0]))
+
+# Mathematical constraints
+def custom_constraint(n, edges, speeds, transfer_speeds_sum):
+    return transfer_speeds_sum > 0 and n > 0
+
+print("Mathematical constraint transfer speeds sum:", constrained_transfer.get_transfer_speeds_sum_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(n, edges, speeds, transfer_speeds_sum):
+    return 1 <= transfer_speeds_sum <= 200
+
+range_constraints = [range_constraint]
+print("Range-constrained transfer speeds sum:", constrained_transfer.get_transfer_speeds_sum_with_speed_constraints(1, 200))
+
+# Multiple constraints
+def constraint1(n, edges, speeds, transfer_speeds_sum):
+    return len(edges) > 0
+
+def constraint2(n, edges, speeds, transfer_speeds_sum):
+    return transfer_speeds_sum > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints transfer speeds sum:", constrained_transfer.get_transfer_speeds_sum_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(n, edges, speeds, transfer_speeds_sum):
+    return n + len(edges) + transfer_speeds_sum
+
+print("Priority-constrained transfer speeds sum:", constrained_transfer.get_transfer_speeds_sum_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(n, edges, speeds, transfer_speeds_sum, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print("Adaptive constraint transfer speeds sum:", constrained_transfer.get_transfer_speeds_sum_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_transfer.get_optimal_transfer_speeds_sum_strategy()
+print(f"Optimal transfer speeds sum strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

@@ -513,6 +513,995 @@ result = multi_dimensional_apple_division(n, weights, dimensions)
 print(f"Multi-dimensional minimum difference: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Apple Division with Dynamic Updates**
+**Problem**: Handle dynamic apple weight updates (add/remove/update apples) while maintaining optimal division.
+
+**Approach**: Use efficient data structures and algorithms for dynamic apple division management.
+
+```python
+from collections import defaultdict
+import itertools
+
+class DynamicAppleDivision:
+    def __init__(self, weights):
+        self.weights = weights[:]
+        self.n = len(weights)
+        self.min_difference = float('inf')
+        self._update_optimal_division()
+    
+    def _update_optimal_division(self):
+        """Update the optimal division using bitmask approach."""
+        if self.n == 0:
+            self.min_difference = 0
+            return
+        
+        self.min_difference = float('inf')
+        
+        # Try all possible subsets using bitmask
+        for mask in range(1, 1 << (self.n - 1)):  # Exclude empty and full subsets
+            subset1_sum = 0
+            subset2_sum = 0
+            
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subset1_sum += self.weights[i]
+                else:
+                    subset2_sum += self.weights[i]
+            
+            difference = abs(subset1_sum - subset2_sum)
+            self.min_difference = min(self.min_difference, difference)
+            
+            if self.min_difference == 0:
+                break
+    
+    def add_apple(self, weight):
+        """Add a new apple with given weight."""
+        self.weights.append(weight)
+        self.n += 1
+        self._update_optimal_division()
+    
+    def remove_apple(self, index):
+        """Remove apple at specified index."""
+        if 0 <= index < self.n:
+            del self.weights[index]
+            self.n -= 1
+            self._update_optimal_division()
+    
+    def update_apple(self, index, new_weight):
+        """Update apple weight at specified index."""
+        if 0 <= index < self.n:
+            self.weights[index] = new_weight
+            self._update_optimal_division()
+    
+    def get_min_difference(self):
+        """Get current minimum difference."""
+        return self.min_difference
+    
+    def get_weights(self):
+        """Get current apple weights."""
+        return self.weights
+    
+    def get_divisions_with_constraints(self, constraint_func):
+        """Get divisions that satisfy custom constraints."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1 = []
+            subset2 = []
+            subset1_sum = 0
+            subset2_sum = 0
+            
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subset1.append(self.weights[i])
+                    subset1_sum += self.weights[i]
+                else:
+                    subset2.append(self.weights[i])
+                    subset2_sum += self.weights[i]
+            
+            if constraint_func(subset1, subset2, subset1_sum, subset2_sum):
+                result.append((subset1, subset2, abs(subset1_sum - subset2_sum)))
+        
+        return result
+    
+    def get_divisions_in_range(self, min_difference, max_difference):
+        """Get divisions with difference in specified range."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1_sum = 0
+            subset2_sum = 0
+            
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subset1_sum += self.weights[i]
+                else:
+                    subset2_sum += self.weights[i]
+            
+            difference = abs(subset1_sum - subset2_sum)
+            if min_difference <= difference <= max_difference:
+                result.append((mask, difference))
+        
+        return result
+    
+    def get_division_statistics(self):
+        """Get statistics about apple divisions."""
+        if self.n == 0:
+            return {
+                'total_apples': 0,
+                'total_divisions': 0,
+                'min_difference': 0,
+                'max_difference': 0,
+                'average_difference': 0
+            }
+        
+        total_apples = self.n
+        total_divisions = (1 << (self.n - 1)) - 1
+        min_diff = self.min_difference
+        
+        # Calculate max and average differences
+        max_diff = 0
+        total_diff = 0
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1_sum = 0
+            subset2_sum = 0
+            
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subset1_sum += self.weights[i]
+                else:
+                    subset2_sum += self.weights[i]
+            
+            difference = abs(subset1_sum - subset2_sum)
+            max_diff = max(max_diff, difference)
+            total_diff += difference
+        
+        average_diff = total_diff / total_divisions if total_divisions > 0 else 0
+        
+        return {
+            'total_apples': total_apples,
+            'total_divisions': total_divisions,
+            'min_difference': min_diff,
+            'max_difference': max_diff,
+            'average_difference': average_diff
+        }
+    
+    def get_division_patterns(self):
+        """Get patterns in apple divisions."""
+        patterns = {
+            'balanced_divisions': 0,
+            'unbalanced_divisions': 0,
+            'optimal_divisions': 0,
+            'extreme_divisions': 0
+        }
+        
+        if self.n == 0:
+            return patterns
+        
+        total_weight = sum(self.weights)
+        avg_weight = total_weight / 2
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1_sum = 0
+            subset2_sum = 0
+            
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subset1_sum += self.weights[i]
+                else:
+                    subset2_sum += self.weights[i]
+            
+            difference = abs(subset1_sum - subset2_sum)
+            
+            if difference == self.min_difference:
+                patterns['optimal_divisions'] += 1
+            
+            if difference <= total_weight * 0.1:  # Within 10% of total weight
+                patterns['balanced_divisions'] += 1
+            elif difference >= total_weight * 0.5:  # More than 50% of total weight
+                patterns['extreme_divisions'] += 1
+            else:
+                patterns['unbalanced_divisions'] += 1
+        
+        return patterns
+    
+    def get_optimal_division_strategy(self):
+        """Get optimal division strategy based on apple characteristics."""
+        if self.n == 0:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'balance_rate': 0
+            }
+        
+        # Calculate efficiency rate
+        total_weight = sum(self.weights)
+        max_possible_difference = total_weight
+        efficiency_rate = (max_possible_difference - self.min_difference) / max_possible_difference if max_possible_difference > 0 else 0
+        
+        # Calculate balance rate
+        optimal_balance = total_weight / 2
+        balance_rate = 1 - (self.min_difference / optimal_balance) if optimal_balance > 0 else 0
+        
+        # Determine recommended strategy
+        if efficiency_rate > 0.8:
+            recommended_strategy = 'bitmask_optimal'
+        elif balance_rate > 0.7:
+            recommended_strategy = 'balanced_approach'
+        else:
+            recommended_strategy = 'greedy_heuristic'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'balance_rate': balance_rate
+        }
+
+# Example usage
+weights = [3, 2, 7, 4]
+dynamic_division = DynamicAppleDivision(weights)
+print(f"Initial min difference: {dynamic_division.get_min_difference()}")
+
+# Add a new apple
+dynamic_division.add_apple(5)
+print(f"After adding apple: {dynamic_division.get_min_difference()}")
+
+# Update an apple
+dynamic_division.update_apple(0, 6)
+print(f"After updating apple: {dynamic_division.get_min_difference()}")
+
+# Remove an apple
+dynamic_division.remove_apple(2)
+print(f"After removing apple: {dynamic_division.get_min_difference()}")
+
+# Get divisions with constraints
+def constraint_func(subset1, subset2, sum1, sum2):
+    return len(subset1) == len(subset2)
+
+print(f"Balanced size divisions: {len(dynamic_division.get_divisions_with_constraints(constraint_func))}")
+
+# Get divisions in range
+print(f"Divisions in range [0, 5]: {len(dynamic_division.get_divisions_in_range(0, 5))}")
+
+# Get statistics
+print(f"Statistics: {dynamic_division.get_division_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_division.get_division_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_division.get_optimal_division_strategy()}")
+```
+
+### **Variation 2: Apple Division with Different Operations**
+**Problem**: Handle different types of operations on apple division (weighted apples, priority-based selection, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of apple division queries.
+
+```python
+class AdvancedAppleDivision:
+    def __init__(self, weights, priorities=None, categories=None):
+        self.weights = weights[:]
+        self.priorities = priorities or [1] * len(weights)
+        self.categories = categories or ['default'] * len(weights)
+        self.n = len(weights)
+        self.min_difference = float('inf')
+        self._update_optimal_division()
+    
+    def _update_optimal_division(self):
+        """Update the optimal division using advanced algorithms."""
+        if self.n == 0:
+            self.min_difference = 0
+            return
+        
+        self.min_difference = float('inf')
+        
+        # Try all possible subsets using bitmask with priorities
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1_sum = 0
+            subset2_sum = 0
+            subset1_priority = 0
+            subset2_priority = 0
+            
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subset1_sum += self.weights[i]
+                    subset1_priority += self.priorities[i]
+                else:
+                    subset2_sum += self.weights[i]
+                    subset2_priority += self.priorities[i]
+            
+            # Calculate weighted difference considering priorities
+            weight_difference = abs(subset1_sum - subset2_sum)
+            priority_difference = abs(subset1_priority - subset2_priority)
+            total_difference = weight_difference + priority_difference
+            
+            self.min_difference = min(self.min_difference, total_difference)
+            
+            if self.min_difference == 0:
+                break
+    
+    def get_divisions(self):
+        """Get current divisions."""
+        return self._get_all_divisions()
+    
+    def get_weighted_divisions(self):
+        """Get divisions with weights and priorities applied."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1 = []
+            subset2 = []
+            subset1_sum = 0
+            subset2_sum = 0
+            subset1_priority = 0
+            subset2_priority = 0
+            
+            for i in range(self.n):
+                apple_data = {
+                    'weight': self.weights[i],
+                    'priority': self.priorities[i],
+                    'category': self.categories[i],
+                    'index': i
+                }
+                
+                if mask & (1 << i):
+                    subset1.append(apple_data)
+                    subset1_sum += self.weights[i]
+                    subset1_priority += self.priorities[i]
+                else:
+                    subset2.append(apple_data)
+                    subset2_sum += self.weights[i]
+                    subset2_priority += self.priorities[i]
+            
+            weight_difference = abs(subset1_sum - subset2_sum)
+            priority_difference = abs(subset1_priority - subset2_priority)
+            total_difference = weight_difference + priority_difference
+            
+            result.append({
+                'subset1': subset1,
+                'subset2': subset2,
+                'weight_difference': weight_difference,
+                'priority_difference': priority_difference,
+                'total_difference': total_difference
+            })
+        
+        return result
+    
+    def get_divisions_with_priority(self, priority_func):
+        """Get divisions considering priority."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1 = []
+            subset2 = []
+            
+            for i in range(self.n):
+                apple_data = {
+                    'weight': self.weights[i],
+                    'priority': self.priorities[i],
+                    'category': self.categories[i],
+                    'index': i
+                }
+                
+                if mask & (1 << i):
+                    subset1.append(apple_data)
+                else:
+                    subset2.append(apple_data)
+            
+            priority = priority_func(subset1, subset2)
+            result.append((subset1, subset2, priority))
+        
+        # Sort by priority
+        result.sort(key=lambda x: x[2], reverse=True)
+        return result
+    
+    def get_divisions_with_optimization(self, optimization_func):
+        """Get divisions using custom optimization function."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1 = []
+            subset2 = []
+            
+            for i in range(self.n):
+                apple_data = {
+                    'weight': self.weights[i],
+                    'priority': self.priorities[i],
+                    'category': self.categories[i],
+                    'index': i
+                }
+                
+                if mask & (1 << i):
+                    subset1.append(apple_data)
+                else:
+                    subset2.append(apple_data)
+            
+            score = optimization_func(subset1, subset2)
+            result.append((subset1, subset2, score))
+        
+        # Sort by optimization score
+        result.sort(key=lambda x: x[2], reverse=True)
+        return result
+    
+    def get_divisions_with_constraints(self, constraint_func):
+        """Get divisions that satisfy custom constraints."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1 = []
+            subset2 = []
+            
+            for i in range(self.n):
+                apple_data = {
+                    'weight': self.weights[i],
+                    'priority': self.priorities[i],
+                    'category': self.categories[i],
+                    'index': i
+                }
+                
+                if mask & (1 << i):
+                    subset1.append(apple_data)
+                else:
+                    subset2.append(apple_data)
+            
+            if constraint_func(subset1, subset2):
+                result.append((subset1, subset2))
+        
+        return result
+    
+    def get_divisions_with_multiple_criteria(self, criteria_list):
+        """Get divisions that satisfy multiple criteria."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1 = []
+            subset2 = []
+            
+            for i in range(self.n):
+                apple_data = {
+                    'weight': self.weights[i],
+                    'priority': self.priorities[i],
+                    'category': self.categories[i],
+                    'index': i
+                }
+                
+                if mask & (1 << i):
+                    subset1.append(apple_data)
+                else:
+                    subset2.append(apple_data)
+            
+            satisfies_all_criteria = True
+            for criterion in criteria_list:
+                if not criterion(subset1, subset2):
+                    satisfies_all_criteria = False
+                    break
+            
+            if satisfies_all_criteria:
+                result.append((subset1, subset2))
+        
+        return result
+    
+    def get_divisions_with_alternatives(self, alternatives):
+        """Get divisions considering alternative apple arrangements."""
+        result = []
+        
+        # Check original divisions
+        original_divisions = self.get_divisions()
+        for division in original_divisions:
+            result.append((division, 'original'))
+        
+        # Check alternative arrangements
+        for alt_weights in alternatives:
+            # Create temporary division with alternative weights
+            temp_division = AdvancedAppleDivision(alt_weights, self.priorities, self.categories)
+            temp_divisions = temp_division.get_divisions()
+            result.append((temp_divisions, f'alternative_{alt_weights}'))
+        
+        return result
+    
+    def get_divisions_with_adaptive_criteria(self, adaptive_func):
+        """Get divisions using adaptive criteria."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1 = []
+            subset2 = []
+            
+            for i in range(self.n):
+                apple_data = {
+                    'weight': self.weights[i],
+                    'priority': self.priorities[i],
+                    'category': self.categories[i],
+                    'index': i
+                }
+                
+                if mask & (1 << i):
+                    subset1.append(apple_data)
+                else:
+                    subset2.append(apple_data)
+            
+            if adaptive_func(subset1, subset2, result):
+                result.append((subset1, subset2))
+        
+        return result
+    
+    def get_division_optimization(self):
+        """Get optimal division configuration."""
+        strategies = [
+            ('divisions', lambda: len(self.get_divisions())),
+            ('weighted_divisions', lambda: len(self.get_weighted_divisions())),
+            ('min_difference', lambda: self.min_difference),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            current_value = strategy_func()
+            if current_value > best_value:
+                best_value = current_value
+                best_strategy = (strategy_name, current_value)
+        
+        return best_strategy
+
+# Example usage
+weights = [3, 2, 7, 4]
+priorities = [2, 1, 3, 1]
+categories = ['red', 'green', 'red', 'yellow']
+advanced_division = AdvancedAppleDivision(weights, priorities, categories)
+
+print(f"Divisions: {len(advanced_division.get_divisions())}")
+print(f"Weighted divisions: {len(advanced_division.get_weighted_divisions())}")
+
+# Get divisions with priority
+def priority_func(subset1, subset2):
+    return sum(apple['priority'] for apple in subset1) + sum(apple['priority'] for apple in subset2)
+
+print(f"Divisions with priority: {len(advanced_division.get_divisions_with_priority(priority_func))}")
+
+# Get divisions with optimization
+def optimization_func(subset1, subset2):
+    return sum(apple['weight'] * apple['priority'] for apple in subset1) + sum(apple['weight'] * apple['priority'] for apple in subset2)
+
+print(f"Divisions with optimization: {len(advanced_division.get_divisions_with_optimization(optimization_func))}")
+
+# Get divisions with constraints
+def constraint_func(subset1, subset2):
+    return len(subset1) == len(subset2) and len(set(apple['category'] for apple in subset1)) > 1
+
+print(f"Divisions with constraints: {len(advanced_division.get_divisions_with_constraints(constraint_func))}")
+
+# Get divisions with multiple criteria
+def criterion1(subset1, subset2):
+    return len(subset1) == len(subset2)
+
+def criterion2(subset1, subset2):
+    return len(set(apple['category'] for apple in subset1)) > 1
+
+criteria_list = [criterion1, criterion2]
+print(f"Divisions with multiple criteria: {len(advanced_division.get_divisions_with_multiple_criteria(criteria_list))}")
+
+# Get divisions with alternatives
+alternatives = [[4, 3, 6, 5], [2, 1, 8, 3]]
+print(f"Divisions with alternatives: {len(advanced_division.get_divisions_with_alternatives(alternatives))}")
+
+# Get divisions with adaptive criteria
+def adaptive_func(subset1, subset2, current_result):
+    return len(subset1) == len(subset2) and len(current_result) < 5
+
+print(f"Divisions with adaptive criteria: {len(advanced_division.get_divisions_with_adaptive_criteria(adaptive_func))}")
+
+# Get division optimization
+print(f"Division optimization: {advanced_division.get_division_optimization()}")
+```
+
+### **Variation 3: Apple Division with Constraints**
+**Problem**: Handle apple division with additional constraints (capacity limits, category constraints, weight constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedAppleDivision:
+    def __init__(self, weights, constraints=None):
+        self.weights = weights[:]
+        self.n = len(weights)
+        self.constraints = constraints or {}
+        self.min_difference = float('inf')
+        self._update_optimal_division()
+    
+    def _update_optimal_division(self):
+        """Update the optimal division considering constraints."""
+        if self.n == 0:
+            self.min_difference = 0
+            return
+        
+        self.min_difference = float('inf')
+        
+        # Try all possible subsets using bitmask with constraints
+        for mask in range(1, 1 << (self.n - 1)):
+            if self._is_valid_division(mask):
+                subset1_sum = 0
+                subset2_sum = 0
+                
+                for i in range(self.n):
+                    if mask & (1 << i):
+                        subset1_sum += self.weights[i]
+                    else:
+                        subset2_sum += self.weights[i]
+                
+                difference = abs(subset1_sum - subset2_sum)
+                self.min_difference = min(self.min_difference, difference)
+                
+                if self.min_difference == 0:
+                    break
+    
+    def _is_valid_division(self, mask):
+        """Check if a division is valid considering constraints."""
+        subset1_count = 0
+        subset2_count = 0
+        subset1_weight = 0
+        subset2_weight = 0
+        
+        for i in range(self.n):
+            if mask & (1 << i):
+                subset1_count += 1
+                subset1_weight += self.weights[i]
+            else:
+                subset2_count += 1
+                subset2_weight += self.weights[i]
+        
+        # Size constraints
+        if 'max_subset_size' in self.constraints:
+            if subset1_count > self.constraints['max_subset_size'] or subset2_count > self.constraints['max_subset_size']:
+                return False
+        
+        if 'min_subset_size' in self.constraints:
+            if subset1_count < self.constraints['min_subset_size'] or subset2_count < self.constraints['min_subset_size']:
+                return False
+        
+        # Weight constraints
+        if 'max_subset_weight' in self.constraints:
+            if subset1_weight > self.constraints['max_subset_weight'] or subset2_weight > self.constraints['max_subset_weight']:
+                return False
+        
+        if 'min_subset_weight' in self.constraints:
+            if subset1_weight < self.constraints['min_subset_weight'] or subset2_weight < self.constraints['min_subset_weight']:
+                return False
+        
+        return True
+    
+    def get_divisions_with_capacity_constraints(self, capacity_limits):
+        """Get divisions considering capacity constraints."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1_count = 0
+            subset2_count = 0
+            
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subset1_count += 1
+                else:
+                    subset2_count += 1
+            
+            if subset1_count <= capacity_limits and subset2_count <= capacity_limits:
+                subset1_sum = 0
+                subset2_sum = 0
+                
+                for i in range(self.n):
+                    if mask & (1 << i):
+                        subset1_sum += self.weights[i]
+                    else:
+                        subset2_sum += self.weights[i]
+                
+                difference = abs(subset1_sum - subset2_sum)
+                result.append((mask, difference))
+        
+        return result
+    
+    def get_divisions_with_weight_constraints(self, weight_limits):
+        """Get divisions considering weight constraints."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1_sum = 0
+            subset2_sum = 0
+            
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subset1_sum += self.weights[i]
+                else:
+                    subset2_sum += self.weights[i]
+            
+            if (weight_limits[0] <= subset1_sum <= weight_limits[1] and 
+                weight_limits[0] <= subset2_sum <= weight_limits[1]):
+                difference = abs(subset1_sum - subset2_sum)
+                result.append((mask, difference))
+        
+        return result
+    
+    def get_divisions_with_category_constraints(self, category_constraints):
+        """Get divisions considering category constraints."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1_categories = set()
+            subset2_categories = set()
+            
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subset1_categories.add(self.constraints.get('categories', ['default'] * self.n)[i])
+                else:
+                    subset2_categories.add(self.constraints.get('categories', ['default'] * self.n)[i])
+            
+            # Check category constraints
+            satisfies_constraints = True
+            for constraint in category_constraints:
+                if not constraint(subset1_categories, subset2_categories):
+                    satisfies_constraints = False
+                    break
+            
+            if satisfies_constraints:
+                subset1_sum = 0
+                subset2_sum = 0
+                
+                for i in range(self.n):
+                    if mask & (1 << i):
+                        subset1_sum += self.weights[i]
+                    else:
+                        subset2_sum += self.weights[i]
+                
+                difference = abs(subset1_sum - subset2_sum)
+                result.append((mask, difference))
+        
+        return result
+    
+    def get_divisions_with_mathematical_constraints(self, constraint_func):
+        """Get divisions that satisfy custom mathematical constraints."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1 = []
+            subset2 = []
+            
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subset1.append(self.weights[i])
+                else:
+                    subset2.append(self.weights[i])
+            
+            if constraint_func(subset1, subset2):
+                subset1_sum = sum(subset1)
+                subset2_sum = sum(subset2)
+                difference = abs(subset1_sum - subset2_sum)
+                result.append((mask, difference))
+        
+        return result
+    
+    def get_divisions_with_range_constraints(self, range_constraints):
+        """Get divisions that satisfy range constraints."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            subset1 = []
+            subset2 = []
+            
+            for i in range(self.n):
+                if mask & (1 << i):
+                    subset1.append(self.weights[i])
+                else:
+                    subset2.append(self.weights[i])
+            
+            # Check if division satisfies all range constraints
+            satisfies_constraints = True
+            for constraint in range_constraints:
+                if not constraint(subset1, subset2):
+                    satisfies_constraints = False
+                    break
+            
+            if satisfies_constraints:
+                subset1_sum = sum(subset1)
+                subset2_sum = sum(subset2)
+                difference = abs(subset1_sum - subset2_sum)
+                result.append((mask, difference))
+        
+        return result
+    
+    def get_divisions_with_optimization_constraints(self, optimization_func):
+        """Get divisions using custom optimization constraints."""
+        # Sort divisions by optimization function
+        all_divisions = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            if self._is_valid_division(mask):
+                subset1 = []
+                subset2 = []
+                
+                for i in range(self.n):
+                    if mask & (1 << i):
+                        subset1.append(self.weights[i])
+                    else:
+                        subset2.append(self.weights[i])
+                
+                score = optimization_func(subset1, subset2)
+                all_divisions.append((mask, score))
+        
+        # Sort by optimization score
+        all_divisions.sort(key=lambda x: x[1], reverse=True)
+        
+        return all_divisions
+    
+    def get_divisions_with_multiple_constraints(self, constraints_list):
+        """Get divisions that satisfy multiple constraints."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            if self._is_valid_division(mask):
+                subset1 = []
+                subset2 = []
+                
+                for i in range(self.n):
+                    if mask & (1 << i):
+                        subset1.append(self.weights[i])
+                    else:
+                        subset2.append(self.weights[i])
+                
+                # Check if division satisfies all constraints
+                satisfies_all_constraints = True
+                for constraint in constraints_list:
+                    if not constraint(subset1, subset2):
+                        satisfies_all_constraints = False
+                        break
+                
+                if satisfies_all_constraints:
+                    subset1_sum = sum(subset1)
+                    subset2_sum = sum(subset2)
+                    difference = abs(subset1_sum - subset2_sum)
+                    result.append((mask, difference))
+        
+        return result
+    
+    def get_divisions_with_priority_constraints(self, priority_func):
+        """Get divisions with priority-based constraints."""
+        # Sort divisions by priority
+        all_divisions = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            if self._is_valid_division(mask):
+                subset1 = []
+                subset2 = []
+                
+                for i in range(self.n):
+                    if mask & (1 << i):
+                        subset1.append(self.weights[i])
+                    else:
+                        subset2.append(self.weights[i])
+                
+                priority = priority_func(subset1, subset2)
+                all_divisions.append((mask, priority))
+        
+        # Sort by priority
+        all_divisions.sort(key=lambda x: x[1], reverse=True)
+        
+        return all_divisions
+    
+    def get_divisions_with_adaptive_constraints(self, adaptive_func):
+        """Get divisions with adaptive constraints."""
+        result = []
+        
+        for mask in range(1, 1 << (self.n - 1)):
+            if self._is_valid_division(mask):
+                subset1 = []
+                subset2 = []
+                
+                for i in range(self.n):
+                    if mask & (1 << i):
+                        subset1.append(self.weights[i])
+                    else:
+                        subset2.append(self.weights[i])
+                
+                # Check adaptive constraints
+                if adaptive_func(subset1, subset2, result):
+                    subset1_sum = sum(subset1)
+                    subset2_sum = sum(subset2)
+                    difference = abs(subset1_sum - subset2_sum)
+                    result.append((mask, difference))
+        
+        return result
+    
+    def get_optimal_division_strategy(self):
+        """Get optimal division strategy considering all constraints."""
+        strategies = [
+            ('capacity_constraints', self.get_divisions_with_capacity_constraints),
+            ('weight_constraints', self.get_divisions_with_weight_constraints),
+            ('category_constraints', self.get_divisions_with_category_constraints),
+        ]
+        
+        best_strategy = None
+        best_count = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'capacity_constraints':
+                    current_count = len(strategy_func(3))  # Capacity limit of 3
+                elif strategy_name == 'weight_constraints':
+                    current_count = len(strategy_func((5, 20)))  # Weight between 5 and 20
+                elif strategy_name == 'category_constraints':
+                    category_constraints = [lambda s1, s2: len(s1) > 0 and len(s2) > 0]
+                    current_count = len(strategy_func(category_constraints))
+                
+                if current_count > best_count:
+                    best_count = current_count
+                    best_strategy = (strategy_name, current_count)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'max_subset_size': 3,
+    'min_subset_size': 1,
+    'max_subset_weight': 15,
+    'min_subset_weight': 5,
+    'categories': ['red', 'green', 'red', 'yellow']
+}
+
+weights = [3, 2, 7, 4]
+constrained_division = ConstrainedAppleDivision(weights, constraints)
+
+print("Capacity-constrained divisions:", len(constrained_division.get_divisions_with_capacity_constraints(3)))
+
+print("Weight-constrained divisions:", len(constrained_division.get_divisions_with_weight_constraints((5, 20))))
+
+# Category constraints
+category_constraints = [lambda s1, s2: len(s1) > 0 and len(s2) > 0]
+print("Category-constrained divisions:", len(constrained_division.get_divisions_with_category_constraints(category_constraints)))
+
+# Mathematical constraints
+def custom_constraint(subset1, subset2):
+    return len(subset1) == len(subset2) and sum(subset1) > sum(subset2)
+
+print("Mathematical constraint divisions:", len(constrained_division.get_divisions_with_mathematical_constraints(custom_constraint)))
+
+# Range constraints
+def range_constraint(subset1, subset2):
+    return 1 <= len(subset1) <= 3 and 1 <= len(subset2) <= 3
+
+range_constraints = [range_constraint]
+print("Range-constrained divisions:", len(constrained_division.get_divisions_with_range_constraints(range_constraints)))
+
+# Multiple constraints
+def constraint1(subset1, subset2):
+    return len(subset1) == len(subset2)
+
+def constraint2(subset1, subset2):
+    return sum(subset1) > sum(subset2)
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints divisions:", len(constrained_division.get_divisions_with_multiple_constraints(constraints_list)))
+
+# Priority constraints
+def priority_func(subset1, subset2):
+    return sum(subset1) + sum(subset2)
+
+print("Priority-constrained divisions:", len(constrained_division.get_divisions_with_priority_constraints(priority_func)))
+
+# Adaptive constraints
+def adaptive_func(subset1, subset2, current_result):
+    return len(subset1) == len(subset2) and len(current_result) < 5
+
+print("Adaptive constraint divisions:", len(constrained_division.get_divisions_with_adaptive_constraints(adaptive_func)))
+
+# Optimal strategy
+optimal = constrained_division.get_optimal_division_strategy()
+print(f"Optimal strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

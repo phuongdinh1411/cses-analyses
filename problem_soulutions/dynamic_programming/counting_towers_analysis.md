@@ -606,6 +606,827 @@ result = range_constraint_counting_towers(n, k, ranges)
 print(f"Range constraint counting towers: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Counting Towers with Dynamic Updates**
+**Problem**: Handle dynamic tower updates (add/remove/update tower levels) while maintaining optimal tower counting efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic tower management.
+
+```python
+from collections import defaultdict
+
+class DynamicCountingTowers:
+    def __init__(self, height=None, width=None):
+        self.height = height or 0
+        self.width = width or 0
+        self.towers = []
+        self._update_tower_counting_info()
+    
+    def _update_tower_counting_info(self):
+        """Update tower counting feasibility information."""
+        self.tower_counting_feasibility = self._calculate_tower_counting_feasibility()
+    
+    def _calculate_tower_counting_feasibility(self):
+        """Calculate tower counting feasibility."""
+        if self.height <= 0 or self.width <= 0:
+            return 0.0
+        
+        # Check if we can build towers with given dimensions
+        return 1.0 if self.height > 0 and self.width > 0 else 0.0
+    
+    def update_dimensions(self, new_height, new_width):
+        """Update tower dimensions."""
+        self.height = new_height
+        self.width = new_width
+        self._update_tower_counting_info()
+    
+    def count_towers(self):
+        """Count number of ways to build towers using dynamic programming."""
+        if self.height <= 0 or self.width <= 0:
+            return 0
+        
+        # DP table: dp[i][j] = number of ways to build tower of height i with width j
+        dp = [[0 for _ in range(self.width + 1)] for _ in range(self.height + 1)]
+        
+        # Base case: one way to build tower of height 0 (empty tower)
+        for j in range(self.width + 1):
+            dp[0][j] = 1
+        
+        # Fill DP table
+        for i in range(1, self.height + 1):
+            for j in range(1, self.width + 1):
+                # Tower can be built by:
+                # 1. Not placing any block at current level
+                dp[i][j] = dp[i-1][j]
+                
+                # 2. Placing blocks at current level
+                for k in range(1, j + 1):
+                    dp[i][j] += dp[i-1][j-k]
+        
+        return dp[self.height][self.width]
+    
+    def get_towers_with_constraints(self, constraint_func):
+        """Get towers that satisfies custom constraints."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        count = self.count_towers()
+        if constraint_func(count, self.height, self.width):
+            return self._generate_towers()
+        else:
+            return []
+    
+    def get_towers_in_range(self, min_count, max_count):
+        """Get towers within specified count range."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        count = self.count_towers()
+        if min_count <= count <= max_count:
+            return self._generate_towers()
+        else:
+            return []
+    
+    def get_towers_with_pattern(self, pattern_func):
+        """Get towers matching specified pattern."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        count = self.count_towers()
+        if pattern_func(count, self.height, self.width):
+            return self._generate_towers()
+        else:
+            return []
+    
+    def _generate_towers(self):
+        """Generate all possible tower configurations."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        towers = []
+        
+        def backtrack(level, current_tower):
+            if level == self.height:
+                towers.append(current_tower[:])
+                return
+            
+            # Try different block configurations at current level
+            for blocks in range(self.width + 1):
+                if blocks <= self.width:
+                    current_tower.append(blocks)
+                    backtrack(level + 1, current_tower)
+                    current_tower.pop()
+        
+        backtrack(0, [])
+        return towers
+    
+    def get_tower_counting_statistics(self):
+        """Get statistics about the tower counting."""
+        if not self.tower_counting_feasibility:
+            return {
+                'height': 0,
+                'width': 0,
+                'tower_counting_feasibility': 0,
+                'tower_count': 0
+            }
+        
+        count = self.count_towers()
+        return {
+            'height': self.height,
+            'width': self.width,
+            'tower_counting_feasibility': self.tower_counting_feasibility,
+            'tower_count': count
+        }
+    
+    def get_tower_counting_patterns(self):
+        """Get patterns in tower counting."""
+        patterns = {
+            'tower_buildable': 0,
+            'has_valid_dimensions': 0,
+            'optimal_towers_possible': 0,
+            'has_large_dimensions': 0
+        }
+        
+        if not self.tower_counting_feasibility:
+            return patterns
+        
+        # Check if tower is buildable
+        if self.tower_counting_feasibility == 1.0:
+            patterns['tower_buildable'] = 1
+        
+        # Check if has valid dimensions
+        if self.height > 0 and self.width > 0:
+            patterns['has_valid_dimensions'] = 1
+        
+        # Check if optimal towers are possible
+        if self.tower_counting_feasibility == 1.0:
+            patterns['optimal_towers_possible'] = 1
+        
+        # Check if has large dimensions
+        if self.height > 10 or self.width > 10:
+            patterns['has_large_dimensions'] = 1
+        
+        return patterns
+    
+    def get_optimal_tower_counting_strategy(self):
+        """Get optimal strategy for tower counting."""
+        if not self.tower_counting_feasibility:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'tower_counting_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.tower_counting_feasibility
+        
+        # Calculate tower counting feasibility
+        tower_counting_feasibility = self.tower_counting_feasibility
+        
+        # Determine recommended strategy
+        if self.height <= 10 and self.width <= 10:
+            recommended_strategy = 'dynamic_programming'
+        elif self.height <= 50 and self.width <= 50:
+            recommended_strategy = 'optimized_dp'
+        else:
+            recommended_strategy = 'advanced_optimization'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'tower_counting_feasibility': tower_counting_feasibility
+        }
+
+# Example usage
+height = 3
+width = 2
+dynamic_tower_counting = DynamicCountingTowers(height, width)
+print(f"Tower counting feasibility: {dynamic_tower_counting.tower_counting_feasibility}")
+
+# Update dimensions
+dynamic_tower_counting.update_dimensions(4, 3)
+print(f"After updating dimensions: {dynamic_tower_counting.height}x{dynamic_tower_counting.width}")
+
+# Count towers
+count = dynamic_tower_counting.count_towers()
+print(f"Number of towers: {count}")
+
+# Get towers with constraints
+def constraint_func(count, height, width):
+    return count > 0 and height > 0 and width > 0
+
+print(f"Towers with constraints: {len(dynamic_tower_counting.get_towers_with_constraints(constraint_func))}")
+
+# Get towers in range
+print(f"Towers in range 1-100: {len(dynamic_tower_counting.get_towers_in_range(1, 100))}")
+
+# Get towers with pattern
+def pattern_func(count, height, width):
+    return count > 0 and height > 0 and width > 0
+
+print(f"Towers with pattern: {len(dynamic_tower_counting.get_towers_with_pattern(pattern_func))}")
+
+# Get statistics
+print(f"Statistics: {dynamic_tower_counting.get_tower_counting_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_tower_counting.get_tower_counting_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_tower_counting.get_optimal_tower_counting_strategy()}")
+```
+
+### **Variation 2: Counting Towers with Different Operations**
+**Problem**: Handle different types of tower counting operations (weighted towers, priority-based counting, advanced tower analysis).
+
+**Approach**: Use advanced data structures for efficient different types of tower counting operations.
+
+```python
+class AdvancedCountingTowers:
+    def __init__(self, height=None, width=None, weights=None, priorities=None):
+        self.height = height or 0
+        self.width = width or 0
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.towers = []
+        self._update_tower_counting_info()
+    
+    def _update_tower_counting_info(self):
+        """Update tower counting feasibility information."""
+        self.tower_counting_feasibility = self._calculate_tower_counting_feasibility()
+    
+    def _calculate_tower_counting_feasibility(self):
+        """Calculate tower counting feasibility."""
+        if self.height <= 0 or self.width <= 0:
+            return 0.0
+        
+        # Check if we can build towers with given dimensions
+        return 1.0 if self.height > 0 and self.width > 0 else 0.0
+    
+    def count_towers(self):
+        """Count number of ways to build towers using dynamic programming."""
+        if self.height <= 0 or self.width <= 0:
+            return 0
+        
+        # DP table: dp[i][j] = number of ways to build tower of height i with width j
+        dp = [[0 for _ in range(self.width + 1)] for _ in range(self.height + 1)]
+        
+        # Base case: one way to build tower of height 0 (empty tower)
+        for j in range(self.width + 1):
+            dp[0][j] = 1
+        
+        # Fill DP table
+        for i in range(1, self.height + 1):
+            for j in range(1, self.width + 1):
+                # Tower can be built by:
+                # 1. Not placing any block at current level
+                dp[i][j] = dp[i-1][j]
+                
+                # 2. Placing blocks at current level
+                for k in range(1, j + 1):
+                    dp[i][j] += dp[i-1][j-k]
+        
+        return dp[self.height][self.width]
+    
+    def get_weighted_towers(self):
+        """Get towers with weights and priorities applied."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        # Create weighted tower configurations
+        weighted_towers = []
+        towers = self._generate_towers()
+        
+        for tower in towers:
+            weight = self.weights.get('height', 1) * self.weights.get('width', 1)
+            priority = self.priorities.get('height', 1) * self.priorities.get('width', 1)
+            weighted_score = len(tower) * weight * priority
+            weighted_towers.append((tower, weighted_score))
+        
+        # Sort by weighted score
+        weighted_towers.sort(key=lambda x: x[1], reverse=True)
+        
+        return [tower for tower, score in weighted_towers]
+    
+    def get_towers_with_priority(self, priority_func):
+        """Get towers considering priority."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        # Create priority-based towers
+        priority_towers = []
+        towers = self._generate_towers()
+        
+        for tower in towers:
+            priority = priority_func(tower, self.weights, self.priorities)
+            priority_towers.append((tower, priority))
+        
+        # Sort by priority
+        priority_towers.sort(key=lambda x: x[1], reverse=True)
+        
+        return [tower for tower, priority in priority_towers]
+    
+    def get_towers_with_optimization(self, optimization_func):
+        """Get towers using custom optimization function."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        # Create optimization-based towers
+        optimized_towers = []
+        towers = self._generate_towers()
+        
+        for tower in towers:
+            score = optimization_func(tower, self.weights, self.priorities)
+            optimized_towers.append((tower, score))
+        
+        # Sort by optimization score
+        optimized_towers.sort(key=lambda x: x[1], reverse=True)
+        
+        return [tower for tower, score in optimized_towers]
+    
+    def get_towers_with_constraints(self, constraint_func):
+        """Get towers that satisfies custom constraints."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        if constraint_func(self.height, self.width, self.weights, self.priorities):
+            return self.get_weighted_towers()
+        else:
+            return []
+    
+    def get_towers_with_multiple_criteria(self, criteria_list):
+        """Get towers that satisfies multiple criteria."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.height, self.width, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_towers()
+        else:
+            return []
+    
+    def get_towers_with_alternatives(self, alternatives):
+        """Get towers considering alternative weights/priorities."""
+        result = []
+        
+        # Check original towers
+        original_towers = self.get_weighted_towers()
+        result.append((original_towers, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedCountingTowers(self.height, self.width, alt_weights, alt_priorities)
+            temp_towers = temp_instance.get_weighted_towers()
+            result.append((temp_towers, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_towers_with_adaptive_criteria(self, adaptive_func):
+        """Get towers using adaptive criteria."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        if adaptive_func(self.height, self.width, self.weights, self.priorities, []):
+            return self.get_weighted_towers()
+        else:
+            return []
+    
+    def _generate_towers(self):
+        """Generate all possible tower configurations."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        towers = []
+        
+        def backtrack(level, current_tower):
+            if level == self.height:
+                towers.append(current_tower[:])
+                return
+            
+            # Try different block configurations at current level
+            for blocks in range(self.width + 1):
+                if blocks <= self.width:
+                    current_tower.append(blocks)
+                    backtrack(level + 1, current_tower)
+                    current_tower.pop()
+        
+        backtrack(0, [])
+        return towers
+    
+    def get_tower_counting_optimization(self):
+        """Get optimal tower counting configuration."""
+        strategies = [
+            ('weighted_towers', lambda: len(self.get_weighted_towers())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+height = 3
+width = 2
+weights = {'height': 2, 'width': 3}  # Weight based on dimensions
+priorities = {'height': 1, 'width': 2}  # Priority based on dimensions
+advanced_tower_counting = AdvancedCountingTowers(height, width, weights, priorities)
+
+print(f"Weighted towers: {len(advanced_tower_counting.get_weighted_towers())}")
+
+# Get towers with priority
+def priority_func(tower, weights, priorities):
+    return weights.get('height', 1) + priorities.get('width', 1)
+
+print(f"Towers with priority: {len(advanced_tower_counting.get_towers_with_priority(priority_func))}")
+
+# Get towers with optimization
+def optimization_func(tower, weights, priorities):
+    return weights.get('height', 1) * priorities.get('width', 1)
+
+print(f"Towers with optimization: {len(advanced_tower_counting.get_towers_with_optimization(optimization_func))}")
+
+# Get towers with constraints
+def constraint_func(height, width, weights, priorities):
+    return height > 0 and width > 0
+
+print(f"Towers with constraints: {len(advanced_tower_counting.get_towers_with_constraints(constraint_func))}")
+
+# Get towers with multiple criteria
+def criterion1(height, width, weights, priorities):
+    return height > 0
+
+def criterion2(height, width, weights, priorities):
+    return width > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Towers with multiple criteria: {len(advanced_tower_counting.get_towers_with_multiple_criteria(criteria_list))}")
+
+# Get towers with alternatives
+alternatives = [({'height': 1, 'width': 1}, {'height': 1, 'width': 1}), ({'height': 3, 'width': 2}, {'height': 2, 'width': 1})]
+print(f"Towers with alternatives: {advanced_tower_counting.get_towers_with_alternatives(alternatives)}")
+
+# Get towers with adaptive criteria
+def adaptive_func(height, width, weights, priorities, current_result):
+    return height > 0 and width > 0 and len(current_result) < 5
+
+print(f"Towers with adaptive criteria: {len(advanced_tower_counting.get_towers_with_adaptive_criteria(adaptive_func))}")
+
+# Get tower counting optimization
+print(f"Tower counting optimization: {advanced_tower_counting.get_tower_counting_optimization()}")
+```
+
+### **Variation 3: Counting Towers with Constraints**
+**Problem**: Handle tower counting with additional constraints (dimension limits, block constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedCountingTowers:
+    def __init__(self, height=None, width=None, constraints=None):
+        self.height = height or 0
+        self.width = width or 0
+        self.constraints = constraints or {}
+        self.towers = []
+        self._update_tower_counting_info()
+    
+    def _update_tower_counting_info(self):
+        """Update tower counting feasibility information."""
+        self.tower_counting_feasibility = self._calculate_tower_counting_feasibility()
+    
+    def _calculate_tower_counting_feasibility(self):
+        """Calculate tower counting feasibility."""
+        if self.height <= 0 or self.width <= 0:
+            return 0.0
+        
+        # Check if we can build towers with given dimensions
+        return 1.0 if self.height > 0 and self.width > 0 else 0.0
+    
+    def _is_valid_tower(self, tower):
+        """Check if tower is valid considering constraints."""
+        # Dimension constraints
+        if 'min_height' in self.constraints:
+            if len(tower) < self.constraints['min_height']:
+                return False
+        
+        if 'max_height' in self.constraints:
+            if len(tower) > self.constraints['max_height']:
+                return False
+        
+        if 'min_width' in self.constraints:
+            if any(level > self.constraints['min_width'] for level in tower):
+                return False
+        
+        if 'max_width' in self.constraints:
+            if any(level > self.constraints['max_width'] for level in tower):
+                return False
+        
+        # Block constraints
+        if 'forbidden_blocks' in self.constraints:
+            if any(level in self.constraints['forbidden_blocks'] for level in tower):
+                return False
+        
+        if 'required_blocks' in self.constraints:
+            if not all(level in tower for level in self.constraints['required_blocks']):
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(tower):
+                    return False
+        
+        return True
+    
+    def get_towers_with_dimension_constraints(self, min_height, max_height, min_width, max_width):
+        """Get towers considering dimension constraints."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        towers = self._generate_towers()
+        valid_towers = []
+        
+        for tower in towers:
+            if (min_height <= len(tower) <= max_height and 
+                all(min_width <= level <= max_width for level in tower) and 
+                self._is_valid_tower(tower)):
+                valid_towers.append(tower)
+        
+        return valid_towers
+    
+    def get_towers_with_block_constraints(self, block_constraints):
+        """Get towers considering block constraints."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in block_constraints:
+            if not constraint(self.height, self.width):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            towers = self._generate_towers()
+            valid_towers = []
+            
+            for tower in towers:
+                if self._is_valid_tower(tower):
+                    valid_towers.append(tower)
+            
+            return valid_towers
+        
+        return []
+    
+    def get_towers_with_pattern_constraints(self, pattern_constraints):
+        """Get towers considering pattern constraints."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.height, self.width):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            towers = self._generate_towers()
+            valid_towers = []
+            
+            for tower in towers:
+                if self._is_valid_tower(tower):
+                    valid_towers.append(tower)
+            
+            return valid_towers
+        
+        return []
+    
+    def get_towers_with_mathematical_constraints(self, constraint_func):
+        """Get towers that satisfies custom mathematical constraints."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        if constraint_func(self.height, self.width):
+            towers = self._generate_towers()
+            valid_towers = []
+            
+            for tower in towers:
+                if self._is_valid_tower(tower):
+                    valid_towers.append(tower)
+            
+            return valid_towers
+        
+        return []
+    
+    def get_towers_with_optimization_constraints(self, optimization_func):
+        """Get towers using custom optimization constraints."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        # Calculate optimization score for towers
+        score = optimization_func(self.height, self.width)
+        
+        if score > 0:
+            towers = self._generate_towers()
+            valid_towers = []
+            
+            for tower in towers:
+                if self._is_valid_tower(tower):
+                    valid_towers.append(tower)
+            
+            return valid_towers
+        
+        return []
+    
+    def get_towers_with_multiple_constraints(self, constraints_list):
+        """Get towers that satisfies multiple constraints."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.height, self.width):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            towers = self._generate_towers()
+            valid_towers = []
+            
+            for tower in towers:
+                if self._is_valid_tower(tower):
+                    valid_towers.append(tower)
+            
+            return valid_towers
+        
+        return []
+    
+    def get_towers_with_priority_constraints(self, priority_func):
+        """Get towers with priority-based constraints."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        # Calculate priority for towers
+        priority = priority_func(self.height, self.width)
+        
+        if priority > 0:
+            towers = self._generate_towers()
+            valid_towers = []
+            
+            for tower in towers:
+                if self._is_valid_tower(tower):
+                    valid_towers.append(tower)
+            
+            return valid_towers
+        
+        return []
+    
+    def get_towers_with_adaptive_constraints(self, adaptive_func):
+        """Get towers with adaptive constraints."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        if adaptive_func(self.height, self.width, []):
+            towers = self._generate_towers()
+            valid_towers = []
+            
+            for tower in towers:
+                if self._is_valid_tower(tower):
+                    valid_towers.append(tower)
+            
+            return valid_towers
+        
+        return []
+    
+    def _generate_towers(self):
+        """Generate all possible tower configurations."""
+        if not self.tower_counting_feasibility:
+            return []
+        
+        towers = []
+        
+        def backtrack(level, current_tower):
+            if level == self.height:
+                towers.append(current_tower[:])
+                return
+            
+            # Try different block configurations at current level
+            for blocks in range(self.width + 1):
+                if blocks <= self.width:
+                    current_tower.append(blocks)
+                    backtrack(level + 1, current_tower)
+                    current_tower.pop()
+        
+        backtrack(0, [])
+        return towers
+    
+    def get_optimal_tower_counting_strategy(self):
+        """Get optimal tower counting strategy considering all constraints."""
+        strategies = [
+            ('dimension_constraints', self.get_towers_with_dimension_constraints),
+            ('block_constraints', self.get_towers_with_block_constraints),
+            ('pattern_constraints', self.get_towers_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'dimension_constraints':
+                    result = strategy_func(0, 100, 0, 100)
+                elif strategy_name == 'block_constraints':
+                    block_constraints = [lambda height, width: height > 0 and width > 0]
+                    result = strategy_func(block_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda height, width: height > 0 and width > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'min_height': 1,
+    'max_height': 5,
+    'min_width': 0,
+    'max_width': 3,
+    'forbidden_blocks': [0, -1],
+    'required_blocks': [1],
+    'pattern_constraints': [lambda tower: len(tower) > 0 and all(level >= 0 for level in tower)]
+}
+
+height = 3
+width = 2
+constrained_tower_counting = ConstrainedCountingTowers(height, width, constraints)
+
+print("Dimension-constrained towers:", len(constrained_tower_counting.get_towers_with_dimension_constraints(1, 5, 0, 3)))
+
+print("Block-constrained towers:", len(constrained_tower_counting.get_towers_with_block_constraints([lambda height, width: height > 0 and width > 0])))
+
+print("Pattern-constrained towers:", len(constrained_tower_counting.get_towers_with_pattern_constraints([lambda height, width: height > 0 and width > 0])))
+
+# Mathematical constraints
+def custom_constraint(height, width):
+    return height > 0 and width > 0
+
+print("Mathematical constraint towers:", len(constrained_tower_counting.get_towers_with_mathematical_constraints(custom_constraint)))
+
+# Range constraints
+def range_constraint(height, width):
+    return 1 <= height <= 10 and 1 <= width <= 10
+
+range_constraints = [range_constraint]
+print("Range-constrained towers:", len(constrained_tower_counting.get_towers_with_dimension_constraints(1, 10, 1, 10)))
+
+# Multiple constraints
+def constraint1(height, width):
+    return height > 0
+
+def constraint2(height, width):
+    return width > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints towers:", len(constrained_tower_counting.get_towers_with_multiple_constraints(constraints_list)))
+
+# Priority constraints
+def priority_func(height, width):
+    return height + width
+
+print("Priority-constrained towers:", len(constrained_tower_counting.get_towers_with_priority_constraints(priority_func)))
+
+# Adaptive constraints
+def adaptive_func(height, width, current_result):
+    return height > 0 and width > 0 and len(current_result) < 5
+
+print("Adaptive constraint towers:", len(constrained_tower_counting.get_towers_with_adaptive_constraints(adaptive_func)))
+
+# Optimal strategy
+optimal = constrained_tower_counting.get_optimal_tower_counting_strategy()
+print(f"Optimal tower counting strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

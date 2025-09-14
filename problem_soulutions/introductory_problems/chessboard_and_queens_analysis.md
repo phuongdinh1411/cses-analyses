@@ -545,6 +545,762 @@ result = multi_dimensional_chessboard_queens(dimensions)
 print(f"Multi-dimensional count: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Chessboard and Queens with Dynamic Updates**
+**Problem**: Handle dynamic chessboard size updates (resize board, add/remove queens) while maintaining valid queen placements.
+
+**Approach**: Use efficient data structures and algorithms for dynamic chessboard and queen management.
+
+```python
+from collections import defaultdict
+import itertools
+
+class DynamicChessboardQueens:
+    def __init__(self, n):
+        self.n = n
+        self.board = [['.' for _ in range(n)] for _ in range(n)]
+        self.queens = []
+        self.solutions = []
+        self._find_all_solutions()
+    
+    def _find_all_solutions(self):
+        """Find all valid queen placements using backtracking."""
+        self.solutions = []
+        
+        def is_safe(row, col):
+            # Check column
+            for i in range(row):
+                if self.board[i][col] == 'Q':
+                    return False
+            
+            # Check diagonal (top-left to bottom-right)
+            for i, j in zip(range(row-1, -1, -1), range(col-1, -1, -1)):
+                if self.board[i][j] == 'Q':
+                    return False
+            
+            # Check diagonal (top-right to bottom-left)
+            for i, j in zip(range(row-1, -1, -1), range(col+1, self.n)):
+                if self.board[i][j] == 'Q':
+                    return False
+            
+            return True
+        
+        def solve(row):
+            if row == self.n:
+                # Found a solution
+                solution = []
+                for i in range(self.n):
+                    for j in range(self.n):
+                        if self.board[i][j] == 'Q':
+                            solution.append((i, j))
+                self.solutions.append(solution[:])
+                return
+            
+            for col in range(self.n):
+                if is_safe(row, col):
+                    self.board[row][col] = 'Q'
+                    solve(row + 1)
+                    self.board[row][col] = '.'
+        
+        solve(0)
+    
+    def resize_board(self, new_size):
+        """Resize the chessboard to new size."""
+        self.n = new_size
+        self.board = [['.' for _ in range(new_size)] for _ in range(new_size)]
+        self.queens = []
+        self._find_all_solutions()
+    
+    def add_queen(self, row, col):
+        """Add a queen at specified position."""
+        if 0 <= row < self.n and 0 <= col < self.n and self.board[row][col] == '.':
+            self.board[row][col] = 'Q'
+            self.queens.append((row, col))
+            return True
+        return False
+    
+    def remove_queen(self, row, col):
+        """Remove queen at specified position."""
+        if 0 <= row < self.n and 0 <= col < self.n and self.board[row][col] == 'Q':
+            self.board[row][col] = '.'
+            if (row, col) in self.queens:
+                self.queens.remove((row, col))
+            return True
+        return False
+    
+    def get_solutions(self):
+        """Get all valid solutions."""
+        return self.solutions
+    
+    def get_solutions_count(self):
+        """Get count of valid solutions."""
+        return len(self.solutions)
+    
+    def get_solutions_with_constraints(self, constraint_func):
+        """Get solutions that satisfy custom constraints."""
+        result = []
+        for solution in self.solutions:
+            if constraint_func(solution):
+                result.append(solution)
+        return result
+    
+    def get_solutions_in_range(self, min_queens, max_queens):
+        """Get solutions with queen count in specified range."""
+        result = []
+        for solution in self.solutions:
+            if min_queens <= len(solution) <= max_queens:
+                result.append(solution)
+        return result
+    
+    def get_solutions_with_pattern(self, pattern_func):
+        """Get solutions matching specified pattern."""
+        result = []
+        for solution in self.solutions:
+            if pattern_func(solution):
+                result.append(solution)
+        return result
+    
+    def get_solution_statistics(self):
+        """Get statistics about solutions."""
+        if not self.solutions:
+            return {
+                'total_solutions': 0,
+                'average_queens': 0,
+                'queen_distribution': {},
+                'pattern_distribution': {}
+            }
+        
+        total_solutions = len(self.solutions)
+        average_queens = sum(len(solution) for solution in self.solutions) / total_solutions
+        
+        # Calculate queen distribution
+        queen_distribution = defaultdict(int)
+        for solution in self.solutions:
+            for row, col in solution:
+                queen_distribution[(row, col)] += 1
+        
+        # Calculate pattern distribution
+        pattern_distribution = defaultdict(int)
+        for solution in self.solutions:
+            # Count patterns like consecutive rows, columns, etc.
+            if len(solution) > 1:
+                rows = [pos[0] for pos in solution]
+                cols = [pos[1] for pos in solution]
+                if len(set(rows)) == len(rows):  # All different rows
+                    pattern_distribution['unique_rows'] += 1
+                if len(set(cols)) == len(cols):  # All different columns
+                    pattern_distribution['unique_cols'] += 1
+        
+        return {
+            'total_solutions': total_solutions,
+            'average_queens': average_queens,
+            'queen_distribution': dict(queen_distribution),
+            'pattern_distribution': dict(pattern_distribution)
+        }
+    
+    def get_solution_patterns(self):
+        """Get patterns in solutions."""
+        patterns = {
+            'symmetric_solutions': 0,
+            'diagonal_solutions': 0,
+            'corner_solutions': 0,
+            'center_solutions': 0
+        }
+        
+        for solution in self.solutions:
+            # Check for symmetric solutions
+            if self._is_symmetric(solution):
+                patterns['symmetric_solutions'] += 1
+            
+            # Check for diagonal solutions
+            if self._is_diagonal(solution):
+                patterns['diagonal_solutions'] += 1
+            
+            # Check for corner solutions
+            if self._has_corner_queens(solution):
+                patterns['corner_solutions'] += 1
+            
+            # Check for center solutions
+            if self._has_center_queens(solution):
+                patterns['center_solutions'] += 1
+        
+        return patterns
+    
+    def _is_symmetric(self, solution):
+        """Check if solution is symmetric."""
+        # Check horizontal symmetry
+        symmetric = True
+        for row, col in solution:
+            if (row, self.n - 1 - col) not in solution:
+                symmetric = False
+                break
+        return symmetric
+    
+    def _is_diagonal(self, solution):
+        """Check if solution forms a diagonal pattern."""
+        if len(solution) != self.n:
+            return False
+        
+        # Check if all queens are on main diagonal
+        for i, (row, col) in enumerate(solution):
+            if row != i or col != i:
+                return False
+        return True
+    
+    def _has_corner_queens(self, solution):
+        """Check if solution has queens in corners."""
+        corners = [(0, 0), (0, self.n-1), (self.n-1, 0), (self.n-1, self.n-1)]
+        return any(corner in solution for corner in corners)
+    
+    def _has_center_queens(self, solution):
+        """Check if solution has queens in center."""
+        center_row = self.n // 2
+        center_col = self.n // 2
+        center_positions = [(center_row, center_col)]
+        if self.n % 2 == 0:
+            center_positions.extend([(center_row-1, center_col), (center_row, center_col-1), (center_row-1, center_col-1)])
+        return any(pos in solution for pos in center_positions)
+    
+    def get_optimal_solution_strategy(self):
+        """Get optimal strategy for queen placement operations."""
+        if self.n == 0:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'solution_rate': 0
+            }
+        
+        # Calculate efficiency rate
+        total_possible = self.n ** self.n
+        efficiency_rate = len(self.solutions) / total_possible if total_possible > 0 else 0
+        
+        # Calculate solution rate
+        solution_rate = len(self.solutions) / (2 ** self.n) if self.n > 0 else 0
+        
+        # Determine recommended strategy
+        if efficiency_rate > 0.1:
+            recommended_strategy = 'backtracking_optimal'
+        elif solution_rate > 0.5:
+            recommended_strategy = 'constraint_propagation'
+        else:
+            recommended_strategy = 'brute_force'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'solution_rate': solution_rate
+        }
+
+# Example usage
+n = 4
+dynamic_queens = DynamicChessboardQueens(n)
+print(f"Initial solutions count: {dynamic_queens.get_solutions_count()}")
+
+# Resize board
+dynamic_queens.resize_board(5)
+print(f"After resizing to 5x5: {dynamic_queens.get_solutions_count()}")
+
+# Add a queen
+dynamic_queens.add_queen(0, 0)
+print(f"After adding queen: {dynamic_queens.get_solutions_count()}")
+
+# Remove a queen
+dynamic_queens.remove_queen(0, 0)
+print(f"After removing queen: {dynamic_queens.get_solutions_count()}")
+
+# Get solutions with constraints
+def constraint_func(solution):
+    return len(solution) == n
+
+print(f"Solutions with {n} queens: {len(dynamic_queens.get_solutions_with_constraints(constraint_func))}")
+
+# Get solutions in range
+print(f"Solutions with 3-5 queens: {len(dynamic_queens.get_solutions_in_range(3, 5))}")
+
+# Get solutions with pattern
+def pattern_func(solution):
+    return all(pos[0] == pos[1] for pos in solution)  # Diagonal pattern
+
+print(f"Diagonal pattern solutions: {len(dynamic_queens.get_solutions_with_pattern(pattern_func))}")
+
+# Get statistics
+print(f"Statistics: {dynamic_queens.get_solution_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_queens.get_solution_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_queens.get_optimal_solution_strategy()}")
+```
+
+### **Variation 2: Chessboard and Queens with Different Operations**
+**Problem**: Handle different types of operations on chessboard and queens (weighted queens, priority-based selection, advanced constraints).
+
+**Approach**: Use advanced data structures for efficient different types of chessboard and queen queries.
+
+```python
+class AdvancedChessboardQueens:
+    def __init__(self, n, weights=None, priorities=None):
+        self.n = n
+        self.weights = weights or [[1 for _ in range(n)] for _ in range(n)]
+        self.priorities = priorities or [[1 for _ in range(n)] for _ in range(n)]
+        self.board = [['.' for _ in range(n)] for _ in range(n)]
+        self.queens = []
+        self.solutions = []
+        self._find_all_solutions()
+    
+    def _find_all_solutions(self):
+        """Find all valid queen placements using advanced backtracking."""
+        self.solutions = []
+        
+        def is_safe(row, col):
+            # Check column
+            for i in range(row):
+                if self.board[i][col] == 'Q':
+                    return False
+            
+            # Check diagonal (top-left to bottom-right)
+            for i, j in zip(range(row-1, -1, -1), range(col-1, -1, -1)):
+                if self.board[i][j] == 'Q':
+                    return False
+            
+            # Check diagonal (top-right to bottom-left)
+            for i, j in zip(range(row-1, -1, -1), range(col+1, self.n)):
+                if self.board[i][j] == 'Q':
+                    return False
+            
+            return True
+        
+        def solve(row):
+            if row == self.n:
+                # Found a solution
+                solution = []
+                for i in range(self.n):
+                    for j in range(self.n):
+                        if self.board[i][j] == 'Q':
+                            solution.append((i, j))
+                self.solutions.append(solution[:])
+                return
+            
+            for col in range(self.n):
+                if is_safe(row, col):
+                    self.board[row][col] = 'Q'
+                    solve(row + 1)
+                    self.board[row][col] = '.'
+        
+        solve(0)
+    
+    def get_solutions(self):
+        """Get current valid solutions."""
+        return self.solutions
+    
+    def get_weighted_solutions(self):
+        """Get solutions with weights and priorities applied."""
+        result = []
+        for solution in self.solutions:
+            weighted_solution = {
+                'positions': solution,
+                'total_weight': sum(self.weights[row][col] for row, col in solution),
+                'total_priority': sum(self.priorities[row][col] for row, col in solution),
+                'weighted_score': sum(self.weights[row][col] * self.priorities[row][col] for row, col in solution)
+            }
+            result.append(weighted_solution)
+        return result
+    
+    def get_solutions_with_priority(self, priority_func):
+        """Get solutions considering priority."""
+        result = []
+        for solution in self.solutions:
+            priority = priority_func(solution, self.weights, self.priorities)
+            result.append((solution, priority))
+        
+        # Sort by priority
+        result.sort(key=lambda x: x[1], reverse=True)
+        return result
+    
+    def get_solutions_with_optimization(self, optimization_func):
+        """Get solutions using custom optimization function."""
+        result = []
+        for solution in self.solutions:
+            score = optimization_func(solution, self.weights, self.priorities)
+            result.append((solution, score))
+        
+        # Sort by optimization score
+        result.sort(key=lambda x: x[1], reverse=True)
+        return result
+    
+    def get_solutions_with_constraints(self, constraint_func):
+        """Get solutions that satisfy custom constraints."""
+        result = []
+        for solution in self.solutions:
+            if constraint_func(solution, self.weights, self.priorities):
+                result.append(solution)
+        return result
+    
+    def get_solutions_with_multiple_criteria(self, criteria_list):
+        """Get solutions that satisfy multiple criteria."""
+        result = []
+        for solution in self.solutions:
+            satisfies_all_criteria = True
+            for criterion in criteria_list:
+                if not criterion(solution, self.weights, self.priorities):
+                    satisfies_all_criteria = False
+                    break
+            if satisfies_all_criteria:
+                result.append(solution)
+        return result
+    
+    def get_solutions_with_alternatives(self, alternatives):
+        """Get solutions considering alternative weights/priorities."""
+        result = []
+        
+        # Check original solutions
+        for solution in self.solutions:
+            result.append((solution, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedChessboardQueens(self.n, alt_weights, alt_priorities)
+            temp_solutions = temp_instance.get_solutions()
+            result.append((temp_solutions, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_solutions_with_adaptive_criteria(self, adaptive_func):
+        """Get solutions using adaptive criteria."""
+        result = []
+        for solution in self.solutions:
+            if adaptive_func(solution, self.weights, self.priorities, result):
+                result.append(solution)
+        return result
+    
+    def get_solution_optimization(self):
+        """Get optimal solution configuration."""
+        strategies = [
+            ('solutions', lambda: len(self.solutions)),
+            ('weighted_solutions', lambda: len(self.get_weighted_solutions())),
+            ('total_weight', lambda: sum(sum(self.weights[i][j] for j in range(self.n)) for i in range(self.n))),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            current_value = strategy_func()
+            if current_value > best_value:
+                best_value = current_value
+                best_strategy = (strategy_name, current_value)
+        
+        return best_strategy
+
+# Example usage
+n = 4
+weights = [[2, 1, 3, 1], [1, 3, 1, 2], [3, 1, 2, 1], [1, 2, 1, 3]]
+priorities = [[1, 2, 1, 3], [2, 1, 3, 1], [1, 3, 1, 2], [3, 1, 2, 1]]
+advanced_queens = AdvancedChessboardQueens(n, weights, priorities)
+
+print(f"Solutions: {len(advanced_queens.get_solutions())}")
+print(f"Weighted solutions: {len(advanced_queens.get_weighted_solutions())}")
+
+# Get solutions with priority
+def priority_func(solution, weights, priorities):
+    return sum(weights[row][col] for row, col in solution) + sum(priorities[row][col] for row, col in solution)
+
+print(f"Solutions with priority: {len(advanced_queens.get_solutions_with_priority(priority_func))}")
+
+# Get solutions with optimization
+def optimization_func(solution, weights, priorities):
+    return sum(weights[row][col] * priorities[row][col] for row, col in solution)
+
+print(f"Solutions with optimization: {len(advanced_queens.get_solutions_with_optimization(optimization_func))}")
+
+# Get solutions with constraints
+def constraint_func(solution, weights, priorities):
+    return len(solution) == n and sum(weights[row][col] for row, col in solution) <= 10
+
+print(f"Solutions with constraints: {len(advanced_queens.get_solutions_with_constraints(constraint_func))}")
+
+# Get solutions with multiple criteria
+def criterion1(solution, weights, priorities):
+    return len(solution) == n
+
+def criterion2(solution, weights, priorities):
+    return sum(weights[row][col] for row, col in solution) <= 10
+
+criteria_list = [criterion1, criterion2]
+print(f"Solutions with multiple criteria: {len(advanced_queens.get_solutions_with_multiple_criteria(criteria_list))}")
+
+# Get solutions with alternatives
+alternatives = [([[1]*n for _ in range(n)], [[1]*n for _ in range(n)]), ([[3]*n for _ in range(n)], [[2]*n for _ in range(n)])]
+print(f"Solutions with alternatives: {len(advanced_queens.get_solutions_with_alternatives(alternatives))}")
+
+# Get solutions with adaptive criteria
+def adaptive_func(solution, weights, priorities, current_result):
+    return len(solution) == n and len(current_result) < 5
+
+print(f"Solutions with adaptive criteria: {len(advanced_queens.get_solutions_with_adaptive_criteria(adaptive_func))}")
+
+# Get solution optimization
+print(f"Solution optimization: {advanced_queens.get_solution_optimization()}")
+```
+
+### **Variation 3: Chessboard and Queens with Constraints**
+**Problem**: Handle chessboard and queens with additional constraints (blocked squares, different board shapes, advanced placement rules).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedChessboardQueens:
+    def __init__(self, n, constraints=None):
+        self.n = n
+        self.constraints = constraints or {}
+        self.board = [['.' for _ in range(n)] for _ in range(n)]
+        self.blocked_squares = set(self.constraints.get('blocked_squares', []))
+        self.queens = []
+        self.solutions = []
+        self._find_all_solutions()
+    
+    def _find_all_solutions(self):
+        """Find all valid queen placements considering constraints."""
+        self.solutions = []
+        
+        def is_safe(row, col):
+            # Check if square is blocked
+            if (row, col) in self.blocked_squares:
+                return False
+            
+            # Check column
+            for i in range(row):
+                if self.board[i][col] == 'Q':
+                    return False
+            
+            # Check diagonal (top-left to bottom-right)
+            for i, j in zip(range(row-1, -1, -1), range(col-1, -1, -1)):
+                if self.board[i][j] == 'Q':
+                    return False
+            
+            # Check diagonal (top-right to bottom-left)
+            for i, j in zip(range(row-1, -1, -1), range(col+1, self.n)):
+                if self.board[i][j] == 'Q':
+                    return False
+            
+            return True
+        
+        def solve(row):
+            if row == self.n:
+                # Found a solution
+                solution = []
+                for i in range(self.n):
+                    for j in range(self.n):
+                        if self.board[i][j] == 'Q':
+                            solution.append((i, j))
+                self.solutions.append(solution[:])
+                return
+            
+            for col in range(self.n):
+                if is_safe(row, col):
+                    self.board[row][col] = 'Q'
+                    solve(row + 1)
+                    self.board[row][col] = '.'
+        
+        solve(0)
+    
+    def get_solutions_with_blocked_squares(self, blocked_squares):
+        """Get solutions considering blocked squares."""
+        result = []
+        for solution in self.solutions:
+            # Check if solution uses any blocked squares
+            if not any(pos in blocked_squares for pos in solution):
+                result.append(solution)
+        return result
+    
+    def get_solutions_with_board_shape(self, board_shape):
+        """Get solutions considering custom board shape."""
+        result = []
+        for solution in self.solutions:
+            # Check if all positions are within board shape
+            if all(0 <= row < len(board_shape) and 0 <= col < len(board_shape[0]) and board_shape[row][col] == 1 
+                   for row, col in solution):
+                result.append(solution)
+        return result
+    
+    def get_solutions_with_placement_rules(self, placement_rules):
+        """Get solutions considering custom placement rules."""
+        result = []
+        for solution in self.solutions:
+            satisfies_rules = True
+            for rule in placement_rules:
+                if not rule(solution):
+                    satisfies_rules = False
+                    break
+            if satisfies_rules:
+                result.append(solution)
+        return result
+    
+    def get_solutions_with_mathematical_constraints(self, constraint_func):
+        """Get solutions that satisfy custom mathematical constraints."""
+        result = []
+        for solution in self.solutions:
+            if constraint_func(solution):
+                result.append(solution)
+        return result
+    
+    def get_solutions_with_range_constraints(self, range_constraints):
+        """Get solutions that satisfy range constraints."""
+        result = []
+        for solution in self.solutions:
+            satisfies_constraints = True
+            for constraint in range_constraints:
+                if not constraint(solution):
+                    satisfies_constraints = False
+                    break
+            if satisfies_constraints:
+                result.append(solution)
+        return result
+    
+    def get_solutions_with_optimization_constraints(self, optimization_func):
+        """Get solutions using custom optimization constraints."""
+        # Sort solutions by optimization function
+        all_solutions = []
+        for solution in self.solutions:
+            score = optimization_func(solution)
+            all_solutions.append((solution, score))
+        
+        # Sort by optimization score
+        all_solutions.sort(key=lambda x: x[1], reverse=True)
+        
+        return [solution for solution, _ in all_solutions]
+    
+    def get_solutions_with_multiple_constraints(self, constraints_list):
+        """Get solutions that satisfy multiple constraints."""
+        result = []
+        for solution in self.solutions:
+            satisfies_all_constraints = True
+            for constraint in constraints_list:
+                if not constraint(solution):
+                    satisfies_all_constraints = False
+                    break
+            if satisfies_all_constraints:
+                result.append(solution)
+        return result
+    
+    def get_solutions_with_priority_constraints(self, priority_func):
+        """Get solutions with priority-based constraints."""
+        # Sort solutions by priority
+        all_solutions = []
+        for solution in self.solutions:
+            priority = priority_func(solution)
+            all_solutions.append((solution, priority))
+        
+        # Sort by priority
+        all_solutions.sort(key=lambda x: x[1], reverse=True)
+        
+        return [solution for solution, _ in all_solutions]
+    
+    def get_solutions_with_adaptive_constraints(self, adaptive_func):
+        """Get solutions with adaptive constraints."""
+        result = []
+        for solution in self.solutions:
+            if adaptive_func(solution, result):
+                result.append(solution)
+        return result
+    
+    def get_optimal_solution_strategy(self):
+        """Get optimal solution strategy considering all constraints."""
+        strategies = [
+            ('blocked_squares', self.get_solutions_with_blocked_squares),
+            ('board_shape', self.get_solutions_with_board_shape),
+            ('placement_rules', self.get_solutions_with_placement_rules),
+        ]
+        
+        best_strategy = None
+        best_count = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'blocked_squares':
+                    current_count = len(strategy_func([(0, 0), (1, 1)]))
+                elif strategy_name == 'board_shape':
+                    board_shape = [[1]*self.n for _ in range(self.n)]
+                    current_count = len(strategy_func(board_shape))
+                elif strategy_name == 'placement_rules':
+                    placement_rules = [lambda s: len(s) == self.n]
+                    current_count = len(strategy_func(placement_rules))
+                
+                if current_count > best_count:
+                    best_count = current_count
+                    best_strategy = (strategy_name, current_count)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'blocked_squares': [(0, 0), (1, 1), (2, 2)]
+}
+
+n = 4
+constrained_queens = ConstrainedChessboardQueens(n, constraints)
+
+print("Blocked squares solutions:", len(constrained_queens.get_solutions_with_blocked_squares([(0, 0), (1, 1)])))
+
+# Board shape constraints
+board_shape = [[1, 1, 0, 1], [1, 1, 1, 1], [0, 1, 1, 1], [1, 1, 1, 1]]
+print("Board shape solutions:", len(constrained_queens.get_solutions_with_board_shape(board_shape)))
+
+# Placement rules
+def rule1(solution):
+    return len(solution) == n
+
+def rule2(solution):
+    return all(pos[0] != pos[1] for pos in solution)  # No queens on main diagonal
+
+placement_rules = [rule1, rule2]
+print("Placement rules solutions:", len(constrained_queens.get_solutions_with_placement_rules(placement_rules)))
+
+# Mathematical constraints
+def custom_constraint(solution):
+    return len(solution) == n and all(pos[0] + pos[1] < n for pos in solution)
+
+print("Mathematical constraint solutions:", len(constrained_queens.get_solutions_with_mathematical_constraints(custom_constraint)))
+
+# Range constraints
+def range_constraint(solution):
+    return 3 <= len(solution) <= 5
+
+range_constraints = [range_constraint]
+print("Range-constrained solutions:", len(constrained_queens.get_solutions_with_range_constraints(range_constraints)))
+
+# Multiple constraints
+def constraint1(solution):
+    return len(solution) == n
+
+def constraint2(solution):
+    return all(pos[0] != pos[1] for pos in solution)
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints solutions:", len(constrained_queens.get_solutions_with_multiple_constraints(constraints_list)))
+
+# Priority constraints
+def priority_func(solution):
+    return len(solution) + sum(pos[0] + pos[1] for pos in solution)
+
+print("Priority-constrained solutions:", len(constrained_queens.get_solutions_with_priority_constraints(priority_func)))
+
+# Adaptive constraints
+def adaptive_func(solution, current_result):
+    return len(solution) == n and len(current_result) < 5
+
+print("Adaptive constraint solutions:", len(constrained_queens.get_solutions_with_adaptive_constraints(adaptive_func)))
+
+# Optimal strategy
+optimal = constrained_queens.get_optimal_solution_strategy()
+print(f"Optimal strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

@@ -531,6 +531,841 @@ result = weighted_even_outdegree_edges(n, edges, edge_weights)
 print(f"Weighted even outdegree result: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Even Outdegree Edges with Dynamic Updates**
+**Problem**: Handle dynamic graph updates (add/remove/update edges) while maintaining even outdegree edge calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic graph management with degree tracking.
+
+```python
+from collections import defaultdict, deque
+import heapq
+
+class DynamicEvenOutdegreeEdges:
+    def __init__(self, n=None, edges=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.graph = defaultdict(list)
+        self.outdegree = defaultdict(int)
+        self._update_even_outdegree_info()
+    
+    def _update_even_outdegree_info(self):
+        """Update even outdegree edge feasibility information."""
+        self.even_outdegree_feasibility = self._calculate_even_outdegree_feasibility()
+    
+    def _calculate_even_outdegree_feasibility(self):
+        """Calculate even outdegree edge feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can have even outdegree edges
+        return 1.0 if self.n > 0 else 0.0
+    
+    def update_graph(self, new_n, new_edges):
+        """Update the graph with new vertices and edges."""
+        self.n = new_n
+        self.edges = new_edges
+        self._build_graph()
+        self._update_even_outdegree_info()
+    
+    def add_edge(self, u, v):
+        """Add an edge to the graph."""
+        if 1 <= u <= self.n and 1 <= v <= self.n:
+            self.edges.append((u, v))
+            self.graph[u].append(v)
+            self.outdegree[u] += 1
+            self._update_even_outdegree_info()
+    
+    def remove_edge(self, u, v):
+        """Remove an edge from the graph."""
+        if (u, v) in self.edges:
+            self.edges.remove((u, v))
+            self.graph[u].remove(v)
+            self.outdegree[u] -= 1
+            if self.outdegree[u] == 0:
+                del self.outdegree[u]
+            self._update_even_outdegree_info()
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        self.outdegree = defaultdict(int)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+            self.outdegree[u] += 1
+    
+    def find_even_outdegree_edges(self):
+        """Find edges that result in even outdegree for all vertices."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        # Count current outdegrees
+        current_outdegree = self.outdegree.copy()
+        
+        # Find vertices with odd outdegree
+        odd_vertices = []
+        for i in range(1, self.n + 1):
+            if current_outdegree[i] % 2 == 1:
+                odd_vertices.append(i)
+        
+        # If we have odd number of vertices with odd outdegree, it's impossible
+        if len(odd_vertices) % 2 == 1:
+            return []
+        
+        # Try to find edges that make all outdegrees even
+        result = []
+        for u, v in self.edges:
+            # Check if adding this edge makes outdegrees more even
+            temp_outdegree = current_outdegree.copy()
+            temp_outdegree[u] += 1
+            
+            # Count odd vertices after adding this edge
+            odd_count = sum(1 for i in range(1, self.n + 1) if temp_outdegree[i] % 2 == 1)
+            
+            if odd_count < len(odd_vertices):
+                result.append((u, v))
+        
+        return result
+    
+    def find_even_outdegree_edges_with_priorities(self, priorities):
+        """Find even outdegree edges considering edge priorities."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        even_edges = self.find_even_outdegree_edges()
+        if not even_edges:
+            return []
+        
+        # Create priority-based edges
+        priority_edges = []
+        for u, v in even_edges:
+            priority = priorities.get((u, v), 1)
+            priority_edges.append((u, v, priority))
+        
+        # Sort by priority (descending for maximization)
+        priority_edges.sort(key=lambda x: x[2], reverse=True)
+        
+        return priority_edges
+    
+    def get_even_outdegree_edges_with_constraints(self, constraint_func):
+        """Get even outdegree edges that satisfies custom constraints."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        even_edges = self.find_even_outdegree_edges()
+        if even_edges and constraint_func(self.n, self.edges, even_edges):
+            return even_edges
+        else:
+            return []
+    
+    def get_even_outdegree_edges_in_range(self, min_edges, max_edges):
+        """Get even outdegree edges within specified edge count range."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        even_edges = self.find_even_outdegree_edges()
+        if min_edges <= len(even_edges) <= max_edges:
+            return even_edges
+        else:
+            return []
+    
+    def get_even_outdegree_edges_with_pattern(self, pattern_func):
+        """Get even outdegree edges matching specified pattern."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        even_edges = self.find_even_outdegree_edges()
+        if pattern_func(self.n, self.edges, even_edges):
+            return even_edges
+        else:
+            return []
+    
+    def get_even_outdegree_edges_statistics(self):
+        """Get statistics about the even outdegree edges."""
+        if not self.even_outdegree_feasibility:
+            return {
+                'n': 0,
+                'even_outdegree_feasibility': 0,
+                'has_even_outdegree': False,
+                'edge_count': 0
+            }
+        
+        even_edges = self.find_even_outdegree_edges()
+        return {
+            'n': self.n,
+            'even_outdegree_feasibility': self.even_outdegree_feasibility,
+            'has_even_outdegree': len(even_edges) > 0,
+            'edge_count': len(even_edges)
+        }
+    
+    def get_even_outdegree_edges_patterns(self):
+        """Get patterns in even outdegree edges."""
+        patterns = {
+            'has_edges': 0,
+            'has_valid_graph': 0,
+            'optimal_even_outdegree_possible': 0,
+            'has_large_graph': 0
+        }
+        
+        if not self.even_outdegree_feasibility:
+            return patterns
+        
+        # Check if has edges
+        if len(self.edges) > 0:
+            patterns['has_edges'] = 1
+        
+        # Check if has valid graph
+        if self.n > 0:
+            patterns['has_valid_graph'] = 1
+        
+        # Check if optimal even outdegree is possible
+        if self.even_outdegree_feasibility == 1.0:
+            patterns['optimal_even_outdegree_possible'] = 1
+        
+        # Check if has large graph
+        if self.n > 100:
+            patterns['has_large_graph'] = 1
+        
+        return patterns
+    
+    def get_optimal_even_outdegree_edges_strategy(self):
+        """Get optimal strategy for even outdegree edges management."""
+        if not self.even_outdegree_feasibility:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'even_outdegree_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.even_outdegree_feasibility
+        
+        # Calculate even outdegree feasibility
+        even_outdegree_feasibility = self.even_outdegree_feasibility
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'degree_counting'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_degree_tracking'
+        else:
+            recommended_strategy = 'advanced_degree_analysis'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'even_outdegree_feasibility': even_outdegree_feasibility
+        }
+
+# Example usage
+n = 5
+edges = [(1, 2), (2, 3), (3, 4), (4, 5)]
+dynamic_even_outdegree = DynamicEvenOutdegreeEdges(n, edges)
+print(f"Even outdegree feasibility: {dynamic_even_outdegree.even_outdegree_feasibility}")
+
+# Update graph
+dynamic_even_outdegree.update_graph(6, [(1, 2), (2, 3), (3, 4), (4, 5), (5, 6)])
+print(f"After updating graph: n={dynamic_even_outdegree.n}, edges={dynamic_even_outdegree.edges}")
+
+# Add edge
+dynamic_even_outdegree.add_edge(6, 1)
+print(f"After adding edge (6,1): {dynamic_even_outdegree.edges}")
+
+# Remove edge
+dynamic_even_outdegree.remove_edge(6, 1)
+print(f"After removing edge (6,1): {dynamic_even_outdegree.edges}")
+
+# Find even outdegree edges
+even_edges = dynamic_even_outdegree.find_even_outdegree_edges()
+print(f"Even outdegree edges: {even_edges}")
+
+# Find even outdegree edges with priorities
+priorities = {(u, v): (u + v) for u, v in edges}
+priority_edges = dynamic_even_outdegree.find_even_outdegree_edges_with_priorities(priorities)
+print(f"Even outdegree edges with priorities: {priority_edges}")
+
+# Get even outdegree edges with constraints
+def constraint_func(n, edges, even_edges):
+    return len(even_edges) > 0 and n > 0
+
+print(f"Even outdegree edges with constraints: {dynamic_even_outdegree.get_even_outdegree_edges_with_constraints(constraint_func)}")
+
+# Get even outdegree edges in range
+print(f"Even outdegree edges in range 1-10: {dynamic_even_outdegree.get_even_outdegree_edges_in_range(1, 10)}")
+
+# Get even outdegree edges with pattern
+def pattern_func(n, edges, even_edges):
+    return len(even_edges) > 0 and n > 0
+
+print(f"Even outdegree edges with pattern: {dynamic_even_outdegree.get_even_outdegree_edges_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_even_outdegree.get_even_outdegree_edges_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_even_outdegree.get_even_outdegree_edges_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_even_outdegree.get_optimal_even_outdegree_edges_strategy()}")
+```
+
+### **Variation 2: Even Outdegree Edges with Different Operations**
+**Problem**: Handle different types of even outdegree edge operations (weighted edges, priority-based selection, advanced degree analysis).
+
+**Approach**: Use advanced data structures for efficient different types of even outdegree edge operations.
+
+```python
+class AdvancedEvenOutdegreeEdges:
+    def __init__(self, n=None, edges=None, weights=None, priorities=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.graph = defaultdict(list)
+        self._update_even_outdegree_info()
+    
+    def _update_even_outdegree_info(self):
+        """Update even outdegree edge feasibility information."""
+        self.even_outdegree_feasibility = self._calculate_even_outdegree_feasibility()
+    
+    def _calculate_even_outdegree_feasibility(self):
+        """Calculate even outdegree edge feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can have even outdegree edges
+        return 1.0 if self.n > 0 else 0.0
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        self.outdegree = defaultdict(int)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+            self.outdegree[u] += 1
+    
+    def find_even_outdegree_edges(self):
+        """Find edges that result in even outdegree for all vertices."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        self._build_graph()
+        
+        # Count current outdegrees
+        current_outdegree = self.outdegree.copy()
+        
+        # Find vertices with odd outdegree
+        odd_vertices = []
+        for i in range(1, self.n + 1):
+            if current_outdegree[i] % 2 == 1:
+                odd_vertices.append(i)
+        
+        # If we have odd number of vertices with odd outdegree, it's impossible
+        if len(odd_vertices) % 2 == 1:
+            return []
+        
+        # Try to find edges that make all outdegrees even
+        result = []
+        for u, v in self.edges:
+            # Check if adding this edge makes outdegrees more even
+            temp_outdegree = current_outdegree.copy()
+            temp_outdegree[u] += 1
+            
+            # Count odd vertices after adding this edge
+            odd_count = sum(1 for i in range(1, self.n + 1) if temp_outdegree[i] % 2 == 1)
+            
+            if odd_count < len(odd_vertices):
+                result.append((u, v))
+        
+        return result
+    
+    def get_weighted_even_outdegree_edges(self):
+        """Get even outdegree edges with weights and priorities applied."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        even_edges = self.find_even_outdegree_edges()
+        if not even_edges:
+            return []
+        
+        # Create weighted edges
+        weighted_edges = []
+        for u, v in even_edges:
+            weight = self.weights.get((u, v), 1)
+            priority = self.priorities.get((u, v), 1)
+            weighted_score = weight * priority
+            weighted_edges.append((u, v, weighted_score))
+        
+        # Sort by weighted score (descending for maximization)
+        weighted_edges.sort(key=lambda x: x[2], reverse=True)
+        
+        return weighted_edges
+    
+    def get_even_outdegree_edges_with_priority(self, priority_func):
+        """Get even outdegree edges considering priority."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        even_edges = self.find_even_outdegree_edges()
+        if not even_edges:
+            return []
+        
+        # Create priority-based edges
+        priority_edges = []
+        for u, v in even_edges:
+            priority = priority_func(u, v, self.weights, self.priorities)
+            priority_edges.append((u, v, priority))
+        
+        # Sort by priority (descending for maximization)
+        priority_edges.sort(key=lambda x: x[2], reverse=True)
+        
+        return priority_edges
+    
+    def get_even_outdegree_edges_with_optimization(self, optimization_func):
+        """Get even outdegree edges using custom optimization function."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        even_edges = self.find_even_outdegree_edges()
+        if not even_edges:
+            return []
+        
+        # Create optimization-based edges
+        optimized_edges = []
+        for u, v in even_edges:
+            score = optimization_func(u, v, self.weights, self.priorities)
+            optimized_edges.append((u, v, score))
+        
+        # Sort by optimization score (descending for maximization)
+        optimized_edges.sort(key=lambda x: x[2], reverse=True)
+        
+        return optimized_edges
+    
+    def get_even_outdegree_edges_with_constraints(self, constraint_func):
+        """Get even outdegree edges that satisfies custom constraints."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.weights, self.priorities):
+            return self.get_weighted_even_outdegree_edges()
+        else:
+            return []
+    
+    def get_even_outdegree_edges_with_multiple_criteria(self, criteria_list):
+        """Get even outdegree edges that satisfies multiple criteria."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.n, self.edges, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_even_outdegree_edges()
+        else:
+            return []
+    
+    def get_even_outdegree_edges_with_alternatives(self, alternatives):
+        """Get even outdegree edges considering alternative weights/priorities."""
+        result = []
+        
+        # Check original even outdegree edges
+        original_edges = self.get_weighted_even_outdegree_edges()
+        result.append((original_edges, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedEvenOutdegreeEdges(self.n, self.edges, alt_weights, alt_priorities)
+            temp_edges = temp_instance.get_weighted_even_outdegree_edges()
+            result.append((temp_edges, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_even_outdegree_edges_with_adaptive_criteria(self, adaptive_func):
+        """Get even outdegree edges using adaptive criteria."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        if adaptive_func(self.n, self.edges, self.weights, self.priorities, []):
+            return self.get_weighted_even_outdegree_edges()
+        else:
+            return []
+    
+    def get_even_outdegree_edges_optimization(self):
+        """Get optimal even outdegree edges configuration."""
+        strategies = [
+            ('weighted_edges', lambda: len(self.get_weighted_even_outdegree_edges())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 5
+edges = [(1, 2), (2, 3), (3, 4), (4, 5)]
+weights = {(u, v): (u + v) * 2 for u, v in edges}  # Weight based on vertex sum
+priorities = {(u, v): 1 for u, v in edges}  # Equal priority
+advanced_even_outdegree = AdvancedEvenOutdegreeEdges(n, edges, weights, priorities)
+
+print(f"Weighted even outdegree edges: {advanced_even_outdegree.get_weighted_even_outdegree_edges()}")
+
+# Get even outdegree edges with priority
+def priority_func(u, v, weights, priorities):
+    return weights.get((u, v), 1) + priorities.get((u, v), 1)
+
+print(f"Even outdegree edges with priority: {advanced_even_outdegree.get_even_outdegree_edges_with_priority(priority_func)}")
+
+# Get even outdegree edges with optimization
+def optimization_func(u, v, weights, priorities):
+    return weights.get((u, v), 1) * priorities.get((u, v), 1)
+
+print(f"Even outdegree edges with optimization: {advanced_even_outdegree.get_even_outdegree_edges_with_optimization(optimization_func)}")
+
+# Get even outdegree edges with constraints
+def constraint_func(n, edges, weights, priorities):
+    return len(edges) > 0 and n > 0
+
+print(f"Even outdegree edges with constraints: {advanced_even_outdegree.get_even_outdegree_edges_with_constraints(constraint_func)}")
+
+# Get even outdegree edges with multiple criteria
+def criterion1(n, edges, weights, priorities):
+    return len(edges) > 0
+
+def criterion2(n, edges, weights, priorities):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Even outdegree edges with multiple criteria: {advanced_even_outdegree.get_even_outdegree_edges_with_multiple_criteria(criteria_list)}")
+
+# Get even outdegree edges with alternatives
+alternatives = [({(u, v): 1 for u, v in edges}, {(u, v): 1 for u, v in edges}), ({(u, v): (u + v)*3 for u, v in edges}, {(u, v): 2 for u, v in edges})]
+print(f"Even outdegree edges with alternatives: {advanced_even_outdegree.get_even_outdegree_edges_with_alternatives(alternatives)}")
+
+# Get even outdegree edges with adaptive criteria
+def adaptive_func(n, edges, weights, priorities, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print(f"Even outdegree edges with adaptive criteria: {advanced_even_outdegree.get_even_outdegree_edges_with_adaptive_criteria(adaptive_func)}")
+
+# Get even outdegree edges optimization
+print(f"Even outdegree edges optimization: {advanced_even_outdegree.get_even_outdegree_edges_optimization()}")
+```
+
+### **Variation 3: Even Outdegree Edges with Constraints**
+**Problem**: Handle even outdegree edges with additional constraints (edge limits, degree constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedEvenOutdegreeEdges:
+    def __init__(self, n=None, edges=None, constraints=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.constraints = constraints or {}
+        self.graph = defaultdict(list)
+        self._update_even_outdegree_info()
+    
+    def _update_even_outdegree_info(self):
+        """Update even outdegree edge feasibility information."""
+        self.even_outdegree_feasibility = self._calculate_even_outdegree_feasibility()
+    
+    def _calculate_even_outdegree_feasibility(self):
+        """Calculate even outdegree edge feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can have even outdegree edges
+        return 1.0 if self.n > 0 else 0.0
+    
+    def _is_valid_edge(self, u, v):
+        """Check if edge is valid considering constraints."""
+        # Edge constraints
+        if 'allowed_edges' in self.constraints:
+            if (u, v) not in self.constraints['allowed_edges']:
+                return False
+        
+        if 'forbidden_edges' in self.constraints:
+            if (u, v) in self.constraints['forbidden_edges']:
+                return False
+        
+        # Vertex constraints
+        if 'max_vertex' in self.constraints:
+            if u > self.constraints['max_vertex'] or v > self.constraints['max_vertex']:
+                return False
+        
+        if 'min_vertex' in self.constraints:
+            if u < self.constraints['min_vertex'] or v < self.constraints['min_vertex']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(u, v, self.n, self.edges):
+                    return False
+        
+        return True
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        self.outdegree = defaultdict(int)
+        
+        for u, v in self.edges:
+            if self._is_valid_edge(u, v):
+                self.graph[u].append(v)
+                self.outdegree[u] += 1
+    
+    def find_even_outdegree_edges(self):
+        """Find edges that result in even outdegree for all vertices."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        self._build_graph()
+        
+        # Count current outdegrees
+        current_outdegree = self.outdegree.copy()
+        
+        # Find vertices with odd outdegree
+        odd_vertices = []
+        for i in range(1, self.n + 1):
+            if current_outdegree[i] % 2 == 1:
+                odd_vertices.append(i)
+        
+        # If we have odd number of vertices with odd outdegree, it's impossible
+        if len(odd_vertices) % 2 == 1:
+            return []
+        
+        # Try to find edges that make all outdegrees even
+        result = []
+        for u, v in self.edges:
+            if self._is_valid_edge(u, v):
+                # Check if adding this edge makes outdegrees more even
+                temp_outdegree = current_outdegree.copy()
+                temp_outdegree[u] += 1
+                
+                # Count odd vertices after adding this edge
+                odd_count = sum(1 for i in range(1, self.n + 1) if temp_outdegree[i] % 2 == 1)
+                
+                if odd_count < len(odd_vertices):
+                    result.append((u, v))
+        
+        return result
+    
+    def get_even_outdegree_edges_with_edge_constraints(self, min_edges, max_edges):
+        """Get even outdegree edges considering edge count constraints."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        even_edges = self.find_even_outdegree_edges()
+        if min_edges <= len(even_edges) <= max_edges:
+            return even_edges
+        else:
+            return []
+    
+    def get_even_outdegree_edges_with_degree_constraints(self, degree_constraints):
+        """Get even outdegree edges considering degree constraints."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in degree_constraints:
+            if not constraint(self.n, self.edges):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self.find_even_outdegree_edges()
+        else:
+            return []
+    
+    def get_even_outdegree_edges_with_pattern_constraints(self, pattern_constraints):
+        """Get even outdegree edges considering pattern constraints."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.n, self.edges):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self.find_even_outdegree_edges()
+        else:
+            return []
+    
+    def get_even_outdegree_edges_with_mathematical_constraints(self, constraint_func):
+        """Get even outdegree edges that satisfies custom mathematical constraints."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        even_edges = self.find_even_outdegree_edges()
+        if even_edges and constraint_func(self.n, self.edges):
+            return even_edges
+        else:
+            return []
+    
+    def get_even_outdegree_edges_with_optimization_constraints(self, optimization_func):
+        """Get even outdegree edges using custom optimization constraints."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        # Calculate optimization score for even outdegree edges
+        score = optimization_func(self.n, self.edges)
+        
+        if score > 0:
+            return self.find_even_outdegree_edges()
+        else:
+            return []
+    
+    def get_even_outdegree_edges_with_multiple_constraints(self, constraints_list):
+        """Get even outdegree edges that satisfies multiple constraints."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.n, self.edges):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self.find_even_outdegree_edges()
+        else:
+            return []
+    
+    def get_even_outdegree_edges_with_priority_constraints(self, priority_func):
+        """Get even outdegree edges with priority-based constraints."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        # Calculate priority for even outdegree edges
+        priority = priority_func(self.n, self.edges)
+        
+        if priority > 0:
+            return self.find_even_outdegree_edges()
+        else:
+            return []
+    
+    def get_even_outdegree_edges_with_adaptive_constraints(self, adaptive_func):
+        """Get even outdegree edges with adaptive constraints."""
+        if not self.even_outdegree_feasibility:
+            return []
+        
+        even_edges = self.find_even_outdegree_edges()
+        if even_edges and adaptive_func(self.n, self.edges, []):
+            return even_edges
+        else:
+            return []
+    
+    def get_optimal_even_outdegree_edges_strategy(self):
+        """Get optimal even outdegree edges strategy considering all constraints."""
+        strategies = [
+            ('edge_constraints', self.get_even_outdegree_edges_with_edge_constraints),
+            ('degree_constraints', self.get_even_outdegree_edges_with_degree_constraints),
+            ('pattern_constraints', self.get_even_outdegree_edges_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'edge_constraints':
+                    result = strategy_func(0, 1000)
+                elif strategy_name == 'degree_constraints':
+                    degree_constraints = [lambda n, edges: len(edges) > 0]
+                    result = strategy_func(degree_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda n, edges: len(edges) > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_edges': [(1, 2), (2, 3), (3, 4), (4, 5)],
+    'forbidden_edges': [(5, 1), (1, 5)],
+    'max_vertex': 10,
+    'min_vertex': 1,
+    'pattern_constraints': [lambda u, v, n, edges: u > 0 and v > 0 and u <= n and v <= n]
+}
+
+n = 5
+edges = [(1, 2), (2, 3), (3, 4), (4, 5)]
+constrained_even_outdegree = ConstrainedEvenOutdegreeEdges(n, edges, constraints)
+
+print("Edge-constrained even outdegree edges:", constrained_even_outdegree.get_even_outdegree_edges_with_edge_constraints(1, 10))
+
+print("Degree-constrained even outdegree edges:", constrained_even_outdegree.get_even_outdegree_edges_with_degree_constraints([lambda n, edges: len(edges) > 0]))
+
+print("Pattern-constrained even outdegree edges:", constrained_even_outdegree.get_even_outdegree_edges_with_pattern_constraints([lambda n, edges: len(edges) > 0]))
+
+# Mathematical constraints
+def custom_constraint(n, edges):
+    return len(edges) > 0
+
+print("Mathematical constraint even outdegree edges:", constrained_even_outdegree.get_even_outdegree_edges_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(n, edges):
+    return 1 <= len(edges) <= 20
+
+range_constraints = [range_constraint]
+print("Range-constrained even outdegree edges:", constrained_even_outdegree.get_even_outdegree_edges_with_edge_constraints(1, 20))
+
+# Multiple constraints
+def constraint1(n, edges):
+    return len(edges) > 0
+
+def constraint2(n, edges):
+    return n > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints even outdegree edges:", constrained_even_outdegree.get_even_outdegree_edges_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(n, edges):
+    return n + len(edges)
+
+print("Priority-constrained even outdegree edges:", constrained_even_outdegree.get_even_outdegree_edges_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(n, edges, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print("Adaptive constraint even outdegree edges:", constrained_even_outdegree.get_even_outdegree_edges_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_even_outdegree.get_optimal_even_outdegree_edges_strategy()
+print(f"Optimal even outdegree edges strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

@@ -796,6 +796,836 @@ result = k_critical_edges(n, edges, k)
 print(f"K-critical edges result: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Strongly Connected Edges with Dynamic Updates**
+**Problem**: Handle dynamic graph updates (add/remove/update edges) while maintaining strongly connected edge calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic graph management with strongly connected component detection.
+
+```python
+from collections import defaultdict, deque
+import heapq
+
+class DynamicStronglyConnectedEdges:
+    def __init__(self, n=None, edges=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.graph = defaultdict(list)
+        self._update_scc_info()
+    
+    def _update_scc_info(self):
+        """Update strongly connected component information."""
+        self.scc_edges = self._calculate_strongly_connected_edges()
+    
+    def _calculate_strongly_connected_edges(self):
+        """Calculate strongly connected edges using Tarjan's algorithm."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return []
+        
+        # Build adjacency list
+        adj = defaultdict(list)
+        for u, v in self.edges:
+            adj[u].append(v)
+        
+        # Tarjan's algorithm for SCC
+        disc = [-1] * self.n
+        low = [-1] * self.n
+        stack = []
+        in_stack = [False] * self.n
+        time = [0]
+        sccs = []
+        
+        def tarjan(u):
+            disc[u] = low[u] = time[0]
+            time[0] += 1
+            stack.append(u)
+            in_stack[u] = True
+            
+            for v in adj[u]:
+                if disc[v] == -1:
+                    tarjan(v)
+                    low[u] = min(low[u], low[v])
+                elif in_stack[v]:
+                    low[u] = min(low[u], disc[v])
+            
+            if low[u] == disc[u]:
+                scc = []
+                while True:
+                    w = stack.pop()
+                    in_stack[w] = False
+                    scc.append(w)
+                    if w == u:
+                        break
+                sccs.append(scc)
+        
+        # Find all SCCs
+        for i in range(self.n):
+            if disc[i] == -1:
+                tarjan(i)
+        
+        # Find edges within SCCs
+        scc_edges = []
+        for scc in sccs:
+            scc_set = set(scc)
+            for u, v in self.edges:
+                if u in scc_set and v in scc_set:
+                    scc_edges.append((u, v))
+        
+        return scc_edges
+    
+    def update_graph(self, new_n, new_edges):
+        """Update the graph with new vertices and edges."""
+        self.n = new_n
+        self.edges = new_edges
+        self._build_graph()
+        self._update_scc_info()
+    
+    def add_edge(self, u, v):
+        """Add an edge to the graph."""
+        if 0 <= u < self.n and 0 <= v < self.n:
+            self.edges.append((u, v))
+            self.graph[u].append(v)
+            self._update_scc_info()
+    
+    def remove_edge(self, u, v):
+        """Remove an edge from the graph."""
+        if (u, v) in self.edges:
+            self.edges.remove((u, v))
+            self.graph[u].remove(v)
+            self._update_scc_info()
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+    
+    def get_strongly_connected_edges(self):
+        """Get all strongly connected edges."""
+        return self.scc_edges
+    
+    def get_strongly_connected_edges_with_priorities(self, priorities):
+        """Get strongly connected edges considering vertex priorities."""
+        if not self.scc_edges:
+            return []
+        
+        # Calculate weighted strongly connected edges based on priorities
+        weighted_edges = []
+        for u, v in self.scc_edges:
+            edge_priority = priorities.get(u, 1) + priorities.get(v, 1)
+            weighted_edges.append((u, v, edge_priority))
+        
+        return weighted_edges
+    
+    def get_strongly_connected_edges_with_constraints(self, constraint_func):
+        """Get strongly connected edges that satisfies custom constraints."""
+        if not self.scc_edges:
+            return []
+        
+        filtered_edges = []
+        for u, v in self.scc_edges:
+            if constraint_func(u, v, self.n, self.edges, self.scc_edges):
+                filtered_edges.append((u, v))
+        
+        return filtered_edges
+    
+    def get_strongly_connected_edges_in_range(self, min_edges, max_edges):
+        """Get strongly connected edges within specified count range."""
+        if not self.scc_edges:
+            return []
+        
+        if min_edges <= len(self.scc_edges) <= max_edges:
+            return self.scc_edges
+        else:
+            return []
+    
+    def get_strongly_connected_edges_with_pattern(self, pattern_func):
+        """Get strongly connected edges matching specified pattern."""
+        if not self.scc_edges:
+            return []
+        
+        if pattern_func(self.n, self.edges, self.scc_edges):
+            return self.scc_edges
+        else:
+            return []
+    
+    def get_scc_statistics(self):
+        """Get statistics about the strongly connected components."""
+        return {
+            'n': self.n,
+            'edge_count': len(self.edges),
+            'scc_edge_count': len(self.scc_edges),
+            'scc_ratio': len(self.scc_edges) / max(1, len(self.edges)),
+            'has_sccs': len(self.scc_edges) > 0
+        }
+    
+    def get_scc_patterns(self):
+        """Get patterns in strongly connected components."""
+        patterns = {
+            'has_edges': 0,
+            'has_valid_graph': 0,
+            'optimal_scc_possible': 0,
+            'has_large_graph': 0
+        }
+        
+        # Check if has edges
+        if len(self.edges) > 0:
+            patterns['has_edges'] = 1
+        
+        # Check if has valid graph
+        if self.n > 0:
+            patterns['has_valid_graph'] = 1
+        
+        # Check if optimal SCC is possible
+        if len(self.scc_edges) > 0:
+            patterns['optimal_scc_possible'] = 1
+        
+        # Check if has large graph
+        if self.n > 100:
+            patterns['has_large_graph'] = 1
+        
+        return patterns
+    
+    def get_optimal_scc_strategy(self):
+        """Get optimal strategy for strongly connected component management."""
+        if not self.scc_edges:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'scc_edge_count': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = len(self.scc_edges) / max(1, len(self.edges))
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'tarjan_scc'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_tarjan'
+        else:
+            recommended_strategy = 'advanced_scc_detection'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'scc_edge_count': len(self.scc_edges)
+        }
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (2, 0), (2, 3), (3, 4), (4, 3)]
+dynamic_scc = DynamicStronglyConnectedEdges(n, edges)
+print(f"Strongly connected edges: {dynamic_scc.scc_edges}")
+
+# Update graph
+dynamic_scc.update_graph(6, [(0, 1), (1, 2), (2, 0), (2, 3), (3, 4), (4, 3), (4, 5), (5, 4)])
+print(f"After updating graph: n={dynamic_scc.n}, scc_edges={dynamic_scc.scc_edges}")
+
+# Add edge
+dynamic_scc.add_edge(5, 0)
+print(f"After adding edge (5,0): {dynamic_scc.edges}")
+
+# Remove edge
+dynamic_scc.remove_edge(5, 0)
+print(f"After removing edge (5,0): {dynamic_scc.edges}")
+
+# Get strongly connected edges
+scc_edges = dynamic_scc.get_strongly_connected_edges()
+print(f"Strongly connected edges: {scc_edges}")
+
+# Get strongly connected edges with priorities
+priorities = {i: i for i in range(n)}
+priority_edges = dynamic_scc.get_strongly_connected_edges_with_priorities(priorities)
+print(f"Strongly connected edges with priorities: {priority_edges}")
+
+# Get strongly connected edges with constraints
+def constraint_func(u, v, n, edges, scc_edges):
+    return u >= 0 and v >= 0 and u < n and v < n
+
+print(f"Strongly connected edges with constraints: {dynamic_scc.get_strongly_connected_edges_with_constraints(constraint_func)}")
+
+# Get strongly connected edges in range
+print(f"Strongly connected edges in range 1-10: {dynamic_scc.get_strongly_connected_edges_in_range(1, 10)}")
+
+# Get strongly connected edges with pattern
+def pattern_func(n, edges, scc_edges):
+    return len(scc_edges) > 0 and n > 0
+
+print(f"Strongly connected edges with pattern: {dynamic_scc.get_strongly_connected_edges_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_scc.get_scc_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_scc.get_scc_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_scc.get_optimal_scc_strategy()}")
+```
+
+### **Variation 2: Strongly Connected Edges with Different Operations**
+**Problem**: Handle different types of strongly connected edge operations (weighted edges, priority-based selection, advanced edge analysis).
+
+**Approach**: Use advanced data structures for efficient different types of strongly connected edge operations.
+
+```python
+class AdvancedStronglyConnectedEdges:
+    def __init__(self, n=None, edges=None, weights=None, priorities=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.graph = defaultdict(list)
+        self._update_scc_info()
+    
+    def _update_scc_info(self):
+        """Update strongly connected component information."""
+        self.scc_edges = self._calculate_strongly_connected_edges()
+    
+    def _calculate_strongly_connected_edges(self):
+        """Calculate strongly connected edges using Tarjan's algorithm."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return []
+        
+        # Build adjacency list
+        adj = defaultdict(list)
+        for u, v in self.edges:
+            adj[u].append(v)
+        
+        # Tarjan's algorithm for SCC
+        disc = [-1] * self.n
+        low = [-1] * self.n
+        stack = []
+        in_stack = [False] * self.n
+        time = [0]
+        sccs = []
+        
+        def tarjan(u):
+            disc[u] = low[u] = time[0]
+            time[0] += 1
+            stack.append(u)
+            in_stack[u] = True
+            
+            for v in adj[u]:
+                if disc[v] == -1:
+                    tarjan(v)
+                    low[u] = min(low[u], low[v])
+                elif in_stack[v]:
+                    low[u] = min(low[u], disc[v])
+            
+            if low[u] == disc[u]:
+                scc = []
+                while True:
+                    w = stack.pop()
+                    in_stack[w] = False
+                    scc.append(w)
+                    if w == u:
+                        break
+                sccs.append(scc)
+        
+        # Find all SCCs
+        for i in range(self.n):
+            if disc[i] == -1:
+                tarjan(i)
+        
+        # Find edges within SCCs
+        scc_edges = []
+        for scc in sccs:
+            scc_set = set(scc)
+            for u, v in self.edges:
+                if u in scc_set and v in scc_set:
+                    scc_edges.append((u, v))
+        
+        return scc_edges
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+    
+    def get_strongly_connected_edges(self):
+        """Get all strongly connected edges."""
+        return self.scc_edges
+    
+    def get_weighted_strongly_connected_edges(self):
+        """Get strongly connected edges with weights and priorities applied."""
+        if not self.scc_edges:
+            return []
+        
+        # Calculate weighted strongly connected edges based on edge weights and vertex priorities
+        weighted_edges = []
+        for u, v in self.scc_edges:
+            edge_weight = self.weights.get((u, v), 1)
+            vertex_priority = self.priorities.get(u, 1) + self.priorities.get(v, 1)
+            weighted_score = edge_weight * vertex_priority
+            weighted_edges.append((u, v, weighted_score))
+        
+        return weighted_edges
+    
+    def get_strongly_connected_edges_with_priority(self, priority_func):
+        """Get strongly connected edges considering priority."""
+        if not self.scc_edges:
+            return []
+        
+        # Calculate priority-based strongly connected edges
+        priority_edges = []
+        for u, v in self.scc_edges:
+            priority = priority_func(u, v, self.weights, self.priorities)
+            priority_edges.append((u, v, priority))
+        
+        return priority_edges
+    
+    def get_strongly_connected_edges_with_optimization(self, optimization_func):
+        """Get strongly connected edges using custom optimization function."""
+        if not self.scc_edges:
+            return []
+        
+        # Calculate optimization-based strongly connected edges
+        optimized_edges = []
+        for u, v in self.scc_edges:
+            score = optimization_func(u, v, self.weights, self.priorities)
+            optimized_edges.append((u, v, score))
+        
+        return optimized_edges
+    
+    def get_strongly_connected_edges_with_constraints(self, constraint_func):
+        """Get strongly connected edges that satisfies custom constraints."""
+        if not self.scc_edges:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.weights, self.priorities, self.scc_edges):
+            return self.get_weighted_strongly_connected_edges()
+        else:
+            return []
+    
+    def get_strongly_connected_edges_with_multiple_criteria(self, criteria_list):
+        """Get strongly connected edges that satisfies multiple criteria."""
+        if not self.scc_edges:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.n, self.edges, self.weights, self.priorities, self.scc_edges):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_strongly_connected_edges()
+        else:
+            return []
+    
+    def get_strongly_connected_edges_with_alternatives(self, alternatives):
+        """Get strongly connected edges considering alternative weights/priorities."""
+        result = []
+        
+        # Check original strongly connected edges
+        original_edges = self.get_weighted_strongly_connected_edges()
+        result.append((original_edges, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedStronglyConnectedEdges(self.n, self.edges, alt_weights, alt_priorities)
+            temp_edges = temp_instance.get_weighted_strongly_connected_edges()
+            result.append((temp_edges, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_strongly_connected_edges_with_adaptive_criteria(self, adaptive_func):
+        """Get strongly connected edges using adaptive criteria."""
+        if not self.scc_edges:
+            return []
+        
+        if adaptive_func(self.n, self.edges, self.weights, self.priorities, self.scc_edges, []):
+            return self.get_weighted_strongly_connected_edges()
+        else:
+            return []
+    
+    def get_strongly_connected_edges_optimization(self):
+        """Get optimal strongly connected edges configuration."""
+        strategies = [
+            ('weighted_edges', lambda: len(self.get_weighted_strongly_connected_edges())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 5
+edges = [(0, 1), (1, 2), (2, 0), (2, 3), (3, 4), (4, 3)]
+weights = {(u, v): (u + v) * 2 for u, v in edges}  # Weight based on vertex sum
+priorities = {i: i for i in range(n)}  # Priority based on vertex number
+advanced_scc = AdvancedStronglyConnectedEdges(n, edges, weights, priorities)
+
+print(f"Weighted strongly connected edges: {advanced_scc.get_weighted_strongly_connected_edges()}")
+
+# Get strongly connected edges with priority
+def priority_func(u, v, weights, priorities):
+    return priorities.get(u, 1) + priorities.get(v, 1) + weights.get((u, v), 1)
+
+print(f"Strongly connected edges with priority: {advanced_scc.get_strongly_connected_edges_with_priority(priority_func)}")
+
+# Get strongly connected edges with optimization
+def optimization_func(u, v, weights, priorities):
+    return weights.get((u, v), 1) + priorities.get(u, 1) + priorities.get(v, 1)
+
+print(f"Strongly connected edges with optimization: {advanced_scc.get_strongly_connected_edges_with_optimization(optimization_func)}")
+
+# Get strongly connected edges with constraints
+def constraint_func(n, edges, weights, priorities, scc_edges):
+    return len(scc_edges) > 0 and n > 0
+
+print(f"Strongly connected edges with constraints: {advanced_scc.get_strongly_connected_edges_with_constraints(constraint_func)}")
+
+# Get strongly connected edges with multiple criteria
+def criterion1(n, edges, weights, priorities, scc_edges):
+    return len(edges) > 0
+
+def criterion2(n, edges, weights, priorities, scc_edges):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Strongly connected edges with multiple criteria: {advanced_scc.get_strongly_connected_edges_with_multiple_criteria(criteria_list)}")
+
+# Get strongly connected edges with alternatives
+alternatives = [({(u, v): 1 for u, v in edges}, {i: 1 for i in range(n)}), ({(u, v): (u + v)*3 for u, v in edges}, {i: 2 for i in range(n)})]
+print(f"Strongly connected edges with alternatives: {advanced_scc.get_strongly_connected_edges_with_alternatives(alternatives)}")
+
+# Get strongly connected edges with adaptive criteria
+def adaptive_func(n, edges, weights, priorities, scc_edges, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print(f"Strongly connected edges with adaptive criteria: {advanced_scc.get_strongly_connected_edges_with_adaptive_criteria(adaptive_func)}")
+
+# Get strongly connected edges optimization
+print(f"Strongly connected edges optimization: {advanced_scc.get_strongly_connected_edges_optimization()}")
+```
+
+### **Variation 3: Strongly Connected Edges with Constraints**
+**Problem**: Handle strongly connected edge calculation with additional constraints (edge limits, SCC constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedStronglyConnectedEdges:
+    def __init__(self, n=None, edges=None, constraints=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.constraints = constraints or {}
+        self.graph = defaultdict(list)
+        self._update_scc_info()
+    
+    def _update_scc_info(self):
+        """Update strongly connected component information."""
+        self.scc_edges = self._calculate_strongly_connected_edges()
+    
+    def _calculate_strongly_connected_edges(self):
+        """Calculate strongly connected edges using Tarjan's algorithm."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return []
+        
+        # Build adjacency list
+        adj = defaultdict(list)
+        for u, v in self.edges:
+            adj[u].append(v)
+        
+        # Tarjan's algorithm for SCC
+        disc = [-1] * self.n
+        low = [-1] * self.n
+        stack = []
+        in_stack = [False] * self.n
+        time = [0]
+        sccs = []
+        
+        def tarjan(u):
+            disc[u] = low[u] = time[0]
+            time[0] += 1
+            stack.append(u)
+            in_stack[u] = True
+            
+            for v in adj[u]:
+                if disc[v] == -1:
+                    tarjan(v)
+                    low[u] = min(low[u], low[v])
+                elif in_stack[v]:
+                    low[u] = min(low[u], disc[v])
+            
+            if low[u] == disc[u]:
+                scc = []
+                while True:
+                    w = stack.pop()
+                    in_stack[w] = False
+                    scc.append(w)
+                    if w == u:
+                        break
+                sccs.append(scc)
+        
+        # Find all SCCs
+        for i in range(self.n):
+            if disc[i] == -1:
+                tarjan(i)
+        
+        # Find edges within SCCs
+        scc_edges = []
+        for scc in sccs:
+            scc_set = set(scc)
+            for u, v in self.edges:
+                if u in scc_set and v in scc_set:
+                    scc_edges.append((u, v))
+        
+        return scc_edges
+    
+    def _is_valid_edge(self, u, v):
+        """Check if edge is valid considering constraints."""
+        # Edge constraints
+        if 'allowed_edges' in self.constraints:
+            if (u, v) not in self.constraints['allowed_edges']:
+                return False
+        
+        if 'forbidden_edges' in self.constraints:
+            if (u, v) in self.constraints['forbidden_edges']:
+                return False
+        
+        # Vertex constraints
+        if 'max_vertex' in self.constraints:
+            if u > self.constraints['max_vertex'] or v > self.constraints['max_vertex']:
+                return False
+        
+        if 'min_vertex' in self.constraints:
+            if u < self.constraints['min_vertex'] or v < self.constraints['min_vertex']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(u, v, self.n, self.edges, self.scc_edges):
+                    return False
+        
+        return True
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            if self._is_valid_edge(u, v):
+                self.graph[u].append(v)
+    
+    def get_strongly_connected_edges(self):
+        """Get all strongly connected edges."""
+        return self.scc_edges
+    
+    def get_strongly_connected_edges_with_edge_constraints(self, min_edges, max_edges):
+        """Get strongly connected edges considering edge count constraints."""
+        if not self.scc_edges:
+            return []
+        
+        if min_edges <= len(self.scc_edges) <= max_edges:
+            return self.scc_edges
+        else:
+            return []
+    
+    def get_strongly_connected_edges_with_scc_constraints(self, scc_constraints):
+        """Get strongly connected edges considering SCC constraints."""
+        if not self.scc_edges:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in scc_constraints:
+            if not constraint(self.n, self.edges, self.scc_edges):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self.scc_edges
+        else:
+            return []
+    
+    def get_strongly_connected_edges_with_pattern_constraints(self, pattern_constraints):
+        """Get strongly connected edges considering pattern constraints."""
+        if not self.scc_edges:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.n, self.edges, self.scc_edges):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self.scc_edges
+        else:
+            return []
+    
+    def get_strongly_connected_edges_with_mathematical_constraints(self, constraint_func):
+        """Get strongly connected edges that satisfies custom mathematical constraints."""
+        if not self.scc_edges:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.scc_edges):
+            return self.scc_edges
+        else:
+            return []
+    
+    def get_strongly_connected_edges_with_optimization_constraints(self, optimization_func):
+        """Get strongly connected edges using custom optimization constraints."""
+        if not self.scc_edges:
+            return []
+        
+        # Calculate optimization score for strongly connected edges
+        score = optimization_func(self.n, self.edges, self.scc_edges)
+        
+        if score > 0:
+            return self.scc_edges
+        else:
+            return []
+    
+    def get_strongly_connected_edges_with_multiple_constraints(self, constraints_list):
+        """Get strongly connected edges that satisfies multiple constraints."""
+        if not self.scc_edges:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.n, self.edges, self.scc_edges):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self.scc_edges
+        else:
+            return []
+    
+    def get_strongly_connected_edges_with_priority_constraints(self, priority_func):
+        """Get strongly connected edges with priority-based constraints."""
+        if not self.scc_edges:
+            return []
+        
+        # Calculate priority for strongly connected edges
+        priority = priority_func(self.n, self.edges, self.scc_edges)
+        
+        if priority > 0:
+            return self.scc_edges
+        else:
+            return []
+    
+    def get_strongly_connected_edges_with_adaptive_constraints(self, adaptive_func):
+        """Get strongly connected edges with adaptive constraints."""
+        if not self.scc_edges:
+            return []
+        
+        if adaptive_func(self.n, self.edges, self.scc_edges, []):
+            return self.scc_edges
+        else:
+            return []
+    
+    def get_optimal_strongly_connected_edges_strategy(self):
+        """Get optimal strongly connected edges strategy considering all constraints."""
+        strategies = [
+            ('edge_constraints', self.get_strongly_connected_edges_with_edge_constraints),
+            ('scc_constraints', self.get_strongly_connected_edges_with_scc_constraints),
+            ('pattern_constraints', self.get_strongly_connected_edges_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'edge_constraints':
+                    result = strategy_func(0, 1000)
+                elif strategy_name == 'scc_constraints':
+                    scc_constraints = [lambda n, edges, scc_edges: len(edges) > 0]
+                    result = strategy_func(scc_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda n, edges, scc_edges: len(edges) > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_edges': [(0, 1), (1, 2), (2, 0), (2, 3), (3, 4), (4, 3)],
+    'forbidden_edges': [(0, 3), (1, 4)],
+    'max_vertex': 10,
+    'min_vertex': 0,
+    'pattern_constraints': [lambda u, v, n, edges, scc_edges: u >= 0 and v >= 0 and u < n and v < n]
+}
+
+n = 5
+edges = [(0, 1), (1, 2), (2, 0), (2, 3), (3, 4), (4, 3)]
+constrained_scc = ConstrainedStronglyConnectedEdges(n, edges, constraints)
+
+print("Edge-constrained strongly connected edges:", constrained_scc.get_strongly_connected_edges_with_edge_constraints(1, 10))
+
+print("SCC-constrained strongly connected edges:", constrained_scc.get_strongly_connected_edges_with_scc_constraints([lambda n, edges, scc_edges: len(edges) > 0]))
+
+print("Pattern-constrained strongly connected edges:", constrained_scc.get_strongly_connected_edges_with_pattern_constraints([lambda n, edges, scc_edges: len(edges) > 0]))
+
+# Mathematical constraints
+def custom_constraint(n, edges, scc_edges):
+    return len(scc_edges) > 0 and n > 0
+
+print("Mathematical constraint strongly connected edges:", constrained_scc.get_strongly_connected_edges_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(n, edges, scc_edges):
+    return 1 <= len(scc_edges) <= 20
+
+range_constraints = [range_constraint]
+print("Range-constrained strongly connected edges:", constrained_scc.get_strongly_connected_edges_with_edge_constraints(1, 20))
+
+# Multiple constraints
+def constraint1(n, edges, scc_edges):
+    return len(edges) > 0
+
+def constraint2(n, edges, scc_edges):
+    return len(scc_edges) > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints strongly connected edges:", constrained_scc.get_strongly_connected_edges_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(n, edges, scc_edges):
+    return n + len(edges) + len(scc_edges)
+
+print("Priority-constrained strongly connected edges:", constrained_scc.get_strongly_connected_edges_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(n, edges, scc_edges, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print("Adaptive constraint strongly connected edges:", constrained_scc.get_strongly_connected_edges_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_scc.get_optimal_strongly_connected_edges_strategy()
+print(f"Optimal strongly connected edges strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

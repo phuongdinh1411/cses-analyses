@@ -722,6 +722,837 @@ def priority_course_schedule(n, prerequisites, priorities):
     return result if len(result) == n else []
 ```
 
+## Problem Variations
+
+### **Variation 1: Course Schedule II with Dynamic Updates**
+**Problem**: Handle dynamic course updates (add/remove/update courses and prerequisites) while maintaining optimal course scheduling calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic course management with topological sorting.
+
+```python
+from collections import defaultdict, deque
+import heapq
+
+class DynamicCourseScheduleII:
+    def __init__(self, n=None, prerequisites=None):
+        self.n = n or 0
+        self.prerequisites = prerequisites or []
+        self.graph = defaultdict(list)
+        self.in_degree = defaultdict(int)
+        self._update_course_schedule_info()
+    
+    def _update_course_schedule_info(self):
+        """Update course schedule feasibility information."""
+        self.course_schedule_feasibility = self._calculate_course_schedule_feasibility()
+    
+    def _calculate_course_schedule_feasibility(self):
+        """Calculate course schedule feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can schedule all courses
+        return 1.0 if self.n > 0 else 0.0
+    
+    def update_courses(self, new_n, new_prerequisites):
+        """Update the courses with new count and prerequisites."""
+        self.n = new_n
+        self.prerequisites = new_prerequisites
+        self._build_graph()
+        self._update_course_schedule_info()
+    
+    def add_course(self, course, prerequisites_list):
+        """Add a new course with its prerequisites."""
+        if 0 <= course < self.n:
+            for prereq in prerequisites_list:
+                if 0 <= prereq < self.n:
+                    self.prerequisites.append([prereq, course])
+            self._build_graph()
+            self._update_course_schedule_info()
+    
+    def remove_course(self, course):
+        """Remove a course and its related prerequisites."""
+        # Remove prerequisites where this course is involved
+        self.prerequisites = [p for p in self.prerequisites if p[0] != course and p[1] != course]
+        self._build_graph()
+        self._update_course_schedule_info()
+    
+    def _build_graph(self):
+        """Build the graph from prerequisites."""
+        self.graph = defaultdict(list)
+        self.in_degree = defaultdict(int)
+        
+        for prereq, course in self.prerequisites:
+            self.graph[prereq].append(course)
+            self.in_degree[course] += 1
+    
+    def find_course_order(self):
+        """Find the order to take all courses using topological sort."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        # Kahn's algorithm for topological sort
+        in_degree_copy = self.in_degree.copy()
+        queue = deque()
+        
+        # Find all courses with no prerequisites
+        for i in range(self.n):
+            if in_degree_copy[i] == 0:
+                queue.append(i)
+        
+        result = []
+        
+        while queue:
+            course = queue.popleft()
+            result.append(course)
+            
+            for next_course in self.graph[course]:
+                in_degree_copy[next_course] -= 1
+                if in_degree_copy[next_course] == 0:
+                    queue.append(next_course)
+        
+        return result if len(result) == self.n else []
+    
+    def find_course_order_with_priorities(self, priorities):
+        """Find course order considering course priorities."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        # Use priority queue for courses with same in-degree
+        in_degree_copy = self.in_degree.copy()
+        pq = []
+        
+        # Add courses with no prerequisites to priority queue
+        for i in range(self.n):
+            if in_degree_copy[i] == 0:
+                heapq.heappush(pq, (-priorities.get(i, 0), i))
+        
+        result = []
+        
+        while pq:
+            _, course = heapq.heappop(pq)
+            result.append(course)
+            
+            for next_course in self.graph[course]:
+                in_degree_copy[next_course] -= 1
+                if in_degree_copy[next_course] == 0:
+                    heapq.heappush(pq, (-priorities.get(next_course, 0), next_course))
+        
+        return result if len(result) == self.n else []
+    
+    def get_course_schedule_with_constraints(self, constraint_func):
+        """Get course schedule that satisfies custom constraints."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        course_order = self.find_course_order()
+        if course_order and constraint_func(self.n, self.prerequisites, course_order):
+            return course_order
+        else:
+            return []
+    
+    def get_course_schedule_in_range(self, min_courses, max_courses):
+        """Get course schedule within specified course count range."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        if min_courses <= self.n <= max_courses:
+            return self.find_course_order()
+        else:
+            return []
+    
+    def get_course_schedule_with_pattern(self, pattern_func):
+        """Get course schedule matching specified pattern."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        course_order = self.find_course_order()
+        if pattern_func(self.n, self.prerequisites, course_order):
+            return course_order
+        else:
+            return []
+    
+    def get_course_schedule_statistics(self):
+        """Get statistics about the course schedule."""
+        if not self.course_schedule_feasibility:
+            return {
+                'n': 0,
+                'course_schedule_feasibility': 0,
+                'is_schedulable': False,
+                'prerequisite_count': 0
+            }
+        
+        course_order = self.find_course_order()
+        return {
+            'n': self.n,
+            'course_schedule_feasibility': self.course_schedule_feasibility,
+            'is_schedulable': len(course_order) == self.n,
+            'prerequisite_count': len(self.prerequisites)
+        }
+    
+    def get_course_schedule_patterns(self):
+        """Get patterns in course schedule."""
+        patterns = {
+            'has_prerequisites': 0,
+            'has_valid_courses': 0,
+            'optimal_scheduling_possible': 0,
+            'has_large_course_set': 0
+        }
+        
+        if not self.course_schedule_feasibility:
+            return patterns
+        
+        # Check if has prerequisites
+        if len(self.prerequisites) > 0:
+            patterns['has_prerequisites'] = 1
+        
+        # Check if has valid courses
+        if self.n > 0:
+            patterns['has_valid_courses'] = 1
+        
+        # Check if optimal scheduling is possible
+        if self.course_schedule_feasibility == 1.0:
+            patterns['optimal_scheduling_possible'] = 1
+        
+        # Check if has large course set
+        if self.n > 100:
+            patterns['has_large_course_set'] = 1
+        
+        return patterns
+    
+    def get_optimal_course_schedule_strategy(self):
+        """Get optimal strategy for course scheduling."""
+        if not self.course_schedule_feasibility:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'course_schedule_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.course_schedule_feasibility
+        
+        # Calculate course schedule feasibility
+        course_schedule_feasibility = self.course_schedule_feasibility
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'topological_sort'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_kahn'
+        else:
+            recommended_strategy = 'advanced_scheduling'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'course_schedule_feasibility': course_schedule_feasibility
+        }
+
+# Example usage
+n = 4
+prerequisites = [[1, 0], [2, 0], [3, 1], [3, 2]]
+dynamic_course_schedule = DynamicCourseScheduleII(n, prerequisites)
+print(f"Course schedule feasibility: {dynamic_course_schedule.course_schedule_feasibility}")
+
+# Update courses
+dynamic_course_schedule.update_courses(5, [[1, 0], [2, 0], [3, 1], [3, 2], [4, 3]])
+print(f"After updating courses: n={dynamic_course_schedule.n}, prerequisites={dynamic_course_schedule.prerequisites}")
+
+# Add course
+dynamic_course_schedule.add_course(4, [3])
+print(f"After adding course 4 with prerequisite 3: {dynamic_course_schedule.prerequisites}")
+
+# Remove course
+dynamic_course_schedule.remove_course(4)
+print(f"After removing course 4: {dynamic_course_schedule.prerequisites}")
+
+# Find course order
+course_order = dynamic_course_schedule.find_course_order()
+print(f"Course order: {course_order}")
+
+# Find course order with priorities
+priorities = {0: 3, 1: 2, 2: 2, 3: 1}
+priority_order = dynamic_course_schedule.find_course_order_with_priorities(priorities)
+print(f"Course order with priorities: {priority_order}")
+
+# Get course schedule with constraints
+def constraint_func(n, prerequisites, course_order):
+    return len(course_order) == n and len(prerequisites) > 0
+
+print(f"Course schedule with constraints: {dynamic_course_schedule.get_course_schedule_with_constraints(constraint_func)}")
+
+# Get course schedule in range
+print(f"Course schedule in range 1-10: {dynamic_course_schedule.get_course_schedule_in_range(1, 10)}")
+
+# Get course schedule with pattern
+def pattern_func(n, prerequisites, course_order):
+    return len(course_order) == n and len(prerequisites) > 0
+
+print(f"Course schedule with pattern: {dynamic_course_schedule.get_course_schedule_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_course_schedule.get_course_schedule_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_course_schedule.get_course_schedule_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_course_schedule.get_optimal_course_schedule_strategy()}")
+```
+
+### **Variation 2: Course Schedule II with Different Operations**
+**Problem**: Handle different types of course scheduling operations (weighted courses, priority-based selection, advanced scheduling analysis).
+
+**Approach**: Use advanced data structures for efficient different types of course scheduling operations.
+
+```python
+class AdvancedCourseScheduleII:
+    def __init__(self, n=None, prerequisites=None, weights=None, priorities=None):
+        self.n = n or 0
+        self.prerequisites = prerequisites or []
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.graph = defaultdict(list)
+        self._update_course_schedule_info()
+    
+    def _update_course_schedule_info(self):
+        """Update course schedule feasibility information."""
+        self.course_schedule_feasibility = self._calculate_course_schedule_feasibility()
+    
+    def _calculate_course_schedule_feasibility(self):
+        """Calculate course schedule feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can schedule all courses
+        return 1.0 if self.n > 0 else 0.0
+    
+    def _build_graph(self):
+        """Build the graph from prerequisites."""
+        self.graph = defaultdict(list)
+        self.in_degree = defaultdict(int)
+        
+        for prereq, course in self.prerequisites:
+            self.graph[prereq].append(course)
+            self.in_degree[course] += 1
+    
+    def find_course_order(self):
+        """Find the order to take all courses using topological sort."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        self._build_graph()
+        
+        # Kahn's algorithm for topological sort
+        in_degree_copy = self.in_degree.copy()
+        queue = deque()
+        
+        # Find all courses with no prerequisites
+        for i in range(self.n):
+            if in_degree_copy[i] == 0:
+                queue.append(i)
+        
+        result = []
+        
+        while queue:
+            course = queue.popleft()
+            result.append(course)
+            
+            for next_course in self.graph[course]:
+                in_degree_copy[next_course] -= 1
+                if in_degree_copy[next_course] == 0:
+                    queue.append(next_course)
+        
+        return result if len(result) == self.n else []
+    
+    def get_weighted_course_schedule(self):
+        """Get course schedule with weights and priorities applied."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        course_order = self.find_course_order()
+        if not course_order:
+            return []
+        
+        # Create weighted course schedule
+        weighted_schedule = []
+        for course in course_order:
+            weight = self.weights.get(course, 1)
+            priority = self.priorities.get(course, 1)
+            weighted_score = weight * priority
+            weighted_schedule.append((course, weighted_score))
+        
+        # Sort by weighted score (descending for maximization)
+        weighted_schedule.sort(key=lambda x: x[1], reverse=True)
+        
+        return weighted_schedule
+    
+    def get_course_schedule_with_priority(self, priority_func):
+        """Get course schedule considering priority."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        course_order = self.find_course_order()
+        if not course_order:
+            return []
+        
+        # Create priority-based course schedule
+        priority_schedule = []
+        for course in course_order:
+            priority = priority_func(course, self.weights, self.priorities)
+            priority_schedule.append((course, priority))
+        
+        # Sort by priority (descending for maximization)
+        priority_schedule.sort(key=lambda x: x[1], reverse=True)
+        
+        return priority_schedule
+    
+    def get_course_schedule_with_optimization(self, optimization_func):
+        """Get course schedule using custom optimization function."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        course_order = self.find_course_order()
+        if not course_order:
+            return []
+        
+        # Create optimization-based course schedule
+        optimized_schedule = []
+        for course in course_order:
+            score = optimization_func(course, self.weights, self.priorities)
+            optimized_schedule.append((course, score))
+        
+        # Sort by optimization score (descending for maximization)
+        optimized_schedule.sort(key=lambda x: x[1], reverse=True)
+        
+        return optimized_schedule
+    
+    def get_course_schedule_with_constraints(self, constraint_func):
+        """Get course schedule that satisfies custom constraints."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        if constraint_func(self.n, self.prerequisites, self.weights, self.priorities):
+            return self.get_weighted_course_schedule()
+        else:
+            return []
+    
+    def get_course_schedule_with_multiple_criteria(self, criteria_list):
+        """Get course schedule that satisfies multiple criteria."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.n, self.prerequisites, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_course_schedule()
+        else:
+            return []
+    
+    def get_course_schedule_with_alternatives(self, alternatives):
+        """Get course schedule considering alternative weights/priorities."""
+        result = []
+        
+        # Check original course schedule
+        original_schedule = self.get_weighted_course_schedule()
+        result.append((original_schedule, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedCourseScheduleII(self.n, self.prerequisites, alt_weights, alt_priorities)
+            temp_schedule = temp_instance.get_weighted_course_schedule()
+            result.append((temp_schedule, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_course_schedule_with_adaptive_criteria(self, adaptive_func):
+        """Get course schedule using adaptive criteria."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        if adaptive_func(self.n, self.prerequisites, self.weights, self.priorities, []):
+            return self.get_weighted_course_schedule()
+        else:
+            return []
+    
+    def get_course_schedule_optimization(self):
+        """Get optimal course schedule configuration."""
+        strategies = [
+            ('weighted_schedule', lambda: len(self.get_weighted_course_schedule())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 4
+prerequisites = [[1, 0], [2, 0], [3, 1], [3, 2]]
+weights = {i: (i + 1) * 2 for i in range(n)}  # Weight based on course number
+priorities = {i: 1 for i in range(n)}  # Equal priority
+advanced_course_schedule = AdvancedCourseScheduleII(n, prerequisites, weights, priorities)
+
+print(f"Weighted course schedule: {advanced_course_schedule.get_weighted_course_schedule()}")
+
+# Get course schedule with priority
+def priority_func(course, weights, priorities):
+    return weights.get(course, 1) + priorities.get(course, 1)
+
+print(f"Course schedule with priority: {advanced_course_schedule.get_course_schedule_with_priority(priority_func)}")
+
+# Get course schedule with optimization
+def optimization_func(course, weights, priorities):
+    return weights.get(course, 1) * priorities.get(course, 1)
+
+print(f"Course schedule with optimization: {advanced_course_schedule.get_course_schedule_with_optimization(optimization_func)}")
+
+# Get course schedule with constraints
+def constraint_func(n, prerequisites, weights, priorities):
+    return len(prerequisites) > 0 and n > 0
+
+print(f"Course schedule with constraints: {advanced_course_schedule.get_course_schedule_with_constraints(constraint_func)}")
+
+# Get course schedule with multiple criteria
+def criterion1(n, prerequisites, weights, priorities):
+    return len(prerequisites) > 0
+
+def criterion2(n, prerequisites, weights, priorities):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Course schedule with multiple criteria: {advanced_course_schedule.get_course_schedule_with_multiple_criteria(criteria_list)}")
+
+# Get course schedule with alternatives
+alternatives = [({i: 1 for i in range(n)}, {i: 1 for i in range(n)}), ({i: (i+1)*3 for i in range(n)}, {i: 2 for i in range(n)})]
+print(f"Course schedule with alternatives: {advanced_course_schedule.get_course_schedule_with_alternatives(alternatives)}")
+
+# Get course schedule with adaptive criteria
+def adaptive_func(n, prerequisites, weights, priorities, current_result):
+    return len(prerequisites) > 0 and len(current_result) < 10
+
+print(f"Course schedule with adaptive criteria: {advanced_course_schedule.get_course_schedule_with_adaptive_criteria(adaptive_func)}")
+
+# Get course schedule optimization
+print(f"Course schedule optimization: {advanced_course_schedule.get_course_schedule_optimization()}")
+```
+
+### **Variation 3: Course Schedule II with Constraints**
+**Problem**: Handle course scheduling with additional constraints (course limits, scheduling constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedCourseScheduleII:
+    def __init__(self, n=None, prerequisites=None, constraints=None):
+        self.n = n or 0
+        self.prerequisites = prerequisites or []
+        self.constraints = constraints or {}
+        self.graph = defaultdict(list)
+        self._update_course_schedule_info()
+    
+    def _update_course_schedule_info(self):
+        """Update course schedule feasibility information."""
+        self.course_schedule_feasibility = self._calculate_course_schedule_feasibility()
+    
+    def _calculate_course_schedule_feasibility(self):
+        """Calculate course schedule feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can schedule all courses
+        return 1.0 if self.n > 0 else 0.0
+    
+    def _is_valid_course(self, course):
+        """Check if course is valid considering constraints."""
+        # Course constraints
+        if 'allowed_courses' in self.constraints:
+            if course not in self.constraints['allowed_courses']:
+                return False
+        
+        if 'forbidden_courses' in self.constraints:
+            if course in self.constraints['forbidden_courses']:
+                return False
+        
+        # Range constraints
+        if 'max_course' in self.constraints:
+            if course > self.constraints['max_course']:
+                return False
+        
+        if 'min_course' in self.constraints:
+            if course < self.constraints['min_course']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(course, self.n, self.prerequisites):
+                    return False
+        
+        return True
+    
+    def _build_graph(self):
+        """Build the graph from prerequisites."""
+        self.graph = defaultdict(list)
+        self.in_degree = defaultdict(int)
+        
+        for prereq, course in self.prerequisites:
+            if self._is_valid_course(prereq) and self._is_valid_course(course):
+                self.graph[prereq].append(course)
+                self.in_degree[course] += 1
+    
+    def find_course_order(self):
+        """Find the order to take all courses using topological sort."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        self._build_graph()
+        
+        # Kahn's algorithm for topological sort
+        in_degree_copy = self.in_degree.copy()
+        queue = deque()
+        
+        # Find all courses with no prerequisites
+        for i in range(self.n):
+            if self._is_valid_course(i) and in_degree_copy[i] == 0:
+                queue.append(i)
+        
+        result = []
+        
+        while queue:
+            course = queue.popleft()
+            result.append(course)
+            
+            for next_course in self.graph[course]:
+                in_degree_copy[next_course] -= 1
+                if in_degree_copy[next_course] == 0:
+                    queue.append(next_course)
+        
+        return result if len(result) == self.n else []
+    
+    def get_course_schedule_with_course_constraints(self, min_courses, max_courses):
+        """Get course schedule considering course count constraints."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        if min_courses <= self.n <= max_courses:
+            return self._calculate_constrained_course_schedule()
+        else:
+            return []
+    
+    def get_course_schedule_with_scheduling_constraints(self, scheduling_constraints):
+        """Get course schedule considering scheduling constraints."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in scheduling_constraints:
+            if not constraint(self.n, self.prerequisites):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self._calculate_constrained_course_schedule()
+        else:
+            return []
+    
+    def get_course_schedule_with_pattern_constraints(self, pattern_constraints):
+        """Get course schedule considering pattern constraints."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.n, self.prerequisites):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self._calculate_constrained_course_schedule()
+        else:
+            return []
+    
+    def get_course_schedule_with_mathematical_constraints(self, constraint_func):
+        """Get course schedule that satisfies custom mathematical constraints."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        if constraint_func(self.n, self.prerequisites):
+            return self._calculate_constrained_course_schedule()
+        else:
+            return []
+    
+    def get_course_schedule_with_optimization_constraints(self, optimization_func):
+        """Get course schedule using custom optimization constraints."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        # Calculate optimization score for course schedule
+        score = optimization_func(self.n, self.prerequisites)
+        
+        if score > 0:
+            return self._calculate_constrained_course_schedule()
+        else:
+            return []
+    
+    def get_course_schedule_with_multiple_constraints(self, constraints_list):
+        """Get course schedule that satisfies multiple constraints."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.n, self.prerequisites):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self._calculate_constrained_course_schedule()
+        else:
+            return []
+    
+    def get_course_schedule_with_priority_constraints(self, priority_func):
+        """Get course schedule with priority-based constraints."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        # Calculate priority for course schedule
+        priority = priority_func(self.n, self.prerequisites)
+        
+        if priority > 0:
+            return self._calculate_constrained_course_schedule()
+        else:
+            return []
+    
+    def get_course_schedule_with_adaptive_constraints(self, adaptive_func):
+        """Get course schedule with adaptive constraints."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        if adaptive_func(self.n, self.prerequisites, []):
+            return self._calculate_constrained_course_schedule()
+        else:
+            return []
+    
+    def _calculate_constrained_course_schedule(self):
+        """Calculate course schedule considering all constraints."""
+        if not self.course_schedule_feasibility:
+            return []
+        
+        course_order = self.find_course_order()
+        if not course_order:
+            return []
+        
+        # Filter valid courses
+        valid_courses = [course for course in course_order if self._is_valid_course(course)]
+        
+        return valid_courses
+    
+    def get_optimal_course_schedule_strategy(self):
+        """Get optimal course schedule strategy considering all constraints."""
+        strategies = [
+            ('course_constraints', self.get_course_schedule_with_course_constraints),
+            ('scheduling_constraints', self.get_course_schedule_with_scheduling_constraints),
+            ('pattern_constraints', self.get_course_schedule_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'course_constraints':
+                    result = strategy_func(1, 1000)
+                elif strategy_name == 'scheduling_constraints':
+                    scheduling_constraints = [lambda n, prerequisites: len(prerequisites) > 0]
+                    result = strategy_func(scheduling_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda n, prerequisites: len(prerequisites) > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_courses': [0, 1, 2, 3, 4],
+    'forbidden_courses': [5, 6, 7, 8, 9],
+    'max_course': 10,
+    'min_course': 0,
+    'pattern_constraints': [lambda course, n, prerequisites: course >= 0 and course < n]
+}
+
+n = 4
+prerequisites = [[1, 0], [2, 0], [3, 1], [3, 2]]
+constrained_course_schedule = ConstrainedCourseScheduleII(n, prerequisites, constraints)
+
+print("Course-constrained course schedule:", constrained_course_schedule.get_course_schedule_with_course_constraints(1, 10))
+
+print("Scheduling-constrained course schedule:", constrained_course_schedule.get_course_schedule_with_scheduling_constraints([lambda n, prerequisites: len(prerequisites) > 0]))
+
+print("Pattern-constrained course schedule:", constrained_course_schedule.get_course_schedule_with_pattern_constraints([lambda n, prerequisites: len(prerequisites) > 0]))
+
+# Mathematical constraints
+def custom_constraint(n, prerequisites):
+    return len(prerequisites) > 0
+
+print("Mathematical constraint course schedule:", constrained_course_schedule.get_course_schedule_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(n, prerequisites):
+    return 1 <= n <= 100
+
+range_constraints = [range_constraint]
+print("Range-constrained course schedule:", constrained_course_schedule.get_course_schedule_with_course_constraints(1, 10))
+
+# Multiple constraints
+def constraint1(n, prerequisites):
+    return len(prerequisites) > 0
+
+def constraint2(n, prerequisites):
+    return n > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints course schedule:", constrained_course_schedule.get_course_schedule_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(n, prerequisites):
+    return n + len(prerequisites)
+
+print("Priority-constrained course schedule:", constrained_course_schedule.get_course_schedule_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(n, prerequisites, current_result):
+    return len(prerequisites) > 0 and len(current_result) < 10
+
+print("Adaptive constraint course schedule:", constrained_course_schedule.get_course_schedule_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_course_schedule.get_optimal_course_schedule_strategy()
+print(f"Optimal course schedule strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

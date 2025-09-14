@@ -705,6 +705,806 @@ result = multiple_mst_edge_check(n, edges, queries)
 print(f"Multiple MST edge check result: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: MST Edge Check with Dynamic Updates**
+**Problem**: Handle dynamic graph updates (add/remove/update edges) while maintaining MST edge check calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic graph management with MST edge detection.
+
+```python
+from collections import defaultdict, deque
+import heapq
+
+class DynamicMSTEdgeCheck:
+    def __init__(self, n=None, edges=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.graph = defaultdict(list)
+        self._update_mst_info()
+    
+    def _update_mst_info(self):
+        """Update MST information."""
+        self.mst_edges = self._calculate_mst()
+        self.mst_edge_set = set(self.mst_edges)
+    
+    def _calculate_mst(self):
+        """Calculate MST using Kruskal's algorithm."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return []
+        
+        # Sort edges by weight
+        sorted_edges = sorted(self.edges, key=lambda x: x[2])
+        
+        # Union-Find data structure
+        parent = list(range(self.n))
+        
+        def find(x):
+            if parent[x] != x:
+                parent[x] = find(parent[x])
+            return parent[x]
+        
+        def union(x, y):
+            px, py = find(x), find(y)
+            if px != py:
+                parent[px] = py
+                return True
+            return False
+        
+        mst_edges = []
+        for u, v, weight in sorted_edges:
+            if union(u, v):
+                mst_edges.append((u, v, weight))
+                if len(mst_edges) == self.n - 1:
+                    break
+        
+        return mst_edges
+    
+    def update_graph(self, new_n, new_edges):
+        """Update the graph with new vertices and edges."""
+        self.n = new_n
+        self.edges = new_edges
+        self._build_graph()
+        self._update_mst_info()
+    
+    def add_edge(self, u, v, weight):
+        """Add an edge to the graph."""
+        if 0 <= u < self.n and 0 <= v < self.n:
+            self.edges.append((u, v, weight))
+            self.graph[u].append((v, weight))
+            self.graph[v].append((u, weight))
+            self._update_mst_info()
+    
+    def remove_edge(self, u, v, weight):
+        """Remove an edge from the graph."""
+        if (u, v, weight) in self.edges:
+            self.edges.remove((u, v, weight))
+            self.graph[u].remove((v, weight))
+            self.graph[v].remove((u, weight))
+            self._update_mst_info()
+        elif (v, u, weight) in self.edges:
+            self.edges.remove((v, u, weight))
+            self.graph[u].remove((v, weight))
+            self.graph[v].remove((u, weight))
+            self._update_mst_info()
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v, weight in self.edges:
+            self.graph[u].append((v, weight))
+            self.graph[v].append((u, weight))
+    
+    def is_mst_edge(self, u, v, weight):
+        """Check if an edge is in the MST."""
+        return (u, v, weight) in self.mst_edge_set or (v, u, weight) in self.mst_edge_set
+    
+    def get_mst_edges(self):
+        """Get all MST edges."""
+        return self.mst_edges
+    
+    def get_mst_edge_with_priorities(self, priorities):
+        """Get MST edges considering vertex priorities."""
+        if not self.mst_edges:
+            return []
+        
+        # Calculate weighted MST based on priorities
+        weighted_mst = []
+        for u, v, weight in self.mst_edges:
+            edge_priority = priorities.get(u, 1) + priorities.get(v, 1)
+            weighted_mst.append((u, v, weight, edge_priority))
+        
+        return weighted_mst
+    
+    def get_mst_edge_with_constraints(self, constraint_func):
+        """Get MST edges that satisfies custom constraints."""
+        if not self.mst_edges:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.mst_edges):
+            return self.mst_edges
+        else:
+            return []
+    
+    def get_mst_edge_in_range(self, min_weight, max_weight):
+        """Get MST edges within specified weight range."""
+        if not self.mst_edges:
+            return []
+        
+        filtered_edges = []
+        for u, v, weight in self.mst_edges:
+            if min_weight <= weight <= max_weight:
+                filtered_edges.append((u, v, weight))
+        
+        return filtered_edges
+    
+    def get_mst_edge_with_pattern(self, pattern_func):
+        """Get MST edges matching specified pattern."""
+        if not self.mst_edges:
+            return []
+        
+        if pattern_func(self.n, self.edges, self.mst_edges):
+            return self.mst_edges
+        else:
+            return []
+    
+    def get_mst_statistics(self):
+        """Get statistics about the MST."""
+        return {
+            'n': self.n,
+            'edge_count': len(self.edges),
+            'mst_edge_count': len(self.mst_edges),
+            'mst_weight': sum(weight for _, _, weight in self.mst_edges),
+            'is_connected': len(self.mst_edges) == self.n - 1
+        }
+    
+    def get_mst_patterns(self):
+        """Get patterns in MST."""
+        patterns = {
+            'has_edges': 0,
+            'has_valid_graph': 0,
+            'optimal_mst_possible': 0,
+            'has_large_graph': 0
+        }
+        
+        # Check if has edges
+        if len(self.edges) > 0:
+            patterns['has_edges'] = 1
+        
+        # Check if has valid graph
+        if self.n > 0:
+            patterns['has_valid_graph'] = 1
+        
+        # Check if optimal MST is possible
+        if len(self.mst_edges) == self.n - 1:
+            patterns['optimal_mst_possible'] = 1
+        
+        # Check if has large graph
+        if self.n > 100:
+            patterns['has_large_graph'] = 1
+        
+        return patterns
+    
+    def get_optimal_mst_strategy(self):
+        """Get optimal strategy for MST management."""
+        if not self.mst_edges:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'mst_weight': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = 1.0 if len(self.mst_edges) == self.n - 1 else 0.0
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'kruskal_mst'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_kruskal'
+        else:
+            recommended_strategy = 'advanced_mst_detection'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'mst_weight': sum(weight for _, _, weight in self.mst_edges)
+        }
+
+# Example usage
+n = 5
+edges = [(0, 1, 2), (1, 2, 3), (2, 3, 1), (3, 4, 4), (4, 0, 5), (0, 2, 6)]
+dynamic_mst = DynamicMSTEdgeCheck(n, edges)
+print(f"MST edges: {dynamic_mst.mst_edges}")
+
+# Update graph
+dynamic_mst.update_graph(6, [(0, 1, 2), (1, 2, 3), (2, 3, 1), (3, 4, 4), (4, 5, 2), (5, 0, 3), (0, 2, 6)])
+print(f"After updating graph: n={dynamic_mst.n}, mst_edges={dynamic_mst.mst_edges}")
+
+# Add edge
+dynamic_mst.add_edge(5, 1, 1)
+print(f"After adding edge (5,1,1): {dynamic_mst.edges}")
+
+# Remove edge
+dynamic_mst.remove_edge(5, 1, 1)
+print(f"After removing edge (5,1,1): {dynamic_mst.edges}")
+
+# Check if edge is in MST
+is_mst = dynamic_mst.is_mst_edge(0, 1, 2)
+print(f"Is edge (0,1,2) in MST: {is_mst}")
+
+# Get MST edges
+mst_edges = dynamic_mst.get_mst_edges()
+print(f"MST edges: {mst_edges}")
+
+# Get MST edges with priorities
+priorities = {i: i for i in range(n)}
+priority_mst = dynamic_mst.get_mst_edge_with_priorities(priorities)
+print(f"MST edges with priorities: {priority_mst}")
+
+# Get MST edges with constraints
+def constraint_func(n, edges, mst_edges):
+    return len(mst_edges) > 0 and n > 0
+
+print(f"MST edges with constraints: {dynamic_mst.get_mst_edge_with_constraints(constraint_func)}")
+
+# Get MST edges in range
+print(f"MST edges in range 1-3: {dynamic_mst.get_mst_edge_in_range(1, 3)}")
+
+# Get MST edges with pattern
+def pattern_func(n, edges, mst_edges):
+    return len(mst_edges) > 0 and n > 0
+
+print(f"MST edges with pattern: {dynamic_mst.get_mst_edge_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_mst.get_mst_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_mst.get_mst_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_mst.get_optimal_mst_strategy()}")
+```
+
+### **Variation 2: MST Edge Check with Different Operations**
+**Problem**: Handle different types of MST edge operations (weighted MST, priority-based selection, advanced MST analysis).
+
+**Approach**: Use advanced data structures for efficient different types of MST edge operations.
+
+```python
+class AdvancedMSTEdgeCheck:
+    def __init__(self, n=None, edges=None, weights=None, priorities=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.graph = defaultdict(list)
+        self._update_mst_info()
+    
+    def _update_mst_info(self):
+        """Update MST information."""
+        self.mst_edges = self._calculate_mst()
+        self.mst_edge_set = set(self.mst_edges)
+    
+    def _calculate_mst(self):
+        """Calculate MST using Kruskal's algorithm."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return []
+        
+        # Sort edges by weight
+        sorted_edges = sorted(self.edges, key=lambda x: x[2])
+        
+        # Union-Find data structure
+        parent = list(range(self.n))
+        
+        def find(x):
+            if parent[x] != x:
+                parent[x] = find(parent[x])
+            return parent[x]
+        
+        def union(x, y):
+            px, py = find(x), find(y)
+            if px != py:
+                parent[px] = py
+                return True
+            return False
+        
+        mst_edges = []
+        for u, v, weight in sorted_edges:
+            if union(u, v):
+                mst_edges.append((u, v, weight))
+                if len(mst_edges) == self.n - 1:
+                    break
+        
+        return mst_edges
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v, weight in self.edges:
+            self.graph[u].append((v, weight))
+            self.graph[v].append((u, weight))
+    
+    def is_mst_edge(self, u, v, weight):
+        """Check if an edge is in the MST."""
+        return (u, v, weight) in self.mst_edge_set or (v, u, weight) in self.mst_edge_set
+    
+    def get_mst_edges(self):
+        """Get all MST edges."""
+        return self.mst_edges
+    
+    def get_weighted_mst_edges(self):
+        """Get MST edges with weights and priorities applied."""
+        if not self.mst_edges:
+            return []
+        
+        # Calculate weighted MST based on edge weights and vertex priorities
+        weighted_mst = []
+        for u, v, weight in self.mst_edges:
+            edge_weight = self.weights.get((u, v), weight)
+            vertex_priority = self.priorities.get(u, 1) + self.priorities.get(v, 1)
+            weighted_score = edge_weight * vertex_priority
+            weighted_mst.append((u, v, weight, weighted_score))
+        
+        return weighted_mst
+    
+    def get_mst_edges_with_priority(self, priority_func):
+        """Get MST edges considering priority."""
+        if not self.mst_edges:
+            return []
+        
+        # Calculate priority-based MST
+        priority_mst = []
+        for u, v, weight in self.mst_edges:
+            priority = priority_func(u, v, weight, self.weights, self.priorities)
+            priority_mst.append((u, v, weight, priority))
+        
+        return priority_mst
+    
+    def get_mst_edges_with_optimization(self, optimization_func):
+        """Get MST edges using custom optimization function."""
+        if not self.mst_edges:
+            return []
+        
+        # Calculate optimization-based MST
+        optimized_mst = []
+        for u, v, weight in self.mst_edges:
+            score = optimization_func(u, v, weight, self.weights, self.priorities)
+            optimized_mst.append((u, v, weight, score))
+        
+        return optimized_mst
+    
+    def get_mst_edges_with_constraints(self, constraint_func):
+        """Get MST edges that satisfies custom constraints."""
+        if not self.mst_edges:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.weights, self.priorities, self.mst_edges):
+            return self.get_weighted_mst_edges()
+        else:
+            return []
+    
+    def get_mst_edges_with_multiple_criteria(self, criteria_list):
+        """Get MST edges that satisfies multiple criteria."""
+        if not self.mst_edges:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.n, self.edges, self.weights, self.priorities, self.mst_edges):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_mst_edges()
+        else:
+            return []
+    
+    def get_mst_edges_with_alternatives(self, alternatives):
+        """Get MST edges considering alternative weights/priorities."""
+        result = []
+        
+        # Check original MST
+        original_mst = self.get_weighted_mst_edges()
+        result.append((original_mst, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedMSTEdgeCheck(self.n, self.edges, alt_weights, alt_priorities)
+            temp_mst = temp_instance.get_weighted_mst_edges()
+            result.append((temp_mst, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_mst_edges_with_adaptive_criteria(self, adaptive_func):
+        """Get MST edges using adaptive criteria."""
+        if not self.mst_edges:
+            return []
+        
+        if adaptive_func(self.n, self.edges, self.weights, self.priorities, self.mst_edges, []):
+            return self.get_weighted_mst_edges()
+        else:
+            return []
+    
+    def get_mst_edges_optimization(self):
+        """Get optimal MST edges configuration."""
+        strategies = [
+            ('weighted_mst', lambda: len(self.get_weighted_mst_edges())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 5
+edges = [(0, 1, 2), (1, 2, 3), (2, 3, 1), (3, 4, 4), (4, 0, 5), (0, 2, 6)]
+weights = {(u, v): (u + v) * 2 for u, v, _ in edges}  # Weight based on vertex sum
+priorities = {i: i for i in range(n)}  # Priority based on vertex number
+advanced_mst = AdvancedMSTEdgeCheck(n, edges, weights, priorities)
+
+print(f"Weighted MST edges: {advanced_mst.get_weighted_mst_edges()}")
+
+# Get MST edges with priority
+def priority_func(u, v, weight, weights, priorities):
+    return priorities.get(u, 1) + priorities.get(v, 1) + weight
+
+print(f"MST edges with priority: {advanced_mst.get_mst_edges_with_priority(priority_func)}")
+
+# Get MST edges with optimization
+def optimization_func(u, v, weight, weights, priorities):
+    return weights.get((u, v), weight) + priorities.get(u, 1) + priorities.get(v, 1)
+
+print(f"MST edges with optimization: {advanced_mst.get_mst_edges_with_optimization(optimization_func)}")
+
+# Get MST edges with constraints
+def constraint_func(n, edges, weights, priorities, mst_edges):
+    return len(mst_edges) > 0 and n > 0
+
+print(f"MST edges with constraints: {advanced_mst.get_mst_edges_with_constraints(constraint_func)}")
+
+# Get MST edges with multiple criteria
+def criterion1(n, edges, weights, priorities, mst_edges):
+    return len(edges) > 0
+
+def criterion2(n, edges, weights, priorities, mst_edges):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"MST edges with multiple criteria: {advanced_mst.get_mst_edges_with_multiple_criteria(criteria_list)}")
+
+# Get MST edges with alternatives
+alternatives = [({(u, v): 1 for u, v, _ in edges}, {i: 1 for i in range(n)}), ({(u, v): (u + v)*3 for u, v, _ in edges}, {i: 2 for i in range(n)})]
+print(f"MST edges with alternatives: {advanced_mst.get_mst_edges_with_alternatives(alternatives)}")
+
+# Get MST edges with adaptive criteria
+def adaptive_func(n, edges, weights, priorities, mst_edges, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print(f"MST edges with adaptive criteria: {advanced_mst.get_mst_edges_with_adaptive_criteria(adaptive_func)}")
+
+# Get MST edges optimization
+print(f"MST edges optimization: {advanced_mst.get_mst_edges_optimization()}")
+```
+
+### **Variation 3: MST Edge Check with Constraints**
+**Problem**: Handle MST edge check with additional constraints (weight limits, MST constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedMSTEdgeCheck:
+    def __init__(self, n=None, edges=None, constraints=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.constraints = constraints or {}
+        self.graph = defaultdict(list)
+        self._update_mst_info()
+    
+    def _update_mst_info(self):
+        """Update MST information."""
+        self.mst_edges = self._calculate_mst()
+        self.mst_edge_set = set(self.mst_edges)
+    
+    def _calculate_mst(self):
+        """Calculate MST using Kruskal's algorithm."""
+        if self.n <= 0 or len(self.edges) == 0:
+            return []
+        
+        # Sort edges by weight
+        sorted_edges = sorted(self.edges, key=lambda x: x[2])
+        
+        # Union-Find data structure
+        parent = list(range(self.n))
+        
+        def find(x):
+            if parent[x] != x:
+                parent[x] = find(parent[x])
+            return parent[x]
+        
+        def union(x, y):
+            px, py = find(x), find(y)
+            if px != py:
+                parent[px] = py
+                return True
+            return False
+        
+        mst_edges = []
+        for u, v, weight in sorted_edges:
+            if union(u, v):
+                mst_edges.append((u, v, weight))
+                if len(mst_edges) == self.n - 1:
+                    break
+        
+        return mst_edges
+    
+    def _is_valid_edge(self, u, v, weight):
+        """Check if edge is valid considering constraints."""
+        # Edge constraints
+        if 'allowed_edges' in self.constraints:
+            if (u, v, weight) not in self.constraints['allowed_edges'] and (v, u, weight) not in self.constraints['allowed_edges']:
+                return False
+        
+        if 'forbidden_edges' in self.constraints:
+            if (u, v, weight) in self.constraints['forbidden_edges'] or (v, u, weight) in self.constraints['forbidden_edges']:
+                return False
+        
+        # Weight constraints
+        if 'max_weight' in self.constraints:
+            if weight > self.constraints['max_weight']:
+                return False
+        
+        if 'min_weight' in self.constraints:
+            if weight < self.constraints['min_weight']:
+                return False
+        
+        # Vertex constraints
+        if 'max_vertex' in self.constraints:
+            if u > self.constraints['max_vertex'] or v > self.constraints['max_vertex']:
+                return False
+        
+        if 'min_vertex' in self.constraints:
+            if u < self.constraints['min_vertex'] or v < self.constraints['min_vertex']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(u, v, weight, self.n, self.edges, self.mst_edges):
+                    return False
+        
+        return True
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v, weight in self.edges:
+            if self._is_valid_edge(u, v, weight):
+                self.graph[u].append((v, weight))
+                self.graph[v].append((u, weight))
+    
+    def is_mst_edge(self, u, v, weight):
+        """Check if an edge is in the MST."""
+        return (u, v, weight) in self.mst_edge_set or (v, u, weight) in self.mst_edge_set
+    
+    def get_mst_edges(self):
+        """Get all MST edges."""
+        return self.mst_edges
+    
+    def get_mst_edges_with_weight_constraints(self, min_weight, max_weight):
+        """Get MST edges considering weight constraints."""
+        if not self.mst_edges:
+            return []
+        
+        filtered_edges = []
+        for u, v, weight in self.mst_edges:
+            if min_weight <= weight <= max_weight:
+                filtered_edges.append((u, v, weight))
+        
+        return filtered_edges
+    
+    def get_mst_edges_with_mst_constraints(self, mst_constraints):
+        """Get MST edges considering MST constraints."""
+        if not self.mst_edges:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in mst_constraints:
+            if not constraint(self.n, self.edges, self.mst_edges):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self.mst_edges
+        else:
+            return []
+    
+    def get_mst_edges_with_pattern_constraints(self, pattern_constraints):
+        """Get MST edges considering pattern constraints."""
+        if not self.mst_edges:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.n, self.edges, self.mst_edges):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self.mst_edges
+        else:
+            return []
+    
+    def get_mst_edges_with_mathematical_constraints(self, constraint_func):
+        """Get MST edges that satisfies custom mathematical constraints."""
+        if not self.mst_edges:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.mst_edges):
+            return self.mst_edges
+        else:
+            return []
+    
+    def get_mst_edges_with_optimization_constraints(self, optimization_func):
+        """Get MST edges using custom optimization constraints."""
+        if not self.mst_edges:
+            return []
+        
+        # Calculate optimization score for MST
+        score = optimization_func(self.n, self.edges, self.mst_edges)
+        
+        if score > 0:
+            return self.mst_edges
+        else:
+            return []
+    
+    def get_mst_edges_with_multiple_constraints(self, constraints_list):
+        """Get MST edges that satisfies multiple constraints."""
+        if not self.mst_edges:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.n, self.edges, self.mst_edges):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self.mst_edges
+        else:
+            return []
+    
+    def get_mst_edges_with_priority_constraints(self, priority_func):
+        """Get MST edges with priority-based constraints."""
+        if not self.mst_edges:
+            return []
+        
+        # Calculate priority for MST
+        priority = priority_func(self.n, self.edges, self.mst_edges)
+        
+        if priority > 0:
+            return self.mst_edges
+        else:
+            return []
+    
+    def get_mst_edges_with_adaptive_constraints(self, adaptive_func):
+        """Get MST edges with adaptive constraints."""
+        if not self.mst_edges:
+            return []
+        
+        if adaptive_func(self.n, self.edges, self.mst_edges, []):
+            return self.mst_edges
+        else:
+            return []
+    
+    def get_optimal_mst_edges_strategy(self):
+        """Get optimal MST edges strategy considering all constraints."""
+        strategies = [
+            ('weight_constraints', self.get_mst_edges_with_weight_constraints),
+            ('mst_constraints', self.get_mst_edges_with_mst_constraints),
+            ('pattern_constraints', self.get_mst_edges_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'weight_constraints':
+                    result = strategy_func(0, 1000)
+                elif strategy_name == 'mst_constraints':
+                    mst_constraints = [lambda n, edges, mst_edges: len(edges) > 0]
+                    result = strategy_func(mst_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda n, edges, mst_edges: len(edges) > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_edges': [(0, 1, 2), (1, 2, 3), (2, 3, 1), (3, 4, 4), (4, 0, 5), (0, 2, 6)],
+    'forbidden_edges': [(0, 3, 7), (1, 4, 8)],
+    'max_weight': 10,
+    'min_weight': 1,
+    'max_vertex': 10,
+    'min_vertex': 0,
+    'pattern_constraints': [lambda u, v, weight, n, edges, mst_edges: u >= 0 and v >= 0 and u < n and v < n]
+}
+
+n = 5
+edges = [(0, 1, 2), (1, 2, 3), (2, 3, 1), (3, 4, 4), (4, 0, 5), (0, 2, 6)]
+constrained_mst = ConstrainedMSTEdgeCheck(n, edges, constraints)
+
+print("Weight-constrained MST edges:", constrained_mst.get_mst_edges_with_weight_constraints(1, 5))
+
+print("MST-constrained MST edges:", constrained_mst.get_mst_edges_with_mst_constraints([lambda n, edges, mst_edges: len(edges) > 0]))
+
+print("Pattern-constrained MST edges:", constrained_mst.get_mst_edges_with_pattern_constraints([lambda n, edges, mst_edges: len(edges) > 0]))
+
+# Mathematical constraints
+def custom_constraint(n, edges, mst_edges):
+    return len(mst_edges) > 0 and n > 0
+
+print("Mathematical constraint MST edges:", constrained_mst.get_mst_edges_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(n, edges, mst_edges):
+    return 1 <= len(mst_edges) <= 20
+
+range_constraints = [range_constraint]
+print("Range-constrained MST edges:", constrained_mst.get_mst_edges_with_weight_constraints(1, 20))
+
+# Multiple constraints
+def constraint1(n, edges, mst_edges):
+    return len(edges) > 0
+
+def constraint2(n, edges, mst_edges):
+    return len(mst_edges) > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints MST edges:", constrained_mst.get_mst_edges_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(n, edges, mst_edges):
+    return n + len(edges) + len(mst_edges)
+
+print("Priority-constrained MST edges:", constrained_mst.get_mst_edges_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(n, edges, mst_edges, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print("Adaptive constraint MST edges:", constrained_mst.get_mst_edges_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_mst.get_optimal_mst_edges_strategy()
+print(f"Optimal MST edges strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

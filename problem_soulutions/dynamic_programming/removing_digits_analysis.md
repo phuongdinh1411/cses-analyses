@@ -574,6 +574,817 @@ result = multi_target_removing_digits(targets, max_n)
 print(f"Multi-target removing digits: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Removing Digits with Dynamic Updates**
+**Problem**: Handle dynamic number updates (add/remove/update digits) while maintaining optimal digit removal calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic digit management.
+
+```python
+from collections import defaultdict
+
+class DynamicRemovingDigits:
+    def __init__(self, number=None):
+        self.number = number or 0
+        self.digits = []
+        self._update_removing_digits_info()
+    
+    def _update_removing_digits_info(self):
+        """Update removing digits feasibility information."""
+        self.removing_digits_feasibility = self._calculate_removing_digits_feasibility()
+    
+    def _calculate_removing_digits_feasibility(self):
+        """Calculate removing digits feasibility."""
+        if self.number <= 0:
+            return 0.0
+        
+        # Check if we can remove digits from the number
+        return 1.0 if self.number > 0 else 0.0
+    
+    def update_number(self, new_number):
+        """Update the number."""
+        self.number = new_number
+        self._update_removing_digits_info()
+    
+    def add_digit(self, digit):
+        """Add a digit to the number."""
+        if 0 <= digit <= 9:
+            self.number = self.number * 10 + digit
+            self._update_removing_digits_info()
+    
+    def remove_digit(self, position):
+        """Remove digit at position from the number."""
+        if self.number > 0:
+            digits = list(str(self.number))
+            if 0 <= position < len(digits):
+                digits.pop(position)
+                self.number = int(''.join(digits)) if digits else 0
+                self._update_removing_digits_info()
+    
+    def find_minimum_operations(self):
+        """Find minimum number of operations to make number 0 using dynamic programming."""
+        if not self.removing_digits_feasibility:
+            return 0
+        
+        if self.number == 0:
+            return 0
+        
+        # DP table: dp[i] = minimum operations to make number i equal to 0
+        dp = [float('inf')] * (self.number + 1)
+        dp[0] = 0
+        
+        # Fill DP table
+        for i in range(1, self.number + 1):
+            # Try removing each digit
+            digits = list(str(i))
+            for j in range(len(digits)):
+                # Remove digit at position j
+                new_digits = digits[:j] + digits[j+1:]
+                if new_digits:
+                    new_number = int(''.join(new_digits))
+                else:
+                    new_number = 0
+                
+                dp[i] = min(dp[i], dp[new_number] + 1)
+        
+        return dp[self.number] if dp[self.number] != float('inf') else -1
+    
+    def find_operation_sequence(self):
+        """Find the actual sequence of operations."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        if self.number == 0:
+            return []
+        
+        # DP table: dp[i] = minimum operations to make number i equal to 0
+        dp = [float('inf')] * (self.number + 1)
+        dp[0] = 0
+        
+        # Fill DP table
+        for i in range(1, self.number + 1):
+            digits = list(str(i))
+            for j in range(len(digits)):
+                new_digits = digits[:j] + digits[j+1:]
+                if new_digits:
+                    new_number = int(''.join(new_digits))
+                else:
+                    new_number = 0
+                
+                dp[i] = min(dp[i], dp[new_number] + 1)
+        
+        # Backtrack to find the operation sequence
+        operations = []
+        current = self.number
+        
+        while current > 0:
+            digits = list(str(current))
+            best_operation = None
+            best_next = current
+            
+            for j in range(len(digits)):
+                new_digits = digits[:j] + digits[j+1:]
+                if new_digits:
+                    new_number = int(''.join(new_digits))
+                else:
+                    new_number = 0
+                
+                if dp[new_number] + 1 == dp[current]:
+                    best_operation = ('remove_digit', j, digits[j])
+                    best_next = new_number
+                    break
+            
+            if best_operation:
+                operations.append(best_operation)
+                current = best_next
+            else:
+                break
+        
+        return operations
+    
+    def get_removing_digits_with_constraints(self, constraint_func):
+        """Get removing digits that satisfies custom constraints."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        min_ops = self.find_minimum_operations()
+        if constraint_func(min_ops, self.number):
+            return self.find_operation_sequence()
+        else:
+            return []
+    
+    def get_removing_digits_in_range(self, min_ops, max_ops):
+        """Get removing digits within specified range."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        result = self.find_minimum_operations()
+        if min_ops <= result <= max_ops:
+            return self.find_operation_sequence()
+        else:
+            return []
+    
+    def get_removing_digits_with_pattern(self, pattern_func):
+        """Get removing digits matching specified pattern."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        min_ops = self.find_minimum_operations()
+        if pattern_func(min_ops, self.number):
+            return self.find_operation_sequence()
+        else:
+            return []
+    
+    def get_removing_digits_statistics(self):
+        """Get statistics about the removing digits."""
+        if not self.removing_digits_feasibility:
+            return {
+                'number': 0,
+                'removing_digits_feasibility': 0,
+                'minimum_operations': 0
+            }
+        
+        min_ops = self.find_minimum_operations()
+        return {
+            'number': self.number,
+            'removing_digits_feasibility': self.removing_digits_feasibility,
+            'minimum_operations': min_ops
+        }
+    
+    def get_removing_digits_patterns(self):
+        """Get patterns in removing digits."""
+        patterns = {
+            'has_multiple_digits': 0,
+            'has_valid_number': 0,
+            'optimal_operations_possible': 0,
+            'has_large_number': 0
+        }
+        
+        if not self.removing_digits_feasibility:
+            return patterns
+        
+        # Check if has multiple digits
+        if len(str(self.number)) > 1:
+            patterns['has_multiple_digits'] = 1
+        
+        # Check if has valid number
+        if self.number > 0:
+            patterns['has_valid_number'] = 1
+        
+        # Check if optimal operations are possible
+        if self.removing_digits_feasibility == 1.0:
+            patterns['optimal_operations_possible'] = 1
+        
+        # Check if has large number
+        if self.number > 1000:
+            patterns['has_large_number'] = 1
+        
+        return patterns
+    
+    def get_optimal_removing_digits_strategy(self):
+        """Get optimal strategy for removing digits."""
+        if not self.removing_digits_feasibility:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'removing_digits_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.removing_digits_feasibility
+        
+        # Calculate removing digits feasibility
+        removing_digits_feasibility = self.removing_digits_feasibility
+        
+        # Determine recommended strategy
+        if self.number <= 1000:
+            recommended_strategy = 'dynamic_programming'
+        elif self.number <= 10000:
+            recommended_strategy = 'optimized_dp'
+        else:
+            recommended_strategy = 'advanced_optimization'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'removing_digits_feasibility': removing_digits_feasibility
+        }
+
+# Example usage
+number = 1234
+dynamic_removing_digits = DynamicRemovingDigits(number)
+print(f"Removing digits feasibility: {dynamic_removing_digits.removing_digits_feasibility}")
+
+# Update number
+dynamic_removing_digits.update_number(5678)
+print(f"After updating number: {dynamic_removing_digits.number}")
+
+# Add digit
+dynamic_removing_digits.add_digit(9)
+print(f"After adding digit 9: {dynamic_removing_digits.number}")
+
+# Remove digit
+dynamic_removing_digits.remove_digit(2)
+print(f"After removing digit at position 2: {dynamic_removing_digits.number}")
+
+# Find minimum operations
+min_ops = dynamic_removing_digits.find_minimum_operations()
+print(f"Minimum operations: {min_ops}")
+
+# Find operation sequence
+sequence = dynamic_removing_digits.find_operation_sequence()
+print(f"Operation sequence: {sequence}")
+
+# Get removing digits with constraints
+def constraint_func(min_ops, number):
+    return min_ops >= 0 and number > 0
+
+print(f"Removing digits with constraints: {dynamic_removing_digits.get_removing_digits_with_constraints(constraint_func)}")
+
+# Get removing digits in range
+print(f"Removing digits in range 0-10: {dynamic_removing_digits.get_removing_digits_in_range(0, 10)}")
+
+# Get removing digits with pattern
+def pattern_func(min_ops, number):
+    return min_ops >= 0 and number > 0
+
+print(f"Removing digits with pattern: {dynamic_removing_digits.get_removing_digits_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_removing_digits.get_removing_digits_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_removing_digits.get_removing_digits_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_removing_digits.get_optimal_removing_digits_strategy()}")
+```
+
+### **Variation 2: Removing Digits with Different Operations**
+**Problem**: Handle different types of digit removal operations (weighted digits, priority-based selection, advanced digit analysis).
+
+**Approach**: Use advanced data structures for efficient different types of digit removal operations.
+
+```python
+class AdvancedRemovingDigits:
+    def __init__(self, number=None, weights=None, priorities=None):
+        self.number = number or 0
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.operations = []
+        self._update_removing_digits_info()
+    
+    def _update_removing_digits_info(self):
+        """Update removing digits feasibility information."""
+        self.removing_digits_feasibility = self._calculate_removing_digits_feasibility()
+    
+    def _calculate_removing_digits_feasibility(self):
+        """Calculate removing digits feasibility."""
+        if self.number <= 0:
+            return 0.0
+        
+        # Check if we can remove digits from the number
+        return 1.0 if self.number > 0 else 0.0
+    
+    def find_minimum_operations(self):
+        """Find minimum number of operations to make number 0 using dynamic programming."""
+        if not self.removing_digits_feasibility:
+            return 0
+        
+        if self.number == 0:
+            return 0
+        
+        # DP table: dp[i] = minimum operations to make number i equal to 0
+        dp = [float('inf')] * (self.number + 1)
+        dp[0] = 0
+        
+        # Fill DP table
+        for i in range(1, self.number + 1):
+            digits = list(str(i))
+            for j in range(len(digits)):
+                new_digits = digits[:j] + digits[j+1:]
+                if new_digits:
+                    new_number = int(''.join(new_digits))
+                else:
+                    new_number = 0
+                
+                dp[i] = min(dp[i], dp[new_number] + 1)
+        
+        return dp[self.number] if dp[self.number] != float('inf') else -1
+    
+    def get_weighted_removing_digits(self):
+        """Get removing digits with weights and priorities applied."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        if self.number == 0:
+            return []
+        
+        # Create weighted digit removal options
+        removal_options = []
+        digits = list(str(self.number))
+        
+        for j in range(len(digits)):
+            digit = int(digits[j])
+            weight = self.weights.get(j, 1)
+            priority = self.priorities.get(j, 1)
+            weighted_score = digit * weight * priority
+            removal_options.append((j, digit, weighted_score))
+        
+        # Sort by weighted score (ascending for minimization)
+        removal_options.sort(key=lambda x: x[2])
+        
+        # Use the best weighted removal option
+        if removal_options:
+            best_option = removal_options[0]
+            return [('remove_weighted_digit', best_option[0], best_option[1], best_option[2])]
+        else:
+            return []
+    
+    def get_removing_digits_with_priority(self, priority_func):
+        """Get removing digits considering priority."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        # Create priority-based digit removal options
+        priority_options = []
+        digits = list(str(self.number))
+        
+        for j in range(len(digits)):
+            digit = int(digits[j])
+            priority = priority_func(j, digit, self.weights, self.priorities)
+            priority_options.append((j, digit, priority))
+        
+        # Sort by priority (ascending for minimization)
+        priority_options.sort(key=lambda x: x[2])
+        
+        # Use the best priority option
+        if priority_options:
+            best_option = priority_options[0]
+            return [('remove_priority_digit', best_option[0], best_option[1], best_option[2])]
+        else:
+            return []
+    
+    def get_removing_digits_with_optimization(self, optimization_func):
+        """Get removing digits using custom optimization function."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        # Create optimization-based digit removal options
+        optimized_options = []
+        digits = list(str(self.number))
+        
+        for j in range(len(digits)):
+            digit = int(digits[j])
+            score = optimization_func(j, digit, self.weights, self.priorities)
+            optimized_options.append((j, digit, score))
+        
+        # Sort by optimization score (ascending for minimization)
+        optimized_options.sort(key=lambda x: x[2])
+        
+        # Use the best optimization option
+        if optimized_options:
+            best_option = optimized_options[0]
+            return [('remove_optimized_digit', best_option[0], best_option[1], best_option[2])]
+        else:
+            return []
+    
+    def get_removing_digits_with_constraints(self, constraint_func):
+        """Get removing digits that satisfies custom constraints."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        if constraint_func(self.number, self.weights, self.priorities):
+            return self.get_weighted_removing_digits()
+        else:
+            return []
+    
+    def get_removing_digits_with_multiple_criteria(self, criteria_list):
+        """Get removing digits that satisfies multiple criteria."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.number, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_removing_digits()
+        else:
+            return []
+    
+    def get_removing_digits_with_alternatives(self, alternatives):
+        """Get removing digits considering alternative weights/priorities."""
+        result = []
+        
+        # Check original removing digits
+        original_digits = self.get_weighted_removing_digits()
+        result.append((original_digits, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedRemovingDigits(self.number, alt_weights, alt_priorities)
+            temp_digits = temp_instance.get_weighted_removing_digits()
+            result.append((temp_digits, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_removing_digits_with_adaptive_criteria(self, adaptive_func):
+        """Get removing digits using adaptive criteria."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        if adaptive_func(self.number, self.weights, self.priorities, []):
+            return self.get_weighted_removing_digits()
+        else:
+            return []
+    
+    def get_removing_digits_optimization(self):
+        """Get optimal removing digits configuration."""
+        strategies = [
+            ('weighted_digits', lambda: len(self.get_weighted_removing_digits())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+number = 1234
+weights = {i: int(str(number)[i]) * 2 for i in range(len(str(number)))}  # Weight based on digit value
+priorities = {i: 1 for i in range(len(str(number)))}  # Equal priority
+advanced_removing_digits = AdvancedRemovingDigits(number, weights, priorities)
+
+print(f"Weighted removing digits: {advanced_removing_digits.get_weighted_removing_digits()}")
+
+# Get removing digits with priority
+def priority_func(index, digit, weights, priorities):
+    return weights.get(index, 1) + priorities.get(index, 1)
+
+print(f"Removing digits with priority: {advanced_removing_digits.get_removing_digits_with_priority(priority_func)}")
+
+# Get removing digits with optimization
+def optimization_func(index, digit, weights, priorities):
+    return weights.get(index, 1) * priorities.get(index, 1)
+
+print(f"Removing digits with optimization: {advanced_removing_digits.get_removing_digits_with_optimization(optimization_func)}")
+
+# Get removing digits with constraints
+def constraint_func(number, weights, priorities):
+    return number > 0
+
+print(f"Removing digits with constraints: {advanced_removing_digits.get_removing_digits_with_constraints(constraint_func)}")
+
+# Get removing digits with multiple criteria
+def criterion1(number, weights, priorities):
+    return number > 0
+
+def criterion2(number, weights, priorities):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Removing digits with multiple criteria: {advanced_removing_digits.get_removing_digits_with_multiple_criteria(criteria_list)}")
+
+# Get removing digits with alternatives
+alternatives = [({i: 1 for i in range(len(str(number)))}, {i: 1 for i in range(len(str(number)))}), ({i: int(str(number)[i])*3 for i in range(len(str(number)))}, {i: 2 for i in range(len(str(number)))})]
+print(f"Removing digits with alternatives: {advanced_removing_digits.get_removing_digits_with_alternatives(alternatives)}")
+
+# Get removing digits with adaptive criteria
+def adaptive_func(number, weights, priorities, current_result):
+    return number > 0 and len(current_result) < 10
+
+print(f"Removing digits with adaptive criteria: {advanced_removing_digits.get_removing_digits_with_adaptive_criteria(adaptive_func)}")
+
+# Get removing digits optimization
+print(f"Removing digits optimization: {advanced_removing_digits.get_removing_digits_optimization()}")
+```
+
+### **Variation 3: Removing Digits with Constraints**
+**Problem**: Handle removing digits with additional constraints (digit limits, operation constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedRemovingDigits:
+    def __init__(self, number=None, constraints=None):
+        self.number = number or 0
+        self.constraints = constraints or {}
+        self.operations = []
+        self._update_removing_digits_info()
+    
+    def _update_removing_digits_info(self):
+        """Update removing digits feasibility information."""
+        self.removing_digits_feasibility = self._calculate_removing_digits_feasibility()
+    
+    def _calculate_removing_digits_feasibility(self):
+        """Calculate removing digits feasibility."""
+        if self.number <= 0:
+            return 0.0
+        
+        # Check if we can remove digits from the number
+        return 1.0 if self.number > 0 else 0.0
+    
+    def _is_valid_digit_removal(self, position, digit):
+        """Check if digit removal is valid considering constraints."""
+        # Digit constraints
+        if 'allowed_digits' in self.constraints:
+            if digit not in self.constraints['allowed_digits']:
+                return False
+        
+        if 'forbidden_digits' in self.constraints:
+            if digit in self.constraints['forbidden_digits']:
+                return False
+        
+        # Position constraints
+        if 'max_position' in self.constraints:
+            if position > self.constraints['max_position']:
+                return False
+        
+        if 'min_position' in self.constraints:
+            if position < self.constraints['min_position']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(position, digit, self.number):
+                    return False
+        
+        return True
+    
+    def get_removing_digits_with_digit_constraints(self, min_digits, max_digits):
+        """Get removing digits considering digit count constraints."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        num_digits = len(str(self.number))
+        if min_digits <= num_digits <= max_digits:
+            return self._calculate_constrained_removing_digits()
+        else:
+            return []
+    
+    def get_removing_digits_with_operation_constraints(self, operation_constraints):
+        """Get removing digits considering operation constraints."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in operation_constraints:
+            if not constraint(self.number):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self._calculate_constrained_removing_digits()
+        else:
+            return []
+    
+    def get_removing_digits_with_pattern_constraints(self, pattern_constraints):
+        """Get removing digits considering pattern constraints."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.number):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self._calculate_constrained_removing_digits()
+        else:
+            return []
+    
+    def get_removing_digits_with_mathematical_constraints(self, constraint_func):
+        """Get removing digits that satisfies custom mathematical constraints."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        if constraint_func(self.number):
+            return self._calculate_constrained_removing_digits()
+        else:
+            return []
+    
+    def get_removing_digits_with_optimization_constraints(self, optimization_func):
+        """Get removing digits using custom optimization constraints."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        # Calculate optimization score for removing digits
+        score = optimization_func(self.number)
+        
+        if score > 0:
+            return self._calculate_constrained_removing_digits()
+        else:
+            return []
+    
+    def get_removing_digits_with_multiple_constraints(self, constraints_list):
+        """Get removing digits that satisfies multiple constraints."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.number):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self._calculate_constrained_removing_digits()
+        else:
+            return []
+    
+    def get_removing_digits_with_priority_constraints(self, priority_func):
+        """Get removing digits with priority-based constraints."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        # Calculate priority for removing digits
+        priority = priority_func(self.number)
+        
+        if priority > 0:
+            return self._calculate_constrained_removing_digits()
+        else:
+            return []
+    
+    def get_removing_digits_with_adaptive_constraints(self, adaptive_func):
+        """Get removing digits with adaptive constraints."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        if adaptive_func(self.number, []):
+            return self._calculate_constrained_removing_digits()
+        else:
+            return []
+    
+    def _calculate_constrained_removing_digits(self):
+        """Calculate removing digits considering all constraints."""
+        if not self.removing_digits_feasibility:
+            return []
+        
+        if self.number == 0:
+            return []
+        
+        # Find valid digit removals
+        valid_removals = []
+        digits = list(str(self.number))
+        
+        for j in range(len(digits)):
+            digit = int(digits[j])
+            if self._is_valid_digit_removal(j, digit):
+                valid_removals.append((j, digit))
+        
+        # Create operations for valid removals
+        operations = []
+        for j, digit in valid_removals[:1]:  # Take first valid removal
+            operations.append(('remove_constrained_digit', j, digit))
+        
+        return operations
+    
+    def get_optimal_removing_digits_strategy(self):
+        """Get optimal removing digits strategy considering all constraints."""
+        strategies = [
+            ('digit_constraints', self.get_removing_digits_with_digit_constraints),
+            ('operation_constraints', self.get_removing_digits_with_operation_constraints),
+            ('pattern_constraints', self.get_removing_digits_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'digit_constraints':
+                    result = strategy_func(1, 10)
+                elif strategy_name == 'operation_constraints':
+                    operation_constraints = [lambda number: number > 0]
+                    result = strategy_func(operation_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda number: number > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_digits': [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    'forbidden_digits': [0],
+    'max_position': 10,
+    'min_position': 0,
+    'pattern_constraints': [lambda position, digit, number: digit > 0 and position >= 0]
+}
+
+number = 1234
+constrained_removing_digits = ConstrainedRemovingDigits(number, constraints)
+
+print("Digit-constrained removing digits:", constrained_removing_digits.get_removing_digits_with_digit_constraints(1, 10))
+
+print("Operation-constrained removing digits:", constrained_removing_digits.get_removing_digits_with_operation_constraints([lambda number: number > 0]))
+
+print("Pattern-constrained removing digits:", constrained_removing_digits.get_removing_digits_with_pattern_constraints([lambda number: number > 0]))
+
+# Mathematical constraints
+def custom_constraint(number):
+    return number > 0
+
+print("Mathematical constraint removing digits:", constrained_removing_digits.get_removing_digits_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(number):
+    return 1 <= number <= 10000
+
+range_constraints = [range_constraint]
+print("Range-constrained removing digits:", constrained_removing_digits.get_removing_digits_with_digit_constraints(1, 10))
+
+# Multiple constraints
+def constraint1(number):
+    return number > 0
+
+def constraint2(number):
+    return len(str(number)) > 1
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints removing digits:", constrained_removing_digits.get_removing_digits_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(number):
+    return number + len(str(number))
+
+print("Priority-constrained removing digits:", constrained_removing_digits.get_removing_digits_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(number, current_result):
+    return number > 0 and len(current_result) < 10
+
+print("Adaptive constraint removing digits:", constrained_removing_digits.get_removing_digits_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_removing_digits.get_optimal_removing_digits_strategy()
+print(f"Optimal removing digits strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

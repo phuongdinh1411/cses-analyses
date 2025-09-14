@@ -590,6 +590,871 @@ result = multi_target_coin_combinations(n, targets, coins)
 print(f"Multi-target coin combinations: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Coin Combinations I with Dynamic Updates**
+**Problem**: Handle dynamic coin updates (add/remove/update coins) while maintaining optimal coin combination counting efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic coin management.
+
+```python
+from collections import defaultdict
+
+class DynamicCoinCombinationsI:
+    def __init__(self, coins=None, target=None):
+        self.coins = coins or []
+        self.target = target or 0
+        self.combinations = []
+        self._update_coin_combinations_info()
+    
+    def _update_coin_combinations_info(self):
+        """Update coin combinations feasibility information."""
+        self.total_coins = len(self.coins)
+        self.coin_combinations_feasibility = self._calculate_coin_combinations_feasibility()
+    
+    def _calculate_coin_combinations_feasibility(self):
+        """Calculate coin combinations feasibility."""
+        if self.total_coins == 0 or self.target <= 0:
+            return 0.0
+        
+        # Check if we can make the target with available coins
+        min_coin = min(self.coins) if self.coins else 0
+        return 1.0 if min_coin <= self.target else 0.0
+    
+    def add_coin(self, coin, position=None):
+        """Add coin to the list."""
+        if position is None:
+            self.coins.append(coin)
+        else:
+            self.coins.insert(position, coin)
+        
+        self._update_coin_combinations_info()
+    
+    def remove_coin(self, position):
+        """Remove coin from the list."""
+        if 0 <= position < len(self.coins):
+            self.coins.pop(position)
+            self._update_coin_combinations_info()
+    
+    def update_coin(self, position, new_coin):
+        """Update coin in the list."""
+        if 0 <= position < len(self.coins):
+            self.coins[position] = new_coin
+            self._update_coin_combinations_info()
+    
+    def count_combinations(self):
+        """Count number of ways to make target using dynamic programming."""
+        if not self.coins or self.target <= 0:
+            return 0
+        
+        # Sort coins for optimization
+        self.coins.sort()
+        
+        # DP table: dp[i] = number of ways to make sum i
+        dp = [0] * (self.target + 1)
+        dp[0] = 1  # One way to make sum 0 (use no coins)
+        
+        # For each coin
+        for coin in self.coins:
+            # For each sum from coin to target
+            for sum_val in range(coin, self.target + 1):
+                dp[sum_val] += dp[sum_val - coin]
+        
+        return dp[self.target]
+    
+    def get_combinations_with_constraints(self, constraint_func):
+        """Get combinations that satisfies custom constraints."""
+        if not self.coins:
+            return []
+        
+        count = self.count_combinations()
+        if constraint_func(count, self.coins, self.target):
+            return self._generate_combinations()
+        else:
+            return []
+    
+    def get_combinations_in_range(self, min_count, max_count):
+        """Get combinations within specified count range."""
+        if not self.coins:
+            return []
+        
+        count = self.count_combinations()
+        if min_count <= count <= max_count:
+            return self._generate_combinations()
+        else:
+            return []
+    
+    def get_combinations_with_pattern(self, pattern_func):
+        """Get combinations matching specified pattern."""
+        if not self.coins:
+            return []
+        
+        count = self.count_combinations()
+        if pattern_func(count, self.coins, self.target):
+            return self._generate_combinations()
+        else:
+            return []
+    
+    def _generate_combinations(self):
+        """Generate all possible combinations."""
+        if not self.coins or self.target <= 0:
+            return []
+        
+        combinations = []
+        
+        def backtrack(remaining, current_combination, start_index):
+            if remaining == 0:
+                combinations.append(current_combination[:])
+                return
+            
+            if remaining < 0:
+                return
+            
+            for i in range(start_index, len(self.coins)):
+                coin = self.coins[i]
+                if coin <= remaining:
+                    current_combination.append(coin)
+                    backtrack(remaining - coin, current_combination, i)
+                    current_combination.pop()
+        
+        backtrack(self.target, [], 0)
+        return combinations
+    
+    def get_coin_combinations_statistics(self):
+        """Get statistics about the coin combinations."""
+        if not self.coins:
+            return {
+                'total_coins': 0,
+                'target': 0,
+                'coin_combinations_feasibility': 0,
+                'combination_count': 0
+            }
+        
+        count = self.count_combinations()
+        return {
+            'total_coins': self.total_coins,
+            'target': self.target,
+            'coin_combinations_feasibility': self.coin_combinations_feasibility,
+            'combination_count': count,
+            'min_coin': min(self.coins) if self.coins else 0,
+            'max_coin': max(self.coins) if self.coins else 0
+        }
+    
+    def get_coin_combinations_patterns(self):
+        """Get patterns in coin combinations."""
+        patterns = {
+            'target_achievable': 0,
+            'has_small_coins': 0,
+            'optimal_combinations_possible': 0,
+            'has_large_coins': 0
+        }
+        
+        if not self.coins:
+            return patterns
+        
+        # Check if target is achievable
+        if self.coin_combinations_feasibility == 1.0:
+            patterns['target_achievable'] = 1
+        
+        # Check if has small coins
+        if any(coin <= self.target // 2 for coin in self.coins):
+            patterns['has_small_coins'] = 1
+        
+        # Check if optimal combinations are possible
+        if self.coin_combinations_feasibility == 1.0:
+            patterns['optimal_combinations_possible'] = 1
+        
+        # Check if has large coins
+        if any(coin > self.target for coin in self.coins):
+            patterns['has_large_coins'] = 1
+        
+        return patterns
+    
+    def get_optimal_coin_combinations_strategy(self):
+        """Get optimal strategy for coin combinations counting."""
+        if not self.coins:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'coin_combinations_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.coin_combinations_feasibility
+        
+        # Calculate coin combinations feasibility
+        coin_combinations_feasibility = self.coin_combinations_feasibility
+        
+        # Determine recommended strategy
+        if self.total_coins <= 10:
+            recommended_strategy = 'dynamic_programming'
+        elif self.total_coins <= 50:
+            recommended_strategy = 'optimized_dp'
+        else:
+            recommended_strategy = 'advanced_optimization'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'coin_combinations_feasibility': coin_combinations_feasibility
+        }
+
+# Example usage
+coins = [1, 2, 3]
+target = 5
+dynamic_coin_combinations = DynamicCoinCombinationsI(coins, target)
+print(f"Coin combinations feasibility: {dynamic_coin_combinations.coin_combinations_feasibility}")
+
+# Add coin
+dynamic_coin_combinations.add_coin(4)
+print(f"After adding coin 4: {dynamic_coin_combinations.total_coins}")
+
+# Remove coin
+dynamic_coin_combinations.remove_coin(0)
+print(f"After removing first coin: {dynamic_coin_combinations.total_coins}")
+
+# Update coin
+dynamic_coin_combinations.update_coin(0, 5)
+print(f"After updating first coin to 5: {dynamic_coin_combinations.coins[0]}")
+
+# Count combinations
+count = dynamic_coin_combinations.count_combinations()
+print(f"Number of combinations: {count}")
+
+# Get combinations with constraints
+def constraint_func(count, coins, target):
+    return count > 0 and len(coins) > 0
+
+print(f"Combinations with constraints: {len(dynamic_coin_combinations.get_combinations_with_constraints(constraint_func))}")
+
+# Get combinations in range
+print(f"Combinations in range 1-10: {len(dynamic_coin_combinations.get_combinations_in_range(1, 10))}")
+
+# Get combinations with pattern
+def pattern_func(count, coins, target):
+    return count > 0 and all(coin > 0 for coin in coins)
+
+print(f"Combinations with pattern: {len(dynamic_coin_combinations.get_combinations_with_pattern(pattern_func))}")
+
+# Get statistics
+print(f"Statistics: {dynamic_coin_combinations.get_coin_combinations_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_coin_combinations.get_coin_combinations_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_coin_combinations.get_optimal_coin_combinations_strategy()}")
+```
+
+### **Variation 2: Coin Combinations I with Different Operations**
+**Problem**: Handle different types of coin combination operations (weighted coins, priority-based counting, advanced coin analysis).
+
+**Approach**: Use advanced data structures for efficient different types of coin combination operations.
+
+```python
+class AdvancedCoinCombinationsI:
+    def __init__(self, coins=None, target=None, weights=None, priorities=None):
+        self.coins = coins or []
+        self.target = target or 0
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.combinations = []
+        self._update_coin_combinations_info()
+    
+    def _update_coin_combinations_info(self):
+        """Update coin combinations feasibility information."""
+        self.total_coins = len(self.coins)
+        self.coin_combinations_feasibility = self._calculate_coin_combinations_feasibility()
+    
+    def _calculate_coin_combinations_feasibility(self):
+        """Calculate coin combinations feasibility."""
+        if self.total_coins == 0 or self.target <= 0:
+            return 0.0
+        
+        # Check if we can make the target with available coins
+        min_coin = min(self.coins) if self.coins else 0
+        return 1.0 if min_coin <= self.target else 0.0
+    
+    def count_combinations(self):
+        """Count number of ways to make target using dynamic programming."""
+        if not self.coins or self.target <= 0:
+            return 0
+        
+        # Sort coins for optimization
+        self.coins.sort()
+        
+        # DP table: dp[i] = number of ways to make sum i
+        dp = [0] * (self.target + 1)
+        dp[0] = 1  # One way to make sum 0 (use no coins)
+        
+        # For each coin
+        for coin in self.coins:
+            # For each sum from coin to target
+            for sum_val in range(coin, self.target + 1):
+                dp[sum_val] += dp[sum_val - coin]
+        
+        return dp[self.target]
+    
+    def get_weighted_combinations(self):
+        """Get combinations with weights and priorities applied."""
+        if not self.coins:
+            return []
+        
+        # Create weighted coins
+        weighted_coins = []
+        for coin in self.coins:
+            weight = self.weights.get(coin, 1)
+            priority = self.priorities.get(coin, 1)
+            weighted_score = coin * weight * priority
+            weighted_coins.append((coin, weighted_score))
+        
+        # Sort by weighted score
+        weighted_coins.sort(key=lambda x: x[1], reverse=True)
+        
+        # Generate combinations with weighted coins
+        combinations = []
+        
+        def backtrack(remaining, current_combination, start_index):
+            if remaining == 0:
+                combinations.append(current_combination[:])
+                return
+            
+            if remaining < 0:
+                return
+            
+            for i in range(start_index, len(weighted_coins)):
+                coin, score = weighted_coins[i]
+                if coin <= remaining:
+                    current_combination.append(coin)
+                    backtrack(remaining - coin, current_combination, i)
+                    current_combination.pop()
+        
+        backtrack(self.target, [], 0)
+        return combinations
+    
+    def get_combinations_with_priority(self, priority_func):
+        """Get combinations considering priority."""
+        if not self.coins:
+            return []
+        
+        # Create priority-based coins
+        priority_coins = []
+        for coin in self.coins:
+            priority = priority_func(coin, self.weights, self.priorities)
+            priority_coins.append((coin, priority))
+        
+        # Sort by priority
+        priority_coins.sort(key=lambda x: x[1], reverse=True)
+        
+        # Generate combinations with priority coins
+        combinations = []
+        
+        def backtrack(remaining, current_combination, start_index):
+            if remaining == 0:
+                combinations.append(current_combination[:])
+                return
+            
+            if remaining < 0:
+                return
+            
+            for i in range(start_index, len(priority_coins)):
+                coin, priority = priority_coins[i]
+                if coin <= remaining:
+                    current_combination.append(coin)
+                    backtrack(remaining - coin, current_combination, i)
+                    current_combination.pop()
+        
+        backtrack(self.target, [], 0)
+        return combinations
+    
+    def get_combinations_with_optimization(self, optimization_func):
+        """Get combinations using custom optimization function."""
+        if not self.coins:
+            return []
+        
+        # Create optimization-based coins
+        optimized_coins = []
+        for coin in self.coins:
+            score = optimization_func(coin, self.weights, self.priorities)
+            optimized_coins.append((coin, score))
+        
+        # Sort by optimization score
+        optimized_coins.sort(key=lambda x: x[1], reverse=True)
+        
+        # Generate combinations with optimized coins
+        combinations = []
+        
+        def backtrack(remaining, current_combination, start_index):
+            if remaining == 0:
+                combinations.append(current_combination[:])
+                return
+            
+            if remaining < 0:
+                return
+            
+            for i in range(start_index, len(optimized_coins)):
+                coin, score = optimized_coins[i]
+                if coin <= remaining:
+                    current_combination.append(coin)
+                    backtrack(remaining - coin, current_combination, i)
+                    current_combination.pop()
+        
+        backtrack(self.target, [], 0)
+        return combinations
+    
+    def get_combinations_with_constraints(self, constraint_func):
+        """Get combinations that satisfies custom constraints."""
+        if not self.coins:
+            return []
+        
+        if constraint_func(self.coins, self.weights, self.priorities):
+            return self.get_weighted_combinations()
+        else:
+            return []
+    
+    def get_combinations_with_multiple_criteria(self, criteria_list):
+        """Get combinations that satisfies multiple criteria."""
+        if not self.coins:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.coins, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_combinations()
+        else:
+            return []
+    
+    def get_combinations_with_alternatives(self, alternatives):
+        """Get combinations considering alternative weights/priorities."""
+        result = []
+        
+        # Check original combinations
+        original_combinations = self.get_weighted_combinations()
+        result.append((original_combinations, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedCoinCombinationsI(self.coins, self.target, alt_weights, alt_priorities)
+            temp_combinations = temp_instance.get_weighted_combinations()
+            result.append((temp_combinations, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_combinations_with_adaptive_criteria(self, adaptive_func):
+        """Get combinations using adaptive criteria."""
+        if not self.coins:
+            return []
+        
+        if adaptive_func(self.coins, self.weights, self.priorities, []):
+            return self.get_weighted_combinations()
+        else:
+            return []
+    
+    def get_coin_combinations_optimization(self):
+        """Get optimal coin combinations configuration."""
+        strategies = [
+            ('weighted_combinations', lambda: len(self.get_weighted_combinations())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+coins = [1, 2, 3]
+target = 5
+weights = {coin: coin * 2 for coin in coins}  # Weight based on coin value
+priorities = {coin: coin // 2 for coin in coins}  # Priority based on coin value
+advanced_coin_combinations = AdvancedCoinCombinationsI(coins, target, weights, priorities)
+
+print(f"Weighted combinations: {len(advanced_coin_combinations.get_weighted_combinations())}")
+
+# Get combinations with priority
+def priority_func(coin, weights, priorities):
+    return weights.get(coin, 1) + priorities.get(coin, 1)
+
+print(f"Combinations with priority: {len(advanced_coin_combinations.get_combinations_with_priority(priority_func))}")
+
+# Get combinations with optimization
+def optimization_func(coin, weights, priorities):
+    return weights.get(coin, 1) * priorities.get(coin, 1)
+
+print(f"Combinations with optimization: {len(advanced_coin_combinations.get_combinations_with_optimization(optimization_func))}")
+
+# Get combinations with constraints
+def constraint_func(coins, weights, priorities):
+    return len(coins) > 0 and all(coin > 0 for coin in coins)
+
+print(f"Combinations with constraints: {len(advanced_coin_combinations.get_combinations_with_constraints(constraint_func))}")
+
+# Get combinations with multiple criteria
+def criterion1(coins, weights, priorities):
+    return len(coins) > 0
+
+def criterion2(coins, weights, priorities):
+    return all(coin > 0 for coin in coins)
+
+criteria_list = [criterion1, criterion2]
+print(f"Combinations with multiple criteria: {len(advanced_coin_combinations.get_combinations_with_multiple_criteria(criteria_list))}")
+
+# Get combinations with alternatives
+alternatives = [({coin: 1 for coin in coins}, {coin: 1 for coin in coins}), ({coin: coin*3 for coin in coins}, {coin: coin+1 for coin in coins})]
+print(f"Combinations with alternatives: {advanced_coin_combinations.get_combinations_with_alternatives(alternatives)}")
+
+# Get combinations with adaptive criteria
+def adaptive_func(coins, weights, priorities, current_result):
+    return len(coins) > 0 and len(current_result) < 5
+
+print(f"Combinations with adaptive criteria: {len(advanced_coin_combinations.get_combinations_with_adaptive_criteria(adaptive_func))}")
+
+# Get coin combinations optimization
+print(f"Coin combinations optimization: {advanced_coin_combinations.get_coin_combinations_optimization()}")
+```
+
+### **Variation 3: Coin Combinations I with Constraints**
+**Problem**: Handle coin combination counting with additional constraints (target limits, coin constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedCoinCombinationsI:
+    def __init__(self, coins=None, target=None, constraints=None):
+        self.coins = coins or []
+        self.target = target or 0
+        self.constraints = constraints or {}
+        self.combinations = []
+        self._update_coin_combinations_info()
+    
+    def _update_coin_combinations_info(self):
+        """Update coin combinations feasibility information."""
+        self.total_coins = len(self.coins)
+        self.coin_combinations_feasibility = self._calculate_coin_combinations_feasibility()
+    
+    def _calculate_coin_combinations_feasibility(self):
+        """Calculate coin combinations feasibility."""
+        if self.total_coins == 0 or self.target <= 0:
+            return 0.0
+        
+        # Check if we can make the target with available coins
+        min_coin = min(self.coins) if self.coins else 0
+        return 1.0 if min_coin <= self.target else 0.0
+    
+    def _is_valid_combination(self, combination):
+        """Check if combination is valid considering constraints."""
+        # Target constraints
+        if 'min_target' in self.constraints:
+            if sum(combination) < self.constraints['min_target']:
+                return False
+        
+        if 'max_target' in self.constraints:
+            if sum(combination) > self.constraints['max_target']:
+                return False
+        
+        # Coin constraints
+        if 'forbidden_coins' in self.constraints:
+            if any(coin in self.constraints['forbidden_coins'] for coin in combination):
+                return False
+        
+        if 'required_coins' in self.constraints:
+            if not all(coin in combination for coin in self.constraints['required_coins']):
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(combination):
+                    return False
+        
+        return True
+    
+    def get_combinations_with_target_constraints(self, min_target, max_target):
+        """Get combinations considering target constraints."""
+        if not self.coins:
+            return []
+        
+        combinations = self._generate_combinations()
+        valid_combinations = []
+        
+        for combination in combinations:
+            if min_target <= sum(combination) <= max_target and self._is_valid_combination(combination):
+                valid_combinations.append(combination)
+        
+        return valid_combinations
+    
+    def get_combinations_with_coin_constraints(self, coin_constraints):
+        """Get combinations considering coin constraints."""
+        if not self.coins:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in coin_constraints:
+            if not constraint(self.coins):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            combinations = self._generate_combinations()
+            valid_combinations = []
+            
+            for combination in combinations:
+                if self._is_valid_combination(combination):
+                    valid_combinations.append(combination)
+            
+            return valid_combinations
+        
+        return []
+    
+    def get_combinations_with_pattern_constraints(self, pattern_constraints):
+        """Get combinations considering pattern constraints."""
+        if not self.coins:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.coins):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            combinations = self._generate_combinations()
+            valid_combinations = []
+            
+            for combination in combinations:
+                if self._is_valid_combination(combination):
+                    valid_combinations.append(combination)
+            
+            return valid_combinations
+        
+        return []
+    
+    def get_combinations_with_mathematical_constraints(self, constraint_func):
+        """Get combinations that satisfies custom mathematical constraints."""
+        if not self.coins:
+            return []
+        
+        if constraint_func(self.coins):
+            combinations = self._generate_combinations()
+            valid_combinations = []
+            
+            for combination in combinations:
+                if self._is_valid_combination(combination):
+                    valid_combinations.append(combination)
+            
+            return valid_combinations
+        
+        return []
+    
+    def get_combinations_with_optimization_constraints(self, optimization_func):
+        """Get combinations using custom optimization constraints."""
+        if not self.coins:
+            return []
+        
+        # Calculate optimization score for combinations
+        score = optimization_func(self.coins)
+        
+        if score > 0:
+            combinations = self._generate_combinations()
+            valid_combinations = []
+            
+            for combination in combinations:
+                if self._is_valid_combination(combination):
+                    valid_combinations.append(combination)
+            
+            return valid_combinations
+        
+        return []
+    
+    def get_combinations_with_multiple_constraints(self, constraints_list):
+        """Get combinations that satisfies multiple constraints."""
+        if not self.coins:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.coins):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            combinations = self._generate_combinations()
+            valid_combinations = []
+            
+            for combination in combinations:
+                if self._is_valid_combination(combination):
+                    valid_combinations.append(combination)
+            
+            return valid_combinations
+        
+        return []
+    
+    def get_combinations_with_priority_constraints(self, priority_func):
+        """Get combinations with priority-based constraints."""
+        if not self.coins:
+            return []
+        
+        # Calculate priority for combinations
+        priority = priority_func(self.coins)
+        
+        if priority > 0:
+            combinations = self._generate_combinations()
+            valid_combinations = []
+            
+            for combination in combinations:
+                if self._is_valid_combination(combination):
+                    valid_combinations.append(combination)
+            
+            return valid_combinations
+        
+        return []
+    
+    def get_combinations_with_adaptive_constraints(self, adaptive_func):
+        """Get combinations with adaptive constraints."""
+        if not self.coins:
+            return []
+        
+        if adaptive_func(self.coins, []):
+            combinations = self._generate_combinations()
+            valid_combinations = []
+            
+            for combination in combinations:
+                if self._is_valid_combination(combination):
+                    valid_combinations.append(combination)
+            
+            return valid_combinations
+        
+        return []
+    
+    def _generate_combinations(self):
+        """Generate all possible combinations."""
+        if not self.coins or self.target <= 0:
+            return []
+        
+        combinations = []
+        
+        def backtrack(remaining, current_combination, start_index):
+            if remaining == 0:
+                combinations.append(current_combination[:])
+                return
+            
+            if remaining < 0:
+                return
+            
+            for i in range(start_index, len(self.coins)):
+                coin = self.coins[i]
+                if coin <= remaining:
+                    current_combination.append(coin)
+                    backtrack(remaining - coin, current_combination, i)
+                    current_combination.pop()
+        
+        backtrack(self.target, [], 0)
+        return combinations
+    
+    def get_optimal_coin_combinations_strategy(self):
+        """Get optimal coin combinations strategy considering all constraints."""
+        strategies = [
+            ('target_constraints', self.get_combinations_with_target_constraints),
+            ('coin_constraints', self.get_combinations_with_coin_constraints),
+            ('pattern_constraints', self.get_combinations_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'target_constraints':
+                    result = strategy_func(0, 1000)
+                elif strategy_name == 'coin_constraints':
+                    coin_constraints = [lambda coins: len(coins) > 0]
+                    result = strategy_func(coin_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda coins: all(coin > 0 for coin in coins)]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'min_target': 3,
+    'max_target': 10,
+    'forbidden_coins': [0, -1],
+    'required_coins': [1],
+    'pattern_constraints': [lambda combination: len(combination) > 0 and all(coin > 0 for coin in combination)]
+}
+
+coins = [1, 2, 3, 0, -1]
+target = 5
+constrained_coin_combinations = ConstrainedCoinCombinationsI(coins, target, constraints)
+
+print("Target-constrained combinations:", len(constrained_coin_combinations.get_combinations_with_target_constraints(3, 10)))
+
+print("Coin-constrained combinations:", len(constrained_coin_combinations.get_combinations_with_coin_constraints([lambda coins: len(coins) > 0])))
+
+print("Pattern-constrained combinations:", len(constrained_coin_combinations.get_combinations_with_pattern_constraints([lambda coins: all(coin > 0 for coin in coins)])),)
+
+# Mathematical constraints
+def custom_constraint(coins):
+    return len(coins) > 0 and all(coin > 0 for coin in coins)
+
+print("Mathematical constraint combinations:", len(constrained_coin_combinations.get_combinations_with_mathematical_constraints(custom_constraint)))
+
+# Range constraints
+def range_constraint(coins):
+    return all(1 <= coin <= 10 for coin in coins)
+
+range_constraints = [range_constraint]
+print("Range-constrained combinations:", len(constrained_coin_combinations.get_combinations_with_target_constraints(1, 10)))
+
+# Multiple constraints
+def constraint1(coins):
+    return len(coins) > 0
+
+def constraint2(coins):
+    return all(coin > 0 for coin in coins)
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints combinations:", len(constrained_coin_combinations.get_combinations_with_multiple_constraints(constraints_list)))
+
+# Priority constraints
+def priority_func(coins):
+    return len(coins) + sum(1 for coin in coins if coin > 0)
+
+print("Priority-constrained combinations:", len(constrained_coin_combinations.get_combinations_with_priority_constraints(priority_func)))
+
+# Adaptive constraints
+def adaptive_func(coins, current_result):
+    return len(coins) > 0 and len(current_result) < 5
+
+print("Adaptive constraint combinations:", len(constrained_coin_combinations.get_combinations_with_adaptive_constraints(adaptive_func)))
+
+# Optimal strategy
+optimal = constrained_coin_combinations.get_optimal_coin_combinations_strategy()
+print(f"Optimal coin combinations strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

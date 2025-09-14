@@ -625,6 +625,936 @@ result1 = dpq.has_path(0, 2, 2)
 print(f"Dynamic path result: {result1}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Fixed Length Path Queries with Dynamic Updates**
+**Problem**: Handle dynamic graph updates (add/remove/update edges) while maintaining fixed length path query calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic graph management with path detection.
+
+```python
+from collections import defaultdict, deque
+import heapq
+
+class DynamicFixedLengthPathQueries:
+    def __init__(self, n=None, edges=None, target_length=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.target_length = target_length or 0
+        self.graph = defaultdict(list)
+        self._update_path_query_info()
+    
+    def _update_path_query_info(self):
+        """Update path query feasibility information."""
+        self.path_query_feasibility = self._calculate_path_query_feasibility()
+    
+    def _calculate_path_query_feasibility(self):
+        """Calculate path query feasibility."""
+        if self.n <= 0 or self.target_length <= 0:
+            return 0.0
+        
+        # Check if we can have paths of target length
+        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
+    
+    def update_graph(self, new_n, new_edges, new_target_length=None):
+        """Update the graph with new vertices, edges, and target length."""
+        self.n = new_n
+        self.edges = new_edges
+        if new_target_length is not None:
+            self.target_length = new_target_length
+        self._build_graph()
+        self._update_path_query_info()
+    
+    def add_edge(self, u, v):
+        """Add an edge to the graph."""
+        if 1 <= u <= self.n and 1 <= v <= self.n:
+            self.edges.append((u, v))
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+            self._update_path_query_info()
+    
+    def remove_edge(self, u, v):
+        """Remove an edge from the graph."""
+        if (u, v) in self.edges:
+            self.edges.remove((u, v))
+            self.graph[u].remove(v)
+            self.graph[v].remove(u)
+            self._update_path_query_info()
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+    
+    def is_path_possible(self):
+        """Check if path is possible."""
+        if not self.path_query_feasibility:
+            return False
+        
+        # Basic check: need at least 1 vertex for a path
+        if self.n < 1:
+            return False
+        
+        # Check if graph has edges
+        return len(self.edges) > 0
+    
+    def find_paths_of_length(self, start_vertex=None, end_vertex=None):
+        """Find paths of the target length."""
+        if not self.path_query_feasibility or not self.is_path_possible():
+            return []
+        
+        paths = []
+        if start_vertex is None:
+            # Try all vertices as starting points
+            for start in range(1, self.n + 1):
+                paths.extend(self._find_paths_from_vertex(start, end_vertex))
+        else:
+            paths = self._find_paths_from_vertex(start_vertex, end_vertex)
+        
+        return paths
+    
+    def _find_paths_from_vertex(self, start, end_vertex=None):
+        """Find paths starting from a specific vertex."""
+        paths = []
+        visited = set()
+        path = []
+        
+        def dfs(current, length):
+            if length == self.target_length:
+                if end_vertex is None or current == end_vertex:
+                    paths.append(path[:])
+                return
+            
+            if length > self.target_length:
+                return
+            
+            for neighbor in self.graph[current]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    path.append(neighbor)
+                    dfs(neighbor, length + 1)
+                    path.pop()
+                    visited.remove(neighbor)
+        
+        visited.add(start)
+        path.append(start)
+        dfs(start, 1)
+        visited.remove(start)
+        path.pop()
+        
+        return paths
+    
+    def find_paths_with_priorities(self, priorities, start_vertex=None, end_vertex=None):
+        """Find paths considering vertex priorities."""
+        if not self.path_query_feasibility:
+            return []
+        
+        paths = self.find_paths_of_length(start_vertex, end_vertex)
+        if not paths:
+            return []
+        
+        # Create priority-based paths
+        priority_paths = []
+        for path in paths:
+            total_priority = sum(priorities.get(vertex, 1) for vertex in path)
+            priority_paths.append((path, total_priority))
+        
+        # Sort by priority (descending for maximization)
+        priority_paths.sort(key=lambda x: x[1], reverse=True)
+        
+        return priority_paths
+    
+    def get_paths_with_constraints(self, constraint_func, start_vertex=None, end_vertex=None):
+        """Get paths that satisfies custom constraints."""
+        if not self.path_query_feasibility:
+            return []
+        
+        paths = self.find_paths_of_length(start_vertex, end_vertex)
+        if paths and constraint_func(self.n, self.edges, paths, self.target_length):
+            return paths
+        else:
+            return []
+    
+    def get_paths_in_range(self, min_length, max_length, start_vertex=None, end_vertex=None):
+        """Get paths within specified length range."""
+        if not self.path_query_feasibility:
+            return []
+        
+        if min_length <= self.target_length <= max_length:
+            return self.find_paths_of_length(start_vertex, end_vertex)
+        else:
+            return []
+    
+    def get_paths_with_pattern(self, pattern_func, start_vertex=None, end_vertex=None):
+        """Get paths matching specified pattern."""
+        if not self.path_query_feasibility:
+            return []
+        
+        paths = self.find_paths_of_length(start_vertex, end_vertex)
+        if pattern_func(self.n, self.edges, paths, self.target_length):
+            return paths
+        else:
+            return []
+    
+    def get_path_query_statistics(self):
+        """Get statistics about the path queries."""
+        if not self.path_query_feasibility:
+            return {
+                'n': 0,
+                'path_query_feasibility': 0,
+                'has_paths': False,
+                'target_length': 0,
+                'path_count': 0
+            }
+        
+        paths = self.find_paths_of_length()
+        return {
+            'n': self.n,
+            'path_query_feasibility': self.path_query_feasibility,
+            'has_paths': len(paths) > 0,
+            'target_length': self.target_length,
+            'path_count': len(paths)
+        }
+    
+    def get_path_query_patterns(self):
+        """Get patterns in path queries."""
+        patterns = {
+            'has_edges': 0,
+            'has_valid_graph': 0,
+            'optimal_path_possible': 0,
+            'has_large_graph': 0
+        }
+        
+        if not self.path_query_feasibility:
+            return patterns
+        
+        # Check if has edges
+        if len(self.edges) > 0:
+            patterns['has_edges'] = 1
+        
+        # Check if has valid graph
+        if self.n > 0:
+            patterns['has_valid_graph'] = 1
+        
+        # Check if optimal path is possible
+        if self.path_query_feasibility == 1.0:
+            patterns['optimal_path_possible'] = 1
+        
+        # Check if has large graph
+        if self.n > 100:
+            patterns['has_large_graph'] = 1
+        
+        return patterns
+    
+    def get_optimal_path_query_strategy(self):
+        """Get optimal strategy for path query management."""
+        if not self.path_query_feasibility:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'path_query_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.path_query_feasibility
+        
+        # Calculate path query feasibility
+        path_query_feasibility = self.path_query_feasibility
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'dfs_path_search'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_dfs'
+        else:
+            recommended_strategy = 'advanced_path_detection'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'path_query_feasibility': path_query_feasibility
+        }
+
+# Example usage
+n = 5
+edges = [(1, 2), (2, 3), (3, 4), (4, 5), (1, 3), (2, 4)]
+target_length = 3
+dynamic_path_queries = DynamicFixedLengthPathQueries(n, edges, target_length)
+print(f"Path query feasibility: {dynamic_path_queries.path_query_feasibility}")
+
+# Update graph
+dynamic_path_queries.update_graph(6, [(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (1, 3), (2, 4)], 4)
+print(f"After updating graph: n={dynamic_path_queries.n}, target_length={dynamic_path_queries.target_length}")
+
+# Add edge
+dynamic_path_queries.add_edge(6, 1)
+print(f"After adding edge (6,1): {dynamic_path_queries.edges}")
+
+# Remove edge
+dynamic_path_queries.remove_edge(6, 1)
+print(f"After removing edge (6,1): {dynamic_path_queries.edges}")
+
+# Check if path is possible
+is_possible = dynamic_path_queries.is_path_possible()
+print(f"Is path possible: {is_possible}")
+
+# Find paths
+paths = dynamic_path_queries.find_paths_of_length()
+print(f"Paths of length {target_length}: {paths}")
+
+# Find paths with priorities
+priorities = {i: i for i in range(1, n + 1)}
+priority_paths = dynamic_path_queries.find_paths_with_priorities(priorities)
+print(f"Paths with priorities: {priority_paths}")
+
+# Get paths with constraints
+def constraint_func(n, edges, paths, target_length):
+    return len(paths) > 0 and target_length > 0
+
+print(f"Paths with constraints: {dynamic_path_queries.get_paths_with_constraints(constraint_func)}")
+
+# Get paths in range
+print(f"Paths in range 2-5: {dynamic_path_queries.get_paths_in_range(2, 5)}")
+
+# Get paths with pattern
+def pattern_func(n, edges, paths, target_length):
+    return len(paths) > 0 and target_length > 0
+
+print(f"Paths with pattern: {dynamic_path_queries.get_paths_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_path_queries.get_path_query_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_path_queries.get_path_query_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_path_queries.get_optimal_path_query_strategy()}")
+```
+
+### **Variation 2: Fixed Length Path Queries with Different Operations**
+**Problem**: Handle different types of path query operations (weighted paths, priority-based selection, advanced path analysis).
+
+**Approach**: Use advanced data structures for efficient different types of path query operations.
+
+```python
+class AdvancedFixedLengthPathQueries:
+    def __init__(self, n=None, edges=None, target_length=None, weights=None, priorities=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.target_length = target_length or 0
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.graph = defaultdict(list)
+        self._update_path_query_info()
+    
+    def _update_path_query_info(self):
+        """Update path query feasibility information."""
+        self.path_query_feasibility = self._calculate_path_query_feasibility()
+    
+    def _calculate_path_query_feasibility(self):
+        """Calculate path query feasibility."""
+        if self.n <= 0 or self.target_length <= 0:
+            return 0.0
+        
+        # Check if we can have paths of target length
+        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+    
+    def is_path_possible(self):
+        """Check if path is possible."""
+        if not self.path_query_feasibility:
+            return False
+        
+        # Basic check: need at least 1 vertex for a path
+        if self.n < 1:
+            return False
+        
+        # Check if graph has edges
+        return len(self.edges) > 0
+    
+    def find_paths_of_length(self, start_vertex=None, end_vertex=None):
+        """Find paths of the target length."""
+        if not self.path_query_feasibility or not self.is_path_possible():
+            return []
+        
+        self._build_graph()
+        
+        paths = []
+        if start_vertex is None:
+            # Try all vertices as starting points
+            for start in range(1, self.n + 1):
+                paths.extend(self._find_paths_from_vertex(start, end_vertex))
+        else:
+            paths = self._find_paths_from_vertex(start_vertex, end_vertex)
+        
+        return paths
+    
+    def _find_paths_from_vertex(self, start, end_vertex=None):
+        """Find paths starting from a specific vertex."""
+        paths = []
+        visited = set()
+        path = []
+        
+        def dfs(current, length):
+            if length == self.target_length:
+                if end_vertex is None or current == end_vertex:
+                    paths.append(path[:])
+                return
+            
+            if length > self.target_length:
+                return
+            
+            for neighbor in self.graph[current]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    path.append(neighbor)
+                    dfs(neighbor, length + 1)
+                    path.pop()
+                    visited.remove(neighbor)
+        
+        visited.add(start)
+        path.append(start)
+        dfs(start, 1)
+        visited.remove(start)
+        path.pop()
+        
+        return paths
+    
+    def get_weighted_paths(self, start_vertex=None, end_vertex=None):
+        """Get paths with weights and priorities applied."""
+        if not self.path_query_feasibility:
+            return []
+        
+        paths = self.find_paths_of_length(start_vertex, end_vertex)
+        if not paths:
+            return []
+        
+        # Create weighted paths
+        weighted_paths = []
+        for path in paths:
+            total_weight = 0
+            total_priority = 0
+            
+            for i in range(len(path) - 1):
+                vertex = path[i]
+                next_vertex = path[i + 1]
+                
+                edge_weight = self.weights.get((vertex, next_vertex), 1)
+                vertex_priority = self.priorities.get(vertex, 1)
+                
+                total_weight += edge_weight
+                total_priority += vertex_priority
+            
+            # Add last vertex priority
+            if path:
+                total_priority += self.priorities.get(path[-1], 1)
+            
+            weighted_score = total_weight * total_priority
+            weighted_paths.append((path, weighted_score))
+        
+        # Sort by weighted score (descending for maximization)
+        weighted_paths.sort(key=lambda x: x[1], reverse=True)
+        
+        return weighted_paths
+    
+    def get_paths_with_priority(self, priority_func, start_vertex=None, end_vertex=None):
+        """Get paths considering priority."""
+        if not self.path_query_feasibility:
+            return []
+        
+        paths = self.find_paths_of_length(start_vertex, end_vertex)
+        if not paths:
+            return []
+        
+        # Create priority-based paths
+        priority_paths = []
+        for path in paths:
+            priority = priority_func(path, self.weights, self.priorities)
+            priority_paths.append((path, priority))
+        
+        # Sort by priority (descending for maximization)
+        priority_paths.sort(key=lambda x: x[1], reverse=True)
+        
+        return priority_paths
+    
+    def get_paths_with_optimization(self, optimization_func, start_vertex=None, end_vertex=None):
+        """Get paths using custom optimization function."""
+        if not self.path_query_feasibility:
+            return []
+        
+        paths = self.find_paths_of_length(start_vertex, end_vertex)
+        if not paths:
+            return []
+        
+        # Create optimization-based paths
+        optimized_paths = []
+        for path in paths:
+            score = optimization_func(path, self.weights, self.priorities)
+            optimized_paths.append((path, score))
+        
+        # Sort by optimization score (descending for maximization)
+        optimized_paths.sort(key=lambda x: x[1], reverse=True)
+        
+        return optimized_paths
+    
+    def get_paths_with_constraints(self, constraint_func, start_vertex=None, end_vertex=None):
+        """Get paths that satisfies custom constraints."""
+        if not self.path_query_feasibility:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.weights, self.priorities, self.target_length):
+            return self.get_weighted_paths(start_vertex, end_vertex)
+        else:
+            return []
+    
+    def get_paths_with_multiple_criteria(self, criteria_list, start_vertex=None, end_vertex=None):
+        """Get paths that satisfies multiple criteria."""
+        if not self.path_query_feasibility:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.n, self.edges, self.weights, self.priorities, self.target_length):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_paths(start_vertex, end_vertex)
+        else:
+            return []
+    
+    def get_paths_with_alternatives(self, alternatives, start_vertex=None, end_vertex=None):
+        """Get paths considering alternative weights/priorities."""
+        result = []
+        
+        # Check original paths
+        original_paths = self.get_weighted_paths(start_vertex, end_vertex)
+        result.append((original_paths, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedFixedLengthPathQueries(self.n, self.edges, self.target_length, alt_weights, alt_priorities)
+            temp_paths = temp_instance.get_weighted_paths(start_vertex, end_vertex)
+            result.append((temp_paths, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_paths_with_adaptive_criteria(self, adaptive_func, start_vertex=None, end_vertex=None):
+        """Get paths using adaptive criteria."""
+        if not self.path_query_feasibility:
+            return []
+        
+        if adaptive_func(self.n, self.edges, self.weights, self.priorities, self.target_length, []):
+            return self.get_weighted_paths(start_vertex, end_vertex)
+        else:
+            return []
+    
+    def get_paths_optimization(self, start_vertex=None, end_vertex=None):
+        """Get optimal paths configuration."""
+        strategies = [
+            ('weighted_paths', lambda: len(self.get_weighted_paths(start_vertex, end_vertex))),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 5
+edges = [(1, 2), (2, 3), (3, 4), (4, 5), (1, 3), (2, 4)]
+target_length = 3
+weights = {(u, v): (u + v) * 2 for u, v in edges}  # Weight based on vertex sum
+priorities = {i: i for i in range(1, n + 1)}  # Priority based on vertex number
+advanced_path_queries = AdvancedFixedLengthPathQueries(n, edges, target_length, weights, priorities)
+
+print(f"Weighted paths: {advanced_path_queries.get_weighted_paths()}")
+
+# Get paths with priority
+def priority_func(path, weights, priorities):
+    return sum(priorities.get(vertex, 1) for vertex in path)
+
+print(f"Paths with priority: {advanced_path_queries.get_paths_with_priority(priority_func)}")
+
+# Get paths with optimization
+def optimization_func(path, weights, priorities):
+    return sum(weights.get((path[i], path[i+1]), 1) for i in range(len(path)-1))
+
+print(f"Paths with optimization: {advanced_path_queries.get_paths_with_optimization(optimization_func)}")
+
+# Get paths with constraints
+def constraint_func(n, edges, weights, priorities, target_length):
+    return len(edges) > 0 and n > 0 and target_length > 0
+
+print(f"Paths with constraints: {advanced_path_queries.get_paths_with_constraints(constraint_func)}")
+
+# Get paths with multiple criteria
+def criterion1(n, edges, weights, priorities, target_length):
+    return len(edges) > 0
+
+def criterion2(n, edges, weights, priorities, target_length):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Paths with multiple criteria: {advanced_path_queries.get_paths_with_multiple_criteria(criteria_list)}")
+
+# Get paths with alternatives
+alternatives = [({(u, v): 1 for u, v in edges}, {i: 1 for i in range(1, n + 1)}), ({(u, v): (u + v)*3 for u, v in edges}, {i: 2 for i in range(1, n + 1)})]
+print(f"Paths with alternatives: {advanced_path_queries.get_paths_with_alternatives(alternatives)}")
+
+# Get paths with adaptive criteria
+def adaptive_func(n, edges, weights, priorities, target_length, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print(f"Paths with adaptive criteria: {advanced_path_queries.get_paths_with_adaptive_criteria(adaptive_func)}")
+
+# Get paths optimization
+print(f"Paths optimization: {advanced_path_queries.get_paths_optimization()}")
+```
+
+### **Variation 3: Fixed Length Path Queries with Constraints**
+**Problem**: Handle path queries with additional constraints (length limits, path constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedFixedLengthPathQueries:
+    def __init__(self, n=None, edges=None, target_length=None, constraints=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.target_length = target_length or 0
+        self.constraints = constraints or {}
+        self.graph = defaultdict(list)
+        self._update_path_query_info()
+    
+    def _update_path_query_info(self):
+        """Update path query feasibility information."""
+        self.path_query_feasibility = self._calculate_path_query_feasibility()
+    
+    def _calculate_path_query_feasibility(self):
+        """Calculate path query feasibility."""
+        if self.n <= 0 or self.target_length <= 0:
+            return 0.0
+        
+        # Check if we can have paths of target length
+        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
+    
+    def _is_valid_edge(self, u, v):
+        """Check if edge is valid considering constraints."""
+        # Edge constraints
+        if 'allowed_edges' in self.constraints:
+            if (u, v) not in self.constraints['allowed_edges'] and (v, u) not in self.constraints['allowed_edges']:
+                return False
+        
+        if 'forbidden_edges' in self.constraints:
+            if (u, v) in self.constraints['forbidden_edges'] or (v, u) in self.constraints['forbidden_edges']:
+                return False
+        
+        # Vertex constraints
+        if 'max_vertex' in self.constraints:
+            if u > self.constraints['max_vertex'] or v > self.constraints['max_vertex']:
+                return False
+        
+        if 'min_vertex' in self.constraints:
+            if u < self.constraints['min_vertex'] or v < self.constraints['min_vertex']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(u, v, self.n, self.edges, self.target_length):
+                    return False
+        
+        return True
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            if self._is_valid_edge(u, v):
+                self.graph[u].append(v)
+                self.graph[v].append(u)
+    
+    def is_path_possible(self):
+        """Check if path is possible."""
+        if not self.path_query_feasibility:
+            return False
+        
+        # Basic check: need at least 1 vertex for a path
+        if self.n < 1:
+            return False
+        
+        # Check if graph has edges
+        return len(self.edges) > 0
+    
+    def find_paths_of_length(self, start_vertex=None, end_vertex=None):
+        """Find paths of the target length."""
+        if not self.path_query_feasibility or not self.is_path_possible():
+            return []
+        
+        self._build_graph()
+        
+        paths = []
+        if start_vertex is None:
+            # Try all vertices as starting points
+            for start in range(1, self.n + 1):
+                paths.extend(self._find_paths_from_vertex(start, end_vertex))
+        else:
+            paths = self._find_paths_from_vertex(start_vertex, end_vertex)
+        
+        return paths
+    
+    def _find_paths_from_vertex(self, start, end_vertex=None):
+        """Find paths starting from a specific vertex."""
+        paths = []
+        visited = set()
+        path = []
+        
+        def dfs(current, length):
+            if length == self.target_length:
+                if end_vertex is None or current == end_vertex:
+                    paths.append(path[:])
+                return
+            
+            if length > self.target_length:
+                return
+            
+            for neighbor in self.graph[current]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    path.append(neighbor)
+                    dfs(neighbor, length + 1)
+                    path.pop()
+                    visited.remove(neighbor)
+        
+        visited.add(start)
+        path.append(start)
+        dfs(start, 1)
+        visited.remove(start)
+        path.pop()
+        
+        return paths
+    
+    def get_paths_with_length_constraints(self, min_length, max_length, start_vertex=None, end_vertex=None):
+        """Get paths considering length constraints."""
+        if not self.path_query_feasibility:
+            return []
+        
+        if min_length <= self.target_length <= max_length:
+            return self.find_paths_of_length(start_vertex, end_vertex)
+        else:
+            return []
+    
+    def get_paths_with_path_constraints(self, path_constraints, start_vertex=None, end_vertex=None):
+        """Get paths considering path constraints."""
+        if not self.path_query_feasibility:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in path_constraints:
+            if not constraint(self.n, self.edges, self.target_length):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self.find_paths_of_length(start_vertex, end_vertex)
+        else:
+            return []
+    
+    def get_paths_with_pattern_constraints(self, pattern_constraints, start_vertex=None, end_vertex=None):
+        """Get paths considering pattern constraints."""
+        if not self.path_query_feasibility:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.n, self.edges, self.target_length):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self.find_paths_of_length(start_vertex, end_vertex)
+        else:
+            return []
+    
+    def get_paths_with_mathematical_constraints(self, constraint_func, start_vertex=None, end_vertex=None):
+        """Get paths that satisfies custom mathematical constraints."""
+        if not self.path_query_feasibility:
+            return []
+        
+        paths = self.find_paths_of_length(start_vertex, end_vertex)
+        if paths and constraint_func(self.n, self.edges, self.target_length):
+            return paths
+        else:
+            return []
+    
+    def get_paths_with_optimization_constraints(self, optimization_func, start_vertex=None, end_vertex=None):
+        """Get paths using custom optimization constraints."""
+        if not self.path_query_feasibility:
+            return []
+        
+        # Calculate optimization score for paths
+        score = optimization_func(self.n, self.edges, self.target_length)
+        
+        if score > 0:
+            return self.find_paths_of_length(start_vertex, end_vertex)
+        else:
+            return []
+    
+    def get_paths_with_multiple_constraints(self, constraints_list, start_vertex=None, end_vertex=None):
+        """Get paths that satisfies multiple constraints."""
+        if not self.path_query_feasibility:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.n, self.edges, self.target_length):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self.find_paths_of_length(start_vertex, end_vertex)
+        else:
+            return []
+    
+    def get_paths_with_priority_constraints(self, priority_func, start_vertex=None, end_vertex=None):
+        """Get paths with priority-based constraints."""
+        if not self.path_query_feasibility:
+            return []
+        
+        # Calculate priority for paths
+        priority = priority_func(self.n, self.edges, self.target_length)
+        
+        if priority > 0:
+            return self.find_paths_of_length(start_vertex, end_vertex)
+        else:
+            return []
+    
+    def get_paths_with_adaptive_constraints(self, adaptive_func, start_vertex=None, end_vertex=None):
+        """Get paths with adaptive constraints."""
+        if not self.path_query_feasibility:
+            return []
+        
+        paths = self.find_paths_of_length(start_vertex, end_vertex)
+        if paths and adaptive_func(self.n, self.edges, self.target_length, []):
+            return paths
+        else:
+            return []
+    
+    def get_optimal_paths_strategy(self, start_vertex=None, end_vertex=None):
+        """Get optimal paths strategy considering all constraints."""
+        strategies = [
+            ('length_constraints', self.get_paths_with_length_constraints),
+            ('path_constraints', self.get_paths_with_path_constraints),
+            ('pattern_constraints', self.get_paths_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'length_constraints':
+                    result = strategy_func(1, 1000, start_vertex, end_vertex)
+                elif strategy_name == 'path_constraints':
+                    path_constraints = [lambda n, edges, target_length: len(edges) > 0]
+                    result = strategy_func(path_constraints, start_vertex, end_vertex)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda n, edges, target_length: len(edges) > 0]
+                    result = strategy_func(pattern_constraints, start_vertex, end_vertex)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_edges': [(1, 2), (2, 3), (3, 4), (4, 5), (1, 3), (2, 4)],
+    'forbidden_edges': [(1, 4), (2, 5)],
+    'max_vertex': 10,
+    'min_vertex': 1,
+    'pattern_constraints': [lambda u, v, n, edges, target_length: u > 0 and v > 0 and u <= n and v <= n]
+}
+
+n = 5
+edges = [(1, 2), (2, 3), (3, 4), (4, 5), (1, 3), (2, 4)]
+target_length = 3
+constrained_path_queries = ConstrainedFixedLengthPathQueries(n, edges, target_length, constraints)
+
+print("Length-constrained paths:", constrained_path_queries.get_paths_with_length_constraints(2, 5))
+
+print("Path-constrained paths:", constrained_path_queries.get_paths_with_path_constraints([lambda n, edges, target_length: len(edges) > 0]))
+
+print("Pattern-constrained paths:", constrained_path_queries.get_paths_with_pattern_constraints([lambda n, edges, target_length: len(edges) > 0]))
+
+# Mathematical constraints
+def custom_constraint(n, edges, target_length):
+    return len(edges) > 0 and target_length > 0
+
+print("Mathematical constraint paths:", constrained_path_queries.get_paths_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(n, edges, target_length):
+    return 1 <= target_length <= 20
+
+range_constraints = [range_constraint]
+print("Range-constrained paths:", constrained_path_queries.get_paths_with_length_constraints(1, 20))
+
+# Multiple constraints
+def constraint1(n, edges, target_length):
+    return len(edges) > 0
+
+def constraint2(n, edges, target_length):
+    return target_length > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints paths:", constrained_path_queries.get_paths_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(n, edges, target_length):
+    return n + len(edges) + target_length
+
+print("Priority-constrained paths:", constrained_path_queries.get_paths_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(n, edges, target_length, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print("Adaptive constraint paths:", constrained_path_queries.get_paths_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_path_queries.get_optimal_paths_strategy()
+print(f"Optimal paths strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

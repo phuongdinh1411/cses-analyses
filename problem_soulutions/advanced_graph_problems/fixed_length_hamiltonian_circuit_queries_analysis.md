@@ -605,6 +605,1004 @@ result1 = dhcq.has_hamiltonian_circuit(0, 3)
 print(f"Dynamic Hamiltonian circuit result: {result1}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Fixed Length Hamiltonian Circuit Queries with Dynamic Updates**
+**Problem**: Handle dynamic graph updates (add/remove/update edges) while maintaining fixed length Hamiltonian circuit query calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic graph management with Hamiltonian circuit detection.
+
+```python
+from collections import defaultdict, deque
+import heapq
+
+class DynamicFixedLengthHamiltonianCircuitQueries:
+    def __init__(self, n=None, edges=None, target_length=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.target_length = target_length or 0
+        self.graph = defaultdict(list)
+        self._update_hamiltonian_circuit_query_info()
+    
+    def _update_hamiltonian_circuit_query_info(self):
+        """Update Hamiltonian circuit query feasibility information."""
+        self.hamiltonian_circuit_query_feasibility = self._calculate_hamiltonian_circuit_query_feasibility()
+    
+    def _calculate_hamiltonian_circuit_query_feasibility(self):
+        """Calculate Hamiltonian circuit query feasibility."""
+        if self.n <= 0 or self.target_length <= 0:
+            return 0.0
+        
+        # Check if we can have Hamiltonian circuits of target length
+        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
+    
+    def update_graph(self, new_n, new_edges, new_target_length=None):
+        """Update the graph with new vertices, edges, and target length."""
+        self.n = new_n
+        self.edges = new_edges
+        if new_target_length is not None:
+            self.target_length = new_target_length
+        self._build_graph()
+        self._update_hamiltonian_circuit_query_info()
+    
+    def add_edge(self, u, v):
+        """Add an edge to the graph."""
+        if 1 <= u <= self.n and 1 <= v <= self.n:
+            self.edges.append((u, v))
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+            self._update_hamiltonian_circuit_query_info()
+    
+    def remove_edge(self, u, v):
+        """Remove an edge from the graph."""
+        if (u, v) in self.edges:
+            self.edges.remove((u, v))
+            self.graph[u].remove(v)
+            self.graph[v].remove(u)
+            self._update_hamiltonian_circuit_query_info()
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+    
+    def is_hamiltonian_circuit_possible(self):
+        """Check if Hamiltonian circuit is possible."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return False
+        
+        # Basic check: need at least 3 vertices for a Hamiltonian circuit
+        if self.n < 3:
+            return False
+        
+        # Check if graph is connected
+        return self._is_connected()
+    
+    def _is_connected(self):
+        """Check if the graph is connected."""
+        if not self.graph:
+            return False
+        
+        visited = set()
+        start = next(iter(self.graph.keys()))
+        stack = [start]
+        
+        while stack:
+            vertex = stack.pop()
+            if vertex not in visited:
+                visited.add(vertex)
+                for neighbor in self.graph[vertex]:
+                    if neighbor not in visited:
+                        stack.append(neighbor)
+        
+        return len(visited) == self.n
+    
+    def find_hamiltonian_circuits_of_length(self, start_vertex=None):
+        """Find Hamiltonian circuits of the target length."""
+        if not self.hamiltonian_circuit_query_feasibility or not self.is_hamiltonian_circuit_possible():
+            return []
+        
+        circuits = []
+        if start_vertex is None:
+            # Try all vertices as starting points
+            for start in range(1, self.n + 1):
+                circuits.extend(self._find_hamiltonian_circuits_from_vertex(start))
+        else:
+            circuits = self._find_hamiltonian_circuits_from_vertex(start_vertex)
+        
+        return circuits
+    
+    def _find_hamiltonian_circuits_from_vertex(self, start):
+        """Find Hamiltonian circuits starting from a specific vertex."""
+        circuits = []
+        visited = set()
+        path = []
+        
+        def dfs(current, length):
+            if length == self.target_length:
+                if current == start and len(path) == self.target_length:
+                    circuits.append(path[:])
+                return
+            
+            if length > self.target_length:
+                return
+            
+            for neighbor in self.graph[current]:
+                if neighbor not in visited or (length == self.target_length - 1 and neighbor == start):
+                    if neighbor == start and length == self.target_length - 1:
+                        path.append(neighbor)
+                        dfs(neighbor, length + 1)
+                        path.pop()
+                    elif neighbor != start:
+                        visited.add(neighbor)
+                        path.append(neighbor)
+                        dfs(neighbor, length + 1)
+                        path.pop()
+                        visited.remove(neighbor)
+        
+        visited.add(start)
+        path.append(start)
+        dfs(start, 1)
+        visited.remove(start)
+        path.pop()
+        
+        return circuits
+    
+    def find_hamiltonian_circuits_with_priorities(self, priorities, start_vertex=None):
+        """Find Hamiltonian circuits considering vertex priorities."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
+        if not circuits:
+            return []
+        
+        # Create priority-based circuits
+        priority_circuits = []
+        for circuit in circuits:
+            total_priority = sum(priorities.get(vertex, 1) for vertex in circuit)
+            priority_circuits.append((circuit, total_priority))
+        
+        # Sort by priority (descending for maximization)
+        priority_circuits.sort(key=lambda x: x[1], reverse=True)
+        
+        return priority_circuits
+    
+    def get_hamiltonian_circuits_with_constraints(self, constraint_func, start_vertex=None):
+        """Get Hamiltonian circuits that satisfies custom constraints."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
+        if circuits and constraint_func(self.n, self.edges, circuits, self.target_length):
+            return circuits
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_in_range(self, min_length, max_length, start_vertex=None):
+        """Get Hamiltonian circuits within specified length range."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        if min_length <= self.target_length <= max_length:
+            return self.find_hamiltonian_circuits_of_length(start_vertex)
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_with_pattern(self, pattern_func, start_vertex=None):
+        """Get Hamiltonian circuits matching specified pattern."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
+        if pattern_func(self.n, self.edges, circuits, self.target_length):
+            return circuits
+        else:
+            return []
+    
+    def get_hamiltonian_circuit_query_statistics(self):
+        """Get statistics about the Hamiltonian circuit queries."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return {
+                'n': 0,
+                'hamiltonian_circuit_query_feasibility': 0,
+                'has_hamiltonian_circuits': False,
+                'target_length': 0,
+                'circuit_count': 0
+            }
+        
+        circuits = self.find_hamiltonian_circuits_of_length()
+        return {
+            'n': self.n,
+            'hamiltonian_circuit_query_feasibility': self.hamiltonian_circuit_query_feasibility,
+            'has_hamiltonian_circuits': len(circuits) > 0,
+            'target_length': self.target_length,
+            'circuit_count': len(circuits)
+        }
+    
+    def get_hamiltonian_circuit_query_patterns(self):
+        """Get patterns in Hamiltonian circuit queries."""
+        patterns = {
+            'has_edges': 0,
+            'has_valid_graph': 0,
+            'optimal_hamiltonian_circuit_possible': 0,
+            'has_large_graph': 0
+        }
+        
+        if not self.hamiltonian_circuit_query_feasibility:
+            return patterns
+        
+        # Check if has edges
+        if len(self.edges) > 0:
+            patterns['has_edges'] = 1
+        
+        # Check if has valid graph
+        if self.n > 0:
+            patterns['has_valid_graph'] = 1
+        
+        # Check if optimal Hamiltonian circuit is possible
+        if self.hamiltonian_circuit_query_feasibility == 1.0:
+            patterns['optimal_hamiltonian_circuit_possible'] = 1
+        
+        # Check if has large graph
+        if self.n > 100:
+            patterns['has_large_graph'] = 1
+        
+        return patterns
+    
+    def get_optimal_hamiltonian_circuit_query_strategy(self):
+        """Get optimal strategy for Hamiltonian circuit query management."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'hamiltonian_circuit_query_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.hamiltonian_circuit_query_feasibility
+        
+        # Calculate Hamiltonian circuit query feasibility
+        hamiltonian_circuit_query_feasibility = self.hamiltonian_circuit_query_feasibility
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'dfs_hamiltonian_circuit_search'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_dfs'
+        else:
+            recommended_strategy = 'advanced_hamiltonian_circuit_detection'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'hamiltonian_circuit_query_feasibility': hamiltonian_circuit_query_feasibility
+        }
+
+# Example usage
+n = 5
+edges = [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1), (1, 3), (2, 4)]
+target_length = 5
+dynamic_hamiltonian_circuit_queries = DynamicFixedLengthHamiltonianCircuitQueries(n, edges, target_length)
+print(f"Hamiltonian circuit query feasibility: {dynamic_hamiltonian_circuit_queries.hamiltonian_circuit_query_feasibility}")
+
+# Update graph
+dynamic_hamiltonian_circuit_queries.update_graph(6, [(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 1), (1, 3), (2, 4)], 6)
+print(f"After updating graph: n={dynamic_hamiltonian_circuit_queries.n}, target_length={dynamic_hamiltonian_circuit_queries.target_length}")
+
+# Add edge
+dynamic_hamiltonian_circuit_queries.add_edge(6, 1)
+print(f"After adding edge (6,1): {dynamic_hamiltonian_circuit_queries.edges}")
+
+# Remove edge
+dynamic_hamiltonian_circuit_queries.remove_edge(6, 1)
+print(f"After removing edge (6,1): {dynamic_hamiltonian_circuit_queries.edges}")
+
+# Check if Hamiltonian circuit is possible
+is_possible = dynamic_hamiltonian_circuit_queries.is_hamiltonian_circuit_possible()
+print(f"Is Hamiltonian circuit possible: {is_possible}")
+
+# Find Hamiltonian circuits
+circuits = dynamic_hamiltonian_circuit_queries.find_hamiltonian_circuits_of_length()
+print(f"Hamiltonian circuits of length {target_length}: {circuits}")
+
+# Find Hamiltonian circuits with priorities
+priorities = {i: i for i in range(1, n + 1)}
+priority_circuits = dynamic_hamiltonian_circuit_queries.find_hamiltonian_circuits_with_priorities(priorities)
+print(f"Hamiltonian circuits with priorities: {priority_circuits}")
+
+# Get Hamiltonian circuits with constraints
+def constraint_func(n, edges, circuits, target_length):
+    return len(circuits) > 0 and target_length > 0
+
+print(f"Hamiltonian circuits with constraints: {dynamic_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_constraints(constraint_func)}")
+
+# Get Hamiltonian circuits in range
+print(f"Hamiltonian circuits in range 3-7: {dynamic_hamiltonian_circuit_queries.get_hamiltonian_circuits_in_range(3, 7)}")
+
+# Get Hamiltonian circuits with pattern
+def pattern_func(n, edges, circuits, target_length):
+    return len(circuits) > 0 and target_length > 0
+
+print(f"Hamiltonian circuits with pattern: {dynamic_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_hamiltonian_circuit_queries.get_hamiltonian_circuit_query_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_hamiltonian_circuit_queries.get_hamiltonian_circuit_query_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_hamiltonian_circuit_queries.get_optimal_hamiltonian_circuit_query_strategy()}")
+```
+
+### **Variation 2: Fixed Length Hamiltonian Circuit Queries with Different Operations**
+**Problem**: Handle different types of Hamiltonian circuit query operations (weighted circuits, priority-based selection, advanced Hamiltonian circuit analysis).
+
+**Approach**: Use advanced data structures for efficient different types of Hamiltonian circuit query operations.
+
+```python
+class AdvancedFixedLengthHamiltonianCircuitQueries:
+    def __init__(self, n=None, edges=None, target_length=None, weights=None, priorities=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.target_length = target_length or 0
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.graph = defaultdict(list)
+        self._update_hamiltonian_circuit_query_info()
+    
+    def _update_hamiltonian_circuit_query_info(self):
+        """Update Hamiltonian circuit query feasibility information."""
+        self.hamiltonian_circuit_query_feasibility = self._calculate_hamiltonian_circuit_query_feasibility()
+    
+    def _calculate_hamiltonian_circuit_query_feasibility(self):
+        """Calculate Hamiltonian circuit query feasibility."""
+        if self.n <= 0 or self.target_length <= 0:
+            return 0.0
+        
+        # Check if we can have Hamiltonian circuits of target length
+        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+    
+    def is_hamiltonian_circuit_possible(self):
+        """Check if Hamiltonian circuit is possible."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return False
+        
+        # Basic check: need at least 3 vertices for a Hamiltonian circuit
+        if self.n < 3:
+            return False
+        
+        # Check if graph is connected
+        return self._is_connected()
+    
+    def _is_connected(self):
+        """Check if the graph is connected."""
+        if not self.graph:
+            return False
+        
+        visited = set()
+        start = next(iter(self.graph.keys()))
+        stack = [start]
+        
+        while stack:
+            vertex = stack.pop()
+            if vertex not in visited:
+                visited.add(vertex)
+                for neighbor in self.graph[vertex]:
+                    if neighbor not in visited:
+                        stack.append(neighbor)
+        
+        return len(visited) == self.n
+    
+    def find_hamiltonian_circuits_of_length(self, start_vertex=None):
+        """Find Hamiltonian circuits of the target length."""
+        if not self.hamiltonian_circuit_query_feasibility or not self.is_hamiltonian_circuit_possible():
+            return []
+        
+        self._build_graph()
+        
+        circuits = []
+        if start_vertex is None:
+            # Try all vertices as starting points
+            for start in range(1, self.n + 1):
+                circuits.extend(self._find_hamiltonian_circuits_from_vertex(start))
+        else:
+            circuits = self._find_hamiltonian_circuits_from_vertex(start_vertex)
+        
+        return circuits
+    
+    def _find_hamiltonian_circuits_from_vertex(self, start):
+        """Find Hamiltonian circuits starting from a specific vertex."""
+        circuits = []
+        visited = set()
+        path = []
+        
+        def dfs(current, length):
+            if length == self.target_length:
+                if current == start and len(path) == self.target_length:
+                    circuits.append(path[:])
+                return
+            
+            if length > self.target_length:
+                return
+            
+            for neighbor in self.graph[current]:
+                if neighbor not in visited or (length == self.target_length - 1 and neighbor == start):
+                    if neighbor == start and length == self.target_length - 1:
+                        path.append(neighbor)
+                        dfs(neighbor, length + 1)
+                        path.pop()
+                    elif neighbor != start:
+                        visited.add(neighbor)
+                        path.append(neighbor)
+                        dfs(neighbor, length + 1)
+                        path.pop()
+                        visited.remove(neighbor)
+        
+        visited.add(start)
+        path.append(start)
+        dfs(start, 1)
+        visited.remove(start)
+        path.pop()
+        
+        return circuits
+    
+    def get_weighted_hamiltonian_circuits(self, start_vertex=None):
+        """Get Hamiltonian circuits with weights and priorities applied."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
+        if not circuits:
+            return []
+        
+        # Create weighted circuits
+        weighted_circuits = []
+        for circuit in circuits:
+            total_weight = 0
+            total_priority = 0
+            
+            for i in range(len(circuit)):
+                vertex = circuit[i]
+                next_vertex = circuit[(i + 1) % len(circuit)]
+                
+                edge_weight = self.weights.get((vertex, next_vertex), 1)
+                vertex_priority = self.priorities.get(vertex, 1)
+                
+                total_weight += edge_weight
+                total_priority += vertex_priority
+            
+            weighted_score = total_weight * total_priority
+            weighted_circuits.append((circuit, weighted_score))
+        
+        # Sort by weighted score (descending for maximization)
+        weighted_circuits.sort(key=lambda x: x[1], reverse=True)
+        
+        return weighted_circuits
+    
+    def get_hamiltonian_circuits_with_priority(self, priority_func, start_vertex=None):
+        """Get Hamiltonian circuits considering priority."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
+        if not circuits:
+            return []
+        
+        # Create priority-based circuits
+        priority_circuits = []
+        for circuit in circuits:
+            priority = priority_func(circuit, self.weights, self.priorities)
+            priority_circuits.append((circuit, priority))
+        
+        # Sort by priority (descending for maximization)
+        priority_circuits.sort(key=lambda x: x[1], reverse=True)
+        
+        return priority_circuits
+    
+    def get_hamiltonian_circuits_with_optimization(self, optimization_func, start_vertex=None):
+        """Get Hamiltonian circuits using custom optimization function."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
+        if not circuits:
+            return []
+        
+        # Create optimization-based circuits
+        optimized_circuits = []
+        for circuit in circuits:
+            score = optimization_func(circuit, self.weights, self.priorities)
+            optimized_circuits.append((circuit, score))
+        
+        # Sort by optimization score (descending for maximization)
+        optimized_circuits.sort(key=lambda x: x[1], reverse=True)
+        
+        return optimized_circuits
+    
+    def get_hamiltonian_circuits_with_constraints(self, constraint_func, start_vertex=None):
+        """Get Hamiltonian circuits that satisfies custom constraints."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        if constraint_func(self.n, self.edges, self.weights, self.priorities, self.target_length):
+            return self.get_weighted_hamiltonian_circuits(start_vertex)
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_with_multiple_criteria(self, criteria_list, start_vertex=None):
+        """Get Hamiltonian circuits that satisfies multiple criteria."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.n, self.edges, self.weights, self.priorities, self.target_length):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_hamiltonian_circuits(start_vertex)
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_with_alternatives(self, alternatives, start_vertex=None):
+        """Get Hamiltonian circuits considering alternative weights/priorities."""
+        result = []
+        
+        # Check original circuits
+        original_circuits = self.get_weighted_hamiltonian_circuits(start_vertex)
+        result.append((original_circuits, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedFixedLengthHamiltonianCircuitQueries(self.n, self.edges, self.target_length, alt_weights, alt_priorities)
+            temp_circuits = temp_instance.get_weighted_hamiltonian_circuits(start_vertex)
+            result.append((temp_circuits, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_hamiltonian_circuits_with_adaptive_criteria(self, adaptive_func, start_vertex=None):
+        """Get Hamiltonian circuits using adaptive criteria."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        if adaptive_func(self.n, self.edges, self.weights, self.priorities, self.target_length, []):
+            return self.get_weighted_hamiltonian_circuits(start_vertex)
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_optimization(self, start_vertex=None):
+        """Get optimal Hamiltonian circuits configuration."""
+        strategies = [
+            ('weighted_circuits', lambda: len(self.get_weighted_hamiltonian_circuits(start_vertex))),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 5
+edges = [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1), (1, 3), (2, 4)]
+target_length = 5
+weights = {(u, v): (u + v) * 2 for u, v in edges}  # Weight based on vertex sum
+priorities = {i: i for i in range(1, n + 1)}  # Priority based on vertex number
+advanced_hamiltonian_circuit_queries = AdvancedFixedLengthHamiltonianCircuitQueries(n, edges, target_length, weights, priorities)
+
+print(f"Weighted Hamiltonian circuits: {advanced_hamiltonian_circuit_queries.get_weighted_hamiltonian_circuits()}")
+
+# Get Hamiltonian circuits with priority
+def priority_func(circuit, weights, priorities):
+    return sum(priorities.get(vertex, 1) for vertex in circuit)
+
+print(f"Hamiltonian circuits with priority: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_priority(priority_func)}")
+
+# Get Hamiltonian circuits with optimization
+def optimization_func(circuit, weights, priorities):
+    return sum(weights.get((circuit[i], circuit[(i+1)%len(circuit)]), 1) for i in range(len(circuit)))
+
+print(f"Hamiltonian circuits with optimization: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_optimization(optimization_func)}")
+
+# Get Hamiltonian circuits with constraints
+def constraint_func(n, edges, weights, priorities, target_length):
+    return len(edges) > 0 and n > 0 and target_length > 0
+
+print(f"Hamiltonian circuits with constraints: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_constraints(constraint_func)}")
+
+# Get Hamiltonian circuits with multiple criteria
+def criterion1(n, edges, weights, priorities, target_length):
+    return len(edges) > 0
+
+def criterion2(n, edges, weights, priorities, target_length):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Hamiltonian circuits with multiple criteria: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_multiple_criteria(criteria_list)}")
+
+# Get Hamiltonian circuits with alternatives
+alternatives = [({(u, v): 1 for u, v in edges}, {i: 1 for i in range(1, n + 1)}), ({(u, v): (u + v)*3 for u, v in edges}, {i: 2 for i in range(1, n + 1)})]
+print(f"Hamiltonian circuits with alternatives: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_alternatives(alternatives)}")
+
+# Get Hamiltonian circuits with adaptive criteria
+def adaptive_func(n, edges, weights, priorities, target_length, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print(f"Hamiltonian circuits with adaptive criteria: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_adaptive_criteria(adaptive_func)}")
+
+# Get Hamiltonian circuits optimization
+print(f"Hamiltonian circuits optimization: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_optimization()}")
+```
+
+### **Variation 3: Fixed Length Hamiltonian Circuit Queries with Constraints**
+**Problem**: Handle Hamiltonian circuit queries with additional constraints (length limits, Hamiltonian circuit constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedFixedLengthHamiltonianCircuitQueries:
+    def __init__(self, n=None, edges=None, target_length=None, constraints=None):
+        self.n = n or 0
+        self.edges = edges or []
+        self.target_length = target_length or 0
+        self.constraints = constraints or {}
+        self.graph = defaultdict(list)
+        self._update_hamiltonian_circuit_query_info()
+    
+    def _update_hamiltonian_circuit_query_info(self):
+        """Update Hamiltonian circuit query feasibility information."""
+        self.hamiltonian_circuit_query_feasibility = self._calculate_hamiltonian_circuit_query_feasibility()
+    
+    def _calculate_hamiltonian_circuit_query_feasibility(self):
+        """Calculate Hamiltonian circuit query feasibility."""
+        if self.n <= 0 or self.target_length <= 0:
+            return 0.0
+        
+        # Check if we can have Hamiltonian circuits of target length
+        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
+    
+    def _is_valid_edge(self, u, v):
+        """Check if edge is valid considering constraints."""
+        # Edge constraints
+        if 'allowed_edges' in self.constraints:
+            if (u, v) not in self.constraints['allowed_edges'] and (v, u) not in self.constraints['allowed_edges']:
+                return False
+        
+        if 'forbidden_edges' in self.constraints:
+            if (u, v) in self.constraints['forbidden_edges'] or (v, u) in self.constraints['forbidden_edges']:
+                return False
+        
+        # Vertex constraints
+        if 'max_vertex' in self.constraints:
+            if u > self.constraints['max_vertex'] or v > self.constraints['max_vertex']:
+                return False
+        
+        if 'min_vertex' in self.constraints:
+            if u < self.constraints['min_vertex'] or v < self.constraints['min_vertex']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(u, v, self.n, self.edges, self.target_length):
+                    return False
+        
+        return True
+    
+    def _build_graph(self):
+        """Build the graph from edges."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.edges:
+            if self._is_valid_edge(u, v):
+                self.graph[u].append(v)
+                self.graph[v].append(u)
+    
+    def is_hamiltonian_circuit_possible(self):
+        """Check if Hamiltonian circuit is possible."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return False
+        
+        # Basic check: need at least 3 vertices for a Hamiltonian circuit
+        if self.n < 3:
+            return False
+        
+        # Check if graph is connected
+        return self._is_connected()
+    
+    def _is_connected(self):
+        """Check if the graph is connected."""
+        if not self.graph:
+            return False
+        
+        visited = set()
+        start = next(iter(self.graph.keys()))
+        stack = [start]
+        
+        while stack:
+            vertex = stack.pop()
+            if vertex not in visited:
+                visited.add(vertex)
+                for neighbor in self.graph[vertex]:
+                    if neighbor not in visited:
+                        stack.append(neighbor)
+        
+        return len(visited) == self.n
+    
+    def find_hamiltonian_circuits_of_length(self, start_vertex=None):
+        """Find Hamiltonian circuits of the target length."""
+        if not self.hamiltonian_circuit_query_feasibility or not self.is_hamiltonian_circuit_possible():
+            return []
+        
+        self._build_graph()
+        
+        circuits = []
+        if start_vertex is None:
+            # Try all vertices as starting points
+            for start in range(1, self.n + 1):
+                circuits.extend(self._find_hamiltonian_circuits_from_vertex(start))
+        else:
+            circuits = self._find_hamiltonian_circuits_from_vertex(start_vertex)
+        
+        return circuits
+    
+    def _find_hamiltonian_circuits_from_vertex(self, start):
+        """Find Hamiltonian circuits starting from a specific vertex."""
+        circuits = []
+        visited = set()
+        path = []
+        
+        def dfs(current, length):
+            if length == self.target_length:
+                if current == start and len(path) == self.target_length:
+                    circuits.append(path[:])
+                return
+            
+            if length > self.target_length:
+                return
+            
+            for neighbor in self.graph[current]:
+                if neighbor not in visited or (length == self.target_length - 1 and neighbor == start):
+                    if neighbor == start and length == self.target_length - 1:
+                        path.append(neighbor)
+                        dfs(neighbor, length + 1)
+                        path.pop()
+                    elif neighbor != start:
+                        visited.add(neighbor)
+                        path.append(neighbor)
+                        dfs(neighbor, length + 1)
+                        path.pop()
+                        visited.remove(neighbor)
+        
+        visited.add(start)
+        path.append(start)
+        dfs(start, 1)
+        visited.remove(start)
+        path.pop()
+        
+        return circuits
+    
+    def get_hamiltonian_circuits_with_length_constraints(self, min_length, max_length, start_vertex=None):
+        """Get Hamiltonian circuits considering length constraints."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        if min_length <= self.target_length <= max_length:
+            return self.find_hamiltonian_circuits_of_length(start_vertex)
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_with_hamiltonian_constraints(self, hamiltonian_constraints, start_vertex=None):
+        """Get Hamiltonian circuits considering Hamiltonian constraints."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in hamiltonian_constraints:
+            if not constraint(self.n, self.edges, self.target_length):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self.find_hamiltonian_circuits_of_length(start_vertex)
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_with_pattern_constraints(self, pattern_constraints, start_vertex=None):
+        """Get Hamiltonian circuits considering pattern constraints."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.n, self.edges, self.target_length):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self.find_hamiltonian_circuits_of_length(start_vertex)
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_with_mathematical_constraints(self, constraint_func, start_vertex=None):
+        """Get Hamiltonian circuits that satisfies custom mathematical constraints."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
+        if circuits and constraint_func(self.n, self.edges, self.target_length):
+            return circuits
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_with_optimization_constraints(self, optimization_func, start_vertex=None):
+        """Get Hamiltonian circuits using custom optimization constraints."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        # Calculate optimization score for Hamiltonian circuits
+        score = optimization_func(self.n, self.edges, self.target_length)
+        
+        if score > 0:
+            return self.find_hamiltonian_circuits_of_length(start_vertex)
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_with_multiple_constraints(self, constraints_list, start_vertex=None):
+        """Get Hamiltonian circuits that satisfies multiple constraints."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.n, self.edges, self.target_length):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self.find_hamiltonian_circuits_of_length(start_vertex)
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_with_priority_constraints(self, priority_func, start_vertex=None):
+        """Get Hamiltonian circuits with priority-based constraints."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        # Calculate priority for Hamiltonian circuits
+        priority = priority_func(self.n, self.edges, self.target_length)
+        
+        if priority > 0:
+            return self.find_hamiltonian_circuits_of_length(start_vertex)
+        else:
+            return []
+    
+    def get_hamiltonian_circuits_with_adaptive_constraints(self, adaptive_func, start_vertex=None):
+        """Get Hamiltonian circuits with adaptive constraints."""
+        if not self.hamiltonian_circuit_query_feasibility:
+            return []
+        
+        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
+        if circuits and adaptive_func(self.n, self.edges, self.target_length, []):
+            return circuits
+        else:
+            return []
+    
+    def get_optimal_hamiltonian_circuits_strategy(self, start_vertex=None):
+        """Get optimal Hamiltonian circuits strategy considering all constraints."""
+        strategies = [
+            ('length_constraints', self.get_hamiltonian_circuits_with_length_constraints),
+            ('hamiltonian_constraints', self.get_hamiltonian_circuits_with_hamiltonian_constraints),
+            ('pattern_constraints', self.get_hamiltonian_circuits_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'length_constraints':
+                    result = strategy_func(1, 1000, start_vertex)
+                elif strategy_name == 'hamiltonian_constraints':
+                    hamiltonian_constraints = [lambda n, edges, target_length: len(edges) > 0]
+                    result = strategy_func(hamiltonian_constraints, start_vertex)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda n, edges, target_length: len(edges) > 0]
+                    result = strategy_func(pattern_constraints, start_vertex)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_edges': [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1), (1, 3), (2, 4)],
+    'forbidden_edges': [(1, 4), (2, 5)],
+    'max_vertex': 10,
+    'min_vertex': 1,
+    'pattern_constraints': [lambda u, v, n, edges, target_length: u > 0 and v > 0 and u <= n and v <= n]
+}
+
+n = 5
+edges = [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1), (1, 3), (2, 4)]
+target_length = 5
+constrained_hamiltonian_circuit_queries = ConstrainedFixedLengthHamiltonianCircuitQueries(n, edges, target_length, constraints)
+
+print("Length-constrained Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_length_constraints(3, 7))
+
+print("Hamiltonian-constrained circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_hamiltonian_constraints([lambda n, edges, target_length: len(edges) > 0]))
+
+print("Pattern-constrained Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_pattern_constraints([lambda n, edges, target_length: len(edges) > 0]))
+
+# Mathematical constraints
+def custom_constraint(n, edges, target_length):
+    return len(edges) > 0 and target_length > 0
+
+print("Mathematical constraint Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(n, edges, target_length):
+    return 1 <= target_length <= 20
+
+range_constraints = [range_constraint]
+print("Range-constrained Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_length_constraints(1, 20))
+
+# Multiple constraints
+def constraint1(n, edges, target_length):
+    return len(edges) > 0
+
+def constraint2(n, edges, target_length):
+    return target_length > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(n, edges, target_length):
+    return n + len(edges) + target_length
+
+print("Priority-constrained Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(n, edges, target_length, current_result):
+    return len(edges) > 0 and len(current_result) < 10
+
+print("Adaptive constraint Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_hamiltonian_circuit_queries.get_optimal_hamiltonian_circuits_strategy()
+print(f"Optimal Hamiltonian circuits strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

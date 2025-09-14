@@ -673,6 +673,870 @@ result = dco.get_minimum_offices()
 print(f"Dynamic offices result: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Creating Offices with Dynamic Updates**
+**Problem**: Handle dynamic office updates (add/remove/update offices and connections) while maintaining optimal office creation calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic office management with graph algorithms.
+
+```python
+from collections import defaultdict, deque
+import heapq
+
+class DynamicCreatingOffices:
+    def __init__(self, n=None, connections=None):
+        self.n = n or 0
+        self.connections = connections or []
+        self.graph = defaultdict(list)
+        self._update_office_creation_info()
+    
+    def _update_office_creation_info(self):
+        """Update office creation feasibility information."""
+        self.office_creation_feasibility = self._calculate_office_creation_feasibility()
+    
+    def _calculate_office_creation_feasibility(self):
+        """Calculate office creation feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can create offices
+        return 1.0 if self.n > 0 else 0.0
+    
+    def update_offices(self, new_n, new_connections):
+        """Update the offices with new count and connections."""
+        self.n = new_n
+        self.connections = new_connections
+        self._build_graph()
+        self._update_office_creation_info()
+    
+    def add_office(self, office, connected_offices):
+        """Add a new office with its connections."""
+        if 1 <= office <= self.n:
+            for connected_office in connected_offices:
+                if 1 <= connected_office <= self.n:
+                    self.connections.append((office, connected_office))
+            self._build_graph()
+            self._update_office_creation_info()
+    
+    def remove_office(self, office):
+        """Remove an office and its related connections."""
+        # Remove connections where this office is involved
+        self.connections = [c for c in self.connections if c[0] != office and c[1] != office]
+        self._build_graph()
+        self._update_office_creation_info()
+    
+    def _build_graph(self):
+        """Build the graph from connections."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.connections:
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+    
+    def find_office_creation_plan(self):
+        """Find the plan to create all offices using graph algorithms."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        # Use BFS to find connected components
+        visited = set()
+        result = []
+        
+        for i in range(1, self.n + 1):
+            if i not in visited:
+                component = self._bfs_component(i, visited)
+                result.append(component)
+        
+        return result
+    
+    def _bfs_component(self, start, visited):
+        """Find connected component using BFS."""
+        component = []
+        queue = deque([start])
+        visited.add(start)
+        
+        while queue:
+            office = queue.popleft()
+            component.append(office)
+            
+            for neighbor in self.graph[office]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append(neighbor)
+        
+        return component
+    
+    def find_office_creation_plan_with_priorities(self, priorities):
+        """Find office creation plan considering office priorities."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        # Use priority queue for offices with same connectivity
+        visited = set()
+        result = []
+        
+        for i in range(1, self.n + 1):
+            if i not in visited:
+                component = self._priority_bfs_component(i, visited, priorities)
+                result.append(component)
+        
+        return result
+    
+    def _priority_bfs_component(self, start, visited, priorities):
+        """Find connected component using priority-based BFS."""
+        component = []
+        pq = [(-priorities.get(start, 0), start)]
+        visited.add(start)
+        
+        while pq:
+            _, office = heapq.heappop(pq)
+            component.append(office)
+            
+            for neighbor in self.graph[office]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    heapq.heappush(pq, (-priorities.get(neighbor, 0), neighbor))
+        
+        return component
+    
+    def get_office_creation_with_constraints(self, constraint_func):
+        """Get office creation plan that satisfies custom constraints."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        office_plan = self.find_office_creation_plan()
+        if office_plan and constraint_func(self.n, self.connections, office_plan):
+            return office_plan
+        else:
+            return []
+    
+    def get_office_creation_in_range(self, min_offices, max_offices):
+        """Get office creation plan within specified office count range."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        if min_offices <= self.n <= max_offices:
+            return self.find_office_creation_plan()
+        else:
+            return []
+    
+    def get_office_creation_with_pattern(self, pattern_func):
+        """Get office creation plan matching specified pattern."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        office_plan = self.find_office_creation_plan()
+        if pattern_func(self.n, self.connections, office_plan):
+            return office_plan
+        else:
+            return []
+    
+    def get_office_creation_statistics(self):
+        """Get statistics about the office creation plan."""
+        if not self.office_creation_feasibility:
+            return {
+                'n': 0,
+                'office_creation_feasibility': 0,
+                'is_creatable': False,
+                'connection_count': 0
+            }
+        
+        office_plan = self.find_office_creation_plan()
+        return {
+            'n': self.n,
+            'office_creation_feasibility': self.office_creation_feasibility,
+            'is_creatable': len(office_plan) > 0,
+            'connection_count': len(self.connections)
+        }
+    
+    def get_office_creation_patterns(self):
+        """Get patterns in office creation plan."""
+        patterns = {
+            'has_connections': 0,
+            'has_valid_offices': 0,
+            'optimal_creation_possible': 0,
+            'has_large_office_set': 0
+        }
+        
+        if not self.office_creation_feasibility:
+            return patterns
+        
+        # Check if has connections
+        if len(self.connections) > 0:
+            patterns['has_connections'] = 1
+        
+        # Check if has valid offices
+        if self.n > 0:
+            patterns['has_valid_offices'] = 1
+        
+        # Check if optimal creation is possible
+        if self.office_creation_feasibility == 1.0:
+            patterns['optimal_creation_possible'] = 1
+        
+        # Check if has large office set
+        if self.n > 100:
+            patterns['has_large_office_set'] = 1
+        
+        return patterns
+    
+    def get_optimal_office_creation_strategy(self):
+        """Get optimal strategy for office creation."""
+        if not self.office_creation_feasibility:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'office_creation_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.office_creation_feasibility
+        
+        # Calculate office creation feasibility
+        office_creation_feasibility = self.office_creation_feasibility
+        
+        # Determine recommended strategy
+        if self.n <= 100:
+            recommended_strategy = 'bfs_components'
+        elif self.n <= 1000:
+            recommended_strategy = 'optimized_bfs'
+        else:
+            recommended_strategy = 'advanced_graph_algorithms'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'office_creation_feasibility': office_creation_feasibility
+        }
+
+# Example usage
+n = 5
+connections = [(1, 2), (2, 3), (3, 4), (4, 5)]
+dynamic_office_creation = DynamicCreatingOffices(n, connections)
+print(f"Office creation feasibility: {dynamic_office_creation.office_creation_feasibility}")
+
+# Update offices
+dynamic_office_creation.update_offices(6, [(1, 2), (2, 3), (3, 4), (4, 5), (5, 6)])
+print(f"After updating offices: n={dynamic_office_creation.n}, connections={dynamic_office_creation.connections}")
+
+# Add office
+dynamic_office_creation.add_office(6, [5])
+print(f"After adding office 6 with connection to 5: {dynamic_office_creation.connections}")
+
+# Remove office
+dynamic_office_creation.remove_office(6)
+print(f"After removing office 6: {dynamic_office_creation.connections}")
+
+# Find office creation plan
+office_plan = dynamic_office_creation.find_office_creation_plan()
+print(f"Office creation plan: {office_plan}")
+
+# Find office creation plan with priorities
+priorities = {1: 3, 2: 2, 3: 2, 4: 1, 5: 1}
+priority_plan = dynamic_office_creation.find_office_creation_plan_with_priorities(priorities)
+print(f"Office creation plan with priorities: {priority_plan}")
+
+# Get office creation with constraints
+def constraint_func(n, connections, office_plan):
+    return len(office_plan) > 0 and len(connections) > 0
+
+print(f"Office creation with constraints: {dynamic_office_creation.get_office_creation_with_constraints(constraint_func)}")
+
+# Get office creation in range
+print(f"Office creation in range 1-10: {dynamic_office_creation.get_office_creation_in_range(1, 10)}")
+
+# Get office creation with pattern
+def pattern_func(n, connections, office_plan):
+    return len(office_plan) > 0 and len(connections) > 0
+
+print(f"Office creation with pattern: {dynamic_office_creation.get_office_creation_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_office_creation.get_office_creation_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_office_creation.get_office_creation_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_office_creation.get_optimal_office_creation_strategy()}")
+```
+
+### **Variation 2: Creating Offices with Different Operations**
+**Problem**: Handle different types of office creation operations (weighted offices, priority-based selection, advanced office analysis).
+
+**Approach**: Use advanced data structures for efficient different types of office creation operations.
+
+```python
+class AdvancedCreatingOffices:
+    def __init__(self, n=None, connections=None, weights=None, priorities=None):
+        self.n = n or 0
+        self.connections = connections or []
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.graph = defaultdict(list)
+        self._update_office_creation_info()
+    
+    def _update_office_creation_info(self):
+        """Update office creation feasibility information."""
+        self.office_creation_feasibility = self._calculate_office_creation_feasibility()
+    
+    def _calculate_office_creation_feasibility(self):
+        """Calculate office creation feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can create offices
+        return 1.0 if self.n > 0 else 0.0
+    
+    def _build_graph(self):
+        """Build the graph from connections."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.connections:
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+    
+    def find_office_creation_plan(self):
+        """Find the plan to create all offices using graph algorithms."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        self._build_graph()
+        
+        # Use BFS to find connected components
+        visited = set()
+        result = []
+        
+        for i in range(1, self.n + 1):
+            if i not in visited:
+                component = self._bfs_component(i, visited)
+                result.append(component)
+        
+        return result
+    
+    def _bfs_component(self, start, visited):
+        """Find connected component using BFS."""
+        component = []
+        queue = deque([start])
+        visited.add(start)
+        
+        while queue:
+            office = queue.popleft()
+            component.append(office)
+            
+            for neighbor in self.graph[office]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append(neighbor)
+        
+        return component
+    
+    def get_weighted_office_creation(self):
+        """Get office creation plan with weights and priorities applied."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        office_plan = self.find_office_creation_plan()
+        if not office_plan:
+            return []
+        
+        # Create weighted office creation plan
+        weighted_plan = []
+        for component in office_plan:
+            weighted_component = []
+            for office in component:
+                weight = self.weights.get(office, 1)
+                priority = self.priorities.get(office, 1)
+                weighted_score = weight * priority
+                weighted_component.append((office, weighted_score))
+            
+            # Sort by weighted score (descending for maximization)
+            weighted_component.sort(key=lambda x: x[1], reverse=True)
+            weighted_plan.append(weighted_component)
+        
+        return weighted_plan
+    
+    def get_office_creation_with_priority(self, priority_func):
+        """Get office creation plan considering priority."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        office_plan = self.find_office_creation_plan()
+        if not office_plan:
+            return []
+        
+        # Create priority-based office creation plan
+        priority_plan = []
+        for component in office_plan:
+            priority_component = []
+            for office in component:
+                priority = priority_func(office, self.weights, self.priorities)
+                priority_component.append((office, priority))
+            
+            # Sort by priority (descending for maximization)
+            priority_component.sort(key=lambda x: x[1], reverse=True)
+            priority_plan.append(priority_component)
+        
+        return priority_plan
+    
+    def get_office_creation_with_optimization(self, optimization_func):
+        """Get office creation plan using custom optimization function."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        office_plan = self.find_office_creation_plan()
+        if not office_plan:
+            return []
+        
+        # Create optimization-based office creation plan
+        optimized_plan = []
+        for component in office_plan:
+            optimized_component = []
+            for office in component:
+                score = optimization_func(office, self.weights, self.priorities)
+                optimized_component.append((office, score))
+            
+            # Sort by optimization score (descending for maximization)
+            optimized_component.sort(key=lambda x: x[1], reverse=True)
+            optimized_plan.append(optimized_component)
+        
+        return optimized_plan
+    
+    def get_office_creation_with_constraints(self, constraint_func):
+        """Get office creation plan that satisfies custom constraints."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        if constraint_func(self.n, self.connections, self.weights, self.priorities):
+            return self.get_weighted_office_creation()
+        else:
+            return []
+    
+    def get_office_creation_with_multiple_criteria(self, criteria_list):
+        """Get office creation plan that satisfies multiple criteria."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.n, self.connections, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_office_creation()
+        else:
+            return []
+    
+    def get_office_creation_with_alternatives(self, alternatives):
+        """Get office creation plan considering alternative weights/priorities."""
+        result = []
+        
+        # Check original office creation plan
+        original_plan = self.get_weighted_office_creation()
+        result.append((original_plan, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedCreatingOffices(self.n, self.connections, alt_weights, alt_priorities)
+            temp_plan = temp_instance.get_weighted_office_creation()
+            result.append((temp_plan, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_office_creation_with_adaptive_criteria(self, adaptive_func):
+        """Get office creation plan using adaptive criteria."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        if adaptive_func(self.n, self.connections, self.weights, self.priorities, []):
+            return self.get_weighted_office_creation()
+        else:
+            return []
+    
+    def get_office_creation_optimization(self):
+        """Get optimal office creation configuration."""
+        strategies = [
+            ('weighted_plan', lambda: len(self.get_weighted_office_creation())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+n = 5
+connections = [(1, 2), (2, 3), (3, 4), (4, 5)]
+weights = {i: (i + 1) * 2 for i in range(1, n + 1)}  # Weight based on office number
+priorities = {i: 1 for i in range(1, n + 1)}  # Equal priority
+advanced_office_creation = AdvancedCreatingOffices(n, connections, weights, priorities)
+
+print(f"Weighted office creation: {advanced_office_creation.get_weighted_office_creation()}")
+
+# Get office creation with priority
+def priority_func(office, weights, priorities):
+    return weights.get(office, 1) + priorities.get(office, 1)
+
+print(f"Office creation with priority: {advanced_office_creation.get_office_creation_with_priority(priority_func)}")
+
+# Get office creation with optimization
+def optimization_func(office, weights, priorities):
+    return weights.get(office, 1) * priorities.get(office, 1)
+
+print(f"Office creation with optimization: {advanced_office_creation.get_office_creation_with_optimization(optimization_func)}")
+
+# Get office creation with constraints
+def constraint_func(n, connections, weights, priorities):
+    return len(connections) > 0 and n > 0
+
+print(f"Office creation with constraints: {advanced_office_creation.get_office_creation_with_constraints(constraint_func)}")
+
+# Get office creation with multiple criteria
+def criterion1(n, connections, weights, priorities):
+    return len(connections) > 0
+
+def criterion2(n, connections, weights, priorities):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Office creation with multiple criteria: {advanced_office_creation.get_office_creation_with_multiple_criteria(criteria_list)}")
+
+# Get office creation with alternatives
+alternatives = [({i: 1 for i in range(1, n + 1)}, {i: 1 for i in range(1, n + 1)}), ({i: (i+1)*3 for i in range(1, n + 1)}, {i: 2 for i in range(1, n + 1)})]
+print(f"Office creation with alternatives: {advanced_office_creation.get_office_creation_with_alternatives(alternatives)}")
+
+# Get office creation with adaptive criteria
+def adaptive_func(n, connections, weights, priorities, current_result):
+    return len(connections) > 0 and len(current_result) < 10
+
+print(f"Office creation with adaptive criteria: {advanced_office_creation.get_office_creation_with_adaptive_criteria(adaptive_func)}")
+
+# Get office creation optimization
+print(f"Office creation optimization: {advanced_office_creation.get_office_creation_optimization()}")
+```
+
+### **Variation 3: Creating Offices with Constraints**
+**Problem**: Handle office creation with additional constraints (office limits, creation constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedCreatingOffices:
+    def __init__(self, n=None, connections=None, constraints=None):
+        self.n = n or 0
+        self.connections = connections or []
+        self.constraints = constraints or {}
+        self.graph = defaultdict(list)
+        self._update_office_creation_info()
+    
+    def _update_office_creation_info(self):
+        """Update office creation feasibility information."""
+        self.office_creation_feasibility = self._calculate_office_creation_feasibility()
+    
+    def _calculate_office_creation_feasibility(self):
+        """Calculate office creation feasibility."""
+        if self.n <= 0:
+            return 0.0
+        
+        # Check if we can create offices
+        return 1.0 if self.n > 0 else 0.0
+    
+    def _is_valid_office(self, office):
+        """Check if office is valid considering constraints."""
+        # Office constraints
+        if 'allowed_offices' in self.constraints:
+            if office not in self.constraints['allowed_offices']:
+                return False
+        
+        if 'forbidden_offices' in self.constraints:
+            if office in self.constraints['forbidden_offices']:
+                return False
+        
+        # Range constraints
+        if 'max_office' in self.constraints:
+            if office > self.constraints['max_office']:
+                return False
+        
+        if 'min_office' in self.constraints:
+            if office < self.constraints['min_office']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(office, self.n, self.connections):
+                    return False
+        
+        return True
+    
+    def _build_graph(self):
+        """Build the graph from connections."""
+        self.graph = defaultdict(list)
+        
+        for u, v in self.connections:
+            if self._is_valid_office(u) and self._is_valid_office(v):
+                self.graph[u].append(v)
+                self.graph[v].append(u)
+    
+    def find_office_creation_plan(self):
+        """Find the plan to create all offices using graph algorithms."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        self._build_graph()
+        
+        # Use BFS to find connected components
+        visited = set()
+        result = []
+        
+        for i in range(1, self.n + 1):
+            if self._is_valid_office(i) and i not in visited:
+                component = self._bfs_component(i, visited)
+                result.append(component)
+        
+        return result
+    
+    def _bfs_component(self, start, visited):
+        """Find connected component using BFS."""
+        component = []
+        queue = deque([start])
+        visited.add(start)
+        
+        while queue:
+            office = queue.popleft()
+            component.append(office)
+            
+            for neighbor in self.graph[office]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append(neighbor)
+        
+        return component
+    
+    def get_office_creation_with_office_constraints(self, min_offices, max_offices):
+        """Get office creation plan considering office count constraints."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        if min_offices <= self.n <= max_offices:
+            return self._calculate_constrained_office_creation()
+        else:
+            return []
+    
+    def get_office_creation_with_creation_constraints(self, creation_constraints):
+        """Get office creation plan considering creation constraints."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in creation_constraints:
+            if not constraint(self.n, self.connections):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self._calculate_constrained_office_creation()
+        else:
+            return []
+    
+    def get_office_creation_with_pattern_constraints(self, pattern_constraints):
+        """Get office creation plan considering pattern constraints."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.n, self.connections):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self._calculate_constrained_office_creation()
+        else:
+            return []
+    
+    def get_office_creation_with_mathematical_constraints(self, constraint_func):
+        """Get office creation plan that satisfies custom mathematical constraints."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        if constraint_func(self.n, self.connections):
+            return self._calculate_constrained_office_creation()
+        else:
+            return []
+    
+    def get_office_creation_with_optimization_constraints(self, optimization_func):
+        """Get office creation plan using custom optimization constraints."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        # Calculate optimization score for office creation
+        score = optimization_func(self.n, self.connections)
+        
+        if score > 0:
+            return self._calculate_constrained_office_creation()
+        else:
+            return []
+    
+    def get_office_creation_with_multiple_constraints(self, constraints_list):
+        """Get office creation plan that satisfies multiple constraints."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.n, self.connections):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self._calculate_constrained_office_creation()
+        else:
+            return []
+    
+    def get_office_creation_with_priority_constraints(self, priority_func):
+        """Get office creation plan with priority-based constraints."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        # Calculate priority for office creation
+        priority = priority_func(self.n, self.connections)
+        
+        if priority > 0:
+            return self._calculate_constrained_office_creation()
+        else:
+            return []
+    
+    def get_office_creation_with_adaptive_constraints(self, adaptive_func):
+        """Get office creation plan with adaptive constraints."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        if adaptive_func(self.n, self.connections, []):
+            return self._calculate_constrained_office_creation()
+        else:
+            return []
+    
+    def _calculate_constrained_office_creation(self):
+        """Calculate office creation plan considering all constraints."""
+        if not self.office_creation_feasibility:
+            return []
+        
+        office_plan = self.find_office_creation_plan()
+        if not office_plan:
+            return []
+        
+        # Filter valid offices
+        valid_plan = []
+        for component in office_plan:
+            valid_component = [office for office in component if self._is_valid_office(office)]
+            if valid_component:
+                valid_plan.append(valid_component)
+        
+        return valid_plan
+    
+    def get_optimal_office_creation_strategy(self):
+        """Get optimal office creation strategy considering all constraints."""
+        strategies = [
+            ('office_constraints', self.get_office_creation_with_office_constraints),
+            ('creation_constraints', self.get_office_creation_with_creation_constraints),
+            ('pattern_constraints', self.get_office_creation_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'office_constraints':
+                    result = strategy_func(1, 1000)
+                elif strategy_name == 'creation_constraints':
+                    creation_constraints = [lambda n, connections: len(connections) > 0]
+                    result = strategy_func(creation_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda n, connections: len(connections) > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_offices': [1, 2, 3, 4, 5],
+    'forbidden_offices': [6, 7, 8, 9, 10],
+    'max_office': 10,
+    'min_office': 1,
+    'pattern_constraints': [lambda office, n, connections: office >= 1 and office <= n]
+}
+
+n = 5
+connections = [(1, 2), (2, 3), (3, 4), (4, 5)]
+constrained_office_creation = ConstrainedCreatingOffices(n, connections, constraints)
+
+print("Office-constrained office creation:", constrained_office_creation.get_office_creation_with_office_constraints(1, 10))
+
+print("Creation-constrained office creation:", constrained_office_creation.get_office_creation_with_creation_constraints([lambda n, connections: len(connections) > 0]))
+
+print("Pattern-constrained office creation:", constrained_office_creation.get_office_creation_with_pattern_constraints([lambda n, connections: len(connections) > 0]))
+
+# Mathematical constraints
+def custom_constraint(n, connections):
+    return len(connections) > 0
+
+print("Mathematical constraint office creation:", constrained_office_creation.get_office_creation_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(n, connections):
+    return 1 <= n <= 100
+
+range_constraints = [range_constraint]
+print("Range-constrained office creation:", constrained_office_creation.get_office_creation_with_office_constraints(1, 10))
+
+# Multiple constraints
+def constraint1(n, connections):
+    return len(connections) > 0
+
+def constraint2(n, connections):
+    return n > 0
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints office creation:", constrained_office_creation.get_office_creation_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(n, connections):
+    return n + len(connections)
+
+print("Priority-constrained office creation:", constrained_office_creation.get_office_creation_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(n, connections, current_result):
+    return len(connections) > 0 and len(current_result) < 10
+
+print("Adaptive constraint office creation:", constrained_office_creation.get_office_creation_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_office_creation.get_optimal_office_creation_strategy()
+print(f"Optimal office creation strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**

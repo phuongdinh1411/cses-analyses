@@ -641,6 +641,794 @@ result = multi_player_removal_game(n, array, num_players)
 print(f"Multi-player removal game: {result}")
 ```
 
+## Problem Variations
+
+### **Variation 1: Removal Game with Dynamic Updates**
+**Problem**: Handle dynamic array updates (add/remove/update array elements) while maintaining optimal game strategy calculation efficiently.
+
+**Approach**: Use efficient data structures and algorithms for dynamic array management.
+
+```python
+from collections import defaultdict
+
+class DynamicRemovalGame:
+    def __init__(self, array=None):
+        self.array = array or []
+        self.moves = []
+        self._update_removal_game_info()
+    
+    def _update_removal_game_info(self):
+        """Update removal game feasibility information."""
+        self.removal_game_feasibility = self._calculate_removal_game_feasibility()
+    
+    def _calculate_removal_game_feasibility(self):
+        """Calculate removal game feasibility."""
+        if not self.array:
+            return 0.0
+        
+        # Check if we can play the removal game
+        return 1.0 if len(self.array) > 0 else 0.0
+    
+    def update_array(self, new_array):
+        """Update the array."""
+        self.array = new_array
+        self._update_removal_game_info()
+    
+    def add_element(self, element):
+        """Add element to the array."""
+        self.array.append(element)
+        self._update_removal_game_info()
+    
+    def remove_element(self, index):
+        """Remove element at index from the array."""
+        if 0 <= index < len(self.array):
+            self.array.pop(index)
+            self._update_removal_game_info()
+    
+    def find_maximum_score(self):
+        """Find maximum score using dynamic programming."""
+        if not self.removal_game_feasibility:
+            return 0
+        
+        n = len(self.array)
+        if n == 0:
+            return 0
+        
+        # DP table: dp[i][j] = maximum score difference for subarray from i to j
+        dp = [[0 for _ in range(n)] for _ in range(n)]
+        
+        # Fill DP table for all subarrays
+        for length in range(1, n + 1):
+            for i in range(n - length + 1):
+                j = i + length - 1
+                
+                if i == j:
+                    dp[i][j] = self.array[i]
+                else:
+                    # Player can take from left or right
+                    left_score = self.array[i] - dp[i + 1][j]
+                    right_score = self.array[j] - dp[i][j - 1]
+                    dp[i][j] = max(left_score, right_score)
+        
+        return dp[0][n - 1]
+    
+    def find_optimal_moves(self):
+        """Find the optimal sequence of moves."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        n = len(self.array)
+        if n == 0:
+            return []
+        
+        # DP table: dp[i][j] = maximum score difference for subarray from i to j
+        dp = [[0 for _ in range(n)] for _ in range(n)]
+        
+        # Fill DP table
+        for length in range(1, n + 1):
+            for i in range(n - length + 1):
+                j = i + length - 1
+                
+                if i == j:
+                    dp[i][j] = self.array[i]
+                else:
+                    left_score = self.array[i] - dp[i + 1][j]
+                    right_score = self.array[j] - dp[i][j - 1]
+                    dp[i][j] = max(left_score, right_score)
+        
+        # Backtrack to find optimal moves
+        moves = []
+        i, j = 0, n - 1
+        
+        while i <= j:
+            if i == j:
+                moves.append(('take', i, self.array[i]))
+                break
+            
+            left_score = self.array[i] - dp[i + 1][j]
+            right_score = self.array[j] - dp[i][j - 1]
+            
+            if left_score >= right_score:
+                moves.append(('take_left', i, self.array[i]))
+                i += 1
+            else:
+                moves.append(('take_right', j, self.array[j]))
+                j -= 1
+        
+        return moves
+    
+    def get_removal_game_with_constraints(self, constraint_func):
+        """Get removal game that satisfies custom constraints."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        max_score = self.find_maximum_score()
+        if constraint_func(max_score, self.array):
+            return self.find_optimal_moves()
+        else:
+            return []
+    
+    def get_removal_game_in_range(self, min_score, max_score):
+        """Get removal game within specified score range."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        result = self.find_maximum_score()
+        if min_score <= result <= max_score:
+            return self.find_optimal_moves()
+        else:
+            return []
+    
+    def get_removal_game_with_pattern(self, pattern_func):
+        """Get removal game matching specified pattern."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        max_score = self.find_maximum_score()
+        if pattern_func(max_score, self.array):
+            return self.find_optimal_moves()
+        else:
+            return []
+    
+    def get_removal_game_statistics(self):
+        """Get statistics about the removal game."""
+        if not self.removal_game_feasibility:
+            return {
+                'array_length': 0,
+                'removal_game_feasibility': 0,
+                'maximum_score': 0
+            }
+        
+        max_score = self.find_maximum_score()
+        return {
+            'array_length': len(self.array),
+            'removal_game_feasibility': self.removal_game_feasibility,
+            'maximum_score': max_score
+        }
+    
+    def get_removal_game_patterns(self):
+        """Get patterns in removal game."""
+        patterns = {
+            'has_positive_elements': 0,
+            'has_valid_array': 0,
+            'optimal_game_possible': 0,
+            'has_large_array': 0
+        }
+        
+        if not self.removal_game_feasibility:
+            return patterns
+        
+        # Check if has positive elements
+        if any(x > 0 for x in self.array):
+            patterns['has_positive_elements'] = 1
+        
+        # Check if has valid array
+        if len(self.array) > 0:
+            patterns['has_valid_array'] = 1
+        
+        # Check if optimal game is possible
+        if self.removal_game_feasibility == 1.0:
+            patterns['optimal_game_possible'] = 1
+        
+        # Check if has large array
+        if len(self.array) > 100:
+            patterns['has_large_array'] = 1
+        
+        return patterns
+    
+    def get_optimal_removal_game_strategy(self):
+        """Get optimal strategy for removal game."""
+        if not self.removal_game_feasibility:
+            return {
+                'recommended_strategy': 'none',
+                'efficiency_rate': 0,
+                'removal_game_feasibility': 0
+            }
+        
+        # Calculate efficiency rate
+        efficiency_rate = self.removal_game_feasibility
+        
+        # Calculate removal game feasibility
+        removal_game_feasibility = self.removal_game_feasibility
+        
+        # Determine recommended strategy
+        if len(self.array) <= 100:
+            recommended_strategy = 'dynamic_programming'
+        elif len(self.array) <= 1000:
+            recommended_strategy = 'optimized_dp'
+        else:
+            recommended_strategy = 'advanced_optimization'
+        
+        return {
+            'recommended_strategy': recommended_strategy,
+            'efficiency_rate': efficiency_rate,
+            'removal_game_feasibility': removal_game_feasibility
+        }
+
+# Example usage
+array = [4, 1, 2, 10]
+dynamic_removal_game = DynamicRemovalGame(array)
+print(f"Removal game feasibility: {dynamic_removal_game.removal_game_feasibility}")
+
+# Update array
+dynamic_removal_game.update_array([3, 9, 1, 2])
+print(f"After updating array: {dynamic_removal_game.array}")
+
+# Add element
+dynamic_removal_game.add_element(5)
+print(f"After adding element 5: {dynamic_removal_game.array}")
+
+# Remove element
+dynamic_removal_game.remove_element(2)
+print(f"After removing element at index 2: {dynamic_removal_game.array}")
+
+# Find maximum score
+max_score = dynamic_removal_game.find_maximum_score()
+print(f"Maximum score: {max_score}")
+
+# Find optimal moves
+moves = dynamic_removal_game.find_optimal_moves()
+print(f"Optimal moves: {moves}")
+
+# Get removal game with constraints
+def constraint_func(max_score, array):
+    return max_score > 0 and len(array) > 0
+
+print(f"Removal game with constraints: {dynamic_removal_game.get_removal_game_with_constraints(constraint_func)}")
+
+# Get removal game in range
+print(f"Removal game in range 0-20: {dynamic_removal_game.get_removal_game_in_range(0, 20)}")
+
+# Get removal game with pattern
+def pattern_func(max_score, array):
+    return max_score > 0 and len(array) > 0
+
+print(f"Removal game with pattern: {dynamic_removal_game.get_removal_game_with_pattern(pattern_func)}")
+
+# Get statistics
+print(f"Statistics: {dynamic_removal_game.get_removal_game_statistics()}")
+
+# Get patterns
+print(f"Patterns: {dynamic_removal_game.get_removal_game_patterns()}")
+
+# Get optimal strategy
+print(f"Optimal strategy: {dynamic_removal_game.get_optimal_removal_game_strategy()}")
+```
+
+### **Variation 2: Removal Game with Different Operations**
+**Problem**: Handle different types of removal game operations (weighted elements, priority-based selection, advanced game analysis).
+
+**Approach**: Use advanced data structures for efficient different types of removal game operations.
+
+```python
+class AdvancedRemovalGame:
+    def __init__(self, array=None, weights=None, priorities=None):
+        self.array = array or []
+        self.weights = weights or {}
+        self.priorities = priorities or {}
+        self.moves = []
+        self._update_removal_game_info()
+    
+    def _update_removal_game_info(self):
+        """Update removal game feasibility information."""
+        self.removal_game_feasibility = self._calculate_removal_game_feasibility()
+    
+    def _calculate_removal_game_feasibility(self):
+        """Calculate removal game feasibility."""
+        if not self.array:
+            return 0.0
+        
+        # Check if we can play the removal game
+        return 1.0 if len(self.array) > 0 else 0.0
+    
+    def find_maximum_score(self):
+        """Find maximum score using dynamic programming."""
+        if not self.removal_game_feasibility:
+            return 0
+        
+        n = len(self.array)
+        if n == 0:
+            return 0
+        
+        # DP table: dp[i][j] = maximum score difference for subarray from i to j
+        dp = [[0 for _ in range(n)] for _ in range(n)]
+        
+        # Fill DP table for all subarrays
+        for length in range(1, n + 1):
+            for i in range(n - length + 1):
+                j = i + length - 1
+                
+                if i == j:
+                    dp[i][j] = self.array[i]
+                else:
+                    # Player can take from left or right
+                    left_score = self.array[i] - dp[i + 1][j]
+                    right_score = self.array[j] - dp[i][j - 1]
+                    dp[i][j] = max(left_score, right_score)
+        
+        return dp[0][n - 1]
+    
+    def get_weighted_removal_game(self):
+        """Get removal game with weights and priorities applied."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        n = len(self.array)
+        if n == 0:
+            return []
+        
+        # Create weighted elements
+        weighted_elements = []
+        for i, element in enumerate(self.array):
+            weight = self.weights.get(i, 1)
+            priority = self.priorities.get(i, 1)
+            weighted_score = element * weight * priority
+            weighted_elements.append((i, element, weighted_score))
+        
+        # Sort by weighted score (descending for maximization)
+        weighted_elements.sort(key=lambda x: x[2], reverse=True)
+        
+        # Use the best weighted elements for optimal moves
+        moves = []
+        for i, element, weighted_score in weighted_elements[:n//2 + 1]:
+            moves.append(('take_weighted', i, element, weighted_score))
+        
+        return moves
+    
+    def get_removal_game_with_priority(self, priority_func):
+        """Get removal game considering priority."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        # Create priority-based elements
+        priority_elements = []
+        for i, element in enumerate(self.array):
+            priority = priority_func(i, element, self.weights, self.priorities)
+            priority_elements.append((i, element, priority))
+        
+        # Sort by priority (descending for maximization)
+        priority_elements.sort(key=lambda x: x[2], reverse=True)
+        
+        # Use the best priority elements for optimal moves
+        moves = []
+        for i, element, priority in priority_elements[:len(self.array)//2 + 1]:
+            moves.append(('take_priority', i, element, priority))
+        
+        return moves
+    
+    def get_removal_game_with_optimization(self, optimization_func):
+        """Get removal game using custom optimization function."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        # Create optimization-based elements
+        optimized_elements = []
+        for i, element in enumerate(self.array):
+            score = optimization_func(i, element, self.weights, self.priorities)
+            optimized_elements.append((i, element, score))
+        
+        # Sort by optimization score (descending for maximization)
+        optimized_elements.sort(key=lambda x: x[2], reverse=True)
+        
+        # Use the best optimization elements for optimal moves
+        moves = []
+        for i, element, score in optimized_elements[:len(self.array)//2 + 1]:
+            moves.append(('take_optimized', i, element, score))
+        
+        return moves
+    
+    def get_removal_game_with_constraints(self, constraint_func):
+        """Get removal game that satisfies custom constraints."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        if constraint_func(self.array, self.weights, self.priorities):
+            return self.get_weighted_removal_game()
+        else:
+            return []
+    
+    def get_removal_game_with_multiple_criteria(self, criteria_list):
+        """Get removal game that satisfies multiple criteria."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        satisfies_all_criteria = True
+        for criterion in criteria_list:
+            if not criterion(self.array, self.weights, self.priorities):
+                satisfies_all_criteria = False
+                break
+        
+        if satisfies_all_criteria:
+            return self.get_weighted_removal_game()
+        else:
+            return []
+    
+    def get_removal_game_with_alternatives(self, alternatives):
+        """Get removal game considering alternative weights/priorities."""
+        result = []
+        
+        # Check original removal game
+        original_game = self.get_weighted_removal_game()
+        result.append((original_game, 'original'))
+        
+        # Check alternative weights/priorities
+        for alt_weights, alt_priorities in alternatives:
+            # Create temporary instance with alternative weights/priorities
+            temp_instance = AdvancedRemovalGame(self.array, alt_weights, alt_priorities)
+            temp_game = temp_instance.get_weighted_removal_game()
+            result.append((temp_game, f'alternative_{alt_weights}_{alt_priorities}'))
+        
+        return result
+    
+    def get_removal_game_with_adaptive_criteria(self, adaptive_func):
+        """Get removal game using adaptive criteria."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        if adaptive_func(self.array, self.weights, self.priorities, []):
+            return self.get_weighted_removal_game()
+        else:
+            return []
+    
+    def get_removal_game_optimization(self):
+        """Get optimal removal game configuration."""
+        strategies = [
+            ('weighted_game', lambda: len(self.get_weighted_removal_game())),
+            ('total_weight', lambda: sum(self.weights.values())),
+            ('total_priority', lambda: sum(self.priorities.values())),
+        ]
+        
+        best_strategy = None
+        best_value = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                current_value = strategy_func()
+                if current_value > best_value:
+                    best_value = current_value
+                    best_strategy = (strategy_name, current_value)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+array = [4, 1, 2, 10]
+weights = {i: array[i] * 2 for i in range(len(array))}  # Weight based on element value
+priorities = {i: 1 for i in range(len(array))}  # Equal priority
+advanced_removal_game = AdvancedRemovalGame(array, weights, priorities)
+
+print(f"Weighted removal game: {advanced_removal_game.get_weighted_removal_game()}")
+
+# Get removal game with priority
+def priority_func(index, element, weights, priorities):
+    return weights.get(index, 1) + priorities.get(index, 1)
+
+print(f"Removal game with priority: {advanced_removal_game.get_removal_game_with_priority(priority_func)}")
+
+# Get removal game with optimization
+def optimization_func(index, element, weights, priorities):
+    return weights.get(index, 1) * priorities.get(index, 1)
+
+print(f"Removal game with optimization: {advanced_removal_game.get_removal_game_with_optimization(optimization_func)}")
+
+# Get removal game with constraints
+def constraint_func(array, weights, priorities):
+    return len(array) > 0
+
+print(f"Removal game with constraints: {advanced_removal_game.get_removal_game_with_constraints(constraint_func)}")
+
+# Get removal game with multiple criteria
+def criterion1(array, weights, priorities):
+    return len(array) > 0
+
+def criterion2(array, weights, priorities):
+    return len(weights) > 0
+
+criteria_list = [criterion1, criterion2]
+print(f"Removal game with multiple criteria: {advanced_removal_game.get_removal_game_with_multiple_criteria(criteria_list)}")
+
+# Get removal game with alternatives
+alternatives = [({i: 1 for i in range(len(array))}, {i: 1 for i in range(len(array))}), ({i: array[i]*3 for i in range(len(array))}, {i: 2 for i in range(len(array))})]
+print(f"Removal game with alternatives: {advanced_removal_game.get_removal_game_with_alternatives(alternatives)}")
+
+# Get removal game with adaptive criteria
+def adaptive_func(array, weights, priorities, current_result):
+    return len(array) > 0 and len(current_result) < 10
+
+print(f"Removal game with adaptive criteria: {advanced_removal_game.get_removal_game_with_adaptive_criteria(adaptive_func)}")
+
+# Get removal game optimization
+print(f"Removal game optimization: {advanced_removal_game.get_removal_game_optimization()}")
+```
+
+### **Variation 3: Removal Game with Constraints**
+**Problem**: Handle removal game with additional constraints (element limits, game constraints, pattern constraints).
+
+**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+
+```python
+class ConstrainedRemovalGame:
+    def __init__(self, array=None, constraints=None):
+        self.array = array or []
+        self.constraints = constraints or {}
+        self.moves = []
+        self._update_removal_game_info()
+    
+    def _update_removal_game_info(self):
+        """Update removal game feasibility information."""
+        self.removal_game_feasibility = self._calculate_removal_game_feasibility()
+    
+    def _calculate_removal_game_feasibility(self):
+        """Calculate removal game feasibility."""
+        if not self.array:
+            return 0.0
+        
+        # Check if we can play the removal game
+        return 1.0 if len(self.array) > 0 else 0.0
+    
+    def _is_valid_element(self, index, element):
+        """Check if element is valid considering constraints."""
+        # Element constraints
+        if 'allowed_elements' in self.constraints:
+            if element not in self.constraints['allowed_elements']:
+                return False
+        
+        if 'forbidden_elements' in self.constraints:
+            if element in self.constraints['forbidden_elements']:
+                return False
+        
+        # Index constraints
+        if 'max_index' in self.constraints:
+            if index > self.constraints['max_index']:
+                return False
+        
+        if 'min_index' in self.constraints:
+            if index < self.constraints['min_index']:
+                return False
+        
+        # Pattern constraints
+        if 'pattern_constraints' in self.constraints:
+            for constraint in self.constraints['pattern_constraints']:
+                if not constraint(index, element, self.array):
+                    return False
+        
+        return True
+    
+    def get_removal_game_with_element_constraints(self, min_elements, max_elements):
+        """Get removal game considering element count constraints."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        if min_elements <= len(self.array) <= max_elements:
+            return self._calculate_constrained_removal_game()
+        else:
+            return []
+    
+    def get_removal_game_with_game_constraints(self, game_constraints):
+        """Get removal game considering game constraints."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        satisfies_constraints = True
+        for constraint in game_constraints:
+            if not constraint(self.array):
+                satisfies_constraints = False
+                break
+        
+        if satisfies_constraints:
+            return self._calculate_constrained_removal_game()
+        else:
+            return []
+    
+    def get_removal_game_with_pattern_constraints(self, pattern_constraints):
+        """Get removal game considering pattern constraints."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        satisfies_pattern = True
+        for constraint in pattern_constraints:
+            if not constraint(self.array):
+                satisfies_pattern = False
+                break
+        
+        if satisfies_pattern:
+            return self._calculate_constrained_removal_game()
+        else:
+            return []
+    
+    def get_removal_game_with_mathematical_constraints(self, constraint_func):
+        """Get removal game that satisfies custom mathematical constraints."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        if constraint_func(self.array):
+            return self._calculate_constrained_removal_game()
+        else:
+            return []
+    
+    def get_removal_game_with_optimization_constraints(self, optimization_func):
+        """Get removal game using custom optimization constraints."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        # Calculate optimization score for removal game
+        score = optimization_func(self.array)
+        
+        if score > 0:
+            return self._calculate_constrained_removal_game()
+        else:
+            return []
+    
+    def get_removal_game_with_multiple_constraints(self, constraints_list):
+        """Get removal game that satisfies multiple constraints."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        satisfies_all_constraints = True
+        for constraint in constraints_list:
+            if not constraint(self.array):
+                satisfies_all_constraints = False
+                break
+        
+        if satisfies_all_constraints:
+            return self._calculate_constrained_removal_game()
+        else:
+            return []
+    
+    def get_removal_game_with_priority_constraints(self, priority_func):
+        """Get removal game with priority-based constraints."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        # Calculate priority for removal game
+        priority = priority_func(self.array)
+        
+        if priority > 0:
+            return self._calculate_constrained_removal_game()
+        else:
+            return []
+    
+    def get_removal_game_with_adaptive_constraints(self, adaptive_func):
+        """Get removal game with adaptive constraints."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        if adaptive_func(self.array, []):
+            return self._calculate_constrained_removal_game()
+        else:
+            return []
+    
+    def _calculate_constrained_removal_game(self):
+        """Calculate removal game considering all constraints."""
+        if not self.removal_game_feasibility:
+            return []
+        
+        n = len(self.array)
+        if n == 0:
+            return []
+        
+        # Find valid elements
+        valid_elements = []
+        for i, element in enumerate(self.array):
+            if self._is_valid_element(i, element):
+                valid_elements.append((i, element))
+        
+        # Create moves for valid elements
+        moves = []
+        for i, element in valid_elements[:n//2 + 1]:
+            moves.append(('take_constrained', i, element))
+        
+        return moves
+    
+    def get_optimal_removal_game_strategy(self):
+        """Get optimal removal game strategy considering all constraints."""
+        strategies = [
+            ('element_constraints', self.get_removal_game_with_element_constraints),
+            ('game_constraints', self.get_removal_game_with_game_constraints),
+            ('pattern_constraints', self.get_removal_game_with_pattern_constraints),
+        ]
+        
+        best_strategy = None
+        best_score = 0
+        
+        for strategy_name, strategy_func in strategies:
+            try:
+                if strategy_name == 'element_constraints':
+                    result = strategy_func(0, 1000)
+                elif strategy_name == 'game_constraints':
+                    game_constraints = [lambda array: len(array) > 0]
+                    result = strategy_func(game_constraints)
+                elif strategy_name == 'pattern_constraints':
+                    pattern_constraints = [lambda array: len(array) > 0]
+                    result = strategy_func(pattern_constraints)
+                
+                if result and len(result) > best_score:
+                    best_score = len(result)
+                    best_strategy = (strategy_name, result)
+            except:
+                continue
+        
+        return best_strategy
+
+# Example usage
+constraints = {
+    'allowed_elements': [1, 2, 3, 4, 5, 10],
+    'forbidden_elements': [6, 7, 8, 9],
+    'max_index': 10,
+    'min_index': 0,
+    'pattern_constraints': [lambda index, element, array: element > 0 and index >= 0]
+}
+
+array = [4, 1, 2, 10]
+constrained_removal_game = ConstrainedRemovalGame(array, constraints)
+
+print("Element-constrained removal game:", constrained_removal_game.get_removal_game_with_element_constraints(1, 10))
+
+print("Game-constrained removal game:", constrained_removal_game.get_removal_game_with_game_constraints([lambda array: len(array) > 0]))
+
+print("Pattern-constrained removal game:", constrained_removal_game.get_removal_game_with_pattern_constraints([lambda array: len(array) > 0]))
+
+# Mathematical constraints
+def custom_constraint(array):
+    return len(array) > 0
+
+print("Mathematical constraint removal game:", constrained_removal_game.get_removal_game_with_mathematical_constraints(custom_constraint))
+
+# Range constraints
+def range_constraint(array):
+    return 1 <= len(array) <= 20
+
+range_constraints = [range_constraint]
+print("Range-constrained removal game:", constrained_removal_game.get_removal_game_with_element_constraints(1, 20))
+
+# Multiple constraints
+def constraint1(array):
+    return len(array) > 0
+
+def constraint2(array):
+    return all(x > 0 for x in array)
+
+constraints_list = [constraint1, constraint2]
+print("Multiple constraints removal game:", constrained_removal_game.get_removal_game_with_multiple_constraints(constraints_list))
+
+# Priority constraints
+def priority_func(array):
+    return len(array) + sum(array)
+
+print("Priority-constrained removal game:", constrained_removal_game.get_removal_game_with_priority_constraints(priority_func))
+
+# Adaptive constraints
+def adaptive_func(array, current_result):
+    return len(array) > 0 and len(current_result) < 10
+
+print("Adaptive constraint removal game:", constrained_removal_game.get_removal_game_with_adaptive_constraints(adaptive_func))
+
+# Optimal strategy
+optimal = constrained_removal_game.get_optimal_removal_game_strategy()
+print(f"Optimal removal game strategy: {optimal}")
+```
+
 ### Related Problems
 
 #### **CSES Problems**
