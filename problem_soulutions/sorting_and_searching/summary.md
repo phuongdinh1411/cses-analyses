@@ -231,18 +231,18 @@ Welcome to the Sorting and Searching section! This category covers fundamental a
 ## Problem Categories
 
 ### Basic Sorting
-- [CSES Distinct Numbers](cses_distinct_numbers_analysis) - Count unique elements
-- [CSES Apartments](cses_apartments_analysis) - Matching problem with sorting
-- [CSES Stick Lengths](cses_stick_lengths_analysis) - Minimize differences
+- [CSES Distinct Numbers](distinct_numbers_analysis) - Count unique elements
+- [CSES Apartments](apartments_analysis) - Matching problem with sorting
+- [CSES Stick Lengths](stick_lengths_analysis) - Minimize differences
 
 ### Two-Pointer Technique
-- [CSES Sum of Two Values](cses_sum_of_two_values_analysis) - Find two numbers with target sum
+- [CSES Sum of Two Values](sum_of_two_values_analysis) - Find two numbers with target sum
 - [CSES Sum of Three Values](sum_of_three_values_analysis) - Three number sum
 - [CSES Sum of Four Values](sum_of_four_values_analysis) - Four number sum
 
 ### Sliding Window
-- [CSES Playlist](cses_playlist_analysis) - Longest subarray with distinct elements
-- [CSES Maximum Subarray Sum](cses_maximum_subarray_sum_analysis) - Maximum sum subarray
+- [CSES Playlist](playlist_analysis) - Longest subarray with distinct elements
+- [CSES Maximum Subarray Sum](maximum_subarray_sum_analysis) - Maximum sum subarray
 - [Subarray Divisibility](subarray_divisibility_analysis) - Divisible subarrays
 
 ### Binary Search
@@ -251,7 +251,7 @@ Welcome to the Sorting and Searching section! This category covers fundamental a
 - [Missing Coin Sum](missing_coin_sum_analysis) - Find smallest missing sum
 
 ### Greedy Algorithms
-- [CSES Movie Festival](cses_movie_festival_analysis) - Activity selection
+- [CSES Movie Festival](movie_festival_analysis) - Activity selection
 - [Tasks and Deadlines](tasks_and_deadlines_analysis) - Task scheduling
 - [Reading Books](reading_books_analysis) - Book reading optimization
 
@@ -839,4 +839,4 @@ def in_place_sorting():
 
 ---
 
-Ready to start? Begin with [CSES Distinct Numbers](cses_distinct_numbers_analysis) and work your way through the problems in order of difficulty!
+Ready to start? Begin with [CSES Distinct Numbers](distinct_numbers_analysis) and work your way through the problems in order of difficulty!

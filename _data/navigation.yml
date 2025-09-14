@@ -65,11 +65,11 @@ main:
     - title: Summary
       url: /cses-analyses/problem_soulutions/sorting_and_searching/summary
     - title: ⭐ Apartments
-      url: /cses-analyses/problem_soulutions/sorting_and_searching/cses_apartments_analysis
+      url: /cses-analyses/problem_soulutions/sorting_and_searching/apartments_analysis
     - title: ⭐⭐ Array Division
       url: /cses-analyses/problem_soulutions/sorting_and_searching/array_division_analysis
     - title: ⭐ Collecting Numbers
-      url: /cses-analyses/problem_soulutions/sorting_and_searching/cses_collecting_numbers_analysis
+      url: /cses-analyses/problem_soulutions/sorting_and_searching/collecting_numbers_analysis
     - title: ⭐⭐ Collecting Numbers II
       url: /cses-analyses/problem_soulutions/sorting_and_searching/collecting_numbers_ii_analysis
     - title: ⭐⭐⭐ Collecting Numbers III
@@ -79,7 +79,7 @@ main:
     - title: ⭐⭐⭐⭐ Collecting Numbers V
       url: /cses-analyses/problem_soulutions/sorting_and_searching/collecting_numbers_v_analysis
     - title: ⭐ Distinct Numbers
-      url: /cses-analyses/problem_soulutions/sorting_and_searching/cses_distinct_numbers_analysis
+      url: /cses-analyses/problem_soulutions/sorting_and_searching/distinct_numbers_analysis
     - title: ⭐⭐ Distinct Values Subarrays
       url: /cses-analyses/problem_soulutions/sorting_and_searching/distinct_values_subarrays_analysis
     - title: ⭐⭐⭐ Distinct Values Subarrays II
@@ -93,11 +93,11 @@ main:
     - title: ⭐⭐⭐ Josephus Problem II
       url: /cses-analyses/problem_soulutions/sorting_and_searching/josephus_problem_ii_analysis
     - title: ⭐⭐ Maximum Subarray Sum
-      url: /cses-analyses/problem_soulutions/sorting_and_searching/cses_maximum_subarray_sum_analysis
+      url: /cses-analyses/problem_soulutions/sorting_and_searching/maximum_subarray_sum_analysis
     - title: ⭐⭐⭐ Missing Coin Sum
       url: /cses-analyses/problem_soulutions/sorting_and_searching/missing_coin_sum_analysis
     - title: ⭐⭐ Movie Festival - Interview
-      url: /cses-analyses/problem_soulutions/sorting_and_searching/cses_movie_festival_analysis
+      url: /cses-analyses/problem_soulutions/sorting_and_searching/movie_festival_analysis
     - title: ⭐⭐ Nearest Smaller Values
       url: /cses-analyses/problem_soulutions/sorting_and_searching/nearest_smaller_values_analysis
     - title: ⭐⭐ Nested Ranges Check
@@ -105,13 +105,13 @@ main:
     - title: ⭐⭐⭐ Nested Ranges Count
       url: /cses-analyses/problem_soulutions/sorting_and_searching/nested_ranges_count_analysis
     - title: ⭐⭐ Playlist
-      url: /cses-analyses/problem_soulutions/sorting_and_searching/cses_playlist_analysis
+      url: /cses-analyses/problem_soulutions/sorting_and_searching/playlist_analysis
     - title: Reading Books
       url: /cses-analyses/problem_soulutions/sorting_and_searching/reading_books_analysis
     - title: Room Allocation
       url: /cses-analyses/problem_soulutions/sorting_and_searching/room_allocation_analysis
     - title: Stick Lengths
-      url: /cses-analyses/problem_soulutions/sorting_and_searching/cses_stick_lengths_analysis
+      url: /cses-analyses/problem_soulutions/sorting_and_searching/stick_lengths_analysis
     - title: Subarray Divisibility
       url: /cses-analyses/problem_soulutions/sorting_and_searching/subarray_divisibility_analysis
     - title: Subarray Sums I
@@ -123,15 +123,15 @@ main:
     - title: Sum of Three Values
       url: /cses-analyses/problem_soulutions/sorting_and_searching/sum_of_three_values_analysis
     - title: Sum of Two Values
-      url: /cses-analyses/problem_soulutions/sorting_and_searching/cses_sum_of_two_values_analysis
+      url: /cses-analyses/problem_soulutions/sorting_and_searching/sum_of_two_values_analysis
     - title: Tasks and Deadlines
       url: /cses-analyses/problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysis
     - title: Towers
-      url: /cses-analyses/problem_soulutions/sorting_and_searching/cses_towers_analysis
+      url: /cses-analyses/problem_soulutions/sorting_and_searching/towers_analysis
     - title: Traffic Lights
       url: /cses-analyses/problem_soulutions/sorting_and_searching/traffic_lights_analysis
     - title: Weird Algorithm
-      url: /cses-analyses/problem_soulutions/sorting_and_searching/cses_weird_algorithm_analysis
+      url: /cses-analyses/problem_soulutions/sorting_and_searching/weird_algorithm_analysis
   - title: Dynamic Programming
     url: /cses-analyses/problem_soulutions/dynamic_programming
     children:
