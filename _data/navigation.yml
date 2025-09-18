@@ -7,7 +7,7 @@ main:
   - title: Introductory Problems
     url: /cses-analyses/problem_soulutions/introductory_problems
     children:
-    - title: Summary
+    - title: 🟢 Summary
       url: /cses-analyses/problem_soulutions/introductory_problems/summary
     - title: ⭐ Apple Division
       url: /cses-analyses/problem_soulutions/introductory_problems/apple_division_analysis
@@ -62,7 +62,7 @@ main:
   - title: Sorting And Searching
     url: /cses-analyses/problem_soulutions/sorting_and_searching
     children:
-    - title: Summary
+    - title: 🟢 Summary
       url: /cses-analyses/problem_soulutions/sorting_and_searching/summary
     - title: ⭐ Apartments
       url: /cses-analyses/problem_soulutions/sorting_and_searching/apartments_analysis
@@ -127,7 +127,7 @@ main:
   - title: Dynamic Programming
     url: /cses-analyses/problem_soulutions/dynamic_programming
     children:
-    - title: Summary
+    - title: 🟢 Summary
       url: /cses-analyses/problem_soulutions/dynamic_programming/summary
     - title: ⭐ Coin Combinations I
       url: /cses-analyses/problem_soulutions/dynamic_programming/coin_combinations_i_analysis
@@ -166,7 +166,7 @@ main:
   - title: Graph Algorithms
     url: /cses-analyses/problem_soulutions/graph_algorithms
     children:
-    - title: Summary
+    - title: 🟢 Summary
       url: /cses-analyses/problem_soulutions/graph_algorithms/summary
     - title: ⭐ Building Roads
       url: /cses-analyses/problem_soulutions/graph_algorithms/building_roads_analysis
@@ -243,7 +243,7 @@ main:
   - title: Tree Algorithms
     url: /cses-analyses/problem_soulutions/tree_algorithms
     children:
-    - title: Summary
+    - title: 🟢 Summary
       url: /cses-analyses/problem_soulutions/tree_algorithms/summary
     - title: ⭐⭐ Company Queries I
       url: /cses-analyses/problem_soulutions/tree_algorithms/company_queries_i_analysis
@@ -270,7 +270,7 @@ main:
   - title: Sliding Window
     url: /cses-analyses/problem_soulutions/sliding_window
     children:
-    - title: Summary
+    - title: 🟢 Summary
       url: /cses-analyses/problem_soulutions/sliding_window/summary
     - title: ⭐ Fixed Length Subarray Sum
       url: /cses-analyses/problem_soulutions/sliding_window/fixed_length_subarray_sum_analysis
@@ -305,7 +305,7 @@ main:
   - title: Range Queries
     url: /cses-analyses/problem_soulutions/range_queries
     children:
-    - title: Summary
+    - title: 🟢 Summary
       url: /cses-analyses/problem_soulutions/range_queries/summary
     - title: ⭐ Static Range Sum Queries
       url: /cses-analyses/problem_soulutions/range_queries/static_range_sum_queries_analysis
@@ -348,7 +348,7 @@ main:
   - title: String Algorithms
     url: /cses-analyses/problem_soulutions/string_algorithms
     children:
-    - title: Summary
+    - title: 🟢 Summary
       url: /cses-analyses/problem_soulutions/string_algorithms/summary
     - title: ⭐ Distinct Strings
       url: /cses-analyses/problem_soulutions/string_algorithms/distinct_strings_analysis
@@ -381,7 +381,7 @@ main:
   - title: Geometry
     url: /cses-analyses/problem_soulutions/geometry
     children:
-    - title: Summary
+    - title: 🟢 Summary
       url: /cses-analyses/problem_soulutions/geometry/summary
     - title: ⭐ All Manhattan Distances
       url: /cses-analyses/problem_soulutions/geometry/all_manhattan_distances_analysis
@@ -416,7 +416,7 @@ main:
   - title: Counting Problems
     url: /cses-analyses/problem_soulutions/counting_problems
     children:
-    - title: Summary
+    - title: 🟢 Summary
       url: /cses-analyses/problem_soulutions/counting_problems/summary
     - title: ⭐ Empty String
       url: /cses-analyses/problem_soulutions/counting_problems/empty_string_analysis
@@ -461,7 +461,7 @@ main:
   - title: Advanced Graph Problems
     url: /cses-analyses/problem_soulutions/advanced_graph_problems
     children:
-    - title: Summary
+    - title: 🟢 Summary
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/summary
     - title: ⭐⭐ Acyclic Graph Edges
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis
