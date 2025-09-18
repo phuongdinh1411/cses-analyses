@@ -60,12 +60,16 @@ Welcome to a comprehensive collection of solutions and detailed analyses for CSE
 - Explore competitive programming variations
 
 
----
-
 ### 🚀 Quick Access Tools
 - **[📚 Quick Reference](/cses-analyses/quick_reference/)** - Ultimate cheatsheet, advanced algorithms, and common mistakes guide
 - **[🎯 Ultimate Cheatsheet](/cses-analyses/quick_reference/ultimate_cheatsheet)** - Complete algorithm decision tree and complexity reference
 - **[⚠️ Common Mistakes](/cses-analyses/quick_reference/common_mistakes)** - Avoid common pitfalls in competitive programming
+
+
+## 🌟 Recommended Learning Resources
+-  🎯 [Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources) - A comprehensive collection of **13.2k+ starred** LeetCode resources that perfectly complements this CSES repository:
+
+---
 
 ---
 
