@@ -67,7 +67,7 @@ Welcome to a comprehensive collection of solutions and detailed analyses for CSE
 
 
 ## 🌟 Recommended Learning Resources
--  🎯 [Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources) - A comprehensive collection of **13.2k+ starred** LeetCode resources that perfectly complements this CSES repository:
+-  **🎯 [Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - A comprehensive collection of **13.2k+ starred** LeetCode resources that perfectly complements this CSES repository:
 
 ---
 
