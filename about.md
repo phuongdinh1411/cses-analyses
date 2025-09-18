@@ -129,10 +129,6 @@ If you have questions, suggestions, or want to contribute:
 - **Pull Requests**: Submit improvements via pull requests
 - **Discussions**: Use GitHub Discussions for questions and ideas
 
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE). Feel free to use, modify, and distribute the content for educational purposes.
-
 ---
 
 *Happy coding and problem solving! 🎉* 
