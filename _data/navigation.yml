@@ -521,7 +521,7 @@ main:
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_tour_queries_ii_analysis
     - title: ⭐⭐⭐⭐ Fixed Length Hamiltonian Trail Queries II
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_trail_queries_ii_analysis
-- title: 📚 Quick Reference
+- title: Quick Reference
   url: /cses-analyses/quick_reference
   children:
   - title: Ultimate Cheatsheet
