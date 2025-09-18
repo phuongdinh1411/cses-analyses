@@ -458,6 +458,23 @@ def divide_conquer_dp(n, m, cost_func):
 - **Overflow**: Handling large numbers
 - **Modular Arithmetic**: Handling remainders
 
+## 📚 **Additional Learning Resources**
+
+### **LeetCode Pattern Integration**
+For interview preparation and pattern recognition, complement your CSES learning with these LeetCode resources:
+
+- **[Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - Comprehensive collection of LeetCode patterns, templates, and curated problem lists
+- **[20 DP Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Essential dynamic programming patterns and techniques
+- **[DP Pattern Templates](https://github.com/ashishps1/awesome-leetcode-resources#-must-read-leetcode-articles)** - Specific dynamic programming templates and optimization strategies
+
+### **Related LeetCode Problems**
+Practice these LeetCode problems to reinforce dynamic programming concepts:
+
+- **1D DP Pattern**: [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/), [House Robber](https://leetcode.com/problems/house-robber/), [Coin Change](https://leetcode.com/problems/coin-change/)
+- **2D DP Pattern**: [Unique Paths](https://leetcode.com/problems/unique-paths/), [Edit Distance](https://leetcode.com/problems/edit-distance/), [Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/)
+- **Interval DP Pattern**: [Matrix Chain Multiplication](https://leetcode.com/problems/minimum-score-triangulation-of-polygon/), [Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/)
+- **Tree DP Pattern**: [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/), [House Robber III](https://leetcode.com/problems/house-robber-iii/)
+
 ---
 
 Ready to start? Begin with [Dice Combinations](dice_combinations_analysis) and work your way through the problems in order of difficulty!

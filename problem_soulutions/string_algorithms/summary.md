@@ -958,6 +958,22 @@ def lexicographically_minimal_rotation(text):
 - **Trie**: O(n) construction
 - **Manacher's**: O(n) palindrome finding
 
+## 📚 **Additional Learning Resources**
+
+### **LeetCode Pattern Integration**
+For interview preparation and pattern recognition, complement your CSES learning with these LeetCode resources:
+
+- **[Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - Comprehensive collection of LeetCode patterns, templates, and curated problem lists
+- **[15 LeetCode Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Essential patterns including Sliding Window, Two Pointers, and String Manipulation
+- **[String Algorithm Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-must-read-leetcode-articles)** - Specific string processing templates and techniques
+
+### **Related LeetCode Problems**
+Practice these LeetCode problems to reinforce string algorithm concepts:
+
+- **Sliding Window Pattern**: [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/), [Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)
+- **Two Pointers Pattern**: [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/), [Reverse String](https://leetcode.com/problems/reverse-string/)
+- **String Hashing**: [Repeated String Match](https://leetcode.com/problems/repeated-string-match/), [Rabin-Karp Pattern Matching](https://leetcode.com/problems/implement-strstr/)
+
 ---
 
 Ready to start? Begin with [Finding Borders](finding_borders_analysis) and work your way through the problems in order of difficulty!

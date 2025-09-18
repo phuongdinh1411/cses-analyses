@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Chessboard and Queens - Introductory Problem"
+title: "Chessboard and Queens"
 permalink: /problem_soulutions/introductory_problems/chessboard_and_queens_analysis
 ---
 
-# Chessboard and Queens - Introductory Problem
+# Chessboard and Queens
 
 ## 📋 Problem Information
 
@@ -1304,9 +1304,9 @@ print(f"Optimal strategy: {optimal}")
 ### Related Problems
 
 #### **CSES Problems**
-- [Permutations](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Two Knights](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Creating Strings](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Permutations](https://cses.fi/problemset/task/1075)s
+- [Two Knights](https://cses.fi/problemset/task/1075)s
+- [Creating Strings](https://cses.fi/problemset/task/1075)s
 
 #### **LeetCode Problems**
 - [N-Queens](https://leetcode.com/problems/n-queens/) - Backtracking

@@ -837,6 +837,23 @@ def in_place_sorting():
 3. **Time Complexity**: Watch for inefficient solutions
 4. **Edge Cases**: Consider boundary conditions
 
+## 📚 **Additional Learning Resources**
+
+### **LeetCode Pattern Integration**
+For interview preparation and pattern recognition, complement your CSES learning with these LeetCode resources:
+
+- **[Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - Comprehensive collection of LeetCode patterns, templates, and curated problem lists
+- **[Binary Search Pattern](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Essential binary search techniques and templates
+- **[Two Pointers Pattern](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Two pointers and sorting optimization techniques
+
+### **Related LeetCode Problems**
+Practice these LeetCode problems to reinforce sorting and searching concepts:
+
+- **Binary Search Pattern**: [Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/), [Find First and Last Position](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/)
+- **Two Pointers Pattern**: [Two Sum](https://leetcode.com/problems/two-sum/), [3Sum](https://leetcode.com/problems/3sum/), [4Sum](https://leetcode.com/problems/4sum/)
+- **Sorting Pattern**: [Merge Intervals](https://leetcode.com/problems/merge-intervals/), [Insert Interval](https://leetcode.com/problems/insert-interval/)
+- **Greedy Pattern**: [Meeting Rooms](https://leetcode.com/problems/meeting-rooms/), [Activity Selection](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/)
+
 ---
 
 Ready to start? Begin with [CSES Distinct Numbers](distinct_numbers_analysis) and work your way through the problems in order of difficulty!

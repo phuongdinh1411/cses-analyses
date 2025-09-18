@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Gray Code - Introductory Problem"
+title: "Gray Code"
 permalink: /problem_soulutions/introductory_problems/gray_code_analysis
 ---
 
-# Gray Code - Introductory Problem
+# Gray Code
 
 ## 📋 Problem Information
 
@@ -1268,9 +1268,9 @@ print(f"Optimal strategy: {optimal}")
 ### Related Problems
 
 #### **CSES Problems**
-- [Bit Strings](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Creating Strings](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Permutations](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Bit Strings](https://cses.fi/problemset/task/1075)s
+- [Creating Strings](https://cses.fi/problemset/task/1075)s
+- [Permutations](https://cses.fi/problemset/task/1075)s
 
 #### **LeetCode Problems**
 - [Gray Code](https://leetcode.com/problems/gray-code/) - Backtracking

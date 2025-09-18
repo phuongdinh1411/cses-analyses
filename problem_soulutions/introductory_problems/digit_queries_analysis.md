@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Digit Queries - Introductory Problem"
+title: "Digit Queries"
 permalink: /problem_soulutions/introductory_problems/digit_queries_analysis
 ---
 
-# Digit Queries - Introductory Problem
+# Digit Queries
 
 ## 📋 Problem Information
 
@@ -1227,9 +1227,9 @@ print(f"Optimal strategy: {optimal}")
 ### Related Problems
 
 #### **CSES Problems**
-- [Number Spiral](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Trailing Zeros](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Weird Algorithm](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Number Spiral](https://cses.fi/problemset/task/1075)s
+- [Trailing Zeros](https://cses.fi/problemset/task/1075)s
+- [Weird Algorithm](https://cses.fi/problemset/task/1075)s
 
 #### **LeetCode Problems**
 - [Nth Digit](https://leetcode.com/problems/nth-digit/) - Math

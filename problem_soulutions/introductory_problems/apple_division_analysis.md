@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Apple Division - Introductory Problem"
+title: "Apple Division"
 permalink: /problem_soulutions/introductory_problems/apple_division_analysis
 ---
 
-# Apple Division - Introductory Problem
+# Apple Division
 
 ## 📋 Problem Information
 
@@ -1505,9 +1505,9 @@ print(f"Optimal strategy: {optimal}")
 ### Related Problems
 
 #### **CSES Problems**
-- [Two Sets](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Coin Piles](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Weird Algorithm](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Two Sets](https://cses.fi/problemset/task/1075)s
+- [Coin Piles](https://cses.fi/problemset/task/1075)s
+- [Weird Algorithm](https://cses.fi/problemset/task/1075)s
 
 #### **LeetCode Problems**
 - [Partition Equal Subset Sum](https://leetcode.com/problems/partition-equal-subset-sum/) - Dynamic Programming

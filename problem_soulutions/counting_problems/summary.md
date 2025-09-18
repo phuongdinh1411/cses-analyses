@@ -553,6 +553,23 @@ def coupon_collector_expected(n):
 - **Grid Path Counting**: Often exponential
 - **Modular Exponentiation**: O(log n) time
 
+## 📚 **Additional Learning Resources**
+
+### **LeetCode Pattern Integration**
+For interview preparation and pattern recognition, complement your CSES learning with these LeetCode resources:
+
+- **[Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - Comprehensive collection of LeetCode patterns, templates, and curated problem lists
+- **[Combinatorics Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Essential counting and combination techniques
+- **[Mathematical Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Advanced mathematical problem-solving patterns
+
+### **Related LeetCode Problems**
+Practice these LeetCode problems to reinforce counting and combinatorial concepts:
+
+- **Combinatorics Pattern**: [Unique Paths](https://leetcode.com/problems/unique-paths/), [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/), [Combination Sum](https://leetcode.com/problems/combination-sum/)
+- **Permutation Pattern**: [Permutations](https://leetcode.com/problems/permutations/), [Permutations II](https://leetcode.com/problems/permutations-ii/), [Next Permutation](https://leetcode.com/problems/next-permutation/)
+- **Counting Pattern**: [Count and Say](https://leetcode.com/problems/count-and-say/), [Count Primes](https://leetcode.com/problems/count-primes/), [Count Numbers with Unique Digits](https://leetcode.com/problems/count-numbers-with-unique-digits/)
+- **Mathematical Counting**: [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/), [Fibonacci Number](https://leetcode.com/problems/fibonacci-number/), [Pascal's Triangle](https://leetcode.com/problems/pascals-triangle/)
+
 ---
 
 Ready to start? Begin with [Counting Combinations](counting_combinations_analysis) and work your way through the problems in order of difficulty!

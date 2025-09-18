@@ -1056,6 +1056,23 @@ def dynamic_connectivity_queries(edges, queries):
 - **Bipartite Graphs**: Two-color property
 - **Planar Graphs**: Geometric embedding
 
+## 📚 **Additional Learning Resources**
+
+### **LeetCode Pattern Integration**
+For interview preparation and pattern recognition, complement your CSES learning with these LeetCode resources:
+
+- **[Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - Comprehensive collection of LeetCode patterns, templates, and curated problem lists
+- **[Advanced Graph Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Complex graph algorithms and optimization techniques
+- **[Network Flow Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Advanced graph theory and flow algorithms
+
+### **Related LeetCode Problems**
+Practice these LeetCode problems to reinforce advanced graph algorithm concepts:
+
+- **Advanced Graph Traversal**: [Word Ladder](https://leetcode.com/problems/word-ladder/), [Word Ladder II](https://leetcode.com/problems/word-ladder-ii/), [Alien Dictionary](https://leetcode.com/problems/alien-dictionary/)
+- **Network Flow**: [Maximum Flow](https://leetcode.com/problems/maximum-flow/), [Minimum Cost to Connect All Points](https://leetcode.com/problems/min-cost-connect-points/)
+- **Graph Optimization**: [Critical Connections in a Network](https://leetcode.com/problems/critical-connections-in-a-network/), [Redundant Connection](https://leetcode.com/problems/redundant-connection/)
+- **Advanced Algorithms**: [Course Schedule](https://leetcode.com/problems/course-schedule/), [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/), [Minimum Height Trees](https://leetcode.com/problems/minimum-height-trees/)
+
 ---
 
 Ready to start? Begin with [Acyclic Graph Edges](acyclic_graph_edges_analysis) and work your way through the problems in order of difficulty!

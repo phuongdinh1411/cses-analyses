@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Coin Piles - Introductory Problem"
+title: "Coin Piles"
 permalink: /problem_soulutions/introductory_problems/coin_piles_analysis
 ---
 
-# Coin Piles - Introductory Problem
+# Coin Piles
 
 ## 📋 Problem Information
 
@@ -1188,9 +1188,9 @@ print(f"Optimal strategy: {optimal}")
 ### Related Problems
 
 #### **CSES Problems**
-- [Apple Division](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Two Sets](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Weird Algorithm](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Apple Division](https://cses.fi/problemset/task/1075)s
+- [Two Sets](https://cses.fi/problemset/task/1075)s
+- [Weird Algorithm](https://cses.fi/problemset/task/1075)s
 
 #### **LeetCode Problems**
 - [Coin Change](https://leetcode.com/problems/coin-change/) - Dynamic Programming

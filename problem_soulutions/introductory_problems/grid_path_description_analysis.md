@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Grid Path Description - Introductory Problem"
+title: "Grid Path Description"
 permalink: /problem_soulutions/introductory_problems/grid_path_description_analysis
 ---
 
-# Grid Path Description - Introductory Problem
+# Grid Path Description
 
 ## 📋 Problem Information
 
@@ -1334,9 +1334,9 @@ print(f"Optimal strategy: {optimal}")
 ### Related Problems
 
 #### **CSES Problems**
-- [Grid Coloring I](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Chessboard and Queens](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Creating Strings](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Grid Coloring I](https://cses.fi/problemset/task/1075)s
+- [Chessboard and Queens](https://cses.fi/problemset/task/1075)s
+- [Creating Strings](https://cses.fi/problemset/task/1075)s
 
 #### **LeetCode Problems**
 - [Unique Paths](https://leetcode.com/problems/unique-paths/) - Dynamic Programming

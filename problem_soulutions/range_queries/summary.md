@@ -680,6 +680,23 @@ def range_sum_with_compression(queries, coordinates):
 - **Dynamic Ranges**: Online updates
 - **Multiple Operations**: Combined queries
 
+## 📚 **Additional Learning Resources**
+
+### **LeetCode Pattern Integration**
+For interview preparation and pattern recognition, complement your CSES learning with these LeetCode resources:
+
+- **[Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - Comprehensive collection of LeetCode patterns, templates, and curated problem lists
+- **[Prefix Sum Pattern](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Essential prefix sum and range query techniques
+- **[Segment Tree Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Advanced data structure patterns for range operations
+
+### **Related LeetCode Problems**
+Practice these LeetCode problems to reinforce range query and data structure concepts:
+
+- **Prefix Sum Pattern**: [Range Sum Query - Immutable](https://leetcode.com/problems/range-sum-query-immutable/), [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/)
+- **Binary Indexed Tree**: [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/), [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/)
+- **Segment Tree**: [Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/), [My Calendar I](https://leetcode.com/problems/my-calendar-i/)
+- **Sparse Table**: [Range Sum Query 2D - Immutable](https://leetcode.com/problems/range-sum-query-2d-immutable/), [Range Addition](https://leetcode.com/problems/range-addition/)
+
 ---
 
 Ready to start? Begin with [Static Range Sum Queries](static_range_sum_queries_analysis) and work your way through the problems in order of difficulty!

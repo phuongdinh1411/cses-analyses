@@ -846,6 +846,23 @@ def point_in_circumcircle(point: Point, triangle: Tuple[Point, Point, Point]) ->
 - **Closest Pair**: O(n log n) time
 - **Rectangle Union**: O(n log n) time
 
+## 📚 **Additional Learning Resources**
+
+### **LeetCode Pattern Integration**
+For interview preparation and pattern recognition, complement your CSES learning with these LeetCode resources:
+
+- **[Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - Comprehensive collection of LeetCode patterns, templates, and curated problem lists
+- **[Math and Geometry Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Essential mathematical and geometric problem patterns
+- **[Advanced Algorithm Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Complex algorithmic techniques and optimization strategies
+
+### **Related LeetCode Problems**
+Practice these LeetCode problems to reinforce geometry and mathematical concepts:
+
+- **Geometric Algorithms**: [Valid Square](https://leetcode.com/problems/valid-square/), [Rectangle Overlap](https://leetcode.com/problems/rectangle-overlap/), [Convex Polygon](https://leetcode.com/problems/convex-polygon/)
+- **Mathematical Problems**: [Pow(x, n)](https://leetcode.com/problems/powx-n/), [Sqrt(x)](https://leetcode.com/problems/sqrtx/), [Perfect Squares](https://leetcode.com/problems/perfect-squares/)
+- **Coordinate Geometry**: [Max Points on a Line](https://leetcode.com/problems/max-points-on-a-line/), [Minimum Area Rectangle](https://leetcode.com/problems/minimum-area-rectangle/)
+- **Advanced Math**: [Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/), [Container With Most Water](https://leetcode.com/problems/container-with-most-water/)
+
 ---
 
 Ready to start? Begin with [Point Location Test](point_location_test_analysis) and work your way through the problems in order of difficulty!

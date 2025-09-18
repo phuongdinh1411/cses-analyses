@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Knight Moves Grid - Introductory Problem"
+title: "Knight Moves Grid"
 permalink: /problem_soulutions/introductory_problems/knight_moves_grid_analysis
 ---
 
-# Knight Moves Grid - Introductory Problem
+# Knight Moves Grid
 
 ## 📋 Problem Information
 
@@ -541,8 +541,8 @@ print(f"Multi-dimensional moves: {result}")
 ### Related Problems
 
 #### **CSES Problems**
-- [Grid Path Description](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Chessboard and Queens](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Grid Path Description](https://cses.fi/problemset/task/1075)s
+- [Chessboard and Queens](https://cses.fi/problemset/task/1075)s
 - [Labyrinth](https://cses.fi/problemset/task/1075) - Graph Algorithms
 
 #### **LeetCode Problems**

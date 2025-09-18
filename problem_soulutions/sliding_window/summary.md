@@ -903,6 +903,23 @@ def lazy_sliding_window(arr, k, lazy_condition):
 - **Sum Calculation**: O(1) with prefix
 - **String Processing**: O(1) per character
 
+## 📚 **Additional Learning Resources**
+
+### **LeetCode Pattern Integration**
+For interview preparation and pattern recognition, complement your CSES learning with these LeetCode resources:
+
+- **[Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - Comprehensive collection of LeetCode patterns, templates, and curated problem lists
+- **[Sliding Window Pattern](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Essential sliding window techniques and templates
+- **[Sliding Window Template](https://github.com/ashishps1/awesome-leetcode-resources#-must-read-leetcode-articles)** - Specific sliding window templates and optimization strategies
+
+### **Related LeetCode Problems**
+Practice these LeetCode problems to reinforce sliding window concepts:
+
+- **Fixed Window Pattern**: [Maximum Average Subarray I](https://leetcode.com/problems/maximum-average-subarray-i/), [Find All Anagrams in a String](https://leetcode.com/problems/find-all-anagrams-in-a-string/)
+- **Variable Window Pattern**: [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/), [Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)
+- **Two Pointers Pattern**: [Container With Most Water](https://leetcode.com/problems/container-with-most-water/), [3Sum](https://leetcode.com/problems/3sum/)
+- **Prefix Sum Pattern**: [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/), [Continuous Subarray Sum](https://leetcode.com/problems/continuous-subarray-sum/)
+
 ---
 
 Ready to start? Begin with [Maximum Subarray Sum](maximum_subarray_sum_analysis) and work your way through the problems in order of difficulty!

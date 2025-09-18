@@ -862,6 +862,23 @@ class TreeWithSegmentTree:
 - **Distance Queries**: O(log n) per query
 - **Value Updates**: O(log n) per update
 
+## 📚 **Additional Learning Resources**
+
+### **LeetCode Pattern Integration**
+For interview preparation and pattern recognition, complement your CSES learning with these LeetCode resources:
+
+- **[Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - Comprehensive collection of LeetCode patterns, templates, and curated problem lists
+- **[Tree Algorithm Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Essential tree patterns including DFS, BFS, and tree traversal techniques
+- **[Tree Problem Templates](https://github.com/ashishps1/awesome-leetcode-resources#-must-read-leetcode-articles)** - Specific tree algorithm templates and optimization strategies
+
+### **Related LeetCode Problems**
+Practice these LeetCode problems to reinforce tree algorithm concepts:
+
+- **Tree Traversal Pattern**: [Binary Tree Inorder Traversal](https://leetcode.com/problems/binary-tree-inorder-traversal/), [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)
+- **Tree DP Pattern**: [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/), [House Robber III](https://leetcode.com/problems/house-robber-iii/)
+- **Tree Construction Pattern**: [Construct Binary Tree from Preorder and Inorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+- **Tree Query Pattern**: [Lowest Common Ancestor](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/), [Path Sum](https://leetcode.com/problems/path-sum/)
+
 ---
 
 Ready to start? Begin with [Subordinates](subordinates_analysis) and work your way through the problems in order of difficulty!

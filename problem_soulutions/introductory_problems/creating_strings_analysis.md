@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Creating Strings - Introductory Problem"
+title: "Creating Strings"
 permalink: /problem_soulutions/introductory_problems/creating_strings_analysis
 ---
 
-# Creating Strings - Introductory Problem
+# Creating Strings
 
 ## 📋 Problem Information
 
@@ -1167,9 +1167,9 @@ print(f"Optimal strategy: {optimal}")
 ### Related Problems
 
 #### **CSES Problems**
-- [Permutations](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Bit Strings](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Chessboard and Queens](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Permutations](https://cses.fi/problemset/task/1075)s
+- [Bit Strings](https://cses.fi/problemset/task/1075)s
+- [Chessboard and Queens](https://cses.fi/problemset/task/1075)s
 
 #### **LeetCode Problems**
 - [Permutations](https://leetcode.com/problems/permutations/) - Backtracking

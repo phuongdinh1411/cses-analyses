@@ -1116,3 +1116,24 @@ def huffman_coding(frequencies):
 5. **Master Fundamentals**: Build strong foundation in basic algorithms
 6. **Practice Patterns**: Recognize common problem patterns
 7. **Handle Edge Cases**: Consider boundary conditions and special cases
+
+## 📚 **Additional Learning Resources**
+
+### **LeetCode Pattern Integration**
+For interview preparation and pattern recognition, complement your CSES learning with these LeetCode resources:
+
+- **[Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - Comprehensive collection of LeetCode patterns, templates, and curated problem lists
+- **[Fundamental Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Essential algorithmic patterns for beginners
+- **[Basic Algorithm Templates](https://github.com/ashishps1/awesome-leetcode-resources#-must-read-leetcode-articles)** - Foundational problem-solving techniques
+
+### **Related LeetCode Problems**
+Practice these LeetCode problems to reinforce fundamental algorithmic concepts:
+
+- **Basic Algorithms**: [Two Sum](https://leetcode.com/problems/two-sum/), [Reverse Integer](https://leetcode.com/problems/reverse-integer/), [Palindrome Number](https://leetcode.com/problems/palindrome-number/)
+- **Array Manipulation**: [Remove Duplicates](https://leetcode.com/problems/remove-duplicates-from-sorted-array/), [Rotate Array](https://leetcode.com/problems/rotate-array/), [Plus One](https://leetcode.com/problems/plus-one/)
+- **String Processing**: [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/), [Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix/), [Roman to Integer](https://leetcode.com/problems/roman-to-integer/)
+- **Mathematical Problems**: [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/), [Fibonacci Number](https://leetcode.com/problems/fibonacci-number/), [Power of Two](https://leetcode.com/problems/power-of-two/)
+
+---
+
+Ready to start? Begin with [Weird Algorithm](weird_algorithm_analysis) and work your way through the problems in order of difficulty!

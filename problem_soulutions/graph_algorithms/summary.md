@@ -911,6 +911,23 @@ def topological_sort_dfs(graph):
 - **Centroid Decomposition**: Tree distances
 - **Dynamic Connectivity**: Online updates
 
+## 📚 **Additional Learning Resources**
+
+### **LeetCode Pattern Integration**
+For interview preparation and pattern recognition, complement your CSES learning with these LeetCode resources:
+
+- **[Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources)** - Comprehensive collection of LeetCode patterns, templates, and curated problem lists
+- **[Graph Algorithm Patterns](https://github.com/ashishps1/awesome-leetcode-resources#-patterns)** - Essential graph patterns including DFS, BFS, and shortest path algorithms
+- **[Graph Problem Templates](https://github.com/ashishps1/awesome-leetcode-resources#-must-read-leetcode-articles)** - Specific graph algorithm templates and optimization techniques
+
+### **Related LeetCode Problems**
+Practice these LeetCode problems to reinforce graph algorithm concepts:
+
+- **DFS/BFS Pattern**: [Number of Islands](https://leetcode.com/problems/number-of-islands/), [Word Search](https://leetcode.com/problems/word-search/), [Course Schedule](https://leetcode.com/problems/course-schedule/)
+- **Shortest Path Pattern**: [Network Delay Time](https://leetcode.com/problems/network-delay-time/), [Cheapest Flights Within K Stops](https://leetcode.com/problems/cheapest-flights-within-k-stops/)
+- **Topological Sort Pattern**: [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/), [Alien Dictionary](https://leetcode.com/problems/alien-dictionary/)
+- **Union-Find Pattern**: [Number of Connected Components](https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/), [Redundant Connection](https://leetcode.com/problems/redundant-connection/)
+
 ---
 
 Ready to start? Begin with [Counting Rooms](counting_rooms_analysis) and work your way through the problems in order of difficulty!

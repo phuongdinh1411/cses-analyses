@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Bit Strings - Introductory Problem"
+title: "Bit Strings"
 permalink: /problem_soulutions/introductory_problems/bit_strings_analysis
 ---
 
-# Bit Strings - Introductory Problem
+# Bit Strings
 
 ## 📋 Problem Information
 
@@ -1183,9 +1183,9 @@ print(f"Optimal strategy: {optimal}")
 ### Related Problems
 
 #### **CSES Problems**
-- [Creating Strings](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Permutations](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Two Knights](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Creating Strings](https://cses.fi/problemset/task/1075)s
+- [Permutations](https://cses.fi/problemset/task/1075)s
+- [Two Knights](https://cses.fi/problemset/task/1075)s
 
 #### **LeetCode Problems**
 - [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/) - Dynamic Programming

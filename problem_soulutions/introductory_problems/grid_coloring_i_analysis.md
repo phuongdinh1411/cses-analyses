@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Grid Coloring I - Introductory Problem"
+title: "Grid Coloring I"
 permalink: /problem_soulutions/introductory_problems/grid_coloring_i_analysis
 ---
 
-# Grid Coloring I - Introductory Problem
+# Grid Coloring I
 
 ## 📋 Problem Information
 
@@ -1405,9 +1405,9 @@ print(f"Optimal strategy: {optimal}")
 ### Related Problems
 
 #### **CSES Problems**
-- [Chessboard and Queens](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Creating Strings](https://cses.fi/problemset/task/1075) - Introductory Problems
-- [Permutations](https://cses.fi/problemset/task/1075) - Introductory Problems
+- [Chessboard and Queens](https://cses.fi/problemset/task/1075)s
+- [Creating Strings](https://cses.fi/problemset/task/1075)s
+- [Permutations](https://cses.fi/problemset/task/1075)s
 
 #### **LeetCode Problems**
 - [Sudoku Solver](https://leetcode.com/problems/sudoku-solver/) - Backtracking
