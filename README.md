@@ -51,24 +51,24 @@ cses_analyses/
 ```
 
 ## 🎯 Quick Reference Guides
-- **[Ultimate Cheatsheet](quick_reference/ultimate_cheatsheet.md)**: Complete quick reference guide with all algorithms, decision trees, visual aids, and templates
-- **[Common Mistakes](quick_reference/common_mistakes.md)**: Comprehensive error prevention
-- **[Advanced Algorithms](quick_reference/advanced_algorithms.md)**: Advanced algorithm techniques
+- **[Ultimate Cheatsheet](quick_reference/ultimate_cheatsheet)**: Complete quick reference guide with all algorithms, decision trees, visual aids, and templates
+- **[Common Mistakes](quick_reference/common_mistakes)**: Comprehensive error prevention
+- **[Advanced Algorithms](quick_reference/advanced_algorithms)**: Advanced algorithm techniques
 
 ## 🎯 Complete Problem Solutions (240+ Problems)
 
 ### 📁 Problem Categories
-- **[Introductory Problems](problem_soulutions/introductory_problems/)**: 25 problems - Start here!
-- **[Sorting and Searching](problem_soulutions/sorting_and_searching/)**: 35 problems - Master fundamentals
-- **[Dynamic Programming](problem_soulutions/dynamic_programming/)**: 17 problems - Optimization techniques
-- **[Graph Algorithms](problem_soulutions/graph_algorithms/)**: 36 problems - Network and path problems
-- **[Tree Algorithms](problem_soulutions/tree_algorithms/)**: 15 problems - Hierarchical data structures
-- **[String Algorithms](problem_soulutions/string_algorithms/)**: 14 problems - Text processing
-- **[Sliding Window](problem_soulutions/sliding_window/)**: 15 problems - Efficient subarray operations
-- **[Range Queries](problem_soulutions/range_queries/)**: 20 problems - Data structure queries
-- **[Advanced Graph Problems](problem_soulutions/advanced_graph_problems/)**: 28 problems - Complex graph algorithms
-- **[Counting Problems](problem_soulutions/counting_problems/)**: 19 problems - Combinatorics and counting
-- **[Geometry](problem_soulutions/geometry/)**: 16 problems - Computational geometry
+- **[Introductory Problems](problem_soulutions/introductory_problems/summary)**: 25 problems - Start here!
+- **[Sorting and Searching](problem_soulutions/sorting_and_searching/summary)**: 35 problems - Master fundamentals
+- **[Dynamic Programming](problem_soulutions/dynamic_programming/summary)**: 17 problems - Optimization techniques
+- **[Graph Algorithms](problem_soulutions/graph_algorithms/summary)**: 36 problems - Network and path problems
+- **[Tree Algorithms](problem_soulutions/tree_algorithms/summary)**: 15 problems - Hierarchical data structures
+- **[String Algorithms](problem_soulutions/string_algorithms/summary)**: 14 problems - Text processing
+- **[Sliding Window](problem_soulutions/sliding_window/summary)**: 15 problems - Efficient subarray operations
+- **[Range Queries](problem_soulutions/range_queries/summary)**: 20 problems - Data structure queries
+- **[Advanced Graph Problems](problem_soulutions/advanced_graph_problems/summary)**: 28 problems - Complex graph algorithms
+- **[Counting Problems](problem_soulutions/counting_problems/summary)**: 19 problems - Combinatorics and counting
+- **[Geometry](problem_soulutions/geometry/summary)**: 16 problems - Computational geometry
 
 ### 📋 Problem Analysis Features
 Each problem folder contains detailed analyses with:

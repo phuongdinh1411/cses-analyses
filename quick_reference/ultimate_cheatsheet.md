@@ -343,25 +343,12 @@ Test & Optimize
 
 ## 📏 Constraint-Based Algorithm Selection
 
-### 🚀 For n ≤ 10⁶ (Large Input)
-- **O(n) or O(n log n) required**
-- **Avoid O(n²) algorithms**
-- **Use efficient data structures**
-
-### 🔍 For n ≤ 10⁵ (Medium Input)
-- **O(n log n) acceptable**
-- **Can use sorting + binary search**
-- **Segment trees, BIT acceptable**
-
-### 🎯 For n ≤ 10³ (Small Input)
-- **O(n²) acceptable**
-- **Can use brute force with optimization**
-- **DP with 2D state space**
-
-### 🔢 For n ≤ 20 (Very Small Input)
-- **O(2ⁿ) acceptable**
-- **Bitmask DP**
-- **Backtracking**
+| Constraint | Time Complexity | Algorithm Examples |
+|------------|----------------|-------------------|
+| **n ≤ 10⁶** | O(n) or O(n log n) | Linear scan, Binary search |
+| **n ≤ 10⁵** | O(n log n) acceptable | Sorting, Tree operations |
+| **n ≤ 10³** | O(n²) acceptable | Nested loops, DP |
+| **n ≤ 20** | O(2ⁿ) acceptable | Bitmask, Backtracking |
 
 ## 🎯 Problem Identification Guide
 

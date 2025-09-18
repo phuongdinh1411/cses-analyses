@@ -226,19 +226,16 @@ Run-length         | O(n)    | O(n)    | Compression
 
 ### Pattern Matching
 - [String Matching](string_matching_analysis) - Basic pattern matching
-- [String Functions](string_functions_analysis) - KMP algorithm
 - [Pattern Positions](pattern_positions_analysis) - Find all pattern occurrences
 - [Longest Palindrome](longest_palindrome_analysis) - Palindrome detection
 
 ### String Construction
 - [Word Combinations](word_combinations_analysis) - Dictionary-based construction
-- [String Compression](string_compression_analysis) - Efficient compression
-- [String Rotation](string_rotation_analysis) - Rotation properties
 - [Repeating Substring](repeating_substring_analysis) - Finding repetitions
 
 ### Advanced String Problems
-- [String Automaton](string_automaton_analysis) - Finite automata
 - [Distinct Strings](distinct_strings_analysis) - Counting unique strings
+- [Distinct Substrings](distinct_substrings_analysis) - Counting unique substrings
 
 ## Detailed Examples and Implementations
 
