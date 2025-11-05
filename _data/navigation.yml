@@ -163,7 +163,7 @@ main:
       url: /cses-analyses/problem_soulutions/dynamic_programming/removal_game_analysis
     - title: ⭐⭐⭐ Two Sets II
       url: /cses-analyses/problem_soulutions/dynamic_programming/two_sets_ii_analysis
-  - title: AtCoder Educational DP Contest
+  - title: AtCoder DP
     url: /cses-analyses/problem_soulutions/dynamic_programming_at
     children:
     - title: 🟢 Summary
