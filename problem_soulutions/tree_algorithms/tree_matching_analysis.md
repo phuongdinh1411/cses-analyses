@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize tree matching algorithms for large inputs
 - Handle edge cases in tree problems (single nodes, linear trees)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Tree algorithms, DFS, tree DP, maximum matching, bipartite matching
-- **Data Structures**: Trees, graphs, adjacency lists, DP arrays
-- **Mathematical Concepts**: Tree theory, graph theory, matching theory, dynamic programming
-- **Programming Skills**: Tree traversal, DFS implementation, DP on trees
-- **Related Problems**: Subordinates (tree DP), Tree Diameter (tree traversal), Company Queries I (tree algorithms)
-
 ## 📋 Problem Description
 
 Given a tree with n nodes, find the maximum number of edges that can be selected such that no two selected edges share a common vertex.

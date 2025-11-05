@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize tree algorithms for large inputs
 - Handle edge cases in tree problems (single nodes, linear trees)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Tree algorithms, DFS, tree DP, subtree counting
-- **Data Structures**: Trees, graphs, adjacency lists, arrays
-- **Mathematical Concepts**: Tree theory, graph theory, dynamic programming
-- **Programming Skills**: Tree traversal, DFS implementation, recursive algorithms
-- **Related Problems**: Tree Diameter (tree traversal), Tree Distances I (tree algorithms), Company Queries I (tree queries)
-
 ## 📋 Problem Description
 
 Given a tree with n nodes, for each node, find the number of nodes in its subtree (including itself).

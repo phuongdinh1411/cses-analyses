@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize algorithms using coordinate compression and mapping
 - Handle edge cases in collection problems (sorted arrays, reverse sorted arrays)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Greedy algorithms, sorting, coordinate compression, position tracking
-- **Data Structures**: Arrays, hash maps, sorted arrays
-- **Mathematical Concepts**: Optimization, greedy choice property, collection strategies
-- **Programming Skills**: Sorting implementation, hash map operations, greedy algorithms
-- **Related Problems**: Distinct Numbers (sorting), Apartments (greedy), Sum of Two Values (optimization)
-
 ## 📋 Problem Description
 
 Given an array of n integers, you need to collect them in increasing order. Each time you collect a number, you must collect the smallest available number that hasn't been collected yet. Find the minimum number of passes needed to collect all numbers.

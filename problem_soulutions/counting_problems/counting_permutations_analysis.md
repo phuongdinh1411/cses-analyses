@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize permutation calculations for large numbers
 - Handle special cases in permutation counting
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Combinatorics, mathematical formulas, modular arithmetic
-- **Data Structures**: Arrays, mathematical computations, factorial calculations
-- **Mathematical Concepts**: Permutations, combinations, factorial, modular arithmetic
-- **Programming Skills**: Mathematical computations, modular arithmetic, large number handling
-- **Related Problems**: Counting Combinations (combinatorics), Counting Sequences (combinatorics), Counting Reorders (combinatorics)
-
 ## 📋 Problem Description
 
 Given n elements, count the number of ways to arrange them in a sequence (permutations).

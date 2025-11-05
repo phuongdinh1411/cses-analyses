@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in modular arithmetic problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Modular arithmetic, hash maps, prefix sums, counting, optimization
-- **Data Structures**: Arrays, hash maps, prefix sum arrays
-- **Mathematical Concepts**: Modular arithmetic, counting theory, optimization theory
-- **Programming Skills**: Algorithm implementation, complexity analysis, modular arithmetic
-- **Related Problems**: Subarray Sums I (prefix sums), Subarray Sums II (hash map), Maximum Subarray Sum (Kadane's algorithm)
-
 ## 📋 Problem Description
 
 You are given an array of n integers. Count the number of subarrays whose sum is divisible by n.

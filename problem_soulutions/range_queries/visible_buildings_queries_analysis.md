@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in visible buildings query problems
 - Recognize when to use geometric queries vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Geometric queries, visible buildings problems, range queries
-- **Data Structures**: Arrays, geometric query structures
-- **Mathematical Concepts**: Geometric query optimization, visible buildings optimization
-- **Programming Skills**: Array manipulation, geometric query implementation
-- **Related Problems**: Range queries, geometric problems, visible buildings problems
-
 ## 📋 Problem Description
 
 Given an array of building heights and multiple queries, each query asks for the number of visible buildings from position i. A building is visible if it's taller than all buildings between position i and that building.

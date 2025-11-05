@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in period detection problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: KMP algorithm, failure function, period detection, string matching
-- **Data Structures**: Strings, failure arrays, prefix arrays
-- **Mathematical Concepts**: String periods, failure function properties, period theory
-- **Programming Skills**: String manipulation, KMP implementation, complexity analysis
-- **Related Problems**: Finding Borders (KMP), Pattern Positions (KMP), String Matching (KMP)
-
 ## 📋 Problem Description
 
 You are given a string s of length n. For each position i (1 ≤ i ≤ n), find the smallest period of the prefix s[1...i].

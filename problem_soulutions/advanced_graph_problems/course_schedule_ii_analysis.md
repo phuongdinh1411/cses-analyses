@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle cycle detection in directed graphs using topological sorting
 - Apply topological sorting to real-world scheduling problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Topological sorting, Kahn's algorithm, DFS, cycle detection
-- **Data Structures**: Adjacency lists, queues, stacks, in-degree arrays
-- **Mathematical Concepts**: Graph theory, directed acyclic graphs (DAGs), ordering
-- **Programming Skills**: DFS implementation, queue operations, graph representation
-- **Related Problems**: Topological Sorting (basic topological sort), Building Teams (cycle detection), Round Trip (cycle detection)
-
 ## 📋 Problem Description
 
 Given n courses and their prerequisites, find a valid order to complete all courses. If it's impossible, return an empty array.

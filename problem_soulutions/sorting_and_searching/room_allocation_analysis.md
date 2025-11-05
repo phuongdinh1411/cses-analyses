@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in interval-based problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting, interval scheduling, greedy algorithms, priority queues
-- **Data Structures**: Arrays, priority queues, heaps, sorted lists
-- **Mathematical Concepts**: Interval overlap, resource allocation, optimization
-- **Programming Skills**: Algorithm implementation, complexity analysis, interval processing
-- **Related Problems**: Movie Festival (interval scheduling), Restaurant Customers (interval overlap), Traffic Lights (coordinate compression)
-
 ## 📋 Problem Description
 
 There are n customers who want to book rooms. Each customer has an arrival time and departure time. You need to allocate rooms to customers such that no two customers with overlapping times share the same room.

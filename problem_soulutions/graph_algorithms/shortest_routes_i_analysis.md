@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph traversal for shortest path calculations
 - Handle special cases in shortest path problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, shortest path, Dijkstra's algorithm
-- **Data Structures**: Graphs, priority queues, distance arrays
-- **Mathematical Concepts**: Graph theory, shortest paths, weighted graphs
-- **Programming Skills**: Graph operations, priority queues, shortest path algorithms
-- **Related Problems**: Shortest Routes II (graph_algorithms), Flight Discount (graph_algorithms), High Score (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a weighted directed graph, find the shortest distance from a source vertex to all other vertices.

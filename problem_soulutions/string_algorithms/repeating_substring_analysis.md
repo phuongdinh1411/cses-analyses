@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in repeating substring problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: String hashing, rolling hash, pattern matching, KMP algorithm
-- **Data Structures**: Strings, hash maps, rolling hash tables
-- **Mathematical Concepts**: String theory, pattern matching, hashing, periodicity
-- **Programming Skills**: String manipulation, algorithm implementation, hash optimization
-- **Related Problems**: String Matching (pattern matching), Finding Periods (periodicity), String Hashing
-
 ## 📋 Problem Description
 
 You are given a string s. Find the length of the longest repeating substring in the string.

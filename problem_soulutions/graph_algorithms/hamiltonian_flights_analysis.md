@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for path counting problems
 - Handle special cases in Hamiltonian path problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, Hamiltonian paths, dynamic programming, bitmasking
-- **Data Structures**: Graphs, arrays, bitmasks, memoization tables
-- **Mathematical Concepts**: Graph theory, Hamiltonian paths, dynamic programming, combinatorics
-- **Programming Skills**: Graph operations, bit manipulation, DP, path counting
-- **Related Problems**: Distinct Routes (graph_algorithms), Message Route (graph_algorithms), Round Trip (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a directed graph, count the number of Hamiltonian paths from source to destination (paths that visit each vertex exactly once).

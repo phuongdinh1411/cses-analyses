@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph traversal for multiple walk queries
 - Handle special cases in walk analysis
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph theory, walk algorithms, graph traversal, dynamic programming
-- **Data Structures**: Adjacency lists, matrices, dynamic programming tables
-- **Mathematical Concepts**: Graph theory, walk properties, combinatorial optimization
-- **Programming Skills**: Graph representation, DFS, BFS, matrix operations
-- **Related Problems**: Fixed Length Path Queries (similar approach), Round Trip (cycle detection), Graph Girth (cycle properties)
-
 ## 📋 Problem Description
 
 Given a directed graph with n nodes and q queries, for each query determine if there exists a walk of length k from node a to node b.

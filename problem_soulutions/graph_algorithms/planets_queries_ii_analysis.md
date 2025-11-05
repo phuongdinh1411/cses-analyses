@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize tree traversal operations for query processing
 - Handle special cases in tree query problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Tree algorithms, binary lifting, LCA algorithms
-- **Data Structures**: Trees, binary lifting tables, depth arrays
-- **Mathematical Concepts**: Binary representation, tree traversal, ancestor relationships
-- **Programming Skills**: Tree operations, binary lifting implementation, query processing
-- **Related Problems**: Planets Queries I (graph_algorithms), Tree Traversals (tree_algorithms), Company Queries (tree_algorithms)
-
 ## 📋 Problem Description
 
 Given a tree with n planets, answer queries about the k-th ancestor of a planet.

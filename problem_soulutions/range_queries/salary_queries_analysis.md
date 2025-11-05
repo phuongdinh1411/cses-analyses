@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in salary query problems
 - Recognize when to use range counting vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Range counting, salary query problems, range queries
-- **Data Structures**: Arrays, range query structures
-- **Mathematical Concepts**: Salary query optimization, range counting optimization
-- **Programming Skills**: Array manipulation, range counting implementation
-- **Related Problems**: Range queries, salary problems, range counting problems
-
 ## 📋 Problem Description
 
 Given an array of salaries and multiple queries, each query asks for the number of employees with salary in range [a, b]. The array is static (no updates).

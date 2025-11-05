@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in prefix sum query problems
 - Recognize when to use advanced prefix sums vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Advanced prefix sums, prefix sum query problems, range queries
-- **Data Structures**: Arrays, prefix sum arrays, range query structures
-- **Mathematical Concepts**: Prefix sum optimization, range query optimization
-- **Programming Skills**: Array manipulation, prefix sum implementation
-- **Related Problems**: Static range sum queries, dynamic range sum queries, prefix sum problems
-
 ## 📋 Problem Description
 
 Given an array of integers and multiple queries, each query asks for the sum of elements from the beginning to position i (prefix sum). The array is static (no updates).

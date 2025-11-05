@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in real-world sliding window problems
 - Recognize when to use sliding window vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sliding window, time-based data analysis, optimization
-- **Data Structures**: Arrays, queues, time series data
-- **Mathematical Concepts**: Time-based optimization, window management
-- **Programming Skills**: Array manipulation, sliding window implementation
-- **Related Problems**: Fixed length subarray sum, sliding window problems, time series analysis
-
 ## 📋 Problem Description
 
 Given a time series of advertisement impressions and a time window, find the maximum number of impressions in any sliding window of the given size.

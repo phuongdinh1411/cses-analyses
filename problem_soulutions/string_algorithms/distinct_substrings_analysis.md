@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in substring counting problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Suffix arrays, suffix automata, string hashing, rolling hash
-- **Data Structures**: Strings, suffix arrays, suffix trees, hash maps
-- **Mathematical Concepts**: String theory, substring counting, suffix array construction
-- **Programming Skills**: String manipulation, algorithm implementation, suffix array algorithms
-- **Related Problems**: Distinct Strings (substring counting), String Matching (pattern matching), Suffix Arrays
-
 ## 📋 Problem Description
 
 You are given a string s. Count the number of distinct substrings in the string.

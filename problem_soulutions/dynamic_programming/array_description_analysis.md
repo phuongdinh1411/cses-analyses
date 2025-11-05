@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for array description analysis
 - Handle special cases in array description problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, counting techniques, mathematical formulas
-- **Data Structures**: Arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Array theory, combinations, modular arithmetic
-- **Programming Skills**: DP implementation, mathematical computations, modular arithmetic
-- **Related Problems**: Book Shop (dynamic programming), Grid Paths (dynamic programming), Money Sums (dynamic programming)
-
 ## 📋 Problem Description
 
 Given an array with some known values and some unknown values (0), count the number of ways to fill the unknown values such that adjacent elements differ by at most 1.

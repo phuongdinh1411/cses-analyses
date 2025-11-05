@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph traversal for multiple queries
 - Handle special cases in nearest neighbor analysis
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph theory, shortest path algorithms, BFS, Dijkstra's algorithm
-- **Data Structures**: Priority queues, adjacency lists, distance arrays, visited arrays
-- **Mathematical Concepts**: Graph theory, shortest path theory, distance metrics
-- **Programming Skills**: Graph representation, BFS, priority queue operations
-- **Related Problems**: Shortest Routes I (single-source shortest path), Shortest Routes II (all-pairs shortest path), Download Speed (max flow)
-
 ## 📋 Problem Description
 
 Given a weighted undirected graph with n nodes and m edges, where some nodes are shops, for each query find the nearest shop to a given node.

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in advanced subarray sum problems
 - Recognize when to use advanced hash map techniques
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Hash maps, prefix sums, subarray problems, advanced counting
-- **Data Structures**: Arrays, hash maps, prefix sums
-- **Mathematical Concepts**: Subarray sum optimization, prefix sum properties, advanced counting
-- **Programming Skills**: Array manipulation, hash map implementation, advanced counting
-- **Related Problems**: Subarray sums I, subarray with given sum, longest subarray with sum
-
 ## 📋 Problem Description
 
 Given an array of integers and a target sum, count the number of contiguous subarrays that sum to the target value, with additional constraints.

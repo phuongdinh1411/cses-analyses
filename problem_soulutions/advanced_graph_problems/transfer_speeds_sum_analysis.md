@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize network analysis for transfer speed problems
 - Handle special cases in network flow analysis
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph theory, network flow, maximum flow, minimum cost flow
-- **Data Structures**: Adjacency lists, flow networks, residual graphs, priority queues
-- **Mathematical Concepts**: Graph theory, flow theory, optimization, linear programming
-- **Programming Skills**: Graph representation, BFS, DFS, flow algorithms
-- **Related Problems**: Download Speed (max flow), Police Chase (min cost flow), Road Construction (connectivity)
-
 ## 📋 Problem Description
 
 Given a network with n nodes and m edges, where each edge has a capacity and cost, find the maximum sum of transfer speeds that can be achieved while minimizing the total cost.

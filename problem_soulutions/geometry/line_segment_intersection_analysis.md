@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize geometric operations for intersection analysis
 - Handle special cases in geometric intersection problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Computational geometry, line intersection algorithms, sweep line algorithms
-- **Data Structures**: Points, line segments, geometric primitives
-- **Mathematical Concepts**: Linear algebra, cross products, orientation tests
-- **Programming Skills**: Geometric computations, coordinate systems, intersection logic
-- **Related Problems**: Point in Polygon (geometry), Convex Hull (geometry), Area of Rectangles (geometry)
-
 ## 📋 Problem Description
 
 Given n line segments, find all pairs of intersecting line segments.

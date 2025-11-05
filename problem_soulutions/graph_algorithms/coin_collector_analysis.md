@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize path finding for maximum value collection
 - Handle special cases in coin collection problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, coin collection, path finding
-- **Data Structures**: Graphs, coins, paths
-- **Mathematical Concepts**: Graph traversal, coin values, path optimization
-- **Programming Skills**: Graph operations, coin collection, path finding
-- **Related Problems**: Shortest Routes (graph_algorithms), Message Route (graph_algorithms), Labyrinth (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a graph with coins on vertices, find the maximum coins that can be collected.

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph traversal for multiple circuit queries
 - Handle special cases in Hamiltonian circuit analysis
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph theory, Hamiltonian circuits, graph traversal, NP-completeness
-- **Data Structures**: Adjacency lists, bitmasks, dynamic programming tables
-- **Mathematical Concepts**: Graph theory, circuit properties, combinatorial optimization
-- **Programming Skills**: Graph representation, DFS, bitmask operations, memoization
-- **Related Problems**: Fixed Length Hamiltonian Cycle Queries (similar approach), Round Trip (cycle detection), Graph Girth (cycle properties)
-
 ## 📋 Problem Description
 
 Given a directed graph with n nodes and q queries, for each query determine if there exists a Hamiltonian circuit of length k starting and ending at node a.

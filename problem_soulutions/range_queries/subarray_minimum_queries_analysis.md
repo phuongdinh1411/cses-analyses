@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in subarray minimum query problems
 - Recognize when to use range queries vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Range queries, subarray minimum problems, sparse tables
-- **Data Structures**: Arrays, sparse tables, range query structures
-- **Mathematical Concepts**: Subarray minimum optimization, range query optimization
-- **Programming Skills**: Array manipulation, range query implementation
-- **Related Problems**: Subarray sum queries, subarray maximum queries, range query problems
-
 ## 📋 Problem Description
 
 Given an array of integers and multiple queries, each query asks for the minimum element in a subarray [l, r]. The array is static (no updates).

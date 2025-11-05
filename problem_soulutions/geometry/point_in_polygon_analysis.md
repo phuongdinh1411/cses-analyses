@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize geometric operations for containment analysis
 - Handle special cases in point-in-polygon problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Computational geometry, ray casting algorithms, line intersection
-- **Data Structures**: Points, polygons, geometric primitives
-- **Mathematical Concepts**: Ray casting, line intersection, coordinate systems
-- **Programming Skills**: Geometric computations, ray casting, line operations
-- **Related Problems**: Convex Hull (geometry), Line Segment Intersection (geometry), Area of Rectangles (geometry)
-
 ## 📋 Problem Description
 
 Given a polygon and a point, determine if the point lies inside, outside, or on the boundary of the polygon.

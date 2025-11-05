@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for path finding with teleporters
 - Handle special cases in Eulerian path problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, Eulerian path, Hierholzer's algorithm
-- **Data Structures**: Graphs, stacks, degree arrays, path arrays
-- **Mathematical Concepts**: Graph theory, Eulerian paths, directed graphs
-- **Programming Skills**: Graph operations, DFS, stack operations, path construction
-- **Related Problems**: Mail Delivery (graph_algorithms), Round Trip (graph_algorithms), Message Route (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a directed graph with teleporters, find an Eulerian path that visits every edge exactly once.

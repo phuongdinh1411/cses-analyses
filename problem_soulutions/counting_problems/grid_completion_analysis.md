@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize grid operations for completion analysis
 - Handle special cases in grid completion counting
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Grid algorithms, counting techniques, mathematical formulas
-- **Data Structures**: 2D arrays, mathematical computations, grid representation
-- **Mathematical Concepts**: Grid theory, combinations, permutations, modular arithmetic
-- **Programming Skills**: Grid manipulation, mathematical computations, modular arithmetic
-- **Related Problems**: Border Subgrid Count (grid counting), Filled Subgrid Count (grid counting), All Letter Subgrid Count (grid counting)
-
 ## 📋 Problem Description
 
 Given a partially filled grid, count the number of ways to complete the grid with specific constraints.

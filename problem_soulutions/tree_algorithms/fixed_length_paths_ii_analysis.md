@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in constrained tree path counting problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Tree algorithms, DFS, BFS, tree DP, centroid decomposition, constrained path counting
-- **Data Structures**: Trees, graphs, adjacency lists, DP tables, segment trees
-- **Mathematical Concepts**: Tree theory, combinatorics, dynamic programming, constraint satisfaction
-- **Programming Skills**: Tree traversal, algorithm implementation, DP optimization
-- **Related Problems**: Fixed Length Paths I (basic path counting), Tree DP, Constrained Path Problems
-
 ## 📋 Problem Description
 
 You are given a tree with n nodes, where each node has a color, and q queries. Each query consists of two integers k and c. For each query, find the number of paths of length exactly k where both endpoints have color c.

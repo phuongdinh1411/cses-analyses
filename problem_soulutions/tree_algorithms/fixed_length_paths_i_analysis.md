@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in tree path counting problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Tree algorithms, DFS, BFS, tree DP, path counting algorithms
-- **Data Structures**: Trees, graphs, adjacency lists, DP tables
-- **Mathematical Concepts**: Tree theory, combinatorics, dynamic programming
-- **Programming Skills**: Tree traversal, algorithm implementation, DP optimization
-- **Related Problems**: Tree Distances (path problems), Counting Paths (path counting), Tree DP
-
 ## 📋 Problem Description
 
 You are given a tree with n nodes and q queries. Each query consists of an integer k. For each query, find the number of paths of length exactly k in the tree.

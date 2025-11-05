@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize algorithms for partition optimization problems
 - Handle special cases in subset generation problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Subset generation, bitmasking, brute force, optimization
-- **Data Structures**: Arrays, bitmasks, subsets
-- **Mathematical Concepts**: Combinatorics, subset theory, optimization, partitions
-- **Programming Skills**: Bit manipulation, subset generation, optimization algorithms
-- **Related Problems**: Two Sets (introductory_problems), Coin Piles (introductory_problems), Weird Algorithm (introductory_problems)
-
 ## 📋 Problem Description
 
 Given n apples with weights, divide them into two groups such that the difference between the total weights of the two groups is minimized.

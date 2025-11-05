@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in string transformation problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, graph algorithms, string matching, edit distance
-- **Data Structures**: Strings, graphs, DP tables, priority queues
-- **Mathematical Concepts**: String theory, graph theory, optimization, edit distance
-- **Programming Skills**: String manipulation, algorithm implementation, DP optimization
-- **Related Problems**: Edit Distance (string transformation), String Matching (pattern matching), Graph Algorithms
-
 ## 📋 Problem Description
 
 You are given two strings s and t, and a set of transformation rules. Each rule allows you to transform a substring of s into another substring. Find the minimum number of transformations needed to convert string s into string t, or determine if it's impossible.

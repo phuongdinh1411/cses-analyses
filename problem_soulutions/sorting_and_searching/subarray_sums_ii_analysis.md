@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in hash map counting problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Hash maps, prefix sums, counting, optimization, two-sum technique
-- **Data Structures**: Arrays, hash maps, prefix sum arrays
-- **Mathematical Concepts**: Counting theory, optimization theory, hash map operations
-- **Programming Skills**: Algorithm implementation, complexity analysis, hash map usage
-- **Related Problems**: Subarray Sums I (prefix sums), Sum of Two Values (hash map), Maximum Subarray Sum (Kadane's algorithm)
-
 ## 📋 Problem Description
 
 You are given an array of n integers and a target sum x. Count the number of subarrays whose sum equals x.

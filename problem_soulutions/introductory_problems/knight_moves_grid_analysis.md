@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize algorithms for knight movement problems
 - Handle special cases in grid traversal problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: BFS, grid traversal, shortest path, graph algorithms, knight movement
-- **Data Structures**: 2D arrays, grids, queues, visited arrays, coordinate systems
-- **Mathematical Concepts**: Grid mathematics, coordinate geometry, shortest path theory, graph theory
-- **Programming Skills**: BFS implementation, grid manipulation, queue operations, coordinate handling
-- **Related Problems**: Grid Path Description (introductory_problems), Chessboard and Queens (introductory_problems), Labyrinth (graph_algorithms)
-
 ## 📋 Problem Description
 
 Find the minimum number of moves for a knight to reach a target position on an n×n chessboard from a starting position.

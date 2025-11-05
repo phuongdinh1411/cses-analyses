@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize geometric operations for area analysis
 - Handle special cases in rectangle area problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Computational geometry, area algorithms, sweep line algorithms
-- **Data Structures**: Rectangles, points, geometric primitives
-- **Mathematical Concepts**: Rectangle area, coordinate systems, area calculations
-- **Programming Skills**: Geometric computations, area calculations, mathematical formulas
-- **Related Problems**: Point in Polygon (geometry), Convex Hull (geometry), Polygon Area (geometry)
-
 ## 📋 Problem Description
 
 Given n rectangles, calculate the total area covered by all rectangles.

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize reorder calculations for large numbers
 - Handle special cases in reorder counting
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Combinatorics, mathematical formulas, modular arithmetic
-- **Data Structures**: Arrays, mathematical computations, factorial calculations
-- **Mathematical Concepts**: Permutations, combinations, derangements, modular arithmetic
-- **Programming Skills**: Mathematical computations, modular arithmetic, large number handling
-- **Related Problems**: Counting Permutations (combinatorics), Counting Combinations (combinatorics), Counting Sequences (combinatorics)
-
 ## 📋 Problem Description
 
 Given an array of n elements, count the number of ways to reorder the elements such that no element appears in its original position (derangements).

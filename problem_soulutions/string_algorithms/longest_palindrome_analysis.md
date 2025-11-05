@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize palindrome algorithms for large inputs
 - Handle edge cases in palindrome problems (single characters, even/odd lengths)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Palindrome detection, Manacher's algorithm, center expansion
-- **Data Structures**: Strings, arrays, character arrays
-- **Mathematical Concepts**: Palindrome properties, symmetry, string theory
-- **Programming Skills**: String manipulation, algorithm implementation, symmetry detection
-- **Related Problems**: String Matching (pattern matching), Pattern Positions (string algorithms)
-
 ## 📋 Problem Description
 
 Given a string, find the longest palindromic substring. A palindrome is a string that reads the same forwards and backwards.

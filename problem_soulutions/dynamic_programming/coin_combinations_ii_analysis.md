@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for unique combination analysis
 - Handle special cases in unique coin combination problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, counting techniques, mathematical formulas
-- **Data Structures**: Arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Combinations, permutations, modular arithmetic
-- **Programming Skills**: DP implementation, mathematical computations, modular arithmetic
-- **Related Problems**: Coin Combinations I (dynamic programming), Money Sums (dynamic programming), Array Description (dynamic programming)
-
 ## 📋 Problem Description
 
 Given n coins with values, count the number of unique ways to achieve a target sum (order doesn't matter).

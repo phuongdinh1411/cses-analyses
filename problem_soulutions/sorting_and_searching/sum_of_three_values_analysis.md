@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize three-sum algorithms for large inputs
 - Handle edge cases in sum problems (duplicates, negative numbers)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Two-pointer technique, hash maps, sorting, three-sum problem
-- **Data Structures**: Arrays, hash maps, sorted arrays
-- **Mathematical Concepts**: Sum problems, combination theory, optimization
-- **Programming Skills**: Two-pointer implementation, hash map usage, sorting algorithms
-- **Related Problems**: Sum of Two Values (two-sum), Sum of Four Values (four-sum), Apartments (matching)
-
 ## 📋 Problem Description
 
 Given an array of n integers and a target sum x, find three distinct elements that sum to x. Return the 1-indexed positions of these elements, or "IMPOSSIBLE" if no such triplet exists.

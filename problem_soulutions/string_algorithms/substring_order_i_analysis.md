@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in substring ordering problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Suffix arrays, LCP arrays, lexicographical ordering, string sorting
-- **Data Structures**: Strings, suffix arrays, LCP arrays, sorting algorithms
-- **Mathematical Concepts**: String theory, lexicographical ordering, suffix array construction
-- **Programming Skills**: String manipulation, algorithm implementation, sorting optimization
-- **Related Problems**: Substring Order II (with length constraints), Distinct Substrings (suffix arrays), String Sorting
-
 ## 📋 Problem Description
 
 You are given a string s and q queries. Each query consists of an integer k. For each query, find the k-th lexicographically smallest substring in the string s.

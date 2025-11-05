@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in subarray sum problems
 - Recognize when to use hash maps vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Hash maps, prefix sums, subarray problems
-- **Data Structures**: Arrays, hash maps, prefix sums
-- **Mathematical Concepts**: Subarray sum optimization, prefix sum properties
-- **Programming Skills**: Array manipulation, hash map implementation
-- **Related Problems**: Maximum subarray sum, longest subarray with sum, shortest subarray with sum
-
 ## 📋 Problem Description
 
 Given an array of integers and a target sum, determine if there exists a contiguous subarray that sums to the target value. Return true if such a subarray exists, false otherwise.

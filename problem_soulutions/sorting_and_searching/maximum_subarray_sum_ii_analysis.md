@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in subarray sum problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, Kadane's algorithm, optimization, subarray problems
-- **Data Structures**: Arrays, DP tables, prefix sums
-- **Mathematical Concepts**: Optimization, subarray theory, dynamic programming theory
-- **Programming Skills**: Algorithm implementation, complexity analysis, DP optimization
-- **Related Problems**: Maximum Subarray Sum (Kadane's algorithm), Subarray Sums II (counting), Array Division (optimization)
-
 ## 📋 Problem Description
 
 You are given an array of n integers. Find the maximum sum of a subarray with exactly k elements.

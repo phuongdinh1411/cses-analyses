@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in sparse table problems
 - Recognize when to use sparse table vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sparse table, range minimum queries, static data structures
-- **Data Structures**: Arrays, 2D arrays, sparse tables
-- **Mathematical Concepts**: Range minimum optimization, binary representation
-- **Programming Skills**: Array manipulation, sparse table implementation
-- **Related Problems**: Static range sum queries, dynamic range minimum queries, range maximum queries
-
 ## 📋 Problem Description
 
 Given an array of integers and multiple queries, each query asks for the minimum element in a range [l, r]. The array is static (no updates).

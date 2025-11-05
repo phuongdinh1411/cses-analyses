@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in multi-sum problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting, two-pointer technique, hash maps, optimization
-- **Data Structures**: Arrays, hash maps, sorting algorithms
-- **Mathematical Concepts**: Combinatorics, optimization theory, multi-sum problems
-- **Programming Skills**: Algorithm implementation, complexity analysis, two-pointer technique
-- **Related Problems**: Sum of Two Values (two-sum), Sum of Three Values (three-sum), Apartments (matching)
-
 ## 📋 Problem Description
 
 You are given an array of n integers and a target value x. Find four distinct indices i, j, k, l such that a[i] + a[j] + a[k] + a[l] = x.

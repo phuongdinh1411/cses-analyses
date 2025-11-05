@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in substring problems
 - Recognize when to use two pointers vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Two pointers, sliding window, hash maps, string manipulation
-- **Data Structures**: Strings, hash maps, sets
-- **Mathematical Concepts**: Substring distinct character optimization, window management
-- **Programming Skills**: String manipulation, two pointers implementation
-- **Related Problems**: Subarray distinct values, subarray with K distinct, sliding window problems
-
 ## 📋 Problem Description
 
 Given a string, find the length of the longest substring without repeating characters.

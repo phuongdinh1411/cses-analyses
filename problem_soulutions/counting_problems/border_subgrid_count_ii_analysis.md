@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize grid traversal and counting operations for complex cases
 - Handle special cases in advanced border subgrid counting
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Advanced grid algorithms, counting techniques, combinatorial analysis
-- **Data Structures**: 2D arrays, prefix sums, mathematical computations, advanced data structures
-- **Mathematical Concepts**: Advanced combinatorics, counting principles, grid properties, mathematical optimization
-- **Programming Skills**: Advanced 2D array manipulation, nested loops, mathematical computations, optimization techniques
-- **Related Problems**: Border Subgrid Count I (grid counting), All Letter Subgrid Count (grid counting), Grid Completion (grid algorithms)
-
 ## 📋 Problem Description
 
 Given a grid of size n×m, count the number of subgrids where all border cells have specific properties and the interior cells have different properties.

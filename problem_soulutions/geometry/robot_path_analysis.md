@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize geometric operations for path analysis
 - Handle special cases in robot path problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Computational geometry, path planning algorithms, robot algorithms
-- **Data Structures**: Points, paths, geometric primitives
-- **Mathematical Concepts**: Robot path planning, coordinate systems, geometric calculations
-- **Programming Skills**: Geometric computations, path planning, robot operations
-- **Related Problems**: Point in Polygon (geometry), Convex Hull (geometry), Line Segment Intersection (geometry)
-
 ## 📋 Problem Description
 
 Given a robot's starting position and target position, find the shortest path avoiding obstacles.

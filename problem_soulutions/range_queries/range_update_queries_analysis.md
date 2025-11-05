@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in lazy propagation problems
 - Recognize when to use lazy propagation vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Segment tree, lazy propagation, range updates
-- **Data Structures**: Arrays, segment trees, lazy arrays
-- **Mathematical Concepts**: Range update optimization, tree data structures
-- **Programming Skills**: Array manipulation, lazy propagation implementation
-- **Related Problems**: Dynamic range sum queries, range interval queries, segment tree problems
-
 ## 📋 Problem Description
 
 Given an array of integers and multiple queries, each query can be either:

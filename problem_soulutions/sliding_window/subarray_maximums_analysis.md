@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in sliding window maximum problems
 - Recognize when to use deque vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sliding window, deque, monotonic data structures
-- **Data Structures**: Arrays, deques, stacks
-- **Mathematical Concepts**: Subarray maximum optimization, window management
-- **Programming Skills**: Array manipulation, deque implementation
-- **Related Problems**: Subarray minimums, sliding window problems, monotonic stack
-
 ## 📋 Problem Description
 
 Given an array of integers and a window size k, find the maximum element in each sliding window of size k.

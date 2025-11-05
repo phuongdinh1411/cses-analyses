@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph traversal for multiple edge queries
 - Handle special cases in MST analysis
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph theory, MST algorithms, Kruskal's algorithm, Prim's algorithm
-- **Data Structures**: Union-Find, priority queues, adjacency lists, edge lists
-- **Mathematical Concepts**: Graph theory, MST properties, cut property, cycle property
-- **Programming Skills**: Graph representation, sorting, union-find operations
-- **Related Problems**: Road Construction (MST construction), Road Reparation (MST repair), Road Construction II (MST variants)
-
 ## 📋 Problem Description
 
 Given a weighted undirected graph with n nodes and m edges, for each query determine if a specific edge is included in any Minimum Spanning Tree (MST) of the graph.

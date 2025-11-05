@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in fixed-length subarray problems
 - Recognize when to use sliding window vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sliding window technique, two pointers, subarray problems
-- **Data Structures**: Arrays, queues
-- **Mathematical Concepts**: Subarray sum optimization, window management
-- **Programming Skills**: Array manipulation, sliding window implementation
-- **Related Problems**: Maximum subarray sum, subarray with given sum, window problems
-
 ## 📋 Problem Description
 
 Given an array of integers and a fixed length k, find the maximum sum of any contiguous subarray of length k.

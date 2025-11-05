@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize memory usage for sparse coordinate data
 - Handle special cases in coordinate compression problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Computational geometry, coordinate compression, mapping algorithms
-- **Data Structures**: Arrays, maps, coordinate systems
-- **Mathematical Concepts**: Coordinate systems, mapping, compression
-- **Programming Skills**: Array operations, mapping, coordinate transformations
-- **Related Problems**: Point in Polygon (geometry), Convex Hull (geometry), Line Segment Intersection (geometry)
-
 ## 📋 Problem Description
 
 Given a set of coordinates, compress them to a smaller range while preserving relative order.

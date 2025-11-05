@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for combination analysis
 - Handle special cases in dice combination problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, counting techniques, mathematical formulas
-- **Data Structures**: Arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Combinations, permutations, modular arithmetic
-- **Programming Skills**: DP implementation, mathematical computations, modular arithmetic
-- **Related Problems**: Coin Combinations (dynamic programming), Money Sums (dynamic programming), Array Description (dynamic programming)
-
 ## 📋 Problem Description
 
 Given a target sum, count the number of ways to achieve it using dice rolls (1-6).

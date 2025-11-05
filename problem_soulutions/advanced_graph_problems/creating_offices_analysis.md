@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize facility placement using distance-based strategies
 - Handle tree-specific constraints in facility location problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Tree traversal, greedy algorithms, facility location, coverage problems
-- **Data Structures**: Trees, adjacency lists, distance arrays
-- **Mathematical Concepts**: Graph theory, tree properties, optimization, greedy strategies
-- **Programming Skills**: Tree traversal, DFS, BFS, greedy algorithm implementation
-- **Related Problems**: Tree Diameter (tree properties), Tree Distances I (tree distances), Nearest Shops (facility location)
-
 ## 📋 Problem Description
 
 Given a tree with n nodes, you need to place offices at some nodes so that every node is within distance k of at least one office. Find the minimum number of offices needed.

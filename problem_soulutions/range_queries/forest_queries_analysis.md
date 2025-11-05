@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in 2D prefix sum problems
 - Recognize when to use 2D prefix sums vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: 2D prefix sums, 2D range queries, 2D data structures
-- **Data Structures**: 2D arrays, 2D prefix sum arrays
-- **Mathematical Concepts**: 2D range sum optimization, 2D cumulative sums
-- **Programming Skills**: 2D array manipulation, 2D prefix sum implementation
-- **Related Problems**: Static range sum queries, hotel queries, 2D range query problems
-
 ## 📋 Problem Description
 
 Given a 2D grid of integers and multiple queries, each query asks for the sum of elements in a 2D range [x1, y1] to [x2, y2]. The grid is static (no updates).

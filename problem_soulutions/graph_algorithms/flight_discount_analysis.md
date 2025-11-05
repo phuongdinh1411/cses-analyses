@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for discount and modification problems
 - Handle special cases in modified shortest path problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, shortest path, Dijkstra's algorithm, state space search
-- **Data Structures**: Graphs, priority queues, distance arrays, state tracking
-- **Mathematical Concepts**: Graph theory, shortest paths, state space, optimization
-- **Programming Skills**: Graph operations, priority queues, state management, shortest path algorithms
-- **Related Problems**: Shortest Routes I (graph_algorithms), High Score (graph_algorithms), Message Route (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a weighted directed graph, find the shortest path from source to destination where you can use a discount on exactly one edge (reduce its weight to half).

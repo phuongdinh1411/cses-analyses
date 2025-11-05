@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize geometric operations for distance analysis
 - Handle special cases in distance calculation problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Computational geometry, distance algorithms, coordinate systems
-- **Data Structures**: Points, coordinate transformations, geometric primitives
-- **Mathematical Concepts**: Manhattan distance, coordinate systems, optimization
-- **Programming Skills**: Geometric computations, coordinate systems, distance calculations
-- **Related Problems**: All Manhattan Distances (geometry), Point in Polygon (geometry), Convex Hull (geometry)
-
 ## 📋 Problem Description
 
 Given n points, find the maximum Manhattan distance between any two points.

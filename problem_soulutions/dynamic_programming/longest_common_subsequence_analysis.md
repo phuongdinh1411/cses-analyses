@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for subsequence analysis
 - Handle special cases in subsequence problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, subsequence algorithms, optimization techniques
-- **Data Structures**: 2D arrays, string processing, DP tables
-- **Mathematical Concepts**: Subsequence theory, optimization, string comparison
-- **Programming Skills**: DP implementation, string processing, mathematical computations
-- **Related Problems**: Increasing Subsequence (dynamic programming), Edit Distance (dynamic programming), Counting Towers (dynamic programming)
-
 ## 📋 Problem Description
 
 Given two strings, find the length of the longest common subsequence.

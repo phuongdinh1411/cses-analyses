@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize algorithms for string permutation problems
 - Handle special cases in string generation problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: String generation, permutations, backtracking, recursion
-- **Data Structures**: Strings, arrays, sets, character frequency maps
-- **Mathematical Concepts**: Permutations, combinatorics, factorial, string theory
-- **Programming Skills**: String manipulation, backtracking, recursive algorithms, character counting
-- **Related Problems**: Permutations (introductory_problems), Bit Strings (introductory_problems), Chessboard and Queens (introductory_problems)
-
 ## 📋 Problem Description
 
 Given a string, generate all unique permutations of its characters.

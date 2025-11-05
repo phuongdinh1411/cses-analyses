@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in coordinate-based problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting, coordinate compression, binary search, set operations
-- **Data Structures**: Arrays, sets, sorted lists, binary search trees
-- **Mathematical Concepts**: Coordinate systems, interval management, dynamic updates
-- **Programming Skills**: Algorithm implementation, complexity analysis, coordinate compression
-- **Related Problems**: Room Allocation (coordinate compression), Nested Ranges (coordinate processing), Array Division (optimization)
-
 ## 📋 Problem Description
 
 There is a street with traffic lights at positions 0 and x. You need to add n more traffic lights at positions a[1], a[2], ..., a[n].

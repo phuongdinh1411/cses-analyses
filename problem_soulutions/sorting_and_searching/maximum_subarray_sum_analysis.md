@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize algorithms using local and global maximum tracking
 - Handle edge cases in subarray problems (all negative numbers, single element)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, Kadane's algorithm, prefix sums, sliding window
-- **Data Structures**: Arrays, prefix sum arrays
-- **Mathematical Concepts**: Optimization, maximum subarray, dynamic programming principles
-- **Programming Skills**: Dynamic programming implementation, array manipulation, optimization
-- **Related Problems**: Sum of Two Values (optimization), Apartments (greedy), Collecting Numbers (sorting)
-
 ## 📋 Problem Description
 
 Given an array of n integers, find the maximum sum of any contiguous subarray. The subarray must contain at least one element.

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in subarray sum query problems
 - Recognize when to use range queries vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Range queries, subarray sum problems, prefix sums
-- **Data Structures**: Arrays, prefix sum arrays, range query structures
-- **Mathematical Concepts**: Subarray sum optimization, range query optimization
-- **Programming Skills**: Array manipulation, range query implementation
-- **Related Problems**: Static range sum queries, dynamic range sum queries, subarray problems
-
 ## 📋 Problem Description
 
 Given an array of integers and multiple queries, each query asks for the sum of elements in a subarray [l, r]. The array is static (no updates).

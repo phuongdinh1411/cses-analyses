@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize tree operations for large inputs
 - Handle edge cases in tree problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Tree algorithms, DFS, BFS, tree DP, centroid decomposition
-- **Data Structures**: Trees, graphs, segment trees, binary indexed trees
-- **Mathematical Concepts**: Tree theory, graph theory, dynamic programming
-- **Programming Skills**: Tree traversal, algorithm implementation
-- **Related Problems**: Other tree algorithm problems in this section
-
 ## 📋 Problem Description
 
 Given a tree with n nodes, each node has a color. For each node, find the number of distinct colors in its subtree.

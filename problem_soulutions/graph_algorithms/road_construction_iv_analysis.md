@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph connectivity for complex scenarios
 - Handle special cases in advanced MST problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, minimum spanning tree, advanced MST
-- **Data Structures**: Graphs, disjoint sets, priority queues, complex data structures
-- **Mathematical Concepts**: Graph theory, spanning trees, advanced connectivity
-- **Programming Skills**: Graph operations, advanced union-find, complex MST algorithms
-- **Related Problems**: Road Construction (graph_algorithms), Road Construction II (graph_algorithms), Road Construction III (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a weighted graph with complex multi-dimensional constraints, find the minimum cost to connect all vertices while satisfying advanced requirements.

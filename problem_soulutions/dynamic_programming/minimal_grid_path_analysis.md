@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize grid operations for path analysis
 - Handle special cases in grid path problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, grid algorithms, path finding
-- **Data Structures**: 2D arrays, mathematical computations, grid representation
-- **Mathematical Concepts**: Grid theory, path optimization, modular arithmetic
-- **Programming Skills**: Grid manipulation, mathematical computations, modular arithmetic
-- **Related Problems**: Grid Paths (dynamic programming), Array Description (dynamic programming), Book Shop (dynamic programming)
-
 ## 📋 Problem Description
 
 Given a grid with costs, find the minimal cost path from top-left to bottom-right.

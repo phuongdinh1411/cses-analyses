@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in prefix sum problems
 - Recognize when to use prefix sums vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Prefix sums, range queries, static data structures
-- **Data Structures**: Arrays, prefix sum arrays
-- **Mathematical Concepts**: Range sum optimization, cumulative sums
-- **Programming Skills**: Array manipulation, prefix sum implementation
-- **Related Problems**: Dynamic range sum queries, range update queries, subarray sum queries
-
 ## 📋 Problem Description
 
 Given an array of integers and multiple queries, each query asks for the sum of elements in a range [l, r]. The array is static (no updates).

@@ -17,14 +17,6 @@ By the end of this problem, you should be able to:
 - Optimize collection counting using mathematical formulas and DP techniques
 - Handle edge cases in collection counting (duplicate numbers, impossible sequences)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, combinatorics, sequence counting, constraint handling
-- **Data Structures**: Arrays, DP tables, sequence data structures
-- **Mathematical Concepts**: Sequences, combinatorics, ordering constraints, modular arithmetic
-- **Programming Skills**: Dynamic programming implementation, sequence manipulation, modular arithmetic
-- **Related Problems**: Collecting Numbers (basic collection), Counting Sequences (sequence counting), Coin Combinations (DP counting)
-
 ## 📋 Problem Description
 
 Given n numbers, count the number of different ways to collect them in order, where each collection step must pick the smallest available number.

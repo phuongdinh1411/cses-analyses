@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for grid-based path problems
 - Handle special cases in maze navigation problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, shortest path, BFS, grid traversal
-- **Data Structures**: Grids, queues, arrays, visited arrays
-- **Mathematical Concepts**: Graph theory, shortest paths, grid graphs, BFS
-- **Programming Skills**: Grid operations, BFS, path reconstruction, maze navigation
-- **Related Problems**: Message Route (graph_algorithms), Counting Rooms (graph_algorithms), Round Trip (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a maze represented as a grid, find the shortest path from start to end, avoiding walls.

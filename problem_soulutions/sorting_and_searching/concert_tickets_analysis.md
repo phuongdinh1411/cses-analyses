@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in greedy algorithms
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting, binary search, greedy algorithms, data structures
-- **Data Structures**: Arrays, sets, multisets, binary search trees
-- **Mathematical Concepts**: Optimization, greedy choice property
-- **Programming Skills**: Algorithm implementation, complexity analysis, binary search
-- **Related Problems**: Ferris Wheel (greedy), Apartments (two-pointer), Sum of Two Values (searching)
-
 ## 📋 Problem Description
 
 There are n concert tickets available, each with a certain price. There are m customers who want to buy tickets. Each customer will buy the most expensive ticket they can afford.

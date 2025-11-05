@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in subarray distinct values query problems
 - Recognize when to use range queries vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Range queries, subarray distinct values problems, hash maps
-- **Data Structures**: Arrays, hash maps, range query structures
-- **Mathematical Concepts**: Subarray distinct values optimization, range query optimization
-- **Programming Skills**: Array manipulation, range query implementation
-- **Related Problems**: Subarray sum queries, subarray distinct values, range query problems
-
 ## 📋 Problem Description
 
 Given an array of integers and multiple queries, each query asks for the number of distinct values in a subarray [l, r]. The array is static (no updates).

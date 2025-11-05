@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in segment tree problems
 - Recognize when to use segment tree vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Segment tree, range queries, dynamic data structures
-- **Data Structures**: Arrays, segment trees, binary trees
-- **Mathematical Concepts**: Range sum optimization, tree data structures
-- **Programming Skills**: Array manipulation, segment tree implementation
-- **Related Problems**: Static range sum queries, range update queries, segment tree problems
-
 ## 📋 Problem Description
 
 Given an array of integers and multiple queries, each query can be either:

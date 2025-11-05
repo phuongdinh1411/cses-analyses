@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in interval operation problems
 - Recognize when to use interval operations vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Interval operations, range queries, interval trees
-- **Data Structures**: Arrays, interval trees, segment trees
-- **Mathematical Concepts**: Interval optimization, tree data structures
-- **Programming Skills**: Array manipulation, interval operation implementation
-- **Related Problems**: Range update queries, range interval queries, interval tree problems
-
 ## 📋 Problem Description
 
 Given an array of integers and multiple queries, each query can be either:

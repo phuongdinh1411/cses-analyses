@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph operations for distribution analysis
 - Handle special cases in functional graph counting
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph theory, counting techniques, combinatorial analysis
-- **Data Structures**: Graphs, adjacency lists, mathematical computations
-- **Mathematical Concepts**: Combinatorics, counting principles, graph properties
-- **Programming Skills**: Graph representation, mathematical computations, modular arithmetic
-- **Related Problems**: Counting Permutations (combinatorics), Counting Combinations (combinatorics), Counting Sequences (combinatorics)
-
 ## 📋 Problem Description
 
 Given n nodes, count the number of functional graphs (where each node has exactly one outgoing edge).

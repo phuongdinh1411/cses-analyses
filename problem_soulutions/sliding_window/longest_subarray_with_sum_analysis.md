@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in subarray sum problems
 - Recognize when to use two pointers vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Two pointers, sliding window, prefix sums, hash maps
-- **Data Structures**: Arrays, hash maps, prefix sums
-- **Mathematical Concepts**: Subarray sum optimization, window management
-- **Programming Skills**: Array manipulation, two pointers implementation
-- **Related Problems**: Maximum subarray sum, subarray with given sum, shortest subarray with sum
-
 ## 📋 Problem Description
 
 Given an array of integers and a target sum, find the length of the longest contiguous subarray that sums to the target value. If no such subarray exists, return 0.

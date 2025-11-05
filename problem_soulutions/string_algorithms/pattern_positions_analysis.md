@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize string matching algorithms for large inputs
 - Handle edge cases in pattern matching (empty patterns, repeated patterns)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: String algorithms, pattern matching, KMP algorithm, rolling hash, Z-algorithm
-- **Data Structures**: Strings, arrays, hash functions, failure functions
-- **Mathematical Concepts**: String theory, hashing, pattern matching, failure function construction
-- **Programming Skills**: String manipulation, algorithm implementation, hash functions
-- **Related Problems**: String Matching (pattern matching), Finding Borders (string preprocessing), Longest Palindrome (string algorithms)
-
 ## 📋 Problem Description
 
 Given a text string and a pattern string, find all positions where the pattern occurs in the text. This is the fundamental pattern matching problem that forms the basis for many other string algorithms.

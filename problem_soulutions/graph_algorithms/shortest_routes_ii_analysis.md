@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for multiple source-destination queries
 - Handle special cases in all-pairs shortest path problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, all-pairs shortest path, Floyd-Warshall
-- **Data Structures**: Graphs, distance matrices, adjacency matrices
-- **Mathematical Concepts**: Graph theory, shortest paths, dynamic programming
-- **Programming Skills**: Graph operations, matrix operations, shortest path algorithms
-- **Related Problems**: Shortest Routes I (graph_algorithms), Flight Discount (graph_algorithms), High Score (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a weighted directed graph, find the shortest distance between all pairs of vertices.

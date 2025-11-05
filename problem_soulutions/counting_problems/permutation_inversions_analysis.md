@@ -17,14 +17,6 @@ By the end of this problem, you should be able to:
 - Optimize inversion counting algorithms for large permutations
 - Handle edge cases in inversion counting (sorted arrays, reverse sorted arrays)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Merge sort, binary indexed tree, segment tree, divide and conquer
-- **Data Structures**: Arrays, binary indexed trees, segment trees, merge sort arrays
-- **Mathematical Concepts**: Permutations, inversions, divide and conquer, counting principles
-- **Programming Skills**: Merge sort implementation, binary indexed tree operations, divide and conquer
-- **Related Problems**: Counting Permutations (permutation properties), Sorting algorithms (merge sort), Range Queries (binary indexed tree)
-
 ## 📋 Problem Description
 
 Given a permutation of numbers from 1 to n, count the number of inversions. An inversion is a pair of indices (i,j) where i < j and a[i] > a[j].

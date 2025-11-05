@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in subsequence counting problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, subsequence counting, optimization, memoization
-- **Data Structures**: Arrays, DP tables, hash maps
-- **Mathematical Concepts**: Combinatorics, counting theory, dynamic programming theory
-- **Programming Skills**: Algorithm implementation, complexity analysis, DP optimization
-- **Related Problems**: Distinct Values Subarrays (subarray counting), Subarray Sums II (counting), Coin Combinations (DP counting)
-
 ## 📋 Problem Description
 
 You are given an array of n integers. Count the number of subsequences that contain exactly k distinct values.

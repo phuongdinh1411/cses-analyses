@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize geometric operations for hull analysis
 - Handle special cases in convex hull problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Computational geometry, convex hull algorithms, sorting algorithms
-- **Data Structures**: Points, stacks, geometric primitives
-- **Mathematical Concepts**: Cross products, orientation tests, coordinate systems
-- **Programming Skills**: Geometric computations, sorting, stack operations
-- **Related Problems**: Point in Polygon (geometry), Line Segment Intersection (geometry), Area of Rectangles (geometry)
-
 ## 📋 Problem Description
 
 Given n points, find the convex hull (smallest convex polygon containing all points).

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for game analysis
 - Handle special cases in game theory problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, game theory, optimization techniques
-- **Data Structures**: Arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Game theory, optimization, minimax algorithms
-- **Programming Skills**: DP implementation, mathematical computations, game logic
-- **Related Problems**: Rectangle Cutting (dynamic programming), Longest Common Subsequence (dynamic programming), Increasing Subsequence (dynamic programming)
-
 ## 📋 Problem Description
 
 Given an array of numbers, two players take turns removing elements from either end. Find the maximum score the first player can achieve.

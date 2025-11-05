@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in pizzeria query problems
 - Recognize when to use distance queries vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Distance queries, pizzeria problems, range queries
-- **Data Structures**: Arrays, distance query structures
-- **Mathematical Concepts**: Distance query optimization, pizzeria optimization
-- **Programming Skills**: Array manipulation, distance query implementation
-- **Related Problems**: Range queries, distance problems, pizzeria problems
-
 ## 📋 Problem Description
 
 Given an array of pizzeria locations and multiple queries, each query asks for the distance from position i to the nearest pizzeria. The array is static (no updates).

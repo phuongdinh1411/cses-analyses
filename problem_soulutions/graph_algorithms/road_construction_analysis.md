@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph connectivity for minimum cost
 - Handle special cases in MST problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, minimum spanning tree, union-find
-- **Data Structures**: Graphs, disjoint sets, priority queues
-- **Mathematical Concepts**: Graph theory, spanning trees, connectivity
-- **Programming Skills**: Graph operations, union-find, MST algorithms
-- **Related Problems**: Road Construction II (graph_algorithms), Road Construction III (graph_algorithms), Road Reparation (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a weighted graph, find the minimum cost to connect all vertices.

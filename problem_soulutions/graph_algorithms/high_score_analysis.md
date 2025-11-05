@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for negative weight problems
 - Handle special cases in shortest path problems with negative weights
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, shortest path, Bellman-Ford algorithm, negative cycles
-- **Data Structures**: Graphs, arrays, distance arrays, edge lists
-- **Mathematical Concepts**: Graph theory, shortest paths, negative cycles, relaxation
-- **Programming Skills**: Graph operations, relaxation, cycle detection, shortest path algorithms
-- **Related Problems**: Shortest Routes I (graph_algorithms), Flight Discount (graph_algorithms), Message Route (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a weighted directed graph, find the shortest path from source to destination. If there exists a negative cycle that can reach the destination, return -1.

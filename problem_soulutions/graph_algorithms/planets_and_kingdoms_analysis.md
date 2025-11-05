@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph traversal for component identification
 - Handle special cases in SCC problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, strongly connected components, Kosaraju's algorithm
-- **Data Structures**: Graphs, stacks, visited arrays
-- **Mathematical Concepts**: Graph theory, connectivity, component analysis
-- **Programming Skills**: Graph operations, DFS, stack operations
-- **Related Problems**: Strongly Connected Components (graph_algorithms), Planets Cycles (graph_algorithms), Round Trip (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a directed graph, find all strongly connected components (kingdoms).

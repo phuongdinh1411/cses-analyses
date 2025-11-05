@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in list removal problems
 - Recognize when to use dynamic array operations vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic array operations, list removal problems, range queries
-- **Data Structures**: Arrays, dynamic arrays, range query structures
-- **Mathematical Concepts**: List removal optimization, dynamic array optimization
-- **Programming Skills**: Array manipulation, dynamic array implementation
-- **Related Problems**: Range queries, dynamic array problems, list manipulation problems
-
 ## 📋 Problem Description
 
 Given an array of integers and multiple queries, each query asks to remove an element at position i and return the removed element. The array is dynamic (elements are removed).

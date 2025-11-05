@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in palindrome query problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: String algorithms, palindrome detection, rolling hash, Manacher's algorithm
-- **Data Structures**: Strings, hash maps, rolling hash tables, prefix arrays
-- **Mathematical Concepts**: String theory, palindrome theory, hashing, symmetry
-- **Programming Skills**: String manipulation, algorithm implementation, query optimization
-- **Related Problems**: Longest Palindrome (palindrome detection), String Hashing (rolling hash), String Matching
-
 ## 📋 Problem Description
 
 You are given a string s and q queries. Each query consists of two integers l and r. For each query, determine if the substring s[l:r+1] is a palindrome.

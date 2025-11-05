@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize interval selection algorithms for large inputs
 - Handle edge cases in scheduling problems (overlapping intervals, single intervals)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Greedy algorithms, sorting, interval scheduling, optimization
-- **Data Structures**: Arrays, sorted arrays, interval data structures
-- **Mathematical Concepts**: Optimization, greedy choice property, interval theory
-- **Programming Skills**: Sorting implementation, greedy algorithms, interval manipulation
-- **Related Problems**: Restaurant Customers (interval problems), Tasks and Deadlines (scheduling), Room Allocation (resource allocation)
-
 ## 📋 Problem Description
 
 Given n movies with start and end times, find the maximum number of movies you can watch without overlapping. You can only watch one movie at a time.

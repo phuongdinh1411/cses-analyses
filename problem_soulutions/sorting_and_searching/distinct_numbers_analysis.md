@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize space and time complexity for distinct element counting
 - Handle edge cases in distinct element problems (empty arrays, single elements)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting algorithms, hash sets, counting techniques
-- **Data Structures**: Arrays, hash sets, sorted arrays
-- **Mathematical Concepts**: Set theory, counting principles, uniqueness
-- **Programming Skills**: Array manipulation, hash set operations, sorting
-- **Related Problems**: Apartments (two-pointer), Sum of Two Values (hash map), Collecting Numbers (sorting)
-
 ## 📋 Problem Description
 
 Given an array of n integers, count the number of distinct (unique) elements in the array.

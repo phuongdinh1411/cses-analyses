@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for subsequence analysis
 - Handle special cases in subsequence problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, subsequence algorithms, optimization techniques
-- **Data Structures**: Arrays, binary search, DP tables
-- **Mathematical Concepts**: Subsequence theory, optimization, binary search
-- **Programming Skills**: DP implementation, binary search, mathematical computations
-- **Related Problems**: Edit Distance (dynamic programming), Counting Towers (dynamic programming), Array Description (dynamic programming)
-
 ## 📋 Problem Description
 
 Given an array of integers, find the length of the longest increasing subsequence.

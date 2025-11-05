@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize algorithms for array modification problems
 - Handle special cases in array manipulation problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Array manipulation, greedy algorithms, array transformation, optimization
-- **Data Structures**: Arrays, integers, mathematical operations
-- **Mathematical Concepts**: Array mathematics, optimization, greedy choice property, array theory
-- **Programming Skills**: Array manipulation, greedy algorithms, mathematical operations, optimization
-- **Related Problems**: Coin Piles (introductory_problems), Apple Division (introductory_problems), Weird Algorithm (introductory_problems)
-
 ## 📋 Problem Description
 
 Given an array of integers, find the minimum number of operations needed to make it non-decreasing. In each operation, you can increase any element by 1.

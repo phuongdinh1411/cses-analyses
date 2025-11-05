@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in parallel processing problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting, greedy algorithms, optimization, parallel processing
-- **Data Structures**: Arrays, sorting algorithms
-- **Mathematical Concepts**: Load balancing, optimization theory, parallel processing
-- **Programming Skills**: Algorithm implementation, complexity analysis, sorting
-- **Related Problems**: Factory Machines (parallel processing), Tasks and Deadlines (optimization), Array Division (binary search)
-
 ## 📋 Problem Description
 
 You have n books to read. Each book i takes t[i] minutes to read. You have two people who can read books in parallel.

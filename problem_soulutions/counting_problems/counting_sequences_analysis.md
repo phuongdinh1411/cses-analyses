@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize sequence calculations for large numbers
 - Handle special cases in sequence counting
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Combinatorics, counting techniques, mathematical formulas
-- **Data Structures**: Arrays, mathematical computations, factorial calculations
-- **Mathematical Concepts**: Sequences, combinations, permutations, modular arithmetic
-- **Programming Skills**: Mathematical computations, modular arithmetic, large number handling
-- **Related Problems**: Counting Permutations (combinatorics), Counting Combinations (combinatorics), Counting Reorders (combinatorics)
-
 ## 📋 Problem Description
 
 Given n and k, count the number of sequences of length k using elements from 1 to n.

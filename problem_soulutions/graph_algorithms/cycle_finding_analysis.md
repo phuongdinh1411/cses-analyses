@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for cycle detection problems
 - Handle special cases in cycle detection problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, cycle detection, DFS, color coding
-- **Data Structures**: Graphs, visited arrays, color arrays, adjacency lists
-- **Mathematical Concepts**: Graph theory, cycles, directed/undirected graphs
-- **Programming Skills**: Graph operations, DFS, cycle detection, color coding
-- **Related Problems**: Round Trip (graph_algorithms), Planets Cycles (graph_algorithms), Message Route (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a directed graph, find if it contains a cycle and return the cycle if it exists.

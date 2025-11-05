@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize query processing for range operations
 - Handle special cases in prefix sum problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, prefix sums, range queries
-- **Data Structures**: Arrays, prefix sum arrays, query structures
-- **Mathematical Concepts**: Prefix sums, range operations, query optimization
-- **Programming Skills**: Array operations, prefix sums, query processing
-- **Related Problems**: Static Range Sum Queries (range_queries), Dynamic Range Sum Queries (range_queries), Range Update Queries (range_queries)
-
 ## 📋 Problem Description
 
 Given an array and q queries, answer range sum queries efficiently.

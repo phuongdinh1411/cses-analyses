@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph matching for assignment problems
 - Handle special cases in bipartite matching problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, bipartite matching, maximum flow
-- **Data Structures**: Graphs, bipartite graphs, flow networks
-- **Mathematical Concepts**: Graph theory, matching theory, flow theory
-- **Programming Skills**: Graph operations, bipartite matching, flow algorithms
-- **Related Problems**: Download Speed (graph_algorithms), Police Chase (graph_algorithms), Message Route (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a bipartite graph with boys and girls, find the maximum number of dance pairs that can be formed.

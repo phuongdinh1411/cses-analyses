@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize search algorithms using different data structures
 - Handle edge cases in pair finding (no solution, duplicate elements)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Hash maps, two-pointer technique, binary search, sorting
-- **Data Structures**: Arrays, hash maps, sorted arrays
-- **Mathematical Concepts**: Pair finding, complement searching, optimization
-- **Programming Skills**: Hash map operations, two-pointer implementation, binary search
-- **Related Problems**: Apartments (two pointers), Distinct Numbers (hash sets), Maximum Subarray Sum (optimization)
-
 ## 📋 Problem Description
 
 Given an array of n integers and a target sum x, find two distinct elements that sum to x. Return the 1-indexed positions of the two elements, or "IMPOSSIBLE" if no such pair exists.

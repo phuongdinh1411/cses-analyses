@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for team assignment problems
 - Handle special cases in bipartite graph problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, bipartite graphs, graph coloring, BFS
-- **Data Structures**: Graphs, queues, color arrays, adjacency lists
-- **Mathematical Concepts**: Graph theory, bipartite graphs, graph coloring
-- **Programming Skills**: Graph operations, BFS, color assignment, bipartite detection
-- **Related Problems**: School Dance (graph_algorithms), Building Roads (graph_algorithms), Message Route (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given n students and m pairs of students who cannot be on the same team, determine if it's possible to divide students into two teams such that no conflicting students are on the same team.

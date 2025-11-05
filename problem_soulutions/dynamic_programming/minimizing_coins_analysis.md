@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for minimization analysis
 - Handle special cases in coin minimization problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, optimization techniques, mathematical formulas
-- **Data Structures**: Arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Optimization, minimization, modular arithmetic
-- **Programming Skills**: DP implementation, mathematical computations, modular arithmetic
-- **Related Problems**: Coin Combinations (dynamic programming), Money Sums (dynamic programming), Array Description (dynamic programming)
-
 ## 📋 Problem Description
 
 Given n coins with values, find the minimum number of coins needed to achieve a target sum.

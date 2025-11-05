@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in sliding window problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sliding window technique, two-pointer technique, hash maps, set operations
-- **Data Structures**: Arrays, hash maps, sets, two pointers
-- **Mathematical Concepts**: Subarray properties, unique element counting
-- **Programming Skills**: Algorithm implementation, complexity analysis, sliding window
-- **Related Problems**: Subarray Distinct Values (sliding window), Longest Substring Without Repeating (sliding window), Maximum Subarray Sum (sliding window)
-
 ## 📋 Problem Description
 
 You have a playlist with n songs. Each song has a genre. You want to find the longest continuous sequence of songs where no song genre is repeated.

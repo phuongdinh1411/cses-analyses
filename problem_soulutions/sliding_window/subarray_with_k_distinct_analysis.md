@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in K distinct values problems
 - Recognize when to use two pointers vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Two pointers, sliding window, hash maps, distinct values
-- **Data Structures**: Arrays, hash maps, sets
-- **Mathematical Concepts**: Subarray distinct values optimization, window management
-- **Programming Skills**: Array manipulation, two pointers implementation
-- **Related Problems**: Subarray distinct values, longest substring without repeating, sliding window problems
-
 ## 📋 Problem Description
 
 Given an array of integers and a value k, find the length of the longest contiguous subarray that contains exactly k distinct values.

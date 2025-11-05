@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in hotel query problems
 - Recognize when to use 2D range queries vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: 2D range queries, hotel problems, 2D data structures
-- **Data Structures**: 2D arrays, 2D range query structures
-- **Mathematical Concepts**: 2D range query optimization, hotel optimization
-- **Programming Skills**: 2D array manipulation, 2D range query implementation
-- **Related Problems**: Forest queries, 2D range query problems, hotel problems
-
 ## 📋 Problem Description
 
 Given a 2D grid representing hotel rooms and multiple queries, each query asks for the number of available rooms in a 2D range [x1, y1] to [x2, y2]. The grid is static (no updates).

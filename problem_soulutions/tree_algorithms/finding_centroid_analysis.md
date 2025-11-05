@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize tree operations for large inputs
 - Handle edge cases in tree problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Tree algorithms, DFS, BFS, tree DP, centroid decomposition
-- **Data Structures**: Trees, graphs, segment trees, binary indexed trees
-- **Mathematical Concepts**: Tree theory, graph theory, dynamic programming
-- **Programming Skills**: Tree traversal, algorithm implementation
-- **Related Problems**: Other tree algorithm problems in this section
-
 ## 📋 Problem Description
 
 Given a tree with n nodes, find the centroid of the tree. A centroid is a node such that when removed, the tree breaks into components of size at most n/2.

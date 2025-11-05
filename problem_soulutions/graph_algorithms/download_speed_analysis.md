@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for network flow problems
 - Handle special cases in maximum flow problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, maximum flow, Ford-Fulkerson, Edmonds-Karp
-- **Data Structures**: Graphs, flow networks, residual graphs, queues
-- **Mathematical Concepts**: Graph theory, network flow, flow conservation, capacity constraints
-- **Programming Skills**: Graph operations, BFS, flow algorithms, residual graph updates
-- **Related Problems**: Police Chase (graph_algorithms), School Dance (graph_algorithms), Message Route (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a flow network with source and sink, find the maximum flow from source to sink.

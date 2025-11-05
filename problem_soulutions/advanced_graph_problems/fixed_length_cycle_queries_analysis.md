@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize matrix operations for multiple cycle queries
 - Handle large cycle lengths using binary exponentiation
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Matrix exponentiation, binary exponentiation, cycle counting, graph theory
-- **Data Structures**: Adjacency matrices, matrices, arrays
-- **Mathematical Concepts**: Matrix operations, modular arithmetic, graph theory, cycle properties
-- **Programming Skills**: Matrix multiplication, modular arithmetic, binary exponentiation
-- **Related Problems**: Fixed Length Circuit Queries (similar matrix approach), Round Trip (cycle detection), Graph Girth (cycle properties)
-
 ## 📋 Problem Description
 
 Given a directed graph with n nodes and q queries, for each query find the number of cycles of length k starting and ending at node a.

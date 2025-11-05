@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in greedy algorithms
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting, greedy algorithms, optimization, mathematical reasoning
-- **Data Structures**: Arrays, sorting algorithms
-- **Mathematical Concepts**: Greedy choice property, optimization theory, coin problems
-- **Programming Skills**: Algorithm implementation, complexity analysis, sorting
-- **Related Problems**: Stick Lengths (optimization), Array Division (optimization), Collecting Numbers (greedy)
-
 ## 📋 Problem Description
 
 You have n coins with values 1, 2, 3, ..., n. You want to select a subset of these coins such that you can make any sum from 1 to some maximum value using the selected coins.

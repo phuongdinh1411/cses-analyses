@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Calculate the minimum number of edges needed to achieve even outdegrees
 - Handle special cases in degree analysis (isolated vertices, disconnected components)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph degree analysis, basic graph theory, parity analysis
-- **Data Structures**: Adjacency lists, degree arrays, sets
-- **Mathematical Concepts**: Graph theory, degree properties, parity analysis, modular arithmetic
-- **Programming Skills**: Graph representation, degree calculation, array manipulation
-- **Related Problems**: Strongly Connected Edges (graph connectivity), Building Roads (basic graph operations)
-
 ## 📋 Problem Description
 
 Given a directed graph, find the minimum number of edges to add so that every vertex has even outdegree.

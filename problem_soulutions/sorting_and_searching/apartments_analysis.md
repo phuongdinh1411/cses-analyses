@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize matching algorithms using sorting and two pointers
 - Handle edge cases in matching problems (no valid matches, all matches valid)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Two-pointer technique, greedy algorithms, sorting, matching
-- **Data Structures**: Arrays, sorted arrays, two pointers
-- **Mathematical Concepts**: Optimization, matching theory, greedy choice property
-- **Programming Skills**: Two-pointer implementation, sorting, greedy algorithms
-- **Related Problems**: Distinct Numbers (sorting), Sum of Two Values (two pointers), Collecting Numbers (greedy)
-
 ## 📋 Problem Description
 
 Given n applicants and m apartments, each with a desired size, find the maximum number of applicants that can be assigned to apartments. An applicant can be assigned to an apartment if the apartment size is within their acceptable range [desired_size - k, desired_size + k].

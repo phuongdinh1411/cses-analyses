@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in stack-based problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Stack algorithms, monotonic stack, range queries, optimization
-- **Data Structures**: Stack, arrays, monotonic data structures
-- **Mathematical Concepts**: Monotonic properties, range queries, optimization theory
-- **Programming Skills**: Algorithm implementation, complexity analysis, stack operations
-- **Related Problems**: Traffic Lights (coordinate compression), Subarray Minimums (monotonic stack), Range Queries (data structures)
-
 ## 📋 Problem Description
 
 You are given an array of n integers. For each element, find the nearest smaller element to its left (the first element to the left that is smaller than the current element).

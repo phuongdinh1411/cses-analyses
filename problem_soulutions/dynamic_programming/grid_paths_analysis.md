@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for path analysis
 - Handle special cases in grid path problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, counting techniques, mathematical formulas
-- **Data Structures**: 2D arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Grid theory, combinations, modular arithmetic
-- **Programming Skills**: DP implementation, mathematical computations, modular arithmetic
-- **Related Problems**: Minimal Grid Path (dynamic programming), Array Description (dynamic programming), Book Shop (dynamic programming)
-
 ## 📋 Problem Description
 
 Given an n×n grid, count the number of paths from top-left to bottom-right (only moving right and down).

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize string matching algorithms for large inputs
 - Handle edge cases in pattern matching (empty patterns, repeated patterns)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: String algorithms, pattern matching, KMP algorithm, rolling hash
-- **Data Structures**: Strings, arrays, hash functions
-- **Mathematical Concepts**: String theory, hashing, pattern matching
-- **Programming Skills**: String manipulation, algorithm implementation, hash functions
-- **Related Problems**: Pattern Positions (pattern matching), Finding Borders (string preprocessing)
-
 ## 📋 Problem Description
 
 Given a text string and a pattern string, find all positions where the pattern occurs in the text.

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in binary search problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Binary search, optimization, array partitioning, monotonic functions
-- **Data Structures**: Arrays, binary search implementation
-- **Mathematical Concepts**: Optimization theory, monotonic functions, array partitioning
-- **Programming Skills**: Algorithm implementation, complexity analysis, binary search
-- **Related Problems**: Factory Machines (binary search on answer), Reading Books (optimization), Tasks and Deadlines (optimization)
-
 ## 📋 Problem Description
 
 You are given an array of n integers. You need to divide the array into k subarrays such that the maximum sum of any subarray is minimized.

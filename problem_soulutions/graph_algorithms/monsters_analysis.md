@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for grid-based escape problems
 - Handle special cases in multi-source shortest path problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, BFS, multi-source BFS, shortest path
-- **Data Structures**: Grids, queues, arrays, visited arrays, distance arrays
-- **Mathematical Concepts**: Graph theory, shortest paths, multi-source BFS, grid graphs
-- **Programming Skills**: Grid operations, BFS, multi-source algorithms, path finding
-- **Related Problems**: Labyrinth (graph_algorithms), Message Route (graph_algorithms), Counting Rooms (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a grid with monsters and a player, find if the player can escape to the boundary without being caught by any monster.

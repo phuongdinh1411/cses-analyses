@@ -17,14 +17,6 @@ By the end of this problem, you should be able to:
 - Optimize grid path counting using space-efficient DP techniques
 - Handle edge cases in grid path counting (blocked start/end, no valid paths)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, grid algorithms, path counting, obstacle handling
-- **Data Structures**: 2D arrays, DP tables, grid representations
-- **Mathematical Concepts**: Grid theory, path counting, combinatorics, modular arithmetic
-- **Programming Skills**: 2D DP implementation, grid manipulation, modular arithmetic
-- **Related Problems**: Grid Paths (basic grid paths), Labyrinth (grid traversal), Message Route (path finding)
-
 ## 📋 Problem Description
 
 Given an n×n grid with some blocked cells, count the number of paths from the top-left corner to the bottom-right corner, moving only right or down.

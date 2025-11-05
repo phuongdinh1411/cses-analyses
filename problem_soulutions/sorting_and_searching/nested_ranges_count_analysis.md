@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in nested range problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting, coordinate compression, range queries, interval scheduling
-- **Data Structures**: Arrays, sorted arrays, coordinate compression
-- **Mathematical Concepts**: Interval relationships, counting theory, optimization
-- **Programming Skills**: Algorithm implementation, complexity analysis, sorting optimization
-- **Related Problems**: Nested Ranges Check (range relationships), Range Queries (interval problems)
-
 ## 📋 Problem Description
 
 You are given n ranges. For each range, count how many other ranges it contains.

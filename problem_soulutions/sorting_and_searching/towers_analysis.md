@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize LIS algorithms for large inputs
 - Handle edge cases in sequence problems (empty sequences, single elements)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, greedy algorithms, binary search, longest increasing subsequence
-- **Data Structures**: Arrays, binary search trees, segment trees
-- **Mathematical Concepts**: Sequence theory, optimization, binary search
-- **Programming Skills**: DP implementation, binary search, greedy algorithms
-- **Related Problems**: Collecting Numbers (sequence problems), Increasing Subsequence (DP), Array Division (optimization)
-
 ## 📋 Problem Description
 
 Given n cubes with different sizes, you want to build towers by stacking cubes. Each cube can only be placed on top of a cube that is strictly larger than it. Find the minimum number of towers needed.

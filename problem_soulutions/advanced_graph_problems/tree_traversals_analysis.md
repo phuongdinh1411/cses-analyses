@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize tree operations for various traversal patterns
 - Handle special cases in tree traversal analysis
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph theory, tree algorithms, DFS, BFS, tree traversal
-- **Data Structures**: Trees, adjacency lists, stacks, queues, visited arrays
-- **Mathematical Concepts**: Graph theory, tree properties, traversal order
-- **Programming Skills**: Tree representation, recursive algorithms, iterative algorithms
-- **Related Problems**: Tree Diameter (tree properties), Tree Queries (tree algorithms), Company Queries (tree operations)
-
 ## 📋 Problem Description
 
 Given a tree with n nodes, perform different types of tree traversals and analyze their properties.

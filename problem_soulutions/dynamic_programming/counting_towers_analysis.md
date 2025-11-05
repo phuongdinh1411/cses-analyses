@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for tower analysis
 - Handle special cases in tower counting problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, counting techniques, mathematical formulas
-- **Data Structures**: Arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Tower theory, combinations, modular arithmetic
-- **Programming Skills**: DP implementation, mathematical computations, modular arithmetic
-- **Related Problems**: Array Description (dynamic programming), Book Shop (dynamic programming), Grid Paths (dynamic programming)
-
 ## 📋 Problem Description
 
 Given n blocks, count the number of ways to build towers such that each tower has at most k blocks and no two adjacent towers have the same height.

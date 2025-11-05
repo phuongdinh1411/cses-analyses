@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize tree operations using Prufer codes
 - Handle special cases in tree encoding and decoding
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph theory, tree algorithms, Prufer codes, tree traversal
-- **Data Structures**: Trees, adjacency lists, priority queues, arrays
-- **Mathematical Concepts**: Graph theory, tree properties, combinatorial encoding
-- **Programming Skills**: Tree representation, DFS, BFS, array operations
-- **Related Problems**: Tree Traversals (tree operations), Tree Diameter (tree properties), Tree Queries (tree algorithms)
-
 ## 📋 Problem Description
 
 Given a tree with n nodes, generate its Prufer code and reconstruct the tree from a Prufer code.

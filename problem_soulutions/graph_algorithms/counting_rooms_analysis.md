@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for maze and room counting problems
 - Handle special cases in grid-based connectivity problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, connected components, DFS, BFS
-- **Data Structures**: Grids, visited arrays, stacks, queues
-- **Mathematical Concepts**: Graph theory, connectivity, 2D grids
-- **Programming Skills**: Grid operations, DFS/BFS, component counting
-- **Related Problems**: Building Roads (graph_algorithms), Building Teams (graph_algorithms), Labyrinth (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a 2D grid with walls ('.') and empty spaces ('#'), count the number of connected rooms (empty spaces).

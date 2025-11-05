@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for route counting problems
 - Handle special cases in path counting problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, path counting, dynamic programming, topological sorting
-- **Data Structures**: Graphs, DAGs, memoization arrays, adjacency lists
-- **Mathematical Concepts**: Graph theory, combinatorics, dynamic programming
-- **Programming Skills**: Graph operations, DP, topological sorting, path counting
-- **Related Problems**: Message Route (graph_algorithms), Shortest Routes I (graph_algorithms), Teleporters Path (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a directed acyclic graph (DAG), count the number of distinct routes from source to destination.

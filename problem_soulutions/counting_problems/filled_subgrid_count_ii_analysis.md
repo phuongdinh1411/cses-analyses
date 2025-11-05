@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize grid traversal and counting operations
 - Handle special cases in filled subgrid counting
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Grid algorithms, counting techniques, combinatorial analysis
-- **Data Structures**: 2D arrays, prefix sums, mathematical computations
-- **Mathematical Concepts**: Combinatorics, counting principles, grid properties
-- **Programming Skills**: 2D array manipulation, nested loops, mathematical computations
-- **Related Problems**: Border Subgrid Count (grid counting), All Letter Subgrid Count (grid counting), Grid Completion (grid algorithms)
-
 ## 📋 Problem Description
 
 Given a grid of size n×m, count the number of subgrids where all cells are filled with a specific value.

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in string hashing problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: String hashing, rolling hash, hash collision handling, string comparison
-- **Data Structures**: Hash maps, strings, rolling hash arrays
-- **Mathematical Concepts**: Hash functions, modular arithmetic, polynomial hashing, collision probability
-- **Programming Skills**: String manipulation, hash function implementation, complexity analysis
-- **Related Problems**: String Matching (hashing), Pattern Positions (hashing), Finding Borders (hashing)
-
 ## 📋 Problem Description
 
 You are given a string s of length n. Count the number of distinct substrings in the string.

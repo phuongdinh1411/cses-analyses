@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in interval scheduling problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Greedy algorithms, interval scheduling, priority queues, sorting
-- **Data Structures**: Arrays, priority queues (heaps), sorted arrays
-- **Mathematical Concepts**: Optimization, interval relationships, scheduling theory
-- **Programming Skills**: Algorithm implementation, complexity analysis, priority queue usage
-- **Related Problems**: Movie Festival (single resource), Room Allocation (resource allocation), Interval Scheduling
-
 ## 📋 Problem Description
 
 You are given n movies with start and end times, and k screens. Each movie can be watched on any screen, but a screen can only show one movie at a time. Find the maximum number of movies you can watch.

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph flow for cut calculations
 - Handle special cases in minimum cut problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, max-flow min-cut, network flow
-- **Data Structures**: Graphs, flow networks, residual graphs
-- **Mathematical Concepts**: Graph theory, flow theory, cut theory
-- **Programming Skills**: Graph operations, flow algorithms, cut calculations
-- **Related Problems**: Download Speed (graph_algorithms), Road Construction (graph_algorithms), Road Reparation (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a directed graph, find the minimum number of edges to remove to disconnect source from sink.

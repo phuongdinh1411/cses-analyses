@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for cutting analysis
 - Handle special cases in rectangle cutting problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, optimization techniques, mathematical formulas
-- **Data Structures**: 2D arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Rectangle theory, optimization, modular arithmetic
-- **Programming Skills**: DP implementation, mathematical computations, modular arithmetic
-- **Related Problems**: Longest Common Subsequence (dynamic programming), Increasing Subsequence (dynamic programming), Edit Distance (dynamic programming)
-
 ## 📋 Problem Description
 
 Given a rectangle of size a×b, find the minimum number of cuts needed to divide it into squares.

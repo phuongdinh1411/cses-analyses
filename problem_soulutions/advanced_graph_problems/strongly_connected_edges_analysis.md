@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph analysis for edge importance
 - Handle special cases in graph connectivity analysis
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph theory, strongly connected components, Tarjan's algorithm, bridge detection
-- **Data Structures**: Adjacency lists, stacks, visited arrays, component arrays
-- **Mathematical Concepts**: Graph theory, connectivity, strongly connected components, bridges
-- **Programming Skills**: Graph representation, DFS, stack operations, component tracking
-- **Related Problems**: Strongly Connected Components (SCC detection), New Flight Routes (connectivity), Planets and Kingdoms (SCC analysis)
-
 ## 📋 Problem Description
 
 Given a directed graph with n nodes and m edges, find all edges that are critical for maintaining strong connectivity.

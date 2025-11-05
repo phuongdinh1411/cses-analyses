@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in interval problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting, line sweep algorithm, interval scheduling, coordinate compression
-- **Data Structures**: Arrays, sorting algorithms, coordinate arrays
-- **Mathematical Concepts**: Interval theory, maximum overlap, coordinate compression
-- **Programming Skills**: Algorithm implementation, complexity analysis, sorting
-- **Related Problems**: Movie Festival (interval scheduling), Nested Ranges Check (interval problems), Room Allocation (interval scheduling)
-
 ## 📋 Problem Description
 
 There are n customers in a restaurant. Each customer has an arrival time and a departure time. Find the maximum number of customers that are in the restaurant at the same time.

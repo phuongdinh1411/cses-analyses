@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize chess calculations for large boards
 - Handle special cases in chess piece counting
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Chess algorithms, counting techniques, mathematical formulas
-- **Data Structures**: 2D arrays, mathematical computations, chess board representation
-- **Mathematical Concepts**: Chess theory, combinations, permutations, modular arithmetic
-- **Programming Skills**: Mathematical computations, modular arithmetic, chess board analysis
-- **Related Problems**: Counting Permutations (combinatorics), Counting Combinations (combinatorics), Counting Sequences (combinatorics)
-
 ## 📋 Problem Description
 
 Given an n×n chessboard, count the number of ways to place k bishops such that no two bishops attack each other.

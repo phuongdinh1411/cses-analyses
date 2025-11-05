@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for sum analysis
 - Handle special cases in subset sum problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, subset sum, counting techniques
-- **Data Structures**: Arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Subset theory, combinations, modular arithmetic
-- **Programming Skills**: DP implementation, mathematical computations, modular arithmetic
-- **Related Problems**: Coin Combinations (dynamic programming), Array Description (dynamic programming), Book Shop (dynamic programming)
-
 ## 📋 Problem Description
 
 Given n coins with values, count the number of different sums that can be formed.

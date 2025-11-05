@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for sequence generation problems
 - Handle special cases in De Bruijn sequence problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, De Bruijn sequences, Eulerian paths, Hierholzer's algorithm
-- **Data Structures**: Graphs, stacks, adjacency lists, string manipulation
-- **Mathematical Concepts**: Graph theory, De Bruijn graphs, Eulerian paths, combinatorics
-- **Programming Skills**: Graph operations, string operations, Eulerian path algorithms
-- **Related Problems**: Teleporters Path (graph_algorithms), Mail Delivery (graph_algorithms), Message Route (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given an alphabet of size k and a word length n, construct a De Bruijn sequence that contains every possible word of length n exactly once.

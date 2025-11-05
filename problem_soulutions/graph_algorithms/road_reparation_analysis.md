@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph connectivity for repair scenarios
 - Handle special cases in MST repair problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, minimum spanning tree, union-find
-- **Data Structures**: Graphs, disjoint sets, edge structures
-- **Mathematical Concepts**: Graph theory, spanning trees, connectivity
-- **Programming Skills**: Graph operations, union-find, MST algorithms
-- **Related Problems**: Road Construction (graph_algorithms), Building Roads (graph_algorithms), Download Speed (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a weighted graph with some existing roads, find the minimum cost to repair/add roads to connect all cities.

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize string preprocessing for pattern matching
 - Handle edge cases in border problems (empty strings, single characters)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: String algorithms, KMP algorithm, failure function, border theory
-- **Data Structures**: Strings, arrays, failure function arrays
-- **Mathematical Concepts**: String theory, border properties, prefix-suffix relationships
-- **Programming Skills**: String manipulation, failure function construction, algorithm implementation
-- **Related Problems**: Pattern Positions (KMP algorithm), String Matching (pattern matching), Finding Periods (string preprocessing)
-
 ## 📋 Problem Description
 
 Given a string, find all borders of the string. A border of a string is a proper prefix that is also a proper suffix of the string.

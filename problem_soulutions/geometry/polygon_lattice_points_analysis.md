@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize geometric operations for lattice point analysis
 - Handle special cases in lattice point problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Computational geometry, lattice point algorithms, polygon algorithms
-- **Data Structures**: Points, polygons, geometric primitives
-- **Mathematical Concepts**: Lattice points, coordinate systems, geometric calculations
-- **Programming Skills**: Geometric computations, lattice point calculations, polygon operations
-- **Related Problems**: Polygon Area (geometry), Point in Polygon (geometry), Convex Hull (geometry)
-
 ## 📋 Problem Description
 
 Given a polygon, count the number of lattice points (points with integer coordinates) inside the polygon.

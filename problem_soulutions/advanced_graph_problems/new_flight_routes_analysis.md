@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph analysis for connectivity problems
 - Handle special cases in graph connectivity analysis
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph theory, strongly connected components, Tarjan's algorithm, Kosaraju's algorithm
-- **Data Structures**: Adjacency lists, stacks, visited arrays, component arrays
-- **Mathematical Concepts**: Graph theory, connectivity, strongly connected components
-- **Programming Skills**: Graph representation, DFS, stack operations, component tracking
-- **Related Problems**: Planets and Kingdoms (SCC detection), Strongly Connected Components (SCC analysis), Road Construction (connectivity)
-
 ## 📋 Problem Description
 
 Given a directed graph with n nodes and m edges, determine the minimum number of new edges to add to make the graph strongly connected.

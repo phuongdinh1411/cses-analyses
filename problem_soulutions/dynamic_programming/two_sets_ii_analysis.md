@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for partition analysis
 - Handle special cases in set partition problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, counting techniques, mathematical formulas
-- **Data Structures**: Arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Set theory, combinations, modular arithmetic
-- **Programming Skills**: DP implementation, mathematical computations, modular arithmetic
-- **Related Problems**: Removal Game (dynamic programming), Rectangle Cutting (dynamic programming), Longest Common Subsequence (dynamic programming)
-
 ## 📋 Problem Description
 
 Given a number n, count the number of ways to partition the set {1, 2, ..., n} into two subsets with equal sum.

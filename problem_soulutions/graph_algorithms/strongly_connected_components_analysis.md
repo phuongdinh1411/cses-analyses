@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for component analysis
 - Handle special cases in strongly connected component problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, strongly connected components, Kosaraju's algorithm
-- **Data Structures**: Graphs, stacks, visited arrays, component arrays
-- **Mathematical Concepts**: Graph theory, connectivity, directed graphs
-- **Programming Skills**: Graph operations, DFS, stack operations, component detection
-- **Related Problems**: Planets and Kingdoms (graph_algorithms), Round Trip (graph_algorithms), Message Route (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a directed graph, find all strongly connected components (SCCs).

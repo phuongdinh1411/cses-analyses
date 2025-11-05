@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph traversal for cycle identification
 - Handle special cases in cycle detection problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, cycle detection, DFS
-- **Data Structures**: Graphs, visited arrays, recursion stacks
-- **Mathematical Concepts**: Graph theory, cycles, connectivity
-- **Programming Skills**: Graph operations, DFS, cycle detection
-- **Related Problems**: Cycle Finding (graph_algorithms), Round Trip (graph_algorithms), Planets and Kingdoms (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a directed graph, find if there exists a cycle and return the cycle path.

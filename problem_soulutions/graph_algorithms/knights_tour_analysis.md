@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for grid-based path problems
 - Handle special cases in Knights Tour problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, Hamiltonian paths, backtracking, pruning
-- **Data Structures**: Grids, arrays, stacks, visited arrays
-- **Mathematical Concepts**: Graph theory, Hamiltonian paths, backtracking, chess moves
-- **Programming Skills**: Grid operations, backtracking, pruning, path finding
-- **Related Problems**: Hamiltonian Flights (graph_algorithms), Round Trip (graph_algorithms), Message Route (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given an n×n chessboard, find a sequence of moves for a knight such that it visits every square exactly once.

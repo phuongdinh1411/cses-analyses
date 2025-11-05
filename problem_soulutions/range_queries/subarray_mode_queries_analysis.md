@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in subarray mode query problems
 - Recognize when to use range queries vs other approaches
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Range queries, subarray mode problems, hash maps
-- **Data Structures**: Arrays, hash maps, range query structures
-- **Mathematical Concepts**: Subarray mode optimization, range query optimization
-- **Programming Skills**: Array manipulation, range query implementation
-- **Related Problems**: Subarray sum queries, subarray distinct values queries, range query problems
-
 ## 📋 Problem Description
 
 Given an array of integers and multiple queries, each query asks for the most frequent element (mode) in a subarray [l, r]. The array is static (no updates).

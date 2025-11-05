@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize algorithms for chess-based constraint problems
 - Handle special cases in backtracking problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Backtracking, constraint satisfaction, N-Queens problem, pruning
-- **Data Structures**: Arrays, sets, boolean arrays
-- **Mathematical Concepts**: Chess rules, constraint satisfaction, backtracking, permutations
-- **Programming Skills**: Backtracking, constraint checking, pruning, recursive algorithms
-- **Related Problems**: Permutations (introductory_problems), Two Knights (introductory_problems), Creating Strings (introductory_problems)
-
 ## 📋 Problem Description
 
 Place 8 queens on an 8×8 chessboard such that no two queens attack each other. Count the number of valid arrangements.

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for digit removal analysis
 - Handle special cases in digit removal problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, optimization techniques, mathematical formulas
-- **Data Structures**: Arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Digit manipulation, optimization, modular arithmetic
-- **Programming Skills**: DP implementation, mathematical computations, modular arithmetic
-- **Related Problems**: Minimizing Coins (dynamic programming), Money Sums (dynamic programming), Array Description (dynamic programming)
-
 ## 📋 Problem Description
 
 Given a number, find the minimum number of operations to reduce it to 0 by removing digits.

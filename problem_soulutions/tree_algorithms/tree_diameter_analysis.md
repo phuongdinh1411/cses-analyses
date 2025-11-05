@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize tree algorithms for large inputs
 - Handle edge cases in tree problems (single node, linear trees)
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Tree algorithms, DFS, BFS, tree traversal, dynamic programming
-- **Data Structures**: Trees, graphs, adjacency lists
-- **Mathematical Concepts**: Tree theory, graph theory, longest path problem
-- **Programming Skills**: Tree traversal implementation, DFS, algorithm optimization
-- **Related Problems**: Tree Distances I (tree distances), Subordinates (tree traversal), Tree Matching (tree algorithms)
-
 ## 📋 Problem Description
 
 Given a tree with n nodes, find the diameter of the tree. The diameter is the length of the longest path between any two nodes in the tree.

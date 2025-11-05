@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for dependency resolution
 - Handle special cases in topological sorting problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, topological sorting, Kahn's algorithm, DFS
-- **Data Structures**: Graphs, queues, stacks, in-degree arrays
-- **Mathematical Concepts**: Graph theory, directed acyclic graphs, partial orders
-- **Programming Skills**: Graph operations, BFS, DFS, queue operations
-- **Related Problems**: Course Schedule (graph_algorithms), Building Teams (graph_algorithms), Message Route (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given a directed acyclic graph (DAG), find a topological ordering of its vertices.

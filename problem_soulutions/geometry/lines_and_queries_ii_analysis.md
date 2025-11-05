@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize geometric operations for query analysis
 - Handle special cases in line query problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Computational geometry, line algorithms, query processing
-- **Data Structures**: Lines, points, geometric primitives, query structures
-- **Mathematical Concepts**: Line equations, intersection tests, coordinate systems
-- **Programming Skills**: Geometric computations, query processing, line operations
-- **Related Problems**: Lines and Queries I (geometry), Line Segment Intersection (geometry), Point in Polygon (geometry)
-
 ## 📋 Problem Description
 
 Given n lines and q queries, for each query point, find how many lines pass through it.

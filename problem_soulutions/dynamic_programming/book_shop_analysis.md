@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize DP operations for knapsack analysis
 - Handle special cases in knapsack problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, knapsack problems, optimization techniques
-- **Data Structures**: Arrays, mathematical computations, DP tables
-- **Mathematical Concepts**: Optimization, knapsack theory, modular arithmetic
-- **Programming Skills**: DP implementation, mathematical computations, modular arithmetic
-- **Related Problems**: Money Sums (dynamic programming), Array Description (dynamic programming), Grid Paths (dynamic programming)
-
 ## 📋 Problem Description
 
 Given n books with prices and pages, find the maximum number of pages you can buy with a given budget.

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in greedy algorithm problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting, greedy algorithms, optimization, mathematical reasoning
-- **Data Structures**: Arrays, sorting algorithms
-- **Mathematical Concepts**: Greedy choice property, optimization theory, deadline scheduling
-- **Programming Skills**: Algorithm implementation, complexity analysis, sorting
-- **Related Problems**: Movie Festival (greedy scheduling), Room Allocation (resource allocation), Factory Machines (optimization)
-
 ## 📋 Problem Description
 
 You have n tasks. Each task i has a duration d[i] and a deadline t[i]. You can complete the tasks in any order.

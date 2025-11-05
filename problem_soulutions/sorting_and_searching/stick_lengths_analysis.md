@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in optimization problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting, median finding, optimization, greedy algorithms
-- **Data Structures**: Arrays, sorting algorithms
-- **Mathematical Concepts**: Median, absolute difference, optimization theory
-- **Programming Skills**: Algorithm implementation, complexity analysis, sorting
-- **Related Problems**: Array Division (optimization), Nearest Smaller Values (optimization), Sum of Two Values (searching)
-
 ## 📋 Problem Description
 
 There are n sticks with some lengths. Your task is to modify the lengths of the sticks so that all sticks have the same length. You can either increase or decrease the length of each stick by 1 unit at a cost of 1 unit.

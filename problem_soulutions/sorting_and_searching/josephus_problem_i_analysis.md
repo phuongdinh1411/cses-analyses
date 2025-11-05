@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with mathematical formulas
 - Handle edge cases in circular elimination problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Simulation, mathematical formulas, circular elimination, modular arithmetic
-- **Data Structures**: Arrays, circular arrays, mathematical sequences
-- **Mathematical Concepts**: Josephus problem, modular arithmetic, recurrence relations, mathematical sequences
-- **Programming Skills**: Algorithm implementation, complexity analysis, mathematical formula derivation
-- **Related Problems**: Josephus Problem II (advanced), Circular elimination problems, Mathematical sequence problems
-
 ## 📋 Problem Description
 
 There are n people sitting in a circle. We start counting from person 1 and eliminate every second person (person 2, 4, 6, ...) until only one person remains.

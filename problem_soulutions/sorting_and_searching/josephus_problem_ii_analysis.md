@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in the Josephus problem
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Josephus problem, mathematical formulas, circular elimination
-- **Data Structures**: Arrays, circular data structures
-- **Mathematical Concepts**: Modular arithmetic, recurrence relations, mathematical formulas
-- **Programming Skills**: Algorithm implementation, complexity analysis, mathematical optimization
-- **Related Problems**: Josephus Problem I (k=2), Circular elimination problems
-
 ## 📋 Problem Description
 
 You are given n people standing in a circle. Starting from person 1, we eliminate every k-th person in a clockwise direction. The process continues until only one person remains. Find the position of the last remaining person.

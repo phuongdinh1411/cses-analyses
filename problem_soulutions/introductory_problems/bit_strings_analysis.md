@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize algorithms for counting problems with constraints
 - Handle special cases in combinatorics problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Counting, combinatorics, modular arithmetic, bit manipulation
-- **Data Structures**: Arrays, integers, modular arithmetic
-- **Mathematical Concepts**: Combinatorics, modular arithmetic, binary representation
-- **Programming Skills**: Modular arithmetic, bit manipulation, counting algorithms
-- **Related Problems**: Creating Strings (introductory_problems), Permutations (introductory_problems), Two Knights (introductory_problems)
-
 ## 📋 Problem Description
 
 Count the number of bit strings of length n that do not contain two consecutive 1s.

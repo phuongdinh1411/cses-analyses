@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize algorithms for mathematical optimization problems
 - Handle special cases in mathematical reasoning problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Mathematical analysis, optimization, constraint satisfaction, number theory
-- **Data Structures**: Integers, mathematical operations
-- **Mathematical Concepts**: Number theory, optimization, constraint analysis, mathematical reasoning
-- **Programming Skills**: Mathematical operations, constraint checking, optimization algorithms
-- **Related Problems**: Apple Division (introductory_problems), Two Sets (introductory_problems), Weird Algorithm (introductory_problems)
-
 ## 📋 Problem Description
 
 Given two piles of coins, determine if it's possible to make both piles empty by repeatedly removing coins according to specific rules.

@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph traversal for cycle detection
 - Handle special cases in girth analysis
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph theory, cycle detection, graph traversal, shortest path algorithms
-- **Data Structures**: Adjacency lists, matrices, priority queues, distance arrays
-- **Mathematical Concepts**: Graph theory, cycle properties, shortest path theory
-- **Programming Skills**: Graph representation, BFS, DFS, Dijkstra's algorithm
-- **Related Problems**: Round Trip (cycle detection), Fixed Length Path Queries (similar approach), Graph Girth (cycle properties)
-
 ## 📋 Problem Description
 
 Given a directed graph with n nodes, find the length of the shortest cycle (girth) in the graph.

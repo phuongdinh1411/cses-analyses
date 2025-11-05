@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with proper complexity analysis
 - Handle edge cases in pairing problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Sorting, two-pointer technique, greedy algorithms, binary search
-- **Data Structures**: Arrays, sorting algorithms
-- **Mathematical Concepts**: Optimization, pairing problems, constraint satisfaction
-- **Programming Skills**: Algorithm implementation, complexity analysis, sorting
-- **Related Problems**: Apartments (two-pointer), Sum of Two Values (two-pointer), Collecting Numbers (greedy)
-
 ## 📋 Problem Description
 
 There are n children who want to go to a Ferris wheel, and your task is to find a gondola for each child. Each gondola has a maximum weight capacity of x, and the weight of the i-th child is w[i].

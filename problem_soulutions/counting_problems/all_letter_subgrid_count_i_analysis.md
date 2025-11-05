@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize grid operations for letter counting
 - Handle special cases in subgrid counting
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Grid algorithms, counting techniques, mathematical formulas
-- **Data Structures**: 2D arrays, mathematical computations, grid representation
-- **Mathematical Concepts**: Grid theory, combinations, permutations, modular arithmetic
-- **Programming Skills**: Grid manipulation, mathematical computations, modular arithmetic
-- **Related Problems**: Border Subgrid Count (grid counting), Filled Subgrid Count (grid counting), Grid Completion (grid algorithms)
-
 ## 📋 Problem Description
 
 Given a grid with letters, count the number of subgrids that contain all letters of the alphabet.

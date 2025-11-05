@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize combination calculations for large numbers
 - Handle special cases in combination counting
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Combinatorics, mathematical formulas, modular arithmetic
-- **Data Structures**: Arrays, mathematical computations, factorial calculations
-- **Mathematical Concepts**: Combinations, permutations, binomial coefficients, modular arithmetic
-- **Programming Skills**: Mathematical computations, modular arithmetic, large number handling
-- **Related Problems**: Counting Permutations (combinatorics), Counting Sequences (combinatorics), Counting Reorders (combinatorics)
-
 ## 📋 Problem Description
 
 Given n and k, count the number of ways to choose k elements from n elements (combinations).

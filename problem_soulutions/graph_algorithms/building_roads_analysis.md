@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize graph algorithms for minimum road construction
 - Handle special cases in connectivity problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Graph algorithms, connected components, Union-Find
-- **Data Structures**: Graphs, Union-Find, adjacency lists
-- **Mathematical Concepts**: Graph theory, connectivity, undirected graphs
-- **Programming Skills**: Graph operations, Union-Find operations, connectivity queries
-- **Related Problems**: Road Construction (graph_algorithms), Building Teams (graph_algorithms), Counting Rooms (graph_algorithms)
-
 ## 📋 Problem Description
 
 Given n cities and some existing roads, find the minimum number of roads to build so that all cities are connected.

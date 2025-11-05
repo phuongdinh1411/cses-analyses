@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize geometric operations for intersection analysis
 - Handle special cases in intersection point problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Computational geometry, intersection algorithms, line intersection
-- **Data Structures**: Points, lines, geometric primitives
-- **Mathematical Concepts**: Line intersection, coordinate systems, geometric calculations
-- **Programming Skills**: Geometric computations, intersection calculations, line operations
-- **Related Problems**: Line Segment Intersection (geometry), Point in Polygon (geometry), Convex Hull (geometry)
-
 ## 📋 Problem Description
 
 Given n lines, find all intersection points between the lines.

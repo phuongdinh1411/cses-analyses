@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize algorithms for digit query problems
 - Handle special cases in mathematical sequence problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Mathematical analysis, sequence analysis, pattern recognition, number theory
-- **Data Structures**: Integers, mathematical operations, sequence analysis
-- **Mathematical Concepts**: Number theory, sequences, arithmetic progressions, digit analysis
-- **Programming Skills**: Mathematical operations, sequence analysis, pattern recognition algorithms
-- **Related Problems**: Number Spiral (introductory_problems), Trailing Zeros (introductory_problems), Weird Algorithm (introductory_problems)
-
 ## 📋 Problem Description
 
 Given a sequence of numbers formed by concatenating all positive integers (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...), find the digit at a specific position.

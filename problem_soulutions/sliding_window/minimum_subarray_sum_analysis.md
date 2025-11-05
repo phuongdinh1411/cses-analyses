@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Handle edge cases in minimum subarray problems (all positive numbers, single element)
 - Recognize the relationship between maximum and minimum subarray algorithms
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic programming, sliding window technique, Kadane's algorithm
-- **Data Structures**: Arrays, prefix sums
-- **Mathematical Concepts**: Minimum sum optimization, dynamic programming principles
-- **Programming Skills**: Array manipulation, dynamic programming implementation
-- **Related Problems**: Maximum subarray sum, subarray with given sum, maximum product subarray
-
 ## 📋 Problem Description
 
 Given an array of integers, find the contiguous subarray (containing at least one number) which has the smallest sum and return its sum.

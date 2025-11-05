@@ -16,14 +16,6 @@ By the end of this problem, you should be able to:
 - Optimize solutions for large inputs with advanced string algorithms
 - Handle edge cases in string rotation problems
 
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: String algorithms, rotation algorithms, lexicographical ordering, suffix arrays
-- **Data Structures**: Strings, suffix arrays, rolling hash tables
-- **Mathematical Concepts**: String theory, lexicographical ordering, rotation theory
-- **Programming Skills**: String manipulation, algorithm implementation, optimization
-- **Related Problems**: String Sorting (lexicographical ordering), Suffix Arrays (string processing), String Matching
-
 ## 📋 Problem Description
 
 You are given a string s. Find the lexicographically smallest rotation of the string. A rotation of a string is obtained by moving some characters from the beginning to the end.
