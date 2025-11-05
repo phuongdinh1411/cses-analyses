@@ -201,10 +201,50 @@ print(f"Optimized recursive array description: {result2}")
 
 **Key Insight**: Use dynamic programming to store results of subproblems and avoid recalculations.
 
+#### 📌 **DP State Definition**
+
+**What does `dp[i][j]` represent?**
+- `dp[i][j]` = **number of ways** to fill the array up to position `i` such that `array[i] = j`
+- This is a 2D DP array where:
+  - First dimension `i` = position in the array (0 to n-1)
+  - Second dimension `j` = value at that position (1 to m)
+- `dp[i][j]` stores the count of valid ways to reach position `i` with value `j`
+
+**In plain language:**
+- For each position `i` in the array and each possible value `j` (1 to m), we count how many valid ways exist to fill the array up to position `i` where `array[i] = j`
+- `dp[0][j]` = number of ways to set the first element to value `j`
+- `dp[n-1][j]` = number of ways to fill the entire array ending with value `j` at the last position
+- The final answer is the sum of `dp[n-1][j]` for all valid `j`
+
+#### 🎯 **DP Thinking Process**
+
+**Step 1: Identify the Subproblem**
+- What are we trying to count? The number of ways to fill an array with valid adjacent differences.
+- What information do we need? For each position and each possible value, we need to know how many ways we can reach that state.
+
+**Step 2: Define the DP State** (See DP State Definition section above)
+- We use `dp[i][j]` to represent the number of ways to fill array up to position `i` with value `j` (already defined above)
+
+**Step 3: Find the Recurrence Relation (State Transition)**
+- How do we compute `dp[i][j]`?
+- To reach position `i` with value `j`, we can come from position `i-1` with value `j-1`, `j`, or `j+1` (if valid)
+- If `array[i]` is fixed: only count ways where previous value allows `array[i]`
+- If `array[i]` is unknown: count all ways where previous value is within ±1 of `j`
+
+**Step 4: Determine Base Cases**
+- `dp[0][j] = 1` if `array[0]` is unknown or `array[0] == j`, else `dp[0][j] = 0`
+- This represents the starting state at position 0.
+
+**Step 5: Identify the Answer**
+- The answer is `sum(dp[n-1][j]` for all valid `j` from 1 to m
+
 **Algorithm**:
-- Use DP table to store number of ways for each position and value
-- Fill DP table bottom-up
-- Return sum of all valid ways
+- Initialize base cases for position 0
+- For each position `i` from 1 to n-1:
+  - For each possible value `j` from 1 to m:
+    - If `array[i]` is fixed and not `j`, skip
+    - Otherwise, sum ways from previous position with values `j-1`, `j`, `j+1`
+- Return sum of all `dp[n-1][j]` for valid `j`
 
 **Visual Example**:
 ```

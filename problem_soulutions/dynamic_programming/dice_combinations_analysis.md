@@ -176,10 +176,73 @@ print(f"Optimized recursive combinations: {result2}")
 
 **Key Insight**: Use dynamic programming to store results of subproblems and avoid recalculations.
 
+#### 📌 **DP State Definition**
+
+**What does `dp[i]` represent?**
+- `dp[i]` = **number of ways** to achieve sum `i` using dice rolls (1, 2, 3, 4, 5, or 6)
+- This is a 1D DP array where the index `i` represents the target sum
+- `dp[i]` stores the count of all possible sequences of dice rolls that sum to exactly `i`
+
+**In plain language:**
+- For each possible sum from 0 to n, we count how many different ways we can roll dice to get that exact sum
+- `dp[0]` = 1 way (by not rolling any dice - empty sequence)
+- `dp[n]` = number of ways to achieve the target sum n (this is our final answer)
+
+#### 🎯 **DP Thinking Process**
+
+**Step 1: Identify the Subproblem**
+- What are we trying to count? The number of ways to achieve a target sum using dice rolls.
+- What information do we need? For each possible sum, we need to know how many ways we can achieve it.
+
+**Step 2: Define the DP State** (See DP State Definition section above)
+- We use `dp[i]` to represent the number of ways to achieve sum `i` (already defined above)
+
+**Step 3: Find the Recurrence Relation (State Transition)**
+- How do we compute `dp[i]`?
+- To achieve sum `i`, we can roll a dice face (1, 2, 3, 4, 5, or 6)
+- If we roll `dice`, we need `i - dice` to be achievable
+- Therefore: `dp[i] = dp[i-1] + dp[i-2] + dp[i-3] + dp[i-4] + dp[i-5] + dp[i-6]`
+- For each dice value `d` from 1 to 6: `dp[i] += dp[i-d]` (if `i >= d`)
+
+**Step 4: Determine Base Cases**
+- `dp[0] = 1`: There is exactly one way to achieve sum 0 (by not rolling any dice)
+- This is our starting point - the empty solution.
+
+**Step 5: Identify the Answer**
+- The answer is `dp[n]` - the number of ways to achieve the target sum `n`
+
+#### 📊 **Visual DP Table Construction**
+
+For `n = 3`:
+```
+Step-by-step DP table filling:
+
+dp[0] = 1  (base case: one way to get sum 0)
+
+For i = 1:
+  - Can roll 1: need dp[0] = 1 way
+  - dp[1] = dp[0] = 1
+
+For i = 2:
+  - Can roll 1: need dp[1] = 1 way
+  - Can roll 2: need dp[0] = 1 way
+  - dp[2] = dp[1] + dp[0] = 1 + 1 = 2
+
+For i = 3:
+  - Can roll 1: need dp[2] = 2 ways
+  - Can roll 2: need dp[1] = 1 way
+  - Can roll 3: need dp[0] = 1 way
+  - dp[3] = dp[2] + dp[1] + dp[0] = 2 + 1 + 1 = 4
+
+Final answer: dp[3] = 4
+```
+
 **Algorithm**:
-- Use DP table to store number of ways for each sum
-- Fill DP table bottom-up
-- Return DP[n] as result
+- Initialize `dp[0] = 1` (base case)
+- For each sum `i` from 1 to `n`:
+  - For each dice value `d` from 1 to 6:
+    - If `i >= d`, add `dp[i-d]` to `dp[i]`
+- Return `dp[n]`
 
 **Visual Example**:
 ```

@@ -189,10 +189,86 @@ print(f"Optimized recursive minimizing coins: {result2}")
 
 **Key Insight**: Use dynamic programming to store results of subproblems and avoid recalculations.
 
+#### 📌 **DP State Definition**
+
+**What does `dp[i]` represent?**
+- `dp[i]` = **minimum number of coins** needed to achieve sum `i`
+- This is a 1D DP array where the index `i` represents the target sum
+- `dp[i]` stores the optimal solution (minimum coins) for the subproblem of achieving sum `i`
+- If sum `i` is impossible to achieve, `dp[i] = infinity` (or a very large number)
+
+**In plain language:**
+- For each possible sum from 0 to x, we find the smallest number of coins needed to make that exact sum
+- `dp[0]` = 0 coins (already have sum 0, no coins needed)
+- `dp[x]` = minimum coins needed to achieve the target sum x (this is our final answer, or -1 if impossible)
+
+#### 🎯 **DP Thinking Process**
+
+**Step 1: Identify the Subproblem**
+- What are we trying to minimize? The number of coins needed to achieve a target sum.
+- What information do we need? For each possible sum, we need to know the minimum number of coins required to achieve it.
+
+**Step 2: Define the DP State** (See DP State Definition section above)
+- We use `dp[i]` to represent the minimum coins needed for sum `i` (already defined above)
+
+**Step 3: Find the Recurrence Relation (State Transition)**
+- How do we compute `dp[i]`?
+- To achieve sum `i`, we can use any coin `c` from the available coins
+- If we use coin `c`, we need `i - c` to be achievable, and we add 1 coin
+- Therefore: `dp[i] = min(dp[i], 1 + dp[i - c])` for all coins `c` where `i >= c`
+- We try all possible coins and take the minimum.
+
+**Step 4: Determine Base Cases**
+- `dp[0] = 0`: Zero coins are needed to achieve sum 0
+- `dp[i] = infinity` for all `i > 0` initially: We don't know if these sums are achievable yet
+
+**Step 5: Identify the Answer**
+- The answer is `dp[x]` if `dp[x] != infinity`, otherwise return `-1` (impossible)
+
+#### 📊 **Visual DP Table Construction**
+
+For `x = 11, coins = [1, 3, 4]`:
+```
+Step-by-step DP table filling:
+
+dp[0] = 0  (base case: 0 coins for sum 0)
+
+For i = 1:
+  - Can use coin 1: dp[1] = min(inf, 1 + dp[0]) = 1
+  - dp[1] = 1
+
+For i = 2:
+  - Can use coin 1: dp[2] = min(inf, 1 + dp[1]) = 2
+  - dp[2] = 2
+
+For i = 3:
+  - Can use coin 1: dp[3] = min(inf, 1 + dp[2]) = 3
+  - Can use coin 3: dp[3] = min(3, 1 + dp[0]) = 1
+  - dp[3] = 1
+
+For i = 4:
+  - Can use coin 1: dp[4] = min(inf, 1 + dp[3]) = 2
+  - Can use coin 3: dp[4] = min(2, 1 + dp[1]) = 2
+  - Can use coin 4: dp[4] = min(2, 1 + dp[0]) = 1
+  - dp[4] = 1
+
+... (continuing similarly)
+
+For i = 11:
+  - Can use coin 1: dp[11] = min(inf, 1 + dp[10]) = ...
+  - Can use coin 3: dp[11] = min(..., 1 + dp[8]) = ...
+  - Can use coin 4: dp[11] = min(..., 1 + dp[7]) = ...
+  - Minimum: dp[11] = 3 (using coins: 3 + 4 + 4)
+
+Final answer: dp[11] = 3
+```
+
 **Algorithm**:
-- Use DP table to store minimum coins for each sum
-- Fill DP table bottom-up
-- Return DP[x] as result
+- Initialize `dp[0] = 0` and `dp[i] = infinity` for `i > 0`
+- For each sum `i` from 1 to `x`:
+  - For each coin `c` in coins:
+    - If `i >= c`, update `dp[i] = min(dp[i], 1 + dp[i-c])`
+- Return `dp[x]` if it's not infinity, otherwise `-1`
 
 **Visual Example**:
 ```

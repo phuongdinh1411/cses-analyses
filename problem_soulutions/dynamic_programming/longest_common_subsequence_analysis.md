@@ -167,10 +167,21 @@ print(f"Optimized recursive longest common subsequence: {result2}")
 
 **Key Insight**: Use dynamic programming to store results of subproblems and avoid recalculations.
 
-**Algorithm**:
-- Use DP table to store LCS length for each position
-- Fill DP table bottom-up
-- Return DP[m][n] as result
+#### 📌 **DP State Definition**
+
+**What does `dp[i][j]` represent?**
+- `dp[i][j]` = **length of the longest common subsequence (LCS)** between the first `i` characters of string `s1` and the first `j` characters of string `s2`
+- This is a 2D DP array where:
+  - First dimension `i` = number of characters considered from `s1` (0 to m)
+  - Second dimension `j` = number of characters considered from `s2` (0 to n)
+- `dp[i][j]` stores the length of the LCS between `s1[0:i]` and `s2[0:j]`
+
+**In plain language:**
+- For each prefix of `s1` (first i characters) and each prefix of `s2` (first j characters), we find the length of their longest common subsequence
+- A subsequence doesn't need to be contiguous, but characters must appear in the same order
+- `dp[0][j]` = 0 (empty string has no common subsequence)
+- `dp[i][0]` = 0 (empty string has no common subsequence)
+- `dp[m][n]` = length of LCS between the full strings (this is our final answer)
 
 **Visual Example**:
 ```

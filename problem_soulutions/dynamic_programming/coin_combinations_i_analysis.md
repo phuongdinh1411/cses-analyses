@@ -196,10 +196,90 @@ print(f"Optimized recursive combinations: {result2}")
 
 **Key Insight**: Use dynamic programming to store results of subproblems and avoid recalculations.
 
+#### 📌 **DP State Definition**
+
+**What does `dp[i]` represent?**
+- `dp[i]` = **number of ordered ways** (sequences) to achieve sum `i` using the given coins
+- This is a 1D DP array where the index `i` represents the target sum
+- `dp[i]` stores the count of all possible **ordered sequences** of coins that sum to exactly `i`
+- **Important**: Order matters! (1+2) is different from (2+1), and both are counted separately
+
+**In plain language:**
+- For each possible sum from 0 to x, we count how many different ordered sequences of coins can sum to that amount
+- `dp[0]` = 1 way (empty sequence - using no coins)
+- `dp[x]` = number of ordered ways to achieve the target sum x (this is our final answer)
+
+#### 🎯 **DP Thinking Process**
+
+**Step 1: Identify the Subproblem**
+- What are we trying to count? The number of **ordered** ways (sequences) to achieve a target sum using coins.
+- **Important**: Order matters! (1+2) is different from (2+1)
+- What information do we need? For each possible sum, we need to know how many ordered ways we can achieve it.
+
+**Step 2: Define the DP State** (See DP State Definition section above)
+- We use `dp[i]` to represent the number of ordered ways to achieve sum `i` (already defined above)
+
+**Step 3: Find the Recurrence Relation (State Transition)**
+- How do we compute `dp[i]`?
+- To achieve sum `i`, we can use any coin `c` as the **last** coin in the sequence
+- If we use coin `c` last, we need `i - c` to be achievable first
+- Therefore: `dp[i] = sum(dp[i - c])` for all coins `c` where `i >= c`
+- We sum over all possible last coins because order matters.
+
+**Step 4: Determine Base Cases**
+- `dp[0] = 1`: There is exactly one way to achieve sum 0 (by using no coins)
+- This represents the empty sequence.
+
+**Step 5: Identify the Answer**
+- The answer is `dp[x]` - the number of ordered ways to achieve the target sum `x`
+
+#### 📊 **Visual DP Table Construction**
+
+For `x = 5, coins = [1, 2, 3]`:
+```
+Step-by-step DP table filling:
+
+dp[0] = 1  (base case: one way to get sum 0 - empty sequence)
+
+For i = 1:
+  - Can end with coin 1: need dp[0] = 1 way
+  - dp[1] = dp[0] = 1
+  - Sequences: [1]
+
+For i = 2:
+  - Can end with coin 1: need dp[1] = 1 way
+  - Can end with coin 2: need dp[0] = 1 way
+  - dp[2] = dp[1] + dp[0] = 1 + 1 = 2
+  - Sequences: [1,1], [2]
+
+For i = 3:
+  - Can end with coin 1: need dp[2] = 2 ways
+  - Can end with coin 2: need dp[1] = 1 way
+  - Can end with coin 3: need dp[0] = 1 way
+  - dp[3] = dp[2] + dp[1] + dp[0] = 2 + 1 + 1 = 4
+  - Sequences: [1,1,1], [1,2], [2,1], [3]
+
+For i = 4:
+  - Can end with coin 1: need dp[3] = 4 ways
+  - Can end with coin 2: need dp[2] = 2 ways
+  - Can end with coin 3: need dp[1] = 1 way
+  - dp[4] = dp[3] + dp[2] + dp[1] = 4 + 2 + 1 = 7
+
+For i = 5:
+  - Can end with coin 1: need dp[4] = 7 ways
+  - Can end with coin 2: need dp[3] = 4 ways
+  - Can end with coin 3: need dp[2] = 2 ways
+  - dp[5] = dp[4] + dp[3] + dp[2] = 7 + 4 + 2 = 13
+
+Final answer: dp[5] = 13
+```
+
 **Algorithm**:
-- Use DP table to store number of ways for each sum
-- Fill DP table bottom-up
-- Return DP[x] as result
+- Initialize `dp[0] = 1` (base case)
+- For each sum `i` from 1 to `x`:
+  - For each coin `c` in coins:
+    - If `i >= c`, add `dp[i-c]` to `dp[i]`
+- Return `dp[x]`
 
 **Visual Example**:
 ```

@@ -198,10 +198,47 @@ print(f"Optimized recursive book shop: {result2}")
 
 **Key Insight**: Use dynamic programming to store results of subproblems and avoid recalculations.
 
+#### 📌 **DP State Definition**
+
+**What does `dp[i]` represent?**
+- `dp[i]` = **maximum number of pages** we can buy with a budget of exactly `i` coins
+- This is a 1D DP array where the index represents the budget
+- `dp[i]` stores the optimal solution (maximum pages) for the subproblem of having budget `i`
+
+**In plain language:**
+- For each possible budget amount from 0 to x, we store the best result (maximum pages) we can achieve with that budget
+- `dp[0]` = 0 pages (no budget, can't buy anything)
+- `dp[x]` = maximum pages we can buy with the full budget x (this is our final answer)
+
+#### 🎯 **DP Thinking Process**
+
+**Step 1: Identify the Subproblem**
+- What are we trying to maximize? The number of pages we can buy within a given budget.
+- What information do we need? For each possible budget, we need to know the maximum pages achievable.
+
+**Step 2: Define the DP State** (See DP State Definition section above)
+- We use `dp[i]` to represent the maximum pages with budget `i` (already defined above)
+
+**Step 3: Find the Recurrence Relation (State Transition)**
+- How do we compute `dp[i]`?
+- For each book with price `p` and pages `pages`:
+  - We can either buy it (if budget allows) or skip it
+  - If we buy it: `dp[i] = max(dp[i], dp[i - p] + pages)`
+  - We try all books and take the maximum
+
+**Step 4: Determine Base Cases**
+- `dp[0] = 0`: With budget 0, we can buy 0 pages
+- Initialize all `dp[i] = 0` for `i >= 0` (start with no pages)
+
+**Step 5: Identify the Answer**
+- The answer is `dp[x]` - the maximum pages we can buy with budget `x`
+
 **Algorithm**:
-- Use DP table to store maximum pages for each budget
-- Fill DP table bottom-up
-- Return DP[x] as result
+- Initialize `dp[i] = 0` for all budgets
+- For each book (price `p`, pages `pages`):
+  - For each budget `i` from `x` down to `p`:
+    - Update `dp[i] = max(dp[i], dp[i - p] + pages)`
+- Return `dp[x]`
 
 **Visual Example**:
 ```

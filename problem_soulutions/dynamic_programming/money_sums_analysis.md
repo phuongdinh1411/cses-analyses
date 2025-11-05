@@ -178,10 +178,17 @@ print(f"Optimized recursive sums: {result2}")
 
 **Key Insight**: Use dynamic programming to store which sums are achievable.
 
-**Algorithm**:
-- Use DP table to store achievable sums
-- For each coin, update achievable sums
-- Count total achievable sums
+#### 📌 **DP State Definition**
+
+**What does `dp[i]` represent?**
+- `dp[i]` = **boolean value** indicating whether sum `i` is achievable using the given coins
+- This is a 1D DP array where the index `i` represents a possible sum
+- `dp[i] = True` means we can make sum `i` with the available coins, `dp[i] = False` means we cannot
+
+**In plain language:**
+- For each possible sum from 0 to the maximum achievable sum, we track whether that sum can be made using the coins
+- `dp[0]` = True (sum 0 is always achievable - use no coins)
+- The final answer is the count of all `i` where `dp[i] = True` (excluding sum 0)
 
 **Visual Example**:
 ```

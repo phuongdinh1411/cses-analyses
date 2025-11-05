@@ -185,10 +185,84 @@ print(f"Optimized recursive grid paths: {result2}")
 
 **Key Insight**: Use dynamic programming to store results of subproblems and avoid recalculations.
 
+#### 📌 **DP State Definition**
+
+**What does `dp[i][j]` represent?**
+- `dp[i][j]` = **number of paths** from the top-left corner (0,0) to position (i,j) in the grid
+- This is a 2D DP array where:
+  - First dimension `i` = row index (0 to n-1)
+  - Second dimension `j` = column index (0 to n-1)
+- `dp[i][j]` stores the count of all possible paths from the starting position to cell (i,j)
+
+**In plain language:**
+- For each cell (i,j) in the grid, we count how many different paths exist from the top-left corner to that cell
+- You can only move right or down, so each path is a sequence of right/down moves
+- `dp[0][0]` = 1 path (starting position, no moves needed)
+- `dp[n-1][n-1]` = number of paths from start to destination (this is our final answer)
+
+#### 🎯 **DP Thinking Process**
+
+**Step 1: Identify the Subproblem**
+- What are we trying to count? The number of paths from top-left (0,0) to bottom-right (n-1, n-1).
+- What information do we need? For each position (i,j), we need to know how many paths exist from (0,0) to (i,j).
+
+**Step 2: Define the DP State** (See DP State Definition section above)
+- We use `dp[i][j]` to represent the number of paths to position (i,j) (already defined above)
+
+**Step 3: Find the Recurrence Relation (State Transition)**
+- How do we compute `dp[i][j]`?
+- To reach (i,j), we can only come from:
+  - **Top**: position (i-1, j) if `i > 0`
+  - **Left**: position (i, j-1) if `j > 0`
+- Therefore: `dp[i][j] = dp[i-1][j] + dp[i][j-1]`
+- We sum the paths from both possible previous positions.
+
+**Step 4: Determine Base Cases**
+- `dp[0][0] = 1`: There is exactly one way to be at the starting position (by not moving)
+- For boundary positions: `dp[0][j] = 1` (only can come from left) and `dp[i][0] = 1` (only can come from top)
+
+**Step 5: Identify the Answer**
+- The answer is `dp[n-1][n-1]` - the number of paths to the destination
+
+#### 📊 **Visual DP Table Construction**
+
+For `n = 3`:
+```
+Step-by-step DP table filling (from top-left to bottom-right):
+
+Initial state:
+dp[0][0] = 1  (base case: starting position)
+
+First row (can only come from left):
+dp[0][1] = dp[0][0] = 1
+dp[0][2] = dp[0][1] = 1
+
+First column (can only come from top):
+dp[1][0] = dp[0][0] = 1
+dp[2][0] = dp[1][0] = 1
+
+Internal positions:
+dp[1][1] = dp[0][1] + dp[1][0] = 1 + 1 = 2
+dp[1][2] = dp[0][2] + dp[1][1] = 1 + 2 = 3
+dp[2][1] = dp[1][1] + dp[2][0] = 2 + 1 = 3
+dp[2][2] = dp[1][2] + dp[2][1] = 3 + 3 = 6
+
+Final DP table:
+    0  1  2
+0   1  1  1
+1   1  2  3
+2   1  3  6
+
+Answer: dp[2][2] = 6
+```
+
 **Algorithm**:
-- Use DP table to store number of paths for each position
-- Fill DP table bottom-up
-- Return DP[0][0] as result
+- Initialize `dp[0][0] = 1`
+- Fill first row: `dp[0][j] = dp[0][j-1]` for `j > 0`
+- Fill first column: `dp[i][0] = dp[i-1][0]` for `i > 0`
+- For each position (i,j) where `i > 0` and `j > 0`:
+  - `dp[i][j] = dp[i-1][j] + dp[i][j-1]`
+- Return `dp[n-1][n-1]`
 
 **Visual Example**:
 ```

@@ -185,10 +185,18 @@ print(f"Optimized recursive removing digits: {result2}")
 
 **Key Insight**: Use dynamic programming to store results of subproblems and avoid recalculations.
 
-**Algorithm**:
-- Use DP table to store minimum operations for each number
-- Fill DP table bottom-up
-- Return DP[n] as result
+#### 📌 **DP State Definition**
+
+**What does `dp[i]` represent?**
+- `dp[i]` = **minimum number of operations** needed to reduce number `i` to 0
+- This is a 1D DP array where the index `i` represents the current number
+- `dp[i]` stores the optimal solution (minimum operations) for the subproblem of reducing `i` to 0
+
+**In plain language:**
+- For each number from 0 to n, we find the minimum steps needed to remove all digits and reach 0
+- In each step, we can remove any digit from the current number
+- `dp[0]` = 0 operations (already at 0, nothing to remove)
+- `dp[n]` = minimum operations needed to reduce n to 0 (this is our final answer)
 
 **Visual Example**:
 ```
