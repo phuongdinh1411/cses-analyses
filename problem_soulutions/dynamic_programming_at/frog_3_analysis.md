@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Frog 3 - AtCoder Educational DP Contest Problem Z"
+title: "Frog 3"
 permalink: /problem_soulutions/dynamic_programming_at/frog_3_analysis
 ---
 
-# Frog 3 - AtCoder Educational DP Contest Problem Z
+# Frog 3
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/frog_3_analysis
 - Apply advanced DP optimization techniques
 - Handle quadratic transitions in DP
 - Optimize DP with convex hull trick
-
-### 📚 **Prerequisites**
-- Dynamic Programming, convex hull trick, line container
-- Arrays, data structures
-- Related: Advanced DP optimization, convex hull trick
 
 ## 📋 Problem Description
 

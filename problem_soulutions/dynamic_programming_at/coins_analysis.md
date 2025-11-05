@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Coins - AtCoder Educational DP Contest Problem I"
+title: "Coins"
 permalink: /problem_soulutions/dynamic_programming_at/coins_analysis
 ---
 
-# Coins - AtCoder Educational DP Contest Problem I
+# Coins
 
 ## 📋 Problem Information
 
@@ -15,14 +15,6 @@ By the end of this problem, you should be able to:
 - Handle floating-point precision in DP
 - Recognize when to use probability DP patterns
 - Optimize probability DP computations
-
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic Programming, probability theory, expectation
-- **Data Structures**: Arrays, 2D arrays
-- **Mathematical Concepts**: Probability, expectation, conditional probability
-- **Programming Skills**: Floating-point arithmetic, DP implementation
-- **Related Problems**: Dice roll problems, probability DP
 
 ## 📋 Problem Description
 

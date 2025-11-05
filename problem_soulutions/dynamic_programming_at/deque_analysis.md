@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Deque - AtCoder Educational DP Contest Problem L"
+title: "Deque"
 permalink: /problem_soulutions/dynamic_programming_at/deque_analysis
 ---
 
-# Deque - AtCoder Educational DP Contest Problem L
+# Deque
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/deque_analysis
 - Apply DP to two-player optimization games
 - Handle optimal play with DP
 - Recognize interval DP patterns
-
-### 📚 **Prerequisites**
-- Dynamic Programming, interval DP, game theory
-- Arrays, 2D arrays
-- Related: Matrix chain multiplication, interval problems
 
 ## 📋 Problem Description
 

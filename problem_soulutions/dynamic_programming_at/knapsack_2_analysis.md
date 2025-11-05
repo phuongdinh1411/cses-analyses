@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Knapsack 2 - AtCoder Educational DP Contest Problem E"
+title: "Knapsack 2"
 permalink: /problem_soulutions/dynamic_programming_at/knapsack_2_analysis
 ---
 
-# Knapsack 2 - AtCoder Educational DP Contest Problem E
+# Knapsack 2
 
 ## 📋 Problem Information
 
@@ -15,14 +15,6 @@ By the end of this problem, you should be able to:
 - Switch DP state from capacity-based to value-based
 - Recognize when to invert the DP state definition
 - Optimize DP solutions for different constraint scenarios
-
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic Programming, knapsack problems, state inversion
-- **Data Structures**: Arrays, 1D arrays
-- **Mathematical Concepts**: Minimum weight computation, optimization
-- **Programming Skills**: Array manipulation, DP state switching
-- **Related Problems**: Knapsack 1 (AtCoder DP D), Book Shop (CSES)
 
 ## 📋 Problem Description
 

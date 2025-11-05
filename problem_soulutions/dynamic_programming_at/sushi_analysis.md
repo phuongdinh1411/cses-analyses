@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Sushi - AtCoder Educational DP Contest Problem J"
+title: "Sushi"
 permalink: /problem_soulutions/dynamic_programming_at/sushi_analysis
 ---
 
-# Sushi - AtCoder Educational DP Contest Problem J
+# Sushi
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/sushi_analysis
 - Apply DP to expectation value problems
 - Handle state transitions with multiple outcomes
 - Optimize expectation DP computations
-
-### 📚 **Prerequisites**
-- Dynamic Programming, expectation value, state space reduction
-- Arrays, probability theory
-- Related: Coins (AtCoder DP I), expectation problems
 
 ## 📋 Problem Description
 

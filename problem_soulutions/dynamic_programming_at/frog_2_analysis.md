@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Frog 2 - AtCoder Educational DP Contest Problem B"
+title: "Frog 2"
 permalink: /problem_soulutions/dynamic_programming_at/frog_2_analysis
 ---
 
-# Frog 2 - AtCoder Educational DP Contest Problem B
+# Frog 2
 
 ## 📋 Problem Information
 
@@ -15,14 +15,6 @@ By the end of this problem, you should be able to:
 - Apply DP to problems with k-step transitions
 - Optimize DP solutions for multiple possible moves
 - Recognize patterns in DP transition generalization
-
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic Programming, state transitions, 1D DP
-- **Data Structures**: Arrays, iteration
-- **Mathematical Concepts**: Minimum value computation, optimization
-- **Programming Skills**: Loop optimization, array manipulation
-- **Related Problems**: Frog 1 (AtCoder DP A), Climbing Stairs (LeetCode)
 
 ## 📋 Problem Description
 

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Tower - AtCoder Educational DP Contest Problem X"
+title: "Tower"
 permalink: /problem_soulutions/dynamic_programming_at/tower_analysis
 ---
 
-# Tower - AtCoder Educational DP Contest Problem X
+# Tower
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/tower_analysis
 - Apply DP to solve box stacking problems
 - Handle 3D optimization problems
 - Recognize LIS-like patterns
-
-### 📚 **Prerequisites**
-- Dynamic Programming, longest increasing subsequence
-- Arrays, sorting
-- Related: Box stacking, LIS problems
 
 ## 📋 Problem Description
 

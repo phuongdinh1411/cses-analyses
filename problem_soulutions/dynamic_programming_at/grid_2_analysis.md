@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Grid 2 - AtCoder Educational DP Contest Problem Y"
+title: "Grid 2"
 permalink: /problem_soulutions/dynamic_programming_at/grid_2_analysis
 ---
 
-# Grid 2 - AtCoder Educational DP Contest Problem Y
+# Grid 2
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/grid_2_analysis
 - Apply DP to solve grid problems with obstacles
 - Handle large number of obstacles
 - Use inclusion-exclusion principle
-
-### 📚 **Prerequisites**
-- Dynamic Programming, inclusion-exclusion, combinatorics
-- Arrays, 2D arrays, modular arithmetic
-- Related: Grid paths, inclusion-exclusion
 
 ## 📋 Problem Description
 

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Matching - AtCoder Educational DP Contest Problem O"
+title: "Matching"
 permalink: /problem_soulutions/dynamic_programming_at/matching_analysis
 ---
 
-# Matching - AtCoder Educational DP Contest Problem O
+# Matching
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/matching_analysis
 - Apply DP to solve matching/assignment problems
 - Recognize when to use bitmask DP
 - Optimize bitmask DP solutions
-
-### 📚 **Prerequisites**
-- Dynamic Programming, bitmask DP, bipartite matching
-- Arrays, bit manipulation
-- Related: Assignment problems, subset DP
 
 ## 📋 Problem Description
 

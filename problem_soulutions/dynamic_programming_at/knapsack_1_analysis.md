@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Knapsack 1 - AtCoder Educational DP Contest Problem D"
+title: "Knapsack 1"
 permalink: /problem_soulutions/dynamic_programming_at/knapsack_1_analysis
 ---
 
-# Knapsack 1 - AtCoder Educational DP Contest Problem D
+# Knapsack 1
 
 ## 📋 Problem Information
 
@@ -15,14 +15,6 @@ By the end of this problem, you should be able to:
 - Implement space-optimized knapsack solutions
 - Recognize when to use knapsack DP pattern
 - Optimize DP solutions for large capacity constraints
-
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic Programming, 2D DP, knapsack problems
-- **Data Structures**: Arrays, 2D arrays
-- **Mathematical Concepts**: Maximum value computation, optimization
-- **Programming Skills**: Multi-dimensional array manipulation, space optimization
-- **Related Problems**: Book Shop (CSES), Coin Change (LeetCode)
 
 ## 📋 Problem Description
 

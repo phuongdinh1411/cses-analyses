@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Vacation - AtCoder Educational DP Contest Problem C"
+title: "Vacation"
 permalink: /problem_soulutions/dynamic_programming_at/vacation_analysis
 ---
 
-# Vacation - AtCoder Educational DP Contest Problem C
+# Vacation
 
 ## 📋 Problem Information
 
@@ -15,14 +15,6 @@ By the end of this problem, you should be able to:
 - Recognize when to track previous state in DP
 - Implement 2D DP with state tracking
 - Optimize state machine DP solutions
-
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic Programming, state machines, 2D DP
-- **Data Structures**: Arrays, 2D arrays
-- **Mathematical Concepts**: Maximum value computation, optimization
-- **Programming Skills**: Multi-dimensional array manipulation
-- **Related Problems**: House Robber (LeetCode), Paint House (LeetCode)
 
 ## 📋 Problem Description
 

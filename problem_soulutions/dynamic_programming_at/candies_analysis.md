@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Candies - AtCoder Educational DP Contest Problem M"
+title: "Candies"
 permalink: /problem_soulutions/dynamic_programming_at/candies_analysis
 ---
 
-# Candies - AtCoder Educational DP Contest Problem M
+# Candies
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/candies_analysis
 - Apply prefix sum optimization in DP
 - Handle cumulative constraints in DP
 - Optimize DP transitions with prefix sums
-
-### 📚 **Prerequisites**
-- Dynamic Programming, prefix sums, constraint handling
-- Arrays, cumulative sums
-- Related: Knapsack problems, constraint DP
 
 ## 📋 Problem Description
 

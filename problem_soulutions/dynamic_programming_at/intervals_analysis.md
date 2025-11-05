@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Intervals - AtCoder Educational DP Contest Problem W"
+title: "Intervals"
 permalink: /problem_soulutions/dynamic_programming_at/intervals_analysis
 ---
 
-# Intervals - AtCoder Educational DP Contest Problem W
+# Intervals
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/intervals_analysis
 - Apply DP to solve interval problems
 - Handle interval optimization
 - Use coordinate compression
-
-### 📚 **Prerequisites**
-- Dynamic Programming, interval problems, coordinate compression
-- Arrays, sorting
-- Related: Interval scheduling, covering problems
 
 ## 📋 Problem Description
 

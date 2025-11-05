@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Flowers - AtCoder Educational DP Contest Problem Q"
+title: "Flowers"
 permalink: /problem_soulutions/dynamic_programming_at/flowers_analysis
 ---
 
-# Flowers - AtCoder Educational DP Contest Problem Q
+# Flowers
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/flowers_analysis
 - Apply DP to solve problems with large coordinate ranges
 - Use segment trees or Fenwick trees for range queries
 - Optimize DP with data structures
-
-### 📚 **Prerequisites**
-- Dynamic Programming, coordinate compression, segment trees
-- Arrays, binary indexed trees
-- Related: Longest Increasing Subsequence, range queries
 
 ## 📋 Problem Description
 

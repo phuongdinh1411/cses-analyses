@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Stones - AtCoder Educational DP Contest Problem K"
+title: "Stones"
 permalink: /problem_soulutions/dynamic_programming_at/stones_analysis
 ---
 
-# Stones - AtCoder Educational DP Contest Problem K
+# Stones
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/stones_analysis
 - Apply DP to solve impartial game problems
 - Recognize winning/losing positions
 - Handle game theory with DP
-
-### 📚 **Prerequisites**
-- Dynamic Programming, game theory, Grundy numbers
-- Arrays, bit manipulation
-- Related: Game theory problems, Nim game
 
 ## 📋 Problem Description
 

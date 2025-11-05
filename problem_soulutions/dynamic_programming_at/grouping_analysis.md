@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Grouping - AtCoder Educational DP Contest Problem U"
+title: "Grouping"
 permalink: /problem_soulutions/dynamic_programming_at/grouping_analysis
 ---
 
-# Grouping - AtCoder Educational DP Contest Problem U
+# Grouping
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/grouping_analysis
 - Apply DP to solve grouping problems
 - Handle subset optimization with bitmask
 - Optimize subset DP solutions
-
-### 📚 **Prerequisites**
-- Dynamic Programming, bitmask DP, subset DP
-- Arrays, bit manipulation
-- Related: Subset problems, grouping problems
 
 ## 📋 Problem Description
 

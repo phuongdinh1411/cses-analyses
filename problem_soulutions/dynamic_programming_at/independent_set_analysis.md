@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Independent Set - AtCoder Educational DP Contest Problem P"
+title: "Independent Set"
 permalink: /problem_soulutions/dynamic_programming_at/independent_set_analysis
 ---
 
-# Independent Set - AtCoder Educational DP Contest Problem P
+# Independent Set
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/independent_set_analysis
 - Apply DP to solve independent set on trees
 - Recognize tree DP patterns
 - Handle tree coloring problems
-
-### 📚 **Prerequisites**
-- Dynamic Programming, tree DP, tree traversal
-- Trees, adjacency lists, DFS
-- Related: Tree coloring, tree DP problems
 
 ## 📋 Problem Description
 

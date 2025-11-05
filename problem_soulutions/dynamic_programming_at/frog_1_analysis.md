@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Frog 1 - AtCoder Educational DP Contest Problem A"
+title: "Frog 1"
 permalink: /problem_soulutions/dynamic_programming_at/frog_1_analysis
 ---
 
-# Frog 1 - AtCoder Educational DP Contest Problem A
+# Frog 1
 
 ## 📋 Problem Information
 
@@ -15,14 +15,6 @@ By the end of this problem, you should be able to:
 - Recognize when to use bottom-up vs top-down DP approaches
 - Implement space-optimized DP solutions
 - Handle edge cases in DP problems
-
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic Programming basics, state transitions, memoization
-- **Data Structures**: Arrays, recursion
-- **Mathematical Concepts**: Minimum value computation, cost optimization
-- **Programming Skills**: Array manipulation, recursive thinking
-- **Related Problems**: Climbing Stairs (LeetCode), Minimizing Coins (CSES)
 
 ## 📋 Problem Description
 

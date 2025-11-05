@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Slimes - AtCoder Educational DP Contest Problem N"
+title: "Slimes"
 permalink: /problem_soulutions/dynamic_programming_at/slimes_analysis
 ---
 
-# Slimes - AtCoder Educational DP Contest Problem N
+# Slimes
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/slimes_analysis
 - Apply DP to solve minimum cost merging
 - Recognize interval DP patterns
 - Optimize interval DP computations
-
-### 📚 **Prerequisites**
-- Dynamic Programming, interval DP, prefix sums
-- Arrays, 2D arrays
-- Related: Matrix chain multiplication, interval problems
 
 ## 📋 Problem Description
 

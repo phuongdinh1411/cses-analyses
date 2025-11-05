@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Permutation - AtCoder Educational DP Contest Problem T"
+title: "Permutation"
 permalink: /problem_soulutions/dynamic_programming_at/permutation_analysis
 ---
 
-# Permutation - AtCoder Educational DP Contest Problem T
+# Permutation
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/permutation_analysis
 - Apply DP to solve permutation problems
 - Handle relative ordering constraints
 - Recognize insertion DP patterns
-
-### 📚 **Prerequisites**
-- Dynamic Programming, combinatorics, insertion DP
-- Arrays, 2D arrays
-- Related: Permutation problems, ordering constraints
 
 ## 📋 Problem Description
 

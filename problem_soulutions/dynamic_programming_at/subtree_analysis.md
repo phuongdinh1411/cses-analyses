@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Subtree - AtCoder Educational DP Contest Problem V"
+title: "Subtree"
 permalink: /problem_soulutions/dynamic_programming_at/subtree_analysis
 ---
 
-# Subtree - AtCoder Educational DP Contest Problem V
+# Subtree
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/subtree_analysis
 - Apply DP to solve subtree problems
 - Handle tree rerooting technique
 - Optimize tree DP with rerooting
-
-### 📚 **Prerequisites**
-- Dynamic Programming, tree DP, rerooting
-- Trees, DFS, adjacency lists
-- Related: Tree DP problems, subtree problems
 
 ## 📋 Problem Description
 

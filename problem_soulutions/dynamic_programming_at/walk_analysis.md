@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Walk - AtCoder Educational DP Contest Problem R"
+title: "Walk"
 permalink: /problem_soulutions/dynamic_programming_at/walk_analysis
 ---
 
-# Walk - AtCoder Educational DP Contest Problem R
+# Walk
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/walk_analysis
 - Apply matrix exponentiation to count paths
 - Recognize when to use matrix exponentiation
 - Optimize DP with matrix operations
-
-### 📚 **Prerequisites**
-- Dynamic Programming, matrix exponentiation, graph theory
-- Matrices, binary exponentiation
-- Related: Matrix chain multiplication, path counting
 
 ## 📋 Problem Description
 

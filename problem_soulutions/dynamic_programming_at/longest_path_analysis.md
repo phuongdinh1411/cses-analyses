@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Longest Path - AtCoder Educational DP Contest Problem G"
+title: "Longest Path"
 permalink: /problem_soulutions/dynamic_programming_at/longest_path_analysis
 ---
 
-# Longest Path - AtCoder Educational DP Contest Problem G
+# Longest Path
 
 ## 📋 Problem Information
 
@@ -15,14 +15,6 @@ By the end of this problem, you should be able to:
 - Recognize when to use DP on graphs
 - Implement longest path algorithms using DP
 - Handle graph-based DP problems efficiently
-
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic Programming, graph algorithms, topological sorting, DAGs
-- **Data Structures**: Graphs, adjacency lists, arrays
-- **Mathematical Concepts**: Longest path computation, graph theory
-- **Programming Skills**: Graph traversal, topological sort, DP on graphs
-- **Related Problems**: Longest Increasing Subsequence, Tree DP problems
 
 ## 📋 Problem Description
 

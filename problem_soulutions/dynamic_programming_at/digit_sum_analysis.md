@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Digit Sum - AtCoder Educational DP Contest Problem S"
+title: "Digit Sum"
 permalink: /problem_soulutions/dynamic_programming_at/digit_sum_analysis
 ---
 
-# Digit Sum - AtCoder Educational DP Contest Problem S
+# Digit Sum
 
 ## 📋 Problem Information
 
@@ -13,11 +13,6 @@ permalink: /problem_soulutions/dynamic_programming_at/digit_sum_analysis
 - Apply DP to solve digit-related problems
 - Handle tight constraints in digit DP
 - Recognize digit DP patterns
-
-### 📚 **Prerequisites**
-- Dynamic Programming, digit DP, number theory
-- Strings, recursion
-- Related: Digit problems, counting problems
 
 ## 📋 Problem Description
 

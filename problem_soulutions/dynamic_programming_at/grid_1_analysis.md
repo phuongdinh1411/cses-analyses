@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Grid 1 - AtCoder Educational DP Contest Problem H"
+title: "Grid 1"
 permalink: /problem_soulutions/dynamic_programming_at/grid_1_analysis
 ---
 
-# Grid 1 - AtCoder Educational DP Contest Problem H
+# Grid 1
 
 ## 📋 Problem Information
 
@@ -15,14 +15,6 @@ By the end of this problem, you should be able to:
 - Handle blocked cells in grid DP
 - Implement efficient grid path counting
 - Recognize when to use grid DP patterns
-
-### 📚 **Prerequisites**
-Before attempting this problem, ensure you understand:
-- **Algorithm Knowledge**: Dynamic Programming, 2D DP, grid algorithms
-- **Data Structures**: 2D arrays, grids
-- **Mathematical Concepts**: Path counting, modular arithmetic
-- **Programming Skills**: 2D array manipulation, DP on grids
-- **Related Problems**: Grid Paths (CSES), Unique Paths (LeetCode)
 
 ## 📋 Problem Description
 
