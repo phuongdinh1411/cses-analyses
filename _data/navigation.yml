@@ -163,6 +163,61 @@ main:
       url: /cses-analyses/problem_soulutions/dynamic_programming/removal_game_analysis
     - title: ⭐⭐⭐ Two Sets II
       url: /cses-analyses/problem_soulutions/dynamic_programming/two_sets_ii_analysis
+  - title: AtCoder Educational DP Contest
+    url: /cses-analyses/problem_soulutions/dynamic_programming_at
+    children:
+    - title: 🟢 Summary
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/summary
+    - title: ⭐ A - Frog 1
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/frog_1_analysis
+    - title: ⭐ B - Frog 2
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/frog_2_analysis
+    - title: ⭐ C - Vacation
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/vacation_analysis
+    - title: ⭐ D - Knapsack 1
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/knapsack_1_analysis
+    - title: ⭐⭐ E - Knapsack 2
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/knapsack_2_analysis
+    - title: ⭐⭐ G - Longest Path
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/longest_path_analysis
+    - title: ⭐ H - Grid 1
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/grid_1_analysis
+    - title: ⭐⭐ I - Coins
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/coins_analysis
+    - title: ⭐⭐ J - Sushi
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/sushi_analysis
+    - title: ⭐⭐ K - Stones
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/stones_analysis
+    - title: ⭐⭐ L - Deque
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/deque_analysis
+    - title: ⭐⭐ M - Candies
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/candies_analysis
+    - title: ⭐⭐ N - Slimes
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/slimes_analysis
+    - title: ⭐⭐⭐ O - Matching
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/matching_analysis
+    - title: ⭐⭐⭐ P - Independent Set
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/independent_set_analysis
+    - title: ⭐⭐⭐ Q - Flowers
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/flowers_analysis
+    - title: ⭐⭐⭐ R - Walk
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/walk_analysis
+    - title: ⭐⭐⭐ S - Digit Sum
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/digit_sum_analysis
+    - title: ⭐⭐⭐ T - Permutation
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/permutation_analysis
+    - title: ⭐⭐⭐ U - Grouping
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/grouping_analysis
+    - title: ⭐⭐⭐ V - Subtree
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/subtree_analysis
+    - title: ⭐⭐⭐ W - Intervals
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/intervals_analysis
+    - title: ⭐⭐⭐ X - Tower
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/tower_analysis
+    - title: ⭐⭐⭐ Y - Grid 2
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/grid_2_analysis
+    - title: ⭐⭐⭐ Z - Frog 3
+      url: /cses-analyses/problem_soulutions/dynamic_programming_at/frog_3_analysis
   - title: Graph Algorithms
     url: /cses-analyses/problem_soulutions/graph_algorithms
     children:
