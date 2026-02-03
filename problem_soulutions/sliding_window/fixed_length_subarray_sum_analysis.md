@@ -16,7 +16,7 @@ tags: [sliding-window, array, subarray-sum]
 | **Category** | Sliding Window |
 | **Time Limit** | 1 second |
 | **Key Technique** | Fixed-Size Sliding Window |
-| **CSES Link** | [Sliding Window Problems](https://cses.fi/problemset/) |
+| **CSES Link** | - |
 
 ### Learning Goals
 
@@ -427,5 +427,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Sliding Window](https://cp-algorithms.com/)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Sum of Two Values](https://cses.fi/problemset/task/1640) - Related array problem
 - [Sliding Window Technique Guide](https://www.geeksforgeeks.org/window-sliding-technique/)

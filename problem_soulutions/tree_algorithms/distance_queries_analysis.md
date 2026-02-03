@@ -568,5 +568,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: LCA with Binary Lifting](https://cp-algorithms.com/graph/lca_binary_lifting.html)
-- [CSES Problem Set - Tree Algorithms](https://cses.fi/problemset/)
+- [CSES Distance Queries](https://cses.fi/problemset/task/1135) - LCA-based distance computation
 - [USACO Guide: Binary Lifting](https://usaco.guide/plat/binary-lifting)

@@ -459,5 +459,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Bitmask DP](https://cp-algorithms.com/algebra/all-submasks.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Hamiltonian Flights](https://cses.fi/problemset/task/1690) - Hamiltonian path counting
 - [Hamiltonian Path - Wikipedia](https://en.wikipedia.org/wiki/Hamiltonian_path)

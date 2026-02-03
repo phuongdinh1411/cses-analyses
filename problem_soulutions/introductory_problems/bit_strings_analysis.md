@@ -466,5 +466,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Bit Strings](https://cses.fi/problemset/task/1617) - Binary exponentiation
 - [Modular Arithmetic - Wikipedia](https://en.wikipedia.org/wiki/Modular_arithmetic)

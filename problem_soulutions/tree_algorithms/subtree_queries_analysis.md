@@ -626,5 +626,5 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Euler Tour Technique](https://cp-algorithms.com/graph/euler_path.html)
 - [CP-Algorithms: Binary Indexed Tree](https://cp-algorithms.com/data_structures/fenwick.html)
-- [CSES Problem Set - Tree Algorithms](https://cses.fi/problemset/)
+- [CSES Subtree Queries](https://cses.fi/problemset/task/1137) - Euler tour with range queries
 - [USACO Guide: Tree Euler Tour](https://usaco.guide/gold/euler-tour)

@@ -16,7 +16,7 @@ tags: [mex, grid, construction, constraint-satisfaction, math]
 | **Category** | Construction / Math |
 | **Time Limit** | 1 second |
 | **Key Technique** | Constraint Satisfaction + MEX Properties |
-| **CSES Link** | [Grid Puzzle Problems](https://cses.fi/problemset/) |
+| **CSES Link** | - |
 
 ### Learning Goals
 

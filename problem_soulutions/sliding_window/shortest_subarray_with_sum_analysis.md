@@ -449,5 +449,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Two Pointers](https://cp-algorithms.com/others/two_pointers.html)
-- [CSES Problem Set - Sorting and Searching](https://cses.fi/problemset/)
+- [CSES Subarray Sums I](https://cses.fi/problemset/task/1660) - Related subarray sum problem
 - [LeetCode Sliding Window Pattern](https://leetcode.com/tag/sliding-window/)

@@ -476,4 +476,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Bridge Finding](https://cp-algorithms.com/graph/bridge-searching.html)
 - [CP-Algorithms: Strongly Connected Components](https://cp-algorithms.com/graph/strongly-connected-components.html)
-- [CSES Problem Set - Graph Algorithms](https://cses.fi/problemset/)
+- [CSES Strongly Connected Edges](https://cses.fi/problemset/task/2177) - Make graph strongly connected

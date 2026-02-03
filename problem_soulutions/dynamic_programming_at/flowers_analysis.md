@@ -512,4 +512,4 @@ Before moving on, make sure you can:
 
 - [AtCoder DP Contest - Problem Q](https://atcoder.jp/contests/dp/tasks/dp_q) - Original problem
 - [CP-Algorithms: Segment Tree](https://cp-algorithms.com/data_structures/segment_tree.html) - Segment tree tutorial
-- [CSES Problem Set](https://cses.fi/problemset/) - More DP problems
+- [CSES Increasing Subsequence](https://cses.fi/problemset/task/1145) - Similar LIS-based DP

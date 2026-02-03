@@ -537,4 +537,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: BFS](https://cp-algorithms.com/graph/breadth-first-search.html)
 - [Knight's Tour - Wikipedia](https://en.wikipedia.org/wiki/Knight%27s_tour)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Labyrinth](https://cses.fi/problemset/task/1193) - BFS on grid

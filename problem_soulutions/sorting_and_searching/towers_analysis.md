@@ -529,6 +529,6 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Towers](https://cses.fi/problemset/task/1073) - Minimum number of stacks
 - [CP-Algorithms: LIS](https://cp-algorithms.com/sequences/longest_increasing_subsequence.html)
 - [Dilworth's Theorem (Wikipedia)](https://en.wikipedia.org/wiki/Dilworth%27s_theorem)

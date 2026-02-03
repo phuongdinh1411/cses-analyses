@@ -561,5 +561,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Sweep Line](https://cp-algorithms.com/geometry/sweep_line.html)
-- [CSES Problem Set - Sorting and Searching](https://cses.fi/problemset/)
+- [CSES Nested Ranges Check](https://cses.fi/problemset/task/2168) - Check range containment
 - [Interval Scheduling Algorithms](https://en.wikipedia.org/wiki/Interval_scheduling)

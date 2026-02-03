@@ -554,4 +554,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Small-to-Large](https://cp-algorithms.com/data_structures/dsu.html)
 - [CF Blog: DSU on Tree](https://codeforces.com/blog/entry/44351)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Distinct Colors](https://cses.fi/problemset/task/1139) - Small-to-large merging

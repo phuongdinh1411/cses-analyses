@@ -16,7 +16,7 @@ tags: [geometry, coordinate-transformation, manhattan-distance, math]
 | **Category** | Geometry |
 | **Time Limit** | 1 second |
 | **Key Technique** | Rotated Coordinates (x+y, x-y) |
-| **CSES Link** | [Geometry Problems](https://cses.fi/problemset/) |
+| **CSES Link** | - |
 
 ### Learning Goals
 
@@ -416,4 +416,4 @@ Before moving on, make sure you can:
 - [CP-Algorithms: Manhattan Distance](https://cp-algorithms.com/geometry/manhattan-distance.html)
 - [Wikipedia: Taxicab Geometry](https://en.wikipedia.org/wiki/Taxicab_geometry)
 - [Chebyshev Distance](https://en.wikipedia.org/wiki/Chebyshev_distance)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Convex Hull](https://cses.fi/problemset/task/2195) - Computational geometry problem

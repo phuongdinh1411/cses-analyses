@@ -484,4 +484,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Prufer Code](https://cp-algorithms.com/graph/pruefer_code.html)
 - [Wikipedia: Cayley's Formula](https://en.wikipedia.org/wiki/Cayley%27s_formula)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Prufer Code](https://cses.fi/problemset/task/1134) - Tree encoding

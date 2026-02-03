@@ -477,4 +477,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
 - [CP-Algorithms: Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html#toc-tgt-5)
-- [CSES Problem Set - Graph Algorithms](https://cses.fi/problemset/)
+- [CSES Graph Paths II](https://cses.fi/problemset/task/1724) - Matrix exponentiation for shortest paths

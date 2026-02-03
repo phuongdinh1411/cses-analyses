@@ -417,4 +417,4 @@ Before moving on, make sure you can:
 
 - [AtCoder DP Contest Editorial](https://atcoder.jp/contests/dp)
 - [CP-Algorithms: Dynamic Programming](https://cp-algorithms.com/dynamic_programming/intro-to-dp.html)
-- [CSES Problem Set - DP Section](https://cses.fi/problemset/)
+- [CSES Grid Paths](https://cses.fi/problemset/task/1638) - Similar DP on sequential choices

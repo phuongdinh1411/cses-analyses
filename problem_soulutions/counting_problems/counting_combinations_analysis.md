@@ -443,4 +443,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Binomial Coefficients](https://cp-algorithms.com/combinatorics/binomial-coefficients.html)
 - [CP-Algorithms: Modular Inverse](https://cp-algorithms.com/algebra/module-inverse.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Binomial Coefficients](https://cses.fi/problemset/task/1079) - nCr computation

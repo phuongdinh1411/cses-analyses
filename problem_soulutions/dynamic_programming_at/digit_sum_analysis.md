@@ -416,4 +416,4 @@ Before moving on, make sure you can:
 
 - [AtCoder DP Contest](https://atcoder.jp/contests/dp) - Educational DP problem set
 - [CP-Algorithms: Digit DP](https://cp-algorithms.com/dynamic_programming/digit-dp.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Counting Numbers](https://cses.fi/problemset/task/2220) - Digit DP application

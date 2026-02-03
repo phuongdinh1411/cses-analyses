@@ -420,5 +420,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Combinatorics](https://cp-algorithms.com/combinatorics/catalan-numbers.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Two Knights](https://cses.fi/problemset/task/1072) - Chess combinatorics
 - [Knight's Tour Problem](https://en.wikipedia.org/wiki/Knight%27s_tour) - Related chess combinatorics

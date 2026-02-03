@@ -448,5 +448,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Digit DP](https://cp-algorithms.com/dynamic_programming/digit_dp.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Digit Queries](https://cses.fi/problemset/task/2431) - Champernowne constant
 - [Wikipedia: Champernowne Constant](https://en.wikipedia.org/wiki/Champernowne_constant) - The mathematical sequence this problem is based on

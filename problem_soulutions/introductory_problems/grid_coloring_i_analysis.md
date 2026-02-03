@@ -482,5 +482,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Backtracking](https://cp-algorithms.com/combinatorics/generating_combinations.html)
-- [CSES Problem Set - Introductory Problems](https://cses.fi/problemset/)
+- [CSES Counting Tilings](https://cses.fi/problemset/task/2181) - Grid-based counting
 - [Graph Coloring - Wikipedia](https://en.wikipedia.org/wiki/Graph_coloring)

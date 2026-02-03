@@ -492,6 +492,6 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Forest Queries](https://cses.fi/problemset/task/1652) - 2D prefix sum basics
 - [CP-Algorithms: 2D Prefix Sums](https://cp-algorithms.com/data_structures/prefix-sum-2d.html)
 - [C++ Bitset Reference](https://en.cppreference.com/w/cpp/utility/bitset)

@@ -495,4 +495,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Bitmask DP](https://cp-algorithms.com/algebra/all-submasks.html)
 - [CP-Algorithms: Hamiltonian Path](https://cp-algorithms.com/graph/hamiltonian-path.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Hamiltonian Flights](https://cses.fi/problemset/task/1690) - Bitmask DP application

@@ -393,5 +393,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [Wikipedia: Collatz Conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Weird Algorithm](https://cses.fi/problemset/task/1068) - Collatz sequence
 - [Numberphile: The Collatz Conjecture](https://www.youtube.com/watch?v=094y1Z2wpJg)

@@ -655,5 +655,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Fenwick Tree](https://cp-algorithms.com/data_structures/fenwick.html)
-- [CSES Problem Set - Sorting and Searching](https://cses.fi/problemset/)
+- [CSES Nested Ranges Count](https://cses.fi/problemset/task/2169) - Count range containment
 - [TopCoder: Binary Indexed Trees](https://www.topcoder.com/community/competitive-programming/tutorials/binary-indexed-trees/)

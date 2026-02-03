@@ -474,4 +474,4 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Manacher's Algorithm](https://cp-algorithms.com/string/manacher.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Longest Palindrome](https://cses.fi/problemset/task/1111) - Manacher's algorithm

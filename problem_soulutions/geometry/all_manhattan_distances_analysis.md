@@ -433,5 +433,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Coordinate Compression](https://cp-algorithms.com/algebra/coordinate-compression.html)
-- [CSES Problem Set - Geometry Section](https://cses.fi/problemset/)
+- [CSES Convex Hull](https://cses.fi/problemset/task/2195) - Related geometry problem
 - [Manhattan Distance Properties](https://en.wikipedia.org/wiki/Taxicab_geometry)

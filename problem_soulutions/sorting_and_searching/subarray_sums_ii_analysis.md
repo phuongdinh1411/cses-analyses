@@ -469,4 +469,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Prefix Sums](https://cp-algorithms.com/others/prefix_sums.html)
 - [LeetCode Discuss: Subarray Sum Pattern](https://leetcode.com/problems/subarray-sum-equals-k/discuss/341399/)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Subarray Sums II](https://cses.fi/problemset/task/1661) - Prefix sum with negative values

@@ -480,4 +480,4 @@ return Ak[a-1][a-1] > 0
 
 **Practice Checklist:** Before moving on, make sure you can explain why A^k counts paths, implement binary exponentiation for matrices, handle overflow, and identify when this pattern applies.
 
-**Resources:** [CP-Algorithms: Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html) | [CSES Problem Set](https://cses.fi/problemset/)
+**Resources:** [CP-Algorithms: Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html) | [CSES Graph Paths I](https://cses.fi/problemset/task/1723)

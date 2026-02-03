@@ -434,5 +434,5 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problemset](https://cses.fi/problemset/)
+- [CSES Playlist](https://cses.fi/problemset/task/1141) - Longest unique subarray
 - [LeetCode Sliding Window Problems](https://leetcode.com/tag/sliding-window/)

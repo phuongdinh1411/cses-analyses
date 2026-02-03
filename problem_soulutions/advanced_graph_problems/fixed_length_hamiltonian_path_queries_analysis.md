@@ -476,5 +476,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Bitmask DP](https://cp-algorithms.com/dynamic_programming/profile-dynamics.html)
-- [CSES Problem Set - Advanced Techniques](https://cses.fi/problemset/)
+- [CSES Hamiltonian Flights](https://cses.fi/problemset/task/1690) - Count Hamiltonian paths
 - [TopCoder: Bitmask Tutorial](https://www.topcoder.com/thrive/articles/A%20bit%20of%20fun:%20fun%20with%20bits)

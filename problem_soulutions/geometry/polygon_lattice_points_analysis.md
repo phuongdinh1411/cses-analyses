@@ -412,4 +412,4 @@ Before moving on, make sure you can:
 - [CP-Algorithms: Pick's Theorem](https://cp-algorithms.com/geometry/picks-theorem.html)
 - [CP-Algorithms: Shoelace Formula](https://cp-algorithms.com/geometry/area-of-simple-polygon.html)
 - [Wikipedia: Pick's Theorem](https://en.wikipedia.org/wiki/Pick%27s_theorem)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Polygon Lattice Points](https://cses.fi/problemset/task/2193) - Pick's theorem application

@@ -497,4 +497,4 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
-- [CSES Problem Set - Graph Algorithms](https://cses.fi/problemset/)
+- [CSES Graph Paths I](https://cses.fi/problemset/task/1723) - Matrix exponentiation for path counting

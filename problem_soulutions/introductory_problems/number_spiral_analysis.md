@@ -464,5 +464,5 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problem Set - Introductory Problems](https://cses.fi/problemset/)
+- [CSES Number Spiral](https://cses.fi/problemset/task/1071) - Spiral pattern queries
 - [Spiral Matrix patterns on CP-Algorithms](https://cp-algorithms.com/)

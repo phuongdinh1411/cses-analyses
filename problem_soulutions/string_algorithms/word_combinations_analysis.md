@@ -510,4 +510,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Trie](https://cp-algorithms.com/string/trie.html)
 - [CP-Algorithms: Aho-Corasick](https://cp-algorithms.com/string/aho_corasick.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Word Combinations](https://cses.fi/problemset/task/1731) - Trie-based DP

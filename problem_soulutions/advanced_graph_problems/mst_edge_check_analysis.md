@@ -542,4 +542,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: MST Kruskal](https://cp-algorithms.com/graph/mst_kruskal.html)
 - [CP-Algorithms: LCA Binary Lifting](https://cp-algorithms.com/graph/lca_binary_lifting.html)
-- [CSES Problem Set - Graph Section](https://cses.fi/problemset/)
+- [CSES Road Reparation](https://cses.fi/problemset/task/1675) - Basic MST problem

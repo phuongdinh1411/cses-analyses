@@ -467,5 +467,5 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Missing Coin Sum](https://cses.fi/problemset/task/2183) - Smallest unachievable sum
 - [CP-Algorithms: Greedy Algorithms](https://cp-algorithms.com/)

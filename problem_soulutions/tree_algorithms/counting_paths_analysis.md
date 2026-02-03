@@ -665,5 +665,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: LCA with Binary Lifting](https://cp-algorithms.com/graph/lca_binary_lifting.html)
-- [CSES Problem Set - Tree Algorithms](https://cses.fi/problemset/)
+- [CSES Counting Paths](https://cses.fi/problemset/task/1136) - Count paths through edges
 - [USACO Guide: Tree Algorithms](https://usaco.guide/gold/tree-euler)

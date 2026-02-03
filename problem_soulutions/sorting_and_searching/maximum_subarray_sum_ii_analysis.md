@@ -543,5 +543,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Minimum Stack/Queue](https://cp-algorithms.com/data_structures/stack_queue_modification.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Maximum Subarray Sum II](https://cses.fi/problemset/task/1644) - Bounded length subarray sum
 - [Monotonic Deque Tutorial](https://leetcode.com/problems/sliding-window-maximum/solutions/65884/java-o-n-solution-using-deque-with-explanation/)

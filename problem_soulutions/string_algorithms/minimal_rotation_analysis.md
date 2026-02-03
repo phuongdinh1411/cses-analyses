@@ -490,4 +490,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Lyndon Factorization](https://cp-algorithms.com/string/lyndon_factorization.html)
 - [Wikipedia: Lexicographically minimal string rotation](https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Minimal Rotation](https://cses.fi/problemset/task/1110) - Smallest cyclic rotation

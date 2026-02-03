@@ -419,4 +419,4 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: LCA with Binary Lifting](https://cp-algorithms.com/graph/lca_binary_lifting.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Company Queries II](https://cses.fi/problemset/task/1688) - LCA queries

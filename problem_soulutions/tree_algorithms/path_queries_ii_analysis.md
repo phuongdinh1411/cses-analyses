@@ -739,5 +739,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Heavy-Light Decomposition](https://cp-algorithms.com/data_structures/hld.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Path Queries II](https://cses.fi/problemset/task/2134) - HLD with segment tree
 - [Anudeep's Blog on HLD](https://blog.anudeep2011.com/heavy-light-decomposition/)

@@ -457,4 +457,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Suffix Array](https://cp-algorithms.com/string/suffix-array.html)
 - [CP-Algorithms: LCP Array (Kasai's Algorithm)](https://cp-algorithms.com/string/suffix-array.html#finding-the-longest-common-prefix-of-two-substrings-with-additional-memory)
-- [CSES Problem Set - String Algorithms](https://cses.fi/problemset/)
+- [CSES Distinct Substrings](https://cses.fi/problemset/task/2105) - Suffix array LCP

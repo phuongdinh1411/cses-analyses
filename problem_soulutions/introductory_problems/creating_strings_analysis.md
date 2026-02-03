@@ -535,5 +535,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Generating Permutations](https://cp-algorithms.com/combinatorics/generating_permutations.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Creating Strings I](https://cses.fi/problemset/task/1622) - Generate permutations
 - [Backtracking Tutorial](https://cp-algorithms.com/others/backtracking.html)

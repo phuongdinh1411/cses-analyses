@@ -547,4 +547,4 @@ Before moving on, make sure you can:
 - [CP-Algorithms: Finding Bridges](https://cp-algorithms.com/graph/bridge-searching.html)
 - [CP-Algorithms: Finding Articulation Points](https://cp-algorithms.com/graph/cutpoints.html)
 - [Tarjan's Original Paper](https://doi.org/10.1137/0201010)
-- [CSES Problem Set - Graph Algorithms](https://cses.fi/problemset/)
+- [CSES Giant Pizza](https://cses.fi/problemset/task/1684) - SCC-based problem

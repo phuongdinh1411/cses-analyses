@@ -559,4 +559,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Suffix Automaton](https://cp-algorithms.com/string/suffix-automaton.html)
 - [E-Maxx: Suffix Automaton (Russian)](https://e-maxx.ru/algo/suffix_automata)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Distinct Substrings](https://cses.fi/problemset/task/2105) - Suffix automaton application

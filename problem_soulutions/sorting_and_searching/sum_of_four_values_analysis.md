@@ -467,4 +467,4 @@ Before moving on, make sure you can:
 
 - [LeetCode - 4Sum Editorial](https://leetcode.com/problems/4sum/editorial/)
 - [CP-Algorithms: Two Pointers](https://cp-algorithms.com/others/two_pointers.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Sum of Four Values](https://cses.fi/problemset/task/1642) - Find 4 elements summing to target

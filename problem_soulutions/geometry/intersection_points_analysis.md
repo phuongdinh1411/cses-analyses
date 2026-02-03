@@ -427,4 +427,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Sweep Line](https://cp-algorithms.com/geometry/sweep-line.html)
 - [CP-Algorithms: Fenwick Tree](https://cp-algorithms.com/data_structures/fenwick.html)
-- [CSES Problem Set - Geometry](https://cses.fi/problemset/)
+- [CSES Line Segment Intersection](https://cses.fi/problemset/task/2190) - Related line intersection problem

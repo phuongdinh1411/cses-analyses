@@ -507,4 +507,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Suffix Array](https://cp-algorithms.com/string/suffix-array.html)
 - [CP-Algorithms: Kasai's LCP Algorithm](https://cp-algorithms.com/string/suffix-array.html#finding-the-longest-common-prefix-of-two-substrings-without-additional-memory)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Substring Order II](https://cses.fi/problemset/task/2109) - K-th smallest substring

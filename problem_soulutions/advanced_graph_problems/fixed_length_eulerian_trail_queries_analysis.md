@@ -17,7 +17,7 @@ prerequisites: [graph-basics, dfs, matrix-multiplication]
 | **Category** | Graph Theory |
 | **Time Limit** | 1 second |
 | **Key Technique** | Matrix Exponentiation, Eulerian Path Theory |
-| **CSES Link** | [Graph Path Queries](https://cses.fi/problemset/) |
+| **CSES Link** | - |
 
 ### Learning Goals
 
@@ -499,4 +499,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Matrix Exponentiation](https://cp-algorithms.com/algebra/matrix-exp.html)
 - [CP-Algorithms: Eulerian Path](https://cp-algorithms.com/graph/euler_path.html)
-- [CSES Problem Set - Graph Algorithms](https://cses.fi/problemset/)
+- [CSES Mail Delivery](https://cses.fi/problemset/task/1691) - Eulerian circuit problem

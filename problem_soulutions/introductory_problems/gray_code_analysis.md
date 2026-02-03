@@ -437,4 +437,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Gray Code](https://cp-algorithms.com/algebra/gray-code.html)
 - [Wikipedia: Gray Code](https://en.wikipedia.org/wiki/Gray_code)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Gray Code](https://cses.fi/problemset/task/2205) - Binary code generation

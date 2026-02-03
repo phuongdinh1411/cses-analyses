@@ -396,5 +396,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Bit Manipulation](https://cp-algorithms.com/algebra/bit-manipulation.html)
-- [CSES Problem Set - Introductory Problems](https://cses.fi/problemset/)
+- [CSES Apple Division](https://cses.fi/problemset/task/1623) - Subset sum with brute force
 - [Bitmask Tutorial - TopCoder](https://www.topcoder.com/thrive/articles/A%20bit%20of%20fun:%20fun%20with%20bits)

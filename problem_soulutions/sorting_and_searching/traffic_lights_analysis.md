@@ -472,5 +472,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Set and Multiset](https://cp-algorithms.com/)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Traffic Lights](https://cses.fi/problemset/task/1163) - Set-based gap tracking
 - [SortedContainers Documentation](http://www.grantjenks.com/docs/sortedcontainers/)

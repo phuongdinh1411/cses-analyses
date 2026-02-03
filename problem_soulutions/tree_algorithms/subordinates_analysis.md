@@ -452,4 +452,4 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Tree DP](https://cp-algorithms.com/graph/tree_dp.html)
-- [CSES Problem Set - Tree Algorithms](https://cses.fi/problemset/)
+- [CSES Subordinates](https://cses.fi/problemset/task/1674) - Count subtree nodes

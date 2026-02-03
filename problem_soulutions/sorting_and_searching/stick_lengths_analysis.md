@@ -440,5 +440,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [Why Median Minimizes Absolute Deviations (Math Explanation)](https://math.stackexchange.com/questions/113270/the-median-minimizes-the-sum-of-absolute-deviations)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Stick Lengths](https://cses.fi/problemset/task/1074) - Median optimization
 - [Sorting Algorithms - CP-Algorithms](https://cp-algorithms.com/sorting/sorting.html)

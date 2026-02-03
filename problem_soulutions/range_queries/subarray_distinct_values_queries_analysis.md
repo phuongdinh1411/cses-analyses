@@ -645,4 +645,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Fenwick Tree](https://cp-algorithms.com/data_structures/fenwick.html)
 - [CP-Algorithms: Mo's Algorithm](https://cp-algorithms.com/data_structures/sqrt_decomposition.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Distinct Values Queries](https://cses.fi/problemset/task/1734) - Count distinct in range

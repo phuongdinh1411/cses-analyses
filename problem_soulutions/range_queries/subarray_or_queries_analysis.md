@@ -664,4 +664,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Sparse Table](https://cp-algorithms.com/data_structures/sparse-table.html)
 - [CP-Algorithms: Segment Tree](https://cp-algorithms.com/data_structures/segment_tree.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Range Xor Queries](https://cses.fi/problemset/task/1650) - Similar bitwise range query

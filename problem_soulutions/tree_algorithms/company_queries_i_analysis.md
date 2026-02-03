@@ -584,5 +584,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Binary Lifting](https://cp-algorithms.com/graph/lca_binary_lifting.html)
-- [CSES Problem Set - Tree Algorithms](https://cses.fi/problemset/)
+- [CSES Company Queries I](https://cses.fi/problemset/task/1687) - K-th ancestor query
 - [Competitive Programmer's Handbook - Chapter 18](https://cses.fi/book/book.pdf)

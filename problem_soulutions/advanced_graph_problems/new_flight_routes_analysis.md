@@ -488,4 +488,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Strongly Connected Components](https://cp-algorithms.com/graph/strongly-connected-components.html)
 - [Kosaraju's Algorithm Visualization](https://www.cs.usfca.edu/~galles/visualization/ConnectedComponent.html)
-- [CSES Graph Section](https://cses.fi/problemset/)
+- [CSES Flight Routes](https://cses.fi/problemset/task/1196) - K shortest paths

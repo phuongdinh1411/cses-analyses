@@ -494,4 +494,4 @@ long long k;
 ## Additional Resources
 
 - [CP-Algorithms: Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Graph Paths I](https://cses.fi/problemset/task/1723) - Matrix exponentiation for paths

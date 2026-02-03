@@ -509,5 +509,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Fenwick Tree](https://cp-algorithms.com/data_structures/fenwick.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Range Update Queries](https://cses.fi/problemset/task/1651) - Difference array technique
 - [Difference Array Technique](https://www.geeksforgeeks.org/difference-array-range-update-query-o1/)

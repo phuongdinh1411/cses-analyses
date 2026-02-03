@@ -415,4 +415,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Modular Inverse](https://cp-algorithms.com/algebra/module-inverse.html)
 - [CP-Algorithms: Factorial & Combinations](https://cp-algorithms.com/combinatorics/binomial-coefficients.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Creating Strings](https://cses.fi/problemset/task/1715) - Permutation counting

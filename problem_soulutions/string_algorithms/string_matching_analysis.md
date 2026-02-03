@@ -660,4 +660,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: KMP](https://cp-algorithms.com/string/prefix-function.html)
 - [CP-Algorithms: Z-function](https://cp-algorithms.com/string/z-function.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES String Matching](https://cses.fi/problemset/task/1753) - Pattern occurrence counting

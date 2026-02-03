@@ -373,4 +373,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Cross Product](https://cp-algorithms.com/geometry/oriented-triangle-area.html)
 - [Computational Geometry - Princeton](https://www.cs.princeton.edu/courses/archive/fall00/cs126/lectures/c13-2x2.pdf)
-- [CSES Problem Set - Geometry Section](https://cses.fi/problemset/)
+- [CSES Point Location Test](https://cses.fi/problemset/task/2189) - Cross product applications

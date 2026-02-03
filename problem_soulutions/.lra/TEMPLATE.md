@@ -334,4 +334,4 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Hash Tables](https://cp-algorithms.com/data_structures/hash_table.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Problem Link](https://cses.fi/problemset/task/XXXX) - Replace with specific task ID

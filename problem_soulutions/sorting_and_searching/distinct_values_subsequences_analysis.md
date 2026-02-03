@@ -505,6 +505,6 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Subarray Distinct Values](https://cses.fi/problemset/task/2428) - Count distinct values in subarrays
 - [Two Pointers Technique - CP Algorithms](https://cp-algorithms.com/data_structures/segment_tree.html)
 - [Sliding Window Pattern - LeetCode Explore](https://leetcode.com/explore/learn/card/array-and-string/205/array-two-pointer-technique/)

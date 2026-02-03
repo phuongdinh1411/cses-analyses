@@ -436,5 +436,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [AtCoder DP Contest](https://atcoder.jp/contests/dp) - Problem D and E
-- [CSES Problem Set - DP Section](https://cses.fi/problemset/)
+- [CSES Minimizing Coins](https://cses.fi/problemset/task/1634) - Similar coin-based DP
 - [CP-Algorithms: Knapsack](https://cp-algorithms.com/dynamic_programming/knapsack.html)

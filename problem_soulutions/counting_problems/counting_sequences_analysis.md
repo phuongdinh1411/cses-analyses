@@ -434,4 +434,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
 - [CP-Algorithms: Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html)
-- [CSES Problem Set - Mathematics](https://cses.fi/problemset/)
+- [CSES Distributing Apples](https://cses.fi/problemset/task/1716) - Stars and bars counting

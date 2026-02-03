@@ -363,5 +363,5 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Repetitions](https://cses.fi/problemset/task/1069) - Longest consecutive run
 - [Run-Length Encoding (Wikipedia)](https://en.wikipedia.org/wiki/Run-length_encoding) - Related concept

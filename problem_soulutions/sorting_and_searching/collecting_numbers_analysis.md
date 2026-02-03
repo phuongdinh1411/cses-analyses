@@ -423,5 +423,5 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Collecting Numbers](https://cses.fi/problemset/task/2216) - Count collection rounds
 - [Collecting Numbers II](https://cses.fi/problemset/task/2217) - Follow-up with updates

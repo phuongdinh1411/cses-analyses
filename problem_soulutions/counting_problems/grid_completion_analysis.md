@@ -487,4 +487,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Generating Permutations](https://cp-algorithms.com/combinatorics/generating_permutations.html)
 - [Wikipedia: Latin Square](https://en.wikipedia.org/wiki/Latin_square)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Grid Paths](https://cses.fi/problemset/task/1638) - Grid-based counting

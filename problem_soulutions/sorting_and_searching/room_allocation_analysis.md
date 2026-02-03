@@ -485,5 +485,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Sweep Line](https://cp-algorithms.com/geometry/sweep-line.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Room Allocation](https://cses.fi/problemset/task/1164) - Interval scheduling
 - [LeetCode Meeting Rooms Problems](https://leetcode.com/tag/meeting-rooms/)

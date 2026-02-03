@@ -585,5 +585,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Fenwick Tree](https://cp-algorithms.com/data_structures/fenwick.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Salary Queries](https://cses.fi/problemset/task/1144) - Count elements in range with updates
 - [Coordinate Compression Tutorial](https://usaco.guide/silver/sorting-custom)

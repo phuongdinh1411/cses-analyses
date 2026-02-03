@@ -490,5 +490,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: DFS and Tree Decomposition](https://cp-algorithms.com/graph/depth-first-search.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Even Outdegree Edges](https://cses.fi/problemset/task/2179) - Graph orientation problem
 - [Graph Orientation Problems - TopCoder](https://www.topcoder.com/community/competitive-programming/tutorials/)

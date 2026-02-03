@@ -542,5 +542,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Triangular Numbers](https://cp-algorithms.com/algebra/triangular-numbers.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Two Sets](https://cses.fi/problemset/task/1092) - Partition into equal sums
 - [Two Sets II Analysis](../dynamic_programming/two_sets_ii_analysis) - Counting version of this problem

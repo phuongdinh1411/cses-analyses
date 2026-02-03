@@ -451,4 +451,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Li Chao Tree](https://cp-algorithms.com/geometry/convex_hull_trick.html)
 - [CF Blog: Li Chao Tree Tutorial](https://codeforces.com/blog/entry/86731)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Line Segment Intersection](https://cses.fi/problemset/task/2190) - Related geometry problem

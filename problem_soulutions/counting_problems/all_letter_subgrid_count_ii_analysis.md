@@ -17,7 +17,7 @@ prerequisites: [prefix_sums, 2d_arrays]
 | **Category** | Grid Counting |
 | **Time Limit** | 1 second |
 | **Key Technique** | Prefix Sums / Histogram Method |
-| **CSES Link** | [Problem Set](https://cses.fi/problemset/) |
+| **CSES Link** | - |
 
 ### Learning Goals
 
@@ -483,5 +483,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Maximum Rectangle in Histogram](https://cp-algorithms.com/data_structures/stack_max_count.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Forest Queries](https://cses.fi/problemset/task/1652) - 2D prefix sums
 - [Monotonic Stack Tutorial](https://leetcode.com/problems/largest-rectangle-in-histogram/solutions/28902/5ms-o-n-java-solution-explained-beats-96/)

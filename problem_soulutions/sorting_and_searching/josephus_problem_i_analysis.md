@@ -509,4 +509,4 @@ Before moving on, make sure you can:
 
 - [Wikipedia: Josephus Problem](https://en.wikipedia.org/wiki/Josephus_problem)
 - [CP-Algorithms: Josephus Problem](https://cp-algorithms.com/others/josephus_problem.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Josephus Problem I](https://cses.fi/problemset/task/2162) - Every second person elimination

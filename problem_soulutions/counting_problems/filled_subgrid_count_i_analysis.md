@@ -501,5 +501,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: 2D Prefix Sums](https://cp-algorithms.com/data_structures/prefix-sum.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Forest Queries](https://cses.fi/problemset/task/1652) - 2D prefix sum application
 - [LeetCode Grid Problems](https://leetcode.com/tag/matrix/)

@@ -473,4 +473,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Backtracking](https://cp-algorithms.com/others/backtracking.html)
 - [Wikipedia: Eight Queens Puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Chessboard and Queens](https://cses.fi/problemset/task/1624) - Backtracking puzzle

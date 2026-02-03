@@ -448,5 +448,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Tree Algorithms](https://cp-algorithms.com/graph/tree-oi.html)
-- [CSES Problem Set - Tree Algorithms](https://cses.fi/problemset/)
+- [CSES Tree Traversals](https://cses.fi/problemset/task/1702) - Reconstruct tree from traversals
 - [Competitive Programmer's Handbook - Tree Algorithms](https://cses.fi/book/book.pdf)

@@ -448,4 +448,4 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Two Pointers](https://cp-algorithms.com/others/two_pointers.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Subarray Distinct Values](https://cses.fi/problemset/task/2428) - Count subarrays with at most k distinct values

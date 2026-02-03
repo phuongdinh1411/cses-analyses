@@ -321,4 +321,4 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Counting Sort](https://cp-algorithms.com/sorting/counting-sort.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Creating Strings I](https://cses.fi/problemset/task/1622) - String permutations

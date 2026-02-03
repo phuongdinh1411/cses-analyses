@@ -548,5 +548,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Eulerian Path](https://cp-algorithms.com/graph/euler_path.html)
-- [CSES Problem Set - Graph Algorithms](https://cses.fi/problemset/)
+- [CSES Mail Delivery](https://cses.fi/problemset/task/1691) - Find Eulerian circuit
 - [Wikipedia: Eulerian Path](https://en.wikipedia.org/wiki/Eulerian_path)

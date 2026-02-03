@@ -352,4 +352,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Factorial Divisors](https://cp-algorithms.com/algebra/factorial-divisors.html)
 - [Wikipedia: Legendre's Formula](https://en.wikipedia.org/wiki/Legendre%27s_formula)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Trailing Zeros](https://cses.fi/problemset/task/1618) - Legendre's formula

@@ -480,5 +480,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: 2D Prefix Sums](https://cp-algorithms.com/data_structures/prefix_sums.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Forest Queries](https://cses.fi/problemset/task/1652) - 2D prefix sum queries
 - [Subgrid Problems on USACO Guide](https://usaco.guide/)

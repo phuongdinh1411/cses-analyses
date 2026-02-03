@@ -591,5 +591,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Segment Tree](https://cp-algorithms.com/data_structures/segment_tree.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Subarray Sum Queries](https://cses.fi/problemset/task/1190) - Maximum subarray with updates
 - [Kadane's Algorithm Explanation](https://en.wikipedia.org/wiki/Maximum_subarray_problem)

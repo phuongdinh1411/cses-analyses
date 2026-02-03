@@ -467,5 +467,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Two Pointers Method](https://cp-algorithms.com/others/two_pointers.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Distinct Values Queries](https://cses.fi/problemset/task/1734) - Query distinct values in range
 - [LeetCode Sliding Window Pattern](https://leetcode.com/tag/sliding-window/)

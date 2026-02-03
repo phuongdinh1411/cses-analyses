@@ -506,4 +506,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Closest Pair of Points](https://cp-algorithms.com/geometry/nearest_points.html)
 - [Computational Geometry - Closest Pair](https://en.wikipedia.org/wiki/Closest_pair_of_points_problem)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Minimum Euclidean Distance](https://cses.fi/problemset/task/2194) - Closest pair of points

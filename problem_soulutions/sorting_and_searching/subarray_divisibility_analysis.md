@@ -452,5 +452,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Prefix Sums](https://cp-algorithms.com/data_structures/prefix_sum.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Subarray Divisibility](https://cses.fi/problemset/task/1662) - Prefix sum with modular arithmetic
 - [LeetCode Modular Arithmetic Problems](https://leetcode.com/tag/math/)

@@ -491,4 +491,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Finding Cycle](https://cp-algorithms.com/graph/finding-cycle.html)
 - [CP-Algorithms: BFS](https://cp-algorithms.com/graph/breadth-first-search.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Shortest Routes I](https://cses.fi/problemset/task/1671) - BFS-based shortest path

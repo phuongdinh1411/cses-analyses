@@ -17,7 +17,7 @@ prerequisites: [modular_exponentiation]
 | **Category** | Combinatorics / Counting |
 | **Time Limit** | 1 second |
 | **Key Technique** | Modular Exponentiation |
-| **CSES Link** | [Mathematics Section](https://cses.fi/problemset/) |
+| **CSES Link** | - |
 
 ### Learning Goals
 
@@ -466,4 +466,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
 - [CP-Algorithms: Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Exponentiation](https://cses.fi/problemset/task/1095) - Modular power computation

@@ -497,4 +497,4 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Bracket Sequences](https://cp-algorithms.com/combinatorics/bracket_sequences.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Bracket Sequences I](https://cses.fi/problemset/task/2064) - Counting bracket patterns

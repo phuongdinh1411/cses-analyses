@@ -585,4 +585,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: String Hashing](https://cp-algorithms.com/string/string-hashing.html)
 - [CP-Algorithms: Suffix Array](https://cp-algorithms.com/string/suffix-array.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Repeating Substring](https://cses.fi/problemset/task/2106) - Longest repeated substring

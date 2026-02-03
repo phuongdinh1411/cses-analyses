@@ -480,4 +480,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Order Statistics Tree](https://cp-algorithms.com/data_structures/order_statistic_tree.html)
 - [GNU Policy-Based Data Structures](https://gcc.gnu.org/onlinedocs/libstdc++/manual/policy_data_structures.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Josephus Problem II](https://cses.fi/problemset/task/2163) - Order statistic variant

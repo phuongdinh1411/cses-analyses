@@ -568,6 +568,6 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Movie Festival II](https://cses.fi/problemset/task/1632) - Multi-member scheduling
 - [CP-Algorithms: Interval Scheduling](https://cp-algorithms.com/)
 - [Python SortedContainers Documentation](http://www.grantjenks.com/docs/sortedcontainers/)

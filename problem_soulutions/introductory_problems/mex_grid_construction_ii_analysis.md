@@ -16,7 +16,7 @@ tags: [mex, grid, construction, constraint-satisfaction, math, dual-constraints]
 | **Category** | Construction / Math |
 | **Time Limit** | 1 second |
 | **Key Technique** | Dual Constraint Satisfaction + MEX Properties |
-| **CSES Link** | [CSES Problem Set](https://cses.fi/problemset/) |
+| **CSES Link** | - |
 
 ### Learning Goals
 

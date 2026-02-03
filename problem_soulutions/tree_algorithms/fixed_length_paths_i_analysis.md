@@ -637,5 +637,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Centroid Decomposition](https://cp-algorithms.com/graph/centroid-decomposition.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Fixed-Length Paths I](https://cses.fi/problemset/task/2080) - Count paths of length k
 - [Centroid Decomposition Tutorial (Codeforces)](https://codeforces.com/blog/entry/52492)

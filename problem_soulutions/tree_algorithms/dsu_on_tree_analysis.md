@@ -581,4 +581,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: DSU on Trees](https://cp-algorithms.com/data_structures/dsu_on_tree.html)
 - [Codeforces Blog: Sack (DSU on Trees)](https://codeforces.com/blog/entry/44351)
-- [CSES Problem Set - Tree Algorithms](https://cses.fi/problemset/)
+- [CSES Distinct Colors](https://cses.fi/problemset/task/1139) - DSU on tree application

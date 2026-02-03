@@ -496,5 +496,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Binary Search](https://cp-algorithms.com/num_methods/binary_search.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Array Division](https://cses.fi/problemset/task/1085) - Binary search the answer
 - [Binary Search on Answer Pattern](https://usaco.guide/silver/binary-search-ans)

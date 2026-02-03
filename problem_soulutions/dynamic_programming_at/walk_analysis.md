@@ -537,4 +537,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Matrix Exponentiation](https://cp-algorithms.com/algebra/matrix-exp.html)
 - [AtCoder DP Contest](https://atcoder.jp/contests/dp)
-- [CSES Problem Set - Mathematics](https://cses.fi/problemset/)
+- [CSES Graph Paths I](https://cses.fi/problemset/task/1723) - Count paths with matrix exponentiation

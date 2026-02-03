@@ -510,5 +510,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Sweep Line](https://cp-algorithms.com/geometry/sweep_line.html)
-- [CSES Problem Set - Geometry](https://cses.fi/problemset/)
+- [CSES Polygon Area](https://cses.fi/problemset/task/2191) - Related geometry problem
 - [Segment Tree Tutorial](https://cp-algorithms.com/data_structures/segment_tree.html)

@@ -482,5 +482,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Convex Hull Trick](https://cp-algorithms.com/geometry/convex_hull_trick.html)
-- [CSES Problem Set - Geometry](https://cses.fi/problemset/)
+- [CSES Convex Hull](https://cses.fi/problemset/task/2195) - Related geometry with CHT
 - [Li Chao Tree Tutorial](https://cp-algorithms.com/geometry/line_operations.html)

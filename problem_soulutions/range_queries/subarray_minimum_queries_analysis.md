@@ -507,5 +507,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Sparse Table](https://cp-algorithms.com/data_structures/sparse-table.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Static Range Minimum Queries](https://cses.fi/problemset/task/1647) - Static RMQ problem
 - [TopCoder Tutorial on RMQ](https://www.topcoder.com/thrive/articles/Range%20Minimum%20Query%20and%20Lowest%20Common%20Ancestor)

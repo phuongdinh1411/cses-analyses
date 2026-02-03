@@ -486,5 +486,5 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Two Knights](https://cses.fi/problemset/task/1072) - Chess counting problems
 - [CP-Algorithms: Combinatorics](https://cp-algorithms.com/combinatorics/binomial-coefficients.html)

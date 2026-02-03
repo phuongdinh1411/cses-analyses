@@ -447,7 +447,7 @@ dp[new_mask][j] = (dp[new_mask][j] + dp[mask][i]) % MOD;
 |---------|----------------|
 | [Round Trip II (CSES)](https://cses.fi/problemset/task/1678) | Finding one cycle, not counting |
 | [Elevator Rides (CSES)](https://cses.fi/problemset/task/1653) | Bitmask DP for optimization |
-| [SOS DP Problems](https://cses.fi/problemset/) | Sum over subsets technique |
+| [Elevator Rides (CSES)](https://cses.fi/problemset/task/1653) | Sum over subsets technique |
 
 ### Harder (Do These After)
 
@@ -481,5 +481,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Bitmask DP](https://cp-algorithms.com/algebra/profile-dynamics.html)
-- [CSES Problem Set - Graph Section](https://cses.fi/problemset/)
+- [CSES Hamiltonian Flights](https://cses.fi/problemset/task/1690) - Hamiltonian path counting
 - [Hamiltonian Path - Wikipedia](https://en.wikipedia.org/wiki/Hamiltonian_path)

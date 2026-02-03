@@ -479,4 +479,4 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: 2D Prefix Sums](https://cp-algorithms.com/data_structures/prefix_sums.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Forest Queries II](https://cses.fi/problemset/task/1739) - 2D range updates

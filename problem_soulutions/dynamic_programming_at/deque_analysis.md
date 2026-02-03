@@ -406,5 +406,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [AtCoder DP Contest - Problem L](https://atcoder.jp/contests/dp/tasks/dp_l) - Original problem
-- [CSES Problemset - Dynamic Programming](https://cses.fi/problemset/) - Related problems
+- [CSES Removal Game](https://cses.fi/problemset/task/1097) - Similar interval game theory problem
 - [CP-Algorithms - Game Theory](https://cp-algorithms.com/game_theory/) - Advanced game theory concepts

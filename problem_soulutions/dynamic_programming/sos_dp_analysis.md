@@ -507,4 +507,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Sum over Subsets](https://cp-algorithms.com/algebra/all-submasks.html)
 - [Codeforces Blog: SOS DP](https://codeforces.com/blog/entry/45223)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Elevator Rides](https://cses.fi/problemset/task/1653) - Bitmask DP application

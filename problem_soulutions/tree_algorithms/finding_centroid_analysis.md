@@ -481,7 +481,7 @@ if subtree_size[child] > n // 2:  # This is wrong if child was computed as desce
 ### Harder (Do These After)
 | Problem | New Concept |
 |---------|-------------|
-| [Centroid Decomposition Problems](https://cses.fi/problemset/) | Uses centroid as building block |
+| [Fixed-Length Paths II (CSES)](https://cses.fi/problemset/task/2081) | Uses centroid as building block |
 | [Fixed-Length Paths I (CSES)](https://cses.fi/problemset/task/2080) | Centroid decomposition application |
 
 ---
@@ -508,5 +508,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Centroid Decomposition](https://cp-algorithms.com/graph/centroid-decomposition.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Finding a Centroid](https://cses.fi/problemset/task/2079) - Tree centroid problem
 - [USACO Guide: Centroid Decomposition](https://usaco.guide/plat/centroid)

@@ -16,7 +16,7 @@ tags: [counting, graph-theory, modular-arithmetic, combinatorics]
 | **Category** | Counting / Graph Theory |
 | **Time Limit** | 1 second |
 | **Key Technique** | Modular Exponentiation |
-| **CSES Link** | [Counting Problems](https://cses.fi/problemset/) |
+| **CSES Link** | - |
 
 ### Learning Goals
 
@@ -391,7 +391,7 @@ for _ in range(n):
 | Problem | Link | New Concept |
 |---------|------|-------------|
 | Counting Sequences | [CSES 2228](https://cses.fi/problemset/task/2228) | More complex counting |
-| Graph Counting | [CSES Advanced](https://cses.fi/problemset/) | Labeled graph enumeration |
+| Graph Counting | [Counting Tilings (CSES)](https://cses.fi/problemset/task/2181) | Labeled graph enumeration |
 | Planets Cycles | [CSES 1751](https://cses.fi/problemset/task/1751) | Functional graph traversal |
 
 ---
@@ -419,5 +419,5 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
 - [CP-Algorithms: Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Planets Cycles](https://cses.fi/problemset/task/1751) - Functional graph traversal
 - [Functional Graph - Wikipedia](https://en.wikipedia.org/wiki/Functional_graph)

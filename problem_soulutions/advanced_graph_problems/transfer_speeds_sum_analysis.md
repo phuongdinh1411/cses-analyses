@@ -477,5 +477,5 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Maximum Flow](https://cp-algorithms.com/graph/edmonds_karp.html)
 - [CP-Algorithms: Min-Cut Max-Flow Theorem](https://cp-algorithms.com/graph/min_cut.html)
-- [CSES Problem Set - Graph Algorithms](https://cses.fi/problemset/)
+- [CSES Download Speed](https://cses.fi/problemset/task/1694) - Maximum flow problem
 - [Visualgo - Network Flow](https://visualgo.net/en/maxflow)

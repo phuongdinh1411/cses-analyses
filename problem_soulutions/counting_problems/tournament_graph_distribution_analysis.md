@@ -16,7 +16,7 @@ tags: [combinatorics, graph-theory, modular-arithmetic, binary-exponentiation]
 | **Category** | Combinatorics / Graph Theory |
 | **Time Limit** | 1 second |
 | **Key Technique** | Modular Exponentiation |
-| **CSES Link** | [Mathematics Section](https://cses.fi/problemset/) |
+| **CSES Link** | - |
 
 ### Learning Goals
 
@@ -423,4 +423,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
 - [Tournament Graph - Wikipedia](https://en.wikipedia.org/wiki/Tournament_(graph_theory))
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Exponentiation](https://cses.fi/problemset/task/1095) - Modular exponentiation

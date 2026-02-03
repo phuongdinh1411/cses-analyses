@@ -570,6 +570,6 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problem Set - Introductory Problems](https://cses.fi/problemset/)
+- [CSES Grid Paths](https://cses.fi/problemset/task/1625) - Backtracking on grid
 - [CP-Algorithms: Backtracking](https://cp-algorithms.com/others/backtracking.html)
 - [Hamiltonian Path - Wikipedia](https://en.wikipedia.org/wiki/Hamiltonian_path)

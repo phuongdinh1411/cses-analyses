@@ -534,4 +534,4 @@ Before moving on, make sure you can:
 
 - [AtCoder DP Contest](https://atcoder.jp/contests/dp) - Full problem set (A-Z)
 - [CP-Algorithms: Dynamic Programming](https://cp-algorithms.com/dynamic_programming/intro-to-dp.html)
-- [CSES Problem Set - DP Section](https://cses.fi/problemset/)
+- [CSES Dice Combinations](https://cses.fi/problemset/task/1633) - Introductory DP problem

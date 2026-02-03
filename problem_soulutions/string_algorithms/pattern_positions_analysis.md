@@ -447,4 +447,4 @@ for idx in out[node]: ...     |  temp = node
 ## Additional Resources
 
 - [CP-Algorithms: Aho-Corasick](https://cp-algorithms.com/string/aho_corasick.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Pattern Positions](https://cses.fi/problemset/task/2107) - Multi-pattern string matching

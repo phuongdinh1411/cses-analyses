@@ -444,4 +444,4 @@ Before moving on, make sure you can:
 
 - [AtCoder DP Contest Editorial](https://atcoder.jp/contests/dp/editorial)
 - [CP-Algorithms: Knapsack Problems](https://cp-algorithms.com/dynamic_programming/knapsack.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Book Shop](https://cses.fi/problemset/task/1158) - Similar knapsack problem

@@ -454,4 +454,4 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: KMP Algorithm](https://cp-algorithms.com/string/prefix-function.html)
-- [CSES Problem Set - String Algorithms](https://cses.fi/problemset/)
+- [CSES Finding Borders](https://cses.fi/problemset/task/1732) - KMP failure function

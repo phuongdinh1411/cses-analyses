@@ -514,5 +514,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Stack](https://cp-algorithms.com/data_structures/stack_queue_modification.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Nearest Smaller Values](https://cses.fi/problemset/task/1645) - Stack-based problem
 - [LeetCode Monotonic Stack Problems](https://leetcode.com/tag/monotonic-stack/)

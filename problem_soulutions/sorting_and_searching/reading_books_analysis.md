@@ -408,5 +408,5 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Reading Books](https://cses.fi/problemset/task/1631) - Parallel scheduling
 - [CP-Algorithms: Scheduling](https://cp-algorithms.com/)

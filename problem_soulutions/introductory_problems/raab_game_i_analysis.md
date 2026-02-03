@@ -451,5 +451,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Game Theory](https://cp-algorithms.com/game_theory/sprague-grundy-nim.html)
-- [CSES Problem Set - Game Theory](https://cses.fi/problemset/)
+- [CSES Nim Game I](https://cses.fi/problemset/task/1730) - Classic game theory
 - [TopCoder: Algorithm Games](https://www.topcoder.com/thrive/articles/Algorithm%20Games)

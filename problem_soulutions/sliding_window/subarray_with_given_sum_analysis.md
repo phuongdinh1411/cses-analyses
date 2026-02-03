@@ -420,4 +420,4 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Prefix Sums](https://cp-algorithms.com/data_structures/segment_tree.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Subarray Sums I](https://cses.fi/problemset/task/1660) - Two pointers on subarrays

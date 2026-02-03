@@ -439,4 +439,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: String Hashing](https://cp-algorithms.com/string/string-hashing.html)
 - [CP-Algorithms: Segment Tree](https://cp-algorithms.com/data_structures/segment_tree.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Palindrome Queries](https://cses.fi/problemset/task/2420) - Dynamic palindrome checking

@@ -17,7 +17,7 @@ prerequisites: [prefix_sums, basic_2d_arrays]
 | **Category** | Grid / Counting |
 | **Time Limit** | 1 second |
 | **Key Technique** | 2D Prefix Sum |
-| **CSES Link** | [Counting Problems](https://cses.fi/problemset/) |
+| **CSES Link** | - |
 
 ### Learning Goals
 
@@ -461,5 +461,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: 2D Prefix Sums](https://cp-algorithms.com/data_structures/prefix_sum.html)
-- [CSES Problem Set](https://cses.fi/problemset/)
+- [CSES Forest Queries](https://cses.fi/problemset/task/1652) - 2D prefix sum technique
 - [Visualgo: Prefix Sum](https://visualgo.net/en/prefixsum)

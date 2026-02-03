@@ -536,4 +536,4 @@ Before moving on, make sure you can:
 
 - [CP-Algorithms: Topological Sorting](https://cp-algorithms.com/graph/topological-sort.html)
 - [CP-Algorithms: Longest Path in DAG](https://cp-algorithms.com/graph/longest_path_in_dag.html)
-- [CSES Problem Set](https://cses.fi/problemset/) - Graph section
+- [CSES Longest Flight Route](https://cses.fi/problemset/task/1680) - Find longest path in DAG
