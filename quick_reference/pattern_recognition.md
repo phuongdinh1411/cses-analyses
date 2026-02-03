@@ -45,7 +45,7 @@ v           v
 ### [A1] Subarray Problems
 
 | If problem says... | Use this technique | Example |
-|-------------------|-------------------|---------|
+|--------------------|--------------------|---------|
 | "contiguous subarray with sum X" | Sliding Window / Prefix Sum + Hash | Subarray Sum Equals K |
 | "longest/shortest subarray with property" | Two Pointers / Sliding Window | Longest Substring Without Repeat |
 | "maximum/minimum subarray sum" | Kadane's Algorithm | Maximum Subarray |
@@ -71,7 +71,7 @@ Window      + Hash Map
 ### [A2] Non-Subarray Array Problems
 
 | If problem says... | Use this technique |
-|-------------------|-------------------|
+|--------------------|-------------------|
 | "pair with sum X" (sorted) | Two Pointers |
 | "pair with sum X" (unsorted) | Hash Map |
 | "next greater/smaller element" | Monotonic Stack |
@@ -162,7 +162,7 @@ Unweighted  Weighted  DAG
 ### Special Graph Problems
 
 | If problem involves... | Use |
-|-----------------------|-----|
+|------------------------|-----|
 | Bipartite checking | BFS/DFS 2-coloring |
 | Cycle detection (directed) | DFS with colors |
 | Cycle detection (undirected) | Union-Find or DFS |
@@ -276,7 +276,7 @@ DP    Binary   Sieve    Factorials
 ### Constraint-Based Selection
 
 | Constraint | Max Complexity | Suitable Algorithms |
-|------------|----------------|---------------------|
+|------------|----------------|----------------------|
 | n <= 10 | O(n!) | Brute force, All permutations |
 | n <= 20 | O(2^n) | Bitmask DP, Backtracking |
 | n <= 500 | O(n^3) | Floyd-Warshall, Interval DP |
