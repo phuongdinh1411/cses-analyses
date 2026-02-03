@@ -45,24 +45,25 @@ Welcome to the Quick Reference section! This is your go-to resource for fast acc
 ## 🎯 Quick Navigation
 
 ### 📊 Problem Collection Overview
-**Total Problems**: 231 | **Categories**: 11 | **Learning Paths**: 3
+**Total Problems**: 262 | **Categories**: 12 | **Learning Paths**: 3
 
 ### 🎯 Learning Paths by Difficulty
 
 #### 🟢 **Beginner Level** (0-6 months)
-- **🧮 Introductory Problems** (24) - Fundamentals and basic algorithms
-- **🔍 Sorting & Searching** (32) - Core algorithmic techniques
+- **🧮 Introductory Problems** (25) - Fundamentals and basic algorithms
+- **🔍 Sorting & Searching** (35) - Core algorithmic techniques
 
-#### 🟡 **Intermediate Level** (6-12 months)  
-- **📊 Dynamic Programming** (18) - Optimization and memoization
-- **🌐 Graph Algorithms** (32) - Connectivity and path finding
-- **🌳 Tree Algorithms** (15) - Hierarchical data structures
+#### 🟡 **Intermediate Level** (6-12 months)
+- **📊 Dynamic Programming** (17) - Optimization and memoization
+- **🌐 Graph Algorithms** (36) - Connectivity and path finding
+- **🌳 Tree Algorithms** (16) - Hierarchical data structures
 - **🪟 Sliding Window** (15) - Array manipulation techniques
+- **📚 AtCoder DP** (25) - Educational DP problems
 
 #### 🔴 **Advanced Level** (12+ months)
-- **📏 Range Queries** (18) - Advanced data structures
-- **🧵 String Algorithms** (15) - Pattern matching and text processing
-- **📐 Geometry** (17) - Computational geometry
+- **📏 Range Queries** (19) - Advanced data structures
+- **🧵 String Algorithms** (14) - Pattern matching and text processing
+- **📐 Geometry** (15) - Computational geometry
 - **🔢 Counting Problems** (20) - Combinatorics and probability
 - **🔗 Advanced Graph Problems** (25) - Complex graph theory
 
@@ -85,6 +86,7 @@ Welcome to the Quick Reference section! This is your go-to resource for fast acc
 
 ### 🎯 Algorithm Categories & Use Cases
 - **📊 Dynamic Programming**: Optimization, counting, memoization
+- **📚 AtCoder DP**: Educational DP problems from beginner to advanced
 - **🌐 Graph Algorithms**: Path finding, connectivity, traversal
 - **🌳 Tree Algorithms**: Hierarchical structures, queries
 - **📏 Range Queries**: Interval operations, segment trees
