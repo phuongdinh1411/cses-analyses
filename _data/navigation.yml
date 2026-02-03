@@ -639,11 +639,19 @@ main:
 - title: Quick Reference
   url: /cses-analyses/quick_reference
   children:
-  - title: Ultimate Cheatsheet
+  - title: 🗺️ Learning Roadmap
+    url: /cses-analyses/quick_reference/learning_roadmap
+  - title: 🔍 Pattern Recognition
+    url: /cses-analyses/quick_reference/pattern_recognition
+  - title: 💻 Code Templates
+    url: /cses-analyses/quick_reference/code_templates
+  - title: 🎯 Interview Patterns
+    url: /cses-analyses/quick_reference/interview_patterns
+  - title: 🚀 Ultimate Cheatsheet
     url: /cses-analyses/quick_reference/ultimate_cheatsheet
-  - title: Advanced Algorithms
+  - title: 🔬 Advanced Algorithms
     url: /cses-analyses/quick_reference/advanced_algorithms
-  - title: Common Mistakes
+  - title: ⚠️ Common Mistakes
     url: /cses-analyses/quick_reference/common_mistakes
 - title: About
   url: /cses-analyses/about
