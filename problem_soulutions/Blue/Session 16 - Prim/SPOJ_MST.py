@@ -1,0 +1,79 @@
+# Problem from SPOJ
+# https://www.spoj.com/problems/MST/
+#
+# Problem: Minimum Spanning Tree (SPOJ MST)
+#
+# Description:
+# Given an undirected weighted graph, find the total weight of its
+# Minimum Spanning Tree. Classic MST problem.
+#
+# Input:
+# - First line: N (nodes), M (edges)
+# - Next M lines: A, B, W (edge between A and B with weight W)
+#
+# Output:
+# - Single integer: total weight of the MST
+#
+# Approach:
+# - Standard Prim's algorithm implementation
+# - Use min-heap priority queue for efficient minimum edge selection
+# - Maintain visited array to avoid cycles
+
+
+import heapq
+
+
+class Node:
+    def __init__(self, id, dist):
+        self.dist = dist
+        self.id = id
+
+    def __lt__(self, other):
+        return self.dist < other.dist
+
+
+def prim(N, graph):
+
+    dist = [-1 for x in range(N+1)]
+    visited = [False for i in range(N + 1)]
+    pqueue = []
+    heapq.heappush(pqueue, Node(1, 0))
+    dist[1] = 0
+
+    while len(pqueue) > 0:
+        top = heapq.heappop(pqueue)
+        u = top.id
+        visited[u] = True
+        for neighbor in graph[u]:
+            v = neighbor.id
+            w = neighbor.dist
+            if not visited[v] and (w < dist[v] or dist[v] == -1):
+                dist[v] = w
+                heapq.heappush(pqueue, Node(v, w))
+
+    result = 0
+    for i in range(1, N + 1):
+        if dist[i] != -1:
+            result += dist[i]
+
+    return result
+
+
+def solution():
+
+    N, M = map(int, input().split())
+
+    graph = [[] for i in range(N + 1)]
+    for i in range(M):
+        A, B, W = map(int, input().split())
+
+        graph[A].append(Node(B, W))
+        graph[B].append(Node(A, W))
+
+    result = prim(N, graph)
+
+    print(result)
+
+
+solution()
+
