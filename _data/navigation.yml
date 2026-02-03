@@ -653,5 +653,24 @@ main:
     url: /cses-analyses/quick_reference/advanced_algorithms
   - title: ⚠️ Common Mistakes
     url: /cses-analyses/quick_reference/common_mistakes
+- title: System Design
+  url: /cses-analyses/system_design
+  children:
+  - title: 📋 Overview
+    url: /cses-analyses/system_design
+  - title: 🔄 Consistent Hashing
+    url: /cses-analyses/system_design/consistent-hashing
+  - title: 🔑 Unique ID Generator
+    url: /cses-analyses/system_design/design-unique-id-generator
+  - title: 💾 Key-Value Store
+    url: /cses-analyses/system_design/design-key-value-store
+  - title: 🔗 URL Shortener
+    url: /cses-analyses/system_design/design-url-shortener
+  - title: 🕷️ Web Crawler
+    url: /cses-analyses/system_design/design-web-crawler
+  - title: 💳 Payment System
+    url: /cses-analyses/system_design/design-payment-system
+  - title: 🧠 Skills GraphRAG
+    url: /cses-analyses/system_design/design-skills-graphrag
 - title: About
   url: /cses-analyses/about
