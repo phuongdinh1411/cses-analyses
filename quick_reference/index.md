@@ -11,6 +11,48 @@ Welcome to the Quick Reference section! This is your go-to resource for fast acc
 
 ## 📚 Available References
 
+### 🗺️ [Learning Roadmap](/cses-analyses/quick_reference/learning_roadmap) ⭐ NEW
+**Structured learning path** from beginner to advanced with weekly goals.
+
+**Includes:**
+- Visual progression map
+- Phase-by-phase curriculum
+- Practice schedules
+- Skill checkpoints
+- Resource recommendations
+
+### 🔍 [Pattern Recognition](/cses-analyses/quick_reference/pattern_recognition) ⭐ NEW
+**Identify which algorithm to use** based on problem characteristics.
+
+**Includes:**
+- Decision flowcharts
+- Keyword-to-algorithm mapping
+- Constraint-based selection
+- Pattern templates
+- Quick reference card
+
+### 💻 [Code Templates](/cses-analyses/quick_reference/code_templates) ⭐ NEW
+**Copy-paste ready templates** for all common algorithms.
+
+**Includes:**
+- Binary Search variants
+- Sliding Window patterns
+- Graph algorithms (BFS, DFS, Dijkstra, Union-Find)
+- DP patterns
+- Data structures (Segment Tree, Fenwick Tree)
+
+### 🎯 [Interview Patterns](/cses-analyses/quick_reference/interview_patterns) ⭐ NEW
+**Top 15 interview patterns** mapped to CSES problems.
+
+**Includes:**
+- LeetCode to CSES mapping
+- Pattern templates
+- Interview framework
+- Follow-up questions
+- Practice recommendations
+
+---
+
 ### 🚀 [Ultimate Cheatsheet](/cses-analyses/quick_reference/ultimate_cheatsheet)
 **Complete comprehensive guide** with all algorithms, techniques, and problem-solving strategies in one place.
 
@@ -97,10 +139,12 @@ Welcome to the Quick Reference section! This is your go-to resource for fast acc
 
 ## 🚀 Getting Started
 
-1. **[Start with Ultimate Cheatsheet](/cses-analyses/quick_reference/ultimate_cheatsheet)** for comprehensive overview
-2. **[Use Advanced Algorithms](/cses-analyses/quick_reference/advanced_algorithms)** for complex problems
-3. **[Check Common Mistakes](/cses-analyses/quick_reference/common_mistakes)** to avoid pitfalls
-4. **Practice regularly** with problems
+1. **[Start with Learning Roadmap](/cses-analyses/quick_reference/learning_roadmap)** to plan your journey
+2. **[Use Pattern Recognition](/cses-analyses/quick_reference/pattern_recognition)** to identify algorithms
+3. **[Copy Code Templates](/cses-analyses/quick_reference/code_templates)** for quick implementation
+4. **[Practice Interview Patterns](/cses-analyses/quick_reference/interview_patterns)** for job prep
+5. **[Check Common Mistakes](/cses-analyses/quick_reference/common_mistakes)** to avoid pitfalls
+6. **[Use Ultimate Cheatsheet](/cses-analyses/quick_reference/ultimate_cheatsheet)** for quick reference
 
 ## 💡 Tips for Effective Use
 
