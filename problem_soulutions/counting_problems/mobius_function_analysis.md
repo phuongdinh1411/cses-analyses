@@ -351,27 +351,26 @@ mu[1] = 1
 
 ## Related Problems
 
-### Foundational
+### Prerequisites (Do These First)
 
-| Problem | Key Concept |
-|---------|-------------|
-| CSES: Common Divisors | GCD counting basics |
-| SPOJ: GCDEX | Sum of GCDs |
-| Project Euler 72 | Counting reduced fractions |
+| Problem | Why It Helps |
+|---------|--------------|
+| [Common Divisors (CSES)](https://cses.fi/problemset/task/1081) | GCD counting basics |
+| [Counting Divisors (CSES)](https://cses.fi/problemset/task/1713) | Divisor enumeration |
 
-### Intermediate
+### Direct Applications
 
 | Problem | Mobius Usage |
 |---------|--------------|
-| SPOJ: SQFREE | Square-free counting |
-| Codeforces: Coprime | Coprime pairs in array |
+| [Counting Coprime Pairs (CSES)](https://cses.fi/problemset/task/2417) | Classic Mobius inversion |
+| [Codeforces - Coprime](https://codeforces.com/contest/547/problem/C) | Coprime pairs in array |
 
-### Advanced
+### Harder (Do These After)
 
 | Problem | Complexity |
 |---------|------------|
-| SPOJ: LCMSUM | LCM sum with Mobius |
-| Codeforces: GCD Table | 2D Mobius application |
+| [Codeforces - GCD Table](https://codeforces.com/contest/583/problem/D) | 2D Mobius application |
+| [SPOJ - LCMSUM](https://www.spoj.com/problems/LCMSUM/) | LCM sum with Mobius |
 
 ---
 

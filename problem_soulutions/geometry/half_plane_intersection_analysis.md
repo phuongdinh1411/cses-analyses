@@ -334,13 +334,23 @@ This provides an alternative O(n log n) solution using any convex hull algorithm
 
 ## Related Problems
 
-| Difficulty | Problem | Connection |
-|------------|---------|------------|
-| Easier | Point Location Test | Which side of line |
-| Easier | Convex Hull | Dual problem |
-| Similar | Polygon Kernel | Half-planes from edges |
-| Similar | 2D Linear Programming | Optimization over intersection |
-| Harder | 3D Half-Space Intersection | Extension to 3D |
+### Prerequisites (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Point Location Test (CSES)](https://cses.fi/problemset/task/2189) | Which side of line |
+| [Convex Hull (CSES)](https://cses.fi/problemset/task/2195) | Dual problem concept |
+
+### Direct Applications
+| Problem | Connection |
+|---------|------------|
+| [Polygon Area (CSES)](https://cses.fi/problemset/task/2191) | Polygon computations |
+| [Codeforces - Convex Polygon](https://codeforces.com/contest/166/problem/B) | Half-plane from polygon |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Codeforces - Circles](https://codeforces.com/contest/2/problem/C) | Feasibility region |
+| [Codeforces - Linear Programming](https://codeforces.com/gym/101175/problem/F) | 2D LP optimization |
 
 ---
 

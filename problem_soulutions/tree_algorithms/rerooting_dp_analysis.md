@@ -468,16 +468,16 @@ def dfs_up(node, parent, contrib):
 
 | Problem | Technique |
 |---------|-----------|
-| Tree Diameter | Two BFS or DP on tree |
-| Tree Matching | Standard tree DP |
-| Subordinates | Basic subtree counting |
+| [Tree Diameter (CSES)](https://cses.fi/problemset/task/1131) | Two BFS or DP on tree |
+| [Tree Matching (CSES)](https://cses.fi/problemset/task/1130) | Standard tree DP |
+| [Subordinates (CSES)](https://cses.fi/problemset/task/1674) | Basic subtree counting |
 
-### Harder Extensions
+### Harder (Do These After)
 
 | Problem | New Challenge |
 |---------|---------------|
-| Finding Centroid | Minimize max subtree |
-| Weighted Tree Distances | Edge weights in formula |
+| [Finding a Centroid (CSES)](https://cses.fi/problemset/task/2079) | Minimize max subtree |
+| [Path Queries II (CSES)](https://cses.fi/problemset/task/2134) | Heavy-light decomposition |
 
 ---
 

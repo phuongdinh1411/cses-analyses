@@ -484,25 +484,23 @@ if cur_line is None:
 
 ## Related Problems
 
-### Easier (Prerequisites)
+### Prerequisites (Do These First)
 | Problem | Why It Helps |
 |---------|--------------|
-| Basic Segment Tree | Understand segment tree structure |
-| Convex Hull Trick (sorted) | Understand line optimization concept |
+| [Dynamic Range Sum (CSES)](https://cses.fi/problemset/task/1648) | Segment tree basics |
+| [Salary Queries (CSES)](https://cses.fi/problemset/task/1144) | Dynamic queries on ranges |
 
 ### Direct Applications
 | Problem | Key Insight |
 |---------|-------------|
-| CSES - Monster Game I | DP with Li Chao for min cost |
-| CF - Covered Points Count | Line sweep + Li Chao |
-| AtCoder - Commute | Classic DP optimization |
+| [Codeforces - Kalila and Dimna](https://codeforces.com/contest/319/problem/C) | Classic DP + CHT |
+| [AtCoder - Walk (DP Contest)](https://atcoder.jp/contests/dp/tasks/dp_r) | Linear function optimization |
 
-### Harder Extensions
+### Harder (Do These After)
 | Problem | New Concept |
 |---------|-------------|
-| Persistent Li Chao Tree | Version control for lines |
-| 2D Li Chao | Extension to planes |
-| Kinetic Tournament Tree | Dynamic maintenance |
+| [Codeforces - The Bakery](https://codeforces.com/contest/834/problem/D) | Divide and conquer DP optimization |
+| [Codeforces - Ann and Books](https://codeforces.com/contest/877/problem/F) | Li Chao with complex state |
 
 ---
 

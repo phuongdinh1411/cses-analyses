@@ -531,24 +531,24 @@ int main() {
 
 ## Related Problems
 
-### Easier (Do These First)
+### Prerequisites (Do These First)
 | Problem | Why It Helps |
 |---------|--------------|
-| Max Flow (Dinic) | Foundation for understanding flow |
-| Shortest Path (SPFA) | Key subroutine in MCMF |
+| [Download Speed (CSES)](https://cses.fi/problemset/task/1694) | Foundation for understanding flow |
+| [Shortest Routes I (CSES)](https://cses.fi/problemset/task/1671) | Shortest path algorithms |
 
-### CSES Problems
+### CSES Applications
 | Problem | Connection to MCMF |
 |---------|-------------------|
-| Download Speed | Standard max flow, no costs |
-| Police Chase | Min cut application |
-| School Dance | Bipartite matching |
+| [Police Chase (CSES)](https://cses.fi/problemset/task/1695) | Min cut application |
+| [School Dance (CSES)](https://cses.fi/problemset/task/1696) | Bipartite matching |
+| [Distinct Routes (CSES)](https://cses.fi/problemset/task/1711) | Edge-disjoint paths |
 
 ### Harder (Do These After)
 | Problem | New Concept |
 |---------|-------------|
-| Min Cost Bipartite Matching | MCMF application |
-| Circulation with Demands | Extended MCMF |
+| [Codeforces - Minimum Cost](https://codeforces.com/contest/237/problem/E) | MCMF application |
+| [Codeforces - Xor-Paths](https://codeforces.com/contest/1009/problem/F) | Advanced flow modeling |
 
 ---
 

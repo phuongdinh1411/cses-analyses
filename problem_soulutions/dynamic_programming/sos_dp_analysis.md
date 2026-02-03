@@ -461,25 +461,23 @@ def superset_dp(n: int, A: list[int]) -> list[int]:
 
 ## Related Problems
 
-### Foundation Problems (Do These First)
+### Prerequisites (Do These First)
 | Problem | Why It Helps |
 |---------|--------------|
-| Subset enumeration basics | Understand `submask = (submask-1) & mask` |
-| Bitmask DP introduction | Familiarize with bitmask indexing |
+| [Hamiltonian Flights (CSES)](https://cses.fi/problemset/task/1690) | Bitmask DP fundamentals |
+| [Two Sets II (CSES)](https://cses.fi/problemset/task/1093) | Subset sum DP basics |
 
 ### Direct Applications
 | Problem | Key Concept |
 |---------|-------------|
-| [CSES - Counting Subsets](https://cses.fi/problemset/) | Direct SOS DP application |
 | [Codeforces - Compatible Numbers](https://codeforces.com/contest/165/problem/E) | Find subset with AND = 0 |
-| [Atcoder - AND Grid](https://atcoder.jp/contests/) | AND convolution |
+| [Codeforces - AND, OR and Square Sum](https://codeforces.com/contest/1368/problem/D) | AND convolution application |
 
-### Advanced Problems
+### Harder (Do These After)
 | Problem | New Concept |
 |---------|-------------|
-| Maximum AND subset | Combine with greedy/binary search |
-| Mobius Transform | Inverse of SOS DP |
-| Subset Sum Convolution | Combine with popcount dimension |
+| [Codeforces - Inverse the Problem](https://codeforces.com/contest/727/problem/E) | SOS with tree reconstruction |
+| [AtCoder - Grouping (DP Contest)](https://atcoder.jp/contests/dp/tasks/dp_u) | Subset DP with grouping |
 
 ---
 

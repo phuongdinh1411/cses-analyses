@@ -531,26 +531,23 @@ Number of surjections from n to k = k! * S(n, k)
 
 ## Related Problems
 
-### Foundational
+### Prerequisites (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Counting Combinations (CSES)](https://cses.fi/problemset/task/1079) | Basic combinatorics |
+| [Distributing Apples (CSES)](https://cses.fi/problemset/task/1716) | Stars and bars method |
+
+### Direct Applications
 | Problem | Connection |
 |---------|------------|
-| Bell Numbers | Sum of S(n, k) over all k |
-| Derangements | Special case: 0 fixed points |
-| Factorial | Sum of \|s(n, k)\| over all k |
+| [Creating Strings II (CSES)](https://cses.fi/problemset/task/1715) | Multinomial coefficients |
+| [Codeforces - Mashmokh and ACM](https://codeforces.com/contest/414/problem/B) | S(n,k) with divisibility |
 
-### Similar Difficulty
-| Problem | Key Difference |
-|---------|----------------|
-| Set Partitions | Direct application of S(n, k) |
-| Cycle Counting | Direct application of s(n, k) |
-| Surjection Counting | k! * S(n, k) |
-
-### Advanced
+### Harder (Do These After)
 | Problem | New Concept |
 |---------|-------------|
-| Exponential Generating Functions | EGF for Stirling numbers |
-| Polynomial Interpolation | Using falling factorials |
-| Random Permutation Statistics | Expected value computations |
+| [Codeforces - Count Good Substrings](https://codeforces.com/contest/451/problem/D) | Combinatorics with constraints |
+| [AtCoder - Choose Integers (ABC)](https://atcoder.jp/contests/abc156/tasks/abc156_d) | Counting arrangements |
 
 ---
 
