@@ -1,525 +1,353 @@
 ---
 layout: simple
-title: "Planets Queries II - Graph Algorithm Problem"
+title: "Planets Queries II - Distance in Functional Graphs"
 permalink: /problem_soulutions/graph_algorithms/planets_queries_ii_analysis
+difficulty: Hard
+tags: [graph, functional-graph, binary-lifting, cycle]
+cses_link: https://cses.fi/problemset/task/1160
 ---
 
-# Planets Queries II - Graph Algorithm Problem
+# Planets Queries II - Distance in Functional Graphs
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of binary lifting in graph algorithms
-- Apply efficient algorithms for ancestor queries in trees
-- Implement binary lifting for LCA (Lowest Common Ancestor) problems
-- Optimize tree traversal operations for query processing
-- Handle special cases in tree query problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find minimum teleports from planet a to reach planet b |
+| Input | n planets with teleporters, q queries (a, b) |
+| Output | Minimum steps from a to b, or -1 if unreachable |
+| Constraints | n, q <= 2x10^5 |
+| Core Technique | Binary Lifting + Cycle Detection |
+| Time Complexity | O(n log n) preprocess, O(log n) per query |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a tree with n planets, answer queries about the k-th ancestor of a planet.
+1. **Distance in Functional Graphs**: Computing shortest path when each node has exactly one successor
+2. **Handling Cycles**: Detecting cycles and computing distances within/around them
+3. **Binary Lifting for Distance**: Using binary lifting to check if b lies on the path from a
 
-**Input**: 
-- n: number of planets
-- parent: array where parent[i] is the parent of planet i
-- q: number of queries
-- queries: array of (planet, k) pairs
+## Problem Statement
 
-**Output**: 
-- For each query, output the k-th ancestor of the planet, or -1 if it doesn't exist
-
-**Constraints**:
-- 1 ≤ n ≤ 2×10^5
-- 1 ≤ q ≤ 2×10^5
-- 0 ≤ k ≤ 10^9
+You are given n planets numbered 1 to n. Each planet i has a teleporter to planet t[i]. For q queries (a, b), find the minimum teleportations from a to b, or -1 if unreachable.
 
 **Example**:
 ```
-Input:
-n = 5
-parent = [-1, 0, 0, 1, 1]
-q = 3
-queries = [(2, 1), (4, 2), (1, 3)]
+Input: n=4, t=[2,1,4,3], queries: (1,2), (3,1)
+Output: 1, -1
 
-Output:
-0
-0
--1
-
-Explanation**: 
-Tree: 0 -> 1, 0 -> 2, 1 -> 3, 1 -> 4
-Query 1: 1st ancestor of planet 2 is 0
-Query 2: 2nd ancestor of planet 4 is 0 (4 -> 1 -> 0)
-Query 3: 3rd ancestor of planet 1 doesn't exist
+Explanation:
+- 1->2 (1 step), planets 1,2 form cycle
+- 3->4->3... never reaches 1 (different component)
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+## Key Insight: Reachability in Functional Graphs
 
-### Approach 1: Brute Force Solution
+In a functional graph, from node a you can only reach nodes "ahead" on your path:
 
-**Key Insights from Brute Force Solution**:
-- **Complete Traversal**: Follow parent pointers k times
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use simple iteration
-- **Inefficient**: O(k) time per query
-
-**Key Insight**: For each query, follow parent pointers k times.
-
-**Algorithm**:
-- For each query (planet, k)
-- Start from the planet
-- Follow parent pointer k times
-- Return the final planet or -1
-
-**Visual Example**:
 ```
-Tree: 0 -> 1, 0 -> 2, 1 -> 3, 1 -> 4
+a --> x1 --> x2 --> ... --> [cycle entry] --> c1 --> c2 --> ... (repeats)
 
-Query: (4, 2)
-┌─────────────────────────────────────┐
-│ Step 1: Start at planet 4          │
-│ Step 2: Go to parent 1             │
-│ Step 3: Go to parent 0             │
-│                                   │
-│ Result: 0                          │
-└─────────────────────────────────────┘
+Reachable from a: all nodes on this path (tail + cycle)
+NOT reachable: any other node
 ```
 
-**Implementation**:
+## Cases to Handle
+
+```
+CASE 1: Both in same cycle
+  Distance = (pos_b - pos_a + cycle_len) % cycle_len
+
+CASE 2: a on tail, b in cycle (same component)
+  Distance = dist_to_cycle(a) + distance_in_cycle(entry, b)
+
+CASE 3: Both on tail (b between a and cycle)
+  Distance = dist_to_cycle(a) - dist_to_cycle(b)
+  (verify b is actually on path from a)
+
+CASE 4: Unreachable (-1)
+  - Different components
+  - a in cycle, b on tail
+  - b is "behind" a on tail (farther from cycle)
+```
+
+## Visual Diagram
+
+```
+Example: t = [2, 1, 4, 4] (1-indexed)
+
+    1 <--> 2  (cycle, length 2)
+
+    3 --> 4   (4 self-loop)
+          ^
+          |
+         cycle
+
+Node info:
+  1: in_cycle, pos=0, cycle_id=0
+  2: in_cycle, pos=1, cycle_id=0
+  3: tail, dist=1, entry=4, cycle_id=1
+  4: in_cycle, pos=0, cycle_id=1
+```
+
+## Dry Run
+
+```
+Input: n=4, t=[2, 1, 4, 4]
+
+Query (1, 2): Both in cycle 0
+  dist = (1 - 0 + 2) % 2 = 1
+
+Query (2, 1): Both in cycle 0
+  dist = (0 - 1 + 2) % 2 = 1
+
+Query (3, 4): 3=tail, 4=cycle
+  dist_to_cycle[3] = 1, entry = 4 = b
+  dist = 1 + 0 = 1
+
+Query (1, 3): 1=cycle, 3=tail
+  Cannot reach tail from cycle: -1
+
+Query (3, 2): Different components
+  cycle_id[3]=1, cycle_id[2]=0: -1
+```
+
+## Python Solution
+
 ```python
-def brute_force_planets_queries_ii(n, parent, queries):
-    """Answer queries using brute force approach"""
-    def find_kth_ancestor(planet, k):
-        current = planet
-        for _ in range(k):
-            if current == -1:
-                return -1
-            current = parent[current]
-        return current
-    
-    results = []
-    for planet, k in queries:
-        result = find_kth_ancestor(planet, k)
-        results.append(result)
-    
-    return results
+import sys
 
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(2, 1), (4, 2), (1, 3)]
-result = brute_force_planets_queries_ii(n, parent, queries)
-print(f"Brute force results: {result}")
-```
+def solve():
+    data = sys.stdin.read().split()
+    idx = 0
+    n, q = int(data[idx]), int(data[idx + 1])
+    idx += 2
+    t = [int(data[idx + i]) - 1 for i in range(n)]
+    idx += n
 
-**Time Complexity**: O(q × k)
-**Space Complexity**: O(1)
-
-**Why it's inefficient**: O(k) time per query, which can be very slow for large k.
-
----
-
-### Approach 2: Binary Lifting Solution
-
-**Key Insights from Binary Lifting Solution**:
-- **Binary Lifting**: Use binary lifting for efficient ancestor queries
-- **Preprocessing**: Build binary lifting table in O(n log n)
-- **Efficient Queries**: Answer each query in O(log k) time
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Use binary lifting to answer ancestor queries efficiently.
-
-**Algorithm**:
-- Preprocess: Build binary lifting table
-- For each query: Use binary lifting to find k-th ancestor
-- Return result
-
-**Visual Example**:
-```
-Binary lifting table construction:
-
-For tree: 0 -> 1, 0 -> 2, 1 -> 3, 1 -> 4
-┌─────────────────────────────────────┐
-│ Level 0: direct parents            │
-│ Level 1: 2^1 = 2 ancestors         │
-│ Level 2: 2^2 = 4 ancestors         │
-│ Level 3: 2^3 = 8 ancestors         │
-│                                   │
-│ Query (4, 2):                     │
-│ - 2 = 2^1, so use level 1         │
-│ - From 4, go 2 ancestors up       │
-│ - Result: 0                        │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def binary_lifting_planets_queries_ii(n, parent, queries):
-    """Answer queries using binary lifting approach"""
-    # Find maximum depth needed
-    max_depth = 0
-    depth = [0] * n
-    
-    def calculate_depth(node):
-        if depth[node] != 0:
-            return depth[node]
-        if parent[node] == -1:
-            depth[node] = 0
-        else:
-            depth[node] = calculate_depth(parent[node]) + 1
-        return depth[node]
-    
+    LOG = 18
+    jump = [[0] * n for _ in range(LOG)]
     for i in range(n):
-        max_depth = max(max_depth, calculate_depth(i))
-    
-    # Build binary lifting table
-    log_max = 20  # Sufficient for most cases
-    up = [[-1] * n for _ in range(log_max)]
-    
-    # Level 0: direct parents
-    for i in range(n):
-        up[0][i] = parent[i]
-    
-    # Build higher levels
-    for level in range(1, log_max):
+        jump[0][i] = t[i]
+    for j in range(1, LOG):
         for i in range(n):
-            if up[level-1][i] != -1:
-                up[level][i] = up[level-1][up[level-1][i]]
-    
-    def find_kth_ancestor(planet, k):
-        current = planet
-        for level in range(log_max):
-            if k & (1 << level):
-                current = up[level][current]
-                if current == -1:
-                    return -1
-        return current
-    
-    results = []
-    for planet, k in queries:
-        result = find_kth_ancestor(planet, k)
-        results.append(result)
-    
-    return results
+            jump[j][i] = jump[j-1][jump[j-1][i]]
 
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(2, 1), (4, 2), (1, 3)]
-result = binary_lifting_planets_queries_ii(n, parent, queries)
-print(f"Binary lifting results: {result}")
-```
+    color = [0] * n
+    in_cycle = [False] * n
+    cycle_id = [-1] * n
+    cycle_pos = [-1] * n
+    cycle_len = [0] * n
+    dist_to_cycle = [0] * n
+    cycle_entry = [-1] * n
+    num_cycles = 0
 
-**Time Complexity**: O(n log n + q log k)
-**Space Complexity**: O(n log n)
+    for start in range(n):
+        if color[start]: continue
+        path = []
+        node = start
+        while color[node] == 0:
+            color[node] = 1
+            path.append(node)
+            node = t[node]
 
-**Why it's better**: Uses binary lifting for O(log k) time per query.
-
----
-
-### Approach 3: Advanced Data Structure Solution (Optimal)
-
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for tree queries
-- **Efficient Implementation**: O(n log n + q log k) time complexity
-- **Space Efficiency**: O(n log n) space complexity
-- **Optimal Complexity**: Best approach for ancestor queries
-
-**Key Insight**: Use advanced data structures for optimal ancestor queries.
-
-**Algorithm**:
-- Use specialized data structures for tree storage
-- Implement efficient binary lifting algorithms
-- Handle special cases optimally
-- Return query results
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For tree: 0 -> 1, 0 -> 2, 1 -> 3, 1 -> 4
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Binary lifting table: for efficient │
-│   ancestor queries                  │
-│ - Depth array: for optimization     │
-│ - Query cache: for optimization     │
-│                                   │
-│ Query processing:                  │
-│ - Use binary lifting table for     │
-│   efficient ancestor queries       │
-│ - Use depth array for optimization │
-│ - Use query cache for optimization │
-│                                   │
-│ Result: [0, 0, -1]                │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def advanced_data_structure_planets_queries_ii(n, parent, queries):
-    """Answer queries using advanced data structure approach"""
-    # Find maximum depth needed
-    max_depth = 0
-    depth = [0] * n
-    
-    def calculate_depth(node):
-        if depth[node] != 0:
-            return depth[node]
-        if parent[node] == -1:
-            depth[node] = 0
+        if color[node] == 1:
+            csi = path.index(node)
+            clen = len(path) - csi
+            for i in range(csi, len(path)):
+                cn = path[i]
+                in_cycle[cn] = True
+                cycle_id[cn] = num_cycles
+                cycle_pos[cn] = i - csi
+                cycle_len[cn] = clen
+                cycle_entry[cn] = cn
+                color[cn] = 2
+            for i in range(csi - 1, -1, -1):
+                tn = path[i]
+                cycle_id[tn] = num_cycles
+                dist_to_cycle[tn] = csi - i
+                cycle_entry[tn] = path[csi]
+                cycle_len[tn] = clen
+                color[tn] = 2
+            num_cycles += 1
         else:
-            depth[node] = calculate_depth(parent[node]) + 1
-        return depth[node]
-    
-    for i in range(n):
-        max_depth = max(max_depth, calculate_depth(i))
-    
-    # Build binary lifting table using advanced data structures
-    log_max = 20  # Sufficient for most cases
-    up = [[-1] * n for _ in range(log_max)]
-    
-    # Level 0: direct parents
-    for i in range(n):
-        up[0][i] = parent[i]
-    
-    # Build higher levels using advanced data structures
-    for level in range(1, log_max):
-        for i in range(n):
-            if up[level-1][i] != -1:
-                up[level][i] = up[level-1][up[level-1][i]]
-    
-    def find_kth_ancestor(planet, k):
-        current = planet
-        for level in range(log_max):
-            if k & (1 << level):
-                current = up[level][current]
-                if current == -1:
-                    return -1
-        return current
-    
+            for i in range(len(path) - 1, -1, -1):
+                tn = path[i]
+                nxt = t[tn]
+                cycle_id[tn] = cycle_id[nxt]
+                dist_to_cycle[tn] = dist_to_cycle[nxt] + 1
+                cycle_entry[tn] = cycle_entry[nxt]
+                cycle_len[tn] = cycle_len[nxt]
+                color[tn] = 2
+
+    def kth(node, k):
+        for j in range(LOG):
+            if k & (1 << j):
+                node = jump[j][node]
+        return node
+
     results = []
-    for planet, k in queries:
-        result = find_kth_ancestor(planet, k)
-        results.append(result)
-    
-    return results
+    for _ in range(q):
+        a, b = int(data[idx]) - 1, int(data[idx + 1]) - 1
+        idx += 2
 
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(2, 1), (4, 2), (1, 3)]
-result = advanced_data_structure_planets_queries_ii(n, parent, queries)
-print(f"Advanced data structure results: {result}")
-```
-
-**Time Complexity**: O(n log n + q log k)
-**Space Complexity**: O(n log n)
-
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(q × k) | O(1) | Follow parent pointers k times |
-| Binary Lifting | O(n log n + q log k) | O(n log n) | Use binary lifting for efficient queries |
-| Advanced Data Structure | O(n log n + q log k) | O(n log n) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(n log n + q log k) - Use binary lifting for efficient queries
-- **Space**: O(n log n) - Store binary lifting table
-
-### Why This Solution Works
-- **Binary Lifting**: Use binary lifting for efficient ancestor queries
-- **Preprocessing**: Build binary lifting table in O(n log n)
-- **Query Processing**: Answer each query in O(log k) time
-- **Optimal Algorithms**: Use optimal algorithms for tree queries
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Planets Queries with Constraints**
-**Problem**: Answer ancestor queries with specific constraints.
-
-**Key Differences**: Apply constraints to ancestor queries
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_planets_queries_ii(n, parent, queries, constraints):
-    """Answer ancestor queries with constraints"""
-    # Build binary lifting table
-    log_max = 20
-    up = [[-1] * n for _ in range(log_max)]
-    
-    for i in range(n):
-        up[0][i] = parent[i]
-    
-    for level in range(1, log_max):
-        for i in range(n):
-            if up[level-1][i] != -1:
-                up[level][i] = up[level-1][up[level-1][i]]
-    
-    def find_kth_ancestor(planet, k):
-        current = planet
-        for level in range(log_max):
-            if k & (1 << level):
-                current = up[level][current]
-                if current == -1:
-                    return -1
-        return current
-    
-    results = []
-    for planet, k in queries:
-        result = find_kth_ancestor(planet, k)
-        if result != -1 and constraints(result):
-            results.append(result)
-        else:
+        if a == b:
+            results.append(0)
+        elif cycle_id[a] != cycle_id[b]:
             results.append(-1)
-    
-    return results
+        elif not in_cycle[b]:
+            if not in_cycle[a]:
+                d = dist_to_cycle[a] - dist_to_cycle[b]
+                results.append(d if d > 0 and kth(a, d) == b else -1)
+            else:
+                results.append(-1)
+        elif in_cycle[a]:
+            d = (cycle_pos[b] - cycle_pos[a] + cycle_len[a]) % cycle_len[a]
+            results.append(d if d else cycle_len[a])
+        else:
+            d1 = dist_to_cycle[a]
+            d2 = (cycle_pos[b] - cycle_pos[cycle_entry[a]] + cycle_len[a]) % cycle_len[a]
+            results.append(d1 + d2)
 
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(2, 1), (4, 2), (1, 3)]
-constraints = lambda planet: planet >= 0  # Only return non-negative planets
-result = constrained_planets_queries_ii(n, parent, queries, constraints)
-print(f"Constrained results: {result}")
+    print('\n'.join(map(str, results)))
+
+if __name__ == "__main__":
+    solve()
 ```
 
-#### **2. Planets Queries with Different Metrics**
-**Problem**: Answer ancestor queries with different distance metrics.
+## C++ Solution
 
-**Key Differences**: Different distance calculations
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Solution Approach**: Use advanced mathematical techniques
+const int LOG = 18;
 
-**Implementation**:
-```python
-def weighted_planets_queries_ii(n, parent, queries, weights):
-    """Answer ancestor queries with different weights"""
-    # Build binary lifting table
-    log_max = 20
-    up = [[-1] * n for _ in range(log_max)]
-    
-    for i in range(n):
-        up[0][i] = parent[i]
-    
-    for level in range(1, log_max):
-        for i in range(n):
-            if up[level-1][i] != -1:
-                up[level][i] = up[level-1][up[level-1][i]]
-    
-    def find_kth_ancestor(planet, k):
-        current = planet
-        total_weight = 0
-        for level in range(log_max):
-            if k & (1 << level):
-                if current == -1:
-                    return -1
-                total_weight += weights.get(current, 1)
-                current = up[level][current]
-        return current, total_weight
-    
-    results = []
-    for planet, k in queries:
-        result = find_kth_ancestor(planet, k)
-        results.append(result)
-    
-    return results
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(2, 1), (4, 2), (1, 3)]
-weights = {0: 1, 1: 2, 2: 3, 3: 4, 4: 5}
-result = weighted_planets_queries_ii(n, parent, queries, weights)
-print(f"Weighted results: {result}")
+    int n, q;
+    cin >> n >> q;
+
+    vector<int> t(n);
+    vector<vector<int>> jump(LOG, vector<int>(n));
+
+    for (int i = 0; i < n; i++) {
+        cin >> t[i]; t[i]--;
+        jump[0][i] = t[i];
+    }
+    for (int j = 1; j < LOG; j++)
+        for (int i = 0; i < n; i++)
+            jump[j][i] = jump[j-1][jump[j-1][i]];
+
+    vector<int> color(n), cycle_id(n, -1), cycle_pos(n, -1);
+    vector<int> cycle_len(n), dist_to_cycle(n), cycle_entry(n, -1);
+    vector<bool> in_cycle(n);
+    int num_cycles = 0;
+
+    for (int start = 0; start < n; start++) {
+        if (color[start]) continue;
+        vector<int> path;
+        int node = start;
+        while (!color[node]) {
+            color[node] = 1;
+            path.push_back(node);
+            node = t[node];
+        }
+        if (color[node] == 1) {
+            int csi = find(path.begin(), path.end(), node) - path.begin();
+            int clen = path.size() - csi;
+            for (int i = csi; i < (int)path.size(); i++) {
+                int cn = path[i];
+                in_cycle[cn] = true;
+                cycle_id[cn] = num_cycles;
+                cycle_pos[cn] = i - csi;
+                cycle_len[cn] = clen;
+                cycle_entry[cn] = cn;
+                color[cn] = 2;
+            }
+            for (int i = csi - 1; i >= 0; i--) {
+                int tn = path[i];
+                cycle_id[tn] = num_cycles;
+                dist_to_cycle[tn] = csi - i;
+                cycle_entry[tn] = path[csi];
+                cycle_len[tn] = clen;
+                color[tn] = 2;
+            }
+            num_cycles++;
+        } else {
+            for (int i = path.size() - 1; i >= 0; i--) {
+                int tn = path[i], nxt = t[tn];
+                cycle_id[tn] = cycle_id[nxt];
+                dist_to_cycle[tn] = dist_to_cycle[nxt] + 1;
+                cycle_entry[tn] = cycle_entry[nxt];
+                cycle_len[tn] = cycle_len[nxt];
+                color[tn] = 2;
+            }
+        }
+    }
+
+    auto kth = [&](int x, int k) {
+        for (int j = 0; j < LOG; j++)
+            if (k & (1 << j)) x = jump[j][x];
+        return x;
+    };
+
+    while (q--) {
+        int a, b;
+        cin >> a >> b;
+        a--; b--;
+
+        if (a == b) cout << 0 << '\n';
+        else if (cycle_id[a] != cycle_id[b]) cout << -1 << '\n';
+        else if (!in_cycle[b]) {
+            if (!in_cycle[a]) {
+                int d = dist_to_cycle[a] - dist_to_cycle[b];
+                cout << (d > 0 && kth(a, d) == b ? d : -1) << '\n';
+            } else cout << -1 << '\n';
+        } else if (in_cycle[a]) {
+            int d = (cycle_pos[b] - cycle_pos[a] + cycle_len[a]) % cycle_len[a];
+            cout << (d ? d : cycle_len[a]) << '\n';
+        } else {
+            int d1 = dist_to_cycle[a];
+            int d2 = (cycle_pos[b] - cycle_pos[cycle_entry[a]] + cycle_len[a]) % cycle_len[a];
+            cout << d1 + d2 << '\n';
+        }
+    }
+    return 0;
+}
 ```
 
-#### **3. Planets Queries with Multiple Dimensions**
-**Problem**: Answer ancestor queries in multiple dimensions.
+## Complexity Analysis
 
-**Key Differences**: Handle multiple dimensions
+| Phase | Time | Space |
+|-------|------|-------|
+| Binary Lifting | O(n log n) | O(n log n) |
+| Cycle Detection | O(n) | O(n) |
+| Per Query | O(log n) | O(1) |
+| **Total** | **O(n log n + q log n)** | **O(n log n)** |
 
-**Solution Approach**: Use advanced mathematical techniques
+## Common Mistakes
 
-**Implementation**:
-```python
-def multi_dimensional_planets_queries_ii(n, parent, queries, dimensions):
-    """Answer ancestor queries in multiple dimensions"""
-    # Build binary lifting table
-    log_max = 20
-    up = [[-1] * n for _ in range(log_max)]
-    
-    for i in range(n):
-        up[0][i] = parent[i]
-    
-    for level in range(1, log_max):
-        for i in range(n):
-            if up[level-1][i] != -1:
-                up[level][i] = up[level-1][up[level-1][i]]
-    
-    def find_kth_ancestor(planet, k):
-        current = planet
-        for level in range(log_max):
-            if k & (1 << level):
-                current = up[level][current]
-                if current == -1:
-                    return -1
-        return current
-    
-    results = []
-    for planet, k in queries:
-        result = find_kth_ancestor(planet, k)
-        results.append(result)
-    
-    return results
+| Mistake | Fix |
+|---------|-----|
+| Not checking different components | Return -1 if cycle_id differs |
+| Returning cycle_len when a == b | Return 0 for same node |
+| Cycle nodes trying to reach tail | Return -1 (impossible) |
+| Wrong cycle distance formula | Use (pos_b - pos_a + len) % len |
+| Not verifying tail reachability | Use kth_successor to confirm |
 
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(2, 1), (4, 2), (1, 3)]
-dimensions = 1
-result = multi_dimensional_planets_queries_ii(n, parent, queries, dimensions)
-print(f"Multi-dimensional results: {result}")
-```
+## Key Takeaways
 
-### Related Problems
+1. **Functional graphs = rho-shaped**: tail leading to exactly one cycle
+2. **Reachability is one-directional**: only forward on your path
+3. **Precompute everything**: cycle membership, position, distance to cycle
+4. **Binary lifting dual use**: fast k-th successor + reachability verification
 
-#### **CSES Problems**
-- [Planets Queries I](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Tree Traversals](https://cses.fi/problemset/task/1075) - Tree Algorithms
-- [Company Queries](https://cses.fi/problemset/task/1075) - Tree Algorithms
+## Related Problems
 
-#### **LeetCode Problems**
-- [Kth Ancestor of a Tree Node](https://leetcode.com/problems/kth-ancestor-of-a-tree-node/) - Tree
-- [Lowest Common Ancestor](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/) - Tree
-- [Binary Tree Paths](https://leetcode.com/problems/binary-tree-paths/) - Tree
-
-#### **Problem Categories**
-- **Tree Algorithms**: Binary lifting, ancestor queries, tree traversal
-- **Graph Algorithms**: Tree algorithms, binary lifting
-- **Query Processing**: Efficient query algorithms, binary lifting
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Tree Algorithms](https://cp-algorithms.com/graph/tree-algorithms.html) - Tree algorithms
-- [Binary Lifting](https://cp-algorithms.com/graph/binary-lifting.html) - Binary lifting algorithms
-- [LCA](https://cp-algorithms.com/graph/lca.html) - Lowest Common Ancestor algorithms
-
-### **Practice Problems**
-- [CSES Planets Queries I](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Tree Traversals](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Company Queries](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Tree Data Structure](https://en.wikipedia.org/wiki/Tree_(data_structure)) - Wikipedia article
-- [Binary Lifting](https://en.wikipedia.org/wiki/Binary_lifting) - Wikipedia article
-- [Lowest Common Ancestor](https://en.wikipedia.org/wiki/Lowest_common_ancestor) - Wikipedia article
+| Problem | Key Difference |
+|---------|----------------|
+| [Planets Queries I](https://cses.fi/problemset/task/1750) | k-th successor, no reachability |
+| [Planets Cycles](https://cses.fi/problemset/task/1751) | Cycle length computation |
+| [Company Queries I](https://cses.fi/problemset/task/1687) | Trees, no cycles |

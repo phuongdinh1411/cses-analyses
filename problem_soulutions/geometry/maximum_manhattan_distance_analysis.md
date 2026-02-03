@@ -2,576 +2,418 @@
 layout: simple
 title: "Maximum Manhattan Distance - Geometry Problem"
 permalink: /problem_soulutions/geometry/maximum_manhattan_distance_analysis
+difficulty: Medium
+tags: [geometry, coordinate-transformation, manhattan-distance, math]
 ---
 
 # Maximum Manhattan Distance
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of Manhattan distance in computational geometry
-- Apply geometric algorithms for distance calculation
-- Implement efficient algorithms for maximum distance finding
-- Optimize geometric operations for distance analysis
-- Handle special cases in distance calculation problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Geometry |
+| **Time Limit** | 1 second |
+| **Key Technique** | Rotated Coordinates (x+y, x-y) |
+| **CSES Link** | [Geometry Problems](https://cses.fi/problemset/) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given n points, find the maximum Manhattan distance between any two points.
+After solving this problem, you will be able to:
+- [ ] Transform Manhattan distance to Chebyshev distance using rotated coordinates
+- [ ] Recognize when coordinate transformation simplifies a problem
+- [ ] Apply the (x+y, x-y) transformation pattern to geometry problems
+- [ ] Optimize O(n^2) pairwise comparisons to O(n) using mathematical insight
 
-**Input**: 
-- n: number of points
-- points: array of points (x, y coordinates)
+---
 
-**Output**: 
-- Maximum Manhattan distance between any two points
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 100000
-- -10^6 ≤ coordinates ≤ 10^6
+**Problem:** Given n points in a 2D plane, find the maximum Manhattan distance between any two points.
 
-**Example**:
+**Input:**
+- Line 1: n (number of points)
+- Next n lines: x_i, y_i (coordinates of each point)
+
+**Output:**
+- Maximum Manhattan distance between any pair of points
+
+**Constraints:**
+- 1 <= n <= 2 * 10^5
+- -10^9 <= x, y <= 10^9
+
+### Example
+
 ```
 Input:
-n = 4
-points = [(0,0), (1,1), (2,2), (3,3)]
+4
+0 0
+1 1
+2 2
+3 3
 
 Output:
 6
-
-Explanation**: 
-Manhattan distances:
-- (0,0) to (3,3): |0-3| + |0-3| = 3 + 3 = 6
-- (0,0) to (2,2): |0-2| + |0-2| = 2 + 2 = 4
-- (1,1) to (3,3): |1-3| + |1-3| = 2 + 2 = 4
-Maximum: 6
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all pairs of points
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Calculate Manhattan distance for each pair
-- **Inefficient**: O(n²) time complexity
-
-**Key Insight**: Check every pair of points and calculate Manhattan distance.
-
-**Algorithm**:
-- Iterate through all pairs of points
-- Calculate Manhattan distance for each pair
-- Keep track of maximum distance
-- Return maximum distance
-
-**Visual Example**:
-```
-Points: [(0,0), (1,1), (2,2), (3,3)]
-
-Distance calculations:
-┌─────────────────────────────────────┐
-│ (0,0) to (1,1): |0-1| + |0-1| = 2  │
-│ (0,0) to (2,2): |0-2| + |0-2| = 4  │
-│ (0,0) to (3,3): |0-3| + |0-3| = 6  │
-│ (1,1) to (2,2): |1-2| + |1-2| = 2  │
-│ (1,1) to (3,3): |1-3| + |1-3| = 4  │
-│ (2,2) to (3,3): |2-3| + |2-3| = 2  │
-│                                   │
-│ Maximum: 6                        │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def brute_force_maximum_manhattan_distance(n, points):
-    """
-    Find maximum Manhattan distance using brute force approach
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        int: maximum Manhattan distance
-    """
-    def manhattan_distance(p1, p2):
-        """Calculate Manhattan distance between two points"""
-        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
-    
-    max_distance = 0
-    
-    # Check all pairs of points
-    for i in range(n):
-        for j in range(i + 1, n):
-            distance = manhattan_distance(points[i], points[j])
-            max_distance = max(max_distance, distance)
-    
-    return max_distance
-
-def brute_force_maximum_manhattan_distance_optimized(n, points):
-    """
-    Optimized brute force maximum Manhattan distance finding
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        int: maximum Manhattan distance
-    """
-    def manhattan_distance_optimized(p1, p2):
-        """Calculate Manhattan distance with optimization"""
-        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
-    
-    max_distance = 0
-    
-    # Check all pairs of points with optimization
-    for i in range(n):
-        for j in range(i + 1, n):
-            distance = manhattan_distance_optimized(points[i], points[j])
-            max_distance = max(max_distance, distance)
-    
-    return max_distance
-
-# Example usage
-n = 4
-points = [(0, 0), (1, 1), (2, 2), (3, 3)]
-result1 = brute_force_maximum_manhattan_distance(n, points)
-result2 = brute_force_maximum_manhattan_distance_optimized(n, points)
-print(f"Brute force maximum Manhattan distance: {result1}")
-print(f"Optimized brute force maximum Manhattan distance: {result2}")
-```
-
-**Time Complexity**: O(n²)
-**Space Complexity**: O(1)
-
-**Why it's inefficient**: O(n²) time complexity for checking all pairs.
+**Explanation:** The maximum Manhattan distance is between (0,0) and (3,3): |0-3| + |0-3| = 6.
 
 ---
 
-### Approach 2: Coordinate Transformation Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Coordinate Transformation Solution**:
-- **Coordinate Transformation**: Transform coordinates to simplify calculation
-- **Mathematical Insight**: Use (x+y, x-y) transformation
-- **Efficient Calculation**: O(n) time complexity
-- **Optimization**: Much more efficient than brute force
+### Pattern Recognition
 
-**Key Insight**: Use coordinate transformation to find maximum distance in O(n) time.
+> **Key Question:** How can we avoid checking all O(n^2) pairs?
 
-**Algorithm**:
-- Transform coordinates using (x+y, x-y)
-- Find min and max values in transformed space
-- Calculate maximum distance from transformed values
-- Return result
+The Manhattan distance |x1-x2| + |y1-y2| has four possible expansions depending on the signs. The maximum always equals max of |(x1+y1) - (x2+y2)| or |(x1-y1) - (x2-y2)|.
 
-**Visual Example**:
+### The Mathematical Insight
+
+For two points (x1, y1) and (x2, y2):
+
 ```
-Original points: [(0,0), (1,1), (2,2), (3,3)]
+Manhattan Distance = |x1-x2| + |y1-y2|
 
-Coordinate transformation (x+y, x-y):
-┌─────────────────────────────────────┐
-│ (0,0) → (0+0, 0-0) = (0, 0)        │
-│ (1,1) → (1+1, 1-1) = (2, 0)        │
-│ (2,2) → (2+2, 2-2) = (4, 0)        │
-│ (3,3) → (3+3, 3-3) = (6, 0)        │
-│                                   │
-│ Transformed points: [(0,0), (2,0), (4,0), (6,0)] │
-│ Min x+y: 0, Max x+y: 6            │
-│ Min x-y: 0, Max x-y: 0            │
-│                                   │
-│ Maximum distance: max(6-0, 0-0) = 6 │
-└─────────────────────────────────────┘
+Expanding all sign combinations:
+= max( (x1-x2) + (y1-y2),   when x1>=x2, y1>=y2
+       (x1-x2) - (y1-y2),   when x1>=x2, y1<=y2
+      -(x1-x2) + (y1-y2),   when x1<=x2, y1>=y2
+      -(x1-x2) - (y1-y2) )  when x1<=x2, y1<=y2
+
+Rearranging:
+= max( (x1+y1) - (x2+y2),
+       (x1-y1) - (x2-y2),
+      -(x1-y1) + (x2-y2),
+      -(x1+y1) + (x2+y2) )
+
+= max( |u1-u2|, |v1-v2| )  where u=x+y, v=x-y
 ```
 
-**Implementation**:
-```python
-def coordinate_transformation_maximum_manhattan_distance(n, points):
-    """
-    Find maximum Manhattan distance using coordinate transformation
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        int: maximum Manhattan distance
-    """
-    # Transform coordinates
-    transformed_points = []
-    for x, y in points:
-        transformed_points.append((x + y, x - y))
-    
-    # Find min and max values
-    min_x_plus_y = min(point[0] for point in transformed_points)
-    max_x_plus_y = max(point[0] for point in transformed_points)
-    min_x_minus_y = min(point[1] for point in transformed_points)
-    max_x_minus_y = max(point[1] for point in transformed_points)
-    
-    # Calculate maximum distance
-    max_distance = max(max_x_plus_y - min_x_plus_y, max_x_minus_y - min_x_minus_y)
-    
-    return max_distance
+### Analogies
 
-def coordinate_transformation_maximum_manhattan_distance_optimized(n, points):
-    """
-    Optimized coordinate transformation maximum Manhattan distance finding
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        int: maximum Manhattan distance
-    """
-    # Transform coordinates with optimization
-    x_plus_y_values = []
-    x_minus_y_values = []
-    
-    for x, y in points:
-        x_plus_y_values.append(x + y)
-        x_minus_y_values.append(x - y)
-    
-    # Find min and max values
-    min_x_plus_y = min(x_plus_y_values)
-    max_x_plus_y = max(x_plus_y_values)
-    min_x_minus_y = min(x_minus_y_values)
-    max_x_minus_y = max(x_minus_y_values)
-    
-    # Calculate maximum distance
-    max_distance = max(max_x_plus_y - min_x_plus_y, max_x_minus_y - min_x_minus_y)
-    
-    return max_distance
-
-# Example usage
-n = 4
-points = [(0, 0), (1, 1), (2, 2), (3, 3)]
-result1 = coordinate_transformation_maximum_manhattan_distance(n, points)
-result2 = coordinate_transformation_maximum_manhattan_distance_optimized(n, points)
-print(f"Coordinate transformation maximum Manhattan distance: {result1}")
-print(f"Optimized coordinate transformation maximum Manhattan distance: {result2}")
-```
-
-**Time Complexity**: O(n)
-**Space Complexity**: O(n)
-
-**Why it's better**: Uses coordinate transformation for O(n) time complexity.
+Think of rotating the coordinate system by 45 degrees. In the rotated system (u, v) = (x+y, x-y), Manhattan distance becomes Chebyshev distance (max of coordinate differences), which is easier to optimize.
 
 ---
 
-### Approach 3: Space-Optimized Solution (Optimal)
+## Solution 1: Brute Force
 
-**Key Insights from Space-Optimized Solution**:
-- **Space Optimization**: Use only necessary variables
-- **Efficient Computation**: O(n) time complexity
-- **Space Efficiency**: O(1) space complexity
-- **Optimal Complexity**: Best approach for maximum Manhattan distance
+### Idea
 
-**Key Insight**: Use space-optimized coordinate transformation to reduce space complexity.
+Check all pairs and compute Manhattan distance for each.
 
-**Algorithm**:
-- Use only necessary variables for min/max tracking
-- Update values in single pass
-- Return final result
+### Algorithm
 
-**Visual Example**:
-```
-Space-optimized approach:
+1. For each pair of points (i, j)
+2. Calculate |x_i - x_j| + |y_i - y_j|
+3. Track the maximum
 
-For points: [(0,0), (1,1), (2,2), (3,3)]
-┌─────────────────────────────────────┐
-│ Single pass through points:        │
-│ - Track min/max x+y values         │
-│ - Track min/max x-y values         │
-│ - Calculate maximum distance       │
-│ Final result: 6                    │
-└─────────────────────────────────────┘
-```
+### Code
 
-**Implementation**:
 ```python
-def space_optimized_maximum_manhattan_distance(n, points):
+def solve_brute_force(points):
     """
-    Find maximum Manhattan distance using space-optimized approach
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        int: maximum Manhattan distance
+    Brute force: check all pairs.
+
+    Time: O(n^2)
+    Space: O(1)
     """
-    # Initialize min/max values
-    min_x_plus_y = float('inf')
-    max_x_plus_y = float('-inf')
-    min_x_minus_y = float('inf')
-    max_x_minus_y = float('-inf')
-    
-    # Single pass through points
-    for x, y in points:
-        x_plus_y = x + y
-        x_minus_y = x - y
-        
-        min_x_plus_y = min(min_x_plus_y, x_plus_y)
-        max_x_plus_y = max(max_x_plus_y, x_plus_y)
-        min_x_minus_y = min(min_x_minus_y, x_minus_y)
-        max_x_minus_y = max(max_x_minus_y, x_minus_y)
-    
-    # Calculate maximum distance
-    max_distance = max(max_x_plus_y - min_x_plus_y, max_x_minus_y - min_x_minus_y)
-    
-    return max_distance
+    n = len(points)
+    max_dist = 0
 
-def space_optimized_maximum_manhattan_distance_v2(n, points):
-    """
-    Alternative space-optimized maximum Manhattan distance finding
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        int: maximum Manhattan distance
-    """
-    # Initialize min/max values
-    min_x_plus_y = max_x_plus_y = points[0][0] + points[0][1]
-    min_x_minus_y = max_x_minus_y = points[0][0] - points[0][1]
-    
-    # Single pass through points
-    for x, y in points[1:]:
-        x_plus_y = x + y
-        x_minus_y = x - y
-        
-        min_x_plus_y = min(min_x_plus_y, x_plus_y)
-        max_x_plus_y = max(max_x_plus_y, x_plus_y)
-        min_x_minus_y = min(min_x_minus_y, x_minus_y)
-        max_x_minus_y = max(max_x_minus_y, x_minus_y)
-    
-    # Calculate maximum distance
-    max_distance = max(max_x_plus_y - min_x_plus_y, max_x_minus_y - min_x_minus_y)
-    
-    return max_distance
-
-def maximum_manhattan_distance_with_precomputation(max_n):
-    """
-    Precompute maximum Manhattan distance for multiple queries
-    
-    Args:
-        max_n: maximum number of points
-    
-    Returns:
-        list: precomputed maximum Manhattan distance results
-    """
-    results = [0] * (max_n + 1)
-    
-    for i in range(max_n + 1):
-        results[i] = i  # Simplified calculation
-    
-    return results
-
-# Example usage
-n = 4
-points = [(0, 0), (1, 1), (2, 2), (3, 3)]
-result1 = space_optimized_maximum_manhattan_distance(n, points)
-result2 = space_optimized_maximum_manhattan_distance_v2(n, points)
-print(f"Space-optimized maximum Manhattan distance: {result1}")
-print(f"Space-optimized maximum Manhattan distance v2: {result2}")
-
-# Precompute for multiple queries
-max_n = 100000
-precomputed = maximum_manhattan_distance_with_precomputation(max_n)
-print(f"Precomputed result for n={n}: {precomputed[n]}")
-```
-
-**Time Complexity**: O(n)
-**Space Complexity**: O(1)
-
-**Why it's optimal**: Uses space-optimized coordinate transformation for O(n) time and O(1) space complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²) | O(1) | Check all pairs of points |
-| Coordinate Transformation | O(n) | O(n) | Use coordinate transformation |
-| Space-Optimized | O(n) | O(1) | Use space-optimized transformation |
-
-### Time Complexity
-- **Time**: O(n) - Use coordinate transformation for efficient calculation
-- **Space**: O(1) - Use space-optimized approach
-
-### Why This Solution Works
-- **Coordinate Transformation**: Use (x+y, x-y) transformation
-- **Mathematical Insight**: Manhattan distance becomes max difference in transformed space
-- **Efficient Computation**: Single pass through points
-- **Optimal Algorithms**: Use optimal algorithms for calculation
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Maximum Manhattan Distance with Constraints**
-**Problem**: Find maximum distance with specific constraints.
-
-**Key Differences**: Apply constraints to distance calculation
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_maximum_manhattan_distance(n, points, constraints):
-    """
-    Find maximum Manhattan distance with constraints
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-        constraints: function to check constraints
-    
-    Returns:
-        int: maximum Manhattan distance
-    """
-    def manhattan_distance(p1, p2):
-        """Calculate Manhattan distance between two points"""
-        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
-    
-    max_distance = 0
-    
     for i in range(n):
         for j in range(i + 1, n):
-            if constraints(points[i], points[j]):
-                distance = manhattan_distance(points[i], points[j])
-            max_distance = max(max_distance, distance)
-    
-    return max_distance
+            dist = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1])
+            max_dist = max(max_dist, dist)
 
-# Example usage
-n = 4
-points = [(0, 0), (1, 1), (2, 2), (3, 3)]
-constraints = lambda p1, p2: p1[0] + p1[1] < p2[0] + p2[1]  # Only check points where first point has smaller sum
-result = constrained_maximum_manhattan_distance(n, points, constraints)
-print(f"Constrained maximum Manhattan distance: {result}")
+    return max_dist
 ```
 
-#### **2. Maximum Manhattan Distance with Different Metrics**
-**Problem**: Find maximum distance with different distance metrics.
+```cpp
+long long solveBruteForce(vector<pair<long long, long long>>& points) {
+    int n = points.size();
+    long long maxDist = 0;
 
-**Key Differences**: Different distance calculations
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            long long dist = abs(points[i].first - points[j].first)
+                           + abs(points[i].second - points[j].second);
+            maxDist = max(maxDist, dist);
+        }
+    }
+    return maxDist;
+}
+```
 
-**Solution Approach**: Use advanced geometric techniques
+### Complexity
 
-**Implementation**:
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Check all n*(n-1)/2 pairs |
+| Space | O(1) | Only store max distance |
+
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed by exhaustive search. However, with n up to 2*10^5, we have about 2*10^10 operations - far too slow.
+
+---
+
+## Solution 2: Rotated Coordinates (Optimal)
+
+### Key Insight
+
+> **The Trick:** Transform to rotated coordinates (u, v) = (x+y, x-y). The maximum Manhattan distance equals max(max_u - min_u, max_v - min_v).
+
+### Why This Works
+
+After transformation, for any two points:
+- Original: Manhattan(P1, P2) = |x1-x2| + |y1-y2|
+- Transformed: max(|u1-u2|, |v1-v2|)
+
+The maximum over all pairs of max(|u1-u2|, |v1-v2|) equals max(range of u, range of v).
+
+### Algorithm
+
+1. Transform each point: u = x + y, v = x - y
+2. Find min and max of u values
+3. Find min and max of v values
+4. Return max(max_u - min_u, max_v - min_v)
+
+### Dry Run Example
+
+Let's trace through with points [(0,0), (1,1), (2,2), (3,3)]:
+
+```
+Step 1: Transform coordinates
+  (0,0) -> u=0+0=0, v=0-0=0
+  (1,1) -> u=1+1=2, v=1-1=0
+  (2,2) -> u=2+2=4, v=2-2=0
+  (3,3) -> u=3+3=6, v=3-3=0
+
+Step 2: Find ranges
+  u values: [0, 2, 4, 6]  -> range = 6 - 0 = 6
+  v values: [0, 0, 0, 0]  -> range = 0 - 0 = 0
+
+Step 3: Maximum distance = max(6, 0) = 6
+```
+
+### Visual Diagram
+
+```
+Original Coordinates:           Rotated Coordinates (45 deg):
+
+y                               v (x-y)
+^                               ^
+|     (3,3)                     |
+|   (2,2)                       |
+| (1,1)                         0--*--*--*--*--> u (x+y)
+*(0,0)                          0  2  4  6
++---------> x
+
+Manhattan distance = 6          Chebyshev distance = max(6-0, 0-0) = 6
+```
+
+### Code
+
 ```python
-def weighted_maximum_manhattan_distance(n, points, weights):
-    """
-    Find maximum Manhattan distance with different weights
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-        weights: list of point weights
-    
-    Returns:
-        int: maximum weighted Manhattan distance
-    """
-    def weighted_manhattan_distance(p1, p2, w1, w2):
-        """Calculate weighted Manhattan distance between two points"""
-        return (abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])) * (w1 + w2)
-    
-    max_distance = 0
-    
-    for i in range(n):
-        for j in range(i + 1, n):
-            distance = weighted_manhattan_distance(points[i], points[j], weights[i], weights[j])
-            max_distance = max(max_distance, distance)
-    
-    return max_distance
+import sys
+input = sys.stdin.readline
 
-# Example usage
-n = 4
-points = [(0, 0), (1, 1), (2, 2), (3, 3)]
-weights = [1, 2, 3, 4]
-result = weighted_maximum_manhattan_distance(n, points, weights)
-print(f"Weighted maximum Manhattan distance: {result}")
+def solve():
+    """
+    Optimal solution using rotated coordinates.
+
+    Time: O(n)
+    Space: O(1)
+    """
+    n = int(input())
+
+    min_u = min_v = float('inf')
+    max_u = max_v = float('-inf')
+
+    for _ in range(n):
+        x, y = map(int, input().split())
+        u = x + y  # rotated coordinate 1
+        v = x - y  # rotated coordinate 2
+
+        min_u = min(min_u, u)
+        max_u = max(max_u, u)
+        min_v = min(min_v, v)
+        max_v = max(max_v, v)
+
+    print(max(max_u - min_u, max_v - min_v))
+
+solve()
 ```
 
-#### **3. Maximum Manhattan Distance with Multiple Dimensions**
-**Problem**: Find maximum distance in multiple dimensions.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Key Differences**: Handle multiple dimensions
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-**Solution Approach**: Use advanced geometric techniques
+    int n;
+    cin >> n;
 
-**Implementation**:
+    long long minU = LLONG_MAX, maxU = LLONG_MIN;
+    long long minV = LLONG_MAX, maxV = LLONG_MIN;
+
+    for (int i = 0; i < n; i++) {
+        long long x, y;
+        cin >> x >> y;
+
+        long long u = x + y;  // rotated coordinate 1
+        long long v = x - y;  // rotated coordinate 2
+
+        minU = min(minU, u);
+        maxU = max(maxU, u);
+        minV = min(minV, v);
+        maxV = max(maxV, v);
+    }
+
+    cout << max(maxU - minU, maxV - minV) << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Single pass through all points |
+| Space | O(1) | Only store 4 values (min/max for u and v) |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Integer Overflow
+
+```cpp
+// WRONG - may overflow with int
+int u = x + y;
+int dist = maxU - minU;
+
+// CORRECT - use long long
+long long u = x + y;
+long long dist = maxU - minU;
+```
+
+**Problem:** With coordinates up to 10^9, x+y can reach 2*10^9, exceeding int range.
+**Fix:** Use `long long` for all calculations.
+
+### Mistake 2: Forgetting One Transformation
+
 ```python
-def multi_dimensional_maximum_manhattan_distance(n, points, dimensions):
-    """
-    Find maximum Manhattan distance in multiple dimensions
-    
-    Args:
-        n: number of points
-        points: list of points (each point is a tuple of coordinates)
-        dimensions: number of dimensions
-    
-    Returns:
-        int: maximum Manhattan distance
-    """
-    def multi_dimensional_manhattan_distance(p1, p2):
-        """Calculate Manhattan distance in multiple dimensions"""
-        distance = 0
-        for i in range(dimensions):
-            distance += abs(p1[i] - p2[i])
-        return distance
-    
-    max_distance = 0
-    
-    for i in range(n):
-        for j in range(i + 1, n):
-            distance = multi_dimensional_manhattan_distance(points[i], points[j])
-            max_distance = max(max_distance, distance)
-    
-    return max_distance
+# WRONG - only using x+y
+max_dist = max_u - min_u
 
-# Example usage
-n = 3
-points = [(0, 0, 0), (1, 1, 1), (2, 2, 2)]
-dimensions = 3
-result = multi_dimensional_maximum_manhattan_distance(n, points, dimensions)
-print(f"Multi-dimensional maximum Manhattan distance: {result}")
+# CORRECT - use both transformations
+max_dist = max(max_u - min_u, max_v - min_v)
 ```
 
-### Related Problems
+**Problem:** The maximum might come from the x-y transformation.
+**Fix:** Always compute and compare both ranges.
 
-#### **CSES Problems**
-- [All Manhattan Distances](https://cses.fi/problemset/task/1075) - Geometry
-- [Point in Polygon](https://cses.fi/problemset/task/1075) - Geometry
-- [Convex Hull](https://cses.fi/problemset/task/1075) - Geometry
+### Mistake 3: Wrong Transformation Formula
 
-#### **LeetCode Problems**
-- [Manhattan Distance](https://leetcode.com/problems/manhattan-distance/) - Geometry
-- [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/) - Geometry
-- [Minimum Time Visiting All Points](https://leetcode.com/problems/minimum-time-visiting-all-points/) - Geometry
+```python
+# WRONG - dividing by sqrt(2)
+u = (x + y) / math.sqrt(2)
 
-#### **Problem Categories**
-- **Computational Geometry**: Distance calculations, coordinate systems
-- **Mathematical Algorithms**: Coordinate transformation, optimization
-- **Geometric Algorithms**: Manhattan distance, distance metrics
+# CORRECT - no division needed
+u = x + y
+```
 
-## 🔗 Additional Resources
+**Problem:** The geometric rotation involves sqrt(2), but for finding max distance we only need the relative differences.
+**Fix:** Use simple x+y and x-y without any scaling.
 
-### **Algorithm References**
-- [Computational Geometry](https://cp-algorithms.com/geometry/basic-geometry.html) - Geometry algorithms
-- [Distance Algorithms](https://cp-algorithms.com/geometry/distance.html) - Distance calculation algorithms
-- [Coordinate Systems](https://cp-algorithms.com/geometry/coordinate-systems.html) - Coordinate system algorithms
+---
 
-### **Practice Problems**
-- [CSES All Manhattan Distances](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Point in Polygon](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Convex Hull](https://cses.fi/problemset/task/1075) - Medium
+## Edge Cases
 
-### **Further Reading**
-- [Computational Geometry](https://en.wikipedia.org/wiki/Computational_geometry) - Wikipedia article
-- [Manhattan Distance](https://en.wikipedia.org/wiki/Taxicab_geometry) - Wikipedia article
-- [Coordinate Transformation](https://en.wikipedia.org/wiki/Coordinate_system) - Wikipedia article
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single point | n=1, (5,5) | 0 | Distance to itself is 0 |
+| Two points | n=2, (0,0), (3,4) | 7 | Direct calculation |
+| All same point | n=3, all (1,1) | 0 | All distances are 0 |
+| Negative coords | (-10^9, -10^9), (10^9, 10^9) | 4*10^9 | Handle negative values |
+| Diagonal line | (0,0), (k,k) for any k | 2*|k| | x-y values all equal |
+| Anti-diagonal | (0,k), (k,0) | 2*k | x+y values all equal |
+
+---
+
+## When to Use This Pattern
+
+### Use Rotated Coordinates When:
+- Computing Manhattan distances between many points
+- Finding closest/farthest pairs under Manhattan metric
+- Problems involving taxicab geometry
+- Need to optimize O(n^2) pairwise Manhattan calculations
+
+### Don't Use When:
+- Working with Euclidean distance (use different techniques)
+- Problem requires actual pairs, not just the distance value
+- Coordinates are in 3D+ (transformation becomes more complex)
+
+### Pattern Recognition Checklist:
+- [ ] Problem mentions Manhattan distance? Consider coordinate rotation
+- [ ] Need max/min over all pairs? Consider transforming to find extremes
+- [ ] L1 norm optimization? Rotated coordinates often help
+
+---
+
+## Related Problems
+
+### Similar Difficulty (CSES)
+| Problem | Key Difference |
+|---------|----------------|
+| [Point Location Test](https://cses.fi/problemset/task/2189) | Cross product for point-line relationship |
+| [Convex Hull](https://cses.fi/problemset/task/2195) | Finding boundary of point set |
+| [Nearest Smaller Values](https://cses.fi/problemset/task/1645) | 1D analogue using monotonic stack |
+
+### LeetCode Problems
+| Problem | Connection |
+|---------|------------|
+| [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/) | Distance-based, but Euclidean |
+| [Minimum Time Visiting All Points](https://leetcode.com/problems/minimum-time-visiting-all-points/) | Chebyshev distance (max of |dx|, |dy|) |
+| [Best Position for a Service Centre](https://leetcode.com/problems/best-position-for-a-service-centre/) | Geometric median problem |
+
+### Harder Extensions
+| Problem | New Concept |
+|---------|-------------|
+| 3D Manhattan Distance | Use 2^3 = 8 transformations |
+| K-th Largest Manhattan Distance | Combine with binary search |
+| Manhattan MST | Divide into 8 regions per point |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Transform (x, y) to (x+y, x-y) to convert Manhattan to Chebyshev distance
+2. **Time Optimization:** O(n^2) pairwise checks reduced to O(n) by finding range extremes
+3. **Space Trade-off:** O(1) extra space - just track 4 values
+4. **Pattern:** Coordinate transformation is powerful for geometry problems
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Derive the (x+y, x-y) transformation from scratch
+- [ ] Explain why max Manhattan = max(range of x+y, range of x-y)
+- [ ] Implement in O(n) time and O(1) space
+- [ ] Handle edge cases (overflow, single point, negative coordinates)
+- [ ] Recognize this pattern in new problems
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Manhattan Distance](https://cp-algorithms.com/geometry/manhattan-distance.html)
+- [Wikipedia: Taxicab Geometry](https://en.wikipedia.org/wiki/Taxicab_geometry)
+- [Chebyshev Distance](https://en.wikipedia.org/wiki/Chebyshev_distance)
+- [CSES Problem Set](https://cses.fi/problemset/)

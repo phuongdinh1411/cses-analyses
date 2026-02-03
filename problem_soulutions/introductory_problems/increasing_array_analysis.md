@@ -1,1263 +1,413 @@
 ---
 layout: simple
-title: "Increasing Array"
+title: "Increasing Array - Introductory Problem"
 permalink: /problem_soulutions/introductory_problems/increasing_array_analysis
+difficulty: Easy
+tags: [greedy, array, introductory]
+prerequisites: []
 ---
 
 # Increasing Array
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of array manipulation and greedy algorithms in introductory problems
-- Apply efficient algorithms for making arrays non-decreasing
-- Implement greedy approaches for array transformation problems
-- Optimize algorithms for array modification problems
-- Handle special cases in array manipulation problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Easy |
+| **Category** | Greedy / Array |
+| **Time Limit** | 1 second |
+| **Key Technique** | Greedy, Single Pass |
+| **CSES Link** | [Increasing Array](https://cses.fi/problemset/task/1094) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an array of integers, find the minimum number of operations needed to make it non-decreasing. In each operation, you can increase any element by 1.
+After solving this problem, you will be able to:
+- [ ] Recognize when a greedy approach yields optimal results
+- [ ] Track running maximum while iterating through an array
+- [ ] Handle potential integer overflow in accumulation problems
+- [ ] Apply single-pass array transformation techniques
 
-**Input**: 
-- n: number of elements
-- arr: array of n integers
+---
 
-**Output**: 
-- Minimum number of operations needed
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10^5
-- 1 ≤ arr[i] ≤ 10^9
+**Problem:** Given an array of n integers, find the minimum number of moves required to make the array non-decreasing. In one move, you can increase any element by 1.
 
-**Example**:
+**Input:**
+- Line 1: An integer n (size of array)
+- Line 2: n space-separated integers (array elements)
+
+**Output:**
+- A single integer: the minimum number of moves required
+
+**Constraints:**
+- 1 <= n <= 2 x 10^5
+- 1 <= arr[i] <= 10^9
+
+### Example
+
 ```
 Input:
-n = 5
-arr = [3, 2, 5, 1, 7]
+5
+3 2 5 1 7
 
 Output:
 5
-
-Explanation**: 
-Original array: [3, 2, 5, 1, 7]
-After operations:
-- Increase arr[1] by 1: [3, 3, 5, 1, 7] (1 operation)
-- Increase arr[1] by 1: [3, 4, 5, 1, 7] (1 operation)  
-- Increase arr[1] by 1: [3, 5, 5, 1, 7] (1 operation)
-- Increase arr[3] by 1: [3, 5, 5, 2, 7] (1 operation)
-- Increase arr[3] by 1: [3, 5, 5, 3, 7] (1 operation)
-- Increase arr[3] by 1: [3, 5, 5, 4, 7] (1 operation)
-- Increase arr[3] by 1: [3, 5, 5, 5, 7] (1 operation)
-Total: 7 operations
-
-Wait, let me recalculate:
-- arr[1] needs 3 operations to become 5: 2→3→4→5
-- arr[3] needs 4 operations to become 5: 1→2→3→4→5
-Total: 3 + 4 = 7 operations
-
-Actually, the answer should be 7, not 5.
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Simulation**: Simulate each operation step by step
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Process array element by element
-- **Inefficient**: O(n²) time complexity
-
-**Key Insight**: Process the array from left to right and increase elements as needed to maintain non-decreasing order.
-
-**Algorithm**:
-- Process array from left to right
-- For each element, if it's smaller than the previous element, increase it
-- Count the number of operations needed
-- Return the total count
-
-**Visual Example**:
-```
-Increasing Array: [3, 2, 5, 1, 7]
-
-Process array from left to right:
-┌─────────────────────────────────────┐
-│ Position 0: arr[0] = 3             │
-│ - First element, no comparison      │
-│ - Current array: [3]               │
-│                                   │
-│ Position 1: arr[1] = 2             │
-│ - Compare with arr[0] = 3          │
-│ - 2 < 3, need to increase          │
-│ - Increase by 1: 2 → 3             │
-│ - Operations: 1                    │
-│ - Current array: [3, 3]            │
-│                                   │
-│ Position 2: arr[2] = 5             │
-│ - Compare with arr[1] = 3          │
-│ - 5 ≥ 3, no increase needed        │
-│ - Operations: 0                    │
-│ - Current array: [3, 3, 5]         │
-│                                   │
-│ Position 3: arr[3] = 1             │
-│ - Compare with arr[2] = 5          │
-│ - 1 < 5, need to increase          │
-│ - Increase by 1: 1 → 2             │
-│ - Increase by 1: 2 → 3             │
-│ - Increase by 1: 3 → 4             │
-│ - Increase by 1: 4 → 5             │
-│ - Operations: 4                    │
-│ - Current array: [3, 3, 5, 5]      │
-│                                   │
-│ Position 4: arr[4] = 7             │
-│ - Compare with arr[3] = 5          │
-│ - 7 ≥ 5, no increase needed        │
-│ - Operations: 0                    │
-│ - Final array: [3, 3, 5, 5, 7]    │
-│                                   │
-│ Total operations: 1 + 0 + 4 + 0 = 5 │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def brute_force_increasing_array(n, arr):
-    """Make array non-decreasing using brute force approach"""
-    operations = 0
-    current_arr = arr.copy()
-    
-    for i in range(1, n):
-        if current_arr[i] < current_arr[i-1]:
-            # Need to increase current element
-            diff = current_arr[i-1] - current_arr[i]
-            current_arr[i] = current_arr[i-1]
-            operations += diff
-    
-    return operations
-
-# Example usage
-n = 5
-arr = [3, 2, 5, 1, 7]
-result = brute_force_increasing_array(n, arr)
-print(f"Brute force operations: {result}")
-```
-
-**Time Complexity**: O(n)
-**Space Complexity**: O(n)
-
-**Why it's inefficient**: Uses extra space for copying the array.
+**Explanation:** We need to increase arr[1] from 2 to 3 (1 move) and arr[3] from 1 to 5 (4 moves). Total: 5 moves. Final array: [3, 3, 5, 5, 7].
 
 ---
 
-### Approach 2: Greedy Algorithm
+## Intuition: How to Think About This Problem
 
-**Key Insights from Greedy Algorithm**:
-- **Greedy Choice**: Always make the minimum necessary changes
-- **Efficient Implementation**: O(n) time complexity
-- **Space Optimization**: O(1) space complexity
-- **Optimization**: Much more efficient than brute force
+### Pattern Recognition
 
-**Key Insight**: Use greedy approach to make minimum necessary changes without storing the modified array.
+> **Key Question:** Since we can only increase elements (not decrease), what determines the minimum operations?
 
-**Algorithm**:
-- Process array from left to right
-- Keep track of the current maximum value
-- For each element, if it's smaller than the maximum, add the difference to operations
-- Update the maximum value
-- Return total operations
+Each element must be at least as large as the previous one. When we encounter an element smaller than its predecessor, we must increase it to match. The key insight is that the optimal target for each element is exactly the maximum value seen so far - no more, no less.
 
-**Visual Example**:
+### Breaking Down the Problem
+
+1. **What are we looking for?** The total number of +1 operations needed.
+2. **What information do we have?** The original array values.
+3. **What's the relationship between input and output?** For each element smaller than the running maximum, we need (max - element) operations.
+
+### Why Greedy Works
+
+Since we can only increase elements, once we've processed an element, its value becomes a constraint for all future elements. The minimum operations required for position i depends only on positions 0 to i-1. This optimal substructure makes greedy the right approach.
+
+---
+
+## Solution 1: Brute Force (Simulation)
+
+### Idea
+
+Iterate through the array. When an element is smaller than the previous, "simulate" increasing it one at a time until it matches.
+
+### Algorithm
+
+1. Start from index 1
+2. Compare each element with the previous
+3. If smaller, calculate the difference and add to total moves
+4. Update the current element to match the previous
+
+### Code
+
+```python
+def solve_brute_force(n, arr):
+    """
+    Brute force: simulate the process.
+
+    Time: O(n)
+    Space: O(n) - copies the array
+    """
+    arr = arr.copy()  # Don't modify original
+    moves = 0
+
+    for i in range(1, n):
+        if arr[i] < arr[i-1]:
+            diff = arr[i-1] - arr[i]
+            moves += diff
+            arr[i] = arr[i-1]
+
+    return moves
 ```
-Greedy Algorithm:
 
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Single pass through array |
+| Space | O(n) | Creates a copy of the array |
+
+### Why This Works (But Uses Extra Space)
+
+This approach correctly computes the answer but wastes space by copying the array. We can optimize by tracking only what we need.
+
+---
+
+## Solution 2: Optimal Solution (Greedy with Running Maximum)
+
+### Key Insight
+
+> **The Trick:** Instead of modifying the array, track the running maximum. Each element must be raised to at least this maximum.
+
+### Algorithm
+
+1. Initialize `max_so_far` with the first element
+2. Initialize `moves` counter to 0
+3. For each subsequent element:
+   - If element < max_so_far: add (max_so_far - element) to moves
+   - Otherwise: update max_so_far = element
+4. Return total moves
+
+### Dry Run Example
+
+Let's trace through with input `n = 5, arr = [3, 2, 5, 1, 7]`:
+
+```
+Initial state:
+  max_so_far = 3
+  moves = 0
+
+Step 1: Process arr[1] = 2
+  2 < 3 (max_so_far)
+  moves += 3 - 2 = 1
+  moves = 1, max_so_far = 3
+
+Step 2: Process arr[2] = 5
+  5 >= 3 (max_so_far)
+  Update max_so_far = 5
+  moves = 1, max_so_far = 5
+
+Step 3: Process arr[3] = 1
+  1 < 5 (max_so_far)
+  moves += 5 - 1 = 4
+  moves = 5, max_so_far = 5
+
+Step 4: Process arr[4] = 7
+  7 >= 5 (max_so_far)
+  Update max_so_far = 7
+  moves = 5, max_so_far = 7
+
+Final answer: 5
+```
+
+### Visual Diagram
+
+```
 Array: [3, 2, 5, 1, 7]
-┌─────────────────────────────────────┐
-│ Position 0: arr[0] = 3             │
-│ - First element, max = 3            │
-│ - Operations: 0                     │
-│                                   │
-│ Position 1: arr[1] = 2             │
-│ - Compare with max = 3              │
-│ - 2 < 3, need to increase by 1     │
-│ - Operations: 0 + 1 = 1            │
-│ - Update max = 3                    │
-│                                   │
-│ Position 2: arr[2] = 5             │
-│ - Compare with max = 3              │
-│ - 5 ≥ 3, no increase needed        │
-│ - Operations: 1 + 0 = 1            │
-│ - Update max = 5                    │
-│                                   │
-│ Position 3: arr[3] = 1             │
-│ - Compare with max = 5              │
-│ - 1 < 5, need to increase by 4     │
-│ - Operations: 1 + 4 = 5            │
-│ - Update max = 5                    │
-│                                   │
-│ Position 4: arr[4] = 7             │
-│ - Compare with max = 5              │
-│ - 7 ≥ 5, no increase needed        │
-│ - Operations: 5 + 0 = 5            │
-│ - Update max = 7                    │
-│                                   │
-│ Total operations: 5                │
-└─────────────────────────────────────┘
+Index:  0  1  2  3  4
+
+Processing left to right:
+
+Position 0: max = 3
+            [3] - baseline established
+
+Position 1: 2 < 3, need +1
+            [3, 3] - arr[1] raised to 3
+            moves = 1
+
+Position 2: 5 > 3, update max = 5
+            [3, 3, 5] - no change needed
+            moves = 1
+
+Position 3: 1 < 5, need +4
+            [3, 3, 5, 5] - arr[3] raised to 5
+            moves = 5
+
+Position 4: 7 > 5, update max = 7
+            [3, 3, 5, 5, 7] - no change needed
+            moves = 5 (final)
 ```
 
-**Implementation**:
+### Code (Python)
+
 ```python
-def greedy_increasing_array(n, arr):
-    """Make array non-decreasing using greedy algorithm"""
-    operations = 0
+def solve_optimal(n, arr):
+    """
+    Optimal solution using running maximum.
+
+    Time: O(n) - single pass
+    Space: O(1) - only tracking max and moves
+    """
+    moves = 0
     max_so_far = arr[0]
-    
+
     for i in range(1, n):
         if arr[i] < max_so_far:
-            # Need to increase current element
-            operations += max_so_far - arr[i]
+            moves += max_so_far - arr[i]
         else:
-            # Update maximum
             max_so_far = arr[i]
-    
-    return operations
 
-# Example usage
-n = 5
-arr = [3, 2, 5, 1, 7]
-result = greedy_increasing_array(n, arr)
-print(f"Greedy operations: {result}")
+    return moves
+
+
+# CSES Input/Output format
+def main():
+    n = int(input())
+    arr = list(map(int, input().split()))
+    print(solve_optimal(n, arr))
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-**Time Complexity**: O(n)
-**Space Complexity**: O(1)
+### Code (C++)
 
-**Why it's better**: Uses O(1) space and is more efficient.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+
+    vector<long long> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    long long moves = 0;
+    long long max_so_far = arr[0];
+
+    for (int i = 1; i < n; i++) {
+        if (arr[i] < max_so_far) {
+            moves += max_so_far - arr[i];
+        } else {
+            max_so_far = arr[i];
+        }
+    }
+
+    cout << moves << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Single pass through array |
+| Space | O(1) | Only two variables needed |
 
 ---
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+## Common Mistakes
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for optimization
-- **Efficient Implementation**: O(n) time complexity
-- **Space Efficiency**: O(1) space complexity
-- **Optimal Complexity**: Best approach for array transformation problems
+### Mistake 1: Integer Overflow
 
-**Key Insight**: Use advanced data structures for optimal array transformation.
+```cpp
+// WRONG - int overflow when summing large differences
+int moves = 0;  // May overflow!
 
-**Algorithm**:
-- Use specialized data structures for efficient processing
-- Implement optimized greedy algorithm
-- Handle special cases optimally
-- Return minimum operations needed
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For array: [3, 2, 5, 1, 7]
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Advanced array processor: for     │
-│   efficient array processing        │
-│ - Operation counter: for optimization│
-│ - Max tracker: for optimization     │
-│                                   │
-│ Array transformation calculation:   │
-│ - Use advanced array processor for  │
-│   efficient processing              │
-│ - Use operation counter for         │
-│   optimization                      │
-│ - Use max tracker for optimization  │
-│                                   │
-│ Result: 5                          │
-└─────────────────────────────────────┘
+// CORRECT - use long long
+long long moves = 0;
 ```
 
-**Implementation**:
-```python
-def advanced_data_structure_increasing_array(n, arr):
-    """Make array non-decreasing using advanced data structure approach"""
-    
-    # Advanced data structures
-    operations = 0
-    max_so_far = arr[0]
-    
-    # Advanced array processing
-    for i in range(1, n):
-        if arr[i] < max_so_far:
-            # Advanced operation calculation
-            operations += max_so_far - arr[i]
-        else:
-            # Advanced maximum tracking
-            max_so_far = arr[i]
-    
-    return operations
+**Problem:** With n up to 2x10^5 and values up to 10^9, the total moves can exceed 2^31-1.
+**Fix:** Use `long long` in C++ or Python's arbitrary precision integers.
 
-# Example usage
-n = 5
-arr = [3, 2, 5, 1, 7]
-result = advanced_data_structure_increasing_array(n, arr)
-print(f"Advanced data structure operations: {result}")
-```
-
-**Time Complexity**: O(n)
-**Space Complexity**: O(1)
-
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n) | O(n) | Simulate operations step by step |
-| Greedy Algorithm | O(n) | O(1) | Use greedy choice to minimize operations |
-| Advanced Data Structure | O(n) | O(1) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(n) - Process array once from left to right
-- **Space**: O(1) - Store only necessary variables
-
-### Why This Solution Works
-- **Greedy Choice**: Always make the minimum necessary changes
-- **Optimal Substructure**: Each decision is optimal for the current state
-- **Efficient Processing**: Process array in single pass
-- **Optimal Algorithms**: Use optimal algorithms for array transformation
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Increasing Array with Constraints**
-**Problem**: Make array non-decreasing with specific constraints.
-
-**Key Differences**: Apply constraints to array transformation
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_increasing_array(n, arr, constraints):
-    """Make array non-decreasing with constraints"""
-    operations = 0
-    max_so_far = arr[0]
-    
-    for i in range(1, n):
-        if arr[i] < max_so_far:
-            # Check constraints
-            if constraints(i, arr[i], max_so_far):
-                operations += max_so_far - arr[i]
-            else:
-                return -1  # Constraint violated
-        else:
-            max_so_far = arr[i]
-    
-    return operations
-
-# Example usage
-n = 5
-arr = [3, 2, 5, 1, 7]
-constraints = lambda i, val, max_val: True  # No constraints
-result = constrained_increasing_array(n, arr, constraints)
-print(f"Constrained operations: {result}")
-```
-
-#### **2. Increasing Array with Different Metrics**
-**Problem**: Make array non-decreasing with different cost metrics.
-
-**Key Differences**: Different cost calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_increasing_array(n, arr, cost_function):
-    """Make array non-decreasing with different cost metrics"""
-    operations = 0
-    max_so_far = arr[0]
-    
-    for i in range(1, n):
-        if arr[i] < max_so_far:
-            # Use cost function instead of simple difference
-            cost = cost_function(i, arr[i], max_so_far)
-            operations += cost
-        else:
-            max_so_far = arr[i]
-    
-    return operations
-
-# Example usage
-n = 5
-arr = [3, 2, 5, 1, 7]
-cost_function = lambda i, val, max_val: max_val - val  # Standard cost
-result = weighted_increasing_array(n, arr, cost_function)
-print(f"Weighted operations: {result}")
-```
-
-#### **3. Increasing Array with Multiple Dimensions**
-**Problem**: Make array non-decreasing in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_increasing_array(n, arr, dimensions):
-    """Make array non-decreasing in multiple dimensions"""
-    operations = 0
-    max_so_far = arr[0]
-    
-    for i in range(1, n):
-        if arr[i] < max_so_far:
-            operations += max_so_far - arr[i]
-        else:
-            max_so_far = arr[i]
-    
-    return operations
-
-# Example usage
-n = 5
-arr = [3, 2, 5, 1, 7]
-dimensions = 1
-result = multi_dimensional_increasing_array(n, arr, dimensions)
-print(f"Multi-dimensional operations: {result}")
-```
-
-## Problem Variations
-
-### **Variation 1: Increasing Array with Dynamic Updates**
-**Problem**: Handle dynamic array updates (add/remove/update elements) while maintaining non-decreasing order with minimum operations.
-
-**Approach**: Use efficient data structures and algorithms for dynamic array management.
+### Mistake 2: Processing Wrong Direction
 
 ```python
-from collections import defaultdict
-import itertools
-
-class DynamicIncreasingArray:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.operations = 0
-        self._make_increasing()
-    
-    def _make_increasing(self):
-        """Make array non-decreasing using greedy approach."""
-        self.operations = 0
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                self.operations += max_so_far - self.arr[i]
-                self.arr[i] = max_so_far
-            else:
-                max_so_far = self.arr[i]
-    
-    def add_element(self, value, position=None):
-        """Add element at specified position (or at end)."""
-        if position is None:
-            position = self.n
-        
-        self.arr.insert(position, value)
-        self.n += 1
-        self._make_increasing()
-    
-    def remove_element(self, position):
-        """Remove element at specified position."""
-        if 0 <= position < self.n:
-            self.arr.pop(position)
-            self.n -= 1
-            self._make_increasing()
-    
-    def update_element(self, position, new_value):
-        """Update element at specified position."""
-        if 0 <= position < self.n:
-            self.arr[position] = new_value
-            self._make_increasing()
-    
-    def get_array(self):
-        """Get current array."""
-        return self.arr
-    
-    def get_operations_count(self):
-        """Get count of operations performed."""
-        return self.operations
-    
-    def get_operations_with_constraints(self, constraint_func):
-        """Get operations that satisfy custom constraints."""
-        result = []
-        for i, val in enumerate(self.arr):
-            if constraint_func(i, val):
-                result.append((i, val))
-        return result
-    
-    def get_operations_in_range(self, start_index, end_index):
-        """Get operations within specified index range."""
-        result = []
-        for i in range(start_index, end_index + 1):
-            if 0 <= i < self.n:
-                result.append((i, self.arr[i]))
-        return result
-    
-    def get_operations_with_pattern(self, pattern_func):
-        """Get operations matching specified pattern."""
-        result = []
-        for i, val in enumerate(self.arr):
-            if pattern_func(i, val):
-                result.append((i, val))
-        return result
-    
-    def get_array_statistics(self):
-        """Get statistics about array operations."""
-        if not self.arr:
-            return {
-                'total_elements': 0,
-                'average_value': 0,
-                'value_distribution': {},
-                'operation_distribution': {}
-            }
-        
-        total_elements = len(self.arr)
-        average_value = sum(self.arr) / total_elements
-        
-        # Calculate value distribution
-        value_distribution = defaultdict(int)
-        for val in self.arr:
-            value_distribution[val] += 1
-        
-        # Calculate operation distribution
-        operation_distribution = defaultdict(int)
-        max_so_far = self.arr[0]
-        for i in range(1, len(self.arr)):
-            if self.arr[i] < max_so_far:
-                operation_distribution[max_so_far - self.arr[i]] += 1
-            else:
-                max_so_far = self.arr[i]
-        
-        return {
-            'total_elements': total_elements,
-            'average_value': average_value,
-            'value_distribution': dict(value_distribution),
-            'operation_distribution': dict(operation_distribution)
-        }
-    
-    def get_array_patterns(self):
-        """Get patterns in array operations."""
-        patterns = {
-            'strictly_increasing': 0,
-            'constant_sequences': 0,
-            'decreasing_sequences': 0,
-            'alternating_sequences': 0
-        }
-        
-        if len(self.arr) < 2:
-            return patterns
-        
-        # Check for strictly increasing
-        strictly_increasing = True
-        for i in range(1, len(self.arr)):
-            if self.arr[i] <= self.arr[i-1]:
-                strictly_increasing = False
-                break
-        if strictly_increasing:
-            patterns['strictly_increasing'] = 1
-        
-        # Check for constant sequences
-        for i in range(len(self.arr) - 1):
-            if self.arr[i] == self.arr[i+1]:
-                patterns['constant_sequences'] += 1
-        
-        # Check for decreasing sequences
-        for i in range(len(self.arr) - 1):
-            if self.arr[i] > self.arr[i+1]:
-                patterns['decreasing_sequences'] += 1
-        
-        # Check for alternating sequences
-        for i in range(len(self.arr) - 2):
-            if (self.arr[i] < self.arr[i+1] > self.arr[i+2]) or (self.arr[i] > self.arr[i+1] < self.arr[i+2]):
-                patterns['alternating_sequences'] += 1
-        
-        return patterns
-    
-    def get_optimal_array_strategy(self):
-        """Get optimal strategy for array operations."""
-        if not self.arr:
-            return {
-                'recommended_strategy': 'none',
-                'efficiency_rate': 0,
-                'operation_rate': 0
-            }
-        
-        # Calculate efficiency rate
-        total_possible_operations = sum(max(0, self.arr[i] - self.arr[i-1]) for i in range(1, len(self.arr)))
-        efficiency_rate = self.operations / total_possible_operations if total_possible_operations > 0 else 0
-        
-        # Calculate operation rate
-        operation_rate = self.operations / len(self.arr) if self.arr else 0
-        
-        # Determine recommended strategy
-        if efficiency_rate > 0.5:
-            recommended_strategy = 'greedy_optimal'
-        elif operation_rate > 0.3:
-            recommended_strategy = 'dynamic_programming'
-        else:
-            recommended_strategy = 'brute_force'
-        
-        return {
-            'recommended_strategy': recommended_strategy,
-            'efficiency_rate': efficiency_rate,
-            'operation_rate': operation_rate
-        }
-
-# Example usage
-arr = [3, 2, 5, 1, 7]
-dynamic_array = DynamicIncreasingArray(arr)
-print(f"Initial operations count: {dynamic_array.get_operations_count()}")
-
-# Add element
-dynamic_array.add_element(4, 2)
-print(f"After adding element 4 at position 2: {dynamic_array.get_operations_count()}")
-
-# Remove element
-dynamic_array.remove_element(1)
-print(f"After removing element at position 1: {dynamic_array.get_operations_count()}")
-
-# Update element
-dynamic_array.update_element(0, 1)
-print(f"After updating element at position 0 to 1: {dynamic_array.get_operations_count()}")
-
-# Get operations with constraints
-def constraint_func(index, value):
-    return value > 3
-
-print(f"Operations with value > 3: {len(dynamic_array.get_operations_with_constraints(constraint_func))}")
-
-# Get operations in range
-print(f"Operations in range 0-2: {len(dynamic_array.get_operations_in_range(0, 2))}")
-
-# Get operations with pattern
-def pattern_func(index, value):
-    return index % 2 == 0
-
-print(f"Operations at even indices: {len(dynamic_array.get_operations_with_pattern(pattern_func))}")
-
-# Get statistics
-print(f"Statistics: {dynamic_array.get_array_statistics()}")
-
-# Get patterns
-print(f"Patterns: {dynamic_array.get_array_patterns()}")
-
-# Get optimal strategy
-print(f"Optimal strategy: {dynamic_array.get_optimal_array_strategy()}")
+# WRONG - processing right to left
+for i in range(n-1, 0, -1):
+    if arr[i] > arr[i-1]:  # Wrong comparison
+        moves += arr[i] - arr[i-1]
 ```
 
-### **Variation 2: Increasing Array with Different Operations**
-**Problem**: Handle different types of array operations (weighted operations, priority-based selection, advanced constraints).
+**Problem:** We can only increase elements, so we must process left to right, raising elements to meet the running maximum.
+**Fix:** Always iterate left to right and compare with the maximum seen so far.
 
-**Approach**: Use advanced data structures for efficient different types of array operations.
+### Mistake 3: Forgetting to Update Maximum
 
 ```python
-class AdvancedIncreasingArray:
-    def __init__(self, arr, weights=None, priorities=None):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.weights = weights or {i: 1 for i in range(self.n)}
-        self.priorities = priorities or {i: 1 for i in range(self.n)}
-        self.operations = 0
-        self._make_increasing()
-    
-    def _make_increasing(self):
-        """Make array non-decreasing using advanced algorithms."""
-        self.operations = 0
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                weighted_cost = operation_cost * self.weights[i]
-                self.operations += weighted_cost
-                self.arr[i] = max_so_far
-            else:
-                max_so_far = self.arr[i]
-    
-    def get_array(self):
-        """Get current array."""
-        return self.arr
-    
-    def get_weighted_operations(self):
-        """Get operations with weights and priorities applied."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                weighted_operation = {
-                    'index': i,
-                    'old_value': self.arr[i],
-                    'new_value': max_so_far,
-                    'operation_cost': operation_cost,
-                    'weight': self.weights[i],
-                    'priority': self.priorities[i],
-                    'weighted_cost': operation_cost * self.weights[i] * self.priorities[i]
-                }
-                result.append(weighted_operation)
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_operations_with_priority(self, priority_func):
-        """Get operations considering priority."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                priority = priority_func(i, operation_cost, self.weights, self.priorities)
-                result.append((i, operation_cost, priority))
-            else:
-                max_so_far = self.arr[i]
-        
-        # Sort by priority
-        result.sort(key=lambda x: x[2], reverse=True)
-        return result
-    
-    def get_operations_with_optimization(self, optimization_func):
-        """Get operations using custom optimization function."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                score = optimization_func(i, operation_cost, self.weights, self.priorities)
-                result.append((i, operation_cost, score))
-            else:
-                max_so_far = self.arr[i]
-        
-        # Sort by optimization score
-        result.sort(key=lambda x: x[2], reverse=True)
-        return result
-    
-    def get_operations_with_constraints(self, constraint_func):
-        """Get operations that satisfy custom constraints."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                if constraint_func(i, operation_cost, self.weights, self.priorities):
-                    result.append((i, operation_cost))
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_operations_with_multiple_criteria(self, criteria_list):
-        """Get operations that satisfy multiple criteria."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                satisfies_all_criteria = True
-                for criterion in criteria_list:
-                    if not criterion(i, operation_cost, self.weights, self.priorities):
-                        satisfies_all_criteria = False
-                        break
-                if satisfies_all_criteria:
-                    result.append((i, operation_cost))
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_operations_with_alternatives(self, alternatives):
-        """Get operations considering alternative weights/priorities."""
-        result = []
-        
-        # Check original operations
-        original_operations = self.get_weighted_operations()
-        result.append((original_operations, 'original'))
-        
-        # Check alternative weights/priorities
-        for alt_weights, alt_priorities in alternatives:
-            # Create temporary instance with alternative weights/priorities
-            temp_instance = AdvancedIncreasingArray(self.arr, alt_weights, alt_priorities)
-            temp_operations = temp_instance.get_weighted_operations()
-            result.append((temp_operations, f'alternative_{alt_weights}_{alt_priorities}'))
-        
-        return result
-    
-    def get_operations_with_adaptive_criteria(self, adaptive_func):
-        """Get operations using adaptive criteria."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                if adaptive_func(i, operation_cost, self.weights, self.priorities, result):
-                    result.append((i, operation_cost))
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_array_optimization(self):
-        """Get optimal array configuration."""
-        strategies = [
-            ('operations', lambda: self.operations),
-            ('weighted_operations', lambda: len(self.get_weighted_operations())),
-            ('total_weight', lambda: sum(self.weights.values())),
-        ]
-        
-        best_strategy = None
-        best_value = 0
-        
-        for strategy_name, strategy_func in strategies:
-            current_value = strategy_func()
-            if current_value > best_value:
-                best_value = current_value
-                best_strategy = (strategy_name, current_value)
-        
-        return best_strategy
-
-# Example usage
-arr = [3, 2, 5, 1, 7]
-weights = {i: i + 1 for i in range(len(arr))}  # Higher indices have higher weights
-priorities = {i: len(arr) - i for i in range(len(arr))}  # Lower indices have higher priority
-advanced_array = AdvancedIncreasingArray(arr, weights, priorities)
-
-print(f"Array: {advanced_array.get_array()}")
-print(f"Weighted operations: {len(advanced_array.get_weighted_operations())}")
-
-# Get operations with priority
-def priority_func(index, operation_cost, weights, priorities):
-    return operation_cost * weights[index] + priorities[index]
-
-print(f"Operations with priority: {len(advanced_array.get_operations_with_priority(priority_func))}")
-
-# Get operations with optimization
-def optimization_func(index, operation_cost, weights, priorities):
-    return operation_cost * weights[index] * priorities[index]
-
-print(f"Operations with optimization: {len(advanced_array.get_operations_with_optimization(optimization_func))}")
-
-# Get operations with constraints
-def constraint_func(index, operation_cost, weights, priorities):
-    return operation_cost <= 5 and weights[index] <= 3
-
-print(f"Operations with constraints: {len(advanced_array.get_operations_with_constraints(constraint_func))}")
-
-# Get operations with multiple criteria
-def criterion1(index, operation_cost, weights, priorities):
-    return operation_cost <= 5
-
-def criterion2(index, operation_cost, weights, priorities):
-    return weights[index] <= 3
-
-criteria_list = [criterion1, criterion2]
-print(f"Operations with multiple criteria: {len(advanced_array.get_operations_with_multiple_criteria(criteria_list))}")
-
-# Get operations with alternatives
-alternatives = [({i: 1 for i in range(len(arr))}, {i: 1 for i in range(len(arr))}), ({i: i*2 for i in range(len(arr))}, {i: i+1 for i in range(len(arr))})]
-print(f"Operations with alternatives: {len(advanced_array.get_operations_with_alternatives(alternatives))}")
-
-# Get operations with adaptive criteria
-def adaptive_func(index, operation_cost, weights, priorities, current_result):
-    return operation_cost <= 5 and len(current_result) < 10
-
-print(f"Operations with adaptive criteria: {len(advanced_array.get_operations_with_adaptive_criteria(adaptive_func))}")
-
-# Get array optimization
-print(f"Array optimization: {advanced_array.get_array_optimization()}")
+# WRONG - not updating max when current is larger
+for i in range(1, n):
+    if arr[i] < max_so_far:
+        moves += max_so_far - arr[i]
+    # Missing: max_so_far = arr[i] when arr[i] >= max_so_far
 ```
 
-### **Variation 3: Increasing Array with Constraints**
-**Problem**: Handle array operations with additional constraints (operation limits, cost constraints, pattern constraints).
+**Problem:** If we don't update the maximum, we undercount required operations.
+**Fix:** Always update `max_so_far` when encountering a larger element.
 
-**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+### Mistake 4: Modifying Array Unnecessarily
 
 ```python
-class ConstrainedIncreasingArray:
-    def __init__(self, arr, constraints=None):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.constraints = constraints or {}
-        self.operations = 0
-        self._make_increasing()
-    
-    def _make_increasing(self):
-        """Make array non-decreasing considering constraints."""
-        self.operations = 0
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                
-                # Check constraints
-                if self._is_valid_operation(i, operation_cost):
-                    self.operations += operation_cost
-                    self.arr[i] = max_so_far
-                else:
-                    # Try to find alternative operation
-                    alternative_cost = self._find_alternative_operation(i, max_so_far)
-                    if alternative_cost is not None:
-                        self.operations += alternative_cost
-                        self.arr[i] = max_so_far
-            else:
-                max_so_far = self.arr[i]
-    
-    def _is_valid_operation(self, index, operation_cost):
-        """Check if operation is valid considering constraints."""
-        # Operation count constraints
-        if 'max_operations' in self.constraints:
-            if self.operations + operation_cost > self.constraints['max_operations']:
-                return False
-        
-        # Cost constraints
-        if 'max_operation_cost' in self.constraints:
-            if operation_cost > self.constraints['max_operation_cost']:
-                return False
-        
-        # Index constraints
-        if 'forbidden_indices' in self.constraints:
-            if index in self.constraints['forbidden_indices']:
-                return False
-        
-        if 'allowed_indices' in self.constraints:
-            if index not in self.constraints['allowed_indices']:
-                return False
-        
-        # Value constraints
-        if 'max_value' in self.constraints:
-            if self.arr[index] + operation_cost > self.constraints['max_value']:
-                return False
-        
-        if 'min_value' in self.constraints:
-            if self.arr[index] + operation_cost < self.constraints['min_value']:
-                return False
-        
-        return True
-    
-    def _find_alternative_operation(self, index, target_value):
-        """Find alternative operation that satisfies constraints."""
-        # Try different operation costs
-        for cost in range(1, target_value - self.arr[index] + 1):
-            if self._is_valid_operation(index, cost):
-                return cost
-        return None
-    
-    def get_operations_with_operation_constraints(self, max_operations):
-        """Get operations considering operation count constraints."""
-        result = []
-        max_so_far = self.arr[0]
-        current_operations = 0
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                if current_operations + operation_cost <= max_operations:
-                    result.append((i, operation_cost))
-                    current_operations += operation_cost
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_operations_with_cost_constraints(self, max_cost):
-        """Get operations considering cost constraints."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                if operation_cost <= max_cost:
-                    result.append((i, operation_cost))
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_operations_with_index_constraints(self, index_constraints):
-        """Get operations considering index constraints."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                satisfies_constraints = True
-                for constraint in index_constraints:
-                    if not constraint(i):
-                        satisfies_constraints = False
-                        break
-                if satisfies_constraints:
-                    result.append((i, operation_cost))
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_operations_with_value_constraints(self, value_constraints):
-        """Get operations considering value constraints."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                new_value = self.arr[i] + operation_cost
-                satisfies_constraints = True
-                for constraint in value_constraints:
-                    if not constraint(new_value):
-                        satisfies_constraints = False
-                        break
-                if satisfies_constraints:
-                    result.append((i, operation_cost))
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_operations_with_mathematical_constraints(self, constraint_func):
-        """Get operations that satisfy custom mathematical constraints."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                if constraint_func(i, operation_cost, self.arr[i], max_so_far):
-                    result.append((i, operation_cost))
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_operations_with_range_constraints(self, range_constraints):
-        """Get operations that satisfy range constraints."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                satisfies_constraints = True
-                for constraint in range_constraints:
-                    if not constraint(i, operation_cost):
-                        satisfies_constraints = False
-                        break
-                if satisfies_constraints:
-                    result.append((i, operation_cost))
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_operations_with_optimization_constraints(self, optimization_func):
-        """Get operations using custom optimization constraints."""
-        # Sort operations by optimization function
-        all_operations = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                score = optimization_func(i, operation_cost)
-                all_operations.append((i, operation_cost, score))
-            else:
-                max_so_far = self.arr[i]
-        
-        # Sort by optimization score
-        all_operations.sort(key=lambda x: x[2], reverse=True)
-        
-        return [(i, cost) for i, cost, _ in all_operations]
-    
-    def get_operations_with_multiple_constraints(self, constraints_list):
-        """Get operations that satisfy multiple constraints."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                satisfies_all_constraints = True
-                for constraint in constraints_list:
-                    if not constraint(i, operation_cost):
-                        satisfies_all_constraints = False
-                        break
-                if satisfies_all_constraints:
-                    result.append((i, operation_cost))
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_operations_with_priority_constraints(self, priority_func):
-        """Get operations with priority-based constraints."""
-        # Sort operations by priority
-        all_operations = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                priority = priority_func(i, operation_cost)
-                all_operations.append((i, operation_cost, priority))
-            else:
-                max_so_far = self.arr[i]
-        
-        # Sort by priority
-        all_operations.sort(key=lambda x: x[2], reverse=True)
-        
-        return [(i, cost) for i, cost, _ in all_operations]
-    
-    def get_operations_with_adaptive_constraints(self, adaptive_func):
-        """Get operations with adaptive constraints."""
-        result = []
-        max_so_far = self.arr[0]
-        
-        for i in range(1, self.n):
-            if self.arr[i] < max_so_far:
-                operation_cost = max_so_far - self.arr[i]
-                if adaptive_func(i, operation_cost, result):
-                    result.append((i, operation_cost))
-            else:
-                max_so_far = self.arr[i]
-        
-        return result
-    
-    def get_optimal_array_strategy(self):
-        """Get optimal array strategy considering all constraints."""
-        strategies = [
-            ('operation_constraints', self.get_operations_with_operation_constraints),
-            ('cost_constraints', self.get_operations_with_cost_constraints),
-            ('index_constraints', self.get_operations_with_index_constraints),
-        ]
-        
-        best_strategy = None
-        best_count = 0
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                if strategy_name == 'operation_constraints':
-                    current_count = len(strategy_func(10))
-                elif strategy_name == 'cost_constraints':
-                    current_count = len(strategy_func(5))
-                elif strategy_name == 'index_constraints':
-                    index_constraints = [lambda i: i % 2 == 0]
-                    current_count = len(strategy_func(index_constraints))
-                
-                if current_count > best_count:
-                    best_count = current_count
-                    best_strategy = (strategy_name, current_count)
-            except:
-                continue
-        
-        return best_strategy
+# INEFFICIENT - modifying array
+arr[i] = max_so_far  # Unnecessary
 
-# Example usage
-constraints = {
-    'max_operations': 10,
-    'max_operation_cost': 5,
-    'forbidden_indices': [1, 3],
-    'allowed_indices': [0, 2, 4],
-    'max_value': 10,
-    'min_value': 1
-}
-
-arr = [3, 2, 5, 1, 7]
-constrained_array = ConstrainedIncreasingArray(arr, constraints)
-
-print("Operation-constrained operations:", len(constrained_array.get_operations_with_operation_constraints(8)))
-
-print("Cost-constrained operations:", len(constrained_array.get_operations_with_cost_constraints(3)))
-
-print("Index-constrained operations:", len(constrained_array.get_operations_with_index_constraints([lambda i: i % 2 == 0])))
-
-print("Value-constrained operations:", len(constrained_array.get_operations_with_value_constraints([lambda v: v <= 8])))
-
-# Mathematical constraints
-def custom_constraint(index, operation_cost, old_value, new_value):
-    return operation_cost <= 3 and new_value <= 8
-
-print("Mathematical constraint operations:", len(constrained_array.get_operations_with_mathematical_constraints(custom_constraint)))
-
-# Range constraints
-def range_constraint(index, operation_cost):
-    return 1 <= operation_cost <= 4
-
-range_constraints = [range_constraint]
-print("Range-constrained operations:", len(constrained_array.get_operations_with_range_constraints(range_constraints)))
-
-# Multiple constraints
-def constraint1(index, operation_cost):
-    return operation_cost <= 3
-
-def constraint2(index, operation_cost):
-    return index % 2 == 0
-
-constraints_list = [constraint1, constraint2]
-print("Multiple constraints operations:", len(constrained_array.get_operations_with_multiple_constraints(constraints_list)))
-
-# Priority constraints
-def priority_func(index, operation_cost):
-    return operation_cost + index
-
-print("Priority-constrained operations:", len(constrained_array.get_operations_with_priority_constraints(priority_func)))
-
-# Adaptive constraints
-def adaptive_func(index, operation_cost, current_result):
-    return operation_cost <= 3 and len(current_result) < 5
-
-print("Adaptive constraint operations:", len(constrained_array.get_operations_with_adaptive_constraints(adaptive_func)))
-
-# Optimal strategy
-optimal = constrained_array.get_optimal_array_strategy()
-print(f"Optimal strategy: {optimal}")
+# BETTER - just track the max
+max_so_far = max(max_so_far, arr[i])
 ```
 
-### Related Problems
+---
 
-#### **CSES Problems**
-- [Coin Piles](https://cses.fi/problemset/task/1075)s
-- [Apple Division](https://cses.fi/problemset/task/1075)s
-- [Weird Algorithm](https://cses.fi/problemset/task/1075)s
+## Edge Cases
 
-#### **LeetCode Problems**
-- [Non-decreasing Array](https://leetcode.com/problems/non-decreasing-array/) - Array
-- [Minimum Operations to Make Array Equal](https://leetcode.com/problems/minimum-operations-to-make-array-equal/) - Math
-- [Minimum Moves to Equal Array Elements](https://leetcode.com/problems/minimum-moves-to-equal-array-elements/) - Math
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Already sorted | `[1, 2, 3, 4, 5]` | `0` | No changes needed |
+| Single element | `[42]` | `0` | Trivially non-decreasing |
+| All same values | `[5, 5, 5, 5]` | `0` | Already non-decreasing |
+| Strictly decreasing | `[5, 4, 3, 2, 1]` | `10` | 1+2+3+4 = 10 moves |
+| Large values | `[10^9, 1]` | `999999999` | Test overflow handling |
+| Two elements | `[5, 3]` | `2` | Simple case: 5-3 = 2 |
 
-#### **Problem Categories**
-- **Introductory Problems**: Array manipulation, greedy algorithms
-- **Greedy Algorithms**: Array transformation, optimization
-- **Array Algorithms**: Array manipulation, transformation
+---
 
-## 🔗 Additional Resources
+## When to Use This Pattern
 
-### **Algorithm References**
-- [Introductory Problems](https://cp-algorithms.com/intro-to-algorithms.html) - Introductory algorithms
-- [Greedy Algorithms](https://cp-algorithms.com/greedy.html) - Greedy algorithms
-- [Array Algorithms](https://cp-algorithms.com/array.html) - Array algorithms
+### Use This Approach When:
+- You need to make an array non-decreasing
+- You can only increase elements (one-directional changes)
+- You want minimum total operations
+- A single left-to-right pass can determine the answer
 
-### **Practice Problems**
-- [CSES Coin Piles](https://cses.fi/problemset/task/1075) - Easy
-- [CSES Apple Division](https://cses.fi/problemset/task/1075) - Easy
-- [CSES Weird Algorithm](https://cses.fi/problemset/task/1075) - Easy
+### Don't Use When:
+- You can both increase and decrease elements (different problem)
+- You need to make the array strictly increasing (may need different handling)
+- The problem asks for the final array, not just the count
 
-### **Further Reading**
-- [Greedy Algorithm](https://en.wikipedia.org/wiki/Greedy_algorithm) - Wikipedia article
-- [Array](https://en.wikipedia.org/wiki/Array_(data_structure)) - Wikipedia article
-- [Optimization](https://en.wikipedia.org/wiki/Optimization) - Wikipedia article
+### Pattern Recognition Checklist:
+- [ ] Array transformation problem? -> **Consider greedy**
+- [ ] Can only modify in one direction? -> **Running max/min approach**
+- [ ] Optimal substructure (current depends on past only)? -> **Single pass greedy**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Weird Algorithm](https://cses.fi/problemset/task/1068) | Basic iteration and simulation |
+| [Missing Number](https://cses.fi/problemset/task/1083) | Simple array processing |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Permutations](https://cses.fi/problemset/task/1070) | Greedy construction |
+| [Non-decreasing Array (LeetCode 665)](https://leetcode.com/problems/non-decreasing-array/) | At most one modification allowed |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Minimum Moves to Equal Array Elements (LC 453)](https://leetcode.com/problems/minimum-moves-to-equal-array-elements/) | Different operation model |
+| [Candy (LC 135)](https://leetcode.com/problems/candy/) | Two-pass greedy |
+| [Minimum Operations to Make Array Equal (LC 1551)](https://leetcode.com/problems/minimum-operations-to-make-array-equal/) | Mathematical insight |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Track the running maximum; each element must be raised to at least this value.
+2. **Time Optimization:** Single pass O(n) by avoiding array modification.
+3. **Space Trade-off:** O(1) space by only tracking the maximum, not the whole modified array.
+4. **Pattern:** Greedy with running aggregate - common in array transformation problems.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Solve this problem without looking at the solution
+- [ ] Explain why greedy gives the optimal answer
+- [ ] Handle integer overflow correctly
+- [ ] Implement in both Python and C++ in under 5 minutes
+- [ ] Identify similar problems where this pattern applies
+
+---
+
+## Additional Resources
+
+- [CSES Problem Set - Introductory Problems](https://cses.fi/problemset/list/)
+- [CP-Algorithms: Greedy Algorithms](https://cp-algorithms.com/)
+- [USACO Guide - Greedy Algorithms](https://usaco.guide/bronze/intro-greedy)

@@ -1,553 +1,472 @@
 ---
-layout: simple
-title: "Distinct Routes - Graph Algorithm Problem"
-permalink: /problem_soulutions/graph_algorithms/distinct_routes_analysis
+layout: problem_analysis
+title: "Distinct Routes"
+difficulty: Hard
+tags: [graph, max-flow, ford-fulkerson, bfs]
+cses_link: https://cses.fi/problemset/task/1711
 ---
 
-# Distinct Routes - Graph Algorithm Problem
+# Distinct Routes
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of counting distinct paths in directed acyclic graphs
-- Apply efficient algorithms for counting paths between vertices
-- Implement dynamic programming for path counting in DAGs
-- Optimize graph algorithms for route counting problems
-- Handle special cases in path counting problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find maximum number of routes from city 1 to city n |
+| Constraint | Each flight (edge) can be used at most once |
+| Core Concept | Maximum flow with unit capacity edges |
+| Key Insight | Max flow = Max edge-disjoint paths |
+| Algorithm | Ford-Fulkerson with BFS (Edmonds-Karp) |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a directed acyclic graph (DAG), count the number of distinct routes from source to destination.
+After completing this problem, you will understand:
+1. **Max Flow = Edge-Disjoint Paths**: The maximum flow in a network with unit capacities equals the maximum number of edge-disjoint paths
+2. **Ford-Fulkerson Method**: Finding augmenting paths to increase flow iteratively
+3. **Edmonds-Karp Algorithm**: Using BFS to find shortest augmenting paths for better complexity
+4. **Path Reconstruction**: How to extract actual paths from the flow network
 
-**Input**: 
-- n: number of vertices
-- m: number of edges
-- source: source vertex
-- destination: destination vertex
-- edges: array of (u, v) representing directed edges
+## Problem Statement
 
-**Output**: 
-- Number of distinct routes from source to destination
+Given n cities and m one-way flights between them, find the maximum number of distinct routes from city 1 to city n such that each flight is used at most once. Output the routes.
 
-**Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
+**Input:**
+- First line: n (cities), m (flights)
+- Next m lines: a, b (flight from city a to city b)
 
-**Example**:
+**Output:**
+- First line: k (maximum number of routes)
+- For each route: number of cities in route, followed by the cities
+
+**Constraints:**
+- 2 <= n <= 500
+- 1 <= m <= 1000
+
+**Example:**
 ```
 Input:
-n = 4, source = 0, destination = 3
-edges = [(0,1), (0,2), (1,3), (2,3)]
+4 5
+1 2
+2 4
+1 3
+3 4
+1 4
 
 Output:
-2
-
-Explanation**: 
-Route 1: 0 -> 1 -> 3
-Route 2: 0 -> 2 -> 3
-Total distinct routes: 2
+3
+2 1 4
+3 1 2 4
+3 1 3 4
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+## Key Insight: Max Flow and Edge-Disjoint Paths
 
-### Approach 1: Brute Force Solution
+This problem is equivalent to finding the **maximum flow** in a network where each edge has **capacity 1**.
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible paths from source to destination
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic graph traversal for each path
-- **Inefficient**: O(n!) time complexity
+**Why?** Each unit of flow from source to sink represents one path. Since each edge has capacity 1, each edge can only be part of one path. Therefore:
 
-**Key Insight**: Check every possible path from source to destination to count distinct routes.
+> **Maximum Flow = Maximum Number of Edge-Disjoint Paths**
 
-**Algorithm**:
-- Generate all possible paths from source to destination
-- Count the number of distinct paths found
-- Return the total count
-
-**Visual Example**:
 ```
-Graph: 0->1, 0->2, 1->3, 2->3
-Source: 0, Destination: 3
+         Capacity 1 on all edges
 
-All possible paths from 0 to 3:
-┌─────────────────────────────────────┐
-│ Path 1: 0 -> 1 -> 3                │
-│ Path 2: 0 -> 2 -> 3                │
-│ Path 3: 0 -> 1 -> 2 -> 3 (invalid) │
-│ Path 4: 0 -> 2 -> 1 -> 3 (invalid) │
-│                                   │
-│ Check each path:                   │
-│ - Path 1: valid route ✓            │
-│ - Path 2: valid route ✓            │
-│ - Path 3: no edge 1->2 ✗          │
-│ - Path 4: no edge 2->1 ✗          │
-│                                   │
-│ Valid routes: 1, 2                │
-│ Total distinct routes: 2          │
-└─────────────────────────────────────┘
+    [1] -----> [2]
+     |  \       |
+     |   \      |
+     v    v     v
+    [3] -----> [4]
+
+Flow interpretation:
+- Send 1 unit: 1 -> 4 (direct)
+- Send 1 unit: 1 -> 2 -> 4
+- Send 1 unit: 1 -> 3 -> 4
+Total flow = 3 = 3 edge-disjoint paths
 ```
 
-**Implementation**:
+## Algorithm: Ford-Fulkerson with BFS (Edmonds-Karp)
+
+### Core Idea
+
+1. **Initialize**: Set flow on all edges to 0
+2. **Find Augmenting Path**: Use BFS to find a path from source (1) to sink (n) with available capacity
+3. **Augment Flow**: Push 1 unit of flow along this path (mark edges as used)
+4. **Handle Reverse Edges**: Add capacity to reverse edges (allows flow cancellation)
+5. **Repeat**: Until no augmenting path exists
+6. **Reconstruct Paths**: Trace flow from source to sink
+
+### Why BFS (Edmonds-Karp)?
+
+Using BFS guarantees we find the **shortest augmenting path**, which provides:
+- Better time complexity: O(V * E^2) vs O(E * max_flow) for DFS
+- More predictable performance
+
+### Residual Graph Concept
+
+For each edge (u, v) with capacity c:
+- **Forward edge**: Remaining capacity = c - flow(u,v)
+- **Reverse edge**: Capacity = flow(u,v) (allows undoing flow)
+
+```
+Original edge:     u ---[cap=1]---> v
+After flow of 1:   u ---[cap=0]---> v   (forward: full)
+                   u <--[cap=1]--- v    (reverse: can undo)
+```
+
+## Visual Walkthrough
+
+### Initial Graph
+```
+Cities: 1, 2, 3, 4
+Flights: 1->2, 2->4, 1->3, 3->4, 1->4
+
+        +---[2]---+
+        |         |
+       (1)       (1)
+        |         |
+    [1]-+         +->[4]
+        |         |
+       (1)       (1)
+        |         |
+        +---[3]---+
+        |
+       (1)
+        |
+        +---------->
+
+(number) = capacity = 1
+```
+
+### Finding Augmenting Paths
+
+**Path 1: BFS finds 1 -> 4 (shortest)**
+```
+[1] =========> [4]
+
+Flow: 1
+Edge 1->4 now used (capacity 0)
+```
+
+**Path 2: BFS finds 1 -> 2 -> 4**
+```
+[1] ---> [2] ---> [4]
+
+Flow: 2
+Edges 1->2, 2->4 now used
+```
+
+**Path 3: BFS finds 1 -> 3 -> 4**
+```
+[1] ---> [3] ---> [4]
+
+Flow: 3
+Edges 1->3, 3->4 now used
+```
+
+**No more augmenting paths exist. Maximum flow = 3**
+
+## Dry Run
+
+**Input:**
+```
+n=4, m=5
+Edges: (1,2), (2,4), (1,3), (3,4), (1,4)
+```
+
+**Step-by-step:**
+
+| Step | Action | BFS Path Found | Flow | Used Edges |
+|------|--------|----------------|------|------------|
+| 0 | Initialize | - | 0 | {} |
+| 1 | BFS from 1 | 1 -> 4 | 1 | {1->4} |
+| 2 | BFS from 1 | 1 -> 2 -> 4 | 2 | {1->4, 1->2, 2->4} |
+| 3 | BFS from 1 | 1 -> 3 -> 4 | 3 | {1->4, 1->2, 2->4, 1->3, 3->4} |
+| 4 | BFS from 1 | None found | 3 | - |
+
+**Path Reconstruction:**
+- From node 1, trace edges with flow = 1
+- Path 1: 1 -> 4
+- Path 2: 1 -> 2 -> 4
+- Path 3: 1 -> 3 -> 4
+
+**Output:**
+```
+3
+2 1 4
+3 1 2 4
+3 1 3 4
+```
+
+## Implementation
+
+### Python Solution
+
 ```python
-def brute_force_distinct_routes(n, source, destination, edges):
-    """Count distinct routes using brute force approach"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    def find_all_paths(current, target, visited, current_path):
-        """Find all possible paths from current to target"""
-        if current == target:
-            return [current_path + [current]]
-        
-        paths = []
-        for neighbor in adj[current]:
-            if neighbor not in visited:
-                new_visited = visited | {neighbor}
-                new_path = current_path + [current]
-                paths.extend(find_all_paths(neighbor, target, new_visited, new_path))
-        
-        return paths
-    
-    # Find all paths from source to destination
-    all_paths = find_all_paths(source, destination, {source}, [])
-    
-    return len(all_paths)
+from collections import deque, defaultdict
 
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1), (0, 2), (1, 3), (2, 3)]
-result = brute_force_distinct_routes(n, source, destination, edges)
-print(f"Brute force distinct routes: {result}")
+def solve():
+    n, m = map(int, input().split())
+
+    # Adjacency list with edge indices
+    # For each edge, store (to, capacity, reverse_edge_index)
+    graph = defaultdict(list)
+
+    def add_edge(u, v, cap):
+        # Forward edge
+        graph[u].append([v, cap, len(graph[v])])
+        # Reverse edge (capacity 0 initially)
+        graph[v].append([u, 0, len(graph[u]) - 1])
+
+    for _ in range(m):
+        a, b = map(int, input().split())
+        add_edge(a, b, 1)
+
+    def bfs():
+        """Find augmenting path using BFS, return parent array"""
+        parent = {1: None}  # node -> (prev_node, edge_index)
+        queue = deque([1])
+
+        while queue:
+            u = queue.popleft()
+            if u == n:
+                return parent
+
+            for i, (v, cap, _) in enumerate(graph[u]):
+                if cap > 0 and v not in parent:
+                    parent[v] = (u, i)
+                    queue.append(v)
+
+        return None
+
+    # Ford-Fulkerson with BFS (Edmonds-Karp)
+    max_flow = 0
+
+    while True:
+        parent = bfs()
+        if parent is None:
+            break
+
+        # Augment flow along path (always 1 for unit capacity)
+        max_flow += 1
+
+        # Update residual capacities
+        v = n
+        while parent[v] is not None:
+            u, edge_idx = parent[v]
+            rev_idx = graph[u][edge_idx][2]
+
+            # Decrease forward edge capacity
+            graph[u][edge_idx][1] -= 1
+            # Increase reverse edge capacity
+            graph[v][rev_idx][1] += 1
+
+            v = u
+
+    # Reconstruct paths
+    paths = []
+    for _ in range(max_flow):
+        path = [1]
+        curr = 1
+
+        while curr != n:
+            for i, (v, cap, rev_idx) in enumerate(graph[curr]):
+                # Check if this edge was used (reverse has capacity)
+                if graph[v][rev_idx][1] > 0 and cap == 0:
+                    # Remove one unit of flow from this edge
+                    graph[v][rev_idx][1] -= 1
+                    path.append(v)
+                    curr = v
+                    break
+
+        paths.append(path)
+
+    # Output
+    print(max_flow)
+    for path in paths:
+        print(len(path), *path)
+
+solve()
 ```
 
-**Time Complexity**: O(n!)
-**Space Complexity**: O(n)
+### C++ Solution
 
-**Why it's inefficient**: O(n!) time complexity for checking all possible paths.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+const int MAXN = 505;
 
-### Approach 2: Dynamic Programming on DAG
+struct Edge {
+    int to, cap, rev;
+};
 
-**Key Insights from Dynamic Programming on DAG**:
-- **Dynamic Programming**: Use DP to count paths efficiently
-- **Efficient Implementation**: O(n + m) time complexity
-- **Topological Order**: Process vertices in topological order
-- **Optimization**: Much more efficient than brute force
+vector<Edge> graph[MAXN];
+int parent_node[MAXN], parent_edge[MAXN];
+int n, m;
 
-**Key Insight**: Use dynamic programming with topological sorting to count paths efficiently.
+void addEdge(int u, int v, int cap) {
+    graph[u].push_back({v, cap, (int)graph[v].size()});
+    graph[v].push_back({u, 0, (int)graph[u].size() - 1});
+}
 
-**Algorithm**:
-- Topologically sort the DAG
-- Use DP where dp[v] = number of paths from source to v
-- Process vertices in topological order
-- Return dp[destination]
+bool bfs() {
+    memset(parent_node, -1, sizeof(parent_node));
+    queue<int> q;
+    q.push(1);
+    parent_node[1] = 1;
 
-**Visual Example**:
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+
+        if (u == n) return true;
+
+        for (int i = 0; i < graph[u].size(); i++) {
+            Edge& e = graph[u][i];
+            if (e.cap > 0 && parent_node[e.to] == -1) {
+                parent_node[e.to] = u;
+                parent_edge[e.to] = i;
+                q.push(e.to);
+            }
+        }
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n >> m;
+
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        addEdge(a, b, 1);
+    }
+
+    // Edmonds-Karp algorithm
+    int maxFlow = 0;
+
+    while (bfs()) {
+        maxFlow++;
+
+        // Update residual graph
+        int v = n;
+        while (v != 1) {
+            int u = parent_node[v];
+            int idx = parent_edge[v];
+            int rev = graph[u][idx].rev;
+
+            graph[u][idx].cap--;
+            graph[v][rev].cap++;
+
+            v = u;
+        }
+    }
+
+    // Reconstruct paths
+    vector<vector<int>> paths;
+
+    for (int i = 0; i < maxFlow; i++) {
+        vector<int> path;
+        path.push_back(1);
+        int curr = 1;
+
+        while (curr != n) {
+            for (auto& e : graph[curr]) {
+                // Find used edge (reverse has capacity, forward is 0)
+                if (e.cap == 0 && graph[e.to][e.rev].cap > 0) {
+                    graph[e.to][e.rev].cap--;
+                    path.push_back(e.to);
+                    curr = e.to;
+                    break;
+                }
+            }
+        }
+        paths.push_back(path);
+    }
+
+    // Output
+    cout << maxFlow << "\n";
+    for (auto& path : paths) {
+        cout << path.size();
+        for (int node : path) {
+            cout << " " << node;
+        }
+        cout << "\n";
+    }
+
+    return 0;
+}
 ```
-Dynamic programming on DAG:
 
-Graph: 0->1, 0->2, 1->3, 2->3
-Topological order: [0, 1, 2, 3]
+## Common Mistakes
 
-DP calculation:
-┌─────────────────────────────────────┐
-│ dp[0] = 1 (source)                 │
-│                                   │
-│ Process vertex 1:                  │
-│ - dp[1] += dp[0] = 1              │
-│                                   │
-│ Process vertex 2:                  │
-│ - dp[2] += dp[0] = 1              │
-│                                   │
-│ Process vertex 3:                  │
-│ - dp[3] += dp[1] = 1              │
-│ - dp[3] += dp[2] = 1              │
-│ - dp[3] = 2                       │
-│                                   │
-│ Result: dp[3] = 2                 │
-└─────────────────────────────────────┘
-```
+### 1. Not Handling Reverse Edges Properly
 
-**Implementation**:
+**Wrong:**
 ```python
-def dp_dag_distinct_routes(n, source, destination, edges):
-    """Count distinct routes using dynamic programming on DAG"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    in_degree = [0] * n
-    
-    for u, v in edges:
-        adj[u].append(v)
-        in_degree[v] += 1
-    
-    # Topological sorting using Kahn's algorithm
-    from collections import deque
-    queue = deque()
-    for i in range(n):
-        if in_degree[i] == 0:
-            queue.append(i)
-    
-    topological_order = []
-    while queue:
-        current = queue.popleft()
-        topological_order.append(current)
-        
-        for neighbor in adj[current]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                queue.append(neighbor)
-    
-    # Dynamic programming
-    dp = [0] * n
-    dp[source] = 1
-    
-    for vertex in topological_order:
-        for neighbor in adj[vertex]:
-            dp[neighbor] += dp[vertex]
-    
-    return dp[destination]
-
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1), (0, 2), (1, 3), (2, 3)]
-result = dp_dag_distinct_routes(n, source, destination, edges)
-print(f"DP DAG distinct routes: {result}")
+# Only tracking forward edges
+if edge_used[u][v]:
+    continue
 ```
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n + m)
-
-**Why it's better**: Uses dynamic programming for O(n + m) time complexity.
-
----
-
-### Approach 3: Advanced Data Structure Solution (Optimal)
-
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for path counting
-- **Efficient Implementation**: O(n + m) time complexity
-- **Space Efficiency**: O(n + m) space complexity
-- **Optimal Complexity**: Best approach for path counting in DAGs
-
-**Key Insight**: Use advanced data structures for optimal path counting.
-
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient dynamic programming with topological sorting
-- Handle special cases optimally
-- Return path count
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For graph: 0->1, 0->2, 1->3, 2->3
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Graph structure: for efficient    │
-│   storage and traversal             │
-│ - DP cache: for optimization        │
-│ - Topological cache: for optimization │
-│                                   │
-│ Path counting calculation:         │
-│ - Use graph structure for efficient │
-│   storage and traversal             │
-│ - Use DP cache for optimization     │
-│ - Use topological cache for         │
-│   optimization                      │
-│                                   │
-│ Result: 2                          │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
+**Correct:**
 ```python
-def advanced_data_structure_distinct_routes(n, source, destination, edges):
-    """Count distinct routes using advanced data structure approach"""
-    # Use advanced data structures for graph storage
-    # Build advanced adjacency list
-    adj = [[] for _ in range(n)]
-    in_degree = [0] * n
-    
-    for u, v in edges:
-        adj[u].append(v)
-        in_degree[v] += 1
-    
-    # Advanced topological sorting using Kahn's algorithm
-    from collections import deque
-    queue = deque()
-    for i in range(n):
-        if in_degree[i] == 0:
-            queue.append(i)
-    
-    topological_order = []
-    while queue:
-        current = queue.popleft()
-        topological_order.append(current)
-        
-        for neighbor in adj[current]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                queue.append(neighbor)
-    
-    # Advanced dynamic programming
-    dp = [0] * n
-    dp[source] = 1
-    
-    # Process vertices in topological order using advanced data structures
-    for vertex in topological_order:
-        for neighbor in adj[vertex]:
-            dp[neighbor] += dp[vertex]
-    
-    return dp[destination]
-
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1), (0, 2), (1, 3), (2, 3)]
-result = advanced_data_structure_distinct_routes(n, source, destination, edges)
-print(f"Advanced data structure distinct routes: {result}")
+# Must use residual graph with reverse edges
+# Reverse edges allow "undoing" flow decisions
+graph[v].append([u, 0, len(graph[u]) - 1])  # Reverse edge
 ```
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n + m)
+**Why it matters:** Without reverse edges, the algorithm cannot correct suboptimal flow decisions and may find fewer paths than actually exist.
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+### 2. Incorrect Path Reconstruction
 
-## 🔧 Implementation Details
+**Wrong:** Trying to reconstruct paths during the flow computation.
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n!) | O(n) | Try all possible paths |
-| DP on DAG | O(n + m) | O(n + m) | Use DP with topological sorting |
-| Advanced Data Structure | O(n + m) | O(n + m) | Use advanced data structures |
+**Correct:** First compute maximum flow, then trace edges with flow from source to sink separately.
 
-### Time Complexity
-- **Time**: O(n + m) - Use dynamic programming with topological sorting for efficient path counting
-- **Space**: O(n + m) - Store graph and DP array
+### 3. Forgetting to Handle Multiple Edges
 
-### Why This Solution Works
-- **Dynamic Programming**: Use DP to count paths from source to each vertex
-- **Topological Sorting**: Process vertices in topological order to ensure correct DP calculation
-- **DAG Property**: Use DAG property to avoid cycles and ensure unique path counting
-- **Optimal Algorithms**: Use optimal algorithms for path counting in DAGs
+If there are multiple edges between the same pair of nodes, each must be treated as a separate edge with its own capacity.
 
-## 🚀 Problem Variations
+### 4. Off-by-One Errors in 1-indexed Problems
 
-### Extended Problems with Detailed Code Examples
+CSES uses 1-indexed cities. Ensure your arrays are sized appropriately (MAXN = n+1).
 
-#### **1. Distinct Routes with Constraints**
-**Problem**: Count distinct routes with specific constraints.
+## Advanced Algorithms
 
-**Key Differences**: Apply constraints to route counting
+For larger graphs or when better complexity is needed:
 
-**Solution Approach**: Modify algorithm to handle constraints
+| Algorithm | Time Complexity | Notes |
+|-----------|----------------|-------|
+| Edmonds-Karp | O(V * E^2) | BFS-based, used here |
+| Dinic's | O(V^2 * E) | Uses level graphs |
+| Push-Relabel | O(V^2 * E) or O(V^3) | Different approach |
 
-**Implementation**:
-```python
-def constrained_distinct_routes(n, source, destination, edges, constraints):
-    """Count distinct routes with constraints"""
-    # Build adjacency list with constraints
-    adj = [[] for _ in range(n)]
-    in_degree = [0] * n
-    
-    for u, v in edges:
-        if constraints(u, v):
-            adj[u].append(v)
-            in_degree[v] += 1
-    
-    # Topological sorting with constraints
-    from collections import deque
-    queue = deque()
-    for i in range(n):
-        if in_degree[i] == 0:
-            queue.append(i)
-    
-    topological_order = []
-    while queue:
-        current = queue.popleft()
-        topological_order.append(current)
-        
-        for neighbor in adj[current]:
-            if constraints(current, neighbor):
-                in_degree[neighbor] -= 1
-                if in_degree[neighbor] == 0:
-                    queue.append(neighbor)
-    
-    # Dynamic programming with constraints
-    dp = [0] * n
-    dp[source] = 1
-    
-    for vertex in topological_order:
-        for neighbor in adj[vertex]:
-            if constraints(vertex, neighbor):
-                dp[neighbor] += dp[vertex]
-    
-    return dp[destination]
+**Dinic's Algorithm** is often preferred for competitive programming due to:
+- Better practical performance
+- O(E * sqrt(V)) for unit capacity graphs (like this problem)
 
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1), (0, 2), (1, 3), (2, 3)]
-constraints = lambda u, v: u < v or v == 3  # Special constraint
-result = constrained_distinct_routes(n, source, destination, edges, constraints)
-print(f"Constrained distinct routes: {result}")
-```
+## Complexity Analysis
 
-#### **2. Distinct Routes with Different Metrics**
-**Problem**: Count distinct routes with different weight metrics.
+**Time Complexity: O(V * E^2)**
+- Each BFS: O(E)
+- Maximum flow is at most E (each augmenting path uses at least one edge)
+- But Edmonds-Karp guarantees at most O(V * E) augmentations
+- Total: O(V * E) augmentations * O(E) per BFS = O(V * E^2)
 
-**Key Differences**: Different weight calculations
+**Space Complexity: O(V + E)**
+- Graph storage: O(E) edges
+- BFS queue and parent array: O(V)
 
-**Solution Approach**: Use advanced mathematical techniques
+**For this problem's constraints (n <= 500, m <= 1000):**
+- Worst case: 500 * 1000^2 = 5 * 10^8 operations
+- In practice, much faster due to early termination
+- Edmonds-Karp handles these constraints comfortably
 
-**Implementation**:
-```python
-def weighted_distinct_routes(n, source, destination, edges, weight_function):
-    """Count distinct routes with different weight metrics"""
-    # Build adjacency list with modified weights
-    adj = [[] for _ in range(n)]
-    in_degree = [0] * n
-    
-    for u, v in edges:
-        weight = weight_function(u, v)
-        adj[u].append((v, weight))
-        in_degree[v] += 1
-    
-    # Topological sorting with modified weights
-    from collections import deque
-    queue = deque()
-    for i in range(n):
-        if in_degree[i] == 0:
-            queue.append(i)
-    
-    topological_order = []
-    while queue:
-        current = queue.popleft()
-        topological_order.append(current)
-        
-        for neighbor, weight in adj[current]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                queue.append(neighbor)
-    
-    # Dynamic programming with modified weights
-    dp = [0] * n
-    dp[source] = 1
-    
-    for vertex in topological_order:
-        for neighbor, weight in adj[vertex]:
-            dp[neighbor] += dp[vertex] * weight
-    
-    return dp[destination]
+## Related Problems
 
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1), (0, 2), (1, 3), (2, 3)]
-weight_function = lambda u, v: 1  # Each edge has weight 1
-result = weighted_distinct_routes(n, source, destination, edges, weight_function)
-print(f"Weighted distinct routes: {result}")
-```
-
-#### **3. Distinct Routes with Multiple Dimensions**
-**Problem**: Count distinct routes in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_distinct_routes(n, source, destination, edges, dimensions):
-    """Count distinct routes in multiple dimensions"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    in_degree = [0] * n
-    
-    for u, v in edges:
-        adj[u].append(v)
-        in_degree[v] += 1
-    
-    # Topological sorting
-    from collections import deque
-    queue = deque()
-    for i in range(n):
-        if in_degree[i] == 0:
-            queue.append(i)
-    
-    topological_order = []
-    while queue:
-        current = queue.popleft()
-        topological_order.append(current)
-        
-        for neighbor in adj[current]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                queue.append(neighbor)
-    
-    # Dynamic programming for multiple dimensions
-    dp = [0] * n
-    dp[source] = 1
-    
-    for vertex in topological_order:
-        for neighbor in adj[vertex]:
-            dp[neighbor] += dp[vertex]
-    
-    return dp[destination]
-
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1), (0, 2), (1, 3), (2, 3)]
-dimensions = 1
-result = multi_dimensional_distinct_routes(n, source, destination, edges, dimensions)
-print(f"Multi-dimensional distinct routes: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Shortest Routes I](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Teleporters Path](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Unique Paths](https://leetcode.com/problems/unique-paths/) - Dynamic Programming
-- [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) - Dynamic Programming
-- [Path Sum](https://leetcode.com/problems/path-sum/) - Tree
-
-#### **Problem Categories**
-- **Graph Algorithms**: Path counting, dynamic programming
-- **Dynamic Programming**: DAG DP, path counting
-- **Combinatorics**: Path enumeration, counting problems
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Dynamic Programming](https://cp-algorithms.com/dynamic_programming/intro-to-dp.html) - Dynamic programming
-- [Topological Sorting](https://cp-algorithms.com/graph/topological-sort.html) - Topological sorting algorithms
-
-### **Practice Problems**
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Shortest Routes I](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Teleporters Path](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Dynamic Programming](https://en.wikipedia.org/wiki/Dynamic_programming) - Wikipedia article
-- [Topological Sorting](https://en.wikipedia.org/wiki/Topological_sorting) - Wikipedia article
+- **CSES Flight Routes Check**: Connectivity verification
+- **CSES Police Chase**: Minimum cut (dual of max flow)
+- **CSES School Dance**: Bipartite matching (special case of max flow)

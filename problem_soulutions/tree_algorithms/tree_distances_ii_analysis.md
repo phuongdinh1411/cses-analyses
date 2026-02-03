@@ -1,711 +1,609 @@
 ---
 layout: simple
-title: "Tree Distances Ii"
+title: "Tree Distances II - Rerooting DP"
 permalink: /problem_soulutions/tree_algorithms/tree_distances_ii_analysis
+difficulty: Medium
+tags: [tree-dp, rerooting, dfs, distance-sum]
+prerequisites: [tree_traversal, subtree_size]
 ---
 
-# Tree Distances Ii
+# Tree Distances II
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand tree algorithms and tree traversal techniques
-- Apply efficient tree processing algorithms
-- Implement advanced tree data structures and algorithms
-- Optimize tree operations for large inputs
-- Handle edge cases in tree problems
+| Attribute | Value |
+|-----------|-------|
+| **Source** | [CSES 1133 - Tree Distances II](https://cses.fi/problemset/task/1133) |
+| **Difficulty** | Medium |
+| **Category** | Tree DP / Rerooting |
+| **Time Limit** | 1 second |
+| **Key Technique** | Rerooting DP (Two-Pass DFS) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a tree with n nodes, for each node, find the sum of distances to all other nodes in the tree.
+After solving this problem, you will be able to:
+- [ ] Understand and implement the rerooting DP technique
+- [ ] Calculate subtree sizes and aggregate values in a single DFS pass
+- [ ] Transform root-specific DP values to all-node answers in O(n) time
+- [ ] Recognize problems where rerooting DP applies
 
-**Input**: 
-- First line: n (number of nodes)
-- Next n-1 lines: edges of the tree
+---
 
-**Output**: 
-- n lines: sum of distances from each node to all other nodes
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10⁵
+**Problem:** Given a tree with n nodes, for each node calculate the sum of distances to all other nodes.
 
-**Example**:
+**Input:**
+- Line 1: n (number of nodes)
+- Next n-1 lines: Two integers a, b representing an edge
+
+**Output:**
+- n integers: For each node 1 to n, print the sum of distances to all other nodes
+
+**Constraints:**
+- 1 <= n <= 2 x 10^5
+
+### Example
+
 ```
 Input:
 5
 1 2
-2 3
-2 4
-4 5
+1 3
+3 4
+3 5
 
 Output:
 6
-4
-6
-4
-6
+9
+5
+8
+8
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Node 1: dist(1,2)=1, dist(1,3)=1, dist(1,4)=2, dist(1,5)=2 => sum = 6
+- Node 2: dist(2,1)=1, dist(2,3)=2, dist(2,4)=3, dist(2,5)=3 => sum = 9
+- Node 3: dist(3,1)=1, dist(3,2)=2, dist(3,4)=1, dist(3,5)=1 => sum = 5
+- Node 4: dist(4,1)=2, dist(4,2)=3, dist(4,3)=1, dist(4,5)=2 => sum = 8
+- Node 5: dist(5,1)=2, dist(5,2)=3, dist(5,3)=1, dist(5,4)=2 => sum = 8
 
-### Approach 1: Brute Force
-**Time Complexity**: O(n²)  
-**Space Complexity**: O(n)
+---
 
-**Algorithm**:
-1. For each node, perform BFS to find distances to all other nodes
-2. Sum up all distances for each node
-3. Return the sum of distances for each node
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### Pattern Recognition
+
+> **Key Question:** If we know the answer for one node, can we efficiently compute it for adjacent nodes?
+
+The naive approach runs BFS/DFS from each node: O(n^2). For n = 2x10^5, this is too slow. The key insight is that when we "move" from node u to an adjacent node v, the distances change in a predictable way.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** Sum of distances from each node to all others
+2. **What information helps?** Subtree sizes tell us how many nodes get closer/farther when rerooting
+3. **What's the relationship?** Moving root from u to v: nodes in v's subtree get 1 closer, all others get 1 farther
+
+### The Rerooting Insight
+
+When we move the root from node `u` to its child `v`:
+- All `subtree_size[v]` nodes in v's subtree become 1 step **closer**
+- All `n - subtree_size[v]` other nodes become 1 step **farther**
+
+Therefore:
+```
+answer[v] = answer[u] - subtree_size[v] + (n - subtree_size[v])
+answer[v] = answer[u] + n - 2 * subtree_size[v]
+```
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+Run BFS from each node to compute distances to all other nodes, then sum them.
+
+### Algorithm
+
+1. Build adjacency list
+2. For each node, run BFS to find all distances
+3. Sum distances for each starting node
+
+### Code
+
 ```python
-def brute_force_tree_distances_ii(n, edges):
+def solve_brute_force(n, edges):
+    """
+    Brute force: BFS from each node.
+
+    Time: O(n^2)
+    Space: O(n)
+    """
     from collections import deque, defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
+
+    adj = defaultdict(list)
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+
     results = []
-    
     for start in range(1, n + 1):
-        # BFS to find distances from start to all other nodes
         queue = deque([(start, 0)])
         visited = {start}
-        total_distance = 0
-        
+        total = 0
+
         while queue:
             node, dist = queue.popleft()
-            if node != start:  # Don't count distance to itself
-                total_distance += dist
-            
-            for neighbor in graph[node]:
+            total += dist
+            for neighbor in adj[node]:
                 if neighbor not in visited:
                     visited.add(neighbor)
                     queue.append((neighbor, dist + 1))
-        
-        results.append(total_distance)
-    
+
+        results.append(total)
+
     return results
 ```
 
-**Analysis**:
-- **Time**: O(n²) - For each node, BFS takes O(n) time
-- **Space**: O(n) - Queue and visited set
-- **Limitations**: Too slow for large inputs
+### Complexity
 
-### Approach 2: Optimized with Tree DP
-**Time Complexity**: O(n)  
-**Space Complexity**: O(n)
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | BFS is O(n), done n times |
+| Space | O(n) | Queue and visited set |
 
-**Algorithm**:
-1. Use tree DP to calculate subtree sizes and distances
-2. Use rerooting technique to calculate distances from each node
-3. For each node, calculate sum of distances using DP
+### Why This Works (But Is Slow)
 
-**Implementation**:
-```python
-def optimized_tree_distances_ii(n, edges):
-    from collections import defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    # First pass: calculate subtree sizes and distances from root
-    subtree_size = [0] * (n + 1)
-    distances_from_root = [0] * (n + 1)
-    
-    def dfs1(node, parent):
-        subtree_size[node] = 1
-        for child in graph[node]:
-            if child != parent:
-                dfs1(child, node)
-                subtree_size[node] += subtree_size[child]
-                distances_from_root[node] += distances_from_root[child] + subtree_size[child]
-    
-    dfs1(1, -1)
-    
-    # Second pass: calculate distances from each node using rerooting
-    total_distances = [0] * (n + 1)
-    total_distances[1] = distances_from_root[1]
-    
-    def dfs2(node, parent):
-        for child in graph[node]:
-            if child != parent:
-                # Reroot from node to child
-                total_distances[child] = (total_distances[node] - 
-                                        distances_from_root[child] - subtree_size[child] + 
-                                        (n - subtree_size[child]))
-                dfs2(child, node)
-    
-    dfs2(1, -1)
-    
-    return total_distances[1:]
+BFS correctly finds shortest paths in unweighted graphs. However, repeating it n times is inefficient for large n.
+
+---
+
+## Solution 2: Optimal - Rerooting DP
+
+### Key Insight
+
+> **The Trick:** Compute the answer for root (node 1) first, then propagate to all other nodes by adjusting based on how subtree sizes affect distances.
+
+### Two-Pass Algorithm
+
+**Pass 1 (Post-order DFS):** Compute for each node:
+- `subtree_size[v]`: Number of nodes in subtree rooted at v
+- `subtree_dist[v]`: Sum of distances from v to all nodes in its subtree
+
+**Pass 2 (Pre-order DFS):** Propagate answers:
+- Start with `answer[root] = subtree_dist[root]`
+- For each child: `answer[child] = answer[parent] + n - 2 * subtree_size[child]`
+
+### State Definition
+
+| State | Meaning |
+|-------|---------|
+| `subtree_size[v]` | Number of nodes in subtree rooted at v |
+| `subtree_dist[v]` | Sum of distances from v to all descendants |
+| `answer[v]` | Sum of distances from v to ALL nodes in tree |
+
+### State Transition
+
+**Pass 1 (building subtree info):**
+```
+subtree_size[v] = 1 + sum(subtree_size[child] for all children)
+subtree_dist[v] = sum(subtree_dist[child] + subtree_size[child] for all children)
 ```
 
-**Analysis**:
-- **Time**: O(n) - Two DFS passes
-- **Space**: O(n) - Recursion stack and arrays
-- **Improvement**: Much more efficient than brute force
-
-### Approach 3: Optimal with Tree DP
-**Time Complexity**: O(n)  
-**Space Complexity**: O(n)
-
-**Algorithm**:
-1. Use tree DP to calculate subtree sizes and distances
-2. Use rerooting technique to calculate distances from each node
-3. For each node, calculate sum of distances using DP
-
-**Implementation**:
-```python
-def optimal_tree_distances_ii(n, edges):
-    from collections import defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    # First pass: calculate subtree sizes and distances from root
-    subtree_size = [0] * (n + 1)
-    distances_from_root = [0] * (n + 1)
-    
-    def dfs1(node, parent):
-        subtree_size[node] = 1
-        for child in graph[node]:
-            if child != parent:
-                dfs1(child, node)
-                subtree_size[node] += subtree_size[child]
-                distances_from_root[node] += distances_from_root[child] + subtree_size[child]
-    
-    dfs1(1, -1)
-    
-    # Second pass: calculate distances from each node using rerooting
-    total_distances = [0] * (n + 1)
-    total_distances[1] = distances_from_root[1]
-    
-    def dfs2(node, parent):
-        for child in graph[node]:
-            if child != parent:
-                # Reroot from node to child
-                total_distances[child] = (total_distances[node] - 
-                                        distances_from_root[child] - subtree_size[child] + 
-                                        (n - subtree_size[child]))
-                dfs2(child, node)
-    
-    dfs2(1, -1)
-    
-    return total_distances[1:]
+**Pass 2 (rerooting):**
+```
+answer[child] = answer[parent] + n - 2 * subtree_size[child]
 ```
 
-**Analysis**:
-- **Time**: O(n) - Two DFS passes
-- **Space**: O(n) - Recursion stack and arrays
-- **Optimal**: Best possible complexity for this problem
+**Why the rerooting formula works:**
+- When moving from parent to child, `subtree_size[child]` nodes get 1 closer (-subtree_size[child])
+- The remaining `n - subtree_size[child]` nodes get 1 farther (+n - subtree_size[child])
+- Net change: `-subtree_size[child] + n - subtree_size[child] = n - 2 * subtree_size[child]`
 
-**Visual Example**:
+### Dry Run Example
+
+Let's trace through the example tree:
+
 ```
 Tree structure:
-    1
-    |
-    2
-   / \
-3   4
-    |
-    5
+      1
+     / \
+    2   3
+       / \
+      4   5
 
-Subtree sizes:
-Node 1: 5
-Node 2: 4
-Node 3: 1
-Node 4: 2
-Node 5: 1
-
-Distances from root (1):
-Node 1: 0
-Node 2: 1
-Node 3: 2
-Node 4: 2
-Node 5: 3
-
-Total distances:
-Node 1: 0 + 1 + 2 + 2 + 3 = 8
-Node 2: 1 + 0 + 1 + 1 + 2 = 5
-Node 3: 2 + 1 + 0 + 2 + 3 = 8
-Node 4: 2 + 1 + 2 + 0 + 1 = 6
-Node 5: 3 + 2 + 3 + 1 + 0 = 9
+Edges: (1,2), (1,3), (3,4), (3,5)
 ```
 
-## 🔧 Implementation Details
+**Pass 1: Post-order DFS from root=1**
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²) | O(n) | Use BFS from each node to find distances to all other nodes |
-| Optimized | O(n) | O(n) | Use tree DP with rerooting to calculate distances efficiently |
-| Optimal | O(n) | O(n) | Use tree DP with rerooting to calculate distances efficiently |
+```
+Processing order: 2, 4, 5, 3, 1
 
-### Time Complexity
-- **Time**: O(n) - Two DFS passes to calculate subtree sizes and distances
-- **Space**: O(n) - Recursion stack and arrays for subtree sizes and distances
+Node 2 (leaf):
+  subtree_size[2] = 1
+  subtree_dist[2] = 0
 
-### Why This Solution Works
-- **Tree DP**: Use dynamic programming to calculate subtree sizes and distances from root
-- **Rerooting**: Use rerooting technique to calculate distances from each node efficiently
-- **Efficient Calculation**: Calculate distances from each node in O(1) time using precomputed values
-- **Optimal Approach**: O(n) time complexity is optimal for this problem
+Node 4 (leaf):
+  subtree_size[4] = 1
+  subtree_dist[4] = 0
 
-## 🚀 Problem Variations
+Node 5 (leaf):
+  subtree_size[5] = 1
+  subtree_dist[5] = 0
 
-### Extended Problems with Detailed Code Examples
+Node 3 (parent of 4, 5):
+  subtree_size[3] = 1 + 1 + 1 = 3
+  subtree_dist[3] = (0 + 1) + (0 + 1) = 2
+  (Each child contributes: its subtree_dist + its subtree_size)
 
-### Variation 1: Tree Distances II with Dynamic Updates
-**Problem**: Handle dynamic updates to the tree structure and maintain distance calculations efficiently.
+Node 1 (root, parent of 2, 3):
+  subtree_size[1] = 1 + 1 + 3 = 5
+  subtree_dist[1] = (0 + 1) + (2 + 3) = 6
+```
 
-**Link**: [CSES Problem Set - Tree Distances II with Updates](https://cses.fi/problemset/task/tree_distances_ii_updates)
+**Pass 2: Pre-order DFS (rerooting)**
+
+```
+answer[1] = subtree_dist[1] = 6
+
+Move to node 2:
+  answer[2] = answer[1] + n - 2*subtree_size[2]
+            = 6 + 5 - 2*1 = 9
+
+Move to node 3:
+  answer[3] = answer[1] + n - 2*subtree_size[3]
+            = 6 + 5 - 2*3 = 5
+
+Move to node 4 (from node 3):
+  answer[4] = answer[3] + n - 2*subtree_size[4]
+            = 5 + 5 - 2*1 = 8
+
+Move to node 5 (from node 3):
+  answer[5] = answer[3] + n - 2*subtree_size[5]
+            = 5 + 5 - 2*1 = 8
+
+Final answers: [6, 9, 5, 8, 8]
+```
+
+### Visual Diagram
+
+```
+Rerooting from Node 1 to Node 3:
+
+Before (root = 1):          After (root = 3):
+      1*                          1
+     / \                         / \
+    2   3                       2   3*
+       / \                         / \
+      4   5                       4   5
+
+Moving root 1 -> 3:
+- Nodes {3,4,5} (subtree_size[3]=3) get CLOSER by 1: -3
+- Nodes {1,2} (n - subtree_size[3]=2) get FARTHER by 1: +2
+- Net change: -3 + 2 = -1
+- Or using formula: n - 2*subtree_size[3] = 5 - 6 = -1
+- answer[3] = answer[1] + (-1) = 6 - 1 = 5
+```
+
+### Code (Python)
 
 ```python
-class TreeDistancesIIWithUpdates:
-    def __init__(self, n, edges):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.subtree_sizes = [0] * n
-        self.distances = [0] * n
-        self.parent = [-1] * n
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_distances()
-    
-    def _calculate_distances(self):
-        """Calculate distances using tree DP with rerooting"""
-        # First DFS: calculate subtree sizes and distances from root
-        self._dfs1(0, -1)
-        
-        # Second DFS: calculate distances from each node using rerooting
-        self._dfs2(0, -1)
-    
-    def _dfs1(self, node, parent):
-        """First DFS to calculate subtree sizes and distances from root"""
-        self.parent[node] = parent
-        self.subtree_sizes[node] = 1
-        self.distances[node] = 0
-        
-        for child in self.adj[node]:
-            if child != parent:
-                self._dfs1(child, node)
-                self.subtree_sizes[node] += self.subtree_sizes[child]
-                self.distances[node] += self.distances[child] + self.subtree_sizes[child]
-    
-    def _dfs2(self, node, parent):
-        """Second DFS to calculate distances from each node using rerooting"""
-        if parent != -1:
-            # Reroot from parent to current node
-            self.distances[node] = self.distances[parent] - self.subtree_sizes[node] + (self.n - self.subtree_sizes[node])
-        
-        for child in self.adj[node]:
-            if child != parent:
-                self._dfs2(child, node)
-    
-    def add_edge(self, u, v):
-        """Add edge between nodes u and v"""
-        self.adj[u].append(v)
-        self.adj[v].append(u)
-        
-        # Recalculate distances
-        self._calculate_distances()
-    
-    def remove_edge(self, u, v):
-        """Remove edge between nodes u and v"""
-        if v in self.adj[u]:
-            self.adj[u].remove(v)
-        if u in self.adj[v]:
-            self.adj[v].remove(u)
-        
-        # Recalculate distances
-        self._calculate_distances()
-    
-    def get_distance_sum(self, node):
-        """Get sum of distances from node to all other nodes"""
-        return self.distances[node]
-    
-    def get_all_distance_sums(self):
-        """Get distance sums for all nodes"""
-        return self.distances.copy()
-    
-    def get_subtree_size(self, node):
-        """Get subtree size of a node"""
-        return self.subtree_sizes[node]
-    
-    def get_all_subtree_sizes(self):
-        """Get subtree sizes for all nodes"""
-        return self.subtree_sizes.copy()
-    
-    def get_distance_statistics(self):
-        """Get comprehensive distance statistics"""
-        return {
-            'total_distance_sum': sum(self.distances),
-            'max_distance_sum': max(self.distances),
-            'min_distance_sum': min(self.distances),
-            'avg_distance_sum': sum(self.distances) / self.n,
-            'distance_sums': self.distances.copy(),
-            'subtree_sizes': self.subtree_sizes.copy()
-        }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'add_edge':
-                self.add_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'remove_edge':
-                self.remove_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'distance_sum':
-                result = self.get_distance_sum(query['node'])
-                results.append(result)
-            elif query['type'] == 'all_distance_sums':
-                result = self.get_all_distance_sums()
-                results.append(result)
-            elif query['type'] == 'subtree_size':
-                result = self.get_subtree_size(query['node'])
-                results.append(result)
-            elif query['type'] == 'all_subtree_sizes':
-                result = self.get_all_subtree_sizes()
-                results.append(result)
-            elif query['type'] == 'statistics':
-                result = self.get_distance_statistics()
-                results.append(result)
-        return results
+import sys
+from collections import defaultdict
+
+def solve(n, edges):
+    """
+    Rerooting DP solution.
+
+    Time: O(n) - two DFS passes
+    Space: O(n) - adjacency list and arrays
+    """
+    if n == 1:
+        print(0)
+        return
+
+    # Build adjacency list
+    adj = defaultdict(list)
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+
+    subtree_size = [0] * (n + 1)
+    subtree_dist = [0] * (n + 1)
+    answer = [0] * (n + 1)
+
+    # Pass 1: Calculate subtree sizes and distances (iterative)
+    parent = [0] * (n + 1)
+    order = []
+    visited = [False] * (n + 1)
+    stack = [1]
+
+    while stack:
+        node = stack.pop()
+        if visited[node]:
+            continue
+        visited[node] = True
+        order.append(node)
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                parent[neighbor] = node
+                stack.append(neighbor)
+
+    # Process in reverse order (post-order)
+    for node in reversed(order):
+        subtree_size[node] = 1
+        subtree_dist[node] = 0
+        for neighbor in adj[node]:
+            if neighbor != parent[node]:
+                subtree_size[node] += subtree_size[neighbor]
+                subtree_dist[node] += subtree_dist[neighbor] + subtree_size[neighbor]
+
+    # Pass 2: Rerooting (process in order)
+    answer[1] = subtree_dist[1]
+    for node in order:
+        for neighbor in adj[node]:
+            if neighbor != parent[node]:
+                answer[neighbor] = answer[node] + n - 2 * subtree_size[neighbor]
+
+    # Output
+    for i in range(1, n + 1):
+        print(answer[i])
+
+
+def main():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n = int(input_data[idx]); idx += 1
+
+    edges = []
+    for _ in range(n - 1):
+        a = int(input_data[idx]); idx += 1
+        b = int(input_data[idx]); idx += 1
+        edges.append((a, b))
+
+    solve(n, edges)
+
+
+if __name__ == "__main__":
+    sys.setrecursionlimit(300000)
+    main()
 ```
 
-### Variation 2: Tree Distances II with Different Operations
-**Problem**: Handle different types of operations (find, analyze, compare) on tree distance calculations.
+### Code (C++)
 
-**Link**: [CSES Problem Set - Tree Distances II Different Operations](https://cses.fi/problemset/task/tree_distances_ii_operations)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+
+    vector<vector<int>> adj(n + 1);
+    for (int i = 0; i < n - 1; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+
+    if (n == 1) {
+        cout << 0 << "\n";
+        return 0;
+    }
+
+    vector<long long> subtree_size(n + 1, 0);
+    vector<long long> subtree_dist(n + 1, 0);
+    vector<long long> answer(n + 1, 0);
+    vector<int> parent(n + 1, 0);
+    vector<int> order;
+    vector<bool> visited(n + 1, false);
+
+    // Pass 1: BFS to get processing order
+    stack<int> stk;
+    stk.push(1);
+
+    while (!stk.empty()) {
+        int node = stk.top();
+        stk.pop();
+        if (visited[node]) continue;
+        visited[node] = true;
+        order.push_back(node);
+
+        for (int neighbor : adj[node]) {
+            if (!visited[neighbor]) {
+                parent[neighbor] = node;
+                stk.push(neighbor);
+            }
+        }
+    }
+
+    // Process in reverse order (post-order)
+    for (int i = n - 1; i >= 0; i--) {
+        int node = order[i];
+        subtree_size[node] = 1;
+        subtree_dist[node] = 0;
+
+        for (int neighbor : adj[node]) {
+            if (neighbor != parent[node]) {
+                subtree_size[node] += subtree_size[neighbor];
+                subtree_dist[node] += subtree_dist[neighbor] + subtree_size[neighbor];
+            }
+        }
+    }
+
+    // Pass 2: Rerooting
+    answer[1] = subtree_dist[1];
+    for (int node : order) {
+        for (int neighbor : adj[node]) {
+            if (neighbor != parent[node]) {
+                answer[neighbor] = answer[node] + n - 2 * subtree_size[neighbor];
+            }
+        }
+    }
+
+    // Output
+    for (int i = 1; i <= n; i++) {
+        cout << answer[i] << "\n";
+    }
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Two linear passes over the tree |
+| Space | O(n) | Adjacency list and DP arrays |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Wrong Rerooting Formula
 
 ```python
-class TreeDistancesIIDifferentOps:
-    def __init__(self, n, edges):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.subtree_sizes = [0] * n
-        self.distances = [0] * n
-        self.parent = [-1] * n
-        self.depths = [0] * n
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_distances()
-    
-    def _calculate_distances(self):
-        """Calculate distances using tree DP with rerooting"""
-        # First DFS: calculate subtree sizes and distances from root
-        self._dfs1(0, -1, 0)
-        
-        # Second DFS: calculate distances from each node using rerooting
-        self._dfs2(0, -1)
-    
-    def _dfs1(self, node, parent, depth):
-        """First DFS to calculate subtree sizes and distances from root"""
-        self.parent[node] = parent
-        self.depths[node] = depth
-        self.subtree_sizes[node] = 1
-        self.distances[node] = 0
-        
-        for child in self.adj[node]:
-            if child != parent:
-                self._dfs1(child, node, depth + 1)
-                self.subtree_sizes[node] += self.subtree_sizes[child]
-                self.distances[node] += self.distances[child] + self.subtree_sizes[child]
-    
-    def _dfs2(self, node, parent):
-        """Second DFS to calculate distances from each node using rerooting"""
-        if parent != -1:
-            # Reroot from parent to current node
-            self.distances[node] = self.distances[parent] - self.subtree_sizes[node] + (self.n - self.subtree_sizes[node])
-        
-        for child in self.adj[node]:
-            if child != parent:
-                self._dfs2(child, node)
-    
-    def get_distance_sum(self, node):
-        """Get sum of distances from node to all other nodes"""
-        return self.distances[node]
-    
-    def get_all_distance_sums(self):
-        """Get distance sums for all nodes"""
-        return self.distances.copy()
-    
-    def get_subtree_size(self, node):
-        """Get subtree size of a node"""
-        return self.subtree_sizes[node]
-    
-    def get_all_subtree_sizes(self):
-        """Get subtree sizes for all nodes"""
-        return self.subtree_sizes.copy()
-    
-    def get_depth(self, node):
-        """Get depth of a node"""
-        return self.depths[node]
-    
-    def get_all_depths(self):
-        """Get depths for all nodes"""
-        return self.depths.copy()
-    
-    def get_distance_by_depth(self):
-        """Get distance sums grouped by depth"""
-        depth_groups = {}
-        for i in range(self.n):
-            depth = self.depths[i]
-            if depth not in depth_groups:
-                depth_groups[depth] = []
-            depth_groups[depth].append(self.distances[i])
-        
-        return depth_groups
-    
-    def get_distance_statistics(self):
-        """Get comprehensive distance statistics"""
-        return {
-            'total_distance_sum': sum(self.distances),
-            'max_distance_sum': max(self.distances),
-            'min_distance_sum': min(self.distances),
-            'avg_distance_sum': sum(self.distances) / self.n,
-            'distance_sums': self.distances.copy(),
-            'subtree_sizes': self.subtree_sizes.copy(),
-            'depths': self.depths.copy(),
-            'distance_by_depth': self.get_distance_by_depth()
-        }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'distance_sum':
-                result = self.get_distance_sum(query['node'])
-                results.append(result)
-            elif query['type'] == 'all_distance_sums':
-                result = self.get_all_distance_sums()
-                results.append(result)
-            elif query['type'] == 'subtree_size':
-                result = self.get_subtree_size(query['node'])
-                results.append(result)
-            elif query['type'] == 'all_subtree_sizes':
-                result = self.get_all_subtree_sizes()
-                results.append(result)
-            elif query['type'] == 'depth':
-                result = self.get_depth(query['node'])
-                results.append(result)
-            elif query['type'] == 'all_depths':
-                result = self.get_all_depths()
-                results.append(result)
-            elif query['type'] == 'distance_by_depth':
-                result = self.get_distance_by_depth()
-                results.append(result)
-            elif query['type'] == 'statistics':
-                result = self.get_distance_statistics()
-                results.append(result)
-        return results
+# WRONG - forgetting the relationship
+answer[child] = answer[parent] - subtree_size[child]
+
+# CORRECT
+answer[child] = answer[parent] + n - 2 * subtree_size[child]
 ```
 
-### Variation 3: Tree Distances II with Constraints
-**Problem**: Handle tree distance calculations with additional constraints (e.g., minimum depth, maximum depth, depth range).
+**Problem:** Only accounting for nodes getting closer, not those getting farther.
+**Fix:** Remember both effects: closer nodes (-subtree_size) AND farther nodes (+n-subtree_size).
 
-**Link**: [CSES Problem Set - Tree Distances II with Constraints](https://cses.fi/problemset/task/tree_distances_ii_constraints)
+### Mistake 2: Integer Overflow
+
+```cpp
+// WRONG - using int for large sums
+int answer[N];
+
+// CORRECT - use long long
+long long answer[N];
+```
+
+**Problem:** With n = 2x10^5 nodes, distances can sum to ~10^10.
+**Fix:** Use `long long` in C++ or Python's native integers.
+
+### Mistake 3: Incorrect Subtree Calculation
 
 ```python
-class TreeDistancesIIWithConstraints:
-    def __init__(self, n, edges, min_depth, max_depth):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.subtree_sizes = [0] * n
-        self.distances = [0] * n
-        self.parent = [-1] * n
-        self.depths = [0] * n
-        self.min_depth = min_depth
-        self.max_depth = max_depth
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_distances()
-    
-    def _calculate_distances(self):
-        """Calculate distances using tree DP with rerooting"""
-        # First DFS: calculate subtree sizes and distances from root
-        self._dfs1(0, -1, 0)
-        
-        # Second DFS: calculate distances from each node using rerooting
-        self._dfs2(0, -1)
-    
-    def _dfs1(self, node, parent, depth):
-        """First DFS to calculate subtree sizes and distances from root"""
-        self.parent[node] = parent
-        self.depths[node] = depth
-        self.subtree_sizes[node] = 1
-        self.distances[node] = 0
-        
-        for child in self.adj[node]:
-            if child != parent:
-                self._dfs1(child, node, depth + 1)
-                self.subtree_sizes[node] += self.subtree_sizes[child]
-                self.distances[node] += self.distances[child] + self.subtree_sizes[child]
-    
-    def _dfs2(self, node, parent):
-        """Second DFS to calculate distances from each node using rerooting"""
-        if parent != -1:
-            # Reroot from parent to current node
-            self.distances[node] = self.distances[parent] - self.subtree_sizes[node] + (self.n - self.subtree_sizes[node])
-        
-        for child in self.adj[node]:
-            if child != parent:
-                self._dfs2(child, node)
-    
-    def get_distance_sum(self, node):
-        """Get sum of distances from node to all other nodes"""
-        return self.distances[node]
-    
-    def get_all_distance_sums(self):
-        """Get distance sums for all nodes"""
-        return self.distances.copy()
-    
-    def get_constrained_distance_sum(self, node):
-        """Get sum of distances from node to nodes within depth constraints"""
-        if not (self.min_depth <= self.depths[node] <= self.max_depth):
-            return 0
-        
-        constrained_sum = 0
-        for i in range(self.n):
-            if self.min_depth <= self.depths[i] <= self.max_depth:
-                # Calculate distance between node and i
-                distance = self._get_distance(node, i)
-                constrained_sum += distance
-        
-        return constrained_sum
-    
-    def _get_distance(self, node1, node2):
-        """Get distance between two nodes"""
-        # Find LCA
-        lca = self._get_lca(node1, node2)
-        return self.depths[node1] + self.depths[node2] - 2 * self.depths[lca]
-    
-    def _get_lca(self, node1, node2):
-        """Get lowest common ancestor of two nodes"""
-        # Make sure node1 is deeper
-        if self.depths[node1] < self.depths[node2]:
-            node1, node2 = node2, node1
-        
-        # Bring node1 to same depth as node2
-        while self.depths[node1] > self.depths[node2]:
-            node1 = self.parent[node1]
-        
-        # Find LCA
-        while node1 != node2:
-            node1 = self.parent[node1]
-            node2 = self.parent[node2]
-        
-        return node1
-    
-    def get_valid_nodes(self):
-        """Get nodes that satisfy depth constraints"""
-        return [i for i in range(self.n) if self.min_depth <= self.depths[i] <= self.max_depth]
-    
-    def get_all_constrained_distance_sums(self):
-        """Get constrained distance sums for all nodes"""
-        constrained_sums = []
-        for i in range(self.n):
-            constrained_sums.append(self.get_constrained_distance_sum(i))
-        return constrained_sums
-    
-    def get_constrained_statistics(self):
-        """Get comprehensive statistics considering depth constraints"""
-        valid_nodes = self.get_valid_nodes()
-        constrained_sums = self.get_all_constrained_distance_sums()
-        
-        return {
-            'total_distance_sum': sum(self.distances),
-            'constrained_distance_sum': sum(constrained_sums),
-            'valid_nodes_count': len(valid_nodes),
-            'max_constrained_sum': max(constrained_sums),
-            'min_constrained_sum': min(constrained_sums),
-            'avg_constrained_sum': sum(constrained_sums) / len(constrained_sums) if constrained_sums else 0,
-            'min_depth': self.min_depth,
-            'max_depth': self.max_depth,
-            'valid_nodes': valid_nodes,
-            'constrained_sums': constrained_sums
-        }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'distance_sum':
-                result = self.get_distance_sum(query['node'])
-                results.append(result)
-            elif query['type'] == 'all_distance_sums':
-                result = self.get_all_distance_sums()
-                results.append(result)
-            elif query['type'] == 'constrained_distance_sum':
-                result = self.get_constrained_distance_sum(query['node'])
-                results.append(result)
-            elif query['type'] == 'valid_nodes':
-                result = self.get_valid_nodes()
-                results.append(result)
-            elif query['type'] == 'all_constrained_sums':
-                result = self.get_all_constrained_distance_sums()
-                results.append(result)
-            elif query['type'] == 'constrained_statistics':
-                result = self.get_constrained_statistics()
-                results.append(result)
-        return results
+# WRONG - including parent in subtree
+for neighbor in adj[node]:
+    subtree_size[node] += subtree_size[neighbor]
 
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (1, 3), (3, 4)]
-min_depth = 1
-max_depth = 3
-
-td = TreeDistancesIIWithConstraints(n, edges, min_depth, max_depth)
-result = td.get_constrained_distance_sum(1)
-print(f"Constrained distance sum result: {result}")
-
-valid_nodes = td.get_valid_nodes()
-print(f"Valid nodes: {valid_nodes}")
-
-statistics = td.get_constrained_statistics()
-print(f"Constrained statistics: {statistics}")
+# CORRECT - exclude parent
+for neighbor in adj[node]:
+    if neighbor != parent[node]:
+        subtree_size[node] += subtree_size[neighbor]
 ```
 
-### Related Problems
+**Problem:** Parent is not part of the subtree.
+**Fix:** Always check `neighbor != parent` when processing children.
 
-#### **CSES Problems**
-- [Tree Distances II](https://cses.fi/problemset/task/1133) - Basic tree distance calculations
-- [Tree Distances I](https://cses.fi/problemset/task/1132) - Tree distance calculations
-- [Tree Diameter](https://cses.fi/problemset/task/1131) - Tree diameter calculation
+### Mistake 4: Stack Overflow with Recursion
 
-#### **LeetCode Problems**
-- [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) - Tree traversal by levels
-- [Path Sum](https://leetcode.com/problems/path-sum/) - Path queries in tree
-- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Path analysis in tree
+```python
+# WRONG - recursive DFS on deep trees
+def dfs(node, parent):
+    for child in adj[node]:
+        if child != parent:
+            dfs(child, node)  # May overflow for n=200000
 
-#### **Problem Categories**
-- **Tree DP**: Dynamic programming on trees, distance calculations
-- **Tree Traversal**: DFS, BFS, tree processing
-- **Tree Queries**: Tree analysis, tree operations
-- **Tree Algorithms**: Tree properties, tree analysis, tree operations
+# CORRECT - use iterative approach or increase recursion limit
+sys.setrecursionlimit(300000)
+```
+
+**Problem:** Deep trees (like a line) cause stack overflow.
+**Fix:** Use iterative DFS or set appropriate recursion limits.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single node | n=1 | 0 | No other nodes to reach |
+| Two nodes | n=2, edge (1,2) | 1, 1 | Each node is distance 1 from the other |
+| Line graph | 1-2-3-4-5 | 10,7,6,7,10 | Nodes at ends have largest sums |
+| Star graph | 1 connected to 2,3,4,5 | 4,6,6,6,6 | Center has minimum sum |
+| Large n | n=200000 | varies | Test for TLE and overflow |
+
+---
+
+## When to Use This Pattern
+
+### Use Rerooting DP When:
+- Computing a value for each node that depends on entire tree structure
+- The value changes predictably when "moving" the root to an adjacent node
+- Naive approach would require O(n) work per node (O(n^2) total)
+
+### Common Rerooting Problems:
+- Sum of distances from each node (this problem)
+- Number of nodes within distance k from each node
+- Minimum/maximum distance to a leaf from each node
+- Tree centroids and related problems
+
+### Pattern Recognition Checklist:
+- [ ] Need to compute something for EVERY node? --> Consider rerooting
+- [ ] Can you compute it easily for ONE root? --> First pass
+- [ ] Does moving root change answer predictably? --> Second pass (reroot)
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [Tree Diameter](https://cses.fi/problemset/task/1131) | Basic tree DFS, understanding distances |
+| [Tree Distances I](https://cses.fi/problemset/task/1132) | Max distance from each node, simpler rerooting |
+| [Subtree Sizes](practice) | Foundation for computing subtree_size array |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Sum of Distances in Tree (LC 834)](https://leetcode.com/problems/sum-of-distances-in-tree/) | Same problem on LeetCode |
+| [Count Nodes Equal to Sum of Descendants (LC 1973)](https://leetcode.com/problems/count-nodes-equal-to-sum-of-descendants/) | Subtree sums, similar technique |
+| [Subordinates](https://cses.fi/problemset/task/1674) | Subtree counting |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Tree Matching](https://cses.fi/problemset/task/1130) | Tree DP with more complex states |
+| [Path Queries II](https://cses.fi/problemset/task/2134) | Heavy-Light Decomposition |
+| [Distance Queries](https://cses.fi/problemset/task/1135) | LCA + distance calculations |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** Rerooting DP computes answers for all nodes in O(n) by leveraging how answers change when moving the root.
+
+2. **Two-Pass Structure:** First pass builds subtree information bottom-up; second pass propagates answers top-down.
+
+3. **The Formula:** When moving from parent to child: `answer[child] = answer[parent] + n - 2*subtree_size[child]`
+
+4. **Pattern:** This technique applies whenever you need node-specific aggregates that depend on tree structure.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why the rerooting formula works
+- [ ] Implement both passes of the algorithm from scratch
+- [ ] Handle edge cases (n=1, line graphs, star graphs)
+- [ ] Identify other problems where rerooting DP applies
+- [ ] Solve this problem in under 15 minutes

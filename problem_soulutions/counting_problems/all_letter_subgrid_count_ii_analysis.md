@@ -2,699 +2,486 @@
 layout: simple
 title: "All Letter Subgrid Count II - Grid Counting Problem"
 permalink: /problem_soulutions/counting_problems/all_letter_subgrid_count_ii_analysis
+difficulty: Medium
+tags: [grid, counting, prefix-sum, 2d-array]
+prerequisites: [prefix_sums, 2d_arrays]
 ---
 
-# All Letter Subgrid Count II - Grid Counting Problem
+# All Letter Subgrid Count II
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of all letter subgrids in grid problems
-- Apply counting techniques for letter subgrid analysis
-- Implement efficient algorithms for subgrid counting
-- Optimize grid traversal and counting operations
-- Handle special cases in letter subgrid counting
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Grid Counting |
+| **Time Limit** | 1 second |
+| **Key Technique** | Prefix Sums / Histogram Method |
+| **CSES Link** | [Problem Set](https://cses.fi/problemset/) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a grid of size n×m with letters, count the number of subgrids where all letters are the same.
+After solving this problem, you will be able to:
+- [ ] Apply prefix sums to 2D grid problems
+- [ ] Count uniform subgrids efficiently using histogram techniques
+- [ ] Recognize when to use monotonic stack for counting problems
+- [ ] Optimize O(n^4) brute force to O(n^2) or better
 
-**Input**: 
-- n, m: grid dimensions
-- grid: n×m grid with letters
+---
 
-**Output**: 
-- Number of all letter subgrids
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n, m ≤ 1000
-- Grid contains only lowercase letters
+**Problem:** Given an n x m grid of lowercase letters, count all rectangular subgrids where every cell contains the same letter.
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and m (grid dimensions)
+- Next n lines: Strings of length m representing the grid
+
+**Output:**
+- Single integer: the count of uniform subgrids
+
+**Constraints:**
+- 1 <= n, m <= 1000
+- Grid contains only lowercase letters 'a'-'z'
+
+### Example
+
 ```
 Input:
-n = 3, m = 3
-grid = [
-  ['a', 'a', 'a'],
-  ['a', 'a', 'a'],
-  ['a', 'a', 'a']
-]
+3 3
+aaa
+aaa
+aaa
 
 Output:
 14
-
-Explanation**: 
-All letter subgrids with same letter 'a':
-- 9 subgrids of size 1×1
-- 4 subgrids of size 2×2
-- 1 subgrid of size 3×3
-Total: 9 + 4 + 1 = 14
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all possible subgrids
-- **Letter Validation**: Check all letters in each subgrid
-- **Simple Implementation**: Easy to understand and implement
-- **Inefficient**: O(n²m²) time complexity
-
-**Key Insight**: Enumerate all possible subgrids and check if all letters are the same.
-
-**Algorithm**:
-- Iterate through all possible subgrid positions and sizes
-- For each subgrid, check all letters
-- Count subgrids that have all same letters
-
-**Visual Example**:
-```
-Grid: 3×3
-┌─────────────────────────────────────┐
-│ a a a                              │
-│ a a a                              │
-│ a a a                              │
-└─────────────────────────────────────┘
-
-Brute force enumeration:
-┌─────────────────────────────────────┐
-│ Check all 1×1 subgrids: 9 ✓        │
-│ Check all 2×2 subgrids: 4 ✓        │
-│ Check all 3×3 subgrids: 1 ✓        │
-│ Total: 9 + 4 + 1 = 14              │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def brute_force_all_letter_subgrid_count(n, m, grid):
-    """
-    Count all letter subgrids using brute force approach
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid with letters
-    
-    Returns:
-        int: number of all letter subgrids
-    """
-    count = 0
-    
-    # Check all possible subgrid positions and sizes
-    for i in range(n):
-        for j in range(m):
-            for height in range(1, n - i + 1):
-                for width in range(1, m - j + 1):
-                    # Check if all letters in subgrid are the same
-                    if is_all_letter_subgrid(grid, i, j, height, width):
-                        count += 1
-    
-    return count
-
-def is_all_letter_subgrid(grid, start_i, start_j, height, width):
-    """
-    Check if all letters in subgrid are the same
-    
-    Args:
-        grid: 2D grid with letters
-        start_i, start_j: starting position
-        height, width: subgrid dimensions
-    
-    Returns:
-        bool: True if all letters are the same
-    """
-    first_letter = grid[start_i][start_j]
-    
-    for i in range(start_i, start_i + height):
-        for j in range(start_j, start_j + width):
-            if grid[i][j] != first_letter:
-                return False
-    
-    return True
-
-# Example usage
-n, m = 3, 3
-grid = [
-    ['a', 'a', 'a'],
-    ['a', 'a', 'a'],
-    ['a', 'a', 'a']
-]
-result = brute_force_all_letter_subgrid_count(n, m, grid)
-print(f"Brute force result: {result}")
-```
-
-**Time Complexity**: O(n²m²)
-**Space Complexity**: O(1)
-
-**Why it's inefficient**: Checks all possible subgrids with O(n²m²) time complexity.
+**Explanation:**
+- 9 subgrids of size 1x1 (each cell)
+- 4 subgrids of size 2x2 (all contain 'a')
+- 1 subgrid of size 3x3 (entire grid)
+- Total: 9 + 4 + 1 = 14
 
 ---
 
-### Approach 2: Optimized Letter Checking Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Letter Checking Solution**:
-- **Early Termination**: Stop checking as soon as different letter is found
-- **Efficient Validation**: Use optimized letter checking
-- **Reduced Redundancy**: Avoid redundant letter checks
-- **Optimization**: More efficient than brute force
+### Pattern Recognition
 
-**Key Insight**: Use early termination and optimized letter checking to reduce redundant operations.
+> **Key Question:** How can we avoid checking every possible subgrid explicitly?
 
-**Algorithm**:
-- Use early termination when different letter is found
-- Optimize letter checking process
-- Reduce redundant operations
+The insight is to fix two rows and count how many valid subgrids exist between them. For each pair of rows, we track "heights" of consecutive matching columns.
 
-**Visual Example**:
-```
-Optimized letter checking:
-┌─────────────────────────────────────┐
-│ For each subgrid:                  │
-│ - Check letters row by row          │
-│ - Stop immediately if different letter │
-│ - Skip remaining letters if possible │
-└─────────────────────────────────────┘
+### Breaking Down the Problem
 
-Early termination example:
-┌─────────────────────────────────────┐
-│ Subgrid (0,0) to (1,1):           │
-│ Check (0,0): 'a' ✓                │
-│ Check (0,1): 'a' ✓                │
-│ Check (1,0): 'a' ✓                │
-│ Check (1,1): 'a' ✓                │
-│ All letters same: count++          │
-└─────────────────────────────────────┘
-```
+1. **What are we looking for?** All rectangles where every cell has the same letter
+2. **What information do we have?** An n x m character grid
+3. **What's the relationship?** A valid subgrid requires all cells in a rectangular region to match
 
-**Implementation**:
-```python
-def optimized_all_letter_subgrid_count(n, m, grid):
-    """
-    Count all letter subgrids using optimized letter checking
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid with letters
-    
-    Returns:
-        int: number of all letter subgrids
-    """
-    count = 0
-    
-    # Check all possible subgrid positions and sizes
-    for i in range(n):
-        for j in range(m):
-            for height in range(1, n - i + 1):
-                for width in range(1, m - j + 1):
-                    # Use optimized letter checking
-                    if is_all_letter_subgrid_optimized(grid, i, j, height, width):
-                        count += 1
-    
-    return count
+### Analogies
 
-def is_all_letter_subgrid_optimized(grid, start_i, start_j, height, width):
-    """
-    Check if all letters in subgrid are the same with optimization
-    
-    Args:
-        grid: 2D grid with letters
-        start_i, start_j: starting position
-        height, width: subgrid dimensions
-    
-    Returns:
-        bool: True if all letters are the same
-    """
-    first_letter = grid[start_i][start_j]
-    
-    # Check letters row by row with early termination
-    for i in range(start_i, start_i + height):
-        for j in range(start_j, start_j + width):
-            if grid[i][j] != first_letter:
-                return False  # Early termination
-    
-    return True
-
-def is_all_letter_subgrid_optimized_v2(grid, start_i, start_j, height, width):
-    """
-    Alternative optimized letter checking with different strategy
-    
-    Args:
-        grid: 2D grid with letters
-        start_i, start_j: starting position
-        height, width: subgrid dimensions
-    
-    Returns:
-        bool: True if all letters are the same
-    """
-    first_letter = grid[start_i][start_j]
-    
-    # Check if starting letter is consistent
-    if first_letter != grid[start_i][start_j]:
-        return False
-    
-    # Check remaining letters
-    for i in range(start_i, start_i + height):
-        for j in range(start_j, start_j + width):
-            if i == start_i and j == start_j:
-                continue  # Skip already checked letter
-            if grid[i][j] != first_letter:
-                return False
-    
-    return True
-
-# Example usage
-n, m = 3, 3
-grid = [
-    ['a', 'a', 'a'],
-    ['a', 'a', 'a'],
-    ['a', 'a', 'a']
-]
-result = optimized_all_letter_subgrid_count(n, m, grid)
-print(f"Optimized letter checking result: {result}")
-```
-
-**Time Complexity**: O(n²m²)
-**Space Complexity**: O(1)
-
-**Why it's better**: Reduces redundant operations and improves efficiency.
-
-**Implementation Considerations**:
-- **Early Termination**: Stop checking as soon as different letter is found
-- **Optimized Validation**: Use optimized letter checking
-- **Reduced Redundancy**: Avoid redundant letter checks
+Think of this like counting rectangles in a histogram. For each column, track how many consecutive rows (from top) have the same letter. Then use histogram techniques to count rectangles.
 
 ---
 
-### Approach 3: Prefix Sum Solution (Optimal)
+## Solution 1: Brute Force
 
-**Key Insights from Prefix Sum Solution**:
-- **Prefix Sum Technique**: Use prefix sums for efficient range queries
-- **Mathematical Optimization**: Use mathematical properties for counting
-- **Efficient Calculation**: O(nm) time complexity
-- **Optimal Complexity**: Best approach for all letter subgrid counting
+### Idea
 
-**Key Insight**: Use prefix sums to efficiently check if subgrids have all same letters.
+Check every possible subgrid by iterating over all top-left corners and all dimensions.
 
-**Algorithm**:
-- Build prefix sum array for each letter
-- Use prefix sums to check subgrid validity
-- Count valid subgrids efficiently
+### Algorithm
 
-**Visual Example**:
-```
-Prefix sum construction for letter 'a':
-┌─────────────────────────────────────┐
-│ Grid: a a a                        │
-│       a a a                        │
-│       a a a                        │
-│                                   │
-│ Prefix sum: 1 2 3                 │
-│            2 4 6                  │
-│            3 6 9                  │
-└─────────────────────────────────────┘
+1. For each top-left corner (i, j)
+2. For each possible height and width
+3. Check if all cells in the subgrid match
+4. Increment count if valid
 
-Subgrid validation:
-┌─────────────────────────────────────┐
-│ For subgrid (0,0) to (1,1):       │
-│ Expected sum: 2×2 = 4             │
-│ Actual sum: 4 ✓                   │
-│ Subgrid has all 'a' letters       │
-└─────────────────────────────────────┘
-```
+### Code
 
-**Implementation**:
 ```python
-def prefix_sum_all_letter_subgrid_count(n, m, grid):
+def count_uniform_subgrids_brute(grid):
     """
-    Count all letter subgrids using prefix sum approach
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid with letters
-    
-    Returns:
-        int: number of all letter subgrids
+    Brute force: check every subgrid.
+
+    Time: O(n^2 * m^2 * n * m) worst case
+    Space: O(1)
     """
-    # Get all unique letters in grid
-    unique_letters = set()
-    for i in range(n):
-        for j in range(m):
-            unique_letters.add(grid[i][j])
-    
-    total_count = 0
-    
-    # For each unique letter, count subgrids with that letter
-    for letter in unique_letters:
-        # Build prefix sum array for current letter
-        prefix_sum = [[0] * (m + 1) for _ in range(n + 1)]
-        
-        for i in range(n):
-            for j in range(m):
-                prefix_sum[i + 1][j + 1] = (prefix_sum[i][j + 1] + 
-                                           prefix_sum[i + 1][j] - 
-                                           prefix_sum[i][j])
-                if grid[i][j] == letter:
-                    prefix_sum[i + 1][j + 1] += 1
-        
-        # Count subgrids with all letters equal to current letter
-        letter_count = 0
-        for i in range(n):
-            for j in range(m):
-                for height in range(1, n - i + 1):
-                    for width in range(1, m - j + 1):
-                        if is_all_letter_subgrid_prefix_sum(prefix_sum, i, j, height, width, letter):
-                            letter_count += 1
-        
-        total_count += letter_count
-    
-    return total_count
-
-def is_all_letter_subgrid_prefix_sum(prefix_sum, start_i, start_j, height, width, letter):
-    """
-    Check if subgrid has all same letters using prefix sum
-    
-    Args:
-        prefix_sum: 2D prefix sum array
-        start_i, start_j: starting position
-        height, width: subgrid dimensions
-        letter: target letter
-    
-    Returns:
-        bool: True if subgrid has all same letters
-    """
-    # Calculate sum of subgrid using prefix sum
-    total_sum = (prefix_sum[start_i + height][start_j + width] - 
-                 prefix_sum[start_i][start_j + width] - 
-                 prefix_sum[start_i + height][start_j] + 
-                 prefix_sum[start_i][start_j])
-    
-    # Check if sum equals expected value (all letters are the same)
-    expected_sum = height * width
-    return total_sum == expected_sum
-
-def optimized_prefix_sum_all_letter_count(n, m, grid):
-    """
-    Optimized prefix sum approach with additional optimizations
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid with letters
-    
-    Returns:
-        int: number of all letter subgrids
-    """
-    # Get all unique letters in grid
-    unique_letters = set()
-    for i in range(n):
-        for j in range(m):
-            unique_letters.add(grid[i][j])
-    
-    total_count = 0
-    
-    # For each unique letter, count subgrids with that letter
-    for letter in unique_letters:
-        # Build prefix sum array for current letter
-        prefix_sum = [[0] * (m + 1) for _ in range(n + 1)]
-        
-        for i in range(n):
-            for j in range(m):
-                prefix_sum[i + 1][j + 1] = (prefix_sum[i][j + 1] + 
-                                           prefix_sum[i + 1][j] - 
-                                           prefix_sum[i][j])
-                if grid[i][j] == letter:
-                    prefix_sum[i + 1][j + 1] += 1
-        
-        # Optimize by checking only valid starting positions
-        letter_count = 0
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == letter:  # Only start from valid letters
-                    for height in range(1, n - i + 1):
-                        for width in range(1, m - j + 1):
-                            if is_all_letter_subgrid_prefix_sum(prefix_sum, i, j, height, width, letter):
-                                letter_count += 1
-        
-        total_count += letter_count
-    
-    return total_count
-
-# Example usage
-n, m = 3, 3
-grid = [
-    ['a', 'a', 'a'],
-    ['a', 'a', 'a'],
-    ['a', 'a', 'a']
-]
-result1 = prefix_sum_all_letter_subgrid_count(n, m, grid)
-result2 = optimized_prefix_sum_all_letter_count(n, m, grid)
-print(f"Prefix sum result: {result1}")
-print(f"Optimized prefix sum result: {result2}")
-```
-
-**Time Complexity**: O(nm * k) where k is number of unique letters
-**Space Complexity**: O(nm)
-
-**Why it's optimal**: Uses prefix sums for efficient range queries.
-
-**Implementation Details**:
-- **Prefix Sum Construction**: Build prefix sum array for each letter
-- **Range Query**: Use prefix sums for efficient range queries
-- **Mathematical Optimization**: Use mathematical properties for counting
-- **Efficient Algorithms**: Use optimal algorithms for grid operations
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²m²) | O(1) | Complete enumeration of all subgrids |
-| Optimized Letter Checking | O(n²m²) | O(1) | Early termination and optimized validation |
-| Prefix Sum | O(nm * k) | O(nm) | Use prefix sums for efficient range queries |
-
-### Time Complexity
-- **Time**: O(nm * k) - Use prefix sums for efficient range queries
-- **Space**: O(nm) - Store prefix sum array
-
-### Why This Solution Works
-- **Prefix Sum Technique**: Use prefix sums for efficient range queries
-- **Mathematical Properties**: Use mathematical properties for counting
-- **Efficient Algorithms**: Use optimal algorithms for grid operations
-- **Range Query Optimization**: Use prefix sums for subgrid validation
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. All Letter Subgrid Count with Case Sensitivity**
-**Problem**: Count all letter subgrids with case sensitivity.
-
-**Key Differences**: Consider uppercase and lowercase letters as different
-
-**Solution Approach**: Modify letter comparison to be case sensitive
-
-**Implementation**:
-```python
-def case_sensitive_all_letter_subgrid_count(n, m, grid):
-    """
-    Count all letter subgrids with case sensitivity
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid with letters (case sensitive)
-    
-    Returns:
-        int: number of all letter subgrids
-    """
+    n, m = len(grid), len(grid[0])
     count = 0
-    
-    # Check all possible subgrid positions and sizes
+
     for i in range(n):
         for j in range(m):
-            for height in range(1, n - i + 1):
-                for width in range(1, m - j + 1):
-                    # Check if all letters in subgrid are the same (case sensitive)
-                    if is_all_letter_subgrid_case_sensitive(grid, i, j, height, width):
+            for h in range(1, n - i + 1):
+                for w in range(1, m - j + 1):
+                    letter = grid[i][j]
+                    valid = True
+                    for di in range(h):
+                        for dj in range(w):
+                            if grid[i + di][j + dj] != letter:
+                                valid = False
+                                break
+                        if not valid:
+                            break
+                    if valid:
                         count += 1
-    
     return count
-
-def is_all_letter_subgrid_case_sensitive(grid, start_i, start_j, height, width):
-    """
-    Check if all letters in subgrid are the same (case sensitive)
-    
-    Args:
-        grid: 2D grid with letters
-        start_i, start_j: starting position
-        height, width: subgrid dimensions
-    
-    Returns:
-        bool: True if all letters are the same
-    """
-    first_letter = grid[start_i][start_j]
-    
-    for i in range(start_i, start_i + height):
-        for j in range(start_j, start_j + width):
-            if grid[i][j] != first_letter:  # Case sensitive comparison
-                return False
-    
-    return True
-
-# Example usage
-n, m = 3, 3
-grid = [
-    ['a', 'A', 'a'],
-    ['A', 'a', 'A'],
-    ['a', 'A', 'a']
-]
-result = case_sensitive_all_letter_subgrid_count(n, m, grid)
-print(f"Case sensitive all letter subgrid count: {result}")
 ```
 
-#### **2. All Letter Subgrid Count with Size Constraints**
-**Problem**: Count all letter subgrids with specific size constraints.
+### Complexity
 
-**Key Differences**: Additional constraints on subgrid size
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^3 * m^3) | Six nested loops in worst case |
+| Space | O(1) | No extra storage |
 
-**Solution Approach**: Add size constraints to the counting logic
+### Why This Works (But Is Slow)
 
-**Implementation**:
+Correctness is guaranteed by exhaustive checking, but the complexity is far too high for n, m = 1000.
+
+---
+
+## Solution 2: Height Array + Counting (Optimal)
+
+### Key Insight
+
+> **The Trick:** For each position, precompute the "height" of consecutive identical letters going upward. Then for each row, count rectangles using a histogram approach.
+
+### Algorithm
+
+1. Build a height array: `height[i][j]` = number of consecutive identical letters ending at (i, j) going upward
+2. For each row, iterate left to right tracking segments of matching letters
+3. Use arithmetic formula to count rectangles in each segment
+
+### Dry Run Example
+
+Let's trace through with a 3x3 grid of all 'a':
+
+```
+Grid:         Height array (consecutive up):
+a a a         1 1 1
+a a a    ->   2 2 2
+a a a         3 3 3
+
+Processing row 2 (heights = [3, 3, 3]):
+  - All columns have same letter 'a'
+  - Segment width = 3, heights = [3, 3, 3]
+  - Count rectangles using histogram method
+```
+
+For a segment with uniform heights h and width w:
+- Number of rectangles = h * (w * (w + 1) / 2)
+
+For varying heights, use stack-based approach or segment analysis.
+
+### Visual Diagram
+
+```
+Height calculation:
+     col 0  col 1  col 2
+row 0:  1      1      1     (first row, all heights = 1)
+row 1:  2      2      2     (same letter above, height++)
+row 2:  3      3      3     (same letter above, height++)
+
+Counting rectangles at row 2:
+- 1x1: 3 cells
+- 1x2: 2 pairs horizontally
+- 1x3: 1 triple horizontally
+- 2x1, 2x2, 2x3: extend upward
+- 3x1, 3x2, 3x3: extend further
+```
+
+### Code
+
 ```python
-def size_constrained_all_letter_subgrid_count(n, m, grid, min_size, max_size):
+def count_uniform_subgrids(grid):
     """
-    Count all letter subgrids with size constraints
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid with letters
-        min_size: minimum subgrid size
-        max_size: maximum subgrid size
-    
-    Returns:
-        int: number of all letter subgrids
+    Optimal solution using height arrays.
+
+    Time: O(n * m)
+    Space: O(m)
     """
-    count = 0
-    
-    # Check all possible subgrid positions and sizes with constraints
+    if not grid or not grid[0]:
+        return 0
+
+    n, m = len(grid), len(grid[0])
+    height = [0] * m  # height of consecutive same-letter cells
+    prev_char = [''] * m  # letter at previous row
+    total = 0
+
     for i in range(n):
+        # Update heights for current row
         for j in range(m):
-            for height in range(max(1, min_size), min(n - i + 1, max_size + 1)):
-                for width in range(max(1, min_size), min(m - j + 1, max_size + 1)):
-                    if is_all_letter_subgrid(grid, i, j, height, width):
-                        count += 1
-    
-    return count
+            if grid[i][j] == prev_char[j]:
+                height[j] += 1
+            else:
+                height[j] = 1
+                prev_char[j] = grid[i][j]
 
-# Example usage
-n, m = 3, 3
-grid = [
-    ['a', 'a', 'a'],
-    ['a', 'a', 'a'],
-    ['a', 'a', 'a']
-]
-result = size_constrained_all_letter_subgrid_count(n, m, grid, 2, 3)
-print(f"Size constrained all letter subgrid count: {result}")
-```
+        # Count rectangles ending at row i
+        j = 0
+        while j < m:
+            # Find segment of same letter
+            letter = grid[i][j]
+            start = j
+            min_height = height[j]
 
-#### **3. All Letter Subgrid Count with Pattern Matching**
-**Problem**: Count all letter subgrids that match specific patterns.
+            while j < m and grid[i][j] == letter:
+                min_height = min(min_height, height[j])
+                # Count rectangles with this cell as bottom-right
+                # Using stack approach for general case
+                j += 1
 
-**Key Differences**: Subgrids must match specific patterns
+            # For segment [start, j), count all uniform rectangles
+            total += count_segment_rectangles(height, start, j)
 
-**Solution Approach**: Use pattern matching techniques
+    return total
 
-**Implementation**:
-```python
-def pattern_matching_all_letter_subgrid_count(n, m, grid, pattern):
+
+def count_segment_rectangles(height, start, end):
     """
-    Count all letter subgrids that match specific patterns
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid with letters
-        pattern: 2D pattern to match
-    
-    Returns:
-        int: number of all letter subgrids matching pattern
+    Count rectangles in a horizontal segment where all cells
+    have the same letter. Uses monotonic stack.
     """
-    pattern_height, pattern_width = len(pattern), len(pattern[0])
     count = 0
-    
-    # Check all possible subgrid positions
-    for i in range(n - pattern_height + 1):
-        for j in range(m - pattern_width + 1):
-            # Check if subgrid matches pattern
-            if matches_letter_pattern(grid, i, j, pattern):
-                count += 1
-    
+    stack = []  # (index, height)
+
+    for j in range(start, end + 1):
+        h = height[j] if j < end else 0
+        width = 0
+
+        while stack and stack[-1][1] >= h:
+            idx, prev_h = stack.pop()
+            width += (j - idx) if not stack else (j - stack[-1][0] - 1)
+            # Rectangles with height exactly prev_h
+            segment_width = j - idx
+            count += (prev_h - h) * segment_width * (segment_width + 1) // 2
+
+        if width > 0 or not stack:
+            stack.append((j - width if width else j, h))
+
     return count
-
-def matches_letter_pattern(grid, start_i, start_j, pattern):
-    """
-    Check if subgrid matches letter pattern
-    
-    Args:
-        grid: 2D grid with letters
-        start_i, start_j: starting position
-        pattern: 2D pattern to match
-    
-    Returns:
-        bool: True if subgrid matches pattern
-    """
-    pattern_height, pattern_width = len(pattern), len(pattern[0])
-    
-    for i in range(pattern_height):
-        for j in range(pattern_width):
-            if grid[start_i + i][start_j + j] != pattern[i][j]:
-                return False
-    
-    return True
-
-# Example usage
-n, m = 3, 3
-grid = [
-    ['a', 'a', 'a'],
-    ['a', 'a', 'a'],
-    ['a', 'a', 'a']
-]
-pattern = [
-    ['a', 'a'],
-    ['a', 'a']
-]
-result = pattern_matching_all_letter_subgrid_count(n, m, grid, pattern)
-print(f"Pattern matching all letter subgrid count: {result}")
 ```
 
-### Related Problems
+### C++ Solution
 
-#### **CSES Problems**
-- [Border Subgrid Count](https://cses.fi/problemset/task/1075) - Grid counting
-- [Filled Subgrid Count](https://cses.fi/problemset/task/1075) - Grid counting
-- [Grid Completion](https://cses.fi/problemset/task/1075) - Grid algorithms
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-#### **LeetCode Problems**
-- [Number of Islands](https://leetcode.com/problems/number-of-islands/) - Grid algorithms
-- [Max Area of Island](https://leetcode.com/problems/max-area-of-island/) - Grid algorithms
-- [Island Perimeter](https://leetcode.com/problems/island-perimeter/) - Grid algorithms
+long long countUniformSubgrids(vector<string>& grid) {
+    int n = grid.size(), m = grid[0].size();
+    vector<int> height(m, 0);
+    vector<char> prevChar(m, '\0');
+    long long total = 0;
 
-#### **Problem Categories**
-- **Grid Algorithms**: 2D array manipulation, grid counting
-- **Combinatorics**: Mathematical counting, grid properties
-- **Mathematical Algorithms**: Prefix sums, mathematical analysis
+    for (int i = 0; i < n; i++) {
+        // Update heights
+        for (int j = 0; j < m; j++) {
+            if (grid[i][j] == prevChar[j]) {
+                height[j]++;
+            } else {
+                height[j] = 1;
+                prevChar[j] = grid[i][j];
+            }
+        }
 
-## 🔗 Additional Resources
+        // Count rectangles using segments
+        int j = 0;
+        while (j < m) {
+            char letter = grid[i][j];
+            int start = j;
 
-### **Algorithm References**
-- [Grid Algorithms](https://cp-algorithms.com/geometry/basic-geometry.html) - Grid algorithms
-- [Prefix Sums](https://cp-algorithms.com/data_structures/prefix_sum.html) - Prefix sum technique
-- [Combinatorics](https://cp-algorithms.com/combinatorics/binomial-coefficients.html) - Counting techniques
+            // Collect segment heights
+            vector<int> segHeights;
+            while (j < m && grid[i][j] == letter) {
+                segHeights.push_back(height[j]);
+                j++;
+            }
 
-### **Practice Problems**
-- [CSES Border Subgrid Count](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Filled Subgrid Count](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Grid Completion](https://cses.fi/problemset/task/1075) - Medium
+            // Count using histogram method
+            total += countHistogramRectangles(segHeights);
+        }
+    }
+    return total;
+}
 
-### **Further Reading**
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
-- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
-- [Grid Algorithms](https://en.wikipedia.org/wiki/Grid_computing) - Wikipedia article
+long long countHistogramRectangles(vector<int>& heights) {
+    long long count = 0;
+    int n = heights.size();
+    stack<pair<int, int>> stk; // (start_index, height)
+
+    for (int i = 0; i <= n; i++) {
+        int h = (i < n) ? heights[i] : 0;
+        int start = i;
+
+        while (!stk.empty() && stk.top().second >= h) {
+            auto [idx, prevH] = stk.top();
+            stk.pop();
+            int width = i - idx;
+            // Count rectangles with height in range (h, prevH]
+            count += (long long)(prevH - h) * width * (width + 1) / 2;
+            start = idx;
+        }
+        if (h > 0) {
+            stk.push({start, h});
+        }
+    }
+    return count;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+    vector<string> grid(n);
+    for (int i = 0; i < n; i++) {
+        cin >> grid[i];
+    }
+
+    cout << countUniformSubgrids(grid) << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n * m) | Each cell processed once, stack ops amortized O(1) |
+| Space | O(m) | Height array and stack |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Not Resetting Height on Letter Change
+
+```python
+# WRONG
+for j in range(m):
+    height[j] += 1  # Always incrementing
+
+# CORRECT
+for j in range(m):
+    if grid[i][j] == prev_char[j]:
+        height[j] += 1
+    else:
+        height[j] = 1  # Reset when letter changes
+        prev_char[j] = grid[i][j]
+```
+
+**Problem:** Heights must reset when the letter changes.
+**Fix:** Track the previous letter and reset height to 1 on change.
+
+### Mistake 2: Off-by-One in Segment Boundaries
+
+```python
+# WRONG
+while j < m and grid[i][j] == letter:
+    process(j)
+# Forgot to handle last element properly
+
+# CORRECT
+for j in range(start, end + 1):  # Include sentinel
+    h = height[j] if j < end else 0  # Sentinel forces stack flush
+```
+
+**Problem:** Not properly closing out rectangles at segment end.
+**Fix:** Use a sentinel value (height 0) to force final processing.
+
+### Mistake 3: Integer Overflow
+
+```python
+# WRONG (in languages with fixed-size integers)
+count += width * (width + 1) / 2 * height
+
+# CORRECT (C++)
+count += (long long)width * (width + 1) / 2 * height
+```
+
+**Problem:** With n, m = 1000, counts can exceed 32-bit integers.
+**Fix:** Use 64-bit integers (long long in C++, Python handles automatically).
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single cell | `1x1 grid "a"` | 1 | Only one 1x1 subgrid |
+| All same letter | `n x m grid of 'a'` | n*m*(n+1)*(m+1)/4 | Formula for counting all rectangles |
+| Alternating letters | `"ababab..."` | n*m | Only 1x1 subgrids valid |
+| Single row | `1 x m grid` | m*(m+1)/2 | All horizontal substrings of uniform char |
+| Single column | `n x 1 grid` | n*(n+1)/2 | All vertical substrings of uniform char |
+
+---
+
+## When to Use This Pattern
+
+### Use This Approach When:
+- Counting rectangles/subgrids with uniform properties
+- 2D problems reducible to 1D histogram problems
+- Need to optimize from O(n^4) to O(n^2) or better
+
+### Don't Use When:
+- Subgrids have complex constraints (not just uniformity)
+- Need to enumerate actual subgrids, not just count
+- Problem has different structure (consider DP or other approaches)
+
+### Pattern Recognition Checklist:
+- [ ] Counting rectangles in a grid? -> **Consider height arrays**
+- [ ] Uniform regions? -> **Height resets on value change**
+- [ ] Need O(n^2) or better? -> **Histogram + stack technique**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [CSES - Rectangle Cutting](https://cses.fi/problemset/task/1744) | Basic 2D DP grid problem |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [CSES - Counting Rooms](https://cses.fi/problemset/task/1192) | Grid counting with flood fill |
+| [LeetCode - Maximal Rectangle](https://leetcode.com/problems/maximal-rectangle/) | Find largest, not count all |
+| [LeetCode - Count Submatrices With All Ones](https://leetcode.com/problems/count-submatrices-with-all-ones/) | Binary grid version |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [CSES - Grid Paths](https://cses.fi/problemset/task/1078) | Grid path counting with constraints |
+| [LeetCode - Number of Submatrices That Sum to Target](https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/) | Prefix sums + hash map in 2D |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Convert 2D rectangle counting to 1D histogram problems by fixing rows
+2. **Time Optimization:** From O(n^4) brute force to O(n*m) using height arrays and monotonic stack
+3. **Space Trade-off:** O(m) extra space for height tracking enables linear time per row
+4. **Pattern:** Histogram-based rectangle counting is a powerful technique for grid problems
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Implement the height array construction correctly
+- [ ] Apply the monotonic stack histogram technique
+- [ ] Handle letter boundaries (reset heights appropriately)
+- [ ] Calculate rectangle counts using the formula w*(w+1)/2 for uniform segments
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Maximum Rectangle in Histogram](https://cp-algorithms.com/data_structures/stack_max_count.html)
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [Monotonic Stack Tutorial](https://leetcode.com/problems/largest-rectangle-in-histogram/solutions/28902/5ms-o-n-java-solution-explained-beats-96/)

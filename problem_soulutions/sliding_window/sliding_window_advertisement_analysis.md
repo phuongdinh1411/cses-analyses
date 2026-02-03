@@ -1,342 +1,472 @@
 ---
 layout: simple
-title: "Sliding Window Advertisement - Real-world Application"
+title: "Sliding Window Maximum - Monotonic Deque Pattern"
 permalink: /problem_soulutions/sliding_window/sliding_window_advertisement_analysis
+difficulty: Medium
+tags: [sliding-window, monotonic-deque, multiset, array]
+prerequisites: []
 ---
 
-# Sliding Window Advertisement - Real-world Application
+# Sliding Window Maximum
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement sliding window technique for real-world applications
-- Apply sliding window technique for time-based data analysis
-- Optimize advertisement placement calculations using sliding window
-- Handle edge cases in real-world sliding window problems
-- Recognize when to use sliding window vs other approaches
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Sliding Window |
+| **Time Limit** | 1 second |
+| **Key Technique** | Monotonic Deque / Multiset |
+| **CSES Link** | [Sliding Window Maximum](https://cses.fi/problemset/task/1076) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a time series of advertisement impressions and a time window, find the maximum number of impressions in any sliding window of the given size.
+After solving this problem, you will be able to:
+- [ ] Understand monotonic deque data structure and its applications
+- [ ] Maintain sliding window maximum/minimum in O(n) time
+- [ ] Use multiset (C++) or sorted containers for window operations
+- [ ] Recognize when sliding window pattern applies to optimization problems
 
-**Input**: 
-- First line: n (number of time points) and k (window size)
-- Second line: n integers representing impressions at each time point
+---
 
-**Output**: 
-- n-k+1 integers: maximum impressions in each sliding window
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ k ≤ n ≤ 10⁵
-- 1 ≤ impressions[i] ≤ 10⁵
+**Problem:** Given an array of n integers and a window size k, find the maximum value in each window as it slides from left to right.
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and k (array size and window size)
+- Line 2: n integers representing the array elements
+
+**Output:**
+- n-k+1 integers: the maximum value in each sliding window
+
+**Constraints:**
+- 1 <= k <= n <= 2 * 10^5
+- 1 <= x_i <= 10^9
+
+### Example
+
 ```
 Input:
-6 3
-1 3 -1 -3 5 3
+8 3
+2 4 3 5 8 1 2 1
 
 Output:
-3 3 5 5
-
-Explanation**: 
-Window 1: [1, 3, -1] → max = 3
-Window 2: [3, -1, -3] → max = 3
-Window 3: [-1, -3, 5] → max = 5
-Window 4: [-3, 5, 3] → max = 5
+4 5 8 8 8 2
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Window [2,4,3] -> max = 4
+- Window [4,3,5] -> max = 5
+- Window [3,5,8] -> max = 8
+- Window [5,8,1] -> max = 8
+- Window [8,1,2] -> max = 8
+- Window [1,2,1] -> max = 2
 
-### Approach 1: Brute Force
-**Time Complexity**: O(n×k)  
-**Space Complexity**: O(1)
+---
 
-**Algorithm**:
-1. For each window position i from 0 to n-k
-2. Find maximum impressions in window [i, i+k-1]
-3. Add maximum to result
-4. Return result
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### Pattern Recognition
+
+> **Key Question:** How can we efficiently track the maximum as elements enter and leave the window?
+
+The brute force approach recalculates max for every window (O(nk)). The key insight is: we only need to track elements that could potentially become the maximum. If a newer element is larger than older elements, those older elements will never be the maximum.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** Maximum value in each window of size k
+2. **What information do we have?** Array values and their positions
+3. **What's the relationship?** Elements leaving the window can affect max; new elements might become the new max
+
+### Analogies
+
+Think of a waiting line where only the tallest person matters. When a taller person joins, everyone shorter in front becomes irrelevant - they will leave before the tall person, and can never be "the tallest".
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+For each window position, scan all k elements to find the maximum.
+
+### Code
+
 ```python
-def brute_force_sliding_window_advertisement(impressions, k):
-    n = len(impressions)
+def solve_brute_force(n, k, arr):
+    """
+    Brute force: check every element in each window.
+    Time: O(n*k), Space: O(1)
+    """
     result = []
-    
     for i in range(n - k + 1):
-        window_max = max(impressions[i:i+k])
-        result.append(window_max)
-    
+        result.append(max(arr[i:i+k]))
     return result
 ```
 
-### Approach 2: Optimized with Priority Queue
-**Time Complexity**: O(n log k)  
-**Space Complexity**: O(k)
+### Complexity
 
-**Algorithm**:
-1. Use priority queue (max heap) to track impressions in current window
-2. For each window, add new impression and remove old impression
-3. Get maximum from priority queue
-4. Add maximum to result
-5. Return result
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n*k) | For each of n-k+1 windows, scan k elements |
+| Space | O(1) | Only store current max |
 
-**Implementation**:
-```python
-import heapq
+### Why This Works (But Is Slow)
 
-def optimized_sliding_window_advertisement(impressions, k):
-    n = len(impressions)
-    result = []
-    max_heap = []
-    
-    for i in range(n):
-        heapq.heappush(max_heap, -impressions[i])
-        
-        if i >= k - 1:
-            result.append(-max_heap[0])
-            max_heap.remove(-impressions[i - k + 1])
-            heapq.heapify(max_heap)
-    
-    return result
+Correctness is guaranteed - we check every element. However, with n,k up to 2*10^5, this gives 4*10^10 operations - far too slow.
+
+---
+
+## Solution 2: Optimal - Monotonic Deque
+
+### Key Insight
+
+> **The Trick:** Maintain a decreasing deque of indices. The front always holds the maximum for the current window.
+
+### How Monotonic Deque Works
+
+| Property | Description |
+|----------|-------------|
+| Store indices | Not values - allows checking if element is in window |
+| Decreasing order | arr[dq[0]] >= arr[dq[1]] >= ... |
+| Front is max | The front element is always the current window maximum |
+
+**In plain English:** Keep only elements that could be the maximum. Remove smaller elements from back when adding a larger one.
+
+### Algorithm
+
+1. For each element at index i:
+   - Remove indices from front that are outside window (index <= i-k)
+   - Remove indices from back where arr[index] <= arr[i] (they can never be max)
+   - Add current index i to back
+   - If window is complete (i >= k-1), record arr[front] as the maximum
+
+### Dry Run Example
+
+Let's trace through with `arr = [2,4,3,5,8,1,2,1], k = 3`:
+
+```
+Initial: deque = []
+
+i=0, arr[0]=2:
+  deque = [0]                    (add index 0)
+  Window incomplete
+
+i=1, arr[1]=4:
+  arr[0]=2 <= 4, pop back       deque = []
+  deque = [1]                    (add index 1)
+  Window incomplete
+
+i=2, arr[2]=3:
+  arr[1]=4 > 3, keep
+  deque = [1, 2]                 (add index 2)
+  Window complete: arr[1] = 4    OUTPUT: 4
+
+i=3, arr[3]=5:
+  arr[2]=3 <= 5, pop back       deque = [1]
+  arr[1]=4 <= 5, pop back       deque = []
+  deque = [3]                    (add index 3)
+  Window [1,3]: arr[3] = 5       OUTPUT: 5
+
+i=4, arr[4]=8:
+  arr[3]=5 <= 8, pop back       deque = []
+  deque = [4]                    (add index 4)
+  Window [2,4]: arr[4] = 8       OUTPUT: 8
+
+i=5, arr[5]=1:
+  arr[4]=8 > 1, keep
+  deque = [4, 5]                 (add index 5)
+  Window [3,5]: arr[4] = 8       OUTPUT: 8
+
+i=6, arr[6]=2:
+  arr[5]=1 <= 2, pop back       deque = [4]
+  deque = [4, 6]                 (add index 6)
+  Window [4,6]: arr[4] = 8       OUTPUT: 8
+
+i=7, arr[7]=1:
+  Index 4 <= 7-3=4, pop front   deque = [6]
+  arr[6]=2 > 1, keep
+  deque = [6, 7]                 (add index 7)
+  Window [5,7]: arr[6] = 2       OUTPUT: 2
+
+Final: [4, 5, 8, 8, 8, 2]
 ```
 
-### Approach 3: Optimal with Deque
-**Time Complexity**: O(n)  
-**Space Complexity**: O(k)
+### Visual Diagram
 
-**Algorithm**:
-1. Use deque to maintain indices of impressions in decreasing order
-2. For each impression, remove indices of smaller impressions from back
-3. Add current index to back of deque
-4. Remove indices outside current window from front
-5. Add maximum (front of deque) to result
-6. Return result
+```
+Array:    [2] [4] [3] [5] [8] [1] [2] [1]
+Index:     0   1   2   3   4   5   6   7
 
-**Implementation**:
+Window at i=4:
+          ─────────────────────────
+                  [3] [5] [8]       <- Window covers indices 2,3,4
+                           ^
+          Deque: [4]       └── Only index 4 in deque (8 dominated all)
+          Max = arr[4] = 8
+```
+
+### Code
+
+**Python:**
 ```python
 from collections import deque
+import sys
+input = sys.stdin.readline
 
-def optimal_sliding_window_advertisement(impressions, k):
-    n = len(impressions)
+def solve():
+    n, k = map(int, input().split())
+    arr = list(map(int, input().split()))
+
+    dq = deque()  # stores indices
     result = []
-    dq = deque()
-    
+
     for i in range(n):
-        # Remove indices of smaller impressions from back
-        while dq and impressions[dq[-1]] <= impressions[i]:
-            dq.pop()
-        
-        # Add current index to back
-        dq.append(i)
-        
-        # Remove indices outside current window from front
-        while dq and dq[0] <= i - k:
-            dq.popleft()
-        
-        # Add maximum to result when window is complete
-        if i >= k - 1:
-            result.append(impressions[dq[0]])
-    
-    return result
-```
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n×k) | O(1) | Check all impressions in each window |
-| Optimized | O(n log k) | O(k) | Use priority queue for maximum tracking |
-| Optimal | O(n) | O(k) | Use deque to maintain decreasing order |
-
-### Time Complexity
-- **Time**: O(n) - Each impression is added and removed at most once
-- **Space**: O(k) - Deque stores at most k elements
-
-### Why This Solution Works
-- **Deque Technique**: Use deque to maintain indices in decreasing order
-- **Monotonic Property**: Keep only impressions that can be maximum in future windows
-- **Window Management**: Remove impressions outside current window
-- **Optimal Approach**: O(n) time complexity is optimal for this problem
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Sliding Window Maximum**
-**Problem**: Find the maximum element in each sliding window of size k.
-
-**Key Differences**: General sliding window maximum problem
-
-**Solution Approach**: Use deque to maintain decreasing order
-
-**Implementation**:
-```python
-def sliding_window_maximum(nums, k):
-    """
-    Find maximum element in each sliding window of size k
-    """
-    if not nums or k == 0:
-        return []
-    
-    from collections import deque
-    dq = deque()  # Store indices
-    result = []
-    
-    for i in range(len(nums)):
         # Remove indices outside current window
         while dq and dq[0] <= i - k:
             dq.popleft()
-        
-        # Remove indices of elements smaller than current
-        while dq and nums[dq[-1]] <= nums[i]:
+
+        # Remove indices of smaller elements (they can never be max)
+        while dq and arr[dq[-1]] <= arr[i]:
             dq.pop()
-        
-        # Add current index
+
         dq.append(i)
-        
-        # Add maximum to result when window is complete
-        if i >= k - 1:
-            result.append(nums[dq[0]])
-    
-    return result
 
-# Example usage
-nums = [1, 3, -1, -3, 5, 3, 6, 7]
-k = 3
-result = sliding_window_maximum(nums, k)
-print(f"Sliding window maximums: {result}")  # Output: [3, 3, 5, 5, 6, 7]
+        # Record maximum when window is complete
+        if i >= k - 1:
+            result.append(arr[dq[0]])
+
+    print(' '.join(map(str, result)))
+
+solve()
 ```
 
-#### **2. Sliding Window Minimum**
-**Problem**: Find the minimum element in each sliding window of size k.
+**C++ (Deque):**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Key Differences**: Minimum instead of maximum
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-**Solution Approach**: Use deque to maintain increasing order
+    int n, k;
+    cin >> n >> k;
 
-**Implementation**:
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    deque<int> dq;  // stores indices
+
+    for (int i = 0; i < n; i++) {
+        // Remove indices outside current window
+        while (!dq.empty() && dq.front() <= i - k) {
+            dq.pop_front();
+        }
+
+        // Remove indices of smaller elements
+        while (!dq.empty() && arr[dq.back()] <= arr[i]) {
+            dq.pop_back();
+        }
+
+        dq.push_back(i);
+
+        // Output maximum when window is complete
+        if (i >= k - 1) {
+            cout << arr[dq.front()];
+            if (i < n - 1) cout << " ";
+        }
+    }
+    cout << "\n";
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Each element enters and leaves deque exactly once |
+| Space | O(k) | Deque stores at most k indices |
+
+---
+
+## Solution 3: Alternative - Multiset (C++)
+
+### Key Insight
+
+> **The Trick:** Use a balanced BST (multiset) that supports O(log k) insertion, deletion, and max queries.
+
+### Code
+
+**C++ (Multiset):**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, k;
+    cin >> n >> k;
+
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    multiset<int> window;
+
+    for (int i = 0; i < n; i++) {
+        window.insert(arr[i]);
+
+        // Remove element leaving the window
+        if (i >= k) {
+            window.erase(window.find(arr[i - k]));
+        }
+
+        // Output maximum when window is complete
+        if (i >= k - 1) {
+            cout << *window.rbegin();
+            if (i < n - 1) cout << " ";
+        }
+    }
+    cout << "\n";
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log k) | Each insert/erase is O(log k) |
+| Space | O(k) | Multiset stores k elements |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Using Value Instead of Index in Deque
+
 ```python
-def sliding_window_minimum(nums, k):
-    """
-    Find minimum element in each sliding window of size k
-    """
-    if not nums or k == 0:
-        return []
-    
-    from collections import deque
-    dq = deque()  # Store indices
-    result = []
-    
-    for i in range(len(nums)):
-        # Remove indices outside current window
-        while dq and dq[0] <= i - k:
-            dq.popleft()
-        
-        # Remove indices of elements larger than current
-        while dq and nums[dq[-1]] >= nums[i]:
-            dq.pop()
-        
-        # Add current index
-        dq.append(i)
-        
-        # Add minimum to result when window is complete
-        if i >= k - 1:
-            result.append(nums[dq[0]])
-    
-    return result
+# WRONG - can't check if element is outside window
+dq.append(arr[i])  # storing value
 
-# Example usage
-nums = [1, 3, -1, -3, 5, 3, 6, 7]
-k = 3
-result = sliding_window_minimum(nums, k)
-print(f"Sliding window minimums: {result}")  # Output: [-1, -3, -3, -3, 3, 3]
+# CORRECT - store index to check window bounds
+dq.append(i)  # storing index
 ```
 
-#### **3. Sliding Window Median**
-**Problem**: Find the median element in each sliding window of size k.
+**Problem:** Without indices, you cannot determine which elements are outside the window.
+**Fix:** Always store indices; access values via arr[index].
 
-**Key Differences**: Median instead of maximum/minimum
+### Mistake 2: Wrong Comparison Direction
 
-**Solution Approach**: Use two heaps to maintain median
-
-**Implementation**:
 ```python
-def sliding_window_median(nums, k):
-    """
-    Find median element in each sliding window of size k
-    """
-    import heapq
-    
-    def get_median(max_heap, min_heap, k):
-        if k % 2 == 1:
-            return -max_heap[0][0]
-        else:
-            return (-max_heap[0][0] + min_heap[0][0]) / 2
-    
-    max_heap = []  # Max heap (use negative values)
-    min_heap = []  # Min heap
-    result = []
-    
-    for i in range(len(nums)):
-        # Add current element
-        if not max_heap or nums[i] <= -max_heap[0][0]:
-            heapq.heappush(max_heap, (-nums[i], i))
-        else:
-            heapq.heappush(min_heap, (nums[i], i))
-        
-        # Balance heaps
-        if len(max_heap) > len(min_heap) + 1:
-            val, idx = heapq.heappop(max_heap)
-            heapq.heappush(min_heap, (-val, idx))
-        elif len(min_heap) > len(max_heap) + 1:
-            val, idx = heapq.heappop(min_heap)
-            heapq.heappush(max_heap, (-val, idx))
-        
-        # Remove elements outside window
-        while max_heap and max_heap[0][1] <= i - k:
-            heapq.heappop(max_heap)
-        while min_heap and min_heap[0][1] <= i - k:
-            heapq.heappop(min_heap)
-        
-        # Add median to result when window is complete
-        if i >= k - 1:
-            result.append(get_median(max_heap, min_heap, k))
-    
-    return result
+# WRONG - maintains increasing order (gives minimum!)
+while dq and arr[dq[-1]] >= arr[i]:
+    dq.pop()
 
-# Example usage
-nums = [1, 3, -1, -3, 5, 3, 6, 7]
-k = 3
-result = sliding_window_median(nums, k)
-print(f"Sliding window medians: {result}")  # Output: [1.0, -1.0, -1.0, 3.0, 5.0, 6.0]
+# CORRECT - maintains decreasing order (gives maximum)
+while dq and arr[dq[-1]] <= arr[i]:
+    dq.pop()
 ```
 
-### Related Problems
+**Problem:** Using >= instead of <= gives you minimum, not maximum.
+**Fix:** For maximum, remove elements smaller than or equal to current.
 
-#### **CSES Problems**
-- [Sliding Window Advertisement](https://cses.fi/problemset/task/2101) - Find maximum impressions in sliding window
-- [Sliding Window Maximum](https://cses.fi/problemset/task/2102) - Find maximum element in sliding window
-- [Sliding Window Minimum](https://cses.fi/problemset/task/2103) - Find minimum element in sliding window
+### Mistake 3: Off-by-One in Window Check
 
-#### **LeetCode Problems**
-- [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) - Classic sliding window maximum
-- [Sliding Window Median](https://leetcode.com/problems/sliding-window-median/) - Median in sliding window
-- [Maximum Sum of 3 Non-Overlapping Subarrays](https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/) - Multiple subarrays
-- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - K distinct characters
+```python
+# WRONG - outputs too early
+if i >= k:
+    result.append(arr[dq[0]])
 
-#### **Problem Categories**
-- **Sliding Window**: Window maximum/minimum, window statistics, window optimization
-- **Deque**: Monotonic data structure, efficient window management
-- **Heap**: Window median, priority queue operations
-- **Array Processing**: Window operations, element tracking, statistics
+# CORRECT - window complete at index k-1
+if i >= k - 1:
+    result.append(arr[dq[0]])
+```
 
-## 🚀 Key Takeaways
+**Problem:** First complete window is at index k-1 (0-indexed).
+**Fix:** Check i >= k-1 for window completion.
 
-- **Deque Technique**: The standard approach for sliding window maximum problems
-- **Monotonic Data Structure**: Use deque to maintain decreasing order
-- **Window Management**: Efficiently remove impressions outside current window
-- **Space Optimization**: Use indices instead of values to save space
-- **Pattern Recognition**: This technique applies to many sliding window maximum problems
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Window equals array | n=3, k=3, [1,2,3] | 3 | Single window |
+| Window size 1 | n=4, k=1, [3,1,4,2] | 3 1 4 2 | Each element is its own max |
+| All same values | n=4, k=2, [5,5,5,5] | 5 5 5 | Deque may hold all indices |
+| Decreasing array | n=4, k=2, [4,3,2,1] | 4 3 2 | Each new max at front |
+| Increasing array | n=4, k=2, [1,2,3,4] | 2 3 4 | Deque always has single element |
+
+---
+
+## When to Use This Pattern
+
+### Use Monotonic Deque When:
+- Finding max/min in sliding window
+- Need O(n) time complexity
+- Window size is fixed
+- Processing elements in order
+
+### Use Multiset When:
+- Need both max AND min in same window
+- More flexible queries (kth element, etc.)
+- O(n log k) is acceptable
+- Simpler to implement correctly
+
+### Pattern Recognition Checklist:
+- [ ] Fixed window size? -> Consider monotonic deque
+- [ ] Need max OR min (not both)? -> Monotonic deque is optimal
+- [ ] Need both max AND min? -> Consider multiset or two deques
+- [ ] Variable window size? -> Consider two-pointer + deque
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Sum of Two Values](https://cses.fi/problemset/task/1640) | Basic sliding window concept |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Sliding Window Minimum](https://cses.fi/problemset/task/1076) | Same technique, flip comparison |
+| [Sliding Window Median](https://cses.fi/problemset/task/1076) | Two heaps or augmented BST |
+| [Playlist](https://cses.fi/problemset/task/1141) | Variable window with distinct elements |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Subarray Sums II](https://cses.fi/problemset/task/1661) | Prefix sums with hash map |
+| [Movie Festival II](https://cses.fi/problemset/task/1632) | Greedy + multiset |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** Monotonic deque maintains candidates for maximum by removing dominated elements
+2. **Time Optimization:** From O(nk) brute force to O(n) by amortized analysis - each element enters/exits once
+3. **Space Trade-off:** O(k) space for deque to achieve O(n) time
+4. **Pattern:** This is the "Monotonic Deque" pattern - essential for sliding window max/min problems
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Implement monotonic deque from scratch without reference
+- [ ] Explain why each element enters and exits deque at most once
+- [ ] Adapt the solution for minimum instead of maximum
+- [ ] Choose between deque (O(n)) and multiset (O(n log k)) based on requirements

@@ -1,662 +1,384 @@
 ---
-layout: simple
-title: "Teleporters Path - Graph Algorithm Problem"
-permalink: /problem_soulutions/graph_algorithms/teleporters_path_analysis
+difficulty: Medium
+tags: [graph, eulerian-path, hierholzer, dfs]
+cses_link: https://cses.fi/problemset/task/1693
 ---
 
-# Teleporters Path - Graph Algorithm Problem
+# Teleporters Path
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of Eulerian path in graph algorithms
-- Apply efficient algorithms for finding Eulerian paths in directed graphs
-- Implement Hierholzer's algorithm for Eulerian path detection
-- Optimize graph algorithms for path finding with teleporters
-- Handle special cases in Eulerian path problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find path using each teleporter exactly once |
+| Algorithm | Hierholzer's Algorithm for Eulerian Path |
+| Time Complexity | O(n + m) |
+| Space Complexity | O(n + m) |
+| Key Insight | DFS with path construction on backtracking |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a directed graph with teleporters, find an Eulerian path that visits every edge exactly once.
+After completing this problem, you should understand:
 
-**Input**: 
-- n: number of vertices
-- m: number of edges (teleporters)
-- edges: array of (u, v) representing directed teleporter connections
+1. **Eulerian Path vs Eulerian Circuit**
+   - Eulerian Path: visits every edge exactly once
+   - Eulerian Circuit: Eulerian path that starts and ends at the same vertex
 
-**Output**: 
-- Eulerian path as a sequence of vertices, or -1 if no path exists
+2. **Existence Conditions for Directed Graphs**
+   - When an Eulerian path exists based on vertex degrees
+
+3. **Hierholzer's Algorithm**
+   - Efficient O(m) algorithm to construct the path
+
+## Problem Statement
+
+A game has `n` levels (numbered 1 to n) and `m` teleporters. Each teleporter is a one-way connection from level `a` to level `b`.
+
+**Task**: Find a route from level 1 to level n that uses each teleporter exactly once.
+
+**Input**:
+- First line: integers n and m
+- Next m lines: teleporter connections (a, b)
+
+**Output**:
+- The path as space-separated level numbers, or "IMPOSSIBLE"
 
 **Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
+- 2 <= n <= 10^5
+- 1 <= m <= 2 * 10^5
 
-**Example**:
+## Eulerian Path Existence Conditions
+
+For a directed graph, an Eulerian path exists if and only if:
+
 ```
-Input:
-n = 4, m = 4
-edges = [(0,1), (1,2), (2,3), (3,0)]
+Condition 1: At most ONE vertex has out_degree - in_degree = 1
+             (This vertex must be the START)
 
-Output:
-[0, 1, 2, 3, 0]
+Condition 2: At most ONE vertex has in_degree - out_degree = 1
+             (This vertex must be the END)
 
-Explanation**: 
-Eulerian path: 0->1->2->3->0
-Visits all edges exactly once
-```
+Condition 3: All OTHER vertices have in_degree = out_degree
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible paths to find Eulerian path
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic graph traversal for each path
-- **Inefficient**: O(m!) time complexity
-
-**Key Insight**: Check every possible path to find one that visits all edges exactly once.
-
-**Algorithm**:
-- Generate all possible paths in the graph
-- Check if any path visits all edges exactly once
-- Return the first valid Eulerian path found
-
-**Visual Example**:
-```
-Graph: 0->1, 1->2, 2->3, 3->0
-
-All possible paths:
-┌─────────────────────────────────────┐
-│ Path 1: 0->1->2->3->0              │
-│ Path 2: 0->1->2->3                 │
-│ Path 3: 1->2->3->0->1              │
-│ Path 4: 2->3->0->1->2              │
-│ Path 5: 3->0->1->2->3              │
-│                                   │
-│ Check each path:                   │
-│ - Path 1: visits all 4 edges ✓    │
-│ - Path 2: visits 3 edges ✗        │
-│ - Path 3: visits all 4 edges ✓    │
-│ - Path 4: visits all 4 edges ✓    │
-│ - Path 5: visits all 4 edges ✓    │
-│                                   │
-│ Valid Eulerian paths: 1, 3, 4, 5  │
-└─────────────────────────────────────┘
+Condition 4: The graph is weakly connected
+             (All vertices with edges are reachable)
 ```
 
-**Implementation**:
+### Special Requirements for This Problem
+
+Since we must start at vertex 1 and end at vertex n:
+
+| Vertex | Required Condition |
+|--------|-------------------|
+| Vertex 1 | out_degree - in_degree = 1 (start vertex) |
+| Vertex n | in_degree - out_degree = 1 (end vertex) |
+| Others | in_degree = out_degree |
+
+If the graph has an Eulerian circuit instead (all vertices balanced), we cannot use it because it would require start = end, but we need start = 1, end = n.
+
+## Hierholzer's Algorithm
+
+The key insight is to build the path during DFS backtracking:
+
+```
+Algorithm Hierholzer(start):
+    1. Initialize empty path
+    2. DFS from start vertex:
+       - While current vertex has unused edges:
+           - Pick any unused edge (u, v)
+           - Mark edge as used
+           - Recursively DFS from v
+       - When no more edges: ADD current vertex to path
+    3. Reverse the path (built backwards during backtracking)
+```
+
+**Why add on backtracking?** A vertex is added to the path only when all its outgoing edges have been used, ensuring we don't get stuck.
+
+## Visual Diagram
+
+```
+Example: n=5, m=6
+Teleporters: 1->2, 2->3, 3->1, 1->4, 4->5, 5->3
+
+Graph:
+          +---+
+          | 1 |----+
+          +---+    |
+         /    \    |
+        v      v   |
+      +---+  +---+ |
+      | 2 |  | 4 | |
+      +---+  +---+ |
+        |      |   |
+        v      v   |
+      +---+  +---+ |
+      | 3 |<-| 5 | |
+      +---+  +---+ |
+        |          |
+        +----------+
+
+Degree Analysis:
+Vertex | in_degree | out_degree | difference
+-------|-----------|------------|------------
+   1   |     1     |     2      |    +1 (START)
+   2   |     1     |     1      |     0
+   3   |     2     |     1      |    -1 (END... but we need n=5!)
+   4   |     1     |     1      |     0
+   5   |     1     |     1      |     0
+
+This example has NO valid path (end should be vertex 5, not 3)
+```
+
+**Valid Example**: n=4, m=4, edges: 1->2, 2->3, 3->4, 1->3
+
+```
+      +---+
+      | 1 |
+      +---+
+      /   \
+     v     v
+   +---+  +---+
+   | 2 |->| 3 |
+   +---+  +---+
+            |
+            v
+          +---+
+          | 4 |
+          +---+
+
+Vertex | in | out | diff
+-------|----|----|-----
+   1   |  0 |  2 | +1 (START - correct!)
+   2   |  1 |  1 |  0
+   3   |  2 |  1 | -1 (... but end should be 4)
+
+Still invalid! Let's use: 1->2, 2->3, 3->4, 2->4
+
+Vertex | in | out | diff
+-------|----|----|-----
+   1   |  0 |  1 | +1 (START)
+   2   |  1 |  2 | +1 (INVALID - two starts!)
+```
+
+**Correct Valid Example**: n=4, m=3, edges: 1->2, 2->3, 3->4
+```
+Path: 1 -> 2 -> 3 -> 4
+```
+
+## Dry Run
+
+```
+Input: n=4, m=3
+Edges: (1,2), (2,3), (3,4)
+
+Step 1: Build adjacency list (using indices for edges)
+adj[1] = [2]
+adj[2] = [3]
+adj[3] = [4]
+adj[4] = []
+
+Step 2: Check degrees
+Vertex 1: out=1, in=0  -> diff = +1 (start candidate)
+Vertex 2: out=1, in=1  -> diff = 0
+Vertex 3: out=1, in=1  -> diff = 0
+Vertex 4: out=0, in=1  -> diff = -1 (end candidate)
+
+Start=1, End=4 matches requirements!
+
+Step 3: Hierholzer's Algorithm (iterative with stack)
+
+Stack: [1]     Path: []
+  Current=1, has edges -> push 2
+Stack: [1,2]   Path: []
+  Current=2, has edges -> push 3
+Stack: [1,2,3] Path: []
+  Current=3, has edges -> push 4
+Stack: [1,2,3,4] Path: []
+  Current=4, no edges -> pop to path
+Stack: [1,2,3]   Path: [4]
+  Current=3, no edges -> pop to path
+Stack: [1,2]     Path: [4,3]
+  Current=2, no edges -> pop to path
+Stack: [1]       Path: [4,3,2]
+  Current=1, no edges -> pop to path
+Stack: []        Path: [4,3,2,1]
+
+Step 4: Reverse path
+Final: [1,2,3,4]
+
+Step 5: Validate
+- Length = 4 = m + 1? 3 + 1 = 4 YES
+- Starts at 1? YES
+- Ends at 4 (=n)? YES
+
+Output: 1 2 3 4
+```
+
+## Python Solution
+
 ```python
-def brute_force_teleporters_path(n, edges):
-    """Find Eulerian path using brute force approach"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    def find_all_paths(start, current_path, used_edges):
-        """Find all possible paths from start"""
-        if len(used_edges) == len(edges):
-            return [current_path]
-        
-        paths = []
-        for i, (u, v) in enumerate(edges):
-            if i not in used_edges and u == start:
-                new_path = current_path + [v]
-                new_used = used_edges | {i}
-                paths.extend(find_all_paths(v, new_path, new_used))
-        
-        return paths
-    
-    # Try starting from each vertex
-    for start in range(n):
-        paths = find_all_paths(start, [start], set())
-        if paths:
-            return paths[0]
-    
-    return -1
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(300000)
 
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-result = brute_force_teleporters_path(n, edges)
-print(f"Brute force Eulerian path: {result}")
-```
+def solve():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n = int(input_data[idx]); idx += 1
+    m = int(input_data[idx]); idx += 1
 
-**Time Complexity**: O(m!)
-**Space Complexity**: O(m)
+    adj = defaultdict(list)
+    in_deg = [0] * (n + 1)
+    out_deg = [0] * (n + 1)
 
-**Why it's inefficient**: O(m!) time complexity for checking all possible paths.
+    for _ in range(m):
+        a = int(input_data[idx]); idx += 1
+        b = int(input_data[idx]); idx += 1
+        adj[a].append(b)
+        out_deg[a] += 1
+        in_deg[b] += 1
 
----
+    # Check Eulerian path conditions for this problem
+    # Vertex 1 must be start: out_deg[1] - in_deg[1] = 1
+    # Vertex n must be end: in_deg[n] - out_deg[n] = 1
+    # All others: in_deg = out_deg
 
-### Approach 2: Hierholzer's Algorithm
+    if out_deg[1] - in_deg[1] != 1:
+        print("IMPOSSIBLE")
+        return
 
-**Key Insights from Hierholzer's Algorithm**:
-- **Hierholzer's Algorithm**: Use Hierholzer's algorithm for efficient Eulerian path detection
-- **Efficient Implementation**: O(m) time complexity
-- **Stack-based**: Use stack to build the path incrementally
-- **Optimization**: Much more efficient than brute force
+    if in_deg[n] - out_deg[n] != 1:
+        print("IMPOSSIBLE")
+        return
 
-**Key Insight**: Use Hierholzer's algorithm with stack for efficient Eulerian path construction.
+    for v in range(2, n):
+        if in_deg[v] != out_deg[v]:
+            print("IMPOSSIBLE")
+            return
 
-**Algorithm**:
-- Check if Eulerian path exists (degree conditions)
-- Start from appropriate vertex
-- Use stack to build path incrementally
-- Merge cycles when stuck
-
-**Visual Example**:
-```
-Hierholzer's algorithm:
-
-Graph: 0->1, 1->2, 2->3, 3->0
-Degree check: in_degree = [1,1,1,1], out_degree = [1,1,1,1]
-
-Step 1: Start from vertex 0
-┌─────────────────────────────────────┐
-│ Stack: [0]                         │
-│ Current: 0                         │
-│                                   │
-│ Step 2: Move 0->1                 │
-│ Stack: [0, 1]                     │
-│ Current: 1                         │
-│                                   │
-│ Step 3: Move 1->2                 │
-│ Stack: [0, 1, 2]                  │
-│ Current: 2                         │
-│                                   │
-│ Step 4: Move 2->3                 │
-│ Stack: [0, 1, 2, 3]               │
-│ Current: 3                         │
-│                                   │
-│ Step 5: Move 3->0                 │
-│ Stack: [0, 1, 2, 3, 0]            │
-│ Current: 0                         │
-│                                   │
-│ Result: [0, 1, 2, 3, 0]          │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def hierholzer_teleporters_path(n, edges):
-    """Find Eulerian path using Hierholzer's algorithm"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Calculate in-degree and out-degree
-    in_degree = [0] * n
-    out_degree = [0] * n
-    
-    for u, v in edges:
-        out_degree[u] += 1
-        in_degree[v] += 1
-    
-    # Check if Eulerian path exists
-    start_vertices = []
-    end_vertices = []
-    
-    for i in range(n):
-        diff = out_degree[i] - in_degree[i]
-        if diff == 1:
-            start_vertices.append(i)
-        elif diff == -1:
-            end_vertices.append(i)
-        elif diff != 0:
-            return -1  # No Eulerian path exists
-    
-    # Determine start vertex
-    if len(start_vertices) == 1 and len(end_vertices) == 1:
-        start = start_vertices[0]
-    elif len(start_vertices) == 0 and len(end_vertices) == 0:
-        # Eulerian cycle - can start from any vertex with outgoing edges
-        start = 0
-        while start < n and out_degree[start] == 0:
-            start += 1
-        if start == n:
-            return -1
-    else:
-        return -1  # No Eulerian path exists
-    
-    # Hierholzer's algorithm
-    stack = [start]
+    # Hierholzer's algorithm (iterative to avoid stack overflow)
     path = []
-    
+    stack = [1]
+
     while stack:
-        current = stack[-1]
-        if adj[current]:
-            # Move to next vertex
-            next_vertex = adj[current].pop()
-            stack.append(next_vertex)
+        u = stack[-1]
+        if adj[u]:
+            v = adj[u].pop()
+            stack.append(v)
         else:
-            # No more outgoing edges, add to path
             path.append(stack.pop())
-    
-    # Reverse path to get correct order
+
     path.reverse()
-    
-    return path
 
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-result = hierholzer_teleporters_path(n, edges)
-print(f"Hierholzer's Eulerian path: {result}")
+    # Validate: path length should be m+1 and end at n
+    if len(path) != m + 1 or path[-1] != n:
+        print("IMPOSSIBLE")
+        return
+
+    print(' '.join(map(str, path)))
+
+solve()
 ```
 
-**Time Complexity**: O(m)
-**Space Complexity**: O(n + m)
+## C++ Solution
 
-**Why it's better**: Uses Hierholzer's algorithm for O(m) time complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+    int n, m;
+    cin >> n >> m;
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for Eulerian path detection
-- **Efficient Implementation**: O(m) time complexity
-- **Space Efficiency**: O(n + m) space complexity
-- **Optimal Complexity**: Best approach for Eulerian path detection
+    vector<vector<int>> adj(n + 1);
+    vector<int> in_deg(n + 1, 0), out_deg(n + 1, 0);
 
-**Key Insight**: Use advanced data structures for optimal Eulerian path detection.
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        out_deg[a]++;
+        in_deg[b]++;
+    }
 
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient Hierholzer's algorithm
-- Handle special cases optimally
-- Return Eulerian path
+    // Check conditions: vertex 1 is start, vertex n is end
+    if (out_deg[1] - in_deg[1] != 1) {
+        cout << "IMPOSSIBLE\n";
+        return 0;
+    }
 
-**Visual Example**:
-```
-Advanced data structure approach:
+    if (in_deg[n] - out_deg[n] != 1) {
+        cout << "IMPOSSIBLE\n";
+        return 0;
+    }
 
-For graph: 0->1, 1->2, 2->3, 3->0
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Graph structure: for efficient    │
-│   storage and traversal             │
-│ - Stack structure: for optimization  │
-│ - Path cache: for optimization      │
-│                                   │
-│ Eulerian path calculation:         │
-│ - Use graph structure for efficient │
-│   storage and traversal             │
-│ - Use stack structure for          │
-│   optimization                      │
-│ - Use path cache for optimization  │
-│                                   │
-│ Result: [0, 1, 2, 3, 0]          │
-└─────────────────────────────────────┘
-```
+    for (int v = 2; v < n; v++) {
+        if (in_deg[v] != out_deg[v]) {
+            cout << "IMPOSSIBLE\n";
+            return 0;
+        }
+    }
 
-**Implementation**:
-```python
-def advanced_data_structure_teleporters_path(n, edges):
-    """Find Eulerian path using advanced data structure approach"""
-    # Use advanced data structures for graph storage
-    # Build advanced adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Advanced data structures for degree calculation
-    in_degree = [0] * n
-    out_degree = [0] * n
-    
-    for u, v in edges:
-        out_degree[u] += 1
-        in_degree[v] += 1
-    
-    # Advanced Eulerian path existence check
-    start_vertices = []
-    end_vertices = []
-    
-    for i in range(n):
-        diff = out_degree[i] - in_degree[i]
-        if diff == 1:
-            start_vertices.append(i)
-        elif diff == -1:
-            end_vertices.append(i)
-        elif diff != 0:
-            return -1  # No Eulerian path exists
-    
-    # Advanced start vertex determination
-    if len(start_vertices) == 1 and len(end_vertices) == 1:
-        start = start_vertices[0]
-    elif len(start_vertices) == 0 and len(end_vertices) == 0:
-        # Eulerian cycle - can start from any vertex with outgoing edges
-        start = 0
-        while start < n and out_degree[start] == 0:
-            start += 1
-        if start == n:
-            return -1
-    else:
-        return -1  # No Eulerian path exists
-    
-    # Advanced Hierholzer's algorithm
-    stack = [start]
-    path = []
-    
-    while stack:
-        current = stack[-1]
-        if adj[current]:
-            # Move to next vertex using advanced data structures
-            next_vertex = adj[current].pop()
-            stack.append(next_vertex)
-        else:
-            # No more outgoing edges, add to path using advanced data structures
-            path.append(stack.pop())
-    
-    # Advanced path reversal
-    path.reverse()
-    
-    return path
+    // Hierholzer's algorithm
+    vector<int> path;
+    stack<int> stk;
+    stk.push(1);
 
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-result = advanced_data_structure_teleporters_path(n, edges)
-print(f"Advanced data structure Eulerian path: {result}")
+    while (!stk.empty()) {
+        int u = stk.top();
+        if (!adj[u].empty()) {
+            int v = adj[u].back();
+            adj[u].pop_back();
+            stk.push(v);
+        } else {
+            path.push_back(u);
+            stk.pop();
+        }
+    }
+
+    reverse(path.begin(), path.end());
+
+    // Validate path
+    if ((int)path.size() != m + 1 || path.back() != n) {
+        cout << "IMPOSSIBLE\n";
+        return 0;
+    }
+
+    for (int i = 0; i < (int)path.size(); i++) {
+        cout << path[i] << (i < (int)path.size() - 1 ? " " : "\n");
+    }
+
+    return 0;
+}
 ```
 
-**Time Complexity**: O(m)
-**Space Complexity**: O(n + m)
+## Complexity Analysis
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+| Operation | Time | Space |
+|-----------|------|-------|
+| Build graph | O(m) | O(n + m) |
+| Degree check | O(n) | O(n) |
+| Hierholzer DFS | O(m) | O(m) stack |
+| **Total** | **O(n + m)** | **O(n + m)** |
 
-## 🔧 Implementation Details
+## Common Mistakes
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(m!) | O(m) | Try all possible paths |
-| Hierholzer's Algorithm | O(m) | O(n + m) | Use stack to build path incrementally |
-| Advanced Data Structure | O(m) | O(n + m) | Use advanced data structures |
+| Mistake | Why It Fails | Fix |
+|---------|--------------|-----|
+| Wrong degree check | General Eulerian path allows any start/end | Must verify vertex 1 is start, vertex n is end |
+| Not reversing path | Hierholzer builds path backwards | Always reverse at the end |
+| Using recursion | Stack overflow for large m | Use iterative version with explicit stack |
+| Missing connectivity check | Disconnected components | Validate path length = m + 1 |
+| Checking all vertices equally | Vertex 1 and n have special roles | Separate checks for 1, n, and others |
 
-### Time Complexity
-- **Time**: O(m) - Use Hierholzer's algorithm for efficient Eulerian path detection
-- **Space**: O(n + m) - Store graph and auxiliary data structures
+## Related Problems
 
-### Why This Solution Works
-- **Hierholzer's Algorithm**: Use stack to build Eulerian path incrementally
-- **Degree Conditions**: Check if Eulerian path exists using degree conditions
-- **Cycle Merging**: Merge cycles when stuck to continue path construction
-- **Optimal Algorithms**: Use optimal algorithms for Eulerian path detection
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Teleporters Path with Constraints**
-**Problem**: Find Eulerian path with specific constraints.
-
-**Key Differences**: Apply constraints to Eulerian path detection
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_teleporters_path(n, edges, constraints):
-    """Find Eulerian path with constraints"""
-    # Build adjacency list with constraints
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        if constraints(u, v):
-            adj[u].append(v)
-    
-    # Calculate in-degree and out-degree with constraints
-    in_degree = [0] * n
-    out_degree = [0] * n
-    
-    for u, v in edges:
-        if constraints(u, v):
-            out_degree[u] += 1
-            in_degree[v] += 1
-    
-    # Check if Eulerian path exists with constraints
-    start_vertices = []
-    end_vertices = []
-    
-    for i in range(n):
-        diff = out_degree[i] - in_degree[i]
-        if diff == 1:
-            start_vertices.append(i)
-        elif diff == -1:
-            end_vertices.append(i)
-        elif diff != 0:
-            return -1  # No Eulerian path exists
-    
-    # Determine start vertex with constraints
-    if len(start_vertices) == 1 and len(end_vertices) == 1:
-        start = start_vertices[0]
-    elif len(start_vertices) == 0 and len(end_vertices) == 0:
-        # Eulerian cycle - can start from any vertex with outgoing edges
-        start = 0
-        while start < n and out_degree[start] == 0:
-            start += 1
-        if start == n:
-            return -1
-    else:
-        return -1  # No Eulerian path exists
-    
-    # Hierholzer's algorithm with constraints
-    stack = [start]
-    path = []
-    
-    while stack:
-        current = stack[-1]
-        if adj[current]:
-            # Move to next vertex with constraints
-            next_vertex = adj[current].pop()
-            if constraints(current, next_vertex):
-                stack.append(next_vertex)
-        else:
-            # No more outgoing edges, add to path
-            path.append(stack.pop())
-    
-    # Reverse path to get correct order
-    path.reverse()
-    
-    return path
-
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-constraints = lambda u, v: u < v or v == 0  # Special constraint
-result = constrained_teleporters_path(n, edges, constraints)
-print(f"Constrained Eulerian path: {result}")
-```
-
-#### **2. Teleporters Path with Different Metrics**
-**Problem**: Find Eulerian path with different distance metrics.
-
-**Key Differences**: Different distance calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_teleporters_path(n, edges, weight_function):
-    """Find Eulerian path with different weight metrics"""
-    # Build adjacency list with modified weights
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        weight = weight_function(u, v)
-        adj[u].append((v, weight))
-    
-    # Calculate in-degree and out-degree with modified weights
-    in_degree = [0] * n
-    out_degree = [0] * n
-    
-    for u, v in edges:
-        weight = weight_function(u, v)
-        out_degree[u] += 1
-        in_degree[v] += 1
-    
-    # Check if Eulerian path exists with modified weights
-    start_vertices = []
-    end_vertices = []
-    
-    for i in range(n):
-        diff = out_degree[i] - in_degree[i]
-        if diff == 1:
-            start_vertices.append(i)
-        elif diff == -1:
-            end_vertices.append(i)
-        elif diff != 0:
-            return -1  # No Eulerian path exists
-    
-    # Determine start vertex with modified weights
-    if len(start_vertices) == 1 and len(end_vertices) == 1:
-        start = start_vertices[0]
-    elif len(start_vertices) == 0 and len(end_vertices) == 0:
-        # Eulerian cycle - can start from any vertex with outgoing edges
-        start = 0
-        while start < n and out_degree[start] == 0:
-            start += 1
-        if start == n:
-            return -1
-    else:
-        return -1  # No Eulerian path exists
-    
-    # Hierholzer's algorithm with modified weights
-    stack = [start]
-    path = []
-    
-    while stack:
-        current = stack[-1]
-        if adj[current]:
-            # Move to next vertex with modified weights
-            next_vertex, weight = adj[current].pop()
-            stack.append(next_vertex)
-        else:
-            # No more outgoing edges, add to path
-            path.append(stack.pop())
-    
-    # Reverse path to get correct order
-    path.reverse()
-    
-    return path
-
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-weight_function = lambda u, v: abs(u - v)  # Distance-based weight
-result = weighted_teleporters_path(n, edges, weight_function)
-print(f"Weighted Eulerian path: {result}")
-```
-
-#### **3. Teleporters Path with Multiple Dimensions**
-**Problem**: Find Eulerian path in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_teleporters_path(n, edges, dimensions):
-    """Find Eulerian path in multiple dimensions"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Calculate in-degree and out-degree
-    in_degree = [0] * n
-    out_degree = [0] * n
-    
-    for u, v in edges:
-        out_degree[u] += 1
-        in_degree[v] += 1
-    
-    # Check if Eulerian path exists
-    start_vertices = []
-    end_vertices = []
-    
-    for i in range(n):
-        diff = out_degree[i] - in_degree[i]
-        if diff == 1:
-            start_vertices.append(i)
-        elif diff == -1:
-            end_vertices.append(i)
-        elif diff != 0:
-            return -1  # No Eulerian path exists
-    
-    # Determine start vertex
-    if len(start_vertices) == 1 and len(end_vertices) == 1:
-        start = start_vertices[0]
-    elif len(start_vertices) == 0 and len(end_vertices) == 0:
-        # Eulerian cycle - can start from any vertex with outgoing edges
-        start = 0
-        while start < n and out_degree[start] == 0:
-            start += 1
-        if start == n:
-            return -1
-    else:
-        return -1  # No Eulerian path exists
-    
-    # Hierholzer's algorithm
-    stack = [start]
-    path = []
-    
-    while stack:
-        current = stack[-1]
-        if adj[current]:
-            # Move to next vertex
-            next_vertex = adj[current].pop()
-            stack.append(next_vertex)
-        else:
-            # No more outgoing edges, add to path
-            path.append(stack.pop())
-    
-    # Reverse path to get correct order
-    path.reverse()
-    
-    return path
-
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-dimensions = 1
-result = multi_dimensional_teleporters_path(n, edges, dimensions)
-print(f"Multi-dimensional Eulerian path: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Mail Delivery](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Round Trip](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Reconstruct Itinerary](https://leetcode.com/problems/reconstruct-itinerary/) - Graph
-- [Valid Arrangement of Pairs](https://leetcode.com/problems/valid-arrangement-of-pairs/) - Graph
-- [Cracking the Safe](https://leetcode.com/problems/cracking-the-safe/) - Graph
-
-#### **Problem Categories**
-- **Graph Algorithms**: Eulerian path, Hierholzer's algorithm
-- **Path Finding**: Eulerian paths, Hamiltonian paths
-- **Graph Traversal**: DFS, stack operations
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Eulerian Path](https://cp-algorithms.com/graph/euler_path.html) - Eulerian path algorithms
-- [Hierholzer's Algorithm](https://cp-algorithms.com/graph/euler_path.html#hierholzers-algorithm) - Hierholzer's algorithm
-
-### **Practice Problems**
-- [CSES Mail Delivery](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Round Trip](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Eulerian Path](https://en.wikipedia.org/wiki/Eulerian_path) - Wikipedia article
-- [Hierholzer's Algorithm](https://en.wikipedia.org/wiki/Hierholzer%27s_algorithm) - Wikipedia article
+| Problem | Type | Key Difference |
+|---------|------|----------------|
+| [Mail Delivery](https://cses.fi/problemset/task/1691) | Eulerian Circuit | Undirected graph, start = end |
+| [De Bruijn Sequence](https://cses.fi/problemset/task/1692) | Eulerian Path | Implicit graph from string patterns |
+| LeetCode 332: Reconstruct Itinerary | Eulerian Path | Lexicographically smallest path |
+| LeetCode 2097: Valid Arrangement of Pairs | Eulerian Path | Generic start/end |

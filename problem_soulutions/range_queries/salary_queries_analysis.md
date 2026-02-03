@@ -1,471 +1,589 @@
 ---
 layout: simple
-title: "Salary Queries - Range Counting"
+title: "Salary Queries - Dynamic Range Counting with Coordinate Compression"
 permalink: /problem_soulutions/range_queries/salary_queries_analysis
+difficulty: Hard
+tags: [BIT, Fenwick Tree, Coordinate Compression, Range Queries, Dynamic Updates]
 ---
 
-# Salary Queries - Range Counting
+# Salary Queries
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement range counting for salary query problems
-- Apply range counting to efficiently answer salary queries
-- Optimize salary query calculations using range counting
-- Handle edge cases in salary query problems
-- Recognize when to use range counting vs other approaches
+| Attribute | Value |
+|-----------|-------|
+| **Source** | [CSES Problem Set - Salary Queries](https://cses.fi/problemset/task/1144) |
+| **Difficulty** | Hard |
+| **Category** | Range Queries |
+| **Time Limit** | 1.0 seconds |
+| **Key Technique** | Coordinate Compression + Binary Indexed Tree (BIT) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an array of salaries and multiple queries, each query asks for the number of employees with salary in range [a, b]. The array is static (no updates).
+After solving this problem, you will be able to:
+- [ ] Understand when and how to apply coordinate compression to handle large value ranges
+- [ ] Implement a Binary Indexed Tree (BIT/Fenwick Tree) for dynamic frequency counting
+- [ ] Combine coordinate compression with BIT for efficient range counting with updates
+- [ ] Handle point updates and range queries in O(log n) time
 
-**Input**: 
-- First line: n (number of employees) and q (number of queries)
-- Second line: n integers representing salaries
-- Next q lines: a b (salary range boundaries)
+---
 
-**Output**: 
-- q lines: number of employees with salary in range [a, b] for each query
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10⁵
-- 1 ≤ q ≤ 2×10⁵
-- 1 ≤ salary[i] ≤ 10⁹
-- 1 ≤ a ≤ b ≤ 10⁹
+**Problem:** You have n employees with given salaries. Process q queries where each query either:
+1. Updates an employee's salary to a new value
+2. Counts how many employees have salaries in the range [a, b]
 
-**Example**:
+**Input:**
+- Line 1: n q (number of employees and queries)
+- Line 2: n integers p1, p2, ..., pn (initial salaries)
+- Next q lines: Either "! k x" (update salary of employee k to x) or "? a b" (count salaries in [a, b])
+
+**Output:**
+- For each "? a b" query, print the count of employees with salary in range [a, b]
+
+**Constraints:**
+- 1 <= n, q <= 2 x 10^5
+- 1 <= pi, x <= 10^9
+- 1 <= k <= n
+- 1 <= a <= b <= 10^9
+
+### Example
+
 ```
 Input:
 5 3
-1000 2000 1500 3000 2500
-1000 2000
-1500 2500
-2000 3000
+3 6 4 4 1
+? 1 4
+! 3 5
+? 1 4
 
 Output:
+4
 3
-3
-2
-
-Explanation**: 
-Query 1: employees with salary [1000,2000] = 3 (1000, 2000, 1500)
-Query 2: employees with salary [1500,2500] = 3 (1500, 2000, 2500)
-Query 3: employees with salary [2000,3000] = 2 (2000, 3000)
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Initial salaries: [3, 6, 4, 4, 1]
+- Query 1 "? 1 4": Salaries in [1,4] are {3, 4, 4, 1} = 4 employees
+- Update "! 3 5": Change employee 3's salary from 4 to 5. Now: [3, 6, 5, 4, 1]
+- Query 2 "? 1 4": Salaries in [1,4] are {3, 4, 1} = 3 employees
 
-### Approach 1: Brute Force
-**Time Complexity**: O(q×n)  
-**Space Complexity**: O(1)
+---
 
-**Algorithm**:
-1. For each query, iterate through all salaries
-2. Count salaries in range [a, b]
-3. Return the count
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### Pattern Recognition
+
+> **Key Question:** How do we efficiently count elements in a range when values can be updated?
+
+The challenge is twofold: (1) salaries can be up to 10^9, making direct array indexing impossible, and (2) we need dynamic updates. This screams for **coordinate compression** to reduce the value space, combined with a **Binary Indexed Tree** for efficient updates and queries.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** Count of salaries in range [a, b] after each query
+2. **What information do we have?** Initial salaries and a sequence of updates/queries
+3. **What's the relationship between input and output?** Each range query returns count of salaries that fall within the bounds
+
+### The Two Key Insights
+
+**Insight 1: Coordinate Compression**
+- Salaries can be 1 to 10^9, but we only have n + q unique values at most
+- Compress all possible salary values to range [1, 2*(n+q)]
+- This allows us to use array-based data structures
+
+**Insight 2: BIT for Frequency Counting**
+- Maintain frequency of each compressed salary value in a BIT
+- Query count in [a, b] = prefix_sum(b) - prefix_sum(a-1)
+- Update: decrease count at old salary, increase count at new salary
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+For each query, scan through all salaries and count those in range.
+
+### Code
+
 ```python
-def brute_force_salary_queries(salaries, queries):
-    n = len(salaries)
+def solve_brute_force():
+    import sys
+    input = sys.stdin.readline
+
+    n, q = map(int, input().split())
+    salaries = list(map(int, input().split()))
+
     results = []
-    
-    for a, b in queries:
-        # Count salaries in range [a, b]
-        count = 0
-        for salary in salaries:
-            if a <= salary <= b:
-                count += 1
-        
-        results.append(count)
-    
-    return results
+    for _ in range(q):
+        query = input().split()
+        if query[0] == '?':
+            a, b = int(query[1]), int(query[2])
+            count = sum(1 for s in salaries if a <= s <= b)
+            results.append(count)
+        else:  # '!'
+            k, x = int(query[1]), int(query[2])
+            salaries[k - 1] = x  # 1-indexed to 0-indexed
+
+    print('\n'.join(map(str, results)))
 ```
 
-### Approach 2: Optimized with Sorting
-**Time Complexity**: O(n log n + q log n)  
-**Space Complexity**: O(n)
+### Complexity
 
-**Algorithm**:
-1. Sort the salaries array
-2. For each query, use binary search to find range boundaries
-3. Count salaries in range [a, b]
-4. Return the count
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(q * n) | Each query scans all n salaries |
+| Space | O(n) | Store salaries array |
 
-**Implementation**:
-```python
-def optimized_salary_queries(salaries, queries):
-    n = len(salaries)
-    sorted_salaries = sorted(salaries)
-    results = []
-    
-    for a, b in queries:
-        # Find first salary >= a
-        left = 0
-        right = n
-        while left < right:
-            mid = (left + right) // 2
-            if sorted_salaries[mid] < a:
-                left = mid + 1
-            else:
-                right = mid
-        
-        # Find first salary > b
-        left2 = 0
-        right2 = n
-        while left2 < right2:
-            mid = (left2 + right2) // 2
-            if sorted_salaries[mid] <= b:
-                left2 = mid + 1
-            else:
-                right2 = mid
-        
-        # Count salaries in range [a, b]
-        count = left2 - left
-        results.append(count)
-    
-    return results
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed because we examine every salary for each query. However, with n, q up to 2x10^5, we get 4x10^10 operations - far too slow.
+
+---
+
+## Solution 2: Optimal Solution (Coordinate Compression + BIT)
+
+### Key Insight
+
+> **The Trick:** Compress all unique salary values to a contiguous range, then use a BIT to track frequency of each compressed value. Range count becomes a difference of two prefix sums.
+
+### Data Structure: Binary Indexed Tree (BIT)
+
+| Operation | Complexity | Description |
+|-----------|------------|-------------|
+| `update(i, delta)` | O(log n) | Add delta to position i |
+| `query(i)` | O(log n) | Get prefix sum [1, i] |
+| `range_query(l, r)` | O(log n) | Get sum in range [l, r] |
+
+### Algorithm
+
+1. **Collect all values**: Initial salaries, update values, and query boundaries
+2. **Coordinate compress**: Map all values to [1, total_unique_values]
+3. **Initialize BIT**: Add 1 at each initial salary's compressed position
+4. **Process queries**:
+   - For "? a b": Return BIT.query(compress(b)) - BIT.query(compress(a-1))
+   - For "! k x": BIT.update(old_pos, -1); BIT.update(new_pos, +1)
+
+### Coordinate Compression Details
+
+```
+Original values:  [3, 6, 4, 4, 1, 5, 1, 4]  (salaries + query bounds)
+Sorted unique:    [1, 3, 4, 5, 6]
+Compressed:       {1:1, 3:2, 4:3, 5:4, 6:5}
+
+When querying [1, 4]:
+  compress(4) = 3, compress(1-1) = compress(0) = 0
+  Answer = BIT.query(3) - BIT.query(0)
 ```
 
-### Approach 3: Optimal with Sorting
-**Time Complexity**: O(n log n + q log n)  
-**Space Complexity**: O(n)
+### Dry Run Example
 
-**Algorithm**:
-1. Sort the salaries array
-2. For each query, use binary search to find range boundaries
-3. Count salaries in range [a, b]
-4. Return the count
+Let's trace through with input: n=5, q=3, salaries=[3,6,4,4,1]
 
-**Implementation**:
-```python
-def optimal_salary_queries(salaries, queries):
-    n = len(salaries)
-    sorted_salaries = sorted(salaries)
-    results = []
-    
-    for a, b in queries:
-        # Find first salary >= a
-        left = 0
-        right = n
-        while left < right:
-            mid = (left + right) // 2
-            if sorted_salaries[mid] < a:
-                left = mid + 1
-            else:
-                right = mid
-        
-        # Find first salary > b
-        left2 = 0
-        right2 = n
-        while left2 < right2:
-            mid = (left2 + right2) // 2
-            if sorted_salaries[mid] <= b:
-                left2 = mid + 1
-            else:
-                right2 = mid
-        
-        # Count salaries in range [a, b]
-        count = left2 - left
-        results.append(count)
-    
-    return results
+```
+Step 1: Collect all values
+  Initial salaries: [3, 6, 4, 4, 1]
+  Query 1 bounds: [1, 4]
+  Update value: [5]
+  Query 2 bounds: [1, 4]
+  All values: [1, 3, 4, 5, 6]
+
+Step 2: Coordinate compression
+  Sorted unique: [1, 3, 4, 5, 6]
+  Mapping: {1->1, 3->2, 4->3, 5->4, 6->5}
+
+Step 3: Initialize BIT
+  BIT after adding salaries [3,6,4,4,1]:
+  Position (compressed): 1  2  3  4  5
+  Frequency:             1  1  2  0  1
+  (salary 1 appears 1x, salary 3 appears 1x, salary 4 appears 2x, salary 6 appears 1x)
+
+Step 4: Process queries
+
+Query "? 1 4":
+  compress(4) = 3, compress(0) = 0
+  count = BIT.prefix(3) - BIT.prefix(0)
+        = (1+1+2) - 0 = 4
+
+Query "! 3 5":
+  Employee 3's old salary = 4, new salary = 5
+  compress(4) = 3, compress(5) = 4
+  BIT.update(3, -1)  -> frequency at 3 becomes 1
+  BIT.update(4, +1)  -> frequency at 4 becomes 1
+  Current state: salaries = [3, 6, 5, 4, 1]
+
+Query "? 1 4":
+  compress(4) = 3, compress(0) = 0
+  count = BIT.prefix(3) - BIT.prefix(0)
+        = (1+1+1) - 0 = 3
+
+Output: 4, 3
 ```
 
-## 🔧 Implementation Details
+### Visual Diagram
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(q×n) | O(1) | Count salaries for each query |
-| Optimized | O(n log n + q log n) | O(n) | Use sorting and binary search |
-| Optimal | O(n log n + q log n) | O(n) | Use sorting and binary search |
+```
+Coordinate Compression:
 
-### Time Complexity
-- **Time**: O(n log n + q log n) - O(n log n) sorting + O(log n) per query
-- **Space**: O(n) - Sorted array
+Value Space:     1  2  3  4  5  6  ...  10^9
+                 |     |  |  |  |
+                 v     v  v  v  v
+Compressed:      1     2  3  4  5    (only 5 unique values)
 
-### Why This Solution Works
-- **Sorting Property**: Sort salaries to enable binary search
-- **Binary Search**: Find range boundaries in O(log n) time
-- **Efficient Counting**: Count salaries in range in O(1) time
-- **Optimal Approach**: O(n log n + q log n) time complexity is optimal for this problem
 
-## 🚀 Problem Variations
+BIT Structure (after initialization):
+Index:           1     2     3     4     5
+Frequency:       1     1     2     0     1
+                 ^     ^     ^           ^
+                 |     |     |           |
+              sal=1  sal=3  sal=4     sal=6
 
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Salary Queries with Dynamic Updates
-**Problem**: Handle dynamic updates to salaries and maintain range count queries.
-
-**Link**: [CSES Problem Set - Salary Queries with Updates](https://cses.fi/problemset/task/salary_queries_updates)
-
-```python
-class SalaryQueriesWithUpdates:
-    def __init__(self, salaries):
-        self.salaries = salaries[:]
-        self.n = len(salaries)
-        self.sorted_salaries = sorted(salaries)
-    
-    def update_salary(self, index, new_salary):
-        """Update salary at index to new_salary"""
-        old_salary = self.salaries[index]
-        self.salaries[index] = new_salary
-        
-        # Update sorted array
-        self.sorted_salaries.remove(old_salary)
-        self._insert_sorted(new_salary)
-    
-    def _insert_sorted(self, salary):
-        """Insert salary into sorted array"""
-        left, right = 0, len(self.sorted_salaries)
-        while left < right:
-            mid = (left + right) // 2
-            if self.sorted_salaries[mid] < salary:
-                left = mid + 1
-            else:
-                right = mid
-        self.sorted_salaries.insert(left, salary)
-    
-    def count_in_range(self, min_salary, max_salary):
-        """Count salaries in range [min_salary, max_salary]"""
-        left_idx = self._binary_search_left(min_salary)
-        right_idx = self._binary_search_right(max_salary)
-        return right_idx - left_idx
-    
-    def _binary_search_left(self, target):
-        """Find leftmost position where salary >= target"""
-        left, right = 0, len(self.sorted_salaries)
-        while left < right:
-            mid = (left + right) // 2
-            if self.sorted_salaries[mid] < target:
-                left = mid + 1
-            else:
-                right = mid
-        return left
-    
-    def _binary_search_right(self, target):
-        """Find rightmost position where salary <= target"""
-        left, right = 0, len(self.sorted_salaries)
-        while left < right:
-            mid = (left + right) // 2
-            if self.sorted_salaries[mid] <= target:
-                left = mid + 1
-            else:
-                right = mid
-        return left
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for min_sal, max_sal in queries:
-            results.append(self.count_in_range(min_sal, max_sal))
-        return results
+Range Query [1,4]:
+  = prefix_sum(compressed(4)) - prefix_sum(compressed(0))
+  = prefix_sum(3) - prefix_sum(0)
+  = 4 - 0 = 4 employees
 ```
 
-### Variation 2: Salary Queries with Different Operations
-**Problem**: Handle different types of operations (count, sum, average, median) on salary ranges.
+### Code
 
-**Link**: [CSES Problem Set - Salary Queries Different Operations](https://cses.fi/problemset/task/salary_queries_operations)
+**Python Solution:**
 
 ```python
-class SalaryQueriesDifferentOps:
-    def __init__(self, salaries):
-        self.salaries = salaries[:]
-        self.n = len(salaries)
-        self.sorted_salaries = sorted(salaries)
-        self.prefix_sums = self._compute_prefix_sums()
-    
-    def _compute_prefix_sums(self):
-        """Compute prefix sums of sorted salaries"""
-        prefix = [0] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = prefix[i] + self.sorted_salaries[i]
-        return prefix
-    
-    def count_in_range(self, min_salary, max_salary):
-        """Count salaries in range [min_salary, max_salary]"""
-        left_idx = self._binary_search_left(min_salary)
-        right_idx = self._binary_search_right(max_salary)
-        return right_idx - left_idx
-    
-    def sum_in_range(self, min_salary, max_salary):
-        """Sum of salaries in range [min_salary, max_salary]"""
-        left_idx = self._binary_search_left(min_salary)
-        right_idx = self._binary_search_right(max_salary)
-        return self.prefix_sums[right_idx] - self.prefix_sums[left_idx]
-    
-    def average_in_range(self, min_salary, max_salary):
-        """Average salary in range [min_salary, max_salary]"""
-        count = self.count_in_range(min_salary, max_salary)
-        if count == 0:
-            return 0
-        total = self.sum_in_range(min_salary, max_salary)
-        return total / count
-    
-    def median_in_range(self, min_salary, max_salary):
-        """Median salary in range [min_salary, max_salary]"""
-        left_idx = self._binary_search_left(min_salary)
-        right_idx = self._binary_search_right(max_salary)
-        count = right_idx - left_idx
-        
-        if count == 0:
-            return None
-        
-        if count % 2 == 1:
-            return self.sorted_salaries[left_idx + count // 2]
+import sys
+from bisect import bisect_left
+
+def main():
+    input = sys.stdin.readline
+
+    n, q = map(int, input().split())
+    salaries = list(map(int, input().split()))
+
+    # Read all queries first
+    queries = []
+    for _ in range(q):
+        line = input().split()
+        if line[0] == '?':
+            queries.append(('?', int(line[1]), int(line[2])))
         else:
-            mid1 = self.sorted_salaries[left_idx + count // 2 - 1]
-            mid2 = self.sorted_salaries[left_idx + count // 2]
-            return (mid1 + mid2) / 2
-    
-    def _binary_search_left(self, target):
-        """Find leftmost position where salary >= target"""
-        left, right = 0, len(self.sorted_salaries)
-        while left < right:
-            mid = (left + right) // 2
-            if self.sorted_salaries[mid] < target:
-                left = mid + 1
-            else:
-                right = mid
-        return left
-    
-    def _binary_search_right(self, target):
-        """Find rightmost position where salary <= target"""
-        left, right = 0, len(self.sorted_salaries)
-        while left < right:
-            mid = (left + right) // 2
-            if self.sorted_salaries[mid] <= target:
-                left = mid + 1
-            else:
-                right = mid
-        return left
+            queries.append(('!', int(line[1]), int(line[2])))
+
+    # Collect all values for coordinate compression
+    all_values = set(salaries)
+    for query in queries:
+        if query[0] == '?':
+            all_values.add(query[1])
+            all_values.add(query[2])
+        else:
+            all_values.add(query[2])
+
+    # Create sorted list for compression
+    sorted_values = sorted(all_values)
+
+    # Compress function: map value to 1-indexed position
+    def compress(val):
+        return bisect_left(sorted_values, val) + 1
+
+    # BIT implementation
+    size = len(sorted_values) + 2
+    bit = [0] * size
+
+    def update(i, delta):
+        while i < size:
+            bit[i] += delta
+            i += i & (-i)
+
+    def query(i):
+        total = 0
+        while i > 0:
+            total += bit[i]
+            i -= i & (-i)
+        return total
+
+    def range_query(l, r):
+        if l > r:
+            return 0
+        return query(r) - query(l - 1)
+
+    # Initialize BIT with initial salaries
+    current_salaries = salaries[:]
+    for sal in salaries:
+        update(compress(sal), 1)
+
+    # Process queries
+    results = []
+    for q_type, a, b in queries:
+        if q_type == '?':
+            # Count salaries in range [a, b]
+            l = compress(a)
+            r = compress(b)
+            results.append(range_query(l, r))
+        else:
+            # Update salary of employee a to b
+            k, new_sal = a, b
+            old_sal = current_salaries[k - 1]
+
+            # Update BIT: remove old, add new
+            update(compress(old_sal), -1)
+            update(compress(new_sal), 1)
+
+            # Update current salary
+            current_salaries[k - 1] = new_sal
+
+    print('\n'.join(map(str, results)))
+
+if __name__ == "__main__":
+    main()
 ```
 
-### Variation 3: Salary Queries with Constraints
-**Problem**: Handle salary queries with additional constraints (e.g., maximum count, minimum range).
+**C++ Solution:**
 
-**Link**: [CSES Problem Set - Salary Queries with Constraints](https://cses.fi/problemset/task/salary_queries_constraints)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class BIT {
+private:
+    vector<int> tree;
+    int n;
+
+public:
+    BIT(int size) : n(size + 1), tree(size + 2, 0) {}
+
+    void update(int i, int delta) {
+        for (; i <= n; i += i & (-i))
+            tree[i] += delta;
+    }
+
+    int query(int i) {
+        int sum = 0;
+        for (; i > 0; i -= i & (-i))
+            sum += tree[i];
+        return sum;
+    }
+
+    int range_query(int l, int r) {
+        if (l > r) return 0;
+        return query(r) - query(l - 1);
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q;
+    cin >> n >> q;
+
+    vector<int> salaries(n);
+    for (int i = 0; i < n; i++) {
+        cin >> salaries[i];
+    }
+
+    // Read all queries
+    vector<tuple<char, int, int>> queries(q);
+    for (int i = 0; i < q; i++) {
+        char type;
+        int a, b;
+        cin >> type >> a >> b;
+        queries[i] = {type, a, b};
+    }
+
+    // Collect all values for coordinate compression
+    set<int> all_values(salaries.begin(), salaries.end());
+    for (auto& [type, a, b] : queries) {
+        if (type == '?') {
+            all_values.insert(a);
+            all_values.insert(b);
+        } else {
+            all_values.insert(b);
+        }
+    }
+
+    // Create compression mapping
+    vector<int> sorted_values(all_values.begin(), all_values.end());
+    map<int, int> compress;
+    for (int i = 0; i < (int)sorted_values.size(); i++) {
+        compress[sorted_values[i]] = i + 1;  // 1-indexed
+    }
+
+    // Initialize BIT
+    BIT bit(sorted_values.size());
+    vector<int> current_salaries = salaries;
+    for (int sal : salaries) {
+        bit.update(compress[sal], 1);
+    }
+
+    // Process queries
+    for (auto& [type, a, b] : queries) {
+        if (type == '?') {
+            // Count salaries in range [a, b]
+            int l = compress[a];
+            int r = compress[b];
+            cout << bit.range_query(l, r) << '\n';
+        } else {
+            // Update salary of employee a to b
+            int k = a, new_sal = b;
+            int old_sal = current_salaries[k - 1];
+
+            bit.update(compress[old_sal], -1);
+            bit.update(compress[new_sal], 1);
+
+            current_salaries[k - 1] = new_sal;
+        }
+    }
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O((n+q) log(n+q)) | Sorting + each operation is O(log n) |
+| Space | O(n+q) | BIT size + compressed values storage |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Not Pre-collecting All Values
 
 ```python
-class SalaryQueriesWithConstraints:
-    def __init__(self, salaries, max_count, min_range):
-        self.salaries = salaries[:]
-        self.n = len(salaries)
-        self.max_count = max_count
-        self.min_range = min_range
-        self.sorted_salaries = sorted(salaries)
-    
-    def constrained_query(self, min_salary, max_salary):
-        """Query count of salaries with constraints"""
-        # Check minimum range constraint
-        if max_salary - min_salary < self.min_range:
-            return None  # Invalid range
-        
-        # Get count
-        count = self.count_in_range(min_salary, max_salary)
-        
-        # Check maximum count constraint
-        if count > self.max_count:
-            return None  # Exceeds maximum count
-        
-        return count
-    
-    def count_in_range(self, min_salary, max_salary):
-        """Count salaries in range [min_salary, max_salary]"""
-        left_idx = self._binary_search_left(min_salary)
-        right_idx = self._binary_search_right(max_salary)
-        return right_idx - left_idx
-    
-    def find_valid_ranges(self):
-        """Find all valid salary ranges that satisfy constraints"""
-        valid_ranges = []
-        unique_salaries = sorted(set(self.salaries))
-        
-        for i in range(len(unique_salaries)):
-            for j in range(i, len(unique_salaries)):
-                min_sal = unique_salaries[i]
-                max_sal = unique_salaries[j]
-                
-                result = self.constrained_query(min_sal, max_sal)
-                if result is not None:
-                    valid_ranges.append((min_sal, max_sal, result))
-        
-        return valid_ranges
-    
-    def get_maximum_valid_count(self):
-        """Get maximum valid count"""
-        max_count = float('-inf')
-        unique_salaries = sorted(set(self.salaries))
-        
-        for i in range(len(unique_salaries)):
-            for j in range(i, len(unique_salaries)):
-                min_sal = unique_salaries[i]
-                max_sal = unique_salaries[j]
-                
-                result = self.constrained_query(min_sal, max_sal)
-                if result is not None:
-                    max_count = max(max_count, result)
-        
-        return max_count if max_count != float('-inf') else None
-    
-    def _binary_search_left(self, target):
-        """Find leftmost position where salary >= target"""
-        left, right = 0, len(self.sorted_salaries)
-        while left < right:
-            mid = (left + right) // 2
-            if self.sorted_salaries[mid] < target:
-                left = mid + 1
-            else:
-                right = mid
-        return left
-    
-    def _binary_search_right(self, target):
-        """Find rightmost position where salary <= target"""
-        left, right = 0, len(self.sorted_salaries)
-        while left < right:
-            mid = (left + right) // 2
-            if self.sorted_salaries[mid] <= target:
-                left = mid + 1
-            else:
-                right = mid
-        return left
-
-# Example usage
-salaries = [1000, 2000, 1500, 3000, 2500]
-max_count = 3
-min_range = 500
-
-sq = SalaryQueriesWithConstraints(salaries, max_count, min_range)
-result = sq.constrained_query(1000, 2000)
-print(f"Constrained query result: {result}")  # Output: 2
-
-valid_ranges = sq.find_valid_ranges()
-print(f"Valid ranges: {valid_ranges}")
+# WRONG - compressing on-the-fly
+def compress(val, sorted_values):
+    sorted_values.append(val)
+    sorted_values.sort()  # Expensive and changes indices!
+    return sorted_values.index(val) + 1
 ```
 
-### Related Problems
+**Problem:** Coordinate compression must be done upfront with all values known.
+**Fix:** Read all queries first, collect all values, then create a fixed mapping.
 
-#### **CSES Problems**
-- [Salary Queries](https://cses.fi/problemset/task/1144) - Basic salary range queries problem
-- [Static Range Sum Queries](https://cses.fi/problemset/task/1646) - Static range sum queries
-- [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) - Dynamic range sum queries
+### Mistake 2: Off-by-One in Range Query
 
-#### **LeetCode Problems**
-- [Range Sum Query - Immutable](https://leetcode.com/problems/range-sum-query-immutable/) - Range sum queries
-- [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/) - Range sum with updates
-- [Count of Range Sum](https://leetcode.com/problems/count-of-range-sum/) - Count range sums
+```python
+# WRONG
+def range_query(l, r):
+    return query(r) - query(l)  # Missing element at l!
 
-#### **Problem Categories**
-- **Binary Search**: Range queries, efficient search, sorted arrays
-- **Range Queries**: Query processing, range operations, efficient algorithms
-- **Sorting**: Array sorting, efficient preprocessing, fast queries
-- **Algorithm Design**: Binary search techniques, range optimization, constraint handling
+# CORRECT
+def range_query(l, r):
+    return query(r) - query(l - 1)  # Includes element at l
+```
 
-## 🚀 Key Takeaways
+**Problem:** BIT prefix sum is inclusive, so [l, r] = prefix(r) - prefix(l-1).
 
-- **Sorting Technique**: The standard approach for salary range queries
-- **Efficient Sorting**: Sort salaries once in O(n log n) time
-- **Fast Queries**: Answer each query in O(log n) time using binary search
-- **Space Trade-off**: Use O(n) extra space for O(log n) query time
-- **Pattern Recognition**: This technique applies to many salary range problems
+### Mistake 3: Forgetting to Track Current Salaries
+
+```python
+# WRONG - using original array
+old_sal = salaries[k - 1]  # Never updated!
+
+# CORRECT - maintain current state
+current_salaries = salaries[:]
+# ... in update:
+old_sal = current_salaries[k - 1]
+current_salaries[k - 1] = new_sal
+```
+
+**Problem:** Must track current salary to know what to decrement in BIT.
+
+### Mistake 4: Handling Query Bounds Not in Original Data
+
+```python
+# WRONG - query bound 7 not in salaries [3,6,4,4,1]
+compress[7]  # KeyError!
+
+# CORRECT - include ALL query bounds in compression
+all_values.add(query_a)
+all_values.add(query_b)
+```
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single employee | n=1, salaries=[5], ? 1 10 | 1 | Only employee is in range |
+| Empty range | salaries=[5,10], ? 6 9 | 0 | No salaries in range |
+| All same salary | salaries=[5,5,5], ? 5 5 | 3 | All match exactly |
+| Update to same value | ! k x where x == current | No change | BIT: -1 then +1 at same pos |
+| Query at boundaries | ? 10^9 10^9 | 0 or 1 | Large value handling |
+| Consecutive updates | Multiple ! to same employee | Track latest | Only current value matters |
+
+---
+
+## When to Use This Pattern
+
+### Use Coordinate Compression + BIT When:
+- Value range is large (up to 10^9) but unique values are limited
+- You need both point updates and range queries
+- Queries ask for count/sum in a range
+- Updates modify individual elements
+
+### Don't Use When:
+- Values are already in small range (direct BIT suffices)
+- No updates needed (just sort + binary search)
+- Need range updates (use lazy segment tree instead)
+- Need to query actual elements, not counts
+
+### Pattern Recognition Checklist:
+- [ ] Large value range with point updates? -> **Coordinate Compression**
+- [ ] Need prefix sums with updates? -> **BIT**
+- [ ] Count elements in range? -> **Frequency BIT**
+- [ ] Range updates needed? -> **Consider Segment Tree with Lazy Propagation**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Static Range Sum Queries (CSES 1646)](https://cses.fi/problemset/task/1646) | Basic prefix sum concept |
+| [Dynamic Range Sum Queries (CSES 1648)](https://cses.fi/problemset/task/1648) | BIT fundamentals |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Range Update Queries (CSES 1651)](https://cses.fi/problemset/task/1651) | Range updates instead of point updates |
+| [Distinct Values Queries (CSES 1734)](https://cses.fi/problemset/task/1734) | Count distinct values in range |
+| [Range Sum Query - Mutable (LeetCode 307)](https://leetcode.com/problems/range-sum-query-mutable/) | Sum instead of count |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Polynomial Queries (CSES 1736)](https://cses.fi/problemset/task/1736) | Complex range updates |
+| [Count of Range Sum (LeetCode 327)](https://leetcode.com/problems/count-of-range-sum/) | Merge sort approach for range count |
+| [Range Frequency Queries (LeetCode 2080)](https://leetcode.com/problems/range-frequency-queries/) | Frequency in subarray |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Coordinate compression maps large value space to manageable indices; BIT handles dynamic frequency tracking
+2. **Time Optimization:** From O(q*n) brute force to O((n+q) log(n+q)) using BIT
+3. **Space Trade-off:** O(n+q) space for BIT enables O(log n) operations
+4. **Pattern:** This is the "Dynamic Range Counting" pattern - compression + frequency BIT
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why coordinate compression is necessary for this problem
+- [ ] Implement a BIT from scratch with update and query operations
+- [ ] Trace through the algorithm on a small example
+- [ ] Identify similar problems that use this pattern
+- [ ] Solve this problem in under 20 minutes
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Fenwick Tree](https://cp-algorithms.com/data_structures/fenwick.html)
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [Coordinate Compression Tutorial](https://usaco.guide/silver/sorting-custom)

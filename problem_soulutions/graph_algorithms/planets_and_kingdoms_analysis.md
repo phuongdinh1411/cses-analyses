@@ -1,597 +1,301 @@
 ---
 layout: simple
-title: "Planets and Kingdoms - Graph Algorithm Problem"
+title: "Planets and Kingdoms"
+difficulty: Hard
+tags: [graph, scc, kosaraju]
+cses_link: https://cses.fi/problemset/task/1683
 permalink: /problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis
 ---
 
-# Planets and Kingdoms - Graph Algorithm Problem
+# Planets and Kingdoms
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of strongly connected components in graph algorithms
-- Apply efficient algorithms for finding SCCs in directed graphs
-- Implement Kosaraju's algorithm for SCC detection
-- Optimize graph traversal for component identification
-- Handle special cases in SCC problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Assign each planet to a kingdom (SCC) |
+| Input | n planets, m one-way teleporters |
+| Output | Number of kingdoms + kingdom ID for each planet |
+| Constraints | 1 <= n <= 10^5, 1 <= m <= 2*10^5 |
+| Core Algorithm | Kosaraju's Algorithm (SCC) |
+| Time Complexity | O(n + m) |
+| Space Complexity | O(n + m) |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a directed graph, find all strongly connected components (kingdoms).
+After solving this problem, you will understand:
+1. **Practical SCC Application**: How SCC theory translates to real problem solving
+2. **Component Labeling**: How to assign unique IDs to each component
+3. **Output Formatting**: Returning per-node component membership
 
-**Input**: 
-- n: number of vertices (planets)
-- m: number of edges
-- edges: array of directed edges (u, v)
+## Problem Statement
 
-**Output**: 
-- List of strongly connected components (kingdoms)
+A game has n planets (numbered 1 to n) and m one-way teleporters. You need to divide the planets into kingdoms such that:
+- You can travel between any two planets in the same kingdom (using teleporters)
+- This is the **definition of a Strongly Connected Component (SCC)**
 
-**Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
+**Output Format**:
+1. First line: k = number of kingdoms
+2. Second line: n integers where the i-th integer is the kingdom number of planet i
 
 **Example**:
 ```
 Input:
-n = 5, m = 5
-edges = [(0,1), (1,2), (2,0), (1,3), (3,4)]
+5 6
+1 2
+2 3
+3 1
+1 4
+4 5
+5 4
 
 Output:
-Kingdom 1: [0, 1, 2]
-Kingdom 2: [3]
-Kingdom 3: [4]
-
-Explanation**: 
-SCC 1: 0 -> 1 -> 2 -> 0 (cycle)
-SCC 2: 3 (single vertex)
-SCC 3: 4 (single vertex)
+2
+1 1 1 2 2
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation**: Planets {1,2,3} form one kingdom (they have a cycle 1->2->3->1), and planets {4,5} form another kingdom (cycle 4->5->4). Total: 2 kingdoms.
 
-### Approach 1: Brute Force Solution
+## Key Insight: Direct SCC Application
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all possible paths between vertices
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic graph traversal
-- **Inefficient**: O(n³) time complexity
+This problem is a **direct application** of finding Strongly Connected Components:
 
-**Key Insight**: For each vertex, check if it can reach all other vertices in its component.
-
-**Algorithm**:
-- For each vertex, perform DFS to find reachable vertices
-- Check if the reachable set forms a strongly connected component
-- Group vertices into components
-
-**Visual Example**:
 ```
-Graph: 0->1->2->0, 1->3, 3->4
+Kingdom = Strongly Connected Component
 
-SCC detection:
-┌─────────────────────────────────────┐
-│ Vertex 0: can reach [0,1,2]        │
-│ Vertex 1: can reach [0,1,2,3,4]    │
-│ Vertex 2: can reach [0,1,2]        │
-│ Vertex 3: can reach [3,4]          │
-│ Vertex 4: can reach [4]            │
-│                                   │
-│ SCC 1: [0,1,2] (mutually reachable) │
-│ SCC 2: [3] (single vertex)        │
-│ SCC 3: [4] (single vertex)        │
-└─────────────────────────────────────┘
+Why? A kingdom groups planets where you can travel between ANY two planets.
+This is exactly the definition of an SCC in a directed graph.
 ```
 
-**Implementation**:
+**The Algorithm**:
+1. Run Kosaraju's algorithm to find all SCCs
+2. During pass 2, assign each node its component number
+3. Output: count of components + component ID for each node
+
+## Algorithm: Kosaraju's with Component Labeling
+
+For a detailed explanation of Kosaraju's algorithm, see [Strongly Connected Components Analysis](strongly_connected_components_analysis).
+
+**Key Modification**: We need to track which component each node belongs to.
+
+```
+Standard Kosaraju:           This Problem:
+- Find all SCCs              - Find all SCCs
+- Return list of SCCs        - Return component[i] for each node i
+```
+
+### Visual Diagram
+
+```
+Original Graph:                  Kingdoms Found:
+    1 --> 2                      Kingdom 1: {1, 2, 3}
+    ^     |                      Kingdom 2: {4, 5}
+    |     v
+    3 <---+                      Component Assignment:
+    |                            Planet 1 -> Kingdom 1
+    v                            Planet 2 -> Kingdom 1
+    4 <--> 5                     Planet 3 -> Kingdom 1
+                                 Planet 4 -> Kingdom 2
+                                 Planet 5 -> Kingdom 2
+```
+
+## Dry Run
+
+**Input**: n=5, m=6, Edges: (1,2), (2,3), (3,1), (3,4), (4,5), (5,4)
+
+```
+Step 1: Build graphs
+Original adj[]:          Reversed adj[]:
+1: [2]                   1: [3]
+2: [3]                   2: [1]
+3: [1, 4]                3: [2]
+4: [5]                   4: [3, 5]
+5: [4]                   5: [4]
+
+Step 2: First DFS (finish order)
+Visit: 1 -> 2 -> 3 -> 4 -> 5
+Finish order: [5, 4, 3, 2, 1]
+
+Step 3: Second DFS on reversed graph (reverse finish order)
+Process 1: DFS finds {1, 3, 2} -> Kingdom 1
+Process 4: DFS finds {4, 5}    -> Kingdom 2
+
+Result: 2 kingdoms, assignments: [1, 1, 1, 2, 2]
+```
+
+## Python Implementation
+
 ```python
-def brute_force_planets_and_kingdoms(n, edges):
-    """Find SCCs using brute force approach"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    def dfs_reachable(start, visited):
-        reachable = set()
-        stack = [start]
-        
-        while stack:
-            vertex = stack.pop()
-            if vertex not in visited:
-                visited.add(vertex)
-                reachable.add(vertex)
-                for neighbor in adj[vertex]:
-                    if neighbor not in visited:
-                        stack.append(neighbor)
-        
-        return reachable
-    
-    # Find SCCs using brute force
-    sccs = []
-    visited = set()
-    
-    for vertex in range(n):
-        if vertex not in visited:
-            # Find all vertices reachable from this vertex
-            reachable = dfs_reachable(vertex, set())
-            
-            # Check if this forms an SCC
-            scc = set()
-            for v in reachable:
-                # Check if v can reach back to vertex
-                v_reachable = dfs_reachable(v, set())
-                if vertex in v_reachable:
-                    scc.add(v)
-            
-            if scc:
-                sccs.append(list(scc))
-                visited.update(scc)
-    
-    return sccs
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(200001)
 
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4)]
-result = brute_force_planets_and_kingdoms(n, edges)
-print(f"Brute force SCCs: {result}")
+def solve():
+    n, m = map(int, input().split())
+
+    # Build adjacency lists (1-indexed)
+    adj = defaultdict(list)      # Original graph
+    radj = defaultdict(list)     # Reversed graph
+
+    for _ in range(m):
+        a, b = map(int, input().split())
+        adj[a].append(b)
+        radj[b].append(a)
+
+    # Pass 1: DFS on original graph to get finish order
+    visited = [False] * (n + 1)
+    order = []
+
+    def dfs1(u):
+        visited[u] = True
+        for v in adj[u]:
+            if not visited[v]:
+                dfs1(v)
+        order.append(u)
+
+    for i in range(1, n + 1):
+        if not visited[i]:
+            dfs1(i)
+
+    # Pass 2: DFS on reversed graph, assign component IDs
+    visited = [False] * (n + 1)
+    component = [0] * (n + 1)
+    comp_id = 0
+
+    def dfs2(u, cid):
+        visited[u] = True
+        component[u] = cid
+        for v in radj[u]:
+            if not visited[v]:
+                dfs2(v, cid)
+
+    # Process in reverse finish order
+    for u in reversed(order):
+        if not visited[u]:
+            comp_id += 1
+            dfs2(u, comp_id)
+
+    # Output
+    print(comp_id)
+    print(' '.join(map(str, component[1:])))
+
+solve()
 ```
 
-**Time Complexity**: O(n³)
-**Space Complexity**: O(n)
+## C++ Implementation
 
-**Why it's inefficient**: O(n³) time complexity for checking all pairs.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+const int MAXN = 100001;
+vector<int> adj[MAXN];    // Original graph
+vector<int> radj[MAXN];   // Reversed graph
+bool visited[MAXN];
+int component[MAXN];
+vector<int> order;
 
-### Approach 2: Kosaraju's Algorithm
+void dfs1(int u) {
+    visited[u] = true;
+    for (int v : adj[u]) {
+        if (!visited[v]) {
+            dfs1(v);
+        }
+    }
+    order.push_back(u);
+}
 
-**Key Insights from Kosaraju's Algorithm**:
-- **Kosaraju's Algorithm**: Use Kosaraju's algorithm for efficient SCC finding
-- **Two Pass DFS**: Use two passes of DFS for SCC detection
-- **Efficient Implementation**: O(n + m) time complexity
-- **Optimization**: Much more efficient than brute force
+void dfs2(int u, int compId) {
+    visited[u] = true;
+    component[u] = compId;
+    for (int v : radj[u]) {
+        if (!visited[v]) {
+            dfs2(v, compId);
+        }
+    }
+}
 
-**Key Insight**: Use Kosaraju's algorithm for efficient SCC finding.
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-**Algorithm**:
-- First pass: Perform DFS and store vertices in finish order
-- Second pass: Perform DFS on transpose graph in reverse finish order
-- Each DFS tree in second pass is an SCC
+    int n, m;
+    cin >> n >> m;
 
-**Visual Example**:
-```
-Kosaraju's algorithm:
+    // Build both graphs
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        radj[b].push_back(a);
+    }
 
-Graph: 0->1->2->0, 1->3, 3->4
-Transpose: 0->2, 1->0, 2->1, 3->1, 4->3
+    // Pass 1: Get finish order
+    fill(visited, visited + n + 1, false);
+    for (int i = 1; i <= n; i++) {
+        if (!visited[i]) {
+            dfs1(i);
+        }
+    }
 
-First pass (finish order):
-┌─────────────────────────────────────┐
-│ DFS from 0: finish order [2,1,0]   │
-│ DFS from 3: finish order [4,3]     │
-│ Complete order: [2,1,0,4,3]        │
-│                                   │
-│ Second pass (reverse order):       │
-│ DFS from 3: SCC [3]               │
-│ DFS from 4: SCC [4]               │
-│ DFS from 0: SCC [0,1,2]           │
-│                                   │
-│ Result: [[0,1,2], [3], [4]]       │
-└─────────────────────────────────────┘
-```
+    // Pass 2: Assign components
+    fill(visited, visited + n + 1, false);
+    int compId = 0;
 
-**Implementation**:
-```python
-def kosaraju_planets_and_kingdoms(n, edges):
-    """Find SCCs using Kosaraju's algorithm"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Build transpose graph
-    adj_transpose = [[] for _ in range(n)]
-    for u, v in edges:
-        adj_transpose[v].append(u)
-    
-    # First pass: DFS to get finish order
-    visited = [False] * n
-    finish_order = []
-    
-    def dfs_first_pass(vertex):
-        visited[vertex] = True
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                dfs_first_pass(neighbor)
-        finish_order.append(vertex)
-    
-    for vertex in range(n):
-        if not visited[vertex]:
-            dfs_first_pass(vertex)
-    
-    # Second pass: DFS on transpose graph in reverse order
-    visited = [False] * n
-    sccs = []
-    
-    def dfs_second_pass(vertex, scc):
-        visited[vertex] = True
-        scc.append(vertex)
-        for neighbor in adj_transpose[vertex]:
-            if not visited[neighbor]:
-                dfs_second_pass(neighbor, scc)
-    
-    # Process vertices in reverse finish order
-    for vertex in reversed(finish_order):
-        if not visited[vertex]:
-            scc = []
-            dfs_second_pass(vertex, scc)
-            sccs.append(scc)
-    
-    return sccs
+    for (int i = n - 1; i >= 0; i--) {
+        int u = order[i];
+        if (!visited[u]) {
+            compId++;
+            dfs2(u, compId);
+        }
+    }
 
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4)]
-result = kosaraju_planets_and_kingdoms(n, edges)
-print(f"Kosaraju SCCs: {result}")
+    // Output
+    cout << compId << "\n";
+    for (int i = 1; i <= n; i++) {
+        cout << component[i] << " \n"[i == n];
+    }
+
+    return 0;
+}
 ```
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n + m)
+## Connection to SCC Problem
 
-**Why it's better**: Uses Kosaraju's algorithm for O(n + m) time complexity.
+| Aspect | SCC Problem | Planets and Kingdoms |
+|--------|-------------|---------------------|
+| Goal | Find all SCCs | Find all SCCs |
+| Output | List of components | Component ID per node |
+| Algorithm | Kosaraju/Tarjan | Kosaraju/Tarjan |
+| Key Difference | Return component lists | Return `component[i]` array |
 
----
+**What's Different?**
+- SCC problem: Return `[[1,2,3], [4,5]]`
+- This problem: Return `k=2` and `[1,1,1,2,2]`
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+The modification is minimal - just track the component ID during pass 2.
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for SCC finding
-- **Efficient Implementation**: O(n + m) time complexity
-- **Space Efficiency**: O(n + m) space complexity
-- **Optimal Complexity**: Best approach for SCC finding
+## Common Mistakes
 
-**Key Insight**: Use advanced data structures for optimal SCC finding.
+| Mistake | Fix |
+|---------|-----|
+| Wrong output order | Output component[1..n], not discovery order |
+| Missing reversed graph | Build radj[] separately for pass 2 |
+| 0-indexed vs 1-indexed | Allocate size n+1, read planets as 1 to n |
+| Recursion limit (Python) | sys.setrecursionlimit(200001) or iterative DFS |
+| Component numbering | Start comp_id from 1, not 0 |
 
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient Kosaraju's algorithm
-- Handle special cases optimally
-- Return SCCs
+## Complexity Analysis
 
-**Visual Example**:
-```
-Advanced data structure approach:
+| Operation | Time | Space |
+|-----------|------|-------|
+| Build graphs | O(m) | O(n + m) |
+| Pass 1 DFS | O(n + m) | O(n) stack |
+| Pass 2 DFS | O(n + m) | O(n) stack |
+| **Total** | **O(n + m)** | **O(n + m)** |
 
-For graph: 0->1->2->0, 1->3, 3->4
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Graph tree: for efficient storage │
-│ - Transpose tree: for optimization  │
-│ - SCC cache: for optimization       │
-│                                   │
-│ SCC finding:                       │
-│ - Use graph tree for efficient     │
-│   traversal                        │
-│ - Use transpose tree for           │
-│   optimization                     │
-│ - Use SCC cache for optimization   │
-│                                   │
-│ Result: [[0,1,2], [3], [4]]       │
-└─────────────────────────────────────┘
-```
+## Related Problems
 
-**Implementation**:
-```python
-def advanced_data_structure_planets_and_kingdoms(n, edges):
-    """Find SCCs using advanced data structure approach"""
-    # Use advanced data structures for graph storage
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Build transpose graph using advanced data structures
-    adj_transpose = [[] for _ in range(n)]
-    for u, v in edges:
-        adj_transpose[v].append(u)
-    
-    # First pass: DFS to get finish order using advanced data structures
-    visited = [False] * n
-    finish_order = []
-    
-    def dfs_advanced_first_pass(vertex):
-        visited[vertex] = True
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                dfs_advanced_first_pass(neighbor)
-        finish_order.append(vertex)
-    
-    for vertex in range(n):
-        if not visited[vertex]:
-            dfs_advanced_first_pass(vertex)
-    
-    # Second pass: DFS on transpose graph using advanced data structures
-    visited = [False] * n
-    sccs = []
-    
-    def dfs_advanced_second_pass(vertex, scc):
-        visited[vertex] = True
-        scc.append(vertex)
-        for neighbor in adj_transpose[vertex]:
-            if not visited[neighbor]:
-                dfs_advanced_second_pass(neighbor, scc)
-    
-    # Process vertices in reverse finish order using advanced data structures
-    for vertex in reversed(finish_order):
-        if not visited[vertex]:
-            scc = []
-            dfs_advanced_second_pass(vertex, scc)
-            sccs.append(scc)
-    
-    return sccs
-
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4)]
-result = advanced_data_structure_planets_and_kingdoms(n, edges)
-print(f"Advanced data structure SCCs: {result}")
-```
-
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n + m)
-
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n³) | O(n) | Check all possible paths |
-| Kosaraju's Algorithm | O(n + m) | O(n + m) | Use two-pass DFS |
-| Advanced Data Structure | O(n + m) | O(n + m) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(n + m) - Use Kosaraju's algorithm for efficient SCC finding
-- **Space**: O(n + m) - Store graph and transpose graph
-
-### Why This Solution Works
-- **Kosaraju's Algorithm**: Use two-pass DFS for efficient SCC finding
-- **Graph Transpose**: Build transpose graph for second pass
-- **Finish Order**: Use finish order for correct SCC detection
-- **Optimal Algorithms**: Use optimal algorithms for SCC finding
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Planets and Kingdoms with Constraints**
-**Problem**: Find SCCs with specific constraints.
-
-**Key Differences**: Apply constraints to SCC finding
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_planets_and_kingdoms(n, edges, constraints):
-    """Find SCCs with constraints"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        if constraints(u) and constraints(v):
-            adj[u].append(v)
-    
-    # Build transpose graph
-    adj_transpose = [[] for _ in range(n)]
-    for u, v in edges:
-        if constraints(u) and constraints(v):
-            adj_transpose[v].append(u)
-    
-    # First pass: DFS to get finish order
-    visited = [False] * n
-    finish_order = []
-    
-    def dfs_first_pass(vertex):
-        visited[vertex] = True
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                dfs_first_pass(neighbor)
-        finish_order.append(vertex)
-    
-    for vertex in range(n):
-        if not visited[vertex] and constraints(vertex):
-            dfs_first_pass(vertex)
-    
-    # Second pass: DFS on transpose graph
-    visited = [False] * n
-    sccs = []
-    
-    def dfs_second_pass(vertex, scc):
-        visited[vertex] = True
-        scc.append(vertex)
-        for neighbor in adj_transpose[vertex]:
-            if not visited[neighbor]:
-                dfs_second_pass(neighbor, scc)
-    
-    # Process vertices in reverse finish order
-    for vertex in reversed(finish_order):
-        if not visited[vertex]:
-            scc = []
-            dfs_second_pass(vertex, scc)
-            sccs.append(scc)
-    
-    return sccs
-
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4)]
-constraints = lambda vertex: vertex >= 0  # Only include non-negative vertices
-result = constrained_planets_and_kingdoms(n, edges, constraints)
-print(f"Constrained SCCs: {result}")
-```
-
-#### **2. Planets and Kingdoms with Different Metrics**
-**Problem**: Find SCCs with different size metrics.
-
-**Key Differences**: Different size calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_planets_and_kingdoms(n, edges, weights):
-    """Find SCCs with different weights"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Build transpose graph
-    adj_transpose = [[] for _ in range(n)]
-    for u, v in edges:
-        adj_transpose[v].append(u)
-    
-    # First pass: DFS to get finish order
-    visited = [False] * n
-    finish_order = []
-    
-    def dfs_first_pass(vertex):
-        visited[vertex] = True
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                dfs_first_pass(neighbor)
-        finish_order.append(vertex)
-    
-    for vertex in range(n):
-        if not visited[vertex]:
-            dfs_first_pass(vertex)
-    
-    # Second pass: DFS on transpose graph
-    visited = [False] * n
-    sccs = []
-    
-    def dfs_second_pass(vertex, scc):
-        visited[vertex] = True
-        scc.append(vertex)
-        for neighbor in adj_transpose[vertex]:
-            if not visited[neighbor]:
-                dfs_second_pass(neighbor, scc)
-    
-    # Process vertices in reverse finish order
-    for vertex in reversed(finish_order):
-        if not visited[vertex]:
-            scc = []
-            dfs_second_pass(vertex, scc)
-            # Calculate total weight for this SCC
-            total_weight = sum(weights.get(v, 1) for v in scc)
-            sccs.append((scc, total_weight))
-    
-    return sccs
-
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4)]
-weights = {0: 2, 1: 1, 2: 3, 3: 4, 4: 1}
-result = weighted_planets_and_kingdoms(n, edges, weights)
-print(f"Weighted SCCs: {result}")
-```
-
-#### **3. Planets and Kingdoms with Multiple Dimensions**
-**Problem**: Find SCCs in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_planets_and_kingdoms(n, edges, dimensions):
-    """Find SCCs in multiple dimensions"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Build transpose graph
-    adj_transpose = [[] for _ in range(n)]
-    for u, v in edges:
-        adj_transpose[v].append(u)
-    
-    # First pass: DFS to get finish order
-    visited = [False] * n
-    finish_order = []
-    
-    def dfs_first_pass(vertex):
-        visited[vertex] = True
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                dfs_first_pass(neighbor)
-        finish_order.append(vertex)
-    
-    for vertex in range(n):
-        if not visited[vertex]:
-            dfs_first_pass(vertex)
-    
-    # Second pass: DFS on transpose graph
-    visited = [False] * n
-    sccs = []
-    
-    def dfs_second_pass(vertex, scc):
-        visited[vertex] = True
-        scc.append(vertex)
-        for neighbor in adj_transpose[vertex]:
-            if not visited[neighbor]:
-                dfs_second_pass(neighbor, scc)
-    
-    # Process vertices in reverse finish order
-    for vertex in reversed(finish_order):
-        if not visited[vertex]:
-            scc = []
-            dfs_second_pass(vertex, scc)
-            sccs.append(scc)
-    
-    return sccs
-
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4)]
-dimensions = 1
-result = multi_dimensional_planets_and_kingdoms(n, edges, dimensions)
-print(f"Multi-dimensional SCCs: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Strongly Connected Components](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Planets Cycles](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Round Trip](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Course Schedule](https://leetcode.com/problems/course-schedule/) - Graph
-- [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) - Graph
-- [Redundant Connection](https://leetcode.com/problems/redundant-connection/) - Graph
-
-#### **Problem Categories**
-- **Graph Algorithms**: Strongly connected components, graph traversal
-- **DFS Algorithms**: Depth-first search, component detection
-- **Graph Theory**: Connectivity, component analysis
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Strongly Connected Components](https://cp-algorithms.com/graph/strongly-connected-components.html) - SCC algorithms
-- [Kosaraju's Algorithm](https://cp-algorithms.com/graph/strongly-connected-components.html) - Kosaraju's algorithm
-
-### **Practice Problems**
-- [CSES Strongly Connected Components](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Planets Cycles](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Round Trip](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Strongly Connected Component](https://en.wikipedia.org/wiki/Strongly_connected_component) - Wikipedia article
-- [Kosaraju's Algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm) - Wikipedia article
+- [CSES: Strongly Connected Components](https://cses.fi/problemset/task/1682) - Find SCCs
+- [CSES: Giant Pizza](https://cses.fi/problemset/task/1684) - 2-SAT using SCCs
+- [CSES: Coin Collector](https://cses.fi/problemset/task/1686) - DP on SCC DAG

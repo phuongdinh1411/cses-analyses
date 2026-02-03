@@ -1,494 +1,448 @@
 ---
 layout: simple
-title: "Subarray Sums I - Hash Map Technique"
+title: "Subarray Sums I - Two Pointers / Sliding Window"
 permalink: /problem_soulutions/sliding_window/subarray_sums_i_analysis
+difficulty: Easy
+tags: [two-pointers, sliding-window, prefix-sum, array]
 ---
 
-# Subarray Sums I - Hash Map Technique
+# Subarray Sums I
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement hash map technique for counting subarray sums
-- Apply prefix sum concept to efficiently count subarrays with given sum
-- Optimize subarray sum counting using hash maps
-- Handle edge cases in subarray sum counting problems
-- Recognize when to use hash maps vs other approaches
+| Attribute | Value |
+|-----------|-------|
+| **CSES Link** | [Subarray Sums I](https://cses.fi/problemset/task/1660) |
+| **Difficulty** | Easy |
+| **Category** | Sliding Window / Two Pointers |
+| **Time Limit** | 1 second |
+| **Key Technique** | Two Pointers on Positive Array |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an array of integers and a target sum, count the number of contiguous subarrays that sum to the target value.
+After solving this problem, you will be able to:
+- [ ] Recognize when two-pointer sliding window applies (positive numbers only)
+- [ ] Implement the expand/shrink window pattern efficiently
+- [ ] Understand why positive numbers guarantee monotonic window behavior
+- [ ] Count subarrays with a target sum in O(n) time
 
-**Input**: 
-- First line: n (number of elements) and target (target sum)
-- Second line: n integers separated by spaces
+---
 
-**Output**: 
-- Single integer: number of subarrays with sum equal to target
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 10⁵
-- -10⁴ ≤ arr[i] ≤ 10⁴
-- -10⁹ ≤ target ≤ 10⁹
+**Problem:** Given an array of `n` positive integers and a target sum `x`, count the number of subarrays whose elements sum to exactly `x`.
 
-**Example**:
+**Input:**
+- Line 1: Two integers `n` and `x` (array size and target sum)
+- Line 2: `n` positive integers (the array elements)
+
+**Output:**
+- A single integer: the count of subarrays with sum equal to `x`
+
+**Constraints:**
+- 1 <= n <= 2 * 10^5
+- 1 <= x <= 10^9
+- 1 <= a[i] <= 10^9 (all elements are **positive**)
+
+### Example
+
 ```
 Input:
-6 7
-1 4 20 3 10 5
+5 7
+2 4 1 2 7
 
 Output:
-1
-
-Explanation**: 
-The subarray [20, 3, 10] has sum 33.
-The subarray [3, 10, 5] has sum 18.
-The subarray [4, 20, 3, 10] has sum 37.
-The subarray [1, 4, 20, 3, 10] has sum 38.
-The subarray [1, 4, 20, 3, 10, 5] has sum 43.
-Wait, let me recalculate: [1, 4, 20, 3, 10, 5] = 1 + 4 + 20 + 3 + 10 + 5 = 43
-But we need sum = 7. Let me check: [1, 4, 20, 3, 10, 5] = 43 ≠ 7
-Actually, let me fix the example:
+3
 ```
 
-Let me fix the example:
-
-**Example**:
-```
-Input:
-6 33
-1 4 20 3 10 5
-
-Output:
-1
-
-Explanation**: 
-The subarray [20, 3, 10] has sum 33.
-```
-
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: Check all possible subarrays by considering every starting and ending position
-- **Complete Coverage**: Guarantees finding all solutions by examining all possibilities
-- **Simple Implementation**: Straightforward nested loops to generate all subarrays
-- **Inefficient**: Time complexity grows quadratically with input size
-
-**Key Insight**: Generate all possible subarrays and calculate their sums to count those equal to target.
-
-**Algorithm**:
-- Initialize counter to 0
-- For each starting position i from 0 to n-1
-- For each ending position j from i to n-1
-- Calculate sum of subarray from i to j
-- If sum equals target, increment counter
-- Return counter
-
-**Visual Example**:
-```
-Array: [1, 4, 20, 3, 10, 5], target = 33
-
-All subarrays and their sums:
-i=0: [1]=1, [1,4]=5, [1,4,20]=25, [1,4,20,3]=28, [1,4,20,3,10]=38, [1,4,20,3,10,5]=43
-i=1: [4]=4, [4,20]=24, [4,20,3]=27, [4,20,3,10]=37, [4,20,3,10,5]=42
-i=2: [20]=20, [20,3]=23, [20,3,10]=33  ← Count: 1
-i=3: [3]=3, [3,10]=13, [3,10,5]=18
-i=4: [10]=10, [10,5]=15
-i=5: [5]=5
-
-Total count: 1
-```
-
-**Implementation**:
-```python
-def brute_force_subarray_sums_i(arr, target):
-    """
-    Count subarrays with given sum using brute force
-    
-    Args:
-        arr: List of integers
-        target: Target sum
-    
-    Returns:
-        int: Number of subarrays with sum equal to target
-    """
-    n = len(arr)
-    count = 0
-    
-    for i in range(n):
-        for j in range(i, n):
-            # Calculate sum of subarray from i to j
-            current_sum = sum(arr[i:j+1])
-            if current_sum == target:
-                count += 1
-    
-    return count
-
-# Example usage
-arr = [1, 4, 20, 3, 10, 5]
-target = 33
-result = brute_force_subarray_sums_i(arr, target)
-print(f"Brute force result: {result}")  # Output: 1
-```
-
-**Time Complexity**: O(n³) - Nested loops plus sum calculation
-**Space Complexity**: O(1) - Only using constant extra space
-
-**Why it's inefficient**: Triple nested operations make it too slow for large inputs.
+**Explanation:**
+- Subarray [2, 4, 1] has sum 2 + 4 + 1 = 7
+- Subarray [4, 1, 2] has sum 4 + 1 + 2 = 7
+- Subarray [7] has sum 7
+- Total: 3 subarrays
 
 ---
 
-### Approach 2: Optimized with Prefix Sums
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Approach**:
-- **Prefix Sum Optimization**: Use prefix sums to calculate subarray sums in O(1) time
-- **Efficiency Improvement**: Reduce time complexity from O(n³) to O(n²)
-- **Space Trade-off**: Use O(n) extra space for prefix sums to speed up calculations
-- **Better Performance**: Significantly faster than brute force for larger inputs
+### Pattern Recognition
 
-**Key Insight**: Precompute prefix sums to eliminate the need to recalculate subarray sums.
+> **Key Question:** All elements are positive. What does this guarantee about subarray sums?
 
-**Algorithm**:
-- Calculate prefix sum array where prefix[i] = sum of elements from 0 to i
-- Initialize counter to 0
-- For each starting position i, for each ending position j
-- Calculate subarray sum as prefix[j] - prefix[i-1] (or prefix[j] if i=0)
-- If sum equals target, increment counter
-- Return counter
+When all elements are positive:
+- Adding an element to a window **always increases** the sum
+- Removing an element from a window **always decreases** the sum
+- This monotonic behavior means we never need to backtrack
 
-**Visual Example**:
-```
-Array: [1, 4, 20, 3, 10, 5], target = 33
-Prefix: [1, 5, 25, 28, 38, 43]
+### Breaking Down the Problem
 
-Subarray sums using prefix:
-i=0, j=0: prefix[0] = 1
-i=0, j=1: prefix[1] = 5
-i=0, j=2: prefix[2] = 25
-i=0, j=3: prefix[3] = 28
-i=0, j=4: prefix[4] = 38
-i=0, j=5: prefix[5] = 43
+1. **What are we looking for?** Count of contiguous subarrays summing to exactly `x`
+2. **What information do we have?** Array of positive integers
+3. **What's the key insight?** Since elements are positive, if current sum exceeds target, we must shrink the window (expanding cannot help)
 
-i=1, j=1: prefix[1] - prefix[0] = 5 - 1 = 4
-i=1, j=2: prefix[2] - prefix[0] = 25 - 1 = 24
-i=1, j=3: prefix[3] - prefix[0] = 28 - 1 = 27
-i=1, j=4: prefix[4] - prefix[0] = 38 - 1 = 37
-i=1, j=5: prefix[5] - prefix[0] = 43 - 1 = 42
+### Analogy
 
-i=2, j=2: prefix[2] - prefix[1] = 25 - 5 = 20
-i=2, j=3: prefix[3] - prefix[1] = 28 - 5 = 23
-i=2, j=4: prefix[4] - prefix[1] = 38 - 5 = 33  ← Count: 1
-
-Total count: 1
-```
-
-**Implementation**:
-```python
-def optimized_subarray_sums_i(arr, target):
-    """
-    Count subarrays with given sum using prefix sums
-    
-    Args:
-        arr: List of integers
-        target: Target sum
-    
-    Returns:
-        int: Number of subarrays with sum equal to target
-    """
-    n = len(arr)
-    
-    # Calculate prefix sums
-    prefix = [0] * n
-    prefix[0] = arr[0]
-    for i in range(1, n):
-        prefix[i] = prefix[i-1] + arr[i]
-    
-    count = 0
-    
-    for i in range(n):
-        for j in range(i, n):
-            # Calculate subarray sum using prefix sums
-            if i == 0:
-                current_sum = prefix[j]
-            else:
-                current_sum = prefix[j] - prefix[i-1]
-            if current_sum == target:
-                count += 1
-    
-    return count
-
-# Example usage
-arr = [1, 4, 20, 3, 10, 5]
-target = 33
-result = optimized_subarray_sums_i(arr, target)
-print(f"Optimized result: {result}")  # Output: 1
-```
-
-**Time Complexity**: O(n²) - Nested loops with O(1) sum calculation
-**Space Complexity**: O(n) - Prefix sum array
-
-**Why it's better**: Much faster than brute force, but still not optimal.
+Think of filling a bucket with water:
+- Each element is a cup of water (always positive amount)
+- If the bucket overflows (sum > target), you must pour some out (shrink left)
+- If it's not full enough (sum < target), add more water (expand right)
 
 ---
 
-### Approach 3: Optimal with Hash Map
+## Solution 1: Brute Force
 
-**Key Insights from Optimal Approach**:
-- **Hash Map Optimization**: Use hash map to store prefix sums and their frequencies
-- **Efficiency Improvement**: Reduce time complexity from O(n²) to O(n)
-- **Space Trade-off**: Use O(n) extra space for hash map to achieve linear time
-- **Optimal Performance**: Best possible time complexity for this problem
+### Idea
 
-**Key Insight**: Use hash map to count how many times each prefix sum occurs, then for each current prefix sum, count how many previous prefix sums give us the target.
+Check every possible subarray and count those with sum equal to target.
 
-**Algorithm**:
-- Initialize hash map with {0: 1} to handle subarrays starting from index 0
-- Initialize counter to 0 and prefix sum to 0
-- For each element in the array:
-  - Add current element to prefix sum
-  - If (prefix_sum - target) exists in hash map, add its frequency to counter
-  - Increment frequency of current prefix sum in hash map
-- Return counter
+### Algorithm
 
-**Visual Example**:
-```
-Array: [1, 4, 20, 3, 10, 5], target = 33
-Hash map: {0: 1}
+1. For each starting index `i`
+2. For each ending index `j >= i`
+3. Calculate sum of subarray [i, j]
+4. If sum equals target, increment count
 
-i=0: prefix_sum = 1
-     Look for 1 - 33 = -32 in hash map (not found)
-     Hash map: {0: 1, 1: 1}
+### Code
 
-i=1: prefix_sum = 5
-     Look for 5 - 33 = -28 in hash map (not found)
-     Hash map: {0: 1, 1: 1, 5: 1}
-
-i=2: prefix_sum = 25
-     Look for 25 - 33 = -8 in hash map (not found)
-     Hash map: {0: 1, 1: 1, 5: 1, 25: 1}
-
-i=3: prefix_sum = 28
-     Look for 28 - 33 = -5 in hash map (not found)
-     Hash map: {0: 1, 1: 1, 5: 1, 25: 1, 28: 1}
-
-i=4: prefix_sum = 38
-     Look for 38 - 33 = 5 in hash map (found with frequency 1)
-     Count += 1
-     Hash map: {0: 1, 1: 1, 5: 1, 25: 1, 28: 1, 38: 1}
-
-i=5: prefix_sum = 43
-     Look for 43 - 33 = 10 in hash map (not found)
-     Hash map: {0: 1, 1: 1, 5: 1, 25: 1, 28: 1, 38: 1, 43: 1}
-
-Total count: 1
-```
-
-**Implementation**:
 ```python
-def optimal_subarray_sums_i(arr, target):
+def count_subarrays_brute(n, x, arr):
     """
-    Count subarrays with given sum using hash map
-    
-    Args:
-        arr: List of integers
-        target: Target sum
-    
-    Returns:
-        int: Number of subarrays with sum equal to target
+    Brute force: check all subarrays.
+    Time: O(n^2), Space: O(1)
     """
-    n = len(arr)
-    prefix_sum_map = {0: 1}  # Handle subarrays starting from index 0
-    prefix_sum = 0
     count = 0
-    
     for i in range(n):
-        prefix_sum += arr[i]
-        
-        # Count how many previous prefix sums give us the target
-        if prefix_sum - target in prefix_sum_map:
-            count += prefix_sum_map[prefix_sum - target]
-        
-        # Increment frequency of current prefix sum
-        prefix_sum_map[prefix_sum] = prefix_sum_map.get(prefix_sum, 0) + 1
-    
-    return count
-
-# Example usage
-arr = [1, 4, 20, 3, 10, 5]
-target = 33
-result = optimal_subarray_sums_i(arr, target)
-print(f"Optimal result: {result}")  # Output: 1
-```
-
-**Time Complexity**: O(n) - Single pass through the array
-**Space Complexity**: O(n) - Hash map for prefix sums
-
-**Why it's optimal**: Best possible time complexity for this problem.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n³) | O(1) | Check all possible subarrays |
-| Optimized | O(n²) | O(n) | Use prefix sums for faster calculation |
-| Optimal | O(n) | O(n) | Use hash map to count prefix sum frequencies |
-
-### Time Complexity
-- **Time**: O(n) - Single pass through the array
-- **Space**: O(n) - Hash map for prefix sums
-
-### Why This Solution Works
-- **Hash Map Counting**: Use hash map to count frequencies of prefix sums
-- **Prefix Sum Property**: If prefix[j] - prefix[i] = target, then subarray from i+1 to j has sum target
-- **Frequency Counting**: Count how many times each prefix sum occurs
-- **Optimal Approach**: O(n) time complexity is optimal for this problem
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Subarray Sums with Range Constraints**
-**Problem**: Count subarrays with sum equal to target within a specific range [l, r].
-
-**Key Differences**: Only count subarrays within a specific range
-
-**Solution Approach**: Use prefix sums with range filtering
-
-**Implementation**:
-```python
-def subarray_sums_range_constraints(arr, target, l, r):
-    """
-    Count subarrays with sum = target within range [l, r]
-    """
-    n = len(arr)
-    if l < 0 or r >= n or l > r:
-        return 0
-    
-    # Calculate prefix sums
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + arr[i]
-    
-    count = 0
-    
-    # Only consider subarrays within range [l, r]
-    for i in range(l, r + 1):
-        for j in range(i, r + 1):
-            if prefix[j + 1] - prefix[i] == target:
-                count += 1
-    
-    return count
-
-# Example usage
-arr = [1, 2, 3, 4, 5]
-target = 7
-l, r = 1, 3
-result = subarray_sums_range_constraints(arr, target, l, r)
-print(f"Subarrays with sum {target} in range [{l}, {r}]: {result}")  # Output: 1
-```
-
-#### **2. Subarray Sums with Multiple Targets**
-**Problem**: Count subarrays with sum equal to any of the given targets.
-
-**Key Differences**: Multiple target values instead of single target
-
-**Solution Approach**: Use hash map with multiple target checking
-
-**Implementation**:
-```python
-def subarray_sums_multiple_targets(arr, targets):
-    """
-    Count subarrays with sum equal to any of the given targets
-    """
-    n = len(arr)
-    targets_set = set(targets)
-    
-    # Calculate prefix sums
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + arr[i]
-    
-    count = 0
-    
-    for i in range(n):
+        current_sum = 0
         for j in range(i, n):
-            current_sum = prefix[j + 1] - prefix[i]
-            if current_sum in targets_set:
+            current_sum += arr[j]
+            if current_sum == x:
                 count += 1
-    
+            elif current_sum > x:
+                break  # Optimization: sum can only increase
     return count
-
-# Example usage
-arr = [1, 2, 3, 4, 5]
-targets = [3, 7, 9]
-result = subarray_sums_multiple_targets(arr, targets)
-print(f"Subarrays with sum in {targets}: {result}")  # Output: 3
 ```
 
-#### **3. Subarray Sums with Modulo Operations**
-**Problem**: Count subarrays with sum congruent to target modulo m.
+```cpp
+// C++ Brute Force
+long long countSubarraysBrute(int n, long long x, vector<long long>& arr) {
+    long long count = 0;
+    for (int i = 0; i < n; i++) {
+        long long sum = 0;
+        for (int j = i; j < n; j++) {
+            sum += arr[j];
+            if (sum == x) count++;
+            else if (sum > x) break;
+        }
+    }
+    return count;
+}
+```
 
-**Key Differences**: Use modulo arithmetic instead of exact equality
+### Complexity
 
-**Solution Approach**: Use prefix sums with modulo operations
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Nested loops over array |
+| Space | O(1) | Only tracking sum and count |
 
-**Implementation**:
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed because we check every subarray. However, O(n^2) is too slow for n = 2*10^5.
+
+---
+
+## Solution 2: Two Pointers (Optimal)
+
+### Key Insight
+
+> **The Trick:** Since all elements are positive, we can use a sliding window. Expand right to increase sum, shrink left to decrease sum. Each element is added and removed at most once.
+
+### Algorithm
+
+1. Initialize `left = 0`, `current_sum = 0`, `count = 0`
+2. For each `right` from 0 to n-1:
+   - Add `arr[right]` to `current_sum`
+   - While `current_sum > x`: subtract `arr[left]` and increment `left`
+   - If `current_sum == x`: increment `count`
+3. Return `count`
+
+### Why Two Pointers Works Here
+
+| Property | Guaranteed By |
+|----------|---------------|
+| Sum increases when expanding | All elements positive |
+| Sum decreases when shrinking | All elements positive |
+| Never need to expand left | Monotonic sum behavior |
+| Each element visited at most twice | Left pointer only moves right |
+
+### Dry Run Example
+
+Input: `n = 5, x = 7, arr = [2, 4, 1, 2, 7]`
+
+```
+Initial: left = 0, sum = 0, count = 0
+
+Step 1: right = 0, add arr[0] = 2
+  sum = 2
+  2 < 7, no shrink
+  2 != 7, no count
+  Window: [2]
+
+Step 2: right = 1, add arr[1] = 4
+  sum = 6
+  6 < 7, no shrink
+  6 != 7, no count
+  Window: [2, 4]
+
+Step 3: right = 2, add arr[2] = 1
+  sum = 7
+  7 = 7, no shrink
+  7 == 7, count = 1  <-- Found [2, 4, 1]
+  Window: [2, 4, 1]
+
+Step 4: right = 3, add arr[3] = 2
+  sum = 9
+  9 > 7, shrink: sum -= arr[0]=2, left = 1, sum = 7
+  7 = 7, stop shrinking
+  7 == 7, count = 2  <-- Found [4, 1, 2]
+  Window: [4, 1, 2]
+
+Step 5: right = 4, add arr[4] = 7
+  sum = 14
+  14 > 7, shrink: sum -= arr[1]=4, left = 2, sum = 10
+  10 > 7, shrink: sum -= arr[2]=1, left = 3, sum = 9
+  9 > 7, shrink: sum -= arr[3]=2, left = 4, sum = 7
+  7 == 7, count = 3  <-- Found [7]
+  Window: [7]
+
+Result: count = 3
+```
+
+All three subarrays found: [2,4,1], [4,1,2], and [7], each summing to 7.
+
+### Visual Diagram
+
+```
+arr:    [2,  4,  1,  2,  7]
+index:   0   1   2   3   4
+
+Window evolution (target = 7):
+
+  [2]         sum=2  < 7, expand
+  [2,4]       sum=6  < 7, expand
+  [2,4,1]     sum=7  = 7, COUNT!
+  [2,4,1,2]   sum=9  > 7, shrink
+    [4,1,2]   sum=7  = 7, COUNT!
+    [4,1,2,7] sum=14 > 7, shrink
+      [1,2,7] sum=10 > 7, shrink
+        [2,7] sum=9  > 7, shrink
+          [7] sum=7  = 7, COUNT!
+```
+
+### Code
+
 ```python
-def subarray_sums_modulo(arr, target, m):
+def count_subarrays(n, x, arr):
     """
-    Count subarrays with sum ≡ target (mod m)
+    Two-pointer sliding window for positive arrays.
+    Time: O(n), Space: O(1)
     """
-    n = len(arr)
-    
-    # Calculate prefix sums with modulo
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = (prefix[i] + arr[i]) % m
-    
     count = 0
-    
-    for i in range(n):
-        for j in range(i, n):
-            current_sum = (prefix[j + 1] - prefix[i]) % m
-            if current_sum == target:
-                count += 1
-    
+    current_sum = 0
+    left = 0
+
+    for right in range(n):
+        current_sum += arr[right]
+
+        # Shrink window while sum exceeds target
+        while current_sum > x and left <= right:
+            current_sum -= arr[left]
+            left += 1
+
+        # Check if current window matches target
+        if current_sum == x:
+            count += 1
+
     return count
 
-# Example usage
-arr = [1, 2, 3, 4, 5]
-target = 0
-m = 3
-result = subarray_sums_modulo(arr, target, m)
-print(f"Subarrays with sum ≡ {target} (mod {m}): {result}")  # Output: 4
+# Main
+if __name__ == "__main__":
+    n, x = map(int, input().split())
+    arr = list(map(int, input().split()))
+    print(count_subarrays(n, x, arr))
 ```
 
-### Related Problems
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-#### **CSES Problems**
-- [Subarray Sums I](https://cses.fi/problemset/task/2101) - Count subarrays with given sum
-- [Subarray Sums II](https://cses.fi/problemset/task/2102) - Count subarrays with given sum (advanced)
-- [Maximum Subarray Sum](https://cses.fi/problemset/task/2103) - Find maximum sum of subarray
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-#### **LeetCode Problems**
-- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Count subarrays with sum k
-- [Continuous Subarray Sum](https://leetcode.com/problems/continuous-subarray-sum/) - Subarray sum with modulo
-- [Subarray Product Less Than K](https://leetcode.com/problems/subarray-product-less-than-k/) - Subarray product
-- [Binary Subarray With Sum](https://leetcode.com/problems/binary-subarray-with-sum/) - Binary subarray with sum
+    int n;
+    long long x;
+    cin >> n >> x;
 
-#### **Problem Categories**
-- **Hash Map**: Prefix sum counting, frequency tracking, efficient lookups
-- **Prefix Sums**: Subarray sum calculation, range sum queries
-- **Array Processing**: Subarray analysis, sum optimization, counting
-- **Modulo Arithmetic**: Modular operations, congruence relations
+    vector<long long> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
 
-## 🚀 Key Takeaways
+    long long count = 0;
+    long long current_sum = 0;
+    int left = 0;
 
-- **Hash Map Counting**: The standard approach for counting subarray sums
-- **Prefix Sum Property**: Use prefix sums to efficiently calculate subarray sums
-- **Frequency Tracking**: Track frequencies of prefix sums to count valid subarrays
-- **Edge Cases**: Handle subarrays starting from index 0 with {0: 1} initialization
-- **Pattern Recognition**: This technique applies to many subarray sum counting problems
+    for (int right = 0; right < n; right++) {
+        current_sum += arr[right];
+
+        // Shrink window while sum exceeds target
+        while (current_sum > x && left <= right) {
+            current_sum -= arr[left];
+            left++;
+        }
+
+        // Check if current window matches target
+        if (current_sum == x) {
+            count++;
+        }
+    }
+
+    cout << count << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Each element added once, removed at most once |
+| Space | O(1) | Only pointers and sum variables |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Forgetting the Positive Constraint
+
+```python
+# WRONG approach for arrays with negative numbers
+# Two pointers does NOT work when elements can be negative!
+# Use hash map approach for Subarray Sums II instead
+```
+
+**Problem:** If array has negatives, shrinking window might not decrease sum.
+**Fix:** Verify constraint says "positive integers" before using two pointers.
+
+### Mistake 2: Integer Overflow
+
+```cpp
+// WRONG
+int current_sum = 0;  // Can overflow!
+
+// CORRECT
+long long current_sum = 0;  // Safe for sum up to 2*10^5 * 10^9
+```
+
+**Problem:** Sum can reach 2*10^14, exceeding `int` range.
+**Fix:** Use `long long` for sum and count in C++.
+
+### Mistake 3: Off-by-One in Window Shrinking
+
+```python
+# WRONG
+while current_sum > x:
+    current_sum -= arr[left]
+    left += 1
+# If left > right, we access invalid elements next iteration
+
+# CORRECT
+while current_sum > x and left <= right:
+    current_sum -= arr[left]
+    left += 1
+```
+
+**Problem:** Window can become empty, causing issues.
+**Fix:** Add boundary check `left <= right`.
+
+### Mistake 4: Not Handling Empty Result
+
+```python
+# The algorithm naturally handles no matches (returns 0)
+# But ensure you don't print "IMPOSSIBLE" - just print 0
+```
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single element match | `1 5` / `5` | `1` | Subarray [5] |
+| No matches | `3 100` / `1 2 3` | `0` | No subarray sums to 100 |
+| All same elements | `4 6` / `2 2 2 2` | `2` | [2,2,2] appears twice |
+| Entire array | `3 6` / `1 2 3` | `1` | Whole array sums to target |
+| Large values | `2 2000000000` / `10^9 10^9` | `1` | Tests long long handling |
+| Single element array | `1 1` / `1` | `1` | Simplest valid case |
+
+---
+
+## When to Use This Pattern
+
+### Use Two Pointers / Sliding Window When:
+- All array elements are **positive** (or non-negative with care)
+- Looking for subarrays with exact/at-most/at-least sum
+- Need O(n) time complexity
+- Can tolerate O(1) extra space
+
+### Don't Use When:
+- Array contains **negative numbers** (use hash map - see Subarray Sums II)
+- Need to find ALL subarrays, not just count
+- Problem asks for non-contiguous subsequences
+
+### Pattern Recognition Checklist:
+- [ ] Contiguous subarray problem? --> Consider sliding window
+- [ ] All positive elements? --> Two pointers works
+- [ ] Target is exact sum? --> Track when sum equals target
+- [ ] Elements can be negative? --> Use prefix sum + hash map instead
+
+---
+
+## Related Problems
+
+### CSES Problems
+
+| Problem | Link | Key Difference |
+|---------|------|----------------|
+| Subarray Sums II | [Task 1661](https://cses.fi/problemset/task/1661) | Allows negative numbers (use hash map) |
+| Subarray Divisibility | [Task 1662](https://cses.fi/problemset/task/1662) | Sum divisible by n (prefix sum modulo) |
+| Maximum Subarray Sum | [Task 1643](https://cses.fi/problemset/task/1643) | Find max sum (Kadane's algorithm) |
+
+### Similar Patterns
+
+| Problem | Platform | Technique |
+|---------|----------|-----------|
+| Minimum Size Subarray Sum | LeetCode 209 | Two pointers, find min length |
+| Subarray Product Less Than K | LeetCode 713 | Two pointers with product |
+| Longest Substring Without Repeating | LeetCode 3 | Sliding window with set |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Positive elements guarantee monotonic sum behavior, enabling O(n) two-pointer solution
+2. **Time Optimization:** From O(n^2) brute force to O(n) sliding window
+3. **Space Trade-off:** No extra space needed beyond pointers
+4. **Critical Check:** This technique ONLY works for positive arrays - verify constraints!
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why two pointers works for positive arrays but not negative
+- [ ] Trace through the algorithm on paper without code
+- [ ] Implement the solution from scratch in under 10 minutes
+- [ ] Identify this pattern when seeing similar problems
+- [ ] Know when to use hash map approach instead (Subarray Sums II)

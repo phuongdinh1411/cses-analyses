@@ -1,436 +1,514 @@
 ---
 layout: simple
-title: "Hotel Queries - 2D Range Queries"
+title: "Hotel Queries - Segment Tree with Max"
 permalink: /problem_soulutions/range_queries/hotel_queries_analysis
+difficulty: Medium
+tags: [segment-tree, range-queries, binary-search, point-update]
 ---
 
-# Hotel Queries - 2D Range Queries
+# Hotel Queries
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement 2D range queries for hotel problems
-- Apply 2D range queries to efficiently answer hotel queries
-- Optimize hotel query calculations using 2D range queries
-- Handle edge cases in hotel query problems
-- Recognize when to use 2D range queries vs other approaches
+| Attribute | Value |
+|-----------|-------|
+| **Source** | [CSES 1143 - Hotel Queries](https://cses.fi/problemset/task/1143) |
+| **Difficulty** | Medium |
+| **Category** | Range Queries |
+| **Time Limit** | 1 second |
+| **Key Technique** | Segment Tree with Maximum + Descend Search |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a 2D grid representing hotel rooms and multiple queries, each query asks for the number of available rooms in a 2D range [x1, y1] to [x2, y2]. The grid is static (no updates).
+After solving this problem, you will be able to:
+- [ ] Implement a segment tree that tracks maximum values
+- [ ] Use segment tree structure to find the first position satisfying a condition
+- [ ] Combine point updates with efficient search operations
+- [ ] Apply "descend" technique to search within a segment tree
 
-**Input**: 
-- First line: n (grid size) and q (number of queries)
-- Next n lines: n integers each (room availability: 1 = available, 0 = occupied)
-- Next q lines: x1 y1 x2 y2 (2D range boundaries, 1-indexed)
+---
 
-**Output**: 
-- q lines: number of available rooms in 2D range [x1, y1] to [x2, y2] for each query
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 1000
-- 1 ≤ q ≤ 2×10⁵
-- 0 ≤ grid[i][j] ≤ 1
-- 1 ≤ x1 ≤ x2 ≤ n, 1 ≤ y1 ≤ y2 ≤ n
+**Problem:** There are n hotels with specified room capacities. For each of m groups of tourists, find the first hotel (leftmost) that has enough rooms to accommodate the entire group, book those rooms, and report the hotel number (or 0 if no hotel can accommodate them).
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and m (number of hotels, number of groups)
+- Line 2: n integers h_1, h_2, ..., h_n (room count in each hotel)
+- Next m lines: One integer r_i (size of each group)
+
+**Output:**
+- For each group, print the hotel number (1-indexed) where they are assigned, or 0 if impossible
+
+**Constraints:**
+- 1 <= n, m <= 2 * 10^5
+- 1 <= h_i <= 10^9
+- 1 <= r_i <= 10^9
+
+### Example
+
 ```
 Input:
-3 2
-1 0 1
-0 1 0
-1 1 1
-1 1 2 2
-2 2 3 3
+8 5
+3 2 4 1 5 5 2 6
+4 4 7 1 1
 
 Output:
-2
-3
-
-Explanation**: 
-Query 1: available rooms in [1,0; 0,1] = 1+0+0+1 = 2
-Query 2: available rooms in [1,0; 1,1] = 1+0+1+1 = 3
+3 5 0 1 1
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Group 1 (size 4): Hotels have [3,2,4,1,5,5,2,6]. First hotel with >= 4 rooms is hotel 3 (4 rooms). Book it: [3,2,0,1,5,5,2,6]. Output: 3
+- Group 2 (size 4): First hotel with >= 4 rooms is hotel 5 (5 rooms). Book it: [3,2,0,1,1,5,2,6]. Output: 5
+- Group 3 (size 7): No hotel has >= 7 rooms. Output: 0
+- Group 4 (size 1): First hotel with >= 1 room is hotel 1 (3 rooms). Book it: [2,2,0,1,1,5,2,6]. Output: 1
+- Group 5 (size 1): First hotel with >= 1 room is hotel 1 (2 rooms). Book it: [1,2,0,1,1,5,2,6]. Output: 1
 
-### Approach 1: Brute Force
-**Time Complexity**: O(q×n²)  
-**Space Complexity**: O(1)
+---
 
-**Algorithm**:
-1. For each query, iterate through the 2D range [x1, y1] to [x2, y2]
-2. Count available rooms in the 2D range
-3. Return the count
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### Pattern Recognition
+
+> **Key Question:** We need to repeatedly find the "first position with value >= X" and then update that position. What data structure supports both operations efficiently?
+
+This is a classic application of segment trees. A segment tree with maximum allows us to:
+1. Check if any hotel in a range has enough rooms (compare range max with required rooms)
+2. Navigate down the tree to find the leftmost such hotel
+3. Update a single hotel's room count after booking
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** The leftmost hotel with rooms >= group size
+2. **What information do we have?** Current room counts for all hotels
+3. **What's the relationship between input and output?** For each query, find first valid position, update it, return the position
+
+### Why a Segment Tree?
+
+Think of the segment tree as a tournament bracket where each node stores the maximum of its children. To find the leftmost hotel with enough rooms:
+- If the root's max is less than needed, no hotel works (return 0)
+- Otherwise, always try the left subtree first (to get leftmost)
+- Only go right if left subtree's max is insufficient
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+For each group, linearly scan hotels from left to right to find the first one with enough rooms.
+
+### Algorithm
+
+1. For each group of size r:
+2. Iterate through hotels 1 to n
+3. If hotel i has >= r rooms, book it (subtract r), output i, move to next group
+4. If no hotel found, output 0
+
+### Code
+
 ```python
-def brute_force_hotel_queries(grid, queries):
-    n = len(grid)
+def solve_brute_force(n, m, hotels, groups):
+    """
+    Brute force: linear scan for each query.
+
+    Time: O(m * n)
+    Space: O(1) extra
+    """
     results = []
-    
-    for x1, y1, x2, y2 in queries:
-        # Convert to 0-indexed
-        x1 -= 1
-        y1 -= 1
-        x2 -= 1
-        y2 -= 1
-        
-        # Count available rooms in 2D range [x1, y1] to [x2, y2]
-        count = 0
-        for i in range(x1, x2 + 1):
-            for j in range(y1, y2 + 1):
-                if grid[i][j] == 1:
-                    count += 1
-        
-        results.append(count)
-    
+
+    for group_size in groups:
+        found = 0
+        for i in range(n):
+            if hotels[i] >= group_size:
+                hotels[i] -= group_size
+                found = i + 1  # 1-indexed
+                break
+        results.append(found)
+
     return results
 ```
 
-### Approach 2: Optimized with 2D Prefix Sums
-**Time Complexity**: O(n² + q)  
-**Space Complexity**: O(n²)
+### Complexity
 
-**Algorithm**:
-1. Precompute 2D prefix sum array where prefix[i][j] = count of available rooms from (0,0) to (i,j)
-2. For each query, calculate count using 2D prefix sums
-3. Return the count
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(m * n) | Each of m queries scans up to n hotels |
+| Space | O(1) | Only using input array |
 
-**Implementation**:
+### Why This Works (But Is Slow)
+
+The correctness is obvious: we check every hotel in order. However, with n, m up to 2*10^5, this gives 4*10^10 operations - far too slow.
+
+---
+
+## Solution 2: Optimal Solution with Segment Tree
+
+### Key Insight
+
+> **The Trick:** Build a segment tree storing maximum room count in each range. To find the leftmost hotel with enough rooms, descend from root, always preferring the left child.
+
+### Segment Tree Node Meaning
+
+| Node | Meaning |
+|------|---------|
+| `tree[v]` | Maximum room count among all hotels in the range covered by node v |
+
+**In plain English:** Each node tells us "the best hotel in my range has this many rooms available."
+
+### Operations Needed
+
+1. **Query + Update Combined:** Find leftmost position with value >= X, then subtract X from that position
+2. This is done in a single tree descent - no separate query and update phases
+
+### Algorithm
+
+1. Build segment tree where each node stores max of its range
+2. For each group of size r:
+   - If root's max < r: output 0 (no hotel works)
+   - Otherwise, descend the tree:
+     - At each internal node, go left if left child's max >= r, else go right
+     - At leaf, update value (subtract r) and propagate max changes up
+   - Output the found position
+
+### Dry Run Example
+
+Let's trace with `hotels = [3, 2, 4, 1, 5, 5, 2, 6]` and first query `r = 4`:
+
+```
+Initial segment tree (showing max values):
+                    [6]                    <- root: max of all = 6
+                /         \
+             [4]           [6]             <- max of [0-3] = 4, max of [4-7] = 6
+            /   \         /    \
+          [3]   [4]     [5]    [6]         <- max of pairs
+         /  \   /  \   /  \   /  \
+        3    2  4   1  5   5  2   6        <- leaf values (hotels)
+        ^    ^  ^   ^  ^   ^  ^   ^
+       h1   h2 h3  h4 h5  h6 h7  h8
+
+Query: Find leftmost hotel with >= 4 rooms
+
+Step 1: At root [6], max=6 >= 4, so solution exists
+Step 2: Check left child [4], max=4 >= 4, go LEFT
+Step 3: Check left child of [4], which is [3], max=3 < 4, go RIGHT
+Step 4: At node [4] (covering h3-h4), left child is leaf h3=4 >= 4, go LEFT
+Step 5: Reached leaf h3 (index 2, 1-indexed = 3)
+
+Update: h3 = 4 - 4 = 0
+
+After update, tree becomes:
+                    [6]
+                /         \
+             [3]           [6]             <- updated from 4 to 3
+            /   \         /    \
+          [3]   [1]     [5]    [6]         <- updated from 4 to 1
+         /  \   /  \
+        3    2  0   1                      <- h3 updated to 0
+
+Output: 3
+```
+
+### Visual Diagram
+
+```
+Segment Tree Structure (array-based, 1-indexed internal):
+
+For n=8 hotels, tree size = 2*8 = 16
+
+         Index:    1
+                /     \
+              2         3
+            /   \     /   \
+           4     5   6     7
+          /\    /\   /\    /\
+         8  9 10 11 12 13 14 15   <- leaves store hotel rooms
+
+Leaf index i corresponds to hotel (i - n + 1) in 1-indexed terms
+Or: leaf at tree[n + i] stores hotel[i] (0-indexed)
+```
+
+### Code
+
+**Python Solution:**
+
 ```python
-def optimized_hotel_queries(grid, queries):
-    n = len(grid)
-    
-    # Precompute 2D prefix sums
-    prefix = [[0] * (n + 1) for _ in range(n + 1)]
+import sys
+from typing import List
+
+def solve():
+    input_data = sys.stdin.read().split()
+    idx = 0
+
+    n = int(input_data[idx]); idx += 1
+    m = int(input_data[idx]); idx += 1
+
+    hotels = [int(input_data[idx + i]) for i in range(n)]
+    idx += n
+
+    groups = [int(input_data[idx + i]) for i in range(m)]
+
+    # Build segment tree (1-indexed, size 2*n)
+    # tree[i] for i >= n are leaves (hotels)
+    # tree[i] for i < n are internal nodes (max of children)
+    tree = [0] * (2 * n)
+
+    # Initialize leaves
     for i in range(n):
-        for j in range(n):
-            prefix[i + 1][j + 1] = (prefix[i][j + 1] + 
-                                   prefix[i + 1][j] - 
-                                   prefix[i][j] + 
-                                   grid[i][j])
-    
+        tree[n + i] = hotels[i]
+
+    # Build internal nodes (bottom-up)
+    for i in range(n - 1, 0, -1):
+        tree[i] = max(tree[2 * i], tree[2 * i + 1])
+
     results = []
-    for x1, y1, x2, y2 in queries:
-        # Calculate count using 2D prefix sums
-        count = (prefix[x2][y2] - 
-                prefix[x1 - 1][y2] - 
-                prefix[x2][y1 - 1] + 
-                prefix[x1 - 1][y1 - 1])
-        results.append(count)
-    
-    return results
+
+    for group_size in groups:
+        # Check if any hotel can accommodate
+        if tree[1] < group_size:
+            results.append(0)
+            continue
+
+        # Descend to find leftmost hotel with enough rooms
+        v = 1
+        while v < n:
+            if tree[2 * v] >= group_size:
+                v = 2 * v      # go left
+            else:
+                v = 2 * v + 1  # go right
+
+        # v is now a leaf, hotel index = v - n (0-indexed), output v - n + 1 (1-indexed)
+        hotel_idx = v - n
+        results.append(hotel_idx + 1)
+
+        # Update: subtract group_size from this hotel
+        tree[v] -= group_size
+
+        # Propagate update upward
+        v //= 2
+        while v >= 1:
+            tree[v] = max(tree[2 * v], tree[2 * v + 1])
+            v //= 2
+
+    print(' '.join(map(str, results)))
+
+if __name__ == "__main__":
+    solve()
 ```
 
-### Approach 3: Optimal with 2D Prefix Sums
-**Time Complexity**: O(n² + q)  
-**Space Complexity**: O(n²)
+**C++ Solution:**
 
-**Algorithm**:
-1. Precompute 2D prefix sum array where prefix[i][j] = count of available rooms from (0,0) to (i,j)
-2. For each query, calculate count using 2D prefix sums
-3. Return the count
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Implementation**:
-```python
-def optimal_hotel_queries(grid, queries):
-    n = len(grid)
-    
-    # Precompute 2D prefix sums
-    prefix = [[0] * (n + 1) for _ in range(n + 1)]
-    for i in range(n):
-        for j in range(n):
-            prefix[i + 1][j + 1] = (prefix[i][j + 1] + 
-                                   prefix[i + 1][j] - 
-                                   prefix[i][j] + 
-                                   grid[i][j])
-    
-    results = []
-    for x1, y1, x2, y2 in queries:
-        # Calculate count using 2D prefix sums
-        count = (prefix[x2][y2] - 
-                prefix[x1 - 1][y2] - 
-                prefix[x2][y1 - 1] + 
-                prefix[x1 - 1][y1 - 1])
-        results.append(count)
-    
-    return results
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+
+    // Segment tree: size 2*n, 1-indexed internally
+    // Leaves at indices [n, 2n-1], internal nodes at [1, n-1]
+    vector<long long> tree(2 * n);
+
+    // Read hotels into leaves
+    for (int i = 0; i < n; i++) {
+        cin >> tree[n + i];
+    }
+
+    // Build internal nodes (store max)
+    for (int i = n - 1; i >= 1; i--) {
+        tree[i] = max(tree[2 * i], tree[2 * i + 1]);
+    }
+
+    // Process queries
+    for (int q = 0; q < m; q++) {
+        long long group_size;
+        cin >> group_size;
+
+        // Check if any hotel can accommodate
+        if (tree[1] < group_size) {
+            cout << 0;
+        } else {
+            // Descend to find leftmost valid hotel
+            int v = 1;
+            while (v < n) {
+                if (tree[2 * v] >= group_size) {
+                    v = 2 * v;      // go left
+                } else {
+                    v = 2 * v + 1;  // go right
+                }
+            }
+
+            // v is leaf, hotel number is (v - n + 1) in 1-indexed
+            cout << (v - n + 1);
+
+            // Update leaf
+            tree[v] -= group_size;
+
+            // Propagate upward
+            for (v /= 2; v >= 1; v /= 2) {
+                tree[v] = max(tree[2 * v], tree[2 * v + 1]);
+            }
+        }
+
+        if (q < m - 1) cout << ' ';
+    }
+    cout << '\n';
+
+    return 0;
+}
 ```
 
-## 🔧 Implementation Details
+### Complexity
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(q×n²) | O(1) | Count available rooms for each query |
-| Optimized | O(n² + q) | O(n²) | Use 2D prefix sums for O(1) queries |
-| Optimal | O(n² + q) | O(n²) | Use 2D prefix sums for O(1) queries |
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O((n + m) * log n) | Build tree O(n), each query O(log n) |
+| Space | O(n) | Segment tree of size 2n |
 
-### Time Complexity
-- **Time**: O(n² + q) - O(n²) preprocessing + O(1) per query
-- **Space**: O(n²) - 2D prefix sum array
+---
 
-### Why This Solution Works
-- **2D Prefix Sum Property**: prefix[x2][y2] - prefix[x1-1][y2] - prefix[x2][y1-1] + prefix[x1-1][y1-1] gives count of available rooms in 2D range
-- **Efficient Preprocessing**: Calculate 2D prefix sums once in O(n²) time
-- **Fast Queries**: Answer each query in O(1) time
-- **Optimal Approach**: O(n² + q) time complexity is optimal for this problem
+## Common Mistakes
 
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Hotel Queries with Dynamic Updates
-**Problem**: Handle dynamic updates to the hotel grid and maintain 2D range count queries.
-
-**Link**: [CSES Problem Set - Hotel Queries with Updates](https://cses.fi/problemset/task/hotel_queries_updates)
-
-```python
-class HotelQueriesWithUpdates:
-    def __init__(self, grid):
-        self.n = len(grid)
-        self.m = len(grid[0]) if grid else 0
-        self.grid = [row[:] for row in grid]
-        self.prefix = self._compute_2d_prefix()
-    
-    def _compute_2d_prefix(self):
-        """Compute 2D prefix sums for count queries"""
-        prefix = [[0] * (self.m + 1) for _ in range(self.n + 1)]
-        
-        for i in range(1, self.n + 1):
-            for j in range(1, self.m + 1):
-                count = 1 if self.grid[i-1][j-1] == 'H' else 0
-                prefix[i][j] = (count + 
-                               prefix[i-1][j] + 
-                               prefix[i][j-1] - 
-                               prefix[i-1][j-1])
-        
-        return prefix
-    
-    def update(self, row, col, value):
-        """Update grid[row][col] to value"""
-        self.grid[row][col] = value
-        self.prefix = self._compute_2d_prefix()
-    
-    def range_count(self, x1, y1, x2, y2):
-        """Query count of hotels in rectangle from (x1,y1) to (x2,y2)"""
-        return (self.prefix[x2+1][y2+1] - 
-                self.prefix[x1][y2+1] - 
-                self.prefix[x2+1][y1] + 
-                self.prefix[x1][y1])
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for x1, y1, x2, y2 in queries:
-            results.append(self.range_count(x1, y1, x2, y2))
-        return results
-```
-
-### Variation 2: Hotel Queries with Different Operations
-**Problem**: Handle different types of operations (count, sum, max, min) on 2D ranges.
-
-**Link**: [CSES Problem Set - Hotel Queries Different Operations](https://cses.fi/problemset/task/hotel_queries_operations)
+### Mistake 1: Using Binary Search Instead of Tree Descent
 
 ```python
-class HotelQueriesDifferentOps:
-    def __init__(self, grid):
-        self.n = len(grid)
-        self.m = len(grid[0]) if grid else 0
-        self.grid = [row[:] for row in grid]
-        self.prefix_count = self._compute_2d_prefix_count()
-        self.prefix_sum = self._compute_2d_prefix_sum()
-        self.prefix_max = self._compute_2d_prefix_max()
-        self.prefix_min = self._compute_2d_prefix_min()
-    
-    def _compute_2d_prefix_count(self):
-        """Compute 2D prefix counts (count of hotels)"""
-        prefix = [[0] * (self.m + 1) for _ in range(self.n + 1)]
-        
-        for i in range(1, self.n + 1):
-            for j in range(1, self.m + 1):
-                count = 1 if self.grid[i-1][j-1] == 'H' else 0
-                prefix[i][j] = (count + 
-                               prefix[i-1][j] + 
-                               prefix[i][j-1] - 
-                               prefix[i-1][j-1])
-        
-        return prefix
-    
-    def _compute_2d_prefix_sum(self):
-        """Compute 2D prefix sums (sum of hotel values)"""
-        prefix = [[0] * (self.m + 1) for _ in range(self.n + 1)]
-        
-        for i in range(1, self.n + 1):
-            for j in range(1, self.m + 1):
-                value = 1 if self.grid[i-1][j-1] == 'H' else 0
-                prefix[i][j] = (value + 
-                               prefix[i-1][j] + 
-                               prefix[i][j-1] - 
-                               prefix[i-1][j-1])
-        
-        return prefix
-    
-    def _compute_2d_prefix_max(self):
-        """Compute 2D prefix maximums"""
-        prefix = [[float('-inf')] * (self.m + 1) for _ in range(self.n + 1)]
-        
-        for i in range(1, self.n + 1):
-            for j in range(1, self.m + 1):
-                value = 1 if self.grid[i-1][j-1] == 'H' else 0
-                prefix[i][j] = max(value,
-                                  prefix[i-1][j],
-                                  prefix[i][j-1])
-        
-        return prefix
-    
-    def _compute_2d_prefix_min(self):
-        """Compute 2D prefix minimums"""
-        prefix = [[float('inf')] * (self.m + 1) for _ in range(self.n + 1)]
-        
-        for i in range(1, self.n + 1):
-            for j in range(1, self.m + 1):
-                value = 1 if self.grid[i-1][j-1] == 'H' else 0
-                prefix[i][j] = min(value,
-                                  prefix[i-1][j],
-                                  prefix[i][j-1])
-        
-        return prefix
-    
-    def range_count(self, x1, y1, x2, y2):
-        """Query count of hotels in rectangle"""
-        return (self.prefix_count[x2+1][y2+1] - 
-                self.prefix_count[x1][y2+1] - 
-                self.prefix_count[x2+1][y1] + 
-                self.prefix_count[x1][y1])
-    
-    def range_sum(self, x1, y1, x2, y2):
-        """Query sum of hotel values in rectangle"""
-        return (self.prefix_sum[x2+1][y2+1] - 
-                self.prefix_sum[x1][y2+1] - 
-                self.prefix_sum[x2+1][y1] + 
-                self.prefix_sum[x1][y1])
-    
-    def range_max(self, x1, y1, x2, y2):
-        """Query maximum hotel value in rectangle"""
-        max_val = float('-inf')
-        for i in range(x1, x2 + 1):
-            for j in range(y1, y2 + 1):
-                value = 1 if self.grid[i][j] == 'H' else 0
-                max_val = max(max_val, value)
-        return max_val
-    
-    def range_min(self, x1, y1, x2, y2):
-        """Query minimum hotel value in rectangle"""
-        min_val = float('inf')
-        for i in range(x1, x2 + 1):
-            for j in range(y1, y2 + 1):
-                value = 1 if self.grid[i][j] == 'H' else 0
-                min_val = min(min_val, value)
-        return min_val
+# WRONG APPROACH
+def find_hotel_binary_search(tree, n, required):
+    lo, hi = 0, n - 1
+    while lo < hi:
+        mid = (lo + hi) // 2
+        # This doesn't work! Can't query "max in [0, mid]" efficiently
+        # without understanding segment tree structure
 ```
 
-### Variation 3: Hotel Queries with Constraints
-**Problem**: Handle 2D range queries with additional constraints (e.g., minimum count, maximum area).
+**Problem:** Standard binary search doesn't leverage segment tree structure efficiently.
+**Fix:** Use the descent approach - check left child first, go right only if necessary.
 
-**Link**: [CSES Problem Set - Hotel Queries with Constraints](https://cses.fi/problemset/task/hotel_queries_constraints)
+### Mistake 2: Forgetting to Propagate Updates
 
 ```python
-class HotelQueriesWithConstraints:
-    def __init__(self, grid, min_count, max_area):
-        self.n = len(grid)
-        self.m = len(grid[0]) if grid else 0
-        self.grid = [row[:] for row in grid]
-        self.min_count = min_count
-        self.max_area = max_area
-        self.prefix = self._compute_2d_prefix()
-    
-    def _compute_2d_prefix(self):
-        """Compute 2D prefix sums for count queries"""
-        prefix = [[0] * (self.m + 1) for _ in range(self.n + 1)]
-        
-        for i in range(1, self.n + 1):
-            for j in range(1, self.m + 1):
-                count = 1 if self.grid[i-1][j-1] == 'H' else 0
-                prefix[i][j] = (count + 
-                               prefix[i-1][j] + 
-                               prefix[i][j-1] - 
-                               prefix[i-1][j-1])
-        
-        return prefix
-    
-    def constrained_range_query(self, x1, y1, x2, y2):
-        """Query count of hotels in rectangle with constraints"""
-        # Check maximum area constraint
-        area = (x2 - x1 + 1) * (y2 - y1 + 1)
-        if area > self.max_area:
-            return None  # Exceeds maximum area
-        
-        # Get count
-        count = (self.prefix[x2+1][y2+1] - 
-                self.prefix[x1][y2+1] - 
-                self.prefix[x2+1][y1] + 
-                self.prefix[x1][y1])
-        
-        # Check minimum count constraint
-        if count < self.min_count:
-            return None  # Below minimum count
-        
-        return count
-    
-    def find_valid_rectangles(self):
-        """Find all valid rectangles that satisfy constraints"""
-        valid_rectangles = []
-        
-        for x1 in range(self.n):
-            for y1 in range(self.m):
-                for x2 in range(x1, self.n):
-                    for y2 in range(y1, self.m):
-                        result = self.constrained_range_query(x1, y1, x2, y2)
-                        if result is not None:
-                            valid_rectangles.append((x1, y1, x2, y2, result))
-        
-        return valid_rectangles
-    
-    def get_maximum_valid_count(self):
-        """Get maximum valid count"""
-        max_count = float('-inf')
-        
-        for x1 in range(self.n):
-            for y1 in range(self.m):
-                for x2 in range(x1, self.n):
-                    for y2 in range(y1, self.m):
-                        result = self.constrained_range_query(x1, y1, x2, y2)
-                        if result is not None:
-                            max_count = max(max_count, result)
-        
-        return max_count if max_count != float('-inf') else None
+# WRONG
+tree[v] -= group_size  # Update leaf
+# Missing: propagate change to ancestors!
 
-# Example usage
-grid = [['H', '.', 'H'], ['.', 'H', '.'], ['H', 'H', '.']]
-min_count = 2
-max_area = 6
-
-hq = HotelQueriesWithConstraints(grid, min_count, max_area)
-result = hq.constrained_range_query(0, 0, 1, 1)
-print(f"Constrained range query result: {result}")  # Output: 2
+# CORRECT
+tree[v] -= group_size
+v //= 2
+while v >= 1:
+    tree[v] = max(tree[2 * v], tree[2 * v + 1])
+    v //= 2
 ```
 
-### Related Problems
+**Problem:** Parent nodes still have stale max values.
+**Fix:** Always update ancestors after modifying a leaf.
 
-#### **CSES Problems**
-- [Hotel Queries](https://cses.fi/problemset/task/1143) - Basic 2D range count queries problem
-- [Forest Queries](https://cses.fi/problemset/task/1652) - 2D range sum queries
-- [Static Range Sum Queries](https://cses.fi/problemset/task/1646) - 1D range sum queries
+### Mistake 3: Off-by-One Indexing
 
-#### **LeetCode Problems**
-- [Range Sum Query 2D - Immutable](https://leetcode.com/problems/range-sum-query-2d-immutable/) - 2D range sum queries
-- [Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) - 2D range sum with updates
-- [Max Sum of Rectangle No Larger Than K](https://leetcode.com/problems/max-sum-of-rectangle-no-larger-than-k/) - 2D range sum with constraints
+```python
+# WRONG - mixing 0-indexed and 1-indexed
+hotel_number = v - n  # This is 0-indexed!
 
-#### **Problem Categories**
-- **2D Prefix Sums**: 2D range queries, rectangle operations, efficient preprocessing
-- **Range Queries**: Query processing, range operations, efficient algorithms
-- **Grid Processing**: 2D array operations, rectangle queries, spatial algorithms
-- **Algorithm Design**: 2D prefix sum techniques, range optimization, spatial processing
+# CORRECT
+hotel_number = v - n + 1  # Convert to 1-indexed for output
+```
+
+### Mistake 4: Wrong Tree Size for Non-Power-of-2
+
+```python
+# Potential issue: if n is not power of 2
+# The simple 2*n approach works, but be careful with indexing
+
+# Safe approach: pad to next power of 2, or use this exact method
+# which works for any n
+```
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| No room available | `n=2, hotels=[1,1], group=5` | 0 | Max room count < required |
+| All groups same hotel | `n=3, hotels=[10,1,1], groups=[1,1,1]` | 1 1 1 | First hotel keeps having enough |
+| Single hotel | `n=1, hotels=[5], groups=[3,3]` | 1 0 | Second group can't fit |
+| Large values | `hotels=[10^9], group=10^9` | 1 | Handle large numbers |
+| Exact fit | `hotels=[4,3], group=4` | 1 | Exact match works |
+
+---
+
+## When to Use This Pattern
+
+### Use This Approach When:
+- You need to find the **first/leftmost position** satisfying a condition
+- The condition can be checked using **range aggregates** (max, min, sum, etc.)
+- You need **point updates** after finding the position
+- Multiple queries require efficient repeated searches
+
+### Don't Use When:
+- Simple linear scan is fast enough (small n, m)
+- You need range updates (consider lazy propagation)
+- The "first position" logic doesn't fit segment tree descent
+
+### Pattern Recognition Checklist:
+- [ ] Need to find first position with value >= X? **Segment tree with max + descent**
+- [ ] Need to find first position with prefix sum >= X? **Segment tree with sum + descent**
+- [ ] Need range max/min queries without position finding? **Standard segment tree query**
+- [ ] Need to support range updates too? **Segment tree with lazy propagation**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [Static Range Minimum Queries (CSES 1647)](https://cses.fi/problemset/task/1647) | Basic segment tree / sparse table for range min |
+| [Dynamic Range Sum Queries (CSES 1648)](https://cses.fi/problemset/task/1648) | Segment tree with point updates |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Dynamic Range Minimum Queries (CSES 1649)](https://cses.fi/problemset/task/1649) | Range min instead of max, no descent needed |
+| [Range Update Queries (CSES 1651)](https://cses.fi/problemset/task/1651) | Range updates instead of point updates |
+| [List Removals (CSES 1749)](https://cses.fi/problemset/task/1749) | Similar descent technique to find k-th element |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Polynomial Queries (CSES 1736)](https://cses.fi/problemset/task/1736) | Lazy propagation with arithmetic sequences |
+| [Range Queries and Copies (CSES 1737)](https://cses.fi/problemset/task/1737) | Persistent segment tree |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Use segment tree maximum to quickly check if a valid position exists, then descend preferring left to find the leftmost one.
+2. **Time Optimization:** From O(n) per query to O(log n) by using tree structure for both searching and updating.
+3. **Space Trade-off:** O(n) extra space for the segment tree enables logarithmic operations.
+4. **Pattern:** "Find first position with condition" problems often use segment tree descent.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Build a segment tree with max in O(n) time
+- [ ] Implement the descent to find leftmost position with value >= X
+- [ ] Correctly update a leaf and propagate changes upward
+- [ ] Handle the "no valid position" case
+- [ ] Implement in under 15 minutes without reference
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Segment Tree](https://cp-algorithms.com/data_structures/segment_tree.html)
+- [CSES Problem Set - Range Queries](https://cses.fi/problemset/list/)
+- [Codeforces EDU: Segment Tree (Part 2)](https://codeforces.com/edu/course/2/lesson/4)

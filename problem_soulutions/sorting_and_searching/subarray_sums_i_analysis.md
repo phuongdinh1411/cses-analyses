@@ -1,1444 +1,518 @@
 ---
 layout: simple
-title: "Subarray Sums I"
+title: "Subarray Sums I - Sorting and Searching Problem"
 permalink: /problem_soulutions/sorting_and_searching/subarray_sums_i_analysis
+difficulty: Easy
+tags: [prefix-sum, hash-map, counting, sliding-window]
+prerequisites: []
 ---
 
 # Subarray Sums I
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of prefix sums and their applications
-- Apply prefix sum technique for efficient range sum queries
-- Implement efficient solutions for subarray sum problems with optimal complexity
-- Optimize solutions for large inputs with proper complexity analysis
-- Handle edge cases in prefix sum problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Easy |
+| **Category** | Sorting and Searching |
+| **Time Limit** | 1 second |
+| **Key Technique** | Prefix Sum + Hash Map |
+| **CSES Link** | [https://cses.fi/problemset/task/1660](https://cses.fi/problemset/task/1660) |
 
-## 📋 Problem Description
+### Learning Goals
 
-You are given an array of n integers and q queries. Each query asks for the sum of elements in a subarray from position a to position b (inclusive).
+After solving this problem, you will be able to:
+- [ ] Understand how prefix sums enable O(1) subarray sum calculations
+- [ ] Use a hash map to count occurrences of prefix sums
+- [ ] Apply the "complement counting" pattern: if prefix[j] - prefix[i] = x, then we need prefix[i] = prefix[j] - x
+- [ ] Handle the base case of prefix sum = 0 (subarray starting from index 0)
 
-Answer all queries efficiently.
+---
 
-**Input**: 
-- First line: two integers n and q (array size and number of queries)
-- Second line: n integers a[1], a[2], ..., a[n] (array elements)
-- Next q lines: two integers a and b (query range)
+## Problem Statement
 
-**Output**: 
-- Print q integers: the sum of elements in each query range
+**Problem:** Given an array of n positive integers and a target sum x, count the number of subarrays that have sum exactly equal to x.
 
-**Constraints**:
-- 1 ≤ n, q ≤ 2×10⁵
-- 1 ≤ a[i] ≤ 10⁹
-- 1 ≤ a ≤ b ≤ n
+**Input:**
+- Line 1: Two integers n (array size) and x (target sum)
+- Line 2: n positive integers a_1, a_2, ..., a_n
 
-**Example**:
+**Output:**
+- One integer: the count of subarrays with sum equal to x
+
+**Constraints:**
+- 1 <= n <= 2 * 10^5
+- 1 <= x <= 10^9
+- 1 <= a_i <= 10^9 (all elements are positive)
+
+### Example
+
 ```
 Input:
-8 3
-3 2 4 5 1 6 2 7
-2 5
-1 3
-4 8
+5 7
+2 4 1 2 7
 
 Output:
-12
-9
-21
-
-Explanation**: 
-Array: [3, 2, 4, 5, 1, 6, 2, 7]
-
-Query 1: Range [2, 5] → sum = 2 + 4 + 5 + 1 = 12
-Query 2: Range [1, 3] → sum = 3 + 2 + 4 = 9
-Query 3: Range [4, 8] → sum = 5 + 1 + 6 + 2 + 7 = 21
+3
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+The subarrays with sum 7 are:
+1. [2, 4, 1] at indices 1-3: 2 + 4 + 1 = 7
+2. [4, 1, 2] at indices 2-4: 4 + 1 + 2 = 7
+3. [7] at index 5: 7 = 7
 
-### Approach 1: Brute Force - Calculate Sum for Each Query
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: For each query, iterate through the range and calculate the sum
-- **Complete Coverage**: Guaranteed to find the correct sum for each query
-- **Simple Implementation**: Straightforward approach with nested loops
-- **Inefficient**: Quadratic time complexity for multiple queries
-
-**Key Insight**: For each query, iterate through the specified range and sum all elements.
-
-**Algorithm**:
-- For each query (a, b):
-  - Initialize sum = 0
-  - Iterate from position a to b (inclusive)
-  - Add each element to the sum
-  - Return the sum
-
-**Visual Example**:
-```
-Array: [3, 2, 4, 5, 1, 6, 2, 7]
-
-Query 1: Range [2, 5]
-- Position 2: sum = 0 + 2 = 2
-- Position 3: sum = 2 + 4 = 6
-- Position 4: sum = 6 + 5 = 11
-- Position 5: sum = 11 + 1 = 12
-Result: 12
-
-Query 2: Range [1, 3]
-- Position 1: sum = 0 + 3 = 3
-- Position 2: sum = 3 + 2 = 5
-- Position 3: sum = 5 + 4 = 9
-Result: 9
-
-Query 3: Range [4, 8]
-- Position 4: sum = 0 + 5 = 5
-- Position 5: sum = 5 + 1 = 6
-- Position 6: sum = 6 + 6 = 12
-- Position 7: sum = 12 + 2 = 14
-- Position 8: sum = 14 + 7 = 21
-Result: 21
-```
-
-**Implementation**:
-```python
-def brute_force_subarray_sums_i(arr, queries):
-    """
-    Find subarray sums using brute force approach
-    
-    Args:
-        arr: list of integers
-        queries: list of (start, end) tuples
-    
-    Returns:
-        list: sum for each query
-    """
-    results = []
-    
-    for start, end in queries:
-        current_sum = 0
-        for i in range(start - 1, end):  # Convert to 0-based indexing
-            current_sum += arr[i]
-        results.append(current_sum)
-    
-    return results
-
-# Example usage
-arr = [3, 2, 4, 5, 1, 6, 2, 7]
-queries = [(2, 5), (1, 3), (4, 8)]
-result = brute_force_subarray_sums_i(arr, queries)
-print(f"Brute force result: {result}")  # Output: [12, 9, 21]
-```
-
-**Time Complexity**: O(q × n) - For each query, iterate through the range
-**Space Complexity**: O(1) - Constant extra space
-
-**Why it's inefficient**: Quadratic time complexity makes it slow for large inputs with many queries.
+Total: 3 subarrays
 
 ---
 
-### Approach 2: Optimized - Precompute Prefix Sums
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Approach**:
-- **Prefix Sums**: Precompute prefix sums to answer queries in O(1) time
-- **Efficient Queries**: Use prefix sum array to calculate range sums quickly
-- **Better Complexity**: Achieve O(n + q) time complexity
-- **Memory Trade-off**: Use more memory for better time complexity
+### Pattern Recognition
 
-**Key Insight**: Use prefix sums to precompute cumulative sums and answer range queries in O(1) time.
+> **Key Question:** How can we efficiently check if any subarray sums to x without checking all O(n^2) subarrays?
 
-**Algorithm**:
-- Precompute prefix sum array: prefix[i] = sum of elements from 1 to i
-- For each query (a, b): sum = prefix[b] - prefix[a-1]
+The key insight is that the sum of subarray arr[i..j] equals prefix[j] - prefix[i-1]. So if we want prefix[j] - prefix[i-1] = x, we need prefix[i-1] = prefix[j] - x. This transforms the problem into: "For each position j, how many previous prefix sums equal (current_prefix - x)?"
 
-**Visual Example**:
+### Breaking Down the Problem
+
+1. **What are we looking for?** Count of subarrays with sum exactly x
+2. **What information do we have?** Array of positive integers, target sum x
+3. **What's the relationship?** sum(arr[i..j]) = prefix[j] - prefix[i-1] = x
+
+### Why This Works
+
 ```
-Array: [3, 2, 4, 5, 1, 6, 2, 7]
+If we have: prefix_sum[j] - prefix_sum[i-1] = x
+Then:       prefix_sum[i-1] = prefix_sum[j] - x
 
-Prefix sum array: [0, 3, 5, 9, 14, 15, 21, 23, 30]
-- prefix[0] = 0
-- prefix[1] = 3
-- prefix[2] = 3 + 2 = 5
-- prefix[3] = 5 + 4 = 9
-- prefix[4] = 9 + 5 = 14
-- prefix[5] = 14 + 1 = 15
-- prefix[6] = 15 + 6 = 21
-- prefix[7] = 21 + 2 = 23
-- prefix[8] = 23 + 7 = 30
-
-Query 1: Range [2, 5]
-- sum = prefix[5] - prefix[1] = 15 - 3 = 12
-
-Query 2: Range [1, 3]
-- sum = prefix[3] - prefix[0] = 9 - 0 = 9
-
-Query 3: Range [4, 8]
-- sum = prefix[8] - prefix[3] = 30 - 9 = 21
+So at each position j, we count how many times we've seen
+the value (prefix_sum[j] - x) in our previous prefix sums.
 ```
 
-**Implementation**:
-```python
-def optimized_subarray_sums_i(arr, queries):
-    """
-    Find subarray sums using prefix sum approach
-    
-    Args:
-        arr: list of integers
-        queries: list of (start, end) tuples
-    
-    Returns:
-        list: sum for each query
-    """
-    n = len(arr)
-    prefix = [0] * (n + 1)
-    
-    # Build prefix sum array
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + arr[i]
-    
-    results = []
-    for start, end in queries:
-        # Convert to 0-based indexing and use prefix sum formula
-        sum_range = prefix[end] - prefix[start - 1]
-        results.append(sum_range)
-    
-    return results
+### Analogies
 
-# Example usage
-arr = [3, 2, 4, 5, 1, 6, 2, 7]
-queries = [(2, 5), (1, 3), (4, 8)]
-result = optimized_subarray_sums_i(arr, queries)
-print(f"Optimized result: {result}")  # Output: [12, 9, 21]
-```
-
-**Time Complexity**: O(n + q) - O(n) for prefix sum construction, O(q) for queries
-**Space Complexity**: O(n) - Prefix sum array
-
-**Why it's better**: Much more efficient than brute force with prefix sum optimization.
+Think of this like a financial ledger. Your running balance (prefix sum) at any point tells you the total so far. To find a period where you earned exactly x dollars, you look for a previous balance that is exactly x less than your current balance.
 
 ---
 
-### Approach 3: Optimal - In-Place Prefix Sums
+## Solution 1: Brute Force
 
-**Key Insights from Optimal Approach**:
-- **In-Place Construction**: Build prefix sums in-place to save memory
-- **Optimal Complexity**: Achieve O(n + q) time complexity with minimal space
-- **Efficient Implementation**: No need for extra array
-- **Space Optimization**: Use the original array for prefix sums
+### Idea
 
-**Key Insight**: Build prefix sums in-place to achieve optimal space complexity while maintaining O(1) query time.
+Check every possible subarray by trying all pairs of start and end positions.
 
-**Algorithm**:
-- Build prefix sums in-place: arr[i] = arr[i] + arr[i-1]
-- For each query (a, b): sum = arr[b-1] - (arr[a-2] if a > 1 else 0)
+### Algorithm
 
-**Visual Example**:
-```
-Array: [3, 2, 4, 5, 1, 6, 2, 7]
+1. For each starting position i from 0 to n-1
+2. For each ending position j from i to n-1
+3. Calculate sum of arr[i..j] and check if it equals x
+4. Count all matching subarrays
 
-In-place prefix sum construction:
-- arr[0] = 3 (unchanged)
-- arr[1] = 2 + 3 = 5
-- arr[2] = 4 + 5 = 9
-- arr[3] = 5 + 9 = 14
-- arr[4] = 1 + 14 = 15
-- arr[5] = 6 + 15 = 21
-- arr[6] = 2 + 21 = 23
-- arr[7] = 7 + 23 = 30
-
-Final array: [3, 5, 9, 14, 15, 21, 23, 30]
-
-Query 1: Range [2, 5] (1-based)
-- sum = arr[4] - arr[0] = 15 - 3 = 12
-
-Query 2: Range [1, 3] (1-based)
-- sum = arr[2] - 0 = 9 - 0 = 9
-
-Query 3: Range [4, 8] (1-based)
-- sum = arr[7] - arr[2] = 30 - 9 = 21
-```
-
-**Implementation**:
-```python
-def optimal_subarray_sums_i(arr, queries):
-    """
-    Find subarray sums using optimal in-place prefix sum approach
-    
-    Args:
-        arr: list of integers
-        queries: list of (start, end) tuples
-    
-    Returns:
-        list: sum for each query
-    """
-    n = len(arr)
-    
-    # Build prefix sums in-place
-    for i in range(1, n):
-        arr[i] += arr[i - 1]
-    
-    results = []
-    for start, end in queries:
-        # Convert to 0-based indexing
-        start_idx = start - 1
-        end_idx = end - 1
-        
-        if start_idx == 0:
-            sum_range = arr[end_idx]
-        else:
-            sum_range = arr[end_idx] - arr[start_idx - 1]
-        
-        results.append(sum_range)
-    
-    return results
-
-# Example usage
-arr = [3, 2, 4, 5, 1, 6, 2, 7]
-queries = [(2, 5), (1, 3), (4, 8)]
-result = optimal_subarray_sums_i(arr, queries)
-print(f"Optimal result: {result}")  # Output: [12, 9, 21]
-```
-
-**Time Complexity**: O(n + q) - O(n) for prefix sum construction, O(q) for queries
-**Space Complexity**: O(1) - In-place modification
-
-**Why it's optimal**: Achieves the best possible time complexity with minimal space usage.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(q × n) | O(1) | Calculate sum for each query |
-| Prefix Sums | O(n + q) | O(n) | Precompute prefix sums |
-| In-Place | O(n + q) | O(1) | Build prefix sums in-place |
-
-### Time Complexity
-- **Time**: O(n + q) - Prefix sum approach provides optimal time complexity
-- **Space**: O(1) - In-place modification
-
-### Why This Solution Works
-- **Prefix Sums**: Precompute cumulative sums to answer range queries in O(1) time
-- **Optimal Algorithm**: Prefix sum approach is the standard solution for range sum queries
-- **Optimal Approach**: In-place prefix sums provide the most efficient solution for subarray sum problems
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Subarray Sums I with Dynamic Updates
-**Problem**: Handle dynamic updates to the array and maintain subarray sum queries.
-
-**Link**: [CSES Problem Set - Subarray Sums I with Updates](https://cses.fi/problemset/task/subarray_sums_i_updates)
+### Code
 
 ```python
-class SubarraySumsIWithUpdates:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.prefix = self._compute_prefix()
-    
-    def _compute_prefix(self):
-        """Compute prefix sums"""
-        prefix = [0] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = prefix[i] + self.arr[i]
-        return prefix
-    
-    def update(self, index, new_value):
-        """Update element at index to new_value"""
-        old_value = self.arr[index]
-        self.arr[index] = new_value
-        
-        # Update prefix sums
-        diff = new_value - old_value
-        for i in range(index + 1, self.n + 1):
-            self.prefix[i] += diff
-    
-    def add_element(self, new_value):
-        """Add a new element to the array"""
-        self.arr.append(new_value)
-        self.n = len(self.arr)
-        self.prefix = self._compute_prefix()
-    
-    def remove_element(self, index):
-        """Remove element at index"""
-        self.arr.pop(index)
-        self.n = len(self.arr)
-        self.prefix = self._compute_prefix()
-    
-    def get_sum(self, left, right):
-        """Get sum of subarray from left to right (inclusive)"""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        return self.prefix[right + 1] - self.prefix[left]
-    
-    def get_all_sums(self, queries):
-        """Get sums for multiple queries"""
-        results = []
-        for left, right in queries:
-            results.append(self.get_sum(left, right))
-        return results
-    
-    def get_maximum_sum(self):
-        """Get maximum subarray sum using Kadane's algorithm"""
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for num in self.arr:
-            current_sum = max(num, current_sum + num)
-            max_sum = max(max_sum, current_sum)
-        
-        return max_sum
-    
-    def get_minimum_sum(self):
-        """Get minimum subarray sum"""
-        min_sum = float('inf')
-        current_sum = 0
-        
-        for num in self.arr:
-            current_sum = min(num, current_sum + num)
-            min_sum = min(min_sum, current_sum)
-        
-        return min_sum
-```
-
-### Variation 2: Subarray Sums I with Constraints
-**Problem**: Find subarray sums with additional constraints (e.g., minimum length, maximum sum).
-
-**Link**: [CSES Problem Set - Subarray Sums I with Constraints](https://cses.fi/problemset/task/subarray_sums_i_constraints)
-
-```python
-def subarray_sums_i_constraints(arr, queries, min_length, max_sum):
+def solve_brute_force(n, x, arr):
     """
-    Find subarray sums with constraints
+    Brute force: check all subarrays.
+
+    Time: O(n^2)
+    Space: O(1)
     """
-    n = len(arr)
-    if n == 0:
-        return []
-    
-    # Compute prefix sums
-    prefix = [0] * (n + 1)
+    count = 0
+
     for i in range(n):
-        prefix[i + 1] = prefix[i] + arr[i]
-    
-    results = []
-    
-    for left, right in queries:
-        # Check if subarray meets length constraint
-        if right - left + 1 < min_length:
-            results.append(0)  # Invalid subarray
-            continue
-        
-        # Calculate sum
-        sum_range = prefix[right + 1] - prefix[left]
-        
-        # Check if sum meets constraint
-        if sum_range <= max_sum:
-            results.append(sum_range)
-        else:
-            results.append(0)  # Exceeds maximum sum
-    
-    return results
+        current_sum = 0
+        for j in range(i, n):
+            current_sum += arr[j]
+            if current_sum == x:
+                count += 1
 
-def subarray_sums_i_constraints_optimized(arr, queries, min_length, max_sum):
-    """
-    Optimized version with better constraint handling
-    """
-    n = len(arr)
-    if n == 0:
-        return []
-    
-    # Compute prefix sums
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + arr[i]
-    
-    results = []
-    
-    for left, right in queries:
-        # Check if subarray meets length constraint
-        if right - left + 1 < min_length:
-            results.append(0)  # Invalid subarray
-            continue
-        
-        # Calculate sum
-        sum_range = prefix[right + 1] - prefix[left]
-        
-        # Check if sum meets constraint
-        if sum_range <= max_sum:
-            results.append(sum_range)
-        else:
-            results.append(0)  # Exceeds maximum sum
-    
-    return results
-
-def subarray_sums_i_constraints_multiple(arr, queries, constraints_list):
-    """
-    Find subarray sums for multiple constraint sets
-    """
-    results = []
-    
-    for min_length, max_sum in constraints_list:
-        result = subarray_sums_i_constraints(arr, queries, min_length, max_sum)
-        results.append(result)
-    
-    return results
-
-# Example usage
-arr = [3, 2, 4, 5, 1, 6, 2, 7]
-queries = [(2, 5), (1, 3), (4, 8)]
-min_length = 2
-max_sum = 15
-
-result = subarray_sums_i_constraints(arr, queries, min_length, max_sum)
-print(f"Subarray sums with constraints: {result}")  # Output: [12, 9, 0]
+    return count
 ```
 
-### Variation 3: Subarray Sums I with Range Updates
-**Problem**: Handle range updates to the array and maintain subarray sum queries.
+### Complexity
 
-**Link**: [CSES Problem Set - Subarray Sums I with Range Updates](https://cses.fi/problemset/task/subarray_sums_i_range_updates)
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Nested loops over all subarray pairs |
+| Space | O(1) | Only storing count and current_sum |
 
-```python
-class SubarraySumsIWithRangeUpdates:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.prefix = self._compute_prefix()
-        self.lazy = [0] * (self.n + 1)  # Lazy propagation array
-    
-    def _compute_prefix(self):
-        """Compute prefix sums"""
-        prefix = [0] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = prefix[i] + self.arr[i]
-        return prefix
-    
-    def _apply_lazy_updates(self):
-        """Apply all pending lazy updates"""
-        for i in range(self.n):
-            if self.lazy[i] != 0:
-                self.arr[i] += self.lazy[i]
-                self.lazy[i] = 0
-        
-        # Recompute prefix sums
-        self.prefix = self._compute_prefix()
-    
-    def range_update(self, left, right, value):
-        """Update range [left, right] by adding value"""
-        if left < 0 or right >= self.n or left > right:
-            return
-        
-        # Apply lazy update
-        self.lazy[left] += value
-        if right + 1 < self.n:
-            self.lazy[right + 1] -= value
-    
-    def get_sum(self, left, right):
-        """Get sum of subarray from left to right (inclusive)"""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        
-        # Apply pending updates
-        self._apply_lazy_updates()
-        
-        return self.prefix[right + 1] - self.prefix[left]
-    
-    def get_all_sums(self, queries):
-        """Get sums for multiple queries"""
-        results = []
-        for left, right in queries:
-            results.append(self.get_sum(left, right))
-        return results
-    
-    def get_maximum_sum(self):
-        """Get maximum subarray sum using Kadane's algorithm"""
-        # Apply pending updates
-        self._apply_lazy_updates()
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for num in self.arr:
-            current_sum = max(num, current_sum + num)
-            max_sum = max(max_sum, current_sum)
-        
-        return max_sum
-    
-    def get_minimum_sum(self):
-        """Get minimum subarray sum"""
-        # Apply pending updates
-        self._apply_lazy_updates()
-        
-        min_sum = float('inf')
-        current_sum = 0
-        
-        for num in self.arr:
-            current_sum = min(num, current_sum + num)
-            min_sum = min(min_sum, current_sum)
-        
-        return min_sum
-    
-    def get_sum_statistics(self):
-        """Get sum statistics"""
-        # Apply pending updates
-        self._apply_lazy_updates()
-        
-        total_sum = sum(self.arr)
-        max_sum = max(self.arr)
-        min_sum = min(self.arr)
-        avg_sum = total_sum / self.n if self.n > 0 else 0
-        
-        return {
-            'total': total_sum,
-            'maximum': max_sum,
-            'minimum': min_sum,
-            'average': avg_sum
-        }
+### Why This Works (But Is Slow)
 
-# Example usage
-arr = [3, 2, 4, 5, 1, 6, 2, 7]
-updater = SubarraySumsIWithRangeUpdates(arr)
+This correctly checks every possible subarray, but with n up to 2*10^5, we'd have up to 4*10^10 operations which is far too slow.
 
-# Range update
-updater.range_update(2, 5, 10)
+---
 
-# Get sums
-queries = [(2, 5), (1, 3), (4, 8)]
-result = updater.get_all_sums(queries)
-print(f"Subarray sums after range update: {result}")  # Output: [22, 9, 31]
+## Solution 2: Optimal Solution (Prefix Sum + Hash Map)
 
-# Get statistics
-stats = updater.get_sum_statistics()
-print(f"Sum statistics: {stats}")
+### Key Insight
+
+> **The Trick:** Instead of checking all subarrays, maintain a hash map of prefix sum frequencies and look up complements in O(1).
+
+### The Prefix Sum Property
+
+| Concept | Formula |
+|---------|---------|
+| Prefix sum at j | prefix[j] = arr[0] + arr[1] + ... + arr[j] |
+| Subarray sum i to j | sum(arr[i..j]) = prefix[j] - prefix[i-1] |
+| Target condition | prefix[j] - prefix[i-1] = x |
+| What we need to find | prefix[i-1] = prefix[j] - x |
+
+**In plain English:** At each position, count how many times we've seen a prefix sum that is exactly x less than the current prefix sum.
+
+### Base Case: Why We Initialize with {0: 1}
+
+We must initialize the hash map with {0: 1} because:
+- If a subarray starting from index 0 has sum x, then prefix[j] = x
+- We need prefix[j] - x = 0 to exist in our map
+- The "empty prefix" before index 0 has sum 0
+
+### Algorithm
+
+1. Initialize hash map with {0: 1} (empty prefix)
+2. Initialize prefix_sum = 0 and count = 0
+3. For each element in array:
+   - Add element to prefix_sum
+   - Add count_map[prefix_sum - x] to count (if exists)
+   - Increment count_map[prefix_sum] by 1
+4. Return count
+
+### Dry Run Example
+
+Let's trace through with input `n = 5, x = 7, arr = [2, 4, 1, 2, 7]`:
+
+```
+Initial state:
+  count_map = {0: 1}  (empty prefix)
+  prefix_sum = 0
+  count = 0
+
+Step 1: Process arr[0] = 2
+  prefix_sum = 0 + 2 = 2
+  complement = 2 - 7 = -5
+  -5 not in count_map -> count += 0
+  count_map = {0: 1, 2: 1}
+  count = 0
+
+Step 2: Process arr[1] = 4
+  prefix_sum = 2 + 4 = 6
+  complement = 6 - 7 = -1
+  -1 not in count_map -> count += 0
+  count_map = {0: 1, 2: 1, 6: 1}
+  count = 0
+
+Step 3: Process arr[2] = 1
+  prefix_sum = 6 + 1 = 7
+  complement = 7 - 7 = 0
+  0 IS in count_map with count 1 -> count += 1
+  count_map = {0: 1, 2: 1, 6: 1, 7: 1}
+  count = 1
+  (Found subarray [2,4,1] from index 0 to 2)
+
+Step 4: Process arr[3] = 2
+  prefix_sum = 7 + 2 = 9
+  complement = 9 - 7 = 2
+  2 IS in count_map with count 1 -> count += 1
+  count_map = {0: 1, 2: 1, 6: 1, 7: 1, 9: 1}
+  count = 2
+  (Found subarray [4,1,2] from index 1 to 3)
+
+Step 5: Process arr[4] = 7
+  prefix_sum = 9 + 7 = 16
+  complement = 16 - 7 = 9
+  9 IS in count_map with count 1 -> count += 1
+  count_map = {0: 1, 2: 1, 6: 1, 7: 1, 9: 1, 16: 1}
+  count = 3
+  (Found subarray [7] from index 4 to 4)
+
+Final answer: 3
 ```
 
-### Related Problems
+### Visual Diagram
 
-## Problem Variations
+```
+Array:       [2,   4,   1,   2,   7]
+Index:        0    1    2    3    4
 
-### **Variation 1: Subarray Sums I with Dynamic Updates**
-**Problem**: Handle dynamic array updates (add/remove/update elements) while maintaining efficient subarray sum calculations.
+Prefix:       2    6    7    9   16
+              |    |    |    |    |
+              v    v    v    v    v
+Target x=7:
 
-**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+Step 3: prefix=7, need 0 (found!) -> subarray [0..2] = [2,4,1]
+Step 4: prefix=9, need 2 (found!) -> subarray [1..3] = [4,1,2]
+Step 5: prefix=16, need 9 (found!) -> subarray [4..4] = [7]
+
+Subarrays with sum 7:
+[2, 4, 1]     sum = 7  ✓
+   [4, 1, 2]  sum = 7  ✓
+            [7] sum = 7  ✓
+```
+
+### Code (Python)
 
 ```python
 from collections import defaultdict
-import bisect
 
-class DynamicSubarraySums:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.prefix_sums = self._compute_prefix_sums()
-        self.max_sum = self._compute_max_sum()
-        self.min_sum = self._compute_min_sum()
-    
-    def _compute_prefix_sums(self):
-        """Compute prefix sums of the array."""
-        prefix = [0] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = prefix[i] + self.arr[i]
-        return prefix
-    
-    def _compute_max_sum(self):
-        """Compute maximum subarray sum using Kadane's algorithm."""
-        if self.n == 0:
-            return 0
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for num in self.arr:
-            current_sum = max(num, current_sum + num)
-            max_sum = max(max_sum, current_sum)
-        
-        return max_sum
-    
-    def _compute_min_sum(self):
-        """Compute minimum subarray sum."""
-        if self.n == 0:
-            return 0
-        
-        min_sum = float('inf')
-        current_sum = 0
-        
-        for num in self.arr:
-            current_sum = min(num, current_sum + num)
-            min_sum = min(min_sum, current_sum)
-        
-        return min_sum
-    
-    def add_element(self, value, index=None):
-        """Add a new element to the array."""
-        if index is None:
-            index = self.n
-        self.arr.insert(index, value)
-        self.n += 1
-        self.prefix_sums = self._compute_prefix_sums()
-        self.max_sum = self._compute_max_sum()
-        self.min_sum = self._compute_min_sum()
-    
-    def remove_element(self, index):
-        """Remove element at specified index."""
-        if 0 <= index < self.n:
-            del self.arr[index]
-            self.n -= 1
-            self.prefix_sums = self._compute_prefix_sums()
-            self.max_sum = self._compute_max_sum()
-            self.min_sum = self._compute_min_sum()
-    
-    def update_element(self, index, new_value):
-        """Update element at specified index."""
-        if 0 <= index < self.n:
-            self.arr[index] = new_value
-            self.prefix_sums = self._compute_prefix_sums()
-            self.max_sum = self._compute_max_sum()
-            self.min_sum = self._compute_min_sum()
-    
-    def get_range_sum(self, left, right):
-        """Get sum of subarray from left to right (inclusive)."""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        return self.prefix_sums[right + 1] - self.prefix_sums[left]
-    
-    def get_max_sum(self):
-        """Get current maximum subarray sum."""
-        return self.max_sum
-    
-    def get_min_sum(self):
-        """Get current minimum subarray sum."""
-        return self.min_sum
-    
-    def get_subarrays_with_sum_range(self, min_sum, max_sum):
-        """Get all subarrays with sum in specified range."""
-        result = []
-        
-        for i in range(self.n):
-            for j in range(i, self.n):
-                current_sum = self.get_range_sum(i, j)
-                if min_sum <= current_sum <= max_sum:
-                    result.append((i, j, current_sum))
-        
-        return result
-    
-    def get_subarrays_with_constraints(self, constraint_func):
-        """Get subarrays that satisfy custom constraints."""
-        result = []
-        
-        for i in range(self.n):
-            for j in range(i, self.n):
-                current_sum = self.get_range_sum(i, j)
-                if constraint_func(i, j, current_sum, self.arr[i:j+1]):
-                    result.append((i, j, current_sum))
-        
-        return result
-    
-    def get_subarray_statistics(self):
-        """Get statistics about subarray sums."""
-        if self.n == 0:
-            return {
-                'total_subarrays': 0,
-                'max_sum': 0,
-                'min_sum': 0,
-                'average_sum': 0,
-                'sum_range': 0
-            }
-        
-        total_subarrays = self.n * (self.n + 1) // 2
-        max_sum = self.max_sum
-        min_sum = self.min_sum
-        sum_range = max_sum - min_sum
-        
-        # Calculate average sum
-        total_sum = 0
-        for i in range(self.n):
-            for j in range(i, self.n):
-                total_sum += self.get_range_sum(i, j)
-        average_sum = total_sum / total_subarrays if total_subarrays > 0 else 0
-        
-        return {
-            'total_subarrays': total_subarrays,
-            'max_sum': max_sum,
-            'min_sum': min_sum,
-            'average_sum': average_sum,
-            'sum_range': sum_range
-        }
-    
-    def get_subarray_patterns(self):
-        """Get patterns in subarray sums."""
-        patterns = {
-            'consecutive_positive': 0,
-            'consecutive_negative': 0,
-            'alternating_pattern': 0,
-            'increasing_sums': 0
-        }
-        
-        for i in range(1, self.n):
-            if self.arr[i] > 0 and self.arr[i-1] > 0:
-                patterns['consecutive_positive'] += 1
-            elif self.arr[i] < 0 and self.arr[i-1] < 0:
-                patterns['consecutive_negative'] += 1
-            
-            if i > 1:
-                if (self.arr[i] > 0) != (self.arr[i-1] > 0) and (self.arr[i-1] > 0) != (self.arr[i-2] > 0):
-                    patterns['alternating_pattern'] += 1
-        
-        return patterns
-    
-    def get_optimal_subarray_strategy(self):
-        """Get optimal strategy for subarray operations."""
-        if self.n == 0:
-            return {
-                'recommended_operation': 'none',
-                'max_efficiency': 0,
-                'sum_distribution': {}
-            }
-        
-        # Analyze different operations
-        operations = {
-            'max_sum': self.max_sum,
-            'min_sum': abs(self.min_sum),
-            'total_sum': sum(self.arr),
-            'average_sum': sum(self.arr) / self.n
-        }
-        
-        best_operation = max(operations, key=operations.get)
-        max_efficiency = operations[best_operation]
-        
-        # Calculate sum distribution
-        sum_distribution = defaultdict(int)
-        for i in range(self.n):
-            for j in range(i, self.n):
-                current_sum = self.get_range_sum(i, j)
-                sum_distribution[current_sum] += 1
-        
-        return {
-            'recommended_operation': best_operation,
-            'max_efficiency': max_efficiency,
-            'sum_distribution': dict(sum_distribution)
-        }
+def solve_optimal(n, x, arr):
+    """
+    Optimal solution using prefix sum + hash map.
 
-# Example usage
-arr = [1, -3, 2, 1, -1]
-dynamic_sums = DynamicSubarraySums(arr)
-print(f"Initial max sum: {dynamic_sums.get_max_sum()}")
-print(f"Initial min sum: {dynamic_sums.get_min_sum()}")
+    Time: O(n) - single pass
+    Space: O(n) - hash map storage
+    """
+    count_map = defaultdict(int)
+    count_map[0] = 1  # Empty prefix (crucial!)
 
-# Add an element
-dynamic_sums.add_element(4)
-print(f"After adding element: {dynamic_sums.get_max_sum()}")
+    prefix_sum = 0
+    count = 0
 
-# Update an element
-dynamic_sums.update_element(2, 5)
-print(f"After updating element: {dynamic_sums.get_max_sum()}")
+    for num in arr:
+        prefix_sum += num
 
-# Get range sum
-print(f"Range sum [1, 3]: {dynamic_sums.get_range_sum(1, 3)}")
+        # How many times have we seen (prefix_sum - x)?
+        complement = prefix_sum - x
+        count += count_map[complement]
 
-# Get subarrays with sum range
-print(f"Subarrays with sum in [-2, 2]: {dynamic_sums.get_subarrays_with_sum_range(-2, 2)}")
+        # Add current prefix sum to map
+        count_map[prefix_sum] += 1
 
-# Get subarrays with constraints
-def constraint_func(start, end, sum_val, subarray):
-    return end - start >= 1 and sum_val > 0
+    return count
 
-print(f"Subarrays with constraints: {dynamic_sums.get_subarrays_with_constraints(constraint_func)}")
 
-# Get statistics
-print(f"Statistics: {dynamic_sums.get_subarray_statistics()}")
+def main():
+    import sys
+    input_data = sys.stdin.read().split()
+    idx = 0
 
-# Get patterns
-print(f"Patterns: {dynamic_sums.get_subarray_patterns()}")
+    n = int(input_data[idx])
+    x = int(input_data[idx + 1])
+    idx += 2
 
-# Get optimal strategy
-print(f"Optimal strategy: {dynamic_sums.get_optimal_subarray_strategy()}")
+    arr = [int(input_data[idx + i]) for i in range(n)]
+
+    print(solve_optimal(n, x, arr))
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-### **Variation 2: Subarray Sums I with Different Operations**
-**Problem**: Handle different types of operations on subarray sums (weighted elements, priority-based selection, advanced constraints).
+### Code (C++)
 
-**Approach**: Use advanced data structures for efficient different types of subarray sum queries.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-```python
-class AdvancedSubarraySums:
-    def __init__(self, arr, weights=None, priorities=None):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.weights = weights or [1] * self.n
-        self.priorities = priorities or [1] * self.n
-        self.prefix_sums = self._compute_prefix_sums()
-        self.weighted_prefix_sums = self._compute_weighted_prefix_sums()
-        self.max_sum = self._compute_max_sum()
-        self.weighted_max_sum = self._compute_weighted_max_sum()
-    
-    def _compute_prefix_sums(self):
-        """Compute prefix sums of the array."""
-        prefix = [0] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = prefix[i] + self.arr[i]
-        return prefix
-    
-    def _compute_weighted_prefix_sums(self):
-        """Compute weighted prefix sums of the array."""
-        prefix = [0] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = prefix[i] + self.arr[i] * self.weights[i]
-        return prefix
-    
-    def _compute_max_sum(self):
-        """Compute maximum subarray sum using Kadane's algorithm."""
-        if self.n == 0:
-            return 0
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for num in self.arr:
-            current_sum = max(num, current_sum + num)
-            max_sum = max(max_sum, current_sum)
-        
-        return max_sum
-    
-    def _compute_weighted_max_sum(self):
-        """Compute maximum weighted subarray sum."""
-        if self.n == 0:
-            return 0
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for i, num in enumerate(self.arr):
-            weighted_num = num * self.weights[i]
-            current_sum = max(weighted_num, current_sum + weighted_num)
-            max_sum = max(max_sum, current_sum)
-        
-        return max_sum
-    
-    def get_range_sum(self, left, right):
-        """Get sum of subarray from left to right (inclusive)."""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        return self.prefix_sums[right + 1] - self.prefix_sums[left]
-    
-    def get_weighted_range_sum(self, left, right):
-        """Get weighted sum of subarray from left to right (inclusive)."""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        return self.weighted_prefix_sums[right + 1] - self.weighted_prefix_sums[left]
-    
-    def get_max_sum(self):
-        """Get current maximum subarray sum."""
-        return self.max_sum
-    
-    def get_weighted_max_sum(self):
-        """Get current maximum weighted subarray sum."""
-        return self.weighted_max_sum
-    
-    def get_subarrays_with_priority(self, priority_func):
-        """Get subarrays considering priority."""
-        result = []
-        
-        for i in range(self.n):
-            for j in range(i, self.n):
-                current_sum = self.get_range_sum(i, j)
-                weighted_sum = self.get_weighted_range_sum(i, j)
-                priority = priority_func(i, j, current_sum, weighted_sum, self.weights[i:j+1], self.priorities[i:j+1])
-                result.append((i, j, current_sum, priority))
-        
-        # Sort by priority
-        result.sort(key=lambda x: x[3], reverse=True)
-        return result
-    
-    def get_subarrays_with_optimization(self, optimization_func):
-        """Get subarrays using custom optimization function."""
-        result = []
-        
-        for i in range(self.n):
-            for j in range(i, self.n):
-                current_sum = self.get_range_sum(i, j)
-                weighted_sum = self.get_weighted_range_sum(i, j)
-                score = optimization_func(i, j, current_sum, weighted_sum, self.weights[i:j+1], self.priorities[i:j+1])
-                result.append((i, j, current_sum, score))
-        
-        # Sort by optimization score
-        result.sort(key=lambda x: x[3], reverse=True)
-        return result
-    
-    def get_subarrays_with_constraints(self, constraint_func):
-        """Get subarrays that satisfy custom constraints."""
-        result = []
-        
-        for i in range(self.n):
-            for j in range(i, self.n):
-                current_sum = self.get_range_sum(i, j)
-                weighted_sum = self.get_weighted_range_sum(i, j)
-                if constraint_func(i, j, current_sum, weighted_sum, self.weights[i:j+1], self.priorities[i:j+1]):
-                    result.append((i, j, current_sum))
-        
-        return result
-    
-    def get_subarrays_with_multiple_criteria(self, criteria_list):
-        """Get subarrays that satisfy multiple criteria."""
-        result = []
-        
-        for i in range(self.n):
-            for j in range(i, self.n):
-                current_sum = self.get_range_sum(i, j)
-                weighted_sum = self.get_weighted_range_sum(i, j)
-                satisfies_all_criteria = True
-                for criterion in criteria_list:
-                    if not criterion(i, j, current_sum, weighted_sum, self.weights[i:j+1], self.priorities[i:j+1]):
-                        satisfies_all_criteria = False
-                        break
-                
-                if satisfies_all_criteria:
-                    result.append((i, j, current_sum))
-        
-        return result
-    
-    def get_subarrays_with_alternatives(self, alternatives):
-        """Get subarrays considering alternative values."""
-        result = []
-        
-        # Check original array
-        for i in range(self.n):
-            for j in range(i, self.n):
-                current_sum = self.get_range_sum(i, j)
-                result.append((i, j, current_sum, 'original'))
-        
-        # Check alternative values
-        for idx, alt_values in alternatives.items():
-            if 0 <= idx < self.n:
-                for alt_value in alt_values:
-                    # Create temporary array with alternative value
-                    temp_arr = self.arr[:]
-                    temp_arr[idx] = alt_value
-                    
-                    # Calculate prefix sums for this alternative
-                    temp_prefix = [0] * (self.n + 1)
-                    for k in range(self.n):
-                        temp_prefix[k + 1] = temp_prefix[k] + temp_arr[k]
-                    
-                    # Find subarrays affected by this change
-                    for i in range(self.n):
-                        for j in range(i, self.n):
-                            if i <= idx <= j:
-                                alt_sum = temp_prefix[j + 1] - temp_prefix[i]
-                                result.append((i, j, alt_sum, f'alternative_{alt_value}'))
-        
-        return result
-    
-    def get_subarrays_with_adaptive_criteria(self, adaptive_func):
-        """Get subarrays using adaptive criteria."""
-        result = []
-        
-        for i in range(self.n):
-            for j in range(i, self.n):
-                current_sum = self.get_range_sum(i, j)
-                weighted_sum = self.get_weighted_range_sum(i, j)
-                if adaptive_func(i, j, current_sum, weighted_sum, self.weights[i:j+1], self.priorities[i:j+1], result):
-                    result.append((i, j, current_sum))
-        
-        return result
-    
-    def get_subarray_optimization(self):
-        """Get optimal subarray configuration."""
-        strategies = [
-            ('max_sum', self.get_max_sum),
-            ('weighted_max_sum', self.get_weighted_max_sum),
-        ]
-        
-        best_strategy = None
-        best_value = float('-inf')
-        
-        for strategy_name, strategy_func in strategies:
-            current_value = strategy_func()
-            if current_value > best_value:
-                best_value = current_value
-                best_strategy = (strategy_name, current_value)
-        
-        return best_strategy
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-# Example usage
-arr = [1, -3, 2, 1, -1]
-weights = [2, 1, 3, 1, 2]
-priorities = [1, 2, 1, 3, 1]
-advanced_sums = AdvancedSubarraySums(arr, weights, priorities)
+    int n;
+    long long x;
+    cin >> n >> x;
 
-print(f"Max sum: {advanced_sums.get_max_sum()}")
-print(f"Weighted max sum: {advanced_sums.get_weighted_max_sum()}")
+    vector<long long> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
 
-# Get subarrays with priority
-def priority_func(start, end, sum_val, weighted_sum, weights, priorities):
-    return sum_val * sum(weights) * sum(priorities)
+    // Hash map to count prefix sum frequencies
+    map<long long, long long> count_map;
+    count_map[0] = 1;  // Empty prefix (crucial!)
 
-print(f"Subarrays with priority: {advanced_sums.get_subarrays_with_priority(priority_func)}")
+    long long prefix_sum = 0;
+    long long count = 0;
 
-# Get subarrays with optimization
-def optimization_func(start, end, sum_val, weighted_sum, weights, priorities):
-    return sum_val * sum(weights) + sum(priorities)
+    for (int i = 0; i < n; i++) {
+        prefix_sum += arr[i];
 
-print(f"Subarrays with optimization: {advanced_sums.get_subarrays_with_optimization(optimization_func)}")
+        // How many times have we seen (prefix_sum - x)?
+        long long complement = prefix_sum - x;
+        if (count_map.count(complement)) {
+            count += count_map[complement];
+        }
 
-# Get subarrays with constraints
-def constraint_func(start, end, sum_val, weighted_sum, weights, priorities):
-    return end - start >= 1 and sum_val > 0 and sum(weights) > 2
+        // Add current prefix sum to map
+        count_map[prefix_sum]++;
+    }
 
-print(f"Subarrays with constraints: {advanced_sums.get_subarrays_with_constraints(constraint_func)}")
+    cout << count << "\n";
 
-# Get subarrays with multiple criteria
-def criterion1(start, end, sum_val, weighted_sum, weights, priorities):
-    return end - start >= 1
-
-def criterion2(start, end, sum_val, weighted_sum, weights, priorities):
-    return sum_val > 0
-
-criteria_list = [criterion1, criterion2]
-print(f"Subarrays with multiple criteria: {advanced_sums.get_subarrays_with_multiple_criteria(criteria_list)}")
-
-# Get subarrays with alternatives
-alternatives = {1: [2, 4], 3: [3, 5]}
-print(f"Subarrays with alternatives: {advanced_sums.get_subarrays_with_alternatives(alternatives)}")
-
-# Get subarrays with adaptive criteria
-def adaptive_func(start, end, sum_val, weighted_sum, weights, priorities, current_result):
-    return end - start >= 1 and sum_val > 0 and len(current_result) < 5
-
-print(f"Subarrays with adaptive criteria: {advanced_sums.get_subarrays_with_adaptive_criteria(adaptive_func)}")
-
-# Get subarray optimization
-print(f"Subarray optimization: {advanced_sums.get_subarray_optimization()}")
-```
-
-### **Variation 3: Subarray Sums I with Constraints**
-**Problem**: Handle subarray sums with additional constraints (cost limits, length constraints, resource constraints).
-
-**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
-
-```python
-class ConstrainedSubarraySums:
-    def __init__(self, arr, constraints=None):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.constraints = constraints or {}
-        self.prefix_sums = self._compute_prefix_sums()
-        self.max_sum = self._compute_max_sum()
-    
-    def _compute_prefix_sums(self):
-        """Compute prefix sums of the array."""
-        prefix = [0] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = prefix[i] + self.arr[i]
-        return prefix
-    
-    def _compute_max_sum(self):
-        """Compute maximum subarray sum using Kadane's algorithm."""
-        if self.n == 0:
-            return 0
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for num in self.arr:
-            current_sum = max(num, current_sum + num)
-            max_sum = max(max_sum, current_sum)
-        
-        return max_sum
-    
-    def get_max_sum_with_cost_constraints(self, cost_limit):
-        """Get maximum sum considering cost constraints."""
-        if self.n == 0:
-            return 0
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        total_cost = 0
-        
-        for i, num in enumerate(self.arr):
-            # Calculate cost for including this element
-            cost = abs(num)  # Simple cost model
-            if total_cost + cost <= cost_limit:
-                current_sum = max(num, current_sum + num)
-                max_sum = max(max_sum, current_sum)
-                total_cost += cost
-            else:
-                # Reset if cost limit exceeded
-                current_sum = num
-                total_cost = cost
-        
-        return max_sum
-    
-    def get_max_sum_with_length_constraints(self, min_length, max_length):
-        """Get maximum sum considering length constraints."""
-        if self.n == 0:
-            return 0
-        
-        max_sum = float('-inf')
-        
-        for i in range(self.n):
-            for j in range(i, self.n):
-                subarray_length = j - i + 1
-                if min_length <= subarray_length <= max_length:
-                    current_sum = self.prefix_sums[j + 1] - self.prefix_sums[i]
-                    max_sum = max(max_sum, current_sum)
-        
-        return max_sum
-    
-    def get_max_sum_with_resource_constraints(self, resource_limits, resource_consumption):
-        """Get maximum sum considering resource constraints."""
-        if self.n == 0:
-            return 0
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        current_resources = [0] * len(resource_limits)
-        
-        for i, num in enumerate(self.arr):
-            # Check resource constraints
-            can_afford = True
-            consumption = resource_consumption.get(i, [0] * len(resource_limits))
-            for j, res_consumption in enumerate(consumption):
-                if current_resources[j] + res_consumption > resource_limits[j]:
-                    can_afford = False
-                    break
-            
-            if can_afford:
-                current_sum = max(num, current_sum + num)
-                max_sum = max(max_sum, current_sum)
-                for j, res_consumption in enumerate(consumption):
-                    current_resources[j] += res_consumption
-            else:
-                # Reset if resource limit exceeded
-                current_sum = num
-                current_resources = consumption[:]
-        
-        return max_sum
-    
-    def get_max_sum_with_mathematical_constraints(self, constraint_func):
-        """Get maximum sum that satisfies custom mathematical constraints."""
-        if self.n == 0:
-            return 0
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for i, num in enumerate(self.arr):
-            if constraint_func(i, num, current_sum):
-                current_sum = max(num, current_sum + num)
-                max_sum = max(max_sum, current_sum)
-            else:
-                current_sum = num
-        
-        return max_sum
-    
-    def get_max_sum_with_range_constraints(self, range_constraints):
-        """Get maximum sum that satisfies range constraints."""
-        if self.n == 0:
-            return 0
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for i, num in enumerate(self.arr):
-            # Check if element satisfies all range constraints
-            satisfies_constraints = True
-            for constraint in range_constraints:
-                if not constraint(i, num, current_sum):
-                    satisfies_constraints = False
-                    break
-            
-            if satisfies_constraints:
-                current_sum = max(num, current_sum + num)
-                max_sum = max(max_sum, current_sum)
-            else:
-                current_sum = num
-        
-        return max_sum
-    
-    def get_max_sum_with_optimization_constraints(self, optimization_func):
-        """Get maximum sum using custom optimization constraints."""
-        if self.n == 0:
-            return 0
-        
-        # Sort elements by optimization function
-        sorted_indices = sorted(range(self.n), key=lambda i: optimization_func(i, self.arr[i]), reverse=True)
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for idx in sorted_indices:
-            num = self.arr[idx]
-            current_sum = max(num, current_sum + num)
-            max_sum = max(max_sum, current_sum)
-        
-        return max_sum
-    
-    def get_max_sum_with_multiple_constraints(self, constraints_list):
-        """Get maximum sum that satisfies multiple constraints."""
-        if self.n == 0:
-            return 0
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for i, num in enumerate(self.arr):
-            # Check if element satisfies all constraints
-            satisfies_all_constraints = True
-            for constraint in constraints_list:
-                if not constraint(i, num, current_sum):
-                    satisfies_all_constraints = False
-                    break
-            
-            if satisfies_all_constraints:
-                current_sum = max(num, current_sum + num)
-                max_sum = max(max_sum, current_sum)
-            else:
-                current_sum = num
-        
-        return max_sum
-    
-    def get_max_sum_with_priority_constraints(self, priority_func):
-        """Get maximum sum with priority-based constraints."""
-        if self.n == 0:
-            return 0
-        
-        # Sort elements by priority
-        sorted_indices = sorted(range(self.n), key=lambda i: priority_func(i, self.arr[i]), reverse=True)
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for idx in sorted_indices:
-            num = self.arr[idx]
-            current_sum = max(num, current_sum + num)
-            max_sum = max(max_sum, current_sum)
-        
-        return max_sum
-    
-    def get_max_sum_with_adaptive_constraints(self, adaptive_func):
-        """Get maximum sum with adaptive constraints."""
-        if self.n == 0:
-            return 0
-        
-        max_sum = float('-inf')
-        current_sum = 0
-        
-        for i, num in enumerate(self.arr):
-            # Check adaptive constraints
-            if adaptive_func(i, num, current_sum, max_sum):
-                current_sum = max(num, current_sum + num)
-                max_sum = max(max_sum, current_sum)
-            else:
-                current_sum = num
-        
-        return max_sum
-    
-    def get_optimal_subarray_strategy(self):
-        """Get optimal subarray strategy considering all constraints."""
-        strategies = [
-            ('cost_constraints', self.get_max_sum_with_cost_constraints),
-            ('length_constraints', self.get_max_sum_with_length_constraints),
-            ('resource_constraints', self.get_max_sum_with_resource_constraints),
-        ]
-        
-        best_strategy = None
-        best_sum = float('-inf')
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                if strategy_name == 'cost_constraints':
-                    current_sum = strategy_func(100)  # Cost limit of 100
-                elif strategy_name == 'length_constraints':
-                    current_sum = strategy_func(1, 5)  # Length between 1 and 5
-                elif strategy_name == 'resource_constraints':
-                    resource_limits = [100, 50]
-                    resource_consumption = {i: [10, 5] for i in range(self.n)}
-                    current_sum = strategy_func(resource_limits, resource_consumption)
-                
-                if current_sum > best_sum:
-                    best_sum = current_sum
-                    best_strategy = (strategy_name, current_sum)
-            except:
-                continue
-        
-        return best_strategy
-
-# Example usage
-constraints = {
-    'max_cost': 100,
-    'min_length': 1,
-    'max_length': 5
+    return 0;
 }
-
-arr = [1, -3, 2, 1, -1]
-constrained_sums = ConstrainedSubarraySums(arr, constraints)
-
-print("Cost-constrained max sum:", constrained_sums.get_max_sum_with_cost_constraints(100))
-
-print("Length-constrained max sum:", constrained_sums.get_max_sum_with_length_constraints(1, 5))
-
-# Resource constraints
-resource_limits = [100, 50]
-resource_consumption = {i: [10, 5] for i in range(len(arr))}
-print("Resource-constrained max sum:", constrained_sums.get_max_sum_with_resource_constraints(resource_limits, resource_consumption))
-
-# Mathematical constraints
-def custom_constraint(index, num, current_sum):
-    return num > 0 and current_sum + num > 0
-
-print("Mathematical constraint max sum:", constrained_sums.get_max_sum_with_mathematical_constraints(custom_constraint))
-
-# Range constraints
-def range_constraint(index, num, current_sum):
-    return num > 0
-
-range_constraints = [range_constraint]
-print("Range-constrained max sum:", constrained_sums.get_max_sum_with_range_constraints(range_constraints))
-
-# Multiple constraints
-def constraint1(index, num, current_sum):
-    return num > 0
-
-def constraint2(index, num, current_sum):
-    return current_sum + num > 0
-
-constraints_list = [constraint1, constraint2]
-print("Multiple constraints max sum:", constrained_sums.get_max_sum_with_multiple_constraints(constraints_list))
-
-# Priority constraints
-def priority_func(index, num):
-    return num
-
-print("Priority-constrained max sum:", constrained_sums.get_max_sum_with_priority_constraints(priority_func))
-
-# Adaptive constraints
-def adaptive_func(index, num, current_sum, max_sum):
-    return num > 0 and current_sum + num > max_sum
-
-print("Adaptive constraint max sum:", constrained_sums.get_max_sum_with_adaptive_constraints(adaptive_func))
-
-# Optimal strategy
-optimal = constrained_sums.get_optimal_subarray_strategy()
-print(f"Optimal strategy: {optimal}")
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Subarray Sums I](https://cses.fi/problemset/task/1661) - Basic subarray sum problem
-- [Subarray Sums II](https://cses.fi/problemset/task/1662) - Subarray sum with target
-- [Subarray Divisibility](https://cses.fi/problemset/task/1662) - Subarray divisibility problem
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Single pass through array, O(1) hash map operations |
+| Space | O(n) | Hash map stores at most n+1 prefix sums |
 
-#### **LeetCode Problems**
-- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Subarray sum with target
-- [Range Sum Query - Immutable](https://leetcode.com/problems/range-sum-query-immutable/) - Range sum queries
-- [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/) - Range sum with updates
+---
 
-#### **Problem Categories**
-- **Prefix Sums**: Cumulative calculations, range queries, efficient sum computation
-- **Range Queries**: Query processing, range operations, efficient data structures
-- **Lazy Propagation**: Range updates, efficient update propagation, segment trees
-- **Algorithm Design**: Prefix sum techniques, range query optimization, update handling
+## Common Mistakes
+
+### Mistake 1: Forgetting the Initial Prefix Sum of 0
+
+```python
+# WRONG
+count_map = {}  # Missing initial {0: 1}
+```
+
+**Problem:** If a subarray starting from index 0 has sum equal to x, we need to find complement = x - x = 0 in the map. Without initializing {0: 1}, we miss all subarrays that start from index 0.
+
+**Fix:** Always initialize with `count_map[0] = 1`.
+
+### Mistake 2: Adding to Map Before Checking
+
+```python
+# WRONG - may count current element against itself
+for num in arr:
+    prefix_sum += num
+    count_map[prefix_sum] += 1      # Adding BEFORE checking
+    count += count_map[prefix_sum - x]  # May incorrectly match itself
+```
+
+**Problem:** This can cause issues when prefix_sum - x equals prefix_sum (when x = 0), though this problem has positive x.
+
+**Fix:** Always check for complement BEFORE adding current prefix to the map.
+
+### Mistake 3: Integer Overflow
+
+```python
+# Potential issue with some languages
+prefix_sum = 0  # May overflow if elements are large
+```
+
+**Problem:** With n up to 2*10^5 and elements up to 10^9, the prefix sum can reach 2*10^14, which exceeds 32-bit integer range.
+
+**Fix:** Use `long long` in C++ or let Python handle large integers naturally.
+
+### Mistake 4: Using Wrong Index in Subarray Identification
+
+When debugging, remember that if complement = prefix_sum - x was found at position i, the subarray runs from position (i+1) to current position j.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single element equals x | `n=1, x=5, arr=[5]` | 1 | Single element is valid subarray |
+| No valid subarray | `n=3, x=100, arr=[1,2,3]` | 0 | No subarray sums to 100 |
+| Entire array equals x | `n=3, x=6, arr=[1,2,3]` | 1 | Whole array is one valid subarray |
+| Multiple overlapping | `n=4, x=3, arr=[1,1,1,1]` | 2 | [1,1,1] at positions 0-2 and 1-3 |
+| Large values | `n=2, x=10^9, arr=[10^9, 10^9]` | 2 | Handle large numbers |
+| All same elements | `n=5, x=2, arr=[1,1,1,1,1]` | 4 | [1,1] appears 4 times |
+
+---
+
+## When to Use This Pattern
+
+### Use This Approach When:
+- Counting subarrays with a specific sum
+- Need O(n) time complexity for subarray sum problems
+- Subarrays are contiguous (not subsequences)
+- Looking for exact sum matches
+
+### Don't Use When:
+- Elements can be negative AND you need to track ranges (use different technique)
+- Looking for subsequences (not contiguous subarrays)
+- Need to return the actual subarrays (not just count)
+- Problem requires sliding window (when all elements are positive and you want exact count, both work)
+
+### Pattern Recognition Checklist:
+- [ ] Counting contiguous subarrays with target sum? -> **Prefix Sum + Hash Map**
+- [ ] Array has only positive elements? -> **Sliding Window also works**
+- [ ] Need sum in a range [lo, hi]? -> **May need two-pass approach**
+- [ ] Need to handle negative numbers? -> **See Subarray Sums II**
+
+---
+
+## Alternative: Two-Pointer / Sliding Window
+
+Since all elements are **positive**, we can also use a sliding window approach:
+
+```python
+def solve_sliding_window(n, x, arr):
+    """
+    Alternative using sliding window (works because all elements are positive).
+
+    Time: O(n)
+    Space: O(1)
+    """
+    left = 0
+    current_sum = 0
+    count = 0
+
+    for right in range(n):
+        current_sum += arr[right]
+
+        # Shrink window while sum > x
+        while current_sum > x and left <= right:
+            current_sum -= arr[left]
+            left += 1
+
+        # Check if current window has sum = x
+        if current_sum == x:
+            count += 1
+
+    return count
+```
+
+**Note:** This approach only works because all elements are positive. With negative numbers, you must use the prefix sum + hash map approach (see Subarray Sums II).
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Basic prefix sum concept |
+| [Two Sum](https://leetcode.com/problems/two-sum/) | Hash map for complement lookup |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Subarray Sums II (CSES 1661)](https://cses.fi/problemset/task/1661) | Allows negative numbers |
+| [Subarray Sum Equals K (LeetCode 560)](https://leetcode.com/problems/subarray-sum-equals-k/) | Same technique, different platform |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Subarray Divisibility (CSES 1662)](https://cses.fi/problemset/task/1662) | Counting based on modular arithmetic |
+| [Maximum Subarray Sum (CSES 1643)](https://cses.fi/problemset/task/1643) | Finding max sum instead of counting |
+| [Count of Range Sum (LeetCode 327)](https://leetcode.com/problems/count-of-range-sum/) | Sum in a range, more complex |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Transform "find subarray with sum x" into "find previous prefix sum that differs by x"
+2. **Time Optimization:** From O(n^2) brute force to O(n) using hash map for O(1) complement lookups
+3. **Space Trade-off:** Use O(n) space to store prefix sum frequencies
+4. **Critical Base Case:** Always initialize hash map with {0: 1} for subarrays starting at index 0
+5. **Pattern:** This is the "prefix sum + complement counting" pattern, foundational for many array problems
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why we initialize the hash map with {0: 1}
+- [ ] Draw the prefix sum array for any given input
+- [ ] Trace through the algorithm step by step
+- [ ] Implement both Python and C++ solutions from memory
+- [ ] Explain the difference between this problem and Subarray Sums II
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Prefix Sums](https://cp-algorithms.com/data_structures/prefix_sums.html)
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [LeetCode - Subarray Sum Pattern](https://leetcode.com/tag/prefix-sum/)

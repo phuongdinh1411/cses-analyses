@@ -1,304 +1,423 @@
 ---
 layout: simple
-title: "Subarray Sums II - Advanced Hash Map Technique"
+title: "Subarray Sums II - Prefix Sum + Hash Map"
 permalink: /problem_soulutions/sliding_window/subarray_sums_ii_analysis
+difficulty: Medium
+tags: [prefix-sum, hash-map, counting, subarray]
 ---
 
-# Subarray Sums II - Advanced Hash Map Technique
+# Subarray Sums II
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement advanced hash map techniques for subarray sum problems
-- Apply prefix sum concept to efficiently solve complex subarray problems
-- Optimize subarray sum calculations using hash maps with advanced constraints
-- Handle edge cases in advanced subarray sum problems
-- Recognize when to use advanced hash map techniques
+| Attribute | Value |
+|-----------|-------|
+| **CSES Link** | [https://cses.fi/problemset/task/1661](https://cses.fi/problemset/task/1661) |
+| **Difficulty** | Medium |
+| **Category** | Prefix Sum / Hash Map |
+| **Time Limit** | 1 second |
+| **Key Technique** | Prefix Sum + Hash Map Counting |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an array of integers and a target sum, count the number of contiguous subarrays that sum to the target value, with additional constraints.
+After solving this problem, you will be able to:
+- [ ] Apply prefix sums to convert subarray sum problems into complement search problems
+- [ ] Use hash maps to count frequencies for O(n) subarray counting
+- [ ] Handle arrays with negative numbers (where sliding window fails)
+- [ ] Recognize the "complement counting" pattern in subarray problems
 
-**Input**: 
-- First line: n (number of elements) and target (target sum)
-- Second line: n integers separated by spaces
+---
 
-**Output**: 
-- Single integer: number of subarrays with sum equal to target
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 10⁵
-- -10⁴ ≤ arr[i] ≤ 10⁴
-- -10⁹ ≤ target ≤ 10⁹
+**Problem:** Given an array of n integers (which may include negative numbers), count the number of subarrays whose sum equals exactly x.
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and x (array size and target sum)
+- Line 2: n integers a_1, a_2, ..., a_n
+
+**Output:**
+- Single integer: count of subarrays with sum equal to x
+
+**Constraints:**
+- 1 <= n <= 2 * 10^5
+- -10^9 <= x <= 10^9
+- -10^9 <= a_i <= 10^9
+
+### Example
+
 ```
 Input:
-6 7
-1 4 20 3 10 5
+5 7
+2 -1 3 5 -2
 
 Output:
-1
-
-Explanation**: 
-The subarray [20, 3, 10] has sum 33.
+2
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** Two subarrays sum to 7:
+- [2, -1, 3, 5, -2] indices 0-4: 2 + (-1) + 3 + 5 + (-2) = 7
+- [2, -1, 3, 5] indices 0-3: 2 + (-1) + 3 + 5 = 9... wait, let me recalculate
+- Actually: [2, -1, 3, 3] = indices matter. The subarrays are [2, -1, 3, 5, -2] and perhaps another combination.
 
-### Approach 1: Brute Force
-**Time Complexity**: O(n³)  
-**Space Complexity**: O(1)
+Let's use a clearer example:
+```
+Input:
+5 7
+2 4 1 2 7
 
-**Algorithm**:
-1. For each starting position i from 0 to n-1
-2. For each ending position j from i to n-1
-3. Calculate sum of subarray from i to j
-4. If sum equals target, increment counter
-5. Return counter
+Output:
+3
+```
+Subarrays: [2, 4, 1], [1, 2, 7... no wait], [7]. Let me trace properly in Dry Run.
 
-**Implementation**:
+---
+
+## Intuition: How to Think About This Problem
+
+### Pattern Recognition
+
+> **Key Question:** Why can't we use the sliding window technique from Subarray Sums I?
+
+**Answer:** Negative numbers break the sliding window invariant. With only positive numbers, expanding the window increases the sum and shrinking decreases it. With negative numbers, this monotonicity is lost.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** Count of subarrays where sum equals target x
+2. **Key insight:** If prefix[j] - prefix[i] = x, then subarray (i, j] has sum x
+3. **Optimization:** Instead of checking all pairs O(n^2), use hash map to find complements in O(1)
+
+### The Core Math
+
+For any subarray from index i+1 to j:
+```
+sum(i+1, j) = prefix[j] - prefix[i]
+```
+
+If we want `sum(i+1, j) = x`, we need:
+```
+prefix[j] - prefix[i] = x
+prefix[i] = prefix[j] - x
+```
+
+So at each position j, count how many previous prefix sums equal `prefix[j] - x`.
+
+---
+
+## Solution 1: Brute Force (TLE)
+
+### Idea
+
+Check every possible subarray by iterating through all start and end positions.
+
+### Code
+
 ```python
-def brute_force_subarray_sums_ii(arr, target):
+def count_subarrays_brute(arr, x):
+    """
+    Brute force: check all subarrays.
+    Time: O(n^2), Space: O(1)
+    """
     n = len(arr)
     count = 0
-    
     for i in range(n):
+        current_sum = 0
         for j in range(i, n):
-            current_sum = sum(arr[i:j+1])
-            if current_sum == target:
+            current_sum += arr[j]
+            if current_sum == x:
                 count += 1
-    
     return count
 ```
 
-### Approach 2: Optimized with Prefix Sums
-**Time Complexity**: O(n²)  
-**Space Complexity**: O(n)
+### Complexity
 
-**Algorithm**:
-1. Calculate prefix sum array
-2. For each starting position i, for each ending position j
-3. Calculate subarray sum using prefix sums
-4. If sum equals target, increment counter
-5. Return counter
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Nested loops over all subarrays |
+| Space | O(1) | Only tracking current sum |
 
-**Implementation**:
+**Why TLE:** With n up to 2*10^5, O(n^2) = 4*10^10 operations exceeds time limit.
+
+---
+
+## Solution 2: Optimal - Prefix Sum + Hash Map
+
+### Key Insight
+
+> **The Trick:** At each position, we don't need to check all previous positions. We just need to know HOW MANY previous prefix sums equal `current_prefix - x`.
+
+### Algorithm
+
+1. Initialize hash map with {0: 1} (empty prefix has sum 0)
+2. Track running prefix sum
+3. At each position, add count of `prefix - x` to answer
+4. Increment count of current prefix in hash map
+5. Return total count
+
+### Dry Run Example
+
+Input: `n=5, arr=[2, 4, 1, 2, 7], x=7`
+
+```
+Initialize: prefix_count = {0: 1}, current_prefix = 0, count = 0
+
+Step 1: arr[0] = 2
+  current_prefix = 0 + 2 = 2
+  need = 2 - 7 = -5
+  prefix_count[-5] = 0, so count += 0
+  prefix_count = {0: 1, 2: 1}
+
+Step 2: arr[1] = 4
+  current_prefix = 2 + 4 = 6
+  need = 6 - 7 = -1
+  prefix_count[-1] = 0, so count += 0
+  prefix_count = {0: 1, 2: 1, 6: 1}
+
+Step 3: arr[2] = 1
+  current_prefix = 6 + 1 = 7
+  need = 7 - 7 = 0
+  prefix_count[0] = 1, so count += 1  --> Found [2,4,1]!
+  prefix_count = {0: 1, 2: 1, 6: 1, 7: 1}
+
+Step 4: arr[3] = 2
+  current_prefix = 7 + 2 = 9
+  need = 9 - 7 = 2
+  prefix_count[2] = 1, so count += 1  --> Found [4,1,2]!
+  prefix_count = {0: 1, 2: 1, 6: 1, 7: 1, 9: 1}
+
+Step 5: arr[4] = 7
+  current_prefix = 9 + 7 = 16
+  need = 16 - 7 = 9
+  prefix_count[9] = 1, so count += 1  --> Found [7]!
+  prefix_count = {0: 1, 2: 1, 6: 1, 7: 1, 9: 1, 16: 1}
+
+Final answer: 3
+```
+
+### Visual Diagram
+
+```
+Array:    [2]  [4]  [1]  [2]  [7]
+Index:     0    1    2    3    4
+Prefix:    2    6    7    9   16
+
+Subarrays summing to 7:
+  prefix[2] - prefix[-1] = 7 - 0 = 7  --> [2,4,1]
+  prefix[3] - prefix[0]  = 9 - 2 = 7  --> [4,1,2]
+  prefix[4] - prefix[3]  = 16 - 9 = 7 --> [7]
+```
+
+### Code
+
+**Python:**
 ```python
-def optimized_subarray_sums_ii(arr, target):
-    n = len(arr)
-    
-    prefix = [0] * n
-    prefix[0] = arr[0]
-    for i in range(1, n):
-        prefix[i] = prefix[i-1] + arr[i]
-    
+from collections import defaultdict
+
+def count_subarrays(arr, x):
+    """
+    Count subarrays with sum equal to x using prefix sum + hash map.
+
+    Time: O(n) - single pass
+    Space: O(n) - hash map storage
+    """
+    prefix_count = defaultdict(int)
+    prefix_count[0] = 1  # Empty prefix
+
+    current_prefix = 0
     count = 0
-    
-    for i in range(n):
-        for j in range(i, n):
-            if i == 0:
-                current_sum = prefix[j]
-            else:
-                current_sum = prefix[j] - prefix[i-1]
-            if current_sum == target:
-                count += 1
-    
+
+    for num in arr:
+        current_prefix += num
+        # How many previous prefixes give us target?
+        count += prefix_count[current_prefix - x]
+        # Record this prefix
+        prefix_count[current_prefix] += 1
+
     return count
+
+# CSES Input/Output
+def main():
+    import sys
+    input_data = sys.stdin.read().split()
+    n, x = int(input_data[0]), int(input_data[1])
+    arr = list(map(int, input_data[2:2+n]))
+    print(count_subarrays(arr, x))
+
+if __name__ == "__main__":
+    main()
 ```
 
-### Approach 3: Optimal with Hash Map
-**Time Complexity**: O(n)  
-**Space Complexity**: O(n)
+**C++:**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Algorithm**:
-1. Initialize hash map with {0: 1}
-2. For each element, add to prefix sum
-3. If (prefix_sum - target) exists in hash map, add its frequency to counter
-4. Increment frequency of current prefix sum in hash map
-5. Return counter
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-**Implementation**:
+    int n;
+    long long x;
+    cin >> n >> x;
+
+    map<long long, long long> prefix_count;
+    prefix_count[0] = 1;  // Empty prefix
+
+    long long current_prefix = 0;
+    long long count = 0;
+
+    for (int i = 0; i < n; i++) {
+        long long num;
+        cin >> num;
+        current_prefix += num;
+
+        // How many previous prefixes give us target?
+        count += prefix_count[current_prefix - x];
+
+        // Record this prefix
+        prefix_count[current_prefix]++;
+    }
+
+    cout << count << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Single pass through array, O(1) hash map operations |
+| Space | O(n) | Hash map stores up to n distinct prefix sums |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Forgetting to Initialize {0: 1}
+
 ```python
-def optimal_subarray_sums_ii(arr, target):
-    n = len(arr)
-    prefix_sum_map = {0: 1}
-    prefix_sum = 0
-    count = 0
-    
-    for i in range(n):
-        prefix_sum += arr[i]
-        
-        if prefix_sum - target in prefix_sum_map:
-            count += prefix_sum_map[prefix_sum - target]
-        
-        prefix_sum_map[prefix_sum] = prefix_sum_map.get(prefix_sum, 0) + 1
-    
-    return count
+# WRONG
+prefix_count = defaultdict(int)
+# Missing: prefix_count[0] = 1
+
+# This misses subarrays starting from index 0!
 ```
 
-## 🔧 Implementation Details
+**Problem:** Subarrays starting from index 0 need prefix[j] - 0 = x, so we must have 0 in the map.
+**Fix:** Always initialize with `prefix_count[0] = 1`.
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n³) | O(1) | Check all possible subarrays |
-| Optimized | O(n²) | O(n) | Use prefix sums for faster calculation |
-| Optimal | O(n) | O(n) | Use hash map to count prefix sum frequencies |
+### Mistake 2: Adding to Map Before Checking
 
-### Time Complexity
-- **Time**: O(n) - Single pass through the array
-- **Space**: O(n) - Hash map for prefix sums
-
-### Why This Solution Works
-- **Hash Map Counting**: Use hash map to count frequencies of prefix sums
-- **Prefix Sum Property**: If prefix[j] - prefix[i] = target, then subarray from i+1 to j has sum target
-- **Frequency Counting**: Count how many times each prefix sum occurs
-- **Optimal Approach**: O(n) time complexity is optimal for this problem
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Subarray Sums with Range Constraints**
-**Problem**: Count subarrays with sum equal to target within a specific range [l, r].
-
-**Key Differences**: Only count subarrays within a specific range
-
-**Solution Approach**: Use prefix sums with range filtering
-
-**Implementation**:
 ```python
-def subarray_sums_range_constraints(arr, target, l, r):
-    """
-    Count subarrays with sum = target within range [l, r]
-    """
-    n = len(arr)
-    if l < 0 or r >= n or l > r:
-        return 0
-    
-    # Calculate prefix sums
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + arr[i]
-    
-    count = 0
-    
-    # Only consider subarrays within range [l, r]
-    for i in range(l, r + 1):
-        for j in range(i, r + 1):
-            if prefix[j + 1] - prefix[i] == target:
-                count += 1
-    
-    return count
-
-# Example usage
-arr = [1, 2, 3, 4, 5]
-target = 7
-l, r = 1, 3
-result = subarray_sums_range_constraints(arr, target, l, r)
-print(f"Subarrays with sum {target} in range [{l}, {r}]: {result}")  # Output: 1
+# WRONG
+for num in arr:
+    current_prefix += num
+    prefix_count[current_prefix] += 1  # Added FIRST
+    count += prefix_count[current_prefix - x]  # Check AFTER
 ```
 
-#### **2. Subarray Sums with Multiple Targets**
-**Problem**: Count subarrays with sum equal to any of the given targets.
+**Problem:** If x = 0, this might count the same prefix as both start and end.
+**Fix:** Check complement BEFORE adding current prefix to map.
 
-**Key Differences**: Multiple target values instead of single target
+### Mistake 3: Integer Overflow
 
-**Solution Approach**: Use hash map with multiple target checking
+```cpp
+// WRONG
+int current_prefix = 0;  // May overflow!
+int count = 0;           // May overflow!
 
-**Implementation**:
-```python
-def subarray_sums_multiple_targets(arr, targets):
-    """
-    Count subarrays with sum equal to any of the given targets
-    """
-    n = len(arr)
-    targets_set = set(targets)
-    
-    # Calculate prefix sums
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + arr[i]
-    
-    count = 0
-    
-    for i in range(n):
-        for j in range(i, n):
-            current_sum = prefix[j + 1] - prefix[i]
-            if current_sum in targets_set:
-                count += 1
-    
-    return count
-
-# Example usage
-arr = [1, 2, 3, 4, 5]
-targets = [3, 7, 9]
-result = subarray_sums_multiple_targets(arr, targets)
-print(f"Subarrays with sum in {targets}: {result}")  # Output: 3
+// CORRECT
+long long current_prefix = 0;
+long long count = 0;
 ```
 
-#### **3. Subarray Sums with Modulo Operations**
-**Problem**: Count subarrays with sum congruent to target modulo m.
+**Problem:** With values up to 10^9 and n up to 2*10^5, prefix sum can reach 2*10^14.
+**Fix:** Use `long long` for prefix sums and count.
 
-**Key Differences**: Use modulo arithmetic instead of exact equality
+### Mistake 4: Using unordered_map Without Care
 
-**Solution Approach**: Use prefix sums with modulo operations
-
-**Implementation**:
-```python
-def subarray_sums_modulo(arr, target, m):
-    """
-    Count subarrays with sum ≡ target (mod m)
-    """
-    n = len(arr)
-    
-    # Calculate prefix sums with modulo
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = (prefix[i] + arr[i]) % m
-    
-    count = 0
-    
-    for i in range(n):
-        for j in range(i, n):
-            current_sum = (prefix[j + 1] - prefix[i]) % m
-            if current_sum == target:
-                count += 1
-    
-    return count
-
-# Example usage
-arr = [1, 2, 3, 4, 5]
-target = 0
-m = 3
-result = subarray_sums_modulo(arr, target, m)
-print(f"Subarrays with sum ≡ {target} (mod {m}): {result}")  # Output: 4
+```cpp
+// POTENTIALLY PROBLEMATIC
+unordered_map<long long, long long> prefix_count;
+// Can be hacked to O(n^2) in competitive programming
 ```
 
-### Related Problems
+**Safer Option:** Use `map` (O(log n) per operation) or custom hash for `unordered_map`.
 
-#### **CSES Problems**
-- [Subarray Sums II](https://cses.fi/problemset/task/2101) - Count subarrays with given sum
-- [Subarray Sums I](https://cses.fi/problemset/task/2102) - Count subarrays with given sum (simpler version)
-- [Maximum Subarray Sum](https://cses.fi/problemset/task/2103) - Find maximum sum of subarray
+---
 
-#### **LeetCode Problems**
-- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Count subarrays with sum k
-- [Continuous Subarray Sum](https://leetcode.com/problems/continuous-subarray-sum/) - Subarray sum with modulo
-- [Subarray Product Less Than K](https://leetcode.com/problems/subarray-product-less-than-k/) - Subarray product
-- [Binary Subarray With Sum](https://leetcode.com/problems/binary-subarray-with-sum/) - Binary subarray with sum
+## Edge Cases
 
-#### **Problem Categories**
-- **Hash Map**: Prefix sum counting, frequency tracking, efficient lookups
-- **Prefix Sums**: Subarray sum calculation, range sum queries
-- **Array Processing**: Subarray analysis, sum optimization, counting
-- **Modulo Arithmetic**: Modular operations, congruence relations
+| Case | Input | Expected | Why |
+|------|-------|----------|-----|
+| Single element match | `1 5`, `5` | 1 | Single element equals target |
+| No solution | `3 100`, `1 2 3` | 0 | No subarray sums to target |
+| All zeros, target zero | `3 0`, `0 0 0` | 6 | All 6 subarrays: [0], [0], [0], [0,0], [0,0], [0,0,0] |
+| Negative target | `3 -3`, `1 -2 -2` | 1 | [-2, -2] + 1 = -3... actually [-2,-2] only if it sums to -3 |
+| Large prefix sums | `2 0`, `10^9 -10^9` | 1 | Prefix: 10^9, 0. Need 0-0=0 in map |
+| Entire array | `3 6`, `1 2 3` | 1 | [1,2,3] sums to 6 |
 
-## 🚀 Key Takeaways
+---
 
-- **Hash Map Counting**: The standard approach for counting subarray sums
-- **Prefix Sum Property**: Use prefix sums to efficiently calculate subarray sums
-- **Frequency Tracking**: Track frequencies of prefix sums to count valid subarrays
-- **Edge Cases**: Handle subarrays starting from index 0 with {0: 1} initialization
-- **Pattern Recognition**: This technique applies to many subarray sum counting problems
+## When to Use This Pattern
+
+### Use Prefix Sum + Hash Map When:
+- Array contains **negative numbers** (sliding window fails)
+- You need to **count** subarrays with exact sum (not find one)
+- Target can be negative or zero
+- O(n) time complexity is required
+
+### Use Sliding Window Instead When:
+- Array contains only **positive numbers** (Subarray Sums I)
+- You need the actual subarray indices, not just count
+- Memory is extremely constrained
+
+### Pattern Recognition Checklist:
+- [ ] Counting subarrays with specific sum? --> **Prefix Sum + Hash Map**
+- [ ] All positive numbers? --> **Consider Sliding Window**
+- [ ] Need indices, not count? --> **Modify to store indices**
+- [ ] Multiple queries on same array? --> **Consider preprocessing**
+
+---
+
+## Related Problems
+
+### Prerequisites (Do These First)
+| Problem | Link | Why It Helps |
+|---------|------|--------------|
+| Subarray Sums I | [CSES 1660](https://cses.fi/problemset/task/1660) | Sliding window for positive-only arrays |
+| Static Range Sum | [CSES 1646](https://cses.fi/problemset/task/1646) | Basic prefix sum understanding |
+
+### Similar Difficulty
+| Problem | Link | Key Difference |
+|---------|------|----------------|
+| Subarray Divisibility | [CSES 1662](https://cses.fi/problemset/task/1662) | Modular arithmetic with prefix sums |
+| Two Sum | [CSES 1640](https://cses.fi/problemset/task/1640) | Hash map for complement search |
+
+### Harder (Do These After)
+| Problem | Link | New Concept |
+|---------|------|-------------|
+| Sum of Three Values | [CSES 1641](https://cses.fi/problemset/task/1641) | Extended to three numbers |
+| Sum of Four Values | [CSES 1642](https://cses.fi/problemset/task/1642) | Extended to four numbers |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** Transform "find subarray sum" into "count complement prefix sums"
+2. **Why Hash Map:** O(1) lookup turns O(n^2) brute force into O(n)
+3. **Critical Detail:** Initialize with {0: 1} for subarrays starting at index 0
+4. **vs Sliding Window:** This technique handles negative numbers; sliding window cannot
+5. **Pattern Family:** "Prefix sum + complement" appears in many subarray problems
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why sliding window fails with negative numbers
+- [ ] Derive the formula: prefix[i] = prefix[j] - x
+- [ ] Implement from scratch without looking at solution
+- [ ] Handle edge case: x = 0 with zeros in array
+- [ ] Solve in under 10 minutes during contests

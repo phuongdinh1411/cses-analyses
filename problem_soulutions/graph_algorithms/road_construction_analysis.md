@@ -1,524 +1,307 @@
 ---
 layout: simple
-title: "Road Construction - Graph Algorithm Problem"
+title: "Road Construction - Online Connectivity with Union-Find"
 permalink: /problem_soulutions/graph_algorithms/road_construction_analysis
+difficulty: Easy
+tags: [graph, union-find, dsu, online-connectivity]
+cses_link: https://cses.fi/problemset/task/1676
 ---
 
-# Road Construction - Graph Algorithm Problem
+# Road Construction - Online Connectivity with Union-Find
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of minimum spanning tree in graph algorithms
-- Apply efficient algorithms for finding MST
-- Implement Kruskal's and Prim's algorithms
-- Optimize graph connectivity for minimum cost
-- Handle special cases in MST problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Track components as roads are added |
+| Pattern | Union-Find with size tracking |
+| Difficulty | Easy |
+| Key Operations | Union, Find, Track component count & max size |
+| Time Complexity | O(m * alpha(n)) approximately O(m) |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a weighted graph, find the minimum cost to connect all vertices.
+1. **Union-Find with Size Tracking**: Maintain component sizes during union operations
+2. **Online Queries**: Answer queries after each modification (no preprocessing all edges)
+3. **Path Compression + Union by Size**: Achieve near-constant time per operation
 
-**Input**: 
-- n: number of vertices
-- m: number of edges
-- edges: array of (u, v, weight) representing edges
+## Problem Statement
 
-**Output**: 
-- Minimum cost to connect all vertices, or -1 if impossible
+There are `n` cities and initially no roads. You are given `m` roads to be constructed one by one. After adding each road, output:
+- Number of connected components
+- Size of the largest component
 
-**Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
-- 1 ≤ weight ≤ 10^9
+**Input:**
+- Line 1: `n m` (cities and roads)
+- Next m lines: `a b` (road connects cities a and b)
 
-**Example**:
+**Output:** m lines, each with two integers: component count and largest component size.
+
+**Constraints:** 1 <= n, m <= 10^5
+
+**Example:**
 ```
 Input:
-n = 4, m = 5
-edges = [(0,1,1), (0,2,2), (1,2,3), (1,3,4), (2,3,5)]
+5 3
+1 2
+1 3
+4 5
 
 Output:
-7
-
-Explanation**: 
-MST: (0,1,1) + (0,2,2) + (1,3,4) = 7
+4 2
+3 3
+2 3
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+## Key Insight
 
-### Approach 1: Brute Force Solution
+Use Union-Find (Disjoint Set Union) with:
+1. **Path compression** in `find()` - flattens tree structure
+2. **Union by size** - attach smaller tree under larger tree
+3. **Track two values globally:**
+   - `num_components`: starts at n, decreases by 1 on each successful union
+   - `max_size`: update when a union creates a larger component
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible spanning trees
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic graph connectivity
-- **Inefficient**: O(n^(n-2)) time complexity
+## Algorithm Design
 
-**Key Insight**: Generate all possible spanning trees and find minimum cost.
+### What We Track
 
-**Algorithm**:
-- Generate all possible spanning trees
-- Calculate cost for each spanning tree
-- Return minimum cost
-
-**Visual Example**:
 ```
-Graph: 0-1(1), 0-2(2), 1-2(3), 1-3(4), 2-3(5)
-
-All spanning trees:
-┌─────────────────────────────────────┐
-│ Tree 1: (0,1,1) + (0,2,2) + (1,3,4) │
-│ Cost: 1 + 2 + 4 = 7                │
-│                                   │
-│ Tree 2: (0,1,1) + (1,2,3) + (1,3,4) │
-│ Cost: 1 + 3 + 4 = 8                │
-│                                   │
-│ Tree 3: (0,2,2) + (1,2,3) + (1,3,4) │
-│ Cost: 2 + 3 + 4 = 9                │
-│                                   │
-│ Minimum: 7                         │
-└─────────────────────────────────────┘
+Global State:
+- parent[i]: parent of node i (initially parent[i] = i)
+- size[i]: size of component rooted at i (initially all 1)
+- num_components: number of distinct components (initially n)
+- max_size: size of largest component (initially 1)
 ```
 
-**Implementation**:
+### Union-Find Operations
+
+```
+find(x):
+    if parent[x] != x:
+        parent[x] = find(parent[x])  # Path compression
+    return parent[x]
+
+union(x, y):
+    root_x = find(x)
+    root_y = find(y)
+
+    if root_x == root_y:
+        return  # Already connected, no change
+
+    # Union by size: smaller under larger
+    if size[root_x] < size[root_y]:
+        swap(root_x, root_y)
+
+    parent[root_y] = root_x
+    size[root_x] += size[root_y]
+
+    num_components -= 1
+    max_size = max(max_size, size[root_x])
+```
+
+## Visual Diagram
+
+```
+Initial: 5 cities, 0 roads
+Components: {1}, {2}, {3}, {4}, {5}
+num_components = 5, max_size = 1
+
+   1    2    3    4    5
+   o    o    o    o    o
+
+After road 1-2:
+Components: {1,2}, {3}, {4}, {5}
+num_components = 4, max_size = 2
+
+   1         3    4    5
+   |
+   2
+
+After road 1-3:
+Components: {1,2,3}, {4}, {5}
+num_components = 3, max_size = 3
+
+     1       4    5
+    / \
+   2   3
+
+After road 4-5:
+Components: {1,2,3}, {4,5}
+num_components = 2, max_size = 3
+
+     1         4
+    / \        |
+   2   3       5
+```
+
+## Dry Run
+
+```
+n=5, m=3, roads: [(1,2), (1,3), (4,5)]
+
+Initial State:
+  parent = [_, 1, 2, 3, 4, 5]  (1-indexed)
+  size   = [_, 1, 1, 1, 1, 1]
+  num_components = 5
+  max_size = 1
+
+Road 1: (1, 2)
+  find(1) = 1, find(2) = 2
+  Different roots -> union them
+  size[1]=1, size[2]=1 -> attach 2 under 1
+  parent[2] = 1, size[1] = 2
+  num_components = 4, max_size = 2
+  Output: 4 2
+
+Road 2: (1, 3)
+  find(1) = 1, find(3) = 3
+  Different roots -> union them
+  size[1]=2 > size[3]=1 -> attach 3 under 1
+  parent[3] = 1, size[1] = 3
+  num_components = 3, max_size = 3
+  Output: 3 3
+
+Road 3: (4, 5)
+  find(4) = 4, find(5) = 5
+  Different roots -> union them
+  size[4]=1, size[5]=1 -> attach 5 under 4
+  parent[5] = 4, size[4] = 2
+  num_components = 2, max_size = max(3, 2) = 3
+  Output: 2 3
+```
+
+## Python Solution
+
 ```python
-def brute_force_road_construction(n, edges):
-    """Find minimum spanning tree using brute force approach"""
-    from itertools import combinations
-    
-    min_cost = float('inf')
-    
-    # Try all possible combinations of n-1 edges
-    for edge_combination in combinations(edges, n - 1):
-        # Check if this forms a spanning tree
-        if is_spanning_tree(n, edge_combination):
-            cost = sum(weight for _, _, weight in edge_combination)
-            min_cost = min(min_cost, cost)
-    
-    return min_cost if min_cost != float('inf') else -1
+import sys
+from sys import stdin
 
-def is_spanning_tree(n, edges):
-    """Check if edges form a spanning tree"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v, _ in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    # Check connectivity using DFS
-    visited = [False] * n
-    stack = [0]
-    visited[0] = True
-    count = 1
-    
-    while stack:
-        vertex = stack.pop()
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                visited[neighbor] = True
-                stack.append(neighbor)
-                count += 1
-    
-    return count == n
+def main():
+    input = stdin.readline
+    n, m = map(int, input().split())
 
-# Example usage
-n = 4
-edges = [(0, 1, 1), (0, 2, 2), (1, 2, 3), (1, 3, 4), (2, 3, 5)]
-result = brute_force_road_construction(n, edges)
-print(f"Brute force MST cost: {result}")
-```
+    parent = list(range(n + 1))  # 1-indexed
+    size = [1] * (n + 1)
+    num_components = n
+    max_size = 1
 
-**Time Complexity**: O(n^(n-2))
-**Space Complexity**: O(n + m)
-
-**Why it's inefficient**: O(n^(n-2)) time complexity for checking all spanning trees.
-
----
-
-### Approach 2: Kruskal's Algorithm
-
-**Key Insights from Kruskal's Algorithm**:
-- **Kruskal's Algorithm**: Use Kruskal's algorithm for efficient MST
-- **Efficient Implementation**: O(m log m) time complexity
-- **Union-Find**: Use union-find data structure for cycle detection
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Sort edges by weight and use union-find to avoid cycles.
-
-**Algorithm**:
-- Sort all edges by weight
-- Use union-find to add edges without creating cycles
-- Stop when we have n-1 edges
-
-**Visual Example**:
-```
-Kruskal's algorithm:
-
-Edges sorted by weight:
-┌─────────────────────────────────────┐
-│ (0,1,1), (0,2,2), (1,2,3), (1,3,4), (2,3,5) │
-│                                   │
-│ Step 1: Add (0,1,1) - cost = 1    │
-│ Step 2: Add (0,2,2) - cost = 3    │
-│ Step 3: Skip (1,2,3) - creates cycle │
-│ Step 4: Add (1,3,4) - cost = 7    │
-│                                   │
-│ MST: (0,1,1) + (0,2,2) + (1,3,4) = 7 │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def kruskal_road_construction(n, edges):
-    """Find minimum spanning tree using Kruskal's algorithm"""
-    # Sort edges by weight
-    edges.sort(key=lambda x: x[2])
-    
-    # Union-Find data structure
-    parent = list(range(n))
-    
     def find(x):
         if parent[x] != x:
             parent[x] = find(parent[x])
         return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px != py:
-            parent[px] = py
-            return True
-        return False
-    
-    # Kruskal's algorithm
-    mst_cost = 0
-    edges_added = 0
-    
-    for u, v, weight in edges:
-        if union(u, v):
-            mst_cost += weight
-            edges_added += 1
-            if edges_added == n - 1:
-                break
-    
-    return mst_cost if edges_added == n - 1 else -1
 
-# Example usage
-n = 4
-edges = [(0, 1, 1), (0, 2, 2), (1, 2, 3), (1, 3, 4), (2, 3, 5)]
-result = kruskal_road_construction(n, edges)
-print(f"Kruskal's MST cost: {result}")
+    results = []
+    for _ in range(m):
+        a, b = map(int, input().split())
+
+        root_a = find(a)
+        root_b = find(b)
+
+        if root_a != root_b:
+            # Union by size
+            if size[root_a] < size[root_b]:
+                root_a, root_b = root_b, root_a
+
+            parent[root_b] = root_a
+            size[root_a] += size[root_b]
+
+            num_components -= 1
+            max_size = max(max_size, size[root_a])
+
+        results.append(f"{num_components} {max_size}")
+
+    print('\n'.join(results))
+
+if __name__ == "__main__":
+    main()
 ```
 
-**Time Complexity**: O(m log m)
-**Space Complexity**: O(n)
+## C++ Solution
 
-**Why it's better**: Uses Kruskal's algorithm for O(m log m) time complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+class DSU {
+public:
+    vector<int> parent, size;
+    int num_components, max_size;
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+    DSU(int n) : parent(n + 1), size(n + 1, 1),
+                 num_components(n), max_size(1) {
+        iota(parent.begin(), parent.end(), 0);
+    }
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for MST
-- **Efficient Implementation**: O(m log m) time complexity
-- **Space Efficiency**: O(n) space complexity
-- **Optimal Complexity**: Best approach for MST
+    int find(int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent[x]);
+        }
+        return parent[x];
+    }
 
-**Key Insight**: Use advanced data structures for optimal MST calculation.
+    void unite(int a, int b) {
+        int root_a = find(a);
+        int root_b = find(b);
 
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient Kruskal's algorithm
-- Handle special cases optimally
-- Return MST cost
+        if (root_a == root_b) return;
 
-**Visual Example**:
-```
-Advanced data structure approach:
+        if (size[root_a] < size[root_b]) {
+            swap(root_a, root_b);
+        }
 
-For graph: 0-1(1), 0-2(2), 1-2(3), 1-3(4), 2-3(5)
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Edge structure: for efficient     │
-│   storage and sorting              │
-│ - Union-find cache: for optimization │
-│ - MST tracker: for optimization     │
-│                                   │
-│ MST calculation:                   │
-│ - Use edge structure for efficient │
-│   storage and sorting              │
-│ - Use union-find cache for         │
-│   optimization                     │
-│ - Use MST tracker for optimization │
-│                                   │
-│ Result: 7                          │
-└─────────────────────────────────────┘
-```
+        parent[root_b] = root_a;
+        size[root_a] += size[root_b];
 
-**Implementation**:
-```python
-def advanced_data_structure_road_construction(n, edges):
-    """Find minimum spanning tree using advanced data structure approach"""
-    # Use advanced data structures for graph storage
-    # Sort edges by weight using advanced data structures
-    edges.sort(key=lambda x: x[2])
-    
-    # Advanced Union-Find data structure
-    parent = list(range(n))
-    
-    def find_advanced(x):
-        if parent[x] != x:
-            parent[x] = find_advanced(parent[x])
-        return parent[x]
-    
-    def union_advanced(x, y):
-        px, py = find_advanced(x), find_advanced(y)
-        if px != py:
-            parent[px] = py
-            return True
-        return False
-    
-    # Advanced Kruskal's algorithm
-    mst_cost = 0
-    edges_added = 0
-    
-    for u, v, weight in edges:
-        if union_advanced(u, v):
-            mst_cost += weight
-            edges_added += 1
-            if edges_added == n - 1:
-                break
-    
-    return mst_cost if edges_added == n - 1 else -1
+        num_components--;
+        max_size = max(max_size, size[root_a]);
+    }
+};
 
-# Example usage
-n = 4
-edges = [(0, 1, 1), (0, 2, 2), (1, 2, 3), (1, 3, 4), (2, 3, 5)]
-result = advanced_data_structure_road_construction(n, edges)
-print(f"Advanced data structure MST cost: {result}")
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+
+    DSU dsu(n);
+
+    while (m--) {
+        int a, b;
+        cin >> a >> b;
+        dsu.unite(a, b);
+        cout << dsu.num_components << " " << dsu.max_size << "\n";
+    }
+
+    return 0;
+}
 ```
 
-**Time Complexity**: O(m log m)
-**Space Complexity**: O(n)
+## Common Mistakes
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+| Mistake | Problem | Fix |
+|---------|---------|-----|
+| Not updating max_size on union | Reports stale maximum | Update `max_size = max(max_size, size[root])` after every union |
+| Off-by-one in component count | Wrong initial count | Start with `num_components = n`, decrement on successful union only |
+| Forgetting path compression | TLE on large inputs | Always update `parent[x] = find(parent[x])` in find |
+| Union without size check | Unbalanced trees | Always attach smaller tree under larger |
+| Updating count when already connected | Double counting | Check `root_a != root_b` before decrementing |
 
-## 🔧 Implementation Details
+## Complexity Analysis
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n^(n-2)) | O(n + m) | Try all spanning trees |
-| Kruskal's Algorithm | O(m log m) | O(n) | Sort edges and use union-find |
-| Advanced Data Structure | O(m log m) | O(n) | Use advanced data structures |
+| Operation | Time | Notes |
+|-----------|------|-------|
+| find(x) | O(alpha(n)) | With path compression, alpha is inverse Ackermann |
+| union(x,y) | O(alpha(n)) | Dominated by two find operations |
+| Total | O(m * alpha(n)) | For m operations, effectively O(m) |
 
-### Time Complexity
-- **Time**: O(m log m) - Use Kruskal's algorithm for efficient MST
-- **Space**: O(n) - Store union-find data structure
+**Space Complexity:** O(n) for parent and size arrays
 
-### Why This Solution Works
-- **Kruskal's Algorithm**: Sort edges by weight and use union-find
-- **Union-Find**: Efficiently detect cycles and merge components
-- **Greedy Approach**: Always choose minimum weight edge that doesn't create cycle
-- **Optimal Algorithms**: Use optimal algorithms for MST
+**Why alpha(n) is effectively constant:** The inverse Ackermann function grows extremely slowly. For any practical input size (even n = 10^80), alpha(n) <= 4.
 
-## 🚀 Problem Variations
+## Related Problems
 
-### Extended Problems with Detailed Code Examples
-
-#### **1. Road Construction with Constraints**
-**Problem**: Find MST with specific constraints.
-
-**Key Differences**: Apply constraints to MST calculation
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_road_construction(n, edges, constraints):
-    """Find MST with constraints"""
-    # Filter edges based on constraints
-    filtered_edges = []
-    for u, v, weight in edges:
-        if constraints(u) and constraints(v):
-            filtered_edges.append((u, v, weight))
-    
-    # Sort edges by weight
-    filtered_edges.sort(key=lambda x: x[2])
-    
-    # Union-Find data structure
-    parent = list(range(n))
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px != py:
-            parent[px] = py
-            return True
-        return False
-    
-    # Kruskal's algorithm with constraints
-    mst_cost = 0
-    edges_added = 0
-    
-    for u, v, weight in filtered_edges:
-        if union(u, v):
-            mst_cost += weight
-            edges_added += 1
-            if edges_added == n - 1:
-                break
-    
-    return mst_cost if edges_added == n - 1 else -1
-
-# Example usage
-n = 4
-edges = [(0, 1, 1), (0, 2, 2), (1, 2, 3), (1, 3, 4), (2, 3, 5)]
-constraints = lambda vertex: vertex >= 0  # Only include non-negative vertices
-result = constrained_road_construction(n, edges, constraints)
-print(f"Constrained MST cost: {result}")
-```
-
-#### **2. Road Construction with Different Metrics**
-**Problem**: Find MST with different cost metrics.
-
-**Key Differences**: Different cost calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_road_construction(n, edges, cost_function):
-    """Find MST with different cost metrics"""
-    # Apply cost function to edges
-    weighted_edges = []
-    for u, v, weight in edges:
-        new_weight = cost_function(weight)
-        weighted_edges.append((u, v, new_weight))
-    
-    # Sort edges by new weight
-    weighted_edges.sort(key=lambda x: x[2])
-    
-    # Union-Find data structure
-    parent = list(range(n))
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px != py:
-            parent[px] = py
-            return True
-        return False
-    
-    # Kruskal's algorithm with weighted edges
-    mst_cost = 0
-    edges_added = 0
-    
-    for u, v, weight in weighted_edges:
-        if union(u, v):
-            mst_cost += weight
-            edges_added += 1
-            if edges_added == n - 1:
-                break
-    
-    return mst_cost if edges_added == n - 1 else -1
-
-# Example usage
-n = 4
-edges = [(0, 1, 1), (0, 2, 2), (1, 2, 3), (1, 3, 4), (2, 3, 5)]
-cost_function = lambda weight: weight * weight  # Square the weight
-result = weighted_road_construction(n, edges, cost_function)
-print(f"Weighted MST cost: {result}")
-```
-
-#### **3. Road Construction with Multiple Dimensions**
-**Problem**: Find MST in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_road_construction(n, edges, dimensions):
-    """Find MST in multiple dimensions"""
-    # Sort edges by weight
-    edges.sort(key=lambda x: x[2])
-    
-    # Union-Find data structure
-    parent = list(range(n))
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px != py:
-            parent[px] = py
-            return True
-        return False
-    
-    # Kruskal's algorithm
-    mst_cost = 0
-    edges_added = 0
-    
-    for u, v, weight in edges:
-        if union(u, v):
-            mst_cost += weight
-            edges_added += 1
-            if edges_added == n - 1:
-                break
-    
-    return mst_cost if edges_added == n - 1 else -1
-
-# Example usage
-n = 4
-edges = [(0, 1, 1), (0, 2, 2), (1, 2, 3), (1, 3, 4), (2, 3, 5)]
-dimensions = 1
-result = multi_dimensional_road_construction(n, edges, dimensions)
-print(f"Multi-dimensional MST cost: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Road Construction II](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Road Construction III](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Road Reparation](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Min Cost to Connect All Points](https://leetcode.com/problems/min-cost-to-connect-all-points/) - Graph
-- [Connecting Cities With Minimum Cost](https://leetcode.com/problems/connecting-cities-with-minimum-cost/) - Graph
-- [Minimum Spanning Tree](https://leetcode.com/problems/minimum-spanning-tree/) - Graph
-
-#### **Problem Categories**
-- **Graph Algorithms**: Minimum spanning tree, Kruskal's algorithm, union-find
-- **MST Algorithms**: Kruskal's, Prim's, MST optimization
-- **Union-Find**: Disjoint sets, cycle detection
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Minimum Spanning Tree](https://cp-algorithms.com/graph/mst_kruskal.html) - MST algorithms
-- [Union-Find](https://cp-algorithms.com/data_structures/disjoint_set_union.html) - Union-find algorithms
-
-### **Practice Problems**
-- [CSES Road Construction II](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Road Construction III](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Road Reparation](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Minimum Spanning Tree](https://en.wikipedia.org/wiki/Minimum_spanning_tree) - Wikipedia article
-- [Kruskal's Algorithm](https://en.wikipedia.org/wiki/Kruskal%27s_algorithm) - Wikipedia article
+- [CSES Building Roads](https://cses.fi/problemset/task/1666) - Make graph connected
+- [LeetCode 547: Number of Provinces](https://leetcode.com/problems/number-of-provinces/)
+- [LeetCode 684: Redundant Connection](https://leetcode.com/problems/redundant-connection/)

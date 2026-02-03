@@ -1,425 +1,237 @@
 ---
-layout: simple
-title: "Coordinate Compression - Graph Algorithm Problem"
-permalink: /problem_soulutions/graph_algorithms/coordinate_compression_analysis
+title: "Coordinate Compression - Efficient Value Mapping"
+category: Techniques
+difficulty: Easy-Medium
 ---
 
-# Coordinate Compression - Graph Algorithm Problem
+# Coordinate Compression - Efficient Value Mapping
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of coordinate compression in computational geometry
-- Apply efficient algorithms for coordinate mapping and compression
-- Implement coordinate compression for large coordinate spaces
-- Optimize memory usage for sparse coordinate data
-- Handle special cases in coordinate compression problems
+| Aspect | Details |
+|--------|---------|
+| Technique | Map large/sparse values to small consecutive integers |
+| Use Case | When value range is huge but count of distinct values is small |
+| Benefit | Enables array indexing, reduces memory, speeds up algorithms |
+| Time | O(n log n) for sorting + O(1) per lookup |
+| Space | O(n) for mapping |
 
-## 📋 Problem Description
+## What is Coordinate Compression?
 
-Given a set of coordinates, compress them to a smaller range while preserving relative order.
+Coordinate compression maps a set of values to consecutive integers [0, k-1] where k is the number of distinct values, preserving relative order.
 
-**Input**: 
-- n: number of coordinates
-- coordinates: array of coordinate values
-
-**Output**: 
-- Compressed coordinates in range [0, n-1]
-
-**Constraints**:
-- 1 ≤ n ≤ 2×10^5
-- -10^9 ≤ coordinates ≤ 10^9
-
-**Example**:
+**Example:**
 ```
-Input:
-n = 5
-coordinates = [100, 50, 200, 50, 150]
-
-Output:
-[2, 0, 4, 0, 3]
-
-Explanation**: 
-Sorted: [50, 50, 100, 150, 200]
-Mapping: 50->0, 100->1, 150->2, 200->3
-Compressed: [100, 50, 200, 50, 150] -> [2, 0, 4, 0, 3]
+Original:  [1000000, 5, 999999, 5, 500000]
+Distinct sorted: [5, 500000, 999999, 1000000]
+Mapping:   5->0, 500000->1, 999999->2, 1000000->3
+Compressed: [3, 0, 2, 0, 1]
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Why useful:**
+- Original range: 0 to 10^9 (can't create array this large)
+- Compressed range: 0 to 4 (easy to index)
 
-### Approach 1: Brute Force Solution
+## When to Use
 
-**Key Insights from Brute Force Solution**:
-- **Complete Sorting**: Sort all coordinates and assign ranks
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Mapping**: Use sorted array for mapping
-- **Inefficient**: O(n²) time complexity
+| Scenario | Without Compression | With Compression |
+|----------|--------------------|--------------------|
+| Segment tree on values | O(10^9) space | O(n) space |
+| Counting sort on large values | Impossible | O(n) |
+| 2D grid with sparse points | Memory limit | Feasible |
 
-**Key Insight**: Sort coordinates and assign ranks based on position.
+## Implementation
 
-**Algorithm**:
-- Sort all unique coordinates
-- For each coordinate, find its rank in sorted array
-- Assign compressed value based on rank
-
-**Visual Example**:
-```
-Coordinates: [100, 50, 200, 50, 150]
-
-Sorting and mapping:
-┌─────────────────────────────────────┐
-│ Original: [100, 50, 200, 50, 150]  │
-│ Sorted:   [50, 100, 150, 200]      │
-│ Mapping:  50->0, 100->1, 150->2, 200->3 │
-│                                   │
-│ Compression:                       │
-│ 100 -> rank 1 -> 1                │
-│ 50  -> rank 0 -> 0                │
-│ 200 -> rank 3 -> 3                │
-│ 50  -> rank 0 -> 0                │
-│ 150 -> rank 2 -> 2                │
-│                                   │
-│ Result: [1, 0, 3, 0, 2]           │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
+### Python Solution
 ```python
-def brute_force_coordinate_compression(n, coordinates):
-    """Compress coordinates using brute force approach"""
-    # Get unique coordinates and sort them
-    unique_coords = sorted(set(coordinates))
-    
-    # Create mapping from coordinate to compressed value
-    coord_to_compressed = {}
-    for i, coord in enumerate(unique_coords):
-        coord_to_compressed[coord] = i
-    
-    # Compress each coordinate
-    compressed = []
-    for coord in coordinates:
-        compressed.append(coord_to_compressed[coord])
-    
-    return compressed
+def compress(arr):
+    """
+    Compress array values to consecutive integers.
+    Returns compressed array and mappings.
+    """
+    # Get sorted unique values
+    sorted_unique = sorted(set(arr))
+
+    # Create value -> compressed index mapping
+    val_to_idx = {v: i for i, v in enumerate(sorted_unique)}
+
+    # Compress the array
+    compressed = [val_to_idx[v] for v in arr]
+
+    return compressed, val_to_idx, sorted_unique
 
 # Example usage
-n = 5
-coordinates = [100, 50, 200, 50, 150]
-result = brute_force_coordinate_compression(n, coordinates)
-print(f"Brute force compression: {result}")
+arr = [1000000, 5, 999999, 5, 500000]
+compressed, mapping, original = compress(arr)
+print(f"Compressed: {compressed}")  # [3, 0, 2, 0, 1]
+print(f"Mapping: {mapping}")        # {5: 0, 500000: 1, 999999: 2, 1000000: 3}
 ```
 
-**Time Complexity**: O(n log n)
-**Space Complexity**: O(n)
+### C++ Solution
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Why it's inefficient**: O(n log n) time complexity due to sorting.
+vector<int> compress(vector<int>& arr) {
+    // Create sorted copy of unique values
+    vector<int> sorted_unique = arr;
+    sort(sorted_unique.begin(), sorted_unique.end());
+    sorted_unique.erase(unique(sorted_unique.begin(), sorted_unique.end()),
+                        sorted_unique.end());
 
----
+    // Create mapping using binary search
+    vector<int> compressed(arr.size());
+    for (int i = 0; i < arr.size(); i++) {
+        compressed[i] = lower_bound(sorted_unique.begin(),
+                                    sorted_unique.end(),
+                                    arr[i]) - sorted_unique.begin();
+    }
 
-### Approach 2: Hash Map Solution
+    return compressed;
+}
 
-**Key Insights from Hash Map Solution**:
-- **Hash Map**: Use hash map for efficient coordinate mapping
-- **Efficient Implementation**: O(n log n) time complexity
-- **Memory Optimization**: Use hash map for sparse data
-- **Optimization**: More efficient than brute force for sparse data
+// Alternative: using map for O(1) lookup after building
+vector<int> compressWithMap(vector<int>& arr) {
+    vector<int> sorted_unique = arr;
+    sort(sorted_unique.begin(), sorted_unique.end());
+    sorted_unique.erase(unique(sorted_unique.begin(), sorted_unique.end()),
+                        sorted_unique.end());
 
-**Key Insight**: Use hash map for efficient coordinate mapping.
+    map<int, int> valToIdx;
+    for (int i = 0; i < sorted_unique.size(); i++) {
+        valToIdx[sorted_unique[i]] = i;
+    }
 
-**Algorithm**:
-- Sort unique coordinates
-- Create hash map from coordinate to compressed value
-- Use hash map for fast lookup during compression
+    vector<int> compressed(arr.size());
+    for (int i = 0; i < arr.size(); i++) {
+        compressed[i] = valToIdx[arr[i]];
+    }
 
-**Visual Example**:
+    return compressed;
+}
 ```
-Hash map approach:
 
-Coordinates: [100, 50, 200, 50, 150]
-┌─────────────────────────────────────┐
-│ Step 1: Sort unique coordinates    │
-│ [50, 100, 150, 200]                │
-│                                   │
-│ Step 2: Create hash map            │
-│ {50: 0, 100: 1, 150: 2, 200: 3}   │
-│                                   │
-│ Step 3: Compress using hash map    │
-│ 100 -> hash_map[100] -> 1         │
-│ 50  -> hash_map[50]  -> 0         │
-│ 200 -> hash_map[200] -> 3         │
-│ 50  -> hash_map[50]  -> 0         │
-│ 150 -> hash_map[150] -> 2         │
-│                                   │
-│ Result: [1, 0, 3, 0, 2]           │
-└─────────────────────────────────────┘
-```
+## Common Applications
 
-**Implementation**:
+### 1. Range Queries with Large Values
+
 ```python
-def hash_map_coordinate_compression(n, coordinates):
-    """Compress coordinates using hash map approach"""
-    # Get unique coordinates and sort them
-    unique_coords = sorted(set(coordinates))
-    
-    # Create hash map for O(1) lookup
-    coord_to_compressed = {}
-    for i, coord in enumerate(unique_coords):
-        coord_to_compressed[coord] = i
-    
-    # Compress each coordinate using hash map
-    compressed = []
-    for coord in coordinates:
-        compressed.append(coord_to_compressed[coord])
-    
-    return compressed
+def count_in_range(arr, queries):
+    """
+    Count elements in range [l, r] for each query.
+    Values can be up to 10^9.
+    """
+    # Compress values
+    compressed, val_to_idx, sorted_vals = compress(arr)
+    n_unique = len(sorted_vals)
 
-# Example usage
-n = 5
-coordinates = [100, 50, 200, 50, 150]
-result = hash_map_coordinate_compression(n, coordinates)
-print(f"Hash map compression: {result}")
+    # Build frequency array on compressed values
+    freq = [0] * n_unique
+    for c in compressed:
+        freq[c] += 1
+
+    # Build prefix sum for range queries
+    prefix = [0] * (n_unique + 1)
+    for i in range(n_unique):
+        prefix[i + 1] = prefix[i] + freq[i]
+
+    results = []
+    for l, r in queries:
+        # Find compressed indices for l and r
+        l_idx = bisect.bisect_left(sorted_vals, l)
+        r_idx = bisect.bisect_right(sorted_vals, r)
+        results.append(prefix[r_idx] - prefix[l_idx])
+
+    return results
 ```
 
-**Time Complexity**: O(n log n)
-**Space Complexity**: O(n)
+### 2. 2D Coordinate Compression
 
-**Why it's better**: Uses hash map for efficient lookup during compression.
-
----
-
-### Approach 3: Advanced Data Structure Solution (Optimal)
-
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for coordinate compression
-- **Efficient Implementation**: O(n log n) time complexity
-- **Space Efficiency**: O(n) space complexity
-- **Optimal Complexity**: Best approach for coordinate compression
-
-**Key Insight**: Use advanced data structures for optimal coordinate compression.
-
-**Algorithm**:
-- Use specialized data structures for coordinate storage
-- Implement efficient compression algorithms
-- Handle special cases optimally
-- Return compressed coordinates
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For coordinates: [100, 50, 200, 50, 150]
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Coordinate tree: for efficient    │
-│   storage and sorting               │
-│ - Compression map: for optimization │
-│ - Result array: for output          │
-│                                   │
-│ Compression process:                │
-│ - Use coordinate tree for efficient │
-│   sorting and storage               │
-│ - Use compression map for           │
-│   optimization                      │
-│ - Use result array for output       │
-│                                   │
-│ Result: [1, 0, 3, 0, 2]           │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
 ```python
-def advanced_data_structure_coordinate_compression(n, coordinates):
-    """Compress coordinates using advanced data structure approach"""
-    # Use advanced data structures for coordinate storage
-    unique_coords = sorted(set(coordinates))
-    
-    # Create compression map using advanced data structures
-    coord_to_compressed = {}
-    for i, coord in enumerate(unique_coords):
-        coord_to_compressed[coord] = i
-    
-    # Compress each coordinate using advanced data structures
-    compressed = []
-    for coord in coordinates:
-        compressed.append(coord_to_compressed[coord])
-    
-    return compressed
+def compress_2d(points):
+    """
+    Compress both x and y coordinates independently.
+    """
+    xs = sorted(set(p[0] for p in points))
+    ys = sorted(set(p[1] for p in points))
 
-# Example usage
-n = 5
-coordinates = [100, 50, 200, 50, 150]
-result = advanced_data_structure_coordinate_compression(n, coordinates)
-print(f"Advanced data structure compression: {result}")
+    x_map = {x: i for i, x in enumerate(xs)}
+    y_map = {y: i for i, y in enumerate(ys)}
+
+    compressed_points = [(x_map[x], y_map[y]) for x, y in points]
+    return compressed_points, len(xs), len(ys)
+
+# Example: Points with coordinates up to 10^9
+points = [(1000000000, 1), (5, 999999999), (1000000000, 999999999)]
+comp_points, w, h = compress_2d(points)
+# Now can create w x h grid instead of 10^9 x 10^9
 ```
 
-**Time Complexity**: O(n log n)
-**Space Complexity**: O(n)
+### 3. Segment Tree on Values
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n log n) | O(n) | Sort coordinates and assign ranks |
-| Hash Map | O(n log n) | O(n) | Use hash map for efficient lookup |
-| Advanced Data Structure | O(n log n) | O(n) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(n log n) - Sort coordinates for compression
-- **Space**: O(n) - Store unique coordinates and mapping
-
-### Why This Solution Works
-- **Coordinate Sorting**: Sort unique coordinates for rank assignment
-- **Mapping Creation**: Create mapping from coordinate to compressed value
-- **Compression**: Use mapping for fast coordinate compression
-- **Optimal Algorithms**: Use optimal algorithms for compression
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Coordinate Compression with Constraints**
-**Problem**: Compress coordinates with specific constraints.
-
-**Key Differences**: Apply constraints to coordinate compression
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
 ```python
-def constrained_coordinate_compression(n, coordinates, constraints):
-    """Compress coordinates with constraints"""
-    # Filter coordinates based on constraints
-    filtered_coords = [coord for coord in coordinates if constraints(coord)]
-    
-    # Get unique coordinates and sort them
-    unique_coords = sorted(set(filtered_coords))
-    
-    # Create mapping from coordinate to compressed value
-    coord_to_compressed = {}
-    for i, coord in enumerate(unique_coords):
-        coord_to_compressed[coord] = i
-    
-    # Compress each coordinate
-    compressed = []
-    for coord in coordinates:
-        if constraints(coord):
-            compressed.append(coord_to_compressed[coord])
+class SegmentTreeOnValues:
+    """
+    Segment tree indexed by values (after compression).
+    Useful for: count of elements in value range, etc.
+    """
+    def __init__(self, arr):
+        self.compressed, self.mapping, self.original = compress(arr)
+        self.n = len(self.original)
+        self.tree = [0] * (4 * self.n)
+
+        # Insert compressed values
+        for c in self.compressed:
+            self._update(1, 0, self.n - 1, c, 1)
+
+    def _update(self, node, start, end, idx, delta):
+        if start == end:
+            self.tree[node] += delta
         else:
-            compressed.append(-1)  # Invalid coordinate
-    
-    return compressed
+            mid = (start + end) // 2
+            if idx <= mid:
+                self._update(2 * node, start, mid, idx, delta)
+            else:
+                self._update(2 * node + 1, mid + 1, end, idx, delta)
+            self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
 
-# Example usage
-n = 5
-coordinates = [100, 50, 200, 50, 150]
-constraints = lambda coord: coord >= 0  # Only compress non-negative coordinates
-result = constrained_coordinate_compression(n, coordinates, constraints)
-print(f"Constrained compression: {result}")
+    def count_in_range(self, l, r):
+        """Count elements with value in [l, r]."""
+        # Map to compressed indices
+        import bisect
+        l_idx = bisect.bisect_left(self.original, l)
+        r_idx = bisect.bisect_right(self.original, r) - 1
+        if l_idx > r_idx:
+            return 0
+        return self._query(1, 0, self.n - 1, l_idx, r_idx)
 ```
 
-#### **2. Coordinate Compression with Different Metrics**
-**Problem**: Compress coordinates with different distance metrics.
+## Complexity Analysis
 
-**Key Differences**: Different distance calculations
+| Operation | Time | Notes |
+|-----------|------|-------|
+| Sort unique values | O(n log n) | One-time preprocessing |
+| Build mapping | O(n) | Hash map or sorted array |
+| Compress one value | O(1) or O(log n) | Hash map vs binary search |
+| **Total compression** | **O(n log n)** | Dominated by sorting |
 
-**Solution Approach**: Use advanced mathematical techniques
+## Common Mistakes
 
-**Implementation**:
-```python
-def weighted_coordinate_compression(n, coordinates, weights):
-    """Compress coordinates with different weights"""
-    # Get unique coordinates and sort them
-    unique_coords = sorted(set(coordinates))
-    
-    # Create mapping from coordinate to compressed value with weights
-    coord_to_compressed = {}
-    for i, coord in enumerate(unique_coords):
-        coord_to_compressed[coord] = i
-    
-    # Compress each coordinate with weights
-    compressed = []
-    for coord in coordinates:
-        compressed_value = coord_to_compressed[coord]
-        weight = weights.get(coord, 1)
-        compressed.append((compressed_value, weight))
-    
-    return compressed
+1. **Not handling duplicates:** Use `set()` before sorting
+2. **Off-by-one in binary search:** Use `lower_bound` vs `upper_bound` correctly
+3. **Forgetting to decompress:** Store original values if needed for output
+4. **Compressing queries separately:** Query values might not be in original array
 
-# Example usage
-n = 5
-coordinates = [100, 50, 200, 50, 150]
-weights = {50: 2, 100: 1, 150: 3, 200: 1}
-result = weighted_coordinate_compression(n, coordinates, weights)
-print(f"Weighted compression: {result}")
-```
+## When NOT to Use
 
-#### **3. Coordinate Compression with Multiple Dimensions**
-**Problem**: Compress coordinates in multiple dimensions.
+- Values already small (0 to n-1)
+- Only need to compare values (not index them)
+- Single pass algorithm that doesn't need random access
 
-**Key Differences**: Handle multiple dimensions
+## Key Takeaways
 
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_coordinate_compression(n, coordinates, dimensions):
-    """Compress coordinates in multiple dimensions"""
-    # Get unique coordinates and sort them
-    unique_coords = sorted(set(coordinates))
-    
-    # Create mapping from coordinate to compressed value
-    coord_to_compressed = {}
-    for i, coord in enumerate(unique_coords):
-        coord_to_compressed[coord] = i
-    
-    # Compress each coordinate
-    compressed = []
-    for coord in coordinates:
-        compressed.append(coord_to_compressed[coord])
-    
-    return compressed
-
-# Example usage
-n = 5
-coordinates = [100, 50, 200, 50, 150]
-dimensions = 1
-result = multi_dimensional_coordinate_compression(n, coordinates, dimensions)
-print(f"Multi-dimensional compression: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Point in Polygon](https://cses.fi/problemset/task/1075) - Geometry
-- [Convex Hull](https://cses.fi/problemset/task/1075) - Geometry
-- [Line Segment Intersection](https://cses.fi/problemset/task/1075) - Geometry
-
-#### **LeetCode Problems**
-- [Merge Intervals](https://leetcode.com/problems/merge-intervals/) - Array
-- [Insert Interval](https://leetcode.com/problems/insert-interval/) - Array
-- [Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/) - Array
-
-#### **Problem Categories**
-- **Computational Geometry**: Coordinate compression, geometric algorithms
-- **Array Algorithms**: Sorting, mapping, compression
-- **Data Structures**: Hash maps, coordinate systems
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Computational Geometry](https://cp-algorithms.com/geometry/basic-geometry.html) - Geometry algorithms
-- [Coordinate Compression](https://cp-algorithms.com/geometry/coordinate-compression.html) - Coordinate compression algorithms
-- [Sorting](https://cp-algorithms.com/sorting/sorting.html) - Sorting algorithms
-
-### **Practice Problems**
-- [CSES Point in Polygon](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Convex Hull](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Line Segment Intersection](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Computational Geometry](https://en.wikipedia.org/wiki/Computational_geometry) - Wikipedia article
-- [Coordinate System](https://en.wikipedia.org/wiki/Coordinate_system) - Wikipedia article
-- [Data Compression](https://en.wikipedia.org/wiki/Data_compression) - Wikipedia article
+- Coordinate compression reduces large value ranges to [0, k-1]
+- Essential for segment trees and BITs on value ranges
+- O(n log n) preprocessing enables O(1) or O(log n) lookups
+- Preserve original values if output needs them
+- Common in competitive programming for handling 10^9 value ranges

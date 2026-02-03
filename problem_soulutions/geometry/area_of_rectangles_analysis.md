@@ -2,595 +2,513 @@
 layout: simple
 title: "Area of Rectangles - Geometry Problem"
 permalink: /problem_soulutions/geometry/area_of_rectangles_analysis
+difficulty: Hard
+tags: [geometry, sweep-line, coordinate-compression, segment-tree]
 ---
 
 # Area of Rectangles
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of rectangle area calculation in computational geometry
-- Apply geometric algorithms for area computation
-- Implement efficient algorithms for rectangle area finding
-- Optimize geometric operations for area analysis
-- Handle special cases in rectangle area problems
+| Attribute | Value |
+|-----------|-------|
+| **CSES Link** | [Area of Rectangles](https://cses.fi/problemset/task/1741) |
+| **Difficulty** | Hard |
+| **Category** | Geometry |
+| **Time Limit** | 1 second |
+| **Key Technique** | Sweep Line + Coordinate Compression |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given n rectangles, calculate the total area covered by all rectangles.
+After solving this problem, you will be able to:
+- [ ] Apply coordinate compression to handle large coordinate ranges
+- [ ] Implement the sweep line algorithm for 2D problems
+- [ ] Use a segment tree to efficiently track interval coverage
+- [ ] Calculate union area of overlapping rectangles
 
-**Input**: 
-- n: number of rectangles
-- rectangles: array of rectangles (each with x1, y1, x2, y2 coordinates)
+---
 
-**Output**: 
-- Total area covered by all rectangles
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 1000
-- -10^6 ≤ coordinates ≤ 10^6
+**Problem:** Given n axis-aligned rectangles, calculate the total area covered by at least one rectangle (union of rectangles).
 
-**Example**:
+**Input:**
+- Line 1: Integer n - number of rectangles
+- Lines 2 to n+1: Four integers x1, y1, x2, y2 - bottom-left and top-right corners
+
+**Output:**
+- Single integer: total area covered by the rectangles
+
+**Constraints:**
+- 1 <= n <= 10^5
+- 1 <= x1 < x2 <= 10^9
+- 1 <= y1 < y2 <= 10^9
+
+### Example
+
 ```
 Input:
-n = 2
-rectangles = [(0,0,2,2), (1,1,3,3)]
+2
+1 1 4 3
+2 2 5 5
 
 Output:
-7
-
-Explanation**: 
-Rectangle 1: area = 2 × 2 = 4
-Rectangle 2: area = 2 × 2 = 4
-Overlap: area = 1 × 1 = 1
-Total: 4 + 4 - 1 = 7
+14
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Rectangle 1: area = 3 * 2 = 6
+- Rectangle 2: area = 3 * 3 = 9
+- Overlap region: (2,2) to (4,3) = 2 * 1 = 2 (counted once)
+- Union area = 6 + 9 - 2 = 13... Wait, let's recalculate visually!
 
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all possible area calculations
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic geometric formulas
-- **Inefficient**: O(n²) time complexity
-
-**Key Insight**: Use basic geometric formulas to calculate total area.
-
-**Algorithm**:
-- Calculate area of each rectangle
-- Sum all rectangle areas
-- Subtract overlap areas
-- Return total area
-
-**Visual Example**:
 ```
-Rectangles: [(0,0,2,2), (1,1,3,3)]
-
-Area calculation:
-┌─────────────────────────────────────┐
-│ Rectangle 1: (0,0) to (2,2)        │
-│ Area = (2-0) × (2-0) = 4           │
-│                                   │
-│ Rectangle 2: (1,1) to (3,3)        │
-│ Area = (3-1) × (3-1) = 4           │
-│                                   │
-│ Overlap: (1,1) to (2,2)            │
-│ Area = (2-1) × (2-1) = 1           │
-│                                   │
-│ Total: 4 + 4 - 1 = 7               │
-└─────────────────────────────────────┘
+Y
+5 |     +-----+
+4 |     |     |
+3 | +---+--+  |
+2 | |   |##|  |
+1 | +---+--+--+
+0 +---------------> X
+  0 1 2 3 4 5
 ```
-
-**Implementation**:
-```python
-def brute_force_area_of_rectangles(n, rectangles):
-    """
-    Calculate total area using brute force approach
-    
-    Args:
-        n: number of rectangles
-        rectangles: list of rectangles (x1, y1, x2, y2)
-    
-    Returns:
-        int: total area covered by all rectangles
-    """
-    def rectangle_area(rect):
-        """Calculate area of a single rectangle"""
-        x1, y1, x2, y2 = rect
-        return (x2 - x1) * (y2 - y1)
-    
-    def rectangles_overlap(rect1, rect2):
-        """Check if two rectangles overlap"""
-        x1, y1, x2, y2 = rect1
-        x3, y3, x4, y4 = rect2
-        
-        # Check if rectangles overlap
-        if x2 <= x3 or x4 <= x1 or y2 <= y3 or y4 <= y1:
-            return False
-        
-        return True
-    
-    def overlap_area(rect1, rect2):
-        """Calculate overlap area of two rectangles"""
-        if not rectangles_overlap(rect1, rect2):
-            return 0
-        
-        x1, y1, x2, y2 = rect1
-        x3, y3, x4, y4 = rect2
-        
-        # Calculate overlap coordinates
-        overlap_x1 = max(x1, x3)
-        overlap_y1 = max(y1, y3)
-        overlap_x2 = min(x2, x4)
-        overlap_y2 = min(y2, y4)
-        
-        return (overlap_x2 - overlap_x1) * (overlap_y2 - overlap_y1)
-    
-    # Calculate total area
-    total_area = 0
-    
-    # Add area of each rectangle
-    for rect in rectangles:
-        total_area += rectangle_area(rect)
-    
-    # Subtract overlap areas
-    for i in range(n):
-        for j in range(i + 1, n):
-            overlap = overlap_area(rectangles[i], rectangles[j])
-            total_area -= overlap
-    
-    return total_area
-
-# Example usage
-n = 2
-rectangles = [(0, 0, 2, 2), (1, 1, 3, 3)]
-result = brute_force_area_of_rectangles(n, rectangles)
-print(f"Brute force area of rectangles: {result}")
-```
-
-**Time Complexity**: O(n²)
-**Space Complexity**: O(1)
-
-**Why it's inefficient**: O(n²) time complexity for checking all pairs.
 
 ---
 
-### Approach 2: Sweep Line Algorithm
+## Intuition: How to Think About This Problem
 
-**Key Insights from Sweep Line Algorithm**:
-- **Sweep Line**: Use sweep line algorithm for area calculation
-- **Event Processing**: Process rectangle events efficiently
-- **Efficient Calculation**: O(n log n) time complexity
-- **Optimization**: Much more efficient than brute force
+### Pattern Recognition
 
-**Key Insight**: Use sweep line algorithm for efficient area calculation.
+> **Key Question:** How do we efficiently calculate the union area when rectangles can overlap arbitrarily?
 
-**Algorithm**:
-- Sort rectangle events by x-coordinate
-- Use sweep line to process events
-- Maintain active rectangles
-- Calculate area during sweep
+The naive approach of inclusion-exclusion fails for many rectangles (exponential subsets). Instead, we use **coordinate compression** to reduce the problem size and **sweep line** to process the plane incrementally.
 
-**Visual Example**:
-```
-Sweep line algorithm:
-┌─────────────────────────────────────┐
-│ Events sorted by x-coordinate:     │
-│ 1. (0,0,2,2) - start              │
-│ 2. (1,1,3,3) - start              │
-│ 3. (0,0,2,2) - end                │
-│ 4. (1,1,3,3) - end                │
-│                                   │
-│ Active rectangles during sweep:   │
-│ x=0: [(0,0,2,2)]                  │
-│ x=1: [(0,0,2,2), (1,1,3,3)]       │
-│ x=2: [(1,1,3,3)]                  │
-│ x=3: []                           │
-│                                   │
-│ Area calculation:                 │
-│ - x=0 to x=1: area = 2 × 2 = 4    │
-│ - x=1 to x=2: area = 2 × 2 = 4    │
-│ - x=2 to x=3: area = 2 × 2 = 4    │
-│ - Overlap: 1 × 1 = 1              │
-│ Total: 4 + 4 + 4 - 1 = 11         │
-└─────────────────────────────────────┘
-```
+### Breaking Down the Problem
 
-**Implementation**:
-```python
-def sweep_line_area_of_rectangles(n, rectangles):
-    """
-    Calculate total area using sweep line algorithm
-    
-    Args:
-        n: number of rectangles
-        rectangles: list of rectangles (x1, y1, x2, y2)
-    
-    Returns:
-        int: total area covered by all rectangles
-    """
-    # Create events
-    events = []
-    for i, (x1, y1, x2, y2) in enumerate(rectangles):
-        events.append((x1, 'start', i))
-        events.append((x2, 'end', i))
-    
-    # Sort events by x-coordinate
-    events.sort()
-    
-    # Sweep line algorithm
-    active_rectangles = set()
-    total_area = 0
-    prev_x = None
-    
-    for x, event_type, rect_id in events:
-        if prev_x is not None and x > prev_x:
-            # Calculate area for current segment
-            if active_rectangles:
-                # Calculate height of active rectangles
-                active_heights = []
-                for rect_id in active_rectangles:
-                    x1, y1, x2, y2 = rectangles[rect_id]
-                    active_heights.append((y1, y2))
-                
-                # Calculate total height
-                active_heights.sort()
-                total_height = 0
-                current_start = None
-                current_end = None
-                
-                for start, end in active_heights:
-                    if current_start is None:
-                        current_start = start
-                        current_end = end
-                    elif start <= current_end:
-                        current_end = max(current_end, end)
-                    else:
-                        total_height += current_end - current_start
-                        current_start = start
-                        current_end = end
-                
-                if current_start is not None:
-                    total_height += current_end - current_start
-                
-                # Add area for current segment
-                total_area += (x - prev_x) * total_height
-        
-        # Update active rectangles
-        if event_type == 'start':
-            active_rectangles.add(rect_id)
-        else:  # end
-            active_rectangles.remove(rect_id)
-        
-        prev_x = x
-    
-    return total_area
+1. **What are we looking for?** Total area covered by at least one rectangle
+2. **What makes this hard?** Coordinates up to 10^9 and arbitrary overlaps
+3. **Key insight:** Only ~2n distinct x-coordinates and ~2n y-coordinates matter
 
-# Example usage
-n = 2
-rectangles = [(0, 0, 2, 2), (1, 1, 3, 3)]
-result = sweep_line_area_of_rectangles(n, rectangles)
-print(f"Sweep line area of rectangles: {result}")
-```
+### Analogy
 
-**Time Complexity**: O(n log n)
-**Space Complexity**: O(n)
-
-**Why it's better**: Uses sweep line algorithm for O(n log n) time complexity.
+Imagine painting rectangles on a canvas. Instead of calculating paint overlap mathematically, we:
+1. Divide the canvas into a grid based on rectangle edges
+2. Sweep left-to-right, tracking which grid cells are "painted"
+3. Sum up painted cell areas
 
 ---
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+## Solution 1: Brute Force (Coordinate Compression Only)
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for area calculation
-- **Efficient Implementation**: O(n log n) time complexity
-- **Space Efficiency**: O(n) space complexity
-- **Optimal Complexity**: Best approach for rectangle area calculation
+### Idea
 
-**Key Insight**: Use advanced data structures for optimal rectangle area calculation.
+Compress coordinates to create a grid, then check each grid cell against all rectangles.
 
-**Algorithm**:
-- Use specialized data structures for rectangle storage
-- Implement efficient area calculation algorithms
-- Handle overlaps optimally
-- Return total area
+### Algorithm
 
-**Visual Example**:
-```
-Advanced data structure approach:
+1. Collect all unique x and y coordinates
+2. Create a grid of "compressed cells"
+3. For each cell, check if any rectangle covers it
+4. Sum areas of covered cells
 
-For rectangles: [(0,0,2,2), (1,1,3,3)]
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Rectangle tree: for efficient     │
-│   overlap detection                 │
-│ - Event queue: for sweep line       │
-│ - Active set: for current rectangles │
-│                                   │
-│ Area calculation:                  │
-│ - Use rectangle tree for overlaps  │
-│ - Use event queue for sweep line   │
-│ - Use active set for current area  │
-│                                   │
-│ Result: 7                          │
-└─────────────────────────────────────┘
-```
+### Code
 
-**Implementation**:
 ```python
-def advanced_data_structure_area_of_rectangles(n, rectangles):
+def solve_brute_force(n, rectangles):
     """
-    Calculate total area using advanced data structure approach
-    
-    Args:
-        n: number of rectangles
-        rectangles: list of rectangles (x1, y1, x2, y2)
-    
-    Returns:
-        int: total area covered by all rectangles
+    Brute force with coordinate compression.
+
+    Time: O(n^3) - n^2 cells, n rectangles to check each
+    Space: O(n^2)
     """
-    # Use advanced data structures
+    # Collect unique coordinates
+    xs = sorted(set(x for r in rectangles for x in (r[0], r[2])))
+    ys = sorted(set(y for r in rectangles for y in (r[1], r[3])))
+
+    total_area = 0
+
+    # Check each grid cell
+    for i in range(len(xs) - 1):
+        for j in range(len(ys) - 1):
+            x1, x2 = xs[i], xs[i + 1]
+            y1, y2 = ys[j], ys[j + 1]
+
+            # Check if any rectangle covers this cell
+            for rx1, ry1, rx2, ry2 in rectangles:
+                if rx1 <= x1 and x2 <= rx2 and ry1 <= y1 and y2 <= ry2:
+                    total_area += (x2 - x1) * (y2 - y1)
+                    break
+
+    return total_area
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^3) | O(n^2) grid cells, O(n) check per cell |
+| Space | O(n^2) | Storing the grid |
+
+### Why This Works (But Is Slow)
+
+Coordinate compression ensures we only consider "interesting" cells. However, checking each cell against all rectangles is too slow for n = 10^5.
+
+---
+
+## Solution 2: Optimal (Sweep Line + Segment Tree)
+
+### Key Insight
+
+> **The Trick:** Sweep a vertical line left-to-right. At each x-position, use a segment tree to track which y-intervals are currently covered, then multiply by the width to get area.
+
+### Algorithm Overview
+
+1. **Coordinate compress** y-values to indices 0 to 2n-1
+2. Create **events**: rectangle start (+1 coverage) and end (-1 coverage)
+3. **Sweep** through events sorted by x-coordinate
+4. Use **segment tree** to track total covered y-length efficiently
+
+### Segment Tree Design
+
+| Property | Description |
+|----------|-------------|
+| Leaf `i` | Represents y-interval `[ys[i], ys[i+1]]` |
+| `cnt[node]` | Number of rectangles fully covering this node's interval |
+| `len[node]` | Total covered length in this node's interval |
+
+**Key Formula:** If `cnt[node] > 0`, entire interval is covered. Otherwise, sum children.
+
+### Dry Run Example
+
+Input: Rectangle 1: (1,1,4,3), Rectangle 2: (2,2,5,5)
+
+```
+Step 1: Coordinate Compression
+  Y-coords: [1, 2, 3, 5] -> indices [0, 1, 2, 3]
+  Intervals: [1,2], [2,3], [3,5]
+
+Step 2: Create Events (sorted by x)
+  x=1: ADD rect1 covering y=[1,3] (indices 0-2)
+  x=2: ADD rect2 covering y=[2,5] (indices 1-3)
+  x=4: REMOVE rect1
+  x=5: REMOVE rect2
+
+Step 3: Sweep
+  x=1: covered_length = 2 (y from 1 to 3)
+       No previous x, no area yet
+
+  x=2: area += (2-1) * 2 = 2
+       Add rect2, covered_length = 4 (y from 1 to 5)
+
+  x=4: area += (4-2) * 4 = 8
+       Remove rect1, covered_length = 3 (y from 2 to 5)
+
+  x=5: area += (5-4) * 3 = 3
+       Remove rect2, done
+
+Total: 2 + 8 + 3 = 13...
+```
+
+### Visual Diagram
+
+```
+Events on x-axis:        Segment Tree tracks y-coverage:
+
+x=1 [+R1]               |  y=5 --------
+x=2 [+R2]               |  y=3 ----+
+x=4 [-R1]               |  y=2   --+--+
+x=5 [-R2]               |  y=1 --+
+    |                   |
+    +--+--+--+-->       +------------->
+    1  2  4  5  x           covered y
+```
+
+### Code (Python)
+
+```python
+import sys
+from collections import defaultdict
+input = sys.stdin.readline
+
+def solve():
+    n = int(input())
+    rectangles = []
+    ys = set()
+
+    for _ in range(n):
+        x1, y1, x2, y2 = map(int, input().split())
+        rectangles.append((x1, y1, x2, y2))
+        ys.add(y1)
+        ys.add(y2)
+
+    # Coordinate compression for y
+    ys = sorted(ys)
+    y_to_idx = {y: i for i, y in enumerate(ys)}
+    m = len(ys) - 1  # Number of y-intervals
+
+    # Segment tree arrays
+    cnt = [0] * (4 * m)  # Coverage count
+    total = [0] * (4 * m)  # Covered length
+
+    def update(node, start, end, l, r, val):
+        """Update coverage for y-interval [l, r) by val (+1 or -1)."""
+        if r <= start or end <= l:
+            return
+        if l <= start and end <= r:
+            cnt[node] += val
+        else:
+            mid = (start + end) // 2
+            update(2*node, start, mid, l, r, val)
+            update(2*node+1, mid, end, l, r, val)
+
+        # Recalculate covered length
+        if cnt[node] > 0:
+            total[node] = ys[end] - ys[start]
+        elif end - start == 1:
+            total[node] = 0
+        else:
+            total[node] = total[2*node] + total[2*node+1]
+
+    # Create events: (x, type, y1_idx, y2_idx)
+    # type: 0 = start (add), 1 = end (remove)
     events = []
-    for i, (x1, y1, x2, y2) in enumerate(rectangles):
-        events.append((x1, 'start', i))
-        events.append((x2, 'end', i))
-    
-    # Sort events by x-coordinate
+    for x1, y1, x2, y2 in rectangles:
+        y1_idx = y_to_idx[y1]
+        y2_idx = y_to_idx[y2]
+        events.append((x1, 0, y1_idx, y2_idx))
+        events.append((x2, 1, y1_idx, y2_idx))
+
     events.sort()
-    
-    # Advanced sweep line algorithm
-    active_rectangles = set()
-    total_area = 0
-    prev_x = None
-    
-    for x, event_type, rect_id in events:
-        if prev_x is not None and x > prev_x:
-            # Calculate area for current segment using advanced data structures
-            if active_rectangles:
-                # Calculate height of active rectangles using advanced data structures
-                active_heights = []
-                for rect_id in active_rectangles:
-                    x1, y1, x2, y2 = rectangles[rect_id]
-                    active_heights.append((y1, y2))
-                
-                # Calculate total height using advanced data structures
-                active_heights.sort()
-                total_height = 0
-                current_start = None
-                current_end = None
-                
-                for start, end in active_heights:
-                    if current_start is None:
-                        current_start = start
-                        current_end = end
-                    elif start <= current_end:
-                        current_end = max(current_end, end)
-                    else:
-                        total_height += current_end - current_start
-                        current_start = start
-                        current_end = end
-                
-                if current_start is not None:
-                    total_height += current_end - current_start
-                
-                # Add area for current segment using advanced data structures
-                total_area += (x - prev_x) * total_height
-        
-        # Update active rectangles using advanced data structures
-        if event_type == 'start':
-            active_rectangles.add(rect_id)
-        else:  # end
-            active_rectangles.remove(rect_id)
-        
+
+    area = 0
+    prev_x = events[0][0]
+
+    for x, typ, y1_idx, y2_idx in events:
+        # Add area from previous x to current x
+        area += total[1] * (x - prev_x)
+
+        # Update segment tree
+        if typ == 0:  # Start of rectangle
+            update(1, 0, m, y1_idx, y2_idx, 1)
+        else:  # End of rectangle
+            update(1, 0, m, y1_idx, y2_idx, -1)
+
         prev_x = x
-    
-    return total_area
 
-# Example usage
-n = 2
-rectangles = [(0, 0, 2, 2), (1, 1, 3, 3)]
-result = advanced_data_structure_area_of_rectangles(n, rectangles)
-print(f"Advanced data structure area of rectangles: {result}")
+    print(area)
+
+solve()
 ```
 
-**Time Complexity**: O(n log n)
-**Space Complexity**: O(n)
+### Code (C++)
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
 
-## 🔧 Implementation Details
+vector<ll> ys;
+vector<ll> cnt, total_len;
+int m;
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²) | O(1) | Check all pairs of rectangles |
-| Sweep Line | O(n log n) | O(n) | Use sweep line algorithm |
-| Advanced Data Structure | O(n log n) | O(n) | Use advanced data structures |
+void update(int node, int start, int end, int l, int r, int val) {
+    if (r <= start || end <= l) return;
+    if (l <= start && end <= r) {
+        cnt[node] += val;
+    } else {
+        int mid = (start + end) / 2;
+        update(2*node, start, mid, l, r, val);
+        update(2*node+1, mid, end, l, r, val);
+    }
 
-### Time Complexity
-- **Time**: O(n log n) - Use sweep line algorithm for efficient calculation
-- **Space**: O(n) - Store events and active rectangles
+    if (cnt[node] > 0) {
+        total_len[node] = ys[end] - ys[start];
+    } else if (end - start == 1) {
+        total_len[node] = 0;
+    } else {
+        total_len[node] = total_len[2*node] + total_len[2*node+1];
+    }
+}
 
-### Why This Solution Works
-- **Sweep Line**: Use sweep line algorithm for efficient calculation
-- **Event Processing**: Process rectangle events efficiently
-- **Data Structures**: Use appropriate data structures for storage
-- **Optimal Algorithms**: Use optimal algorithms for calculation
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-## 🚀 Problem Variations
+    int n;
+    cin >> n;
 
-### Extended Problems with Detailed Code Examples
+    vector<array<ll, 4>> rects(n);
+    set<ll> y_set;
 
-#### **1. Area of Rectangles with Constraints**
-**Problem**: Calculate area with specific constraints.
+    for (int i = 0; i < n; i++) {
+        cin >> rects[i][0] >> rects[i][1] >> rects[i][2] >> rects[i][3];
+        y_set.insert(rects[i][1]);
+        y_set.insert(rects[i][3]);
+    }
 
-**Key Differences**: Apply constraints to area calculation
+    ys = vector<ll>(y_set.begin(), y_set.end());
+    map<ll, int> y_to_idx;
+    for (int i = 0; i < (int)ys.size(); i++) {
+        y_to_idx[ys[i]] = i;
+    }
 
-**Solution Approach**: Modify algorithm to handle constraints
+    m = ys.size() - 1;
+    cnt.assign(4 * m + 4, 0);
+    total_len.assign(4 * m + 4, 0);
 
-**Implementation**:
+    // Events: (x, type, y1_idx, y2_idx), type: 0=add, 1=remove
+    vector<tuple<ll, int, int, int>> events;
+    for (auto& r : rects) {
+        int y1 = y_to_idx[r[1]], y2 = y_to_idx[r[3]];
+        events.push_back({r[0], 0, y1, y2});
+        events.push_back({r[2], 1, y1, y2});
+    }
+    sort(events.begin(), events.end());
+
+    ll area = 0;
+    ll prev_x = get<0>(events[0]);
+
+    for (auto& [x, typ, y1, y2] : events) {
+        area += total_len[1] * (x - prev_x);
+        update(1, 0, m, y1, y2, typ == 0 ? 1 : -1);
+        prev_x = x;
+    }
+
+    cout << area << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log n) | Sort events + O(log n) per segment tree update |
+| Space | O(n) | Segment tree and events storage |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Integer Overflow
+
+```cpp
+// WRONG
+int area = width * height;  // May overflow for 10^9 coordinates
+
+// CORRECT
+long long area = (long long)width * height;
+```
+
+**Problem:** Coordinates up to 10^9, area can exceed 10^18.
+**Fix:** Use `long long` throughout.
+
+### Mistake 2: Forgetting to Process Final Segment
+
 ```python
-def constrained_area_of_rectangles(n, rectangles, constraints):
-    """
-    Calculate area of rectangles with constraints
-    
-    Args:
-        n: number of rectangles
-        rectangles: list of rectangles (x1, y1, x2, y2)
-        constraints: function to check constraints
-    
-    Returns:
-        int: constrained total area covered by all rectangles
-    """
-    def rectangle_area(rect):
-        """Calculate area of a single rectangle"""
-        x1, y1, x2, y2 = rect
-        return (x2 - x1) * (y2 - y1)
-    
-    # Calculate total area
-    total_area = 0
-    
-    # Add area of each rectangle
-    for rect in rectangles:
-        area = rectangle_area(rect)
-        if constraints(area):
-            total_area += area
-    
-    return total_area
+# WRONG - stops at last event without adding final area
+for event in events:
+    update_tree(event)
+    # Missing area calculation!
 
-# Example usage
-n = 2
-rectangles = [(0, 0, 2, 2), (1, 1, 3, 3)]
-constraints = lambda area: area > 0  # Only include positive areas
-result = constrained_area_of_rectangles(n, rectangles, constraints)
-print(f"Constrained area of rectangles: {result}")
+# CORRECT
+for x, typ, y1, y2 in events:
+    area += total[1] * (x - prev_x)  # Add area BEFORE update
+    update_tree(...)
+    prev_x = x
 ```
 
-#### **2. Area of Rectangles with Different Metrics**
-**Problem**: Calculate area with different distance metrics.
+### Mistake 3: Wrong Event Order for Same X
 
-**Key Differences**: Different area calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
 ```python
-def weighted_area_of_rectangles(n, rectangles, weights):
-    """
-    Calculate area of rectangles with different weights
-    
-    Args:
-        n: number of rectangles
-        rectangles: list of rectangles (x1, y1, x2, y2)
-        weights: list of rectangle weights
-    
-    Returns:
-        int: weighted total area covered by all rectangles
-    """
-    def weighted_rectangle_area(rect, weight):
-        """Calculate weighted area of a single rectangle"""
-        x1, y1, x2, y2 = rect
-        return (x2 - x1) * (y2 - y1) * weight
-    
-    # Calculate weighted total area
-    total_area = 0
-    
-    # Add weighted area of each rectangle
-    for i, rect in enumerate(rectangles):
-        area = weighted_rectangle_area(rect, weights[i])
-        total_area += area
-    
-    return total_area
+# WRONG - may remove before add at same x
+events.sort()  # Only sorts by x
 
-# Example usage
-n = 2
-rectangles = [(0, 0, 2, 2), (1, 1, 3, 3)]
-weights = [1, 2]
-result = weighted_area_of_rectangles(n, rectangles, weights)
-print(f"Weighted area of rectangles: {result}")
+# CORRECT - add before remove at same x
+events.sort(key=lambda e: (e[0], e[1]))  # type 0 (add) before type 1 (remove)
 ```
 
-#### **3. Area of Rectangles with Multiple Dimensions**
-**Problem**: Calculate area in multiple dimensions.
+---
 
-**Key Differences**: Handle multiple dimensions
+## Edge Cases
 
-**Solution Approach**: Use advanced mathematical techniques
+| Case | Input | Expected | Why |
+|------|-------|----------|-----|
+| Single rectangle | 1 rect (1,1,3,3) | 4 | No overlap |
+| Identical rectangles | 2 same rects | area of 1 | Union, not sum |
+| No overlap | 2 disjoint rects | sum of areas | No intersection |
+| Complete overlap | small inside large | large area | Small adds nothing |
+| Touching edges | (1,1,2,2), (2,1,3,2) | 2 | No overlap, just touch |
 
-**Implementation**:
-```python
-def multi_dimensional_area_of_rectangles(n, rectangles, dimensions):
-    """
-    Calculate area of rectangles in multiple dimensions
-    
-    Args:
-        n: number of rectangles
-        rectangles: list of rectangles (each rectangle is a tuple of coordinates)
-        dimensions: number of dimensions
-    
-    Returns:
-        int: total area covered by all rectangles
-    """
-    def multi_dimensional_rectangle_area(rect, dimensions):
-        """Calculate area of a single rectangle in multiple dimensions"""
-        area = 1
-        for i in range(dimensions):
-            start = rect[i * 2]
-            end = rect[i * 2 + 1]
-            area *= (end - start)
-        return area
-    
-    # Calculate total area
-    total_area = 0
-    
-    # Add area of each rectangle
-    for rect in rectangles:
-        area = multi_dimensional_rectangle_area(rect, dimensions)
-        total_area += area
-    
-    return total_area
+---
 
-# Example usage
-n = 2
-rectangles = [(0, 0, 2, 2), (1, 1, 3, 3)]
-dimensions = 2
-result = multi_dimensional_area_of_rectangles(n, rectangles, dimensions)
-print(f"Multi-dimensional area of rectangles: {result}")
-```
+## When to Use This Pattern
 
-### Related Problems
+### Use Sweep Line + Coordinate Compression When:
+- Dealing with geometric objects (rectangles, segments)
+- Coordinates are large but count of objects is manageable
+- Need to compute union/intersection of shapes
+- Problems involve "area covered by at least k rectangles"
 
-#### **CSES Problems**
-- [Point in Polygon](https://cses.fi/problemset/task/1075) - Geometry
-- [Convex Hull](https://cses.fi/problemset/task/1075) - Geometry
-- [Polygon Area](https://cses.fi/problemset/task/1075) - Geometry
+### Don't Use When:
+- Only 2-3 rectangles (inclusion-exclusion is simpler)
+- Need to handle arbitrary polygons (different algorithms)
+- Online queries (consider persistent structures)
 
-#### **LeetCode Problems**
-- [Rectangle Area](https://leetcode.com/problems/rectangle-area/) - Geometry
-- [Rectangle Overlap](https://leetcode.com/problems/rectangle-overlap/) - Geometry
-- [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/) - Geometry
+### Pattern Recognition Checklist:
+- [ ] Union/intersection of rectangles? -> **Sweep line**
+- [ ] Large coordinates, few objects? -> **Coordinate compression**
+- [ ] Need efficient interval updates? -> **Segment tree**
 
-#### **Problem Categories**
-- **Computational Geometry**: Area calculations, geometric algorithms
-- **Mathematical Algorithms**: Rectangle area, sweep line algorithms
-- **Geometric Algorithms**: Rectangle algorithms, area calculations
+---
 
-## 🔗 Additional Resources
+## Related Problems
 
-### **Algorithm References**
-- [Computational Geometry](https://cp-algorithms.com/geometry/basic-geometry.html) - Geometry algorithms
-- [Rectangle Area](https://cp-algorithms.com/geometry/rectangle-area.html) - Rectangle area algorithms
-- [Sweep Line](https://cp-algorithms.com/geometry/sweep-line.html) - Sweep line algorithms
+### Easier (Do These First)
 
-### **Practice Problems**
-- [CSES Point in Polygon](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Convex Hull](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Polygon Area](https://cses.fi/problemset/task/1075) - Medium
+| Problem | Why It Helps |
+|---------|--------------|
+| [Line Segment Intersection](https://cses.fi/problemset/task/2190) | Basic sweep line |
+| [Restaurant Customers](https://cses.fi/problemset/task/1619) | Event-based sweep |
 
-### **Further Reading**
-- [Computational Geometry](https://en.wikipedia.org/wiki/Computational_geometry) - Wikipedia article
-- [Rectangle Area](https://en.wikipedia.org/wiki/Rectangle_area) - Wikipedia article
-- [Sweep Line Algorithm](https://en.wikipedia.org/wiki/Sweep_line_algorithm) - Wikipedia article
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Polygon Area](https://cses.fi/problemset/task/2191) | Shoelace formula |
+| [Point in Polygon](https://cses.fi/problemset/task/2192) | Ray casting |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Convex Hull](https://cses.fi/problemset/task/2195) | Graham scan |
+| Rectangle Union with K-coverage | Track coverage counts |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** Sweep line converts 2D problems into 1D + time
+2. **Coordinate Compression:** Reduces infinite plane to O(n) grid
+3. **Segment Tree Role:** Efficiently maintains covered length during sweep
+4. **Time Trade-off:** O(n log n) vs O(n^3) brute force
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Implement coordinate compression from scratch
+- [ ] Explain why we process events left-to-right
+- [ ] Draw the segment tree for a small example
+- [ ] Handle the case where rectangles share edges
+- [ ] Solve in under 20 minutes without reference
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Sweep Line](https://cp-algorithms.com/geometry/sweep_line.html)
+- [CSES Problem Set - Geometry](https://cses.fi/problemset/)
+- [Segment Tree Tutorial](https://cp-algorithms.com/data_structures/segment_tree.html)

@@ -1,38 +1,50 @@
 ---
 layout: simple
-title: "Minimum Window Substring - Two Pointers Technique"
+title: "Minimum Window Substring - Sliding Window Problem"
 permalink: /problem_soulutions/sliding_window/minimum_window_substring_analysis
+difficulty: Hard
+tags: [sliding-window, two-pointers, hash-map, string]
 ---
 
-# Minimum Window Substring - Two Pointers Technique
+# Minimum Window Substring
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement two pointers technique for minimum window problems
-- Apply sliding window technique for variable-size windows with character coverage
-- Optimize substring character coverage calculations using hash maps
-- Handle edge cases in minimum window problems
-- Recognize when to use two pointers vs other approaches
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Hard |
+| **Category** | Sliding Window / Two Pointers |
+| **Time Limit** | 1 second |
+| **Key Technique** | Variable-size sliding window with frequency tracking |
+| **Similar To** | [Playlist (CSES 2429)](https://cses.fi/problemset/task/2429) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given two strings s and t, find the minimum window substring of s that contains all characters of t.
+After solving this problem, you will be able to:
+- [ ] Implement a variable-size sliding window that expands and contracts
+- [ ] Track character frequencies using hash maps efficiently
+- [ ] Use a "formed" counter to track when window conditions are satisfied
+- [ ] Recognize minimum window problems and apply the shrinking window pattern
 
-**Input**: 
-- First line: string s
-- Second line: string t
+---
 
-**Output**: 
-- Single string: minimum window substring of s that contains all characters of t
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ |s| ≤ 10⁵
-- 1 ≤ |t| ≤ 10⁵
-- s and t contain only lowercase English letters
+**Problem:** Given two strings `s` and `t`, find the minimum length substring of `s` that contains all characters of `t` (including duplicates).
 
-**Example**:
+**Input:**
+- Line 1: String `s` (the source string)
+- Line 2: String `t` (the target characters)
+
+**Output:**
+- The minimum window substring, or empty string if no valid window exists
+
+**Constraints:**
+- 1 <= |s|, |t| <= 10^5
+- `s` and `t` consist of uppercase and lowercase English letters
+
+### Example
+
 ```
 Input:
 ADOBECODEBANC
@@ -40,336 +52,399 @@ ABC
 
 Output:
 BANC
-
-Explanation**: 
-The minimum window substring that contains all characters of "ABC" is "BANC".
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** "BANC" is the smallest substring containing A, B, and C. Other valid windows like "ADOBEC" are longer.
 
-### Approach 1: Brute Force
-**Time Complexity**: O(n³)  
-**Space Complexity**: O(n)
+---
 
-**Algorithm**:
-1. For each starting position i from 0 to n-1
-2. For each ending position j from i to n-1
-3. Check if substring from i to j contains all characters of t
-4. If yes, update minimum window
-5. Return minimum window
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### Pattern Recognition
+
+> **Key Question:** How do we efficiently find the smallest window containing all required characters?
+
+This is a classic **variable-size sliding window** problem. The key insight is that once we find a valid window, we should try to shrink it from the left to find the minimum.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** The shortest substring containing all characters from `t`
+2. **What information do we track?** Character frequencies in current window vs required frequencies
+3. **When do we expand?** When window doesn't contain all required characters
+4. **When do we shrink?** When window contains all required characters
+
+### Analogies
+
+Think of this like adjusting a spotlight on a stage. You expand the spotlight (right pointer) until all actors (required characters) are visible. Then you narrow the spotlight from one side (left pointer) to find the tightest focus that still includes everyone.
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+Check every possible substring and find the smallest one containing all characters of `t`.
+
+### Algorithm
+
+1. Generate all substrings of `s`
+2. For each substring, check if it contains all characters of `t`
+3. Track the minimum length valid substring
+
+### Code
+
 ```python
-def brute_force_minimum_window_substring(s, t):
-    n = len(s)
+def min_window_brute(s: str, t: str) -> str:
+    """
+    Brute force: Check all substrings.
+    Time: O(n^2 * m) where n = len(s), m = len(t)
+    Space: O(m)
+    """
+    def contains_all(window: str, target: str) -> bool:
+        from collections import Counter
+        t_count = Counter(target)
+        for c in window:
+            if c in t_count:
+                t_count[c] -= 1
+                if t_count[c] == 0:
+                    del t_count[c]
+        return len(t_count) == 0
+
     min_window = ""
-    min_length = float('inf')
-    
-    for i in range(n):
-        for j in range(i, n):
-            substring = s[i:j+1]
-            if contains_all_characters(substring, t):
-                if len(substring) < min_length:
-                    min_length = len(substring)
-                    min_window = substring
-    
+    min_len = float('inf')
+
+    for i in range(len(s)):
+        for j in range(i + len(t), len(s) + 1):
+            window = s[i:j]
+            if contains_all(window, t) and len(window) < min_len:
+                min_len = len(window)
+                min_window = window
+
     return min_window
-
-def contains_all_characters(s, t):
-    char_count = {}
-    for char in t:
-        char_count[char] = char_count.get(char, 0) + 1
-    
-    for char in s:
-        if char in char_count:
-            char_count[char] -= 1
-            if char_count[char] == 0:
-                del char_count[char]
-    
-    return len(char_count) == 0
 ```
 
-### Approach 2: Optimized with Hash Map
-**Time Complexity**: O(n²)  
-**Space Complexity**: O(n)
+### Complexity
 
-**Algorithm**:
-1. For each starting position i from 0 to n-1
-2. Use hash map to track characters from position i
-3. For each ending position j from i to n-1
-4. Add s[j] to hash map
-5. If hash map contains all characters of t, update minimum window
-6. Return minimum window
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2 * m) | n^2 substrings, O(m) to check each |
+| Space | O(m) | Counter for target string |
 
-**Implementation**:
-```python
-def optimized_minimum_window_substring(s, t):
-    n = len(s)
-    min_window = ""
-    min_length = float('inf')
-    
-    for i in range(n):
-        char_count = {}
-        for j in range(i, n):
-            char_count[s[j]] = char_count.get(s[j], 0) + 1
-            if contains_all_characters(char_count, t):
-                if j - i + 1 < min_length:
-                    min_length = j - i + 1
-                    min_window = s[i:j+1]
-    
-    return min_window
+### Why This Works (But Is Slow)
 
-def contains_all_characters(char_count, t):
-    for char in t:
-        if char not in char_count or char_count[char] == 0:
-            return False
-    return True
+Correctness is guaranteed because we check every substring. However, with n up to 10^5, O(n^2) operations would timeout.
+
+---
+
+## Solution 2: Optimal Sliding Window
+
+### Key Insight
+
+> **The Trick:** Use two pointers to maintain a window. Expand right to include characters, shrink left to minimize. Track how many required characters are "formed" (have sufficient count).
+
+### State Tracking
+
+| Variable | Purpose |
+|----------|---------|
+| `t_count` | Required frequency of each character in `t` |
+| `window_count` | Current frequency of characters in window |
+| `required` | Number of unique characters needed (len of t_count) |
+| `formed` | Number of unique characters with sufficient count |
+
+### Algorithm
+
+1. Build frequency map of `t`
+2. Expand window by moving right pointer
+3. When a character count matches requirement, increment `formed`
+4. When `formed == required`, try shrinking from left
+5. Update minimum window when valid
+6. Continue until right pointer exhausts `s`
+
+### Dry Run Example
+
+Input: `s = "ADOBECODEBANC"`, `t = "ABC"`
+
+```
+t_count = {A:1, B:1, C:1}, required = 3
+
+Step 1: Expand right
+  right=0 (A): window={A:1}, formed=1 (A matched)
+  right=1 (D): window={A:1,D:1}, formed=1
+  right=2 (O): window={A:1,D:1,O:1}, formed=1
+  right=3 (B): window={A:1,D:1,O:1,B:1}, formed=2 (B matched)
+  right=4 (E): window={...,E:1}, formed=2
+  right=5 (C): window={...,C:1}, formed=3 (C matched!)
+
+Step 2: Shrink left (formed == required)
+  Window "ADOBEC" (len=6), update min_window
+  left=0->1: Remove A, window={A:0,...}, formed=2 (A no longer matched)
+
+Step 3: Continue expanding
+  right=6 (O): formed=2
+  right=7 (D): formed=2
+  right=8 (E): formed=2
+  right=9 (B): window={...,B:2}, formed=2 (already had B)
+  right=10 (A): window={A:1,...}, formed=3!
+
+Step 4: Shrink left again
+  Window "DOBECODEBA" - shrink...
+  Eventually reach "BANC" (len=4) - new minimum!
+
+Final answer: "BANC"
 ```
 
-### Approach 3: Optimal with Two Pointers
-**Time Complexity**: O(n)  
-**Space Complexity**: O(n)
+### Visual Diagram
 
-**Algorithm**:
-1. Use two pointers: left and right
-2. Use hash map to track frequency of characters in current window
-3. Expand right pointer while maintaining character coverage
-4. When all characters covered, contract left pointer to minimize window
-5. Update minimum window throughout
-6. Return minimum window
+```
+s: A D O B E C O D E B A N C
+   0 1 2 3 4 5 6 7 8 9 10 11 12
 
-**Implementation**:
+Window 1: [A D O B E C]        len=6, valid
+              L         R
+
+Window 2: [B A N C]            len=4, valid (MINIMUM)
+                    L     R
+```
+
+### Code
+
+**Python:**
 ```python
-def optimal_minimum_window_substring(s, t):
-    n = len(s)
-    min_window = ""
-    min_length = float('inf')
-    
-    # Count characters in t
-    t_count = {}
-    for char in t:
-        t_count[char] = t_count.get(char, 0) + 1
-    
-    left = 0
-    window_count = {}
+from collections import Counter
+
+def min_window(s: str, t: str) -> str:
+    """
+    Optimal sliding window solution.
+    Time: O(n + m)
+    Space: O(m)
+    """
+    if not s or not t or len(s) < len(t):
+        return ""
+
+    # Character frequency required
+    t_count = Counter(t)
     required = len(t_count)
+
+    # Window state
+    window_count = {}
     formed = 0
-    
-    for right in range(n):
-        # Add character to window
+    left = 0
+
+    # Result tracking
+    min_len = float('inf')
+    result = (0, 0)
+
+    for right in range(len(s)):
+        # Expand: add s[right] to window
         char = s[right]
         window_count[char] = window_count.get(char, 0) + 1
-        
-        # Check if character count matches requirement
+
+        # Check if this character's count matches requirement
         if char in t_count and window_count[char] == t_count[char]:
             formed += 1
-        
-        # Try to contract window
-        while left <= right and formed == required:
-            # Update minimum window
-            if right - left + 1 < min_length:
-                min_length = right - left + 1
-                min_window = s[left:right+1]
-            
-            # Remove character from window
-            char = s[left]
-            window_count[char] -= 1
-            if char in t_count and window_count[char] < t_count[char]:
-                formed -= 1
-            left += 1
-    
-    return min_window
-```
 
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n³) | O(n) | Check all possible substrings |
-| Optimized | O(n²) | O(n) | Use hash map for faster character check |
-| Optimal | O(n) | O(n) | Use two pointers with hash map |
-
-### Time Complexity
-- **Time**: O(n) - Each character is processed at most twice
-- **Space**: O(n) - Hash map for character frequencies
-
-### Why This Solution Works
-- **Two Pointers**: Use left and right pointers to maintain a sliding window
-- **Hash Map Tracking**: Track frequency of characters in current window
-- **Window Management**: Expand when not all characters covered, contract when all covered
-- **Optimal Approach**: O(n) time complexity is optimal for this problem
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Minimum Window Subsequence**
-**Problem**: Find the minimum window in string S that contains all characters of string T as a subsequence.
-
-**Key Differences**: Subsequence instead of substring, different matching criteria
-
-**Solution Approach**: Use two pointers with subsequence matching
-
-**Implementation**:
-```python
-def minimum_window_subsequence(s, t):
-    """
-    Find minimum window in s that contains t as subsequence
-    """
-    if not s or not t:
-        return ""
-    
-    min_len = float('inf')
-    min_start = 0
-    
-    for i in range(len(s)):
-        if s[i] == t[0]:
-            # Try to match subsequence starting from i
-            t_idx = 0
-            for j in range(i, len(s)):
-                if s[j] == t[t_idx]:
-                    t_idx += 1
-                    if t_idx == len(t):
-                        # Found complete subsequence
-                        if j - i + 1 < min_len:
-                            min_len = j - i + 1
-                            min_start = i
-                        break
-    
-    return s[min_start:min_start + min_len] if min_len != float('inf') else ""
-
-# Example usage
-s = "abcdebdde"
-t = "bde"
-result = minimum_window_subsequence(s, t)
-print(f"Minimum window subsequence: {result}")  # Output: "bcde"
-```
-
-#### **2. Minimum Window Substring with Order**
-**Problem**: Find the minimum window in string S that contains all characters of string T in the same order.
-
-**Key Differences**: Characters must appear in the same order as in T
-
-**Solution Approach**: Use sliding window with order tracking
-
-**Implementation**:
-```python
-def minimum_window_ordered(s, t):
-    """
-    Find minimum window in s that contains t in order
-    """
-    if not s or not t:
-        return ""
-    
-    min_len = float('inf')
-    min_start = 0
-    
-    for i in range(len(s)):
-        if s[i] == t[0]:
-            # Try to match ordered sequence starting from i
-            t_idx = 0
-            for j in range(i, len(s)):
-                if s[j] == t[t_idx]:
-                    t_idx += 1
-                    if t_idx == len(t):
-                        # Found complete ordered sequence
-                        if j - i + 1 < min_len:
-                            min_len = j - i + 1
-                            min_start = i
-                        break
-    
-    return s[min_start:min_start + min_len] if min_len != float('inf') else ""
-
-# Example usage
-s = "ADOBECODEBANC"
-t = "ABC"
-result = minimum_window_ordered(s, t)
-print(f"Minimum window ordered: {result}")  # Output: "ADOBEC"
-```
-
-#### **3. Minimum Window Substring with Frequency**
-**Problem**: Find the minimum window in string S that contains all characters of string T with exact frequency.
-
-**Key Differences**: Must match exact frequency of each character
-
-**Solution Approach**: Use sliding window with frequency tracking
-
-**Implementation**:
-```python
-def minimum_window_frequency(s, t):
-    """
-    Find minimum window in s that contains t with exact frequency
-    """
-    if not s or not t:
-        return ""
-    
-    # Count frequency of characters in t
-    t_count = {}
-    for char in t:
-        t_count[char] = t_count.get(char, 0) + 1
-    
-    # Track frequency in current window
-    window_count = {}
-    left = 0
-    min_len = float('inf')
-    min_start = 0
-    matched = 0
-    
-    for right in range(len(s)):
-        # Add current character to window
-        char = s[right]
-        window_count[char] = window_count.get(char, 0) + 1
-        
-        # Check if we have enough of this character
-        if char in t_count and window_count[char] == t_count[char]:
-            matched += 1
-        
-        # Try to shrink window
-        while matched == len(t_count):
-            # Update minimum window
+        # Shrink: contract window from left while valid
+        while formed == required and left <= right:
+            # Update result if current window is smaller
             if right - left + 1 < min_len:
                 min_len = right - left + 1
-                min_start = left
-            
-            # Remove leftmost character
+                result = (left, right + 1)
+
+            # Remove s[left] from window
             left_char = s[left]
             window_count[left_char] -= 1
             if left_char in t_count and window_count[left_char] < t_count[left_char]:
-                matched -= 1
+                formed -= 1
             left += 1
-    
-    return s[min_start:min_start + min_len] if min_len != float('inf') else ""
 
-# Example usage
-s = "ADOBECODEBANC"
-t = "ABC"
-result = minimum_window_frequency(s, t)
-print(f"Minimum window frequency: {result}")  # Output: "BANC"
+    return s[result[0]:result[1]] if min_len != float('inf') else ""
 ```
 
-### Related Problems
+**C++:**
+```cpp
+#include <string>
+#include <unordered_map>
+using namespace std;
 
-#### **CSES Problems**
-- [Minimum Window Substring](https://cses.fi/problemset/task/2101) - Find minimum window containing all characters
-- [Substring with All Characters](https://cses.fi/problemset/task/2102) - Find substring containing all characters
-- [Minimum Window Subsequence](https://cses.fi/problemset/task/2103) - Find minimum window containing subsequence
+string minWindow(string s, string t) {
+    if (s.empty() || t.empty() || s.length() < t.length()) {
+        return "";
+    }
 
-#### **LeetCode Problems**
-- [Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/) - Classic minimum window problem
-- [Minimum Window Subsequence](https://leetcode.com/problems/minimum-window-subsequence/) - Subsequence variant
-- [Longest Substring with At Most Two Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/) - Two distinct characters
-- [Substring with Concatenation of All Words](https://leetcode.com/problems/substring-with-concatenation-of-all-words/) - Word concatenation variant
+    // Character frequency required
+    unordered_map<char, int> t_count;
+    for (char c : t) t_count[c]++;
+    int required = t_count.size();
 
-#### **Problem Categories**
-- **Sliding Window**: Minimum window problems, character coverage, window optimization
-- **Two Pointers**: Left and right pointer technique, window expansion and contraction
-- **Hash Map**: Character frequency tracking, efficient lookups
-- **String Processing**: Substring analysis, character matching, pattern recognition
+    // Window state
+    unordered_map<char, int> window_count;
+    int formed = 0;
+    int left = 0;
 
-## 🚀 Key Takeaways
+    // Result tracking
+    int min_len = INT_MAX;
+    int result_left = 0;
 
-- **Two Pointers Technique**: The standard approach for minimum window problems
-- **Sliding Window**: Maintain a window that covers all required characters
-- **Hash Map Tracking**: Use hash map to track character frequencies efficiently
-- **Window Management**: Expand and contract window based on character coverage
-- **Pattern Recognition**: This technique applies to many minimum window problems
+    for (int right = 0; right < s.length(); right++) {
+        // Expand: add s[right] to window
+        char c = s[right];
+        window_count[c]++;
+
+        // Check if character count matches requirement
+        if (t_count.count(c) && window_count[c] == t_count[c]) {
+            formed++;
+        }
+
+        // Shrink: contract window while valid
+        while (formed == required && left <= right) {
+            // Update result if current window is smaller
+            if (right - left + 1 < min_len) {
+                min_len = right - left + 1;
+                result_left = left;
+            }
+
+            // Remove s[left] from window
+            char left_char = s[left];
+            window_count[left_char]--;
+            if (t_count.count(left_char) &&
+                window_count[left_char] < t_count[left_char]) {
+                formed--;
+            }
+            left++;
+        }
+    }
+
+    return min_len == INT_MAX ? "" : s.substr(result_left, min_len);
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n + m) | Each character visited at most twice (once by right, once by left) |
+| Space | O(m) | Hash maps store at most unique characters in `t` |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Incrementing `formed` on Every Character Match
+
+```python
+# WRONG
+if char in t_count:
+    formed += 1  # Increments even if already have enough
+```
+
+**Problem:** We only want to increment `formed` when we reach the exact required count, not on every occurrence.
+
+**Fix:** Check if count equals (not exceeds) the requirement:
+```python
+if char in t_count and window_count[char] == t_count[char]:
+    formed += 1
+```
+
+### Mistake 2: Using Total Characters Instead of Unique Characters
+
+```python
+# WRONG
+required = len(t)  # Total chars including duplicates
+formed = 0
+
+# This breaks when t has duplicates like "AAB"
+```
+
+**Problem:** With `t = "AAB"`, we need 2 A's and 1 B (2 unique chars to match), not 3 matches.
+
+**Fix:** Use number of unique characters:
+```python
+required = len(t_count)  # Number of unique characters
+```
+
+### Mistake 3: Not Handling Empty Result
+
+```python
+# WRONG
+return s[result[0]:result[1]]  # Crashes if no valid window found
+```
+
+**Fix:** Check for valid result:
+```python
+return s[result[0]:result[1]] if min_len != float('inf') else ""
+```
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| No valid window | s="ABC", t="D" | "" | Target char not in source |
+| t longer than s | s="A", t="ABC" | "" | Impossible to contain |
+| Exact match | s="ABC", t="ABC" | "ABC" | Entire string is the window |
+| Duplicate chars | s="AAAB", t="AA" | "AA" | Must handle frequency correctly |
+| Single char | s="A", t="A" | "A" | Minimal case |
+| Empty strings | s="", t="A" | "" | Handle empty input |
+
+---
+
+## When to Use This Pattern
+
+### Use Variable-Size Sliding Window When:
+- Finding minimum/maximum substring with a condition
+- Window size depends on content, not fixed
+- Need to track frequency/count of elements in window
+- Can identify when to expand vs shrink
+
+### Pattern Recognition Checklist:
+- [ ] Looking for minimum length substring? -> **Expand then shrink**
+- [ ] Looking for maximum length substring? -> **Shrink then expand**
+- [ ] Need to track character frequencies? -> **Hash map + formed counter**
+- [ ] Window validity based on content? -> **Variable-size window**
+
+### Don't Use When:
+- Window size is fixed (use fixed-size sliding window)
+- No clear window validity condition
+- Need to find all occurrences, not just optimal
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Longest Substring Without Repeating](https://leetcode.com/problems/longest-substring-without-repeating-characters/) | Basic variable window |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Playlist (CSES 2429)](https://cses.fi/problemset/task/2429) | Maximum window with unique elements |
+| [Permutation in String](https://leetcode.com/problems/permutation-in-string/) | Fixed window size, anagram matching |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Substring with Concatenation](https://leetcode.com/problems/substring-with-concatenation-of-all-words/) | Word-level windows |
+| [Minimum Window Subsequence](https://leetcode.com/problems/minimum-window-subsequence/) | Subsequence ordering |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Expand window to satisfy condition, shrink to optimize
+2. **Time Optimization:** Each pointer moves at most n times -> O(2n) = O(n)
+3. **Space Trade-off:** O(m) space for frequency maps enables O(n) time
+4. **Pattern:** Variable-size sliding window with "formed" counter for validation
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Solve this problem without looking at the solution
+- [ ] Explain why each pointer moves at most n times
+- [ ] Handle duplicates in the target string correctly
+- [ ] Implement in your preferred language in under 15 minutes
+- [ ] Identify similar problems that use this pattern

@@ -1,539 +1,395 @@
 ---
-layout: simple
-title: "Building Teams - Graph Algorithm Problem"
-permalink: /problem_soulutions/graph_algorithms/building_teams_analysis
+layout: problem-analysis
+title: "Building Teams"
+difficulty: Easy
+tags: [graph, bipartite, bfs, dfs, 2-coloring]
+cses_link: https://cses.fi/problemset/task/1668
 ---
 
-# Building Teams - Graph Algorithm Problem
+# Building Teams
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of bipartite graph coloring in graph algorithms
-- Apply efficient algorithms for checking bipartiteness and 2-coloring
-- Implement BFS-based bipartite graph detection and coloring
-- Optimize graph algorithms for team assignment problems
-- Handle special cases in bipartite graph problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Divide n pupils into 2 teams so no two friends are on the same team |
+| Input | n pupils, m friendships (edges) |
+| Output | Team assignment (1 or 2) for each pupil, or "IMPOSSIBLE" |
+| Constraints | 1 <= n <= 10^5, 1 <= m <= 2*10^5 |
+| Core Concept | Bipartite graph checking / 2-coloring |
+| Time Complexity | O(n + m) |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given n students and m pairs of students who cannot be on the same team, determine if it's possible to divide students into two teams such that no conflicting students are on the same team.
+After solving this problem, you will understand:
+1. **Bipartite Graphs**: A graph whose vertices can be divided into two disjoint sets such that every edge connects vertices from different sets
+2. **Graph 2-Coloring**: Assigning one of two colors to each vertex so adjacent vertices have different colors
+3. **Odd Cycle Detection**: Why odd-length cycles make bipartite coloring impossible
 
-**Input**: 
-- n: number of students
-- m: number of conflicts
-- conflicts: array of (u, v) representing students who cannot be on the same team
+## Problem Statement
 
-**Output**: 
-- Team assignment (1 or 2) for each student, or -1 if impossible
+There are n pupils and m friendships. Your task is to divide the pupils into two teams such that no two pupils in the same team are friends. If this is possible, output the team assignment; otherwise, output "IMPOSSIBLE".
 
-**Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
-
-**Example**:
+**Example Input:**
 ```
-Input:
-n = 4, m = 3
-conflicts = [(0,1), (1,2), (2,3)]
-
-Output:
-[1, 2, 1, 2]
-
-Explanation**: 
-Team 1: students 0, 2
-Team 2: students 1, 3
-No conflicting students are on the same team
+5 3
+1 2
+2 3
+3 4
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumation**: Try all possible team assignments
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Check if each assignment satisfies constraints
-- **Inefficient**: O(2^n × m) time complexity
-
-**Key Insight**: Check every possible team assignment to find valid bipartite coloring.
-
-**Algorithm**:
-- Generate all possible team assignments (2^n possibilities)
-- Check if each assignment satisfies conflict constraints
-- Return the first valid assignment found
-
-**Visual Example**:
+**Example Output:**
 ```
-Students: 0, 1, 2, 3
-Conflicts: (0,1), (1,2), (2,3)
-
-All possible team assignments:
-┌─────────────────────────────────────┐
-│ Assignment 1: [1,1,1,1] ✗          │
-│ - Conflict (0,1): both team 1 ✗    │
-│                                   │
-│ Assignment 2: [1,1,1,2] ✗          │
-│ - Conflict (0,1): both team 1 ✗    │
-│                                   │
-│ Assignment 3: [1,1,2,1] ✗          │
-│ - Conflict (0,1): both team 1 ✗    │
-│                                   │
-│ Assignment 4: [1,1,2,2] ✗          │
-│ - Conflict (0,1): both team 1 ✗    │
-│                                   │
-│ Assignment 5: [1,2,1,1] ✗          │
-│ - Conflict (1,2): both team 1 ✗    │
-│                                   │
-│ Assignment 6: [1,2,1,2] ✓          │
-│ - All conflicts satisfied ✓        │
-│                                   │
-│ Valid assignment: [1,2,1,2]       │
-└─────────────────────────────────────┘
+1 2 1 2 1
 ```
 
-**Implementation**:
+## Key Insight
+
+This problem is equivalent to checking if the graph is **bipartite**.
+
+A graph is bipartite if and only if it contains **no odd-length cycles**.
+
+Why? When you traverse a cycle and alternate colors:
+- Even-length cycle: You return to the start with the opposite color (valid)
+- Odd-length cycle: You return to the start with the SAME color (conflict!)
+
+## Algorithm: BFS/DFS 2-Coloring
+
+**Core idea**: Start from any uncolored vertex, assign it color 1, then assign the opposite color to all neighbors. If we ever find a neighbor with the same color, the graph is not bipartite.
+
+**Steps:**
+1. Build adjacency list from friendships
+2. Initialize all vertices as uncolored (-1 or 0)
+3. For each uncolored vertex (handles disconnected components!):
+   - Start BFS/DFS from this vertex
+   - Assign alternating colors to neighbors
+   - If a neighbor already has the same color as current vertex -> IMPOSSIBLE
+4. Output the color assignment
+
+## Handling Disconnected Components
+
+**Critical**: The graph may have multiple disconnected components. You must check EACH component separately!
+
+```
+Component 1: 1--2--3     Component 2: 4--5
+```
+
+If you only start from vertex 1, vertices 4 and 5 remain uncolored. Always iterate through all vertices and start a new BFS/DFS from any uncolored vertex.
+
+## Visual Diagram
+
+**Case 1: Valid 2-Coloring (Even Cycle / Tree)**
+```
+    1(A) --- 2(B)
+      |       |
+    4(B) --- 3(A)
+
+Colors alternate around the cycle (length 4 = even)
+Team A: {1, 3}    Team B: {2, 4}
+```
+
+**Case 2: Impossible (Odd Cycle)**
+```
+    1(A) --- 2(B)
+      \     /
+       \   /
+        3(?)
+
+Starting from 1(A):
+  - 2 gets color B (opposite of A)
+  - 3 gets color A (opposite of B)
+  - But 3 is connected to 1, which is also A!
+
+CONFLICT! Triangle (length 3 = odd) cannot be 2-colored.
+```
+
+## Dry Run Example
+
+**Input:** n=5, m=3, edges: (1,2), (2,3), (3,4)
+
+```
+Initial graph:
+1 --- 2 --- 3 --- 4     5 (isolated)
+
+Step 1: Start BFS from vertex 1
+  color[1] = 1
+  Queue: [1]
+
+Step 2: Process vertex 1
+  Neighbor 2: uncolored -> color[2] = 2
+  Queue: [2]
+
+Step 3: Process vertex 2
+  Neighbor 1: color[1]=1 != color[2]=2 (OK)
+  Neighbor 3: uncolored -> color[3] = 1
+  Queue: [3]
+
+Step 4: Process vertex 3
+  Neighbor 2: color[2]=2 != color[3]=1 (OK)
+  Neighbor 4: uncolored -> color[4] = 2
+  Queue: [4]
+
+Step 5: Process vertex 4
+  Neighbor 3: color[3]=1 != color[4]=2 (OK)
+  Queue: []
+
+Step 6: Vertex 5 is still uncolored (disconnected!)
+  Start new BFS from vertex 5
+  color[5] = 1
+
+Final: [1, 2, 1, 2, 1]
+```
+
+## Implementation: BFS Approach
+
+### Python (BFS)
 ```python
-def brute_force_building_teams(n, conflicts):
-    """Find team assignment using brute force approach"""
-    def is_valid_assignment(assignment):
-        """Check if team assignment satisfies all conflicts"""
-        for u, v in conflicts:
-            if assignment[u] == assignment[v]:
-                return False
+from collections import deque
+
+def solve():
+    n, m = map(int, input().split())
+
+    # Build adjacency list (1-indexed)
+    adj = [[] for _ in range(n + 1)]
+    for _ in range(m):
+        a, b = map(int, input().split())
+        adj[a].append(b)
+        adj[b].append(a)
+
+    color = [0] * (n + 1)  # 0 = uncolored, 1 or 2 = team
+
+    def bfs(start):
+        queue = deque([start])
+        color[start] = 1
+
+        while queue:
+            u = queue.popleft()
+            for v in adj[u]:
+                if color[v] == 0:
+                    color[v] = 3 - color[u]  # Alternate: 1->2, 2->1
+                    queue.append(v)
+                elif color[v] == color[u]:
+                    return False  # Same color = conflict
         return True
-    
-    # Try all possible team assignments
-    for assignment_num in range(2**n):
-        assignment = []
-        temp = assignment_num
-        
-        # Convert number to binary assignment
-        for i in range(n):
-            assignment.append((temp % 2) + 1)  # Teams 1 or 2
-            temp //= 2
-        
-        # Check if assignment is valid
-        if is_valid_assignment(assignment):
-            return assignment
-    
-    return -1  # No valid assignment exists
 
-# Example usage
-n = 4
-conflicts = [(0, 1), (1, 2), (2, 3)]
-result = brute_force_building_teams(n, conflicts)
-print(f"Brute force team assignment: {result}")
+    # Check ALL components
+    for i in range(1, n + 1):
+        if color[i] == 0:
+            if not bfs(i):
+                print("IMPOSSIBLE")
+                return
+
+    print(*color[1:])
+
+solve()
 ```
 
-**Time Complexity**: O(2^n × m)
-**Space Complexity**: O(n)
-
-**Why it's inefficient**: O(2^n × m) time complexity for checking all possible assignments.
-
----
-
-### Approach 2: BFS-based Bipartite Coloring
-
-**Key Insights from BFS-based Bipartite Coloring**:
-- **BFS Coloring**: Use BFS to assign colors (teams) to vertices
-- **Efficient Implementation**: O(n + m) time complexity
-- **Bipartite Detection**: Check if graph is bipartite during coloring
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Use BFS to assign teams (colors) and detect bipartiteness simultaneously.
-
-**Algorithm**:
-- Use BFS to traverse the graph
-- Assign alternating colors (teams) to adjacent vertices
-- If conflict is found, graph is not bipartite
-
-**Visual Example**:
-```
-BFS-based bipartite coloring:
-
-Graph: 0-1, 1-2, 2-3
-Colors: 1 (team 1), 2 (team 2)
-
-Step 1: Start with vertex 0
-┌─────────────────────────────────────┐
-│ Queue: [0]                         │
-│ Color[0] = 1                       │
-│                                   │
-│ Step 2: Process vertex 0           │
-│ - Neighbors: [1]                   │
-│ - Color[1] = 2 (opposite of 0)     │
-│ - Queue: [1]                       │
-│                                   │
-│ Step 3: Process vertex 1           │
-│ - Neighbors: [0, 2]                │
-│ - Color[0] = 1 ✓ (already set)     │
-│ - Color[2] = 1 (opposite of 1)     │
-│ - Queue: [2]                       │
-│                                   │
-│ Step 4: Process vertex 2           │
-│ - Neighbors: [1, 3]                │
-│ - Color[1] = 2 ✓ (already set)     │
-│ - Color[3] = 2 (opposite of 2)     │
-│ - Queue: [3]                       │
-│                                   │
-│ Step 5: Process vertex 3           │
-│ - Neighbors: [2]                   │
-│ - Color[2] = 1 ✓ (already set)     │
-│                                   │
-│ Result: [1, 2, 1, 2]              │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
+### Python (DFS)
 ```python
-def bfs_building_teams(n, conflicts):
-    """Find team assignment using BFS-based bipartite coloring"""
-    from collections import deque
-    
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in conflicts:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    # Initialize color array (-1 means uncolored)
-    color = [-1] * n
-    
-    # Try to color each connected component
-    for start in range(n):
-        if color[start] == -1:
-            # BFS to color this component
-            queue = deque([start])
-            color[start] = 1  # Start with team 1
-            
-            while queue:
-                current = queue.popleft()
-                
-                for neighbor in adj[current]:
-                    if color[neighbor] == -1:
-                        # Assign opposite color
-                        color[neighbor] = 3 - color[current]
-                        queue.append(neighbor)
-                    elif color[neighbor] == color[current]:
-                        # Conflict found - not bipartite
-                        return -1
-    
-    return color
+import sys
+sys.setrecursionlimit(200005)
 
-# Example usage
-n = 4
-conflicts = [(0, 1), (1, 2), (2, 3)]
-result = bfs_building_teams(n, conflicts)
-print(f"BFS team assignment: {result}")
+def solve():
+    n, m = map(int, input().split())
+
+    adj = [[] for _ in range(n + 1)]
+    for _ in range(m):
+        a, b = map(int, input().split())
+        adj[a].append(b)
+        adj[b].append(a)
+
+    color = [0] * (n + 1)
+    possible = True
+
+    def dfs(u, c):
+        nonlocal possible
+        color[u] = c
+        for v in adj[u]:
+            if color[v] == 0:
+                dfs(v, 3 - c)
+            elif color[v] == c:
+                possible = False
+
+    for i in range(1, n + 1):
+        if color[i] == 0:
+            dfs(i, 1)
+
+    if possible:
+        print(*color[1:])
+    else:
+        print("IMPOSSIBLE")
+
+solve()
 ```
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n + m)
+### C++ (BFS)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Why it's better**: Uses BFS for O(n + m) time complexity.
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
----
+    int n, m;
+    cin >> n >> m;
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+    vector<vector<int>> adj(n + 1);
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for bipartite coloring
-- **Efficient Implementation**: O(n + m) time complexity
-- **Space Efficiency**: O(n + m) space complexity
-- **Optimal Complexity**: Best approach for bipartite graph coloring
+    vector<int> color(n + 1, 0);
 
-**Key Insight**: Use advanced data structures for optimal bipartite graph coloring.
+    auto bfs = [&](int start) -> bool {
+        queue<int> q;
+        q.push(start);
+        color[start] = 1;
 
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient BFS-based bipartite coloring
-- Handle special cases optimally
-- Return team assignment
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            for (int v : adj[u]) {
+                if (color[v] == 0) {
+                    color[v] = 3 - color[u];
+                    q.push(v);
+                } else if (color[v] == color[u]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
 
-**Visual Example**:
-```
-Advanced data structure approach:
+    for (int i = 1; i <= n; i++) {
+        if (color[i] == 0) {
+            if (!bfs(i)) {
+                cout << "IMPOSSIBLE\n";
+                return 0;
+            }
+        }
+    }
 
-For graph: 0-1, 1-2, 2-3
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Graph structure: for efficient    │
-│   storage and traversal             │
-│ - Queue structure: for optimization  │
-│ - Color cache: for optimization     │
-│                                   │
-│ Bipartite coloring calculation:    │
-│ - Use graph structure for efficient │
-│   storage and traversal             │
-│ - Use queue structure for          │
-│   optimization                      │
-│ - Use color cache for optimization  │
-│                                   │
-│ Result: [1, 2, 1, 2]              │
-└─────────────────────────────────────┘
-```
+    for (int i = 1; i <= n; i++) {
+        cout << color[i] << " \n"[i == n];
+    }
 
-**Implementation**:
-```python
-def advanced_data_structure_building_teams(n, conflicts):
-    """Find team assignment using advanced data structure approach"""
-    from collections import deque
-    
-    # Use advanced data structures for graph storage
-    # Build advanced adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in conflicts:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    # Advanced data structures for bipartite coloring
-    # Initialize advanced color array (-1 means uncolored)
-    color = [-1] * n
-    
-    # Advanced BFS to color each connected component
-    for start in range(n):
-        if color[start] == -1:
-            # Advanced BFS to color this component
-            queue = deque([start])
-            color[start] = 1  # Start with team 1
-            
-            while queue:
-                current = queue.popleft()
-                
-                # Process neighbors using advanced data structures
-                for neighbor in adj[current]:
-                    if color[neighbor] == -1:
-                        # Assign opposite color using advanced data structures
-                        color[neighbor] = 3 - color[current]
-                        queue.append(neighbor)
-                    elif color[neighbor] == color[current]:
-                        # Conflict found - not bipartite
-                        return -1
-    
-    return color
-
-# Example usage
-n = 4
-conflicts = [(0, 1), (1, 2), (2, 3)]
-result = advanced_data_structure_building_teams(n, conflicts)
-print(f"Advanced data structure team assignment: {result}")
+    return 0;
+}
 ```
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n + m)
+### C++ (DFS)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+vector<vector<int>> adj;
+vector<int> color;
+bool possible = true;
 
-## 🔧 Implementation Details
+void dfs(int u, int c) {
+    color[u] = c;
+    for (int v : adj[u]) {
+        if (color[v] == 0) {
+            dfs(v, 3 - c);
+        } else if (color[v] == c) {
+            possible = false;
+        }
+    }
+}
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(2^n × m) | O(n) | Try all possible team assignments |
-| BFS Coloring | O(n + m) | O(n + m) | Use BFS to assign alternating colors |
-| Advanced Data Structure | O(n + m) | O(n + m) | Use advanced data structures |
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-### Time Complexity
-- **Time**: O(n + m) - Use BFS for efficient bipartite graph coloring
-- **Space**: O(n + m) - Store graph and color information
+    int n, m;
+    cin >> n >> m;
 
-### Why This Solution Works
-- **BFS Coloring**: Use BFS to assign alternating colors to adjacent vertices
-- **Bipartite Detection**: Check for color conflicts during traversal
-- **Connected Components**: Handle each connected component separately
-- **Optimal Algorithms**: Use optimal algorithms for bipartite graph coloring
+    adj.resize(n + 1);
+    color.resize(n + 1, 0);
 
-## 🚀 Problem Variations
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
 
-### Extended Problems with Detailed Code Examples
+    for (int i = 1; i <= n; i++) {
+        if (color[i] == 0) {
+            dfs(i, 1);
+        }
+    }
 
-#### **1. Building Teams with Constraints**
-**Problem**: Find team assignment with specific constraints.
+    if (possible) {
+        for (int i = 1; i <= n; i++) {
+            cout << color[i] << " \n"[i == n];
+        }
+    } else {
+        cout << "IMPOSSIBLE\n";
+    }
 
-**Key Differences**: Apply constraints to team assignment
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_building_teams(n, conflicts, constraints):
-    """Find team assignment with constraints"""
-    from collections import deque
-    
-    # Build adjacency list with constraints
-    adj = [[] for _ in range(n)]
-    for u, v in conflicts:
-        if constraints(u, v):
-            adj[u].append(v)
-            adj[v].append(u)
-    
-    # Initialize color array (-1 means uncolored)
-    color = [-1] * n
-    
-    # Try to color each connected component with constraints
-    for start in range(n):
-        if color[start] == -1:
-            # BFS to color this component with constraints
-            queue = deque([start])
-            color[start] = 1  # Start with team 1
-            
-            while queue:
-                current = queue.popleft()
-                
-                for neighbor in adj[current]:
-                    if constraints(current, neighbor):
-                        if color[neighbor] == -1:
-                            # Assign opposite color with constraints
-                            color[neighbor] = 3 - color[current]
-                            queue.append(neighbor)
-                        elif color[neighbor] == color[current]:
-                            # Conflict found - not bipartite
-                            return -1
-    
-    return color
-
-# Example usage
-n = 4
-conflicts = [(0, 1), (1, 2), (2, 3)]
-constraints = lambda u, v: u < v or v == 0  # Special constraint
-result = constrained_building_teams(n, conflicts, constraints)
-print(f"Constrained team assignment: {result}")
+    return 0;
+}
 ```
 
-#### **2. Building Teams with Different Metrics**
-**Problem**: Find team assignment with different team size metrics.
+## Why Odd Cycle = Impossible
 
-**Key Differences**: Different team size calculations
+Consider walking around a cycle and assigning alternating colors:
 
-**Solution Approach**: Use advanced mathematical techniques
+```
+Vertex:  v1 -> v2 -> v3 -> ... -> vk -> v1
+Color:    A     B     A    ...    ?     A
 
-**Implementation**:
-```python
-def weighted_building_teams(n, conflicts, weight_function):
-    """Find team assignment with different team size metrics"""
-    from collections import deque
-    
-    # Build adjacency list with modified weights
-    adj = [[] for _ in range(n)]
-    for u, v in conflicts:
-        weight = weight_function(u, v)
-        adj[u].append((v, weight))
-        adj[v].append((u, weight))
-    
-    # Initialize color array (-1 means uncolored)
-    color = [-1] * n
-    
-    # Try to color each connected component with modified weights
-    for start in range(n):
-        if color[start] == -1:
-            # BFS to color this component with modified weights
-            queue = deque([start])
-            color[start] = 1  # Start with team 1
-            
-            while queue:
-                current = queue.popleft()
-                
-                for neighbor, weight in adj[current]:
-                    if color[neighbor] == -1:
-                        # Assign opposite color with modified weights
-                        color[neighbor] = 3 - color[current]
-                        queue.append(neighbor)
-                    elif color[neighbor] == color[current]:
-                        # Conflict found - not bipartite
-                        return -1
-    
-    return color
-
-# Example usage
-n = 4
-conflicts = [(0, 1), (1, 2), (2, 3)]
-weight_function = lambda u, v: abs(u - v)  # Distance-based weight
-result = weighted_building_teams(n, conflicts, weight_function)
-print(f"Weighted team assignment: {result}")
+If k is EVEN:  vk gets color B, connects back to v1(A) - OK!
+If k is ODD:   vk gets color A, connects back to v1(A) - CONFLICT!
 ```
 
-#### **3. Building Teams with Multiple Dimensions**
-**Problem**: Find team assignment in multiple dimensions.
+The mathematical reason: In a cycle of length k, vertex vi gets color based on (i mod 2). If k is odd, vertex vk and v1 have the same parity, hence the same color.
 
-**Key Differences**: Handle multiple dimensions
+## Complexity Analysis
 
-**Solution Approach**: Use advanced mathematical techniques
+| Operation | Time | Space |
+|-----------|------|-------|
+| Build adjacency list | O(m) | O(n + m) |
+| BFS/DFS traversal | O(n + m) | O(n) for queue/stack |
+| **Total** | **O(n + m)** | **O(n + m)** |
 
-**Implementation**:
-```python
-def multi_dimensional_building_teams(n, conflicts, dimensions):
-    """Find team assignment in multiple dimensions"""
-    from collections import deque
-    
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in conflicts:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    # Initialize color array (-1 means uncolored)
-    color = [-1] * n
-    
-    # Try to color each connected component
-    for start in range(n):
-        if color[start] == -1:
-            # BFS to color this component
-            queue = deque([start])
-            color[start] = 1  # Start with team 1
-            
-            while queue:
-                current = queue.popleft()
-                
-                for neighbor in adj[current]:
-                    if color[neighbor] == -1:
-                        # Assign opposite color
-                        color[neighbor] = 3 - color[current]
-                        queue.append(neighbor)
-                    elif color[neighbor] == color[current]:
-                        # Conflict found - not bipartite
-                        return -1
-    
-    return color
+## Common Mistakes
 
-# Example usage
-n = 4
-conflicts = [(0, 1), (1, 2), (2, 3)]
-dimensions = 1
-result = multi_dimensional_building_teams(n, conflicts, dimensions)
-print(f"Multi-dimensional team assignment: {result}")
-```
+1. **Forgetting disconnected components**: Only running BFS/DFS from vertex 1 misses isolated components
+   ```python
+   # WRONG: Only starts from vertex 1
+   bfs(1)
 
-### Related Problems
+   # CORRECT: Check all vertices
+   for i in range(1, n + 1):
+       if color[i] == 0:
+           bfs(i)
+   ```
 
-#### **CSES Problems**
-- [School Dance](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Building Roads](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
+2. **Wrong initial color check**: Using 0 as a valid color instead of "uncolored"
+   ```python
+   # WRONG: 0 could be confused with unvisited
+   color = [0] * n  # Is 0 a team or unvisited?
 
-#### **LeetCode Problems**
-- [Is Graph Bipartite?](https://leetcode.com/problems/is-graph-bipartite/) - Graph
-- [Possible Bipartition](https://leetcode.com/problems/possible-bipartition/) - Graph
-- [Course Schedule](https://leetcode.com/problems/course-schedule/) - Graph
+   # CORRECT: Use distinct values
+   color = [0] * n  # 0 = unvisited, 1 and 2 = teams
+   # OR
+   color = [-1] * n  # -1 = unvisited, 0 and 1 = teams
+   ```
 
-#### **Problem Categories**
-- **Graph Algorithms**: Bipartite graphs, graph coloring
-- **Graph Coloring**: 2-coloring, bipartite detection
-- **Graph Traversal**: BFS, connected components
+3. **Not handling self-loops**: A self-loop (edge from v to v) makes the graph non-bipartite
 
-## 🔗 Additional Resources
+4. **Stack overflow with DFS**: For large graphs, use iterative DFS or increase recursion limit
 
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Bipartite Graph](https://cp-algorithms.com/graph/bipartite-check.html) - Bipartite graph algorithms
-- [Graph Coloring](https://cp-algorithms.com/graph/graph_coloring.html) - Graph coloring algorithms
+## Related Problems
 
-### **Practice Problems**
-- [CSES School Dance](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Building Roads](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Bipartite Graph](https://en.wikipedia.org/wiki/Bipartite_graph) - Wikipedia article
-- [Graph Coloring](https://en.wikipedia.org/wiki/Graph_coloring) - Wikipedia article
+| Problem | Platform | Key Difference |
+|---------|----------|----------------|
+| [Is Graph Bipartite?](https://leetcode.com/problems/is-graph-bipartite/) | LeetCode | Same problem, 0-indexed |
+| [Possible Bipartition](https://leetcode.com/problems/possible-bipartition/) | LeetCode | Dislikes instead of friendships |
+| [Round Trip](https://cses.fi/problemset/task/1669) | CSES | Find the actual odd cycle |

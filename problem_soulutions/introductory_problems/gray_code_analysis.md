@@ -1,38 +1,53 @@
 ---
 layout: simple
-title: "Gray Code"
+title: "Gray Code - Introductory Problem"
 permalink: /problem_soulutions/introductory_problems/gray_code_analysis
+difficulty: Medium
+tags: [bit-manipulation, gray-code, xor, recursion]
+prerequisites: []
 ---
 
 # Gray Code
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of Gray code generation and bit manipulation in introductory problems
-- Apply efficient algorithms for generating Gray codes
-- Implement bit manipulation and recursive approaches for Gray code generation
-- Optimize algorithms for Gray code problems
-- Handle special cases in bit manipulation problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Bit Manipulation |
+| **Time Limit** | 1 second |
+| **Key Technique** | XOR Formula / Recursive Construction |
+| **CSES Link** | [Gray Code](https://cses.fi/problemset/task/2205) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Generate the n-bit Gray code sequence. Gray code is a binary numeral system where two successive values differ in only one bit.
+After solving this problem, you will be able to:
+- [ ] Understand the mathematical formula for Gray code: `i ^ (i >> 1)`
+- [ ] Apply bit manipulation to generate sequences with specific properties
+- [ ] Recognize the mirror/reflection property of Gray codes
+- [ ] Convert between binary and Gray code representations
 
-**Input**: 
-- n: number of bits
+---
 
-**Output**: 
-- List of n-bit Gray codes
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 16
+**Problem:** Generate a Gray code sequence of n-bit strings where consecutive strings differ by exactly one bit.
 
-**Example**:
+**Input:**
+- Line 1: An integer n (the number of bits)
+
+**Output:**
+- Print 2^n lines, each containing an n-bit Gray code string
+- Any valid Gray code sequence is accepted
+
+**Constraints:**
+- 1 <= n <= 16
+
+### Example
+
 ```
 Input:
-n = 3
+3
 
 Output:
 000
@@ -43,1250 +58,383 @@ Output:
 111
 101
 100
-
-Explanation**: 
-3-bit Gray code sequence where each consecutive pair differs by exactly one bit:
-000 → 001 (bit 0 changes)
-001 → 011 (bit 1 changes)
-011 → 010 (bit 0 changes)
-010 → 110 (bit 2 changes)
-110 → 111 (bit 0 changes)
-111 → 101 (bit 1 changes)
-101 → 100 (bit 0 changes)
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Generate all possible n-bit numbers and find valid Gray code sequence
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Check each number for Gray code property
-- **Inefficient**: O(2^n × n) time complexity
-
-**Key Insight**: Generate all possible n-bit numbers and find a sequence where consecutive numbers differ by exactly one bit.
-
-**Algorithm**:
-- Generate all possible n-bit numbers (0 to 2^n - 1)
-- Try to find a sequence where consecutive numbers differ by exactly one bit
-- Use backtracking to find valid Gray code sequence
-- Return the valid sequence
-
-**Visual Example**:
-```
-Gray Code Generation: n = 3
-
-Generate all 3-bit numbers:
-┌─────────────────────────────────────┐
-│ Numbers: 000, 001, 010, 011, 100, 101, 110, 111 │
-│                                   │
-│ Try to find Gray code sequence:   │
-│ Start with 000                    │
-│                                   │
-│ Next: 001 (differs by 1 bit) ✓   │
-│ Sequence: [000, 001]              │
-│                                   │
-│ Next: 011 (differs by 1 bit from 001) ✓ │
-│ Sequence: [000, 001, 011]         │
-│                                   │
-│ Next: 010 (differs by 1 bit from 011) ✓ │
-│ Sequence: [000, 001, 011, 010]    │
-│                                   │
-│ Next: 110 (differs by 1 bit from 010) ✓ │
-│ Sequence: [000, 001, 011, 010, 110] │
-│                                   │
-│ Next: 111 (differs by 1 bit from 110) ✓ │
-│ Sequence: [000, 001, 011, 010, 110, 111] │
-│                                   │
-│ Next: 101 (differs by 1 bit from 111) ✓ │
-│ Sequence: [000, 001, 011, 010, 110, 111, 101] │
-│                                   │
-│ Next: 100 (differs by 1 bit from 101) ✓ │
-│ Sequence: [000, 001, 011, 010, 110, 111, 101, 100] │
-│                                   │
-│ Final Gray code: [000, 001, 011, 010, 110, 111, 101, 100] │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def brute_force_gray_code(n):
-    """Generate Gray code using brute force approach"""
-    def hamming_distance(a, b):
-        """Calculate Hamming distance between two numbers"""
-        return bin(a ^ b).count('1')
-    
-    def find_gray_code_sequence(numbers, current_sequence, used):
-        """Find Gray code sequence using backtracking"""
-        if len(current_sequence) == len(numbers):
-            return current_sequence
-        
-        last_number = current_sequence[-1] if current_sequence else -1
-        
-        for num in numbers:
-            if not used[num]:
-                if last_number == -1 or hamming_distance(last_number, num) == 1:
-                    used[num] = True
-                    current_sequence.append(num)
-                    
-                    result = find_gray_code_sequence(numbers, current_sequence, used)
-                    if result:
-                        return result
-                    
-                    current_sequence.pop()
-                    used[num] = False
-        
-        return None
-    
-    # Generate all n-bit numbers
-    numbers = list(range(2**n))
-    used = [False] * (2**n)
-    
-    # Find Gray code sequence
-    sequence = find_gray_code_sequence(numbers, [], used)
-    
-    # Convert to binary strings
-    return [format(num, f'0{n}b') for num in sequence]
-
-# Example usage
-n = 3
-result = brute_force_gray_code(n)
-print(f"Brute force Gray code:")
-for code in result:
-    print(code)
-```
-
-**Time Complexity**: O(2^n × n)
-**Space Complexity**: O(2^n)
-
-**Why it's inefficient**: O(2^n × n) time complexity for trying all possible sequences.
+**Explanation:** Each consecutive pair differs by exactly one bit:
+- 000 -> 001 (bit 0 changes)
+- 001 -> 011 (bit 1 changes)
+- 011 -> 010 (bit 0 changes)
+- 010 -> 110 (bit 2 changes)
+- 110 -> 111 (bit 0 changes)
+- 111 -> 101 (bit 1 changes)
+- 101 -> 100 (bit 0 changes)
 
 ---
 
-### Approach 2: Recursive Construction
+## Intuition: How to Think About This Problem
 
-**Key Insights from Recursive Construction**:
-- **Recursive Pattern**: Use recursive construction based on Gray code properties
-- **Efficient Implementation**: O(2^n) time complexity
-- **Mirror Property**: Use the mirror property of Gray codes
-- **Optimization**: Much more efficient than brute force
+### Pattern Recognition
 
-**Key Insight**: Use recursive construction based on the mirror property of Gray codes.
+> **Key Question:** How can we generate a sequence where adjacent values differ by exactly one bit?
 
-**Algorithm**:
-- Base case: 1-bit Gray code is [0, 1]
-- For n-bit Gray code, take (n-1)-bit Gray code
-- Prepend 0 to all codes
-- Prepend 1 to reversed (n-1)-bit Gray code
-- Combine the two lists
+The crucial insight is that **Gray code has a direct mathematical formula**: for any integer `i`, its Gray code is `i ^ (i >> 1)`. This formula naturally produces a sequence where consecutive values differ by exactly one bit.
 
-**Visual Example**:
+### Why Does `i ^ (i >> 1)` Work?
+
+Consider what happens when we go from `i` to `i + 1`:
+- When incrementing, the rightmost 0 bit becomes 1, and all bits to its right (which were 1s) become 0
+- The XOR with the right-shifted value "smooths" this transition, ensuring only one bit changes
+
 ```
-Recursive Construction:
+Example: i = 5 (binary: 101)
+  i     = 101
+  i >> 1 = 010
+  XOR    = 111  (Gray code for 5)
 
-For n = 3:
-┌─────────────────────────────────────┐
-│ Step 1: n = 1                      │
-│ Gray code: [0, 1]                  │
-│                                   │
-│ Step 2: n = 2                      │
-│ Take n-1 = 1 bit Gray code: [0, 1] │
-│                                   │
-│ Prepend 0: [00, 01]               │
-│ Reverse and prepend 1: [11, 10]   │
-│ Combine: [00, 01, 11, 10]         │
-│                                   │
-│ Step 3: n = 3                      │
-│ Take n-1 = 2 bit Gray code: [00, 01, 11, 10] │
-│                                   │
-│ Prepend 0: [000, 001, 011, 010]   │
-│ Reverse and prepend 1: [110, 111, 101, 100] │
-│ Combine: [000, 001, 011, 010, 110, 111, 101, 100] │
-│                                   │
-│ Final 3-bit Gray code:            │
-│ [000, 001, 011, 010, 110, 111, 101, 100] │
-└─────────────────────────────────────┘
+  i = 6 (binary: 110)
+  i     = 110
+  i >> 1 = 011
+  XOR    = 101  (Gray code for 6)
+
+  111 and 101 differ by exactly one bit!
 ```
 
-**Implementation**:
+### Alternative: Mirror Construction
+
+Another way to understand Gray code is through the **mirror property**:
+1. For n=1: [0, 1]
+2. For n bits: Take (n-1)-bit Gray code, prepend 0 to all, then prepend 1 to the reversed sequence
+
+```
+n=1: [0, 1]
+n=2: [00, 01] + [11, 10] = [00, 01, 11, 10]
+n=3: [000, 001, 011, 010] + [110, 111, 101, 100]
+```
+
+---
+
+## Solution 1: XOR Formula (Optimal)
+
+### Key Insight
+
+> **The Trick:** Gray code for integer i is simply `i ^ (i >> 1)`. This O(1) formula generates each code directly.
+
+### Algorithm
+
+1. Loop through all integers from 0 to 2^n - 1
+2. For each integer i, compute Gray code as `i ^ (i >> 1)`
+3. Convert the result to an n-bit binary string
+
+### Dry Run Example
+
+Let's trace through with input `n = 3`:
+
+```
+For n = 3, we generate 2^3 = 8 codes (indices 0 to 7)
+
+i = 0: 0 ^ (0 >> 1) = 0 ^ 0 = 0 = 000
+i = 1: 1 ^ (1 >> 1) = 1 ^ 0 = 1 = 001
+i = 2: 2 ^ (2 >> 1) = 2 ^ 1 = 3 = 011
+i = 3: 3 ^ (3 >> 1) = 3 ^ 1 = 2 = 010
+i = 4: 4 ^ (4 >> 1) = 4 ^ 2 = 6 = 110
+i = 5: 5 ^ (5 >> 1) = 5 ^ 2 = 7 = 111
+i = 6: 6 ^ (6 >> 1) = 6 ^ 3 = 5 = 101
+i = 7: 7 ^ (7 >> 1) = 7 ^ 3 = 4 = 100
+
+Verification (adjacent codes differ by 1 bit):
+000 -> 001: bit 0 flips
+001 -> 011: bit 1 flips
+011 -> 010: bit 0 flips
+010 -> 110: bit 2 flips
+110 -> 111: bit 0 flips
+111 -> 101: bit 1 flips
+101 -> 100: bit 0 flips
+```
+
+### Visual Diagram
+
+```
+Index (i)    Binary    i >> 1    XOR Result    Gray Code
+---------    ------    ------    ----------    ---------
+    0         000        000        000           000
+    1         001        000        001           001
+    2         010        001        011           011
+    3         011        001        010           010
+    4         100        010        110           110
+    5         101        010        111           111
+    6         110        011        101           101
+    7         111        011        100           100
+
+                 XOR operation visualized for i=6:
+
+                   1 1 0   (i = 6)
+                 ^ 0 1 1   (i >> 1 = 3)
+                 -------
+                   1 0 1   (Gray code = 5)
+```
+
+### Code
+
+**Python:**
 ```python
-def recursive_gray_code(n):
-    """Generate Gray code using recursive construction"""
+def solve():
+    n = int(input())
+    for i in range(1 << n):  # 1 << n = 2^n
+        gray = i ^ (i >> 1)
+        print(format(gray, f'0{n}b'))
+
+solve()
+```
+
+**C++:**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+
+    for (int i = 0; i < (1 << n); i++) {
+        int gray = i ^ (i >> 1);
+        for (int j = n - 1; j >= 0; j--) {
+            cout << ((gray >> j) & 1);
+        }
+        cout << '\n';
+    }
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(2^n * n) | 2^n codes, each taking O(n) to print |
+| Space | O(1) | No additional data structures needed |
+
+---
+
+## Solution 2: Recursive Mirror Construction
+
+### Key Insight
+
+> **The Trick:** Build n-bit Gray code by prepending 0 to (n-1)-bit code, then prepending 1 to its reverse.
+
+### Algorithm
+
+1. Base case: 1-bit Gray code is ["0", "1"]
+2. Recursively get (n-1)-bit Gray code
+3. Prepend "0" to all codes
+4. Prepend "1" to reversed codes
+5. Concatenate both lists
+
+### Code
+
+**Python:**
+```python
+def gray_code_recursive(n):
     if n == 1:
         return ['0', '1']
-    
-    # Get (n-1)-bit Gray code
-    prev_gray = recursive_gray_code(n - 1)
-    
-    # Prepend 0 to all codes
-    gray_with_zero = ['0' + code for code in prev_gray]
-    
-    # Prepend 1 to reversed codes
-    gray_with_one = ['1' + code for code in reversed(prev_gray)]
-    
-    # Combine the two lists
-    return gray_with_zero + gray_with_one
 
-# Example usage
-n = 3
-result = recursive_gray_code(n)
-print(f"Recursive Gray code:")
-for code in result:
-    print(code)
+    prev = gray_code_recursive(n - 1)
+
+    # Prepend 0 to original, prepend 1 to reversed
+    return ['0' + code for code in prev] + ['1' + code for code in reversed(prev)]
+
+def solve():
+    n = int(input())
+    for code in gray_code_recursive(n):
+        print(code)
+
+solve()
 ```
 
-**Time Complexity**: O(2^n)
-**Space Complexity**: O(2^n)
+**C++:**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Why it's better**: Uses recursive construction for O(2^n) time complexity.
+vector<string> grayCode(int n) {
+    if (n == 1) {
+        return {"0", "1"};
+    }
+
+    vector<string> prev = grayCode(n - 1);
+    vector<string> result;
+
+    // Prepend 0 to original
+    for (const string& code : prev) {
+        result.push_back("0" + code);
+    }
+
+    // Prepend 1 to reversed
+    for (int i = prev.size() - 1; i >= 0; i--) {
+        result.push_back("1" + prev[i]);
+    }
+
+    return result;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+
+    for (const string& code : grayCode(n)) {
+        cout << code << '\n';
+    }
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(2^n * n) | Building 2^n strings of length n |
+| Space | O(2^n * n) | Storing all Gray code strings |
 
 ---
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+## Common Mistakes
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for Gray code generation
-- **Efficient Implementation**: O(2^n) time complexity
-- **Space Efficiency**: O(2^n) space complexity
-- **Optimal Complexity**: Best approach for Gray code problems
-
-**Key Insight**: Use advanced data structures for optimal Gray code generation.
-
-**Algorithm**:
-- Use specialized data structures for efficient Gray code construction
-- Implement efficient recursive construction
-- Handle special cases optimally
-- Return the Gray code sequence
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For n = 3:
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Advanced Gray code builder: for   │
-│   efficient Gray code construction  │
-│ - Bit manipulator: for optimization │
-│ - Sequence cache: for optimization  │
-│                                   │
-│ Gray code construction:            │
-│ - Use advanced Gray code builder for│
-│   efficient construction           │
-│ - Use bit manipulator for          │
-│   optimization                     │
-│ - Use sequence cache for           │
-│   optimization                     │
-│                                   │
-│ Result: [000, 001, 011, 010, 110, 111, 101, 100] │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def advanced_data_structure_gray_code(n):
-    """Generate Gray code using advanced data structure approach"""
-    
-    def advanced_gray_code_construction(n):
-        """Advanced Gray code construction"""
-        if n == 1:
-            return ['0', '1']
-        
-        # Advanced recursive construction
-        prev_gray = advanced_gray_code_construction(n - 1)
-        
-        # Advanced prepending with optimization
-        gray_with_zero = ['0' + code for code in prev_gray]
-        gray_with_one = ['1' + code for code in reversed(prev_gray)]
-        
-        # Advanced combination
-        return gray_with_zero + gray_with_one
-    
-    return advanced_gray_code_construction(n)
-
-# Example usage
-n = 3
-result = advanced_data_structure_gray_code(n)
-print(f"Advanced data structure Gray code:")
-for code in result:
-    print(code)
-```
-
-**Time Complexity**: O(2^n)
-**Space Complexity**: O(2^n)
-
-**Why it's optimal**: Uses advanced data structures for optimal Gray code generation.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(2^n × n) | O(2^n) | Try all possible sequences with backtracking |
-| Recursive Construction | O(2^n) | O(2^n) | Use recursive construction based on mirror property |
-| Advanced Data Structure | O(2^n) | O(2^n) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(2^n) - Use recursive construction for efficient Gray code generation
-- **Space**: O(2^n) - Store the Gray code sequence
-
-### Why This Solution Works
-- **Recursive Construction**: Use the mirror property of Gray codes
-- **Bit Manipulation**: Efficiently construct Gray codes using bit operations
-- **Pattern Recognition**: Recognize the recursive pattern in Gray code construction
-- **Optimal Algorithms**: Use optimal algorithms for Gray code generation
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Gray Code with Constraints**
-**Problem**: Generate Gray codes with specific constraints.
-
-**Key Differences**: Apply constraints to Gray code generation
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_gray_code(n, constraints):
-    """Generate Gray code with constraints"""
-    
-    def constrained_gray_code_construction(n):
-        """Gray code construction with constraints"""
-        if n == 1:
-            codes = ['0', '1']
-            return [code for code in codes if constraints(code)]
-        
-        prev_gray = constrained_gray_code_construction(n - 1)
-        
-        gray_with_zero = ['0' + code for code in prev_gray]
-        gray_with_one = ['1' + code for code in reversed(prev_gray)]
-        
-        all_codes = gray_with_zero + gray_with_one
-        return [code for code in all_codes if constraints(code)]
-    
-    return constrained_gray_code_construction(n)
-
-# Example usage
-n = 3
-constraints = lambda code: True  # No constraints
-result = constrained_gray_code(n, constraints)
-print(f"Constrained Gray code:")
-for code in result:
-    print(code)
-```
-
-#### **2. Gray Code with Different Metrics**
-**Problem**: Generate Gray codes with different cost metrics.
-
-**Key Differences**: Different cost calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_gray_code(n, weight_function):
-    """Generate Gray code with different cost metrics"""
-    
-    def weighted_gray_code_construction(n):
-        """Gray code construction with weights"""
-        if n == 1:
-            codes = ['0', '1']
-            return [(code, weight_function(code)) for code in codes]
-        
-        prev_gray = weighted_gray_code_construction(n - 1)
-        
-        gray_with_zero = [('0' + code, weight_function('0' + code)) for code, _ in prev_gray]
-        gray_with_one = [('1' + code, weight_function('1' + code)) for code, _ in reversed(prev_gray)]
-        
-        return gray_with_zero + gray_with_one
-    
-    return weighted_gray_code_construction(n)
-
-# Example usage
-n = 3
-weight_function = lambda code: code.count('1')  # Count of 1s as weight
-result = weighted_gray_code(n, weight_function)
-print(f"Weighted Gray code:")
-for code, weight in result:
-    print(f"{code} (weight: {weight})")
-```
-
-#### **3. Gray Code with Multiple Dimensions**
-**Problem**: Generate Gray codes in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_gray_code(n, dimensions):
-    """Generate Gray code in multiple dimensions"""
-    
-    def multi_dimensional_gray_code_construction(n):
-        """Gray code construction for multiple dimensions"""
-        if n == 1:
-            return ['0', '1']
-        
-        prev_gray = multi_dimensional_gray_code_construction(n - 1)
-        
-        gray_with_zero = ['0' + code for code in prev_gray]
-        gray_with_one = ['1' + code for code in reversed(prev_gray)]
-        
-        return gray_with_zero + gray_with_one
-    
-    return multi_dimensional_gray_code_construction(n)
-
-# Example usage
-n = 3
-dimensions = 1
-result = multi_dimensional_gray_code(n, dimensions)
-print(f"Multi-dimensional Gray code:")
-for code in result:
-    print(code)
-```
-
-## Problem Variations
-
-### **Variation 1: Gray Code with Dynamic Updates**
-**Problem**: Handle dynamic Gray code updates (add/remove/update bits) while maintaining valid Gray code sequences.
-
-**Approach**: Use efficient data structures and algorithms for dynamic Gray code management.
+### Mistake 1: Wrong Bit Shift Direction
 
 ```python
-from collections import defaultdict
-import itertools
+# WRONG
+gray = i ^ (i << 1)  # Left shift instead of right shift
 
-class DynamicGrayCode:
-    def __init__(self, n):
-        self.n = n
-        self.gray_codes = []
-        self._generate_gray_codes()
-        self.code_cache = {}
-        self._build_cache()
-    
-    def _generate_gray_codes(self):
-        """Generate Gray codes using recursive construction."""
-        if self.n == 0:
-            self.gray_codes = []
-            return
-        if self.n == 1:
-            self.gray_codes = ['0', '1']
-            return
-        
-        # Recursive construction
-        prev_gray = self._generate_gray_codes_recursive(self.n - 1)
-        
-        # Add 0 prefix to all codes
-        gray_with_zero = ['0' + code for code in prev_gray]
-        # Add 1 prefix to reversed codes
-        gray_with_one = ['1' + code for code in reversed(prev_gray)]
-        
-        self.gray_codes = gray_with_zero + gray_with_one
-    
-    def _generate_gray_codes_recursive(self, n):
-        """Recursive helper for Gray code generation."""
-        if n == 1:
-            return ['0', '1']
-        
-        prev_gray = self._generate_gray_codes_recursive(n - 1)
-        
-        gray_with_zero = ['0' + code for code in prev_gray]
-        gray_with_one = ['1' + code for code in reversed(prev_gray)]
-        
-        return gray_with_zero + gray_with_one
-    
-    def _build_cache(self):
-        """Build cache for efficient Gray code queries."""
-        self.code_cache = {}
-        for i, code in enumerate(self.gray_codes):
-            self.code_cache[i] = {
-                'code': code,
-                'decimal': int(code, 2),
-                'index': i,
-                'length': len(code),
-                'ones_count': code.count('1'),
-                'zeros_count': code.count('0')
-            }
-    
-    def add_bit(self, position=None):
-        """Add a bit at specified position (or at end)."""
-        if position is None:
-            position = self.n
-        
-        self.n += 1
-        self._generate_gray_codes()
-        self._build_cache()
-    
-    def remove_bit(self, position):
-        """Remove bit at specified position."""
-        if 0 <= position < self.n:
-            self.n -= 1
-            self._generate_gray_codes()
-            self._build_cache()
-    
-    def update_bit(self, position, new_value):
-        """Update bit at specified position."""
-        if 0 <= position < self.n:
-            # Rebuild Gray codes with updated bit
-            self._generate_gray_codes()
-            self._build_cache()
-    
-    def get_gray_codes(self):
-        """Get all Gray codes."""
-        return self.gray_codes
-    
-    def get_gray_codes_count(self):
-        """Get count of Gray codes."""
-        return len(self.gray_codes)
-    
-    def get_gray_code_at_index(self, index):
-        """Get Gray code at specified index."""
-        if index in self.code_cache:
-            return self.code_cache[index]
-        return None
-    
-    def get_gray_codes_with_constraints(self, constraint_func):
-        """Get Gray codes that satisfy custom constraints."""
-        result = []
-        for index, info in self.code_cache.items():
-            if constraint_func(info):
-                result.append((index, info))
-        return result
-    
-    def get_gray_codes_in_range(self, start_index, end_index):
-        """Get Gray codes within specified index range."""
-        result = []
-        for index in range(start_index, end_index + 1):
-            if index in self.code_cache:
-                result.append((index, self.code_cache[index]))
-        return result
-    
-    def get_gray_codes_with_pattern(self, pattern_func):
-        """Get Gray codes matching specified pattern."""
-        result = []
-        for index, info in self.code_cache.items():
-            if pattern_func(info):
-                result.append((index, info))
-        return result
-    
-    def get_gray_code_statistics(self):
-        """Get statistics about Gray codes."""
-        if not self.code_cache:
-            return {
-                'total_codes': 0,
-                'average_length': 0,
-                'ones_distribution': {},
-                'zeros_distribution': {}
-            }
-        
-        total_codes = len(self.code_cache)
-        average_length = sum(info['length'] for info in self.code_cache.values()) / total_codes
-        
-        # Calculate ones distribution
-        ones_distribution = defaultdict(int)
-        for info in self.code_cache.values():
-            ones_distribution[info['ones_count']] += 1
-        
-        # Calculate zeros distribution
-        zeros_distribution = defaultdict(int)
-        for info in self.code_cache.values():
-            zeros_distribution[info['zeros_count']] += 1
-        
-        return {
-            'total_codes': total_codes,
-            'average_length': average_length,
-            'ones_distribution': dict(ones_distribution),
-            'zeros_distribution': dict(zeros_distribution)
-        }
-    
-    def get_gray_code_patterns(self):
-        """Get patterns in Gray codes."""
-        patterns = {
-            'palindromic_codes': 0,
-            'alternating_codes': 0,
-            'consecutive_ones': 0,
-            'consecutive_zeros': 0
-        }
-        
-        for info in self.code_cache.values():
-            code = info['code']
-            
-            # Check for palindromic codes
-            if code == code[::-1]:
-                patterns['palindromic_codes'] += 1
-            
-            # Check for alternating codes
-            alternating = True
-            for i in range(1, len(code)):
-                if code[i] == code[i-1]:
-                    alternating = False
-                    break
-            if alternating:
-                patterns['alternating_codes'] += 1
-            
-            # Check for consecutive ones
-            if '11' in code:
-                patterns['consecutive_ones'] += 1
-            
-            # Check for consecutive zeros
-            if '00' in code:
-                patterns['consecutive_zeros'] += 1
-        
-        return patterns
-    
-    def get_optimal_gray_code_strategy(self):
-        """Get optimal strategy for Gray code operations."""
-        if not self.code_cache:
-            return {
-                'recommended_strategy': 'none',
-                'efficiency_rate': 0,
-                'uniqueness_rate': 0
-            }
-        
-        # Calculate efficiency rate
-        total_possible = 2 ** self.n
-        efficiency_rate = len(self.code_cache) / total_possible if total_possible > 0 else 0
-        
-        # Calculate uniqueness rate
-        unique_codes = len(set(info['code'] for info in self.code_cache.values()))
-        uniqueness_rate = unique_codes / len(self.code_cache) if self.code_cache else 0
-        
-        # Determine recommended strategy
-        if efficiency_rate > 0.5:
-            recommended_strategy = 'recursive_optimal'
-        elif uniqueness_rate > 0.9:
-            recommended_strategy = 'cache_based'
-        else:
-            recommended_strategy = 'brute_force'
-        
-        return {
-            'recommended_strategy': recommended_strategy,
-            'efficiency_rate': efficiency_rate,
-            'uniqueness_rate': uniqueness_rate
-        }
-
-# Example usage
-n = 3
-dynamic_gray = DynamicGrayCode(n)
-print(f"Initial Gray codes count: {dynamic_gray.get_gray_codes_count()}")
-
-# Add bit
-dynamic_gray.add_bit()
-print(f"After adding bit: {dynamic_gray.get_gray_codes_count()}")
-
-# Remove bit
-dynamic_gray.remove_bit(0)
-print(f"After removing bit at position 0: {dynamic_gray.get_gray_codes_count()}")
-
-# Update bit
-dynamic_gray.update_bit(1, '1')
-print(f"After updating bit at position 1: {dynamic_gray.get_gray_codes_count()}")
-
-# Get Gray code at index
-print(f"Gray code at index 2: {dynamic_gray.get_gray_code_at_index(2)}")
-
-# Get Gray codes with constraints
-def constraint_func(info):
-    return info['ones_count'] > 1
-
-print(f"Gray codes with > 1 ones: {len(dynamic_gray.get_gray_codes_with_constraints(constraint_func))}")
-
-# Get Gray codes in range
-print(f"Gray codes in range 0-3: {len(dynamic_gray.get_gray_codes_in_range(0, 3))}")
-
-# Get Gray codes with pattern
-def pattern_func(info):
-    return info['code'].startswith('1')
-
-print(f"Gray codes starting with '1': {len(dynamic_gray.get_gray_codes_with_pattern(pattern_func))}")
-
-# Get statistics
-print(f"Statistics: {dynamic_gray.get_gray_code_statistics()}")
-
-# Get patterns
-print(f"Patterns: {dynamic_gray.get_gray_code_patterns()}")
-
-# Get optimal strategy
-print(f"Optimal strategy: {dynamic_gray.get_optimal_gray_code_strategy()}")
+# CORRECT
+gray = i ^ (i >> 1)  # Right shift
 ```
 
-### **Variation 2: Gray Code with Different Operations**
-**Problem**: Handle different types of Gray code operations (weighted bits, priority-based selection, advanced constraints).
+**Problem:** Left shift produces incorrect results; the formula specifically requires right shift.
+**Fix:** Always use right shift (`>>`) in the Gray code formula.
 
-**Approach**: Use advanced data structures for efficient different types of Gray code operations.
+### Mistake 2: Incorrect Binary Padding
 
 ```python
-class AdvancedGrayCode:
-    def __init__(self, n, weights=None, priorities=None):
-        self.n = n
-        self.weights = weights or {i: 1 for i in range(n)}
-        self.priorities = priorities or {i: 1 for i in range(n)}
-        self.gray_codes = []
-        self._generate_gray_codes()
-        self.code_cache = {}
-        self._build_cache()
-    
-    def _generate_gray_codes(self):
-        """Generate Gray codes using advanced algorithms."""
-        if self.n == 0:
-            self.gray_codes = []
-            return
-        if self.n == 1:
-            self.gray_codes = ['0', '1']
-            return
-        
-        # Recursive construction
-        prev_gray = self._generate_gray_codes_recursive(self.n - 1)
-        
-        # Add 0 prefix to all codes
-        gray_with_zero = ['0' + code for code in prev_gray]
-        # Add 1 prefix to reversed codes
-        gray_with_one = ['1' + code for code in reversed(prev_gray)]
-        
-        self.gray_codes = gray_with_zero + gray_with_one
-    
-    def _generate_gray_codes_recursive(self, n):
-        """Recursive helper for Gray code generation."""
-        if n == 1:
-            return ['0', '1']
-        
-        prev_gray = self._generate_gray_codes_recursive(n - 1)
-        
-        gray_with_zero = ['0' + code for code in prev_gray]
-        gray_with_one = ['1' + code for code in reversed(prev_gray)]
-        
-        return gray_with_zero + gray_with_one
-    
-    def _build_cache(self):
-        """Build cache for efficient Gray code queries with weights and priorities."""
-        self.code_cache = {}
-        for i, code in enumerate(self.gray_codes):
-            total_weight = sum(self.weights[j] for j in range(len(code)) if code[j] == '1')
-            total_priority = sum(self.priorities[j] for j in range(len(code)) if code[j] == '1')
-            
-            self.code_cache[i] = {
-                'code': code,
-                'decimal': int(code, 2),
-                'index': i,
-                'length': len(code),
-                'ones_count': code.count('1'),
-                'zeros_count': code.count('0'),
-                'total_weight': total_weight,
-                'total_priority': total_priority,
-                'weighted_score': total_weight * total_priority
-            }
-    
-    def get_gray_codes(self):
-        """Get current Gray codes."""
-        return self.gray_codes
-    
-    def get_weighted_gray_codes(self):
-        """Get Gray codes with weights and priorities applied."""
-        result = []
-        for index, info in self.code_cache.items():
-            weighted_code = {
-                'code': info['code'],
-                'decimal': info['decimal'],
-                'index': info['index'],
-                'total_weight': info['total_weight'],
-                'total_priority': info['total_priority'],
-                'weighted_score': info['weighted_score']
-            }
-            result.append(weighted_code)
-        return result
-    
-    def get_gray_codes_with_priority(self, priority_func):
-        """Get Gray codes considering priority."""
-        result = []
-        for index, info in self.code_cache.items():
-            priority = priority_func(info)
-            result.append((index, info, priority))
-        
-        # Sort by priority
-        result.sort(key=lambda x: x[2], reverse=True)
-        return result
-    
-    def get_gray_codes_with_optimization(self, optimization_func):
-        """Get Gray codes using custom optimization function."""
-        result = []
-        for index, info in self.code_cache.items():
-            score = optimization_func(info)
-            result.append((index, info, score))
-        
-        # Sort by optimization score
-        result.sort(key=lambda x: x[2], reverse=True)
-        return result
-    
-    def get_gray_codes_with_constraints(self, constraint_func):
-        """Get Gray codes that satisfy custom constraints."""
-        result = []
-        for index, info in self.code_cache.items():
-            if constraint_func(info):
-                result.append((index, info))
-        return result
-    
-    def get_gray_codes_with_multiple_criteria(self, criteria_list):
-        """Get Gray codes that satisfy multiple criteria."""
-        result = []
-        for index, info in self.code_cache.items():
-            satisfies_all_criteria = True
-            for criterion in criteria_list:
-                if not criterion(info):
-                    satisfies_all_criteria = False
-                    break
-            if satisfies_all_criteria:
-                result.append((index, info))
-        return result
-    
-    def get_gray_codes_with_alternatives(self, alternatives):
-        """Get Gray codes considering alternative weights/priorities."""
-        result = []
-        
-        # Check original Gray codes
-        for index, info in self.code_cache.items():
-            result.append((index, info, 'original'))
-        
-        # Check alternative weights/priorities
-        for alt_weights, alt_priorities in alternatives:
-            # Create temporary instance with alternative weights/priorities
-            temp_instance = AdvancedGrayCode(self.n, alt_weights, alt_priorities)
-            temp_cache = temp_instance.code_cache
-            result.append((temp_cache, f'alternative_{alt_weights}_{alt_priorities}'))
-        
-        return result
-    
-    def get_gray_codes_with_adaptive_criteria(self, adaptive_func):
-        """Get Gray codes using adaptive criteria."""
-        result = []
-        for index, info in self.code_cache.items():
-            if adaptive_func(info, result):
-                result.append((index, info))
-        return result
-    
-    def get_gray_code_optimization(self):
-        """Get optimal Gray code configuration."""
-        strategies = [
-            ('gray_codes', lambda: len(self.gray_codes)),
-            ('weighted_gray_codes', lambda: len(self.get_weighted_gray_codes())),
-            ('total_weight', lambda: sum(self.weights.values())),
-        ]
-        
-        best_strategy = None
-        best_value = 0
-        
-        for strategy_name, strategy_func in strategies:
-            current_value = strategy_func()
-            if current_value > best_value:
-                best_value = current_value
-                best_strategy = (strategy_name, current_value)
-        
-        return best_strategy
+# WRONG
+print(bin(gray)[2:])  # Missing leading zeros
 
-# Example usage
-n = 3
-weights = {i: i + 1 for i in range(n)}  # Higher positions have higher weights
-priorities = {i: n - i for i in range(n)}  # Lower positions have higher priority
-advanced_gray = AdvancedGrayCode(n, weights, priorities)
-
-print(f"Gray codes: {len(advanced_gray.get_gray_codes())}")
-print(f"Weighted Gray codes: {len(advanced_gray.get_weighted_gray_codes())}")
-
-# Get Gray codes with priority
-def priority_func(info):
-    return info['total_priority'] + info['total_weight']
-
-print(f"Gray codes with priority: {len(advanced_gray.get_gray_codes_with_priority(priority_func))}")
-
-# Get Gray codes with optimization
-def optimization_func(info):
-    return info['weighted_score'] + info['ones_count']
-
-print(f"Gray codes with optimization: {len(advanced_gray.get_gray_codes_with_optimization(optimization_func))}")
-
-# Get Gray codes with constraints
-def constraint_func(info):
-    return info['ones_count'] > 1 and info['total_weight'] > 3
-
-print(f"Gray codes with constraints: {len(advanced_gray.get_gray_codes_with_constraints(constraint_func))}")
-
-# Get Gray codes with multiple criteria
-def criterion1(info):
-    return info['ones_count'] > 1
-
-def criterion2(info):
-    return info['total_weight'] > 3
-
-criteria_list = [criterion1, criterion2]
-print(f"Gray codes with multiple criteria: {len(advanced_gray.get_gray_codes_with_multiple_criteria(criteria_list))}")
-
-# Get Gray codes with alternatives
-alternatives = [({i: 1 for i in range(n)}, {i: 1 for i in range(n)}), ({i: i*2 for i in range(n)}, {i: i+1 for i in range(n)})]
-print(f"Gray codes with alternatives: {len(advanced_gray.get_gray_codes_with_alternatives(alternatives))}")
-
-# Get Gray codes with adaptive criteria
-def adaptive_func(info, current_result):
-    return info['ones_count'] > 1 and len(current_result) < 10
-
-print(f"Gray codes with adaptive criteria: {len(advanced_gray.get_gray_codes_with_adaptive_criteria(adaptive_func))}")
-
-# Get Gray code optimization
-print(f"Gray code optimization: {advanced_gray.get_gray_code_optimization()}")
+# CORRECT
+print(format(gray, f'0{n}b'))  # Properly padded to n bits
 ```
 
-### **Variation 3: Gray Code with Constraints**
-**Problem**: Handle Gray codes with additional constraints (length limits, bit constraints, pattern constraints).
+**Problem:** Without padding, codes like 1 print as "1" instead of "001" for n=3.
+**Fix:** Use format specifier to ensure n-bit output.
 
-**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+### Mistake 3: Off-by-One in Loop Range
 
 ```python
-class ConstrainedGrayCode:
-    def __init__(self, n, constraints=None):
-        self.n = n
-        self.constraints = constraints or {}
-        self.gray_codes = []
-        self._generate_gray_codes()
-        self.code_cache = {}
-        self._build_cache()
-    
-    def _generate_gray_codes(self):
-        """Generate Gray codes considering constraints."""
-        if self.n == 0:
-            self.gray_codes = []
-            return
-        if self.n == 1:
-            self.gray_codes = ['0', '1']
-            return
-        
-        # Recursive construction
-        prev_gray = self._generate_gray_codes_recursive(self.n - 1)
-        
-        # Add 0 prefix to all codes
-        gray_with_zero = ['0' + code for code in prev_gray]
-        # Add 1 prefix to reversed codes
-        gray_with_one = ['1' + code for code in reversed(prev_gray)]
-        
-        self.gray_codes = gray_with_zero + gray_with_one
-    
-    def _generate_gray_codes_recursive(self, n):
-        """Recursive helper for Gray code generation."""
-        if n == 1:
-            return ['0', '1']
-        
-        prev_gray = self._generate_gray_codes_recursive(n - 1)
-        
-        gray_with_zero = ['0' + code for code in prev_gray]
-        gray_with_one = ['1' + code for code in reversed(prev_gray)]
-        
-        return gray_with_zero + gray_with_one
-    
-    def _build_cache(self):
-        """Build cache for efficient Gray code queries considering constraints."""
-        self.code_cache = {}
-        for i, code in enumerate(self.gray_codes):
-            info = {
-                'code': code,
-                'decimal': int(code, 2),
-                'index': i,
-                'length': len(code),
-                'ones_count': code.count('1'),
-                'zeros_count': code.count('0')
-            }
-            
-            if self._is_valid_gray_code(info):
-                self.code_cache[i] = info
-    
-    def _is_valid_gray_code(self, info):
-        """Check if a Gray code is valid considering constraints."""
-        # Length constraints
-        if 'min_length' in self.constraints:
-            if info['length'] < self.constraints['min_length']:
-                return False
-        
-        if 'max_length' in self.constraints:
-            if info['length'] > self.constraints['max_length']:
-                return False
-        
-        # Ones count constraints
-        if 'min_ones_count' in self.constraints:
-            if info['ones_count'] < self.constraints['min_ones_count']:
-                return False
-        
-        if 'max_ones_count' in self.constraints:
-            if info['ones_count'] > self.constraints['max_ones_count']:
-                return False
-        
-        # Zeros count constraints
-        if 'min_zeros_count' in self.constraints:
-            if info['zeros_count'] < self.constraints['min_zeros_count']:
-                return False
-        
-        if 'max_zeros_count' in self.constraints:
-            if info['zeros_count'] > self.constraints['max_zeros_count']:
-                return False
-        
-        # Pattern constraints
-        if 'forbidden_patterns' in self.constraints:
-            for pattern in self.constraints['forbidden_patterns']:
-                if pattern in info['code']:
-                    return False
-        
-        if 'required_patterns' in self.constraints:
-            for pattern in self.constraints['required_patterns']:
-                if pattern not in info['code']:
-                    return False
-        
-        # Decimal constraints
-        if 'min_decimal' in self.constraints:
-            if info['decimal'] < self.constraints['min_decimal']:
-                return False
-        
-        if 'max_decimal' in self.constraints:
-            if info['decimal'] > self.constraints['max_decimal']:
-                return False
-        
-        return True
-    
-    def get_gray_codes_with_length_constraints(self, min_length, max_length):
-        """Get Gray codes considering length constraints."""
-        result = []
-        for index, info in self.code_cache.items():
-            if min_length <= info['length'] <= max_length:
-                result.append((index, info))
-        return result
-    
-    def get_gray_codes_with_ones_constraints(self, min_ones, max_ones):
-        """Get Gray codes considering ones count constraints."""
-        result = []
-        for index, info in self.code_cache.items():
-            if min_ones <= info['ones_count'] <= max_ones:
-                result.append((index, info))
-        return result
-    
-    def get_gray_codes_with_zeros_constraints(self, min_zeros, max_zeros):
-        """Get Gray codes considering zeros count constraints."""
-        result = []
-        for index, info in self.code_cache.items():
-            if min_zeros <= info['zeros_count'] <= max_zeros:
-                result.append((index, info))
-        return result
-    
-    def get_gray_codes_with_pattern_constraints(self, pattern_constraints):
-        """Get Gray codes considering pattern constraints."""
-        result = []
-        for index, info in self.code_cache.items():
-            satisfies_constraints = True
-            for constraint in pattern_constraints:
-                if not constraint(info):
-                    satisfies_constraints = False
-                    break
-            if satisfies_constraints:
-                result.append((index, info))
-        return result
-    
-    def get_gray_codes_with_decimal_constraints(self, min_decimal, max_decimal):
-        """Get Gray codes considering decimal constraints."""
-        result = []
-        for index, info in self.code_cache.items():
-            if min_decimal <= info['decimal'] <= max_decimal:
-                result.append((index, info))
-        return result
-    
-    def get_gray_codes_with_mathematical_constraints(self, constraint_func):
-        """Get Gray codes that satisfy custom mathematical constraints."""
-        result = []
-        for index, info in self.code_cache.items():
-            if constraint_func(info):
-                result.append((index, info))
-        return result
-    
-    def get_gray_codes_with_range_constraints(self, range_constraints):
-        """Get Gray codes that satisfy range constraints."""
-        result = []
-        for index, info in self.code_cache.items():
-            satisfies_constraints = True
-            for constraint in range_constraints:
-                if not constraint(info):
-                    satisfies_constraints = False
-                    break
-            if satisfies_constraints:
-                result.append((index, info))
-        return result
-    
-    def get_gray_codes_with_optimization_constraints(self, optimization_func):
-        """Get Gray codes using custom optimization constraints."""
-        # Sort Gray codes by optimization function
-        all_codes = []
-        for index, info in self.code_cache.items():
-            score = optimization_func(info)
-            all_codes.append((index, info, score))
-        
-        # Sort by optimization score
-        all_codes.sort(key=lambda x: x[2], reverse=True)
-        
-        return [(index, info) for index, info, _ in all_codes]
-    
-    def get_gray_codes_with_multiple_constraints(self, constraints_list):
-        """Get Gray codes that satisfy multiple constraints."""
-        result = []
-        for index, info in self.code_cache.items():
-            satisfies_all_constraints = True
-            for constraint in constraints_list:
-                if not constraint(info):
-                    satisfies_all_constraints = False
-                    break
-            if satisfies_all_constraints:
-                result.append((index, info))
-        return result
-    
-    def get_gray_codes_with_priority_constraints(self, priority_func):
-        """Get Gray codes with priority-based constraints."""
-        # Sort Gray codes by priority
-        all_codes = []
-        for index, info in self.code_cache.items():
-            priority = priority_func(info)
-            all_codes.append((index, info, priority))
-        
-        # Sort by priority
-        all_codes.sort(key=lambda x: x[2], reverse=True)
-        
-        return [(index, info) for index, info, _ in all_codes]
-    
-    def get_gray_codes_with_adaptive_constraints(self, adaptive_func):
-        """Get Gray codes with adaptive constraints."""
-        result = []
-        for index, info in self.code_cache.items():
-            if adaptive_func(info, result):
-                result.append((index, info))
-        return result
-    
-    def get_optimal_gray_code_strategy(self):
-        """Get optimal Gray code strategy considering all constraints."""
-        strategies = [
-            ('length_constraints', self.get_gray_codes_with_length_constraints),
-            ('ones_constraints', self.get_gray_codes_with_ones_constraints),
-            ('zeros_constraints', self.get_gray_codes_with_zeros_constraints),
-        ]
-        
-        best_strategy = None
-        best_count = 0
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                if strategy_name == 'length_constraints':
-                    current_count = len(strategy_func(1, self.n))
-                elif strategy_name == 'ones_constraints':
-                    current_count = len(strategy_func(0, self.n))
-                elif strategy_name == 'zeros_constraints':
-                    current_count = len(strategy_func(0, self.n))
-                
-                if current_count > best_count:
-                    best_count = current_count
-                    best_strategy = (strategy_name, current_count)
-            except:
-                continue
-        
-        return best_strategy
+# WRONG
+for i in range(2**n - 1):  # Missing the last code
 
-# Example usage
-constraints = {
-    'min_length': 2,
-    'max_length': 4,
-    'min_ones_count': 1,
-    'max_ones_count': 3,
-    'min_zeros_count': 0,
-    'max_zeros_count': 3,
-    'forbidden_patterns': ['111'],
-    'required_patterns': ['01'],
-    'min_decimal': 0,
-    'max_decimal': 15
+# CORRECT
+for i in range(2**n):  # Or equivalently: range(1 << n)
+```
+
+**Problem:** Missing the last Gray code in the sequence.
+**Fix:** Loop should cover all 2^n values from 0 to 2^n - 1.
+
+### Mistake 4: Printing Bits in Wrong Order (C++)
+
+```cpp
+// WRONG - prints bits in reverse order
+for (int j = 0; j < n; j++) {
+    cout << ((gray >> j) & 1);
 }
 
-n = 3
-constrained_gray = ConstrainedGrayCode(n, constraints)
-
-print("Length-constrained Gray codes:", len(constrained_gray.get_gray_codes_with_length_constraints(2, 3)))
-
-print("Ones-constrained Gray codes:", len(constrained_gray.get_gray_codes_with_ones_constraints(1, 2)))
-
-print("Zeros-constrained Gray codes:", len(constrained_gray.get_gray_codes_with_zeros_constraints(0, 2)))
-
-print("Pattern-constrained Gray codes:", len(constrained_gray.get_gray_codes_with_pattern_constraints([lambda info: '01' in info['code']])))
-
-print("Decimal-constrained Gray codes:", len(constrained_gray.get_gray_codes_with_decimal_constraints(0, 7)))
-
-# Mathematical constraints
-def custom_constraint(info):
-    return info['ones_count'] > 1 and info['decimal'] % 2 == 0
-
-print("Mathematical constraint Gray codes:", len(constrained_gray.get_gray_codes_with_mathematical_constraints(custom_constraint)))
-
-# Range constraints
-def range_constraint(info):
-    return 1 <= info['ones_count'] <= 2
-
-range_constraints = [range_constraint]
-print("Range-constrained Gray codes:", len(constrained_gray.get_gray_codes_with_range_constraints(range_constraints)))
-
-# Multiple constraints
-def constraint1(info):
-    return info['ones_count'] > 1
-
-def constraint2(info):
-    return info['decimal'] % 2 == 0
-
-constraints_list = [constraint1, constraint2]
-print("Multiple constraints Gray codes:", len(constrained_gray.get_gray_codes_with_multiple_constraints(constraints_list)))
-
-# Priority constraints
-def priority_func(info):
-    return info['ones_count'] + info['decimal']
-
-print("Priority-constrained Gray codes:", len(constrained_gray.get_gray_codes_with_priority_constraints(priority_func)))
-
-# Adaptive constraints
-def adaptive_func(info, current_result):
-    return info['ones_count'] > 1 and len(current_result) < 5
-
-print("Adaptive constraint Gray codes:", len(constrained_gray.get_gray_codes_with_adaptive_constraints(adaptive_func)))
-
-# Optimal strategy
-optimal = constrained_gray.get_optimal_gray_code_strategy()
-print(f"Optimal strategy: {optimal}")
+// CORRECT - prints MSB first
+for (int j = n - 1; j >= 0; j--) {
+    cout << ((gray >> j) & 1);
+}
 ```
 
-### Related Problems
+---
 
-#### **CSES Problems**
-- [Bit Strings](https://cses.fi/problemset/task/1075)s
-- [Creating Strings](https://cses.fi/problemset/task/1075)s
-- [Permutations](https://cses.fi/problemset/task/1075)s
+## Edge Cases
 
-#### **LeetCode Problems**
-- [Gray Code](https://leetcode.com/problems/gray-code/) - Backtracking
-- [Subsets](https://leetcode.com/problems/subsets/) - Backtracking
-- [Subsets II](https://leetcode.com/problems/subsets-ii/) - Backtracking
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Minimum n | n = 1 | `0` then `1` | Simplest Gray code |
+| Power of 2 codes | n = 2 | 4 codes | 00, 01, 11, 10 |
+| Maximum n | n = 16 | 65536 codes | Tests efficiency |
+| Single bit change | Any n | Adjacent differ by 1 bit | Core Gray code property |
 
-#### **Problem Categories**
-- **Introductory Problems**: Bit manipulation, Gray code generation
-- **Bit Manipulation**: Gray codes, binary representation
-- **Recursion**: Recursive construction, pattern recognition
+---
 
-## 🔗 Additional Resources
+## When to Use This Pattern
 
-### **Algorithm References**
-- [Introductory Problems](https://cp-algorithms.com/intro-to-algorithms.html) - Introductory algorithms
-- [Bit Manipulation](https://cp-algorithms.com/algebra/bit-manipulation.html) - Bit manipulation
-- [Gray Code](https://cp-algorithms.com/combinatorics/generating_combinations.html) - Gray code generation
+### Use This Approach When:
+- Generating sequences where adjacent elements differ minimally
+- Encoding data for error reduction in transmission
+- Solving Hamiltonian path problems on hypercubes
+- Tower of Hanoi variations
 
-### **Practice Problems**
-- [CSES Bit Strings](https://cses.fi/problemset/task/1075) - Easy
-- [CSES Creating Strings](https://cses.fi/problemset/task/1075) - Easy
-- [CSES Permutations](https://cses.fi/problemset/task/1075) - Easy
+### Don't Use When:
+- Standard binary representation is required
+- Order of bits must follow natural binary ordering
+- Problem requires different adjacency constraints
 
-### **Further Reading**
-- [Gray Code](https://en.wikipedia.org/wiki/Gray_code) - Wikipedia article
-- [Bit Manipulation](https://en.wikipedia.org/wiki/Bit_manipulation) - Wikipedia article
-- [Binary Number](https://en.wikipedia.org/wiki/Binary_number) - Wikipedia article
+### Pattern Recognition Checklist:
+- [ ] Need sequence where neighbors differ by exactly 1 bit? -> **Gray code**
+- [ ] Need to enumerate subsets in minimal-change order? -> **Gray code**
+- [ ] Need Hamiltonian path on n-dimensional hypercube? -> **Gray code**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Bit Strings](https://cses.fi/problemset/task/1617) | Basic bit counting |
+| [Two Sets](https://cses.fi/problemset/task/1092) | Understanding binary subsets |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Gray Code (LeetCode 89)](https://leetcode.com/problems/gray-code/) | Same concept, return as integers |
+| [Circular Permutation](https://leetcode.com/problems/circular-permutation-in-binary-representation/) | Gray code with specific starting point |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Creating Strings](https://cses.fi/problemset/task/1622) | Permutation generation |
+| [Apple Division](https://cses.fi/problemset/task/1623) | Subset enumeration with optimization |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Gray code for integer i is `i ^ (i >> 1)` - a simple XOR operation
+2. **Time Optimization:** Direct formula gives O(1) per code vs O(2^n) backtracking
+3. **Space Trade-off:** XOR approach uses O(1) space; recursive uses O(2^n)
+4. **Pattern:** This belongs to the "bit manipulation" pattern family
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Write the XOR formula from memory: `i ^ (i >> 1)`
+- [ ] Explain why adjacent Gray codes differ by exactly one bit
+- [ ] Implement both iterative and recursive solutions
+- [ ] Handle proper binary string formatting with leading zeros
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Gray Code](https://cp-algorithms.com/algebra/gray-code.html)
+- [Wikipedia: Gray Code](https://en.wikipedia.org/wiki/Gray_code)
+- [CSES Problem Set](https://cses.fi/problemset/)

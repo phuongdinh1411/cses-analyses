@@ -2,879 +2,441 @@
 layout: simple
 title: "Point in Polygon - Geometry Problem"
 permalink: /problem_soulutions/geometry/point_in_polygon_analysis
+difficulty: Medium
+tags: [geometry, ray-casting, cross-product, computational-geometry]
 ---
 
 # Point in Polygon
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of point-in-polygon testing in computational geometry
-- Apply geometric algorithms for point containment
-- Implement efficient algorithms for point-in-polygon testing
-- Optimize geometric operations for containment analysis
-- Handle special cases in point-in-polygon problems
+| Attribute | Value |
+|-----------|-------|
+| **CSES Link** | [Point in Polygon](https://cses.fi/problemset/task/2192) |
+| **Difficulty** | Medium |
+| **Category** | Geometry |
+| **Time Limit** | 1 second |
+| **Key Technique** | Ray Casting Algorithm |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a polygon and a point, determine if the point lies inside, outside, or on the boundary of the polygon.
+After solving this problem, you will be able to:
+- [ ] Understand the ray casting algorithm for point-in-polygon testing
+- [ ] Use cross products to determine point position relative to a line
+- [ ] Handle boundary cases (point on edge, point on vertex)
+- [ ] Apply computational geometry techniques to containment problems
 
-**Input**: 
-- n: number of polygon vertices
-- polygon: array of polygon vertices (x, y coordinates)
-- point: query point (x, y)
+---
 
-**Output**: 
-- "INSIDE", "OUTSIDE", or "BOUNDARY"
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 1000
-- -10^6 ≤ coordinates ≤ 10^6
+**Problem:** Given a polygon with n vertices and m query points, determine whether each point is inside, outside, or on the boundary of the polygon.
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and m (number of vertices, number of queries)
+- Next n lines: Vertices (x, y) of the polygon in order
+- Next m lines: Query points (x, y)
+
+**Output:**
+- For each query point: "INSIDE", "OUTSIDE", or "BOUNDARY"
+
+**Constraints:**
+- 3 <= n, m <= 1000
+- -10^9 <= x, y <= 10^9
+- All coordinates are integers
+
+### Example
+
 ```
 Input:
-n = 4
-polygon = [(0,0), (2,0), (2,2), (0,2)]
-point = (1,1)
+4 3
+0 0
+4 0
+4 4
+0 4
+2 2
+0 2
+5 5
 
 Output:
 INSIDE
-
-Explanation**: 
-Point (1,1) lies inside the square polygon
+BOUNDARY
+OUTSIDE
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all polygon edges
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use ray casting for each edge
-- **Inefficient**: O(n) time complexity per query
-
-**Key Insight**: Check all polygon edges to determine point containment.
-
-**Algorithm**:
-- Cast ray from point to infinity
-- Count intersections with polygon edges
-- Determine containment based on intersection count
-- Return result
-
-**Visual Example**:
-```
-Polygon: [(0,0), (2,0), (2,2), (0,2)]
-Point: (1,1)
-
-Ray casting:
-┌─────────────────────────────────────┐
-│ Cast ray from (1,1) to right:      │
-│ - Intersects edge (2,0)-(2,2): ✓   │
-│ - No other intersections           │
-│                                   │
-│ Intersection count: 1 (odd)       │
-│ Result: INSIDE                     │
-│                                   │
-│ Alternative ray to left:           │
-│ - Intersects edge (0,0)-(0,2): ✓   │
-│ - No other intersections           │
-│                                   │
-│ Intersection count: 1 (odd)       │
-│ Result: INSIDE                     │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def brute_force_point_in_polygon(n, polygon, point):
-    """
-    Test point in polygon using brute force approach
-    
-    Args:
-        n: number of polygon vertices
-        polygon: list of polygon vertices (x, y)
-        point: query point (x, y)
-    
-    Returns:
-        str: "INSIDE", "OUTSIDE", or "BOUNDARY"
-    """
-    def ray_intersects_segment(point, edge_start, edge_end):
-        """Check if ray from point intersects edge"""
-        px, py = point
-        x1, y1 = edge_start
-        x2, y2 = edge_end
-        
-        # Check if point is on the edge
-        if min(x1, x2) <= px <= max(x1, x2) and min(y1, y2) <= py <= max(y1, y2):
-            # Check if point is on the line
-            if abs((y2 - y1) * (px - x1) - (x2 - x1) * (py - y1)) < 1e-9:
-                return "BOUNDARY"
-        
-        # Check if ray intersects edge
-        if y1 > y2:
-            x1, y1, x2, y2 = x2, y2, x1, y1
-        
-        if py < y1 or py >= y2:
-            return False
-        
-        if x1 == x2:
-            return px <= x1
-        
-        x_intersect = x1 + (py - y1) * (x2 - x1) / (y2 - y1)
-        return px <= x_intersect
-    
-    # Check if point is on any edge
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        result = ray_intersects_segment(point, edge_start, edge_end)
-        if result == "BOUNDARY":
-            return "BOUNDARY"
-    
-    # Count intersections with ray to the right
-    intersection_count = 0
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        if ray_intersects_segment(point, edge_start, edge_end):
-            intersection_count += 1
-    
-    # Determine containment
-    if intersection_count % 2 == 1:
-        return "INSIDE"
-    else:
-        return "OUTSIDE"
-
-def brute_force_point_in_polygon_optimized(n, polygon, point):
-    """
-    Optimized brute force point in polygon testing
-    
-    Args:
-        n: number of polygon vertices
-        polygon: list of polygon vertices (x, y)
-        point: query point (x, y)
-    
-    Returns:
-        str: "INSIDE", "OUTSIDE", or "BOUNDARY"
-    """
-    def ray_intersects_segment_optimized(point, edge_start, edge_end):
-        """Check if ray from point intersects edge with optimization"""
-        px, py = point
-        x1, y1 = edge_start
-        x2, y2 = edge_end
-        
-        # Check if point is on the edge with optimization
-        if min(x1, x2) <= px <= max(x1, x2) and min(y1, y2) <= py <= max(y1, y2):
-            if abs((y2 - y1) * (px - x1) - (x2 - x1) * (py - y1)) < 1e-9:
-                return "BOUNDARY"
-        
-        # Check if ray intersects edge with optimization
-        if y1 > y2:
-            x1, y1, x2, y2 = x2, y2, x1, y1
-        
-        if py < y1 or py >= y2:
-            return False
-        
-        if x1 == x2:
-            return px <= x1
-        
-        x_intersect = x1 + (py - y1) * (x2 - x1) / (y2 - y1)
-        return px <= x_intersect
-    
-    # Check if point is on any edge with optimization
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        result = ray_intersects_segment_optimized(point, edge_start, edge_end)
-        if result == "BOUNDARY":
-            return "BOUNDARY"
-    
-    # Count intersections with ray to the right with optimization
-    intersection_count = 0
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        if ray_intersects_segment_optimized(point, edge_start, edge_end):
-            intersection_count += 1
-    
-    # Determine containment with optimization
-    if intersection_count % 2 == 1:
-        return "INSIDE"
-    else:
-        return "OUTSIDE"
-
-# Example usage
-n = 4
-polygon = [(0, 0), (2, 0), (2, 2), (0, 2)]
-point = (1, 1)
-result1 = brute_force_point_in_polygon(n, polygon, point)
-result2 = brute_force_point_in_polygon_optimized(n, polygon, point)
-print(f"Brute force point in polygon: {result1}")
-print(f"Optimized brute force point in polygon: {result2}")
-```
-
-**Time Complexity**: O(n)
-**Space Complexity**: O(1)
-
-**Why it's inefficient**: O(n) time complexity for each query.
+**Explanation:**
+- Point (2,2) is inside the square
+- Point (0,2) lies on the left edge
+- Point (5,5) is outside the polygon
 
 ---
 
-### Approach 2: Optimized Ray Casting Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Ray Casting Solution**:
-- **Optimized Ray Casting**: Use optimized ray casting algorithm
-- **Efficient Implementation**: Optimize intersection calculations
-- **Better Performance**: Improved constant factors
-- **Optimization**: More efficient than brute force
+### Pattern Recognition
 
-**Key Insight**: Use optimized ray casting for better performance.
+> **Key Question:** How can we determine if a point is inside a polygon without checking infinitely many interior points?
 
-**Algorithm**:
-- Use optimized ray casting algorithm
-- Optimize intersection calculations
-- Handle edge cases efficiently
-- Return result
+The key insight is the **Ray Casting Algorithm**: cast a ray from the point to infinity and count how many polygon edges it crosses. An odd count means inside, even means outside.
 
-**Visual Example**:
-```
-Optimized ray casting:
-┌─────────────────────────────────────┐
-│ Polygon: [(0,0), (2,0), (2,2), (0,2)] │
-│ Point: (1,1)                       │
-│                                   │
-│ Optimized ray casting:             │
-│ - Precompute edge properties       │
-│ - Use efficient intersection tests │
-│ - Handle special cases quickly     │
-│                                   │
-│ Result: INSIDE                     │
-└─────────────────────────────────────┘
-```
+### Breaking Down the Problem
 
-**Implementation**:
-```python
-def optimized_ray_casting_point_in_polygon(n, polygon, point):
-    """
-    Test point in polygon using optimized ray casting approach
-    
-    Args:
-        n: number of polygon vertices
-        polygon: list of polygon vertices (x, y)
-        point: query point (x, y)
-    
-    Returns:
-        str: "INSIDE", "OUTSIDE", or "BOUNDARY"
-    """
-    def optimized_ray_intersects_segment(point, edge_start, edge_end):
-        """Optimized ray intersection test"""
-        px, py = point
-        x1, y1 = edge_start
-        x2, y2 = edge_end
-        
-        # Quick bounds check
-        if min(x1, x2) <= px <= max(x1, x2) and min(y1, y2) <= py <= max(y1, y2):
-            # Check if point is on the line
-            if abs((y2 - y1) * (px - x1) - (x2 - x1) * (py - y1)) < 1e-9:
-                return "BOUNDARY"
-        
-        # Optimized ray intersection
-        if y1 > y2:
-            x1, y1, x2, y2 = x2, y2, x1, y1
-        
-        if py < y1 or py >= y2:
-            return False
-        
-        if x1 == x2:
-            return px <= x1
-        
-        x_intersect = x1 + (py - y1) * (x2 - x1) / (y2 - y1)
-        return px <= x_intersect
-    
-    # Precompute edge properties
-    edges = []
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        edges.append((edge_start, edge_end))
-    
-    # Check if point is on any edge
-    for edge_start, edge_end in edges:
-        result = optimized_ray_intersects_segment(point, edge_start, edge_end)
-        if result == "BOUNDARY":
-            return "BOUNDARY"
-    
-    # Count intersections with optimized ray casting
-    intersection_count = 0
-    for edge_start, edge_end in edges:
-        if optimized_ray_intersects_segment(point, edge_start, edge_end):
-            intersection_count += 1
-    
-    # Determine containment
-    if intersection_count % 2 == 1:
-        return "INSIDE"
-    else:
-        return "OUTSIDE"
+1. **What are we looking for?** Classification of each point as INSIDE/OUTSIDE/BOUNDARY
+2. **What information do we have?** Polygon vertices in order, query point coordinates
+3. **What's the relationship?** A point inside a closed polygon will have the ray cross an odd number of edges
 
-def optimized_ray_casting_point_in_polygon_v2(n, polygon, point):
-    """
-    Alternative optimized ray casting point in polygon testing
-    
-    Args:
-        n: number of polygon vertices
-        polygon: list of polygon vertices (x, y)
-        point: query point (x, y)
-    
-    Returns:
-        str: "INSIDE", "OUTSIDE", or "BOUNDARY"
-    """
-    def optimized_ray_intersects_segment_v2(point, edge_start, edge_end):
-        """Alternative optimized ray intersection test"""
-        px, py = point
-        x1, y1 = edge_start
-        x2, y2 = edge_end
-        
-        # Quick bounds check
-        if min(x1, x2) <= px <= max(x1, x2) and min(y1, y2) <= py <= max(y1, y2):
-            # Check if point is on the line
-            if abs((y2 - y1) * (px - x1) - (x2 - x1) * (py - y1)) < 1e-9:
-                return "BOUNDARY"
-        
-        # Optimized ray intersection
-        if y1 > y2:
-            x1, y1, x2, y2 = x2, y2, x1, y1
-        
-        if py < y1 or py >= y2:
-            return False
-        
-        if x1 == x2:
-            return px <= x1
-        
-        x_intersect = x1 + (py - y1) * (x2 - x1) / (y2 - y1)
-        return px <= x_intersect
-    
-    # Precompute edge properties
-    edges = []
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        edges.append((edge_start, edge_end))
-    
-    # Check if point is on any edge
-    for edge_start, edge_end in edges:
-        result = optimized_ray_intersects_segment_v2(point, edge_start, edge_end)
-        if result == "BOUNDARY":
-            return "BOUNDARY"
-    
-    # Count intersections with optimized ray casting
-    intersection_count = 0
-    for edge_start, edge_end in edges:
-        if optimized_ray_intersects_segment_v2(point, edge_start, edge_end):
-            intersection_count += 1
-    
-    # Determine containment
-    if intersection_count % 2 == 1:
-        return "INSIDE"
-    else:
-        return "OUTSIDE"
+### Analogies
 
-# Example usage
-n = 4
-polygon = [(0, 0), (2, 0), (2, 2), (0, 2)]
-point = (1, 1)
-result1 = optimized_ray_casting_point_in_polygon(n, polygon, point)
-result2 = optimized_ray_casting_point_in_polygon_v2(n, polygon, point)
-print(f"Optimized ray casting point in polygon: {result1}")
-print(f"Optimized ray casting point in polygon v2: {result2}")
-```
-
-**Time Complexity**: O(n)
-**Space Complexity**: O(n)
-
-**Why it's better**: Uses optimized ray casting for better performance.
+Think of this like escaping a fenced area. If you walk in a straight line from your position, you cross the fence an odd number of times if you started inside, and an even number if you started outside.
 
 ---
 
-### Approach 3: Winding Number Algorithm (Optimal)
+## Solution: Ray Casting Algorithm
 
-**Key Insights from Winding Number Algorithm**:
-- **Winding Number**: Use winding number algorithm
-- **Robust**: Handles all edge cases correctly
-- **Efficient**: O(n) time complexity
-- **Optimal**: Best approach for point-in-polygon testing
+### Key Insight
 
-**Key Insight**: Use winding number algorithm for robust point-in-polygon testing.
+> **The Trick:** Cast a horizontal ray to the right from the query point. Count edge crossings. Odd = inside, Even = outside. First, check if the point lies exactly on any edge.
 
-**Algorithm**:
-- Calculate winding number around point
-- Use cross products to determine winding
-- Handle all edge cases correctly
-- Return result based on winding number
+### Algorithm
 
-**Visual Example**:
+1. **Check boundary first:** For each edge, check if the point lies on the edge
+2. **Cast ray:** Imagine a horizontal ray going right from the point
+3. **Count crossings:** Count how many polygon edges the ray intersects
+4. **Determine result:** Odd crossings = INSIDE, Even crossings = OUTSIDE
+
+### Dry Run Example
+
+Let's trace through with polygon `[(0,0), (4,0), (4,4), (0,4)]` and point `(2,2)`:
+
 ```
-Winding number algorithm:
-┌─────────────────────────────────────┐
-│ Polygon: [(0,0), (2,0), (2,2), (0,2)] │
-│ Point: (1,1)                       │
-│                                   │
-│ Winding number calculation:        │
-│ - Edge (0,0)-(2,0): cross product = 0 │
-│ - Edge (2,0)-(2,2): cross product = 2 │
-│ - Edge (2,2)-(0,2): cross product = 0 │
-│ - Edge (0,2)-(0,0): cross product = -2 │
-│                                   │
-│ Total winding: 0 + 2 + 0 - 2 = 0  │
-│ Result: INSIDE (winding != 0)      │
-└─────────────────────────────────────┘
+Polygon (square):
+    (0,4)-----(4,4)
+      |         |
+      |  (2,2)  |   <-- query point
+      |    -----|-------> ray to infinity
+      |         |
+    (0,0)-----(4,0)
+
+Step 1: Check if (2,2) is on any edge
+  - Edge (0,0)-(4,0): y=0, point y=2, NOT on edge
+  - Edge (4,0)-(4,4): x=4, point x=2, NOT on edge
+  - Edge (4,4)-(0,4): y=4, point y=2, NOT on edge
+  - Edge (0,4)-(0,0): x=0, point x=2, NOT on edge
+  Result: Not on boundary
+
+Step 2: Cast ray from (2,2) going right (y=2)
+  - Edge (0,0)-(4,0): y range [0,0], ray y=2 not in range, NO crossing
+  - Edge (4,0)-(4,4): y range [0,4], ray y=2 in range
+    - Intersection x = 4, point x = 2, ray crosses at x=4, YES crossing
+  - Edge (4,4)-(0,4): y range [4,4], ray y=2 not in range, NO crossing
+  - Edge (0,4)-(0,0): y range [0,4], ray y=2 in range
+    - Intersection x = 0, point x = 2, ray does NOT cross (0 < 2)
+
+Step 3: Count = 1 (odd)
+  Result: INSIDE
 ```
 
-**Implementation**:
+### Visual Diagram
+
+```
+   y
+   ^
+ 4 +-------+
+   |       |
+   | * --> | -->  (ray crosses 1 edge)
+   |       |
+ 0 +-------+---> x
+   0       4
+
+   * = query point (2,2)
+   --> = ray direction
+   Count = 1 (odd) -> INSIDE
+```
+
+### Code (Python)
+
 ```python
-def winding_number_point_in_polygon(n, polygon, point):
-    """
-    Test point in polygon using winding number algorithm
-    
-    Args:
-        n: number of polygon vertices
-        polygon: list of polygon vertices (x, y)
-        point: query point (x, y)
-    
-    Returns:
-        str: "INSIDE", "OUTSIDE", or "BOUNDARY"
-    """
-    def cross_product(o, a, b):
-        """Calculate cross product for winding number"""
-        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-    
-    def point_on_segment(point, seg_start, seg_end):
-        """Check if point is on line segment"""
-        px, py = point
-        x1, y1 = seg_start
-        x2, y2 = seg_end
-        
-        if min(x1, x2) <= px <= max(x1, x2) and min(y1, y2) <= py <= max(y1, y2):
-            if abs((y2 - y1) * (px - x1) - (x2 - x1) * (py - y1)) < 1e-9:
-                return True
+import sys
+input = sys.stdin.readline
+
+def cross_product(o, a, b):
+    """Calculate (a - o) x (b - o). Positive if counter-clockwise."""
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+def on_segment(p, a, b):
+    """Check if point p lies on segment ab."""
+    # Point must be collinear with segment
+    if cross_product(a, b, p) != 0:
         return False
-    
+    # Point must be within bounding box
+    return (min(a[0], b[0]) <= p[0] <= max(a[0], b[0]) and
+            min(a[1], b[1]) <= p[1] <= max(a[1], b[1]))
+
+def point_in_polygon(polygon, point):
+    """
+    Determine if point is inside, outside, or on boundary of polygon.
+    Uses ray casting algorithm.
+
+    Time: O(n) per query
+    Space: O(1)
+    """
+    n = len(polygon)
+    px, py = point
+
     # Check if point is on any edge
     for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        if point_on_segment(point, edge_start, edge_end):
+        a = polygon[i]
+        b = polygon[(i + 1) % n]
+        if on_segment(point, a, b):
             return "BOUNDARY"
-    
-    # Calculate winding number
-    winding = 0
+
+    # Ray casting: count crossings to the right
+    crossings = 0
     for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        # Calculate cross product
-        cross = cross_product(point, edge_start, edge_end)
-        
-        # Add to winding number
-        if cross > 0:
-            winding += 1
-        elif cross < 0:
-            winding -= 1
-    
-    # Determine containment based on winding number
-    if winding != 0:
-        return "INSIDE"
-    else:
-        return "OUTSIDE"
+        x1, y1 = polygon[i]
+        x2, y2 = polygon[(i + 1) % n]
 
-def winding_number_point_in_polygon_optimized(n, polygon, point):
-    """
-    Optimized winding number point in polygon testing
-    
-    Args:
-        n: number of polygon vertices
-        polygon: list of polygon vertices (x, y)
-        point: query point (x, y)
-    
-    Returns:
-        str: "INSIDE", "OUTSIDE", or "BOUNDARY"
-    """
-    def cross_product_optimized(o, a, b):
-        """Calculate cross product with optimization"""
-        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-    
-    def point_on_segment_optimized(point, seg_start, seg_end):
-        """Check if point is on line segment with optimization"""
-        px, py = point
-        x1, y1 = seg_start
-        x2, y2 = seg_end
-        
-        if min(x1, x2) <= px <= max(x1, x2) and min(y1, y2) <= py <= max(y1, y2):
-            if abs((y2 - y1) * (px - x1) - (x2 - x1) * (py - y1)) < 1e-9:
-                return True
-        return False
-    
-    # Check if point is on any edge with optimization
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        if point_on_segment_optimized(point, edge_start, edge_end):
-            return "BOUNDARY"
-    
-    # Calculate winding number with optimization
-    winding = 0
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        # Calculate cross product with optimization
-        cross = cross_product_optimized(point, edge_start, edge_end)
-        
-        # Add to winding number with optimization
-        if cross > 0:
-            winding += 1
-        elif cross < 0:
-            winding -= 1
-    
-    # Determine containment based on winding number with optimization
-    if winding != 0:
-        return "INSIDE"
-    else:
-        return "OUTSIDE"
+        # Ensure y1 <= y2 for consistent handling
+        if y1 > y2:
+            x1, y1, x2, y2 = x2, y2, x1, y1
 
-def point_in_polygon_with_precomputation(max_n):
-    """
-    Precompute point in polygon for multiple queries
-    
-    Args:
-        max_n: maximum number of polygon vertices
-    
-    Returns:
-        list: precomputed point in polygon results
-    """
-    results = [0] * (max_n + 1)
-    
-    for i in range(max_n + 1):
-        results[i] = i  # Simplified calculation
-    
-    return results
+        # Check if ray at height py intersects this edge
+        # Use half-open interval [y1, y2) to avoid double-counting vertices
+        if y1 <= py < y2:
+            # Calculate x-coordinate of intersection
+            # x = x1 + (py - y1) * (x2 - x1) / (y2 - y1)
+            # Check if intersection is to the right of point
+            # Rearranged to avoid division: (px - x1) * (y2 - y1) < (py - y1) * (x2 - x1)
+            if (x2 - x1) * (py - y1) > (px - x1) * (y2 - y1):
+                crossings += 1
 
-# Example usage
-n = 4
-polygon = [(0, 0), (2, 0), (2, 2), (0, 2)]
-point = (1, 1)
-result1 = winding_number_point_in_polygon(n, polygon, point)
-result2 = winding_number_point_in_polygon_optimized(n, polygon, point)
-print(f"Winding number point in polygon: {result1}")
-print(f"Optimized winding number point in polygon: {result2}")
+    return "INSIDE" if crossings % 2 == 1 else "OUTSIDE"
 
-# Precompute for multiple queries
-max_n = 1000
-precomputed = point_in_polygon_with_precomputation(max_n)
-print(f"Precomputed result for n={n}: {precomputed[n]}")
-```
+def solve():
+    n, m = map(int, input().split())
+    polygon = [tuple(map(int, input().split())) for _ in range(n)]
 
-**Time Complexity**: O(n)
-**Space Complexity**: O(1)
-
-**Why it's optimal**: Uses winding number algorithm for robust and efficient testing.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n) | O(1) | Check all polygon edges |
-| Optimized Ray Casting | O(n) | O(n) | Use optimized ray casting |
-| Winding Number | O(n) | O(1) | Use winding number algorithm |
-
-### Time Complexity
-- **Time**: O(n) - Must check all polygon edges
-- **Space**: O(1) - Use winding number algorithm
-
-### Why This Solution Works
-- **Winding Number**: Use winding number for robust testing
-- **Cross Products**: Use cross products to determine winding
-- **Edge Cases**: Handle all edge cases correctly
-- **Optimal Algorithms**: Use optimal algorithms for testing
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Point in Polygon with Constraints**
-**Problem**: Test point in polygon with specific constraints.
-
-**Key Differences**: Apply constraints to point-in-polygon testing
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_point_in_polygon(n, polygon, point, constraints):
-    """
-    Test point in polygon with constraints
-    
-    Args:
-        n: number of polygon vertices
-        polygon: list of polygon vertices (x, y)
-        point: query point (x, y)
-        constraints: function to check constraints
-    
-    Returns:
-        str: "INSIDE", "OUTSIDE", or "BOUNDARY"
-    """
-    def cross_product(o, a, b):
-        """Calculate cross product for winding number"""
-        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-    
-    def point_on_segment(point, seg_start, seg_end):
-        """Check if point is on line segment"""
-        px, py = point
-        x1, y1 = seg_start
-        x2, y2 = seg_end
-        
-        if min(x1, x2) <= px <= max(x1, x2) and min(y1, y2) <= py <= max(y1, y2):
-            if abs((y2 - y1) * (px - x1) - (x2 - x1) * (py - y1)) < 1e-9:
-                return True
-        return False
-    
-    # Check constraints
-    if not constraints(point):
-        return "OUTSIDE"
-    
-    # Check if point is on any edge
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        if point_on_segment(point, edge_start, edge_end):
-            return "BOUNDARY"
-    
-    # Calculate winding number
-    winding = 0
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        cross = cross_product(point, edge_start, edge_end)
-        
-        if cross > 0:
-            winding += 1
-        elif cross < 0:
-            winding -= 1
-    
-    # Determine containment
-    if winding != 0:
-        return "INSIDE"
-    else:
-        return "OUTSIDE"
-
-# Example usage
-n = 4
-polygon = [(0, 0), (2, 0), (2, 2), (0, 2)]
-point = (1, 1)
-constraints = lambda p: p[0] + p[1] < 3  # Only test points where sum < 3
-result = constrained_point_in_polygon(n, polygon, point, constraints)
-print(f"Constrained point in polygon: {result}")
-```
-
-#### **2. Point in Polygon with Different Metrics**
-**Problem**: Test point in polygon with different distance metrics.
-
-**Key Differences**: Different distance calculations
-
-**Solution Approach**: Use advanced geometric techniques
-
-**Implementation**:
-```python
-def weighted_point_in_polygon(n, polygon, point, weights):
-    """
-    Test point in polygon with different weights
-    
-    Args:
-        n: number of polygon vertices
-        polygon: list of polygon vertices (x, y)
-        point: query point (x, y)
-        weights: list of vertex weights
-    
-    Returns:
-        str: "INSIDE", "OUTSIDE", or "BOUNDARY"
-    """
-    def cross_product(o, a, b):
-        """Calculate cross product for winding number"""
-        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-    
-    def point_on_segment(point, seg_start, seg_end):
-        """Check if point is on line segment"""
-        px, py = point
-        x1, y1 = seg_start
-        x2, y2 = seg_end
-        
-        if min(x1, x2) <= px <= max(x1, x2) and min(y1, y2) <= py <= max(y1, y2):
-            if abs((y2 - y1) * (px - x1) - (x2 - x1) * (py - y1)) < 1e-9:
-                return True
-        return False
-    
-    # Check if point is on any edge
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        if point_on_segment(point, edge_start, edge_end):
-            return "BOUNDARY"
-    
-    # Calculate weighted winding number
-    winding = 0
-    for i in range(n):
-        edge_start = polygon[i]
-        edge_end = polygon[(i + 1) % n]
-        
-        cross = cross_product(point, edge_start, edge_end)
-        weight = weights[i]
-        
-        if cross > 0:
-            winding += weight
-        elif cross < 0:
-            winding -= weight
-    
-    # Determine containment
-    if winding != 0:
-        return "INSIDE"
-    else:
-        return "OUTSIDE"
-
-# Example usage
-n = 4
-polygon = [(0, 0), (2, 0), (2, 2), (0, 2)]
-point = (1, 1)
-weights = [1, 2, 3, 4]
-result = weighted_point_in_polygon(n, polygon, point, weights)
-print(f"Weighted point in polygon: {result}")
-```
-
-#### **3. Point in Polygon with Multiple Polygons**
-**Problem**: Test point in multiple polygons.
-
-**Key Differences**: Handle multiple polygons
-
-**Solution Approach**: Use advanced geometric techniques
-
-**Implementation**:
-```python
-def multi_polygon_point_in_polygon(polygons, point):
-    """
-    Test point in multiple polygons
-    
-    Args:
-        polygons: list of polygons (each polygon is a list of vertices)
-        point: query point (x, y)
-    
-    Returns:
-        list: results for each polygon
-    """
-    def cross_product(o, a, b):
-        """Calculate cross product for winding number"""
-        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-    
-    def point_on_segment(point, seg_start, seg_end):
-        """Check if point is on line segment"""
-        px, py = point
-        x1, y1 = seg_start
-        x2, y2 = seg_end
-        
-        if min(x1, x2) <= px <= max(x1, x2) and min(y1, y2) <= py <= max(y1, y2):
-            if abs((y2 - y1) * (px - x1) - (x2 - x1) * (py - y1)) < 1e-9:
-                return True
-        return False
-    
     results = []
-    
-    for polygon in polygons:
-        n = len(polygon)
-        
-        # Check if point is on any edge
-        on_boundary = False
-        for i in range(n):
-            edge_start = polygon[i]
-            edge_end = polygon[(i + 1) % n]
-            
-            if point_on_segment(point, edge_start, edge_end):
-                results.append("BOUNDARY")
-                on_boundary = True
-                break
-        
-        if on_boundary:
-            continue
-        
-        # Calculate winding number
-        winding = 0
-        for i in range(n):
-            edge_start = polygon[i]
-            edge_end = polygon[(i + 1) % n]
-            
-            cross = cross_product(point, edge_start, edge_end)
-            
-            if cross > 0:
-                winding += 1
-            elif cross < 0:
-                winding -= 1
-        
-        # Determine containment
-        if winding != 0:
-            results.append("INSIDE")
-        else:
-            results.append("OUTSIDE")
-    
-    return results
+    for _ in range(m):
+        point = tuple(map(int, input().split()))
+        results.append(point_in_polygon(polygon, point))
 
-# Example usage
-polygons = [
-    [(0, 0), (2, 0), (2, 2), (0, 2)],
-    [(1, 1), (3, 1), (3, 3), (1, 3)]
-]
-point = (1, 1)
-result = multi_polygon_point_in_polygon(polygons, point)
-print(f"Multi-polygon point in polygon: {result}")
+    print('\n'.join(results))
+
+if __name__ == "__main__":
+    solve()
 ```
 
-### Related Problems
+### Code (C++)
 
-#### **CSES Problems**
-- [Convex Hull](https://cses.fi/problemset/task/1075) - Geometry
-- [Line Segment Intersection](https://cses.fi/problemset/task/1075) - Geometry
-- [Area of Rectangles](https://cses.fi/problemset/task/1075) - Geometry
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-#### **LeetCode Problems**
-- [Point in Polygon](https://leetcode.com/problems/point-in-polygon/) - Geometry
-- [Convex Polygon](https://leetcode.com/problems/convex-polygon/) - Geometry
-- [Largest Triangle Area](https://leetcode.com/problems/largest-triangle-area/) - Geometry
+typedef long long ll;
+typedef pair<ll, ll> Point;
 
-#### **Problem Categories**
-- **Computational Geometry**: Point-in-polygon, geometric algorithms
-- **Mathematical Algorithms**: Ray casting, winding number
-- **Geometric Algorithms**: Point containment, polygon algorithms
+ll cross_product(Point o, Point a, Point b) {
+    return (a.first - o.first) * (b.second - o.second)
+         - (a.second - o.second) * (b.first - o.first);
+}
 
-## 🔗 Additional Resources
+bool on_segment(Point p, Point a, Point b) {
+    if (cross_product(a, b, p) != 0) return false;
+    return min(a.first, b.first) <= p.first && p.first <= max(a.first, b.first)
+        && min(a.second, b.second) <= p.second && p.second <= max(a.second, b.second);
+}
 
-### **Algorithm References**
-- [Computational Geometry](https://cp-algorithms.com/geometry/basic-geometry.html) - Geometry algorithms
-- [Point in Polygon](https://cp-algorithms.com/geometry/point-in-polygon.html) - Point-in-polygon algorithms
-- [Ray Casting](https://cp-algorithms.com/geometry/ray-casting.html) - Ray casting algorithms
+string point_in_polygon(vector<Point>& polygon, Point p) {
+    int n = polygon.size();
+    ll px = p.first, py = p.second;
 
-### **Practice Problems**
-- [CSES Convex Hull](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Line Segment Intersection](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Area of Rectangles](https://cses.fi/problemset/task/1075) - Medium
+    // Check if on boundary
+    for (int i = 0; i < n; i++) {
+        if (on_segment(p, polygon[i], polygon[(i + 1) % n])) {
+            return "BOUNDARY";
+        }
+    }
 
-### **Further Reading**
-- [Computational Geometry](https://en.wikipedia.org/wiki/Computational_geometry) - Wikipedia article
-- [Point in Polygon](https://en.wikipedia.org/wiki/Point_in_polygon) - Wikipedia article
-- [Ray Casting](https://en.wikipedia.org/wiki/Ray_casting) - Wikipedia article
+    // Ray casting
+    int crossings = 0;
+    for (int i = 0; i < n; i++) {
+        ll x1 = polygon[i].first, y1 = polygon[i].second;
+        ll x2 = polygon[(i + 1) % n].first, y2 = polygon[(i + 1) % n].second;
+
+        if (y1 > y2) {
+            swap(x1, x2);
+            swap(y1, y2);
+        }
+
+        if (y1 <= py && py < y2) {
+            // Check if intersection is to the right
+            if ((x2 - x1) * (py - y1) > (px - x1) * (y2 - y1)) {
+                crossings++;
+            }
+        }
+    }
+
+    return (crossings % 2 == 1) ? "INSIDE" : "OUTSIDE";
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<Point> polygon(n);
+    for (int i = 0; i < n; i++) {
+        cin >> polygon[i].first >> polygon[i].second;
+    }
+
+    for (int i = 0; i < m; i++) {
+        Point p;
+        cin >> p.first >> p.second;
+        cout << point_in_polygon(polygon, p) << "\n";
+    }
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n * m) | O(n) per query, m queries |
+| Space | O(n) | Store polygon vertices |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Using Floating Point Division
+
+```python
+# WRONG - floating point precision issues
+x_intersect = x1 + (py - y1) * (x2 - x1) / (y2 - y1)
+if px < x_intersect:
+    crossings += 1
+```
+
+**Problem:** Floating point errors can cause incorrect results near edges.
+**Fix:** Rearrange to use integer multiplication only:
+```python
+# CORRECT - integer arithmetic
+if (x2 - x1) * (py - y1) > (px - x1) * (y2 - y1):
+    crossings += 1
+```
+
+### Mistake 2: Double-Counting Vertices
+
+```python
+# WRONG - counts vertex twice when ray passes through it
+if y1 <= py <= y2:  # Closed interval
+    # ...
+```
+
+**Problem:** When the ray passes exactly through a vertex, both adjacent edges count it.
+**Fix:** Use half-open interval `[y1, y2)`:
+```python
+# CORRECT - vertex counted only once
+if y1 <= py < y2:  # Half-open interval
+    # ...
+```
+
+### Mistake 3: Forgetting Boundary Check
+
+```python
+# WRONG - jumps straight to ray casting
+crossings = 0
+for i in range(n):
+    # ray casting logic...
+return "INSIDE" if crossings % 2 == 1 else "OUTSIDE"
+```
+
+**Problem:** Points on the boundary are classified as INSIDE or OUTSIDE.
+**Fix:** Always check boundary first before ray casting.
+
+---
+
+## Edge Cases
+
+| Case | Example | Expected | Why |
+|------|---------|----------|-----|
+| Point on vertex | Point = (0,0), vertex at (0,0) | BOUNDARY | Vertex is part of boundary |
+| Point on edge | Point on line between vertices | BOUNDARY | Edge is part of boundary |
+| Ray through vertex | Ray exactly hits a vertex | Correct count | Half-open interval handles this |
+| Horizontal edge | Edge at same y as point | Correct count | Handle horizontal edges specially |
+| Concave polygon | Non-convex shape | Works correctly | Ray casting works for any simple polygon |
+| Large coordinates | 10^9 values | Works | Use long long to avoid overflow |
+
+---
+
+## When to Use This Pattern
+
+### Use Ray Casting When:
+- You need to test point containment in any simple polygon (convex or concave)
+- You have multiple query points for the same polygon
+- The polygon is defined by vertices in order
+
+### Don't Use When:
+- The polygon is convex (use cross product method - faster constant factor)
+- You need to handle polygons with holes (need modified algorithm)
+- You have very many queries (consider preprocessing with spatial data structures)
+
+### Pattern Recognition Checklist:
+- [ ] Need to determine if point is inside/outside a polygon? **Ray Casting**
+- [ ] Polygon is convex? **Consider cross product method for all edges**
+- [ ] Many queries on same polygon? **Still O(n) per query, but could preprocess**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Line Segment Intersection](https://cses.fi/problemset/task/2190) | Understand segment intersection basics |
+| [Point Location Test](https://cses.fi/problemset/task/2189) | Learn cross product for left/right test |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Polygon Area](https://cses.fi/problemset/task/2191) | Uses cross products, similar polygon traversal |
+| [Convex Hull](https://cses.fi/problemset/task/2195) | Related geometry concepts |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Polygon Lattice Points](https://cses.fi/problemset/task/2193) | Pick's theorem, boundary counting |
+| [Minimum Euclidean Distance](https://cses.fi/problemset/task/2194) | Divide and conquer geometry |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Cast a ray and count edge crossings - odd means inside, even means outside
+2. **Boundary Check:** Always check if point is on the boundary first
+3. **Integer Arithmetic:** Avoid floating point by rearranging comparisons to use multiplication
+4. **Half-Open Intervals:** Use `[y1, y2)` to avoid double-counting vertices
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why odd crossings means the point is inside
+- [ ] Handle the boundary case correctly
+- [ ] Avoid floating point arithmetic
+- [ ] Explain how to handle the ray passing through a vertex
+- [ ] Implement the solution in under 15 minutes
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Point in Polygon](https://cp-algorithms.com/geometry/point-in-polygon.html)
+- [Wikipedia: Point in Polygon](https://en.wikipedia.org/wiki/Point_in_polygon)
+- [CSES Geometry Problem Set](https://cses.fi/problemset/list/)

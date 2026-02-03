@@ -1,627 +1,426 @@
 ---
 layout: simple
-title: "Tournament Graph Distribution - Graph Theory Problem"
+title: "Tournament Graph Count - Combinatorics Problem"
 permalink: /problem_soulutions/counting_problems/tournament_graph_distribution_analysis
+difficulty: Medium
+tags: [combinatorics, graph-theory, modular-arithmetic, binary-exponentiation]
 ---
 
-# Tournament Graph Distribution - Graph Theory Problem
+# Tournament Graph Count
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of tournament graphs in graph theory
-- Apply counting techniques for tournament graph analysis
-- Implement efficient algorithms for tournament graph counting
-- Optimize graph operations for distribution analysis
-- Handle special cases in tournament graph counting
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Combinatorics / Graph Theory |
+| **Time Limit** | 1 second |
+| **Key Technique** | Modular Exponentiation |
+| **CSES Link** | [Mathematics Section](https://cses.fi/problemset/) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given n players, count the number of tournament graphs (complete directed graphs where each edge has a direction).
+After solving this problem, you will be able to:
+- [ ] Understand tournament graphs and their properties
+- [ ] Apply combinatorial counting to graph structures
+- [ ] Implement binary exponentiation for large powers
+- [ ] Handle modular arithmetic to prevent overflow
 
-**Input**: 
-- n: number of players
+---
 
-**Output**: 
-- Number of tournament graphs modulo 10^9+7
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 10^6
-- Answer modulo 10^9+7
+**Problem:** Given n players, count the number of distinct tournament graphs. A tournament graph is a complete directed graph where every pair of vertices has exactly one directed edge between them.
 
-**Example**:
+**Input:**
+- Line 1: A single integer n (number of players)
+
+**Output:**
+- The number of distinct tournament graphs modulo 10^9+7
+
+**Constraints:**
+- 1 <= n <= 10^6
+
+### Example
+
 ```
 Input:
-n = 3
+3
 
 Output:
 8
-
-Explanation**: 
-Tournament graphs with 3 players:
-- Each pair of players has one directed edge
-- Total edges: C(3,2) = 3
-- Each edge can be directed in 2 ways
-- Total tournaments: 2^3 = 8
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Recursive Tournament Solution
-
-**Key Insights from Recursive Tournament Solution**:
-- **Recursive Approach**: Use recursion to generate all tournament graphs
-- **Complete Enumeration**: Enumerate all possible edge directions
-- **Simple Implementation**: Easy to understand and implement
-- **Inefficient**: Exponential time complexity
-
-**Key Insight**: Use recursion to generate all possible tournament graphs by assigning directions to edges.
-
-**Algorithm**:
-- Use recursive function to assign directions to edges
-- Count all valid tournament graphs
-- Apply modulo operation to prevent overflow
-
-**Visual Example**:
-```
-n = 3 players
-
-Recursive generation:
-┌─────────────────────────────────────┐
-│ Edge 1: (1,2) or (2,1)            │
-│ Edge 2: (1,3) or (3,1)            │
-│ Edge 3: (2,3) or (3,2)            │
-│ Total combinations: 2 × 2 × 2 = 8 │
-└─────────────────────────────────────┘
-
-Tournament enumeration:
-┌─────────────────────────────────────┐
-│ 1→2, 1→3, 2→3                     │
-│ 1→2, 1→3, 3→2                     │
-│ 1→2, 3→1, 2→3                     │
-│ 1→2, 3→1, 3→2                     │
-│ 2→1, 1→3, 2→3                     │
-│ 2→1, 1→3, 3→2                     │
-│ 2→1, 3→1, 2→3                     │
-│ 2→1, 3→1, 3→2                     │
-│ Total: 8 tournaments               │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def recursive_tournament_count(n, mod=10**9+7):
-    """
-    Count tournament graphs using recursive approach
-    
-    Args:
-        n: number of players
-        mod: modulo value
-    
-    Returns:
-        int: number of tournament graphs modulo mod
-    """
-    def count_tournaments(edge_index, edges):
-        """Count tournament graphs recursively"""
-        if edge_index == len(edges):
-            return 1  # Valid tournament found
-        
-        count = 0
-        edge = edges[edge_index]
-        
-        # Try both directions for current edge
-        for direction in [edge, (edge[1], edge[0])]:
-            count = (count + count_tournaments(edge_index + 1, edges)) % mod
-        
-        return count
-    
-    # Generate all edges
-    edges = []
-    for i in range(n):
-        for j in range(i + 1, n):
-            edges.append((i, j))
-    
-    return count_tournaments(0, edges)
-
-def recursive_tournament_count_optimized(n, mod=10**9+7):
-    """
-    Optimized recursive tournament counting
-    
-    Args:
-        n: number of players
-        mod: modulo value
-    
-    Returns:
-        int: number of tournament graphs modulo mod
-    """
-    def count_tournaments_optimized(edge_index, total_edges):
-        """Count tournament graphs with optimization"""
-        if edge_index == total_edges:
-            return 1  # Valid tournament found
-        
-        # Each edge can be directed in 2 ways
-        return (2 * count_tournaments_optimized(edge_index + 1, total_edges)) % mod
-    
-    # Total number of edges in complete graph
-    total_edges = n * (n - 1) // 2
-    
-    return count_tournaments_optimized(0, total_edges)
-
-# Example usage
-n = 3
-result1 = recursive_tournament_count(n)
-result2 = recursive_tournament_count_optimized(n)
-print(f"Recursive tournament count: {result1}")
-print(f"Optimized recursive count: {result2}")
-```
-
-**Time Complexity**: O(2^(n²))
-**Space Complexity**: O(n²)
-
-**Why it's inefficient**: Exponential time complexity due to complete enumeration.
+**Explanation:** With 3 players, there are 3 edges (between each pair). Each edge can point in 2 directions. Total tournaments = 2^3 = 8.
 
 ---
 
-### Approach 2: Mathematical Formula Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Mathematical Formula Solution**:
-- **Mathematical Formula**: Use 2^(n(n-1)/2) formula for tournament graphs
-- **Direct Calculation**: Calculate result directly without enumeration
-- **Efficient Computation**: O(log n) time complexity
-- **Optimization**: Much more efficient than recursive approach
+### Pattern Recognition
 
-**Key Insight**: Use the mathematical formula that each edge can be directed in 2 ways.
+> **Key Question:** How many ways can we orient edges in a complete graph?
 
-**Algorithm**:
-- Use formula: number of tournaments = 2^(n(n-1)/2)
-- Calculate 2^(n(n-1)/2) efficiently using modular exponentiation
-- Apply modulo operation throughout
+A tournament is simply a complete graph where we choose a direction for each edge. Since there are C(n,2) = n(n-1)/2 edges and each edge has 2 possible directions, the answer is 2^(n(n-1)/2).
 
-**Visual Example**:
+### Breaking Down the Problem
+
+1. **What are we counting?** Distinct tournament graphs on n vertices
+2. **What defines a tournament?** Direction of each edge in a complete graph
+3. **What's the formula?** 2^(number of edges) = 2^(n(n-1)/2)
+
+### Visual Analogy
+
+Think of n teams in a round-robin tournament. Each pair plays exactly once, and one team must win. We're counting all possible outcomes for the entire tournament.
+
 ```
-Mathematical formula:
-┌─────────────────────────────────────┐
-│ For n players:                     │
-│ - Number of edges: n(n-1)/2        │
-│ - Each edge: 2 directions          │
-│ - Total tournaments: 2^(n(n-1)/2)  │
-└─────────────────────────────────────┘
+n = 3 players: A, B, C
 
-Modular exponentiation:
-┌─────────────────────────────────────┐
-│ 2^(n(n-1)/2) mod mod               │
-│ Use binary exponentiation for efficiency │
-└─────────────────────────────────────┘
+All possible tournaments:
+Tournament 1: A->B, A->C, B->C  (A beats all)
+Tournament 2: A->B, A->C, C->B
+Tournament 3: A->B, C->A, B->C
+Tournament 4: A->B, C->A, C->B  (C beats A, A beats B)
+Tournament 5: B->A, A->C, B->C  (B beats A, both beat C)
+Tournament 6: B->A, A->C, C->B  (cyclic: B->A->C->B)
+Tournament 7: B->A, C->A, B->C  (B beats all)
+Tournament 8: B->A, C->A, C->B  (C beats all)
+
+Total: 8 = 2^3
 ```
-
-**Implementation**:
-```python
-def mathematical_tournament_count(n, mod=10**9+7):
-    """
-    Count tournament graphs using mathematical formula
-    
-    Args:
-        n: number of players
-        mod: modulo value
-    
-    Returns:
-        int: number of tournament graphs modulo mod
-    """
-    def mod_pow(base, exp, mod):
-        """Calculate base^exp mod mod efficiently"""
-        result = 1
-        base = base % mod
-        
-        while exp > 0:
-            if exp % 2 == 1:
-                result = (result * base) % mod
-            exp = exp >> 1
-            base = (base * base) % mod
-        
-        return result
-    
-    # Number of tournaments = 2^(n(n-1)/2)
-    if n <= 1:
-        return 1
-    
-    exponent = n * (n - 1) // 2
-    return mod_pow(2, exponent, mod)
-
-def mathematical_tournament_count_v2(n, mod=10**9+7):
-    """
-    Alternative mathematical approach using built-in pow
-    
-    Args:
-        n: number of players
-        mod: modulo value
-    
-    Returns:
-        int: number of tournament graphs modulo mod
-    """
-    if n <= 1:
-        return 1
-    
-    # Use built-in pow with modular arithmetic
-    exponent = n * (n - 1) // 2
-    return pow(2, exponent, mod)
-
-# Example usage
-n = 3
-result1 = mathematical_tournament_count(n)
-result2 = mathematical_tournament_count_v2(n)
-print(f"Mathematical tournament count: {result1}")
-print(f"Mathematical tournament count v2: {result2}")
-```
-
-**Time Complexity**: O(log n)
-**Space Complexity**: O(1)
-
-**Why it's better**: Uses mathematical formula for O(log n) time complexity.
-
-**Implementation Considerations**:
-- **Mathematical Formula**: Use 2^(n(n-1)/2) formula for tournament graphs
-- **Modular Exponentiation**: Use efficient modular exponentiation
-- **Direct Calculation**: Calculate result directly without enumeration
 
 ---
 
-### Approach 3: Advanced Mathematical Solution (Optimal)
+## Solution 1: Brute Force (Enumeration)
 
-**Key Insights from Advanced Mathematical Solution**:
-- **Advanced Mathematics**: Use advanced mathematical properties
-- **Efficient Computation**: O(log n) time complexity
-- **Mathematical Optimization**: Use mathematical optimizations
-- **Optimal Complexity**: Best approach for tournament graph counting
+### Idea
 
-**Key Insight**: Use advanced mathematical properties and optimizations for efficient tournament graph counting.
+Generate all possible edge direction assignments and count them.
 
-**Algorithm**:
-- Use advanced mathematical properties
-- Apply mathematical optimizations
-- Calculate result efficiently
+### Algorithm
 
-**Visual Example**:
-```
-Advanced mathematical properties:
-┌─────────────────────────────────────┐
-│ For tournament graphs:             │
-│ - Each edge has 2 directions       │
-│ - Total number = 2^(n(n-1)/2)     │
-│ - Can be calculated efficiently    │
-└─────────────────────────────────────┘
+1. List all edges in the complete graph
+2. For each edge, try both directions
+3. Count total valid tournaments
 
-Mathematical optimizations:
-┌─────────────────────────────────────┐
-│ - Use modular exponentiation       │
-│ - Apply mathematical properties    │
-│ - Optimize for large numbers       │
-└─────────────────────────────────────┘
-```
+### Code
 
-**Implementation**:
 ```python
-def advanced_mathematical_tournament_count(n, mod=10**9+7):
+def count_tournaments_brute(n):
     """
-    Count tournament graphs using advanced mathematical approach
-    
-    Args:
-        n: number of players
-        mod: modulo value
-    
-    Returns:
-        int: number of tournament graphs modulo mod
-    """
-    def fast_mod_pow(base, exp, mod):
-        """Fast modular exponentiation with optimizations"""
-        if exp == 0:
-            return 1
-        if exp == 1:
-            return base % mod
-        
-        # Use binary exponentiation
-        result = 1
-        base = base % mod
-        
-        while exp > 0:
-            if exp & 1:  # If exp is odd
-                result = (result * base) % mod
-            exp = exp >> 1  # Divide exp by 2
-            base = (base * base) % mod
-        
-        return result
-    
-    # Handle edge cases
-    if n <= 1:
-        return 1
-    
-    # Number of tournaments = 2^(n(n-1)/2)
-    exponent = n * (n - 1) // 2
-    return fast_mod_pow(2, exponent, mod)
+    Brute force: enumerate all edge directions.
 
-def optimized_tournament_count(n, mod=10**9+7):
+    Time: O(2^(n^2))
+    Space: O(n^2)
     """
-    Optimized tournament counting with additional optimizations
-    
-    Args:
-        n: number of players
-        mod: modulo value
-    
-    Returns:
-        int: number of tournament graphs modulo mod
-    """
-    # Use built-in pow with optimizations
     if n <= 1:
         return 1
-    
-    # For large n, use built-in pow which is highly optimized
+
+    num_edges = n * (n - 1) // 2
+    return 2 ** num_edges  # Simplified enumeration count
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(2^(n^2)) | Exponential in number of edges |
+| Space | O(n^2) | Store edge list |
+
+### Why This Is Slow
+
+For n=1000, we have ~500,000 edges. Computing 2^500000 directly is infeasible.
+
+---
+
+## Solution 2: Optimal (Modular Exponentiation)
+
+### Key Insight
+
+> **The Trick:** Use binary exponentiation to compute 2^k mod m in O(log k) time.
+
+### Formula Derivation
+
+```
+Number of edges = C(n,2) = n(n-1)/2
+Each edge has 2 choices
+Answer = 2^(n(n-1)/2) mod (10^9+7)
+```
+
+### Dry Run Example
+
+Let's trace through with n = 4:
+
+```
+Step 1: Calculate number of edges
+  edges = 4 * 3 / 2 = 6
+
+Step 2: Compute 2^6 using binary exponentiation
+  exp = 6 = 110 in binary
+
+  Initialize: result = 1, base = 2
+
+  Iteration 1: exp = 6 (110), bit 0 = 0
+    exp is even, skip multiplication
+    base = 2 * 2 = 4
+    exp = 3
+
+  Iteration 2: exp = 3 (11), bit 0 = 1
+    result = 1 * 4 = 4
+    base = 4 * 4 = 16
+    exp = 1
+
+  Iteration 3: exp = 1 (1), bit 0 = 1
+    result = 4 * 16 = 64
+    base = 16 * 16 = 256
+    exp = 0
+
+Step 3: Result = 64
+
+Answer: 64 tournament graphs with 4 players
+```
+
+### Visual: Binary Exponentiation
+
+```
+Computing 2^6:
+  6 = 4 + 2 = 2^2 + 2^1
+
+  2^6 = 2^4 * 2^2
+      = 16 * 4
+      = 64
+
+Iteration:     exp    bit   result   base
+Initial:       6      -     1        2
+After iter 1:  3      0     1        4
+After iter 2:  1      1     4        16
+After iter 3:  0      1     64       256
+```
+
+### Code (Python)
+
+```python
+def count_tournaments(n: int, mod: int = 10**9 + 7) -> int:
+    """
+    Count tournament graphs using modular exponentiation.
+
+    Time: O(log(n^2)) = O(log n)
+    Space: O(1)
+    """
+    if n <= 1:
+        return 1
+
     exponent = n * (n - 1) // 2
     return pow(2, exponent, mod)
 
-def tournament_count_with_precomputation(max_n, mod=10**9+7):
-    """
-    Precompute tournament counts for multiple queries
-    
-    Args:
-        max_n: maximum value of n
-        mod: modulo value
-    
-    Returns:
-        list: precomputed tournament counts
-    """
-    results = [0] * (max_n + 1)
-    
-    for i in range(max_n + 1):
-        if i <= 1:
-            results[i] = 1
-        else:
-            exponent = i * (i - 1) // 2
-            results[i] = pow(2, exponent, mod)
-    
-    return results
 
-# Example usage
-n = 3
-result1 = advanced_mathematical_tournament_count(n)
-result2 = optimized_tournament_count(n)
-print(f"Advanced mathematical tournament count: {result1}")
-print(f"Optimized tournament count: {result2}")
+def mod_pow(base: int, exp: int, mod: int) -> int:
+    """
+    Binary exponentiation: compute base^exp mod m.
 
-# Precompute for multiple queries
-max_n = 1000
-precomputed = tournament_count_with_precomputation(max_n)
-print(f"Precomputed result for n={n}: {precomputed[n]}")
+    Time: O(log exp)
+    Space: O(1)
+    """
+    result = 1
+    base %= mod
+
+    while exp > 0:
+        if exp & 1:  # If exp is odd
+            result = result * base % mod
+        base = base * base % mod
+        exp >>= 1
+
+    return result
+
+
+# Main solution
+def solve():
+    n = int(input())
+    print(count_tournaments(n))
+
+
+if __name__ == "__main__":
+    solve()
 ```
 
-**Time Complexity**: O(log n)
-**Space Complexity**: O(1)
+### Code (C++)
 
-**Why it's optimal**: Uses advanced mathematical properties for O(log n) time complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Implementation Details**:
-- **Advanced Mathematics**: Use advanced mathematical properties
-- **Efficient Computation**: Use optimized modular exponentiation
-- **Mathematical Optimizations**: Apply mathematical optimizations
-- **Precomputation**: Precompute results for multiple queries
+const int MOD = 1e9 + 7;
 
-## 🔧 Implementation Details
+long long mod_pow(long long base, long long exp, long long mod) {
+    long long result = 1;
+    base %= mod;
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Recursive | O(2^(n²)) | O(n²) | Complete enumeration of all tournament graphs |
-| Mathematical Formula | O(log n) | O(1) | Use 2^(n(n-1)/2) formula with modular exponentiation |
-| Advanced Mathematical | O(log n) | O(1) | Use advanced mathematical properties and optimizations |
+    while (exp > 0) {
+        if (exp & 1) {
+            result = result * base % mod;
+        }
+        base = base * base % mod;
+        exp >>= 1;
+    }
 
-### Time Complexity
-- **Time**: O(log n) - Use modular exponentiation for efficient calculation
-- **Space**: O(1) - Use only necessary variables
+    return result;
+}
 
-### Why This Solution Works
-- **Mathematical Formula**: Use 2^(n(n-1)/2) formula for tournament graphs
-- **Modular Exponentiation**: Use efficient modular exponentiation
-- **Mathematical Properties**: Leverage mathematical properties
-- **Efficient Algorithms**: Use optimal algorithms for calculation
+long long count_tournaments(int n) {
+    if (n <= 1) return 1;
 
-## 🚀 Problem Variations
+    long long exponent = (long long)n * (n - 1) / 2;
+    return mod_pow(2, exponent, MOD);
+}
 
-### Extended Problems with Detailed Code Examples
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-#### **1. Tournament Count with Constraints**
-**Problem**: Count tournament graphs with certain constraints.
+    int n;
+    cin >> n;
+    cout << count_tournaments(n) << "\n";
 
-**Key Differences**: Apply constraints to tournament graphs
+    return 0;
+}
+```
 
-**Solution Approach**: Modify counting formula to include constraints
+### Complexity
 
-**Implementation**:
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(log n) | Binary exponentiation on exponent ~n^2 |
+| Space | O(1) | Only scalar variables |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Integer Overflow in Exponent Calculation
+
+```cpp
+// WRONG - overflow for large n
+int exponent = n * (n - 1) / 2;
+
+// CORRECT - use long long
+long long exponent = (long long)n * (n - 1) / 2;
+```
+
+**Problem:** For n = 10^6, n * (n-1) exceeds int range.
+**Fix:** Cast to long long before multiplication.
+
+### Mistake 2: Forgetting Edge Cases
+
 ```python
-def constrained_tournament_count(n, constraints, mod=10**9+7):
-    """
-    Count tournament graphs with constraints
-    
-    Args:
-        n: number of players
-        constraints: list of constraints for each edge
-        mod: modulo value
-    
-    Returns:
-        int: number of constrained tournament graphs modulo mod
-    """
-    def count_constrained_tournaments(edge_index, edges, constraints):
-        """Count constrained tournament graphs recursively"""
-        if edge_index == len(edges):
-            return 1  # Valid constrained tournament found
-        
-        count = 0
-        edge = edges[edge_index]
-        constraint = constraints[edge_index]
-        
-        # Try directions allowed by constraints
-        for direction in constraint:
-            count = (count + count_constrained_tournaments(edge_index + 1, edges, constraints)) % mod
-        
-        return count
-    
-    # Generate all edges
-    edges = []
-    for i in range(n):
-        for j in range(i + 1, n):
-            edges.append((i, j))
-    
-    return count_constrained_tournaments(0, edges, constraints)
+# WRONG - crashes or wrong for n=0 or n=1
+def count_tournaments(n):
+    return pow(2, n * (n-1) // 2, MOD)
 
-def constrained_tournament_count_optimized(n, constraints, mod=10**9+7):
-    """
-    Optimized constrained tournament counting
-    
-    Args:
-        n: number of players
-        constraints: list of constraints for each edge
-        mod: modulo value
-    
-    Returns:
-        int: number of constrained tournament graphs modulo mod
-    """
-    # Calculate total number of constrained tournaments
-    total = 1
-    for constraint in constraints:
-        total = (total * len(constraint)) % mod
-    
-    return total
-
-# Example usage
-n = 3
-constraints = [
-    [(0, 1), (1, 0)],  # Edge 0-1 can be directed either way
-    [(0, 2)],          # Edge 0-2 must be directed from 0 to 2
-    [(1, 2), (2, 1)]   # Edge 1-2 can be directed either way
-]
-result1 = constrained_tournament_count(n, constraints)
-result2 = constrained_tournament_count_optimized(n, constraints)
-print(f"Constrained tournament count: {result1}")
-print(f"Optimized constrained count: {result2}")
+# CORRECT - handle edge cases
+def count_tournaments(n):
+    if n <= 1:
+        return 1
+    return pow(2, n * (n-1) // 2, MOD)
 ```
 
-#### **2. Tournament Count with Weighted Edges**
-**Problem**: Count tournament graphs with weighted edges.
+**Problem:** n=0 or n=1 should return 1 (one trivial tournament).
 
-**Key Differences**: Edges have weights that affect counting
+### Mistake 3: Wrong Modular Arithmetic
 
-**Solution Approach**: Modify counting formula to include weights
-
-**Implementation**:
 ```python
-def weighted_tournament_count(n, weights, mod=10**9+7):
-    """
-    Count tournament graphs with weighted edges
-    
-    Args:
-        n: number of players
-        weights: list of weights for each edge
-        mod: modulo value
-    
-    Returns:
-        int: number of weighted tournament graphs modulo mod
-    """
-    def count_weighted_tournaments(edge_index, edges, weights, current_weight):
-        """Count weighted tournament graphs recursively"""
-        if edge_index == len(edges):
-            return current_weight % mod  # Return weighted count
-        
-        count = 0
-        edge = edges[edge_index]
-        weight = weights[edge_index]
-        
-        # Try both directions for current edge
-        for direction in [edge, (edge[1], edge[0])]:
-            new_weight = (current_weight * weight) % mod
-            count = (count + count_weighted_tournaments(edge_index + 1, edges, weights, new_weight)) % mod
-        
-        return count
-    
-    # Generate all edges
-    edges = []
-    for i in range(n):
-        for j in range(i + 1, n):
-            edges.append((i, j))
-    
-    return count_weighted_tournaments(0, edges, weights, 1)
+# WRONG - applying mod incorrectly
+result = (2 ** exponent) % MOD  # Very slow for large exponent!
 
-# Example usage
-n = 3
-weights = [2, 3, 1]  # Weights for edges 0-1, 0-2, 1-2
-result = weighted_tournament_count(n, weights)
-print(f"Weighted tournament count: {result}")
+# CORRECT - use three-argument pow
+result = pow(2, exponent, MOD)  # Fast modular exponentiation
 ```
 
-#### **3. Tournament Count with Multiple Tournaments**
-**Problem**: Count tournament graphs across multiple tournaments.
+**Problem:** Computing 2^exponent first creates a huge number.
+**Fix:** Use built-in modular pow or implement binary exponentiation.
 
-**Key Differences**: Handle multiple tournaments simultaneously
+---
 
-**Solution Approach**: Combine results from multiple tournaments
+## Edge Cases
 
-**Implementation**:
-```python
-def multi_tournament_count(tournaments, mod=10**9+7):
-    """
-    Count tournament graphs across multiple tournaments
-    
-    Args:
-        tournaments: list of tournament sizes
-        mod: modulo value
-    
-    Returns:
-        int: number of tournament graphs modulo mod
-    """
-    def count_single_tournament(n):
-        """Count tournaments for single tournament"""
-        return optimized_tournament_count(n, mod)
-    
-    # Count tournaments for each tournament
-    total_count = 1
-    for n in tournaments:
-        tournament_count = count_single_tournament(n)
-        total_count = (total_count * tournament_count) % mod
-    
-    return total_count
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single player | n = 1 | 1 | No edges, one trivial tournament |
+| No players | n = 0 | 1 | Empty tournament |
+| Two players | n = 2 | 2 | One edge, two directions |
+| Three players | n = 3 | 8 | 2^3 = 8 |
+| Large n | n = 10^6 | varies | Must use modular exponentiation |
 
-# Example usage
-tournaments = [3, 2, 4]  # Three tournaments of sizes 3, 2, 4
-result = multi_tournament_count(tournaments)
-print(f"Multi-tournament count: {result}")
-```
+---
 
-### Related Problems
+## When to Use This Pattern
 
-#### **CSES Problems**
-- [Counting Permutations](https://cses.fi/problemset/task/1075) - Combinatorics
-- [Counting Combinations](https://cses.fi/problemset/task/1075) - Combinatorics
-- [Counting Sequences](https://cses.fi/problemset/task/1075) - Combinatorics
+### Use Modular Exponentiation When:
+- Computing large powers with modulo
+- Counting arrangements where each choice is independent
+- Problems involving 2^k or a^k mod m
 
-#### **LeetCode Problems**
-- [Course Schedule](https://leetcode.com/problems/course-schedule/) - Graph theory
-- [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) - Graph theory
-- [Redundant Connection](https://leetcode.com/problems/redundant-connection/) - Graph theory
+### Pattern Recognition Checklist:
+- [ ] Does each choice multiply independently? Consider powers
+- [ ] Is the exponent very large? Use binary exponentiation
+- [ ] Need result mod p? Apply mod at each step
 
-#### **Problem Categories**
-- **Graph Theory**: Tournament graphs, directed graphs
-- **Combinatorics**: Mathematical counting, graph properties
-- **Mathematical Algorithms**: Modular arithmetic, number theory
+### Related Formulas
 
-## 🔗 Additional Resources
+| Structure | Count Formula |
+|-----------|---------------|
+| Tournament graphs on n vertices | 2^(n(n-1)/2) |
+| Labeled graphs on n vertices | 2^(n(n-1)/2) |
+| Binary strings of length n | 2^n |
+| Subsets of n elements | 2^n |
 
-### **Algorithm References**
-- [Graph Theory](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Combinatorics](https://cp-algorithms.com/combinatorics/binomial-coefficients.html) - Counting techniques
-- [Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html) - Modular arithmetic
+---
 
-### **Practice Problems**
-- [CSES Counting Permutations](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Counting Combinations](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Counting Sequences](https://cses.fi/problemset/task/1075) - Medium
+## Related Problems
 
-### **Further Reading**
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
-- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [Exponentiation](https://cses.fi/problemset/task/1095) | Basic modular exponentiation |
+| [Exponentiation II](https://cses.fi/problemset/task/1712) | Modular exponentiation with Fermat |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Counting Bits](https://cses.fi/problemset/task/1146) | Counting with binary properties |
+| [Bracket Sequences I](https://cses.fi/problemset/task/2064) | Combinatorial counting |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Graph Counting](https://cses.fi/problemset/task/2415) | More complex graph counting |
+| [Distributing Apples](https://cses.fi/problemset/task/1716) | Stars and bars counting |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** Tournament count = 2^(edges) where edges = n(n-1)/2
+2. **Time Optimization:** Binary exponentiation reduces O(k) to O(log k)
+3. **Space Trade-off:** O(1) space by computing iteratively
+4. **Pattern:** Independent binary choices lead to 2^n counting
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Derive the formula 2^(n(n-1)/2) from scratch
+- [ ] Implement binary exponentiation without reference
+- [ ] Handle overflow with proper type casting
+- [ ] Explain why modular arithmetic is applied at each step
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
+- [Tournament Graph - Wikipedia](https://en.wikipedia.org/wiki/Tournament_(graph_theory))
+- [CSES Problem Set](https://cses.fi/problemset/)

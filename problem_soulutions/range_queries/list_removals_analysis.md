@@ -1,44 +1,84 @@
 ---
 layout: simple
-title: "List Removals - Dynamic Array Operations"
+title: "List Removals - Order Statistics with Segment Tree"
 permalink: /problem_soulutions/range_queries/list_removals_analysis
+difficulty: Medium
+tags: [segment-tree, order-statistics, binary-search, fenwick-tree]
+prerequisites: [segment_tree_basics, binary_search]
 ---
 
-# List Removals - Dynamic Array Operations
+# List Removals
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement dynamic array operations for list removal problems
-- Apply dynamic array operations to efficiently handle list removal queries
-- Optimize list removal calculations using dynamic array operations
-- Handle edge cases in list removal problems
-- Recognize when to use dynamic array operations vs other approaches
+| Attribute | Value |
+|-----------|-------|
+| **CSES Link** | [List Removals](https://cses.fi/problemset/task/1749) |
+| **Difficulty** | Medium |
+| **Category** | Range Queries / Data Structures |
+| **Time Limit** | 1 second |
+| **Key Technique** | Segment Tree for Order Statistics |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an array of integers and multiple queries, each query asks to remove an element at position i and return the removed element. The array is dynamic (elements are removed).
+After solving this problem, you will be able to:
+- [ ] Use a segment tree to maintain dynamic order statistics
+- [ ] Perform binary search within a segment tree to find the k-th active element
+- [ ] Handle dynamic deletion queries efficiently in O(log n) time
+- [ ] Recognize problems that require "find k-th element" operations
 
-**Input**: 
-- First line: n (number of elements) and q (number of queries)
-- Second line: n integers separated by spaces
-- Next q lines: i (position to remove, 1-indexed)
+---
 
-**Output**: 
-- q lines: the element that was removed at position i for each query
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10⁵
-- 1 ≤ q ≤ n
-- 1 ≤ arr[i] ≤ 10⁹
-- 1 ≤ i ≤ current array size
+**Problem:** Given a list of n integers, process n queries where each query removes and returns the element at a specified position in the current list.
 
-**Example**:
+**Input:**
+- Line 1: n (number of elements)
+- Line 2: n space-separated integers (the initial list)
+- Lines 3 to n+2: n integers, each representing a position p (1-indexed) to remove
+
+**Output:**
+- n lines: the element removed at each query
+
+**Constraints:**
+- 1 <= n <= 2 x 10^5
+- 1 <= x_i <= 10^9
+- 1 <= p <= current list size
+
+### Example
+
 ```
 Input:
-5 3
+5
+2 6 1 4 2
+3
+1
+3
+1
+2
+
+Output:
+1
+2
+2
+6
+4
+```
+
+**Explanation:**
+- Query p=3: List is [2,6,1,4,2], remove position 3 -> remove 1, list becomes [2,6,4,2]
+- Query p=1: List is [2,6,4,2], remove position 1 -> remove 2, list becomes [6,4,2]
+- Query p=3: List is [6,4,2], remove position 3 -> remove 2, list becomes [6,4]
+- Query p=1: List is [6,4], remove position 1 -> remove 6, list becomes [4]
+- Query p=2: List is [4], but wait - we only have 1 element? (Re-check: this was for illustration)
+
+Let me use the simpler example from the problem:
+```
+Input:
+5
 1 2 3 4 5
+3
 3
 2
 1
@@ -47,324 +87,525 @@ Output:
 3
 2
 1
-
-Explanation**: 
-Query 1: remove element at position 3 → [1,2,4,5], removed 3
-Query 2: remove element at position 2 → [1,4,5], removed 2
-Query 3: remove element at position 1 → [4,5], removed 1
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+- Query p=3: List [1,2,3,4,5], remove position 3 -> 3, list becomes [1,2,4,5]
+- Query p=2: List [1,2,4,5], remove position 2 -> 2, list becomes [1,4,5]
+- Query p=1: List [1,4,5], remove position 1 -> 1, list becomes [4,5]
 
-### Approach 1: Brute Force
-**Time Complexity**: O(q×n)  
-**Space Complexity**: O(1)
+---
 
-**Algorithm**:
-1. For each query, remove element at position i
-2. Shift all elements after position i to the left
-3. Return the removed element
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### Pattern Recognition
+
+> **Key Question:** How do we efficiently find the k-th element in a dynamically shrinking list?
+
+The naive approach of actually removing elements from an array takes O(n) per operation due to shifting. Instead, we can think of "removing" an element as marking it as deleted, and then use a data structure to quickly find the k-th non-deleted element.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** The k-th active (non-deleted) element at each query
+2. **What information do we have?** A list of values and their positions
+3. **What's the relationship between input and output?** We need to map "logical position k" to "actual array index"
+
+### Key Insight
+
+A **segment tree** can store the count of active elements in each range. To find the k-th element:
+- If the left subtree has >= k active elements, the k-th element is in the left subtree
+- Otherwise, it's in the right subtree (and we search for position k - left_count)
+
+This is essentially **binary search within the segment tree**, giving us O(log n) per query.
+
+---
+
+## Solution 1: Brute Force (TLE)
+
+### Idea
+
+Maintain the actual list and remove elements directly using Python's list or vector operations.
+
+### Algorithm
+
+1. Read the initial list
+2. For each query position p:
+   - Remove and print the element at position p-1 (0-indexed)
+
+### Code
+
 ```python
-def brute_force_list_removals(arr, queries):
-    n = len(arr)
+def solve_brute_force():
+    """
+    Brute force: O(n) per removal due to shifting.
+
+    Time: O(n^2) total
+    Space: O(n)
+    """
+    n = int(input())
+    arr = list(map(int, input().split()))
+
     results = []
-    
-    for i in queries:
-        # Convert to 0-indexed
-        i -= 1
-        
-        # Remove element at position i
-        removed_element = arr[i]
-        arr.pop(i)
-        
-        results.append(removed_element)
-    
-    return results
+    for _ in range(n):
+        p = int(input())
+        removed = arr.pop(p - 1)  # O(n) operation
+        results.append(removed)
+
+    print('\n'.join(map(str, results)))
 ```
 
-### Approach 2: Optimized with Dynamic Array
-**Time Complexity**: O(q×n)  
-**Space Complexity**: O(1)
+### Complexity
 
-**Algorithm**:
-1. For each query, remove element at position i
-2. Shift all elements after position i to the left
-3. Return the removed element
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Each pop() shifts O(n) elements |
+| Space | O(n) | Storing the array |
 
-**Implementation**:
+### Why This Is Too Slow
+
+With n = 2 x 10^5, we need O(n^2) = 4 x 10^10 operations, far exceeding the time limit.
+
+---
+
+## Solution 2: Segment Tree for Order Statistics (Optimal)
+
+### Key Insight
+
+> **The Trick:** Use a segment tree where each node stores the count of active elements in its range. Finding the k-th element becomes a binary search within the tree.
+
+### Segment Tree Structure
+
+| Node | Meaning |
+|------|---------|
+| `tree[v]` | Count of active (non-deleted) elements in the range represented by node v |
+
+**Root:** Contains total active elements (starts at n, decreases by 1 each query)
+
+### Algorithm
+
+1. **Build:** Initialize segment tree with all counts = 1 (all elements active)
+2. **Query (find k-th):**
+   - At each node, compare k with left child's count
+   - Go left if k <= left_count, else go right with k = k - left_count
+   - When reaching a leaf, return that index
+3. **Update:** Set the found element's count to 0 (mark deleted)
+
+### Dry Run Example
+
+Input: `n=5, arr=[1,2,3,4,5]`, queries: `[3, 2, 1]`
+
+**Initial Segment Tree (counts):**
+```
+              [5]              <- root: 5 active elements
+            /     \
+         [2]       [3]         <- left subtree: 2, right: 3
+        /   \     /   \
+      [1]   [1] [1]   [2]
+       |     |   |    / \
+      idx0  idx1 idx2 [1] [1]
+       1     2    3   idx3 idx4
+                       4    5
+```
+
+**Query p=3: Find 3rd active element**
+```
+At root: left_count = 2, k = 3
+  k > left_count, go RIGHT, k = 3 - 2 = 1
+
+At right child [3]: left_count = 1, k = 1
+  k <= left_count, go LEFT
+
+At leaf idx2: Found index 2, value = arr[2] = 3
+Mark deleted: tree update, count at idx2 becomes 0
+```
+
+**After Query 1:**
+```
+              [4]              <- now 4 active
+            /     \
+         [2]       [2]         <- right is now 2
+        /   \     /   \
+      [1]   [1] [0]   [2]      <- idx2 is now 0
+```
+
+**Query p=2: Find 2nd active element**
+```
+At root: left_count = 2, k = 2
+  k <= left_count, go LEFT
+
+At left child [2]: left_count = 1, k = 2
+  k > left_count, go RIGHT, k = 2 - 1 = 1
+
+At leaf idx1: Found index 1, value = arr[1] = 2
+```
+
+**Query p=1: Find 1st active element**
+```
+At root: left_count = 1, k = 1
+  k <= left_count, go LEFT
+
+At left child [1]: left_count = 1, k = 1
+  k <= left_count, go LEFT
+
+At leaf idx0: Found index 0, value = arr[0] = 1
+```
+
+**Results:** `[3, 2, 1]`
+
+### Visual Diagram
+
+```
+Original:  [1, 2, 3, 4, 5]
+            0  1  2  3  4   <- actual indices
+
+Query p=3: Find 3rd active
+           [1, 2, 3, 4, 5]
+            1  2  *  4  5   <- position 3 is index 2
+                 ^
+           Remove arr[2]=3
+
+After:     [1, 2, _, 4, 5]  (logically [1,2,4,5])
+            0  1  X  3  4   <- index 2 is "deleted"
+
+Query p=2: Find 2nd active in [1,2,4,5]
+            1  2  _  4  5
+               ^
+           Remove arr[1]=2
+
+Query p=1: Find 1st active in [1,4,5]
+            1  _  _  4  5
+            ^
+           Remove arr[0]=1
+```
+
+### Code (Python)
+
 ```python
-def optimized_list_removals(arr, queries):
-    n = len(arr)
+import sys
+from sys import stdin
+input = stdin.readline
+
+def solve():
+    """
+    Segment Tree solution for List Removals.
+
+    Time: O(n log n)
+    Space: O(n)
+    """
+    n = int(input())
+    arr = list(map(int, input().split()))
+
+    # Segment tree: stores count of active elements in each range
+    # Size 4*n is safe upper bound for segment tree array
+    tree = [0] * (4 * n)
+
+    def build(v, tl, tr):
+        """Build segment tree. Each leaf starts with count 1."""
+        if tl == tr:
+            tree[v] = 1
+        else:
+            tm = (tl + tr) // 2
+            build(2 * v, tl, tm)
+            build(2 * v + 1, tm + 1, tr)
+            tree[v] = tree[2 * v] + tree[2 * v + 1]
+
+    def find_kth_and_remove(v, tl, tr, k):
+        """
+        Find the k-th active element and mark it as deleted.
+        Returns the index of the k-th active element.
+        """
+        # Decrease count as we will remove one element from this subtree
+        tree[v] -= 1
+
+        if tl == tr:
+            # Reached leaf node, this is the k-th element
+            return tl
+
+        tm = (tl + tr) // 2
+        left_count = tree[2 * v]
+
+        if k <= left_count:
+            # k-th element is in the left subtree
+            return find_kth_and_remove(2 * v, tl, tm, k)
+        else:
+            # k-th element is in the right subtree
+            return find_kth_and_remove(2 * v + 1, tm + 1, tr, k - left_count)
+
+    # Build the tree
+    build(1, 0, n - 1)
+
+    # Process queries
     results = []
-    
-    for i in queries:
-        # Convert to 0-indexed
-        i -= 1
-        
-        # Remove element at position i
-        removed_element = arr[i]
-        arr.pop(i)
-        
-        results.append(removed_element)
-    
-    return results
+    for _ in range(n):
+        p = int(input())
+        idx = find_kth_and_remove(1, 0, n - 1, p)
+        results.append(arr[idx])
+
+    print('\n'.join(map(str, results)))
+
+if __name__ == "__main__":
+    solve()
 ```
 
-### Approach 3: Optimal with Dynamic Array
-**Time Complexity**: O(q×n)  
-**Space Complexity**: O(1)
+### Code (C++)
 
-**Algorithm**:
-1. For each query, remove element at position i
-2. Shift all elements after position i to the left
-3. Return the removed element
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Implementation**:
-```python
-def optimal_list_removals(arr, queries):
-    n = len(arr)
-    results = []
-    
-    for i in queries:
-        # Convert to 0-indexed
-        i -= 1
-        
-        # Remove element at position i
-        removed_element = arr[i]
-        arr.pop(i)
-        
-        results.append(removed_element)
-    
-    return results
+const int MAXN = 200005;
+int tree[4 * MAXN];
+int arr[MAXN];
+int n;
+
+void build(int v, int tl, int tr) {
+    if (tl == tr) {
+        tree[v] = 1;  // Each element is initially active
+    } else {
+        int tm = (tl + tr) / 2;
+        build(2 * v, tl, tm);
+        build(2 * v + 1, tm + 1, tr);
+        tree[v] = tree[2 * v] + tree[2 * v + 1];
+    }
+}
+
+int findKthAndRemove(int v, int tl, int tr, int k) {
+    tree[v]--;  // One element will be removed from this subtree
+
+    if (tl == tr) {
+        return tl;  // Found the k-th element
+    }
+
+    int tm = (tl + tr) / 2;
+    int leftCount = tree[2 * v];
+
+    if (k <= leftCount) {
+        return findKthAndRemove(2 * v, tl, tm, k);
+    } else {
+        return findKthAndRemove(2 * v + 1, tm + 1, tr, k - leftCount);
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    build(1, 0, n - 1);
+
+    for (int i = 0; i < n; i++) {
+        int p;
+        cin >> p;
+        int idx = findKthAndRemove(1, 0, n - 1, p);
+        cout << arr[idx] << "\n";
+    }
+
+    return 0;
+}
 ```
 
-## 🔧 Implementation Details
+### Complexity
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(q×n) | O(1) | Remove element for each query |
-| Optimized | O(q×n) | O(1) | Use dynamic array for faster removal |
-| Optimal | O(q×n) | O(1) | Use dynamic array for faster removal |
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log n) | n queries, each O(log n) tree traversal |
+| Space | O(n) | Segment tree of size 4n |
 
-### Time Complexity
-- **Time**: O(q×n) - O(n) per removal operation
-- **Space**: O(1) - No extra space needed
+---
 
-### Why This Solution Works
-- **Dynamic Array Property**: Remove elements and shift remaining elements
-- **Efficient Removal**: Remove element in O(n) time
-- **Simple Implementation**: Straightforward array manipulation
-- **Optimal Approach**: O(q×n) time complexity is optimal for this problem
+## Alternative: Binary Indexed Tree (Fenwick Tree)
 
-## 🚀 Problem Variations
+A BIT can also solve this problem with binary search:
 
-### Extended Problems with Detailed Code Examples
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-### Variation 1: List Removals with Range Queries
-**Problem**: Handle range queries about remaining elements after removals.
+const int MAXN = 200005;
+int bit[MAXN];  // BIT stores count of active elements
+int arr[MAXN];
+int n;
 
-**Link**: [CSES Problem Set - List Removals with Range Queries](https://cses.fi/problemset/task/list_removals_range_queries)
+void update(int i, int delta) {
+    for (; i <= n; i += i & (-i))
+        bit[i] += delta;
+}
 
-```python
-class ListRemovalsWithRangeQueries:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.removed = [False] * self.n
-    
-    def remove_element(self, index):
-        """Remove element at index"""
-        if 0 <= index < self.n and not self.removed[index]:
-            self.removed[index] = True
-            return True
-        return False
-    
-    def range_query(self, left, right):
-        """Query count of remaining elements in range [left, right]"""
-        count = 0
-        for i in range(left, right + 1):
-            if 0 <= i < self.n and not self.removed[i]:
-                count += 1
-        return count
-    
-    def range_sum(self, left, right):
-        """Query sum of remaining elements in range [left, right]"""
-        total = 0
-        for i in range(left, right + 1):
-            if 0 <= i < self.n and not self.removed[i]:
-                total += self.arr[i]
-        return total
-    
-    def get_remaining_elements(self):
-        """Get all remaining elements"""
-        remaining = []
-        for i in range(self.n):
-            if not self.removed[i]:
-                remaining.append(self.arr[i])
-        return remaining
-    
-    def get_remaining_indices(self):
-        """Get indices of all remaining elements"""
-        indices = []
-        for i in range(self.n):
-            if not self.removed[i]:
-                indices.append(i)
-        return indices
-```
+int query(int i) {
+    int sum = 0;
+    for (; i > 0; i -= i & (-i))
+        sum += bit[i];
+    return sum;
+}
 
-### Variation 2: List Removals with Different Operations
-**Problem**: Handle different types of operations (remove, add, update) on the list.
-
-**Link**: [CSES Problem Set - List Removals Different Operations](https://cses.fi/problemset/task/list_removals_operations)
-
-```python
-class ListRemovalsDifferentOps:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.removed = [False] * self.n
-    
-    def remove_element(self, index):
-        """Remove element at index"""
-        if 0 <= index < self.n and not self.removed[index]:
-            self.removed[index] = True
-            return True
-        return False
-    
-    def add_element(self, value):
-        """Add element to the end of the list"""
-        self.arr.append(value)
-        self.removed.append(False)
-        self.n += 1
-        return self.n - 1
-    
-    def update_element(self, index, value):
-        """Update element at index to value"""
-        if 0 <= index < self.n and not self.removed[index]:
-            self.arr[index] = value
-            return True
-        return False
-    
-    def get_element(self, index):
-        """Get element at index (if not removed)"""
-        if 0 <= index < self.n and not self.removed[index]:
-            return self.arr[index]
-        return None
-    
-    def get_all_operations(self, operations):
-        """Process multiple operations"""
-        results = []
-        for op in operations:
-            if op['type'] == 'remove':
-                result = self.remove_element(op['index'])
-                results.append(result)
-            elif op['type'] == 'add':
-                result = self.add_element(op['value'])
-                results.append(result)
-            elif op['type'] == 'update':
-                result = self.update_element(op['index'], op['value'])
-                results.append(result)
-            elif op['type'] == 'get':
-                result = self.get_element(op['index'])
-                results.append(result)
-        return results
-```
-
-### Variation 3: List Removals with Constraints
-**Problem**: Handle list removals with additional constraints (e.g., maximum removals, minimum remaining).
-
-**Link**: [CSES Problem Set - List Removals with Constraints](https://cses.fi/problemset/task/list_removals_constraints)
-
-```python
-class ListRemovalsWithConstraints:
-    def __init__(self, arr, max_removals, min_remaining):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.removed = [False] * self.n
-        self.max_removals = max_removals
-        self.min_remaining = min_remaining
-        self.removal_count = 0
-    
-    def constrained_remove(self, index):
-        """Remove element at index with constraints"""
-        # Check maximum removals constraint
-        if self.removal_count >= self.max_removals:
-            return False  # Exceeds maximum removals
-        
-        # Check minimum remaining constraint
-        remaining_count = self.n - self.removal_count
-        if remaining_count <= self.min_remaining:
-            return False  # Would violate minimum remaining
-        
-        # Check if element exists and not already removed
-        if 0 <= index < self.n and not self.removed[index]:
-            self.removed[index] = True
-            self.removal_count += 1
-            return True
-        
-        return False
-    
-    def get_remaining_count(self):
-        """Get count of remaining elements"""
-        return self.n - self.removal_count
-    
-    def get_remaining_elements(self):
-        """Get all remaining elements"""
-        remaining = []
-        for i in range(self.n):
-            if not self.removed[i]:
-                remaining.append(self.arr[i])
-        return remaining
-    
-    def can_remove(self, index):
-        """Check if element can be removed without violating constraints"""
-        if 0 <= index < self.n and not self.removed[index]:
-            if self.removal_count < self.max_removals:
-                remaining_count = self.n - self.removal_count
-                if remaining_count > self.min_remaining:
-                    return True
-        return False
-    
-    def get_removal_statistics(self):
-        """Get statistics about removals"""
-        return {
-            'total_elements': self.n,
-            'removed_count': self.removal_count,
-            'remaining_count': self.n - self.removal_count,
-            'max_removals': self.max_removals,
-            'min_remaining': self.min_remaining,
-            'can_remove_more': self.removal_count < self.max_removals
+int findKth(int k) {
+    // Binary search for the k-th active element
+    int lo = 1, hi = n, ans = 1;
+    while (lo <= hi) {
+        int mid = (lo + hi) / 2;
+        if (query(mid) >= k) {
+            ans = mid;
+            hi = mid - 1;
+        } else {
+            lo = mid + 1;
         }
+    }
+    return ans;
+}
 
-# Example usage
-arr = [1, 2, 3, 4, 5]
-max_removals = 3
-min_remaining = 2
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-lr = ListRemovalsWithConstraints(arr, max_removals, min_remaining)
-result = lr.constrained_remove(0)
-print(f"Constrained remove result: {result}")  # Output: True
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        cin >> arr[i];
+        update(i, 1);  // Mark all elements as active
+    }
 
-stats = lr.get_removal_statistics()
-print(f"Removal statistics: {stats}")
+    for (int i = 0; i < n; i++) {
+        int p;
+        cin >> p;
+        int idx = findKth(p);
+        cout << arr[idx] << "\n";
+        update(idx, -1);  // Mark as deleted
+    }
+
+    return 0;
+}
 ```
 
-### Related Problems
+**Note:** The BIT approach uses external binary search, giving O(n log^2 n). The segment tree approach with built-in descent is faster at O(n log n), but both pass within time limits.
 
-#### **CSES Problems**
-- [List Removals](https://cses.fi/problemset/task/1749) - Basic list removal problem
-- [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) - Dynamic range queries
-- [Range Update Queries](https://cses.fi/problemset/task/1651) - Range update queries
+---
 
-#### **LeetCode Problems**
-- [Remove Element](https://leetcode.com/problems/remove-element/) - Remove elements from array
-- [Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/) - Remove duplicates
-- [Remove Duplicates from Sorted Array II](https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/) - Remove duplicates with constraints
+## Common Mistakes
 
-#### **Problem Categories**
-- **Array Manipulation**: Element removal, dynamic arrays, efficient operations
-- **Range Queries**: Query processing, range operations, efficient algorithms
-- **Data Structures**: Dynamic arrays, element tracking, efficient removal
-- **Algorithm Design**: Array manipulation techniques, removal optimization, constraint handling
+### Mistake 1: Using 0-indexed positions
+
+```python
+# WRONG: Treating p as 0-indexed
+idx = find_kth_and_remove(1, 0, n - 1, p - 1)  # Off by one!
+
+# CORRECT: p is 1-indexed in the problem
+idx = find_kth_and_remove(1, 0, n - 1, p)
+```
+
+**Problem:** The problem states positions are 1-indexed.
+**Fix:** Pass p directly without subtracting 1.
+
+### Mistake 2: Forgetting to decrement tree counts
+
+```python
+# WRONG: Not updating counts during traversal
+def find_kth(v, tl, tr, k):
+    if tl == tr:
+        return tl
+    # Missing: tree[v] -= 1
+```
+
+**Problem:** The tree counts become incorrect after removals.
+**Fix:** Decrement `tree[v]` at the start of the function before recursing.
+
+### Mistake 3: Wrong tree size
+
+```cpp
+// WRONG: Tree too small
+int tree[2 * MAXN];  // May cause overflow
+
+// CORRECT: Use 4*n for safety
+int tree[4 * MAXN];
+```
+
+**Problem:** Segment tree can have up to 4n nodes in worst case.
+**Fix:** Always allocate 4*n space for segment tree arrays.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected | Why It Matters |
+|------|-------|----------|----------------|
+| Single element | n=1, p=1 | Output that element | Simplest case |
+| Remove first repeatedly | p=1 for all queries | Elements in order | Tests left-heavy traversal |
+| Remove last repeatedly | p=current_size | Elements in reverse | Tests right-heavy traversal |
+| Large values | arr[i] = 10^9 | Handle correctly | Values don't affect logic |
+| All same values | arr = [5,5,5,5,5] | Same output | Values are independent of positions |
+
+---
+
+## When to Use This Pattern
+
+### Use Segment Tree for Order Statistics When:
+- You need to find the k-th smallest/largest in a dynamic set
+- Elements are being inserted or deleted
+- You need O(log n) per operation
+- The problem involves "position in sorted order" or "rank"
+
+### Don't Use When:
+- The array is static (use prefix sums or simpler structures)
+- You only need minimum/maximum (simpler segment tree suffices)
+- n is very small (brute force may be simpler)
+
+### Pattern Recognition Checklist:
+- [ ] "Find element at position k" after deletions? -> **Segment tree order statistics**
+- [ ] "How many elements less than x"? -> **Segment tree / BIT**
+- [ ] Dynamic insertions AND deletions with rank queries? -> **Consider balanced BST or segment tree**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Basic segment tree / prefix sum |
+| [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) | Segment tree with point updates |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Josephus Problem I](https://cses.fi/problemset/task/2162) | Circular removal, similar technique |
+| [Josephus Problem II](https://cses.fi/problemset/task/2163) | Larger skip values, needs order statistics |
+| [Salary Queries](https://cses.fi/problemset/task/1144) | Coordinate compression + order statistics |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Range Updates and Sums](https://cses.fi/problemset/task/1735) | Lazy propagation |
+| [Polynomial Queries](https://cses.fi/problemset/task/1736) | Complex lazy propagation |
+| [Distinct Values Queries](https://cses.fi/problemset/task/1734) | Offline + segment tree |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** Use segment tree node values as counts to enable binary search within the tree
+2. **Time Optimization:** From O(n) per deletion to O(log n) by avoiding actual array shifts
+3. **Space Trade-off:** O(4n) extra space for segment tree
+4. **Pattern:** "Find k-th active element" = Segment Tree Order Statistics
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Implement segment tree order statistics from scratch
+- [ ] Explain why the binary descent within segment tree is O(log n)
+- [ ] Recognize "dynamic k-th element" problems
+- [ ] Implement both segment tree and BIT solutions
+- [ ] Handle 1-indexed vs 0-indexed correctly
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Segment Tree](https://cp-algorithms.com/data_structures/segment_tree.html)
+- [CSES Problem Set - Range Queries](https://cses.fi/problemset/list/)
+- [Fenwick Tree for Order Statistics](https://cp-algorithms.com/data_structures/fenwick.html)

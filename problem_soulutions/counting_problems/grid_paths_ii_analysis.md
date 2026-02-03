@@ -1,593 +1,492 @@
 ---
 layout: simple
-title: "Grid Paths II"
+title: "Grid Paths II - Counting Problem"
 permalink: /problem_soulutions/counting_problems/grid_paths_ii_analysis
+difficulty: Medium
+tags: [dynamic-programming, grid, counting, obstacles]
+prerequisites: [grid_paths]
 ---
-
 
 # Grid Paths II
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand grid path counting with obstacles and movement constraints
-- Apply dynamic programming to count valid paths in 2D grids
-- Implement efficient DP algorithms for grid path counting with obstacles
-- Optimize grid path counting using space-efficient DP techniques
-- Handle edge cases in grid path counting (blocked start/end, no valid paths)
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Dynamic Programming |
+| **Time Limit** | 1 second |
+| **Key Technique** | Grid DP with Obstacles |
+| **CSES Link** | [Grid Paths II](https://cses.fi/problemset/task/1638) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an n×n grid with some blocked cells, count the number of paths from the top-left corner to the bottom-right corner, moving only right or down.
+After solving this problem, you will be able to:
+- [ ] Apply dynamic programming to count paths in a 2D grid with obstacles
+- [ ] Handle blocked cells by setting their DP value to zero
+- [ ] Optimize space complexity from O(n^2) to O(n) using a rolling array
+- [ ] Recognize the grid path counting pattern in similar problems
 
-**Input**: 
-- First line: integer n (size of the grid)
-- Next n lines: n characters each ('.' for empty cell, '#' for blocked cell)
+---
 
-**Output**: 
-- Print the number of valid paths modulo 10^9 + 7
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 1000
+**Problem:** Given an n x n grid where some cells are blocked, count the number of paths from the top-left corner (1,1) to the bottom-right corner (n,n). You can only move right or down.
 
-**Example**:
+**Input:**
+- Line 1: integer n (grid size)
+- Lines 2 to n+1: n characters each ('.' = empty, '*' = blocked)
+
+**Output:**
+- Number of valid paths modulo 10^9 + 7
+
+**Constraints:**
+- 1 <= n <= 1000
+
+### Example
+
 ```
 Input:
-3
-...
-.#.
-...
+4
+....
+.*..
+..*.
+....
 
 Output:
-2
-
-Explanation**: 
-In the 3×3 grid, there are 2 valid paths from (0,0) to (2,2):
-1. Right → Right → Down → Down: (0,0) → (0,1) → (0,2) → (1,2) → (2,2)
-2. Down → Down → Right → Right: (0,0) → (1,0) → (2,0) → (2,1) → (2,2)
-
-Both paths avoid the blocked cell at (1,1) and reach the destination.
+3
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force - Generate All Possible Paths
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Path Generation**: Generate all possible paths from start to end
-- **Path Validation**: Check if each path avoids blocked cells
-- **Complete Coverage**: Guaranteed to find all valid paths
-- **Simple Implementation**: Recursive approach to explore all possibilities
-
-**Key Insight**: Systematically generate all possible paths from (0,0) to (n-1,n-1) and count those that avoid blocked cells.
-
-**Algorithm**:
-- Use recursive DFS to explore all possible paths
-- At each cell, try moving right and down (if valid)
-- Count paths that reach the destination without hitting blocked cells
-
-**Visual Example**:
-```
-Grid (3×3):
-. . .
-. # .
-. . .
-
-All possible paths from (0,0) to (2,2):
-1. R→R→D→D: (0,0)→(0,1)→(0,2)→(1,2)→(2,2) ✓
-2. R→D→R→D: (0,0)→(0,1)→(1,1) ✗ (blocked)
-3. R→D→D→R: (0,0)→(0,1)→(1,1) ✗ (blocked)
-4. D→R→R→D: (0,0)→(1,0)→(1,1) ✗ (blocked)
-5. D→R→D→R: (0,0)→(1,0)→(1,1) ✗ (blocked)
-6. D→D→R→R: (0,0)→(1,0)→(2,0)→(2,1)→(2,2) ✓
-
-Valid paths: 2
-```
-
-**Implementation**:
-```python
-def brute_force_grid_paths(grid):
-    """
-    Count valid paths using brute force approach
-    
-    Args:
-        grid: 2D list representing the grid ('.' for empty, '#' for blocked)
-    
-    Returns:
-        int: number of valid paths from (0,0) to (n-1,n-1)
-    """
-    n = len(grid)
-    
-    def dfs(i, j):
-        # Base case: reached destination
-        if i == n-1 and j == n-1:
-            return 1
-        
-        # Base case: out of bounds or blocked
-        if i >= n or j >= n or grid[i][j] == '#':
-            return 0
-        
-        # Recursive case: try moving right and down
-        return dfs(i, j+1) + dfs(i+1, j)
-    
-    return dfs(0, 0)
-
-# Example usage
-grid = [
-    ['.', '.', '.'],
-    ['.', '#', '.'],
-    ['.', '.', '.']
-]
-result = brute_force_grid_paths(grid)
-print(f"Brute force result: {result}")  # Output: 2
-```
-
-**Time Complexity**: O(2^(2n)) - Exponential due to overlapping subproblems
-**Space Complexity**: O(n) - Recursion stack depth
-
-**Why it's inefficient**: Exponential time complexity due to repeated calculations of the same subproblems.
+**Explanation:** The three valid paths from (1,1) to (4,4) avoiding obstacles:
+1. Right -> Right -> Right -> Down -> Down -> Down
+2. Down -> Right -> Right -> Down -> Down -> Right
+3. Down -> Down -> Right -> Right -> Down -> Right
 
 ---
 
-### Approach 2: Optimized - Dynamic Programming with Memoization
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Approach**:
-- **Memoization**: Store results of subproblems to avoid recomputation
-- **Overlapping Subproblems**: Many paths share common subpaths
-- **Top-Down DP**: Use recursive approach with memoization
-- **Efficient Storage**: Cache results for each cell position
+### Pattern Recognition
 
-**Key Insight**: Use memoization to avoid recalculating the same subproblems, significantly reducing time complexity.
+> **Key Question:** How does adding obstacles change the basic grid path counting problem?
 
-**Algorithm**:
-- Use recursive DFS with memoization
-- Store the number of paths from each cell to the destination
-- Return cached result if already computed
+Without obstacles, the number of paths to any cell (i,j) is the sum of paths to (i-1,j) and (i,j-1). With obstacles, we simply set the path count to 0 for any blocked cell, which naturally propagates through the DP computation.
 
-**Visual Example**:
-```
-Grid (3×3):
-. . .
-. # .
-. . .
+### Breaking Down the Problem
 
-Memoization table (paths from each cell to (2,2)):
-[2, 1, 1]
-[1, 0, 1]
-[1, 1, 1]
+1. **What are we counting?** Paths from top-left to bottom-right using only right/down moves
+2. **How do obstacles affect paths?** A blocked cell cannot be part of any path, so dp[i][j] = 0
+3. **What's the recurrence?** dp[i][j] = dp[i-1][j] + dp[i][j-1] (if cell is not blocked)
 
-Explanation:
-- (0,0): 2 paths (R→R→D→D, D→D→R→R)
-- (0,1): 1 path (R→D→D)
-- (0,2): 1 path (D→D)
-- (1,0): 1 path (D→R→R)
-- (1,1): 0 paths (blocked)
-- (1,2): 1 path (D)
-- (2,0): 1 path (R→R)
-- (2,1): 1 path (R)
-- (2,2): 1 path (destination)
-```
+### Analogy
 
-**Implementation**:
-```python
-def optimized_grid_paths(grid):
-    """
-    Count valid paths using memoization
-    
-    Args:
-        grid: 2D list representing the grid
-    
-    Returns:
-        int: number of valid paths from (0,0) to (n-1,n-1)
-    """
-    n = len(grid)
-    memo = {}
-    
-    def dfs(i, j):
-        # Base case: reached destination
-        if i == n-1 and j == n-1:
-            return 1
-        
-        # Base case: out of bounds or blocked
-        if i >= n or j >= n or grid[i][j] == '#':
-            return 0
-        
-        # Check if already computed
-        if (i, j) in memo:
-            return memo[(i, j)]
-        
-        # Compute and store result
-        result = dfs(i, j+1) + dfs(i+1, j)
-        memo[(i, j)] = result
-        return result
-    
-    return dfs(0, 0)
-
-# Example usage
-grid = [
-    ['.', '.', '.'],
-    ['.', '#', '.'],
-    ['.', '.', '.']
-]
-result = optimized_grid_paths(grid)
-print(f"Optimized result: {result}")  # Output: 2
-```
-
-**Time Complexity**: O(n²) - Each cell computed once
-**Space Complexity**: O(n²) - For memoization table
-
-**Why it's better**: Eliminates redundant calculations, making it much more efficient.
+Imagine water flowing from the top-left corner. It can only flow right or down. Obstacles are like dams that block flow completely. The amount of water reaching the bottom-right is the sum of all possible flow paths.
 
 ---
 
-### Approach 3: Optimal - Bottom-Up Dynamic Programming
+## Solution 1: Brute Force (DFS)
 
-**Key Insights from Optimal Approach**:
-- **Bottom-Up DP**: Build solution from base cases to target
-- **Tabular Approach**: Use 2D table to store results
-- **Iterative Solution**: Avoid recursion overhead
-- **Space Optimization**: Can optimize space usage further
+### Idea
 
-**Key Insight**: Use bottom-up dynamic programming to build the solution iteratively, avoiding recursion and providing optimal time and space complexity.
+Try all possible paths using recursion. At each cell, branch into two choices: go right or go down.
 
-**Algorithm**:
-- Create DP table where dp[i][j] = number of paths from (i,j) to destination
-- Fill table from bottom-right to top-left
-- Handle blocked cells and boundary conditions
-- Return dp[0][0]
+### Algorithm
 
-**Visual Example**:
-```
-Grid (3×3):
-. . .
-. # .
-. . .
+1. Start at (0,0)
+2. If current cell is blocked or out of bounds, return 0
+3. If reached destination, return 1
+4. Recursively count paths going right + paths going down
 
-DP table construction (bottom-up):
-Step 1: Initialize destination
-[0, 0, 0]
-[0, 0, 0]
-[0, 0, 1]
+### Code
 
-Step 2: Fill bottom row
-[0, 0, 0]
-[0, 0, 1]
-[1, 1, 1]
-
-Step 3: Fill middle row
-[0, 0, 1]
-[0, 0, 1]
-[1, 1, 1]
-
-Step 4: Fill top row
-[2, 1, 1]
-[0, 0, 1]
-[1, 1, 1]
-
-Result: dp[0][0] = 2
-```
-
-**Implementation**:
 ```python
-def optimal_grid_paths(grid):
+def count_paths_brute(grid):
     """
-    Count valid paths using bottom-up DP
-    
-    Args:
-        grid: 2D list representing the grid
-    
-    Returns:
-        int: number of valid paths from (0,0) to (n-1,n-1)
+    Brute force DFS solution.
+    Time: O(2^(2n)) - exponential
+    Space: O(n) - recursion depth
     """
     n = len(grid)
-    
-    # Initialize DP table
+
+    def dfs(i, j):
+        if i >= n or j >= n or grid[i][j] == '*':
+            return 0
+        if i == n - 1 and j == n - 1:
+            return 1
+        return dfs(i + 1, j) + dfs(i, j + 1)
+
+    return dfs(0, 0)
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(2^(2n)) | Each cell branches into 2 paths |
+| Space | O(n) | Maximum recursion depth |
+
+### Why This Works (But Is Slow)
+
+The recursion explores all valid paths, but recomputes the same subproblems many times. For example, paths through (2,3) are recalculated for every path that reaches (2,3).
+
+---
+
+## Solution 2: Optimal Solution (Bottom-Up DP)
+
+### Key Insight
+
+> **The Trick:** The number of paths to cell (i,j) only depends on paths to (i-1,j) and (i,j-1). Process cells in order so dependencies are always computed first.
+
+### DP State Definition
+
+| State | Meaning |
+|-------|---------|
+| `dp[i][j]` | Number of paths from (0,0) to (i,j) avoiding obstacles |
+
+**In plain English:** dp[i][j] answers "How many ways can I reach cell (i,j) from the start?"
+
+### State Transition
+
+```
+dp[i][j] = 0                           if grid[i][j] == '*'
+dp[i][j] = dp[i-1][j] + dp[i][j-1]     otherwise
+```
+
+**Why?** Every path to (i,j) must come from either above (i-1,j) or left (i,j-1). Blocked cells contribute 0 paths.
+
+### Base Cases
+
+| Case | Value | Reason |
+|------|-------|--------|
+| `dp[0][0]` | 1 if empty, 0 if blocked | Starting point has 1 way to reach itself |
+| First row | Propagate from left | Can only come from the left |
+| First column | Propagate from above | Can only come from above |
+
+### Algorithm
+
+1. Initialize dp[0][0] = 1 (if not blocked)
+2. Fill first row: dp[0][j] = dp[0][j-1] if empty
+3. Fill first column: dp[i][0] = dp[i-1][0] if empty
+4. Fill rest: dp[i][j] = dp[i-1][j] + dp[i][j-1] if empty
+5. Return dp[n-1][n-1]
+
+### Dry Run Example
+
+Let's trace through with a simple 3x3 grid:
+
+```
+Grid (0-indexed):
+. . .    (row 0)
+. * .    (row 1, obstacle at (1,1))
+. . .    (row 2)
+
+Step 1: Initialize dp[0][0] = 1
+dp = [1, 0, 0]
+     [0, 0, 0]
+     [0, 0, 0]
+
+Step 2: Fill first row (propagate from left)
+dp[0][1] = dp[0][0] = 1
+dp[0][2] = dp[0][1] = 1
+dp = [1, 1, 1]
+     [0, 0, 0]
+     [0, 0, 0]
+
+Step 3: Fill first column (propagate from above)
+dp[1][0] = dp[0][0] = 1
+dp[2][0] = dp[1][0] = 1
+dp = [1, 1, 1]
+     [1, 0, 0]
+     [1, 0, 0]
+
+Step 4: Fill remaining cells row by row
+(1,1): blocked -> stays 0
+(1,2): dp[0][2] + dp[1][1] = 1 + 0 = 1
+dp = [1, 1, 1]
+     [1, 0, 1]
+     [1, 0, 0]
+
+(2,1): dp[1][1] + dp[2][0] = 0 + 1 = 1
+(2,2): dp[1][2] + dp[2][1] = 1 + 1 = 2
+dp = [1, 1, 1]
+     [1, 0, 1]
+     [1, 1, 2]  <- Final answer: 2 paths
+
+The 2 paths are:
+  Path 1: (0,0) -> (0,1) -> (0,2) -> (1,2) -> (2,2)
+  Path 2: (0,0) -> (1,0) -> (2,0) -> (2,1) -> (2,2)
+```
+
+### Code (Python)
+
+```python
+import sys
+input = sys.stdin.readline
+
+def solve():
+    MOD = 10**9 + 7
+    n = int(input())
+    grid = [input().strip() for _ in range(n)]
+
+    # Edge case: start or end blocked
+    if grid[0][0] == '*' or grid[n-1][n-1] == '*':
+        print(0)
+        return
+
+    # DP table
     dp = [[0] * n for _ in range(n)]
-    
-    # Base case: destination has 1 path
-    if grid[n-1][n-1] != '#':
-        dp[n-1][n-1] = 1
-    
-    # Fill table from bottom-right to top-left
-    for i in range(n-1, -1, -1):
-        for j in range(n-1, -1, -1):
-            # Skip if blocked or already filled (destination)
-            if grid[i][j] == '#' or (i == n-1 and j == n-1):
-                continue
-            
-            # Add paths from right and down
-            if j+1 < n:
-                dp[i][j] += dp[i][j+1]
-            if i+1 < n:
-                dp[i][j] += dp[i+1][j]
-    
-    return dp[0][0]
+    dp[0][0] = 1
 
-# Example usage
-grid = [
-    ['.', '.', '.'],
-    ['.', '#', '.'],
-    ['.', '.', '.']
-]
-result = optimal_grid_paths(grid)
-print(f"Optimal result: {result}")  # Output: 2
+    # Fill first row
+    for j in range(1, n):
+        if grid[0][j] == '.':
+            dp[0][j] = dp[0][j-1]
+
+    # Fill first column
+    for i in range(1, n):
+        if grid[i][0] == '.':
+            dp[i][0] = dp[i-1][0]
+
+    # Fill rest of the table
+    for i in range(1, n):
+        for j in range(1, n):
+            if grid[i][j] == '.':
+                dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD
+
+    print(dp[n-1][n-1])
+
+solve()
 ```
 
-**Time Complexity**: O(n²) - Fill entire DP table once
-**Space Complexity**: O(n²) - For DP table
+### Code (C++)
 
-**Why it's optimal**: Efficient bottom-up approach with optimal time and space complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-## 🔧 Implementation Details
+const int MOD = 1e9 + 7;
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(2^(2n)) | O(n) | Generate all paths recursively |
-| Memoization | O(n²) | O(n²) | Cache subproblem results |
-| Bottom-Up DP | O(n²) | O(n²) | Build solution iteratively |
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-### Time Complexity
-- **Time**: O(n²) - Each cell computed once in optimal approach
-- **Space**: O(n²) - For DP table
+    int n;
+    cin >> n;
 
-### Why This Solution Works
-- **Path Counting**: Count all valid paths from start to destination
-- **Obstacle Avoidance**: Skip blocked cells in path calculation
-- **Dynamic Programming**: Efficiently solve overlapping subproblems
-- **Optimal Approach**: Bottom-up DP provides best performance
+    vector<string> grid(n);
+    for (int i = 0; i < n; i++) {
+        cin >> grid[i];
+    }
 
-## 🚀 Problem Variations
+    // Edge case: start or end blocked
+    if (grid[0][0] == '*' || grid[n-1][n-1] == '*') {
+        cout << 0 << "\n";
+        return 0;
+    }
 
-### Extended Problems with Detailed Code Examples
+    vector<vector<long long>> dp(n, vector<long long>(n, 0));
+    dp[0][0] = 1;
 
-#### **1. Grid Paths with Multiple Destinations**
-**Problem**: Count paths from start to any of multiple destination cells.
+    // Fill first row
+    for (int j = 1; j < n; j++) {
+        if (grid[0][j] == '.') {
+            dp[0][j] = dp[0][j-1];
+        }
+    }
 
-**Key Differences**: Multiple possible end points instead of single destination
+    // Fill first column
+    for (int i = 1; i < n; i++) {
+        if (grid[i][0] == '.') {
+            dp[i][0] = dp[i-1][0];
+        }
+    }
 
-**Solution Approach**: Sum paths to all valid destinations
+    // Fill rest
+    for (int i = 1; i < n; i++) {
+        for (int j = 1; j < n; j++) {
+            if (grid[i][j] == '.') {
+                dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD;
+            }
+        }
+    }
 
-**Implementation**:
+    cout << dp[n-1][n-1] << "\n";
+    return 0;
+}
+```
+
+### Space-Optimized Solution (O(n) space)
+
+Since each row only depends on the previous row, we can use a single array:
+
 ```python
-def grid_paths_multiple_destinations(grid, start, destinations):
-    """
-    Count paths from start to any of multiple destinations
-    """
-    n, m = len(grid), len(grid[0])
-    dp = [[0] * m for _ in range(n)]
-    
-    # Initialize start position
-    dp[start[0]][start[1]] = 1
-    
-    # Fill DP table
+def solve_optimized():
+    MOD = 10**9 + 7
+    n = int(input())
+    grid = [input().strip() for _ in range(n)]
+
+    if grid[0][0] == '*' or grid[n-1][n-1] == '*':
+        print(0)
+        return
+
+    dp = [0] * n
+    dp[0] = 1
+
     for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 0:  # Not blocked
-                if i > 0:
-                    dp[i][j] += dp[i-1][j]
-                if j > 0:
-                    dp[i][j] += dp[i][j-1]
-    
-    # Sum paths to all destinations
-    total_paths = 0
-    for dest in destinations:
-        if grid[dest[0]][dest[1]] == 0:
-            total_paths += dp[dest[0]][dest[1]]
-    
-    return total_paths
+        for j in range(n):
+            if grid[i][j] == '*':
+                dp[j] = 0
+            elif j > 0:
+                dp[j] = (dp[j] + dp[j-1]) % MOD
 
-def grid_paths_with_waypoints(grid, start, waypoints, end):
-    """
-    Count paths that visit all waypoints in order
-    """
-    total_paths = 1
-    current = start
-    
-    # Visit each waypoint in order
-    for waypoint in waypoints:
-        paths = grid_paths_multiple_destinations(grid, current, [waypoint])
-        if paths == 0:
-            return 0
-        total_paths *= paths
-        current = waypoint
-    
-    # Final path to end
-    final_paths = grid_paths_multiple_destinations(grid, current, [end])
-    return total_paths * final_paths
-
-# Example usage
-grid = [[0, 0, 0], [0, 1, 0], [0, 0, 0]]
-start = (0, 0)
-destinations = [(2, 2), (1, 0), (0, 2)]
-result = grid_paths_multiple_destinations(grid, start, destinations)
-print(f"Paths to multiple destinations: {result}")  # Output: 3
+    print(dp[n-1])
 ```
 
-#### **2. Grid Paths with Constraints**
-**Problem**: Count paths with additional constraints (e.g., maximum steps, specific directions).
+### Complexity
 
-**Key Differences**: Add constraints to path generation
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Visit each cell once |
+| Space | O(n^2) or O(n) | Full DP table or rolling array |
 
-**Solution Approach**: Use constrained DP with additional state
+---
 
-**Implementation**:
+## Common Mistakes
+
+### Mistake 1: Forgetting to Check Start/End
+
 ```python
-def grid_paths_with_max_steps(grid, start, end, max_steps):
-    """
-    Count paths with maximum step constraint
-    """
-    n, m = len(grid), len(grid[0])
-    # DP[steps][i][j] = paths to (i,j) in exactly 'steps' moves
-    dp = [[[0] * m for _ in range(n)] for _ in range(max_steps + 1)]
-    
-    dp[0][start[0]][start[1]] = 1
-    
-    for steps in range(1, max_steps + 1):
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 0:  # Not blocked
-                    if i > 0:
-                        dp[steps][i][j] += dp[steps-1][i-1][j]
-                    if j > 0:
-                        dp[steps][i][j] += dp[steps-1][i][j-1]
-    
-    return dp[max_steps][end[0]][end[1]]
+# WRONG - crashes or gives wrong answer if start blocked
+dp[0][0] = 1
+for i in range(n):
+    for j in range(n):
+        ...
 
-def grid_paths_with_direction_constraints(grid, start, end, allowed_directions):
-    """
-    Count paths with specific direction constraints
-    """
-    n, m = len(grid), len(grid[0])
-    dp = [[0] * m for _ in range(n)]
-    
-    dp[start[0]][start[1]] = 1
-    
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 0:  # Not blocked
-                if 'up' in allowed_directions and i > 0:
-                    dp[i][j] += dp[i-1][j]
-                if 'left' in allowed_directions and j > 0:
-                    dp[i][j] += dp[i][j-1]
-    
-    return dp[end[0]][end[1]]
-
-def grid_paths_with_visits(grid, start, end, must_visit):
-    """
-    Count paths that must visit specific cells
-    """
-    def count_paths_with_visits(current, visited, remaining_visits):
-        if current == end and len(remaining_visits) == 0:
-            return 1
-        
-        if current in remaining_visits:
-            remaining_visits = remaining_visits - {current}
-        
-        total = 0
-        i, j = current
-        
-        # Try moving right
-        if j + 1 < len(grid[0]) and grid[i][j+1] == 0:
-            total += count_paths_with_visits((i, j+1), visited | {current}, remaining_visits)
-        
-        # Try moving down
-        if i + 1 < len(grid) and grid[i+1][j] == 0:
-            total += count_paths_with_visits((i+1, j), visited | {current}, remaining_visits)
-        
-        return total
-    
-    return count_paths_with_visits(start, set(), set(must_visit))
-
-# Example usage
-grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-start = (0, 0)
-end = (2, 2)
-max_steps = 4
-result = grid_paths_with_max_steps(grid, start, end, max_steps)
-print(f"Paths with max steps: {result}")  # Output: 6
+# CORRECT
+if grid[0][0] == '*' or grid[n-1][n-1] == '*':
+    print(0)
+    return
+dp[0][0] = 1
 ```
 
-#### **3. Grid Paths with Dynamic Obstacles**
-**Problem**: Count paths when obstacles can be added or removed dynamically.
+**Problem:** If start or end is blocked, there are 0 paths.
+**Fix:** Check and handle this edge case first.
 
-**Key Differences**: Handle dynamic grid changes
+### Mistake 2: Wrong Obstacle Character
 
-**Solution Approach**: Use incremental updates and caching
-
-**Implementation**:
 ```python
-class DynamicGridPaths:
-    def __init__(self, grid, start, end):
-        self.grid = [row[:] for row in grid]
-        self.n, self.m = len(grid), len(grid[0])
-        self.start = start
-        self.end = end
-        self.dp = None
-        self._recompute_paths()
-    
-    def _recompute_paths(self):
-        """Recompute all path counts"""
-        self.dp = [[0] * self.m for _ in range(self.n)]
-        self.dp[self.start[0]][self.start[1]] = 1
-        
-        for i in range(self.n):
-            for j in range(self.m):
-                if self.grid[i][j] == 0:  # Not blocked
-                    if i > 0:
-                        self.dp[i][j] += self.dp[i-1][j]
-                    if j > 0:
-                        self.dp[i][j] += self.dp[i][j-1]
-    
-    def add_obstacle(self, i, j):
-        """Add obstacle at position (i,j)"""
-        if self.grid[i][j] == 0:
-            self.grid[i][j] = 1
-            self._recompute_paths()
-    
-    def remove_obstacle(self, i, j):
-        """Remove obstacle at position (i,j)"""
-        if self.grid[i][j] == 1:
-            self.grid[i][j] = 0
-            self._recompute_paths()
-    
-    def get_path_count(self):
-        """Get current path count"""
-        return self.dp[self.end[0]][self.end[1]]
-    
-    def get_paths_to_cell(self, i, j):
-        """Get path count to specific cell"""
-        return self.dp[i][j]
+# WRONG - using '#' instead of '*'
+if grid[i][j] == '#':
+    dp[i][j] = 0
 
-def grid_paths_with_queries(grid, start, end, queries):
-    """
-    Answer multiple path queries with dynamic obstacles
-    """
-    solver = DynamicGridPaths(grid, start, end)
-    results = []
-    
-    for query in queries:
-        if query[0] == 'add_obstacle':
-            solver.add_obstacle(query[1], query[2])
-        elif query[0] == 'remove_obstacle':
-            solver.remove_obstacle(query[1], query[2])
-        elif query[0] == 'get_paths':
-            results.append(solver.get_path_count())
-        elif query[0] == 'get_paths_to':
-            results.append(solver.get_paths_to_cell(query[1], query[2]))
-    
-    return results
-
-# Example usage
-grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-start = (0, 0)
-end = (2, 2)
-queries = [
-    ('get_paths',),
-    ('add_obstacle', 1, 1),
-    ('get_paths',),
-    ('remove_obstacle', 1, 1),
-    ('get_paths',)
-]
-result = grid_paths_with_queries(grid, start, end, queries)
-print(f"Path counts: {result}")  # Output: [6, 2, 6]
+# CORRECT - CSES uses '*' for obstacles
+if grid[i][j] == '*':
+    dp[i][j] = 0
 ```
 
-### Related Problems
+**Problem:** Different problems use different characters for obstacles.
+**Fix:** Read the problem statement carefully for the exact format.
 
-#### **CSES Problems**
-- [Grid Paths II](https://cses.fi/problemset/task/2101) - Count paths with obstacles
-- [Grid Paths](https://cses.fi/problemset/task/2102) - Basic grid path counting
-- [Robot Paths](https://cses.fi/problemset/task/2103) - Robot path optimization
+### Mistake 3: Integer Overflow (C++)
 
-#### **LeetCode Problems**
-- [Unique Paths](https://leetcode.com/problems/unique-paths/) - Count paths without obstacles
-- [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) - Count paths with obstacles
-- [Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/) - Find minimum cost path
-- [Dungeon Game](https://leetcode.com/problems/dungeon-game/) - Path with health constraints
+```cpp
+// WRONG - may overflow before mod
+dp[i][j] = dp[i-1][j] + dp[i][j-1];
+dp[i][j] %= MOD;
 
-#### **Problem Categories**
-- **Dynamic Programming**: Path counting, state transitions, optimal substructure
-- **Grid Processing**: 2D array navigation, obstacle handling, path enumeration
-- **Combinatorics**: Path counting, constraint satisfaction, counting principles
-- **Graph Theory**: Grid as graph, path finding, connectivity analysis
+// CORRECT - use long long and mod during addition
+dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD;
+```
+
+### Mistake 4: Not Handling First Row/Column Correctly
+
+```python
+# WRONG - doesn't stop propagation after obstacle
+for j in range(1, n):
+    dp[0][j] = dp[0][j-1]  # Missing obstacle check!
+
+# CORRECT
+for j in range(1, n):
+    if grid[0][j] == '.':
+        dp[0][j] = dp[0][j-1]
+    # else dp[0][j] stays 0
+```
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Start blocked | `*...` | 0 | Cannot begin |
+| End blocked | `...*` | 0 | Cannot finish |
+| Single cell empty | n=1, `.` | 1 | Already at destination |
+| Single cell blocked | n=1, `*` | 0 | Blocked |
+| Full row blocked | Row of `*` | 0 | No path through |
+| Full column blocked | Column of `*` | 0 | No path through |
+| No obstacles | All `.` | C(2n-2, n-1) | Catalan-related |
+
+---
+
+## When to Use This Pattern
+
+### Use Grid DP When:
+- Counting paths in a 2D grid with movement constraints
+- Grid has obstacles or varying cell costs
+- Can only move in limited directions (right, down, etc.)
+- Subproblems overlap (same cell reached via different paths)
+
+### Don't Use When:
+- Need to find the actual path (use backtracking or parent pointers)
+- Movements can go in all 4 directions (use BFS/DFS instead)
+- Need shortest path with weights (use Dijkstra)
+
+### Pattern Recognition Checklist:
+- [ ] Grid with restricted movement? -> **Grid DP**
+- [ ] Counting paths, not finding one? -> **Grid DP**
+- [ ] Obstacles blocking some cells? -> **Set dp[blocked] = 0**
+- [ ] Need space optimization? -> **Use rolling array**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Link | Why It Helps |
+|---------|------|--------------|
+| Grid Paths | [CSES 1638](https://cses.fi/problemset/task/1638) | Same problem, simpler constraints |
+
+### Similar Difficulty
+
+| Problem | Link | Key Difference |
+|---------|------|----------------|
+| Edit Distance | [CSES 1639](https://cses.fi/problemset/task/1639) | Grid DP with different transitions |
+| Rectangle Cutting | [CSES 1744](https://cses.fi/problemset/task/1744) | 2D DP optimization |
+
+### Harder (Do These After)
+
+| Problem | Link | New Concept |
+|---------|------|-------------|
+| Book Shop | [CSES 1158](https://cses.fi/problemset/task/1158) | Knapsack DP |
+| Projects | [CSES 1140](https://cses.fi/problemset/task/1140) | DP with sorting |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Paths to (i,j) = paths from above + paths from left; blocked cells contribute 0
+2. **Time Optimization:** DP reduces exponential brute force to O(n^2)
+3. **Space Trade-off:** Can reduce from O(n^2) to O(n) with rolling array
+4. **Pattern:** Classic grid DP - fundamental for many 2D counting problems
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Solve this problem without looking at the solution
+- [ ] Explain why blocked cells propagate correctly through DP
+- [ ] Implement the space-optimized O(n) solution
+- [ ] Handle all edge cases (blocked start/end, single cell)
+- [ ] Implement in both Python and C++ in under 15 minutes

@@ -2,416 +2,429 @@
 layout: simple
 title: "Intersection Points - Geometry Problem"
 permalink: /problem_soulutions/geometry/intersection_points_analysis
+difficulty: Hard
+tags: [sweep-line, coordinate-compression, fenwick-tree, geometry]
+prerequisites: [line_segment_intersection]
 ---
 
 # Intersection Points
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of intersection points in computational geometry
-- Apply geometric algorithms for intersection point calculation
-- Implement efficient algorithms for intersection point finding
-- Optimize geometric operations for intersection analysis
-- Handle special cases in intersection point problems
+| Attribute | Value |
+|-----------|-------|
+| **CSES Link** | [https://cses.fi/problemset/task/2196](https://cses.fi/problemset/task/2196) |
+| **Difficulty** | Hard |
+| **Category** | Geometry |
+| **Time Limit** | 1 second |
+| **Key Technique** | Sweep Line + Fenwick Tree |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given n lines, find all intersection points between the lines.
+After solving this problem, you will be able to:
+- [ ] Apply sweep line algorithm to geometric intersection problems
+- [ ] Use coordinate compression to handle large coordinate ranges
+- [ ] Combine Fenwick Tree with sweep line for efficient counting
+- [ ] Process geometric events in the correct order
 
-**Input**: 
-- n: number of lines
-- lines: array of lines (each with coefficients a, b, c for ax + by + c = 0)
+---
 
-**Output**: 
-- List of all intersection points between the lines
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 1000
-- -10^6 ≤ coordinates ≤ 10^6
+**Problem:** Given n horizontal and vertical line segments, count the total number of intersection points.
 
-**Example**:
+**Input:**
+- Line 1: n (number of segments)
+- Next n lines: x1, y1, x2, y2 (endpoints of each segment)
+
+**Output:**
+- The total number of intersection points
+
+**Constraints:**
+- 1 <= n <= 10^5
+- -10^9 <= x1, y1, x2, y2 <= 10^9
+- Each segment is either horizontal (y1 = y2) or vertical (x1 = x2)
+
+### Example
+
 ```
 Input:
-n = 3
-lines = [(1,0,0), (0,1,0), (1,1,-2)]
+5
+0 2 4 2
+1 0 1 3
+2 1 2 4
+0 1 3 1
+4 0 4 3
 
 Output:
-[(0,0), (2,0), (0,2)]
-
-Explanation**: 
-Line 1: x = 0 (vertical line)
-Line 2: y = 0 (horizontal line)  
-Line 3: x + y = 2
-Intersections:
-- Line 1 & 2: (0,0)
-- Line 1 & 3: (0,2)
-- Line 2 & 3: (2,0)
+5
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all pairs of lines
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use line intersection formulas
-- **Inefficient**: O(n²) time complexity
-
-**Key Insight**: Check every pair of lines for intersection.
-
-**Algorithm**:
-- Iterate through all pairs of lines
-- Calculate intersection point for each pair
-- Check if lines actually intersect
-- Collect all intersection points
-
-**Visual Example**:
-```
-Lines: x=0, y=0, x+y=2
-
-Intersection calculations:
-┌─────────────────────────────────────┐
-│ Line 1 (x=0) & Line 2 (y=0):       │
-│ Intersection: (0,0)                 │
-│                                   │
-│ Line 1 (x=0) & Line 3 (x+y=2):     │
-│ Intersection: (0,2)                 │
-│                                   │
-│ Line 2 (y=0) & Line 3 (x+y=2):     │
-│ Intersection: (2,0)                 │
-│                                   │
-│ Result: [(0,0), (0,2), (2,0)]      │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def brute_force_intersection_points(n, lines):
-    """Find intersection points using brute force approach"""
-    def line_intersection(line1, line2):
-        a1, b1, c1 = line1
-        a2, b2, c2 = line2
-        det = a1 * b2 - a2 * b1
-        if abs(det) < 1e-9:
-            return None
-        x = (b1 * c2 - b2 * c1) / det
-        y = (a2 * c1 - a1 * c2) / det
-        return (x, y)
-    
-    intersection_points = []
-    for i in range(n):
-        for j in range(i + 1, n):
-            intersection = line_intersection(lines[i], lines[j])
-            if intersection is not None:
-                intersection_points.append(intersection)
-    return intersection_points
-```
-
-**Time Complexity**: O(n²)
-**Space Complexity**: O(n²)
+**Explanation:** Horizontal segment at y=2 intersects verticals at x=1,2,4. Horizontal at y=1 intersects verticals at x=1,2. Total: 5 intersections.
 
 ---
 
-### Approach 2: Sweep Line Algorithm
+## Intuition: How to Think About This Problem
 
-**Key Insights from Sweep Line Algorithm**:
-- **Sweep Line**: Use sweep line algorithm for intersection finding
-- **Event Processing**: Process line events efficiently
-- **Efficient Detection**: O(n log n + k) time complexity
-- **Optimization**: Much more efficient than brute force
+### Pattern Recognition
 
-**Key Insight**: Use sweep line algorithm for efficient intersection finding.
+> **Key Question:** How can we efficiently count intersections without checking all O(n^2) pairs?
 
-**Algorithm**:
-- Sort line endpoints by x-coordinate
-- Use sweep line to process events
-- Maintain active lines
-- Detect intersections during sweep
+Use a **sweep line** moving left to right. Track which vertical segments are "active" and count how many active verticals each horizontal segment crosses.
 
-**Visual Example**:
-```
-Sweep line algorithm:
-┌─────────────────────────────────────┐
-│ Events sorted by x-coordinate:     │
-│ 1. (0,0) - start of line 1         │
-│ 2. (0,0) - start of line 2         │
-│ 3. (0,2) - start of line 3         │
-│ 4. (2,0) - start of line 3         │
-│                                   │
-│ Active lines during sweep:        │
-│ x=0: [line1, line2]               │
-│ x=0: [line1, line2, line3]        │
-│ x=2: [line1, line3]               │
-│                                   │
-│ Intersections found: (0,0), (0,2), (2,0) │
-└─────────────────────────────────────┘
-```
+### Breaking Down the Problem
 
-**Implementation**:
-```python
-def sweep_line_intersection_points(n, lines):
-    """Find intersection points using sweep line algorithm"""
-    def line_intersection(line1, line2):
-        a1, b1, c1 = line1
-        a2, b2, c2 = line2
-        det = a1 * b2 - a2 * b1
-        if abs(det) < 1e-9:
-            return None
-        x = (b1 * c2 - b2 * c1) / det
-        y = (a2 * c1 - a1 * c2) / det
-        return (x, y)
-    
-    events = []
-    for i, line in enumerate(lines):
-        events.append((0, 'start', i))
-        events.append((10, 'end', i))
-    
-    events.sort()
-    active_lines = set()
-    intersection_points = []
-    
-    for x, event_type, line_id in events:
-        if event_type == 'start':
-            for active_id in active_lines:
-                intersection = line_intersection(lines[line_id], lines[active_id])
-                if intersection is not None:
-                    intersection_points.append(intersection)
-            active_lines.add(line_id)
-        else:
-            active_lines.remove(line_id)
-    
-    return intersection_points
-```
+1. **What are we looking for?** Count of intersection points
+2. **What's the relationship?** Horizontal (y=k, x in [a,b]) intersects vertical (x=c, y in [d,e]) iff a <= c <= b AND d <= k <= e
 
-**Time Complexity**: O(n log n + k) where k is number of intersections
-**Space Complexity**: O(n)
+### Analogy
+
+Think of vertical segments as "bookmarks" inserted at their x-coordinate. When processing a horizontal segment, count bookmarks whose y-range includes the horizontal's y-value.
 
 ---
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+## Solution 1: Brute Force
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for intersection finding
-- **Efficient Implementation**: O(n log n + k) time complexity
-- **Space Efficiency**: O(n) space complexity
-- **Optimal Complexity**: Best approach for intersection point finding
+### Idea
 
-**Key Insight**: Use advanced data structures for optimal intersection finding.
+Check every horizontal-vertical pair for intersection.
 
-**Algorithm**:
-- Use specialized data structures for line storage
-- Implement efficient intersection detection algorithms
-- Handle special cases optimally
-- Return intersection points
+### Code
 
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For lines: x=0, y=0, x+y=2
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Line tree: for efficient storage  │
-│ - Intersection cache: for optimization │
-│ - Event queue: for sweep line       │
-│                                   │
-│ Intersection detection:            │
-│ - Use line tree for efficient      │
-│   intersection detection           │
-│ - Use intersection cache for       │
-│   optimization                     │
-│ - Use event queue for sweep line   │
-│                                   │
-│ Result: [(0,0), (0,2), (2,0)]      │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
 ```python
-def advanced_data_structure_intersection_points(n, lines):
-    """Find intersection points using advanced data structure approach"""
-    def line_intersection(line1, line2):
-        a1, b1, c1 = line1
-        a2, b2, c2 = line2
-        det = a1 * b2 - a2 * b1
-        if abs(det) < 1e-9:
-            return None
-        x = (b1 * c2 - b2 * c1) / det
-        y = (a2 * c1 - a1 * c2) / det
-        return (x, y)
-    
-    events = []
-    for i, line in enumerate(lines):
-        events.append((0, 'start', i))
-        events.append((10, 'end', i))
-    
-    events.sort()
-    active_lines = set()
-    intersection_points = []
-    
-    for x, event_type, line_id in events:
-        if event_type == 'start':
-            for active_id in active_lines:
-                intersection = line_intersection(lines[line_id], lines[active_id])
-                if intersection is not None:
-                    intersection_points.append(intersection)
-            active_lines.add(line_id)
+def solve_brute_force(n, segments):
+    """
+    Time: O(n^2), Space: O(n)
+    """
+    horizontal = []
+    vertical = []
+
+    for x1, y1, x2, y2 in segments:
+        if y1 == y2:
+            horizontal.append((min(x1, x2), max(x1, x2), y1))
         else:
-            active_lines.remove(line_id)
-    
-    return intersection_points
+            vertical.append((x1, min(y1, y2), max(y1, y2)))
+
+    count = 0
+    for hx1, hx2, hy in horizontal:
+        for vx, vy1, vy2 in vertical:
+            if hx1 <= vx <= hx2 and vy1 <= hy <= vy2:
+                count += 1
+    return count
 ```
 
-**Time Complexity**: O(n log n + k) where k is number of intersections
-**Space Complexity**: O(n)
+### Complexity
 
-## 🔧 Implementation Details
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Check all pairs |
+| Space | O(n) | Store segments |
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²) | O(n²) | Check all pairs of lines |
-| Sweep Line | O(n log n + k) | O(n) | Use sweep line algorithm |
-| Advanced Data Structure | O(n log n + k) | O(n) | Use advanced data structures |
+---
 
-### Time Complexity
-- **Time**: O(n log n + k) - Use sweep line algorithm for efficient calculation
-- **Space**: O(n) - Store active lines and events
+## Solution 2: Sweep Line with Fenwick Tree (Optimal)
 
-### Why This Solution Works
-- **Sweep Line**: Use sweep line algorithm for efficient calculation
-- **Event Processing**: Process line events efficiently
-- **Data Structures**: Use appropriate data structures for storage
-- **Optimal Algorithms**: Use optimal algorithms for intersection finding
+### Key Insight
 
-## 🚀 Problem Variations
+> **The Trick:** Process events left-to-right. At each x: add vertical segments starting here, query for horizontal segments ending here, remove vertical segments ending here.
 
-### Extended Problems with Detailed Code Examples
+### Event Types
 
-#### **1. Intersection Points with Constraints**
-**Problem**: Find intersection points with specific constraints.
+| Event | Type | Description |
+|-------|------|-------------|
+| Vertical Start | 0 | Add y-range to active set |
+| Horizontal Query | 1 | Count active verticals at this y |
+| Vertical End | 2 | Remove y-range from active set |
 
-**Key Differences**: Apply constraints to intersection point finding
+### Dry Run Example
 
-**Solution Approach**: Modify algorithm to handle constraints
+```
+Segments:
+  H1: (0,2)-(4,2), H2: (0,1)-(3,1)
+  V1: (1,0)-(1,3), V2: (2,1)-(2,4), V3: (4,0)-(4,3)
 
-**Implementation**:
+Events sorted by x:
+x=1: V1 add [0,3]
+x=2: V2 add [1,4]
+x=3: H2 query y=1 -> V1[0,3] contains 1, V2[1,4] contains 1 -> +2
+x=4: V3 add [0,3], H1 query y=2 -> V1,V2,V3 all contain 2 -> +3
+
+Total: 5
+```
+
+### Visual Diagram
+
+```
+Y
+4 |     +---V2
+3 |   + | +---V3
+2 |---+-+-+---H1
+1 +---+-+-+---H2
+0 +---V1V2V3
+  0 1 2 3 4  X
+
+Intersections: (1,2), (2,2), (4,2), (1,1), (2,1) = 5
+```
+
+### Python Solution
+
 ```python
-def constrained_intersection_points(n, lines, constraints):
-    """Find intersection points with constraints"""
-    def line_intersection(line1, line2):
-        a1, b1, c1 = line1
-        a2, b2, c2 = line2
-        det = a1 * b2 - a2 * b1
-        if abs(det) < 1e-9:
-            return None
-        x = (b1 * c2 - b2 * c1) / det
-        y = (a2 * c1 - a1 * c2) / det
-        return (x, y)
-    
-    intersection_points = []
-    for i in range(n):
-        for j in range(i + 1, n):
-            intersection = line_intersection(lines[i], lines[j])
-            if intersection is not None and constraints(intersection):
-                intersection_points.append(intersection)
-    return intersection_points
+import sys
+from bisect import bisect_left, bisect_right
+input = sys.stdin.readline
+
+def main():
+    n = int(input())
+    events = []
+    all_y = set()
+
+    for _ in range(n):
+        x1, y1, x2, y2 = map(int, input().split())
+        if y1 == y2:  # Horizontal
+            xmin, xmax = min(x1, x2), max(x1, x2)
+            events.append((xmax, 1, y1, y1))  # Query
+            all_y.add(y1)
+        else:  # Vertical
+            ymin, ymax = min(y1, y2), max(y1, y2)
+            events.append((x1, 0, ymin, ymax))  # Add
+            events.append((x1, 2, ymin, ymax))  # Remove
+            all_y.add(ymin)
+            all_y.add(ymax)
+
+    ys = sorted(all_y)
+    y_idx = {y: i for i, y in enumerate(ys)}
+    m = len(ys)
+    tree = [0] * (m + 2)
+
+    def update(i, d):
+        i += 1
+        while i <= m:
+            tree[i] += d
+            i += i & (-i)
+
+    def query(i):
+        i += 1
+        s = 0
+        while i > 0:
+            s += tree[i]
+            i -= i & (-i)
+        return s
+
+    events.sort()
+    ans = 0
+
+    for x, t, a, b in events:
+        if t == 0:  # Add vertical
+            ai, bi = y_idx[a], y_idx[b]
+            for yi in range(ai, bi + 1):
+                update(yi, 1)
+        elif t == 1:  # Query horizontal
+            yi = y_idx[a]
+            ans += query(yi) - (query(yi - 1) if yi > 0 else 0)
+        else:  # Remove vertical
+            ai, bi = y_idx[a], y_idx[b]
+            for yi in range(ai, bi + 1):
+                update(yi, -1)
+
+    print(ans)
+
+main()
 ```
 
-#### **2. Intersection Points with Different Line Types**
-**Problem**: Find intersection points with different line types.
+### C++ Solution
 
-**Key Differences**: Handle different types of lines
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Solution Approach**: Use advanced data structures
+vector<int> tree;
+int m;
 
-**Implementation**:
+void update(int i, int d) {
+    for (++i; i <= m; i += i & (-i)) tree[i] += d;
+}
+
+int query(int i) {
+    int s = 0;
+    for (++i; i > 0; i -= i & (-i)) s += tree[i];
+    return s;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+
+    vector<tuple<int,int,int,int>> events;
+    set<int> y_set;
+
+    for (int i = 0; i < n; i++) {
+        int x1, y1, x2, y2;
+        cin >> x1 >> y1 >> x2 >> y2;
+        y_set.insert(y1);
+        y_set.insert(y2);
+
+        if (y1 == y2) {  // Horizontal
+            int xmin = min(x1, x2), xmax = max(x1, x2);
+            events.push_back({xmax, 1, y1, y1});
+        } else {  // Vertical
+            int ymin = min(y1, y2), ymax = max(y1, y2);
+            events.push_back({x1, 0, ymin, ymax});
+            events.push_back({x1, 2, ymin, ymax});
+        }
+    }
+
+    vector<int> ys(y_set.begin(), y_set.end());
+    map<int, int> y_idx;
+    for (int i = 0; i < (int)ys.size(); i++) y_idx[ys[i]] = i;
+    m = ys.size();
+    tree.assign(m + 1, 0);
+
+    sort(events.begin(), events.end());
+    long long ans = 0;
+
+    for (auto& [x, t, a, b] : events) {
+        int ai = y_idx[a], bi = y_idx[b];
+        if (t == 0) {  // Add
+            for (int yi = ai; yi <= bi; yi++) update(yi, 1);
+        } else if (t == 1) {  // Query
+            ans += query(ai) - (ai > 0 ? query(ai - 1) : 0);
+        } else {  // Remove
+            for (int yi = ai; yi <= bi; yi++) update(yi, -1);
+        }
+    }
+
+    cout << ans << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log n) | Sort + Fenwick operations |
+| Space | O(n) | Events + coordinate map |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Wrong Event Order
+
 ```python
-def typed_intersection_points(n, lines, line_types):
-    """Find intersection points with different line types"""
-    def line_intersection(line1, line2):
-        a1, b1, c1 = line1
-        a2, b2, c2 = line2
-        det = a1 * b2 - a2 * b1
-        if abs(det) < 1e-9:
-            return None
-        x = (b1 * c2 - b2 * c1) / det
-        y = (a2 * c1 - a1 * c2) / det
-        return (x, y)
-    
-    intersection_points = []
-    for i in range(n):
-        for j in range(i + 1, n):
-            if line_types[i] == 'active' and line_types[j] == 'active':
-                intersection = line_intersection(lines[i], lines[j])
-                if intersection is not None:
-                    intersection_points.append(intersection)
-    return intersection_points
+# WRONG: Remove before query at same x
+events.sort(key=lambda e: (e[0], -e[1]))
+
+# CORRECT: Add(0) < Query(1) < Remove(2)
+events.sort(key=lambda e: (e[0], e[1]))
 ```
 
-#### **3. Intersection Points with Weights**
-**Problem**: Find intersection points with weighted lines.
+**Problem:** Processing removes before queries misses valid intersections.
 
-**Key Differences**: Handle weighted lines
+### Mistake 2: No Coordinate Compression
 
-**Solution Approach**: Use advanced data structures
-
-**Implementation**:
 ```python
-def weighted_intersection_points(n, lines, weights):
-    """Find intersection points with weighted lines"""
-    def line_intersection(line1, line2):
-        a1, b1, c1 = line1
-        a2, b2, c2 = line2
-        det = a1 * b2 - a2 * b1
-        if abs(det) < 1e-9:
-            return None
-        x = (b1 * c2 - b2 * c1) / det
-        y = (a2 * c1 - a1 * c2) / det
-        return (x, y)
-    
-    intersection_points = []
-    for i in range(n):
-        for j in range(i + 1, n):
-            intersection = line_intersection(lines[i], lines[j])
-            if intersection is not None:
-                weight = weights[i] + weights[j]
-                intersection_points.append((intersection, weight))
-    return intersection_points
+# WRONG: y can be 10^9
+tree[y] += 1
+
+# CORRECT: Compress first
+tree[y_idx[y]] += 1
 ```
 
-### Related Problems
+**Problem:** Cannot use 10^9 as array index.
 
-#### **CSES Problems**
-- [Line Segment Intersection](https://cses.fi/problemset/task/1075) - Geometry
-- [Point in Polygon](https://cses.fi/problemset/task/1075) - Geometry
-- [Convex Hull](https://cses.fi/problemset/task/1075) - Geometry
+### Mistake 3: Off-by-One in Range Query
 
-#### **LeetCode Problems**
-- [Line Reflection](https://leetcode.com/problems/line-reflection/) - Geometry
-- [Self Crossing](https://leetcode.com/problems/self-crossing/) - Geometry
-- [Rectangle Overlap](https://leetcode.com/problems/rectangle-overlap/) - Geometry
+```python
+# WRONG: Excludes l
+return query(r) - query(l)
 
-#### **Problem Categories**
-- **Computational Geometry**: Intersection calculations, geometric algorithms
-- **Mathematical Algorithms**: Line intersection, coordinate systems
-- **Geometric Algorithms**: Intersection algorithms, line algorithms
+# CORRECT: Includes l
+return query(r) - query(l - 1)
+```
 
-## 🔗 Additional Resources
+---
 
-### **Algorithm References**
-- [Computational Geometry](https://cp-algorithms.com/geometry/basic-geometry.html) - Geometry algorithms
-- [Line Intersection](https://cp-algorithms.com/geometry/line-intersection.html) - Line intersection algorithms
-- [Sweep Line](https://cp-algorithms.com/geometry/sweep-line.html) - Sweep line algorithms
+## Edge Cases
 
-### **Practice Problems**
-- [CSES Line Segment Intersection](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Point in Polygon](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Convex Hull](https://cses.fi/problemset/task/1075) - Medium
+| Case | Input | Expected | Why |
+|------|-------|----------|-----|
+| Single horizontal | 1 segment | 0 | No vertical to intersect |
+| Single vertical | 1 segment | 0 | No horizontal to intersect |
+| All parallel | Same orientation | 0 | Parallel don't intersect |
+| Large coordinates | 10^9 range | Correct | Needs compression |
+| Same endpoint | Segments share point | 1 | Valid intersection |
 
-### **Further Reading**
-- [Computational Geometry](https://en.wikipedia.org/wiki/Computational_geometry) - Wikipedia article
-- [Line Intersection](https://en.wikipedia.org/wiki/Line_intersection) - Wikipedia article
-- [Sweep Line Algorithm](https://en.wikipedia.org/wiki/Sweep_line_algorithm) - Wikipedia article
+---
+
+## When to Use This Pattern
+
+### Use Sweep Line + Fenwick When:
+- Counting intersections between axis-aligned segments
+- Need O(n log n) complexity
+- Segments are horizontal/vertical only
+
+### Don't Use When:
+- Arbitrary segment orientations (use Bentley-Ottmann)
+- Need actual intersection coordinates
+- Very sparse input (brute force may suffice)
+
+### Pattern Recognition Checklist:
+- [ ] Horizontal and vertical only? -> Sweep line works
+- [ ] Large coordinates? -> Use compression
+- [ ] n > 10^4? -> Avoid O(n^2)
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [Line Segment Intersection](https://cses.fi/problemset/task/2190) | Check if two segments intersect |
+| [Point Location Test](https://cses.fi/problemset/task/2189) | Point position relative to line |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Polygon Area](https://cses.fi/problemset/task/2191) | Sweep for area calculation |
+| [Point in Polygon](https://cses.fi/problemset/task/2192) | Ray casting technique |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Convex Hull](https://cses.fi/problemset/task/2195) | Graham scan algorithm |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** Sweep line converts 2D geometry to 1D event processing
+2. **Optimization:** O(n^2) to O(n log n) with Fenwick Tree
+3. **Critical Detail:** Event ordering (add < query < remove)
+4. **Pattern:** Event-based sweep line with range query structure
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain sweep line for intersection counting
+- [ ] Implement coordinate compression
+- [ ] Write Fenwick tree operations
+- [ ] Handle event ordering correctly
+- [ ] Identify when sweep line applies
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Sweep Line](https://cp-algorithms.com/geometry/sweep-line.html)
+- [CP-Algorithms: Fenwick Tree](https://cp-algorithms.com/data_structures/fenwick.html)
+- [CSES Problem Set - Geometry](https://cses.fi/problemset/)

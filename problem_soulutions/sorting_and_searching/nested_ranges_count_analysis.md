@@ -1,39 +1,54 @@
 ---
 layout: simple
-title: "Nested Ranges Count"
+title: "Nested Ranges Count - Sorting Problem"
 permalink: /problem_soulutions/sorting_and_searching/nested_ranges_count_analysis
+difficulty: Hard
+tags: [sorting, coordinate-compression, fenwick-tree, bit]
+prerequisites: [nested_ranges_check]
 ---
 
 # Nested Ranges Count
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of nested ranges and their applications
-- Apply sorting and coordinate compression techniques for range problems
-- Implement efficient solutions for nested range counting with optimal complexity
-- Optimize solutions for large inputs with proper complexity analysis
-- Handle edge cases in nested range problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Hard |
+| **Category** | Sorting and Searching |
+| **Time Limit** | 1 second |
+| **Key Technique** | Coordinate Compression + Fenwick Tree (BIT) |
+| **CSES Link** | [Nested Ranges Count](https://cses.fi/problemset/task/2169) |
 
-## 📋 Problem Description
+### Learning Goals
 
-You are given n ranges. For each range, count how many other ranges it contains.
+After solving this problem, you will be able to:
+- [ ] Apply coordinate compression to handle large value ranges
+- [ ] Use Fenwick Tree (BIT) for efficient prefix counting
+- [ ] Design sorting strategies for range containment problems
+- [ ] Count both "contains" and "contained by" relationships efficiently
 
-A range [a, b] contains another range [c, d] if a ≤ c and d ≤ b.
+---
 
-**Input**: 
-- First line: integer n (number of ranges)
-- Next n lines: two integers a[i] and b[i] (start and end of range i)
+## Problem Statement
 
-**Output**: 
-- Print n integers: for each range, the number of ranges it contains
+**Problem:** Given n ranges, for each range count:
+1. How many other ranges it **contains** (a range [a,b] contains [c,d] if a <= c and d <= b)
+2. How many other ranges **contain** it
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10⁵
-- 1 ≤ a[i] ≤ b[i] ≤ 10⁹
+**Input:**
+- Line 1: Integer n (number of ranges)
+- Lines 2 to n+1: Two integers x and y (start and end of range)
 
-**Example**:
+**Output:**
+- Line 1: n integers - for each range, how many ranges it contains
+- Line 2: n integers - for each range, how many ranges contain it
+
+**Constraints:**
+- 1 <= n <= 2 x 10^5
+- 1 <= x <= y <= 10^9
+
+### Example
+
 ```
 Input:
 4
@@ -44,1206 +59,601 @@ Input:
 
 Output:
 2 0 0 0
-
-Explanation**: 
-Ranges: [1,6], [2,4], [3,5], [7,8]
-
-Range [1,6] contains:
-- [2,4] (1 ≤ 2 and 4 ≤ 6) ✓
-- [3,5] (1 ≤ 3 and 5 ≤ 6) ✓
-Total: 2 ranges
-
-Range [2,4] contains: 0 ranges
-Range [3,5] contains: 0 ranges  
-Range [7,8] contains: 0 ranges
+0 1 1 0
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
 
-### Approach 1: Brute Force - Check All Pairs
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: Check all pairs of ranges to count containment relationships
-- **Complete Coverage**: Guaranteed to find all containment relationships
-- **Simple Implementation**: Straightforward approach with nested loops
-- **Inefficient**: Quadratic time complexity
-
-**Key Insight**: For each range, check all other ranges to see if they are contained within it.
-
-**Algorithm**:
-- For each range i:
-  - For each range j (j ≠ i):
-    - Check if range i contains range j
-    - If yes, increment count for range i
-- Return the counts
-
-**Visual Example**:
 ```
-Ranges: [1,6], [2,4], [3,5], [7,8]
-
-Range [1,6]:
-- Contains [2,4]? 1 ≤ 2 and 4 ≤ 6 → Yes ✓
-- Contains [3,5]? 1 ≤ 3 and 5 ≤ 6 → Yes ✓
-- Contains [7,8]? 1 ≤ 7 and 8 ≤ 6 → No ✗
-Count: 2
-
-Range [2,4]:
-- Contains [1,6]? 2 ≤ 1 and 6 ≤ 4 → No ✗
-- Contains [3,5]? 2 ≤ 3 and 5 ≤ 4 → No ✗
-- Contains [7,8]? 2 ≤ 7 and 8 ≤ 4 → No ✗
-Count: 0
-
-Range [3,5]:
-- Contains [1,6]? 3 ≤ 1 and 6 ≤ 5 → No ✗
-- Contains [2,4]? 3 ≤ 2 and 4 ≤ 5 → No ✗
-- Contains [7,8]? 3 ≤ 7 and 8 ≤ 5 → No ✗
-Count: 0
-
-Range [7,8]:
-- Contains [1,6]? 7 ≤ 1 and 6 ≤ 8 → No ✗
-- Contains [2,4]? 7 ≤ 2 and 4 ≤ 8 → No ✗
-- Contains [3,5]? 7 ≤ 3 and 5 ≤ 8 → No ✗
-Count: 0
+Range [1,6] contains [2,4] and [3,5] -> contains 2
+Range [2,4] is contained by [1,6] -> contained by 1
+Range [3,5] is contained by [1,6] -> contained by 1
+Range [7,8] is disjoint from others -> 0 in both
 ```
 
-**Implementation**:
+---
+
+## Intuition: How to Think About This Problem
+
+### Pattern Recognition
+
+> **Key Question:** How can we efficiently count ranges contained within each range?
+
+The brute force O(n^2) approach checks all pairs, but we can do better by:
+1. **Sorting** ranges so that potential containers come before contained ranges
+2. **Using BIT** to count how many valid end points we have seen
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** For each range, count of contained/containing ranges
+2. **What information do we have?** Start and end points of all ranges
+3. **What's the relationship?** Range [a,b] contains [c,d] iff a <= c AND d <= b
+
+### The Key Insight
+
+If we sort ranges by **start ascending** (and by **end descending** for ties):
+- When we process range i, all ranges j with smaller start have been seen
+- Among those, count ranges where end[j] <= end[i] (they are contained by i)
+
+We use a **Fenwick Tree** to efficiently count how many end points <= current end.
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+Check every pair of ranges for containment relationship.
+
+### Algorithm
+
+1. For each range i, iterate through all other ranges j
+2. Check if i contains j (a[i] <= a[j] AND b[j] <= b[i])
+3. Count both directions
+
+### Code
+
 ```python
-def brute_force_nested_ranges_count(ranges):
+def brute_force(ranges):
     """
-    Count nested ranges using brute force approach
-    
-    Args:
-        ranges: list of (start, end) tuples
-    
-    Returns:
-        list: count of ranges each range contains
+    Brute force: check all pairs.
+
+    Time: O(n^2)
+    Space: O(n)
     """
     n = len(ranges)
-    counts = [0] * n
-    
+    contains = [0] * n
+    contained_by = [0] * n
+
     for i in range(n):
-        a_i, b_i = ranges[i]
         for j in range(n):
             if i == j:
                 continue
-            a_j, b_j = ranges[j]
             # Check if range i contains range j
-            if a_i <= a_j and b_j <= b_i:
-                counts[i] += 1
-    
-    return counts
+            if ranges[i][0] <= ranges[j][0] and ranges[j][1] <= ranges[i][1]:
+                contains[i] += 1
+                contained_by[j] += 1
 
-# Example usage
-ranges = [(1, 6), (2, 4), (3, 5), (7, 8)]
-result = brute_force_nested_ranges_count(ranges)
-print(f"Brute force result: {result}")  # Output: [2, 0, 0, 0]
+    # Divide by 2 since we count each relationship twice
+    return contains, contained_by
 ```
 
-**Time Complexity**: O(n²) - Nested loops checking all pairs
-**Space Complexity**: O(1) - Constant space
+### Complexity
 
-**Why it's inefficient**: Quadratic time complexity makes it slow for large inputs.
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Check all n^2 pairs |
+| Space | O(n) | Store counts |
+
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed since we check every possible pair. However, with n up to 2 x 10^5, this gives 4 x 10^10 operations - far too slow.
 
 ---
 
-### Approach 2: Optimized - Sort by Start Point
+## Solution 2: Optimal - Sorting + Fenwick Tree (BIT)
 
-**Key Insights from Optimized Approach**:
-- **Sorting**: Sort ranges by start point to optimize containment checking
-- **Efficient Checking**: Use sorted order to reduce unnecessary comparisons
-- **Better Complexity**: Achieve O(n²) time complexity with optimizations
-- **Memory Trade-off**: Use more memory for better time complexity
+### Key Insight
 
-**Key Insight**: Sort ranges by start point to optimize containment checking.
+> **The Trick:** Sort by start point, then use BIT to count valid end points we have seen.
 
-**Algorithm**:
-- Sort ranges by start point
-- For each range i:
-  - For each range j (j > i):
-    - Check if range i contains range j
-    - If yes, increment count for range i
-- Return the counts
+### Why Fenwick Tree?
 
-**Visual Example**:
+A Fenwick Tree (Binary Indexed Tree) supports:
+- **Point update:** Add 1 at position i in O(log n)
+- **Prefix query:** Count elements <= i in O(log n)
+
+This is exactly what we need: "count how many ranges with smaller start have end <= current end."
+
+### Coordinate Compression
+
+Since end values can be up to 10^9 but we only have n <= 2 x 10^5 ranges, we compress coordinates:
+
 ```
-Sorted ranges: [1,6], [2,4], [3,5], [7,8]
-
-Range [1,6]:
-- Contains [2,4]? 1 ≤ 2 and 4 ≤ 6 → Yes ✓
-- Contains [3,5]? 1 ≤ 3 and 5 ≤ 6 → Yes ✓
-- Contains [7,8]? 1 ≤ 7 and 8 ≤ 6 → No ✗
-Count: 2
-
-Range [2,4]:
-- Contains [3,5]? 2 ≤ 3 and 5 ≤ 4 → No ✗
-- Contains [7,8]? 2 ≤ 7 and 8 ≤ 4 → No ✗
-Count: 0
-
-Range [3,5]:
-- Contains [7,8]? 3 ≤ 7 and 8 ≤ 5 → No ✗
-Count: 0
-
-Range [7,8]:
-Count: 0
+Original ends: [6, 4, 5, 8] -> Sorted unique: [4, 5, 6, 8]
+Compressed:    [3, 1, 2, 4] (1-indexed positions)
 ```
 
-**Implementation**:
-```python
-def optimized_nested_ranges_count(ranges):
-    """
-    Count nested ranges using optimized sorting approach
-    
-    Args:
-        ranges: list of (start, end) tuples
-    
-    Returns:
-        list: count of ranges each range contains
-    """
-    n = len(ranges)
-    counts = [0] * n
-    
-    # Sort ranges by start point
-    sorted_ranges = sorted(enumerate(ranges), key=lambda x: x[1][0])
-    
-    for i in range(n):
-        idx_i, (a_i, b_i) = sorted_ranges[i]
-        for j in range(i + 1, n):
-            idx_j, (a_j, b_j) = sorted_ranges[j]
-            # Check if range i contains range j
-            if a_i <= a_j and b_j <= b_i:
-                counts[idx_i] += 1
-    
-    return counts
+### Algorithm
 
-# Example usage
-ranges = [(1, 6), (2, 4), (3, 5), (7, 8)]
-result = optimized_nested_ranges_count(ranges)
-print(f"Optimized result: {result}")  # Output: [2, 0, 0, 0]
+**For "contains" count:**
+1. Sort ranges by (start ASC, end DESC) with original indices
+2. Process in order; for each range:
+   - Query BIT: how many ends <= current end? (these ranges are contained by current)
+   - Update BIT: add current end
+3. Handle ties (same start) carefully
+
+**For "contained_by" count:**
+1. Sort ranges by (start DESC, end ASC)
+2. Similar logic but reversed
+
+### Dry Run Example
+
+Let's trace through with ranges: `[1,6], [2,4], [3,5], [7,8]`
+
+**Step 1: Coordinate Compression**
+```
+All end values: [6, 4, 5, 8]
+Sorted unique:  [4, 5, 6, 8]
+Mapping: 4->1, 5->2, 6->3, 8->4
+
+Compressed ranges:
+  [1,6] idx=0 -> end compressed = 3
+  [2,4] idx=1 -> end compressed = 1
+  [3,5] idx=2 -> end compressed = 2
+  [7,8] idx=3 -> end compressed = 4
 ```
 
-**Time Complexity**: O(n²) - Nested loops with sorting optimization
-**Space Complexity**: O(n) - Sorted ranges
-
-**Why it's better**: More efficient than brute force with sorting optimization.
-
----
-
-### Approach 3: Optimal - Use Coordinate Compression
-
-**Key Insights from Optimal Approach**:
-- **Coordinate Compression**: Use coordinate compression to optimize range operations
-- **Optimal Complexity**: Achieve O(n log n) time complexity
-- **Efficient Implementation**: Use coordinate compression and sorting
-- **Mathematical Insight**: Use coordinate compression to optimize range containment checking
-
-**Key Insight**: Use coordinate compression to optimize range containment checking.
-
-**Algorithm**:
-- Compress coordinates to reduce range of values
-- Sort ranges by start point
-- Use coordinate compression to optimize containment checking
-- Return the counts
-
-**Visual Example**:
+**Step 2: Sort for "contains" (start ASC, end DESC)**
 ```
-Original ranges: [1,6], [2,4], [3,5], [7,8]
-
-Coordinate compression:
-- Unique values: [1, 2, 3, 4, 5, 6, 7, 8]
-- Compressed: [0, 1, 2, 3, 4, 5, 6, 7]
-
-Compressed ranges: [0,5], [1,3], [2,4], [6,7]
-
-Range [0,5]:
-- Contains [1,3]? 0 ≤ 1 and 3 ≤ 5 → Yes ✓
-- Contains [2,4]? 0 ≤ 2 and 4 ≤ 5 → Yes ✓
-- Contains [6,7]? 0 ≤ 6 and 7 ≤ 5 → No ✗
-Count: 2
-
-Range [1,3]:
-- Contains [2,4]? 1 ≤ 2 and 4 ≤ 3 → No ✗
-- Contains [6,7]? 1 ≤ 6 and 7 ≤ 3 → No ✗
-Count: 0
-
-Range [2,4]:
-- Contains [6,7]? 2 ≤ 6 and 7 ≤ 4 → No ✗
-Count: 0
-
-Range [6,7]:
-Count: 0
+Sorted order: [1,6], [2,4], [3,5], [7,8]
+              idx=0   idx=1   idx=2   idx=3
 ```
 
-**Implementation**:
-```python
-def optimal_nested_ranges_count(ranges):
-    """
-    Count nested ranges using optimal coordinate compression approach
-    
-    Args:
-        ranges: list of (start, end) tuples
-    
-    Returns:
-        list: count of ranges each range contains
-    """
-    n = len(ranges)
-    counts = [0] * n
-    
-    # Coordinate compression
-    all_values = []
-    for start, end in ranges:
-        all_values.extend([start, end])
-    
-    unique_values = sorted(set(all_values))
-    value_to_compressed = {val: i for i, val in enumerate(unique_values)}
-    
-    # Compress ranges
-    compressed_ranges = []
-    for i, (start, end) in enumerate(ranges):
-        compressed_start = value_to_compressed[start]
-        compressed_end = value_to_compressed[end]
-        compressed_ranges.append((i, compressed_start, compressed_end))
-    
-    # Sort by start point
-    compressed_ranges.sort(key=lambda x: x[1])
-    
-    # Count containment relationships
-    for i in range(n):
-        idx_i, a_i, b_i = compressed_ranges[i]
-        for j in range(i + 1, n):
-            idx_j, a_j, b_j = compressed_ranges[j]
-            # Check if range i contains range j
-            if a_i <= a_j and b_j <= b_i:
-                counts[idx_i] += 1
-    
-    return counts
+**Step 3: Process with BIT for "contains"**
+```
+BIT initially: [0, 0, 0, 0, 0] (1-indexed)
 
-# Example usage
-ranges = [(1, 6), (2, 4), (3, 5), (7, 8)]
-result = optimal_nested_ranges_count(ranges)
-print(f"Optimal result: {result}")  # Output: [2, 0, 0, 0]
+Process [1,6] (compressed end = 3):
+  Query(3) = 0 (no ends <= 3 seen yet)
+  contains[0] = 0
+  Update BIT at position 3: BIT adds 1
+  BIT: [0, 0, 0, 1, 0]
+
+Process [2,4] (compressed end = 1):
+  Query(1) = 0
+  contains[1] = 0
+  Update BIT at position 1
+  BIT: [0, 1, 0, 1, 0]
+
+Process [3,5] (compressed end = 2):
+  Query(2) = 1 (position 1 has value)
+  But wait - [2,4] has start=2, [3,5] has start=3
+  So [3,5] does NOT contain [2,4] (3 > 2)
+  contains[2] = 0
+  Update BIT at position 2
+
+Process [7,8] (compressed end = 4):
+  Query(4) = 3 (all previous ends)
+  But [7,8] doesn't contain any (starts 1,2,3 < 7)
+  contains[3] = 0
 ```
 
-**Time Complexity**: O(n log n) - Coordinate compression and sorting
-**Space Complexity**: O(n) - Coordinate compression
+Wait - our dry run shows we need to be more careful. Let me correct the algorithm:
 
-**Why it's optimal**: Achieves the best possible time complexity with coordinate compression optimization.
+**Corrected Algorithm for "contains":**
+- Sort by (start ASC, end DESC)
+- When processing range with start=s, ranges with SAME start and LARGER end come first
+- These larger-end ranges contain the current one
+- We need to count ranges that current range contains = ranges with start >= current.start AND end <= current.end
 
-## 🔧 Implementation Details
+Actually, let me re-approach. For "contains":
+- Sort by (end ASC, start DESC)
+- Process in order. For range [a,b], count ranges with start > a that we've seen
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²) | O(1) | Check all pairs |
-| Sorting | O(n²) | O(n) | Sort by start point |
-| Coordinate Compression | O(n log n) | O(n) | Use coordinate compression |
+**Revised Dry Run:**
 
-### Time Complexity
-- **Time**: O(n log n) - Coordinate compression approach provides optimal time complexity
-- **Space**: O(n) - Coordinate compression for range optimization
+```
+For counting how many ranges each range CONTAINS:
 
-### Why This Solution Works
-- **Coordinate Compression**: Use coordinate compression to optimize range containment checking
-- **Optimal Algorithm**: Coordinate compression approach is the standard solution for this problem
-- **Optimal Approach**: Single pass through ranges provides the most efficient solution for nested range counting problems
-- **Sorting Strategy**: Sort ranges by start point to enable efficient containment checking
-- **Optimal Approach**: Coordinate compression with sorting provides the most efficient solution for nested range counting problems
+Sort by (start ASC, end DESC):
+  [1,6], [2,4], [3,5], [7,8]
 
-## 🚀 Problem Variations
+BIT tracks: ends of ranges we've processed (with smaller or equal start)
 
-### Extended Problems with Detailed Code Examples
+Process [1,6]:
+  BIT empty, contains[0] += 0
+  Add end=6 to BIT
 
-### Variation 1: Nested Ranges Count with Range Queries
-**Problem**: Answer multiple queries about nested range counts in different subsets of ranges.
+Process [2,4]:
+  Query: ends <= 4? We have [6], so 0 ends <= 4
+  contains[1] += 0
+  Add end=4 to BIT
 
-**Link**: [CSES Problem Set - Nested Ranges Count Range Queries](https://cses.fi/problemset/task/nested_ranges_count_range)
+Process [3,5]:
+  Query: ends <= 5? We have [6,4], one end (4) <= 5
+  contains[2] += 1? NO! [3,5] doesn't contain [2,4] since 2 < 3
+  ...this approach counts [2,4] wrongly
+```
+
+The key insight is: we need to count ranges where start >= current.start AND end <= current.end. Let me use the correct approach:
+
+**Correct Approach:**
+1. For "contains": Sort by (start ASC, end DESC). Process ranges. When ranges have same start, larger end should process FIRST (it might contain smaller ends). Use BIT to count ends.
+2. For "contained_by": Sort by (start DESC, end ASC). Similar logic reversed.
+
+### Visual Diagram
+
+```
+Ranges on number line:
+   1   2   3   4   5   6   7   8
+   [===============]              [1,6] contains [2,4] and [3,5]
+       [=====]                    [2,4]
+           [=====]                [3,5]
+                       [===]      [7,8]
+
+After sorting by (start ASC, end DESC):
+  [1,6] -> [2,4] -> [3,5] -> [7,8]
+
+BIT counts ends seen so far:
+  At [1,6]: no ends seen, contains = 0
+  At [2,4]: end 6 seen but 6 > 4, contains = 0
+  At [3,5]: ends [6,4] seen, 4 <= 5, but [2,4] has start=2 < 3
+            Need to track that [1,6] doesn't apply (start 1 < 2)
+
+Key: When starts differ, we CAN'T use simple prefix count!
+     When start is same, end DESC means bigger end processes first.
+```
+
+### Handling Equal Starts
+
+For ranges with **equal start**, the one with **larger end** contains the smaller ones:
+- Sort by (start ASC, end DESC)
+- Ranges with same start: larger end comes first
+- It counts smaller ends as "contained"
+
+For ranges with **different starts**, we process in start order and use BIT on ends.
+
+### Code
 
 ```python
-def nested_ranges_count_range_queries(ranges, queries):
-    """
-    Answer range queries about nested range counts
-    """
-    results = []
-    
-    for query in queries:
-        left, right = query['left'], query['right']
-        
-        # Extract subset of ranges
-        subset_ranges = ranges[left:right+1]
-        
-        # Count nested ranges for this subset
-        counts = count_nested_ranges(subset_ranges)
-        results.append(counts)
-    
-    return results
+class FenwickTree:
+    """Binary Indexed Tree for prefix sums."""
 
-def count_nested_ranges(ranges):
+    def __init__(self, n):
+        self.n = n
+        self.tree = [0] * (n + 1)
+
+    def update(self, i, delta=1):
+        """Add delta at position i (1-indexed)."""
+        while i <= self.n:
+            self.tree[i] += delta
+            i += i & (-i)  # Add lowest set bit
+
+    def query(self, i):
+        """Sum of elements from 1 to i."""
+        total = 0
+        while i > 0:
+            total += self.tree[i]
+            i -= i & (-i)  # Remove lowest set bit
+        return total
+
+
+def solve(n, ranges):
     """
-    Count how many ranges each range contains and is contained by
+    Count nested ranges using sorting + Fenwick Tree.
+
+    Time: O(n log n)
+    Space: O(n)
     """
-    n = len(ranges)
-    contains_count = [0] * n
-    contained_by_count = [0] * n
-    
-    # Coordinate compression
-    all_values = []
-    for start, end in ranges:
-        all_values.extend([start, end])
-    
-    unique_values = sorted(set(all_values))
-    value_to_compressed = {val: i for i, val in enumerate(unique_values)}
-    
-    # Compress ranges
-    compressed_ranges = []
-    for i, (start, end) in enumerate(ranges):
-        compressed_start = value_to_compressed[start]
-        compressed_end = value_to_compressed[end]
-        compressed_ranges.append((i, compressed_start, compressed_end))
-    
-    # Sort by start point
-    compressed_ranges.sort(key=lambda x: x[1])
-    
-    # Count containment relationships
-    for i in range(n):
-        idx_i, a_i, b_i = compressed_ranges[i]
-        for j in range(i + 1, n):
-            idx_j, a_j, b_j = compressed_ranges[j]
-            
-            if a_i <= a_j and b_j <= b_i:
-                # Range i contains range j
-                contains_count[idx_i] += 1
-                contained_by_count[idx_j] += 1
-            elif a_j <= a_i and b_i <= b_j:
-                # Range j contains range i
-                contains_count[idx_j] += 1
-                contained_by_count[idx_i] += 1
-    
-    return contains_count, contained_by_count
+    # Coordinate compression for end values
+    ends = sorted(set(r[1] for r in ranges))
+    compress = {v: i + 1 for i, v in enumerate(ends)}  # 1-indexed
+    m = len(ends)
+
+    contains = [0] * n
+    contained_by = [0] * n
+
+    # For "contained_by": sort by (start ASC, end DESC)
+    # Ranges processed earlier have smaller/equal start
+    # Among those with same start, larger end comes first
+    indexed = [(ranges[i][0], -ranges[i][1], i) for i in range(n)]
+    indexed.sort()
+
+    bit = FenwickTree(m)
+
+    for start, neg_end, idx in indexed:
+        end = -neg_end
+        comp_end = compress[end]
+        # Count ranges with start <= current.start and end >= current.end
+        # Those are ranges that CONTAIN the current range
+        # Query: total seen - count of ends < current end
+        # = count of ends >= current end
+        contained_by[idx] = bit.query(m) - bit.query(comp_end - 1)
+        bit.update(comp_end)
+
+    # For "contains": sort by (start DESC, end ASC)
+    # Process in reverse start order
+    indexed = [(-ranges[i][0], ranges[i][1], i) for i in range(n)]
+    indexed.sort()
+
+    bit = FenwickTree(m)
+
+    for neg_start, end, idx in indexed:
+        comp_end = compress[end]
+        # Count ranges with start >= current.start and end <= current.end
+        # Those are ranges that current CONTAINS
+        # Query: count of ends <= current end
+        contains[idx] = bit.query(comp_end)
+        bit.update(comp_end)
+
+    return contains, contained_by
+
+
+def main():
+    import sys
+    input_data = sys.stdin.read().split()
+    ptr = 0
+    n = int(input_data[ptr]); ptr += 1
+
+    ranges = []
+    for _ in range(n):
+        x = int(input_data[ptr]); ptr += 1
+        y = int(input_data[ptr]); ptr += 1
+        ranges.append((x, y))
+
+    contains, contained_by = solve(n, ranges)
+    print(' '.join(map(str, contains)))
+    print(' '.join(map(str, contained_by)))
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-### Variation 2: Nested Ranges Count with Updates
-**Problem**: Handle dynamic updates to ranges and maintain nested range counts.
+### C++ Solution
 
-**Link**: [CSES Problem Set - Nested Ranges Count with Updates](https://cses.fi/problemset/task/nested_ranges_count_updates)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-```python
-class NestedRangesCountWithUpdates:
-    def __init__(self, ranges):
-        self.ranges = ranges[:]
-        self.n = len(ranges)
-        self.contains_count, self.contained_by_count = self._compute_counts()
-    
-    def _compute_counts(self):
-        """Compute initial nested range counts"""
-        contains_count = [0] * self.n
-        contained_by_count = [0] * self.n
-        
-        # Sort ranges by start point, then by end point (descending)
-        sorted_ranges = sorted(enumerate(self.ranges), key=lambda x: (x[1][0], -x[1][1]))
-        
-        for i in range(self.n):
-            idx_i, (a_i, b_i) = sorted_ranges[i]
-            for j in range(i + 1, self.n):
-                idx_j, (a_j, b_j) = sorted_ranges[j]
-                
-                if a_i <= a_j and b_j <= b_i:
-                    contains_count[idx_i] += 1
-                    contained_by_count[idx_j] += 1
-                elif a_j <= a_i and b_i <= b_j:
-                    contains_count[idx_j] += 1
-                    contained_by_count[idx_i] += 1
-        
-        return contains_count, contained_by_count
-    
-    def update_range(self, index, new_range):
-        """Update a range and recompute counts"""
-        self.ranges[index] = new_range
-        self.contains_count, self.contained_by_count = self._compute_counts()
-    
-    def get_counts(self):
-        """Get current nested range counts"""
-        return self.contains_count, self.contained_by_count
-```
+class FenwickTree {
+    vector<int> tree;
+    int n;
+public:
+    FenwickTree(int n) : n(n), tree(n + 1, 0) {}
 
-### Variation 3: Nested Ranges Count with Constraints
-**Problem**: Count nested ranges that satisfy additional constraints (e.g., minimum overlap, maximum gap).
+    void update(int i, int delta = 1) {
+        for (; i <= n; i += i & (-i))
+            tree[i] += delta;
+    }
 
-**Link**: [CSES Problem Set - Nested Ranges Count with Constraints](https://cses.fi/problemset/task/nested_ranges_count_constraints)
+    int query(int i) {
+        int sum = 0;
+        for (; i > 0; i -= i & (-i))
+            sum += tree[i];
+        return sum;
+    }
+};
 
-```python
-def nested_ranges_count_constraints(ranges, min_overlap, max_gap):
-    """
-    Count nested ranges with additional constraints
-    """
-    n = len(ranges)
-    contains_count = [0] * n
-    contained_by_count = [0] * n
-    
-    # Sort ranges by start point, then by end point (descending)
-    sorted_ranges = sorted(enumerate(ranges), key=lambda x: (x[1][0], -x[1][1]))
-    
-    for i in range(n):
-        idx_i, (a_i, b_i) = sorted_ranges[i]
-        
-        # Check if this range contains any other range with constraints
-        for j in range(i + 1, n):
-            idx_j, (a_j, b_j) = sorted_ranges[j]
-            
-            if a_j >= a_i and b_j <= b_i:
-                # Check overlap constraint
-                overlap = min(b_i, b_j) - max(a_i, a_j)
-                if overlap >= min_overlap:
-                    # Check gap constraint
-                    gap = a_j - a_i
-                    if gap <= max_gap:
-                        contains_count[idx_i] += 1
-                        contained_by_count[idx_j] += 1
-        
-        # Check if this range is contained by any other range with constraints
-        for j in range(i):
-            idx_j, (a_j, b_j) = sorted_ranges[j]
-            
-            if a_i >= a_j and b_i <= b_j:
-                # Check overlap constraint
-                overlap = min(b_i, b_j) - max(a_i, a_j)
-                if overlap >= min_overlap:
-                    # Check gap constraint
-                    gap = a_i - a_j
-                    if gap <= max_gap:
-                        contains_count[idx_j] += 1
-                        contained_by_count[idx_i] += 1
-    
-    return contains_count, contained_by_count
-```
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-## Problem Variations
+    int n;
+    cin >> n;
 
-### **Variation 1: Nested Ranges Count with Dynamic Updates**
-**Problem**: Handle dynamic range updates (add/remove/update ranges) while maintaining efficient nested range counting queries.
+    vector<pair<int, int>> ranges(n);
+    vector<int> ends;
 
-**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
+    for (int i = 0; i < n; i++) {
+        cin >> ranges[i].first >> ranges[i].second;
+        ends.push_back(ranges[i].second);
+    }
 
-```python
-from collections import defaultdict
-import bisect
+    // Coordinate compression
+    sort(ends.begin(), ends.end());
+    ends.erase(unique(ends.begin(), ends.end()), ends.end());
+    map<int, int> compress;
+    for (int i = 0; i < (int)ends.size(); i++) {
+        compress[ends[i]] = i + 1;  // 1-indexed
+    }
+    int m = ends.size();
 
-class DynamicNestedRangesCount:
-    def __init__(self, ranges):
-        self.ranges = ranges[:]
-        self.n = len(ranges)
-        self.contains_count, self.contained_by_count = self._compute_counts()
-    
-    def _compute_counts(self):
-        """Compute nested range counts using sorting and coordinate compression."""
-        if not self.ranges:
-            return [0] * self.n, [0] * self.n
-        
-        # Coordinate compression
-        coordinates = set()
-        for start, end in self.ranges:
-            coordinates.add(start)
-            coordinates.add(end)
-        
-        coord_to_idx = {coord: idx for idx, coord in enumerate(sorted(coordinates))}
-        
-        # Compress ranges
-        compressed_ranges = []
-        for start, end in self.ranges:
-            compressed_ranges.append((coord_to_idx[start], coord_to_idx[end]))
-        
-        # Sort ranges by start point, then by end point (descending)
-        sorted_ranges = sorted(enumerate(compressed_ranges), key=lambda x: (x[1][0], -x[1][1]))
-        
-        contains_count = [0] * self.n
-        contained_by_count = [0] * self.n
-        
-        for i in range(self.n):
-            original_idx_i, (start_i, end_i) = sorted_ranges[i]
-            
-            # Count ranges that this range contains
-            for j in range(i + 1, self.n):
-                original_idx_j, (start_j, end_j) = sorted_ranges[j]
-                
-                if start_j >= start_i and end_j <= end_i:
-                    contains_count[original_idx_i] += 1
-                    contained_by_count[original_idx_j] += 1
-            
-            # Count ranges that contain this range
-            for j in range(i):
-                original_idx_j, (start_j, end_j) = sorted_ranges[j]
-                
-                if start_i >= start_j and end_i <= end_j:
-                    contains_count[original_idx_j] += 1
-                    contained_by_count[original_idx_i] += 1
-        
-        return contains_count, contained_by_count
-    
-    def add_range(self, start, end):
-        """Add a new range to the collection."""
-        self.ranges.append((start, end))
-        self.n += 1
-        self.contains_count, self.contained_by_count = self._compute_counts()
-    
-    def remove_range(self, index):
-        """Remove a range at the specified index."""
-        if 0 <= index < self.n:
-            del self.ranges[index]
-            self.n -= 1
-            self.contains_count, self.contained_by_count = self._compute_counts()
-    
-    def update_range(self, index, new_start, new_end):
-        """Update a range at the specified index."""
-        if 0 <= index < self.n:
-            self.ranges[index] = (new_start, new_end)
-            self.contains_count, self.contained_by_count = self._compute_counts()
-    
-    def get_contains_count(self, index):
-        """Get number of ranges that the range at index contains."""
-        if 0 <= index < self.n:
-            return self.contains_count[index]
-        return 0
-    
-    def get_contained_by_count(self, index):
-        """Get number of ranges that contain the range at index."""
-        if 0 <= index < self.n:
-            return self.contained_by_count[index]
-        return 0
-    
-    def get_all_counts(self):
-        """Get all contains and contained_by counts."""
-        return self.contains_count, self.contained_by_count
-    
-    def get_ranges_with_contains_count(self, min_count):
-        """Get ranges that contain at least min_count other ranges."""
-        result = []
-        for i in range(self.n):
-            if self.contains_count[i] >= min_count:
-                result.append((i, self.ranges[i], self.contains_count[i]))
-        return result
-    
-    def get_ranges_with_contained_by_count(self, min_count):
-        """Get ranges that are contained by at least min_count other ranges."""
-        result = []
-        for i in range(self.n):
-            if self.contained_by_count[i] >= min_count:
-                result.append((i, self.ranges[i], self.contained_by_count[i]))
-        return result
-    
-    def get_nested_statistics(self):
-        """Get statistics about nested ranges."""
-        if not self.ranges:
-            return {
-                'total_ranges': 0,
-                'total_contains': 0,
-                'total_contained_by': 0,
-                'max_contains': 0,
-                'max_contained_by': 0,
-                'average_contains': 0,
-                'average_contained_by': 0
-            }
-        
-        total_contains = sum(self.contains_count)
-        total_contained_by = sum(self.contained_by_count)
-        max_contains = max(self.contains_count) if self.contains_count else 0
-        max_contained_by = max(self.contained_by_count) if self.contained_by_count else 0
-        average_contains = total_contains / self.n
-        average_contained_by = total_contained_by / self.n
-        
-        return {
-            'total_ranges': self.n,
-            'total_contains': total_contains,
-            'total_contained_by': total_contained_by,
-            'max_contains': max_contains,
-            'max_contained_by': max_contained_by,
-            'average_contains': average_contains,
-            'average_contained_by': average_contained_by
-        }
-    
-    def get_nested_patterns(self):
-        """Get patterns in nested ranges."""
-        patterns = {
-            'consecutive_contains': 0,
-            'alternating_contains': 0,
-            'clustered_contains': 0,
-            'isolated_contains': 0
-        }
-        
-        for i in range(1, self.n):
-            if self.contains_count[i] > 0 and self.contains_count[i-1] > 0:
-                patterns['consecutive_contains'] += 1
-            
-            if i > 1:
-                if (self.contains_count[i] > 0) != (self.contains_count[i-1] > 0) and \
-                   (self.contains_count[i-1] > 0) != (self.contains_count[i-2] > 0):
-                    patterns['alternating_contains'] += 1
-        
-        return patterns
+    vector<int> contains(n), contained_by(n);
 
-# Example usage
-ranges = [(1, 4), (2, 3), (5, 8), (6, 7), (9, 12)]
-dynamic_nrc = DynamicNestedRangesCount(ranges)
-contains_count, contained_by_count = dynamic_nrc.get_all_counts()
-print(f"Contains count: {contains_count}")
-print(f"Contained by count: {contained_by_count}")
+    // For contained_by: sort by (start ASC, end DESC)
+    vector<tuple<int, int, int>> indexed(n);
+    for (int i = 0; i < n; i++) {
+        indexed[i] = {ranges[i].first, -ranges[i].second, i};
+    }
+    sort(indexed.begin(), indexed.end());
 
-# Add a range
-dynamic_nrc.add_range(10, 11)
-contains_count, contained_by_count = dynamic_nrc.get_all_counts()
-print(f"After adding range: {contains_count}, {contained_by_count}")
+    FenwickTree bit1(m);
+    for (auto& [start, neg_end, idx] : indexed) {
+        int end = -neg_end;
+        int comp_end = compress[end];
+        contained_by[idx] = bit1.query(m) - bit1.query(comp_end - 1);
+        bit1.update(comp_end);
+    }
 
-# Update a range
-dynamic_nrc.update_range(1, 1, 5)
-contains_count, contained_by_count = dynamic_nrc.get_all_counts()
-print(f"After updating range: {contains_count}, {contained_by_count}")
+    // For contains: sort by (start DESC, end ASC)
+    for (int i = 0; i < n; i++) {
+        indexed[i] = {-ranges[i].first, ranges[i].second, i};
+    }
+    sort(indexed.begin(), indexed.end());
 
-# Get ranges with contains count
-print(f"Ranges with contains count >= 1: {dynamic_nrc.get_ranges_with_contains_count(1)}")
+    FenwickTree bit2(m);
+    for (auto& [neg_start, end, idx] : indexed) {
+        int comp_end = compress[end];
+        contains[idx] = bit2.query(comp_end);
+        bit2.update(comp_end);
+    }
 
-# Get ranges with contained by count
-print(f"Ranges with contained by count >= 1: {dynamic_nrc.get_ranges_with_contained_by_count(1)}")
+    for (int i = 0; i < n; i++) {
+        cout << contains[i] << " \n"[i == n - 1];
+    }
+    for (int i = 0; i < n; i++) {
+        cout << contained_by[i] << " \n"[i == n - 1];
+    }
 
-# Get statistics
-print(f"Statistics: {dynamic_nrc.get_nested_statistics()}")
-
-# Get patterns
-print(f"Patterns: {dynamic_nrc.get_nested_patterns()}")
-```
-
-### **Variation 2: Nested Ranges Count with Different Operations**
-**Problem**: Handle different types of operations on nested ranges (weighted counting, priority-based counting, advanced constraints).
-
-**Approach**: Use advanced data structures for efficient different types of range counting queries.
-
-```python
-class AdvancedNestedRangesCount:
-    def __init__(self, ranges, weights=None):
-        self.ranges = ranges[:]
-        self.n = len(ranges)
-        self.weights = weights or [1] * self.n
-        self.contains_count, self.contained_by_count = self._compute_counts()
-        self.weighted_contains_count, self.weighted_contained_by_count = self._compute_weighted_counts()
-    
-    def _compute_counts(self):
-        """Compute nested range counts using sorting."""
-        if not self.ranges:
-            return [0] * self.n, [0] * self.n
-        
-        # Sort ranges by start point, then by end point (descending)
-        sorted_ranges = sorted(enumerate(self.ranges), key=lambda x: (x[1][0], -x[1][1]))
-        
-        contains_count = [0] * self.n
-        contained_by_count = [0] * self.n
-        
-        for i in range(self.n):
-            original_idx_i, (start_i, end_i) = sorted_ranges[i]
-            
-            # Count ranges that this range contains
-            for j in range(i + 1, self.n):
-                original_idx_j, (start_j, end_j) = sorted_ranges[j]
-                
-                if start_j >= start_i and end_j <= end_i:
-                    contains_count[original_idx_i] += 1
-                    contained_by_count[original_idx_j] += 1
-            
-            # Count ranges that contain this range
-            for j in range(i):
-                original_idx_j, (start_j, end_j) = sorted_ranges[j]
-                
-                if start_i >= start_j and end_i <= end_j:
-                    contains_count[original_idx_j] += 1
-                    contained_by_count[original_idx_i] += 1
-        
-        return contains_count, contained_by_count
-    
-    def _compute_weighted_counts(self):
-        """Compute weighted nested range counts."""
-        if not self.ranges:
-            return [0] * self.n, [0] * self.n
-        
-        # Sort ranges by start point, then by end point (descending)
-        sorted_ranges = sorted(enumerate(self.ranges), key=lambda x: (x[1][0], -x[1][1]))
-        
-        weighted_contains_count = [0] * self.n
-        weighted_contained_by_count = [0] * self.n
-        
-        for i in range(self.n):
-            original_idx_i, (start_i, end_i) = sorted_ranges[i]
-            
-            # Count weighted ranges that this range contains
-            for j in range(i + 1, self.n):
-                original_idx_j, (start_j, end_j) = sorted_ranges[j]
-                
-                if start_j >= start_i and end_j <= end_i:
-                    weighted_contains_count[original_idx_i] += self.weights[original_idx_j]
-                    weighted_contained_by_count[original_idx_j] += self.weights[original_idx_i]
-            
-            # Count weighted ranges that contain this range
-            for j in range(i):
-                original_idx_j, (start_j, end_j) = sorted_ranges[j]
-                
-                if start_i >= start_j and end_i <= end_j:
-                    weighted_contains_count[original_idx_j] += self.weights[original_idx_i]
-                    weighted_contained_by_count[original_idx_i] += self.weights[original_idx_j]
-        
-        return weighted_contains_count, weighted_contained_by_count
-    
-    def get_contains_count(self, index):
-        """Get number of ranges that the range at index contains."""
-        return self.contains_count[index] if 0 <= index < self.n else 0
-    
-    def get_contained_by_count(self, index):
-        """Get number of ranges that contain the range at index."""
-        return self.contained_by_count[index] if 0 <= index < self.n else 0
-    
-    def get_weighted_contains_count(self, index):
-        """Get weighted count of ranges that the range at index contains."""
-        return self.weighted_contains_count[index] if 0 <= index < self.n else 0
-    
-    def get_weighted_contained_by_count(self, index):
-        """Get weighted count of ranges that contain the range at index."""
-        return self.weighted_contained_by_count[index] if 0 <= index < self.n else 0
-    
-    def get_ranges_with_priority(self, priority_func):
-        """Get ranges sorted by priority based on nested counts."""
-        ranges_with_priority = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            priority = priority_func(
-                start_i, end_i, 
-                self.contains_count[i], 
-                self.contained_by_count[i],
-                self.weights[i]
-            )
-            ranges_with_priority.append((i, start_i, end_i, priority))
-        
-        ranges_with_priority.sort(key=lambda x: x[3], reverse=True)
-        return ranges_with_priority
-    
-    def get_ranges_with_optimization(self, optimization_func):
-        """Get ranges using custom optimization function."""
-        ranges_with_score = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            score = optimization_func(
-                start_i, end_i, 
-                self.contains_count[i], 
-                self.contained_by_count[i],
-                self.weights[i]
-            )
-            ranges_with_score.append((i, start_i, end_i, score))
-        
-        ranges_with_score.sort(key=lambda x: x[3], reverse=True)
-        return ranges_with_score
-    
-    def get_ranges_with_constraints(self, constraint_func):
-        """Get ranges that satisfy custom constraints."""
-        result = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            
-            if constraint_func(
-                start_i, end_i, 
-                self.contains_count[i], 
-                self.contained_by_count[i],
-                self.weights[i]
-            ):
-                result.append((i, start_i, end_i))
-        
-        return result
-    
-    def get_ranges_with_multiple_criteria(self, criteria_list):
-        """Get ranges that satisfy multiple criteria."""
-        result = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            
-            # Check if range satisfies all criteria
-            satisfies_all_criteria = True
-            for criterion in criteria_list:
-                if not criterion(
-                    start_i, end_i, 
-                    self.contains_count[i], 
-                    self.contained_by_count[i],
-                    self.weights[i]
-                ):
-                    satisfies_all_criteria = False
-                    break
-            
-            if satisfies_all_criteria:
-                result.append((i, start_i, end_i))
-        
-        return result
-    
-    def get_ranges_with_alternatives(self, alternatives):
-        """Get ranges considering alternative ranges."""
-        result = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            
-            # Check original range
-            result.append((i, start_i, end_i, 'original', self.contains_count[i], self.contained_by_count[i]))
-            
-            # Check alternative ranges
-            if i in alternatives:
-                for alt_start, alt_end in alternatives[i]:
-                    # Calculate counts for alternative range
-                    alt_contains = 0
-                    alt_contained_by = 0
-                    
-                    for j in range(self.n):
-                        if i != j:
-                            start_j, end_j = self.ranges[j]
-                            
-                            # Check if alternative range contains range j
-                            if start_j >= alt_start and end_j <= alt_end:
-                                alt_contains += 1
-                            
-                            # Check if range j contains alternative range
-                            if alt_start >= start_j and alt_end <= end_j:
-                                alt_contained_by += 1
-                    
-                    result.append((i, alt_start, alt_end, 'alternative', alt_contains, alt_contained_by))
-        
-        return result
-    
-    def get_ranges_with_adaptive_criteria(self, adaptive_func):
-        """Get ranges using adaptive criteria."""
-        result = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            
-            # Check adaptive criteria
-            if adaptive_func(
-                start_i, end_i, 
-                self.contains_count[i], 
-                self.contained_by_count[i],
-                self.weights[i],
-                result
-            ):
-                result.append((i, start_i, end_i))
-        
-        return result
-
-# Example usage
-ranges = [(1, 4), (2, 3), (5, 8), (6, 7), (9, 12)]
-weights = [2, 1, 3, 1, 2]
-advanced_nrc = AdvancedNestedRangesCount(ranges, weights)
-
-print(f"Contains count: {advanced_nrc.contains_count}")
-print(f"Contained by count: {advanced_nrc.contained_by_count}")
-print(f"Weighted contains count: {advanced_nrc.weighted_contains_count}")
-print(f"Weighted contained by count: {advanced_nrc.weighted_contained_by_count}")
-
-# Get ranges with priority
-def priority_func(start, end, contains, contained_by, weight):
-    return (contains + contained_by) * weight
-
-print(f"Ranges with priority: {advanced_nrc.get_ranges_with_priority(priority_func)}")
-
-# Get ranges with optimization
-def optimization_func(start, end, contains, contained_by, weight):
-    return contains * 2 + contained_by + weight
-
-print(f"Ranges with optimization: {advanced_nrc.get_ranges_with_optimization(optimization_func)}")
-
-# Get ranges with constraints
-def constraint_func(start, end, contains, contained_by, weight):
-    return contains >= 1 and weight >= 2
-
-print(f"Ranges with constraints: {advanced_nrc.get_ranges_with_constraints(constraint_func)}")
-
-# Get ranges with multiple criteria
-def criterion1(start, end, contains, contained_by, weight):
-    return contains >= 1
-
-def criterion2(start, end, contains, contained_by, weight):
-    return weight >= 2
-
-criteria_list = [criterion1, criterion2]
-print(f"Ranges with multiple criteria: {advanced_nrc.get_ranges_with_multiple_criteria(criteria_list)}")
-
-# Get ranges with alternatives
-alternatives = {1: [(1, 2), (2, 4)], 3: [(5, 6), (7, 8)]}
-print(f"Ranges with alternatives: {advanced_nrc.get_ranges_with_alternatives(alternatives)}")
-
-# Get ranges with adaptive criteria
-def adaptive_func(start, end, contains, contained_by, weight, current_result):
-    return contains >= 1 and len(current_result) < 3
-
-print(f"Ranges with adaptive criteria: {advanced_nrc.get_ranges_with_adaptive_criteria(adaptive_func)}")
-```
-
-### **Variation 3: Nested Ranges Count with Constraints**
-**Problem**: Handle nested ranges count with additional constraints (time limits, resource constraints, mathematical constraints).
-
-**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
-
-```python
-class ConstrainedNestedRangesCount:
-    def __init__(self, ranges, constraints=None):
-        self.ranges = ranges[:]
-        self.n = len(ranges)
-        self.constraints = constraints or {}
-        self.contains_count, self.contained_by_count = self._compute_counts()
-    
-    def _compute_counts(self):
-        """Compute nested range counts using sorting."""
-        if not self.ranges:
-            return [0] * self.n, [0] * self.n
-        
-        # Sort ranges by start point, then by end point (descending)
-        sorted_ranges = sorted(enumerate(self.ranges), key=lambda x: (x[1][0], -x[1][1]))
-        
-        contains_count = [0] * self.n
-        contained_by_count = [0] * self.n
-        
-        for i in range(self.n):
-            original_idx_i, (start_i, end_i) = sorted_ranges[i]
-            
-            # Count ranges that this range contains
-            for j in range(i + 1, self.n):
-                original_idx_j, (start_j, end_j) = sorted_ranges[j]
-                
-                if start_j >= start_i and end_j <= end_i:
-                    contains_count[original_idx_i] += 1
-                    contained_by_count[original_idx_j] += 1
-            
-            # Count ranges that contain this range
-            for j in range(i):
-                original_idx_j, (start_j, end_j) = sorted_ranges[j]
-                
-                if start_i >= start_j and end_i <= end_j:
-                    contains_count[original_idx_j] += 1
-                    contained_by_count[original_idx_i] += 1
-        
-        return contains_count, contained_by_count
-    
-    def get_nested_counts_with_time_constraints(self, time_limit):
-        """Get nested counts considering time constraints."""
-        result = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            range_duration = end_i - start_i
-            
-            if range_duration <= time_limit:
-                result.append((i, start_i, end_i, self.contains_count[i], self.contained_by_count[i]))
-        
-        return result
-    
-    def get_nested_counts_with_resource_constraints(self, resource_limits, resource_consumption):
-        """Get nested counts considering resource constraints."""
-        result = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            
-            # Check resource constraints
-            can_use_range = True
-            for j, consumption in enumerate(resource_consumption[i]):
-                if consumption > resource_limits[j]:
-                    can_use_range = False
-                    break
-            
-            if can_use_range:
-                result.append((i, start_i, end_i, self.contains_count[i], self.contained_by_count[i]))
-        
-        return result
-    
-    def get_nested_counts_with_mathematical_constraints(self, constraint_func):
-        """Get nested counts that satisfy custom mathematical constraints."""
-        result = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            
-            if constraint_func(start_i, end_i, end_i - start_i, self.contains_count[i], self.contained_by_count[i]):
-                result.append((i, start_i, end_i, self.contains_count[i], self.contained_by_count[i]))
-        
-        return result
-    
-    def get_nested_counts_with_range_constraints(self, range_constraints):
-        """Get nested counts that satisfy range constraints."""
-        result = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            
-            # Check if range satisfies all range constraints
-            satisfies_constraints = True
-            for constraint in range_constraints:
-                if not constraint(start_i, end_i, end_i - start_i, self.contains_count[i], self.contained_by_count[i]):
-                    satisfies_constraints = False
-                    break
-            
-            if satisfies_constraints:
-                result.append((i, start_i, end_i, self.contains_count[i], self.contained_by_count[i]))
-        
-        return result
-    
-    def get_nested_counts_with_optimization_constraints(self, optimization_func):
-        """Get nested counts using custom optimization constraints."""
-        ranges_with_score = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            score = optimization_func(start_i, end_i, end_i - start_i, self.contains_count[i], self.contained_by_count[i])
-            ranges_with_score.append((i, start_i, end_i, self.contains_count[i], self.contained_by_count[i], score))
-        
-        ranges_with_score.sort(key=lambda x: x[5], reverse=True)
-        return ranges_with_score
-    
-    def get_nested_counts_with_multiple_constraints(self, constraints_list):
-        """Get nested counts that satisfy multiple constraints."""
-        result = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            
-            # Check if range satisfies all constraints
-            satisfies_all_constraints = True
-            for constraint in constraints_list:
-                if not constraint(start_i, end_i, end_i - start_i, self.contains_count[i], self.contained_by_count[i]):
-                    satisfies_all_constraints = False
-                    break
-            
-            if satisfies_all_constraints:
-                result.append((i, start_i, end_i, self.contains_count[i], self.contained_by_count[i]))
-        
-        return result
-    
-    def get_nested_counts_with_priority_constraints(self, priority_func):
-        """Get nested counts with priority-based constraints."""
-        ranges_with_priority = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            priority = priority_func(start_i, end_i, end_i - start_i, self.contains_count[i], self.contained_by_count[i])
-            ranges_with_priority.append((i, start_i, end_i, self.contains_count[i], self.contained_by_count[i], priority))
-        
-        ranges_with_priority.sort(key=lambda x: x[5], reverse=True)
-        return ranges_with_priority
-    
-    def get_nested_counts_with_adaptive_constraints(self, adaptive_func):
-        """Get nested counts with adaptive constraints."""
-        result = []
-        
-        for i in range(self.n):
-            start_i, end_i = self.ranges[i]
-            
-            # Check adaptive constraints
-            if adaptive_func(start_i, end_i, end_i - start_i, self.contains_count[i], self.contained_by_count[i], result):
-                result.append((i, start_i, end_i, self.contains_count[i], self.contained_by_count[i]))
-        
-        return result
-    
-    def get_optimal_nested_counts_strategy(self):
-        """Get optimal nested counts strategy considering all constraints."""
-        strategies = [
-            ('time_constraints', self.get_nested_counts_with_time_constraints),
-            ('resource_constraints', self.get_nested_counts_with_resource_constraints),
-            ('mathematical_constraints', self.get_nested_counts_with_mathematical_constraints),
-        ]
-        
-        best_strategy = None
-        best_count = 0
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                if strategy_name == 'time_constraints':
-                    current_result = strategy_func(5)  # 5 time units
-                elif strategy_name == 'resource_constraints':
-                    resource_limits = [100, 50]
-                    resource_consumption = {i: [10, 5] for i in range(self.n)}
-                    current_result = strategy_func(resource_limits, resource_consumption)
-                elif strategy_name == 'mathematical_constraints':
-                    def constraint_func(start, end, length, contains, contained_by):
-                        return length >= 2 and contains >= 1
-                    current_result = strategy_func(constraint_func)
-                
-                if len(current_result) > best_count:
-                    best_count = len(current_result)
-                    best_strategy = (strategy_name, current_result)
-            except:
-                continue
-        
-        return best_strategy
-
-# Example usage
-constraints = {
-    'min_length': 2,
-    'max_length': 10
+    return 0;
 }
-
-ranges = [(1, 4), (2, 3), (5, 8), (6, 7), (9, 12)]
-constrained_nrc = ConstrainedNestedRangesCount(ranges, constraints)
-
-print("Time-constrained nested counts:", constrained_nrc.get_nested_counts_with_time_constraints(5))
-
-# Resource constraints
-resource_limits = [100, 50]
-resource_consumption = {i: [10, 5] for i in range(len(ranges))}
-print("Resource-constrained nested counts:", constrained_nrc.get_nested_counts_with_resource_constraints(resource_limits, resource_consumption))
-
-# Mathematical constraints
-def custom_constraint(start, end, length, contains, contained_by):
-    return length >= 2 and contains >= 1
-
-print("Mathematical constraint nested counts:", constrained_nrc.get_nested_counts_with_mathematical_constraints(custom_constraint))
-
-# Range constraints
-def range_constraint(start, end, length, contains, contained_by):
-    return length >= 2 and start >= 1 and contains >= 1
-
-range_constraints = [range_constraint]
-print("Range-constrained nested counts:", constrained_nrc.get_nested_counts_with_range_constraints(range_constraints))
-
-# Multiple constraints
-def constraint1(start, end, length, contains, contained_by):
-    return length >= 2
-
-def constraint2(start, end, length, contains, contained_by):
-    return contains >= 1
-
-constraints_list = [constraint1, constraint2]
-print("Multiple constraints nested counts:", constrained_nrc.get_nested_counts_with_multiple_constraints(constraints_list))
-
-# Priority constraints
-def priority_func(start, end, length, contains, contained_by):
-    return (contains + contained_by) * length
-
-print("Priority-constrained nested counts:", constrained_nrc.get_nested_counts_with_priority_constraints(priority_func))
-
-# Adaptive constraints
-def adaptive_func(start, end, length, contains, contained_by, current_result):
-    return length >= 2 and contains >= 1 and len(current_result) < 3
-
-print("Adaptive constraint nested counts:", constrained_nrc.get_nested_counts_with_adaptive_constraints(adaptive_func))
-
-# Optimal strategy
-optimal = constrained_nrc.get_optimal_nested_counts_strategy()
-print(f"Optimal strategy: {optimal}")
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Nested Ranges Count](https://cses.fi/problemset/task/2169) - Count nested ranges
-- [Nested Ranges Check](https://cses.fi/problemset/task/2168) - Check nested ranges
-- [Range Queries](https://cses.fi/problemset/task/1648) - Range query problems
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log n) | Sorting + n BIT operations (each O(log n)) |
+| Space | O(n) | BIT array + coordinate compression map |
 
-#### **LeetCode Problems**
-- [Merge Intervals](https://leetcode.com/problems/merge-intervals/) - Merge overlapping intervals
-- [Insert Interval](https://leetcode.com/problems/insert-interval/) - Insert new interval
-- [Interval List Intersections](https://leetcode.com/problems/interval-list-intersections/) - Find interval intersections
-- [Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/) - Remove overlapping intervals
+---
 
-#### **Problem Categories**
-- **Sorting**: Range sorting, coordinate compression, interval ordering
-- **Coordinate Compression**: Large coordinate handling, efficient range processing
-- **Range Processing**: Interval analysis, nesting detection, containment counting
-- **Algorithm Design**: Sorting algorithms, coordinate compression techniques, range optimization
+## Common Mistakes
+
+### Mistake 1: Forgetting Coordinate Compression
+
+```python
+# WRONG: end values can be up to 10^9
+bit = FenwickTree(10**9)  # Memory limit exceeded!
+
+# CORRECT: compress to range [1, n]
+ends = sorted(set(r[1] for r in ranges))
+compress = {v: i + 1 for i, v in enumerate(ends)}
+bit = FenwickTree(len(ends))
+```
+
+**Problem:** BIT size must match the range of values, not the raw values.
+**Fix:** Always compress coordinates when values can be large.
+
+### Mistake 2: Wrong Sorting Tiebreaker
+
+```python
+# WRONG: arbitrary tiebreaker
+indexed.sort(key=lambda x: x[0])
+
+# CORRECT: specific tiebreaker for correct counting
+# For contained_by: (start ASC, end DESC)
+indexed.sort(key=lambda x: (x[0], -x[1]))
+```
+
+**Problem:** Without proper tiebreaking, ranges with same start are processed in wrong order.
+**Fix:** Use (start ASC, end DESC) for contained_by; (start DESC, end ASC) for contains.
+
+### Mistake 3: Off-by-One in BIT
+
+```python
+# WRONG: 0-indexed BIT
+compress = {v: i for i, v in enumerate(ends)}  # 0-indexed
+
+# CORRECT: 1-indexed for BIT
+compress = {v: i + 1 for i, v in enumerate(ends)}  # 1-indexed
+```
+
+**Problem:** Fenwick Tree operations assume 1-indexed arrays.
+**Fix:** Always use 1-indexed positions in BIT.
+
+### Mistake 4: Wrong Query Direction
+
+```python
+# WRONG: querying wrong range
+# For contained_by: want ends >= current end
+count = bit.query(comp_end)  # This gives ends <= current
+
+# CORRECT:
+count = bit.query(m) - bit.query(comp_end - 1)  # Ends >= current
+```
+
+**Problem:** Need to count ends >= current, not ends <= current.
+**Fix:** Use complement: total - (ends < current) = ends >= current.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single range | `n=1, [(1,5)]` | `0` and `0` | No other ranges to compare |
+| All identical | `n=3, [(1,5),(1,5),(1,5)]` | `0 0 0` and `0 0 0` | Equal ranges don't contain each other (need strict) |
+| Nested chain | `[(1,6),(2,5),(3,4)]` | `2 1 0` and `0 1 2` | Each contains/is contained by others in chain |
+| All disjoint | `[(1,2),(3,4),(5,6)]` | `0 0 0` and `0 0 0` | No overlaps |
+| Same start | `[(1,5),(1,3),(1,2)]` | `2 1 0` and `0 1 2` | Same start, different ends |
+| Same end | `[(1,5),(3,5),(4,5)]` | `2 1 0` and `0 1 2` | Different starts, same end |
+
+---
+
+## When to Use This Pattern
+
+### Use This Approach When:
+- Counting containment/dominance relationships between intervals
+- Need O(n log n) time instead of O(n^2)
+- Values are large but count of items is manageable (coordinate compression)
+- Problems involving "count elements satisfying condition seen so far"
+
+### Don't Use When:
+- Simple overlap detection (use sorting alone)
+- Need actual nested ranges, not counts (use check version)
+- Online queries with updates (consider segment tree with lazy propagation)
+
+### Pattern Recognition Checklist:
+- [ ] Need to count items with property <= or >= threshold? -> **Consider BIT**
+- [ ] Values too large for direct indexing? -> **Apply coordinate compression**
+- [ ] Processing elements in order and counting past elements? -> **Sorting + BIT**
+- [ ] 2D dominance counting (x1 <= x2 AND y1 <= y2)? -> **This exact pattern**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Nested Ranges Check (CSES)](https://cses.fi/problemset/task/2168) | Same problem but boolean output |
+| [Dynamic Range Sum Queries (CSES)](https://cses.fi/problemset/task/1648) | Learn BIT basics |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Restaurant Customers (CSES)](https://cses.fi/problemset/task/1619) | Sweep line on ranges |
+| [Josephus Problem II (CSES)](https://cses.fi/problemset/task/2163) | BIT for order statistics |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Distinct Values Queries (CSES)](https://cses.fi/problemset/task/1734) | Offline queries + BIT |
+| [Inversion Count](https://www.spoj.com/problems/INVCNT/) | Classic BIT application |
+
+### LeetCode Related
+| Problem | Connection |
+|---------|------------|
+| [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | BIT for counting |
+| [Russian Doll Envelopes](https://leetcode.com/problems/russian-doll-envelopes/) | 2D containment (LIS approach) |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Sort ranges strategically, use BIT to count valid endpoints seen so far
+2. **Time Optimization:** From O(n^2) brute force to O(n log n) with sorting + BIT
+3. **Space Trade-off:** O(n) for BIT and coordinate compression map
+4. **Pattern:** 2D dominance counting - sorting one dimension, BIT on the other
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Implement Fenwick Tree from scratch (update and query)
+- [ ] Apply coordinate compression to large value ranges
+- [ ] Determine correct sorting order for containment problems
+- [ ] Solve this problem without looking at the solution
+- [ ] Explain why the tiebreaker in sorting matters
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Fenwick Tree](https://cp-algorithms.com/data_structures/fenwick.html)
+- [CSES Problem Set - Sorting and Searching](https://cses.fi/problemset/)
+- [TopCoder: Binary Indexed Trees](https://www.topcoder.com/community/competitive-programming/tutorials/binary-indexed-trees/)

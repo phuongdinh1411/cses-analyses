@@ -1,1292 +1,518 @@
 ---
 layout: simple
-title: "Nearest Smaller Values"
+title: "Nearest Smaller Values - Monotonic Stack Problem"
 permalink: /problem_soulutions/sorting_and_searching/nearest_smaller_values_analysis
+difficulty: Easy
+tags: [monotonic-stack, stack, array]
 ---
 
 # Nearest Smaller Values
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of stack-based algorithms and their applications
-- Apply stack data structure for finding nearest smaller elements
-- Implement efficient solutions for range queries with optimal complexity
-- Optimize solutions for large inputs with proper complexity analysis
-- Handle edge cases in stack-based problems
+| Attribute | Value |
+|-----------|-------|
+| **Problem Link** | [CSES 1645 - Nearest Smaller Values](https://cses.fi/problemset/task/1645) |
+| **Difficulty** | Easy |
+| **Category** | Sorting and Searching |
+| **Time Limit** | 1 second |
+| **Key Technique** | Monotonic Stack (Increasing) |
 
-## 📋 Problem Description
+### Learning Goals
 
-You are given an array of n integers. For each element, find the nearest smaller element to its left (the first element to the left that is smaller than the current element).
+After solving this problem, you will be able to:
+- [ ] Understand when and why to use a monotonic stack
+- [ ] Maintain a stack in increasing order for efficient lookups
+- [ ] Recognize the "nearest smaller/greater element" pattern
+- [ ] Analyze why each element is pushed and popped at most once (amortized O(n))
 
-If there is no smaller element to the left, print 0.
+---
 
-**Input**: 
-- First line: integer n (array size)
-- Second line: n integers a[1], a[2], ..., a[n] (array elements)
+## Problem Statement
 
-**Output**: 
-- Print n integers: for each position, the nearest smaller value to the left
+**Problem:** Given an array of n integers, for each element find the nearest smaller element to its left. If no such element exists, output 0.
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10⁵
-- 1 ≤ a[i] ≤ 10⁹
+**Input:**
+- Line 1: Integer n (size of array)
+- Line 2: n space-separated integers representing the array
 
-**Example**:
+**Output:**
+- n integers: For each position i, print the position (1-indexed) of the nearest smaller element to the left, or 0 if none exists.
+
+**Constraints:**
+- 1 <= n <= 2 x 10^5
+- 1 <= a[i] <= 10^9
+
+### Example
+
 ```
 Input:
 8
 2 5 1 4 8 3 2 5
 
 Output:
-0 2 0 1 4 0 0 3
-
-Explanation**: 
-Array: [2, 5, 1, 4, 8, 3, 2, 5]
-
-For each position:
-- Position 1 (2): No element to the left → 0
-- Position 2 (5): Nearest smaller to left is 2 → 2
-- Position 3 (1): No smaller element to the left → 0
-- Position 4 (4): Nearest smaller to left is 1 → 1
-- Position 5 (8): Nearest smaller to left is 4 → 4
-- Position 6 (3): No smaller element to the left → 0
-- Position 7 (2): No smaller element to the left → 0
-- Position 8 (5): Nearest smaller to left is 3 → 3
+0 1 0 3 4 3 3 7
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Position 1 (value 2): No element to the left -> 0
+- Position 2 (value 5): Element at position 1 (value 2) is smaller -> 1
+- Position 3 (value 1): No smaller element to the left -> 0
+- Position 4 (value 4): Element at position 3 (value 1) is smaller -> 3
+- Position 5 (value 8): Element at position 4 (value 4) is smaller -> 4
+- Position 6 (value 3): Element at position 3 (value 1) is smaller -> 3
+- Position 7 (value 2): Element at position 3 (value 1) is smaller -> 3
+- Position 8 (value 5): Element at position 7 (value 2) is smaller -> 7
 
-### Approach 1: Brute Force - Check All Previous Elements
+---
 
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: For each element, check all previous elements to find the nearest smaller one
-- **Complete Coverage**: Guaranteed to find the correct nearest smaller element
-- **Simple Implementation**: Straightforward approach with nested loops
-- **Inefficient**: Quadratic time complexity
+## Intuition: How to Think About This Problem
 
-**Key Insight**: For each element, scan all previous elements from right to left to find the first smaller element.
+### Pattern Recognition
 
-**Algorithm**:
-- For each element at position i:
-  - Scan all previous elements from i-1 to 1
-  - Return the first element that is smaller than current element
-  - If no such element exists, return 0
+> **Key Question:** Why can we use a stack here instead of checking all previous elements?
 
-**Visual Example**:
-```
-Array: [2, 5, 1, 4, 8, 3, 2, 5]
+The crucial insight is that we only need to maintain **candidates** that could be the answer for future elements. If element A is larger than element B and A comes before B, then A will **never** be the answer for any future element - B will always be a better candidate (smaller and closer).
 
-Processing:
-- Position 1 (2): No previous elements → 0
-- Position 2 (5): Check position 1 (2) → 2 < 5 ✓ → 2
-- Position 3 (1): Check position 2 (5) → 5 > 1 ✗, Check position 1 (2) → 2 > 1 ✗ → 0
-- Position 4 (4): Check position 3 (1) → 1 < 4 ✓ → 1
-- Position 5 (8): Check position 4 (4) → 4 < 8 ✓ → 4
-- Position 6 (3): Check position 5 (8) → 8 > 3 ✗, Check position 4 (4) → 4 > 3 ✗, Check position 3 (1) → 1 < 3 ✓ → 1
-- Position 7 (2): Check position 6 (3) → 3 > 2 ✗, Check position 5 (8) → 8 > 2 ✗, Check position 4 (4) → 4 > 2 ✗, Check position 3 (1) → 1 < 2 ✓ → 1
-- Position 8 (5): Check position 7 (2) → 2 < 5 ✓ → 2
+### Breaking Down the Problem
 
-Result: [0, 2, 0, 1, 4, 1, 1, 2]
-```
+1. **What are we looking for?** The nearest (closest) smaller element to the left of each position.
+2. **What information do we have?** All elements to the left of current position.
+3. **What's the relationship?** Elements that are larger than or equal to the current element can never be the answer for this or any future element.
 
-**Implementation**:
+### The Monotonic Stack Insight
+
+Think of it like a "bouncer at a club":
+- New element arrives and checks the stack from top
+- Any element >= current element gets "kicked out" (they'll never be useful again)
+- The remaining top (if any) is our answer
+- Then the new element joins the stack
+
+This maintains a **strictly increasing** stack from bottom to top.
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+For each element, scan all previous elements from right to left and find the first one that is smaller.
+
+### Algorithm
+
+1. For each position i from 0 to n-1
+2. Scan positions j from i-1 down to 0
+3. Return the first j where arr[j] < arr[i]
+4. If no such j exists, answer is 0
+
+### Code
+
 ```python
-def brute_force_nearest_smaller_values(arr):
+def solve_brute_force(n, arr):
     """
-    Find nearest smaller values using brute force approach
-    
-    Args:
-        arr: list of integers
-    
-    Returns:
-        list: nearest smaller values for each position
+    Brute force: Check all previous elements.
+
+    Time: O(n^2)
+    Space: O(1)
     """
-    n = len(arr)
-    result = [0] * n
-    
+    result = []
     for i in range(n):
+        found = 0
         for j in range(i - 1, -1, -1):
             if arr[j] < arr[i]:
-                result[i] = arr[j]
+                found = j + 1  # 1-indexed
                 break
-    
+        result.append(found)
     return result
-
-# Example usage
-arr = [2, 5, 1, 4, 8, 3, 2, 5]
-result = brute_force_nearest_smaller_values(arr)
-print(f"Brute force result: {result}")  # Output: [0, 2, 0, 1, 4, 1, 1, 2]
 ```
 
-**Time Complexity**: O(n²) - Nested loops
-**Space Complexity**: O(1) - Constant extra space
+### Complexity
 
-**Why it's inefficient**: Quadratic time complexity makes it slow for large inputs.
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | For each element, potentially scan all previous elements |
+| Space | O(1) | No extra space besides output |
+
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed since we check every candidate. However, with n up to 2 x 10^5, O(n^2) = 4 x 10^10 operations is far too slow.
 
 ---
 
-### Approach 2: Optimized - Use Stack for Efficient Lookup
+## Solution 2: Monotonic Stack (Optimal)
 
-**Key Insights from Optimized Approach**:
-- **Stack**: Use stack to maintain elements in decreasing order
-- **Efficient Lookup**: O(1) lookup for nearest smaller element
-- **Better Complexity**: Achieve O(n) time complexity
-- **Memory Trade-off**: Use more memory for better time complexity
+### Key Insight
 
-**Key Insight**: Use stack to maintain elements in decreasing order for efficient nearest smaller element lookup.
+> **The Trick:** Maintain a stack of (index, value) pairs in strictly increasing order of values. Elements that are >= current element will never be useful again, so we can safely remove them.
 
-**Algorithm**:
-- For each element, pop elements from stack that are greater than or equal to current element
-- The top element of stack (if exists) is the nearest smaller element
-- Push current element to stack
+### Why Monotonic Stack Works
 
-**Visual Example**:
+Consider processing element X:
+1. Any stack element >= X cannot be the "nearest smaller" for X
+2. Any stack element >= X cannot be the "nearest smaller" for any future element Y either, because:
+   - If Y > X: X would be a better answer (smaller and closer)
+   - If Y <= X: That element is still >= Y, so it's not smaller
+
+Therefore, we can safely pop all elements >= X before checking the answer.
+
+### Algorithm
+
+1. Initialize empty stack (stores pairs of index and value)
+2. For each element at position i:
+   - Pop all stack elements with value >= arr[i]
+   - If stack is non-empty, top element's index is our answer
+   - Otherwise, answer is 0
+   - Push current (i, arr[i]) onto stack
+3. Output all answers
+
+### Dry Run Example
+
+Let's trace through `arr = [2, 5, 1, 4, 8, 3, 2, 5]`:
+
+```
+Stack format: [(index, value), ...]  (index is 1-based for clarity)
+
+Step 1: Process arr[0] = 2
+  Stack: []
+  Pop condition: nothing to pop
+  Answer: 0 (stack empty)
+  Push (1, 2)
+  Stack after: [(1, 2)]
+  Output: [0]
+
+Step 2: Process arr[1] = 5
+  Stack: [(1, 2)]
+  Pop condition: 2 < 5, don't pop
+  Answer: 1 (top is (1, 2))
+  Push (2, 5)
+  Stack after: [(1, 2), (2, 5)]
+  Output: [0, 1]
+
+Step 3: Process arr[2] = 1
+  Stack: [(1, 2), (2, 5)]
+  Pop condition: 5 >= 1, pop (2, 5)
+  Pop condition: 2 >= 1, pop (1, 2)
+  Answer: 0 (stack empty)
+  Push (3, 1)
+  Stack after: [(3, 1)]
+  Output: [0, 1, 0]
+
+Step 4: Process arr[3] = 4
+  Stack: [(3, 1)]
+  Pop condition: 1 < 4, don't pop
+  Answer: 3 (top is (3, 1))
+  Push (4, 4)
+  Stack after: [(3, 1), (4, 4)]
+  Output: [0, 1, 0, 3]
+
+Step 5: Process arr[4] = 8
+  Stack: [(3, 1), (4, 4)]
+  Pop condition: 4 < 8, don't pop
+  Answer: 4 (top is (4, 4))
+  Push (5, 8)
+  Stack after: [(3, 1), (4, 4), (5, 8)]
+  Output: [0, 1, 0, 3, 4]
+
+Step 6: Process arr[5] = 3
+  Stack: [(3, 1), (4, 4), (5, 8)]
+  Pop condition: 8 >= 3, pop (5, 8)
+  Pop condition: 4 >= 3, pop (4, 4)
+  Pop condition: 1 < 3, don't pop
+  Answer: 3 (top is (3, 1))
+  Push (6, 3)
+  Stack after: [(3, 1), (6, 3)]
+  Output: [0, 1, 0, 3, 4, 3]
+
+Step 7: Process arr[6] = 2
+  Stack: [(3, 1), (6, 3)]
+  Pop condition: 3 >= 2, pop (6, 3)
+  Pop condition: 1 < 2, don't pop
+  Answer: 3 (top is (3, 1))
+  Push (7, 2)
+  Stack after: [(3, 1), (7, 2)]
+  Output: [0, 1, 0, 3, 4, 3, 3]
+
+Step 8: Process arr[7] = 5
+  Stack: [(3, 1), (7, 2)]
+  Pop condition: 2 < 5, don't pop
+  Answer: 7 (top is (7, 2))
+  Push (8, 5)
+  Stack after: [(3, 1), (7, 2), (8, 5)]
+  Output: [0, 1, 0, 3, 4, 3, 3, 7]
+
+Final Answer: 0 1 0 3 4 3 3 7
+```
+
+### Visual Diagram
+
 ```
 Array: [2, 5, 1, 4, 8, 3, 2, 5]
+Index:  1  2  3  4  5  6  7  8
 
-Processing with stack:
-- Element 2: Stack empty → 0, Stack: [2]
-- Element 5: Stack top 2 < 5 → 2, Stack: [2, 5]
-- Element 1: Stack top 5 > 1, pop 5; Stack top 2 > 1, pop 2; Stack empty → 0, Stack: [1]
-- Element 4: Stack top 1 < 4 → 1, Stack: [1, 4]
-- Element 8: Stack top 4 < 8 → 4, Stack: [1, 4, 8]
-- Element 3: Stack top 8 > 3, pop 8; Stack top 4 > 3, pop 4; Stack top 1 < 3 → 1, Stack: [1, 3]
-- Element 2: Stack top 3 > 2, pop 3; Stack top 1 < 2 → 1, Stack: [1, 2]
-- Element 5: Stack top 2 < 5 → 2, Stack: [1, 2, 5]
+Stack Evolution (showing values):
 
-Result: [0, 2, 0, 1, 4, 1, 1, 2]
+Step 1: [2]                    -> Answer: 0
+Step 2: [2, 5]                 -> Answer: 1 (2 < 5)
+Step 3: [1]                    -> Answer: 0 (2,5 popped)
+Step 4: [1, 4]                 -> Answer: 3 (1 < 4)
+Step 5: [1, 4, 8]              -> Answer: 4 (4 < 8)
+Step 6: [1, 3]                 -> Answer: 3 (4,8 popped, 1 < 3)
+Step 7: [1, 2]                 -> Answer: 3 (3 popped, 1 < 2)
+Step 8: [1, 2, 5]              -> Answer: 7 (2 < 5)
+
+Note: Stack always maintains STRICTLY INCREASING order
+      [1] < [2] < [5] at the end
 ```
 
-**Implementation**:
+### Code (Python)
+
 ```python
-def optimized_nearest_smaller_values(arr):
+import sys
+from typing import List
+
+def solve(n: int, arr: List[int]) -> List[int]:
     """
-    Find nearest smaller values using stack approach
-    
-    Args:
-        arr: list of integers
-    
-    Returns:
-        list: nearest smaller values for each position
+    Find nearest smaller element to the left using monotonic stack.
+
+    Time: O(n) - each element pushed and popped at most once
+    Space: O(n) - stack storage
     """
-    n = len(arr)
-    result = [0] * n
-    stack = []
-    
+    result = []
+    stack = []  # stores (index, value)
+
     for i in range(n):
-        # Pop elements that are greater than or equal to current element
-        while stack and stack[-1] >= arr[i]:
+        # Pop elements >= current (they'll never be useful again)
+        while stack and stack[-1][1] >= arr[i]:
             stack.pop()
-        
-        # Top element is the nearest smaller element
+
+        # Top of stack is nearest smaller, or 0 if empty
         if stack:
-            result[i] = stack[-1]
-        
-        # Push current element to stack
-        stack.append(arr[i])
-    
-    return result
-
-# Example usage
-arr = [2, 5, 1, 4, 8, 3, 2, 5]
-result = optimized_nearest_smaller_values(arr)
-print(f"Optimized result: {result}")  # Output: [0, 2, 0, 1, 4, 1, 1, 2]
-```
-
-**Time Complexity**: O(n) - Each element pushed and popped at most once
-**Space Complexity**: O(n) - Stack storage
-
-**Why it's better**: Much more efficient than brute force with stack optimization.
-
----
-
-### Approach 3: Optimal - Monotonic Stack
-
-**Key Insights from Optimal Approach**:
-- **Monotonic Stack**: Maintain stack in strictly decreasing order
-- **Optimal Complexity**: Achieve O(n) time complexity with optimal constants
-- **Efficient Implementation**: No need for complex data structures
-- **Space Optimization**: Stack size is bounded by array size
-
-**Key Insight**: Use monotonic stack to maintain elements in strictly decreasing order for optimal nearest smaller element lookup.
-
-**Algorithm**:
-- For each element, maintain stack in strictly decreasing order
-- Pop elements that are greater than or equal to current element
-- The top element of stack (if exists) is the nearest smaller element
-- Push current element to stack
-
-**Visual Example**:
-```
-Array: [2, 5, 1, 4, 8, 3, 2, 5]
-
-Monotonic stack processing:
-- Element 2: Stack empty → 0, Stack: [2]
-- Element 5: Stack top 2 < 5 → 2, Stack: [2, 5]
-- Element 1: Stack top 5 ≥ 1, pop 5; Stack top 2 ≥ 1, pop 2; Stack empty → 0, Stack: [1]
-- Element 4: Stack top 1 < 4 → 1, Stack: [1, 4]
-- Element 8: Stack top 4 < 8 → 4, Stack: [1, 4, 8]
-- Element 3: Stack top 8 ≥ 3, pop 8; Stack top 4 ≥ 3, pop 4; Stack top 1 < 3 → 1, Stack: [1, 3]
-- Element 2: Stack top 3 ≥ 2, pop 3; Stack top 1 < 2 → 1, Stack: [1, 2]
-- Element 5: Stack top 2 < 5 → 2, Stack: [1, 2, 5]
-
-Result: [0, 2, 0, 1, 4, 1, 1, 2]
-```
-
-**Implementation**:
-```python
-def optimal_nearest_smaller_values(arr):
-    """
-    Find nearest smaller values using optimal monotonic stack approach
-    
-    Args:
-        arr: list of integers
-    
-    Returns:
-        list: nearest smaller values for each position
-    """
-    n = len(arr)
-    result = [0] * n
-    stack = []
-    
-    for i in range(n):
-        # Maintain monotonic stack (strictly decreasing)
-        while stack and stack[-1] >= arr[i]:
-            stack.pop()
-        
-        # Top element is the nearest smaller element
-        if stack:
-            result[i] = stack[-1]
-        
-        # Push current element to stack
-        stack.append(arr[i])
-    
-    return result
-
-# Example usage
-arr = [2, 5, 1, 4, 8, 3, 2, 5]
-result = optimal_nearest_smaller_values(arr)
-print(f"Optimal result: {result}")  # Output: [0, 2, 0, 1, 4, 1, 1, 2]
-```
-
-**Time Complexity**: O(n) - Each element pushed and popped at most once
-**Space Complexity**: O(n) - Stack storage
-
-**Why it's optimal**: Achieves the best possible time complexity with monotonic stack optimization.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²) | O(1) | Check all previous elements |
-| Stack | O(n) | O(n) | Use stack for efficient lookup |
-| Monotonic Stack | O(n) | O(n) | Maintain decreasing order |
-
-### Time Complexity
-- **Time**: O(n) - Monotonic stack approach provides optimal time complexity
-- **Space**: O(n) - Stack storage
-
-### Why This Solution Works
-- **Monotonic Stack**: Maintain stack in strictly decreasing order for efficient nearest smaller element lookup
-- **Optimal Algorithm**: Monotonic stack approach is the standard solution for this problem
-- **Optimal Approach**: Monotonic stack provides the most efficient solution for nearest smaller element problems
-- **Space**: O([complexity]) - [Explanation]
-
-### Why This Solution Works
-- **Monotonic Stack**: Maintain stack in strictly decreasing order for efficient nearest smaller element lookup
-- **Optimal Algorithm**: Monotonic stack approach is the standard solution for this problem
-- **Optimal Approach**: Monotonic stack provides the most efficient solution for nearest smaller element problems
-- **Efficient Lookup**: Stack maintains elements in decreasing order for O(1) nearest smaller element access
-- **Optimal Approach**: Monotonic stack provides the most efficient solution for nearest smaller element problems
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Nearest Smaller Values with Range Queries
-**Problem**: Answer multiple queries about nearest smaller values in different ranges.
-
-**Link**: [CSES Problem Set - Nearest Smaller Values Range Queries](https://cses.fi/problemset/task/nearest_smaller_values_range)
-
-```python
-def nearest_smaller_values_range_queries(arr, queries):
-    """
-    Answer range queries about nearest smaller values
-    """
-    results = []
-    
-    for query in queries:
-        left, right = query['left'], query['right']
-        
-        # Extract subarray
-        subarray = arr[left:right+1]
-        
-        # Find nearest smaller values for this subarray
-        nearest_smaller = find_nearest_smaller_values(subarray)
-        results.append(nearest_smaller)
-    
-    return results
-
-def find_nearest_smaller_values(arr):
-    """
-    Find nearest smaller value for each element using monotonic stack
-    """
-    n = len(arr)
-    result = [-1] * n
-    stack = []
-    
-    for i in range(n):
-        # Remove elements that are not smaller than current element
-        while stack and arr[stack[-1]] >= arr[i]:
-            stack.pop()
-        
-        # The top of stack is the nearest smaller element
-        if stack:
-            result[i] = stack[-1]
-        
-        # Push current index to stack
-        stack.append(i)
-    
-    return result
-
-def find_nearest_smaller_values_optimized(arr):
-    """
-    Optimized version with early termination
-    """
-    n = len(arr)
-    result = [-1] * n
-    stack = []
-    
-    for i in range(n):
-        # Remove elements that are not smaller than current element
-        while stack and arr[stack[-1]] >= arr[i]:
-            stack.pop()
-        
-        # The top of stack is the nearest smaller element
-        if stack:
-            result[i] = stack[-1]
-        
-        # Push current index to stack
-        stack.append(i)
-        
-        # Early termination if stack becomes empty
-        if not stack:
-            break
-    
-    return result
-```
-
-### Variation 2: Nearest Smaller Values with Updates
-**Problem**: Handle dynamic updates to the array and maintain nearest smaller value queries.
-
-**Link**: [CSES Problem Set - Nearest Smaller Values with Updates](https://cses.fi/problemset/task/nearest_smaller_values_updates)
-
-```python
-class NearestSmallerValuesWithUpdates:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.nearest_smaller = self._compute_nearest_smaller()
-    
-    def _compute_nearest_smaller(self):
-        """Compute initial nearest smaller values"""
-        result = [-1] * self.n
-        stack = []
-        
-        for i in range(self.n):
-            # Remove elements that are not smaller than current element
-            while stack and self.arr[stack[-1]] >= self.arr[i]:
-                stack.pop()
-            
-            # The top of stack is the nearest smaller element
-            if stack:
-                result[i] = stack[-1]
-            
-            # Push current index to stack
-            stack.append(i)
-        
-        return result
-    
-    def update(self, index, new_value):
-        """Update element at index to new_value"""
-        self.arr[index] = new_value
-        self.nearest_smaller = self._compute_nearest_smaller()
-    
-    def get_nearest_smaller(self, index):
-        """Get nearest smaller value for element at index"""
-        return self.nearest_smaller[index]
-    
-    def get_all_nearest_smaller(self):
-        """Get all nearest smaller values"""
-        return self.nearest_smaller
-    
-    def get_nearest_smaller_range(self, left, right):
-        """Get nearest smaller values for range [left, right]"""
-        # Extract subarray
-        subarray = self.arr[left:right+1]
-        
-        # Find nearest smaller values for this subarray
-        result = [-1] * len(subarray)
-        stack = []
-        
-        for i in range(len(subarray)):
-            # Remove elements that are not smaller than current element
-            while stack and subarray[stack[-1]] >= subarray[i]:
-                stack.pop()
-            
-            # The top of stack is the nearest smaller element
-            if stack:
-                result[i] = stack[-1] + left  # Adjust for original array indices
-            
-            # Push current index to stack
-            stack.append(i)
-        
-        return result
-```
-
-### Variation 3: Nearest Smaller Values with Constraints
-**Problem**: Find nearest smaller values that satisfy additional constraints (e.g., minimum difference, maximum distance).
-
-**Link**: [CSES Problem Set - Nearest Smaller Values with Constraints](https://cses.fi/problemset/task/nearest_smaller_values_constraints)
-
-```python
-def nearest_smaller_values_constraints(arr, min_difference, max_distance):
-    """
-    Find nearest smaller values with additional constraints
-    """
-    n = len(arr)
-    result = [-1] * n
-    stack = []
-    
-    for i in range(n):
-        # Remove elements that are not smaller than current element
-        while stack and arr[stack[-1]] >= arr[i]:
-            stack.pop()
-        
-        # Find nearest smaller element that satisfies constraints
-        for j in range(len(stack) - 1, -1, -1):
-            smaller_idx = stack[j]
-            smaller_value = arr[smaller_idx]
-            
-            # Check distance constraint
-            if i - smaller_idx > max_distance:
-                break
-            
-            # Check difference constraint
-            if arr[i] - smaller_value >= min_difference:
-                result[i] = smaller_idx
-                break
-        
-        # Push current index to stack
-        stack.append(i)
-    
-    return result
-
-def nearest_smaller_values_constraints_optimized(arr, min_difference, max_distance):
-    """
-    Optimized version with early termination
-    """
-    n = len(arr)
-    result = [-1] * n
-    stack = []
-    
-    for i in range(n):
-        # Remove elements that are not smaller than current element
-        while stack and arr[stack[-1]] >= arr[i]:
-            stack.pop()
-        
-        # Find nearest smaller element that satisfies constraints
-        for j in range(len(stack) - 1, -1, -1):
-            smaller_idx = stack[j]
-            smaller_value = arr[smaller_idx]
-            
-            # Check distance constraint
-            if i - smaller_idx > max_distance:
-                break
-            
-            # Check difference constraint
-            if arr[i] - smaller_value >= min_difference:
-                result[i] = smaller_idx
-                break
-        
-        # Push current index to stack
-        stack.append(i)
-        
-        # Early termination if stack becomes empty
-        if not stack:
-            break
-    
-    return result
-
-# Example usage
-arr = [3, 1, 4, 1, 5, 9, 2, 6]
-min_difference = 2
-max_distance = 3
-
-result = nearest_smaller_values_constraints(arr, min_difference, max_distance)
-print(f"Nearest smaller values with constraints: {result}")  # Output: [-1, -1, 1, -1, 3, 4, 1, 6]
-```
-
-## Problem Variations
-
-### **Variation 1: Nearest Smaller Values with Dynamic Updates**
-**Problem**: Handle dynamic array updates (add/remove/update elements) while maintaining efficient nearest smaller value queries.
-
-**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
-
-```python
-from collections import defaultdict
-import bisect
-
-class DynamicNearestSmallerValues:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.nearest_smaller = self._compute_nearest_smaller()
-    
-    def _compute_nearest_smaller(self):
-        """Compute nearest smaller values using monotonic stack."""
-        result = [-1] * self.n
-        stack = []
-        
-        for i in range(self.n):
-            # Remove elements that are not smaller than current element
-            while stack and self.arr[stack[-1]] >= self.arr[i]:
-                stack.pop()
-            
-            # The top of stack is the nearest smaller element
-            if stack:
-                result[i] = stack[-1]
-            
-            # Push current index to stack
-            stack.append(i)
-        
-        return result
-    
-    def update_value(self, index, new_value):
-        """Update array value and recalculate nearest smaller values."""
-        if 0 <= index < self.n:
-            self.arr[index] = new_value
-            self.nearest_smaller = self._compute_nearest_smaller()
-    
-    def add_element(self, value):
-        """Add new element to the array."""
-        self.arr.append(value)
-        self.n += 1
-        self.nearest_smaller = self._compute_nearest_smaller()
-    
-    def remove_element(self, index):
-        """Remove element at index from the array."""
-        if 0 <= index < self.n:
-            del self.arr[index]
-            self.n -= 1
-            self.nearest_smaller = self._compute_nearest_smaller()
-    
-    def get_nearest_smaller(self, index):
-        """Get nearest smaller value for element at index."""
-        if 0 <= index < self.n:
-            return self.nearest_smaller[index]
-        return -1
-    
-    def get_all_nearest_smaller(self):
-        """Get all nearest smaller values."""
-        return self.nearest_smaller
-    
-    def get_nearest_smaller_range(self, left, right):
-        """Get nearest smaller values for range [left, right]."""
-        if left < 0 or right >= self.n or left > right:
-            return []
-        
-        # Extract subarray
-        subarray = self.arr[left:right+1]
-        
-        # Find nearest smaller values for this subarray
-        result = [-1] * len(subarray)
-        stack = []
-        
-        for i in range(len(subarray)):
-            # Remove elements that are not smaller than current element
-            while stack and subarray[stack[-1]] >= subarray[i]:
-                stack.pop()
-            
-            # The top of stack is the nearest smaller element
-            if stack:
-                result[i] = stack[-1] + left  # Adjust for original array indices
-            
-            # Push current index to stack
-            stack.append(i)
-        
-        return result
-    
-    def get_nearest_smaller_with_value(self, target_value):
-        """Get nearest smaller values for elements with specific value."""
-        result = []
-        for i in range(self.n):
-            if self.arr[i] == target_value:
-                result.append(self.nearest_smaller[i])
-        return result
-    
-    def get_nearest_smaller_with_constraint(self, constraint_func):
-        """Get nearest smaller values for elements that satisfy constraint."""
-        result = []
-        for i in range(self.n):
-            if constraint_func(self.arr[i]):
-                result.append((i, self.nearest_smaller[i]))
-        return result
-    
-    def get_nearest_smaller_statistics(self):
-        """Get statistics about nearest smaller values."""
-        if not self.arr:
-            return {
-                'total_elements': 0,
-                'elements_with_smaller': 0,
-                'elements_without_smaller': 0,
-                'average_distance': 0,
-                'max_distance': 0
-            }
-        
-        elements_with_smaller = sum(1 for x in self.nearest_smaller if x != -1)
-        elements_without_smaller = self.n - elements_with_smaller
-        
-        distances = []
-        for i in range(self.n):
-            if self.nearest_smaller[i] != -1:
-                distances.append(i - self.nearest_smaller[i])
-        
-        return {
-            'total_elements': self.n,
-            'elements_with_smaller': elements_with_smaller,
-            'elements_without_smaller': elements_without_smaller,
-            'average_distance': sum(distances) / len(distances) if distances else 0,
-            'max_distance': max(distances) if distances else 0
-        }
-    
-    def get_nearest_smaller_patterns(self):
-        """Get patterns in nearest smaller values."""
-        patterns = {
-            'consecutive_smaller': 0,
-            'alternating_pattern': 0,
-            'monotonic_increasing': 0,
-            'monotonic_decreasing': 0
-        }
-        
-        for i in range(1, self.n):
-            if self.nearest_smaller[i] == i - 1:
-                patterns['consecutive_smaller'] += 1
-            
-            if i > 1:
-                if (self.nearest_smaller[i] != -1 and 
-                    self.nearest_smaller[i-1] != -1 and
-                    self.nearest_smaller[i] != self.nearest_smaller[i-1]):
-                    patterns['alternating_pattern'] += 1
-        
-        return patterns
-
-# Example usage
-arr = [2, 5, 1, 4, 8, 3, 2, 5]
-dynamic_nsv = DynamicNearestSmallerValues(arr)
-print(f"Initial nearest smaller: {dynamic_nsv.get_all_nearest_smaller()}")
-
-# Update a value
-dynamic_nsv.update_value(1, 1)
-print(f"After update: {dynamic_nsv.get_all_nearest_smaller()}")
-
-# Add element
-dynamic_nsv.add_element(0)
-print(f"After adding 0: {dynamic_nsv.get_all_nearest_smaller()}")
-
-# Get nearest smaller for specific index
-print(f"Nearest smaller for index 3: {dynamic_nsv.get_nearest_smaller(3)}")
-
-# Get nearest smaller for range
-print(f"Nearest smaller for range [2, 5]: {dynamic_nsv.get_nearest_smaller_range(2, 5)}")
-
-# Get nearest smaller with value constraint
-print(f"Nearest smaller for value 2: {dynamic_nsv.get_nearest_smaller_with_value(2)}")
-
-# Get nearest smaller with custom constraint
-def constraint_func(x):
-    return x > 3
-
-print(f"Nearest smaller for elements > 3: {dynamic_nsv.get_nearest_smaller_with_constraint(constraint_func)}")
-
-# Get statistics
-print(f"Statistics: {dynamic_nsv.get_nearest_smaller_statistics()}")
-
-# Get patterns
-print(f"Patterns: {dynamic_nsv.get_nearest_smaller_patterns()}")
-```
-
-### **Variation 2: Nearest Smaller Values with Different Operations**
-**Problem**: Handle different types of operations on nearest smaller values (nearest greater, nearest equal, advanced constraints).
-
-**Approach**: Use advanced data structures for efficient different types of nearest element queries.
-
-```python
-class AdvancedNearestSmallerValues:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.nearest_smaller = self._compute_nearest_smaller()
-        self.nearest_greater = self._compute_nearest_greater()
-        self.nearest_equal = self._compute_nearest_equal()
-    
-    def _compute_nearest_smaller(self):
-        """Compute nearest smaller values using monotonic stack."""
-        result = [-1] * self.n
-        stack = []
-        
-        for i in range(self.n):
-            while stack and self.arr[stack[-1]] >= self.arr[i]:
-                stack.pop()
-            
-            if stack:
-                result[i] = stack[-1]
-            
-            stack.append(i)
-        
-        return result
-    
-    def _compute_nearest_greater(self):
-        """Compute nearest greater values using monotonic stack."""
-        result = [-1] * self.n
-        stack = []
-        
-        for i in range(self.n):
-            while stack and self.arr[stack[-1]] <= self.arr[i]:
-                stack.pop()
-            
-            if stack:
-                result[i] = stack[-1]
-            
-            stack.append(i)
-        
-        return result
-    
-    def _compute_nearest_equal(self):
-        """Compute nearest equal values using hash map."""
-        result = [-1] * self.n
-        value_to_indices = defaultdict(list)
-        
-        for i in range(self.n):
-            value_to_indices[self.arr[i]].append(i)
-        
-        for i in range(self.n):
-            indices = value_to_indices[self.arr[i]]
-            # Find the nearest equal element to the left
-            for j in reversed(indices):
-                if j < i:
-                    result[i] = j
-                    break
-        
-        return result
-    
-    def get_nearest_smaller(self, index):
-        """Get nearest smaller value for element at index."""
-        return self.nearest_smaller[index] if 0 <= index < self.n else -1
-    
-    def get_nearest_greater(self, index):
-        """Get nearest greater value for element at index."""
-        return self.nearest_greater[index] if 0 <= index < self.n else -1
-    
-    def get_nearest_equal(self, index):
-        """Get nearest equal value for element at index."""
-        return self.nearest_equal[index] if 0 <= index < self.n else -1
-    
-    def get_nearest_smaller_or_equal(self, index):
-        """Get nearest smaller or equal value for element at index."""
-        smaller = self.nearest_smaller[index]
-        equal = self.nearest_equal[index]
-        
-        if smaller == -1 and equal == -1:
-            return -1
-        elif smaller == -1:
-            return equal
-        elif equal == -1:
-            return smaller
+            result.append(stack[-1][0] + 1)  # 1-indexed
         else:
-            return max(smaller, equal)  # Return the closer one
-    
-    def get_nearest_greater_or_equal(self, index):
-        """Get nearest greater or equal value for element at index."""
-        greater = self.nearest_greater[index]
-        equal = self.nearest_equal[index]
-        
-        if greater == -1 and equal == -1:
-            return -1
-        elif greater == -1:
-            return equal
-        elif equal == -1:
-            return greater
-        else:
-            return max(greater, equal)  # Return the closer one
-    
-    def get_nearest_with_tolerance(self, index, tolerance):
-        """Get nearest value within tolerance for element at index."""
-        target_value = self.arr[index]
-        result = -1
-        min_distance = float('inf')
-        
-        for i in range(self.n):
-            if i != index and abs(self.arr[i] - target_value) <= tolerance:
-                distance = abs(i - index)
-                if distance < min_distance:
-                    min_distance = distance
-                    result = i
-        
-        return result
-    
-    def get_nearest_with_constraint(self, index, constraint_func):
-        """Get nearest value that satisfies constraint for element at index."""
-        target_value = self.arr[index]
-        result = -1
-        min_distance = float('inf')
-        
-        for i in range(self.n):
-            if i != index and constraint_func(self.arr[i], target_value):
-                distance = abs(i - index)
-                if distance < min_distance:
-                    min_distance = distance
-                    result = i
-        
-        return result
-    
-    def get_nearest_with_priority(self, index, priority_func):
-        """Get nearest value with highest priority for element at index."""
-        target_value = self.arr[index]
-        result = -1
-        max_priority = float('-inf')
-        
-        for i in range(self.n):
-            if i != index:
-                priority = priority_func(self.arr[i], target_value, abs(i - index))
-                if priority > max_priority:
-                    max_priority = priority
-                    result = i
-        
-        return result
-    
-    def get_nearest_with_multiple_criteria(self, index, criteria_list):
-        """Get nearest value that satisfies multiple criteria."""
-        target_value = self.arr[index]
-        candidates = []
-        
-        for i in range(self.n):
-            if i != index:
-                satisfies_all = True
-                for criterion in criteria_list:
-                    if not criterion(self.arr[i], target_value, abs(i - index)):
-                        satisfies_all = False
-                        break
-                
-                if satisfies_all:
-                    candidates.append((i, abs(i - index)))
-        
-        if not candidates:
-            return -1
-        
-        # Return the closest candidate
-        candidates.sort(key=lambda x: x[1])
-        return candidates[0][0]
-    
-    def get_nearest_with_optimization(self, index, optimization_func):
-        """Get nearest value using custom optimization function."""
-        target_value = self.arr[index]
-        result = -1
-        best_score = float('-inf')
-        
-        for i in range(self.n):
-            if i != index:
-                score = optimization_func(self.arr[i], target_value, abs(i - index))
-                if score > best_score:
-                    best_score = score
-                    result = i
-        
-        return result
-    
-    def get_nearest_with_alternatives(self, index, alternatives):
-        """Get nearest value considering alternative values."""
-        target_value = self.arr[index]
-        result = -1
-        min_distance = float('inf')
-        
-        for i in range(self.n):
-            if i != index:
-                # Check original value
-                if self.arr[i] == target_value:
-                    distance = abs(i - index)
-                    if distance < min_distance:
-                        min_distance = distance
-                        result = i
-                
-                # Check alternative values
-                if i in alternatives:
-                    for alt_value in alternatives[i]:
-                        if alt_value == target_value:
-                            distance = abs(i - index)
-                            if distance < min_distance:
-                                min_distance = distance
-                                result = i
-        
-        return result
+            result.append(0)
 
-# Example usage
-arr = [2, 5, 1, 4, 8, 3, 2, 5]
-advanced_nsv = AdvancedNearestSmallerValues(arr)
+        # Push current element
+        stack.append((i, arr[i]))
 
-print(f"Nearest smaller: {advanced_nsv.get_all_nearest_smaller()}")
-print(f"Nearest greater: {advanced_nsv.get_all_nearest_greater()}")
-print(f"Nearest equal: {advanced_nsv.get_all_nearest_equal()}")
+    return result
 
-# Get nearest smaller or equal
-print(f"Nearest smaller or equal for index 3: {advanced_nsv.get_nearest_smaller_or_equal(3)}")
 
-# Get nearest greater or equal
-print(f"Nearest greater or equal for index 3: {advanced_nsv.get_nearest_greater_or_equal(3)}")
+def main():
+    input_data = sys.stdin.read().split()
+    n = int(input_data[0])
+    arr = list(map(int, input_data[1:n+1]))
 
-# Get nearest with tolerance
-print(f"Nearest with tolerance 2 for index 3: {advanced_nsv.get_nearest_with_tolerance(3, 2)}")
+    result = solve(n, arr)
+    print(' '.join(map(str, result)))
 
-# Get nearest with constraint
-def constraint_func(value, target):
-    return value < target and value > 0
 
-print(f"Nearest with constraint for index 3: {advanced_nsv.get_nearest_with_constraint(3, constraint_func)}")
-
-# Get nearest with priority
-def priority_func(value, target, distance):
-    return value / (distance + 1)  # Higher value, closer distance = higher priority
-
-print(f"Nearest with priority for index 3: {advanced_nsv.get_nearest_with_priority(3, priority_func)}")
-
-# Get nearest with multiple criteria
-def criterion1(value, target, distance):
-    return value < target
-
-def criterion2(value, target, distance):
-    return distance <= 3
-
-criteria_list = [criterion1, criterion2]
-print(f"Nearest with multiple criteria for index 3: {advanced_nsv.get_nearest_with_multiple_criteria(3, criteria_list)}")
-
-# Get nearest with optimization
-def optimization_func(value, target, distance):
-    return value - distance  # Higher value, closer distance = better score
-
-print(f"Nearest with optimization for index 3: {advanced_nsv.get_nearest_with_optimization(3, optimization_func)}")
-
-# Get nearest with alternatives
-alternatives = {1: [2, 3], 4: [1, 2]}
-print(f"Nearest with alternatives for index 3: {advanced_nsv.get_nearest_with_alternatives(3, alternatives)}")
+if __name__ == "__main__":
+    main()
 ```
 
-### **Variation 3: Nearest Smaller Values with Constraints**
-**Problem**: Handle nearest smaller values with additional constraints (time limits, resource constraints, mathematical constraints).
+### Code (C++)
 
-**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-```python
-class ConstrainedNearestSmallerValues:
-    def __init__(self, arr, constraints=None):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.constraints = constraints or {}
-        self.nearest_smaller = self._compute_nearest_smaller()
-    
-    def _compute_nearest_smaller(self):
-        """Compute nearest smaller values using monotonic stack."""
-        result = [-1] * self.n
-        stack = []
-        
-        for i in range(self.n):
-            while stack and self.arr[stack[-1]] >= self.arr[i]:
-                stack.pop()
-            
-            if stack:
-                result[i] = stack[-1]
-            
-            stack.append(i)
-        
-        return result
-    
-    def get_nearest_smaller_with_time_constraints(self, index, time_limit):
-        """Get nearest smaller value considering time constraints."""
-        if index < 0 or index >= self.n:
-            return -1
-        
-        target_value = self.arr[index]
-        result = -1
-        min_distance = float('inf')
-        
-        for i in range(self.n):
-            if i != index and self.arr[i] < target_value:
-                distance = abs(i - index)
-                # Simulate time constraint (distance represents time)
-                if distance <= time_limit and distance < min_distance:
-                    min_distance = distance
-                    result = i
-        
-        return result
-    
-    def get_nearest_smaller_with_resource_constraints(self, index, resource_limits, resource_consumption):
-        """Get nearest smaller value considering resource constraints."""
-        if index < 0 or index >= self.n:
-            return -1
-        
-        target_value = self.arr[index]
-        result = -1
-        min_distance = float('inf')
-        
-        for i in range(self.n):
-            if i != index and self.arr[i] < target_value:
-                distance = abs(i - index)
-                
-                # Check resource constraints
-                can_use_element = True
-                for j, consumption in enumerate(resource_consumption[i]):
-                    if consumption > resource_limits[j]:
-                        can_use_element = False
-                        break
-                
-                if can_use_element and distance < min_distance:
-                    min_distance = distance
-                    result = i
-        
-        return result
-    
-    def get_nearest_smaller_with_mathematical_constraints(self, index, constraint_func):
-        """Get nearest smaller value that satisfies custom mathematical constraints."""
-        if index < 0 or index >= self.n:
-            return -1
-        
-        target_value = self.arr[index]
-        result = -1
-        min_distance = float('inf')
-        
-        for i in range(self.n):
-            if i != index and self.arr[i] < target_value:
-                if constraint_func(self.arr[i], target_value, abs(i - index)):
-                    distance = abs(i - index)
-                    if distance < min_distance:
-                        min_distance = distance
-                        result = i
-        
-        return result
-    
-    def get_nearest_smaller_with_range_constraints(self, index, range_constraints):
-        """Get nearest smaller value that satisfies range constraints."""
-        if index < 0 or index >= self.n:
-            return -1
-        
-        target_value = self.arr[index]
-        result = -1
-        min_distance = float('inf')
-        
-        for i in range(self.n):
-            if i != index and self.arr[i] < target_value:
-                # Check if element satisfies all range constraints
-                satisfies_constraints = True
-                for constraint in range_constraints:
-                    if not constraint(self.arr[i], target_value, abs(i - index)):
-                        satisfies_constraints = False
-                        break
-                
-                if satisfies_constraints:
-                    distance = abs(i - index)
-                    if distance < min_distance:
-                        min_distance = distance
-                        result = i
-        
-        return result
-    
-    def get_nearest_smaller_with_optimization_constraints(self, index, optimization_func):
-        """Get nearest smaller value using custom optimization constraints."""
-        if index < 0 or index >= self.n:
-            return -1
-        
-        target_value = self.arr[index]
-        result = -1
-        best_score = float('-inf')
-        
-        for i in range(self.n):
-            if i != index and self.arr[i] < target_value:
-                score = optimization_func(self.arr[i], target_value, abs(i - index))
-                if score > best_score:
-                    best_score = score
-                    result = i
-        
-        return result
-    
-    def get_nearest_smaller_with_multiple_constraints(self, index, constraints_list):
-        """Get nearest smaller value that satisfies multiple constraints."""
-        if index < 0 or index >= self.n:
-            return -1
-        
-        target_value = self.arr[index]
-        result = -1
-        min_distance = float('inf')
-        
-        for i in range(self.n):
-            if i != index and self.arr[i] < target_value:
-                # Check if element satisfies all constraints
-                satisfies_all_constraints = True
-                for constraint in constraints_list:
-                    if not constraint(self.arr[i], target_value, abs(i - index)):
-                        satisfies_all_constraints = False
-                        break
-                
-                if satisfies_all_constraints:
-                    distance = abs(i - index)
-                    if distance < min_distance:
-                        min_distance = distance
-                        result = i
-        
-        return result
-    
-    def get_nearest_smaller_with_priority_constraints(self, index, priority_func):
-        """Get nearest smaller value with priority-based constraints."""
-        if index < 0 or index >= self.n:
-            return -1
-        
-        target_value = self.arr[index]
-        result = -1
-        max_priority = float('-inf')
-        
-        for i in range(self.n):
-            if i != index and self.arr[i] < target_value:
-                priority = priority_func(self.arr[i], target_value, abs(i - index))
-                if priority > max_priority:
-                    max_priority = priority
-                    result = i
-        
-        return result
-    
-    def get_nearest_smaller_with_adaptive_constraints(self, index, adaptive_func):
-        """Get nearest smaller value with adaptive constraints."""
-        if index < 0 or index >= self.n:
-            return -1
-        
-        target_value = self.arr[index]
-        result = -1
-        min_distance = float('inf')
-        
-        for i in range(self.n):
-            if i != index and self.arr[i] < target_value:
-                # Check adaptive constraints
-                if adaptive_func(self.arr[i], target_value, abs(i - index), result):
-                    distance = abs(i - index)
-                    if distance < min_distance:
-                        min_distance = distance
-                        result = i
-        
-        return result
-    
-    def get_optimal_nearest_smaller_strategy(self, index):
-        """Get optimal nearest smaller value strategy considering all constraints."""
-        strategies = [
-            ('time_constraints', self.get_nearest_smaller_with_time_constraints),
-            ('resource_constraints', self.get_nearest_smaller_with_resource_constraints),
-            ('mathematical_constraints', self.get_nearest_smaller_with_mathematical_constraints),
-        ]
-        
-        best_strategy = None
-        best_result = -1
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                if strategy_name == 'time_constraints':
-                    current_result = strategy_func(index, 5)  # 5 time units
-                elif strategy_name == 'resource_constraints':
-                    resource_limits = [100, 50]
-                    resource_consumption = {i: [10, 5] for i in range(self.n)}
-                    current_result = strategy_func(index, resource_limits, resource_consumption)
-                elif strategy_name == 'mathematical_constraints':
-                    def constraint_func(value, target, distance):
-                        return value > 0 and distance <= 3
-                    current_result = strategy_func(index, constraint_func)
-                
-                if current_result != -1:
-                    best_result = current_result
-                    best_strategy = (strategy_name, current_result)
-                    break
-            except:
-                continue
-        
-        return best_strategy
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-# Example usage
-constraints = {
-    'min_value': 1,
-    'max_distance': 3
+    int n;
+    cin >> n;
+
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    // Stack stores pairs: (index, value)
+    stack<pair<int, int>> st;
+
+    for (int i = 0; i < n; i++) {
+        // Pop elements >= current
+        while (!st.empty() && st.top().second >= arr[i]) {
+            st.pop();
+        }
+
+        // Output answer (1-indexed, or 0 if none)
+        if (st.empty()) {
+            cout << 0;
+        } else {
+            cout << st.top().first + 1;
+        }
+
+        if (i < n - 1) cout << " ";
+
+        // Push current element
+        st.push({i, arr[i]});
+    }
+
+    cout << "\n";
+    return 0;
 }
-
-arr = [2, 5, 1, 4, 8, 3, 2, 5]
-constrained_nsv = ConstrainedNearestSmallerValues(arr, constraints)
-
-print("Time-constrained nearest smaller:", constrained_nsv.get_nearest_smaller_with_time_constraints(3, 3))
-
-# Resource constraints
-resource_limits = [100, 50]
-resource_consumption = {i: [10, 5] for i in range(len(arr))}
-print("Resource-constrained nearest smaller:", constrained_nsv.get_nearest_smaller_with_resource_constraints(3, resource_limits, resource_consumption))
-
-# Mathematical constraints
-def custom_constraint(value, target, distance):
-    return value > 0 and distance <= 3
-
-print("Mathematical constraint nearest smaller:", constrained_nsv.get_nearest_smaller_with_mathematical_constraints(3, custom_constraint))
-
-# Range constraints
-def range_constraint(value, target, distance):
-    return value > 0 and distance <= 3
-
-range_constraints = [range_constraint]
-print("Range-constrained nearest smaller:", constrained_nsv.get_nearest_smaller_with_range_constraints(3, range_constraints))
-
-# Multiple constraints
-def constraint1(value, target, distance):
-    return value > 0
-
-def constraint2(value, target, distance):
-    return distance <= 3
-
-constraints_list = [constraint1, constraint2]
-print("Multiple constraints nearest smaller:", constrained_nsv.get_nearest_smaller_with_multiple_constraints(3, constraints_list))
-
-# Priority constraints
-def priority_func(value, target, distance):
-    return value / (distance + 1)
-
-print("Priority-constrained nearest smaller:", constrained_nsv.get_nearest_smaller_with_priority_constraints(3, priority_func))
-
-# Adaptive constraints
-def adaptive_func(value, target, distance, current_result):
-    return value > 0 and distance <= 3
-
-print("Adaptive constraint nearest smaller:", constrained_nsv.get_nearest_smaller_with_adaptive_constraints(3, adaptive_func))
-
-# Optimal strategy
-optimal = constrained_nsv.get_optimal_nearest_smaller_strategy(3)
-print(f"Optimal strategy: {optimal}")
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Nearest Smaller Values](https://cses.fi/problemset/task/1645) - Basic nearest smaller values problem
-- [Nearest Greater Values](https://cses.fi/problemset/task/1646) - Nearest greater values problem
-- [Range Queries](https://cses.fi/problemset/task/1648) - Range query problems
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Each element is pushed once and popped at most once |
+| Space | O(n) | Stack can hold up to n elements |
 
-#### **LeetCode Problems**
-- [Next Greater Element I](https://leetcode.com/problems/next-greater-element-i/) - Next greater element
-- [Next Greater Element II](https://leetcode.com/problems/next-greater-element-ii/) - Circular next greater element
-- [Daily Temperatures](https://leetcode.com/problems/daily-temperatures/) - Next warmer day
-- [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/) - Histogram area
+---
 
-#### **Problem Categories**
-- **Monotonic Stack**: Stack-based algorithms, nearest element problems, efficient lookups
-- **Array Processing**: Element searching, nearest value problems, constraint handling
-- **Stack Algorithms**: Monotonic stack techniques, efficient element lookup
-- **Algorithm Design**: Stack-based algorithms, nearest element optimization, constraint satisfaction
+## Common Mistakes
+
+### Mistake 1: Wrong Pop Condition
+
+```python
+# WRONG: Using > instead of >=
+while stack and stack[-1][1] > arr[i]:
+    stack.pop()
+```
+
+**Problem:** If stack top equals current element, it's NOT smaller, so it shouldn't be the answer.
+**Fix:** Use `>=` to pop elements that are greater than OR equal to current.
+
+### Mistake 2: Forgetting to Push Current Element
+
+```python
+# WRONG: Missing the push step
+while stack and stack[-1][1] >= arr[i]:
+    stack.pop()
+
+if stack:
+    result.append(stack[-1][0] + 1)
+else:
+    result.append(0)
+
+# MISSING: stack.append((i, arr[i]))
+```
+
+**Problem:** Current element could be the nearest smaller for future elements.
+**Fix:** Always push current element after finding its answer.
+
+### Mistake 3: Off-by-One Index Error
+
+```python
+# WRONG: 0-indexed output
+result.append(stack[-1][0])
+
+# CORRECT: 1-indexed output as required
+result.append(stack[-1][0] + 1)
+```
+
+**Problem:** CSES expects 1-indexed positions in output.
+**Fix:** Add 1 when outputting the index.
+
+### Mistake 4: Checking Before Popping All Invalid Elements
+
+```python
+# WRONG: Checking answer before popping all >= elements
+if stack and stack[-1][1] < arr[i]:
+    result.append(stack[-1][0] + 1)
+else:
+    while stack and stack[-1][1] >= arr[i]:
+        stack.pop()
+    # Now the answer check is in the wrong place!
+```
+
+**Problem:** You might return an element that isn't actually smaller.
+**Fix:** Always pop ALL invalid elements first, then check the answer.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single element | `n=1, arr=[5]` | `0` | No elements to the left |
+| All same values | `n=3, arr=[4,4,4]` | `0 0 0` | Equal is not smaller |
+| Strictly increasing | `n=4, arr=[1,2,3,4]` | `0 1 2 3` | Previous element is always smaller |
+| Strictly decreasing | `n=4, arr=[4,3,2,1]` | `0 0 0 0` | Stack gets cleared each time |
+| Minimum at start | `n=4, arr=[1,5,3,4]` | `0 1 1 3` | First element answers many |
+| Minimum at end | `n=4, arr=[5,3,4,1]` | `0 0 2 0` | Last element clears stack |
+
+---
+
+## When to Use This Pattern
+
+### Use Monotonic Stack When:
+- Finding **nearest smaller/greater element** to left or right
+- Computing **span** problems (stock span, histogram area)
+- Problems involving **next greater element** or **previous smaller element**
+- Optimizing nested loops where inner loop searches for first element satisfying a condition
+
+### Don't Use When:
+- You need the k-th smallest, not the nearest (use heap or sorting)
+- The "nearest" condition has additional constraints (may need different approach)
+- You need to answer queries on subarrays (may need segment tree)
+
+### Pattern Recognition Checklist:
+- [ ] Looking for nearest element with some comparison property? -> **Monotonic Stack**
+- [ ] Need to process elements left-to-right maintaining some order? -> **Monotonic Stack**
+- [ ] Brute force has nested loop where inner finds first matching element? -> **Monotonic Stack**
+
+### Types of Monotonic Stacks
+
+| Type | Pop Condition | Use Case |
+|------|---------------|----------|
+| Increasing (this problem) | `stack.top() >= current` | Nearest smaller to left |
+| Decreasing | `stack.top() <= current` | Nearest greater to left |
+| Non-decreasing | `stack.top() > current` | Nearest smaller or equal |
+| Non-increasing | `stack.top() < current` | Nearest greater or equal |
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/) | Basic stack operations |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Next Greater Element I](https://leetcode.com/problems/next-greater-element-i/) | Finding greater instead of smaller |
+| [Next Greater Element II](https://leetcode.com/problems/next-greater-element-ii/) | Circular array variant |
+| [Daily Temperatures](https://leetcode.com/problems/daily-temperatures/) | Next greater with distance calculation |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/) | Using both left and right boundaries |
+| [Maximal Rectangle](https://leetcode.com/problems/maximal-rectangle/) | 2D extension of histogram problem |
+| [Sum of Subarray Minimums](https://leetcode.com/problems/sum-of-subarray-minimums/) | Counting subarrays using stack bounds |
+| [Sum of Subarray Ranges](https://leetcode.com/problems/sum-of-subarray-ranges/) | Combining min and max monotonic stacks |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Maintain a stack of candidates in monotonic order; elements that violate the order will never be useful again.
+2. **Time Optimization:** From O(n^2) brute force to O(n) because each element is pushed and popped at most once.
+3. **Space Trade-off:** We use O(n) space for the stack to achieve linear time.
+4. **Pattern:** This is the classic "Monotonic Stack" pattern for nearest element queries.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Solve this problem without looking at the solution
+- [ ] Explain why the stack maintains increasing order
+- [ ] Prove the O(n) time complexity (amortized analysis)
+- [ ] Implement in both Python and C++ in under 10 minutes
+- [ ] Solve the "nearest greater" variant by changing one comparison
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Stack](https://cp-algorithms.com/data_structures/stack_queue_modification.html)
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [LeetCode Monotonic Stack Problems](https://leetcode.com/tag/monotonic-stack/)

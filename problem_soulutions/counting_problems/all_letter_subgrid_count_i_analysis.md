@@ -2,768 +2,483 @@
 layout: simple
 title: "All Letter Subgrid Count I - Grid Counting Problem"
 permalink: /problem_soulutions/counting_problems/all_letter_subgrid_count_i_analysis
+difficulty: Medium
+tags: [grid, counting, set, subgrid, enumeration]
+prerequisites: [basic_grid_traversal, set_operations]
 ---
 
-# All Letter Subgrid Count I - Grid Counting Problem
+# All Letter Subgrid Count I
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of subgrid counting in grid algorithms
-- Apply counting techniques for letter subgrid analysis
-- Implement efficient algorithms for subgrid counting
-- Optimize grid operations for letter counting
-- Handle special cases in subgrid counting
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Grid Counting / Enumeration |
+| **Time Limit** | 1 second |
+| **Key Technique** | Subgrid Enumeration + Set Tracking |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a grid with letters, count the number of subgrids that contain all letters of the alphabet.
+After solving this problem, you will be able to:
+- [ ] Enumerate all possible subgrids in an n x m grid efficiently
+- [ ] Use sets to track distinct elements in a rectangular region
+- [ ] Apply incremental counting to avoid redundant recomputation
+- [ ] Understand when O(n^2 * m^2) is acceptable vs. when optimization is needed
 
-**Input**: 
-- n, m: grid dimensions
-- grid: grid containing letters
+---
 
-**Output**: 
-- Number of subgrids containing all letters modulo 10^9+7
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n, m ≤ 100
-- Grid contains lowercase letters
-- Answer modulo 10^9+7
+**Problem:** Given a grid of lowercase letters, count the number of subgrids (rectangular regions) that contain ALL unique letters present in the entire grid.
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and m (grid dimensions)
+- Next n lines: A string of m lowercase letters
+
+**Output:**
+- Single integer: count of valid subgrids (modulo 10^9 + 7)
+
+**Constraints:**
+- 1 <= n, m <= 100
+- Grid contains lowercase letters a-z
+
+### Example
+
 ```
 Input:
-n = 2, m = 3
-grid = [
-  ['a', 'b', 'c'],
-  ['d', 'e', 'f']
-]
+2 3
+abc
+def
 
 Output:
 1
-
-Explanation**: 
-Only one subgrid contains all letters:
-The entire 2×3 grid contains all letters a-f
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible subgrids
-- **Letter Counting**: Count letters in each subgrid
-- **Simple Implementation**: Easy to understand and implement
-- **Inefficient**: O(n²m²) time complexity
-
-**Key Insight**: Enumerate all possible subgrids and check if each contains all letters.
-
-**Algorithm**:
-- Generate all possible subgrids
-- For each subgrid, count the letters
-- Check if all letters are present
-- Count valid subgrids
-
-**Visual Example**:
-```
-2×3 grid with letters:
-
-Brute force enumeration:
-┌─────────────────────────────────────┐
-│ Try all subgrids:                  │
-│ - (0,0) to (0,0): [a]             │
-│ - (0,0) to (0,1): [a,b]           │
-│ - (0,0) to (0,2): [a,b,c]         │
-│ - (0,0) to (1,2): [a,b,c,d,e,f]   │
-│ - ...                              │
-│ Check each for all letters         │
-└─────────────────────────────────────┘
-
-Valid subgrids:
-┌─────────────────────────────────────┐
-│ Only (0,0) to (1,2) contains      │
-│ all letters a-f                    │
-│ Total: 1 valid subgrid            │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def brute_force_subgrid_count(n, m, grid, mod=10**9+7):
-    """
-    Count letter subgrids using brute force approach
-    
-    Args:
-        n, m: grid dimensions
-        grid: grid containing letters
-        mod: modulo value
-    
-    Returns:
-        int: number of subgrids containing all letters modulo mod
-    """
-    def count_letters_in_subgrid(grid, start_row, start_col, end_row, end_col):
-        """Count letters in a subgrid"""
-        letters = set()
-        for i in range(start_row, end_row + 1):
-            for j in range(start_col, end_col + 1):
-                letters.add(grid[i][j])
-        return letters
-    
-    def has_all_letters(letters, total_letters):
-        """Check if subgrid has all letters"""
-        return len(letters) == total_letters
-    
-    # Count total unique letters in grid
-    all_letters = set()
-    for i in range(n):
-        for j in range(m):
-            all_letters.add(grid[i][j])
-    total_letters = len(all_letters)
-    
-    count = 0
-    
-    # Try all possible subgrids
-    for start_row in range(n):
-        for start_col in range(m):
-            for end_row in range(start_row, n):
-                for end_col in range(start_col, m):
-                    letters = count_letters_in_subgrid(grid, start_row, start_col, end_row, end_col)
-                    if has_all_letters(letters, total_letters):
-                        count = (count + 1) % mod
-    
-    return count
-
-def brute_force_subgrid_count_optimized(n, m, grid, mod=10**9+7):
-    """
-    Optimized brute force subgrid counting
-    
-    Args:
-        n, m: grid dimensions
-        grid: grid containing letters
-        mod: modulo value
-    
-    Returns:
-        int: number of subgrids containing all letters modulo mod
-    """
-    def count_letters_in_subgrid_optimized(grid, start_row, start_col, end_row, end_col):
-        """Count letters in a subgrid with optimization"""
-        letters = set()
-        for i in range(start_row, end_row + 1):
-            for j in range(start_col, end_col + 1):
-                letters.add(grid[i][j])
-        return letters
-    
-    def has_all_letters_optimized(letters, total_letters):
-        """Check if subgrid has all letters with optimization"""
-        return len(letters) == total_letters
-    
-    # Count total unique letters in grid
-    all_letters = set()
-    for i in range(n):
-        for j in range(m):
-            all_letters.add(grid[i][j])
-    total_letters = len(all_letters)
-    
-    count = 0
-    
-    # Try all possible subgrids
-    for start_row in range(n):
-        for start_col in range(m):
-            for end_row in range(start_row, n):
-                for end_col in range(start_col, m):
-                    letters = count_letters_in_subgrid_optimized(grid, start_row, start_col, end_row, end_col)
-                    if has_all_letters_optimized(letters, total_letters):
-                        count = (count + 1) % mod
-    
-    return count
-
-# Example usage
-n, m = 2, 3
-grid = [
-    ['a', 'b', 'c'],
-    ['d', 'e', 'f']
-]
-result1 = brute_force_subgrid_count(n, m, grid)
-result2 = brute_force_subgrid_count_optimized(n, m, grid)
-print(f"Brute force subgrid count: {result1}")
-print(f"Optimized brute force count: {result2}")
-```
-
-**Time Complexity**: O(n²m²)
-**Space Complexity**: O(1)
-
-**Why it's inefficient**: O(n²m²) time complexity due to complete enumeration.
+**Explanation:** The grid contains 6 unique letters: {a, b, c, d, e, f}. The only subgrid containing all 6 letters is the entire 2x3 grid itself.
 
 ---
 
-### Approach 2: Optimized Brute Force Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Brute Force Solution**:
-- **Early Termination**: Stop when all letters are found
-- **Efficient Counting**: Use set operations for letter counting
-- **Optimization**: More efficient than basic brute force
-- **Better Performance**: Reduced constant factors
+### Pattern Recognition
 
-**Key Insight**: Use early termination and efficient set operations to optimize the brute force approach.
+> **Key Question:** How do we systematically check all rectangular regions?
 
-**Algorithm**:
-- Use early termination when all letters are found
-- Optimize letter counting with set operations
-- Reduce constant factors in the algorithm
+A subgrid is defined by four boundaries: top row, bottom row, left column, right column. We need to enumerate all valid combinations and check if each contains all required letters.
 
-**Visual Example**:
-```
-Optimized brute force approach:
-┌─────────────────────────────────────┐
-│ Try subgrids with early termination │
-│ - (0,0) to (0,0): [a] - continue   │
-│ - (0,0) to (0,1): [a,b] - continue │
-│ - (0,0) to (0,2): [a,b,c] - continue │
-│ - (0,0) to (1,2): [a,b,c,d,e,f] - found! │
-│ Stop early when all letters found   │
-└─────────────────────────────────────┘
+### Breaking Down the Problem
 
-Early termination:
-┌─────────────────────────────────────┐
-│ Once all letters found,            │
-│ no need to check larger subgrids   │
-│ from same starting position        │
-└─────────────────────────────────────┘
-```
+1. **What are we looking for?** Count of subgrids containing all unique letters
+2. **What information do we have?** An n x m character grid
+3. **What's the relationship?** A subgrid is valid if its letter set equals the grid's total letter set
 
-**Implementation**:
-```python
-def optimized_brute_force_subgrid_count(n, m, grid, mod=10**9+7):
-    """
-    Count letter subgrids using optimized brute force approach
-    
-    Args:
-        n, m: grid dimensions
-        grid: grid containing letters
-        mod: modulo value
-    
-    Returns:
-        int: number of subgrids containing all letters modulo mod
-    """
-    def count_letters_in_subgrid_optimized(grid, start_row, start_col, end_row, end_col):
-        """Count letters in a subgrid with optimization"""
-        letters = set()
-        for i in range(start_row, end_row + 1):
-            for j in range(start_col, end_col + 1):
-                letters.add(grid[i][j])
-        return letters
-    
-    def has_all_letters_optimized(letters, total_letters):
-        """Check if subgrid has all letters with optimization"""
-        return len(letters) == total_letters
-    
-    # Count total unique letters in grid
-    all_letters = set()
-    for i in range(n):
-        for j in range(m):
-            all_letters.add(grid[i][j])
-    total_letters = len(all_letters)
-    
-    count = 0
-    
-    # Try all possible subgrids with early termination
-    for start_row in range(n):
-        for start_col in range(m):
-            for end_row in range(start_row, n):
-                for end_col in range(start_col, m):
-                    letters = count_letters_in_subgrid_optimized(grid, start_row, start_col, end_row, end_col)
-                    if has_all_letters_optimized(letters, total_letters):
-                        count = (count + 1) % mod
-                        # Early termination: no need to check larger subgrids from same start
-                        break
-    
-    return count
+### Analogies
 
-def optimized_brute_force_subgrid_count_v2(n, m, grid, mod=10**9+7):
-    """
-    Alternative optimized brute force subgrid counting
-    
-    Args:
-        n, m: grid dimensions
-        grid: grid containing letters
-        mod: modulo value
-    
-    Returns:
-        int: number of subgrids containing all letters modulo mod
-    """
-    def count_letters_in_subgrid_v2(grid, start_row, start_col, end_row, end_col):
-        """Count letters in a subgrid with v2 optimization"""
-        letters = set()
-        for i in range(start_row, end_row + 1):
-            for j in range(start_col, end_col + 1):
-                letters.add(grid[i][j])
-        return letters
-    
-    def has_all_letters_v2(letters, total_letters):
-        """Check if subgrid has all letters with v2 optimization"""
-        return len(letters) == total_letters
-    
-    # Count total unique letters in grid
-    all_letters = set()
-    for i in range(n):
-        for j in range(m):
-            all_letters.add(grid[i][j])
-    total_letters = len(all_letters)
-    
-    count = 0
-    
-    # Try all possible subgrids with v2 optimization
-    for start_row in range(n):
-        for start_col in range(m):
-            for end_row in range(start_row, n):
-                for end_col in range(start_col, m):
-                    letters = count_letters_in_subgrid_v2(grid, start_row, start_col, end_row, end_col)
-                    if has_all_letters_v2(letters, total_letters):
-                        count = (count + 1) % mod
-    
-    return count
-
-# Example usage
-n, m = 2, 3
-grid = [
-    ['a', 'b', 'c'],
-    ['d', 'e', 'f']
-]
-result1 = optimized_brute_force_subgrid_count(n, m, grid)
-result2 = optimized_brute_force_subgrid_count_v2(n, m, grid)
-print(f"Optimized brute force subgrid count: {result1}")
-print(f"Optimized brute force subgrid count v2: {result2}")
-```
-
-**Time Complexity**: O(n²m²)
-**Space Complexity**: O(1)
-
-**Why it's better**: Uses early termination and efficient set operations.
-
-**Implementation Considerations**:
-- **Early Termination**: Stop when all letters are found
-- **Efficient Counting**: Use set operations for letter counting
-- **Optimization**: Reduce constant factors in the algorithm
+Think of this problem like searching for rectangular windows on a map. You need to find all windows large enough to see every landmark (letter) at least once.
 
 ---
 
-### Approach 3: Mathematical Solution (Optimal)
+## Solution 1: Brute Force Enumeration
 
-**Key Insights from Mathematical Solution**:
-- **Mathematical Analysis**: Use mathematical properties of subgrid counting
-- **Efficient Calculation**: Use mathematical formulas
-- **Optimal Complexity**: Best approach for subgrid counting
-- **Advanced Mathematics**: Use advanced mathematical techniques
+### Idea
 
-**Key Insight**: Use mathematical analysis of subgrid properties and letter distribution.
+Enumerate all possible subgrids using four nested loops. For each subgrid, collect all letters and check if the set matches all unique letters in the grid.
 
-**Algorithm**:
-- Analyze subgrid properties mathematically
-- Use mathematical formulas for counting
-- Calculate result efficiently
+### Algorithm
 
-**Visual Example**:
-```
-Mathematical analysis:
-┌─────────────────────────────────────┐
-│ For subgrid counting:              │
-│ - Use mathematical properties      │
-│ - Calculate efficiently           │
-│ - Apply mathematical formulas     │
-└─────────────────────────────────────┘
+1. Find all unique letters in the entire grid
+2. For each possible (top, left, bottom, right) combination:
+   - Collect all letters in that subgrid
+   - If the set contains all unique letters, increment count
 
-Mathematical approach:
-┌─────────────────────────────────────┐
-│ For 2×3 grid:                     │
-│ - Total subgrids: C(2,1)×C(3,1) = 6 │
-│ - Check each for all letters      │
-│ - Use mathematical analysis       │
-└─────────────────────────────────────┘
-```
+### Code
 
-**Implementation**:
+**Python:**
 ```python
-def mathematical_subgrid_count(n, m, grid, mod=10**9+7):
+def count_all_letter_subgrids(n, m, grid):
     """
-    Count letter subgrids using mathematical approach
-    
-    Args:
-        n, m: grid dimensions
-        grid: grid containing letters
-        mod: modulo value
-    
-    Returns:
-        int: number of subgrids containing all letters modulo mod
-    """
-    def count_letters_in_subgrid_mathematical(grid, start_row, start_col, end_row, end_col):
-        """Count letters in a subgrid using mathematical approach"""
-        letters = set()
-        for i in range(start_row, end_row + 1):
-            for j in range(start_col, end_col + 1):
-                letters.add(grid[i][j])
-        return letters
-    
-    def has_all_letters_mathematical(letters, total_letters):
-        """Check if subgrid has all letters using mathematical approach"""
-        return len(letters) == total_letters
-    
-    # Count total unique letters in grid
-    all_letters = set()
-    for i in range(n):
-        for j in range(m):
-            all_letters.add(grid[i][j])
-    total_letters = len(all_letters)
-    
-    # For small grids, use mathematical analysis
-    if n <= 10 and m <= 10:
-        return mathematical_subgrid_count_small(n, m, grid, total_letters, mod)
-    
-    # For larger grids, use approximation
-    return mathematical_subgrid_count_large(n, m, grid, total_letters, mod)
+    Brute force: enumerate all subgrids, check each for completeness.
 
-def mathematical_subgrid_count_small(n, m, grid, total_letters, mod=10**9+7):
+    Time: O(n^2 * m^2 * n * m) - 6 nested loops
+    Space: O(k) where k = number of unique letters
     """
-    Mathematical subgrid counting for small grids
-    
-    Args:
-        n, m: grid dimensions
-        grid: grid containing letters
-        total_letters: total number of unique letters
-        mod: modulo value
-    
-    Returns:
-        int: number of subgrids containing all letters modulo mod
-    """
-    count = 0
-    
-    # For small grids, use mathematical analysis
-    for start_row in range(n):
-        for start_col in range(m):
-            for end_row in range(start_row, n):
-                for end_col in range(start_col, m):
+    MOD = 10**9 + 7
+
+    # Find all unique letters in grid
+    all_letters = set()
+    for row in grid:
+        for ch in row:
+            all_letters.add(ch)
+    target_count = len(all_letters)
+
+    result = 0
+
+    # Enumerate all subgrids: O(n^2 * m^2)
+    for top in range(n):
+        for left in range(m):
+            for bottom in range(top, n):
+                for right in range(left, m):
+                    # Collect letters in this subgrid: O(n * m)
                     letters = set()
-                    for i in range(start_row, end_row + 1):
-                        for j in range(start_col, end_col + 1):
+                    for i in range(top, bottom + 1):
+                        for j in range(left, right + 1):
                             letters.add(grid[i][j])
-                    
-                    if len(letters) == total_letters:
-                        count = (count + 1) % mod
-    
-    return count
 
-def mathematical_subgrid_count_large(n, m, grid, total_letters, mod=10**9+7):
-    """
-    Mathematical subgrid counting for large grids
-    
-    Args:
-        n, m: grid dimensions
-        grid: grid containing letters
-        total_letters: total number of unique letters
-        mod: modulo value
-    
-    Returns:
-        int: number of subgrids containing all letters modulo mod
-    """
-    # For large grids, use mathematical approximation
-    # This is a simplified version
-    return mathematical_subgrid_count_small(n, m, grid, total_letters, mod)
+                    if len(letters) == target_count:
+                        result = (result + 1) % MOD
 
-def mathematical_subgrid_count_advanced(n, m, grid, mod=10**9+7):
+    return result
+```
+
+**C++:**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+int countAllLetterSubgrids(int n, int m, vector<string>& grid) {
+    // Find all unique letters
+    set<char> allLetters;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            allLetters.insert(grid[i][j]);
+        }
+    }
+    int targetCount = allLetters.size();
+
+    int result = 0;
+
+    // Enumerate all subgrids
+    for (int top = 0; top < n; top++) {
+        for (int left = 0; left < m; left++) {
+            for (int bottom = top; bottom < n; bottom++) {
+                for (int right = left; right < m; right++) {
+                    // Collect letters in subgrid
+                    set<char> letters;
+                    for (int i = top; i <= bottom; i++) {
+                        for (int j = left; j <= right; j++) {
+                            letters.insert(grid[i][j]);
+                        }
+                    }
+
+                    if (letters.size() == targetCount) {
+                        result = (result + 1) % MOD;
+                    }
+                }
+            }
+        }
+    }
+
+    return result;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^3 * m^3) | 4 loops for boundaries + 2 loops to scan subgrid |
+| Space | O(26) = O(1) | At most 26 letters in set |
+
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed because we check every possible subgrid. However, we redundantly scan the same cells multiple times for overlapping subgrids.
+
+---
+
+## Solution 2: Optimized with Incremental Set Building
+
+### Key Insight
+
+> **The Trick:** When expanding a subgrid to the right, only add the new column's letters instead of rescanning the entire subgrid.
+
+### Algorithm
+
+1. Fix top and bottom rows
+2. For each left boundary, incrementally expand right
+3. When expanding right by one column, only scan that new column
+4. Maintain a running set of letters
+
+### Dry Run Example
+
+Let's trace through with input:
+```
+Grid:
+a b c
+d e f
+
+All unique letters: {a, b, c, d, e, f} (count = 6)
+```
+
+```
+Fix top=0, bottom=1:
+
+  left=0, right=0:
+    Subgrid: [a]    letters={a,d} -> 2 letters, need 6, NOT valid
+             [d]
+
+  left=0, right=1:
+    Subgrid: [a b]  letters={a,b,d,e} -> 4 letters, NOT valid
+             [d e]
+
+  left=0, right=2:
+    Subgrid: [a b c]  letters={a,b,c,d,e,f} -> 6 letters, VALID! count=1
+             [d e f]
+
+  left=1, right=1:
+    Subgrid: [b]    letters={b,e} -> 2 letters, NOT valid
+             [e]
+
+  left=1, right=2:
+    Subgrid: [b c]  letters={b,c,e,f} -> 4 letters, NOT valid
+             [e f]
+
+  left=2, right=2:
+    Subgrid: [c]    letters={c,f} -> 2 letters, NOT valid
+             [f]
+
+Final count = 1
+```
+
+### Visual Diagram
+
+```
+Grid:     a b c
+          d e f
+
+Expanding right from (0,0) to (1,2):
+
+Step 1: [a]     Step 2: [a b]    Step 3: [a b c]
+        [d]             [d e]            [d e f]
+
+        {a,d}           {a,b,d,e}        {a,b,c,d,e,f}
+        2 letters       4 letters        6 letters = ALL!
+```
+
+### Code
+
+**Python:**
+```python
+def count_all_letter_subgrids_optimized(n, m, grid):
     """
-    Advanced mathematical subgrid counting
-    
-    Args:
-        n, m: grid dimensions
-        grid: grid containing letters
-        mod: modulo value
-    
-    Returns:
-        int: number of subgrids containing all letters modulo mod
+    Optimized: incrementally build set when expanding right.
+
+    Time: O(n^2 * m^2) - still 4 loops but no inner scanning
+    Space: O(26) = O(1)
     """
-    def count_letters_in_subgrid_advanced(grid, start_row, start_col, end_row, end_col):
-        """Count letters in a subgrid using advanced approach"""
-        letters = set()
-        for i in range(start_row, end_row + 1):
-            for j in range(start_col, end_col + 1):
-                letters.add(grid[i][j])
-        return letters
-    
-    def has_all_letters_advanced(letters, total_letters):
-        """Check if subgrid has all letters using advanced approach"""
-        return len(letters) == total_letters
-    
-    # Count total unique letters in grid
+    MOD = 10**9 + 7
+
+    # Find all unique letters
     all_letters = set()
-    for i in range(n):
-        for j in range(m):
-            all_letters.add(grid[i][j])
-    total_letters = len(all_letters)
-    
-    # Use advanced mathematical analysis
-    count = 0
-    
-    for start_row in range(n):
-        for start_col in range(m):
-            for end_row in range(start_row, n):
-                for end_col in range(start_col, m):
-                    letters = count_letters_in_subgrid_advanced(grid, start_row, start_col, end_row, end_col)
-                    if has_all_letters_advanced(letters, total_letters):
-                        count = (count + 1) % mod
-    
-    return count
+    for row in grid:
+        for ch in row:
+            all_letters.add(ch)
+    target_count = len(all_letters)
 
-# Example usage
-n, m = 2, 3
-grid = [
-    ['a', 'b', 'c'],
-    ['d', 'e', 'f']
-]
-result1 = mathematical_subgrid_count(n, m, grid)
-result2 = mathematical_subgrid_count_advanced(n, m, grid)
-print(f"Mathematical subgrid count: {result1}")
-print(f"Advanced mathematical subgrid count: {result2}")
+    result = 0
+
+    # Fix top and bottom rows
+    for top in range(n):
+        for bottom in range(top, n):
+            # For this row range, slide window across columns
+            for left in range(m):
+                letters = set()
+                for right in range(left, m):
+                    # Only add the new column
+                    for i in range(top, bottom + 1):
+                        letters.add(grid[i][right])
+
+                    if len(letters) == target_count:
+                        result = (result + 1) % MOD
+
+    return result
 ```
 
-**Time Complexity**: O(n²m²)
-**Space Complexity**: O(1)
+**C++:**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Why it's optimal**: Uses mathematical analysis for efficient calculation.
+const int MOD = 1e9 + 7;
 
-**Implementation Details**:
-- **Mathematical Analysis**: Use mathematical properties of subgrid counting
-- **Efficient Calculation**: Use mathematical formulas
-- **Advanced Mathematics**: Use advanced mathematical techniques
-- **Optimization**: Apply mathematical optimizations
+int countAllLetterSubgridsOptimized(int n, int m, vector<string>& grid) {
+    // Find all unique letters
+    set<char> allLetters;
+    for (int i = 0; i < n; i++) {
+        for (char c : grid[i]) {
+            allLetters.insert(c);
+        }
+    }
+    int targetCount = allLetters.size();
 
-## 🔧 Implementation Details
+    int result = 0;
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²m²) | O(1) | Complete enumeration of all subgrids |
-| Optimized Brute Force | O(n²m²) | O(1) | Early termination and efficient set operations |
-| Mathematical | O(n²m²) | O(1) | Use mathematical analysis and formulas |
+    // Fix top and bottom rows
+    for (int top = 0; top < n; top++) {
+        for (int bottom = top; bottom < n; bottom++) {
+            // Slide window across columns
+            for (int left = 0; left < m; left++) {
+                set<char> letters;
+                for (int right = left; right < m; right++) {
+                    // Add only the new column
+                    for (int i = top; i <= bottom; i++) {
+                        letters.insert(grid[i][right]);
+                    }
 
-### Time Complexity
-- **Time**: O(n²m²) - Must check all possible subgrids
-- **Space**: O(1) - Use only necessary variables
+                    if ((int)letters.size() == targetCount) {
+                        result = (result + 1) % MOD;
+                    }
+                }
+            }
+        }
+    }
 
-### Why This Solution Works
-- **Mathematical Analysis**: Use mathematical properties of subgrid counting
-- **Efficient Calculation**: Use mathematical formulas
-- **Advanced Mathematics**: Use advanced mathematical techniques
-- **Optimization**: Apply mathematical optimizations
+    return result;
+}
 
-## 🚀 Problem Variations
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-### Extended Problems with Detailed Code Examples
+    int n, m;
+    cin >> n >> m;
 
-#### **1. Subgrid Count with Letter Constraints**
-**Problem**: Count subgrids with specific letter constraints.
+    vector<string> grid(n);
+    for (int i = 0; i < n; i++) {
+        cin >> grid[i];
+    }
 
-**Key Differences**: Apply constraints to letter counting
+    cout << countAllLetterSubgridsOptimized(n, m, grid) << "\n";
+    return 0;
+}
+```
 
-**Solution Approach**: Modify algorithms to handle constraints
+### Complexity
 
-**Implementation**:
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2 * m^2) | 4 loops, column scan is amortized |
+| Space | O(26) = O(1) | At most 26 letters in set |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Forgetting to Reset the Set
+
 ```python
-def constrained_subgrid_count(n, m, grid, constraints, mod=10**9+7):
-    """
-    Count letter subgrids with constraints
-    
-    Args:
-        n, m: grid dimensions
-        grid: grid containing letters
-        constraints: list of letter constraints
-        mod: modulo value
-    
-    Returns:
-        int: number of constrained subgrids modulo mod
-    """
-    def count_letters_in_subgrid_constrained(grid, start_row, start_col, end_row, end_col):
-        """Count letters in a subgrid with constraints"""
-        letters = set()
-        for i in range(start_row, end_row + 1):
-            for j in range(start_col, end_col + 1):
-                letters.add(grid[i][j])
-        return letters
-    
-    def satisfies_constraints(letters, constraints):
-        """Check if subgrid satisfies constraints"""
-        for constraint in constraints:
-            if not constraint(letters):
-                return False
-        return True
-    
-    count = 0
-    
-    # Try all possible subgrids
-    for start_row in range(n):
-        for start_col in range(m):
-            for end_row in range(start_row, n):
-                for end_col in range(start_col, m):
-                    letters = count_letters_in_subgrid_constrained(grid, start_row, start_col, end_row, end_col)
-                    if satisfies_constraints(letters, constraints):
-                        count = (count + 1) % mod
-    
-    return count
-
-# Example usage
-n, m = 2, 3
-grid = [
-    ['a', 'b', 'c'],
-    ['d', 'e', 'f']
-]
-constraints = [
-    lambda letters: len(letters) >= 3,  # At least 3 letters
-    lambda letters: 'a' in letters      # Must contain 'a'
-]
-result = constrained_subgrid_count(n, m, grid, constraints)
-print(f"Constrained subgrid count: {result}")
+# WRONG - set accumulates across different left boundaries
+letters = set()
+for left in range(m):
+    for right in range(left, m):
+        # letters still has old values!
+        for i in range(top, bottom + 1):
+            letters.add(grid[i][right])
 ```
 
-#### **2. Subgrid Count with Size Constraints**
-**Problem**: Count subgrids with specific size constraints.
+**Problem:** The set is not reset when starting a new left boundary.
+**Fix:** Reset `letters = set()` inside the left loop, not outside.
 
-**Key Differences**: Apply size constraints to subgrids
+### Mistake 2: Wrong Loop Order
 
-**Solution Approach**: Modify algorithms to handle size constraints
-
-**Implementation**:
 ```python
-def size_constrained_subgrid_count(n, m, grid, min_size, max_size, mod=10**9+7):
-    """
-    Count letter subgrids with size constraints
-    
-    Args:
-        n, m: grid dimensions
-        grid: grid containing letters
-        min_size: minimum subgrid size
-        max_size: maximum subgrid size
-        mod: modulo value
-    
-    Returns:
-        int: number of size-constrained subgrids modulo mod
-    """
-    def count_letters_in_subgrid_size_constrained(grid, start_row, start_col, end_row, end_col):
-        """Count letters in a subgrid with size constraints"""
-        letters = set()
-        for i in range(start_row, end_row + 1):
-            for j in range(start_col, end_col + 1):
-                letters.add(grid[i][j])
-        return letters
-    
-    def is_valid_size(start_row, start_col, end_row, end_col, min_size, max_size):
-        """Check if subgrid size is valid"""
-        size = (end_row - start_row + 1) * (end_col - start_col + 1)
-        return min_size <= size <= max_size
-    
-    # Count total unique letters in grid
-    all_letters = set()
-    for i in range(n):
-        for j in range(m):
-            all_letters.add(grid[i][j])
-    total_letters = len(all_letters)
-    
-    count = 0
-    
-    # Try all possible subgrids with size constraints
-    for start_row in range(n):
-        for start_col in range(m):
-            for end_row in range(start_row, n):
-                for end_col in range(start_col, m):
-                    if is_valid_size(start_row, start_col, end_row, end_col, min_size, max_size):
-                        letters = count_letters_in_subgrid_size_constrained(grid, start_row, start_col, end_row, end_col)
-                        if len(letters) == total_letters:
-                            count = (count + 1) % mod
-    
-    return count
-
-# Example usage
-n, m = 2, 3
-grid = [
-    ['a', 'b', 'c'],
-    ['d', 'e', 'f']
-]
-min_size, max_size = 4, 6
-result = size_constrained_subgrid_count(n, m, grid, min_size, max_size)
-print(f"Size constrained subgrid count: {result}")
+# WRONG - bottom should depend on top
+for top in range(n):
+    for bottom in range(n):  # Should start from top!
+        ...
 ```
 
-#### **3. Subgrid Count with Multiple Grids**
-**Problem**: Count subgrids across multiple grids.
+**Problem:** Creates invalid subgrids where bottom < top.
+**Fix:** Use `for bottom in range(top, n)`.
 
-**Key Differences**: Handle multiple grids simultaneously
+### Mistake 3: Not Applying Modulo
 
-**Solution Approach**: Combine results from multiple grids
-
-**Implementation**:
 ```python
-def multi_grid_subgrid_count(grids, mod=10**9+7):
-    """
-    Count letter subgrids across multiple grids
-    
-    Args:
-        grids: list of grids containing letters
-        mod: modulo value
-    
-    Returns:
-        int: number of subgrids containing all letters modulo mod
-    """
-    def count_single_grid_subgrids(grid):
-        """Count subgrids for single grid"""
-        n, m = len(grid), len(grid[0])
-        return mathematical_subgrid_count(n, m, grid, mod)
-    
-    # Count subgrids for each grid
-    total_count = 0
-    for grid in grids:
-        grid_count = count_single_grid_subgrids(grid)
-        total_count = (total_count + grid_count) % mod
-    
-    return total_count
-
-# Example usage
-grids = [
-    [['a', 'b', 'c'], ['d', 'e', 'f']],  # Grid 1
-    [['x', 'y', 'z'], ['w', 'v', 'u']]   # Grid 2
-]
-result = multi_grid_subgrid_count(grids)
-print(f"Multi-grid subgrid count: {result}")
+# WRONG - may overflow for large results
+if len(letters) == target_count:
+    result += 1  # Should be (result + 1) % MOD
 ```
 
-### Related Problems
+**Problem:** Result can exceed integer limits.
+**Fix:** Apply modulo at each addition.
 
-#### **CSES Problems**
-- [Border Subgrid Count](https://cses.fi/problemset/task/1075) - Grid counting
-- [Filled Subgrid Count](https://cses.fi/problemset/task/1075) - Grid counting
-- [Grid Completion](https://cses.fi/problemset/task/1075) - Grid algorithms
+---
 
-#### **LeetCode Problems**
-- [Number of Islands](https://leetcode.com/problems/number-of-islands/) - Grid counting
-- [Max Area of Island](https://leetcode.com/problems/max-area-of-island/) - Grid counting
-- [Island Perimeter](https://leetcode.com/problems/island-perimeter/) - Grid counting
+## Edge Cases
 
-#### **Problem Categories**
-- **Grid Algorithms**: Subgrid counting, grid analysis
-- **Combinatorics**: Mathematical counting, grid properties
-- **String Algorithms**: Letter counting, pattern matching
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single cell | 1x1 grid "a" | 1 | Only one letter, one subgrid |
+| All same letter | 2x2 "aa/aa" | 4 | Every subgrid contains 'a' |
+| All different | 1x3 "abc" | 1 | Only full row has all 3 |
+| No valid subgrid | Large sparse grid | 0 | Some letter not reachable |
 
-## 🔗 Additional Resources
+---
 
-### **Algorithm References**
-- [Grid Algorithms](https://cp-algorithms.com/geometry/basic-geometry.html) - Grid algorithms
-- [String Algorithms](https://cp-algorithms.com/string/string-hashing.html) - String algorithms
-- [Combinatorics](https://cp-algorithms.com/combinatorics/binomial-coefficients.html) - Counting techniques
+## When to Use This Pattern
 
-### **Practice Problems**
-- [CSES Border Subgrid Count](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Filled Subgrid Count](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Grid Completion](https://cses.fi/problemset/task/1075) - Medium
+### Use This Approach When:
+- Grid dimensions are small (n, m <= 100)
+- Need to count subgrids satisfying a property checkable via set membership
+- The property depends on distinct elements, not frequencies
 
-### **Further Reading**
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
-- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
-- [Grid Algorithms](https://en.wikipedia.org/wiki/Grid_computing) - Wikipedia article
+### Don't Use When:
+- Grid is very large (n, m > 500) - need more optimization
+- You need exact frequency counts (use frequency arrays instead)
+- Looking for submatrices with sum constraints (use prefix sums)
+
+### Pattern Recognition Checklist:
+- [ ] Counting rectangular regions? -> Consider 4-loop enumeration
+- [ ] Need distinct elements? -> Use set operations
+- [ ] Small grid (n,m <= 100)? -> O(n^2 * m^2) is acceptable
+- [ ] Large grid? -> Consider 2D prefix sums or advanced techniques
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Subarray Distinct Values](https://cses.fi/problemset/task/2428) | 1D version of distinct counting |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Counting Tilings](https://cses.fi/problemset/task/2181) | Grid DP with bitmask |
+| [Counting Grids](https://cses.fi/problemset/task/2210) | Different grid counting variant |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| 2D Range Distinct Query | Persistent data structures |
+| Maximum Subgrid with K Distinct | Binary search + 2D sliding window |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Enumerate all subgrids using 4 boundary parameters
+2. **Time Optimization:** Build sets incrementally when expanding boundaries
+3. **Space Trade-off:** O(1) extra space using constant-size letter sets
+4. **Pattern:** Grid enumeration with set-based property checking
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Enumerate all subgrids correctly using 4 nested loops
+- [ ] Explain why incremental set building improves performance
+- [ ] Handle the modulo operation correctly
+- [ ] Identify when this O(n^2 * m^2) approach is acceptable
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: 2D Prefix Sums](https://cp-algorithms.com/data_structures/prefix_sums.html)
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [Subgrid Problems on USACO Guide](https://usaco.guide/)

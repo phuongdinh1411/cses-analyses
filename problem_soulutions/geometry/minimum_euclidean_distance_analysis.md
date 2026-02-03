@@ -2,733 +2,508 @@
 layout: simple
 title: "Minimum Euclidean Distance - Geometry Problem"
 permalink: /problem_soulutions/geometry/minimum_euclidean_distance_analysis
+difficulty: Hard
+tags: [geometry, divide-and-conquer, closest-pair, computational-geometry]
 ---
 
 # Minimum Euclidean Distance
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of Euclidean distance in computational geometry
-- Apply geometric algorithms for distance calculation
-- Implement efficient algorithms for minimum distance finding
-- Optimize geometric operations for distance analysis
-- Handle special cases in distance calculation problems
+| Attribute | Value |
+|-----------|-------|
+| **CSES Link** | [Minimum Euclidean Distance](https://cses.fi/problemset/task/2194) |
+| **Difficulty** | Hard |
+| **Category** | Geometry |
+| **Time Limit** | 1 second |
+| **Key Technique** | Divide and Conquer (Closest Pair Algorithm) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given n points, find the minimum Euclidean distance between any two points.
+After solving this problem, you will be able to:
+- [ ] Understand the classic Closest Pair of Points algorithm
+- [ ] Apply divide and conquer to geometric problems
+- [ ] Optimize strip processing using the "7 points" insight
+- [ ] Handle squared distances to avoid floating-point precision issues
 
-**Input**: 
-- n: number of points
-- points: array of points (x, y coordinates)
+---
 
-**Output**: 
-- Minimum Euclidean distance between any two points
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 100000
-- -10^6 ≤ coordinates ≤ 10^6
+**Problem:** Given n points in a 2D plane, find the minimum squared Euclidean distance between any two points.
 
-**Example**:
+**Input:**
+- Line 1: n (number of points)
+- Lines 2 to n+1: x and y coordinates of each point
+
+**Output:**
+- The minimum squared Euclidean distance between any two points
+
+**Constraints:**
+- 2 <= n <= 200,000
+- -10^9 <= x, y <= 10^9
+
+### Example
+
 ```
 Input:
-n = 4
-points = [(0,0), (1,1), (2,2), (3,3)]
+4
+0 0
+1 1
+2 2
+3 3
 
 Output:
-1.4142135623730951
-
-Explanation**: 
-Euclidean distances:
-- (0,0) to (1,1): √((0-1)² + (0-1)²) = √2 ≈ 1.414
-- (0,0) to (2,2): √((0-2)² + (0-2)²) = √8 ≈ 2.828
-- (1,1) to (2,2): √((1-2)² + (1-2)²) = √2 ≈ 1.414
-Minimum: √2 ≈ 1.414
+2
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all pairs of points
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Calculate Euclidean distance for each pair
-- **Inefficient**: O(n²) time complexity
-
-**Key Insight**: Check every pair of points and calculate Euclidean distance.
-
-**Algorithm**:
-- Iterate through all pairs of points
-- Calculate Euclidean distance for each pair
-- Keep track of minimum distance
-- Return minimum distance
-
-**Visual Example**:
-```
-Points: [(0,0), (1,1), (2,2), (3,3)]
-
-Distance calculations:
-┌─────────────────────────────────────┐
-│ (0,0) to (1,1): √((0-1)² + (0-1)²) = √2 │
-│ (0,0) to (2,2): √((0-2)² + (0-2)²) = √8 │
-│ (0,0) to (3,3): √((0-3)² + (0-3)²) = √18 │
-│ (1,1) to (2,2): √((1-2)² + (1-2)²) = √2 │
-│ (1,1) to (3,3): √((1-3)² + (1-3)²) = √8 │
-│ (2,2) to (3,3): √((2-3)² + (2-3)²) = √2 │
-│                                   │
-│ Minimum: √2 ≈ 1.414               │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def brute_force_minimum_euclidean_distance(n, points):
-    """
-    Find minimum Euclidean distance using brute force approach
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        float: minimum Euclidean distance
-    """
-    def euclidean_distance(p1, p2):
-        """Calculate Euclidean distance between two points"""
-        return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
-    
-    min_distance = float('inf')
-    
-    # Check all pairs of points
-    for i in range(n):
-        for j in range(i + 1, n):
-            distance = euclidean_distance(points[i], points[j])
-            min_distance = min(min_distance, distance)
-    
-    return min_distance
-
-def brute_force_minimum_euclidean_distance_optimized(n, points):
-    """
-    Optimized brute force minimum Euclidean distance finding
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        float: minimum Euclidean distance
-    """
-    def euclidean_distance_optimized(p1, p2):
-        """Calculate Euclidean distance with optimization"""
-        return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
-    
-    min_distance = float('inf')
-    
-    # Check all pairs of points with optimization
-    for i in range(n):
-        for j in range(i + 1, n):
-            distance = euclidean_distance_optimized(points[i], points[j])
-            min_distance = min(min_distance, distance)
-    
-    return min_distance
-
-# Example usage
-n = 4
-points = [(0, 0), (1, 1), (2, 2), (3, 3)]
-result1 = brute_force_minimum_euclidean_distance(n, points)
-result2 = brute_force_minimum_euclidean_distance_optimized(n, points)
-print(f"Brute force minimum Euclidean distance: {result1}")
-print(f"Optimized brute force minimum Euclidean distance: {result2}")
-```
-
-**Time Complexity**: O(n²)
-**Space Complexity**: O(1)
-
-**Why it's inefficient**: O(n²) time complexity for checking all pairs.
+**Explanation:** The closest pair is any two adjacent points like (0,0) and (1,1). The squared distance is (1-0)^2 + (1-0)^2 = 1 + 1 = 2.
 
 ---
 
-### Approach 2: Divide and Conquer Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Divide and Conquer Solution**:
-- **Divide and Conquer**: Use divide and conquer algorithm
-- **Efficient Implementation**: O(n log n) time complexity
-- **Recursive Approach**: Divide problem into smaller subproblems
-- **Optimization**: Much more efficient than brute force
+### Pattern Recognition
 
-**Key Insight**: Use divide and conquer algorithm for efficient distance calculation.
+> **Key Question:** Given n points, how do we avoid checking all O(n^2) pairs?
 
-**Algorithm**:
-- Sort points by x-coordinate
-- Divide points into two halves
-- Recursively find minimum distance in each half
-- Find minimum distance across the dividing line
-- Return minimum of all distances
+The key insight is that **divide and conquer** can reduce this to O(n log n) by exploiting the geometric property that points far apart in x-coordinate cannot be close together.
 
-**Visual Example**:
-```
-Divide and conquer algorithm:
-┌─────────────────────────────────────┐
-│ Points: [(0,0), (1,1), (2,2), (3,3)] │
-│                                   │
-│ Step 1: Sort by x-coordinate       │
-│ [(0,0), (1,1), (2,2), (3,3)]      │
-│                                   │
-│ Step 2: Divide into two halves     │
-│ Left: [(0,0), (1,1)]              │
-│ Right: [(2,2), (3,3)]             │
-│                                   │
-│ Step 3: Recursively find minimum   │
-│ Left minimum: √2                  │
-│ Right minimum: √2                 │
-│                                   │
-│ Step 4: Find minimum across line   │
-│ Cross minimum: √2                 │
-│                                   │
-│ Result: √2 ≈ 1.414                │
-└─────────────────────────────────────┘
-```
+### Breaking Down the Problem
 
-**Implementation**:
-```python
-def divide_and_conquer_minimum_euclidean_distance(n, points):
-    """
-    Find minimum Euclidean distance using divide and conquer approach
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        float: minimum Euclidean distance
-    """
-    def euclidean_distance(p1, p2):
-        """Calculate Euclidean distance between two points"""
-        return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
-    
-    def closest_pair_recursive(points):
-        """Recursively find closest pair of points"""
-        n = len(points)
-        
-        if n <= 3:
-            # Base case: use brute force for small number of points
-            min_distance = float('inf')
-            for i in range(n):
-                for j in range(i + 1, n):
-                    distance = euclidean_distance(points[i], points[j])
-                    min_distance = min(min_distance, distance)
-            return min_distance
-        
-        # Divide points into two halves
-        mid = n // 2
-        left_points = points[:mid]
-        right_points = points[mid:]
-        
-        # Recursively find minimum distance in each half
-        left_min = closest_pair_recursive(left_points)
-        right_min = closest_pair_recursive(right_points)
-        
-        # Find minimum distance across the dividing line
-        min_distance = min(left_min, right_min)
-        
-        # Find points close to the dividing line
-        mid_x = points[mid][0]
-        strip = []
-        for point in points:
-            if abs(point[0] - mid_x) < min_distance:
-                strip.append(point)
-        
-        # Sort strip by y-coordinate
-        strip.sort(key=lambda p: p[1])
-        
-        # Find minimum distance in strip
-        for i in range(len(strip)):
-            for j in range(i + 1, len(strip)):
-                if strip[j][1] - strip[i][1] >= min_distance:
-                    break
-                distance = euclidean_distance(strip[i], strip[j])
-                min_distance = min(min_distance, distance)
-        
-        return min_distance
-    
-    # Sort points by x-coordinate
-    points.sort()
-    
-    return closest_pair_recursive(points)
+1. **What are we looking for?** The minimum squared distance between any two points.
+2. **What information do we have?** All point coordinates.
+3. **What is the relationship between input and output?** We must find the pair of points that are geometrically closest.
 
-def divide_and_conquer_minimum_euclidean_distance_optimized(n, points):
-    """
-    Optimized divide and conquer minimum Euclidean distance finding
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        float: minimum Euclidean distance
-    """
-    def euclidean_distance_optimized(p1, p2):
-        """Calculate Euclidean distance with optimization"""
-        return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
-    
-    def closest_pair_recursive_optimized(points):
-        """Recursively find closest pair of points with optimization"""
-        n = len(points)
-        
-        if n <= 3:
-            # Base case: use brute force for small number of points with optimization
-            min_distance = float('inf')
-            for i in range(n):
-                for j in range(i + 1, n):
-                    distance = euclidean_distance_optimized(points[i], points[j])
-                    min_distance = min(min_distance, distance)
-            return min_distance
-        
-        # Divide points into two halves with optimization
-        mid = n // 2
-        left_points = points[:mid]
-        right_points = points[mid:]
-        
-        # Recursively find minimum distance in each half with optimization
-        left_min = closest_pair_recursive_optimized(left_points)
-        right_min = closest_pair_recursive_optimized(right_points)
-        
-        # Find minimum distance across the dividing line with optimization
-        min_distance = min(left_min, right_min)
-        
-        # Find points close to the dividing line with optimization
-        mid_x = points[mid][0]
-        strip = []
-        for point in points:
-            if abs(point[0] - mid_x) < min_distance:
-                strip.append(point)
-        
-        # Sort strip by y-coordinate with optimization
-        strip.sort(key=lambda p: p[1])
-        
-        # Find minimum distance in strip with optimization
-        for i in range(len(strip)):
-            for j in range(i + 1, len(strip)):
-                if strip[j][1] - strip[i][1] >= min_distance:
-                    break
-                distance = euclidean_distance_optimized(strip[i], strip[j])
-                min_distance = min(min_distance, distance)
-        
-        return min_distance
-    
-    # Sort points by x-coordinate with optimization
-    points.sort()
-    
-    return closest_pair_recursive_optimized(points)
+### Analogies
 
-# Example usage
-n = 4
-points = [(0, 0), (1, 1), (2, 2), (3, 3)]
-result1 = divide_and_conquer_minimum_euclidean_distance(n, points)
-result2 = divide_and_conquer_minimum_euclidean_distance_optimized(n, points)
-print(f"Divide and conquer minimum Euclidean distance: {result1}")
-print(f"Optimized divide and conquer minimum Euclidean distance: {result2}")
-```
-
-**Time Complexity**: O(n log n)
-**Space Complexity**: O(n)
-
-**Why it's better**: Uses divide and conquer algorithm for O(n log n) time complexity.
+Think of this like finding the two closest houses in a city. Instead of measuring every pair, you first divide the city in half, find the closest pair in each half, then only check houses near the dividing line that might be closer.
 
 ---
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+## Solution 1: Brute Force
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for distance calculation
-- **Efficient Implementation**: O(n log n) time complexity
-- **Space Efficiency**: O(n) space complexity
-- **Optimal Complexity**: Best approach for minimum Euclidean distance
+### Idea
 
-**Key Insight**: Use advanced data structures for optimal distance calculation.
+Check every pair of points and compute their squared distance.
 
-**Algorithm**:
-- Use specialized data structures for point storage
-- Implement efficient distance calculation algorithms
-- Handle special cases optimally
-- Return minimum distance
+### Algorithm
 
-**Visual Example**:
-```
-Advanced data structure approach:
+1. For each pair of points (i, j) where i < j
+2. Calculate squared Euclidean distance
+3. Track the minimum
 
-For points: [(0,0), (1,1), (2,2), (3,3)]
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Point tree: for efficient storage │
-│ - Distance cache: for optimization  │
-│ - Coordinate system: for sorting    │
-│                                   │
-│ Distance calculation:              │
-│ - Use point tree for efficient     │
-│   distance calculation             │
-│ - Use distance cache for           │
-│   optimization                     │
-│ - Use coordinate system for        │
-│   sorting                          │
-│                                   │
-│ Result: √2 ≈ 1.414                │
-└─────────────────────────────────────┘
-```
+### Code
 
-**Implementation**:
 ```python
-def advanced_data_structure_minimum_euclidean_distance(n, points):
+def solve_brute_force(points):
     """
-    Find minimum Euclidean distance using advanced data structure approach
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        float: minimum Euclidean distance
+    Brute force solution - check all pairs.
+
+    Time: O(n^2)
+    Space: O(1)
     """
-    def euclidean_distance(p1, p2):
-        """Calculate Euclidean distance between two points"""
-        return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
-    
-    def closest_pair_recursive(points):
-        """Recursively find closest pair of points using advanced data structures"""
-        n = len(points)
-        
+    n = len(points)
+    min_dist = float('inf')
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            dx = points[i][0] - points[j][0]
+            dy = points[i][1] - points[j][1]
+            dist_sq = dx * dx + dy * dy
+            min_dist = min(min_dist, dist_sq)
+
+    return min_dist
+```
+
+```cpp
+// C++ Brute Force
+long long brute_force(vector<pair<long long, long long>>& points) {
+    int n = points.size();
+    long long min_dist = LLONG_MAX;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            long long dx = points[i].first - points[j].first;
+            long long dy = points[i].second - points[j].second;
+            min_dist = min(min_dist, dx*dx + dy*dy);
+        }
+    }
+    return min_dist;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Check all n*(n-1)/2 pairs |
+| Space | O(1) | Only store minimum |
+
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed by exhaustive search, but with n = 200,000 points, we would need ~20 billion operations, which is far too slow.
+
+---
+
+## Solution 2: Divide and Conquer (Optimal)
+
+### Key Insight
+
+> **The Trick:** After finding the minimum distance d in left and right halves, we only need to check points within distance d of the dividing line. Furthermore, for each point in this strip, we only need to check at most 7 other points!
+
+### Algorithm
+
+1. Sort points by x-coordinate
+2. Recursively find minimum distance in left and right halves
+3. Let d = min(left_min, right_min)
+4. Build a "strip" of points within distance d of the middle x-coordinate
+5. Sort strip by y-coordinate
+6. For each point in strip, only compare with next 7 points (they are sorted by y)
+7. Return the overall minimum
+
+### Why Only 7 Points?
+
+```
+Consider a d x 2d rectangle around the dividing line:
+
+         d       d
+    +----+------+----+
+    |    |      |    |
+  d |  L |      |  R |
+    |    |      |    |
+    +----+------+----+
+    |    |      |    |
+  d |  L |      |  R |
+    |    |      |    |
+    +----+------+----+
+         ^
+     dividing line
+
+Each d x d square can contain at most 4 points (any more would have
+distance < d within that half, contradicting our found minimum d).
+So the 2d x d rectangle contains at most 8 points including the
+current point, meaning at most 7 other points to check.
+```
+
+### Dry Run Example
+
+Let's trace through with points: `[(2,3), (12,30), (40,50), (5,1), (12,10), (3,4)]`
+
+```
+Step 1: Sort by x-coordinate
+  Sorted: [(2,3), (3,4), (5,1), (12,10), (12,30), (40,50)]
+
+Step 2: Divide at middle
+  Left half:  [(2,3), (3,4), (5,1)]
+  Right half: [(12,10), (12,30), (40,50)]
+  Mid x = 5
+
+Step 3: Recursive calls
+  Left minimum:  (2,3) to (3,4) = 1+1 = 2
+  Right minimum: (12,10) to (12,30) = 0+400 = 400
+  d = min(2, 400) = 2, sqrt(d) ~ 1.41
+
+Step 4: Build strip (points with |x - 5| < sqrt(2) ~ 1.41)
+  Strip candidates: [(5,1)] only (others too far)
+
+Step 5: Check strip pairs
+  Only 1 point in strip, no pairs to check
+
+Result: 2 (squared distance between (2,3) and (3,4))
+```
+
+### Visual Diagram
+
+```
+Points plotted:
+                      (12,30)
+                         *
+
+
+
+  (3,4)               (12,10)
+    *                    *
+  (2,3)
+    *
+        (5,1)                        (40,50)
+          *                              *
+
+  --------|-------- dividing line at x=5
+
+  LEFT    |    RIGHT
+```
+
+### Code
+
+```python
+import sys
+from functools import cmp_to_key
+sys.setrecursionlimit(300000)
+
+def solve():
+    n = int(input())
+    points = []
+    for _ in range(n):
+        x, y = map(int, input().split())
+        points.append((x, y))
+
+    def dist_sq(p1, p2):
+        """Calculate squared Euclidean distance."""
+        dx = p1[0] - p2[0]
+        dy = p1[1] - p2[1]
+        return dx * dx + dy * dy
+
+    def closest_in_strip(strip, d):
+        """Find minimum distance in strip, given current minimum d."""
+        min_d = d
+        strip.sort(key=lambda p: p[1])  # Sort by y
+
+        for i in range(len(strip)):
+            j = i + 1
+            while j < len(strip) and (strip[j][1] - strip[i][1])**2 < min_d:
+                min_d = min(min_d, dist_sq(strip[i], strip[j]))
+                j += 1
+        return min_d
+
+    def closest_pair(pts):
+        """Divide and conquer to find closest pair."""
+        n = len(pts)
+
+        # Base case: brute force for small inputs
         if n <= 3:
-            # Base case: use brute force for small number of points
-            min_distance = float('inf')
+            min_d = float('inf')
             for i in range(n):
                 for j in range(i + 1, n):
-                    distance = euclidean_distance(points[i], points[j])
-                    min_distance = min(min_distance, distance)
-            return min_distance
-        
-        # Divide points into two halves using advanced data structures
+                    min_d = min(min_d, dist_sq(pts[i], pts[j]))
+            return min_d
+
         mid = n // 2
-        left_points = points[:mid]
-        right_points = points[mid:]
-        
-        # Recursively find minimum distance in each half using advanced data structures
-        left_min = closest_pair_recursive(left_points)
-        right_min = closest_pair_recursive(right_points)
-        
-        # Find minimum distance across the dividing line using advanced data structures
-        min_distance = min(left_min, right_min)
-        
-        # Find points close to the dividing line using advanced data structures
-        mid_x = points[mid][0]
-        strip = []
-        for point in points:
-            if abs(point[0] - mid_x) < min_distance:
-                strip.append(point)
-        
-        # Sort strip by y-coordinate using advanced data structures
-        strip.sort(key=lambda p: p[1])
-        
-        # Find minimum distance in strip using advanced data structures
-        for i in range(len(strip)):
-            for j in range(i + 1, len(strip)):
-                if strip[j][1] - strip[i][1] >= min_distance:
-                    break
-                distance = euclidean_distance(strip[i], strip[j])
-                min_distance = min(min_distance, distance)
-        
-        return min_distance
-    
-    # Sort points by x-coordinate using advanced data structures
+        mid_x = pts[mid][0]
+
+        # Recursively find minimum in each half
+        left_min = closest_pair(pts[:mid])
+        right_min = closest_pair(pts[mid:])
+        d = min(left_min, right_min)
+
+        # Build strip of points close to dividing line
+        strip = [p for p in pts if (p[0] - mid_x)**2 < d]
+
+        # Find minimum in strip
+        return closest_in_strip(strip, d)
+
+    # Sort by x-coordinate
     points.sort()
-    
-    return closest_pair_recursive(points)
+    print(closest_pair(points))
 
-def advanced_data_structure_minimum_euclidean_distance_v2(n, points):
-    """
-    Alternative advanced data structure minimum Euclidean distance finding
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-    
-    Returns:
-        float: minimum Euclidean distance
-    """
-    def euclidean_distance_optimized(p1, p2):
-        """Calculate Euclidean distance with optimization"""
-        return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
-    
-    def closest_pair_recursive_optimized(points):
-        """Recursively find closest pair of points using alternative advanced data structures"""
-        n = len(points)
-        
-        if n <= 3:
-            # Base case: use brute force for small number of points with optimization
-            min_distance = float('inf')
-            for i in range(n):
-                for j in range(i + 1, n):
-                    distance = euclidean_distance_optimized(points[i], points[j])
-                    min_distance = min(min_distance, distance)
-            return min_distance
-        
-        # Divide points into two halves using alternative advanced data structures
-        mid = n // 2
-        left_points = points[:mid]
-        right_points = points[mid:]
-        
-        # Recursively find minimum distance in each half using alternative advanced data structures
-        left_min = closest_pair_recursive_optimized(left_points)
-        right_min = closest_pair_recursive_optimized(right_points)
-        
-        # Find minimum distance across the dividing line using alternative advanced data structures
-        min_distance = min(left_min, right_min)
-        
-        # Find points close to the dividing line using alternative advanced data structures
-        mid_x = points[mid][0]
-        strip = []
-        for point in points:
-            if abs(point[0] - mid_x) < min_distance:
-                strip.append(point)
-        
-        # Sort strip by y-coordinate using alternative advanced data structures
-        strip.sort(key=lambda p: p[1])
-        
-        # Find minimum distance in strip using alternative advanced data structures
-        for i in range(len(strip)):
-            for j in range(i + 1, len(strip)):
-                if strip[j][1] - strip[i][1] >= min_distance:
-                    break
-                distance = euclidean_distance_optimized(strip[i], strip[j])
-                min_distance = min(min_distance, distance)
-        
-        return min_distance
-    
-    # Sort points by x-coordinate using alternative advanced data structures
-    points.sort()
-    
-    return closest_pair_recursive_optimized(points)
-
-def minimum_euclidean_distance_with_precomputation(max_n):
-    """
-    Precompute minimum Euclidean distance for multiple queries
-    
-    Args:
-        max_n: maximum number of points
-    
-    Returns:
-        list: precomputed minimum Euclidean distance results
-    """
-    results = [0] * (max_n + 1)
-    
-    for i in range(max_n + 1):
-        results[i] = i  # Simplified calculation
-    
-    return results
-
-# Example usage
-n = 4
-points = [(0, 0), (1, 1), (2, 2), (3, 3)]
-result1 = advanced_data_structure_minimum_euclidean_distance(n, points)
-result2 = advanced_data_structure_minimum_euclidean_distance_v2(n, points)
-print(f"Advanced data structure minimum Euclidean distance: {result1}")
-print(f"Advanced data structure minimum Euclidean distance v2: {result2}")
-
-# Precompute for multiple queries
-max_n = 100000
-precomputed = minimum_euclidean_distance_with_precomputation(max_n)
-print(f"Precomputed result for n={n}: {precomputed[n]}")
+solve()
 ```
 
-**Time Complexity**: O(n log n)
-**Space Complexity**: O(n)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+typedef long long ll;
+typedef pair<ll, ll> Point;
 
-## 🔧 Implementation Details
+ll dist_sq(const Point& a, const Point& b) {
+    ll dx = a.first - b.first;
+    ll dy = a.second - b.second;
+    return dx * dx + dy * dy;
+}
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²) | O(1) | Check all pairs of points |
-| Divide and Conquer | O(n log n) | O(n) | Use divide and conquer algorithm |
-| Advanced Data Structure | O(n log n) | O(n) | Use advanced data structures |
+ll closest_in_strip(vector<Point>& strip, ll d) {
+    ll min_d = d;
+    sort(strip.begin(), strip.end(), [](const Point& a, const Point& b) {
+        return a.second < b.second;
+    });
 
-### Time Complexity
-- **Time**: O(n log n) - Use divide and conquer algorithm for efficient calculation
-- **Space**: O(n) - Store points and intermediate results
+    for (int i = 0; i < strip.size(); i++) {
+        for (int j = i + 1; j < strip.size() &&
+             (strip[j].second - strip[i].second) * (strip[j].second - strip[i].second) < min_d; j++) {
+            min_d = min(min_d, dist_sq(strip[i], strip[j]));
+        }
+    }
+    return min_d;
+}
 
-### Why This Solution Works
-- **Divide and Conquer**: Use divide and conquer algorithm for efficient calculation
-- **Recursive Approach**: Divide problem into smaller subproblems
-- **Efficient Sorting**: Sort points by coordinate for efficient processing
-- **Optimal Algorithms**: Use optimal algorithms for distance calculation
+ll closest_pair(vector<Point>& pts, int left, int right) {
+    if (right - left <= 3) {
+        ll min_d = LLONG_MAX;
+        for (int i = left; i < right; i++) {
+            for (int j = i + 1; j < right; j++) {
+                min_d = min(min_d, dist_sq(pts[i], pts[j]));
+            }
+        }
+        return min_d;
+    }
 
-## 🚀 Problem Variations
+    int mid = (left + right) / 2;
+    ll mid_x = pts[mid].first;
 
-### Extended Problems with Detailed Code Examples
+    ll left_min = closest_pair(pts, left, mid);
+    ll right_min = closest_pair(pts, mid, right);
+    ll d = min(left_min, right_min);
 
-#### **1. Minimum Euclidean Distance with Constraints**
-**Problem**: Find minimum distance with specific constraints.
+    vector<Point> strip;
+    for (int i = left; i < right; i++) {
+        if ((pts[i].first - mid_x) * (pts[i].first - mid_x) < d) {
+            strip.push_back(pts[i]);
+        }
+    }
 
-**Key Differences**: Apply constraints to distance calculation
+    return closest_in_strip(strip, d);
+}
 
-**Solution Approach**: Modify algorithm to handle constraints
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-**Implementation**:
+    int n;
+    cin >> n;
+    vector<Point> points(n);
+
+    for (int i = 0; i < n; i++) {
+        cin >> points[i].first >> points[i].second;
+    }
+
+    sort(points.begin(), points.end());
+    cout << closest_pair(points, 0, n) << "\n";
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log^2 n) | T(n) = 2T(n/2) + O(n log n) for strip sorting |
+| Space | O(n) | Recursion stack and strip storage |
+
+**Note:** Can be optimized to O(n log n) by maintaining a y-sorted list alongside x-sorted list, avoiding re-sorting the strip each time.
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Using Floating-Point Distance
+
 ```python
-def constrained_minimum_euclidean_distance(n, points, constraints):
-    """
-    Find minimum Euclidean distance with constraints
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-        constraints: function to check constraints
-    
-    Returns:
-        float: constrained minimum Euclidean distance
-    """
-    def euclidean_distance(p1, p2):
-        """Calculate Euclidean distance between two points"""
-        return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
-    
-    min_distance = float('inf')
-    
-    for i in range(n):
-        for j in range(i + 1, n):
-            if constraints(points[i], points[j]):
-                distance = euclidean_distance(points[i], points[j])
-                min_distance = min(min_distance, distance)
-    
-    return min_distance
-
-# Example usage
-n = 4
-points = [(0, 0), (1, 1), (2, 2), (3, 3)]
-constraints = lambda p1, p2: p1[0] + p1[1] < p2[0] + p2[1]  # Only check points where first point has smaller sum
-result = constrained_minimum_euclidean_distance(n, points, constraints)
-print(f"Constrained minimum Euclidean distance: {result}")
+# WRONG - floating point precision issues
+import math
+dist = math.sqrt((x1-x2)**2 + (y1-y2)**2)
 ```
 
-#### **2. Minimum Euclidean Distance with Different Metrics**
-**Problem**: Find minimum distance with different distance metrics.
+**Problem:** Floating-point arithmetic can introduce precision errors.
+**Fix:** Use squared distances throughout and only output the squared result.
 
-**Key Differences**: Different distance calculations
+### Mistake 2: Checking All Points in Strip
 
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
 ```python
-def weighted_minimum_euclidean_distance(n, points, weights):
-    """
-    Find minimum Euclidean distance with different weights
-    
-    Args:
-        n: number of points
-        points: list of points (x, y)
-        weights: list of point weights
-    
-    Returns:
-        float: weighted minimum Euclidean distance
-    """
-    def weighted_euclidean_distance(p1, p2, w1, w2):
-        """Calculate weighted Euclidean distance between two points"""
-        return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5 * (w1 + w2)
-    
-    min_distance = float('inf')
-    
-    for i in range(n):
-        for j in range(i + 1, n):
-            distance = weighted_euclidean_distance(points[i], points[j], weights[i], weights[j])
-            min_distance = min(min_distance, distance)
-    
-    return min_distance
-
-# Example usage
-n = 4
-points = [(0, 0), (1, 1), (2, 2), (3, 3)]
-weights = [1, 2, 3, 4]
-result = weighted_minimum_euclidean_distance(n, points, weights)
-print(f"Weighted minimum Euclidean distance: {result}")
+# WRONG - defeats purpose of algorithm
+for i in range(len(strip)):
+    for j in range(i+1, len(strip)):  # No early termination!
+        min_d = min(min_d, dist_sq(strip[i], strip[j]))
 ```
 
-#### **3. Minimum Euclidean Distance with Multiple Dimensions**
-**Problem**: Find minimum distance in multiple dimensions.
+**Problem:** This is O(n^2) in the strip, losing the efficiency gain.
+**Fix:** Sort strip by y and only check while y-difference squared is less than current minimum.
 
-**Key Differences**: Handle multiple dimensions
+### Mistake 3: Integer Overflow
 
-**Solution Approach**: Use advanced mathematical techniques
+```cpp
+// WRONG in C++ with int
+int dx = points[i].first - points[j].first;
+int dy = points[i].second - points[j].second;
+int dist = dx*dx + dy*dy;  // Overflow!
+```
 
-**Implementation**:
+**Problem:** With coordinates up to 10^9, dx^2 can reach 10^18, exceeding int range.
+**Fix:** Use `long long` for all distance calculations.
+
+### Mistake 4: Wrong Strip Condition
+
 ```python
-def multi_dimensional_minimum_euclidean_distance(n, points, dimensions):
-    """
-    Find minimum Euclidean distance in multiple dimensions
-    
-    Args:
-        n: number of points
-        points: list of points (each point is a tuple of coordinates)
-        dimensions: number of dimensions
-    
-    Returns:
-        float: minimum Euclidean distance
-    """
-    def multi_dimensional_euclidean_distance(p1, p2):
-        """Calculate Euclidean distance in multiple dimensions"""
-        distance = 0
-        for i in range(dimensions):
-            distance += (p1[i] - p2[i])**2
-        return distance**0.5
-    
-    min_distance = float('inf')
-    
-    for i in range(n):
-        for j in range(i + 1, n):
-            distance = multi_dimensional_euclidean_distance(points[i], points[j])
-            min_distance = min(min_distance, distance)
-    
-    return min_distance
-
-# Example usage
-n = 3
-points = [(0, 0, 0), (1, 1, 1), (2, 2, 2)]
-dimensions = 3
-result = multi_dimensional_minimum_euclidean_distance(n, points, dimensions)
-print(f"Multi-dimensional minimum Euclidean distance: {result}")
+# WRONG - using d instead of sqrt(d)
+strip = [p for p in pts if abs(p[0] - mid_x) < d]
 ```
 
-### Related Problems
+**Problem:** d is the squared distance, but x-difference should be compared to sqrt(d).
+**Fix:** Compare (p[0] - mid_x)^2 < d, or take sqrt of d for the comparison.
 
-#### **CSES Problems**
-- [Maximum Manhattan Distance](https://cses.fi/problemset/task/1075) - Geometry
-- [All Manhattan Distances](https://cses.fi/problemset/task/1075) - Geometry
-- [Point in Polygon](https://cses.fi/problemset/task/1075) - Geometry
+---
 
-#### **LeetCode Problems**
-- [Closest Points to Origin](https://leetcode.com/problems/closest-points-to-origin/) - Geometry
-- [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/) - Geometry
-- [Minimum Time Visiting All Points](https://leetcode.com/problems/minimum-time-visiting-all-points/) - Geometry
+## Edge Cases
 
-#### **Problem Categories**
-- **Computational Geometry**: Distance calculations, coordinate systems
-- **Mathematical Algorithms**: Euclidean distance, optimization
-- **Geometric Algorithms**: Distance metrics, point algorithms
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Two points | `n=2, (0,0), (3,4)` | 25 | Only one pair, distance = 3^2 + 4^2 |
+| Coincident points | `n=2, (5,5), (5,5)` | 0 | Same point, distance = 0 |
+| All collinear | `n=4` on y=x line | min adjacent | Adjacent points are closest |
+| Large coordinates | 10^9 values | Use long long | Prevent overflow |
+| Points on axes | All x=0 or y=0 | Standard algorithm | Works normally |
 
-## 🔗 Additional Resources
+---
 
-### **Algorithm References**
-- [Computational Geometry](https://cp-algorithms.com/geometry/basic-geometry.html) - Geometry algorithms
-- [Distance Algorithms](https://cp-algorithms.com/geometry/distance.html) - Distance calculation algorithms
-- [Coordinate Systems](https://cp-algorithms.com/geometry/coordinate-systems.html) - Coordinate system algorithms
+## When to Use This Pattern
 
-### **Practice Problems**
-- [CSES Maximum Manhattan Distance](https://cses.fi/problemset/task/1075) - Medium
-- [CSES All Manhattan Distances](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Point in Polygon](https://cses.fi/problemset/task/1075) - Medium
+### Use Divide and Conquer Closest Pair When:
+- Finding minimum distance between any two points in 2D
+- Large number of points (n > 1000) where O(n^2) is too slow
+- Need O(n log n) or O(n log^2 n) complexity
 
-### **Further Reading**
-- [Computational Geometry](https://en.wikipedia.org/wiki/Computational_geometry) - Wikipedia article
-- [Euclidean Distance](https://en.wikipedia.org/wiki/Euclidean_distance) - Wikipedia article
-- [Coordinate System](https://en.wikipedia.org/wiki/Coordinate_system) - Wikipedia article
+### Simpler Alternatives:
+- **Small n (< 1000):** Brute force O(n^2) is fine
+- **Points on a grid with small range:** Use spatial hashing
+- **Only need approximate answer:** Use randomized algorithms
+
+### Pattern Recognition Checklist:
+- [ ] Finding closest/minimum distance between point pairs? This is likely it
+- [ ] Large n requiring subquadratic time? Consider divide and conquer
+- [ ] Geometric problem with sortable coordinates? D&C often applies
+
+---
+
+## Related Problems
+
+### CSES Geometry Problems
+| Problem | Link | Relationship |
+|---------|------|--------------|
+| Point Location Test | [CSES 2189](https://cses.fi/problemset/task/2189) | Basic geometry |
+| Line Segment Intersection | [CSES 2190](https://cses.fi/problemset/task/2190) | Line geometry |
+| Convex Hull | [CSES 2195](https://cses.fi/problemset/task/2195) | D&C in geometry |
+
+### Similar Problems
+| Problem | Key Difference |
+|---------|----------------|
+| K Closest Points to Origin (LC 973) | Distance from fixed point, not between pairs |
+| Closest Pair in 3D | Extend to 3 dimensions |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Divide and conquer reduces O(n^2) to O(n log^2 n) by exploiting geometric properties.
+2. **The Strip Insight:** Only 7 points need to be checked for each strip point.
+3. **Avoid Float Errors:** Use squared distances to avoid precision issues.
+4. **Integer Overflow:** With large coordinates, use 64-bit integers.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why only 7 points need checking in the strip
+- [ ] Implement the algorithm without looking at the solution
+- [ ] Handle the base case correctly (n <= 3)
+- [ ] Avoid integer overflow with large coordinates
+- [ ] Understand the O(n log^2 n) time complexity derivation
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Closest Pair of Points](https://cp-algorithms.com/geometry/nearest_points.html)
+- [Computational Geometry - Closest Pair](https://en.wikipedia.org/wiki/Closest_pair_of_points_problem)
+- [CSES Problem Set](https://cses.fi/problemset/)

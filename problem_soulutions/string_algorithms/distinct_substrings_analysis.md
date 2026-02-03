@@ -1,773 +1,451 @@
 ---
 layout: simple
-title: "Distinct Substrings"
+title: "Distinct Substrings - String Algorithms Problem"
 permalink: /problem_soulutions/string_algorithms/distinct_substrings_analysis
+difficulty: Medium
+tags: [suffix-array, lcp-array, string-processing]
+prerequisites: []
 ---
 
 # Distinct Substrings
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of distinct substrings and their applications
-- Apply suffix arrays and suffix automata for efficient substring counting
-- Implement efficient solutions for distinct substring problems with optimal complexity
-- Optimize solutions for large inputs with proper complexity analysis
-- Handle edge cases in substring counting problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | String Algorithms |
+| **Time Limit** | 1 second |
+| **Key Technique** | Suffix Array + LCP Array |
+| **CSES Link** | [https://cses.fi/problemset/task/2105](https://cses.fi/problemset/task/2105) |
 
-## 📋 Problem Description
+### Learning Goals
 
-You are given a string s. Count the number of distinct substrings in the string.
+After solving this problem, you will be able to:
+- [ ] Build a suffix array efficiently using sorting or radix sort
+- [ ] Construct the LCP (Longest Common Prefix) array from a suffix array
+- [ ] Apply the formula: distinct substrings = total substrings - sum(LCP)
+- [ ] Recognize when suffix array + LCP is the optimal approach for substring problems
 
-A substring is a contiguous sequence of characters within a string.
+---
 
-**Input**: 
-- First line: string s
+## Problem Statement
 
-**Output**: 
-- Print one integer: the number of distinct substrings
+**Problem:** Given a string s, count the number of distinct substrings.
 
-**Constraints**:
-- 1 ≤ |s| ≤ 10⁵
-- s contains only lowercase English letters
+**Input:**
+- Line 1: A string s consisting of lowercase English letters
 
-**Example**:
+**Output:**
+- A single integer: the number of distinct substrings
+
+**Constraints:**
+- 1 <= |s| <= 10^5
+- s contains only lowercase English letters (a-z)
+
+### Example
+
 ```
 Input:
-abc
+abab
 
 Output:
-6
-
-Explanation**: 
-String: "abc"
-
-All substrings:
-- "a" (position 0)
-- "b" (position 1)  
-- "c" (position 2)
-- "ab" (positions 0-1)
-- "bc" (positions 1-2)
-- "abc" (positions 0-2)
-
-Total distinct substrings: 6
+7
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force - Generate All Substrings
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: Generate all possible substrings and count distinct ones
-- **Complete Coverage**: Guaranteed to find all distinct substrings
-- **Simple Implementation**: Straightforward approach with nested loops
-- **Inefficient**: Quadratic time complexity
-
-**Key Insight**: For each possible starting and ending position, generate the substring and add it to a set.
-
-**Algorithm**:
-- For each starting position i:
-  - For each ending position j (j ≥ i):
-    - Generate substring s[i:j+1]
-    - Add to set of distinct substrings
-- Return the size of the set
-
-**Visual Example**:
-```
-String: "abc"
-
-All substrings:
-- i=0, j=0: "a"
-- i=0, j=1: "ab"
-- i=0, j=2: "abc"
-- i=1, j=1: "b"
-- i=1, j=2: "bc"
-- i=2, j=2: "c"
-
-Distinct substrings: {"a", "ab", "abc", "b", "bc", "c"}
-Count: 6
-```
-
-**Implementation**:
-```python
-def brute_force_distinct_substrings(s):
-    """
-    Count distinct substrings using brute force approach
-    
-    Args:
-        s: input string
-    
-    Returns:
-        int: number of distinct substrings
-    """
-    n = len(s)
-    distinct_substrings = set()
-    
-    for i in range(n):
-        for j in range(i, n):
-            substring = s[i:j+1]
-            distinct_substrings.add(substring)
-    
-    return len(distinct_substrings)
-
-# Example usage
-s = "abc"
-result = brute_force_distinct_substrings(s)
-print(f"Brute force result: {result}")  # Output: 6
-```
-
-**Time Complexity**: O(n³) - Nested loops with substring generation
-**Space Complexity**: O(n²) - Set of substrings
-
-**Why it's inefficient**: Cubic time complexity makes it very slow for large inputs.
+**Explanation:** The distinct substrings are: "a", "b", "ab", "ba", "aba", "bab", "abab". Note that "a" and "b" each appear twice in the string, but we count them only once.
 
 ---
 
-### Approach 2: Optimized - Use Rolling Hash
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Approach**:
-- **Rolling Hash**: Use rolling hash to efficiently generate substring hashes
-- **Efficient Generation**: Avoid string concatenation for substring generation
-- **Better Complexity**: Achieve O(n²) time complexity
-- **Memory Trade-off**: Use more memory for better time complexity
+### Pattern Recognition
 
-**Key Insight**: Use rolling hash to efficiently generate and hash substrings.
+> **Key Question:** How can we efficiently count unique substrings without generating all of them?
 
-**Algorithm**:
-- Precompute rolling hash for the string
-- For each starting position i:
-  - For each ending position j (j ≥ i):
-    - Calculate hash of substring s[i:j+1] using rolling hash
-    - Add hash to set of distinct hashes
-- Return the size of the set
+The insight is that every suffix of a string contains all substrings starting at that position. If we sort all suffixes lexicographically, consecutive suffixes share common prefixes - and these shared prefixes represent duplicate substrings. The LCP array captures exactly this redundancy.
 
-**Visual Example**:
-```
-String: "abc"
+### Breaking Down the Problem
 
-Rolling hash calculation:
-- Hash("a") = 1
-- Hash("ab") = 1*31 + 2 = 33
-- Hash("abc") = 33*31 + 3 = 1026
-- Hash("b") = 2
-- Hash("bc") = 2*31 + 3 = 65
-- Hash("c") = 3
+1. **What are we looking for?** Count of unique substrings
+2. **What information do we have?** A string of length n has n*(n+1)/2 total substrings (with duplicates)
+3. **What's the relationship between input and output?** Distinct count = Total count - Duplicates
 
-Distinct hashes: {1, 33, 1026, 2, 65, 3}
-Count: 6
-```
+### Analogies
 
-**Implementation**:
-```python
-def optimized_distinct_substrings(s):
-    """
-    Count distinct substrings using optimized rolling hash approach
-    
-    Args:
-        s: input string
-    
-    Returns:
-        int: number of distinct substrings
-    """
-    n = len(s)
-    distinct_hashes = set()
-    base = 31
-    mod = 10**9 + 7
-    
-    for i in range(n):
-        hash_value = 0
-        for j in range(i, n):
-            # Rolling hash: hash = (hash * base + char_value) % mod
-            hash_value = (hash_value * base + (ord(s[j]) - ord('a') + 1)) % mod
-            distinct_hashes.add(hash_value)
-    
-    return len(distinct_hashes)
-
-# Example usage
-s = "abc"
-result = optimized_distinct_substrings(s)
-print(f"Optimized result: {result}")  # Output: 6
-```
-
-**Time Complexity**: O(n²) - Nested loops with rolling hash
-**Space Complexity**: O(n²) - Set of hashes
-
-**Why it's better**: More efficient than brute force with rolling hash optimization.
+Think of this like counting unique words in a sorted dictionary. If consecutive words share a common prefix (like "pre-" in "predict" and "prefer"), we don't want to double-count that shared part. The LCP tells us exactly how many characters are shared.
 
 ---
 
-### Approach 3: Optimal - Use Suffix Array
+## Solution 1: Brute Force
 
-**Key Insights from Optimal Approach**:
-- **Suffix Array**: Use suffix array to efficiently count distinct substrings
-- **Optimal Complexity**: Achieve O(n log n) time complexity
-- **Efficient Implementation**: Use suffix array and LCP array
-- **Mathematical Insight**: Use suffix array to count distinct substrings efficiently
+### Idea
 
-**Key Insight**: Use suffix array and LCP array to count distinct substrings using the formula: total_substrings - sum_of_lcp_values.
+Generate all possible substrings and store them in a set to eliminate duplicates.
 
-**Algorithm**:
-- Build suffix array for the string
-- Build LCP (Longest Common Prefix) array
-- Calculate total possible substrings: n*(n+1)/2
-- Subtract sum of LCP values to get distinct substrings
-- Return the result
+### Algorithm
 
-**Visual Example**:
-```
-String: "abc"
+1. Iterate over all starting positions i from 0 to n-1
+2. For each starting position, iterate over all ending positions j from i to n-1
+3. Add substring s[i:j+1] to a hash set
+4. Return the size of the set
 
-Suffixes: ["abc", "bc", "c"]
-Suffix Array: [0, 1, 2] (indices of sorted suffixes)
-LCP Array: [0, 0, 0] (LCP between adjacent suffixes)
+### Code
 
-Total substrings: 3*4/2 = 6
-Sum of LCP: 0 + 0 = 0
-Distinct substrings: 6 - 0 = 6
-```
-
-**Implementation**:
 ```python
-def optimal_distinct_substrings(s):
+def count_distinct_brute(s: str) -> int:
     """
-    Count distinct substrings using optimal suffix array approach
-    
-    Args:
-        s: input string
-    
-    Returns:
-        int: number of distinct substrings
+    Brute force: generate all substrings and use a set.
+
+    Time: O(n^2) substrings, each taking O(n) to hash
+    Space: O(n^2) for storing substrings
     """
     n = len(s)
-    
-    # Build suffix array (simplified version)
-    suffixes = []
+    substrings = set()
+
     for i in range(n):
-        suffixes.append((s[i:], i))
-    suffixes.sort()
-    
-    # Build LCP array
+        for j in range(i + 1, n + 1):
+            substrings.add(s[i:j])
+
+    return len(substrings)
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^3) | O(n^2) substrings, each O(n) to create/hash |
+| Space | O(n^2) | Up to n*(n+1)/2 unique substrings stored |
+
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed because we enumerate all substrings. However, for n=10^5, this generates up to 5 billion substrings - far too slow.
+
+---
+
+## Solution 2: Optimal Solution (Suffix Array + LCP)
+
+### Key Insight
+
+> **The Trick:** Each suffix contributes (length - LCP with previous suffix) new distinct substrings.
+
+A suffix of length L represents L unique substrings (its prefixes). When suffixes are sorted, the LCP with the previous suffix tells us how many of those substrings are duplicates.
+
+### Core Formula
+
+```
+Distinct Substrings = n*(n+1)/2 - sum(LCP[i])
+```
+
+Or equivalently, sum over all suffixes: (suffix_length - LCP_with_previous).
+
+### Algorithm
+
+1. Build the suffix array (sort all suffix starting positions by lexicographic order)
+2. Build the LCP array (longest common prefix between adjacent suffixes)
+3. Total substrings = n*(n+1)/2
+4. Subtract sum of all LCP values
+5. Return the result
+
+### Dry Run Example
+
+Let's trace through with input `s = "abab"`:
+
+```
+Step 1: Generate all suffixes with their starting indices
+  Index 0: "abab"
+  Index 1: "bab"
+  Index 2: "ab"
+  Index 3: "b"
+
+Step 2: Sort suffixes lexicographically
+  Sorted order: "ab" (2), "abab" (0), "b" (3), "bab" (1)
+  Suffix Array: [2, 0, 3, 1]
+
+Step 3: Compute LCP array (LCP between adjacent sorted suffixes)
+  LCP[0] = 0  (no previous suffix)
+  LCP[1] = 2  ("ab" and "abab" share "ab")
+  LCP[2] = 0  ("abab" and "b" share nothing)
+  LCP[3] = 1  ("b" and "bab" share "b")
+
+  LCP Array: [0, 2, 0, 1]
+
+Step 4: Calculate distinct substrings
+  Total possible = 4 * 5 / 2 = 10
+  Sum of LCP = 0 + 2 + 0 + 1 = 3
+  Distinct = 10 - 3 = 7
+
+Answer: 7
+```
+
+### Visual Diagram
+
+```
+String: "abab" (n=4)
+
+Sorted Suffixes:        Suffix  |  Length  |  LCP  |  New Substrings
+                        --------|----------|-------|------------------
+                        "ab"    |    2     |   0   |  2 ("a", "ab")
+                        "abab"  |    4     |   2   |  2 ("aba", "abab")
+                        "b"     |    1     |   0   |  1 ("b")
+                        "bab"   |    3     |   1   |  2 ("ba", "bab")
+                        --------|----------|-------|------------------
+                        Total   |   10     |   3   |  7 distinct
+```
+
+### Code (Python)
+
+```python
+def count_distinct_substrings(s: str) -> int:
+    """
+    Count distinct substrings using Suffix Array + LCP.
+
+    Time: O(n log n) for suffix array construction
+    Space: O(n) for arrays
+    """
+    n = len(s)
+    if n == 0:
+        return 0
+
+    # Build suffix array (indices sorted by suffix)
+    suffix_array = sorted(range(n), key=lambda i: s[i:])
+
+    # Build rank array (position of each suffix in sorted order)
+    rank = [0] * n
+    for i, sa in enumerate(suffix_array):
+        rank[sa] = i
+
+    # Build LCP array using Kasai's algorithm
     lcp = [0] * n
-    for i in range(1, n):
-        lcp[i] = 0
-        j = 0
-        while (j < len(suffixes[i-1][0]) and 
-               j < len(suffixes[i][0]) and 
-               suffixes[i-1][0][j] == suffixes[i][0][j]):
-            lcp[i] += 1
-            j += 1
-    
-    # Calculate distinct substrings
-    total_substrings = n * (n + 1) // 2
-    sum_lcp = sum(lcp)
-    distinct_substrings = total_substrings - sum_lcp
-    
-    return distinct_substrings
+    k = 0
+    for i in range(n):
+        if rank[i] == 0:
+            k = 0
+            continue
+        j = suffix_array[rank[i] - 1]
+        while i + k < n and j + k < n and s[i + k] == s[j + k]:
+            k += 1
+        lcp[rank[i]] = k
+        if k > 0:
+            k -= 1
 
-# Example usage
-s = "abc"
-result = optimal_distinct_substrings(s)
-print(f"Optimal result: {result}")  # Output: 6
+    # Distinct = total - duplicates
+    total = n * (n + 1) // 2
+    duplicates = sum(lcp)
+    return total - duplicates
+
+
+# Read input and solve
+if __name__ == "__main__":
+    s = input().strip()
+    print(count_distinct_substrings(s))
 ```
 
-**Time Complexity**: O(n log n) - Suffix array construction
-**Space Complexity**: O(n) - Suffix array and LCP array
+### Code (C++)
 
-**Why it's optimal**: Achieves the best possible time complexity with suffix array optimization.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-## 🔧 Implementation Details
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n³) | O(n²) | Generate all substrings |
-| Rolling Hash | O(n²) | O(n²) | Use rolling hash |
-| Suffix Array | O(n log n) | O(n) | Use suffix array and LCP |
+    string s;
+    cin >> s;
+    int n = s.size();
 
-### Time Complexity
-- **Time**: O(n log n) - Suffix array approach provides optimal time complexity
-- **Space**: O(n) - Suffix array and LCP array
+    // Build suffix array
+    vector<int> sa(n), rank(n), tmp(n);
+    for (int i = 0; i < n; i++) {
+        sa[i] = i;
+        rank[i] = s[i];
+    }
 
-### Why This Solution Works
-- **Suffix Array**: Use suffix array and LCP array to efficiently count distinct substrings
-- **Optimal Algorithm**: Suffix array approach is the standard solution for this problem
-- **Optimal Approach**: Single pass through suffixes provides the most efficient solution for substring counting problems
-- **[Reason 3]**: [Explanation]
-- **Optimal Approach**: [Final explanation]
+    for (int k = 1; k < n; k *= 2) {
+        auto cmp = [&](int a, int b) {
+            if (rank[a] != rank[b]) return rank[a] < rank[b];
+            int ra = (a + k < n) ? rank[a + k] : -1;
+            int rb = (b + k < n) ? rank[b + k] : -1;
+            return ra < rb;
+        };
+        sort(sa.begin(), sa.end(), cmp);
 
-## 🚀 Problem Variations
+        tmp[sa[0]] = 0;
+        for (int i = 1; i < n; i++) {
+            tmp[sa[i]] = tmp[sa[i-1]] + (cmp(sa[i-1], sa[i]) ? 1 : 0);
+        }
+        rank = tmp;
+    }
 
-### Extended Problems with Detailed Code Examples
+    // Build LCP array using Kasai's algorithm
+    vector<int> lcp(n, 0);
+    for (int i = 0; i < n; i++) {
+        rank[sa[i]] = i;
+    }
 
-### Variation 1: Distinct Substrings with Dynamic Updates
-**Problem**: Handle dynamic updates to string characters and maintain distinct substring count efficiently.
+    int k = 0;
+    for (int i = 0; i < n; i++) {
+        if (rank[i] == 0) {
+            k = 0;
+            continue;
+        }
+        int j = sa[rank[i] - 1];
+        while (i + k < n && j + k < n && s[i + k] == s[j + k]) {
+            k++;
+        }
+        lcp[rank[i]] = k;
+        if (k > 0) k--;
+    }
 
-**Link**: [CSES Problem Set - Distinct Substrings with Updates](https://cses.fi/problemset/task/distinct_substrings_updates)
+    // Calculate distinct substrings
+    long long total = (long long)n * (n + 1) / 2;
+    long long dup = 0;
+    for (int i = 0; i < n; i++) {
+        dup += lcp[i];
+    }
+
+    cout << total - dup << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log n) | Suffix array sorting dominates |
+| Space | O(n) | Suffix array + rank + LCP arrays |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Integer Overflow
+
+```cpp
+// WRONG
+int total = n * (n + 1) / 2;  // Overflow for n = 10^5
+
+// CORRECT
+long long total = (long long)n * (n + 1) / 2;
+```
+
+**Problem:** n*(n+1) can exceed 2^31 for n = 10^5.
+**Fix:** Cast to long long before multiplication.
+
+### Mistake 2: Forgetting Empty LCP at Position 0
 
 ```python
-class DistinctSubstringsWithUpdates:
-    def __init__(self, s):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.suffix_array = self._build_suffix_array()
-        self.lcp_array = self._build_lcp_array()
-        self.distinct_count = self._calculate_distinct_count()
-    
-    def _build_suffix_array(self):
-        """Build suffix array using efficient algorithm"""
-        suffixes = []
-        for i in range(self.n):
-            suffixes.append((self.s[i:], i))
-        
-        suffixes.sort()
-        return [suffix[1] for suffix in suffixes]
-    
-    def _build_lcp_array(self):
-        """Build LCP array from suffix array"""
-        lcp = [0] * self.n
-        rank = [0] * self.n
-        
-        for i in range(self.n):
-            rank[self.suffix_array[i]] = i
-        
-        h = 0
-        for i in range(self.n):
-            if rank[i] > 0:
-                j = self.suffix_array[rank[i] - 1]
-                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
-                    h += 1
-                lcp[rank[i]] = h
-                if h > 0:
-                    h -= 1
-        
-        return lcp
-    
-    def _calculate_distinct_count(self):
-        """Calculate distinct substring count using suffix array"""
-        total_substrings = self.n * (self.n + 1) // 2
-        sum_lcp = sum(self.lcp_array)
-        return total_substrings - sum_lcp
-    
-    def update(self, pos, char):
-        """Update character at position pos"""
-        if pos < 0 or pos >= self.n:
-            return
-        
-        self.s[pos] = char
-        
-        # Rebuild suffix array, LCP array, and distinct count
-        self.suffix_array = self._build_suffix_array()
-        self.lcp_array = self._build_lcp_array()
-        self.distinct_count = self._calculate_distinct_count()
-    
-    def get_distinct_count(self):
-        """Get current distinct substring count"""
-        return self.distinct_count
-    
-    def get_substring_count(self, start, length):
-        """Get count of specific substring"""
-        if start < 0 or start + length > self.n:
-            return 0
-        
-        substring = ''.join(self.s[start:start + length])
-        count = 0
-        
-        for i in range(self.n - length + 1):
-            if ''.join(self.s[i:i + length]) == substring:
-                count += 1
-        
-        return count
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'update':
-                self.update(query['pos'], query['char'])
-                results.append(None)
-            elif query['type'] == 'count':
-                result = self.get_distinct_count()
-                results.append(result)
-            elif query['type'] == 'substring_count':
-                result = self.get_substring_count(query['start'], query['length'])
-                results.append(result)
-        return results
+# WRONG - Starting LCP sum from index 0 with undefined value
+lcp = compute_lcp()
+# Assuming lcp[0] has a meaningful value
+
+# CORRECT - LCP[0] is always 0 (no previous suffix)
+lcp[0] = 0  # First suffix has no predecessor
 ```
 
-### Variation 2: Distinct Substrings with Different Operations
-**Problem**: Handle different types of operations (count, analyze, find) on distinct substrings.
+**Problem:** The first suffix in sorted order has no previous suffix to compare with.
+**Fix:** Always set LCP[0] = 0.
 
-**Link**: [CSES Problem Set - Distinct Substrings Different Operations](https://cses.fi/problemset/task/distinct_substrings_operations)
+### Mistake 3: Incorrect Kasai's Algorithm Implementation
 
 ```python
-class DistinctSubstringsDifferentOps:
-    def __init__(self, s):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.suffix_array = self._build_suffix_array()
-        self.lcp_array = self._build_lcp_array()
-        self.distinct_count = self._calculate_distinct_count()
-    
-    def _build_suffix_array(self):
-        """Build suffix array using efficient algorithm"""
-        suffixes = []
-        for i in range(self.n):
-            suffixes.append((self.s[i:], i))
-        
-        suffixes.sort()
-        return [suffix[1] for suffix in suffixes]
-    
-    def _build_lcp_array(self):
-        """Build LCP array from suffix array"""
-        lcp = [0] * self.n
-        rank = [0] * self.n
-        
-        for i in range(self.n):
-            rank[self.suffix_array[i]] = i
-        
-        h = 0
-        for i in range(self.n):
-            if rank[i] > 0:
-                j = self.suffix_array[rank[i] - 1]
-                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
-                    h += 1
-                lcp[rank[i]] = h
-                if h > 0:
-                    h -= 1
-        
-        return lcp
-    
-    def _calculate_distinct_count(self):
-        """Calculate distinct substring count using suffix array"""
-        total_substrings = self.n * (self.n + 1) // 2
-        sum_lcp = sum(self.lcp_array)
-        return total_substrings - sum_lcp
-    
-    def get_distinct_count(self):
-        """Get current distinct substring count"""
-        return self.distinct_count
-    
-    def get_substring_count(self, start, length):
-        """Get count of specific substring"""
-        if start < 0 or start + length > self.n:
-            return 0
-        
-        substring = ''.join(self.s[start:start + length])
-        count = 0
-        
-        for i in range(self.n - length + 1):
-            if ''.join(self.s[i:i + length]) == substring:
-                count += 1
-        
-        return count
-    
-    def find_longest_repeating_substring(self):
-        """Find longest repeating substring"""
-        if not self.lcp_array:
-            return None
-        
-        max_lcp = max(self.lcp_array)
-        if max_lcp == 0:
-            return None
-        
-        # Find position with maximum LCP
-        max_pos = self.lcp_array.index(max_lcp)
-        start_pos = self.suffix_array[max_pos]
-        
-        return {
-            'substring': ''.join(self.s[start_pos:start_pos + max_lcp]),
-            'length': max_lcp,
-            'start': start_pos,
-            'count': self.get_substring_count(start_pos, max_lcp)
-        }
-    
-    def find_most_frequent_substring(self, min_length=1):
-        """Find most frequent substring of given minimum length"""
-        frequency_map = {}
-        
-        for length in range(min_length, self.n + 1):
-            for start in range(self.n - length + 1):
-                substring = ''.join(self.s[start:start + length])
-                if substring not in frequency_map:
-                    frequency_map[substring] = 0
-                frequency_map[substring] += 1
-        
-        if not frequency_map:
-            return None
-        
-        most_frequent = max(frequency_map, key=frequency_map.get)
-        return {
-            'substring': most_frequent,
-            'frequency': frequency_map[most_frequent],
-            'length': len(most_frequent)
-        }
-    
-    def analyze_substring_distribution(self):
-        """Analyze distribution of substrings by length"""
-        distribution = {}
-        
-        for length in range(1, self.n + 1):
-            distinct_count = 0
-            total_count = 0
-            
-            for start in range(self.n - length + 1):
-                substring = ''.join(self.s[start:start + length])
-                total_count += 1
-            
-            # Count distinct substrings of this length
-            seen = set()
-            for start in range(self.n - length + 1):
-                substring = ''.join(self.s[start:start + length])
-                seen.add(substring)
-            
-            distinct_count = len(seen)
-            distribution[length] = {
-                'distinct': distinct_count,
-                'total': total_count,
-                'ratio': distinct_count / total_count if total_count > 0 else 0
-            }
-        
-        return distribution
-    
-    def get_substring_statistics(self):
-        """Get comprehensive statistics about substrings"""
-        distribution = self.analyze_substring_distribution()
-        
-        total_distinct = sum(info['distinct'] for info in distribution.values())
-        total_substrings = sum(info['total'] for info in distribution.values())
-        
-        return {
-            'total_distinct': total_distinct,
-            'total_substrings': total_substrings,
-            'distinct_ratio': total_distinct / total_substrings if total_substrings > 0 else 0,
-            'distribution': distribution,
-            'longest_repeating': self.find_longest_repeating_substring(),
-            'most_frequent': self.find_most_frequent_substring()
-        }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'count':
-                result = self.get_distinct_count()
-                results.append(result)
-            elif query['type'] == 'substring_count':
-                result = self.get_substring_count(query['start'], query['length'])
-                results.append(result)
-            elif query['type'] == 'longest_repeating':
-                result = self.find_longest_repeating_substring()
-                results.append(result)
-            elif query['type'] == 'most_frequent':
-                result = self.find_most_frequent_substring(query.get('min_length', 1))
-                results.append(result)
-            elif query['type'] == 'analyze':
-                result = self.analyze_substring_distribution()
-                results.append(result)
-            elif query['type'] == 'statistics':
-                result = self.get_substring_statistics()
-                results.append(result)
-        return results
+# WRONG - Not decrementing k properly
+k = 0
+for i in range(n):
+    # ... compute lcp
+    k = lcp[rank[i]]  # Wrong: should preserve k and decrement
+
+# CORRECT
+k = 0
+for i in range(n):
+    # ... compute lcp
+    if k > 0:
+        k -= 1  # Key optimization in Kasai's algorithm
 ```
 
-### Variation 3: Distinct Substrings with Constraints
-**Problem**: Handle distinct substring queries with additional constraints (e.g., minimum length, maximum length, frequency).
+**Problem:** Kasai's algorithm relies on the property that LCP can decrease by at most 1.
+**Fix:** Decrement k by 1 (not reset to 0) after each iteration.
 
-**Link**: [CSES Problem Set - Distinct Substrings with Constraints](https://cses.fi/problemset/task/distinct_substrings_constraints)
+---
 
-```python
-class DistinctSubstringsWithConstraints:
-    def __init__(self, s, min_length, max_length, min_frequency):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.min_length = min_length
-        self.max_length = max_length
-        self.min_frequency = min_frequency
-        self.suffix_array = self._build_suffix_array()
-        self.lcp_array = self._build_lcp_array()
-        self.distinct_count = self._calculate_distinct_count()
-    
-    def _build_suffix_array(self):
-        """Build suffix array using efficient algorithm"""
-        suffixes = []
-        for i in range(self.n):
-            suffixes.append((self.s[i:], i))
-        
-        suffixes.sort()
-        return [suffix[1] for suffix in suffixes]
-    
-    def _build_lcp_array(self):
-        """Build LCP array from suffix array"""
-        lcp = [0] * self.n
-        rank = [0] * self.n
-        
-        for i in range(self.n):
-            rank[self.suffix_array[i]] = i
-        
-        h = 0
-        for i in range(self.n):
-            if rank[i] > 0:
-                j = self.suffix_array[rank[i] - 1]
-                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
-                    h += 1
-                lcp[rank[i]] = h
-                if h > 0:
-                    h -= 1
-        
-        return lcp
-    
-    def _calculate_distinct_count(self):
-        """Calculate distinct substring count using suffix array"""
-        total_substrings = self.n * (self.n + 1) // 2
-        sum_lcp = sum(self.lcp_array)
-        return total_substrings - sum_lcp
-    
-    def constrained_distinct_count(self):
-        """Count distinct substrings that satisfy constraints"""
-        distinct_substrings = set()
-        
-        for length in range(self.min_length, min(self.max_length + 1, self.n + 1)):
-            for start in range(self.n - length + 1):
-                substring = ''.join(self.s[start:start + length])
-                
-                # Check frequency constraint
-                frequency = 0
-                for i in range(self.n - length + 1):
-                    if ''.join(self.s[i:i + length]) == substring:
-                        frequency += 1
-                
-                if frequency >= self.min_frequency:
-                    distinct_substrings.add(substring)
-        
-        return len(distinct_substrings)
-    
-    def find_valid_substrings(self):
-        """Find all valid substrings that satisfy constraints"""
-        valid_substrings = []
-        
-        for length in range(self.min_length, min(self.max_length + 1, self.n + 1)):
-            for start in range(self.n - length + 1):
-                substring = ''.join(self.s[start:start + length])
-                
-                # Check frequency constraint
-                frequency = 0
-                for i in range(self.n - length + 1):
-                    if ''.join(self.s[i:i + length]) == substring:
-                        frequency += 1
-                
-                if frequency >= self.min_frequency:
-                    valid_substrings.append({
-                        'substring': substring,
-                        'start': start,
-                        'length': length,
-                        'frequency': frequency
-                    })
-        
-        return valid_substrings
-    
-    def get_longest_valid_substring(self):
-        """Get longest valid substring that satisfies constraints"""
-        valid_substrings = self.find_valid_substrings()
-        
-        if not valid_substrings:
-            return None
-        
-        longest = max(valid_substrings, key=lambda x: x['length'])
-        return longest
-    
-    def get_most_frequent_valid_substring(self):
-        """Get most frequent valid substring that satisfies constraints"""
-        valid_substrings = self.find_valid_substrings()
-        
-        if not valid_substrings:
-            return None
-        
-        most_frequent = max(valid_substrings, key=lambda x: x['frequency'])
-        return most_frequent
-    
-    def get_lexicographically_smallest_valid(self):
-        """Get lexicographically smallest valid substring"""
-        valid_substrings = self.find_valid_substrings()
-        
-        if not valid_substrings:
-            return None
-        
-        smallest = min(valid_substrings, key=lambda x: x['substring'])
-        return smallest
-    
-    def get_lexicographically_largest_valid(self):
-        """Get lexicographically largest valid substring"""
-        valid_substrings = self.find_valid_substrings()
-        
-        if not valid_substrings:
-            return None
-        
-        largest = max(valid_substrings, key=lambda x: x['substring'])
-        return largest
-    
-    def count_valid_substrings(self):
-        """Count number of valid substrings"""
-        return len(self.find_valid_substrings())
-    
-    def get_constraint_statistics(self):
-        """Get statistics about valid substrings"""
-        valid_substrings = self.find_valid_substrings()
-        
-        if not valid_substrings:
-            return {
-                'count': 0,
-                'min_length': 0,
-                'max_length': 0,
-                'avg_length': 0,
-                'min_frequency': 0,
-                'max_frequency': 0,
-                'avg_frequency': 0
-            }
-        
-        lengths = [sub['length'] for sub in valid_substrings]
-        frequencies = [sub['frequency'] for sub in valid_substrings]
-        
-        return {
-            'count': len(valid_substrings),
-            'min_length': min(lengths),
-            'max_length': max(lengths),
-            'avg_length': sum(lengths) / len(lengths),
-            'min_frequency': min(frequencies),
-            'max_frequency': max(frequencies),
-            'avg_frequency': sum(frequencies) / len(frequencies)
-        }
+## Edge Cases
 
-# Example usage
-s = "abacaba"
-min_length = 2
-max_length = 4
-min_frequency = 2
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single character | `"a"` | 1 | Only substring is "a" |
+| All same characters | `"aaaa"` | 4 | "a", "aa", "aaa", "aaaa" |
+| All distinct characters | `"abcd"` | 10 | n*(n+1)/2 = 10, no duplicates |
+| Two characters alternating | `"abab"` | 7 | Some prefixes repeat |
+| Empty string | `""` | 0 | No substrings possible |
 
-ds = DistinctSubstringsWithConstraints(s, min_length, max_length, min_frequency)
-result = ds.constrained_distinct_count()
-print(f"Constrained distinct count: {result}")
+---
 
-valid_substrings = ds.find_valid_substrings()
-print(f"Valid substrings: {valid_substrings}")
+## When to Use This Pattern
 
-longest = ds.get_longest_valid_substring()
-print(f"Longest valid substring: {longest}")
-```
+### Use Suffix Array + LCP When:
+- Counting distinct substrings
+- Finding longest repeated substring
+- Comparing all pairs of suffixes efficiently
+- Problems involving lexicographic ordering of substrings
 
-### Related Problems
+### Don't Use When:
+- Simple pattern matching (use KMP or Z-algorithm)
+- String length is very small (brute force may be simpler)
+- You only need to check existence of a specific substring
 
-#### **CSES Problems**
-- [Distinct Substrings](https://cses.fi/problemset/task/2105) - Basic distinct substrings problem
-- [String Matching](https://cses.fi/problemset/task/1753) - String matching
-- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+### Pattern Recognition Checklist:
+- [ ] Need to count/enumerate all substrings? -> **Consider Suffix Array**
+- [ ] Looking for repeated patterns in string? -> **Consider Suffix Array + LCP**
+- [ ] Need lexicographically k-th substring? -> **Consider Suffix Array**
+- [ ] Simple string matching? -> **Use KMP or hashing instead**
 
-#### **LeetCode Problems**
-- [Longest Common Substring](https://leetcode.com/problems/longest-common-substring/) - Find longest common substring
-- [Repeated String Match](https://leetcode.com/problems/repeated-string-match/) - String matching with repetition
-- [Wildcard Matching](https://leetcode.com/problems/wildcard-matching/) - Pattern matching with wildcards
+---
 
-#### **Problem Categories**
-- **Suffix Arrays**: String processing, substring counting, lexicographical comparison
-- **Pattern Matching**: KMP, Z-algorithm, string matching algorithms
-- **String Processing**: Borders, periods, palindromes, string transformations
-- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [String Matching (CSES 1753)](https://cses.fi/problemset/task/1753) | Basic string matching with KMP/Z-algorithm |
+| [Finding Borders (CSES 1732)](https://cses.fi/problemset/task/1732) | Understanding string prefixes/suffixes |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Repeating Substring (CSES 2106)](https://cses.fi/problemset/task/2106) | Find longest substring that appears >= k times |
+| [Longest Repeating Substring (LC 1062)](https://leetcode.com/problems/longest-repeating-substring/) | Find max LCP in array |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Substring Distribution (CSES 2110)](https://cses.fi/problemset/task/2110) | Count substrings of each length |
+| [Distinct Substrings II (LC 940)](https://leetcode.com/problems/distinct-subsequences-ii/) | Subsequences instead of substrings |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Suffix Array + LCP lets us count duplicates among all substrings efficiently
+2. **Time Optimization:** From O(n^3) brute force to O(n log n) with suffix array
+3. **Space Trade-off:** O(n) space for suffix array and LCP array
+4. **Pattern:** This is the standard approach for substring counting problems
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Build a suffix array from scratch (sorting-based approach)
+- [ ] Implement Kasai's algorithm for LCP construction
+- [ ] Explain why distinct = total - sum(LCP)
+- [ ] Implement the full solution in under 15 minutes
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Suffix Array](https://cp-algorithms.com/string/suffix-array.html)
+- [CP-Algorithms: LCP Array (Kasai's Algorithm)](https://cp-algorithms.com/string/suffix-array.html#lcp-array)
+- [CSES Problem Set](https://cses.fi/problemset/)

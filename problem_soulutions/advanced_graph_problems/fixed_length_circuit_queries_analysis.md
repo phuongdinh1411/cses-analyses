@@ -2,40 +2,53 @@
 layout: simple
 title: "Fixed Length Circuit Queries - Matrix Exponentiation Problem"
 permalink: /problem_soulutions/advanced_graph_problems/fixed_length_circuit_queries_analysis
+difficulty: Hard
+tags: [matrix-exponentiation, graph, binary-exponentiation, modular-arithmetic]
+prerequisites: [binary-exponentiation, matrix-multiplication]
 ---
 
-# Fixed Length Circuit Queries - Matrix Exponentiation Problem
+# Fixed Length Circuit Queries
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of circuits (closed walks) in directed graphs
-- Apply matrix exponentiation for efficient circuit counting
-- Implement modular arithmetic for large circuit counts
-- Optimize matrix operations for multiple circuit queries
-- Handle large circuit lengths using binary exponentiation
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Hard |
+| **Category** | Graph / Matrix Exponentiation |
+| **Time Limit** | 1 second |
+| **Key Technique** | Matrix Exponentiation with Binary Exponentiation |
+| **CSES Link** | [Graph Paths II](https://cses.fi/problemset/task/1724) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a directed graph with n nodes and q queries, for each query find the number of circuits of length k starting and ending at node a.
+After solving this problem, you will be able to:
+- [ ] Understand that adjacency matrix powers count paths of specific lengths
+- [ ] Implement matrix multiplication with modular arithmetic
+- [ ] Apply binary exponentiation to compute matrix powers in O(log k) time
+- [ ] Recognize when matrix exponentiation applies to counting problems
 
-**Input**: 
-- n: number of nodes
-- q: number of queries
-- n lines: adjacency matrix (1 if edge exists, 0 otherwise)
-- q lines: a k (find circuits from node a to a of length k)
+---
 
-**Output**: 
-- Answer to each query modulo 10^9 + 7
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 100
-- 1 ≤ q ≤ 10^5
-- 1 ≤ k ≤ 10^9
-- 1 ≤ a ≤ n
+**Problem:** Given a directed graph with n nodes, answer q queries. For each query, find the number of circuits (closed walks) of exactly length k starting and ending at node a.
 
-**Example**:
+**Input:**
+- Line 1: n (number of nodes), q (number of queries)
+- Next n lines: n x n adjacency matrix (1 if edge exists, 0 otherwise)
+- Next q lines: a k (find circuits from node a of length k)
+
+**Output:**
+- For each query, output the count modulo 10^9 + 7
+
+**Constraints:**
+- 1 <= n <= 100
+- 1 <= q <= 10^5
+- 1 <= k <= 10^9
+- 1 <= a <= n
+
+### Example
+
 ```
 Input:
 3 2
@@ -48,1475 +61,420 @@ Input:
 Output:
 1
 0
-
-Explanation**: 
-Query 1: Circuits of length 3 from node 1 to 1
-Path: 1→2→3→1 (circuit of length 3)
-Answer: 1
-
-Query 2: Circuits of length 2 from node 2 to 2
-No circuit of length 2 exists from node 2
-Answer: 0
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Query 1: From node 1 with length 3, the path 1->2->3->1 is the only circuit. Answer: 1
+- Query 2: From node 2 with length 2, no circuit exists (2->3->1 ends at 1, not 2). Answer: 0
 
-### Approach 1: Brute Force Solution
+---
 
-**Key Insights from Brute Force Solution**:
-- **Exhaustive Search**: Try all possible paths of length k
-- **Path Validation**: For each path, check if it forms a circuit
-- **Combinatorial Explosion**: n^k possible paths to explore
-- **Baseline Understanding**: Provides correct answer but impractical
+## Intuition: How to Think About This Problem
 
-**Key Insight**: Generate all possible paths of length k and count those that form circuits.
+### Pattern Recognition
 
-**Algorithm**:
-- Generate all possible paths of length k starting from node a
-- For each path, check if it ends at node a (forms a circuit)
-- Count valid circuits and return the result
+> **Key Question:** How can we count paths of length k efficiently without enumerating all paths?
 
-**Visual Example**:
-```
-Graph: 1→2→3→1, k=3, start=1
+The fundamental insight is from linear algebra: if A is the adjacency matrix of a graph, then A^k[i][j] gives the number of paths of length k from node i to node j. For circuits starting and ending at node a, we need A^k[a][a].
 
-All possible paths of length 3 from node 1:
-┌─────────────────────────────────────┐
-│ Path 1: 1→2→3→1 ✓ (circuit)        │
-│ Path 2: 1→2→3→2 ✗ (not circuit)    │
-│ Path 3: 1→2→3→3 ✗ (not circuit)    │
-│ Path 4: 1→2→1→2 ✗ (not circuit)    │
-│ Path 5: 1→2→1→3 ✗ (not circuit)    │
-│ Path 6: 1→2→1→1 ✗ (not circuit)    │
-│ ... (all other paths)               │
-└─────────────────────────────────────┘
+### Breaking Down the Problem
 
-Valid circuits: 1
-Result: 1
-```
+1. **What are we looking for?** Number of walks of exactly length k that start and end at the same node
+2. **What information do we have?** The graph structure (adjacency matrix) and query parameters
+3. **What's the relationship?** A^k[a][a] = count of circuits of length k from node a
 
-**Implementation**:
+### Why Does Matrix Power Work?
+
+Consider a path of length 2 from i to j. It goes through some intermediate node m:
+- Number of paths: sum over all m of (paths from i to m) * (paths from m to j)
+- This is exactly how matrix multiplication works: (A*A)[i][j] = sum(A[i][m] * A[m][j])
+
+By induction, A^k[i][j] counts all paths of length k from i to j.
+
+---
+
+## Solution 1: Brute Force DFS
+
+### Idea
+
+Enumerate all possible paths of length k starting from node a using DFS, counting those that return to a.
+
+### Code
+
 ```python
-def brute_force_solution(n, adj_matrix, queries):
+def brute_force(n, adj, queries):
     """
-    Find circuit counts using brute force approach
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, k) queries
-    
-    Returns:
-        list: answers to queries
+    DFS enumeration of all paths.
+
+    Time: O(n^k * q) - exponential in k
+    Space: O(k) - recursion depth
     """
-    def count_circuits(start, k):
-        """Count circuits of length k starting from start"""
-        def dfs(node, remaining_length):
-            if remaining_length == 0:
+    MOD = 10**9 + 7
+
+    def count_circuits(start, length):
+        def dfs(node, remaining):
+            if remaining == 0:
                 return 1 if node == start else 0
-            
-            count = 0
+            total = 0
             for neighbor in range(n):
-                if adj_matrix[node][neighbor] == 1:
-                    count += dfs(neighbor, remaining_length - 1)
-            return count
-        
-        return dfs(start, k)
-    
-    results = []
-    for a, k in queries:
-        result = count_circuits(a - 1, k)  # Convert to 0-indexed
-        results.append(result)
-    
-    return results
+                if adj[node][neighbor]:
+                    total = (total + dfs(neighbor, remaining - 1)) % MOD
+            return total
+        return dfs(start, length)
 
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 0],
-    [0, 0, 1],
-    [1, 0, 0]
-]
-queries = [(1, 3), (2, 2)]
-result = brute_force_solution(n, adj_matrix, queries)
-print(f"Brute force result: {result}")  # Output: [1, 0]
+    return [count_circuits(a - 1, k) for a, k in queries]
 ```
 
-**Time Complexity**: O(n^k × q)
-**Space Complexity**: O(k)
+### Complexity
 
-**Why it's inefficient**: Exponential time complexity makes it impractical for large k.
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^k * q) | Up to n choices at each of k steps |
+| Space | O(k) | Recursion stack depth |
+
+### Why This Is Too Slow
+
+With k up to 10^9, this approach is completely infeasible. We need a way to "skip" the enumeration.
 
 ---
 
-### Approach 2: Dynamic Programming Solution
+## Solution 2: Matrix Exponentiation (Optimal)
 
-**Key Insights from Dynamic Programming Solution**:
-- **State Definition**: dp[i][j][k] = number of paths from i to j of length k
-- **State Transition**: dp[i][j][k] = sum of dp[i][m][k-1] * adj_matrix[m][j]
-- **Base Case**: dp[i][j][0] = 1 if i == j, else 0
-- **Memory Optimization**: Use 2D arrays instead of 3D
+### Key Insight
 
-**Key Insight**: Use dynamic programming to count paths of different lengths efficiently.
+> **The Trick:** Use binary exponentiation to compute A^k in O(n^3 * log k) time instead of O(n^3 * k).
 
-**Algorithm**:
-- Initialize DP table for paths of length 0
-- For each length from 1 to k, compute paths using previous lengths
-- Return dp[start][start][k] for circuit count
+Binary exponentiation exploits: A^k = (A^(k/2))^2 if k is even, or A * A^(k-1) if k is odd.
 
-**Visual Example**:
+### Algorithm
+
+1. Convert adjacency matrix to working matrix
+2. Use binary exponentiation to compute A^k
+3. Return the diagonal entry A^k[a-1][a-1] for each query
+
+### Dry Run Example
+
+Let's trace through with the example: n=3, query (1, 3)
+
 ```
-Graph: 1→2→3→1, k=3, start=1
-
-DP table for paths of length k from node 1:
-┌─────────────────────────────────────┐
-│ k=0: [1, 0, 0] (only self-loops)   │
-│ k=1: [0, 1, 0] (1→2)               │
-│ k=2: [0, 0, 1] (1→2→3)             │
-│ k=3: [1, 0, 0] (1→2→3→1) ✓         │
-└─────────────────────────────────────┘
-
-Circuit count: dp[1][1][3] = 1
-```
-
-**Implementation**:
-```python
-def dp_solution(n, adj_matrix, queries):
-    """
-    Find circuit counts using dynamic programming
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, k) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    def count_circuits(start, k):
-        """Count circuits of length k starting from start"""
-        # dp[i][j] = number of paths from start to j of length i
-        dp = [[0] * n for _ in range(k + 1)]
-        
-        # Base case: paths of length 0
-        dp[0][start] = 1
-        
-        # Fill DP table
-        for length in range(1, k + 1):
-            for j in range(n):
-                for m in range(n):
-                    if adj_matrix[m][j] == 1:
-                        dp[length][j] += dp[length - 1][m]
-        
-        return dp[k][start]
-    
-    results = []
-    for a, k in queries:
-        result = count_circuits(a - 1, k)  # Convert to 0-indexed
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 0],
-    [0, 0, 1],
-    [1, 0, 0]
-]
-queries = [(1, 3), (2, 2)]
-result = dp_solution(n, adj_matrix, queries)
-print(f"DP result: {result}")  # Output: [1, 0]
-```
-
-**Time Complexity**: O(n³ × k × q)
-**Space Complexity**: O(n × k)
-
-**Why it's better**: Much faster than brute force, but still not optimal for large k.
-
-**Implementation Considerations**:
-- **State Transition**: Use matrix multiplication for state updates
-- **Memory Management**: Use 2D arrays instead of 3D
-- **Modular Arithmetic**: Apply modulo to prevent overflow
-
----
-
-### Approach 3: Matrix Exponentiation Solution (Optimal)
-
-**Key Insights from Matrix Exponentiation Solution**:
-- **Matrix Power**: Adjacency matrix raised to power k gives path counts
-- **Binary Exponentiation**: Compute matrix powers efficiently
-- **Modular Arithmetic**: Handle large numbers with modulo operations
-- **Query Optimization**: Precompute matrix powers for multiple queries
-
-**Key Insight**: The number of circuits of length k from node a to a is the (a,a) entry of the adjacency matrix raised to power k.
-
-**Algorithm**:
-- Raise adjacency matrix to power k using binary exponentiation
-- Return the (a,a) entry of the resulting matrix
-- Apply modular arithmetic throughout
-
-**Visual Example**:
-```
-Graph: 1→2→3→1
-
 Adjacency matrix A:
-┌─────────────────────────────────────┐
-│ A = [0, 1, 0]                      │
-│     [0, 0, 1]                      │
-│     [1, 0, 0]                      │
-└─────────────────────────────────────┘
+    0  1  2
+0 [ 0  1  0 ]    Node 0 -> Node 1
+1 [ 0  0  1 ]    Node 1 -> Node 2
+2 [ 1  0  0 ]    Node 2 -> Node 0
 
-A³ = A × A × A:
-┌─────────────────────────────────────┐
-│ A³ = [1, 0, 0]                     │
-│      [0, 1, 0]                     │
-│      [0, 0, 1]                     │
-└─────────────────────────────────────┘
+Computing A^3 using binary exponentiation:
 
-Circuits of length 3 from node 1: A³[1][1] = 1
+k = 3 (binary: 11)
+
+Step 1: k=3 is odd, result = result * base
+  result = I * A = A
+  k = 2, base = A * A = A^2
+
+  A^2 calculation:
+  A^2[0][0] = A[0][0]*A[0][0] + A[0][1]*A[1][0] + A[0][2]*A[2][0] = 0
+  A^2[0][1] = A[0][0]*A[0][1] + A[0][1]*A[1][1] + A[0][2]*A[2][1] = 0
+  A^2[0][2] = A[0][0]*A[0][2] + A[0][1]*A[1][2] + A[0][2]*A[2][2] = 1
+  ...
+
+  A^2 = [ 0  0  1 ]
+        [ 1  0  0 ]
+        [ 0  1  0 ]
+
+Step 2: k=2 is even
+  k = 1, base = A^2 * A^2 = A^4
+
+Step 3: k=1 is odd, result = result * base
+  result = A * A^4 = A^5? No wait...
+
+Let me redo more carefully:
+
+Initial: result = I (identity), base = A, k = 3
+
+Iteration 1: k=3 (odd)
+  result = I * A = A
+  base = A * A = A^2
+  k = 3 // 2 = 1
+
+Iteration 2: k=1 (odd)
+  result = A * A^2 = A^3
+  base = A^2 * A^2 = A^4
+  k = 1 // 2 = 0
+
+Final: result = A^3
+
+A^3 = [ 1  0  0 ]
+      [ 0  1  0 ]
+      [ 0  0  1 ]
+
+A^3[0][0] = 1 (circuits of length 3 from node 1)
 ```
 
-**Implementation**:
+### Visual Diagram
+
+```
+Graph structure:        Path enumeration for k=3 from node 1:
+
+    1 -----> 2              1 -> 2 -> 3 -> 1  (returns to 1)
+    ^        |
+    |        v         Only 1 circuit exists
+    +------- 3
+
+Matrix Power Intuition:
+A^1[i][j] = direct edges from i to j
+A^2[i][j] = paths of length 2 (through any intermediate)
+A^3[i][j] = paths of length 3
+...
+A^k[i][j] = paths of length k
+```
+
+### Code
+
 ```python
-def matrix_exponentiation_solution(n, adj_matrix, queries):
+def matrix_exponentiation(n, adj, queries):
     """
-    Find circuit counts using matrix exponentiation
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, k) queries
-    
-    Returns:
-        list: answers to queries
+    Optimal solution using matrix exponentiation.
+
+    Time: O(n^3 * log(max_k) + q)
+    Space: O(n^2)
     """
     MOD = 10**9 + 7
-    
-    def matrix_multiply(A, B):
-        """Multiply two matrices with modular arithmetic"""
-        result = [[0] * n for _ in range(n)]
+
+    def mat_mult(A, B):
+        """Multiply two n x n matrices."""
+        C = [[0] * n for _ in range(n)]
         for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        """Compute matrix^power using binary exponentiation"""
-        result = [[0] * n for _ in range(n)]
+            for k in range(n):
+                if A[i][k] == 0:
+                    continue
+                for j in range(n):
+                    C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD
+        return C
+
+    def mat_pow(M, p):
+        """Compute M^p using binary exponentiation."""
         # Initialize result as identity matrix
-        for i in range(n):
-            result[i][i] = 1
-        
-        base = [row[:] for row in matrix]
-        
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
+        result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+        base = [row[:] for row in M]
+
+        while p > 0:
+            if p & 1:
+                result = mat_mult(result, base)
+            base = mat_mult(base, base)
+            p >>= 1
+
         return result
-    
-    def count_circuits(start, k):
-        """Count circuits of length k starting from start"""
-        powered_matrix = matrix_power(adj_matrix, k)
-        return powered_matrix[start][start]
-    
+
     results = []
     for a, k in queries:
-        result = count_circuits(a - 1, k)  # Convert to 0-indexed
-        results.append(result)
-    
+        powered = mat_pow(adj, k)
+        results.append(powered[a - 1][a - 1])
+
     return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 0],
-    [0, 0, 1],
-    [1, 0, 0]
-]
-queries = [(1, 3), (2, 2)]
-result = matrix_exponentiation_solution(n, adj_matrix, queries)
-print(f"Matrix exponentiation result: {result}")  # Output: [1, 0]
 ```
 
-**Time Complexity**: O(n³ × log k × q)
-**Space Complexity**: O(n²)
+### C++ Solution
 
-**Why it's optimal**: O(log k) complexity for each query using binary exponentiation, making it efficient for large k values.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Implementation Details**:
-- **Binary Exponentiation**: Compute matrix powers in O(log k) time
-- **Modular Arithmetic**: Apply modulo operations to prevent overflow
-- **Matrix Multiplication**: Use efficient matrix multiplication
-- **Query Optimization**: Handle multiple queries efficiently
+const int MOD = 1e9 + 7;
 
-## 🔧 Implementation Details
+typedef vector<vector<long long>> Matrix;
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n^k × q) | O(k) | Exhaustive search of all paths |
-| Dynamic Programming | O(n³ × k × q) | O(n × k) | Count paths using DP |
-| Matrix Exponentiation | O(n³ × log k × q) | O(n²) | Use matrix powers for path counting |
-
-### Time Complexity
-- **Time**: O(n³ × log k × q) - Matrix exponentiation with binary exponentiation
-- **Space**: O(n²) - Matrix storage
-
-### Why This Solution Works
-- **Matrix Power Property**: Adjacency matrix^k gives path counts of length k
-- **Binary Exponentiation**: Efficiently compute large matrix powers
-- **Modular Arithmetic**: Handle large numbers with modulo operations
-- **Query Optimization**: Process multiple queries efficiently
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Fixed Length Path Queries**
-**Problem**: Find number of paths of length k from node a to node b.
-
-**Key Differences**: Paths instead of circuits, different start and end nodes
-
-**Solution Approach**: Use same matrix exponentiation but return (a,b) entry
-
-**Implementation**:
-```python
-def fixed_length_path_queries(n, adj_matrix, queries):
-    """
-    Find path counts using matrix exponentiation
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, b, k) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    MOD = 10**9 + 7
-    
-    def matrix_multiply(A, B):
-        """Multiply two matrices with modular arithmetic"""
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % MOD
-        return result
-    
-    def matrix_power(matrix, power):
-        """Compute matrix^power using binary exponentiation"""
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            result[i][i] = 1
-        
-        base = [row[:] for row in matrix]
-        
-        while power > 0:
-            if power % 2 == 1:
-                result = matrix_multiply(result, base)
-            base = matrix_multiply(base, base)
-            power //= 2
-        
-        return result
-    
-    def count_paths(start, end, k):
-        """Count paths of length k from start to end"""
-        powered_matrix = matrix_power(adj_matrix, k)
-        return powered_matrix[start][end]
-    
-    results = []
-    for a, b, k in queries:
-        result = count_paths(a - 1, b - 1, k)  # Convert to 0-indexed
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 0],
-    [0, 0, 1],
-    [1, 0, 0]
-]
-queries = [(1, 3, 2), (2, 1, 3)]
-result = fixed_length_path_queries(n, adj_matrix, queries)
-print(f"Fixed length path result: {result}")
-```
-
-#### **2. Weighted Graph Circuit Queries**
-**Problem**: Find number of circuits of length k with total weight w.
-
-**Key Differences**: Edges have weights, consider total weight
-
-**Solution Approach**: Use 3D DP with weight dimension
-
-**Implementation**:
-```python
-def weighted_circuit_queries(n, adj_matrix, weights, queries):
-    """
-    Find weighted circuit counts using 3D DP
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        weights: weight matrix
-        queries: list of (a, k, w) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    MOD = 10**9 + 7
-    
-    def count_weighted_circuits(start, k, target_weight):
-        """Count circuits of length k with total weight target_weight"""
-        # dp[i][j][w] = number of paths from start to j of length i with weight w
-        max_weight = target_weight + 1
-        dp = [[[0] * max_weight for _ in range(n)] for _ in range(k + 1)]
-        
-        # Base case: paths of length 0
-        dp[0][start][0] = 1
-        
-        # Fill DP table
-        for length in range(1, k + 1):
-            for j in range(n):
-                for w in range(max_weight):
-                    for m in range(n):
-                        if adj_matrix[m][j] == 1:
-                            edge_weight = weights[m][j]
-                            if w >= edge_weight:
-                                dp[length][j][w] = (dp[length][j][w] + dp[length - 1][m][w - edge_weight]) % MOD
-        
-        return dp[k][start][target_weight]
-    
-    results = []
-    for a, k, w in queries:
-        result = count_weighted_circuits(a - 1, k, w)  # Convert to 0-indexed
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 0],
-    [0, 0, 1],
-    [1, 0, 0]
-]
-weights = [
-    [0, 2, 0],
-    [0, 0, 3],
-    [1, 0, 0]
-]
-queries = [(1, 3, 6), (2, 2, 5)]
-result = weighted_circuit_queries(n, adj_matrix, weights, queries)
-print(f"Weighted circuit result: {result}")
-```
-
-#### **3. Dynamic Graph Circuit Queries**
-**Problem**: Support adding/removing edges and answering circuit queries.
-
-**Key Differences**: Graph structure can change dynamically
-
-**Solution Approach**: Use dynamic matrix updates with lazy evaluation
-
-**Implementation**:
-```python
-class DynamicCircuitQueries:
-    def __init__(self, n):
-        self.n = n
-        self.adj_matrix = [[0] * n for _ in range(n)]
-        self.matrix_cache = {}  # Cache for matrix powers
-        self.MOD = 10**9 + 7
-    
-    def add_edge(self, a, b):
-        """Add edge from a to b"""
-        self.adj_matrix[a][b] = 1
-        self.matrix_cache.clear()  # Invalidate cache
-    
-    def remove_edge(self, a, b):
-        """Remove edge from a to b"""
-        self.adj_matrix[a][b] = 0
-        self.matrix_cache.clear()  # Invalidate cache
-    
-    def matrix_multiply(self, A, B):
-        """Multiply two matrices with modular arithmetic"""
-        result = [[0] * self.n for _ in range(self.n)]
-        for i in range(self.n):
-            for j in range(self.n):
-                for k in range(self.n):
-                    result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % self.MOD
-        return result
-    
-    def matrix_power(self, power):
-        """Compute matrix^power using binary exponentiation with caching"""
-        if power in self.matrix_cache:
-            return self.matrix_cache[power]
-        
-        result = [[0] * self.n for _ in range(self.n)]
-        for i in range(self.n):
-            result[i][i] = 1
-        
-        base = [row[:] for row in self.adj_matrix]
-        
-        while power > 0:
-            if power % 2 == 1:
-                result = self.matrix_multiply(result, base)
-            base = self.matrix_multiply(base, base)
-            power //= 2
-        
-        self.matrix_cache[power] = result
-        return result
-    
-    def count_circuits(self, start, k):
-        """Count circuits of length k starting from start"""
-        powered_matrix = self.matrix_power(k)
-        return powered_matrix[start][start]
-
-# Example usage
-dcq = DynamicCircuitQueries(3)
-dcq.add_edge(0, 1)
-dcq.add_edge(1, 2)
-dcq.add_edge(2, 0)
-result1 = dcq.count_circuits(0, 3)
-print(f"Dynamic circuit result: {result1}")
-```
-
-## Problem Variations
-
-### **Variation 1: Fixed Length Circuit Queries with Dynamic Updates**
-**Problem**: Handle dynamic graph updates (add/remove/update edges) while maintaining fixed length circuit query calculation efficiently.
-
-**Approach**: Use efficient data structures and algorithms for dynamic graph management with circuit detection.
-
-```python
-from collections import defaultdict, deque
-import heapq
-
-class DynamicFixedLengthCircuitQueries:
-    def __init__(self, n=None, edges=None, target_length=None):
-        self.n = n or 0
-        self.edges = edges or []
-        self.target_length = target_length or 0
-        self.graph = defaultdict(list)
-        self._update_circuit_query_info()
-    
-    def _update_circuit_query_info(self):
-        """Update circuit query feasibility information."""
-        self.circuit_query_feasibility = self._calculate_circuit_query_feasibility()
-    
-    def _calculate_circuit_query_feasibility(self):
-        """Calculate circuit query feasibility."""
-        if self.n <= 0 or self.target_length <= 0:
-            return 0.0
-        
-        # Check if we can have circuits of target length
-        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
-    
-    def update_graph(self, new_n, new_edges, new_target_length=None):
-        """Update the graph with new vertices, edges, and target length."""
-        self.n = new_n
-        self.edges = new_edges
-        if new_target_length is not None:
-            self.target_length = new_target_length
-        self._build_graph()
-        self._update_circuit_query_info()
-    
-    def add_edge(self, u, v):
-        """Add an edge to the graph."""
-        if 1 <= u <= self.n and 1 <= v <= self.n:
-            self.edges.append((u, v))
-            self.graph[u].append(v)
-            self.graph[v].append(u)
-            self._update_circuit_query_info()
-    
-    def remove_edge(self, u, v):
-        """Remove an edge from the graph."""
-        if (u, v) in self.edges:
-            self.edges.remove((u, v))
-            self.graph[u].remove(v)
-            self.graph[v].remove(u)
-            self._update_circuit_query_info()
-    
-    def _build_graph(self):
-        """Build the graph from edges."""
-        self.graph = defaultdict(list)
-        
-        for u, v in self.edges:
-            self.graph[u].append(v)
-            self.graph[v].append(u)
-    
-    def find_circuits_of_length(self, start_vertex=None):
-        """Find circuits of the target length."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        circuits = []
-        if start_vertex is None:
-            # Try all vertices as starting points
-            for start in range(1, self.n + 1):
-                circuits.extend(self._find_circuits_from_vertex(start))
-        else:
-            circuits = self._find_circuits_from_vertex(start_vertex)
-        
-        return circuits
-    
-    def _find_circuits_from_vertex(self, start):
-        """Find circuits starting from a specific vertex."""
-        circuits = []
-        visited = set()
-        path = []
-        
-        def dfs(current, length):
-            if length == self.target_length:
-                if current == start and len(path) == self.target_length:
-                    circuits.append(path[:])
-                return
-            
-            if length > self.target_length:
-                return
-            
-            for neighbor in self.graph[current]:
-                if neighbor not in visited or (length == self.target_length - 1 and neighbor == start):
-                    if neighbor == start and length == self.target_length - 1:
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                    elif neighbor != start:
-                        visited.add(neighbor)
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                        visited.remove(neighbor)
-        
-        visited.add(start)
-        path.append(start)
-        dfs(start, 1)
-        visited.remove(start)
-        path.pop()
-        
-        return circuits
-    
-    def find_circuits_with_priorities(self, priorities, start_vertex=None):
-        """Find circuits considering vertex priorities."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_circuits_of_length(start_vertex)
-        if not circuits:
-            return []
-        
-        # Create priority-based circuits
-        priority_circuits = []
-        for circuit in circuits:
-            total_priority = sum(priorities.get(vertex, 1) for vertex in circuit)
-            priority_circuits.append((circuit, total_priority))
-        
-        # Sort by priority (descending for maximization)
-        priority_circuits.sort(key=lambda x: x[1], reverse=True)
-        
-        return priority_circuits
-    
-    def get_circuits_with_constraints(self, constraint_func, start_vertex=None):
-        """Get circuits that satisfies custom constraints."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_circuits_of_length(start_vertex)
-        if circuits and constraint_func(self.n, self.edges, circuits, self.target_length):
-            return circuits
-        else:
-            return []
-    
-    def get_circuits_in_range(self, min_length, max_length, start_vertex=None):
-        """Get circuits within specified length range."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        if min_length <= self.target_length <= max_length:
-            return self.find_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_circuits_with_pattern(self, pattern_func, start_vertex=None):
-        """Get circuits matching specified pattern."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_circuits_of_length(start_vertex)
-        if pattern_func(self.n, self.edges, circuits, self.target_length):
-            return circuits
-        else:
-            return []
-    
-    def get_circuit_query_statistics(self):
-        """Get statistics about the circuit queries."""
-        if not self.circuit_query_feasibility:
-            return {
-                'n': 0,
-                'circuit_query_feasibility': 0,
-                'has_circuits': False,
-                'target_length': 0,
-                'circuit_count': 0
+Matrix multiply(const Matrix& A, const Matrix& B, int n) {
+    Matrix C(n, vector<long long>(n, 0));
+    for (int i = 0; i < n; i++) {
+        for (int k = 0; k < n; k++) {
+            if (A[i][k] == 0) continue;
+            for (int j = 0; j < n; j++) {
+                C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;
             }
-        
-        circuits = self.find_circuits_of_length()
-        return {
-            'n': self.n,
-            'circuit_query_feasibility': self.circuit_query_feasibility,
-            'has_circuits': len(circuits) > 0,
-            'target_length': self.target_length,
-            'circuit_count': len(circuits)
         }
-    
-    def get_circuit_query_patterns(self):
-        """Get patterns in circuit queries."""
-        patterns = {
-            'has_edges': 0,
-            'has_valid_graph': 0,
-            'optimal_circuit_possible': 0,
-            'has_large_graph': 0
-        }
-        
-        if not self.circuit_query_feasibility:
-            return patterns
-        
-        # Check if has edges
-        if len(self.edges) > 0:
-            patterns['has_edges'] = 1
-        
-        # Check if has valid graph
-        if self.n > 0:
-            patterns['has_valid_graph'] = 1
-        
-        # Check if optimal circuit is possible
-        if self.circuit_query_feasibility == 1.0:
-            patterns['optimal_circuit_possible'] = 1
-        
-        # Check if has large graph
-        if self.n > 100:
-            patterns['has_large_graph'] = 1
-        
-        return patterns
-    
-    def get_optimal_circuit_query_strategy(self):
-        """Get optimal strategy for circuit query management."""
-        if not self.circuit_query_feasibility:
-            return {
-                'recommended_strategy': 'none',
-                'efficiency_rate': 0,
-                'circuit_query_feasibility': 0
-            }
-        
-        # Calculate efficiency rate
-        efficiency_rate = self.circuit_query_feasibility
-        
-        # Calculate circuit query feasibility
-        circuit_query_feasibility = self.circuit_query_feasibility
-        
-        # Determine recommended strategy
-        if self.n <= 100:
-            recommended_strategy = 'dfs_circuit_search'
-        elif self.n <= 1000:
-            recommended_strategy = 'optimized_dfs'
-        else:
-            recommended_strategy = 'advanced_circuit_detection'
-        
-        return {
-            'recommended_strategy': recommended_strategy,
-            'efficiency_rate': efficiency_rate,
-            'circuit_query_feasibility': circuit_query_feasibility
-        }
-
-# Example usage
-n = 5
-edges = [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1)]
-target_length = 5
-dynamic_circuit_queries = DynamicFixedLengthCircuitQueries(n, edges, target_length)
-print(f"Circuit query feasibility: {dynamic_circuit_queries.circuit_query_feasibility}")
-
-# Update graph
-dynamic_circuit_queries.update_graph(6, [(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 1)], 6)
-print(f"After updating graph: n={dynamic_circuit_queries.n}, target_length={dynamic_circuit_queries.target_length}")
-
-# Add edge
-dynamic_circuit_queries.add_edge(6, 1)
-print(f"After adding edge (6,1): {dynamic_circuit_queries.edges}")
-
-# Remove edge
-dynamic_circuit_queries.remove_edge(6, 1)
-print(f"After removing edge (6,1): {dynamic_circuit_queries.edges}")
-
-# Find circuits
-circuits = dynamic_circuit_queries.find_circuits_of_length()
-print(f"Circuits of length {target_length}: {circuits}")
-
-# Find circuits with priorities
-priorities = {i: i for i in range(1, n + 1)}
-priority_circuits = dynamic_circuit_queries.find_circuits_with_priorities(priorities)
-print(f"Circuits with priorities: {priority_circuits}")
-
-# Get circuits with constraints
-def constraint_func(n, edges, circuits, target_length):
-    return len(circuits) > 0 and target_length > 0
-
-print(f"Circuits with constraints: {dynamic_circuit_queries.get_circuits_with_constraints(constraint_func)}")
-
-# Get circuits in range
-print(f"Circuits in range 3-7: {dynamic_circuit_queries.get_circuits_in_range(3, 7)}")
-
-# Get circuits with pattern
-def pattern_func(n, edges, circuits, target_length):
-    return len(circuits) > 0 and target_length > 0
-
-print(f"Circuits with pattern: {dynamic_circuit_queries.get_circuits_with_pattern(pattern_func)}")
-
-# Get statistics
-print(f"Statistics: {dynamic_circuit_queries.get_circuit_query_statistics()}")
-
-# Get patterns
-print(f"Patterns: {dynamic_circuit_queries.get_circuit_query_patterns()}")
-
-# Get optimal strategy
-print(f"Optimal strategy: {dynamic_circuit_queries.get_optimal_circuit_query_strategy()}")
-```
-
-### **Variation 2: Fixed Length Circuit Queries with Different Operations**
-**Problem**: Handle different types of circuit query operations (weighted circuits, priority-based selection, advanced circuit analysis).
-
-**Approach**: Use advanced data structures for efficient different types of circuit query operations.
-
-```python
-class AdvancedFixedLengthCircuitQueries:
-    def __init__(self, n=None, edges=None, target_length=None, weights=None, priorities=None):
-        self.n = n or 0
-        self.edges = edges or []
-        self.target_length = target_length or 0
-        self.weights = weights or {}
-        self.priorities = priorities or {}
-        self.graph = defaultdict(list)
-        self._update_circuit_query_info()
-    
-    def _update_circuit_query_info(self):
-        """Update circuit query feasibility information."""
-        self.circuit_query_feasibility = self._calculate_circuit_query_feasibility()
-    
-    def _calculate_circuit_query_feasibility(self):
-        """Calculate circuit query feasibility."""
-        if self.n <= 0 or self.target_length <= 0:
-            return 0.0
-        
-        # Check if we can have circuits of target length
-        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
-    
-    def _build_graph(self):
-        """Build the graph from edges."""
-        self.graph = defaultdict(list)
-        
-        for u, v in self.edges:
-            self.graph[u].append(v)
-            self.graph[v].append(u)
-    
-    def find_circuits_of_length(self, start_vertex=None):
-        """Find circuits of the target length."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        self._build_graph()
-        
-        circuits = []
-        if start_vertex is None:
-            # Try all vertices as starting points
-            for start in range(1, self.n + 1):
-                circuits.extend(self._find_circuits_from_vertex(start))
-        else:
-            circuits = self._find_circuits_from_vertex(start_vertex)
-        
-        return circuits
-    
-    def _find_circuits_from_vertex(self, start):
-        """Find circuits starting from a specific vertex."""
-        circuits = []
-        visited = set()
-        path = []
-        
-        def dfs(current, length):
-            if length == self.target_length:
-                if current == start and len(path) == self.target_length:
-                    circuits.append(path[:])
-                return
-            
-            if length > self.target_length:
-                return
-            
-            for neighbor in self.graph[current]:
-                if neighbor not in visited or (length == self.target_length - 1 and neighbor == start):
-                    if neighbor == start and length == self.target_length - 1:
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                    elif neighbor != start:
-                        visited.add(neighbor)
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                        visited.remove(neighbor)
-        
-        visited.add(start)
-        path.append(start)
-        dfs(start, 1)
-        visited.remove(start)
-        path.pop()
-        
-        return circuits
-    
-    def get_weighted_circuits(self, start_vertex=None):
-        """Get circuits with weights and priorities applied."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_circuits_of_length(start_vertex)
-        if not circuits:
-            return []
-        
-        # Create weighted circuits
-        weighted_circuits = []
-        for circuit in circuits:
-            total_weight = 0
-            total_priority = 0
-            
-            for i in range(len(circuit)):
-                vertex = circuit[i]
-                next_vertex = circuit[(i + 1) % len(circuit)]
-                
-                edge_weight = self.weights.get((vertex, next_vertex), 1)
-                vertex_priority = self.priorities.get(vertex, 1)
-                
-                total_weight += edge_weight
-                total_priority += vertex_priority
-            
-            weighted_score = total_weight * total_priority
-            weighted_circuits.append((circuit, weighted_score))
-        
-        # Sort by weighted score (descending for maximization)
-        weighted_circuits.sort(key=lambda x: x[1], reverse=True)
-        
-        return weighted_circuits
-    
-    def get_circuits_with_priority(self, priority_func, start_vertex=None):
-        """Get circuits considering priority."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_circuits_of_length(start_vertex)
-        if not circuits:
-            return []
-        
-        # Create priority-based circuits
-        priority_circuits = []
-        for circuit in circuits:
-            priority = priority_func(circuit, self.weights, self.priorities)
-            priority_circuits.append((circuit, priority))
-        
-        # Sort by priority (descending for maximization)
-        priority_circuits.sort(key=lambda x: x[1], reverse=True)
-        
-        return priority_circuits
-    
-    def get_circuits_with_optimization(self, optimization_func, start_vertex=None):
-        """Get circuits using custom optimization function."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_circuits_of_length(start_vertex)
-        if not circuits:
-            return []
-        
-        # Create optimization-based circuits
-        optimized_circuits = []
-        for circuit in circuits:
-            score = optimization_func(circuit, self.weights, self.priorities)
-            optimized_circuits.append((circuit, score))
-        
-        # Sort by optimization score (descending for maximization)
-        optimized_circuits.sort(key=lambda x: x[1], reverse=True)
-        
-        return optimized_circuits
-    
-    def get_circuits_with_constraints(self, constraint_func, start_vertex=None):
-        """Get circuits that satisfies custom constraints."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        if constraint_func(self.n, self.edges, self.weights, self.priorities, self.target_length):
-            return self.get_weighted_circuits(start_vertex)
-        else:
-            return []
-    
-    def get_circuits_with_multiple_criteria(self, criteria_list, start_vertex=None):
-        """Get circuits that satisfies multiple criteria."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        satisfies_all_criteria = True
-        for criterion in criteria_list:
-            if not criterion(self.n, self.edges, self.weights, self.priorities, self.target_length):
-                satisfies_all_criteria = False
-                break
-        
-        if satisfies_all_criteria:
-            return self.get_weighted_circuits(start_vertex)
-        else:
-            return []
-    
-    def get_circuits_with_alternatives(self, alternatives, start_vertex=None):
-        """Get circuits considering alternative weights/priorities."""
-        result = []
-        
-        # Check original circuits
-        original_circuits = self.get_weighted_circuits(start_vertex)
-        result.append((original_circuits, 'original'))
-        
-        # Check alternative weights/priorities
-        for alt_weights, alt_priorities in alternatives:
-            # Create temporary instance with alternative weights/priorities
-            temp_instance = AdvancedFixedLengthCircuitQueries(self.n, self.edges, self.target_length, alt_weights, alt_priorities)
-            temp_circuits = temp_instance.get_weighted_circuits(start_vertex)
-            result.append((temp_circuits, f'alternative_{alt_weights}_{alt_priorities}'))
-        
-        return result
-    
-    def get_circuits_with_adaptive_criteria(self, adaptive_func, start_vertex=None):
-        """Get circuits using adaptive criteria."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        if adaptive_func(self.n, self.edges, self.weights, self.priorities, self.target_length, []):
-            return self.get_weighted_circuits(start_vertex)
-        else:
-            return []
-    
-    def get_circuits_optimization(self, start_vertex=None):
-        """Get optimal circuits configuration."""
-        strategies = [
-            ('weighted_circuits', lambda: len(self.get_weighted_circuits(start_vertex))),
-            ('total_weight', lambda: sum(self.weights.values())),
-            ('total_priority', lambda: sum(self.priorities.values())),
-        ]
-        
-        best_strategy = None
-        best_value = 0
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                current_value = strategy_func()
-                if current_value > best_value:
-                    best_value = current_value
-                    best_strategy = (strategy_name, current_value)
-            except:
-                continue
-        
-        return best_strategy
-
-# Example usage
-n = 5
-edges = [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1)]
-target_length = 5
-weights = {(u, v): (u + v) * 2 for u, v in edges}  # Weight based on vertex sum
-priorities = {i: i for i in range(1, n + 1)}  # Priority based on vertex number
-advanced_circuit_queries = AdvancedFixedLengthCircuitQueries(n, edges, target_length, weights, priorities)
-
-print(f"Weighted circuits: {advanced_circuit_queries.get_weighted_circuits()}")
-
-# Get circuits with priority
-def priority_func(circuit, weights, priorities):
-    return sum(priorities.get(vertex, 1) for vertex in circuit)
-
-print(f"Circuits with priority: {advanced_circuit_queries.get_circuits_with_priority(priority_func)}")
-
-# Get circuits with optimization
-def optimization_func(circuit, weights, priorities):
-    return sum(weights.get((circuit[i], circuit[(i+1)%len(circuit)]), 1) for i in range(len(circuit)))
-
-print(f"Circuits with optimization: {advanced_circuit_queries.get_circuits_with_optimization(optimization_func)}")
-
-# Get circuits with constraints
-def constraint_func(n, edges, weights, priorities, target_length):
-    return len(edges) > 0 and n > 0 and target_length > 0
-
-print(f"Circuits with constraints: {advanced_circuit_queries.get_circuits_with_constraints(constraint_func)}")
-
-# Get circuits with multiple criteria
-def criterion1(n, edges, weights, priorities, target_length):
-    return len(edges) > 0
-
-def criterion2(n, edges, weights, priorities, target_length):
-    return len(weights) > 0
-
-criteria_list = [criterion1, criterion2]
-print(f"Circuits with multiple criteria: {advanced_circuit_queries.get_circuits_with_multiple_criteria(criteria_list)}")
-
-# Get circuits with alternatives
-alternatives = [({(u, v): 1 for u, v in edges}, {i: 1 for i in range(1, n + 1)}), ({(u, v): (u + v)*3 for u, v in edges}, {i: 2 for i in range(1, n + 1)})]
-print(f"Circuits with alternatives: {advanced_circuit_queries.get_circuits_with_alternatives(alternatives)}")
-
-# Get circuits with adaptive criteria
-def adaptive_func(n, edges, weights, priorities, target_length, current_result):
-    return len(edges) > 0 and len(current_result) < 10
-
-print(f"Circuits with adaptive criteria: {advanced_circuit_queries.get_circuits_with_adaptive_criteria(adaptive_func)}")
-
-# Get circuits optimization
-print(f"Circuits optimization: {advanced_circuit_queries.get_circuits_optimization()}")
-```
-
-### **Variation 3: Fixed Length Circuit Queries with Constraints**
-**Problem**: Handle circuit queries with additional constraints (length limits, circuit constraints, pattern constraints).
-
-**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
-
-```python
-class ConstrainedFixedLengthCircuitQueries:
-    def __init__(self, n=None, edges=None, target_length=None, constraints=None):
-        self.n = n or 0
-        self.edges = edges or []
-        self.target_length = target_length or 0
-        self.constraints = constraints or {}
-        self.graph = defaultdict(list)
-        self._update_circuit_query_info()
-    
-    def _update_circuit_query_info(self):
-        """Update circuit query feasibility information."""
-        self.circuit_query_feasibility = self._calculate_circuit_query_feasibility()
-    
-    def _calculate_circuit_query_feasibility(self):
-        """Calculate circuit query feasibility."""
-        if self.n <= 0 or self.target_length <= 0:
-            return 0.0
-        
-        # Check if we can have circuits of target length
-        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
-    
-    def _is_valid_edge(self, u, v):
-        """Check if edge is valid considering constraints."""
-        # Edge constraints
-        if 'allowed_edges' in self.constraints:
-            if (u, v) not in self.constraints['allowed_edges'] and (v, u) not in self.constraints['allowed_edges']:
-                return False
-        
-        if 'forbidden_edges' in self.constraints:
-            if (u, v) in self.constraints['forbidden_edges'] or (v, u) in self.constraints['forbidden_edges']:
-                return False
-        
-        # Vertex constraints
-        if 'max_vertex' in self.constraints:
-            if u > self.constraints['max_vertex'] or v > self.constraints['max_vertex']:
-                return False
-        
-        if 'min_vertex' in self.constraints:
-            if u < self.constraints['min_vertex'] or v < self.constraints['min_vertex']:
-                return False
-        
-        # Pattern constraints
-        if 'pattern_constraints' in self.constraints:
-            for constraint in self.constraints['pattern_constraints']:
-                if not constraint(u, v, self.n, self.edges, self.target_length):
-                    return False
-        
-        return True
-    
-    def _build_graph(self):
-        """Build the graph from edges."""
-        self.graph = defaultdict(list)
-        
-        for u, v in self.edges:
-            if self._is_valid_edge(u, v):
-                self.graph[u].append(v)
-                self.graph[v].append(u)
-    
-    def find_circuits_of_length(self, start_vertex=None):
-        """Find circuits of the target length."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        self._build_graph()
-        
-        circuits = []
-        if start_vertex is None:
-            # Try all vertices as starting points
-            for start in range(1, self.n + 1):
-                circuits.extend(self._find_circuits_from_vertex(start))
-        else:
-            circuits = self._find_circuits_from_vertex(start_vertex)
-        
-        return circuits
-    
-    def _find_circuits_from_vertex(self, start):
-        """Find circuits starting from a specific vertex."""
-        circuits = []
-        visited = set()
-        path = []
-        
-        def dfs(current, length):
-            if length == self.target_length:
-                if current == start and len(path) == self.target_length:
-                    circuits.append(path[:])
-                return
-            
-            if length > self.target_length:
-                return
-            
-            for neighbor in self.graph[current]:
-                if neighbor not in visited or (length == self.target_length - 1 and neighbor == start):
-                    if neighbor == start and length == self.target_length - 1:
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                    elif neighbor != start:
-                        visited.add(neighbor)
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                        visited.remove(neighbor)
-        
-        visited.add(start)
-        path.append(start)
-        dfs(start, 1)
-        visited.remove(start)
-        path.pop()
-        
-        return circuits
-    
-    def get_circuits_with_length_constraints(self, min_length, max_length, start_vertex=None):
-        """Get circuits considering length constraints."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        if min_length <= self.target_length <= max_length:
-            return self.find_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_circuits_with_circuit_constraints(self, circuit_constraints, start_vertex=None):
-        """Get circuits considering circuit constraints."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        satisfies_constraints = True
-        for constraint in circuit_constraints:
-            if not constraint(self.n, self.edges, self.target_length):
-                satisfies_constraints = False
-                break
-        
-        if satisfies_constraints:
-            return self.find_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_circuits_with_pattern_constraints(self, pattern_constraints, start_vertex=None):
-        """Get circuits considering pattern constraints."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        satisfies_pattern = True
-        for constraint in pattern_constraints:
-            if not constraint(self.n, self.edges, self.target_length):
-                satisfies_pattern = False
-                break
-        
-        if satisfies_pattern:
-            return self.find_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_circuits_with_mathematical_constraints(self, constraint_func, start_vertex=None):
-        """Get circuits that satisfies custom mathematical constraints."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_circuits_of_length(start_vertex)
-        if circuits and constraint_func(self.n, self.edges, self.target_length):
-            return circuits
-        else:
-            return []
-    
-    def get_circuits_with_optimization_constraints(self, optimization_func, start_vertex=None):
-        """Get circuits using custom optimization constraints."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        # Calculate optimization score for circuits
-        score = optimization_func(self.n, self.edges, self.target_length)
-        
-        if score > 0:
-            return self.find_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_circuits_with_multiple_constraints(self, constraints_list, start_vertex=None):
-        """Get circuits that satisfies multiple constraints."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        satisfies_all_constraints = True
-        for constraint in constraints_list:
-            if not constraint(self.n, self.edges, self.target_length):
-                satisfies_all_constraints = False
-                break
-        
-        if satisfies_all_constraints:
-            return self.find_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_circuits_with_priority_constraints(self, priority_func, start_vertex=None):
-        """Get circuits with priority-based constraints."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        # Calculate priority for circuits
-        priority = priority_func(self.n, self.edges, self.target_length)
-        
-        if priority > 0:
-            return self.find_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_circuits_with_adaptive_constraints(self, adaptive_func, start_vertex=None):
-        """Get circuits with adaptive constraints."""
-        if not self.circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_circuits_of_length(start_vertex)
-        if circuits and adaptive_func(self.n, self.edges, self.target_length, []):
-            return circuits
-        else:
-            return []
-    
-    def get_optimal_circuits_strategy(self, start_vertex=None):
-        """Get optimal circuits strategy considering all constraints."""
-        strategies = [
-            ('length_constraints', self.get_circuits_with_length_constraints),
-            ('circuit_constraints', self.get_circuits_with_circuit_constraints),
-            ('pattern_constraints', self.get_circuits_with_pattern_constraints),
-        ]
-        
-        best_strategy = None
-        best_score = 0
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                if strategy_name == 'length_constraints':
-                    result = strategy_func(1, 1000, start_vertex)
-                elif strategy_name == 'circuit_constraints':
-                    circuit_constraints = [lambda n, edges, target_length: len(edges) > 0]
-                    result = strategy_func(circuit_constraints, start_vertex)
-                elif strategy_name == 'pattern_constraints':
-                    pattern_constraints = [lambda n, edges, target_length: len(edges) > 0]
-                    result = strategy_func(pattern_constraints, start_vertex)
-                
-                if result and len(result) > best_score:
-                    best_score = len(result)
-                    best_strategy = (strategy_name, result)
-            except:
-                continue
-        
-        return best_strategy
-
-# Example usage
-constraints = {
-    'allowed_edges': [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1)],
-    'forbidden_edges': [(1, 3), (2, 4)],
-    'max_vertex': 10,
-    'min_vertex': 1,
-    'pattern_constraints': [lambda u, v, n, edges, target_length: u > 0 and v > 0 and u <= n and v <= n]
+    }
+    return C;
 }
 
-n = 5
-edges = [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1)]
-target_length = 5
-constrained_circuit_queries = ConstrainedFixedLengthCircuitQueries(n, edges, target_length, constraints)
+Matrix matpow(Matrix M, long long p, int n) {
+    Matrix result(n, vector<long long>(n, 0));
+    for (int i = 0; i < n; i++) result[i][i] = 1;  // Identity
 
-print("Length-constrained circuits:", constrained_circuit_queries.get_circuits_with_length_constraints(3, 7))
+    while (p > 0) {
+        if (p & 1) result = multiply(result, M, n);
+        M = multiply(M, M, n);
+        p >>= 1;
+    }
+    return result;
+}
 
-print("Circuit-constrained circuits:", constrained_circuit_queries.get_circuits_with_circuit_constraints([lambda n, edges, target_length: len(edges) > 0]))
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-print("Pattern-constrained circuits:", constrained_circuit_queries.get_circuits_with_pattern_constraints([lambda n, edges, target_length: len(edges) > 0]))
+    int n, q;
+    cin >> n >> q;
 
-# Mathematical constraints
-def custom_constraint(n, edges, target_length):
-    return len(edges) > 0 and target_length > 0
+    Matrix adj(n, vector<long long>(n));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> adj[i][j];
+        }
+    }
 
-print("Mathematical constraint circuits:", constrained_circuit_queries.get_circuits_with_mathematical_constraints(custom_constraint))
+    while (q--) {
+        int a;
+        long long k;
+        cin >> a >> k;
+        Matrix powered = matpow(adj, k, n);
+        cout << powered[a - 1][a - 1] << "\n";
+    }
 
-# Range constraints
-def range_constraint(n, edges, target_length):
-    return 1 <= target_length <= 20
-
-range_constraints = [range_constraint]
-print("Range-constrained circuits:", constrained_circuit_queries.get_circuits_with_length_constraints(1, 20))
-
-# Multiple constraints
-def constraint1(n, edges, target_length):
-    return len(edges) > 0
-
-def constraint2(n, edges, target_length):
-    return target_length > 0
-
-constraints_list = [constraint1, constraint2]
-print("Multiple constraints circuits:", constrained_circuit_queries.get_circuits_with_multiple_constraints(constraints_list))
-
-# Priority constraints
-def priority_func(n, edges, target_length):
-    return n + len(edges) + target_length
-
-print("Priority-constrained circuits:", constrained_circuit_queries.get_circuits_with_priority_constraints(priority_func))
-
-# Adaptive constraints
-def adaptive_func(n, edges, target_length, current_result):
-    return len(edges) > 0 and len(current_result) < 10
-
-print("Adaptive constraint circuits:", constrained_circuit_queries.get_circuits_with_adaptive_constraints(adaptive_func))
-
-# Optimal strategy
-optimal = constrained_circuit_queries.get_optimal_circuits_strategy()
-print(f"Optimal circuits strategy: {optimal}")
+    return 0;
+}
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Fixed Length Cycle Queries](https://cses.fi/problemset/task/2417) - Similar matrix approach
-- [Round Trip](https://cses.fi/problemset/task/1669) - Cycle detection
-- [Graph Girth](https://cses.fi/problemset/task/1707) - Cycle properties
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^3 log k * q) | Matrix multiply is O(n^3), log k iterations per query |
+| Space | O(n^2) | Store matrices |
 
-#### **LeetCode Problems**
-- [Number of Ways to Arrive at Destination](https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/) - Path counting
-- [Unique Paths](https://leetcode.com/problems/unique-paths/) - Path counting
-- [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) - Path counting with obstacles
+---
 
-#### **Problem Categories**
-- **Matrix Exponentiation**: Matrix powers, binary exponentiation
-- **Graph Theory**: Circuits, cycles, paths
-- **Dynamic Programming**: State transitions, path counting
+## Common Mistakes
 
-## 🔗 Additional Resources
+### Mistake 1: Not Using Modular Arithmetic
 
-### **Algorithm References**
-- [Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html) - Binary exponentiation
-- [Graph Theory](https://cp-algorithms.com/graph/) - Graph algorithms
-- [Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html) - Modular operations
+```python
+# WRONG - integer overflow for large k
+C[i][j] = C[i][j] + A[i][k] * B[k][j]
 
-### **Practice Problems**
-- [CSES Fixed Length Cycle Queries](https://cses.fi/problemset/task/2417) - Medium
-- [CSES Round Trip](https://cses.fi/problemset/task/1669) - Medium
-- [CSES Graph Girth](https://cses.fi/problemset/task/1707) - Medium
+# CORRECT
+C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD
+```
 
-### **Further Reading**
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
-- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
+**Problem:** Numbers grow exponentially; 64-bit integers overflow.
+**Fix:** Apply modulo at every multiplication step.
+
+### Mistake 2: Wrong Identity Matrix Initialization
+
+```python
+# WRONG - all zeros
+result = [[0] * n for _ in range(n)]
+
+# CORRECT - identity matrix
+result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+```
+
+**Problem:** Starting with zeros gives zero result.
+**Fix:** Initialize result as identity matrix (1s on diagonal).
+
+### Mistake 3: Modifying Input Matrix
+
+```python
+# WRONG - modifies original
+base = M
+base = mat_mult(base, base)  # Corrupts M
+
+# CORRECT - make a copy
+base = [row[:] for row in M]
+```
+
+**Problem:** Modifying the input affects subsequent queries.
+**Fix:** Create a deep copy of the matrix before modifying.
+
+### Mistake 4: 1-indexed vs 0-indexed Confusion
+
+```python
+# WRONG
+return powered[a][a]  # a is 1-indexed!
+
+# CORRECT
+return powered[a - 1][a - 1]  # Convert to 0-indexed
+```
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| k = 1, self-loop exists | adj[0][0] = 1, query (1, 1) | 1 | Direct self-loop is a circuit |
+| k = 1, no self-loop | adj[0][0] = 0, query (1, 1) | 0 | No path of length 1 back to self |
+| Disconnected node | No edges to/from node a | 0 | No circuits possible |
+| k = 10^9 | Large k | Computed via log k steps | Binary exponentiation handles this |
+| Complete graph | All edges present | n^(k-1) mod MOD | Many paths possible |
+
+---
+
+## When to Use This Pattern
+
+### Use Matrix Exponentiation When:
+- Counting paths/walks of a specific length in a graph
+- Linear recurrences with large iteration counts (e.g., Fibonacci for large n)
+- State transitions that can be expressed as matrix multiplication
+- Multiple queries on the same graph with different path lengths
+
+### Don't Use When:
+- k is small (k < n^2) - direct DP might be faster
+- Finding actual paths, not counting them
+- Graph changes between queries
+- Need shortest/longest path (use Dijkstra/Bellman-Ford)
+
+### Pattern Recognition Checklist:
+- [ ] Need to count paths of length k? -> **Matrix exponentiation**
+- [ ] Linear recurrence like dp[i] = a*dp[i-1] + b*dp[i-2]? -> **Matrix exponentiation**
+- [ ] k is very large (> 10^6)? -> **Must use O(log k) approach**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html) | Core technique for matrix power |
+| [Fibonacci Number](https://leetcode.com/problems/fibonacci-number/) | Simple matrix exponentiation application |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Graph Paths I](https://cses.fi/problemset/task/1723) | Count paths between different nodes (not circuits) |
+| [Graph Paths II](https://cses.fi/problemset/task/1724) | Same technique, paths instead of circuits |
+| [Counting Paths](https://cses.fi/problemset/task/1136) | Different approach (LCA-based) |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Knight's Tour](https://cses.fi/problemset/task/1635) | Matrix exponentiation on grid |
+| [Shortest Routes II](https://cses.fi/problemset/task/1672) | Floyd-Warshall for all-pairs shortest paths |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Adjacency matrix raised to power k counts paths of length k
+2. **Time Optimization:** Binary exponentiation reduces O(k) to O(log k) matrix multiplications
+3. **Space Trade-off:** O(n^2) space for matrices, but handles arbitrarily large k
+4. **Pattern:** Matrix exponentiation for counting problems with large iteration counts
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Implement matrix multiplication with modular arithmetic
+- [ ] Implement binary exponentiation for matrices
+- [ ] Explain why A^k[i][j] counts paths from i to j
+- [ ] Recognize problems solvable with matrix exponentiation
+- [ ] Handle edge cases (self-loops, disconnected nodes)
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
+- [CP-Algorithms: Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html#toc-tgt-5)
+- [CSES Problem Set - Graph Algorithms](https://cses.fi/problemset/)

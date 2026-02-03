@@ -1,640 +1,437 @@
 ---
 layout: simple
-title: "Counting Sequences - Combinatorial Problem"
+title: "Counting Sequences - Combinatorics Problem"
 permalink: /problem_soulutions/counting_problems/counting_sequences_analysis
+difficulty: Easy
+tags: [combinatorics, modular-arithmetic, exponentiation]
 ---
 
-# Counting Sequences - Combinatorial Problem
+# Counting Sequences
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of sequence counting in combinatorics
-- Apply counting techniques for sequence analysis
-- Implement efficient algorithms for sequence counting
-- Optimize sequence calculations for large numbers
-- Handle special cases in sequence counting
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Easy |
+| **Category** | Combinatorics / Mathematics |
+| **Time Limit** | 1 second |
+| **Key Technique** | Modular Exponentiation |
+| **CSES Link** | [Exponentiation](https://cses.fi/problemset/task/1095) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given n and k, count the number of sequences of length k using elements from 1 to n.
+After solving this problem, you will be able to:
+- [ ] Apply the multiplication principle for counting sequences
+- [ ] Implement binary exponentiation for efficient power computation
+- [ ] Handle modular arithmetic to prevent integer overflow
+- [ ] Recognize when a counting problem reduces to a simple formula
 
-**Input**: 
-- n: maximum element value
-- k: sequence length
+---
 
-**Output**: 
-- Number of sequences modulo 10^9+7
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n, k ≤ 10^6
-- Answer modulo 10^9+7
+**Problem:** Count the number of sequences of length k where each element can be any integer from 1 to n.
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and k (maximum element value and sequence length)
+
+**Output:**
+- The count of possible sequences, modulo 10^9 + 7
+
+**Constraints:**
+- 1 <= n, k <= 10^6
+
+### Example
+
 ```
 Input:
-n = 3, k = 2
+3 2
 
 Output:
 9
-
-Explanation**: 
-Sequences of length 2 using elements 1, 2, 3:
-[1,1], [1,2], [1,3]
-[2,1], [2,2], [2,3]
-[3,1], [3,2], [3,3]
-Total: 9 sequences
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** With n=3 elements {1, 2, 3} and sequence length k=2:
+- Position 1 can be: 1, 2, or 3 (3 choices)
+- Position 2 can be: 1, 2, or 3 (3 choices)
+- Total sequences: 3 x 3 = 9
 
-### Approach 1: Recursive Sequence Solution
-
-**Key Insights from Recursive Sequence Solution**:
-- **Recursive Approach**: Use recursion to generate all sequences
-- **Complete Enumeration**: Enumerate all possible sequences
-- **Simple Implementation**: Easy to understand and implement
-- **Inefficient**: Exponential time complexity
-
-**Key Insight**: Use recursion to generate all possible sequences of length k using elements from 1 to n.
-
-**Algorithm**:
-- Use recursive function to build sequences element by element
-- Count all valid sequences
-- Apply modulo operation to prevent overflow
-
-**Visual Example**:
-```
-n = 3, k = 2
-
-Recursive generation:
-┌─────────────────────────────────────┐
-│ Position 1: can be 1, 2, or 3      │
-│ Position 2: can be 1, 2, or 3      │
-│ Total combinations: 3 × 3 = 9      │
-└─────────────────────────────────────┘
-
-Sequence enumeration:
-┌─────────────────────────────────────┐
-│ [1,1], [1,2], [1,3]               │
-│ [2,1], [2,2], [2,3]               │
-│ [3,1], [3,2], [3,3]               │
-│ Total: 9 sequences                 │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def recursive_sequence_count(n, k, mod=10**9+7):
-    """
-    Count sequences using recursive approach
-    
-    Args:
-        n: maximum element value
-        k: sequence length
-        mod: modulo value
-    
-    Returns:
-        int: number of sequences modulo mod
-    """
-    def count_sequences(position, current_sequence):
-        """Count sequences recursively"""
-        if position == k:
-            return 1  # Valid sequence found
-        
-        count = 0
-        for element in range(1, n + 1):
-            current_sequence.append(element)
-            count = (count + count_sequences(position + 1, current_sequence)) % mod
-            current_sequence.pop()  # Backtrack
-        
-        return count
-    
-    return count_sequences(0, [])
-
-def recursive_sequence_count_optimized(n, k, mod=10**9+7):
-    """
-    Optimized recursive sequence counting
-    
-    Args:
-        n: maximum element value
-        k: sequence length
-        mod: modulo value
-    
-    Returns:
-        int: number of sequences modulo mod
-    """
-    def count_sequences_optimized(position):
-        """Count sequences with optimization"""
-        if position == k:
-            return 1  # Valid sequence found
-        
-        count = 0
-        for element in range(1, n + 1):
-            count = (count + count_sequences_optimized(position + 1)) % mod
-        
-        return count
-    
-    return count_sequences_optimized(0)
-
-# Example usage
-n, k = 3, 2
-result1 = recursive_sequence_count(n, k)
-result2 = recursive_sequence_count_optimized(n, k)
-print(f"Recursive sequence count: {result1}")
-print(f"Optimized recursive count: {result2}")
-```
-
-**Time Complexity**: O(n^k)
-**Space Complexity**: O(k)
-
-**Why it's inefficient**: Exponential time complexity due to complete enumeration.
+All sequences: [1,1], [1,2], [1,3], [2,1], [2,2], [2,3], [3,1], [3,2], [3,3]
 
 ---
 
-### Approach 2: Mathematical Formula Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Mathematical Formula Solution**:
-- **Mathematical Formula**: Use n^k formula for sequences
-- **Direct Calculation**: Calculate result directly without enumeration
-- **Efficient Computation**: O(log k) time complexity
-- **Optimization**: Much more efficient than recursive approach
+### Pattern Recognition
 
-**Key Insight**: Use the mathematical formula that each position can have any of n values.
+> **Key Question:** For each position in the sequence, how many choices do we have?
 
-**Algorithm**:
-- Use formula: number of sequences = n^k
-- Calculate n^k efficiently using modular exponentiation
-- Apply modulo operation throughout
+Each of the k positions can independently hold any of the n values. Since choices at one position do not affect choices at another, we use the **multiplication principle**: total = n x n x ... x n (k times) = n^k.
 
-**Visual Example**:
-```
-Mathematical formula:
-┌─────────────────────────────────────┐
-│ For k positions and n elements:    │
-│ - Position 1: n choices            │
-│ - Position 2: n choices            │
-│ - ...                              │
-│ - Position k: n choices            │
-│ Total: n × n × ... × n = n^k      │
-└─────────────────────────────────────┘
+### Breaking Down the Problem
 
-Modular exponentiation:
-┌─────────────────────────────────────┐
-│ n^k mod mod = (n mod mod)^k mod mod │
-│ Use binary exponentiation for efficiency │
-└─────────────────────────────────────┘
-```
+1. **What are we looking for?** Total count of distinct sequences
+2. **What information do we have?** n possible values, k positions
+3. **What's the relationship between input and output?** Each position multiplies our choices by n
 
-**Implementation**:
-```python
-def mathematical_sequence_count(n, k, mod=10**9+7):
-    """
-    Count sequences using mathematical formula
-    
-    Args:
-        n: maximum element value
-        k: sequence length
-        mod: modulo value
-    
-    Returns:
-        int: number of sequences modulo mod
-    """
-    def mod_pow(base, exp, mod):
-        """Calculate base^exp mod mod efficiently"""
-        result = 1
-        base = base % mod
-        
-        while exp > 0:
-            if exp % 2 == 1:
-                result = (result * base) % mod
-            exp = exp >> 1
-            base = (base * base) % mod
-        
-        return result
-    
-    # Number of sequences = n^k
-    return mod_pow(n, k, mod)
+### Analogies
 
-def mathematical_sequence_count_v2(n, k, mod=10**9+7):
-    """
-    Alternative mathematical approach using built-in pow
-    
-    Args:
-        n: maximum element value
-        k: sequence length
-        mod: modulo value
-    
-    Returns:
-        int: number of sequences modulo mod
-    """
-    # Use built-in pow with modular arithmetic
-    return pow(n, k, mod)
-
-# Example usage
-n, k = 3, 2
-result1 = mathematical_sequence_count(n, k)
-result2 = mathematical_sequence_count_v2(n, k)
-print(f"Mathematical sequence count: {result1}")
-print(f"Mathematical sequence count v2: {result2}")
-```
-
-**Time Complexity**: O(log k)
-**Space Complexity**: O(1)
-
-**Why it's better**: Uses mathematical formula for O(log k) time complexity.
-
-**Implementation Considerations**:
-- **Mathematical Formula**: Use n^k formula for sequences
-- **Modular Exponentiation**: Use efficient modular exponentiation
-- **Direct Calculation**: Calculate result directly without enumeration
+Think of this like a combination lock with k dials, where each dial can show any number from 1 to n. The total number of possible codes is n^k.
 
 ---
 
-### Approach 3: Advanced Mathematical Solution (Optimal)
+## Solution 1: Brute Force (Recursive Enumeration)
 
-**Key Insights from Advanced Mathematical Solution**:
-- **Advanced Mathematics**: Use advanced mathematical properties
-- **Efficient Computation**: O(log k) time complexity
-- **Mathematical Optimization**: Use mathematical optimizations
-- **Optimal Complexity**: Best approach for sequence counting
+### Idea
 
-**Key Insight**: Use advanced mathematical properties and optimizations for efficient sequence counting.
+Generate all possible sequences by trying every value at each position recursively.
 
-**Algorithm**:
-- Use advanced mathematical properties
-- Apply mathematical optimizations
-- Calculate result efficiently
+### Algorithm
 
-**Visual Example**:
-```
-Advanced mathematical properties:
-┌─────────────────────────────────────┐
-│ For sequences:                     │
-│ - Each position has n choices      │
-│ - Total number = n^k               │
-│ - Can be calculated efficiently    │
-└─────────────────────────────────────┘
+1. Start at position 0
+2. Try each value from 1 to n at the current position
+3. Recurse to the next position
+4. Count when we reach position k
 
-Mathematical optimizations:
-┌─────────────────────────────────────┐
-│ - Use modular exponentiation       │
-│ - Apply mathematical properties    │
-│ - Optimize for large numbers       │
-└─────────────────────────────────────┘
-```
+### Code
 
-**Implementation**:
 ```python
-def advanced_mathematical_sequence_count(n, k, mod=10**9+7):
+def count_sequences_brute(n, k, mod=10**9+7):
     """
-    Count sequences using advanced mathematical approach
-    
-    Args:
-        n: maximum element value
-        k: sequence length
-        mod: modulo value
-    
-    Returns:
-        int: number of sequences modulo mod
+    Brute force: enumerate all sequences recursively.
+
+    Time: O(n^k) - generates all sequences
+    Space: O(k) - recursion depth
     """
-    def fast_mod_pow(base, exp, mod):
-        """Fast modular exponentiation with optimizations"""
-        if exp == 0:
+    def count(pos):
+        if pos == k:
             return 1
-        if exp == 1:
-            return base % mod
-        
-        # Use binary exponentiation
-        result = 1
-        base = base % mod
-        
-        while exp > 0:
-            if exp & 1:  # If exp is odd
-                result = (result * base) % mod
-            exp = exp >> 1  # Divide exp by 2
-            base = (base * base) % mod
-        
-        return result
-    
-    # Handle edge cases
-    if k == 0:
-        return 1
-    if n == 0:
-        return 0
-    if n == 1:
-        return 1
-    
-    # Number of sequences = n^k
-    return fast_mod_pow(n, k, mod)
+        total = 0
+        for _ in range(n):
+            total = (total + count(pos + 1)) % mod
+        return total
 
-def optimized_sequence_count(n, k, mod=10**9+7):
+    return count(0)
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^k) | Generates all n^k sequences |
+| Space | O(k) | Recursion stack depth |
+
+### Why This Works (But Is Slow)
+
+The brute force correctly counts every sequence but becomes impossibly slow for large inputs. With n=1000, k=1000, we would need 1000^1000 operations!
+
+---
+
+## Solution 2: Optimal (Binary Exponentiation)
+
+### Key Insight
+
+> **The Trick:** The answer is simply n^k mod (10^9+7). Use binary exponentiation to compute this in O(log k) time.
+
+### Mathematical Formula
+
+```
+Total sequences = n^k (mod 10^9 + 7)
+```
+
+**Why?** By the multiplication principle:
+- Position 1: n choices
+- Position 2: n choices (independent)
+- ...
+- Position k: n choices (independent)
+- Total = n * n * ... * n = n^k
+
+### Algorithm
+
+1. Handle base cases (k=0 returns 1, n=0 returns 0)
+2. Use binary exponentiation to compute n^k mod m
+3. Return the result
+
+### Dry Run Example
+
+Let's trace through with `n = 3, k = 5`:
+
+```
+Computing 3^5 mod (10^9 + 7) using binary exponentiation:
+
+k = 5 in binary = 101
+
+Initial: result = 1, base = 3
+
+Step 1: k = 5 (odd, bit = 1)
+  result = 1 * 3 = 3
+  base = 3 * 3 = 9
+  k = 5 >> 1 = 2
+
+Step 2: k = 2 (even, bit = 0)
+  result stays 3
+  base = 9 * 9 = 81
+  k = 2 >> 1 = 1
+
+Step 3: k = 1 (odd, bit = 1)
+  result = 3 * 81 = 243
+  base = 81 * 81 = 6561
+  k = 1 >> 1 = 0
+
+Done! Result = 243
+
+Verify: 3^5 = 3*3*3*3*3 = 243 (correct!)
+```
+
+### Visual Diagram
+
+```
+Binary Exponentiation for n^k:
+
+k in binary:  k = b_m b_{m-1} ... b_1 b_0
+
+n^k = n^(2^0 * b_0) * n^(2^1 * b_1) * ... * n^(2^m * b_m)
+
+Example: 3^5 = 3^(101 in binary)
+       = 3^(4+0+1)
+       = 3^4 * 3^1
+       = 81 * 3 = 243
+
+We square the base repeatedly and multiply when bit is 1:
+  base: 3 -> 9 -> 81 -> ...
+        ^        ^
+        |        |
+      b_0=1    b_2=1 (include these in result)
+```
+
+### Code
+
+**Python:**
+```python
+def count_sequences(n, k, mod=10**9+7):
     """
-    Optimized sequence counting with additional optimizations
-    
-    Args:
-        n: maximum element value
-        k: sequence length
-        mod: modulo value
-    
-    Returns:
-        int: number of sequences modulo mod
+    Count sequences using binary exponentiation.
+
+    Time: O(log k)
+    Space: O(1)
     """
-    # Use built-in pow with optimizations
+    # Edge cases
     if k == 0:
         return 1
     if n == 0:
         return 0
-    if n == 1:
-        return 1
-    
-    # For large k, use built-in pow which is highly optimized
+
+    # Python's built-in pow handles modular exponentiation efficiently
     return pow(n, k, mod)
 
-def sequence_count_with_precomputation(max_n, max_k, mod=10**9+7):
+
+def count_sequences_manual(n, k, mod=10**9+7):
     """
-    Precompute sequence counts for multiple queries
-    
-    Args:
-        max_n: maximum value of n
-        max_k: maximum value of k
-        mod: modulo value
-    
-    Returns:
-        list: precomputed sequence counts
+    Manual implementation of binary exponentiation.
     """
-    results = [[0] * (max_k + 1) for _ in range(max_n + 1)]
-    
-    for i in range(max_n + 1):
-        for j in range(max_k + 1):
-            if j == 0:
-                results[i][j] = 1
-            elif i == 0:
-                results[i][j] = 0
-            elif i == 1:
-                results[i][j] = 1
-            else:
-                results[i][j] = pow(i, j, mod)
-    
-    return results
+    if k == 0:
+        return 1
+    if n == 0:
+        return 0
+
+    result = 1
+    base = n % mod
+
+    while k > 0:
+        if k & 1:  # If k is odd (last bit is 1)
+            result = (result * base) % mod
+        base = (base * base) % mod
+        k >>= 1  # Divide k by 2
+
+    return result
+
 
 # Example usage
-n, k = 3, 2
-result1 = advanced_mathematical_sequence_count(n, k)
-result2 = optimized_sequence_count(n, k)
-print(f"Advanced mathematical sequence count: {result1}")
-print(f"Optimized sequence count: {result2}")
-
-# Precompute for multiple queries
-max_n, max_k = 1000, 1000
-precomputed = sequence_count_with_precomputation(max_n, max_k)
-print(f"Precomputed result for n={n}, k={k}: {precomputed[n][k]}")
+if __name__ == "__main__":
+    n, k = map(int, input().split())
+    print(count_sequences(n, k))
 ```
 
-**Time Complexity**: O(log k)
-**Space Complexity**: O(1)
+**C++:**
+```cpp
+#include <iostream>
+using namespace std;
 
-**Why it's optimal**: Uses advanced mathematical properties for O(log k) time complexity.
+const long long MOD = 1e9 + 7;
 
-**Implementation Details**:
-- **Advanced Mathematics**: Use advanced mathematical properties
-- **Efficient Computation**: Use optimized modular exponentiation
-- **Mathematical Optimizations**: Apply mathematical optimizations
-- **Precomputation**: Precompute results for multiple queries
+long long mod_pow(long long base, long long exp, long long mod) {
+    // Binary exponentiation
+    long long result = 1;
+    base %= mod;
 
-## 🔧 Implementation Details
+    while (exp > 0) {
+        if (exp & 1) {  // If exp is odd
+            result = (result * base) % mod;
+        }
+        base = (base * base) % mod;
+        exp >>= 1;  // Divide exp by 2
+    }
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Recursive | O(n^k) | O(k) | Complete enumeration of all sequences |
-| Mathematical Formula | O(log k) | O(1) | Use n^k formula with modular exponentiation |
-| Advanced Mathematical | O(log k) | O(1) | Use advanced mathematical properties and optimizations |
+    return result;
+}
 
-### Time Complexity
-- **Time**: O(log k) - Use modular exponentiation for efficient calculation
-- **Space**: O(1) - Use only necessary variables
+long long count_sequences(int n, int k) {
+    if (k == 0) return 1;
+    if (n == 0) return 0;
+    return mod_pow(n, k, MOD);
+}
 
-### Why This Solution Works
-- **Mathematical Formula**: Use n^k formula for sequences
-- **Modular Exponentiation**: Use efficient modular exponentiation
-- **Mathematical Properties**: Leverage mathematical properties
-- **Efficient Algorithms**: Use optimal algorithms for calculation
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-## 🚀 Problem Variations
+    int n, k;
+    cin >> n >> k;
+    cout << count_sequences(n, k) << "\n";
 
-### Extended Problems with Detailed Code Examples
+    return 0;
+}
+```
 
-#### **1. Sequence Count with Constraints**
-**Problem**: Count sequences with certain constraints.
+### Complexity
 
-**Key Differences**: Apply constraints to sequences
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(log k) | Binary exponentiation halves k each iteration |
+| Space | O(1) | Only a few variables needed |
 
-**Solution Approach**: Modify counting formula to include constraints
+---
 
-**Implementation**:
+## Common Mistakes
+
+### Mistake 1: Integer Overflow
+
+```cpp
+// WRONG - overflows for large n, k
+long long result = 1;
+for (int i = 0; i < k; i++) {
+    result *= n;  // Overflows before taking mod!
+}
+return result % mod;
+```
+
+**Problem:** Multiplying before taking mod causes overflow.
+**Fix:** Take mod after each multiplication: `result = (result * n) % mod;`
+
+### Mistake 2: Slow Linear Exponentiation
+
 ```python
-def constrained_sequence_count(n, k, constraints, mod=10**9+7):
-    """
-    Count sequences with constraints
-    
-    Args:
-        n: maximum element value
-        k: sequence length
-        constraints: list of constraints for each position
-        mod: modulo value
-    
-    Returns:
-        int: number of constrained sequences modulo mod
-    """
-    def count_constrained_sequences(position):
-        """Count constrained sequences recursively"""
-        if position == k:
-            return 1  # Valid constrained sequence found
-        
-        count = 0
-        for element in constraints[position]:  # Only consider allowed elements
-            count = (count + count_constrained_sequences(position + 1)) % mod
-        
-        return count
-    
-    return count_constrained_sequences(0)
-
-def constrained_sequence_count_optimized(n, k, constraints, mod=10**9+7):
-    """
-    Optimized constrained sequence counting
-    
-    Args:
-        n: maximum element value
-        k: sequence length
-        constraints: list of constraints for each position
-        mod: modulo value
-    
-    Returns:
-        int: number of constrained sequences modulo mod
-    """
-    # Calculate total number of constrained sequences
-    total = 1
-    for i in range(k):
-        total = (total * len(constraints[i])) % mod
-    
-    return total
-
-# Example usage
-n, k = 3, 2
-constraints = [
-    [1, 2],  # Position 0 can be 1 or 2
-    [2, 3]   # Position 1 can be 2 or 3
-]
-result1 = constrained_sequence_count(n, k, constraints)
-result2 = constrained_sequence_count_optimized(n, k, constraints)
-print(f"Constrained sequence count: {result1}")
-print(f"Optimized constrained count: {result2}")
+# WRONG - too slow for k up to 10^6
+def slow_pow(n, k, mod):
+    result = 1
+    for _ in range(k):  # O(k) iterations!
+        result = (result * n) % mod
+    return result
 ```
 
-#### **2. Sequence Count with Repetition Constraints**
-**Problem**: Count sequences with repetition constraints.
+**Problem:** O(k) is too slow when k can be 10^6.
+**Fix:** Use binary exponentiation for O(log k) time.
 
-**Key Differences**: Limit repetition of elements
+### Mistake 3: Forgetting Edge Cases
 
-**Solution Approach**: Use inclusion-exclusion principle
-
-**Implementation**:
 ```python
-def repetition_constrained_sequence_count(n, k, max_repetition, mod=10**9+7):
-    """
-    Count sequences with repetition constraints
-    
-    Args:
-        n: maximum element value
-        k: sequence length
-        max_repetition: maximum number of repetitions allowed
-        mod: modulo value
-    
-    Returns:
-        int: number of repetition-constrained sequences modulo mod
-    """
-    def count_repetition_constrained_sequences(position, element_counts):
-        """Count sequences with repetition constraints"""
-        if position == k:
-            return 1  # Valid repetition-constrained sequence found
-        
-        count = 0
-        for element in range(1, n + 1):
-            if element_counts[element] < max_repetition:  # Check repetition limit
-                element_counts[element] += 1
-                count = (count + count_repetition_constrained_sequences(position + 1, element_counts)) % mod
-                element_counts[element] -= 1  # Backtrack
-        
-        return count
-    
-    element_counts = [0] * (n + 1)
-    return count_repetition_constrained_sequences(0, element_counts)
-
-# Example usage
-n, k = 3, 2
-max_repetition = 1  # No element can appear more than once
-result = repetition_constrained_sequence_count(n, k, max_repetition)
-print(f"Repetition constrained sequence count: {result}")
+# WRONG - crashes or gives wrong answer for edge cases
+def count_sequences(n, k, mod):
+    return pow(n, k, mod)  # What if n=0? k=0?
 ```
 
-#### **3. Sequence Count with Pattern Constraints**
-**Problem**: Count sequences that match specific patterns.
+**Problem:** n=0 should return 0 (no elements to choose), k=0 should return 1 (empty sequence).
+**Fix:** Handle edge cases explicitly before the main computation.
 
-**Key Differences**: Sequences must match specific patterns
+### Mistake 4: Incorrect Mod Value
 
-**Solution Approach**: Use pattern matching techniques
-
-**Implementation**:
 ```python
-def pattern_constrained_sequence_count(n, k, pattern, mod=10**9+7):
-    """
-    Count sequences that match specific patterns
-    
-    Args:
-        n: maximum element value
-        k: sequence length
-        pattern: pattern to match
-        mod: modulo value
-    
-    Returns:
-        int: number of pattern-matching sequences modulo mod
-    """
-    def count_pattern_sequences(position, current_sequence):
-        """Count sequences that match pattern"""
-        if position == k:
-            # Check if sequence matches pattern
-            if matches_pattern(current_sequence, pattern):
-                return 1
-            return 0
-        
-        count = 0
-        for element in range(1, n + 1):
-            current_sequence.append(element)
-            count = (count + count_pattern_sequences(position + 1, current_sequence)) % mod
-            current_sequence.pop()  # Backtrack
-        
-        return count
-    
-    def matches_pattern(sequence, pattern):
-        """Check if sequence matches pattern"""
-        if len(sequence) != len(pattern):
-            return False
-        
-        for i in range(len(sequence)):
-            if not matches_element_pattern(sequence[i], pattern[i]):
-                return False
-        
-        return True
-    
-    def matches_element_pattern(element, pattern_element):
-        """Check if element matches pattern element"""
-        if isinstance(pattern_element, set):
-            return element in pattern_element
-        elif isinstance(pattern_element, list):
-            return element in pattern_element
-        else:
-            return element == pattern_element
-    
-    return count_pattern_sequences(0, [])
+# WRONG - using wrong modulo
+MOD = 1e9 + 7  # This is a float!
 
-# Example usage
-n, k = 3, 2
-pattern = [1, {2, 3}]  # First element must be 1, second element must be 2 or 3
-result = pattern_constrained_sequence_count(n, k, pattern)
-print(f"Pattern constrained sequence count: {result}")
+# CORRECT
+MOD = 10**9 + 7  # Integer
+MOD = 1000000007  # Also integer
 ```
 
-### Related Problems
+---
 
-#### **CSES Problems**
-- [Counting Permutations](https://cses.fi/problemset/task/1075) - Combinatorics
-- [Counting Combinations](https://cses.fi/problemset/task/1075) - Combinatorics
-- [Counting Reorders](https://cses.fi/problemset/task/1075) - Combinatorics
+## Edge Cases
 
-#### **LeetCode Problems**
-- [Permutations](https://leetcode.com/problems/permutations/) - Permutations
-- [Permutations II](https://leetcode.com/problems/permutations-ii/) - Permutations with duplicates
-- [Combinations](https://leetcode.com/problems/combinations/) - Combinations
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Empty sequence | k = 0 | 1 | One way to have empty sequence |
+| No elements | n = 0, k > 0 | 0 | Cannot form non-empty sequence |
+| Single element | n = 1 | 1 | All positions must be 1 |
+| Single position | k = 1 | n | Just n choices |
+| Large values | n = 10^6, k = 10^6 | (computed) | Must use modular exponentiation |
 
-#### **Problem Categories**
-- **Combinatorics**: Mathematical counting, sequences, permutations
-- **Dynamic Programming**: DP optimization, mathematical DP
-- **Mathematical Algorithms**: Modular arithmetic, number theory
+---
 
-## 🔗 Additional Resources
+## When to Use This Pattern
 
-### **Algorithm References**
-- [Combinatorics](https://cp-algorithms.com/combinatorics/binomial-coefficients.html) - Binomial coefficients
-- [Sequences](https://cp-algorithms.com/combinatorics/inclusion-exclusion.html) - Inclusion-exclusion principle
-- [Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html) - Modular arithmetic
+### Use Binary Exponentiation When:
+- Computing large powers (a^b where b is large)
+- Working with modular arithmetic
+- Matrix exponentiation for DP optimization
+- Computing Fibonacci numbers in O(log n)
 
-### **Practice Problems**
-- [CSES Counting Permutations](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Counting Combinations](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Counting Reorders](https://cses.fi/problemset/task/1075) - Medium
+### Recognize Counting with Multiplication Principle When:
+- Choices at each step are independent
+- No constraints between positions
+- Answer is product of choices at each step
 
-### **Further Reading**
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
-- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
-- [Combinatorics](https://en.wikipedia.org/wiki/Combinatorics) - Wikipedia article
+### Pattern Recognition Checklist:
+- [ ] Are positions independent? --> **Multiplication principle**
+- [ ] Need a^b for large b? --> **Binary exponentiation**
+- [ ] Working with mod? --> **Take mod at each step**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Exponentiation](https://cses.fi/problemset/task/1095) | Basic modular exponentiation |
+| [Exponentiation II](https://cses.fi/problemset/task/1712) | Fermat's little theorem extension |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Counting Rooms](https://cses.fi/problemset/task/1192) | Flood fill counting |
+| [Dice Combinations](https://cses.fi/problemset/task/1633) | DP instead of direct formula |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Bracket Sequences I](https://cses.fi/problemset/task/2064) | Catalan numbers |
+| [Counting Necklaces](https://cses.fi/problemset/task/2209) | Burnside's lemma |
+| [Graph Paths I](https://cses.fi/problemset/task/1723) | Matrix exponentiation |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Counting sequences with n choices and k positions = n^k
+2. **Time Optimization:** Binary exponentiation reduces O(k) to O(log k)
+3. **Space Trade-off:** O(1) space - no arrays needed
+4. **Pattern:** Multiplication principle + modular arithmetic
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why the answer is n^k using the multiplication principle
+- [ ] Implement binary exponentiation from scratch
+- [ ] Handle modular arithmetic correctly to avoid overflow
+- [ ] Identify when a counting problem reduces to a power formula
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
+- [CP-Algorithms: Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html)
+- [CSES Problem Set - Mathematics](https://cses.fi/problemset/)

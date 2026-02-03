@@ -1,578 +1,418 @@
 ---
 layout: simple
-title: "Cycle Finding - Graph Algorithm Problem"
+title: "Cycle Finding - Negative Cycle Detection with Bellman-Ford"
 permalink: /problem_soulutions/graph_algorithms/cycle_finding_analysis
+difficulty: Medium
+tags: [graph, bellman-ford, negative-cycle, shortest-path]
+cses_link: https://cses.fi/problemset/task/1197
 ---
 
-# Cycle Finding - Graph Algorithm Problem
+# Cycle Finding - Negative Cycle Detection with Bellman-Ford
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of cycle detection in directed and undirected graphs
-- Apply efficient algorithms for finding cycles in graphs
-- Implement DFS-based cycle detection with color coding
-- Optimize graph algorithms for cycle detection problems
-- Handle special cases in cycle detection problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find a negative cycle in a directed weighted graph |
+| Algorithm | Bellman-Ford with cycle extraction |
+| Time Complexity | O(n * m) |
+| Space Complexity | O(n) |
+| Key Insight | If relaxation occurs on nth iteration, negative cycle exists |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a directed graph, find if it contains a cycle and return the cycle if it exists.
+By completing this problem, you will understand:
+1. **Bellman-Ford Algorithm**: How to find shortest paths with negative edge weights
+2. **Negative Cycle Detection**: Why n-1 relaxations are sufficient and what the nth means
+3. **Cycle Extraction**: How to trace back and reconstruct the actual negative cycle
 
-**Input**: 
-- n: number of vertices
-- m: number of edges
-- edges: array of (u, v) representing directed edges
+## Problem Statement
 
-**Output**: 
-- Cycle as a list of vertices, or -1 if no cycle exists
+Given a directed graph with `n` nodes and `m` weighted edges, find a negative cycle or report that none exists.
 
-**Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
+**Input:**
+- First line: `n` (nodes) and `m` (edges)
+- Next `m` lines: `a b c` representing edge from `a` to `b` with weight `c`
 
-**Example**:
+**Output:**
+- If negative cycle exists: Print "YES" and the cycle vertices
+- Otherwise: Print "NO"
+
+**Constraints:**
+- 1 <= n <= 2500
+- 1 <= m <= 5000
+- -10^9 <= edge weight <= 10^9
+
+## Bellman-Ford Algorithm Basics
+
+### Core Idea
+
+Bellman-Ford finds shortest paths by **relaxing all edges repeatedly**:
+
 ```
-Input:
-n = 4, m = 4
-edges = [(0,1), (1,2), (2,3), (3,0)]
-
-Output:
-[0, 1, 2, 3, 0]
-
-Explanation**: 
-Cycle: 0 -> 1 -> 2 -> 3 -> 0
-All vertices form a directed cycle
-```
-
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible paths to find cycles
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic graph traversal for each path
-- **Inefficient**: O(n!) time complexity
-
-**Key Insight**: Check every possible path to find if any forms a cycle.
-
-**Algorithm**:
-- Generate all possible paths in the graph
-- Check if any path forms a cycle
-- Return the first cycle found
-
-**Visual Example**:
-```
-Graph: 0->1, 1->2, 2->3, 3->0
-
-All possible paths:
-┌─────────────────────────────────────┐
-│ Path 1: 0 -> 1 -> 2 -> 3 -> 0 ✓    │
-│ Path 2: 0 -> 1 -> 2 -> 3           │
-│ Path 3: 1 -> 2 -> 3 -> 0 -> 1 ✓    │
-│ Path 4: 2 -> 3 -> 0 -> 1 -> 2 ✓    │
-│ Path 5: 3 -> 0 -> 1 -> 2 -> 3 ✓    │
-│                                   │
-│ Check each path:                   │
-│ - Path 1: starts and ends at 0 ✓   │
-│ - Path 3: starts and ends at 1 ✓   │
-│ - Path 4: starts and ends at 2 ✓   │
-│ - Path 5: starts and ends at 3 ✓   │
-│                                   │
-│ Cycles found: 1, 3, 4, 5          │
-│ Return: [0, 1, 2, 3, 0]          │
-└─────────────────────────────────────┘
+Relaxation: If dist[u] + weight(u,v) < dist[v], update dist[v]
 ```
 
-**Implementation**:
+### Why n-1 Relaxations?
+
+A shortest path in a graph with `n` nodes has **at most n-1 edges** (visiting each node once).
+
+```
+Iteration 1: Finds shortest paths using at most 1 edge
+Iteration 2: Finds shortest paths using at most 2 edges
+...
+Iteration n-1: Finds shortest paths using at most n-1 edges
+```
+
+After `n-1` iterations, all shortest paths are found (if no negative cycle).
+
+### The Key Insight for Negative Cycles
+
+**If we can still relax an edge on the nth iteration, a negative cycle exists.**
+
+Why? Because:
+- Without negative cycles, n-1 iterations are sufficient
+- If relaxation is still possible, we can keep reducing distances indefinitely
+- This only happens when there's a cycle with total negative weight
+
+## Finding the Actual Cycle
+
+### The Tricky Part
+
+When edge `(u, v)` relaxes on the nth iteration:
+- Node `v` might NOT be on the cycle itself
+- Node `v` might just be **reachable from** the cycle
+
+**Visual Example:**
+```
+    Negative Cycle          Node v (relaxed)
+    +-----------+
+    |           |
+    v           |
+   [1]--(-5)-->[2]--(-3)-->[3]---->(4)---->(5)
+    ^           |                           |
+    |           |                           v
+    +----(2)----+                    (v gets relaxed
+                                     but not on cycle)
+```
+
+### Solution: Follow Parents n Times
+
+To guarantee we're ON the cycle (not just reachable from it):
+
+```
+1. When edge (u,v) relaxes on nth iteration, start from v
+2. Follow parent pointers n times (guaranteed to reach cycle)
+3. From that node, trace the cycle back to itself
+```
+
+**Why n times?** The path from cycle to v has at most n-1 edges, so going back n steps guarantees we're on the cycle.
+
+## Visual Diagram
+
+```
+Example Graph with Negative Cycle:
+
+        1
+       /|\
+    (2) | (-4)
+     /  |  \
+    v   |   v
+   [2]  |  [3]
+    |   |   |
+ (-3)   |  (1)
+    |   |   |
+    v   |   v
+   [4]--+  [5]
+      \   /
+    (3)\ /(2)
+        v
+       [6]
+
+Edges: (1,2,2), (1,3,-4), (2,4,-3), (3,5,1), (4,1,3), (5,6,2), (4,6,3)
+
+Negative Cycle: 1 -> 2 -> 4 -> 1
+Total weight: 2 + (-3) + 3 = 2  (NOT negative)
+
+Let's use: 1 -> 3 -> 5 with different weights for negative cycle:
+Edges: (1,2,1), (2,3,-2), (3,1,-1)
+Cycle: 1 -> 2 -> 3 -> 1 = 1 + (-2) + (-1) = -2 (NEGATIVE!)
+```
+
+## Dry Run: Step-by-Step Example
+
+**Graph:**
+```
+Nodes: 4
+Edges:
+  1 -> 2 (weight: 1)
+  2 -> 3 (weight: -2)
+  3 -> 4 (weight: 2)
+  4 -> 2 (weight: -2)
+
+Negative cycle: 2 -> 3 -> 4 -> 2 = -2 + 2 + (-2) = -2
+```
+
+**Initialization:**
+```
+dist = [0, INF, INF, INF, INF]  (1-indexed, node 1 as source)
+parent = [-1, -1, -1, -1, -1]
+```
+
+**Iteration 1 (relaxing all edges):**
+```
+Edge (1,2,1):  dist[2] = min(INF, 0+1) = 1,    parent[2] = 1
+Edge (2,3,-2): dist[3] = min(INF, 1-2) = -1,   parent[3] = 2
+Edge (3,4,2):  dist[4] = min(INF, -1+2) = 1,   parent[4] = 3
+Edge (4,2,-2): dist[2] = min(1, 1-2) = -1,     parent[2] = 4
+
+dist = [0, INF, -1, -1, 1]
+```
+
+**Iteration 2:**
+```
+Edge (1,2,1):  dist[2] = min(-1, 0+1) = -1     (no change)
+Edge (2,3,-2): dist[3] = min(-1, -1-2) = -3,   parent[3] = 2
+Edge (3,4,2):  dist[4] = min(1, -3+2) = -1,    parent[4] = 3
+Edge (4,2,-2): dist[2] = min(-1, -1-2) = -3,   parent[2] = 4
+
+dist = [0, INF, -3, -3, -1]
+```
+
+**Iteration 3:**
+```
+Edge (2,3,-2): dist[3] = min(-3, -3-2) = -5,   parent[3] = 2
+Edge (3,4,2):  dist[4] = min(-1, -5+2) = -3,   parent[4] = 3
+Edge (4,2,-2): dist[2] = min(-3, -3-2) = -5,   parent[2] = 4
+
+dist = [0, INF, -5, -5, -3]
+```
+
+**Iteration 4 (nth iteration - checking for negative cycle):**
+```
+Edge (4,2,-2): dist[2] = min(-5, -3-2) = -5    (STILL CAN RELAX!)
+
+Negative cycle detected! Node involved: 2
+```
+
+**Extracting the cycle:**
+```
+Start at node 2, follow parents n=4 times:
+2 -> parent[2]=4 -> parent[4]=3 -> parent[3]=2 -> parent[2]=4
+
+After 4 steps, we're at node 4 (guaranteed on cycle)
+
+Now trace cycle from node 4:
+4 -> parent[4]=3 -> parent[3]=2 -> parent[2]=4 (back to start!)
+
+Cycle found: 4 -> 3 -> 2 -> 4
+Or equivalently: 2 -> 4 -> 3 -> 2
+```
+
+## Python Solution
+
 ```python
-def brute_force_cycle_finding(n, edges):
-    """Find cycle using brute force approach"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    def find_all_paths(start, current_path, visited):
-        """Find all possible paths from start"""
-        if len(current_path) > 1 and current_path[0] == current_path[-1]:
-            return [current_path]  # Found a cycle
-        
-        if len(current_path) > n:
-            return []  # Path too long, no cycle
-        
-        paths = []
-        for neighbor in adj[start]:
-            if neighbor not in visited:
-                new_path = current_path + [neighbor]
-                new_visited = visited | {neighbor}
-                paths.extend(find_all_paths(neighbor, new_path, new_visited))
-        
-        return paths
-    
-    # Try starting from each vertex
-    for start in range(n):
-        paths = find_all_paths(start, [start], {start})
-        if paths:
-            return paths[0]
-    
-    return -1
+def find_negative_cycle(n, edges):
+    """
+    Find a negative cycle using Bellman-Ford algorithm.
 
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-result = brute_force_cycle_finding(n, edges)
-print(f"Brute force cycle: {result}")
-```
+    Args:
+        n: Number of nodes (1-indexed)
+        edges: List of (u, v, w) tuples representing directed edges
 
-**Time Complexity**: O(n!)
-**Space Complexity**: O(n)
+    Returns:
+        List of nodes forming the cycle, or None if no negative cycle
+    """
+    INF = float('inf')
+    dist = [0] * (n + 1)  # Start with all zeros (virtual source to all)
+    parent = [-1] * (n + 1)
 
-**Why it's inefficient**: O(n!) time complexity for checking all possible paths.
+    # Run n iterations (n-1 for shortest paths, 1 more to detect cycle)
+    last_relaxed = -1
 
----
+    for iteration in range(n):
+        last_relaxed = -1
+        for u, v, w in edges:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                parent[v] = u
+                last_relaxed = v
 
-### Approach 2: DFS with Color Coding
+    # No relaxation on nth iteration means no negative cycle
+    if last_relaxed == -1:
+        return None
 
-**Key Insights from DFS with Color Coding**:
-- **Color Coding**: Use three colors (white, gray, black) to track vertex states
-- **Efficient Implementation**: O(n + m) time complexity
-- **Cycle Detection**: Detect back edges during DFS traversal
-- **Optimization**: Much more efficient than brute force
+    # Find a node that is definitely on the cycle
+    # Go back n steps to ensure we're on the cycle
+    node_on_cycle = last_relaxed
+    for _ in range(n):
+        node_on_cycle = parent[node_on_cycle]
 
-**Key Insight**: Use DFS with color coding to detect back edges that indicate cycles.
-
-**Algorithm**:
-- Use three colors: white (unvisited), gray (visiting), black (visited)
-- During DFS, if we encounter a gray vertex, we found a back edge (cycle)
-- Track the path to reconstruct the cycle
-
-**Visual Example**:
-```
-DFS with color coding:
-
-Graph: 0->1, 1->2, 2->3, 3->0
-Colors: white (0), gray (1), black (2)
-
-Step 1: Start DFS from 0
-┌─────────────────────────────────────┐
-│ Color[0] = gray (visiting)         │
-│ Stack: [0]                         │
-│                                   │
-│ Step 2: Visit 1                    │
-│ Color[1] = gray (visiting)         │
-│ Stack: [0, 1]                     │
-│                                   │
-│ Step 3: Visit 2                    │
-│ Color[2] = gray (visiting)         │
-│ Stack: [0, 1, 2]                  │
-│                                   │
-│ Step 4: Visit 3                    │
-│ Color[3] = gray (visiting)         │
-│ Stack: [0, 1, 2, 3]               │
-│                                   │
-│ Step 5: Try to visit 0             │
-│ Color[0] = gray (already visiting) │
-│ Back edge found! Cycle detected!   │
-│                                   │
-│ Reconstruct cycle: [0, 1, 2, 3, 0] │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def dfs_color_coding_cycle_finding(n, edges):
-    """Find cycle using DFS with color coding"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Color coding: 0=white, 1=gray, 2=black
-    color = [0] * n
-    parent = [-1] * n
+    # Extract the cycle
     cycle = []
-    
-    def dfs(vertex):
-        """DFS with color coding for cycle detection"""
-        color[vertex] = 1  # Mark as gray (visiting)
-        
-        for neighbor in adj[vertex]:
-            if color[neighbor] == 0:  # White (unvisited)
-                parent[neighbor] = vertex
-                if dfs(neighbor):
-                    return True
-            elif color[neighbor] == 1:  # Gray (visiting) - back edge found!
-                # Reconstruct cycle
-                cycle.append(neighbor)
-                current = vertex
-                while current != neighbor:
-                    cycle.append(current)
-                    current = parent[current]
-                cycle.append(neighbor)
-                cycle.reverse()
-                return True
-        
-        color[vertex] = 2  # Mark as black (visited)
-        return False
-    
-    # Try DFS from each unvisited vertex
-    for i in range(n):
-        if color[i] == 0:  # White (unvisited)
-            if dfs(i):
-                return cycle
-    
-    return -1
+    current = node_on_cycle
+    while True:
+        cycle.append(current)
+        current = parent[current]
+        if current == node_on_cycle:
+            break
 
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-result = dfs_color_coding_cycle_finding(n, edges)
-print(f"DFS color coding cycle: {result}")
+    cycle.append(node_on_cycle)  # Complete the cycle
+    cycle.reverse()  # Correct order
+
+    return cycle
+
+
+def solve():
+    """Main solution function."""
+    import sys
+    input = sys.stdin.readline
+
+    n, m = map(int, input().split())
+    edges = []
+    for _ in range(m):
+        a, b, c = map(int, input().split())
+        edges.append((a, b, c))
+
+    cycle = find_negative_cycle(n, edges)
+
+    if cycle is None:
+        print("NO")
+    else:
+        print("YES")
+        print(' '.join(map(str, cycle)))
+
+
+if __name__ == "__main__":
+    solve()
 ```
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n + m)
+## C++ Solution
 
-**Why it's better**: Uses DFS with color coding for O(n + m) time complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+    int n, m;
+    cin >> n >> m;
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for cycle detection
-- **Efficient Implementation**: O(n + m) time complexity
-- **Space Efficiency**: O(n + m) space complexity
-- **Optimal Complexity**: Best approach for cycle detection
+    vector<tuple<int, int, long long>> edges(m);
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        long long c;
+        cin >> a >> b >> c;
+        edges[i] = {a, b, c};
+    }
 
-**Key Insight**: Use advanced data structures for optimal cycle detection.
+    const long long INF = 1e18;
+    vector<long long> dist(n + 1, 0);  // All zeros (virtual source)
+    vector<int> parent(n + 1, -1);
 
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient DFS with optimized color coding
-- Handle special cases optimally
-- Return cycle
+    int lastRelaxed = -1;
 
-**Visual Example**:
+    // Run n iterations
+    for (int iter = 0; iter < n; iter++) {
+        lastRelaxed = -1;
+        for (auto& [u, v, w] : edges) {
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                parent[v] = u;
+                lastRelaxed = v;
+            }
+        }
+    }
+
+    // No negative cycle
+    if (lastRelaxed == -1) {
+        cout << "NO\n";
+        return 0;
+    }
+
+    // Find node guaranteed to be on the cycle
+    int nodeOnCycle = lastRelaxed;
+    for (int i = 0; i < n; i++) {
+        nodeOnCycle = parent[nodeOnCycle];
+    }
+
+    // Extract the cycle
+    vector<int> cycle;
+    int current = nodeOnCycle;
+    do {
+        cycle.push_back(current);
+        current = parent[current];
+    } while (current != nodeOnCycle);
+
+    cycle.push_back(nodeOnCycle);
+    reverse(cycle.begin(), cycle.end());
+
+    cout << "YES\n";
+    for (int i = 0; i < cycle.size(); i++) {
+        cout << cycle[i] << (i < cycle.size() - 1 ? " " : "\n");
+    }
+
+    return 0;
+}
 ```
-Advanced data structure approach:
 
-For graph: 0->1, 1->2, 2->3, 3->0
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Graph structure: for efficient    │
-│   storage and traversal             │
-│ - Color cache: for optimization     │
-│ - Parent cache: for optimization    │
-│                                   │
-│ Cycle detection calculation:       │
-│ - Use graph structure for efficient │
-│   storage and traversal             │
-│ - Use color cache for optimization  │
-│ - Use parent cache for optimization │
-│                                   │
-│ Result: [0, 1, 2, 3, 0]          │
-└─────────────────────────────────────┘
-```
+## Common Mistakes
 
-**Implementation**:
+### 1. Not Handling "Node Leads to Cycle" Case
+
+**Wrong Approach:**
 ```python
-def advanced_data_structure_cycle_finding(n, edges):
-    """Find cycle using advanced data structure approach"""
-    # Use advanced data structures for graph storage
-    # Build advanced adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Advanced data structures for cycle detection
-    # Color coding: 0=white, 1=gray, 2=black
-    color = [0] * n
-    parent = [-1] * n
-    cycle = []
-    
-    def advanced_dfs(vertex):
-        """Advanced DFS with optimized color coding"""
-        color[vertex] = 1  # Mark as gray (visiting)
-        
-        # Process neighbors using advanced data structures
-        for neighbor in adj[vertex]:
-            if color[neighbor] == 0:  # White (unvisited)
-                parent[neighbor] = vertex
-                if advanced_dfs(neighbor):
-                    return True
-            elif color[neighbor] == 1:  # Gray (visiting) - back edge found!
-                # Advanced cycle reconstruction
-                cycle.append(neighbor)
-                current = vertex
-                while current != neighbor:
-                    cycle.append(current)
-                    current = parent[current]
-                cycle.append(neighbor)
-                cycle.reverse()
-                return True
-        
-        color[vertex] = 2  # Mark as black (visited)
-        return False
-    
-    # Advanced DFS from each unvisited vertex
-    for i in range(n):
-        if color[i] == 0:  # White (unvisited)
-            if advanced_dfs(i):
-                return cycle
-    
-    return -1
-
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-result = advanced_data_structure_cycle_finding(n, edges)
-print(f"Advanced data structure cycle: {result}")
+# WRONG: Assuming last_relaxed is ON the cycle
+cycle_start = last_relaxed
 ```
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n + m)
-
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n!) | O(n) | Try all possible paths |
-| DFS Color Coding | O(n + m) | O(n + m) | Use color coding to detect back edges |
-| Advanced Data Structure | O(n + m) | O(n + m) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(n + m) - Use DFS with color coding for efficient cycle detection
-- **Space**: O(n + m) - Store graph and auxiliary data structures
-
-### Why This Solution Works
-- **Color Coding**: Use three colors to track vertex states during DFS
-- **Back Edge Detection**: Detect cycles by finding back edges to gray vertices
-- **Cycle Reconstruction**: Reconstruct cycle using parent pointers
-- **Optimal Algorithms**: Use optimal algorithms for cycle detection
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Cycle Finding with Constraints**
-**Problem**: Find cycles with specific constraints.
-
-**Key Differences**: Apply constraints to cycle detection
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
+**Correct Approach:**
 ```python
-def constrained_cycle_finding(n, edges, constraints):
-    """Find cycles with constraints"""
-    # Build adjacency list with constraints
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        if constraints(u, v):
-            adj[u].append(v)
-    
-    # Color coding: 0=white, 1=gray, 2=black
-    color = [0] * n
-    parent = [-1] * n
-    cycle = []
-    
-    def constrained_dfs(vertex):
-        """DFS with constraints for cycle detection"""
-        color[vertex] = 1  # Mark as gray (visiting)
-        
-        for neighbor in adj[vertex]:
-            if constraints(vertex, neighbor):
-                if color[neighbor] == 0:  # White (unvisited)
-                    parent[neighbor] = vertex
-                    if constrained_dfs(neighbor):
-                        return True
-                elif color[neighbor] == 1:  # Gray (visiting) - back edge found!
-                    # Reconstruct cycle with constraints
-                    cycle.append(neighbor)
-                    current = vertex
-                    while current != neighbor:
-                        cycle.append(current)
-                        current = parent[current]
-                    cycle.append(neighbor)
-                    cycle.reverse()
-                    return True
-        
-        color[vertex] = 2  # Mark as black (visited)
-        return False
-    
-    # Try constrained DFS from each unvisited vertex
-    for i in range(n):
-        if color[i] == 0:  # White (unvisited)
-            if constrained_dfs(i):
-                return cycle
-    
-    return -1
-
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-constraints = lambda u, v: u < v or v == 0  # Special constraint
-result = constrained_cycle_finding(n, edges, constraints)
-print(f"Constrained cycle: {result}")
+# CORRECT: Follow parents n times to ensure we're on cycle
+node_on_cycle = last_relaxed
+for _ in range(n):
+    node_on_cycle = parent[node_on_cycle]
 ```
 
-#### **2. Cycle Finding with Different Metrics**
-**Problem**: Find cycles with different length metrics.
+### 2. Integer Overflow
 
-**Key Differences**: Different cycle length calculations
+With edge weights up to 10^9 and potentially n*weight additions, use `long long` in C++ or handle large integers in Python.
 
-**Solution Approach**: Use advanced mathematical techniques
+### 3. Not Initializing Distances Properly
 
-**Implementation**:
-```python
-def weighted_cycle_finding(n, edges, weight_function):
-    """Find cycles with different weight metrics"""
-    # Build adjacency list with modified weights
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        weight = weight_function(u, v)
-        adj[u].append((v, weight))
-    
-    # Color coding: 0=white, 1=gray, 2=black
-    color = [0] * n
-    parent = [-1] * n
-    cycle = []
-    
-    def weighted_dfs(vertex):
-        """DFS with weights for cycle detection"""
-        color[vertex] = 1  # Mark as gray (visiting)
-        
-        for neighbor, weight in adj[vertex]:
-            if color[neighbor] == 0:  # White (unvisited)
-                parent[neighbor] = vertex
-                if weighted_dfs(neighbor):
-                    return True
-            elif color[neighbor] == 1:  # Gray (visiting) - back edge found!
-                # Reconstruct cycle with weights
-                cycle.append(neighbor)
-                current = vertex
-                while current != neighbor:
-                    cycle.append(current)
-                    current = parent[current]
-                cycle.append(neighbor)
-                cycle.reverse()
-                return True
-        
-        color[vertex] = 2  # Mark as black (visited)
-        return False
-    
-    # Try weighted DFS from each unvisited vertex
-    for i in range(n):
-        if color[i] == 0:  # White (unvisited)
-            if weighted_dfs(i):
-                return cycle
-    
-    return -1
+**Issue:** If you initialize `dist[1] = 0` and others to INF, you might miss negative cycles not reachable from node 1.
 
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-weight_function = lambda u, v: abs(u - v)  # Distance-based weight
-result = weighted_cycle_finding(n, edges, weight_function)
-print(f"Weighted cycle: {result}")
-```
+**Solution:** Initialize all distances to 0 (conceptually, add a virtual source connected to all nodes with weight 0).
 
-#### **3. Cycle Finding with Multiple Dimensions**
-**Problem**: Find cycles in multiple dimensions.
+### 4. Wrong Cycle Direction
 
-**Key Differences**: Handle multiple dimensions
+The parent pointers go backward. Remember to reverse the cycle for correct output order.
 
-**Solution Approach**: Use advanced mathematical techniques
+## Complexity Analysis
 
-**Implementation**:
-```python
-def multi_dimensional_cycle_finding(n, edges, dimensions):
-    """Find cycles in multiple dimensions"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Color coding: 0=white, 1=gray, 2=black
-    color = [0] * n
-    parent = [-1] * n
-    cycle = []
-    
-    def multi_dimensional_dfs(vertex):
-        """DFS for multiple dimensions"""
-        color[vertex] = 1  # Mark as gray (visiting)
-        
-        for neighbor in adj[vertex]:
-            if color[neighbor] == 0:  # White (unvisited)
-                parent[neighbor] = vertex
-                if multi_dimensional_dfs(neighbor):
-                    return True
-            elif color[neighbor] == 1:  # Gray (visiting) - back edge found!
-                # Reconstruct cycle
-                cycle.append(neighbor)
-                current = vertex
-                while current != neighbor:
-                    cycle.append(current)
-                    current = parent[current]
-                cycle.append(neighbor)
-                cycle.reverse()
-                return True
-        
-        color[vertex] = 2  # Mark as black (visited)
-        return False
-    
-    # Try multi-dimensional DFS from each unvisited vertex
-    for i in range(n):
-        if color[i] == 0:  # White (unvisited)
-            if multi_dimensional_dfs(i):
-                return cycle
-    
-    return -1
+| Operation | Time | Space |
+|-----------|------|-------|
+| Bellman-Ford (n iterations) | O(n * m) | O(n) |
+| Finding node on cycle | O(n) | O(1) |
+| Extracting cycle | O(n) | O(n) |
+| **Total** | **O(n * m)** | **O(n)** |
 
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-dimensions = 1
-result = multi_dimensional_cycle_finding(n, edges, dimensions)
-print(f"Multi-dimensional cycle: {result}")
-```
+## Related Problems
 
-### Related Problems
+### CSES Problems
+- [High Score](https://cses.fi/problemset/task/1673) - Longest path with negative cycles
+- [Shortest Routes I](https://cses.fi/problemset/task/1671) - Dijkstra's algorithm
 
-#### **CSES Problems**
-- [Round Trip](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Planets Cycles](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
+### LeetCode Problems
+- [Cheapest Flights Within K Stops](https://leetcode.com/problems/cheapest-flights-within-k-stops/) - Bellman-Ford variant with limited iterations
+- [Network Delay Time](https://leetcode.com/problems/network-delay-time/) - Shortest path basics
 
-#### **LeetCode Problems**
-- [Course Schedule](https://leetcode.com/problems/course-schedule/) - Graph
-- [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) - Graph
-- [Redundant Connection](https://leetcode.com/problems/redundant-connection/) - Graph
+## Key Takeaways
 
-#### **Problem Categories**
-- **Graph Algorithms**: Cycle detection, DFS, color coding
-- **Cycle Detection**: Back edge detection, cycle reconstruction
-- **Graph Traversal**: DFS, graph coloring
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Cycle Detection](https://cp-algorithms.com/graph/finding-cycle.html) - Cycle detection algorithms
-- [DFS](https://cp-algorithms.com/graph/depth-first-search.html) - DFS algorithms
-
-### **Practice Problems**
-- [CSES Round Trip](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Planets Cycles](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Cycle (Graph Theory)](https://en.wikipedia.org/wiki/Cycle_(graph_theory)) - Wikipedia article
-- [Depth-First Search](https://en.wikipedia.org/wiki/Depth-first_search) - Wikipedia article
+1. **Bellman-Ford** works with negative edges, unlike Dijkstra
+2. **n-1 iterations** find all shortest paths (without negative cycles)
+3. **nth iteration relaxation** proves negative cycle exists
+4. **Follow parents n times** to guarantee landing on the actual cycle
+5. **Initialize dist to 0** for all nodes to detect cycles anywhere in graph

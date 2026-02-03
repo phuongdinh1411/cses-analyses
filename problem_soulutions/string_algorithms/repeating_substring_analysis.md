@@ -1,739 +1,588 @@
 ---
 layout: simple
-title: "Repeating Substring"
+title: "Repeating Substring - String Algorithm Problem"
 permalink: /problem_soulutions/string_algorithms/repeating_substring_analysis
+difficulty: Medium
+tags: [string, hashing, binary-search, suffix-array]
 ---
 
 # Repeating Substring
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of repeating substrings and their applications
-- Apply string hashing and rolling hash techniques for pattern detection
-- Implement efficient solutions for repeating substring problems with optimal complexity
-- Optimize solutions for large inputs with proper complexity analysis
-- Handle edge cases in repeating substring problems
+| Attribute | Value |
+|-----------|-------|
+| **CSES Link** | [https://cses.fi/problemset/task/2106](https://cses.fi/problemset/task/2106) |
+| **Difficulty** | Medium |
+| **Category** | String Algorithms |
+| **Time Limit** | 1 second |
+| **Key Technique** | Binary Search + Hashing / Suffix Array |
 
-## 📋 Problem Description
+### Learning Goals
 
-You are given a string s. Find the length of the longest repeating substring in the string.
+After solving this problem, you will be able to:
+- [ ] Apply binary search on answer to find optimal string length
+- [ ] Implement rolling hash (Rabin-Karp) for O(1) substring comparison
+- [ ] Understand suffix arrays and LCP arrays for string problems
+- [ ] Choose between hashing and suffix array approaches based on constraints
 
-A repeating substring is a substring that appears at least twice in the string (non-overlapping occurrences).
+---
 
-**Input**: 
-- First line: string s
+## Problem Statement
 
-**Output**: 
-- Print one integer: the length of the longest repeating substring
+**Problem:** Find the longest substring that appears at least twice in a given string.
 
-**Constraints**:
-- 1 ≤ |s| ≤ 10⁵
-- s contains only lowercase English letters
+**Input:**
+- A single string `s` of lowercase English letters
 
-**Example**:
+**Output:**
+- The length of the longest repeating substring
+- If such a substring exists, print the length; otherwise print `-1`
+
+**Constraints:**
+- 1 <= |s| <= 10^5
+- s contains only lowercase English letters (a-z)
+
+### Example
+
 ```
 Input:
 ababab
 
 Output:
 4
-
-Explanation**: 
-String: "ababab"
-
-Repeating substrings:
-- "ab" appears 3 times (positions 0-1, 2-3, 4-5)
-- "abab" appears 2 times (positions 0-3, 2-5)
-
-Longest repeating substring: "abab" with length 4
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** The substring "abab" appears twice:
+- At position 0: **abab**ab
+- At position 2: ab**abab**
 
-### Approach 1: Brute Force
-**Time Complexity**: O(n³)  
-**Space Complexity**: O(n²)
+These occurrences overlap, which is allowed.
 
-**Algorithm**:
-1. Generate all possible substrings
-2. For each substring, count its occurrences in the string
-3. Return the length of the longest substring that appears at least twice
+---
 
-**Implementation**:
+## Intuition: How to Think About This Problem
+
+### Pattern Recognition
+
+> **Key Question:** How can we efficiently check if a repeating substring of length `k` exists?
+
+If a repeating substring of length `k` exists, then a repeating substring of length `k-1` also exists (just take a prefix). This **monotonic property** means we can binary search on the answer!
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** The maximum length `L` such that some substring of length `L` appears at least twice.
+2. **What information do we have?** A string where we can extract and compare substrings.
+3. **What's the relationship?** If length `L` works, all lengths < `L` also work. If `L` doesn't work, no length > `L` works.
+
+### Analogies
+
+Think of this like finding the longest common prefix among duplicate entries in a sorted phone book. If we sort all suffixes of the string, duplicates (repeating substrings) will be adjacent!
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+Check all possible substrings and count their occurrences using a hash set.
+
+### Algorithm
+
+1. For each length `L` from `n-1` down to `1`
+2. Extract all substrings of length `L`
+3. If any substring appears twice, return `L`
+
+### Code
+
 ```python
-def brute_force_repeating_substring(s):
+def solve_brute_force(s):
+    """
+    Brute force: check all substrings.
+    Time: O(n^3)  Space: O(n^2)
+    """
     n = len(s)
-    max_length = 0
-    
-    # Try all possible substring lengths
-    for length in range(1, n):
-        # Try all possible starting positions
-        for i in range(n - length + 1):
-            substring = s[i:i + length]
-            count = 0
-            
-            # Count occurrences of this substring
-            for j in range(n - length + 1):
-                if s[j:j + length] == substring:
-                    count += 1
-            
-            # If it appears at least twice, update max length
-            if count >= 2:
-                max_length = max(max_length, length)
-    
-    return max_length
-```
-
-**Analysis**:
-- **Time**: O(n³) - Three nested loops
-- **Space**: O(n²) - Storing all possible substrings
-- **Limitations**: Too slow for large inputs
-
-### Approach 2: Optimized with Rolling Hash
-**Time Complexity**: O(n²)  
-**Space Complexity**: O(n²)
-
-**Algorithm**:
-1. Use rolling hash to efficiently compute substring hashes
-2. Group substrings by their hash values
-3. For each hash group, verify actual matches and count occurrences
-4. Return the length of the longest substring with at least 2 occurrences
-
-**Implementation**:
-```python
-def optimized_repeating_substring(s):
-    n = len(s)
-    max_length = 0
-    P = 31  # Prime base
-    M = 10**9 + 7  # Large prime modulus
-    
-    # Precompute powers of P
-    powers = [1] * (n + 1)
-    for i in range(1, n + 1):
-        powers[i] = (powers[i-1] * P) % M
-    
-    # Try all possible substring lengths
-    for length in range(1, n):
-        hash_to_positions = {}
-        
-        # Compute rolling hash for all substrings of current length
-        current_hash = 0
-        for i in range(length):
-            current_hash = (current_hash * P + ord(s[i]) - ord('a') + 1) % M
-        
-        # Store first occurrence
-        if current_hash not in hash_to_positions:
-            hash_to_positions[current_hash] = []
-        hash_to_positions[current_hash].append(0)
-        
-        # Rolling hash for remaining positions
-        for i in range(1, n - length + 1):
-            # Remove leftmost character
-            current_hash = (current_hash - (ord(s[i-1]) - ord('a') + 1) * powers[length-1]) % M
-            current_hash = (current_hash + M) % M  # Handle negative
-            
-            # Add rightmost character
-            current_hash = (current_hash * P + ord(s[i + length - 1]) - ord('a') + 1) % M
-            
-            # Store position
-            if current_hash not in hash_to_positions:
-                hash_to_positions[current_hash] = []
-            hash_to_positions[current_hash].append(i)
-        
-        # Check for repeating substrings
-        for hash_val, positions in hash_to_positions.items():
-            if len(positions) >= 2:
-                # Verify actual matches (handle hash collisions)
-                for i in range(len(positions)):
-                    for j in range(i + 1, len(positions)):
-                        pos1, pos2 = positions[i], positions[j]
-                        if s[pos1:pos1 + length] == s[pos2:pos2 + length]:
-                            max_length = max(max_length, length)
-                            break
-                    if max_length == length:
-                        break
-    
-    return max_length
-```
-
-**Analysis**:
-- **Time**: O(n²) - Two nested loops with rolling hash
-- **Space**: O(n²) - Hash map storing positions
-- **Improvement**: Much faster than brute force, handles hash collisions
-
-### Approach 3: Optimal with Suffix Array
-**Time Complexity**: O(n log n)  
-**Space Complexity**: O(n)
-
-**Algorithm**:
-1. Build suffix array for the string
-2. Compute LCP (Longest Common Prefix) array
-3. Find the maximum LCP value, which represents the longest repeating substring
-
-**Implementation**:
-```python
-def optimal_repeating_substring(s):
-    n = len(s)
-    
-    # Build suffix array (simplified version)
-    # In practice, use efficient algorithms like DC3 or SA-IS
-    suffixes = []
-    for i in range(n):
-        suffixes.append((s[i:], i))
-    suffixes.sort()
-    
-    # Compute LCP array
-    lcp = [0] * n
-    for i in range(1, n):
-        lcp[i] = longest_common_prefix(suffixes[i-1][0], suffixes[i][0])
-    
-    # Find maximum LCP
-    max_lcp = max(lcp) if lcp else 0
-    return max_lcp
-
-def longest_common_prefix(s1, s2):
-    """Find length of longest common prefix between two strings"""
-    min_len = min(len(s1), len(s2))
-    for i in range(min_len):
-        if s1[i] != s2[i]:
-            return i
-    return min_len
-```
-
-**Analysis**:
-- **Time**: O(n log n) - Suffix array construction
-- **Space**: O(n) - Suffix array and LCP array
-- **Optimal**: Best possible complexity for this problem
-
-**Visual Example**:
-```
-String: "ababab"
-
-Suffix Array:
-Index | Suffix | LCP
-------|--------|----
-  0   | "ab"   |  0
-  1   | "abab" |  2  ← Longest common prefix
-  2   | "ababab"| 4
-  3   | "b"    |  0
-  4   | "bab"  |  1
-  5   | "babab"| 3
-
-Maximum LCP = 4
-Longest repeating substring: "abab" (length 4)
-```
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: Check all possible substrings and count their occurrences
-- **Complete Coverage**: Guarantees finding the correct answer but inefficient
-- **Simple Implementation**: Easy to understand and implement
-
-**Key Insights from Optimized Approach**:
-- **Rolling Hash**: Efficiently compute hash values for all substrings of a given length
-- **Efficient Grouping**: Group substrings by hash values to avoid redundant comparisons
-- **Hash Collision Handling**: Verify actual matches when hash values are equal
-
-**Key Insights from Optimal Approach**:
-- **Suffix Array**: Provides lexicographically sorted suffixes for efficient comparison
-- **LCP Array**: Longest Common Prefix array reveals repeating patterns
-- **Optimal Complexity**: O(n log n) is the best possible for this problem
-
-## 🎯 Key Insights
-
-### 🔑 **Core Concepts**
-- **String Hashing**: Use polynomial rolling hash to efficiently compare substrings
-- **Rolling Hash**: Compute hash values incrementally to avoid recomputation
-- **Suffix Arrays**: Lexicographically sorted array of all suffixes
-- **LCP Arrays**: Longest Common Prefix between adjacent suffixes in suffix array
-
-### 💡 **Problem-Specific Insights**
-- **Repeating Substrings**: A substring that appears at least twice in the string
-- **Pattern Detection**: Use suffix arrays to find common prefixes efficiently
-- **Efficiency Optimization**: From O(n³) brute force to O(n log n) optimal solution
-
-### 🚀 **Optimization Strategies**
-- **Hash-based Grouping**: Group substrings by hash values to reduce comparisons
-- **Suffix Array Construction**: Use efficient algorithms like DC3 or SA-IS
-- **LCP Computation**: Compute LCP array to find longest repeating substrings
-
-## 🧠 Common Pitfalls & How to Avoid Them
-
-### ❌ **Common Mistakes**
-1. **Hash Collisions**: Different strings may have the same hash value - always verify actual matches
-2. **Overlapping Occurrences**: Ensure non-overlapping occurrences when counting repeats
-3. **Edge Cases**: Handle empty strings, single character strings, and no repeating substrings
-
-### ✅ **Best Practices**
-1. **Proper Hash Function**: Use large prime modulus and base to minimize collisions
-2. **Collision Handling**: Always verify actual string matches when hash values are equal
-3. **Efficient Implementation**: Use rolling hash for O(1) hash computation per substring
-
-## 🔗 Related Problems & Pattern Recognition
-
-### 📚 **Similar Problems**
-- **String Matching**: Finding pattern occurrences in text using similar techniques
-- **Finding Periods**: Detecting periodic patterns in strings
-- **Distinct Substrings**: Counting unique substrings using suffix arrays
-
-### 🎯 **Pattern Recognition**
-- **String Hashing Problems**: Problems involving substring comparison and pattern matching
-- **Suffix Array Problems**: Problems requiring efficient string processing and comparison
-- **Pattern Matching Problems**: Problems involving finding repeating or common patterns
-
-## 📈 Complexity Analysis
-
-### ⏱️ **Time Complexity**
-- **Brute Force**: O(n³) - Three nested loops checking all substrings
-- **Optimized**: O(n²) - Two nested loops with rolling hash optimization
-- **Optimal**: O(n log n) - Suffix array construction and LCP computation
-
-### 💾 **Space Complexity**
-- **Brute Force**: O(n²) - Storing all possible substrings
-- **Optimized**: O(n²) - Hash map storing positions for each hash value
-- **Optimal**: O(n) - Suffix array and LCP array storage
-
-## 🎓 Summary
-
-### 🏆 **Key Takeaways**
-1. **String Hashing**: Essential technique for efficient substring comparison
-2. **Rolling Hash**: Enables O(1) hash computation for sliding windows
-3. **Suffix Arrays**: Powerful data structure for string processing problems
-4. **LCP Arrays**: Reveal repeating patterns and common prefixes efficiently
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Repeating Substring with Dynamic Updates
-**Problem**: Handle dynamic updates to string characters and maintain repeating substring queries efficiently.
-
-**Link**: [CSES Problem Set - Repeating Substring with Updates](https://cses.fi/problemset/task/repeating_substring_updates)
-
-```python
-class RepeatingSubstringWithUpdates:
-    def __init__(self, s):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.suffix_array = self._build_suffix_array()
-        self.lcp_array = self._build_lcp_array()
-    
-    def _build_suffix_array(self):
-        """Build suffix array using efficient algorithm"""
-        suffixes = []
-        for i in range(self.n):
-            suffixes.append((self.s[i:], i))
-        
-        suffixes.sort()
-        return [suffix[1] for suffix in suffixes]
-    
-    def _build_lcp_array(self):
-        """Build LCP array from suffix array"""
-        lcp = [0] * self.n
-        rank = [0] * self.n
-        
-        for i in range(self.n):
-            rank[self.suffix_array[i]] = i
-        
-        h = 0
-        for i in range(self.n):
-            if rank[i] > 0:
-                j = self.suffix_array[rank[i] - 1]
-                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
-                    h += 1
-                lcp[rank[i]] = h
-                if h > 0:
-                    h -= 1
-        
-        return lcp
-    
-    def update(self, pos, char):
-        """Update character at position pos"""
-        if pos < 0 or pos >= self.n:
-            return
-        
-        self.s[pos] = char
-        
-        # Rebuild suffix array and LCP array
-        self.suffix_array = self._build_suffix_array()
-        self.lcp_array = self._build_lcp_array()
-    
-    def find_longest_repeating_substring(self):
-        """Find longest repeating substring"""
-        if not self.lcp_array:
-            return ""
-        
-        max_lcp = max(self.lcp_array)
-        if max_lcp == 0:
-            return ""
-        
-        # Find position with maximum LCP
-        max_pos = self.lcp_array.index(max_lcp)
-        start = self.suffix_array[max_pos]
-        
-        return ''.join(self.s[start:start + max_lcp])
-    
-    def find_all_repeating_substrings(self, min_length=2):
-        """Find all repeating substrings with minimum length"""
-        repeating_substrings = []
-        
-        for i in range(1, self.n):
-            if self.lcp_array[i] >= min_length:
-                start = self.suffix_array[i]
-                substring = ''.join(self.s[start:start + self.lcp_array[i]])
-                repeating_substrings.append(substring)
-        
-        return list(set(repeating_substrings))  # Remove duplicates
-    
-    def count_repeating_substrings(self, min_length=2):
-        """Count number of repeating substrings"""
-        count = 0
+    for length in range(n - 1, 0, -1):
         seen = set()
-        
-        for i in range(1, self.n):
-            if self.lcp_array[i] >= min_length:
-                start = self.suffix_array[i]
-                substring = ''.join(self.s[start:start + self.lcp_array[i]])
-                if substring not in seen:
-                    seen.add(substring)
-                    count += 1
-        
-        return count
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'update':
-                self.update(query['pos'], query['char'])
-                results.append(None)
-            elif query['type'] == 'longest':
-                result = self.find_longest_repeating_substring()
-                results.append(result)
-            elif query['type'] == 'all':
-                result = self.find_all_repeating_substrings(query.get('min_length', 2))
-                results.append(result)
-            elif query['type'] == 'count':
-                result = self.count_repeating_substrings(query.get('min_length', 2))
-                results.append(result)
-        return results
+        for i in range(n - length + 1):
+            sub = s[i:i + length]
+            if sub in seen:
+                return length
+            seen.add(sub)
+    return -1
 ```
 
-### Variation 2: Repeating Substring with Different Operations
-**Problem**: Handle different types of operations (find, count, analyze) on repeating substrings.
+### Complexity
 
-**Link**: [CSES Problem Set - Repeating Substring Different Operations](https://cses.fi/problemset/task/repeating_substring_operations)
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^3) | O(n) lengths x O(n) substrings x O(n) string comparison |
+| Space | O(n^2) | Storing substrings in hash set |
+
+### Why This Is Slow
+
+String comparison and hashing each substring takes O(n) time, making this approach too slow for n = 10^5.
+
+---
+
+## Solution 2: Binary Search + Rolling Hash (Optimal)
+
+### Key Insight
+
+> **The Trick:** Binary search on the answer length, and use rolling hash to check if any substring of that length repeats in O(n) time.
+
+### Algorithm
+
+1. Binary search on length `L` in range `[1, n-1]`
+2. For each `L`, compute rolling hashes of all substrings of length `L`
+3. If any hash appears twice (and strings match), length `L` is achievable
+4. Maximize `L` using binary search
+
+### Dry Run Example
+
+Let's trace through with input `s = "ababab"`:
+
+```
+Binary Search: lo=1, hi=5
+
+Mid = 3: Check if repeating substring of length 3 exists
+  Substrings: "aba", "bab", "aba", "bab"
+  Hashes:     h1,    h2,    h1,    h2
+  "aba" appears twice -> YES, length 3 works
+  Update: lo = 4
+
+Mid = 4: Check if repeating substring of length 4 exists
+  Substrings: "abab", "baba", "abab"
+  Hashes:     h1,     h2,     h1
+  "abab" appears twice -> YES, length 4 works
+  Update: lo = 5
+
+Mid = 5: Check if repeating substring of length 5 exists
+  Substrings: "ababa", "babab"
+  Hashes:     h1,      h2
+  No repeats -> NO
+  Update: hi = 4
+
+Answer: 4
+```
+
+### Visual Diagram
+
+```
+String: a b a b a b
+Index:  0 1 2 3 4 5
+
+Length 4 substrings:
+[a b a b] . .    hash = H1, position 0
+. [b a b a] .    hash = H2, position 1
+. . [a b a b]    hash = H1, position 2  <- MATCH with position 0!
+
+Binary Search Progress:
+[1----3----5]
+      ^mid=3: works, go right
+[----4----5]
+     ^mid=4: works, go right
+[--------5]
+         ^mid=5: fails, go left
+Answer: 4
+```
+
+### Code
+
+**Python:**
+```python
+def solve(s):
+    """
+    Binary Search + Rolling Hash.
+    Time: O(n log n)  Space: O(n)
+    """
+    n = len(s)
+    if n == 1:
+        return -1
+
+    BASE = 31
+    MOD = 10**18 + 9
+
+    # Precompute powers
+    pw = [1] * (n + 1)
+    for i in range(1, n + 1):
+        pw[i] = (pw[i-1] * BASE) % MOD
+
+    # Precompute prefix hashes
+    h = [0] * (n + 1)
+    for i in range(n):
+        h[i + 1] = (h[i] * BASE + ord(s[i]) - ord('a') + 1) % MOD
+
+    def get_hash(l, r):
+        """Get hash of s[l:r] in O(1)"""
+        return (h[r] - h[l] * pw[r - l] % MOD + MOD) % MOD
+
+    def has_repeat(length):
+        """Check if any substring of given length repeats"""
+        seen = {}
+        for i in range(n - length + 1):
+            hval = get_hash(i, i + length)
+            if hval in seen:
+                # Verify to handle hash collisions
+                if s[seen[hval]:seen[hval] + length] == s[i:i + length]:
+                    return True
+            else:
+                seen[hval] = i
+        return False
+
+    # Binary search on answer
+    lo, hi, ans = 1, n - 1, -1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if has_repeat(mid):
+            ans = mid
+            lo = mid + 1
+        else:
+            hi = mid - 1
+
+    return ans
+
+# Input/Output
+s = input().strip()
+print(solve(s))
+```
+
+**C++:**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const long long BASE = 31;
+const long long MOD = 1e18 + 9;
+
+int n;
+string s;
+vector<long long> pw, h;
+
+long long getHash(int l, int r) {
+    return ((h[r] - h[l] * pw[r - l] % MOD) % MOD + MOD) % MOD;
+}
+
+bool hasRepeat(int len) {
+    unordered_map<long long, int> seen;
+    for (int i = 0; i + len <= n; i++) {
+        long long hval = getHash(i, i + len);
+        if (seen.count(hval)) {
+            // Verify match
+            if (s.substr(seen[hval], len) == s.substr(i, len))
+                return true;
+        } else {
+            seen[hval] = i;
+        }
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> s;
+    n = s.size();
+
+    if (n == 1) {
+        cout << -1 << "\n";
+        return 0;
+    }
+
+    // Precompute powers and prefix hashes
+    pw.resize(n + 1);
+    h.resize(n + 1);
+    pw[0] = 1;
+    for (int i = 1; i <= n; i++)
+        pw[i] = pw[i-1] * BASE % MOD;
+
+    h[0] = 0;
+    for (int i = 0; i < n; i++)
+        h[i + 1] = (h[i] * BASE + s[i] - 'a' + 1) % MOD;
+
+    // Binary search
+    int lo = 1, hi = n - 1, ans = -1;
+    while (lo <= hi) {
+        int mid = (lo + hi) / 2;
+        if (hasRepeat(mid)) {
+            ans = mid;
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
+        }
+    }
+
+    cout << ans << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log n) | Binary search (log n) x hash check (O(n)) |
+| Space | O(n) | Hash arrays and hash map |
+
+---
+
+## Solution 3: Suffix Array + LCP (Alternative Optimal)
+
+### Key Insight
+
+> **The Trick:** The longest repeating substring equals the maximum value in the LCP (Longest Common Prefix) array of the suffix array.
+
+### Why It Works
+
+- Suffix array sorts all suffixes lexicographically
+- Adjacent suffixes in sorted order share the longest common prefix
+- A repeating substring is a common prefix of two different suffixes
+
+### Code
+
+**Python:**
+```python
+def solve_suffix_array(s):
+    """
+    Suffix Array + LCP approach.
+    Time: O(n log n)  Space: O(n)
+    """
+    n = len(s)
+    if n == 1:
+        return -1
+
+    # Build suffix array (simplified O(n log^2 n) version)
+    sa = list(range(n))
+    rank = [ord(c) for c in s]
+    tmp = [0] * n
+
+    k = 1
+    while k < n:
+        def key(i):
+            return (rank[i], rank[i + k] if i + k < n else -1)
+        sa.sort(key=key)
+
+        tmp[sa[0]] = 0
+        for i in range(1, n):
+            tmp[sa[i]] = tmp[sa[i-1]]
+            if key(sa[i]) != key(sa[i-1]):
+                tmp[sa[i]] += 1
+        rank = tmp[:]
+        k *= 2
+
+    # Build LCP array using Kasai's algorithm
+    lcp = [0] * n
+    rank_inv = [0] * n
+    for i in range(n):
+        rank_inv[sa[i]] = i
+
+    k = 0
+    for i in range(n):
+        if rank_inv[i] == 0:
+            k = 0
+            continue
+        j = sa[rank_inv[i] - 1]
+        while i + k < n and j + k < n and s[i + k] == s[j + k]:
+            k += 1
+        lcp[rank_inv[i]] = k
+        if k > 0:
+            k -= 1
+
+    return max(lcp) if max(lcp) > 0 else -1
+
+s = input().strip()
+print(solve_suffix_array(s))
+```
+
+**C++:**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string s;
+    cin >> s;
+    int n = s.size();
+
+    if (n == 1) {
+        cout << -1 << "\n";
+        return 0;
+    }
+
+    // Build suffix array
+    vector<int> sa(n), rank(n), tmp(n);
+    for (int i = 0; i < n; i++) {
+        sa[i] = i;
+        rank[i] = s[i];
+    }
+
+    for (int k = 1; k < n; k *= 2) {
+        auto cmp = [&](int a, int b) {
+            if (rank[a] != rank[b]) return rank[a] < rank[b];
+            int ra = a + k < n ? rank[a + k] : -1;
+            int rb = b + k < n ? rank[b + k] : -1;
+            return ra < rb;
+        };
+        sort(sa.begin(), sa.end(), cmp);
+
+        tmp[sa[0]] = 0;
+        for (int i = 1; i < n; i++) {
+            tmp[sa[i]] = tmp[sa[i-1]] + (cmp(sa[i-1], sa[i]) ? 1 : 0);
+        }
+        rank = tmp;
+    }
+
+    // Build LCP array (Kasai's algorithm)
+    vector<int> lcp(n), rank_inv(n);
+    for (int i = 0; i < n; i++)
+        rank_inv[sa[i]] = i;
+
+    int k = 0;
+    for (int i = 0; i < n; i++) {
+        if (rank_inv[i] == 0) {
+            k = 0;
+            continue;
+        }
+        int j = sa[rank_inv[i] - 1];
+        while (i + k < n && j + k < n && s[i + k] == s[j + k])
+            k++;
+        lcp[rank_inv[i]] = k;
+        if (k > 0) k--;
+    }
+
+    int ans = *max_element(lcp.begin(), lcp.end());
+    cout << (ans > 0 ? ans : -1) << "\n";
+    return 0;
+}
+```
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Ignoring Hash Collisions
 
 ```python
-class RepeatingSubstringDifferentOps:
-    def __init__(self, s):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.suffix_array = self._build_suffix_array()
-        self.lcp_array = self._build_lcp_array()
-    
-    def _build_suffix_array(self):
-        """Build suffix array using efficient algorithm"""
-        suffixes = []
-        for i in range(self.n):
-            suffixes.append((self.s[i:], i))
-        
-        suffixes.sort()
-        return [suffix[1] for suffix in suffixes]
-    
-    def _build_lcp_array(self):
-        """Build LCP array from suffix array"""
-        lcp = [0] * self.n
-        rank = [0] * self.n
-        
-        for i in range(self.n):
-            rank[self.suffix_array[i]] = i
-        
-        h = 0
-        for i in range(self.n):
-            if rank[i] > 0:
-                j = self.suffix_array[rank[i] - 1]
-                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
-                    h += 1
-                lcp[rank[i]] = h
-                if h > 0:
-                    h -= 1
-        
-        return lcp
-    
-    def find_longest_repeating_substring(self):
-        """Find longest repeating substring"""
-        if not self.lcp_array:
-            return ""
-        
-        max_lcp = max(self.lcp_array)
-        if max_lcp == 0:
-            return ""
-        
-        # Find position with maximum LCP
-        max_pos = self.lcp_array.index(max_lcp)
-        start = self.suffix_array[max_pos]
-        
-        return ''.join(self.s[start:start + max_lcp])
-    
-    def find_shortest_repeating_substring(self, min_length=2):
-        """Find shortest repeating substring"""
-        shortest_length = float('inf')
-        shortest_substring = ""
-        
-        for i in range(1, self.n):
-            if self.lcp_array[i] >= min_length and self.lcp_array[i] < shortest_length:
-                shortest_length = self.lcp_array[i]
-                start = self.suffix_array[i]
-                shortest_substring = ''.join(self.s[start:start + self.lcp_array[i]])
-        
-        return shortest_substring if shortest_length != float('inf') else ""
-    
-    def find_most_frequent_repeating_substring(self, min_length=2):
-        """Find most frequent repeating substring"""
-        frequency = {}
-        
-        for i in range(1, self.n):
-            if self.lcp_array[i] >= min_length:
-                start = self.suffix_array[i]
-                substring = ''.join(self.s[start:start + self.lcp_array[i]])
-                frequency[substring] = frequency.get(substring, 0) + 1
-        
-        if not frequency:
-            return ""
-        
-        return max(frequency, key=frequency.get)
-    
-    def analyze_repeating_patterns(self):
-        """Analyze repeating patterns in the string"""
-        patterns = {}
-        
-        for i in range(1, self.n):
-            if self.lcp_array[i] > 0:
-                start = self.suffix_array[i]
-                substring = ''.join(self.s[start:start + self.lcp_array[i]])
-                
-                if substring not in patterns:
-                    patterns[substring] = {
-                        'length': len(substring),
-                        'frequency': 0,
-                        'positions': []
-                    }
-                
-                patterns[substring]['frequency'] += 1
-                patterns[substring]['positions'].append(start)
-        
-        return patterns
-    
-    def get_repeating_substring_statistics(self):
-        """Get statistics about repeating substrings"""
-        patterns = self.analyze_repeating_patterns()
-        
-        if not patterns:
-            return {
-                'total_patterns': 0,
-                'longest_length': 0,
-                'shortest_length': 0,
-                'most_frequent': None,
-                'average_frequency': 0
-            }
-        
-        lengths = [pattern['length'] for pattern in patterns.values()]
-        frequencies = [pattern['frequency'] for pattern in patterns.values()]
-        
-        most_frequent = max(patterns, key=lambda x: patterns[x]['frequency'])
-        
-        return {
-            'total_patterns': len(patterns),
-            'longest_length': max(lengths),
-            'shortest_length': min(lengths),
-            'most_frequent': most_frequent,
-            'average_frequency': sum(frequencies) / len(frequencies)
-        }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'longest':
-                result = self.find_longest_repeating_substring()
-                results.append(result)
-            elif query['type'] == 'shortest':
-                result = self.find_shortest_repeating_substring(query.get('min_length', 2))
-                results.append(result)
-            elif query['type'] == 'most_frequent':
-                result = self.find_most_frequent_repeating_substring(query.get('min_length', 2))
-                results.append(result)
-            elif query['type'] == 'analyze':
-                result = self.analyze_repeating_patterns()
-                results.append(result)
-            elif query['type'] == 'statistics':
-                result = self.get_repeating_substring_statistics()
-                results.append(result)
-        return results
+# WRONG - no collision check
+if hval in seen:
+    return True  # May be false positive!
 ```
 
-### Variation 3: Repeating Substring with Constraints
-**Problem**: Handle repeating substring queries with additional constraints (e.g., minimum frequency, maximum length).
+**Problem:** Two different strings can have the same hash value.
+**Fix:** Always verify actual string equality when hashes match.
 
-**Link**: [CSES Problem Set - Repeating Substring with Constraints](https://cses.fi/problemset/task/repeating_substring_constraints)
+### Mistake 2: Wrong Hash Formula
 
 ```python
-class RepeatingSubstringWithConstraints:
-    def __init__(self, s, min_frequency, max_length):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.min_frequency = min_frequency
-        self.max_length = max_length
-        self.suffix_array = self._build_suffix_array()
-        self.lcp_array = self._build_lcp_array()
-    
-    def _build_suffix_array(self):
-        """Build suffix array using efficient algorithm"""
-        suffixes = []
-        for i in range(self.n):
-            suffixes.append((self.s[i:], i))
-        
-        suffixes.sort()
-        return [suffix[1] for suffix in suffixes]
-    
-    def _build_lcp_array(self):
-        """Build LCP array from suffix array"""
-        lcp = [0] * self.n
-        rank = [0] * self.n
-        
-        for i in range(self.n):
-            rank[self.suffix_array[i]] = i
-        
-        h = 0
-        for i in range(self.n):
-            if rank[i] > 0:
-                j = self.suffix_array[rank[i] - 1]
-                while i + h < self.n and j + h < self.n and self.s[i + h] == self.s[j + h]:
-                    h += 1
-                lcp[rank[i]] = h
-                if h > 0:
-                    h -= 1
-        
-        return lcp
-    
-    def constrained_query(self, min_length=2):
-        """Query repeating substrings with constraints"""
-        valid_substrings = []
-        
-        for i in range(1, self.n):
-            if self.lcp_array[i] >= min_length and self.lcp_array[i] <= self.max_length:
-                start = self.suffix_array[i]
-                substring = ''.join(self.s[start:start + self.lcp_array[i]])
-                
-                # Count frequency
-                frequency = 1
-                for j in range(i + 1, self.n):
-                    if self.lcp_array[j] >= len(substring):
-                        # Check if it's the same substring
-                        other_start = self.suffix_array[j]
-                        other_substring = ''.join(self.s[other_start:other_start + len(substring)])
-                        if other_substring == substring:
-                            frequency += 1
-                    else:
-                        break
-                
-                if frequency >= self.min_frequency:
-                    valid_substrings.append((substring, frequency))
-        
-        return valid_substrings
-    
-    def find_valid_repeating_substrings(self, min_length=2):
-        """Find all valid repeating substrings that satisfy constraints"""
-        return self.constrained_query(min_length)
-    
-    def get_longest_valid_repeating_substring(self, min_length=2):
-        """Get longest valid repeating substring"""
-        valid_substrings = self.find_valid_repeating_substrings(min_length)
-        
-        if not valid_substrings:
-            return None
-        
-        longest = max(valid_substrings, key=lambda x: len(x[0]))
-        return longest
-    
-    def get_most_frequent_valid_repeating_substring(self, min_length=2):
-        """Get most frequent valid repeating substring"""
-        valid_substrings = self.find_valid_repeating_substrings(min_length)
-        
-        if not valid_substrings:
-            return None
-        
-        most_frequent = max(valid_substrings, key=lambda x: x[1])
-        return most_frequent
-    
-    def count_valid_repeating_substrings(self, min_length=2):
-        """Count number of valid repeating substrings"""
-        return len(self.find_valid_repeating_substrings(min_length))
-    
-    def get_constraint_statistics(self, min_length=2):
-        """Get statistics about valid repeating substrings"""
-        valid_substrings = self.find_valid_repeating_substrings(min_length)
-        
-        if not valid_substrings:
-            return {
-                'count': 0,
-                'longest_length': 0,
-                'shortest_length': 0,
-                'max_frequency': 0,
-                'min_frequency': 0,
-                'avg_frequency': 0
-            }
-        
-        lengths = [len(substring) for substring, _ in valid_substrings]
-        frequencies = [freq for _, freq in valid_substrings]
-        
-        return {
-            'count': len(valid_substrings),
-            'longest_length': max(lengths),
-            'shortest_length': min(lengths),
-            'max_frequency': max(frequencies),
-            'min_frequency': min(frequencies),
-            'avg_frequency': sum(frequencies) / len(frequencies)
-        }
-
-# Example usage
-s = "abacaba"
-min_frequency = 2
-max_length = 4
-
-rs = RepeatingSubstringWithConstraints(s, min_frequency, max_length)
-result = rs.constrained_query(2)
-print(f"Constrained query result: {result}")
-
-valid_substrings = rs.find_valid_repeating_substrings(2)
-print(f"Valid repeating substrings: {valid_substrings}")
-
-longest = rs.get_longest_valid_repeating_substring(2)
-print(f"Longest valid repeating substring: {longest}")
+# WRONG - subtracting hashes directly
+def get_hash(l, r):
+    return h[r] - h[l]  # Doesn't account for positional weights!
 ```
 
-### Related Problems
+**Problem:** Must scale by power of base when subtracting prefix hashes.
+**Fix:** Use `(h[r] - h[l] * pw[r-l]) % MOD`
 
-#### **CSES Problems**
-- [Repeating Substring](https://cses.fi/problemset/task/2106) - Basic repeating substring problem
-- [String Matching](https://cses.fi/problemset/task/1753) - String matching
-- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+### Mistake 3: Integer Overflow in C++
 
-#### **LeetCode Problems**
-- [Longest Repeating Substring](https://leetcode.com/problems/longest-repeating-substring/) - Find longest repeating substring
-- [Repeated String Match](https://leetcode.com/problems/repeated-string-match/) - String matching with repetition
-- [Repeated Substring Pattern](https://leetcode.com/problems/repeated-substring-pattern/) - Check if string has repeated pattern
+```cpp
+// WRONG - overflow before mod
+long long hval = h[r] - h[l] * pw[r - l] % MOD;
+```
 
-#### **Problem Categories**
-- **Suffix Arrays**: String processing, repeating patterns, LCP arrays
-- **Pattern Matching**: KMP, Z-algorithm, string matching algorithms
-- **String Processing**: Borders, periods, palindromes, string transformations
-- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata
+**Problem:** `h[l] * pw[r-l]` can overflow before taking mod.
+**Fix:** Use `((h[r] - h[l] * pw[r-l] % MOD) % MOD + MOD) % MOD`
 
-## 🚀 Key Takeaways
+### Mistake 4: Off-by-One in Binary Search
 
-- **Repeating Patterns**: Important concept in string analysis and pattern recognition
-- **Suffix Arrays**: Powerful data structure for string processing problems
-- **LCP Arrays**: Reveal repeating patterns and common prefixes efficiently
+```python
+# WRONG
+hi = n  # Should be n-1, substring of length n can't repeat
+```
+
+**Problem:** A substring of length n is the entire string; it can appear at most once.
+**Fix:** Set `hi = n - 1`
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single character | `"a"` | -1 | Cannot repeat |
+| All same chars | `"aaaa"` | 3 | "aaa" repeats twice |
+| No repeats | `"abcde"` | -1 | All unique chars |
+| Two chars | `"aa"` | 1 | "a" repeats |
+| Entire string repeats | `"abab"` | 2 | "ab" appears twice |
+
+---
+
+## When to Use This Pattern
+
+### Use Binary Search + Hashing When:
+- You need to find the longest/shortest X satisfying a condition
+- The condition has monotonic property (if length k works, k-1 works too)
+- String comparison is the bottleneck
+
+### Use Suffix Array When:
+- Multiple queries on the same string
+- Need to find all repeating substrings
+- Problem involves suffix/prefix relationships
+
+### Pattern Recognition Checklist:
+- [ ] Looking for longest repeating pattern? -> **Binary search + hash** or **Suffix Array**
+- [ ] Need to compare many substrings? -> **Rolling hash**
+- [ ] Monotonic property on answer? -> **Binary search on answer**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [String Matching](https://cses.fi/problemset/task/1753) | Basic hashing for pattern matching |
+| [Finding Borders](https://cses.fi/problemset/task/1732) | Prefix function, related to repeating patterns |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Finding Periods](https://cses.fi/problemset/task/1733) | Find all periods, not just longest repeat |
+| [Minimal Rotation](https://cses.fi/problemset/task/1110) | Uses similar suffix array techniques |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Distinct Substrings](https://cses.fi/problemset/task/2105) | Count unique substrings using suffix array |
+| [Longest Palindrome](https://cses.fi/problemset/task/1111) | Combines hashing with palindrome properties |
+
+---
+
+## Key Takeaways
+
+1. **Binary Search on Answer:** When the answer has monotonic property, binary search!
+2. **Rolling Hash:** Enables O(1) substring hash computation after O(n) preprocessing.
+3. **Suffix Array + LCP:** Max LCP value = longest repeating substring length.
+4. **Always Verify:** Hash collisions happen; verify string equality on hash match.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Implement rolling hash with prefix sums from scratch
+- [ ] Explain why binary search works (monotonic property)
+- [ ] Build a suffix array and LCP array
+- [ ] Handle hash collisions properly
+- [ ] Solve in under 15 minutes without looking at solution
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: String Hashing](https://cp-algorithms.com/string/string-hashing.html)
+- [CP-Algorithms: Suffix Array](https://cp-algorithms.com/string/suffix-array.html)
+- [CSES Problem Set](https://cses.fi/problemset/)

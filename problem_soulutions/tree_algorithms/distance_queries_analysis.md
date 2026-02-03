@@ -1,831 +1,572 @@
 ---
 layout: simple
-title: "Distance Queries"
+title: "Distance Queries - Tree Algorithms Problem"
 permalink: /problem_soulutions/tree_algorithms/distance_queries_analysis
+difficulty: Medium
+tags: [tree, lca, binary-lifting, dfs]
+prerequisites: [tree_traversal, binary_lifting_basics]
 ---
 
 # Distance Queries
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand tree algorithms and tree traversal techniques
-- Apply efficient tree processing algorithms
-- Implement advanced tree data structures and algorithms
-- Optimize tree operations for large inputs
-- Handle edge cases in tree problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Tree Algorithms |
+| **Time Limit** | 1 second |
+| **Key Technique** | LCA with Binary Lifting |
+| **CSES Link** | [Distance Queries](https://cses.fi/problemset/task/1135) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a tree with n nodes, process q queries of the form "find the distance between nodes a and b".
+After solving this problem, you will be able to:
+- [ ] Use LCA (Lowest Common Ancestor) to compute distances in a tree
+- [ ] Implement binary lifting for O(log n) ancestor queries
+- [ ] Apply the distance formula: `dist(a,b) = depth[a] + depth[b] - 2*depth[LCA(a,b)]`
+- [ ] Preprocess a tree to answer multiple path queries efficiently
 
-**Input**: 
-- First line: n (number of nodes)
-- Next n-1 lines: edges of the tree
-- Next line: q (number of queries)
-- Next q lines: two integers a and b (query nodes)
+---
 
-**Output**: 
-- q lines: distance between nodes a and b
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10⁵
-- 1 ≤ q ≤ 2×10⁵
+**Problem:** Given a tree with n nodes, answer q queries of the form "what is the distance (number of edges) between nodes a and b?"
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and q (number of nodes and queries)
+- Next n-1 lines: Two integers a and b describing an edge
+- Next q lines: Two integers a and b (query nodes)
+
+**Output:**
+- For each query, print the distance between the two nodes
+
+**Constraints:**
+- 1 <= n, q <= 2 x 10^5
+- 1 <= a, b <= n
+
+### Example
+
 ```
 Input:
-5
+5 3
 1 2
-2 3
-2 4
-4 5
-3
 1 3
+3 4
+3 5
+1 4
+5 4
 2 5
-1 5
 
 Output:
 2
+2
 3
-4
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Query 1: Path 1 -> 3 -> 4 has length 2
+- Query 2: Path 5 -> 3 -> 4 has length 2
+- Query 3: Path 2 -> 1 -> 3 -> 5 has length 3
 
-### Approach 1: Brute Force
-**Time Complexity**: O(q × n)  
-**Space Complexity**: O(n)
+---
 
-**Algorithm**:
-1. For each query, perform BFS from node a to find distance to node b
-2. Return the distance for each query
-3. Use BFS to find shortest path in unweighted tree
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### Pattern Recognition
+
+> **Key Question:** How can we efficiently compute the distance between any two nodes in a tree without traversing the path each time?
+
+The core insight is that **every path between two nodes in a tree passes through their Lowest Common Ancestor (LCA)**. This lets us break the path into two parts and use precomputed depths.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** The number of edges between two nodes
+2. **What information do we have?** The tree structure (edges)
+3. **What is the relationship between input and output?** The distance equals the sum of distances from each node to their LCA
+
+### The Distance Formula
+
+```
+For nodes a and b with LCA l:
+
+distance(a, b) = depth[a] + depth[b] - 2 * depth[l]
+```
+
+**Why does this work?**
+- `depth[a]` = distance from root to a
+- `depth[b]` = distance from root to b
+- The path from a to b goes: a -> ... -> LCA -> ... -> b
+- We add both depths but count the root-to-LCA portion twice, so we subtract `2 * depth[LCA]`
+
+### Visual Explanation
+
+```
+        1 (depth=0)
+       / \
+      2   3 (depth=1)
+         / \
+        4   5 (depth=2)
+
+Query: distance(2, 4)
+- depth[2] = 1
+- depth[4] = 2
+- LCA(2, 4) = 1, depth[1] = 0
+- distance = 1 + 2 - 2*0 = 3
+
+Path: 2 -> 1 -> 3 -> 4 (3 edges)
+```
+
+---
+
+## Solution 1: Brute Force (BFS for Each Query)
+
+### Idea
+
+For each query, run BFS/DFS from node a to find the distance to node b.
+
+### Algorithm
+
+1. Build adjacency list from edges
+2. For each query (a, b):
+   - Run BFS from a
+   - Return distance when b is reached
+
+### Code
+
 ```python
-def brute_force_distance_queries(n, edges, queries):
-    from collections import deque, defaultdict
-    
+from collections import deque, defaultdict
+
+def solve_brute_force(n, edges, queries):
+    """
+    Brute force: BFS for each query.
+
+    Time: O(q * n)
+    Space: O(n)
+    """
     # Build adjacency list
     graph = defaultdict(list)
     for u, v in edges:
         graph[u].append(v)
         graph[v].append(u)
-    
-    def find_distance(a, b):
-        if a == b:
+
+    def bfs_distance(start, end):
+        if start == end:
             return 0
-        
-        # BFS to find distance from a to b
-        queue = deque([(a, 0)])
-        visited = {a}
-        
+        queue = deque([(start, 0)])
+        visited = {start}
         while queue:
             node, dist = queue.popleft()
-            
-            if node == b:
-                return dist
-            
             for neighbor in graph[node]:
+                if neighbor == end:
+                    return dist + 1
                 if neighbor not in visited:
                     visited.add(neighbor)
                     queue.append((neighbor, dist + 1))
-        
-        return -1  # Should not happen in a tree
-    
-    results = []
-    for a, b in queries:
-        distance = find_distance(a, b)
-        results.append(distance)
-    
-    return results
-```
-
-**Analysis**:
-- **Time**: O(q × n) - For each query, BFS takes O(n) time
-- **Space**: O(n) - Queue and visited set
-- **Limitations**: Too slow for large inputs
-
-### Approach 2: Optimized with LCA
-**Time Complexity**: O(n log n + q log n)  
-**Space Complexity**: O(n log n)
-
-**Algorithm**:
-1. Precompute LCA using binary lifting
-2. For each query, find LCA of a and b
-3. Calculate distance as depth[a] + depth[b] - 2 * depth[LCA]
-
-**Implementation**:
-```python
-def optimized_distance_queries(n, edges, queries):
-    from collections import defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    # Precompute LCA using binary lifting
-    LOG = 20
-    up = [[0] * (n + 1) for _ in range(LOG)]
-    depth = [0] * (n + 1)
-    
-    def dfs(node, parent):
-        up[0][node] = parent
-        depth[node] = depth[parent] + 1
-        
-        for child in graph[node]:
-            if child != parent:
-                dfs(child, node)
-    
-    dfs(1, 0)
-    
-    # Binary lifting
-    for k in range(1, LOG):
-        for node in range(1, n + 1):
-            up[k][node] = up[k-1][up[k-1][node]]
-    
-    def lca(a, b):
-        if depth[a] < depth[b]:
-            a, b = b, a
-        
-        # Bring a to same depth as b
-        for k in range(LOG - 1, -1, -1):
-            if depth[a] - (1 << k) >= depth[b]:
-                a = up[k][a]
-        
-        if a == b:
-            return a
-        
-        # Find LCA
-        for k in range(LOG - 1, -1, -1):
-            if up[k][a] != up[k][b]:
-                a = up[k][a]
-                b = up[k][b]
-        
-        return up[0][a]
-    
-    results = []
-    for a, b in queries:
-        lca_node = lca(a, b)
-        distance = depth[a] + depth[b] - 2 * depth[lca_node]
-        results.append(distance)
-    
-    return results
-```
-
-**Analysis**:
-- **Time**: O(n log n + q log n) - Preprocessing + query processing
-- **Space**: O(n log n) - Binary lifting table
-- **Improvement**: Much more efficient than brute force
-
-### Approach 3: Optimal with LCA
-**Time Complexity**: O(n log n + q log n)  
-**Space Complexity**: O(n log n)
-
-**Algorithm**:
-1. Use binary lifting to precompute LCA efficiently
-2. For each query, find LCA and calculate distance using depth formula
-3. Distance = depth[a] + depth[b] - 2 * depth[LCA]
-
-**Implementation**:
-```python
-def optimal_distance_queries(n, edges, queries):
-    from collections import defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    # Precompute LCA using binary lifting
-    LOG = 20
-    up = [[0] * (n + 1) for _ in range(LOG)]
-    depth = [0] * (n + 1)
-    
-    def dfs(node, parent):
-        up[0][node] = parent
-        depth[node] = depth[parent] + 1
-        
-        for child in graph[node]:
-            if child != parent:
-                dfs(child, node)
-    
-    dfs(1, 0)
-    
-    # Binary lifting
-    for k in range(1, LOG):
-        for node in range(1, n + 1):
-            up[k][node] = up[k-1][up[k-1][node]]
-    
-    def lca(a, b):
-        if depth[a] < depth[b]:
-            a, b = b, a
-        
-        # Bring a to same depth as b
-        for k in range(LOG - 1, -1, -1):
-            if depth[a] - (1 << k) >= depth[b]:
-                a = up[k][a]
-        
-        if a == b:
-            return a
-        
-        # Find LCA
-        for k in range(LOG - 1, -1, -1):
-            if up[k][a] != up[k][b]:
-                a = up[k][a]
-                b = up[k][b]
-        
-        return up[0][a]
-    
-    results = []
-    for a, b in queries:
-        lca_node = lca(a, b)
-        distance = depth[a] + depth[b] - 2 * depth[lca_node]
-        results.append(distance)
-    
-    return results
-```
-
-**Analysis**:
-- **Time**: O(n log n + q log n) - Preprocessing + query processing
-- **Space**: O(n log n) - Binary lifting table
-- **Optimal**: Best possible complexity for this problem
-
-**Visual Example**:
-```
-Tree structure:
-    1
-    |
-    2
-   / \
-3   4
-    |
-    5
-
-Depth array: [0, 1, 2, 2, 3, 4]
-
-Query: Distance between nodes 1 and 5
-1. LCA(1, 5) = 1
-2. Distance = depth[1] + depth[5] - 2 * depth[1]
-3. Distance = 1 + 4 - 2 * 1 = 3
-```
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(q × n) | O(n) | BFS for each query |
-| Optimized | O(n log n + q log n) | O(n log n) | LCA with binary lifting |
-| Optimal | O(n log n + q log n) | O(n log n) | LCA with binary lifting |
-
-### Time Complexity
-- **Time**: O(n log n + q log n) - Preprocessing + query processing with LCA
-- **Space**: O(n log n) - Binary lifting table
-
-### Why This Solution Works
-- **LCA Technique**: Use lowest common ancestor to break path into two parts
-- **Binary Lifting**: Efficiently find LCA in O(log n) time
-- **Depth Formula**: Calculate distance using depth[a] + depth[b] - 2 * depth[LCA]
-- **Optimal Approach**: LCA with binary lifting provides the best possible complexity for distance queries
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Distance Queries with Dynamic Updates
-**Problem**: Handle dynamic updates to the tree structure and maintain distance queries efficiently.
-
-**Link**: [CSES Problem Set - Distance Queries with Updates](https://cses.fi/problemset/task/distance_queries_updates)
-
-```python
-class DistanceQueriesWithUpdates:
-    def __init__(self, n, edges):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.depth = [0] * n
-        self.log_n = 20  # Maximum log n for binary lifting
-        self.up = [[-1] * self.log_n for _ in range(n)]
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node using DFS"""
-        def dfs(node, parent, d):
-            self.depth[node] = d
-            self.up[node][0] = parent
-            
-            for neighbor in self.adj[node]:
-                if neighbor != parent:
-                    dfs(neighbor, node, d + 1)
-        
-        dfs(0, -1, 0)
-    
-    def _preprocess_binary_lifting(self):
-        """Preprocess binary lifting table"""
-        for j in range(1, self.log_n):
-            for i in range(self.n):
-                if self.up[i][j-1] != -1:
-                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
-    
-    def add_edge(self, u, v):
-        """Add edge between nodes u and v"""
-        self.adj[u].append(v)
-        self.adj[v].append(u)
-        
-        # Recalculate depths and binary lifting table
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def remove_edge(self, u, v):
-        """Remove edge between nodes u and v"""
-        if v in self.adj[u]:
-            self.adj[u].remove(v)
-        if u in self.adj[v]:
-            self.adj[v].remove(u)
-        
-        # Recalculate depths and binary lifting table
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def get_lca(self, node1, node2):
-        """Get lowest common ancestor of two nodes"""
-        # Make sure node1 is deeper
-        if self.depth[node1] < self.depth[node2]:
-            node1, node2 = node2, node1
-        
-        # Bring node1 to same depth as node2
-        diff = self.depth[node1] - self.depth[node2]
-        for j in range(self.log_n):
-            if diff & (1 << j):
-                node1 = self.up[node1][j]
-        
-        if node1 == node2:
-            return node1
-        
-        # Binary search for LCA
-        for j in range(self.log_n - 1, -1, -1):
-            if self.up[node1][j] != self.up[node2][j]:
-                node1 = self.up[node1][j]
-                node2 = self.up[node2][j]
-        
-        return self.up[node1][0]
-    
-    def get_distance(self, node1, node2):
-        """Get distance between two nodes"""
-        lca = self.get_lca(node1, node2)
-        return self.depth[node1] + self.depth[node2] - 2 * self.depth[lca]
-    
-    def get_path_between_nodes(self, node1, node2):
-        """Get path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Path from node1 to LCA
-        path1 = []
-        current = node1
-        while current != lca:
-            path1.append(current)
-            current = self.up[current][0]
-        
-        # Path from node2 to LCA
-        path2 = []
-        current = node2
-        while current != lca:
-            path2.append(current)
-            current = self.up[current][0]
-        
-        # Combine paths
-        return path1 + [lca] + path2[::-1]
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'add_edge':
-                self.add_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'remove_edge':
-                self.remove_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'distance':
-                result = self.get_distance(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'lca':
-                result = self.get_lca(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path':
-                result = self.get_path_between_nodes(query['u'], query['v'])
-                results.append(result)
-        return results
-```
-
-### Variation 2: Distance Queries with Different Operations
-**Problem**: Handle different types of operations (find, analyze, compare) on distance queries.
-
-**Link**: [CSES Problem Set - Distance Queries Different Operations](https://cses.fi/problemset/task/distance_queries_operations)
-
-```python
-class DistanceQueriesDifferentOps:
-    def __init__(self, n, edges):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.depth = [0] * n
-        self.log_n = 20  # Maximum log n for binary lifting
-        self.up = [[-1] * self.log_n for _ in range(n)]
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node using DFS"""
-        def dfs(node, parent, d):
-            self.depth[node] = d
-            self.up[node][0] = parent
-            
-            for neighbor in self.adj[node]:
-                if neighbor != parent:
-                    dfs(neighbor, node, d + 1)
-        
-        dfs(0, -1, 0)
-    
-    def _preprocess_binary_lifting(self):
-        """Preprocess binary lifting table"""
-        for j in range(1, self.log_n):
-            for i in range(self.n):
-                if self.up[i][j-1] != -1:
-                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
-    
-    def get_lca(self, node1, node2):
-        """Get lowest common ancestor of two nodes"""
-        # Make sure node1 is deeper
-        if self.depth[node1] < self.depth[node2]:
-            node1, node2 = node2, node1
-        
-        # Bring node1 to same depth as node2
-        diff = self.depth[node1] - self.depth[node2]
-        for j in range(self.log_n):
-            if diff & (1 << j):
-                node1 = self.up[node1][j]
-        
-        if node1 == node2:
-            return node1
-        
-        # Binary search for LCA
-        for j in range(self.log_n - 1, -1, -1):
-            if self.up[node1][j] != self.up[node2][j]:
-                node1 = self.up[node1][j]
-                node2 = self.up[node2][j]
-        
-        return self.up[node1][0]
-    
-    def get_distance(self, node1, node2):
-        """Get distance between two nodes"""
-        lca = self.get_lca(node1, node2)
-        return self.depth[node1] + self.depth[node2] - 2 * self.depth[lca]
-    
-    def get_path_between_nodes(self, node1, node2):
-        """Get path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Path from node1 to LCA
-        path1 = []
-        current = node1
-        while current != lca:
-            path1.append(current)
-            current = self.up[current][0]
-        
-        # Path from node2 to LCA
-        path2 = []
-        current = node2
-        while current != lca:
-            path2.append(current)
-            current = self.up[current][0]
-        
-        # Combine paths
-        return path1 + [lca] + path2[::-1]
-    
-    def get_nodes_at_distance(self, node, distance):
-        """Get all nodes at specific distance from given node"""
-        nodes = []
-        
-        def dfs(current, parent, current_distance):
-            if current_distance == distance:
-                nodes.append(current)
-                return
-            
-            for neighbor in self.adj[current]:
-                if neighbor != parent:
-                    dfs(neighbor, current, current_distance + 1)
-        
-        dfs(node, -1, 0)
-        return nodes
-    
-    def get_farthest_node(self, node):
-        """Get farthest node from given node"""
-        farthest_node = node
-        max_distance = 0
-        
-        def dfs(current, parent, current_distance):
-            nonlocal farthest_node, max_distance
-            
-            if current_distance > max_distance:
-                max_distance = current_distance
-                farthest_node = current
-            
-            for neighbor in self.adj[current]:
-                if neighbor != parent:
-                    dfs(neighbor, current, current_distance + 1)
-        
-        dfs(node, -1, 0)
-        return farthest_node, max_distance
-    
-    def get_diameter(self):
-        """Get diameter of the tree"""
-        # Find farthest node from any node (e.g., node 0)
-        farthest1, _ = self.get_farthest_node(0)
-        
-        # Find farthest node from farthest1
-        farthest2, diameter = self.get_farthest_node(farthest1)
-        
-        return diameter, farthest1, farthest2
-    
-    def get_center(self):
-        """Get center(s) of the tree"""
-        diameter, end1, end2 = self.get_diameter()
-        
-        # Find middle node(s) of the diameter
-        path = self.get_path_between_nodes(end1, end2)
-        
-        if diameter % 2 == 0:
-            # Single center
-            return [path[diameter // 2]]
-        else:
-            # Two centers
-            return [path[diameter // 2], path[diameter // 2 + 1]]
-    
-    def get_all_distances_from_node(self, node):
-        """Get distances from given node to all other nodes"""
-        distances = [0] * self.n
-        
-        def dfs(current, parent, current_distance):
-            distances[current] = current_distance
-            
-            for neighbor in self.adj[current]:
-                if neighbor != parent:
-                    dfs(neighbor, current, current_distance + 1)
-        
-        dfs(node, -1, 0)
-        return distances
-    
-    def get_tree_statistics(self):
-        """Get comprehensive tree statistics"""
-        diameter, end1, end2 = self.get_diameter()
-        center = self.get_center()
-        max_depth = max(self.depth)
-        
-        return {
-            'diameter': diameter,
-            'diameter_endpoints': (end1, end2),
-            'center': center,
-            'max_depth': max_depth,
-            'total_nodes': self.n
-        }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'distance':
-                result = self.get_distance(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'lca':
-                result = self.get_lca(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path':
-                result = self.get_path_between_nodes(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'nodes_at_distance':
-                result = self.get_nodes_at_distance(query['node'], query['distance'])
-                results.append(result)
-            elif query['type'] == 'farthest_node':
-                result = self.get_farthest_node(query['node'])
-                results.append(result)
-            elif query['type'] == 'diameter':
-                result = self.get_diameter()
-                results.append(result)
-            elif query['type'] == 'center':
-                result = self.get_center()
-                results.append(result)
-            elif query['type'] == 'all_distances':
-                result = self.get_all_distances_from_node(query['node'])
-                results.append(result)
-            elif query['type'] == 'statistics':
-                result = self.get_tree_statistics()
-                results.append(result)
-        return results
-```
-
-### Variation 3: Distance Queries with Constraints
-**Problem**: Handle distance queries with additional constraints (e.g., minimum distance, maximum distance).
-
-**Link**: [CSES Problem Set - Distance Queries with Constraints](https://cses.fi/problemset/task/distance_queries_constraints)
-
-```python
-class DistanceQueriesWithConstraints:
-    def __init__(self, n, edges, min_distance, max_distance):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.depth = [0] * n
-        self.log_n = 20  # Maximum log n for binary lifting
-        self.up = [[-1] * self.log_n for _ in range(n)]
-        self.min_distance = min_distance
-        self.max_distance = max_distance
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node using DFS"""
-        def dfs(node, parent, d):
-            self.depth[node] = d
-            self.up[node][0] = parent
-            
-            for neighbor in self.adj[node]:
-                if neighbor != parent:
-                    dfs(neighbor, node, d + 1)
-        
-        dfs(0, -1, 0)
-    
-    def _preprocess_binary_lifting(self):
-        """Preprocess binary lifting table"""
-        for j in range(1, self.log_n):
-            for i in range(self.n):
-                if self.up[i][j-1] != -1:
-                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
-    
-    def get_lca(self, node1, node2):
-        """Get lowest common ancestor of two nodes"""
-        # Make sure node1 is deeper
-        if self.depth[node1] < self.depth[node2]:
-            node1, node2 = node2, node1
-        
-        # Bring node1 to same depth as node2
-        diff = self.depth[node1] - self.depth[node2]
-        for j in range(self.log_n):
-            if diff & (1 << j):
-                node1 = self.up[node1][j]
-        
-        if node1 == node2:
-            return node1
-        
-        # Binary search for LCA
-        for j in range(self.log_n - 1, -1, -1):
-            if self.up[node1][j] != self.up[node2][j]:
-                node1 = self.up[node1][j]
-                node2 = self.up[node2][j]
-        
-        return self.up[node1][0]
-    
-    def get_distance(self, node1, node2):
-        """Get distance between two nodes"""
-        lca = self.get_lca(node1, node2)
-        return self.depth[node1] + self.depth[node2] - 2 * self.depth[lca]
-    
-    def constrained_distance_query(self, node1, node2):
-        """Query distance with constraints"""
-        distance = self.get_distance(node1, node2)
-        
-        # Check if distance satisfies constraints
-        if self.min_distance <= distance <= self.max_distance:
-            return distance
-        
         return -1
-    
-    def find_valid_pairs(self):
-        """Find all pairs of nodes with valid distances"""
-        valid_pairs = []
-        
-        for i in range(self.n):
-            for j in range(i + 1, self.n):
-                distance = self.get_distance(i, j)
-                if self.min_distance <= distance <= self.max_distance:
-                    valid_pairs.append((i, j, distance))
-        
-        return valid_pairs
-    
-    def count_valid_pairs(self):
-        """Count number of valid pairs"""
-        return len(self.find_valid_pairs())
-    
-    def get_valid_nodes_at_distance(self, node, distance):
-        """Get all nodes at specific distance from given node that satisfy constraints"""
-        if not (self.min_distance <= distance <= self.max_distance):
-            return []
-        
-        nodes = []
-        
-        def dfs(current, parent, current_distance):
-            if current_distance == distance:
-                nodes.append(current)
-                return
-            
-            for neighbor in self.adj[current]:
-                if neighbor != parent:
-                    dfs(neighbor, current, current_distance + 1)
-        
-        dfs(node, -1, 0)
-        return nodes
-    
-    def get_valid_distances_from_node(self, node):
-        """Get all valid distances from given node to other nodes"""
-        valid_distances = []
-        
-        def dfs(current, parent, current_distance):
-            if current_distance > 0 and self.min_distance <= current_distance <= self.max_distance:
-                valid_distances.append((current, current_distance))
-            
-            for neighbor in self.adj[current]:
-                if neighbor != parent:
-                    dfs(neighbor, current, current_distance + 1)
-        
-        dfs(node, -1, 0)
-        return valid_distances
-    
-    def get_constraint_statistics(self):
-        """Get statistics about valid distances"""
-        valid_pairs = self.find_valid_pairs()
-        
-        if not valid_pairs:
-            return {
-                'valid_pairs_count': 0,
-                'min_distance': self.min_distance,
-                'max_distance': self.max_distance,
-                'valid_pairs': []
-            }
-        
-        distances = [pair[2] for pair in valid_pairs]
-        
-        return {
-            'valid_pairs_count': len(valid_pairs),
-            'min_distance': self.min_distance,
-            'max_distance': self.max_distance,
-            'min_valid_distance': min(distances),
-            'max_valid_distance': max(distances),
-            'avg_valid_distance': sum(distances) / len(distances),
-            'valid_pairs': valid_pairs
-        }
 
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (1, 3), (3, 4)]
-min_distance = 2
-max_distance = 4
-
-dq = DistanceQueriesWithConstraints(n, edges, min_distance, max_distance)
-result = dq.constrained_distance_query(0, 4)
-print(f"Constrained distance query result: {result}")
-
-valid_pairs = dq.find_valid_pairs()
-print(f"Valid pairs: {valid_pairs}")
-
-statistics = dq.get_constraint_statistics()
-print(f"Constraint statistics: {statistics}")
+    return [bfs_distance(a, b) for a, b in queries]
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Distance Queries](https://cses.fi/problemset/task/1135) - Basic distance queries in tree
-- [Company Queries II](https://cses.fi/problemset/task/1688) - LCA queries in company hierarchy
-- [Tree Diameter](https://cses.fi/problemset/task/1131) - Find diameter of tree
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(q * n) | BFS takes O(n) per query |
+| Space | O(n) | Queue and visited set |
 
-#### **LeetCode Problems**
-- [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) - Tree traversal by levels
-- [Path Sum](https://leetcode.com/problems/path-sum/) - Path queries in tree
-- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Path analysis in tree
+### Why This Works (But Is Slow)
 
-#### **Problem Categories**
-- **LCA Algorithm**: Lowest common ancestor, binary lifting
-- **Tree Queries**: Distance queries, path queries, tree analysis
-- **Tree Algorithms**: Tree properties, tree analysis, tree operations
-- **Tree Traversal**: DFS, BFS, tree traversal algorithms
+Correctness is guaranteed since BFS finds shortest paths. However, with q = 2x10^5 queries and n = 2x10^5 nodes, this gives 4x10^10 operations - far too slow.
+
+---
+
+## Solution 2: Optimal Solution (LCA with Binary Lifting)
+
+### Key Insight
+
+> **The Trick:** Preprocess the tree to answer LCA queries in O(log n), then use the distance formula.
+
+### Binary Lifting Concept
+
+Binary lifting precomputes the 2^k-th ancestor of each node. To find LCA:
+1. Bring both nodes to the same depth (using binary jumps)
+2. Jump both nodes up together until they meet
+
+| Array | Meaning |
+|-------|---------|
+| `depth[v]` | Distance from root to node v |
+| `up[k][v]` | The 2^k-th ancestor of node v |
+
+### Algorithm
+
+1. **Preprocessing O(n log n):**
+   - DFS to compute depths and direct parents
+   - Build binary lifting table: `up[k][v] = up[k-1][up[k-1][v]]`
+
+2. **Query O(log n):**
+   - Find LCA of a and b using binary lifting
+   - Return `depth[a] + depth[b] - 2 * depth[LCA]`
+
+### Dry Run Example
+
+Let us trace through with the example tree:
+
+```
+Tree:
+        1
+       / \
+      2   3
+         / \
+        4   5
+
+Query: distance(2, 5)
+```
+
+**Step 1: Preprocessing**
+```
+DFS from node 1:
+  depth = [_, 0, 1, 1, 2, 2]  (1-indexed, _ is placeholder)
+
+Binary lifting table (up[k][v] = 2^k ancestor):
+  up[0] = [_, 0, 1, 1, 3, 3]  (direct parents, 0 means no parent)
+  up[1] = [_, 0, 0, 0, 1, 1]  (2^1 = 2nd ancestors)
+```
+
+**Step 2: Query distance(2, 5)**
+```
+Finding LCA(2, 5):
+  depth[2] = 1, depth[5] = 2
+
+  Node 5 is deeper, so lift it:
+  - Difference = 2 - 1 = 1
+  - Jump 5 up by 1: 5 -> up[0][5] = 3
+
+  Now both at depth 1: nodes 2 and 3
+
+  They are different, so jump both:
+  - up[0][2] = 1, up[0][3] = 1  (same!)
+  - LCA = 1
+
+Computing distance:
+  distance = depth[2] + depth[5] - 2*depth[1]
+           = 1 + 2 - 2*0
+           = 3
+
+Path: 2 -> 1 -> 3 -> 5 (verified: 3 edges)
+```
+
+### Code (Python)
+
+```python
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(300000)
+
+def solve():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n, q = int(input_data[idx]), int(input_data[idx+1])
+    idx += 2
+
+    # Build adjacency list
+    graph = defaultdict(list)
+    for _ in range(n - 1):
+        u, v = int(input_data[idx]), int(input_data[idx+1])
+        idx += 2
+        graph[u].append(v)
+        graph[v].append(u)
+
+    # Binary lifting setup
+    LOG = 18  # ceil(log2(2*10^5)) = 18
+    up = [[0] * (n + 1) for _ in range(LOG)]
+    depth = [0] * (n + 1)
+
+    # DFS to compute depths and direct parents
+    def dfs(node, parent):
+        up[0][node] = parent
+        for child in graph[node]:
+            if child != parent:
+                depth[child] = depth[node] + 1
+                dfs(child, node)
+
+    dfs(1, 0)  # Root at node 1
+
+    # Build binary lifting table
+    for k in range(1, LOG):
+        for v in range(1, n + 1):
+            up[k][v] = up[k-1][up[k-1][v]]
+
+    def lca(a, b):
+        # Ensure a is deeper
+        if depth[a] < depth[b]:
+            a, b = b, a
+
+        diff = depth[a] - depth[b]
+
+        # Lift a to same depth as b
+        for k in range(LOG):
+            if diff & (1 << k):
+                a = up[k][a]
+
+        if a == b:
+            return a
+
+        # Binary search for LCA
+        for k in range(LOG - 1, -1, -1):
+            if up[k][a] != up[k][b]:
+                a = up[k][a]
+                b = up[k][b]
+
+        return up[0][a]
+
+    def distance(a, b):
+        l = lca(a, b)
+        return depth[a] + depth[b] - 2 * depth[l]
+
+    # Process queries
+    results = []
+    for _ in range(q):
+        a, b = int(input_data[idx]), int(input_data[idx+1])
+        idx += 2
+        results.append(str(distance(a, b)))
+
+    print('\n'.join(results))
+
+if __name__ == "__main__":
+    solve()
+```
+
+### Code (C++)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 200005;
+const int LOG = 18;
+
+vector<int> adj[MAXN];
+int up[LOG][MAXN];
+int depth[MAXN];
+int n, q;
+
+void dfs(int v, int parent) {
+    up[0][v] = parent;
+    for (int child : adj[v]) {
+        if (child != parent) {
+            depth[child] = depth[v] + 1;
+            dfs(child, v);
+        }
+    }
+}
+
+int lca(int a, int b) {
+    if (depth[a] < depth[b]) swap(a, b);
+
+    int diff = depth[a] - depth[b];
+    for (int k = 0; k < LOG; k++) {
+        if (diff & (1 << k)) {
+            a = up[k][a];
+        }
+    }
+
+    if (a == b) return a;
+
+    for (int k = LOG - 1; k >= 0; k--) {
+        if (up[k][a] != up[k][b]) {
+            a = up[k][a];
+            b = up[k][b];
+        }
+    }
+
+    return up[0][a];
+}
+
+int distance(int a, int b) {
+    int l = lca(a, b);
+    return depth[a] + depth[b] - 2 * depth[l];
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    cin >> n >> q;
+
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    // DFS from root (node 1)
+    depth[1] = 0;
+    dfs(1, 0);
+
+    // Build binary lifting table
+    for (int k = 1; k < LOG; k++) {
+        for (int v = 1; v <= n; v++) {
+            up[k][v] = up[k-1][up[k-1][v]];
+        }
+    }
+
+    // Process queries
+    while (q--) {
+        int a, b;
+        cin >> a >> b;
+        cout << distance(a, b) << "\n";
+    }
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O((n + q) log n) | O(n log n) preprocessing + O(q log n) queries |
+| Space | O(n log n) | Binary lifting table has LOG rows of n elements |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Wrong Depth Initialization
+
+```python
+# WRONG - depth[root] should be 0, not undefined
+depth = [0] * (n + 1)
+def dfs(node, parent):
+    depth[node] = depth[parent] + 1  # Root's parent is 0, so depth[1] = 1
+```
+
+**Problem:** If root's depth starts at 1 instead of 0, the distance formula gives wrong results.
+**Fix:** Either set `depth[root] = 0` explicitly or handle root specially in DFS.
+
+### Mistake 2: Insufficient LOG Value
+
+```python
+# WRONG for n = 2*10^5
+LOG = 10  # 2^10 = 1024, way too small!
+
+# CORRECT
+LOG = 18  # 2^18 = 262144 > 2*10^5
+```
+
+**Problem:** If LOG is too small, binary lifting cannot reach distant ancestors.
+**Fix:** Use `LOG = ceil(log2(n)) + 1` or just 18-20 for n up to 2x10^5.
+
+### Mistake 3: Not Handling Same Node Query
+
+```python
+# WRONG - may cause issues if not handled
+def lca(a, b):
+    if depth[a] < depth[b]:
+        a, b = b, a
+    # ... rest of code
+```
+
+**Problem:** Query for distance(a, a) should return 0.
+**Fix:** The code actually handles this correctly since LCA(a, a) = a, giving distance = 0. But it is good to verify.
+
+### Mistake 4: 0-indexed vs 1-indexed Confusion
+
+```python
+# WRONG - mixing indices
+up = [[0] * n for _ in range(LOG)]  # 0-indexed
+dfs(1, 0)  # 1-indexed call!
+```
+
+**Problem:** Accessing out-of-bounds or wrong nodes.
+**Fix:** Be consistent - use 1-indexed throughout for tree problems.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Same node | `distance(3, 3)` | 0 | Node to itself has distance 0 |
+| Adjacent nodes | `distance(1, 2)` where 1-2 is edge | 1 | Direct edge = distance 1 |
+| Root query | `distance(1, n)` | depth[n] | Path to root is just depth |
+| Linear tree | 1-2-3-...-n | n-1 for distance(1,n) | Worst case path length |
+| Star tree | All nodes connect to 1 | 2 for any non-root pair | All paths go through center |
+
+---
+
+## When to Use This Pattern
+
+### Use This Approach When:
+- Multiple queries about paths/distances in a static tree
+- Need to find LCA of node pairs efficiently
+- Computing path properties (distance, sum, min, max on path)
+- Problems involving tree paths passing through ancestors
+
+### Do Not Use When:
+- Tree changes dynamically (consider Link-Cut Trees)
+- Only a single query (BFS is simpler)
+- Graph is not a tree (use Dijkstra/BFS)
+
+### Pattern Recognition Checklist:
+- [ ] Is the graph a tree (n nodes, n-1 edges, connected)?
+- [ ] Are there multiple queries about paths?
+- [ ] Does the solution involve finding common ancestors?
+- [ ] Can path problems be split at LCA?
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [Subordinates](https://cses.fi/problemset/task/1674) | Basic tree DFS, computing subtree properties |
+| [Tree Diameter](https://cses.fi/problemset/task/1131) | Understanding tree paths |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Company Queries I](https://cses.fi/problemset/task/1687) | Find k-th ancestor (uses binary lifting directly) |
+| [Company Queries II](https://cses.fi/problemset/task/1688) | LCA queries without distance |
+| [Counting Paths](https://cses.fi/problemset/task/1136) | Path counting using LCA + difference arrays |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Path Queries](https://cses.fi/problemset/task/1138) | Path sums with updates (Euler tour + segment tree) |
+| [Path Queries II](https://cses.fi/problemset/task/2134) | Path min/max with updates (HLD) |
+| [Distinct Colors](https://cses.fi/problemset/task/1139) | Small-to-large merging on tree |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Distance in a tree can be computed using LCA: `dist(a,b) = depth[a] + depth[b] - 2*depth[LCA]`
+2. **Time Optimization:** Binary lifting reduces LCA queries from O(n) to O(log n)
+3. **Space Trade-off:** We use O(n log n) space for the lifting table to enable fast queries
+4. **Pattern:** This is a fundamental technique for all tree path problems
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why the distance formula works with a diagram
+- [ ] Implement binary lifting from scratch
+- [ ] Trace through LCA computation step by step
+- [ ] Identify when a problem can use LCA-based solutions
+- [ ] Implement in your preferred language in under 15 minutes
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: LCA with Binary Lifting](https://cp-algorithms.com/graph/lca_binary_lifting.html)
+- [CSES Problem Set - Tree Algorithms](https://cses.fi/problemset/)
+- [USACO Guide: Binary Lifting](https://usaco.guide/plat/binary-lifting)

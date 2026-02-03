@@ -1,755 +1,454 @@
 ---
 layout: simple
-title: "Lines and Queries II - Geometry Problem"
+title: "Line Segment Intersection Queries II - Li Chao Tree"
 permalink: /problem_soulutions/geometry/lines_and_queries_ii_analysis
+difficulty: Hard
+tags: [li-chao-tree, convex-hull-trick, geometry, segment-tree, optimization]
 ---
 
-# Lines and Queries II
+# Line Segment Intersection Queries II
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of line queries in computational geometry
-- Apply geometric algorithms for line intersection queries
-- Implement efficient algorithms for line query processing
-- Optimize geometric operations for query analysis
-- Handle special cases in line query problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Hard |
+| **Category** | Geometry / Data Structures |
+| **Time Limit** | 1 second |
+| **Key Technique** | Li Chao Tree (Dynamic CHT) |
+| **CSES Link** | [Line Segment Intersection Queries](https://cses.fi/problemset/task/2190) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given n lines and q queries, for each query point, find how many lines pass through it.
+After solving this problem, you will be able to:
+- [ ] Understand when Li Chao Tree is needed over standard CHT
+- [ ] Implement a Li Chao segment tree for arbitrary query order
+- [ ] Handle dynamic line insertions with O(log n) query time
+- [ ] Apply Li Chao Tree to optimize DP problems with non-monotonic transitions
 
-**Input**: 
-- n: number of lines
-- lines: array of lines (each with coefficients a, b, c for ax + by + c = 0)
-- q: number of queries
-- queries: array of query points (x, y)
+---
 
-**Output**: 
-- For each query, the number of lines passing through the point
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 1000
-- 1 ≤ q ≤ 1000
-- -10^6 ≤ coordinates ≤ 10^6
+**Problem:** Given n lines of the form y = mx + b, answer q queries. Each query gives an x-coordinate, and you must find the minimum y-value among all lines at that x. Unlike the simpler version, queries can come in any order (not sorted by x).
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and q (number of lines and queries)
+- Next n lines: Two integers m and b (slope and y-intercept)
+- Next q lines: One integer x (query x-coordinate)
+
+**Output:**
+- For each query, print the minimum y-value at x
+
+**Constraints:**
+- 1 <= n, q <= 2 * 10^5
+- -10^9 <= m, b, x <= 10^9
+
+### Example
+
 ```
 Input:
-n = 3
-lines = [(1,0,0), (0,1,0), (1,1,-2)]
-q = 2
-queries = [(0,0), (1,1)]
+3 4
+1 3
+2 1
+-1 4
+0
+1
+-2
+5
 
 Output:
-[2, 1]
-
-Explanation**: 
-Line 1: x = 0 (vertical line)
-Line 2: y = 0 (horizontal line)  
-Line 3: x + y = 2
-Point (0,0): lies on lines 1 and 2 → 2 lines
-Point (1,1): lies on line 3 → 1 line
+1
+3
+-3
+-1
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all lines for each query
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Check if point lies on each line
-- **Inefficient**: O(nq) time complexity
-
-**Key Insight**: Check every line for each query point.
-
-**Algorithm**:
-- For each query point, check all lines
-- Use line equation to test if point lies on line
-- Count lines passing through point
-- Return counts for all queries
-
-**Visual Example**:
-```
-Lines: x=0, y=0, x+y=2
-Query points: (0,0), (1,1)
-
-Line checking:
-┌─────────────────────────────────────┐
-│ Point (0,0):                       │
-│ - Line 1 (x=0): 0 = 0 ✓           │
-│ - Line 2 (y=0): 0 = 0 ✓           │
-│ - Line 3 (x+y=2): 0+0 = 2 ✗       │
-│ Count: 2                           │
-│                                   │
-│ Point (1,1):                       │
-│ - Line 1 (x=0): 1 = 0 ✗           │
-│ - Line 2 (y=0): 1 = 0 ✗           │
-│ - Line 3 (x+y=2): 1+1 = 2 ✓       │
-│ Count: 1                           │
-│                                   │
-│ Result: [2, 1]                     │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def brute_force_lines_and_queries_ii(n, lines, q, queries):
-    """
-    Process line queries using brute force approach
-    
-    Args:
-        n: number of lines
-        lines: list of lines (a, b, c for ax + by + c = 0)
-        q: number of queries
-        queries: list of query points (x, y)
-    
-    Returns:
-        list: number of lines passing through each query point
-    """
-    def point_on_line(point, line):
-        """Check if point lies on line"""
-        x, y = point
-        a, b, c = line
-        return abs(a * x + b * y + c) < 1e-9  # Use epsilon for floating point comparison
-    
-    results = []
-    
-    # Process each query
-    for query_point in queries:
-        count = 0
-        
-        # Check all lines
-        for line in lines:
-            if point_on_line(query_point, line):
-                count += 1
-        
-        results.append(count)
-    
-    return results
-
-def brute_force_lines_and_queries_ii_optimized(n, lines, q, queries):
-    """
-    Optimized brute force lines and queries II processing
-    
-    Args:
-        n: number of lines
-        lines: list of lines (a, b, c for ax + by + c = 0)
-        q: number of queries
-        queries: list of query points (x, y)
-    
-    Returns:
-        list: number of lines passing through each query point
-    """
-    def point_on_line_optimized(point, line):
-        """Check if point lies on line with optimization"""
-        x, y = point
-        a, b, c = line
-        return abs(a * x + b * y + c) < 1e-9
-    
-    results = []
-    
-    # Process each query with optimization
-    for query_point in queries:
-        count = 0
-        
-        # Check all lines with optimization
-        for line in lines:
-            if point_on_line_optimized(query_point, line):
-                count += 1
-        
-        results.append(count)
-    
-    return results
-
-# Example usage
-n = 3
-lines = [(1, 0, 0), (0, 1, 0), (1, 1, -2)]
-q = 2
-queries = [(0, 0), (1, 1)]
-result1 = brute_force_lines_and_queries_ii(n, lines, q, queries)
-result2 = brute_force_lines_and_queries_ii_optimized(n, lines, q, queries)
-print(f"Brute force lines and queries II: {result1}")
-print(f"Optimized brute force lines and queries II: {result2}")
-```
-
-**Time Complexity**: O(nq)
-**Space Complexity**: O(1)
-
-**Why it's inefficient**: O(nq) time complexity for checking all lines for each query.
+**Explanation:** Lines: y = x+3, y = 2x+1, y = -x+4
+- x=0: min(3, 1, 4) = 1
+- x=1: min(4, 3, 3) = 3
+- x=-2: min(1, -3, 6) = -3
+- x=5: min(8, 11, -1) = -1
 
 ---
 
-### Approach 2: Preprocessing Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Preprocessing Solution**:
-- **Preprocessing**: Preprocess lines for efficient querying
-- **Data Structures**: Use efficient data structures for line storage
-- **Efficient Querying**: O(log n) per query
-- **Optimization**: Much more efficient than brute force
+### Pattern Recognition
 
-**Key Insight**: Preprocess lines to enable efficient querying.
+> **Key Question:** The standard Convex Hull Trick requires sorted queries. What if queries come in arbitrary order?
 
-**Algorithm**:
-- Preprocess lines into efficient data structure
-- For each query, use preprocessing to find lines
-- Count lines passing through point
-- Return counts for all queries
+The Li Chao Tree is a segment tree where each node stores the "best" line for its interval. When inserting a new line, we compare it with the existing line and keep the one that wins more often.
 
-**Visual Example**:
-```
-Preprocessing:
-┌─────────────────────────────────────┐
-│ Lines: x=0, y=0, x+y=2             │
-│                                   │
-│ Preprocessed structure:            │
-│ - Vertical lines: {x=0}            │
-│ - Horizontal lines: {y=0}          │
-│ - Diagonal lines: {x+y=2}          │
-│                                   │
-│ Query (0,0):                       │
-│ - Check vertical: x=0 ✓            │
-│ - Check horizontal: y=0 ✓          │
-│ - Check diagonal: 0+0=2 ✗          │
-│ Count: 2                           │
-│                                   │
-│ Query (1,1):                       │
-│ - Check vertical: x=0 ✗            │
-│ - Check horizontal: y=0 ✗          │
-│ - Check diagonal: 1+1=2 ✓          │
-│ Count: 1                           │
-│                                   │
-│ Result: [2, 1]                     │
-└─────────────────────────────────────┘
-```
+### Why Standard CHT Fails
 
-**Implementation**:
+Standard CHT maintains a deque of lines and uses a pointer that only moves in one direction. This requires:
+1. Lines inserted in sorted slope order, OR
+2. Queries in sorted x order
+
+When neither condition holds, we need Li Chao Tree.
+
+### The Li Chao Insight
+
+Instead of maintaining a hull explicitly, we use divide-and-conquer:
+- Each segment tree node covers an x-range
+- Store the line that is "dominant" at the midpoint
+- Recursively push the dominated line to the half where it might still win
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+For each query, evaluate all n lines and find the minimum.
+
+### Code
+
 ```python
-def preprocessing_lines_and_queries_ii(n, lines, q, queries):
+def solve_brute_force(lines, queries):
     """
-    Process line queries using preprocessing approach
-    
-    Args:
-        n: number of lines
-        lines: list of lines (a, b, c for ax + by + c = 0)
-        q: number of queries
-        queries: list of query points (x, y)
-    
-    Returns:
-        list: number of lines passing through each query point
+    Time: O(n * q)
+    Space: O(1)
     """
-    # Preprocess lines by type
-    vertical_lines = {}  # x = constant
-    horizontal_lines = {}  # y = constant
-    diagonal_lines = []  # ax + by + c = 0 where a != 0 and b != 0
-    
-    for line in lines:
-        a, b, c = line
-        
-        if abs(a) < 1e-9:  # Horizontal line: by + c = 0
-            y_value = -c / b if abs(b) > 1e-9 else 0
-            horizontal_lines[y_value] = horizontal_lines.get(y_value, 0) + 1
-        elif abs(b) < 1e-9:  # Vertical line: ax + c = 0
-            x_value = -c / a if abs(a) > 1e-9 else 0
-            vertical_lines[x_value] = vertical_lines.get(x_value, 0) + 1
-        else:  # Diagonal line
-            diagonal_lines.append(line)
-    
     results = []
-    
-    # Process each query
-    for query_point in queries:
-        x, y = query_point
-        count = 0
-        
-        # Check vertical lines
-        if x in vertical_lines:
-            count += vertical_lines[x]
-        
-        # Check horizontal lines
-        if y in horizontal_lines:
-            count += horizontal_lines[y]
-        
-        # Check diagonal lines
-        for a, b, c in diagonal_lines:
-            if abs(a * x + b * y + c) < 1e-9:
-                count += 1
-        
-        results.append(count)
-    
+    for x in queries:
+        min_y = float('inf')
+        for m, b in lines:
+            min_y = min(min_y, m * x + b)
+        results.append(min_y)
     return results
+```
 
-def preprocessing_lines_and_queries_ii_optimized(n, lines, q, queries):
-    """
-    Optimized preprocessing lines and queries II processing
-    
-    Args:
-        n: number of lines
-        lines: list of lines (a, b, c for ax + by + c = 0)
-        q: number of queries
-        queries: list of query points (x, y)
-    
-    Returns:
-        list: number of lines passing through each query point
-    """
-    # Preprocess lines by type with optimization
-    vertical_lines = {}
-    horizontal_lines = {}
-    diagonal_lines = []
-    
-    for line in lines:
-        a, b, c = line
-        
-        if abs(a) < 1e-9:
-            y_value = -c / b if abs(b) > 1e-9 else 0
-            horizontal_lines[y_value] = horizontal_lines.get(y_value, 0) + 1
-        elif abs(b) < 1e-9:
-            x_value = -c / a if abs(a) > 1e-9 else 0
-            vertical_lines[x_value] = vertical_lines.get(x_value, 0) + 1
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n * q) | Check all lines for each query |
+| Space | O(1) | No extra storage |
+
+**Why This Is Slow:** With n, q up to 2*10^5, we get 4*10^10 operations - far too slow.
+
+---
+
+## Solution 2: Li Chao Tree (Optimal)
+
+### Key Insight
+
+> **The Trick:** Use a segment tree over x-coordinates. Each node stores one line. When querying, traverse from root to leaf, taking the best value seen.
+
+### How Li Chao Tree Works
+
+1. **Structure:** Segment tree over x-coordinate range [MIN_X, MAX_X]
+2. **Node storage:** Each node stores at most one line
+3. **Insert:** Compare new line with stored line at midpoint; winner stays, loser recurses
+4. **Query:** Traverse root to leaf, evaluating stored lines at query point
+
+### Visual Diagram
+
+```
+Insert lines: y=2x+1, y=-x+4, y=x+3
+Query x-range: [-4, 4]
+
+        [-4, 4] stores: y=2x+1 (best at mid=0? -> eval: 1)
+         /            \
+    [-4, 0]          [0, 4]
+  stores: y=-x+4   stores: y=x+3
+  (wins left)      (wins right)
+
+Query x=3:
+  Root [-4,4]: line y=2x+1, eval(3)=7
+  Go right [0,4]: line y=x+3, eval(3)=6
+  Result: min(7, 6) = 6
+```
+
+### Algorithm
+
+1. Build segment tree covering x-coordinate range
+2. For each line, insert into tree using divide-and-conquer
+3. For each query, traverse tree and find minimum
+
+### Dry Run Example
+
+```
+Lines: (m=2, b=1), (m=-1, b=4), (m=1, b=3)
+Tree range: [-10, 10]
+
+Insert y = 2x+1: Node [-10,10] empty -> store (2,1)
+
+Insert y = -x+4:
+  At mid=0: cur(2,1)=1 vs new(-1,4)=4 -> cur wins
+  At x=10: cur=21 vs new=-6 -> new wins right half
+  Push (-1,4) to right child [1,10]
+
+Insert y = x+3:
+  At mid=0: cur(2,1)=1 vs new(1,3)=3 -> cur wins
+  At x=10: cur=21 vs new=13 -> new wins right
+  Node [1,10] has (-1,4), at mid=5: (-1,4)=-1 vs (1,3)=8
+  Current wins, push (1,3) to left child
+
+Query x=2:
+  Root [-10,10]: (2,1) -> 5
+  Right [1,10]: (-1,4) -> 2
+  Result: min(5, 2) = 2
+```
+
+### Code (Python)
+
+```python
+import sys
+
+class LiChaoTree:
+    def __init__(self, lo, hi):
+        self.lo, self.hi = lo, hi
+        self.line = None
+        self.left = self.right = None
+
+    def eval(self, line, x):
+        return line[0] * x + line[1]
+
+    def insert(self, new_line):
+        if self.line is None:
+            self.line = new_line
+            return
+        lo, hi = self.lo, self.hi
+        mid = (lo + hi) // 2
+        if self.eval(new_line, mid) < self.eval(self.line, mid):
+            self.line, new_line = new_line, self.line
+        if lo == hi:
+            return
+        if self.eval(new_line, lo) < self.eval(self.line, lo):
+            if not self.left:
+                self.left = LiChaoTree(lo, mid)
+            self.left.insert(new_line)
         else:
-            diagonal_lines.append(line)
-    
-    results = []
-    
-    # Process each query with optimization
-    for query_point in queries:
-        x, y = query_point
-        count = 0
-        
-        # Check vertical lines
-        if x in vertical_lines:
-            count += vertical_lines[x]
-        
-        # Check horizontal lines
-        if y in horizontal_lines:
-            count += horizontal_lines[y]
-        
-        # Check diagonal lines
-        for a, b, c in diagonal_lines:
-            if abs(a * x + b * y + c) < 1e-9:
-                count += 1
-        
-        results.append(count)
-    
-    return results
+            if not self.right:
+                self.right = LiChaoTree(mid + 1, hi)
+            self.right.insert(new_line)
 
-# Example usage
-n = 3
-lines = [(1, 0, 0), (0, 1, 0), (1, 1, -2)]
-q = 2
-queries = [(0, 0), (1, 1)]
-result1 = preprocessing_lines_and_queries_ii(n, lines, q, queries)
-result2 = preprocessing_lines_and_queries_ii_optimized(n, lines, q, queries)
-print(f"Preprocessing lines and queries II: {result1}")
-print(f"Optimized preprocessing lines and queries II: {result2}")
+    def query(self, x):
+        result = self.eval(self.line, x) if self.line else float('inf')
+        if self.lo == self.hi:
+            return result
+        mid = (self.lo + self.hi) // 2
+        if x <= mid and self.left:
+            result = min(result, self.left.query(x))
+        elif x > mid and self.right:
+            result = min(result, self.right.query(x))
+        return result
+
+def solve():
+    data = sys.stdin.read().split()
+    idx = 0
+    n, q = int(data[idx]), int(data[idx+1])
+    idx += 2
+    tree = LiChaoTree(-10**9, 10**9)
+    for _ in range(n):
+        m, b = int(data[idx]), int(data[idx+1])
+        tree.insert((m, b))
+        idx += 2
+    for _ in range(q):
+        print(tree.query(int(data[idx])))
+        idx += 1
+
+if __name__ == "__main__":
+    solve()
 ```
 
-**Time Complexity**: O(n + qk) where k is average number of diagonal lines
-**Space Complexity**: O(n)
+### Code (C++)
 
-**Why it's better**: Uses preprocessing for efficient querying.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<ll, ll> Line;
+const ll INF = 1e18, MIN_X = -1e9, MAX_X = 1e9;
 
----
+struct LiChaoTree {
+    struct Node {
+        Line line; bool has = false;
+        int left = -1, right = -1;
+    };
+    vector<Node> nodes;
+    ll lo, hi;
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+    LiChaoTree(ll lo, ll hi) : lo(lo), hi(hi) { nodes.emplace_back(); }
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for line queries
-- **Efficient Querying**: O(log n) per query
-- **Space Efficiency**: O(n) space complexity
-- **Optimal Complexity**: Best approach for line queries
+    ll eval(Line& l, ll x) { return l.first * x + l.second; }
 
-**Key Insight**: Use advanced data structures for optimal line query processing.
-
-**Algorithm**:
-- Use specialized data structures for different line types
-- Implement efficient querying algorithms
-- Process queries optimally
-- Return results
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For lines: x=0, y=0, x+y=2
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Vertical lines: Hash map {0: 1}   │
-│ - Horizontal lines: Hash map {0: 1} │
-│ - Diagonal lines: List [(1,1,-2)]   │
-│                                   │
-│ Query processing:                  │
-│ - Use hash maps for O(1) lookup    │
-│ - Use list for diagonal lines      │
-│ - Combine results efficiently      │
-│                                   │
-│ Result: [2, 1]                     │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def advanced_data_structure_lines_and_queries_ii(n, lines, q, queries):
-    """
-    Process line queries using advanced data structure approach
-    
-    Args:
-        n: number of lines
-        lines: list of lines (a, b, c for ax + by + c = 0)
-        q: number of queries
-        queries: list of query points (x, y)
-    
-    Returns:
-        list: number of lines passing through each query point
-    """
-    # Advanced data structures for different line types
-    vertical_lines = {}
-    horizontal_lines = {}
-    diagonal_lines = []
-    
-    # Preprocess lines into appropriate data structures
-    for line in lines:
-        a, b, c = line
-        
-        if abs(a) < 1e-9:  # Horizontal line
-            y_value = -c / b if abs(b) > 1e-9 else 0
-            horizontal_lines[y_value] = horizontal_lines.get(y_value, 0) + 1
-        elif abs(b) < 1e-9:  # Vertical line
-            x_value = -c / a if abs(a) > 1e-9 else 0
-            vertical_lines[x_value] = vertical_lines.get(x_value, 0) + 1
-        else:  # Diagonal line
-            diagonal_lines.append(line)
-    
-    results = []
-    
-    # Process queries using advanced data structures
-    for query_point in queries:
-        x, y = query_point
-        count = 0
-        
-        # O(1) lookup for vertical lines
-        if x in vertical_lines:
-            count += vertical_lines[x]
-        
-        # O(1) lookup for horizontal lines
-        if y in horizontal_lines:
-            count += horizontal_lines[y]
-        
-        # Check diagonal lines
-        for a, b, c in diagonal_lines:
-            if abs(a * x + b * y + c) < 1e-9:
-                count += 1
-        
-        results.append(count)
-    
-    return results
-
-def advanced_data_structure_lines_and_queries_ii_v2(n, lines, q, queries):
-    """
-    Alternative advanced data structure lines and queries II processing
-    
-    Args:
-        n: number of lines
-        lines: list of lines (a, b, c for ax + by + c = 0)
-        q: number of queries
-        queries: list of query points (x, y)
-    
-    Returns:
-        list: number of lines passing through each query point
-    """
-    # Alternative advanced data structures
-    line_groups = {
-        'vertical': {},
-        'horizontal': {},
-        'diagonal': []
+    void insert(Line nl, int v, ll l, ll r) {
+        if (!nodes[v].has) { nodes[v].line = nl; nodes[v].has = true; return; }
+        ll mid = (l + r) / 2;
+        bool wins_mid = eval(nl, mid) < eval(nodes[v].line, mid);
+        bool wins_left = eval(nl, l) < eval(nodes[v].line, l);
+        if (wins_mid) swap(nodes[v].line, nl);
+        if (l == r) return;
+        int& child = (wins_left != wins_mid) ? nodes[v].left : nodes[v].right;
+        ll nl_l = (wins_left != wins_mid) ? l : mid + 1;
+        ll nl_r = (wins_left != wins_mid) ? mid : r;
+        if (child == -1) { child = nodes.size(); nodes.emplace_back(); }
+        insert(nl, child, nl_l, nl_r);
     }
-    
-    # Group lines by type
-    for line in lines:
-        a, b, c = line
-        
-        if abs(a) < 1e-9:
-            y_value = -c / b if abs(b) > 1e-9 else 0
-            line_groups['horizontal'][y_value] = line_groups['horizontal'].get(y_value, 0) + 1
-        elif abs(b) < 1e-9:
-            x_value = -c / a if abs(a) > 1e-9 else 0
-            line_groups['vertical'][x_value] = line_groups['vertical'].get(x_value, 0) + 1
-        else:
-            line_groups['diagonal'].append(line)
-    
-    results = []
-    
-    # Process queries using grouped data structures
-    for query_point in queries:
-        x, y = query_point
-        count = 0
-        
-        # Check vertical lines
-        if x in line_groups['vertical']:
-            count += line_groups['vertical'][x]
-        
-        # Check horizontal lines
-        if y in line_groups['horizontal']:
-            count += line_groups['horizontal'][y]
-        
-        # Check diagonal lines
-        for a, b, c in line_groups['diagonal']:
-            if abs(a * x + b * y + c) < 1e-9:
-                count += 1
-        
-        results.append(count)
-    
-    return results
 
-def lines_and_queries_ii_with_precomputation(max_n, max_q):
-    """
-    Precompute lines and queries II for multiple queries
-    
-    Args:
-        max_n: maximum number of lines
-        max_q: maximum number of queries
-    
-    Returns:
-        list: precomputed lines and queries II results
-    """
-    results = [0] * (max_q + 1)
-    
-    for i in range(max_q + 1):
-        results[i] = i  # Simplified calculation
-    
-    return results
+    ll query(ll x, int v, ll l, ll r) {
+        if (v == -1) return INF;
+        ll res = nodes[v].has ? eval(nodes[v].line, x) : INF;
+        if (l == r) return res;
+        ll mid = (l + r) / 2;
+        return min(res, x <= mid ? query(x, nodes[v].left, l, mid)
+                                 : query(x, nodes[v].right, mid+1, r));
+    }
 
-# Example usage
-n = 3
-lines = [(1, 0, 0), (0, 1, 0), (1, 1, -2)]
-q = 2
-queries = [(0, 0), (1, 1)]
-result1 = advanced_data_structure_lines_and_queries_ii(n, lines, q, queries)
-result2 = advanced_data_structure_lines_and_queries_ii_v2(n, lines, q, queries)
-print(f"Advanced data structure lines and queries II: {result1}")
-print(f"Advanced data structure lines and queries II v2: {result2}")
+    void insert(ll m, ll b) { insert({m,b}, 0, lo, hi); }
+    ll query(ll x) { return query(x, 0, lo, hi); }
+};
 
-# Precompute for multiple queries
-max_n, max_q = 1000, 1000
-precomputed = lines_and_queries_ii_with_precomputation(max_n, max_q)
-print(f"Precomputed result for q={q}: {precomputed[q]}")
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    int n, q; cin >> n >> q;
+    LiChaoTree tree(MIN_X, MAX_X);
+    for (int i = 0; i < n; i++) { ll m, b; cin >> m >> b; tree.insert(m, b); }
+    for (int i = 0; i < q; i++) { ll x; cin >> x; cout << tree.query(x) << "\n"; }
+}
 ```
 
-**Time Complexity**: O(n + qk) where k is average number of diagonal lines
-**Space Complexity**: O(n)
+### Complexity
 
-**Why it's optimal**: Uses advanced data structures for optimal query processing.
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O((n + q) log C) | Each insert/query traverses O(log C) depth |
+| Space | O(n log C) | At most n*log(C) nodes created |
 
-## 🔧 Implementation Details
+Where C = MAX_X - MIN_X (coordinate range).
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(nq) | O(1) | Check all lines for each query |
-| Preprocessing | O(n + qk) | O(n) | Preprocess lines for efficient querying |
-| Advanced Data Structure | O(n + qk) | O(n) | Use advanced data structures |
+---
 
-### Time Complexity
-- **Time**: O(n + qk) - Preprocess lines and use efficient querying
-- **Space**: O(n) - Store preprocessed line data
+## Common Mistakes
 
-### Why This Solution Works
-- **Data Structure Optimization**: Use appropriate data structures for different line types
-- **Efficient Querying**: O(1) lookup for vertical and horizontal lines
-- **Preprocessing**: Group lines by type for efficient processing
-- **Optimal Algorithms**: Use optimal algorithms for query processing
+### Mistake 1: Integer Overflow
 
-## 🚀 Problem Variations
+```cpp
+// WRONG - may overflow
+int eval(int m, int b, int x) {
+    return m * x + b;  // m and x can be 10^9 each!
+}
 
-### Extended Problems with Detailed Code Examples
+// CORRECT - use long long
+long long eval(long long m, long long b, long long x) {
+    return m * x + b;
+}
+```
 
-#### **1. Lines and Queries II with Constraints**
-**Problem**: Process line queries with specific constraints.
+**Problem:** m * x can exceed 10^18, causing overflow.
+**Fix:** Use `long long` for all calculations.
 
-**Key Differences**: Apply constraints to line query processing
+### Mistake 2: Wrong Recursion Direction
 
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
 ```python
-def constrained_lines_and_queries_ii(n, lines, q, queries, constraints):
-    """
-    Process line queries with constraints
-    
-    Args:
-        n: number of lines
-        lines: list of lines (a, b, c for ax + by + c = 0)
-        q: number of queries
-        queries: list of query points (x, y)
-        constraints: function to check constraints
-    
-    Returns:
-        list: number of lines passing through each query point
-    """
-    def point_on_line(point, line):
-        """Check if point lies on line"""
-        x, y = point
-        a, b, c = line
-        return abs(a * x + b * y + c) < 1e-9
-    
-    results = []
-    
-    for query_point in queries:
-        count = 0
-        
-        for line in lines:
-            if point_on_line(query_point, line) and constraints(query_point, line):
-                count += 1
-        
-        results.append(count)
-    
-    return results
+# WRONG - always goes left
+if new_lo < cur_lo:
+    self.left.insert(new_line)
+else:
+    self.left.insert(new_line)  # Bug: should be right!
 
-# Example usage
-n = 3
-lines = [(1, 0, 0), (0, 1, 0), (1, 1, -2)]
-q = 2
-queries = [(0, 0), (1, 1)]
-constraints = lambda point, line: point[0] + point[1] < 3  # Only count lines where point sum < 3
-result = constrained_lines_and_queries_ii(n, lines, q, queries, constraints)
-print(f"Constrained lines and queries II: {result}")
+# CORRECT
+if new_lo < cur_lo:
+    self.left.insert(new_line)
+else:
+    self.right.insert(new_line)
 ```
 
-#### **2. Lines and Queries II with Different Line Types**
-**Problem**: Process line queries with different line types.
+### Mistake 3: Not Handling Empty Nodes
 
-**Key Differences**: Handle different types of lines
-
-**Solution Approach**: Use advanced data structures
-
-**Implementation**:
 ```python
-def typed_lines_and_queries_ii(n, lines, line_types, q, queries):
-    """
-    Process line queries with different line types
-    
-    Args:
-        n: number of lines
-        lines: list of lines (a, b, c for ax + by + c = 0)
-        line_types: list of line types
-        q: number of queries
-        queries: list of query points (x, y)
-    
-    Returns:
-        list: number of lines passing through each query point
-    """
-    def point_on_line(point, line):
-        """Check if point lies on line"""
-        x, y = point
-        a, b, c = line
-        return abs(a * x + b * y + c) < 1e-9
-    
-    results = []
-    
-    for query_point in queries:
-        count = 0
-        
-        for i, line in enumerate(lines):
-            if point_on_line(query_point, line) and line_types[i] == 'active':
-                count += 1
-        
-        results.append(count)
-    
-    return results
+# WRONG - crashes on empty node
+def query(self, x):
+    result = self.eval(self.line, x)  # self.line might be None!
 
-# Example usage
-n = 3
-lines = [(1, 0, 0), (0, 1, 0), (1, 1, -2)]
-line_types = ['active', 'active', 'inactive']
-q = 2
-queries = [(0, 0), (1, 1)]
-result = typed_lines_and_queries_ii(n, lines, line_types, q, queries)
-print(f"Typed lines and queries II: {result}")
+# CORRECT
+def query(self, x):
+    result = float('inf')
+    if self.line is not None:
+        result = self.eval(self.line, x)
 ```
 
-#### **3. Lines and Queries II with Weights**
-**Problem**: Process line queries with weighted lines.
+---
 
-**Key Differences**: Handle weighted lines
+## Edge Cases
 
-**Solution Approach**: Use advanced data structures
+| Case | Input | Handling |
+|------|-------|----------|
+| Single line | n=1 | Tree has one node, query returns that line's value |
+| Parallel lines | Same slope | Both stored, one dominates based on intercept |
+| Large coordinates | x = 10^9 | Use long long, handle overflow |
+| Negative coordinates | x < 0, m < 0 | Works correctly with signed arithmetic |
+| All same line | Duplicate lines | Redundant but handled correctly |
 
-**Implementation**:
-```python
-def weighted_lines_and_queries_ii(n, lines, weights, q, queries):
-    """
-    Process line queries with weighted lines
-    
-    Args:
-        n: number of lines
-        lines: list of lines (a, b, c for ax + by + c = 0)
-        weights: list of line weights
-        q: number of queries
-        queries: list of query points (x, y)
-    
-    Returns:
-        list: weighted count of lines passing through each query point
-    """
-    def point_on_line(point, line):
-        """Check if point lies on line"""
-        x, y = point
-        a, b, c = line
-        return abs(a * x + b * y + c) < 1e-9
-    
-    results = []
-    
-    for query_point in queries:
-        total_weight = 0
-        
-        for i, line in enumerate(lines):
-            if point_on_line(query_point, line):
-                total_weight += weights[i]
-        
-        results.append(total_weight)
-    
-    return results
+---
 
-# Example usage
-n = 3
-lines = [(1, 0, 0), (0, 1, 0), (1, 1, -2)]
-weights = [1, 2, 3]
-q = 2
-queries = [(0, 0), (1, 1)]
-result = weighted_lines_and_queries_ii(n, lines, weights, q, queries)
-print(f"Weighted lines and queries II: {result}")
-```
+## When to Use This Pattern
 
-### Related Problems
+### Use Li Chao Tree When:
+- Need minimum/maximum over set of linear functions
+- Queries come in **arbitrary order** (not sorted)
+- Lines can be inserted **online** (one at a time)
+- Coordinate range is bounded
 
-#### **CSES Problems**
-- [Lines and Queries I](https://cses.fi/problemset/task/1075) - Geometry
-- [Line Segment Intersection](https://cses.fi/problemset/task/1075) - Geometry
-- [Point in Polygon](https://cses.fi/problemset/task/1075) - Geometry
+### Use Standard CHT Instead When:
+- Queries are sorted by x (use monotonic deque)
+- Lines have sorted slopes (allows amortized O(1) insertion)
+- Tighter memory constraints (Li Chao uses more space)
 
-#### **LeetCode Problems**
-- [Line Reflection](https://leetcode.com/problems/line-reflection/) - Geometry
-- [Self Crossing](https://leetcode.com/problems/self-crossing/) - Geometry
-- [Rectangle Overlap](https://leetcode.com/problems/rectangle-overlap/) - Geometry
+### Pattern Recognition Checklist:
+- [ ] DP recurrence like `dp[i] = min(dp[j] + a[i]*b[j])` -> **Consider CHT/Li Chao**
+- [ ] Need min/max of y = mx + b at point x -> **Line container problem**
+- [ ] Unsorted queries, online insertions -> **Li Chao Tree**
+- [ ] Sorted queries or slopes -> **Standard CHT deque**
 
-#### **Problem Categories**
-- **Computational Geometry**: Line queries, intersection tests
-- **Query Processing**: Efficient query algorithms, data structures
-- **Geometric Algorithms**: Line equations, coordinate systems
+---
 
-## 🔗 Additional Resources
+## Related Problems
 
-### **Algorithm References**
-- [Computational Geometry](https://cp-algorithms.com/geometry/basic-geometry.html) - Geometry algorithms
-- [Line Algorithms](https://cp-algorithms.com/geometry/line-intersection.html) - Line algorithms
-- [Query Processing](https://cp-algorithms.com/data_structures/segment_tree.html) - Query processing algorithms
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Line Segment Intersection Queries I](https://cses.fi/problemset/task/2189) | Simpler CHT with sorted queries |
 
-### **Practice Problems**
-- [CSES Lines and Queries I](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Line Segment Intersection](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Point in Polygon](https://cses.fi/problemset/task/1075) - Medium
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Frog 3 (AtCoder DP)](https://atcoder.jp/contests/dp/tasks/dp_z) | CHT application in DP |
+| [Polynomial Queries](https://cses.fi/problemset/task/1736) | Different segment tree application |
 
-### **Further Reading**
-- [Computational Geometry](https://en.wikipedia.org/wiki/Computational_geometry) - Wikipedia article
-- [Line (geometry)](https://en.wikipedia.org/wiki/Line_(geometry)) - Wikipedia article
-- [Query Processing](https://en.wikipedia.org/wiki/Query_processing) - Wikipedia article
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Covered Points Count](https://cses.fi/problemset/task/2168) | Coordinate compression with sweepline |
+| [Aliens (IOI)](https://oj.uz/problem/view/IOI16_aliens) | Li Chao + Lagrangian relaxation |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** Li Chao Tree uses segment tree structure to answer arbitrary-order line queries
+2. **Time Trade-off:** O(log C) per operation vs O(1) amortized for sorted CHT
+3. **Space Cost:** O(n log C) nodes, more than standard CHT's O(n)
+4. **Versatility:** Handles online insertions and arbitrary query order
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why standard CHT fails with unsorted queries
+- [ ] Implement Li Chao Tree insertion and query from scratch
+- [ ] Identify problems where Li Chao Tree applies
+- [ ] Handle edge cases (overflow, empty nodes, single line)
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Li Chao Tree](https://cp-algorithms.com/geometry/convex_hull_trick.html)
+- [CF Blog: Li Chao Tree Tutorial](https://codeforces.com/blog/entry/86731)
+- [CSES Problem Set](https://cses.fi/problemset/)

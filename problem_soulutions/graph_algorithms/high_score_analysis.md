@@ -1,752 +1,473 @@
 ---
-layout: simple
-title: "High Score - Graph Algorithm Problem"
-permalink: /problem_soulutions/graph_algorithms/high_score_analysis
+difficulty: Hard
+tags: [graph, bellman-ford, longest-path, positive-cycle]
+cses_link: https://cses.fi/problemset/task/1673
 ---
 
-# High Score - Graph Algorithm Problem
+# High Score - Longest Path with Positive Cycles
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of shortest path with negative weights in graph algorithms
-- Apply efficient algorithms for finding shortest paths in graphs with negative cycles
-- Implement Bellman-Ford algorithm for negative weight detection
-- Optimize graph algorithms for negative weight problems
-- Handle special cases in shortest path problems with negative weights
+| Aspect | Details |
+|--------|---------|
+| Problem | Find maximum score from room 1 to room n |
+| Core Challenge | Detect if infinite score is possible via positive cycles |
+| Algorithm | Modified Bellman-Ford for longest path |
+| Time Complexity | O(n * m) |
+| Space Complexity | O(n + m) |
+| Key Insight | Positive cycle on path from 1 to n = infinite score |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a weighted directed graph, find the shortest path from source to destination. If there exists a negative cycle that can reach the destination, return -1.
+After studying this problem, you will understand:
 
-**Input**: 
-- n: number of vertices
-- m: number of edges
-- source: source vertex
-- destination: destination vertex
-- edges: array of (u, v, weight) representing directed edges
+1. **Longest Path in Graphs**: How to adapt shortest path algorithms for longest path
+2. **Positive Cycle Detection**: Identifying cycles that increase score infinitely
+3. **Bellman-Ford Modification**: Using Bellman-Ford for maximization instead of minimization
+4. **Reachability Analysis**: Why a cycle must be on a valid path to matter
 
-**Output**: 
-- Shortest distance from source to destination, or -1 if negative cycle exists
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2500
-- 1 ≤ m ≤ 5000
-- -10^9 ≤ weight ≤ 10^9
+You are in a game with n rooms and m tunnels. Each tunnel has a score (can be positive or negative). Starting from room 1, find the maximum score you can collect when reaching room n.
 
-**Example**:
+**Input:**
+- First line: n (rooms), m (tunnels)
+- Next m lines: a, b, x (tunnel from a to b with score x)
+
+**Output:**
+- Maximum score from room 1 to room n
+- Print -1 if you can get an arbitrarily large score (infinite)
+
+**Constraints:**
+- 1 <= n <= 2500
+- 1 <= m <= 5000
+- 1 <= a, b <= n
+- -10^9 <= x <= 10^9
+
+**Example:**
 ```
 Input:
-n = 4, source = 0, destination = 3
-edges = [(0,1,1), (1,2,-3), (2,1,1), (1,3,2)]
+4 5
+1 2 3
+2 4 -1
+1 3 -2
+3 4 7
+1 4 4
 
 Output:
--1
+5
 
-Explanation**: 
-Graph has negative cycle: 1 → 2 → 1 (cycle weight: -3 + 1 = -2)
-Since this cycle can reach destination 3, shortest path is -1
+Explanation: Path 1 -> 3 -> 4 gives score -2 + 7 = 5
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+## Key Insight: Longest Path via Weight Negation
 
-### Approach 1: Brute Force Solution
+The standard Bellman-Ford finds shortest paths. To find longest paths:
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible paths from source to destination
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic path enumeration
-- **Inefficient**: O(n! × m) time complexity
+**Method 1: Negate weights and find shortest path**
+- Negate all edge weights
+- Find shortest path (which is longest in original)
+- Positive cycle becomes negative cycle after negation
 
-**Key Insight**: Try all possible paths and find the shortest one, checking for negative cycles.
+**Method 2: Modify relaxation directly**
+- Instead of: `dist[v] = min(dist[v], dist[u] + w)`
+- Use: `dist[v] = max(dist[v], dist[u] + w)`
+- Initialize dist[1] = 0, others = -infinity
 
-**Algorithm**:
-- Generate all possible paths from source to destination
-- For each path, calculate its total weight
-- Check if any path contains a negative cycle
-- Return the shortest path weight or -1 if negative cycle exists
+We'll use Method 2 for clarity.
 
-**Visual Example**:
+## Critical Concept: Cycle Must Be On Path
+
+**This is the tricky part that many solutions miss!**
+
+A positive cycle only gives infinite score if:
+1. The cycle is reachable from room 1 (source)
+2. Room n is reachable from the cycle (destination)
+
 ```
-Graph: 0->1(1), 1->2(-3), 2->1(1), 1->3(2)
-Source: 0, Destination: 3
+Example where cycle does NOT matter:
 
-Try all possible paths:
-┌─────────────────────────────────────┐
-│ Path 1: 0 → 1 → 3                  │
-│ - Weight: 1 + 2 = 3                │
-│ - Valid path ✓                     │
-│                                   │
-│ Path 2: 0 → 1 → 2 → 1 → 3         │
-│ - Weight: 1 + (-3) + 1 + 2 = 1    │
-│ - Valid path ✓                     │
-│                                   │
-│ Path 3: 0 → 1 → 2 → 1 → 2 → 1 → 3 │
-│ - Weight: 1 + (-3) + 1 + (-3) + 1 + 2 = -1 │
-│ - Valid path ✓                     │
-│                                   │
-│ Path 4: 0 → 1 → 2 → 1 → 2 → 1 → 2 → 1 → 3 │
-│ - Weight: 1 + (-3) + 1 + (-3) + 1 + (-3) + 1 + 2 = -3 │
-│ - Valid path ✓                     │
-│                                   │
-│ Continue infinitely...             │
-│ - Negative cycle: 1 → 2 → 1       │
-│ - Cycle weight: -3 + 1 = -2       │
-│ - Can reach destination 3         │
-│                                   │
-│ Result: -1 (negative cycle)       │
-└─────────────────────────────────────┘
+    1 -----> 4 (destination)
+    |
+    v
+    2 <---> 3  (positive cycle between 2 and 3)
+
+The cycle 2-3 exists, but room 4 is NOT reachable from it.
+Answer: finite (not -1)
 ```
 
-**Implementation**:
+```
+Example where cycle DOES matter:
+
+    1 --> 2 <--> 3 --> 4
+          ^      |
+          |______|  (positive cycle)
+
+Room 4 IS reachable from the cycle.
+Answer: -1 (infinite)
+```
+
+## Algorithm
+
+### Step 1: Modified Bellman-Ford (n-1 iterations)
+
+```
+dist[1] = 0
+dist[2..n] = -infinity
+
+For i = 1 to n-1:
+    For each edge (u, v, w):
+        If dist[u] != -infinity:
+            dist[v] = max(dist[v], dist[u] + w)
+```
+
+### Step 2: Detect Positive Cycles on Valid Paths
+
+Run n more iterations. Any node that can still be improved is part of a positive cycle or reachable from one.
+
+```
+For i = 1 to n:
+    For each edge (u, v, w):
+        If dist[u] != -infinity AND dist[u] + w > dist[v]:
+            Mark v as "can_improve" (part of/reachable from positive cycle)
+```
+
+### Step 3: Check if Destination is Affected
+
+If node n is marked as "can_improve", return -1. Otherwise, return dist[n].
+
+## Visual Diagram
+
+```
+Problem: 4 rooms, 5 tunnels
+
+    +3      -1
+1 -----> 2 -----> 4
+|                 ^
+| -2              | +7
+v                 |
+3 ----------------+
+
+Also: 1 --+4--> 4
+
+Bellman-Ford for LONGEST path:
+
+Initial:  dist = [0, -inf, -inf, -inf]  (1-indexed)
+
+Iteration 1:
+  Edge 1->2 (+3): dist[2] = max(-inf, 0+3) = 3
+  Edge 1->3 (-2): dist[3] = max(-inf, 0-2) = -2
+  Edge 1->4 (+4): dist[4] = max(-inf, 0+4) = 4
+  Edge 2->4 (-1): dist[4] = max(4, 3-1) = 4
+  Edge 3->4 (+7): dist[4] = max(4, -2+7) = 5
+
+  After: dist = [0, 3, -2, 5]
+
+Iteration 2:
+  No improvements possible (no positive cycles)
+
+  After: dist = [0, 3, -2, 5]
+
+Final check (n more iterations):
+  No nodes can be improved further
+
+Answer: dist[4] = 5
+```
+
+## Dry Run: Example with Positive Cycle
+
+```
+Input:
+4 4
+1 2 1
+2 3 5
+3 2 5
+2 4 1
+
+Graph:
+       +1      +1
+    1 ----> 2 ----> 4
+            |  ^
+         +5 |  | +5
+            v  |
+            3--+
+
+Positive cycle: 2 -> 3 -> 2 (total: +10 per loop)
+
+Initial: dist = [0, -inf, -inf, -inf]
+
+Iteration 1:
+  1->2: dist[2] = 1
+  2->3: dist[3] = 6
+  3->2: dist[2] = max(1, 6+5) = 11
+  2->4: dist[4] = 12
+
+Iteration 2:
+  2->3: dist[3] = max(6, 11+5) = 16
+  3->2: dist[2] = max(11, 16+5) = 21
+  2->4: dist[4] = max(12, 21+1) = 22
+
+Iteration 3:
+  Still improving! This continues forever...
+
+Positive cycle detection (iterations n to 2n-1):
+  Node 2, 3, 4 keep improving
+  Node 4 is destination and is improving
+
+Answer: -1 (infinite score possible)
+```
+
+## Implementation
+
+### Python Solution
+
 ```python
-def brute_force_high_score(n, source, destination, edges):
-    """Find shortest path using brute force approach"""
-    from itertools import product
-    
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v, weight in edges:
-        adj[u].append((v, weight))
-    
-    def has_negative_cycle():
-        """Check if graph has negative cycle using brute force"""
-        # Try all possible cycles
-        for start in range(n):
-            # Try cycles of length 2 to n
-            for length in range(2, n + 1):
-                # Generate all possible cycles of given length starting from start
-                for cycle in product(range(n), repeat=length):
-                    if cycle[0] == start and cycle[-1] == start:
-                        # Check if cycle is valid and has negative weight
-                        total_weight = 0
-                        valid_cycle = True
-                        
-                        for i in range(len(cycle) - 1):
-                            u, v = cycle[i], cycle[i + 1]
-                            # Check if edge exists
-                            edge_exists = False
-                            for neighbor, weight in adj[u]:
-                                if neighbor == v:
-                                    total_weight += weight
-                                    edge_exists = True
-                                    break
-                            
-                            if not edge_exists:
-                                valid_cycle = False
-                                break
-                        
-                        if valid_cycle and total_weight < 0:
-                            return True
-        
-        return False
-    
-    def can_reach_destination_from_cycle():
-        """Check if negative cycle can reach destination"""
-        # Simple check: if destination is reachable from any vertex in negative cycle
-        # This is a simplified version - in practice, we'd need more sophisticated cycle detection
-        return True  # Simplified for this example
-    
-    # Check for negative cycles first
-    if has_negative_cycle() and can_reach_destination_from_cycle():
-        return -1
-    
-    # If no negative cycle, find shortest path using brute force
-    def find_shortest_path():
-        """Find shortest path using brute force"""
-        min_distance = float('inf')
-        
-        # Try all possible paths (limited to reasonable length)
-        max_path_length = min(n, 10)  # Limit to avoid infinite loops
-        
-        def dfs(current, target, visited, current_weight, path_length):
-            nonlocal min_distance
-            
-            if current == target:
-                min_distance = min(min_distance, current_weight)
-                return
-            
-            if path_length >= max_path_length:
-                return
-            
-            for neighbor, weight in adj[current]:
-                if neighbor not in visited:
-                    new_visited = visited | {neighbor}
-                    dfs(neighbor, target, new_visited, current_weight + weight, path_length + 1)
-        
-        dfs(source, destination, {source}, 0, 0)
-        return min_distance if min_distance != float('inf') else -1
-    
-    return find_shortest_path()
+from collections import deque
 
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1, 1), (1, 2, -3), (2, 1, 1), (1, 3, 2)]
-result = brute_force_high_score(n, source, destination, edges)
-print(f"Brute force result: {result}")
-```
+def high_score(n, m, edges):
+    """
+    Find maximum score from room 1 to room n.
+    Returns -1 if infinite score is possible.
+    """
+    NEG_INF = float('-inf')
 
-**Time Complexity**: O(n! × m)
-**Space Complexity**: O(n)
+    # Initialize distances: room 1 = 0, others = -infinity
+    dist = [NEG_INF] * (n + 1)
+    dist[1] = 0
 
-**Why it's inefficient**: O(n! × m) time complexity for trying all possible paths.
+    # Build adjacency list for reachability check
+    adj = [[] for _ in range(n + 1)]
+    for a, b, x in edges:
+        adj[a].append(b)
 
----
-
-### Approach 2: Bellman-Ford Algorithm
-
-**Key Insights from Bellman-Ford Algorithm**:
-- **Relaxation**: Use edge relaxation to find shortest paths
-- **Negative Cycle Detection**: Use additional iteration to detect negative cycles
-- **Efficient Implementation**: O(n × m) time complexity
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Use Bellman-Ford algorithm with negative cycle detection.
-
-**Algorithm**:
-- Initialize distances with infinity except source (distance 0)
-- Relax all edges n-1 times
-- Check for negative cycles by relaxing edges one more time
-- If any distance can be improved, negative cycle exists
-- Return shortest distance or -1 if negative cycle
-
-**Visual Example**:
-```
-Bellman-Ford Algorithm:
-
-Graph: 0->1(1), 1->2(-3), 2->1(1), 1->3(2)
-Source: 0, Destination: 3
-
-Initial distances: [0, ∞, ∞, ∞]
-
-Iteration 1 (relax all edges):
-┌─────────────────────────────────────┐
-│ Relax 0->1: dist[1] = min(∞, 0+1) = 1 │
-│ Relax 1->2: dist[2] = min(∞, 1+(-3)) = -2 │
-│ Relax 2->1: dist[1] = min(1, -2+1) = -1 │
-│ Relax 1->3: dist[3] = min(∞, 1+2) = 3 │
-│ After iteration 1: [0, -1, -2, 3]   │
-└─────────────────────────────────────┘
-
-Iteration 2 (relax all edges):
-┌─────────────────────────────────────┐
-│ Relax 0->1: dist[1] = min(-1, 0+1) = -1 │
-│ Relax 1->2: dist[2] = min(-2, -1+(-3)) = -4 │
-│ Relax 2->1: dist[1] = min(-1, -4+1) = -3 │
-│ Relax 1->3: dist[3] = min(3, -1+2) = 1 │
-│ After iteration 2: [0, -3, -4, 1]   │
-└─────────────────────────────────────┘
-
-Iteration 3 (relax all edges):
-┌─────────────────────────────────────┐
-│ Relax 0->1: dist[1] = min(-3, 0+1) = -3 │
-│ Relax 1->2: dist[2] = min(-4, -3+(-3)) = -6 │
-│ Relax 2->1: dist[1] = min(-3, -6+1) = -5 │
-│ Relax 1->3: dist[3] = min(1, -3+2) = -1 │
-│ After iteration 3: [0, -5, -6, -1]  │
-└─────────────────────────────────────┘
-
-Negative cycle detection (iteration 4):
-┌─────────────────────────────────────┐
-│ Relax 1->2: dist[2] = min(-6, -5+(-3)) = -8 │
-│ Relax 2->1: dist[1] = min(-5, -8+1) = -7 │
-│ Distances still improving → negative cycle! │
-│                                   │
-│ Result: -1 (negative cycle)       │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def bellman_ford_high_score(n, source, destination, edges):
-    """Find shortest path using Bellman-Ford algorithm"""
-    # Initialize distances
-    distances = [float('inf')] * n
-    distances[source] = 0
-    
-    # Relax edges n-1 times
+    # Step 1: Bellman-Ford for longest path (n-1 iterations)
     for _ in range(n - 1):
-        for u, v, weight in edges:
-            if distances[u] != float('inf'):
-                distances[v] = min(distances[v], distances[u] + weight)
-    
-    # Check for negative cycles
-    # Store distances before final relaxation
-    distances_before = distances.copy()
-    
-    # Relax edges one more time
-    for u, v, weight in edges:
-        if distances[u] != float('inf'):
-            distances[v] = min(distances[v], distances[u] + weight)
-    
-    # Check if any distance improved
-    for i in range(n):
-        if distances[i] < distances_before[i]:
-            # Negative cycle detected
-            # Check if this negative cycle can reach destination
-            if can_reach_destination(n, i, destination, edges):
-                return -1
-    
-    # If no negative cycle, return shortest distance
-    return distances[destination] if distances[destination] != float('inf') else -1
+        for a, b, x in edges:
+            if dist[a] != NEG_INF and dist[a] + x > dist[b]:
+                dist[b] = dist[a] + x
 
-def can_reach_destination(n, start, destination, edges):
-    """Check if destination is reachable from start using BFS"""
-    from collections import deque
-    
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v, _ in edges:
-        adj[u].append(v)
-    
-    # BFS to check reachability
-    visited = [False] * n
-    queue = deque([start])
-    visited[start] = True
-    
+    # Step 2: Detect nodes that can be improved (positive cycle reachable)
+    # Run n more iterations to propagate "infinite" status
+    can_improve = [False] * (n + 1)
+
+    for _ in range(n):
+        for a, b, x in edges:
+            if dist[a] != NEG_INF and dist[a] + x > dist[b]:
+                dist[b] = dist[a] + x
+                can_improve[b] = True
+            # Propagate: if source can improve, destination can too
+            if can_improve[a]:
+                can_improve[b] = True
+
+    # Step 3: Check if destination n can be infinitely improved
+    if can_improve[n]:
+        return -1
+
+    return dist[n]
+
+
+def high_score_with_reachability(n, m, edges):
+    """
+    Alternative approach with explicit reachability checks.
+    More intuitive but slightly more code.
+    """
+    NEG_INF = float('-inf')
+
+    # Build forward and reverse adjacency lists
+    adj = [[] for _ in range(n + 1)]
+    radj = [[] for _ in range(n + 1)]
+    for a, b, x in edges:
+        adj[a].append((b, x))
+        radj[b].append(a)
+
+    # Check which nodes are reachable from node 1
+    reachable_from_1 = [False] * (n + 1)
+    queue = deque([1])
+    reachable_from_1[1] = True
     while queue:
-        current = queue.popleft()
-        if current == destination:
-            return True
-        
-        for neighbor in adj[current]:
-            if not visited[neighbor]:
-                visited[neighbor] = True
-                queue.append(neighbor)
-    
-    return False
+        u = queue.popleft()
+        for v, _ in adj[u]:
+            if not reachable_from_1[v]:
+                reachable_from_1[v] = True
+                queue.append(v)
 
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1, 1), (1, 2, -3), (2, 1, 1), (1, 3, 2)]
-result = bellman_ford_high_score(n, source, destination, edges)
-print(f"Bellman-Ford result: {result}")
-```
+    # Check which nodes can reach node n (BFS on reverse graph)
+    can_reach_n = [False] * (n + 1)
+    queue = deque([n])
+    can_reach_n[n] = True
+    while queue:
+        u = queue.popleft()
+        for v in radj[u]:
+            if not can_reach_n[v]:
+                can_reach_n[v] = True
+                queue.append(v)
 
-**Time Complexity**: O(n × m)
-**Space Complexity**: O(n)
+    # Bellman-Ford for longest path
+    dist = [NEG_INF] * (n + 1)
+    dist[1] = 0
 
-**Why it's better**: Uses Bellman-Ford algorithm for O(n × m) time complexity.
+    for _ in range(n - 1):
+        for a, b, x in edges:
+            if dist[a] != NEG_INF and dist[a] + x > dist[b]:
+                dist[b] = dist[a] + x
 
----
-
-### Approach 3: Advanced Data Structure Solution (Optimal)
-
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for shortest path with negative weights
-- **Efficient Implementation**: O(n × m) time complexity
-- **Space Efficiency**: O(n + m) space complexity
-- **Optimal Complexity**: Best approach for shortest path with negative weights
-
-**Key Insight**: Use advanced data structures for optimal shortest path with negative weight detection.
-
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient Bellman-Ford algorithm
-- Handle special cases optimally
-- Return shortest distance or -1 if negative cycle
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For graph: 0->1(1), 1->2(-3), 2->1(1), 1->3(2)
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Edge list: for efficient          │
-│   storage and operations            │
-│ - Distance array: for optimization  │
-│ - Reachability cache: for optimization│
-│                                   │
-│ Shortest path calculation:          │
-│ - Use edge list for efficient       │
-│   storage and operations            │
-│ - Use distance array for           │
-│   optimization                      │
-│ - Use reachability cache for       │
-│   optimization                      │
-│                                   │
-│ Result: -1                         │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def advanced_data_structure_high_score(n, source, destination, edges):
-    """Find shortest path using advanced data structure approach"""
-    
-    # Use advanced data structures for graph storage
-    # Advanced edge list with metadata
-    edge_list = []
-    for u, v, weight in edges:
-        edge_list.append((u, v, weight))
-    
-    # Advanced distance array
-    distances = [float('inf')] * n
-    distances[source] = 0
-    
-    # Advanced Bellman-Ford with optimizations
-    def advanced_bellman_ford():
-        """Advanced Bellman-Ford algorithm"""
-        # Advanced relaxation with early termination
-        for iteration in range(n - 1):
-            improved = False
-            for u, v, weight in edge_list:
-                if distances[u] != float('inf'):
-                    old_dist = distances[v]
-                    distances[v] = min(distances[v], distances[u] + weight)
-                    if distances[v] < old_dist:
-                        improved = True
-            
-            # Early termination if no improvement
-            if not improved:
-                break
-        
-        # Advanced negative cycle detection
-        distances_before = distances.copy()
-        
-        for u, v, weight in edge_list:
-            if distances[u] != float('inf'):
-                distances[v] = min(distances[v], distances[u] + weight)
-        
-        # Advanced reachability check
-        for i in range(n):
-            if distances[i] < distances_before[i]:
-                if advanced_can_reach_destination(i, destination):
+    # Check for positive cycles on valid paths
+    for _ in range(n):
+        for a, b, x in edges:
+            if dist[a] != NEG_INF and dist[a] + x > dist[b]:
+                # Node b can be improved = part of positive cycle
+                # Check if this cycle is on a path from 1 to n
+                if reachable_from_1[a] and can_reach_n[b]:
                     return -1
-        
-        return distances[destination] if distances[destination] != float('inf') else -1
-    
-    def advanced_can_reach_destination(start, destination):
-        """Advanced reachability check"""
-        from collections import deque
-        
-        # Advanced adjacency list building
-        adj = [[] for _ in range(n)]
-        for u, v, _ in edge_list:
-            adj[u].append(v)
-        
-        # Advanced BFS with optimizations
-        visited = [False] * n
-        queue = deque([start])
-        visited[start] = True
-        
-        while queue:
-            current = queue.popleft()
-            if current == destination:
-                return True
-            
-            for neighbor in adj[current]:
-                if not visited[neighbor]:
-                    visited[neighbor] = True
-                    queue.append(neighbor)
-        
-        return False
-    
-    return advanced_bellman_ford()
+                dist[b] = dist[a] + x
 
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1, 1), (1, 2, -3), (2, 1, 1), (1, 3, 2)]
-result = advanced_data_structure_high_score(n, source, destination, edges)
-print(f"Advanced data structure result: {result}")
+    return dist[n]
+
+
+# Read input and solve
+if __name__ == "__main__":
+    n, m = map(int, input().split())
+    edges = []
+    for _ in range(m):
+        a, b, x = map(int, input().split())
+        edges.append((a, b, x))
+
+    print(high_score(n, m, edges))
 ```
 
-**Time Complexity**: O(n × m)
-**Space Complexity**: O(n + m)
+### C++ Solution
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-## 🔧 Implementation Details
+typedef long long ll;
+const ll NEG_INF = LLONG_MIN / 2;  // Avoid overflow
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n! × m) | O(n) | Try all possible paths |
-| Bellman-Ford | O(n × m) | O(n) | Use edge relaxation with negative cycle detection |
-| Advanced Data Structure | O(n × m) | O(n + m) | Use advanced data structures |
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-### Time Complexity
-- **Time**: O(n × m) - Use Bellman-Ford algorithm for efficient shortest path with negative weights
-- **Space**: O(n + m) - Store graph and distance arrays
+    int n, m;
+    cin >> n >> m;
 
-### Why This Solution Works
-- **Bellman-Ford Algorithm**: Use edge relaxation to find shortest paths
-- **Negative Cycle Detection**: Use additional iteration to detect negative cycles
-- **Reachability Check**: Verify if negative cycle can reach destination
-- **Optimal Algorithms**: Use optimal algorithms for shortest path with negative weights
+    vector<tuple<int, int, ll>> edges(m);
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        ll x;
+        cin >> a >> b >> x;
+        edges[i] = {a, b, x};
+    }
 
-## 🚀 Problem Variations
+    // Initialize distances
+    vector<ll> dist(n + 1, NEG_INF);
+    dist[1] = 0;
 
-### Extended Problems with Detailed Code Examples
+    // Bellman-Ford for longest path (n-1 iterations)
+    for (int i = 0; i < n - 1; i++) {
+        for (auto& [a, b, x] : edges) {
+            if (dist[a] != NEG_INF && dist[a] + x > dist[b]) {
+                dist[b] = dist[a] + x;
+            }
+        }
+    }
 
-#### **1. High Score with Constraints**
-**Problem**: Find shortest path with negative weights and specific constraints.
+    // Detect positive cycles (n more iterations)
+    // Mark nodes that can be infinitely improved
+    vector<bool> can_improve(n + 1, false);
 
-**Key Differences**: Apply constraints to path finding
+    for (int i = 0; i < n; i++) {
+        for (auto& [a, b, x] : edges) {
+            if (dist[a] != NEG_INF && dist[a] + x > dist[b]) {
+                dist[b] = dist[a] + x;
+                can_improve[b] = true;
+            }
+            // Propagate infinite status
+            if (can_improve[a]) {
+                can_improve[b] = true;
+            }
+        }
+    }
 
-**Solution Approach**: Modify algorithm to handle constraints
+    // Check if node n can be infinitely improved
+    if (can_improve[n]) {
+        cout << -1 << "\n";
+    } else {
+        cout << dist[n] << "\n";
+    }
 
-**Implementation**:
+    return 0;
+}
+```
+
+## Complexity Analysis
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| Bellman-Ford (n-1 iterations) | O(n * m) | O(n) |
+| Positive cycle detection (n iterations) | O(n * m) | O(n) |
+| Total | O(n * m) | O(n + m) |
+
+- **Time**: O(n * m) where n = nodes, m = edges
+- **Space**: O(n + m) for distances and edge list
+
+## Common Mistakes
+
+### Mistake 1: Not Checking if Cycle Affects Destination
+
 ```python
-def constrained_high_score(n, source, destination, edges, constraints):
-    """Find shortest path with negative weights and constraints"""
-    
-    # Build edge list with constraints
-    edge_list = []
-    for u, v, weight in edges:
-        if constraints(u, v, weight):
-            edge_list.append((u, v, weight))
-    
-    distances = [float('inf')] * n
-    distances[source] = 0
-    
-    def constrained_bellman_ford():
-        """Bellman-Ford with constraints"""
-        for iteration in range(n - 1):
-            for u, v, weight in edge_list:
-                if distances[u] != float('inf') and constraints(u, v, weight):
-                    distances[v] = min(distances[v], distances[u] + weight)
-        
-        distances_before = distances.copy()
-        
-        for u, v, weight in edge_list:
-            if distances[u] != float('inf') and constraints(u, v, weight):
-                distances[v] = min(distances[v], distances[u] + weight)
-        
-        for i in range(n):
-            if distances[i] < distances_before[i]:
-                if constrained_can_reach_destination(i, destination):
-                    return -1
-        
-        return distances[destination] if distances[destination] != float('inf') else -1
-    
-    def constrained_can_reach_destination(start, destination):
-        """Reachability check with constraints"""
-        from collections import deque
-        
-        adj = [[] for _ in range(n)]
-        for u, v, weight in edge_list:
-            if constraints(u, v, weight):
-                adj[u].append(v)
-        
-        visited = [False] * n
-        queue = deque([start])
-        visited[start] = True
-        
-        while queue:
-            current = queue.popleft()
-            if current == destination:
-                return True
-            
-            for neighbor in adj[current]:
-                if not visited[neighbor]:
-                    visited[neighbor] = True
-                    queue.append(neighbor)
-        
-        return False
-    
-    return constrained_bellman_ford()
+# WRONG: Detecting any positive cycle
+for a, b, x in edges:
+    if dist[a] + x > dist[b]:
+        return -1  # Wrong! Cycle might not reach n
 
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1, 1), (1, 2, -3), (2, 1, 1), (1, 3, 2)]
-constraints = lambda u, v, w: abs(w) <= 10  # Weight constraint
-result = constrained_high_score(n, source, destination, edges, constraints)
-print(f"Constrained result: {result}")
+# CORRECT: Check if cycle is on path to n
+for a, b, x in edges:
+    if dist[a] + x > dist[b]:
+        if reachable_from_1[a] and can_reach_n[b]:
+            return -1
 ```
 
-#### **2. High Score with Different Metrics**
-**Problem**: Find shortest path with negative weights and different cost metrics.
+### Mistake 2: Using BFS/DFS for Longest Path
 
-**Key Differences**: Different cost calculations
+Longest path in general graphs is NP-hard. But with Bellman-Ford, we can detect when it's infinite (positive cycle) and compute the finite answer otherwise.
 
-**Solution Approach**: Use advanced mathematical techniques
+### Mistake 3: Integer Overflow
 
-**Implementation**:
+With weights up to 10^9 and paths up to 2500 edges:
+- Maximum score: 2500 * 10^9 = 2.5 * 10^12
+- Use `long long` in C++ or Python's arbitrary precision
+
+### Mistake 4: Wrong Initialization
+
 ```python
-def weighted_high_score(n, source, destination, edges, cost_function):
-    """Find shortest path with negative weights and different cost metrics"""
-    
-    # Build edge list with modified costs
-    edge_list = []
-    for u, v, weight in edges:
-        modified_weight = cost_function(u, v, weight)
-        edge_list.append((u, v, modified_weight))
-    
-    distances = [float('inf')] * n
-    distances[source] = 0
-    
-    def weighted_bellman_ford():
-        """Bellman-Ford with modified costs"""
-        for iteration in range(n - 1):
-            for u, v, weight in edge_list:
-                if distances[u] != float('inf'):
-                    distances[v] = min(distances[v], distances[u] + weight)
-        
-        distances_before = distances.copy()
-        
-        for u, v, weight in edge_list:
-            if distances[u] != float('inf'):
-                distances[v] = min(distances[v], distances[u] + weight)
-        
-        for i in range(n):
-            if distances[i] < distances_before[i]:
-                if weighted_can_reach_destination(i, destination):
-                    return -1
-        
-        return distances[destination] if distances[destination] != float('inf') else -1
-    
-    def weighted_can_reach_destination(start, destination):
-        """Reachability check with modified costs"""
-        from collections import deque
-        
-        adj = [[] for _ in range(n)]
-        for u, v, _ in edge_list:
-            adj[u].append(v)
-        
-        visited = [False] * n
-        queue = deque([start])
-        visited[start] = True
-        
-        while queue:
-            current = queue.popleft()
-            if current == destination:
-                return True
-            
-            for neighbor in adj[current]:
-                if not visited[neighbor]:
-                    visited[neighbor] = True
-                    queue.append(neighbor)
-        
-        return False
-    
-    return weighted_bellman_ford()
+# WRONG: Initialize all to 0
+dist = [0] * (n + 1)
 
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1, 1), (1, 2, -3), (2, 1, 1), (1, 3, 2)]
-cost_function = lambda u, v, w: w * 2  # Double the cost
-result = weighted_high_score(n, source, destination, edges, cost_function)
-print(f"Weighted result: {result}")
+# CORRECT: Initialize to -infinity, except source
+dist = [NEG_INF] * (n + 1)
+dist[1] = 0
 ```
 
-#### **3. High Score with Multiple Dimensions**
-**Problem**: Find shortest path with negative weights in multiple dimensions.
+## Why 2n-1 Total Iterations?
 
-**Key Differences**: Handle multiple dimensions
+- **First n-1 iterations**: Find longest paths assuming no positive cycles
+- **Next n iterations**: Propagate the "can be improved" status
+  - If a node is on a positive cycle, it needs up to n iterations to propagate to all reachable nodes
+  - This ensures we correctly identify ALL nodes that can reach node n from a positive cycle
 
-**Solution Approach**: Use advanced mathematical techniques
+## Related Problems
 
-**Implementation**:
-```python
-def multi_dimensional_high_score(n, source, destination, edges, dimensions):
-    """Find shortest path with negative weights in multiple dimensions"""
-    
-    # Build edge list
-    edge_list = []
-    for u, v, weight in edges:
-        edge_list.append((u, v, weight))
-    
-    distances = [float('inf')] * n
-    distances[source] = 0
-    
-    def multi_dimensional_bellman_ford():
-        """Bellman-Ford for multiple dimensions"""
-        for iteration in range(n - 1):
-            for u, v, weight in edge_list:
-                if distances[u] != float('inf'):
-                    distances[v] = min(distances[v], distances[u] + weight)
-        
-        distances_before = distances.copy()
-        
-        for u, v, weight in edge_list:
-            if distances[u] != float('inf'):
-                distances[v] = min(distances[v], distances[u] + weight)
-        
-        for i in range(n):
-            if distances[i] < distances_before[i]:
-                if multi_dimensional_can_reach_destination(i, destination):
-                    return -1
-        
-        return distances[destination] if distances[destination] != float('inf') else -1
-    
-    def multi_dimensional_can_reach_destination(start, destination):
-        """Reachability check for multiple dimensions"""
-        from collections import deque
-        
-        adj = [[] for _ in range(n)]
-        for u, v, _ in edge_list:
-            adj[u].append(v)
-        
-        visited = [False] * n
-        queue = deque([start])
-        visited[start] = True
-        
-        while queue:
-            current = queue.popleft()
-            if current == destination:
-                return True
-            
-            for neighbor in adj[current]:
-                if not visited[neighbor]:
-                    visited[neighbor] = True
-                    queue.append(neighbor)
-        
-        return False
-    
-    return multi_dimensional_bellman_ford()
+| Problem | Key Difference |
+|---------|----------------|
+| [Cycle Finding (CSES)](https://cses.fi/problemset/task/1669) | Find any negative cycle, not on specific path |
+| [Shortest Routes I](https://cses.fi/problemset/task/1671) | Shortest path, no negative weights |
+| [Shortest Routes II](https://cses.fi/problemset/task/1672) | All-pairs shortest path |
 
-# Example usage
-n = 4
-source = 0
-destination = 3
-edges = [(0, 1, 1), (1, 2, -3), (2, 1, 1), (1, 3, 2)]
-dimensions = 1
-result = multi_dimensional_high_score(n, source, destination, edges, dimensions)
-print(f"Multi-dimensional result: {result}")
-```
+## Summary
 
-### Related Problems
-
-#### **CSES Problems**
-- [Shortest Routes I](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Flight Discount](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Network Delay Time](https://leetcode.com/problems/network-delay-time/) - Graph
-- [Cheapest Flights](https://leetcode.com/problems/cheapest-flights-within-k-stops/) - Graph
-- [Path With Minimum Effort](https://leetcode.com/problems/path-with-minimum-effort/) - Graph
-
-#### **Problem Categories**
-- **Graph Algorithms**: Shortest path, negative weights, negative cycles
-- **Bellman-Ford**: Edge relaxation, negative cycle detection
-- **Graph Traversal**: BFS, reachability
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Bellman-Ford Algorithm](https://cp-algorithms.com/graph/bellman_ford.html) - Bellman-Ford algorithm
-- [Negative Cycle Detection](https://cp-algorithms.com/graph/bellman_ford.html#negative-cycle-detection) - Negative cycle detection
-
-### **Practice Problems**
-- [CSES Shortest Routes I](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Flight Discount](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Bellman-Ford Algorithm](https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm) - Wikipedia article
-- [Negative Cycle](https://en.wikipedia.org/wiki/Negative_cycle) - Wikipedia article
+1. **Problem**: Longest path from 1 to n with possible infinite score
+2. **Key Insight**: Convert to shortest path by negating, or modify Bellman-Ford to maximize
+3. **Critical Check**: Positive cycle must be reachable from 1 AND must be able to reach n
+4. **Algorithm**: Bellman-Ford (n-1 iter) + positive cycle propagation (n iter)
+5. **Answer**: -1 if node n is on/reachable from a positive cycle, else dist[n]

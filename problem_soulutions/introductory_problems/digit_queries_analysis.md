@@ -1,1251 +1,452 @@
 ---
 layout: simple
-title: "Digit Queries"
+title: "Digit Queries - Introductory Problem"
 permalink: /problem_soulutions/introductory_problems/digit_queries_analysis
+difficulty: Medium
+tags: [math, digit-counting, number-theory, binary-search]
+prerequisites: []
 ---
 
 # Digit Queries
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of mathematical analysis and pattern recognition in introductory problems
-- Apply efficient algorithms for finding digits in number sequences
-- Implement mathematical reasoning and sequence analysis
-- Optimize algorithms for digit query problems
-- Handle special cases in mathematical sequence problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Math / Number Theory |
+| **Time Limit** | 1 second |
+| **Key Technique** | Digit Counting by Range |
+| **CSES Link** | [Digit Queries](https://cses.fi/problemset/task/2431) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a sequence of numbers formed by concatenating all positive integers (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...), find the digit at a specific position.
+After solving this problem, you will be able to:
+- [ ] Understand how to count digits in number ranges (1-digit, 2-digit, etc.)
+- [ ] Calculate which number contains a specific digit position
+- [ ] Handle 1-indexed positions correctly
+- [ ] Apply mathematical analysis to avoid brute force enumeration
 
-**Input**: 
-- k: position in the sequence (1-indexed)
+---
 
-**Output**: 
-- The digit at position k
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ k ≤ 10^18
+**Problem:** Consider an infinite string formed by concatenating all positive integers: "123456789101112131415...". Given a position k, find the digit at that position.
 
-**Example**:
+**Input:**
+- Line 1: q - number of queries
+- Lines 2 to q+1: k - position to query (1-indexed)
+
+**Output:**
+- For each query, print the digit at position k
+
+**Constraints:**
+- 1 <= q <= 1000
+- 1 <= k <= 10^18
+
+### Example
+
 ```
 Input:
-k = 7
+3
+7
+19
+12
 
 Output:
 7
-
-Explanation**: 
-Sequence: 123456789101112131415...
-Position 1: 1
-Position 2: 2
-Position 3: 3
-Position 4: 4
-Position 5: 5
-Position 6: 6
-Position 7: 7
-Position 8: 8
-Position 9: 9
-Position 10: 1 (from 10)
-Position 11: 0 (from 10)
-Position 12: 1 (from 11)
-Position 13: 1 (from 11)
-...
+4
+1
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Position 7: The string is "1234567..." so position 7 is '7'
+- Position 19: The string is "12345678910111213141..." - position 19 is '4' (from "14")
+- Position 12: The string is "123456789101..." - position 12 is '1' (from "11")
 
-### Approach 1: Brute Force Solution
+---
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Generate the entire sequence up to position k
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Build sequence character by character
-- **Inefficient**: O(k) time complexity
+## Intuition: How to Think About This Problem
 
-**Key Insight**: Generate the entire sequence up to position k and return the digit at that position.
+### Pattern Recognition
 
-**Algorithm**:
-- Start with empty sequence
-- Add each positive integer to the sequence
-- Continue until sequence length reaches k
-- Return the digit at position k
+> **Key Question:** How can we find the digit at position k without building the entire string?
 
-**Visual Example**:
-```
-Digit Queries: k = 7
+The key insight is that numbers can be grouped by their digit length. All 1-digit numbers (1-9) contribute exactly 9 digits. All 2-digit numbers (10-99) contribute 90 x 2 = 180 digits. This pattern lets us quickly narrow down which "range" contains position k.
 
-Generate sequence:
-┌─────────────────────────────────────┐
-│ Step 1: Add 1                      │
-│ Sequence: "1"                      │
-│ Length: 1                          │
-│                                   │
-│ Step 2: Add 2                      │
-│ Sequence: "12"                     │
-│ Length: 2                          │
-│                                   │
-│ Step 3: Add 3                      │
-│ Sequence: "123"                    │
-│ Length: 3                          │
-│                                   │
-│ Step 4: Add 4                      │
-│ Sequence: "1234"                   │
-│ Length: 4                          │
-│                                   │
-│ Step 5: Add 5                      │
-│ Sequence: "12345"                  │
-│ Length: 5                          │
-│                                   │
-│ Step 6: Add 6                      │
-│ Sequence: "123456"                 │
-│ Length: 6                          │
-│                                   │
-│ Step 7: Add 7                      │
-│ Sequence: "1234567"                │
-│ Length: 7                          │
-│                                   │
-│ Position 7: '7'                    │
-│ Result: 7                          │
-└─────────────────────────────────────┘
-```
+### Breaking Down the Problem
 
-**Implementation**:
+1. **What are we looking for?** The digit at position k in the infinite concatenated string.
+2. **What information do we have?** The position k (1-indexed).
+3. **What's the relationship between input and output?** We need to find which number contains position k, then extract the specific digit.
+
+### Digit Counting by Range
+
+| Digit Length | Number Range | Count of Numbers | Total Digits |
+|--------------|--------------|------------------|--------------|
+| 1 | 1 - 9 | 9 | 9 x 1 = 9 |
+| 2 | 10 - 99 | 90 | 90 x 2 = 180 |
+| 3 | 100 - 999 | 900 | 900 x 3 = 2700 |
+| d | 10^(d-1) to 10^d - 1 | 9 x 10^(d-1) | 9 x 10^(d-1) x d |
+
+### Analogies
+
+Think of this like finding a word in a book where:
+- Chapter 1 has 9 one-letter words (positions 1-9)
+- Chapter 2 has 90 two-letter words (positions 10-189)
+- Chapter 3 has 900 three-letter words (positions 190-2889)
+
+To find which word contains position k, first find the chapter, then the word, then the letter.
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+Generate the string character by character until we reach position k.
+
+### Algorithm
+
+1. Start with an empty string
+2. Append each positive integer (1, 2, 3, ...) to the string
+3. Stop when the string length reaches k
+4. Return the character at position k-1 (0-indexed)
+
+### Code
+
 ```python
-def brute_force_digit_queries(k):
-    """Find digit at position k using brute force approach"""
-    sequence = ""
+def solve_brute_force(k):
+    """
+    Brute force solution - generates string until position k.
+
+    Time: O(k)
+    Space: O(k)
+    """
+    s = ""
     num = 1
-    
-    while len(sequence) < k:
-        sequence += str(num)
+    while len(s) < k:
+        s += str(num)
         num += 1
-    
-    return int(sequence[k - 1])
-
-# Example usage
-k = 7
-result = brute_force_digit_queries(k)
-print(f"Brute force result: {result}")
+    return int(s[k - 1])
 ```
 
-**Time Complexity**: O(k)
-**Space Complexity**: O(k)
+### Complexity
 
-**Why it's inefficient**: O(k) time complexity for generating the entire sequence.
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(k) | Must generate all digits up to position k |
+| Space | O(k) | Stores entire string up to position k |
+
+### Why This Works (But Is Slow)
+
+This correctly builds the string and returns the right digit, but with k up to 10^18, we cannot possibly generate that many characters. We need a mathematical approach.
 
 ---
 
-### Approach 2: Mathematical Analysis
+## Solution 2: Optimal Solution (Mathematical Analysis)
 
-**Key Insights from Mathematical Analysis**:
-- **Mathematical Reasoning**: Use mathematical analysis to find the digit without generating sequence
-- **Efficient Implementation**: O(log k) time complexity
-- **Pattern Recognition**: Recognize patterns in number lengths
-- **Optimization**: Much more efficient than brute force
+### Key Insight
 
-**Key Insight**: Use mathematical analysis to determine which number contains the digit at position k.
+> **The Trick:** Group numbers by digit length, skip entire groups, then pinpoint the exact number and digit.
 
-**Algorithm**:
-- Calculate the range of numbers that contribute to each digit length
-- Find which range contains position k
-- Determine the specific number and digit position
-- Return the digit
+### Algorithm
 
-**Visual Example**:
+1. **Find the digit length range:** Determine how many digits the target number has
+2. **Find the exact number:** Calculate which number in that range contains position k
+3. **Find the exact digit:** Determine which digit within that number
+
+### Step-by-Step Approach
+
 ```
-Mathematical Analysis:
+For position k:
 
-For k = 7:
-┌─────────────────────────────────────┐
-│ Digit length analysis:              │
-│ - 1-digit numbers: 1-9 (9 numbers) │
-│ - Total digits: 9 × 1 = 9          │
-│ - Positions: 1-9                   │
-│                                   │
-│ Since k = 7 ≤ 9, the digit is in   │
-│ a 1-digit number                   │
-│                                   │
-│ Position 7 in 1-digit numbers:     │
-│ - Numbers: 1, 2, 3, 4, 5, 6, 7, 8, 9 │
-│ - Position 7 corresponds to number 7 │
-│ - Digit at position 7: '7'         │
-│                                   │
-│ For k = 10:                        │
-│ - 1-digit numbers: positions 1-9   │
-│ - 2-digit numbers: positions 10+   │
-│ - Position 10 is in 2-digit range  │
-│ - Calculate which 2-digit number   │
-│ - Calculate which digit in number  │
-│                                   │
-│ Result: 7                          │
-└─────────────────────────────────────┘
+Step 1: Find digit length (len)
+  - 1-digit numbers cover positions 1 to 9
+  - 2-digit numbers cover positions 10 to 189
+  - Keep subtracting until k falls within a range
+
+Step 2: Find the number (num)
+  - first_num = 10^(len-1)  (first number with 'len' digits)
+  - num = first_num + (k - 1) / len
+
+Step 3: Find the digit position within num
+  - digit_pos = (k - 1) % len
+  - Return digit at that position
 ```
 
-**Implementation**:
-```python
-def mathematical_digit_queries(k):
-    """Find digit at position k using mathematical analysis"""
-    
-    # Find the range of numbers that contains position k
-    digit_length = 1
-    start_pos = 1
-    
-    while True:
-        # Calculate number of numbers with current digit length
-        numbers_count = 9 * (10 ** (digit_length - 1))
-        total_digits = numbers_count * digit_length
-        
-        if start_pos + total_digits - 1 >= k:
-            # Position k is in this range
-            break
-        
-        start_pos += total_digits
-        digit_length += 1
-    
-    # Find the specific number
-    position_in_range = k - start_pos
-    number_index = position_in_range // digit_length
-    digit_index = position_in_range % digit_length
-    
-    # Calculate the actual number
-    first_number = 10 ** (digit_length - 1)
-    target_number = first_number + number_index
-    
-    # Return the specific digit
-    return int(str(target_number)[digit_index])
+### Dry Run Example
 
-# Example usage
-k = 7
-result = mathematical_digit_queries(k)
-print(f"Mathematical result: {result}")
+Let's trace through with `k = 19`:
+
+```
+Initial: k = 19
+
+Step 1: Find digit length
+  Len=1: count = 9 * 1 = 9 digits (positions 1-9)
+         k = 19 > 9, so subtract: k = 19 - 9 = 10
+         Move to len=2
+
+  Len=2: count = 90 * 2 = 180 digits (positions 10-189)
+         k = 10 <= 180, so we're in the 2-digit range
+         Final: len = 2, k = 10 (position within 2-digit numbers)
+
+Step 2: Find the number
+  first_num = 10^(2-1) = 10
+  number_index = (10 - 1) / 2 = 9 / 2 = 4
+  num = 10 + 4 = 14
+
+Step 3: Find the digit
+  digit_pos = (10 - 1) % 2 = 9 % 2 = 1
+  str(14)[1] = '4'
+
+Result: 4
 ```
 
-**Time Complexity**: O(log k)
-**Space Complexity**: O(1)
+### Visual Diagram
 
-**Why it's better**: Uses mathematical analysis for O(log k) time complexity.
-
----
-
-### Approach 3: Advanced Data Structure Solution (Optimal)
-
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for mathematical analysis
-- **Efficient Implementation**: O(log k) time complexity
-- **Space Efficiency**: O(1) space complexity
-- **Optimal Complexity**: Best approach for digit query problems
-
-**Key Insight**: Use advanced data structures for optimal mathematical analysis.
-
-**Algorithm**:
-- Use specialized data structures for range calculation
-- Implement efficient mathematical operations
-- Handle special cases optimally
-- Return the digit at position k
-
-**Visual Example**:
 ```
-Advanced data structure approach:
+Position:  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ...
+String:    1 2 3 4 5 6 7 8 9 1  0  1  1  1  2  1  3  1  4  1  5 ...
+                             |--10-|--11-|--12-|--13-|--14-|--15-|
+                                                          ^
+                                                     k=19 = '4'
 
-For k = 7:
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Advanced range calculator: for    │
-│   efficient range calculation       │
-│ - Mathematical optimizer: for       │
-│   optimization                      │
-│ - Digit extractor: for optimization │
-│                                   │
-│ Mathematical analysis calculation:  │
-│ - Use advanced range calculator for │
-│   efficient range calculation       │
-│ - Use mathematical optimizer for    │
-│   optimization                      │
-│ - Use digit extractor for           │
-│   optimization                      │
-│                                   │
-│ Result: 7                          │
-└─────────────────────────────────────┘
+Digit Ranges:
+  1-digit: positions  1 -  9   (9 positions)
+  2-digit: positions 10 - 189  (180 positions)
+  3-digit: positions 190 - 2889 (2700 positions)
 ```
 
-**Implementation**:
-```python
-def advanced_data_structure_digit_queries(k):
-    """Find digit at position k using advanced data structure approach"""
-    
-    # Advanced range calculation
-    digit_length = 1
-    start_pos = 1
-    
-    while True:
-        # Advanced number count calculation
-        numbers_count = 9 * (10 ** (digit_length - 1))
-        total_digits = numbers_count * digit_length
-        
-        if start_pos + total_digits - 1 >= k:
-            break
-        
-        start_pos += total_digits
-        digit_length += 1
-    
-    # Advanced position calculation
-    position_in_range = k - start_pos
-    number_index = position_in_range // digit_length
-    digit_index = position_in_range % digit_length
-    
-    # Advanced number calculation
-    first_number = 10 ** (digit_length - 1)
-    target_number = first_number + number_index
-    
-    # Advanced digit extraction
-    return int(str(target_number)[digit_index])
+### Code
 
-# Example usage
-k = 7
-result = advanced_data_structure_digit_queries(k)
-print(f"Advanced data structure result: {result}")
-```
-
-**Time Complexity**: O(log k)
-**Space Complexity**: O(1)
-
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(k) | O(k) | Generate entire sequence up to position k |
-| Mathematical Analysis | O(log k) | O(1) | Use mathematical analysis to find digit |
-| Advanced Data Structure | O(log k) | O(1) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(log k) - Use mathematical analysis for efficient digit finding
-- **Space**: O(1) - Store only necessary variables
-
-### Why This Solution Works
-- **Mathematical Analysis**: Use range calculation to find the digit
-- **Pattern Recognition**: Recognize patterns in number lengths
-- **Efficient Calculation**: Calculate digit without generating sequence
-- **Optimal Algorithms**: Use optimal algorithms for digit query problems
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Digit Queries with Constraints**
-**Problem**: Find digits with specific constraints.
-
-**Key Differences**: Apply constraints to digit finding
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_digit_queries(k, constraints):
-    """Find digit at position k with constraints"""
-    
-    digit_length = 1
-    start_pos = 1
-    
-    while True:
-        numbers_count = 9 * (10 ** (digit_length - 1))
-        total_digits = numbers_count * digit_length
-        
-        if start_pos + total_digits - 1 >= k:
-            break
-        
-        start_pos += total_digits
-        digit_length += 1
-    
-    position_in_range = k - start_pos
-    number_index = position_in_range // digit_length
-    digit_index = position_in_range % digit_length
-    
-    first_number = 10 ** (digit_length - 1)
-    target_number = first_number + number_index
-    
-    digit = int(str(target_number)[digit_index])
-    
-    # Apply constraints
-    if constraints(digit, target_number, digit_index):
-        return digit
-    else:
-        return -1  # Constraint not satisfied
-
-# Example usage
-k = 7
-constraints = lambda digit, number, index: True  # No constraints
-result = constrained_digit_queries(k, constraints)
-print(f"Constrained result: {result}")
-```
-
-#### **2. Digit Queries with Different Metrics**
-**Problem**: Find digits with different cost metrics.
-
-**Key Differences**: Different cost calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_digit_queries(k, weight_function):
-    """Find digit at position k with different cost metrics"""
-    
-    digit_length = 1
-    start_pos = 1
-    
-    while True:
-        numbers_count = 9 * (10 ** (digit_length - 1))
-        total_digits = numbers_count * digit_length
-        
-        if start_pos + total_digits - 1 >= k:
-            break
-        
-        start_pos += total_digits
-        digit_length += 1
-    
-    position_in_range = k - start_pos
-    number_index = position_in_range // digit_length
-    digit_index = position_in_range % digit_length
-    
-    first_number = 10 ** (digit_length - 1)
-    target_number = first_number + number_index
-    
-    digit = int(str(target_number)[digit_index])
-    weight = weight_function(digit, target_number, digit_index)
-    
-    return digit, weight
-
-# Example usage
-k = 7
-weight_function = lambda digit, number, index: digit  # Digit value as weight
-result = weighted_digit_queries(k, weight_function)
-print(f"Weighted result: {result}")
-```
-
-#### **3. Digit Queries with Multiple Dimensions**
-**Problem**: Find digits in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_digit_queries(k, dimensions):
-    """Find digit at position k in multiple dimensions"""
-    
-    digit_length = 1
-    start_pos = 1
-    
-    while True:
-        numbers_count = 9 * (10 ** (digit_length - 1))
-        total_digits = numbers_count * digit_length
-        
-        if start_pos + total_digits - 1 >= k:
-            break
-        
-        start_pos += total_digits
-        digit_length += 1
-    
-    position_in_range = k - start_pos
-    number_index = position_in_range // digit_length
-    digit_index = position_in_range % digit_length
-    
-    first_number = 10 ** (digit_length - 1)
-    target_number = first_number + number_index
-    
-    return int(str(target_number)[digit_index])
-
-# Example usage
-k = 7
-dimensions = 1
-result = multi_dimensional_digit_queries(k, dimensions)
-print(f"Multi-dimensional result: {result}")
-```
-
-## Problem Variations
-
-### **Variation 1: Digit Queries with Dynamic Updates**
-**Problem**: Handle dynamic digit sequence updates (add/remove/update numbers) while maintaining valid digit queries.
-
-**Approach**: Use efficient data structures and algorithms for dynamic digit sequence management.
+**Python Solution:**
 
 ```python
-from collections import defaultdict
-import itertools
+def solve(k):
+    """
+    Optimal solution using digit counting by range.
 
-class DynamicDigitQueries:
-    def __init__(self, max_number=1000):
-        self.max_number = max_number
-        self.sequence = self._generate_sequence()
-        self.digit_cache = {}
-        self._build_cache()
-    
-    def _generate_sequence(self):
-        """Generate the digit sequence up to max_number."""
-        sequence = []
-        for i in range(1, self.max_number + 1):
-            sequence.extend(list(str(i)))
-        return sequence
-    
-    def _build_cache(self):
-        """Build cache for efficient digit queries."""
-        self.digit_cache = {}
-        position = 1
-        
-        for digit_length in range(1, len(str(self.max_number)) + 1):
-            start_number = 10 ** (digit_length - 1)
-            end_number = min(10 ** digit_length - 1, self.max_number)
-            numbers_count = end_number - start_number + 1
-            
-            for i in range(numbers_count):
-                number = start_number + i
-                number_str = str(number)
-                
-                for digit_index, digit in enumerate(number_str):
-                    self.digit_cache[position] = {
-                        'digit': int(digit),
-                        'number': number,
-                        'digit_index': digit_index,
-                        'digit_length': digit_length
-                    }
-                    position += 1
-    
-    def add_number(self, number):
-        """Add a number to the sequence."""
-        if number > self.max_number:
-            self.max_number = number
-            self.sequence = self._generate_sequence()
-            self._build_cache()
-    
-    def remove_number(self, number):
-        """Remove a number from the sequence."""
-        if number <= self.max_number:
-            # Rebuild sequence without the number
-            new_sequence = []
-            for i in range(1, self.max_number + 1):
-                if i != number:
-                    new_sequence.extend(list(str(i)))
-            self.sequence = new_sequence
-            self._build_cache()
-    
-    def update_number(self, old_number, new_number):
-        """Update a number in the sequence."""
-        if old_number <= self.max_number:
-            self.remove_number(old_number)
-            self.add_number(new_number)
-    
-    def get_digit_at_position(self, k):
-        """Get digit at position k."""
-        if k in self.digit_cache:
-            return self.digit_cache[k]['digit']
-        return None
-    
-    def get_digit_info(self, k):
-        """Get detailed information about digit at position k."""
-        if k in self.digit_cache:
-            return self.digit_cache[k]
-        return None
-    
-    def get_digits_with_constraints(self, constraint_func):
-        """Get digits that satisfy custom constraints."""
-        result = []
-        for position, info in self.digit_cache.items():
-            if constraint_func(info):
-                result.append((position, info))
-        return result
-    
-    def get_digits_in_range(self, start_pos, end_pos):
-        """Get digits within specified position range."""
-        result = []
-        for pos in range(start_pos, end_pos + 1):
-            if pos in self.digit_cache:
-                result.append((pos, self.digit_cache[pos]))
-        return result
-    
-    def get_digits_with_pattern(self, pattern_func):
-        """Get digits matching specified pattern."""
-        result = []
-        for position, info in self.digit_cache.items():
-            if pattern_func(info):
-                result.append((position, info))
-        return result
-    
-    def get_digit_statistics(self):
-        """Get statistics about digits."""
-        if not self.digit_cache:
-            return {
-                'total_digits': 0,
-                'digit_distribution': {},
-                'number_distribution': {},
-                'position_distribution': {}
-            }
-        
-        total_digits = len(self.digit_cache)
-        
-        # Calculate digit distribution
-        digit_distribution = defaultdict(int)
-        for info in self.digit_cache.values():
-            digit_distribution[info['digit']] += 1
-        
-        # Calculate number distribution
-        number_distribution = defaultdict(int)
-        for info in self.digit_cache.values():
-            number_distribution[info['number']] += 1
-        
-        # Calculate position distribution
-        position_distribution = defaultdict(int)
-        for info in self.digit_cache.values():
-            position_distribution[info['digit_length']] += 1
-        
-        return {
-            'total_digits': total_digits,
-            'digit_distribution': dict(digit_distribution),
-            'number_distribution': dict(number_distribution),
-            'position_distribution': dict(position_distribution)
-        }
-    
-    def get_digit_patterns(self):
-        """Get patterns in digits."""
-        patterns = {
-            'consecutive_digits': 0,
-            'palindromic_numbers': 0,
-            'even_digits': 0,
-            'odd_digits': 0
-        }
-        
-        for info in self.digit_cache.values():
-            digit = info['digit']
-            number = info['number']
-            
-            # Check for even/odd digits
-            if digit % 2 == 0:
-                patterns['even_digits'] += 1
-            else:
-                patterns['odd_digits'] += 1
-            
-            # Check for palindromic numbers
-            if str(number) == str(number)[::-1]:
-                patterns['palindromic_numbers'] += 1
-        
-        # Check for consecutive digits
-        positions = sorted(self.digit_cache.keys())
-        for i in range(len(positions) - 1):
-            if positions[i+1] - positions[i] == 1:
-                digit1 = self.digit_cache[positions[i]]['digit']
-                digit2 = self.digit_cache[positions[i+1]]['digit']
-                if abs(digit1 - digit2) == 1:
-                    patterns['consecutive_digits'] += 1
-        
-        return patterns
-    
-    def get_optimal_query_strategy(self):
-        """Get optimal strategy for digit query operations."""
-        if not self.digit_cache:
-            return {
-                'recommended_strategy': 'none',
-                'efficiency_rate': 0,
-                'cache_hit_rate': 0
-            }
-        
-        # Calculate efficiency rate
-        total_possible = self.max_number * len(str(self.max_number))
-        efficiency_rate = len(self.digit_cache) / total_possible if total_possible > 0 else 0
-        
-        # Calculate cache hit rate (simulated)
-        cache_hit_rate = 0.95  # Assume 95% cache hit rate
-        
-        # Determine recommended strategy
-        if efficiency_rate > 0.8:
-            recommended_strategy = 'cache_optimal'
-        elif cache_hit_rate > 0.9:
-            recommended_strategy = 'precomputed'
-        else:
-            recommended_strategy = 'on_demand'
-        
-        return {
-            'recommended_strategy': recommended_strategy,
-            'efficiency_rate': efficiency_rate,
-            'cache_hit_rate': cache_hit_rate
-        }
+    Time: O(log k) - number of digit lengths is O(log k)
+    Space: O(1) - only using a few variables
+    """
+    # Step 1: Find the digit length containing position k
+    digit_len = 1
+    count = 9  # 9 one-digit numbers
+    start = 1  # first number with current digit length
 
-# Example usage
-dynamic_queries = DynamicDigitQueries(100)
-print(f"Initial sequence length: {len(dynamic_queries.sequence)}")
+    while k > digit_len * count:
+        k -= digit_len * count
+        digit_len += 1
+        count *= 10
+        start *= 10
 
-# Add number
-dynamic_queries.add_number(101)
-print(f"After adding 101: {len(dynamic_queries.sequence)}")
+    # Step 2: Find which number contains position k
+    # k is now 1-indexed position within the current digit-length range
+    number_index = (k - 1) // digit_len
+    num = start + number_index
 
-# Remove number
-dynamic_queries.remove_number(50)
-print(f"After removing 50: {len(dynamic_queries.sequence)}")
+    # Step 3: Find which digit within the number
+    digit_index = (k - 1) % digit_len
 
-# Update number
-dynamic_queries.update_number(25, 125)
-print(f"After updating 25 to 125: {len(dynamic_queries.sequence)}")
+    return int(str(num)[digit_index])
 
-# Get digit at position
-print(f"Digit at position 7: {dynamic_queries.get_digit_at_position(7)}")
 
-# Get digit info
-print(f"Digit info at position 7: {dynamic_queries.get_digit_info(7)}")
+def main():
+    q = int(input())
+    for _ in range(q):
+        k = int(input())
+        print(solve(k))
 
-# Get digits with constraints
-def constraint_func(info):
-    return info['digit'] > 5
 
-print(f"Digits > 5: {len(dynamic_queries.get_digits_with_constraints(constraint_func))}")
-
-# Get digits in range
-print(f"Digits in range 1-10: {len(dynamic_queries.get_digits_in_range(1, 10))}")
-
-# Get digits with pattern
-def pattern_func(info):
-    return info['number'] % 2 == 0
-
-print(f"Even numbers: {len(dynamic_queries.get_digits_with_pattern(pattern_func))}")
-
-# Get statistics
-print(f"Statistics: {dynamic_queries.get_digit_statistics()}")
-
-# Get patterns
-print(f"Patterns: {dynamic_queries.get_digit_patterns()}")
-
-# Get optimal strategy
-print(f"Optimal strategy: {dynamic_queries.get_optimal_query_strategy()}")
+if __name__ == "__main__":
+    main()
 ```
 
-### **Variation 2: Digit Queries with Different Operations**
-**Problem**: Handle different types of digit operations (weighted digits, priority-based selection, advanced constraints).
+**C++ Solution:**
 
-**Approach**: Use advanced data structures for efficient different types of digit query operations.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-```python
-class AdvancedDigitQueries:
-    def __init__(self, max_number=1000, weights=None, priorities=None):
-        self.max_number = max_number
-        self.weights = weights or {i: 1 for i in range(10)}
-        self.priorities = priorities or {i: 1 for i in range(10)}
-        self.sequence = self._generate_sequence()
-        self.digit_cache = {}
-        self._build_cache()
-    
-    def _generate_sequence(self):
-        """Generate the digit sequence up to max_number."""
-        sequence = []
-        for i in range(1, self.max_number + 1):
-            sequence.extend(list(str(i)))
-        return sequence
-    
-    def _build_cache(self):
-        """Build cache for efficient digit queries with weights and priorities."""
-        self.digit_cache = {}
-        position = 1
-        
-        for digit_length in range(1, len(str(self.max_number)) + 1):
-            start_number = 10 ** (digit_length - 1)
-            end_number = min(10 ** digit_length - 1, self.max_number)
-            numbers_count = end_number - start_number + 1
-            
-            for i in range(numbers_count):
-                number = start_number + i
-                number_str = str(number)
-                
-                for digit_index, digit in enumerate(number_str):
-                    digit_val = int(digit)
-                    self.digit_cache[position] = {
-                        'digit': digit_val,
-                        'number': number,
-                        'digit_index': digit_index,
-                        'digit_length': digit_length,
-                        'weight': self.weights[digit_val],
-                        'priority': self.priorities[digit_val],
-                        'weighted_score': self.weights[digit_val] * self.priorities[digit_val]
-                    }
-                    position += 1
-    
-    def get_digit_at_position(self, k):
-        """Get digit at position k."""
-        if k in self.digit_cache:
-            return self.digit_cache[k]['digit']
-        return None
-    
-    def get_weighted_digit_info(self, k):
-        """Get weighted digit information at position k."""
-        if k in self.digit_cache:
-            return self.digit_cache[k]
-        return None
-    
-    def get_digits_with_priority(self, priority_func):
-        """Get digits considering priority."""
-        result = []
-        for position, info in self.digit_cache.items():
-            priority = priority_func(info)
-            result.append((position, info, priority))
-        
-        # Sort by priority
-        result.sort(key=lambda x: x[2], reverse=True)
-        return result
-    
-    def get_digits_with_optimization(self, optimization_func):
-        """Get digits using custom optimization function."""
-        result = []
-        for position, info in self.digit_cache.items():
-            score = optimization_func(info)
-            result.append((position, info, score))
-        
-        # Sort by optimization score
-        result.sort(key=lambda x: x[2], reverse=True)
-        return result
-    
-    def get_digits_with_constraints(self, constraint_func):
-        """Get digits that satisfy custom constraints."""
-        result = []
-        for position, info in self.digit_cache.items():
-            if constraint_func(info):
-                result.append((position, info))
-        return result
-    
-    def get_digits_with_multiple_criteria(self, criteria_list):
-        """Get digits that satisfy multiple criteria."""
-        result = []
-        for position, info in self.digit_cache.items():
-            satisfies_all_criteria = True
-            for criterion in criteria_list:
-                if not criterion(info):
-                    satisfies_all_criteria = False
-                    break
-            if satisfies_all_criteria:
-                result.append((position, info))
-        return result
-    
-    def get_digits_with_alternatives(self, alternatives):
-        """Get digits considering alternative weights/priorities."""
-        result = []
-        
-        # Check original digits
-        for position, info in self.digit_cache.items():
-            result.append((position, info, 'original'))
-        
-        # Check alternative weights/priorities
-        for alt_weights, alt_priorities in alternatives:
-            # Create temporary instance with alternative weights/priorities
-            temp_instance = AdvancedDigitQueries(self.max_number, alt_weights, alt_priorities)
-            temp_cache = temp_instance.digit_cache
-            result.append((temp_cache, f'alternative_{alt_weights}_{alt_priorities}'))
-        
-        return result
-    
-    def get_digits_with_adaptive_criteria(self, adaptive_func):
-        """Get digits using adaptive criteria."""
-        result = []
-        for position, info in self.digit_cache.items():
-            if adaptive_func(info, result):
-                result.append((position, info))
-        return result
-    
-    def get_digit_optimization(self):
-        """Get optimal digit configuration."""
-        strategies = [
-            ('digits', lambda: len(self.digit_cache)),
-            ('weighted_digits', lambda: sum(info['weight'] for info in self.digit_cache.values())),
-            ('priority_digits', lambda: sum(info['priority'] for info in self.digit_cache.values())),
-        ]
-        
-        best_strategy = None
-        best_value = 0
-        
-        for strategy_name, strategy_func in strategies:
-            current_value = strategy_func()
-            if current_value > best_value:
-                best_value = current_value
-                best_strategy = (strategy_name, current_value)
-        
-        return best_strategy
+int solve(long long k) {
+    // Step 1: Find the digit length containing position k
+    int digit_len = 1;
+    long long count = 9;  // 9 one-digit numbers
+    long long start = 1;  // first number with current digit length
 
-# Example usage
-weights = {i: i + 1 for i in range(10)}  # Higher digits have higher weights
-priorities = {i: 10 - i for i in range(10)}  # Lower digits have higher priority
-advanced_queries = AdvancedDigitQueries(100, weights, priorities)
+    while (k > digit_len * count) {
+        k -= digit_len * count;
+        digit_len++;
+        count *= 10;
+        start *= 10;
+    }
 
-print(f"Total digits: {len(advanced_queries.digit_cache)}")
+    // Step 2: Find which number contains position k
+    // k is now 1-indexed position within the current digit-length range
+    long long number_index = (k - 1) / digit_len;
+    long long num = start + number_index;
 
-# Get digit at position
-print(f"Digit at position 7: {advanced_queries.get_digit_at_position(7)}")
+    // Step 3: Find which digit within the number
+    int digit_index = (k - 1) % digit_len;
 
-# Get weighted digit info
-print(f"Weighted digit info at position 7: {advanced_queries.get_weighted_digit_info(7)}")
-
-# Get digits with priority
-def priority_func(info):
-    return info['priority'] + info['weight']
-
-print(f"Digits with priority: {len(advanced_queries.get_digits_with_priority(priority_func))}")
-
-# Get digits with optimization
-def optimization_func(info):
-    return info['weighted_score'] + info['digit']
-
-print(f"Digits with optimization: {len(advanced_queries.get_digits_with_optimization(optimization_func))}")
-
-# Get digits with constraints
-def constraint_func(info):
-    return info['digit'] > 5 and info['weight'] > 5
-
-print(f"Digits with constraints: {len(advanced_queries.get_digits_with_constraints(constraint_func))}")
-
-# Get digits with multiple criteria
-def criterion1(info):
-    return info['digit'] > 5
-
-def criterion2(info):
-    return info['weight'] > 5
-
-criteria_list = [criterion1, criterion2]
-print(f"Digits with multiple criteria: {len(advanced_queries.get_digits_with_multiple_criteria(criteria_list))}")
-
-# Get digits with alternatives
-alternatives = [({i: 1 for i in range(10)}, {i: 1 for i in range(10)}), ({i: i*2 for i in range(10)}, {i: i+1 for i in range(10)})]
-print(f"Digits with alternatives: {len(advanced_queries.get_digits_with_alternatives(alternatives))}")
-
-# Get digits with adaptive criteria
-def adaptive_func(info, current_result):
-    return info['digit'] > 5 and len(current_result) < 50
-
-print(f"Digits with adaptive criteria: {len(advanced_queries.get_digits_with_adaptive_criteria(adaptive_func))}")
-
-# Get digit optimization
-print(f"Digit optimization: {advanced_queries.get_digit_optimization()}")
-```
-
-### **Variation 3: Digit Queries with Constraints**
-**Problem**: Handle digit queries with additional constraints (position limits, digit constraints, number constraints).
-
-**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
-
-```python
-class ConstrainedDigitQueries:
-    def __init__(self, max_number=1000, constraints=None):
-        self.max_number = max_number
-        self.constraints = constraints or {}
-        self.sequence = self._generate_sequence()
-        self.digit_cache = {}
-        self._build_cache()
-    
-    def _generate_sequence(self):
-        """Generate the digit sequence up to max_number."""
-        sequence = []
-        for i in range(1, self.max_number + 1):
-            sequence.extend(list(str(i)))
-        return sequence
-    
-    def _build_cache(self):
-        """Build cache for efficient digit queries considering constraints."""
-        self.digit_cache = {}
-        position = 1
-        
-        for digit_length in range(1, len(str(self.max_number)) + 1):
-            start_number = 10 ** (digit_length - 1)
-            end_number = min(10 ** digit_length - 1, self.max_number)
-            numbers_count = end_number - start_number + 1
-            
-            for i in range(numbers_count):
-                number = start_number + i
-                number_str = str(number)
-                
-                for digit_index, digit in enumerate(number_str):
-                    digit_val = int(digit)
-                    info = {
-                        'digit': digit_val,
-                        'number': number,
-                        'digit_index': digit_index,
-                        'digit_length': digit_length,
-                        'position': position
-                    }
-                    
-                    if self._is_valid_digit(info):
-                        self.digit_cache[position] = info
-                    
-                    position += 1
-    
-    def _is_valid_digit(self, info):
-        """Check if a digit is valid considering constraints."""
-        # Position constraints
-        if 'min_position' in self.constraints:
-            if info['position'] < self.constraints['min_position']:
-                return False
-        
-        if 'max_position' in self.constraints:
-            if info['position'] > self.constraints['max_position']:
-                return False
-        
-        # Digit constraints
-        if 'forbidden_digits' in self.constraints:
-            if info['digit'] in self.constraints['forbidden_digits']:
-                return False
-        
-        if 'required_digits' in self.constraints:
-            if info['digit'] not in self.constraints['required_digits']:
-                return False
-        
-        # Number constraints
-        if 'forbidden_numbers' in self.constraints:
-            if info['number'] in self.constraints['forbidden_numbers']:
-                return False
-        
-        if 'required_numbers' in self.constraints:
-            if info['number'] not in self.constraints['required_numbers']:
-                return False
-        
-        # Digit length constraints
-        if 'min_digit_length' in self.constraints:
-            if info['digit_length'] < self.constraints['min_digit_length']:
-                return False
-        
-        if 'max_digit_length' in self.constraints:
-            if info['digit_length'] > self.constraints['max_digit_length']:
-                return False
-        
-        return True
-    
-    def get_digits_with_position_constraints(self, min_position, max_position):
-        """Get digits considering position constraints."""
-        result = []
-        for position, info in self.digit_cache.items():
-            if min_position <= position <= max_position:
-                result.append((position, info))
-        return result
-    
-    def get_digits_with_digit_constraints(self, digit_constraints):
-        """Get digits considering digit constraints."""
-        result = []
-        for position, info in self.digit_cache.items():
-            satisfies_constraints = True
-            for constraint in digit_constraints:
-                if not constraint(info):
-                    satisfies_constraints = False
-                    break
-            if satisfies_constraints:
-                result.append((position, info))
-        return result
-    
-    def get_digits_with_number_constraints(self, number_constraints):
-        """Get digits considering number constraints."""
-        result = []
-        for position, info in self.digit_cache.items():
-            satisfies_constraints = True
-            for constraint in number_constraints:
-                if not constraint(info):
-                    satisfies_constraints = False
-                    break
-            if satisfies_constraints:
-                result.append((position, info))
-        return result
-    
-    def get_digits_with_length_constraints(self, min_length, max_length):
-        """Get digits considering digit length constraints."""
-        result = []
-        for position, info in self.digit_cache.items():
-            if min_length <= info['digit_length'] <= max_length:
-                result.append((position, info))
-        return result
-    
-    def get_digits_with_mathematical_constraints(self, constraint_func):
-        """Get digits that satisfy custom mathematical constraints."""
-        result = []
-        for position, info in self.digit_cache.items():
-            if constraint_func(info):
-                result.append((position, info))
-        return result
-    
-    def get_digits_with_range_constraints(self, range_constraints):
-        """Get digits that satisfy range constraints."""
-        result = []
-        for position, info in self.digit_cache.items():
-            satisfies_constraints = True
-            for constraint in range_constraints:
-                if not constraint(info):
-                    satisfies_constraints = False
-                    break
-            if satisfies_constraints:
-                result.append((position, info))
-        return result
-    
-    def get_digits_with_optimization_constraints(self, optimization_func):
-        """Get digits using custom optimization constraints."""
-        # Sort digits by optimization function
-        all_digits = []
-        for position, info in self.digit_cache.items():
-            score = optimization_func(info)
-            all_digits.append((position, info, score))
-        
-        # Sort by optimization score
-        all_digits.sort(key=lambda x: x[2], reverse=True)
-        
-        return [(position, info) for position, info, _ in all_digits]
-    
-    def get_digits_with_multiple_constraints(self, constraints_list):
-        """Get digits that satisfy multiple constraints."""
-        result = []
-        for position, info in self.digit_cache.items():
-            satisfies_all_constraints = True
-            for constraint in constraints_list:
-                if not constraint(info):
-                    satisfies_all_constraints = False
-                    break
-            if satisfies_all_constraints:
-                result.append((position, info))
-        return result
-    
-    def get_digits_with_priority_constraints(self, priority_func):
-        """Get digits with priority-based constraints."""
-        # Sort digits by priority
-        all_digits = []
-        for position, info in self.digit_cache.items():
-            priority = priority_func(info)
-            all_digits.append((position, info, priority))
-        
-        # Sort by priority
-        all_digits.sort(key=lambda x: x[2], reverse=True)
-        
-        return [(position, info) for position, info, _ in all_digits]
-    
-    def get_digits_with_adaptive_constraints(self, adaptive_func):
-        """Get digits with adaptive constraints."""
-        result = []
-        for position, info in self.digit_cache.items():
-            if adaptive_func(info, result):
-                result.append((position, info))
-        return result
-    
-    def get_optimal_digit_strategy(self):
-        """Get optimal digit strategy considering all constraints."""
-        strategies = [
-            ('position_constraints', self.get_digits_with_position_constraints),
-            ('digit_constraints', self.get_digits_with_digit_constraints),
-            ('number_constraints', self.get_digits_with_number_constraints),
-        ]
-        
-        best_strategy = None
-        best_count = 0
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                if strategy_name == 'position_constraints':
-                    current_count = len(strategy_func(1, 100))
-                elif strategy_name == 'digit_constraints':
-                    digit_constraints = [lambda info: info['digit'] > 5]
-                    current_count = len(strategy_func(digit_constraints))
-                elif strategy_name == 'number_constraints':
-                    number_constraints = [lambda info: info['number'] % 2 == 0]
-                    current_count = len(strategy_func(number_constraints))
-                
-                if current_count > best_count:
-                    best_count = current_count
-                    best_strategy = (strategy_name, current_count)
-            except:
-                continue
-        
-        return best_strategy
-
-# Example usage
-constraints = {
-    'min_position': 1,
-    'max_position': 200,
-    'forbidden_digits': [0, 1],
-    'required_digits': [2, 3, 4, 5, 6, 7, 8, 9],
-    'forbidden_numbers': [10, 20, 30],
-    'required_numbers': list(range(1, 51)),
-    'min_digit_length': 1,
-    'max_digit_length': 3
+    string num_str = to_string(num);
+    return num_str[digit_index] - '0';
 }
 
-constrained_queries = ConstrainedDigitQueries(100, constraints)
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-print("Position-constrained digits:", len(constrained_queries.get_digits_with_position_constraints(1, 50)))
+    int q;
+    cin >> q;
 
-print("Digit-constrained digits:", len(constrained_queries.get_digits_with_digit_constraints([lambda info: info['digit'] > 5])))
+    while (q--) {
+        long long k;
+        cin >> k;
+        cout << solve(k) << "\n";
+    }
 
-print("Number-constrained digits:", len(constrained_queries.get_digits_with_number_constraints([lambda info: info['number'] % 2 == 0])))
-
-print("Length-constrained digits:", len(constrained_queries.get_digits_with_length_constraints(1, 2)))
-
-# Mathematical constraints
-def custom_constraint(info):
-    return info['digit'] > 5 and info['number'] % 2 == 0
-
-print("Mathematical constraint digits:", len(constrained_queries.get_digits_with_mathematical_constraints(custom_constraint)))
-
-# Range constraints
-def range_constraint(info):
-    return 1 <= info['position'] <= 50
-
-range_constraints = [range_constraint]
-print("Range-constrained digits:", len(constrained_queries.get_digits_with_range_constraints(range_constraints)))
-
-# Multiple constraints
-def constraint1(info):
-    return info['digit'] > 5
-
-def constraint2(info):
-    return info['number'] % 2 == 0
-
-constraints_list = [constraint1, constraint2]
-print("Multiple constraints digits:", len(constrained_queries.get_digits_with_multiple_constraints(constraints_list)))
-
-# Priority constraints
-def priority_func(info):
-    return info['digit'] + info['number']
-
-print("Priority-constrained digits:", len(constrained_queries.get_digits_with_priority_constraints(priority_func)))
-
-# Adaptive constraints
-def adaptive_func(info, current_result):
-    return info['digit'] > 5 and len(current_result) < 20
-
-print("Adaptive constraint digits:", len(constrained_queries.get_digits_with_adaptive_constraints(adaptive_func)))
-
-# Optimal strategy
-optimal = constrained_queries.get_optimal_digit_strategy()
-print(f"Optimal strategy: {optimal}")
+    return 0;
+}
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Number Spiral](https://cses.fi/problemset/task/1075)s
-- [Trailing Zeros](https://cses.fi/problemset/task/1075)s
-- [Weird Algorithm](https://cses.fi/problemset/task/1075)s
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(log k) | Loop runs once per digit length, max ~19 for k <= 10^18 |
+| Space | O(1) | Only stores a few variables (string conversion is O(log k) but constant) |
 
-#### **LeetCode Problems**
-- [Nth Digit](https://leetcode.com/problems/nth-digit/) - Math
-- [Count and Say](https://leetcode.com/problems/count-and-say/) - String
-- [Integer to Roman](https://leetcode.com/problems/integer-to-roman/) - Math
+---
 
-#### **Problem Categories**
-- **Introductory Problems**: Mathematical analysis, sequence analysis
-- **Mathematical Problems**: Number theory, sequence analysis
-- **Pattern Recognition**: Mathematical patterns, sequence analysis
+## Common Mistakes
 
-## 🔗 Additional Resources
+### Mistake 1: Off-by-One with 1-Indexed Positions
 
-### **Algorithm References**
-- [Introductory Problems](https://cp-algorithms.com/intro-to-algorithms.html) - Introductory algorithms
-- [Mathematical Analysis](https://cp-algorithms.com/algebra/binary-exp.html) - Mathematical algorithms
-- [Number Theory](https://cp-algorithms.com/algebra/binary-exp.html) - Number theory
+```python
+# WRONG - treating k as 0-indexed
+number_index = k // digit_len
+digit_index = k % digit_len
 
-### **Practice Problems**
-- [CSES Number Spiral](https://cses.fi/problemset/task/1075) - Easy
-- [CSES Trailing Zeros](https://cses.fi/problemset/task/1075) - Easy
-- [CSES Weird Algorithm](https://cses.fi/problemset/task/1075) - Easy
+# CORRECT - k is 1-indexed, so subtract 1
+number_index = (k - 1) // digit_len
+digit_index = (k - 1) % digit_len
+```
 
-### **Further Reading**
-- [Number Theory](https://en.wikipedia.org/wiki/Number_theory) - Wikipedia article
-- [Mathematical Analysis](https://en.wikipedia.org/wiki/Mathematical_analysis) - Wikipedia article
-- [Sequence](https://en.wikipedia.org/wiki/Sequence) - Wikipedia article
+**Problem:** CSES problems typically use 1-indexed positions.
+**Fix:** Always subtract 1 before dividing to convert to 0-indexed calculations.
+
+### Mistake 2: Incorrect Digit Range Boundaries
+
+```python
+# WRONG - confusing count vs total digits
+while k > count:  # count is number of numbers, not digits!
+    k -= count
+    ...
+
+# CORRECT - multiply count by digit_len to get total digits
+while k > digit_len * count:
+    k -= digit_len * count
+    ...
+```
+
+**Problem:** Mixing up "number of numbers" with "number of digits".
+**Fix:** Total digits in a range = (count of numbers) x (digits per number).
+
+### Mistake 3: Integer Overflow
+
+```cpp
+// WRONG - int can overflow for large k
+int k, count = 9, start = 1;
+
+// CORRECT - use long long
+long long k, count = 9, start = 1;
+```
+
+**Problem:** With k up to 10^18, intermediate calculations can overflow 32-bit integers.
+**Fix:** Use `long long` in C++ or Python's arbitrary precision integers.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| First position | k = 1 | 1 | First digit is '1' |
+| Last 1-digit | k = 9 | 9 | Position 9 is '9' |
+| First 2-digit | k = 10 | 1 | Position 10 is '1' from "10" |
+| Transition point | k = 189 | 9 | Last digit of "99" |
+| Start of 3-digit | k = 190 | 1 | First digit of "100" |
+| Very large k | k = 10^18 | varies | Must handle without overflow |
+
+---
+
+## When to Use This Pattern
+
+### Use This Approach When:
+- You need to find positions in concatenated number sequences
+- The position k is too large to simulate
+- Numbers follow a predictable length pattern
+
+### Don't Use When:
+- The sequence has irregular patterns (not consecutive integers)
+- k is small enough for brute force (k < 10^6)
+- Numbers are not grouped by digit length
+
+### Pattern Recognition Checklist:
+- [ ] Infinite or very large concatenated string? -> **Consider digit counting**
+- [ ] Numbers grouped by length (1-digit, 2-digit, ...)? -> **Use range analysis**
+- [ ] Need to find position without building string? -> **Mathematical approach**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [Trailing Zeros](https://cses.fi/problemset/task/1618) | Basic math/counting problem |
+| [Number Spiral](https://cses.fi/problemset/task/1071) | Mathematical position finding |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [LeetCode - Nth Digit](https://leetcode.com/problems/nth-digit/) | Same problem, different constraints |
+| [Counting Digits](https://cses.fi/problemset/task/2220) | Count occurrences of digits 0-9 |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [LeetCode - Find Kth Bit](https://leetcode.com/problems/find-kth-bit-in-nth-binary-string/) | Recursive string construction |
+| [Magic String](https://leetcode.com/problems/magical-string/) | Self-describing sequences |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Group numbers by digit length to skip entire ranges at once.
+2. **Time Optimization:** From O(k) brute force to O(log k) by mathematical analysis.
+3. **Space Trade-off:** O(1) space since we calculate positions instead of building strings.
+4. **Pattern:** This is a classic "digit counting" problem - recognize it by concatenated number sequences.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Solve this problem without looking at the solution
+- [ ] Calculate digit counts for any range (1-digit, 2-digit, etc.)
+- [ ] Handle 1-indexed positions correctly
+- [ ] Explain why the time complexity is O(log k)
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Digit DP](https://cp-algorithms.com/dynamic_programming/digit_dp.html)
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [Wikipedia: Champernowne Constant](https://en.wikipedia.org/wiki/Champernowne_constant) - The mathematical sequence this problem is based on

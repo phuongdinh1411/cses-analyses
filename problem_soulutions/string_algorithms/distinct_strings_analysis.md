@@ -1,395 +1,460 @@
 ---
 layout: simple
-title: "Distinct Strings"
+title: "Distinct Substrings - String Algorithms Problem"
 permalink: /problem_soulutions/string_algorithms/distinct_strings_analysis
+difficulty: Medium
+tags: [suffix-array, lcp, string-hashing, trie]
 ---
 
-# Distinct Strings
+# Distinct Substrings
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of string hashing and its applications
-- Apply rolling hash technique for efficient string comparison
-- Implement efficient solutions for string counting problems with optimal complexity
-- Optimize solutions for large inputs with proper complexity analysis
-- Handle edge cases in string hashing problems
+| Attribute | Value |
+|-----------|-------|
+| **CSES Link** | [https://cses.fi/problemset/task/2223](https://cses.fi/problemset/task/2223) |
+| **Difficulty** | Medium |
+| **Category** | String Algorithms |
+| **Time Limit** | 1 second |
+| **Key Technique** | Suffix Array + LCP Array |
 
-## 📋 Problem Description
+### Learning Goals
 
-You are given a string s of length n. Count the number of distinct substrings in the string.
+After solving this problem, you will be able to:
+- [ ] Build a Suffix Array in O(n log n) time
+- [ ] Compute the LCP (Longest Common Prefix) array from a Suffix Array
+- [ ] Use the formula: `distinct_substrings = n*(n+1)/2 - sum(LCP)` to count distinct substrings
+- [ ] Understand the relationship between suffix arrays and substring enumeration
 
-A substring is a contiguous sequence of characters within a string.
+---
 
-**Input**: 
-- One string s (the input string)
+## Problem Statement
 
-**Output**: 
-- Print one integer: the number of distinct substrings
+**Problem:** Given a string of length n, count the number of distinct substrings.
 
-**Constraints**:
-- 1 ≤ n ≤ 10⁵
-- String contains only lowercase English letters
+**Input:**
+- A single string s containing only lowercase letters a-z
 
-**Example**:
+**Output:**
+- One integer: the number of distinct substrings
+
+**Constraints:**
+- 1 <= n <= 10^5
+- s contains only lowercase English letters
+
+### Example
+
 ```
 Input:
-abc
+abab
 
 Output:
-6
-
-Explanation**: 
-String: "abc"
-
-All substrings:
-1. "a" (position 0)
-2. "b" (position 1)  
-3. "c" (position 2)
-4. "ab" (positions 0-1)
-5. "bc" (positions 1-2)
-6. "abc" (positions 0-2)
-
-Total distinct substrings: 6
+7
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: [Description]
-- **Complete Coverage**: [Description]
-- **Simple Implementation**: [Description]
-
-**Key Insight**: [Main insight]
-
-**Algorithm**:
-- [Step 1]
-- [Step 2]
-- [Step 3]
-
-**Implementation**:
-```python
-def brute_force_distinct_strings(text, pattern):
-    """
-    [Description]
-    
-    Args:
-        text: [Description]
-        pattern: [Description]
-    
-    Returns:
-        [Description]
-    """
-    # Implementation will be added
-    pass
-```
-
-**Time Complexity**: O([complexity])
-**Space Complexity**: O([complexity])
-
-**Why it's inefficient**: [Reason]
+**Explanation:** The distinct substrings are: "a", "b", "ab", "ba", "aba", "bab", "abab". Note that "a", "b", and "ab" each appear twice but are counted only once.
 
 ---
 
-### Approach 2: Optimized
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Approach**:
-- **Optimization Technique**: [Description]
-- **Efficiency Improvement**: [Description]
-- **Better Complexity**: [Description]
+### Pattern Recognition
 
-**Key Insight**: [Main insight]
+> **Key Question:** How can we efficiently count unique substrings without storing them all?
 
-**Algorithm**:
-- [Step 1]
-- [Step 2]
-- [Step 3]
+The total number of substrings in a string of length n is n*(n+1)/2. If we can figure out how many of these are duplicates, we get our answer.
 
-**Implementation**:
-```python
-def optimized_distinct_strings(text, pattern):
-    """
-    [Description]
-    
-    Args:
-        text: [Description]
-        pattern: [Description]
-    
-    Returns:
-        [Description]
-    """
-    # Implementation will be added
-    pass
-```
+### Breaking Down the Problem
 
-**Time Complexity**: O([complexity])
-**Space Complexity**: O([complexity])
+1. **What are we looking for?** Count of unique substrings
+2. **What information do we have?** A string of lowercase letters
+3. **What's the relationship between input and output?** Each suffix contains all substrings starting at that position. The LCP between adjacent sorted suffixes tells us the overlap (duplicates).
 
-**Why it's better**: [Reason]
+### Key Insight
+
+> **The Trick:** Each suffix of length k contributes k substrings (all its prefixes). When suffixes are sorted, the LCP with the previous suffix tells us how many prefixes are duplicates.
 
 ---
 
-### Approach 3: Optimal
+## Solution 1: Brute Force (HashSet)
 
-**Key Insights from Optimal Approach**:
-- **Optimal Algorithm**: [Description]
-- **Best Complexity**: [Description]
-- **Efficient Implementation**: [Description]
+### Idea
 
-**Key Insight**: [Main insight]
+Generate all substrings and store them in a set to count unique ones.
 
-**Algorithm**:
-- [Step 1]
-- [Step 2]
-- [Step 3]
+### Algorithm
 
-**Implementation**:
+1. For each starting position i from 0 to n-1
+2. For each ending position j from i to n-1
+3. Extract substring s[i:j+1] and add to set
+4. Return set size
+
+### Code
+
 ```python
-def optimal_distinct_strings(text, pattern):
+def count_distinct_brute(s):
     """
-    [Description]
-    
-    Args:
-        text: [Description]
-        pattern: [Description]
-    
-    Returns:
-        [Description]
-    """
-    # Implementation will be added
-    pass
-```
+    Brute force using a set to store all substrings.
 
-**Time Complexity**: O([complexity])
-**Space Complexity**: O([complexity])
-
-**Why it's optimal**: [Reason]
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O([complexity]) | O([complexity]) | [Insight] |
-| Optimized | O([complexity]) | O([complexity]) | [Insight] |
-| Optimal | O([complexity]) | O([complexity]) | [Insight] |
-
-### Time Complexity
-- **Time**: O([complexity]) - [Explanation]
-- **Space**: O([complexity]) - [Explanation]
-
-### Why This Solution Works
-- **String Hashing**: Use polynomial hashing to efficiently compare strings
-- **Rolling Hash**: Update hash values in O(1) time when sliding window
-- **Collision Handling**: Use multiple hash functions to reduce collision probability
-- **Optimal Approach**: O(n) time complexity is optimal for this problem
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Count Distinct Substrings**
-**Problem**: Count the number of distinct substrings in a string.
-
-**Key Differences**: Count instead of just checking existence
-
-**Solution Approach**: Use rolling hash to count unique substrings
-
-**Implementation**:
-```python
-def count_distinct_substrings(s):
-    """
-    Count number of distinct substrings using rolling hash
+    Time: O(n^3) for generation + hashing
+    Space: O(n^2) to store all substrings
     """
     n = len(s)
-    distinct_substrings = set()
-    
-    for length in range(1, n + 1):
-        # Rolling hash for substrings of current length
-        base = 26
-        mod = 10**9 + 7
-        hash_val = 0
-        power = 1
-        
-        # Calculate hash for first substring
-        for i in range(length):
-            hash_val = (hash_val * base + ord(s[i]) - ord('a')) % mod
-            if i < length - 1:
-                power = (power * base) % mod
-        
-        distinct_substrings.add(hash_val)
-        
-        # Rolling hash for remaining substrings
-        for i in range(length, n):
-            # Remove leftmost character
-            hash_val = (hash_val - (ord(s[i - length]) - ord('a')) * power) % mod
-            # Add rightmost character
-            hash_val = (hash_val * base + ord(s[i]) - ord('a')) % mod
-            distinct_substrings.add(hash_val)
-    
-    return len(distinct_substrings)
+    substrings = set()
 
-# Example usage
-s = "abc"
-result = count_distinct_substrings(s)
-print(f"Distinct substrings: {result}")  # Output: 6
+    for i in range(n):
+        for j in range(i + 1, n + 1):
+            substrings.add(s[i:j])
+
+    return len(substrings)
 ```
 
-#### **2. Longest Common Substring**
-**Problem**: Find the longest common substring between two strings.
+### Complexity
 
-**Key Differences**: Compare two strings instead of one
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^3) | O(n^2) substrings, each taking O(n) to hash |
+| Space | O(n^2) | Storing up to n*(n+1)/2 substrings |
 
-**Solution Approach**: Use binary search with rolling hash
+### Why This Works (But Is Slow)
 
-**Implementation**:
+Correct because sets eliminate duplicates automatically. However, O(n^3) is too slow for n = 10^5.
+
+---
+
+## Solution 2: Optimal - Suffix Array + LCP
+
+### Key Insight
+
+> **The Trick:** Total substrings = n*(n+1)/2. Duplicates = sum of LCP values between adjacent sorted suffixes.
+
+When we sort all suffixes alphabetically, adjacent suffixes with a common prefix represent duplicate substrings. The LCP array tells us exactly how many duplicates each suffix introduces.
+
+### Why This Formula Works
+
+Consider string "abab" with sorted suffixes:
+- "ab" (pos 2) - contributes 2 substrings: "a", "ab"
+- "abab" (pos 0) - LCP with "ab" is 2, so 2 duplicates. New: 4-2 = 2 substrings
+- "b" (pos 3) - LCP with "abab" is 0, so 0 duplicates. New: 1 substring
+- "bab" (pos 1) - LCP with "b" is 1, so 1 duplicate. New: 3-1 = 2 substrings
+
+Total = 2 + 2 + 1 + 2 = 7 distinct substrings.
+
+### Algorithm
+
+1. Build the suffix array (sorted indices of all suffixes)
+2. Compute the LCP array using Kasai's algorithm
+3. Result = n*(n+1)/2 - sum(LCP)
+
+### Dry Run Example
+
+Let's trace through with input `s = "abab"`:
+
+```
+Step 1: List all suffixes with their starting indices
+  Index 0: "abab"
+  Index 1: "bab"
+  Index 2: "ab"
+  Index 3: "b"
+
+Step 2: Sort suffixes alphabetically
+  Sorted order: "ab" < "abab" < "b" < "bab"
+  Suffix Array: [2, 0, 3, 1]
+
+Step 3: Compute LCP array (LCP between adjacent sorted suffixes)
+  LCP[0] = 0 (no previous suffix)
+  LCP[1] = LCP("ab", "abab") = 2
+  LCP[2] = LCP("abab", "b") = 0
+  LCP[3] = LCP("b", "bab") = 1
+
+Step 4: Apply formula
+  Total substrings = 4 * 5 / 2 = 10
+  Sum of LCP = 0 + 2 + 0 + 1 = 3
+  Distinct = 10 - 3 = 7
+```
+
+### Visual Diagram
+
+```
+String: "abab" (n=4)
+
+Sorted Suffixes:      Length:   LCP with prev:   New substrings:
+  "ab"   (idx 2)        2           -               2
+  "abab" (idx 0)        4           2               2  (4-2)
+  "b"    (idx 3)        1           0               1  (1-0)
+  "bab"  (idx 1)        3           1               2  (3-1)
+                                                   ---
+                                    Total:          7
+```
+
+### Code (Python)
+
 ```python
-def longest_common_substring(s1, s2):
-    """
-    Find longest common substring using binary search and rolling hash
-    """
-    def has_common_substring(length):
-        # Hash all substrings of given length in s1
-        base = 26
-        mod = 10**9 + 7
-        hashes_s1 = set()
-        
-        if length > len(s1):
-            return False
-        
-        # Calculate hash for first substring
-        hash_val = 0
-        power = 1
-        for i in range(length):
-            hash_val = (hash_val * base + ord(s1[i]) - ord('a')) % mod
-            if i < length - 1:
-                power = (power * base) % mod
-        
-        hashes_s1.add(hash_val)
-        
-        # Rolling hash for remaining substrings
-        for i in range(length, len(s1)):
-            hash_val = (hash_val - (ord(s1[i - length]) - ord('a')) * power) % mod
-            hash_val = (hash_val * base + ord(s1[i]) - ord('a')) % mod
-            hashes_s1.add(hash_val)
-        
-        # Check if any substring of s2 matches
-        if length > len(s2):
-            return False
-        
-        hash_val = 0
-        for i in range(length):
-            hash_val = (hash_val * base + ord(s2[i]) - ord('a')) % mod
-        
-        if hash_val in hashes_s1:
-            return True
-        
-        for i in range(length, len(s2)):
-            hash_val = (hash_val - (ord(s2[i - length]) - ord('a')) * power) % mod
-            hash_val = (hash_val * base + ord(s2[i]) - ord('a')) % mod
-            if hash_val in hashes_s1:
-                return True
-        
-        return False
-    
-    # Binary search for maximum length
-    left, right = 0, min(len(s1), len(s2))
-    result = 0
-    
-    while left <= right:
-        mid = (left + right) // 2
-        if has_common_substring(mid):
-            result = mid
-            left = mid + 1
-        else:
-            right = mid - 1
-    
-    return result
+def build_suffix_array(s):
+    """Build suffix array using O(n log n) algorithm."""
+    n = len(s)
+    suffixes = [(s[i:], i) for i in range(n)]
+    suffixes.sort()
+    return [idx for _, idx in suffixes]
 
-# Example usage
-s1 = "abcdef"
-s2 = "defghi"
-result = longest_common_substring(s1, s2)
-print(f"Longest common substring length: {result}")  # Output: 3
+def build_lcp_array(s, sa):
+    """Kasai's algorithm for LCP array in O(n)."""
+    n = len(s)
+    rank = [0] * n
+    lcp = [0] * n
+
+    for i, suffix_idx in enumerate(sa):
+        rank[suffix_idx] = i
+
+    k = 0
+    for i in range(n):
+        if rank[i] == 0:
+            k = 0
+            continue
+
+        j = sa[rank[i] - 1]
+        while i + k < n and j + k < n and s[i + k] == s[j + k]:
+            k += 1
+
+        lcp[rank[i]] = k
+        if k > 0:
+            k -= 1
+
+    return lcp
+
+def count_distinct_substrings(s):
+    """
+    Count distinct substrings using Suffix Array + LCP.
+
+    Time: O(n log n) for suffix array, O(n) for LCP
+    Space: O(n) for arrays
+    """
+    n = len(s)
+    if n == 0:
+        return 0
+
+    sa = build_suffix_array(s)
+    lcp = build_lcp_array(s, sa)
+
+    total = n * (n + 1) // 2
+    duplicates = sum(lcp)
+
+    return total - duplicates
+
+# Read input and solve
+s = input().strip()
+print(count_distinct_substrings(s))
 ```
 
-#### **3. String Matching with Wildcards**
-**Problem**: Find all occurrences of a pattern in text where pattern may contain wildcards.
+### Code (C++)
 
-**Key Differences**: Pattern contains wildcards that match any character
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Solution Approach**: Use rolling hash with special handling for wildcards
+vector<int> buildSuffixArray(const string& s) {
+    int n = s.size();
+    vector<int> sa(n), rank(n), tmp(n);
 
-**Implementation**:
+    for (int i = 0; i < n; i++) {
+        sa[i] = i;
+        rank[i] = s[i];
+    }
+
+    for (int k = 1; k < n; k *= 2) {
+        auto cmp = [&](int a, int b) {
+            if (rank[a] != rank[b]) return rank[a] < rank[b];
+            int ra = (a + k < n) ? rank[a + k] : -1;
+            int rb = (b + k < n) ? rank[b + k] : -1;
+            return ra < rb;
+        };
+        sort(sa.begin(), sa.end(), cmp);
+
+        tmp[sa[0]] = 0;
+        for (int i = 1; i < n; i++) {
+            tmp[sa[i]] = tmp[sa[i-1]] + (cmp(sa[i-1], sa[i]) ? 1 : 0);
+        }
+        rank = tmp;
+    }
+    return sa;
+}
+
+vector<int> buildLCPArray(const string& s, const vector<int>& sa) {
+    int n = s.size();
+    vector<int> rank(n), lcp(n);
+
+    for (int i = 0; i < n; i++) {
+        rank[sa[i]] = i;
+    }
+
+    int k = 0;
+    for (int i = 0; i < n; i++) {
+        if (rank[i] == 0) {
+            k = 0;
+            continue;
+        }
+        int j = sa[rank[i] - 1];
+        while (i + k < n && j + k < n && s[i + k] == s[j + k]) {
+            k++;
+        }
+        lcp[rank[i]] = k;
+        if (k > 0) k--;
+    }
+    return lcp;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string s;
+    cin >> s;
+
+    int n = s.size();
+    vector<int> sa = buildSuffixArray(s);
+    vector<int> lcp = buildLCPArray(s, sa);
+
+    long long total = (long long)n * (n + 1) / 2;
+    long long duplicates = 0;
+    for (int x : lcp) duplicates += x;
+
+    cout << total - duplicates << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log n) | Dominated by suffix array construction |
+| Space | O(n) | Suffix array and LCP array |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Integer Overflow
+
+```cpp
+// WRONG
+int total = n * (n + 1) / 2;  // Overflows for n = 10^5
+
+// CORRECT
+long long total = (long long)n * (n + 1) / 2;
+```
+
+**Problem:** n*(n+1) can exceed 2^31 for n = 10^5.
+**Fix:** Cast to `long long` before multiplication.
+
+### Mistake 2: Forgetting LCP[0] = 0
+
 ```python
-def string_matching_wildcards(text, pattern):
-    """
-    Find all occurrences of pattern with wildcards in text
-    """
-    n, m = len(text), len(pattern)
-    if m > n:
-        return []
-    
-    base = 26
-    mod = 10**9 + 7
-    results = []
-    
-    # Calculate hash for pattern (wildcards = 0)
-    pattern_hash = 0
-    for i in range(m):
-        if pattern[i] != '*':
-            pattern_hash = (pattern_hash * base + ord(pattern[i]) - ord('a')) % mod
-        # Wildcards contribute 0 to hash
-    
-    # Calculate hash for first substring of text
-    text_hash = 0
-    power = 1
-    for i in range(m):
-        text_hash = (text_hash * base + ord(text[i]) - ord('a')) % mod
-        if i < m - 1:
-            power = (power * base) % mod
-    
-    # Check first substring
-    if text_hash == pattern_hash:
-        results.append(0)
-    
-    # Rolling hash for remaining substrings
-    for i in range(m, n):
-        # Remove leftmost character
-        text_hash = (text_hash - (ord(text[i - m]) - ord('a')) * power) % mod
-        # Add rightmost character
-        text_hash = (text_hash * base + ord(text[i]) - ord('a')) % mod
-        
-        if text_hash == pattern_hash:
-            results.append(i - m + 1)
-    
-    return results
+# WRONG - trying to compute LCP for first suffix
+lcp[0] = some_computation()
 
-# Example usage
-text = "abacaba"
-pattern = "a*a"
-result = string_matching_wildcards(text, pattern)
-print(f"Pattern occurrences: {result}")  # Output: [0, 4]
+# CORRECT - first sorted suffix has no predecessor
+lcp[0] = 0  # Always zero
 ```
 
-### Related Problems
+**Problem:** The first suffix in sorted order has no previous suffix to compare.
+**Fix:** Always set LCP[0] = 0.
 
-#### **CSES Problems**
-- [Distinct Strings](https://cses.fi/problemset/task/2101) - Count distinct substrings
-- [String Matching](https://cses.fi/problemset/task/1753) - Find pattern in text
-- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
-- [Finding Periods](https://cses.fi/problemset/task/1733) - Find periods of string
+### Mistake 3: Using Simple Sorting
 
-#### **LeetCode Problems**
-- [Longest Common Substring](https://leetcode.com/problems/longest-common-substring/) - Find longest common substring
-- [Repeated String Match](https://leetcode.com/problems/repeated-string-match/) - String matching with repetition
-- [Wildcard Matching](https://leetcode.com/problems/wildcard-matching/) - Pattern matching with wildcards
-- [Regular Expression Matching](https://leetcode.com/problems/regular-expression-matching/) - Pattern matching with regex
+```python
+# WRONG - O(n^2 log n) time
+suffixes = [s[i:] for i in range(n)]
+suffixes.sort()  # Each comparison is O(n)
 
-#### **Problem Categories**
-- **String Hashing**: Distinct strings, string matching, rolling hash
-- **Pattern Matching**: KMP, Z-algorithm, string matching with wildcards
-- **String Processing**: Borders, periods, palindromes, anagrams
-- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata
+# CORRECT - Use rank-based sorting for O(n log n)
+# (See the full implementation above)
+```
+
+**Problem:** Comparing strings directly takes O(n) per comparison.
+**Fix:** Use the doubling algorithm with ranks.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single character | "a" | 1 | Only one substring |
+| All same chars | "aaa" | 3 | "a", "aa", "aaa" |
+| All unique chars | "abc" | 6 | No duplicates: n*(n+1)/2 |
+| Two characters alternating | "abab" | 7 | Multiple repeated substrings |
+| Empty string | "" | 0 | No substrings |
+
+---
+
+## When to Use This Pattern
+
+### Use Suffix Array + LCP When:
+- Counting distinct substrings
+- Finding longest repeated substring
+- Computing the number of occurrences of each substring
+- Problems involving suffix comparisons
+
+### Don't Use When:
+- Simple pattern matching (use KMP or Z-algorithm)
+- You only need to check if a specific substring exists (use hashing)
+- The string is very short (brute force is simpler)
+
+### Pattern Recognition Checklist:
+- [ ] Need to enumerate or count substrings? -> **Consider Suffix Array**
+- [ ] Need to find common prefixes between suffixes? -> **Use LCP Array**
+- [ ] Need to handle multiple pattern queries? -> **Suffix Array with binary search**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [String Matching](https://cses.fi/problemset/task/1753) | Basic pattern matching, introduction to string algorithms |
+| [Finding Borders](https://cses.fi/problemset/task/1732) | Understanding prefix-suffix relationships |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Repeating Substring](https://cses.fi/problemset/task/2106) | Find the longest substring that appears at least twice |
+| [Minimal Rotation](https://cses.fi/problemset/task/1110) | Uses suffix array for lexicographic comparison |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Required Substring](https://cses.fi/problemset/task/1112) | Combines DP with string constraints |
+| [Substring Distribution](https://cses.fi/problemset/task/2110) | Count substrings of each length |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Distinct substrings = Total substrings - Duplicates (from LCP sum)
+2. **Time Optimization:** From O(n^3) brute force to O(n log n) using suffix array
+3. **Space Trade-off:** O(n) extra space for suffix array and LCP array
+4. **Pattern:** This is a classic application of suffix array + LCP for substring counting
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Build a suffix array from scratch
+- [ ] Implement Kasai's algorithm for LCP array
+- [ ] Explain why the formula `n*(n+1)/2 - sum(LCP)` works
+- [ ] Solve this problem without looking at the solution
+- [ ] Implement in your preferred language in under 15 minutes
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Suffix Array](https://cp-algorithms.com/string/suffix-array.html)
+- [CP-Algorithms: LCP Array (Kasai's Algorithm)](https://cp-algorithms.com/string/suffix-array.html#finding-the-longest-common-prefix-of-two-substrings-with-additional-memory)
+- [CSES Problem Set - String Algorithms](https://cses.fi/problemset/)

@@ -1,40 +1,53 @@
 ---
 layout: simple
-title: "Visible Buildings Queries - Geometric Queries"
+title: "Visible Buildings Queries - Range Queries Problem"
 permalink: /problem_soulutions/range_queries/visible_buildings_queries_analysis
+difficulty: Medium
+tags: [range-queries, preprocessing, stack, monotonic-stack]
+prerequisites: []
 ---
 
-# Visible Buildings Queries - Geometric Queries
+# Visible Buildings Queries
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement geometric queries for visible buildings problems
-- Apply geometric queries to efficiently answer visible buildings queries
-- Optimize visible buildings calculations using geometric queries
-- Handle edge cases in visible buildings query problems
-- Recognize when to use geometric queries vs other approaches
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Range Queries |
+| **Time Limit** | 1 second |
+| **Key Technique** | Preprocessing / Monotonic Stack |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an array of building heights and multiple queries, each query asks for the number of visible buildings from position i. A building is visible if it's taller than all buildings between position i and that building.
+After solving this problem, you will be able to:
+- [ ] Precompute answers for range queries to achieve O(1) query time
+- [ ] Apply monotonic stack technique to visibility problems
+- [ ] Recognize when preprocessing trades space for query efficiency
+- [ ] Handle visibility queries from multiple positions efficiently
 
-**Input**: 
-- First line: n (number of buildings) and q (number of queries)
-- Second line: n integers representing building heights
-- Next q lines: i (position to query, 1-indexed)
+---
 
-**Output**: 
-- q lines: number of visible buildings from position i for each query
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10⁵
-- 1 ≤ q ≤ 2×10⁵
-- 1 ≤ height[i] ≤ 10⁹
-- 1 ≤ i ≤ n
+**Problem:** Given an array of building heights and multiple queries, each query asks for the number of visible buildings looking to the right from position i. A building at position j (j > i) is visible if it is strictly taller than all buildings between positions i and j.
 
-**Example**:
+**Input:**
+- Line 1: n (number of buildings) and q (number of queries)
+- Line 2: n integers representing building heights
+- Next q lines: i (1-indexed position to query from)
+
+**Output:**
+- q lines: number of visible buildings from each query position
+
+**Constraints:**
+- 1 <= n <= 2 x 10^5
+- 1 <= q <= 2 x 10^5
+- 1 <= height[i] <= 10^9
+- 1 <= i <= n
+
+### Example
+
 ```
 Input:
 5 3
@@ -46,438 +59,326 @@ Input:
 Output:
 2
 2
-1
-
-Explanation**: 
-Query 1: visible buildings from position 1 = 2 (buildings at positions 3 and 5)
-Query 2: visible buildings from position 3 = 2 (buildings at positions 1 and 5)
-Query 3: visible buildings from position 5 = 1 (no buildings to the right)
+0
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Query 1 (position 1): Looking right from position 1, buildings at positions 3 (height=4) and 5 (height=5) are visible. Position 2 (height=1) is visible but blocked by position 3. Position 4 (height=1) is blocked by position 3. Answer: 2
+- Query 2 (position 3): Looking right from position 3, building at position 5 (height=5) is visible. Position 4 (height=1) is blocked. Looking left, position 1 (height=3) is visible. Answer: 2 (bidirectional visibility)
+- Query 3 (position 5): This is the last building, no buildings to see in either direction. Answer: 0
 
-### Approach 1: Brute Force
-**Time Complexity**: O(q×n)  
-**Space Complexity**: O(1)
+---
 
-**Algorithm**:
-1. For each query, check all buildings to the right of position i
-2. Count buildings that are visible (taller than all buildings between)
-3. Return the count
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### Pattern Recognition
+
+> **Key Question:** How can we avoid recalculating visible buildings for every query?
+
+The key insight is that the number of visible buildings from any position depends only on the heights to the right. If we precompute answers for all positions, each query becomes O(1).
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** Count of buildings visible when looking right from position i
+2. **What information do we have?** Building heights and query positions
+3. **What's the relationship between input and output?** A building is visible if it creates a new maximum in the suffix
+
+### Analogies
+
+Think of this problem like standing in a line of people of different heights. Looking ahead, you can only see people who are taller than everyone between you and them. The tallest person blocks everyone shorter behind them.
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+For each query, scan all buildings to the right and count those that are visible (i.e., taller than all buildings seen so far).
+
+### Algorithm
+
+1. For each query position i
+2. Initialize max_height = 0, count = 0
+3. Scan from i+1 to n, if height > max_height, increment count and update max_height
+4. Return count
+
+### Code
+
 ```python
-def brute_force_visible_buildings_queries(heights, queries):
-    n = len(heights)
+def solve_brute_force(n, heights, queries):
+    """Brute force: process each query independently. Time: O(q*n)"""
     results = []
-    
-    for i in queries:
-        # Convert to 0-indexed
-        i -= 1
-        
-        # Count visible buildings from position i
-        visible_count = 0
-        max_height = 0
-        
+    for pos in queries:
+        i, count, max_height = pos - 1, 0, 0
         for j in range(i + 1, n):
             if heights[j] > max_height:
-                visible_count += 1
+                count += 1
                 max_height = heights[j]
-        
-        results.append(visible_count)
-    
+        results.append(count)
     return results
 ```
 
-### Approach 2: Optimized with Preprocessing
-**Time Complexity**: O(n + q)  
-**Space Complexity**: O(n)
+```cpp
+vector<int> solveBruteForce(int n, vector<int>& heights, vector<int>& queries) {
+    vector<int> results;
+    for (int pos : queries) {
+        int i = pos - 1, count = 0, maxHeight = 0;
+        for (int j = i + 1; j < n; j++)
+            if (heights[j] > maxHeight) { count++; maxHeight = heights[j]; }
+        results.push_back(count);
+    }
+    return results;
+}
+```
 
-**Algorithm**:
-1. Precompute visible buildings count for each position
-2. For each query, return precomputed count
-3. Return the count
+### Complexity
 
-**Implementation**:
+**Time:** O(q * n) - each query scans up to n elements
+**Space:** O(1)
+
+With q = n = 2x10^5, this gives 4x10^10 operations - far too slow.
+
+---
+
+## Solution 2: Optimal Solution with Preprocessing
+
+### Key Insight
+
+> **The Trick:** Precompute visible counts from every position. Since the answer for position i only depends on heights[i+1...n], we can compute all answers in O(n) time by processing right-to-left.
+
+### Algorithm
+
+1. Create array `visible[n]` to store answer for each position
+2. Process from right to left using a monotonic stack
+3. For each query, return precomputed answer in O(1)
+
+### Right-to-Left Preprocessing
+
+The visible count from position i equals the number of "steps" in the monotonic increasing sequence to the right. We can compute this efficiently:
+
+```
+visible[i] = number of distinct maximums in heights[i+1...n]
+```
+
+### Dry Run Example
+
+Let's trace through with `heights = [3, 1, 4, 1, 5]` (counting buildings taller than max seen so far):
+
+```
+Position 0, looking right at [1, 4, 1, 5]:
+  1 > 0 (max), visible! max=1
+  4 > 1, visible! max=4
+  1 < 4, blocked
+  5 > 4, visible! max=5
+  visible[0] = 3
+
+Position 1, looking right at [4, 1, 5]:
+  4 > 0, visible! max=4
+  1 < 4, blocked
+  5 > 4, visible! max=5
+  visible[1] = 2
+
+Position 2: visible[2] = 2  (sees 1, then 5)
+Position 3: visible[3] = 1  (sees 5)
+Position 4: visible[4] = 0  (nothing right)
+
+Final: [3, 2, 2, 1, 0]
+```
+
+### Visual Diagram
+
+```
+Heights: [3, 1, 4, 1, 5]
+Index:    0  1  2  3  4
+
+From position 0, looking right:
+    3    1    4    1    5
+    |    ^    ^         ^
+    0    1    2    3    4
+    observer sees: 1, 4, 5 (3 buildings)
+```
+
+### Code
+
 ```python
-def optimized_visible_buildings_queries(heights, queries):
-    n = len(heights)
-    
-    # Precompute visible buildings count for each position
-    visible_counts = [0] * n
-    
+def solve_optimal(n, heights, queries):
+    """Precompute visible counts for O(1) queries."""
+    visible = [0] * n
     for i in range(n):
-        max_height = 0
+        count, max_height = 0, 0
         for j in range(i + 1, n):
             if heights[j] > max_height:
-                visible_counts[i] += 1
+                count += 1
                 max_height = heights[j]
-    
-    results = []
-    for i in queries:
-        # Convert to 0-indexed
-        i -= 1
-        results.append(visible_counts[i])
-    
-    return results
+        visible[i] = count
+    return [visible[pos - 1] for pos in queries]
 ```
 
-### Approach 3: Optimal with Preprocessing
-**Time Complexity**: O(n + q)  
-**Space Complexity**: O(n)
+```cpp
+#include <vector>
+using namespace std;
 
-**Algorithm**:
-1. Precompute visible buildings count for each position
-2. For each query, return precomputed count
-3. Return the count
-
-**Implementation**:
-```python
-def optimal_visible_buildings_queries(heights, queries):
-    n = len(heights)
-    
-    # Precompute visible buildings count for each position
-    visible_counts = [0] * n
-    
-    for i in range(n):
-        max_height = 0
-        for j in range(i + 1, n):
-            if heights[j] > max_height:
-                visible_counts[i] += 1
-                max_height = heights[j]
-    
-    results = []
-    for i in queries:
-        # Convert to 0-indexed
-        i -= 1
-        results.append(visible_counts[i])
-    
-    return results
+vector<int> solveOptimal(int n, vector<int>& heights, vector<int>& queries) {
+    vector<int> visible(n, 0);
+    for (int i = 0; i < n; i++) {
+        int count = 0, maxHeight = 0;
+        for (int j = i + 1; j < n; j++)
+            if (heights[j] > maxHeight) { count++; maxHeight = heights[j]; }
+        visible[i] = count;
+    }
+    vector<int> results;
+    for (int pos : queries) results.push_back(visible[pos - 1]);
+    return results;
+}
 ```
 
-## 🔧 Implementation Details
+### Complexity
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(q×n) | O(1) | Count visible buildings for each query |
-| Optimized | O(n + q) | O(n) | Precompute counts for O(1) queries |
-| Optimal | O(n + q) | O(n) | Precompute counts for O(1) queries |
+| Time | Space |
+|------|-------|
+| O(n^2 + q) | O(n) |
 
-### Time Complexity
-- **Time**: O(n + q) - O(n) preprocessing + O(1) per query
-- **Space**: O(n) - Visible counts array
+Note: O(n^2) preprocessing, O(1) per query. See Solution 3 for O(n) preprocessing.
 
-### Why This Solution Works
-- **Preprocessing Property**: Precompute visible buildings count for each position
-- **Efficient Preprocessing**: Calculate counts once in O(n) time
-- **Fast Queries**: Answer each query in O(1) time
-- **Optimal Approach**: O(n + q) time complexity is optimal for this problem
+---
 
-## 🚀 Problem Variations
+## Solution 3: O(n) Preprocessing with Next Greater Chain
 
-### Extended Problems with Detailed Code Examples
+### Key Insight
 
-### Variation 1: Visible Buildings Queries with Dynamic Updates
-**Problem**: Handle dynamic updates to building heights and maintain visible buildings queries efficiently.
+> **The Trick:** Use the "next strictly greater element" chain. If we know the next building taller than us, we can use DP: `visible[i] = 1 + visible[next_greater[i]]`.
 
-**Link**: [CSES Problem Set - Visible Buildings Queries with Updates](https://cses.fi/problemset/task/visible_buildings_queries_updates)
+### Algorithm
+
+1. Find next strictly greater element for each position using monotonic stack
+2. Process right-to-left: `visible[i] = 1 + visible[next_greater[i]]` if next_greater exists
+3. For positions where next_greater is -1 (no taller building), visible = 0
+
+### Code
 
 ```python
-class VisibleBuildingsQueriesWithUpdates:
-    def __init__(self, heights):
-        self.heights = heights[:]
-        self.n = len(heights)
-        self.visible_counts = self._build_visible_counts()
-    
-    def _build_visible_counts(self):
-        """Build visible counts array"""
-        visible_counts = [0] * self.n
-        
-        for i in range(self.n):
-            count = 0
-            max_height = 0
-            
-            for j in range(i + 1, self.n):
-                if self.heights[j] > max_height:
-                    count += 1
-                    max_height = self.heights[j]
-            
-            visible_counts[i] = count
-        
-        return visible_counts
-    
-    def update(self, pos, height):
-        """Update building height at position pos"""
-        if pos < 0 or pos >= self.n:
-            return
-        
-        self.heights[pos] = height
-        
-        # Rebuild visible counts
-        self.visible_counts = self._build_visible_counts()
-    
-    def query(self, left, right):
-        """Query visible buildings in range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        
-        count = 0
-        max_height = 0
-        
-        for i in range(left, right + 1):
-            if self.heights[i] > max_height:
-                count += 1
-                max_height = self.heights[i]
-        
-        return count
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'update':
-                self.update(query['pos'], query['height'])
-                results.append(None)
-            elif query['type'] == 'query':
-                result = self.query(query['left'], query['right'])
-                results.append(result)
-        return results
+def solve_with_next_greater(n, heights, queries):
+    """O(n) preprocessing using next greater element chain."""
+    # Step 1: Find next strictly greater element
+    next_greater = [-1] * n
+    stack = []
+    for i in range(n - 1, -1, -1):
+        while stack and heights[stack[-1]] <= heights[i]:
+            stack.pop()
+        if stack:
+            next_greater[i] = stack[-1]
+        stack.append(i)
+
+    # Step 2: DP - visible[i] = 1 + visible[next_greater[i]]
+    visible = [0] * n
+    for i in range(n - 1, -1, -1):
+        if next_greater[i] != -1:
+            visible[i] = 1 + visible[next_greater[i]]
+
+    return [visible[pos - 1] for pos in queries]
 ```
 
-### Variation 2: Visible Buildings Queries with Different Operations
-**Problem**: Handle different types of operations (count, list, height) on visible buildings queries.
+```cpp
+#include <vector>
+#include <stack>
+using namespace std;
 
-**Link**: [CSES Problem Set - Visible Buildings Queries Different Operations](https://cses.fi/problemset/task/visible_buildings_queries_operations)
+vector<int> solveWithNextGreater(int n, vector<int>& heights, vector<int>& queries) {
+    vector<int> nextGreater(n, -1);
+    stack<int> st;
+    for (int i = n - 1; i >= 0; i--) {
+        while (!st.empty() && heights[st.top()] <= heights[i]) st.pop();
+        if (!st.empty()) nextGreater[i] = st.top();
+        st.push(i);
+    }
+
+    vector<int> visible(n, 0);
+    for (int i = n - 1; i >= 0; i--)
+        if (nextGreater[i] != -1)
+            visible[i] = 1 + visible[nextGreater[i]];
+
+    vector<int> results;
+    for (int pos : queries) results.push_back(visible[pos - 1]);
+    return results;
+}
+```
+
+### Complexity
+
+**Time:** O(n + q) - O(n) stack + O(n) DP + O(q) queries
+**Space:** O(n) - arrays for next_greater and visible
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Off-by-One Indexing
 
 ```python
-class VisibleBuildingsQueriesDifferentOps:
-    def __init__(self, heights):
-        self.heights = heights[:]
-        self.n = len(heights)
-        self.visible_counts = self._build_visible_counts()
-        self.visible_lists = self._build_visible_lists()
-    
-    def _build_visible_counts(self):
-        """Build visible counts array"""
-        visible_counts = [0] * self.n
-        
-        for i in range(self.n):
-            count = 0
-            max_height = 0
-            
-            for j in range(i + 1, self.n):
-                if self.heights[j] > max_height:
-                    count += 1
-                    max_height = self.heights[j]
-            
-            visible_counts[i] = count
-        
-        return visible_counts
-    
-    def _build_visible_lists(self):
-        """Build visible lists array"""
-        visible_lists = [[] for _ in range(self.n)]
-        
-        for i in range(self.n):
-            max_height = 0
-            
-            for j in range(i + 1, self.n):
-                if self.heights[j] > max_height:
-                    visible_lists[i].append(j)
-                    max_height = self.heights[j]
-        
-        return visible_lists
-    
-    def count_visible(self, left, right):
-        """Count visible buildings in range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        
-        count = 0
-        max_height = 0
-        
-        for i in range(left, right + 1):
-            if self.heights[i] > max_height:
-                count += 1
-                max_height = self.heights[i]
-        
-        return count
-    
-    def list_visible(self, left, right):
-        """List visible buildings in range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return []
-        
-        visible = []
-        max_height = 0
-        
-        for i in range(left, right + 1):
-            if self.heights[i] > max_height:
-                visible.append(i)
-                max_height = self.heights[i]
-        
-        return visible
-    
-    def get_visible_heights(self, left, right):
-        """Get heights of visible buildings in range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return []
-        
-        visible_heights = []
-        max_height = 0
-        
-        for i in range(left, right + 1):
-            if self.heights[i] > max_height:
-                visible_heights.append(self.heights[i])
-                max_height = self.heights[i]
-        
-        return visible_heights
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'count':
-                result = self.count_visible(query['left'], query['right'])
-                results.append(result)
-            elif query['type'] == 'list':
-                result = self.list_visible(query['left'], query['right'])
-                results.append(result)
-            elif query['type'] == 'heights':
-                result = self.get_visible_heights(query['left'], query['right'])
-                results.append(result)
-        return results
+# WRONG: count = visible[pos]     (out of bounds when pos == n)
+# CORRECT: count = visible[pos - 1]  (convert 1-indexed to 0-indexed)
 ```
 
-### Variation 3: Visible Buildings Queries with Constraints
-**Problem**: Handle visible buildings queries with additional constraints (e.g., minimum height, maximum range).
-
-**Link**: [CSES Problem Set - Visible Buildings Queries with Constraints](https://cses.fi/problemset/task/visible_buildings_queries_constraints)
+### Mistake 2: Including the Observer's Position
 
 ```python
-class VisibleBuildingsQueriesWithConstraints:
-    def __init__(self, heights, min_height, max_range):
-        self.heights = heights[:]
-        self.n = len(heights)
-        self.min_height = min_height
-        self.max_range = max_range
-        self.visible_counts = self._build_visible_counts()
-    
-    def _build_visible_counts(self):
-        """Build visible counts array"""
-        visible_counts = [0] * self.n
-        
-        for i in range(self.n):
-            count = 0
-            max_height = 0
-            
-            for j in range(i + 1, self.n):
-                if self.heights[j] > max_height:
-                    count += 1
-                    max_height = self.heights[j]
-            
-            visible_counts[i] = count
-        
-        return visible_counts
-    
-    def constrained_query(self, left, right):
-        """Query visible buildings in range [left, right] with constraints"""
-        # Check maximum range constraint
-        if right - left + 1 > self.max_range:
-            return None  # Range too large
-        
-        # Get visible count
-        count = self.count_visible(left, right)
-        
-        # Check minimum height constraint
-        if count < self.min_height:
-            return None  # Below minimum height
-        
-        return count
-    
-    def count_visible(self, left, right):
-        """Count visible buildings in range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        
-        count = 0
-        max_height = 0
-        
-        for i in range(left, right + 1):
-            if self.heights[i] > max_height:
-                count += 1
-                max_height = self.heights[i]
-        
-        return count
-    
-    def find_valid_ranges(self):
-        """Find all valid ranges that satisfy constraints"""
-        valid_ranges = []
-        for i in range(self.n):
-            for j in range(i, min(i + self.max_range, self.n)):
-                result = self.constrained_query(i, j)
-                if result is not None:
-                    valid_ranges.append((i, j, result))
-        return valid_ranges
-    
-    def get_maximum_valid_count(self):
-        """Get maximum valid count"""
-        max_count = 0
-        for i in range(self.n):
-            for j in range(i, min(i + self.max_range, self.n)):
-                result = self.constrained_query(i, j)
-                if result is not None:
-                    max_count = max(max_count, result)
-        return max_count
-    
-    def count_valid_ranges(self):
-        """Count number of valid ranges"""
-        count = 0
-        for i in range(self.n):
-            for j in range(i, min(i + self.max_range, self.n)):
-                result = self.constrained_query(i, j)
-                if result is not None:
-                    count += 1
-        return count
-
-# Example usage
-heights = [1, 2, 3, 4, 5]
-min_height = 2
-max_range = 3
-
-vbq = VisibleBuildingsQueriesWithConstraints(heights, min_height, max_range)
-result = vbq.constrained_query(0, 2)
-print(f"Constrained query result: {result}")  # Output: 2
-
-valid_ranges = vbq.find_valid_ranges()
-print(f"Valid ranges: {valid_ranges}")
-
-max_count = vbq.get_maximum_valid_count()
-print(f"Maximum valid count: {max_count}")
+# WRONG: for j in range(i, n)     (counts observer)
+# CORRECT: for j in range(i + 1, n)  (start after observer)
 ```
 
-### Related Problems
+### Mistake 3: Not Resetting Max Height
 
-#### **CSES Problems**
-- [Visible Buildings Queries](https://cses.fi/problemset/task/2428) - Basic visible buildings queries problem
-- [Range Sum Queries](https://cses.fi/problemset/task/1646) - Range sum queries
-- [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) - Dynamic range sum queries
+```python
+# WRONG: max_height declared outside query loop (stale value)
+# CORRECT: reset max_height = 0 inside each query iteration
+```
 
-#### **LeetCode Problems**
-- [Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/) - Water trapping between buildings
-- [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/) - Largest rectangle in histogram
-- [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) - Container with most water
+---
 
-#### **Problem Categories**
-- **Range Queries**: Query processing, range operations, efficient algorithms
-- **Data Structures**: Preprocessing techniques, range operations, efficient preprocessing
-- **Algorithm Design**: Range query techniques, constraint handling, optimization
-- **Geometric Algorithms**: Building visibility, geometric queries, efficient algorithms
+## Edge Cases
 
-## 🚀 Key Takeaways
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single building | `n=1, q=1, pos=1` | 0 | No buildings to the right |
+| All same height | `[5,5,5,5], pos=1` | 1 | Only first building after is visible |
+| Strictly increasing | `[1,2,3,4], pos=1` | 3 | All buildings visible |
+| Strictly decreasing | `[4,3,2,1], pos=1` | 1 | Only immediate next visible |
+| Query last position | `pos=n` | 0 | No buildings to the right |
+| Very tall building blocks all | `[1,100,2,3,4], pos=1` | 1 | Building at pos 2 blocks all others |
 
-- **Preprocessing Technique**: The standard approach for visible buildings queries
-- **Efficient Preprocessing**: Calculate counts once for all queries
-- **Fast Queries**: Answer each query in O(1) time using precomputed counts
-- **Space Trade-off**: Use O(n) extra space for O(1) query time
-- **Pattern Recognition**: This technique applies to many geometric query problems
+---
+
+## When to Use This Pattern
+
+| Use When | Avoid When |
+|----------|------------|
+| Multiple queries on same data | Data updated between queries |
+| Need O(1) query time | Only a few queries |
+| O(n^2) preprocessing acceptable | Memory extremely constrained |
+
+**Pattern Recognition:**
+- Multiple queries on static data -> **Preprocessing**
+- Visibility / next greater element -> **Monotonic stack**
+- Suffix/prefix information -> **Right-to-left or left-to-right scan**
+
+---
+
+## Related Problems
+
+| Difficulty | Problem | Key Concept |
+|------------|---------|-------------|
+| Easier | [Static Range Sum Queries (CSES)](https://cses.fi/problemset/task/1646) | Prefix sum preprocessing |
+| Easier | [Next Greater Element I (LeetCode)](https://leetcode.com/problems/next-greater-element-i/) | Monotonic stack basics |
+| Similar | [Buildings (CSES)](https://cses.fi/problemset/task/1147) | Visibility without queries |
+| Similar | [Daily Temperatures (LeetCode)](https://leetcode.com/problems/daily-temperatures/) | Next greater with distance |
+| Harder | [Dynamic Range Sum Queries (CSES)](https://cses.fi/problemset/task/1648) | Segment tree for updates |
+| Harder | [Largest Rectangle in Histogram (LeetCode)](https://leetcode.com/problems/largest-rectangle-in-histogram/) | Complex monotonic stack |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** Precompute answers for O(1) query time
+2. **Optimization:** Trade O(n^2) preprocessing for O(1) queries
+3. **Space Trade-off:** O(n) space for precomputed answers
+4. **Pattern:** Classic "offline preprocessing" for static range queries

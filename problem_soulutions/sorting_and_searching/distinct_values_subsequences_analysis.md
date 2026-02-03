@@ -1,854 +1,510 @@
 ---
 layout: simple
-title: "Distinct Values Subsequences"
+title: "Subarray Distinct Values - Sorting and Searching Problem"
 permalink: /problem_soulutions/sorting_and_searching/distinct_values_subsequences_analysis
+difficulty: Medium
+tags: [sliding-window, hash-map, two-pointers, counting]
 ---
 
-# Distinct Values Subsequences
+# Subarray Distinct Values
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the core concepts of this sorting and searching problem
-- Apply appropriate algorithms and data structures
-- Implement efficient solutions with optimal complexity
-- Handle edge cases and constraints properly
-- Optimize solutions for large inputs
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Sorting and Searching |
+| **Time Limit** | 1.00 s |
+| **CSES Link** | [Subarray Distinct Values](https://cses.fi/problemset/task/2428) |
+| **Key Technique** | Sliding Window / Two Pointers |
 
-## 📋 Problem Description
+### Learning Goals
 
-[Problem description will be added here]
-
-**Input**: 
-[Input format will be added here]
-
-**Output**: 
-[Output format will be added here]
-
-**Constraints**:
-[Constraints will be added here]
-
-**Example**:
-```
-[Example will be added here]
-```
-
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: [Description]
-- **Complete Coverage**: [Description]
-- **Simple Implementation**: [Description]
-
-**Key Insight**: [Main insight]
-
-**Algorithm**:
-- [Step 1]
-- [Step 2]
-- [Step 3]
-
-**Implementation**:
-```python
-def brute_force_distinct_values_subsequences(arr):
-    """
-    [Description]
-    
-    Args:
-        arr: [Description]
-    
-    Returns:
-        [Description]
-    """
-    # Implementation will be added
-    pass
-```
-
-**Time Complexity**: O([complexity])
-**Space Complexity**: O([complexity])
-
-**Why it's inefficient**: [Reason]
+After solving this problem, you will be able to:
+- [ ] Apply the sliding window technique to count valid subarrays
+- [ ] Use hash maps efficiently to track element frequencies in a window
+- [ ] Derive counting formulas based on window boundaries
+- [ ] Recognize the "count subarrays with at most K distinct values" pattern
 
 ---
 
-### Approach 2: Optimized
+## Problem Statement
 
-**Key Insights from Optimized Approach**:
-- **Optimization Technique**: [Description]
-- **Efficiency Improvement**: [Description]
-- **Better Complexity**: [Description]
+**Problem:** Given an array of n integers and a value k, count the number of subarrays that have at most k distinct values.
 
-**Key Insight**: [Main insight]
+**Input:**
+- Line 1: Two integers n and k (array size and maximum distinct values)
+- Line 2: n integers x_1, x_2, ..., x_n (array contents)
 
-**Algorithm**:
-- [Step 1]
-- [Step 2]
-- [Step 3]
+**Output:**
+- Print the number of subarrays with at most k distinct values
 
-**Implementation**:
-```python
-def optimized_distinct_values_subsequences(arr):
-    """
-    [Description]
-    
-    Args:
-        arr: [Description]
-    
-    Returns:
-        [Description]
-    """
-    # Implementation will be added
-    pass
+**Constraints:**
+- 1 <= n <= 2 * 10^5
+- 1 <= k <= n
+- 1 <= x_i <= 10^9
+
+### Example
+
+```
+Input:
+5 2
+1 2 3 1 1
+
+Output:
+10
 ```
 
-**Time Complexity**: O([complexity])
-**Space Complexity**: O([complexity])
+**Explanation:** The valid subarrays with at most 2 distinct values are:
+- Length 1: [1], [2], [3], [1], [1] (5 subarrays)
+- Length 2: [1,2], [2,3], [1,1] (3 subarrays - note [3,1] has 2 distinct)
+- Length 3: [1,1] within [3,1,1] gives us [1,1,1]? No, [3,1,1] has 2 distinct values
+- Actually: [3,1,1] has {3,1} = 2 distinct values, so it counts!
+- Length 4: [1,1] pattern - no length 4 with <= 2 distinct
 
-**Why it's better**: [Reason]
+Wait, let me recount properly:
+- Single elements: [1], [2], [3], [1], [1] = 5 subarrays
+- Two elements: [1,2], [2,3], [3,1], [1,1] = 4 subarrays (all have <= 2 distinct)
+- Three elements: [3,1,1] has {3,1} = 2 distinct, so counts = 1 subarray
+
+Total = 5 + 4 + 1 = 10 subarrays.
 
 ---
 
-### Approach 3: Optimal
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimal Approach**:
-- **Optimal Algorithm**: [Description]
-- **Best Complexity**: [Description]
-- **Efficient Implementation**: [Description]
+### Pattern Recognition
 
-**Key Insight**: [Main insight]
+> **Key Question:** How do we efficiently count all subarrays where the number of distinct elements is at most k?
 
-**Algorithm**:
-- [Step 1]
-- [Step 2]
-- [Step 3]
+The crucial insight is that if we fix the right endpoint of a subarray, there exists a leftmost position such that all subarrays from that position to the right have at most k distinct values. This monotonic property makes the sliding window technique applicable.
 
-**Implementation**:
-```python
-def optimal_distinct_values_subsequences(arr):
-    """
-    [Description]
-    
-    Args:
-        arr: [Description]
-    
-    Returns:
-        [Description]
-    """
-    # Implementation will be added
-    pass
-```
+### Breaking Down the Problem
 
-**Time Complexity**: O([complexity])
-**Space Complexity**: O([complexity])
+1. **What are we looking for?** Count of subarrays with at most k distinct elements
+2. **What information do we have?** An array of integers and limit k
+3. **What's the relationship between input and output?** For each ending position, count how many valid starting positions exist
 
-**Why it's optimal**: [Reason]
+### Analogies
 
-## 🔧 Implementation Details
+Think of this problem like a DJ mixing tracks. You can only play at most k different songs at any time. As you move through your playlist (extend the window right), you add new songs. If you exceed k unique songs, you must drop the oldest ones (shrink from left) until you're back to k or fewer. At each moment, count how many valid "mixes" (subarrays) end at that point.
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O([complexity]) | O([complexity]) | [Insight] |
-| Optimized | O([complexity]) | O([complexity]) | [Insight] |
-| Optimal | O([complexity]) | O([complexity]) | [Insight] |
+---
 
-### Time Complexity
-- **Time**: O([complexity]) - [Explanation]
-- **Space**: O([complexity]) - [Explanation]
+## Solution 1: Brute Force
 
-### Why This Solution Works
-- **Combinatorics Technique**: Use combinatorial formulas to count subsequences with exactly k distinct values efficiently
-- **Mathematical Insight**: Combinatorics formula provides optimal counting without enumeration
-- **Efficient Implementation**: No need for complex data structures or enumeration
-- **Optimal Approach**: Combinatorics approach provides the most efficient solution for subsequence counting problems
+### Idea
 
-## 🚀 Problem Variations
+Check every possible subarray and count distinct elements using a set.
 
-### Extended Problems with Detailed Code Examples
+### Algorithm
 
-### Variation 1: Distinct Values Subsequences with Range Queries
-**Problem**: Answer multiple queries about subsequences with exactly k distinct values in different ranges.
+1. For each starting position i (0 to n-1)
+2. For each ending position j (i to n-1)
+3. Count distinct elements in subarray [i, j]
+4. If distinct count <= k, increment result
 
-**Link**: [CSES Problem Set - Distinct Values Subsequences Range Queries](https://cses.fi/problemset/task/distinct_values_subsequences_range)
+### Code
 
 ```python
-def distinct_values_subsequences_range_queries(arr, queries):
+def count_subarrays_brute(arr, k):
     """
-    Answer range queries about subsequences with exactly k distinct values
-    """
-    results = []
-    
-    for query in queries:
-        left, right, k = query['left'], query['right'], query['k']
-        
-        # Extract subarray
-        subarray = arr[left:right+1]
-        
-        # Count subsequences with exactly k distinct values
-        count = count_distinct_values_subsequences(subarray, k)
-        results.append(count)
-    
-    return results
+    Brute force solution - check all subarrays.
 
-def count_distinct_values_subsequences(arr, k):
+    Time: O(n^2)
+    Space: O(n)
     """
-    Count subsequences with exactly k distinct values using combinatorics
-    """
-    from collections import Counter
-    
-    # Count frequency of each value
-    freq = Counter(arr)
-    
-    # Get unique values and their frequencies
-    unique_values = list(freq.keys())
-    
-    if len(unique_values) < k:
-        return 0
-    
-    # Use combinatorics to count subsequences
+    n = len(arr)
     count = 0
-    
-    # Generate all combinations of k distinct values
-    from itertools import combinations
-    
-    for combo in combinations(unique_values, k):
-        # For each combination, count subsequences
-        combo_count = 1
-        for value in combo:
-            combo_count *= (2**freq[value] - 1)
-        count += combo_count
-    
+
+    for i in range(n):
+        distinct = set()
+        for j in range(i, n):
+            distinct.add(arr[j])
+            if len(distinct) <= k:
+                count += 1
+            else:
+                break  # Further extension only adds more distinct
+
     return count
 ```
 
-### Variation 2: Distinct Values Subsequences with Updates
-**Problem**: Handle dynamic updates to the array and maintain subsequence counts with exactly k distinct values.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Link**: [CSES Problem Set - Distinct Values Subsequences with Updates](https://cses.fi/problemset/task/distinct_values_subsequences_updates)
+long long countSubarraysBrute(vector<int>& arr, int k) {
+    int n = arr.size();
+    long long count = 0;
 
-```python
-class DistinctValuesSubsequencesWithUpdates:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.freq = {}
-        self._build_frequency_map()
-    
-    def _build_frequency_map(self):
-        """Build frequency map of array elements"""
-        self.freq = {}
-        for num in self.arr:
-            self.freq[num] = self.freq.get(num, 0) + 1
-    
-    def update(self, index, new_value):
-        """Update element at index to new_value"""
-        old_value = self.arr[index]
-        self.arr[index] = new_value
-        
-        # Update frequency map
-        self.freq[old_value] -= 1
-        if self.freq[old_value] == 0:
-            del self.freq[old_value]
-        
-        self.freq[new_value] = self.freq.get(new_value, 0) + 1
-    
-    def count_subsequences_with_k_distinct(self, k):
-        """Count subsequences with exactly k distinct values"""
-        unique_values = list(self.freq.keys())
-        
-        if len(unique_values) < k:
-            return 0
-        
-        # Use combinatorics to count subsequences
-        count = 0
-        
-        # Generate all combinations of k distinct values
-        from itertools import combinations
-        
-        for combo in combinations(unique_values, k):
-            # For each combination, count subsequences
-            combo_count = 1
-            for value in combo:
-                combo_count *= (2**self.freq[value] - 1)
-            count += combo_count
-        
-        return count
-    
-    def count_subsequences_range(self, left, right, k):
-        """Count subsequences with exactly k distinct values in range [left, right]"""
-        # Extract subarray
-        subarray = self.arr[left:right+1]
-        
-        # Count frequency of each value in subarray
-        from collections import Counter
-        freq = Counter(subarray)
-        
-        unique_values = list(freq.keys())
-        
-        if len(unique_values) < k:
-            return 0
-        
-        # Use combinatorics to count subsequences
-        count = 0
-        
-        # Generate all combinations of k distinct values
-        from itertools import combinations
-        
-        for combo in combinations(unique_values, k):
-            # For each combination, count subsequences
-            combo_count = 1
-            for value in combo:
-                combo_count *= (2**freq[value] - 1)
-            count += combo_count
-        
-        return count
-```
-
-### Variation 3: Distinct Values Subsequences with Constraints
-**Problem**: Find subsequences with exactly k distinct values that satisfy additional constraints (e.g., minimum length, maximum sum).
-
-**Link**: [CSES Problem Set - Distinct Values Subsequences with Constraints](https://cses.fi/problemset/task/distinct_values_subsequences_constraints)
-
-```python
-def distinct_values_subsequences_constraints(arr, k, min_length, max_sum):
-    """
-    Find subsequences with exactly k distinct values that satisfy constraints
-    """
-    from collections import Counter
-    from itertools import combinations
-    
-    # Count frequency of each value
-    freq = Counter(arr)
-    
-    # Get unique values and their frequencies
-    unique_values = list(freq.keys())
-    
-    if len(unique_values) < k:
-        return 0
-    
-    count = 0
-    
-    # Generate all combinations of k distinct values
-    for combo in combinations(unique_values, k):
-        # For each combination, count subsequences that satisfy constraints
-        combo_count = count_constrained_subsequences(combo, freq, min_length, max_sum)
-        count += combo_count
-    
-    return count
-
-def count_constrained_subsequences(combo, freq, min_length, max_sum):
-    """
-    Count subsequences for a specific combination that satisfy constraints
-    """
-    # Generate all possible subsequences for this combination
-    from itertools import product
-    
-    # For each value in combo, generate all possible subsequences
-    value_subsequences = []
-    for value in combo:
-        # Generate all possible subsequences for this value
-        # Each value can appear 1 to freq[value] times
-        value_subseqs = []
-        for count in range(1, freq[value] + 1):
-            value_subseqs.append([value] * count)
-        value_subsequences.append(value_subseqs)
-    
-    # Generate all combinations of subsequences
-    count = 0
-    for subseq_combo in product(*value_subsequences):
-        # Flatten the subsequence combination
-        subsequence = []
-        for subseq in subseq_combo:
-            subsequence.extend(subseq)
-        
-        # Check constraints
-        if len(subsequence) >= min_length and sum(subsequence) <= max_sum:
-            count += 1
-    
-    return count
-
-def distinct_values_subsequences_constraints_optimized(arr, k, min_length, max_sum):
-    """
-    Optimized version with early termination
-    """
-    from collections import Counter
-    from itertools import combinations
-    
-    # Count frequency of each value
-    freq = Counter(arr)
-    
-    # Get unique values and their frequencies
-    unique_values = list(freq.keys())
-    
-    if len(unique_values) < k:
-        return 0
-    
-    count = 0
-    
-    # Generate all combinations of k distinct values
-    for combo in combinations(unique_values, k):
-        # For each combination, count subsequences that satisfy constraints
-        combo_count = count_constrained_subsequences_optimized(combo, freq, min_length, max_sum)
-        count += combo_count
-    
-    return count
-
-def count_constrained_subsequences_optimized(combo, freq, min_length, max_sum):
-    """
-    Optimized version with early termination
-    """
-    # Calculate minimum possible sum for this combination
-    min_sum = sum(combo)
-    
-    if min_sum > max_sum:
-        return 0
-    
-    # Calculate maximum possible length for this combination
-    max_length = sum(freq[value] for value in combo)
-    
-    if max_length < min_length:
-        return 0
-    
-    # Use combinatorics to count subsequences
-    count = 0
-    
-    # Generate all possible subsequences for this combination
-    from itertools import product
-    
-    # For each value in combo, generate all possible subsequences
-    value_subsequences = []
-    for value in combo:
-        # Generate all possible subsequences for this value
-        # Each value can appear 1 to freq[value] times
-        value_subseqs = []
-        for count in range(1, freq[value] + 1):
-            value_subseqs.append([value] * count)
-        value_subsequences.append(value_subseqs)
-    
-    # Generate all combinations of subsequences
-    for subseq_combo in product(*value_subsequences):
-        # Flatten the subsequence combination
-        subsequence = []
-        for subseq in subseq_combo:
-            subsequence.extend(subseq)
-        
-        # Check constraints
-        if len(subsequence) >= min_length and sum(subsequence) <= max_sum:
-            count += 1
-    
-    return count
-```
-
-## Problem Variations
-
-### **Variation 1: Distinct Values Subsequences with Dynamic Updates**
-**Problem**: Handle dynamic array updates while maintaining distinct subsequence counts efficiently.
-
-**Approach**: Use balanced binary search trees or segment trees for efficient updates and queries.
-
-```python
-from collections import defaultdict
-import bisect
-
-class DynamicDistinctSubsequences:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.distinct_count = 0
-        self._calculate_distinct_count()
-    
-    def _calculate_distinct_count(self):
-        """Calculate total number of distinct subsequences."""
-        self.distinct_count = 0
-        seen = set()
-        
-        # Generate all possible subsequences
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            # Create a tuple of distinct values
-            distinct_tuple = tuple(sorted(set(subsequence)))
-            if distinct_tuple not in seen:
-                seen.add(distinct_tuple)
-                self.distinct_count += 1
-    
-    def update_value(self, index, new_value):
-        """Update array value and recalculate distinct count."""
-        if 0 <= index < self.n:
-            self.arr[index] = new_value
-            self._calculate_distinct_count()
-    
-    def add_element(self, value):
-        """Add new element to the array."""
-        self.arr.append(value)
-        self.n += 1
-        self._calculate_distinct_count()
-    
-    def remove_element(self, index):
-        """Remove element at index from the array."""
-        if 0 <= index < self.n:
-            del self.arr[index]
-            self.n -= 1
-            self._calculate_distinct_count()
-    
-    def get_distinct_count(self):
-        """Get current distinct subsequence count."""
-        return self.distinct_count
-    
-    def get_distinct_subsequences(self):
-        """Get all distinct subsequences."""
-        seen = set()
-        distinct_subsequences = []
-        
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            distinct_tuple = tuple(sorted(set(subsequence)))
-            if distinct_tuple not in seen:
-                seen.add(distinct_tuple)
-                distinct_subsequences.append(list(distinct_tuple))
-        
-        return distinct_subsequences
-
-# Example usage
-arr = [1, 2, 1, 3]
-dynamic_counter = DynamicDistinctSubsequences(arr)
-print(f"Initial distinct count: {dynamic_counter.get_distinct_count()}")
-
-# Update a value
-dynamic_counter.update_value(1, 4)
-print(f"After update: {dynamic_counter.get_distinct_count()}")
-
-# Add element
-dynamic_counter.add_element(2)
-print(f"After adding 2: {dynamic_counter.get_distinct_count()}")
-```
-
-### **Variation 2: Distinct Values Subsequences with Different Operations**
-**Problem**: Handle different types of operations on distinct subsequences (size constraints, value filtering).
-
-**Approach**: Use advanced data structures for efficient size-based filtering and value constraints.
-
-```python
-class AdvancedDistinctSubsequences:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-    
-    def get_distinct_subsequences_with_size(self, min_size, max_size):
-        """Get distinct subsequences with size constraints."""
-        seen = set()
-        count = 0
-        
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            distinct_set = set(subsequence)
-            if min_size <= len(distinct_set) <= max_size:
-                distinct_tuple = tuple(sorted(distinct_set))
-                if distinct_tuple not in seen:
-                    seen.add(distinct_tuple)
-                    count += 1
-        
-        return count
-    
-    def get_distinct_subsequences_with_values(self, required_values):
-        """Get distinct subsequences containing specific values."""
-        seen = set()
-        count = 0
-        
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            distinct_set = set(subsequence)
-            if all(val in distinct_set for val in required_values):
-                distinct_tuple = tuple(sorted(distinct_set))
-                if distinct_tuple not in seen:
-                    seen.add(distinct_tuple)
-                    count += 1
-        
-        return count
-    
-    def get_distinct_subsequences_with_sum(self, target_sum):
-        """Get distinct subsequences with specific sum."""
-        seen = set()
-        count = 0
-        
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            distinct_set = set(subsequence)
-            if sum(distinct_set) == target_sum:
-                distinct_tuple = tuple(sorted(distinct_set))
-                if distinct_tuple not in seen:
-                    seen.add(distinct_tuple)
-                    count += 1
-        
-        return count
-    
-    def get_distinct_subsequences_with_pattern(self, pattern_func):
-        """Get distinct subsequences matching a pattern."""
-        seen = set()
-        count = 0
-        
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            distinct_set = set(subsequence)
-            if pattern_func(distinct_set):
-                distinct_tuple = tuple(sorted(distinct_set))
-                if distinct_tuple not in seen:
-                    seen.add(distinct_tuple)
-                    count += 1
-        
-        return count
-    
-    def get_distinct_subsequences_with_length(self, target_length):
-        """Get distinct subsequences with specific length."""
-        seen = set()
-        count = 0
-        
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            if len(subsequence) == target_length:
-                distinct_tuple = tuple(sorted(set(subsequence)))
-                if distinct_tuple not in seen:
-                    seen.add(distinct_tuple)
-                    count += 1
-        
-        return count
-
-# Example usage
-arr = [1, 2, 1, 3, 2, 4]
-advanced_counter = AdvancedDistinctSubsequences(arr)
-
-print(f"Distinct with size [2, 3]: {advanced_counter.get_distinct_subsequences_with_size(2, 3)}")
-print(f"Distinct containing [1, 2]: {advanced_counter.get_distinct_subsequences_with_values([1, 2])}")
-print(f"Distinct with sum 5: {advanced_counter.get_distinct_subsequences_with_sum(5)}")
-print(f"Distinct with length 3: {advanced_counter.get_distinct_subsequences_with_length(3)}")
-
-# Test pattern matching
-even_size_pattern = lambda s: len(s) % 2 == 0
-print(f"Distinct with even size: {advanced_counter.get_distinct_subsequences_with_pattern(even_size_pattern)}")
-```
-
-### **Variation 3: Distinct Values Subsequences with Constraints**
-**Problem**: Handle distinct subsequences with additional constraints (value ranges, frequency limits, mathematical constraints).
-
-**Approach**: Use constraint satisfaction with advanced filtering and optimization.
-
-```python
-class ConstrainedDistinctSubsequences:
-    def __init__(self, arr, constraints=None):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.constraints = constraints or {}
-    
-    def _is_valid_subsequence(self, subsequence, distinct_set):
-        """Check if subsequence satisfies constraints."""
-        if 'min_size' in self.constraints and len(distinct_set) < self.constraints['min_size']:
-            return False
-        if 'max_size' in self.constraints and len(distinct_set) > self.constraints['max_size']:
-            return False
-        if 'min_length' in self.constraints and len(subsequence) < self.constraints['min_length']:
-            return False
-        if 'max_length' in self.constraints and len(subsequence) > self.constraints['max_length']:
-            return False
-        if 'min_value' in self.constraints and min(distinct_set) < self.constraints['min_value']:
-            return False
-        if 'max_value' in self.constraints and max(distinct_set) > self.constraints['max_value']:
-            return False
-        if 'allowed_values' in self.constraints:
-            if not all(val in self.constraints['allowed_values'] for val in distinct_set):
-                return False
-        if 'forbidden_values' in self.constraints:
-            if any(val in self.constraints['forbidden_values'] for val in distinct_set):
-                return False
-        return True
-    
-    def get_distinct_with_constraints(self):
-        """Get distinct subsequences satisfying constraints."""
-        seen = set()
-        count = 0
-        
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            distinct_set = set(subsequence)
-            if self._is_valid_subsequence(subsequence, distinct_set):
-                distinct_tuple = tuple(sorted(distinct_set))
-                if distinct_tuple not in seen:
-                    seen.add(distinct_tuple)
-                    count += 1
-        
-        return count
-    
-    def get_distinct_with_frequency_constraints(self, max_frequency):
-        """Get distinct subsequences with frequency constraints."""
-        seen = set()
-        count = 0
-        
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            # Check frequency constraints
-            frequency_map = defaultdict(int)
-            for val in subsequence:
-                frequency_map[val] += 1
-            
-            if all(freq <= max_frequency for freq in frequency_map.values()):
-                distinct_set = set(subsequence)
-                distinct_tuple = tuple(sorted(distinct_set))
-                if distinct_tuple not in seen:
-                    seen.add(distinct_tuple)
-                    count += 1
-        
-        return count
-    
-    def get_distinct_with_sum_constraints(self, min_sum, max_sum):
-        """Get distinct subsequences with sum constraints."""
-        seen = set()
-        count = 0
-        
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            distinct_set = set(subsequence)
-            subsequence_sum = sum(distinct_set)
-            if min_sum <= subsequence_sum <= max_sum:
-                distinct_tuple = tuple(sorted(distinct_set))
-                if distinct_tuple not in seen:
-                    seen.add(distinct_tuple)
-                    count += 1
-        
-        return count
-    
-    def get_distinct_with_parity_constraints(self, parity_type):
-        """Get distinct subsequences with parity constraints."""
-        seen = set()
-        count = 0
-        
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            distinct_set = set(subsequence)
-            
-            # Check parity constraints
-            if parity_type == 'even':
-                if all(val % 2 == 0 for val in distinct_set):
-                    distinct_tuple = tuple(sorted(distinct_set))
-                    if distinct_tuple not in seen:
-                        seen.add(distinct_tuple)
-                        count += 1
-            elif parity_type == 'odd':
-                if all(val % 2 == 1 for val in distinct_set):
-                    distinct_tuple = tuple(sorted(distinct_set))
-                    if distinct_tuple not in seen:
-                        seen.add(distinct_tuple)
-                        count += 1
-            elif parity_type == 'mixed':
-                if any(val % 2 == 0 for val in distinct_set) and any(val % 2 == 1 for val in distinct_set):
-                    distinct_tuple = tuple(sorted(distinct_set))
-                    if distinct_tuple not in seen:
-                        seen.add(distinct_tuple)
-                        count += 1
-        
-        return count
-    
-    def get_distinct_with_mathematical_constraints(self, constraint_func):
-        """Get distinct subsequences with custom mathematical constraints."""
-        seen = set()
-        count = 0
-        
-        for mask in range(1, 1 << self.n):
-            subsequence = []
-            for i in range(self.n):
-                if mask & (1 << i):
-                    subsequence.append(self.arr[i])
-            
-            distinct_set = set(subsequence)
-            if constraint_func(distinct_set):
-                distinct_tuple = tuple(sorted(distinct_set))
-                if distinct_tuple not in seen:
-                    seen.add(distinct_tuple)
-                    count += 1
-        
-        return count
-
-# Example usage
-arr = [1, 2, 3, 2, 1, 4, 5, 6]
-constraints = {
-    'min_size': 2,
-    'max_size': 4,
-    'min_length': 2,
-    'max_length': 5,
-    'min_value': 1,
-    'max_value': 5,
-    'forbidden_values': {6}
+    for (int i = 0; i < n; i++) {
+        unordered_set<int> distinct;
+        for (int j = i; j < n; j++) {
+            distinct.insert(arr[j]);
+            if ((int)distinct.size() <= k) {
+                count++;
+            } else {
+                break;
+            }
+        }
+    }
+    return count;
 }
-
-constrained_counter = ConstrainedDistinctSubsequences(arr, constraints)
-print(f"Constrained distinct count: {constrained_counter.get_distinct_with_constraints()}")
-print(f"Distinct with frequency <= 1: {constrained_counter.get_distinct_with_frequency_constraints(1)}")
-print(f"Distinct with sum [3, 8]: {constrained_counter.get_distinct_with_sum_constraints(3, 8)}")
-print(f"Distinct with even parity: {constrained_counter.get_distinct_with_parity_constraints('even')}")
-
-# Test custom mathematical constraint
-def custom_constraint(distinct_set):
-    return len(distinct_set) == 2 and sum(distinct_set) % 3 == 0
-
-print(f"Distinct with custom constraint: {constrained_counter.get_distinct_with_mathematical_constraints(custom_constraint)}")
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Distinct Values Subsequences](https://cses.fi/problemset/task/2110) - Basic distinct values subsequences problem
-- [Distinct Values Subarrays](https://cses.fi/problemset/task/2108) - Basic distinct values subarrays problem
-- [Distinct Values Subarrays II](https://cses.fi/problemset/task/2109) - Advanced distinct values subarrays problem
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Two nested loops, with early break optimization |
+| Space | O(n) | Set can hold up to n distinct elements |
 
-#### **LeetCode Problems**
-- [Subsequences with K Different Integers](https://leetcode.com/problems/subsequences-with-k-different-integers/) - Subsequences with exactly k distinct values
-- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - Sliding window with k distinct characters
-- [Subarrays with K Different Integers](https://leetcode.com/problems/subarrays-with-k-different-integers/) - Subarrays with exactly k distinct values
-- [Fruit Into Baskets](https://leetcode.com/problems/fruit-into-baskets/) - Sliding window with at most 2 distinct values
+### Why This Works (But Is Slow)
 
-#### **Problem Categories**
-- **Combinatorics**: Mathematical counting, combination generation, subsequence analysis
-- **Hash Maps**: Frequency counting, distinct value tracking, efficient lookups
-- **Array Processing**: Subsequence analysis, distinct value counting, range queries
-- **Algorithm Design**: Combinatorics algorithms, mathematical counting, subsequence optimization
+The brute force correctly checks all O(n^2) subarrays. The early break when distinct > k helps but doesn't change worst case. For large n (up to 2*10^5), this approach times out.
+
+---
+
+## Solution 2: Optimal Solution (Sliding Window)
+
+### Key Insight
+
+> **The Trick:** For each right endpoint, find the smallest left endpoint such that the window has at most k distinct values. All subarrays ending at right and starting from left to right are valid.
+
+### Data Structure
+
+| Component | Purpose |
+|-----------|---------|
+| `freq` map | Track frequency of each element in current window |
+| `left` pointer | Left boundary of sliding window |
+| `distinct_count` | Number of distinct elements (size of freq with non-zero values) |
+
+**In plain English:** We maintain a window [left, right] where the number of distinct elements is always at most k. When we extend right and exceed k distinct elements, we shrink from left.
+
+### The Counting Formula
+
+When we have a valid window [left, right] with at most k distinct elements:
+- Number of valid subarrays ending at `right` = `right - left + 1`
+
+This is because every subarray [left, right], [left+1, right], ..., [right, right] is valid.
+
+### Algorithm
+
+1. Initialize left pointer at 0, freq map empty
+2. For each right from 0 to n-1:
+   - Add arr[right] to freq map
+   - While distinct count > k:
+     - Remove arr[left] from window (decrement freq, delete if 0)
+     - Increment left
+   - Add (right - left + 1) to answer
+
+### Dry Run Example
+
+Let's trace through with input `n=5, k=2, arr=[1, 2, 3, 1, 1]`:
+
+```
+Initial: left=0, freq={}, count=0
+
+Step 1: right=0, arr[right]=1
+  freq = {1: 1}, distinct=1
+  distinct(1) <= k(2), valid
+  count += (0 - 0 + 1) = 1
+  count = 1
+
+Step 2: right=1, arr[right]=2
+  freq = {1: 1, 2: 1}, distinct=2
+  distinct(2) <= k(2), valid
+  count += (1 - 0 + 1) = 2
+  count = 3
+
+Step 3: right=2, arr[right]=3
+  freq = {1: 1, 2: 1, 3: 1}, distinct=3
+  distinct(3) > k(2), shrink!
+    Remove arr[0]=1: freq = {1: 0, 2: 1, 3: 1} -> {2: 1, 3: 1}
+    left = 1, distinct=2
+  distinct(2) <= k(2), valid
+  count += (2 - 1 + 1) = 2
+  count = 5
+
+Step 4: right=3, arr[right]=1
+  freq = {2: 1, 3: 1, 1: 1}, distinct=3
+  distinct(3) > k(2), shrink!
+    Remove arr[1]=2: freq = {3: 1, 1: 1}, distinct=2
+    left = 2
+  distinct(2) <= k(2), valid
+  count += (3 - 2 + 1) = 2
+  count = 7
+
+Step 5: right=4, arr[right]=1
+  freq = {3: 1, 1: 2}, distinct=2
+  distinct(2) <= k(2), valid
+  count += (4 - 2 + 1) = 3
+  count = 10
+
+Final answer: 10
+```
+
+### Visual Diagram
+
+```
+Array: [1, 2, 3, 1, 1]    k = 2
+
+right=0: [1]           distinct={1}     count+=1  total=1
+          ^
+          L,R
+
+right=1: [1, 2]        distinct={1,2}   count+=2  total=3
+          ^  ^
+          L  R
+
+right=2: [1, 2, 3]     distinct={1,2,3} > k, shrink!
+             [2, 3]    distinct={2,3}   count+=2  total=5
+             ^  ^
+             L  R
+
+right=3:    [2, 3, 1]  distinct={2,3,1} > k, shrink!
+               [3, 1]  distinct={3,1}   count+=2  total=7
+                ^  ^
+                L  R
+
+right=4:      [3, 1, 1] distinct={3,1}  count+=3  total=10
+               ^     ^
+               L     R
+```
+
+### Code
+
+```python
+def count_subarrays_optimal(arr, k):
+    """
+    Optimal solution using sliding window.
+
+    Time: O(n) - each element added and removed at most once
+    Space: O(min(n, k)) - hash map stores at most k+1 distinct elements
+    """
+    n = len(arr)
+    freq = {}
+    left = 0
+    count = 0
+
+    for right in range(n):
+        # Add arr[right] to window
+        freq[arr[right]] = freq.get(arr[right], 0) + 1
+
+        # Shrink window while we have more than k distinct values
+        while len(freq) > k:
+            freq[arr[left]] -= 1
+            if freq[arr[left]] == 0:
+                del freq[arr[left]]
+            left += 1
+
+        # All subarrays ending at right with start in [left, right] are valid
+        count += right - left + 1
+
+    return count
+
+
+def solve():
+    import sys
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n = int(input_data[idx]); idx += 1
+    k = int(input_data[idx]); idx += 1
+    arr = [int(input_data[idx + i]) for i in range(n)]
+
+    print(count_subarrays_optimal(arr, k))
+
+
+if __name__ == "__main__":
+    solve()
+```
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n, k;
+    cin >> n >> k;
+
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    unordered_map<int, int> freq;
+    long long count = 0;
+    int left = 0;
+
+    for (int right = 0; right < n; right++) {
+        // Add arr[right] to window
+        freq[arr[right]]++;
+
+        // Shrink window while we have more than k distinct values
+        while ((int)freq.size() > k) {
+            freq[arr[left]]--;
+            if (freq[arr[left]] == 0) {
+                freq.erase(arr[left]);
+            }
+            left++;
+        }
+
+        // All subarrays ending at right with start in [left, right] are valid
+        count += right - left + 1;
+    }
+
+    cout << count << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Each element is added and removed from window at most once |
+| Space | O(min(n, k)) | Hash map stores at most k+1 distinct elements |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Integer Overflow
+
+```cpp
+// WRONG - may overflow for large n
+int count = 0;
+count += right - left + 1;
+
+// CORRECT - use long long
+long long count = 0;
+count += right - left + 1;
+```
+
+**Problem:** With n up to 2*10^5, the count can reach n*(n+1)/2 which exceeds int range.
+**Fix:** Use `long long` for the count variable.
+
+### Mistake 2: Not Removing Zero-Frequency Entries
+
+```python
+# WRONG - doesn't clean up freq map
+freq[arr[left]] -= 1
+left += 1
+
+# CORRECT - delete entry when frequency becomes 0
+freq[arr[left]] -= 1
+if freq[arr[left]] == 0:
+    del freq[arr[left]]
+left += 1
+```
+
+**Problem:** The distinct count is based on map size. Zero-frequency entries inflate the count.
+**Fix:** Delete map entries when their frequency drops to 0.
+
+### Mistake 3: Off-by-One in Counting
+
+```python
+# WRONG - missing +1
+count += right - left
+
+# CORRECT
+count += right - left + 1
+```
+
+**Problem:** The number of subarrays from index `left` to `right` is `right - left + 1`, not `right - left`.
+**Fix:** Remember to add 1 for inclusive counting.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| All same elements | `[1,1,1], k=1` | 6 | All n*(n+1)/2 subarrays valid |
+| All different, k=n | `[1,2,3], k=3` | 6 | All subarrays valid |
+| All different, k=1 | `[1,2,3], k=1` | 3 | Only single elements valid |
+| Single element | `[5], k=1` | 1 | Only one subarray |
+| Large k | `[1,2], k=100` | 3 | k >= n means all valid |
+
+---
+
+## When to Use This Pattern
+
+### Use This Approach When:
+- Counting subarrays with a constraint on distinct elements
+- The constraint has a monotonic property (valid window remains valid when shrunk)
+- You need O(n) time complexity
+- Problems involving "at most K" constraints
+
+### Don't Use When:
+- Looking for subsequences (non-contiguous elements)
+- The constraint is "exactly K" distinct (use subtraction trick instead)
+- No monotonic property exists in the constraint
+
+### Pattern Recognition Checklist:
+- [ ] Counting subarrays? Consider sliding window
+- [ ] "At most K" constraint? Standard sliding window
+- [ ] "Exactly K" constraint? Use atMost(k) - atMost(k-1)
+- [ ] Need to track frequencies? Use hash map
+
+### Related Pattern: Exactly K Distinct
+
+To count subarrays with **exactly K** distinct values:
+```python
+def exactly_k_distinct(arr, k):
+    return at_most_k_distinct(arr, k) - at_most_k_distinct(arr, k - 1)
+```
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) | Basic sliding window with distinct constraint |
+| [Distinct Numbers (CSES)](https://cses.fi/problemset/task/1621) | Simple distinct counting |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Subarrays with K Different Integers](https://leetcode.com/problems/subarrays-with-k-different-integers/) | Exactly K distinct (uses subtraction trick) |
+| [Fruit Into Baskets](https://leetcode.com/problems/fruit-into-baskets/) | At most 2 distinct values |
+| [Longest Substring with At Most K Distinct](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) | Find length instead of count |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Distinct Values Queries (CSES)](https://cses.fi/problemset/task/1734) | Offline queries + Mo's algorithm |
+| [Count Vowel Substrings](https://leetcode.com/problems/count-vowel-substrings-of-a-string/) | Additional constraints on elements |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Use sliding window to maintain at most K distinct elements; count subarrays by window size at each step.
+2. **Time Optimization:** From O(n^2) brute force to O(n) by avoiding redundant work with two pointers.
+3. **Space Trade-off:** O(min(n, k)) space for hash map to gain linear time.
+4. **Pattern:** This is the "at most K" sliding window pattern - memorize it!
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Solve this problem without looking at the solution
+- [ ] Explain why each element is processed at most twice
+- [ ] Derive the counting formula (right - left + 1)
+- [ ] Implement the "exactly K" variant using subtraction
+- [ ] Identify this pattern in new problems
+
+---
+
+## Additional Resources
+
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [Two Pointers Technique - CP Algorithms](https://cp-algorithms.com/data_structures/segment_tree.html)
+- [Sliding Window Pattern - LeetCode Explore](https://leetcode.com/explore/learn/card/array-and-string/205/array-two-pointer-technique/)

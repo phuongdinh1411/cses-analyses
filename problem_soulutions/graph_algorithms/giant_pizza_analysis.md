@@ -1,811 +1,569 @@
 ---
-layout: simple
-title: "Giant Pizza - Graph Algorithm Problem"
-permalink: /problem_soulutions/graph_algorithms/giant_pizza_analysis
+layout: problem-analysis
+title: "Giant Pizza"
+difficulty: Hard
+tags: [graph, 2-sat, scc, implication-graph]
+cses_link: https://cses.fi/problemset/task/1684
 ---
 
-# Giant Pizza - Graph Algorithm Problem
+# Giant Pizza - 2-SAT Problem
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of 2-SAT (2-Satisfiability) problems in graph algorithms
-- Apply efficient algorithms for solving 2-SAT problems using strongly connected components
-- Implement Kosaraju's algorithm for finding strongly connected components
-- Optimize graph algorithms for satisfiability problems
-- Handle special cases in 2-SAT problems
+| Aspect | Details |
+|--------|---------|
+| Problem Type | 2-SAT (2-Satisfiability) |
+| Core Technique | Implication Graph + SCC |
+| Time Complexity | O(n + m) |
+| Space Complexity | O(n + m) |
+| Key Data Structure | Directed Graph |
+| Difficulty | Hard |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a set of boolean variables and logical implications, determine if there exists a truth assignment that satisfies all implications.
+By completing this problem, you will learn:
 
-**Input**: 
-- n: number of boolean variables
-- m: number of implications
-- implications: array of (a, b) representing logical implications a → b
+1. **2-SAT Fundamentals**: Understand satisfiability problems with clauses of exactly 2 literals
+2. **Implication Graphs**: Transform logical clauses into directed graph edges
+3. **Reduction to SCC**: Use Strongly Connected Components to determine satisfiability
+4. **Assignment Extraction**: Derive valid assignments from SCC topological ordering
 
-**Output**: 
-- "YES" if satisfiable, "NO" otherwise
-- If satisfiable, output the truth assignment
+## Problem Statement
+
+Uolevi wants to order a giant pizza with `n` toppings. There are `m` family members, each with exactly **two wishes** about the toppings. Each wish specifies whether a particular topping should be included (+) or excluded (-).
+
+**Goal**: Determine if there exists a valid topping selection where every family member has **at least one** of their two wishes satisfied.
+
+**Input**:
+- Line 1: `n m` (n = number of toppings, m = number of family members)
+- Next m lines: Two wishes per person, e.g., `+ 1 - 3` means "include topping 1 OR exclude topping 3"
+
+**Output**:
+- If possible: Print selection for each topping (+ for include, - for exclude)
+- If impossible: Print "IMPOSSIBLE"
 
 **Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
+- 1 <= n, m <= 10^5
 
 **Example**:
 ```
 Input:
-n = 3, m = 4
-implications = [(1, 2), (¬1, 3), (2, ¬3), (¬2, 1)]
+3 4
++ 1 + 2
+- 1 + 2
++ 1 - 2
+- 1 - 2
 
 Output:
-YES
-1 0 1
-
-Explanation**: 
-Truth assignment: x1=1, x2=0, x3=1
-Check implications:
-- 1 → 2: 1 → 0 (satisfied: if 1 is true, 2 is false, so implication is true)
-- ¬1 → 3: 0 → 1 (satisfied: if ¬1 is true, 3 is true, so implication is true)
-- 2 → ¬3: 0 → 0 (satisfied: if 2 is false, ¬3 is false, so implication is true)
-- ¬2 → 1: 1 → 1 (satisfied: if ¬2 is true, 1 is true, so implication is true)
+- + -
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+## 2-SAT Basics
 
-### Approach 1: Brute Force Solution
+### What is 2-SAT?
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible truth assignments
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Check each implication for each assignment
-- **Inefficient**: O(2^n × m) time complexity
+2-SAT is a special case of the Boolean Satisfiability problem where each clause contains exactly 2 literals. A literal is either a variable (x) or its negation (NOT x).
 
-**Key Insight**: Try all possible truth assignments and check if any satisfies all implications.
+**General Form**: (a OR b) AND (c OR d) AND ...
 
-**Algorithm**:
-- Generate all possible truth assignments (2^n possibilities)
-- For each assignment, check if all implications are satisfied
-- Return the first satisfying assignment or "NO"
+### Converting Clauses to Implications
 
-**Visual Example**:
+The key insight: Every clause `(a OR b)` can be rewritten as two implications:
+
 ```
-2-SAT problem: x1, x2, x3 with implications
-Implications: (1→2), (¬1→3), (2→¬3), (¬2→1)
-
-Try all possible assignments:
-┌─────────────────────────────────────┐
-│ Assignment 1: [0,0,0]              │
-│ - 1→2: 0→0 ✓ (false→false is true) │
-│ - ¬1→3: 1→0 ✗ (true→false is false)│
-│ - 2→¬3: 0→1 ✓ (false→true is true) │
-│ - ¬2→1: 1→0 ✗ (true→false is false)│
-│ Result: Not satisfiable            │
-│                                   │
-│ Assignment 2: [0,0,1]              │
-│ - 1→2: 0→0 ✓                      │
-│ - ¬1→3: 1→1 ✓                     │
-│ - 2→¬3: 0→0 ✓                     │
-│ - ¬2→1: 1→0 ✗                     │
-│ Result: Not satisfiable            │
-│                                   │
-│ Assignment 3: [0,1,0]              │
-│ - 1→2: 0→1 ✓                      │
-│ - ¬1→3: 1→0 ✗                     │
-│ - 2→¬3: 1→1 ✓                     │
-│ - ¬2→1: 0→0 ✓                     │
-│ Result: Not satisfiable            │
-│                                   │
-│ Assignment 4: [0,1,1]              │
-│ - 1→2: 0→1 ✓                      │
-│ - ¬1→3: 1→1 ✓                     │
-│ - 2→¬3: 1→0 ✗                     │
-│ - ¬2→1: 0→0 ✓                     │
-│ Result: Not satisfiable            │
-│                                   │
-│ Assignment 5: [1,0,0]              │
-│ - 1→2: 1→0 ✗                      │
-│ - ¬1→3: 0→0 ✓                     │
-│ - 2→¬3: 0→1 ✓                     │
-│ - ¬2→1: 1→1 ✓                     │
-│ Result: Not satisfiable            │
-│                                   │
-│ Assignment 6: [1,0,1]              │
-│ - 1→2: 1→0 ✗                      │
-│ - ¬1→3: 0→1 ✓                     │
-│ - 2→¬3: 0→0 ✓                     │
-│ - ¬2→1: 1→1 ✓                     │
-│ Result: Not satisfiable            │
-│                                   │
-│ Assignment 7: [1,1,0]              │
-│ - 1→2: 1→1 ✓                      │
-│ - ¬1→3: 0→0 ✓                     │
-│ - 2→¬3: 1→1 ✓                     │
-│ - ¬2→1: 0→1 ✓                     │
-│ Result: Not satisfiable            │
-│                                   │
-│ Assignment 8: [1,1,1]              │
-│ - 1→2: 1→1 ✓                      │
-│ - ¬1→3: 0→1 ✓                     │
-│ - 2→¬3: 1→0 ✗                     │
-│ - ¬2→1: 0→1 ✓                     │
-│ Result: Not satisfiable            │
-│                                   │
-│ No satisfying assignment found     │
-└─────────────────────────────────────┘
+(a OR b) is equivalent to:
+  - (NOT a) -> b    (if a is false, b must be true)
+  - (NOT b) -> a    (if b is false, a must be true)
 ```
 
-**Implementation**:
+**Why this works**:
+- If `a` is false and the clause must be true, then `b` must be true
+- If `b` is false and the clause must be true, then `a` must be true
+
+### Example Transformation
+
+For wish "+ 1 - 2" (topping 1 included OR topping 2 excluded):
+- Let x1 = "topping 1 is included", x2 = "topping 2 is included"
+- Clause: (x1 OR NOT x2)
+- Implications:
+  - NOT x1 -> NOT x2
+  - x2 -> x1
+
+## Building the Implication Graph
+
+### Node Representation
+
+Create **2n nodes** for n variables:
+- Node `2i`: Variable xi is TRUE
+- Node `2i + 1`: Variable xi is FALSE
+
+Alternative indexing (used in code):
+- Positive literal xi: index `i` (0-indexed: `i-1`)
+- Negative literal NOT xi: index `n + i` (or use XOR trick: `idx ^ 1`)
+
+### Edge Construction
+
+For each clause (a OR b):
+1. Add edge: NOT a -> b
+2. Add edge: NOT b -> a
+
+```
+Implication Graph Construction:
+
+Variables: x1, x2, x3 (3 toppings)
+Clause: (x1 OR NOT x2)
+
+Nodes:     x1    NOT_x1    x2    NOT_x2    x3    NOT_x3
+          [0]     [1]     [2]     [3]     [4]     [5]
+
+Implications from (x1 OR NOT x2):
+  NOT x1 -> NOT x2:  edge from [1] to [3]
+  x2 -> x1:          edge from [2] to [0]
+```
+
+## Key Insight: Satisfiability Condition
+
+**Theorem**: A 2-SAT formula is satisfiable if and only if no variable x and its negation NOT x belong to the same Strongly Connected Component.
+
+**Why?**
+- If x and NOT x are in the same SCC, there exists a path from x to NOT x AND from NOT x to x
+- This means: if x is true, NOT x must be true (contradiction!)
+- And: if NOT x is true, x must be true (contradiction!)
+
+```
+Satisfiability Check:
+
+SCC Analysis:
++-------------------+     +-------------------+
+|    SCC 1          |     |    SCC 2          |
+|  x1, x3, NOT_x2   |     | NOT_x1, NOT_x3, x2|
++-------------------+     +-------------------+
+
+Check each variable:
+  x1 in SCC1, NOT_x1 in SCC2  -> Different SCCs (OK)
+  x2 in SCC2, NOT_x2 in SCC1  -> Different SCCs (OK)
+  x3 in SCC1, NOT_x3 in SCC2  -> Different SCCs (OK)
+
+Result: SATISFIABLE
+```
+
+## Finding a Valid Assignment
+
+### Algorithm: Process SCCs in Reverse Topological Order
+
+After finding SCCs using Kosaraju's or Tarjan's algorithm, SCCs are naturally in reverse topological order.
+
+**Assignment Rule**: For each variable x:
+- If x appears in an SCC that comes **after** NOT x's SCC in topological order, set x = TRUE
+- Equivalently: Compare SCC indices; assign based on which literal has larger SCC index
+
+```
+Assignment Strategy:
+
+SCCs in reverse topological order (Kosaraju output):
+  SCC[0]: {NOT_x1, x2, NOT_x3}  <- processed first
+  SCC[1]: {x1, NOT_x2, x3}      <- processed second
+
+SCC indices:
+  scc[x1] = 1,     scc[NOT_x1] = 0
+  scc[x2] = 0,     scc[NOT_x2] = 1
+  scc[x3] = 1,     scc[NOT_x3] = 0
+
+Assignment (if scc[x] > scc[NOT_x], then x = TRUE):
+  x1: scc[x1]=1 > scc[NOT_x1]=0  -> x1 = TRUE  (+)
+  x2: scc[x2]=0 < scc[NOT_x2]=1  -> x2 = FALSE (-)
+  x3: scc[x3]=1 > scc[NOT_x3]=0  -> x3 = TRUE  (+)
+
+Result: + - +
+```
+
+## Visual Diagram: Complete Implication Graph
+
+```
+Example: n=3 toppings, m=4 wishes
+Wishes:
+  1. + 1 + 2  ->  (x1 OR x2)
+  2. - 1 + 2  ->  (NOT_x1 OR x2)
+  3. + 1 - 2  ->  (x1 OR NOT_x2)
+  4. - 1 - 2  ->  (NOT_x1 OR NOT_x2)
+
+Implication Graph:
+
+        +-------+                    +-------+
+        |  x1   |<-------------------|NOT_x2 |
+        +-------+                    +-------+
+           |  ^                         ^  |
+           |  |                         |  |
+           v  |                         |  v
+        +-------+                    +-------+
+        |NOT_x1 |------------------->|  x2   |
+        +-------+                    +-------+
+              \                        /
+               \                      /
+                v                    v
+              +------------------------+
+              |     (other edges)      |
+              +------------------------+
+
+From clause (x1 OR x2):
+  NOT_x1 -> x2 (edge 1)
+  NOT_x2 -> x1 (edge 2)
+
+From clause (NOT_x1 OR x2):
+  x1 -> x2 (edge 3)
+  NOT_x2 -> NOT_x1 (edge 4)
+
+From clause (x1 OR NOT_x2):
+  NOT_x1 -> NOT_x2 (edge 5)
+  x2 -> x1 (edge 6)
+
+From clause (NOT_x1 OR NOT_x2):
+  x1 -> NOT_x2 (edge 7)
+  x2 -> NOT_x1 (edge 8)
+```
+
+## Dry Run
+
+**Input**:
+```
+3 4
++ 1 + 2
+- 1 + 2
++ 1 - 2
+- 1 - 2
+```
+
+**Step 1: Parse wishes into clauses**
+```
+Wish 1: + 1 + 2  ->  (x1 OR x2)
+Wish 2: - 1 + 2  ->  (NOT_x1 OR x2)
+Wish 3: + 1 - 2  ->  (x1 OR NOT_x2)
+Wish 4: - 1 - 2  ->  (NOT_x1 OR NOT_x2)
+```
+
+**Step 2: Build implication graph (edges)**
+```
+Graph with 6 nodes: x1(0), NOT_x1(1), x2(2), NOT_x2(3), x3(4), NOT_x3(5)
+
+From (x1 OR x2):      1->2, 3->0
+From (NOT_x1 OR x2):  0->2, 3->1
+From (x1 OR NOT_x2):  1->3, 2->0
+From (NOT_x1 OR NOT_x2): 0->3, 2->1
+
+Adjacency list:
+  0 (x1):     [2, 3]
+  1 (NOT_x1): [2, 3]
+  2 (x2):     [0, 1]
+  3 (NOT_x2): [0, 1]
+```
+
+**Step 3: Find SCCs (Kosaraju's algorithm)**
+```
+First DFS (finish order): [0, 2, 1, 3] (example order)
+Transpose graph, DFS in reverse finish order:
+  SCC 0: {3, 1} = {NOT_x2, NOT_x1}
+  SCC 1: {2, 0} = {x2, x1}
+```
+
+**Step 4: Check satisfiability**
+```
+scc[x1]=1, scc[NOT_x1]=0  -> Different SCCs (OK)
+scc[x2]=1, scc[NOT_x2]=0  -> Different SCCs (OK)
+
+Formula is SATISFIABLE!
+```
+
+**Step 5: Determine assignment**
+```
+x1: scc[x1]=1 > scc[NOT_x1]=0 -> x1 = TRUE  (+)
+x2: scc[x2]=1 > scc[NOT_x2]=0 -> x2 = TRUE  (+)
+x3: not constrained, default to - (FALSE)
+
+Output: - + -
+```
+
+## Python Implementation
+
 ```python
-def brute_force_giant_pizza(n, implications):
-    """Solve 2-SAT using brute force approach"""
-    from itertools import product
-    
-    def is_implication_satisfied(assignment, a, b):
-        """Check if implication a → b is satisfied by assignment"""
-        # Convert variable indices to actual values
-        if a > 0:
-            a_val = assignment[a - 1]
-        else:
-            a_val = not assignment[abs(a) - 1]
-        
-        if b > 0:
-            b_val = assignment[b - 1]
-        else:
-            b_val = not assignment[abs(b) - 1]
-        
-        # Implication a → b is satisfied if (not a) or b
-        return (not a_val) or b_val
-    
-    def is_assignment_satisfying(assignment):
-        """Check if assignment satisfies all implications"""
-        for a, b in implications:
-            if not is_implication_satisfied(assignment, a, b):
-                return False
-        return True
-    
-    # Try all possible truth assignments
-    for assignment in product([False, True], repeat=n):
-        if is_assignment_satisfying(assignment):
-            return "YES", [1 if val else 0 for val in assignment]
-    
-    return "NO", None
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(300000)
 
-# Example usage
-n = 3
-implications = [(1, 2), (-1, 3), (2, -3), (-2, 1)]
-result, assignment = brute_force_giant_pizza(n, implications)
-print(f"Brute force result: {result}")
-if assignment:
-    print(f"Assignment: {assignment}")
-```
+def solve():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n, m = int(input_data[idx]), int(input_data[idx + 1])
+    idx += 2
 
-**Time Complexity**: O(2^n × m)
-**Space Complexity**: O(n)
-
-**Why it's inefficient**: O(2^n × m) time complexity for trying all possible assignments.
-
----
-
-### Approach 2: Graph-based 2-SAT
-
-**Key Insights from Graph-based 2-SAT**:
-- **Implication Graph**: Build implication graph where each variable has two nodes (positive and negative)
-- **Strongly Connected Components**: Use SCC to detect contradictions
-- **Efficient Implementation**: O(n + m) time complexity
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Use implication graph and strongly connected components to solve 2-SAT efficiently.
-
-**Algorithm**:
-- Build implication graph with 2n nodes (positive and negative for each variable)
-- Add edges for each implication: (¬a, b) and (¬b, a)
-- Find strongly connected components
-- If a variable and its negation are in the same SCC, no solution exists
-- Otherwise, assign values based on SCC topological order
-
-**Visual Example**:
-```
-Graph-based 2-SAT:
-
-Implications: (1→2), (¬1→3), (2→¬3), (¬2→1)
-Build implication graph:
-┌─────────────────────────────────────┐
-│ Nodes: x1, ¬x1, x2, ¬x2, x3, ¬x3   │
-│                                   │
-│ Edges from implications:           │
-│ - (1→2): add (¬1, 2) and (¬2, 1)  │
-│ - (¬1→3): add (1, 3) and (¬3, ¬1) │
-│ - (2→¬3): add (¬2, ¬3) and (3, 2) │
-│ - (¬2→1): add (2, 1) and (¬1, ¬2) │
-│                                   │
-│ Final edges:                       │
-│ - (¬1, 2), (¬2, 1)                │
-│ - (1, 3), (¬3, ¬1)                │
-│ - (¬2, ¬3), (3, 2)                │
-│ - (2, 1), (¬1, ¬2)                │
-│                                   │
-│ Strongly Connected Components:     │
-│ - SCC1: {x1, x2, ¬x3}             │
-│ - SCC2: {¬x1, ¬x2, x3}            │
-│                                   │
-│ Check contradictions:              │
-│ - x1 and ¬x1: different SCCs ✓    │
-│ - x2 and ¬x2: different SCCs ✓    │
-│ - x3 and ¬x3: different SCCs ✓    │
-│                                   │
-│ Assignment based on SCC order:     │
-│ - x1=1, x2=1, x3=0                │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def graph_based_giant_pizza(n, implications):
-    """Solve 2-SAT using graph-based approach with SCC"""
-    
-    def kosaraju_scc(adj, n):
-        """Find strongly connected components using Kosaraju's algorithm"""
-        # First pass: DFS to get finish times
-        visited = [False] * n
-        finish_order = []
-        
-        def dfs1(node):
-            visited[node] = True
-            for neighbor in adj[node]:
-                if not visited[neighbor]:
-                    dfs1(neighbor)
-            finish_order.append(node)
-        
-        for i in range(n):
-            if not visited[i]:
-                dfs1(i)
-        
-        # Build transpose graph
-        adj_transpose = [[] for _ in range(n)]
-        for u in range(n):
-            for v in adj[u]:
-                adj_transpose[v].append(u)
-        
-        # Second pass: DFS on transpose in reverse finish order
-        visited = [False] * n
-        sccs = []
-        
-        def dfs2(node, scc):
-            visited[node] = True
-            scc.append(node)
-            for neighbor in adj_transpose[node]:
-                if not visited[neighbor]:
-                    dfs2(neighbor, scc)
-        
-        for node in reversed(finish_order):
-            if not visited[node]:
-                scc = []
-                dfs2(node, scc)
-                sccs.append(scc)
-        
-        return sccs
-    
     # Build implication graph
-    # Each variable x has nodes at indices 2x and 2x+1 (positive and negative)
-    adj = [[] for _ in range(2 * n)]
-    
-    for a, b in implications:
-        # Convert to 0-indexed
-        a_idx = 2 * (abs(a) - 1) + (0 if a > 0 else 1)
-        b_idx = 2 * (abs(b) - 1) + (0 if b > 0 else 1)
-        
-        # Add implication edges: (¬a, b) and (¬b, a)
-        adj[a_idx ^ 1].append(b_idx)  # ¬a → b
-        adj[b_idx ^ 1].append(a_idx)  # ¬b → a
-    
-    # Find strongly connected components
-    sccs = kosaraju_scc(adj, 2 * n)
-    
-    # Assign SCC IDs
-    scc_id = [0] * (2 * n)
-    for i, scc in enumerate(sccs):
-        for node in scc:
-            scc_id[node] = i
-    
-    # Check for contradictions
-    for i in range(n):
-        if scc_id[2 * i] == scc_id[2 * i + 1]:
-            return "NO", None
-    
-    # Build assignment based on SCC topological order
-    assignment = [0] * n
-    for i in range(n):
-        # If positive literal comes before negative in topological order, set to true
-        if scc_id[2 * i] < scc_id[2 * i + 1]:
-            assignment[i] = 0  # Set to false (contradiction)
-        else:
-            assignment[i] = 1  # Set to true
-    
-    return "YES", assignment
+    # Node indexing: variable i (1-indexed) -> positive: i-1, negative: n+i-1
+    graph = defaultdict(list)
+    reverse_graph = defaultdict(list)
 
-# Example usage
-n = 3
-implications = [(1, 2), (-1, 3), (2, -3), (-2, 1)]
-result, assignment = graph_based_giant_pizza(n, implications)
-print(f"Graph-based result: {result}")
-if assignment:
-    print(f"Assignment: {assignment}")
+    def pos(i):
+        return i - 1
+
+    def neg(i):
+        return n + i - 1
+
+    def get_node(sign, var):
+        return pos(var) if sign == '+' else neg(var)
+
+    def get_negation(node):
+        if node < n:
+            return node + n
+        return node - n
+
+    for _ in range(m):
+        sign1, var1 = input_data[idx], int(input_data[idx + 1])
+        sign2, var2 = input_data[idx + 2], int(input_data[idx + 3])
+        idx += 4
+
+        # Clause: (lit1 OR lit2)
+        # Implications: NOT lit1 -> lit2, NOT lit2 -> lit1
+        a = get_node(sign1, var1)
+        b = get_node(sign2, var2)
+        not_a = get_negation(a)
+        not_b = get_negation(b)
+
+        graph[not_a].append(b)
+        graph[not_b].append(a)
+        reverse_graph[b].append(not_a)
+        reverse_graph[a].append(not_b)
+
+    # Kosaraju's algorithm for SCC
+    visited = [False] * (2 * n)
+    order = []
+
+    def dfs1(node):
+        visited[node] = True
+        for neighbor in graph[node]:
+            if not visited[neighbor]:
+                dfs1(neighbor)
+        order.append(node)
+
+    for i in range(2 * n):
+        if not visited[i]:
+            dfs1(i)
+
+    visited = [False] * (2 * n)
+    scc_id = [-1] * (2 * n)
+    current_scc = 0
+
+    def dfs2(node, scc):
+        visited[node] = True
+        scc_id[node] = scc
+        for neighbor in reverse_graph[node]:
+            if not visited[neighbor]:
+                dfs2(neighbor, scc)
+
+    for node in reversed(order):
+        if not visited[node]:
+            dfs2(node, current_scc)
+            current_scc += 1
+
+    # Check satisfiability and build assignment
+    result = []
+    for i in range(n):
+        if scc_id[pos(i + 1)] == scc_id[neg(i + 1)]:
+            print("IMPOSSIBLE")
+            return
+        # If positive literal has larger SCC id, set to TRUE
+        if scc_id[pos(i + 1)] > scc_id[neg(i + 1)]:
+            result.append('+')
+        else:
+            result.append('-')
+
+    print(' '.join(result))
+
+solve()
 ```
+
+## C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 200005;
+vector<int> graph[MAXN], reverse_graph[MAXN];
+int scc_id[MAXN];
+bool visited[MAXN];
+vector<int> order;
+int n, m;
+
+// Get positive literal node index
+int pos(int i) { return i; }
+
+// Get negative literal node index
+int neg(int i) { return n + i; }
+
+// Get negation of a node
+int get_neg(int node) {
+    return (node <= n) ? node + n : node - n;
+}
+
+void dfs1(int node) {
+    visited[node] = true;
+    for (int neighbor : graph[node]) {
+        if (!visited[neighbor]) {
+            dfs1(neighbor);
+        }
+    }
+    order.push_back(node);
+}
+
+void dfs2(int node, int scc) {
+    visited[node] = true;
+    scc_id[node] = scc;
+    for (int neighbor : reverse_graph[node]) {
+        if (!visited[neighbor]) {
+            dfs2(neighbor, scc);
+        }
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    cin >> n >> m;
+
+    for (int i = 0; i < m; i++) {
+        char sign1, sign2;
+        int var1, var2;
+        cin >> sign1 >> var1 >> sign2 >> var2;
+
+        // Get node indices for literals
+        int a = (sign1 == '+') ? pos(var1) : neg(var1);
+        int b = (sign2 == '+') ? pos(var2) : neg(var2);
+        int not_a = get_neg(a);
+        int not_b = get_neg(b);
+
+        // Add implication edges
+        graph[not_a].push_back(b);
+        graph[not_b].push_back(a);
+        reverse_graph[b].push_back(not_a);
+        reverse_graph[a].push_back(not_b);
+    }
+
+    // First DFS pass
+    memset(visited, false, sizeof(visited));
+    for (int i = 1; i <= 2 * n; i++) {
+        if (!visited[i]) {
+            dfs1(i);
+        }
+    }
+
+    // Second DFS pass (reverse order, transpose graph)
+    memset(visited, false, sizeof(visited));
+    int current_scc = 0;
+    for (int i = order.size() - 1; i >= 0; i--) {
+        if (!visited[order[i]]) {
+            dfs2(order[i], current_scc);
+            current_scc++;
+        }
+    }
+
+    // Check satisfiability and output
+    for (int i = 1; i <= n; i++) {
+        if (scc_id[pos(i)] == scc_id[neg(i)]) {
+            cout << "IMPOSSIBLE\n";
+            return 0;
+        }
+    }
+
+    for (int i = 1; i <= n; i++) {
+        if (scc_id[pos(i)] > scc_id[neg(i)]) {
+            cout << "+ ";
+        } else {
+            cout << "- ";
+        }
+    }
+    cout << "\n";
+
+    return 0;
+}
+```
+
+## Common Mistakes
+
+### 1. Wrong Implication Direction
+
+**Wrong**: For clause (a OR b), adding edges a -> b and b -> a
+**Correct**: Add edges NOT_a -> b and NOT_b -> a
+
+```
+Remember: (a OR b) means "if a is false, b must be true"
+So the implication is: NOT_a -> b (not a -> b)
+```
+
+### 2. Forgetting Both Implications
+
+**Wrong**: Only adding one implication per clause
+**Correct**: Each clause (a OR b) produces TWO edges
+
+```
+Clause (a OR b) requires:
+  1. NOT_a -> b
+  2. NOT_b -> a  <- Don't forget this one!
+```
+
+### 3. Incorrect Node Indexing
+
+**Wrong**: Confusing positive and negative literal indices
+**Correct**: Use consistent indexing scheme throughout
+
+```
+Common scheme:
+  Variable i (1-indexed):
+    Positive literal: index i
+    Negative literal: index n + i
+
+  Or use XOR trick for 0-indexed:
+    Positive: 2*i
+    Negative: 2*i + 1
+    Negation: idx ^ 1
+```
+
+### 4. Wrong Assignment Logic
+
+**Wrong**: Assigning TRUE when SCC index is smaller
+**Correct**: Assign TRUE when positive literal's SCC index is LARGER
+
+```
+With Kosaraju's algorithm (outputs reverse topological order):
+  If scc[x] > scc[NOT_x]: set x = TRUE
+  If scc[x] < scc[NOT_x]: set x = FALSE
+```
+
+### 5. Stack Overflow on Large Inputs
+
+**Wrong**: Using recursive DFS without increasing stack limit
+**Correct**: Increase recursion limit or use iterative DFS
+
+```python
+# Python: Add at the start
+import sys
+sys.setrecursionlimit(300000)
+```
+
+## Complexity Analysis
 
 **Time Complexity**: O(n + m)
+- Building graph: O(m) for m clauses
+- Kosaraju's algorithm: O(V + E) = O(2n + 2m) = O(n + m)
+- Assignment extraction: O(n)
+
 **Space Complexity**: O(n + m)
+- Graph storage: O(n + m) for adjacency lists
+- SCC tracking: O(n) for IDs and visited arrays
+- Order stack: O(n)
 
-**Why it's better**: Uses implication graph and SCC for O(n + m) time complexity.
+## Related Concepts
 
----
-
-### Approach 3: Advanced Data Structure Solution (Optimal)
-
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for 2-SAT solving
-- **Efficient Implementation**: O(n + m) time complexity
-- **Space Efficiency**: O(n + m) space complexity
-- **Optimal Complexity**: Best approach for 2-SAT problems
-
-**Key Insight**: Use advanced data structures for optimal 2-SAT solving.
-
-**Algorithm**:
-- Use specialized data structures for implication graph storage
-- Implement efficient Kosaraju's algorithm
-- Handle special cases optimally
-- Return satisfiability result and assignment
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For implications: (1→2), (¬1→3), (2→¬3), (¬2→1)
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Implication graph: for efficient  │
-│   storage and operations            │
-│ - SCC data: for optimization        │
-│ - Assignment cache: for optimization│
-│                                   │
-│ 2-SAT solving calculation:         │
-│ - Use implication graph for        │
-│   efficient storage and operations  │
-│ - Use SCC data for optimization     │
-│ - Use assignment cache for         │
-│   optimization                      │
-│                                   │
-│ Result: YES, [1, 0, 1]            │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def advanced_data_structure_giant_pizza(n, implications):
-    """Solve 2-SAT using advanced data structure approach"""
-    
-    def advanced_kosaraju_scc(adj, n):
-        """Advanced Kosaraju's algorithm for SCC"""
-        # Advanced first pass: DFS to get finish times
-        visited = [False] * n
-        finish_order = []
-        
-        def advanced_dfs1(node):
-            visited[node] = True
-            for neighbor in adj[node]:
-                if not visited[neighbor]:
-                    advanced_dfs1(neighbor)
-            finish_order.append(node)
-        
-        for i in range(n):
-            if not visited[i]:
-                advanced_dfs1(i)
-        
-        # Advanced transpose graph building
-        adj_transpose = [[] for _ in range(n)]
-        for u in range(n):
-            for v in adj[u]:
-                adj_transpose[v].append(u)
-        
-        # Advanced second pass: DFS on transpose
-        visited = [False] * n
-        sccs = []
-        
-        def advanced_dfs2(node, scc):
-            visited[node] = True
-            scc.append(node)
-            for neighbor in adj_transpose[node]:
-                if not visited[neighbor]:
-                    advanced_dfs2(neighbor, scc)
-        
-        for node in reversed(finish_order):
-            if not visited[node]:
-                scc = []
-                advanced_dfs2(node, scc)
-                sccs.append(scc)
-        
-        return sccs
-    
-    # Advanced implication graph building
-    adj = [[] for _ in range(2 * n)]
-    
-    for a, b in implications:
-        # Advanced conversion to 0-indexed
-        a_idx = 2 * (abs(a) - 1) + (0 if a > 0 else 1)
-        b_idx = 2 * (abs(b) - 1) + (0 if b > 0 else 1)
-        
-        # Advanced implication edges
-        adj[a_idx ^ 1].append(b_idx)  # ¬a → b
-        adj[b_idx ^ 1].append(a_idx)  # ¬b → a
-    
-    # Advanced SCC finding
-    sccs = advanced_kosaraju_scc(adj, 2 * n)
-    
-    # Advanced SCC ID assignment
-    scc_id = [0] * (2 * n)
-    for i, scc in enumerate(sccs):
-        for node in scc:
-            scc_id[node] = i
-    
-    # Advanced contradiction checking
-    for i in range(n):
-        if scc_id[2 * i] == scc_id[2 * i + 1]:
-            return "NO", None
-    
-    # Advanced assignment building
-    assignment = [0] * n
-    for i in range(n):
-        if scc_id[2 * i] < scc_id[2 * i + 1]:
-            assignment[i] = 0
-        else:
-            assignment[i] = 1
-    
-    return "YES", assignment
-
-# Example usage
-n = 3
-implications = [(1, 2), (-1, 3), (2, -3), (-2, 1)]
-result, assignment = advanced_data_structure_giant_pizza(n, implications)
-print(f"Advanced data structure result: {result}")
-if assignment:
-    print(f"Assignment: {assignment}")
-```
-
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n + m)
-
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(2^n × m) | O(n) | Try all possible truth assignments |
-| Graph-based 2-SAT | O(n + m) | O(n + m) | Use implication graph and SCC |
-| Advanced Data Structure | O(n + m) | O(n + m) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(n + m) - Use implication graph and SCC for efficient 2-SAT solving
-- **Space**: O(n + m) - Store implication graph and SCC data
-
-### Why This Solution Works
-- **Implication Graph**: Build graph where implications become edges
-- **Strongly Connected Components**: Use SCC to detect contradictions
-- **Assignment Strategy**: Assign values based on SCC topological order
-- **Optimal Algorithms**: Use optimal algorithms for 2-SAT problems
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Giant Pizza with Constraints**
-**Problem**: Solve 2-SAT with specific constraints.
-
-**Key Differences**: Apply constraints to variable assignments
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_giant_pizza(n, implications, constraints):
-    """Solve 2-SAT with constraints"""
-    
-    def constrained_kosaraju_scc(adj, n):
-        """Kosaraju's algorithm with constraints"""
-        visited = [False] * n
-        finish_order = []
-        
-        def dfs1(node):
-            visited[node] = True
-            for neighbor in adj[node]:
-                if not visited[neighbor]:
-                    dfs1(neighbor)
-            finish_order.append(node)
-        
-        for i in range(n):
-            if not visited[i]:
-                dfs1(i)
-        
-        adj_transpose = [[] for _ in range(n)]
-        for u in range(n):
-            for v in adj[u]:
-                adj_transpose[v].append(u)
-        
-        visited = [False] * n
-        sccs = []
-        
-        def dfs2(node, scc):
-            visited[node] = True
-            scc.append(node)
-            for neighbor in adj_transpose[node]:
-                if not visited[neighbor]:
-                    dfs2(neighbor, scc)
-        
-        for node in reversed(finish_order):
-            if not visited[node]:
-                scc = []
-                dfs2(node, scc)
-                sccs.append(scc)
-        
-        return sccs
-    
-    # Build implication graph with constraints
-    adj = [[] for _ in range(2 * n)]
-    
-    for a, b in implications:
-        if constraints(a, b):
-            a_idx = 2 * (abs(a) - 1) + (0 if a > 0 else 1)
-            b_idx = 2 * (abs(b) - 1) + (0 if b > 0 else 1)
-            
-            adj[a_idx ^ 1].append(b_idx)
-            adj[b_idx ^ 1].append(a_idx)
-    
-    sccs = constrained_kosaraju_scc(adj, 2 * n)
-    
-    scc_id = [0] * (2 * n)
-    for i, scc in enumerate(sccs):
-        for node in scc:
-            scc_id[node] = i
-    
-    for i in range(n):
-        if scc_id[2 * i] == scc_id[2 * i + 1]:
-            return "NO", None
-    
-    assignment = [0] * n
-    for i in range(n):
-        if scc_id[2 * i] < scc_id[2 * i + 1]:
-            assignment[i] = 0
-        else:
-            assignment[i] = 1
-    
-    return "YES", assignment
-
-# Example usage
-n = 3
-implications = [(1, 2), (-1, 3), (2, -3), (-2, 1)]
-constraints = lambda a, b: abs(a) <= 3 and abs(b) <= 3
-result, assignment = constrained_giant_pizza(n, implications, constraints)
-print(f"Constrained result: {result}")
-if assignment:
-    print(f"Assignment: {assignment}")
-```
-
-#### **2. Giant Pizza with Different Metrics**
-**Problem**: Solve 2-SAT with different satisfaction metrics.
-
-**Key Differences**: Different satisfaction calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_giant_pizza(n, implications, weight_function):
-    """Solve 2-SAT with different satisfaction metrics"""
-    
-    def weighted_kosaraju_scc(adj, n):
-        """Kosaraju's algorithm with weights"""
-        visited = [False] * n
-        finish_order = []
-        
-        def dfs1(node):
-            visited[node] = True
-            for neighbor in adj[node]:
-                if not visited[neighbor]:
-                    dfs1(neighbor)
-            finish_order.append(node)
-        
-        for i in range(n):
-            if not visited[i]:
-                dfs1(i)
-        
-        adj_transpose = [[] for _ in range(n)]
-        for u in range(n):
-            for v in adj[u]:
-                adj_transpose[v].append(u)
-        
-        visited = [False] * n
-        sccs = []
-        
-        def dfs2(node, scc):
-            visited[node] = True
-            scc.append(node)
-            for neighbor in adj_transpose[node]:
-                if not visited[neighbor]:
-                    dfs2(neighbor, scc)
-        
-        for node in reversed(finish_order):
-            if not visited[node]:
-                scc = []
-                dfs2(node, scc)
-                sccs.append(scc)
-        
-        return sccs
-    
-    # Build implication graph with weights
-    adj = [[] for _ in range(2 * n)]
-    
-    for a, b in implications:
-        weight = weight_function(a, b)
-        a_idx = 2 * (abs(a) - 1) + (0 if a > 0 else 1)
-        b_idx = 2 * (abs(b) - 1) + (0 if b > 0 else 1)
-        
-        # Add weighted edges
-        for _ in range(weight):
-            adj[a_idx ^ 1].append(b_idx)
-            adj[b_idx ^ 1].append(a_idx)
-    
-    sccs = weighted_kosaraju_scc(adj, 2 * n)
-    
-    scc_id = [0] * (2 * n)
-    for i, scc in enumerate(sccs):
-        for node in scc:
-            scc_id[node] = i
-    
-    for i in range(n):
-        if scc_id[2 * i] == scc_id[2 * i + 1]:
-            return "NO", None
-    
-    assignment = [0] * n
-    for i in range(n):
-        if scc_id[2 * i] < scc_id[2 * i + 1]:
-            assignment[i] = 0
-        else:
-            assignment[i] = 1
-    
-    return "YES", assignment
-
-# Example usage
-n = 3
-implications = [(1, 2), (-1, 3), (2, -3), (-2, 1)]
-weight_function = lambda a, b: 1  # Unit weight
-result, assignment = weighted_giant_pizza(n, implications, weight_function)
-print(f"Weighted result: {result}")
-if assignment:
-    print(f"Assignment: {assignment}")
-```
-
-#### **3. Giant Pizza with Multiple Dimensions**
-**Problem**: Solve 2-SAT in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_giant_pizza(n, implications, dimensions):
-    """Solve 2-SAT in multiple dimensions"""
-    
-    def multi_dimensional_kosaraju_scc(adj, n):
-        """Kosaraju's algorithm for multiple dimensions"""
-        visited = [False] * n
-        finish_order = []
-        
-        def dfs1(node):
-            visited[node] = True
-            for neighbor in adj[node]:
-                if not visited[neighbor]:
-                    dfs1(neighbor)
-            finish_order.append(node)
-        
-        for i in range(n):
-            if not visited[i]:
-                dfs1(i)
-        
-        adj_transpose = [[] for _ in range(n)]
-        for u in range(n):
-            for v in adj[u]:
-                adj_transpose[v].append(u)
-        
-        visited = [False] * n
-        sccs = []
-        
-        def dfs2(node, scc):
-            visited[node] = True
-            scc.append(node)
-            for neighbor in adj_transpose[node]:
-                if not visited[neighbor]:
-                    dfs2(neighbor, scc)
-        
-        for node in reversed(finish_order):
-            if not visited[node]:
-                scc = []
-                dfs2(node, scc)
-                sccs.append(scc)
-        
-        return sccs
-    
-    # Build implication graph for multiple dimensions
-    adj = [[] for _ in range(2 * n)]
-    
-    for a, b in implications:
-        a_idx = 2 * (abs(a) - 1) + (0 if a > 0 else 1)
-        b_idx = 2 * (abs(b) - 1) + (0 if b > 0 else 1)
-        
-        adj[a_idx ^ 1].append(b_idx)
-        adj[b_idx ^ 1].append(a_idx)
-    
-    sccs = multi_dimensional_kosaraju_scc(adj, 2 * n)
-    
-    scc_id = [0] * (2 * n)
-    for i, scc in enumerate(sccs):
-        for node in scc:
-            scc_id[node] = i
-    
-    for i in range(n):
-        if scc_id[2 * i] == scc_id[2 * i + 1]:
-            return "NO", None
-    
-    assignment = [0] * n
-    for i in range(n):
-        if scc_id[2 * i] < scc_id[2 * i + 1]:
-            assignment[i] = 0
-        else:
-            assignment[i] = 1
-    
-    return "YES", assignment
-
-# Example usage
-n = 3
-implications = [(1, 2), (-1, 3), (2, -3), (-2, 1)]
-dimensions = 1
-result, assignment = multi_dimensional_giant_pizza(n, implications, dimensions)
-print(f"Multi-dimensional result: {result}")
-if assignment:
-    print(f"Assignment: {assignment}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Strongly Connected Components](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Building Teams](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Course Schedule](https://leetcode.com/problems/course-schedule/) - Graph
-- [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) - Graph
-- [Alien Dictionary](https://leetcode.com/problems/alien-dictionary/) - Graph
-
-#### **Problem Categories**
-- **Graph Algorithms**: 2-SAT, strongly connected components
-- **Satisfiability**: Boolean satisfiability, logical implications
-- **Graph Traversal**: DFS, SCC algorithms
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [2-SAT](https://cp-algorithms.com/graph/2SAT.html) - 2-SAT algorithm
-- [Strongly Connected Components](https://cp-algorithms.com/graph/strongly-connected-components.html) - SCC algorithms
-
-### **Practice Problems**
-- [CSES Strongly Connected Components](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Building Teams](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [2-Satisfiability](https://en.wikipedia.org/wiki/2-satisfiability) - Wikipedia article
-- [Strongly Connected Component](https://en.wikipedia.org/wiki/Strongly_connected_component) - Wikipedia article
+- **3-SAT**: NP-complete, no polynomial solution known
+- **Horn-SAT**: Special case solvable in linear time
+- **MAX-2-SAT**: Optimization version, NP-hard
+- **Kosaraju's Algorithm**: Two-pass DFS for SCC
+- **Tarjan's Algorithm**: Single-pass DFS for SCC

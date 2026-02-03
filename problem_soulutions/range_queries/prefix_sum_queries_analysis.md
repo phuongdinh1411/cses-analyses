@@ -1,421 +1,424 @@
 ---
 layout: simple
-title: "Prefix Sum Queries - Advanced Prefix Sums"
+title: "Prefix Sum Queries - Segment Tree with Custom Merge"
 permalink: /problem_soulutions/range_queries/prefix_sum_queries_analysis
+difficulty: Hard
+tags: [segment-tree, prefix-sum, range-queries, point-update]
+prerequisites: [dynamic_range_sum_queries, static_range_sum_queries]
 ---
 
-# Prefix Sum Queries - Advanced Prefix Sums
+# Prefix Sum Queries
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement advanced prefix sums for prefix sum query problems
-- Apply advanced prefix sums to efficiently answer prefix sum queries
-- Optimize prefix sum calculations using advanced prefix sums
-- Handle edge cases in prefix sum query problems
-- Recognize when to use advanced prefix sums vs other approaches
+| Attribute | Value |
+|-----------|-------|
+| **CSES Link** | [Prefix Sum Queries](https://cses.fi/problemset/task/2166) |
+| **Difficulty** | Hard |
+| **Category** | Range Queries / Segment Tree |
+| **Time Limit** | 1 second |
+| **Key Technique** | Segment Tree with Custom Merge Function |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an array of integers and multiple queries, each query asks for the sum of elements from the beginning to position i (prefix sum). The array is static (no updates).
+After solving this problem, you will be able to:
+- [ ] Design segment trees that store multiple values per node
+- [ ] Implement custom merge functions for non-trivial range queries
+- [ ] Combine prefix sums with maximum operations in a single structure
+- [ ] Handle point updates while maintaining prefix sum properties
 
-**Input**: 
-- First line: n (number of elements) and q (number of queries)
-- Second line: n integers separated by spaces
-- Next q lines: i (position for prefix sum, 1-indexed)
+---
 
-**Output**: 
-- q lines: sum of elements from position 1 to i for each query
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10⁵
-- 1 ≤ q ≤ 2×10⁵
-- -10⁹ ≤ arr[i] ≤ 10⁹
-- 1 ≤ i ≤ n
+**Problem:** Given an array of n integers, process two types of queries:
+1. **Update (type 1):** Change the value at position k to u
+2. **Max prefix sum (type 2):** Find the maximum prefix sum in range [a, b]
 
-**Example**:
+A prefix sum at position i within range [a, b] is: sum(arr[a], arr[a+1], ..., arr[i])
+
+**Input:**
+- Line 1: n (array size) and q (number of queries)
+- Line 2: n integers (the initial array)
+- Next q lines: Either "1 k u" (update) or "2 a b" (query)
+
+**Output:** For each type 2 query, output the maximum prefix sum
+
+**Constraints:**
+- 1 <= n, q <= 2 x 10^5
+- -10^9 <= arr[i], u <= 10^9
+
+### Example
+
 ```
 Input:
-5 3
-1 2 3 4 5
-3
-4
-5
+8 4
+3 -1 4 1 -5 9 2 6
+2 1 8
+2 2 3
+1 3 -5
+2 1 8
 
 Output:
+13
+3
 6
-10
-15
-
-Explanation**: 
-Query 1: prefix sum to position 3 = 1+2+3 = 6
-Query 2: prefix sum to position 4 = 1+2+3+4 = 10
-Query 3: prefix sum to position 5 = 1+2+3+4+5 = 15
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Query `2 1 8`: Prefix sums are [3, 2, 6, 7, 2, 11, 13, 19]. Max = 13 at position 7.
+- Query `2 2 3`: Range [-1, 4], prefix sums [-1, 3]. Max = 3.
+- Update `1 3 -5`: arr[3] becomes -5.
+- Query `2 1 8`: New prefix sums [3, 2, -3, -2, -7, 2, 4, 10]. Max = 10.
 
-### Approach 1: Brute Force
-**Time Complexity**: O(q×n)  
-**Space Complexity**: O(1)
+---
 
-**Algorithm**:
-1. For each query, iterate from position 1 to position i
-2. Sum all elements from position 1 to i
-3. Return the sum
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### The Challenge
+
+> **Key Question:** Why can't we use a simple segment tree with maximum values?
+
+A prefix sum depends on **all elements before it** within the query range. We cannot simply store one value per segment.
+
+### The Key Insight
+
+When merging two segments [L, mid] and [mid+1, R]:
+- Max prefix could be entirely in left segment
+- OR it could extend through left into right segment
+
+```
+Left: sum=5, maxPrefix=7    Right: sum=3, maxPrefix=4
+
+Merged maxPrefix = max(7, 5+4) = 9
+                       ^    ^
+                  left only | left.sum + right.maxPrefix
+```
+
+**Solution:** Store TWO values per node: (total_sum, max_prefix_sum)
+
+---
+
+## Solution 1: Brute Force
+
+For each query, iterate through the range computing prefix sums.
+
 ```python
-def brute_force_prefix_sum_queries(arr, queries):
-    n = len(arr)
+def solve_brute_force(arr, queries):
     results = []
-    
-    for i in queries:
-        # Convert to 0-indexed
-        i -= 1
-        
-        # Calculate prefix sum from position 0 to i
-        prefix_sum = 0
-        for j in range(i + 1):
-            prefix_sum += arr[j]
-        
-        results.append(prefix_sum)
-    
+    for query in queries:
+        if query[0] == 1:  # Update
+            arr[query[1] - 1] = query[2]
+        else:  # Query
+            a, b = query[1], query[2]
+            max_prefix, curr = float('-inf'), 0
+            for i in range(a - 1, b):
+                curr += arr[i]
+                max_prefix = max(max_prefix, curr)
+            results.append(max_prefix)
     return results
 ```
 
-### Approach 2: Optimized with Prefix Sums
-**Time Complexity**: O(n + q)  
-**Space Complexity**: O(n)
+**Complexity:** O(q * n) time, O(1) space - Too slow for constraints.
 
-**Algorithm**:
-1. Precompute prefix sum array where prefix[i] = sum of elements from 0 to i
-2. For each query, return prefix[i]
-3. Return the sum
+---
 
-**Implementation**:
+## Solution 2: Segment Tree with Custom Merge
+
+### Node Structure
+
+| Field | Meaning |
+|-------|---------|
+| `total` | Sum of all elements in this segment |
+| `max_prefix` | Maximum prefix sum from segment's left boundary |
+
+### Merge Function
+
 ```python
-def optimized_prefix_sum_queries(arr, queries):
-    n = len(arr)
-    
-    # Precompute prefix sums
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + arr[i]
-    
+def merge(left, right):
+    total = left.total + right.total
+    max_prefix = max(left.max_prefix, left.total + right.max_prefix)
+    return (total, max_prefix)
+```
+
+### Dry Run Example
+
+Array `[3, -1, 4, -2]`:
+
+```
+Tree Structure:
+                    [1-4]
+                 (sum=4, max=6)
+                /              \
+           [1-2]               [3-4]
+        (sum=2, max=3)      (sum=2, max=4)
+         /       \            /       \
+       [1]       [2]        [3]       [4]
+    (3, 3)    (-1,-1)     (4, 4)   (-2,-2)
+
+Query [2,4]:
+  Combine [2] with [3-4]: merge((-1,-1), (2,4))
+  total = -1 + 2 = 1
+  max_prefix = max(-1, -1 + 4) = 3
+
+Verify: arr[2..4] = [-1, 4, -2]
+  Prefixes: -1, 3, 1 -> Max = 3  [Correct]
+```
+
+### Code (Python)
+
+```python
+import sys
+
+def solve():
+    data = sys.stdin.read().split()
+    idx = 0
+    n, q = int(data[idx]), int(data[idx+1]); idx += 2
+
+    arr = [0] + [int(data[idx+i]) for i in range(n)]; idx += n
+    tree = [(0, float('-inf'))] * (4 * n)
+
+    def merge(l, r):
+        return (l[0] + r[0], max(l[1], l[0] + r[1]))
+
+    def build(node, start, end):
+        if start == end:
+            tree[node] = (arr[start], arr[start])
+            return
+        mid = (start + end) // 2
+        build(2*node, start, mid)
+        build(2*node+1, mid+1, end)
+        tree[node] = merge(tree[2*node], tree[2*node+1])
+
+    def update(node, start, end, pos, val):
+        if start == end:
+            tree[node] = (val, val)
+            return
+        mid = (start + end) // 2
+        if pos <= mid:
+            update(2*node, start, mid, pos, val)
+        else:
+            update(2*node+1, mid+1, end, pos, val)
+        tree[node] = merge(tree[2*node], tree[2*node+1])
+
+    def query(node, start, end, l, r):
+        if r < start or end < l:
+            return (0, float('-inf'))
+        if l <= start and end <= r:
+            return tree[node]
+        mid = (start + end) // 2
+        return merge(query(2*node, start, mid, l, r),
+                     query(2*node+1, mid+1, end, l, r))
+
+    build(1, 1, n)
     results = []
-    for i in queries:
-        # Return prefix sum at position i
-        prefix_sum = prefix[i]
-        results.append(prefix_sum)
-    
-    return results
+
+    for _ in range(q):
+        t = int(data[idx]); idx += 1
+        if t == 1:
+            k, u = int(data[idx]), int(data[idx+1]); idx += 2
+            update(1, 1, n, k, u)
+        else:
+            a, b = int(data[idx]), int(data[idx+1]); idx += 2
+            results.append(query(1, 1, n, a, b)[1])
+
+    print('\n'.join(map(str, results)))
+
+if __name__ == "__main__":
+    solve()
 ```
 
-### Approach 3: Optimal with Prefix Sums
-**Time Complexity**: O(n + q)  
-**Space Complexity**: O(n)
+### Code (C++)
 
-**Algorithm**:
-1. Precompute prefix sum array where prefix[i] = sum of elements from 0 to i
-2. For each query, return prefix[i]
-3. Return the sum
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Implementation**:
-```python
-def optimal_prefix_sum_queries(arr, queries):
-    n = len(arr)
-    
-    # Precompute prefix sums
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + arr[i]
-    
-    results = []
-    for i in queries:
-        # Return prefix sum at position i
-        prefix_sum = prefix[i]
-        results.append(prefix_sum)
-    
-    return results
+typedef long long ll;
+typedef pair<ll, ll> pll;
+const ll NEG_INF = LLONG_MIN / 2;
+
+class SegmentTree {
+    int n;
+    vector<pll> tree;
+
+    pll merge(const pll& l, const pll& r) {
+        return {l.first + r.first, max(l.second, l.first + r.second)};
+    }
+
+    void build(const vector<ll>& arr, int node, int start, int end) {
+        if (start == end) {
+            tree[node] = {arr[start], arr[start]};
+            return;
+        }
+        int mid = (start + end) / 2;
+        build(arr, 2*node, start, mid);
+        build(arr, 2*node+1, mid+1, end);
+        tree[node] = merge(tree[2*node], tree[2*node+1]);
+    }
+
+    void update(int node, int start, int end, int pos, ll val) {
+        if (start == end) {
+            tree[node] = {val, val};
+            return;
+        }
+        int mid = (start + end) / 2;
+        if (pos <= mid) update(2*node, start, mid, pos, val);
+        else update(2*node+1, mid+1, end, pos, val);
+        tree[node] = merge(tree[2*node], tree[2*node+1]);
+    }
+
+    pll query(int node, int start, int end, int l, int r) {
+        if (r < start || end < l) return {0, NEG_INF};
+        if (l <= start && end <= r) return tree[node];
+        int mid = (start + end) / 2;
+        return merge(query(2*node, start, mid, l, r),
+                     query(2*node+1, mid+1, end, l, r));
+    }
+
+public:
+    SegmentTree(const vector<ll>& arr) : n(arr.size() - 1) {
+        tree.resize(4 * n + 1);
+        build(arr, 1, 1, n);
+    }
+
+    void update(int pos, ll val) { update(1, 1, n, pos, val); }
+    ll query(int l, int r) { return query(1, 1, n, l, r).second; }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q;
+    cin >> n >> q;
+
+    vector<ll> arr(n + 1);
+    for (int i = 1; i <= n; i++) cin >> arr[i];
+
+    SegmentTree st(arr);
+
+    while (q--) {
+        int type;
+        cin >> type;
+        if (type == 1) {
+            int k; ll u;
+            cin >> k >> u;
+            st.update(k, u);
+        } else {
+            int a, b;
+            cin >> a >> b;
+            cout << st.query(a, b) << '\n';
+        }
+    }
+    return 0;
+}
 ```
 
-## 🔧 Implementation Details
+### Complexity
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(q×n) | O(1) | Calculate prefix sum for each query |
-| Optimized | O(n + q) | O(n) | Use prefix sums for O(1) queries |
-| Optimal | O(n + q) | O(n) | Use prefix sums for O(1) queries |
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O((n + q) log n) | Build O(n), each operation O(log n) |
+| Space | O(n) | Segment tree with 4n nodes |
 
-### Time Complexity
-- **Time**: O(n + q) - O(n) preprocessing + O(1) per query
-- **Space**: O(n) - Prefix sum array
+---
 
-### Why This Solution Works
-- **Prefix Sum Property**: prefix[i] gives sum of elements from 0 to i
-- **Efficient Preprocessing**: Calculate prefix sums once in O(n) time
-- **Fast Queries**: Answer each query in O(1) time
-- **Optimal Approach**: O(n + q) time complexity is optimal for this problem
+## Common Mistakes
 
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Prefix Sum Queries with Dynamic Updates
-**Problem**: Handle dynamic updates to the array and maintain prefix sum queries.
-
-**Link**: [CSES Problem Set - Prefix Sum Queries with Updates](https://cses.fi/problemset/task/prefix_sum_queries_updates)
-
-```python
-class PrefixSumQueriesWithUpdates:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.prefix = self._compute_prefix()
-    
-    def _compute_prefix(self):
-        """Compute prefix sums"""
-        prefix = [0] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = prefix[i] + self.arr[i]
-        return prefix
-    
-    def update(self, index, value):
-        """Update element at index to value"""
-        self.arr[index] = value
-        self.prefix = self._compute_prefix()
-    
-    def range_query(self, left, right):
-        """Query sum of range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        return self.prefix[right + 1] - self.prefix[left]
-    
-    def prefix_query(self, index):
-        """Query prefix sum up to index"""
-        if index < 0 or index >= self.n:
-            return 0
-        return self.prefix[index + 1]
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'range':
-                result = self.range_query(query['left'], query['right'])
-            elif query['type'] == 'prefix':
-                result = self.prefix_query(query['index'])
-            results.append(result)
-        return results
-```
-
-### Variation 2: Prefix Sum Queries with Different Operations
-**Problem**: Handle different types of operations (sum, count, max, min) on prefix ranges.
-
-**Link**: [CSES Problem Set - Prefix Sum Queries Different Operations](https://cses.fi/problemset/task/prefix_sum_queries_operations)
-
-```python
-class PrefixSumQueriesDifferentOps:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.prefix_sum = self._compute_prefix_sum()
-        self.prefix_count = self._compute_prefix_count()
-        self.prefix_max = self._compute_prefix_max()
-        self.prefix_min = self._compute_prefix_min()
-    
-    def _compute_prefix_sum(self):
-        """Compute prefix sums"""
-        prefix = [0] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = prefix[i] + self.arr[i]
-        return prefix
-    
-    def _compute_prefix_count(self):
-        """Compute prefix counts (count of non-zero elements)"""
-        prefix = [0] * (self.n + 1)
-        for i in range(self.n):
-            count = 1 if self.arr[i] != 0 else 0
-            prefix[i + 1] = prefix[i] + count
-        return prefix
-    
-    def _compute_prefix_max(self):
-        """Compute prefix maximums"""
-        prefix = [float('-inf')] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = max(prefix[i], self.arr[i])
-        return prefix
-    
-    def _compute_prefix_min(self):
-        """Compute prefix minimums"""
-        prefix = [float('inf')] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = min(prefix[i], self.arr[i])
-        return prefix
-    
-    def range_sum(self, left, right):
-        """Query sum of range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        return self.prefix_sum[right + 1] - self.prefix_sum[left]
-    
-    def range_count(self, left, right):
-        """Query count of non-zero elements in range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        return self.prefix_count[right + 1] - self.prefix_count[left]
-    
-    def range_max(self, left, right):
-        """Query maximum element in range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return float('-inf')
-        max_val = float('-inf')
-        for i in range(left, right + 1):
-            max_val = max(max_val, self.arr[i])
-        return max_val
-    
-    def range_min(self, left, right):
-        """Query minimum element in range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return float('inf')
-        min_val = float('inf')
-        for i in range(left, right + 1):
-            min_val = min(min_val, self.arr[i])
-        return min_val
-    
-    def prefix_sum(self, index):
-        """Query prefix sum up to index"""
-        if index < 0 or index >= self.n:
-            return 0
-        return self.prefix_sum[index + 1]
-    
-    def prefix_count(self, index):
-        """Query prefix count up to index"""
-        if index < 0 or index >= self.n:
-            return 0
-        return self.prefix_count[index + 1]
-```
-
-### Variation 3: Prefix Sum Queries with Constraints
-**Problem**: Handle prefix sum queries with additional constraints (e.g., maximum sum, minimum length).
-
-**Link**: [CSES Problem Set - Prefix Sum Queries with Constraints](https://cses.fi/problemset/task/prefix_sum_queries_constraints)
+### Mistake 1: Storing Only Max Element
 
 ```python
-class PrefixSumQueriesWithConstraints:
-    def __init__(self, arr, max_sum, min_length):
-        self.arr = arr[:]
-        self.n = len(arr)
-        self.max_sum = max_sum
-        self.min_length = min_length
-        self.prefix = self._compute_prefix()
-    
-    def _compute_prefix(self):
-        """Compute prefix sums"""
-        prefix = [0] * (self.n + 1)
-        for i in range(self.n):
-            prefix[i + 1] = prefix[i] + self.arr[i]
-        return prefix
-    
-    def constrained_range_query(self, left, right):
-        """Query sum of range [left, right] with constraints"""
-        # Check minimum length constraint
-        if right - left + 1 < self.min_length:
-            return None  # Invalid range length
-        
-        # Get sum
-        sum_value = self.prefix[right + 1] - self.prefix[left]
-        
-        # Check maximum sum constraint
-        if sum_value > self.max_sum:
-            return None  # Exceeds maximum sum
-        
-        return sum_value
-    
-    def constrained_prefix_query(self, index):
-        """Query prefix sum up to index with constraints"""
-        if index < 0 or index >= self.n:
-            return None
-        
-        # Check minimum length constraint
-        if index + 1 < self.min_length:
-            return None  # Invalid prefix length
-        
-        # Get sum
-        sum_value = self.prefix[index + 1]
-        
-        # Check maximum sum constraint
-        if sum_value > self.max_sum:
-            return None  # Exceeds maximum sum
-        
-        return sum_value
-    
-    def find_valid_ranges(self):
-        """Find all valid ranges that satisfy constraints"""
-        valid_ranges = []
-        for i in range(self.n):
-            for j in range(i + self.min_length - 1, self.n):
-                result = self.constrained_range_query(i, j)
-                if result is not None:
-                    valid_ranges.append((i, j, result))
-        return valid_ranges
-    
-    def find_valid_prefixes(self):
-        """Find all valid prefixes that satisfy constraints"""
-        valid_prefixes = []
-        for i in range(self.min_length - 1, self.n):
-            result = self.constrained_prefix_query(i)
-            if result is not None:
-                valid_prefixes.append((i, result))
-        return valid_prefixes
-    
-    def get_maximum_valid_sum(self):
-        """Get maximum valid sum"""
-        max_sum = float('-inf')
-        for i in range(self.n):
-            for j in range(i + self.min_length - 1, self.n):
-                result = self.constrained_range_query(i, j)
-                if result is not None:
-                    max_sum = max(max_sum, result)
-        return max_sum if max_sum != float('-inf') else None
-
-# Example usage
-arr = [1, 2, 3, 4, 5]
-max_sum = 10
-min_length = 2
-
-psq = PrefixSumQueriesWithConstraints(arr, max_sum, min_length)
-result = psq.constrained_range_query(0, 2)
-print(f"Constrained range query result: {result}")  # Output: 6
-
-valid_ranges = psq.find_valid_ranges()
-print(f"Valid ranges: {valid_ranges}")
+# WRONG
+def merge(left, right):
+    return max(left, right)  # Finds max element, not max prefix sum
 ```
 
-### Related Problems
+**Fix:** Store (total, max_prefix) tuple.
 
-#### **CSES Problems**
-- [Prefix Sum Queries](https://cses.fi/problemset/task/2166) - Basic prefix sum queries problem
-- [Static Range Sum Queries](https://cses.fi/problemset/task/1646) - Static range sum queries
-- [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) - Dynamic range sum queries
+### Mistake 2: Wrong Merge Order
 
-#### **LeetCode Problems**
-- [Range Sum Query - Immutable](https://leetcode.com/problems/range-sum-query-immutable/) - Range sum queries
-- [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/) - Range sum with updates
-- [Range Sum Query 2D - Immutable](https://leetcode.com/problems/range-sum-query-2d-immutable/) - 2D range sum queries
+```python
+# WRONG - order matters!
+max_prefix = max(right[1], right[0] + left[1])  # Reversed!
+```
 
-#### **Problem Categories**
-- **Prefix Sums**: Range sum queries, efficient preprocessing, fast queries
-- **Range Queries**: Query processing, range operations, efficient algorithms
-- **Array Processing**: Prefix computation, range operations, efficient data structures
-- **Algorithm Design**: Prefix sum techniques, range optimization, constraint handling
+**Fix:** Use `max(left.max_prefix, left.total + right.max_prefix)`.
 
-## 🚀 Key Takeaways
+### Mistake 3: Wrong Identity Element
 
-- **Prefix Sum Technique**: The standard approach for prefix sum queries
-- **Efficient Preprocessing**: Calculate prefix sums once for all queries
-- **Fast Queries**: Answer each query in O(1) time using prefix sums
-- **Space Trade-off**: Use O(n) extra space for O(1) query time
-- **Pattern Recognition**: This technique applies to many prefix sum problems
+```python
+# WRONG
+return (0, 0)  # Empty segment max_prefix should be -infinity
+```
+
+**Fix:** Use `(0, float('-inf'))` for out-of-range.
+
+### Mistake 4: Integer Overflow (C++)
+
+Values up to 10^9, sums can reach 2 x 10^14. Use `long long`.
+
+---
+
+## Edge Cases
+
+| Case | Input | Output | Why |
+|------|-------|--------|-----|
+| Single element | `query [1,1]` | arr[1] | Only one prefix |
+| All negative | `[-5,-3,-1]` | -1 | Shortest prefix best |
+| All positive | `[1,2,3]` | 6 | Full range best |
+| Large values | 10^9 | Use long long | Overflow prevention |
+
+---
+
+## When to Use This Pattern
+
+**Use when:**
+- Need max/min prefix sums over arbitrary ranges
+- Point updates required
+- O(log n) query complexity needed
+
+**Don't use when:**
+- Static queries only (sparse table simpler)
+- Need max subarray sum (different segment tree structure)
+- Range updates (need lazy propagation)
+
+---
+
+## Related Problems
+
+### Easier (Do First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Basic prefix sums |
+| [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) | Segment tree basics |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Range Update Queries](https://cses.fi/problemset/task/1651) | Lazy propagation |
+| [Maximum Subarray](https://leetcode.com/problems/maximum-subarray/) | Kadane's algorithm |
+
+### Harder (Do After)
+| Problem | New Concept |
+|---------|-------------|
+| [Polynomial Queries](https://cses.fi/problemset/task/1736) | Complex lazy propagation |
+| [Range Updates and Sums](https://cses.fi/problemset/task/1735) | Multiple update types |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** Store (total_sum, max_prefix_sum) per node for correct merging
+2. **Time:** O(n) brute force per query -> O(log n) with segment tree
+3. **Space:** O(4n) enables O(log n) operations
+4. **Pattern:** When simple aggregation fails, ask "what extra info enables correct merging?"
+
+---
+
+## Practice Checklist
+
+- [ ] Explain why both sum AND max_prefix are needed
+- [ ] Derive the merge function from first principles
+- [ ] Handle identity element correctly
+- [ ] Extend to similar problems (max suffix sum)

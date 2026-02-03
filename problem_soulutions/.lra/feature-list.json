@@ -1,0 +1,710 @@
+{
+  "project": "CSES Problem Set Analyses",
+  "description": "Comprehensive algorithmic problem analyses for CSES Problem Set and AtCoder DP Contest, including solution explanations, complexity analysis, and learning objectives",
+  "created_at": "2026-02-02T00:00:00Z",
+  "features": [
+    {
+      "id": "F001",
+      "category": "core",
+      "priority": "critical",
+      "description": "Review and standardize all existing analysis file formats",
+      "acceptance_criteria": [
+        "All analysis files follow consistent markdown structure",
+        "All files have proper YAML frontmatter",
+        "All files include Learning Objectives section"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "Foundation for all other improvements"
+    },
+    {
+      "id": "F002",
+      "category": "core",
+      "priority": "critical",
+      "description": "Create master index file linking all categories and problems",
+      "acceptance_criteria": [
+        "Index file lists all 14 categories",
+        "Each category shows problem count",
+        "Links to individual summaries work correctly"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F003",
+      "category": "core",
+      "priority": "high",
+      "description": "Add difficulty ratings to all problems",
+      "acceptance_criteria": [
+        "Each problem has difficulty tag (Easy/Medium/Hard)",
+        "Ratings are consistent across categories",
+        "Summary files show difficulty distribution"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F004",
+      "category": "core",
+      "priority": "high",
+      "description": "Add prerequisite problem references to each analysis",
+      "acceptance_criteria": [
+        "Each problem lists prerequisite problems",
+        "Links between related problems are bidirectional",
+        "Learning path is clear"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F005",
+      "category": "database",
+      "priority": "medium",
+      "description": "Create problems metadata JSON for programmatic access",
+      "acceptance_criteria": [
+        "JSON file contains all problem metadata",
+        "Includes category, difficulty, tags, links",
+        "Can be used for filtering and searching"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F006",
+      "category": "core",
+      "priority": "high",
+      "description": "Standardize DP state definition format across all DP problems",
+      "acceptance_criteria": [
+        "All DP problems have clear state definition section",
+        "State transition formula is explicit",
+        "Base cases are documented"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "Critical for DP learning"
+    },
+    {
+      "id": "F007",
+      "category": "core",
+      "priority": "high",
+      "description": "Add time and space complexity analysis to all problems",
+      "acceptance_criteria": [
+        "Each solution has Big-O time complexity",
+        "Each solution has Big-O space complexity",
+        "Complexity is explained, not just stated"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F008",
+      "category": "core",
+      "priority": "medium",
+      "description": "Add code implementations in Python for all problems",
+      "acceptance_criteria": [
+        "Each problem has working Python solution",
+        "Code is well-commented",
+        "Code follows PEP8 style"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F009",
+      "category": "core",
+      "priority": "medium",
+      "description": "Add code implementations in C++ for all problems",
+      "acceptance_criteria": [
+        "Each problem has working C++ solution",
+        "Code compiles without warnings",
+        "Code follows modern C++ practices"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F010",
+      "category": "testing",
+      "priority": "medium",
+      "description": "Add test cases section to all problem analyses",
+      "acceptance_criteria": [
+        "Each problem has sample test cases",
+        "Edge cases are documented",
+        "Expected outputs are provided"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F011",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance Introductory Problems analyses (25 problems)",
+      "acceptance_criteria": [
+        "All 25 analyses follow standard format",
+        "Visual examples are included",
+        "Multiple approaches are compared"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F012",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance Sorting and Searching analyses (35 problems)",
+      "acceptance_criteria": [
+        "All 35 analyses follow standard format",
+        "Binary search variants are explained",
+        "Two-pointer techniques are covered"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F013",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance Dynamic Programming analyses (17 problems)",
+      "acceptance_criteria": [
+        "All 17 analyses follow standard format",
+        "DP states are clearly defined",
+        "Optimization techniques are explained"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F014",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance AtCoder DP analyses (25 problems)",
+      "acceptance_criteria": [
+        "All 25 analyses follow standard format",
+        "Advanced DP techniques are covered",
+        "Connection to CSES problems noted"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F015",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance Graph Algorithms analyses (36 problems)",
+      "acceptance_criteria": [
+        "All 36 analyses follow standard format",
+        "Graph representations are explained",
+        "Algorithm visualizations included"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F016",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance Advanced Graph analyses (25 problems)",
+      "acceptance_criteria": [
+        "All 25 analyses follow standard format",
+        "Advanced concepts are explained",
+        "Prerequisites are clear"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F017",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance Tree Algorithms analyses (16 problems)",
+      "acceptance_criteria": [
+        "All 16 analyses follow standard format",
+        "Tree traversal methods covered",
+        "LCA and tree DP explained"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F018",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance Range Queries analyses (19 problems)",
+      "acceptance_criteria": [
+        "All 19 analyses follow standard format",
+        "Segment tree operations explained",
+        "Lazy propagation covered"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F019",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance String Algorithms analyses (14 problems)",
+      "acceptance_criteria": [
+        "All 14 analyses follow standard format",
+        "Pattern matching algorithms covered",
+        "String hashing explained"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F020",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance Counting Problems analyses (20 problems)",
+      "acceptance_criteria": [
+        "All 20 analyses follow standard format",
+        "Combinatorics formulas explained",
+        "Modular arithmetic covered"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F021",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance Geometry analyses (15 problems)",
+      "acceptance_criteria": [
+        "All 15 analyses follow standard format",
+        "Geometric primitives explained",
+        "Convex hull algorithms covered"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F022",
+      "category": "core",
+      "priority": "high",
+      "description": "Review and enhance Sliding Window analyses (15 problems)",
+      "acceptance_criteria": [
+        "All 15 analyses follow standard format",
+        "Window expansion/contraction explained",
+        "Deque-based solutions covered"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F023",
+      "category": "other",
+      "priority": "medium",
+      "description": "Add common mistakes section to each problem",
+      "acceptance_criteria": [
+        "Each problem lists 2-3 common mistakes",
+        "Solutions to avoid mistakes provided",
+        "Edge cases highlighted"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F024",
+      "category": "other",
+      "priority": "medium",
+      "description": "Add related LeetCode problems mapping",
+      "acceptance_criteria": [
+        "Each CSES problem links to similar LeetCode problems",
+        "Difficulty comparison noted",
+        "Key differences highlighted"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F025",
+      "category": "other",
+      "priority": "medium",
+      "description": "Add related Codeforces problems mapping",
+      "acceptance_criteria": [
+        "Each CSES problem links to similar CF problems",
+        "Problem ratings noted",
+        "Variation types documented"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F026",
+      "category": "core",
+      "priority": "high",
+      "description": "Create algorithm pattern cheat sheets",
+      "acceptance_criteria": [
+        "Binary search patterns documented",
+        "Two-pointer patterns documented",
+        "DP patterns documented",
+        "Graph patterns documented"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F027",
+      "category": "core",
+      "priority": "medium",
+      "description": "Add interview tips section to applicable problems",
+      "acceptance_criteria": [
+        "Communication tips provided",
+        "Time management advice",
+        "Follow-up questions anticipated"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F028",
+      "category": "other",
+      "priority": "low",
+      "description": "Add problem tags for filtering (arrays, strings, graphs, etc.)",
+      "acceptance_criteria": [
+        "Each problem has relevant tags",
+        "Tags are consistent across problems",
+        "Tag-based filtering is possible"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F029",
+      "category": "other",
+      "priority": "low",
+      "description": "Create study plans by topic",
+      "acceptance_criteria": [
+        "DP study plan created",
+        "Graph study plan created",
+        "Full CSES study plan created"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F030",
+      "category": "other",
+      "priority": "low",
+      "description": "Create study plans by difficulty progression",
+      "acceptance_criteria": [
+        "Easy to Hard progression defined",
+        "Time estimates provided",
+        "Milestone checkpoints set"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F031",
+      "category": "ui",
+      "priority": "medium",
+      "description": "Improve visual diagrams in graph algorithms",
+      "acceptance_criteria": [
+        "ASCII art diagrams are clear",
+        "Step-by-step visualizations provided",
+        "Algorithm state shown at each step"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F032",
+      "category": "ui",
+      "priority": "medium",
+      "description": "Improve visual diagrams in DP problems",
+      "acceptance_criteria": [
+        "DP table visualizations included",
+        "State transitions shown graphically",
+        "Subproblem dependencies clear"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F033",
+      "category": "ui",
+      "priority": "medium",
+      "description": "Improve visual diagrams in tree algorithms",
+      "acceptance_criteria": [
+        "Tree structures rendered clearly",
+        "Traversal paths shown",
+        "Node states visualized"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F034",
+      "category": "core",
+      "priority": "high",
+      "description": "Add step-by-step algorithm walkthroughs",
+      "acceptance_criteria": [
+        "Each complex algorithm has walkthrough",
+        "Variable states shown at each step",
+        "Decision points highlighted"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F035",
+      "category": "other",
+      "priority": "medium",
+      "description": "Add memory optimization techniques section",
+      "acceptance_criteria": [
+        "Space optimization strategies documented",
+        "Rolling array technique explained",
+        "Bit manipulation for space saving covered"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F036",
+      "category": "other",
+      "priority": "medium",
+      "description": "Add time optimization techniques section",
+      "acceptance_criteria": [
+        "Pruning strategies documented",
+        "Early termination conditions explained",
+        "Algorithmic improvements vs constant factor improvements"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F037",
+      "category": "testing",
+      "priority": "low",
+      "description": "Add stress testing examples for validation",
+      "acceptance_criteria": [
+        "Random test case generators provided",
+        "Brute force validators included",
+        "Edge case generators documented"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F038",
+      "category": "core",
+      "priority": "medium",
+      "description": "Standardize summary.md files across all categories",
+      "acceptance_criteria": [
+        "All summaries follow same structure",
+        "Key concepts section present",
+        "Problem list with links included"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F039",
+      "category": "core",
+      "priority": "medium",
+      "description": "Add quick reference cards for data structures",
+      "acceptance_criteria": [
+        "Stack/Queue operations documented",
+        "Tree operations documented",
+        "Graph operations documented",
+        "Complexity tables included"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F040",
+      "category": "other",
+      "priority": "low",
+      "description": "Add glossary of algorithmic terms",
+      "acceptance_criteria": [
+        "Common terms defined",
+        "Cross-references to problems",
+        "Alphabetically organized"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F041",
+      "category": "core",
+      "priority": "high",
+      "description": "Ensure all binary search problems explain loop invariants",
+      "acceptance_criteria": [
+        "Loop invariant defined for each binary search",
+        "Boundary conditions explained",
+        "Off-by-one errors addressed"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F042",
+      "category": "core",
+      "priority": "high",
+      "description": "Ensure all graph problems explain edge cases",
+      "acceptance_criteria": [
+        "Disconnected graph handling documented",
+        "Self-loops handling documented",
+        "Empty graph handling documented"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F043",
+      "category": "core",
+      "priority": "high",
+      "description": "Ensure all DP problems explain recurrence relation derivation",
+      "acceptance_criteria": [
+        "Subproblem definition clear",
+        "Optimal substructure proven",
+        "Overlapping subproblems identified"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F044",
+      "category": "other",
+      "priority": "medium",
+      "description": "Add video tutorial links where available",
+      "acceptance_criteria": [
+        "Quality video resources linked",
+        "Multiple explanations per topic",
+        "Timestamps provided when useful"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F045",
+      "category": "other",
+      "priority": "low",
+      "description": "Add academic paper references for advanced topics",
+      "acceptance_criteria": [
+        "Original papers cited",
+        "Accessible explanations linked",
+        "Historical context provided"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F046",
+      "category": "core",
+      "priority": "medium",
+      "description": "Add modular arithmetic guide for counting problems",
+      "acceptance_criteria": [
+        "MOD operations explained",
+        "Modular inverse explained",
+        "Common pitfalls documented"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F047",
+      "category": "core",
+      "priority": "medium",
+      "description": "Add bit manipulation guide",
+      "acceptance_criteria": [
+        "Common bit operations explained",
+        "Bitmask DP patterns documented",
+        "XOR properties covered"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F048",
+      "category": "core",
+      "priority": "medium",
+      "description": "Add Union-Find detailed guide",
+      "acceptance_criteria": [
+        "Path compression explained",
+        "Union by rank explained",
+        "Applications documented"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F049",
+      "category": "core",
+      "priority": "medium",
+      "description": "Add Segment Tree detailed guide",
+      "acceptance_criteria": [
+        "Build operation explained",
+        "Query operation explained",
+        "Update operation explained",
+        "Lazy propagation covered"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    },
+    {
+      "id": "F050",
+      "category": "core",
+      "priority": "medium",
+      "description": "Add Fenwick Tree detailed guide",
+      "acceptance_criteria": [
+        "Index manipulation explained",
+        "Range queries covered",
+        "Point vs range updates documented"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": ""
+    }
+  ]
+}

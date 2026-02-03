@@ -1,653 +1,359 @@
 ---
 layout: simple
-title: "De Bruijn Sequence - Graph Algorithm Problem"
+title: "De Bruijn Sequence"
 permalink: /problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis
+difficulty: Hard
+tags: [graph, de-bruijn, eulerian-circuit, string]
+cses_link: https://cses.fi/problemset/task/1692
 ---
 
-# De Bruijn Sequence - Graph Algorithm Problem
+# De Bruijn Sequence
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of De Bruijn sequences in graph algorithms
-- Apply efficient algorithms for constructing De Bruijn sequences
-- Implement Eulerian path algorithms for De Bruijn graph construction
-- Optimize graph algorithms for sequence generation problems
-- Handle special cases in De Bruijn sequence problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find the shortest binary string containing all n-bit patterns as substrings |
+| Input | Integer n (1 <= n <= 15) |
+| Output | Binary string of length 2^n + n - 1 |
+| Core Technique | Eulerian circuit on de Bruijn graph |
+| Time Complexity | O(2^n) |
+| Space Complexity | O(2^n) |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given an alphabet of size k and a word length n, construct a De Bruijn sequence that contains every possible word of length n exactly once.
+After studying this problem, you should understand:
 
-**Input**: 
-- k: size of alphabet (e.g., 2 for binary)
-- n: word length
+1. **De Bruijn Sequence**: A cyclic sequence where every possible n-length substring appears exactly once
+2. **Reduction to Eulerian Circuit**: How to model string construction as a graph traversal problem
+3. **Hierholzer's Algorithm**: Finding Eulerian circuits efficiently
 
-**Output**: 
-- De Bruijn sequence as a string
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ k ≤ 10
-- 1 ≤ n ≤ 10
+Given an integer n, find the shortest binary string that contains every possible n-bit binary pattern as a substring.
 
-**Example**:
+**Example**: For n = 2, the 2-bit patterns are: 00, 01, 10, 11
+
+One valid answer: `00110` (length 5 = 2^2 + 2 - 1)
+- Position 0-1: `00`
+- Position 1-2: `01`
+- Position 2-3: `11`
+- Position 3-4: `10`
+
+## Key Insight: Reduction to Eulerian Circuit
+
+The brilliant insight is to model this as a graph problem:
+
+**Graph Construction:**
+- **Nodes**: All (n-1)-bit patterns (there are 2^(n-1) nodes)
+- **Edges**: Each n-bit pattern becomes a directed edge
+- **Edge Rule**: Pattern "abcd" creates edge from "abc" to "bcd", labeled with 'd'
+
+**Why Eulerian Circuit?**
+- Each n-bit pattern must appear exactly once -> each edge traversed exactly once
+- An Eulerian circuit visits every edge exactly once
+- Finding an Eulerian circuit gives us our de Bruijn sequence
+
+## Edge Construction Explained
+
+For an n-bit pattern, we create an edge from its first (n-1) bits to its last (n-1) bits.
+
+**Example for n=3, pattern "011":**
 ```
-Input:
-k = 2, n = 3
-
-Output:
-"00010111"
-
-Explanation**: 
-All 3-bit binary words: 000, 001, 010, 011, 100, 101, 110, 111
-De Bruijn sequence: 00010111
-Contains all words: 000, 001, 010, 101, 011, 111, 110, 100
-```
-
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible sequences to find valid De Bruijn sequence
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic string operations for each sequence
-- **Inefficient**: O(k^(k^n)) time complexity
-
-**Key Insight**: Check every possible sequence to find one that contains all words exactly once.
-
-**Algorithm**:
-- Generate all possible sequences of length k^n + n - 1
-- Check if each sequence contains all k^n words exactly once
-- Return the first valid De Bruijn sequence found
-
-**Visual Example**:
-```
-De Bruijn sequence construction for k=2, n=3:
-
-All possible 3-bit words: 000, 001, 010, 011, 100, 101, 110, 111
-Target length: 2^3 + 3 - 1 = 10
-
-All possible sequences of length 10:
-┌─────────────────────────────────────┐
-│ Sequence 1: "0000000000"           │
-│ - Contains: 000 (multiple times)   │
-│ - Missing: 001, 010, 011, 100, 101, 110, 111 ✗ │
-│                                   │
-│ Sequence 2: "0000000001"           │
-│ - Contains: 000, 001               │
-│ - Missing: 010, 011, 100, 101, 110, 111 ✗ │
-│                                   │
-│ Sequence 3: "00010111"             │
-│ - Contains: 000, 001, 010, 101, 011, 111, 110, 100 ✓ │
-│ - All words present exactly once ✓ │
-│                                   │
-│ Valid De Bruijn sequence: "00010111" │
-└─────────────────────────────────────┘
+Pattern: 0 1 1
+         -----
+First 2: 0 1     -> Source node: "01"
+Last 2:    1 1   -> Target node: "11"
+Edge label:  1   -> The last bit
 ```
 
-**Implementation**:
+Edge: "01" --[1]--> "11"
+
+This edge represents including pattern "011" in our sequence.
+
+## Why Eulerian Circuit Exists
+
+For an Eulerian circuit to exist, every node must have equal in-degree and out-degree.
+
+**Proof for de Bruijn graph:**
+- Each node is an (n-1)-bit pattern
+- From any node "abc", there are exactly 2 outgoing edges: "abc0" and "abc1"
+- To any node "abc", there are exactly 2 incoming edges: "0abc" and "1abc"
+- Therefore: in-degree = out-degree = 2 for every node
+
+Since the graph is connected and balanced, an Eulerian circuit always exists.
+
+## Visual Diagram for n=3
+
+```
+Nodes: 2-bit patterns (00, 01, 10, 11)
+Edges: 3-bit patterns
+
+                    [0]
+              +----------+
+              |          |
+              v          |
+        +---[00]---+     |
+        |    |     |     |
+   [0]  |    |[1]  |     |
+        |    v     |     |
+        |  [01]----+     |
+        |    |           |
+        |    |[0]  [1]   |
+        |    v      |    |
+        +--[10]<----+    |
+             |           |
+        [0]  |[1]        |
+             v           |
+           [11]----------+
+             |      [0]
+             +------+
+               [1]
+
+Edges (3-bit patterns):
+  000: 00 -> 00    100: 10 -> 00
+  001: 00 -> 01    101: 10 -> 01
+  010: 01 -> 10    110: 11 -> 10
+  011: 01 -> 11    111: 11 -> 11
+```
+
+## Building the Result
+
+Once we find an Eulerian circuit, the de Bruijn sequence is:
+
+**Result = Starting node + All edge labels in order**
+
+If circuit visits: 00 -[0]-> 00 -[1]-> 01 -[0]-> 10 -[0]-> 00 ...
+
+Result starts with: "00" + "0" + "1" + "0" + "0" + ...
+
+**Length**: (n-1) for starting node + 2^n edges = 2^n + n - 1
+
+## Dry Run for n=3
+
+**Step 1: Build Graph**
+```
+Nodes: {00, 01, 10, 11}
+Adjacency list (each node -> list of (neighbor, edge_label)):
+  00: [(00, '0'), (01, '1')]
+  01: [(10, '0'), (11, '1')]
+  10: [(00, '0'), (01, '1')]
+  11: [(10, '0'), (11, '1')]
+```
+
+**Step 2: Hierholzer's Algorithm**
+```
+Start at node "00"
+Stack: [00]
+Path: []
+
+Iteration 1: At 00, go to 01 via edge '1'
+  Stack: [00, 01], Path: []
+
+Iteration 2: At 01, go to 11 via edge '1'
+  Stack: [00, 01, 11], Path: []
+
+Iteration 3: At 11, go to 11 via edge '1'
+  Stack: [00, 01, 11, 11], Path: []
+
+Iteration 4: At 11, go to 10 via edge '0'
+  Stack: [00, 01, 11, 11, 10], Path: []
+
+Iteration 5: At 10, go to 01 via edge '1'
+  Stack: [00, 01, 11, 11, 10, 01], Path: []
+
+Iteration 6: At 01, go to 10 via edge '0'
+  Stack: [00, 01, 11, 11, 10, 01, 10], Path: []
+
+Iteration 7: At 10, go to 00 via edge '0'
+  Stack: [00, 01, 11, 11, 10, 01, 10, 00], Path: []
+
+Iteration 8: At 00, go to 00 via edge '0'
+  Stack: [00, 01, 11, 11, 10, 01, 10, 00, 00], Path: []
+
+Iteration 9: At 00, no more edges, pop to path
+  Stack: [00, 01, 11, 11, 10, 01, 10, 00], Path: [(00, -)]
+
+Continue popping until stack empty...
+```
+
+**Step 3: Build Result**
+```
+Path (reversed): 00 -> 00 -> 01 -> 10 -> 01 -> 10 -> 11 -> 11 -> 00
+Edge labels:         0    1    0    1    0    1    1    0
+
+Result: "00" + "01010110" = "0001010110"
+        ^^^^   ^^^^^^^^
+        start  edge labels
+
+Verify: Contains all 3-bit patterns:
+  000 at pos 0, 001 at pos 1, 010 at pos 2, 101 at pos 3
+  010 at pos 4, 101 at pos 5, 011 at pos 6, 110 at pos 7
+
+Wait - we have duplicates! Let me recalculate...
+```
+
+**Correct traversal (one valid circuit):**
+```
+00 -[0]-> 00 -[1]-> 01 -[1]-> 11 -[1]-> 11 -[0]-> 10 -[1]-> 01 -[0]-> 10 -[0]-> 00
+
+Result: "00" + "01110100" = "0001110100"
+```
+
+## Python Implementation
+
 ```python
-def brute_force_de_bruijn_sequence(k, n):
-    """Construct De Bruijn sequence using brute force approach"""
-    from itertools import product
-    
-    # Generate all possible words of length n
-    alphabet = [str(i) for i in range(k)]
-    all_words = [''.join(word) for word in product(alphabet, repeat=n)]
-    
-    # Target sequence length
-    target_length = k**n + n - 1
-    
-    def is_valid_sequence(sequence):
-        """Check if sequence contains all words exactly once"""
-        if len(sequence) != target_length:
-            return False
-        
-        found_words = set()
-        for i in range(len(sequence) - n + 1):
-            word = sequence[i:i+n]
-            if word in found_words:
-                return False  # Duplicate word
-            found_words.add(word)
-        
-        return len(found_words) == len(all_words)
-    
-    # Try all possible sequences
-    for sequence_tuple in product(alphabet, repeat=target_length):
-        sequence = ''.join(sequence_tuple)
-        if is_valid_sequence(sequence):
-            return sequence
-    
-    return None
+def solve():
+    n = int(input())
 
-# Example usage
-k = 2
-n = 3
-result = brute_force_de_bruijn_sequence(k, n)
-print(f"Brute force De Bruijn sequence: {result}")
-```
+    if n == 1:
+        print("01")
+        return
 
-**Time Complexity**: O(k^(k^n))
-**Space Complexity**: O(k^n)
+    # Number of (n-1)-bit patterns (nodes)
+    num_nodes = 1 << (n - 1)
+    mask = num_nodes - 1  # Mask for (n-1) bits
 
-**Why it's inefficient**: O(k^(k^n)) time complexity for checking all possible sequences.
+    # Each node has edges to node*2 % num_nodes (append 0)
+    # and (node*2 + 1) % num_nodes (append 1)
+    # We track which edges are used: edge_used[node][0] and edge_used[node][1]
+    edge_used = [[False, False] for _ in range(num_nodes)]
 
----
-
-### Approach 2: De Bruijn Graph Construction
-
-**Key Insights from De Bruijn Graph Construction**:
-- **De Bruijn Graph**: Use De Bruijn graph to find Eulerian path
-- **Efficient Implementation**: O(k^n) time complexity
-- **Eulerian Path**: Use Hierholzer's algorithm to find Eulerian path
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Use De Bruijn graph construction with Eulerian path to find De Bruijn sequence.
-
-**Algorithm**:
-- Construct De Bruijn graph where vertices are (n-1)-length words
-- Edges represent n-length words
-- Find Eulerian path in the graph
-- Convert Eulerian path to De Bruijn sequence
-
-**Visual Example**:
-```
-De Bruijn graph construction for k=2, n=3:
-
-Vertices (2-bit words): 00, 01, 10, 11
-Edges (3-bit words):
-┌─────────────────────────────────────┐
-│ 00 -> 00: edge "000"               │
-│ 00 -> 01: edge "001"               │
-│ 01 -> 10: edge "010"               │
-│ 01 -> 11: edge "011"               │
-│ 10 -> 00: edge "100"               │
-│ 10 -> 01: edge "101"               │
-│ 11 -> 10: edge "110"               │
-│ 11 -> 11: edge "111"               │
-│                                   │
-│ Eulerian path: 00 -> 00 -> 01 -> 10 -> 01 -> 11 -> 11 -> 10 │
-│                                   │
-│ Convert to sequence:              │
-│ - Start with first vertex: "00"   │
-│ - Add last character of each edge: │
-│   "00" + "0" + "1" + "0" + "1" + "1" + "1" + "0" │
-│   = "00010111"                    │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def de_bruijn_graph_sequence(k, n):
-    """Construct De Bruijn sequence using De Bruijn graph"""
-    from collections import defaultdict, deque
-    
-    # Generate alphabet
-    alphabet = [str(i) for i in range(k)]
-    
-    # Build De Bruijn graph
-    graph = defaultdict(list)
-    in_degree = defaultdict(int)
-    out_degree = defaultdict(int)
-    
-    # Create vertices (words of length n-1)
-    vertices = [''.join(word) for word in product(alphabet, repeat=n-1)]
-    
-    # Create edges (words of length n)
-    for word in product(alphabet, repeat=n):
-        word_str = ''.join(word)
-        from_vertex = word_str[:-1]  # First n-1 characters
-        to_vertex = word_str[1:]     # Last n-1 characters
-        
-        graph[from_vertex].append(to_vertex)
-        out_degree[from_vertex] += 1
-        in_degree[to_vertex] += 1
-    
-    # Find starting vertex for Eulerian path
-    start_vertex = None
-    for vertex in vertices:
-        if out_degree[vertex] > in_degree[vertex]:
-            start_vertex = vertex
-            break
-    
-    if start_vertex is None:
-        start_vertex = vertices[0]  # Any vertex for Eulerian cycle
-    
-    # Find Eulerian path using Hierholzer's algorithm
-    stack = [start_vertex]
+    # Hierholzer's algorithm
+    stack = [0]  # Start from node 0 (all zeros)
     path = []
-    
+
     while stack:
-        current = stack[-1]
-        if graph[current]:
-            next_vertex = graph[current].pop()
-            stack.append(next_vertex)
+        node = stack[-1]
+        # Try edge 0, then edge 1
+        if not edge_used[node][0]:
+            edge_used[node][0] = True
+            next_node = (node << 1) & mask  # Append 0
+            stack.append(next_node)
+        elif not edge_used[node][1]:
+            edge_used[node][1] = True
+            next_node = ((node << 1) | 1) & mask  # Append 1
+            stack.append(next_node)
         else:
             path.append(stack.pop())
-    
+
+    # Reverse path to get correct order
     path.reverse()
-    
-    # Convert path to De Bruijn sequence
-    if not path:
-        return ""
-    
-    sequence = path[0]  # Start with first vertex
+
+    # Build result: start with first node in binary, then append edge bits
+    result = []
+    # First node as (n-1)-bit string
+    first_node = path[0]
+    for i in range(n - 2, -1, -1):
+        result.append('0' if (first_node >> i) & 1 == 0 else '1')
+
+    # For each edge in path, append the last bit of destination
     for i in range(1, len(path)):
-        sequence += path[i][-1]  # Add last character of each vertex
-    
-    return sequence
+        result.append('1' if path[i] & 1 else '0')
 
-# Example usage
-k = 2
-n = 3
-result = de_bruijn_graph_sequence(k, n)
-print(f"De Bruijn graph sequence: {result}")
+    print(''.join(result))
+
+solve()
 ```
 
-**Time Complexity**: O(k^n)
-**Space Complexity**: O(k^n)
+## C++ Implementation
 
-**Why it's better**: Uses De Bruijn graph construction for O(k^n) time complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+    int n;
+    cin >> n;
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for De Bruijn graph
-- **Efficient Implementation**: O(k^n) time complexity
-- **Space Efficiency**: O(k^n) space complexity
-- **Optimal Complexity**: Best approach for De Bruijn sequence construction
+    if (n == 1) {
+        cout << "01\n";
+        return 0;
+    }
 
-**Key Insight**: Use advanced data structures for optimal De Bruijn sequence construction.
+    int num_nodes = 1 << (n - 1);
+    int mask = num_nodes - 1;
 
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient Hierholzer's algorithm
-- Handle special cases optimally
-- Return De Bruijn sequence
+    // edge_used[node][bit] = whether edge (node -> node*2+bit) is used
+    vector<array<bool, 2>> edge_used(num_nodes, {false, false});
 
-**Visual Example**:
-```
-Advanced data structure approach:
+    // Hierholzer's algorithm
+    vector<int> stack_vec, path;
+    stack_vec.push_back(0);
 
-For k=2, n=3
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Graph structure: for efficient    │
-│   storage and traversal             │
-│ - Stack structure: for optimization  │
-│ - Path cache: for optimization      │
-│                                   │
-│ De Bruijn sequence calculation:    │
-│ - Use graph structure for efficient │
-│   storage and traversal             │
-│ - Use stack structure for          │
-│   optimization                      │
-│ - Use path cache for optimization  │
-│                                   │
-│ Result: "00010111"                │
-└─────────────────────────────────────┘
-```
+    while (!stack_vec.empty()) {
+        int node = stack_vec.back();
+        if (!edge_used[node][0]) {
+            edge_used[node][0] = true;
+            stack_vec.push_back((node << 1) & mask);
+        } else if (!edge_used[node][1]) {
+            edge_used[node][1] = true;
+            stack_vec.push_back(((node << 1) | 1) & mask);
+        } else {
+            path.push_back(node);
+            stack_vec.pop_back();
+        }
+    }
 
-**Implementation**:
-```python
-def advanced_data_structure_de_bruijn_sequence(k, n):
-    """Construct De Bruijn sequence using advanced data structure approach"""
-    from collections import defaultdict, deque
-    
-    # Use advanced data structures for graph storage
-    # Generate alphabet
-    alphabet = [str(i) for i in range(k)]
-    
-    # Build advanced De Bruijn graph
-    graph = defaultdict(list)
-    in_degree = defaultdict(int)
-    out_degree = defaultdict(int)
-    
-    # Create vertices using advanced data structures
-    vertices = [''.join(word) for word in product(alphabet, repeat=n-1)]
-    
-    # Create edges using advanced data structures
-    for word in product(alphabet, repeat=n):
-        word_str = ''.join(word)
-        from_vertex = word_str[:-1]  # First n-1 characters
-        to_vertex = word_str[1:]     # Last n-1 characters
-        
-        graph[from_vertex].append(to_vertex)
-        out_degree[from_vertex] += 1
-        in_degree[to_vertex] += 1
-    
-    # Advanced starting vertex selection
-    start_vertex = None
-    for vertex in vertices:
-        if out_degree[vertex] > in_degree[vertex]:
-            start_vertex = vertex
-            break
-    
-    if start_vertex is None:
-        start_vertex = vertices[0]  # Any vertex for Eulerian cycle
-    
-    # Advanced Eulerian path using Hierholzer's algorithm
-    stack = [start_vertex]
-    path = []
-    
-    while stack:
-        current = stack[-1]
-        if graph[current]:
-            next_vertex = graph[current].pop()
-            stack.append(next_vertex)
-        else:
-            path.append(stack.pop())
-    
-    path.reverse()
-    
-    # Advanced sequence conversion
-    if not path:
-        return ""
-    
-    sequence = path[0]  # Start with first vertex
-    for i in range(1, len(path)):
-        sequence += path[i][-1]  # Add last character of each vertex
-    
-    return sequence
+    reverse(path.begin(), path.end());
 
-# Example usage
-k = 2
-n = 3
-result = advanced_data_structure_de_bruijn_sequence(k, n)
-print(f"Advanced data structure De Bruijn sequence: {result}")
+    // Build result
+    string result;
+    // First node as (n-1)-bit string
+    for (int i = n - 2; i >= 0; i--) {
+        result += ((path[0] >> i) & 1) ? '1' : '0';
+    }
+
+    // Append edge bits
+    for (int i = 1; i < (int)path.size(); i++) {
+        result += (path[i] & 1) ? '1' : '0';
+    }
+
+    cout << result << "\n";
+    return 0;
+}
 ```
 
-**Time Complexity**: O(k^n)
-**Space Complexity**: O(k^n)
+## Why This Works
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+**Correctness Proof:**
 
-## 🔧 Implementation Details
+1. **Each n-bit pattern appears exactly once:**
+   - Each n-bit pattern is represented by exactly one edge in the graph
+   - An Eulerian circuit traverses each edge exactly once
+   - Therefore, each pattern appears exactly once as a substring
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(k^(k^n)) | O(k^n) | Try all possible sequences |
-| De Bruijn Graph | O(k^n) | O(k^n) | Use De Bruijn graph with Eulerian path |
-| Advanced Data Structure | O(k^n) | O(k^n) | Use advanced data structures |
+2. **The result is the shortest possible:**
+   - There are 2^n different n-bit patterns
+   - Any string containing all of them must have at least 2^n + n - 1 characters
+   - Our construction achieves exactly this length
 
-### Time Complexity
-- **Time**: O(k^n) - Use De Bruijn graph construction for efficient sequence generation
-- **Space**: O(k^n) - Store De Bruijn graph
+3. **Every window of n bits is unique:**
+   - When we traverse edge from node A to node B, we're adding a character
+   - The n-bit window at that position is: last (n-1) bits of A + edge label
+   - This exactly corresponds to the edge (the n-bit pattern)
+   - Since each edge is traversed once, each window is unique
 
-### Why This Solution Works
-- **De Bruijn Graph**: Use graph where vertices are (n-1)-length words and edges are n-length words
-- **Eulerian Path**: Find Eulerian path in De Bruijn graph using Hierholzer's algorithm
-- **Sequence Construction**: Convert Eulerian path to De Bruijn sequence
-- **Optimal Algorithms**: Use optimal algorithms for De Bruijn sequence construction
+**Intuition:**
+- The (n-1)-bit nodes represent "context" - what we've seen recently
+- Each edge extends the context by one bit while maintaining the window size
+- The Eulerian circuit ensures we use every possible extension exactly once
 
-## 🚀 Problem Variations
+## Complexity Analysis
 
-### Extended Problems with Detailed Code Examples
+| Operation | Complexity |
+|-----------|------------|
+| Graph construction | O(2^n) nodes and edges |
+| Hierholzer's algorithm | O(2^n) - visits each edge once |
+| Result construction | O(2^n) |
+| **Total Time** | **O(2^n)** |
+| **Total Space** | **O(2^n)** for edge tracking |
 
-#### **1. De Bruijn Sequence with Constraints**
-**Problem**: Construct De Bruijn sequence with specific constraints.
+## Related Problems
 
-**Key Differences**: Apply constraints to sequence construction
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_de_bruijn_sequence(k, n, constraints):
-    """Construct De Bruijn sequence with constraints"""
-    from collections import defaultdict, deque
-    
-    # Generate alphabet with constraints
-    alphabet = [str(i) for i in range(k)]
-    
-    # Build constrained De Bruijn graph
-    graph = defaultdict(list)
-    in_degree = defaultdict(int)
-    out_degree = defaultdict(int)
-    
-    # Create vertices with constraints
-    vertices = [''.join(word) for word in product(alphabet, repeat=n-1)]
-    
-    # Create edges with constraints
-    for word in product(alphabet, repeat=n):
-        word_str = ''.join(word)
-        from_vertex = word_str[:-1]
-        to_vertex = word_str[1:]
-        
-        if constraints(from_vertex, to_vertex, word_str):
-            graph[from_vertex].append(to_vertex)
-            out_degree[from_vertex] += 1
-            in_degree[to_vertex] += 1
-    
-    # Find starting vertex with constraints
-    start_vertex = None
-    for vertex in vertices:
-        if out_degree[vertex] > in_degree[vertex]:
-            start_vertex = vertex
-            break
-    
-    if start_vertex is None:
-        start_vertex = vertices[0]
-    
-    # Find constrained Eulerian path
-    stack = [start_vertex]
-    path = []
-    
-    while stack:
-        current = stack[-1]
-        if graph[current]:
-            next_vertex = graph[current].pop()
-            stack.append(next_vertex)
-        else:
-            path.append(stack.pop())
-    
-    path.reverse()
-    
-    # Convert to constrained sequence
-    if not path:
-        return ""
-    
-    sequence = path[0]
-    for i in range(1, len(path)):
-        sequence += path[i][-1]
-    
-    return sequence
-
-# Example usage
-k = 2
-n = 3
-constraints = lambda f, t, w: len(w) == 3  # Basic constraint
-result = constrained_de_bruijn_sequence(k, n, constraints)
-print(f"Constrained De Bruijn sequence: {result}")
-```
-
-#### **2. De Bruijn Sequence with Different Metrics**
-**Problem**: Construct De Bruijn sequence with different alphabet metrics.
-
-**Key Differences**: Different alphabet size calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_de_bruijn_sequence(k, n, weight_function):
-    """Construct De Bruijn sequence with different alphabet metrics"""
-    from collections import defaultdict, deque
-    
-    # Generate alphabet with modified weights
-    alphabet = [str(i) for i in range(k)]
-    
-    # Build weighted De Bruijn graph
-    graph = defaultdict(list)
-    in_degree = defaultdict(int)
-    out_degree = defaultdict(int)
-    
-    # Create vertices with modified weights
-    vertices = [''.join(word) for word in product(alphabet, repeat=n-1)]
-    
-    # Create edges with modified weights
-    for word in product(alphabet, repeat=n):
-        word_str = ''.join(word)
-        from_vertex = word_str[:-1]
-        to_vertex = word_str[1:]
-        weight = weight_function(word_str)
-        
-        graph[from_vertex].append((to_vertex, weight))
-        out_degree[from_vertex] += 1
-        in_degree[to_vertex] += 1
-    
-    # Find starting vertex with modified weights
-    start_vertex = None
-    for vertex in vertices:
-        if out_degree[vertex] > in_degree[vertex]:
-            start_vertex = vertex
-            break
-    
-    if start_vertex is None:
-        start_vertex = vertices[0]
-    
-    # Find weighted Eulerian path
-    stack = [start_vertex]
-    path = []
-    
-    while stack:
-        current = stack[-1]
-        if graph[current]:
-            next_vertex, weight = graph[current].pop()
-            stack.append(next_vertex)
-        else:
-            path.append(stack.pop())
-    
-    path.reverse()
-    
-    # Convert to weighted sequence
-    if not path:
-        return ""
-    
-    sequence = path[0]
-    for i in range(1, len(path)):
-        sequence += path[i][-1]
-    
-    return sequence
-
-# Example usage
-k = 2
-n = 3
-weight_function = lambda w: len(w)  # Length-based weight
-result = weighted_de_bruijn_sequence(k, n, weight_function)
-print(f"Weighted De Bruijn sequence: {result}")
-```
-
-#### **3. De Bruijn Sequence with Multiple Dimensions**
-**Problem**: Construct De Bruijn sequence in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_de_bruijn_sequence(k, n, dimensions):
-    """Construct De Bruijn sequence in multiple dimensions"""
-    from collections import defaultdict, deque
-    
-    # Generate alphabet
-    alphabet = [str(i) for i in range(k)]
-    
-    # Build multi-dimensional De Bruijn graph
-    graph = defaultdict(list)
-    in_degree = defaultdict(int)
-    out_degree = defaultdict(int)
-    
-    # Create vertices for multiple dimensions
-    vertices = [''.join(word) for word in product(alphabet, repeat=n-1)]
-    
-    # Create edges for multiple dimensions
-    for word in product(alphabet, repeat=n):
-        word_str = ''.join(word)
-        from_vertex = word_str[:-1]
-        to_vertex = word_str[1:]
-        
-        graph[from_vertex].append(to_vertex)
-        out_degree[from_vertex] += 1
-        in_degree[to_vertex] += 1
-    
-    # Find starting vertex for multiple dimensions
-    start_vertex = None
-    for vertex in vertices:
-        if out_degree[vertex] > in_degree[vertex]:
-            start_vertex = vertex
-            break
-    
-    if start_vertex is None:
-        start_vertex = vertices[0]
-    
-    # Find multi-dimensional Eulerian path
-    stack = [start_vertex]
-    path = []
-    
-    while stack:
-        current = stack[-1]
-        if graph[current]:
-            next_vertex = graph[current].pop()
-            stack.append(next_vertex)
-        else:
-            path.append(stack.pop())
-    
-    path.reverse()
-    
-    # Convert to multi-dimensional sequence
-    if not path:
-        return ""
-    
-    sequence = path[0]
-    for i in range(1, len(path)):
-        sequence += path[i][-1]
-    
-    return sequence
-
-# Example usage
-k = 2
-n = 3
-dimensions = 1
-result = multi_dimensional_de_bruijn_sequence(k, n, dimensions)
-print(f"Multi-dimensional De Bruijn sequence: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Teleporters Path](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Mail Delivery](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Reconstruct Itinerary](https://leetcode.com/problems/reconstruct-itinerary/) - Graph
-- [Valid Arrangement of Pairs](https://leetcode.com/problems/valid-arrangement-of-pairs/) - Graph
-- [Cracking the Safe](https://leetcode.com/problems/cracking-the-safe/) - Graph
-
-#### **Problem Categories**
-- **Graph Algorithms**: De Bruijn sequences, Eulerian paths
-- **Combinatorics**: Sequence generation, word problems
-- **Graph Traversal**: Eulerian paths, Hierholzer's algorithm
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [De Bruijn Sequence](https://cp-algorithms.com/graph/euler_path.html#de-bruijn-sequence) - De Bruijn sequence algorithms
-- [Eulerian Path](https://cp-algorithms.com/graph/euler_path.html) - Eulerian path algorithms
-
-### **Practice Problems**
-- [CSES Teleporters Path](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Mail Delivery](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [De Bruijn Sequence](https://en.wikipedia.org/wiki/De_Bruijn_sequence) - Wikipedia article
-- [Eulerian Path](https://en.wikipedia.org/wiki/Eulerian_path) - Wikipedia article
+- [CSES Teleporters Path](https://cses.fi/problemset/task/1693) - Eulerian path
+- [CSES Mail Delivery](https://cses.fi/problemset/task/1691) - Eulerian circuit
+- [LeetCode 753: Cracking the Safe](https://leetcode.com/problems/cracking-the-safe/) - Same concept, different framing

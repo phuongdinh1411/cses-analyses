@@ -1,1207 +1,470 @@
 ---
 layout: simple
-title: "Bit Strings"
+title: "Bit Strings - Introductory Problem"
 permalink: /problem_soulutions/introductory_problems/bit_strings_analysis
+difficulty: Easy
+tags: [modular-arithmetic, exponentiation, combinatorics]
 ---
 
 # Bit Strings
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of counting and combinatorics in introductory problems
-- Apply efficient algorithms for counting bit strings with constraints
-- Implement modular arithmetic for large number calculations
-- Optimize algorithms for counting problems with constraints
-- Handle special cases in combinatorics problems
+| Attribute | Value |
+|-----------|-------|
+| **Problem Link** | [CSES 1617 - Bit Strings](https://cses.fi/problemset/task/1617) |
+| **Difficulty** | Easy |
+| **Category** | Introductory / Math |
+| **Time Limit** | 1 second |
+| **Key Technique** | Modular Exponentiation |
 
-## 📋 Problem Description
+### Learning Goals
 
-Count the number of bit strings of length n that do not contain two consecutive 1s.
+After solving this problem, you will be able to:
+- [ ] Understand why there are 2^n possible bit strings of length n
+- [ ] Implement modular exponentiation (binary exponentiation)
+- [ ] Apply modular arithmetic to avoid integer overflow
+- [ ] Recognize when to use fast exponentiation for large powers
 
-**Input**: 
-- n: length of bit string
+---
 
-**Output**: 
-- Number of valid bit strings modulo 10^9 + 7
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 10^6
+**Problem:** Calculate the number of bit strings of length n.
 
-**Example**:
+**Input:**
+- Line 1: An integer n (the length of the bit string)
+
+**Output:**
+- The number of bit strings of length n, modulo 10^9 + 7
+
+**Constraints:**
+- 1 <= n <= 10^6
+
+### Example
+
 ```
 Input:
-n = 3
+3
 
 Output:
-5
-
-Explanation**: 
-Valid bit strings of length 3:
-000, 001, 010, 100, 101
-Invalid bit strings: 011, 110, 111
-Total: 5 valid strings
+8
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Generate all possible bit strings and check constraints
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Check each bit string for consecutive 1s
-- **Inefficient**: O(2^n × n) time complexity
-
-**Key Insight**: Generate all possible bit strings and count those without consecutive 1s.
-
-**Algorithm**:
-- Generate all possible bit strings of length n
-- For each bit string, check if it contains consecutive 1s
-- Count the valid bit strings
-- Return the count modulo 10^9 + 7
-
-**Visual Example**:
-```
-Bit strings of length 3:
-
-Generate all 2^3 = 8 bit strings:
-┌─────────────────────────────────────┐
-│ String 1: 000                      │
-│ - Check: No consecutive 1s ✓       │
-│ - Valid ✓                          │
-│                                   │
-│ String 2: 001                      │
-│ - Check: No consecutive 1s ✓       │
-│ - Valid ✓                          │
-│                                   │
-│ String 3: 010                      │
-│ - Check: No consecutive 1s ✓       │
-│ - Valid ✓                          │
-│                                   │
-│ String 4: 011                      │
-│ - Check: Has consecutive 1s ✗      │
-│ - Invalid ✗                        │
-│                                   │
-│ String 5: 100                      │
-│ - Check: No consecutive 1s ✓       │
-│ - Valid ✓                          │
-│                                   │
-│ String 6: 101                      │
-│ - Check: No consecutive 1s ✓       │
-│ - Valid ✓                          │
-│                                   │
-│ String 7: 110                      │
-│ - Check: Has consecutive 1s ✗      │
-│ - Invalid ✗                        │
-│                                   │
-│ String 8: 111                      │
-│ - Check: Has consecutive 1s ✗      │
-│ - Invalid ✗                        │
-│                                   │
-│ Valid strings: 000, 001, 010, 100, 101 │
-│ Total: 5                           │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def brute_force_bit_strings(n):
-    """Count valid bit strings using brute force approach"""
-    MOD = 10**9 + 7
-    count = 0
-    
-    # Generate all possible bit strings
-    for i in range(1 << n):
-        bit_string = format(i, f'0{n}b')
-        
-        # Check if bit string has consecutive 1s
-        has_consecutive_ones = False
-        for j in range(len(bit_string) - 1):
-            if bit_string[j] == '1' and bit_string[j + 1] == '1':
-                has_consecutive_ones = True
-                break
-        
-        if not has_consecutive_ones:
-            count += 1
-    
-    return count % MOD
-
-# Example usage
-n = 3
-result = brute_force_bit_strings(n)
-print(f"Brute force count: {result}")
-```
-
-**Time Complexity**: O(2^n × n)
-**Space Complexity**: O(n)
-
-**Why it's inefficient**: O(2^n × n) time complexity for generating and checking all bit strings.
+**Explanation:** For n = 3, the possible bit strings are: 000, 001, 010, 011, 100, 101, 110, 111. That is 2^3 = 8 strings.
 
 ---
 
-### Approach 2: Dynamic Programming
+## Intuition: How to Think About This Problem
 
-**Key Insights from Dynamic Programming**:
-- **Recurrence Relation**: Use DP to avoid recalculating subproblems
-- **Efficient Implementation**: O(n) time complexity
-- **State Definition**: dp[i] = number of valid bit strings of length i
-- **Optimization**: Much more efficient than brute force
+### Pattern Recognition
 
-**Key Insight**: Use dynamic programming with recurrence relation to count valid bit strings.
+> **Key Question:** How many ways can we fill n positions where each position has 2 choices (0 or 1)?
 
-**Algorithm**:
-- Define dp[i] as number of valid bit strings of length i
-- Base cases: dp[1] = 2, dp[2] = 3
-- Recurrence: dp[i] = dp[i-1] + dp[i-2]
-- Return dp[n] modulo 10^9 + 7
+Each position in the bit string can independently be either 0 or 1. Since there are n positions and 2 choices per position, the total count is 2 * 2 * 2 * ... (n times) = 2^n.
 
-**Visual Example**:
-```
-Dynamic Programming:
+### Breaking Down the Problem
 
-For n = 3:
-┌─────────────────────────────────────┐
-│ Base cases:                        │
-│ - dp[1] = 2 (0, 1)                │
-│ - dp[2] = 3 (00, 01, 10)          │
-│                                   │
-│ Recurrence relation:               │
-│ dp[i] = dp[i-1] + dp[i-2]         │
-│                                   │
-│ Calculation:                       │
-│ - dp[3] = dp[2] + dp[1] = 3 + 2 = 5 │
-│                                   │
-│ Explanation:                       │
-│ - dp[i-1]: strings ending with 0   │
-│ - dp[i-2]: strings ending with 01  │
-│ - Total: all valid strings of length i │
-│                                   │
-│ Result: 5                          │
-└─────────────────────────────────────┘
-```
+1. **What are we looking for?** The count of all possible binary strings of length n.
+2. **What information do we have?** The length n.
+3. **What is the relationship between input and output?** Output = 2^n mod (10^9 + 7).
 
-**Implementation**:
-```python
-def dp_bit_strings(n):
-    """Count valid bit strings using dynamic programming"""
-    MOD = 10**9 + 7
-    
-    if n == 1:
-        return 2
-    if n == 2:
-        return 3
-    
-    # Initialize DP array
-    dp = [0] * (n + 1)
-    dp[1] = 2  # 0, 1
-    dp[2] = 3  # 00, 01, 10
-    
-    # Fill DP array
-    for i in range(3, n + 1):
-        dp[i] = (dp[i-1] + dp[i-2]) % MOD
-    
-    return dp[n]
+### Analogies
 
-# Example usage
-n = 3
-result = dp_bit_strings(n)
-print(f"DP count: {result}")
-```
-
-**Time Complexity**: O(n)
-**Space Complexity**: O(n)
-
-**Why it's better**: Uses dynamic programming for O(n) time complexity.
+Think of this like a binary counter with n digits. Starting from all zeros, you count up until all ones. The total number of states is exactly 2^n.
 
 ---
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+## Solution 1: Naive Approach (TLE)
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for counting
-- **Efficient Implementation**: O(n) time complexity
-- **Space Efficiency**: O(1) space complexity
-- **Optimal Complexity**: Best approach for counting problems
+### Idea
 
-**Key Insight**: Use advanced data structures for optimal counting.
+Multiply 2 by itself n times, taking modulo at each step.
 
-**Algorithm**:
-- Use specialized data structures for counting
-- Implement efficient DP with space optimization
-- Handle special cases optimally
-- Return count modulo 10^9 + 7
+### Algorithm
 
-**Visual Example**:
-```
-Advanced data structure approach:
+1. Initialize result = 1
+2. Loop n times, multiply result by 2
+3. Take modulo 10^9 + 7 at each step
+4. Return result
 
-For n = 3:
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Advanced counter: for efficient   │
-│   counting                          │
-│ - Modular arithmetic: for optimization│
-│ - Space optimization: for efficiency│
-│                                   │
-│ Counting calculation:               │
-│ - Use advanced counter for efficient│
-│   counting                          │
-│ - Use modular arithmetic for       │
-│   optimization                      │
-│ - Use space optimization for       │
-│   efficiency                        │
-│                                   │
-│ Result: 5                          │
-└─────────────────────────────────────┘
-```
+### Code
 
-**Implementation**:
 ```python
-def advanced_data_structure_bit_strings(n):
-    """Count valid bit strings using advanced data structure approach"""
+def solve_naive(n):
+    """
+    Naive solution: linear multiplication.
+
+    Time: O(n)
+    Space: O(1)
+    """
     MOD = 10**9 + 7
-    
-    if n == 1:
-        return 2
-    if n == 2:
-        return 3
-    
-    # Use space-optimized DP
-    prev2 = 2  # dp[i-2]
-    prev1 = 3  # dp[i-1]
-    
-    # Advanced DP with space optimization
-    for i in range(3, n + 1):
-        current = (prev1 + prev2) % MOD
-        prev2 = prev1
-        prev1 = current
-    
-    return prev1
-
-# Example usage
-n = 3
-result = advanced_data_structure_bit_strings(n)
-print(f"Advanced data structure count: {result}")
+    result = 1
+    for _ in range(n):
+        result = (result * 2) % MOD
+    return result
 ```
 
-**Time Complexity**: O(n)
-**Space Complexity**: O(1)
+```cpp
+#include <iostream>
+using namespace std;
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+int main() {
+    int n;
+    cin >> n;
 
-## 🔧 Implementation Details
+    long long result = 1;
+    const long long MOD = 1e9 + 7;
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(2^n × n) | O(n) | Generate all bit strings and check |
-| Dynamic Programming | O(n) | O(n) | Use recurrence relation dp[i] = dp[i-1] + dp[i-2] |
-| Advanced Data Structure | O(n) | O(1) | Use space-optimized DP |
+    for (int i = 0; i < n; i++) {
+        result = (result * 2) % MOD;
+    }
 
-### Time Complexity
-- **Time**: O(n) - Use dynamic programming for efficient counting
-- **Space**: O(1) - Use space-optimized DP
+    cout << result << endl;
+    return 0;
+}
+```
 
-### Why This Solution Works
-- **Recurrence Relation**: Use dp[i] = dp[i-1] + dp[i-2] to avoid recalculating
-- **Base Cases**: Handle small cases directly
-- **Modular Arithmetic**: Use modulo to handle large numbers
-- **Optimal Algorithms**: Use optimal algorithms for counting problems
+### Complexity
 
-## 🚀 Problem Variations
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Loop runs n times |
+| Space | O(1) | Only stores result |
 
-### Extended Problems with Detailed Code Examples
+### Why This Works (But Is Slow)
 
-#### **1. Bit Strings with Constraints**
-**Problem**: Count bit strings with specific constraints.
+This approach is correct but performs n multiplications. For n up to 10^6, this is acceptable but not optimal. For larger constraints, we need a faster method.
 
-**Key Differences**: Apply constraints to counting
+---
 
-**Solution Approach**: Modify algorithm to handle constraints
+## Solution 2: Binary Exponentiation (Optimal)
 
-**Implementation**:
+### Key Insight
+
+> **The Trick:** Use binary exponentiation to compute 2^n in O(log n) time by repeatedly squaring.
+
+Binary exponentiation exploits the fact that:
+- If n is even: 2^n = (2^(n/2))^2
+- If n is odd: 2^n = 2 * 2^(n-1)
+
+This reduces the number of multiplications from n to log(n).
+
+### How Binary Exponentiation Works
+
+```
+Example: 2^13
+
+13 in binary = 1101 = 8 + 4 + 1
+
+2^13 = 2^8 * 2^4 * 2^1
+
+We compute powers of 2 by repeated squaring:
+2^1 = 2
+2^2 = 4
+2^4 = 16
+2^8 = 256
+
+Then multiply the ones corresponding to set bits:
+2^13 = 256 * 16 * 2 = 8192
+```
+
+### Algorithm
+
+1. Initialize result = 1, base = 2
+2. While exponent > 0:
+   - If exponent is odd, multiply result by base
+   - Square the base
+   - Halve the exponent (integer division)
+3. Take modulo at each multiplication
+4. Return result
+
+### Dry Run Example
+
+Let us trace through with input `n = 10`:
+
+```
+Goal: Compute 2^10 mod (10^9 + 7)
+
+Initial state:
+  result = 1
+  base = 2
+  exp = 10
+
+Step 1: exp = 10 (even)
+  exp is even, do not multiply result
+  base = 2 * 2 = 4
+  exp = 10 / 2 = 5
+
+Step 2: exp = 5 (odd)
+  result = 1 * 4 = 4
+  base = 4 * 4 = 16
+  exp = 5 / 2 = 2
+
+Step 3: exp = 2 (even)
+  exp is even, do not multiply result
+  base = 16 * 16 = 256
+  exp = 2 / 2 = 1
+
+Step 4: exp = 1 (odd)
+  result = 4 * 256 = 1024
+  base = 256 * 256 = 65536
+  exp = 1 / 2 = 0
+
+Final: result = 1024
+
+Verification: 2^10 = 1024
+```
+
+### Visual Diagram
+
+```
+Computing 2^10:
+
+Exponent in binary: 10 = 1010
+
+     bit:     1    0    1    0
+     pos:     3    2    1    0
+   power:    2^8  2^4  2^2  2^1
+   value:   256   16    4    2
+
+Include:    YES   NO  YES   NO
+
+Result = 2^8 * 2^2 = 256 * 4 = 1024
+```
+
+### Code
+
 ```python
-def constrained_bit_strings(n, constraints):
-    """Count valid bit strings with constraints"""
+def solve_optimal(n):
+    """
+    Optimal solution using binary exponentiation.
+
+    Time: O(log n)
+    Space: O(1)
+    """
     MOD = 10**9 + 7
-    
-    if n == 1:
-        return 2 if constraints(1) else 0
-    if n == 2:
-        return 3 if constraints(2) else 0
-    
-    prev2 = 2
-    prev1 = 3
-    
-    for i in range(3, n + 1):
-        current = (prev1 + prev2) % MOD
-        if not constraints(i):
-            current = 0
-        prev2 = prev1
-        prev1 = current
-    
-    return prev1
 
-# Example usage
-n = 3
-constraints = lambda i: True  # No constraints
-result = constrained_bit_strings(n, constraints)
-print(f"Constrained count: {result}")
+    def power(base, exp, mod):
+        result = 1
+        base = base % mod
+
+        while exp > 0:
+            # If exp is odd, multiply result with base
+            if exp % 2 == 1:
+                result = (result * base) % mod
+
+            # Square the base
+            base = (base * base) % mod
+
+            # Halve the exponent
+            exp //= 2
+
+        return result
+
+    return power(2, n, MOD)
+
+
+# Main
+n = int(input())
+print(solve_optimal(n))
 ```
 
-#### **2. Bit Strings with Different Metrics**
-**Problem**: Count bit strings with different cost metrics.
+### C++ Solution
 
-**Key Differences**: Different cost calculations
+```cpp
+#include <iostream>
+using namespace std;
 
-**Solution Approach**: Use advanced mathematical techniques
+const long long MOD = 1e9 + 7;
 
-**Implementation**:
-```python
-def weighted_bit_strings(n, weight_function):
-    """Count valid bit strings with different cost metrics"""
-    MOD = 10**9 + 7
-    
-    if n == 1:
-        return weight_function(1, 2)
-    if n == 2:
-        return weight_function(2, 3)
-    
-    prev2 = weight_function(1, 2)
-    prev1 = weight_function(2, 3)
-    
-    for i in range(3, n + 1):
-        current = (prev1 + prev2) % MOD
-        current = weight_function(i, current)
-        prev2 = prev1
-        prev1 = current
-    
-    return prev1
+long long power(long long base, long long exp, long long mod) {
+    long long result = 1;
+    base = base % mod;
 
-# Example usage
-n = 3
-weight_function = lambda i, count: count  # No modification
-result = weighted_bit_strings(n, weight_function)
-print(f"Weighted count: {result}")
-```
-
-#### **3. Bit Strings with Multiple Dimensions**
-**Problem**: Count bit strings in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_bit_strings(n, dimensions):
-    """Count valid bit strings in multiple dimensions"""
-    MOD = 10**9 + 7
-    
-    if n == 1:
-        return 2
-    if n == 2:
-        return 3
-    
-    prev2 = 2
-    prev1 = 3
-    
-    for i in range(3, n + 1):
-        current = (prev1 + prev2) % MOD
-        prev2 = prev1
-        prev1 = current
-    
-    return prev1
-
-# Example usage
-n = 3
-dimensions = 1
-result = multi_dimensional_bit_strings(n, dimensions)
-print(f"Multi-dimensional count: {result}")
-```
-
-## Problem Variations
-
-### **Variation 1: Bit Strings with Dynamic Updates**
-**Problem**: Handle dynamic bit string length updates (add/remove bits) while maintaining valid bit string count.
-
-**Approach**: Use efficient data structures and algorithms for dynamic bit string management.
-
-```python
-from collections import defaultdict
-import itertools
-
-class DynamicBitStrings:
-    def __init__(self, n):
-        self.n = n
-        self.MOD = 10**9 + 7
-        self.count = self._calculate_count()
-        self.valid_strings = self._generate_valid_strings()
-    
-    def _calculate_count(self):
-        """Calculate count of valid bit strings using dynamic programming."""
-        if self.n == 0:
-            return 0
-        if self.n == 1:
-            return 2
-        if self.n == 2:
-            return 3
-        
-        prev2 = 2
-        prev1 = 3
-        
-        for i in range(3, self.n + 1):
-            current = (prev1 + prev2) % self.MOD
-            prev2 = prev1
-            prev1 = current
-        
-        return prev1
-    
-    def _generate_valid_strings(self):
-        """Generate all valid bit strings."""
-        if self.n == 0:
-            return []
-        if self.n == 1:
-            return ['0', '1']
-        if self.n == 2:
-            return ['00', '01', '10']
-        
-        # Generate valid strings using recursive approach
-        result = []
-        
-        def generate_strings(current, length):
-            if length == self.n:
-                result.append(current)
-                return
-            
-            # Add '0' (always valid)
-            generate_strings(current + '0', length + 1)
-            
-            # Add '1' only if previous character is not '1'
-            if length == 0 or current[-1] != '1':
-                generate_strings(current + '1', length + 1)
-        
-        generate_strings('', 0)
-        return result
-    
-    def add_bit(self, position=None):
-        """Add a bit at specified position (or at end)."""
-        if position is None:
-            position = self.n
-        
-        self.n += 1
-        self.count = self._calculate_count()
-        self.valid_strings = self._generate_valid_strings()
-    
-    def remove_bit(self, position):
-        """Remove bit at specified position."""
-        if 0 <= position < self.n:
-            self.n -= 1
-            self.count = self._calculate_count()
-            self.valid_strings = self._generate_valid_strings()
-    
-    def get_count(self):
-        """Get current count of valid bit strings."""
-        return self.count
-    
-    def get_valid_strings(self):
-        """Get current valid bit strings."""
-        return self.valid_strings
-    
-    def get_strings_with_constraints(self, constraint_func):
-        """Get bit strings that satisfy custom constraints."""
-        result = []
-        for bit_string in self.valid_strings:
-            if constraint_func(bit_string):
-                result.append(bit_string)
-        return result
-    
-    def get_strings_in_range(self, start_pattern, end_pattern):
-        """Get bit strings within specified pattern range."""
-        result = []
-        for bit_string in self.valid_strings:
-            if start_pattern <= bit_string <= end_pattern:
-                result.append(bit_string)
-        return result
-    
-    def get_strings_with_pattern(self, pattern):
-        """Get bit strings containing specified pattern."""
-        result = []
-        for bit_string in self.valid_strings:
-            if pattern in bit_string:
-                result.append(bit_string)
-        return result
-    
-    def get_string_statistics(self):
-        """Get statistics about bit strings."""
-        if not self.valid_strings:
-            return {
-                'total_strings': 0,
-                'strings_with_0': 0,
-                'strings_with_1': 0,
-                'average_length': 0,
-                'pattern_distribution': {}
-            }
-        
-        total_strings = len(self.valid_strings)
-        strings_with_0 = sum(1 for s in self.valid_strings if '0' in s)
-        strings_with_1 = sum(1 for s in self.valid_strings if '1' in s)
-        average_length = sum(len(s) for s in self.valid_strings) / total_strings
-        
-        # Calculate pattern distribution
-        pattern_distribution = defaultdict(int)
-        for bit_string in self.valid_strings:
-            for i in range(len(bit_string) - 1):
-                pattern = bit_string[i:i+2]
-                pattern_distribution[pattern] += 1
-        
-        return {
-            'total_strings': total_strings,
-            'strings_with_0': strings_with_0,
-            'strings_with_1': strings_with_1,
-            'average_length': average_length,
-            'pattern_distribution': dict(pattern_distribution)
-        }
-    
-    def get_string_patterns(self):
-        """Get patterns in bit strings."""
-        patterns = {
-            'consecutive_0s': 0,
-            'consecutive_1s': 0,
-            'alternating_patterns': 0,
-            'palindromic_strings': 0
-        }
-        
-        for bit_string in self.valid_strings:
-            # Check for consecutive 0s
-            if '00' in bit_string:
-                patterns['consecutive_0s'] += 1
-            
-            # Check for consecutive 1s (should be 0 for valid strings)
-            if '11' in bit_string:
-                patterns['consecutive_1s'] += 1
-            
-            # Check for alternating patterns
-            alternating = True
-            for i in range(1, len(bit_string)):
-                if bit_string[i] == bit_string[i-1]:
-                    alternating = False
-                    break
-            if alternating:
-                patterns['alternating_patterns'] += 1
-            
-            # Check for palindromic strings
-            if bit_string == bit_string[::-1]:
-                patterns['palindromic_strings'] += 1
-        
-        return patterns
-    
-    def get_optimal_string_strategy(self):
-        """Get optimal strategy for bit string operations."""
-        if self.n == 0:
-            return {
-                'recommended_strategy': 'none',
-                'efficiency_rate': 0,
-                'validity_rate': 0
-            }
-        
-        # Calculate efficiency rate
-        total_possible = 2 ** self.n
-        efficiency_rate = self.count / total_possible if total_possible > 0 else 0
-        
-        # Calculate validity rate
-        valid_strings = len(self.valid_strings)
-        validity_rate = valid_strings / self.count if self.count > 0 else 0
-        
-        # Determine recommended strategy
-        if efficiency_rate > 0.5:
-            recommended_strategy = 'dp_optimal'
-        elif validity_rate > 0.8:
-            recommended_strategy = 'recursive_generation'
-        else:
-            recommended_strategy = 'brute_force'
-        
-        return {
-            'recommended_strategy': recommended_strategy,
-            'efficiency_rate': efficiency_rate,
-            'validity_rate': validity_rate
+    while (exp > 0) {
+        // If exp is odd, multiply result with base
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
         }
 
-# Example usage
-n = 4
-dynamic_bit_strings = DynamicBitStrings(n)
-print(f"Initial count: {dynamic_bit_strings.get_count()}")
+        // Square the base
+        base = (base * base) % mod;
 
-# Add a bit
-dynamic_bit_strings.add_bit()
-print(f"After adding bit: {dynamic_bit_strings.get_count()}")
+        // Halve the exponent
+        exp /= 2;
+    }
 
-# Remove a bit
-dynamic_bit_strings.remove_bit(0)
-print(f"After removing bit: {dynamic_bit_strings.get_count()}")
-
-# Get strings with constraints
-def constraint_func(bit_string):
-    return bit_string.count('1') <= 2
-
-print(f"Strings with at most 2 ones: {len(dynamic_bit_strings.get_strings_with_constraints(constraint_func))}")
-
-# Get strings in range
-print(f"Strings in range ['00', '10']: {len(dynamic_bit_strings.get_strings_in_range('00', '10'))}")
-
-# Get strings with pattern
-print(f"Strings containing '01': {len(dynamic_bit_strings.get_strings_with_pattern('01'))}")
-
-# Get statistics
-print(f"Statistics: {dynamic_bit_strings.get_string_statistics()}")
-
-# Get patterns
-print(f"Patterns: {dynamic_bit_strings.get_string_patterns()}")
-
-# Get optimal strategy
-print(f"Optimal strategy: {dynamic_bit_strings.get_optimal_string_strategy()}")
-```
-
-### **Variation 2: Bit Strings with Different Operations**
-**Problem**: Handle different types of operations on bit strings (weighted bits, priority-based selection, advanced constraints).
-
-**Approach**: Use advanced data structures for efficient different types of bit string queries.
-
-```python
-class AdvancedBitStrings:
-    def __init__(self, n, weights=None, priorities=None):
-        self.n = n
-        self.weights = weights or [1] * n
-        self.priorities = priorities or [1] * n
-        self.MOD = 10**9 + 7
-        self.count = self._calculate_count()
-        self.valid_strings = self._generate_valid_strings()
-        self.weighted_strings = self._generate_weighted_strings()
-    
-    def _calculate_count(self):
-        """Calculate count of valid bit strings using dynamic programming."""
-        if self.n == 0:
-            return 0
-        if self.n == 1:
-            return 2
-        if self.n == 2:
-            return 3
-        
-        prev2 = 2
-        prev1 = 3
-        
-        for i in range(3, self.n + 1):
-            current = (prev1 + prev2) % self.MOD
-            prev2 = prev1
-            prev1 = current
-        
-        return prev1
-    
-    def _generate_valid_strings(self):
-        """Generate all valid bit strings."""
-        if self.n == 0:
-            return []
-        if self.n == 1:
-            return ['0', '1']
-        if self.n == 2:
-            return ['00', '01', '10']
-        
-        result = []
-        
-        def generate_strings(current, length):
-            if length == self.n:
-                result.append(current)
-                return
-            
-            # Add '0' (always valid)
-            generate_strings(current + '0', length + 1)
-            
-            # Add '1' only if previous character is not '1'
-            if length == 0 or current[-1] != '1':
-                generate_strings(current + '1', length + 1)
-        
-        generate_strings('', 0)
-        return result
-    
-    def _generate_weighted_strings(self):
-        """Generate weighted bit strings."""
-        result = []
-        for bit_string in self.valid_strings:
-            weighted_string = {
-                'string': bit_string,
-                'weight': sum(self.weights[i] for i in range(len(bit_string)) if bit_string[i] == '1'),
-                'priority': sum(self.priorities[i] for i in range(len(bit_string)) if bit_string[i] == '1')
-            }
-            result.append(weighted_string)
-        return result
-    
-    def get_strings(self):
-        """Get current valid bit strings."""
-        return self.valid_strings
-    
-    def get_weighted_strings(self):
-        """Get weighted bit strings."""
-        return self.weighted_strings
-    
-    def get_strings_with_priority(self, priority_func):
-        """Get bit strings considering priority."""
-        result = []
-        for bit_string in self.valid_strings:
-            priority = priority_func(bit_string, self.weights, self.priorities)
-            result.append((bit_string, priority))
-        
-        # Sort by priority
-        result.sort(key=lambda x: x[1], reverse=True)
-        return result
-    
-    def get_strings_with_optimization(self, optimization_func):
-        """Get bit strings using custom optimization function."""
-        result = []
-        for bit_string in self.valid_strings:
-            score = optimization_func(bit_string, self.weights, self.priorities)
-            result.append((bit_string, score))
-        
-        # Sort by optimization score
-        result.sort(key=lambda x: x[1], reverse=True)
-        return result
-    
-    def get_strings_with_constraints(self, constraint_func):
-        """Get bit strings that satisfy custom constraints."""
-        result = []
-        for bit_string in self.valid_strings:
-            if constraint_func(bit_string, self.weights, self.priorities):
-                result.append(bit_string)
-        return result
-    
-    def get_strings_with_multiple_criteria(self, criteria_list):
-        """Get bit strings that satisfy multiple criteria."""
-        result = []
-        for bit_string in self.valid_strings:
-            satisfies_all_criteria = True
-            for criterion in criteria_list:
-                if not criterion(bit_string, self.weights, self.priorities):
-                    satisfies_all_criteria = False
-                    break
-            if satisfies_all_criteria:
-                result.append(bit_string)
-        return result
-    
-    def get_strings_with_alternatives(self, alternatives):
-        """Get bit strings considering alternative weights/priorities."""
-        result = []
-        
-        # Check original strings
-        for bit_string in self.valid_strings:
-            result.append((bit_string, 'original'))
-        
-        # Check alternative weights/priorities
-        for alt_weights, alt_priorities in alternatives:
-            # Create temporary instance with alternative weights/priorities
-            temp_instance = AdvancedBitStrings(self.n, alt_weights, alt_priorities)
-            temp_strings = temp_instance.get_valid_strings()
-            result.append((temp_strings, f'alternative_{alt_weights}_{alt_priorities}'))
-        
-        return result
-    
-    def get_strings_with_adaptive_criteria(self, adaptive_func):
-        """Get bit strings using adaptive criteria."""
-        result = []
-        for bit_string in self.valid_strings:
-            if adaptive_func(bit_string, self.weights, self.priorities, result):
-                result.append(bit_string)
-        return result
-    
-    def get_string_optimization(self):
-        """Get optimal bit string configuration."""
-        strategies = [
-            ('strings', lambda: len(self.valid_strings)),
-            ('weighted_strings', lambda: len(self.weighted_strings)),
-            ('count', lambda: self.count),
-        ]
-        
-        best_strategy = None
-        best_value = 0
-        
-        for strategy_name, strategy_func in strategies:
-            current_value = strategy_func()
-            if current_value > best_value:
-                best_value = current_value
-                best_strategy = (strategy_name, current_value)
-        
-        return best_strategy
-
-# Example usage
-n = 4
-weights = [2, 1, 3, 1]
-priorities = [1, 2, 1, 3]
-advanced_bit_strings = AdvancedBitStrings(n, weights, priorities)
-
-print(f"Strings: {len(advanced_bit_strings.get_strings())}")
-print(f"Weighted strings: {len(advanced_bit_strings.get_weighted_strings())}")
-
-# Get strings with priority
-def priority_func(bit_string, weights, priorities):
-    return sum(weights[i] for i in range(len(bit_string)) if bit_string[i] == '1') + sum(priorities[i] for i in range(len(bit_string)) if bit_string[i] == '1')
-
-print(f"Strings with priority: {len(advanced_bit_strings.get_strings_with_priority(priority_func))}")
-
-# Get strings with optimization
-def optimization_func(bit_string, weights, priorities):
-    return sum(weights[i] * priorities[i] for i in range(len(bit_string)) if bit_string[i] == '1')
-
-print(f"Strings with optimization: {len(advanced_bit_strings.get_strings_with_optimization(optimization_func))}")
-
-# Get strings with constraints
-def constraint_func(bit_string, weights, priorities):
-    return bit_string.count('1') <= 2 and sum(weights[i] for i in range(len(bit_string)) if bit_string[i] == '1') <= 5
-
-print(f"Strings with constraints: {len(advanced_bit_strings.get_strings_with_constraints(constraint_func))}")
-
-# Get strings with multiple criteria
-def criterion1(bit_string, weights, priorities):
-    return bit_string.count('1') <= 2
-
-def criterion2(bit_string, weights, priorities):
-    return sum(weights[i] for i in range(len(bit_string)) if bit_string[i] == '1') <= 5
-
-criteria_list = [criterion1, criterion2]
-print(f"Strings with multiple criteria: {len(advanced_bit_strings.get_strings_with_multiple_criteria(criteria_list))}")
-
-# Get strings with alternatives
-alternatives = [([1, 1, 1, 1], [1, 1, 1, 1]), ([3, 2, 1, 4], [2, 1, 3, 1])]
-print(f"Strings with alternatives: {len(advanced_bit_strings.get_strings_with_alternatives(alternatives))}")
-
-# Get strings with adaptive criteria
-def adaptive_func(bit_string, weights, priorities, current_result):
-    return bit_string.count('1') <= 2 and len(current_result) < 5
-
-print(f"Strings with adaptive criteria: {len(advanced_bit_strings.get_strings_with_adaptive_criteria(adaptive_func))}")
-
-# Get string optimization
-print(f"String optimization: {advanced_bit_strings.get_string_optimization()}")
-```
-
-### **Variation 3: Bit Strings with Constraints**
-**Problem**: Handle bit strings with additional constraints (length limits, pattern constraints, weight constraints).
-
-**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
-
-```python
-class ConstrainedBitStrings:
-    def __init__(self, n, constraints=None):
-        self.n = n
-        self.constraints = constraints or {}
-        self.MOD = 10**9 + 7
-        self.count = self._calculate_count()
-        self.valid_strings = self._generate_valid_strings()
-    
-    def _calculate_count(self):
-        """Calculate count of valid bit strings considering constraints."""
-        if self.n == 0:
-            return 0
-        if self.n == 1:
-            return 2
-        if self.n == 2:
-            return 3
-        
-        prev2 = 2
-        prev1 = 3
-        
-        for i in range(3, self.n + 1):
-            current = (prev1 + prev2) % self.MOD
-            prev2 = prev1
-            prev1 = current
-        
-        return prev1
-    
-    def _generate_valid_strings(self):
-        """Generate all valid bit strings considering constraints."""
-        if self.n == 0:
-            return []
-        if self.n == 1:
-            return ['0', '1']
-        if self.n == 2:
-            return ['00', '01', '10']
-        
-        result = []
-        
-        def generate_strings(current, length):
-            if length == self.n:
-                if self._is_valid_string(current):
-                    result.append(current)
-                return
-            
-            # Add '0' (always valid)
-            generate_strings(current + '0', length + 1)
-            
-            # Add '1' only if previous character is not '1'
-            if length == 0 or current[-1] != '1':
-                generate_strings(current + '1', length + 1)
-        
-        generate_strings('', 0)
-        return result
-    
-    def _is_valid_string(self, bit_string):
-        """Check if a bit string is valid considering constraints."""
-        # Basic constraint: no consecutive 1s
-        if '11' in bit_string:
-            return False
-        
-        # Length constraints
-        if 'min_length' in self.constraints:
-            if len(bit_string) < self.constraints['min_length']:
-                return False
-        
-        if 'max_length' in self.constraints:
-            if len(bit_string) > self.constraints['max_length']:
-                return False
-        
-        # Pattern constraints
-        if 'forbidden_patterns' in self.constraints:
-            for pattern in self.constraints['forbidden_patterns']:
-                if pattern in bit_string:
-                    return False
-        
-        if 'required_patterns' in self.constraints:
-            for pattern in self.constraints['required_patterns']:
-                if pattern not in bit_string:
-                    return False
-        
-        # Weight constraints
-        if 'max_weight' in self.constraints:
-            weight = sum(self.constraints.get('weights', [1] * len(bit_string))[i] for i in range(len(bit_string)) if bit_string[i] == '1')
-            if weight > self.constraints['max_weight']:
-                return False
-        
-        if 'min_weight' in self.constraints:
-            weight = sum(self.constraints.get('weights', [1] * len(bit_string))[i] for i in range(len(bit_string)) if bit_string[i] == '1')
-            if weight < self.constraints['min_weight']:
-                return False
-        
-        return True
-    
-    def get_strings_with_length_constraints(self, min_length, max_length):
-        """Get bit strings considering length constraints."""
-        result = []
-        for bit_string in self.valid_strings:
-            if min_length <= len(bit_string) <= max_length:
-                result.append(bit_string)
-        return result
-    
-    def get_strings_with_pattern_constraints(self, pattern_constraints):
-        """Get bit strings considering pattern constraints."""
-        result = []
-        for bit_string in self.valid_strings:
-            satisfies_constraints = True
-            for constraint in pattern_constraints:
-                if not constraint(bit_string):
-                    satisfies_constraints = False
-                    break
-            if satisfies_constraints:
-                result.append(bit_string)
-        return result
-    
-    def get_strings_with_weight_constraints(self, weight_limits):
-        """Get bit strings considering weight constraints."""
-        result = []
-        weights = self.constraints.get('weights', [1] * self.n)
-        
-        for bit_string in self.valid_strings:
-            weight = sum(weights[i] for i in range(len(bit_string)) if bit_string[i] == '1')
-            if weight_limits[0] <= weight <= weight_limits[1]:
-                result.append(bit_string)
-        return result
-    
-    def get_strings_with_mathematical_constraints(self, constraint_func):
-        """Get bit strings that satisfy custom mathematical constraints."""
-        result = []
-        for bit_string in self.valid_strings:
-            if constraint_func(bit_string):
-                result.append(bit_string)
-        return result
-    
-    def get_strings_with_range_constraints(self, range_constraints):
-        """Get bit strings that satisfy range constraints."""
-        result = []
-        for bit_string in self.valid_strings:
-            satisfies_constraints = True
-            for constraint in range_constraints:
-                if not constraint(bit_string):
-                    satisfies_constraints = False
-                    break
-            if satisfies_constraints:
-                result.append(bit_string)
-        return result
-    
-    def get_strings_with_optimization_constraints(self, optimization_func):
-        """Get bit strings using custom optimization constraints."""
-        # Sort strings by optimization function
-        all_strings = []
-        for bit_string in self.valid_strings:
-            score = optimization_func(bit_string)
-            all_strings.append((bit_string, score))
-        
-        # Sort by optimization score
-        all_strings.sort(key=lambda x: x[1], reverse=True)
-        
-        return [bit_string for bit_string, _ in all_strings]
-    
-    def get_strings_with_multiple_constraints(self, constraints_list):
-        """Get bit strings that satisfy multiple constraints."""
-        result = []
-        for bit_string in self.valid_strings:
-            satisfies_all_constraints = True
-            for constraint in constraints_list:
-                if not constraint(bit_string):
-                    satisfies_all_constraints = False
-                    break
-            if satisfies_all_constraints:
-                result.append(bit_string)
-        return result
-    
-    def get_strings_with_priority_constraints(self, priority_func):
-        """Get bit strings with priority-based constraints."""
-        # Sort strings by priority
-        all_strings = []
-        for bit_string in self.valid_strings:
-            priority = priority_func(bit_string)
-            all_strings.append((bit_string, priority))
-        
-        # Sort by priority
-        all_strings.sort(key=lambda x: x[1], reverse=True)
-        
-        return [bit_string for bit_string, _ in all_strings]
-    
-    def get_strings_with_adaptive_constraints(self, adaptive_func):
-        """Get bit strings with adaptive constraints."""
-        result = []
-        for bit_string in self.valid_strings:
-            if adaptive_func(bit_string, result):
-                result.append(bit_string)
-        return result
-    
-    def get_optimal_string_strategy(self):
-        """Get optimal bit string strategy considering all constraints."""
-        strategies = [
-            ('length_constraints', self.get_strings_with_length_constraints),
-            ('pattern_constraints', self.get_strings_with_pattern_constraints),
-            ('weight_constraints', self.get_strings_with_weight_constraints),
-        ]
-        
-        best_strategy = None
-        best_count = 0
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                if strategy_name == 'length_constraints':
-                    current_count = len(strategy_func(1, self.n))
-                elif strategy_name == 'pattern_constraints':
-                    pattern_constraints = [lambda s: '00' not in s]
-                    current_count = len(strategy_func(pattern_constraints))
-                elif strategy_name == 'weight_constraints':
-                    current_count = len(strategy_func((0, 10)))
-                
-                if current_count > best_count:
-                    best_count = current_count
-                    best_strategy = (strategy_name, current_count)
-            except:
-                continue
-        
-        return best_strategy
-
-# Example usage
-constraints = {
-    'min_length': 2,
-    'max_length': 5,
-    'forbidden_patterns': ['111'],
-    'required_patterns': ['01'],
-    'max_weight': 10,
-    'min_weight': 1,
-    'weights': [2, 1, 3, 1, 2]
+    return result;
 }
 
-n = 5
-constrained_bit_strings = ConstrainedBitStrings(n, constraints)
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-print("Length-constrained strings:", len(constrained_bit_strings.get_strings_with_length_constraints(2, 4)))
+    int n;
+    cin >> n;
 
-# Pattern constraints
-pattern_constraints = [lambda s: '00' not in s, lambda s: s.count('1') <= 2]
-print("Pattern-constrained strings:", len(constrained_bit_strings.get_strings_with_pattern_constraints(pattern_constraints)))
+    cout << power(2, n, MOD) << endl;
 
-print("Weight-constrained strings:", len(constrained_bit_strings.get_strings_with_weight_constraints((1, 8))))
-
-# Mathematical constraints
-def custom_constraint(bit_string):
-    return bit_string.count('1') == 2 and bit_string.startswith('0')
-
-print("Mathematical constraint strings:", len(constrained_bit_strings.get_strings_with_mathematical_constraints(custom_constraint)))
-
-# Range constraints
-def range_constraint(bit_string):
-    return 1 <= bit_string.count('1') <= 3
-
-range_constraints = [range_constraint]
-print("Range-constrained strings:", len(constrained_bit_strings.get_strings_with_range_constraints(range_constraints)))
-
-# Multiple constraints
-def constraint1(bit_string):
-    return bit_string.count('1') <= 2
-
-def constraint2(bit_string):
-    return bit_string.startswith('0')
-
-constraints_list = [constraint1, constraint2]
-print("Multiple constraints strings:", len(constrained_bit_strings.get_strings_with_multiple_constraints(constraints_list)))
-
-# Priority constraints
-def priority_func(bit_string):
-    return bit_string.count('1') + len(bit_string)
-
-print("Priority-constrained strings:", len(constrained_bit_strings.get_strings_with_priority_constraints(priority_func)))
-
-# Adaptive constraints
-def adaptive_func(bit_string, current_result):
-    return bit_string.count('1') <= 2 and len(current_result) < 5
-
-print("Adaptive constraint strings:", len(constrained_bit_strings.get_strings_with_adaptive_constraints(adaptive_func)))
-
-# Optimal strategy
-optimal = constrained_bit_strings.get_optimal_string_strategy()
-print(f"Optimal strategy: {optimal}")
+    return 0;
+}
 ```
 
-### Related Problems
+### Using Built-in Functions
 
-#### **CSES Problems**
-- [Creating Strings](https://cses.fi/problemset/task/1075)s
-- [Permutations](https://cses.fi/problemset/task/1075)s
-- [Two Knights](https://cses.fi/problemset/task/1075)s
+Python has a built-in three-argument `pow()` that does modular exponentiation efficiently:
 
-#### **LeetCode Problems**
-- [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/) - Dynamic Programming
-- [Fibonacci Number](https://leetcode.com/problems/fibonacci-number/) - Dynamic Programming
-- [House Robber](https://leetcode.com/problems/house-robber/) - Dynamic Programming
+```python
+n = int(input())
+print(pow(2, n, 10**9 + 7))
+```
 
-#### **Problem Categories**
-- **Introductory Problems**: Counting, combinatorics
-- **Dynamic Programming**: Recurrence relations, counting
-- **Combinatorics**: Bit strings, counting problems
+### Complexity
 
-## 🔗 Additional Resources
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(log n) | Exponent halves each iteration |
+| Space | O(1) | Only constant variables used |
 
-### **Algorithm References**
-- [Introductory Problems](https://cp-algorithms.com/intro-to-algorithms.html) - Introductory algorithms
-- [Dynamic Programming](https://cp-algorithms.com/dynamic_programming/intro-to-dp.html) - DP algorithms
-- [Combinatorics](https://cp-algorithms.com/combinatorics/basic-combinatorics.html) - Combinatorics
+---
 
-### **Practice Problems**
-- [CSES Creating Strings](https://cses.fi/problemset/task/1075) - Easy
-- [CSES Permutations](https://cses.fi/problemset/task/1075) - Easy
-- [CSES Two Knights](https://cses.fi/problemset/task/1075) - Easy
+## Common Mistakes
 
-### **Further Reading**
-- [Combinatorics](https://en.wikipedia.org/wiki/Combinatorics) - Wikipedia article
-- [Dynamic Programming](https://en.wikipedia.org/wiki/Dynamic_programming) - Wikipedia article
-- [Bit String](https://en.wikipedia.org/wiki/Bit_string) - Wikipedia article
+### Mistake 1: Integer Overflow (C++)
+
+```cpp
+// WRONG - overflow for large intermediate results
+long long result = 1;
+for (int i = 0; i < n; i++) {
+    result *= 2;  // Overflows before taking mod!
+}
+result %= MOD;
+```
+
+**Problem:** The result overflows before we apply modulo.
+**Fix:** Apply modulo after each multiplication.
+
+```cpp
+// CORRECT
+long long result = 1;
+for (int i = 0; i < n; i++) {
+    result = (result * 2) % MOD;
+}
+```
+
+### Mistake 2: Forgetting Modulo in Exponentiation
+
+```python
+# WRONG - intermediate values overflow
+def power(base, exp):
+    result = 1
+    while exp > 0:
+        if exp % 2 == 1:
+            result = result * base  # No modulo!
+        base = base * base          # No modulo!
+        exp //= 2
+    return result % MOD
+```
+
+**Problem:** Even though Python handles big integers, this is slow and wrong for other languages.
+**Fix:** Apply modulo at every multiplication step.
+
+### Mistake 3: Using Wrong Data Type (C++)
+
+```cpp
+// WRONG - int overflow during multiplication
+int result = 1;
+int base = 2;
+result = (result * base) % MOD;  // May overflow before mod
+```
+
+**Problem:** `int * int` can overflow before modulo is applied.
+**Fix:** Use `long long` for all arithmetic involving modulo.
+
+```cpp
+// CORRECT
+long long result = 1;
+long long base = 2;
+result = (result * base) % MOD;
+```
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Minimum n | n = 1 | 2 | 2^1 = 2 |
+| Small n | n = 3 | 8 | 2^3 = 8 |
+| Power of 2 | n = 10 | 1024 | 2^10 = 1024 |
+| Large n | n = 1000000 | 470211272 | Result after mod |
+| Mod boundary | n = 30 | 1073741824 | 2^30 (before mod kicks in) |
+
+---
+
+## When to Use This Pattern
+
+### Use Binary Exponentiation When:
+- Computing large powers (a^n where n can be very large)
+- Working with modular arithmetic
+- Need O(log n) time instead of O(n)
+- Matrix exponentiation for recurrence relations
+
+### Do Not Use When:
+- n is very small (direct multiplication is fine)
+- No modular arithmetic needed and result fits in data type
+
+### Pattern Recognition Checklist:
+- [ ] Need to compute a^n for large n? -> **Binary Exponentiation**
+- [ ] Result must be modulo some value? -> **Apply mod at each step**
+- [ ] Computing Fibonacci/recurrence for large n? -> **Matrix exponentiation**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Weird Algorithm](https://cses.fi/problemset/task/1068) | Basic loop and arithmetic |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Exponentiation](https://cses.fi/problemset/task/1095) | General a^b mod m |
+| [Exponentiation II](https://cses.fi/problemset/task/1712) | a^(b^c) mod m using Fermat |
+| [LeetCode: Pow(x, n)](https://leetcode.com/problems/powx-n/) | Handle negative exponents |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Fibonacci](https://cses.fi/problemset/task/1722) | Matrix exponentiation |
+| [Graph Paths I](https://cses.fi/problemset/task/1723) | Matrix exponentiation for paths |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Count of n-bit strings is 2^n; use binary exponentiation for efficiency.
+2. **Time Optimization:** Reduced from O(n) to O(log n) using repeated squaring.
+3. **Space Trade-off:** O(1) space - no additional memory needed.
+4. **Pattern:** This is the foundation for modular exponentiation used throughout competitive programming.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why there are 2^n bit strings of length n
+- [ ] Implement binary exponentiation from scratch
+- [ ] Handle modular arithmetic correctly to avoid overflow
+- [ ] Solve this problem in under 5 minutes
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [Modular Arithmetic - Wikipedia](https://en.wikipedia.org/wiki/Modular_arithmetic)

@@ -1,1006 +1,628 @@
 ---
 layout: simple
-title: "Path Queries"
+title: "Path Queries - Tree Algorithms Problem"
 permalink: /problem_soulutions/tree_algorithms/path_queries_analysis
+difficulty: Medium
+tags: [tree, euler-tour, segment-tree, dfs]
+prerequisites: [tree_traversal, segment_tree_basics]
 ---
 
 # Path Queries
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand tree algorithms and tree traversal techniques
-- Apply efficient tree processing algorithms
-- Implement advanced tree data structures and algorithms
-- Optimize tree operations for large inputs
-- Handle edge cases in tree problems
+| Attribute | Value |
+|-----------|-------|
+| **Source** | [CSES 1138](https://cses.fi/problemset/task/1138) |
+| **Difficulty** | Medium |
+| **Category** | Tree Algorithms |
+| **Time Limit** | 1 second |
+| **Key Technique** | Euler Tour + Segment Tree |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a tree with n nodes, each node has a value. Process q queries of the form "find the sum of values on the path from node a to node b".
+After solving this problem, you will be able to:
+- [ ] Transform tree path sums into range queries using Euler tour
+- [ ] Apply segment trees to tree problems via linearization
+- [ ] Understand how point updates on nodes affect subtree ranges
+- [ ] Convert "root-to-node" queries into O(log n) operations
 
-**Input**: 
-- First line: n (number of nodes)
-- Next n lines: values of nodes 1 to n
-- Next n-1 lines: edges of the tree
-- Next line: q (number of queries)
-- Next q lines: two integers a and b (path endpoints)
+---
 
-**Output**: 
-- q lines: sum of values on the path from a to b
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10⁵
-- 1 ≤ q ≤ 2×10⁵
-- 1 ≤ value ≤ 10⁹
+**Problem:** Given a rooted tree with n nodes where each node has a value, process two types of queries:
+1. **Update:** Change the value of node s to x
+2. **Query:** Find the sum of values on the path from root (node 1) to node s
 
-**Example**:
+**Input:**
+- Line 1: n q (number of nodes, number of queries)
+- Line 2: v1 v2 ... vn (initial values of nodes)
+- Next n-1 lines: a b (edge between nodes a and b)
+- Next q lines: Either "1 s x" (update) or "2 s" (query)
+
+**Output:**
+- For each type 2 query, print the sum of values on the path from root to node s
+
+**Constraints:**
+- 1 <= n, q <= 2 x 10^5
+- 1 <= vi, x <= 10^9
+- 1 <= s <= n
+
+### Example
+
 ```
 Input:
-5
-1 2 3 4 5
+5 3
+4 2 5 2 1
 1 2
-2 3
-2 4
-4 5
-3
 1 3
-2 5
-1 5
+3 4
+3 5
+2 4
+1 3 2
+2 4
 
 Output:
-6
 11
-15
+8
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Query 1: Path 1->3->4 has sum 4+5+2 = 11
+- Update: Node 3 value changes from 5 to 2
+- Query 2: Path 1->3->4 now has sum 4+2+2 = 8
 
-### Approach 1: Brute Force
-**Time Complexity**: O(q × n)  
-**Space Complexity**: O(n)
+---
 
-**Algorithm**:
-1. For each query, find the path from a to b using DFS
-2. Sum the values along the path
-3. Return the sum for each query
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### Pattern Recognition
+
+> **Key Question:** How can we transform tree path queries into something a segment tree can handle?
+
+The core insight is that **path sum from root to node u = prefix sum in DFS order**. If we flatten the tree using Euler tour (DFS traversal), each node's "entry time" gives us a position where we can use a segment tree for prefix sums.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** Sum of node values from root to any node
+2. **What information do we have?** Tree structure, node values, update/query operations
+3. **What's the relationship?** Path to node u includes all ancestors of u in DFS order
+
+### The Key Transformation
+
+```
+Tree:           Euler Tour (entry times):
+    1               Node: 1  2  3  4  5
+   / \              Time: 0  1  2  3  4
+  2   3
+     / \
+    4   5
+
+Path sum(1->3->4) = value[1] + value[3] + value[4]
+                  = Prefix sum up to node 4's entry time
+                  = BUT only counting ancestors!
+```
+
+**The trick:** When we enter a node, add its value. When we exit, subtract it. Then prefix sum at entry time gives path sum!
+
+---
+
+## Solution 1: Brute Force (DFS per Query)
+
+### Idea
+
+For each query, traverse from root to the target node, summing values along the path.
+
+### Algorithm
+
+1. Build adjacency list from edges
+2. For each query, run DFS to find path and sum values
+3. For updates, simply modify the value array
+
+### Code
+
 ```python
-def brute_force_path_queries(n, values, edges, queries):
+def solve_brute_force(n, values, edges, queries):
+    """
+    Brute force: DFS for each query.
+
+    Time: O(q * n) - TLE for large inputs
+    Space: O(n)
+    """
     from collections import defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    def find_path(a, b):
-        # Find path from a to b using DFS
-        path = []
-        visited = set()
-        
-        def dfs(node, target, current_path):
+
+    adj = defaultdict(list)
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+
+    def path_sum(target):
+        """Find sum from root (1) to target using DFS."""
+        def dfs(node, parent, current_sum):
+            current_sum += values[node]
             if node == target:
-                return current_path + [node]
-            
-            visited.add(node)
-            for child in graph[node]:
-                if child not in visited:
-                    result = dfs(child, target, current_path + [node])
-                    if result:
+                return current_sum
+            for child in adj[node]:
+                if child != parent:
+                    result = dfs(child, node, current_sum)
+                    if result is not None:
                         return result
             return None
-        
-        return dfs(a, b, [])
-    
+        return dfs(1, 0, 0)
+
     results = []
-    for a, b in queries:
-        path = find_path(a, b)
-        path_sum = sum(values[node - 1] for node in path)
-        results.append(path_sum)
-    
+    for query in queries:
+        if query[0] == 1:  # Update
+            s, x = query[1], query[2]
+            values[s] = x
+        else:  # Query
+            s = query[1]
+            results.append(path_sum(s))
+
     return results
 ```
 
-**Analysis**:
-- **Time**: O(q × n) - For each query, DFS takes O(n) time
-- **Space**: O(n) - Recursion stack and path storage
-- **Limitations**: Too slow for large inputs
+### Complexity
 
-### Approach 2: Optimized with LCA
-**Time Complexity**: O(n log n + q log n)  
-**Space Complexity**: O(n log n)
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(q * n) | Each query traverses up to n nodes |
+| Space | O(n) | Adjacency list and recursion stack |
 
-**Algorithm**:
-1. Precompute LCA using binary lifting
-2. For each query, find LCA of a and b
-3. Sum values from a to LCA and from b to LCA
+### Why This Works (But Is Slow)
 
-**Implementation**:
-```python
-def optimized_path_queries(n, values, edges, queries):
-    from collections import defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    # Precompute LCA using binary lifting
-    LOG = 20
-    up = [[0] * (n + 1) for _ in range(LOG)]
-    depth = [0] * (n + 1)
-    path_sum = [0] * (n + 1)
-    
-    def dfs(node, parent):
-        up[0][node] = parent
-        path_sum[node] = path_sum[parent] + values[node - 1]
-        depth[node] = depth[parent] + 1
-        
-        for child in graph[node]:
-            if child != parent:
-                dfs(child, node)
-    
-    dfs(1, 0)
-    
-    # Binary lifting
-    for k in range(1, LOG):
-        for node in range(1, n + 1):
-            up[k][node] = up[k-1][up[k-1][node]]
-    
-    def lca(a, b):
-        if depth[a] < depth[b]:
-            a, b = b, a
-        
-        # Bring a to same depth as b
-        for k in range(LOG - 1, -1, -1):
-            if depth[a] - (1 << k) >= depth[b]:
-                a = up[k][a]
-        
-        if a == b:
-            return a
-        
-        # Find LCA
-        for k in range(LOG - 1, -1, -1):
-            if up[k][a] != up[k][b]:
-                a = up[k][a]
-                b = up[k][b]
-        
-        return up[0][a]
-    
-    results = []
-    for a, b in queries:
-        lca_node = lca(a, b)
-        # Sum from a to LCA + sum from b to LCA - LCA value (counted twice)
-        sum_a_to_lca = path_sum[a] - path_sum[lca_node] + values[lca_node - 1]
-        sum_b_to_lca = path_sum[b] - path_sum[lca_node] + values[lca_node - 1]
-        total_sum = sum_a_to_lca + sum_b_to_lca - values[lca_node - 1]
-        results.append(total_sum)
-    
-    return results
+Correctness is guaranteed since we traverse the actual tree path. However, with q up to 2x10^5 queries and n up to 2x10^5 nodes, this gives 4x10^10 operations - far too slow.
+
+---
+
+## Solution 2: Optimal - Euler Tour + Segment Tree
+
+### Key Insight
+
+> **The Trick:** Flatten the tree with Euler tour. Add node value at entry, subtract at exit. Prefix sum at entry time = path sum from root!
+
+### How Euler Tour Works for Path Sums
+
+```
+Tree:               Entry/Exit times:
+      1             Node 1: entry=0, exit=9
+     /|\            Node 2: entry=1, exit=2
+    2 3 4           Node 3: entry=3, exit=8
+     /|\            Node 4: entry=4, exit=5
+    5 6 7           ...
+
+Euler tour array (size 2n):
+Position: 0   1   2   3   4   5   6   7   8   9
+Event:   +1  +2  -2  +3  +4  -4  +5  -5  -3  -1
+         ^entry    ^entry      ^entry
+         1         3           5
 ```
 
-**Analysis**:
-- **Time**: O(n log n + q log n) - Preprocessing + query processing
-- **Space**: O(n log n) - Binary lifting table
-- **Improvement**: Much more efficient than brute force
+**For query on node 5:**
+- Entry time of node 5 = 6
+- Prefix sum [0..6] = +1 -2 +2 +3 +4 -4 +5 = 1 + 3 + 5 = 9
+- Wait, node 2 cancels out! Only ancestors remain!
 
-### Approach 3: Optimal with Heavy-Light Decomposition
-**Time Complexity**: O(n + q log n)  
-**Space Complexity**: O(n)
+### Why This Works
 
-**Algorithm**:
-1. Use heavy-light decomposition to break tree into chains
-2. Use segment trees on each chain for efficient range queries
-3. For each query, break path into O(log n) segments
+When computing prefix sum up to entry[u]:
+- Ancestors of u: entered but NOT exited yet -> their +value counts
+- Non-ancestors: either (not entered) or (entered AND exited) -> cancel out
 
-**Implementation**:
-```python
-def optimal_path_queries(n, values, edges, queries):
-    from collections import defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    # Heavy-light decomposition
-    parent = [0] * (n + 1)
-    depth = [0] * (n + 1)
-    size = [0] * (n + 1)
-    heavy = [0] * (n + 1)
-    head = [0] * (n + 1)
-    pos = [0] * (n + 1)
-    
-    def dfs_size(node, par):
-        parent[node] = par
-        size[node] = 1
-        heavy[node] = 0
-        
-        for child in graph[node]:
-            if child != par:
-                depth[child] = depth[node] + 1
-                size[node] += dfs_size(child, node)
-                if size[child] > size[heavy[node]]:
-                    heavy[node] = child
-        
-        return size[node]
-    
-    dfs_size(1, 0)
-    
-    # Decompose tree into chains
-    current_pos = 0
-    def decompose(node, h):
-        nonlocal current_pos
-        head[node] = h
-        pos[node] = current_pos
-        current_pos += 1
-        
-        if heavy[node]:
-            decompose(heavy[node], h)
-        
-        for child in graph[node]:
-            if child != parent[node] and child != heavy[node]:
-                decompose(child, child)
-    
-    decompose(1, 1)
-    
-    # Build segment tree for each chain
-    chain_values = [0] * n
-    for node in range(1, n + 1):
-        chain_values[pos[node]] = values[node - 1]
-    
-    # Simple segment tree for range sum
-    class SegmentTree:
-        def __init__(self, arr):
-            self.n = len(arr)
-            self.tree = [0] * (4 * self.n)
-            self.build(arr, 1, 0, self.n - 1)
-        
-        def build(self, arr, node, start, end):
-            if start == end:
-                self.tree[node] = arr[start]
-            else:
-                mid = (start + end) // 2
-                self.build(arr, 2 * node, start, mid)
-                self.build(arr, 2 * node + 1, mid + 1, end)
-                self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
-        
-        def query(self, node, start, end, l, r):
-            if r < start or end < l:
-                return 0
-            if l <= start and end <= r:
-                return self.tree[node]
-            mid = (start + end) // 2
-            return (self.query(2 * node, start, mid, l, r) + 
-                    self.query(2 * node + 1, mid + 1, end, l, r))
-    
-    st = SegmentTree(chain_values)
-    
-    def path_query(a, b):
-        total_sum = 0
-        
-        while head[a] != head[b]:
-            if depth[head[a]] > depth[head[b]]:
-                a, b = b, a
-            
-            # Add sum from b to head[b]
-            total_sum += st.query(1, 0, n - 1, pos[head[b]], pos[b])
-            b = parent[head[b]]
-        
-        # Add sum from a to b (they're in same chain now)
-        if depth[a] > depth[b]:
-            a, b = b, a
-        total_sum += st.query(1, 0, n - 1, pos[a], pos[b])
-        
-        return total_sum
-    
-    results = []
-    for a, b in queries:
-        results.append(path_query(a, b))
-    
-    return results
-```
+### Algorithm
 
-**Analysis**:
-- **Time**: O(n + q log n) - Preprocessing + query processing
-- **Space**: O(n) - Heavy-light decomposition and segment tree
-- **Optimal**: Best possible complexity for this problem
+1. **Build tree and run DFS** to compute entry/exit times
+2. **Initialize segment tree** with +value at entry, -value at exit
+3. **For update(s, x):** Update both entry[s] and exit[s] positions
+4. **For query(s):** Return prefix sum from 0 to entry[s]
 
-**Visual Example**:
+### Dry Run Example
+
+Input: n=5, values=[4,2,5,2,1], tree edges form: 1-2, 1-3, 3-4, 3-5
+
 ```
 Tree structure:
-    1(1)
-    |
-    2(2)
-   / \
-3(3) 4(4)
-      |
-    5(5)
+      1(4)
+     / \
+   2(2) 3(5)
+       / \
+     4(2) 5(1)
 
-Heavy-Light Decomposition:
-Chain 1: 1-2-4-5 (heavy edges)
-Chain 2: 3 (light edge)
+Step 1: DFS to get entry/exit times
+  DFS order: 1 -> 2 -> back -> 3 -> 4 -> back -> 5 -> back -> back
 
-Path Query (1, 5):
-1. 1 → 2 (same chain)
-2. 2 → 4 (same chain)
-3. 4 → 5 (same chain)
-Total: 1 + 2 + 4 + 5 = 12
+  Node:  1  2  3  4  5
+  Entry: 0  1  3  4  6
+  Exit:  9  2  8  5  7
+
+Step 2: Build Euler array (size 2n = 10)
+  Position: 0   1   2   3   4   5   6   7   8   9
+  Value:   +4  +2  -2  +5  +2  -2  +1  -1  -5  -4
+           ^1  ^2  ^2  ^3  ^4  ^4  ^5  ^5  ^3  ^1
+          enter   exit
+
+Step 3: Query - path sum to node 4 (entry time = 4)
+  Prefix sum [0..4] = 4 + 2 + (-2) + 5 + 2 = 11
+  Path: 1 -> 3 -> 4, values: 4 + 5 + 2 = 11  [Correct!]
+
+Step 4: Update - change node 3 from 5 to 2
+  Update position 3 (entry): +5 -> +2  (delta = -3)
+  Update position 8 (exit):  -5 -> -2  (delta = +3)
+
+Step 5: Query again - path sum to node 4
+  Prefix sum [0..4] = 4 + 2 + (-2) + 2 + 2 = 8
+  Path: 1 -> 3 -> 4, values: 4 + 2 + 2 = 8  [Correct!]
 ```
 
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(q × n) | O(n) | DFS for each query |
-| Optimized | O(n log n + q log n) | O(n log n) | LCA with binary lifting |
-| Optimal | O(n + q log n) | O(n) | Heavy-light decomposition |
-
-### Time Complexity
-- **Time**: O(n + q log n) - Preprocessing + query processing with HLD
-- **Space**: O(n) - Heavy-light decomposition and segment tree
-
-### Why This Solution Works
-- **LCA Technique**: Use lowest common ancestor to break path into two parts
-- **Binary Lifting**: Efficiently find LCA in O(log n) time
-- **Heavy-Light Decomposition**: Break tree into chains for efficient range queries
-- **Optimal Approach**: Heavy-light decomposition provides the best possible complexity for path queries
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Path Queries with Dynamic Updates
-**Problem**: Handle dynamic updates to the tree structure and maintain path queries efficiently.
-
-**Link**: [CSES Problem Set - Path Queries with Updates](https://cses.fi/problemset/task/path_queries_updates)
+### Code (Python)
 
 ```python
-class PathQueriesWithUpdates:
-    def __init__(self, n, edges, values):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.values = values[:]
-        self.depths = [0] * n
-        self.log_n = 20  # Maximum log n for binary lifting
-        self.up = [[-1] * self.log_n for _ in range(n)]
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node using DFS"""
-        def dfs(node, parent, d):
-            self.depths[node] = d
-            self.up[node][0] = parent
-            
-            for neighbor in self.adj[node]:
-                if neighbor != parent:
-                    dfs(neighbor, node, d + 1)
-        
-        dfs(0, -1, 0)
-    
-    def _preprocess_binary_lifting(self):
-        """Preprocess binary lifting table"""
-        for j in range(1, self.log_n):
-            for i in range(self.n):
-                if self.up[i][j-1] != -1:
-                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
-    
-    def add_edge(self, u, v):
-        """Add edge between nodes u and v"""
-        self.adj[u].append(v)
-        self.adj[v].append(u)
-        
-        # Recalculate depths and binary lifting table
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def remove_edge(self, u, v):
-        """Remove edge between nodes u and v"""
-        if v in self.adj[u]:
-            self.adj[u].remove(v)
-        if u in self.adj[v]:
-            self.adj[v].remove(u)
-        
-        # Recalculate depths and binary lifting table
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def update_value(self, node, new_value):
-        """Update value of a node"""
-        self.values[node] = new_value
-    
-    def get_lca(self, node1, node2):
-        """Get lowest common ancestor of two nodes"""
-        # Make sure node1 is deeper
-        if self.depths[node1] < self.depths[node2]:
-            node1, node2 = node2, node1
-        
-        # Bring node1 to same depth as node2
-        diff = self.depths[node1] - self.depths[node2]
-        for j in range(self.log_n):
-            if diff & (1 << j):
-                node1 = self.up[node1][j]
-        
-        if node1 == node2:
-            return node1
-        
-        # Binary search for LCA
-        for j in range(self.log_n - 1, -1, -1):
-            if self.up[node1][j] != self.up[node2][j]:
-                node1 = self.up[node1][j]
-                node2 = self.up[node2][j]
-        
-        return self.up[node1][0]
-    
-    def get_path_sum(self, node1, node2):
-        """Get sum of values on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate sum from node1 to LCA
-        sum1 = 0
-        current = node1
-        while current != lca:
-            sum1 += self.values[current]
-            current = self.up[current][0]
-        
-        # Calculate sum from node2 to LCA
-        sum2 = 0
-        current = node2
-        while current != lca:
-            sum2 += self.values[current]
-            current = self.up[current][0]
-        
-        # Add LCA value
-        return sum1 + sum2 + self.values[lca]
-    
-    def get_path_max(self, node1, node2):
-        """Get maximum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate max from node1 to LCA
-        max1 = self.values[node1]
-        current = node1
-        while current != lca:
-            max1 = max(max1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate max from node2 to LCA
-        max2 = self.values[node2]
-        current = node2
-        while current != lca:
-            max2 = max(max2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return max(max1, max2, self.values[lca])
-    
-    def get_path_min(self, node1, node2):
-        """Get minimum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate min from node1 to LCA
-        min1 = self.values[node1]
-        current = node1
-        while current != lca:
-            min1 = min(min1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate min from node2 to LCA
-        min2 = self.values[node2]
-        current = node2
-        while current != lca:
-            min2 = min(min2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return min(min1, min2, self.values[lca])
-    
-    def get_path_values(self, node1, node2):
-        """Get all values on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Get values from node1 to LCA
-        values1 = []
-        current = node1
-        while current != lca:
-            values1.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Get values from node2 to LCA
-        values2 = []
-        current = node2
-        while current != lca:
-            values2.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Combine values
-        return values1 + [self.values[lca]] + values2[::-1]
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'add_edge':
-                self.add_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'remove_edge':
-                self.remove_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'update_value':
-                self.update_value(query['node'], query['new_value'])
-                results.append(None)
-            elif query['type'] == 'path_sum':
-                result = self.get_path_sum(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_max':
-                result = self.get_path_max(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_min':
-                result = self.get_path_min(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_values':
-                result = self.get_path_values(query['u'], query['v'])
-                results.append(result)
-        return results
+import sys
+from collections import defaultdict
+input = sys.stdin.readline
+
+def solve():
+    n, q = map(int, input().split())
+    values = [0] + list(map(int, input().split()))  # 1-indexed
+
+    # Build adjacency list
+    adj = defaultdict(list)
+    for _ in range(n - 1):
+        a, b = map(int, input().split())
+        adj[a].append(b)
+        adj[b].append(a)
+
+    # Euler tour: compute entry and exit times
+    entry = [0] * (n + 1)
+    exit_time = [0] * (n + 1)
+    euler = [0] * (2 * n)  # Euler tour array
+    timer = [0]  # Use list for mutable reference in nested function
+
+    def dfs(node, parent):
+        entry[node] = timer[0]
+        euler[timer[0]] = values[node]  # +value at entry
+        timer[0] += 1
+
+        for child in adj[node]:
+            if child != parent:
+                dfs(child, node)
+
+        exit_time[node] = timer[0]
+        euler[timer[0]] = -values[node]  # -value at exit
+        timer[0] += 1
+
+    dfs(1, 0)
+
+    # Segment tree for range sum with point updates
+    size = 2 * n
+    tree = [0] * (4 * size)
+
+    def build(node, start, end):
+        if start == end:
+            tree[node] = euler[start]
+        else:
+            mid = (start + end) // 2
+            build(2 * node, start, mid)
+            build(2 * node + 1, mid + 1, end)
+            tree[node] = tree[2 * node] + tree[2 * node + 1]
+
+    def update(node, start, end, idx, delta):
+        if start == end:
+            tree[node] += delta
+        else:
+            mid = (start + end) // 2
+            if idx <= mid:
+                update(2 * node, start, mid, idx, delta)
+            else:
+                update(2 * node + 1, mid + 1, end, idx, delta)
+            tree[node] = tree[2 * node] + tree[2 * node + 1]
+
+    def query(node, start, end, l, r):
+        if r < start or end < l:
+            return 0
+        if l <= start and end <= r:
+            return tree[node]
+        mid = (start + end) // 2
+        return query(2 * node, start, mid, l, r) + \
+               query(2 * node + 1, mid + 1, end, l, r)
+
+    build(1, 0, size - 1)
+
+    # Process queries
+    results = []
+    for _ in range(q):
+        query_line = list(map(int, input().split()))
+        if query_line[0] == 1:  # Update
+            s, x = query_line[1], query_line[2]
+            old_val = values[s]
+            delta = x - old_val
+            values[s] = x
+            # Update entry position (+delta) and exit position (-delta)
+            update(1, 0, size - 1, entry[s], delta)
+            update(1, 0, size - 1, exit_time[s], -delta)
+        else:  # Query
+            s = query_line[1]
+            # Prefix sum from 0 to entry[s]
+            results.append(query(1, 0, size - 1, 0, entry[s]))
+
+    print('\n'.join(map(str, results)))
+
+solve()
 ```
 
-### Variation 2: Path Queries with Different Operations
-**Problem**: Handle different types of operations (find, analyze, compare) on path queries.
+### Code (C++)
 
-**Link**: [CSES Problem Set - Path Queries Different Operations](https://cses.fi/problemset/task/path_queries_operations)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-```python
-class PathQueriesDifferentOps:
-    def __init__(self, n, edges, values):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.values = values[:]
-        self.depths = [0] * n
-        self.log_n = 20  # Maximum log n for binary lifting
-        self.up = [[-1] * self.log_n for _ in range(n)]
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node using DFS"""
-        def dfs(node, parent, d):
-            self.depths[node] = d
-            self.up[node][0] = parent
-            
-            for neighbor in self.adj[node]:
-                if neighbor != parent:
-                    dfs(neighbor, node, d + 1)
-        
-        dfs(0, -1, 0)
-    
-    def _preprocess_binary_lifting(self):
-        """Preprocess binary lifting table"""
-        for j in range(1, self.log_n):
-            for i in range(self.n):
-                if self.up[i][j-1] != -1:
-                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
-    
-    def get_lca(self, node1, node2):
-        """Get lowest common ancestor of two nodes"""
-        # Make sure node1 is deeper
-        if self.depths[node1] < self.depths[node2]:
-            node1, node2 = node2, node1
-        
-        # Bring node1 to same depth as node2
-        diff = self.depths[node1] - self.depths[node2]
-        for j in range(self.log_n):
-            if diff & (1 << j):
-                node1 = self.up[node1][j]
-        
-        if node1 == node2:
-            return node1
-        
-        # Binary search for LCA
-        for j in range(self.log_n - 1, -1, -1):
-            if self.up[node1][j] != self.up[node2][j]:
-                node1 = self.up[node1][j]
-                node2 = self.up[node2][j]
-        
-        return self.up[node1][0]
-    
-    def get_path_sum(self, node1, node2):
-        """Get sum of values on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate sum from node1 to LCA
-        sum1 = 0
-        current = node1
-        while current != lca:
-            sum1 += self.values[current]
-            current = self.up[current][0]
-        
-        # Calculate sum from node2 to LCA
-        sum2 = 0
-        current = node2
-        while current != lca:
-            sum2 += self.values[current]
-            current = self.up[current][0]
-        
-        # Add LCA value
-        return sum1 + sum2 + self.values[lca]
-    
-    def get_path_max(self, node1, node2):
-        """Get maximum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate max from node1 to LCA
-        max1 = self.values[node1]
-        current = node1
-        while current != lca:
-            max1 = max(max1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate max from node2 to LCA
-        max2 = self.values[node2]
-        current = node2
-        while current != lca:
-            max2 = max(max2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return max(max1, max2, self.values[lca])
-    
-    def get_path_min(self, node1, node2):
-        """Get minimum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate min from node1 to LCA
-        min1 = self.values[node1]
-        current = node1
-        while current != lca:
-            min1 = min(min1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate min from node2 to LCA
-        min2 = self.values[node2]
-        current = node2
-        while current != lca:
-            min2 = min(min2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return min(min1, min2, self.values[lca])
-    
-    def get_path_values(self, node1, node2):
-        """Get all values on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Get values from node1 to LCA
-        values1 = []
-        current = node1
-        while current != lca:
-            values1.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Get values from node2 to LCA
-        values2 = []
-        current = node2
-        while current != lca:
-            values2.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Combine values
-        return values1 + [self.values[lca]] + values2[::-1]
-    
-    def get_path_length(self, node1, node2):
-        """Get length of path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        return self.depths[node1] + self.depths[node2] - 2 * self.depths[lca]
-    
-    def get_path_statistics(self, node1, node2):
-        """Get comprehensive statistics for path between two nodes"""
-        values = self.get_path_values(node1, node2)
-        
-        return {
-            'sum': sum(values),
-            'max': max(values),
-            'min': min(values),
-            'avg': sum(values) / len(values),
-            'length': len(values),
-            'values': values
+const int MAXN = 200005;
+vector<int> adj[MAXN];
+long long values[MAXN];
+int entry_time[MAXN], exit_time[MAXN];
+long long euler_arr[2 * MAXN];
+long long tree[8 * MAXN];
+int timer = 0;
+int n, q;
+
+void dfs(int node, int parent) {
+    entry_time[node] = timer;
+    euler_arr[timer++] = values[node];
+
+    for (int child : adj[node]) {
+        if (child != parent) {
+            dfs(child, node);
         }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'path_sum':
-                result = self.get_path_sum(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_max':
-                result = self.get_path_max(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_min':
-                result = self.get_path_min(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_values':
-                result = self.get_path_values(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_length':
-                result = self.get_path_length(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_statistics':
-                result = self.get_path_statistics(query['u'], query['v'])
-                results.append(result)
-        return results
-```
+    }
 
-### Variation 3: Path Queries with Constraints
-**Problem**: Handle path queries with additional constraints (e.g., minimum value, maximum value, value range).
+    exit_time[node] = timer;
+    euler_arr[timer++] = -values[node];
+}
 
-**Link**: [CSES Problem Set - Path Queries with Constraints](https://cses.fi/problemset/task/path_queries_constraints)
+void build(int node, int start, int end) {
+    if (start == end) {
+        tree[node] = euler_arr[start];
+    } else {
+        int mid = (start + end) / 2;
+        build(2 * node, start, mid);
+        build(2 * node + 1, mid + 1, end);
+        tree[node] = tree[2 * node] + tree[2 * node + 1];
+    }
+}
 
-```python
-class PathQueriesWithConstraints:
-    def __init__(self, n, edges, values, min_value, max_value):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.values = values[:]
-        self.depths = [0] * n
-        self.log_n = 20  # Maximum log n for binary lifting
-        self.up = [[-1] * self.log_n for _ in range(n)]
-        self.min_value = min_value
-        self.max_value = max_value
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node using DFS"""
-        def dfs(node, parent, d):
-            self.depths[node] = d
-            self.up[node][0] = parent
-            
-            for neighbor in self.adj[node]:
-                if neighbor != parent:
-                    dfs(neighbor, node, d + 1)
-        
-        dfs(0, -1, 0)
-    
-    def _preprocess_binary_lifting(self):
-        """Preprocess binary lifting table"""
-        for j in range(1, self.log_n):
-            for i in range(self.n):
-                if self.up[i][j-1] != -1:
-                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
-    
-    def get_lca(self, node1, node2):
-        """Get lowest common ancestor of two nodes"""
-        # Make sure node1 is deeper
-        if self.depths[node1] < self.depths[node2]:
-            node1, node2 = node2, node1
-        
-        # Bring node1 to same depth as node2
-        diff = self.depths[node1] - self.depths[node2]
-        for j in range(self.log_n):
-            if diff & (1 << j):
-                node1 = self.up[node1][j]
-        
-        if node1 == node2:
-            return node1
-        
-        # Binary search for LCA
-        for j in range(self.log_n - 1, -1, -1):
-            if self.up[node1][j] != self.up[node2][j]:
-                node1 = self.up[node1][j]
-                node2 = self.up[node2][j]
-        
-        return self.up[node1][0]
-    
-    def get_path_sum(self, node1, node2):
-        """Get sum of values on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate sum from node1 to LCA
-        sum1 = 0
-        current = node1
-        while current != lca:
-            sum1 += self.values[current]
-            current = self.up[current][0]
-        
-        # Calculate sum from node2 to LCA
-        sum2 = 0
-        current = node2
-        while current != lca:
-            sum2 += self.values[current]
-            current = self.up[current][0]
-        
-        # Add LCA value
-        return sum1 + sum2 + self.values[lca]
-    
-    def get_path_max(self, node1, node2):
-        """Get maximum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate max from node1 to LCA
-        max1 = self.values[node1]
-        current = node1
-        while current != lca:
-            max1 = max(max1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate max from node2 to LCA
-        max2 = self.values[node2]
-        current = node2
-        while current != lca:
-            max2 = max(max2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return max(max1, max2, self.values[lca])
-    
-    def get_path_min(self, node1, node2):
-        """Get minimum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate min from node1 to LCA
-        min1 = self.values[node1]
-        current = node1
-        while current != lca:
-            min1 = min(min1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate min from node2 to LCA
-        min2 = self.values[node2]
-        current = node2
-        while current != lca:
-            min2 = min(min2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return min(min1, min2, self.values[lca])
-    
-    def get_path_values(self, node1, node2):
-        """Get all values on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Get values from node1 to LCA
-        values1 = []
-        current = node1
-        while current != lca:
-            values1.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Get values from node2 to LCA
-        values2 = []
-        current = node2
-        while current != lca:
-            values2.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Combine values
-        return values1 + [self.values[lca]] + values2[::-1]
-    
-    def constrained_path_sum_query(self, node1, node2):
-        """Query path sum with constraints"""
-        values = self.get_path_values(node1, node2)
-        
-        # Filter values that satisfy constraints
-        valid_values = [v for v in values if self.min_value <= v <= self.max_value]
-        
-        return sum(valid_values) if valid_values else 0
-    
-    def constrained_path_max_query(self, node1, node2):
-        """Query path max with constraints"""
-        values = self.get_path_values(node1, node2)
-        
-        # Filter values that satisfy constraints
-        valid_values = [v for v in values if self.min_value <= v <= self.max_value]
-        
-        return max(valid_values) if valid_values else -1
-    
-    def constrained_path_min_query(self, node1, node2):
-        """Query path min with constraints"""
-        values = self.get_path_values(node1, node2)
-        
-        # Filter values that satisfy constraints
-        valid_values = [v for v in values if self.min_value <= v <= self.max_value]
-        
-        return min(valid_values) if valid_values else -1
-    
-    def find_valid_paths(self):
-        """Find all paths that satisfy value constraints"""
-        valid_paths = []
-        
-        for i in range(self.n):
-            for j in range(i + 1, self.n):
-                values = self.get_path_values(i, j)
-                if all(self.min_value <= v <= self.max_value for v in values):
-                    valid_paths.append((i, j, values))
-        
-        return valid_paths
-    
-    def count_valid_paths(self):
-        """Count number of valid paths"""
-        return len(self.find_valid_paths())
-    
-    def get_constraint_statistics(self):
-        """Get statistics about valid paths"""
-        valid_paths = self.find_valid_paths()
-        
-        if not valid_paths:
-            return {
-                'valid_paths_count': 0,
-                'min_value': self.min_value,
-                'max_value': self.max_value,
-                'valid_paths': []
-            }
-        
-        all_values = []
-        for _, _, values in valid_paths:
-            all_values.extend(values)
-        
-        return {
-            'valid_paths_count': len(valid_paths),
-            'min_value': self.min_value,
-            'max_value': self.max_value,
-            'min_valid_value': min(all_values),
-            'max_valid_value': max(all_values),
-            'avg_valid_value': sum(all_values) / len(all_values),
-            'valid_paths': valid_paths
+void update(int node, int start, int end, int idx, long long delta) {
+    if (start == end) {
+        tree[node] += delta;
+    } else {
+        int mid = (start + end) / 2;
+        if (idx <= mid) {
+            update(2 * node, start, mid, idx, delta);
+        } else {
+            update(2 * node + 1, mid + 1, end, idx, delta);
         }
+        tree[node] = tree[2 * node] + tree[2 * node + 1];
+    }
+}
 
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (1, 3), (3, 4)]
-values = [1, 2, 3, 4, 5]
-min_value = 2
-max_value = 4
+long long query(int node, int start, int end, int l, int r) {
+    if (r < start || end < l) return 0;
+    if (l <= start && end <= r) return tree[node];
+    int mid = (start + end) / 2;
+    return query(2 * node, start, mid, l, r) +
+           query(2 * node + 1, mid + 1, end, l, r);
+}
 
-pq = PathQueriesWithConstraints(n, edges, values, min_value, max_value)
-result = pq.constrained_path_sum_query(0, 4)
-print(f"Constrained path sum query result: {result}")
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-valid_paths = pq.find_valid_paths()
-print(f"Valid paths: {valid_paths}")
+    cin >> n >> q;
 
-statistics = pq.get_constraint_statistics()
-print(f"Constraint statistics: {statistics}")
+    for (int i = 1; i <= n; i++) {
+        cin >> values[i];
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+
+    dfs(1, 0);
+
+    int size = 2 * n;
+    build(1, 0, size - 1);
+
+    while (q--) {
+        int type;
+        cin >> type;
+
+        if (type == 1) {
+            int s;
+            long long x;
+            cin >> s >> x;
+            long long delta = x - values[s];
+            values[s] = x;
+            update(1, 0, size - 1, entry_time[s], delta);
+            update(1, 0, size - 1, exit_time[s], -delta);
+        } else {
+            int s;
+            cin >> s;
+            cout << query(1, 0, size - 1, 0, entry_time[s]) << "\n";
+        }
+    }
+
+    return 0;
+}
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Path Queries](https://cses.fi/problemset/task/1138) - Basic path queries in tree
-- [Path Queries II](https://cses.fi/problemset/task/2134) - Advanced path queries in tree
-- [Tree Diameter](https://cses.fi/problemset/task/1131) - Find diameter of tree
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O((n + q) log n) | Build O(n), each query/update O(log n) |
+| Space | O(n) | Euler array and segment tree |
 
-#### **LeetCode Problems**
-- [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) - Tree traversal by levels
-- [Path Sum](https://leetcode.com/problems/path-sum/) - Path queries in tree
-- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Path analysis in tree
+---
 
-#### **Problem Categories**
-- **Heavy-Light Decomposition**: Tree decomposition, path queries
-- **LCA Algorithm**: Lowest common ancestor, binary lifting
-- **Tree Queries**: Path queries, tree analysis, tree operations
-- **Tree Algorithms**: Tree properties, tree analysis, tree operations
+## Common Mistakes
+
+### Mistake 1: Forgetting to Update Both Entry and Exit
+
+```cpp
+// WRONG - only updating entry
+update(entry[s], delta);
+
+// CORRECT - must update both positions
+update(entry[s], delta);      // +delta at entry
+update(exit_time[s], -delta); // -delta at exit
+```
+
+**Problem:** The cancellation property breaks; non-ancestors will affect queries.
+**Fix:** Always update both entry (+delta) and exit (-delta) positions.
+
+### Mistake 2: Integer Overflow
+
+```cpp
+// WRONG - using int for sums
+int tree[8 * MAXN];
+
+// CORRECT - use long long
+long long tree[8 * MAXN];
+```
+
+**Problem:** Values up to 10^9, path up to 2x10^5 nodes -> sum can reach 2x10^14.
+**Fix:** Use `long long` for all sum-related variables.
+
+### Mistake 3: Off-by-One in Euler Array Size
+
+```cpp
+// WRONG
+long long euler_arr[MAXN];
+
+// CORRECT - need 2n entries (entry + exit for each node)
+long long euler_arr[2 * MAXN];
+```
+
+**Problem:** Each node contributes two events (entry and exit).
+**Fix:** Euler array must have size 2n.
+
+### Mistake 4: Wrong Query Range
+
+```cpp
+// WRONG - querying up to exit time
+query(0, exit_time[s]);
+
+// CORRECT - query up to entry time only
+query(0, entry_time[s]);
+```
+
+**Problem:** Including exit events of the target node and descendants.
+**Fix:** Path sum = prefix sum ending at entry time.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Behavior | Why |
+|------|-------|-------------------|-----|
+| Single node | n=1, query node 1 | Return value[1] | Trivial path |
+| Root query | Query node 1 | Return value[1] | Path is just root |
+| Deep tree (chain) | n nodes in a line | O(log n) per query | Euler tour handles any tree shape |
+| Star graph | Root with n-1 leaves | Works correctly | Entry/exit times still valid |
+| Large values | v[i] = 10^9 | Use long long | Sum can overflow int |
+| Update to same value | Update v[s] = v[s] | No-op (delta=0) | Should handle gracefully |
+
+---
+
+## When to Use This Pattern
+
+### Use Euler Tour + Segment Tree When:
+- Path queries from root to any node (this problem)
+- Subtree queries (sum/min/max of all nodes in subtree)
+- Need both point updates and path/subtree queries
+- Tree is static (edges don't change)
+
+### Don't Use When:
+- Path queries between arbitrary nodes u and v (use HLD or LCA + data structure)
+- Tree structure changes dynamically (use Link-Cut Trees)
+- Only need single path query without updates (simple DFS suffices)
+- Memory is extremely constrained (Euler tour doubles space requirement)
+
+### Pattern Recognition Checklist:
+- [ ] Queries involve root-to-node paths? -> **Euler tour + prefix sums**
+- [ ] Queries involve subtrees? -> **Euler tour + range queries**
+- [ ] Queries involve arbitrary paths (u to v)? -> **HLD or LCA-based approach**
+- [ ] Need updates on edges instead of nodes? -> **Map edges to child nodes**
+
+---
+
+## Visual Summary
+
+```
+Original Tree:          After Euler Tour:
+      1
+     / \                Position: 0  1  2  3  4  5  6  7  8  9
+    2   3               Value:   +1 +2 -2 +3 +4 -4 +5 -5 -3 -1
+       / \                       |  |     |  |     |
+      4   5             entry:   1  2     3  4     5
+
+Query(node 4) = prefix_sum[0..4] = 1 + 2 - 2 + 3 + 4 = 8
+                                 = value[1] + value[3] + value[4]
+                                 (node 2 cancels out!)
+```
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [Subordinates (CSES 1674)](https://cses.fi/problemset/task/1674) | Basic subtree size with DFS |
+| [Tree Diameter (CSES 1131)](https://cses.fi/problemset/task/1131) | Tree traversal fundamentals |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Path Queries II (CSES 2134)](https://cses.fi/problemset/task/2134) | Path between any two nodes (needs HLD) |
+| [Subtree Queries (CSES 1137)](https://cses.fi/problemset/task/1137) | Subtree sums instead of path sums |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Path Queries II (CSES 2134)](https://cses.fi/problemset/task/2134) | Heavy-Light Decomposition |
+| [Distance Queries (CSES 1135)](https://cses.fi/problemset/task/1135) | LCA for arbitrary path distances |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Euler tour linearizes the tree so path sums become prefix sums
+2. **The Cancellation Trick:** +value at entry, -value at exit makes non-ancestors cancel
+3. **Time Optimization:** O(n) per query -> O(log n) using segment tree
+4. **Pattern:** This is the "Euler Tour Technique" for tree linearization
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why +value at entry and -value at exit gives correct path sums
+- [ ] Implement Euler tour DFS to compute entry/exit times
+- [ ] Build and query a segment tree for prefix sums
+- [ ] Handle both update and query operations correctly
+- [ ] Identify when Euler tour is applicable vs when HLD is needed
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Euler Tour Technique](https://cp-algorithms.com/graph/euler_path.html)
+- [CSES Problem Set - Tree Algorithms](https://cses.fi/problemset/list/)
+- [USACO Guide - Euler Tour Technique](https://usaco.guide/gold/tree-euler)

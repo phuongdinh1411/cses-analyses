@@ -1,993 +1,743 @@
 ---
 layout: simple
-title: "Path Queries Ii"
+title: "Path Queries II - Tree Algorithms Problem"
 permalink: /problem_soulutions/tree_algorithms/path_queries_ii_analysis
+difficulty: Hard
+tags: [heavy-light-decomposition, segment-tree, tree, path-queries, lca]
+prerequisites: [tree_basics, segment_tree, lca]
 ---
 
-# Path Queries Ii
+# Path Queries II
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand tree algorithms and tree traversal techniques
-- Apply efficient tree processing algorithms
-- Implement advanced tree data structures and algorithms
-- Optimize tree operations for large inputs
-- Handle edge cases in tree problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Hard |
+| **Category** | Tree Algorithms |
+| **Time Limit** | 1 second |
+| **Key Technique** | Heavy-Light Decomposition + Segment Tree |
+| **CSES Link** | [https://cses.fi/problemset/task/2134](https://cses.fi/problemset/task/2134) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a tree with n nodes, each node has a value. Process q queries of the form "find the minimum value on the path from node a to node b".
+After solving this problem, you will be able to:
+- [ ] Understand and implement Heavy-Light Decomposition (HLD)
+- [ ] Combine HLD with segment trees for efficient path queries
+- [ ] Handle point updates and path maximum queries in O(log^2 n)
+- [ ] Decompose a tree into chains for linearization
+- [ ] Apply HLD pattern to other path query problems
 
-**Input**: 
-- First line: n (number of nodes)
-- Next n lines: values of nodes 1 to n
-- Next n-1 lines: edges of the tree
-- Next line: q (number of queries)
-- Next q lines: two integers a and b (path endpoints)
+---
 
-**Output**: 
-- q lines: minimum value on the path from a to b
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10⁵
-- 1 ≤ q ≤ 2×10⁵
-- 1 ≤ value ≤ 10⁹
+**Problem:** Given a tree with n nodes where each node has a value, process two types of queries:
+1. **Update (type 1):** Change the value of node s to x
+2. **Query (type 2):** Find the maximum value on the path from node a to node b
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and q (number of nodes and queries)
+- Line 2: n integers v1, v2, ..., vn (initial node values)
+- Next n-1 lines: Two integers a, b describing an edge
+- Next q lines: Either "1 s x" (update) or "2 a b" (query)
+
+**Output:**
+- For each type 2 query, print the maximum value on the path
+
+**Constraints:**
+- 1 <= n, q <= 2 * 10^5
+- 1 <= vi, x <= 10^9
+
+### Example
+
 ```
 Input:
-5
-1 2 3 4 5
+5 5
+4 2 5 2 1
 1 2
-2 3
-2 4
-4 5
-3
 1 3
-2 5
-1 5
+3 4
+3 5
+2 2 5
+1 3 7
+2 2 5
+2 1 1
+2 2 4
 
 Output:
-1
-2
-1
+5
+7
+4
+7
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Query 2 5: Path is 2->1->3->5, values are [2,4,5,1], max = 5
+- Update node 3 to value 7
+- Query 2 5: Path is 2->1->3->5, values are [2,4,7,1], max = 7
+- Query 1 1: Path is just node 1, max = 4
+- Query 2 4: Path is 2->1->3->4, values are [2,4,7,2], max = 7
 
-### Approach 1: Brute Force
-**Time Complexity**: O(q × n)  
-**Space Complexity**: O(n)
+---
 
-**Algorithm**:
-1. For each query, find the path from a to b using DFS
-2. Find the minimum value along the path
-3. Return the minimum for each query
+## Intuition: How to Think About This Problem
 
-**Implementation**:
-```python
-def brute_force_path_queries_ii(n, values, edges, queries):
-    from collections import defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    def find_path(a, b):
-        # Find path from a to b using DFS
-        path = []
-        visited = set()
-        
-        def dfs(node, target, current_path):
-            if node == target:
-                return current_path + [node]
-            
-            visited.add(node)
-            for child in graph[node]:
-                if child not in visited:
-                    result = dfs(child, target, current_path + [node])
-                    if result:
-                        return result
-            return None
-        
-        return dfs(a, b, [])
-    
-    results = []
-    for a, b in queries:
-        path = find_path(a, b)
-        min_value = min(values[node - 1] for node in path)
-        results.append(min_value)
-    
-    return results
+### Pattern Recognition
+
+> **Key Question:** How do we efficiently answer path queries on a tree?
+
+The challenge is that a tree path can go through any nodes, not just along a linear structure. We need to transform tree paths into contiguous segments that a segment tree can handle.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** Maximum value on arbitrary tree paths
+2. **What information do we have?** Tree structure and node values
+3. **What's the relationship?** Any path can be decomposed into O(log n) chains
+
+### The Core Insight: Heavy-Light Decomposition
+
+Think of HLD like organizing a company hierarchy:
+- Each node has one "heavy" child (largest subtree) and possibly multiple "light" children
+- Following heavy edges creates long "chains"
+- Any path crosses at most O(log n) chains because each light edge at least halves the subtree size
+
+```
+Original Tree:         After HLD (chains shown):
+      1                      [1-2-4-8] <- Heavy chain
+     /|\                    /
+    2 3 5                 [3]  [5-6]
+   /|   |                 |
+  4 7   6                [7]
+  |
+  8
 ```
 
-**Analysis**:
-- **Time**: O(q × n) - For each query, DFS takes O(n) time
-- **Space**: O(n) - Recursion stack and path storage
-- **Limitations**: Too slow for large inputs
+---
 
-### Approach 2: Optimized with LCA
-**Time Complexity**: O(n log n + q log n)  
-**Space Complexity**: O(n log n)
+## Solution 1: Brute Force with LCA
 
-**Algorithm**:
-1. Precompute LCA using binary lifting
+### Idea
+
+For each query, find the path using LCA and traverse all nodes to find maximum.
+
+### Algorithm
+
+1. Build tree and precompute LCA using binary lifting
 2. For each query, find LCA of a and b
-3. Find minimum value from a to LCA and from b to LCA
+3. Traverse from a to LCA and from b to LCA, tracking maximum
 
-**Implementation**:
+### Code
+
 ```python
-def optimized_path_queries_ii(n, values, edges, queries):
+def solve_brute_force(n, values, edges, queries):
+    """
+    Brute force: traverse path for each query.
+
+    Time: O(q * n) - each query may traverse O(n) nodes
+    Space: O(n log n) - for LCA preprocessing
+    """
     from collections import defaultdict
-    
-    # Build adjacency list
+    import sys
+    sys.setrecursionlimit(300000)
+
     graph = defaultdict(list)
     for u, v in edges:
         graph[u].append(v)
         graph[v].append(u)
-    
-    # Precompute LCA using binary lifting
-    LOG = 20
-    up = [[0] * (n + 1) for _ in range(LOG)]
+
+    LOG = 18
+    parent = [[0] * (n + 1) for _ in range(LOG)]
     depth = [0] * (n + 1)
-    min_path = [[float('inf')] * (n + 1) for _ in range(LOG)]
-    
-    def dfs(node, parent):
-        up[0][node] = parent
-        min_path[0][node] = values[node - 1]
-        depth[node] = depth[parent] + 1
-        
+
+    def dfs(node, par, d):
+        parent[0][node] = par
+        depth[node] = d
         for child in graph[node]:
-            if child != parent:
-                dfs(child, node)
-    
-    dfs(1, 0)
-    
-    # Binary lifting
+            if child != par:
+                dfs(child, node, d + 1)
+
+    dfs(1, 0, 0)
+
     for k in range(1, LOG):
-        for node in range(1, n + 1):
-            up[k][node] = up[k-1][up[k-1][node]]
-            min_path[k][node] = min(min_path[k-1][node], min_path[k-1][up[k-1][node]])
-    
+        for v in range(1, n + 1):
+            parent[k][v] = parent[k-1][parent[k-1][v]]
+
     def lca(a, b):
         if depth[a] < depth[b]:
             a, b = b, a
-        
-        # Bring a to same depth as b
-        for k in range(LOG - 1, -1, -1):
-            if depth[a] - (1 << k) >= depth[b]:
-                a = up[k][a]
-        
+        diff = depth[a] - depth[b]
+        for k in range(LOG):
+            if diff & (1 << k):
+                a = parent[k][a]
         if a == b:
             return a
-        
-        # Find LCA
         for k in range(LOG - 1, -1, -1):
-            if up[k][a] != up[k][b]:
-                a = up[k][a]
-                b = up[k][b]
-        
-        return up[0][a]
-    
-    def min_on_path(node, ancestor):
-        min_val = float('inf')
-        for k in range(LOG - 1, -1, -1):
-            if depth[node] - (1 << k) >= depth[ancestor]:
-                min_val = min(min_val, min_path[k][node])
-                node = up[k][node]
-        return min_val
-    
+            if parent[k][a] != parent[k][b]:
+                a, b = parent[k][a], parent[k][b]
+        return parent[0][a]
+
+    def path_max(a, b):
+        l = lca(a, b)
+        max_val = values[l]
+        # Traverse a to lca
+        node = a
+        while node != l:
+            max_val = max(max_val, values[node])
+            node = parent[0][node]
+        # Traverse b to lca
+        node = b
+        while node != l:
+            max_val = max(max_val, values[node])
+            node = parent[0][node]
+        return max_val
+
     results = []
-    for a, b in queries:
-        lca_node = lca(a, b)
-        min_a_to_lca = min_on_path(a, lca_node)
-        min_b_to_lca = min_on_path(b, lca_node)
-        total_min = min(min_a_to_lca, min_b_to_lca)
-        results.append(total_min)
-    
+    for query in queries:
+        if query[0] == 1:  # Update
+            s, x = query[1], query[2]
+            values[s] = x
+        else:  # Query
+            a, b = query[1], query[2]
+            results.append(path_max(a, b))
+
     return results
 ```
 
-**Analysis**:
-- **Time**: O(n log n + q log n) - Preprocessing + query processing
-- **Space**: O(n log n) - Binary lifting table
-- **Improvement**: Much more efficient than brute force
+### Complexity
 
-### Approach 3: Optimal with Heavy-Light Decomposition
-**Time Complexity**: O(n + q log n)  
-**Space Complexity**: O(n)
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(q * n) | Each query traverses up to n nodes |
+| Space | O(n log n) | Binary lifting table for LCA |
 
-**Algorithm**:
-1. Use heavy-light decomposition to break tree into chains
-2. Use segment trees on each chain for efficient range minimum queries
-3. For each query, break path into O(log n) segments
+### Why This Works (But Is Slow)
 
-**Implementation**:
+Correctness is guaranteed because we visit every node on the path. However, with n, q up to 2*10^5, this gives 4*10^10 operations - far too slow.
+
+---
+
+## Solution 2: Optimal with Heavy-Light Decomposition
+
+### Key Insight
+
+> **The Trick:** Decompose the tree into chains such that any path crosses O(log n) chains, then use a segment tree on the linearized nodes.
+
+### Heavy-Light Decomposition Explained
+
+**Step 1: Calculate subtree sizes and identify heavy edges**
+- For each node, the "heavy child" is the one with the largest subtree
+- Heavy edges form chains; light edges connect chains
+
+**Step 2: Decompose into chains (DFS order)**
+- Assign positions to nodes so each chain is contiguous
+- Store chain head for each node
+
+**Step 3: Build segment tree on the linearized array**
+- Node values placed according to their HLD position
+- Segment tree supports point update and range max query
+
+**Step 4: Answer path queries**
+- Climb from both endpoints toward LCA
+- When nodes are in different chains, query the chain segment and jump to chain head's parent
+- When in same chain, do one final segment query
+
+### Visual Example: HLD Construction
+
+```
+Tree:                Values:
+      1 (val=4)           4
+     / \                 / \
+    2   3               2   5
+   (2) (5)
+       / \                 / \
+      4   5               2   1
+     (2) (1)
+
+Step 1: Subtree sizes
+  Node 1: size=5 (heavy child = 3, size=3)
+  Node 2: size=1
+  Node 3: size=3 (heavy child = 4, size=1... tie, pick 4)
+  Node 4: size=1
+  Node 5: size=1
+
+Step 2: Chains and positions
+  Chain 1: 1 -> 3 -> 4  (positions 0, 1, 2)
+  Chain 2: 2            (position 3)
+  Chain 3: 5            (position 4)
+
+  Linearized array: [4, 5, 2, 2, 1]  (by position)
+                     ^  ^  ^  ^  ^
+                     1  3  4  2  5
+
+Step 3: Segment tree on [4, 5, 2, 2, 1]
+```
+
+### Dry Run: Query path from node 2 to node 5
+
+```
+Path: 2 -> 1 -> 3 -> 5
+Values on path: [2, 4, 5, 1]
+Expected max: 5
+
+Step 1: Start with a=2, b=5
+  head[2]=2, head[5]=5, depth[head[2]]=1, depth[head[5]]=2
+  depth[head[5]] > depth[head[2]], so process node 5's chain first
+
+Step 2: Process node 5
+  Query segment tree [pos[5], pos[5]] = [4, 4] -> max = 1
+  Move b = parent[head[5]] = parent[5] = 3
+
+Step 3: Now a=2, b=3
+  head[2]=2, head[3]=1
+  Different chains, depth[head[2]]=1, depth[head[3]]=0
+  depth[head[2]] > depth[head[3]], process node 2's chain
+
+Step 4: Process node 2
+  Query segment tree [pos[2], pos[2]] = [3, 3] -> max = 2
+  Move a = parent[head[2]] = parent[2] = 1
+
+Step 5: Now a=1, b=3
+  head[1]=1, head[3]=1
+  Same chain! Query segment tree [pos[1], pos[3]] = [0, 1] -> max = 5
+
+Step 6: Combine all results: max(1, 2, 5) = 5
+```
+
+### Algorithm
+
+1. Build adjacency list from edges
+2. DFS to compute parent, depth, subtree size, heavy child
+3. Decompose tree: assign chain heads and positions
+4. Build segment tree on linearized values
+5. For each query:
+   - Update: modify segment tree at node's position
+   - Path max: climb chains, querying segments, until same chain
+
+### Code (Python)
+
 ```python
-def optimal_path_queries_ii(n, values, edges, queries):
-    from collections import defaultdict
-    
-    # Build adjacency list
+import sys
+from collections import defaultdict
+
+def solve():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n, q = int(input_data[idx]), int(input_data[idx + 1])
+    idx += 2
+
+    values = [0] + [int(input_data[idx + i]) for i in range(n)]  # 1-indexed
+    idx += n
+
     graph = defaultdict(list)
-    for u, v in edges:
+    for _ in range(n - 1):
+        u, v = int(input_data[idx]), int(input_data[idx + 1])
+        idx += 2
         graph[u].append(v)
         graph[v].append(u)
-    
-    # Heavy-light decomposition
+
+    # HLD arrays
     parent = [0] * (n + 1)
     depth = [0] * (n + 1)
     size = [0] * (n + 1)
-    heavy = [0] * (n + 1)
-    head = [0] * (n + 1)
-    pos = [0] * (n + 1)
-    
-    def dfs_size(node, par):
-        parent[node] = par
-        size[node] = 1
-        heavy[node] = 0
-        
-        for child in graph[node]:
-            if child != par:
-                depth[child] = depth[node] + 1
-                size[node] += dfs_size(child, node)
-                if size[child] > size[heavy[node]]:
-                    heavy[node] = child
-        
-        return size[node]
-    
-    dfs_size(1, 0)
-    
-    # Decompose tree into chains
+    heavy = [0] * (n + 1)  # heavy child (0 if leaf)
+    head = [0] * (n + 1)   # chain head
+    pos = [0] * (n + 1)    # position in segment tree
+
+    # DFS to compute size and heavy child (iterative)
+    stack = [(1, 0, False)]
+    while stack:
+        node, par, processed = stack.pop()
+        if processed:
+            size[node] = 1
+            max_child_size = 0
+            for child in graph[node]:
+                if child != par:
+                    size[node] += size[child]
+                    if size[child] > max_child_size:
+                        max_child_size = size[child]
+                        heavy[node] = child
+        else:
+            parent[node] = par
+            depth[node] = depth[par] + 1 if par else 0
+            stack.append((node, par, True))
+            for child in graph[node]:
+                if child != par:
+                    stack.append((child, node, False))
+
+    # Decompose into chains (iterative)
     current_pos = 0
-    def decompose(node, h):
-        nonlocal current_pos
+    stack = [(1, 1)]  # (node, chain_head)
+    while stack:
+        node, h = stack.pop()
         head[node] = h
         pos[node] = current_pos
         current_pos += 1
-        
-        if heavy[node]:
-            decompose(heavy[node], h)
-        
+
+        # Add light children first (processed later)
+        light_children = []
         for child in graph[node]:
             if child != parent[node] and child != heavy[node]:
-                decompose(child, child)
-    
-    decompose(1, 1)
-    
-    # Build segment tree for each chain
-    chain_values = [0] * n
-    for node in range(1, n + 1):
-        chain_values[pos[node]] = values[node - 1]
-    
-    # Simple segment tree for range minimum
-    class SegmentTree:
-        def __init__(self, arr):
-            self.n = len(arr)
-            self.tree = [float('inf')] * (4 * self.n)
-            self.build(arr, 1, 0, self.n - 1)
-        
-        def build(self, arr, node, start, end):
-            if start == end:
-                self.tree[node] = arr[start]
-            else:
-                mid = (start + end) // 2
-                self.build(arr, 2 * node, start, mid)
-                self.build(arr, 2 * node + 1, mid + 1, end)
-                self.tree[node] = min(self.tree[2 * node], self.tree[2 * node + 1])
-        
-        def query(self, node, start, end, l, r):
-            if r < start or end < l:
-                return float('inf')
-            if l <= start and end <= r:
-                return self.tree[node]
+                light_children.append(child)
+
+        # Add light children - each starts new chain
+        for child in reversed(light_children):
+            stack.append((child, child))
+
+        # Add heavy child (processed next, same chain)
+        if heavy[node]:
+            stack.append((heavy[node], h))
+
+    # Build segment tree
+    seg_tree = [0] * (4 * n)
+    arr = [0] * n
+    for i in range(1, n + 1):
+        arr[pos[i]] = values[i]
+
+    def build(node, start, end):
+        if start == end:
+            seg_tree[node] = arr[start]
+        else:
             mid = (start + end) // 2
-            return min(self.query(2 * node, start, mid, l, r), 
-                       self.query(2 * node + 1, mid + 1, end, l, r))
-    
-    st = SegmentTree(chain_values)
-    
-    def path_query(a, b):
-        min_val = float('inf')
-        
+            build(2 * node, start, mid)
+            build(2 * node + 1, mid + 1, end)
+            seg_tree[node] = max(seg_tree[2 * node], seg_tree[2 * node + 1])
+
+    def update(node, start, end, idx, val):
+        if start == end:
+            seg_tree[node] = val
+        else:
+            mid = (start + end) // 2
+            if idx <= mid:
+                update(2 * node, start, mid, idx, val)
+            else:
+                update(2 * node + 1, mid + 1, end, idx, val)
+            seg_tree[node] = max(seg_tree[2 * node], seg_tree[2 * node + 1])
+
+    def query(node, start, end, l, r):
+        if r < start or end < l:
+            return 0
+        if l <= start and end <= r:
+            return seg_tree[node]
+        mid = (start + end) // 2
+        return max(query(2 * node, start, mid, l, r),
+                   query(2 * node + 1, mid + 1, end, l, r))
+
+    build(1, 0, n - 1)
+
+    def path_max(a, b):
+        result = 0
         while head[a] != head[b]:
-            if depth[head[a]] > depth[head[b]]:
+            if depth[head[a]] < depth[head[b]]:
                 a, b = b, a
-            
-            # Add minimum from b to head[b]
-            min_val = min(min_val, st.query(1, 0, n - 1, pos[head[b]], pos[b]))
-            b = parent[head[b]]
-        
-        # Add minimum from a to b (they're in same chain now)
+            result = max(result, query(1, 0, n - 1, pos[head[a]], pos[a]))
+            a = parent[head[a]]
         if depth[a] > depth[b]:
             a, b = b, a
-        min_val = min(min_val, st.query(1, 0, n - 1, pos[a], pos[b]))
-        
-        return min_val
-    
+        result = max(result, query(1, 0, n - 1, pos[a], pos[b]))
+        return result
+
     results = []
-    for a, b in queries:
-        results.append(path_query(a, b))
-    
-    return results
+    for _ in range(q):
+        query_type = int(input_data[idx])
+        if query_type == 1:
+            s, x = int(input_data[idx + 1]), int(input_data[idx + 2])
+            idx += 3
+            update(1, 0, n - 1, pos[s], x)
+        else:
+            a, b = int(input_data[idx + 1]), int(input_data[idx + 2])
+            idx += 3
+            results.append(path_max(a, b))
+
+    print('\n'.join(map(str, results)))
+
+if __name__ == "__main__":
+    solve()
 ```
 
-**Analysis**:
-- **Time**: O(n + q log n) - Preprocessing + query processing
-- **Space**: O(n) - Heavy-light decomposition and segment tree
-- **Optimal**: Best possible complexity for this problem
+### Code (C++)
 
-**Visual Example**:
-```
-Tree structure:
-    1(1)
-    |
-    2(2)
-   / \
-3(3) 4(4)
-      |
-    5(5)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-Heavy-Light Decomposition:
-Chain 1: 1-2-4-5 (heavy edges)
-Chain 2: 3 (light edge)
+const int MAXN = 200005;
 
-Path Query (1, 5):
-1. 1 → 2 (same chain): min = 1
-2. 2 → 4 (same chain): min = 2
-3. 4 → 5 (same chain): min = 4
-Total minimum: 1
-```
+vector<int> adj[MAXN];
+int values[MAXN], parent_node[MAXN], depth[MAXN];
+int subtree_size[MAXN], heavy[MAXN], head[MAXN], pos[MAXN];
+int seg_tree[4 * MAXN];
+int current_pos = 0;
 
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(q × n) | O(n) | DFS for each query |
-| Optimized | O(n log n + q log n) | O(n log n) | LCA with binary lifting |
-| Optimal | O(n + q log n) | O(n) | Heavy-light decomposition |
-
-### Time Complexity
-- **Time**: O(n + q log n) - Preprocessing + query processing with HLD
-- **Space**: O(n) - Heavy-light decomposition and segment tree
-
-### Why This Solution Works
-- **LCA Technique**: Use lowest common ancestor to break path into two parts
-- **Binary Lifting**: Efficiently find LCA and minimum values in O(log n) time
-- **Heavy-Light Decomposition**: Break tree into chains for efficient range minimum queries
-- **Optimal Approach**: Heavy-light decomposition provides the best possible complexity for path minimum queries
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Path Queries II with Dynamic Updates
-**Problem**: Handle dynamic updates to the tree structure and maintain path minimum queries efficiently.
-
-**Link**: [CSES Problem Set - Path Queries II with Updates](https://cses.fi/problemset/task/path_queries_ii_updates)
-
-```python
-class PathQueriesIIWithUpdates:
-    def __init__(self, n, edges, values):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.values = values[:]
-        self.depths = [0] * n
-        self.log_n = 20  # Maximum log n for binary lifting
-        self.up = [[-1] * self.log_n for _ in range(n)]
-        self.min_up = [[float('inf')] * self.log_n for _ in range(n)]
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node using DFS"""
-        def dfs(node, parent, d):
-            self.depths[node] = d
-            self.up[node][0] = parent
-            self.min_up[node][0] = self.values[node]
-            
-            for neighbor in self.adj[node]:
-                if neighbor != parent:
-                    dfs(neighbor, node, d + 1)
-        
-        dfs(0, -1, 0)
-    
-    def _preprocess_binary_lifting(self):
-        """Preprocess binary lifting table with minimum values"""
-        for j in range(1, self.log_n):
-            for i in range(self.n):
-                if self.up[i][j-1] != -1:
-                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
-                    self.min_up[i][j] = min(
-                        self.min_up[i][j-1],
-                        self.min_up[self.up[i][j-1]][j-1]
-                    )
-    
-    def add_edge(self, u, v):
-        """Add edge between nodes u and v"""
-        self.adj[u].append(v)
-        self.adj[v].append(u)
-        
-        # Recalculate depths and binary lifting table
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def remove_edge(self, u, v):
-        """Remove edge between nodes u and v"""
-        if v in self.adj[u]:
-            self.adj[u].remove(v)
-        if u in self.adj[v]:
-            self.adj[v].remove(u)
-        
-        # Recalculate depths and binary lifting table
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def update_value(self, node, new_value):
-        """Update value of a node and recalculate binary lifting table"""
-        self.values[node] = new_value
-        
-        # Recalculate binary lifting table
-        self._preprocess_binary_lifting()
-    
-    def get_lca(self, node1, node2):
-        """Get lowest common ancestor of two nodes"""
-        # Make sure node1 is deeper
-        if self.depths[node1] < self.depths[node2]:
-            node1, node2 = node2, node1
-        
-        # Bring node1 to same depth as node2
-        diff = self.depths[node1] - self.depths[node2]
-        for j in range(self.log_n):
-            if diff & (1 << j):
-                node1 = self.up[node1][j]
-        
-        if node1 == node2:
-            return node1
-        
-        # Binary search for LCA
-        for j in range(self.log_n - 1, -1, -1):
-            if self.up[node1][j] != self.up[node2][j]:
-                node1 = self.up[node1][j]
-                node2 = self.up[node2][j]
-        
-        return self.up[node1][0]
-    
-    def get_path_minimum(self, node1, node2):
-        """Get minimum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate minimum from node1 to LCA
-        min1 = self.values[node1]
-        current = node1
-        while current != lca:
-            min1 = min(min1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate minimum from node2 to LCA
-        min2 = self.values[node2]
-        current = node2
-        while current != lca:
-            min2 = min(min2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return min(min1, min2, self.values[lca])
-    
-    def get_path_maximum(self, node1, node2):
-        """Get maximum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate maximum from node1 to LCA
-        max1 = self.values[node1]
-        current = node1
-        while current != lca:
-            max1 = max(max1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate maximum from node2 to LCA
-        max2 = self.values[node2]
-        current = node2
-        while current != lca:
-            max2 = max(max2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return max(max1, max2, self.values[lca])
-    
-    def get_path_sum(self, node1, node2):
-        """Get sum of values on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate sum from node1 to LCA
-        sum1 = 0
-        current = node1
-        while current != lca:
-            sum1 += self.values[current]
-            current = self.up[current][0]
-        
-        # Calculate sum from node2 to LCA
-        sum2 = 0
-        current = node2
-        while current != lca:
-            sum2 += self.values[current]
-            current = self.up[current][0]
-        
-        # Add LCA value
-        return sum1 + sum2 + self.values[lca]
-    
-    def get_path_values(self, node1, node2):
-        """Get all values on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Get values from node1 to LCA
-        values1 = []
-        current = node1
-        while current != lca:
-            values1.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Get values from node2 to LCA
-        values2 = []
-        current = node2
-        while current != lca:
-            values2.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Combine values
-        return values1 + [self.values[lca]] + values2[::-1]
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'add_edge':
-                self.add_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'remove_edge':
-                self.remove_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'update_value':
-                self.update_value(query['node'], query['new_value'])
-                results.append(None)
-            elif query['type'] == 'path_minimum':
-                result = self.get_path_minimum(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_maximum':
-                result = self.get_path_maximum(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_sum':
-                result = self.get_path_sum(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_values':
-                result = self.get_path_values(query['u'], query['v'])
-                results.append(result)
-        return results
-```
-
-### Variation 2: Path Queries II with Different Operations
-**Problem**: Handle different types of operations (find, analyze, compare) on path queries.
-
-**Link**: [CSES Problem Set - Path Queries II Different Operations](https://cses.fi/problemset/task/path_queries_ii_operations)
-
-```python
-class PathQueriesIIDifferentOps:
-    def __init__(self, n, edges, values):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.values = values[:]
-        self.depths = [0] * n
-        self.log_n = 20  # Maximum log n for binary lifting
-        self.up = [[-1] * self.log_n for _ in range(n)]
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node using DFS"""
-        def dfs(node, parent, d):
-            self.depths[node] = d
-            self.up[node][0] = parent
-            
-            for neighbor in self.adj[node]:
-                if neighbor != parent:
-                    dfs(neighbor, node, d + 1)
-        
-        dfs(0, -1, 0)
-    
-    def _preprocess_binary_lifting(self):
-        """Preprocess binary lifting table"""
-        for j in range(1, self.log_n):
-            for i in range(self.n):
-                if self.up[i][j-1] != -1:
-                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
-    
-    def get_lca(self, node1, node2):
-        """Get lowest common ancestor of two nodes"""
-        # Make sure node1 is deeper
-        if self.depths[node1] < self.depths[node2]:
-            node1, node2 = node2, node1
-        
-        # Bring node1 to same depth as node2
-        diff = self.depths[node1] - self.depths[node2]
-        for j in range(self.log_n):
-            if diff & (1 << j):
-                node1 = self.up[node1][j]
-        
-        if node1 == node2:
-            return node1
-        
-        # Binary search for LCA
-        for j in range(self.log_n - 1, -1, -1):
-            if self.up[node1][j] != self.up[node2][j]:
-                node1 = self.up[node1][j]
-                node2 = self.up[node2][j]
-        
-        return self.up[node1][0]
-    
-    def get_path_minimum(self, node1, node2):
-        """Get minimum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate minimum from node1 to LCA
-        min1 = self.values[node1]
-        current = node1
-        while current != lca:
-            min1 = min(min1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate minimum from node2 to LCA
-        min2 = self.values[node2]
-        current = node2
-        while current != lca:
-            min2 = min(min2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return min(min1, min2, self.values[lca])
-    
-    def get_path_maximum(self, node1, node2):
-        """Get maximum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate maximum from node1 to LCA
-        max1 = self.values[node1]
-        current = node1
-        while current != lca:
-            max1 = max(max1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate maximum from node2 to LCA
-        max2 = self.values[node2]
-        current = node2
-        while current != lca:
-            max2 = max(max2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return max(max1, max2, self.values[lca])
-    
-    def get_path_sum(self, node1, node2):
-        """Get sum of values on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate sum from node1 to LCA
-        sum1 = 0
-        current = node1
-        while current != lca:
-            sum1 += self.values[current]
-            current = self.up[current][0]
-        
-        # Calculate sum from node2 to LCA
-        sum2 = 0
-        current = node2
-        while current != lca:
-            sum2 += self.values[current]
-            current = self.up[current][0]
-        
-        # Add LCA value
-        return sum1 + sum2 + self.values[lca]
-    
-    def get_path_values(self, node1, node2):
-        """Get all values on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Get values from node1 to LCA
-        values1 = []
-        current = node1
-        while current != lca:
-            values1.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Get values from node2 to LCA
-        values2 = []
-        current = node2
-        while current != lca:
-            values2.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Combine values
-        return values1 + [self.values[lca]] + values2[::-1]
-    
-    def get_path_length(self, node1, node2):
-        """Get length of path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        return self.depths[node1] + self.depths[node2] - 2 * self.depths[lca]
-    
-    def get_path_statistics(self, node1, node2):
-        """Get comprehensive statistics for path between two nodes"""
-        values = self.get_path_values(node1, node2)
-        
-        return {
-            'sum': sum(values),
-            'max': max(values),
-            'min': min(values),
-            'avg': sum(values) / len(values),
-            'length': len(values),
-            'values': values
-        }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'path_minimum':
-                result = self.get_path_minimum(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_maximum':
-                result = self.get_path_maximum(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_sum':
-                result = self.get_path_sum(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_values':
-                result = self.get_path_values(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_length':
-                result = self.get_path_length(query['u'], query['v'])
-                results.append(result)
-            elif query['type'] == 'path_statistics':
-                result = self.get_path_statistics(query['u'], query['v'])
-                results.append(result)
-        return results
-```
-
-### Variation 3: Path Queries II with Constraints
-**Problem**: Handle path queries with additional constraints (e.g., minimum value, maximum value, value range).
-
-**Link**: [CSES Problem Set - Path Queries II with Constraints](https://cses.fi/problemset/task/path_queries_ii_constraints)
-
-```python
-class PathQueriesIIWithConstraints:
-    def __init__(self, n, edges, values, min_value, max_value):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.values = values[:]
-        self.depths = [0] * n
-        self.log_n = 20  # Maximum log n for binary lifting
-        self.up = [[-1] * self.log_n for _ in range(n)]
-        self.min_value = min_value
-        self.max_value = max_value
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_depths()
-        self._preprocess_binary_lifting()
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node using DFS"""
-        def dfs(node, parent, d):
-            self.depths[node] = d
-            self.up[node][0] = parent
-            
-            for neighbor in self.adj[node]:
-                if neighbor != parent:
-                    dfs(neighbor, node, d + 1)
-        
-        dfs(0, -1, 0)
-    
-    def _preprocess_binary_lifting(self):
-        """Preprocess binary lifting table"""
-        for j in range(1, self.log_n):
-            for i in range(self.n):
-                if self.up[i][j-1] != -1:
-                    self.up[i][j] = self.up[self.up[i][j-1]][j-1]
-    
-    def get_lca(self, node1, node2):
-        """Get lowest common ancestor of two nodes"""
-        # Make sure node1 is deeper
-        if self.depths[node1] < self.depths[node2]:
-            node1, node2 = node2, node1
-        
-        # Bring node1 to same depth as node2
-        diff = self.depths[node1] - self.depths[node2]
-        for j in range(self.log_n):
-            if diff & (1 << j):
-                node1 = self.up[node1][j]
-        
-        if node1 == node2:
-            return node1
-        
-        # Binary search for LCA
-        for j in range(self.log_n - 1, -1, -1):
-            if self.up[node1][j] != self.up[node2][j]:
-                node1 = self.up[node1][j]
-                node2 = self.up[node2][j]
-        
-        return self.up[node1][0]
-    
-    def get_path_minimum(self, node1, node2):
-        """Get minimum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate minimum from node1 to LCA
-        min1 = self.values[node1]
-        current = node1
-        while current != lca:
-            min1 = min(min1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate minimum from node2 to LCA
-        min2 = self.values[node2]
-        current = node2
-        while current != lca:
-            min2 = min(min2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return min(min1, min2, self.values[lca])
-    
-    def get_path_maximum(self, node1, node2):
-        """Get maximum value on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Calculate maximum from node1 to LCA
-        max1 = self.values[node1]
-        current = node1
-        while current != lca:
-            max1 = max(max1, self.values[current])
-            current = self.up[current][0]
-        
-        # Calculate maximum from node2 to LCA
-        max2 = self.values[node2]
-        current = node2
-        while current != lca:
-            max2 = max(max2, self.values[current])
-            current = self.up[current][0]
-        
-        # Include LCA value
-        return max(max1, max2, self.values[lca])
-    
-    def get_path_values(self, node1, node2):
-        """Get all values on path between two nodes"""
-        lca = self.get_lca(node1, node2)
-        
-        # Get values from node1 to LCA
-        values1 = []
-        current = node1
-        while current != lca:
-            values1.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Get values from node2 to LCA
-        values2 = []
-        current = node2
-        while current != lca:
-            values2.append(self.values[current])
-            current = self.up[current][0]
-        
-        # Combine values
-        return values1 + [self.values[lca]] + values2[::-1]
-    
-    def constrained_path_minimum_query(self, node1, node2):
-        """Query path minimum with constraints"""
-        values = self.get_path_values(node1, node2)
-        
-        # Filter values that satisfy constraints
-        valid_values = [v for v in values if self.min_value <= v <= self.max_value]
-        
-        return min(valid_values) if valid_values else -1
-    
-    def constrained_path_maximum_query(self, node1, node2):
-        """Query path maximum with constraints"""
-        values = self.get_path_values(node1, node2)
-        
-        # Filter values that satisfy constraints
-        valid_values = [v for v in values if self.min_value <= v <= self.max_value]
-        
-        return max(valid_values) if valid_values else -1
-    
-    def find_valid_paths(self):
-        """Find all paths that satisfy value constraints"""
-        valid_paths = []
-        
-        for i in range(self.n):
-            for j in range(i + 1, self.n):
-                values = self.get_path_values(i, j)
-                if all(self.min_value <= v <= self.max_value for v in values):
-                    valid_paths.append((i, j, values))
-        
-        return valid_paths
-    
-    def count_valid_paths(self):
-        """Count number of valid paths"""
-        return len(self.find_valid_paths())
-    
-    def get_constraint_statistics(self):
-        """Get statistics about valid paths"""
-        valid_paths = self.find_valid_paths()
-        
-        if not valid_paths:
-            return {
-                'valid_paths_count': 0,
-                'min_value': self.min_value,
-                'max_value': self.max_value,
-                'valid_paths': []
+void dfs_size(int node, int par) {
+    parent_node[node] = par;
+    subtree_size[node] = 1;
+    heavy[node] = 0;
+    int max_child = 0;
+    for (int child : adj[node]) {
+        if (child != par) {
+            depth[child] = depth[node] + 1;
+            dfs_size(child, node);
+            subtree_size[node] += subtree_size[child];
+            if (subtree_size[child] > max_child) {
+                max_child = subtree_size[child];
+                heavy[node] = child;
             }
-        
-        all_values = []
-        for _, _, values in valid_paths:
-            all_values.extend(values)
-        
-        return {
-            'valid_paths_count': len(valid_paths),
-            'min_value': self.min_value,
-            'max_value': self.max_value,
-            'min_valid_value': min(all_values),
-            'max_valid_value': max(all_values),
-            'avg_valid_value': sum(all_values) / len(all_values),
-            'valid_paths': valid_paths
         }
+    }
+}
 
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (1, 3), (3, 4)]
-values = [1, 2, 3, 4, 5]
-min_value = 2
-max_value = 4
+void decompose(int node, int h) {
+    head[node] = h;
+    pos[node] = current_pos++;
+    if (heavy[node]) {
+        decompose(heavy[node], h);
+    }
+    for (int child : adj[node]) {
+        if (child != parent_node[node] && child != heavy[node]) {
+            decompose(child, child);
+        }
+    }
+}
 
-pq = PathQueriesIIWithConstraints(n, edges, values, min_value, max_value)
-result = pq.constrained_path_minimum_query(0, 4)
-print(f"Constrained path minimum query result: {result}")
+void build(int node, int start, int end, int arr[]) {
+    if (start == end) {
+        seg_tree[node] = arr[start];
+    } else {
+        int mid = (start + end) / 2;
+        build(2 * node, start, mid, arr);
+        build(2 * node + 1, mid + 1, end, arr);
+        seg_tree[node] = max(seg_tree[2 * node], seg_tree[2 * node + 1]);
+    }
+}
 
-valid_paths = pq.find_valid_paths()
-print(f"Valid paths: {valid_paths}")
+void update(int node, int start, int end, int idx, int val) {
+    if (start == end) {
+        seg_tree[node] = val;
+    } else {
+        int mid = (start + end) / 2;
+        if (idx <= mid) {
+            update(2 * node, start, mid, idx, val);
+        } else {
+            update(2 * node + 1, mid + 1, end, idx, val);
+        }
+        seg_tree[node] = max(seg_tree[2 * node], seg_tree[2 * node + 1]);
+    }
+}
 
-statistics = pq.get_constraint_statistics()
-print(f"Constraint statistics: {statistics}")
+int query(int node, int start, int end, int l, int r) {
+    if (r < start || end < l) return 0;
+    if (l <= start && end <= r) return seg_tree[node];
+    int mid = (start + end) / 2;
+    return max(query(2 * node, start, mid, l, r),
+               query(2 * node + 1, mid + 1, end, l, r));
+}
+
+int path_max(int a, int b, int n) {
+    int result = 0;
+    while (head[a] != head[b]) {
+        if (depth[head[a]] < depth[head[b]]) swap(a, b);
+        result = max(result, query(1, 0, n - 1, pos[head[a]], pos[a]));
+        a = parent_node[head[a]];
+    }
+    if (depth[a] > depth[b]) swap(a, b);
+    result = max(result, query(1, 0, n - 1, pos[a], pos[b]));
+    return result;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q;
+    cin >> n >> q;
+
+    for (int i = 1; i <= n; i++) {
+        cin >> values[i];
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    depth[1] = 0;
+    dfs_size(1, 0);
+    decompose(1, 1);
+
+    int arr[n];
+    for (int i = 1; i <= n; i++) {
+        arr[pos[i]] = values[i];
+    }
+    build(1, 0, n - 1, arr);
+
+    while (q--) {
+        int type;
+        cin >> type;
+        if (type == 1) {
+            int s, x;
+            cin >> s >> x;
+            update(1, 0, n - 1, pos[s], x);
+        } else {
+            int a, b;
+            cin >> a >> b;
+            cout << path_max(a, b, n) << "\n";
+        }
+    }
+
+    return 0;
+}
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Path Queries](https://cses.fi/problemset/task/1138) - Basic path queries in tree
-- [Path Queries II](https://cses.fi/problemset/task/2134) - Advanced path queries in tree
-- [Tree Diameter](https://cses.fi/problemset/task/1131) - Find diameter of tree
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O((n + q) log^2 n) | Each query crosses O(log n) chains, each segment query is O(log n) |
+| Space | O(n) | Tree arrays and segment tree |
 
-#### **LeetCode Problems**
-- [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) - Tree traversal by levels
-- [Path Sum](https://leetcode.com/problems/path-sum/) - Path queries in tree
-- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Path analysis in tree
+---
 
-#### **Problem Categories**
-- **Heavy-Light Decomposition**: Tree decomposition, path queries
-- **LCA Algorithm**: Lowest common ancestor, binary lifting
-- **Tree Queries**: Path queries, tree analysis, tree operations
-- **Tree Algorithms**: Tree properties, tree analysis, tree operations
+## Common Mistakes
+
+### Mistake 1: Wrong Chain Traversal Order
+
+```python
+# WRONG - may skip nodes
+while head[a] != head[b]:
+    if depth[a] < depth[b]:  # Comparing node depth, not chain head depth
+        a, b = b, a
+    ...
+```
+
+**Problem:** We must compare depths of chain heads, not the nodes themselves.
+**Fix:** Use `depth[head[a]] < depth[head[b]]` to decide which chain to process.
+
+### Mistake 2: Forgetting Final Same-Chain Query
+
+```python
+# WRONG - missing the final segment
+while head[a] != head[b]:
+    # ... process chains
+# Missing: query(pos[a], pos[b]) when same chain!
+```
+
+**Problem:** After the loop, a and b are in the same chain but we still need to query that segment.
+**Fix:** Always do a final query from pos[a] to pos[b] after the loop.
+
+### Mistake 3: Position Order in Segment Query
+
+```python
+# WRONG - positions may be reversed
+result = max(result, query(1, 0, n-1, pos[a], pos[b]))
+```
+
+**Problem:** If a is deeper than b in the same chain, pos[a] > pos[b].
+**Fix:** Ensure a is the shallower node before the final query:
+```python
+if depth[a] > depth[b]:
+    a, b = b, a
+result = max(result, query(1, 0, n-1, pos[a], pos[b]))
+```
+
+### Mistake 4: Stack Overflow in DFS
+
+```python
+# WRONG - recursive DFS on large trees
+def dfs(node, par):
+    for child in graph[node]:
+        if child != par:
+            dfs(child, node)  # Stack overflow for n=200000
+```
+
+**Problem:** Python's default recursion limit is 1000.
+**Fix:** Use iterative DFS or increase recursion limit with `sys.setrecursionlimit()`.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Behavior | Why |
+|------|-------|-------------------|-----|
+| Single node | n=1, query 2 1 1 | Return value of node 1 | Path is just one node |
+| Linear tree | 1-2-3-...-n chain | All nodes in one chain | Degenerate case, still O(log n) per query |
+| Star tree | 1 connected to all others | n-1 chains of length 1 | Many light edges |
+| Query after update | Update then query same node | New value | Segment tree reflects update |
+| Same node query | Query 2 a a | value[a] | Path contains only one node |
+
+---
+
+## When to Use This Pattern
+
+### Use HLD When:
+- You need path queries (max, min, sum, etc.) on a tree
+- Point updates or path updates are required
+- Query complexity needs to be better than O(n)
+- The tree is static (structure doesn't change)
+
+### Don't Use When:
+- Only need LCA queries (binary lifting is simpler)
+- Tree structure changes dynamically (consider Link-Cut Trees)
+- Only querying subtrees (use Euler tour instead)
+- Single path query without updates (simple DFS suffices)
+
+### Pattern Recognition Checklist:
+- [ ] Path queries on a tree? -> **Consider HLD**
+- [ ] Need to support updates? -> **HLD + Segment Tree**
+- [ ] Subtree queries only? -> **Euler Tour + Segment Tree**
+- [ ] LCA queries only? -> **Binary Lifting**
+- [ ] Dynamic tree connectivity? -> **Link-Cut Trees**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Path Queries](https://cses.fi/problemset/task/1138) | Subtree sums with Euler tour |
+| [Company Queries I](https://cses.fi/problemset/task/1687) | Binary lifting basics |
+| [Company Queries II](https://cses.fi/problemset/task/1688) | LCA with binary lifting |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Subtree Queries](https://cses.fi/problemset/task/1137) | Subtree updates instead of path |
+| [Distance Queries](https://cses.fi/problemset/task/1135) | Path length using LCA |
+| [Path Queries (SPOJ QTREE)](https://www.spoj.com/problems/QTREE/) | Classic HLD problem |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Vertex Set Path Composite](https://judge.yosupo.jp/problem/vertex_set_path_composite) | Non-commutative operations on paths |
+| [Tree Isomorphism](https://cses.fi/problemset/task/1700) | Tree hashing |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** HLD transforms tree paths into O(log n) contiguous segments
+2. **Time Optimization:** From O(n) per query to O(log^2 n) per query
+3. **Space Trade-off:** O(n) extra arrays for decomposition metadata
+4. **Pattern:** Linearize tree structure to enable efficient range queries
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why any path crosses at most O(log n) chains
+- [ ] Implement HLD decomposition from scratch
+- [ ] Combine HLD with segment trees for path queries
+- [ ] Handle both point updates and path queries
+- [ ] Debug common issues (wrong chain comparison, missing final query)
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Heavy-Light Decomposition](https://cp-algorithms.com/data_structures/hld.html)
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [Anudeep's Blog on HLD](https://blog.anudeep2011.com/heavy-light-decomposition/)

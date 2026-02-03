@@ -1,747 +1,395 @@
 ---
-layout: simple
-title: "Mail Delivery - Graph Algorithm Problem"
-permalink: /problem_soulutions/graph_algorithms/mail_delivery_analysis
+layout: analysis
+title: "Mail Delivery"
+difficulty: Medium
+tags: [graph, eulerian-circuit, hierholzer, undirected]
+cses_link: https://cses.fi/problemset/task/1691
 ---
 
-# Mail Delivery - Graph Algorithm Problem
+# Mail Delivery
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of Eulerian paths in graph algorithms
-- Apply efficient algorithms for finding Eulerian paths in undirected graphs
-- Implement Hierholzer's algorithm for Eulerian path construction
-- Optimize graph algorithms for path construction problems
-- Handle special cases in Eulerian path problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find a route using each street exactly once, returning to start |
+| Type | Eulerian Circuit in Undirected Graph |
+| Key Technique | Hierholzer's Algorithm |
+| Time Complexity | O(n + m) |
+| Space Complexity | O(n + m) |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given an undirected graph, find an Eulerian path (a path that uses every edge exactly once) if it exists.
+After solving this problem, you will understand:
+1. **Eulerian Circuit**: A path that visits every edge exactly once and returns to the starting vertex
+2. **Existence Conditions**: When an Eulerian circuit exists in an undirected graph
+3. **Hierholzer's Algorithm**: Efficient algorithm to construct Eulerian circuits
+4. **Undirected Edge Handling**: Properly marking edges as used from both endpoints
 
-**Input**: 
-- n: number of vertices
-- m: number of edges
-- edges: array of (u, v) representing undirected edges
+## Problem Statement
 
-**Output**: 
-- Eulerian path if it exists, or "NO" if no Eulerian path exists
+Syrjala's mail carrier needs to deliver mail to n crossings connected by m streets. The carrier must:
+- Start at the post office (crossing 1)
+- Use each street exactly once
+- Return to the post office
 
-**Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
+**Input**: First line has n and m. Next m lines each contain two integers a and b (a street between crossings a and b).
 
-**Example**:
+**Output**: Print any valid route as a sequence of crossings, or "IMPOSSIBLE" if no such route exists.
+
+**Constraints**: 1 <= n <= 10^5, 1 <= m <= 2 x 10^5
+
+## Eulerian Circuit: Existence Conditions
+
+For an **undirected graph**, an Eulerian circuit exists if and only if:
+
+1. **All vertices with edges have even degree**: Every vertex must have an even number of edges
+2. **Connectivity**: All vertices with at least one edge must be in the same connected component
+
 ```
-Input:
-n = 4, m = 4
-edges = [(1,2), (2,3), (3,4), (4,1)]
+Why even degree?
+- When entering a vertex, you must also leave it
+- Each visit uses 2 edges (one in, one out)
+- The start vertex: leave once initially, return once finally = 2 edges
 
-Output:
-YES
-1 2 3 4 1
-
-Explanation**: 
-Eulerian path: 1 → 2 → 3 → 4 → 1
-This path uses every edge exactly once
-```
-
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible sequences of edges
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Check each sequence for valid Eulerian path
-- **Inefficient**: O(m! × m) time complexity
-
-**Key Insight**: Try all possible sequences of edges and check which ones form valid Eulerian paths.
-
-**Algorithm**:
-- Generate all possible sequences of edges
-- For each sequence, check if it forms a valid Eulerian path
-- Return the first valid Eulerian path or "NO" if none exists
-
-**Visual Example**:
-```
-Graph: 1-2, 2-3, 3-4, 4-1
-
-Try all possible edge sequences:
-┌─────────────────────────────────────┐
-│ Sequence 1: [(1,2), (2,3), (3,4), (4,1)] │
-│ - Check: 1→2→3→4→1 ✓               │
-│ - Valid Eulerian path ✓            │
-│                                   │
-│ Sequence 2: [(1,2), (2,3), (4,1), (3,4)] │
-│ - Check: 1→2→3→4→1 ✓               │
-│ - Valid Eulerian path ✓            │
-│                                   │
-│ Sequence 3: [(1,2), (3,4), (2,3), (4,1)] │
-│ - Check: 1→2→3→4→1 ✓               │
-│ - Valid Eulerian path ✓            │
-│                                   │
-│ Sequence 4: [(2,3), (1,2), (3,4), (4,1)] │
-│ - Check: 2→3→4→1→2 ✓               │
-│ - Valid Eulerian path ✓            │
-│                                   │
-│ Continue for all m! sequences...   │
-│                                   │
-│ First valid Eulerian path found:   │
-│ 1 → 2 → 3 → 4 → 1                 │
-└─────────────────────────────────────┘
+Odd degree vertex = dead end (you get stuck or can't return)
 ```
 
-**Implementation**:
-```python
-def brute_force_mail_delivery(n, edges):
-    """Find Eulerian path using brute force approach"""
-    from itertools import permutations
-    
-    def is_valid_eulerian_path(edge_sequence):
-        """Check if edge sequence forms valid Eulerian path"""
-        if len(edge_sequence) != len(edges):
-            return False
-        
-        # Check if all edges are used exactly once
-        used_edges = set()
-        for edge in edge_sequence:
-            if edge in used_edges:
-                return False
-            used_edges.add(edge)
-        
-        # Check if path is connected
-        path = []
-        current_vertex = None
-        
-        for edge in edge_sequence:
-            if current_vertex is None:
-                # Start with first edge
-                current_vertex = edge[0]
-                path.append(current_vertex)
-                path.append(edge[1])
-                current_vertex = edge[1]
-            else:
-                # Check if edge connects to current vertex
-                if edge[0] == current_vertex:
-                    path.append(edge[1])
-                    current_vertex = edge[1]
-                elif edge[1] == current_vertex:
-                    path.append(edge[0])
-                    current_vertex = edge[0]
-                else:
-                    return False
-        
-        return True
-    
-    def generate_path_from_edges(edge_sequence):
-        """Generate vertex path from edge sequence"""
-        path = []
-        current_vertex = edge_sequence[0][0]
-        path.append(current_vertex)
-        
-        for edge in edge_sequence:
-            if edge[0] == current_vertex:
-                current_vertex = edge[1]
-            else:
-                current_vertex = edge[0]
-            path.append(current_vertex)
-        
-        return path
-    
-    # Try all possible edge sequences
-    for edge_sequence in permutations(edges):
-        if is_valid_eulerian_path(edge_sequence):
-            path = generate_path_from_edges(edge_sequence)
-            return "YES", path
-    
-    return "NO", None
+## Undirected vs Directed: Key Difference
 
-# Example usage
-n = 4
-edges = [(1, 2), (2, 3), (3, 4), (4, 1)]
-result, path = brute_force_mail_delivery(n, edges)
-print(f"Brute force result: {result}")
-if path:
-    print(f"Path: {' '.join(map(str, path))}")
+In an **undirected** graph:
+- Each edge can be traversed in either direction
+- But each edge can only be used **once total**
+- When you use edge (u,v), it's consumed from both u's and v's perspective
+
+```
+Edge (A)-----(B)
+
+Can traverse: A -> B  OR  B -> A
+But NOT both! Once used, the edge is gone.
 ```
 
-**Time Complexity**: O(m! × m)
-**Space Complexity**: O(m)
+## Hierholzer's Algorithm for Undirected Graphs
 
-**Why it's inefficient**: O(m! × m) time complexity for trying all possible edge sequences.
+**Core Idea**: Build the circuit by following edges until stuck, then backtrack and insert sub-circuits.
+
+**Key for Undirected Graphs**: When using edge (u,v), mark it as used from BOTH endpoints.
+
+```
+Algorithm:
+1. Check existence conditions
+2. Start DFS from vertex 1
+3. For each vertex, follow any unused edge
+4. Mark edge as used (remove from both endpoints)
+5. When stuck (no unused edges), add vertex to result
+6. Backtrack and continue
+7. Reverse the result
+```
+
+## Visual Diagram
+
+```
+Example: n=5, m=6
+Streets: (1,2), (1,3), (2,3), (2,4), (3,4), (4,5), (5,1)
+Wait, that's 7 edges. Let's use: (1,2), (1,3), (2,3), (3,4), (4,5), (5,1)
+
+Initial Graph:
+        1
+       /|\
+      / | \
+     2--3  5
+        |  |
+        4--+
+
+Degree check:
+- Vertex 1: degree 3 (edges to 2, 3, 5) - ODD!
+- This graph has NO Eulerian circuit
+
+Let's fix it - add edge (1,4):
+Streets: (1,2), (1,3), (1,4), (2,3), (3,4), (4,5), (5,1)
+
+        1
+       /|\\
+      / | \\
+     2--3  5
+        |  |
+        4--+
+
+Degrees: 1->4, 2->2, 3->3, 4->3, 5->2
+Still odd degrees! Need even simpler example.
+
+Simple Example: n=4, m=4
+Streets: (1,2), (2,3), (3,4), (4,1)
+
+    1 --- 2
+    |     |
+    4 --- 3
+
+Degrees: 1->2, 2->2, 3->2, 4->2 (all even!)
+Connected: Yes
+
+Hierholzer's execution:
+Step 1: Start at 1, stack=[1]
+Step 2: Go to 2 (use edge 1-2), stack=[1,2]
+Step 3: Go to 3 (use edge 2-3), stack=[1,2,3]
+Step 4: Go to 4 (use edge 3-4), stack=[1,2,3,4]
+Step 5: Go to 1 (use edge 4-1), stack=[1,2,3,4,1]
+Step 6: No edges from 1, pop -> result=[1]
+Step 7: No edges from 4, pop -> result=[1,4]
+Step 8: No edges from 3, pop -> result=[1,4,3]
+Step 9: No edges from 2, pop -> result=[1,4,3,2]
+Step 10: No edges from 1, pop -> result=[1,4,3,2,1]
+
+Reverse: [1,2,3,4,1]
+Output: 1 2 3 4 1
+```
+
+## Dry Run: Complex Example
+
+```
+n=5, m=6
+Edges: (1,2), (1,3), (2,3), (2,4), (3,4), (1,4)
+
+Graph:
+      1
+     /|\
+    / | \
+   2--+--3
+    \ | /
+     \|/
+      4
+
+Degrees: 1->3, 2->3, 3->3, 4->3
+All ODD! No Eulerian circuit exists.
+Output: IMPOSSIBLE
 
 ---
 
-### Approach 2: Hierholzer's Algorithm
+n=4, m=6 (with multi-edges)
+Edges: (1,2), (1,2), (2,3), (3,4), (4,1), (4,1)
 
-**Key Insights from Hierholzer's Algorithm**:
-- **Hierholzer's Algorithm**: Use Hierholzer's algorithm for Eulerian path construction
-- **Efficient Implementation**: O(m) time complexity
-- **Path Construction**: Build path by finding cycles and merging them
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Use Hierholzer's algorithm to construct Eulerian path efficiently.
-
-**Algorithm**:
-- Check if Eulerian path exists (at most 2 vertices with odd degree)
-- Use Hierholzer's algorithm to construct the path
-- Start from a vertex with odd degree (or any vertex if all have even degree)
-- Use DFS to find cycles and merge them into the path
-
-**Visual Example**:
-```
-Hierholzer's Algorithm:
-
-Graph: 1-2, 2-3, 3-4, 4-1
-All vertices have even degree (2 each)
-Eulerian path exists
-
-Step 1: Start from vertex 1
-┌─────────────────────────────────────┐
-│ Current path: [1]                  │
-│ Available edges: (1,2), (1,4)      │
-│ Choose edge (1,2)                  │
-│ Current path: [1, 2]               │
-│                                   │
-│ Step 2: From vertex 2              │
-│ Available edges: (2,3)             │
-│ Choose edge (2,3)                  │
-│ Current path: [1, 2, 3]            │
-│                                   │
-│ Step 3: From vertex 3              │
-│ Available edges: (3,4)             │
-│ Choose edge (3,4)                  │
-│ Current path: [1, 2, 3, 4]         │
-│                                   │
-│ Step 4: From vertex 4              │
-│ Available edges: (4,1)             │
-│ Choose edge (4,1)                  │
-│ Current path: [1, 2, 3, 4, 1]      │
-│                                   │
-│ All edges used, path complete      │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def hierholzer_mail_delivery(n, edges):
-    """Find Eulerian path using Hierholzer's algorithm"""
-    from collections import defaultdict, deque
-    
-    # Build adjacency list
-    adj = defaultdict(list)
-    degree = defaultdict(int)
-    
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-        degree[u] += 1
-        degree[v] += 1
-    
-    def has_eulerian_path():
-        """Check if Eulerian path exists"""
-        odd_degree_count = 0
-        odd_degree_vertices = []
-        
-        for vertex in range(1, n + 1):
-            if degree[vertex] % 2 == 1:
-                odd_degree_count += 1
-                odd_degree_vertices.append(vertex)
-        
-        # Eulerian path exists if at most 2 vertices have odd degree
-        if odd_degree_count == 0:
-            # Eulerian circuit exists
-            return True, None
-        elif odd_degree_count == 2:
-            # Eulerian path exists, start from odd degree vertex
-            return True, odd_degree_vertices[0]
-        else:
-            # No Eulerian path exists
-            return False, None
-    
-    def find_eulerian_path():
-        """Find Eulerian path using Hierholzer's algorithm"""
-        has_path, start_vertex = has_eulerian_path()
-        
-        if not has_path:
-            return None
-        
-        # If no start vertex specified, use any vertex
-        if start_vertex is None:
-            start_vertex = 1
-        
-        # Use stack to build path
-        stack = [start_vertex]
-        path = []
-        
-        while stack:
-            current_vertex = stack[-1]
-            
-            # If current vertex has no more edges, add to path
-            if not adj[current_vertex]:
-                path.append(stack.pop())
-            else:
-                # Find next edge
-                next_vertex = adj[current_vertex].pop()
-                # Remove reverse edge
-                adj[next_vertex].remove(current_vertex)
-                # Add next vertex to stack
-                stack.append(next_vertex)
-        
-        return path[::-1]  # Reverse to get correct order
-    
-    path = find_eulerian_path()
-    
-    if path:
-        return "YES", path
-    else:
-        return "NO", None
-
-# Example usage
-n = 4
-edges = [(1, 2), (2, 3), (3, 4), (4, 1)]
-result, path = hierholzer_mail_delivery(n, edges)
-print(f"Hierholzer result: {result}")
-if path:
-    print(f"Path: {' '.join(map(str, path))}")
-```
-
-**Time Complexity**: O(m)
-**Space Complexity**: O(n + m)
-
-**Why it's better**: Uses Hierholzer's algorithm for O(m) time complexity.
+Degrees: 1->4, 2->3, 3->2, 4->3
+Vertices 2,4 have odd degree -> IMPOSSIBLE
 
 ---
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+Valid example: n=3, m=4
+Edges: (1,2), (1,2), (2,3), (3,1)
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for Eulerian path construction
-- **Efficient Implementation**: O(m) time complexity
-- **Space Efficiency**: O(n + m) space complexity
-- **Optimal Complexity**: Best approach for Eulerian path problems
+     1
+    /|\\
+   / | \\
+  3--+--2
+  (two edges between 1-2)
 
-**Key Insight**: Use advanced data structures for optimal Eulerian path construction.
+Degrees: 1->4, 2->3, 3->2
+Vertex 2 odd -> IMPOSSIBLE
 
-**Algorithm**:
-- Use specialized data structures for graph representation
-- Implement efficient Hierholzer's algorithm
-- Handle special cases optimally
-- Return Eulerian path or "NO" if none exists
+Actually valid: n=3, m=6
+Edges: (1,2), (1,2), (2,3), (2,3), (3,1), (3,1)
 
-**Visual Example**:
-```
-Advanced data structure approach:
+Degrees: 1->4, 2->4, 3->4 (all even!)
 
-For graph: 1-2, 2-3, 3-4, 4-1
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Advanced adjacency list: for     │
-│   efficient storage and operations  │
-│ - Degree cache: for optimization    │
-│ - Path cache: for optimization      │
-│                                   │
-│ Eulerian path construction:         │
-│ - Use advanced adjacency list for  │
-│   efficient storage and operations  │
-│ - Use degree cache for optimization │
-│ - Use path cache for optimization   │
-│                                   │
-│ Result: YES, [1, 2, 3, 4, 1]      │
-└─────────────────────────────────────┘
+Hierholzer's:
+adj[1] = [2,2,3,3], adj[2] = [1,1,3,3], adj[3] = [2,2,1,1]
+
+stack=[1], result=[]
+Go 1->2: adj[1]=[2,3,3], adj[2]=[1,3,3], stack=[1,2]
+Go 2->1: adj[2]=[3,3], adj[1]=[3,3], stack=[1,2,1]
+Go 1->3: adj[1]=[3], adj[3]=[2,2,1], stack=[1,2,1,3]
+Go 3->2: adj[3]=[2,1], adj[2]=[3], stack=[1,2,1,3,2]
+Go 2->3: adj[2]=[], adj[3]=[1], stack=[1,2,1,3,2,3]
+Go 3->1: adj[3]=[], adj[1]=[], stack=[1,2,1,3,2,3,1]
+
+Pop all (no remaining edges): result=[1,3,2,3,1,2,1]
+Reverse: [1,2,1,3,2,3,1]
+
+Output: 1 2 1 3 2 3 1
 ```
 
-**Implementation**:
+## Python Solution
+
 ```python
-def advanced_data_structure_mail_delivery(n, edges):
-    """Find Eulerian path using advanced data structure approach"""
-    from collections import defaultdict, deque
-    
-    # Use advanced data structures for graph representation
-    # Advanced adjacency list with metadata
-    adj = defaultdict(list)
-    degree = defaultdict(int)
-    
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-        degree[u] += 1
-        degree[v] += 1
-    
-    def advanced_has_eulerian_path():
-        """Advanced Eulerian path existence check"""
-        odd_degree_count = 0
-        odd_degree_vertices = []
-        
-        for vertex in range(1, n + 1):
-            if degree[vertex] % 2 == 1:
-                odd_degree_count += 1
-                odd_degree_vertices.append(vertex)
-        
-        # Advanced existence check
-        if odd_degree_count == 0:
-            return True, None
-        elif odd_degree_count == 2:
-            return True, odd_degree_vertices[0]
-        else:
-            return False, None
-    
-    def advanced_find_eulerian_path():
-        """Advanced Hierholzer's algorithm"""
-        has_path, start_vertex = advanced_has_eulerian_path()
-        
-        if not has_path:
-            return None
-        
-        # Advanced start vertex selection
-        if start_vertex is None:
-            start_vertex = 1
-        
-        # Advanced stack-based path construction
-        stack = [start_vertex]
-        path = []
-        
-        while stack:
-            current_vertex = stack[-1]
-            
-            # Advanced edge selection
-            if not adj[current_vertex]:
-                path.append(stack.pop())
-            else:
-                # Advanced edge removal
-                next_vertex = adj[current_vertex].pop()
-                adj[next_vertex].remove(current_vertex)
-                stack.append(next_vertex)
-        
-        return path[::-1]
-    
-    path = advanced_find_eulerian_path()
-    
-    if path:
-        return "YES", path
-    else:
-        return "NO", None
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(300000)
 
-# Example usage
-n = 4
-edges = [(1, 2), (2, 3), (3, 4), (4, 1)]
-result, path = advanced_data_structure_mail_delivery(n, edges)
-print(f"Advanced data structure result: {result}")
-if path:
-    print(f"Path: {' '.join(map(str, path))}")
+def solve():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n = int(input_data[idx]); idx += 1
+    m = int(input_data[idx]); idx += 1
+
+    if m == 0:
+        print(1)
+        return
+
+    # Adjacency list storing (neighbor, edge_index)
+    adj = defaultdict(list)
+    degree = [0] * (n + 1)
+
+    for i in range(m):
+        a = int(input_data[idx]); idx += 1
+        b = int(input_data[idx]); idx += 1
+        adj[a].append([b, i])
+        adj[b].append([a, i])
+        degree[a] += 1
+        degree[b] += 1
+
+    # Check 1: All vertices must have even degree
+    for v in range(1, n + 1):
+        if degree[v] % 2 == 1:
+            print("IMPOSSIBLE")
+            return
+
+    # Check 2: All edges must be in same component (containing vertex 1)
+    # We'll verify this by checking if we use all m edges
+
+    used = [False] * m  # Track which edges are used
+    result = []
+
+    def dfs(u):
+        while adj[u]:
+            v, edge_idx = adj[u].pop()
+            if not used[edge_idx]:
+                used[edge_idx] = True
+                dfs(v)
+        result.append(u)
+
+    dfs(1)
+
+    # Check if all edges were used
+    if len(result) != m + 1:
+        print("IMPOSSIBLE")
+        return
+
+    result.reverse()
+    print(' '.join(map(str, result)))
+
+solve()
 ```
 
-**Time Complexity**: O(m)
-**Space Complexity**: O(n + m)
+## C++ Solution
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-## 🔧 Implementation Details
+const int MAXM = 200005;
+vector<pair<int,int>> adj[100005];  // {neighbor, edge_index}
+bool used[MAXM];
+vector<int> result;
+int degree[100005];
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(m! × m) | O(m) | Try all possible edge sequences |
-| Hierholzer's Algorithm | O(m) | O(n + m) | Use Hierholzer's algorithm for Eulerian path |
-| Advanced Data Structure | O(m) | O(n + m) | Use advanced data structures |
+void dfs(int u) {
+    while (!adj[u].empty()) {
+        auto [v, idx] = adj[u].back();
+        adj[u].pop_back();
+        if (!used[idx]) {
+            used[idx] = true;
+            dfs(v);
+        }
+    }
+    result.push_back(u);
+}
 
-### Time Complexity
-- **Time**: O(m) - Use Hierholzer's algorithm for efficient Eulerian path construction
-- **Space**: O(n + m) - Store graph and path information
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-### Why This Solution Works
-- **Hierholzer's Algorithm**: Use Hierholzer's algorithm to construct Eulerian path
-- **Degree Check**: Check if Eulerian path exists based on vertex degrees
-- **Path Construction**: Build path by finding cycles and merging them
-- **Optimal Algorithms**: Use optimal algorithms for Eulerian path problems
+    int n, m;
+    cin >> n >> m;
 
-## 🚀 Problem Variations
+    if (m == 0) {
+        cout << 1 << "\n";
+        return 0;
+    }
 
-### Extended Problems with Detailed Code Examples
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back({b, i});
+        adj[b].push_back({a, i});
+        degree[a]++;
+        degree[b]++;
+    }
 
-#### **1. Mail Delivery with Constraints**
-**Problem**: Find Eulerian path with specific constraints.
+    // Check: all vertices must have even degree
+    for (int v = 1; v <= n; v++) {
+        if (degree[v] % 2 == 1) {
+            cout << "IMPOSSIBLE\n";
+            return 0;
+        }
+    }
 
-**Key Differences**: Apply constraints to path construction
+    dfs(1);
 
-**Solution Approach**: Modify algorithm to handle constraints
+    // Check: all edges must be used (connectivity check)
+    if ((int)result.size() != m + 1) {
+        cout << "IMPOSSIBLE\n";
+        return 0;
+    }
 
-**Implementation**:
-```python
-def constrained_mail_delivery(n, edges, constraints):
-    """Find Eulerian path with constraints"""
-    from collections import defaultdict, deque
-    
-    # Build adjacency list with constraints
-    adj = defaultdict(list)
-    degree = defaultdict(int)
-    
-    for u, v in edges:
-        if constraints(u, v):
-            adj[u].append(v)
-            adj[v].append(u)
-            degree[u] += 1
-            degree[v] += 1
-    
-    def constrained_has_eulerian_path():
-        """Eulerian path existence check with constraints"""
-        odd_degree_count = 0
-        odd_degree_vertices = []
-        
-        for vertex in range(1, n + 1):
-            if degree[vertex] % 2 == 1:
-                odd_degree_count += 1
-                odd_degree_vertices.append(vertex)
-        
-        if odd_degree_count == 0:
-            return True, None
-        elif odd_degree_count == 2:
-            return True, odd_degree_vertices[0]
-        else:
-            return False, None
-    
-    def constrained_find_eulerian_path():
-        """Hierholzer's algorithm with constraints"""
-        has_path, start_vertex = constrained_has_eulerian_path()
-        
-        if not has_path:
-            return None
-        
-        if start_vertex is None:
-            start_vertex = 1
-        
-        stack = [start_vertex]
-        path = []
-        
-        while stack:
-            current_vertex = stack[-1]
-            
-            if not adj[current_vertex]:
-                path.append(stack.pop())
-            else:
-                next_vertex = adj[current_vertex].pop()
-                adj[next_vertex].remove(current_vertex)
-                stack.append(next_vertex)
-        
-        return path[::-1]
-    
-    path = constrained_find_eulerian_path()
-    
-    if path:
-        return "YES", path
-    else:
-        return "NO", None
+    reverse(result.begin(), result.end());
+    for (int i = 0; i < (int)result.size(); i++) {
+        cout << result[i] << " \n"[i == (int)result.size() - 1];
+    }
 
-# Example usage
-n = 4
-edges = [(1, 2), (2, 3), (3, 4), (4, 1)]
-constraints = lambda u, v: True  # No constraints
-result, path = constrained_mail_delivery(n, edges, constraints)
-print(f"Constrained result: {result}")
-if path:
-    print(f"Path: {' '.join(map(str, path))}")
+    return 0;
+}
 ```
 
-#### **2. Mail Delivery with Different Metrics**
-**Problem**: Find Eulerian path with different cost metrics.
+## Algorithm Walkthrough
 
-**Key Differences**: Different cost calculations
+```
+Why we use edge indices:
 
-**Solution Approach**: Use advanced mathematical techniques
+In undirected graphs, edge (u,v) appears in both adj[u] and adj[v].
+When we traverse from u to v, we must mark it used for BOTH.
 
-**Implementation**:
-```python
-def weighted_mail_delivery(n, edges, weight_function):
-    """Find Eulerian path with different cost metrics"""
-    from collections import defaultdict, deque
-    
-    # Build adjacency list with weights
-    adj = defaultdict(list)
-    degree = defaultdict(int)
-    
-    for u, v in edges:
-        weight = weight_function(u, v)
-        adj[u].append((v, weight))
-        adj[v].append((u, weight))
-        degree[u] += 1
-        degree[v] += 1
-    
-    def weighted_has_eulerian_path():
-        """Eulerian path existence check with weights"""
-        odd_degree_count = 0
-        odd_degree_vertices = []
-        
-        for vertex in range(1, n + 1):
-            if degree[vertex] % 2 == 1:
-                odd_degree_count += 1
-                odd_degree_vertices.append(vertex)
-        
-        if odd_degree_count == 0:
-            return True, None
-        elif odd_degree_count == 2:
-            return True, odd_degree_vertices[0]
-        else:
-            return False, None
-    
-    def weighted_find_eulerian_path():
-        """Hierholzer's algorithm with weights"""
-        has_path, start_vertex = weighted_has_eulerian_path()
-        
-        if not has_path:
-            return None
-        
-        if start_vertex is None:
-            start_vertex = 1
-        
-        stack = [start_vertex]
-        path = []
-        
-        while stack:
-            current_vertex = stack[-1]
-            
-            if not adj[current_vertex]:
-                path.append(stack.pop())
-            else:
-                next_vertex, weight = adj[current_vertex].pop()
-                # Remove reverse edge
-                for i, (v, w) in enumerate(adj[next_vertex]):
-                    if v == current_vertex:
-                        adj[next_vertex].pop(i)
-                        break
-                stack.append(next_vertex)
-        
-        return path[::-1]
-    
-    path = weighted_find_eulerian_path()
-    
-    if path:
-        return "YES", path
-    else:
-        return "NO", None
+Using edge index:
+- Edge 0: (1,2) -> adj[1] has {2,0}, adj[2] has {1,0}
+- When we use edge 0 going 1->2:
+  - Set used[0] = true
+  - When we later see {1,0} in adj[2], used[0] is already true
+  - So we skip it (edge already consumed)
 
-# Example usage
-n = 4
-edges = [(1, 2), (2, 3), (3, 4), (4, 1)]
-weight_function = lambda u, v: 1  # Unit weight
-result, path = weighted_mail_delivery(n, edges, weight_function)
-print(f"Weighted result: {result}")
-if path:
-    print(f"Path: {' '.join(map(str, path))}")
+This prevents using the same street twice!
 ```
 
-#### **3. Mail Delivery with Multiple Dimensions**
-**Problem**: Find Eulerian path in multiple dimensions.
+## Common Mistakes
 
-**Key Differences**: Handle multiple dimensions
+| Mistake | Why It's Wrong | Fix |
+|---------|---------------|-----|
+| Not marking edge as used from both endpoints | Same edge traversed twice | Use edge index to track globally |
+| Checking only degree condition | Disconnected components with even degrees still fail | Verify all edges are used |
+| Using recursion without increasing stack limit | Stack overflow for large graphs | Use iterative version or increase limit |
+| Forgetting to check m=0 case | Empty graph is valid (just output "1") | Handle edge case explicitly |
+| Not reversing final result | Hierholzer builds path backwards | Reverse at the end |
 
-**Solution Approach**: Use advanced mathematical techniques
+## Key Insights
 
-**Implementation**:
-```python
-def multi_dimensional_mail_delivery(n, edges, dimensions):
-    """Find Eulerian path in multiple dimensions"""
-    from collections import defaultdict, deque
-    
-    # Build adjacency list
-    adj = defaultdict(list)
-    degree = defaultdict(int)
-    
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-        degree[u] += 1
-        degree[v] += 1
-    
-    def multi_dimensional_has_eulerian_path():
-        """Eulerian path existence check for multiple dimensions"""
-        odd_degree_count = 0
-        odd_degree_vertices = []
-        
-        for vertex in range(1, n + 1):
-            if degree[vertex] % 2 == 1:
-                odd_degree_count += 1
-                odd_degree_vertices.append(vertex)
-        
-        if odd_degree_count == 0:
-            return True, None
-        elif odd_degree_count == 2:
-            return True, odd_degree_vertices[0]
-        else:
-            return False, None
-    
-    def multi_dimensional_find_eulerian_path():
-        """Hierholzer's algorithm for multiple dimensions"""
-        has_path, start_vertex = multi_dimensional_has_eulerian_path()
-        
-        if not has_path:
-            return None
-        
-        if start_vertex is None:
-            start_vertex = 1
-        
-        stack = [start_vertex]
-        path = []
-        
-        while stack:
-            current_vertex = stack[-1]
-            
-            if not adj[current_vertex]:
-                path.append(stack.pop())
-            else:
-                next_vertex = adj[current_vertex].pop()
-                adj[next_vertex].remove(current_vertex)
-                stack.append(next_vertex)
-        
-        return path[::-1]
-    
-    path = multi_dimensional_find_eulerian_path()
-    
-    if path:
-        return "YES", path
-    else:
-        return "NO", None
+1. **Undirected = bidirectional but single-use**: Each street can be walked either way, but only once total
 
-# Example usage
-n = 4
-edges = [(1, 2), (2, 3), (3, 4), (4, 1)]
-dimensions = 1
-result, path = multi_dimensional_mail_delivery(n, edges, dimensions)
-print(f"Multi-dimensional result: {result}")
-if path:
-    print(f"Path: {' '.join(map(str, path))}")
-```
+2. **Even degree = balanced flow**: Every time you enter a vertex, you can leave it
 
-### Related Problems
+3. **Edge tracking is crucial**: Must track each edge individually, not just adjacency
 
-#### **CSES Problems**
-- [Teleporters Path](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Round Trip](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
+4. **Connectivity via edge count**: If result has m+1 vertices, all edges were used and graph was connected
 
-#### **LeetCode Problems**
-- [Reconstruct Itinerary](https://leetcode.com/problems/reconstruct-itinerary/) - Graph
-- [Valid Arrangement of Pairs](https://leetcode.com/problems/valid-arrangement-of-pairs/) - Graph
-- [Eulerian Path](https://leetcode.com/problems/eulerian-path/) - Graph
+## Related Problems
 
-#### **Problem Categories**
-- **Graph Algorithms**: Eulerian paths, Hierholzer's algorithm
-- **Path Construction**: Eulerian path, cycle merging
-- **Graph Traversal**: DFS, path finding
+| Problem | Type | Key Difference |
+|---------|------|----------------|
+| [Teleporters Path](https://cses.fi/problemset/task/1693) | Eulerian Path (Directed) | Directed edges, path not circuit |
+| [De Bruijn Sequence](https://cses.fi/problemset/task/1692) | Eulerian Path | Construct specific sequence |
+| [LeetCode 332: Reconstruct Itinerary](https://leetcode.com/problems/reconstruct-itinerary/) | Eulerian Path | Lexicographically smallest |
 
-## 🔗 Additional Resources
+## Complexity Analysis
 
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Eulerian Path](https://cp-algorithms.com/graph/euler_path.html) - Eulerian path algorithms
-- [Hierholzer's Algorithm](https://cp-algorithms.com/graph/euler_path.html#hierholzers-algorithm) - Hierholzer's algorithm
-
-### **Practice Problems**
-- [CSES Teleporters Path](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Round Trip](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Eulerian Path](https://en.wikipedia.org/wiki/Eulerian_path) - Wikipedia article
-- [Hierholzer's Algorithm](https://en.wikipedia.org/wiki/Eulerian_path#Hierholzer%27s_algorithm) - Wikipedia article
+| Operation | Time | Space |
+|-----------|------|-------|
+| Build adjacency list | O(m) | O(m) |
+| Degree check | O(n) | O(n) |
+| Hierholzer's DFS | O(m) | O(m) stack |
+| **Total** | **O(n + m)** | **O(n + m)** |

@@ -1,37 +1,51 @@
 ---
 layout: simple
-title: "Finding Centroid"
+title: "Finding Centroid - Tree Algorithm Problem"
 permalink: /problem_soulutions/tree_algorithms/finding_centroid_analysis
+difficulty: Medium
+tags: [tree, centroid, dfs, tree-dp]
+prerequisites: [tree_traversal, subtree_size]
 ---
 
 # Finding Centroid
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand tree algorithms and tree traversal techniques
-- Apply efficient tree processing algorithms
-- Implement advanced tree data structures and algorithms
-- Optimize tree operations for large inputs
-- Handle edge cases in tree problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Tree Algorithms |
+| **Time Limit** | 1 second |
+| **Key Technique** | Tree DP / Subtree Size Calculation |
+| **CSES Link** | [Finding Centroid](https://cses.fi/problemset/task/2079) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a tree with n nodes, find the centroid of the tree. A centroid is a node such that when removed, the tree breaks into components of size at most n/2.
+After solving this problem, you will be able to:
+- [ ] Understand what a tree centroid is and its properties
+- [ ] Calculate subtree sizes using DFS
+- [ ] Identify the centroid by checking the max subtree size constraint
+- [ ] Apply centroid concepts as a foundation for centroid decomposition
 
-**Input**: 
-- First line: n (number of nodes)
-- Next n-1 lines: edges of the tree
+---
 
-**Output**: 
-- The centroid node (if multiple centroids exist, output any one)
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10⁵
-- Tree is connected
+**Problem:** Given a tree of n nodes, find the centroid of the tree. A centroid is a node such that when removed, no remaining component has more than n/2 nodes.
 
-**Example**:
+**Input:**
+- Line 1: n (number of nodes)
+- Next n-1 lines: Two integers a and b representing an edge between nodes a and b
+
+**Output:**
+- A single integer: the centroid node (1-indexed)
+
+**Constraints:**
+- 1 <= n <= 2 x 10^5
+- The graph is a connected tree
+
+### Example
+
 ```
 Input:
 5
@@ -44,682 +58,455 @@ Output:
 2
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** When node 2 is removed, the tree splits into components: {1}, {3}, and {4,5}. The largest component has size 2, which is <= 5/2 = 2. Node 2 is the centroid.
 
-### Approach 1: Brute Force
-**Time Complexity**: O(n²)  
-**Space Complexity**: O(n)
+---
 
-**Algorithm**:
-1. For each node, remove it and check if all remaining components have size ≤ n/2
-2. Use DFS to find component sizes after removal
-3. Return the first node that satisfies the centroid condition
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### Pattern Recognition
+
+> **Key Question:** What makes a node the "center" of a tree?
+
+A centroid is the most balanced node in a tree. When you remove it, no single subtree dominates - all resulting components have size at most n/2. This is the defining property of a centroid.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** A node where ALL neighboring subtrees have size <= n/2
+2. **What information do we need?** The size of each subtree when rooted at any node
+3. **What's the key insight?** For a node rooted at r, we need to check:
+   - Size of each child's subtree
+   - Size of the "parent's subtree" = n - subtree_size[current_node]
+
+### Centroid Properties
+
+```
+Important Properties:
+1. Every tree has at least one centroid
+2. A tree has at most two centroids (if two exist, they are adjacent)
+3. For the centroid, max(all_component_sizes) <= n/2
+4. The centroid minimizes the maximum subtree size
+```
+
+### Analogies
+
+Think of the centroid like finding the balance point of a mobile. If you hang the tree from the centroid, no branch would significantly outweigh the others.
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+For each node, remove it and check if all resulting components have size <= n/2.
+
+### Algorithm
+
+1. For each node v from 1 to n:
+2. Remove node v and find all connected components
+3. Check if all component sizes are <= n/2
+4. Return the first node satisfying this condition
+
+### Code
+
 ```python
-def brute_force_finding_centroid(n, edges):
+def brute_force_centroid(n, edges):
+    """
+    Brute force: try removing each node and check component sizes.
+
+    Time: O(n^2)
+    Space: O(n)
+    """
     from collections import defaultdict
-    
-    # Build adjacency list
+
     graph = defaultdict(list)
     for u, v in edges:
         graph[u].append(v)
         graph[v].append(u)
-    
-    def get_component_sizes(node_to_remove):
-        visited = set()
-        component_sizes = []
-        
-        def dfs(node, parent):
-            if node in visited or node == node_to_remove:
-                return 0
-            visited.add(node)
-            size = 1
-            for child in graph[node]:
-                if child != parent:
-                    size += dfs(child, node)
-            return size
-        
-        for node in range(1, n + 1):
-            if node not in visited and node != node_to_remove:
-                size = dfs(node, -1)
-                component_sizes.append(size)
-        
-        return component_sizes
-    
+
+    def get_component_sizes(removed):
+        visited = set([removed])
+        sizes = []
+
+        for start in range(1, n + 1):
+            if start not in visited:
+                # BFS/DFS to find component size
+                size = 0
+                stack = [start]
+                while stack:
+                    node = stack.pop()
+                    if node in visited:
+                        continue
+                    visited.add(node)
+                    size += 1
+                    for neighbor in graph[node]:
+                        if neighbor not in visited:
+                            stack.append(neighbor)
+                sizes.append(size)
+
+        return sizes
+
     for node in range(1, n + 1):
-        component_sizes = get_component_sizes(node)
-        if all(size <= n // 2 for size in component_sizes):
+        sizes = get_component_sizes(node)
+        if all(s <= n // 2 for s in sizes):
             return node
-    
+
     return -1
 ```
 
-**Analysis**:
-- **Time**: O(n²) - For each node, DFS takes O(n) time
-- **Space**: O(n) - Recursion stack and visited set
-- **Limitations**: Too slow for large inputs
+### Complexity
 
-### Approach 2: Optimized with Tree DP
-**Time Complexity**: O(n)  
-**Space Complexity**: O(n)
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | For each of n nodes, we do O(n) traversal |
+| Space | O(n) | Graph storage and visited set |
 
-**Algorithm**:
-1. Use tree DP to compute subtree sizes for each node
-2. For each node, check if removing it creates components of size ≤ n/2
-3. Use the subtree size information to efficiently check centroid condition
+### Why This Works (But Is Slow)
 
-**Implementation**:
-```python
-def optimized_finding_centroid(n, edges):
-    from collections import defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    subtree_sizes = [0] * (n + 1)
-    
-    def dfs(node, parent):
-        subtree_sizes[node] = 1
-        for child in graph[node]:
-            if child != parent:
-                subtree_sizes[node] += dfs(child, node)
-        return subtree_sizes[node]
-    
-    dfs(1, -1)
-    
-    def is_centroid(node):
-        for child in graph[node]:
-            if subtree_sizes[child] < subtree_sizes[node]:
-                if subtree_sizes[child] > n // 2:
-                    return False
-        return subtree_sizes[node] <= n // 2
-    
-    for node in range(1, n + 1):
-        if is_centroid(node):
-            return node
-    
-    return -1
+This correctly finds the centroid by definition checking, but we repeat O(n) work for each candidate node.
+
+---
+
+## Solution 2: Optimal Solution (Single DFS)
+
+### Key Insight
+
+> **The Trick:** Root the tree at any node, compute subtree sizes once, then find the node where max(child subtree sizes, n - subtree_size[node]) <= n/2.
+
+### Understanding the Components
+
+When we root the tree at node 1 and consider removing node v:
+- **Child subtrees:** Direct subtrees below v (we know their sizes from DFS)
+- **Parent subtree:** Everything above v = n - subtree_size[v]
+
+```
+         1
+        / \
+       2   3     If we remove node 2:
+      / \        - Child subtrees: {4}, {5}
+     4   5       - Parent subtree: {1, 3} = n - subtree_size[2]
 ```
 
-**Analysis**:
-- **Time**: O(n) - Single DFS pass
-- **Space**: O(n) - Recursion stack and subtree sizes array
-- **Improvement**: Much more efficient than brute force
+### Algorithm
 
-### Approach 3: Optimal with Centroid Finding Algorithm
-**Time Complexity**: O(n)  
-**Space Complexity**: O(n)
+1. Build adjacency list from edges
+2. DFS from node 1 to compute subtree sizes
+3. For each node, check if it's a centroid:
+   - Max child subtree size <= n/2
+   - Parent subtree size (n - subtree_size[node]) <= n/2
+4. Return the first centroid found
 
-**Algorithm**:
-1. Use the standard centroid finding algorithm
-2. Start from any node and move towards the largest subtree
-3. Continue until we find a node where all subtrees have size ≤ n/2
+### Dry Run Example
 
-**Implementation**:
-```python
-def optimal_finding_centroid(n, edges):
-    from collections import defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    def find_centroid():
-        # Start from node 1
-        current = 1
-        parent = -1
-        
-        while True:
-            # Find the largest subtree
-            max_subtree_size = 0
-            max_subtree_node = -1
-            
-            for child in graph[current]:
-                if child != parent:
-                    # Calculate subtree size
-                    subtree_size = 0
-                    def dfs_size(node, par):
-                        nonlocal subtree_size
-                        subtree_size = 1
-                        for grandchild in graph[node]:
-                            if grandchild != par:
-                                subtree_size += dfs_size(grandchild, node)
-                        return subtree_size
-                    
-                    size = dfs_size(child, current)
-                    if size > max_subtree_size:
-                        max_subtree_size = size
-                        max_subtree_node = child
-            
-            # If largest subtree has size ≤ n/2, current is centroid
-            if max_subtree_size <= n // 2:
-                return current
-            
-            # Move towards the largest subtree
-            parent = current
-            current = max_subtree_node
-    
-    return find_centroid()
+Let's trace through with the example tree:
+
 ```
-
-**Analysis**:
-- **Time**: O(n) - At most O(n) moves, each move takes O(degree) time
-- **Space**: O(n) - Recursion stack
-- **Optimal**: Best possible complexity for this problem
-
-**Visual Example**:
-```
-Tree structure:
+Tree structure (n=5):
     1
     |
     2
-   / \
-3   4
+   /|\
+  3 4
     |
     5
 
-Centroid Finding Process:
-1. Start at node 1
-2. Largest subtree: {2,3,4,5} (size 4 > 5/2)
-3. Move to node 2
-4. Largest subtree: {4,5} (size 2 ≤ 5/2)
-5. Node 2 is the centroid
+Edges: (1,2), (2,3), (2,4), (4,5)
 ```
 
-## 🔧 Implementation Details
+**Step 1: Compute subtree sizes (root at node 1)**
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²) | O(n) | Check each node by removing it |
-| Optimized | O(n) | O(n) | Tree DP with subtree sizes |
-| Optimal | O(n) | O(n) | Centroid finding algorithm |
+```
+DFS traversal order: 1 -> 2 -> 3 -> 4 -> 5
 
-### Time Complexity
-- **Time**: O(n) - Single DFS pass to find centroid
-- **Space**: O(n) - Recursion stack and subtree sizes array
+After DFS:
+  subtree_size[5] = 1
+  subtree_size[4] = 1 + 1 = 2  (4 + subtree of 5)
+  subtree_size[3] = 1
+  subtree_size[2] = 1 + 1 + 2 = 4  (2 + subtrees of 3,4)
+  subtree_size[1] = 1 + 4 = 5  (1 + subtree of 2)
+```
 
-### Why This Solution Works
-- **Centroid Property**: A centroid always exists in any tree
-- **Tree DP**: Use dynamic programming to compute subtree sizes efficiently
-- **Centroid Finding**: Move towards the largest subtree until centroid is found
-- **Optimal Approach**: The centroid finding algorithm provides the most efficient solution
+**Step 2: Check each node for centroid condition**
 
-## 🚀 Problem Variations
+```
+n/2 = 5/2 = 2
 
-### Extended Problems with Detailed Code Examples
+Node 1:
+  Child subtree: {2,3,4,5} size=4 > 2  FAIL
 
-### Variation 1: Finding Centroid with Dynamic Updates
-**Problem**: Handle dynamic updates to the tree structure and maintain centroid queries efficiently.
+Node 2:
+  Child subtrees: {3} size=1 <= 2  OK
+                  {4,5} size=2 <= 2  OK
+  Parent subtree: n - 4 = 1 <= 2  OK
+  ALL <= 2, so node 2 is CENTROID
 
-**Link**: [CSES Problem Set - Finding Centroid with Updates](https://cses.fi/problemset/task/finding_centroid_updates)
+Answer: 2
+```
+
+### Visual Diagram
+
+```
+Checking node 2 as centroid:
+
+       [1]          <- Parent component (size = 1)
+        |
+  -----[2]-----     <- Remove this node
+  |     |     |
+ [3]   [4]         <- Child components
+        |
+       [5]
+
+Component sizes: 1, 1, 2
+All <= n/2 = 2?  YES -> Node 2 is centroid
+```
+
+### Code (Python)
 
 ```python
-class FindingCentroidWithUpdates:
-    def __init__(self, n, edges):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.subtree_sizes = [0] * n
-        self.centroid = -1
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._find_centroid()
-    
-    def _calculate_subtree_sizes(self, node, parent):
-        """Calculate subtree sizes using DFS"""
-        self.subtree_sizes[node] = 1
-        
-        for child in self.adj[node]:
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(300000)
+
+def find_centroid(n, edges):
+    """
+    Find tree centroid using single DFS.
+
+    Time: O(n) - one DFS pass
+    Space: O(n) - adjacency list and subtree sizes
+    """
+    if n == 1:
+        return 1
+
+    # Build adjacency list
+    graph = defaultdict(list)
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+
+    subtree_size = [0] * (n + 1)
+
+    # DFS to compute subtree sizes
+    def dfs(node, parent):
+        subtree_size[node] = 1
+        for child in graph[node]:
             if child != parent:
-                self._calculate_subtree_sizes(child, node)
-                self.subtree_sizes[node] += self.subtree_sizes[child]
-    
-    def _find_centroid(self):
-        """Find centroid of the tree"""
-        # Calculate subtree sizes
-        self._calculate_subtree_sizes(0, -1)
-        
-        # Find centroid
-        current = 0
-        while True:
-            found = False
-            for child in self.adj[current]:
-                if self.subtree_sizes[child] > self.n // 2:
-                    current = child
-                    found = True
-                    break
-            
-            if not found:
-                break
-        
-        self.centroid = current
-    
-    def add_edge(self, u, v):
-        """Add edge between nodes u and v"""
-        self.adj[u].append(v)
-        self.adj[v].append(u)
-        
-        # Recalculate centroid
-        self._find_centroid()
-    
-    def remove_edge(self, u, v):
-        """Remove edge between nodes u and v"""
-        if v in self.adj[u]:
-            self.adj[u].remove(v)
-        if u in self.adj[v]:
-            self.adj[v].remove(u)
-        
-        # Recalculate centroid
-        self._find_centroid()
-    
-    def get_centroid(self):
-        """Get current centroid of the tree"""
-        return self.centroid
-    
-    def get_subtree_size(self, node):
-        """Get subtree size of a node"""
-        return self.subtree_sizes[node]
-    
-    def get_all_subtree_sizes(self):
-        """Get all subtree sizes"""
-        return self.subtree_sizes.copy()
-    
-    def get_centroid_properties(self):
-        """Get properties of the centroid"""
-        if self.centroid == -1:
-            return None
-        
-        max_subtree_size = 0
-        for child in self.adj[self.centroid]:
-            if self.subtree_sizes[child] > max_subtree_size:
-                max_subtree_size = self.subtree_sizes[child]
-        
-        return {
-            'centroid': self.centroid,
-            'max_subtree_size': max_subtree_size,
-            'is_valid_centroid': max_subtree_size <= self.n // 2
+                dfs(child, node)
+                subtree_size[node] += subtree_size[child]
+
+    dfs(1, -1)
+
+    # Find centroid
+    def find(node, parent):
+        for child in graph[node]:
+            if child != parent:
+                # Check child subtree
+                if subtree_size[child] > n // 2:
+                    return find(child, node)
+        # Check parent subtree
+        if n - subtree_size[node] > n // 2:
+            return find(parent, node)
+        return node
+
+    return find(1, -1)
+
+
+# Main input handling
+def main():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n = int(input_data[idx]); idx += 1
+
+    edges = []
+    for _ in range(n - 1):
+        u = int(input_data[idx]); idx += 1
+        v = int(input_data[idx]); idx += 1
+        edges.append((u, v))
+
+    print(find_centroid(n, edges))
+
+if __name__ == "__main__":
+    main()
+```
+
+### Code (C++)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 200005;
+vector<int> adj[MAXN];
+int subtree_size[MAXN];
+int n;
+
+void dfs(int node, int parent) {
+    subtree_size[node] = 1;
+    for (int child : adj[node]) {
+        if (child != parent) {
+            dfs(child, node);
+            subtree_size[node] += subtree_size[child];
         }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'add_edge':
-                self.add_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'remove_edge':
-                self.remove_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'centroid':
-                result = self.get_centroid()
-                results.append(result)
-            elif query['type'] == 'subtree_size':
-                result = self.get_subtree_size(query['node'])
-                results.append(result)
-            elif query['type'] == 'all_subtree_sizes':
-                result = self.get_all_subtree_sizes()
-                results.append(result)
-            elif query['type'] == 'centroid_properties':
-                result = self.get_centroid_properties()
-                results.append(result)
-        return results
-```
+    }
+}
 
-### Variation 2: Finding Centroid with Different Operations
-**Problem**: Handle different types of operations (find, analyze, compare) on centroid finding.
-
-**Link**: [CSES Problem Set - Finding Centroid Different Operations](https://cses.fi/problemset/task/finding_centroid_operations)
-
-```python
-class FindingCentroidDifferentOps:
-    def __init__(self, n, edges):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.subtree_sizes = [0] * n
-        self.centroid = -1
-        self.depths = [0] * n
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._find_centroid()
-        self._calculate_depths()
-    
-    def _calculate_subtree_sizes(self, node, parent):
-        """Calculate subtree sizes using DFS"""
-        self.subtree_sizes[node] = 1
-        
-        for child in self.adj[node]:
-            if child != parent:
-                self._calculate_subtree_sizes(child, node)
-                self.subtree_sizes[node] += self.subtree_sizes[child]
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node"""
-        def dfs(node, parent, depth):
-            self.depths[node] = depth
-            
-            for child in self.adj[node]:
-                if child != parent:
-                    dfs(child, node, depth + 1)
-        
-        dfs(0, -1, 0)
-    
-    def _find_centroid(self):
-        """Find centroid of the tree"""
-        # Calculate subtree sizes
-        self._calculate_subtree_sizes(0, -1)
-        
-        # Find centroid
-        current = 0
-        while True:
-            found = False
-            for child in self.adj[current]:
-                if self.subtree_sizes[child] > self.n // 2:
-                    current = child
-                    found = True
-                    break
-            
-            if not found:
-                break
-        
-        self.centroid = current
-    
-    def get_centroid(self):
-        """Get current centroid of the tree"""
-        return self.centroid
-    
-    def get_centroid_depth(self):
-        """Get depth of the centroid"""
-        return self.depths[self.centroid]
-    
-    def get_centroid_children(self):
-        """Get children of the centroid"""
-        return self.adj[self.centroid].copy()
-    
-    def get_centroid_subtree_sizes(self):
-        """Get subtree sizes of centroid's children"""
-        subtree_sizes = []
-        for child in self.adj[self.centroid]:
-            subtree_sizes.append(self.subtree_sizes[child])
-        return subtree_sizes
-    
-    def get_centroid_balance(self):
-        """Get balance of the centroid (max subtree size / total size)"""
-        if self.centroid == -1:
-            return 0
-        
-        max_subtree_size = max(self.get_centroid_subtree_sizes()) if self.get_centroid_subtree_sizes() else 0
-        return max_subtree_size / self.n
-    
-    def get_centroid_distance_to_root(self):
-        """Get distance from centroid to root"""
-        return self.depths[self.centroid]
-    
-    def get_centroid_statistics(self):
-        """Get comprehensive centroid statistics"""
-        if self.centroid == -1:
-            return None
-        
-        return {
-            'centroid': self.centroid,
-            'depth': self.depths[self.centroid],
-            'children_count': len(self.adj[self.centroid]),
-            'subtree_sizes': self.get_centroid_subtree_sizes(),
-            'balance': self.get_centroid_balance(),
-            'is_valid_centroid': self.get_centroid_balance() <= 0.5
-        }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'centroid':
-                result = self.get_centroid()
-                results.append(result)
-            elif query['type'] == 'centroid_depth':
-                result = self.get_centroid_depth()
-                results.append(result)
-            elif query['type'] == 'centroid_children':
-                result = self.get_centroid_children()
-                results.append(result)
-            elif query['type'] == 'centroid_subtree_sizes':
-                result = self.get_centroid_subtree_sizes()
-                results.append(result)
-            elif query['type'] == 'centroid_balance':
-                result = self.get_centroid_balance()
-                results.append(result)
-            elif query['type'] == 'centroid_distance_to_root':
-                result = self.get_centroid_distance_to_root()
-                results.append(result)
-            elif query['type'] == 'centroid_statistics':
-                result = self.get_centroid_statistics()
-                results.append(result)
-        return results
-```
-
-### Variation 3: Finding Centroid with Constraints
-**Problem**: Handle centroid finding queries with additional constraints (e.g., minimum balance, maximum depth).
-
-**Link**: [CSES Problem Set - Finding Centroid with Constraints](https://cses.fi/problemset/task/finding_centroid_constraints)
-
-```python
-class FindingCentroidWithConstraints:
-    def __init__(self, n, edges, min_balance, max_depth):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.subtree_sizes = [0] * n
-        self.centroid = -1
-        self.depths = [0] * n
-        self.min_balance = min_balance
-        self.max_depth = max_depth
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._find_centroid()
-        self._calculate_depths()
-    
-    def _calculate_subtree_sizes(self, node, parent):
-        """Calculate subtree sizes using DFS"""
-        self.subtree_sizes[node] = 1
-        
-        for child in self.adj[node]:
-            if child != parent:
-                self._calculate_subtree_sizes(child, node)
-                self.subtree_sizes[node] += self.subtree_sizes[child]
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node"""
-        def dfs(node, parent, depth):
-            self.depths[node] = depth
-            
-            for child in self.adj[node]:
-                if child != parent:
-                    dfs(child, node, depth + 1)
-        
-        dfs(0, -1, 0)
-    
-    def _find_centroid(self):
-        """Find centroid of the tree"""
-        # Calculate subtree sizes
-        self._calculate_subtree_sizes(0, -1)
-        
-        # Find centroid
-        current = 0
-        while True:
-            found = False
-            for child in self.adj[current]:
-                if self.subtree_sizes[child] > self.n // 2:
-                    current = child
-                    found = True
-                    break
-            
-            if not found:
-                break
-        
-        self.centroid = current
-    
-    def get_centroid(self):
-        """Get current centroid of the tree"""
-        return self.centroid
-    
-    def get_centroid_balance(self):
-        """Get balance of the centroid"""
-        if self.centroid == -1:
-            return 0
-        
-        max_subtree_size = 0
-        for child in self.adj[self.centroid]:
-            if self.subtree_sizes[child] > max_subtree_size:
-                max_subtree_size = self.subtree_sizes[child]
-        
-        return max_subtree_size / self.n
-    
-    def constrained_centroid_query(self):
-        """Query centroid with constraints"""
-        if self.centroid == -1:
-            return -1
-        
-        balance = self.get_centroid_balance()
-        depth = self.depths[self.centroid]
-        
-        # Check if centroid satisfies constraints
-        if self.min_balance <= balance <= 0.5 and depth <= self.max_depth:
-            return self.centroid
-        
-        return -1
-    
-    def find_valid_centroids(self):
-        """Find all nodes that could be valid centroids with constraints"""
-        valid_centroids = []
-        
-        for node in range(self.n):
-            # Calculate balance for this node
-            max_subtree_size = 0
-            for child in self.adj[node]:
-                if self.subtree_sizes[child] > max_subtree_size:
-                    max_subtree_size = self.subtree_sizes[child]
-            
-            balance = max_subtree_size / self.n
-            depth = self.depths[node]
-            
-            # Check constraints
-            if self.min_balance <= balance <= 0.5 and depth <= self.max_depth:
-                valid_centroids.append(node)
-        
-        return valid_centroids
-    
-    def count_valid_centroids(self):
-        """Count number of valid centroids"""
-        return len(self.find_valid_centroids())
-    
-    def get_best_centroid(self):
-        """Get best centroid among valid ones (lowest balance)"""
-        valid_centroids = self.find_valid_centroids()
-        
-        if not valid_centroids:
-            return -1
-        
-        best_centroid = valid_centroids[0]
-        best_balance = self.get_centroid_balance()
-        
-        for centroid in valid_centroids:
-            # Calculate balance for this centroid
-            max_subtree_size = 0
-            for child in self.adj[centroid]:
-                if self.subtree_sizes[child] > max_subtree_size:
-                    max_subtree_size = self.subtree_sizes[child]
-            
-            balance = max_subtree_size / self.n
-            
-            if balance < best_balance:
-                best_balance = balance
-                best_centroid = centroid
-        
-        return best_centroid
-    
-    def get_constraint_statistics(self):
-        """Get statistics about valid centroids"""
-        valid_centroids = self.find_valid_centroids()
-        
-        if not valid_centroids:
-            return {
-                'valid_centroids_count': 0,
-                'min_balance': self.min_balance,
-                'max_depth': self.max_depth,
-                'valid_centroids': []
+int find_centroid(int node, int parent) {
+    for (int child : adj[node]) {
+        if (child != parent) {
+            // Child subtree too large -> move toward it
+            if (subtree_size[child] > n / 2) {
+                return find_centroid(child, node);
             }
-        
-        balances = []
-        depths = []
-        
-        for centroid in valid_centroids:
-            # Calculate balance for this centroid
-            max_subtree_size = 0
-            for child in self.adj[centroid]:
-                if self.subtree_sizes[child] > max_subtree_size:
-                    max_subtree_size = self.subtree_sizes[child]
-            
-            balance = max_subtree_size / self.n
-            balances.append(balance)
-            depths.append(self.depths[centroid])
-        
-        return {
-            'valid_centroids_count': len(valid_centroids),
-            'min_balance': self.min_balance,
-            'max_depth': self.max_depth,
-            'min_balance_found': min(balances),
-            'max_balance_found': max(balances),
-            'min_depth_found': min(depths),
-            'max_depth_found': max(depths),
-            'valid_centroids': valid_centroids
         }
+    }
+    // Parent subtree too large -> move toward parent
+    if (n - subtree_size[node] > n / 2) {
+        return find_centroid(parent, node);
+    }
+    return node;
+}
 
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (1, 3), (3, 4)]
-min_balance = 0.3
-max_depth = 2
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-fc = FindingCentroidWithConstraints(n, edges, min_balance, max_depth)
-result = fc.constrained_centroid_query()
-print(f"Constrained centroid query result: {result}")
+    cin >> n;
 
-valid_centroids = fc.find_valid_centroids()
-print(f"Valid centroids: {valid_centroids}")
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
 
-statistics = fc.get_constraint_statistics()
-print(f"Constraint statistics: {statistics}")
+    dfs(1, -1);
+    cout << find_centroid(1, -1) << "\n";
+
+    return 0;
+}
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Finding Centroid](https://cses.fi/problemset/task/2079) - Basic centroid finding in tree
-- [Tree Diameter](https://cses.fi/problemset/task/1131) - Find diameter of tree
-- [Tree Distances I](https://cses.fi/problemset/task/1132) - Distance queries in tree
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Single DFS to compute sizes + single traversal to find centroid |
+| Space | O(n) | Adjacency list + subtree size array + recursion stack |
 
-#### **LeetCode Problems**
-- [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) - Tree traversal by levels
-- [Path Sum](https://leetcode.com/problems/path-sum/) - Path queries in tree
-- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Path analysis in tree
+---
 
-#### **Problem Categories**
-- **Centroid Decomposition**: Tree decomposition, centroid finding
-- **Tree DP**: Dynamic programming on trees, subtree calculations
-- **Tree Queries**: Tree analysis, tree operations, tree properties
-- **Tree Algorithms**: Tree properties, tree analysis, tree operations
+## Common Mistakes
+
+### Mistake 1: Forgetting the Parent Subtree
+
+```python
+# WRONG - Only checking child subtrees
+def is_centroid(node):
+    for child in graph[node]:
+        if subtree_size[child] > n // 2:
+            return False
+    return True  # Missing parent subtree check!
+```
+
+**Problem:** When we root the tree, the "parent direction" also forms a component.
+**Fix:** Also check `n - subtree_size[node] <= n // 2`
+
+### Mistake 2: Wrong Subtree Size After Re-rooting
+
+```python
+# WRONG - Using child's subtree size directly when node is not root
+if subtree_size[child] > n // 2:  # This is wrong if child was computed as descendant
+```
+
+**Problem:** subtree_size[child] is computed relative to the root, not relative to current node.
+**Fix:** When moving from node to child, the "subtree" in child's direction has size `subtree_size[child]`, which is correct. The confusion arises when checking the parent direction.
+
+### Mistake 3: Integer Division Edge Case
+
+```python
+# Be careful with n // 2 vs n / 2
+# For n = 5: n // 2 = 2
+# Centroid condition: component_size <= n // 2
+```
+
+**Fix:** Use integer division consistently. The condition is `<= n/2` which means `<= floor(n/2)`.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single node | n=1, no edges | 1 | Only node is trivially the centroid |
+| Two nodes | n=2, edge (1,2) | 1 or 2 | Both are centroids (component size = 1 <= 1) |
+| Line graph | 1-2-3-4-5 | 3 | Middle node is centroid |
+| Star graph | 1 connected to 2,3,4,5 | 1 | Center node is centroid |
+| Two centroids | Certain even trees | Either one | Both valid answers |
+
+---
+
+## When to Use This Pattern
+
+### Use This Approach When:
+- Finding the "balanced center" of a tree
+- Preprocessing for centroid decomposition
+- Solving tree problems that benefit from divide-and-conquer on trees
+- Finding a node that minimizes maximum distance to all other nodes
+
+### Don't Use When:
+- Looking for tree diameter endpoints (different problem)
+- Need all possible centroids (modify to return both if two exist)
+- Working with forests (apply to each tree separately)
+
+### Pattern Recognition Checklist:
+- [ ] Need to split tree into balanced parts? -> **Centroid**
+- [ ] Divide and conquer on trees? -> **Centroid Decomposition**
+- [ ] Find most central node? -> **Consider centroid**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Subordinates (CSES)](https://cses.fi/problemset/task/1674) | Practice computing subtree sizes |
+| [Tree Diameter (CSES)](https://cses.fi/problemset/task/1131) | Basic tree DFS traversal |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Tree Distances I (CSES)](https://cses.fi/problemset/task/1132) | Uses similar subtree size technique |
+| [Tree Distances II (CSES)](https://cses.fi/problemset/task/1133) | Re-rooting technique on trees |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Centroid Decomposition Problems](https://cses.fi/problemset/) | Uses centroid as building block |
+| [Fixed-Length Paths I (CSES)](https://cses.fi/problemset/task/2080) | Centroid decomposition application |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** A centroid balances the tree - no component exceeds n/2 when removed
+2. **Time Optimization:** Single DFS computes all subtree sizes; then one traversal finds centroid
+3. **Space Trade-off:** O(n) extra space for subtree sizes enables O(n) time
+4. **Pattern:** Foundation for centroid decomposition - a powerful divide-and-conquer technique on trees
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain what a tree centroid is and its properties
+- [ ] Compute subtree sizes with a single DFS
+- [ ] Check both child subtrees AND parent subtree for centroid condition
+- [ ] Implement the solution in under 10 minutes
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Centroid Decomposition](https://cp-algorithms.com/graph/centroid-decomposition.html)
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [USACO Guide: Centroid Decomposition](https://usaco.guide/plat/centroid)

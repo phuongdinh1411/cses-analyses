@@ -1,971 +1,641 @@
 ---
 layout: simple
-title: "Fixed Length Paths I"
+title: "Fixed Length Paths I - Tree Algorithm Problem"
 permalink: /problem_soulutions/tree_algorithms/fixed_length_paths_i_analysis
+difficulty: Hard
+tags: [centroid-decomposition, tree, divide-and-conquer, path-counting]
+prerequisites: [tree_diameter, tree_distances_i]
 ---
 
 # Fixed Length Paths I
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand path counting in trees and their applications
-- Apply dynamic programming and tree traversal techniques for path counting
-- Implement efficient solutions for fixed length path problems with optimal complexity
-- Optimize solutions for large inputs with proper complexity analysis
-- Handle edge cases in tree path counting problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Hard |
+| **Category** | Tree Algorithms |
+| **Time Limit** | 1 second |
+| **Key Technique** | Centroid Decomposition |
+| **CSES Link** | [Fixed Length Paths I](https://cses.fi/problemset/task/2080) |
 
-## 📋 Problem Description
+### Learning Goals
 
-You are given a tree with n nodes and q queries. Each query consists of an integer k. For each query, find the number of paths of length exactly k in the tree.
+After solving this problem, you will be able to:
+- [ ] Understand centroid decomposition and its application to tree path problems
+- [ ] Implement efficient O(n log n) path counting using divide-and-conquer
+- [ ] Count paths passing through a specific node without double counting
+- [ ] Apply the "count through centroid" technique to similar tree problems
 
-**Input**: 
-- First line: integer n (number of nodes)
-- Next n-1 lines: two integers u and v (edge between nodes u and v)
-- Next line: integer q (number of queries)
-- Next q lines: integer k
+---
 
-**Output**: 
-- For each query, print the number of paths of length exactly k
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 10⁵
-- 1 ≤ q ≤ 10⁵
-- 1 ≤ k ≤ n-1
-- Tree is connected and undirected
+**Problem:** Given a tree of n nodes, count the number of distinct paths that consist of exactly k edges.
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and k (number of nodes and target path length)
+- Lines 2 to n: Two integers a and b describing an edge between nodes a and b
+
+**Output:**
+- A single integer: the number of paths with exactly k edges
+
+**Constraints:**
+- 1 <= n <= 2 * 10^5
+- 1 <= k <= n - 1
+- 1 <= a, b <= n
+
+### Example
+
 ```
 Input:
-5
+5 2
 1 2
 2 3
-2 4
-4 5
-3
-1
-2
-3
+3 4
+3 5
 
 Output:
 4
-3
-2
+```
 
-Explanation**: 
+**Explanation:**
+
 Tree structure:
+```
     1
     |
     2
+    |
+    3
    / \
-  3   4
-      |
-      5
-
-Paths of length 1: (1,2), (2,3), (2,4), (4,5) = 4 paths
-Paths of length 2: (1,3), (1,4), (3,4) = 3 paths  
-Paths of length 3: (1,5), (3,5) = 2 paths
+  4   5
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+Paths of exactly 2 edges:
+1. 1 -> 2 -> 3
+2. 2 -> 3 -> 4
+3. 2 -> 3 -> 5
+4. 4 -> 3 -> 5
 
-### Approach 1: Brute Force
-**Time Complexity**: O(n² × k)  
-**Space Complexity**: O(n)
+Total: 4 paths
 
-**Algorithm**:
-1. For each node, perform BFS to find all nodes at distance k
-2. Count the number of such nodes for each starting node
-3. Sum up all counts and divide by 2 (since each path is counted twice)
+---
 
-**Implementation**:
+## Intuition: How to Think About This Problem
+
+### Pattern Recognition
+
+> **Key Question:** How do we efficiently count all paths of length k in a tree?
+
+The naive approach of checking all O(n^2) pairs is too slow. The key insight is that every path in a tree either:
+1. Lies entirely within a subtree, OR
+2. Passes through some specific node (connecting two different subtrees)
+
+This suggests a **divide-and-conquer** approach using **centroid decomposition**.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** Paths with exactly k edges
+2. **What information do we have?** Tree structure with n-1 edges
+3. **What is the relationship between input and output?** Each valid path consists of two "half-paths" from some node, where the sum of their lengths equals k
+
+### The Centroid Decomposition Insight
+
+A **centroid** of a tree is a node whose removal splits the tree into subtrees, each with at most n/2 nodes.
+
+**Key Insight:** For any path in the tree, there exists exactly one centroid (in the centroid decomposition hierarchy) that the path passes through. This means:
+
+1. Find the centroid of the current tree
+2. Count all paths of length k that pass through this centroid
+3. Remove the centroid and recursively solve for each remaining subtree
+4. Since each path is counted exactly once (at its "highest" centroid), we avoid double counting
+
+---
+
+## Solution 1: Brute Force (DFS from Every Node)
+
+### Idea
+
+For each node, run a DFS to count all nodes at distance exactly k. Sum up and divide by 2 (since each path is counted from both endpoints).
+
+### Algorithm
+
+1. Build adjacency list
+2. For each node, DFS to find nodes at distance k
+3. Count total and divide by 2
+
+### Code
+
 ```python
-def brute_force_fixed_length_paths_i(n, edges, queries):
-    from collections import deque, defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    results = []
-    
-    for k in queries:
-        count = 0
-        
-        # For each node as starting point
-        for start in range(1, n + 1):
-            # BFS to find nodes at distance k
-            queue = deque([(start, 0)])
-            visited = {start}
-            
-            while queue:
-                node, dist = queue.popleft()
-                
-                if dist == k:
-                    count += 1
-                    continue
-                
-                for neighbor in graph[node]:
-                    if neighbor not in visited:
-                        visited.add(neighbor)
-                        queue.append((neighbor, dist + 1))
-        
-        # Each path is counted twice (from both endpoints)
-        results.append(count // 2)
-    
-    return results
-```
+def solve_brute_force(n, k, edges):
+    """
+    Brute force: DFS from every node.
 
-**Analysis**:
-- **Time**: O(n² × k) - For each query, BFS from each node
-- **Space**: O(n) - Queue and visited set
-- **Limitations**: Too slow for large inputs
-
-### Approach 2: Optimized with Tree DP
-**Time Complexity**: O(n²)  
-**Space Complexity**: O(n)
-
-**Algorithm**:
-1. Use tree DP to count paths of each length
-2. For each node, count paths passing through it
-3. Use rerooting technique to efficiently compute counts
-
-**Implementation**:
-```python
-def optimized_fixed_length_paths_i(n, edges, queries):
+    Time: O(n^2)
+    Space: O(n)
+    """
     from collections import defaultdict
-    
-    # Build adjacency list
+
     graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    # Precompute all path counts
-    path_counts = [0] * n
-    
-    def dfs(node, parent):
-        # Count paths of each length passing through this node
-        subtree_sizes = []
-        
-        for child in graph[node]:
-            if child != parent:
-                child_size = dfs(child, node)
-                subtree_sizes.append(child_size)
-        
-        # Count paths of each length
-        for length in range(1, n):
-            count = 0
-            
-            # Paths within subtrees
-            for size in subtree_sizes:
-                if size >= length:
-                    count += size - length + 1
-            
-            # Paths passing through this node
-            for i in range(len(subtree_sizes)):
-                for j in range(i + 1, len(subtree_sizes)):
-                    if subtree_sizes[i] + subtree_sizes[j] >= length:
-                        count += min(subtree_sizes[i], length) * min(subtree_sizes[j], length)
-            
-            path_counts[length] += count
-        
-        return sum(subtree_sizes) + 1
-    
-    dfs(1, -1)
-    
-    # Answer queries
-    results = []
-    for k in queries:
-        results.append(path_counts[k])
-    
-    return results
-```
+    for a, b in edges:
+        graph[a].append(b)
+        graph[b].append(a)
 
-**Analysis**:
-- **Time**: O(n²) - Tree DP with rerooting
-- **Space**: O(n) - Recursion stack and arrays
-- **Improvement**: More efficient than brute force
+    count = 0
 
-### Approach 3: Optimal with Centroid Decomposition
-**Time Complexity**: O(n log n)  
-**Space Complexity**: O(n)
-
-**Algorithm**:
-1. Use centroid decomposition to divide the tree
-2. For each centroid, count paths passing through it
-3. Recursively solve for each subtree
-
-**Implementation**:
-```python
-def optimal_fixed_length_paths_i(n, edges, queries):
-    from collections import defaultdict
-    
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
-    
-    path_counts = [0] * n
-    
-    def get_centroid(node, parent, total_size):
-        # Find centroid of the tree
-        max_subtree = 0
-        centroid = node
-        
-        def dfs_size(curr, par):
-            nonlocal max_subtree, centroid
-            size = 1
-            
-            for child in graph[curr]:
-                if child != par:
-                    child_size = dfs_size(child, curr)
-                    size += child_size
-                    max_subtree = max(max_subtree, child_size)
-            
-            if max_subtree <= total_size // 2:
-                centroid = curr
-            
-            return size
-        
-        dfs_size(node, parent)
-        return centroid
-    
-    def solve_subtree(node, parent):
-        if node is None:
+    def dfs(node, parent, depth):
+        nonlocal count
+        if depth == k:
+            count += 1
             return
-        
-        # Find centroid
-        centroid = get_centroid(node, parent, n)
-        
-        # Count paths passing through centroid
-        distances = defaultdict(int)
-        
-        def dfs_distances(curr, par, dist):
-            distances[dist] += 1
-            for child in graph[curr]:
-                if child != par and child != centroid:
-                    dfs_distances(child, curr, dist + 1)
-        
-        # Count paths of each length
-        for length in range(1, n):
-            count = 0
-            
-            # Paths within each subtree of centroid
-            for child in graph[centroid]:
-                if child != parent:
-                    subtree_distances = defaultdict(int)
-                    
-                    def dfs_subtree(curr, par, dist):
-                        subtree_distances[dist] += 1
-                        for grandchild in graph[curr]:
-                            if grandchild != par and grandchild != centroid:
-                                dfs_subtree(grandchild, curr, dist + 1)
-                    
-                    dfs_subtree(child, centroid, 1)
-                    
-                    # Count paths of length k within this subtree
-                    for dist in subtree_distances:
-                        if dist == length:
-                            count += subtree_distances[dist]
-            
-            path_counts[length] += count
-        
-        # Recursively solve for each subtree
-        for child in graph[centroid]:
-            if child != parent:
-                solve_subtree(child, centroid)
-    
-    solve_subtree(1, -1)
-    
-    # Answer queries
-    results = []
-    for k in queries:
-        results.append(path_counts[k])
-    
-    return results
+        for neighbor in graph[node]:
+            if neighbor != parent:
+                dfs(neighbor, node, depth + 1)
+
+    for start in range(1, n + 1):
+        dfs(start, -1, 0)
+
+    # Each path counted twice (from both endpoints)
+    return count // 2
 ```
 
-**Analysis**:
-- **Time**: O(n log n) - Centroid decomposition
-- **Space**: O(n) - Recursion stack and arrays
-- **Optimal**: Best possible complexity for this problem
+### Complexity
 
-**Visual Example**:
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | DFS from each of n nodes, each taking O(n) |
+| Space | O(n) | Recursion stack depth |
+
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed because we explore all possible paths. However, for n = 2 * 10^5, O(n^2) operations will timeout.
+
+---
+
+## Solution 2: Optimal - Centroid Decomposition
+
+### Key Insight
+
+> **The Trick:** Use centroid decomposition to ensure each path is counted exactly once, achieving O(n log n) complexity.
+
+When we process a centroid:
+1. Compute distances from centroid to all nodes in its current subtree
+2. For each subtree, count how many paths of length k pass through the centroid
+3. Use a frequency array: if we have `cnt[d]` nodes at distance d, and we see a node at distance d', we can form `cnt[k - d']` paths of length k
+
+### Algorithm
+
+1. **Find Centroid:** Calculate subtree sizes and find the node where all subtrees have <= n/2 nodes
+2. **Count Paths Through Centroid:**
+   - Process each subtree one by one
+   - Before processing a subtree, we have `cnt[d]` = count of nodes at distance d from centroid (from previously processed subtrees)
+   - For each node at distance d' in current subtree, add `cnt[k - d']` to answer
+   - After processing, add current subtree's distances to cnt array
+3. **Recurse:** Mark centroid as removed and recurse on each subtree
+
+### Dry Run Example
+
+Let's trace through with the example: n=5, k=2
+
 ```
-Tree structure:
+Tree:
     1
     |
     2
+    |
+    3
    / \
-  3   4
-      |
-      5
+  4   5
 
-Centroid Decomposition:
-1. Find centroid (node 2)
-2. Count paths through centroid:
-   - Length 1: (1,2), (2,3), (2,4) = 3 paths
-   - Length 2: (1,3), (1,4), (3,4) = 3 paths
-   - Length 3: (1,5), (3,5) = 2 paths
-3. Recursively solve subtrees
+Step 1: Find centroid of entire tree
+  Subtree sizes from node 1: {1:5, 2:4, 3:3, 4:1, 5:1}
+  Centroid = node 3 (removing it gives subtrees of size 2, 1, 1)
+
+Step 2: Count paths through centroid (node 3)
+  Initialize: cnt = [1, 0, 0, ...]  (cnt[0]=1 for centroid itself)
+  answer = 0
+
+  Process subtree rooted at 2 (going up):
+    Node 2: distance 1 from centroid
+      - Check cnt[k-1] = cnt[1] = 0, add 0
+    Node 1: distance 2 from centroid
+      - Check cnt[k-2] = cnt[0] = 1, add 1 to answer
+    Update cnt: cnt[1]++, cnt[2]++
+    cnt = [1, 1, 1, ...]
+    answer = 1 (path 1-2-3)
+
+  Process subtree rooted at 4:
+    Node 4: distance 1 from centroid
+      - Check cnt[k-1] = cnt[1] = 1, add 1 to answer
+    Update cnt: cnt[1]++
+    cnt = [1, 2, 1, ...]
+    answer = 2 (added path 4-3-2)
+
+  Process subtree rooted at 5:
+    Node 5: distance 1 from centroid
+      - Check cnt[k-1] = cnt[1] = 2, add 2 to answer
+    cnt = [1, 3, 1, ...]
+    answer = 4 (added paths 5-3-2 and 5-3-4)
+
+Step 3: Recurse on subtrees (after removing centroid 3)
+  Subtree {1,2}: centroid is 2
+    - Only path would need length 2, but max distance is 1
+    - No additional paths
+
+  Subtrees {4} and {5}: single nodes, no paths
+
+Final answer: 4
 ```
 
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: Try all possible paths by BFS from each node
-- **Complete Coverage**: Guarantees finding all paths but inefficient
-- **Simple Implementation**: Easy to understand and implement
+### Visual Diagram
 
-**Key Insights from Optimized Approach**:
-- **Tree DP**: Use dynamic programming to count paths efficiently
-- **Rerooting**: Use rerooting technique to avoid redundant calculations
-- **Efficiency Improvement**: Much faster than brute force
+```
+Centroid Decomposition Process:
 
-**Key Insights from Optimal Approach**:
-- **Centroid Decomposition**: Use centroid decomposition for optimal performance
-- **Divide and Conquer**: Divide tree into smaller subtrees recursively
-- **Optimal Complexity**: Best possible complexity for this problem
+Original Tree:          After finding centroid 3:
+    1
+    |                       Subtree 1: 1-2 (size 2)
+    2                       Subtree 2: 4   (size 1)
+    |                       Subtree 3: 5   (size 1)
+   [3] <-- centroid
+   / \
+  4   5
 
-## 🎯 Key Insights
+Counting at centroid 3:
+  cnt array tracks distances from centroid
 
-### 🔑 **Core Concepts**
-- **Path Counting**: Counting paths of specific lengths in trees
-- **Tree DP**: Dynamic programming on trees for efficient computation
-- **Centroid Decomposition**: Divide and conquer technique for trees
-- **Rerooting**: Technique to efficiently compute values for all nodes
+  dist=0: [3]
+  dist=1: [2, 4, 5]
+  dist=2: [1]
 
-### 💡 **Problem-Specific Insights**
-- **Fixed Length Paths**: Count paths of exactly k edges in a tree
-- **Efficiency Optimization**: From O(n² × k) brute force to O(n log n) optimal solution
-- **Tree Structure**: Leverage tree properties for efficient algorithms
+  Paths of length k=2:
+  - dist 0 + dist 2: 3 to 1 via 2   (1 path)
+  - dist 1 + dist 1: 2-3-4, 2-3-5, 4-3-5 (3 paths)
 
-### 🚀 **Optimization Strategies**
-- **Tree DP**: Use dynamic programming to avoid redundant calculations
-- **Centroid Decomposition**: Use divide and conquer for optimal performance
-- **Precomputation**: Precompute results to answer queries efficiently
-
-## 🧠 Common Pitfalls & How to Avoid Them
-
-### ❌ **Common Mistakes**
-1. **Double Counting**: Not handling the fact that each path is counted twice
-2. **Inefficient BFS**: Using BFS for each query instead of precomputation
-3. **Memory Issues**: Not optimizing space usage for large trees
-
-### ✅ **Best Practices**
-1. **Use Tree DP**: Implement tree DP for efficient path counting
-2. **Centroid Decomposition**: Use centroid decomposition for optimal performance
-3. **Proper Counting**: Handle double counting correctly
-
-## 🔗 Related Problems & Pattern Recognition
-
-### 📚 **Similar Problems**
-- **Tree Distances**: Finding distances between nodes in trees
-- **Counting Paths**: Counting paths with specific properties
-- **Tree DP**: Dynamic programming problems on trees
-
-### 🎯 **Pattern Recognition**
-- **Path Problems**: Problems involving counting or finding paths in trees
-- **Tree DP Problems**: Problems requiring dynamic programming on trees
-- **Centroid Problems**: Problems that can benefit from centroid decomposition
-
-## 📈 Complexity Analysis
-
-### ⏱️ **Time Complexity**
-- **Brute Force**: O(n² × k) - BFS from each node for each query
-- **Optimized**: O(n²) - Tree DP with rerooting
-- **Optimal**: O(n log n) - Centroid decomposition
-
-### 💾 **Space Complexity**
-- **Brute Force**: O(n) - Queue and visited set
-- **Optimized**: O(n) - Recursion stack and arrays
-- **Optimal**: O(n) - Recursion stack and arrays
-
-## 🎓 Summary
-
-### 🏆 **Key Takeaways**
-1. **Path Counting**: Important problem type in tree algorithms
-2. **Tree DP**: Essential technique for efficient tree computations
-3. **Centroid Decomposition**: Powerful technique for optimal tree algorithms
-4. **Rerooting**: Useful technique for computing values for all nodes
-
-### 🚀 **Next Steps**
-1. **Practice**: Implement path counting algorithms with different approaches
-2. **Advanced Topics**: Learn about more complex tree path problems
-3. **Related Problems**: Solve more tree DP and centroid decomposition problems
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Fixed Length Paths I with Dynamic Updates
-**Problem**: Handle dynamic updates to the tree structure and maintain fixed length path queries efficiently.
-
-**Link**: [CSES Problem Set - Fixed Length Paths I with Updates](https://cses.fi/problemset/task/fixed_length_paths_i_updates)
-
-```python
-class FixedLengthPathsIWithUpdates:
-    def __init__(self, n, edges, target_length):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.target_length = target_length
-        self.path_counts = [0] * n
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_path_counts()
-    
-    def _calculate_path_counts(self):
-        """Calculate path counts using tree DP"""
-        def dfs(node, parent):
-            # Initialize with current node
-            self.path_counts[node] = 0
-            
-            # Count paths of target length starting from this node
-            def count_paths(current, parent, length):
-                if length == self.target_length:
-                    return 1
-                
-                count = 0
-                for child in self.adj[current]:
-                    if child != parent:
-                        count += count_paths(child, current, length + 1)
-                
-                return count
-            
-            self.path_counts[node] = count_paths(node, parent, 0)
-            
-            # Recursively calculate for children
-            for child in self.adj[node]:
-                if child != parent:
-                    dfs(child, node)
-        
-        dfs(0, -1)
-    
-    def add_edge(self, u, v):
-        """Add edge between nodes u and v"""
-        self.adj[u].append(v)
-        self.adj[v].append(u)
-        
-        # Recalculate path counts
-        self._calculate_path_counts()
-    
-    def remove_edge(self, u, v):
-        """Remove edge between nodes u and v"""
-        if v in self.adj[u]:
-            self.adj[u].remove(v)
-        if u in self.adj[v]:
-            self.adj[v].remove(u)
-        
-        # Recalculate path counts
-        self._calculate_path_counts()
-    
-    def get_path_count(self, node):
-        """Get number of paths of target length starting from node"""
-        return self.path_counts[node]
-    
-    def get_all_path_counts(self):
-        """Get path counts for all nodes"""
-        return self.path_counts.copy()
-    
-    def get_total_paths(self):
-        """Get total number of paths of target length"""
-        return sum(self.path_counts)
-    
-    def get_max_path_count(self):
-        """Get maximum path count among all nodes"""
-        return max(self.path_counts)
-    
-    def get_min_path_count(self):
-        """Get minimum path count among all nodes"""
-        return min(self.path_counts)
-    
-    def get_path_statistics(self):
-        """Get comprehensive path statistics"""
-        return {
-            'total_paths': self.get_total_paths(),
-            'max_path_count': self.get_max_path_count(),
-            'min_path_count': self.get_min_path_count(),
-            'target_length': self.target_length,
-            'path_counts': self.path_counts.copy()
-        }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'add_edge':
-                self.add_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'remove_edge':
-                self.remove_edge(query['u'], query['v'])
-                results.append(None)
-            elif query['type'] == 'path_count':
-                result = self.get_path_count(query['node'])
-                results.append(result)
-            elif query['type'] == 'all_path_counts':
-                result = self.get_all_path_counts()
-                results.append(result)
-            elif query['type'] == 'total_paths':
-                result = self.get_total_paths()
-                results.append(result)
-            elif query['type'] == 'max_path_count':
-                result = self.get_max_path_count()
-                results.append(result)
-            elif query['type'] == 'min_path_count':
-                result = self.get_min_path_count()
-                results.append(result)
-            elif query['type'] == 'statistics':
-                result = self.get_path_statistics()
-                results.append(result)
-        return results
+  Total: 4 paths
 ```
 
-### Variation 2: Fixed Length Paths I with Different Operations
-**Problem**: Handle different types of operations (find, analyze, compare) on fixed length paths.
-
-**Link**: [CSES Problem Set - Fixed Length Paths I Different Operations](https://cses.fi/problemset/task/fixed_length_paths_i_operations)
+### Code (Python)
 
 ```python
-class FixedLengthPathsIDifferentOps:
-    def __init__(self, n, edges, target_length):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.target_length = target_length
-        self.path_counts = [0] * n
-        self.depths = [0] * n
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_path_counts()
-        self._calculate_depths()
-    
-    def _calculate_path_counts(self):
-        """Calculate path counts using tree DP"""
-        def dfs(node, parent):
-            # Initialize with current node
-            self.path_counts[node] = 0
-            
-            # Count paths of target length starting from this node
-            def count_paths(current, parent, length):
-                if length == self.target_length:
-                    return 1
-                
-                count = 0
-                for child in self.adj[current]:
-                    if child != parent:
-                        count += count_paths(child, current, length + 1)
-                
-                return count
-            
-            self.path_counts[node] = count_paths(node, parent, 0)
-            
-            # Recursively calculate for children
-            for child in self.adj[node]:
-                if child != parent:
-                    dfs(child, node)
-        
-        dfs(0, -1)
-    
-    def _calculate_depths(self):
-        """Calculate depth of each node"""
-        def dfs(node, parent, depth):
-            self.depths[node] = depth
-            
-            for child in self.adj[node]:
-                if child != parent:
-                    dfs(child, node, depth + 1)
-        
-        dfs(0, -1, 0)
-    
-    def get_path_count(self, node):
-        """Get number of paths of target length starting from node"""
-        return self.path_counts[node]
-    
-    def get_paths_by_length(self, length):
-        """Get all paths of specific length"""
-        paths = []
-        
-        def dfs(node, parent, current_path):
-            if len(current_path) == length:
-                paths.append(current_path.copy())
-                return
-            
-            for child in self.adj[node]:
-                if child != parent:
-                    current_path.append(child)
-                    dfs(child, node, current_path)
-                    current_path.pop()
-        
-        for start in range(self.n):
-            dfs(start, -1, [start])
-        
-        return paths
-    
-    def get_paths_from_node(self, node):
-        """Get all paths starting from given node"""
-        paths = []
-        
-        def dfs(current, parent, current_path):
-            if len(current_path) > 1:
-                paths.append(current_path.copy())
-            
-            for child in self.adj[current]:
-                if child != parent:
-                    current_path.append(child)
-                    dfs(child, current, current_path)
-                    current_path.pop()
-        
-        dfs(node, -1, [node])
-        return paths
-    
-    def get_paths_to_node(self, node):
-        """Get all paths ending at given node"""
-        paths = []
-        
-        def dfs(current, parent, current_path):
-            if current == node and len(current_path) > 1:
-                paths.append(current_path.copy())
-                return
-            
-            for child in self.adj[current]:
-                if child != parent:
-                    current_path.append(child)
-                    dfs(child, current, current_path)
-                    current_path.pop()
-        
-        for start in range(self.n):
-            dfs(start, -1, [start])
-        
-        return paths
-    
-    def get_paths_through_node(self, node):
-        """Get all paths passing through given node"""
-        paths = []
-        
-        def dfs(current, parent, current_path):
-            if node in current_path and len(current_path) > 1:
-                paths.append(current_path.copy())
-            
-            for child in self.adj[current]:
-                if child != parent:
-                    current_path.append(child)
-                    dfs(child, current, current_path)
-                    current_path.pop()
-        
-        for start in range(self.n):
-            dfs(start, -1, [start])
-        
-        return paths
-    
-    def get_longest_path(self):
-        """Get longest path in the tree"""
-        longest_path = []
-        max_length = 0
-        
-        def dfs(node, parent, current_path):
-            nonlocal longest_path, max_length
-            
-            if len(current_path) > max_length:
-                max_length = len(current_path)
-                longest_path = current_path.copy()
-            
-            for child in self.adj[node]:
-                if child != parent:
-                    current_path.append(child)
-                    dfs(child, node, current_path)
-                    current_path.pop()
-        
-        for start in range(self.n):
-            dfs(start, -1, [start])
-        
-        return longest_path, max_length - 1
-    
-    def get_shortest_path(self, start, end):
-        """Get shortest path between two nodes"""
-        from collections import deque
-        
-        queue = deque([(start, [start])])
-        visited = {start}
-        
-        while queue:
-            node, path = queue.popleft()
-            
-            if node == end:
-                return path
-            
-            for neighbor in self.adj[node]:
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    queue.append((neighbor, path + [neighbor]))
-        
-        return []
-    
-    def get_path_statistics(self):
-        """Get comprehensive path statistics"""
-        longest_path, max_length = self.get_longest_path()
-        
-        return {
-            'total_paths': sum(self.path_counts),
-            'max_path_count': max(self.path_counts),
-            'min_path_count': min(self.path_counts),
-            'longest_path_length': max_length,
-            'longest_path': longest_path,
-            'target_length': self.target_length,
-            'path_counts': self.path_counts.copy(),
-            'depths': self.depths.copy()
-        }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'path_count':
-                result = self.get_path_count(query['node'])
-                results.append(result)
-            elif query['type'] == 'paths_by_length':
-                result = self.get_paths_by_length(query['length'])
-                results.append(result)
-            elif query['type'] == 'paths_from_node':
-                result = self.get_paths_from_node(query['node'])
-                results.append(result)
-            elif query['type'] == 'paths_to_node':
-                result = self.get_paths_to_node(query['node'])
-                results.append(result)
-            elif query['type'] == 'paths_through_node':
-                result = self.get_paths_through_node(query['node'])
-                results.append(result)
-            elif query['type'] == 'longest_path':
-                result = self.get_longest_path()
-                results.append(result)
-            elif query['type'] == 'shortest_path':
-                result = self.get_shortest_path(query['start'], query['end'])
-                results.append(result)
-            elif query['type'] == 'statistics':
-                result = self.get_path_statistics()
-                results.append(result)
-        return results
-```
+import sys
+from collections import defaultdict
 
-### Variation 3: Fixed Length Paths I with Constraints
-**Problem**: Handle fixed length path queries with additional constraints (e.g., minimum length, maximum length).
+def solve(n, k, edges):
+    """
+    Centroid Decomposition solution.
 
-**Link**: [CSES Problem Set - Fixed Length Paths I with Constraints](https://cses.fi/problemset/task/fixed_length_paths_i_constraints)
+    Time: O(n log n)
+    Space: O(n)
+    """
+    sys.setrecursionlimit(300000)
 
-```python
-class FixedLengthPathsIWithConstraints:
-    def __init__(self, n, edges, target_length, min_length, max_length):
-        self.n = n
-        self.adj = [[] for _ in range(n)]
-        self.target_length = target_length
-        self.min_length = min_length
-        self.max_length = max_length
-        self.path_counts = [0] * n
-        
-        # Build adjacency list
-        for u, v in edges:
-            self.adj[u].append(v)
-            self.adj[v].append(u)
-        
-        self._calculate_path_counts()
-    
-    def _calculate_path_counts(self):
-        """Calculate path counts using tree DP"""
-        def dfs(node, parent):
-            # Initialize with current node
-            self.path_counts[node] = 0
-            
-            # Count paths of target length starting from this node
-            def count_paths(current, parent, length):
-                if length == self.target_length:
-                    return 1
-                
-                count = 0
-                for child in self.adj[current]:
-                    if child != parent:
-                        count += count_paths(child, current, length + 1)
-                
-                return count
-            
-            self.path_counts[node] = count_paths(node, parent, 0)
-            
-            # Recursively calculate for children
-            for child in self.adj[node]:
-                if child != parent:
-                    dfs(child, node)
-        
-        dfs(0, -1)
-    
-    def constrained_path_count_query(self, node):
-        """Query path count with constraints"""
-        if self.path_counts[node] == 0:
-            return 0
-        
-        # Count paths of valid lengths starting from this node
-        valid_paths = 0
-        
-        def count_valid_paths(current, parent, length):
-            nonlocal valid_paths
-            
-            if self.min_length <= length <= self.max_length:
-                valid_paths += 1
-            
-            for child in self.adj[current]:
-                if child != parent:
-                    count_valid_paths(child, current, length + 1)
-        
-        count_valid_paths(node, -1, 0)
-        return valid_paths
-    
-    def find_valid_paths(self):
-        """Find all paths that satisfy length constraints"""
-        valid_paths = []
-        
-        def dfs(node, parent, current_path):
-            if self.min_length <= len(current_path) <= self.max_length:
-                valid_paths.append(current_path.copy())
-            
-            for child in self.adj[node]:
-                if child != parent:
-                    current_path.append(child)
-                    dfs(child, node, current_path)
-                    current_path.pop()
-        
-        for start in range(self.n):
-            dfs(start, -1, [start])
-        
-        return valid_paths
-    
-    def count_valid_paths(self):
-        """Count number of valid paths"""
-        return len(self.find_valid_paths())
-    
-    def get_valid_paths_by_length(self, length):
-        """Get all valid paths of specific length"""
-        if not (self.min_length <= length <= self.max_length):
+    # Build adjacency list
+    graph = defaultdict(list)
+    for a, b in edges:
+        graph[a].append(b)
+        graph[b].append(a)
+
+    removed = [False] * (n + 1)
+    subtree_size = [0] * (n + 1)
+    answer = 0
+
+    def get_subtree_size(node, parent):
+        """Calculate subtree sizes for centroid finding."""
+        subtree_size[node] = 1
+        for neighbor in graph[node]:
+            if neighbor != parent and not removed[neighbor]:
+                get_subtree_size(neighbor, node)
+                subtree_size[node] += subtree_size[neighbor]
+
+    def find_centroid(node, parent, tree_size):
+        """Find centroid of the current tree."""
+        for neighbor in graph[node]:
+            if neighbor != parent and not removed[neighbor]:
+                if subtree_size[neighbor] > tree_size // 2:
+                    return find_centroid(neighbor, node, tree_size)
+        return node
+
+    def count_paths(node, parent, dist, cnt):
+        """
+        Count paths and collect distances.
+        Returns list of distances from centroid for nodes in this subtree.
+        """
+        nonlocal answer
+
+        if dist > k:
             return []
-        
-        paths = []
-        
-        def dfs(node, parent, current_path):
-            if len(current_path) == length:
-                paths.append(current_path.copy())
-                return
-            
-            for child in self.adj[node]:
-                if child != parent:
-                    current_path.append(child)
-                    dfs(child, node, current_path)
-                    current_path.pop()
-        
-        for start in range(self.n):
-            dfs(start, -1, [start])
-        
-        return paths
-    
-    def get_valid_paths_from_node(self, node):
-        """Get all valid paths starting from given node"""
-        valid_paths = []
-        
-        def dfs(current, parent, current_path):
-            if self.min_length <= len(current_path) <= self.max_length:
-                valid_paths.append(current_path.copy())
-            
-            for child in self.adj[current]:
-                if child != parent:
-                    current_path.append(child)
-                    dfs(child, current, current_path)
-                    current_path.pop()
-        
-        dfs(node, -1, [node])
-        return valid_paths
-    
-    def get_valid_paths_through_node(self, node):
-        """Get all valid paths passing through given node"""
-        valid_paths = []
-        
-        def dfs(current, parent, current_path):
-            if node in current_path and self.min_length <= len(current_path) <= self.max_length:
-                valid_paths.append(current_path.copy())
-            
-            for child in self.adj[current]:
-                if child != parent:
-                    current_path.append(child)
-                    dfs(child, current, current_path)
-                    current_path.pop()
-        
-        for start in range(self.n):
-            dfs(start, -1, [start])
-        
-        return valid_paths
-    
-    def get_constraint_statistics(self):
-        """Get statistics about valid paths"""
-        valid_paths = self.find_valid_paths()
-        
-        if not valid_paths:
-            return {
-                'valid_paths_count': 0,
-                'min_length': self.min_length,
-                'max_length': self.max_length,
-                'target_length': self.target_length,
-                'valid_paths': []
-            }
-        
-        lengths = [len(path) for path in valid_paths]
-        
-        return {
-            'valid_paths_count': len(valid_paths),
-            'min_length': self.min_length,
-            'max_length': self.max_length,
-            'target_length': self.target_length,
-            'min_valid_length': min(lengths),
-            'max_valid_length': max(lengths),
-            'avg_valid_length': sum(lengths) / len(lengths),
-            'valid_paths': valid_paths
-        }
 
-# Example usage
-n = 5
-edges = [(0, 1), (1, 2), (1, 3), (3, 4)]
-target_length = 2
-min_length = 1
-max_length = 3
+        distances = [dist]
 
-flp = FixedLengthPathsIWithConstraints(n, edges, target_length, min_length, max_length)
-result = flp.constrained_path_count_query(1)
-print(f"Constrained path count query result: {result}")
+        # Count paths: current node pairs with nodes at distance (k - dist)
+        if k - dist >= 0 and k - dist < len(cnt):
+            answer += cnt[k - dist]
 
-valid_paths = flp.find_valid_paths()
-print(f"Valid paths: {valid_paths}")
+        for neighbor in graph[node]:
+            if neighbor != parent and not removed[neighbor]:
+                distances.extend(count_paths(neighbor, node, dist + 1, cnt))
 
-statistics = flp.get_constraint_statistics()
-print(f"Constraint statistics: {statistics}")
+        return distances
+
+    def solve_centroid(node):
+        """Process tree rooted at node using centroid decomposition."""
+        get_subtree_size(node, -1)
+        centroid = find_centroid(node, -1, subtree_size[node])
+        removed[centroid] = True
+
+        # cnt[d] = number of nodes at distance d from centroid (from processed subtrees)
+        cnt = [0] * (k + 2)
+        cnt[0] = 1  # centroid itself at distance 0
+
+        for neighbor in graph[centroid]:
+            if not removed[neighbor]:
+                # Count paths and get distances for this subtree
+                distances = count_paths(neighbor, centroid, 1, cnt)
+
+                # Add these distances to cnt for future subtrees
+                for d in distances:
+                    if d <= k:
+                        cnt[d] += 1
+
+        # Recurse on subtrees
+        for neighbor in graph[centroid]:
+            if not removed[neighbor]:
+                solve_centroid(neighbor)
+
+    solve_centroid(1)
+    return answer
+
+
+def main():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n = int(input_data[idx]); idx += 1
+    k = int(input_data[idx]); idx += 1
+
+    edges = []
+    for _ in range(n - 1):
+        a = int(input_data[idx]); idx += 1
+        b = int(input_data[idx]); idx += 1
+        edges.append((a, b))
+
+    print(solve(n, k, edges))
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-### Related Problems
+### Code (C++)
 
-#### **CSES Problems**
-- [Fixed Length Paths I](https://cses.fi/problemset/task/2080) - Basic fixed length paths in tree
-- [Fixed Length Paths II](https://cses.fi/problemset/task/2081) - Advanced fixed length paths in tree
-- [Tree Diameter](https://cses.fi/problemset/task/1131) - Find diameter of tree
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-#### **LeetCode Problems**
-- [Binary Tree Paths](https://leetcode.com/problems/binary-tree-paths/) - Find all paths in binary tree
-- [Path Sum](https://leetcode.com/problems/path-sum/) - Path queries in tree
-- [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Path analysis in tree
+const int MAXN = 200005;
 
-#### **Problem Categories**
-- **Tree DP**: Dynamic programming on trees, path counting
-- **Tree Traversal**: DFS, BFS, tree traversal algorithms
-- **Tree Queries**: Path queries, tree analysis, tree operations
-- **Tree Algorithms**: Tree properties, tree analysis, tree operations
+vector<int> adj[MAXN];
+bool removed[MAXN];
+int subtree_size[MAXN];
+int n, k;
+long long answer = 0;
+
+void get_subtree_size(int node, int parent) {
+    subtree_size[node] = 1;
+    for (int neighbor : adj[node]) {
+        if (neighbor != parent && !removed[neighbor]) {
+            get_subtree_size(neighbor, node);
+            subtree_size[node] += subtree_size[neighbor];
+        }
+    }
+}
+
+int find_centroid(int node, int parent, int tree_size) {
+    for (int neighbor : adj[node]) {
+        if (neighbor != parent && !removed[neighbor]) {
+            if (subtree_size[neighbor] > tree_size / 2) {
+                return find_centroid(neighbor, node, tree_size);
+            }
+        }
+    }
+    return node;
+}
+
+void count_paths(int node, int parent, int dist, vector<long long>& cnt, vector<int>& distances) {
+    if (dist > k) return;
+
+    distances.push_back(dist);
+
+    // Count paths: current node pairs with nodes at distance (k - dist)
+    if (k - dist >= 0 && k - dist < (int)cnt.size()) {
+        answer += cnt[k - dist];
+    }
+
+    for (int neighbor : adj[node]) {
+        if (neighbor != parent && !removed[neighbor]) {
+            count_paths(neighbor, node, dist + 1, cnt, distances);
+        }
+    }
+}
+
+void solve_centroid(int node) {
+    get_subtree_size(node, -1);
+    int centroid = find_centroid(node, -1, subtree_size[node]);
+    removed[centroid] = true;
+
+    // cnt[d] = number of nodes at distance d from centroid
+    vector<long long> cnt(k + 2, 0);
+    cnt[0] = 1;  // centroid itself
+
+    for (int neighbor : adj[centroid]) {
+        if (!removed[neighbor]) {
+            vector<int> distances;
+            count_paths(neighbor, centroid, 1, cnt, distances);
+
+            // Add distances to cnt for future subtrees
+            for (int d : distances) {
+                if (d <= k) {
+                    cnt[d]++;
+                }
+            }
+        }
+    }
+
+    // Recurse on subtrees
+    for (int neighbor : adj[centroid]) {
+        if (!removed[neighbor]) {
+            solve_centroid(neighbor);
+        }
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    cin >> n >> k;
+
+    for (int i = 0; i < n - 1; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+
+    solve_centroid(1);
+
+    cout << answer << "\n";
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log n) | Each node visited O(log n) times across all centroid levels |
+| Space | O(n) | Adjacency list, recursion stack, and cnt array |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Double Counting Paths
+
+```python
+# WRONG: Counting paths within the same subtree
+for neighbor in graph[centroid]:
+    distances = get_all_distances(neighbor)
+    for d in distances:
+        answer += cnt[k - d]  # This counts paths within same subtree!
+    for d in distances:
+        cnt[d] += 1
+```
+
+**Problem:** If we add distances to cnt before processing all subtrees correctly, we might count paths that stay within the same subtree.
+
+**Fix:** Process subtrees one by one. Only count against nodes from *previously* processed subtrees, then add current subtree to cnt.
+
+### Mistake 2: Forgetting to Reset the Removed Array
+
+```python
+# WRONG: Not properly handling the removed array
+def solve_centroid(node):
+    centroid = find_centroid(node)
+    removed[centroid] = True
+    # ... process ...
+    removed[centroid] = False  # DON'T do this!
+```
+
+**Problem:** The centroid should stay removed for the entire decomposition. Resetting it causes infinite recursion or incorrect counting.
+
+**Fix:** Once a centroid is removed, it stays removed. The recursion naturally handles separate subtrees.
+
+### Mistake 3: Not Handling Distance > k
+
+```python
+# WRONG: Not checking bounds
+def count_paths(node, parent, dist, cnt):
+    answer += cnt[k - dist]  # IndexError if dist > k!
+```
+
+**Problem:** When dist > k, we get k - dist < 0, causing index errors.
+
+**Fix:** Check `if dist > k: return` at the start, or check bounds before array access.
+
+### Mistake 4: Integer Overflow in C++
+
+```cpp
+// WRONG: Using int for answer
+int answer = 0;  // Can overflow for large n
+
+// CORRECT: Use long long
+long long answer = 0;
+```
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| k = 1 (all edges) | n=5, k=1, line graph | 4 | Every edge is a path of length 1 |
+| Star graph | n=5, k=2, center connected to all | 6 | C(4,2) = 6 paths through center |
+| k = n-1 (diameter) | Line graph, k=n-1 | 1 | Only one path spans entire tree |
+| k larger than diameter | k > tree diameter | 0 | No path can be that long |
+| Two nodes | n=2, k=1 | 1 | Single edge |
+
+---
+
+## When to Use This Pattern
+
+### Use Centroid Decomposition When:
+- Counting or finding paths in a tree with specific properties
+- Problem involves pairs of nodes where path between them matters
+- You need O(n log n) or O(n log^2 n) complexity for tree path queries
+- Answering multiple queries about tree paths
+
+### Do Not Use When:
+- Simple tree DP suffices (single-pass solutions)
+- Problem only involves ancestor-descendant relationships (use LCA instead)
+- Tree has special structure (e.g., binary tree with simpler solutions)
+
+### Pattern Recognition Checklist:
+- [ ] Problem involves paths in an unrooted tree? --> **Consider Centroid Decomposition**
+- [ ] Need to count/find paths with specific length/weight? --> **Centroid Decomposition**
+- [ ] Need to pair nodes from different subtrees? --> **Centroid Decomposition**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Tree Diameter](https://cses.fi/problemset/task/1131) | Basic tree path concepts |
+| [Tree Distances I](https://cses.fi/problemset/task/1132) | DFS for distances in trees |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Fixed Length Paths II](https://cses.fi/problemset/task/2081) | Count paths with length in range [k1, k2] |
+| [Tree Distances II](https://cses.fi/problemset/task/1133) | Sum of distances (rerooting technique) |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Centroid Path Decomposition](https://codeforces.com/problemset/problem/321/C) | Building centroid tree |
+| [Race (IOI 2011)](https://oj.uz/problem/view/IOI11_race) | Weighted paths with centroid decomposition |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Centroid decomposition ensures each path is counted exactly once by processing it at the "highest" centroid it passes through.
+
+2. **Time Optimization:** From O(n^2) brute force to O(n log n) by exploiting the property that removing a centroid creates subtrees of size <= n/2.
+
+3. **Space Trade-off:** We use O(n) extra space for the cnt array and removed markers, which is acceptable.
+
+4. **Pattern:** This is the canonical "count paths through a node" pattern using divide-and-conquer on trees.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why centroid decomposition achieves O(n log n) complexity
+- [ ] Implement centroid finding (subtree size calculation + finding balanced node)
+- [ ] Correctly count paths without double counting same-subtree paths
+- [ ] Handle edge cases (k=1, k larger than diameter)
+- [ ] Implement in both Python and C++ within 15 minutes
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Centroid Decomposition](https://cp-algorithms.com/graph/centroid-decomposition.html)
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [Centroid Decomposition Tutorial (Codeforces)](https://codeforces.com/blog/entry/52492)

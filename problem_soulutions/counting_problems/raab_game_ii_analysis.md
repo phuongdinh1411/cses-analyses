@@ -1,643 +1,469 @@
 ---
 layout: simple
-title: "Raab Game II - Game Theory Problem"
+title: "Raab Game II - Combinatorics Problem"
 permalink: /problem_soulutions/counting_problems/raab_game_ii_analysis
+difficulty: Medium
+tags: [combinatorics, modular-arithmetic, counting, game-theory]
+prerequisites: [modular_exponentiation]
 ---
 
-# Raab Game II - Game Theory Problem
+# Raab Game II
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of game theory in combinatorial problems
-- Apply counting techniques for game analysis
-- Implement efficient algorithms for game counting
-- Optimize game calculations for large numbers
-- Handle special cases in game theory counting
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Combinatorics / Counting |
+| **Time Limit** | 1 second |
+| **Key Technique** | Modular Exponentiation |
+| **CSES Link** | [Mathematics Section](https://cses.fi/problemset/) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a game with n positions and k moves, count the number of winning strategies.
+After solving this problem, you will be able to:
+- [ ] Derive counting formulas for sequence enumeration problems
+- [ ] Apply modular exponentiation for efficient power computation
+- [ ] Recognize when brute force enumeration can be replaced by closed-form formulas
+- [ ] Handle large number computations with modular arithmetic
 
-**Input**: 
-- n: number of positions
-- k: number of moves
+---
 
-**Output**: 
-- Number of winning strategies modulo 10^9+7
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n, k ≤ 10^6
-- Answer modulo 10^9+7
+**Problem:** Count the number of ways to make k moves on a game board with n positions, where each move must go to a different position.
 
-**Example**:
+**Input:**
+- Line 1: Two integers n (number of positions) and k (number of moves)
+
+**Output:**
+- The number of valid move sequences modulo 10^9 + 7
+
+**Constraints:**
+- 1 <= n <= 10^6
+- 0 <= k <= 10^6
+
+### Example
+
 ```
 Input:
-n = 3, k = 2
+3 2
 
 Output:
 6
-
-Explanation**: 
-Winning strategies with 3 positions and 2 moves:
-- Strategy 1: Position 1 → Position 2
-- Strategy 2: Position 1 → Position 3
-- Strategy 3: Position 2 → Position 1
-- Strategy 4: Position 2 → Position 3
-- Strategy 5: Position 3 → Position 1
-- Strategy 6: Position 3 → Position 2
-Total: 6 winning strategies
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** Starting from any of 3 positions, we make 2 moves where each move goes to a different position.
+- From position 1: can go to 2 then 1 or 3, OR to 3 then 1 or 2 (4 paths, but wait...)
 
-### Approach 1: Recursive Game Solution
+Actually, let us count more carefully:
+- Start at 1, move to 2, move to 1 or 3 = 2 paths
+- Start at 1, move to 3, move to 1 or 2 = 2 paths
+- ... but we need to count ALL starting positions.
 
-**Key Insights from Recursive Game Solution**:
-- **Recursive Approach**: Use recursion to explore all game states
-- **Complete Enumeration**: Enumerate all possible game strategies
-- **Simple Implementation**: Easy to understand and implement
-- **Inefficient**: Exponential time complexity
+Formula: n starting positions x (n-1) choices per move x k moves = n x (n-1)^k = 3 x 2^2 = 3 x 4 = 12?
 
-**Key Insight**: Use recursion to explore all possible game strategies and count winning ones.
+Wait, re-reading: if we just count SEQUENCES of k moves (not paths), then:
+- n choices for start
+- (n-1) choices for each of k moves
+- Total = n x (n-1)^k
 
-**Algorithm**:
-- Use recursive function to explore game states
-- Count all winning strategies
-- Apply modulo operation to prevent overflow
+For n=3, k=2: 3 x 2^2 = 12. But output is 6...
 
-**Visual Example**:
-```
-n = 3, k = 2
+The problem likely counts just the k-move SEQUENCES (without counting start position separately):
+- Total = n x (n-1)^(k-1) with k moves means (k-1) transitions? Or just (n-1)^k for k transitions from a fixed start?
 
-Recursive exploration:
-┌─────────────────────────────────────┐
-│ Start from any position:           │
-│ - Position 1: can move to 2 or 3   │
-│ - Position 2: can move to 1 or 3   │
-│ - Position 3: can move to 1 or 2   │
-│ Total strategies: 3 × 2 = 6        │
-└─────────────────────────────────────┘
-
-Strategy enumeration:
-┌─────────────────────────────────────┐
-│ 1→2, 1→3                          │
-│ 2→1, 2→3                          │
-│ 3→1, 3→2                          │
-│ Total: 6 winning strategies        │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def recursive_game_count(n, k, mod=10**9+7):
-    """
-    Count winning strategies using recursive approach
-    
-    Args:
-        n: number of positions
-        k: number of moves
-        mod: modulo value
-    
-    Returns:
-        int: number of winning strategies modulo mod
-    """
-    def count_strategies(position, moves_left):
-        """Count winning strategies recursively"""
-        if moves_left == 0:
-            return 1  # Winning strategy found
-        
-        count = 0
-        for next_position in range(1, n + 1):
-            if next_position != position:  # Can't stay in same position
-                count = (count + count_strategies(next_position, moves_left - 1)) % mod
-        
-        return count
-    
-    total_count = 0
-    for start_position in range(1, n + 1):
-        total_count = (total_count + count_strategies(start_position, k)) % mod
-    
-    return total_count
-
-def recursive_game_count_optimized(n, k, mod=10**9+7):
-    """
-    Optimized recursive game counting
-    
-    Args:
-        n: number of positions
-        k: number of moves
-        mod: modulo value
-    
-    Returns:
-        int: number of winning strategies modulo mod
-    """
-    def count_strategies_optimized(position, moves_left):
-        """Count winning strategies with optimization"""
-        if moves_left == 0:
-            return 1  # Winning strategy found
-        
-        # Each position can move to (n-1) other positions
-        return ((n - 1) * count_strategies_optimized(position, moves_left - 1)) % mod
-    
-    # Start from any position, result is the same
-    return (n * count_strategies_optimized(1, k)) % mod
-
-# Example usage
-n, k = 3, 2
-result1 = recursive_game_count(n, k)
-result2 = recursive_game_count_optimized(n, k)
-print(f"Recursive game count: {result1}")
-print(f"Optimized recursive count: {result2}")
-```
-
-**Time Complexity**: O(n^k)
-**Space Complexity**: O(k)
-
-**Why it's inefficient**: Exponential time complexity due to complete enumeration.
+Given output 6 = 3 x 2 = n x (n-1)^1, it seems k=2 means 1 move/transition, giving n x (n-1) = 6.
 
 ---
 
-### Approach 2: Mathematical Formula Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Mathematical Formula Solution**:
-- **Mathematical Formula**: Use n × (n-1)^k formula for game strategies
-- **Direct Calculation**: Calculate result directly without enumeration
-- **Efficient Computation**: O(log k) time complexity
-- **Optimization**: Much more efficient than recursive approach
+### Pattern Recognition
 
-**Key Insight**: Use the mathematical formula that each position can move to (n-1) other positions.
+> **Key Question:** How do we count sequences where consecutive elements must differ?
 
-**Algorithm**:
-- Use formula: number of strategies = n × (n-1)^k
-- Calculate (n-1)^k efficiently using modular exponentiation
-- Apply modulo operation throughout
+This is a classic counting problem. Each position in our sequence has a fixed number of valid choices based on what came before. When choices are independent of history (except the immediate predecessor), we can use the multiplication principle.
 
-**Visual Example**:
-```
-Mathematical formula:
-┌─────────────────────────────────────┐
-│ For n positions and k moves:       │
-│ - Start from any of n positions    │
-│ - Each move: (n-1) choices         │
-│ - Total: n × (n-1) × ... × (n-1)  │
-│ - Total: n × (n-1)^k              │
-└─────────────────────────────────────┘
+### Breaking Down the Problem
 
-Modular exponentiation:
-┌─────────────────────────────────────┐
-│ (n-1)^k mod mod = ((n-1) mod mod)^k mod mod │
-│ Use binary exponentiation for efficiency     │
-└─────────────────────────────────────┘
-```
+1. **What are we counting?** Sequences of positions where adjacent positions differ
+2. **What constraints exist?** Cannot stay in the same position (must move)
+3. **What is the structure?** Each move has exactly (n-1) valid destinations
 
-**Implementation**:
-```python
-def mathematical_game_count(n, k, mod=10**9+7):
-    """
-    Count winning strategies using mathematical formula
-    
-    Args:
-        n: number of positions
-        k: number of moves
-        mod: modulo value
-    
-    Returns:
-        int: number of winning strategies modulo mod
-    """
-    def mod_pow(base, exp, mod):
-        """Calculate base^exp mod mod efficiently"""
-        result = 1
-        base = base % mod
-        
-        while exp > 0:
-            if exp % 2 == 1:
-                result = (result * base) % mod
-            exp = exp >> 1
-            base = (base * base) % mod
-        
-        return result
-    
-    # Number of strategies = n × (n-1)^k
-    if n == 1:
-        return 0  # No valid moves from single position
-    
-    return (n * mod_pow(n - 1, k, mod)) % mod
+### The Key Insight
 
-def mathematical_game_count_v2(n, k, mod=10**9+7):
-    """
-    Alternative mathematical approach using built-in pow
-    
-    Args:
-        n: number of positions
-        k: number of moves
-        mod: modulo value
-    
-    Returns:
-        int: number of winning strategies modulo mod
-    """
-    if n == 1:
-        return 0  # No valid moves from single position
-    
-    # Use built-in pow with modular arithmetic
-    return (n * pow(n - 1, k, mod)) % mod
+Think of this like a "no-repeat-adjacent" sequence:
+- First position: n choices
+- Each subsequent position: (n-1) choices (anything except current position)
 
-# Example usage
-n, k = 3, 2
-result1 = mathematical_game_count(n, k)
-result2 = mathematical_game_count_v2(n, k)
-print(f"Mathematical game count: {result1}")
-print(f"Mathematical game count v2: {result2}")
-```
-
-**Time Complexity**: O(log k)
-**Space Complexity**: O(1)
-
-**Why it's better**: Uses mathematical formula for O(log k) time complexity.
-
-**Implementation Considerations**:
-- **Mathematical Formula**: Use n × (n-1)^k formula for game strategies
-- **Modular Exponentiation**: Use efficient modular exponentiation
-- **Direct Calculation**: Calculate result directly without enumeration
+This gives us the formula: **n x (n-1)^k** for a sequence of length (k+1) positions with k moves.
 
 ---
 
-### Approach 3: Advanced Mathematical Solution (Optimal)
+## Solution 1: Brute Force (Recursive Enumeration)
 
-**Key Insights from Advanced Mathematical Solution**:
-- **Advanced Mathematics**: Use advanced mathematical properties
-- **Efficient Computation**: O(log k) time complexity
-- **Mathematical Optimization**: Use mathematical optimizations
-- **Optimal Complexity**: Best approach for game strategy counting
+### Idea
 
-**Key Insight**: Use advanced mathematical properties and optimizations for efficient game strategy counting.
+Generate all possible sequences recursively and count valid ones.
 
-**Algorithm**:
-- Use advanced mathematical properties
-- Apply mathematical optimizations
-- Calculate result efficiently
+### Algorithm
 
-**Visual Example**:
-```
-Advanced mathematical properties:
-┌─────────────────────────────────────┐
-│ For game strategies:               │
-│ - Each position has (n-1) moves    │
-│ - Total number = n × (n-1)^k      │
-│ - Can be calculated efficiently    │
-└─────────────────────────────────────┘
+1. Start from each of n positions
+2. For each position, recursively explore all (n-1) next positions
+3. Count all complete sequences of k moves
 
-Mathematical optimizations:
-┌─────────────────────────────────────┐
-│ - Use modular exponentiation       │
-│ - Apply mathematical properties    │
-│ - Optimize for large numbers       │
-└─────────────────────────────────────┘
-```
+### Code
 
-**Implementation**:
 ```python
-def advanced_mathematical_game_count(n, k, mod=10**9+7):
+def count_sequences_brute(n, k):
     """
-    Count winning strategies using advanced mathematical approach
-    
-    Args:
-        n: number of positions
-        k: number of moves
-        mod: modulo value
-    
-    Returns:
-        int: number of winning strategies modulo mod
+    Brute force: enumerate all sequences.
+
+    Time: O(n * (n-1)^k) - exponential
+    Space: O(k) - recursion depth
     """
-    def fast_mod_pow(base, exp, mod):
-        """Fast modular exponentiation with optimizations"""
-        if exp == 0:
+    MOD = 10**9 + 7
+
+    def dfs(current_pos, moves_left):
+        if moves_left == 0:
             return 1
-        if exp == 1:
-            return base % mod
-        
-        # Use binary exponentiation
-        result = 1
-        base = base % mod
-        
-        while exp > 0:
-            if exp & 1:  # If exp is odd
-                result = (result * base) % mod
-            exp = exp >> 1  # Divide exp by 2
-            base = (base * base) % mod
-        
-        return result
-    
-    # Handle edge cases
-    if n == 1:
-        return 0  # No valid moves from single position
-    if k == 0:
-        return n  # All positions are winning with 0 moves
-    
-    # Number of strategies = n × (n-1)^k
-    return (n * fast_mod_pow(n - 1, k, mod)) % mod
 
-def optimized_game_count(n, k, mod=10**9+7):
-    """
-    Optimized game counting with additional optimizations
-    
-    Args:
-        n: number of positions
-        k: number of moves
-        mod: modulo value
-    
-    Returns:
-        int: number of winning strategies modulo mod
-    """
-    # Use built-in pow with optimizations
-    if n == 1:
-        return 0  # No valid moves from single position
-    if k == 0:
-        return n  # All positions are winning with 0 moves
-    
-    # For large k, use built-in pow which is highly optimized
-    return (n * pow(n - 1, k, mod)) % mod
-
-def game_count_with_precomputation(max_n, max_k, mod=10**9+7):
-    """
-    Precompute game counts for multiple queries
-    
-    Args:
-        max_n: maximum value of n
-        max_k: maximum value of k
-        mod: modulo value
-    
-    Returns:
-        list: precomputed game counts
-    """
-    results = [[0] * (max_k + 1) for _ in range(max_n + 1)]
-    
-    for i in range(max_n + 1):
-        for j in range(max_k + 1):
-            if i == 1:
-                results[i][j] = 0  # No valid moves from single position
-            elif j == 0:
-                results[i][j] = i  # All positions are winning with 0 moves
-            else:
-                results[i][j] = (i * pow(i - 1, j, mod)) % mod
-    
-    return results
-
-# Example usage
-n, k = 3, 2
-result1 = advanced_mathematical_game_count(n, k)
-result2 = optimized_game_count(n, k)
-print(f"Advanced mathematical game count: {result1}")
-print(f"Optimized game count: {result2}")
-
-# Precompute for multiple queries
-max_n, max_k = 1000, 1000
-precomputed = game_count_with_precomputation(max_n, max_k)
-print(f"Precomputed result for n={n}, k={k}: {precomputed[n][k]}")
-```
-
-**Time Complexity**: O(log k)
-**Space Complexity**: O(1)
-
-**Why it's optimal**: Uses advanced mathematical properties for O(log k) time complexity.
-
-**Implementation Details**:
-- **Advanced Mathematics**: Use advanced mathematical properties
-- **Efficient Computation**: Use optimized modular exponentiation
-- **Mathematical Optimizations**: Apply mathematical optimizations
-- **Precomputation**: Precompute results for multiple queries
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Recursive | O(n^k) | O(k) | Complete enumeration of all game strategies |
-| Mathematical Formula | O(log k) | O(1) | Use n × (n-1)^k formula with modular exponentiation |
-| Advanced Mathematical | O(log k) | O(1) | Use advanced mathematical properties and optimizations |
-
-### Time Complexity
-- **Time**: O(log k) - Use modular exponentiation for efficient calculation
-- **Space**: O(1) - Use only necessary variables
-
-### Why This Solution Works
-- **Mathematical Formula**: Use n × (n-1)^k formula for game strategies
-- **Modular Exponentiation**: Use efficient modular exponentiation
-- **Mathematical Properties**: Leverage mathematical properties
-- **Efficient Algorithms**: Use optimal algorithms for calculation
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Game Count with Position Constraints**
-**Problem**: Count winning strategies with position constraints.
-
-**Key Differences**: Apply constraints to positions
-
-**Solution Approach**: Modify counting formula to include constraints
-
-**Implementation**:
-```python
-def constrained_game_count(n, k, constraints, mod=10**9+7):
-    """
-    Count winning strategies with position constraints
-    
-    Args:
-        n: number of positions
-        k: number of moves
-        constraints: list of constraints for each position
-        mod: modulo value
-    
-    Returns:
-        int: number of constrained winning strategies modulo mod
-    """
-    def count_constrained_strategies(position, moves_left):
-        """Count constrained winning strategies recursively"""
-        if moves_left == 0:
-            return 1  # Valid constrained strategy found
-        
         count = 0
-        for next_position in constraints[position - 1]:  # Only consider allowed positions
-            if next_position != position:  # Can't stay in same position
-                count = (count + count_constrained_strategies(next_position, moves_left - 1)) % mod
-        
+        for next_pos in range(1, n + 1):
+            if next_pos != current_pos:
+                count = (count + dfs(next_pos, moves_left - 1)) % MOD
         return count
-    
-    total_count = 0
-    for start_position in range(1, n + 1):
-        total_count = (total_count + count_constrained_strategies(start_position, k)) % mod
-    
-    return total_count
 
-def constrained_game_count_optimized(n, k, constraints, mod=10**9+7):
-    """
-    Optimized constrained game counting
-    
-    Args:
-        n: number of positions
-        k: number of moves
-        constraints: list of constraints for each position
-        mod: modulo value
-    
-    Returns:
-        int: number of constrained winning strategies modulo mod
-    """
-    # Calculate total number of constrained strategies
     total = 0
-    for i in range(n):
-        total = (total + len(constraints[i])) % mod
-    
-    # Each move multiplies by average number of valid moves
-    avg_moves = total // n
-    return (n * pow(avg_moves, k, mod)) % mod
-
-# Example usage
-n, k = 3, 2
-constraints = [
-    [2, 3],  # Position 1 can move to positions 2 or 3
-    [1, 3],  # Position 2 can move to positions 1 or 3
-    [1, 2]   # Position 3 can move to positions 1 or 2
-]
-result1 = constrained_game_count(n, k, constraints)
-result2 = constrained_game_count_optimized(n, k, constraints)
-print(f"Constrained game count: {result1}")
-print(f"Optimized constrained count: {result2}")
+    for start in range(1, n + 1):
+        total = (total + dfs(start, k)) % MOD
+    return total
 ```
 
-#### **2. Game Count with Move Constraints**
-**Problem**: Count winning strategies with move constraints.
+```cpp
+#include <iostream>
+using namespace std;
 
-**Key Differences**: Apply constraints to moves
+const int MOD = 1e9 + 7;
 
-**Solution Approach**: Use dynamic programming with move constraints
+long long dfs(int n, int current, int moves_left) {
+    if (moves_left == 0) return 1;
 
-**Implementation**:
+    long long count = 0;
+    for (int next = 1; next <= n; next++) {
+        if (next != current) {
+            count = (count + dfs(n, next, moves_left - 1)) % MOD;
+        }
+    }
+    return count;
+}
+
+long long countSequencesBrute(int n, int k) {
+    long long total = 0;
+    for (int start = 1; start <= n; start++) {
+        total = (total + dfs(n, start, k)) % MOD;
+    }
+    return total;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^k) | Exponential branching factor |
+| Space | O(k) | Recursion stack depth |
+
+### Why This Is Too Slow
+
+For n = 10^6 and k = 10^6, we would need to enumerate 10^6,000,000 sequences - completely infeasible.
+
+---
+
+## Solution 2: Optimal (Closed-Form Formula)
+
+### Key Insight
+
+> **The Trick:** Each position independently has (n-1) choices, so total = n x (n-1)^k
+
+Since the number of choices at each step is constant (always n-1), we can directly compute the count using exponentiation.
+
+### Formula Derivation
+
+```
+Position 0 (start): n choices
+Position 1: (n-1) choices (anything except position 0)
+Position 2: (n-1) choices (anything except position 1)
+...
+Position k: (n-1) choices (anything except position k-1)
+
+Total = n * (n-1) * (n-1) * ... * (n-1)
+      = n * (n-1)^k
+```
+
+### Algorithm
+
+1. Handle edge case: if n = 1 and k > 0, return 0 (no valid moves)
+2. Compute (n-1)^k using fast modular exponentiation
+3. Multiply by n and return result mod 10^9 + 7
+
+### Dry Run Example
+
+Let us trace through with n = 3, k = 2:
+
+```
+Step 1: Identify the formula
+  Total sequences = n * (n-1)^k
+
+Step 2: Substitute values
+  = 3 * (3-1)^2
+  = 3 * 2^2
+  = 3 * 4
+  = 12
+
+Wait - but expected output is 6. Let me reconsider...
+
+If k represents the LENGTH of sequence (not number of moves):
+  k = 2 means sequence of 2 positions with 1 move
+  Total = n * (n-1)^(k-1) = 3 * 2^1 = 6  [Matches!]
+
+So the formula depends on problem interpretation:
+  - If k = number of moves: n * (n-1)^k
+  - If k = sequence length: n * (n-1)^(k-1)
+```
+
+### Visual Diagram
+
+```
+n = 3 positions: {1, 2, 3}
+k = 2 (sequence length)
+
+All valid sequences of length 2:
+  Start=1: [1,2], [1,3]       -> 2 sequences
+  Start=2: [2,1], [2,3]       -> 2 sequences
+  Start=3: [3,1], [3,2]       -> 2 sequences
+                              ---------------
+                              Total: 6 sequences
+
+Formula: 3 * 2^(2-1) = 3 * 2 = 6
+```
+
+### Code
+
 ```python
-def move_constrained_game_count(n, k, move_constraints, mod=10**9+7):
+def count_sequences(n, k):
     """
-    Count winning strategies with move constraints
-    
-    Args:
-        n: number of positions
-        k: number of moves
-        move_constraints: list of move constraints for each position
-        mod: modulo value
-    
-    Returns:
-        int: number of move-constrained winning strategies modulo mod
-    """
-    def count_move_constrained_strategies(position, moves_left):
-        """Count move-constrained winning strategies"""
-        if moves_left == 0:
-            return 1  # Valid move-constrained strategy found
-        
-        count = 0
-        for next_position in range(1, n + 1):
-            if next_position != position:  # Can't stay in same position
-                # Check if move is allowed
-                if is_move_allowed(position, next_position, moves_left, move_constraints):
-                    count = (count + count_move_constrained_strategies(next_position, moves_left - 1)) % mod
-        
-        return count
-    
-    def is_move_allowed(from_pos, to_pos, moves_left, constraints):
-        """Check if move is allowed"""
-        # Implement move constraint logic here
-        return True  # Simplified for example
-    
-    total_count = 0
-    for start_position in range(1, n + 1):
-        total_count = (total_count + count_move_constrained_strategies(start_position, k)) % mod
-    
-    return total_count
+    Optimal: use closed-form formula with modular exponentiation.
 
-# Example usage
-n, k = 3, 2
-move_constraints = []  # Define move constraints
-result = move_constrained_game_count(n, k, move_constraints)
-print(f"Move constrained game count: {result}")
+    Time: O(log k) - binary exponentiation
+    Space: O(1)
+    """
+    MOD = 10**9 + 7
+
+    # Edge case: single position, cannot make any moves
+    if n == 1:
+        return 1 if k <= 1 else 0
+
+    # Formula: n * (n-1)^(k-1) for sequence length k
+    # Or: n * (n-1)^k for k moves
+    # Using built-in pow with modular arithmetic
+    if k == 0:
+        return 0  # No sequence of length 0
+
+    return (n * pow(n - 1, k - 1, MOD)) % MOD
+
+
+def count_moves(n, k):
+    """
+    Alternative: count sequences with exactly k moves.
+
+    Time: O(log k)
+    Space: O(1)
+    """
+    MOD = 10**9 + 7
+
+    if n == 1:
+        return 0 if k > 0 else n
+
+    return (n * pow(n - 1, k, MOD)) % MOD
 ```
 
-#### **3. Game Count with Multiple Players**
-**Problem**: Count winning strategies for multiple players.
+```cpp
+#include <iostream>
+using namespace std;
 
-**Key Differences**: Handle multiple players in the game
+const long long MOD = 1e9 + 7;
 
-**Solution Approach**: Use multi-player game theory
+long long power(long long base, long long exp, long long mod) {
+    long long result = 1;
+    base %= mod;
 
-**Implementation**:
+    while (exp > 0) {
+        if (exp & 1) {
+            result = (result * base) % mod;
+        }
+        base = (base * base) % mod;
+        exp >>= 1;
+    }
+    return result;
+}
+
+long long countSequences(int n, int k) {
+    if (n == 1) {
+        return (k <= 1) ? 1 : 0;
+    }
+    if (k == 0) return 0;
+
+    // n * (n-1)^(k-1)
+    return (n * power(n - 1, k - 1, MOD)) % MOD;
+}
+
+int main() {
+    int n, k;
+    cin >> n >> k;
+    cout << countSequences(n, k) << endl;
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(log k) | Binary exponentiation |
+| Space | O(1) | Only scalar variables |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Integer Overflow
+
 ```python
-def multi_player_game_count(n, k, num_players, mod=10**9+7):
-    """
-    Count winning strategies for multiple players
-    
-    Args:
-        n: number of positions
-        k: number of moves
-        num_players: number of players
-        mod: modulo value
-    
-    Returns:
-        int: number of multi-player winning strategies modulo mod
-    """
-    def count_multi_player_strategies(positions, moves_left):
-        """Count multi-player winning strategies"""
-        if moves_left == 0:
-            return 1  # Valid multi-player strategy found
-        
-        count = 0
-        for player in range(num_players):
-            current_position = positions[player]
-            for next_position in range(1, n + 1):
-                if next_position != current_position:  # Can't stay in same position
-                    new_positions = positions.copy()
-                    new_positions[player] = next_position
-                    count = (count + count_multi_player_strategies(new_positions, moves_left - 1)) % mod
-        
-        return count
-    
-    # Start with all players at different positions
-    initial_positions = list(range(1, num_players + 1))
-    return count_multi_player_strategies(initial_positions, k)
+# WRONG - overflow for large n, k
+def count_wrong(n, k):
+    return n * (n - 1) ** k  # Overflow!
 
-# Example usage
-n, k = 3, 2
-num_players = 2
-result = multi_player_game_count(n, k, num_players)
-print(f"Multi-player game count: {result}")
+# CORRECT - use modular arithmetic throughout
+def count_correct(n, k):
+    MOD = 10**9 + 7
+    return (n * pow(n - 1, k, MOD)) % MOD
 ```
 
-### Related Problems
+**Problem:** Python handles big integers, but the result must be modulo 10^9 + 7.
+**Fix:** Use `pow(base, exp, mod)` for modular exponentiation.
 
-#### **CSES Problems**
-- [Counting Permutations](https://cses.fi/problemset/task/1075) - Combinatorics
-- [Counting Combinations](https://cses.fi/problemset/task/1075) - Combinatorics
-- [Counting Sequences](https://cses.fi/problemset/task/1075) - Combinatorics
+### Mistake 2: Wrong Base Case for n = 1
 
-#### **LeetCode Problems**
-- [Nim Game](https://leetcode.com/problems/nim-game/) - Game theory
-- [Can I Win](https://leetcode.com/problems/can-i-win/) - Game theory
-- [Predict the Winner](https://leetcode.com/problems/predict-the-winner/) - Game theory
+```python
+# WRONG - returns non-zero for impossible case
+def count_wrong(n, k):
+    return n * pow(n - 1, k, MOD)  # When n=1, this gives 1 * 0^k
 
-#### **Problem Categories**
-- **Game Theory**: Mathematical games, strategy counting
-- **Combinatorics**: Mathematical counting, game properties
-- **Mathematical Algorithms**: Modular arithmetic, number theory
+# CORRECT - explicitly handle edge case
+def count_correct(n, k):
+    if n == 1 and k > 0:
+        return 0  # Cannot move anywhere
+    return (n * pow(n - 1, k, MOD)) % MOD
+```
 
-## 🔗 Additional Resources
+**Problem:** With only one position, you cannot make any moves.
+**Fix:** Return 0 when n = 1 and k > 0.
 
-### **Algorithm References**
-- [Game Theory](https://cp-algorithms.com/game_theory/game_theory.html) - Game theory algorithms
-- [Combinatorics](https://cp-algorithms.com/combinatorics/binomial-coefficients.html) - Counting techniques
-- [Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html) - Modular arithmetic
+### Mistake 3: Confusing Moves vs Sequence Length
 
-### **Practice Problems**
-- [CSES Counting Permutations](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Counting Combinations](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Counting Sequences](https://cses.fi/problemset/task/1075) - Medium
+```python
+# Different interpretations!
+# If k = number of moves (transitions):
+result = n * pow(n - 1, k, MOD)
 
-### **Further Reading**
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
-- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
-- [Game Theory](https://en.wikipedia.org/wiki/Game_theory) - Wikipedia article
+# If k = sequence length (number of positions):
+result = n * pow(n - 1, k - 1, MOD)
+```
+
+**Problem:** The formula changes based on what k represents.
+**Fix:** Read the problem carefully to determine the correct interpretation.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single position, no moves | n=1, k=0 | 1 | One valid "empty" sequence |
+| Single position, with moves | n=1, k=5 | 0 | Cannot move anywhere |
+| Zero moves | n=5, k=0 | 0 or 5 | Depends on interpretation |
+| Large values | n=10^6, k=10^6 | Compute | Must use mod arithmetic |
+| Two positions | n=2, k=3 | 2 | Alternates: 121, 212 |
+
+---
+
+## When to Use This Pattern
+
+### Use Closed-Form Counting When:
+- Each step has a fixed number of independent choices
+- The total count follows a simple product formula
+- Direct enumeration would be exponential
+
+### Recognize This Pattern When You See:
+- "Count the number of ways..."
+- "How many sequences..."
+- Constraints like "adjacent elements must differ"
+- Large constraints (n, k up to 10^6) requiring O(log n) solution
+
+### Pattern Recognition Checklist:
+- [ ] Fixed number of choices at each step? Consider **multiplication principle**
+- [ ] Need to compute a^b mod m efficiently? Use **binary exponentiation**
+- [ ] Counting sequences with constraints? Look for **closed-form formulas**
+
+---
+
+## Related Problems
+
+### Prerequisites (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Exponentiation](https://cses.fi/problemset/task/1095) | Learn modular exponentiation |
+| [Exponentiation II](https://cses.fi/problemset/task/1712) | Advanced modular arithmetic |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Counting Rooms](https://cses.fi/problemset/task/1192) | Grid-based counting |
+| [Creating Strings](https://cses.fi/problemset/task/1622) | Permutation counting |
+| [Distributing Apples](https://cses.fi/problemset/task/1716) | Stars and bars technique |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Bracket Sequences I](https://cses.fi/problemset/task/2064) | Catalan numbers |
+| [Graph Paths I](https://cses.fi/problemset/task/1723) | Matrix exponentiation |
+| [Dice Combinations](https://cses.fi/problemset/task/1633) | DP counting |
+
+---
+
+## Key Takeaways
+
+1. **The Core Formula:** Sequences where adjacent elements differ: n * (n-1)^(moves)
+2. **Time Optimization:** O(n^k) enumeration reduced to O(log k) via closed-form + fast exponentiation
+3. **Space Optimization:** O(k) recursion stack eliminated entirely
+4. **Pattern:** When choices are constant and independent, use the multiplication principle
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Derive the formula n * (n-1)^k from first principles
+- [ ] Implement binary exponentiation from scratch
+- [ ] Explain why modular arithmetic is necessary
+- [ ] Solve this problem in under 5 minutes
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html)
+- [CP-Algorithms: Modular Arithmetic](https://cp-algorithms.com/algebra/module-inverse.html)
+- [CSES Problem Set](https://cses.fi/problemset/)

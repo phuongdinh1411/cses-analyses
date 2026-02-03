@@ -1,556 +1,312 @@
 ---
 layout: simple
-title: "Round Trip - Graph Algorithm Problem"
+title: "Round Trip - Cycle Detection in Undirected Graph"
 permalink: /problem_soulutions/graph_algorithms/round_trip_analysis
+difficulty: Medium
+tags: [graph, dfs, cycle-detection, undirected]
+cses_link: https://cses.fi/problemset/task/1669
 ---
 
-# Round Trip - Graph Algorithm Problem
+# Round Trip - Cycle Detection in Undirected Graph
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of cycle detection in undirected graphs
-- Apply efficient algorithms for finding cycles in graphs
-- Implement DFS-based cycle detection algorithms
-- Optimize graph traversal for cycle identification
-- Handle special cases in cycle detection problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find a cycle (round trip) in an undirected graph |
+| Input | n cities, m bidirectional roads |
+| Output | Cycle path starting and ending at same city, or "IMPOSSIBLE" |
+| Constraints | 2 <= n <= 10^5, 1 <= m <= 2*10^5 |
+| Time Limit | 1 second |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given an undirected graph, find if there exists a cycle and return the cycle path.
+After solving this problem, you will understand:
+1. **Cycle detection in undirected graphs** - How back edges indicate cycles
+2. **Parent tracking during DFS** - Why we need to track where we came from
+3. **Cycle extraction** - How to reconstruct the cycle path using parent pointers
 
-**Input**: 
-- n: number of vertices
-- m: number of edges
-- edges: array of undirected edges (u, v)
+## Problem Statement
 
-**Output**: 
-- Cycle path if exists, or -1 if no cycle
+Byteland has n cities and m roads. Each road connects two cities bidirectionally. Your task is to find a route that starts from a city, visits at least one other city, and returns to the starting city. All roads on the route must be distinct.
 
-**Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
+**Input:**
+- First line: n (cities) and m (roads)
+- Next m lines: two integers a and b (road between cities a and b)
 
-**Example**:
+**Output:**
+- If a round trip exists: first line is the number of cities, second line is the route
+- If no round trip exists: print "IMPOSSIBLE"
+
+**Example:**
 ```
 Input:
-n = 4, m = 4
-edges = [(0,1), (1,2), (2,3), (3,0)]
+5 6
+1 3
+1 2
+5 3
+1 5
+2 4
+4 5
 
 Output:
-0 1 2 3 0
-
-Explanation**: 
-Cycle: 0 -> 1 -> 2 -> 3 -> 0
+4
+3 5 1 3
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+## Key Insight: Back Edge Detection
 
-### Approach 1: Brute Force Solution
+In an undirected graph, a **cycle exists if and only if** we encounter an already-visited node that is NOT our immediate parent during DFS.
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all possible paths for cycles
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic graph traversal
-- **Inefficient**: O(n!) time complexity
-
-**Key Insight**: Check every possible path to find cycles.
-
-**Algorithm**:
-- Generate all possible paths
-- Check if any path forms a cycle
-- Return cycle if found
-
-**Visual Example**:
 ```
-Graph: 0-1-2-3-0
+Why parent check matters:
 
-Cycle detection:
-┌─────────────────────────────────────┐
-│ Path 1: 0 -> 1 -> 2 -> 3 -> 0      │
-│ Forms cycle: YES                    │
-│ Cycle: [0, 1, 2, 3, 0]            │
-│                                   │
-│ Path 2: 0 -> 1                     │
-│ Forms cycle: NO                    │
-│                                   │
-│ Path 3: 1 -> 2 -> 3                │
-│ Forms cycle: NO                    │
-│                                   │
-│ Result: [0, 1, 2, 3, 0]           │
-└─────────────────────────────────────┘
+    1 --- 2          When at node 2, we see node 1 is visited.
+                     But 1 is our parent (we came from 1).
+                     This is NOT a cycle - just the edge we used!
+
+    1 --- 2          When at node 3, we see node 1 is visited.
+     \   /           Node 1 is NOT our parent (parent is 2).
+      \ /            This IS a cycle: 1 -> 2 -> 3 -> 1
+       3
 ```
 
-**Implementation**:
+**Key difference from directed graphs:** In directed graphs, we use colors (white/gray/black) to detect back edges. In undirected graphs, we simply check if visited node != parent.
+
+## Algorithm: DFS with Parent Tracking
+
+```
+1. Build adjacency list from edges
+2. For each unvisited node, start DFS:
+   a. Mark current node as visited
+   b. For each neighbor:
+      - If unvisited: set parent[neighbor] = current, recurse
+      - If visited AND neighbor != parent[current]: CYCLE FOUND!
+3. When cycle found at edge (u, v) where v is already visited:
+   - Trace back from u to v using parent pointers
+   - This gives us the cycle path
+```
+
+## Visual: DFS Tree and Back Edge
+
+```
+Original Graph:              DFS Tree:
+
+    1 --- 2                     1 (root)
+     \   /                      |
+      \ /                       2
+       3                        |
+       |                        3 --- back edge to 1!
+       4                        |
+                                4
+
+DFS traversal from node 1:
+- Visit 1, parent[1] = -1
+- Visit 2, parent[2] = 1
+- Visit 3, parent[3] = 2
+- At 3, see neighbor 1: visited AND 1 != parent[3] (which is 2)
+- CYCLE FOUND! Back edge: 3 -> 1
+
+Cycle extraction:
+- Start at 3, trace parents until we reach 1
+- Path: 3 -> 2 -> 1, then add 3 again
+- Cycle: [1, 2, 3, 1] or equivalently [3, 2, 1, 3]
+```
+
+## Dry Run Example
+
+```
+Input: n=5, m=6
+Edges: (1,3), (1,2), (5,3), (1,5), (2,4), (4,5)
+
+Adjacency List:
+1: [3, 2, 5]
+2: [1, 4]
+3: [1, 5]
+4: [2, 5]
+5: [3, 1, 4]
+
+DFS from node 1:
+Step 1: Visit 1, parent[1]=-1, visited={1}
+Step 2: Go to neighbor 3, parent[3]=1, visited={1,3}
+Step 3: From 3, go to neighbor 5, parent[5]=3, visited={1,3,5}
+Step 4: From 5, check neighbor 3 -> visited, parent[5]=3, SKIP (it's parent)
+Step 5: From 5, check neighbor 1 -> visited, parent[5]=3, 1 != 3
+        CYCLE FOUND! Back edge: 5 -> 1
+
+Cycle Extraction:
+- cycle_end = 1, current = 5
+- Trace: 5 -> parent[5]=3 -> parent[3]=1 = cycle_end, STOP
+- Cycle: [1, 3, 5, 1]
+
+Output: 4 cities, path: 1 3 5 1
+```
+
+## Python Solution
+
 ```python
-def brute_force_round_trip(n, edges):
-    """Find cycles using brute force approach"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    def find_cycle_path(start, current_path, visited):
-        if start in current_path:
-            # Found cycle
-            cycle_start = current_path.index(start)
-            return current_path[cycle_start:] + [start]
-        
-        if start in visited:
-            return None
-        
-        current_path.append(start)
-        visited.add(start)
-        
-        for neighbor in adj[start]:
-            result = find_cycle_path(neighbor, current_path.copy(), visited.copy())
-            if result:
-                return result
-        
-        return None
-    
-    # Try starting from each vertex
-    for start in range(n):
-        result = find_cycle_path(start, [], set())
-        if result:
-            return result
-    
-    return None
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(200005)
 
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-result = brute_force_round_trip(n, edges)
-print(f"Brute force cycle: {result}")
+def solve():
+    n, m = map(int, input().split())
+
+    adj = defaultdict(list)
+    for _ in range(m):
+        a, b = map(int, input().split())
+        adj[a].append(b)
+        adj[b].append(a)
+
+    visited = [False] * (n + 1)
+    parent = [-1] * (n + 1)
+    cycle = []
+
+    def dfs(u):
+        visited[u] = True
+        for v in adj[u]:
+            if not visited[v]:
+                parent[v] = u
+                if dfs(v):
+                    return True
+            elif v != parent[u]:
+                # Found cycle! Extract it
+                cycle.append(v)
+                curr = u
+                while curr != v:
+                    cycle.append(curr)
+                    curr = parent[curr]
+                cycle.append(v)
+                return True
+        return False
+
+    # Try DFS from each unvisited node (handles disconnected graphs)
+    for start in range(1, n + 1):
+        if not visited[start]:
+            if dfs(start):
+                print(len(cycle))
+                print(*cycle)
+                return
+
+    print("IMPOSSIBLE")
+
+solve()
 ```
 
-**Time Complexity**: O(n!)
-**Space Complexity**: O(n)
+## C++ Solution
 
-**Why it's inefficient**: O(n!) time complexity for checking all paths.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+const int MAXN = 100005;
+vector<int> adj[MAXN];
+int parent[MAXN];
+bool visited[MAXN];
+vector<int> cycle;
+int n, m;
 
-### Approach 2: DFS with Parent Tracking
+bool dfs(int u) {
+    visited[u] = true;
+    for (int v : adj[u]) {
+        if (!visited[v]) {
+            parent[v] = u;
+            if (dfs(v)) return true;
+        } else if (v != parent[u]) {
+            // Found cycle - extract it
+            cycle.push_back(v);
+            for (int curr = u; curr != v; curr = parent[curr]) {
+                cycle.push_back(curr);
+            }
+            cycle.push_back(v);
+            return true;
+        }
+    }
+    return false;
+}
 
-**Key Insights from DFS with Parent Tracking**:
-- **DFS with Parent**: Use DFS with parent tracking for cycle detection
-- **Efficient Implementation**: O(n + m) time complexity
-- **Parent Array**: Track parent of each vertex during DFS
-- **Optimization**: Much more efficient than brute force
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-**Key Insight**: Use DFS with parent tracking to detect cycles in undirected graphs.
+    cin >> n >> m;
 
-**Algorithm**:
-- Perform DFS from each unvisited vertex
-- Track parent of each vertex
-- If we encounter a visited vertex that's not the parent, we found a cycle
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
 
-**Visual Example**:
+    memset(parent, -1, sizeof(parent));
+
+    // Handle disconnected graphs
+    for (int i = 1; i <= n; i++) {
+        if (!visited[i]) {
+            if (dfs(i)) {
+                cout << cycle.size() << "\n";
+                for (int node : cycle) {
+                    cout << node << " ";
+                }
+                cout << "\n";
+                return 0;
+            }
+        }
+    }
+
+    cout << "IMPOSSIBLE\n";
+    return 0;
+}
 ```
-DFS with parent tracking:
 
-Graph: 0-1-2-3-0
-Parent tracking:
-┌─────────────────────────────────────┐
-│ Start DFS from 0:                  │
-│ 0: parent = -1, visited = True     │
-│ 1: parent = 0, visited = True      │
-│ 2: parent = 1, visited = True      │
-│ 3: parent = 2, visited = True      │
-│ 0: visited = True, parent = 3      │
-│ 0 != parent of 3 (2), CYCLE FOUND! │
-│                                   │
-│ Cycle path: [0, 1, 2, 3, 0]       │
-└─────────────────────────────────────┘
-```
+## Handling Disconnected Graphs
 
-**Implementation**:
+The graph may have multiple connected components. A cycle can exist in any component, so we must try DFS from each unvisited node:
+
 ```python
-def dfs_parent_tracking_round_trip(n, edges):
-    """Find cycles using DFS with parent tracking"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    visited = [False] * n
-    parent = [-1] * n
-    
-    def dfs(vertex):
-        visited[vertex] = True
-        
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                parent[neighbor] = vertex
-                result = dfs(neighbor)
-                if result:
-                    return result
-            elif neighbor != parent[vertex]:
-                # Found cycle - reconstruct path
-                cycle = [neighbor]
-                current = vertex
-                while current != neighbor:
-                    cycle.append(current)
-                    current = parent[current]
-                cycle.append(neighbor)
-                return cycle
-        
-        return None
-    
-    # Try DFS from each unvisited vertex
-    for vertex in range(n):
-        if not visited[vertex]:
-            result = dfs(vertex)
-            if result:
-                return result
-    
-    return None
-
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-result = dfs_parent_tracking_round_trip(n, edges)
-print(f"DFS parent tracking cycle: {result}")
+for start in range(1, n + 1):
+    if not visited[start]:
+        if dfs(start):  # Found cycle in this component
+            return
 ```
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n)
+If no component contains a cycle, we output "IMPOSSIBLE".
 
-**Why it's better**: Uses DFS with parent tracking for O(n + m) time complexity.
+## Common Mistakes
 
----
+| Mistake | Why It's Wrong | Fix |
+|---------|---------------|-----|
+| Not tracking parent | Will detect the edge you just came from as a "cycle" | Always track `parent[v] = u` before recursing |
+| Using directed graph algorithm | Colors (white/gray/black) are for directed graphs | For undirected, just check `v != parent[u]` |
+| Only starting DFS from node 1 | Misses cycles in disconnected components | Loop through all nodes, start DFS from unvisited ones |
+| Wrong cycle extraction order | Cycle might be reversed | Either order is valid as long as start == end |
+| Off-by-one with 1-indexed nodes | Array out of bounds | Use size `n+1` for 1-indexed problems |
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+## Output Format
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for cycle detection
-- **Efficient Implementation**: O(n + m) time complexity
-- **Space Efficiency**: O(n) space complexity
-- **Optimal Complexity**: Best approach for cycle detection
+The cycle must:
+1. Start and end with the **same city**
+2. Have length >= 3 (at least 3 cities including the repeated endpoint)
+3. Use distinct roads (automatically satisfied by our DFS approach)
 
-**Key Insight**: Use advanced data structures for optimal cycle detection.
-
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient DFS algorithms
-- Handle special cases optimally
-- Return cycle path
-
-**Visual Example**:
 ```
-Advanced data structure approach:
-
-For graph: 0-1-2-3-0
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Graph structure: for efficient    │
-│   storage and traversal             │
-│ - Parent cache: for optimization    │
-│ - Cycle tracker: for optimization   │
-│                                   │
-│ Cycle detection:                   │
-│ - Use graph structure for efficient │
-│   storage and traversal             │
-│ - Use parent cache for optimization │
-│ - Use cycle tracker for optimization │
-│                                   │
-│ Result: [0, 1, 2, 3, 0]           │
-└─────────────────────────────────────┘
+Valid:   3 1 5 3     (starts and ends at 3)
+Valid:   1 2 4 5 1   (starts and ends at 1)
+Invalid: 1 2 1       (only 2 distinct cities, not a valid cycle for this problem)
 ```
 
-**Implementation**:
-```python
-def advanced_data_structure_round_trip(n, edges):
-    """Find cycles using advanced data structure approach"""
-    # Use advanced data structures for graph storage
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    # Advanced data structures for cycle detection
-    visited = [False] * n
-    parent = [-1] * n
-    
-    def dfs_advanced(vertex):
-        visited[vertex] = True
-        
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                parent[neighbor] = vertex
-                result = dfs_advanced(neighbor)
-                if result:
-                    return result
-            elif neighbor != parent[vertex]:
-                # Found cycle - reconstruct path using advanced data structures
-                cycle = [neighbor]
-                current = vertex
-                while current != neighbor:
-                    cycle.append(current)
-                    current = parent[current]
-                cycle.append(neighbor)
-                return cycle
-        
-        return None
-    
-    # Try advanced DFS from each unvisited vertex
-    for vertex in range(n):
-        if not visited[vertex]:
-            result = dfs_advanced(vertex)
-            if result:
-                return result
-    
-    return None
+## Complexity Analysis
 
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-result = advanced_data_structure_round_trip(n, edges)
-print(f"Advanced data structure cycle: {result}")
-```
+| Aspect | Complexity | Reason |
+|--------|-----------|--------|
+| Time | O(n + m) | Each node and edge visited at most once |
+| Space | O(n + m) | Adjacency list + visited/parent arrays |
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n)
+## Related Problems
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n!) | O(n) | Check all possible paths |
-| DFS with Parent Tracking | O(n + m) | O(n) | Use parent tracking in DFS |
-| Advanced Data Structure | O(n + m) | O(n) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(n + m) - Use DFS with parent tracking for efficient cycle detection
-- **Space**: O(n) - Store visited array and parent array
-
-### Why This Solution Works
-- **DFS with Parent Tracking**: Track parent of each vertex during DFS
-- **Cycle Detection**: If we encounter a visited vertex that's not the parent, we found a cycle
-- **Path Reconstruction**: Reconstruct cycle path using parent array
-- **Optimal Algorithms**: Use optimal algorithms for cycle detection
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Round Trip with Constraints**
-**Problem**: Find cycles with specific constraints.
-
-**Key Differences**: Apply constraints to cycle detection
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_round_trip(n, edges, constraints):
-    """Find cycles with constraints"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        if constraints(u) and constraints(v):
-            adj[u].append(v)
-            adj[v].append(u)
-    
-    visited = [False] * n
-    parent = [-1] * n
-    
-    def dfs_constrained(vertex):
-        if not constraints(vertex):
-            return None
-            
-        visited[vertex] = True
-        
-        for neighbor in adj[vertex]:
-            if not visited[neighbor] and constraints(neighbor):
-                parent[neighbor] = vertex
-                result = dfs_constrained(neighbor)
-                if result:
-                    return result
-            elif neighbor != parent[vertex] and constraints(neighbor):
-                # Found cycle - reconstruct path
-                cycle = [neighbor]
-                current = vertex
-                while current != neighbor:
-                    cycle.append(current)
-                    current = parent[current]
-                cycle.append(neighbor)
-                return cycle
-        
-        return None
-    
-    # Try DFS from each unvisited vertex
-    for vertex in range(n):
-        if not visited[vertex] and constraints(vertex):
-            result = dfs_constrained(vertex)
-            if result:
-                return result
-    
-    return None
-
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-constraints = lambda vertex: vertex >= 0  # Only include non-negative vertices
-result = constrained_round_trip(n, edges, constraints)
-print(f"Constrained cycle: {result}")
-```
-
-#### **2. Round Trip with Different Metrics**
-**Problem**: Find cycles with different length metrics.
-
-**Key Differences**: Different length calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_round_trip(n, edges, weights):
-    """Find cycles with different weights"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    visited = [False] * n
-    parent = [-1] * n
-    
-    def dfs_weighted(vertex):
-        visited[vertex] = True
-        
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                parent[neighbor] = vertex
-                result = dfs_weighted(neighbor)
-                if result:
-                    return result
-            elif neighbor != parent[vertex]:
-                # Found cycle - reconstruct path with weights
-                cycle = [neighbor]
-                current = vertex
-                total_weight = 0
-                while current != neighbor:
-                    cycle.append(current)
-                    total_weight += weights.get((current, parent[current]), 1)
-                    current = parent[current]
-                cycle.append(neighbor)
-                total_weight += weights.get((current, neighbor), 1)
-                return cycle, total_weight
-        
-        return None
-    
-    # Try DFS from each unvisited vertex
-    for vertex in range(n):
-        if not visited[vertex]:
-            result = dfs_weighted(vertex)
-            if result:
-                return result
-    
-    return None
-
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-weights = {(0, 1): 2, (1, 2): 1, (2, 3): 3, (3, 0): 1}
-result = weighted_round_trip(n, edges, weights)
-print(f"Weighted cycle: {result}")
-```
-
-#### **3. Round Trip with Multiple Dimensions**
-**Problem**: Find cycles in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_round_trip(n, edges, dimensions):
-    """Find cycles in multiple dimensions"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    visited = [False] * n
-    parent = [-1] * n
-    
-    def dfs_multi_dimensional(vertex):
-        visited[vertex] = True
-        
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                parent[neighbor] = vertex
-                result = dfs_multi_dimensional(neighbor)
-                if result:
-                    return result
-            elif neighbor != parent[vertex]:
-                # Found cycle - reconstruct path
-                cycle = [neighbor]
-                current = vertex
-                while current != neighbor:
-                    cycle.append(current)
-                    current = parent[current]
-                cycle.append(neighbor)
-                return cycle
-        
-        return None
-    
-    # Try DFS from each unvisited vertex
-    for vertex in range(n):
-        if not visited[vertex]:
-            result = dfs_multi_dimensional(vertex)
-            if result:
-                return result
-    
-    return None
-
-# Example usage
-n = 4
-edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-dimensions = 1
-result = multi_dimensional_round_trip(n, edges, dimensions)
-print(f"Multi-dimensional cycle: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Cycle Finding](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Planets Cycles](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Planets and Kingdoms](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Course Schedule](https://leetcode.com/problems/course-schedule/) - Graph
-- [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) - Graph
-- [Redundant Connection](https://leetcode.com/problems/redundant-connection/) - Graph
-
-#### **Problem Categories**
-- **Graph Algorithms**: Cycle detection, graph traversal
-- **DFS Algorithms**: Depth-first search, cycle detection
-- **Graph Theory**: Cycles, connectivity
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Cycle Detection](https://cp-algorithms.com/graph/finding-cycle.html) - Cycle detection algorithms
-- [DFS](https://cp-algorithms.com/graph/depth-first-search.html) - Depth-first search
-
-### **Practice Problems**
-- [CSES Cycle Finding](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Planets Cycles](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Planets and Kingdoms](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Cycle Detection](https://en.wikipedia.org/wiki/Cycle_detection) - Wikipedia article
-- [Depth-First Search](https://en.wikipedia.org/wiki/Depth-first_search) - Wikipedia article
+| Problem | Platform | Key Difference |
+|---------|----------|---------------|
+| [Course Schedule](https://leetcode.com/problems/course-schedule/) | LeetCode | Directed graph, detect if cycle exists (no extraction) |
+| [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) | LeetCode | Directed graph, topological sort |
+| [Round Trip II](https://cses.fi/problemset/task/1678) | CSES | Directed graph version of this problem |
+| [Redundant Connection](https://leetcode.com/problems/redundant-connection/) | LeetCode | Find the edge that creates a cycle (Union-Find) |

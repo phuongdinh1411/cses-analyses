@@ -1,701 +1,425 @@
 ---
-layout: simple
-title: "Police Chase - Graph Algorithm Problem"
-permalink: /problem_soulutions/graph_algorithms/police_chase_analysis
+layout: problem-analysis
+title: "Police Chase"
+difficulty: Hard
+tags: [graph, max-flow, min-cut, ford-fulkerson]
+cses_link: https://cses.fi/problemset/task/1695
 ---
 
-# Police Chase - Graph Algorithm Problem
+# Police Chase
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of minimum cut in graph algorithms
-- Apply efficient algorithms for finding minimum cuts
-- Implement max-flow min-cut algorithms
-- Optimize graph flow for cut calculations
-- Handle special cases in minimum cut problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find minimum streets to block to disconnect crossing 1 from crossing n |
+| Type | Minimum Cut (dual of Maximum Flow) |
+| Key Theorem | Max-Flow Min-Cut Theorem |
+| Time Complexity | O(V * E^2) using Edmonds-Karp |
+| Space Complexity | O(V^2) for adjacency matrix |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a directed graph, find the minimum number of edges to remove to disconnect source from sink.
+After completing this problem, you will understand:
 
-**Input**: 
-- n: number of vertices
-- m: number of edges
-- source: source vertex
-- sink: sink vertex
-- edges: array of directed edges (u, v)
+1. **Max-Flow Min-Cut Theorem**: The value of the maximum flow equals the capacity of the minimum cut
+2. **Finding actual cut edges**: How to identify which edges form the minimum cut after running max flow
+3. **Residual graph analysis**: Using BFS/DFS on residual graph to partition vertices into S and T sets
+4. **Flow network modeling**: Converting graph problems into flow problems with unit capacities
 
-**Output**: 
-- Minimum number of edges to remove
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 500
-- 1 ≤ m ≤ 1000
+Kaaleppi has just robbed a bank and is trying to escape from the police. The city has `n` crossings and `m` streets between them. Your task is to find the **minimum number of streets** that must be blocked so that the robber cannot reach crossing `n` from crossing 1.
 
-**Example**:
+**Input:**
+- First line: integers `n` and `m` (2 <= n <= 500, 1 <= m <= 1000)
+- Next `m` lines: two integers `a` and `b` describing a street between crossings `a` and `b`
+
+**Output:**
+- First line: minimum number `k` of streets to block
+- Next `k` lines: the blocked streets (any valid solution)
+
+**Example:**
 ```
 Input:
-n = 4, m = 5
-source = 0, sink = 3
-edges = [(0,1), (0,2), (1,2), (1,3), (2,3)]
+4 5
+1 2
+1 3
+2 3
+2 4
+3 4
 
 Output:
 2
-
-Explanation**: 
-Remove edges (0,1) and (0,2) to disconnect 0 from 3
+1 2
+1 3
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+## Key Insight: Max-Flow Min-Cut Theorem
 
-### Approach 1: Brute Force Solution
+The fundamental insight is the **Max-Flow Min-Cut Theorem**:
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible edge combinations
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic graph connectivity
-- **Inefficient**: O(2^m) time complexity
+> In any flow network, the value of the maximum flow from source to sink equals the capacity of the minimum cut separating source from sink.
 
-**Key Insight**: Try all possible combinations of edges to remove.
+For this problem:
+- **Source** = crossing 1 (bank location)
+- **Sink** = crossing n (escape destination)
+- **Edge capacity** = 1 (each street can be blocked once)
+- **Max flow value** = minimum number of streets to block
 
-**Algorithm**:
-- Generate all possible subsets of edges
-- For each subset, check if removing those edges disconnects source from sink
-- Return minimum size of such subset
+## Algorithm
 
-**Visual Example**:
+### Step 1: Run Max Flow Algorithm
+
+Use Ford-Fulkerson (with BFS = Edmonds-Karp) to find maximum flow from node 1 to node n.
+
+### Step 2: Find the Minimum Cut
+
+After max flow completes, the residual graph reveals the cut:
+
+1. **BFS/DFS from source** in the residual graph (only follow edges with remaining capacity > 0)
+2. **Set S** = all nodes reachable from source
+3. **Set T** = all remaining nodes (including sink)
+
+### Step 3: Identify Cut Edges
+
+Cut edges are original edges `(u, v)` where:
+- `u` is in set S (reachable from source)
+- `v` is in set T (not reachable from source)
+- The edge is **saturated** (residual capacity from u to v is 0)
+
+## Why This Works
+
 ```
-Graph: 0->1->3, 0->2->3, 1->2
+After running max flow:
 
-Edge removal combinations:
-┌─────────────────────────────────────┐
-│ Remove {}: 0 can reach 3 (NO)      │
-│ Remove {(0,1)}: 0 can reach 3 (NO) │
-│ Remove {(0,2)}: 0 can reach 3 (NO) │
-│ Remove {(0,1),(0,2)}: 0 cannot reach 3 (YES) │
-│                                   │
-│ Minimum: 2 edges                  │
-└─────────────────────────────────────┘
+Original Graph              Residual Graph
+    1 -----> 2                  1 - - -> 2
+    |        |                  |        |
+    v        v                  x        v
+    3 -----> 4                  3 -----> 4
+
+Saturated edges (capacity used up) form the bottleneck.
+In residual graph, we cannot reach nodes beyond saturated edges.
+
+S = {1}          (reachable from source)
+T = {2, 3, 4}    (not reachable)
+
+Cut edges: (1,2) and (1,3) - both saturated, cross from S to T
 ```
 
-**Implementation**:
+The saturated edges are exactly where flow "gets stuck" - removing them disconnects source from sink.
+
+## Visual Diagram
+
+```
+EXAMPLE: n=4, m=5
+
+Initial Graph (all capacities = 1):
+
+       [1]----(1)---->[2]
+        |              |
+       (1)            (1)
+        |              |
+        v              v
+       [3]----(1)---->[4]
+        \              ^
+         \----(1)-----/
+
+After Max Flow = 2:
+
+       [1]- - -(0)- - >[2]     (saturated, residual=0)
+        |              |
+       (0)            (1)
+        |              |
+        v              v
+       [3]----(1)---->[4]
+                       ^
+          (0: saturated)
+
+Flow paths found:
+  Path 1: 1 -> 2 -> 4  (flow = 1)
+  Path 2: 1 -> 3 -> 4  (flow = 1)
+
+Residual Graph Analysis:
+  - BFS from node 1
+  - Can reach: {1} only (edges to 2 and 3 are saturated)
+  - S = {1}, T = {2, 3, 4}
+
+Minimum Cut Edges:
+  - Edge (1,2): u=1 in S, v=2 in T, saturated -> CUT
+  - Edge (1,3): u=1 in S, v=3 in T, saturated -> CUT
+
+Answer: Block streets 1-2 and 1-3
+```
+
+## Dry Run
+
+```
+Input: n=4, m=5
+Streets: (1,2), (1,3), (2,3), (2,4), (3,4)
+
+Step 1: Initialize capacities (undirected = both directions)
+  cap[1][2] = cap[2][1] = 1
+  cap[1][3] = cap[3][1] = 1
+  cap[2][3] = cap[3][2] = 1
+  cap[2][4] = cap[4][2] = 1
+  cap[3][4] = cap[4][3] = 1
+
+Step 2: Find augmenting paths (BFS)
+
+  Iteration 1:
+    BFS finds path: 1 -> 2 -> 4
+    Bottleneck = min(cap[1][2], cap[2][4]) = min(1,1) = 1
+    Update: cap[1][2]=0, cap[2][1]=1, cap[2][4]=0, cap[4][2]=1
+    Total flow = 1
+
+  Iteration 2:
+    BFS finds path: 1 -> 3 -> 4
+    Bottleneck = min(cap[1][3], cap[3][4]) = min(1,1) = 1
+    Update: cap[1][3]=0, cap[3][1]=1, cap[3][4]=0, cap[4][3]=1
+    Total flow = 2
+
+  Iteration 3:
+    BFS from 1: can only reach {1} (cap[1][2]=0, cap[1][3]=0)
+    No path to 4. Max flow complete.
+
+Step 3: Find minimum cut
+    BFS in residual graph from node 1:
+    - From 1: cap[1][2]=0, cap[1][3]=0 -> cannot proceed
+    - S = {1}
+    - T = {2, 3, 4}
+
+Step 4: Identify cut edges
+    Check all original edges (u,v) where u in S, v in T:
+    - (1,2): 1 in S, 2 in T, cap[1][2]=0 -> CUT EDGE
+    - (1,3): 1 in S, 3 in T, cap[1][3]=0 -> CUT EDGE
+
+Output:
+  2
+  1 2
+  1 3
+```
+
+## Python Solution
+
 ```python
-def brute_force_police_chase(n, source, sink, edges):
-    """Find minimum cut using brute force approach"""
-    from itertools import combinations
-    
-    min_edges = float('inf')
-    
-    # Try all possible combinations of edges to remove
-    for r in range(len(edges) + 1):
-        for edge_subset in combinations(edges, r):
-            # Check if removing these edges disconnects source from sink
-            if is_disconnected(n, source, sink, edges, edge_subset):
-                min_edges = min(min_edges, len(edge_subset))
-    
-    return min_edges
+from collections import deque
 
-def is_disconnected(n, source, sink, edges, removed_edges):
-    """Check if source is disconnected from sink after removing edges"""
-    # Build adjacency list excluding removed edges
-    adj = [[] for _ in range(n)]
-    removed_set = set(removed_edges)
-    
-    for u, v in edges:
-        if (u, v) not in removed_set:
-            adj[u].append(v)
-    
-    # BFS to check connectivity
-    visited = [False] * n
-    queue = [source]
-    visited[source] = True
-    
+def solve():
+    n, m = map(int, input().split())
+
+    # Adjacency list and capacity matrix
+    adj = [[] for _ in range(n + 1)]
+    cap = [[0] * (n + 1) for _ in range(n + 1)]
+
+    edges = []
+    for _ in range(m):
+        a, b = map(int, input().split())
+        edges.append((a, b))
+        adj[a].append(b)
+        adj[b].append(a)
+        cap[a][b] += 1
+        cap[b][a] += 1
+
+    source, sink = 1, n
+
+    def bfs():
+        """Find augmenting path using BFS, return parent array"""
+        parent = [-1] * (n + 1)
+        parent[source] = source
+        queue = deque([source])
+
+        while queue:
+            u = queue.popleft()
+            if u == sink:
+                break
+            for v in adj[u]:
+                if parent[v] == -1 and cap[u][v] > 0:
+                    parent[v] = u
+                    queue.append(v)
+
+        return parent if parent[sink] != -1 else None
+
+    # Edmonds-Karp: Find max flow
+    max_flow = 0
+    while True:
+        parent = bfs()
+        if not parent:
+            break
+
+        # Find bottleneck
+        flow = float('inf')
+        v = sink
+        while v != source:
+            u = parent[v]
+            flow = min(flow, cap[u][v])
+            v = u
+
+        # Update residual capacities
+        v = sink
+        while v != source:
+            u = parent[v]
+            cap[u][v] -= flow
+            cap[v][u] += flow
+            v = u
+
+        max_flow += flow
+
+    # Find nodes reachable from source in residual graph
+    reachable = [False] * (n + 1)
+    reachable[source] = True
+    queue = deque([source])
+
     while queue:
-        vertex = queue.pop(0)
-        if vertex == sink:
-            return False  # Still connected
-        
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                visited[neighbor] = True
-                queue.append(neighbor)
-    
-    return True  # Disconnected
+        u = queue.popleft()
+        for v in adj[u]:
+            if not reachable[v] and cap[u][v] > 0:
+                reachable[v] = True
+                queue.append(v)
 
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
-result = brute_force_police_chase(n, source, sink, edges)
-print(f"Brute force minimum cut: {result}")
+    # Find cut edges: from reachable to non-reachable
+    cut_edges = []
+    for a, b in edges:
+        if reachable[a] and not reachable[b]:
+            cut_edges.append((a, b))
+        elif reachable[b] and not reachable[a]:
+            cut_edges.append((b, a))
+
+    print(len(cut_edges))
+    for a, b in cut_edges:
+        print(a, b)
+
+solve()
 ```
 
-**Time Complexity**: O(2^m)
-**Space Complexity**: O(n + m)
+## C++ Solution
 
-**Why it's inefficient**: O(2^m) time complexity for checking all combinations.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+const int MAXN = 505;
+int n, m;
+int cap[MAXN][MAXN];
+vector<int> adj[MAXN];
+vector<pair<int,int>> edges;
 
-### Approach 2: Max-Flow Min-Cut Solution
+int bfs(int source, int sink, vector<int>& parent) {
+    fill(parent.begin(), parent.end(), -1);
+    parent[source] = source;
+    queue<pair<int,int>> q;
+    q.push({source, INT_MAX});
 
-**Key Insights from Max-Flow Min-Cut Solution**:
-- **Max-Flow Min-Cut**: Use max-flow min-cut theorem for efficient solution
-- **Efficient Implementation**: O(nm²) time complexity
-- **Flow Network**: Convert to flow network problem
-- **Optimization**: Much more efficient than brute force
+    while (!q.empty()) {
+        int u = q.front().first;
+        int flow = q.front().second;
+        q.pop();
 
-**Key Insight**: Use max-flow min-cut theorem to find minimum cut.
+        for (int v : adj[u]) {
+            if (parent[v] == -1 && cap[u][v] > 0) {
+                parent[v] = u;
+                int new_flow = min(flow, cap[u][v]);
+                if (v == sink) return new_flow;
+                q.push({v, new_flow});
+            }
+        }
+    }
+    return 0;
+}
 
-**Algorithm**:
-- Convert graph to flow network (assign capacity 1 to each edge)
-- Find maximum flow from source to sink
-- The value of max flow equals the minimum cut
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-**Visual Example**:
-```
-Max-flow min-cut approach:
+    cin >> n >> m;
 
-Graph: 0->1->3, 0->2->3, 1->2
-Capacities: all edges have capacity 1
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        edges.push_back({a, b});
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+        cap[a][b]++;
+        cap[b][a]++;
+    }
 
-Flow network:
-┌─────────────────────────────────────┐
-│ 0 --1--> 1 --1--> 3               │
-│ |        |                         │
-│ 1        1                         │
-│ |        |                         │
-│ v        v                         │
-│ 2 --1--> 2 --1--> 3               │
-│                                   │
-│ Max flow: 2                        │
-│ Min cut: 2 edges                   │
-└─────────────────────────────────────┘
-```
+    int source = 1, sink = n;
+    vector<int> parent(n + 1);
 
-**Implementation**:
-```python
-def max_flow_min_cut_police_chase(n, source, sink, edges):
-    """Find minimum cut using max-flow min-cut theorem"""
-    # Build adjacency list with capacities
-    adj = [[] for _ in range(n)]
-    capacity = [[0] * n for _ in range(n)]
-    
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)  # For residual graph
-        capacity[u][v] = 1  # Each edge has capacity 1
-    
-    def bfs_find_path():
-        """Find augmenting path using BFS"""
-        parent = [-1] * n
-        visited = [False] * n
-        queue = [source]
-        visited[source] = True
-        
-        while queue:
-            vertex = queue.pop(0)
-            if vertex == sink:
-                break
-            
-            for neighbor in adj[vertex]:
-                if not visited[neighbor] and capacity[vertex][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = vertex
-                    queue.append(neighbor)
-        
-        # Reconstruct path
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def find_max_flow():
-        """Find maximum flow using Ford-Fulkerson algorithm"""
-        max_flow = 0
-        
-        while True:
-            path = bfs_find_path()
-            if not path:
-                break
-            
-            # Find minimum capacity in path
-            min_capacity = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                min_capacity = min(min_capacity, capacity[u][v])
-            
-            # Update residual capacities
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= min_capacity
-                capacity[v][u] += min_capacity
-            
-            max_flow += min_capacity
-        
-        return max_flow
-    
-    return find_max_flow()
+    // Edmonds-Karp max flow
+    int max_flow = 0, flow;
+    while ((flow = bfs(source, sink, parent)) > 0) {
+        max_flow += flow;
+        int v = sink;
+        while (v != source) {
+            int u = parent[v];
+            cap[u][v] -= flow;
+            cap[v][u] += flow;
+            v = u;
+        }
+    }
 
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
-result = max_flow_min_cut_police_chase(n, source, sink, edges)
-print(f"Max-flow min-cut result: {result}")
+    // Find reachable nodes from source in residual graph
+    vector<bool> reachable(n + 1, false);
+    queue<int> q;
+    q.push(source);
+    reachable[source] = true;
+
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        for (int v : adj[u]) {
+            if (!reachable[v] && cap[u][v] > 0) {
+                reachable[v] = true;
+                q.push(v);
+            }
+        }
+    }
+
+    // Find cut edges
+    vector<pair<int,int>> cut_edges;
+    for (auto& [a, b] : edges) {
+        if (reachable[a] && !reachable[b]) {
+            cut_edges.push_back({a, b});
+        } else if (reachable[b] && !reachable[a]) {
+            cut_edges.push_back({b, a});
+        }
+    }
+
+    cout << cut_edges.size() << "\n";
+    for (auto& [a, b] : cut_edges) {
+        cout << a << " " << b << "\n";
+    }
+
+    return 0;
+}
 ```
 
-**Time Complexity**: O(nm²)
-**Space Complexity**: O(n²)
+## Common Mistakes
 
-**Why it's better**: Uses max-flow min-cut theorem for O(nm²) time complexity.
+| Mistake | Why It Fails | Correct Approach |
+|---------|--------------|------------------|
+| Finding cut edges by checking flow instead of reachability | Multiple edges might carry flow but not be in min cut | Use BFS on residual graph to find S/T partition |
+| Only checking one direction for undirected edges | Missing cut edges in reverse direction | Check both (a,b) and (b,a) for reachability |
+| Using original capacities instead of residual | Doesn't reflect the actual bottleneck | Always use residual capacities after max flow |
+| Outputting all saturated edges | Some saturated edges are not in the cut | Only edges crossing S to T boundary are cut edges |
+| Not handling parallel edges | Capacities may be > 1 for multiple streets | Use `cap[a][b]++` instead of `cap[a][b] = 1` |
 
----
+## Complexity Analysis
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+| Phase | Time | Space |
+|-------|------|-------|
+| Build graph | O(m) | O(n^2) |
+| Max flow (Edmonds-Karp) | O(V * E^2) | O(n^2) |
+| Find reachable set | O(V + E) | O(n) |
+| Find cut edges | O(m) | O(m) |
+| **Total** | **O(V * E^2)** | **O(n^2)** |
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for flow algorithms
-- **Efficient Implementation**: O(nm²) time complexity
-- **Space Efficiency**: O(n²) space complexity
-- **Optimal Complexity**: Best approach for minimum cut
+## Related Problems
 
-**Key Insight**: Use advanced data structures for optimal minimum cut calculation.
-
-**Algorithm**:
-- Use specialized data structures for flow network storage
-- Implement efficient max-flow algorithms
-- Handle special cases optimally
-- Return minimum cut value
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For graph: 0->1->3, 0->2->3, 1->2
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Flow network: for efficient       │
-│   storage and operations            │
-│ - Residual graph: for optimization  │
-│ - Flow cache: for optimization      │
-│                                   │
-│ Minimum cut calculation:            │
-│ - Use flow network for efficient   │
-│   storage and operations            │
-│ - Use residual graph for           │
-│   optimization                      │
-│ - Use flow cache for optimization  │
-│                                   │
-│ Result: 2                          │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def advanced_data_structure_police_chase(n, source, sink, edges):
-    """Find minimum cut using advanced data structure approach"""
-    # Use advanced data structures for flow network storage
-    adj = [[] for _ in range(n)]
-    capacity = [[0] * n for _ in range(n)]
-    
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)  # For residual graph
-        capacity[u][v] = 1  # Each edge has capacity 1
-    
-    def bfs_advanced_find_path():
-        """Find augmenting path using advanced BFS"""
-        parent = [-1] * n
-        visited = [False] * n
-        queue = [source]
-        visited[source] = True
-        
-        while queue:
-            vertex = queue.pop(0)
-            if vertex == sink:
-                break
-            
-            for neighbor in adj[vertex]:
-                if not visited[neighbor] and capacity[vertex][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = vertex
-                    queue.append(neighbor)
-        
-        # Reconstruct path using advanced data structures
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def find_advanced_max_flow():
-        """Find maximum flow using advanced Ford-Fulkerson algorithm"""
-        max_flow = 0
-        
-        while True:
-            path = bfs_advanced_find_path()
-            if not path:
-                break
-            
-            # Find minimum capacity in path using advanced data structures
-            min_capacity = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                min_capacity = min(min_capacity, capacity[u][v])
-            
-            # Update residual capacities using advanced data structures
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= min_capacity
-                capacity[v][u] += min_capacity
-            
-            max_flow += min_capacity
-        
-        return max_flow
-    
-    return find_advanced_max_flow()
-
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
-result = advanced_data_structure_police_chase(n, source, sink, edges)
-print(f"Advanced data structure result: {result}")
-```
-
-**Time Complexity**: O(nm²)
-**Space Complexity**: O(n²)
-
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(2^m) | O(n + m) | Try all edge combinations |
-| Max-Flow Min-Cut | O(nm²) | O(n²) | Use max-flow min-cut theorem |
-| Advanced Data Structure | O(nm²) | O(n²) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(nm²) - Use max-flow min-cut theorem for efficient minimum cut
-- **Space**: O(n²) - Store capacity matrix and adjacency list
-
-### Why This Solution Works
-- **Max-Flow Min-Cut**: Use max-flow min-cut theorem for minimum cut
-- **Flow Network**: Convert to flow network with unit capacities
-- **Ford-Fulkerson**: Use Ford-Fulkerson algorithm for max flow
-- **Optimal Algorithms**: Use optimal algorithms for minimum cut
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Police Chase with Constraints**
-**Problem**: Find minimum cut with specific constraints.
-
-**Key Differences**: Apply constraints to minimum cut calculation
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_police_chase(n, source, sink, edges, constraints):
-    """Find minimum cut with constraints"""
-    # Build adjacency list with capacities
-    adj = [[] for _ in range(n)]
-    capacity = [[0] * n for _ in range(n)]
-    
-    for u, v in edges:
-        if constraints(u) and constraints(v):
-            adj[u].append(v)
-            adj[v].append(u)  # For residual graph
-            capacity[u][v] = 1  # Each edge has capacity 1
-    
-    def bfs_constrained_find_path():
-        """Find augmenting path using constrained BFS"""
-        parent = [-1] * n
-        visited = [False] * n
-        queue = [source]
-        visited[source] = True
-        
-        while queue:
-            vertex = queue.pop(0)
-            if vertex == sink:
-                break
-            
-            for neighbor in adj[vertex]:
-                if (not visited[neighbor] and 
-                    capacity[vertex][neighbor] > 0 and 
-                    constraints(neighbor)):
-                    visited[neighbor] = True
-                    parent[neighbor] = vertex
-                    queue.append(neighbor)
-        
-        # Reconstruct path
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def find_constrained_max_flow():
-        """Find maximum flow with constraints"""
-        max_flow = 0
-        
-        while True:
-            path = bfs_constrained_find_path()
-            if not path:
-                break
-            
-            # Find minimum capacity in path
-            min_capacity = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                min_capacity = min(min_capacity, capacity[u][v])
-            
-            # Update residual capacities
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= min_capacity
-                capacity[v][u] += min_capacity
-            
-            max_flow += min_capacity
-        
-        return max_flow
-    
-    return find_constrained_max_flow()
-
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
-constraints = lambda vertex: vertex >= 0  # Only include non-negative vertices
-result = constrained_police_chase(n, source, sink, edges, constraints)
-print(f"Constrained minimum cut: {result}")
-```
-
-#### **2. Police Chase with Different Metrics**
-**Problem**: Find minimum cut with different edge weights.
-
-**Key Differences**: Different edge weight calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_police_chase(n, source, sink, edges, weights):
-    """Find minimum cut with different edge weights"""
-    # Build adjacency list with capacities
-    adj = [[] for _ in range(n)]
-    capacity = [[0] * n for _ in range(n)]
-    
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)  # For residual graph
-        capacity[u][v] = weights.get((u, v), 1)  # Use edge weights
-    
-    def bfs_weighted_find_path():
-        """Find augmenting path using weighted BFS"""
-        parent = [-1] * n
-        visited = [False] * n
-        queue = [source]
-        visited[source] = True
-        
-        while queue:
-            vertex = queue.pop(0)
-            if vertex == sink:
-                break
-            
-            for neighbor in adj[vertex]:
-                if not visited[neighbor] and capacity[vertex][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = vertex
-                    queue.append(neighbor)
-        
-        # Reconstruct path
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def find_weighted_max_flow():
-        """Find maximum flow with weights"""
-        max_flow = 0
-        
-        while True:
-            path = bfs_weighted_find_path()
-            if not path:
-                break
-            
-            # Find minimum capacity in path
-            min_capacity = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                min_capacity = min(min_capacity, capacity[u][v])
-            
-            # Update residual capacities
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= min_capacity
-                capacity[v][u] += min_capacity
-            
-            max_flow += min_capacity
-        
-        return max_flow
-    
-    return find_weighted_max_flow()
-
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
-weights = {(0, 1): 2, (0, 2): 1, (1, 2): 3, (1, 3): 1, (2, 3): 2}
-result = weighted_police_chase(n, source, sink, edges, weights)
-print(f"Weighted minimum cut: {result}")
-```
-
-#### **3. Police Chase with Multiple Dimensions**
-**Problem**: Find minimum cut in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_police_chase(n, source, sink, edges, dimensions):
-    """Find minimum cut in multiple dimensions"""
-    # Build adjacency list with capacities
-    adj = [[] for _ in range(n)]
-    capacity = [[0] * n for _ in range(n)]
-    
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)  # For residual graph
-        capacity[u][v] = 1  # Each edge has capacity 1
-    
-    def bfs_multi_dimensional_find_path():
-        """Find augmenting path using multi-dimensional BFS"""
-        parent = [-1] * n
-        visited = [False] * n
-        queue = [source]
-        visited[source] = True
-        
-        while queue:
-            vertex = queue.pop(0)
-            if vertex == sink:
-                break
-            
-            for neighbor in adj[vertex]:
-                if not visited[neighbor] and capacity[vertex][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = vertex
-                    queue.append(neighbor)
-        
-        # Reconstruct path
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def find_multi_dimensional_max_flow():
-        """Find maximum flow in multiple dimensions"""
-        max_flow = 0
-        
-        while True:
-            path = bfs_multi_dimensional_find_path()
-            if not path:
-                break
-            
-            # Find minimum capacity in path
-            min_capacity = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                min_capacity = min(min_capacity, capacity[u][v])
-            
-            # Update residual capacities
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= min_capacity
-                capacity[v][u] += min_capacity
-            
-            max_flow += min_capacity
-        
-        return max_flow
-    
-    return find_multi_dimensional_max_flow()
-
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)]
-dimensions = 1
-result = multi_dimensional_police_chase(n, source, sink, edges, dimensions)
-print(f"Multi-dimensional minimum cut: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Download Speed](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Road Construction](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Road Reparation](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Critical Connections](https://leetcode.com/problems/critical-connections-in-a-network/) - Graph
-- [Network Delay Time](https://leetcode.com/problems/network-delay-time/) - Graph
-- [Cheapest Flights](https://leetcode.com/problems/cheapest-flights-within-k-stops/) - Graph
-
-#### **Problem Categories**
-- **Graph Algorithms**: Minimum cut, max-flow min-cut, network flow
-- **Flow Algorithms**: Ford-Fulkerson, max flow, min cut
-- **Network Flow**: Flow networks, residual graphs
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Max-Flow Min-Cut](https://cp-algorithms.com/graph/max_flow.html) - Max-flow min-cut algorithms
-- [Network Flow](https://cp-algorithms.com/graph/flow-network.html) - Network flow algorithms
-
-### **Practice Problems**
-- [CSES Download Speed](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Road Construction](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Road Reparation](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Max-Flow Min-Cut Theorem](https://en.wikipedia.org/wiki/Max-flow_min-cut_theorem) - Wikipedia article
-- [Network Flow](https://en.wikipedia.org/wiki/Flow_network) - Wikipedia article
+| Problem | Link | Relation |
+|---------|------|----------|
+| Download Speed | [CSES 1694](https://cses.fi/problemset/task/1694) | Pure max flow without finding cut edges |
+| School Dance | [CSES 1696](https://cses.fi/problemset/task/1696) | Max flow for bipartite matching |
+| Distinct Routes | [CSES 1711](https://cses.fi/problemset/task/1711) | Finding actual flow paths |

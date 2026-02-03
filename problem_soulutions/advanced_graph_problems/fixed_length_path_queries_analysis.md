@@ -1,1582 +1,585 @@
 ---
 layout: simple
-title: "Fixed Length Path Queries - Graph Theory Problem"
+title: "Fixed-Length Paths - Advanced Graph Problem"
 permalink: /problem_soulutions/advanced_graph_problems/fixed_length_path_queries_analysis
+difficulty: Hard
+tags: [centroid-decomposition, tree, divide-and-conquer, counting]
 ---
 
-# Fixed Length Path Queries - Graph Theory Problem
+# Fixed-Length Paths
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of fixed length paths in directed graphs
-- Apply graph theory principles to determine path existence
-- Implement algorithms for finding paths of specific lengths
-- Optimize graph traversal for multiple path queries
-- Handle special cases in path analysis
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Hard |
+| **Category** | Tree / Divide and Conquer |
+| **Time Limit** | 1 second |
+| **Key Technique** | Centroid Decomposition |
+| **CSES Link** | [https://cses.fi/problemset/task/2080](https://cses.fi/problemset/task/2080) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a directed graph with n nodes and q queries, for each query determine if there exists a path of length k from node a to node b.
+After solving this problem, you will be able to:
+- [ ] Understand and implement centroid decomposition on trees
+- [ ] Count paths of specific lengths efficiently in trees
+- [ ] Apply divide-and-conquer on tree structures
+- [ ] Optimize path counting using subtree separation
 
-**Input**: 
-- n: number of nodes
-- q: number of queries
-- n lines: adjacency matrix (1 if edge exists, 0 otherwise)
-- q lines: a b k (check for path from node a to b of length k)
+---
 
-**Output**: 
-- Answer to each query (1 if exists, 0 otherwise)
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 100
-- 1 ≤ q ≤ 10^5
-- 1 ≤ k ≤ 10^9
-- 1 ≤ a,b ≤ n
+**Problem:** Given a tree of n nodes, count the number of distinct paths that contain exactly k edges.
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and k (number of nodes, target path length)
+- Lines 2 to n: Two integers a and b describing edges
+
+**Output:**
+- Single integer: the number of paths with exactly k edges
+
+**Constraints:**
+- 1 <= n <= 2 * 10^5
+- 1 <= k <= n - 1
+- The graph is a tree (connected, n-1 edges, no cycles)
+
+### Example
+
 ```
 Input:
-3 2
-0 1 1
-1 0 1
-1 1 0
-1 3 2
-2 1 1
+5 2
+1 2
+2 3
+3 4
+3 5
 
 Output:
-1
-1
-
-Explanation**: 
-Query 1: Path of length 2 from node 1 to 3
-Path: 1→2→3 (length 2)
-Answer: 1
-
-Query 2: Path of length 1 from node 2 to 1
-Path: 2→1 (direct edge)
-Answer: 1
+4
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Exhaustive Search**: Try all possible paths of length k
-- **DFS Traversal**: Use depth-first search to explore all paths
-- **Exponential Growth**: Number of paths grows exponentially with k
-- **Baseline Understanding**: Provides correct answer but impractical for large k
-
-**Key Insight**: Use DFS to explore all possible paths of length k from start to end.
-
-**Algorithm**:
-- Start DFS from node a
-- Explore all paths of length exactly k
-- Return 1 if any path reaches node b, 0 otherwise
-
-**Visual Example**:
+**Explanation:** The tree looks like:
 ```
-Graph: 1→2→3, 1→3, 2→1, k=2, start=1, end=3
-
-DFS exploration:
-┌─────────────────────────────────────┐
-│ Start at 1, depth=0                │
-│ ├─ Go to 2, depth=1                │
-│ │  └─ Go to 3, depth=2 ✓ (found!)  │
-│ └─ Go to 3, depth=1                │
-│    └─ No more edges                │
-└─────────────────────────────────────┘
-
-Path found: 1→2→3 (length 2)
-Result: 1
+    1 - 2 - 3 - 4
+            |
+            5
 ```
-
-**Implementation**:
-```python
-def brute_force_solution(n, adj_matrix, queries):
-    """
-    Find path existence using brute force DFS approach
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, b, k) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    def has_path(start, end, k):
-        """Check if path of length k exists from start to end using DFS"""
-        if k == 0:
-            return start == end
-        
-        if k == 1:
-            return adj_matrix[start][end] == 1
-        
-        # DFS to find path of length k
-        def dfs(current, remaining_length):
-            if remaining_length == 0:
-                return current == end
-            
-            for next_node in range(n):
-                if adj_matrix[current][next_node] == 1:
-                    if dfs(next_node, remaining_length - 1):
-                        return True
-            return False
-        
-        return dfs(start, k)
-    
-    results = []
-    for a, b, k in queries:
-        result = 1 if has_path(a - 1, b - 1, k) else 0  # Convert to 0-indexed
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0]
-]
-queries = [(1, 3, 2), (2, 1, 1)]
-result = brute_force_solution(n, adj_matrix, queries)
-print(f"Brute force result: {result}")  # Output: [1, 1]
-```
-
-**Time Complexity**: O(n^k)
-**Space Complexity**: O(k)
-
-**Why it's inefficient**: Exponential time complexity makes it impractical for large k.
+Paths with exactly 2 edges: (1,2,3), (2,3,4), (2,3,5), (4,3,5) = 4 paths.
 
 ---
 
-### Approach 2: Dynamic Programming Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Dynamic Programming Solution**:
-- **State Definition**: dp[i][j][k] = can reach node j from node i in exactly k steps
-- **State Transition**: dp[i][j][k] = OR of dp[i][l][k-1] AND adj[l][j] for all l
-- **Matrix Multiplication**: Use adjacency matrix powers for path counting
-- **Memoization**: Cache results to avoid recomputation
+### Pattern Recognition
 
-**Key Insight**: Use dynamic programming to compute path existence for all pairs and lengths.
+> **Key Question:** How do we efficiently count paths of a specific length in a tree?
 
-**Algorithm**:
-- Use DP to compute path existence for all (i,j,k) combinations
-- For each query, return precomputed result
-- Use matrix operations for efficient computation
+A naive approach would check all pairs of nodes, but that is O(n^2). The key insight is that every path in a tree either passes through a "central" node or stays entirely within a subtree. This is the foundation of **centroid decomposition**.
 
-**Visual Example**:
-```
-Graph: 1→2→3, 1→3, 2→1, k=2
+### Breaking Down the Problem
 
-DP table for length 2:
-┌─────────────────────────────────────┐
-│ dp[1][3][2] = dp[1][2][1] & adj[2][3] │
-│ dp[1][3][2] = 1 & 1 = 1 ✓          │
-│ dp[2][1][2] = dp[2][3][1] & adj[3][1] │
-│ dp[2][1][2] = 1 & 1 = 1 ✓          │
-└─────────────────────────────────────┘
+1. **What are we looking for?** Paths with exactly k edges.
+2. **What makes trees special?** There is exactly one path between any two nodes.
+3. **How can we divide the problem?** Split at the centroid and count paths that go through it.
 
-Path exists for both queries
-Result: [1, 1]
-```
+### Analogies
 
-**Implementation**:
-```python
-def dp_solution(n, adj_matrix, queries):
-    """
-    Find path existence using dynamic programming
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, b, k) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    # Find maximum k value
-    max_k = max(k for _, _, k in queries)
-    
-    # DP table: dp[i][j][k] = can reach node j from node i in exactly k steps
-    dp = [[[False] * (max_k + 1) for _ in range(n)] for _ in range(n)]
-    
-    # Base case: paths of length 0
-    for i in range(n):
-        dp[i][i][0] = True
-    
-    # Base case: paths of length 1
-    for i in range(n):
-        for j in range(n):
-            dp[i][j][1] = (adj_matrix[i][j] == 1)
-    
-    # Fill DP table
-    for k in range(2, max_k + 1):
-        for i in range(n):
-            for j in range(n):
-                for l in range(n):
-                    if dp[i][l][k-1] and adj_matrix[l][j] == 1:
-                        dp[i][j][k] = True
-                        break
-    
-    # Answer queries
-    results = []
-    for a, b, k in queries:
-        if k <= max_k:
-            result = 1 if dp[a-1][b-1][k] else 0  # Convert to 0-indexed
-        else:
-            result = 0
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0]
-]
-queries = [(1, 3, 2), (2, 1, 1)]
-result = dp_solution(n, adj_matrix, queries)
-print(f"DP result: {result}")  # Output: [1, 1]
-```
-
-**Time Complexity**: O(n³ × max_k)
-**Space Complexity**: O(n² × max_k)
-
-**Why it's better**: Much faster than brute force, but still limited by max_k.
-
-**Implementation Considerations**:
-- **Matrix Operations**: Use adjacency matrix for efficient edge checking
-- **State Transitions**: Check all intermediate nodes for path construction
-- **Memory Management**: Use 3D DP table for state storage
+Think of the centroid as the "capital city" of a country. Any long journey either passes through the capital or stays within one region. By removing the capital and recursively solving for each region, we efficiently cover all paths.
 
 ---
 
-### Approach 3: Matrix Exponentiation Solution (Optimal)
+## Solution 1: Brute Force DFS
 
-**Key Insights from Matrix Exponentiation Solution**:
-- **Matrix Powers**: Use adjacency matrix powers for path counting
-- **Binary Exponentiation**: Compute matrix powers efficiently
-- **Logarithmic Time**: O(log k) time per query
-- **Efficient Storage**: Store only necessary matrix powers
+### Idea
 
-**Key Insight**: Use matrix exponentiation to compute adjacency matrix powers for efficient path queries.
+For every pair of nodes, compute the path length using BFS/DFS and count pairs with distance k.
 
-**Algorithm**:
-- Compute adjacency matrix powers using binary exponentiation
-- For each query, use appropriate matrix power to check path existence
-- Return 1 if path exists, 0 otherwise
+### Algorithm
 
-**Visual Example**:
-```
-Graph: 1→2→3, 1→3, 2→1
+1. For each node u, run BFS to find distances to all other nodes
+2. Count pairs where distance equals k
+3. Divide by 2 (each path counted twice)
 
-Adjacency matrix A:
-┌─────────────────────────────────────┐
-│ A = [0 1 1]                        │
-│     [1 0 1]                        │
-│     [1 1 0]                        │
-└─────────────────────────────────────┘
-
-A² = A × A:
-┌─────────────────────────────────────┐
-│ A² = [2 1 1]                       │
-│      [1 2 1]                       │
-│      [1 1 2]                       │
-└─────────────────────────────────────┘
-
-Query 1: A²[0][2] = 1 ✓ (path of length 2)
-Query 2: A[1][0] = 1 ✓ (path of length 1)
-```
-
-**Implementation**:
-```python
-def matrix_exponentiation_solution(n, adj_matrix, queries):
-    """
-    Find path existence using matrix exponentiation
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, b, k) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    def matrix_multiply(A, B):
-        """Multiply two n×n matrices"""
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += A[i][k] * B[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        """Compute matrix^power using binary exponentiation"""
-        if power == 0:
-            # Return identity matrix
-            identity = [[0] * n for _ in range(n)]
-            for i in range(n):
-                identity[i][i] = 1
-            return identity
-        
-        if power == 1:
-            return matrix
-        
-        if power % 2 == 0:
-            half_power = matrix_power(matrix, power // 2)
-            return matrix_multiply(half_power, half_power)
-        else:
-            return matrix_multiply(matrix, matrix_power(matrix, power - 1))
-    
-    # Find unique k values
-    unique_k_values = sorted(set(k for _, _, k in queries))
-    
-    # Precompute matrix powers
-    matrix_powers = {}
-    for k in unique_k_values:
-        matrix_powers[k] = matrix_power(adj_matrix, k)
-    
-    # Answer queries
-    results = []
-    for a, b, k in queries:
-        if k in matrix_powers:
-            result = 1 if matrix_powers[k][a-1][b-1] > 0 else 0  # Convert to 0-indexed
-        else:
-            result = 0
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0]
-]
-queries = [(1, 3, 2), (2, 1, 1)]
-result = matrix_exponentiation_solution(n, adj_matrix, queries)
-print(f"Matrix exponentiation result: {result}")  # Output: [1, 1]
-```
-
-**Time Complexity**: O(n³ × log(max_k) + q)
-**Space Complexity**: O(n² × unique_k_values)
-
-**Why it's optimal**: O(log k) time per query after O(n³ × log(max_k)) preprocessing, making it efficient for large k values.
-
-**Implementation Details**:
-- **Binary Exponentiation**: Compute matrix powers efficiently
-- **Query Optimization**: Answer queries in constant time
-- **Memory Efficiency**: Store only necessary matrix powers
-- **Matrix Operations**: Use efficient matrix multiplication
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n^k) | O(k) | Exhaustive DFS search |
-| Dynamic Programming | O(n³ × max_k) | O(n² × max_k) | Use DP for all path lengths |
-| Matrix Exponentiation | O(n³ × log(max_k) + q) | O(n² × unique_k_values) | Use matrix powers for O(log k) queries |
-
-### Time Complexity
-- **Time**: O(n³ × log(max_k) + q) - Precompute matrix powers, then O(1) per query
-- **Space**: O(n² × unique_k_values) - Store matrix powers
-
-### Why This Solution Works
-- **Matrix Exponentiation**: Use adjacency matrix powers for path counting
-- **Binary Exponentiation**: Compute matrix powers efficiently
-- **Query Optimization**: Answer queries in constant time
-- **Efficient Storage**: Store only necessary matrix powers
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Weighted Path Queries**
-**Problem**: Find if there exists a path of length k with total weight w.
-
-**Key Differences**: Edges have weights, consider total weight
-
-**Solution Approach**: Use weighted adjacency matrix with matrix exponentiation
-
-**Implementation**:
-```python
-def weighted_path_queries(n, adj_matrix, weights, queries):
-    """
-    Find weighted path existence using matrix exponentiation
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        weights: weight matrix
-        queries: list of (a, b, k, w) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    def matrix_multiply(A, B):
-        """Multiply two n×n matrices"""
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += A[i][k] * B[k][j]
-        return result
-    
-    def matrix_power(matrix, power):
-        """Compute matrix^power using binary exponentiation"""
-        if power == 0:
-            # Return identity matrix
-            identity = [[0] * n for _ in range(n)]
-            for i in range(n):
-                identity[i][i] = 1
-            return identity
-        
-        if power == 1:
-            return matrix
-        
-        if power % 2 == 0:
-            half_power = matrix_power(matrix, power // 2)
-            return matrix_multiply(half_power, half_power)
-        else:
-            return matrix_multiply(matrix, matrix_power(matrix, power - 1))
-    
-    # Create weighted adjacency matrix
-    weighted_adj = [[0] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(n):
-            if adj_matrix[i][j] == 1:
-                weighted_adj[i][j] = weights[i][j]
-    
-    # Find unique k values
-    unique_k_values = sorted(set(k for _, _, k, _ in queries))
-    
-    # Precompute matrix powers
-    matrix_powers = {}
-    for k in unique_k_values:
-        matrix_powers[k] = matrix_power(weighted_adj, k)
-    
-    # Answer queries
-    results = []
-    for a, b, k, w in queries:
-        if k in matrix_powers:
-            result = 1 if matrix_powers[k][a-1][b-1] == w else 0  # Convert to 0-indexed
-        else:
-            result = 0
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0]
-]
-weights = [
-    [0, 2, 3],
-    [2, 0, 4],
-    [3, 4, 0]
-]
-queries = [(1, 3, 2, 6), (2, 1, 1, 2)]
-result = weighted_path_queries(n, adj_matrix, weights, queries)
-print(f"Weighted path result: {result}")
-```
-
-#### **2. Shortest Path Queries**
-**Problem**: Find the shortest path length between two nodes.
-
-**Key Differences**: Find minimum path length instead of fixed length
-
-**Solution Approach**: Use Floyd-Warshall or Dijkstra's algorithm
-
-**Implementation**:
-```python
-def shortest_path_queries(n, adj_matrix, queries):
-    """
-    Find shortest path lengths using Floyd-Warshall algorithm
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, b) queries
-    
-    Returns:
-        list: shortest path lengths
-    """
-    # Initialize distance matrix
-    dist = [[float('inf')] * n for _ in range(n)]
-    
-    # Base case: direct edges
-    for i in range(n):
-        for j in range(n):
-            if adj_matrix[i][j] == 1:
-                dist[i][j] = 1
-            elif i == j:
-                dist[i][j] = 0
-    
-    # Floyd-Warshall algorithm
-    for k in range(n):
-        for i in range(n):
-            for j in range(n):
-                if dist[i][k] + dist[k][j] < dist[i][j]:
-                    dist[i][j] = dist[i][k] + dist[k][j]
-    
-    # Answer queries
-    results = []
-    for a, b in queries:
-        shortest_length = dist[a-1][b-1]  # Convert to 0-indexed
-        if shortest_length == float('inf'):
-            results.append(-1)  # No path exists
-        else:
-            results.append(shortest_length)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0]
-]
-queries = [(1, 3), (2, 1)]
-result = shortest_path_queries(n, adj_matrix, queries)
-print(f"Shortest path result: {result}")
-```
-
-#### **3. Dynamic Path Queries**
-**Problem**: Support adding/removing edges and answering path queries.
-
-**Key Differences**: Graph structure can change dynamically
-
-**Solution Approach**: Use dynamic graph analysis with incremental updates
-
-**Implementation**:
-```python
-class DynamicPathQueries:
-    def __init__(self, n):
-        self.n = n
-        self.adj_matrix = [[0] * n for _ in range(n)]
-        self.weights = [[0] * n for _ in range(n)]
-        self.path_cache = {}  # Cache for path existence
-    
-    def add_edge(self, a, b, weight=1):
-        """Add edge from a to b with weight"""
-        if self.adj_matrix[a][b] == 0:
-            self.adj_matrix[a][b] = 1
-            self.weights[a][b] = weight
-            self.path_cache.clear()  # Invalidate cache
-    
-    def remove_edge(self, a, b):
-        """Remove edge from a to b"""
-        if self.adj_matrix[a][b] == 1:
-            self.adj_matrix[a][b] = 0
-            self.weights[a][b] = 0
-            self.path_cache.clear()  # Invalidate cache
-    
-    def has_path(self, start, end, k):
-        """Check if path of length k exists from start to end"""
-        # Check cache first
-        cache_key = (start, end, k)
-        if cache_key in self.path_cache:
-            return self.path_cache[cache_key]
-        
-        # Use DFS to find path
-        def dfs(current, remaining_length):
-            if remaining_length == 0:
-                return current == end
-            
-            for next_node in range(self.n):
-                if self.adj_matrix[current][next_node] == 1:
-                    if dfs(next_node, remaining_length - 1):
-                        return True
-            return False
-        
-        result = dfs(start, k)
-        
-        # Cache result
-        self.path_cache[cache_key] = result
-        return result
-
-# Example usage
-dpq = DynamicPathQueries(3)
-dpq.add_edge(0, 1, 2)
-dpq.add_edge(1, 2, 3)
-dpq.add_edge(2, 0, 4)
-result1 = dpq.has_path(0, 2, 2)
-print(f"Dynamic path result: {result1}")
-```
-
-## Problem Variations
-
-### **Variation 1: Fixed Length Path Queries with Dynamic Updates**
-**Problem**: Handle dynamic graph updates (add/remove/update edges) while maintaining fixed length path query calculation efficiently.
-
-**Approach**: Use efficient data structures and algorithms for dynamic graph management with path detection.
+### Code
 
 ```python
-from collections import defaultdict, deque
-import heapq
+from collections import deque
 
-class DynamicFixedLengthPathQueries:
-    def __init__(self, n=None, edges=None, target_length=None):
-        self.n = n or 0
-        self.edges = edges or []
-        self.target_length = target_length or 0
-        self.graph = defaultdict(list)
-        self._update_path_query_info()
-    
-    def _update_path_query_info(self):
-        """Update path query feasibility information."""
-        self.path_query_feasibility = self._calculate_path_query_feasibility()
-    
-    def _calculate_path_query_feasibility(self):
-        """Calculate path query feasibility."""
-        if self.n <= 0 or self.target_length <= 0:
-            return 0.0
-        
-        # Check if we can have paths of target length
-        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
-    
-    def update_graph(self, new_n, new_edges, new_target_length=None):
-        """Update the graph with new vertices, edges, and target length."""
-        self.n = new_n
-        self.edges = new_edges
-        if new_target_length is not None:
-            self.target_length = new_target_length
-        self._build_graph()
-        self._update_path_query_info()
-    
-    def add_edge(self, u, v):
-        """Add an edge to the graph."""
-        if 1 <= u <= self.n and 1 <= v <= self.n:
-            self.edges.append((u, v))
-            self.graph[u].append(v)
-            self.graph[v].append(u)
-            self._update_path_query_info()
-    
-    def remove_edge(self, u, v):
-        """Remove an edge from the graph."""
-        if (u, v) in self.edges:
-            self.edges.remove((u, v))
-            self.graph[u].remove(v)
-            self.graph[v].remove(u)
-            self._update_path_query_info()
-    
-    def _build_graph(self):
-        """Build the graph from edges."""
-        self.graph = defaultdict(list)
-        
-        for u, v in self.edges:
-            self.graph[u].append(v)
-            self.graph[v].append(u)
-    
-    def is_path_possible(self):
-        """Check if path is possible."""
-        if not self.path_query_feasibility:
-            return False
-        
-        # Basic check: need at least 1 vertex for a path
-        if self.n < 1:
-            return False
-        
-        # Check if graph has edges
-        return len(self.edges) > 0
-    
-    def find_paths_of_length(self, start_vertex=None, end_vertex=None):
-        """Find paths of the target length."""
-        if not self.path_query_feasibility or not self.is_path_possible():
-            return []
-        
-        paths = []
-        if start_vertex is None:
-            # Try all vertices as starting points
-            for start in range(1, self.n + 1):
-                paths.extend(self._find_paths_from_vertex(start, end_vertex))
-        else:
-            paths = self._find_paths_from_vertex(start_vertex, end_vertex)
-        
-        return paths
-    
-    def _find_paths_from_vertex(self, start, end_vertex=None):
-        """Find paths starting from a specific vertex."""
-        paths = []
-        visited = set()
-        path = []
-        
-        def dfs(current, length):
-            if length == self.target_length:
-                if end_vertex is None or current == end_vertex:
-                    paths.append(path[:])
-                return
-            
-            if length > self.target_length:
-                return
-            
-            for neighbor in self.graph[current]:
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    path.append(neighbor)
-                    dfs(neighbor, length + 1)
-                    path.pop()
-                    visited.remove(neighbor)
-        
-        visited.add(start)
-        path.append(start)
-        dfs(start, 1)
-        visited.remove(start)
-        path.pop()
-        
-        return paths
-    
-    def find_paths_with_priorities(self, priorities, start_vertex=None, end_vertex=None):
-        """Find paths considering vertex priorities."""
-        if not self.path_query_feasibility:
-            return []
-        
-        paths = self.find_paths_of_length(start_vertex, end_vertex)
-        if not paths:
-            return []
-        
-        # Create priority-based paths
-        priority_paths = []
-        for path in paths:
-            total_priority = sum(priorities.get(vertex, 1) for vertex in path)
-            priority_paths.append((path, total_priority))
-        
-        # Sort by priority (descending for maximization)
-        priority_paths.sort(key=lambda x: x[1], reverse=True)
-        
-        return priority_paths
-    
-    def get_paths_with_constraints(self, constraint_func, start_vertex=None, end_vertex=None):
-        """Get paths that satisfies custom constraints."""
-        if not self.path_query_feasibility:
-            return []
-        
-        paths = self.find_paths_of_length(start_vertex, end_vertex)
-        if paths and constraint_func(self.n, self.edges, paths, self.target_length):
-            return paths
-        else:
-            return []
-    
-    def get_paths_in_range(self, min_length, max_length, start_vertex=None, end_vertex=None):
-        """Get paths within specified length range."""
-        if not self.path_query_feasibility:
-            return []
-        
-        if min_length <= self.target_length <= max_length:
-            return self.find_paths_of_length(start_vertex, end_vertex)
-        else:
-            return []
-    
-    def get_paths_with_pattern(self, pattern_func, start_vertex=None, end_vertex=None):
-        """Get paths matching specified pattern."""
-        if not self.path_query_feasibility:
-            return []
-        
-        paths = self.find_paths_of_length(start_vertex, end_vertex)
-        if pattern_func(self.n, self.edges, paths, self.target_length):
-            return paths
-        else:
-            return []
-    
-    def get_path_query_statistics(self):
-        """Get statistics about the path queries."""
-        if not self.path_query_feasibility:
-            return {
-                'n': 0,
-                'path_query_feasibility': 0,
-                'has_paths': False,
-                'target_length': 0,
-                'path_count': 0
-            }
-        
-        paths = self.find_paths_of_length()
-        return {
-            'n': self.n,
-            'path_query_feasibility': self.path_query_feasibility,
-            'has_paths': len(paths) > 0,
-            'target_length': self.target_length,
-            'path_count': len(paths)
-        }
-    
-    def get_path_query_patterns(self):
-        """Get patterns in path queries."""
-        patterns = {
-            'has_edges': 0,
-            'has_valid_graph': 0,
-            'optimal_path_possible': 0,
-            'has_large_graph': 0
-        }
-        
-        if not self.path_query_feasibility:
-            return patterns
-        
-        # Check if has edges
-        if len(self.edges) > 0:
-            patterns['has_edges'] = 1
-        
-        # Check if has valid graph
-        if self.n > 0:
-            patterns['has_valid_graph'] = 1
-        
-        # Check if optimal path is possible
-        if self.path_query_feasibility == 1.0:
-            patterns['optimal_path_possible'] = 1
-        
-        # Check if has large graph
-        if self.n > 100:
-            patterns['has_large_graph'] = 1
-        
-        return patterns
-    
-    def get_optimal_path_query_strategy(self):
-        """Get optimal strategy for path query management."""
-        if not self.path_query_feasibility:
-            return {
-                'recommended_strategy': 'none',
-                'efficiency_rate': 0,
-                'path_query_feasibility': 0
-            }
-        
-        # Calculate efficiency rate
-        efficiency_rate = self.path_query_feasibility
-        
-        # Calculate path query feasibility
-        path_query_feasibility = self.path_query_feasibility
-        
-        # Determine recommended strategy
-        if self.n <= 100:
-            recommended_strategy = 'dfs_path_search'
-        elif self.n <= 1000:
-            recommended_strategy = 'optimized_dfs'
-        else:
-            recommended_strategy = 'advanced_path_detection'
-        
-        return {
-            'recommended_strategy': recommended_strategy,
-            'efficiency_rate': efficiency_rate,
-            'path_query_feasibility': path_query_feasibility
-        }
+def solve_brute_force(n, k, edges):
+    """
+    Brute force: BFS from each node.
+    Time: O(n^2)
+    Space: O(n)
+    """
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
 
-# Example usage
-n = 5
-edges = [(1, 2), (2, 3), (3, 4), (4, 5), (1, 3), (2, 4)]
-target_length = 3
-dynamic_path_queries = DynamicFixedLengthPathQueries(n, edges, target_length)
-print(f"Path query feasibility: {dynamic_path_queries.path_query_feasibility}")
+    count = 0
+    for start in range(1, n + 1):
+        dist = [-1] * (n + 1)
+        dist[start] = 0
+        queue = deque([start])
+        while queue:
+            u = queue.popleft()
+            for v in adj[u]:
+                if dist[v] == -1:
+                    dist[v] = dist[u] + 1
+                    if dist[v] == k:
+                        count += 1
+                    if dist[v] < k:
+                        queue.append(v)
 
-# Update graph
-dynamic_path_queries.update_graph(6, [(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (1, 3), (2, 4)], 4)
-print(f"After updating graph: n={dynamic_path_queries.n}, target_length={dynamic_path_queries.target_length}")
-
-# Add edge
-dynamic_path_queries.add_edge(6, 1)
-print(f"After adding edge (6,1): {dynamic_path_queries.edges}")
-
-# Remove edge
-dynamic_path_queries.remove_edge(6, 1)
-print(f"After removing edge (6,1): {dynamic_path_queries.edges}")
-
-# Check if path is possible
-is_possible = dynamic_path_queries.is_path_possible()
-print(f"Is path possible: {is_possible}")
-
-# Find paths
-paths = dynamic_path_queries.find_paths_of_length()
-print(f"Paths of length {target_length}: {paths}")
-
-# Find paths with priorities
-priorities = {i: i for i in range(1, n + 1)}
-priority_paths = dynamic_path_queries.find_paths_with_priorities(priorities)
-print(f"Paths with priorities: {priority_paths}")
-
-# Get paths with constraints
-def constraint_func(n, edges, paths, target_length):
-    return len(paths) > 0 and target_length > 0
-
-print(f"Paths with constraints: {dynamic_path_queries.get_paths_with_constraints(constraint_func)}")
-
-# Get paths in range
-print(f"Paths in range 2-5: {dynamic_path_queries.get_paths_in_range(2, 5)}")
-
-# Get paths with pattern
-def pattern_func(n, edges, paths, target_length):
-    return len(paths) > 0 and target_length > 0
-
-print(f"Paths with pattern: {dynamic_path_queries.get_paths_with_pattern(pattern_func)}")
-
-# Get statistics
-print(f"Statistics: {dynamic_path_queries.get_path_query_statistics()}")
-
-# Get patterns
-print(f"Patterns: {dynamic_path_queries.get_path_query_patterns()}")
-
-# Get optimal strategy
-print(f"Optimal strategy: {dynamic_path_queries.get_optimal_path_query_strategy()}")
+    return count // 2
 ```
 
-### **Variation 2: Fixed Length Path Queries with Different Operations**
-**Problem**: Handle different types of path query operations (weighted paths, priority-based selection, advanced path analysis).
+### Complexity
 
-**Approach**: Use advanced data structures for efficient different types of path query operations.
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | BFS from each of n nodes |
+| Space | O(n) | Distance array and queue |
+
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed because we enumerate all pairs. However, for n = 2*10^5, O(n^2) is too slow (4*10^10 operations).
+
+---
+
+## Solution 2: Centroid Decomposition (Optimal)
+
+### Key Insight
+
+> **The Trick:** Decompose the tree by repeatedly finding and removing centroids. For each centroid, count paths passing through it by combining depths from different subtrees.
+
+### What is a Centroid?
+
+A **centroid** of a tree is a node whose removal results in no subtree having more than n/2 nodes. Every tree has at least one centroid.
+
+### Algorithm Overview
+
+1. Find the centroid of the current tree
+2. Count all paths of length k that pass through the centroid
+3. Remove the centroid and recursively solve for each subtree
+4. Sum all counts
+
+### Counting Paths Through Centroid
+
+For paths passing through centroid c:
+- Compute depth of each node from c
+- A path of length k consists of two segments: depth d1 from one subtree and depth d2 from another, where d1 + d2 = k
+- Use a count array to track how many nodes are at each depth
+- Process subtrees one by one, combining with previously seen depths
+
+### Dry Run Example
+
+```
+Tree:       1 - 2 - 3 - 4
+                    |
+                    5
+Target k = 2
+
+Step 1: Find centroid
+  Sizes: node 3 has subtrees of size 2, 1, 1
+  Centroid = 3 (removing it gives subtrees <= n/2)
+
+Step 2: Count paths through centroid 3
+  Subtree 1 (via edge 3-2): depths = {1: node 2, 2: node 1}
+  Subtree 2 (via edge 3-4): depths = {1: node 4}
+  Subtree 3 (via edge 3-5): depths = {1: node 5}
+
+  Process Subtree 1:
+    cnt = [1,0,0,...] (only centroid at depth 0)
+    Nodes at depth 1: need depth k-1=1 in cnt -> cnt[1]=0
+    Nodes at depth 2: need depth k-2=0 in cnt -> cnt[0]=1 -> count += 1
+    Update cnt: cnt[1]+=1, cnt[2]+=1 -> cnt = [1,1,1,...]
+
+  Process Subtree 2:
+    Nodes at depth 1: need depth 1 in cnt -> cnt[1]=1 -> count += 1
+    Update cnt: cnt[1]+=1 -> cnt = [1,2,1,...]
+
+  Process Subtree 3:
+    Nodes at depth 1: need depth 1 in cnt -> cnt[1]=2 -> count += 2
+
+  Paths through centroid 3: 1 + 1 + 2 = 4
+
+Step 3: Remove centroid 3, recurse on subtrees
+  Subtrees {1,2}, {4}, {5} have no paths of length 2
+
+Total: 4 paths
+```
+
+### Visual Diagram
+
+```
+Original Tree:
+    1 - 2 - 3 - 4       Centroid = 3
+            |
+            5
+
+Paths of length 2 through centroid 3:
+  1 -- 2 -- [3]           depth 2 + depth 0 = 2  (node 1 to centroid)
+  [3] -- 2 -- 1           Same path
+
+  2 -- [3] -- 4           depth 1 + depth 1 = 2
+  2 -- [3] -- 5           depth 1 + depth 1 = 2
+  4 -- [3] -- 5           depth 1 + depth 1 = 2
+
+Wait, let's recount properly:
+  Path (1,2,3): uses 2 edges  -> depth of 1 from centroid = 2, depth of 3 = 0
+  But we want paths, not just to centroid.
+
+  Paths passing through 3:
+    1-2-3-4: length 3 (no)
+    1-2-3-5: length 3 (no)
+    1-2-3: length 2 (yes) - but this ends at centroid
+    2-3-4: length 2 (yes)
+    2-3-5: length 2 (yes)
+    4-3-5: length 2 (yes)
+
+Correct count: 4 paths of length 2
+```
+
+### Code (Python)
 
 ```python
-class AdvancedFixedLengthPathQueries:
-    def __init__(self, n=None, edges=None, target_length=None, weights=None, priorities=None):
-        self.n = n or 0
-        self.edges = edges or []
-        self.target_length = target_length or 0
-        self.weights = weights or {}
-        self.priorities = priorities or {}
-        self.graph = defaultdict(list)
-        self._update_path_query_info()
-    
-    def _update_path_query_info(self):
-        """Update path query feasibility information."""
-        self.path_query_feasibility = self._calculate_path_query_feasibility()
-    
-    def _calculate_path_query_feasibility(self):
-        """Calculate path query feasibility."""
-        if self.n <= 0 or self.target_length <= 0:
-            return 0.0
-        
-        # Check if we can have paths of target length
-        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
-    
-    def _build_graph(self):
-        """Build the graph from edges."""
-        self.graph = defaultdict(list)
-        
-        for u, v in self.edges:
-            self.graph[u].append(v)
-            self.graph[v].append(u)
-    
-    def is_path_possible(self):
-        """Check if path is possible."""
-        if not self.path_query_feasibility:
-            return False
-        
-        # Basic check: need at least 1 vertex for a path
-        if self.n < 1:
-            return False
-        
-        # Check if graph has edges
-        return len(self.edges) > 0
-    
-    def find_paths_of_length(self, start_vertex=None, end_vertex=None):
-        """Find paths of the target length."""
-        if not self.path_query_feasibility or not self.is_path_possible():
-            return []
-        
-        self._build_graph()
-        
-        paths = []
-        if start_vertex is None:
-            # Try all vertices as starting points
-            for start in range(1, self.n + 1):
-                paths.extend(self._find_paths_from_vertex(start, end_vertex))
-        else:
-            paths = self._find_paths_from_vertex(start_vertex, end_vertex)
-        
-        return paths
-    
-    def _find_paths_from_vertex(self, start, end_vertex=None):
-        """Find paths starting from a specific vertex."""
-        paths = []
-        visited = set()
-        path = []
-        
-        def dfs(current, length):
-            if length == self.target_length:
-                if end_vertex is None or current == end_vertex:
-                    paths.append(path[:])
-                return
-            
-            if length > self.target_length:
-                return
-            
-            for neighbor in self.graph[current]:
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    path.append(neighbor)
-                    dfs(neighbor, length + 1)
-                    path.pop()
-                    visited.remove(neighbor)
-        
-        visited.add(start)
-        path.append(start)
-        dfs(start, 1)
-        visited.remove(start)
-        path.pop()
-        
-        return paths
-    
-    def get_weighted_paths(self, start_vertex=None, end_vertex=None):
-        """Get paths with weights and priorities applied."""
-        if not self.path_query_feasibility:
-            return []
-        
-        paths = self.find_paths_of_length(start_vertex, end_vertex)
-        if not paths:
-            return []
-        
-        # Create weighted paths
-        weighted_paths = []
-        for path in paths:
-            total_weight = 0
-            total_priority = 0
-            
-            for i in range(len(path) - 1):
-                vertex = path[i]
-                next_vertex = path[i + 1]
-                
-                edge_weight = self.weights.get((vertex, next_vertex), 1)
-                vertex_priority = self.priorities.get(vertex, 1)
-                
-                total_weight += edge_weight
-                total_priority += vertex_priority
-            
-            # Add last vertex priority
-            if path:
-                total_priority += self.priorities.get(path[-1], 1)
-            
-            weighted_score = total_weight * total_priority
-            weighted_paths.append((path, weighted_score))
-        
-        # Sort by weighted score (descending for maximization)
-        weighted_paths.sort(key=lambda x: x[1], reverse=True)
-        
-        return weighted_paths
-    
-    def get_paths_with_priority(self, priority_func, start_vertex=None, end_vertex=None):
-        """Get paths considering priority."""
-        if not self.path_query_feasibility:
-            return []
-        
-        paths = self.find_paths_of_length(start_vertex, end_vertex)
-        if not paths:
-            return []
-        
-        # Create priority-based paths
-        priority_paths = []
-        for path in paths:
-            priority = priority_func(path, self.weights, self.priorities)
-            priority_paths.append((path, priority))
-        
-        # Sort by priority (descending for maximization)
-        priority_paths.sort(key=lambda x: x[1], reverse=True)
-        
-        return priority_paths
-    
-    def get_paths_with_optimization(self, optimization_func, start_vertex=None, end_vertex=None):
-        """Get paths using custom optimization function."""
-        if not self.path_query_feasibility:
-            return []
-        
-        paths = self.find_paths_of_length(start_vertex, end_vertex)
-        if not paths:
-            return []
-        
-        # Create optimization-based paths
-        optimized_paths = []
-        for path in paths:
-            score = optimization_func(path, self.weights, self.priorities)
-            optimized_paths.append((path, score))
-        
-        # Sort by optimization score (descending for maximization)
-        optimized_paths.sort(key=lambda x: x[1], reverse=True)
-        
-        return optimized_paths
-    
-    def get_paths_with_constraints(self, constraint_func, start_vertex=None, end_vertex=None):
-        """Get paths that satisfies custom constraints."""
-        if not self.path_query_feasibility:
-            return []
-        
-        if constraint_func(self.n, self.edges, self.weights, self.priorities, self.target_length):
-            return self.get_weighted_paths(start_vertex, end_vertex)
-        else:
-            return []
-    
-    def get_paths_with_multiple_criteria(self, criteria_list, start_vertex=None, end_vertex=None):
-        """Get paths that satisfies multiple criteria."""
-        if not self.path_query_feasibility:
-            return []
-        
-        satisfies_all_criteria = True
-        for criterion in criteria_list:
-            if not criterion(self.n, self.edges, self.weights, self.priorities, self.target_length):
-                satisfies_all_criteria = False
-                break
-        
-        if satisfies_all_criteria:
-            return self.get_weighted_paths(start_vertex, end_vertex)
-        else:
-            return []
-    
-    def get_paths_with_alternatives(self, alternatives, start_vertex=None, end_vertex=None):
-        """Get paths considering alternative weights/priorities."""
-        result = []
-        
-        # Check original paths
-        original_paths = self.get_weighted_paths(start_vertex, end_vertex)
-        result.append((original_paths, 'original'))
-        
-        # Check alternative weights/priorities
-        for alt_weights, alt_priorities in alternatives:
-            # Create temporary instance with alternative weights/priorities
-            temp_instance = AdvancedFixedLengthPathQueries(self.n, self.edges, self.target_length, alt_weights, alt_priorities)
-            temp_paths = temp_instance.get_weighted_paths(start_vertex, end_vertex)
-            result.append((temp_paths, f'alternative_{alt_weights}_{alt_priorities}'))
-        
-        return result
-    
-    def get_paths_with_adaptive_criteria(self, adaptive_func, start_vertex=None, end_vertex=None):
-        """Get paths using adaptive criteria."""
-        if not self.path_query_feasibility:
-            return []
-        
-        if adaptive_func(self.n, self.edges, self.weights, self.priorities, self.target_length, []):
-            return self.get_weighted_paths(start_vertex, end_vertex)
-        else:
-            return []
-    
-    def get_paths_optimization(self, start_vertex=None, end_vertex=None):
-        """Get optimal paths configuration."""
-        strategies = [
-            ('weighted_paths', lambda: len(self.get_weighted_paths(start_vertex, end_vertex))),
-            ('total_weight', lambda: sum(self.weights.values())),
-            ('total_priority', lambda: sum(self.priorities.values())),
-        ]
-        
-        best_strategy = None
-        best_value = 0
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                current_value = strategy_func()
-                if current_value > best_value:
-                    best_value = current_value
-                    best_strategy = (strategy_name, current_value)
-            except:
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(300000)
+
+def solve(n, k, edges):
+    """
+    Centroid decomposition solution.
+    Time: O(n log n)
+    Space: O(n)
+    """
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+        adj[b].append(a)
+
+    removed = [False] * (n + 1)
+    subtree_size = [0] * (n + 1)
+    result = 0
+
+    def get_subtree_size(u, parent):
+        subtree_size[u] = 1
+        for v in adj[u]:
+            if v != parent and not removed[v]:
+                get_subtree_size(v, u)
+                subtree_size[u] += subtree_size[v]
+
+    def get_centroid(u, parent, tree_size):
+        for v in adj[u]:
+            if v != parent and not removed[v]:
+                if subtree_size[v] > tree_size // 2:
+                    return get_centroid(v, u, tree_size)
+        return u
+
+    def get_depths(u, parent, depth, depths):
+        if depth > k:
+            return
+        depths.append(depth)
+        for v in adj[u]:
+            if v != parent and not removed[v]:
+                get_depths(v, u, depth + 1, depths)
+
+    def count_paths(centroid):
+        nonlocal result
+        cnt = [0] * (k + 2)
+        cnt[0] = 1  # centroid itself at depth 0
+
+        for neighbor in adj[centroid]:
+            if removed[neighbor]:
                 continue
-        
-        return best_strategy
 
-# Example usage
-n = 5
-edges = [(1, 2), (2, 3), (3, 4), (4, 5), (1, 3), (2, 4)]
-target_length = 3
-weights = {(u, v): (u + v) * 2 for u, v in edges}  # Weight based on vertex sum
-priorities = {i: i for i in range(1, n + 1)}  # Priority based on vertex number
-advanced_path_queries = AdvancedFixedLengthPathQueries(n, edges, target_length, weights, priorities)
+            depths = []
+            get_depths(neighbor, centroid, 1, depths)
 
-print(f"Weighted paths: {advanced_path_queries.get_weighted_paths()}")
+            # Count paths combining this subtree with previous subtrees
+            for d in depths:
+                if k - d >= 0 and k - d <= k:
+                    result += cnt[k - d]
 
-# Get paths with priority
-def priority_func(path, weights, priorities):
-    return sum(priorities.get(vertex, 1) for vertex in path)
+            # Add depths from this subtree to cnt
+            for d in depths:
+                if d <= k:
+                    cnt[d] += 1
 
-print(f"Paths with priority: {advanced_path_queries.get_paths_with_priority(priority_func)}")
+    def decompose(u):
+        get_subtree_size(u, -1)
+        centroid = get_centroid(u, -1, subtree_size[u])
+        removed[centroid] = True
 
-# Get paths with optimization
-def optimization_func(path, weights, priorities):
-    return sum(weights.get((path[i], path[i+1]), 1) for i in range(len(path)-1))
+        count_paths(centroid)
 
-print(f"Paths with optimization: {advanced_path_queries.get_paths_with_optimization(optimization_func)}")
+        for v in adj[centroid]:
+            if not removed[v]:
+                decompose(v)
 
-# Get paths with constraints
-def constraint_func(n, edges, weights, priorities, target_length):
-    return len(edges) > 0 and n > 0 and target_length > 0
+    decompose(1)
+    return result
 
-print(f"Paths with constraints: {advanced_path_queries.get_paths_with_constraints(constraint_func)}")
+# Read input
+def main():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n, k = int(input_data[idx]), int(input_data[idx + 1])
+    idx += 2
+    edges = []
+    for _ in range(n - 1):
+        a, b = int(input_data[idx]), int(input_data[idx + 1])
+        edges.append((a, b))
+        idx += 2
+    print(solve(n, k, edges))
 
-# Get paths with multiple criteria
-def criterion1(n, edges, weights, priorities, target_length):
-    return len(edges) > 0
-
-def criterion2(n, edges, weights, priorities, target_length):
-    return len(weights) > 0
-
-criteria_list = [criterion1, criterion2]
-print(f"Paths with multiple criteria: {advanced_path_queries.get_paths_with_multiple_criteria(criteria_list)}")
-
-# Get paths with alternatives
-alternatives = [({(u, v): 1 for u, v in edges}, {i: 1 for i in range(1, n + 1)}), ({(u, v): (u + v)*3 for u, v in edges}, {i: 2 for i in range(1, n + 1)})]
-print(f"Paths with alternatives: {advanced_path_queries.get_paths_with_alternatives(alternatives)}")
-
-# Get paths with adaptive criteria
-def adaptive_func(n, edges, weights, priorities, target_length, current_result):
-    return len(edges) > 0 and len(current_result) < 10
-
-print(f"Paths with adaptive criteria: {advanced_path_queries.get_paths_with_adaptive_criteria(adaptive_func)}")
-
-# Get paths optimization
-print(f"Paths optimization: {advanced_path_queries.get_paths_optimization()}")
+if __name__ == "__main__":
+    main()
 ```
 
-### **Variation 3: Fixed Length Path Queries with Constraints**
-**Problem**: Handle path queries with additional constraints (length limits, path constraints, pattern constraints).
+### Code (C++)
 
-**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-```python
-class ConstrainedFixedLengthPathQueries:
-    def __init__(self, n=None, edges=None, target_length=None, constraints=None):
-        self.n = n or 0
-        self.edges = edges or []
-        self.target_length = target_length or 0
-        self.constraints = constraints or {}
-        self.graph = defaultdict(list)
-        self._update_path_query_info()
-    
-    def _update_path_query_info(self):
-        """Update path query feasibility information."""
-        self.path_query_feasibility = self._calculate_path_query_feasibility()
-    
-    def _calculate_path_query_feasibility(self):
-        """Calculate path query feasibility."""
-        if self.n <= 0 or self.target_length <= 0:
-            return 0.0
-        
-        # Check if we can have paths of target length
-        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
-    
-    def _is_valid_edge(self, u, v):
-        """Check if edge is valid considering constraints."""
-        # Edge constraints
-        if 'allowed_edges' in self.constraints:
-            if (u, v) not in self.constraints['allowed_edges'] and (v, u) not in self.constraints['allowed_edges']:
-                return False
-        
-        if 'forbidden_edges' in self.constraints:
-            if (u, v) in self.constraints['forbidden_edges'] or (v, u) in self.constraints['forbidden_edges']:
-                return False
-        
-        # Vertex constraints
-        if 'max_vertex' in self.constraints:
-            if u > self.constraints['max_vertex'] or v > self.constraints['max_vertex']:
-                return False
-        
-        if 'min_vertex' in self.constraints:
-            if u < self.constraints['min_vertex'] or v < self.constraints['min_vertex']:
-                return False
-        
-        # Pattern constraints
-        if 'pattern_constraints' in self.constraints:
-            for constraint in self.constraints['pattern_constraints']:
-                if not constraint(u, v, self.n, self.edges, self.target_length):
-                    return False
-        
-        return True
-    
-    def _build_graph(self):
-        """Build the graph from edges."""
-        self.graph = defaultdict(list)
-        
-        for u, v in self.edges:
-            if self._is_valid_edge(u, v):
-                self.graph[u].append(v)
-                self.graph[v].append(u)
-    
-    def is_path_possible(self):
-        """Check if path is possible."""
-        if not self.path_query_feasibility:
-            return False
-        
-        # Basic check: need at least 1 vertex for a path
-        if self.n < 1:
-            return False
-        
-        # Check if graph has edges
-        return len(self.edges) > 0
-    
-    def find_paths_of_length(self, start_vertex=None, end_vertex=None):
-        """Find paths of the target length."""
-        if not self.path_query_feasibility or not self.is_path_possible():
-            return []
-        
-        self._build_graph()
-        
-        paths = []
-        if start_vertex is None:
-            # Try all vertices as starting points
-            for start in range(1, self.n + 1):
-                paths.extend(self._find_paths_from_vertex(start, end_vertex))
-        else:
-            paths = self._find_paths_from_vertex(start_vertex, end_vertex)
-        
-        return paths
-    
-    def _find_paths_from_vertex(self, start, end_vertex=None):
-        """Find paths starting from a specific vertex."""
-        paths = []
-        visited = set()
-        path = []
-        
-        def dfs(current, length):
-            if length == self.target_length:
-                if end_vertex is None or current == end_vertex:
-                    paths.append(path[:])
-                return
-            
-            if length > self.target_length:
-                return
-            
-            for neighbor in self.graph[current]:
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    path.append(neighbor)
-                    dfs(neighbor, length + 1)
-                    path.pop()
-                    visited.remove(neighbor)
-        
-        visited.add(start)
-        path.append(start)
-        dfs(start, 1)
-        visited.remove(start)
-        path.pop()
-        
-        return paths
-    
-    def get_paths_with_length_constraints(self, min_length, max_length, start_vertex=None, end_vertex=None):
-        """Get paths considering length constraints."""
-        if not self.path_query_feasibility:
-            return []
-        
-        if min_length <= self.target_length <= max_length:
-            return self.find_paths_of_length(start_vertex, end_vertex)
-        else:
-            return []
-    
-    def get_paths_with_path_constraints(self, path_constraints, start_vertex=None, end_vertex=None):
-        """Get paths considering path constraints."""
-        if not self.path_query_feasibility:
-            return []
-        
-        satisfies_constraints = True
-        for constraint in path_constraints:
-            if not constraint(self.n, self.edges, self.target_length):
-                satisfies_constraints = False
-                break
-        
-        if satisfies_constraints:
-            return self.find_paths_of_length(start_vertex, end_vertex)
-        else:
-            return []
-    
-    def get_paths_with_pattern_constraints(self, pattern_constraints, start_vertex=None, end_vertex=None):
-        """Get paths considering pattern constraints."""
-        if not self.path_query_feasibility:
-            return []
-        
-        satisfies_pattern = True
-        for constraint in pattern_constraints:
-            if not constraint(self.n, self.edges, self.target_length):
-                satisfies_pattern = False
-                break
-        
-        if satisfies_pattern:
-            return self.find_paths_of_length(start_vertex, end_vertex)
-        else:
-            return []
-    
-    def get_paths_with_mathematical_constraints(self, constraint_func, start_vertex=None, end_vertex=None):
-        """Get paths that satisfies custom mathematical constraints."""
-        if not self.path_query_feasibility:
-            return []
-        
-        paths = self.find_paths_of_length(start_vertex, end_vertex)
-        if paths and constraint_func(self.n, self.edges, self.target_length):
-            return paths
-        else:
-            return []
-    
-    def get_paths_with_optimization_constraints(self, optimization_func, start_vertex=None, end_vertex=None):
-        """Get paths using custom optimization constraints."""
-        if not self.path_query_feasibility:
-            return []
-        
-        # Calculate optimization score for paths
-        score = optimization_func(self.n, self.edges, self.target_length)
-        
-        if score > 0:
-            return self.find_paths_of_length(start_vertex, end_vertex)
-        else:
-            return []
-    
-    def get_paths_with_multiple_constraints(self, constraints_list, start_vertex=None, end_vertex=None):
-        """Get paths that satisfies multiple constraints."""
-        if not self.path_query_feasibility:
-            return []
-        
-        satisfies_all_constraints = True
-        for constraint in constraints_list:
-            if not constraint(self.n, self.edges, self.target_length):
-                satisfies_all_constraints = False
-                break
-        
-        if satisfies_all_constraints:
-            return self.find_paths_of_length(start_vertex, end_vertex)
-        else:
-            return []
-    
-    def get_paths_with_priority_constraints(self, priority_func, start_vertex=None, end_vertex=None):
-        """Get paths with priority-based constraints."""
-        if not self.path_query_feasibility:
-            return []
-        
-        # Calculate priority for paths
-        priority = priority_func(self.n, self.edges, self.target_length)
-        
-        if priority > 0:
-            return self.find_paths_of_length(start_vertex, end_vertex)
-        else:
-            return []
-    
-    def get_paths_with_adaptive_constraints(self, adaptive_func, start_vertex=None, end_vertex=None):
-        """Get paths with adaptive constraints."""
-        if not self.path_query_feasibility:
-            return []
-        
-        paths = self.find_paths_of_length(start_vertex, end_vertex)
-        if paths and adaptive_func(self.n, self.edges, self.target_length, []):
-            return paths
-        else:
-            return []
-    
-    def get_optimal_paths_strategy(self, start_vertex=None, end_vertex=None):
-        """Get optimal paths strategy considering all constraints."""
-        strategies = [
-            ('length_constraints', self.get_paths_with_length_constraints),
-            ('path_constraints', self.get_paths_with_path_constraints),
-            ('pattern_constraints', self.get_paths_with_pattern_constraints),
-        ]
-        
-        best_strategy = None
-        best_score = 0
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                if strategy_name == 'length_constraints':
-                    result = strategy_func(1, 1000, start_vertex, end_vertex)
-                elif strategy_name == 'path_constraints':
-                    path_constraints = [lambda n, edges, target_length: len(edges) > 0]
-                    result = strategy_func(path_constraints, start_vertex, end_vertex)
-                elif strategy_name == 'pattern_constraints':
-                    pattern_constraints = [lambda n, edges, target_length: len(edges) > 0]
-                    result = strategy_func(pattern_constraints, start_vertex, end_vertex)
-                
-                if result and len(result) > best_score:
-                    best_score = len(result)
-                    best_strategy = (strategy_name, result)
-            except:
-                continue
-        
-        return best_strategy
+const int MAXN = 200005;
+vector<int> adj[MAXN];
+bool removed[MAXN];
+int subtree_size[MAXN];
+int n, k;
+long long result = 0;
 
-# Example usage
-constraints = {
-    'allowed_edges': [(1, 2), (2, 3), (3, 4), (4, 5), (1, 3), (2, 4)],
-    'forbidden_edges': [(1, 4), (2, 5)],
-    'max_vertex': 10,
-    'min_vertex': 1,
-    'pattern_constraints': [lambda u, v, n, edges, target_length: u > 0 and v > 0 and u <= n and v <= n]
+void get_subtree_size(int u, int parent) {
+    subtree_size[u] = 1;
+    for (int v : adj[u]) {
+        if (v != parent && !removed[v]) {
+            get_subtree_size(v, u);
+            subtree_size[u] += subtree_size[v];
+        }
+    }
 }
 
-n = 5
-edges = [(1, 2), (2, 3), (3, 4), (4, 5), (1, 3), (2, 4)]
-target_length = 3
-constrained_path_queries = ConstrainedFixedLengthPathQueries(n, edges, target_length, constraints)
+int get_centroid(int u, int parent, int tree_size) {
+    for (int v : adj[u]) {
+        if (v != parent && !removed[v]) {
+            if (subtree_size[v] > tree_size / 2) {
+                return get_centroid(v, u, tree_size);
+            }
+        }
+    }
+    return u;
+}
 
-print("Length-constrained paths:", constrained_path_queries.get_paths_with_length_constraints(2, 5))
+void get_depths(int u, int parent, int depth, vector<int>& depths) {
+    if (depth > k) return;
+    depths.push_back(depth);
+    for (int v : adj[u]) {
+        if (v != parent && !removed[v]) {
+            get_depths(v, u, depth + 1, depths);
+        }
+    }
+}
 
-print("Path-constrained paths:", constrained_path_queries.get_paths_with_path_constraints([lambda n, edges, target_length: len(edges) > 0]))
+void count_paths(int centroid) {
+    vector<int> cnt(k + 2, 0);
+    cnt[0] = 1;  // centroid at depth 0
 
-print("Pattern-constrained paths:", constrained_path_queries.get_paths_with_pattern_constraints([lambda n, edges, target_length: len(edges) > 0]))
+    for (int neighbor : adj[centroid]) {
+        if (removed[neighbor]) continue;
 
-# Mathematical constraints
-def custom_constraint(n, edges, target_length):
-    return len(edges) > 0 and target_length > 0
+        vector<int> depths;
+        get_depths(neighbor, centroid, 1, depths);
 
-print("Mathematical constraint paths:", constrained_path_queries.get_paths_with_mathematical_constraints(custom_constraint))
+        // Count paths combining this subtree with previous
+        for (int d : depths) {
+            if (k - d >= 0 && k - d <= k) {
+                result += cnt[k - d];
+            }
+        }
 
-# Range constraints
-def range_constraint(n, edges, target_length):
-    return 1 <= target_length <= 20
+        // Add this subtree's depths to cnt
+        for (int d : depths) {
+            if (d <= k) {
+                cnt[d]++;
+            }
+        }
+    }
+}
 
-range_constraints = [range_constraint]
-print("Range-constrained paths:", constrained_path_queries.get_paths_with_length_constraints(1, 20))
+void decompose(int u) {
+    get_subtree_size(u, -1);
+    int centroid = get_centroid(u, -1, subtree_size[u]);
+    removed[centroid] = true;
 
-# Multiple constraints
-def constraint1(n, edges, target_length):
-    return len(edges) > 0
+    count_paths(centroid);
 
-def constraint2(n, edges, target_length):
-    return target_length > 0
+    for (int v : adj[centroid]) {
+        if (!removed[v]) {
+            decompose(v);
+        }
+    }
+}
 
-constraints_list = [constraint1, constraint2]
-print("Multiple constraints paths:", constrained_path_queries.get_paths_with_multiple_constraints(constraints_list))
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-# Priority constraints
-def priority_func(n, edges, target_length):
-    return n + len(edges) + target_length
+    cin >> n >> k;
+    for (int i = 0; i < n - 1; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
 
-print("Priority-constrained paths:", constrained_path_queries.get_paths_with_priority_constraints(priority_func))
-
-# Adaptive constraints
-def adaptive_func(n, edges, target_length, current_result):
-    return len(edges) > 0 and len(current_result) < 10
-
-print("Adaptive constraint paths:", constrained_path_queries.get_paths_with_adaptive_constraints(adaptive_func))
-
-# Optimal strategy
-optimal = constrained_path_queries.get_optimal_paths_strategy()
-print(f"Optimal paths strategy: {optimal}")
+    decompose(1);
+    cout << result << "\n";
+    return 0;
+}
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Fixed Length Hamiltonian Path Queries](https://cses.fi/problemset/task/2417) - Similar approach
-- [Round Trip](https://cses.fi/problemset/task/1669) - Cycle detection
-- [Graph Girth](https://cses.fi/problemset/task/1707) - Cycle properties
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log n) | Each node processed O(log n) times across decomposition levels |
+| Space | O(n) | Adjacency list, arrays, recursion stack |
 
-#### **LeetCode Problems**
-- [Unique Paths III](https://leetcode.com/problems/unique-paths-iii/) - Hamiltonian path
-- [Word Ladder](https://leetcode.com/problems/word-ladder/) - Graph traversal
-- [Word Ladder II](https://leetcode.com/problems/word-ladder-ii/) - All shortest paths
+---
 
-#### **Problem Categories**
-- **Graph Theory**: Path algorithms, matrix exponentiation
-- **Dynamic Programming**: Matrix powers, state transitions
-- **Combinatorial Optimization**: Path counting, graph traversal
+## Common Mistakes
 
-## 🔗 Additional Resources
+### Mistake 1: Not Handling Removed Nodes
 
-### **Algorithm References**
-- [Matrix Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html) - Matrix power algorithms
-- [Dynamic Programming](https://cp-algorithms.com/dynamic_programming/) - DP techniques
-- [Graph Algorithms](https://cp-algorithms.com/graph/) - Graph traversal algorithms
+```cpp
+// WRONG: Visiting already removed nodes
+void get_subtree_size(int u, int parent) {
+    subtree_size[u] = 1;
+    for (int v : adj[u]) {
+        if (v != parent) {  // Missing: && !removed[v]
+            get_subtree_size(v, u);
+            subtree_size[u] += subtree_size[v];
+        }
+    }
+}
+```
 
-### **Practice Problems**
-- [CSES Round Trip](https://cses.fi/problemset/task/1669) - Medium
-- [CSES Graph Girth](https://cses.fi/problemset/task/1707) - Medium
-- [CSES Hamiltonian Flights](https://cses.fi/problemset/task/1690) - Medium
+**Problem:** After removing a centroid, we must skip it in future traversals.
+**Fix:** Always check `!removed[v]` when traversing neighbors.
 
-### **Further Reading**
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
-- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
+### Mistake 2: Counting Paths Within Same Subtree
+
+```cpp
+// WRONG: Adding to cnt before checking
+for (int d : depths) {
+    cnt[d]++;  // Added first
+}
+for (int d : depths) {
+    result += cnt[k - d];  // Now counts paths within same subtree!
+}
+```
+
+**Problem:** This counts paths where both endpoints are in the same subtree (not passing through centroid).
+**Fix:** Count matches first, then add to the frequency array.
+
+### Mistake 3: Off-by-One in Depth Limit
+
+```cpp
+// WRONG: Missing depth limit check
+void get_depths(int u, int parent, int depth, vector<int>& depths) {
+    depths.push_back(depth);  // Should check if depth > k first
+    for (int v : adj[u]) {
+        // ...
+    }
+}
+```
+
+**Problem:** Collecting depths greater than k wastes time and memory.
+**Fix:** Return early if `depth > k`.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| k = 1 | Tree with any edges | Number of edges | Every edge is a path of length 1 |
+| Linear tree | 1-2-3-...-n, k=n-1 | 1 | Only one path of maximum length |
+| Star graph | Center connected to n-1 leaves, k=2 | C(n-1, 2) | All pairs of leaves |
+| k > n-1 | Any tree | 0 | No path can have more than n-1 edges |
+| Single node | n=1, k=1 | 0 | No edges exist |
+
+---
+
+## When to Use This Pattern
+
+### Use Centroid Decomposition When:
+- Counting or finding paths in a tree with specific properties
+- Querying distances between pairs of nodes
+- Problems involving "paths passing through" a node
+- Need O(n log n) or O(n log^2 n) solution on trees
+
+### Do Not Use When:
+- The graph is not a tree (has cycles)
+- Simple BFS/DFS suffices (single source queries)
+- Problem requires path reconstruction (not just counting)
+
+### Pattern Recognition Checklist:
+- [ ] Is the graph a tree? -> **Consider centroid decomposition**
+- [ ] Counting paths with specific length/property? -> **Centroid decomposition**
+- [ ] Need to combine information from different subtrees? -> **Centroid decomposition**
+- [ ] O(n^2) is too slow but tree structure exists? -> **Centroid decomposition**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [Tree Distances I](https://cses.fi/problemset/task/1132) | Basic tree traversal and distances |
+| [Tree Diameter](https://cses.fi/problemset/task/1131) | Finding longest path in tree |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Fixed-Length Paths II](https://cses.fi/problemset/task/2081) | Count paths with length in range [k1, k2] |
+| [Tree Distances II](https://cses.fi/problemset/task/1133) | Sum of distances, different technique |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Path Queries II](https://cses.fi/problemset/task/2134) | HLD with segment tree |
+| [Centroid decomposition with updates](https://codeforces.com/problemset/problem/342/E) | Dynamic centroid queries |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Decompose tree by centroids; count paths passing through each centroid by combining depths from different subtrees.
+2. **Time Optimization:** From O(n^2) brute force to O(n log n) by exploiting tree structure.
+3. **Space Trade-off:** O(n) space for tracking depths and counts.
+4. **Pattern:** Divide-and-conquer on trees using centroid decomposition.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Find the centroid of a tree in O(n) time
+- [ ] Explain why each node is processed O(log n) times total
+- [ ] Implement centroid decomposition without looking at the solution
+- [ ] Apply this technique to count paths with other properties
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Centroid Decomposition](https://cp-algorithms.com/graph/centroid-decomposition.html)
+- [USACO Guide: Centroid Decomposition](https://usaco.guide/plat/centroid)
+- [Codeforces Tutorial](https://codeforces.com/blog/entry/81661)

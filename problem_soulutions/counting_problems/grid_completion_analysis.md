@@ -1,833 +1,490 @@
 ---
 layout: simple
-title: "Grid Completion - Grid Algorithm Problem"
+title: "Grid Completion - Combinatorics Problem"
 permalink: /problem_soulutions/counting_problems/grid_completion_analysis
+difficulty: Medium
+tags: [combinatorics, backtracking, grid, counting]
 ---
 
-# Grid Completion - Grid Algorithm Problem
+# Grid Completion
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of grid completion in algorithmic problems
-- Apply counting techniques for grid completion analysis
-- Implement efficient algorithms for grid completion counting
-- Optimize grid operations for completion analysis
-- Handle special cases in grid completion counting
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Combinatorics / Backtracking |
+| **Time Limit** | 1 second |
+| **Key Technique** | Constraint Satisfaction, Latin Square Counting |
+| **CSES Link** | [Grid Paths](https://cses.fi/problemset/task/1078) (related) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a partially filled grid, count the number of ways to complete the grid with specific constraints.
+After solving this problem, you will be able to:
+- [ ] Apply backtracking to count valid grid configurations
+- [ ] Understand Latin square constraints (unique values per row/column)
+- [ ] Use bitmasks to track available values efficiently
+- [ ] Recognize when mathematical formulas can replace enumeration
 
-**Input**: 
-- n, m: grid dimensions
-- grid: partially filled grid with some cells empty
+---
 
-**Output**: 
-- Number of ways to complete the grid modulo 10^9+7
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n, m ≤ 10
-- Grid contains some empty cells (represented as 0)
-- Answer modulo 10^9+7
+**Problem:** Given a partially filled n x n grid, count the number of ways to complete it such that each row and column contains each value from 1 to n exactly once.
 
-**Example**:
+**Input:**
+- Line 1: Integer n (grid dimension)
+- Next n lines: Grid values (0 = empty cell)
+
+**Output:**
+- Number of valid completions modulo 10^9 + 7
+
+**Constraints:**
+- 1 <= n <= 10
+- Grid values are in range [0, n] where 0 means empty
+- Answer modulo 10^9 + 7
+
+### Example
+
 ```
 Input:
-n = 2, m = 2
-grid = [
-  [1, 0],
-  [0, 1]
-]
+2
+1 0
+0 1
 
 Output:
 1
-
-Explanation**: 
-Only one way to complete the grid:
-[1, 2]
-[2, 1]
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible values for empty cells
-- **Constraint Validation**: Check if completed grid satisfies constraints
-- **Simple Implementation**: Easy to understand and implement
-- **Inefficient**: Exponential time complexity
-
-**Key Insight**: Enumerate all possible values for empty cells and check if the completed grid satisfies constraints.
-
-**Algorithm**:
-- Find all empty cells in the grid
-- Try all possible values for each empty cell
-- Check if completed grid satisfies constraints
-- Count valid completions
-
-**Visual Example**:
+**Explanation:** The only valid completion is:
 ```
-2×2 grid with empty cells:
-
-Brute force enumeration:
-┌─────────────────────────────────────┐
-│ Empty cells: (0,1) and (1,0)      │
-│ Try all values: 1, 2 for each cell │
-│ Check constraints for each combination │
-└─────────────────────────────────────┘
-
-Valid completions:
-┌─────────────────────────────────────┐
-│ [1, 2]                            │
-│ [2, 1]                            │
-│ Only 1 valid completion            │
-└─────────────────────────────────────┘
+1 2
+2 1
 ```
-
-**Implementation**:
-```python
-def brute_force_grid_completion(n, m, grid, mod=10**9+7):
-    """
-    Count grid completions using brute force approach
-    
-    Args:
-        n, m: grid dimensions
-        grid: partially filled grid
-        mod: modulo value
-    
-    Returns:
-        int: number of ways to complete grid modulo mod
-    """
-    def find_empty_cells(grid):
-        """Find all empty cells in the grid"""
-        empty_cells = []
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 0:
-                    empty_cells.append((i, j))
-        return empty_cells
-    
-    def is_valid_completion(grid):
-        """Check if completed grid is valid"""
-        # Check rows
-        for i in range(n):
-            row_values = [grid[i][j] for j in range(m) if grid[i][j] != 0]
-            if len(row_values) != len(set(row_values)):
-                return False
-        
-        # Check columns
-        for j in range(m):
-            col_values = [grid[i][j] for i in range(n) if grid[i][j] != 0]
-            if len(col_values) != len(set(col_values)):
-                return False
-        
-        return True
-    
-    def count_completions(grid, empty_cells, index):
-        """Count completions recursively"""
-        if index == len(empty_cells):
-            return 1 if is_valid_completion(grid) else 0
-        
-        count = 0
-        i, j = empty_cells[index]
-        
-        # Try all possible values for current empty cell
-        for value in range(1, n + 1):
-            grid[i][j] = value
-            count = (count + count_completions(grid, empty_cells, index + 1)) % mod
-            grid[i][j] = 0  # Backtrack
-        
-        return count
-    
-    empty_cells = find_empty_cells(grid)
-    return count_completions(grid, empty_cells, 0)
-
-def brute_force_grid_completion_optimized(n, m, grid, mod=10**9+7):
-    """
-    Optimized brute force grid completion counting
-    
-    Args:
-        n, m: grid dimensions
-        grid: partially filled grid
-        mod: modulo value
-    
-    Returns:
-        int: number of ways to complete grid modulo mod
-    """
-    def find_empty_cells_optimized(grid):
-        """Find empty cells with optimization"""
-        empty_cells = []
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == 0:
-                    empty_cells.append((i, j))
-        return empty_cells
-    
-    def is_valid_completion_optimized(grid, row, col, value):
-        """Check if placing value at (row, col) is valid"""
-        # Check row
-        for j in range(m):
-            if j != col and grid[row][j] == value:
-                return False
-        
-        # Check column
-        for i in range(n):
-            if i != row and grid[i][col] == value:
-                return False
-        
-        return True
-    
-    def count_completions_optimized(grid, empty_cells, index):
-        """Count completions with optimization"""
-        if index == len(empty_cells):
-            return 1
-        
-        count = 0
-        i, j = empty_cells[index]
-        
-        # Try all possible values for current empty cell
-        for value in range(1, n + 1):
-            if is_valid_completion_optimized(grid, i, j, value):
-                grid[i][j] = value
-                count = (count + count_completions_optimized(grid, empty_cells, index + 1)) % mod
-                grid[i][j] = 0  # Backtrack
-        
-        return count
-    
-    empty_cells = find_empty_cells_optimized(grid)
-    return count_completions_optimized(grid, empty_cells, 0)
-
-# Example usage
-n, m = 2, 2
-grid = [
-    [1, 0],
-    [0, 1]
-]
-result1 = brute_force_grid_completion(n, m, grid)
-result2 = brute_force_grid_completion_optimized(n, m, grid)
-print(f"Brute force grid completion count: {result1}")
-print(f"Optimized brute force count: {result2}")
-```
-
-**Time Complexity**: O(n^(empty_cells))
-**Space Complexity**: O(empty_cells)
-
-**Why it's inefficient**: Exponential time complexity due to complete enumeration.
+Row 1: contains 1, 2. Row 2: contains 2, 1.
+Col 1: contains 1, 2. Col 2: contains 2, 1.
 
 ---
 
-### Approach 2: Backtracking Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Backtracking Solution**:
-- **Backtracking**: Use backtracking to avoid invalid placements
-- **Early Termination**: Stop exploring invalid branches early
-- **Efficient Pruning**: Prune invalid branches efficiently
-- **Optimization**: More efficient than brute force
+### Pattern Recognition
 
-**Key Insight**: Use backtracking to place values one by one and prune invalid branches early.
+> **Key Question:** This is a Latin square completion problem. Each row and column must be a permutation of 1 to n.
 
-**Algorithm**:
-- Place values one by one using backtracking
-- Check for constraints after each placement
-- Backtrack when invalid placement is found
+The problem combines two concepts:
+1. **Constraint satisfaction** - each placement must respect row/column uniqueness
+2. **Counting** - we need to count ALL valid completions, not just find one
 
-**Visual Example**:
-```
-Backtracking approach:
-┌─────────────────────────────────────┐
-│ Place value 2 at (0,1)            │
-│ Check constraints - valid          │
-│ Place value 2 at (1,0)            │
-│ Check constraints - valid          │
-│ Grid completed - count++           │
-└─────────────────────────────────────┘
+### Breaking Down the Problem
 
-Backtracking tree:
-┌─────────────────────────────────────┐
-│ (0,1): 2 ✓                        │
-│ └─ (1,0): 2 ✓                     │
-│    └─ Complete ✓                  │
-└─────────────────────────────────────┘
-```
+1. **What are we looking for?** Total count of valid grid completions
+2. **What information do we have?** Pre-filled cells that constrain valid values
+3. **What's the relationship?** Each empty cell has limited valid choices based on its row/column
 
-**Implementation**:
-```python
-def backtracking_grid_completion(n, m, grid, mod=10**9+7):
-    """
-    Count grid completions using backtracking approach
-    
-    Args:
-        n, m: grid dimensions
-        grid: partially filled grid
-        mod: modulo value
-    
-    Returns:
-        int: number of ways to complete grid modulo mod
-    """
-    def is_valid_placement(grid, row, col, value):
-        """Check if placing value at (row, col) is valid"""
-        # Check row
-        for j in range(m):
-            if j != col and grid[row][j] == value:
-                return False
-        
-        # Check column
-        for i in range(n):
-            if i != row and grid[i][col] == value:
-                return False
-        
-        return True
-    
-    def backtrack(grid, empty_cells, index):
-        """Backtrack to find valid completions"""
-        if index == len(empty_cells):
-            return 1
-        
-        count = 0
-        i, j = empty_cells[index]
-        
-        # Try all possible values for current empty cell
-        for value in range(1, n + 1):
-            if is_valid_placement(grid, i, j, value):
-                grid[i][j] = value
-                count = (count + backtrack(grid, empty_cells, index + 1)) % mod
-                grid[i][j] = 0  # Backtrack
-        
-        return count
-    
-    # Find empty cells
-    empty_cells = []
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 0:
-                empty_cells.append((i, j))
-    
-    return backtrack(grid, empty_cells, 0)
+### Analogies
 
-def backtracking_grid_completion_optimized(n, m, grid, mod=10**9+7):
-    """
-    Optimized backtracking grid completion counting
-    
-    Args:
-        n, m: grid dimensions
-        grid: partially filled grid
-        mod: modulo value
-    
-    Returns:
-        int: number of ways to complete grid modulo mod
-    """
-    def is_valid_placement_optimized(grid, row, col, value):
-        """Check if placing value at (row, col) is valid with optimization"""
-        # Check row
-        for j in range(m):
-            if j != col and grid[row][j] == value:
-                return False
-        
-        # Check column
-        for i in range(n):
-            if i != row and grid[i][col] == value:
-                return False
-        
-        return True
-    
-    def backtrack_optimized(grid, empty_cells, index):
-        """Optimized backtracking"""
-        if index == len(empty_cells):
-            return 1
-        
-        count = 0
-        i, j = empty_cells[index]
-        
-        # Try all possible values for current empty cell
-        for value in range(1, n + 1):
-            if is_valid_placement_optimized(grid, i, j, value):
-                grid[i][j] = value
-                count = (count + backtrack_optimized(grid, empty_cells, index + 1)) % mod
-                grid[i][j] = 0  # Backtrack
-        
-        return count
-    
-    # Find empty cells
-    empty_cells = []
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 0:
-                empty_cells.append((i, j))
-    
-    return backtrack_optimized(grid, empty_cells, 0)
-
-# Example usage
-n, m = 2, 2
-grid = [
-    [1, 0],
-    [0, 1]
-]
-result1 = backtracking_grid_completion(n, m, grid)
-result2 = backtracking_grid_completion_optimized(n, m, grid)
-print(f"Backtracking grid completion count: {result1}")
-print(f"Optimized backtracking count: {result2}")
-```
-
-**Time Complexity**: O(n^(empty_cells))
-**Space Complexity**: O(empty_cells)
-
-**Why it's better**: Uses backtracking to prune invalid branches early.
-
-**Implementation Considerations**:
-- **Backtracking**: Use backtracking to avoid invalid placements
-- **Early Termination**: Stop exploring invalid branches early
-- **Efficient Pruning**: Prune invalid branches efficiently
+Think of this like solving multiple Sudoku puzzles simultaneously and counting how many solutions exist. Each empty cell can only use values not already in its row or column.
 
 ---
 
-### Approach 3: Mathematical Solution (Optimal)
+## Solution 1: Brute Force Backtracking
 
-**Key Insights from Mathematical Solution**:
-- **Mathematical Analysis**: Use mathematical properties of grid completion
-- **Constraint Analysis**: Analyze constraints mathematically
-- **Efficient Calculation**: Use mathematical formulas
-- **Optimal Complexity**: Best approach for grid completion counting
+### Idea
 
-**Key Insight**: Use mathematical analysis of grid constraints and completion properties.
+Try every possible value (1 to n) for each empty cell. After filling all cells, verify the grid satisfies Latin square constraints.
 
-**Algorithm**:
-- Analyze grid constraints mathematically
-- Use mathematical formulas for completion counting
-- Calculate result efficiently
+### Algorithm
 
-**Visual Example**:
-```
-Mathematical analysis:
-┌─────────────────────────────────────┐
-│ For grid completion:               │
-│ - Each row must have unique values │
-│ - Each column must have unique values │
-│ - Use mathematical formulas        │
-└─────────────────────────────────────┘
+1. Find all empty cells in the grid
+2. For each empty cell, try values 1 to n
+3. After filling all cells, check if grid is valid
+4. Count valid completions
 
-Constraint analysis:
-┌─────────────────────────────────────┐
-│ For 2×2 grid:                     │
-│ - Row constraints: 2! = 2         │
-│ - Column constraints: 2! = 2      │
-│ - Total completions: 2 × 2 = 4    │
-└─────────────────────────────────────┘
-```
+### Code
 
-**Implementation**:
 ```python
-def mathematical_grid_completion(n, m, grid, mod=10**9+7):
+def solve_brute_force(n, grid):
     """
-    Count grid completions using mathematical approach
-    
-    Args:
-        n, m: grid dimensions
-        grid: partially filled grid
-        mod: modulo value
-    
-    Returns:
-        int: number of ways to complete grid modulo mod
+    Brute force: try all values, validate at the end.
+
+    Time: O(n^k * n^2) where k = empty cells
+    Space: O(k) for recursion
     """
-    def factorial_mod(x, mod):
-        """Calculate factorial modulo mod"""
-        result = 1
-        for i in range(1, x + 1):
-            result = (result * i) % mod
-        return result
-    
-    def count_row_completions(grid, row):
-        """Count ways to complete a row"""
-        used_values = set()
-        empty_cells = 0
-        
-        for j in range(m):
-            if grid[row][j] == 0:
-                empty_cells += 1
-            else:
-                used_values.add(grid[row][j])
-        
-        if empty_cells == 0:
-            return 1
-        
-        # Count ways to fill empty cells with unused values
-        unused_values = n - len(used_values)
-        if unused_values < empty_cells:
-            return 0
-        
-        return factorial_mod(unused_values, mod) // factorial_mod(unused_values - empty_cells, mod)
-    
-    def count_column_completions(grid, col):
-        """Count ways to complete a column"""
-        used_values = set()
-        empty_cells = 0
-        
+    MOD = 10**9 + 7
+    empty = [(i, j) for i in range(n) for j in range(n) if grid[i][j] == 0]
+
+    def is_valid():
         for i in range(n):
-            if grid[i][col] == 0:
-                empty_cells += 1
-            else:
-                used_values.add(grid[i][col])
-        
-        if empty_cells == 0:
-            return 1
-        
-        # Count ways to fill empty cells with unused values
-        unused_values = n - len(used_values)
-        if unused_values < empty_cells:
-            return 0
-        
-        return factorial_mod(unused_values, mod) // factorial_mod(unused_values - empty_cells, mod)
-    
-    # For small grids, use mathematical analysis
-    if n <= 3 and m <= 3:
-        return mathematical_grid_completion_small(n, m, grid, mod)
-    
-    # For larger grids, use approximation
-    return mathematical_grid_completion_large(n, m, grid, mod)
-
-def mathematical_grid_completion_small(n, m, grid, mod=10**9+7):
-    """
-    Mathematical grid completion counting for small grids
-    
-    Args:
-        n, m: grid dimensions
-        grid: partially filled grid
-        mod: modulo value
-    
-    Returns:
-        int: number of ways to complete grid modulo mod
-    """
-    # For small grids, use known mathematical formulas
-    if n == 2 and m == 2:
-        # Check if grid is valid
-        if is_valid_partial_grid(grid):
-            return 1
-        else:
-            return 0
-    elif n == 3 and m == 3:
-        # Use mathematical analysis for 3x3 grid
-        return mathematical_3x3_completion(grid, mod)
-    else:
-        return 0
-
-def mathematical_grid_completion_large(n, m, grid, mod=10**9+7):
-    """
-    Mathematical grid completion counting for large grids
-    
-    Args:
-        n, m: grid dimensions
-        grid: partially filled grid
-        mod: modulo value
-    
-    Returns:
-        int: number of ways to complete grid modulo mod
-    """
-    # For large grids, use mathematical approximation
-    # This is a simplified version
-    empty_cells = sum(1 for i in range(n) for j in range(m) if grid[i][j] == 0)
-    return pow(n, empty_cells, mod)  # Simplified for demonstration
-
-def is_valid_partial_grid(grid):
-    """Check if partial grid is valid"""
-    n, m = len(grid), len(grid[0])
-    
-    # Check rows
-    for i in range(n):
-        row_values = [grid[i][j] for j in range(m) if grid[i][j] != 0]
-        if len(row_values) != len(set(row_values)):
-            return False
-    
-    # Check columns
-    for j in range(m):
-        col_values = [grid[i][j] for i in range(n) if grid[i][j] != 0]
-        if len(col_values) != len(set(col_values)):
-            return False
-    
-    return True
-
-def mathematical_3x3_completion(grid, mod=10**9+7):
-    """Mathematical completion for 3x3 grid"""
-    # Implement specific mathematical analysis for 3x3 grid
-    # This is a simplified version
-    return 1
-
-# Example usage
-n, m = 2, 2
-grid = [
-    [1, 0],
-    [0, 1]
-]
-result1 = mathematical_grid_completion(n, m, grid)
-result2 = mathematical_grid_completion_small(n, m, grid)
-print(f"Mathematical grid completion count: {result1}")
-print(f"Mathematical grid completion small: {result2}")
-```
-
-**Time Complexity**: O(1)
-**Space Complexity**: O(1)
-
-**Why it's optimal**: Uses mathematical analysis for O(1) time complexity.
-
-**Implementation Details**:
-- **Mathematical Analysis**: Use mathematical properties of grid completion
-- **Constraint Analysis**: Analyze constraints mathematically
-- **Efficient Calculation**: Use mathematical formulas
-- **Precomputed Values**: Use precomputed values for small grids
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n^(empty_cells)) | O(empty_cells) | Complete enumeration of all completions |
-| Backtracking | O(n^(empty_cells)) | O(empty_cells) | Backtracking with early termination |
-| Mathematical | O(1) | O(1) | Use mathematical analysis and formulas |
-
-### Time Complexity
-- **Time**: O(1) - Use mathematical analysis and precomputed values
-- **Space**: O(1) - Use only necessary variables
-
-### Why This Solution Works
-- **Mathematical Analysis**: Use mathematical properties of grid completion
-- **Constraint Analysis**: Analyze constraints mathematically
-- **Efficient Calculation**: Use mathematical formulas
-- **Precomputed Values**: Use precomputed values for small grids
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Grid Completion with Obstacles**
-**Problem**: Count grid completions with obstacles on the board.
-
-**Key Differences**: Some cells are blocked
-
-**Solution Approach**: Modify algorithms to handle obstacles
-
-**Implementation**:
-```python
-def obstacle_grid_completion(n, m, grid, obstacles, mod=10**9+7):
-    """
-    Count grid completions with obstacles
-    
-    Args:
-        n, m: grid dimensions
-        grid: partially filled grid
-        obstacles: list of blocked positions
-        mod: modulo value
-    
-    Returns:
-        int: number of ways to complete grid modulo mod
-    """
-    def is_valid_placement_with_obstacles(grid, row, col, value, obstacles):
-        """Check if placing value at (row, col) is valid with obstacles"""
-        if (row, col) in obstacles:
-            return False
-        
-        # Check row
-        for j in range(m):
-            if j != col and grid[row][j] == value:
+            if len(set(grid[i])) != n:
                 return False
-        
-        # Check column
-        for i in range(n):
-            if i != row and grid[i][col] == value:
+            if len(set(grid[j][i] for j in range(n))) != n:
                 return False
-        
         return True
-    
-    def backtrack_with_obstacles(grid, empty_cells, index, obstacles):
-        """Backtrack with obstacles"""
-        if index == len(empty_cells):
-            return 1
-        
+
+    def backtrack(idx):
+        if idx == len(empty):
+            return 1 if is_valid() else 0
+
+        r, c = empty[idx]
         count = 0
-        i, j = empty_cells[index]
-        
-        # Try all possible values for current empty cell
-        for value in range(1, n + 1):
-            if is_valid_placement_with_obstacles(grid, i, j, value, obstacles):
-                grid[i][j] = value
-                count = (count + backtrack_with_obstacles(grid, empty_cells, index + 1, obstacles)) % mod
-                grid[i][j] = 0  # Backtrack
-        
+        for val in range(1, n + 1):
+            grid[r][c] = val
+            count = (count + backtrack(idx + 1)) % MOD
+        grid[r][c] = 0
         return count
-    
-    # Find empty cells
-    empty_cells = []
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 0 and (i, j) not in obstacles:
-                empty_cells.append((i, j))
-    
-    return backtrack_with_obstacles(grid, empty_cells, 0, obstacles)
 
-# Example usage
-n, m = 2, 2
-grid = [
-    [1, 0],
-    [0, 1]
-]
-obstacles = [(0, 1)]  # Block position (0,1)
-result = obstacle_grid_completion(n, m, grid, obstacles)
-print(f"Obstacle grid completion count: {result}")
+    return backtrack(0)
 ```
 
-#### **2. Grid Completion with Different Constraints**
-**Problem**: Count grid completions with different types of constraints.
+### Complexity
 
-**Key Differences**: Apply different types of constraints
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^k * n^2) | n choices for k cells, O(n^2) validation |
+| Space | O(k) | Recursion depth = number of empty cells |
 
-**Solution Approach**: Modify constraint checking logic
+### Why This Is Slow
 
-**Implementation**:
+We try invalid combinations and only discover them at the end. Most branches are wasted effort.
+
+---
+
+## Solution 2: Optimized Backtracking with Pruning
+
+### Key Insight
+
+> **The Trick:** Validate constraints incrementally. Reject invalid placements immediately instead of at the end.
+
+### Algorithm
+
+1. Track used values for each row and column
+2. Before placing a value, check if it's available in both row AND column
+3. Only recurse on valid placements
+
+### Dry Run Example
+
+Let's trace through with n = 2, grid = [[1, 0], [0, 1]]:
+
+```
+Initial state:
+  grid = [[1, 0], [0, 1]]
+  empty cells: [(0,1), (1,0)]
+  row_used[0] = {1}, row_used[1] = {1}
+  col_used[0] = {1}, col_used[1] = {1}
+
+Step 1: Fill cell (0,1)
+  Need value not in row_used[0]={1} AND not in col_used[1]={1}
+  Available: {2}
+  Try val=2: Valid! Place it.
+  grid = [[1, 2], [0, 1]]
+
+Step 2: Fill cell (1,0)
+  Need value not in row_used[1]={1} AND not in col_used[0]={1}
+  Available: {2}
+  Try val=2: Valid! Place it.
+  grid = [[1, 2], [2, 1]]
+
+All cells filled -> count = 1
+```
+
+### Visual Diagram
+
+```
+Initial Grid:        After filling:
++---+---+            +---+---+
+| 1 | ? |            | 1 | 2 |
++---+---+            +---+---+
+| ? | 1 |            | 2 | 1 |
++---+---+            +---+---+
+
+Row constraints:     Column constraints:
+Row 0: has {1}       Col 0: has {1}
+  -> needs {2}         -> needs {2}
+Row 1: has {1}       Col 1: has {1}
+  -> needs {2}         -> needs {2}
+```
+
+### Code
+
 ```python
-def constrained_grid_completion(n, m, grid, constraints, mod=10**9+7):
+def solve_optimized(n, grid):
     """
-    Count grid completions with different constraints
-    
-    Args:
-        n, m: grid dimensions
-        grid: partially filled grid
-        constraints: list of constraints
-        mod: modulo value
-    
-    Returns:
-        int: number of ways to complete grid modulo mod
+    Backtracking with early pruning.
+
+    Time: O(n! in worst case, much better with constraints)
+    Space: O(n) for tracking sets
     """
-    def is_valid_placement_constrained(grid, row, col, value, constraints):
-        """Check if placing value at (row, col) is valid with constraints"""
-        # Check row constraint
-        if 'row' in constraints:
-            for j in range(m):
-                if j != col and grid[row][j] == value:
-                    return False
-        
-        # Check column constraint
-        if 'column' in constraints:
-            for i in range(n):
-                if i != row and grid[i][col] == value:
-                    return False
-        
-        # Check diagonal constraint
-        if 'diagonal' in constraints:
-            for i in range(n):
-                for j in range(m):
-                    if i != row and j != col and abs(i - row) == abs(j - col) and grid[i][j] == value:
-                        return False
-        
-        return True
-    
-    def backtrack_constrained(grid, empty_cells, index, constraints):
-        """Backtrack with constraints"""
-        if index == len(empty_cells):
+    MOD = 10**9 + 7
+
+    # Track used values per row and column
+    row_used = [set() for _ in range(n)]
+    col_used = [set() for _ in range(n)]
+
+    # Initialize with pre-filled values
+    for i in range(n):
+        for j in range(n):
+            if grid[i][j] != 0:
+                row_used[i].add(grid[i][j])
+                col_used[j].add(grid[i][j])
+
+    # Find empty cells
+    empty = [(i, j) for i in range(n) for j in range(n) if grid[i][j] == 0]
+
+    def backtrack(idx):
+        if idx == len(empty):
             return 1
-        
+
+        r, c = empty[idx]
         count = 0
-        i, j = empty_cells[index]
-        
-        # Try all possible values for current empty cell
-        for value in range(1, n + 1):
-            if is_valid_placement_constrained(grid, i, j, value, constraints):
-                grid[i][j] = value
-                count = (count + backtrack_constrained(grid, empty_cells, index + 1, constraints)) % mod
-                grid[i][j] = 0  # Backtrack
-        
+
+        for val in range(1, n + 1):
+            # Prune: check constraints before recursing
+            if val not in row_used[r] and val not in col_used[c]:
+                # Place value
+                row_used[r].add(val)
+                col_used[c].add(val)
+                grid[r][c] = val
+
+                count = (count + backtrack(idx + 1)) % MOD
+
+                # Backtrack
+                row_used[r].remove(val)
+                col_used[c].remove(val)
+                grid[r][c] = 0
+
         return count
-    
-    # Find empty cells
-    empty_cells = []
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 0:
-                empty_cells.append((i, j))
-    
-    return backtrack_constrained(grid, empty_cells, 0, constraints)
 
-# Example usage
-n, m = 2, 2
-grid = [
-    [1, 0],
-    [0, 1]
-]
-constraints = ['row', 'column', 'diagonal']  # Multiple constraints
-result = constrained_grid_completion(n, m, grid, constraints)
-print(f"Constrained grid completion count: {result}")
+    return backtrack(0)
 ```
 
-#### **3. Grid Completion with Multiple Grids**
-**Problem**: Count grid completions across multiple grids.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Key Differences**: Handle multiple grids simultaneously
+const int MOD = 1e9 + 7;
 
-**Solution Approach**: Combine results from multiple grids
+class GridCompletion {
+    int n;
+    vector<vector<int>> grid;
+    vector<int> row_mask, col_mask;  // Bitmasks for used values
+    vector<pair<int,int>> empty_cells;
 
-**Implementation**:
+public:
+    int solve(int n_, vector<vector<int>>& g) {
+        n = n_;
+        grid = g;
+        row_mask.assign(n, 0);
+        col_mask.assign(n, 0);
+
+        // Initialize masks and find empty cells
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 0) {
+                    empty_cells.push_back({i, j});
+                } else {
+                    row_mask[i] |= (1 << grid[i][j]);
+                    col_mask[j] |= (1 << grid[i][j]);
+                }
+            }
+        }
+
+        return backtrack(0);
+    }
+
+private:
+    int backtrack(int idx) {
+        if (idx == (int)empty_cells.size()) {
+            return 1;
+        }
+
+        int r = empty_cells[idx].first;
+        int c = empty_cells[idx].second;
+        int used = row_mask[r] | col_mask[c];
+        long long count = 0;
+
+        for (int val = 1; val <= n; val++) {
+            if (!(used & (1 << val))) {  // Value not used
+                row_mask[r] |= (1 << val);
+                col_mask[c] |= (1 << val);
+
+                count = (count + backtrack(idx + 1)) % MOD;
+
+                row_mask[r] ^= (1 << val);
+                col_mask[c] ^= (1 << val);
+            }
+        }
+
+        return count;
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    vector<vector<int>> grid(n, vector<int>(n));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> grid[i][j];
+        }
+    }
+
+    GridCompletion solver;
+    cout << solver.solve(n, grid) << "\n";
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^k) worst case | But heavily pruned in practice |
+| Space | O(n + k) | Row/col tracking + recursion depth |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Forgetting to Backtrack
+
 ```python
-def multi_grid_completion(grids, mod=10**9+7):
-    """
-    Count grid completions across multiple grids
-    
-    Args:
-        grids: list of partially filled grids
-        mod: modulo value
-    
-    Returns:
-        int: number of ways to complete grids modulo mod
-    """
-    def count_single_grid_completion(grid):
-        """Count completions for single grid"""
-        n, m = len(grid), len(grid[0])
-        return backtracking_grid_completion(n, m, grid, mod)
-    
-    # Count completions for each grid
-    total_count = 1
-    for grid in grids:
-        grid_count = count_single_grid_completion(grid)
-        total_count = (total_count * grid_count) % mod
-    
-    return total_count
-
-# Example usage
-grids = [
-    [[1, 0], [0, 1]],  # Grid 1
-    [[2, 0], [0, 2]]   # Grid 2
-]
-result = multi_grid_completion(grids)
-print(f"Multi-grid completion count: {result}")
+# WRONG
+row_used[r].add(val)
+count = (count + backtrack(idx + 1)) % MOD
+# Missing: row_used[r].remove(val)
 ```
 
-### Related Problems
+**Problem:** State persists across branches, corrupting the search.
+**Fix:** Always undo changes after recursive call returns.
 
-#### **CSES Problems**
-- [Border Subgrid Count](https://cses.fi/problemset/task/1075) - Grid counting
-- [Filled Subgrid Count](https://cses.fi/problemset/task/1075) - Grid counting
-- [All Letter Subgrid Count](https://cses.fi/problemset/task/1075) - Grid counting
+### Mistake 2: Checking Constraints After Placement
 
-#### **LeetCode Problems**
-- [Sudoku Solver](https://leetcode.com/problems/sudoku-solver/) - Grid completion
-- [Valid Sudoku](https://leetcode.com/problems/valid-sudoku/) - Grid validation
-- [N-Queens](https://leetcode.com/problems/n-queens/) - Grid placement
+```python
+# WRONG - inefficient
+grid[r][c] = val
+if is_valid_so_far():  # Check AFTER placing
+    count += backtrack(idx + 1)
+grid[r][c] = 0
+```
 
-#### **Problem Categories**
-- **Grid Algorithms**: Grid completion, constraint satisfaction
-- **Combinatorics**: Mathematical counting, grid properties
-- **Backtracking**: Recursive algorithms, constraint satisfaction
+**Problem:** We place invalid values and then check. Wastes time.
+**Fix:** Check BEFORE placing (early pruning).
 
-## 🔗 Additional Resources
+### Mistake 3: Wrong Modulo Application
 
-### **Algorithm References**
-- [Grid Algorithms](https://cp-algorithms.com/geometry/basic-geometry.html) - Grid algorithms
-- [Backtracking](https://cp-algorithms.com/recursion/backtracking.html) - Backtracking algorithms
-- [Combinatorics](https://cp-algorithms.com/combinatorics/binomial-coefficients.html) - Counting techniques
+```python
+# WRONG
+return count % MOD  # Only at the end
 
-### **Practice Problems**
-- [CSES Border Subgrid Count](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Filled Subgrid Count](https://cses.fi/problemset/task/1075) - Medium
-- [CSES All Letter Subgrid Count](https://cses.fi/problemset/task/1075) - Medium
+# CORRECT
+count = (count + backtrack(idx + 1)) % MOD  # At each addition
+```
 
-### **Further Reading**
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
-- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
-- [Grid Algorithms](https://en.wikipedia.org/wiki/Grid_computing) - Wikipedia article
+**Problem:** Integer overflow before final modulo (especially in C++).
+**Fix:** Apply modulo at each addition step.
+
+### Mistake 4: Not Handling Pre-filled Conflicts
+
+```python
+# WRONG - doesn't check if initial grid is valid
+def solve(n, grid):
+    # Start backtracking immediately...
+```
+
+**Problem:** If pre-filled values already violate constraints, answer should be 0.
+**Fix:** Validate initial grid before counting.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected | Why |
+|------|-------|----------|-----|
+| Empty grid n=1 | `[[0]]` | 1 | Only fill: [[1]] |
+| Already complete | `[[1,2],[2,1]]` | 1 | No empty cells, valid |
+| Invalid pre-fill | `[[1,1],[0,0]]` | 0 | Row 0 has duplicate 1 |
+| Single empty | `[[1,0],[2,0]]` n=2 | 1 | Forced: [[1,2],[2,1]] |
+| All empty n=2 | `[[0,0],[0,0]]` | 2 | Two Latin squares of order 2 |
+| Large empty n=4 | All zeros | 576 | 4! * 4! / corrections |
+
+---
+
+## When to Use This Pattern
+
+### Use Backtracking When:
+- Grid size is small (n <= 10)
+- Constraints allow significant pruning
+- You need to count ALL solutions, not just one
+- No closed-form mathematical formula exists
+
+### Use Bitmasks When:
+- n is small enough (n <= 20 for single int, n <= 64 for long long)
+- Need fast membership testing
+- Constraint checking is the bottleneck
+
+### Consider Mathematical Formulas When:
+- Grid is completely empty (counting Latin squares)
+- Problem has known combinatorial structure
+- n is too large for enumeration
+
+### Pattern Recognition Checklist:
+- [ ] Unique values per row? -> Latin square constraints
+- [ ] Need all solutions? -> Backtracking with counting
+- [ ] Small n with complex constraints? -> Bitmask DP
+- [ ] Large n, simple structure? -> Mathematical formula
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Creating Strings](https://cses.fi/problemset/task/1622) | Basic backtracking and permutations |
+| [Chessboard and Queens](https://cses.fi/problemset/task/1624) | Grid + backtracking + constraint checking |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Grid Paths](https://cses.fi/problemset/task/1078) | Fixed start/end, path counting |
+| [Apple Division](https://cses.fi/problemset/task/1623) | Subset enumeration with backtracking |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Counting Tilings](https://cses.fi/problemset/task/2181) | Bitmask DP on grid |
+| [Hamiltonian Flights](https://cses.fi/problemset/task/1690) | Bitmask DP with constraints |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Track used values per row/column to prune invalid branches early
+2. **Time Optimization:** Validate constraints before recursing, not after
+3. **Space Trade-off:** O(n) tracking sets enable O(1) constraint checking
+4. **Pattern:** Constraint satisfaction + counting = backtracking with pruning
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Implement backtracking with proper state management (add/remove)
+- [ ] Use bitmasks for efficient constraint tracking
+- [ ] Identify Latin square problems by their row/column uniqueness property
+- [ ] Calculate complexity based on branching factor and pruning
+- [ ] Handle edge cases (invalid input, already complete, single solution)
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Generating Permutations](https://cp-algorithms.com/combinatorics/generating_permutations.html)
+- [Wikipedia: Latin Square](https://en.wikipedia.org/wiki/Latin_square)
+- [CSES Problem Set](https://cses.fi/problemset/)

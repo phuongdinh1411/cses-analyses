@@ -2,805 +2,481 @@
 layout: simple
 title: "Border Subgrid Count II - Grid Counting Problem"
 permalink: /problem_soulutions/counting_problems/border_subgrid_count_ii_analysis
+difficulty: Hard
+tags: [grid, prefix-sum, counting, 2d-arrays]
 ---
 
-# Border Subgrid Count II - Grid Counting Problem
+# Border Subgrid Count II
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of border subgrids in advanced grid problems
-- Apply counting techniques for complex border subgrid analysis
-- Implement efficient algorithms for advanced subgrid counting
-- Optimize grid traversal and counting operations for complex cases
-- Handle special cases in advanced border subgrid counting
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Hard |
+| **Category** | Grid Counting / 2D Prefix Sums |
+| **Time Limit** | 1.0 seconds |
+| **Key Technique** | 2D Prefix Sum, Range Queries |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a grid of size n×m, count the number of subgrids where all border cells have specific properties and the interior cells have different properties.
+After solving this problem, you will be able to:
+- [ ] Distinguish between border cells and interior cells in a subgrid
+- [ ] Build and query 2D prefix sums for multiple value types
+- [ ] Apply early termination to optimize brute force validation
+- [ ] Recognize when prefix sums convert O(hw) validation to O(1)
 
-**Input**: 
-- n, m: grid dimensions
-- grid: n×m grid with values
+---
 
-**Output**: 
-- Number of border subgrids with the specified properties
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n, m ≤ 1000
-- Grid values are integers
-- Border and interior cells have different constraints
+**Problem:** Given an n x m grid, count all subgrids where border cells equal a specific value and interior cells equal a different value.
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and m (grid dimensions)
+- Lines 2 to n+1: m integers per row representing the grid
+
+**Output:**
+- A single integer: the count of valid border subgrids
+
+**Constraints:**
+- 1 <= n, m <= 1000
+- Grid values are integers (typically 0 or 1)
+
+### Example
+
 ```
 Input:
-n = 4, m = 4
-grid = [
-  [1, 1, 1, 1],
-  [1, 0, 0, 1],
-  [1, 0, 0, 1],
-  [1, 1, 1, 1]
-]
+4 4
+1 1 1 1
+1 0 0 1
+1 0 0 1
+1 1 1 1
 
 Output:
 1
-
-Explanation**: 
-Border subgrid with border=1 and interior=0:
-- Only the 4×4 subgrid satisfies the condition
-- Border cells: all 1s
-- Interior cells: all 0s
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** Only the 4x4 subgrid satisfies the condition:
+- Border cells (perimeter): all 1s
+- Interior cells (2x2 center): all 0s
 
-### Approach 1: Brute Force Solution
+---
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all possible subgrids
-- **Border and Interior Validation**: Check both border and interior cells
-- **Simple Implementation**: Easy to understand and implement
-- **Inefficient**: O(n²m²) time complexity
+## Intuition: How to Think About This Problem
 
-**Key Insight**: Enumerate all possible subgrids and check if their borders and interiors satisfy the conditions.
+### Pattern Recognition
 
-**Algorithm**:
-- Iterate through all possible subgrid positions and sizes
-- For each subgrid, check all border and interior cells
-- Count subgrids that satisfy both border and interior conditions
+> **Key Question:** How do we efficiently verify both border AND interior conditions for every possible subgrid?
 
-**Visual Example**:
+The challenge is that a naive check of every cell in every subgrid is O(n^2 * m^2 * n * m). We need to validate border and interior regions in O(1) time using prefix sums.
+
+### Breaking Down the Problem
+
+1. **What are we counting?** Subgrids where border = value_b and interior = value_i
+2. **What defines a border?** First/last row and first/last column of the subgrid
+3. **What defines interior?** All cells not on the border (requires height >= 3 and width >= 3)
+
+### Visual Understanding
+
 ```
-Grid: 4×4
-┌─────────────────────────────────────┐
-│ 1 1 1 1                            │
-│ 1 0 0 1                            │
-│ 1 0 0 1                            │
-│ 1 1 1 1                            │
-└─────────────────────────────────────┘
+Subgrid structure (4x5):
++---+---+---+---+---+
+| B | B | B | B | B |  <- Top border
++---+---+---+---+---+
+| B | I | I | I | B |  <- Interior with side borders
++---+---+---+---+---+
+| B | I | I | I | B |  <- Interior with side borders
++---+---+---+---+---+
+| B | B | B | B | B |  <- Bottom border
++---+---+---+---+---+
 
-Brute force enumeration:
-┌─────────────────────────────────────┐
-│ Check 4×4 subgrid:                 │
-│ Border: 1,1,1,1,1,1,1,1,1,1,1,1 ✓ │
-│ Interior: 0,0,0,0 ✓               │
-│ Valid subgrid: count++             │
-│ Total: 1                           │
-└─────────────────────────────────────┘
+B = Border cell (must equal border_value)
+I = Interior cell (must equal interior_value)
+
+Border count = 2*(h + w) - 4 = 2*(4 + 5) - 4 = 14
+Interior count = (h-2)*(w-2) = 2*3 = 6
 ```
 
-**Implementation**:
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+Check every possible subgrid by iterating through all cells and validating border/interior conditions.
+
+### Algorithm
+
+1. Enumerate all top-left corners (i, j)
+2. Enumerate all heights and widths
+3. For each subgrid, check all border and interior cells
+
+### Code
+
 ```python
-def brute_force_border_subgrid_count_ii(n, m, grid, border_value=1, interior_value=0):
+def count_border_subgrids_brute(n, m, grid, border_val=1, interior_val=0):
     """
-    Count border subgrids using brute force approach
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid
-        border_value: target value for border cells
-        interior_value: target value for interior cells
-    
-    Returns:
-        int: number of border subgrids
+    Brute force: check all subgrids by examining each cell.
+
+    Time: O(n^2 * m^2 * n * m) worst case
+    Space: O(1)
     """
     count = 0
-    
-    # Check all possible subgrid positions and sizes
     for i in range(n):
         for j in range(m):
-            for height in range(1, n - i + 1):
-                for width in range(1, m - j + 1):
-                    # Check if subgrid satisfies border and interior conditions
-                    if is_border_subgrid_valid_ii(grid, i, j, height, width, border_value, interior_value):
+            for h in range(1, n - i + 1):
+                for w in range(1, m - j + 1):
+                    if is_valid_subgrid(grid, i, j, h, w, border_val, interior_val):
                         count += 1
-    
     return count
 
-def is_border_subgrid_valid_ii(grid, start_i, start_j, height, width, border_value, interior_value):
-    """
-    Check if subgrid satisfies border and interior conditions
-    
-    Args:
-        grid: 2D grid
-        start_i, start_j: starting position
-        height, width: subgrid dimensions
-        border_value: target value for border cells
-        interior_value: target value for interior cells
-    
-    Returns:
-        bool: True if subgrid satisfies conditions
-    """
-    # Check border cells
-    for i in range(start_i, start_i + height):
-        for j in range(start_j, start_j + width):
-            # Check if cell is on border
-            if (i == start_i or i == start_i + height - 1 or 
-                j == start_j or j == start_j + width - 1):
-                if grid[i][j] != border_value:
+def is_valid_subgrid(grid, r, c, h, w, border_val, interior_val):
+    """Check if subgrid has valid border and interior."""
+    for i in range(r, r + h):
+        for j in range(c, c + w):
+            is_border = (i == r or i == r + h - 1 or j == c or j == c + w - 1)
+            if is_border:
+                if grid[i][j] != border_val:
                     return False
             else:
-                # Interior cell
-                if grid[i][j] != interior_value:
+                if grid[i][j] != interior_val:
                     return False
-    
     return True
-
-# Example usage
-n, m = 4, 4
-grid = [
-    [1, 1, 1, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1]
-]
-result = brute_force_border_subgrid_count_ii(n, m, grid)
-print(f"Brute force result: {result}")
 ```
 
-**Time Complexity**: O(n²m²)
-**Space Complexity**: O(1)
+```cpp
+#include <vector>
+using namespace std;
 
-**Why it's inefficient**: Checks all possible subgrids with O(n²m²) time complexity.
+bool isValidSubgrid(vector<vector<int>>& grid, int r, int c, int h, int w,
+                    int borderVal, int interiorVal) {
+    for (int i = r; i < r + h; i++) {
+        for (int j = c; j < c + w; j++) {
+            bool isBorder = (i == r || i == r + h - 1 || j == c || j == c + w - 1);
+            if (isBorder) {
+                if (grid[i][j] != borderVal) return false;
+            } else {
+                if (grid[i][j] != interiorVal) return false;
+            }
+        }
+    }
+    return true;
+}
+
+int countBorderSubgridsBrute(int n, int m, vector<vector<int>>& grid,
+                              int borderVal = 1, int interiorVal = 0) {
+    int count = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            for (int h = 1; h <= n - i; h++) {
+                for (int w = 1; w <= m - j; w++) {
+                    if (isValidSubgrid(grid, i, j, h, w, borderVal, interiorVal)) {
+                        count++;
+                    }
+                }
+            }
+        }
+    }
+    return count;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^4 * m^2) | Four nested loops + O(nm) validation |
+| Space | O(1) | No extra space |
+
+### Why This Is Slow
+
+Each subgrid validation scans up to n*m cells. With O(n^2 * m^2) subgrids, this becomes impractical for n, m = 1000.
 
 ---
 
-### Approach 2: Optimized Border and Interior Checking Solution
+## Solution 2: Optimal - 2D Prefix Sums
 
-**Key Insights from Optimized Border and Interior Checking Solution**:
-- **Early Termination**: Stop checking as soon as invalid cell is found
-- **Efficient Validation**: Use optimized border and interior checking
-- **Reduced Redundancy**: Avoid redundant cell checks
-- **Optimization**: More efficient than brute force
+### Key Insight
 
-**Key Insight**: Use early termination and optimized checking to reduce redundant operations.
+> **The Trick:** Build two prefix sum arrays - one for border values, one for interior values. Then validate any rectangular region in O(1).
 
-**Algorithm**:
-- Use early termination when invalid cell is found
-- Optimize border and interior checking process
-- Reduce redundant operations
+### Prefix Sum Concept
 
-**Visual Example**:
+A 2D prefix sum allows us to compute the sum of any rectangle in O(1):
 ```
-Optimized checking:
-┌─────────────────────────────────────┐
-│ For each subgrid:                  │
-│ - Check border cells first         │
-│ - Check interior cells second      │
-│ - Stop immediately if invalid cell │
-│ - Skip remaining cells if possible │
-└─────────────────────────────────────┘
-
-Early termination example:
-┌─────────────────────────────────────┐
-│ Subgrid (0,0) to (3,3):           │
-│ Check border: all 1s ✓            │
-│ Check interior: all 0s ✓          │
-│ Valid subgrid: count++             │
-└─────────────────────────────────────┘
+sum(r1, c1, r2, c2) = prefix[r2+1][c2+1] - prefix[r1][c2+1]
+                    - prefix[r2+1][c1] + prefix[r1][c1]
 ```
 
-**Implementation**:
+### Algorithm
+
+1. Build prefix sum for cells matching `border_val`
+2. Build prefix sum for cells matching `interior_val`
+3. For each subgrid, use prefix sums to count matching cells
+4. Compare counts against expected border/interior sizes
+
+### Dry Run Example
+
+```
+Grid (4x4):            border_val = 1, interior_val = 0
+1 1 1 1
+1 0 0 1
+1 0 0 1
+1 1 1 1
+
+Check subgrid from (0,0) with height=4, width=4:
+
+Step 1: Calculate expected counts
+  Border cells = 2*(4+4) - 4 = 12
+  Interior cells = (4-2)*(4-2) = 4
+
+Step 2: Query prefix sums
+  Total 1s in entire grid = 12 (using border_prefix)
+  Total 0s in interior region (1,1) to (2,2) = 4 (using interior_prefix)
+
+Step 3: Validate
+  All 12 border positions have value 1? YES (12 == 12)
+  All 4 interior positions have value 0? YES (4 == 4)
+
+Result: Valid subgrid, count++
+```
+
+### Code
+
 ```python
-def optimized_border_subgrid_count_ii(n, m, grid, border_value=1, interior_value=0):
+def count_border_subgrids_optimal(n, m, grid, border_val=1, interior_val=0):
     """
-    Count border subgrids using optimized checking approach
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid
-        border_value: target value for border cells
-        interior_value: target value for interior cells
-    
-    Returns:
-        int: number of border subgrids
+    Optimal solution using 2D prefix sums.
+
+    Time: O(n^2 * m^2) for enumeration, O(1) per validation
+    Space: O(n * m) for prefix sum arrays
     """
+    # Build prefix sums
+    border_ps = build_prefix_sum(n, m, grid, border_val)
+    interior_ps = build_prefix_sum(n, m, grid, interior_val)
+
     count = 0
-    
-    # Check all possible subgrid positions and sizes
     for i in range(n):
         for j in range(m):
-            for height in range(1, n - i + 1):
-                for width in range(1, m - j + 1):
-                    # Use optimized checking
-                    if is_border_subgrid_valid_optimized_ii(grid, i, j, height, width, border_value, interior_value):
-                    count += 1
-    
+            for h in range(1, n - i + 1):
+                for w in range(1, m - j + 1):
+                    if is_valid_with_prefix(border_ps, interior_ps,
+                                            i, j, h, w):
+                        count += 1
     return count
 
-def is_border_subgrid_valid_optimized_ii(grid, start_i, start_j, height, width, border_value, interior_value):
-    """
-    Check if subgrid satisfies conditions with optimization
-    
-    Args:
-        grid: 2D grid
-        start_i, start_j: starting position
-        height, width: subgrid dimensions
-        border_value: target value for border cells
-        interior_value: target value for interior cells
-    
-    Returns:
-        bool: True if subgrid satisfies conditions
-    """
-    # Check border cells first
-    for i in range(start_i, start_i + height):
-        for j in range(start_j, start_j + width):
-            if (i == start_i or i == start_i + height - 1 or 
-                j == start_j or j == start_j + width - 1):
-                if grid[i][j] != border_value:
-                    return False  # Early termination
-    
-    # Check interior cells
-    for i in range(start_i + 1, start_i + height - 1):
-        for j in range(start_j + 1, start_j + width - 1):
-            if grid[i][j] != interior_value:
-                return False  # Early termination
-    
-    return True
+def build_prefix_sum(n, m, grid, target):
+    """Build 2D prefix sum for cells equal to target."""
+    ps = [[0] * (m + 1) for _ in range(n + 1)]
+    for i in range(n):
+        for j in range(m):
+            ps[i+1][j+1] = (ps[i][j+1] + ps[i+1][j] - ps[i][j]
+                          + (1 if grid[i][j] == target else 0))
+    return ps
 
-def is_border_subgrid_valid_optimized_ii_v2(grid, start_i, start_j, height, width, border_value, interior_value):
-    """
-    Alternative optimized checking with different strategy
-    
-    Args:
-        grid: 2D grid
-        start_i, start_j: starting position
-        height, width: subgrid dimensions
-        border_value: target value for border cells
-        interior_value: target value for interior cells
-    
-    Returns:
-        bool: True if subgrid satisfies conditions
-    """
-    # Check if subgrid is large enough to have interior
-    if height < 3 or width < 3:
-        # Only border cells, check if all are border_value
-        for i in range(start_i, start_i + height):
-            for j in range(start_j, start_j + width):
-                if grid[i][j] != border_value:
-                    return False
-        return True
-    
-    # Check border cells
-    for i in range(start_i, start_i + height):
-        for j in range(start_j, start_j + width):
-            if (i == start_i or i == start_i + height - 1 or 
-                j == start_j or j == start_j + width - 1):
-                if grid[i][j] != border_value:
-                    return False
-    
-    # Check interior cells
-    for i in range(start_i + 1, start_i + height - 1):
-        for j in range(start_j + 1, start_j + width - 1):
-            if grid[i][j] != interior_value:
-                return False
-    
-    return True
+def query_sum(ps, r1, c1, r2, c2):
+    """Query rectangle sum using prefix sums."""
+    return ps[r2+1][c2+1] - ps[r1][c2+1] - ps[r2+1][c1] + ps[r1][c1]
 
-# Example usage
-n, m = 4, 4
-grid = [
-    [1, 1, 1, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1]
-]
-result = optimized_border_subgrid_count_ii(n, m, grid)
-print(f"Optimized checking result: {result}")
+def is_valid_with_prefix(border_ps, interior_ps, r, c, h, w):
+    """Validate subgrid using prefix sums."""
+    # Total border_val count in entire subgrid
+    total_border = query_sum(border_ps, r, c, r + h - 1, c + w - 1)
+
+    # Small subgrids (no interior) - all cells are border
+    if h < 3 or w < 3:
+        expected = h * w
+        return total_border == expected
+
+    # Calculate expected border cells
+    expected_border = 2 * (h + w) - 4
+
+    # Check interior region
+    interior_count = query_sum(interior_ps, r + 1, c + 1, r + h - 2, c + w - 2)
+    expected_interior = (h - 2) * (w - 2)
+
+    return total_border == expected_border + interior_count and \
+           interior_count == expected_interior
 ```
 
-**Time Complexity**: O(n²m²)
-**Space Complexity**: O(1)
+```cpp
+#include <vector>
+using namespace std;
 
-**Why it's better**: Reduces redundant operations and improves efficiency.
+class BorderSubgridCounter {
+private:
+    vector<vector<int>> borderPS, interiorPS;
+    int n, m;
 
-**Implementation Considerations**:
-- **Early Termination**: Stop checking as soon as invalid cell is found
-- **Optimized Validation**: Use optimized border and interior checking
-- **Reduced Redundancy**: Avoid redundant cell checks
+    void buildPrefixSum(vector<vector<int>>& grid, int target,
+                        vector<vector<int>>& ps) {
+        ps.assign(n + 1, vector<int>(m + 1, 0));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                ps[i+1][j+1] = ps[i][j+1] + ps[i+1][j] - ps[i][j]
+                             + (grid[i][j] == target ? 1 : 0);
+            }
+        }
+    }
+
+    int querySum(vector<vector<int>>& ps, int r1, int c1, int r2, int c2) {
+        return ps[r2+1][c2+1] - ps[r1][c2+1] - ps[r2+1][c1] + ps[r1][c1];
+    }
+
+    bool isValid(int r, int c, int h, int w) {
+        int totalBorder = querySum(borderPS, r, c, r + h - 1, c + w - 1);
+
+        if (h < 3 || w < 3) {
+            return totalBorder == h * w;
+        }
+
+        int expectedBorder = 2 * (h + w) - 4;
+        int interiorCount = querySum(interiorPS, r + 1, c + 1, r + h - 2, c + w - 2);
+        int expectedInterior = (h - 2) * (w - 2);
+
+        return totalBorder == expectedBorder + interiorCount &&
+               interiorCount == expectedInterior;
+    }
+
+public:
+    int count(int rows, int cols, vector<vector<int>>& grid,
+              int borderVal = 1, int interiorVal = 0) {
+        n = rows; m = cols;
+        buildPrefixSum(grid, borderVal, borderPS);
+        buildPrefixSum(grid, interiorVal, interiorPS);
+
+        int result = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                for (int h = 1; h <= n - i; h++) {
+                    for (int w = 1; w <= m - j; w++) {
+                        if (isValid(i, j, h, w)) result++;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+};
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2 * m^2) | Enumerate all subgrids, O(1) validation each |
+| Space | O(n * m) | Two prefix sum arrays |
 
 ---
 
-### Approach 3: Advanced Prefix Sum Solution (Optimal)
+## Common Mistakes
 
-**Key Insights from Advanced Prefix Sum Solution**:
-- **Advanced Prefix Sum Technique**: Use prefix sums for efficient range queries
-- **Mathematical Optimization**: Use mathematical properties for counting
-- **Efficient Calculation**: O(nm) time complexity
-- **Optimal Complexity**: Best approach for advanced border subgrid counting
+### Mistake 1: Wrong Interior Region Indices
 
-**Key Insight**: Use advanced prefix sums to efficiently check if subgrids satisfy border and interior conditions.
-
-**Algorithm**:
-- Build prefix sum arrays for border and interior values
-- Use prefix sums to check subgrid validity
-- Count valid subgrids efficiently
-
-**Visual Example**:
-```
-Advanced prefix sum construction:
-┌─────────────────────────────────────┐
-│ Grid: 1 1 1 1                      │
-│       1 0 0 1                      │
-│       1 0 0 1                      │
-│       1 1 1 1                      │
-│                                   │
-│ Border prefix sum: 1 2 3 4        │
-│                   2 3 4 5         │
-│                   3 4 5 6         │
-│                   4 5 6 7         │
-│                                   │
-│ Interior prefix sum: 0 0 0 0      │
-│                      0 1 2 2      │
-│                      0 2 4 4      │
-│                      0 2 4 4      │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
 ```python
-def advanced_prefix_sum_border_subgrid_count_ii(n, m, grid, border_value=1, interior_value=0):
-    """
-    Count border subgrids using advanced prefix sum approach
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid
-        border_value: target value for border cells
-        interior_value: target value for interior cells
-    
-    Returns:
-        int: number of border subgrids
-    """
-    # Build prefix sum arrays for border and interior values
-    border_prefix_sum = [[0] * (m + 1) for _ in range(n + 1)]
-    interior_prefix_sum = [[0] * (m + 1) for _ in range(n + 1)]
-    
-    for i in range(n):
-        for j in range(m):
-            # Border prefix sum
-            border_prefix_sum[i + 1][j + 1] = (border_prefix_sum[i][j + 1] + 
-                                              border_prefix_sum[i + 1][j] - 
-                                              border_prefix_sum[i][j])
-            if grid[i][j] == border_value:
-                border_prefix_sum[i + 1][j + 1] += 1
-            
-            # Interior prefix sum
-            interior_prefix_sum[i + 1][j + 1] = (interior_prefix_sum[i][j + 1] + 
-                                                interior_prefix_sum[i + 1][j] - 
-                                                interior_prefix_sum[i][j])
-            if grid[i][j] == interior_value:
-                interior_prefix_sum[i + 1][j + 1] += 1
-    
-    count = 0
-    
-    # Check all possible subgrid positions and sizes
-    for i in range(n):
-        for j in range(m):
-            for height in range(1, n - i + 1):
-                for width in range(1, m - j + 1):
-                    # Use prefix sums to check validity
-                    if is_border_subgrid_valid_prefix_sum_ii(border_prefix_sum, interior_prefix_sum, 
-                                                           i, j, height, width, border_value, interior_value):
-                    count += 1
-    
-    return count
+# WRONG - off by one error
+interior = query_sum(ps, r, c, r + h - 1, c + w - 1)  # This is entire grid!
 
-def is_border_subgrid_valid_prefix_sum_ii(border_prefix_sum, interior_prefix_sum, 
-                                        start_i, start_j, height, width, border_value, interior_value):
-    """
-    Check if subgrid satisfies conditions using prefix sums
-    
-    Args:
-        border_prefix_sum: 2D prefix sum array for border values
-        interior_prefix_sum: 2D prefix sum array for interior values
-        start_i, start_j: starting position
-        height, width: subgrid dimensions
-        border_value: target value for border cells
-        interior_value: target value for interior cells
-    
-    Returns:
-        bool: True if subgrid satisfies conditions
-    """
-    # Check if subgrid is large enough to have interior
-    if height < 3 or width < 3:
-        # Only border cells, check if all are border_value
-        total_sum = (border_prefix_sum[start_i + height][start_j + width] - 
-                     border_prefix_sum[start_i][start_j + width] - 
-                     border_prefix_sum[start_i + height][start_j] + 
-                     border_prefix_sum[start_i][start_j])
-        expected_sum = height * width
-        return total_sum == expected_sum
-    
-    # Check border cells
-    border_sum = (border_prefix_sum[start_i + height][start_j + width] - 
-                  border_prefix_sum[start_i][start_j + width] - 
-                  border_prefix_sum[start_i + height][start_j] + 
-                  border_prefix_sum[start_i][start_j])
-    
-    # Calculate expected border sum
-    expected_border_sum = 2 * (height + width) - 4  # Border cells count
-    
-    if border_sum != expected_border_sum:
-        return False
-    
-    # Check interior cells
-    interior_sum = (interior_prefix_sum[start_i + height - 1][start_j + width - 1] - 
-                    interior_prefix_sum[start_i + 1][start_j + width - 1] - 
-                    interior_prefix_sum[start_i + height - 1][start_j + 1] + 
-                    interior_prefix_sum[start_i + 1][start_j + 1])
-    
-    # Calculate expected interior sum
-    expected_interior_sum = (height - 2) * (width - 2)  # Interior cells count
-    
-    return interior_sum == expected_interior_sum
-
-def optimized_advanced_prefix_sum_count_ii(n, m, grid, border_value=1, interior_value=0):
-    """
-    Optimized advanced prefix sum approach with additional optimizations
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid
-        border_value: target value for border cells
-        interior_value: target value for interior cells
-    
-    Returns:
-        int: number of border subgrids
-    """
-    # Build prefix sum arrays
-    border_prefix_sum = [[0] * (m + 1) for _ in range(n + 1)]
-    interior_prefix_sum = [[0] * (m + 1) for _ in range(n + 1)]
-    
-        for i in range(n):
-            for j in range(m):
-            border_prefix_sum[i + 1][j + 1] = (border_prefix_sum[i][j + 1] + 
-                                              border_prefix_sum[i + 1][j] - 
-                                              border_prefix_sum[i][j])
-            if grid[i][j] == border_value:
-                border_prefix_sum[i + 1][j + 1] += 1
-            
-            interior_prefix_sum[i + 1][j + 1] = (interior_prefix_sum[i][j + 1] + 
-                                                interior_prefix_sum[i + 1][j] - 
-                                                interior_prefix_sum[i][j])
-            if grid[i][j] == interior_value:
-                interior_prefix_sum[i + 1][j + 1] += 1
-    
-    count = 0
-    
-    # Optimize by checking only valid starting positions
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == border_value:  # Only start from valid border cells
-                for height in range(1, n - i + 1):
-                    for width in range(1, m - j + 1):
-                        if is_border_subgrid_valid_prefix_sum_ii(border_prefix_sum, interior_prefix_sum, 
-                                                               i, j, height, width, border_value, interior_value):
-                    count += 1
-    
-    return count
-
-# Example usage
-n, m = 4, 4
-grid = [
-    [1, 1, 1, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1]
-]
-result1 = advanced_prefix_sum_border_subgrid_count_ii(n, m, grid)
-result2 = optimized_advanced_prefix_sum_count_ii(n, m, grid)
-print(f"Advanced prefix sum result: {result1}")
-print(f"Optimized advanced prefix sum result: {result2}")
+# CORRECT - interior starts at (r+1, c+1) and ends at (r+h-2, c+w-2)
+interior = query_sum(ps, r + 1, c + 1, r + h - 2, c + w - 2)
 ```
 
-**Time Complexity**: O(nm)
-**Space Complexity**: O(nm)
+**Problem:** Interior region excludes the border, not the entire subgrid.
+**Fix:** Interior spans from (r+1, c+1) to (r+h-2, c+w-2).
 
-**Why it's optimal**: Uses advanced prefix sums for O(nm) time complexity.
+### Mistake 2: Forgetting Small Subgrids Have No Interior
 
-**Implementation Details**:
-- **Advanced Prefix Sum Construction**: Build prefix sum arrays for border and interior values
-- **Range Query**: Use prefix sums for efficient range queries
-- **Mathematical Optimization**: Use mathematical properties for counting
-- **Efficient Algorithms**: Use optimal algorithms for grid operations
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²m²) | O(1) | Complete enumeration of all subgrids |
-| Optimized Checking | O(n²m²) | O(1) | Early termination and optimized validation |
-| Advanced Prefix Sum | O(nm) | O(nm) | Use advanced prefix sums for efficient range queries |
-
-### Time Complexity
-- **Time**: O(nm) - Use advanced prefix sums for efficient range queries
-- **Space**: O(nm) - Store prefix sum arrays
-
-### Why This Solution Works
-- **Advanced Prefix Sum Technique**: Use prefix sums for efficient range queries
-- **Mathematical Properties**: Use mathematical properties for counting
-- **Efficient Algorithms**: Use optimal algorithms for grid operations
-- **Range Query Optimization**: Use prefix sums for subgrid validation
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Border Subgrid Count with Multiple Border Values**
-**Problem**: Count border subgrids with multiple valid border values.
-
-**Key Differences**: Border cells can have multiple valid values
-
-**Solution Approach**: Modify prefix sum to handle multiple border values
-
-**Implementation**:
 ```python
-def multiple_border_value_subgrid_count_ii(n, m, grid, border_values, interior_value=0):
-    """
-    Count border subgrids with multiple valid border values
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid
-        border_values: set of valid border values
-        interior_value: target value for interior cells
-    
-    Returns:
-        int: number of border subgrids
-    """
-    count = 0
-    
-    # Check all possible subgrid positions and sizes
-    for i in range(n):
-        for j in range(m):
-            for height in range(1, n - i + 1):
-                for width in range(1, m - j + 1):
-                    # Check if subgrid satisfies conditions with multiple border values
-                    if is_border_subgrid_valid_multiple_values_ii(grid, i, j, height, width, border_values, interior_value):
-                        count += 1
-    
-    return count
+# WRONG - accessing invalid interior region
+interior = query_sum(ps, r + 1, c + 1, r + h - 2, c + w - 2)  # Invalid if h < 3
 
-def is_border_subgrid_valid_multiple_values_ii(grid, start_i, start_j, height, width, border_values, interior_value):
-    """
-    Check if subgrid satisfies conditions with multiple border values
-    
-    Args:
-        grid: 2D grid
-        start_i, start_j: starting position
-        height, width: subgrid dimensions
-        border_values: set of valid border values
-        interior_value: target value for interior cells
-    
-    Returns:
-        bool: True if subgrid satisfies conditions
-    """
-    # Check border cells
-    for i in range(start_i, start_i + height):
-        for j in range(start_j, start_j + width):
-            if (i == start_i or i == start_i + height - 1 or 
-                j == start_j or j == start_j + width - 1):
-                if grid[i][j] not in border_values:
-                    return False
-    
-    # Check interior cells
-    for i in range(start_i + 1, start_i + height - 1):
-        for j in range(start_j + 1, start_j + width - 1):
-            if grid[i][j] != interior_value:
-                return False
-    
-    return True
-
-# Example usage
-n, m = 4, 4
-grid = [
-    [1, 2, 2, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 2, 2, 1]
-]
-border_values = {1, 2}
-result = multiple_border_value_subgrid_count_ii(n, m, grid, border_values)
-print(f"Multiple border value subgrid count: {result}")
+# CORRECT - check size first
+if h < 3 or w < 3:
+    return all_cells_are_border
 ```
 
-#### **2. Border Subgrid Count with Size Constraints**
-**Problem**: Count border subgrids with specific size constraints.
+**Problem:** A 2x2 or 1xN subgrid has no interior cells.
+**Fix:** Handle small subgrids as special cases.
 
-**Key Differences**: Additional constraints on subgrid size
+### Mistake 3: Border Count Formula Error
 
-**Solution Approach**: Add size constraints to the counting logic
-
-**Implementation**:
 ```python
-def size_constrained_border_subgrid_count_ii(n, m, grid, border_value, interior_value, min_size, max_size):
-    """
-    Count border subgrids with size constraints
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid
-        border_value: target value for border cells
-        interior_value: target value for interior cells
-        min_size: minimum subgrid size
-        max_size: maximum subgrid size
-    
-    Returns:
-        int: number of border subgrids
-    """
-    count = 0
-    
-    # Check all possible subgrid positions and sizes with constraints
-    for i in range(n):
-        for j in range(m):
-            for height in range(max(1, min_size), min(n - i + 1, max_size + 1)):
-                for width in range(max(1, min_size), min(m - j + 1, max_size + 1)):
-                    if is_border_subgrid_valid_ii(grid, i, j, height, width, border_value, interior_value):
-                        count += 1
-    
-    return count
+# WRONG
+border_count = 2 * h + 2 * w  # Overcounts corners
 
-# Example usage
-n, m = 4, 4
-grid = [
-    [1, 1, 1, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1]
-]
-result = size_constrained_border_subgrid_count_ii(n, m, grid, 1, 0, 3, 4)
-print(f"Size constrained border subgrid count: {result}")
+# CORRECT
+border_count = 2 * (h + w) - 4  # Subtract 4 corners counted twice
 ```
 
-#### **3. Border Subgrid Count with Pattern Matching**
-**Problem**: Count border subgrids that match specific patterns.
+---
 
-**Key Differences**: Subgrids must match specific patterns
+## Edge Cases
 
-**Solution Approach**: Use pattern matching techniques
+| Case | Input | Expected | Why |
+|------|-------|----------|-----|
+| 1x1 grid | `[[1]]` | 1 | Single cell is its own border |
+| All same value | `[[1,1],[1,1]]` | Count all | Every subgrid valid if border=1, interior=1 |
+| No valid subgrids | `[[0,0],[0,0]]` | 0 | No border_val=1 exists |
+| Minimum with interior | 3x3 | Check | Smallest grid with 1 interior cell |
+| Large grid | 1000x1000 | Varies | Test performance |
 
-**Implementation**:
-```python
-def pattern_matching_border_subgrid_count_ii(n, m, grid, border_pattern, interior_pattern):
-    """
-    Count border subgrids that match specific patterns
-    
-    Args:
-        n, m: grid dimensions
-        grid: 2D grid
-        border_pattern: pattern for border cells
-        interior_pattern: pattern for interior cells
-    
-    Returns:
-        int: number of border subgrids matching patterns
-    """
-    count = 0
-    
-    # Check all possible subgrid positions and sizes
-    for i in range(n):
-        for j in range(m):
-            for height in range(1, n - i + 1):
-                for width in range(1, m - j + 1):
-                    # Check if subgrid matches patterns
-                    if matches_border_pattern_ii(grid, i, j, height, width, border_pattern, interior_pattern):
-                    count += 1
-    
-    return count
+---
 
-def matches_border_pattern_ii(grid, start_i, start_j, height, width, border_pattern, interior_pattern):
-    """
-    Check if subgrid matches border and interior patterns
-    
-    Args:
-        grid: 2D grid
-        start_i, start_j: starting position
-        height, width: subgrid dimensions
-        border_pattern: pattern for border cells
-        interior_pattern: pattern for interior cells
-    
-    Returns:
-        bool: True if subgrid matches patterns
-    """
-    # Check border pattern
-    for i in range(start_i, start_i + height):
-        for j in range(start_j, start_j + width):
-            if (i == start_i or i == start_i + height - 1 or 
-                j == start_j or j == start_j + width - 1):
-                if not matches_cell_pattern(grid[i][j], border_pattern):
-                    return False
-    
-    # Check interior pattern
-    for i in range(start_i + 1, start_i + height - 1):
-        for j in range(start_j + 1, start_j + width - 1):
-            if not matches_cell_pattern(grid[i][j], interior_pattern):
-                return False
-    
-    return True
+## When to Use This Pattern
 
-def matches_cell_pattern(value, pattern):
-    """
-    Check if cell value matches pattern
-    
-    Args:
-        value: cell value
-        pattern: pattern to match
-    
-    Returns:
-        bool: True if value matches pattern
-    """
-    if isinstance(pattern, set):
-        return value in pattern
-    elif isinstance(pattern, list):
-        return value in pattern
-    else:
-        return value == pattern
+### Use 2D Prefix Sums When:
+- Counting cells with specific values in rectangular regions
+- Multiple queries over the same grid
+- O(1) range sum is critical for performance
 
-# Example usage
-n, m = 4, 4
-grid = [
-    [1, 1, 1, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1]
-]
-border_pattern = {1}
-interior_pattern = {0}
-result = pattern_matching_border_subgrid_count_ii(n, m, grid, border_pattern, interior_pattern)
-print(f"Pattern matching border subgrid count: {result}")
-```
+### Alternative Approaches:
+- **Early termination brute force**: When most subgrids fail quickly
+- **Sparse grids**: When target values are rare, enumerate positions instead
 
-### Related Problems
+### Pattern Recognition Checklist:
+- [ ] Need to sum/count values in rectangles? → **2D Prefix Sum**
+- [ ] Multiple conditions on different regions? → **Multiple prefix arrays**
+- [ ] Need O(1) validation per subgrid? → **Prefix sum queries**
 
-#### **CSES Problems**
-- [Border Subgrid Count I](https://cses.fi/problemset/task/1075) - Grid counting
-- [All Letter Subgrid Count](https://cses.fi/problemset/task/1075) - Grid counting
-- [Grid Completion](https://cses.fi/problemset/task/1075) - Grid algorithms
+---
 
-#### **LeetCode Problems**
-- [Number of Islands](https://leetcode.com/problems/number-of-islands/) - Grid algorithms
-- [Max Area of Island](https://leetcode.com/problems/max-area-of-island/) - Grid algorithms
-- [Island Perimeter](https://leetcode.com/problems/island-perimeter/) - Grid algorithms
+## Related Problems
 
-#### **Problem Categories**
-- **Grid Algorithms**: 2D array manipulation, grid counting
-- **Combinatorics**: Mathematical counting, grid properties
-- **Mathematical Algorithms**: Prefix sums, mathematical analysis
+### CSES Problems
+| Problem | Technique |
+|---------|-----------|
+| [Forest Queries](https://cses.fi/problemset/task/1652) | Basic 2D prefix sum |
+| [Subarray Sums I](https://cses.fi/problemset/task/1660) | 1D prefix sum + hash map |
 
-## 🔗 Additional Resources
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [LeetCode: Maximal Square](https://leetcode.com/problems/maximal-square/) | DP instead of counting |
+| [LeetCode: Range Sum Query 2D](https://leetcode.com/problems/range-sum-query-2d-immutable/) | Pure prefix sum queries |
+| [LeetCode: Number of Submatrices That Sum to Target](https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/) | Prefix sum + hash map |
 
-### **Algorithm References**
-- [Grid Algorithms](https://cp-algorithms.com/geometry/basic-geometry.html) - Grid algorithms
-- [Prefix Sums](https://cp-algorithms.com/data_structures/prefix_sum.html) - Prefix sum technique
-- [Combinatorics](https://cp-algorithms.com/combinatorics/binomial-coefficients.html) - Counting techniques
+---
 
-### **Practice Problems**
-- [CSES Border Subgrid Count I](https://cses.fi/problemset/task/1075) - Medium
-- [CSES All Letter Subgrid Count](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Grid Completion](https://cses.fi/problemset/task/1075) - Medium
+## Key Takeaways
 
-### **Further Reading**
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
-- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
-- [Grid Algorithms](https://en.wikipedia.org/wiki/Grid_computing) - Wikipedia article
+1. **Core Idea:** Use separate prefix sums for border and interior values to validate in O(1)
+2. **Time Optimization:** Reduce validation from O(hw) to O(1) per subgrid
+3. **Space Trade-off:** O(nm) space enables O(1) queries
+4. **Border Formula:** Border cells = 2*(h + w) - 4, Interior = (h-2)*(w-2)
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Build a 2D prefix sum array from scratch
+- [ ] Query any rectangular region in O(1)
+- [ ] Correctly identify border vs interior cells
+- [ ] Handle edge cases (small subgrids, empty interiors)
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: 2D Prefix Sums](https://cp-algorithms.com/data_structures/prefix_sums.html)
+- [CSES Problem Set](https://cses.fi/problemset/)

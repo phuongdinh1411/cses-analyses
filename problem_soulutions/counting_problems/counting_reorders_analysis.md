@@ -1,535 +1,418 @@
 ---
 layout: simple
-title: "Counting Reorders - Combinatorial Problem"
+title: "Creating Strings - Counting Problem"
 permalink: /problem_soulutions/counting_problems/counting_reorders_analysis
+difficulty: Medium
+tags: [combinatorics, multinomial, factorial, modular-arithmetic]
 ---
 
-# Counting Reorders - Combinatorial Problem
+# Creating Strings / Counting Reorders
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of reordering elements in combinatorics
-- Apply mathematical formulas for counting reorderings
-- Implement efficient algorithms for reorder counting
-- Optimize reorder calculations for large numbers
-- Handle special cases in reorder counting
+| Attribute | Value |
+|-----------|-------|
+| **CSES Link** | [Creating Strings I](https://cses.fi/problemset/task/1622) |
+| **Difficulty** | Medium |
+| **Category** | Combinatorics |
+| **Time Limit** | 1 second |
+| **Key Technique** | Multinomial Coefficient / Factorial with Division |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an array of n elements, count the number of ways to reorder the elements such that no element appears in its original position (derangements).
+After solving this problem, you will be able to:
+- [ ] Calculate the number of distinct permutations of a string with repeated characters
+- [ ] Apply the multinomial coefficient formula: n! / (c1! * c2! * ... * ck!)
+- [ ] Implement modular division using Fermat's Little Theorem (modular inverse)
+- [ ] Precompute factorials for efficient repeated calculations
 
-**Input**: 
-- n: number of elements
+---
 
-**Output**: 
-- Number of derangements D(n) modulo 10^9+7
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 10^6
-- Answer modulo 10^9+7
+**Problem:** Given a string of n characters (possibly with duplicates), count the number of distinct ways to reorder its characters.
 
-**Example**:
+**Input:**
+- Line 1: A string s of length n
+
+**Output:**
+- The number of distinct reorderings (permutations) modulo 10^9 + 7
+
+**Constraints:**
+- 1 <= n <= 10^6
+- String contains lowercase letters a-z
+
+### Example
+
 ```
 Input:
-n = 4
+aabac
 
 Output:
-9
-
-Explanation**: 
-D(4) = 9
-Derangements of [1,2,3,4]:
-[2,1,4,3], [2,3,4,1], [2,4,1,3]
-[3,1,4,2], [3,4,1,2], [3,4,2,1]
-[4,1,2,3], [4,3,1,2], [4,3,2,1]
+20
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Recursive Solution
-
-**Key Insights from Recursive Solution**:
-- **Recursive Formula**: Use D(n) = (n-1) * (D(n-1) + D(n-2))
-- **Base Cases**: D(1) = 0, D(2) = 1
-- **Overlapping Subproblems**: Same subproblems calculated multiple times
-- **Baseline Understanding**: Provides correct answer but inefficient
-
-**Key Insight**: Use recursive formula for derangements with base cases.
-
-**Algorithm**:
-- Use recursive formula: D(n) = (n-1) * (D(n-1) + D(n-2))
-- Handle base cases: D(1) = 0, D(2) = 1
-- Apply modulo operation
-
-**Visual Example**:
-```
-Derangement formula:
-┌─────────────────────────────────────┐
-│ D(n) = (n-1) × (D(n-1) + D(n-2))  │
-│ D(1) = 0                           │
-│ D(2) = 1                           │
-│ D(3) = 2 × (1 + 0) = 2             │
-│ D(4) = 3 × (2 + 1) = 9             │
-└─────────────────────────────────────┘
-
-Recursive calculation:
-┌─────────────────────────────────────┐
-│ D(4) = 3 × (D(3) + D(2))          │
-│ D(3) = 2 × (D(2) + D(1)) = 2 × (1 + 0) = 2 │
-│ D(2) = 1                           │
-│ D(4) = 3 × (2 + 1) = 9             │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def recursive_reorder_solution(n, mod=10**9+7):
-    """
-    Calculate derangements using recursive approach
-    
-    Args:
-        n: number of elements
-        mod: modulo value
-    
-    Returns:
-        int: D(n) modulo mod
-    """
-    def derangement(n):
-        """Calculate derangement recursively"""
-        if n == 1:
-            return 0
-        if n == 2:
-            return 1
-        
-        # D(n) = (n-1) * (D(n-1) + D(n-2))
-        return ((n - 1) * (derangement(n - 1) + derangement(n - 2))) % mod
-    
-    return derangement(n)
-
-# Example usage
-n = 4
-result = recursive_reorder_solution(n)
-print(f"Recursive reorder result: D({n}) = {result}")
-```
-
-**Time Complexity**: O(2^n)
-**Space Complexity**: O(n)
-
-**Why it's inefficient**: Exponential time complexity due to overlapping subproblems.
+**Explanation:** The string "aabac" has 5 characters with frequencies: a=3, b=1, c=1. The number of distinct permutations is 5! / (3! * 1! * 1!) = 120 / 6 = 20.
 
 ---
 
-### Approach 2: Memoized Recursive Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Memoized Recursive Solution**:
-- **Memoization**: Store previously calculated values
-- **Overlapping Subproblems**: Avoid recalculating same subproblems
-- **Time Optimization**: Reduce time complexity to O(n)
-- **Space Trade-off**: Use O(n) space for memoization
+### Pattern Recognition
 
-**Key Insight**: Use memoization to store previously calculated derangement values.
+> **Key Question:** How does having duplicate characters affect the count of permutations?
 
-**Algorithm**:
-- Use memoization to store calculated values
-- Check memoization table before calculating
-- Store results in memoization table
+If all characters were unique, we would have n! permutations. But when characters repeat, many of these permutations look identical. We need to divide by the number of ways to arrange identical characters among themselves.
 
-**Visual Example**:
+### Breaking Down the Problem
+
+1. **What are we looking for?** The count of distinct arrangements of characters
+2. **What information do we have?** The frequency of each character in the string
+3. **What's the relationship?** Total permutations divided by redundant orderings of identical characters
+
+### The Multinomial Coefficient Formula
+
+For a string with character frequencies c1, c2, ..., ck (where c1 + c2 + ... + ck = n):
+
 ```
-Memoized calculation:
-┌─────────────────────────────────────┐
-│ memo = {1: 0, 2: 1}                │
-│ D(3) = 2 × (D(2) + D(1))          │
-│ D(2) = 1 (from memo)               │
-│ D(1) = 0 (from memo)               │
-│ D(3) = 2 × (1 + 0) = 2             │
-│ memo[3] = 2                        │
-│ D(4) = 3 × (D(3) + D(2))          │
-│ D(3) = 2 (from memo)               │
-│ D(2) = 1 (from memo)               │
-│ D(4) = 3 × (2 + 1) = 9             │
-│ memo[4] = 9                        │
-└─────────────────────────────────────┘
+Distinct Permutations = n! / (c1! * c2! * ... * ck!)
 ```
 
-**Implementation**:
-```python
-def memoized_reorder_solution(n, mod=10**9+7):
-    """
-    Calculate derangements using memoized recursive approach
-    
-    Args:
-        n: number of elements
-        mod: modulo value
-    
-    Returns:
-        int: D(n) modulo mod
-    """
-    memo = {1: 0, 2: 1}
-    
-    def derangement(n):
-        """Calculate derangement with memoization"""
-        if n in memo:
-            return memo[n]
-        
-        # D(n) = (n-1) * (D(n-1) + D(n-2))
-        result = ((n - 1) * (derangement(n - 1) + derangement(n - 2))) % mod
-        memo[n] = result
-        return result
-    
-    return derangement(n)
+### Analogy
 
-# Example usage
-n = 4
-result = memoized_reorder_solution(n)
-print(f"Memoized reorder result: D({n}) = {result}")
-```
-
-**Time Complexity**: O(n)
-**Space Complexity**: O(n)
-
-**Why it's better**: Eliminates overlapping subproblems and reduces time complexity.
-
-**Implementation Considerations**:
-- **Memoization**: Store calculated values to avoid recalculation
-- **Base Cases**: Handle base cases properly
-- **Modular Arithmetic**: Apply modulo operations throughout
+Imagine arranging 5 people in a row where 3 are identical triplets. Without considering identity, there are 5! = 120 ways. But since the triplets are indistinguishable, we've overcounted by 3! = 6 (the ways to arrange triplets among themselves). So the answer is 120/6 = 20.
 
 ---
 
-### Approach 3: Dynamic Programming Solution (Optimal)
+## Solution 1: Brute Force (Generate All Permutations)
 
-**Key Insights from Dynamic Programming Solution**:
-- **Bottom-up Approach**: Build solution from base cases
-- **Space Optimization**: Use only necessary variables
-- **Efficient Calculation**: O(n) time with O(1) space
-- **Optimal Complexity**: Best approach for single query
+### Idea
 
-**Key Insight**: Use dynamic programming with space optimization for efficient derangement calculation.
+Generate all permutations and use a set to count unique ones. Only works for small inputs.
 
-**Algorithm**:
-- Use bottom-up approach starting from base cases
-- Maintain only last two values for space optimization
-- Apply modular arithmetic throughout
+### Code
 
-**Visual Example**:
-```
-DP calculation with space optimization:
-┌─────────────────────────────────────┐
-│ prev2 = D(1) = 0                   │
-│ prev1 = D(2) = 1                   │
-│ for i in range(3, n+1):            │
-│   curr = (i-1) × (prev1 + prev2)   │
-│   prev2 = prev1                     │
-│   prev1 = curr                      │
-│ return prev1                        │
-└─────────────────────────────────────┘
-
-Step-by-step calculation:
-┌─────────────────────────────────────┐
-│ i=3: curr = 2 × (1 + 0) = 2        │
-│       prev2 = 1, prev1 = 2         │
-│ i=4: curr = 3 × (2 + 1) = 9        │
-│       prev2 = 2, prev1 = 9         │
-│ Result: 9                           │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
 ```python
-def dp_reorder_solution(n, mod=10**9+7):
-    """
-    Calculate derangements using dynamic programming approach
-    
-    Args:
-        n: number of elements
-        mod: modulo value
-    
-    Returns:
-        int: D(n) modulo mod
-    """
-    if n == 1:
-        return 0
-    if n == 2:
-        return 1
-    
-    # Base cases
-    prev2 = 0  # D(1)
-    prev1 = 1  # D(2)
-    
-    # Calculate D(i) for i from 3 to n
-    for i in range(3, n + 1):
-        # D(i) = (i-1) * (D(i-1) + D(i-2))
-        curr = ((i - 1) * (prev1 + prev2)) % mod
-        prev2 = prev1
-        prev1 = curr
-    
-    return prev1
+from itertools import permutations
 
-def optimized_dp_reorder_solution(n, mod=10**9+7):
+def count_reorders_brute(s):
     """
-    Calculate derangements using optimized DP approach
-    
-    Args:
-        n: number of elements
-        mod: modulo value
-    
-    Returns:
-        int: D(n) modulo mod
-    """
-    if n <= 1:
-        return 0
-    if n == 2:
-        return 1
-    
-    # Use array for multiple queries
-    dp = [0] * (n + 1)
-    dp[1] = 0
-    dp[2] = 1
-    
-    for i in range(3, n + 1):
-        dp[i] = ((i - 1) * (dp[i - 1] + dp[i - 2])) % mod
-    
-    return dp[n]
+    Brute force: generate all permutations and count unique ones.
 
-# Example usage
-n = 4
-result1 = dp_reorder_solution(n)
-result2 = optimized_dp_reorder_solution(n)
-print(f"DP reorder result: D({n}) = {result1}")
-print(f"Optimized DP reorder result: D({n}) = {result2}")
+    Time: O(n! * n) - generates n! permutations, each of length n
+    Space: O(n! * n) - stores all unique permutations
+    """
+    unique = set(permutations(s))
+    return len(unique)
+
+# Example
+print(count_reorders_brute("aabac"))  # Output: 20
 ```
 
-**Time Complexity**: O(n)
-**Space Complexity**: O(1) (space-optimized version)
+### Complexity
 
-**Why it's optimal**: O(n) time complexity with optimal space usage.
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n! * n) | Generates all permutations |
+| Space | O(n! * n) | Stores unique permutations |
 
-**Implementation Details**:
-- **Bottom-up Approach**: Build solution from base cases
-- **Space Optimization**: Use only necessary variables
-- **Modular Arithmetic**: Apply modulo operations throughout
-- **Single Query**: Efficient for single derangement calculation
+### Why This Is Impractical
 
-## 🔧 Implementation Details
+For n = 10, we have 3,628,800 permutations. For n = 20, it's over 10^18. This approach only works for very small strings.
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Recursive | O(2^n) | O(n) | Recursive formula with base cases |
-| Memoized | O(n) | O(n) | Memoization to avoid overlapping subproblems |
-| Dynamic Programming | O(n) | O(1) | Bottom-up approach with space optimization |
+---
 
-### Time Complexity
-- **Time**: O(n) - Calculate each derangement once
-- **Space**: O(1) - Use only necessary variables
+## Solution 2: Optimal (Multinomial Coefficient)
 
-### Why This Solution Works
-- **Mathematical Formula**: Use derangement formula D(n) = (n-1) * (D(n-1) + D(n-2))
-- **Dynamic Programming**: Build solution from base cases
-- **Space Optimization**: Use only necessary variables
-- **Modular Arithmetic**: Handle large numbers efficiently
+### Key Insight
 
-## 🚀 Problem Variations
+> **The Trick:** Use the formula n! / (c1! * c2! * ... * ck!) with modular arithmetic to compute the answer in O(n) time.
 
-### Extended Problems with Detailed Code Examples
+### Algorithm
 
-#### **1. Partial Derangements**
-**Problem**: Count derangements where exactly k elements are in their original positions.
+1. Count the frequency of each character
+2. Compute n! (factorial of string length)
+3. For each character frequency ci, divide by ci!
+4. Use modular inverse for division under modulo
 
-**Key Differences**: Allow some elements to be in original positions
+### Modular Inverse
 
-**Solution Approach**: Use inclusion-exclusion principle
+To compute (a / b) mod p, we compute a * b^(-1) mod p, where b^(-1) = b^(p-2) mod p (by Fermat's Little Theorem, when p is prime).
 
-**Implementation**:
+### Dry Run Example
+
+Let's trace through with input `s = "aabac"`:
+
+```
+Step 1: Count frequencies
+  freq = {'a': 3, 'b': 1, 'c': 1}
+  n = 5
+
+Step 2: Compute n!
+  5! = 120
+
+Step 3: Divide by each ci!
+  Result = 120 / 3! / 1! / 1!
+         = 120 / 6 / 1 / 1
+         = 20
+
+With modular arithmetic:
+  fact[5] = 120
+  result = 120
+  result = 120 * inverse(6) mod (10^9+7)
+         = 120 * 166666668 mod (10^9+7)
+         = 20
+```
+
+### Visual Diagram
+
+```
+String: "aabac"
+
+Character Frequencies:
+  a: |||  (3 times)
+  b: |    (1 time)
+  c: |    (1 time)
+
+Formula:
+       n!           5!        120
+  ----------- = --------- = ----- = 20
+  c_a! * c_b! * c_c!   3! * 1! * 1!    6
+
+Why divide by 3!?
+  The 3 'a's can be arranged among themselves in 3! = 6 ways,
+  but all these arrangements look the same in the final string.
+```
+
+### Code (Python)
+
 ```python
-def partial_derangements(n, k, mod=10**9+7):
+def count_reorders(s):
     """
-    Calculate partial derangements where exactly k elements are in original positions
-    
-    Args:
-        n: number of elements
-        k: number of elements in original positions
-        mod: modulo value
-    
-    Returns:
-        int: Number of partial derangements modulo mod
+    Count distinct permutations using multinomial coefficient.
+
+    Time: O(n + 26) = O(n)
+    Space: O(n) for factorial array
     """
-    def combination(n, k, mod):
-        """Calculate C(n,k) modulo mod"""
-        if k > n or k < 0:
-            return 0
-        
-        result = 1
-        for i in range(k):
-            result = (result * (n - i)) % mod
-            result = (result * pow(i + 1, mod - 2, mod)) % mod
-        
-        return result
-    
-    def derangement(n, mod):
-        """Calculate derangement D(n) modulo mod"""
-        if n <= 1:
-            return 0
-        if n == 2:
-            return 1
-        
-        prev2, prev1 = 0, 1
-        for i in range(3, n + 1):
-            curr = ((i - 1) * (prev1 + prev2)) % mod
-            prev2, prev1 = prev1, curr
-        
-        return prev1
-    
-    # Use inclusion-exclusion principle
-    result = 0
-    for i in range(k, n + 1):
-        # C(n,i) * D(n-i)
-        term = (combination(n, i, mod) * derangement(n - i, mod)) % mod
-        if (i - k) % 2 == 0:
-            result = (result + term) % mod
-        else:
-            result = (result - term + mod) % mod
-    
+    MOD = 10**9 + 7
+    n = len(s)
+
+    # Precompute factorials
+    fact = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = fact[i-1] * i % MOD
+
+    # Count character frequencies
+    freq = {}
+    for c in s:
+        freq[c] = freq.get(c, 0) + 1
+
+    # Compute n! / (c1! * c2! * ... * ck!)
+    result = fact[n]
+    for count in freq.values():
+        # Divide by count! using modular inverse
+        result = result * pow(fact[count], MOD - 2, MOD) % MOD
+
     return result
 
 # Example usage
-n, k = 5, 2  # Exactly 2 elements in original positions
-result = partial_derangements(n, k)
-print(f"Partial derangements with {k} fixed: {result}")
+print(count_reorders("aabac"))  # Output: 20
+print(count_reorders("aaaa"))   # Output: 1
+print(count_reorders("abcd"))   # Output: 24
 ```
 
-#### **2. Circular Derangements**
-**Problem**: Count derangements in a circular arrangement.
+### Code (C++)
 
-**Key Differences**: Elements are arranged in a circle
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Solution Approach**: Use circular derangement formula
+const int MOD = 1e9 + 7;
 
-**Implementation**:
+long long power(long long base, long long exp, long long mod) {
+    long long result = 1;
+    base %= mod;
+    while (exp > 0) {
+        if (exp & 1) result = result * base % mod;
+        base = base * base % mod;
+        exp >>= 1;
+    }
+    return result;
+}
+
+long long modInverse(long long a, long long mod) {
+    return power(a, mod - 2, mod);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string s;
+    cin >> s;
+    int n = s.length();
+
+    // Precompute factorials
+    vector<long long> fact(n + 1);
+    fact[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        fact[i] = fact[i-1] * i % MOD;
+    }
+
+    // Count character frequencies
+    map<char, int> freq;
+    for (char c : s) {
+        freq[c]++;
+    }
+
+    // Compute n! / (c1! * c2! * ... * ck!)
+    long long result = fact[n];
+    for (auto& [ch, cnt] : freq) {
+        result = result * modInverse(fact[cnt], MOD) % MOD;
+    }
+
+    cout << result << "\n";
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n + k log MOD) | n for factorial, k characters with O(log MOD) for each inverse |
+| Space | O(n) | Factorial array storage |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Forgetting Modular Inverse
+
 ```python
-def circular_derangements(n, mod=10**9+7):
-    """
-    Calculate circular derangements
-    
-    Args:
-        n: number of elements
-        mod: modulo value
-    
-    Returns:
-        int: Number of circular derangements modulo mod
-    """
-    def derangement(n, mod):
-        """Calculate derangement D(n) modulo mod"""
-        if n <= 1:
-            return 0
-        if n == 2:
-            return 1
-        
-        prev2, prev1 = 0, 1
-        for i in range(3, n + 1):
-            curr = ((i - 1) * (prev1 + prev2)) % mod
-            prev2, prev1 = prev1, curr
-        
-        return prev1
-    
-    # Circular derangement formula: D_c(n) = D(n) + D(n-1)
-    if n <= 1:
-        return 0
-    if n == 2:
-        return 1
-    
-    d_n = derangement(n, mod)
-    d_n_minus_1 = derangement(n - 1, mod)
-    
-    return (d_n + d_n_minus_1) % mod
-
-# Example usage
-n = 4
-result = circular_derangements(n)
-print(f"Circular derangements for {n} elements: {result}")
+# WRONG - Integer division doesn't work with modular arithmetic
+result = fact[n]
+for count in freq.values():
+    result = result // fact[count]  # WRONG!
+result %= MOD
 ```
 
-#### **3. Weighted Derangements**
-**Problem**: Count derangements with weights for each position.
+**Problem:** Division and modulo don't commute. (a // b) % MOD != (a % MOD) // (b % MOD)
 
-**Key Differences**: Each position has a weight
+**Fix:** Use modular inverse: multiply by b^(MOD-2) instead of dividing by b.
 
-**Solution Approach**: Use weighted derangement formula
+### Mistake 2: Overflow in Factorial Computation
 
-**Implementation**:
+```cpp
+// WRONG - Overflow before taking mod
+long long fact[n+1];
+fact[0] = 1;
+for (int i = 1; i <= n; i++) {
+    fact[i] = fact[i-1] * i;  // Overflows for i > 20!
+}
+fact[n] %= MOD;
+```
+
+**Problem:** Factorial grows extremely fast and overflows even 64-bit integers.
+
+**Fix:** Take modulo at each step: `fact[i] = fact[i-1] * i % MOD;`
+
+### Mistake 3: Not Handling Single Character
+
 ```python
-def weighted_derangements(weights, mod=10**9+7):
-    """
-    Calculate weighted derangements
-    
-    Args:
-        weights: list of weights for each position
-        mod: modulo value
-    
-    Returns:
-        int: Number of weighted derangements modulo mod
-    """
-    n = len(weights)
-    
-    def derangement(n, mod):
-        """Calculate derangement D(n) modulo mod"""
-        if n <= 1:
-            return 0
-        if n == 2:
-            return 1
-        
-        prev2, prev1 = 0, 1
-        for i in range(3, n + 1):
-            curr = ((i - 1) * (prev1 + prev2)) % mod
-            prev2, prev1 = prev1, curr
-        
-        return prev1
-    
-    # Calculate weighted derangement
-    # D_w(n) = sum of weights * D(n)
-    total_weight = sum(weights) % mod
-    d_n = derangement(n, mod)
-    
-    return (total_weight * d_n) % mod
-
-# Example usage
-weights = [1, 2, 3, 4]  # Weights for each position
-result = weighted_derangements(weights)
-print(f"Weighted derangements: {result}")
+# Edge case: all characters are the same
+s = "aaaa"
+# n! / n! = 1 (only one way to arrange identical items)
 ```
 
-### Related Problems
+**Problem:** Some implementations crash or return wrong values for edge cases.
 
-#### **CSES Problems**
-- [Counting Permutations](https://cses.fi/problemset/task/1075) - Combinatorics
-- [Counting Combinations](https://cses.fi/problemset/task/1075) - Combinatorics
-- [Counting Sequences](https://cses.fi/problemset/task/1075) - Combinatorics
+**Fix:** The formula naturally handles this: 4! / 4! = 1.
 
-#### **LeetCode Problems**
-- [Permutations](https://leetcode.com/problems/permutations/) - Permutations
-- [Permutations II](https://leetcode.com/problems/permutations-ii/) - Permutations with duplicates
-- [Next Permutation](https://leetcode.com/problems/next-permutation/) - Permutation generation
+---
 
-#### **Problem Categories**
-- **Combinatorics**: Mathematical counting, derangements, permutations
-- **Dynamic Programming**: DP optimization, mathematical DP
-- **Mathematical Algorithms**: Modular arithmetic, number theory
+## Edge Cases
 
-## 🔗 Additional Resources
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single character | `"a"` | 1 | Only one arrangement |
+| All same | `"aaaa"` | 1 | 4!/4! = 1 |
+| All unique | `"abcd"` | 24 | 4!/1!^4 = 24 |
+| Two characters | `"ab"` | 2 | 2!/1!/1! = 2 |
+| Long repeated | `"aabb"` | 6 | 4!/(2!*2!) = 6 |
+| Max length | n = 10^6 | Large number | Test efficiency |
 
-### **Algorithm References**
-- [Combinatorics](https://cp-algorithms.com/combinatorics/binomial-coefficients.html) - Binomial coefficients
-- [Derangements](https://cp-algorithms.com/combinatorics/inclusion-exclusion.html) - Inclusion-exclusion principle
-- [Dynamic Programming](https://cp-algorithms.com/dynamic_programming/intro-to-dp.html) - DP introduction
+---
 
-### **Practice Problems**
-- [CSES Counting Permutations](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Counting Combinations](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Counting Sequences](https://cses.fi/problemset/task/1075) - Medium
+## When to Use This Pattern
 
-### **Further Reading**
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
-- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
-- [Combinatorics](https://en.wikipedia.org/wiki/Combinatorics) - Wikipedia article
+### Use This Approach When:
+- Counting distinct arrangements of items with repetitions
+- You need to compute permutations with duplicate elements
+- The problem involves distributing identical items into distinct positions
+
+### Don't Use When:
+- You need to actually generate all permutations (use backtracking)
+- Items have order constraints (use DP)
+- Dealing with circular permutations (different formula)
+
+### Pattern Recognition Checklist:
+- [ ] Counting arrangements? --> **Consider multinomial coefficient**
+- [ ] Items have duplicates? --> **Divide by duplicate factorials**
+- [ ] Need modular arithmetic? --> **Use Fermat's Little Theorem for inverse**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Link | Why It Helps |
+|---------|------|--------------|
+| Creating Strings I | [CSES 1622](https://cses.fi/problemset/task/1622) | Generate permutations for small n |
+| Binomial Coefficients | [CSES 1079](https://cses.fi/problemset/task/1079) | Practice modular inverse |
+
+### Similar Difficulty
+
+| Problem | Link | Key Difference |
+|---------|------|----------------|
+| Distributing Apples | [CSES 1716](https://cses.fi/problemset/task/1716) | Stars and bars technique |
+| Bracket Sequences I | [CSES 2064](https://cses.fi/problemset/task/2064) | Catalan numbers |
+
+### Harder (Do These After)
+
+| Problem | Link | New Concept |
+|---------|------|-------------|
+| Bracket Sequences II | [CSES 2187](https://cses.fi/problemset/task/2187) | Counting with constraints |
+| Counting Necklaces | [CSES 2209](https://cses.fi/problemset/task/2209) | Burnside's lemma |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Count distinct permutations by dividing total permutations by the permutations of identical elements.
+
+2. **Formula:** For string with frequencies c1, c2, ..., ck: Answer = n! / (c1! * c2! * ... * ck!)
+
+3. **Modular Arithmetic:** Use Fermat's Little Theorem for modular inverse: a^(-1) = a^(p-2) mod p
+
+4. **Time Optimization:** Precompute factorials to avoid redundant calculations.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Derive the multinomial coefficient formula from first principles
+- [ ] Implement modular inverse using fast exponentiation
+- [ ] Explain why we divide by the factorial of each frequency
+- [ ] Handle edge cases (single char, all same, all unique)
+- [ ] Solve in O(n) time with O(n) space
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Modular Inverse](https://cp-algorithms.com/algebra/module-inverse.html)
+- [CP-Algorithms: Factorial & Combinations](https://cp-algorithms.com/combinatorics/binomial-coefficients.html)
+- [CSES Problem Set](https://cses.fi/problemset/)

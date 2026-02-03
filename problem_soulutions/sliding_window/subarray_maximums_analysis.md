@@ -1,374 +1,437 @@
 ---
 layout: simple
-title: "Subarray Maximums - Sliding Window with Deque"
+title: "Sliding Window Maximum - Monotonic Deque"
 permalink: /problem_soulutions/sliding_window/subarray_maximums_analysis
+difficulty: Medium
+tags: [sliding-window, monotonic-deque, deque, array]
+prerequisites: [basic-arrays, deque-operations]
 ---
 
-# Subarray Maximums - Sliding Window with Deque
+# Sliding Window Maximum
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement deque technique for sliding window maximum problems
-- Apply sliding window technique for fixed-size windows with maximum tracking
-- Optimize subarray maximum calculations using deque data structure
-- Handle edge cases in sliding window maximum problems
-- Recognize when to use deque vs other approaches
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Sliding Window |
+| **Time Limit** | 1 second |
+| **Key Technique** | Monotonic Deque |
+| **CSES Link** | [Sliding Window Maximum](https://cses.fi/problemset/task/1076) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an array of integers and a window size k, find the maximum element in each sliding window of size k.
+After solving this problem, you will be able to:
+- [ ] Understand why a monotonic deque achieves O(n) time complexity
+- [ ] Implement a decreasing monotonic deque for maximum tracking
+- [ ] Recognize sliding window problems that benefit from deque optimization
+- [ ] Apply the same pattern to minimum queries by reversing the comparison
 
-**Input**: 
-- First line: n (number of elements) and k (window size)
-- Second line: n integers separated by spaces
+---
 
-**Output**: 
-- n-k+1 integers: maximum element in each sliding window
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ k ≤ n ≤ 10⁵
-- 1 ≤ arr[i] ≤ 10⁵
+**Problem:** Given an array of n integers and a window size k, find the maximum element in each sliding window of size k as it moves from left to right.
 
-**Example**:
+**Input:**
+- Line 1: Two integers n (array size) and k (window size)
+- Line 2: n space-separated integers
+
+**Output:**
+- n-k+1 integers: the maximum of each window
+
+**Constraints:**
+- 1 <= k <= n <= 2 x 10^5
+- 1 <= arr[i] <= 10^9
+
+### Example
+
 ```
 Input:
-6 3
-1 3 -1 -3 5 3
+8 3
+2 1 4 5 3 4 1 2
 
 Output:
-3 3 5 5
-
-Explanation**: 
-Window 1: [1, 3, -1] → max = 3
-Window 2: [3, -1, -3] → max = 3
-Window 3: [-1, -3, 5] → max = 5
-Window 4: [-3, 5, 3] → max = 5
+4 5 5 5 4 4
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:**
+- Window [2,1,4] -> max = 4
+- Window [1,4,5] -> max = 5
+- Window [4,5,3] -> max = 5
+- Window [5,3,4] -> max = 5
+- Window [3,4,1] -> max = 4
+- Window [4,1,2] -> max = 4
 
-### Approach 1: Brute Force
-**Time Complexity**: O(n×k)  
-**Space Complexity**: O(1)
+---
 
-**Algorithm**:
-1. For each window position i from 0 to n-k
-2. Find maximum element in window [i, i+k-1]
-3. Add maximum to result
-4. Return result
+## Intuition: How to Think About This Problem
 
-**Implementation**:
+### Pattern Recognition
+
+> **Key Question:** When the window slides, how can we efficiently update the maximum without rechecking all k elements?
+
+The core insight is that many elements in the window can never become the maximum. If we see a larger element, all smaller elements before it (still in the window) become irrelevant because the larger element will outlast them or we will find an even larger one.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** The maximum value in each window position
+2. **What information do we have?** Array values and their indices (positions)
+3. **What is the relationship?** We need to track "candidates" that could be maximum as the window slides
+
+### The Monotonic Deque Idea
+
+Think of it like a queue of "potential champions":
+- New elements enter from the right
+- Before entering, they "knock out" all weaker elements (smaller values)
+- The strongest (largest) is always at the front
+- Old elements that leave the window are removed from the front
+
+This maintains a **decreasing sequence** from front to back.
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+For each window position, scan all k elements to find the maximum.
+
+### Code
+
 ```python
-def brute_force_subarray_maximums(arr, k):
+def sliding_max_brute(arr, k):
     n = len(arr)
     result = []
-    
     for i in range(n - k + 1):
-        window_max = max(arr[i:i+k])
-        result.append(window_max)
-    
+        result.append(max(arr[i:i+k]))
     return result
 ```
 
-### Approach 2: Optimized with Priority Queue
-**Time Complexity**: O(n log k)  
-**Space Complexity**: O(k)
+### Complexity
 
-**Algorithm**:
-1. Use priority queue (max heap) to track elements in current window
-2. For each window, add new element and remove old element
-3. Get maximum from priority queue
-4. Add maximum to result
-5. Return result
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n*k) | k comparisons for each of n-k+1 windows |
+| Space | O(1) | No extra space beyond output |
 
-**Implementation**:
-```python
-import heapq
+### Why This Works (But Is Slow)
 
-def optimized_subarray_maximums(arr, k):
-    n = len(arr)
-    result = []
-    max_heap = []
-    
-    for i in range(n):
-        heapq.heappush(max_heap, -arr[i])
-        
-        if i >= k - 1:
-            result.append(-max_heap[0])
-            max_heap.remove(-arr[i - k + 1])
-            heapq.heapify(max_heap)
-    
-    return result
+Correctness is obvious - we check every element. But with n = 200,000 and k = 100,000, this is 10^10 operations, far too slow.
+
+---
+
+## Solution 2: Optimal - Monotonic Deque
+
+### Key Insight
+
+> **The Trick:** Maintain a deque of indices where values are in decreasing order. The front always holds the maximum for the current window.
+
+### Why Store Indices?
+
+We store indices (not values) because:
+1. We can look up the value anytime via `arr[index]`
+2. We need to know when an element leaves the window (when `index <= i - k`)
+
+### Algorithm
+
+1. **Process each element** at index i:
+   - **Remove expired:** Pop from front if index is outside window
+   - **Remove smaller:** Pop from back while back element <= current (they can never be max)
+   - **Add current:** Push current index to back
+   - **Record answer:** If window is complete (i >= k-1), front is the max
+
+### Dry Run Example
+
+Input: `arr = [2, 1, 4, 5, 3]`, `k = 3`
+
+```
+Deque stores INDICES. Values shown for clarity: deque -> [idx:val, ...]
+
+i=0, arr[0]=2:
+  Deque empty, add 0
+  Deque: [0:2]
+  Window incomplete (need k=3 elements)
+
+i=1, arr[1]=1:
+  arr[1]=1 < arr[0]=2, just add 1
+  Deque: [0:2, 1:1]
+  Window incomplete
+
+i=2, arr[2]=4:
+  arr[2]=4 > arr[1]=1, pop 1
+  arr[2]=4 > arr[0]=2, pop 0
+  Add 2
+  Deque: [2:4]
+  Window [0,1,2] complete -> max = arr[2] = 4
+
+i=3, arr[3]=5:
+  arr[3]=5 > arr[2]=4, pop 2
+  Add 3
+  Deque: [3:5]
+  Front index 3 > 3-3=0, still valid
+  Window [1,2,3] -> max = arr[3] = 5
+
+i=4, arr[4]=3:
+  arr[4]=3 < arr[3]=5, just add 4
+  Deque: [3:5, 4:3]
+  Front index 3 > 4-3=1, still valid
+  Window [2,3,4] -> max = arr[3] = 5
+
+Output: [4, 5, 5]
 ```
 
-### Approach 3: Optimal with Deque
-**Time Complexity**: O(n)  
-**Space Complexity**: O(k)
+### Visual Diagram
 
-**Algorithm**:
-1. Use deque to maintain indices of elements in decreasing order
-2. For each element, remove indices of smaller elements from back
-3. Add current index to back of deque
-4. Remove indices outside current window from front
-5. Add maximum (front of deque) to result
-6. Return result
+```
+Array: [2, 1, 4, 5, 3]  k=3
 
-**Implementation**:
+Window 1: [2, 1, 4]
+  Deque maintains: [4] (index 2)
+  Max = 4
+
+Window 2: [1, 4, 5]
+  5 removes 4, Deque: [5] (index 3)
+  Max = 5
+
+Window 3: [4, 5, 3]
+  3 < 5, Deque: [5, 3] (indices 3, 4)
+  Max = 5 (front)
+```
+
+### Code
+
+**Python:**
 ```python
 from collections import deque
 
-def optimal_subarray_maximums(arr, k):
+def sliding_max(arr, k):
+    """
+    Find maximum in each sliding window of size k.
+
+    Time: O(n) - each element pushed/popped at most once
+    Space: O(k) - deque holds at most k indices
+    """
     n = len(arr)
+    dq = deque()  # stores indices
     result = []
-    dq = deque()
-    
+
     for i in range(n):
-        # Remove indices of smaller elements from back
-        while dq and arr[dq[-1]] <= arr[i]:
-            dq.pop()
-        
-        # Add current index to back
-        dq.append(i)
-        
-        # Remove indices outside current window from front
-        while dq and dq[0] <= i - k:
-            dq.popleft()
-        
-        # Add maximum to result when window is complete
-        if i >= k - 1:
-            result.append(arr[dq[0]])
-    
-    return result
-```
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n×k) | O(1) | Check all elements in each window |
-| Optimized | O(n log k) | O(k) | Use priority queue for maximum tracking |
-| Optimal | O(n) | O(k) | Use deque to maintain decreasing order |
-
-### Time Complexity
-- **Time**: O(n) - Each element is added and removed at most once
-- **Space**: O(k) - Deque stores at most k elements
-
-### Why This Solution Works
-- **Deque Technique**: Use deque to maintain indices in decreasing order
-- **Monotonic Property**: Keep only elements that can be maximum in future windows
-- **Window Management**: Remove elements outside current window
-- **Optimal Approach**: O(n) time complexity is optimal for this problem
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Subarray Maximums with Range Updates**
-**Problem**: Find maximum element in each subarray of size k, with range update operations.
-
-**Key Differences**: Array can be updated between queries
-
-**Solution Approach**: Use segment tree with lazy propagation
-
-**Implementation**:
-```python
-def subarray_maximums_with_updates(arr, k, updates):
-    """
-    Find maximum element in each subarray of size k with range updates
-    """
-    class SegmentTree:
-        def __init__(self, arr):
-            self.n = len(arr)
-            self.tree = [0] * (4 * self.n)
-            self.lazy = [0] * (4 * self.n)
-            self.build(arr, 0, 0, self.n - 1)
-        
-        def build(self, arr, node, start, end):
-            if start == end:
-                self.tree[node] = arr[start]
-            else:
-                mid = (start + end) // 2
-                self.build(arr, 2 * node + 1, start, mid)
-                self.build(arr, 2 * node + 2, mid + 1, end)
-                self.tree[node] = max(self.tree[2 * node + 1], self.tree[2 * node + 2])
-        
-        def update_range(self, node, start, end, l, r, val):
-            if self.lazy[node] != 0:
-                self.tree[node] += self.lazy[node]
-                if start != end:
-                    self.lazy[2 * node + 1] += self.lazy[node]
-                    self.lazy[2 * node + 2] += self.lazy[node]
-                self.lazy[node] = 0
-            
-            if start > end or start > r or end < l:
-                return
-            
-            if start >= l and end <= r:
-                self.tree[node] += val
-                if start != end:
-                    self.lazy[2 * node + 1] += val
-                    self.lazy[2 * node + 2] += val
-            else:
-                mid = (start + end) // 2
-                self.update_range(2 * node + 1, start, mid, l, r, val)
-                self.update_range(2 * node + 2, mid + 1, end, l, r, val)
-                self.tree[node] = max(self.tree[2 * node + 1], self.tree[2 * node + 2])
-        
-        def query_range(self, node, start, end, l, r):
-            if start > end or start > r or end < l:
-                return float('-inf')
-            
-            if self.lazy[node] != 0:
-                self.tree[node] += self.lazy[node]
-                if start != end:
-                    self.lazy[2 * node + 1] += self.lazy[node]
-                    self.lazy[2 * node + 2] += self.lazy[node]
-                self.lazy[node] = 0
-            
-            if start >= l and end <= r:
-                return self.tree[node]
-            
-            mid = (start + end) // 2
-            return max(
-                self.query_range(2 * node + 1, start, mid, l, r),
-                self.query_range(2 * node + 2, mid + 1, end, l, r)
-            )
-    
-    st = SegmentTree(arr)
-    results = []
-    
-    for update in updates:
-        if update[0] == 'update':
-            l, r, val = update[1], update[2], update[3]
-            st.update_range(0, 0, st.n - 1, l, r, val)
-        else:  # query
-            results.append(st.query_range(0, 0, st.n - 1, 0, k - 1))
-    
-    return results
-
-# Example usage
-arr = [1, 3, -1, -3, 5, 3, 6, 7]
-k = 3
-updates = [('query',), ('update', 0, 2, 2), ('query',)]
-result = subarray_maximums_with_updates(arr, k, updates)
-print(f"Subarray maximums with updates: {result}")
-```
-
-#### **2. Subarray Maximums with Frequency**
-**Problem**: Find maximum element in each subarray of size k, along with its frequency.
-
-**Key Differences**: Also track frequency of maximum element
-
-**Solution Approach**: Use deque with frequency tracking
-
-**Implementation**:
-```python
-def subarray_maximums_with_frequency(arr, k):
-    """
-    Find maximum element and its frequency in each subarray of size k
-    """
-    from collections import deque
-    
-    dq = deque()  # Store (value, frequency) pairs
-    result = []
-    
-    for i in range(len(arr)):
-        # Remove elements outside current window
-        while dq and dq[0][1] <= i - k:
-            dq.popleft()
-        
-        # Remove elements smaller than current
-        while dq and dq[-1][0] <= arr[i]:
-            dq.pop()
-        
-        # Add current element
-        dq.append((arr[i], i))
-        
-        # Add maximum to result when window is complete
-        if i >= k - 1:
-            max_val = dq[0][0]
-            # Count frequency of maximum in current window
-            freq = sum(1 for j in range(i - k + 1, i + 1) if arr[j] == max_val)
-            result.append((max_val, freq))
-    
-    return result
-
-# Example usage
-arr = [1, 3, -1, -3, 5, 3, 6, 7]
-k = 3
-result = subarray_maximums_with_frequency(arr, k)
-print(f"Subarray maximums with frequency: {result}")
-```
-
-#### **3. Subarray Maximums with Index**
-**Problem**: Find maximum element in each subarray of size k, along with its index.
-
-**Key Differences**: Also track index of maximum element
-
-**Solution Approach**: Use deque with index tracking
-
-**Implementation**:
-```python
-def subarray_maximums_with_index(arr, k):
-    """
-    Find maximum element and its index in each subarray of size k
-    """
-    from collections import deque
-    
-    dq = deque()  # Store indices
-    result = []
-    
-    for i in range(len(arr)):
         # Remove indices outside current window
         while dq and dq[0] <= i - k:
             dq.popleft()
-        
+
         # Remove indices of elements smaller than current
+        # They can never be the maximum while current exists
         while dq and arr[dq[-1]] <= arr[i]:
             dq.pop()
-        
-        # Add current index
+
         dq.append(i)
-        
-        # Add maximum and its index to result when window is complete
+
+        # Window is complete when i >= k-1
         if i >= k - 1:
-            max_idx = dq[0]
-            result.append((arr[max_idx], max_idx))
-    
+            result.append(arr[dq[0]])
+
     return result
 
-# Example usage
-arr = [1, 3, -1, -3, 5, 3, 6, 7]
-k = 3
-result = subarray_maximums_with_index(arr, k)
-print(f"Subarray maximums with index: {result}")
+
+# CSES I/O wrapper
+def main():
+    import sys
+    input_data = sys.stdin.read().split()
+    n, k = int(input_data[0]), int(input_data[1])
+    arr = list(map(int, input_data[2:2+n]))
+
+    result = sliding_max(arr, k)
+    print(' '.join(map(str, result)))
+
+if __name__ == "__main__":
+    main()
 ```
 
-### Related Problems
+**C++:**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-#### **CSES Problems**
-- [Subarray Maximums](https://cses.fi/problemset/task/2101) - Find maximum element in each subarray
-- [Sliding Window Maximum](https://cses.fi/problemset/task/2102) - Classic sliding window maximum
-- [Range Maximum Queries](https://cses.fi/problemset/task/2103) - Range maximum queries
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-#### **LeetCode Problems**
-- [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) - Classic sliding window maximum
-- [Maximum Sum of 3 Non-Overlapping Subarrays](https://leetcode.com/problems/maximum-sum-of-3-non-overlapping-subarrays/) - Multiple subarrays
-- [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) - K distinct characters
-- [Subarray Product Less Than K](https://leetcode.com/problems/subarray-product-less-than-k/) - Subarray product
+    int n, k;
+    cin >> n >> k;
 
-#### **Problem Categories**
-- **Sliding Window**: Window maximum, window statistics, window optimization
-- **Deque**: Monotonic data structure, efficient window management
-- **Segment Tree**: Range updates, range queries, lazy propagation
-- **Array Processing**: Window operations, element tracking, statistics
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
 
-## 🚀 Key Takeaways
+    deque<int> dq;  // stores indices
 
-- **Deque Technique**: The standard approach for sliding window maximum problems
-- **Monotonic Data Structure**: Use deque to maintain decreasing order
-- **Window Management**: Efficiently remove elements outside current window
-- **Space Optimization**: Use indices instead of values to save space
-- **Pattern Recognition**: This technique applies to many sliding window maximum problems
+    for (int i = 0; i < n; i++) {
+        // Remove indices outside window
+        while (!dq.empty() && dq.front() <= i - k) {
+            dq.pop_front();
+        }
+
+        // Remove smaller elements (they cannot be max)
+        while (!dq.empty() && arr[dq.back()] <= arr[i]) {
+            dq.pop_back();
+        }
+
+        dq.push_back(i);
+
+        // Output when window is complete
+        if (i >= k - 1) {
+            cout << arr[dq.front()];
+            if (i < n - 1) cout << ' ';
+        }
+    }
+    cout << '\n';
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Each index is pushed and popped at most once |
+| Space | O(k) | Deque stores at most k indices |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Using Values Instead of Indices
+
+```python
+# WRONG - Cannot track when elements leave the window
+dq.append(arr[i])  # Stores value
+while dq and dq[0] < ???:  # How do we know if it's out of window?
+    dq.popleft()
+```
+
+**Problem:** Without indices, you cannot determine when the front element has left the window.
+**Fix:** Store indices and check `dq[0] <= i - k`.
+
+### Mistake 2: Wrong Removal Order
+
+```python
+# WRONG - Removing from front before back
+for i in range(n):
+    while dq and dq[0] <= i - k:  # Front removal
+        dq.popleft()
+    dq.append(i)  # Adding without back removal!
+```
+
+**Problem:** Not removing smaller elements from back breaks the decreasing property.
+**Fix:** Remove from back (smaller elements) before adding current element.
+
+### Mistake 3: Strict vs Non-Strict Comparison
+
+```python
+# WRONG for some cases
+while dq and arr[dq[-1]] < arr[i]:  # Strict less-than
+    dq.pop()
+```
+
+**Problem:** With `<` instead of `<=`, duplicates can accumulate unnecessarily.
+**Fix:** Use `<=` to remove equal elements too (the newer one is equally good and stays longer).
+
+### Mistake 4: Off-by-One Window Start
+
+```python
+# WRONG
+if i >= k:  # Should be k-1
+    result.append(arr[dq[0]])
+```
+
+**Problem:** Misses the first window or outputs too late.
+**Fix:** First complete window is at index k-1 (0-indexed), so check `i >= k - 1`.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected | Why |
+|------|-------|----------|-----|
+| k equals n | `arr=[3,1,4], k=3` | `4` | Single window, just find max |
+| k equals 1 | `arr=[3,1,4], k=1` | `3 1 4` | Output is the array itself |
+| All same | `arr=[5,5,5], k=2` | `5 5` | Deque works correctly with duplicates |
+| Decreasing | `arr=[5,4,3,2], k=2` | `5 4 3` | Deque keeps all elements |
+| Increasing | `arr=[1,2,3,4], k=2` | `2 3 4` | Each new element clears deque |
+
+---
+
+## When to Use This Pattern
+
+### Use Monotonic Deque When:
+- Finding max/min in **fixed-size** sliding windows
+- You need O(n) time and O(k) space
+- Processing elements left-to-right (streaming)
+
+### Do Not Use When:
+- Window size varies dynamically (consider segment tree)
+- You need random access to any window (consider sparse table)
+- The "window" is defined by value range, not position (consider different structure)
+
+### Pattern Recognition Checklist:
+- [ ] Fixed window size k? -> **Consider monotonic deque**
+- [ ] Need max OR min (not both)? -> **Monotonic deque is ideal**
+- [ ] Need both max AND min? -> **Use two deques**
+- [ ] Range updates involved? -> **Consider segment tree instead**
+
+---
+
+## Sliding Minimum Variant
+
+To find the **minimum** instead of maximum, reverse the comparison:
+
+```python
+# For MINIMUM: maintain INCREASING deque
+while dq and arr[dq[-1]] >= arr[i]:  # Remove larger elements
+    dq.pop()
+```
+
+The front will hold the minimum instead of the maximum.
+
+---
+
+## Related Problems
+
+### CSES Problems
+| Problem | Technique |
+|---------|-----------|
+| [Sliding Window Median](https://cses.fi/problemset/task/1076) | Two multisets or segment tree |
+| [Sliding Window Cost](https://cses.fi/problemset/task/1077) | Extension with cost calculation |
+
+### LeetCode Problems
+| Problem | Key Difference |
+|---------|----------------|
+| [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) | Same problem |
+| [Shortest Subarray with Sum at Least K](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) | Monotonic deque on prefix sums |
+| [Constrained Subsequence Sum](https://leetcode.com/problems/constrained-subsequence-sum/) | DP with monotonic deque optimization |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** A decreasing deque keeps the maximum at the front; smaller elements are discarded because they cannot become maximum while a larger element exists in the window.
+
+2. **Time Optimization:** From O(n*k) to O(n) because each element enters and leaves the deque exactly once.
+
+3. **Space Trade-off:** O(k) space for the deque enables O(1) time per query.
+
+4. **Pattern:** Monotonic data structures are powerful for range min/max queries with sliding windows.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Implement monotonic deque without looking at code
+- [ ] Explain why each element is pushed/popped at most once
+- [ ] Modify for sliding minimum
+- [ ] Identify this pattern in new problems within 2 minutes

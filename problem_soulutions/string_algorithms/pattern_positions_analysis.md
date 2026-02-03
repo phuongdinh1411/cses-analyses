@@ -1,875 +1,450 @@
 ---
 layout: simple
-title: "Pattern Positions"
+title: "Pattern Positions - Multi-Pattern String Matching"
 permalink: /problem_soulutions/string_algorithms/pattern_positions_analysis
+difficulty: Hard
+tags: [strings, aho-corasick, automaton, multi-pattern-matching, trie]
+prerequisites: [string_matching_analysis, finding_borders_analysis]
 ---
 
 # Pattern Positions
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand pattern matching and string searching algorithms
-- Apply the Knuth-Morris-Pratt (KMP) algorithm for efficient pattern matching
-- Implement the Rabin-Karp algorithm using rolling hash
-- Optimize string matching algorithms for large inputs
-- Handle edge cases in pattern matching (empty patterns, repeated patterns)
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Hard |
+| **Category** | String Algorithms |
+| **Time Limit** | 1 second |
+| **Key Technique** | Aho-Corasick Automaton |
+| **CSES Link** | [Pattern Positions](https://cses.fi/problemset/task/2102) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a text string and a pattern string, find all positions where the pattern occurs in the text. This is the fundamental pattern matching problem that forms the basis for many other string algorithms.
+After solving this problem, you will be able to:
+- [ ] Understand when to use Aho-Corasick vs KMP algorithm
+- [ ] Build a trie structure for multiple patterns
+- [ ] Construct failure links (similar to KMP's LPS array)
+- [ ] Implement efficient multi-pattern matching in O(n + m + z) time
 
-**Input**: 
-- First line: text string
-- Second line: pattern string
+---
 
-**Output**: 
-- Print all positions (0-indexed) where the pattern occurs in the text, separated by spaces
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ |text|, |pattern| ≤ 10⁶
-- Both strings contain only lowercase English letters
+**Problem:** Given a text string and k pattern strings, find the first occurrence position of each pattern in the text.
 
-**Example**:
+**Input:**
+- Line 1: Text string
+- Line 2: Number of patterns k
+- Lines 3 to k+2: Pattern strings (one per line)
+
+**Output:**
+- For each pattern, print the 1-indexed position of its first occurrence, or -1 if not found
+
+**Constraints:**
+- 1 <= |text| <= 10^5
+- 1 <= k <= 500
+- 1 <= |pattern_i| <= 10^5
+- Total length of all patterns <= 10^6
+- All strings contain only lowercase English letters (a-z)
+
+### Example
+
 ```
 Input:
-ababcababc
+aybabtu
+3
+bab
 abc
+tu
 
 Output:
-2 7
-
-Explanation**: 
-The pattern "abc" occurs at positions 2 and 7 in the text "ababcababc":
-- Position 2: "ababcababc" → "abc" matches
-- Position 7: "ababcababc" → "abc" matches
+3
+-1
+6
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force - Naive String Matching
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: Check every possible position in the text
-- **Character-by-Character Comparison**: Compare pattern with text at each position
-- **Complete Coverage**: Guaranteed to find all occurrences
-- **Simple Implementation**: Straightforward nested loops approach
-
-**Key Insight**: For each position in the text, check if the pattern matches starting from that position.
-
-**Algorithm**:
-- For each position i in the text:
-  - Check if pattern matches text[i:i+len(pattern)]
-  - If match found, record the position
-
-**Visual Example**:
-```
-Text: "ababcababc", Pattern: "abc"
-
-Check position 0: "aba" vs "abc" → No match
-Check position 1: "bab" vs "abc" → No match  
-Check position 2: "abc" vs "abc" → Match! (position 2)
-Check position 3: "bca" vs "abc" → No match
-Check position 4: "cab" vs "abc" → No match
-Check position 5: "aba" vs "abc" → No match
-Check position 6: "bab" vs "abc" → No match
-Check position 7: "abc" vs "abc" → Match! (position 7)
-
-Results: [2, 7]
-```
-
-**Implementation**:
-```python
-def brute_force_pattern_positions(text, pattern):
-    """
-    Find all pattern occurrences using brute force approach
-    
-    Args:
-        text: the text string to search in
-        pattern: the pattern string to find
-    
-    Returns:
-        list: positions where pattern occurs
-    """
-    n, m = len(text), len(pattern)
-    positions = []
-    
-    # Check each possible starting position
-    for i in range(n - m + 1):
-        # Check if pattern matches at position i
-        match = True
-        for j in range(m):
-            if text[i + j] != pattern[j]:
-                match = False
-                break
-        
-        if match:
-            positions.append(i)
-    
-    return positions
-
-# Example usage
-text = "ababcababc"
-pattern = "abc"
-result = brute_force_pattern_positions(text, pattern)
-print(f"Brute force result: {result}")  # Output: [2, 7]
-```
-
-**Time Complexity**: O(n × m) - For each position, compare up to m characters
-**Space Complexity**: O(1) - Constant extra space
-
-**Why it's inefficient**: Quadratic time complexity makes it slow for large inputs.
+**Explanation:**
+- "bab" first occurs at position 3 (1-indexed): ay**bab**tu
+- "abc" does not occur in the text: -1
+- "tu" first occurs at position 6 (1-indexed): aybab**tu**
 
 ---
 
-### Approach 2: Optimized - Rabin-Karp Algorithm
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Approach**:
-- **Rolling Hash**: Use hash function to compare strings efficiently
-- **Hash Comparison**: Compare hash values instead of character-by-character
-- **Efficient Updates**: Update hash in O(1) time when sliding the window
-- **Collision Handling**: Handle hash collisions with additional verification
+### Pattern Recognition
 
-**Key Insight**: Use rolling hash to compare strings in O(1) time, reducing overall complexity.
+> **Key Question:** Why can't we just use KMP k times?
 
-**Algorithm**:
-- Compute hash of pattern
-- Compute hash of first window in text
-- Slide window and update hash efficiently
-- Compare hashes and verify matches
+If we use KMP for each pattern separately, the time complexity becomes O(n * k + total_pattern_length). When k is large, this becomes inefficient. The key insight is that we can search for ALL patterns simultaneously in a single pass through the text.
 
-**Visual Example**:
-```
-Text: "ababcababc", Pattern: "abc"
+### Why Aho-Corasick?
 
-Step 1: Compute pattern hash
-Pattern "abc": hash = (1×26² + 2×26¹ + 3×26⁰) mod p
+Think of it like searching for 500 words in a book. Instead of scanning 500 times (once per word), scan ONCE while tracking all words simultaneously using a state machine.
 
-Step 2: Compute first window hash
-Text[0:3] "aba": hash = (1×26² + 2×26¹ + 1×26⁰) mod p
+| Approach | Time Complexity | When to Use |
+|----------|-----------------|-------------|
+| KMP per pattern | O(n * k + m) | Few patterns (k < 10) |
+| Rabin-Karp | O(n * k + m) avg | When patterns same length |
+| **Aho-Corasick** | O(n + m + z) | Many patterns, different lengths |
 
-Step 3: Slide window and update hash
-Window "bab": hash = (2×26² + 1×26¹ + 2×26⁰) mod p
-Window "abc": hash = (1×26² + 2×26¹ + 3×26⁰) mod p → Match!
-
-Continue sliding...
-```
-
-**Implementation**:
-```python
-def optimized_pattern_positions(text, pattern):
-    """
-    Find all pattern occurrences using Rabin-Karp algorithm
-    
-    Args:
-        text: the text string to search in
-        pattern: the pattern string to find
-    
-    Returns:
-        list: positions where pattern occurs
-    """
-    n, m = len(text), len(pattern)
-    if m > n:
-        return []
-    
-    # Hash parameters
-    base = 26
-    mod = 10**9 + 7
-    
-    # Compute pattern hash
-    pattern_hash = 0
-    for i in range(m):
-        pattern_hash = (pattern_hash * base + ord(pattern[i])) % mod
-    
-    # Compute first window hash
-    window_hash = 0
-    for i in range(m):
-        window_hash = (window_hash * base + ord(text[i])) % mod
-    
-    positions = []
-    
-    # Check first window
-    if window_hash == pattern_hash and text[:m] == pattern:
-        positions.append(0)
-    
-    # Slide window and update hash
-    base_power = pow(base, m - 1, mod)
-    for i in range(1, n - m + 1):
-        # Remove leftmost character and add rightmost character
-        window_hash = ((window_hash - ord(text[i-1]) * base_power) * base + ord(text[i + m - 1])) % mod
-        
-        # Check for match
-        if window_hash == pattern_hash and text[i:i+m] == pattern:
-            positions.append(i)
-    
-    return positions
-
-# Example usage
-text = "ababcababc"
-pattern = "abc"
-result = optimized_pattern_positions(text, pattern)
-print(f"Optimized result: {result}")  # Output: [2, 7]
-```
-
-**Time Complexity**: O(n + m) - Average case, O(n × m) worst case
-**Space Complexity**: O(1) - Constant extra space
-
-**Why it's better**: Much more efficient on average, but worst case is still quadratic.
+Where n = text length, m = total pattern length, k = number of patterns, z = total matches.
 
 ---
 
-### Approach 3: Optimal - Knuth-Morris-Pratt (KMP) Algorithm
+## Solution 1: Brute Force (KMP per Pattern)
 
-**Key Insights from Optimal Approach**:
-- **Failure Function**: Preprocess pattern to create failure function (LPS array)
-- **Skip Characters**: Skip characters that are guaranteed not to match
-- **Linear Time**: Achieve O(n + m) time complexity in all cases
-- **No Backtracking**: Never backtrack in the text
+### Idea
 
-**Key Insight**: Preprocess the pattern to create a failure function that tells us how many characters to skip when a mismatch occurs.
+Apply KMP algorithm for each pattern independently. Simple but inefficient for many patterns.
 
-**Algorithm**:
-- Build failure function (LPS array) for the pattern
-- Use failure function to skip characters during matching
-- Never backtrack in the text
+### Algorithm
 
-**Visual Example**:
-```
-Pattern: "abc"
+1. For each pattern, build its LPS array
+2. Run KMP matching against the text
+3. Record the first match position (or -1)
 
-Step 1: Build LPS array
-LPS[0] = 0 (no proper prefix)
-LPS[1] = 0 (no proper prefix of "ab")
-LPS[2] = 0 (no proper prefix of "abc")
+### Code
 
-Step 2: KMP matching
-Text: "ababcababc"
-Pattern: "abc"
-
-i=0, j=0: 'a' == 'a' → i=1, j=1
-i=1, j=1: 'b' == 'b' → i=2, j=2  
-i=2, j=2: 'a' != 'c' → j = LPS[1] = 0
-i=2, j=0: 'a' == 'a' → i=3, j=1
-i=3, j=1: 'b' == 'b' → i=4, j=2
-i=4, j=2: 'c' == 'c' → Match at position 2!
-
-Continue...
-```
-
-**Implementation**:
 ```python
-def optimal_pattern_positions(text, pattern):
-    """
-    Find all pattern occurrences using KMP algorithm
-    
-    Args:
-        text: the text string to search in
-        pattern: the pattern string to find
-    
-    Returns:
-        list: positions where pattern occurs
-    """
-    def build_lps(pattern):
-        """Build Longest Proper Prefix which is also Suffix array"""
-        m = len(pattern)
-        lps = [0] * m
-        length = 0
-        i = 1
-        
+def solve_brute_force(text, patterns):
+    """Apply KMP for each pattern separately. Time: O(n * k + m)"""
+    def kmp_first_match(text, pattern):
+        # Build LPS array
+        m, lps = len(pattern), [0] * len(pattern)
+        length, i = 0, 1
         while i < m:
             if pattern[i] == pattern[length]:
                 length += 1
                 lps[i] = length
                 i += 1
-            else:
-                if length != 0:
-                    length = lps[length - 1]
-                else:
-                    lps[i] = 0
-                    i += 1
-        
-        return lps
-    
-    n, m = len(text), len(pattern)
-    if m > n:
-        return []
-    
-    # Build LPS array
-    lps = build_lps(pattern)
-    
-    positions = []
-    i = j = 0  # i for text, j for pattern
-    
-    while i < n:
-        if text[i] == pattern[j]:
-            i += 1
-            j += 1
-        
-        if j == m:
-            positions.append(i - j)
-            j = lps[j - 1]
-        elif i < n and text[i] != pattern[j]:
-            if j != 0:
-                j = lps[j - 1]
+            elif length:
+                length = lps[length - 1]
             else:
                 i += 1
-    
-    return positions
+        # KMP search
+        i = j = 0
+        while i < len(text):
+            if text[i] == pattern[j]:
+                i, j = i + 1, j + 1
+            if j == m:
+                return i - j
+            elif i < len(text) and text[i] != pattern[j]:
+                j = lps[j - 1] if j else 0
+                if not j:
+                    i += 1
+        return -1
 
-# Example usage
-text = "ababcababc"
-pattern = "abc"
-result = optimal_pattern_positions(text, pattern)
-print(f"Optimal result: {result}")  # Output: [2, 7]
+    return [kmp_first_match(text, p) + 1 if kmp_first_match(text, p) != -1 else -1
+            for p in patterns]
 ```
 
-**Time Complexity**: O(n + m) - Linear time in all cases
-**Space Complexity**: O(m) - For LPS array
+### Complexity
 
-**Why it's optimal**: Guaranteed linear time complexity with no backtracking in text.
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n * k + m) | KMP is O(n + pattern_len) per pattern |
+| Space | O(max_pattern_len) | LPS array for each pattern |
 
-## 🔧 Implementation Details
+### Why This Works (But Is Slow)
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n × m) | O(1) | Check all positions |
-| Rabin-Karp | O(n + m) avg, O(n × m) worst | O(1) | Rolling hash comparison |
-| KMP Algorithm | O(n + m) | O(m) | Failure function preprocessing |
+Correctness is guaranteed since KMP correctly finds all occurrences. However, scanning the text k times is wasteful when patterns share common prefixes or when k is large.
 
-### Time Complexity
-- **Time**: O(n + m) - KMP algorithm provides optimal linear time
-- **Space**: O(m) - For LPS array in KMP algorithm
+---
 
-### Why This Solution Works
-- **Pattern Preprocessing**: KMP algorithm preprocesses pattern for efficient matching
-- **No Backtracking**: Never need to backtrack in the text
-- **Optimal Complexity**: Guaranteed linear time in all cases
-- **Optimal Approach**: KMP algorithm provides the best theoretical and practical performance
+## Solution 2: Aho-Corasick Algorithm (Optimal)
 
-## 🚀 Problem Variations
+### Key Insight
 
-### Extended Problems with Detailed Code Examples
+> **The Trick:** Build a trie of all patterns, add failure links (like KMP's LPS), then scan text ONCE while tracking all pattern matches simultaneously.
 
-### Variation 1: Pattern Positions with Dynamic Updates
-**Problem**: Handle dynamic updates to text and pattern strings and maintain pattern position queries efficiently.
+| Component | Purpose |
+|-----------|---------|
+| **Trie** | Store all patterns as a tree |
+| **Failure Links** | Point to longest suffix that is also a prefix of some pattern |
+| **Output** | Track which patterns end at each node |
 
-**Link**: [CSES Problem Set - Pattern Positions with Updates](https://cses.fi/problemset/task/pattern_positions_updates)
+**Algorithm:** (1) Build trie, (2) Compute failure links via BFS, (3) Process text char-by-char
+
+### Dry Run Example
+
+Let's trace through with text = "ushers", patterns = ["he", "she", "hers"]:
+
+```
+Trie with Failure Links:
+       root(0)
+      /      \
+    h(1)     s(2)         Failure links:
+    |          \           - node 4 (sh) --fail--> node 1 (h)
+   e(3)        h(4)        - node 5 (she) --fail--> node 3 (he)
+  [he]          \
+    |          e(5)
+   r(6)       [she]
+    |
+   s(7)
+  [hers]
+
+Processing "ushers":
+  i=0 'u': stay at root (no child 'u')
+  i=1 's': root -> node 2
+  i=2 'h': node 2 -> node 4
+  i=3 'e': node 4 -> node 5 [she] -> also fail to node 3 [he]
+           MATCH "she" at pos 3, "he" at pos 4 (1-indexed)
+  i=4 'r': node 5 has no 'r' -> fail to node 3 -> node 6
+  i=5 's': node 6 -> node 7 [hers]
+           MATCH "hers" at pos 4 (1-indexed)
+
+Output: he=4, she=3, hers=4
+```
+
+### Code
+
+**Python Solution:**
 
 ```python
-class PatternPositionsWithUpdates:
-    def __init__(self, text, pattern):
-        self.text = list(text)
-        self.pattern = list(pattern)
-        self.n = len(self.text)
-        self.m = len(self.pattern)
-        self.lps = self._build_lps()
-        self.positions = self._find_all_positions()
-    
-    def _build_lps(self):
-        """Build Longest Proper Prefix which is also Suffix array"""
-        lps = [0] * self.m
-        length = 0
-        i = 1
-        
-        while i < self.m:
-            if self.pattern[i] == self.pattern[length]:
-                length += 1
-                lps[i] = length
-                i += 1
-            else:
-                if length != 0:
-                    length = lps[length - 1]
-                else:
-                    lps[i] = 0
-                    i += 1
-        
-        return lps
-    
-    def _find_all_positions(self):
-        """Find all positions where pattern occurs in text"""
-        positions = []
-        i = j = 0  # i for text, j for pattern
-        
-        while i < self.n:
-            if self.text[i] == self.pattern[j]:
-                i += 1
-                j += 1
-            
-            if j == self.m:
-                positions.append(i - j)
-                j = self.lps[j - 1]
-            elif i < self.n and self.text[i] != self.pattern[j]:
-                if j != 0:
-                    j = self.lps[j - 1]
-                else:
-                    i += 1
-        
-        return positions
-    
-    def update_text(self, pos, char):
-        """Update character in text at position pos"""
-        if pos < 0 or pos >= self.n:
-            return
-        
-        self.text[pos] = char
-        self.positions = self._find_all_positions()
-    
-    def update_pattern(self, pos, char):
-        """Update character in pattern at position pos"""
-        if pos < 0 or pos >= self.m:
-            return
-        
-        self.pattern[pos] = char
-        self.lps = self._build_lps()
-        self.positions = self._find_all_positions()
-    
-    def get_positions(self):
-        """Get all positions where pattern occurs in text"""
-        return self.positions.copy()
-    
-    def count_occurrences(self):
-        """Count number of occurrences of pattern in text"""
-        return len(self.positions)
-    
-    def find_next_occurrence(self, start_pos):
-        """Find next occurrence of pattern starting from start_pos"""
-        for pos in self.positions:
-            if pos >= start_pos:
-                return pos
-        return -1
-    
-    def find_previous_occurrence(self, end_pos):
-        """Find previous occurrence of pattern ending before end_pos"""
-        for pos in reversed(self.positions):
-            if pos < end_pos:
-                return pos
-        return -1
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'update_text':
-                self.update_text(query['pos'], query['char'])
-                results.append(None)
-            elif query['type'] == 'update_pattern':
-                self.update_pattern(query['pos'], query['char'])
-                results.append(None)
-            elif query['type'] == 'positions':
-                result = self.get_positions()
-                results.append(result)
-            elif query['type'] == 'count':
-                result = self.count_occurrences()
-                results.append(result)
-            elif query['type'] == 'next':
-                result = self.find_next_occurrence(query['start_pos'])
-                results.append(result)
-            elif query['type'] == 'previous':
-                result = self.find_previous_occurrence(query['end_pos'])
-                results.append(result)
-        return results
+from collections import deque, defaultdict
+
+class AhoCorasick:
+    def __init__(self):
+        self.goto = [{}]          # Trie transitions
+        self.fail = [0]           # Failure links
+        self.output = [[]]        # Pattern indices ending at each node
+        self.node_count = 1
+
+    def add_pattern(self, pattern, index):
+        """Add a pattern to the trie with its index."""
+        node = 0
+        for char in pattern:
+            if char not in self.goto[node]:
+                self.goto[node][char] = self.node_count
+                self.goto.append({})
+                self.fail.append(0)
+                self.output.append([])
+                self.node_count += 1
+            node = self.goto[node][char]
+        self.output[node].append(index)
+
+    def build(self):
+        """Build failure links using BFS."""
+        queue = deque()
+
+        # Initialize: depth-1 nodes fail to root
+        for char, node in self.goto[0].items():
+            queue.append(node)
+            # fail[node] = 0 already set
+
+        # BFS to compute failure links
+        while queue:
+            curr = queue.popleft()
+
+            for char, next_node in self.goto[curr].items():
+                queue.append(next_node)
+
+                # Find failure link for next_node
+                fail_state = self.fail[curr]
+                while fail_state and char not in self.goto[fail_state]:
+                    fail_state = self.fail[fail_state]
+
+                self.fail[next_node] = self.goto[fail_state].get(char, 0)
+
+                # Merge output from failure link
+                if self.fail[next_node] != next_node:
+                    self.output[next_node] += self.output[self.fail[next_node]]
+
+    def search(self, text, pattern_lengths):
+        """Find first occurrence of each pattern (1-indexed, -1 if not found)."""
+        result = [-1] * len(pattern_lengths)
+        node = 0
+
+        for i, char in enumerate(text):
+            while node and char not in self.goto[node]:
+                node = self.fail[node]
+            node = self.goto[node].get(char, 0)
+
+            # Check outputs via failure chain
+            temp = node
+            while temp:
+                for idx in self.output[temp]:
+                    if result[idx] == -1:
+                        result[idx] = i - pattern_lengths[idx] + 2  # 1-indexed start
+                temp = self.fail[temp]
+
+        return result
+
+
+def solve(text, patterns):
+    """Find first occurrence of each pattern using Aho-Corasick."""
+    ac = AhoCorasick()
+    lengths = [len(p) for p in patterns]
+    for i, p in enumerate(patterns):
+        ac.add_pattern(p, i)
+    ac.build()
+    return ac.search(text, lengths)
+
+
+def main():
+    text = input().strip()
+    k = int(input().strip())
+    patterns = [input().strip() for _ in range(k)]
+
+    result = solve(text, patterns)
+    for pos in result:
+        print(pos)
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-### Variation 2: Pattern Positions with Different Operations
-**Problem**: Handle different types of operations (find, count, analyze) on pattern matching.
+**C++ Solution:**
 
-**Link**: [CSES Problem Set - Pattern Positions Different Operations](https://cses.fi/problemset/task/pattern_positions_operations)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<map<char,int>> go(1);
+vector<int> fail(1), lens;
+vector<vector<int>> out(1);
+int cnt = 1;
+
+void add(const string& p, int idx) {
+    int u = 0;
+    for (char c : p) {
+        if (!go[u].count(c)) {
+            go[u][c] = cnt++;
+            go.push_back({});
+            fail.push_back(0);
+            out.push_back({});
+        }
+        u = go[u][c];
+    }
+    out[u].push_back(idx);
+}
+
+void build() {
+    queue<int> q;
+    for (auto& [c, v] : go[0]) q.push(v);
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        for (auto& [c, v] : go[u]) {
+            q.push(v);
+            int f = fail[u];
+            while (f && !go[f].count(c)) f = fail[f];
+            fail[v] = go[f].count(c) ? go[f][c] : 0;
+            for (int i : out[fail[v]]) out[v].push_back(i);
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(0); cin.tie(0);
+    string text; int k;
+    cin >> text >> k;
+    lens.resize(k);
+    for (int i = 0; i < k; i++) {
+        string p; cin >> p;
+        lens[i] = p.size();
+        add(p, i);
+    }
+    build();
+    vector<int> res(k, -1);
+    int u = 0;
+    for (int i = 0; i < (int)text.size(); i++) {
+        char c = text[i];
+        while (u && !go[u].count(c)) u = fail[u];
+        u = go[u].count(c) ? go[u][c] : 0;
+        for (int t = u; t; t = fail[t])
+            for (int j : out[t])
+                if (res[j] < 0) res[j] = i - lens[j] + 2;
+    }
+    for (int x : res) cout << x << "\n";
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n + m + z) | n = text length, m = total pattern length, z = matches |
+| Space | O(m * SIGMA) | Trie storage, SIGMA = alphabet size (26) |
+
+---
+
+## Common Mistakes
+
+| Mistake | Problem | Fix |
+|---------|---------|-----|
+| Only check current node outputs | Shorter patterns via failure link are missed | Traverse entire failure chain for outputs |
+| Use end position as start | Pattern "abc" at i=5 starts at 3, not 5 | `start = i - len(pattern) + 1` |
+| Direct child access without check | KeyError when character not in trie | Follow failure links until found or root |
 
 ```python
-class PatternPositionsDifferentOps:
-    def __init__(self, text, pattern):
-        self.text = list(text)
-        self.pattern = list(pattern)
-        self.n = len(self.text)
-        self.m = len(self.pattern)
-        self.lps = self._build_lps()
-        self.positions = self._find_all_positions()
-    
-    def _build_lps(self):
-        """Build Longest Proper Prefix which is also Suffix array"""
-        lps = [0] * self.m
-        length = 0
-        i = 1
-        
-        while i < self.m:
-            if self.pattern[i] == self.pattern[length]:
-                length += 1
-                lps[i] = length
-                i += 1
-            else:
-                if length != 0:
-                    length = lps[length - 1]
-                else:
-                    lps[i] = 0
-                    i += 1
-        
-        return lps
-    
-    def _find_all_positions(self):
-        """Find all positions where pattern occurs in text"""
-        positions = []
-        i = j = 0  # i for text, j for pattern
-        
-        while i < self.n:
-            if self.text[i] == self.pattern[j]:
-                i += 1
-                j += 1
-            
-            if j == self.m:
-                positions.append(i - j)
-                j = self.lps[j - 1]
-            elif i < self.n and self.text[i] != self.pattern[j]:
-                if j != 0:
-                    j = self.lps[j - 1]
-                else:
-                    i += 1
-        
-        return positions
-    
-    def get_positions(self):
-        """Get all positions where pattern occurs in text"""
-        return self.positions.copy()
-    
-    def count_occurrences(self):
-        """Count number of occurrences of pattern in text"""
-        return len(self.positions)
-    
-    def find_next_occurrence(self, start_pos):
-        """Find next occurrence of pattern starting from start_pos"""
-        for pos in self.positions:
-            if pos >= start_pos:
-                return pos
-        return -1
-    
-    def find_previous_occurrence(self, end_pos):
-        """Find previous occurrence of pattern ending before end_pos"""
-        for pos in reversed(self.positions):
-            if pos < end_pos:
-                return pos
-        return -1
-    
-    def find_overlapping_occurrences(self):
-        """Find all overlapping occurrences of pattern in text"""
-        overlapping = []
-        
-        for i in range(len(self.positions) - 1):
-            current_pos = self.positions[i]
-            next_pos = self.positions[i + 1]
-            
-            if next_pos < current_pos + self.m:
-                overlapping.append({
-                    'first': current_pos,
-                    'second': next_pos,
-                    'overlap': current_pos + self.m - next_pos
-                })
-        
-        return overlapping
-    
-    def find_non_overlapping_occurrences(self):
-        """Find all non-overlapping occurrences of pattern in text"""
-        non_overlapping = []
-        last_end = -1
-        
-        for pos in self.positions:
-            if pos > last_end:
-                non_overlapping.append(pos)
-                last_end = pos + self.m - 1
-        
-        return non_overlapping
-    
-    def analyze_pattern_distribution(self):
-        """Analyze distribution of pattern occurrences"""
-        if not self.positions:
-            return {
-                'total_occurrences': 0,
-                'overlapping_occurrences': 0,
-                'non_overlapping_occurrences': 0,
-                'average_gap': 0,
-                'min_gap': 0,
-                'max_gap': 0
-            }
-        
-        overlapping = self.find_overlapping_occurrences()
-        non_overlapping = self.find_non_overlapping_occurrences()
-        
-        gaps = []
-        for i in range(len(self.positions) - 1):
-            gap = self.positions[i + 1] - self.positions[i]
-            gaps.append(gap)
-        
-        return {
-            'total_occurrences': len(self.positions),
-            'overlapping_occurrences': len(overlapping),
-            'non_overlapping_occurrences': len(non_overlapping),
-            'average_gap': sum(gaps) / len(gaps) if gaps else 0,
-            'min_gap': min(gaps) if gaps else 0,
-            'max_gap': max(gaps) if gaps else 0
-        }
-    
-    def get_pattern_statistics(self):
-        """Get comprehensive statistics about pattern matching"""
-        distribution = self.analyze_pattern_distribution()
-        
-        return {
-            'pattern': ''.join(self.pattern),
-            'text_length': self.n,
-            'pattern_length': self.m,
-            'distribution': distribution,
-            'positions': self.positions,
-            'overlapping': self.find_overlapping_occurrences(),
-            'non_overlapping': self.find_non_overlapping_occurrences()
-        }
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'positions':
-                result = self.get_positions()
-                results.append(result)
-            elif query['type'] == 'count':
-                result = self.count_occurrences()
-                results.append(result)
-            elif query['type'] == 'next':
-                result = self.find_next_occurrence(query['start_pos'])
-                results.append(result)
-            elif query['type'] == 'previous':
-                result = self.find_previous_occurrence(query['end_pos'])
-                results.append(result)
-            elif query['type'] == 'overlapping':
-                result = self.find_overlapping_occurrences()
-                results.append(result)
-            elif query['type'] == 'non_overlapping':
-                result = self.find_non_overlapping_occurrences()
-                results.append(result)
-            elif query['type'] == 'analyze':
-                result = self.analyze_pattern_distribution()
-                results.append(result)
-            elif query['type'] == 'statistics':
-                result = self.get_pattern_statistics()
-                results.append(result)
-        return results
+# WRONG: Only current node    |  # CORRECT: Follow failure chain
+for idx in out[node]: ...     |  temp = node
+                              |  while temp:
+                              |      for idx in out[temp]: ...
+                              |      temp = fail[temp]
 ```
 
-### Variation 3: Pattern Positions with Constraints
-**Problem**: Handle pattern position queries with additional constraints (e.g., minimum gap, maximum gap, frequency).
+---
 
-**Link**: [CSES Problem Set - Pattern Positions with Constraints](https://cses.fi/problemset/task/pattern_positions_constraints)
+## Edge Cases
 
-```python
-class PatternPositionsWithConstraints:
-    def __init__(self, text, pattern, min_gap, max_gap, min_frequency):
-        self.text = list(text)
-        self.pattern = list(pattern)
-        self.n = len(self.text)
-        self.m = len(self.pattern)
-        self.min_gap = min_gap
-        self.max_gap = max_gap
-        self.min_frequency = min_frequency
-        self.lps = self._build_lps()
-        self.positions = self._find_all_positions()
-    
-    def _build_lps(self):
-        """Build Longest Proper Prefix which is also Suffix array"""
-        lps = [0] * self.m
-        length = 0
-        i = 1
-        
-        while i < self.m:
-            if self.pattern[i] == self.pattern[length]:
-                length += 1
-                lps[i] = length
-                i += 1
-            else:
-                if length != 0:
-                    length = lps[length - 1]
-                else:
-                    lps[i] = 0
-                    i += 1
-        
-        return lps
-    
-    def _find_all_positions(self):
-        """Find all positions where pattern occurs in text"""
-        positions = []
-        i = j = 0  # i for text, j for pattern
-        
-        while i < self.n:
-            if self.text[i] == self.pattern[j]:
-                i += 1
-                j += 1
-            
-            if j == self.m:
-                positions.append(i - j)
-                j = self.lps[j - 1]
-            elif i < self.n and self.text[i] != self.pattern[j]:
-                if j != 0:
-                    j = self.lps[j - 1]
-                else:
-                    i += 1
-        
-        return positions
-    
-    def constrained_position_query(self, start_pos, end_pos):
-        """Query pattern positions with constraints"""
-        if start_pos < 0 or end_pos >= self.n or start_pos > end_pos:
-            return []
-        
-        valid_positions = []
-        
-        for pos in self.positions:
-            if start_pos <= pos <= end_pos:
-                valid_positions.append(pos)
-        
-        # Check gap constraints
-        if len(valid_positions) < 2:
-            return valid_positions
-        
-        constrained_positions = [valid_positions[0]]
-        
-        for i in range(1, len(valid_positions)):
-            gap = valid_positions[i] - valid_positions[i - 1]
-            if self.min_gap <= gap <= self.max_gap:
-                constrained_positions.append(valid_positions[i])
-        
-        # Check frequency constraint
-        if len(constrained_positions) < self.min_frequency:
-            return []
-        
-        return constrained_positions
-    
-    def find_valid_occurrences(self):
-        """Find all valid occurrences that satisfy constraints"""
-        valid_occurrences = []
-        
-        if len(self.positions) < self.min_frequency:
-            return valid_occurrences
-        
-        # Check gap constraints
-        constrained_positions = [self.positions[0]]
-        
-        for i in range(1, len(self.positions)):
-            gap = self.positions[i] - self.positions[i - 1]
-            if self.min_gap <= gap <= self.max_gap:
-                constrained_positions.append(self.positions[i])
-        
-        # Check frequency constraint
-        if len(constrained_positions) >= self.min_frequency:
-            valid_occurrences = constrained_positions
-        
-        return valid_occurrences
-    
-    def get_longest_valid_sequence(self):
-        """Get longest valid sequence of pattern occurrences"""
-        valid_occurrences = self.find_valid_occurrences()
-        
-        if not valid_occurrences:
-            return []
-        
-        longest_sequence = []
-        current_sequence = [valid_occurrences[0]]
-        
-        for i in range(1, len(valid_occurrences)):
-            gap = valid_occurrences[i] - valid_occurrences[i - 1]
-            
-            if self.min_gap <= gap <= self.max_gap:
-                current_sequence.append(valid_occurrences[i])
-            else:
-                if len(current_sequence) > len(longest_sequence):
-                    longest_sequence = current_sequence.copy()
-                current_sequence = [valid_occurrences[i]]
-        
-        if len(current_sequence) > len(longest_sequence):
-            longest_sequence = current_sequence
-        
-        return longest_sequence
-    
-    def get_shortest_valid_sequence(self):
-        """Get shortest valid sequence of pattern occurrences"""
-        valid_occurrences = self.find_valid_occurrences()
-        
-        if not valid_occurrences:
-            return []
-        
-        shortest_sequence = valid_occurrences[:self.min_frequency]
-        
-        for i in range(self.min_frequency, len(valid_occurrences)):
-            for j in range(i - self.min_frequency + 1):
-                sequence = valid_occurrences[j:i + 1]
-                if len(sequence) >= self.min_frequency:
-                    if len(sequence) < len(shortest_sequence):
-                        shortest_sequence = sequence
-        
-        return shortest_sequence
-    
-    def count_valid_occurrences(self):
-        """Count number of valid occurrences"""
-        return len(self.find_valid_occurrences())
-    
-    def get_constraint_statistics(self):
-        """Get statistics about valid occurrences"""
-        valid_occurrences = self.find_valid_occurrences()
-        
-        if not valid_occurrences:
-            return {
-                'count': 0,
-                'min_gap': 0,
-                'max_gap': 0,
-                'avg_gap': 0,
-                'longest_sequence': 0,
-                'shortest_sequence': 0
-            }
-        
-        gaps = []
-        for i in range(len(valid_occurrences) - 1):
-            gap = valid_occurrences[i + 1] - valid_occurrences[i]
-            gaps.append(gap)
-        
-        longest_sequence = self.get_longest_valid_sequence()
-        shortest_sequence = self.get_shortest_valid_sequence()
-        
-        return {
-            'count': len(valid_occurrences),
-            'min_gap': min(gaps) if gaps else 0,
-            'max_gap': max(gaps) if gaps else 0,
-            'avg_gap': sum(gaps) / len(gaps) if gaps else 0,
-            'longest_sequence': len(longest_sequence),
-            'shortest_sequence': len(shortest_sequence)
-        }
+| Case | Input | Expected | Why |
+|------|-------|----------|-----|
+| No patterns match | text="xyz", patterns=["abc"] | -1 | Pattern not in text |
+| Pattern equals text | text="abc", patterns=["abc"] | 1 | Exact match at position 1 |
+| Overlapping patterns | text="abab", patterns=["ab","bab"] | 1, 2 | Both found at different positions |
+| Pattern is prefix of another | text="abcd", patterns=["ab","abc"] | 1, 1 | Both start at same position |
+| Single character patterns | text="aaa", patterns=["a"] | 1 | First occurrence |
+| Duplicate patterns | text="abc", patterns=["ab","ab"] | 1, 1 | Same result for duplicates |
+| Pattern longer than text | text="ab", patterns=["abc"] | -1 | Cannot match |
 
-# Example usage
-text = "abacabacabac"
-pattern = "aba"
-min_gap = 2
-max_gap = 6
-min_frequency = 2
+---
 
-pp = PatternPositionsWithConstraints(text, pattern, min_gap, max_gap, min_frequency)
-result = pp.constrained_position_query(0, 11)
-print(f"Constrained position query result: {result}")
+## When to Use This Pattern
 
-valid_occurrences = pp.find_valid_occurrences()
-print(f"Valid occurrences: {valid_occurrences}")
+| Scenario | Best Algorithm |
+|----------|---------------|
+| Multiple patterns (k > 10) | **Aho-Corasick** |
+| Single pattern | KMP or Z-algorithm |
+| All patterns same length | Rabin-Karp with rolling hash |
+| Approximate matching | Edit distance DP |
+| Streaming text + multiple patterns | **Aho-Corasick** (stateful) |
 
-longest_sequence = pp.get_longest_valid_sequence()
-print(f"Longest valid sequence: {longest_sequence}")
-```
+---
 
-### Related Problems
+## Related Problems
 
-#### **CSES Problems**
-- [Pattern Positions](https://cses.fi/problemset/task/1753) - Basic pattern positions problem
-- [String Matching](https://cses.fi/problemset/task/1753) - String matching
-- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+| Level | Problem | Key Concept |
+|-------|---------|-------------|
+| Easier | [String Matching](https://cses.fi/problemset/task/1753) | Single pattern KMP |
+| Easier | [Finding Borders](https://cses.fi/problemset/task/1732) | LPS/failure function |
+| Similar | [Counting Patterns](https://cses.fi/problemset/task/2103) | Count instead of position |
+| Similar | [Word Combinations](https://cses.fi/problemset/task/1731) | DP + Aho-Corasick |
+| Harder | [Stream of Characters](https://leetcode.com/problems/stream-of-characters/) | Reverse Aho-Corasick |
+| Harder | [Word Search II](https://leetcode.com/problems/word-search-ii/) | Trie + backtracking |
 
-#### **LeetCode Problems**
-- [Find All Anagrams in a String](https://leetcode.com/problems/find-all-anagrams-in-a-string/) - Find all anagram positions
-- [Repeated String Match](https://leetcode.com/problems/repeated-string-match/) - String matching with repetition
-- [Wildcard Matching](https://leetcode.com/problems/wildcard-matching/) - Pattern matching with wildcards
+---
 
-#### **Problem Categories**
-- **KMP Algorithm**: String matching, pattern detection, failure function
-- **Pattern Matching**: KMP, Z-algorithm, string matching algorithms
-- **String Processing**: Borders, periods, palindromes, string transformations
-- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata
+## Key Takeaways
+
+1. **The Core Idea:** Build a trie with failure links to search for all patterns in a single text scan.
+2. **Time Optimization:** From O(n * k) with separate KMP to O(n + m + z) with Aho-Corasick.
+3. **Space Trade-off:** O(m) space for trie enables linear-time multi-pattern matching.
+4. **Pattern:** Failure links generalize KMP's LPS array to multiple patterns.
+
+---
+
+## Practice Checklist
+
+- [ ] Explain why Aho-Corasick beats running KMP k times
+- [ ] Build trie and compute failure links using BFS
+- [ ] Trace the automaton on a sample input
+- [ ] Handle edge cases (overlapping patterns, no matches)
+
+## Additional Resources
+
+- [CP-Algorithms: Aho-Corasick](https://cp-algorithms.com/string/aho_corasick.html)
+- [CSES Problem Set](https://cses.fi/problemset/)

@@ -1,613 +1,493 @@
 ---
 layout: simple
-title: "Minimal Rotation"
+title: "Minimal Rotation - String Algorithm Problem"
 permalink: /problem_soulutions/string_algorithms/minimal_rotation_analysis
+difficulty: Medium
+tags: [strings, rotation, booth-algorithm, lexicographic]
+prerequisites: [string-basics, two-pointers]
 ---
 
 # Minimal Rotation
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand string rotation concepts and their applications
-- Apply efficient algorithms for finding minimal rotations
-- Implement optimal solutions for minimal rotation problems with proper complexity analysis
-- Optimize solutions for large inputs with advanced string algorithms
-- Handle edge cases in string rotation problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | String Algorithms |
+| **Time Limit** | 1 second |
+| **Key Technique** | Booth's Algorithm |
+| **CSES Link** | [Minimal Rotation](https://cses.fi/problemset/task/1110) |
 
-## 📋 Problem Description
+### Learning Goals
 
-You are given a string s. Find the lexicographically smallest rotation of the string. A rotation of a string is obtained by moving some characters from the beginning to the end.
+After solving this problem, you will be able to:
+- [ ] Understand string rotation concepts and lexicographic comparison
+- [ ] Implement Booth's algorithm for finding minimal rotation in O(n) time
+- [ ] Apply the doubled-string technique for circular string problems
+- [ ] Recognize when to use specialized string algorithms over brute force
 
-**Input**: 
-- First line: string s
+---
 
-**Output**: 
-- Print the lexicographically smallest rotation of the string
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ |s| ≤ 10⁵
-- s contains only lowercase English letters
+**Problem:** Given a string, find its lexicographically smallest rotation.
 
-**Example**:
+A rotation of a string is obtained by moving some number of characters from the beginning to the end. For example, the rotations of "abc" are "abc", "bca", and "cab".
+
+**Input:**
+- Line 1: A string s consisting of lowercase English letters
+
+**Output:**
+- The lexicographically smallest rotation of the string
+
+**Constraints:**
+- 1 <= |s| <= 10^6
+- s contains only lowercase English letters (a-z)
+
+### Example
+
 ```
 Input:
 abacaba
 
 Output:
 aabacab
-
-Explanation**: 
-String: "abacaba"
-
-All possible rotations:
-1. "abacaba" (original)
-2. "bacabaa" (rotate left by 1)
-3. "acabaab" (rotate left by 2)
-4. "cabaaba" (rotate left by 3)
-5. "abaabac" (rotate left by 4)
-6. "baabaca" (rotate left by 5)
-7. "aabacab" (rotate left by 6)
-
-Lexicographically smallest: "aabacab"
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** All rotations of "abacaba":
+- Position 0: "abacaba"
+- Position 1: "bacabaa"
+- Position 2: "acabaab"
+- Position 3: "cabaaba"
+- Position 4: "abaabac"
+- Position 5: "baabaca"
+- Position 6: "aabacab" (smallest)
 
-### Approach 1: Brute Force
-**Time Complexity**: O(n²)  
-**Space Complexity**: O(n)
+The lexicographically smallest is "aabacab" (rotation starting at position 6).
 
-**Algorithm**:
-1. Generate all possible rotations of the string
-2. Compare them lexicographically
-3. Return the smallest one
+---
 
-**Implementation**:
+## Intuition: How to Think About This Problem
+
+### Pattern Recognition
+
+> **Key Question:** How can we efficiently compare all rotations without explicitly generating them?
+
+The key insight is that every rotation of a string s can be found as a substring of s+s (the string concatenated with itself). Instead of generating all n rotations and comparing them, we can use Booth's algorithm to find the starting position of the minimal rotation in linear time.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** The starting index k such that s[k:] + s[:k] is lexicographically smallest.
+2. **What information do we have?** The original string s.
+3. **What's the relationship between input and output?** The output is a rotation of the input, specifically the one that would come first in dictionary order.
+
+### Analogies
+
+Think of this problem like finding the "canonical form" of a necklace. If you have beads on a circular string and want to describe the necklace uniquely, you'd start reading from the position that gives the smallest sequence - that's exactly what we're computing.
+
+---
+
+## Solution 1: Brute Force
+
+### Idea
+
+Generate all n rotations explicitly and find the minimum using string comparison.
+
+### Algorithm
+
+1. For each starting position i from 0 to n-1
+2. Generate the rotation s[i:] + s[:i]
+3. Keep track of the lexicographically smallest rotation seen
+
+### Code
+
 ```python
-def brute_force_minimal_rotation(s):
+def solve_brute_force(s: str) -> str:
+    """
+    Brute force: try all rotations.
+
+    Time: O(n^2)
+    Space: O(n)
+    """
     n = len(s)
     min_rotation = s
-    
-    # Try all possible rotations
+
     for i in range(n):
         rotation = s[i:] + s[:i]
         if rotation < min_rotation:
             min_rotation = rotation
-    
+
     return min_rotation
 ```
 
-**Analysis**:
-- **Time**: O(n²) - Generate and compare all rotations
-- **Space**: O(n) - Store current rotation
-- **Limitations**: Too slow for large inputs
+```cpp
+// C++ Brute Force
+#include <string>
+#include <algorithm>
+using namespace std;
 
-### Approach 2: Optimized with Suffix Array
-**Time Complexity**: O(n log n)  
-**Space Complexity**: O(n)
+string solveBruteForce(const string& s) {
+    int n = s.length();
+    string minRotation = s;
 
-**Algorithm**:
-1. Create a doubled string (s + s) to handle rotations
-2. Build suffix array for the doubled string
-3. Find the lexicographically smallest suffix of length n
+    for (int i = 0; i < n; i++) {
+        string rotation = s.substr(i) + s.substr(0, i);
+        if (rotation < minRotation) {
+            minRotation = rotation;
+        }
+    }
 
-**Implementation**:
-```python
-def optimized_minimal_rotation(s):
-    n = len(s)
-    doubled = s + s
-    
-    # Build suffix array (simplified version)
-    suffixes = []
-    for i in range(n):
-        suffixes.append((doubled[i:i + n], i))
-    suffixes.sort()
-    
-    # Return the lexicographically smallest rotation
-    return suffixes[0][0]
+    return minRotation;
+}
 ```
 
-**Analysis**:
-- **Time**: O(n log n) - Suffix array construction
-- **Space**: O(n) - Suffix array storage
-- **Improvement**: Much faster than brute force
+### Complexity
 
-### Approach 3: Optimal with Booth's Algorithm
-**Time Complexity**: O(n)  
-**Space Complexity**: O(n)
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | n rotations, each comparison takes O(n) |
+| Space | O(n) | Store current rotation string |
 
-**Algorithm**:
-1. Use Booth's algorithm to find the lexicographically smallest rotation
-2. Maintain two pointers and compare characters efficiently
-3. Handle ties and edge cases properly
+### Why This Works (But Is Slow)
 
-**Implementation**:
+Correctness is guaranteed because we examine every possible rotation. However, with n up to 10^6, O(n^2) is far too slow (10^12 operations).
+
+---
+
+## Solution 2: Optimal - Booth's Algorithm
+
+### Key Insight
+
+> **The Trick:** Use two pointers to compare rotations character-by-character, eliminating candidates efficiently without generating full rotation strings.
+
+Booth's algorithm maintains two candidate starting positions (i and j) and determines which leads to a smaller rotation by comparing characters at corresponding positions. When a mismatch is found, one candidate can be eliminated entirely along with several subsequent positions.
+
+### Algorithm
+
+1. Create doubled string: `t = s + s`
+2. Initialize two candidate positions: `i = 0`, `j = 1`
+3. Use `k` to track how many characters match between rotations at i and j
+4. Compare `t[i+k]` vs `t[j+k]`:
+   - If equal: increment k (keep comparing)
+   - If `t[i+k] < t[j+k]`: rotation at i is better, eliminate j and positions up to j+k
+   - If `t[i+k] > t[j+k]`: rotation at j is better, eliminate i and positions up to i+k
+5. The smaller of i, j at the end is the answer
+
+### Why This Works
+
+When we find that `t[i+k] < t[j+k]`, we know:
+- Rotation starting at j is worse than rotation at i
+- Rotations starting at j+1, j+2, ..., j+k are also worse (they share the same prefix up to the mismatch point)
+
+This allows us to skip multiple positions at once, achieving linear time.
+
+### Dry Run Example
+
+Let's trace through with input `s = "baca"`:
+
+```
+Doubled string t = "bacabaca"
+n = 4
+
+Initial: i=0, j=1, k=0
+
+Step 1: Compare t[0+0]='b' vs t[1+0]='a'
+  'b' > 'a', so rotation at j=1 is better
+  Move i to i+k+1 = 0+0+1 = 1
+  But i == j, so i = 2
+  Reset k = 0
+  State: i=2, j=1, k=0
+
+Step 2: Compare t[2+0]='c' vs t[1+0]='a'
+  'c' > 'a', so rotation at j=1 is better
+  Move i to i+k+1 = 2+0+1 = 3
+  Reset k = 0
+  State: i=3, j=1, k=0
+
+Step 3: Compare t[3+0]='a' vs t[1+0]='a'
+  Equal, increment k
+  State: i=3, j=1, k=1
+
+Step 4: Compare t[3+1]='b' vs t[1+1]='c'
+  'b' < 'c', so rotation at i=3 is better
+  Move j to j+k+1 = 1+1+1 = 3
+  But j == i, so j = 4
+  Reset k = 0
+  State: i=3, j=4, k=0
+
+j >= n, so stop.
+
+Answer: min(i, j) = min(3, 4) = 3
+Result: s[3:] + s[:3] = "a" + "bac" = "abac"
+```
+
+### Visual Diagram
+
+```
+String: b a c a
+Index:  0 1 2 3
+
+Doubled: b a c a | b a c a
+Index:   0 1 2 3   4 5 6 7
+
+Comparing rotations:
+  i=0: "baca"  vs  j=1: "acab"  -> 'b' > 'a', j wins, move i
+  i=2: "caba"  vs  j=1: "acab"  -> 'c' > 'a', j wins, move i
+  i=3: "abac"  vs  j=1: "acab"  -> 'a'='a', continue...
+                                   'b' < 'c', i wins, move j
+
+Final: position 3 -> "abac" is minimal rotation
+```
+
+### Code
+
 ```python
-def optimal_minimal_rotation(s):
+def solve_optimal(s: str) -> str:
+    """
+    Booth's Algorithm for minimal rotation.
+
+    Time: O(n)
+    Space: O(n) for doubled string
+    """
     n = len(s)
-    doubled = s + s
-    
-    # Booth's algorithm
-    i = 0
-    j = 1
-    k = 0
-    
+    if n == 0:
+        return s
+
+    t = s + s  # Doubled string
+
+    i = 0  # First candidate position
+    j = 1  # Second candidate position
+    k = 0  # Number of matching characters
+
     while i < n and j < n and k < n:
-        if doubled[i + k] == doubled[j + k]:
+        a = t[i + k]
+        b = t[j + k]
+
+        if a == b:
             k += 1
-        elif doubled[i + k] < doubled[j + k]:
-            j += k + 1
+        elif a < b:
+            # Rotation at i is better, eliminate j through j+k
+            j = j + k + 1
+            if j == i:
+                j += 1
             k = 0
         else:
-            i += k + 1
+            # Rotation at j is better, eliminate i through i+k
+            i = i + k + 1
+            if i == j:
+                i += 1
             k = 0
-        
-        if i == j:
-            j += 1
-    
-    # Return the minimal rotation
-    return doubled[i:i + n]
+
+    # The smaller index is the answer
+    start = min(i, j)
+    return s[start:] + s[:start]
+
+
+def main():
+    s = input().strip()
+    print(solve_optimal(s))
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-**Analysis**:
-- **Time**: O(n) - Linear time algorithm
-- **Space**: O(n) - Doubled string storage
-- **Optimal**: Best possible complexity for this problem
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
 
-**Visual Example**:
+/**
+ * Booth's Algorithm for minimal rotation.
+ *
+ * Time: O(n)
+ * Space: O(n) for doubled string
+ */
+string solveOptimal(const string& s) {
+    int n = s.length();
+    if (n == 0) return s;
+
+    string t = s + s;  // Doubled string
+
+    int i = 0;  // First candidate position
+    int j = 1;  // Second candidate position
+    int k = 0;  // Number of matching characters
+
+    while (i < n && j < n && k < n) {
+        char a = t[i + k];
+        char b = t[j + k];
+
+        if (a == b) {
+            k++;
+        } else if (a < b) {
+            // Rotation at i is better
+            j = j + k + 1;
+            if (j == i) j++;
+            k = 0;
+        } else {
+            // Rotation at j is better
+            i = i + k + 1;
+            if (i == j) i++;
+            k = 0;
+        }
+    }
+
+    // The smaller index is the answer
+    int start = min(i, j);
+    return s.substr(start) + s.substr(0, start);
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string s;
+    cin >> s;
+    cout << solveOptimal(s) << "\n";
+
+    return 0;
+}
 ```
-String: "abacaba"
-Doubled: "abacabaabacaba"
 
-Booth's Algorithm:
-i=0, j=1, k=0: 'a' == 'b'? No, 'a' < 'b', so j=2
-i=0, j=2, k=0: 'a' == 'a'? Yes, k=1
-i=0, j=2, k=1: 'b' == 'b'? Yes, k=2
-i=0, j=2, k=2: 'a' == 'a'? Yes, k=3
-i=0, j=2, k=3: 'c' == 'c'? Yes, k=4
-i=0, j=2, k=4: 'a' == 'a'? Yes, k=5
-i=0, j=2, k=5: 'b' == 'b'? Yes, k=6
-i=0, j=2, k=6: 'a' == 'a'? Yes, k=7 (k >= n, stop)
+### Complexity
 
-Result: doubled[0:7] = "abacaba"
-But we need to find the minimal rotation...
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Each character position is visited at most twice (once by i, once by j) |
+| Space | O(n) | Doubled string requires 2n characters |
 
-Actually, the algorithm finds the starting position of the minimal rotation.
-Let's trace it more carefully:
+---
 
-i=0, j=1: Compare rotations starting at positions 0 and 1
-- Position 0: "abacaba"
-- Position 1: "bacabaa"
-- "abacaba" < "bacabaa", so j=2
+## Common Mistakes
 
-i=0, j=2: Compare rotations starting at positions 0 and 2
-- Position 0: "abacaba"
-- Position 2: "acabaab"
-- "abacaba" < "acabaab", so j=3
-
-Continue until we find the minimal rotation starting position.
-```
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: Try all possible rotations and compare them lexicographically
-- **Complete Coverage**: Guarantees finding the correct answer but inefficient
-- **Simple Implementation**: Easy to understand and implement
-
-**Key Insights from Optimized Approach**:
-- **Suffix Array**: Use suffix array on doubled string to find minimal rotation
-- **Efficiency Improvement**: Much faster than brute force using sorting
-- **Memory Trade-off**: Use more memory to achieve better time complexity
-
-**Key Insights from Optimal Approach**:
-- **Booth's Algorithm**: Use specialized algorithm for finding minimal rotation
-- **Linear Time**: Achieve O(n) time complexity with proper algorithm
-- **Optimal Complexity**: Best possible complexity for this problem
-
-## 🎯 Key Insights
-
-### 🔑 **Core Concepts**
-- **String Rotation**: Moving characters from beginning to end of string
-- **Lexicographical Ordering**: Dictionary order comparison of strings
-- **Booth's Algorithm**: Specialized algorithm for minimal rotation
-- **Doubled String**: Technique to handle circular rotations
-
-### 💡 **Problem-Specific Insights**
-- **Minimal Rotation**: Find the lexicographically smallest rotation
-- **Efficiency Optimization**: From O(n²) brute force to O(n) optimal solution
-- **Circular Nature**: Rotations are circular, so doubled string helps
-
-### 🚀 **Optimization Strategies**
-- **Suffix Array**: Use suffix array on doubled string for efficient comparison
-- **Booth's Algorithm**: Use specialized algorithm for linear time solution
-- **Character Comparison**: Efficient character-by-character comparison
-
-## 🧠 Common Pitfalls & How to Avoid Them
-
-### ❌ **Common Mistakes**
-1. **Quadratic Time**: Brute force approach has O(n²) time complexity
-2. **Circular Handling**: Not properly handling the circular nature of rotations
-3. **Edge Cases**: Not handling ties and edge cases in comparison
-
-### ✅ **Best Practices**
-1. **Use Doubled String**: Create s + s to handle rotations efficiently
-2. **Efficient Algorithm**: Use Booth's algorithm for optimal performance
-3. **Proper Comparison**: Handle character comparisons correctly
-
-## 🔗 Related Problems & Pattern Recognition
-
-### 📚 **Similar Problems**
-- **String Sorting**: Lexicographical ordering of strings
-- **Suffix Arrays**: String processing and comparison
-- **String Matching**: Finding patterns in strings
-
-### 🎯 **Pattern Recognition**
-- **Rotation Problems**: Problems involving string rotations
-- **Lexicographical Problems**: Problems involving string ordering
-- **String Processing Problems**: Problems requiring efficient string manipulation
-
-## 📈 Complexity Analysis
-
-### ⏱️ **Time Complexity**
-- **Brute Force**: O(n²) - Generate and compare all rotations
-- **Optimized**: O(n log n) - Suffix array construction
-- **Optimal**: O(n) - Booth's algorithm
-
-### 💾 **Space Complexity**
-- **Brute Force**: O(n) - Store current rotation
-- **Optimized**: O(n) - Suffix array storage
-- **Optimal**: O(n) - Doubled string storage
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Minimal Rotation with Dynamic Updates
-**Problem**: Handle dynamic updates to string characters and maintain minimal rotation queries efficiently.
-
-**Link**: [CSES Problem Set - Minimal Rotation with Updates](https://cses.fi/problemset/task/minimal_rotation_updates)
+### Mistake 1: Forgetting to Handle i == j
 
 ```python
-class MinimalRotationWithUpdates:
-    def __init__(self, s):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.min_rotation = self._find_minimal_rotation()
-    
-    def _find_minimal_rotation(self):
-        """Find minimal rotation using Booth's algorithm"""
-        if not self.s:
-            return 0
-        
-        # Double the string to handle circular nature
-        doubled = self.s + self.s
-        n = len(self.s)
-        
-        # Initialize failure function
-        failure = [0] * (2 * n)
-        
-        # Find minimal rotation
-        min_rotation = 0
-        for i in range(1, 2 * n):
-            j = failure[i - 1]
-            while j > 0 and doubled[i] != doubled[j]:
-                j = failure[j - 1]
-            
-            if doubled[i] == doubled[j]:
-                j += 1
-            
-            failure[i] = j
-            
-            # Update minimal rotation
-            if i >= n and failure[i] == n:
-                min_rotation = i - n + 1
-                break
-        
-        return min_rotation
-    
-    def update(self, pos, char):
-        """Update character at position pos"""
-        if pos < 0 or pos >= self.n:
-            return
-        
-        self.s[pos] = char
-        
-        # Recalculate minimal rotation
-        self.min_rotation = self._find_minimal_rotation()
-    
-    def get_minimal_rotation(self):
-        """Get current minimal rotation"""
-        return self.min_rotation
-    
-    def get_rotated_string(self):
-        """Get string rotated to minimal position"""
-        if not self.s:
-            return ""
-        
-        rotated = self.s[self.min_rotation:] + self.s[:self.min_rotation]
-        return ''.join(rotated)
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'update':
-                self.update(query['pos'], query['char'])
-                results.append(None)
-            elif query['type'] == 'rotation':
-                result = self.get_minimal_rotation()
-                results.append(result)
-            elif query['type'] == 'string':
-                result = self.get_rotated_string()
-                results.append(result)
-        return results
+# WRONG
+if a < b:
+    j = j + k + 1
+    k = 0  # Missing: check if j == i
+
+# CORRECT
+if a < b:
+    j = j + k + 1
+    if j == i:
+        j += 1  # Skip to avoid comparing same position
+    k = 0
 ```
 
-### Variation 2: Minimal Rotation with Different Operations
-**Problem**: Handle different types of operations (rotation, comparison, sorting) on string rotations.
+**Problem:** When we advance j and it lands on i (or vice versa), we'd be comparing a rotation with itself.
+**Fix:** Always check if i == j after advancing and skip if needed.
 
-**Link**: [CSES Problem Set - Minimal Rotation Different Operations](https://cses.fi/problemset/task/minimal_rotation_operations)
+### Mistake 2: Using Wrong Loop Condition
 
 ```python
-class MinimalRotationDifferentOps:
-    def __init__(self, s):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.min_rotation = self._find_minimal_rotation()
-        self.all_rotations = self._generate_all_rotations()
-    
-    def _find_minimal_rotation(self):
-        """Find minimal rotation using Booth's algorithm"""
-        if not self.s:
-            return 0
-        
-        # Double the string to handle circular nature
-        doubled = self.s + self.s
-        n = len(self.s)
-        
-        # Initialize failure function
-        failure = [0] * (2 * n)
-        
-        # Find minimal rotation
-        min_rotation = 0
-        for i in range(1, 2 * n):
-            j = failure[i - 1]
-            while j > 0 and doubled[i] != doubled[j]:
-                j = failure[j - 1]
-            
-            if doubled[i] == doubled[j]:
-                j += 1
-            
-            failure[i] = j
-            
-            # Update minimal rotation
-            if i >= n and failure[i] == n:
-                min_rotation = i - n + 1
-                break
-        
-        return min_rotation
-    
-    def _generate_all_rotations(self):
-        """Generate all possible rotations"""
-        rotations = []
-        for i in range(self.n):
-            rotated = self.s[i:] + self.s[:i]
-            rotations.append(''.join(rotated))
-        return rotations
-    
-    def get_minimal_rotation(self):
-        """Get minimal rotation index"""
-        return self.min_rotation
-    
-    def get_all_rotations(self):
-        """Get all possible rotations"""
-        return self.all_rotations.copy()
-    
-    def compare_rotations(self, i, j):
-        """Compare two rotations"""
-        if i < 0 or i >= self.n or j < 0 or j >= self.n:
-            return 0
-        
-        rotation_i = self.all_rotations[i]
-        rotation_j = self.all_rotations[j]
-        
-        if rotation_i < rotation_j:
-            return -1
-        elif rotation_i > rotation_j:
-            return 1
-        else:
-            return 0
-    
-    def sort_rotations(self):
-        """Sort all rotations lexicographically"""
-        return sorted(self.all_rotations)
-    
-    def find_rotation_rank(self, rotation):
-        """Find rank of a specific rotation"""
-        sorted_rotations = self.sort_rotations()
-        try:
-            return sorted_rotations.index(rotation)
-        except ValueError:
-            return -1
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'minimal':
-                result = self.get_minimal_rotation()
-                results.append(result)
-            elif query['type'] == 'all':
-                result = self.get_all_rotations()
-                results.append(result)
-            elif query['type'] == 'compare':
-                result = self.compare_rotations(query['i'], query['j'])
-                results.append(result)
-            elif query['type'] == 'sort':
-                result = self.sort_rotations()
-                results.append(result)
-            elif query['type'] == 'rank':
-                result = self.find_rotation_rank(query['rotation'])
-                results.append(result)
-        return results
+# WRONG
+while k < n:  # May access out of bounds
+
+# CORRECT
+while i < n and j < n and k < n:
 ```
 
-### Variation 3: Minimal Rotation with Constraints
-**Problem**: Handle minimal rotation queries with additional constraints (e.g., minimum length, maximum rotations).
+**Problem:** If i or j exceeds n-1, we're no longer comparing valid rotation start positions.
+**Fix:** Include bounds check for both i and j.
 
-**Link**: [CSES Problem Set - Minimal Rotation with Constraints](https://cses.fi/problemset/task/minimal_rotation_constraints)
+### Mistake 3: Returning Index Instead of String
 
 ```python
-class MinimalRotationWithConstraints:
-    def __init__(self, s, min_length, max_rotations):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.min_length = min_length
-        self.max_rotations = max_rotations
-        self.min_rotation = self._find_minimal_rotation()
-    
-    def _find_minimal_rotation(self):
-        """Find minimal rotation using Booth's algorithm"""
-        if not self.s or len(self.s) < self.min_length:
-            return 0
-        
-        # Double the string to handle circular nature
-        doubled = self.s + self.s
-        n = len(self.s)
-        
-        # Initialize failure function
-        failure = [0] * (2 * n)
-        
-        # Find minimal rotation
-        min_rotation = 0
-        for i in range(1, 2 * n):
-            j = failure[i - 1]
-            while j > 0 and doubled[i] != doubled[j]:
-                j = failure[j - 1]
-            
-            if doubled[i] == doubled[j]:
-                j += 1
-            
-            failure[i] = j
-            
-            # Update minimal rotation
-            if i >= n and failure[i] == n:
-                min_rotation = i - n + 1
-                break
-        
-        return min_rotation
-    
-    def constrained_query(self, start, end):
-        """Query minimal rotation in range [start, end] with constraints"""
-        # Check minimum length constraint
-        if end - start + 1 < self.min_length:
-            return None  # Too short
-        
-        # Check maximum rotations constraint
-        if end - start + 1 > self.max_rotations:
-            return None  # Too many rotations
-        
-        # Get substring
-        substring = self.s[start:end+1]
-        
-        # Find minimal rotation for substring
-        if not substring:
-            return None
-        
-        # Double the substring to handle circular nature
-        doubled = substring + substring
-        n = len(substring)
-        
-        # Initialize failure function
-        failure = [0] * (2 * n)
-        
-        # Find minimal rotation
-        min_rotation = 0
-        for i in range(1, 2 * n):
-            j = failure[i - 1]
-            while j > 0 and doubled[i] != doubled[j]:
-                j = failure[j - 1]
-            
-            if doubled[i] == doubled[j]:
-                j += 1
-            
-            failure[i] = j
-            
-            # Update minimal rotation
-            if i >= n and failure[i] == n:
-                min_rotation = i - n + 1
-                break
-        
-        return min_rotation
-    
-    def find_valid_ranges(self):
-        """Find all valid ranges that satisfy constraints"""
-        valid_ranges = []
-        for i in range(self.n):
-            for j in range(i + self.min_length - 1, min(i + self.max_rotations, self.n)):
-                result = self.constrained_query(i, j)
-                if result is not None:
-                    valid_ranges.append((i, j, result))
-        return valid_ranges
-    
-    def get_maximum_valid_rotation(self):
-        """Get maximum valid rotation"""
-        max_rotation = 0
-        for i in range(self.n):
-            for j in range(i + self.min_length - 1, min(i + self.max_rotations, self.n)):
-                result = self.constrained_query(i, j)
-                if result is not None:
-                    max_rotation = max(max_rotation, result)
-        return max_rotation
-    
-    def count_valid_ranges(self):
-        """Count number of valid ranges"""
-        count = 0
-        for i in range(self.n):
-            for j in range(i + self.min_length - 1, min(i + self.max_rotations, self.n)):
-                result = self.constrained_query(i, j)
-                if result is not None:
-                    count += 1
-        return count
+# WRONG
+return min(i, j)  # Returns position, not string
 
-# Example usage
-s = "abacaba"
-min_length = 3
-max_rotations = 5
-
-mr = MinimalRotationWithConstraints(s, min_length, max_rotations)
-result = mr.constrained_query(0, 2)
-print(f"Constrained query result: {result}")  # Output: 0
-
-valid_ranges = mr.find_valid_ranges()
-print(f"Valid ranges: {valid_ranges}")
-
-max_rotation = mr.get_maximum_valid_rotation()
-print(f"Maximum valid rotation: {max_rotation}")
+# CORRECT
+start = min(i, j)
+return s[start:] + s[:start]  # Returns actual rotation
 ```
 
-### Related Problems
+**Problem:** The problem asks for the rotated string, not the starting index.
+**Fix:** Use the index to construct and return the actual rotation.
 
-#### **CSES Problems**
-- [Minimal Rotation](https://cses.fi/problemset/task/1110) - Basic minimal rotation problem
-- [String Matching](https://cses.fi/problemset/task/1753) - String matching
-- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+---
 
-#### **LeetCode Problems**
-- [Rotate String](https://leetcode.com/problems/rotate-string/) - Check if string is rotation
-- [Repeated String Match](https://leetcode.com/problems/repeated-string-match/) - String matching with repetition
-- [String Rotation](https://leetcode.com/problems/string-rotation/) - String rotation problems
+## Edge Cases
 
-#### **Problem Categories**
-- **String Rotation**: Minimal rotation, string comparison, circular strings
-- **Pattern Matching**: KMP, Z-algorithm, string matching algorithms
-- **String Processing**: Borders, periods, palindromes, string transformations
-- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single character | `"a"` | `"a"` | Only one rotation exists |
+| All same characters | `"aaaa"` | `"aaaa"` | All rotations are identical |
+| Already minimal | `"abcd"` | `"abcd"` | Original is lexicographically smallest |
+| Two characters | `"ba"` | `"ab"` | Simple swap case |
+| Repeated pattern | `"abab"` | `"abab"` | Position 0 and 2 give same result |
+| Descending order | `"dcba"` | `"adcb"` | Start from 'a' |
 
-## 🚀 Key Takeaways
+---
 
-- **String Rotation**: Important concept in string processing
-- **Booth's Algorithm**: Essential for finding minimal rotations efficiently
-- **Lexicographical Ordering**: Fundamental concept for string comparison
-- **Doubled String Technique**: Useful for handling circular problems
+## When to Use This Pattern
+
+### Use Booth's Algorithm When:
+- Finding the lexicographically smallest/largest rotation
+- Computing canonical forms for cyclic sequences
+- Comparing circular strings for equality
+- String fingerprinting in competitive programming
+
+### Don't Use When:
+- You need all rotations (just iterate)
+- The string is very short (brute force is fine for n < 100)
+- You need rotation by a specific amount (direct slicing is simpler)
+
+### Pattern Recognition Checklist:
+- [ ] Is the problem about circular/rotational strings? -> Consider doubled string technique
+- [ ] Need the "smallest" or "canonical" rotation? -> Use Booth's Algorithm
+- [ ] Need to check if two strings are rotations of each other? -> Check if one is substring of the other doubled
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [Rotate String (LC 796)](https://leetcode.com/problems/rotate-string/) | Basic rotation understanding |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Repeated String Match (LC 686)](https://leetcode.com/problems/repeated-string-match/) | String repetition + matching |
+| [String Matching (CSES 1753)](https://cses.fi/problemset/task/1753) | KMP/Z-algorithm for pattern matching |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Finding Borders (CSES 1732)](https://cses.fi/problemset/task/1732) | Failure function / KMP preprocessing |
+| [Finding Periods (CSES 1733)](https://cses.fi/problemset/task/1733) | String periodicity |
+| [Longest Palindrome (CSES 1111)](https://cses.fi/problemset/task/1111) | Manacher's algorithm |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Use two-pointer comparison on a doubled string to find minimal rotation in O(n) time.
+2. **Time Optimization:** From O(n^2) brute force to O(n) by eliminating multiple candidates at once.
+3. **Space Trade-off:** O(n) extra space for doubled string enables O(1) access to any rotation position.
+4. **Pattern:** This is a classic example of the "doubled string" technique for circular problems.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why doubling the string helps with rotations
+- [ ] Trace through Booth's algorithm by hand on a small example
+- [ ] Implement the algorithm without looking at the solution
+- [ ] Explain why the time complexity is O(n), not O(n^2)
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Lyndon Factorization](https://cp-algorithms.com/string/lyndon_factorization.html)
+- [Wikipedia: Lexicographically minimal string rotation](https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation)
+- [CSES Problem Set](https://cses.fi/problemset/)

@@ -1,1630 +1,498 @@
 ---
 layout: simple
-title: "Fixed Length Hamiltonian Circuit Queries - Graph Theory Problem"
+title: "Hamiltonian Flights - Bitmask DP Problem"
 permalink: /problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_circuit_queries_analysis
+difficulty: Hard
+tags: [bitmask-dp, hamiltonian-path, graph, combinatorics]
+prerequisites: [grid_paths, counting_paths]
 ---
 
-# Fixed Length Hamiltonian Circuit Queries - Graph Theory Problem
+# Hamiltonian Flights
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of Hamiltonian circuits in directed graphs
-- Apply graph theory principles to determine Hamiltonian circuit existence
-- Implement algorithms for finding Hamiltonian circuits of specific lengths
-- Optimize graph traversal for multiple circuit queries
-- Handle special cases in Hamiltonian circuit analysis
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Hard |
+| **Category** | Bitmask DP / Graph |
+| **Time Limit** | 1 second |
+| **Key Technique** | Bitmask DP for subset enumeration |
+| **CSES Link** | [Hamiltonian Flights](https://cses.fi/problemset/task/1690) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a directed graph with n nodes and q queries, for each query determine if there exists a Hamiltonian circuit of length k starting and ending at node a.
+After solving this problem, you will be able to:
+- [ ] Understand when to apply Bitmask DP for subset problems
+- [ ] Represent visited vertices as a bitmask
+- [ ] Define DP states combining bitmask and current position
+- [ ] Implement efficient state transitions using bitwise operations
+- [ ] Handle counting problems modulo a prime
 
-**Input**: 
-- n: number of nodes
-- q: number of queries
-- n lines: adjacency matrix (1 if edge exists, 0 otherwise)
-- q lines: a k (check for Hamiltonian circuit from node a to a of length k)
+---
 
-**Output**: 
-- Answer to each query (1 if exists, 0 otherwise)
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 20
-- 1 ≤ q ≤ 10^5
-- 1 ≤ k ≤ 10^9
-- 1 ≤ a ≤ n
+**Problem:** Count the number of Hamiltonian paths from city 1 to city n in a directed graph.
 
-**Example**:
+A Hamiltonian path visits every vertex exactly once.
+
+**Input:**
+- Line 1: n (cities) and m (flights)
+- Next m lines: a b (flight from city a to city b)
+
+**Output:**
+- Number of Hamiltonian paths from 1 to n, modulo 10^9 + 7
+
+**Constraints:**
+- 2 <= n <= 20
+- 1 <= m <= n^2
+- 1 <= a, b <= n
+
+### Example
+
 ```
 Input:
-3 2
-0 1 1
-1 0 1
-1 1 0
+4 6
+1 2
 1 3
 2 3
+3 2
+2 4
+3 4
 
 Output:
-1
-1
-
-Explanation**: 
-Query 1: Hamiltonian circuit of length 3 from node 1 to 1
-Circuit: 1→2→3→1 (visits all vertices exactly once)
-Answer: 1
-
-Query 2: Hamiltonian circuit of length 3 from node 2 to 2
-Circuit: 2→3→1→2 (visits all vertices exactly once)
-Answer: 1
+2
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** Two Hamiltonian paths exist:
+- Path 1: 1 -> 2 -> 3 -> 4
+- Path 2: 1 -> 3 -> 2 -> 4
 
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Exhaustive Search**: Try all possible permutations of vertices
-- **Hamiltonian Validation**: For each permutation, check if it forms a Hamiltonian circuit
-- **Combinatorial Explosion**: n! possible permutations to explore
-- **Baseline Understanding**: Provides correct answer but impractical
-
-**Key Insight**: Generate all possible permutations of vertices and check if any forms a Hamiltonian circuit.
-
-**Algorithm**:
-- Generate all possible permutations of vertices starting from node a
-- For each permutation, check if it forms a valid Hamiltonian circuit
-- Return 1 if any valid Hamiltonian circuit exists, 0 otherwise
-
-**Visual Example**:
-```
-Graph: 1↔2↔3↔1, k=3, start=1
-
-All possible permutations starting from node 1:
-┌─────────────────────────────────────┐
-│ Permutation 1: [1,2,3] ✓ (circuit) │
-│ Permutation 2: [1,3,2] ✓ (circuit) │
-│ ... (other permutations)            │
-└─────────────────────────────────────┘
-
-Valid Hamiltonian circuits: Multiple
-Result: 1
-```
-
-**Implementation**:
-```python
-def brute_force_solution(n, adj_matrix, queries):
-    """
-    Find Hamiltonian circuit existence using brute force approach
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, k) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    from itertools import permutations
-    
-    def has_hamiltonian_circuit(start, k):
-        """Check if Hamiltonian circuit of length k exists from start"""
-        if k != n:
-            return False
-        
-        # Generate all permutations starting from start
-        vertices = list(range(n))
-        vertices.remove(start)
-        
-        for perm in permutations(vertices):
-            path = [start] + list(perm)
-            
-            # Check if path forms a valid Hamiltonian circuit
-            valid = True
-            for i in range(len(path)):
-                current = path[i]
-                next_vertex = path[(i + 1) % len(path)]
-                if adj_matrix[current][next_vertex] == 0:
-                    valid = False
-                    break
-            
-            if valid:
-                return True
-        
-        return False
-    
-    results = []
-    for a, k in queries:
-        result = 1 if has_hamiltonian_circuit(a - 1, k) else 0  # Convert to 0-indexed
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0]
-]
-queries = [(1, 3), (2, 3)]
-result = brute_force_solution(n, adj_matrix, queries)
-print(f"Brute force result: {result}")  # Output: [1, 1]
-```
-
-**Time Complexity**: O(n! × n)
-**Space Complexity**: O(n)
-
-**Why it's inefficient**: Factorial time complexity makes it impractical for large n.
+Both visit all 4 cities exactly once.
 
 ---
 
-### Approach 2: Dynamic Programming Solution
+## Intuition: How to Think About This Problem
 
-**Key Insights from Dynamic Programming Solution**:
-- **State Definition**: dp[mask][i] = can reach vertex i using vertices in mask
-- **State Transition**: dp[mask][i] = OR of dp[mask-{i}][j] for all j with edge (j,i)
-- **Bitmask Representation**: Use bitmasks to represent vertex sets
-- **Memoization**: Cache results to avoid recomputation
+### Pattern Recognition
 
-**Key Insight**: Use dynamic programming with bitmasks to efficiently check Hamiltonian circuit existence.
+> **Key Question:** How do we efficiently track which cities have been visited?
 
-**Algorithm**:
-- Use bitmask to represent set of visited vertices
-- For each state (mask, vertex), check if Hamiltonian circuit exists
-- Return 1 if valid Hamiltonian circuit found, 0 otherwise
+When n <= 20, we can represent the set of visited cities as a **bitmask**. Each bit position corresponds to a city: bit i is 1 if city i has been visited.
 
-**Visual Example**:
-```
-Graph: 1↔2↔3↔1, k=3, start=1
+### Breaking Down the Problem
 
-DP table for bitmask states:
-┌─────────────────────────────────────┐
-│ mask=001 (vertex 1): dp[001][0]=1  │
-│ mask=011 (vertices 1,2):           │
-│   dp[011][1] = dp[001][0] & edge   │
-│ mask=111 (all vertices):           │
-│   dp[111][0] = dp[011][1] & edge   │
-└─────────────────────────────────────┘
+1. **What are we counting?** Paths visiting all n cities exactly once, starting at 1 and ending at n.
+2. **What state do we need?** The set of visited cities AND the current city.
+3. **Why bitmask?** With n <= 20, there are at most 2^20 = ~10^6 possible subsets, which is manageable.
 
-Hamiltonian circuit exists: dp[111][0] = 1
-```
+### Analogies
 
-**Implementation**:
-```python
-def dp_solution(n, adj_matrix, queries):
-    """
-    Find Hamiltonian circuit existence using dynamic programming
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, k) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    def has_hamiltonian_circuit(start, k):
-        """Check if Hamiltonian circuit of length k exists from start"""
-        if k != n:
-            return False
-        
-        # DP table: dp[mask][i] = can reach vertex i using vertices in mask
-        dp = [[False] * n for _ in range(1 << n)]
-        
-        # Base case: start vertex with only itself
-        dp[1 << start][start] = True
-        
-        # Fill DP table
-        for mask in range(1 << n):
-            for i in range(n):
-                if dp[mask][i]:
-                    for j in range(n):
-                        if (adj_matrix[i][j] == 1 and 
-                            (mask & (1 << j)) == 0):
-                            new_mask = mask | (1 << j)
-                            dp[new_mask][j] = True
-        
-        # Check if we can return to start from all vertices
-        full_mask = (1 << n) - 1
-        return dp[full_mask][start]
-    
-    results = []
-    for a, k in queries:
-        result = 1 if has_hamiltonian_circuit(a - 1, k) else 0  # Convert to 0-indexed
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0]
-]
-queries = [(1, 3), (2, 3)]
-result = dp_solution(n, adj_matrix, queries)
-print(f"DP result: {result}")  # Output: [1, 1]
-```
-
-**Time Complexity**: O(2^n × n²)
-**Space Complexity**: O(2^n × n)
-
-**Why it's better**: Much faster than brute force, but still exponential in n.
-
-**Implementation Considerations**:
-- **Bitmask Operations**: Use bitwise operations for efficient set representation
-- **State Transitions**: Check all possible transitions from current state
-- **Memory Management**: Use 2D DP table for state storage
+Think of this like a delivery driver who must visit all customers exactly once. The bitmask is like a checklist tracking which customers have been served, and we need to count all valid orderings.
 
 ---
 
-### Approach 3: Optimized Dynamic Programming Solution (Optimal)
+## Solution 1: Brute Force (DFS)
 
-**Key Insights from Optimized Dynamic Programming Solution**:
-- **Precomputation**: Precompute Hamiltonian circuit existence for all starting vertices
-- **Query Optimization**: Answer queries in O(1) time
-- **Memory Optimization**: Use only necessary DP states
-- **Efficient Transitions**: Optimize state transition calculations
+### Idea
 
-**Key Insight**: Precompute all Hamiltonian circuit possibilities and answer queries efficiently.
+Try all possible orderings of cities using depth-first search with backtracking.
 
-**Algorithm**:
-- Precompute Hamiltonian circuit existence for all starting vertices
-- For each query, return precomputed result
-- Use optimized DP with reduced memory usage
+### Algorithm
 
-**Visual Example**:
-```
-Graph: 1↔2↔3↔1
+1. Start DFS from city 1
+2. For each unvisited neighbor, mark it visited and recurse
+3. If we reach city n with all cities visited, increment count
+4. Backtrack by unmarking the city
 
-Precomputed results:
-┌─────────────────────────────────────┐
-│ Start vertex 1: Hamiltonian ✓      │
-│ Start vertex 2: Hamiltonian ✓      │
-│ Start vertex 3: Hamiltonian ✓      │
-└─────────────────────────────────────┘
-
-Query 1: start=1, k=3 → 1
-Query 2: start=2, k=3 → 1
-```
-
-**Implementation**:
-```python
-def optimized_solution(n, adj_matrix, queries):
-    """
-    Find Hamiltonian circuit existence using optimized DP
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, k) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    # Precompute Hamiltonian circuit existence for all starting vertices
-    hamiltonian_exists = [False] * n
-    
-    for start in range(n):
-        # DP table: dp[mask][i] = can reach vertex i using vertices in mask
-        dp = [[False] * n for _ in range(1 << n)]
-        
-        # Base case: start vertex with only itself
-        dp[1 << start][start] = True
-        
-        # Fill DP table
-        for mask in range(1 << n):
-            for i in range(n):
-                if dp[mask][i]:
-                    for j in range(n):
-                        if (adj_matrix[i][j] == 1 and 
-                            (mask & (1 << j)) == 0):
-                            new_mask = mask | (1 << j)
-                            dp[new_mask][j] = True
-        
-        # Check if we can return to start from all vertices
-        full_mask = (1 << n) - 1
-        hamiltonian_exists[start] = dp[full_mask][start]
-    
-    # Answer queries
-    results = []
-    for a, k in queries:
-        if k == n and hamiltonian_exists[a - 1]:  # Convert to 0-indexed
-            result = 1
-        else:
-            result = 0
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0]
-]
-queries = [(1, 3), (2, 3)]
-result = optimized_solution(n, adj_matrix, queries)
-print(f"Optimized result: {result}")  # Output: [1, 1]
-```
-
-**Time Complexity**: O(2^n × n² + q)
-**Space Complexity**: O(2^n × n)
-
-**Why it's optimal**: O(1) time per query after O(2^n × n²) preprocessing, making it efficient for large numbers of queries.
-
-**Implementation Details**:
-- **Precomputation**: Compute Hamiltonian circuit existence for all starting vertices
-- **Query Optimization**: Answer queries in constant time
-- **Memory Efficiency**: Use optimized DP table
-- **State Optimization**: Reduce unnecessary state calculations
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n! × n) | O(n) | Exhaustive search of all permutations |
-| Dynamic Programming | O(2^n × n²) | O(2^n × n) | Use DP with bitmasks |
-| Optimized | O(2^n × n² + q) | O(2^n × n) | Precompute for O(1) queries |
-
-### Time Complexity
-- **Time**: O(2^n × n² + q) - Precompute Hamiltonian circuit existence, then O(1) per query
-- **Space**: O(2^n × n) - Store DP table and precomputed results
-
-### Why This Solution Works
-- **Dynamic Programming**: Use bitmasks to represent vertex sets efficiently
-- **Precomputation**: Compute Hamiltonian circuit existence once for all queries
-- **Query Optimization**: Answer queries in constant time
-- **State Optimization**: Use optimized DP transitions
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Hamiltonian Path Queries**
-**Problem**: Find if there exists a Hamiltonian path of length k from node a to node b.
-
-**Key Differences**: Paths instead of circuits, different start and end nodes
-
-**Solution Approach**: Use similar DP but don't require return to start
-
-**Implementation**:
-```python
-def hamiltonian_path_queries(n, adj_matrix, queries):
-    """
-    Find Hamiltonian path existence using DP
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        queries: list of (a, b, k) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    def has_hamiltonian_path(start, end, k):
-        """Check if Hamiltonian path of length k exists from start to end"""
-        if k != n:
-            return False
-        
-        # DP table: dp[mask][i] = can reach vertex i using vertices in mask
-        dp = [[False] * n for _ in range(1 << n)]
-        
-        # Base case: start vertex with only itself
-        dp[1 << start][start] = True
-        
-        # Fill DP table
-        for mask in range(1 << n):
-            for i in range(n):
-                if dp[mask][i]:
-                    for j in range(n):
-                        if (adj_matrix[i][j] == 1 and 
-                            (mask & (1 << j)) == 0):
-                            new_mask = mask | (1 << j)
-                            dp[new_mask][j] = True
-        
-        # Check if we can reach end from all vertices
-        full_mask = (1 << n) - 1
-        return dp[full_mask][end]
-    
-    results = []
-    for a, b, k in queries:
-        result = 1 if has_hamiltonian_path(a - 1, b - 1, k) else 0  # Convert to 0-indexed
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0]
-]
-queries = [(1, 3, 3), (2, 1, 3)]
-result = hamiltonian_path_queries(n, adj_matrix, queries)
-print(f"Hamiltonian path result: {result}")
-```
-
-#### **2. Weighted Hamiltonian Circuit Queries**
-**Problem**: Find if there exists a Hamiltonian circuit of length k with total weight w.
-
-**Key Differences**: Edges have weights, consider total weight
-
-**Solution Approach**: Use 3D DP with weight dimension
-
-**Implementation**:
-```python
-def weighted_hamiltonian_circuit_queries(n, adj_matrix, weights, queries):
-    """
-    Find weighted Hamiltonian circuit existence using 3D DP
-    
-    Args:
-        n: number of nodes
-        adj_matrix: adjacency matrix
-        weights: weight matrix
-        queries: list of (a, k, w) queries
-    
-    Returns:
-        list: answers to queries
-    """
-    def has_weighted_hamiltonian_circuit(start, k, target_weight):
-        """Check if weighted Hamiltonian circuit exists"""
-        if k != n:
-            return False
-        
-        # DP table: dp[mask][i][w] = can reach vertex i with weight w using vertices in mask
-        max_weight = target_weight + 1
-        dp = [[[False] * max_weight for _ in range(n)] for _ in range(1 << n)]
-        
-        # Base case: start vertex with only itself
-        dp[1 << start][start][0] = True
-        
-        # Fill DP table
-        for mask in range(1 << n):
-            for i in range(n):
-                for w in range(max_weight):
-                    if dp[mask][i][w]:
-                        for j in range(n):
-                            if (adj_matrix[i][j] == 1 and 
-                                (mask & (1 << j)) == 0):
-                                new_mask = mask | (1 << j)
-                                new_weight = w + weights[i][j]
-                                if new_weight < max_weight:
-                                    dp[new_mask][j][new_weight] = True
-        
-        # Check if we can return to start with target weight
-        full_mask = (1 << n) - 1
-        return dp[full_mask][start][target_weight]
-    
-    results = []
-    for a, k, w in queries:
-        result = 1 if has_weighted_hamiltonian_circuit(a - 1, k, w) else 0  # Convert to 0-indexed
-        results.append(result)
-    
-    return results
-
-# Example usage
-n = 3
-adj_matrix = [
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0]
-]
-weights = [
-    [0, 2, 3],
-    [2, 0, 4],
-    [3, 4, 0]
-]
-queries = [(1, 3, 9), (2, 3, 8)]
-result = weighted_hamiltonian_circuit_queries(n, adj_matrix, weights, queries)
-print(f"Weighted Hamiltonian circuit result: {result}")
-```
-
-#### **3. Dynamic Hamiltonian Circuit Queries**
-**Problem**: Support adding/removing edges and answering Hamiltonian circuit queries.
-
-**Key Differences**: Graph structure can change dynamically
-
-**Solution Approach**: Use dynamic graph analysis with incremental updates
-
-**Implementation**:
-```python
-class DynamicHamiltonianCircuitQueries:
-    def __init__(self, n):
-        self.n = n
-        self.adj_matrix = [[0] * n for _ in range(n)]
-        self.weights = [[0] * n for _ in range(n)]
-        self.hamiltonian_cache = {}  # Cache for Hamiltonian circuit existence
-    
-    def add_edge(self, a, b, weight=1):
-        """Add edge from a to b with weight"""
-        if self.adj_matrix[a][b] == 0:
-            self.adj_matrix[a][b] = 1
-            self.weights[a][b] = weight
-            self.hamiltonian_cache.clear()  # Invalidate cache
-    
-    def remove_edge(self, a, b):
-        """Remove edge from a to b"""
-        if self.adj_matrix[a][b] == 1:
-            self.adj_matrix[a][b] = 0
-            self.weights[a][b] = 0
-            self.hamiltonian_cache.clear()  # Invalidate cache
-    
-    def has_hamiltonian_circuit(self, start, k):
-        """Check if Hamiltonian circuit of length k exists from start"""
-        if k != self.n:
-            return False
-        
-        # Check cache first
-        cache_key = (start, k)
-        if cache_key in self.hamiltonian_cache:
-            return self.hamiltonian_cache[cache_key]
-        
-        # DP table: dp[mask][i] = can reach vertex i using vertices in mask
-        dp = [[False] * self.n for _ in range(1 << self.n)]
-        
-        # Base case: start vertex with only itself
-        dp[1 << start][start] = True
-        
-        # Fill DP table
-        for mask in range(1 << self.n):
-            for i in range(self.n):
-                if dp[mask][i]:
-                    for j in range(self.n):
-                        if (self.adj_matrix[i][j] == 1 and 
-                            (mask & (1 << j)) == 0):
-                            new_mask = mask | (1 << j)
-                            dp[new_mask][j] = True
-        
-        # Check if we can return to start from all vertices
-        full_mask = (1 << self.n) - 1
-        result = dp[full_mask][start]
-        
-        # Cache result
-        self.hamiltonian_cache[cache_key] = result
-        return result
-
-# Example usage
-dhcq = DynamicHamiltonianCircuitQueries(3)
-dhcq.add_edge(0, 1, 2)
-dhcq.add_edge(1, 2, 3)
-dhcq.add_edge(2, 0, 4)
-result1 = dhcq.has_hamiltonian_circuit(0, 3)
-print(f"Dynamic Hamiltonian circuit result: {result1}")
-```
-
-## Problem Variations
-
-### **Variation 1: Fixed Length Hamiltonian Circuit Queries with Dynamic Updates**
-**Problem**: Handle dynamic graph updates (add/remove/update edges) while maintaining fixed length Hamiltonian circuit query calculation efficiently.
-
-**Approach**: Use efficient data structures and algorithms for dynamic graph management with Hamiltonian circuit detection.
+### Code
 
 ```python
-from collections import defaultdict, deque
-import heapq
+def solve_brute_force(n, adj):
+    """
+    Brute force using DFS backtracking.
 
-class DynamicFixedLengthHamiltonianCircuitQueries:
-    def __init__(self, n=None, edges=None, target_length=None):
-        self.n = n or 0
-        self.edges = edges or []
-        self.target_length = target_length or 0
-        self.graph = defaultdict(list)
-        self._update_hamiltonian_circuit_query_info()
-    
-    def _update_hamiltonian_circuit_query_info(self):
-        """Update Hamiltonian circuit query feasibility information."""
-        self.hamiltonian_circuit_query_feasibility = self._calculate_hamiltonian_circuit_query_feasibility()
-    
-    def _calculate_hamiltonian_circuit_query_feasibility(self):
-        """Calculate Hamiltonian circuit query feasibility."""
-        if self.n <= 0 or self.target_length <= 0:
-            return 0.0
-        
-        # Check if we can have Hamiltonian circuits of target length
-        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
-    
-    def update_graph(self, new_n, new_edges, new_target_length=None):
-        """Update the graph with new vertices, edges, and target length."""
-        self.n = new_n
-        self.edges = new_edges
-        if new_target_length is not None:
-            self.target_length = new_target_length
-        self._build_graph()
-        self._update_hamiltonian_circuit_query_info()
-    
-    def add_edge(self, u, v):
-        """Add an edge to the graph."""
-        if 1 <= u <= self.n and 1 <= v <= self.n:
-            self.edges.append((u, v))
-            self.graph[u].append(v)
-            self.graph[v].append(u)
-            self._update_hamiltonian_circuit_query_info()
-    
-    def remove_edge(self, u, v):
-        """Remove an edge from the graph."""
-        if (u, v) in self.edges:
-            self.edges.remove((u, v))
-            self.graph[u].remove(v)
-            self.graph[v].remove(u)
-            self._update_hamiltonian_circuit_query_info()
-    
-    def _build_graph(self):
-        """Build the graph from edges."""
-        self.graph = defaultdict(list)
-        
-        for u, v in self.edges:
-            self.graph[u].append(v)
-            self.graph[v].append(u)
-    
-    def is_hamiltonian_circuit_possible(self):
-        """Check if Hamiltonian circuit is possible."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return False
-        
-        # Basic check: need at least 3 vertices for a Hamiltonian circuit
-        if self.n < 3:
-            return False
-        
-        # Check if graph is connected
-        return self._is_connected()
-    
-    def _is_connected(self):
-        """Check if the graph is connected."""
-        if not self.graph:
-            return False
-        
-        visited = set()
-        start = next(iter(self.graph.keys()))
-        stack = [start]
-        
-        while stack:
-            vertex = stack.pop()
-            if vertex not in visited:
-                visited.add(vertex)
-                for neighbor in self.graph[vertex]:
-                    if neighbor not in visited:
-                        stack.append(neighbor)
-        
-        return len(visited) == self.n
-    
-    def find_hamiltonian_circuits_of_length(self, start_vertex=None):
-        """Find Hamiltonian circuits of the target length."""
-        if not self.hamiltonian_circuit_query_feasibility or not self.is_hamiltonian_circuit_possible():
-            return []
-        
-        circuits = []
-        if start_vertex is None:
-            # Try all vertices as starting points
-            for start in range(1, self.n + 1):
-                circuits.extend(self._find_hamiltonian_circuits_from_vertex(start))
-        else:
-            circuits = self._find_hamiltonian_circuits_from_vertex(start_vertex)
-        
-        return circuits
-    
-    def _find_hamiltonian_circuits_from_vertex(self, start):
-        """Find Hamiltonian circuits starting from a specific vertex."""
-        circuits = []
-        visited = set()
-        path = []
-        
-        def dfs(current, length):
-            if length == self.target_length:
-                if current == start and len(path) == self.target_length:
-                    circuits.append(path[:])
-                return
-            
-            if length > self.target_length:
-                return
-            
-            for neighbor in self.graph[current]:
-                if neighbor not in visited or (length == self.target_length - 1 and neighbor == start):
-                    if neighbor == start and length == self.target_length - 1:
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                    elif neighbor != start:
-                        visited.add(neighbor)
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                        visited.remove(neighbor)
-        
-        visited.add(start)
-        path.append(start)
-        dfs(start, 1)
-        visited.remove(start)
-        path.pop()
-        
-        return circuits
-    
-    def find_hamiltonian_circuits_with_priorities(self, priorities, start_vertex=None):
-        """Find Hamiltonian circuits considering vertex priorities."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
-        if not circuits:
-            return []
-        
-        # Create priority-based circuits
-        priority_circuits = []
-        for circuit in circuits:
-            total_priority = sum(priorities.get(vertex, 1) for vertex in circuit)
-            priority_circuits.append((circuit, total_priority))
-        
-        # Sort by priority (descending for maximization)
-        priority_circuits.sort(key=lambda x: x[1], reverse=True)
-        
-        return priority_circuits
-    
-    def get_hamiltonian_circuits_with_constraints(self, constraint_func, start_vertex=None):
-        """Get Hamiltonian circuits that satisfies custom constraints."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
-        if circuits and constraint_func(self.n, self.edges, circuits, self.target_length):
-            return circuits
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_in_range(self, min_length, max_length, start_vertex=None):
-        """Get Hamiltonian circuits within specified length range."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        if min_length <= self.target_length <= max_length:
-            return self.find_hamiltonian_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_with_pattern(self, pattern_func, start_vertex=None):
-        """Get Hamiltonian circuits matching specified pattern."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
-        if pattern_func(self.n, self.edges, circuits, self.target_length):
-            return circuits
-        else:
-            return []
-    
-    def get_hamiltonian_circuit_query_statistics(self):
-        """Get statistics about the Hamiltonian circuit queries."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return {
-                'n': 0,
-                'hamiltonian_circuit_query_feasibility': 0,
-                'has_hamiltonian_circuits': False,
-                'target_length': 0,
-                'circuit_count': 0
-            }
-        
-        circuits = self.find_hamiltonian_circuits_of_length()
-        return {
-            'n': self.n,
-            'hamiltonian_circuit_query_feasibility': self.hamiltonian_circuit_query_feasibility,
-            'has_hamiltonian_circuits': len(circuits) > 0,
-            'target_length': self.target_length,
-            'circuit_count': len(circuits)
-        }
-    
-    def get_hamiltonian_circuit_query_patterns(self):
-        """Get patterns in Hamiltonian circuit queries."""
-        patterns = {
-            'has_edges': 0,
-            'has_valid_graph': 0,
-            'optimal_hamiltonian_circuit_possible': 0,
-            'has_large_graph': 0
-        }
-        
-        if not self.hamiltonian_circuit_query_feasibility:
-            return patterns
-        
-        # Check if has edges
-        if len(self.edges) > 0:
-            patterns['has_edges'] = 1
-        
-        # Check if has valid graph
-        if self.n > 0:
-            patterns['has_valid_graph'] = 1
-        
-        # Check if optimal Hamiltonian circuit is possible
-        if self.hamiltonian_circuit_query_feasibility == 1.0:
-            patterns['optimal_hamiltonian_circuit_possible'] = 1
-        
-        # Check if has large graph
-        if self.n > 100:
-            patterns['has_large_graph'] = 1
-        
-        return patterns
-    
-    def get_optimal_hamiltonian_circuit_query_strategy(self):
-        """Get optimal strategy for Hamiltonian circuit query management."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return {
-                'recommended_strategy': 'none',
-                'efficiency_rate': 0,
-                'hamiltonian_circuit_query_feasibility': 0
-            }
-        
-        # Calculate efficiency rate
-        efficiency_rate = self.hamiltonian_circuit_query_feasibility
-        
-        # Calculate Hamiltonian circuit query feasibility
-        hamiltonian_circuit_query_feasibility = self.hamiltonian_circuit_query_feasibility
-        
-        # Determine recommended strategy
-        if self.n <= 100:
-            recommended_strategy = 'dfs_hamiltonian_circuit_search'
-        elif self.n <= 1000:
-            recommended_strategy = 'optimized_dfs'
-        else:
-            recommended_strategy = 'advanced_hamiltonian_circuit_detection'
-        
-        return {
-            'recommended_strategy': recommended_strategy,
-            'efficiency_rate': efficiency_rate,
-            'hamiltonian_circuit_query_feasibility': hamiltonian_circuit_query_feasibility
-        }
+    Time: O(n! * n) - factorial paths, n edges each
+    Space: O(n) - recursion stack
+    """
+    MOD = 10**9 + 7
+    count = 0
 
-# Example usage
-n = 5
-edges = [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1), (1, 3), (2, 4)]
-target_length = 5
-dynamic_hamiltonian_circuit_queries = DynamicFixedLengthHamiltonianCircuitQueries(n, edges, target_length)
-print(f"Hamiltonian circuit query feasibility: {dynamic_hamiltonian_circuit_queries.hamiltonian_circuit_query_feasibility}")
+    def dfs(city, visited_count, visited):
+        nonlocal count
+        if city == n:
+            if visited_count == n:
+                count = (count + 1) % MOD
+            return
 
-# Update graph
-dynamic_hamiltonian_circuit_queries.update_graph(6, [(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 1), (1, 3), (2, 4)], 6)
-print(f"After updating graph: n={dynamic_hamiltonian_circuit_queries.n}, target_length={dynamic_hamiltonian_circuit_queries.target_length}")
+        for next_city in adj[city]:
+            if not visited[next_city]:
+                visited[next_city] = True
+                dfs(next_city, visited_count + 1, visited)
+                visited[next_city] = False
 
-# Add edge
-dynamic_hamiltonian_circuit_queries.add_edge(6, 1)
-print(f"After adding edge (6,1): {dynamic_hamiltonian_circuit_queries.edges}")
-
-# Remove edge
-dynamic_hamiltonian_circuit_queries.remove_edge(6, 1)
-print(f"After removing edge (6,1): {dynamic_hamiltonian_circuit_queries.edges}")
-
-# Check if Hamiltonian circuit is possible
-is_possible = dynamic_hamiltonian_circuit_queries.is_hamiltonian_circuit_possible()
-print(f"Is Hamiltonian circuit possible: {is_possible}")
-
-# Find Hamiltonian circuits
-circuits = dynamic_hamiltonian_circuit_queries.find_hamiltonian_circuits_of_length()
-print(f"Hamiltonian circuits of length {target_length}: {circuits}")
-
-# Find Hamiltonian circuits with priorities
-priorities = {i: i for i in range(1, n + 1)}
-priority_circuits = dynamic_hamiltonian_circuit_queries.find_hamiltonian_circuits_with_priorities(priorities)
-print(f"Hamiltonian circuits with priorities: {priority_circuits}")
-
-# Get Hamiltonian circuits with constraints
-def constraint_func(n, edges, circuits, target_length):
-    return len(circuits) > 0 and target_length > 0
-
-print(f"Hamiltonian circuits with constraints: {dynamic_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_constraints(constraint_func)}")
-
-# Get Hamiltonian circuits in range
-print(f"Hamiltonian circuits in range 3-7: {dynamic_hamiltonian_circuit_queries.get_hamiltonian_circuits_in_range(3, 7)}")
-
-# Get Hamiltonian circuits with pattern
-def pattern_func(n, edges, circuits, target_length):
-    return len(circuits) > 0 and target_length > 0
-
-print(f"Hamiltonian circuits with pattern: {dynamic_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_pattern(pattern_func)}")
-
-# Get statistics
-print(f"Statistics: {dynamic_hamiltonian_circuit_queries.get_hamiltonian_circuit_query_statistics()}")
-
-# Get patterns
-print(f"Patterns: {dynamic_hamiltonian_circuit_queries.get_hamiltonian_circuit_query_patterns()}")
-
-# Get optimal strategy
-print(f"Optimal strategy: {dynamic_hamiltonian_circuit_queries.get_optimal_hamiltonian_circuit_query_strategy()}")
+    visited = [False] * (n + 1)
+    visited[1] = True
+    dfs(1, 1, visited)
+    return count
 ```
 
-### **Variation 2: Fixed Length Hamiltonian Circuit Queries with Different Operations**
-**Problem**: Handle different types of Hamiltonian circuit query operations (weighted circuits, priority-based selection, advanced Hamiltonian circuit analysis).
+### Complexity
 
-**Approach**: Use advanced data structures for efficient different types of Hamiltonian circuit query operations.
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n! * n) | At most n! paths, each path has n transitions |
+| Space | O(n) | Visited array and recursion stack |
+
+### Why This Works (But Is Slow)
+
+This explores every possible path. For n=20, there could be up to 20! paths - far too many to enumerate.
+
+---
+
+## Solution 2: Optimal Solution (Bitmask DP)
+
+### Key Insight
+
+> **The Trick:** Use a bitmask to represent visited cities, converting the exponential backtracking into polynomial DP.
+
+Instead of exploring paths one by one, we count paths to each (mask, city) state.
+
+### DP State Definition
+
+| State | Meaning |
+|-------|---------|
+| `dp[mask][v]` | Number of paths that visit exactly the cities in `mask` and end at city `v` |
+
+**In plain English:** dp[mask][v] counts how many ways we can arrive at city v having visited precisely the cities whose bits are set in mask.
+
+### State Transition
+
+```
+dp[new_mask][u] += dp[mask][v]   for each edge v -> u
+where new_mask = mask | (1 << u)
+```
+
+**Why?** If we have `dp[mask][v]` paths ending at v, and there's an edge v -> u where u is unvisited (bit not set), we can extend all those paths to u.
+
+### Base Cases
+
+| Case | Value | Reason |
+|------|-------|--------|
+| `dp[1][1]` | 1 | Start at city 1, only city 1 visited |
+| All other | 0 | No paths initially |
+
+### Algorithm
+
+1. Initialize dp[1][1] = 1 (city 1 visited, at city 1)
+2. Iterate through all masks from 1 to 2^n - 1
+3. For each valid (mask, v) state, extend to neighbors
+4. Answer is dp[(1 << n) - 1][n] (all visited, at city n)
+
+### Dry Run Example
+
+Let's trace with `n=4, edges: 1->2, 1->3, 2->3, 3->2, 2->4, 3->4`:
+
+```
+Initial: dp[0001][1] = 1  (binary 0001 = city 1 visited)
+
+Process mask=0001 (city 1):
+  From city 1:
+    Edge 1->2: dp[0011][2] += dp[0001][1] = 1
+    Edge 1->3: dp[0101][3] += dp[0001][1] = 1
+
+Process mask=0011 (cities 1,2):
+  From city 2:
+    Edge 2->3: dp[0111][3] += dp[0011][2] = 1
+    Edge 2->4: dp[1011][4] += dp[0011][2] = 1
+
+Process mask=0101 (cities 1,3):
+  From city 3:
+    Edge 3->2: dp[0111][2] += dp[0101][3] = 1
+    Edge 3->4: dp[1101][4] += dp[0101][3] = 1
+
+Process mask=0111 (cities 1,2,3):
+  From city 2: dp[1111][4] += dp[0111][2] = 1
+  From city 3: dp[1111][4] += dp[0111][3] = 1
+
+Final: dp[1111][4] = 2 (all cities visited, at city 4)
+```
+
+### Visual Diagram
+
+```
+State Space:
+
+  mask=0001   mask=0011   mask=0111   mask=1111
+  city 1      city 2      city 3      city 4
+    (1) ------> (1) ------> (1) ------> (1)
+        \                 /          /
+         \-> city 3     \/          /
+             (1) ------> (1) ------+
+                        city 2      \
+                                     -> (2) Total
+
+Bitmask meaning:
+  0001 = {1}
+  0011 = {1,2}
+  0101 = {1,3}
+  0111 = {1,2,3}
+  1111 = {1,2,3,4}
+```
+
+### Code
 
 ```python
-class AdvancedFixedLengthHamiltonianCircuitQueries:
-    def __init__(self, n=None, edges=None, target_length=None, weights=None, priorities=None):
-        self.n = n or 0
-        self.edges = edges or []
-        self.target_length = target_length or 0
-        self.weights = weights or {}
-        self.priorities = priorities or {}
-        self.graph = defaultdict(list)
-        self._update_hamiltonian_circuit_query_info()
-    
-    def _update_hamiltonian_circuit_query_info(self):
-        """Update Hamiltonian circuit query feasibility information."""
-        self.hamiltonian_circuit_query_feasibility = self._calculate_hamiltonian_circuit_query_feasibility()
-    
-    def _calculate_hamiltonian_circuit_query_feasibility(self):
-        """Calculate Hamiltonian circuit query feasibility."""
-        if self.n <= 0 or self.target_length <= 0:
-            return 0.0
-        
-        # Check if we can have Hamiltonian circuits of target length
-        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
-    
-    def _build_graph(self):
-        """Build the graph from edges."""
-        self.graph = defaultdict(list)
-        
-        for u, v in self.edges:
-            self.graph[u].append(v)
-            self.graph[v].append(u)
-    
-    def is_hamiltonian_circuit_possible(self):
-        """Check if Hamiltonian circuit is possible."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return False
-        
-        # Basic check: need at least 3 vertices for a Hamiltonian circuit
-        if self.n < 3:
-            return False
-        
-        # Check if graph is connected
-        return self._is_connected()
-    
-    def _is_connected(self):
-        """Check if the graph is connected."""
-        if not self.graph:
-            return False
-        
-        visited = set()
-        start = next(iter(self.graph.keys()))
-        stack = [start]
-        
-        while stack:
-            vertex = stack.pop()
-            if vertex not in visited:
-                visited.add(vertex)
-                for neighbor in self.graph[vertex]:
-                    if neighbor not in visited:
-                        stack.append(neighbor)
-        
-        return len(visited) == self.n
-    
-    def find_hamiltonian_circuits_of_length(self, start_vertex=None):
-        """Find Hamiltonian circuits of the target length."""
-        if not self.hamiltonian_circuit_query_feasibility or not self.is_hamiltonian_circuit_possible():
-            return []
-        
-        self._build_graph()
-        
-        circuits = []
-        if start_vertex is None:
-            # Try all vertices as starting points
-            for start in range(1, self.n + 1):
-                circuits.extend(self._find_hamiltonian_circuits_from_vertex(start))
-        else:
-            circuits = self._find_hamiltonian_circuits_from_vertex(start_vertex)
-        
-        return circuits
-    
-    def _find_hamiltonian_circuits_from_vertex(self, start):
-        """Find Hamiltonian circuits starting from a specific vertex."""
-        circuits = []
-        visited = set()
-        path = []
-        
-        def dfs(current, length):
-            if length == self.target_length:
-                if current == start and len(path) == self.target_length:
-                    circuits.append(path[:])
-                return
-            
-            if length > self.target_length:
-                return
-            
-            for neighbor in self.graph[current]:
-                if neighbor not in visited or (length == self.target_length - 1 and neighbor == start):
-                    if neighbor == start and length == self.target_length - 1:
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                    elif neighbor != start:
-                        visited.add(neighbor)
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                        visited.remove(neighbor)
-        
-        visited.add(start)
-        path.append(start)
-        dfs(start, 1)
-        visited.remove(start)
-        path.pop()
-        
-        return circuits
-    
-    def get_weighted_hamiltonian_circuits(self, start_vertex=None):
-        """Get Hamiltonian circuits with weights and priorities applied."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
-        if not circuits:
-            return []
-        
-        # Create weighted circuits
-        weighted_circuits = []
-        for circuit in circuits:
-            total_weight = 0
-            total_priority = 0
-            
-            for i in range(len(circuit)):
-                vertex = circuit[i]
-                next_vertex = circuit[(i + 1) % len(circuit)]
-                
-                edge_weight = self.weights.get((vertex, next_vertex), 1)
-                vertex_priority = self.priorities.get(vertex, 1)
-                
-                total_weight += edge_weight
-                total_priority += vertex_priority
-            
-            weighted_score = total_weight * total_priority
-            weighted_circuits.append((circuit, weighted_score))
-        
-        # Sort by weighted score (descending for maximization)
-        weighted_circuits.sort(key=lambda x: x[1], reverse=True)
-        
-        return weighted_circuits
-    
-    def get_hamiltonian_circuits_with_priority(self, priority_func, start_vertex=None):
-        """Get Hamiltonian circuits considering priority."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
-        if not circuits:
-            return []
-        
-        # Create priority-based circuits
-        priority_circuits = []
-        for circuit in circuits:
-            priority = priority_func(circuit, self.weights, self.priorities)
-            priority_circuits.append((circuit, priority))
-        
-        # Sort by priority (descending for maximization)
-        priority_circuits.sort(key=lambda x: x[1], reverse=True)
-        
-        return priority_circuits
-    
-    def get_hamiltonian_circuits_with_optimization(self, optimization_func, start_vertex=None):
-        """Get Hamiltonian circuits using custom optimization function."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
-        if not circuits:
-            return []
-        
-        # Create optimization-based circuits
-        optimized_circuits = []
-        for circuit in circuits:
-            score = optimization_func(circuit, self.weights, self.priorities)
-            optimized_circuits.append((circuit, score))
-        
-        # Sort by optimization score (descending for maximization)
-        optimized_circuits.sort(key=lambda x: x[1], reverse=True)
-        
-        return optimized_circuits
-    
-    def get_hamiltonian_circuits_with_constraints(self, constraint_func, start_vertex=None):
-        """Get Hamiltonian circuits that satisfies custom constraints."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        if constraint_func(self.n, self.edges, self.weights, self.priorities, self.target_length):
-            return self.get_weighted_hamiltonian_circuits(start_vertex)
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_with_multiple_criteria(self, criteria_list, start_vertex=None):
-        """Get Hamiltonian circuits that satisfies multiple criteria."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        satisfies_all_criteria = True
-        for criterion in criteria_list:
-            if not criterion(self.n, self.edges, self.weights, self.priorities, self.target_length):
-                satisfies_all_criteria = False
-                break
-        
-        if satisfies_all_criteria:
-            return self.get_weighted_hamiltonian_circuits(start_vertex)
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_with_alternatives(self, alternatives, start_vertex=None):
-        """Get Hamiltonian circuits considering alternative weights/priorities."""
-        result = []
-        
-        # Check original circuits
-        original_circuits = self.get_weighted_hamiltonian_circuits(start_vertex)
-        result.append((original_circuits, 'original'))
-        
-        # Check alternative weights/priorities
-        for alt_weights, alt_priorities in alternatives:
-            # Create temporary instance with alternative weights/priorities
-            temp_instance = AdvancedFixedLengthHamiltonianCircuitQueries(self.n, self.edges, self.target_length, alt_weights, alt_priorities)
-            temp_circuits = temp_instance.get_weighted_hamiltonian_circuits(start_vertex)
-            result.append((temp_circuits, f'alternative_{alt_weights}_{alt_priorities}'))
-        
-        return result
-    
-    def get_hamiltonian_circuits_with_adaptive_criteria(self, adaptive_func, start_vertex=None):
-        """Get Hamiltonian circuits using adaptive criteria."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        if adaptive_func(self.n, self.edges, self.weights, self.priorities, self.target_length, []):
-            return self.get_weighted_hamiltonian_circuits(start_vertex)
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_optimization(self, start_vertex=None):
-        """Get optimal Hamiltonian circuits configuration."""
-        strategies = [
-            ('weighted_circuits', lambda: len(self.get_weighted_hamiltonian_circuits(start_vertex))),
-            ('total_weight', lambda: sum(self.weights.values())),
-            ('total_priority', lambda: sum(self.priorities.values())),
-        ]
-        
-        best_strategy = None
-        best_value = 0
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                current_value = strategy_func()
-                if current_value > best_value:
-                    best_value = current_value
-                    best_strategy = (strategy_name, current_value)
-            except:
+def solve(n, m, edges):
+    """
+    Bitmask DP solution for counting Hamiltonian paths.
+
+    Time: O(2^n * n^2)
+    Space: O(2^n * n)
+    """
+    MOD = 10**9 + 7
+
+    # Build adjacency list
+    adj = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        adj[a].append(b)
+
+    # dp[mask][v] = number of paths visiting cities in mask, ending at v
+    dp = [[0] * (n + 1) for _ in range(1 << n)]
+
+    # Base case: start at city 1
+    dp[1][1] = 1
+
+    # Process all masks in order
+    for mask in range(1, 1 << n):
+        for v in range(1, n + 1):
+            # Skip if v is not in current mask
+            if not (mask & (1 << (v - 1))):
                 continue
-        
-        return best_strategy
+            if dp[mask][v] == 0:
+                continue
 
-# Example usage
-n = 5
-edges = [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1), (1, 3), (2, 4)]
-target_length = 5
-weights = {(u, v): (u + v) * 2 for u, v in edges}  # Weight based on vertex sum
-priorities = {i: i for i in range(1, n + 1)}  # Priority based on vertex number
-advanced_hamiltonian_circuit_queries = AdvancedFixedLengthHamiltonianCircuitQueries(n, edges, target_length, weights, priorities)
+            # Try extending to each neighbor
+            for u in adj[v]:
+                # Skip if u already visited
+                if mask & (1 << (u - 1)):
+                    continue
+                new_mask = mask | (1 << (u - 1))
+                dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD
 
-print(f"Weighted Hamiltonian circuits: {advanced_hamiltonian_circuit_queries.get_weighted_hamiltonian_circuits()}")
+    # Answer: all cities visited, ending at city n
+    full_mask = (1 << n) - 1
+    return dp[full_mask][n]
 
-# Get Hamiltonian circuits with priority
-def priority_func(circuit, weights, priorities):
-    return sum(priorities.get(vertex, 1) for vertex in circuit)
 
-print(f"Hamiltonian circuits with priority: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_priority(priority_func)}")
+# Input handling
+def main():
+    import sys
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n = int(input_data[idx]); idx += 1
+    m = int(input_data[idx]); idx += 1
 
-# Get Hamiltonian circuits with optimization
-def optimization_func(circuit, weights, priorities):
-    return sum(weights.get((circuit[i], circuit[(i+1)%len(circuit)]), 1) for i in range(len(circuit)))
+    edges = []
+    for _ in range(m):
+        a = int(input_data[idx]); idx += 1
+        b = int(input_data[idx]); idx += 1
+        edges.append((a, b))
 
-print(f"Hamiltonian circuits with optimization: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_optimization(optimization_func)}")
+    print(solve(n, m, edges))
 
-# Get Hamiltonian circuits with constraints
-def constraint_func(n, edges, weights, priorities, target_length):
-    return len(edges) > 0 and n > 0 and target_length > 0
-
-print(f"Hamiltonian circuits with constraints: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_constraints(constraint_func)}")
-
-# Get Hamiltonian circuits with multiple criteria
-def criterion1(n, edges, weights, priorities, target_length):
-    return len(edges) > 0
-
-def criterion2(n, edges, weights, priorities, target_length):
-    return len(weights) > 0
-
-criteria_list = [criterion1, criterion2]
-print(f"Hamiltonian circuits with multiple criteria: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_multiple_criteria(criteria_list)}")
-
-# Get Hamiltonian circuits with alternatives
-alternatives = [({(u, v): 1 for u, v in edges}, {i: 1 for i in range(1, n + 1)}), ({(u, v): (u + v)*3 for u, v in edges}, {i: 2 for i in range(1, n + 1)})]
-print(f"Hamiltonian circuits with alternatives: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_alternatives(alternatives)}")
-
-# Get Hamiltonian circuits with adaptive criteria
-def adaptive_func(n, edges, weights, priorities, target_length, current_result):
-    return len(edges) > 0 and len(current_result) < 10
-
-print(f"Hamiltonian circuits with adaptive criteria: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_adaptive_criteria(adaptive_func)}")
-
-# Get Hamiltonian circuits optimization
-print(f"Hamiltonian circuits optimization: {advanced_hamiltonian_circuit_queries.get_hamiltonian_circuits_optimization()}")
+if __name__ == "__main__":
+    main()
 ```
 
-### **Variation 3: Fixed Length Hamiltonian Circuit Queries with Constraints**
-**Problem**: Handle Hamiltonian circuit queries with additional constraints (length limits, Hamiltonian circuit constraints, pattern constraints).
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Approach**: Use constraint satisfaction with advanced optimization and mathematical analysis.
+const int MOD = 1e9 + 7;
 
-```python
-class ConstrainedFixedLengthHamiltonianCircuitQueries:
-    def __init__(self, n=None, edges=None, target_length=None, constraints=None):
-        self.n = n or 0
-        self.edges = edges or []
-        self.target_length = target_length or 0
-        self.constraints = constraints or {}
-        self.graph = defaultdict(list)
-        self._update_hamiltonian_circuit_query_info()
-    
-    def _update_hamiltonian_circuit_query_info(self):
-        """Update Hamiltonian circuit query feasibility information."""
-        self.hamiltonian_circuit_query_feasibility = self._calculate_hamiltonian_circuit_query_feasibility()
-    
-    def _calculate_hamiltonian_circuit_query_feasibility(self):
-        """Calculate Hamiltonian circuit query feasibility."""
-        if self.n <= 0 or self.target_length <= 0:
-            return 0.0
-        
-        # Check if we can have Hamiltonian circuits of target length
-        return 1.0 if self.n > 0 and self.target_length > 0 else 0.0
-    
-    def _is_valid_edge(self, u, v):
-        """Check if edge is valid considering constraints."""
-        # Edge constraints
-        if 'allowed_edges' in self.constraints:
-            if (u, v) not in self.constraints['allowed_edges'] and (v, u) not in self.constraints['allowed_edges']:
-                return False
-        
-        if 'forbidden_edges' in self.constraints:
-            if (u, v) in self.constraints['forbidden_edges'] or (v, u) in self.constraints['forbidden_edges']:
-                return False
-        
-        # Vertex constraints
-        if 'max_vertex' in self.constraints:
-            if u > self.constraints['max_vertex'] or v > self.constraints['max_vertex']:
-                return False
-        
-        if 'min_vertex' in self.constraints:
-            if u < self.constraints['min_vertex'] or v < self.constraints['min_vertex']:
-                return False
-        
-        # Pattern constraints
-        if 'pattern_constraints' in self.constraints:
-            for constraint in self.constraints['pattern_constraints']:
-                if not constraint(u, v, self.n, self.edges, self.target_length):
-                    return False
-        
-        return True
-    
-    def _build_graph(self):
-        """Build the graph from edges."""
-        self.graph = defaultdict(list)
-        
-        for u, v in self.edges:
-            if self._is_valid_edge(u, v):
-                self.graph[u].append(v)
-                self.graph[v].append(u)
-    
-    def is_hamiltonian_circuit_possible(self):
-        """Check if Hamiltonian circuit is possible."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return False
-        
-        # Basic check: need at least 3 vertices for a Hamiltonian circuit
-        if self.n < 3:
-            return False
-        
-        # Check if graph is connected
-        return self._is_connected()
-    
-    def _is_connected(self):
-        """Check if the graph is connected."""
-        if not self.graph:
-            return False
-        
-        visited = set()
-        start = next(iter(self.graph.keys()))
-        stack = [start]
-        
-        while stack:
-            vertex = stack.pop()
-            if vertex not in visited:
-                visited.add(vertex)
-                for neighbor in self.graph[vertex]:
-                    if neighbor not in visited:
-                        stack.append(neighbor)
-        
-        return len(visited) == self.n
-    
-    def find_hamiltonian_circuits_of_length(self, start_vertex=None):
-        """Find Hamiltonian circuits of the target length."""
-        if not self.hamiltonian_circuit_query_feasibility or not self.is_hamiltonian_circuit_possible():
-            return []
-        
-        self._build_graph()
-        
-        circuits = []
-        if start_vertex is None:
-            # Try all vertices as starting points
-            for start in range(1, self.n + 1):
-                circuits.extend(self._find_hamiltonian_circuits_from_vertex(start))
-        else:
-            circuits = self._find_hamiltonian_circuits_from_vertex(start_vertex)
-        
-        return circuits
-    
-    def _find_hamiltonian_circuits_from_vertex(self, start):
-        """Find Hamiltonian circuits starting from a specific vertex."""
-        circuits = []
-        visited = set()
-        path = []
-        
-        def dfs(current, length):
-            if length == self.target_length:
-                if current == start and len(path) == self.target_length:
-                    circuits.append(path[:])
-                return
-            
-            if length > self.target_length:
-                return
-            
-            for neighbor in self.graph[current]:
-                if neighbor not in visited or (length == self.target_length - 1 and neighbor == start):
-                    if neighbor == start and length == self.target_length - 1:
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                    elif neighbor != start:
-                        visited.add(neighbor)
-                        path.append(neighbor)
-                        dfs(neighbor, length + 1)
-                        path.pop()
-                        visited.remove(neighbor)
-        
-        visited.add(start)
-        path.append(start)
-        dfs(start, 1)
-        visited.remove(start)
-        path.pop()
-        
-        return circuits
-    
-    def get_hamiltonian_circuits_with_length_constraints(self, min_length, max_length, start_vertex=None):
-        """Get Hamiltonian circuits considering length constraints."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        if min_length <= self.target_length <= max_length:
-            return self.find_hamiltonian_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_with_hamiltonian_constraints(self, hamiltonian_constraints, start_vertex=None):
-        """Get Hamiltonian circuits considering Hamiltonian constraints."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        satisfies_constraints = True
-        for constraint in hamiltonian_constraints:
-            if not constraint(self.n, self.edges, self.target_length):
-                satisfies_constraints = False
-                break
-        
-        if satisfies_constraints:
-            return self.find_hamiltonian_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_with_pattern_constraints(self, pattern_constraints, start_vertex=None):
-        """Get Hamiltonian circuits considering pattern constraints."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        satisfies_pattern = True
-        for constraint in pattern_constraints:
-            if not constraint(self.n, self.edges, self.target_length):
-                satisfies_pattern = False
-                break
-        
-        if satisfies_pattern:
-            return self.find_hamiltonian_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_with_mathematical_constraints(self, constraint_func, start_vertex=None):
-        """Get Hamiltonian circuits that satisfies custom mathematical constraints."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
-        if circuits and constraint_func(self.n, self.edges, self.target_length):
-            return circuits
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_with_optimization_constraints(self, optimization_func, start_vertex=None):
-        """Get Hamiltonian circuits using custom optimization constraints."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        # Calculate optimization score for Hamiltonian circuits
-        score = optimization_func(self.n, self.edges, self.target_length)
-        
-        if score > 0:
-            return self.find_hamiltonian_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_with_multiple_constraints(self, constraints_list, start_vertex=None):
-        """Get Hamiltonian circuits that satisfies multiple constraints."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        satisfies_all_constraints = True
-        for constraint in constraints_list:
-            if not constraint(self.n, self.edges, self.target_length):
-                satisfies_all_constraints = False
-                break
-        
-        if satisfies_all_constraints:
-            return self.find_hamiltonian_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_with_priority_constraints(self, priority_func, start_vertex=None):
-        """Get Hamiltonian circuits with priority-based constraints."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        # Calculate priority for Hamiltonian circuits
-        priority = priority_func(self.n, self.edges, self.target_length)
-        
-        if priority > 0:
-            return self.find_hamiltonian_circuits_of_length(start_vertex)
-        else:
-            return []
-    
-    def get_hamiltonian_circuits_with_adaptive_constraints(self, adaptive_func, start_vertex=None):
-        """Get Hamiltonian circuits with adaptive constraints."""
-        if not self.hamiltonian_circuit_query_feasibility:
-            return []
-        
-        circuits = self.find_hamiltonian_circuits_of_length(start_vertex)
-        if circuits and adaptive_func(self.n, self.edges, self.target_length, []):
-            return circuits
-        else:
-            return []
-    
-    def get_optimal_hamiltonian_circuits_strategy(self, start_vertex=None):
-        """Get optimal Hamiltonian circuits strategy considering all constraints."""
-        strategies = [
-            ('length_constraints', self.get_hamiltonian_circuits_with_length_constraints),
-            ('hamiltonian_constraints', self.get_hamiltonian_circuits_with_hamiltonian_constraints),
-            ('pattern_constraints', self.get_hamiltonian_circuits_with_pattern_constraints),
-        ]
-        
-        best_strategy = None
-        best_score = 0
-        
-        for strategy_name, strategy_func in strategies:
-            try:
-                if strategy_name == 'length_constraints':
-                    result = strategy_func(1, 1000, start_vertex)
-                elif strategy_name == 'hamiltonian_constraints':
-                    hamiltonian_constraints = [lambda n, edges, target_length: len(edges) > 0]
-                    result = strategy_func(hamiltonian_constraints, start_vertex)
-                elif strategy_name == 'pattern_constraints':
-                    pattern_constraints = [lambda n, edges, target_length: len(edges) > 0]
-                    result = strategy_func(pattern_constraints, start_vertex)
-                
-                if result and len(result) > best_score:
-                    best_score = len(result)
-                    best_strategy = (strategy_name, result)
-            except:
-                continue
-        
-        return best_strategy
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-# Example usage
-constraints = {
-    'allowed_edges': [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1), (1, 3), (2, 4)],
-    'forbidden_edges': [(1, 4), (2, 5)],
-    'max_vertex': 10,
-    'min_vertex': 1,
-    'pattern_constraints': [lambda u, v, n, edges, target_length: u > 0 and v > 0 and u <= n and v <= n]
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<int>> adj(n + 1);
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+    }
+
+    // dp[mask][v] = paths visiting mask cities, ending at v
+    vector<vector<long long>> dp(1 << n, vector<long long>(n + 1, 0));
+
+    // Base case: at city 1, only city 1 visited
+    dp[1][1] = 1;
+
+    for (int mask = 1; mask < (1 << n); mask++) {
+        for (int v = 1; v <= n; v++) {
+            // Check if v is in mask (0-indexed bit)
+            if (!(mask & (1 << (v - 1)))) continue;
+            if (dp[mask][v] == 0) continue;
+
+            for (int u : adj[v]) {
+                // Check if u is NOT in mask
+                if (mask & (1 << (u - 1))) continue;
+
+                int new_mask = mask | (1 << (u - 1));
+                dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD;
+            }
+        }
+    }
+
+    // All cities visited (full_mask), ending at city n
+    int full_mask = (1 << n) - 1;
+    cout << dp[full_mask][n] << "\n";
+
+    return 0;
 }
-
-n = 5
-edges = [(1, 2), (2, 3), (3, 4), (4, 5), (5, 1), (1, 3), (2, 4)]
-target_length = 5
-constrained_hamiltonian_circuit_queries = ConstrainedFixedLengthHamiltonianCircuitQueries(n, edges, target_length, constraints)
-
-print("Length-constrained Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_length_constraints(3, 7))
-
-print("Hamiltonian-constrained circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_hamiltonian_constraints([lambda n, edges, target_length: len(edges) > 0]))
-
-print("Pattern-constrained Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_pattern_constraints([lambda n, edges, target_length: len(edges) > 0]))
-
-# Mathematical constraints
-def custom_constraint(n, edges, target_length):
-    return len(edges) > 0 and target_length > 0
-
-print("Mathematical constraint Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_mathematical_constraints(custom_constraint))
-
-# Range constraints
-def range_constraint(n, edges, target_length):
-    return 1 <= target_length <= 20
-
-range_constraints = [range_constraint]
-print("Range-constrained Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_length_constraints(1, 20))
-
-# Multiple constraints
-def constraint1(n, edges, target_length):
-    return len(edges) > 0
-
-def constraint2(n, edges, target_length):
-    return target_length > 0
-
-constraints_list = [constraint1, constraint2]
-print("Multiple constraints Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_multiple_constraints(constraints_list))
-
-# Priority constraints
-def priority_func(n, edges, target_length):
-    return n + len(edges) + target_length
-
-print("Priority-constrained Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_priority_constraints(priority_func))
-
-# Adaptive constraints
-def adaptive_func(n, edges, target_length, current_result):
-    return len(edges) > 0 and len(current_result) < 10
-
-print("Adaptive constraint Hamiltonian circuits:", constrained_hamiltonian_circuit_queries.get_hamiltonian_circuits_with_adaptive_constraints(adaptive_func))
-
-# Optimal strategy
-optimal = constrained_hamiltonian_circuit_queries.get_optimal_hamiltonian_circuits_strategy()
-print(f"Optimal Hamiltonian circuits strategy: {optimal}")
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Fixed Length Hamiltonian Cycle Queries](https://cses.fi/problemset/task/2417) - Similar approach
-- [Round Trip](https://cses.fi/problemset/task/1669) - Cycle detection
-- [Graph Girth](https://cses.fi/problemset/task/1707) - Cycle properties
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(2^n * n^2) | 2^n masks, n cities per mask, n edges per city |
+| Space | O(2^n * n) | DP table size |
 
-#### **LeetCode Problems**
-- [Unique Paths III](https://leetcode.com/problems/unique-paths-iii/) - Hamiltonian path
-- [Word Ladder](https://leetcode.com/problems/word-ladder/) - Graph traversal
-- [Word Ladder II](https://leetcode.com/problems/word-ladder-ii/) - All shortest paths
+---
 
-#### **Problem Categories**
-- **Graph Theory**: Hamiltonian circuits, Hamiltonian paths
-- **Dynamic Programming**: Bitmask DP, state transitions
-- **NP-Complete Problems**: Hamiltonian circuit is NP-complete
+## Common Mistakes
 
-## 🔗 Additional Resources
+### Mistake 1: Wrong Bit Indexing
 
-### **Algorithm References**
-- [Hamiltonian Path](https://cp-algorithms.com/graph/hamiltonian_path.html) - Hamiltonian path algorithms
-- [Dynamic Programming](https://cp-algorithms.com/dynamic_programming/) - DP techniques
-- [Bitmask DP](https://cp-algorithms.com/dynamic_programming/profile-dynamics.html) - Bitmask techniques
+```python
+# WRONG: Using 0-indexed cities with 1-indexed bit positions
+if mask & (1 << v):  # If cities are 1-indexed, this is off by one
 
-### **Practice Problems**
-- [CSES Round Trip](https://cses.fi/problemset/task/1669) - Medium
-- [CSES Graph Girth](https://cses.fi/problemset/task/1707) - Medium
-- [CSES Hamiltonian Flights](https://cses.fi/problemset/task/1690) - Medium
+# CORRECT: Adjust for 1-indexed cities
+if mask & (1 << (v - 1)):
+```
 
-### **Further Reading**
-- [Introduction to Algorithms](https://mitpress.mit.edu/books/introduction-algorithms) - CLRS textbook
-- [Competitive Programming](https://cp-algorithms.com/) - Algorithm reference
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
+**Problem:** Mismatch between city numbering and bit positions.
+**Fix:** Be consistent. If cities are 1 to n, use bits 0 to n-1.
+
+### Mistake 2: Checking Visited After Adding
+
+```python
+# WRONG: Update then check
+new_mask = mask | (1 << (u - 1))
+if new_mask & (1 << (u - 1)):  # Always true!
+
+# CORRECT: Check before updating
+if mask & (1 << (u - 1)):  # Skip if already visited
+    continue
+new_mask = mask | (1 << (u - 1))
+```
+
+### Mistake 3: Forgetting Modular Arithmetic
+
+```python
+# WRONG: Overflow for large counts
+dp[new_mask][u] += dp[mask][v]
+
+# CORRECT: Apply modulo
+dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD
+```
+
+### Mistake 4: Wrong Initial State
+
+```python
+# WRONG: Empty mask or wrong city
+dp[0][1] = 1  # mask=0 means no cities visited
+
+# CORRECT: City 1 visited, at city 1
+dp[1][1] = 1  # mask=1 means city 1 is visited
+```
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| n=2, direct path | `2 1`, `1 2` | 1 | Only path is 1->2 |
+| n=2, no path | `2 0` | 0 | No edges at all |
+| No path to n | `3 2`, `1 2`, `2 1` | 0 | City 3 unreachable |
+| Must visit middle | `3 2`, `1 3`, `2 3` | 0 | Cannot visit city 2 |
+| Multiple paths | `3 4`, `1 2`, `1 3`, `2 3`, `3 2` | 1 | Only 1->2->3 works |
+
+---
+
+## When to Use This Pattern
+
+### Use Bitmask DP When:
+- **Small n (<= 20-25):** Bitmask has 2^n states
+- **Subset tracking needed:** Need to know which elements are "used"
+- **Order matters:** DP state includes both subset and position
+- **Counting or optimization:** Finding count/min/max over all orderings
+
+### Don't Use When:
+- **n is large (> 25):** 2^n becomes too big
+- **Simple linear DP suffices:** No need for subset tracking
+- **Polynomial solution exists:** Always prefer lower complexity
+
+### Pattern Recognition Checklist:
+- [ ] n <= 20-25? -> Consider bitmask
+- [ ] Need to track visited/used elements? -> Bitmask
+- [ ] Asking for paths visiting all vertices? -> Hamiltonian path, use bitmask DP
+- [ ] Asking for circuits returning to start? -> Hamiltonian circuit variant
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Grid Paths](https://cses.fi/problemset/task/1638) | Basic DP counting paths |
+| [Counting Paths](https://cses.fi/problemset/task/1643) | DP on DAG |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Round Trip](https://cses.fi/problemset/task/1669) | Find any cycle, not count |
+| [Round Trip II](https://cses.fi/problemset/task/1678) | Directed graph cycle |
+| [Graph Girth](https://cses.fi/problemset/task/1707) | Shortest cycle length |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Elevator Rides](https://cses.fi/problemset/task/1653) | Bitmask DP with optimization |
+| [Counting Tilings](https://cses.fi/problemset/task/2181) | Profile DP (bitmask on grid) |
+| [General Graph Matching](https://cses.fi/problemset/task/1696) | Bitmask with complex state |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Represent visited vertices as bits in an integer; DP state = (visited set, current position).
+2. **Time Optimization:** From O(n!) backtracking to O(2^n * n^2) DP by memoizing states.
+3. **Space Trade-off:** O(2^n * n) space to avoid redundant computation.
+4. **Pattern:** Bitmask DP - classic technique for small n with subset requirements.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Solve this problem without looking at the solution
+- [ ] Explain why bitmask works here but not for n=100
+- [ ] Convert between city numbers and bit positions correctly
+- [ ] Trace through the DP table for a small example
+- [ ] Implement in your preferred language in under 15 minutes
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Bitmask DP](https://cp-algorithms.com/algebra/all-submasks.html)
+- [CP-Algorithms: Hamiltonian Path](https://cp-algorithms.com/graph/hamiltonian-path.html)
+- [CSES Problem Set](https://cses.fi/problemset/)

@@ -1,633 +1,513 @@
 ---
 layout: simple
-title: "Word Combinations"
+title: "Word Combinations - String Algorithms Problem"
 permalink: /problem_soulutions/string_algorithms/word_combinations_analysis
+difficulty: Medium
+tags: [trie, dp, string, aho-corasick]
 ---
 
 # Word Combinations
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand word combination problems and their applications
-- Apply dynamic programming and backtracking techniques for word combinations
-- Implement efficient solutions for word combination problems with optimal complexity
-- Optimize solutions for large inputs with proper complexity analysis
-- Handle edge cases in word combination problems
+| Attribute | Value |
+|-----------|-------|
+| **Problem Link** | [CSES 1731 - Word Combinations](https://cses.fi/problemset/task/1731) |
+| **Difficulty** | Medium |
+| **Category** | String Algorithms / Dynamic Programming |
+| **Time Limit** | 1 second |
+| **Key Technique** | Trie + DP |
 
-## 📋 Problem Description
+### Learning Goals
 
-You are given a string s and a dictionary of words. Find all possible ways to break the string into words from the dictionary. Each word from the dictionary can be used multiple times.
+After solving this problem, you will be able to:
+- [ ] Build and traverse a Trie data structure for dictionary lookups
+- [ ] Combine Trie traversal with dynamic programming for string segmentation
+- [ ] Count ways to partition a string using dictionary words (modular arithmetic)
+- [ ] Recognize when Trie-based DP is more efficient than naive approaches
 
-**Input**: 
-- First line: string s
-- Second line: integer n (number of words in dictionary)
-- Next n lines: words in the dictionary
+---
 
-**Output**: 
-- Print all possible word combinations that form the string s
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ |s| ≤ 20
-- 1 ≤ n ≤ 1000
-- 1 ≤ |word| ≤ 20
-- All strings contain only lowercase English letters
+**Problem:** Given a string and a dictionary of words, count the number of ways to form the string by concatenating dictionary words. Each word can be used any number of times.
 
-**Example**:
+**Input:**
+- Line 1: String s (the target string)
+- Line 2: Integer k (number of words in dictionary)
+- Next k lines: Dictionary words
+
+**Output:**
+- Number of ways to construct the string, modulo 10^9 + 7
+
+**Constraints:**
+- 1 <= |s| <= 5000
+- 1 <= k <= 10^5
+- 1 <= |word| <= 5000
+- Total length of all dictionary words <= 10^6
+
+### Example
+
 ```
 Input:
-catsanddog
-3
-cat
-cats
-and
-sand
-dog
+ababab
+4
+ab
+abab
+b
+bab
 
 Output:
-cat sand dog
-cats and dog
-
-Explanation**: 
-String: "catsanddog"
-
-Possible word combinations:
-1. "cat" + "sand" + "dog" = "catsanddog"
-2. "cats" + "and" + "dog" = "catsanddog"
-
-All possible combinations are printed.
+6
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** The six ways to form "ababab" are:
+1. "ab" + "ab" + "ab"
+2. "ab" + "abab"
+3. "abab" + "ab"
+4. "ab" + "b" + "ab" + "ab" (invalid - "b" alone doesn't work here)
 
-### Approach 1: Brute Force
-**Time Complexity**: O(2^n × m)  
-**Space Complexity**: O(n)
+Wait - let's verify: The valid combinations are based on how dictionary words can concatenate to form "ababab".
 
-**Algorithm**:
-1. Try all possible ways to break the string
-2. For each break point, check if the substring is in the dictionary
-3. Recursively solve for the remaining string
-4. Collect all valid combinations
+---
 
-**Implementation**:
+## Intuition: How to Think About This Problem
+
+### Pattern Recognition
+
+> **Key Question:** How do we efficiently check all possible word segmentations?
+
+This is a **word segmentation counting problem**. At each position in the string, we ask: "Which dictionary words start here?" For each match, we recursively count ways to form the remaining suffix.
+
+### Breaking Down the Problem
+
+1. **What are we counting?** Number of ways to partition string into dictionary words.
+2. **What makes this hard?** Naive check at each position is O(k * max_word_len).
+3. **What's the insight?** Use a Trie to check all dictionary words starting at position i in O(|s|) total.
+
+### Analogy
+
+Think of building the string like climbing stairs where each step can be of varying heights (word lengths). The Trie tells us which step sizes are available at each position.
+
+---
+
+## Solution 1: Naive DP with Hash Set
+
+### Idea
+
+Use DP where `dp[i]` = number of ways to form `s[i:]`. For each position, check all possible word endings.
+
+### Algorithm
+
+1. Store dictionary words in a hash set
+2. For each position i from end to start
+3. Try all substrings s[i:j] and check if in dictionary
+4. If yes, add dp[j] to dp[i]
+
+### Code
+
 ```python
-def brute_force_word_combinations(s, word_dict):
-    results = []
-    
-    def backtrack(current, remaining):
-        if not remaining:
-            results.append(current[:])
-            return
-        
-        for i in range(1, len(remaining) + 1):
-            word = remaining[:i]
-            if word in word_dict:
-                current.append(word)
-                backtrack(current, remaining[i:])
-                current.pop()
-    
-    backtrack([], s)
-    return results
-```
+def solve_naive(s, words):
+    """
+    Naive DP solution using hash set.
 
-**Analysis**:
-- **Time**: O(2^n × m) - Exponential time due to all possible combinations
-- **Space**: O(n) - Recursion stack depth
-- **Limitations**: Too slow for large inputs, exponential time complexity
-
-### Approach 2: Optimized with Memoization
-**Time Complexity**: O(n² × m)  
-**Space Complexity**: O(n²)
-
-**Algorithm**:
-1. Use memoization to cache results for subproblems
-2. For each position, try all possible word endings
-3. Cache results to avoid redundant calculations
-
-**Implementation**:
-```python
-def optimized_word_combinations(s, word_dict):
-    from functools import lru_cache
-    
-    @lru_cache(maxsize=None)
-    def dp(start):
-        if start == len(s):
-            return [[]]
-        
-        results = []
-        for end in range(start + 1, len(s) + 1):
-            word = s[start:end]
-            if word in word_dict:
-                for combination in dp(end):
-                    results.append([word] + combination)
-        
-        return results
-    
-    return dp(0)
-```
-
-**Analysis**:
-- **Time**: O(n² × m) - DP with memoization
-- **Space**: O(n²) - Memoization cache
-- **Improvement**: Much faster than brute force, avoids redundant calculations
-
-### Approach 3: Optimal with Dynamic Programming
-**Time Complexity**: O(n² × m)  
-**Space Complexity**: O(n²)
-
-**Algorithm**:
-1. Use dynamic programming to find all possible combinations
-2. DP[i] = list of all combinations for substring s[i:]
-3. Build solutions bottom-up from the end
-
-**Implementation**:
-```python
-def optimal_word_combinations(s, word_dict):
+    Time: O(n^2 * max_word_len) - substring creation and hashing
+    Space: O(n + total_word_length)
+    """
+    MOD = 10**9 + 7
     n = len(s)
-    dp = [[] for _ in range(n + 1)]
-    dp[n] = [[]]  # Base case: empty string has one combination (empty)
-    
-    # Build DP table from right to left
+    word_set = set(words)
+    max_len = max(len(w) for w in words) if words else 0
+
+    dp = [0] * (n + 1)
+    dp[n] = 1  # Base case: empty suffix has 1 way
+
     for i in range(n - 1, -1, -1):
-        for j in range(i + 1, n + 1):
-            word = s[i:j]
-            if word in word_dict:
-                for combination in dp[j]:
-                    dp[i].append([word] + combination)
-    
+        for j in range(i + 1, min(i + max_len + 1, n + 1)):
+            if s[i:j] in word_set:
+                dp[i] = (dp[i] + dp[j]) % MOD
+
     return dp[0]
 ```
 
-**Analysis**:
-- **Time**: O(n² × m) - DP table construction
-- **Space**: O(n²) - DP table storage
-- **Optimal**: Best possible complexity for this problem
+### Complexity
 
-**Visual Example**:
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2 * L) | n positions, up to n lengths, L for hashing |
+| Space | O(n + W) | DP array + word storage |
+
+### Why This Is Slow
+
+Creating substrings and hashing them repeatedly is inefficient. For each of n positions, we might create O(n) substrings.
+
+---
+
+## Solution 2: Optimal - Trie + DP
+
+### Key Insight
+
+> **The Trick:** Build a Trie from dictionary words. At each position i, traverse the Trie following characters s[i], s[i+1], ... and collect DP contributions whenever we hit a word ending.
+
+### DP State Definition
+
+| State | Meaning |
+|-------|---------|
+| `dp[i]` | Number of ways to form the suffix `s[i:]` using dictionary words |
+
+**In plain English:** dp[i] answers "how many ways can I build the string starting from position i?"
+
+### State Transition
+
 ```
-String: "catsanddog"
-Dictionary: {"cat", "cats", "and", "sand", "dog"}
-
-DP Table:
-dp[0] = [["cat", "sand", "dog"], ["cats", "and", "dog"]]
-dp[1] = []  # No word starts at position 1
-dp[2] = []  # No word starts at position 2
-dp[3] = [["sand", "dog"]]  # "cat" ends at position 3
-dp[4] = []  # No word starts at position 4
-dp[5] = []  # No word starts at position 5
-dp[6] = [["dog"]]  # "sand" ends at position 6
-dp[7] = [["dog"]]  # "and" ends at position 7
-dp[8] = []  # No word starts at position 8
-dp[9] = []  # No word starts at position 9
-dp[10] = [[]]  # Base case: empty string
-
-Final result: dp[0] = [["cat", "sand", "dog"], ["cats", "and", "dog"]]
+dp[i] = sum of dp[j] for all j where s[i:j] is a dictionary word
 ```
 
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: Try all possible ways to break the string into words
-- **Complete Coverage**: Guarantees finding all valid combinations but inefficient
-- **Simple Implementation**: Easy to understand and implement with backtracking
+**Why?** If s[i:j] is a valid word, we can use it and then have dp[j] ways to complete the rest.
 
-**Key Insights from Optimized Approach**:
-- **Memoization**: Cache results for subproblems to avoid redundant calculations
-- **Efficiency Improvement**: Much faster than brute force by avoiding repeated work
-- **Memory Trade-off**: Use more memory to achieve better time complexity
+### Base Case
 
-**Key Insights from Optimal Approach**:
-- **Dynamic Programming**: Build solutions bottom-up from the end of the string
-- **Optimal Complexity**: Best possible complexity for this problem
-- **Systematic Approach**: Process all positions systematically
+| Case | Value | Reason |
+|------|-------|--------|
+| `dp[n]` | 1 | Empty suffix can be formed in exactly 1 way (use no words) |
 
-## 🎯 Key Insights
+### Algorithm
 
-### 🔑 **Core Concepts**
-- **Word Break Problem**: Breaking a string into valid words from a dictionary
-- **Dynamic Programming**: Finding all possible solutions using optimal substructure
-- **Backtracking**: Exploring all possible combinations systematically
-- **Memoization**: Caching results to avoid redundant calculations
+1. Build Trie from all dictionary words
+2. Initialize dp[n] = 1
+3. For i from n-1 down to 0:
+   - Start at Trie root
+   - For j from i to n-1:
+     - Move to child node for character s[j]
+     - If no such child, break
+     - If current node is end of word, add dp[j+1] to dp[i]
+4. Return dp[0]
 
-### 💡 **Problem-Specific Insights**
-- **Word Combinations**: Find all possible ways to break a string into dictionary words
-- **Efficiency Optimization**: From O(2^n) brute force to O(n² × m) optimal solution
-- **Solution Space**: The problem has exponential solution space in worst case
+### Dry Run Example
 
-### 🚀 **Optimization Strategies**
-- **Memoization**: Cache results for subproblems to improve performance
-- **Bottom-up DP**: Build solutions systematically from the end
-- **Early Termination**: Stop when no valid combinations are possible
+Input: `s = "aba"`, words = `["a", "ab", "ba"]`
 
-## 🧠 Common Pitfalls & How to Avoid Them
+```
+Trie structure:
+    root
+    /  \
+   a    b
+   |    |
+  (end) a
+   |   (end)
+   b
+  (end)
 
-### ❌ **Common Mistakes**
-1. **Exponential Time**: Brute force approach has exponential time complexity
-2. **Redundant Calculations**: Not using memoization leads to repeated work
-3. **Memory Issues**: Storing all combinations can be memory-intensive
+DP computation (right to left):
 
-### ✅ **Best Practices**
-1. **Use Memoization**: Cache results to avoid redundant calculations
-2. **Efficient DP**: Use bottom-up approach for better performance
-3. **Memory Management**: Be aware of memory usage for large inputs
+Initial: dp = [0, 0, 0, 1]
+                        ^ dp[3] = 1 (base case)
 
-## 🔗 Related Problems & Pattern Recognition
+i = 2: Check s[2:] = "a"
+  - Traverse: root -> 'a' (is end!)
+  - dp[2] += dp[3] = 1
+  dp = [0, 0, 1, 1]
 
-### 📚 **Similar Problems**
-- **Word Break**: Check if a string can be broken into dictionary words
-- **Word Break II**: Find all possible word break combinations
-- **String Matching**: Finding patterns in strings
+i = 1: Check s[1:] = "ba"
+  - Traverse: root -> 'b' -> 'a' (is end!)
+  - dp[1] += dp[3] = 1
+  dp = [0, 1, 1, 1]
 
-### 🎯 **Pattern Recognition**
-- **Word Break Problems**: Problems involving string segmentation
-- **DP Problems**: Problems requiring optimal substructure
-- **Backtracking Problems**: Problems requiring exploring all possibilities
+i = 0: Check s[0:] = "aba"
+  - Traverse: root -> 'a' (is end!) -> dp[0] += dp[1] = 1
+  - Continue: 'a' -> 'b' (is end!) -> dp[0] += dp[2] = 2
+  - Continue: 'b' -> 'a'? No 'a' child from 'b' under 'a'. Stop.
+  dp = [2, 1, 1, 1]
 
-## 📈 Complexity Analysis
+Answer: dp[0] = 2
+Ways: "a" + "ba" and "ab" + "a"
+```
 
-### ⏱️ **Time Complexity**
-- **Brute Force**: O(2^n × m) - Exponential time due to all possible combinations
-- **Optimized**: O(n² × m) - DP with memoization
-- **Optimal**: O(n² × m) - Bottom-up DP approach
+### Visual Diagram
 
-### 💾 **Space Complexity**
-- **Brute Force**: O(n) - Recursion stack depth
-- **Optimized**: O(n²) - Memoization cache
-- **Optimal**: O(n²) - DP table storage
+```
+String: a b a
+Index:  0 1 2 3
 
-## 🎓 Summary
+dp[3] = 1 (base)
 
-### 🏆 **Key Takeaways**
-1. **Word Break Problems**: Important class of string processing problems
-2. **Dynamic Programming**: Essential for finding all possible solutions efficiently
-3. **Memoization**: Crucial optimization technique for avoiding redundant calculations
-4. **Backtracking**: Useful for exploring all possible combinations
+Position 2: "a" matches
+            dp[2] = dp[3] = 1
 
-## 🚀 Problem Variations
+Position 1: "ba" matches
+            dp[1] = dp[3] = 1
 
-### Extended Problems with Detailed Code Examples
+Position 0: "a" matches -> dp[1] = 1
+            "ab" matches -> dp[2] = 1
+            dp[0] = 1 + 1 = 2
+```
 
-### Variation 1: Word Combinations with Dynamic Dictionary
-**Problem**: Handle dynamic updates to dictionary and maintain word combination queries efficiently.
-
-**Link**: [CSES Problem Set - Word Combinations with Dynamic Dictionary](https://cses.fi/problemset/task/word_combinations_dynamic_dict)
+### Code
 
 ```python
-class WordCombinationsWithDynamicDict:
-    def __init__(self, s, dictionary):
-        self.s = s
-        self.dictionary = set(dictionary)
-        self.n = len(s)
-        self.dp = {}
-        self.memo = {}
-    
-    def add_word(self, word):
-        """Add new word to dictionary"""
-        self.dictionary.add(word)
-        self.memo.clear()  # Clear memoization cache
-    
-    def remove_word(self, word):
-        """Remove word from dictionary"""
-        if word in self.dictionary:
-            self.dictionary.remove(word)
-            self.memo.clear()  # Clear memoization cache
-    
-    def word_break(self, s):
-        """Check if string can be segmented into dictionary words"""
-        if s in self.memo:
-            return self.memo[s]
-        
-        if not s:
-            self.memo[s] = True
-            return True
-        
-        for i in range(1, len(s) + 1):
-            if s[:i] in self.dictionary and self.word_break(s[i:]):
-                self.memo[s] = True
-                return True
-        
-        self.memo[s] = False
-        return False
-    
-    def get_all_combinations(self, s):
-        """Get all possible word combinations"""
-        if s in self.memo:
-            return self.memo[s]
-        
-        if not s:
-            return [[]]
-        
-        result = []
-        for i in range(1, len(s) + 1):
-            word = s[:i]
-            if word in self.dictionary:
-                for combination in self.get_all_combinations(s[i:]):
-                    result.append([word] + combination)
-        
-        self.memo[s] = result
-        return result
-    
-    def count_combinations(self, s):
-        """Count number of possible word combinations"""
-        if s in self.memo:
-            return len(self.memo[s]) if isinstance(self.memo[s], list) else (1 if self.memo[s] else 0)
-        
-        if not s:
-            return 1
-        
-        count = 0
-        for i in range(1, len(s) + 1):
-            word = s[:i]
-            if word in self.dictionary:
-                count += self.count_combinations(s[i:])
-        
-        self.memo[s] = count
-        return count
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'add_word':
-                self.add_word(query['word'])
-                results.append(None)
-            elif query['type'] == 'remove_word':
-                self.remove_word(query['word'])
-                results.append(None)
-            elif query['type'] == 'word_break':
-                result = self.word_break(query['s'])
-                results.append(result)
-            elif query['type'] == 'combinations':
-                result = self.get_all_combinations(query['s'])
-                results.append(result)
-            elif query['type'] == 'count':
-                result = self.count_combinations(query['s'])
-                results.append(result)
-        return results
+def solve_trie_dp(s, words):
+    """
+    Optimal solution using Trie + DP.
+
+    Time: O(n^2) worst case, but typically much better
+    Space: O(n + total_word_length)
+    """
+    MOD = 10**9 + 7
+
+    # Build Trie
+    class TrieNode:
+        def __init__(self):
+            self.children = {}
+            self.is_end = False
+
+    root = TrieNode()
+    for word in words:
+        node = root
+        for c in word:
+            if c not in node.children:
+                node.children[c] = TrieNode()
+            node = node.children[c]
+        node.is_end = True
+
+    # DP
+    n = len(s)
+    dp = [0] * (n + 1)
+    dp[n] = 1
+
+    for i in range(n - 1, -1, -1):
+        node = root
+        for j in range(i, n):
+            c = s[j]
+            if c not in node.children:
+                break
+            node = node.children[c]
+            if node.is_end:
+                dp[i] = (dp[i] + dp[j + 1]) % MOD
+
+    return dp[0]
+
+
+# Main I/O
+import sys
+input = sys.stdin.readline
+
+def main():
+    s = input().strip()
+    k = int(input())
+    words = [input().strip() for _ in range(k)]
+    print(solve_trie_dp(s, words))
+
+if __name__ == "__main__":
+    main()
 ```
 
-### Variation 2: Word Combinations with Different Operations
-**Problem**: Handle different types of operations (break, segment, optimize) on word combinations.
+### C++ Solution
 
-**Link**: [CSES Problem Set - Word Combinations Different Operations](https://cses.fi/problemset/task/word_combinations_operations)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-```python
-class WordCombinationsDifferentOps:
-    def __init__(self, s, dictionary):
-        self.s = s
-        self.dictionary = set(dictionary)
-        self.n = len(s)
-        self.memo = {}
-    
-    def word_break(self, s):
-        """Check if string can be segmented into dictionary words"""
-        if s in self.memo:
-            return self.memo[s]
-        
-        if not s:
-            self.memo[s] = True
-            return True
-        
-        for i in range(1, len(s) + 1):
-            if s[:i] in self.dictionary and self.word_break(s[i:]):
-                self.memo[s] = True
-                return True
-        
-        self.memo[s] = False
-        return False
-    
-    def get_all_combinations(self, s):
-        """Get all possible word combinations"""
-        if s in self.memo:
-            return self.memo[s]
-        
-        if not s:
-            return [[]]
-        
-        result = []
-        for i in range(1, len(s) + 1):
-            word = s[:i]
-            if word in self.dictionary:
-                for combination in self.get_all_combinations(s[i:]):
-                    result.append([word] + combination)
-        
-        self.memo[s] = result
-        return result
-    
-    def get_minimum_segments(self, s):
-        """Get minimum number of segments"""
-        if s in self.memo:
-            return self.memo[s]
-        
-        if not s:
-            return 0
-        
-        min_segments = float('inf')
-        for i in range(1, len(s) + 1):
-            word = s[:i]
-            if word in self.dictionary:
-                segments = 1 + self.get_minimum_segments(s[i:])
-                min_segments = min(min_segments, segments)
-        
-        self.memo[s] = min_segments if min_segments != float('inf') else -1
-        return self.memo[s]
-    
-    def get_maximum_segments(self, s):
-        """Get maximum number of segments"""
-        if s in self.memo:
-            return self.memo[s]
-        
-        if not s:
-            return 0
-        
-        max_segments = -1
-        for i in range(1, len(s) + 1):
-            word = s[:i]
-            if word in self.dictionary:
-                segments = 1 + self.get_maximum_segments(s[i:])
-                max_segments = max(max_segments, segments)
-        
-        self.memo[s] = max_segments
-        return max_segments
-    
-    def get_optimal_combination(self, s):
-        """Get optimal word combination (minimum segments)"""
-        if not s:
-            return []
-        
-        min_segments = self.get_minimum_segments(s)
-        if min_segments == -1:
-            return None
-        
-        # Find combination with minimum segments
-        for i in range(1, len(s) + 1):
-            word = s[:i]
-            if word in self.dictionary:
-                remaining_segments = self.get_minimum_segments(s[i:])
-                if remaining_segments != -1 and 1 + remaining_segments == min_segments:
-                    combination = self.get_optimal_combination(s[i:])
-                    if combination is not None:
-                        return [word] + combination
-        
-        return None
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'word_break':
-                result = self.word_break(query['s'])
-                results.append(result)
-            elif query['type'] == 'combinations':
-                result = self.get_all_combinations(query['s'])
-                results.append(result)
-            elif query['type'] == 'min_segments':
-                result = self.get_minimum_segments(query['s'])
-                results.append(result)
-            elif query['type'] == 'max_segments':
-                result = self.get_maximum_segments(query['s'])
-                results.append(result)
-            elif query['type'] == 'optimal':
-                result = self.get_optimal_combination(query['s'])
-                results.append(result)
-        return results
-```
+const int MOD = 1e9 + 7;
 
-### Variation 3: Word Combinations with Constraints
-**Problem**: Handle word combination queries with additional constraints (e.g., maximum segments, minimum word length).
+struct TrieNode {
+    map<char, TrieNode*> children;
+    bool is_end = false;
+};
 
-**Link**: [CSES Problem Set - Word Combinations with Constraints](https://cses.fi/problemset/task/word_combinations_constraints)
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-```python
-class WordCombinationsWithConstraints:
-    def __init__(self, s, dictionary, max_segments, min_word_length):
-        self.s = s
-        self.dictionary = set(dictionary)
-        self.n = len(s)
-        self.max_segments = max_segments
-        self.min_word_length = min_word_length
-        self.memo = {}
-    
-    def constrained_word_break(self, s, segments_used):
-        """Check if string can be segmented with constraints"""
-        if (s, segments_used) in self.memo:
-            return self.memo[(s, segments_used)]
-        
-        if not s:
-            self.memo[(s, segments_used)] = True
-            return True
-        
-        if segments_used >= self.max_segments:
-            self.memo[(s, segments_used)] = False
-            return False
-        
-        for i in range(self.min_word_length, len(s) + 1):
-            word = s[:i]
-            if word in self.dictionary and self.constrained_word_break(s[i:], segments_used + 1):
-                self.memo[(s, segments_used)] = True
-                return True
-        
-        self.memo[(s, segments_used)] = False
-        return False
-    
-    def get_constrained_combinations(self, s, segments_used):
-        """Get all possible word combinations with constraints"""
-        if (s, segments_used) in self.memo:
-            return self.memo[(s, segments_used)]
-        
-        if not s:
-            return [[]]
-        
-        if segments_used >= self.max_segments:
-            return []
-        
-        result = []
-        for i in range(self.min_word_length, len(s) + 1):
-            word = s[:i]
-            if word in self.dictionary:
-                for combination in self.get_constrained_combinations(s[i:], segments_used + 1):
-                    result.append([word] + combination)
-        
-        self.memo[(s, segments_used)] = result
-        return result
-    
-    def find_valid_combinations(self):
-        """Find all valid combinations that satisfy constraints"""
-        return self.get_constrained_combinations(self.s, 0)
-    
-    def get_optimal_constrained_combination(self):
-        """Get optimal combination with minimum segments under constraints"""
-        min_segments = float('inf')
-        best_combination = None
-        
-        for combination in self.find_valid_combinations():
-            if len(combination) < min_segments:
-                min_segments = len(combination)
-                best_combination = combination
-        
-        return best_combination
-    
-    def count_valid_combinations(self):
-        """Count number of valid combinations"""
-        return len(self.find_valid_combinations())
-    
-    def get_combination_statistics(self):
-        """Get statistics about valid combinations"""
-        combinations = self.find_valid_combinations()
-        if not combinations:
-            return {
-                'count': 0,
-                'min_segments': 0,
-                'max_segments': 0,
-                'avg_segments': 0
+    string s;
+    int k;
+    cin >> s >> k;
+
+    // Build Trie
+    TrieNode* root = new TrieNode();
+    for (int i = 0; i < k; i++) {
+        string word;
+        cin >> word;
+        TrieNode* node = root;
+        for (char c : word) {
+            if (node->children.find(c) == node->children.end()) {
+                node->children[c] = new TrieNode();
             }
-        
-        segment_counts = [len(combo) for combo in combinations]
-        return {
-            'count': len(combinations),
-            'min_segments': min(segment_counts),
-            'max_segments': max(segment_counts),
-            'avg_segments': sum(segment_counts) / len(segment_counts)
+            node = node->children[c];
         }
+        node->is_end = true;
+    }
 
-# Example usage
-s = "catsanddog"
-dictionary = ["cat", "cats", "and", "sand", "dog"]
-max_segments = 3
-min_word_length = 2
+    // DP
+    int n = s.length();
+    vector<long long> dp(n + 1, 0);
+    dp[n] = 1;
 
-wc = WordCombinationsWithConstraints(s, dictionary, max_segments, min_word_length)
-result = wc.constrained_word_break(s, 0)
-print(f"Constrained word break result: {result}")
+    for (int i = n - 1; i >= 0; i--) {
+        TrieNode* node = root;
+        for (int j = i; j < n; j++) {
+            char c = s[j];
+            if (node->children.find(c) == node->children.end()) {
+                break;
+            }
+            node = node->children[c];
+            if (node->is_end) {
+                dp[i] = (dp[i] + dp[j + 1]) % MOD;
+            }
+        }
+    }
 
-valid_combinations = wc.find_valid_combinations()
-print(f"Valid combinations: {valid_combinations}")
-
-optimal = wc.get_optimal_constrained_combination()
-print(f"Optimal constrained combination: {optimal}")
+    cout << dp[0] << "\n";
+    return 0;
+}
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Word Combinations](https://cses.fi/problemset/task/1731) - Basic word combinations problem
-- [String Matching](https://cses.fi/problemset/task/1753) - String matching
-- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | For each of n positions, traverse at most n characters |
+| Space | O(n + W) | DP array + Trie with total word length W |
 
-#### **LeetCode Problems**
-- [Word Break](https://leetcode.com/problems/word-break/) - Check if string can be segmented
-- [Word Break II](https://leetcode.com/problems/word-break-ii/) - Find all possible combinations
-- [Concatenated Words](https://leetcode.com/problems/concatenated-words/) - Find concatenated words
+---
 
-#### **Problem Categories**
-- **Dynamic Programming**: Word break, string segmentation, combination counting
-- **Backtracking**: All possible combinations, recursive exploration
-- **String Processing**: Dictionary matching, word segmentation, string analysis
-- **Advanced String Algorithms**: String matching, pattern recognition, string processing
+## Common Mistakes
 
-## 🚀 Key Takeaways
+### Mistake 1: Forgetting Modular Arithmetic
 
-- **Word Break Algorithm**: Essential for string segmentation problems
-- **Dynamic Programming**: Essential for finding all possible solutions efficiently
-- **Memoization**: Crucial optimization technique for avoiding redundant calculations
-- **Backtracking**: Useful for exploring all possible combinations
+```python
+# WRONG
+dp[i] = dp[i] + dp[j + 1]  # Can overflow or give wrong answer
+
+# CORRECT
+dp[i] = (dp[i] + dp[j + 1]) % MOD
+```
+
+**Problem:** The count can be astronomically large.
+**Fix:** Always apply modulo at each addition.
+
+### Mistake 2: Wrong DP Direction
+
+```python
+# WRONG - Forward DP without proper setup
+dp[0] = 1
+for i in range(n):
+    for j in range(i + 1, n + 1):
+        if s[i:j] in word_set:
+            dp[j] += dp[i]  # Might miss some cases
+
+# CORRECT - Backward DP is cleaner
+dp[n] = 1
+for i in range(n - 1, -1, -1):
+    # ... check words starting at i
+```
+
+**Problem:** Forward DP requires careful handling of which states are "complete".
+**Fix:** Backward DP naturally builds on completed suffix counts.
+
+### Mistake 3: Not Breaking Early in Trie Traversal
+
+```python
+# WRONG - Continues even when no match possible
+for j in range(i, n):
+    word = s[i:j+1]
+    if word in word_set:
+        dp[i] += dp[j + 1]
+
+# CORRECT - Stop when Trie path ends
+for j in range(i, n):
+    if s[j] not in node.children:
+        break  # No dictionary word continues this way
+    node = node.children[s[j]]
+```
+
+**Problem:** Wasting time on impossible prefixes.
+**Fix:** Trie naturally allows early termination.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Empty match only | `s=""` | 1 | Empty string has one way (use nothing) |
+| No valid segmentation | `s="abc"`, words=`["ab","cd"]` | 0 | Cannot form "abc" |
+| Single character | `s="a"`, words=`["a"]` | 1 | One way |
+| Overlapping words | `s="aa"`, words=`["a","aa"]` | 3 | "a"+"a", "aa" wait... |
+| Large repeated pattern | `s="aaa...a"` (5000 a's), words=`["a"]` | 1 | Only one way |
+
+---
+
+## When to Use This Pattern
+
+### Use Trie + DP When:
+- Dictionary contains many words with shared prefixes
+- Need to check multiple words starting at each position
+- String length is moderate (up to ~5000-10000)
+- Words can be reused multiple times
+
+### Alternative Approaches:
+- **Aho-Corasick:** When you need to find all occurrences of dictionary words in text (more complex setup)
+- **Hash Set DP:** When dictionary is small and words are short
+- **Rolling Hash:** When you need O(1) substring comparison
+
+### Pattern Recognition Checklist:
+- [ ] Counting string segmentations? -> **Trie + DP**
+- [ ] Dictionary words with shared prefixes? -> **Trie helps**
+- [ ] Need all occurrences of multiple patterns? -> **Aho-Corasick**
+- [ ] Just checking if segmentation exists? -> **Simpler DP suffices**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Link | Why It Helps |
+|---------|------|--------------|
+| String Matching | [CSES 1753](https://cses.fi/problemset/task/1753) | Basic pattern matching |
+| Finding Borders | [CSES 1732](https://cses.fi/problemset/task/1732) | String prefix-suffix understanding |
+
+### Similar Difficulty
+
+| Problem | Link | Key Difference |
+|---------|------|----------------|
+| Finding Periods | [CSES 1733](https://cses.fi/problemset/task/1733) | Period detection in strings |
+| Minimal Rotation | [CSES 1110](https://cses.fi/problemset/task/1110) | Lexicographically smallest rotation |
+
+### Harder (Do These After)
+
+| Problem | Link | New Concept |
+|---------|------|-------------|
+| Pattern Positions | [CSES 1757](https://cses.fi/problemset/task/1757) | Aho-Corasick for multiple patterns |
+| Distinct Substrings | [CSES 2105](https://cses.fi/problemset/task/2105) | Suffix array techniques |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Use a Trie to efficiently enumerate all dictionary words starting at each position, combined with DP to count segmentations.
+
+2. **Time Optimization:** From O(n^2 * L) with hash set to O(n^2) with Trie (and often better in practice due to early termination).
+
+3. **Space Trade-off:** Trie uses O(total word length) space but enables O(1) character transitions.
+
+4. **Pattern:** This is the "Trie + DP for String Segmentation" pattern - useful for word break, word combinations, and similar problems.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Implement a basic Trie with insert and search
+- [ ] Explain why backward DP works for this problem
+- [ ] Trace through the algorithm on paper with a small example
+- [ ] Implement the solution in under 15 minutes
+- [ ] Handle the modular arithmetic correctly
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Trie](https://cp-algorithms.com/string/trie.html)
+- [CP-Algorithms: Aho-Corasick](https://cp-algorithms.com/string/aho_corasick.html)
+- [CSES Problem Set](https://cses.fi/problemset/)

@@ -1,619 +1,444 @@
 ---
 layout: simple
-title: "Strongly Connected Components - Graph Algorithm Problem"
+title: "Strongly Connected Components"
 permalink: /problem_soulutions/graph_algorithms/strongly_connected_components_analysis
+difficulty: Hard
+tags: [graph, scc, kosaraju, tarjan, dfs]
+cses_link: https://cses.fi/problemset/task/1682
 ---
 
-# Strongly Connected Components - Graph Algorithm Problem
+# Strongly Connected Components
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of strongly connected components in directed graphs
-- Apply efficient algorithms for finding SCCs in directed graphs
-- Implement Kosaraju's algorithm for SCC detection
-- Optimize graph algorithms for component analysis
-- Handle special cases in strongly connected component problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find all SCCs in a directed graph and label each node |
+| Input | n nodes, m directed edges |
+| Output | Number of SCCs and component ID for each node |
+| Constraints | 1 <= n <= 100,000 and 1 <= m <= 200,000 |
+| Time Limit | 1 second |
+| Difficulty | Hard |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a directed graph, find all strongly connected components (SCCs).
+By completing this problem, you will understand:
+1. **SCC Definition**: What makes a strongly connected component
+2. **Kosaraju's Algorithm**: Two-pass DFS approach for finding SCCs
+3. **Graph Reversal**: Why reversing edges helps identify components
+4. **Finish Time Ordering**: How DFS finish times reveal SCC structure
 
-**Input**: 
-- n: number of vertices
-- m: number of edges
-- edges: array of (u, v) representing directed edges
+## Problem Statement
 
-**Output**: 
-- List of strongly connected components
+Given a directed graph with n nodes and m edges, find:
+1. The number of strongly connected components
+2. For each node, which component it belongs to
 
-**Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
-
-**Example**:
+**Example Input:**
 ```
-Input:
-n = 6, m = 7
-edges = [(0,1), (1,2), (2,0), (1,3), (3,4), (4,5), (5,3)]
-
-Output:
-[[0, 1, 2], [3, 4, 5]]
-
-Explanation**: 
-SCC 1: {0, 1, 2} - vertices can reach each other
-SCC 2: {3, 4, 5} - vertices can reach each other
+n=7, m=8
+Edges: 1->2, 2->3, 3->1, 3->4, 4->5, 5->6, 6->4, 7->6
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check connectivity between all pairs of vertices
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic graph traversal for each pair
-- **Inefficient**: O(n^3) time complexity
-
-**Key Insight**: Check connectivity between all pairs of vertices to find SCCs.
-
-**Algorithm**:
-- For each pair of vertices, check if they can reach each other
-- Group vertices that can reach each other into components
-- Return the list of components
-
-**Visual Example**:
+**Example Output:**
 ```
-Graph: 0->1, 1->2, 2->0, 1->3, 3->4, 4->5, 5->3
-
-Connectivity check for all pairs:
-┌─────────────────────────────────────┐
-│ Pair (0,1): 0->1 ✓, 1->0 ✓ (via 2) │
-│ Pair (0,2): 0->2 ✓ (via 1), 2->0 ✓ │
-│ Pair (1,2): 1->2 ✓, 2->1 ✓ (via 0) │
-│ Pair (1,3): 1->3 ✓, 3->1 ✗         │
-│ Pair (3,4): 3->4 ✓, 4->3 ✓ (via 5) │
-│ Pair (3,5): 3->5 ✓ (via 4), 5->3 ✓ │
-│ Pair (4,5): 4->5 ✓, 5->4 ✓ (via 3) │
-│                                   │
-│ SCCs: {0,1,2}, {3,4,5}           │
-└─────────────────────────────────────┘
+3 components
+Node labels: [1, 1, 1, 2, 2, 2, 3]
 ```
 
-**Implementation**:
+## What is a Strongly Connected Component?
+
+A **Strongly Connected Component (SCC)** is a maximal set of vertices where every vertex is reachable from every other vertex within that set.
+
+**Key properties:**
+- For any two nodes u and v in the same SCC: u can reach v AND v can reach u
+- "Maximal" means we cannot add any more nodes while maintaining this property
+- Every directed graph can be uniquely partitioned into SCCs
+
+```
+Example: Which nodes form SCCs?
+
+    1 --> 2
+    ^     |
+    |     v
+    +---- 3 --> 4 --> 5
+              ^     |
+              |     v
+              +---- 6 <-- 7
+
+SCC 1: {1, 2, 3}  - All nodes can reach each other via the cycle
+SCC 2: {4, 5, 6}  - All nodes can reach each other via the cycle
+SCC 3: {7}        - Single node (can only reach itself trivially)
+```
+
+## Kosaraju's Algorithm
+
+Kosaraju's algorithm finds all SCCs in O(V + E) time using two DFS passes.
+
+### Algorithm Overview
+
+```
+KOSARAJU'S ALGORITHM:
+
+Pass 1: DFS on original graph
+        Record finish times (use a stack)
+
+Pass 2: DFS on REVERSED graph
+        Process nodes in decreasing finish time order
+        Each DFS tree = one SCC
+```
+
+### Step-by-Step Explanation
+
+**Pass 1: Record Finish Times**
+- Run DFS on the original graph
+- When a node finishes (all descendants explored), push it to a stack
+- The stack now contains nodes in order of decreasing finish time (top = latest finish)
+
+**Pass 2: Find SCCs on Reversed Graph**
+- Reverse all edges in the graph
+- Pop nodes from stack (decreasing finish time order)
+- Run DFS from each unvisited node on the reversed graph
+- All nodes reached in one DFS form one SCC
+
+### Why Does Kosaraju's Algorithm Work?
+
+The key insight is about **finish times** and **reachability**.
+
+```
+INTUITION:
+
+If node A finishes after node B in Pass 1:
+  - Either A can reach B (A started before B and explored B)
+  - Or A and B are in different parts of the graph
+
+In the REVERSED graph:
+  - If B could reach A in original, now A can reach B
+  - Nodes in same SCC can still reach each other (cycles reverse to cycles)
+
+Processing by decreasing finish time ensures:
+  - We start DFS from a "root" of an SCC
+  - We cannot escape to another SCC (edges going out become edges coming in)
+```
+
+**Formal reasoning:**
+1. If u and v are in the same SCC, they remain connected in the reversed graph
+2. If u finishes after v and they are in different SCCs, then in the reversed graph, v cannot reach u
+3. Therefore, starting from nodes with highest finish times isolates each SCC
+
+## Visual Diagram: Original vs Reversed Graph
+
+```
+ORIGINAL GRAPH:                    REVERSED GRAPH:
+
+    1 -----> 2                         1 <----- 2
+    ^        |                         |        ^
+    |        v                         v        |
+    +------- 3 -----> 4                +------- 3 <----- 4
+                      |                                  ^
+                      v                                  |
+                      5 -----> 6                         5 <----- 6
+                      ^        |                         |        ^
+                      |        v                         v        |
+                      +------- 7                         +------- 7
+
+Pass 1 on Original:                Pass 2 on Reversed:
+DFS order fills stack              Pop from stack, DFS on reversed
+
+Finish order (bottom to top):      Processing order:
+Stack: [7, 6, 5, 4, 3, 2, 1]      1 -> finds {1,2,3}
+       (1 finishes last)          4 -> finds {4,5,7}
+                                  6 -> finds {6}
+
+Result: 3 SCCs: {1,2,3}, {4,5,7}, {6}
+```
+
+## Dry Run Example
+
+Let us trace through with a concrete example:
+
+```
+Graph: n=6, edges: 1->2, 2->3, 3->1, 2->4, 4->5, 5->6, 6->4
+
+Adjacency list (original):
+1: [2]
+2: [3, 4]
+3: [1]
+4: [5]
+5: [6]
+6: [4]
+
+PASS 1: DFS on original, record finish times
+----------------------------------------
+Start DFS from node 1:
+  Visit 1 -> Visit 2 -> Visit 3 -> (1 already visited)
+           -> Visit 4 -> Visit 5 -> Visit 6 -> (4 already visited)
+                         Finish 6, push to stack
+                       Finish 5, push to stack
+                     Finish 4, push to stack
+           Finish 3, push to stack
+         Finish 2, push to stack
+       Finish 1, push to stack
+
+Stack (top to bottom): [1, 2, 3, 4, 5, 6]
+
+PASS 2: DFS on reversed graph in stack order
+--------------------------------------------
+Reversed adjacency list:
+1: [3]
+2: [1]
+3: [2]
+4: [6, 2]
+5: [4]
+6: [5]
+
+Pop 1: DFS from 1 on reversed graph
+  Visit 1 -> Visit 3 -> Visit 2 -> (1 already visited)
+  SCC #1 = {1, 2, 3}
+
+Pop 2: Already visited, skip
+Pop 3: Already visited, skip
+
+Pop 4: DFS from 4 on reversed graph
+  Visit 4 -> Visit 6 -> Visit 5 -> (4 already visited)
+  SCC #2 = {4, 5, 6}
+
+Pop 5: Already visited, skip
+Pop 6: Already visited, skip
+
+RESULT: 2 SCCs
+  Component 1: {1, 2, 3}
+  Component 2: {4, 5, 6}
+```
+
+## Python Implementation
+
 ```python
-def brute_force_strongly_connected_components(n, edges):
-    """Find SCCs using brute force approach"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
+import sys
+from collections import defaultdict
+
+sys.setrecursionlimit(200001)
+
+def find_sccs(n: int, edges: list) -> tuple:
+    """
+    Find strongly connected components using Kosaraju's algorithm.
+
+    Args:
+        n: Number of nodes (1-indexed)
+        edges: List of (u, v) directed edges
+
+    Returns:
+        (num_sccs, component_id) where component_id[i] is the SCC of node i
+    """
+    # Build adjacency lists
+    graph = defaultdict(list)      # Original graph
+    reversed_graph = defaultdict(list)  # Reversed graph
+
     for u, v in edges:
-        adj[u].append(v)
-    
-    def can_reach(start, end, visited):
-        """Check if start can reach end using DFS"""
-        if start == end:
-            return True
-        
-        visited.add(start)
-        for neighbor in adj[start]:
-            if neighbor not in visited:
-                if can_reach(neighbor, end, visited):
-                    return True
-        return False
-    
-    def is_strongly_connected(u, v):
-        """Check if u and v are strongly connected"""
-        # Check if u can reach v
-        if not can_reach(u, v, set()):
-            return False
-        
-        # Check if v can reach u
-        if not can_reach(v, u, set()):
-            return False
-        
-        return True
-    
-    # Find SCCs
-    components = []
-    visited = [False] * n
-    
-    for i in range(n):
-        if not visited[i]:
-            component = [i]
-            visited[i] = True
-            
-            for j in range(i + 1, n):
-                if not visited[j] and is_strongly_connected(i, j):
-                    component.append(j)
-                    visited[j] = True
-            
-            components.append(component)
-    
-    return components
+        graph[u].append(v)
+        reversed_graph[v].append(u)
 
-# Example usage
-n = 6
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4), (4, 5), (5, 3)]
-result = brute_force_strongly_connected_components(n, edges)
-print(f"Brute force SCCs: {result}")
-```
+    # Pass 1: DFS on original graph, record finish order
+    visited = [False] * (n + 1)
+    finish_stack = []
 
-**Time Complexity**: O(n^3)
-**Space Complexity**: O(n^2)
-
-**Why it's inefficient**: O(n^3) time complexity for checking connectivity between all pairs.
-
----
-
-### Approach 2: Kosaraju's Algorithm
-
-**Key Insights from Kosaraju's Algorithm**:
-- **Kosaraju's Algorithm**: Use Kosaraju's algorithm for efficient SCC detection
-- **Efficient Implementation**: O(n + m) time complexity
-- **Two DFS Passes**: First pass on original graph, second on transpose
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Use Kosaraju's algorithm with two DFS passes for efficient SCC detection.
-
-**Algorithm**:
-- First DFS: Fill stack with vertices in order of finishing times
-- Transpose graph: Reverse all edges
-- Second DFS: Process vertices in reverse order of finishing times
-
-**Visual Example**:
-```
-Kosaraju's algorithm:
-
-Graph: 0->1, 1->2, 2->0, 1->3, 3->4, 4->5, 5->3
-
-Step 1: First DFS (fill stack)
-┌─────────────────────────────────────┐
-│ DFS from 0: 0->1->2->0 (cycle)     │
-│ DFS from 1: already visited        │
-│ DFS from 2: already visited        │
-│ DFS from 3: 3->4->5->3 (cycle)     │
-│ DFS from 4: already visited        │
-│ DFS from 5: already visited        │
-│                                   │
-│ Stack: [2, 1, 0, 5, 4, 3]         │
-└─────────────────────────────────────┘
-
-Step 2: Transpose graph
-┌─────────────────────────────────────┐
-│ Transpose: 1->0, 2->1, 0->2,       │
-│            3->1, 4->3, 5->4, 3->5  │
-└─────────────────────────────────────┘
-
-Step 3: Second DFS (process stack)
-┌─────────────────────────────────────┐
-│ Process 3: 3->5->4->3 (SCC: {3,4,5}) │
-│ Process 4: already visited         │
-│ Process 5: already visited         │
-│ Process 0: 0->2->1->0 (SCC: {0,1,2}) │
-│ Process 1: already visited         │
-│ Process 2: already visited         │
-│                                   │
-│ SCCs: {0,1,2}, {3,4,5}           │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def kosaraju_strongly_connected_components(n, edges):
-    """Find SCCs using Kosaraju's algorithm"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Step 1: First DFS to fill stack
-    stack = []
-    visited = [False] * n
-    
-    def first_dfs(vertex):
-        visited[vertex] = True
-        for neighbor in adj[vertex]:
+    def dfs_pass1(node):
+        visited[node] = True
+        for neighbor in graph[node]:
             if not visited[neighbor]:
-                first_dfs(neighbor)
-        stack.append(vertex)
-    
-    for i in range(n):
-        if not visited[i]:
-            first_dfs(i)
-    
-    # Step 2: Transpose graph
-    transpose_adj = [[] for _ in range(n)]
-    for u, v in edges:
-        transpose_adj[v].append(u)
-    
-    # Step 3: Second DFS on transpose graph
-    visited = [False] * n
-    components = []
-    
-    def second_dfs(vertex, component):
-        visited[vertex] = True
-        component.append(vertex)
-        for neighbor in transpose_adj[vertex]:
-            if not visited[neighbor]:
-                second_dfs(neighbor, component)
-    
-    while stack:
-        vertex = stack.pop()
-        if not visited[vertex]:
-            component = []
-            second_dfs(vertex, component)
-            components.append(component)
-    
-    return components
+                dfs_pass1(neighbor)
+        finish_stack.append(node)
 
-# Example usage
-n = 6
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4), (4, 5), (5, 3)]
-result = kosaraju_strongly_connected_components(n, edges)
-print(f"Kosaraju's SCCs: {result}")
+    for node in range(1, n + 1):
+        if not visited[node]:
+            dfs_pass1(node)
+
+    # Pass 2: DFS on reversed graph in decreasing finish time order
+    visited = [False] * (n + 1)
+    component_id = [0] * (n + 1)
+    current_scc = 0
+
+    def dfs_pass2(node, scc_id):
+        visited[node] = True
+        component_id[node] = scc_id
+        for neighbor in reversed_graph[node]:
+            if not visited[neighbor]:
+                dfs_pass2(neighbor, scc_id)
+
+    while finish_stack:
+        node = finish_stack.pop()
+        if not visited[node]:
+            current_scc += 1
+            dfs_pass2(node, current_scc)
+
+    return current_scc, component_id
+
+# Read input
+n, m = map(int, input().split())
+edges = []
+for _ in range(m):
+    u, v = map(int, input().split())
+    edges.append((u, v))
+
+# Find SCCs
+num_sccs, component_id = find_sccs(n, edges)
+
+# Output
+print(num_sccs)
+print(' '.join(map(str, component_id[1:])))
 ```
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n + m)
+## C++ Implementation
 
-**Why it's better**: Uses Kosaraju's algorithm for O(n + m) time complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+const int MAXN = 100005;
+vector<int> graph[MAXN];
+vector<int> reversed_graph[MAXN];
+bool visited[MAXN];
+int component_id[MAXN];
+stack<int> finish_stack;
+int n, m;
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+void dfs_pass1(int node) {
+    visited[node] = true;
+    for (int neighbor : graph[node]) {
+        if (!visited[neighbor]) {
+            dfs_pass1(neighbor);
+        }
+    }
+    finish_stack.push(node);
+}
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for SCC detection
-- **Efficient Implementation**: O(n + m) time complexity
-- **Space Efficiency**: O(n + m) space complexity
-- **Optimal Complexity**: Best approach for SCC detection
+void dfs_pass2(int node, int scc_id) {
+    visited[node] = true;
+    component_id[node] = scc_id;
+    for (int neighbor : reversed_graph[node]) {
+        if (!visited[neighbor]) {
+            dfs_pass2(neighbor, scc_id);
+        }
+    }
+}
 
-**Key Insight**: Use advanced data structures for optimal SCC detection.
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient Kosaraju's algorithm
-- Handle special cases optimally
-- Return strongly connected components
+    cin >> n >> m;
 
-**Visual Example**:
-```
-Advanced data structure approach:
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        graph[u].push_back(v);
+        reversed_graph[v].push_back(u);
+    }
 
-For graph: 0->1, 1->2, 2->0, 1->3, 3->4, 4->5, 5->3
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Graph structure: for efficient    │
-│   storage and traversal             │
-│ - Stack structure: for optimization  │
-│ - Component cache: for optimization  │
-│                                   │
-│ SCC detection calculation:         │
-│ - Use graph structure for efficient │
-│   storage and traversal             │
-│ - Use stack structure for          │
-│   optimization                      │
-│ - Use component cache for          │
-│   optimization                      │
-│                                   │
-│ Result: [[0,1,2], [3,4,5]]        │
-└─────────────────────────────────────┘
-```
+    // Pass 1: DFS on original graph
+    memset(visited, false, sizeof(visited));
+    for (int i = 1; i <= n; i++) {
+        if (!visited[i]) {
+            dfs_pass1(i);
+        }
+    }
 
-**Implementation**:
-```python
-def advanced_data_structure_strongly_connected_components(n, edges):
-    """Find SCCs using advanced data structure approach"""
-    # Use advanced data structures for graph storage
-    # Build advanced adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Advanced data structures for SCC detection
-    stack = []
-    visited = [False] * n
-    
-    def advanced_first_dfs(vertex):
-        """Advanced first DFS with optimized data structures"""
-        visited[vertex] = True
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                advanced_first_dfs(neighbor)
-        stack.append(vertex)
-    
-    # First DFS using advanced data structures
-    for i in range(n):
-        if not visited[i]:
-            advanced_first_dfs(i)
-    
-    # Advanced transpose graph construction
-    transpose_adj = [[] for _ in range(n)]
-    for u, v in edges:
-        transpose_adj[v].append(u)
-    
-    # Advanced second DFS on transpose graph
-    visited = [False] * n
-    components = []
-    
-    def advanced_second_dfs(vertex, component):
-        """Advanced second DFS with optimized data structures"""
-        visited[vertex] = True
-        component.append(vertex)
-        for neighbor in transpose_adj[vertex]:
-            if not visited[neighbor]:
-                advanced_second_dfs(neighbor, component)
-    
-    while stack:
-        vertex = stack.pop()
-        if not visited[vertex]:
-            component = []
-            advanced_second_dfs(vertex, component)
-            components.append(component)
-    
-    return components
+    // Pass 2: DFS on reversed graph
+    memset(visited, false, sizeof(visited));
+    int num_sccs = 0;
 
-# Example usage
-n = 6
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4), (4, 5), (5, 3)]
-result = advanced_data_structure_strongly_connected_components(n, edges)
-print(f"Advanced data structure SCCs: {result}")
+    while (!finish_stack.empty()) {
+        int node = finish_stack.top();
+        finish_stack.pop();
+        if (!visited[node]) {
+            num_sccs++;
+            dfs_pass2(node, num_sccs);
+        }
+    }
+
+    // Output
+    cout << num_sccs << "\n";
+    for (int i = 1; i <= n; i++) {
+        cout << component_id[i];
+        if (i < n) cout << " ";
+    }
+    cout << "\n";
+
+    return 0;
+}
 ```
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n + m)
+## Brief Overview: Tarjan's Algorithm
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+Tarjan's algorithm finds SCCs in a single DFS pass using **low-link values**.
 
-## 🔧 Implementation Details
+```
+TARJAN'S ALGORITHM (Single Pass):
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n^3) | O(n^2) | Check connectivity between all pairs |
-| Kosaraju's Algorithm | O(n + m) | O(n + m) | Use two DFS passes with transpose |
-| Advanced Data Structure | O(n + m) | O(n + m) | Use advanced data structures |
+For each node, track:
+  - discovery_time[v]: When v was first visited
+  - low_link[v]: Smallest discovery time reachable from v's subtree
 
-### Time Complexity
-- **Time**: O(n + m) - Use Kosaraju's algorithm for efficient SCC detection
-- **Space**: O(n + m) - Store graph and auxiliary data structures
+Key idea:
+  - A node v is the "root" of an SCC if low_link[v] == discovery_time[v]
+  - Use a stack to track current SCC candidates
+  - When we find a root, pop all nodes until v from stack -> one SCC
 
-### Why This Solution Works
-- **Kosaraju's Algorithm**: Use two DFS passes to find SCCs efficiently
-- **Transpose Graph**: Reverse edges to find components in second pass
-- **Stack Ordering**: Process vertices in reverse order of finishing times
-- **Optimal Algorithms**: Use optimal algorithms for SCC detection
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Strongly Connected Components with Constraints**
-**Problem**: Find SCCs with specific constraints.
-
-**Key Differences**: Apply constraints to SCC detection
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_strongly_connected_components(n, edges, constraints):
-    """Find SCCs with constraints"""
-    # Build adjacency list with constraints
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        if constraints(u, v):
-            adj[u].append(v)
-    
-    # Step 1: First DFS to fill stack
-    stack = []
-    visited = [False] * n
-    
-    def first_dfs(vertex):
-        visited[vertex] = True
-        for neighbor in adj[vertex]:
-            if not visited[neighbor] and constraints(vertex, neighbor):
-                first_dfs(neighbor)
-        stack.append(vertex)
-    
-    for i in range(n):
-        if not visited[i]:
-            first_dfs(i)
-    
-    # Step 2: Transpose graph with constraints
-    transpose_adj = [[] for _ in range(n)]
-    for u, v in edges:
-        if constraints(u, v):
-            transpose_adj[v].append(u)
-    
-    # Step 3: Second DFS on transpose graph with constraints
-    visited = [False] * n
-    components = []
-    
-    def second_dfs(vertex, component):
-        visited[vertex] = True
-        component.append(vertex)
-        for neighbor in transpose_adj[vertex]:
-            if not visited[neighbor] and constraints(neighbor, vertex):
-                second_dfs(neighbor, component)
-    
-    while stack:
-        vertex = stack.pop()
-        if not visited[vertex]:
-            component = []
-            second_dfs(vertex, component)
-            components.append(component)
-    
-    return components
-
-# Example usage
-n = 6
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4), (4, 5), (5, 3)]
-constraints = lambda u, v: u < v or v == 0  # Special constraint
-result = constrained_strongly_connected_components(n, edges, constraints)
-print(f"Constrained SCCs: {result}")
+Advantage: Single pass O(V + E)
+Disadvantage: More complex to understand and implement
 ```
 
-#### **2. Strongly Connected Components with Different Metrics**
-**Problem**: Find SCCs with different connectivity metrics.
+**When to use which:**
+- Kosaraju's: Easier to understand, good for learning
+- Tarjan's: Slightly more efficient (single pass), preferred in competitions
 
-**Key Differences**: Different connectivity calculations
+## Common Mistakes
 
-**Solution Approach**: Use advanced mathematical techniques
+| Mistake | Problem | Solution |
+|---------|---------|----------|
+| Forgetting to reverse the graph | Pass 2 runs on original graph, gives wrong SCCs | Build reversed adjacency list explicitly |
+| Wrong order in Pass 2 | Processing nodes in wrong order breaks the algorithm | Use stack from Pass 1, pop in order |
+| 0-indexed vs 1-indexed confusion | Off-by-one errors, missing nodes | Be consistent, CSES uses 1-indexed |
+| Stack overflow on large graphs | Recursion limit exceeded | Increase recursion limit or use iterative DFS |
+| Not handling disconnected graphs | Missing some nodes entirely | Start DFS from all unvisited nodes in Pass 1 |
 
-**Implementation**:
-```python
-def weighted_strongly_connected_components(n, edges, weight_function):
-    """Find SCCs with different connectivity metrics"""
-    # Build adjacency list with modified weights
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        weight = weight_function(u, v)
-        adj[u].append((v, weight))
-    
-    # Step 1: First DFS to fill stack
-    stack = []
-    visited = [False] * n
-    
-    def first_dfs(vertex):
-        visited[vertex] = True
-        for neighbor, weight in adj[vertex]:
-            if not visited[neighbor]:
-                first_dfs(neighbor)
-        stack.append(vertex)
-    
-    for i in range(n):
-        if not visited[i]:
-            first_dfs(i)
-    
-    # Step 2: Transpose graph with modified weights
-    transpose_adj = [[] for _ in range(n)]
-    for u, v in edges:
-        weight = weight_function(u, v)
-        transpose_adj[v].append((u, weight))
-    
-    # Step 3: Second DFS on transpose graph with modified weights
-    visited = [False] * n
-    components = []
-    
-    def second_dfs(vertex, component):
-        visited[vertex] = True
-        component.append(vertex)
-        for neighbor, weight in transpose_adj[vertex]:
-            if not visited[neighbor]:
-                second_dfs(neighbor, component)
-    
-    while stack:
-        vertex = stack.pop()
-        if not visited[vertex]:
-            component = []
-            second_dfs(vertex, component)
-            components.append(component)
-    
-    return components
+## Applications of SCCs
 
-# Example usage
-n = 6
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4), (4, 5), (5, 3)]
-weight_function = lambda u, v: abs(u - v)  # Distance-based weight
-result = weighted_strongly_connected_components(n, edges, weight_function)
-print(f"Weighted SCCs: {result}")
-```
+**1. 2-SAT (Boolean Satisfiability)**
+- Model implications as directed graph
+- Variables in same SCC must have same truth value
+- If x and NOT x in same SCC, no solution exists
 
-#### **3. Strongly Connected Components with Multiple Dimensions**
-**Problem**: Find SCCs in multiple dimensions.
+**2. DAG of SCCs (Condensation Graph)**
+- Contract each SCC to a single node
+- Result is a DAG (no cycles between SCCs)
+- Useful for problems requiring topological ordering
 
-**Key Differences**: Handle multiple dimensions
+**3. Reachability Queries**
+- Nodes in same SCC can all reach each other
+- Condense to DAG, then answer reachability on DAG
 
-**Solution Approach**: Use advanced mathematical techniques
+**4. Finding Bridges and Articulation Points**
+- Related concepts in connectivity analysis
+- SCC algorithms share ideas with bridge-finding
 
-**Implementation**:
-```python
-def multi_dimensional_strongly_connected_components(n, edges, dimensions):
-    """Find SCCs in multiple dimensions"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-    
-    # Step 1: First DFS to fill stack
-    stack = []
-    visited = [False] * n
-    
-    def first_dfs(vertex):
-        visited[vertex] = True
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                first_dfs(neighbor)
-        stack.append(vertex)
-    
-    for i in range(n):
-        if not visited[i]:
-            first_dfs(i)
-    
-    # Step 2: Transpose graph
-    transpose_adj = [[] for _ in range(n)]
-    for u, v in edges:
-        transpose_adj[v].append(u)
-    
-    # Step 3: Second DFS on transpose graph
-    visited = [False] * n
-    components = []
-    
-    def second_dfs(vertex, component):
-        visited[vertex] = True
-        component.append(vertex)
-        for neighbor in transpose_adj[vertex]:
-            if not visited[neighbor]:
-                second_dfs(neighbor, component)
-    
-    while stack:
-        vertex = stack.pop()
-        if not visited[vertex]:
-            component = []
-            second_dfs(vertex, component)
-            components.append(component)
-    
-    return components
+## Complexity Analysis
 
-# Example usage
-n = 6
-edges = [(0, 1), (1, 2), (2, 0), (1, 3), (3, 4), (4, 5), (5, 3)]
-dimensions = 1
-result = multi_dimensional_strongly_connected_components(n, edges, dimensions)
-print(f"Multi-dimensional SCCs: {result}")
-```
+| Aspect | Kosaraju's | Tarjan's |
+|--------|-----------|----------|
+| Time | O(V + E) | O(V + E) |
+| Space | O(V + E) | O(V) |
+| DFS Passes | 2 | 1 |
+| Extra Space | Reversed graph | Stack + arrays |
 
-### Related Problems
+Both algorithms are optimal for finding SCCs. Choose based on implementation preference.
 
-#### **CSES Problems**
-- [Planets and Kingdoms](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Round Trip](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
+## Summary
 
-#### **LeetCode Problems**
-- [Course Schedule](https://leetcode.com/problems/course-schedule/) - Graph
-- [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) - Graph
-- [Redundant Connection](https://leetcode.com/problems/redundant-connection/) - Graph
-
-#### **Problem Categories**
-- **Graph Algorithms**: Strongly connected components, Kosaraju's algorithm
-- **Connectivity**: Graph connectivity, component detection
-- **DFS**: Depth-first search, graph traversal
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Strongly Connected Components](https://cp-algorithms.com/graph/strongly-connected-components.html) - SCC algorithms
-- [Kosaraju's Algorithm](https://cp-algorithms.com/graph/strongly-connected-components.html#kosarajus-algorithm) - Kosaraju's algorithm
-
-### **Practice Problems**
-- [CSES Planets and Kingdoms](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Round Trip](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Strongly Connected Component](https://en.wikipedia.org/wiki/Strongly_connected_component) - Wikipedia article
-- [Kosaraju's Algorithm](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm) - Wikipedia article
+1. **SCC** = Maximal set where every node reaches every other node
+2. **Kosaraju's Algorithm**: Two-pass DFS approach
+   - Pass 1: Record finish times on original graph
+   - Pass 2: DFS on reversed graph in decreasing finish time order
+3. **Key insight**: Finish time ordering + graph reversal isolates SCCs
+4. **Complexity**: O(V + E) time and space
+5. **Applications**: 2-SAT, condensation graphs, reachability analysis

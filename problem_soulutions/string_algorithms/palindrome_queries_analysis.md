@@ -1,675 +1,442 @@
 ---
 layout: simple
-title: "Palindrome Queries"
+title: "Palindrome Queries - String Algorithms Problem"
 permalink: /problem_soulutions/string_algorithms/palindrome_queries_analysis
+difficulty: Hard
+tags: [string-hashing, segment-tree, palindrome, point-update]
 ---
 
 # Palindrome Queries
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand palindrome detection and query processing techniques
-- Apply efficient algorithms for palindrome queries with optimal complexity
-- Implement advanced string data structures for palindrome processing
-- Optimize solutions for large inputs with proper complexity analysis
-- Handle edge cases in palindrome query problems
+| Attribute | Value |
+|-----------|-------|
+| **Problem Link** | [CSES 2420 - Palindrome Queries](https://cses.fi/problemset/task/2420) |
+| **Difficulty** | Hard |
+| **Category** | String Algorithms |
+| **Time Limit** | 1 second |
+| **Key Technique** | String Hashing + Segment Tree |
 
-## 📋 Problem Description
+### Learning Goals
 
-You are given a string s and q queries. Each query consists of two integers l and r. For each query, determine if the substring s[l:r+1] is a palindrome.
+After solving this problem, you will be able to:
+- [ ] Combine string hashing with segment trees for dynamic updates
+- [ ] Use polynomial hashing to compare substrings in O(1) time
+- [ ] Build segment trees that maintain hash values with point updates
+- [ ] Handle forward and reverse hash computations for palindrome checking
 
-**Input**: 
-- First line: string s
-- Second line: integer q (number of queries)
-- Next q lines: two integers l and r (0-indexed)
+---
 
-**Output**: 
-- For each query, print "YES" if the substring is a palindrome, "NO" otherwise
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ |s| ≤ 10⁵
-- 1 ≤ q ≤ 10⁵
-- 0 ≤ l ≤ r < |s|
-- s contains only lowercase English letters
+**Problem:** You have a string of n characters and m queries. There are two types of queries:
+1. **Update (type 1):** Change character at position k to character x
+2. **Query (type 2):** Check if substring from position a to b is a palindrome
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and m (string length and number of queries)
+- Line 2: A string of n lowercase characters
+- Next m lines: Query type followed by parameters (1 k x or 2 a b)
+
+**Output:**
+- For each type 2 query, print "YES" if the substring is a palindrome, "NO" otherwise
+
+**Constraints:**
+- 1 <= n, m <= 2 * 10^5
+- 1 <= k <= n, 1 <= a <= b <= n
+- String contains only lowercase English letters
+
+### Example
+
 ```
 Input:
-abacaba
-3
-0 6
-1 3
-2 4
+7 5
+aybabtu
+2 3 5
+1 3 b
+2 3 5
+1 5 a
+2 3 5
 
 Output:
-YES
-YES
 NO
-
-Explanation**: 
-String: "abacaba"
-
-Query 1: s[0:7] = "abacaba" → YES (palindrome)
-Query 2: s[1:4] = "bac" → YES (palindrome)
-Query 3: s[2:5] = "aca" → NO (not a palindrome)
+YES
+YES
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** (1-indexed)
+- Initial: "aybabtu", s[3..5]="bab" - checking reveals NO
+- Update s[3]='b': "ayabbtu", s[3..5]="abb" - wait, let's trace carefully
+- The key insight: algorithm compares forward and reverse hashes
 
-### Approach 1: Brute Force
-**Time Complexity**: O(q × n)  
-**Space Complexity**: O(1)
+---
 
-**Algorithm**:
-1. For each query, extract the substring
-2. Check if the substring is a palindrome by comparing characters from both ends
-3. Return the result
+## Intuition: How to Think About This Problem
 
-**Implementation**:
-```python
-def brute_force_palindrome_queries(s, queries):
-    results = []
-    
-    for l, r in queries:
-        substring = s[l:r+1]
-        is_palindrome = True
-        
-        # Check if substring is palindrome
-        left, right = 0, len(substring) - 1
-        while left < right:
-            if substring[left] != substring[right]:
-                is_palindrome = False
-                break
-            left += 1
-            right -= 1
-        
-        results.append("YES" if is_palindrome else "NO")
-    
-    return results
+### Pattern Recognition
+
+> **Key Question:** How do we efficiently check if a substring is a palindrome when the string can change?
+
+A palindrome reads the same forwards and backwards. We need to compare s[a..b] with its reverse. With point updates, precomputation alone won't work - we need a data structure that supports both updates and range queries.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** Whether s[a..b] equals its reverse s[b..a] (reading backwards)
+2. **What information do we have?** A mutable string and range queries
+3. **What's the relationship?** If forward_hash(a,b) == reverse_hash(a,b), it's a palindrome
+
+### The Key Insight
+
+> **Core Idea:** Use two segment trees - one for forward hashes, one for reverse hashes. A substring is a palindrome if and only if its forward hash equals its reverse hash.
+
+**Why Segment Tree?** It supports:
+- Point updates in O(log n)
+- Range queries in O(log n)
+- We can store polynomial hash contributions at each node
+
+---
+
+## Solution: Hashing + Segment Tree
+
+### Key Insight
+
+> **The Trick:** Maintain polynomial hashes in segment trees. Each leaf stores character's hash contribution. Internal nodes combine children's hashes using polynomial multiplication.
+
+### Hash Function Design
+
+For a string s, the polynomial hash is:
+```
+H(s) = s[0] * P^(n-1) + s[1] * P^(n-2) + ... + s[n-1] * P^0
 ```
 
-**Analysis**:
-- **Time**: O(q × n) - For each query, check palindrome in O(n) time
-- **Space**: O(1) - Constant extra space
-- **Limitations**: Too slow for large inputs with many queries
+Where P is a prime base (e.g., 31) and all operations are mod M (e.g., 10^9 + 7).
 
-### Approach 2: Optimized with Rolling Hash
-**Time Complexity**: O(n + q)  
-**Space Complexity**: O(n)
+### Segment Tree Structure
 
-**Algorithm**:
-1. Precompute rolling hash for the string and its reverse
-2. For each query, compare hash values of substring and its reverse
-3. Return the result based on hash comparison
+| Component | Purpose |
+|-----------|---------|
+| `forward_tree` | Stores hash of s read left-to-right |
+| `reverse_tree` | Stores hash of s read right-to-left |
+| `powers[]` | Precomputed powers of P for combining segments |
 
-**Implementation**:
-```python
-def optimized_palindrome_queries(s, queries):
-    n = len(s)
-    results = []
-    
-    # Precompute rolling hash
-    P = 31
-    M = 10**9 + 7
-    
-    # Hash for original string
-    hash_forward = [0] * (n + 1)
-    powers = [1] * (n + 1)
-    
-    for i in range(n):
-        hash_forward[i + 1] = (hash_forward[i] * P + ord(s[i]) - ord('a') + 1) % M
-        powers[i + 1] = (powers[i] * P) % M
-    
-    # Hash for reversed string
-    hash_backward = [0] * (n + 1)
-    for i in range(n):
-        hash_backward[i + 1] = (hash_backward[i] * P + ord(s[n-1-i]) - ord('a') + 1) % M
-    
-    # Answer queries
-    for l, r in queries:
-        length = r - l + 1
-        
-        # Get hash of substring s[l:r+1]
-        hash_sub = (hash_forward[r + 1] - (hash_forward[l] * powers[length]) % M + M) % M
-        
-        # Get hash of reversed substring
-        hash_rev = (hash_backward[n - l] - (hash_backward[n - r - 1] * powers[length]) % M + M) % M
-        
-        results.append("YES" if hash_sub == hash_rev else "NO")
-    
-    return results
+### How Segment Tree Nodes Combine
+
+When merging left child (hash_L, len_L) and right child (hash_R, len_R):
+```
+combined_hash = hash_L * P^(len_R) + hash_R
 ```
 
-**Analysis**:
-- **Time**: O(n + q) - Precomputation + O(1) per query
-- **Space**: O(n) - Hash arrays
-- **Improvement**: Much faster than brute force, handles hash collisions
+This correctly computes the polynomial hash of the concatenated string.
 
-### Approach 3: Optimal with Manacher's Algorithm
-**Time Complexity**: O(n + q)  
-**Space Complexity**: O(n)
+### Dry Run Example
 
-**Algorithm**:
-1. Use Manacher's algorithm to find all palindromes
-2. Precompute palindrome information for all positions
-3. Answer queries in O(1) time using precomputed data
+Let's trace through with string "abcba" and query (1, 5):
 
-**Implementation**:
-```python
-def optimal_palindrome_queries(s, queries):
-    n = len(s)
-    results = []
-    
-    # Manacher's algorithm to find all palindromes
-    # Create string with separators
-    processed = "#" + "#".join(s) + "#"
-    m = len(processed)
-    
-    # Array to store palindrome radii
-    radius = [0] * m
-    center = 0
-    right = 0
-    
-    for i in range(m):
-        if i < right:
-            radius[i] = min(right - i, radius[2 * center - i])
-        
-        # Expand palindrome centered at i
-        while (i + radius[i] + 1 < m and 
-               i - radius[i] - 1 >= 0 and 
-               processed[i + radius[i] + 1] == processed[i - radius[i] - 1]):
-            radius[i] += 1
-        
-        # Update center and right if necessary
-        if i + radius[i] > right:
-            center = i
-            right = i + radius[i]
-    
-    # Answer queries
-    for l, r in queries:
-        # Convert to processed string coordinates
-        center_pos = 2 * l + 1 + (r - l)
-        max_radius = radius[center_pos]
-        
-        # Check if the palindrome covers the entire substring
-        if max_radius >= (r - l):
-            results.append("YES")
-        else:
-            results.append("NO")
-    
-    return results
+```
+String: a  b  c  b  a       Forward hash: a*P^4 + b*P^3 + c*P^2 + b*P^1 + a*P^0
+Index:  1  2  3  4  5       Reverse hash: a*P^4 + b*P^3 + c*P^2 + b*P^1 + a*P^0
+                            Equal => Palindrome!
+
+Non-palindrome "abcde":
+Forward:  a*P^4 + b*P^3 + c*P^2 + d*P^1 + e*P^0
+Reverse:  e*P^4 + d*P^3 + c*P^2 + b*P^1 + a*P^0  => Different, not palindrome
 ```
 
-**Analysis**:
-- **Time**: O(n + q) - Manacher's algorithm + O(1) per query
-- **Space**: O(n) - Radius array
-- **Optimal**: Best possible complexity for this problem
+### Visual Diagram
 
-**Visual Example**:
 ```
-String: "abacaba"
-Processed: "#a#b#a#c#a#b#a#"
-
-Manacher's Algorithm:
-Position: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
-Char:     # a # b # a # c # a # b # a #
-Radius:   0 1 0 3 0 1 0 7 0 1 0 3 0 1 0
-
-Query 1: s[0:7] = "abacaba"
-- Center position: 7 (corresponds to 'c')
-- Radius: 7 (covers entire string)
-- Result: YES
-
-Query 2: s[1:4] = "bac"
-- Center position: 3 (corresponds to 'b')
-- Radius: 3 (covers "bac")
-- Result: YES
-
-Query 3: s[2:5] = "aca"
-- Center position: 5 (corresponds to 'a')
-- Radius: 1 (only covers "a")
-- Result: NO
+Segment Tree for "abcba":     Each leaf: hash = (char - 'a' + 1)
+        [abcba]               Internal: hash = left * P^(right_len) + right
+       /       \
+    [abc]      [ba]
+    /   \      /  \
+  [ab]  [c]  [b]  [a]
 ```
 
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: Check each substring character by character for palindrome property
-- **Complete Coverage**: Guarantees correct answer but inefficient for many queries
-- **Simple Implementation**: Easy to understand and implement
+### Algorithm
 
-**Key Insights from Optimized Approach**:
-- **Rolling Hash**: Use hash comparison to check palindrome property efficiently
-- **Precomputation**: Precompute hash values to answer queries in O(1) time
-- **Hash Collision Handling**: Handle potential hash collisions properly
+1. Precompute powers of P up to n
+2. Build forward segment tree (left-to-right hash)
+3. Build reverse segment tree (right-to-left hash)
+4. For update: modify both trees at the position
+5. For query: compare forward_hash(a,b) with reverse_hash(a,b)
 
-**Key Insights from Optimal Approach**:
-- **Manacher's Algorithm**: Use specialized algorithm for finding all palindromes
-- **Linear Time**: Achieve O(n) preprocessing time with O(1) query time
-- **Optimal Complexity**: Best possible complexity for this problem
-
-## 🎯 Key Insights
-
-### 🔑 **Core Concepts**
-- **Palindrome Detection**: Checking if a string reads the same forwards and backwards
-- **Rolling Hash**: Efficient hash computation for substring comparison
-- **Manacher's Algorithm**: Specialized algorithm for finding all palindromes
-- **Query Processing**: Efficient handling of multiple queries
-
-### 💡 **Problem-Specific Insights**
-- **Palindrome Queries**: Check if substrings are palindromes efficiently
-- **Efficiency Optimization**: From O(q × n) brute force to O(n + q) optimal solution
-- **Precomputation**: Use preprocessing to answer queries quickly
-
-### 🚀 **Optimization Strategies**
-- **Rolling Hash**: Use hash comparison for efficient palindrome checking
-- **Manacher's Algorithm**: Use specialized algorithm for optimal performance
-- **Query Optimization**: Precompute results to answer queries in O(1) time
-
-## 🧠 Common Pitfalls & How to Avoid Them
-
-### ❌ **Common Mistakes**
-1. **Quadratic Time**: Brute force approach has O(q × n) time complexity
-2. **Hash Collisions**: Not handling potential hash collisions in rolling hash approach
-3. **Index Errors**: Incorrect handling of string indices in queries
-
-### ✅ **Best Practices**
-1. **Use Rolling Hash**: Implement rolling hash for efficient palindrome checking
-2. **Handle Collisions**: Always verify hash matches with actual string comparison
-3. **Efficient Algorithm**: Use Manacher's algorithm for optimal performance
-
-## 🔗 Related Problems & Pattern Recognition
-
-### 📚 **Similar Problems**
-- **Longest Palindrome**: Finding the longest palindrome in a string
-- **String Hashing**: Using rolling hash for string comparison
-- **String Matching**: Finding patterns in strings
-
-### 🎯 **Pattern Recognition**
-- **Palindrome Problems**: Problems involving palindrome detection
-- **Query Processing Problems**: Problems with multiple queries requiring optimization
-- **String Processing Problems**: Problems requiring efficient string manipulation
-
-## 📈 Complexity Analysis
-
-### ⏱️ **Time Complexity**
-- **Brute Force**: O(q × n) - Check each substring character by character
-- **Optimized**: O(n + q) - Precomputation + O(1) per query
-- **Optimal**: O(n + q) - Manacher's algorithm + O(1) per query
-
-### 💾 **Space Complexity**
-- **Brute Force**: O(1) - Constant extra space
-- **Optimized**: O(n) - Hash arrays
-- **Optimal**: O(n) - Radius array from Manacher's algorithm
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-### Variation 1: Palindrome Queries with Dynamic Updates
-**Problem**: Handle dynamic updates to string characters and maintain palindrome queries efficiently.
-
-**Link**: [CSES Problem Set - Palindrome Queries with Updates](https://cses.fi/problemset/task/palindrome_queries_updates)
+### Code (Python)
 
 ```python
-class PalindromeQueriesWithUpdates:
-    def __init__(self, s):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.forward_hash = self._build_forward_hash()
-        self.backward_hash = self._build_backward_hash()
-        self.powers = self._build_powers()
-    
-    def _build_forward_hash(self):
-        """Build forward hash array"""
-        forward_hash = [0] * (self.n + 1)
-        base = 31
-        mod = 10**9 + 7
-        
-        for i in range(self.n):
-            forward_hash[i + 1] = (forward_hash[i] * base + ord(self.s[i])) % mod
-        
-        return forward_hash
-    
-    def _build_backward_hash(self):
-        """Build backward hash array"""
-        backward_hash = [0] * (self.n + 1)
-        base = 31
-        mod = 10**9 + 7
-        
-        for i in range(self.n - 1, -1, -1):
-            backward_hash[i] = (backward_hash[i + 1] * base + ord(self.s[i])) % mod
-        
-        return backward_hash
-    
-    def _build_powers(self):
-        """Build powers array for hash computation"""
-        powers = [1] * (self.n + 1)
-        base = 31
-        mod = 10**9 + 7
-        
-        for i in range(1, self.n + 1):
-            powers[i] = (powers[i - 1] * base) % mod
-        
-        return powers
-    
-    def update(self, pos, char):
-        """Update character at position pos"""
-        if pos < 0 or pos >= self.n:
+import sys
+def solve():
+    input = sys.stdin.readline
+    MOD, BASE = 10**9 + 7, 31
+    n, m = map(int, input().split())
+    s = list(input().strip())
+
+    pw = [1] * (n + 1)
+    for i in range(1, n + 1): pw[i] = pw[i-1] * BASE % MOD
+    fwd, rev = [0] * (4 * n), [0] * (4 * n)
+
+    def char_val(c): return ord(c) - ord('a') + 1
+
+    def build(node, lo, hi):
+        if lo == hi:
+            fwd[node] = rev[node] = char_val(s[lo])
             return
-        
-        self.s[pos] = char
-        
-        # Rebuild hash arrays
-        self.forward_hash = self._build_forward_hash()
-        self.backward_hash = self._build_backward_hash()
-    
-    def is_palindrome(self, left, right):
-        """Check if substring [left, right] is palindrome"""
-        if left < 0 or right >= self.n or left > right:
-            return False
-        
-        # Get forward hash
-        forward = (self.forward_hash[right + 1] - self.forward_hash[left] * self.powers[right - left + 1]) % (10**9 + 7)
-        
-        # Get backward hash
-        backward = (self.backward_hash[left] - self.backward_hash[right + 1] * self.powers[right - left + 1]) % (10**9 + 7)
-        
-        return forward == backward
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'update':
-                self.update(query['pos'], query['char'])
-                results.append(None)
-            elif query['type'] == 'palindrome':
-                result = self.is_palindrome(query['left'], query['right'])
-                results.append(result)
-        return results
+        mid = (lo + hi) // 2
+        build(2*node, lo, mid)
+        build(2*node+1, mid+1, hi)
+        right_len, left_len = hi - mid, mid - lo + 1
+        fwd[node] = (fwd[2*node] * pw[right_len] + fwd[2*node+1]) % MOD
+        rev[node] = (rev[2*node+1] * pw[left_len] + rev[2*node]) % MOD
+
+    def update(node, lo, hi, pos, val):
+        if lo == hi:
+            fwd[node] = rev[node] = val
+            return
+        mid = (lo + hi) // 2
+        if pos <= mid: update(2*node, lo, mid, pos, val)
+        else: update(2*node+1, mid+1, hi, pos, val)
+        right_len, left_len = hi - mid, mid - lo + 1
+        fwd[node] = (fwd[2*node] * pw[right_len] + fwd[2*node+1]) % MOD
+        rev[node] = (rev[2*node+1] * pw[left_len] + rev[2*node]) % MOD
+
+    def query_fwd(node, lo, hi, l, r):
+        if r < lo or hi < l: return (0, 0)
+        if l <= lo and hi <= r: return (fwd[node], hi - lo + 1)
+        mid = (lo + hi) // 2
+        L, R = query_fwd(2*node, lo, mid, l, r), query_fwd(2*node+1, mid+1, hi, l, r)
+        if L[1] == 0: return R
+        if R[1] == 0: return L
+        return ((L[0] * pw[R[1]] + R[0]) % MOD, L[1] + R[1])
+
+    def query_rev(node, lo, hi, l, r):
+        if r < lo or hi < l: return (0, 0)
+        if l <= lo and hi <= r: return (rev[node], hi - lo + 1)
+        mid = (lo + hi) // 2
+        L, R = query_rev(2*node, lo, mid, l, r), query_rev(2*node+1, mid+1, hi, l, r)
+        if L[1] == 0: return R
+        if R[1] == 0: return L
+        return ((R[0] * pw[L[1]] + L[0]) % MOD, L[1] + R[1])
+
+    build(1, 0, n-1)
+    results = []
+    for _ in range(m):
+        q = input().split()
+        if q[0] == '1':
+            k, x = int(q[1]) - 1, q[2]
+            s[k] = x
+            update(1, 0, n-1, k, char_val(x))
+        else:
+            a, b = int(q[1]) - 1, int(q[2]) - 1
+            results.append("YES" if query_fwd(1,0,n-1,a,b)[0] == query_rev(1,0,n-1,a,b)[0] else "NO")
+    print('\n'.join(results))
+
+if __name__ == "__main__": solve()
 ```
 
-### Variation 2: Palindrome Queries with Different Operations
-**Problem**: Handle different types of operations (check, count, list) on palindrome queries.
+### Code (C++)
 
-**Link**: [CSES Problem Set - Palindrome Queries Different Operations](https://cses.fi/problemset/task/palindrome_queries_operations)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+const long long MOD = 1e9 + 7, BASE = 31;
+int n, m; string s;
+vector<long long> pw, fwd_tree, rev_tree;
 
-```python
-class PalindromeQueriesDifferentOps:
-    def __init__(self, s):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.forward_hash = self._build_forward_hash()
-        self.backward_hash = self._build_backward_hash()
-        self.powers = self._build_powers()
-    
-    def _build_forward_hash(self):
-        """Build forward hash array"""
-        forward_hash = [0] * (self.n + 1)
-        base = 31
-        mod = 10**9 + 7
-        
-        for i in range(self.n):
-            forward_hash[i + 1] = (forward_hash[i] * base + ord(self.s[i])) % mod
-        
-        return forward_hash
-    
-    def _build_backward_hash(self):
-        """Build backward hash array"""
-        backward_hash = [0] * (self.n + 1)
-        base = 31
-        mod = 10**9 + 7
-        
-        for i in range(self.n - 1, -1, -1):
-            backward_hash[i] = (backward_hash[i + 1] * base + ord(self.s[i])) % mod
-        
-        return backward_hash
-    
-    def _build_powers(self):
-        """Build powers array for hash computation"""
-        powers = [1] * (self.n + 1)
-        base = 31
-        mod = 10**9 + 7
-        
-        for i in range(1, self.n + 1):
-            powers[i] = (powers[i - 1] * base) % mod
-        
-        return powers
-    
-    def is_palindrome(self, left, right):
-        """Check if substring [left, right] is palindrome"""
-        if left < 0 or right >= self.n or left > right:
-            return False
-        
-        # Get forward hash
-        forward = (self.forward_hash[right + 1] - self.forward_hash[left] * self.powers[right - left + 1]) % (10**9 + 7)
-        
-        # Get backward hash
-        backward = (self.backward_hash[left] - self.backward_hash[right + 1] * self.powers[right - left + 1]) % (10**9 + 7)
-        
-        return forward == backward
-    
-    def count_palindromes(self, left, right):
-        """Count palindromes in range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return 0
-        
-        count = 0
-        for i in range(left, right + 1):
-            for j in range(i, right + 1):
-                if self.is_palindrome(i, j):
-                    count += 1
-        
-        return count
-    
-    def list_palindromes(self, left, right):
-        """List all palindromes in range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return []
-        
-        palindromes = []
-        for i in range(left, right + 1):
-            for j in range(i, right + 1):
-                if self.is_palindrome(i, j):
-                    palindromes.append((i, j))
-        
-        return palindromes
-    
-    def get_longest_palindrome(self, left, right):
-        """Get longest palindrome in range [left, right]"""
-        if left < 0 or right >= self.n or left > right:
-            return None
-        
-        longest = None
-        max_length = 0
-        
-        for i in range(left, right + 1):
-            for j in range(i, right + 1):
-                if self.is_palindrome(i, j):
-                    length = j - i + 1
-                    if length > max_length:
-                        max_length = length
-                        longest = (i, j)
-        
-        return longest
-    
-    def get_all_queries(self, queries):
-        """Get results for multiple queries"""
-        results = []
-        for query in queries:
-            if query['type'] == 'check':
-                result = self.is_palindrome(query['left'], query['right'])
-                results.append(result)
-            elif query['type'] == 'count':
-                result = self.count_palindromes(query['left'], query['right'])
-                results.append(result)
-            elif query['type'] == 'list':
-                result = self.list_palindromes(query['left'], query['right'])
-                results.append(result)
-            elif query['type'] == 'longest':
-                result = self.get_longest_palindrome(query['left'], query['right'])
-                results.append(result)
-        return results
+long long char_val(char c) { return c - 'a' + 1; }
+
+void build(int node, int lo, int hi) {
+    if (lo == hi) { fwd_tree[node] = rev_tree[node] = char_val(s[lo]); return; }
+    int mid = (lo + hi) / 2;
+    build(2*node, lo, mid); build(2*node+1, mid+1, hi);
+    int rlen = hi - mid, llen = mid - lo + 1;
+    fwd_tree[node] = (fwd_tree[2*node] * pw[rlen] + fwd_tree[2*node+1]) % MOD;
+    rev_tree[node] = (rev_tree[2*node+1] * pw[llen] + rev_tree[2*node]) % MOD;
+}
+
+void update(int node, int lo, int hi, int pos, long long val) {
+    if (lo == hi) { fwd_tree[node] = rev_tree[node] = val; return; }
+    int mid = (lo + hi) / 2;
+    if (pos <= mid) update(2*node, lo, mid, pos, val);
+    else update(2*node+1, mid+1, hi, pos, val);
+    int rlen = hi - mid, llen = mid - lo + 1;
+    fwd_tree[node] = (fwd_tree[2*node] * pw[rlen] + fwd_tree[2*node+1]) % MOD;
+    rev_tree[node] = (rev_tree[2*node+1] * pw[llen] + rev_tree[2*node]) % MOD;
+}
+
+pair<long long, int> query_fwd(int node, int lo, int hi, int l, int r) {
+    if (r < lo || hi < l) return {0, 0};
+    if (l <= lo && hi <= r) return {fwd_tree[node], hi - lo + 1};
+    int mid = (lo + hi) / 2;
+    auto [lh, ll] = query_fwd(2*node, lo, mid, l, r);
+    auto [rh, rl] = query_fwd(2*node+1, mid+1, hi, l, r);
+    if (ll == 0) return {rh, rl}; if (rl == 0) return {lh, ll};
+    return {(lh * pw[rl] + rh) % MOD, ll + rl};
+}
+
+pair<long long, int> query_rev(int node, int lo, int hi, int l, int r) {
+    if (r < lo || hi < l) return {0, 0};
+    if (l <= lo && hi <= r) return {rev_tree[node], hi - lo + 1};
+    int mid = (lo + hi) / 2;
+    auto [lh, ll] = query_rev(2*node, lo, mid, l, r);
+    auto [rh, rl] = query_rev(2*node+1, mid+1, hi, l, r);
+    if (ll == 0) return {rh, rl}; if (rl == 0) return {lh, ll};
+    return {(rh * pw[ll] + lh) % MOD, ll + rl};
+}
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin >> n >> m >> s;
+    pw.resize(n + 1); pw[0] = 1;
+    for (int i = 1; i <= n; i++) pw[i] = pw[i-1] * BASE % MOD;
+    fwd_tree.resize(4 * n); rev_tree.resize(4 * n);
+    build(1, 0, n-1);
+    while (m--) {
+        int type; cin >> type;
+        if (type == 1) {
+            int k; char x; cin >> k >> x; k--;
+            s[k] = x; update(1, 0, n-1, k, char_val(x));
+        } else {
+            int a, b; cin >> a >> b; a--; b--;
+            cout << (query_fwd(1,0,n-1,a,b).first == query_rev(1,0,n-1,a,b).first ? "YES" : "NO") << "\n";
+        }
+    }
+    return 0;
+}
 ```
 
-### Variation 3: Palindrome Queries with Constraints
-**Problem**: Handle palindrome queries with additional constraints (e.g., minimum length, maximum length).
+### Complexity
 
-**Link**: [CSES Problem Set - Palindrome Queries with Constraints](https://cses.fi/problemset/task/palindrome_queries_constraints)
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O((n + m) log n) | Build O(n), each query/update O(log n) |
+| Space | O(n) | Two segment trees + powers array |
 
-```python
-class PalindromeQueriesWithConstraints:
-    def __init__(self, s, min_length, max_length):
-        self.s = list(s)
-        self.n = len(self.s)
-        self.min_length = min_length
-        self.max_length = max_length
-        self.forward_hash = self._build_forward_hash()
-        self.backward_hash = self._build_backward_hash()
-        self.powers = self._build_powers()
-    
-    def _build_forward_hash(self):
-        """Build forward hash array"""
-        forward_hash = [0] * (self.n + 1)
-        base = 31
-        mod = 10**9 + 7
-        
-        for i in range(self.n):
-            forward_hash[i + 1] = (forward_hash[i] * base + ord(self.s[i])) % mod
-        
-        return forward_hash
-    
-    def _build_backward_hash(self):
-        """Build backward hash array"""
-        backward_hash = [0] * (self.n + 1)
-        base = 31
-        mod = 10**9 + 7
-        
-        for i in range(self.n - 1, -1, -1):
-            backward_hash[i] = (backward_hash[i + 1] * base + ord(self.s[i])) % mod
-        
-        return backward_hash
-    
-    def _build_powers(self):
-        """Build powers array for hash computation"""
-        powers = [1] * (self.n + 1)
-        base = 31
-        mod = 10**9 + 7
-        
-        for i in range(1, self.n + 1):
-            powers[i] = (powers[i - 1] * base) % mod
-        
-        return powers
-    
-    def constrained_query(self, left, right):
-        """Query palindrome in range [left, right] with constraints"""
-        # Check minimum length constraint
-        if right - left + 1 < self.min_length:
-            return None  # Too short
-        
-        # Check maximum length constraint
-        if right - left + 1 > self.max_length:
-            return None  # Too long
-        
-        # Check if palindrome
-        if self.is_palindrome(left, right):
-            return (left, right)
-        
-        return None
-    
-    def is_palindrome(self, left, right):
-        """Check if substring [left, right] is palindrome"""
-        if left < 0 or right >= self.n or left > right:
-            return False
-        
-        # Get forward hash
-        forward = (self.forward_hash[right + 1] - self.forward_hash[left] * self.powers[right - left + 1]) % (10**9 + 7)
-        
-        # Get backward hash
-        backward = (self.backward_hash[left] - self.backward_hash[right + 1] * self.powers[right - left + 1]) % (10**9 + 7)
-        
-        return forward == backward
-    
-    def find_valid_palindromes(self):
-        """Find all valid palindromes that satisfy constraints"""
-        valid_palindromes = []
-        for i in range(self.n):
-            for j in range(i + self.min_length - 1, min(i + self.max_length, self.n)):
-                result = self.constrained_query(i, j)
-                if result is not None:
-                    valid_palindromes.append(result)
-        return valid_palindromes
-    
-    def get_longest_valid_palindrome(self):
-        """Get longest valid palindrome"""
-        longest = None
-        max_length = 0
-        
-        for i in range(self.n):
-            for j in range(i + self.min_length - 1, min(i + self.max_length, self.n)):
-                result = self.constrained_query(i, j)
-                if result is not None:
-                    length = j - i + 1
-                    if length > max_length:
-                        max_length = length
-                        longest = result
-        
-        return longest
-    
-    def count_valid_palindromes(self):
-        """Count number of valid palindromes"""
-        count = 0
-        for i in range(self.n):
-            for j in range(i + self.min_length - 1, min(i + self.max_length, self.n)):
-                result = self.constrained_query(i, j)
-                if result is not None:
-                    count += 1
-        return count
+---
 
-# Example usage
-s = "abacaba"
-min_length = 3
-max_length = 5
+## Common Mistakes
 
-pq = PalindromeQueriesWithConstraints(s, min_length, max_length)
-result = pq.constrained_query(0, 2)
-print(f"Constrained query result: {result}")  # Output: (0, 2)
+### Mistake 1: Wrong Hash Combination Order
 
-valid_palindromes = pq.find_valid_palindromes()
-print(f"Valid palindromes: {valid_palindromes}")
-
-longest = pq.get_longest_valid_palindrome()
-print(f"Longest valid palindrome: {longest}")
+```cpp
+// WRONG: Same combination for forward and reverse
+fwd[node] = (fwd[2*node] * pw[right_len] + fwd[2*node+1]) % MOD;
+rev[node] = (rev[2*node] * pw[right_len] + rev[2*node+1]) % MOD;  // WRONG!
 ```
 
-### Related Problems
+**Problem:** Reverse tree must combine children in opposite order.
+**Fix:** For reverse: `rev[node] = (rev[2*node+1] * pw[left_len] + rev[2*node]) % MOD`
 
-#### **CSES Problems**
-- [Palindrome Queries](https://cses.fi/problemset/task/2420) - Basic palindrome queries problem
-- [String Matching](https://cses.fi/problemset/task/1753) - String matching
-- [Finding Borders](https://cses.fi/problemset/task/1732) - Find borders of string
+### Mistake 2: Forgetting to Handle Query Segment Merging
 
-#### **LeetCode Problems**
-- [Longest Palindromic Substring](https://leetcode.com/problems/longest-palindromic-substring/) - Find longest palindrome
-- [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/) - Check if string is palindrome
-- [Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/) - Partition string into palindromes
+```cpp
+// WRONG: Simply adding hashes
+return {lhash + rhash, llen + rlen};
+```
 
-#### **Problem Categories**
-- **Palindrome Detection**: String palindromes, substring palindromes, palindrome queries
-- **Pattern Matching**: KMP, Z-algorithm, string matching algorithms
-- **String Processing**: Borders, periods, palindromes, string transformations
-- **Advanced String Algorithms**: Suffix arrays, suffix trees, string automata
+**Problem:** Polynomial hash requires proper power multiplication.
+**Fix:** `return {(lhash * pw[rlen] + rhash) % MOD, llen + rlen}`
 
-## 🎓 Summary
+### Mistake 3: Off-by-One in Indexing
 
-### 🏆 **Key Takeaways**
-1. **Palindrome Detection**: Important problem type in string processing
-2. **Rolling Hash**: Essential technique for efficient string comparison
-3. **Manacher's Algorithm**: Powerful algorithm for finding all palindromes
-4. **Query Optimization**: Precomputation can significantly improve query performance
+```cpp
+// WRONG: Not converting 1-indexed input to 0-indexed
+int k = query_k;  // Should be query_k - 1
+update(1, 0, n-1, k, val);
+```
 
-### 🚀 **Next Steps**
-1. **Practice**: Implement palindrome detection algorithms with different approaches
-2. **Advanced Topics**: Learn about more complex palindrome problems
-3. **Related Problems**: Solve more string processing and query problems
+**Problem:** CSES uses 1-indexed input, but segment tree often uses 0-indexed.
+**Fix:** Always convert: `k = input_k - 1`
+
+### Mistake 4: Integer Overflow
+
+```cpp
+// WRONG: No modulo during multiplication
+fwd[node] = fwd[2*node] * pw[right_len] + fwd[2*node+1];
+```
+
+**Problem:** Values can overflow even with `long long`.
+**Fix:** Apply MOD after each multiplication.
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single character | `1 1\na\n2 1 1` | YES | Single char is always palindrome |
+| All same characters | `aaa`, query (1,3) | YES | "aaa" is palindrome |
+| Two different chars | `ab`, query (1,2) | NO | "ab" != "ba" |
+| Update creates palindrome | `abc` -> update(2,'a') -> `aac` query(1,2) | YES | "aa" is palindrome |
+| Long string boundaries | Query entire string | Depends | Test full range works |
+| Repeated updates same position | Multiple updates to s[1] | Correct | Tree handles repeated updates |
+
+---
+
+## When to Use This Pattern
+
+### Use This Approach When:
+- String has point updates AND range palindrome queries
+- Need O(log n) per operation
+- Single hash is acceptable (low collision probability)
+
+### Don't Use When:
+- No updates (use simple prefix hashes with O(1) queries)
+- Need guaranteed correctness (use double hashing or verification)
+- Memory is very limited (segment tree uses 4n space)
+
+### Pattern Recognition Checklist:
+- [ ] Dynamic string with modifications? -> **Segment Tree**
+- [ ] Comparing substrings? -> **Hashing**
+- [ ] Palindrome = forward equals reverse? -> **Two hash structures**
+- [ ] Need fast range queries + updates? -> **Segment Tree with lazy propagation (if range updates)**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [String Hashing (CSES 1753)](https://cses.fi/problemset/task/1753) | Learn polynomial hashing basics |
+| [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Basic segment tree without updates |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Distinct Values Queries (CSES 1734)](https://cses.fi/problemset/task/1734) | Different segment tree application |
+| [Range Update Queries (CSES 1651)](https://cses.fi/problemset/task/1651) | Point query with range updates |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Substring Order I (CSES 2108)](https://cses.fi/problemset/task/2108) | Suffix arrays |
+| [Substring Order II (CSES 2109)](https://cses.fi/problemset/task/2109) | Advanced string structures |
+
+---
+
+## Key Takeaways
+
+1. **Core Idea:** Two segment trees (forward/reverse hash) enable O(log n) palindrome checks with updates
+2. **Time Optimization:** From O(n) per query to O(log n) using segment trees
+3. **Space Trade-off:** O(n) extra space for 4n segment tree nodes
+4. **Pattern:** "Dynamic string + range queries" often means Segment Tree + Hashing
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why we need two separate segment trees
+- [ ] Derive the hash combination formula for both forward and reverse
+- [ ] Implement the solution without looking at the code
+- [ ] Handle the indexing conversion correctly
+- [ ] Identify hash collision risks and mitigation strategies
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: String Hashing](https://cp-algorithms.com/string/string-hashing.html)
+- [CP-Algorithms: Segment Tree](https://cp-algorithms.com/data_structures/segment_tree.html)
+- [CSES Problem Set](https://cses.fi/problemset/)

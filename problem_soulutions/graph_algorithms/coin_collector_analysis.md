@@ -1,526 +1,437 @@
 ---
 layout: simple
-title: "Coin Collector - Graph Algorithm Problem"
+title: "Coin Collector - SCC Condensation + DP on DAG"
 permalink: /problem_soulutions/graph_algorithms/coin_collector_analysis
+difficulty: Hard
+tags: [graph, scc, dag, dp, topological-sort]
+cses_link: https://cses.fi/problemset/task/1686
 ---
 
-# Coin Collector - Graph Algorithm Problem
+# Coin Collector
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of coin collection in graph algorithms
-- Apply efficient algorithms for maximum coin collection
-- Implement graph traversal for coin collection problems
-- Optimize path finding for maximum value collection
-- Handle special cases in coin collection problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Maximum coin collection on directed graph |
+| Technique | SCC Condensation + DP on DAG |
+| Time Complexity | O(n + m) |
+| Space Complexity | O(n + m) |
+| Key Insight | Condense SCCs, then DP in reverse topological order |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a graph with coins on vertices, find the maximum coins that can be collected.
+After solving this problem, you will understand:
 
-**Input**: 
-- n: number of vertices
-- m: number of edges
-- coins: array where coins[i] is the value of coin on vertex i
-- edges: array of edges (u, v)
+1. **SCC Condensation**: How to collapse strongly connected components into single nodes
+2. **DP on DAG**: Running dynamic programming on directed acyclic graphs
+3. **Combining Graph Algorithms**: Using Kosaraju's/Tarjan's with topological sort and DP
+4. **Graph Transformation**: Converting cyclic graphs to DAGs for easier processing
 
-**Output**: 
-- Maximum coins that can be collected
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
-- 0 ≤ coins[i] ≤ 10^9
+You have `n` rooms and `m` one-way tunnels. Each room contains a certain number of coins. You can start from any room and travel through tunnels, collecting coins from each room you visit (each room counted only once). Find the maximum number of coins you can collect.
 
-**Example**:
+**Input:**
+- First line: n (rooms), m (tunnels)
+- Second line: coins in each room (k1, k2, ..., kn)
+- Next m lines: tunnel from room a to room b
+
+**Constraints:**
+- 1 <= n <= 10^5
+- 1 <= m <= 2 x 10^5
+- 1 <= ki <= 10^9
+
+**Example:**
 ```
 Input:
-n = 4, m = 3
-coins = [5, 2, 8, 1]
-edges = [(0,1), (1,2), (2,3)]
+4 4
+4 5 2 7
+1 2
+2 1
+2 3
+3 4
 
 Output:
-16
-
-Explanation**: 
-Path: 0 -> 1 -> 2 -> 3
-Coins collected: 5 + 2 + 8 + 1 = 16
+18
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+## Key Insight: SCC Condensation
 
-### Approach 1: Brute Force Solution
+**Critical Observation:** Within a Strongly Connected Component (SCC), you can reach ANY node from ANY other node. This means if you enter an SCC, you can collect ALL coins in that SCC.
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all possible paths
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic graph traversal
-- **Inefficient**: O(n!) time complexity
+This insight transforms the problem:
+1. Find all SCCs
+2. Treat each SCC as a single "super-node" with total coins = sum of all coins in SCC
+3. The condensed graph is a DAG (no cycles between SCCs)
+4. Find maximum path sum on this DAG
 
-**Key Insight**: Check every possible path to find maximum coins.
+## Algorithm
 
-**Algorithm**:
-- Generate all possible paths
-- Calculate coins collected for each path
-- Return maximum coins
+### Step 1: Find SCCs using Kosaraju's Algorithm
 
-**Visual Example**:
+Kosaraju's algorithm uses two DFS passes:
+1. First DFS: Record finish times (add to stack when done)
+2. Second DFS: Process nodes in reverse finish order on transposed graph
+
+### Step 2: Condense the Graph
+
+- Assign each node to its SCC ID
+- For each SCC, compute total coins
+- Build DAG: for each original edge (u, v), if scc[u] != scc[v], add edge scc[u] -> scc[v]
+
+### Step 3: DP on DAG
+
+Process SCCs in reverse topological order:
+
 ```
-Graph: 0-1-2-3
-Coins: [5, 2, 8, 1]
-
-Path enumeration:
-┌─────────────────────────────────────┐
-│ Path 1: 0 -> 1 -> 2 -> 3           │
-│ Coins: 5 + 2 + 8 + 1 = 16          │
-│                                   │
-│ Path 2: 0 -> 1                     │
-│ Coins: 5 + 2 = 7                   │
-│                                   │
-│ Path 3: 1 -> 2 -> 3                │
-│ Coins: 2 + 8 + 1 = 11              │
-│                                   │
-│ Maximum: 16                        │
-└─────────────────────────────────────┘
+dp[scc] = coins[scc] + max(dp[child] for all children in DAG)
 ```
 
-**Implementation**:
+If no children: `dp[scc] = coins[scc]`
+
+### Step 4: Answer
+
+```
+Answer = max(dp[scc]) for all SCCs
+```
+
+## Visual Diagram
+
+### Original Graph
+```
+    [4]         [5]
+     1 --------> 2
+     ^           |
+     |           |
+     +-----------+
+           |
+           v
+          [2]         [7]
+           3 --------> 4
+```
+Nodes 1 and 2 form an SCC (can go 1->2->1).
+
+### SCC Identification
+```
+SCC A: {1, 2}  coins = 4 + 5 = 9
+SCC B: {3}     coins = 2
+SCC C: {4}     coins = 7
+```
+
+### Condensed DAG
+```
+    [9]         [2]         [7]
+     A --------> B --------> C
+```
+
+### DP Calculation (reverse topological order: C, B, A)
+```
+dp[C] = 7                    (no outgoing edges)
+dp[B] = 2 + dp[C] = 2 + 7 = 9
+dp[A] = 9 + dp[B] = 9 + 9 = 18
+
+Answer = max(18, 9, 7) = 18
+```
+
+## Dry Run
+
+**Input:**
+```
+n=4, m=4
+coins = [4, 5, 2, 7]  (1-indexed: room 1 has 4 coins, etc.)
+edges: 1->2, 2->1, 2->3, 3->4
+```
+
+**Step 1: First DFS (record finish order)**
+```
+Start DFS from node 1:
+  Visit 1 -> Visit 2 -> Visit 3 -> Visit 4
+  Finish 4, push to stack
+  Finish 3, push to stack
+  Back to 2: try 1 (already visiting, skip)
+  Finish 2, push to stack
+  Finish 1, push to stack
+
+Stack (top to bottom): [1, 2, 3, 4]
+```
+
+**Step 2: Build transpose graph**
+```
+Original: 1->2, 2->1, 2->3, 3->4
+Transpose: 2->1, 1->2, 3->2, 4->3
+```
+
+**Step 3: Second DFS (process in stack order on transpose)**
+```
+Pop 1: DFS on transpose
+  Visit 1 -> Visit 2 -> (2's neighbor is 1, already visited)
+  SCC 0: {1, 2}
+
+Pop 2: already visited, skip
+
+Pop 3: DFS on transpose
+  Visit 3 -> (3's neighbor is 2, already visited)
+  SCC 1: {3}
+
+Pop 4: DFS on transpose
+  Visit 4 -> (4's neighbor is 3, already visited)
+  SCC 2: {4}
+```
+
+**Step 4: Build condensed graph**
+```
+scc_coins[0] = 4 + 5 = 9
+scc_coins[1] = 2
+scc_coins[2] = 7
+
+Original edges -> DAG edges:
+  1->2: same SCC, skip
+  2->1: same SCC, skip
+  2->3: SCC 0 -> SCC 1
+  3->4: SCC 1 -> SCC 2
+
+DAG: 0 -> 1 -> 2
+```
+
+**Step 5: DP in reverse topological order**
+```
+Topological order: [0, 1, 2]
+Reverse: [2, 1, 0]
+
+dp[2] = 7 (no outgoing)
+dp[1] = 2 + max(dp[2]) = 2 + 7 = 9
+dp[0] = 9 + max(dp[1]) = 9 + 9 = 18
+
+Answer = max(dp[0], dp[1], dp[2]) = 18
+```
+
+## Python Implementation
+
 ```python
-def brute_force_coin_collector(n, coins, edges):
-    """Find maximum coins using brute force approach"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    def dfs_all_paths(start, visited, current_coins):
-        max_coins = current_coins
-        
-        for neighbor in adj[start]:
-            if neighbor not in visited:
-                new_visited = visited | {neighbor}
-                new_coins = current_coins + coins[neighbor]
-                max_coins = max(max_coins, dfs_all_paths(neighbor, new_visited, new_coins))
-        
-        return max_coins
-    
-    # Try starting from each vertex
-    max_total = 0
-    for start in range(n):
-        visited = {start}
-        current_coins = coins[start]
-        max_total = max(max_total, dfs_all_paths(start, visited, current_coins))
-    
-    return max_total
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(200005)
 
-# Example usage
-n = 4
-coins = [5, 2, 8, 1]
-edges = [(0, 1), (1, 2), (2, 3)]
-result = brute_force_coin_collector(n, coins, edges)
-print(f"Brute force maximum coins: {result}")
-```
+def solve():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n = int(input_data[idx]); idx += 1
+    m = int(input_data[idx]); idx += 1
 
-**Time Complexity**: O(n!)
-**Space Complexity**: O(n)
+    coins = [0] * (n + 1)
+    for i in range(1, n + 1):
+        coins[i] = int(input_data[idx]); idx += 1
 
-**Why it's inefficient**: O(n!) time complexity for checking all paths.
+    # Build graph and transpose
+    graph = defaultdict(list)
+    transpose = defaultdict(list)
 
----
+    for _ in range(m):
+        a = int(input_data[idx]); idx += 1
+        b = int(input_data[idx]); idx += 1
+        graph[a].append(b)
+        transpose[b].append(a)
 
-### Approach 2: Dynamic Programming Solution
+    # Step 1: First DFS - get finish order
+    visited = [False] * (n + 1)
+    finish_stack = []
 
-**Key Insights from Dynamic Programming Solution**:
-- **Dynamic Programming**: Use DP for efficient coin collection
-- **Efficient Implementation**: O(n + m) time complexity
-- **State Optimization**: Use DP states for optimization
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Use dynamic programming to find maximum coins efficiently.
-
-**Algorithm**:
-- Use DP to store maximum coins from each vertex
-- Traverse graph and update DP values
-- Return maximum DP value
-
-**Visual Example**:
-```
-Dynamic programming approach:
-
-Graph: 0-1-2-3
-Coins: [5, 2, 8, 1]
-
-DP calculation:
-┌─────────────────────────────────────┐
-│ DP[3] = coins[3] = 1               │
-│ DP[2] = coins[2] + DP[3] = 8 + 1 = 9 │
-│ DP[1] = coins[1] + DP[2] = 2 + 9 = 11 │
-│ DP[0] = coins[0] + DP[1] = 5 + 11 = 16 │
-│                                   │
-│ Maximum: 16                        │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def dp_coin_collector(n, coins, edges):
-    """Find maximum coins using dynamic programming approach"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    # DP array to store maximum coins from each vertex
-    dp = [0] * n
-    visited = [False] * n
-    
-    def dfs_dp(vertex):
-        if visited[vertex]:
-            return dp[vertex]
-        
-        visited[vertex] = True
-        dp[vertex] = coins[vertex]
-        
-        max_child_coins = 0
-        for neighbor in adj[vertex]:
+    def dfs1(node):
+        visited[node] = True
+        for neighbor in graph[node]:
             if not visited[neighbor]:
-                child_coins = dfs_dp(neighbor)
-                max_child_coins = max(max_child_coins, child_coins)
-        
-        dp[vertex] += max_child_coins
-        return dp[vertex]
-    
-    # Calculate DP for all vertices
-    max_total = 0
-    for vertex in range(n):
-        if not visited[vertex]:
-            max_total = max(max_total, dfs_dp(vertex))
-    
-    return max_total
+                dfs1(neighbor)
+        finish_stack.append(node)
 
-# Example usage
-n = 4
-coins = [5, 2, 8, 1]
-edges = [(0, 1), (1, 2), (2, 3)]
-result = dp_coin_collector(n, coins, edges)
-print(f"DP maximum coins: {result}")
-```
+    for i in range(1, n + 1):
+        if not visited[i]:
+            dfs1(i)
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n)
+    # Step 2: Second DFS on transpose - find SCCs
+    visited = [False] * (n + 1)
+    scc_id = [0] * (n + 1)
+    scc_count = 0
 
-**Why it's better**: Uses dynamic programming for O(n + m) time complexity.
-
----
-
-### Approach 3: Advanced Data Structure Solution (Optimal)
-
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for coin collection
-- **Efficient Implementation**: O(n + m) time complexity
-- **Space Efficiency**: O(n) space complexity
-- **Optimal Complexity**: Best approach for coin collection
-
-**Key Insight**: Use advanced data structures for optimal coin collection.
-
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient coin collection algorithms
-- Handle special cases optimally
-- Return maximum coins
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For graph: 0-1-2-3
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Graph tree: for efficient storage │
-│ - Coin cache: for optimization      │
-│ - Path tracker: for path optimization │
-│                                   │
-│ Coin collection:                   │
-│ - Use graph tree for efficient     │
-│   traversal                        │
-│ - Use coin cache for optimization  │
-│ - Use path tracker for path        │
-│   optimization                     │
-│                                   │
-│ Result: 16                         │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def advanced_data_structure_coin_collector(n, coins, edges):
-    """Find maximum coins using advanced data structure approach"""
-    # Use advanced data structures for graph storage
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    # Advanced DP array to store maximum coins from each vertex
-    dp = [0] * n
-    visited = [False] * n
-    
-    def dfs_advanced_dp(vertex):
-        if visited[vertex]:
-            return dp[vertex]
-        
-        visited[vertex] = True
-        dp[vertex] = coins[vertex]
-        
-        max_child_coins = 0
-        for neighbor in adj[vertex]:
+    def dfs2(node, scc):
+        visited[node] = True
+        scc_id[node] = scc
+        for neighbor in transpose[node]:
             if not visited[neighbor]:
-                child_coins = dfs_advanced_dp(neighbor)
-                max_child_coins = max(max_child_coins, child_coins)
-        
-        dp[vertex] += max_child_coins
-        return dp[vertex]
-    
-    # Calculate advanced DP for all vertices
-    max_total = 0
-    for vertex in range(n):
-        if not visited[vertex]:
-            max_total = max(max_total, dfs_advanced_dp(vertex))
-    
-    return max_total
+                dfs2(neighbor, scc)
 
-# Example usage
-n = 4
-coins = [5, 2, 8, 1]
-edges = [(0, 1), (1, 2), (2, 3)]
-result = advanced_data_structure_coin_collector(n, coins, edges)
-print(f"Advanced data structure maximum coins: {result}")
+    while finish_stack:
+        node = finish_stack.pop()
+        if not visited[node]:
+            dfs2(node, scc_count)
+            scc_count += 1
+
+    # Step 3: Build condensed DAG
+    scc_coins = [0] * scc_count
+    for i in range(1, n + 1):
+        scc_coins[scc_id[i]] += coins[i]
+
+    # Build DAG edges (use set to avoid duplicates)
+    dag = defaultdict(set)
+    for u in range(1, n + 1):
+        for v in graph[u]:
+            if scc_id[u] != scc_id[v]:
+                dag[scc_id[u]].add(scc_id[v])
+
+    # Step 4: DP on DAG
+    # SCCs are numbered in reverse topological order by Kosaraju's
+    # So process from scc_count-1 down to 0
+    dp = [0] * scc_count
+
+    for scc in range(scc_count - 1, -1, -1):
+        dp[scc] = scc_coins[scc]
+        for child in dag[scc]:
+            dp[scc] = max(dp[scc], scc_coins[scc] + dp[child])
+
+    print(max(dp))
+
+solve()
 ```
 
-**Time Complexity**: O(n + m)
-**Space Complexity**: O(n)
+## C++ Implementation
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-## 🔧 Implementation Details
+const int MAXN = 100005;
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n!) | O(n) | Check all possible paths |
-| Dynamic Programming | O(n + m) | O(n) | Use DP for efficient calculation |
-| Advanced Data Structure | O(n + m) | O(n) | Use advanced data structures |
+vector<int> graph[MAXN], transpose_graph[MAXN];
+vector<int> dag[MAXN];
+long long coins[MAXN], scc_coins[MAXN], dp[MAXN];
+int scc_id[MAXN];
+bool visited[MAXN];
+vector<int> finish_order;
+int n, m, scc_count;
 
-### Time Complexity
-- **Time**: O(n + m) - Use dynamic programming for efficient calculation
-- **Space**: O(n) - Store DP values and graph
+void dfs1(int node) {
+    visited[node] = true;
+    for (int neighbor : graph[node]) {
+        if (!visited[neighbor]) {
+            dfs1(neighbor);
+        }
+    }
+    finish_order.push_back(node);
+}
 
-### Why This Solution Works
-- **Dynamic Programming**: Use DP for efficient coin collection
-- **Graph Traversal**: Traverse graph to calculate DP values
-- **State Optimization**: Use DP states for optimization
-- **Optimal Algorithms**: Use optimal algorithms for coin collection
+void dfs2(int node, int scc) {
+    visited[node] = true;
+    scc_id[node] = scc;
+    for (int neighbor : transpose_graph[node]) {
+        if (!visited[neighbor]) {
+            dfs2(neighbor, scc);
+        }
+    }
+}
 
-## 🚀 Problem Variations
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-### Extended Problems with Detailed Code Examples
+    cin >> n >> m;
 
-#### **1. Coin Collector with Constraints**
-**Problem**: Collect coins with specific constraints.
+    for (int i = 1; i <= n; i++) {
+        cin >> coins[i];
+    }
 
-**Key Differences**: Apply constraints to coin collection
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        graph[a].push_back(b);
+        transpose_graph[b].push_back(a);
+    }
 
-**Solution Approach**: Modify algorithm to handle constraints
+    // Step 1: First DFS to get finish order
+    memset(visited, false, sizeof(visited));
+    for (int i = 1; i <= n; i++) {
+        if (!visited[i]) {
+            dfs1(i);
+        }
+    }
 
-**Implementation**:
-```python
-def constrained_coin_collector(n, coins, edges, constraints):
-    """Collect coins with constraints"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    # DP array to store maximum coins from each vertex
-    dp = [0] * n
-    visited = [False] * n
-    
-    def dfs_constrained_dp(vertex):
-        if visited[vertex]:
-            return dp[vertex]
-        
-        visited[vertex] = True
-        dp[vertex] = coins[vertex] if constraints(vertex) else 0
-        
-        max_child_coins = 0
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                child_coins = dfs_constrained_dp(neighbor)
-                max_child_coins = max(max_child_coins, child_coins)
-        
-        dp[vertex] += max_child_coins
-        return dp[vertex]
-    
-    # Calculate constrained DP for all vertices
-    max_total = 0
-    for vertex in range(n):
-        if not visited[vertex]:
-            max_total = max(max_total, dfs_constrained_dp(vertex))
-    
-    return max_total
+    // Step 2: Second DFS on transpose to find SCCs
+    memset(visited, false, sizeof(visited));
+    scc_count = 0;
+    for (int i = n - 1; i >= 0; i--) {
+        int node = finish_order[i];
+        if (!visited[node]) {
+            dfs2(node, scc_count);
+            scc_count++;
+        }
+    }
 
-# Example usage
-n = 4
-coins = [5, 2, 8, 1]
-edges = [(0, 1), (1, 2), (2, 3)]
-constraints = lambda vertex: vertex >= 0  # Only collect from non-negative vertices
-result = constrained_coin_collector(n, coins, edges, constraints)
-print(f"Constrained maximum coins: {result}")
+    // Step 3: Build condensed DAG
+    for (int i = 1; i <= n; i++) {
+        scc_coins[scc_id[i]] += coins[i];
+    }
+
+    set<pair<int,int>> dag_edges;
+    for (int u = 1; u <= n; u++) {
+        for (int v : graph[u]) {
+            if (scc_id[u] != scc_id[v]) {
+                if (dag_edges.find({scc_id[u], scc_id[v]}) == dag_edges.end()) {
+                    dag_edges.insert({scc_id[u], scc_id[v]});
+                    dag[scc_id[u]].push_back(scc_id[v]);
+                }
+            }
+        }
+    }
+
+    // Step 4: DP on DAG (process in reverse topological order)
+    // Kosaraju gives SCCs in reverse topological order
+    for (int scc = scc_count - 1; scc >= 0; scc--) {
+        dp[scc] = scc_coins[scc];
+        for (int child : dag[scc]) {
+            dp[scc] = max(dp[scc], scc_coins[scc] + dp[child]);
+        }
+    }
+
+    long long answer = 0;
+    for (int scc = 0; scc < scc_count; scc++) {
+        answer = max(answer, dp[scc]);
+    }
+
+    cout << answer << "\n";
+
+    return 0;
+}
 ```
 
-#### **2. Coin Collector with Different Metrics**
-**Problem**: Collect coins with different value metrics.
+## Common Mistakes
 
-**Key Differences**: Different value calculations
+| Mistake | Why It's Wrong | Fix |
+|---------|---------------|-----|
+| Not processing in reverse topological order | DP depends on children being computed first | Process from sinks to sources |
+| Integer overflow | Coins up to 10^9, sum can exceed 32-bit | Use `long long` in C++ |
+| Duplicate edges in DAG | Multiple edges between same SCCs waste time | Use set to deduplicate |
+| Forgetting self-loops | A node can have edge to itself (still same SCC) | Check `scc[u] != scc[v]` |
+| Wrong topological order | Kosaraju gives reverse topo order naturally | Process SCCs from highest ID to lowest |
 
-**Solution Approach**: Use advanced mathematical techniques
+## Why Kosaraju's Order Works
 
-**Implementation**:
-```python
-def weighted_coin_collector(n, coins, edges, weights):
-    """Collect coins with different weights"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    # DP array to store maximum coins from each vertex
-    dp = [0] * n
-    visited = [False] * n
-    
-    def dfs_weighted_dp(vertex):
-        if visited[vertex]:
-            return dp[vertex]
-        
-        visited[vertex] = True
-        weight = weights.get(vertex, 1)
-        dp[vertex] = coins[vertex] * weight
-        
-        max_child_coins = 0
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                child_coins = dfs_weighted_dp(neighbor)
-                max_child_coins = max(max_child_coins, child_coins)
-        
-        dp[vertex] += max_child_coins
-        return dp[vertex]
-    
-    # Calculate weighted DP for all vertices
-    max_total = 0
-    for vertex in range(n):
-        if not visited[vertex]:
-            max_total = max(max_total, dfs_weighted_dp(vertex))
-    
-    return max_total
+Kosaraju's algorithm assigns SCC IDs in reverse topological order:
+- SCCs discovered first (higher IDs) have no outgoing edges to undiscovered SCCs
+- This means if there's an edge from SCC A to SCC B in the DAG, then ID(A) < ID(B)
+- Processing from highest to lowest ID = processing sinks before sources = correct DP order
 
-# Example usage
-n = 4
-coins = [5, 2, 8, 1]
-edges = [(0, 1), (1, 2), (2, 3)]
-weights = {0: 2, 1: 1, 2: 3, 3: 1}
-result = weighted_coin_collector(n, coins, edges, weights)
-print(f"Weighted maximum coins: {result}")
-```
+## Complexity Analysis
 
-#### **3. Coin Collector with Multiple Dimensions**
-**Problem**: Collect coins in multiple dimensions.
+| Operation | Time | Space |
+|-----------|------|-------|
+| Build graph | O(m) | O(n + m) |
+| First DFS | O(n + m) | O(n) |
+| Second DFS | O(n + m) | O(n) |
+| Build DAG | O(m) | O(m) |
+| DP on DAG | O(n + m) | O(n) |
+| **Total** | **O(n + m)** | **O(n + m)** |
 
-**Key Differences**: Handle multiple dimensions
+## Related Problems
 
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_coin_collector(n, coins, edges, dimensions):
-    """Collect coins in multiple dimensions"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    # DP array to store maximum coins from each vertex
-    dp = [0] * n
-    visited = [False] * n
-    
-    def dfs_multi_dimensional_dp(vertex):
-        if visited[vertex]:
-            return dp[vertex]
-        
-        visited[vertex] = True
-        dp[vertex] = coins[vertex]
-        
-        max_child_coins = 0
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                child_coins = dfs_multi_dimensional_dp(neighbor)
-                max_child_coins = max(max_child_coins, child_coins)
-        
-        dp[vertex] += max_child_coins
-        return dp[vertex]
-    
-    # Calculate multi-dimensional DP for all vertices
-    max_total = 0
-    for vertex in range(n):
-        if not visited[vertex]:
-            max_total = max(max_total, dfs_multi_dimensional_dp(vertex))
-    
-    return max_total
-
-# Example usage
-n = 4
-coins = [5, 2, 8, 1]
-edges = [(0, 1), (1, 2), (2, 3)]
-dimensions = 1
-result = multi_dimensional_coin_collector(n, coins, edges, dimensions)
-print(f"Multi-dimensional maximum coins: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Shortest Routes](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Labyrinth](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Path Sum](https://leetcode.com/problems/path-sum/) - Tree
-- [Path Sum II](https://leetcode.com/problems/path-sum-ii/) - Tree
-- [Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) - Tree
-
-#### **Problem Categories**
-- **Graph Algorithms**: Coin collection, path finding, graph traversal
-- **Dynamic Programming**: DP on trees, coin collection
-- **Tree Algorithms**: Tree traversal, coin collection
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Dynamic Programming](https://cp-algorithms.com/dynamic_programming/basic-dp.html) - Dynamic programming algorithms
-- [Tree Algorithms](https://cp-algorithms.com/graph/tree-algorithms.html) - Tree algorithms
-
-### **Practice Problems**
-- [CSES Shortest Routes](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Labyrinth](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Dynamic Programming](https://en.wikipedia.org/wiki/Dynamic_programming) - Wikipedia article
-- [Tree Traversal](https://en.wikipedia.org/wiki/Tree_traversal) - Wikipedia article
+- [CSES: Giant Pizza](https://cses.fi/problemset/task/1684) - 2-SAT with SCC
+- [CSES: Planets and Kingdoms](https://cses.fi/problemset/task/1683) - Finding SCCs
+- [CSES: Longest Flight Route](https://cses.fi/problemset/task/1680) - DP on DAG

@@ -1,470 +1,461 @@
 ---
 layout: simple
-title: "Longest Subarray with Sum - Two Pointers Technique"
+title: "Longest Subarray with Sum - Sliding Window / Hash Map"
 permalink: /problem_soulutions/sliding_window/longest_subarray_with_sum_analysis
+difficulty: Medium
+tags: [sliding-window, two-pointers, prefix-sum, hash-map]
 ---
 
-# Longest Subarray with Sum - Two Pointers Technique
+# Longest Subarray with Sum
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement two pointers technique for subarray problems
-- Apply sliding window technique for variable-size windows
-- Optimize subarray sum calculations using prefix sums and hash maps
-- Handle edge cases in subarray sum problems
-- Recognize when to use two pointers vs other approaches
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Sliding Window / Prefix Sum |
+| **Time Limit** | 1 second |
+| **Key Technique** | Two Pointers (positive arrays) / Hash Map (general) |
+| **CSES Link** | [Subarray Sums I](https://cses.fi/problemset/task/1660) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an array of integers and a target sum, find the length of the longest contiguous subarray that sums to the target value. If no such subarray exists, return 0.
+After solving this problem, you will be able to:
+- [ ] Apply sliding window technique for variable-size window problems
+- [ ] Use prefix sums with hash maps for subarray sum problems
+- [ ] Choose between sliding window and hash map based on constraints
+- [ ] Handle edge cases involving empty subarrays and zero sums
 
-**Input**: 
-- First line: n (number of elements) and target (target sum)
-- Second line: n integers separated by spaces
+---
 
-**Output**: 
-- Single integer: length of longest subarray with sum equal to target, or 0 if none exists
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 10⁵
-- -10⁴ ≤ arr[i] ≤ 10⁴
-- -10⁹ ≤ target ≤ 10⁹
+**Problem:** Given an array of integers and a target sum, find the length of the longest contiguous subarray that sums to the target value.
 
-**Example**:
+**Input:**
+- Line 1: n (array size) and x (target sum)
+- Line 2: n space-separated integers
+
+**Output:**
+- Length of longest subarray with sum equal to target (0 if none exists)
+
+**Constraints:**
+- 1 <= n <= 2 * 10^5
+- 1 <= x <= 10^9
+- 1 <= a[i] <= 10^9 (for sliding window variant)
+- -10^9 <= a[i] <= 10^9 (for hash map variant)
+
+### Example
+
 ```
 Input:
-6 3
--2 1 -3 4 -1 2
+8 8
+3 1 4 1 5 9 2 6
 
 Output:
-3
-
-Explanation**: 
-The subarray [1, -3, 4] has sum 2, and [4, -1, 2] has sum 5.
-The subarray [-2, 1, -3, 4] has sum 0.
-The subarray [1, -3, 4, -1, 2] has sum 3 and length 5.
-But the longest subarray with sum 3 is [1, -3, 4, -1, 2] with length 5.
-Wait, let me recalculate: [1, -3, 4, -1, 2] = 1 + (-3) + 4 + (-1) + 2 = 3 ✓
+4
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: Check all possible subarrays by considering every starting and ending position
-- **Complete Coverage**: Guarantees finding the optimal solution by examining all possibilities
-- **Simple Implementation**: Straightforward nested loops to generate all subarrays
-- **Inefficient**: Time complexity grows quadratically with input size
-
-**Key Insight**: Generate all possible subarrays and calculate their sums to find the longest one with target sum.
-
-**Algorithm**:
-- For each starting position i from 0 to n-1
-- For each ending position j from i to n-1
-- Calculate sum of subarray from i to j
-- If sum equals target, update maximum length
-- Return maximum length found
-
-**Visual Example**:
-```
-Array: [-2, 1, -3, 4, -1, 2], target = 3
-
-All subarrays and their sums:
-i=0: [-2]=-2, [-2,1]=-1, [-2,1,-3]=-4, [-2,1,-3,4]=0, [-2,1,-3,4,-1]=-1, [-2,1,-3,4,-1,2]=1
-i=1: [1]=1, [1,-3]=-2, [1,-3,4]=2, [1,-3,4,-1]=1, [1,-3,4,-1,2]=3  ← Length 5
-i=2: [-3]=-3, [-3,4]=1, [-3,4,-1]=0, [-3,4,-1,2]=2
-i=3: [4]=4, [4,-1]=3  ← Length 2
-i=4: [-1]=-1, [-1,2]=1
-i=5: [2]=2
-
-Longest subarray with sum 3: [1, -3, 4, -1, 2] with length 5
-```
-
-**Implementation**:
-```python
-def brute_force_longest_subarray_with_sum(arr, target):
-    """
-    Find longest subarray with given sum using brute force
-    
-    Args:
-        arr: List of integers
-        target: Target sum
-    
-    Returns:
-        int: Length of longest subarray with sum equal to target
-    """
-    n = len(arr)
-    max_length = 0
-    
-    for i in range(n):
-        for j in range(i, n):
-            # Calculate sum of subarray from i to j
-            current_sum = sum(arr[i:j+1])
-            if current_sum == target:
-                max_length = max(max_length, j - i + 1)
-    
-    return max_length
-
-# Example usage
-arr = [-2, 1, -3, 4, -1, 2]
-target = 3
-result = brute_force_longest_subarray_with_sum(arr, target)
-print(f"Brute force result: {result}")  # Output: 5
-```
-
-**Time Complexity**: O(n³) - Nested loops plus sum calculation
-**Space Complexity**: O(1) - Only using constant extra space
-
-**Why it's inefficient**: Triple nested operations make it too slow for large inputs.
+**Explanation:** The subarray [3, 1, 4] has sum 8 and length 3. The subarray [1, 4, 1, 2] = wait, let's check: we need sum = 8. Subarray [3, 1, 4] = 8 with length 3. Subarray [1, 5, 2] is not contiguous. The longest valid subarray is [3, 1, 4] with length 3.
 
 ---
 
-### Approach 2: Optimized with Prefix Sums
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Approach**:
-- **Prefix Sum Optimization**: Use prefix sums to calculate subarray sums in O(1) time
-- **Efficiency Improvement**: Reduce time complexity from O(n³) to O(n²)
-- **Space Trade-off**: Use O(n) extra space for prefix sums to speed up calculations
-- **Better Performance**: Significantly faster than brute force for larger inputs
+### Pattern Recognition
 
-**Key Insight**: Precompute prefix sums to eliminate the need to recalculate subarray sums.
+> **Key Question:** When do we expand the window, and when do we shrink it?
 
-**Algorithm**:
-- Calculate prefix sum array where prefix[i] = sum of elements from 0 to i
-- For each starting position i, for each ending position j
-- Calculate subarray sum as prefix[j] - prefix[i-1] (or prefix[j] if i=0)
-- If sum equals target, update maximum length
-- Return maximum length found
+For **positive integers only**: Use sliding window. When sum exceeds target, shrink from left. When sum equals target, record the length.
 
-**Visual Example**:
-```
-Array: [-2, 1, -3, 4, -1, 2], target = 3
-Prefix: [-2, -1, -4, 0, -1, 1]
+For **arrays with negative numbers**: Sliding window does not work because removing elements might increase or decrease the sum unpredictably. Use prefix sum + hash map instead.
 
-Subarray sums using prefix:
-i=0, j=0: prefix[0] = -2
-i=0, j=1: prefix[1] = -1
-i=0, j=2: prefix[2] = -4
-i=0, j=3: prefix[3] = 0
-i=0, j=4: prefix[4] = -1
-i=0, j=5: prefix[5] = 1
+### Breaking Down the Problem
 
-i=1, j=1: prefix[1] - prefix[0] = -1 - (-2) = 1
-i=1, j=2: prefix[2] - prefix[0] = -4 - (-2) = -2
-i=1, j=3: prefix[3] - prefix[0] = 0 - (-2) = 2
-i=1, j=4: prefix[4] - prefix[0] = -1 - (-2) = 1
-i=1, j=5: prefix[5] - prefix[0] = 1 - (-2) = 3  ← Length 5
+1. **What are we looking for?** Maximum length subarray with exact sum
+2. **What information do we have?** Array elements and target sum
+3. **What is the relationship?** Subarray sum = prefix[j] - prefix[i-1]
 
-i=3, j=4: prefix[4] - prefix[2] = -1 - (-4) = 3  ← Length 2
+### Analogies
 
-Longest subarray with sum 3: length 5
-```
-
-**Implementation**:
-```python
-def optimized_longest_subarray_with_sum(arr, target):
-    """
-    Find longest subarray with given sum using prefix sums
-    
-    Args:
-        arr: List of integers
-        target: Target sum
-    
-    Returns:
-        int: Length of longest subarray with sum equal to target
-    """
-    n = len(arr)
-    
-    # Calculate prefix sums
-    prefix = [0] * n
-    prefix[0] = arr[0]
-    for i in range(1, n):
-        prefix[i] = prefix[i-1] + arr[i]
-    
-    max_length = 0
-    
-    for i in range(n):
-        for j in range(i, n):
-            # Calculate subarray sum using prefix sums
-            if i == 0:
-                current_sum = prefix[j]
-            else:
-                current_sum = prefix[j] - prefix[i-1]
-            if current_sum == target:
-                max_length = max(max_length, j - i + 1)
-    
-    return max_length
-
-# Example usage
-arr = [-2, 1, -3, 4, -1, 2]
-target = 3
-result = optimized_longest_subarray_with_sum(arr, target)
-print(f"Optimized result: {result}")  # Output: 5
-```
-
-**Time Complexity**: O(n²) - Nested loops with O(1) sum calculation
-**Space Complexity**: O(n) - Prefix sum array
-
-**Why it's better**: Much faster than brute force, but still not optimal.
+Think of this like a worm crawling along a number line. The worm's body (window) expands and contracts to maintain a specific "weight" (sum). For positive-only arrays, the worm knows that stretching always adds weight and shrinking always reduces it.
 
 ---
 
-### Approach 3: Optimal with Hash Map
+## Solution 1: Sliding Window (Positive Arrays Only)
 
-**Key Insights from Optimal Approach**:
-- **Hash Map Optimization**: Use hash map to store prefix sums and their first occurrence indices
-- **Efficiency Improvement**: Reduce time complexity from O(n²) to O(n)
-- **Space Trade-off**: Use O(n) extra space for hash map to achieve linear time
-- **Optimal Performance**: Best possible time complexity for this problem
+### Key Insight
 
-**Key Insight**: Use hash map to find if there exists a prefix sum that, when subtracted from current prefix sum, gives the target.
+> **The Trick:** With positive numbers, window sum is monotonic - expanding increases sum, shrinking decreases sum.
 
-**Algorithm**:
-- Initialize hash map with {0: -1} to handle subarrays starting from index 0
-- Calculate prefix sum as we iterate through the array
-- For each position, check if (current_prefix_sum - target) exists in hash map
-- If it exists, update maximum length
-- Store current prefix sum and its index in hash map (only first occurrence)
+### Algorithm
 
-**Visual Example**:
+1. Initialize left pointer at 0, current_sum at 0, max_length at 0
+2. Expand right pointer through the array
+3. Add arr[right] to current_sum
+4. While current_sum > target, shrink by moving left pointer right
+5. If current_sum == target, update max_length
+6. Return max_length
+
+### Dry Run Example
+
+Let's trace through with input `arr = [2, 1, 5, 1, 3, 2], target = 8`:
+
 ```
-Array: [-2, 1, -3, 4, -1, 2], target = 3
-Hash map: {0: -1}
+Initial state:
+  left = 0, current_sum = 0, max_length = 0
 
-i=0: prefix_sum = -2
-     Look for -2 - 3 = -5 in hash map (not found)
-     Hash map: {0: -1, -2: 0}
+Step 1: right = 0, arr[0] = 2
+  current_sum = 0 + 2 = 2
+  2 < 8, no shrink needed
+  2 != 8, don't update max_length
+  Window: [2], sum = 2
 
-i=1: prefix_sum = -1
-     Look for -1 - 3 = -4 in hash map (not found)
-     Hash map: {0: -1, -2: 0, -1: 1}
+Step 2: right = 1, arr[1] = 1
+  current_sum = 2 + 1 = 3
+  3 < 8, no shrink needed
+  Window: [2, 1], sum = 3
 
-i=2: prefix_sum = -4
-     Look for -4 - 3 = -7 in hash map (not found)
-     Hash map: {0: -1, -2: 0, -1: 1, -4: 2}
+Step 3: right = 2, arr[2] = 5
+  current_sum = 3 + 5 = 8
+  8 == 8, update max_length = 3
+  Window: [2, 1, 5], sum = 8
 
-i=3: prefix_sum = 0
-     Look for 0 - 3 = -3 in hash map (not found)
-     Hash map: {0: -1, -2: 0, -1: 1, -4: 2, 0: 3}
+Step 4: right = 3, arr[3] = 1
+  current_sum = 8 + 1 = 9
+  9 > 8, shrink: subtract arr[0]=2, left=1, sum=7
+  7 < 8, stop shrinking
+  Window: [1, 5, 1], sum = 7
 
-i=4: prefix_sum = -1
-     Look for -1 - 3 = -4 in hash map (found at index 2)
-     Length = 4 - 2 = 2
-     Hash map: {0: -1, -2: 0, -1: 1, -4: 2, 0: 3}
+Step 5: right = 4, arr[4] = 3
+  current_sum = 7 + 3 = 10
+  10 > 8, shrink: subtract arr[1]=1, left=2, sum=9
+  9 > 8, shrink: subtract arr[2]=5, left=3, sum=4
+  Window: [1, 3], sum = 4
 
-i=5: prefix_sum = 1
-     Look for 1 - 3 = -2 in hash map (found at index 0)
-     Length = 5 - 0 = 5  ← Maximum length
-     Hash map: {0: -1, -2: 0, -1: 1, -4: 2, 0: 3, 1: 5}
+Step 6: right = 5, arr[5] = 2
+  current_sum = 4 + 2 = 6
+  Window: [1, 3, 2], sum = 6
 
-Maximum length: 5
+Final: max_length = 3 (subarray [2, 1, 5])
 ```
 
-**Implementation**:
+### Visual Diagram
+
+```
+Array: [2, 1, 5, 1, 3, 2]  Target: 8
+
+  left=0               right=2
+    |                    |
+    v                    v
+   [2,  1,  5] 1,  3,  2
+    └────────┘
+    sum = 8, length = 3
+```
+
+### Code
+
+**Python:**
 ```python
-def optimal_longest_subarray_with_sum(arr, target):
+def longest_subarray_positive(arr, target):
     """
-    Find longest subarray with given sum using hash map
-    
-    Args:
-        arr: List of integers
-        target: Target sum
-    
-    Returns:
-        int: Length of longest subarray with sum equal to target
-    """
-    n = len(arr)
-    prefix_sum_map = {0: -1}  # Handle subarrays starting from index 0
-    prefix_sum = 0
-    max_length = 0
-    
-    for i in range(n):
-        prefix_sum += arr[i]
-        
-        # Check if there exists a prefix sum that gives us the target
-        if prefix_sum - target in prefix_sum_map:
-            length = i - prefix_sum_map[prefix_sum - target]
-            max_length = max(max_length, length)
-        
-        # Store first occurrence of this prefix sum
-        if prefix_sum not in prefix_sum_map:
-            prefix_sum_map[prefix_sum] = i
-    
-    return max_length
-
-# Example usage
-arr = [-2, 1, -3, 4, -1, 2]
-target = 3
-result = optimal_longest_subarray_with_sum(arr, target)
-print(f"Optimal result: {result}")  # Output: 5
-```
-
-**Time Complexity**: O(n) - Single pass through the array
-**Space Complexity**: O(n) - Hash map for prefix sums
-
-**Why it's optimal**: Best possible time complexity for this problem.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n³) | O(1) | Check all possible subarrays |
-| Optimized | O(n²) | O(n) | Use prefix sums for faster calculation |
-| Optimal | O(n) | O(n) | Use hash map to find target prefix sums |
-
-### Time Complexity
-- **Time**: O(n) - Single pass through the array
-- **Space**: O(n) - Hash map for prefix sums
-
-### Why This Solution Works
-- **Hash Map Lookup**: Use hash map to find if target prefix sum exists in O(1) time
-- **Prefix Sum Property**: If prefix[j] - prefix[i] = target, then subarray from i+1 to j has sum target
-- **First Occurrence**: Store only first occurrence of each prefix sum to get maximum length
-- **Optimal Approach**: O(n) time complexity is optimal for this problem
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Longest Subarray with Sum At Most Target**
-**Problem**: Find the length of the longest subarray with sum at most target.
-
-**Key Differences**: At most target instead of exactly target
-
-**Solution Approach**: Use sliding window with sum tracking
-
-**Implementation**:
-```python
-def longest_subarray_sum_at_most(arr, target):
-    """
-    Find length of longest subarray with sum at most target
+    Sliding window for positive-only arrays.
+    Time: O(n), Space: O(1)
     """
     n = len(arr)
     left = 0
     current_sum = 0
     max_length = 0
-    
+
     for right in range(n):
         current_sum += arr[right]
-        
-        # Shrink window if sum exceeds target
+
+        # Shrink window while sum exceeds target
         while current_sum > target and left <= right:
             current_sum -= arr[left]
             left += 1
-        
-        # Update maximum length
-        max_length = max(max_length, right - left + 1)
-    
-    return max_length
 
-# Example usage
-arr = [1, 2, 3, 4, 5]
-target = 8
-result = longest_subarray_sum_at_most(arr, target)
-print(f"Longest subarray with sum <= {target}: {result}")  # Output: 3
+        # Check if we found target sum
+        if current_sum == target:
+            max_length = max(max_length, right - left + 1)
+
+    return max_length
 ```
 
-#### **2. Longest Subarray with Sum At Least Target**
-**Problem**: Find the length of the longest subarray with sum at least target.
+**C++:**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Key Differences**: At least target instead of exactly target
+int longestSubarrayPositive(vector<int>& arr, long long target) {
+    int n = arr.size();
+    int left = 0;
+    long long currentSum = 0;
+    int maxLength = 0;
 
-**Solution Approach**: Use sliding window with sum tracking
+    for (int right = 0; right < n; right++) {
+        currentSum += arr[right];
 
-**Implementation**:
+        // Shrink window while sum exceeds target
+        while (currentSum > target && left <= right) {
+            currentSum -= arr[left];
+            left++;
+        }
+
+        // Check if we found target sum
+        if (currentSum == target) {
+            maxLength = max(maxLength, right - left + 1);
+        }
+    }
+
+    return maxLength;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Each element visited at most twice (once by right, once by left) |
+| Space | O(1) | Only tracking pointers and sum |
+
+---
+
+## Solution 2: Hash Map (General - Works with Negatives)
+
+### Key Insight
+
+> **The Trick:** If prefix[j] - prefix[i] = target, then subarray (i, j] has sum = target. Store first occurrence of each prefix sum to maximize length.
+
+### Algorithm
+
+1. Initialize hash map with {0: -1} (empty prefix at index -1)
+2. Compute running prefix sum
+3. For each index, check if (prefix_sum - target) exists in map
+4. If found, compute length and update max
+5. Store first occurrence of each prefix sum
+
+### Dry Run Example
+
+Let's trace through with `arr = [-2, 1, -3, 4, -1, 2], target = 3`:
+
+```
+Initial: prefix_map = {0: -1}, prefix_sum = 0, max_length = 0
+
+i=0: prefix_sum = -2
+  Look for -2 - 3 = -5 (not found)
+  Store: {0: -1, -2: 0}
+
+i=1: prefix_sum = -1
+  Look for -1 - 3 = -4 (not found)
+  Store: {0: -1, -2: 0, -1: 1}
+
+i=2: prefix_sum = -4
+  Look for -4 - 3 = -7 (not found)
+  Store: {0: -1, -2: 0, -1: 1, -4: 2}
+
+i=3: prefix_sum = 0
+  Look for 0 - 3 = -3 (not found)
+  0 already in map, don't overwrite (keep first occurrence)
+
+i=4: prefix_sum = -1
+  Look for -1 - 3 = -4 (found at index 2!)
+  length = 4 - 2 = 2, max_length = 2
+  -1 already in map, don't overwrite
+
+i=5: prefix_sum = 1
+  Look for 1 - 3 = -2 (found at index 0!)
+  length = 5 - 0 = 5, max_length = 5
+  Store: {0: -1, -2: 0, -1: 1, -4: 2, 1: 5}
+
+Result: max_length = 5 (subarray [1, -3, 4, -1, 2])
+```
+
+### Code
+
+**Python:**
 ```python
-def longest_subarray_sum_at_least(arr, target):
+def longest_subarray_general(arr, target):
     """
-    Find length of longest subarray with sum at least target
+    Hash map approach for arrays with any integers.
+    Time: O(n), Space: O(n)
     """
-    n = len(arr)
+    prefix_map = {0: -1}  # Handle subarrays starting at index 0
+    prefix_sum = 0
+    max_length = 0
+
+    for i, num in enumerate(arr):
+        prefix_sum += num
+
+        # Check if (prefix_sum - target) exists
+        if prefix_sum - target in prefix_map:
+            length = i - prefix_map[prefix_sum - target]
+            max_length = max(max_length, length)
+
+        # Store first occurrence only (for maximum length)
+        if prefix_sum not in prefix_map:
+            prefix_map[prefix_sum] = i
+
+    return max_length
+```
+
+**C++:**
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int longestSubarrayGeneral(vector<int>& arr, long long target) {
+    unordered_map<long long, int> prefixMap;
+    prefixMap[0] = -1;  // Handle subarrays starting at index 0
+
+    long long prefixSum = 0;
+    int maxLength = 0;
+
+    for (int i = 0; i < arr.size(); i++) {
+        prefixSum += arr[i];
+
+        // Check if (prefixSum - target) exists
+        if (prefixMap.count(prefixSum - target)) {
+            int length = i - prefixMap[prefixSum - target];
+            maxLength = max(maxLength, length);
+        }
+
+        // Store first occurrence only
+        if (!prefixMap.count(prefixSum)) {
+            prefixMap[prefixSum] = i;
+        }
+    }
+
+    return maxLength;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Single pass through array |
+| Space | O(n) | Hash map stores up to n prefix sums |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Using Sliding Window with Negative Numbers
+
+```python
+# WRONG - Does not work with negative numbers!
+def wrong_approach(arr, target):
     left = 0
     current_sum = 0
-    max_length = 0
-    
-    for right in range(n):
+    for right in range(len(arr)):
         current_sum += arr[right]
-        
-        # Try to expand window while sum is at least target
-        while current_sum >= target and left <= right:
-            max_length = max(max_length, right - left + 1)
+        while current_sum > target:  # May never trigger or wrong shrink
             current_sum -= arr[left]
             left += 1
-    
-    return max_length
-
-# Example usage
-arr = [1, 2, 3, 4, 5]
-target = 6
-result = longest_subarray_sum_at_least(arr, target)
-print(f"Longest subarray with sum >= {target}: {result}")  # Output: 3
 ```
 
-#### **3. Longest Subarray with Sum in Range**
-**Problem**: Find the length of the longest subarray with sum in range [min_sum, max_sum].
+**Problem:** Negative numbers break monotonicity. Shrinking might increase the sum!
+**Fix:** Use hash map approach for arrays with negative numbers.
 
-**Key Differences**: Sum must be within a range instead of exact value
+### Mistake 2: Overwriting Prefix Sum Index
 
-**Solution Approach**: Use sliding window with range checking
-
-**Implementation**:
 ```python
-def longest_subarray_sum_in_range(arr, min_sum, max_sum):
-    """
-    Find length of longest subarray with sum in range [min_sum, max_sum]
-    """
-    n = len(arr)
-    left = 0
-    current_sum = 0
-    max_length = 0
-    
-    for right in range(n):
-        current_sum += arr[right]
-        
-        # Shrink window if sum exceeds max_sum
-        while current_sum > max_sum and left <= right:
-            current_sum -= arr[left]
-            left += 1
-        
-        # Check if current sum is in valid range
-        if min_sum <= current_sum <= max_sum:
-            max_length = max(max_length, right - left + 1)
-    
-    return max_length
+# WRONG - Overwrites first occurrence
+prefix_map[prefix_sum] = i  # Always updates
 
-# Example usage
-arr = [1, 2, 3, 4, 5]
-min_sum, max_sum = 4, 8
-result = longest_subarray_sum_in_range(arr, min_sum, max_sum)
-print(f"Longest subarray with sum in [{min_sum}, {max_sum}]: {result}")  # Output: 3
+# CORRECT - Keep first occurrence for maximum length
+if prefix_sum not in prefix_map:
+    prefix_map[prefix_sum] = i
 ```
 
-### Related Problems
+**Problem:** Overwriting gives shorter subarrays.
+**Fix:** Only store the first occurrence of each prefix sum.
 
-#### **CSES Problems**
-- [Longest Subarray with Sum](https://cses.fi/problemset/task/2101) - Find longest subarray with given sum
-- [Subarray Sums I](https://cses.fi/problemset/task/2102) - Count subarrays with given sum
-- [Subarray Sums II](https://cses.fi/problemset/task/2103) - Count subarrays with given sum (advanced)
+### Mistake 3: Forgetting Base Case {0: -1}
 
-#### **LeetCode Problems**
-- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Count subarrays with sum k
-- [Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) - Minimum length subarray with sum >= target
-- [Maximum Size Subarray Sum Equals k](https://leetcode.com/problems/maximum-size-subarray-sum-equals-k/) - Maximum length subarray with sum k
-- [Continuous Subarray Sum](https://leetcode.com/problems/continuous-subarray-sum/) - Subarray sum with modulo
+```python
+# WRONG - Missing base case
+prefix_map = {}  # Misses subarrays starting at index 0
 
-#### **Problem Categories**
-- **Hash Map**: Prefix sum tracking, efficient lookups, frequency counting
-- **Sliding Window**: Variable-size windows, sum optimization, window management
-- **Array Processing**: Subarray analysis, sum calculation, range queries
-- **Two Pointers**: Left and right pointer technique, window expansion and contraction
+# CORRECT
+prefix_map = {0: -1}  # Handles arr[0:j] subarrays
+```
 
-## 🚀 Key Takeaways
+**Problem:** Cannot find subarrays that start at index 0.
+**Fix:** Initialize with {0: -1} to handle empty prefix.
 
-- **Hash Map Technique**: The standard approach for subarray sum problems
-- **Prefix Sum Property**: Use prefix sums to efficiently calculate subarray sums
-- **First Occurrence**: Store only first occurrence to maximize subarray length
-- **Edge Cases**: Handle subarrays starting from index 0 with {0: -1} initialization
-- **Pattern Recognition**: This technique applies to many subarray sum problems
+---
+
+## Edge Cases
+
+| Case | Input | Expected | Why |
+|------|-------|----------|-----|
+| No solution | `[1,2,3], target=10` | 0 | No subarray sums to 10 |
+| Single element | `[5], target=5` | 1 | Element itself is the answer |
+| Entire array | `[1,2,3], target=6` | 3 | Whole array is valid |
+| Target = 0 | `[1,-1,2,-2], target=0` | 4 | Sum of all elements is 0 |
+| All same values | `[2,2,2,2], target=4` | 2 | Multiple valid windows |
+| Large values | `[10^9, 10^9], target=2*10^9` | 2 | Use long long in C++ |
+
+---
+
+## When to Use This Pattern
+
+### Use Sliding Window When:
+- All array elements are positive (or all non-negative)
+- You need O(1) space complexity
+- Finding contiguous subarrays with sum constraints
+
+### Use Hash Map When:
+- Array contains negative numbers
+- Need to find exact sum (not "at most" or "at least")
+- Willing to trade O(n) space for simpler logic
+
+### Pattern Recognition Checklist:
+- [ ] Contiguous subarray problem? Consider sliding window or prefix sum
+- [ ] All positive elements? Sliding window works
+- [ ] Contains negatives? Must use hash map
+- [ ] Finding maximum length? Store first occurrence of prefix sum
+- [ ] Finding minimum length? Store last occurrence of prefix sum
+
+---
+
+## Related Problems
+
+### CSES Problems
+| Problem | Link | Relationship |
+|---------|------|--------------|
+| Subarray Sums I | [CSES 1660](https://cses.fi/problemset/task/1660) | Count subarrays (positive only) |
+| Subarray Sums II | [CSES 1661](https://cses.fi/problemset/task/1661) | Count subarrays (with negatives) |
+| Subarray Divisibility | [CSES 1662](https://cses.fi/problemset/task/1662) | Modular arithmetic variant |
+| Maximum Subarray Sum | [CSES 1643](https://cses.fi/problemset/task/1643) | Kadane's algorithm |
+
+### LeetCode Problems
+| Problem | Difficulty | Key Difference |
+|---------|------------|----------------|
+| [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) | Medium | Count instead of max length |
+| [Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) | Medium | Minimum length, sum >= target |
+| [Maximum Size Subarray Sum Equals k](https://leetcode.com/problems/maximum-size-subarray-sum-equals-k/) | Medium | Same problem |
+| [Binary Subarrays With Sum](https://leetcode.com/problems/binary-subarrays-with-sum/) | Medium | Binary array variant |
+
+---
+
+## Key Takeaways
+
+1. **Choose Your Weapon:** Sliding window for positive arrays, hash map for general arrays
+2. **Monotonicity Matters:** Sliding window requires predictable sum behavior when expanding/shrinking
+3. **First Occurrence:** For maximum length, store first occurrence of each prefix sum
+4. **Base Case:** Always initialize with {0: -1} to handle subarrays starting at index 0
+5. **Overflow:** Use long long in C++ for large sums
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Implement sliding window solution for positive arrays without looking
+- [ ] Implement hash map solution for general arrays without looking
+- [ ] Explain why sliding window fails with negative numbers
+- [ ] Identify which approach to use based on constraints
+- [ ] Handle all edge cases correctly

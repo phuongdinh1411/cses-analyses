@@ -1,527 +1,365 @@
 ---
 layout: simple
-title: "Road Reparation - Graph Algorithm Problem"
+title: "Road Reparation - Minimum Spanning Tree with Kruskal's Algorithm"
 permalink: /problem_soulutions/graph_algorithms/road_reparation_analysis
+difficulty: Medium
+tags: [graph, mst, kruskal, union-find, greedy]
+cses_link: https://cses.fi/problemset/task/1675
 ---
 
-# Road Reparation - Graph Algorithm Problem
+# Road Reparation - Minimum Spanning Tree (MST)
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of minimum spanning tree with existing edges
-- Apply efficient algorithms for finding MST with pre-existing connections
-- Implement Kruskal's algorithm with edge selection optimization
-- Optimize graph connectivity for repair scenarios
-- Handle special cases in MST repair problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Connect all cities with minimum total road repair cost |
+| Algorithm | Kruskal's Algorithm with Union-Find |
+| Time Complexity | O(m log m) |
+| Space Complexity | O(n + m) |
+| Key Technique | Greedy edge selection + cycle detection |
+| Difficulty | Medium |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a weighted graph with some existing roads, find the minimum cost to repair/add roads to connect all cities.
+By completing this problem, you will master:
 
-**Input**: 
-- n: number of cities
-- m: number of existing roads
-- edges: array of (u, v, weight) representing existing roads
+1. **MST Concept**: Understanding what a Minimum Spanning Tree is and why it matters
+2. **Kruskal's Algorithm**: Greedy approach to building MST by processing edges in sorted order
+3. **Union-Find Data Structure**: Efficient component tracking and cycle detection
+4. **Connectivity Check**: Determining when a graph cannot be fully connected
 
-**Output**: 
-- Minimum cost to repair/add roads to connect all cities, or -1 if impossible
+## Problem Statement
+
+There are **n** cities and **m** bidirectional roads. Each road has a repair cost. Find the **minimum total cost** to repair roads such that all cities become connected. If it's impossible to connect all cities, output "IMPOSSIBLE".
+
+**Input Format**:
+- First line: n (cities) and m (roads)
+- Next m lines: a, b, c (road between cities a and b with cost c)
+
+**Output**: Minimum cost to connect all cities, or "IMPOSSIBLE"
 
 **Constraints**:
-- 1 ≤ n ≤ 10^5
-- 1 ≤ m ≤ 2×10^5
-- 1 ≤ weight ≤ 10^9
+- 1 <= n <= 10^5
+- 1 <= m <= 2 x 10^5
+- 1 <= cost <= 10^9
 
-**Example**:
+## What is a Minimum Spanning Tree?
+
+A **Spanning Tree** of a graph is a subgraph that:
+- Includes ALL vertices (nodes)
+- Is a tree (connected and has no cycles)
+- Has exactly **n-1** edges for n vertices
+
+A **Minimum Spanning Tree (MST)** is a spanning tree with the smallest possible sum of edge weights.
+
 ```
-Input:
-n = 4, m = 3
-edges = [(0,1,1), (1,2,2), (2,3,3)]
+Original Graph:              MST (total weight = 6):
+    1                            1
+   /|\                          /|
+  3 1 4                        3 1
+ /  |  \                      /  |
+2---5---3                    2   3
+    2
 
-Output:
-0
-
-Explanation**: 
-All cities are already connected
-No additional roads needed
-```
-
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible combinations of existing roads
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic graph connectivity
-- **Inefficient**: O(2^m) time complexity
-
-**Key Insight**: Check all possible subsets of existing roads to find minimum spanning tree.
-
-**Algorithm**:
-- Generate all possible subsets of existing roads
-- Check if subset forms a spanning tree
-- Calculate cost for valid spanning trees
-- Return minimum cost
-
-**Visual Example**:
-```
-Graph: 0-1(1), 1-2(2), 2-3(3)
-
-All possible road combinations:
-┌─────────────────────────────────────┐
-│ Subset 1: {} - Not connected       │
-│ Subset 2: {(0,1,1)} - Not connected │
-│ Subset 3: {(1,2,2)} - Not connected │
-│ Subset 4: {(2,3,3)} - Not connected │
-│ Subset 5: {(0,1,1), (1,2,2)} - Not connected │
-│ Subset 6: {(1,2,2), (2,3,3)} - Not connected │
-│ Subset 7: {(0,1,1), (2,3,3)} - Not connected │
-│ Subset 8: {(0,1,1), (1,2,2), (2,3,3)} - Connected! │
-│ Cost: 1 + 2 + 3 = 6                │
-│                                   │
-│ Minimum: 6                         │
-└─────────────────────────────────────┘
+All edges available           Only edges: 1-2(3), 1-3(1), 3-4(2)
 ```
 
-**Implementation**:
+**Key Properties**:
+- An MST connects all n vertices using exactly n-1 edges
+- The total weight is minimized
+- An MST may not be unique, but all MSTs have the same total weight
+
+## Kruskal's Algorithm
+
+Kruskal's algorithm builds the MST using a **greedy approach**:
+
+### Algorithm Steps
+
+1. **Sort** all edges by weight (ascending)
+2. **Initialize** each vertex as its own component (using Union-Find)
+3. **Process edges** in sorted order:
+   - If the edge connects two DIFFERENT components, add it to MST
+   - If both endpoints are in the SAME component, skip it (would create cycle)
+4. **Stop** when MST has n-1 edges (all vertices connected)
+5. If fewer than n-1 edges added after processing all edges, graph is disconnected
+
+### Why Does Greedy Work? The Cut Property
+
+The **Cut Property** guarantees Kruskal's correctness:
+
+> For any cut (partition of vertices into two sets), the minimum weight edge crossing the cut is safe to include in the MST.
+
+Since we process edges in sorted order, each edge we add is the minimum weight edge that connects two currently disconnected components.
+
+## Visual Algorithm Progression
+
+**Example**: 5 cities, 6 roads
+
+```
+Initial State:          Sorted Edges:
+                        (1,2,1), (2,3,2), (1,3,3),
+  1---3---4             (3,4,4), (4,5,5), (2,4,6)
+  |\     /
+  1 3   5               Components: {1}, {2}, {3}, {4}, {5}
+  |  \ /
+  2---5
+    2
+
+Step 1: Add edge (1,2) weight=1
+  1                     Components: {1,2}, {3}, {4}, {5}
+  |                     MST cost: 1
+  1                     Edges in MST: 1
+  |
+  2
+
+Step 2: Add edge (2,3) weight=2
+  1---2---3             Components: {1,2,3}, {4}, {5}
+      |                 MST cost: 3
+      2                 Edges in MST: 2
+
+Step 3: Skip edge (1,3) weight=3
+  Would create cycle    Components: {1,2,3}, {4}, {5}
+  (1 and 3 already      MST cost: 3
+  in same component)    Edges in MST: 2
+
+Step 4: Add edge (3,4) weight=4
+  1---2---3---4         Components: {1,2,3,4}, {5}
+                        MST cost: 7
+                        Edges in MST: 3
+
+Step 5: Add edge (4,5) weight=5
+  1---2---3---4---5     Components: {1,2,3,4,5}
+                        MST cost: 12
+                        Edges in MST: 4 = n-1 (DONE!)
+
+Final MST: edges (1,2), (2,3), (3,4), (4,5) with total cost = 12
+```
+
+## Dry Run Example
+
+**Input**:
+```
+5 6
+1 2 3
+2 3 5
+3 4 2
+4 5 4
+1 3 7
+2 4 1
+```
+
+**Sorted edges by weight**: (2,4,1), (3,4,2), (1,2,3), (4,5,4), (2,3,5), (1,3,7)
+
+| Step | Edge | Weight | Action | Components | MST Cost | Edges |
+|------|------|--------|--------|------------|----------|-------|
+| Init | - | - | - | {1},{2},{3},{4},{5} | 0 | 0 |
+| 1 | (2,4) | 1 | Add | {1},{2,4},{3},{5} | 1 | 1 |
+| 2 | (3,4) | 2 | Add | {1},{2,3,4},{5} | 3 | 2 |
+| 3 | (1,2) | 3 | Add | {1,2,3,4},{5} | 6 | 3 |
+| 4 | (4,5) | 4 | Add | {1,2,3,4,5} | 10 | 4 |
+
+**Output**: 10 (MST complete with 4 = n-1 edges)
+
+## Handling Disconnected Graphs
+
+If after processing ALL edges, we have fewer than n-1 edges in MST, the graph is **disconnected**.
+
+```
+Example: 4 cities, 2 roads
+1---2    3---4
+
+No matter which edges we select, we cannot connect all 4 cities.
+Output: IMPOSSIBLE
+```
+
+**Detection**: After Kruskal's algorithm, check if `edges_added == n - 1`
+
+## Python Solution
+
 ```python
-def brute_force_road_reparation(n, edges):
-    """Find minimum repair cost using brute force approach"""
-    from itertools import combinations
-    
-    min_cost = float('inf')
-    
-    # Try all possible combinations of existing roads
-    for r in range(len(edges) + 1):
-        for road_subset in combinations(edges, r):
-            # Check if this forms a spanning tree
-            if is_spanning_tree(n, road_subset):
-                cost = sum(weight for _, _, weight in road_subset)
-                min_cost = min(min_cost, cost)
-    
-    return min_cost if min_cost != float('inf') else -1
+import sys
+from typing import List, Tuple
 
-def is_spanning_tree(n, edges):
-    """Check if edges form a spanning tree"""
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    for u, v, _ in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-    
-    # Check connectivity using DFS
-    visited = [False] * n
-    stack = [0]
-    visited[0] = True
-    count = 1
-    
-    while stack:
-        vertex = stack.pop()
-        for neighbor in adj[vertex]:
-            if not visited[neighbor]:
-                visited[neighbor] = True
-                stack.append(neighbor)
-                count += 1
-    
-    return count == n
+def solve():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n = int(input_data[idx]); idx += 1
+    m = int(input_data[idx]); idx += 1
 
-# Example usage
-n = 4
-edges = [(0, 1, 1), (1, 2, 2), (2, 3, 3)]
-result = brute_force_road_reparation(n, edges)
-print(f"Brute force repair cost: {result}")
-```
+    edges: List[Tuple[int, int, int]] = []
+    for _ in range(m):
+        a = int(input_data[idx]); idx += 1
+        b = int(input_data[idx]); idx += 1
+        c = int(input_data[idx]); idx += 1
+        edges.append((c, a, b))  # (weight, u, v) for easy sorting
 
-**Time Complexity**: O(2^m)
-**Space Complexity**: O(n + m)
-
-**Why it's inefficient**: O(2^m) time complexity for checking all road combinations.
-
----
-
-### Approach 2: Kruskal's Algorithm
-
-**Key Insights from Kruskal's Algorithm**:
-- **Kruskal's Algorithm**: Use Kruskal's algorithm for efficient MST
-- **Efficient Implementation**: O(m log m) time complexity
-- **Union-Find**: Use union-find data structure for cycle detection
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Sort existing roads by weight and use union-find to build MST.
-
-**Algorithm**:
-- Sort all existing roads by weight
-- Use union-find to add roads without creating cycles
-- Stop when we have n-1 roads or all roads processed
-
-**Visual Example**:
-```
-Kruskal's algorithm:
-
-Existing roads sorted by weight:
-┌─────────────────────────────────────┐
-│ (0,1,1), (1,2,2), (2,3,3)         │
-│                                   │
-│ Step 1: Add (0,1,1) - cost = 1    │
-│ Step 2: Add (1,2,2) - cost = 3    │
-│ Step 3: Add (2,3,3) - cost = 6    │
-│                                   │
-│ MST: (0,1,1) + (1,2,2) + (2,3,3) = 6 │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def kruskal_road_reparation(n, edges):
-    """Find minimum repair cost using Kruskal's algorithm"""
     # Sort edges by weight
-    edges.sort(key=lambda x: x[2])
-    
-    # Union-Find data structure
-    parent = list(range(n))
-    
-    def find(x):
+    edges.sort()
+
+    # Union-Find with path compression and union by rank
+    parent = list(range(n + 1))
+    rank = [0] * (n + 1)
+
+    def find(x: int) -> int:
         if parent[x] != x:
-            parent[x] = find(parent[x])
+            parent[x] = find(parent[x])  # Path compression
         return parent[x]
-    
-    def union(x, y):
+
+    def union(x: int, y: int) -> bool:
         px, py = find(x), find(y)
-        if px != py:
-            parent[px] = py
-            return True
-        return False
-    
+        if px == py:
+            return False  # Same component, would create cycle
+        # Union by rank
+        if rank[px] < rank[py]:
+            px, py = py, px
+        parent[py] = px
+        if rank[px] == rank[py]:
+            rank[px] += 1
+        return True
+
     # Kruskal's algorithm
     mst_cost = 0
     edges_added = 0
-    
-    for u, v, weight in edges:
+
+    for weight, u, v in edges:
         if union(u, v):
             mst_cost += weight
             edges_added += 1
             if edges_added == n - 1:
                 break
-    
-    return mst_cost if edges_added == n - 1 else -1
 
-# Example usage
-n = 4
-edges = [(0, 1, 1), (1, 2, 2), (2, 3, 3)]
-result = kruskal_road_reparation(n, edges)
-print(f"Kruskal's repair cost: {result}")
+    # Check if all cities are connected
+    if edges_added == n - 1:
+        print(mst_cost)
+    else:
+        print("IMPOSSIBLE")
+
+if __name__ == "__main__":
+    solve()
 ```
 
-**Time Complexity**: O(m log m)
-**Space Complexity**: O(n)
+## C++ Solution
 
-**Why it's better**: Uses Kruskal's algorithm for O(m log m) time complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+class UnionFind {
+private:
+    vector<int> parent, rank_;
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+public:
+    UnionFind(int n) : parent(n + 1), rank_(n + 1, 0) {
+        iota(parent.begin(), parent.end(), 0);
+    }
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for MST
-- **Efficient Implementation**: O(m log m) time complexity
-- **Space Efficiency**: O(n) space complexity
-- **Optimal Complexity**: Best approach for MST repair
+    int find(int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent[x]);  // Path compression
+        }
+        return parent[x];
+    }
 
-**Key Insight**: Use advanced data structures for optimal MST repair calculation.
+    bool unite(int x, int y) {
+        int px = find(x), py = find(y);
+        if (px == py) return false;  // Same component
 
-**Algorithm**:
-- Use specialized data structures for graph storage
-- Implement efficient Kruskal's algorithm
-- Handle special cases optimally
-- Return MST repair cost
+        // Union by rank
+        if (rank_[px] < rank_[py]) swap(px, py);
+        parent[py] = px;
+        if (rank_[px] == rank_[py]) rank_[px]++;
+        return true;
+    }
+};
 
-**Visual Example**:
-```
-Advanced data structure approach:
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-For graph: 0-1(1), 1-2(2), 2-3(3)
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Edge structure: for efficient     │
-│   storage and sorting              │
-│ - Union-find cache: for optimization │
-│ - MST tracker: for optimization     │
-│                                   │
-│ MST repair calculation:            │
-│ - Use edge structure for efficient │
-│   storage and sorting              │
-│ - Use union-find cache for         │
-│   optimization                     │
-│ - Use MST tracker for optimization │
-│                                   │
-│ Result: 6                          │
-└─────────────────────────────────────┘
-```
+    int n, m;
+    cin >> n >> m;
 
-**Implementation**:
-```python
-def advanced_data_structure_road_reparation(n, edges):
-    """Find minimum repair cost using advanced data structure approach"""
-    # Use advanced data structures for graph storage
-    # Sort edges by weight using advanced data structures
-    edges.sort(key=lambda x: x[2])
-    
-    # Advanced Union-Find data structure
-    parent = list(range(n))
-    
-    def find_advanced(x):
-        if parent[x] != x:
-            parent[x] = find_advanced(parent[x])
-        return parent[x]
-    
-    def union_advanced(x, y):
-        px, py = find_advanced(x), find_advanced(y)
-        if px != py:
-            parent[px] = py
-            return True
-        return False
-    
-    # Advanced Kruskal's algorithm
-    mst_cost = 0
-    edges_added = 0
-    
-    for u, v, weight in edges:
-        if union_advanced(u, v):
-            mst_cost += weight
-            edges_added += 1
-            if edges_added == n - 1:
-                break
-    
-    return mst_cost if edges_added == n - 1 else -1
+    vector<tuple<long long, int, int>> edges(m);
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        long long c;
+        cin >> a >> b >> c;
+        edges[i] = {c, a, b};
+    }
 
-# Example usage
-n = 4
-edges = [(0, 1, 1), (1, 2, 2), (2, 3, 3)]
-result = advanced_data_structure_road_reparation(n, edges)
-print(f"Advanced data structure repair cost: {result}")
+    // Sort edges by weight
+    sort(edges.begin(), edges.end());
+
+    UnionFind uf(n);
+    long long mst_cost = 0;
+    int edges_added = 0;
+
+    for (auto& [weight, u, v] : edges) {
+        if (uf.unite(u, v)) {
+            mst_cost += weight;
+            edges_added++;
+            if (edges_added == n - 1) break;
+        }
+    }
+
+    if (edges_added == n - 1) {
+        cout << mst_cost << "\n";
+    } else {
+        cout << "IMPOSSIBLE\n";
+    }
+
+    return 0;
+}
 ```
 
-**Time Complexity**: O(m log m)
-**Space Complexity**: O(n)
+## Kruskal's vs Prim's Algorithm
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+| Aspect | Kruskal's | Prim's |
+|--------|-----------|--------|
+| Approach | Edge-centric (process edges globally) | Vertex-centric (grow tree from a vertex) |
+| Data Structure | Union-Find | Priority Queue / Min-Heap |
+| Time Complexity | O(m log m) | O(m log n) with binary heap |
+| Best for | Sparse graphs (m close to n) | Dense graphs (m close to n^2) |
+| Implementation | Simpler, sort then iterate | More complex, requires adjacency list |
+| Edge Processing | Sorted order globally | Process edges of current frontier |
 
-## 🔧 Implementation Details
+**When to use which**:
+- **Kruskal's**: When edges are already sorted or graph is sparse
+- **Prim's**: When graph is dense or stored as adjacency list
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(2^m) | O(n + m) | Try all road combinations |
-| Kruskal's Algorithm | O(m log m) | O(n) | Sort roads and use union-find |
-| Advanced Data Structure | O(m log m) | O(n) | Use advanced data structures |
+## Common Mistakes
 
-### Time Complexity
-- **Time**: O(m log m) - Use Kruskal's algorithm for efficient MST repair
-- **Space**: O(n) - Store union-find data structure
+| Mistake | Problem | Solution |
+|---------|---------|----------|
+| Forgetting IMPOSSIBLE check | Output wrong answer for disconnected graphs | Always check if `edges_added == n - 1` |
+| Integer overflow | Sum of edge weights exceeds int range | Use `long long` for cost accumulation |
+| 1-indexed vs 0-indexed | Array out of bounds or wrong component | Be consistent; CSES uses 1-indexed |
+| Not sorting edges | Algorithm gives wrong answer | Sort by weight before processing |
+| Wrong Union-Find | Cycles included or components merged wrongly | Implement find with path compression |
 
-### Why This Solution Works
-- **Kruskal's Algorithm**: Sort roads by weight and use union-find
-- **Union-Find**: Efficiently detect cycles and merge components
-- **Greedy Approach**: Always choose minimum weight road that doesn't create cycle
-- **Optimal Algorithms**: Use optimal algorithms for MST repair
+## Complexity Analysis
 
-## 🚀 Problem Variations
+**Time Complexity: O(m log m)**
+- Sorting m edges: O(m log m)
+- Processing each edge with Union-Find: O(m * alpha(n)) where alpha is inverse Ackermann
+- Since alpha(n) <= 5 for practical n, effectively O(m)
+- Total: O(m log m) dominated by sorting
 
-### Extended Problems with Detailed Code Examples
+**Space Complexity: O(n + m)**
+- Edge storage: O(m)
+- Union-Find arrays: O(n)
 
-#### **1. Road Reparation with Constraints**
-**Problem**: Find MST repair with specific constraints.
+## Related Problems
 
-**Key Differences**: Apply constraints to MST repair calculation
+- **CSES Building Roads**: Find minimum edges to add to connect graph
+- **LeetCode 1584**: Min Cost to Connect All Points
+- **LeetCode 1135**: Connecting Cities With Minimum Cost
 
-**Solution Approach**: Modify algorithm to handle constraints
+## Key Takeaways
 
-**Implementation**:
-```python
-def constrained_road_reparation(n, edges, constraints):
-    """Find MST repair with constraints"""
-    # Filter edges based on constraints
-    filtered_edges = []
-    for u, v, weight in edges:
-        if constraints(u, v, weight):
-            filtered_edges.append((u, v, weight))
-    
-    # Sort edges by weight
-    filtered_edges.sort(key=lambda x: x[2])
-    
-    # Union-Find data structure
-    parent = list(range(n))
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px != py:
-            parent[px] = py
-            return True
-        return False
-    
-    # Constrained Kruskal's algorithm
-    mst_cost = 0
-    edges_added = 0
-    
-    for u, v, weight in filtered_edges:
-        if union(u, v):
-            mst_cost += weight
-            edges_added += 1
-            if edges_added == n - 1:
-                break
-    
-    return mst_cost if edges_added == n - 1 else -1
-
-# Example usage
-n = 4
-edges = [(0, 1, 1), (1, 2, 2), (2, 3, 3)]
-constraints = lambda u, v, w: w <= 10  # Only roads with weight ≤ 10
-result = constrained_road_reparation(n, edges, constraints)
-print(f"Constrained repair cost: {result}")
-```
-
-#### **2. Road Reparation with Different Metrics**
-**Problem**: Find MST repair with different cost metrics.
-
-**Key Differences**: Different cost calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_road_reparation(n, edges, cost_function):
-    """Find MST repair with different cost metrics"""
-    # Apply cost function to edges
-    weighted_edges = []
-    for u, v, weight in edges:
-        new_weight = cost_function(weight)
-        weighted_edges.append((u, v, new_weight))
-    
-    # Sort edges by new weight
-    weighted_edges.sort(key=lambda x: x[2])
-    
-    # Union-Find data structure
-    parent = list(range(n))
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px != py:
-            parent[px] = py
-            return True
-        return False
-    
-    # Weighted Kruskal's algorithm
-    mst_cost = 0
-    edges_added = 0
-    
-    for u, v, weight in weighted_edges:
-        if union(u, v):
-            mst_cost += weight
-            edges_added += 1
-            if edges_added == n - 1:
-                break
-    
-    return mst_cost if edges_added == n - 1 else -1
-
-# Example usage
-n = 4
-edges = [(0, 1, 1), (1, 2, 2), (2, 3, 3)]
-cost_function = lambda weight: weight * weight  # Square the weight
-result = weighted_road_reparation(n, edges, cost_function)
-print(f"Weighted repair cost: {result}")
-```
-
-#### **3. Road Reparation with Multiple Dimensions**
-**Problem**: Find MST repair in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_road_reparation(n, edges, dimensions):
-    """Find MST repair in multiple dimensions"""
-    # Sort edges by weight
-    edges.sort(key=lambda x: x[2])
-    
-    # Union-Find data structure
-    parent = list(range(n))
-    
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
-    
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px != py:
-            parent[px] = py
-            return True
-        return False
-    
-    # Multi-dimensional Kruskal's algorithm
-    mst_cost = 0
-    edges_added = 0
-    
-    for u, v, weight in edges:
-        if union(u, v):
-            mst_cost += weight
-            edges_added += 1
-            if edges_added == n - 1:
-                break
-    
-    return mst_cost if edges_added == n - 1 else -1
-
-# Example usage
-n = 4
-edges = [(0, 1, 1), (1, 2, 2), (2, 3, 3)]
-dimensions = 1
-result = multi_dimensional_road_reparation(n, edges, dimensions)
-print(f"Multi-dimensional repair cost: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Road Construction](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Building Roads](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Download Speed](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Min Cost to Connect All Points](https://leetcode.com/problems/min-cost-to-connect-all-points/) - Graph
-- [Connecting Cities With Minimum Cost](https://leetcode.com/problems/connecting-cities-with-minimum-cost/) - Graph
-- [Minimum Spanning Tree](https://leetcode.com/problems/minimum-spanning-tree/) - Graph
-
-#### **Problem Categories**
-- **Graph Algorithms**: Minimum spanning tree, Kruskal's algorithm, union-find
-- **MST Algorithms**: Kruskal's, Prim's, MST repair
-- **Union-Find**: Disjoint sets, cycle detection
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Minimum Spanning Tree](https://cp-algorithms.com/graph/mst_kruskal.html) - MST algorithms
-- [Union-Find](https://cp-algorithms.com/data_structures/disjoint_set_union.html) - Union-find algorithms
-
-### **Practice Problems**
-- [CSES Road Construction](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Building Roads](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Download Speed](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Minimum Spanning Tree](https://en.wikipedia.org/wiki/Minimum_spanning_tree) - Wikipedia article
-- [Kruskal's Algorithm](https://en.wikipedia.org/wiki/Kruskal%27s_algorithm) - Wikipedia article
+1. MST connects all vertices with minimum total edge weight using exactly n-1 edges
+2. Kruskal's algorithm: sort edges, greedily add edges that don't create cycles
+3. Union-Find efficiently tracks components and detects cycles in O(alpha(n))
+4. Always check for disconnected graphs by verifying n-1 edges were added
+5. Use `long long` for edge weight sums to avoid overflow

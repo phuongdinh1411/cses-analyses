@@ -1,800 +1,313 @@
 ---
 layout: simple
-title: "Labyrinth - Graph Algorithm Problem"
+title: "Labyrinth"
 permalink: /problem_soulutions/graph_algorithms/labyrinth_analysis
+difficulty: Easy
+tags: [graph, bfs, shortest-path, grid, path-reconstruction]
+cses_link: https://cses.fi/problemset/task/1193
 ---
 
-# Labyrinth - Graph Algorithm Problem
+# Labyrinth
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of shortest path in grid graphs
-- Apply efficient algorithms for finding shortest paths in mazes
-- Implement BFS for shortest path in unweighted graphs
-- Optimize graph algorithms for grid-based path problems
-- Handle special cases in maze navigation problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find shortest path from A to B in a grid |
+| Input | n x m grid with walls '#', floor '.', start 'A', end 'B' |
+| Output | Path length and direction string, or "NO" if impossible |
+| Constraints | 1 <= n, m <= 1000 |
+| Core Technique | BFS with path reconstruction |
+| Time Complexity | O(n * m) |
+| Space Complexity | O(n * m) |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a maze represented as a grid, find the shortest path from start to end, avoiding walls.
+After solving this problem, you will understand:
+1. **BFS for shortest path**: Why BFS guarantees the shortest path in unweighted graphs
+2. **Path reconstruction**: Using parent pointers to rebuild the path from destination to source
+3. **Direction encoding**: Storing movement directions for path output
 
-**Input**: 
-- n: number of rows
-- m: number of columns
-- grid: n×m grid where '.' represents empty cell, '#' represents wall, 'A' represents start, 'B' represents end
+## Problem Statement
 
-**Output**: 
-- Shortest path length and the path itself, or "NO" if no path exists
+You are given a map of a labyrinth. Your task is to find a path from start to end.
 
-**Constraints**:
-- 1 ≤ n, m ≤ 1000
+- `#` = wall (cannot pass)
+- `.` = floor (can pass)
+- `A` = start position
+- `B` = end position
 
-**Example**:
+Output "YES" followed by path length and directions (L/R/U/D), or "NO" if no path exists.
+
+**Example Input:**
 ```
-Input:
-n = 5, m = 8
-grid = [
-    "########",
-    "#.A#...#",
-    "#.##.#B#",
-    "#......#",
-    "########"
-]
+5 8
+########
+#.A#...#
+#.##.#B#
+#......#
+########
+```
 
-Output:
+**Example Output:**
+```
 YES
 9
-DRRURDDD
-
-Explanation**: 
-Shortest path from A to B:
-A(1,1) → (1,2) → (2,2) → (3,2) → (3,3) → (3,4) → (3,5) → (3,6) → B(2,6)
-Path: DRRURDDD (Down, Right, Right, Up, Right, Down, Down, Down)
+LDDRRRRRU
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+## Key Insight
 
-### Approach 1: Brute Force Solution
+BFS explores nodes level by level. The first time we reach any cell, we've found the shortest path to it. This is because all edges have equal weight (1 step).
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible paths from start to end
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Check each path for validity and length
-- **Inefficient**: O(4^(n×m)) time complexity
-
-**Key Insight**: Try all possible paths and find the shortest valid one.
-
-**Algorithm**:
-- Generate all possible paths from start to end
-- For each path, check if it's valid (no walls, within bounds)
-- Keep track of the shortest valid path
-- Return the shortest path or "NO" if none exists
-
-**Visual Example**:
 ```
-Maze: 5×8 grid
-Start: A(1,1), End: B(2,6)
-
-Try all possible paths:
-┌─────────────────────────────────────┐
-│ Path 1: A → (1,2) → (1,3) → ...    │
-│ - Check: (1,3) is wall ✗           │
-│ - Invalid path                      │
-│                                   │
-│ Path 2: A → (1,2) → (2,2) → ...    │
-│ - Check: (1,2) is empty ✓          │
-│ - Check: (2,2) is empty ✓          │
-│ - Continue checking...              │
-│ - Valid path, length: 12           │
-│                                   │
-│ Path 3: A → (1,2) → (2,2) → (3,2) → ... │
-│ - Check: (1,2) is empty ✓          │
-│ - Check: (2,2) is empty ✓          │
-│ - Check: (3,2) is empty ✓          │
-│ - Continue checking...              │
-│ - Valid path, length: 9            │
-│                                   │
-│ Continue for all 4^(40) paths...   │
-│                                   │
-│ Shortest valid path: length 9      │
-│ Path: DRRURDDD                     │
-└─────────────────────────────────────┘
+Why BFS works for shortest path:
+- Level 0: Start cell (distance 0)
+- Level 1: All cells 1 step away
+- Level 2: All cells 2 steps away
+- ...
+- First time reaching B = shortest path to B
 ```
 
-**Implementation**:
+## Algorithm
+
+1. **Find start and end positions** by scanning the grid
+2. **Run BFS from start**:
+   - Use a queue for BFS traversal
+   - Track visited cells to avoid revisiting
+   - Store parent pointer and direction for each cell
+3. **When reaching end**: Reconstruct path by backtracking through parents
+4. **Reverse the path** (we built it backwards from B to A)
+
+## Path Reconstruction
+
+We store for each cell: (parent_cell, direction_to_reach_this_cell)
+
+```
+Backtracking from B to A:
+B <- parent of B <- parent of that <- ... <- A
+
+Directions collected: [U, R, R, R, R, D, D, L]  (reversed order)
+Final path: LDDRRRRRU (after reversing)
+```
+
+## Direction Encoding
+
+When moving from cell (r, c) to neighbor (nr, nc):
+- Move UP (r-1, c): store 'U' at neighbor
+- Move DOWN (r+1, c): store 'D' at neighbor
+- Move LEFT (r, c-1): store 'L' at neighbor
+- Move RIGHT (r, c+1): store 'R' at neighbor
+
+The direction stored represents "how we arrived at this cell".
+
+## Visual Diagram
+
+```
+Initial Grid:              BFS Exploration (distances):
+########                   ########
+#.A#...#                   #2A#...#
+#.##.#B#                   #3##6#B#  <- B found at distance 9
+#......#                   #456789#
+########                   ########
+
+Parent Pointers (showing direction to reach each cell):
+########
+#LA#...#      L = came from right (moved left to get here)
+#D##.#U#      D = came from above (moved down to get here)
+#DRRRRU#      etc.
+########
+
+Path Reconstruction:
+B(2,6) <- U <- (3,6) <- R <- (3,5) <- R <- (3,4) <- R <- (3,3) <- R <- (3,2)
+       <- D <- (2,2) <- D <- (1,2) <- L <- A(1,2)
+
+Reversed: L, D, D, R, R, R, R, U -> "LDDRRRRRU"
+```
+
+## Dry Run Example
+
+```
+Grid (0-indexed):
+Row 0: ########
+Row 1: #.A#...#    A at (1,2)
+Row 2: #.##.#B#    B at (2,6)
+Row 3: #......#
+Row 4: ########
+
+BFS Steps:
+Step 0: Queue = [(1,2)], visited = {(1,2)}
+Step 1: Process (1,2), add (1,1) with 'L'
+        Queue = [(1,1)], visited = {(1,2), (1,1)}
+Step 2: Process (1,1), add (2,1) with 'D'
+        Queue = [(2,1)]
+Step 3: Process (2,1), add (3,1) with 'D'
+        Queue = [(3,1)]
+Step 4: Process (3,1), add (3,2) with 'R'
+        Queue = [(3,2)]
+... continue until B is reached ...
+
+When (2,6) is dequeued: FOUND! Backtrack to get path.
+```
+
+## Python Solution
+
 ```python
-def brute_force_labyrinth(n, m, grid):
-    """Find shortest path using brute force approach"""
-    from itertools import product
-    
-    # Find start and end positions
-    start_pos = None
-    end_pos = None
-    
+from collections import deque
+
+def solve():
+    n, m = map(int, input().split())
+    grid = [input().strip() for _ in range(n)]
+
+    # Find start and end
+    start = end = None
     for i in range(n):
         for j in range(m):
             if grid[i][j] == 'A':
-                start_pos = (i, j)
+                start = (i, j)
             elif grid[i][j] == 'B':
-                end_pos = (i, j)
-    
-    if not start_pos or not end_pos:
-        return "NO", None, None
-    
-    # Directions: Up, Down, Left, Right
+                end = (i, j)
+
+    # Direction vectors: (dr, dc, char)
     directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
-    
-    def is_valid_position(row, col):
-        """Check if position is valid"""
-        return (0 <= row < n and 0 <= col < m and 
-                grid[row][col] != '#')
-    
-    def is_valid_path(path):
-        """Check if path is valid"""
-        current_row, current_col = start_pos
-        
-        for direction in path:
-            row_delta, col_delta, _ = directions[direction]
-            new_row = current_row + row_delta
-            new_col = current_col + col_delta
-            
-            if not is_valid_position(new_row, new_col):
-                return False
-            
-            current_row, current_col = new_row
-        
-        return current_row == end_pos[0] and current_col == end_pos[1]
-    
-    def get_path_string(path):
-        """Convert path to string"""
-        return ''.join(directions[direction][2] for direction in path)
-    
-    # Try all possible paths
-    max_path_length = n * m  # Maximum possible path length
-    
-    for path_length in range(1, max_path_length + 1):
-        for path in product(range(4), repeat=path_length):
-            if is_valid_path(path):
-                path_string = get_path_string(path)
-                return "YES", path_length, path_string
-    
-    return "NO", None, None
 
-# Example usage
-n = 5
-m = 8
-grid = [
-    "########",
-    "#.A#...#",
-    "#.##.#B#",
-    "#......#",
-    "########"
-]
-result, length, path = brute_force_labyrinth(n, m, grid)
-print(f"Brute force result: {result}")
-if result == "YES":
-    print(f"Length: {length}")
-    print(f"Path: {path}")
-```
-
-**Time Complexity**: O(4^(n×m))
-**Space Complexity**: O(n×m)
-
-**Why it's inefficient**: O(4^(n×m)) time complexity for trying all possible paths.
-
----
-
-### Approach 2: BFS (Breadth-First Search)
-
-**Key Insights from BFS**:
-- **BFS**: Use BFS to find shortest path in unweighted graph
-- **Efficient Implementation**: O(n×m) time complexity
-- **Shortest Path**: BFS guarantees shortest path in unweighted graphs
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Use BFS to find shortest path in unweighted grid graph.
-
-**Algorithm**:
-- Use BFS starting from the start position
-- Keep track of visited cells and parent information
-- When end position is reached, reconstruct the path
-- Return shortest path or "NO" if no path exists
-
-**Visual Example**:
-```
-BFS for shortest path:
-
-Maze: 5×8 grid
-Start: A(1,1), End: B(2,6)
-
-BFS exploration:
-┌─────────────────────────────────────┐
-│ Level 0: A(1,1)                    │
-│                                   │
-│ Level 1: (1,2)                     │
-│ - From A(1,1) → (1,2)             │
-│                                   │
-│ Level 2: (2,2)                     │
-│ - From (1,2) → (2,2)              │
-│                                   │
-│ Level 3: (3,2)                     │
-│ - From (2,2) → (3,2)              │
-│                                   │
-│ Level 4: (3,3)                     │
-│ - From (3,2) → (3,3)              │
-│                                   │
-│ Level 5: (3,4)                     │
-│ - From (3,3) → (3,4)              │
-│                                   │
-│ Level 6: (3,5)                     │
-│ - From (3,4) → (3,5)              │
-│                                   │
-│ Level 7: (3,6)                     │
-│ - From (3,5) → (3,6)              │
-│                                   │
-│ Level 8: (2,6) = B                 │
-│ - From (3,6) → (2,6)              │
-│                                   │
-│ Path reconstruction:               │
-│ B(2,6) ← (3,6) ← (3,5) ← ... ← A(1,1) │
-│ Path: DRRURDDD                     │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def bfs_labyrinth(n, m, grid):
-    """Find shortest path using BFS"""
-    from collections import deque
-    
-    # Find start and end positions
-    start_pos = None
-    end_pos = None
-    
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 'A':
-                start_pos = (i, j)
-            elif grid[i][j] == 'B':
-                end_pos = (i, j)
-    
-    if not start_pos or not end_pos:
-        return "NO", None, None
-    
-    # Directions: Up, Down, Left, Right
-    directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
-    
-    def is_valid_position(row, col):
-        """Check if position is valid"""
-        return (0 <= row < n and 0 <= col < m and 
-                grid[row][col] != '#')
-    
-    def reconstruct_path(parent, start, end):
-        """Reconstruct path from parent information"""
-        path = []
-        current = end
-        
-        while current != start:
-            parent_pos, direction = parent[current]
-            path.append(direction)
-            current = parent_pos
-        
-        return path[::-1]  # Reverse to get path from start to end
-    
     # BFS
-    queue = deque([start_pos])
-    visited = {start_pos}
-    parent = {start_pos: (None, None)}
-    
+    queue = deque([start])
+    parent = {start: None}  # Maps cell -> (parent_cell, direction)
+
     while queue:
-        current_row, current_col = queue.popleft()
-        
-        # Check if we reached the end
-        if (current_row, current_col) == end_pos:
-            path = reconstruct_path(parent, start_pos, end_pos)
-            return "YES", len(path), ''.join(path)
-        
-        # Explore all four directions
-        for i, (row_delta, col_delta, direction) in enumerate(directions):
-            new_row = current_row + row_delta
-            new_col = current_col + col_delta
-            new_pos = (new_row, new_col)
-            
-            if (is_valid_position(new_row, new_col) and 
-                new_pos not in visited):
-                visited.add(new_pos)
-                parent[new_pos] = ((current_row, current_col), direction)
-                queue.append(new_pos)
-    
-    return "NO", None, None
+        r, c = queue.popleft()
 
-# Example usage
-n = 5
-m = 8
-grid = [
-    "########",
-    "#.A#...#",
-    "#.##.#B#",
-    "#......#",
-    "########"
-]
-result, length, path = bfs_labyrinth(n, m, grid)
-print(f"BFS result: {result}")
-if result == "YES":
-    print(f"Length: {length}")
-    print(f"Path: {path}")
+        if (r, c) == end:
+            # Reconstruct path
+            path = []
+            curr = end
+            while parent[curr] is not None:
+                prev, direction = parent[curr]
+                path.append(direction)
+                curr = prev
+            path.reverse()
+
+            print("YES")
+            print(len(path))
+            print(''.join(path))
+            return
+
+        for dr, dc, direction in directions:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] != '#' and (nr, nc) not in parent:
+                parent[(nr, nc)] = ((r, c), direction)
+                queue.append((nr, nc))
+
+    print("NO")
+
+solve()
 ```
 
-**Time Complexity**: O(n×m)
-**Space Complexity**: O(n×m)
+## C++ Solution
 
-**Why it's better**: Uses BFS for O(n×m) time complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+    int n, m;
+    cin >> n >> m;
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for maze navigation
-- **Efficient Implementation**: O(n×m) time complexity
-- **Space Efficiency**: O(n×m) space complexity
-- **Optimal Complexity**: Best approach for maze navigation problems
+    vector<string> grid(n);
+    pair<int,int> start, end;
 
-**Key Insight**: Use advanced data structures for optimal maze navigation.
+    for (int i = 0; i < n; i++) {
+        cin >> grid[i];
+        for (int j = 0; j < m; j++) {
+            if (grid[i][j] == 'A') start = {i, j};
+            if (grid[i][j] == 'B') end = {i, j};
+        }
+    }
 
-**Algorithm**:
-- Use specialized data structures for grid representation
-- Implement efficient BFS with path reconstruction
-- Handle special cases optimally
-- Return shortest path or "NO" if no path exists
+    // Direction vectors
+    int dr[] = {-1, 1, 0, 0};
+    int dc[] = {0, 0, -1, 1};
+    char dir[] = {'U', 'D', 'L', 'R'};
 
-**Visual Example**:
-```
-Advanced data structure approach:
+    // Parent tracking: parent[r][c] = {prev_r, prev_c, direction_char}
+    vector<vector<tuple<int,int,char>>> parent(n, vector<tuple<int,int,char>>(m, {-1, -1, ' '}));
 
-For maze: 5×8 grid
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Advanced grid: for efficient      │
-│   storage and operations            │
-│ - BFS queue: for optimization       │
-│ - Path cache: for optimization      │
-│                                   │
-│ Maze navigation calculation:        │
-│ - Use advanced grid for efficient   │
-│   storage and operations            │
-│ - Use BFS queue for optimization    │
-│ - Use path cache for optimization   │
-│                                   │
-│ Result: YES, 9, DRRURDDD          │
-└─────────────────────────────────────┘
-```
+    queue<pair<int,int>> q;
+    q.push(start);
+    get<0>(parent[start.first][start.second]) = -2;  // Mark start as visited
 
-**Implementation**:
-```python
-def advanced_data_structure_labyrinth(n, m, grid):
-    """Find shortest path using advanced data structure approach"""
-    from collections import deque
-    
-    # Use advanced data structures for grid representation
-    # Advanced position finding
-    start_pos = None
-    end_pos = None
-    
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 'A':
-                start_pos = (i, j)
-            elif grid[i][j] == 'B':
-                end_pos = (i, j)
-    
-    if not start_pos or not end_pos:
-        return "NO", None, None
-    
-    # Advanced directions with metadata
-    directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
-    
-    def advanced_is_valid_position(row, col):
-        """Advanced position validation"""
-        return (0 <= row < n and 0 <= col < m and 
-                grid[row][col] != '#')
-    
-    def advanced_reconstruct_path(parent, start, end):
-        """Advanced path reconstruction"""
-        path = []
-        current = end
-        
-        while current != start:
-            parent_pos, direction = parent[current]
-            path.append(direction)
-            current = parent_pos
-        
-        return path[::-1]
-    
-    # Advanced BFS with optimizations
-    def advanced_bfs():
-        """Advanced BFS with optimizations"""
-        queue = deque([start_pos])
-        visited = {start_pos}
-        parent = {start_pos: (None, None)}
-        
-        while queue:
-            current_row, current_col = queue.popleft()
-            
-            # Advanced end check
-            if (current_row, current_col) == end_pos:
-                path = advanced_reconstruct_path(parent, start_pos, end_pos)
-                return "YES", len(path), ''.join(path)
-            
-            # Advanced neighbor exploration
-            for i, (row_delta, col_delta, direction) in enumerate(directions):
-                new_row = current_row + row_delta
-                new_col = current_col + col_delta
-                new_pos = (new_row, new_col)
-                
-                if (advanced_is_valid_position(new_row, new_col) and 
-                    new_pos not in visited):
-                    visited.add(new_pos)
-                    parent[new_pos] = ((current_row, current_col), direction)
-                    queue.append(new_pos)
-        
-        return "NO", None, None
-    
-    return advanced_bfs()
+    while (!q.empty()) {
+        auto [r, c] = q.front();
+        q.pop();
 
-# Example usage
-n = 5
-m = 8
-grid = [
-    "########",
-    "#.A#...#",
-    "#.##.#B#",
-    "#......#",
-    "########"
-]
-result, length, path = advanced_data_structure_labyrinth(n, m, grid)
-print(f"Advanced data structure result: {result}")
-if result == "YES":
-    print(f"Length: {length}")
-    print(f"Path: {path}")
+        if (r == end.first && c == end.second) {
+            // Reconstruct path
+            string path;
+            int cr = r, cc = c;
+            while (cr != start.first || cc != start.second) {
+                auto [pr, pc, d] = parent[cr][cc];
+                path += d;
+                cr = pr;
+                cc = pc;
+            }
+            reverse(path.begin(), path.end());
+
+            cout << "YES\n" << path.length() << "\n" << path << "\n";
+            return 0;
+        }
+
+        for (int i = 0; i < 4; i++) {
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if (nr >= 0 && nr < n && nc >= 0 && nc < m &&
+                grid[nr][nc] != '#' && get<0>(parent[nr][nc]) == -1) {
+                parent[nr][nc] = {r, c, dir[i]};
+                q.push({nr, nc});
+            }
+        }
+    }
+
+    cout << "NO\n";
+    return 0;
+}
 ```
 
-**Time Complexity**: O(n×m)
-**Space Complexity**: O(n×m)
+## Common Mistakes
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+| Mistake | Problem | Fix |
+|---------|---------|-----|
+| Forgetting to reverse path | Path is backwards (B to A) | Always reverse after backtracking |
+| Wrong direction encoding | Store direction of parent instead of current move | Store direction when adding to queue |
+| Not marking start as visited | Start might be re-added to queue | Initialize visited with start cell |
+| Checking visited after dequeue | Same cell added multiple times | Check visited when adding to queue |
+| Using DFS instead of BFS | DFS doesn't guarantee shortest path | Use queue (BFS), not stack (DFS) |
 
-## 🔧 Implementation Details
+## Direction Encoding Pitfall
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(4^(n×m)) | O(n×m) | Try all possible paths |
-| BFS | O(n×m) | O(n×m) | Use BFS for shortest path in unweighted graph |
-| Advanced Data Structure | O(n×m) | O(n×m) | Use advanced data structures |
+```
+WRONG: Store direction at parent cell
+  When at (1,2) moving to (2,2), storing 'D' at (1,2)
+  This loses information about how we reached (2,2)
 
-### Time Complexity
-- **Time**: O(n×m) - Use BFS for efficient shortest path in unweighted grid
-- **Space**: O(n×m) - Store grid and BFS data structures
-
-### Why This Solution Works
-- **BFS**: Use BFS to find shortest path in unweighted graphs
-- **Grid Representation**: Represent maze as grid graph
-- **Path Reconstruction**: Use parent information to reconstruct path
-- **Optimal Algorithms**: Use optimal algorithms for maze navigation
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Labyrinth with Constraints**
-**Problem**: Find shortest path in maze with specific constraints.
-
-**Key Differences**: Apply constraints to path finding
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_labyrinth(n, m, grid, constraints):
-    """Find shortest path in maze with constraints"""
-    from collections import deque
-    
-    # Find start and end positions
-    start_pos = None
-    end_pos = None
-    
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 'A':
-                start_pos = (i, j)
-            elif grid[i][j] == 'B':
-                end_pos = (i, j)
-    
-    if not start_pos or not end_pos:
-        return "NO", None, None
-    
-    directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
-    
-    def constrained_is_valid_position(row, col):
-        """Position validation with constraints"""
-        return (0 <= row < n and 0 <= col < m and 
-                grid[row][col] != '#' and
-                constraints(row, col))
-    
-    def constrained_reconstruct_path(parent, start, end):
-        """Path reconstruction with constraints"""
-        path = []
-        current = end
-        
-        while current != start:
-            parent_pos, direction = parent[current]
-            path.append(direction)
-            current = parent_pos
-        
-        return path[::-1]
-    
-    def constrained_bfs():
-        """BFS with constraints"""
-        queue = deque([start_pos])
-        visited = {start_pos}
-        parent = {start_pos: (None, None)}
-        
-        while queue:
-            current_row, current_col = queue.popleft()
-            
-            if (current_row, current_col) == end_pos:
-                path = constrained_reconstruct_path(parent, start_pos, end_pos)
-                return "YES", len(path), ''.join(path)
-            
-            for i, (row_delta, col_delta, direction) in enumerate(directions):
-                new_row = current_row + row_delta
-                new_col = current_col + col_delta
-                new_pos = (new_row, new_col)
-                
-                if (constrained_is_valid_position(new_row, new_col) and 
-                    new_pos not in visited):
-                    visited.add(new_pos)
-                    parent[new_pos] = ((current_row, current_col), direction)
-                    queue.append(new_pos)
-        
-        return "NO", None, None
-    
-    return constrained_bfs()
-
-# Example usage
-n = 5
-m = 8
-grid = [
-    "########",
-    "#.A#...#",
-    "#.##.#B#",
-    "#......#",
-    "########"
-]
-constraints = lambda row, col: True  # No constraints
-result, length, path = constrained_labyrinth(n, m, grid, constraints)
-print(f"Constrained result: {result}")
-if result == "YES":
-    print(f"Length: {length}")
-    print(f"Path: {path}")
+CORRECT: Store direction at destination cell
+  When at (1,2) moving to (2,2), storing 'D' at (2,2)
+  This tells us: "we moved DOWN to reach (2,2)"
 ```
 
-#### **2. Labyrinth with Different Metrics**
-**Problem**: Find shortest path in maze with different cost metrics.
+## Complexity Analysis
 
-**Key Differences**: Different cost calculations
+- **Time**: O(n * m) - each cell visited at most once
+- **Space**: O(n * m) - for parent array and queue
 
-**Solution Approach**: Use advanced mathematical techniques
+## Related Problems
 
-**Implementation**:
-```python
-def weighted_labyrinth(n, m, grid, cost_function):
-    """Find shortest path in maze with different cost metrics"""
-    from collections import deque
-    
-    # Find start and end positions
-    start_pos = None
-    end_pos = None
-    
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 'A':
-                start_pos = (i, j)
-            elif grid[i][j] == 'B':
-                end_pos = (i, j)
-    
-    if not start_pos or not end_pos:
-        return "NO", None, None
-    
-    directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
-    
-    def weighted_is_valid_position(row, col):
-        """Position validation with weights"""
-        return (0 <= row < n and 0 <= col < m and 
-                grid[row][col] != '#')
-    
-    def weighted_reconstruct_path(parent, start, end):
-        """Path reconstruction with weights"""
-        path = []
-        current = end
-        
-        while current != start:
-            parent_pos, direction = parent[current]
-            path.append(direction)
-            current = parent_pos
-        
-        return path[::-1]
-    
-    def weighted_bfs():
-        """BFS with weights"""
-        queue = deque([start_pos])
-        visited = {start_pos}
-        parent = {start_pos: (None, None)}
-        
-        while queue:
-            current_row, current_col = queue.popleft()
-            
-            if (current_row, current_col) == end_pos:
-                path = weighted_reconstruct_path(parent, start_pos, end_pos)
-                return "YES", len(path), ''.join(path)
-            
-            for i, (row_delta, col_delta, direction) in enumerate(directions):
-                new_row = current_row + row_delta
-                new_col = current_col + col_delta
-                new_pos = (new_row, new_col)
-                
-                if (weighted_is_valid_position(new_row, new_col) and 
-                    new_pos not in visited):
-                    visited.add(new_pos)
-                    parent[new_pos] = ((current_row, current_col), direction)
-                    queue.append(new_pos)
-        
-        return "NO", None, None
-    
-    return weighted_bfs()
-
-# Example usage
-n = 5
-m = 8
-grid = [
-    "########",
-    "#.A#...#",
-    "#.##.#B#",
-    "#......#",
-    "########"
-]
-cost_function = lambda r1, c1, r2, c2: 1  # Unit cost
-result, length, path = weighted_labyrinth(n, m, grid, cost_function)
-print(f"Weighted result: {result}")
-if result == "YES":
-    print(f"Length: {length}")
-    print(f"Path: {path}")
-```
-
-#### **3. Labyrinth with Multiple Dimensions**
-**Problem**: Find shortest path in maze in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_labyrinth(n, m, grid, dimensions):
-    """Find shortest path in maze in multiple dimensions"""
-    from collections import deque
-    
-    # Find start and end positions
-    start_pos = None
-    end_pos = None
-    
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 'A':
-                start_pos = (i, j)
-            elif grid[i][j] == 'B':
-                end_pos = (i, j)
-    
-    if not start_pos or not end_pos:
-        return "NO", None, None
-    
-    directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
-    
-    def multi_dimensional_is_valid_position(row, col):
-        """Position validation for multiple dimensions"""
-        return (0 <= row < n and 0 <= col < m and 
-                grid[row][col] != '#')
-    
-    def multi_dimensional_reconstruct_path(parent, start, end):
-        """Path reconstruction for multiple dimensions"""
-        path = []
-        current = end
-        
-        while current != start:
-            parent_pos, direction = parent[current]
-            path.append(direction)
-            current = parent_pos
-        
-        return path[::-1]
-    
-    def multi_dimensional_bfs():
-        """BFS for multiple dimensions"""
-        queue = deque([start_pos])
-        visited = {start_pos}
-        parent = {start_pos: (None, None)}
-        
-        while queue:
-            current_row, current_col = queue.popleft()
-            
-            if (current_row, current_col) == end_pos:
-                path = multi_dimensional_reconstruct_path(parent, start_pos, end_pos)
-                return "YES", len(path), ''.join(path)
-            
-            for i, (row_delta, col_delta, direction) in enumerate(directions):
-                new_row = current_row + row_delta
-                new_col = current_col + col_delta
-                new_pos = (new_row, new_col)
-                
-                if (multi_dimensional_is_valid_position(new_row, new_col) and 
-                    new_pos not in visited):
-                    visited.add(new_pos)
-                    parent[new_pos] = ((current_row, current_col), direction)
-                    queue.append(new_pos)
-        
-        return "NO", None, None
-    
-    return multi_dimensional_bfs()
-
-# Example usage
-n = 5
-m = 8
-grid = [
-    "########",
-    "#.A#...#",
-    "#.##.#B#",
-    "#......#",
-    "########"
-]
-dimensions = 1
-result, length, path = multi_dimensional_labyrinth(n, m, grid, dimensions)
-print(f"Multi-dimensional result: {result}")
-if result == "YES":
-    print(f"Length: {length}")
-    print(f"Path: {path}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Counting Rooms](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Round Trip](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Unique Paths](https://leetcode.com/problems/unique-paths/) - Dynamic Programming
-- [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) - Dynamic Programming
-- [Path Sum](https://leetcode.com/problems/path-sum/) - Tree
-
-#### **Problem Categories**
-- **Graph Algorithms**: Shortest path, BFS, grid traversal
-- **Maze Navigation**: Path finding, grid graphs
-- **BFS**: Breadth-first search, shortest path
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [BFS](https://cp-algorithms.com/graph/breadth-first-search.html) - BFS algorithm
-- [Shortest Path](https://cp-algorithms.com/graph/shortest_path.html) - Shortest path algorithms
-
-### **Practice Problems**
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Counting Rooms](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Round Trip](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Breadth-First Search](https://en.wikipedia.org/wiki/Breadth-first_search) - Wikipedia article
-- [Maze](https://en.wikipedia.org/wiki/Maze) - Wikipedia article
+| Problem | Platform | Key Difference |
+|---------|----------|----------------|
+| [Shortest Path in Binary Matrix](https://leetcode.com/problems/shortest-path-in-binary-matrix/) | LeetCode | 8 directions instead of 4 |
+| [Message Route](https://cses.fi/problemset/task/1667) | CSES | Graph instead of grid |
+| [Counting Rooms](https://cses.fi/problemset/task/1192) | CSES | Count components, no path needed |
+| [Maze (shortest path)](https://leetcode.com/problems/the-maze-ii/) | LeetCode | Ball rolls until hitting wall |

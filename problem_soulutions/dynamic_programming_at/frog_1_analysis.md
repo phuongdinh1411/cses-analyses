@@ -1,40 +1,52 @@
 ---
 layout: simple
-title: "Frog 1"
+title: "Frog 1 - Dynamic Programming Problem"
 permalink: /problem_soulutions/dynamic_programming_at/frog_1_analysis
+difficulty: Easy
+tags: [dp, 1d-dp, linear-dp, minimum-cost]
+prerequisites: []
 ---
 
 # Frog 1
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand 1D dynamic programming with linear transitions
-- Apply DP to solve minimum cost path problems
-- Recognize when to use bottom-up vs top-down DP approaches
-- Implement space-optimized DP solutions
-- Handle edge cases in DP problems
+| Attribute | Value |
+|-----------|-------|
+| **Source** | [AtCoder DP Contest - Problem A](https://atcoder.jp/contests/dp/tasks/dp_a) |
+| **Difficulty** | Easy |
+| **Category** | Dynamic Programming |
+| **Time Limit** | 2 seconds |
+| **Key Technique** | 1D DP with Linear Transitions |
 
-## 📋 Problem Description
+### Learning Goals
 
-There are N stones, numbered 1, 2, ..., N. For each i (1 ≤ i ≤ N), the height of Stone i is h_i. There is a frog who is initially on Stone 1. He will repeat the following action some number of times to reach Stone N:
-- If the frog is currently on Stone i, jump to Stone i+1 or Stone i+2. Here, a cost of |h_i - h_j| is incurred, where j is the stone to land on.
+After solving this problem, you will be able to:
+- [ ] Recognize problems that require simple 1D dynamic programming
+- [ ] Define DP states that represent "minimum cost to reach position i"
+- [ ] Write recurrence relations with multiple transition options
+- [ ] Implement both forward and backward DP approaches
+- [ ] Optimize space from O(n) to O(1) using rolling variables
 
-Find the minimum possible total cost incurred before the frog reaches Stone N.
+---
 
-**Input**: 
-- First line: N (2 ≤ N ≤ 10^5)
-- Second line: h_1, h_2, ..., h_N (1 ≤ h_i ≤ 10^4)
+## Problem Statement
 
-**Output**: 
-- Print the minimum total cost
+**Problem:** A frog starts on stone 1 and wants to reach stone N. From stone i, it can jump to stone i+1 or i+2. Each jump costs |h[i] - h[j]| where h is the height of each stone. Find the minimum total cost to reach stone N.
 
-**Constraints**:
-- 2 ≤ N ≤ 10^5
-- 1 ≤ h_i ≤ 10^4
+**Input:**
+- Line 1: N (number of stones)
+- Line 2: h[1], h[2], ..., h[N] (heights of stones)
 
-**Example**:
+**Output:**
+- Single integer: minimum total cost
+
+**Constraints:**
+- 2 <= N <= 10^5
+- 1 <= h[i] <= 10^4
+
+### Example
+
 ```
 Input:
 6
@@ -42,600 +54,484 @@ Input:
 
 Output:
 40
-
-Explanation**: 
-Optimal path: Stone 1 → Stone 2 → Stone 4 → Stone 6
-Cost: |30-10| + |10-10| + |10-50| = 20 + 0 + 40 = 40
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** The optimal path is Stone 1 -> Stone 3 -> Stone 5 -> Stone 6 (1-indexed).
+Using 0-indexed: 0 -> 2 -> 4 -> 5
+- Jump 0->2: |30-60| = 30
+- Jump 2->4: |60-60| = 0
+- Jump 4->5: |60-50| = 10
+- Total: 30 + 0 + 10 = 40
 
-### Approach 1: Recursive Solution (Brute Force)
+---
 
-**Key Insights from Recursive Solution**:
-- **Recursive Approach**: Try all possible paths from stone 1 to stone N
-- **Complete Enumeration**: Explore all possible jump sequences
-- **Simple Implementation**: Easy to understand and implement
-- **Inefficient**: Exponential time complexity
+## Intuition: How to Think About This Problem
 
-**Key Insight**: Use recursion to explore all possible paths from the current stone to the destination.
+### Pattern Recognition
 
-**Algorithm**:
-- Start from stone 1
-- At each stone i, try jumping to i+1 and i+2
-- Calculate the cost for each path
-- Return the minimum cost path
+> **Key Question:** This is a classic "minimum cost path" problem where we need to find the cheapest way to reach a destination with limited movement options.
 
-**Visual Example**:
-```
-Stones: [30, 10, 60, 10, 60, 50]
-        0   1   2   3   4   5
+The frog has only two choices at each stone: jump 1 step or jump 2 steps. This limited choice structure with overlapping subproblems screams dynamic programming.
 
-Recursive exploration:
-┌─────────────────────────────────────┐
-│ From stone 0:                       │
-│ - Jump to 1: cost=20, then recurse  │
-│ - Jump to 2: cost=30, then recurse  │
-│                                     │
-│ From stone 1:                       │
-│ - Jump to 2: cost=50, then recurse  │
-│ - Jump to 3: cost=0, then recurse   │
-│ ... (explores all paths)            │
-└─────────────────────────────────────┘
-```
+### Breaking Down the Problem
 
-**Implementation**:
+1. **What are we looking for?** Minimum total cost to reach stone N from stone 1.
+2. **What information do we have?** Heights of all stones, and the cost formula |h[i] - h[j]|.
+3. **What's the relationship between input and output?** The minimum cost to reach stone i depends on the minimum costs to reach stones i-1 and i-2.
+
+### Analogies
+
+Think of this problem like climbing stairs where each step has a different "energy cost" based on height difference. You want to reach the top floor spending the least energy, and you can take either 1 or 2 steps at a time.
+
+---
+
+## Solution 1: Brute Force (Recursion)
+
+### Idea
+
+Try all possible paths from stone 1 to stone N using recursion. At each stone, branch into two choices (jump +1 or +2) and return the minimum cost.
+
+### Algorithm
+
+1. Start at stone 0 (0-indexed)
+2. If at destination, return 0
+3. Try jumping to i+1 and i+2, recursively compute costs
+4. Return minimum of the two options
+
+### Code
+
 ```python
-def frog_1_recursive(n, heights):
+def frog_brute_force(n, heights):
     """
-    Recursive solution for Frog 1 problem
-    
-    Args:
-        n: number of stones
-        heights: list of stone heights
-    
-    Returns:
-        int: minimum total cost
+    Brute force recursive solution.
+
+    Time: O(2^n) - exponential branching
+    Space: O(n) - recursion stack
     """
-    def min_cost(i):
-        """Calculate minimum cost from stone i to stone n-1"""
-        # Base case: already at destination
+    def solve(i):
         if i == n - 1:
             return 0
-        
-        # Base case: can only jump to destination
-        if i == n - 2:
-            return abs(heights[i] - heights[n - 1])
-        
-        # Try jumping to i+1
-        cost1 = abs(heights[i] - heights[i + 1]) + min_cost(i + 1)
-        
-        # Try jumping to i+2
-        cost2 = abs(heights[i] - heights[i + 2]) + min_cost(i + 2)
-        
-        return min(cost1, cost2)
-    
-    return min_cost(0)
 
-# Example usage
-n = 6
-heights = [30, 10, 60, 10, 60, 50]
-result = frog_1_recursive(n, heights)
-print(f"Minimum cost: {result}")  # Output: 40
+        # Jump to i+1
+        cost1 = abs(heights[i] - heights[i + 1]) + solve(i + 1)
+
+        # Jump to i+2 (if possible)
+        if i + 2 < n:
+            cost2 = abs(heights[i] - heights[i + 2]) + solve(i + 2)
+            return min(cost1, cost2)
+
+        return cost1
+
+    return solve(0)
 ```
 
-**Time Complexity**: O(2^n)
-**Space Complexity**: O(n)
+### Complexity
 
-**Why it's inefficient**: Exponential time complexity due to recalculating the same subproblems multiple times.
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(2^n) | Each position branches into 2 choices |
+| Space | O(n) | Maximum recursion depth |
+
+### Why This Works (But Is Slow)
+
+The recursion correctly explores all paths, but it recalculates the same subproblems exponentially many times. For example, solve(3) is called multiple times from different paths.
 
 ---
 
-### Approach 2: Memoized Recursive Solution
+## Solution 2: Optimal Solution (Bottom-Up DP)
 
-**Key Insights from Memoized Solution**:
-- **Memoization**: Store results of subproblems to avoid recomputation
-- **Top-Down DP**: Recursive approach with caching
-- **Efficient**: O(n) time complexity
-- **Memory Trade-off**: O(n) space for memoization
+### Key Insight
 
-**Key Insight**: Use memoization to cache results of subproblems and avoid redundant calculations.
+> **The Trick:** The minimum cost to reach stone i only depends on the costs to reach stones i-1 and i-2. We can build the solution iteratively from the start.
 
-**Algorithm**:
-- Use recursion with memoization
-- Store computed results in a dictionary/array
-- Return cached results when available
+### DP State Definition
 
-**Visual Example**:
+| State | Meaning |
+|-------|---------|
+| `dp[i]` | Minimum cost to reach stone i from stone 0 |
+
+**In plain English:** For each stone, we store the cheapest way to get there from the starting stone.
+
+### State Transition
+
 ```
-Memoization table:
-dp[0] = min cost from stone 0 to N-1
-dp[1] = min cost from stone 1 to N-1
-...
-dp[N-1] = 0 (base case)
-
-When computing dp[i], check if already computed.
+dp[i] = min(dp[i-1] + |h[i] - h[i-1]|, dp[i-2] + |h[i] - h[i-2]|)
 ```
 
-**Implementation**:
+**Why?** To reach stone i, we must have come from either stone i-1 or stone i-2. We pick whichever path gives the minimum total cost.
+
+### Base Cases
+
+| Case | Value | Reason |
+|------|-------|--------|
+| `dp[0]` | 0 | Starting position, no cost to be here |
+| `dp[1]` | \|h[1] - h[0]\| | Only one way to reach stone 1 |
+
+### Algorithm
+
+1. Initialize dp[0] = 0, dp[1] = |h[1] - h[0]|
+2. For each stone i from 2 to n-1:
+   - Compute cost coming from i-1 and i-2
+   - Take minimum
+3. Return dp[n-1]
+
+### Dry Run Example
+
+Let's trace through with `n = 6, heights = [30, 10, 60, 10, 60, 50]`:
+
+```
+Initial state:
+  dp = [0, _, _, _, _, _]
+  heights = [30, 10, 60, 10, 60, 50]
+
+Step 1: Compute dp[1]
+  dp[1] = |10 - 30| = 20
+  dp = [0, 20, _, _, _, _]
+
+Step 2: Compute dp[2]
+  From dp[1]: 20 + |60 - 10| = 20 + 50 = 70
+  From dp[0]: 0 + |60 - 30| = 0 + 30 = 30
+  dp[2] = min(70, 30) = 30
+  dp = [0, 20, 30, _, _, _]
+
+Step 3: Compute dp[3]
+  From dp[2]: 30 + |10 - 60| = 30 + 50 = 80
+  From dp[1]: 20 + |10 - 10| = 20 + 0 = 20
+  dp[3] = min(80, 20) = 20
+  dp = [0, 20, 30, 20, _, _]
+
+Step 4: Compute dp[4]
+  From dp[3]: 20 + |60 - 10| = 20 + 50 = 70
+  From dp[2]: 30 + |60 - 60| = 30 + 0 = 30
+  dp[4] = min(70, 30) = 30
+  dp = [0, 20, 30, 20, 30, _]
+
+Step 5: Compute dp[5]
+  From dp[4]: 30 + |50 - 60| = 30 + 10 = 40
+  From dp[3]: 20 + |50 - 10| = 20 + 40 = 60
+  dp[5] = min(40, 60) = 40
+  dp = [0, 20, 30, 20, 30, 40]
+
+Answer: dp[5] = 40
+```
+
+### Visual Diagram
+
+```
+Heights: [30, 10, 60, 10, 60, 50]
+Index:     0   1   2   3   4   5
+
+DP Table Construction:
+  dp[0] = 0 (start)
+  dp[1] = 20 (only from 0)
+  dp[2] = min(70, 30) = 30 (from 1 or 0)
+  dp[3] = min(80, 20) = 20 (from 2 or 1)
+  dp[4] = min(70, 30) = 30 (from 3 or 2)
+  dp[5] = min(40, 60) = 40 (from 4 or 3)
+
+Optimal path reconstruction: 0 -> 2 -> 4 -> 5
+  Cost: |30-60| + |60-60| + |60-50| = 30 + 0 + 10 = 40
+```
+
+### Code
+
+**Python:**
+
 ```python
-def frog_1_memoized(n, heights):
+def frog_dp(n, heights):
     """
-    Memoized recursive solution for Frog 1 problem
-    
-    Args:
-        n: number of stones
-        heights: list of stone heights
-    
-    Returns:
-        int: minimum total cost
+    Bottom-up DP solution.
+
+    Time: O(n) - single pass
+    Space: O(n) - dp array
     """
-    memo = {}
-    
-    def min_cost(i):
-        """Calculate minimum cost from stone i to stone n-1"""
-        # Check memo
-        if i in memo:
-            return memo[i]
-        
-        # Base case: already at destination
-        if i == n - 1:
-            memo[i] = 0
-            return 0
-        
-        # Base case: can only jump to destination
-        if i == n - 2:
-            cost = abs(heights[i] - heights[n - 1])
-            memo[i] = cost
-            return cost
-        
-        # Try jumping to i+1
-        cost1 = abs(heights[i] - heights[i + 1]) + min_cost(i + 1)
-        
-        # Try jumping to i+2
-        cost2 = abs(heights[i] - heights[i + 2]) + min_cost(i + 2)
-        
-        result = min(cost1, cost2)
-        memo[i] = result
-        return result
-    
-    return min_cost(0)
-
-# Example usage
-n = 6
-heights = [30, 10, 60, 10, 60, 50]
-result = frog_1_memoized(n, heights)
-print(f"Minimum cost: {result}")  # Output: 40
-```
-
-**Time Complexity**: O(n)
-**Space Complexity**: O(n)
-
-**Why it's better**: Uses memoization to achieve O(n) time complexity.
-
-**Implementation Considerations**:
-- **Memoization**: Store results to avoid recomputation
-- **Top-Down Approach**: Natural recursive structure
-- **Memory Management**: Consider stack depth for large n
-
----
-
-### Approach 3: Bottom-Up Dynamic Programming (Optimal)
-
-**Key Insights from Bottom-Up DP Solution**:
-- **Bottom-Up DP**: Build solution from base cases
-- **Iterative Approach**: No recursion stack overhead
-- **Efficient**: O(n) time, O(n) space
-- **Optimal**: Best approach for this problem
-
-**Key Insight**: Build the solution iteratively from the destination backwards, or from start forwards.
-
-#### 📌 **DP State Definition**
-
-**What does `dp[i]` represent?**
-- `dp[i]` = **minimum cost** to reach stone N-1 (destination) starting from stone i
-- This is a 1D DP array where index i represents the current stone position
-- `dp[n-1]` = 0 (base case: already at destination)
-- `dp[0]` = our final answer (minimum cost from stone 0 to stone N-1)
-
-**In plain language:**
-- For each stone position i, we store the minimum cost to reach the destination
-- We can compute dp[i] by considering jumps to i+1 and i+2
-
-#### 🎯 **DP Thinking Process**
-
-**Step 1: Identify the Subproblem**
-- What are we trying to minimize? The total cost to reach stone N-1
-- What information do we need? For each stone, the minimum cost to reach the destination
-
-**Step 2: Define the DP State** (See DP State Definition section above)
-
-**Step 3: Find the Recurrence Relation (State Transition)**
-- How do we compute `dp[i]`?
-- From stone i, we can jump to i+1 or i+2
-- Cost to jump from i to j is |h_i - h_j|
-- Therefore: `dp[i] = min(dp[i+1] + |h_i - h_{i+1}|, dp[i+2] + |h_i - h_{i+2}|)`
-- For each possible jump, add the jump cost to the minimum cost from the destination stone
-
-**Step 4: Determine Base Cases**
-- `dp[n-1] = 0`: Already at destination, no cost
-- `dp[n-2] = |h_{n-2} - h_{n-1}|`: Only one possible jump to destination
-
-**Step 5: Identify the Answer**
-- The answer is `dp[0]` - the minimum cost from stone 0 to stone N-1
-
-#### 📊 **Visual DP Table Construction**
-
-For `n = 6, heights = [30, 10, 60, 10, 60, 50]`:
-```
-Step-by-step DP table filling (backwards):
-
-dp[5] = 0  (base case: at destination)
-
-dp[4] = |60 - 50| = 10  (only one jump possible)
-
-dp[3] = min(
-    dp[4] + |10 - 60| = 10 + 50 = 60,
-    dp[5] + |10 - 50| = 0 + 40 = 40
-) = 40
-
-dp[2] = min(
-    dp[3] + |60 - 10| = 40 + 50 = 90,
-    dp[4] + |60 - 60| = 10 + 0 = 10
-) = 10
-
-dp[1] = min(
-    dp[2] + |10 - 60| = 10 + 50 = 60,
-    dp[3] + |10 - 10| = 40 + 0 = 40
-) = 40
-
-dp[0] = min(
-    dp[1] + |30 - 10| = 40 + 20 = 60,
-    dp[2] + |30 - 60| = 10 + 30 = 40
-) = 40
-
-Final answer: dp[0] = 40
-```
-
-**Algorithm**:
-- Initialize `dp[n-1] = 0`
-- Initialize `dp[n-2] = |h_{n-2} - h_{n-1}|`
-- For i from n-3 down to 0:
-  - `dp[i] = min(dp[i+1] + |h_i - h_{i+1}|, dp[i+2] + |h_i - h_{i+2}|)`
-- Return `dp[0]`
-
-**Visual Example**:
-```
-DP table for n=6, heights=[30, 10, 60, 10, 60, 50]:
-
-┌─────────────────────────────────────┐
-│ Stone:  0   1   2   3   4   5      │
-│ Height: 30  10  60  10  60  50     │
-│ DP:     40  40  10  40  10  0      │
-│                                     │
-│ Optimal path: 0→2→4→5              │
-│ Cost: 40 (30+10+0 = 40)            │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def frog_1_dp(n, heights):
-    """
-    Bottom-up DP solution for Frog 1 problem
-    
-    Args:
-        n: number of stones
-        heights: list of stone heights
-    
-    Returns:
-        int: minimum total cost
-    """
-    # Create DP table
-    dp = [0] * n
-    
-    # Base case: already at destination
-    dp[n - 1] = 0
-    
-    # Base case: one jump to destination
-    if n >= 2:
-        dp[n - 2] = abs(heights[n - 2] - heights[n - 1])
-    
-    # Fill DP table backwards
-    for i in range(n - 3, -1, -1):
-        # Try jumping to i+1
-        cost1 = dp[i + 1] + abs(heights[i] - heights[i + 1])
-        
-        # Try jumping to i+2
-        cost2 = dp[i + 2] + abs(heights[i] - heights[i + 2])
-        
-        dp[i] = min(cost1, cost2)
-    
-    return dp[0]
-
-# Example usage
-n = 6
-heights = [30, 10, 60, 10, 60, 50]
-result = frog_1_dp(n, heights)
-print(f"Minimum cost: {result}")  # Output: 40
-```
-
-**Time Complexity**: O(n)
-**Space Complexity**: O(n)
-
-**Why it's optimal**: Uses bottom-up DP for O(n) time and space complexity.
-
-**Implementation Details**:
-- **Bottom-Up Approach**: Build solution from base cases
-- **Iterative**: No recursion stack overhead
-- **Space Efficient**: Can be optimized to O(1) if only last two values needed
-
----
-
-### Approach 4: Space-Optimized DP Solution
-
-**Key Insights from Space-Optimized Solution**:
-- **Space Optimization**: Only need last two DP values
-- **Rolling Variables**: Use variables instead of array
-- **Efficient**: O(n) time, O(1) space
-- **Optimal Complexity**: Best space complexity
-
-**Key Insight**: Since we only need dp[i+1] and dp[i+2] to compute dp[i], we can use just two variables.
-
-**Algorithm**:
-- Use two variables to track last two DP values
-- Update them as we iterate backwards
-- Return the final result
-
-**Implementation**:
-```python
-def frog_1_space_optimized(n, heights):
-    """
-    Space-optimized DP solution for Frog 1 problem
-    
-    Args:
-        n: number of stones
-        heights: list of stone heights
-    
-    Returns:
-        int: minimum total cost
-    """
-    # Base cases
     if n == 1:
         return 0
-    
-    # Only need last two values
-    prev2 = 0  # dp[n-1]
-    prev1 = abs(heights[n - 2] - heights[n - 1])  # dp[n-2]
-    
-    # Fill DP backwards using only two variables
-    for i in range(n - 3, -1, -1):
-        # Try jumping to i+1 and i+2
-        cost1 = prev1 + abs(heights[i] - heights[i + 1])
-        cost2 = prev2 + abs(heights[i] - heights[i + 2])
-        
-        current = min(cost1, cost2)
-        
-        # Update for next iteration
-        prev2, prev1 = prev1, current
-    
-    return prev1
 
-# Example usage
-n = 6
-heights = [30, 10, 60, 10, 60, 50]
-result = frog_1_space_optimized(n, heights)
-print(f"Minimum cost: {result}")  # Output: 40
-```
+    dp = [0] * n
+    dp[0] = 0
+    dp[1] = abs(heights[1] - heights[0])
 
-**Time Complexity**: O(n)
-**Space Complexity**: O(1)
+    for i in range(2, n):
+        from_prev = dp[i - 1] + abs(heights[i] - heights[i - 1])
+        from_prev2 = dp[i - 2] + abs(heights[i] - heights[i - 2])
+        dp[i] = min(from_prev, from_prev2)
 
-**Why it's optimal**: Uses O(1) space while maintaining O(n) time complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Recursive | O(2^n) | O(n) | Complete enumeration of all paths |
-| Memoized | O(n) | O(n) | Cache subproblem results |
-| Bottom-Up DP | O(n) | O(n) | Build solution iteratively |
-| Space-Optimized DP | O(n) | O(1) | Only need last two values |
-
-### Time Complexity
-- **Time**: O(n) - Single pass through all stones
-- **Space**: O(1) - Only two variables needed for space-optimized version
-
-### Why This Solution Works
-- **Optimal Substructure**: Minimum cost to reach destination from stone i depends on minimum costs from stones i+1 and i+2
-- **Overlapping Subproblems**: Same subproblems are solved multiple times in recursive approach
-- **DP Optimization**: Bottom-up approach avoids redundant calculations
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Frog 1 - Forward DP Approach**
-**Problem**: Solve using forward DP (building from start to end).
-
-**Key Differences**: Iterate from 0 to n-1 instead of backwards
-
-**Solution Approach**: Define dp[i] as minimum cost from stone 0 to stone i
-
-**Implementation**:
-```python
-def frog_1_forward_dp(n, heights):
-    """
-    Forward DP solution for Frog 1 problem
-    
-    Args:
-        n: number of stones
-        heights: list of stone heights
-    
-    Returns:
-        int: minimum total cost
-    """
-    dp = [float('inf')] * n
-    dp[0] = 0  # Starting at stone 0, cost is 0
-    
-    for i in range(n):
-        # Try jumping to i+1
-        if i + 1 < n:
-            cost = dp[i] + abs(heights[i] - heights[i + 1])
-            dp[i + 1] = min(dp[i + 1], cost)
-        
-        # Try jumping to i+2
-        if i + 2 < n:
-            cost = dp[i] + abs(heights[i] - heights[i + 2])
-            dp[i + 2] = min(dp[i + 2], cost)
-    
     return dp[n - 1]
 
-# Example usage
-n = 6
-heights = [30, 10, 60, 10, 60, 50]
-result = frog_1_forward_dp(n, heights)
-print(f"Minimum cost: {result}")  # Output: 40
+
+# Read input and solve
+def main():
+    n = int(input())
+    heights = list(map(int, input().split()))
+    print(frog_dp(n, heights))
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-#### **2. Frog 1 - Path Reconstruction**
-**Problem**: Not just find minimum cost, but also reconstruct the optimal path.
+**C++:**
 
-**Key Differences**: Track parent/previous stone for each optimal choice
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Solution Approach**: Maintain parent array to reconstruct path
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-**Implementation**:
+    int n;
+    cin >> n;
+
+    vector<int> h(n);
+    for (int i = 0; i < n; i++) {
+        cin >> h[i];
+    }
+
+    vector<int> dp(n);
+    dp[0] = 0;
+    if (n > 1) dp[1] = abs(h[1] - h[0]);
+
+    for (int i = 2; i < n; i++) {
+        int from_prev = dp[i - 1] + abs(h[i] - h[i - 1]);
+        int from_prev2 = dp[i - 2] + abs(h[i] - h[i - 2]);
+        dp[i] = min(from_prev, from_prev2);
+    }
+
+    cout << dp[n - 1] << endl;
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Single pass through all stones |
+| Space | O(n) | DP array of size n |
+
+---
+
+## Solution 3: Space-Optimized DP
+
+### Key Insight
+
+> **The Trick:** Since dp[i] only depends on dp[i-1] and dp[i-2], we only need two variables instead of an entire array.
+
+### Code
+
+**Python:**
+
 ```python
-def frog_1_with_path(n, heights):
+def frog_optimized(n, heights):
     """
-    DP solution with path reconstruction for Frog 1 problem
-    
-    Args:
-        n: number of stones
-        heights: list of stone heights
-    
-    Returns:
-        tuple: (minimum cost, optimal path)
-    """
-    dp = [0] * n
-    parent = [-1] * n
-    
-    dp[n - 1] = 0
-    if n >= 2:
-        dp[n - 2] = abs(heights[n - 2] - heights[n - 1])
-        parent[n - 2] = n - 1
-    
-    for i in range(n - 3, -1, -1):
-        cost1 = dp[i + 1] + abs(heights[i] - heights[i + 1])
-        cost2 = dp[i + 2] + abs(heights[i] - heights[i + 2])
-        
-        if cost1 <= cost2:
-            dp[i] = cost1
-            parent[i] = i + 1
-        else:
-            dp[i] = cost2
-            parent[i] = i + 2
-    
-    # Reconstruct path
-    path = [0]
-    current = 0
-    while parent[current] != -1:
-        current = parent[current]
-        path.append(current)
-    
-    return dp[0], path
+    Space-optimized DP using rolling variables.
 
-# Example usage
-n = 6
-heights = [30, 10, 60, 10, 60, 50]
-cost, path = frog_1_with_path(n, heights)
-print(f"Minimum cost: {cost}")  # Output: 40
-print(f"Optimal path: {path}")  # Output: [0, 2, 4, 5]
+    Time: O(n) - single pass
+    Space: O(1) - only two variables
+    """
+    if n == 1:
+        return 0
+
+    prev2 = 0  # dp[i-2]
+    prev1 = abs(heights[1] - heights[0])  # dp[i-1]
+
+    for i in range(2, n):
+        curr = min(
+            prev1 + abs(heights[i] - heights[i - 1]),
+            prev2 + abs(heights[i] - heights[i - 2])
+        )
+        prev2, prev1 = prev1, curr
+
+    return prev1
+
+
+def main():
+    n = int(input())
+    heights = list(map(int, input().split()))
+    print(frog_optimized(n, heights))
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-#### **3. Frog 1 - Multiple Destinations**
-**Problem**: Find minimum cost to reach any of multiple destination stones.
+**C++:**
 
-**Key Differences**: Have multiple possible destination stones
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Solution Approach**: Initialize multiple base cases
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-**Implementation**:
+    int n;
+    cin >> n;
+
+    vector<int> h(n);
+    for (int i = 0; i < n; i++) {
+        cin >> h[i];
+    }
+
+    if (n == 1) {
+        cout << 0 << endl;
+        return 0;
+    }
+
+    int prev2 = 0;
+    int prev1 = abs(h[1] - h[0]);
+
+    for (int i = 2; i < n; i++) {
+        int curr = min(
+            prev1 + abs(h[i] - h[i - 1]),
+            prev2 + abs(h[i] - h[i - 2])
+        );
+        prev2 = prev1;
+        prev1 = curr;
+    }
+
+    cout << prev1 << endl;
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Single pass through all stones |
+| Space | O(1) | Only two rolling variables |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Forgetting the i-2 Bound Check
+
 ```python
-def frog_1_multiple_destinations(n, heights, destinations):
-    """
-    DP solution for reaching any of multiple destinations
-    
-    Args:
-        n: number of stones
-        heights: list of stone heights
-        destinations: set of destination stone indices
-    
-    Returns:
-        int: minimum total cost to reach any destination
-    """
-    dp = [float('inf')] * n
-    
-    # Initialize base cases for all destinations
-    for dest in destinations:
-        dp[dest] = 0
-    
-    # Fill DP backwards
-    for i in range(n - 1, -1, -1):
-        if i in destinations:
-            continue  # Already initialized
-        
-        if i + 1 < n:
-            cost1 = dp[i + 1] + abs(heights[i] - heights[i + 1])
-            dp[i] = min(dp[i], cost1)
-        
-        if i + 2 < n:
-            cost2 = dp[i + 2] + abs(heights[i] - heights[i + 2])
-            dp[i] = min(dp[i], cost2)
-    
-    return dp[0]
+# WRONG (in brute force)
+cost2 = abs(heights[i] - heights[i + 2]) + solve(i + 2)
+return min(cost1, cost2)  # Crashes when i+2 >= n
 
-# Example usage
-n = 6
-heights = [30, 10, 60, 10, 60, 50]
-destinations = {4, 5}  # Can end at stone 4 or 5
-result = frog_1_multiple_destinations(n, heights, destinations)
-print(f"Minimum cost: {result}")
+# CORRECT
+if i + 2 < n:
+    cost2 = abs(heights[i] - heights[i + 2]) + solve(i + 2)
+    return min(cost1, cost2)
+return cost1
 ```
 
-### Related Problems
+**Problem:** Index out of bounds when near the last stone.
+**Fix:** Always check bounds before accessing i+2 or i-2.
 
-#### **CSES Problems**
-- [Minimizing Coins](https://cses.fi/problemset/task/1634) - Similar DP pattern
-- [Removing Digits](https://cses.fi/problemset/task/1637) - Similar state transitions
+### Mistake 2: Wrong Initial State
 
-#### **LeetCode Problems**
-- [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/) - Similar structure
-- [Min Cost Climbing Stairs](https://leetcode.com/problems/min-cost-climbing-stairs/) - Almost identical problem
-- [Jump Game II](https://leetcode.com/problems/jump-game-ii/) - Similar jumping pattern
+```python
+# WRONG
+dp[0] = heights[0]  # This is height, not cost!
 
-#### **AtCoder Problems**
-- [Frog 2](https://atcoder.jp/contests/dp/tasks/dp_b) - Extension with k jumps
-- [Frog 3](https://atcoder.jp/contests/dp/tasks/dp_z) - Advanced version with convex hull trick
+# CORRECT
+dp[0] = 0  # Cost to reach starting position is 0
+```
 
-#### **Problem Categories**
-- **1D DP**: Linear state space, simple transitions
-- **Minimum Path**: Finding optimal paths
-- **Cost Optimization**: Minimizing costs
+**Problem:** Confusing height values with cost values.
+**Fix:** dp[0] should be 0 because there's no cost to start at the first stone.
 
-## 🔗 Additional Resources
+### Mistake 3: Off-by-One in Loop Range
 
-### **Algorithm References**
-- [Dynamic Programming Introduction](https://cp-algorithms.com/dynamic_programming/intro-to-dp.html) - DP fundamentals
-- [1D DP Problems](https://cp-algorithms.com/dynamic_programming/1d-dp.html) - Linear DP techniques
+```python
+# WRONG
+for i in range(2, n - 1):  # Misses the last stone!
 
-### **Practice Problems**
-- [AtCoder DP Contest Problem A](https://atcoder.jp/contests/dp/tasks/dp_a) - Original problem
-- [AtCoder DP Contest Problem B](https://atcoder.jp/contests/dp/tasks/dp_b) - Next in series
-- [LeetCode Min Cost Climbing Stairs](https://leetcode.com/problems/min-cost-climbing-stairs/) - Similar problem
+# CORRECT
+for i in range(2, n):  # Process all stones including the last
+```
 
-### **Further Reading**
-- [Introduction to Algorithms (CLRS)](https://mitpress.mit.edu/books/introduction-algorithms) - Dynamic Programming chapter
-- [Competitive Programming Handbook](https://cses.fi/book/book.pdf) - DP section
+**Problem:** Not processing the destination stone.
+**Fix:** Loop should go up to n (exclusive) to include index n-1.
 
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Minimum N | n=2, h=[10, 20] | 10 | Only one jump possible |
+| All same height | n=5, h=[5, 5, 5, 5, 5] | 0 | All jumps cost 0 |
+| Strictly increasing | n=4, h=[1, 2, 3, 4] | 3 | Always jump +1 (cost=1 each) |
+| Alternating heights | n=4, h=[1, 100, 1, 100] | 99 | Better to jump +2 when possible |
+| Large heights | n=3, h=[1, 10000, 1] | 2 | Jump +2 to avoid peak |
+
+---
+
+## When to Use This Pattern
+
+### Use This Approach When:
+- Problem asks for minimum/maximum cost to reach a destination
+- Movement is restricted to a fixed number of options (e.g., +1 or +2 steps)
+- Current state only depends on a small number of previous states
+- Problem has optimal substructure (optimal solution contains optimal sub-solutions)
+
+### Don't Use When:
+- Movement options depend on current position in complex ways
+- State depends on entire history, not just recent states
+- Problem requires finding all paths, not just the optimal one
+
+### Pattern Recognition Checklist:
+- [ ] Is there a clear "start" and "end" state? -> **Consider DP**
+- [ ] Limited movement options at each step? -> **Consider 1D DP**
+- [ ] Cost/value accumulates along the path? -> **Consider min/max DP**
+- [ ] Only need last few states? -> **Consider space optimization**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+
+| Problem | Why It Helps |
+|---------|--------------|
+| [Climbing Stairs (LC 70)](https://leetcode.com/problems/climbing-stairs/) | Same structure, counts paths instead of min cost |
+
+### Similar Difficulty
+
+| Problem | Key Difference |
+|---------|----------------|
+| [Min Cost Climbing Stairs (LC 746)](https://leetcode.com/problems/min-cost-climbing-stairs/) | Can start from step 0 or 1 |
+| [Frog 2 (AtCoder)](https://atcoder.jp/contests/dp/tasks/dp_b) | Can jump up to K steps instead of just 2 |
+| [House Robber (LC 198)](https://leetcode.com/problems/house-robber/) | Similar recurrence, different problem context |
+
+### Harder (Do These After)
+
+| Problem | New Concept |
+|---------|-------------|
+| [Jump Game II (LC 45)](https://leetcode.com/problems/jump-game-ii/) | Variable jump lengths |
+| [Frog 3 (AtCoder)](https://atcoder.jp/contests/dp/tasks/dp_z) | Requires Convex Hull Trick optimization |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** DP state represents minimum cost to reach each position; each position considers all incoming transitions.
+2. **Time Optimization:** From O(2^n) brute force to O(n) by storing and reusing subproblem solutions.
+3. **Space Trade-off:** O(n) array can be reduced to O(1) since we only need the last two states.
+4. **Pattern:** This is the canonical "Linear DP with Limited Transitions" pattern.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Solve this problem without looking at the solution
+- [ ] Explain why dp[i] only needs dp[i-1] and dp[i-2]
+- [ ] Implement both O(n) space and O(1) space versions
+- [ ] Identify similar problems in contests within 2 minutes
+
+---
+
+## Additional Resources
+
+- [AtCoder DP Contest](https://atcoder.jp/contests/dp) - Full problem set (A-Z)
+- [CP-Algorithms: Dynamic Programming](https://cp-algorithms.com/dynamic_programming/intro-to-dp.html)
+- [CSES Problem Set - DP Section](https://cses.fi/problemset/)

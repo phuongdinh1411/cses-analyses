@@ -1,39 +1,52 @@
 ---
 layout: simple
-title: "Longest Path"
+title: "Longest Path - Graph DP Problem"
 permalink: /problem_soulutions/dynamic_programming_at/longest_path_analysis
+difficulty: Medium
+tags: [dp, dag, graph, topological-sort, memoization]
+prerequisites: []
 ---
 
 # Longest Path
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand DP on Directed Acyclic Graphs (DAGs)
-- Apply topological sorting for DP computation
-- Recognize when to use DP on graphs
-- Implement longest path algorithms using DP
-- Handle graph-based DP problems efficiently
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Graph DP / DAG |
+| **Time Limit** | 2 seconds |
+| **Key Technique** | DP on DAG with Topological Order |
+| **Problem Link** | [AtCoder DP Contest - G](https://atcoder.jp/contests/dp/tasks/dp_g) |
 
-## 📋 Problem Description
+### Learning Goals
 
-There is a directed graph G with N vertices and M edges. The vertices are numbered 1, 2, ..., N, and each edge is directed from a vertex with a smaller number to a vertex with a larger number. G is a DAG (Directed Acyclic Graph). Find the length of the longest path in G. Here, the length of a path is the number of edges in it.
+After solving this problem, you will be able to:
+- [ ] Understand how to apply DP on Directed Acyclic Graphs (DAGs)
+- [ ] Implement DFS with memoization for graph problems
+- [ ] Use topological sorting to determine DP computation order
+- [ ] Recognize the optimal substructure in path problems
 
-**Input**: 
-- First line: N, M (2 ≤ N ≤ 10^5, 1 ≤ M ≤ 10^5)
-- Next M lines: x_i, y_i (1 ≤ x_i < y_i ≤ N) - edge from x_i to y_i
+---
 
-**Output**: 
-- Print the length of the longest path
+## Problem Statement
 
-**Constraints**:
-- 2 ≤ N ≤ 10^5
-- 1 ≤ M ≤ 10^5
-- 1 ≤ x_i < y_i ≤ N
-- G is a DAG (guaranteed by x_i < y_i)
+**Problem:** Given a directed acyclic graph (DAG) with N vertices and M edges, find the length of the longest directed path. The length of a path is defined as the number of edges in it.
 
-**Example**:
+**Input:**
+- Line 1: Two integers N and M (number of vertices and edges)
+- Lines 2 to M+1: Two integers x_i and y_i representing a directed edge from x_i to y_i
+
+**Output:**
+- A single integer: the length of the longest path
+
+**Constraints:**
+- 2 <= N <= 10^5
+- 1 <= M <= 10^5
+- 1 <= x_i < y_i <= N (this guarantees the graph is a DAG)
+
+### Example
+
 ```
 Input:
 4 5
@@ -45,422 +58,482 @@ Input:
 
 Output:
 3
-
-Explanation**: 
-Graph structure:
-1 → 2 → 3 → 4
-1 → 3 → 4
-1 → 2 → 4
-
-Longest path: 1 → 2 → 3 → 4 (length 3)
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: DFS with Memoization (Optimal)
-
-**Key Insights from DFS Solution**:
-- **DFS Approach**: Use DFS to explore all paths from each vertex
-- **Memoization**: Cache results to avoid recomputation
-- **DAG Property**: Since graph is acyclic, DFS is safe
-- **Efficient**: O(V + E) time complexity
-
-**Key Insight**: For a DAG, we can use DFS with memoization to compute longest path from each vertex. The longest path overall is the maximum over all starting vertices.
-
-#### 📌 **DP State Definition**
-
-**What does `dp[v]` represent?**
-- `dp[v]` = **length of longest path** starting from vertex v
-- This is a 1D DP array where index v represents the vertex
-- `dp[v]` stores the maximum number of edges in any path starting from v
-- Final answer = max(dp[v]) over all vertices v
-
-**In plain language:**
-- For each vertex, we store the length of the longest path that starts from that vertex
-- We can compute dp[v] by considering all neighbors u of v and taking the maximum
-
-#### 🎯 **DP Thinking Process**
-
-**Step 1: Identify the Subproblem**
-- What are we trying to maximize? The length of the longest path in the graph
-- What information do we need? For each vertex, the longest path starting from it
-
-**Step 2: Define the DP State** (See DP State Definition section above)
-
-**Step 3: Find the Recurrence Relation (State Transition)**
-- How do we compute `dp[v]`?
-- From vertex v, we can go to any neighbor u
-- If we go to u, the path length becomes 1 + dp[u]
-- Therefore: `dp[v] = max(1 + dp[u])` for all neighbors u of v
-- Base case: If v has no outgoing edges, `dp[v] = 0`
-
-**Step 4: Determine Base Cases**
-- `dp[v] = 0` if v has no outgoing edges (sink vertex)
-
-**Step 5: Identify the Answer**
-- The answer is `max(dp[v])` over all vertices v
-
-#### 📊 **Visual DP Table Construction**
-
-For the example graph:
+**Explanation:** The graph has the structure:
 ```
-Vertices: 1, 2, 3, 4
-Edges: 1→2, 1→3, 2→3, 2→4, 3→4
+1 --> 2 --> 3 --> 4
+ \         /
+  \-> 3 --/
+```
+The longest path is 1 -> 2 -> 3 -> 4 with 3 edges.
 
-Graph structure:
-1 → 2 → 3 → 4
-  ↘   ↗
-   3 → 4
+---
 
-DFS with memoization:
-┌─────────────────────────────────────┐
-│ dp[4] = 0 (no outgoing edges)       │
-│                                     │
-│ dp[3] = 1 + dp[4] = 1 + 0 = 1      │
-│                                     │
-│ dp[2] = max(1 + dp[3], 1 + dp[4]) │
-│      = max(1 + 1, 1 + 0) = 2       │
-│                                     │
-│ dp[1] = max(1 + dp[2], 1 + dp[3]) │
-│      = max(1 + 2, 1 + 1) = 3       │
-│                                     │
-│ Final answer: max(dp) = 3          │
-└─────────────────────────────────────┘
+## Intuition: How to Think About This Problem
+
+### Pattern Recognition
+
+> **Key Question:** Why can we use DP on this graph?
+
+A DAG has no cycles, which means there is a natural ordering of vertices (topological order). This ordering guarantees that if we process vertices correctly, all dependencies (neighbors) are resolved before we need them. This is the essence of DP on DAGs.
+
+### Breaking Down the Problem
+
+1. **What are we looking for?** The maximum number of edges in any path.
+2. **What information do we have?** The graph structure (vertices and directed edges).
+3. **What is the relationship?** The longest path from vertex v depends on the longest paths from its neighbors.
+
+### Analogies
+
+Think of this like finding the longest route through a one-way street system where you can only go "forward" (no U-turns allowed). From any intersection, your best route is 1 + the best route from whichever next intersection leads farthest.
+
+---
+
+## Solution 1: DFS with Memoization (Recommended)
+
+### Key Insight
+
+> **The Trick:** Use DFS to explore paths lazily, caching results to avoid recomputation. The DAG property ensures no infinite loops.
+
+### DP State Definition
+
+| State | Meaning |
+|-------|---------|
+| `dp[v]` | Length of the longest path **starting from** vertex v |
+
+**In plain English:** For each vertex, we store how far we can travel starting from that vertex.
+
+### State Transition
+
+```
+dp[v] = max(1 + dp[u]) for all neighbors u of v
+dp[v] = 0 if v has no outgoing edges (sink vertex)
 ```
 
-**Algorithm**:
-- Build adjacency list representation of graph
-- Initialize `dp[v] = -1` (unvisited) for all vertices
-- For each vertex v:
-  - If `dp[v] == -1`, compute it using DFS
-  - `dp[v] = max(1 + dp[u])` for all neighbors u
-- Return `max(dp[v])` over all vertices
+**Why?** From vertex v, we can go to any neighbor u. Taking that edge adds 1 to the path length, plus however far we can go from u.
 
-**Visual Example**:
+### Base Cases
+
+| Case | Value | Reason |
+|------|-------|--------|
+| `dp[v]` for sink | 0 | No outgoing edges means path ends here |
+
+### Algorithm
+
+1. Build adjacency list from input edges
+2. Initialize dp array with -1 (unvisited marker)
+3. For each vertex, run DFS to compute longest path from it
+4. Return the maximum value in dp array
+
+### Dry Run Example
+
+Let's trace through with input `N=4, M=5, edges: (1,2), (1,3), (2,3), (2,4), (3,4)`:
+
 ```
-DP computation order (topological order):
-Vertex 4: dp[4] = 0 (sink)
-Vertex 3: dp[3] = 1 + dp[4] = 1
-Vertex 2: dp[2] = max(1 + dp[3], 1 + dp[4]) = max(2, 1) = 2
-Vertex 1: dp[1] = max(1 + dp[2], 1 + dp[3]) = max(3, 2) = 3
+Graph adjacency list:
+  1 -> [2, 3]
+  2 -> [3, 4]
+  3 -> [4]
+  4 -> []
 
-Longest path: 1 → 2 → 3 → 4 (length 3)
+Initial state: dp = [-1, -1, -1, -1, -1] (index 0 unused)
+
+DFS(1):
+  |-- DFS(2):
+  |     |-- DFS(3):
+  |     |     |-- DFS(4):
+  |     |     |     No neighbors, dp[4] = 0
+  |     |     dp[3] = 1 + dp[4] = 1 + 0 = 1
+  |     |-- DFS(4): already computed, dp[4] = 0
+  |     dp[2] = max(1 + dp[3], 1 + dp[4]) = max(2, 1) = 2
+  |-- DFS(3): already computed, dp[3] = 1
+  dp[1] = max(1 + dp[2], 1 + dp[3]) = max(3, 2) = 3
+
+Final: dp = [-1, 3, 2, 1, 0]
+Answer: max(dp[1..4]) = 3
 ```
 
-**Implementation**:
+### Visual Diagram
+
+```
+Vertex:    1       2       3       4
+           |       |       |       |
+           v       v       v       v
+dp value:  3       2       1       0
+
+Path:      1 ----> 2 ----> 3 ----> 4
+           (longest path, length = 3)
+```
+
+### Code (Python)
+
 ```python
-def longest_path_dfs(n, m, edges):
+import sys
+from typing import List, Tuple
+sys.setrecursionlimit(200005)
+
+def solve(n: int, edges: List[Tuple[int, int]]) -> int:
     """
-    DFS with memoization solution for Longest Path problem
-    
-    Args:
-        n: number of vertices
-        m: number of edges
-        edges: list of (u, v) tuples representing edges
-    
-    Returns:
-        int: length of longest path
+    Find longest path in DAG using DFS with memoization.
+
+    Time: O(V + E) - each vertex and edge visited once
+    Space: O(V + E) - adjacency list and recursion stack
     """
     # Build adjacency list
     graph = [[] for _ in range(n + 1)]
     for u, v in edges:
         graph[u].append(v)
-    
-    # dp[v] = longest path starting from vertex v
+
+    # dp[v] = longest path starting from v, -1 means unvisited
     dp = [-1] * (n + 1)
-    
-    def dfs(v):
-        """Compute longest path from vertex v"""
-        # If already computed, return cached value
+
+    def dfs(v: int) -> int:
         if dp[v] != -1:
             return dp[v]
-        
-        # Base case: no outgoing edges
-        if len(graph[v]) == 0:
+
+        # Base case: sink vertex
+        if not graph[v]:
             dp[v] = 0
             return 0
-        
-        # Try all neighbors
-        max_path = 0
-        for u in graph[v]:
-            max_path = max(max_path, 1 + dfs(u))
-        
-        dp[v] = max_path
-        return max_path
-    
-    # Compute longest path from each vertex
-    max_length = 0
-    for v in range(1, n + 1):
-        if dp[v] == -1:
-            dfs(v)
-        max_length = max(max_length, dp[v])
-    
-    return max_length
 
-# Example usage
-n, m = 4, 5
-edges = [(1, 2), (1, 3), (2, 3), (2, 4), (3, 4)]
-result = longest_path_dfs(n, m, edges)
-print(f"Longest path length: {result}")  # Output: 3
+        # Recurrence: try all neighbors
+        dp[v] = max(1 + dfs(u) for u in graph[v])
+        return dp[v]
+
+    # Compute for all vertices, return maximum
+    return max(dfs(v) for v in range(1, n + 1))
+
+
+def main():
+    input_data = sys.stdin.read().split()
+    idx = 0
+    n, m = int(input_data[idx]), int(input_data[idx + 1])
+    idx += 2
+
+    edges = []
+    for _ in range(m):
+        u, v = int(input_data[idx]), int(input_data[idx + 1])
+        edges.append((u, v))
+        idx += 2
+
+    print(solve(n, edges))
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-**Time Complexity**: O(V + E)
-**Space Complexity**: O(V + E)
+### Code (C++)
 
-**Why it's optimal**: Uses DFS with memoization for O(V + E) time complexity, which is optimal for this problem.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+private:
+    vector<vector<int>> graph;
+    vector<int> dp;
+
+    int dfs(int v) {
+        if (dp[v] != -1) return dp[v];
+
+        // Base case: sink vertex
+        if (graph[v].empty()) {
+            return dp[v] = 0;
+        }
+
+        // Recurrence: try all neighbors
+        int maxPath = 0;
+        for (int u : graph[v]) {
+            maxPath = max(maxPath, 1 + dfs(u));
+        }
+        return dp[v] = maxPath;
+    }
+
+public:
+    int solve(int n, vector<pair<int, int>>& edges) {
+        graph.assign(n + 1, vector<int>());
+        dp.assign(n + 1, -1);
+
+        // Build adjacency list
+        for (auto& [u, v] : edges) {
+            graph[u].push_back(v);
+        }
+
+        // Compute for all vertices
+        int ans = 0;
+        for (int v = 1; v <= n; v++) {
+            ans = max(ans, dfs(v));
+        }
+        return ans;
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<pair<int, int>> edges(m);
+    for (int i = 0; i < m; i++) {
+        cin >> edges[i].first >> edges[i].second;
+    }
+
+    Solution sol;
+    cout << sol.solve(n, edges) << "\n";
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(V + E) | Each vertex computed once, each edge traversed once |
+| Space | O(V + E) | Adjacency list + dp array + recursion stack |
 
 ---
 
-### Approach 2: Topological Sort + DP
+## Solution 2: Topological Sort + Iterative DP
 
-**Key Insights from Topological Sort Solution**:
-- **Topological Order**: Process vertices in topological order
-- **DAG Property**: Guaranteed topological ordering exists
-- **Iterative DP**: Fill DP table in topological order
-- **Efficient**: O(V + E) time complexity
+### Key Insight
 
-**Key Insight**: Since the graph is a DAG, we can process vertices in topological order. This ensures that when we compute dp[v], all neighbors u have already been processed.
+> **The Trick:** Process vertices in reverse topological order. This ensures that when computing dp[v], all dp[u] values for neighbors u are already computed.
 
-**Algorithm**:
-- Compute topological ordering of vertices
-- Process vertices in topological order
-- For each vertex v, compute dp[v] using already computed neighbors
+### Algorithm
 
-**Implementation**:
+1. Compute topological order using Kahn's algorithm (BFS with in-degree)
+2. Process vertices in **reverse** topological order
+3. For each vertex, compute dp using already-computed neighbor values
+
+### Code (Python)
+
 ```python
-def longest_path_topological(n, m, edges):
+from collections import deque
+from typing import List, Tuple
+
+def solve_topological(n: int, edges: List[Tuple[int, int]]) -> int:
     """
-    Topological sort + DP solution for Longest Path problem
-    
-    Args:
-        n: number of vertices
-        m: number of edges
-        edges: list of (u, v) tuples representing edges
-    
-    Returns:
-        int: length of longest path
+    Find longest path using topological sort + DP.
+
+    Time: O(V + E)
+    Space: O(V + E)
     """
-    # Build graph and in-degree array
     graph = [[] for _ in range(n + 1)]
     in_degree = [0] * (n + 1)
-    
+
     for u, v in edges:
         graph[u].append(v)
         in_degree[v] += 1
-    
-    # Topological sort using Kahn's algorithm
-    queue = []
-    for v in range(1, n + 1):
-        if in_degree[v] == 0:
-            queue.append(v)
-    
+
+    # Kahn's algorithm for topological sort
+    queue = deque(v for v in range(1, n + 1) if in_degree[v] == 0)
     topo_order = []
+
     while queue:
-        v = queue.pop(0)
+        v = queue.popleft()
         topo_order.append(v)
         for u in graph[v]:
             in_degree[u] -= 1
             if in_degree[u] == 0:
                 queue.append(u)
-    
-    # DP: dp[v] = longest path starting from v
+
+    # DP in reverse topological order
     dp = [0] * (n + 1)
-    
-    # Process vertices in reverse topological order
-    # (so we process sinks first, then sources)
     for v in reversed(topo_order):
         for u in graph[v]:
             dp[v] = max(dp[v], 1 + dp[u])
-    
-    return max(dp[1:])
 
-# Example usage
-n, m = 4, 5
-edges = [(1, 2), (1, 3), (2, 3), (2, 4), (3, 4)]
-result = longest_path_topological(n, m, edges)
-print(f"Longest path length: {result}")  # Output: 3
+    return max(dp)
 ```
 
-**Time Complexity**: O(V + E)
-**Space Complexity**: O(V + E)
+### Code (C++)
 
-**Why it's equivalent**: Both approaches achieve O(V + E) complexity, choose based on preference.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-## 🔧 Implementation Details
+int solveTopological(int n, vector<pair<int, int>>& edges) {
+    vector<vector<int>> graph(n + 1);
+    vector<int> inDegree(n + 1, 0);
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| DFS with Memoization | O(V + E) | O(V + E) | Cache results during DFS |
-| Topological Sort + DP | O(V + E) | O(V + E) | Process in topological order |
+    for (auto& [u, v] : edges) {
+        graph[u].push_back(v);
+        inDegree[v]++;
+    }
 
-### Time Complexity
-- **Time**: O(V + E) - Visit each vertex and edge once
-- **Space**: O(V + E) - Graph representation and DP array
+    // Kahn's algorithm
+    queue<int> q;
+    for (int v = 1; v <= n; v++) {
+        if (inDegree[v] == 0) q.push(v);
+    }
 
-### Why This Solution Works
-- **DAG Property**: Graph is acyclic, so longest path is well-defined
-- **Optimal Substructure**: Longest path from v depends on longest paths from neighbors
-- **Memoization**: Cache results to avoid recomputation
-- **Topological Order**: Ensures dependencies are resolved before computation
+    vector<int> topoOrder;
+    while (!q.empty()) {
+        int v = q.front(); q.pop();
+        topoOrder.push_back(v);
+        for (int u : graph[v]) {
+            if (--inDegree[u] == 0) q.push(u);
+        }
+    }
 
-## 🚀 Problem Variations
+    // DP in reverse order
+    vector<int> dp(n + 1, 0);
+    for (int i = topoOrder.size() - 1; i >= 0; i--) {
+        int v = topoOrder[i];
+        for (int u : graph[v]) {
+            dp[v] = max(dp[v], 1 + dp[u]);
+        }
+    }
 
-### Extended Problems with Detailed Code Examples
+    return *max_element(dp.begin(), dp.end());
+}
+```
 
-#### **1. Longest Path - Path Reconstruction**
-**Problem**: Find longest path and reconstruct the actual path.
+### Complexity
 
-**Implementation**:
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(V + E) | Topological sort + single DP pass |
+| Space | O(V + E) | Adjacency list + in-degree array + dp array |
+
+---
+
+## Common Mistakes
+
+### Mistake 1: Forgetting Base Case
+
 ```python
-def longest_path_with_path(n, m, edges):
-    """
-    Longest path with path reconstruction
-    
-    Args:
-        n: number of vertices
-        m: number of edges
-        edges: list of (u, v) tuples
-    
-    Returns:
-        tuple: (longest path length, actual path)
-    """
-    graph = [[] for _ in range(n + 1)]
-    for u, v in edges:
-        graph[u].append(v)
-    
-    dp = [-1] * (n + 1)
-    next_vertex = [-1] * (n + 1)
-    
-    def dfs(v):
-        if dp[v] != -1:
-            return dp[v]
-        
-        if len(graph[v]) == 0:
-            dp[v] = 0
-            return 0
-        
-        max_path = 0
-        best_next = -1
-        for u in graph[v]:
-            path_len = 1 + dfs(u)
-            if path_len > max_path:
-                max_path = path_len
-                best_next = u
-        
-        dp[v] = max_path
-        next_vertex[v] = best_next
-        return max_path
-    
-    # Find starting vertex with longest path
-    max_length = 0
-    start_vertex = 1
-    for v in range(1, n + 1):
-        if dp[v] == -1:
-            dfs(v)
-        if dp[v] > max_length:
-            max_length = dp[v]
-            start_vertex = v
-    
-    # Reconstruct path
-    path = [start_vertex]
-    current = start_vertex
-    while next_vertex[current] != -1:
-        current = next_vertex[current]
-        path.append(current)
-    
-    return max_length, path
+# WRONG - infinite recursion for sink vertices
+def dfs(v):
+    dp[v] = max(1 + dfs(u) for u in graph[v])  # crashes if graph[v] is empty
+    return dp[v]
 
-# Example usage
-n, m = 4, 5
-edges = [(1, 2), (1, 3), (2, 3), (2, 4), (3, 4)]
-length, path = longest_path_with_path(n, m, edges)
-print(f"Longest path length: {length}")
-print(f"Path: {path}")
+# CORRECT
+def dfs(v):
+    if not graph[v]:
+        dp[v] = 0
+        return 0
+    dp[v] = max(1 + dfs(u) for u in graph[v])
+    return dp[v]
 ```
 
-#### **2. Longest Path - Weighted Edges**
-**Problem**: Find longest path when edges have weights.
+**Problem:** Empty max() raises ValueError in Python; undefined behavior in C++.
+**Fix:** Handle sink vertices explicitly.
 
-**Implementation**:
+### Mistake 2: Processing Topological Order in Wrong Direction
+
 ```python
-def longest_path_weighted(n, m, weighted_edges):
-    """
-    Longest path with weighted edges
-    
-    Args:
-        n: number of vertices
-        m: number of edges
-        weighted_edges: list of (u, v, weight) tuples
-    
-    Returns:
-        int: maximum total weight of a path
-    """
-    graph = [[] for _ in range(n + 1)]
-    for u, v, w in weighted_edges:
-        graph[u].append((v, w))
-    
-    dp = [-1] * (n + 1)
-    
-    def dfs(v):
-        if dp[v] != -1:
-            return dp[v]
-        
-        if len(graph[v]) == 0:
-            dp[v] = 0
-            return 0
-        
-        max_weight = 0
-        for u, w in graph[v]:
-            max_weight = max(max_weight, w + dfs(u))
-        
-        dp[v] = max_weight
-        return max_weight
-    
-    max_total = 0
-    for v in range(1, n + 1):
-        if dp[v] == -1:
-            dfs(v)
-        max_total = max(max_total, dp[v])
-    
-    return max_total
+# WRONG - neighbors not computed yet
+for v in topo_order:
+    for u in graph[v]:
+        dp[v] = max(dp[v], 1 + dp[u])  # dp[u] is still 0!
 
-# Example usage
-n, m = 4, 5
-weighted_edges = [(1, 2, 5), (1, 3, 3), (2, 3, 2), (2, 4, 4), (3, 4, 1)]
-result = longest_path_weighted(n, m, weighted_edges)
-print(f"Maximum path weight: {result}")
+# CORRECT - reverse order so neighbors are computed first
+for v in reversed(topo_order):
+    for u in graph[v]:
+        dp[v] = max(dp[v], 1 + dp[u])
 ```
 
-### Related Problems
+**Problem:** In forward order, dp[u] for neighbors hasn't been computed.
+**Fix:** Process in reverse topological order.
 
-#### **AtCoder Problems**
-- [Grid 1](https://atcoder.jp/contests/dp/tasks/dp_h) - Similar DP pattern on grid
-- [Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/) - Similar concept
+### Mistake 3: Recursion Limit in Python
 
-#### **LeetCode Problems**
-- [Longest Increasing Path in Matrix](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/) - Similar on grid
-- [Longest Path With Different Adjacent Characters](https://leetcode.com/problems/longest-path-with-different-adjacent-characters/) - Tree version
+```python
+# WRONG - default recursion limit is ~1000
+def dfs(v):
+    # ... may hit RecursionError for large graphs
 
-#### **CSES Problems**
-- [Longest Flight Route](https://cses.fi/problemset/task/1680) - Similar problem
-- [Game Routes](https://cses.fi/problemset/task/1681) - Counting paths
+# CORRECT - increase limit before running
+import sys
+sys.setrecursionlimit(200005)
+```
 
-#### **Problem Categories**
-- **DP on DAGs**: Dynamic programming on directed acyclic graphs
-- **Graph DP**: Applying DP to graph problems
-- **Longest Path**: Finding maximum length paths
+---
 
-## 🔗 Additional Resources
+## Edge Cases
 
-### **Algorithm References**
-- [Dynamic Programming on DAGs](https://cp-algorithms.com/graph/longest_path_in_dag.html) - DAG DP algorithms
-- [Topological Sorting](https://cp-algorithms.com/graph/topological-sort.html) - Topological sort algorithms
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| No edges | N=3, M=0 | 0 | All isolated vertices, no path |
+| Single edge | N=2, M=1, (1,2) | 1 | Only one edge to traverse |
+| Linear chain | N=4, edges: (1,2),(2,3),(3,4) | 3 | Full path through all vertices |
+| Star graph | N=4, edges: (1,2),(1,3),(1,4) | 1 | All paths have length 1 |
+| Dense DAG | Complete DAG with all i->j where i<j | N-1 | Longest path visits all vertices |
 
-### **Practice Problems**
-- [AtCoder DP Contest Problem G](https://atcoder.jp/contests/dp/tasks/dp_g) - Original problem
-- [CSES Longest Flight Route](https://cses.fi/problemset/task/1680) - Similar problem
+---
 
-### **Further Reading**
-- [Introduction to Algorithms (CLRS)](https://mitpress.mit.edu/books/introduction-algorithms) - Graph algorithms chapter
-- [Competitive Programming Handbook](https://cses.fi/book/book.pdf) - DP and graphs section
+## When to Use This Pattern
 
+### Use This Approach When:
+- The graph is a **DAG** (no cycles)
+- You need to find **longest/shortest path** in terms of edge count or weight
+- The problem has **optimal substructure** (answer at v depends on answers at neighbors)
+- You need to **count paths** or compute path-related quantities
+
+### Don't Use When:
+- The graph has **cycles** (use BFS/DFS or detect cycle first)
+- You need **shortest path with non-negative weights** (use Dijkstra)
+- You need **shortest path with negative weights** (use Bellman-Ford)
+- The graph is **undirected** and you need longest path (NP-hard in general)
+
+### Pattern Recognition Checklist:
+- [ ] Is the graph guaranteed to be a DAG? --> **DP on DAG is applicable**
+- [ ] Does the answer at a vertex depend on answers at reachable vertices? --> **Use DFS + memoization**
+- [ ] Need to process vertices in dependency order? --> **Topological sort**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [AtCoder DP - A: Frog 1](https://atcoder.jp/contests/dp/tasks/dp_a) | Basic 1D DP warm-up |
+| [AtCoder DP - B: Frog 2](https://atcoder.jp/contests/dp/tasks/dp_b) | Variable transitions in DP |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [CSES - Longest Flight Route](https://cses.fi/problemset/task/1680) | Same concept, requires path reconstruction |
+| [CSES - Game Routes](https://cses.fi/problemset/task/1681) | Count number of paths instead of max length |
+| [AtCoder DP - H: Grid 1](https://atcoder.jp/contests/dp/tasks/dp_h) | DP on implicit DAG (grid) |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [LeetCode - Longest Increasing Path in Matrix](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/) | Implicit DAG on 2D grid |
+| [CSES - Shortest Routes I](https://cses.fi/problemset/task/1671) | Shortest path with Dijkstra |
+| [LeetCode - Longest Path With Different Adjacent Characters](https://leetcode.com/problems/longest-path-with-different-adjacent-characters/) | Longest path on tree with constraints |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** In a DAG, longest path from v = 1 + max(longest path from neighbors).
+2. **Time Optimization:** Memoization prevents recomputing paths from the same vertex.
+3. **Space Trade-off:** O(V) dp array enables O(V+E) time instead of exponential.
+4. **Pattern:** This is the fundamental "DP on DAG" pattern - applicable whenever you have a DAG with optimal substructure.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Solve this problem without looking at the solution
+- [ ] Explain why DP works on DAGs but not general graphs
+- [ ] Implement both DFS+memoization and topological sort approaches
+- [ ] Identify when a problem can be modeled as longest/shortest path on DAG
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Topological Sorting](https://cp-algorithms.com/graph/topological-sort.html)
+- [CP-Algorithms: Longest Path in DAG](https://cp-algorithms.com/graph/longest_path_in_dag.html)
+- [CSES Problem Set](https://cses.fi/problemset/) - Graph section

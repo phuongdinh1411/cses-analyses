@@ -1,590 +1,333 @@
 ---
 layout: simple
-title: "Planets Queries I - Graph Algorithm Problem"
+title: "Planets Queries I"
 permalink: /problem_soulutions/graph_algorithms/planets_queries_i_analysis
+difficulty: Medium
+tags: [graph, binary-lifting, functional-graph, sparse-table]
+cses_link: https://cses.fi/problemset/task/1750
 ---
 
-# Planets Queries I - Graph Algorithm Problem
+# Planets Queries I
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of ancestor queries in tree structures
-- Apply efficient algorithms for finding k-th ancestors
-- Implement binary lifting for ancestor queries
-- Optimize tree traversal for query processing
-- Handle special cases in ancestor query problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find destination after k teleports in a functional graph |
+| Input | n planets, each with one outgoing teleporter; q queries (x, k) |
+| Output | Planet reached after k teleports from planet x |
+| Constraints | n, q <= 2x10^5, k <= 10^9 |
+| Core Technique | Binary Lifting (Sparse Table for successors) |
+| Time Complexity | O(n log k) preprocessing, O(log k) per query |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a tree with n vertices, answer q queries about k-th ancestors.
+1. **Binary Lifting Technique**: Precompute jumps of powers of 2 for fast k-th successor queries
+2. **Functional Graphs**: Understand graphs where each node has exactly one outgoing edge
+3. **Sparse Table for Successors**: Build a table where `jump[i][j]` = node reached from i after 2^j steps
+4. **Bit Decomposition**: Answer queries by decomposing k into sum of powers of 2
 
-**Input**: 
-- n: number of vertices
-- parent: array where parent[i] is the parent of vertex i
-- q: number of queries
-- queries: array of (vertex, k) pairs
+## Problem Statement
 
-**Output**: 
-- For each query, return the k-th ancestor of the vertex
+You are given n planets numbered 1 to n. Each planet i has a teleporter that leads to planet t[i].
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10^5
-- 1 ≤ q ≤ 2×10^5
-- 0 ≤ k ≤ 10^9
+Given q queries, each query (x, k) asks: starting from planet x, which planet do you reach after using teleporters exactly k times?
+
+**Input Format**:
+```
+n q
+t[1] t[2] ... t[n]
+x[1] k[1]
+x[2] k[2]
+...
+x[q] k[q]
+```
 
 **Example**:
 ```
 Input:
-n = 5
-parent = [-1, 0, 0, 1, 1]
-q = 3
-queries = [(4, 1), (4, 2), (4, 3)]
+4 3
+2 1 1 4
+1 2
+3 4
+4 1
 
 Output:
 1
-0
--1
-
-Explanation**: 
-Vertex 4's ancestors:
-- 1st ancestor: 1
-- 2nd ancestor: 0  
-- 3rd ancestor: -1 (doesn't exist)
+2
+4
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation**:
+- Query (1, 2): 1 -> 2 -> 1, answer is 1
+- Query (3, 4): 3 -> 1 -> 2 -> 1 -> 2, answer is 2
+- Query (4, 1): 4 -> 4, answer is 4
 
-### Approach 1: Brute Force Solution
+## Key Insight: Binary Lifting
 
-**Key Insights from Brute Force Solution**:
-- **Complete Traversal**: Walk up the tree k steps for each query
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic tree traversal
-- **Inefficient**: O(qk) time complexity
+The naive approach of following k edges takes O(k) per query - too slow when k up to 10^9.
 
-**Key Insight**: For each query, walk up the tree k steps to find the ancestor.
+**Core Idea**: Precompute `jump[i][j]` = planet reached from planet i after exactly 2^j teleports.
 
-**Algorithm**:
-- For each query (vertex, k)
-- Walk up the tree k steps
-- Return the final vertex
+Then any k can be expressed as sum of powers of 2, allowing O(log k) query time.
 
-**Visual Example**:
+### Building the Jump Table
+
 ```
-Tree: 0 -> 1 -> 4
-      0 -> 2
-      0 -> 3
-
-Query (4, 2):
-┌─────────────────────────────────────┐
-│ Start at vertex 4                  │
-│ Step 1: 4 -> parent[4] = 1         │
-│ Step 2: 1 -> parent[1] = 0         │
-│ Result: 0                          │
-│                                   │
-│ Query (4, 3):                     │
-│ Start at vertex 4                  │
-│ Step 1: 4 -> parent[4] = 1         │
-│ Step 2: 1 -> parent[1] = 0         │
-│ Step 3: 0 -> parent[0] = -1        │
-│ Result: -1 (no ancestor)          │
-└─────────────────────────────────────┘
+jump[i][0] = t[i]                           (direct successor)
+jump[i][j] = jump[jump[i][j-1]][j-1]        (for j >= 1)
 ```
 
-**Implementation**:
+The recurrence says: to jump 2^j steps, first jump 2^(j-1) steps, then jump 2^(j-1) steps again.
+
+## Visual Diagram: Binary Lifting Table
+
+Consider planets with teleporters: t = [2, 3, 1, 4] (1-indexed)
+
+```
+Planet connections:
+    1 --> 2 --> 3 --> 1 (cycle)
+    4 --> 4 (self-loop)
+
+Binary Lifting Table:
++--------+--------+--------+--------+--------+
+| Planet | j=0    | j=1    | j=2    | j=3    |
+|        | (2^0=1)| (2^1=2)| (2^2=4)| (2^3=8)|
++--------+--------+--------+--------+--------+
+|   1    |   2    |   3    |   2    |   2    |
+|   2    |   3    |   1    |   3    |   3    |
+|   3    |   1    |   2    |   1    |   1    |
+|   4    |   4    |   4    |   4    |   4    |
++--------+--------+--------+--------+--------+
+
+Building jump[1][2] (4 steps from planet 1):
+  jump[1][2] = jump[jump[1][1]][1]
+             = jump[3][1]
+             = 2
+
+Verification: 1 -> 2 -> 3 -> 1 -> 2 (4 steps lands on 2)
+```
+
+## Answering Queries: Bit Decomposition
+
+To find destination after k steps from planet x:
+
+```
+For each bit position j where bit j of k is set:
+    x = jump[x][j]
+Return x
+```
+
+**Example**: Query (1, 5) where k=5 = 101 in binary = 2^0 + 2^2
+
+```
+Start: x = 1
+k = 5 = 101 (binary)
+
+Bit 0 is set: x = jump[1][0] = 2
+Bit 1 not set: skip
+Bit 2 is set: x = jump[2][2] = 3
+
+Answer: 3
+
+Verification: 1 -> 2 -> 3 -> 1 -> 2 -> 3 (5 steps)
+```
+
+## Dry Run
+
+**Input**:
+```
+n=4, q=2
+t = [2, 1, 1, 4]  (1-indexed)
+Queries: (1, 3), (3, 5)
+```
+
+**Step 1: Build jump table** (LOG = 30 for k up to 10^9)
+
+```
+j=0 (direct successors):
+  jump[1][0] = 2
+  jump[2][0] = 1
+  jump[3][0] = 1
+  jump[4][0] = 4
+
+j=1 (2 steps):
+  jump[1][1] = jump[jump[1][0]][0] = jump[2][0] = 1
+  jump[2][1] = jump[jump[2][0]][0] = jump[1][0] = 2
+  jump[3][1] = jump[jump[3][0]][0] = jump[1][0] = 2
+  jump[4][1] = jump[jump[4][0]][0] = jump[4][0] = 4
+
+j=2 (4 steps):
+  jump[1][2] = jump[jump[1][1]][1] = jump[1][1] = 1
+  jump[2][2] = jump[jump[2][1]][1] = jump[2][1] = 2
+  jump[3][2] = jump[jump[3][1]][1] = jump[2][1] = 2
+  jump[4][2] = jump[jump[4][1]][1] = jump[4][1] = 4
+```
+
+**Step 2: Answer queries**
+
+Query (1, 3): k=3 = 11 in binary
+- Bit 0 set: x = jump[1][0] = 2
+- Bit 1 set: x = jump[2][1] = 2
+- Answer: 2
+- Verify: 1 -> 2 -> 1 -> 2
+
+Query (3, 5): k=5 = 101 in binary
+- Bit 0 set: x = jump[3][0] = 1
+- Bit 2 set: x = jump[1][2] = 1
+- Answer: 1
+- Verify: 3 -> 1 -> 2 -> 1 -> 2 -> 1
+
+## Python Solution
+
 ```python
-def brute_force_planets_queries_i(n, parent, queries):
-    """Answer ancestor queries using brute force approach"""
-    results = []
-    
-    for vertex, k in queries:
-        current = vertex
-        steps = 0
-        
-        # Walk up the tree k steps
-        while current != -1 and steps < k:
-            current = parent[current]
-            steps += 1
-        
-        if current == -1:
-            results.append(-1)
-        else:
-            results.append(current)
-    
-    return results
+import sys
+from math import log2
 
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(4, 1), (4, 2), (4, 3)]
-result = brute_force_planets_queries_i(n, parent, queries)
-print(f"Brute force results: {result}")
-```
+def solve():
+    input_data = sys.stdin.read().split()
+    idx = 0
 
-**Time Complexity**: O(qk)
-**Space Complexity**: O(1)
+    n, q = int(input_data[idx]), int(input_data[idx + 1])
+    idx += 2
 
-**Why it's inefficient**: O(qk) time complexity for large k values.
+    # Read teleporter destinations (convert to 0-indexed)
+    t = [int(input_data[idx + i]) - 1 for i in range(n)]
+    idx += n
 
----
+    # LOG = number of bits needed for max k (10^9 < 2^30)
+    LOG = 30
 
-### Approach 2: Binary Lifting Solution
+    # Build binary lifting table
+    # jump[j][i] = destination from planet i after 2^j teleports
+    jump = [[0] * n for _ in range(LOG)]
 
-**Key Insights from Binary Lifting Solution**:
-- **Binary Lifting**: Use binary representation for efficient ancestor queries
-- **Efficient Implementation**: O(n log n) preprocessing, O(log n) per query
-- **Power of 2**: Precompute ancestors at powers of 2
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Precompute ancestors at powers of 2 for efficient queries.
-
-**Algorithm**:
-- Precompute ancestors at powers of 2 (1, 2, 4, 8, ...)
-- For each query, use binary representation of k
-- Jump up the tree using precomputed values
-
-**Visual Example**:
-```
-Binary lifting preprocessing:
-
-Tree: 0 -> 1 -> 4
-      0 -> 2
-      0 -> 3
-
-Precomputed ancestors:
-┌─────────────────────────────────────┐
-│ up[0][0] = parent[0] = -1          │
-│ up[1][0] = parent[1] = 0           │
-│ up[4][0] = parent[4] = 1           │
-│                                   │
-│ up[1][1] = up[up[1][0]][0] = -1   │
-│ up[4][1] = up[up[4][0]][0] = 0    │
-│                                   │
-│ Query (4, 2):                     │
-│ k = 2 = 10₂ (binary)              │
-│ Jump 2^1 = 2 steps: 4 -> 0        │
-│ Result: 0                         │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def binary_lifting_planets_queries_i(n, parent, queries):
-    """Answer ancestor queries using binary lifting"""
-    # Find maximum depth and log value
-    max_depth = 0
+    # Base case: j=0, direct successors
     for i in range(n):
-        depth = 0
-        current = i
-        while current != -1:
-            current = parent[current]
-            depth += 1
-        max_depth = max(max_depth, depth)
-    
-    log = 0
-    while (1 << log) <= max_depth:
-        log += 1
-    
-    # Initialize binary lifting table
-    up = [[-1] * log for _ in range(n)]
-    
-    # Fill first level (2^0 = 1)
-    for i in range(n):
-        up[i][0] = parent[i]
-    
-    # Fill remaining levels
-    for j in range(1, log):
+        jump[0][i] = t[i]
+
+    # Fill table: jump 2^j = jump 2^(j-1) twice
+    for j in range(1, LOG):
         for i in range(n):
-            if up[i][j-1] != -1:
-                up[i][j] = up[up[i][j-1]][j-1]
-    
+            jump[j][i] = jump[j - 1][jump[j - 1][i]]
+
     # Answer queries
     results = []
-    for vertex, k in queries:
-        current = vertex
-        
-        # Use binary representation of k
-        for j in range(log):
+    for _ in range(q):
+        x, k = int(input_data[idx]) - 1, int(input_data[idx + 1])
+        idx += 2
+
+        # Decompose k into powers of 2
+        for j in range(LOG):
             if k & (1 << j):
-                if current == -1:
-                    break
-                current = up[current][j]
-        
-        results.append(current)
-    
-    return results
+                x = jump[j][x]
 
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(4, 1), (4, 2), (4, 3)]
-result = binary_lifting_planets_queries_i(n, parent, queries)
-print(f"Binary lifting results: {result}")
+        results.append(x + 1)  # Convert back to 1-indexed
+
+    print('\n'.join(map(str, results)))
+
+if __name__ == "__main__":
+    solve()
 ```
 
-**Time Complexity**: O(n log n + q log n)
-**Space Complexity**: O(n log n)
+## C++ Solution
 
-**Why it's better**: Uses binary lifting for O(log n) per query.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+const int LOG = 30;
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for ancestor queries
-- **Efficient Implementation**: O(n log n) preprocessing, O(log n) per query
-- **Space Efficiency**: O(n log n) space complexity
-- **Optimal Complexity**: Best approach for ancestor queries
+    int n, q;
+    cin >> n >> q;
 
-**Key Insight**: Use advanced data structures for optimal ancestor queries.
+    // jump[j][i] = destination from planet i after 2^j teleports
+    vector<vector<int>> jump(LOG, vector<int>(n));
 
-**Algorithm**:
-- Use specialized data structures for tree storage
-- Implement efficient binary lifting algorithms
-- Handle special cases optimally
-- Return ancestor query results
+    // Base case: direct successors (0-indexed)
+    for (int i = 0; i < n; i++) {
+        cin >> jump[0][i];
+        jump[0][i]--;  // Convert to 0-indexed
+    }
 
-**Visual Example**:
-```
-Advanced data structure approach:
+    // Build binary lifting table
+    for (int j = 1; j < LOG; j++) {
+        for (int i = 0; i < n; i++) {
+            jump[j][i] = jump[j - 1][jump[j - 1][i]];
+        }
+    }
 
-For tree: 0 -> 1 -> 4
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Tree structure: for efficient     │
-│   storage and traversal             │
-│ - Binary lift cache: for            │
-│   optimization                      │
-│ - Query processor: for optimization │
-│                                   │
-│ Ancestor queries:                   │
-│ - Use tree structure for efficient │
-│   storage and traversal             │
-│ - Use binary lift cache for         │
-│   optimization                      │
-│ - Use query processor for           │
-│   optimization                      │
-│                                   │
-│ Result: [1, 0, -1]                 │
-└─────────────────────────────────────┘
-```
+    // Answer queries
+    while (q--) {
+        int x, k;
+        cin >> x >> k;
+        x--;  // Convert to 0-indexed
 
-**Implementation**:
-```python
-def advanced_data_structure_planets_queries_i(n, parent, queries):
-    """Answer ancestor queries using advanced data structure approach"""
-    # Use advanced data structures for tree storage
-    # Find maximum depth and log value
-    max_depth = 0
-    for i in range(n):
-        depth = 0
-        current = i
-        while current != -1:
-            current = parent[current]
-            depth += 1
-        max_depth = max(max_depth, depth)
-    
-    log = 0
-    while (1 << log) <= max_depth:
-        log += 1
-    
-    # Initialize advanced binary lifting table
-    up = [[-1] * log for _ in range(n)]
-    
-    # Fill first level (2^0 = 1) using advanced data structures
-    for i in range(n):
-        up[i][0] = parent[i]
-    
-    # Fill remaining levels using advanced data structures
-    for j in range(1, log):
-        for i in range(n):
-            if up[i][j-1] != -1:
-                up[i][j] = up[up[i][j-1]][j-1]
-    
-    # Answer queries using advanced data structures
-    results = []
-    for vertex, k in queries:
-        current = vertex
-        
-        # Use binary representation of k with advanced data structures
-        for j in range(log):
-            if k & (1 << j):
-                if current == -1:
-                    break
-                current = up[current][j]
-        
-        results.append(current)
-    
-    return results
+        // Decompose k into powers of 2
+        for (int j = 0; j < LOG; j++) {
+            if (k & (1 << j)) {
+                x = jump[j][x];
+            }
+        }
 
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(4, 1), (4, 2), (4, 3)]
-result = advanced_data_structure_planets_queries_i(n, parent, queries)
-print(f"Advanced data structure results: {result}")
+        cout << x + 1 << '\n';  // Convert back to 1-indexed
+    }
+
+    return 0;
+}
 ```
 
-**Time Complexity**: O(n log n + q log n)
-**Space Complexity**: O(n log n)
+## Complexity Analysis
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+| Phase | Time | Space |
+|-------|------|-------|
+| Preprocessing | O(n * log k) | O(n * log k) |
+| Per Query | O(log k) | O(1) |
+| Total | O(n log k + q log k) | O(n log k) |
 
-## 🔧 Implementation Details
+With n, q = 2x10^5 and log k = 30:
+- Preprocessing: ~6x10^6 operations
+- All queries: ~6x10^6 operations
+- Memory: ~6x10^6 integers (~24 MB)
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(qk) | O(1) | Walk up tree k steps |
-| Binary Lifting | O(n log n + q log n) | O(n log n) | Precompute powers of 2 |
-| Advanced Data Structure | O(n log n + q log n) | O(n log n) | Use advanced data structures |
+## Common Mistakes
 
-### Time Complexity
-- **Time**: O(n log n + q log n) - Use binary lifting for efficient queries
-- **Space**: O(n log n) - Store binary lifting table
+1. **Off-by-one in LOG calculation**
+   - Wrong: `LOG = (int)log2(max_k)` may round down
+   - Right: Use `LOG = 30` for k up to 10^9, or calculate `ceil(log2(max_k + 1))`
 
-### Why This Solution Works
-- **Binary Lifting**: Precompute ancestors at powers of 2
-- **Binary Representation**: Use binary representation of k for queries
-- **Efficient Queries**: O(log n) per query using precomputed values
-- **Optimal Algorithms**: Use optimal algorithms for ancestor queries
+2. **Not handling k=0**
+   - When k=0, answer is x itself (no teleports)
+   - The bit decomposition loop naturally handles this (no bits set)
 
-## 🚀 Problem Variations
+3. **1-indexed vs 0-indexed confusion**
+   - CSES uses 1-indexed planets
+   - Be consistent throughout: convert early, convert back at output
 
-### Extended Problems with Detailed Code Examples
+4. **Integer overflow with 1 << j**
+   - In C++, use `1LL << j` if j can be >= 31
+   - For this problem, k <= 10^9, so `1 << 30` suffices (but be careful)
 
-#### **1. Planets Queries I with Constraints**
-**Problem**: Answer ancestor queries with specific constraints.
+5. **Wrong recurrence direction**
+   - Wrong: `jump[i][j] = jump[jump[i][j-1]][j]`
+   - Right: `jump[i][j] = jump[jump[i][j-1]][j-1]`
 
-**Key Differences**: Apply constraints to ancestor queries
+## Related Problems
 
-**Solution Approach**: Modify algorithm to handle constraints
+| Problem | Technique | Key Difference |
+|---------|-----------|----------------|
+| [Planets Queries II](https://cses.fi/problemset/task/1160) | Binary Lifting + Cycle Detection | Find if y is reachable from x |
+| [Company Queries I](https://cses.fi/problemset/task/1687) | Binary Lifting on Tree | k-th ancestor in rooted tree |
+| [Company Queries II](https://cses.fi/problemset/task/1688) | Binary Lifting for LCA | Lowest Common Ancestor |
+| [LeetCode 1483](https://leetcode.com/problems/kth-ancestor-of-a-tree-node/) | Binary Lifting | k-th ancestor with -1 for invalid |
 
-**Implementation**:
-```python
-def constrained_planets_queries_i(n, parent, queries, constraints):
-    """Answer ancestor queries with constraints"""
-    # Find maximum depth and log value
-    max_depth = 0
-    for i in range(n):
-        if constraints(i):
-            depth = 0
-            current = i
-            while current != -1 and constraints(current):
-                current = parent[current]
-                depth += 1
-            max_depth = max(max_depth, depth)
-    
-    log = 0
-    while (1 << log) <= max_depth:
-        log += 1
-    
-    # Initialize binary lifting table
-    up = [[-1] * log for _ in range(n)]
-    
-    # Fill first level (2^0 = 1)
-    for i in range(n):
-        if constraints(i):
-            up[i][0] = parent[i] if constraints(parent[i]) else -1
-    
-    # Fill remaining levels
-    for j in range(1, log):
-        for i in range(n):
-            if constraints(i) and up[i][j-1] != -1:
-                up[i][j] = up[up[i][j-1]][j-1]
-    
-    # Answer queries
-    results = []
-    for vertex, k in queries:
-        if not constraints(vertex):
-            results.append(-1)
-            continue
-            
-        current = vertex
-        
-        # Use binary representation of k
-        for j in range(log):
-            if k & (1 << j):
-                if current == -1 or not constraints(current):
-                    break
-                current = up[current][j]
-        
-        results.append(current if constraints(current) else -1)
-    
-    return results
+## Key Takeaways
 
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(4, 1), (4, 2), (4, 3)]
-constraints = lambda vertex: vertex >= 0  # Only include non-negative vertices
-result = constrained_planets_queries_i(n, parent, queries, constraints)
-print(f"Constrained results: {result}")
-```
-
-#### **2. Planets Queries I with Different Metrics**
-**Problem**: Answer ancestor queries with different distance metrics.
-
-**Key Differences**: Different distance calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_planets_queries_i(n, parent, queries, weights):
-    """Answer ancestor queries with different weights"""
-    # Find maximum depth and log value
-    max_depth = 0
-    for i in range(n):
-        depth = 0
-        current = i
-        while current != -1:
-            current = parent[current]
-            depth += 1
-        max_depth = max(max_depth, depth)
-    
-    log = 0
-    while (1 << log) <= max_depth:
-        log += 1
-    
-    # Initialize binary lifting table
-    up = [[-1] * log for _ in range(n)]
-    
-    # Fill first level (2^0 = 1)
-    for i in range(n):
-        up[i][0] = parent[i]
-    
-    # Fill remaining levels
-    for j in range(1, log):
-        for i in range(n):
-            if up[i][j-1] != -1:
-                up[i][j] = up[up[i][j-1]][j-1]
-    
-    # Answer queries with weights
-    results = []
-    for vertex, k in queries:
-        current = vertex
-        total_weight = 0
-        
-        # Use binary representation of k
-        for j in range(log):
-            if k & (1 << j):
-                if current == -1:
-                    break
-                total_weight += weights.get((current, up[current][j]), 1)
-                current = up[current][j]
-        
-        if current == -1:
-            results.append((-1, 0))
-        else:
-            results.append((current, total_weight))
-    
-    return results
-
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(4, 1), (4, 2), (4, 3)]
-weights = {(0, 1): 2, (1, 4): 1, (0, 2): 3, (0, 3): 1}
-result = weighted_planets_queries_i(n, parent, queries, weights)
-print(f"Weighted results: {result}")
-```
-
-#### **3. Planets Queries I with Multiple Dimensions**
-**Problem**: Answer ancestor queries in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_planets_queries_i(n, parent, queries, dimensions):
-    """Answer ancestor queries in multiple dimensions"""
-    # Find maximum depth and log value
-    max_depth = 0
-    for i in range(n):
-        depth = 0
-        current = i
-        while current != -1:
-            current = parent[current]
-            depth += 1
-        max_depth = max(max_depth, depth)
-    
-    log = 0
-    while (1 << log) <= max_depth:
-        log += 1
-    
-    # Initialize binary lifting table
-    up = [[-1] * log for _ in range(n)]
-    
-    # Fill first level (2^0 = 1)
-    for i in range(n):
-        up[i][0] = parent[i]
-    
-    # Fill remaining levels
-    for j in range(1, log):
-        for i in range(n):
-            if up[i][j-1] != -1:
-                up[i][j] = up[up[i][j-1]][j-1]
-    
-    # Answer queries
-    results = []
-    for vertex, k in queries:
-        current = vertex
-        
-        # Use binary representation of k
-        for j in range(log):
-            if k & (1 << j):
-                if current == -1:
-                    break
-                current = up[current][j]
-        
-        results.append(current)
-    
-    return results
-
-# Example usage
-n = 5
-parent = [-1, 0, 0, 1, 1]
-queries = [(4, 1), (4, 2), (4, 3)]
-dimensions = 1
-result = multi_dimensional_planets_queries_i(n, parent, queries, dimensions)
-print(f"Multi-dimensional results: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Planets Queries II](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Company Queries I](https://cses.fi/problemset/task/1075) - Tree Algorithms
-- [Company Queries II](https://cses.fi/problemset/task/1075) - Tree Algorithms
-
-#### **LeetCode Problems**
-- [Kth Ancestor of a Tree Node](https://leetcode.com/problems/kth-ancestor-of-a-tree-node/) - Tree
-- [Lowest Common Ancestor](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/) - Tree
-- [Binary Tree Paths](https://leetcode.com/problems/binary-tree-paths/) - Tree
-
-#### **Problem Categories**
-- **Tree Algorithms**: Ancestor queries, binary lifting, tree traversal
-- **Query Processing**: Range queries, ancestor queries
-- **Binary Lifting**: Powers of 2, efficient queries
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Tree Algorithms](https://cp-algorithms.com/graph/tree-algorithms.html) - Tree algorithms
-- [Binary Lifting](https://cp-algorithms.com/graph/lca_binary_lifting.html) - Binary lifting algorithms
-- [Lowest Common Ancestor](https://cp-algorithms.com/graph/lca.html) - LCA algorithms
-
-### **Practice Problems**
-- [CSES Planets Queries II](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Company Queries I](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Company Queries II](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Tree Traversal](https://en.wikipedia.org/wiki/Tree_traversal) - Wikipedia article
-- [Binary Lifting](https://en.wikipedia.org/wiki/Binary_lifting) - Wikipedia article
-- [Lowest Common Ancestor](https://en.wikipedia.org/wiki/Lowest_common_ancestor) - Wikipedia article
+1. **Binary Lifting** is the go-to technique for k-th successor/ancestor queries
+2. **Functional graphs** (each node has exactly one outgoing edge) always lead to cycles
+3. **Preprocessing trade-off**: O(n log k) extra space enables O(log k) queries
+4. **Bit manipulation**: Any integer k can be decomposed into O(log k) powers of 2

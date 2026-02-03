@@ -1,538 +1,510 @@
 ---
 layout: simple
-title: "Line Segments Trace - Geometry Problem"
+title: "Line Segment Tracing - Geometry Problem"
 permalink: /problem_soulutions/geometry/line_segments_trace_analysis
+difficulty: Medium
+tags: [geometry, graph-traversal, sweep-line, hashing]
 ---
 
-# Line Segments Trace
+# Line Segment Tracing
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of line segment tracing in computational geometry
-- Apply geometric algorithms for line segment tracing
-- Implement efficient algorithms for line segment trace finding
-- Optimize geometric operations for trace analysis
-- Handle special cases in line segment trace problems
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Geometry / Graph |
+| **Time Limit** | 1 second |
+| **Key Technique** | Graph Traversal + Hashing |
+| **CSES Link** | [Geometry Section](https://cses.fi/problemset/list/) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given n line segments, trace the path formed by connecting the segments.
+After solving this problem, you will be able to:
+- [ ] Model connected line segments as a graph problem
+- [ ] Use coordinate hashing for efficient point matching
+- [ ] Identify endpoints for path traversal (degree-1 vertices)
+- [ ] Trace paths through connected geometric structures
 
-**Input**: 
-- n: number of line segments
-- segments: array of line segments (each with x1, y1, x2, y2 coordinates)
+---
 
-**Output**: 
-- List of points forming the trace path
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 1000
-- -10^6 ≤ coordinates ≤ 10^6
+**Problem:** Given n line segments, trace the path formed by connecting segments that share endpoints. Output the ordered sequence of points forming the complete path.
 
-**Example**:
+**Input:**
+- Line 1: n (number of line segments)
+- Lines 2 to n+1: Four integers x1, y1, x2, y2 (segment endpoints)
+
+**Output:**
+- The sequence of points forming the trace path from start to end
+
+**Constraints:**
+- 1 <= n <= 10^5
+- -10^6 <= coordinates <= 10^6
+- Segments form a single connected path (no branches)
+
+### Example
+
 ```
 Input:
-n = 3
-segments = [(0,0,1,1), (1,1,2,0), (2,0,3,1)]
+3
+0 0 1 1
+1 1 2 0
+2 0 3 1
 
 Output:
-[(0,0), (1,1), (2,0), (3,1)]
-
-Explanation**: 
-Trace path: (0,0) → (1,1) → (2,0) → (3,1)
+(0,0) (1,1) (2,0) (3,1)
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** Segment 1 connects (0,0) to (1,1). Segment 2 shares endpoint (1,1) and goes to (2,0). Segment 3 shares (2,0) and ends at (3,1). The trace follows this chain.
 
-### Approach 1: Brute Force Solution
+---
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Check all possible segment connections
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic geometric formulas
-- **Inefficient**: O(n²) time complexity
+## Intuition: How to Think About This Problem
 
-**Key Insight**: Check every pair of segments for connections.
+### Pattern Recognition
 
-**Algorithm**:
-- Iterate through all segments
-- Find connected segments
-- Build trace path
-- Return path
+> **Key Question:** How do we efficiently find which segments connect to each other?
 
-**Visual Example**:
-```
-Segments: [(0,0,1,1), (1,1,2,0), (2,0,3,1)]
+Each segment has two endpoints. If two segments share an endpoint, they are connected. This is exactly a **graph problem** where points are nodes and segments are edges.
 
-Trace building:
-┌─────────────────────────────────────┐
-│ Segment 1: (0,0) to (1,1)          │
-│ Segment 2: (1,1) to (2,0)          │
-│ Segment 3: (2,0) to (3,1)          │
-│                                   │
-│ Connections:                       │
-│ - Segment 1 connects to Segment 2  │
-│ - Segment 2 connects to Segment 3  │
-│                                   │
-│ Trace: (0,0) → (1,1) → (2,0) → (3,1) │
-└─────────────────────────────────────┘
-```
+### Breaking Down the Problem
 
-**Implementation**:
+1. **What are we looking for?** A path that visits all segment endpoints in connection order.
+2. **What information do we have?** Segment endpoints that may or may not connect.
+3. **What's the relationship?** Segments connect when they share an endpoint - forming a graph edge.
+
+### Analogies
+
+Think of this like connecting train stations. Each segment is a rail line between two stations. We want to find the route that travels through all stations, starting from a terminal (a station with only one line).
+
+---
+
+## Solution 1: Brute Force (O(n^2))
+
+### Idea
+
+For each segment, check all other segments to find connections by comparing endpoints.
+
+### Algorithm
+
+1. For each pair of segments, check if they share an endpoint
+2. Build adjacency list of connected segments
+3. Find a starting segment (one with only one connection)
+4. Traverse the path, recording visited points
+
+### Code
+
 ```python
-def brute_force_line_segments_trace(n, segments):
-    """Trace line segments using brute force approach"""
-    def segments_connect(seg1, seg2):
-        x1, y1, x2, y2 = seg1
-        x3, y3, x4, y4 = seg2
-        return (x2, y2) == (x3, y3) or (x2, y2) == (x4, y4) or \
-               (x1, y1) == (x3, y3) or (x1, y1) == (x4, y4)
-    
-    # Build adjacency list
+def trace_brute_force(n, segments):
+    """
+    Brute force: check all pairs for connections.
+
+    Time: O(n^2)
+    Space: O(n)
+    """
+    def connects(seg1, seg2):
+        """Check if two segments share an endpoint."""
+        p1, p2 = (seg1[0], seg1[1]), (seg1[2], seg1[3])
+        p3, p4 = (seg2[0], seg2[1]), (seg2[2], seg2[3])
+        return p1 in (p3, p4) or p2 in (p3, p4)
+
+    # Build adjacency list - O(n^2)
     adj = [[] for _ in range(n)]
     for i in range(n):
         for j in range(i + 1, n):
-            if segments_connect(segments[i], segments[j]):
+            if connects(segments[i], segments[j]):
                 adj[i].append(j)
                 adj[j].append(i)
-    
-    # Find starting segment
-    start = 0
-    for i in range(n):
-        if len(adj[i]) == 1:
-            start = i
-            break
-    
-    # Trace path
+
+    # Find starting segment (degree 1)
+    start = next((i for i in range(n) if len(adj[i]) == 1), 0)
+
+    # Traverse and build path
     path = []
     visited = [False] * n
-    current = start
-    
-    while current != -1:
-        visited[current] = True
-        x1, y1, x2, y2 = segments[current]
-        
+    curr = start
+
+    while curr != -1:
+        visited[curr] = True
+        x1, y1, x2, y2 = segments[curr]
+
         if not path:
-            path.append((x1, y1))
+            path.extend([(x1, y1), (x2, y2)])
+        elif (x1, y1) == path[-1]:
             path.append((x2, y2))
         else:
-            if (x1, y1) == path[-1]:
-                path.append((x2, y2))
-            else:
-                path.append((x1, y1))
-        
-        # Find next segment
-        next_seg = -1
-        for neighbor in adj[current]:
-            if not visited[neighbor]:
-                next_seg = neighbor
-                break
-        
-        current = next_seg
-    
+            path.append((x1, y1))
+
+        curr = next((nb for nb in adj[curr] if not visited[nb]), -1)
+
     return path
 ```
 
-**Time Complexity**: O(n²)
-**Space Complexity**: O(n)
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Check all n*(n-1)/2 pairs |
+| Space | O(n) | Adjacency list storage |
+
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed because we check every possible connection. However, for n=10^5 segments, n^2 = 10^10 operations is far too slow.
 
 ---
 
-### Approach 2: Graph Traversal Solution
+## Solution 2: Optimal Solution (O(n) with Hash Map)
 
-**Key Insights from Graph Traversal Solution**:
-- **Graph Traversal**: Use graph traversal for efficient tracing
-- **Efficient Implementation**: O(n) time complexity
-- **Graph Approach**: Treat segments as graph edges
-- **Optimization**: Much more efficient than brute force
+### Key Insight
 
-**Key Insight**: Use graph traversal to find the trace path.
+> **The Trick:** Use a hash map keyed by coordinates to find connected segments in O(1) instead of O(n).
 
-**Algorithm**:
-- Build graph from segments
-- Find starting point
-- Traverse graph to build path
-- Return path
+Instead of comparing all pairs, store each point with its connected neighbors. Points appearing in multiple segments are connection points.
 
-**Visual Example**:
+### Algorithm
+
+1. Build graph: for each segment, add both endpoints as nodes and connect them
+2. Find start: locate a point with exactly one neighbor (path endpoint)
+3. Traverse: follow the unique unvisited neighbor at each step
+
+### Dry Run Example
+
+Let's trace through with segments: [(0,0,1,1), (1,1,2,0), (2,0,3,1)]
+
 ```
-Graph traversal approach:
+Step 1: Build Graph
+  Process segment (0,0) - (1,1):
+    graph[(0,0)] = [(1,1)]
+    graph[(1,1)] = [(0,0)]
 
-For segments: [(0,0,1,1), (1,1,2,0), (2,0,3,1)]
-┌─────────────────────────────────────┐
-│ Graph construction:                 │
-│ - (0,0) connects to (1,1)          │
-│ - (1,1) connects to (2,0)          │
-│ - (2,0) connects to (3,1)          │
-│                                   │
-│ Traversal:                         │
-│ - Start at (0,0)                   │
-│ - Follow connections               │
-│ - Build path: (0,0) → (1,1) → (2,0) → (3,1) │
-└─────────────────────────────────────┘
+  Process segment (1,1) - (2,0):
+    graph[(1,1)] = [(0,0), (2,0)]  # (1,1) now has 2 neighbors
+    graph[(2,0)] = [(1,1)]
+
+  Process segment (2,0) - (3,1):
+    graph[(2,0)] = [(1,1), (3,1)]  # (2,0) now has 2 neighbors
+    graph[(3,1)] = [(2,0)]
+
+Final graph:
+  (0,0) -> [(1,1)]           degree 1 <- START
+  (1,1) -> [(0,0), (2,0)]    degree 2
+  (2,0) -> [(1,1), (3,1)]    degree 2
+  (3,1) -> [(2,0)]           degree 1 <- END
+
+Step 2: Find Start Point
+  (0,0) has degree 1 -> start = (0,0)
+
+Step 3: Traverse
+  current = (0,0), visited = {(0,0)}
+  path = [(0,0)]
+
+  neighbors of (0,0): [(1,1)]
+  (1,1) not visited -> current = (1,1)
+  path = [(0,0), (1,1)], visited = {(0,0), (1,1)}
+
+  neighbors of (1,1): [(0,0), (2,0)]
+  (0,0) visited, (2,0) not -> current = (2,0)
+  path = [(0,0), (1,1), (2,0)], visited = {(0,0), (1,1), (2,0)}
+
+  neighbors of (2,0): [(1,1), (3,1)]
+  (1,1) visited, (3,1) not -> current = (3,1)
+  path = [(0,0), (1,1), (2,0), (3,1)], visited = all
+
+  No unvisited neighbors -> DONE
+
+Output: [(0,0), (1,1), (2,0), (3,1)]
 ```
 
-**Implementation**:
+### Visual Diagram
+
+```
+Segments:
+  Seg1: (0,0)-----(1,1)
+  Seg2:           (1,1)-----(2,0)
+  Seg3:                     (2,0)-----(3,1)
+
+Graph representation:
+  (0,0) --- (1,1) --- (2,0) --- (3,1)
+    ^                             ^
+  START                          END
+  (degree 1)                (degree 1)
+
+Trace path:
+  (0,0) -> (1,1) -> (2,0) -> (3,1)
+```
+
+### Code (Python)
+
 ```python
-def graph_traversal_line_segments_trace(n, segments):
-    """Trace line segments using graph traversal approach"""
+def trace_segments(n, segments):
+    """
+    Optimal solution using hash map for O(1) lookups.
+
+    Time: O(n) - single pass to build graph, single pass to traverse
+    Space: O(n) - hash map stores 2n points (at most)
+    """
     # Build graph from segments
     graph = {}
-    for i, (x1, y1, x2, y2) in enumerate(segments):
-        if (x1, y1) not in graph:
-            graph[(x1, y1)] = []
-        if (x2, y2) not in graph:
-            graph[(x2, y2)] = []
-        
-        graph[(x1, y1)].append((x2, y2))
-        graph[(x2, y2)].append((x1, y1))
-    
-    # Find starting point
+
+    for x1, y1, x2, y2 in segments:
+        p1, p2 = (x1, y1), (x2, y2)
+
+        if p1 not in graph:
+            graph[p1] = []
+        if p2 not in graph:
+            graph[p2] = []
+
+        graph[p1].append(p2)
+        graph[p2].append(p1)
+
+    # Find starting point (degree 1 vertex)
     start = None
     for point, neighbors in graph.items():
         if len(neighbors) == 1:
             start = point
             break
-    
+
     if start is None:
-        return []
-    
-    # Traverse graph to build path
+        return []  # Cycle or empty
+
+    # Traverse the path
     path = [start]
     visited = {start}
     current = start
-    
-    while current in graph:
+
+    while True:
         next_point = None
         for neighbor in graph[current]:
             if neighbor not in visited:
                 next_point = neighbor
                 break
-        
+
         if next_point is None:
             break
-        
+
         path.append(next_point)
         visited.add(next_point)
         current = next_point
-    
+
     return path
 ```
 
-**Time Complexity**: O(n)
-**Space Complexity**: O(n)
+### Code (C++)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair<long long, long long> Point;
+
+vector<Point> traceSegments(int n, vector<array<long long, 4>>& segments) {
+    // Build graph using map
+    map<Point, vector<Point>> graph;
+
+    for (auto& seg : segments) {
+        Point p1 = {seg[0], seg[1]};
+        Point p2 = {seg[2], seg[3]};
+
+        graph[p1].push_back(p2);
+        graph[p2].push_back(p1);
+    }
+
+    // Find starting point (degree 1)
+    Point start = {LLONG_MAX, LLONG_MAX};
+    for (auto& [point, neighbors] : graph) {
+        if (neighbors.size() == 1) {
+            start = point;
+            break;
+        }
+    }
+
+    if (start.first == LLONG_MAX) {
+        return {};  // No valid start
+    }
+
+    // Traverse path
+    vector<Point> path;
+    set<Point> visited;
+    Point current = start;
+
+    path.push_back(current);
+    visited.insert(current);
+
+    while (true) {
+        Point nextPoint = {LLONG_MAX, LLONG_MAX};
+
+        for (Point& neighbor : graph[current]) {
+            if (visited.find(neighbor) == visited.end()) {
+                nextPoint = neighbor;
+                break;
+            }
+        }
+
+        if (nextPoint.first == LLONG_MAX) break;
+
+        path.push_back(nextPoint);
+        visited.insert(nextPoint);
+        current = nextPoint;
+    }
+
+    return path;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+
+    vector<array<long long, 4>> segments(n);
+    for (int i = 0; i < n; i++) {
+        cin >> segments[i][0] >> segments[i][1]
+            >> segments[i][2] >> segments[i][3];
+    }
+
+    vector<Point> result = traceSegments(n, segments);
+
+    for (auto& p : result) {
+        cout << "(" << p.first << "," << p.second << ") ";
+    }
+    cout << endl;
+
+    return 0;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Build graph in O(n), traverse in O(n) |
+| Space | O(n) | Store at most 2n points in hash map |
 
 ---
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+## Common Mistakes
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for tracing
-- **Efficient Implementation**: O(n) time complexity
-- **Space Efficiency**: O(n) space complexity
-- **Optimal Complexity**: Best approach for line segment tracing
+### Mistake 1: Not Handling Segment Direction
 
-**Key Insight**: Use advanced data structures for optimal line segment tracing.
-
-**Algorithm**:
-- Use specialized data structures for segment storage
-- Implement efficient tracing algorithms
-- Handle special cases optimally
-- Return trace path
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For segments: [(0,0,1,1), (1,1,2,0), (2,0,3,1)]
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Segment tree: for efficient storage │
-│ - Connection map: for optimization  │
-│ - Path builder: for trace construction │
-│                                   │
-│ Trace construction:                │
-│ - Use segment tree for efficient   │
-│   segment access                   │
-│ - Use connection map for           │
-│   optimization                     │
-│ - Use path builder for trace       │
-│   construction                     │
-│                                   │
-│ Result: [(0,0), (1,1), (2,0), (3,1)] │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
 ```python
-def advanced_data_structure_line_segments_trace(n, segments):
-    """Trace line segments using advanced data structure approach"""
-    # Use advanced data structures
-    graph = {}
-    for i, (x1, y1, x2, y2) in enumerate(segments):
-        if (x1, y1) not in graph:
-            graph[(x1, y1)] = []
-        if (x2, y2) not in graph:
-            graph[(x2, y2)] = []
-        
-        graph[(x1, y1)].append((x2, y2))
-        graph[(x2, y2)].append((x1, y1))
-    
-    # Find starting point using advanced data structures
-    start = None
-    for point, neighbors in graph.items():
-        if len(neighbors) == 1:
-            start = point
-            break
-    
-    if start is None:
-        return []
-    
-    # Traverse graph using advanced data structures
-    path = [start]
-    visited = {start}
-    current = start
-    
-    while current in graph:
-        next_point = None
-        for neighbor in graph[current]:
-            if neighbor not in visited:
-                next_point = neighbor
-                break
-        
-        if next_point is None:
-            break
-        
-        path.append(next_point)
-        visited.add(next_point)
-        current = next_point
-    
-    return path
+# WRONG - assumes segments are always ordered
+path.append((x2, y2))  # Always adds second endpoint
+
+# CORRECT - check which endpoint connects
+if (x1, y1) == path[-1]:
+    path.append((x2, y2))
+else:
+    path.append((x1, y1))
 ```
 
-**Time Complexity**: O(n)
-**Space Complexity**: O(n)
+**Problem:** Segments may be given in any direction.
+**Fix:** Check which endpoint matches the current path end.
 
-## 🔧 Implementation Details
+### Mistake 2: Using Floating Point for Coordinates
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²) | O(n) | Check all pairs of segments |
-| Graph Traversal | O(n) | O(n) | Use graph traversal |
-| Advanced Data Structure | O(n) | O(n) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(n) - Use graph traversal for efficient calculation
-- **Space**: O(n) - Store graph and path
-
-### Why This Solution Works
-- **Graph Construction**: Build graph from segments
-- **Traversal**: Use graph traversal for efficient path finding
-- **Data Structures**: Use appropriate data structures for storage
-- **Optimal Algorithms**: Use optimal algorithms for tracing
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Line Segments Trace with Constraints**
-**Problem**: Trace line segments with specific constraints.
-
-**Key Differences**: Apply constraints to line segment tracing
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
 ```python
-def constrained_line_segments_trace(n, segments, constraints):
-    """Trace line segments with constraints"""
-    # Build graph from segments
-    graph = {}
-    for i, (x1, y1, x2, y2) in enumerate(segments):
-        if constraints((x1, y1)) and constraints((x2, y2)):
-            if (x1, y1) not in graph:
-                graph[(x1, y1)] = []
-            if (x2, y2) not in graph:
-                graph[(x2, y2)] = []
-            
-            graph[(x1, y1)].append((x2, y2))
-            graph[(x2, y2)].append((x1, y1))
-    
-    # Find starting point
-    start = None
-    for point, neighbors in graph.items():
-        if len(neighbors) == 1:
-            start = point
-            break
-    
-    if start is None:
-        return []
-    
-    # Traverse graph
-    path = [start]
-    visited = {start}
-    current = start
-    
-    while current in graph:
-        next_point = None
-        for neighbor in graph[current]:
-            if neighbor not in visited:
-                next_point = neighbor
-                break
-        
-        if next_point is None:
-            break
-        
-        path.append(next_point)
-        visited.add(next_point)
-        current = next_point
-    
-    return path
+# WRONG - floating point comparison issues
+if abs(p1[0] - p2[0]) < 1e-9 and abs(p1[1] - p2[1]) < 1e-9:
+    # Points are "equal"
+
+# CORRECT - use integer coordinates
+if p1 == p2:  # Exact integer comparison
 ```
 
-#### **2. Line Segments Trace with Different Metrics**
-**Problem**: Trace line segments with different distance metrics.
+**Problem:** Floating point equality is unreliable.
+**Fix:** Use integer coordinates or proper tolerance handling.
 
-**Key Differences**: Different distance calculations
+### Mistake 3: Forgetting to Handle Cycles
 
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
 ```python
-def weighted_line_segments_trace(n, segments, weights):
-    """Trace line segments with different weights"""
-    # Build graph from segments with weights
-    graph = {}
-    for i, (x1, y1, x2, y2) in enumerate(segments):
-        if (x1, y1) not in graph:
-            graph[(x1, y1)] = []
-        if (x2, y2) not in graph:
-            graph[(x2, y2)] = []
-        
-        graph[(x1, y1)].append(((x2, y2), weights[i]))
-        graph[(x2, y2)].append(((x1, y1), weights[i]))
-    
-    # Find starting point
-    start = None
-    for point, neighbors in graph.items():
-        if len(neighbors) == 1:
-            start = point
-            break
-    
-    if start is None:
-        return []
-    
-    # Traverse graph
-    path = [start]
-    visited = {start}
-    current = start
-    
-    while current in graph:
-        next_point = None
-        for neighbor, weight in graph[current]:
-            if neighbor not in visited:
-                next_point = neighbor
-                break
-        
-        if next_point is None:
-            break
-        
-        path.append(next_point)
-        visited.add(next_point)
-        current = next_point
-    
-    return path
+# WRONG - assumes linear path exists
+start = None
+for point, neighbors in graph.items():
+    if len(neighbors) == 1:
+        start = point
+        break
+# start might be None if all points have degree 2!
+
+# CORRECT - handle cycle case
+if start is None:
+    start = next(iter(graph.keys()))  # Any point works for cycle
 ```
 
-#### **3. Line Segments Trace with Multiple Dimensions**
-**Problem**: Trace line segments in multiple dimensions.
+---
 
-**Key Differences**: Handle multiple dimensions
+## Edge Cases
 
-**Solution Approach**: Use advanced mathematical techniques
+| Case | Input | Expected Behavior | Why |
+|------|-------|-------------------|-----|
+| Single segment | n=1, [(0,0,1,1)] | [(0,0), (1,1)] | Only two points |
+| Two connected | n=2, sharing one point | Path of 3 points | Simple chain |
+| Cycle | All points degree 2 | Start anywhere | No natural endpoint |
+| Collinear points | Segments on same line | Still works | Connectivity matters, not geometry |
+| Large coordinates | 10^6 values | Use long long | Prevent overflow |
 
-**Implementation**:
-```python
-def multi_dimensional_line_segments_trace(n, segments, dimensions):
-    """Trace line segments in multiple dimensions"""
-    # Build graph from segments
-    graph = {}
-    for i, segment in enumerate(segments):
-        start = tuple(segment[:dimensions])
-        end = tuple(segment[dimensions:2*dimensions])
-        
-        if start not in graph:
-            graph[start] = []
-        if end not in graph:
-            graph[end] = []
-        
-        graph[start].append(end)
-        graph[end].append(start)
-    
-    # Find starting point
-    start = None
-    for point, neighbors in graph.items():
-        if len(neighbors) == 1:
-            start = point
-            break
-    
-    if start is None:
-        return []
-    
-    # Traverse graph
-    path = [start]
-    visited = {start}
-    current = start
-    
-    while current in graph:
-        next_point = None
-        for neighbor in graph[current]:
-            if neighbor not in visited:
-                next_point = neighbor
-                break
-        
-        if next_point is None:
-            break
-        
-        path.append(next_point)
-        visited.add(next_point)
-        current = next_point
-    
-    return path
-```
+---
 
-### Related Problems
+## When to Use This Pattern
 
-#### **CSES Problems**
-- [Line Segment Intersection](https://cses.fi/problemset/task/1075) - Geometry
-- [Point in Polygon](https://cses.fi/problemset/task/1075) - Geometry
-- [Convex Hull](https://cses.fi/problemset/task/1075) - Geometry
+### Use This Approach When:
+- Segments/edges share endpoints that need matching
+- Building paths through connected geometric objects
+- Need O(1) lookup for coordinate matching
 
-#### **LeetCode Problems**
-- [Line Reflection](https://leetcode.com/problems/line-reflection/) - Geometry
-- [Self Crossing](https://leetcode.com/problems/self-crossing/) - Geometry
-- [Rectangle Overlap](https://leetcode.com/problems/rectangle-overlap/) - Geometry
+### Don't Use When:
+- Segments can intersect at non-endpoints (use sweep line)
+- Multiple disconnected paths exist (need different algorithm)
+- Approximate matching needed (use spatial indexing)
 
-#### **Problem Categories**
-- **Computational Geometry**: Line segment tracing, geometric algorithms
-- **Graph Algorithms**: Graph traversal, path finding
-- **Geometric Algorithms**: Line segment algorithms, tracing algorithms
+### Pattern Recognition Checklist:
+- [ ] Are objects connected by shared coordinates? -> **Hash map approach**
+- [ ] Is it a single path/chain? -> **Find degree-1 endpoints**
+- [ ] Need intersection detection? -> **Consider sweep line instead**
 
-## 🔗 Additional Resources
+---
 
-### **Algorithm References**
-- [Computational Geometry](https://cp-algorithms.com/geometry/basic-geometry.html) - Geometry algorithms
-- [Line Segment Algorithms](https://cp-algorithms.com/geometry/line-segment.html) - Line segment algorithms
-- [Graph Traversal](https://cp-algorithms.com/graph/traversal.html) - Graph traversal algorithms
+## Related Problems
 
-### **Practice Problems**
-- [CSES Line Segment Intersection](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Point in Polygon](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Convex Hull](https://cses.fi/problemset/task/1075) - Medium
+### CSES Problems
+| Problem | Technique |
+|---------|-----------|
+| [Line Segment Intersection](https://cses.fi/problemset/task/2190) | Sweep line algorithm |
+| [Point in Polygon](https://cses.fi/problemset/task/2192) | Ray casting |
+| [Polygon Area](https://cses.fi/problemset/task/2191) | Shoelace formula |
+| [Convex Hull](https://cses.fi/problemset/task/2195) | Graham scan / Andrew's algorithm |
 
-### **Further Reading**
-- [Computational Geometry](https://en.wikipedia.org/wiki/Computational_geometry) - Wikipedia article
-- [Line Segment](https://en.wikipedia.org/wiki/Line_segment) - Wikipedia article
-- [Graph Traversal](https://en.wikipedia.org/wiki/Graph_traversal) - Wikipedia article
+### LeetCode Problems
+| Problem | Connection |
+|---------|------------|
+| [Valid Path](https://leetcode.com/problems/find-if-path-exists-in-graph/) | Graph traversal basics |
+| [Number of Islands](https://leetcode.com/problems/number-of-islands/) | Connected components |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Model geometric connectivity as a graph and use hash maps for O(1) point lookup.
+2. **Time Optimization:** From O(n^2) pair checking to O(n) with hash-based adjacency.
+3. **Space Trade-off:** O(n) hash map storage enables linear time traversal.
+4. **Pattern:** Coordinate hashing + graph traversal for geometric path problems.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Build a graph from line segments using a hash map
+- [ ] Identify path endpoints (degree-1 vertices)
+- [ ] Trace the complete path without revisiting points
+- [ ] Handle edge cases (single segment, cycles)
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Geometry Basics](https://cp-algorithms.com/geometry/basic-geometry.html)
+- [CP-Algorithms: Sweep Line](https://cp-algorithms.com/geometry/sweep-line.html)
+- [CSES Problem Set - Geometry](https://cses.fi/problemset/list/)

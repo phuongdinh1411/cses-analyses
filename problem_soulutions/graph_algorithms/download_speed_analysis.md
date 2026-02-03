@@ -1,762 +1,495 @@
 ---
 layout: simple
-title: "Download Speed - Graph Algorithm Problem"
+title: "Download Speed"
 permalink: /problem_soulutions/graph_algorithms/download_speed_analysis
+difficulty: Hard
+tags: [graph, max-flow, ford-fulkerson, edmonds-karp]
+cses_link: https://cses.fi/problemset/task/1694
 ---
 
-# Download Speed - Graph Algorithm Problem
+# Download Speed
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of maximum flow in network flow problems
-- Apply efficient algorithms for finding maximum flow in networks
-- Implement Ford-Fulkerson algorithm with BFS (Edmonds-Karp)
-- Optimize graph algorithms for network flow problems
-- Handle special cases in maximum flow problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find maximum data transfer rate from source to sink |
+| Type | Maximum Flow |
+| Difficulty | Hard |
+| Key Algorithm | Edmonds-Karp (Ford-Fulkerson with BFS) |
+| Time Complexity | O(VE^2) |
+| Space Complexity | O(V^2) |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a flow network with source and sink, find the maximum flow from source to sink.
+By completing this problem, you will understand:
 
-**Input**: 
-- n: number of vertices
-- m: number of edges
-- source: source vertex
-- sink: sink vertex
-- edges: array of (u, v, capacity) representing directed edges with capacities
+1. **Maximum Flow Concept**: How to model network bandwidth as a flow problem
+2. **Residual Graphs**: Tracking remaining capacity after using some flow
+3. **Augmenting Paths**: Finding paths that can carry additional flow
+4. **Ford-Fulkerson Method**: The general framework for max flow algorithms
+5. **Edmonds-Karp Algorithm**: Using BFS to guarantee polynomial time complexity
 
-**Output**: 
-- Maximum flow value from source to sink
+## Problem Statement
+
+You have a network of `n` computers numbered 1 to n. Computer 1 is the server and computer n is your computer. There are `m` connections between computers, each with a maximum bandwidth (data transfer capacity).
+
+**Goal**: Find the maximum rate at which data can be transferred from computer 1 to computer n.
+
+**Input**:
+- First line: n (computers) and m (connections)
+- Next m lines: a, b, c meaning connection from a to b with bandwidth c
+
+**Output**: Maximum data transfer rate from 1 to n
 
 **Constraints**:
-- 1 ≤ n ≤ 500
-- 1 ≤ m ≤ 1000
-- 1 ≤ capacity ≤ 10^9
+- 1 <= n <= 500
+- 1 <= m <= 1000
+- 1 <= a, b <= n
+- 1 <= c <= 10^9
 
-**Example**:
+## Core Concepts
+
+### What is Maximum Flow?
+
+Maximum flow finds the greatest amount of "flow" that can be sent from a source to a sink through a network where each edge has a capacity limit.
+
+Key properties:
+- **Capacity Constraint**: Flow on edge (u,v) cannot exceed its capacity
+- **Flow Conservation**: For non-source/sink nodes, inflow = outflow
+- **Skew Symmetry**: flow(u,v) = -flow(v,u)
+
+### Residual Graph
+
+The residual graph shows remaining capacity after some flow is used.
+
+For each edge (u,v) with capacity c and current flow f:
+- **Forward edge**: remaining capacity = c - f
+- **Backward edge**: remaining capacity = f (allows "undoing" flow)
+
+```
+Original Graph:          After sending 3 units:    Residual Graph:
+
+   [A]---5--->[B]         [A]--3/5-->[B]           [A]---2--->[B]
+                                                       <---3---
+
+   Capacity: 5            Flow: 3                  Forward: 5-3=2
+                                                   Backward: 3 (reverse)
+```
+
+### Why Backward Edges?
+
+Backward edges allow the algorithm to "undo" previous decisions. Without them, a greedy choice might block the optimal solution.
+
+```
+Example where backward edges are essential:
+
+        2
+    A-------->B
+    |         |
+  3 |         | 3
+    v         v
+    S         T
+    |         |
+  3 |         | 2
+    v         v
+    C-------->D
+        3
+
+Without backward edges: Path S->A->B->T uses 2, Path S->C->D->T uses 2
+Total: 4
+
+With backward edges: Can find path S->A->B->D->T (uses B->D backward)
+Then S->C->D->T uses forward edge
+Total: 5 (optimal)
+```
+
+## Ford-Fulkerson Algorithm
+
+The Ford-Fulkerson method repeatedly finds augmenting paths until none exist.
+
+### Algorithm Steps
+
+```
+1. Initialize: flow = 0 for all edges
+2. Build residual graph from original capacities
+3. While augmenting path exists from source to sink:
+   a. Find path P in residual graph
+   b. Find bottleneck = min capacity along P
+   c. Augment flow by bottleneck:
+      - Subtract bottleneck from forward edges
+      - Add bottleneck to backward edges
+   d. Add bottleneck to total flow
+4. Return total flow
+```
+
+### Edmonds-Karp: BFS for Path Finding
+
+Using BFS (instead of DFS) guarantees O(VE^2) complexity because:
+- BFS finds shortest augmenting path (by edge count)
+- Each edge becomes critical (bottleneck) at most O(V) times
+- At most O(E) edges, so O(VE) augmentations
+- Each BFS takes O(E), total: O(VE^2)
+
+## Visual Walkthrough
+
+### Example Network
+
 ```
 Input:
-n = 4, source = 0, sink = 3
-edges = [(0,1,3), (0,2,2), (1,2,1), (1,3,2), (2,3,3)]
+4 5
+1 2 6
+1 3 4
+2 3 2
+2 4 3
+3 4 5
 
-Output:
-4
-
-Explanation**: 
-Maximum flow: 4
-Flow paths: 0->1->3 (flow 2), 0->2->3 (flow 2)
-Total flow: 2 + 2 = 4
+Network Structure:
+          6
+    [1]------>[2]
+     |  \      |
+   4 |   \ 2   | 3
+     v    v    v
+    [3]------>[4]
+          5
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+### Dry Run
 
-### Approach 1: Brute Force Solution
-
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible flow assignments
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic flow conservation for each assignment
-- **Inefficient**: O(c^m) time complexity where c is maximum capacity
-
-**Key Insight**: Check every possible flow assignment to find maximum flow.
-
-**Algorithm**:
-- Generate all possible flow assignments for edges
-- Check if each assignment satisfies flow conservation
-- Calculate total flow and find maximum
-
-**Visual Example**:
+**Initial State**:
 ```
-Flow network: 0->1(3), 0->2(2), 1->2(1), 1->3(2), 2->3(3)
-
-All possible flow assignments:
-┌─────────────────────────────────────┐
-│ Assignment 1: [0,0,0,0,0] - Flow: 0 │
-│ Assignment 2: [1,0,0,0,0] - Flow: 1 │
-│ Assignment 3: [2,0,0,0,0] - Flow: 2 │
-│ Assignment 4: [3,0,0,0,0] - Flow: 3 │
-│ Assignment 5: [0,1,0,0,0] - Flow: 1 │
-│ Assignment 6: [0,2,0,0,0] - Flow: 2 │
-│ Assignment 7: [1,1,0,0,0] - Flow: 2 │
-│ Assignment 8: [2,1,0,0,0] - Flow: 3 │
-│ Assignment 9: [1,1,1,1,1] - Flow: 2 │
-│ Assignment 10: [2,2,1,2,2] - Flow: 4 │
-│                                   │
-│ Check flow conservation:           │
-│ - Assignment 10: valid ✓          │
-│ - Maximum flow: 4                 │
-└─────────────────────────────────────┘
+Residual capacities:
+1->2: 6    2->3: 2    3->4: 5
+1->3: 4    2->4: 3
+Total flow: 0
 ```
 
-**Implementation**:
+**Iteration 1**: BFS finds path 1 -> 2 -> 4
+```
+Path: 1 -> 2 -> 4
+Bottleneck: min(6, 3) = 3
+
+Update residual graph:
+1->2: 6-3=3    2->1: 0+3=3
+2->4: 3-3=0    4->2: 0+3=3
+
+Total flow: 0 + 3 = 3
+```
+
+**Iteration 2**: BFS finds path 1 -> 3 -> 4
+```
+Path: 1 -> 3 -> 4
+Bottleneck: min(4, 5) = 4
+
+Update residual graph:
+1->3: 4-4=0    3->1: 0+4=4
+3->4: 5-4=1    4->3: 0+4=4
+
+Total flow: 3 + 4 = 7
+```
+
+**Iteration 3**: BFS finds path 1 -> 2 -> 3 -> 4
+```
+Path: 1 -> 2 -> 3 -> 4
+Bottleneck: min(3, 2, 1) = 1
+
+Update residual graph:
+1->2: 3-1=2    2->1: 3+1=4
+2->3: 2-1=1    3->2: 0+1=1
+3->4: 1-1=0    4->3: 4+1=5
+
+Total flow: 7 + 1 = 8
+```
+
+**Iteration 4**: No augmenting path exists
+```
+BFS from 1 cannot reach 4 (all paths blocked)
+Algorithm terminates
+
+Maximum Flow: 8
+```
+
+**Final Flow Distribution**:
+```
+Edge 1->2: 4 units (capacity 6)
+Edge 1->3: 4 units (capacity 4)
+Edge 2->3: 1 unit  (capacity 2)
+Edge 2->4: 3 units (capacity 3)
+Edge 3->4: 5 units (capacity 5)
+
+Verification:
+- Outflow from 1: 4 + 4 = 8
+- Inflow to 4: 3 + 5 = 8
+```
+
+## Implementation
+
+### Python Solution
+
 ```python
-def brute_force_download_speed(n, source, sink, edges):
-    """Find maximum flow using brute force approach"""
-    from itertools import product
-    
-    # Build adjacency list with capacities
-    adj = [[] for _ in range(n)]
-    capacities = {}
-    
-    for u, v, capacity in edges:
-        adj[u].append(v)
-        capacities[(u, v)] = capacity
-    
-    def is_valid_flow(flow_assignment):
-        """Check if flow assignment satisfies flow conservation"""
-        # Check flow conservation at each vertex (except source and sink)
-        for vertex in range(n):
-            if vertex == source or vertex == sink:
-                continue
-            
-            inflow = 0
-            outflow = 0
-            
-            # Calculate inflow
-            for i, (u, v, _) in enumerate(edges):
-                if v == vertex:
-                    inflow += flow_assignment[i]
-            
-            # Calculate outflow
-            for i, (u, v, _) in enumerate(edges):
-                if u == vertex:
-                    outflow += flow_assignment[i]
-            
-            if inflow != outflow:
-                return False
-        
-        return True
-    
-    def calculate_total_flow(flow_assignment):
-        """Calculate total flow from source to sink"""
-        total_flow = 0
-        for i, (u, v, _) in enumerate(edges):
-            if u == source:
-                total_flow += flow_assignment[i]
-        return total_flow
-    
-    # Try all possible flow assignments
-    max_capacity = max(capacity for _, _, capacity in edges)
-    max_flow = 0
-    
-    # Generate all possible flow assignments
-    for flow_assignment in product(range(max_capacity + 1), repeat=len(edges)):
-        # Check capacity constraints
-        valid_capacity = True
-        for i, (u, v, capacity) in enumerate(edges):
-            if flow_assignment[i] > capacity:
-                valid_capacity = False
-                break
-        
-        if valid_capacity and is_valid_flow(flow_assignment):
-            total_flow = calculate_total_flow(flow_assignment)
-            max_flow = max(max_flow, total_flow)
-    
-    return max_flow
+from collections import deque
 
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1, 3), (0, 2, 2), (1, 2, 1), (1, 3, 2), (2, 3, 3)]
-result = brute_force_download_speed(n, source, sink, edges)
-print(f"Brute force maximum flow: {result}")
-```
+def max_flow(n, edges):
+    """
+    Find maximum flow from node 1 to node n.
+    Uses Edmonds-Karp algorithm (Ford-Fulkerson with BFS).
+    """
+    # Build adjacency list and capacity matrix
+    # Using dict for capacity to handle parallel edges
+    adj = [[] for _ in range(n + 1)]
+    capacity = {}
 
-**Time Complexity**: O(c^m)
-**Space Complexity**: O(m)
-
-**Why it's inefficient**: O(c^m) time complexity for checking all possible flow assignments.
-
----
-
-### Approach 2: Ford-Fulkerson with BFS (Edmonds-Karp)
-
-**Key Insights from Ford-Fulkerson with BFS**:
-- **Ford-Fulkerson**: Use Ford-Fulkerson algorithm with BFS for augmenting paths
-- **Efficient Implementation**: O(VE²) time complexity
-- **Residual Graph**: Use residual graph to find augmenting paths
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Use Ford-Fulkerson algorithm with BFS to find augmenting paths efficiently.
-
-**Algorithm**:
-- Start with zero flow
-- Use BFS to find augmenting paths in residual graph
-- Update flow along augmenting paths
-- Continue until no more augmenting paths exist
-
-**Visual Example**:
-```
-Ford-Fulkerson with BFS:
-
-Initial flow network: 0->1(3), 0->2(2), 1->2(1), 1->3(2), 2->3(3)
-Initial flow: 0
-
-Step 1: Find augmenting path using BFS
-┌─────────────────────────────────────┐
-│ BFS from source 0:                  │
-│ - Queue: [0]                       │
-│ - Visit 0: neighbors [1, 2]        │
-│ - Queue: [1, 2]                    │
-│ - Visit 1: neighbors [2, 3]        │
-│ - Queue: [2, 3]                    │
-│ - Visit 2: neighbors [3]           │
-│ - Queue: [3]                       │
-│ - Visit 3: sink reached!           │
-│                                   │
-│ Augmenting path: 0->1->3           │
-│ Bottleneck capacity: min(3, 2) = 2 │
-│ Update flow: 0->1: 2, 1->3: 2     │
-│ Total flow: 2                      │
-└─────────────────────────────────────┘
-
-Step 2: Find another augmenting path
-┌─────────────────────────────────────┐
-│ BFS from source 0:                  │
-│ - Augmenting path: 0->2->3          │
-│ - Bottleneck capacity: min(2, 3) = 2 │
-│ - Update flow: 0->2: 2, 2->3: 2    │
-│ - Total flow: 2 + 2 = 4            │
-└─────────────────────────────────────┘
-
-Step 3: No more augmenting paths
-┌─────────────────────────────────────┐
-│ BFS from source 0:                  │
-│ - No path to sink in residual graph │
-│ - Maximum flow found: 4            │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def ford_fulkerson_download_speed(n, source, sink, edges):
-    """Find maximum flow using Ford-Fulkerson with BFS (Edmonds-Karp)"""
-    from collections import deque
-    
-    # Build adjacency list with capacities
-    adj = [[] for _ in range(n)]
-    capacity = [[0] * n for _ in range(n)]
-    
-    for u, v, cap in edges:
-        adj[u].append(v)
-        adj[v].append(u)  # Add reverse edge for residual graph
-        capacity[u][v] = cap
-    
-    def bfs_find_path():
-        """Find augmenting path using BFS"""
-        parent = [-1] * n
-        visited = [False] * n
-        queue = deque([source])
-        visited[source] = True
-        
-        while queue:
-            current = queue.popleft()
-            if current == sink:
-                break
-            
-            for neighbor in adj[current]:
-                if not visited[neighbor] and capacity[current][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = current
-                    queue.append(neighbor)
-        
-        # Reconstruct path
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def find_max_flow():
-        """Find maximum flow using Ford-Fulkerson algorithm"""
-        max_flow = 0
-        
-        while True:
-            # Find augmenting path
-            path = bfs_find_path()
-            if not path:
-                break
-            
-            # Find bottleneck capacity
-            bottleneck = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                bottleneck = min(bottleneck, capacity[u][v])
-            
-            # Update residual capacities
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= bottleneck
-                capacity[v][u] += bottleneck
-            
-            max_flow += bottleneck
-        
-        return max_flow
-    
-    return find_max_flow()
-
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1, 3), (0, 2, 2), (1, 2, 1), (1, 3, 2), (2, 3, 3)]
-result = ford_fulkerson_download_speed(n, source, sink, edges)
-print(f"Ford-Fulkerson maximum flow: {result}")
-```
-
-**Time Complexity**: O(VE²)
-**Space Complexity**: O(V²)
-
-**Why it's better**: Uses Ford-Fulkerson with BFS for O(VE²) time complexity.
-
----
-
-### Approach 3: Advanced Data Structure Solution (Optimal)
-
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for maximum flow
-- **Efficient Implementation**: O(VE²) time complexity
-- **Space Efficiency**: O(V²) space complexity
-- **Optimal Complexity**: Best approach for maximum flow problems
-
-**Key Insight**: Use advanced data structures for optimal maximum flow calculation.
-
-**Algorithm**:
-- Use specialized data structures for flow network storage
-- Implement efficient Ford-Fulkerson algorithm
-- Handle special cases optimally
-- Return maximum flow
-
-**Visual Example**:
-```
-Advanced data structure approach:
-
-For flow network: 0->1(3), 0->2(2), 1->2(1), 1->3(2), 2->3(3)
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Flow network: for efficient       │
-│   storage and operations            │
-│ - Residual graph: for optimization  │
-│ - Flow cache: for optimization      │
-│                                   │
-│ Maximum flow calculation:          │
-│ - Use flow network for efficient   │
-│   storage and operations            │
-│ - Use residual graph for           │
-│   optimization                      │
-│ - Use flow cache for optimization  │
-│                                   │
-│ Result: 4                          │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def advanced_data_structure_download_speed(n, source, sink, edges):
-    """Find maximum flow using advanced data structure approach"""
-    from collections import deque
-    
-    # Use advanced data structures for flow network storage
-    # Build advanced adjacency list with capacities
-    adj = [[] for _ in range(n)]
-    capacity = [[0] * n for _ in range(n)]
-    
-    for u, v, cap in edges:
-        adj[u].append(v)
-        adj[v].append(u)  # Add reverse edge for residual graph
-        capacity[u][v] = cap
-    
-    def advanced_bfs_find_path():
-        """Advanced BFS to find augmenting path"""
-        parent = [-1] * n
-        visited = [False] * n
-        queue = deque([source])
-        visited[source] = True
-        
-        while queue:
-            current = queue.popleft()
-            if current == sink:
-                break
-            
-            for neighbor in adj[current]:
-                if not visited[neighbor] and capacity[current][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = current
-                    queue.append(neighbor)
-        
-        # Advanced path reconstruction
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def advanced_find_max_flow():
-        """Advanced Ford-Fulkerson algorithm"""
-        max_flow = 0
-        
-        while True:
-            # Advanced augmenting path finding
-            path = advanced_bfs_find_path()
-            if not path:
-                break
-            
-            # Advanced bottleneck capacity calculation
-            bottleneck = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                bottleneck = min(bottleneck, capacity[u][v])
-            
-            # Advanced residual capacity updates
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= bottleneck
-                capacity[v][u] += bottleneck
-            
-            max_flow += bottleneck
-        
-        return max_flow
-    
-    return advanced_find_max_flow()
-
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1, 3), (0, 2, 2), (1, 2, 1), (1, 3, 2), (2, 3, 3)]
-result = advanced_data_structure_download_speed(n, source, sink, edges)
-print(f"Advanced data structure maximum flow: {result}")
-```
-
-**Time Complexity**: O(VE²)
-**Space Complexity**: O(V²)
-
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
-
-## 🔧 Implementation Details
-
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(c^m) | O(m) | Try all possible flow assignments |
-| Ford-Fulkerson | O(VE²) | O(V²) | Use BFS to find augmenting paths |
-| Advanced Data Structure | O(VE²) | O(V²) | Use advanced data structures |
-
-### Time Complexity
-- **Time**: O(VE²) - Use Ford-Fulkerson with BFS for efficient maximum flow
-- **Space**: O(V²) - Store capacity matrix and residual graph
-
-### Why This Solution Works
-- **Ford-Fulkerson Algorithm**: Use augmenting paths to increase flow
-- **BFS for Augmenting Paths**: Use BFS to find shortest augmenting paths
-- **Residual Graph**: Maintain residual graph to find augmenting paths
-- **Optimal Algorithms**: Use optimal algorithms for maximum flow problems
-
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. Download Speed with Constraints**
-**Problem**: Find maximum flow with specific constraints.
-
-**Key Differences**: Apply constraints to flow calculation
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_download_speed(n, source, sink, edges, constraints):
-    """Find maximum flow with constraints"""
-    from collections import deque
-    
-    # Build adjacency list with constraints
-    adj = [[] for _ in range(n)]
-    capacity = [[0] * n for _ in range(n)]
-    
-    for u, v, cap in edges:
-        if constraints(u, v, cap):
+    for u, v, c in edges:
+        # Add forward edge
+        if (u, v) not in capacity:
             adj[u].append(v)
-            adj[v].append(u)
-            capacity[u][v] = cap
-    
-    def constrained_bfs_find_path():
-        """BFS to find augmenting path with constraints"""
-        parent = [-1] * n
-        visited = [False] * n
-        queue = deque([source])
-        visited[source] = True
-        
-        while queue:
-            current = queue.popleft()
-            if current == sink:
-                break
-            
-            for neighbor in adj[current]:
-                if (not visited[neighbor] and 
-                    capacity[current][neighbor] > 0 and
-                    constraints(current, neighbor, capacity[current][neighbor])):
-                    visited[neighbor] = True
-                    parent[neighbor] = current
-                    queue.append(neighbor)
-        
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def constrained_find_max_flow():
-        """Ford-Fulkerson with constraints"""
-        max_flow = 0
-        
-        while True:
-            path = constrained_bfs_find_path()
-            if not path:
-                break
-            
-            bottleneck = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                bottleneck = min(bottleneck, capacity[u][v])
-            
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= bottleneck
-                capacity[v][u] += bottleneck
-            
-            max_flow += bottleneck
-        
-        return max_flow
-    
-    return constrained_find_max_flow()
+            adj[v].append(u)  # Reverse edge for residual graph
+            capacity[(u, v)] = 0
+            capacity[(v, u)] = 0
+        capacity[(u, v)] += c  # Handle multiple edges between same nodes
 
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1, 3), (0, 2, 2), (1, 2, 1), (1, 3, 2), (2, 3, 3)]
-constraints = lambda u, v, c: c <= 5  # Capacity constraint
-result = constrained_download_speed(n, source, sink, edges, constraints)
-print(f"Constrained maximum flow: {result}")
+    def bfs():
+        """Find augmenting path using BFS. Returns (path, bottleneck)."""
+        parent = [-1] * (n + 1)
+        visited = [False] * (n + 1)
+        visited[1] = True
+        queue = deque([1])
+
+        while queue:
+            node = queue.popleft()
+            if node == n:
+                break
+
+            for neighbor in adj[node]:
+                if not visited[neighbor] and capacity[(node, neighbor)] > 0:
+                    visited[neighbor] = True
+                    parent[neighbor] = node
+                    queue.append(neighbor)
+
+        # No path found
+        if parent[n] == -1:
+            return None, 0
+
+        # Reconstruct path and find bottleneck
+        path = []
+        bottleneck = float('inf')
+        current = n
+
+        while current != 1:
+            prev = parent[current]
+            path.append((prev, current))
+            bottleneck = min(bottleneck, capacity[(prev, current)])
+            current = prev
+
+        return path, bottleneck
+
+    total_flow = 0
+
+    while True:
+        path, bottleneck = bfs()
+        if path is None:
+            break
+
+        # Update residual capacities
+        for u, v in path:
+            capacity[(u, v)] -= bottleneck
+            capacity[(v, u)] += bottleneck
+
+        total_flow += bottleneck
+
+    return total_flow
+
+
+def solve():
+    n, m = map(int, input().split())
+    edges = []
+    for _ in range(m):
+        a, b, c = map(int, input().split())
+        edges.append((a, b, c))
+
+    print(max_flow(n, edges))
+
+
+if __name__ == "__main__":
+    solve()
 ```
 
-#### **2. Download Speed with Different Metrics**
-**Problem**: Find maximum flow with different cost metrics.
+### C++ Solution
 
-**Key Differences**: Different cost calculations
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Solution Approach**: Use advanced mathematical techniques
+typedef long long ll;
 
-**Implementation**:
+const int MAXN = 505;
+vector<int> adj[MAXN];
+ll capacity[MAXN][MAXN];
+int parent_node[MAXN];
+int n, m;
+
+ll bfs() {
+    // Returns bottleneck of augmenting path, or 0 if no path exists
+    fill(parent_node, parent_node + n + 1, -1);
+    parent_node[1] = 1;
+
+    queue<pair<int, ll>> q;
+    q.push({1, LLONG_MAX});
+
+    while (!q.empty()) {
+        int node = q.front().first;
+        ll flow = q.front().second;
+        q.pop();
+
+        if (node == n) {
+            return flow;
+        }
+
+        for (int neighbor : adj[node]) {
+            if (parent_node[neighbor] == -1 && capacity[node][neighbor] > 0) {
+                parent_node[neighbor] = node;
+                ll new_flow = min(flow, capacity[node][neighbor]);
+                q.push({neighbor, new_flow});
+            }
+        }
+    }
+
+    return 0;
+}
+
+ll max_flow() {
+    ll total = 0;
+    ll bottleneck;
+
+    while ((bottleneck = bfs()) > 0) {
+        total += bottleneck;
+
+        // Update residual capacities along the path
+        int current = n;
+        while (current != 1) {
+            int prev = parent_node[current];
+            capacity[prev][current] -= bottleneck;
+            capacity[current][prev] += bottleneck;
+            current = prev;
+        }
+    }
+
+    return total;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n >> m;
+
+    // Initialize capacity matrix
+    memset(capacity, 0, sizeof(capacity));
+
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        ll c;
+        cin >> a >> b >> c;
+
+        // Add edges to adjacency list (only once per pair)
+        if (capacity[a][b] == 0 && capacity[b][a] == 0) {
+            adj[a].push_back(b);
+            adj[b].push_back(a);
+        }
+
+        // Handle multiple edges: add capacities
+        capacity[a][b] += c;
+    }
+
+    cout << max_flow() << "\n";
+
+    return 0;
+}
+```
+
+## Common Mistakes
+
+### 1. Forgetting Reverse Edges
+
+**Wrong**:
 ```python
-def weighted_download_speed(n, source, sink, edges, cost_function):
-    """Find maximum flow with different cost metrics"""
-    from collections import deque
-    
-    # Build adjacency list with modified costs
-    adj = [[] for _ in range(n)]
-    capacity = [[0] * n for _ in range(n)]
-    cost = [[0] * n for _ in range(n)]
-    
-    for u, v, cap in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-        capacity[u][v] = cap
-        cost[u][v] = cost_function(u, v, cap)
-        cost[v][u] = -cost_function(u, v, cap)  # Negative cost for reverse edge
-    
-    def weighted_bfs_find_path():
-        """BFS to find augmenting path with costs"""
-        parent = [-1] * n
-        visited = [False] * n
-        queue = deque([source])
-        visited[source] = True
-        
-        while queue:
-            current = queue.popleft()
-            if current == sink:
-                break
-            
-            for neighbor in adj[current]:
-                if not visited[neighbor] and capacity[current][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = current
-                    queue.append(neighbor)
-        
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def weighted_find_max_flow():
-        """Ford-Fulkerson with costs"""
-        max_flow = 0
-        
-        while True:
-            path = weighted_bfs_find_path()
-            if not path:
-                break
-            
-            bottleneck = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                bottleneck = min(bottleneck, capacity[u][v])
-            
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= bottleneck
-                capacity[v][u] += bottleneck
-            
-            max_flow += bottleneck
-        
-        return max_flow
-    
-    return weighted_find_max_flow()
-
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1, 3), (0, 2, 2), (1, 2, 1), (1, 3, 2), (2, 3, 3)]
-cost_function = lambda u, v, c: c * 2  # Cost is twice the capacity
-result = weighted_download_speed(n, source, sink, edges, cost_function)
-print(f"Weighted maximum flow: {result}")
+# Only adding forward edge
+adj[u].append(v)
+capacity[(u, v)] = c
 ```
 
-#### **3. Download Speed with Multiple Dimensions**
-**Problem**: Find maximum flow in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
+**Correct**:
 ```python
-def multi_dimensional_download_speed(n, source, sink, edges, dimensions):
-    """Find maximum flow in multiple dimensions"""
-    from collections import deque
-    
-    # Build adjacency list
-    adj = [[] for _ in range(n)]
-    capacity = [[0] * n for _ in range(n)]
-    
-    for u, v, cap in edges:
-        adj[u].append(v)
-        adj[v].append(u)
-        capacity[u][v] = cap
-    
-    def multi_dimensional_bfs_find_path():
-        """BFS to find augmenting path in multiple dimensions"""
-        parent = [-1] * n
-        visited = [False] * n
-        queue = deque([source])
-        visited[source] = True
-        
-        while queue:
-            current = queue.popleft()
-            if current == sink:
-                break
-            
-            for neighbor in adj[current]:
-                if not visited[neighbor] and capacity[current][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = current
-                    queue.append(neighbor)
-        
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def multi_dimensional_find_max_flow():
-        """Ford-Fulkerson in multiple dimensions"""
-        max_flow = 0
-        
-        while True:
-            path = multi_dimensional_bfs_find_path()
-            if not path:
-                break
-            
-            bottleneck = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                bottleneck = min(bottleneck, capacity[u][v])
-            
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= bottleneck
-                capacity[v][u] += bottleneck
-            
-            max_flow += bottleneck
-        
-        return max_flow
-    
-    return multi_dimensional_find_max_flow()
-
-# Example usage
-n = 4
-source = 0
-sink = 3
-edges = [(0, 1, 3), (0, 2, 2), (1, 2, 1), (1, 3, 2), (2, 3, 3)]
-dimensions = 1
-result = multi_dimensional_download_speed(n, source, sink, edges, dimensions)
-print(f"Multi-dimensional maximum flow: {result}")
+# Must add both directions for residual graph
+adj[u].append(v)
+adj[v].append(u)
+capacity[(u, v)] = c
+capacity[(v, u)] = 0  # Reverse edge starts with 0 capacity
 ```
 
-### Related Problems
+### 2. Integer Overflow
 
-#### **CSES Problems**
-- [Police Chase](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [School Dance](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
+With capacities up to 10^9 and potentially 500 * 1000 total flow:
+- Maximum flow can be around 5 * 10^11
+- Use `long long` in C++ or Python's arbitrary precision
 
-#### **LeetCode Problems**
-- [Maximum Flow](https://leetcode.com/problems/maximum-flow/) - Graph
-- [Network Delay Time](https://leetcode.com/problems/network-delay-time/) - Graph
-- [Cheapest Flights](https://leetcode.com/problems/cheapest-flights-within-k-stops/) - Graph
+**Wrong** (C++):
+```cpp
+int capacity[MAXN][MAXN];  // Can overflow!
+```
 
-#### **Problem Categories**
-- **Graph Algorithms**: Maximum flow, network flow
-- **Network Flow**: Ford-Fulkerson, Edmonds-Karp, flow algorithms
-- **Graph Traversal**: BFS, augmenting paths
+**Correct**:
+```cpp
+long long capacity[MAXN][MAXN];
+```
 
-## 🔗 Additional Resources
+### 3. Not Handling Parallel Edges
 
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Maximum Flow](https://cp-algorithms.com/graph/max_flow.html) - Maximum flow algorithms
-- [Ford-Fulkerson](https://cp-algorithms.com/graph/max_flow.html#ford-fulkerson-method) - Ford-Fulkerson algorithm
+Multiple edges between same nodes should have capacities added:
 
-### **Practice Problems**
-- [CSES Police Chase](https://cses.fi/problemset/task/1075) - Medium
-- [CSES School Dance](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
+**Wrong**:
+```python
+capacity[(u, v)] = c  # Overwrites previous edge
+```
 
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Maximum Flow Problem](https://en.wikipedia.org/wiki/Maximum_flow_problem) - Wikipedia article
-- [Ford-Fulkerson Algorithm](https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm) - Wikipedia article
+**Correct**:
+```python
+capacity[(u, v)] += c  # Accumulates parallel edges
+```
+
+### 4. Incorrect Residual Update
+
+**Wrong**:
+```python
+# Only updating forward edge
+capacity[(u, v)] -= bottleneck
+```
+
+**Correct**:
+```python
+# Must update both directions
+capacity[(u, v)] -= bottleneck  # Reduce forward
+capacity[(v, u)] += bottleneck  # Increase backward
+```
+
+## Complexity Analysis
+
+| Operation | Complexity | Explanation |
+|-----------|------------|-------------|
+| BFS | O(E) | Visits each edge once |
+| Augmentations | O(VE) | Each edge saturates O(V) times with BFS |
+| Total Time | O(VE^2) | O(VE) augmentations, each O(E) |
+| Space | O(V^2) | Capacity matrix |
+
+For this problem:
+- V = 500, E = 1000
+- O(VE^2) = O(500 * 1000^2) = O(5 * 10^8)
+- Fits within time limit with efficient implementation
+
+## Key Takeaways
+
+1. **Max flow = min cut**: The maximum flow equals the minimum cut capacity
+2. **Residual graph** enables finding augmenting paths after initial flow
+3. **Backward edges** allow algorithm to "correct" suboptimal choices
+4. **BFS guarantees** O(VE^2) time (Edmonds-Karp)
+5. **Handle large values** with appropriate data types

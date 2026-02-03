@@ -2,36 +2,49 @@
 layout: simple
 title: "Minimum Subarray Sum - Modified Kadane's Algorithm"
 permalink: /problem_soulutions/sliding_window/minimum_subarray_sum_analysis
+difficulty: Medium
+tags: [dynamic-programming, kadane, subarray, greedy]
 ---
 
-# Minimum Subarray Sum - Modified Kadane's Algorithm
+# Minimum Subarray Sum
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand and implement modified Kadane's algorithm for minimum subarray sum
-- Apply dynamic programming concepts to find minimum subarray problems
-- Optimize space complexity from O(n) to O(1) for minimum subarray problems
-- Handle edge cases in minimum subarray problems (all positive numbers, single element)
-- Recognize the relationship between maximum and minimum subarray algorithms
+| Attribute | Value |
+|-----------|-------|
+| **Difficulty** | Medium |
+| **Category** | Dynamic Programming / Array |
+| **Time Limit** | 1 second |
+| **Key Technique** | Modified Kadane's Algorithm |
+| **CSES Link** | [Maximum Subarray Sum](https://cses.fi/problemset/task/1643) (variant) |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given an array of integers, find the contiguous subarray (containing at least one number) which has the smallest sum and return its sum.
+After solving this problem, you will be able to:
+- [ ] Apply modified Kadane's algorithm to find minimum subarray sum
+- [ ] Recognize the duality between maximum and minimum subarray problems
+- [ ] Make optimal local decisions (extend vs. restart) at each step
+- [ ] Achieve O(n) time and O(1) space for subarray optimization problems
 
-**Input**: 
-- First line: n (number of elements)
-- Second line: n integers separated by spaces
+---
 
-**Output**: 
+## Problem Statement
+
+**Problem:** Given an array of integers, find the contiguous subarray (containing at least one number) which has the smallest sum and return its sum.
+
+**Input:**
+- Line 1: n (number of elements)
+- Line 2: n integers separated by spaces
+
+**Output:**
 - Single integer: minimum sum of any contiguous subarray
 
-**Constraints**:
-- 1 ≤ n ≤ 10⁵
-- -10⁴ ≤ arr[i] ≤ 10⁴
+**Constraints:**
+- 1 <= n <= 10^5
+- -10^4 <= arr[i] <= 10^4
 
-**Example**:
+### Example
+
 ```
 Input:
 6
@@ -39,457 +52,416 @@ Input:
 
 Output:
 -4
-
-Explanation**: 
-The subarray [-3] has the minimum sum of -3, but the subarray [-2, 1, -3] has sum -4.
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
-
-### Approach 1: Brute Force
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Search**: Check all possible subarrays by considering every starting and ending position
-- **Complete Coverage**: Guarantees finding the optimal solution by examining all possibilities
-- **Simple Implementation**: Straightforward nested loops to generate all subarrays
-- **Inefficient**: Time complexity grows quadratically with input size
-
-**Key Insight**: Generate all possible subarrays and calculate their sums to find the minimum.
-
-**Algorithm**:
-- For each starting position i from 0 to n-1
-- For each ending position j from i to n-1
-- Calculate sum of subarray from i to j
-- Keep track of minimum sum found
-
-**Visual Example**:
-```
-Array: [-2, 1, -3, 4, -1, 2]
-
-All subarrays and their sums:
-i=0: [-2]=-2, [-2,1]=-1, [-2,1,-3]=-4, [-2,1,-3,4]=0, [-2,1,-3,4,-1]=-1, [-2,1,-3,4,-1,2]=1
-i=1: [1]=1, [1,-3]=-2, [1,-3,4]=2, [1,-3,4,-1]=1, [1,-3,4,-1,2]=3
-i=2: [-3]=-3, [-3,4]=1, [-3,4,-1]=0, [-3,4,-1,2]=2
-i=3: [4]=4, [4,-1]=3, [4,-1,2]=5
-i=4: [-1]=-1, [-1,2]=1
-i=5: [2]=2
-
-Minimum sum: -4
-```
-
-**Implementation**:
-```python
-def brute_force_minimum_subarray_sum(arr):
-    """
-    Find minimum subarray sum using brute force approach
-    
-    Args:
-        arr: List of integers
-    
-    Returns:
-        int: Minimum sum of any contiguous subarray
-    """
-    n = len(arr)
-    min_sum = float('inf')
-    
-    for i in range(n):
-        for j in range(i, n):
-            # Calculate sum of subarray from i to j
-            current_sum = sum(arr[i:j+1])
-            min_sum = min(min_sum, current_sum)
-    
-    return min_sum
-
-# Example usage
-arr = [-2, 1, -3, 4, -1, 2]
-result = brute_force_minimum_subarray_sum(arr)
-print(f"Brute force result: {result}")  # Output: -4
-```
-
-**Time Complexity**: O(n³) - Nested loops plus sum calculation
-**Space Complexity**: O(1) - Only using constant extra space
-
-**Why it's inefficient**: Triple nested operations make it too slow for large inputs.
+**Explanation:** The subarray `[-2, 1, -3]` has sum = -2 + 1 + (-3) = -4, which is the minimum among all contiguous subarrays.
 
 ---
 
-### Approach 2: Optimized with Prefix Sums
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Approach**:
-- **Prefix Sum Optimization**: Use prefix sums to calculate subarray sums in O(1) time
-- **Efficiency Improvement**: Reduce time complexity from O(n³) to O(n²)
-- **Space Trade-off**: Use O(n) extra space for prefix sums to speed up calculations
-- **Better Performance**: Significantly faster than brute force for larger inputs
+### Pattern Recognition
 
-**Key Insight**: Precompute prefix sums to eliminate the need to recalculate subarray sums.
+> **Key Question:** At each position, should we extend the current subarray or start fresh?
 
-**Algorithm**:
-- Calculate prefix sum array where prefix[i] = sum of elements from 0 to i
-- For each starting position i, for each ending position j
-- Calculate subarray sum as prefix[j] - prefix[i-1] (or prefix[j] if i=0)
-- Keep track of minimum sum found
+This is the **inverse of the classic Maximum Subarray problem**. Instead of keeping sums positive, we want to keep sums negative to minimize the total.
 
-**Visual Example**:
-```
-Array: [-2, 1, -3, 4, -1, 2]
-Prefix: [-2, -1, -4, 0, -1, 1]
+### Breaking Down the Problem
 
-Subarray sums using prefix:
-i=0, j=0: prefix[0] = -2
-i=0, j=1: prefix[1] = -1
-i=0, j=2: prefix[2] = -4  ← Minimum sum
-i=0, j=3: prefix[3] = 0
-i=0, j=4: prefix[4] = -1
-i=0, j=5: prefix[5] = 1
+1. **What are we looking for?** The minimum sum of any contiguous subarray
+2. **What information do we have?** Array of integers (positive, negative, or zero)
+3. **What's the relationship?** At each position, the minimum ending there is either:
+   - Just the current element (start fresh), OR
+   - Current element + previous minimum (extend)
 
-i=1, j=1: prefix[1] - prefix[0] = -1 - (-2) = 1
-i=1, j=2: prefix[2] - prefix[0] = -4 - (-2) = -2
-i=1, j=3: prefix[3] - prefix[0] = 0 - (-2) = 2
-i=1, j=4: prefix[4] - prefix[0] = -1 - (-2) = 1
-i=1, j=5: prefix[5] - prefix[0] = 1 - (-2) = 3
+### Analogies
 
-Minimum sum: -4
-```
+Think of this like tracking your worst spending streak. At each day, you decide: "Should I count this as part of my current bad streak, or is starting fresh worse?"
 
-**Implementation**:
-```python
-def optimized_minimum_subarray_sum(arr):
-    """
-    Find minimum subarray sum using prefix sums
-    
-    Args:
-        arr: List of integers
-    
-    Returns:
-        int: Minimum sum of any contiguous subarray
-    """
-    n = len(arr)
-    
-    # Calculate prefix sums
-    prefix = [0] * n
-    prefix[0] = arr[0]
-    for i in range(1, n):
-        prefix[i] = prefix[i-1] + arr[i]
-    
-    min_sum = float('inf')
-    
-    for i in range(n):
-        for j in range(i, n):
-            # Calculate subarray sum using prefix sums
-            if i == 0:
-                current_sum = prefix[j]
-            else:
-                current_sum = prefix[j] - prefix[i-1]
-            min_sum = min(min_sum, current_sum)
-    
-    return min_sum
-
-# Example usage
-arr = [-2, 1, -3, 4, -1, 2]
-result = optimized_minimum_subarray_sum(arr)
-print(f"Optimized result: {result}")  # Output: -4
-```
-
-**Time Complexity**: O(n²) - Nested loops with O(1) sum calculation
-**Space Complexity**: O(n) - Prefix sum array
-
-**Why it's better**: Much faster than brute force, but still not optimal.
+**Key Insight for Kadane's:**
+- For **maximum**: Reset when sum goes negative (can't help)
+- For **minimum**: Reset when sum goes positive (can't hurt more)
 
 ---
 
-### Approach 3: Optimal with Modified Kadane's Algorithm
+## Solution 1: Brute Force
 
-**Key Insights from Optimal Approach**:
-- **Dynamic Programming**: Use optimal substructure property of minimum subarray problem
-- **Local vs Global Minimum**: Track both current subarray sum and global minimum
-- **Greedy Decision**: Start new subarray when current sum becomes positive
-- **Optimal Complexity**: Achieve O(n) time and O(1) space complexity
+### Idea
 
-**Key Insight**: At each position, decide whether to extend the current subarray or start a new one.
+Check all possible subarrays and track the minimum sum found.
 
-**Algorithm**:
-- Initialize current_sum and min_sum to first element
-- For each element from index 1 to n-1:
-  - Update current_sum = min(arr[i], current_sum + arr[i])
-  - Update min_sum = min(min_sum, current_sum)
-- Return min_sum
+### Algorithm
 
-**Visual Example**:
+1. For each starting index i (0 to n-1)
+2. For each ending index j (i to n-1)
+3. Calculate sum of subarray [i..j]
+4. Update minimum if current sum is smaller
+
+### Code
+
+```python
+def min_subarray_brute(arr):
+    """
+    Brute force: Check all subarrays.
+    Time: O(n^2), Space: O(1)
+    """
+    n = len(arr)
+    min_sum = float('inf')
+
+    for i in range(n):
+        current_sum = 0
+        for j in range(i, n):
+            current_sum += arr[j]
+            min_sum = min(min_sum, current_sum)
+
+    return min_sum
 ```
-Array: [-2, 1, -3, 4, -1, 2]
 
-Step 0: current_sum = -2, min_sum = -2
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long minSubarrayBrute(vector<int>& arr) {
+    int n = arr.size();
+    long long minSum = LLONG_MAX;
+
+    for (int i = 0; i < n; i++) {
+        long long currentSum = 0;
+        for (int j = i; j < n; j++) {
+            currentSum += arr[j];
+            minSum = min(minSum, currentSum);
+        }
+    }
+    return minSum;
+}
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2) | Two nested loops |
+| Space | O(1) | Only tracking current and min sum |
+
+### Why This Works (But Is Slow)
+
+Correctness is guaranteed because we examine every possible subarray. However, for n = 10^5, this gives 10^10 operations - far too slow.
+
+---
+
+## Solution 2: Optimal - Modified Kadane's Algorithm
+
+### Key Insight
+
+> **The Trick:** At each position, decide whether extending the current subarray or starting fresh gives a smaller sum.
+
+### DP State Definition
+
+| State | Meaning |
+|-------|---------|
+| `current_min` | Minimum sum of subarray **ending at current position** |
+| `global_min` | Minimum sum found **anywhere so far** |
+
+**In plain English:** `current_min` answers "What's the smallest sum I can achieve if the subarray must end here?"
+
+### State Transition
+
+```
+current_min = min(arr[i], current_min + arr[i])
+```
+
+**Why?**
+- `arr[i]` = Start a new subarray here
+- `current_min + arr[i]` = Extend the previous minimum subarray
+
+We pick whichever gives the smaller value.
+
+### Base Cases
+
+| Case | Value | Reason |
+|------|-------|--------|
+| `current_min` | arr[0] | First element is the only option |
+| `global_min` | arr[0] | Best we've seen so far |
+
+### Algorithm
+
+1. Initialize `current_min = global_min = arr[0]`
+2. For each element from index 1 to n-1:
+   - `current_min = min(arr[i], current_min + arr[i])`
+   - `global_min = min(global_min, current_min)`
+3. Return `global_min`
+
+### Dry Run Example
+
+Let's trace through with input `arr = [-2, 1, -3, 4, -1, 2]`:
+
+```
+Initial state:
+  current_min = -2
+  global_min = -2
+
 Step 1: arr[1] = 1
-        current_sum = min(1, -2 + 1) = min(1, -1) = -1
-        min_sum = min(-2, -1) = -2
+  Option A: Start fresh = 1
+  Option B: Extend = -2 + 1 = -1
+  current_min = min(1, -1) = -1
+  global_min = min(-2, -1) = -2
+
 Step 2: arr[2] = -3
-        current_sum = min(-3, -1 + (-3)) = min(-3, -4) = -4
-        min_sum = min(-2, -4) = -4
+  Option A: Start fresh = -3
+  Option B: Extend = -1 + (-3) = -4
+  current_min = min(-3, -4) = -4    <-- Extending is better!
+  global_min = min(-2, -4) = -4     <-- New minimum found!
+
 Step 3: arr[3] = 4
-        current_sum = min(4, -4 + 4) = min(4, 0) = 0
-        min_sum = min(-4, 0) = -4
+  Option A: Start fresh = 4
+  Option B: Extend = -4 + 4 = 0
+  current_min = min(4, 0) = 0       <-- Extending still better
+  global_min = min(-4, 0) = -4
+
 Step 4: arr[4] = -1
-        current_sum = min(-1, 0 + (-1)) = min(-1, -1) = -1
-        min_sum = min(-4, -1) = -4
+  Option A: Start fresh = -1
+  Option B: Extend = 0 + (-1) = -1
+  current_min = min(-1, -1) = -1    <-- Same either way
+  global_min = min(-4, -1) = -4
+
 Step 5: arr[5] = 2
-        current_sum = min(2, -1 + 2) = min(2, 1) = 1
-        min_sum = min(-4, 1) = -4
+  Option A: Start fresh = 2
+  Option B: Extend = -1 + 2 = 1
+  current_min = min(2, 1) = 1
+  global_min = min(-4, 1) = -4
 
-Final result: -4
+Final answer: -4
 ```
 
-**Implementation**:
+### Visual Diagram
+
+```
+Array: [-2,  1, -3,  4, -1,  2]
+Index:   0   1   2   3   4   5
+
+current_min at each step:
+        -2  -1  -4   0  -1   1
+             ↓   ↓
+            These form the minimum subarray
+
+Minimum subarray: [-2, 1, -3] = -4
+                   └────────┘
+```
+
+### Code
+
 ```python
-def optimal_minimum_subarray_sum(arr):
+def min_subarray_sum(arr):
     """
-    Find minimum subarray sum using modified Kadane's algorithm
-    
-    Args:
-        arr: List of integers
-    
-    Returns:
-        int: Minimum sum of any contiguous subarray
+    Modified Kadane's algorithm for minimum subarray sum.
+
+    Time: O(n) - single pass
+    Space: O(1) - only two variables
     """
     if not arr:
         return 0
-    
-    current_sum = min_sum = arr[0]
-    
+
+    current_min = global_min = arr[0]
+
     for i in range(1, len(arr)):
-        # Either extend current subarray or start new one
-        current_sum = min(arr[i], current_sum + arr[i])
+        # Decide: extend current subarray or start new
+        current_min = min(arr[i], current_min + arr[i])
         # Update global minimum
-        min_sum = min(min_sum, current_sum)
-    
-    return min_sum
+        global_min = min(global_min, current_min)
 
-# Example usage
-arr = [-2, 1, -3, 4, -1, 2]
-result = optimal_minimum_subarray_sum(arr)
-print(f"Optimal result: {result}")  # Output: -4
+    return global_min
+
+
+# CSES-style I/O
+def solve():
+    n = int(input())
+    arr = list(map(int, input().split()))
+    print(min_subarray_sum(arr))
+
+if __name__ == "__main__":
+    solve()
 ```
 
-**Time Complexity**: O(n) - Single pass through the array
-**Space Complexity**: O(1) - Only using constant extra space
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
-**Why it's optimal**: Best possible time complexity with minimal space usage.
+long long minSubarraySum(vector<int>& arr) {
+    if (arr.empty()) return 0;
 
-## 🔧 Implementation Details
+    long long currentMin = arr[0];
+    long long globalMin = arr[0];
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n³) | O(1) | Check all possible subarrays |
-| Optimized | O(n²) | O(n) | Use prefix sums for faster calculation |
-| Optimal | O(n) | O(1) | Use dynamic programming with modified Kadane's algorithm |
+    for (int i = 1; i < (int)arr.size(); i++) {
+        // Decide: extend current subarray or start new
+        currentMin = min((long long)arr[i], currentMin + arr[i]);
+        // Update global minimum
+        globalMin = min(globalMin, currentMin);
+    }
 
-### Time Complexity
-- **Time**: O(n) - Single pass through the array
-- **Space**: O(1) - Only using constant extra space
+    return globalMin;
+}
 
-### Why This Solution Works
-- **Optimal Substructure**: Minimum subarray ending at position i can be computed from minimum subarray ending at position i-1
-- **Greedy Choice**: Start new subarray when current sum becomes positive
-- **Dynamic Programming**: Use previous results to compute current result efficiently
-- **Optimal Approach**: O(n) time complexity is optimal for this problem
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-## 🚀 Problem Variations
+    int n;
+    cin >> n;
 
-### Extended Problems with Detailed Code Examples
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
 
-#### **1. Minimum Subarray Sum with Constraints**
-**Problem**: Find the minimum sum of a contiguous subarray with length constraints (minimum length k).
+    cout << minSubarraySum(arr) << "\n";
+    return 0;
+}
+```
 
-**Key Differences**: Must find subarray of at least length k
+### Complexity
 
-**Solution Approach**: Use sliding window with prefix sums
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n) | Single pass through array |
+| Space | O(1) | Only two variables regardless of input size |
 
-**Implementation**:
+---
+
+## Common Mistakes
+
+### Mistake 1: Confusing with Maximum Subarray Logic
+
 ```python
-def minimum_subarray_sum_with_constraints(arr, k):
-    """
-    Find minimum sum of subarray with at least length k
-    """
-    n = len(arr)
-    if n < k:
-        return sum(arr)
-    
-    # Calculate prefix sums
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + arr[i]
-    
-    min_sum = float('inf')
-    
-    # For each possible starting position
-    for i in range(n - k + 1):
-        # For each possible ending position (at least k elements)
-        for j in range(i + k - 1, n):
-            current_sum = prefix[j + 1] - prefix[i]
-            min_sum = min(min_sum, current_sum)
-    
-    return min_sum
-
-# Example usage
-arr = [1, -2, 3, -4, 5]
-k = 2
-result = minimum_subarray_sum_with_constraints(arr, k)
-print(f"Minimum subarray sum with length >= {k}: {result}")  # Output: -1
+# WRONG - This finds MAXIMUM, not minimum
+current = max(arr[i], current + arr[i])
 ```
 
-#### **2. Minimum Subarray Sum with Range Updates**
-**Problem**: Find minimum sum of subarray with range update operations.
+**Problem:** Using `max` instead of `min` finds the maximum subarray sum.
+**Fix:** Use `min` for minimum subarray sum.
 
-**Key Differences**: Array can be updated between queries
+### Mistake 2: Not Handling Single Element Arrays
 
-**Solution Approach**: Use segment tree with lazy propagation
-
-**Implementation**:
 ```python
-def minimum_subarray_sum_with_updates(arr, updates):
-    """
-    Find minimum subarray sum with range updates
-    """
-    class SegmentTree:
-        def __init__(self, arr):
-            self.n = len(arr)
-            self.tree = [0] * (4 * self.n)
-            self.lazy = [0] * (4 * self.n)
-            self.build(arr, 0, 0, self.n - 1)
-        
-        def build(self, arr, node, start, end):
-            if start == end:
-                self.tree[node] = arr[start]
-            else:
-                mid = (start + end) // 2
-                self.build(arr, 2 * node + 1, start, mid)
-                self.build(arr, 2 * node + 2, mid + 1, end)
-                self.tree[node] = min(self.tree[2 * node + 1], self.tree[2 * node + 2])
-        
-        def update_range(self, node, start, end, l, r, val):
-            if self.lazy[node] != 0:
-                self.tree[node] += self.lazy[node]
-                if start != end:
-                    self.lazy[2 * node + 1] += self.lazy[node]
-                    self.lazy[2 * node + 2] += self.lazy[node]
-                self.lazy[node] = 0
-            
-            if start > end or start > r or end < l:
-                return
-            
-            if start >= l and end <= r:
-                self.tree[node] += val
-                if start != end:
-                    self.lazy[2 * node + 1] += val
-                    self.lazy[2 * node + 2] += val
-            else:
-                mid = (start + end) // 2
-                self.update_range(2 * node + 1, start, mid, l, r, val)
-                self.update_range(2 * node + 2, mid + 1, end, l, r, val)
-                self.tree[node] = min(self.tree[2 * node + 1], self.tree[2 * node + 2])
-        
-        def query_range(self, node, start, end, l, r):
-            if start > end or start > r or end < l:
-                return float('inf')
-            
-            if self.lazy[node] != 0:
-                self.tree[node] += self.lazy[node]
-                if start != end:
-                    self.lazy[2 * node + 1] += self.lazy[node]
-                    self.lazy[2 * node + 2] += self.lazy[node]
-                self.lazy[node] = 0
-            
-            if start >= l and end <= r:
-                return self.tree[node]
-            
-            mid = (start + end) // 2
-            return min(
-                self.query_range(2 * node + 1, start, mid, l, r),
-                self.query_range(2 * node + 2, mid + 1, end, l, r)
-            )
-    
-    st = SegmentTree(arr)
-    results = []
-    
-    for update in updates:
-        if update[0] == 'update':
-            l, r, val = update[1], update[2], update[3]
-            st.update_range(0, 0, st.n - 1, l, r, val)
-        else:  # query
-            results.append(st.query_range(0, 0, st.n - 1, 0, st.n - 1))
-    
-    return results
-
-# Example usage
-arr = [1, -2, 3, -4, 5]
-updates = [('query',), ('update', 0, 2, 2), ('query',)]
-result = minimum_subarray_sum_with_updates(arr, updates)
-print(f"Minimum subarray sum with updates: {result}")
+# WRONG - Crashes on empty array
+def min_subarray(arr):
+    current_min = global_min = arr[0]  # IndexError if empty!
 ```
 
-#### **3. Minimum Subarray Sum with Non-Negative Elements**
-**Problem**: Find minimum sum of subarray when all elements are non-negative.
+**Problem:** No check for empty input.
+**Fix:** Add `if not arr: return 0` at the start.
 
-**Key Differences**: All elements are non-negative, so minimum sum is always 0
+### Mistake 3: Integer Overflow in C++
 
-**Solution Approach**: Handle edge case and find actual minimum
+```cpp
+// WRONG - Can overflow with large values
+int currentMin = arr[0];
+currentMin = min(arr[i], currentMin + arr[i]);
+```
 
-**Implementation**:
+**Problem:** With n=10^5 elements of magnitude 10^4, sum can reach 10^9.
+**Fix:** Use `long long` for sum variables.
+
+### Mistake 4: Wrong Initialization
+
 ```python
-def minimum_subarray_sum_non_negative(arr):
-    """
-    Find minimum sum of subarray with non-negative elements
-    """
-    if not arr:
-        return 0
-    
-    # If all elements are non-negative, minimum sum is 0 (empty subarray)
-    if all(x >= 0 for x in arr):
-        return 0
-    
-    # Otherwise, use modified Kadane's algorithm
-    current_sum = min_sum = arr[0]
-    
-    for i in range(1, len(arr)):
-        # Either extend current subarray or start new one
-        current_sum = min(arr[i], current_sum + arr[i])
-        # Update global minimum
-        min_sum = min(min_sum, current_sum)
-    
-    return min_sum
-
-# Example usage
-arr = [1, 2, 3, 4, 5]  # All positive
-result = minimum_subarray_sum_non_negative(arr)
-print(f"Minimum subarray sum (non-negative): {result}")  # Output: 0
-
-arr = [1, -2, 3, -4, 5]  # Mixed
-result = minimum_subarray_sum_non_negative(arr)
-print(f"Minimum subarray sum (mixed): {result}")  # Output: -6
+# WRONG - Initializing to 0
+current_min = 0
+global_min = 0
 ```
 
-### Related Problems
+**Problem:** If all elements are positive, minimum is the smallest element, not 0.
+**Fix:** Initialize with `arr[0]`.
 
-#### **CSES Problems**
-- [Minimum Subarray Sum](https://cses.fi/problemset/task/2101) - Find minimum sum of contiguous subarray
-- [Maximum Subarray Sum](https://cses.fi/problemset/task/2102) - Find maximum sum of contiguous subarray
-- [Subarray Sums I](https://cses.fi/problemset/task/2103) - Count subarrays with given sum
+---
 
-#### **LeetCode Problems**
-- [Maximum Subarray](https://leetcode.com/problems/maximum-subarray/) - Classic Kadane's algorithm
-- [Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/) - Maximum subarray product
-- [Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) - Minimum length subarray with sum >= target
-- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) - Count subarrays with sum k
+## Edge Cases
 
-#### **Problem Categories**
-- **Dynamic Programming**: Subarray optimization, Kadane's algorithm, optimal substructure
-- **Sliding Window**: Subarray problems, two pointers, window optimization
-- **Array Processing**: Subarray analysis, prefix sums, range queries
-- **Segment Tree**: Range updates, range queries, lazy propagation
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Single element | `[5]` | 5 | Only one choice |
+| All negative | `[-1, -2, -3]` | -6 | Entire array |
+| All positive | `[1, 2, 3]` | 1 | Smallest single element |
+| Mixed | `[-2, 1, -3]` | -4 | Optimal subarray spans multiple |
+| Single negative | `[-5]` | -5 | Only one choice |
+| Zero present | `[0, -1, 0]` | -1 | Zero doesn't help minimize |
+| Large values | `[-10^4] * 10^5` | -10^9 | Check for overflow |
 
-## 🚀 Key Takeaways
+---
 
-- **Modified Kadane's Algorithm**: The standard approach for minimum subarray sum problems
-- **Dynamic Programming**: Use optimal substructure to avoid redundant calculations
-- **Space Optimization**: Can achieve O(1) space complexity with careful implementation
-- **Edge Cases**: Handle arrays with all positive numbers and single element arrays
-- **Pattern Recognition**: This algorithm pattern applies to many subarray optimization problems
+## When to Use This Pattern
+
+### Use Modified Kadane's When:
+- Finding minimum/maximum contiguous subarray sum
+- Need O(n) time and O(1) space
+- Subarray must be contiguous (no skipping elements)
+- Looking for optimal substructure with local decisions
+
+### Don't Use When:
+- Non-contiguous subsequence allowed (use different DP)
+- Need to find the actual subarray indices (need extra tracking)
+- Multiple constraints (length, specific values)
+- Need all subarrays with minimum sum
+
+### Pattern Recognition Checklist:
+- [ ] Looking for min/max of **contiguous** subarray? -> **Kadane's**
+- [ ] Can extend or restart at each position? -> **Kadane's**
+- [ ] Need O(n) single-pass solution? -> **Kadane's**
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Maximum Subarray Sum (CSES)](https://cses.fi/problemset/task/1643) | Classic Kadane's - learn the pattern |
+| [Maximum Subarray (LeetCode 53)](https://leetcode.com/problems/maximum-subarray/) | Same problem, max instead of min |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/) | Track both min and max products |
+| [Maximum Sum Circular Subarray](https://leetcode.com/problems/maximum-sum-circular-subarray/) | Array wraps around |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Subarray Sums I (CSES)](https://cses.fi/problemset/task/1660) | Count subarrays with target sum |
+| [Subarray Sums II (CSES)](https://cses.fi/problemset/task/1661) | Handle negative numbers |
+| [Subarray Divisibility (CSES)](https://cses.fi/problemset/task/1662) | Modular arithmetic with prefix sums |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** At each position, choose whether to extend the current subarray or start fresh - pick whichever gives the smaller (for min) or larger (for max) sum.
+
+2. **Time Optimization:** From O(n^2) brute force to O(n) by avoiding redundant recalculations.
+
+3. **Space Trade-off:** No extra space needed - O(1) with just two variables.
+
+4. **Pattern:** This is a **greedy/DP hybrid** - optimal substructure with local greedy choices.
+
+5. **Duality:** Maximum and minimum subarray problems are mirrors - just swap `max` and `min`.
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Solve this problem without looking at the solution
+- [ ] Explain why we use `min(arr[i], current_min + arr[i])`
+- [ ] Convert between maximum and minimum versions
+- [ ] Handle all edge cases (empty, single element, all same sign)
+- [ ] Implement in both Python and C++ in under 5 minutes
+
+---
+
+## Complexity Comparison
+
+| Approach | Time | Space | When to Use |
+|----------|------|-------|-------------|
+| Brute Force | O(n^2) | O(1) | Understanding only |
+| Prefix Sum | O(n^2) | O(n) | Need all subarray sums |
+| **Kadane's** | **O(n)** | **O(1)** | **Optimal for min/max subarray** |

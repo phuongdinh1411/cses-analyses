@@ -1,805 +1,388 @@
 ---
-layout: simple
-title: "Knights Tour - Graph Algorithm Problem"
-permalink: /problem_soulutions/graph_algorithms/knights_tour_analysis
+layout: problem-analysis
+title: "Knight's Tour"
+difficulty: Hard
+tags: [graph, backtracking, warnsdorff, heuristic]
+cses_link: https://cses.fi/problemset/task/1689
 ---
 
-# Knights Tour - Graph Algorithm Problem
+# Knight's Tour
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of Hamiltonian paths in grid graphs
-- Apply efficient algorithms for finding Hamiltonian paths on chessboard
-- Implement backtracking with pruning for Knights Tour problems
-- Optimize graph algorithms for grid-based path problems
-- Handle special cases in Knights Tour problems
+| Aspect | Details |
+|--------|---------|
+| Problem | Find a path for a knight to visit all squares exactly once |
+| Input | 8x8 chessboard, starting position (row, column) |
+| Output | Sequence of 64 positions covering the entire board |
+| Type | Hamiltonian Path on a graph |
+| Core Technique | Backtracking with Warnsdorff's Heuristic |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given an n×n chessboard, find a sequence of moves for a knight such that it visits every square exactly once.
+After completing this problem, you will understand:
+1. **Backtracking with heuristics** - How intelligent move ordering dramatically reduces search space
+2. **Warnsdorff's rule** - A greedy heuristic that guides move selection
+3. **Pruning strategies** - Early termination of unpromising branches
 
-**Input**: 
-- n: size of chessboard (n×n)
-- start_row: starting row position
-- start_col: starting column position
+## Problem Statement
 
-**Output**: 
-- Sequence of moves that visits every square exactly once, or "NO" if impossible
+Given an 8x8 chessboard and a starting position, find a sequence of knight moves that visits every square exactly once. A knight moves in an "L" shape: two squares in one direction and one square perpendicular (or vice versa).
 
-**Constraints**:
-- 1 ≤ n ≤ 8
+**Input**: Starting row `y` and column `x` (1-indexed)
+**Output**: 64 positions representing a complete tour, or indicate impossibility
 
-**Example**:
+## The 8 Knight Moves
+
+A knight at position (r, c) can move to exactly 8 possible squares:
+
 ```
-Input:
-n = 5, start_row = 0, start_col = 0
+    The 8 possible knight moves from position (r, c):
 
-Output:
-YES
-0 0
-2 1
-4 0
-3 2
-1 3
-0 1
-2 0
-4 1
-3 3
-1 4
-3 0
-1 1
-0 3
-2 4
-4 3
-2 2
-0 4
-1 2
-3 1
-4 4
-2 3
-0 2
-1 0
-3 4
-1 1
+         (-2,-1)     (-2,+1)
+              \       /
+               +-----+
+    (-1,-2) -- |  K  | -- (-1,+2)
+               +-----+
+    (+1,-2) -- |     | -- (+1,+2)
+               +-----+
+              /       \
+         (+2,-1)     (+2,+1)
 
-Explanation**: 
-Knight's tour visiting all 25 squares exactly once
-Starting from (0,0), following valid knight moves
+    Move offsets: (dr, dc)
+    1. (-2, -1)    5. (+1, -2)
+    2. (-2, +1)    6. (+1, +2)
+    3. (-1, -2)    7. (+2, -1)
+    4. (-1, +2)    8. (+2, +1)
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+## Approach 1: Brute Force Backtracking
 
-### Approach 1: Brute Force Solution
+### Algorithm
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible sequences of knight moves
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Check each sequence for valid tour
-- **Inefficient**: O(8^(n²)) time complexity
+Try all 8 knight moves at each step. When stuck (no valid moves but board not complete), backtrack and try the next option.
 
-**Key Insight**: Try all possible sequences of knight moves and check which ones form valid tours.
-
-**Algorithm**:
-- Generate all possible sequences of knight moves
-- For each sequence, check if it visits every square exactly once
-- Return the first valid tour or "NO" if none exists
-
-**Visual Example**:
 ```
-5×5 Chessboard starting from (0,0):
+Brute Force Backtracking:
 
-Try all possible move sequences:
-┌─────────────────────────────────────┐
-│ Sequence 1: [(0,0), (2,1), (4,0), ...] │
-│ - Check: visits (0,0), (2,1), (4,0) ✓ │
-│ - Continue checking...              │
-│ - Valid tour ✓                      │
-│                                   │
-│ Sequence 2: [(0,0), (1,2), (3,1), ...] │
-│ - Check: visits (0,0), (1,2), (3,1) ✓ │
-│ - Continue checking...              │
-│ - Invalid (revisits square) ✗       │
-│                                   │
-│ Sequence 3: [(0,0), (2,1), (1,3), ...] │
-│ - Check: visits (0,0), (2,1), (1,3) ✓ │
-│ - Continue checking...              │
-│ - Invalid (revisits square) ✗       │
-│                                   │
-│ Continue for all 8^(25) sequences... │
-│                                   │
-│ First valid tour found:            │
-│ [(0,0), (2,1), (4,0), (3,2), ...]  │
-└─────────────────────────────────────┘
+Step 1: Start at given position, mark visited
+Step 2: Try each of 8 moves in fixed order
+Step 3: If move valid (on board, unvisited):
+        - Mark new square visited
+        - Recurse from new position
+        - If recursion succeeds, done!
+        - Otherwise, unmark and try next move
+Step 4: If all moves fail, backtrack
 ```
 
-**Implementation**:
+### Why Brute Force is Too Slow
+
+- At each of 64 squares, up to 8 choices
+- Worst case: O(8^64) states to explore
+- Even with pruning for invalid moves, exponential blowup
+- An 8x8 board has 26,534,728,821,064 possible tours!
+
+## Approach 2: Warnsdorff's Heuristic (Key Optimization)
+
+### The Core Idea
+
+**Warnsdorff's Rule**: Always move to the square with the FEWEST onward moves available.
+
+### Why Warnsdorff Works
+
+```
+Without heuristic:            With Warnsdorff:
+
+  +--+--+--+--+--+            +--+--+--+--+--+
+  |  |  |  |  |  |            |  |  |  |  |  |
+  +--+--+--+--+--+            +--+--+--+--+--+
+  |  |  |XX|  |  |  Knight    |  |  |  |  |  |
+  +--+--+--+--+--+  goes to   +--+--+--+--+--+
+  |  |  |  |  |  |  center    |  |XX|  |  |  |  Knight goes
+  +--+--+--+--+--+  first     +--+--+--+--+--+  to corner
+  |  |  |  |  |  |  (more     |  |  |  |  |  |  first (fewer
+  +--+--+--+--+--+  options)  +--+--+--+--+--+  options)
+
+  Problem: Corners get        Benefit: Visit
+  "painted into" -            constrained squares
+  hard to reach later!        early, keep options open
+```
+
+**Intuition**: Squares with few exits (corners, edges) become impossible to reach if left for later. By visiting them early, we avoid "painting ourselves into a corner."
+
+### Degree Calculation
+
+For each candidate move, count how many unvisited squares it can reach:
+
+```
+Example: Knight at position K, considering moves A, B, C
+
+  +--+--+--+--+--+--+--+--+
+  |  |  | A|  |  |  |  |  |   A can reach: 2 squares (degree=2)
+  +--+--+--+--+--+--+--+--+
+  |  |  |  |  | B|  |  |  |   B can reach: 5 squares (degree=5)
+  +--+--+--+--+--+--+--+--+
+  |  |  |  | K|  |  |  |  |   C can reach: 4 squares (degree=4)
+  +--+--+--+--+--+--+--+--+
+  |  | C|  |  |  |  |  |  |
+  +--+--+--+--+--+--+--+--+
+
+  Warnsdorff chooses: A (lowest degree = 2)
+```
+
+## Implementation
+
+### Python Solution
+
 ```python
-def brute_force_knights_tour(n, start_row, start_col):
-    """Find knight's tour using brute force approach"""
-    from itertools import product
-    
-    # Knight moves: (row_delta, col_delta)
-    knight_moves = [
-        (-2, -1), (-2, 1), (-1, -2), (-1, 2),
-        (1, -2), (1, 2), (2, -1), (2, 1)
+def solve_knights_tour(start_row: int, start_col: int) -> list:
+    """
+    Find knight's tour on 8x8 board starting from (start_row, start_col).
+    Uses Warnsdorff's heuristic for efficient solving.
+    Returns list of (row, col) tuples representing the tour.
+    """
+    N = 8
+
+    # The 8 possible knight moves
+    MOVES = [
+        (-2, -1), (-2, +1), (-1, -2), (-1, +2),
+        (+1, -2), (+1, +2), (+2, -1), (+2, +1)
     ]
-    
-    def is_valid_position(row, col):
-        """Check if position is within board bounds"""
-        return 0 <= row < n and 0 <= col < n
-    
-    def is_valid_tour(move_sequence):
-        """Check if move sequence forms valid knight's tour"""
-        visited = [[False] * n for _ in range(n)]
-        current_row, current_col = start_row, start_col
-        visited[current_row][current_col] = True
-        
-        for move_idx in move_sequence:
-            row_delta, col_delta = knight_moves[move_idx]
-            new_row = current_row + row_delta
-            new_col = current_col + col_delta
-            
-            # Check if move is valid
-            if not is_valid_position(new_row, new_col):
-                return False
-            
-            # Check if square is already visited
-            if visited[new_row][new_col]:
-                return False
-            
-            # Make the move
-            visited[new_row][new_col] = True
-            current_row, current_col = new_row, new_col
-        
-        # Check if all squares are visited
-        for i in range(n):
-            for j in range(n):
-                if not visited[i][j]:
-                    return False
-        
-        return True
-    
-    def generate_tour_path(move_sequence):
-        """Generate the actual path from move sequence"""
-        path = [(start_row, start_col)]
-        current_row, current_col = start_row, start_col
-        
-        for move_idx in move_sequence:
-            row_delta, col_delta = knight_moves[move_idx]
-            new_row = current_row + row_delta
-            new_col = current_col + col_delta
-            path.append((new_row, new_col))
-            current_row, current_col = new_row, new_col
-        
-        return path
-    
-    # Try all possible move sequences
-    total_squares = n * n
-    max_moves = total_squares - 1  # -1 because we start at one square
-    
-    # Generate all possible move sequences
-    for move_sequence in product(range(8), repeat=max_moves):
-        if is_valid_tour(move_sequence):
-            path = generate_tour_path(move_sequence)
-            return "YES", path
-    
-    return "NO", None
 
-# Example usage
-n = 5
-start_row = 0
-start_col = 0
-result, path = brute_force_knights_tour(n, start_row, start_col)
-print(f"Brute force result: {result}")
-if path:
-    print("Path:")
-    for row, col in path:
-        print(f"{row} {col}")
-```
+    board = [[-1] * N for _ in range(N)]
 
-**Time Complexity**: O(8^(n²))
-**Space Complexity**: O(n²)
+    def is_valid(r: int, c: int) -> bool:
+        """Check if position is on board and unvisited."""
+        return 0 <= r < N and 0 <= c < N and board[r][c] == -1
 
-**Why it's inefficient**: O(8^(n²)) time complexity for trying all possible move sequences.
-
----
-
-### Approach 2: Backtracking with Pruning
-
-**Key Insights from Backtracking with Pruning**:
-- **Backtracking**: Use backtracking to explore possible moves
-- **Pruning**: Use heuristics to prune invalid branches early
-- **Efficient Implementation**: O(8^(n²)) worst case, but much better in practice
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Use backtracking with pruning to find knight's tour efficiently.
-
-**Algorithm**:
-- Use backtracking to explore possible moves
-- Apply pruning heuristics to avoid exploring invalid branches
-- Use Warnsdorff's rule: prefer moves with fewer available next moves
-- Return first valid tour found
-
-**Visual Example**:
-```
-Backtracking with Pruning:
-
-5×5 Chessboard starting from (0,0):
-┌─────────────────────────────────────┐
-│ Current position: (0,0)            │
-│ Available moves: 8                 │
-│                                   │
-│ Apply Warnsdorff's rule:           │
-│ - Move to (2,1): 3 available moves │
-│ - Move to (1,2): 4 available moves │
-│ - Choose (2,1) (fewer options)     │
-│                                   │
-│ Current position: (2,1)            │
-│ Available moves: 3                 │
-│                                   │
-│ Apply Warnsdorff's rule:           │
-│ - Move to (4,0): 2 available moves │
-│ - Move to (0,0): already visited   │
-│ - Move to (4,2): 3 available moves │
-│ - Choose (4,0) (fewer options)     │
-│                                   │
-│ Continue with pruning...           │
-│                                   │
-│ If dead end reached:               │
-│ - Backtrack to previous position   │
-│ - Try next available move          │
-│                                   │
-│ Result: Valid tour found           │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def backtracking_knights_tour(n, start_row, start_col):
-    """Find knight's tour using backtracking with pruning"""
-    
-    # Knight moves: (row_delta, col_delta)
-    knight_moves = [
-        (-2, -1), (-2, 1), (-1, -2), (-1, 2),
-        (1, -2), (1, 2), (2, -1), (2, 1)
-    ]
-    
-    def is_valid_position(row, col):
-        """Check if position is within board bounds"""
-        return 0 <= row < n and 0 <= col < n
-    
-    def count_available_moves(row, col, visited):
-        """Count available moves from current position"""
+    def count_degree(r: int, c: int) -> int:
+        """Count available moves from position (Warnsdorff's degree)."""
         count = 0
-        for row_delta, col_delta in knight_moves:
-            new_row = row + row_delta
-            new_col = col + col_delta
-            if (is_valid_position(new_row, new_col) and 
-                not visited[new_row][new_col]):
+        for dr, dc in MOVES:
+            if is_valid(r + dr, c + dc):
                 count += 1
         return count
-    
-    def warnsdorff_heuristic(row, col, visited):
-        """Get moves sorted by Warnsdorff's rule"""
-        moves = []
-        for i, (row_delta, col_delta) in enumerate(knight_moves):
-            new_row = row + row_delta
-            new_col = col + col_delta
-            if (is_valid_position(new_row, new_col) and 
-                not visited[new_row][new_col]):
-                available_moves = count_available_moves(new_row, new_col, visited)
-                moves.append((available_moves, i, new_row, new_col))
-        
-        # Sort by number of available moves (Warnsdorff's rule)
-        moves.sort()
-        return moves
-    
-    def backtrack(current_row, current_col, visited, path, move_count):
-        """Backtracking function to find knight's tour"""
+
+    def get_sorted_moves(r: int, c: int) -> list:
+        """Get valid moves sorted by degree (Warnsdorff's heuristic)."""
+        candidates = []
+        for dr, dc in MOVES:
+            nr, nc = r + dr, c + dc
+            if is_valid(nr, nc):
+                degree = count_degree(nr, nc)
+                candidates.append((degree, nr, nc))
+        # Sort by degree (fewest onward moves first)
+        candidates.sort()
+        return [(nr, nc) for _, nr, nc in candidates]
+
+    def backtrack(r: int, c: int, move_num: int) -> bool:
+        """Recursive backtracking with Warnsdorff ordering."""
+        board[r][c] = move_num
+
         # Base case: all squares visited
-        if move_count == n * n:
+        if move_num == N * N - 1:
             return True
-        
-        # Get moves sorted by Warnsdorff's rule
-        moves = warnsdorff_heuristic(current_row, current_col, visited)
-        
-        # Try each move in order of preference
-        for _, move_idx, new_row, new_col in moves:
-            # Make the move
-            visited[new_row][new_col] = True
-            path.append((new_row, new_col))
-            
-            # Recursively explore
-            if backtrack(new_row, new_col, visited, path, move_count + 1):
+
+        # Try moves in Warnsdorff order (lowest degree first)
+        for nr, nc in get_sorted_moves(r, c):
+            if backtrack(nr, nc, move_num + 1):
                 return True
-            
-            # Backtrack
-            visited[new_row][new_col] = False
-            path.pop()
-        
+
+        # Backtrack
+        board[r][c] = -1
         return False
-    
-    # Initialize
-    visited = [[False] * n for _ in range(n)]
-    visited[start_row][start_col] = True
-    path = [(start_row, start_col)]
-    
-    # Start backtracking
-    if backtrack(start_row, start_col, visited, path, 1):
-        return "YES", path
-    else:
-        return "NO", None
+
+    # Solve and extract path
+    if backtrack(start_row, start_col, 0):
+        path = [None] * (N * N)
+        for r in range(N):
+            for c in range(N):
+                path[board[r][c]] = (r, c)
+        return path
+    return None
+
+
+def print_tour(path: list) -> None:
+    """Print the tour as required by CSES."""
+    if path is None:
+        print("NO SOLUTION")
+        return
+    for r, c in path:
+        print(r + 1, c + 1)  # Convert to 1-indexed
+
 
 # Example usage
-n = 5
-start_row = 0
-start_col = 0
-result, path = backtracking_knights_tour(n, start_row, start_col)
-print(f"Backtracking result: {result}")
-if path:
-    print("Path:")
-    for row, col in path:
-        print(f"{row} {col}")
+if __name__ == "__main__":
+    y, x = map(int, input().split())
+    tour = solve_knights_tour(y - 1, x - 1)  # Convert to 0-indexed
+    print_tour(tour)
 ```
 
-**Time Complexity**: O(8^(n²)) worst case, but much better in practice
-**Space Complexity**: O(n²)
+### C++ Solution
 
-**Why it's better**: Uses backtracking with pruning for much better performance in practice.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+const int N = 8;
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+// The 8 possible knight moves
+const int dr[] = {-2, -2, -1, -1, +1, +1, +2, +2};
+const int dc[] = {-1, +1, -2, +2, -2, +2, -1, +1};
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for knight's tour
-- **Efficient Implementation**: O(8^(n²)) worst case, but optimized in practice
-- **Space Efficiency**: O(n²) space complexity
-- **Optimal Complexity**: Best approach for knight's tour problems
+int board[N][N];
+pair<int,int> path[N * N];
 
-**Key Insight**: Use advanced data structures for optimal knight's tour solving.
+bool isValid(int r, int c) {
+    return r >= 0 && r < N && c >= 0 && c < N && board[r][c] == -1;
+}
 
-**Algorithm**:
-- Use specialized data structures for board representation
-- Implement efficient backtracking with advanced pruning
-- Handle special cases optimally
-- Return knight's tour or "NO" if impossible
+int countDegree(int r, int c) {
+    int count = 0;
+    for (int i = 0; i < 8; i++) {
+        if (isValid(r + dr[i], c + dc[i])) {
+            count++;
+        }
+    }
+    return count;
+}
 
-**Visual Example**:
-```
-Advanced data structure approach:
+vector<tuple<int,int,int>> getSortedMoves(int r, int c) {
+    vector<tuple<int,int,int>> moves;
+    for (int i = 0; i < 8; i++) {
+        int nr = r + dr[i];
+        int nc = c + dc[i];
+        if (isValid(nr, nc)) {
+            int degree = countDegree(nr, nc);
+            moves.push_back({degree, nr, nc});
+        }
+    }
+    sort(moves.begin(), moves.end());
+    return moves;
+}
 
-For 5×5 chessboard starting from (0,0):
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Advanced board: for efficient     │
-│   storage and operations            │
-│ - Move cache: for optimization      │
-│ - Pruning cache: for optimization   │
-│                                   │
-│ Knight's tour calculation:          │
-│ - Use advanced board for efficient  │
-│   storage and operations            │
-│ - Use move cache for optimization   │
-│ - Use pruning cache for optimization│
-│                                   │
-│ Result: Valid tour found           │
-└─────────────────────────────────────┘
-```
+bool backtrack(int r, int c, int moveNum) {
+    board[r][c] = moveNum;
+    path[moveNum] = {r, c};
 
-**Implementation**:
-```python
-def advanced_data_structure_knights_tour(n, start_row, start_col):
-    """Find knight's tour using advanced data structure approach"""
-    
-    # Use advanced data structures for board representation
-    # Advanced knight moves with metadata
-    knight_moves = [
-        (-2, -1), (-2, 1), (-1, -2), (-1, 2),
-        (1, -2), (1, 2), (2, -1), (2, 1)
-    ]
-    
-    def advanced_is_valid_position(row, col):
-        """Advanced position validation"""
-        return 0 <= row < n and 0 <= col < n
-    
-    def advanced_count_available_moves(row, col, visited):
-        """Advanced move counting with caching"""
-        count = 0
-        for row_delta, col_delta in knight_moves:
-            new_row = row + row_delta
-            new_col = col + col_delta
-            if (advanced_is_valid_position(new_row, new_col) and 
-                not visited[new_row][new_col]):
-                count += 1
-        return count
-    
-    def advanced_warnsdorff_heuristic(row, col, visited):
-        """Advanced Warnsdorff's rule with optimizations"""
-        moves = []
-        for i, (row_delta, col_delta) in enumerate(knight_moves):
-            new_row = row + row_delta
-            new_col = col + col_delta
-            if (advanced_is_valid_position(new_row, new_col) and 
-                not visited[new_row][new_col]):
-                available_moves = advanced_count_available_moves(new_row, new_col, visited)
-                moves.append((available_moves, i, new_row, new_col))
-        
-        # Advanced sorting with optimizations
-        moves.sort()
-        return moves
-    
-    def advanced_backtrack(current_row, current_col, visited, path, move_count):
-        """Advanced backtracking with optimizations"""
-        # Advanced base case handling
-        if move_count == n * n:
-            return True
-        
-        # Advanced move selection with optimizations
-        moves = advanced_warnsdorff_heuristic(current_row, current_col, visited)
-        
-        # Advanced move exploration
-        for _, move_idx, new_row, new_col in moves:
-            # Advanced move execution
-            visited[new_row][new_col] = True
-            path.append((new_row, new_col))
-            
-            # Advanced recursive exploration
-            if advanced_backtrack(new_row, new_col, visited, path, move_count + 1):
-                return True
-            
-            # Advanced backtracking
-            visited[new_row][new_col] = False
-            path.pop()
-        
-        return False
-    
-    # Advanced initialization
-    visited = [[False] * n for _ in range(n)]
-    visited[start_row][start_col] = True
-    path = [(start_row, start_col)]
-    
-    # Advanced backtracking
-    if advanced_backtrack(start_row, start_col, visited, path, 1):
-        return "YES", path
-    else:
-        return "NO", None
+    // Base case: all squares visited
+    if (moveNum == N * N - 1) {
+        return true;
+    }
 
-# Example usage
-n = 5
-start_row = 0
-start_col = 0
-result, path = advanced_data_structure_knights_tour(n, start_row, start_col)
-print(f"Advanced data structure result: {result}")
-if path:
-    print("Path:")
-    for row, col in path:
-        print(f"{row} {col}")
+    // Try moves in Warnsdorff order
+    for (auto& [degree, nr, nc] : getSortedMoves(r, c)) {
+        if (backtrack(nr, nc, moveNum + 1)) {
+            return true;
+        }
+    }
+
+    // Backtrack
+    board[r][c] = -1;
+    return false;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int y, x;
+    cin >> y >> x;
+
+    // Initialize board
+    memset(board, -1, sizeof(board));
+
+    // Convert to 0-indexed
+    if (backtrack(y - 1, x - 1, 0)) {
+        for (int i = 0; i < N * N; i++) {
+            cout << path[i].first + 1 << " " << path[i].second + 1 << "\n";
+        }
+    }
+
+    return 0;
+}
 ```
 
-**Time Complexity**: O(8^(n²)) worst case, but optimized in practice
-**Space Complexity**: O(n²)
+## Complexity Analysis
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+| Approach | Time Complexity | Space Complexity | Practical Performance |
+|----------|----------------|------------------|----------------------|
+| Brute Force | O(8^64) worst | O(64) | Too slow |
+| Warnsdorff | O(8^64) worst | O(64) | Nearly linear in practice |
 
-## 🔧 Implementation Details
+**Key insight**: While worst-case is still exponential, Warnsdorff's heuristic is so effective that it typically finds a solution on the first try without any backtracking!
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(8^(n²)) | O(n²) | Try all possible move sequences |
-| Backtracking with Pruning | O(8^(n²)) worst case | O(n²) | Use backtracking with Warnsdorff's rule |
-| Advanced Data Structure | O(8^(n²)) worst case | O(n²) | Use advanced data structures |
+## Common Mistakes
 
-### Time Complexity
-- **Time**: O(8^(n²)) worst case - Use backtracking with pruning for efficient knight's tour
-- **Space**: O(n²) - Store board and path information
+1. **Not implementing the heuristic**
+   - Pure backtracking without Warnsdorff is far too slow for 8x8
+   - Will time out on judge
 
-### Why This Solution Works
-- **Backtracking**: Use backtracking to explore possible moves
-- **Warnsdorff's Rule**: Prefer moves with fewer available next moves
-- **Pruning**: Avoid exploring invalid branches early
-- **Optimal Algorithms**: Use optimal algorithms for knight's tour problems
+2. **Wrong move offsets**
+   - Knight moves are (+/-1, +/-2) and (+/-2, +/-1)
+   - Common error: using (+/-1, +/-1) or (+/-2, +/-2)
 
-## 🚀 Problem Variations
+3. **Off-by-one in indexing**
+   - CSES uses 1-indexed input/output
+   - Remember to convert when using 0-indexed arrays
 
-### Extended Problems with Detailed Code Examples
+4. **Forgetting to backtrack**
+   - Must reset board[r][c] = -1 when returning false
+   - Otherwise the visited state corrupts future attempts
 
-#### **1. Knights Tour with Constraints**
-**Problem**: Find knight's tour with specific constraints.
+5. **Not sorting moves properly**
+   - Must sort by degree of destination, not current position
+   - Sorting should be ascending (lowest degree first)
 
-**Key Differences**: Apply constraints to move selection
+## Why Warnsdorff Often Finds Solution Without Backtracking
 
-**Solution Approach**: Modify algorithm to handle constraints
+For an 8x8 board, Warnsdorff's heuristic is remarkably effective:
+- Empirically succeeds without backtracking ~76% of starting positions
+- The remaining cases need minimal backtracking
+- This is because the heuristic naturally avoids dead-ends
 
-**Implementation**:
-```python
-def constrained_knights_tour(n, start_row, start_col, constraints):
-    """Find knight's tour with constraints"""
-    
-    knight_moves = [
-        (-2, -1), (-2, 1), (-1, -2), (-1, 2),
-        (1, -2), (1, 2), (2, -1), (2, 1)
-    ]
-    
-    def constrained_is_valid_position(row, col):
-        """Position validation with constraints"""
-        return (0 <= row < n and 0 <= col < n and 
-                constraints(row, col))
-    
-    def constrained_count_available_moves(row, col, visited):
-        """Count available moves with constraints"""
-        count = 0
-        for row_delta, col_delta in knight_moves:
-            new_row = row + row_delta
-            new_col = col + col_delta
-            if (constrained_is_valid_position(new_row, new_col) and 
-                not visited[new_row][new_col]):
-                count += 1
-        return count
-    
-    def constrained_warnsdorff_heuristic(row, col, visited):
-        """Warnsdorff's rule with constraints"""
-        moves = []
-        for i, (row_delta, col_delta) in enumerate(knight_moves):
-            new_row = row + row_delta
-            new_col = col + col_delta
-            if (constrained_is_valid_position(new_row, new_col) and 
-                not visited[new_row][new_col]):
-                available_moves = constrained_count_available_moves(new_row, new_col, visited)
-                moves.append((available_moves, i, new_row, new_col))
-        
-        moves.sort()
-        return moves
-    
-    def constrained_backtrack(current_row, current_col, visited, path, move_count):
-        """Backtracking with constraints"""
-        if move_count == n * n:
-            return True
-        
-        moves = constrained_warnsdorff_heuristic(current_row, current_col, visited)
-        
-        for _, move_idx, new_row, new_col in moves:
-            visited[new_row][new_col] = True
-            path.append((new_row, new_col))
-            
-            if constrained_backtrack(new_row, new_col, visited, path, move_count + 1):
-                return True
-            
-            visited[new_row][new_col] = False
-            path.pop()
-        
-        return False
-    
-    visited = [[False] * n for _ in range(n)]
-    visited[start_row][start_col] = True
-    path = [(start_row, start_col)]
-    
-    if constrained_backtrack(start_row, start_col, visited, path, 1):
-        return "YES", path
-    else:
-        return "NO", None
+The intuition: By always visiting the most constrained squares first, we ensure that no square becomes unreachable. It is a greedy strategy that happens to work exceptionally well for this specific problem.
 
-# Example usage
-n = 5
-start_row = 0
-start_col = 0
-constraints = lambda row, col: True  # No constraints
-result, path = constrained_knights_tour(n, start_row, start_col, constraints)
-print(f"Constrained result: {result}")
-if path:
-    print("Path:")
-    for row, col in path:
-        print(f"{row} {col}")
+## Visual: Complete Example
+
+```
+Starting at (1,1) - top-left corner:
+
+Move 1: (1,1)     Degree of candidates: (2,3)=4, (3,2)=4
+                  Both equal, pick first
+
+Move 2: (2,3)     Degree of candidates: (1,1)=visited, (3,1)=3, (4,2)=4...
+                  Pick (3,1) with degree 3
+
+Move 3: (3,1)     Continue applying Warnsdorff...
+
+Final board (move numbers):
++----+----+----+----+----+----+----+----+
+|  1 | 38 | 55 | 34 |  3 | 36 | 19 | 22 |
++----+----+----+----+----+----+----+----+
+| 54 | 47 |  2 | 37 | 20 | 23 |  4 | 17 |
++----+----+----+----+----+----+----+----+
+| 39 | 56 | 33 | 46 | 35 | 18 | 21 |  8 |
++----+----+----+----+----+----+----+----+
+| 48 | 53 | 40 | 57 | 24 |  7 | 16 |  5 |
++----+----+----+----+----+----+----+----+
+| 59 | 32 | 45 | 52 | 41 | 26 |  9 | 14 |
++----+----+----+----+----+----+----+----+
+| 44 | 49 | 58 | 25 | 62 | 15 |  6 | 27 |
++----+----+----+----+----+----+----+----+
+| 31 | 60 | 51 | 42 | 29 | 10 | 63 | 12 |
++----+----+----+----+----+----+----+----+
+| 50 | 43 | 30 | 61 | 64 | 13 | 28 | 11 |
++----+----+----+----+----+----+----+----+
 ```
 
-#### **2. Knights Tour with Different Metrics**
-**Problem**: Find knight's tour with different cost metrics.
+## Summary
 
-**Key Differences**: Different cost calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_knights_tour(n, start_row, start_col, weight_function):
-    """Find knight's tour with different cost metrics"""
-    
-    knight_moves = [
-        (-2, -1), (-2, 1), (-1, -2), (-1, 2),
-        (1, -2), (1, 2), (2, -1), (2, 1)
-    ]
-    
-    def weighted_is_valid_position(row, col):
-        """Position validation with weights"""
-        return 0 <= row < n and 0 <= col < n
-    
-    def weighted_count_available_moves(row, col, visited):
-        """Count available moves with weights"""
-        count = 0
-        for row_delta, col_delta in knight_moves:
-            new_row = row + row_delta
-            new_col = col + col_delta
-            if (weighted_is_valid_position(new_row, new_col) and 
-                not visited[new_row][new_col]):
-                count += 1
-        return count
-    
-    def weighted_warnsdorff_heuristic(row, col, visited):
-        """Warnsdorff's rule with weights"""
-        moves = []
-        for i, (row_delta, col_delta) in enumerate(knight_moves):
-            new_row = row + row_delta
-            new_col = col + col_delta
-            if (weighted_is_valid_position(new_row, new_col) and 
-                not visited[new_row][new_col]):
-                available_moves = weighted_count_available_moves(new_row, new_col, visited)
-                weight = weight_function(row, col, new_row, new_col)
-                moves.append((available_moves, weight, i, new_row, new_col))
-        
-        # Sort by available moves, then by weight
-        moves.sort()
-        return moves
-    
-    def weighted_backtrack(current_row, current_col, visited, path, move_count):
-        """Backtracking with weights"""
-        if move_count == n * n:
-            return True
-        
-        moves = weighted_warnsdorff_heuristic(current_row, current_col, visited)
-        
-        for _, _, move_idx, new_row, new_col in moves:
-            visited[new_row][new_col] = True
-            path.append((new_row, new_col))
-            
-            if weighted_backtrack(new_row, new_col, visited, path, move_count + 1):
-                return True
-            
-            visited[new_row][new_col] = False
-            path.pop()
-        
-        return False
-    
-    visited = [[False] * n for _ in range(n)]
-    visited[start_row][start_col] = True
-    path = [(start_row, start_col)]
-    
-    if weighted_backtrack(start_row, start_col, visited, path, 1):
-        return "YES", path
-    else:
-        return "NO", None
-
-# Example usage
-n = 5
-start_row = 0
-start_col = 0
-weight_function = lambda r1, c1, r2, c2: 1  # Unit weight
-result, path = weighted_knights_tour(n, start_row, start_col, weight_function)
-print(f"Weighted result: {result}")
-if path:
-    print("Path:")
-    for row, col in path:
-        print(f"{row} {col}")
-```
-
-#### **3. Knights Tour with Multiple Dimensions**
-**Problem**: Find knight's tour in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_knights_tour(n, start_row, start_col, dimensions):
-    """Find knight's tour in multiple dimensions"""
-    
-    knight_moves = [
-        (-2, -1), (-2, 1), (-1, -2), (-1, 2),
-        (1, -2), (1, 2), (2, -1), (2, 1)
-    ]
-    
-    def multi_dimensional_is_valid_position(row, col):
-        """Position validation for multiple dimensions"""
-        return 0 <= row < n and 0 <= col < n
-    
-    def multi_dimensional_count_available_moves(row, col, visited):
-        """Count available moves for multiple dimensions"""
-        count = 0
-        for row_delta, col_delta in knight_moves:
-            new_row = row + row_delta
-            new_col = col + col_delta
-            if (multi_dimensional_is_valid_position(new_row, new_col) and 
-                not visited[new_row][new_col]):
-                count += 1
-        return count
-    
-    def multi_dimensional_warnsdorff_heuristic(row, col, visited):
-        """Warnsdorff's rule for multiple dimensions"""
-        moves = []
-        for i, (row_delta, col_delta) in enumerate(knight_moves):
-            new_row = row + row_delta
-            new_col = col + col_delta
-            if (multi_dimensional_is_valid_position(new_row, new_col) and 
-                not visited[new_row][new_col]):
-                available_moves = multi_dimensional_count_available_moves(new_row, new_col, visited)
-                moves.append((available_moves, i, new_row, new_col))
-        
-        moves.sort()
-        return moves
-    
-    def multi_dimensional_backtrack(current_row, current_col, visited, path, move_count):
-        """Backtracking for multiple dimensions"""
-        if move_count == n * n:
-            return True
-        
-        moves = multi_dimensional_warnsdorff_heuristic(current_row, current_col, visited)
-        
-        for _, move_idx, new_row, new_col in moves:
-            visited[new_row][new_col] = True
-            path.append((new_row, new_col))
-            
-            if multi_dimensional_backtrack(new_row, new_col, visited, path, move_count + 1):
-                return True
-            
-            visited[new_row][new_col] = False
-            path.pop()
-        
-        return False
-    
-    visited = [[False] * n for _ in range(n)]
-    visited[start_row][start_col] = True
-    path = [(start_row, start_col)]
-    
-    if multi_dimensional_backtrack(start_row, start_col, visited, path, 1):
-        return "YES", path
-    else:
-        return "NO", None
-
-# Example usage
-n = 5
-start_row = 0
-start_col = 0
-dimensions = 1
-result, path = multi_dimensional_knights_tour(n, start_row, start_col, dimensions)
-print(f"Multi-dimensional result: {result}")
-if path:
-    print("Path:")
-    for row, col in path:
-        print(f"{row} {col}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Hamiltonian Flights](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Round Trip](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Unique Paths](https://leetcode.com/problems/unique-paths/) - Dynamic Programming
-- [Unique Paths II](https://leetcode.com/problems/unique-paths-ii/) - Dynamic Programming
-- [Path Sum](https://leetcode.com/problems/path-sum/) - Tree
-
-#### **Problem Categories**
-- **Graph Algorithms**: Hamiltonian paths, knight's tour
-- **Backtracking**: Pruning, Warnsdorff's rule
-- **Grid Problems**: Chessboard, path finding
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Hamiltonian Path](https://cp-algorithms.com/graph/hamiltonian_path.html) - Hamiltonian path algorithms
-- [Backtracking](https://cp-algorithms.com/backtracking.html) - Backtracking algorithms
-
-### **Practice Problems**
-- [CSES Hamiltonian Flights](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Round Trip](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Knight's Tour](https://en.wikipedia.org/wiki/Knight%27s_tour) - Wikipedia article
-- [Warnsdorff's Algorithm](https://en.wikipedia.org/wiki/Knight%27s_tour#Warnsdorff%27s_algorithm) - Wikipedia article
+| Concept | Key Point |
+|---------|-----------|
+| Problem Type | Hamiltonian path on implicit graph |
+| Core Algorithm | Backtracking |
+| Key Optimization | Warnsdorff's heuristic |
+| Heuristic Rule | Move to square with fewest onward moves |
+| Why It Works | Avoids stranding constrained squares |
+| Practical Note | Often finds solution without backtracking |

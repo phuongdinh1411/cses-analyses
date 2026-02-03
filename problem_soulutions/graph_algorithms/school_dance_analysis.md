@@ -1,795 +1,438 @@
 ---
-layout: simple
-title: "School Dance - Graph Algorithm Problem"
-permalink: /problem_soulutions/graph_algorithms/school_dance_analysis
+layout: analysis
+title: "School Dance"
+difficulty: Hard
+tags: [graph, bipartite-matching, max-flow, hopcroft-karp]
+cses_link: https://cses.fi/problemset/task/1696
 ---
 
-# School Dance - Graph Algorithm Problem
+# School Dance - Maximum Bipartite Matching
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of bipartite matching in graph algorithms
-- Apply efficient algorithms for finding maximum bipartite matching
-- Implement Hungarian algorithm or maximum flow for matching
-- Optimize graph matching for assignment problems
-- Handle special cases in bipartite matching problems
+| Aspect | Details |
+|--------|---------|
+| Problem Type | Maximum Bipartite Matching |
+| Technique | Reduction to Max Flow / Hopcroft-Karp |
+| Time Complexity | O(V * E) with Ford-Fulkerson, O(E * sqrt(V)) with Hopcroft-Karp |
+| Space Complexity | O(V + E) |
+| Key Insight | Bipartite matching reduces to maximum flow in a network |
 
-## 📋 Problem Description
+## Learning Goals
 
-Given a bipartite graph with boys and girls, find the maximum number of dance pairs that can be formed.
+After solving this problem, you will understand:
 
-**Input**: 
-- n: number of boys
-- m: number of girls
-- k: number of possible pairs
-- pairs: array of (boy, girl) representing possible dance pairs
+1. **Bipartite Matching**: How to model pairing problems as bipartite graphs
+2. **Reduction to Max Flow**: Converting matching to a flow network with source/sink
+3. **Flow Network Construction**: Adding auxiliary nodes and unit capacities
+4. **Extracting the Matching**: Recovering actual pairs from flow solution
 
-**Output**: 
-- Maximum number of dance pairs that can be formed
+## Problem Statement
+
+There are **n** boys and **m** girls at a school dance. You are given **k** pairs indicating which boy and girl are willing to dance together.
+
+**Goal**: Find the maximum number of dancing pairs, where each person can dance with at most one partner.
+
+**Input**:
+- First line: n, m, k (number of boys, girls, and potential pairs)
+- Next k lines: Each contains two integers a and b, meaning boy a and girl b are willing to dance
+
+**Output**:
+- First line: The maximum number of dance pairs
+- Next lines: Each matched pair (boy girl)
 
 **Constraints**:
-- 1 ≤ n, m ≤ 500
-- 1 ≤ k ≤ 10^4
+- 1 <= n, m <= 500
+- 1 <= k <= 1000
 
 **Example**:
 ```
 Input:
-n = 3, m = 3, k = 4
-pairs = [(0,0), (0,1), (1,1), (2,2)]
+4 3 6
+1 1
+1 2
+2 1
+2 2
+3 1
+4 3
 
 Output:
 3
-
-Explanation**: 
-Maximum matching: (0,0), (1,1), (2,2)
-All boys and girls are paired
+1 2
+2 1
+4 3
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+## Key Insight
 
-### Approach 1: Brute Force Solution
+Maximum bipartite matching is equivalent to maximum flow in a specially constructed network:
 
-**Key Insights from Brute Force Solution**:
-- **Complete Enumeration**: Try all possible combinations of pairs
-- **Simple Implementation**: Easy to understand and implement
-- **Direct Calculation**: Use basic graph matching
-- **Inefficient**: O(2^k) time complexity
-
-**Key Insight**: Check all possible combinations of pairs to find maximum matching.
-
-**Algorithm**:
-- Generate all possible subsets of pairs
-- Check if subset forms a valid matching
-- Calculate size for valid matchings
-- Return maximum size
-
-**Visual Example**:
 ```
-Bipartite graph: Boys {0,1,2} - Girls {0,1,2}
-Pairs: (0,0), (0,1), (1,1), (2,2)
+                    Max Matching = Max Flow
 
-All possible pair combinations:
-┌─────────────────────────────────────┐
-│ Subset 1: {} - Size: 0             │
-│ Subset 2: {(0,0)} - Size: 1        │
-│ Subset 3: {(0,1)} - Size: 1        │
-│ Subset 4: {(1,1)} - Size: 1        │
-│ Subset 5: {(2,2)} - Size: 1        │
-│ Subset 6: {(0,0), (1,1)} - Size: 2 │
-│ Subset 7: {(0,0), (2,2)} - Size: 2 │
-│ Subset 8: {(1,1), (2,2)} - Size: 2 │
-│ Subset 9: {(0,0), (1,1), (2,2)} - Size: 3 │
-│                                   │
-│ Maximum: 3                        │
-└─────────────────────────────────────┘
+    Bipartite Graph    -->    Flow Network
+
+    Boys --- Girls     -->    S -> Boys -> Girls -> T
 ```
 
-**Implementation**:
+The critical observation is that **each person can appear in at most one pair**, which maps perfectly to **unit capacity edges** in a flow network.
+
+## Reduction to Max Flow
+
+### Network Construction
+
+To convert bipartite matching to max flow:
+
+1. **Add Source S**: Connect S to all boys with capacity 1
+2. **Add Sink T**: Connect all girls to T with capacity 1
+3. **Add Pair Edges**: For each compatible (boy, girl) pair, add edge with capacity 1
+
+```
+Flow Network Structure:
+
+         capacity = 1 each
+              |
+    Source ---+---> Boy 1 ----> Girl 1 ---+---> Sink
+              |         \      /          |
+              +---> Boy 2 --X--> Girl 2 --+
+              |         /      \          |
+              +---> Boy 3 ----> Girl 3 ---+
+              |                           |
+              +---> Boy 4 --------> ... --+
+```
+
+### Why This Works
+
+| Property | Matching Constraint | Flow Constraint |
+|----------|---------------------|-----------------|
+| Boy uses at most 1 | Each boy matched once | Edge S->Boy has capacity 1 |
+| Girl uses at most 1 | Each girl matched once | Edge Girl->T has capacity 1 |
+| Valid pair | (boy, girl) compatible | Edge exists Boy->Girl |
+
+**Max Flow = Max Matching** because:
+- Flow of 1 through Boy->Girl means they are matched
+- Unit capacities ensure each person appears in at most one pair
+
+## Visual Diagram
+
+### Original Bipartite Graph
+
+```
+    Boys           Girls
+
+    B1 ------------ G1
+      \ \        /
+       \  \    /
+    B2 ---+--X--- G2
+          |    \
+    B3 ---+
+                   G3
+    B4 ------------
+```
+
+### Converted Flow Network
+
+```
+          +----[1]----> B1 --[1]--> G1 --[1]----+
+          |              \ \      /              |
+          |               \ [1] /                |
+    [S] --+----[1]----> B2 -X---> G2 --[1]----+--> [T]
+          |                  \                  |
+          +----[1]----> B3 ---+                 |
+          |                                     |
+          +----[1]----> B4 --------> G3 --[1]--+
+
+    [1] = capacity 1
+```
+
+## Dry Run
+
+**Input**: n=4, m=3, pairs = [(1,1), (1,2), (2,1), (2,2), (3,1), (4,3)]
+
+**Step 1**: Build flow network
+```
+Nodes: S=0, Boys=1-4, Girls=5-7, T=8
+Edges: S->1,2,3,4 (cap 1), 1->5,6, 2->5,6, 3->5, 4->7, 5,6,7->T (cap 1)
+```
+
+**Step 2**: Find augmenting paths
+```
+Path 1: S -> 1 -> 5 -> T  (flow +1)
+Path 2: S -> 2 -> 6 -> T  (flow +1)
+Path 3: S -> 4 -> 7 -> T  (flow +1)
+Path 4: S -> 3 -> 5 -> ... blocked (G1 already saturated)
+```
+
+**Step 3**: Check for augmenting paths via residual graph
+```
+Try: S -> 3 -> 5 -> 1 (reverse) -> 6 -> ... blocked (G2 saturated by B2)
+No more augmenting paths found.
+```
+
+**Result**: Max flow = 3
+
+**Extract matching from flow**:
+- Boy 1 -> Girl 1 (or Boy 1 -> Girl 2 depending on path order)
+- Boy 2 -> Girl 2 (or Girl 1)
+- Boy 4 -> Girl 3
+
+## Alternative Algorithms
+
+### Hopcroft-Karp Algorithm
+
+Specifically designed for bipartite matching with better complexity:
+
+- **Time**: O(E * sqrt(V)) - faster for sparse graphs
+- **Idea**: Find multiple augmenting paths of the same length simultaneously using BFS + DFS
+- **Advantage**: Fewer iterations than basic Ford-Fulkerson
+
+### Hungarian Algorithm
+
+For **weighted** bipartite matching (assignment problem):
+
+- **Time**: O(V^3)
+- **Use Case**: When pairs have different costs/preferences
+
+For this unweighted problem, max flow or Hopcroft-Karp is preferred.
+
+## Python Solution
+
 ```python
-def brute_force_school_dance(n, m, pairs):
-    """Find maximum matching using brute force approach"""
-    from itertools import combinations
-    
-    max_matching = 0
-    
-    # Try all possible combinations of pairs
-    for r in range(len(pairs) + 1):
-        for pair_subset in combinations(pairs, r):
-            # Check if this forms a valid matching
-            if is_valid_matching(pair_subset):
-                max_matching = max(max_matching, len(pair_subset))
-    
-    return max_matching
+from collections import deque
 
-def is_valid_matching(pairs):
-    """Check if pairs form a valid matching"""
-    boys_used = set()
-    girls_used = set()
-    
-    for boy, girl in pairs:
-        if boy in boys_used or girl in girls_used:
-            return False
-        boys_used.add(boy)
-        girls_used.add(girl)
-    
-    return True
+def solve():
+    n, m, k = map(int, input().split())
 
-# Example usage
-n = 3
-m = 3
-pairs = [(0, 0), (0, 1), (1, 1), (2, 2)]
-result = brute_force_school_dance(n, m, pairs)
-print(f"Brute force maximum matching: {result}")
-```
-
-**Time Complexity**: O(2^k)
-**Space Complexity**: O(k)
-
-**Why it's inefficient**: O(2^k) time complexity for checking all pair combinations.
-
----
-
-### Approach 2: Maximum Flow Solution
-
-**Key Insights from Maximum Flow Solution**:
-- **Maximum Flow**: Use maximum flow algorithm for bipartite matching
-- **Efficient Implementation**: O(k√(n+m)) time complexity
-- **Flow Network**: Convert bipartite graph to flow network
-- **Optimization**: Much more efficient than brute force
-
-**Key Insight**: Convert bipartite matching to maximum flow problem.
-
-**Algorithm**:
-- Create flow network with source and sink
-- Add edges from source to boys, boys to girls, girls to sink
-- Find maximum flow from source to sink
-- The flow value equals the maximum matching size
-
-**Visual Example**:
-```
-Maximum flow approach:
-
-Bipartite graph: Boys {0,1,2} - Girls {0,1,2}
-Pairs: (0,0), (0,1), (1,1), (2,2)
-
-Flow network:
-┌─────────────────────────────────────┐
-│ Source -> Boys: capacity 1         │
-│ Boys -> Girls: capacity 1           │
-│ Girls -> Sink: capacity 1           │
-│                                   │
-│ Flow paths:                        │
-│ Source -> 0 -> 0 -> Sink: flow 1   │
-│ Source -> 1 -> 1 -> Sink: flow 1   │
-│ Source -> 2 -> 2 -> Sink: flow 1   │
-│                                   │
-│ Maximum flow: 3                    │
-└─────────────────────────────────────┘
-```
-
-**Implementation**:
-```python
-def max_flow_school_dance(n, m, pairs):
-    """Find maximum matching using maximum flow"""
-    # Create flow network
-    # Source = 0, Boys = 1 to n, Girls = n+1 to n+m, Sink = n+m+1
+    # Node numbering: 0=source, 1..n=boys, n+1..n+m=girls, n+m+1=sink
     source = 0
     sink = n + m + 1
-    
-    # Build adjacency list with capacities
-    adj = [[] for _ in range(n + m + 2)]
-    capacity = [[0] * (n + m + 2) for _ in range(n + m + 2)]
-    
-    # Add edges from source to boys
-    for boy in range(n):
-        adj[source].append(boy + 1)
-        adj[boy + 1].append(source)
-        capacity[source][boy + 1] = 1
-    
-    # Add edges from boys to girls
-    for boy, girl in pairs:
-        boy_node = boy + 1
-        girl_node = girl + n + 1
-        adj[boy_node].append(girl_node)
-        adj[girl_node].append(boy_node)
-        capacity[boy_node][girl_node] = 1
-    
-    # Add edges from girls to sink
-    for girl in range(m):
-        girl_node = girl + n + 1
-        adj[girl_node].append(sink)
-        adj[sink].append(girl_node)
-        capacity[girl_node][sink] = 1
-    
-    def bfs_find_path():
+    total_nodes = n + m + 2
+
+    # Adjacency list for flow network
+    adj = [[] for _ in range(total_nodes)]
+    capacity = {}
+
+    def add_edge(u, v, cap):
+        adj[u].append(v)
+        adj[v].append(u)
+        capacity[(u, v)] = cap
+        capacity[(v, u)] = 0  # Reverse edge for residual graph
+
+    # Source to all boys
+    for boy in range(1, n + 1):
+        add_edge(source, boy, 1)
+
+    # All girls to sink
+    for girl in range(n + 1, n + m + 1):
+        add_edge(girl, sink, 1)
+
+    # Compatible pairs
+    for _ in range(k):
+        a, b = map(int, input().split())
+        boy_node = a
+        girl_node = n + b
+        add_edge(boy_node, girl_node, 1)
+
+    def bfs():
         """Find augmenting path using BFS"""
-        parent = [-1] * (n + m + 2)
-        visited = [False] * (n + m + 2)
-        queue = [source]
+        parent = [-1] * total_nodes
+        visited = [False] * total_nodes
         visited[source] = True
-        
+        queue = deque([source])
+
         while queue:
-            vertex = queue.pop(0)
-            if vertex == sink:
-                break
-            
-            for neighbor in adj[vertex]:
-                if not visited[neighbor] and capacity[vertex][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = vertex
-                    queue.append(neighbor)
-        
-        # Reconstruct path
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def find_max_flow():
-        """Find maximum flow using Ford-Fulkerson algorithm"""
-        max_flow = 0
-        
+            u = queue.popleft()
+            for v in adj[u]:
+                if not visited[v] and capacity.get((u, v), 0) > 0:
+                    visited[v] = True
+                    parent[v] = u
+                    if v == sink:
+                        return parent
+                    queue.append(v)
+        return None
+
+    def max_flow():
+        """Edmonds-Karp (BFS-based Ford-Fulkerson)"""
+        total_flow = 0
+
         while True:
-            path = bfs_find_path()
-            if not path:
+            parent = bfs()
+            if parent is None:
                 break
-            
-            # Find minimum capacity in path
-            min_capacity = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                min_capacity = min(min_capacity, capacity[u][v])
-            
+
+            # Find bottleneck
+            path_flow = float('inf')
+            v = sink
+            while v != source:
+                u = parent[v]
+                path_flow = min(path_flow, capacity[(u, v)])
+                v = u
+
             # Update residual capacities
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= min_capacity
-                capacity[v][u] += min_capacity
-            
-            max_flow += min_capacity
-        
-        return max_flow
-    
-    return find_max_flow()
+            v = sink
+            while v != source:
+                u = parent[v]
+                capacity[(u, v)] -= path_flow
+                capacity[(v, u)] += path_flow
+                v = u
 
-# Example usage
-n = 3
-m = 3
-pairs = [(0, 0), (0, 1), (1, 1), (2, 2)]
-result = max_flow_school_dance(n, m, pairs)
-print(f"Maximum flow matching: {result}")
+            total_flow += path_flow
+
+        return total_flow
+
+    result = max_flow()
+    print(result)
+
+    # Extract actual matching from residual graph
+    for boy in range(1, n + 1):
+        for girl in range(n + 1, n + m + 1):
+            # If reverse edge has capacity 1, flow went through this edge
+            if capacity.get((girl, boy), 0) == 1:
+                print(boy, girl - n)
+                break
+
+if __name__ == "__main__":
+    solve()
 ```
 
-**Time Complexity**: O(k√(n+m))
-**Space Complexity**: O((n+m)²)
+## C++ Solution
 
-**Why it's better**: Uses maximum flow for O(k√(n+m)) time complexity.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
 
----
+class MaxFlow {
+    int n;
+    vector<vector<int>> adj;
+    map<pair<int,int>, int> capacity;
 
-### Approach 3: Advanced Data Structure Solution (Optimal)
+public:
+    MaxFlow(int nodes) : n(nodes), adj(nodes) {}
 
-**Key Insights from Advanced Data Structure Solution**:
-- **Advanced Data Structures**: Use specialized data structures for bipartite matching
-- **Efficient Implementation**: O(k√(n+m)) time complexity
-- **Space Efficiency**: O((n+m)²) space complexity
-- **Optimal Complexity**: Best approach for bipartite matching
+    void addEdge(int u, int v, int cap) {
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+        capacity[{u, v}] = cap;
+        capacity[{v, u}] = 0;
+    }
 
-**Key Insight**: Use advanced data structures for optimal bipartite matching calculation.
+    int bfs(int source, int sink, vector<int>& parent) {
+        fill(parent.begin(), parent.end(), -1);
+        parent[source] = source;
+        queue<pair<int,int>> q;
+        q.push({source, INT_MAX});
 
-**Algorithm**:
-- Use specialized data structures for flow network storage
-- Implement efficient maximum flow algorithms
-- Handle special cases optimally
-- Return maximum matching size
+        while (!q.empty()) {
+            auto [u, flow] = q.front();
+            q.pop();
 
-**Visual Example**:
-```
-Advanced data structure approach:
+            for (int v : adj[u]) {
+                if (parent[v] == -1 && capacity[{u, v}] > 0) {
+                    parent[v] = u;
+                    int newFlow = min(flow, capacity[{u, v}]);
+                    if (v == sink) return newFlow;
+                    q.push({v, newFlow});
+                }
+            }
+        }
+        return 0;
+    }
 
-For bipartite graph: Boys {0,1,2} - Girls {0,1,2}
-┌─────────────────────────────────────┐
-│ Data structures:                    │
-│ - Flow network: for efficient       │
-│   storage and operations            │
-│ - Residual graph: for optimization  │
-│ - Flow cache: for optimization      │
-│                                   │
-│ Bipartite matching calculation:    │
-│ - Use flow network for efficient   │
-│   storage and operations            │
-│ - Use residual graph for           │
-│   optimization                      │
-│ - Use flow cache for optimization  │
-│                                   │
-│ Result: 3                          │
-└─────────────────────────────────────┘
-```
+    int maxflow(int source, int sink) {
+        int totalFlow = 0;
+        vector<int> parent(n);
+        int pathFlow;
 
-**Implementation**:
-```python
-def advanced_data_structure_school_dance(n, m, pairs):
-    """Find maximum matching using advanced data structure approach"""
-    # Use advanced data structures for flow network storage
-    # Create flow network using advanced data structures
-    source = 0
-    sink = n + m + 1
-    
-    # Build advanced adjacency list with capacities
-    adj = [[] for _ in range(n + m + 2)]
-    capacity = [[0] * (n + m + 2) for _ in range(n + m + 2)]
-    
-    # Add edges from source to boys using advanced data structures
-    for boy in range(n):
-        adj[source].append(boy + 1)
-        adj[boy + 1].append(source)
-        capacity[source][boy + 1] = 1
-    
-    # Add edges from boys to girls using advanced data structures
-    for boy, girl in pairs:
-        boy_node = boy + 1
-        girl_node = girl + n + 1
-        adj[boy_node].append(girl_node)
-        adj[girl_node].append(boy_node)
-        capacity[boy_node][girl_node] = 1
-    
-    # Add edges from girls to sink using advanced data structures
-    for girl in range(m):
-        girl_node = girl + n + 1
-        adj[girl_node].append(sink)
-        adj[sink].append(girl_node)
-        capacity[girl_node][sink] = 1
-    
-    def bfs_advanced_find_path():
-        """Find augmenting path using advanced BFS"""
-        parent = [-1] * (n + m + 2)
-        visited = [False] * (n + m + 2)
-        queue = [source]
-        visited[source] = True
-        
-        while queue:
-            vertex = queue.pop(0)
-            if vertex == sink:
-                break
-            
-            for neighbor in adj[vertex]:
-                if not visited[neighbor] and capacity[vertex][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = vertex
-                    queue.append(neighbor)
-        
-        # Reconstruct path using advanced data structures
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def find_advanced_max_flow():
-        """Find maximum flow using advanced Ford-Fulkerson algorithm"""
-        max_flow = 0
-        
-        while True:
-            path = bfs_advanced_find_path()
-            if not path:
-                break
-            
-            # Find minimum capacity in path using advanced data structures
-            min_capacity = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                min_capacity = min(min_capacity, capacity[u][v])
-            
-            # Update residual capacities using advanced data structures
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= min_capacity
-                capacity[v][u] += min_capacity
-            
-            max_flow += min_capacity
-        
-        return max_flow
-    
-    return find_advanced_max_flow()
+        while ((pathFlow = bfs(source, sink, parent)) > 0) {
+            totalFlow += pathFlow;
+            int cur = sink;
+            while (cur != source) {
+                int prev = parent[cur];
+                capacity[{prev, cur}] -= pathFlow;
+                capacity[{cur, prev}] += pathFlow;
+                cur = prev;
+            }
+        }
+        return totalFlow;
+    }
 
-# Example usage
-n = 3
-m = 3
-pairs = [(0, 0), (0, 1), (1, 1), (2, 2)]
-result = advanced_data_structure_school_dance(n, m, pairs)
-print(f"Advanced data structure matching: {result}")
+    int getFlow(int u, int v) {
+        return capacity[{v, u}];  // Reverse edge capacity = flow
+    }
+};
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m, k;
+    cin >> n >> m >> k;
+
+    // 0=source, 1..n=boys, n+1..n+m=girls, n+m+1=sink
+    int source = 0, sink = n + m + 1;
+    MaxFlow mf(n + m + 2);
+
+    // Source to boys
+    for (int i = 1; i <= n; i++) {
+        mf.addEdge(source, i, 1);
+    }
+
+    // Girls to sink
+    for (int i = 1; i <= m; i++) {
+        mf.addEdge(n + i, sink, 1);
+    }
+
+    // Compatible pairs
+    for (int i = 0; i < k; i++) {
+        int a, b;
+        cin >> a >> b;
+        mf.addEdge(a, n + b, 1);
+    }
+
+    int result = mf.maxflow(source, sink);
+    cout << result << "\n";
+
+    // Extract matching
+    for (int boy = 1; boy <= n; boy++) {
+        for (int girl = 1; girl <= m; girl++) {
+            if (mf.getFlow(boy, n + girl) == 1) {
+                cout << boy << " " << girl << "\n";
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
 ```
 
-**Time Complexity**: O(k√(n+m))
-**Space Complexity**: O((n+m)²)
+## Common Mistakes
 
-**Why it's optimal**: Uses advanced data structures for optimal complexity.
+| Mistake | Problem | Fix |
+|---------|---------|-----|
+| Wrong node numbering | Source/sink overlap with boys/girls | Use distinct ranges: S=0, boys=1..n, girls=n+1..n+m, T=n+m+1 |
+| Missing reverse edges | Cannot find augmenting paths | Always add reverse edge with capacity 0 |
+| Wrong capacity direction | Flow goes backwards | S->boys, boys->girls, girls->T (not reversed) |
+| Forgetting to extract pairs | Only output count | Check residual graph: reverse edge capacity = flow |
+| Using capacity > 1 | Multiple matches per person | All edges must have capacity exactly 1 |
+| 1-indexed vs 0-indexed | Off-by-one errors | Be consistent; problem uses 1-indexed |
 
-## 🔧 Implementation Details
+## Complexity Analysis
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(2^k) | O(k) | Try all pair combinations |
-| Maximum Flow | O(k√(n+m)) | O((n+m)²) | Convert to flow network |
-| Advanced Data Structure | O(k√(n+m)) | O((n+m)²) | Use advanced data structures |
+| Algorithm | Time Complexity | Space Complexity | Best For |
+|-----------|-----------------|------------------|----------|
+| Ford-Fulkerson (DFS) | O(V * E) | O(V + E) | Simple implementation |
+| Edmonds-Karp (BFS) | O(V * E^2) | O(V + E) | Guaranteed termination |
+| Hopcroft-Karp | O(E * sqrt(V)) | O(V + E) | Large bipartite graphs |
+| Dinic's Algorithm | O(V^2 * E) | O(V + E) | General max flow |
 
-### Time Complexity
-- **Time**: O(k√(n+m)) - Use maximum flow for efficient bipartite matching
-- **Space**: O((n+m)²) - Store flow network and capacity matrix
+For this problem with V = n + m <= 1000 and E = k <= 1000:
+- **Edmonds-Karp**: O(V * E) = O(1000 * 1000) = O(10^6) - fast enough
+- **Hopcroft-Karp**: O(E * sqrt(V)) = O(1000 * 32) = O(32000) - even faster
 
-### Why This Solution Works
-- **Maximum Flow**: Convert bipartite matching to maximum flow problem
-- **Flow Network**: Create flow network with source, boys, girls, and sink
-- **Ford-Fulkerson**: Use Ford-Fulkerson algorithm for maximum flow
-- **Optimal Algorithms**: Use optimal algorithms for bipartite matching
+## Related Problems
 
-## 🚀 Problem Variations
-
-### Extended Problems with Detailed Code Examples
-
-#### **1. School Dance with Constraints**
-**Problem**: Find maximum matching with specific constraints.
-
-**Key Differences**: Apply constraints to bipartite matching
-
-**Solution Approach**: Modify algorithm to handle constraints
-
-**Implementation**:
-```python
-def constrained_school_dance(n, m, pairs, constraints):
-    """Find maximum matching with constraints"""
-    # Filter pairs based on constraints
-    filtered_pairs = []
-    for boy, girl in pairs:
-        if constraints(boy, girl):
-            filtered_pairs.append((boy, girl))
-    
-    # Create flow network
-    source = 0
-    sink = n + m + 1
-    
-    # Build adjacency list with capacities
-    adj = [[] for _ in range(n + m + 2)]
-    capacity = [[0] * (n + m + 2) for _ in range(n + m + 2)]
-    
-    # Add edges from source to boys
-    for boy in range(n):
-        adj[source].append(boy + 1)
-        adj[boy + 1].append(source)
-        capacity[source][boy + 1] = 1
-    
-    # Add edges from boys to girls
-    for boy, girl in filtered_pairs:
-        boy_node = boy + 1
-        girl_node = girl + n + 1
-        adj[boy_node].append(girl_node)
-        adj[girl_node].append(boy_node)
-        capacity[boy_node][girl_node] = 1
-    
-    # Add edges from girls to sink
-    for girl in range(m):
-        girl_node = girl + n + 1
-        adj[girl_node].append(sink)
-        adj[sink].append(girl_node)
-        capacity[girl_node][sink] = 1
-    
-    def bfs_find_path():
-        """Find augmenting path using BFS"""
-        parent = [-1] * (n + m + 2)
-        visited = [False] * (n + m + 2)
-        queue = [source]
-        visited[source] = True
-        
-        while queue:
-            vertex = queue.pop(0)
-            if vertex == sink:
-                break
-            
-            for neighbor in adj[vertex]:
-                if not visited[neighbor] and capacity[vertex][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = vertex
-                    queue.append(neighbor)
-        
-        # Reconstruct path
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def find_max_flow():
-        """Find maximum flow using Ford-Fulkerson algorithm"""
-        max_flow = 0
-        
-        while True:
-            path = bfs_find_path()
-            if not path:
-                break
-            
-            # Find minimum capacity in path
-            min_capacity = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                min_capacity = min(min_capacity, capacity[u][v])
-            
-            # Update residual capacities
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= min_capacity
-                capacity[v][u] += min_capacity
-            
-            max_flow += min_capacity
-        
-        return max_flow
-    
-    return find_max_flow()
-
-# Example usage
-n = 3
-m = 3
-pairs = [(0, 0), (0, 1), (1, 1), (2, 2)]
-constraints = lambda boy, girl: boy != girl or boy == 0  # Special constraint
-result = constrained_school_dance(n, m, pairs, constraints)
-print(f"Constrained maximum matching: {result}")
-```
-
-#### **2. School Dance with Different Metrics**
-**Problem**: Find maximum matching with different weight metrics.
-
-**Key Differences**: Different weight calculations
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def weighted_school_dance(n, m, pairs, weights):
-    """Find maximum matching with different weights"""
-    # Create flow network
-    source = 0
-    sink = n + m + 1
-    
-    # Build adjacency list with capacities
-    adj = [[] for _ in range(n + m + 2)]
-    capacity = [[0] * (n + m + 2) for _ in range(n + m + 2)]
-    
-    # Add edges from source to boys
-    for boy in range(n):
-        adj[source].append(boy + 1)
-        adj[boy + 1].append(source)
-        capacity[source][boy + 1] = 1
-    
-    # Add edges from boys to girls with weights
-    for boy, girl in pairs:
-        boy_node = boy + 1
-        girl_node = girl + n + 1
-        adj[boy_node].append(girl_node)
-        adj[girl_node].append(boy_node)
-        weight = weights.get((boy, girl), 1)
-        capacity[boy_node][girl_node] = weight
-    
-    # Add edges from girls to sink
-    for girl in range(m):
-        girl_node = girl + n + 1
-        adj[girl_node].append(sink)
-        adj[sink].append(girl_node)
-        capacity[girl_node][sink] = 1
-    
-    def bfs_find_path():
-        """Find augmenting path using BFS"""
-        parent = [-1] * (n + m + 2)
-        visited = [False] * (n + m + 2)
-        queue = [source]
-        visited[source] = True
-        
-        while queue:
-            vertex = queue.pop(0)
-            if vertex == sink:
-                break
-            
-            for neighbor in adj[vertex]:
-                if not visited[neighbor] and capacity[vertex][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = vertex
-                    queue.append(neighbor)
-        
-        # Reconstruct path
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def find_max_flow():
-        """Find maximum flow using Ford-Fulkerson algorithm"""
-        max_flow = 0
-        
-        while True:
-            path = bfs_find_path()
-            if not path:
-                break
-            
-            # Find minimum capacity in path
-            min_capacity = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                min_capacity = min(min_capacity, capacity[u][v])
-            
-            # Update residual capacities
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= min_capacity
-                capacity[v][u] += min_capacity
-            
-            max_flow += min_capacity
-        
-        return max_flow
-    
-    return find_max_flow()
-
-# Example usage
-n = 3
-m = 3
-pairs = [(0, 0), (0, 1), (1, 1), (2, 2)]
-weights = {(0, 0): 2, (0, 1): 1, (1, 1): 3, (2, 2): 1}
-result = weighted_school_dance(n, m, pairs, weights)
-print(f"Weighted maximum matching: {result}")
-```
-
-#### **3. School Dance with Multiple Dimensions**
-**Problem**: Find maximum matching in multiple dimensions.
-
-**Key Differences**: Handle multiple dimensions
-
-**Solution Approach**: Use advanced mathematical techniques
-
-**Implementation**:
-```python
-def multi_dimensional_school_dance(n, m, pairs, dimensions):
-    """Find maximum matching in multiple dimensions"""
-    # Create flow network
-    source = 0
-    sink = n + m + 1
-    
-    # Build adjacency list with capacities
-    adj = [[] for _ in range(n + m + 2)]
-    capacity = [[0] * (n + m + 2) for _ in range(n + m + 2)]
-    
-    # Add edges from source to boys
-    for boy in range(n):
-        adj[source].append(boy + 1)
-        adj[boy + 1].append(source)
-        capacity[source][boy + 1] = 1
-    
-    # Add edges from boys to girls
-    for boy, girl in pairs:
-        boy_node = boy + 1
-        girl_node = girl + n + 1
-        adj[boy_node].append(girl_node)
-        adj[girl_node].append(boy_node)
-        capacity[boy_node][girl_node] = 1
-    
-    # Add edges from girls to sink
-    for girl in range(m):
-        girl_node = girl + n + 1
-        adj[girl_node].append(sink)
-        adj[sink].append(girl_node)
-        capacity[girl_node][sink] = 1
-    
-    def bfs_find_path():
-        """Find augmenting path using BFS"""
-        parent = [-1] * (n + m + 2)
-        visited = [False] * (n + m + 2)
-        queue = [source]
-        visited[source] = True
-        
-        while queue:
-            vertex = queue.pop(0)
-            if vertex == sink:
-                break
-            
-            for neighbor in adj[vertex]:
-                if not visited[neighbor] and capacity[vertex][neighbor] > 0:
-                    visited[neighbor] = True
-                    parent[neighbor] = vertex
-                    queue.append(neighbor)
-        
-        # Reconstruct path
-        if parent[sink] == -1:
-            return None
-        
-        path = []
-        current = sink
-        while current != -1:
-            path.append(current)
-            current = parent[current]
-        return path[::-1]
-    
-    def find_max_flow():
-        """Find maximum flow using Ford-Fulkerson algorithm"""
-        max_flow = 0
-        
-        while True:
-            path = bfs_find_path()
-            if not path:
-                break
-            
-            # Find minimum capacity in path
-            min_capacity = float('inf')
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                min_capacity = min(min_capacity, capacity[u][v])
-            
-            # Update residual capacities
-            for i in range(len(path) - 1):
-                u, v = path[i], path[i + 1]
-                capacity[u][v] -= min_capacity
-                capacity[v][u] += min_capacity
-            
-            max_flow += min_capacity
-        
-        return max_flow
-    
-    return find_max_flow()
-
-# Example usage
-n = 3
-m = 3
-pairs = [(0, 0), (0, 1), (1, 1), (2, 2)]
-dimensions = 1
-result = multi_dimensional_school_dance(n, m, pairs, dimensions)
-print(f"Multi-dimensional maximum matching: {result}")
-```
-
-### Related Problems
-
-#### **CSES Problems**
-- [Download Speed](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Police Chase](https://cses.fi/problemset/task/1075) - Graph Algorithms
-- [Message Route](https://cses.fi/problemset/task/1075) - Graph Algorithms
-
-#### **LeetCode Problems**
-- [Maximum Bipartite Matching](https://leetcode.com/problems/maximum-bipartite-matching/) - Graph
-- [Assign Cookies](https://leetcode.com/problems/assign-cookies/) - Greedy
-- [Task Scheduler](https://leetcode.com/problems/task-scheduler/) - Greedy
-
-#### **Problem Categories**
-- **Graph Algorithms**: Bipartite matching, maximum flow, network flow
-- **Matching Algorithms**: Hungarian algorithm, maximum bipartite matching
-- **Network Flow**: Flow networks, bipartite graphs
-
-## 🔗 Additional Resources
-
-### **Algorithm References**
-- [Graph Algorithms](https://cp-algorithms.com/graph/basic-graph-algorithms.html) - Graph algorithms
-- [Maximum Flow](https://cp-algorithms.com/graph/max_flow.html) - Maximum flow algorithms
-- [Bipartite Matching](https://cp-algorithms.com/graph/bipartite-matching.html) - Bipartite matching algorithms
-
-### **Practice Problems**
-- [CSES Download Speed](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Police Chase](https://cses.fi/problemset/task/1075) - Medium
-- [CSES Message Route](https://cses.fi/problemset/task/1075) - Medium
-
-### **Further Reading**
-- [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) - Wikipedia article
-- [Maximum Flow](https://en.wikipedia.org/wiki/Maximum_flow_problem) - Wikipedia article
-- [Bipartite Graph](https://en.wikipedia.org/wiki/Bipartite_graph) - Wikipedia article
+- **CSES Download Speed** (1694): Pure max flow problem
+- **CSES Police Chase** (1695): Min cut = max flow
+- **LeetCode 785**: Is Graph Bipartite?
+- **LeetCode 1066**: Campus Bikes II (weighted matching)

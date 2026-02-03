@@ -1,758 +1,435 @@
 ---
 layout: simple
-title: "Permutation Inversions"
+title: "Permutation Inversions - Counting Problem"
 permalink: /problem_soulutions/counting_problems/permutation_inversions_analysis
+difficulty: Hard
+tags: [dp, combinatorics, counting, inversions, prefix-sum]
 ---
-
 
 # Permutation Inversions
 
-## 📋 Problem Information
+## Problem Overview
 
-### 🎯 **Learning Objectives**
-By the end of this problem, you should be able to:
-- Understand the concept of inversions in permutations and their properties
-- Apply merge sort algorithm to count inversions efficiently
-- Implement binary indexed tree (Fenwick tree) for inversion counting
-- Optimize inversion counting algorithms for large permutations
-- Handle edge cases in inversion counting (sorted arrays, reverse sorted arrays)
+| Attribute | Value |
+|-----------|-------|
+| **Source** | [CSES - Permutation Inversions](https://cses.fi/problemset/task/2229) |
+| **Difficulty** | Hard |
+| **Category** | Dynamic Programming, Counting |
+| **Time Limit** | 1 second |
+| **Key Technique** | DP with Prefix Sum Optimization |
 
-## 📋 Problem Description
+### Learning Goals
 
-Given a permutation of numbers from 1 to n, count the number of inversions. An inversion is a pair of indices (i,j) where i < j and a[i] > a[j].
+After solving this problem, you will be able to:
+- [ ] Understand how inversions characterize permutations
+- [ ] Design DP states for counting combinatorial objects
+- [ ] Apply prefix sum optimization to reduce DP complexity
+- [ ] Handle modular arithmetic in counting problems
 
-**Input**: 
-- First line: integer n (size of the permutation)
-- Second line: n integers (the permutation)
+---
 
-**Output**: 
-- Print one integer: the number of inversions
+## Problem Statement
 
-**Constraints**:
-- 1 ≤ n ≤ 2×10^5
-- The input is a valid permutation of 1 to n
+**Problem:** Count the number of permutations of numbers 1 to n that have exactly k inversions. An inversion is a pair (i, j) where i < j but p[i] > p[j].
 
-**Example**:
+**Input:**
+- Line 1: Two integers n and k
+
+**Output:**
+- The count of permutations modulo 10^9 + 7
+
+**Constraints:**
+- 1 <= n <= 500
+- 0 <= k <= n(n-1)/2
+
+### Example
+
 ```
 Input:
-4
-3 1 4 2
+4 3
 
 Output:
-3
-
-Explanation**: 
-In the permutation [3, 1, 4, 2], there are 3 inversions:
-1. (0, 1): 3 > 1 (indices 0 and 1)
-2. (0, 3): 3 > 2 (indices 0 and 3)
-3. (2, 3): 4 > 2 (indices 2 and 3)
-
-These are the pairs where a larger element appears before a smaller element.
+6
 ```
 
-## 🔍 Solution Analysis: From Brute Force to Optimal
+**Explanation:** The permutations of [1,2,3,4] with exactly 3 inversions are:
+- [2,4,3,1] - inversions: (2,3), (2,1), (4,3), (4,1), (3,1) = wait, that's 5
+- Actually: [3,2,1,4], [2,4,1,3], [4,1,2,3], [1,4,3,2], [3,1,4,2], [2,3,4,1]
 
-### Approach 1: Brute Force - Check All Pairs
-
-**Key Insights from Brute Force Approach**:
-- **Exhaustive Pair Checking**: Check all possible pairs (i,j) where i < j
-- **Inversion Detection**: Count pairs where a[i] > a[j]
-- **Complete Coverage**: Guaranteed to find all inversions
-- **Simple Implementation**: Nested loops approach
-
-**Key Insight**: Systematically check all possible pairs of indices to count inversions where a larger element appears before a smaller element.
-
-**Algorithm**:
-- Use nested loops to check all pairs (i,j) where i < j
-- Count pairs where a[i] > a[j]
-- Return the total count
-
-**Visual Example**:
-```
-Permutation: [3, 1, 4, 2]
-
-All possible pairs (i,j) where i < j:
-1. (0,1): a[0]=3, a[1]=1 → 3 > 1 ✓ (inversion)
-2. (0,2): a[0]=3, a[2]=4 → 3 < 4 ✗
-3. (0,3): a[0]=3, a[3]=2 → 3 > 2 ✓ (inversion)
-4. (1,2): a[1]=1, a[2]=4 → 1 < 4 ✗
-5. (1,3): a[1]=1, a[3]=2 → 1 < 2 ✗
-6. (2,3): a[2]=4, a[3]=2 → 4 > 2 ✓ (inversion)
-
-Total inversions: 3
-```
-
-**Implementation**:
-```python
-def brute_force_inversions(arr):
-    """
-    Count inversions using brute force approach
-    
-    Args:
-        arr: list of integers (permutation)
-    
-    Returns:
-        int: number of inversions
-    """
-    n = len(arr)
-    count = 0
-    
-    # Check all possible pairs
-    for i in range(n):
-        for j in range(i + 1, n):
-            if arr[i] > arr[j]:
-                count += 1
-    
-    return count
-
-# Example usage
-arr = [3, 1, 4, 2]
-result = brute_force_inversions(arr)
-print(f"Brute force result: {result}")  # Output: 3
-```
-
-**Time Complexity**: O(n²) - Check all pairs
-**Space Complexity**: O(1) - Constant extra space
-
-**Why it's inefficient**: Quadratic time complexity makes it slow for large inputs.
+Let me verify [3,2,1,4]: pairs (3,2), (3,1), (2,1) = 3 inversions. Correct!
 
 ---
 
-### Approach 2: Optimized - Merge Sort with Inversion Counting
+## Intuition: How to Think About This Problem
 
-**Key Insights from Optimized Approach**:
-- **Divide and Conquer**: Use merge sort's divide and conquer approach
-- **Inversion Counting**: Count inversions during the merge process
-- **Efficient Merging**: Count cross-inversions between left and right halves
-- **Recursive Solution**: Solve subproblems recursively
+### Pattern Recognition
 
-**Key Insight**: Use merge sort's merge process to count inversions efficiently by counting cross-inversions between sorted halves.
+> **Key Question:** How does adding a new element to a permutation affect the inversion count?
 
-**Algorithm**:
-- Divide the array into two halves
-- Recursively count inversions in each half
-- Count cross-inversions during merge
-- Return total inversions
+When we insert element (i+1) into a permutation of elements 1 to i, the new element can be placed in any of (i+1) positions. If placed at position j (0-indexed from left), it creates exactly (i - j) new inversions because there are (i - j) elements to its right, all smaller than (i+1).
 
-**Visual Example**:
-```
-Permutation: [3, 1, 4, 2]
+### Breaking Down the Problem
 
-Step 1: Divide
-Left: [3, 1], Right: [4, 2]
+1. **What are we counting?** Permutations with exactly k inversions
+2. **What's the recursive structure?** Build permutation by inserting elements one by one
+3. **How do inversions grow?** Inserting element m at position j adds (m-1-j) inversions
 
-Step 2: Recursively sort and count
-Left: [1, 3] (1 inversion: 3 > 1)
-Right: [2, 4] (1 inversion: 4 > 2)
+### The Key Insight
 
-Step 3: Merge and count cross-inversions
-Merge [1, 3] and [2, 4]:
-- 1 < 2 → Take 1, no cross-inversions
-- 3 > 2 → Take 2, cross-inversion: 3 > 2
-- 3 < 4 → Take 3, no cross-inversions
-- Take 4
-
-Result: [1, 2, 3, 4]
-Total inversions: 1 + 1 + 1 = 3
-```
-
-**Implementation**:
-```python
-def optimized_inversions(arr):
-    """
-    Count inversions using merge sort approach
-    
-    Args:
-        arr: list of integers (permutation)
-    
-    Returns:
-        int: number of inversions
-    """
-    def merge_sort_and_count(arr):
-        if len(arr) <= 1:
-            return arr, 0
-        
-        mid = len(arr) // 2
-        left, left_inv = merge_sort_and_count(arr[:mid])
-        right, right_inv = merge_sort_and_count(arr[mid:])
-        
-        merged, cross_inv = merge_and_count(left, right)
-        total_inv = left_inv + right_inv + cross_inv
-        
-        return merged, total_inv
-    
-    def merge_and_count(left, right):
-        merged = []
-        i = j = 0
-        cross_inversions = 0
-        
-        while i < len(left) and j < len(right):
-            if left[i] <= right[j]:
-                merged.append(left[i])
-                i += 1
-            else:
-                merged.append(right[j])
-                cross_inversions += len(left) - i
-                j += 1
-        
-        merged.extend(left[i:])
-        merged.extend(right[j:])
-        
-        return merged, cross_inversions
-    
-    _, total_inversions = merge_sort_and_count(arr)
-    return total_inversions
-
-# Example usage
-arr = [3, 1, 4, 2]
-result = optimized_inversions(arr)
-print(f"Optimized result: {result}")  # Output: 3
-```
-
-**Time Complexity**: O(n log n) - Merge sort complexity
-**Space Complexity**: O(n) - For temporary arrays during merge
-
-**Why it's better**: Much more efficient than brute force, using divide and conquer.
+When inserting the i-th element (1-indexed) into a permutation of (i-1) elements:
+- There are i possible positions (0 to i-1)
+- Position j creates (i-1-j) new inversions
+- We can create 0, 1, 2, ..., or (i-1) new inversions
 
 ---
 
-### Approach 3: Optimal - Binary Indexed Tree (Fenwick Tree)
+## Solution 1: Basic DP (TLE for large inputs)
 
-**Key Insights from Optimal Approach**:
-- **Coordinate Compression**: Map values to compressed coordinates
-- **Binary Indexed Tree**: Use BIT for efficient range queries
-- **Right-to-Left Processing**: Process elements from right to left
-- **Efficient Counting**: Count smaller elements to the right efficiently
+### Idea
 
-**Key Insight**: Use coordinate compression and Binary Indexed Tree to efficiently count inversions by processing elements from right to left and counting smaller elements to the right.
+Let `dp[i][j]` = number of permutations of elements 1 to i with exactly j inversions.
 
-**Algorithm**:
-- Compress coordinates to handle large values
-- Process elements from right to left
-- For each element, count smaller elements to the right using BIT
-- Update BIT with current element
+### DP State Definition
 
-**Visual Example**:
+| State | Meaning |
+|-------|---------|
+| `dp[i][j]` | Count of permutations of 1..i with exactly j inversions |
+
+### State Transition
+
 ```
-Permutation: [3, 1, 4, 2]
-
-Step 1: Coordinate compression
-Original: [3, 1, 4, 2]
-Compressed: [2, 0, 3, 1] (sorted: [1, 2, 3, 4] → [0, 1, 2, 3])
-
-Step 2: Process from right to left
-BIT: [0, 0, 0, 0]
-
-i=3: arr[3]=2, compressed=1
-- Count smaller elements to right: 0
-- Update BIT[1] = 1
-- BIT: [0, 1, 0, 0]
-
-i=2: arr[2]=4, compressed=3
-- Count smaller elements to right: 1 (element 2)
-- Update BIT[3] = 1
-- BIT: [0, 1, 0, 1]
-
-i=1: arr[1]=1, compressed=0
-- Count smaller elements to right: 0
-- Update BIT[0] = 1
-- BIT: [1, 1, 0, 1]
-
-i=0: arr[0]=3, compressed=2
-- Count smaller elements to right: 2 (elements 1 and 2)
-- Update BIT[2] = 1
-- BIT: [1, 1, 1, 1]
-
-Total inversions: 0 + 1 + 0 + 2 = 3
+dp[i][j] = sum(dp[i-1][j-x]) for x in [0, min(j, i-1)]
 ```
 
-**Implementation**:
+**Why?** When inserting element i, we can add 0 to (i-1) inversions by choosing the position.
+
+### Base Case
+
+| Case | Value | Reason |
+|------|-------|--------|
+| `dp[1][0]` | 1 | Single element has 0 inversions |
+| `dp[i][j]` where j < 0 | 0 | Invalid state |
+
+### Code
+
 ```python
-def optimal_inversions(arr):
+def count_permutations_basic(n, k):
     """
-    Count inversions using Binary Indexed Tree
-    
-    Args:
-        arr: list of integers (permutation)
-    
-    Returns:
-        int: number of inversions
-    """
-    # Coordinate compression
-    sorted_arr = sorted(arr)
-    compressed = {}
-    for i, val in enumerate(sorted_arr):
-        compressed[val] = i
-    
-    # Binary Indexed Tree implementation
-    class BIT:
-        def __init__(self, size):
-            self.size = size
-            self.tree = [0] * (size + 1)
-        
-        def update(self, idx, delta):
-            while idx <= self.size:
-                self.tree[idx] += delta
-                idx += idx & -idx
-        
-        def query(self, idx):
-            result = 0
-            while idx > 0:
-                result += self.tree[idx]
-                idx -= idx & -idx
-            return result
-    
-    n = len(arr)
-    bit = BIT(n)
-    inversions = 0
-    
-    # Process from right to left
-    for i in range(n - 1, -1, -1):
-        compressed_val = compressed[arr[i]] + 1  # 1-indexed
-        inversions += bit.query(compressed_val - 1)
-        bit.update(compressed_val, 1)
-    
-    return inversions
+    Basic DP solution - O(n^2 * k) time.
 
-# Example usage
-arr = [3, 1, 4, 2]
-result = optimal_inversions(arr)
-print(f"Optimal result: {result}")  # Output: 3
+    Time: O(n^2 * k) - too slow for large inputs
+    Space: O(n * k)
+    """
+    MOD = 10**9 + 7
+
+    # dp[i][j] = permutations of 1..i with j inversions
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    dp[1][0] = 1
+
+    for i in range(2, n + 1):
+        for j in range(k + 1):
+            # Insert element i: can add 0 to (i-1) inversions
+            for add in range(min(j + 1, i)):
+                dp[i][j] = (dp[i][j] + dp[i-1][j-add]) % MOD
+
+    return dp[n][k]
 ```
 
-**Time Complexity**: O(n log n) - Coordinate compression + BIT operations
-**Space Complexity**: O(n) - For BIT and coordinate mapping
+### Complexity
 
-**Why it's optimal**: Efficient algorithm using advanced data structures for optimal performance.
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n^2 * k) | Three nested loops |
+| Space | O(n * k) | DP table |
 
-## 🔧 Implementation Details
+### Why This Is Slow
 
-| Approach | Time Complexity | Space Complexity | Key Insight |
-|----------|----------------|------------------|-------------|
-| Brute Force | O(n²) | O(1) | Check all pairs |
-| Merge Sort | O(n log n) | O(n) | Divide and conquer |
-| Binary Indexed Tree | O(n log n) | O(n) | Coordinate compression + BIT |
+The innermost loop sums over up to min(i, j) values, making total complexity O(n * k * n) = O(n^2 * k).
 
-### Time Complexity
-- **Time**: O(n log n) - Optimal for inversion counting
-- **Space**: O(n) - For auxiliary data structures
+---
 
-### Why This Solution Works
-- **Inversion Definition**: Count pairs where larger element appears before smaller element
-- **Efficient Counting**: Use divide and conquer or advanced data structures
-- **Coordinate Compression**: Handle large values efficiently
-- **Optimal Approach**: Binary Indexed Tree provides best practical performance
+## Solution 2: Optimal Solution with Prefix Sum
 
-## 🚀 Problem Variations
+### Key Insight
 
-### Extended Problems with Detailed Code Examples
+> **The Trick:** The inner sum `dp[i-1][j] + dp[i-1][j-1] + ... + dp[i-1][j-(i-1)]` is a contiguous range sum. Use prefix sums!
 
-#### **1. Permutation Inversions with Range Queries**
-**Problem**: Count inversions in subarrays for multiple range queries.
+### Optimized Transition
 
-**Key Differences**: Handle multiple queries on different subarrays
-
-**Solution Approach**: Use segment tree or persistent data structures
-
-**Implementation**:
-```python
-def permutation_inversions_range_queries(arr, queries):
-    """
-    Count inversions in subarrays for multiple range queries
-    """
-    def count_inversions_subarray(subarray):
-        """Count inversions in a subarray using merge sort"""
-        def merge_sort_and_count(arr):
-            if len(arr) <= 1:
-                return arr, 0
-            
-            mid = len(arr) // 2
-            left, left_inv = merge_sort_and_count(arr[:mid])
-            right, right_inv = merge_sort_and_count(arr[mid:])
-            
-            merged, split_inv = merge_and_count(left, right)
-            total_inv = left_inv + right_inv + split_inv
-            
-            return merged, total_inv
-        
-        def merge_and_count(left, right):
-            merged = []
-            i = j = inv_count = 0
-            
-            while i < len(left) and j < len(right):
-                if left[i] <= right[j]:
-                    merged.append(left[i])
-                    i += 1
-                else:
-                    merged.append(right[j])
-                    inv_count += len(left) - i
-                    j += 1
-            
-            merged.extend(left[i:])
-            merged.extend(right[j:])
-            
-            return merged, inv_count
-        
-        _, inv_count = merge_sort_and_count(subarray)
-        return inv_count
-    
-    results = []
-    for l, r in queries:
-        subarray = arr[l:r+1]
-        inv_count = count_inversions_subarray(subarray)
-        results.append(inv_count)
-    
-    return results
-
-def permutation_inversions_persistent(arr, queries):
-    """
-    Count inversions with persistent data structure
-    """
-    class PersistentBIT:
-        def __init__(self, size):
-            self.size = size
-            self.versions = []
-            self.current = [0] * (size + 1)
-        
-        def update(self, idx, val):
-            self.current = self.current[:]
-            while idx <= self.size:
-                self.current[idx] += val
-                idx += idx & -idx
-        
-        def query(self, idx):
-            result = 0
-            while idx > 0:
-                result += self.current[idx]
-                idx -= idx & -idx
-            return result
-        
-        def save_version(self):
-            self.versions.append(self.current[:])
-    
-    # Coordinate compression
-    sorted_arr = sorted(set(arr))
-    coord_map = {val: i+1 for i, val in enumerate(sorted_arr)}
-    
-    bit = PersistentBIT(len(sorted_arr))
-    results = []
-    
-    for l, r in queries:
-        # Reset BIT
-        bit.current = [0] * (len(sorted_arr) + 1)
-        
-        inv_count = 0
-        for i in range(l, r + 1):
-            compressed_val = coord_map[arr[i]]
-            inv_count += bit.query(len(sorted_arr)) - bit.query(compressed_val)
-            bit.update(compressed_val, 1)
-        
-        results.append(inv_count)
-    
-    return results
-
-# Example usage
-arr = [3, 1, 4, 2, 5]
-queries = [(0, 2), (1, 3), (0, 4)]
-result = permutation_inversions_range_queries(arr, queries)
-print(f"Inversions in ranges: {result}")  # Output: [2, 1, 4]
+Instead of summing in a loop, precompute prefix sums:
+```
+prefix[j] = dp[i-1][0] + dp[i-1][1] + ... + dp[i-1][j]
+dp[i][j] = prefix[j] - prefix[max(0, j-i)]
 ```
 
-#### **2. Permutation Inversions with Updates**
-**Problem**: Count inversions with support for array element updates.
+### Dry Run Example
 
-**Key Differences**: Handle dynamic array modifications
+Let's trace through with `n = 4, k = 3`:
 
-**Solution Approach**: Use segment tree with lazy propagation
+```
+Initial: dp[1][0] = 1 (permutation [1] has 0 inversions)
 
-**Implementation**:
-```python
-class InversionCounter:
-    def __init__(self, arr):
-        self.arr = arr[:]
-        self.n = len(arr)
-        # Coordinate compression
-        self.sorted_arr = sorted(set(arr))
-        self.coord_map = {val: i for i, val in enumerate(self.sorted_arr)}
-        self.compressed_arr = [self.coord_map[val] for val in arr]
-        
-        # Build segment tree
-        self.tree = [0] * (4 * len(self.sorted_arr))
-        self._build_tree(0, 0, len(self.sorted_arr) - 1)
-        
-        # Calculate initial inversions
-        self.inversions = self._count_inversions()
-    
-    def _build_tree(self, node, start, end):
-        if start == end:
-            self.tree[node] = 0
-        else:
-            mid = (start + end) // 2
-            self._build_tree(2 * node + 1, start, mid)
-            self._build_tree(2 * node + 2, mid + 1, end)
-            self.tree[node] = self.tree[2 * node + 1] + self.tree[2 * node + 2]
-    
-    def _count_inversions(self):
-        """Count inversions using BIT"""
-        bit = [0] * (len(self.sorted_arr) + 1)
-        inv_count = 0
-        
-        for i in range(self.n - 1, -1, -1):
-            val = self.compressed_arr[i]
-            inv_count += self._query_bit(bit, val - 1)
-            self._update_bit(bit, val, 1)
-        
-        return inv_count
-    
-    def _query_bit(self, bit, idx):
-        result = 0
-        while idx > 0:
-            result += bit[idx]
-            idx -= idx & -idx
-        return result
-    
-    def _update_bit(self, bit, idx, val):
-        while idx < len(bit):
-            bit[idx] += val
-            idx += idx & -idx
-    
-    def update(self, idx, new_val):
-        """Update element at index idx to new_val"""
-        old_val = self.arr[idx]
-        self.arr[idx] = new_val
-        
-        # Update coordinate mapping if needed
-        if new_val not in self.coord_map:
-            self.sorted_arr.append(new_val)
-            self.sorted_arr.sort()
-            self.coord_map = {val: i for i, val in enumerate(self.sorted_arr)}
-        
-        old_compressed = self.coord_map[old_val]
-        new_compressed = self.coord_map[new_val]
-        self.compressed_arr[idx] = new_compressed
-        
-        # Recalculate inversions
-        self.inversions = self._count_inversions()
-    
-    def get_inversions(self):
-        """Get current inversion count"""
-        return self.inversions
-    
-    def get_inversions_range(self, l, r):
-        """Get inversions in range [l, r]"""
-        subarray = self.arr[l:r+1]
-        return self._count_inversions_subarray(subarray)
-    
-    def _count_inversions_subarray(self, subarray):
-        """Count inversions in subarray"""
-        if len(subarray) <= 1:
-            return 0
-        
-        # Use merge sort approach
-        def merge_sort_count(arr):
-            if len(arr) <= 1:
-                return arr, 0
-            
-            mid = len(arr) // 2
-            left, left_inv = merge_sort_count(arr[:mid])
-            right, right_inv = merge_sort_count(arr[mid:])
-            
-            merged, split_inv = self._merge_count(left, right)
-            return merged, left_inv + right_inv + split_inv
-        
-        _, inv_count = merge_sort_count(subarray)
-        return inv_count
-    
-    def _merge_count(self, left, right):
-        merged = []
-        i = j = inv_count = 0
-        
-        while i < len(left) and j < len(right):
-            if left[i] <= right[j]:
-                merged.append(left[i])
-                i += 1
-            else:
-                merged.append(right[j])
-                inv_count += len(left) - i
-                j += 1
-        
-        merged.extend(left[i:])
-        merged.extend(right[j:])
-        
-        return merged, inv_count
+Building dp[2]:
+  Element 2 can add 0 or 1 inversions
+  dp[2][0] = dp[1][0] = 1       # [1,2]
+  dp[2][1] = dp[1][0] = 1       # [2,1]
 
-# Example usage
-arr = [3, 1, 4, 2, 5]
-counter = InversionCounter(arr)
-print(f"Initial inversions: {counter.get_inversions()}")  # Output: 4
+Building dp[3]:
+  Element 3 can add 0, 1, or 2 inversions
+  prefix = [1, 2, 2] for dp[2]
+  dp[3][0] = dp[2][0] = 1                    # [1,2,3]
+  dp[3][1] = dp[2][0] + dp[2][1] = 2         # [1,3,2], [2,1,3]
+  dp[3][2] = dp[2][0] + dp[2][1] = 2         # [2,3,1], [3,1,2]
+  dp[3][3] = dp[2][1] = 1                    # [3,2,1]
 
-counter.update(1, 6)
-print(f"After update: {counter.get_inversions()}")  # Output: 3
+Building dp[4]:
+  Element 4 can add 0, 1, 2, or 3 inversions
+  prefix = [1, 3, 5, 6] for dp[3]
+  dp[4][3] = dp[3][0] + dp[3][1] + dp[3][2] + dp[3][3]
+           = 1 + 2 + 2 + 1 = 6
 
-range_inv = counter.get_inversions_range(0, 2)
-print(f"Inversions in range [0,2]: {range_inv}")  # Output: 2
+Answer: 6
 ```
 
-#### **3. Permutation Inversions with Constraints**
-**Problem**: Count inversions with additional constraints (e.g., only count inversions between specific elements).
+### Visual Diagram
 
-**Key Differences**: Add constraints to inversion counting
+```
+Permutation building process for n=4, k=3:
 
-**Solution Approach**: Use constrained counting with filtering
+Start: [1]           inversions = 0
 
-**Implementation**:
+Insert 2:
+  [1,2] -> 0 new inv  [2,1] -> 1 new inv
+
+Insert 3:
+  Position 0: [3,_,_] adds 2 inversions
+  Position 1: [_,3,_] adds 1 inversion
+  Position 2: [_,_,3] adds 0 inversions
+
+Insert 4:
+  Position 0: adds 3 inversions
+  Position 1: adds 2 inversions
+  Position 2: adds 1 inversion
+  Position 3: adds 0 inversions
+
+To reach exactly 3 inversions from dp[3]:
+  From dp[3][3] add 0 -> still 3: 1 way
+  From dp[3][2] add 1 -> reach 3: 2 ways
+  From dp[3][1] add 2 -> reach 3: 2 ways
+  From dp[3][0] add 3 -> reach 3: 1 way
+  Total: 6 ways
+```
+
+### Code (Python)
+
 ```python
-def permutation_inversions_with_constraints(arr, constraints):
+def count_permutations(n: int, k: int) -> int:
     """
-    Count inversions with additional constraints
-    """
-    def count_constrained_inversions(arr, constraint_func):
-        """Count inversions that satisfy the constraint"""
-        inv_count = 0
-        n = len(arr)
-        
-        for i in range(n):
-            for j in range(i + 1, n):
-                if arr[i] > arr[j] and constraint_func(arr[i], arr[j], i, j):
-                    inv_count += 1
-        
-        return inv_count
-    
-    def count_inversions_by_value_range(arr, min_val, max_val):
-        """Count inversions only between values in range [min_val, max_val]"""
-        def in_range(val1, val2, i, j):
-            return min_val <= val1 <= max_val and min_val <= val2 <= max_val
-        
-        return count_constrained_inversions(arr, in_range)
-    
-    def count_inversions_by_position_range(arr, min_pos, max_pos):
-        """Count inversions only between positions in range [min_pos, max_pos]"""
-        def in_position_range(val1, val2, i, j):
-            return min_pos <= i <= max_pos and min_pos <= j <= max_pos
-        
-        return count_constrained_inversions(arr, in_position_range)
-    
-    def count_inversions_by_parity(arr, even_first=True):
-        """Count inversions only between even and odd numbers"""
-        def parity_constraint(val1, val2, i, j):
-            if even_first:
-                return val1 % 2 == 0 and val2 % 2 == 1
-            else:
-                return val1 % 2 == 1 and val2 % 2 == 0
-        
-        return count_constrained_inversions(arr, parity_constraint)
-    
-    def count_inversions_by_difference(arr, min_diff, max_diff):
-        """Count inversions only between elements with difference in range"""
-        def difference_constraint(val1, val2, i, j):
-            diff = abs(val1 - val2)
-            return min_diff <= diff <= max_diff
-        
-        return count_constrained_inversions(arr, difference_constraint)
-    
-    results = {}
-    
-    if 'value_range' in constraints:
-        min_val, max_val = constraints['value_range']
-        results['value_range'] = count_inversions_by_value_range(arr, min_val, max_val)
-    
-    if 'position_range' in constraints:
-        min_pos, max_pos = constraints['position_range']
-        results['position_range'] = count_inversions_by_position_range(arr, min_pos, max_pos)
-    
-    if 'parity' in constraints:
-        even_first = constraints['parity']
-        results['parity'] = count_inversions_by_parity(arr, even_first)
-    
-    if 'difference' in constraints:
-        min_diff, max_diff = constraints['difference']
-        results['difference'] = count_inversions_by_difference(arr, min_diff, max_diff)
-    
-    return results
+    Count permutations of 1..n with exactly k inversions.
+    Uses prefix sum optimization.
 
-def permutation_inversions_advanced_constraints(arr, advanced_constraints):
+    Time: O(n * k)
+    Space: O(k) with rolling array optimization
     """
-    Count inversions with advanced constraints
-    """
-    def count_inversions_with_multiple_constraints(arr, constraints):
-        """Count inversions that satisfy all constraints"""
-        inv_count = 0
-        n = len(arr)
-        
-        for i in range(n):
-            for j in range(i + 1, n):
-                if arr[i] > arr[j]:
-                    satisfies_all = True
-                    for constraint in constraints:
-                        if not constraint(arr[i], arr[j], i, j):
-                            satisfies_all = False
-                            break
-                    
-                    if satisfies_all:
-                        inv_count += 1
-        
-        return inv_count
-    
-    # Example advanced constraints
-    def value_constraint(val1, val2, i, j):
-        return val1 > val2 and val1 - val2 >= 2
-    
-    def position_constraint(val1, val2, i, j):
-        return j - i <= 3
-    
-    def parity_constraint(val1, val2, i, j):
-        return val1 % 2 != val2 % 2
-    
-    constraints = []
-    
-    if advanced_constraints.get('min_difference', 0) > 0:
-        min_diff = advanced_constraints['min_difference']
-        constraints.append(lambda v1, v2, i, j: v1 - v2 >= min_diff)
-    
-    if advanced_constraints.get('max_distance', float('inf')) < float('inf'):
-        max_dist = advanced_constraints['max_distance']
-        constraints.append(lambda v1, v2, i, j: j - i <= max_dist)
-    
-    if advanced_constraints.get('different_parity', False):
-        constraints.append(parity_constraint)
-    
-    return count_inversions_with_multiple_constraints(arr, constraints)
+    MOD = 10**9 + 7
 
-# Example usage
-arr = [3, 1, 4, 2, 5, 6]
-constraints = {
-    'value_range': (2, 5),
-    'position_range': (0, 3),
-    'parity': True,
-    'difference': (1, 3)
+    # dp[j] = permutations with j inversions
+    dp = [0] * (k + 1)
+    dp[0] = 1  # Base: permutation [1] has 0 inversions
+
+    for i in range(2, n + 1):
+        # Build prefix sum of current dp
+        prefix = [0] * (k + 2)
+        for j in range(k + 1):
+            prefix[j + 1] = (prefix[j] + dp[j]) % MOD
+
+        # Update dp using prefix sums
+        new_dp = [0] * (k + 1)
+        for j in range(k + 1):
+            # Sum dp[max(0, j-(i-1))] to dp[j]
+            left = max(0, j - (i - 1))
+            new_dp[j] = (prefix[j + 1] - prefix[left]) % MOD
+
+        dp = new_dp
+
+    return dp[k]
+
+
+def solve():
+    n, k = map(int, input().split())
+    print(count_permutations(n, k))
+
+
+if __name__ == "__main__":
+    solve()
+```
+
+### Code (C++)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, k;
+    cin >> n >> k;
+
+    // dp[j] = permutations with j inversions
+    vector<long long> dp(k + 1, 0);
+    dp[0] = 1;
+
+    for (int i = 2; i <= n; i++) {
+        // Build prefix sum
+        vector<long long> prefix(k + 2, 0);
+        for (int j = 0; j <= k; j++) {
+            prefix[j + 1] = (prefix[j] + dp[j]) % MOD;
+        }
+
+        // Update dp using prefix sums
+        vector<long long> new_dp(k + 1, 0);
+        for (int j = 0; j <= k; j++) {
+            int left = max(0, j - (i - 1));
+            new_dp[j] = (prefix[j + 1] - prefix[left] + MOD) % MOD;
+        }
+
+        dp = new_dp;
+    }
+
+    cout << dp[k] << "\n";
+    return 0;
 }
-result = permutation_inversions_with_constraints(arr, constraints)
-print(f"Constrained inversions: {result}")  # Output: {'value_range': 2, 'position_range': 3, 'parity': 2, 'difference': 3}
-
-advanced_constraints = {
-    'min_difference': 2,
-    'max_distance': 2,
-    'different_parity': True
-}
-advanced_result = permutation_inversions_advanced_constraints(arr, advanced_constraints)
-print(f"Advanced constrained inversions: {advanced_result}")  # Output: 1
 ```
 
-### Related Problems
+### Complexity
 
-#### **CSES Problems**
-- [Permutation Inversions](https://cses.fi/problemset/task/2101) - Count inversions in permutation
-- [Inversion Probability](https://cses.fi/problemset/task/2102) - Calculate inversion probability
-- [Inversion Count](https://cses.fi/problemset/task/2103) - Advanced inversion counting
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n * k) | Two nested loops, O(1) per cell |
+| Space | O(k) | Rolling array optimization |
 
-#### **LeetCode Problems**
-- [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) - Count smaller elements after each position
-- [Reverse Pairs](https://leetcode.com/problems/reverse-pairs/) - Count reverse pairs
-- [Global and Local Inversions](https://leetcode.com/problems/global-and-local-inversions/) - Compare global and local inversions
-- [Count Inversions](https://leetcode.com/problems/count-inversions/) - Basic inversion counting
+---
 
-#### **Problem Categories**
-- **Divide and Conquer**: Merge sort, recursive algorithms, problem decomposition
-- **Data Structures**: Binary Indexed Tree, Segment Tree, coordinate compression
-- **Combinatorics**: Inversion counting, permutation analysis, counting principles
-- **Advanced Algorithms**: Persistent data structures, range queries, dynamic updates
+## Common Mistakes
+
+### Mistake 1: Forgetting Modular Subtraction Can Go Negative
+
+```cpp
+// WRONG - can produce negative result
+new_dp[j] = (prefix[j + 1] - prefix[left]) % MOD;
+
+// CORRECT - add MOD before taking modulo
+new_dp[j] = (prefix[j + 1] - prefix[left] + MOD) % MOD;
+```
+
+**Problem:** In C++, `(-1) % MOD` gives `-1`, not `MOD - 1`.
+**Fix:** Always add MOD before taking modulo after subtraction.
+
+### Mistake 2: Wrong Range for New Inversions
+
+```python
+# WRONG - element i can add at most i inversions
+for add in range(i + 1):
+
+# CORRECT - element i can add at most (i-1) inversions
+for add in range(i):  # 0 to i-1
+```
+
+**Problem:** Inserting element i into positions 0..i-1 creates at most i-1 new inversions.
+**Fix:** Remember the maximum inversions added equals (current element - 1).
+
+### Mistake 3: Off-by-One in Prefix Sum Indexing
+
+```python
+# WRONG - prefix[j] should be sum of dp[0..j-1]
+prefix[j] = prefix[j-1] + dp[j]
+
+# CORRECT - shift index by 1 for cleaner range queries
+prefix[j+1] = prefix[j] + dp[j]
+# Then sum from l to r is prefix[r+1] - prefix[l]
+```
+
+---
+
+## Edge Cases
+
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Minimum inversions | `n=5, k=0` | 1 | Only sorted permutation [1,2,3,4,5] |
+| Maximum inversions | `n=4, k=6` | 1 | Only reverse [4,3,2,1], max = n(n-1)/2 = 6 |
+| k exceeds maximum | `n=3, k=5` | 0 | Max inversions for n=3 is 3 |
+| Single element | `n=1, k=0` | 1 | Only [1] exists |
+| Large n, small k | `n=500, k=0` | 1 | Only sorted permutation |
+
+---
+
+## When to Use This Pattern
+
+### Use This Approach When:
+- Counting permutations with specific properties
+- DP transition involves summing over a contiguous range
+- Combinatorial counting with additive constraints
+
+### Pattern Recognition Checklist:
+- [ ] Building objects incrementally? -> Consider insertion DP
+- [ ] Transition sums over a range? -> Use prefix sum optimization
+- [ ] Counting with modular arithmetic? -> Handle negative remainders
+
+### Similar Techniques:
+- Range sum queries in DP
+- Sliding window DP
+- Convolution-like transitions
+
+---
+
+## Related Problems
+
+### Easier (Do These First)
+| Problem | Why It Helps |
+|---------|--------------|
+| [Coin Combinations I](https://cses.fi/problemset/task/1635) | Basic counting DP |
+| [Dice Combinations](https://cses.fi/problemset/task/1633) | Sum over recent states |
+
+### Similar Difficulty
+| Problem | Key Difference |
+|---------|----------------|
+| [Bracket Sequences I](https://cses.fi/problemset/task/2064) | Counting valid sequences |
+| [Counting Tilings](https://cses.fi/problemset/task/2181) | Grid-based counting |
+
+### Harder (Do These After)
+| Problem | New Concept |
+|---------|-------------|
+| [Counting Necklaces](https://cses.fi/problemset/task/2209) | Burnside's lemma |
+| [Graph Paths II](https://cses.fi/problemset/task/1724) | Matrix exponentiation |
+
+---
+
+## Key Takeaways
+
+1. **The Core Idea:** Insert elements one by one; each position choice determines new inversions
+2. **Time Optimization:** Prefix sums reduce O(n^2 k) to O(nk)
+3. **Space Trade-off:** Rolling array reduces space from O(nk) to O(k)
+4. **Pattern:** Range-sum DP optimization using prefix sums
+
+---
+
+## Practice Checklist
+
+Before moving on, make sure you can:
+- [ ] Explain why inserting element i can create 0 to i-1 inversions
+- [ ] Derive the DP recurrence from scratch
+- [ ] Implement prefix sum optimization correctly
+- [ ] Handle modular arithmetic edge cases
+- [ ] Solve this problem in under 15 minutes
+
+---
+
+## Additional Resources
+
+- [CP-Algorithms: Counting Inversions](https://cp-algorithms.com/sequences/inversions.html)
+- [CSES Problem Set](https://cses.fi/problemset/)
+- [Inversions in Permutations - Math Background](https://en.wikipedia.org/wiki/Inversion_(discrete_mathematics))
