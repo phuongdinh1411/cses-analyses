@@ -37,6 +37,7 @@ These guides are designed to prepare you for system design interviews:
 | Guide | Description | Key Trade-offs |
 |-------|-------------|----------------|
 | [Key-Value Store](/cses-analyses/system_design/design-key-value-store) | Distributed storage with replication and consistency | CAP trade-offs, consistency vs availability |
+| [Google Drive](/cses-analyses/system_design/design-google-drive) | Cloud file storage, sync, sharing, versioning | Durability vs cost, sync latency vs consistency |
 
 ### Web-Scale Systems
 

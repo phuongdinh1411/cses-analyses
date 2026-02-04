@@ -19,11 +19,12 @@ A comprehensive learning resource for **competitive programming** and **system d
 
 ## System Design
 
-### Available Guides (12 Topics)
+### Available Guides (13 Topics)
 
 | System | Key Concepts | Trade-offs |
 |--------|--------------|------------|
 | [YouTube](system_design/design-youtube.md) | Transcoding, CDN, ABR streaming | Storage cost vs latency |
+| [Google Drive](system_design/design-google-drive.md) | Chunked upload, sync, deduplication | Durability vs cost |
 | [Chat System](system_design/design-chat-system.md) | WebSocket, presence, delivery | Push vs pull |
 | [News Feed](system_design/design-news-feed.md) | Fan-out, ranking, caching | Push vs pull vs hybrid |
 | [URL Shortener](system_design/design-url-shortener.md) | Base62, key generation | Predictability vs security |

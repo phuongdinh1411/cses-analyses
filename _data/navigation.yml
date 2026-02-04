@@ -739,6 +739,8 @@ main:
     url: /cses-analyses/system_design/design-search-autocomplete
   - title: YouTube
     url: /cses-analyses/system_design/design-youtube
+  - title: Google Drive
+    url: /cses-analyses/system_design/design-google-drive
 - title: Quick Reference
   url: /cses-analyses/quick_reference
   children:
