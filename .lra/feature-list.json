@@ -167,9 +167,9 @@
         "Frame embedding strategy as interview topic",
         "Add 'Interviewer might ask' about query optimization"
       ],
-      "status": "pending",
-      "completed_at": null,
-      "notes": "64KB document - specialized topic (GraphRAG)"
+      "status": "completed",
+      "completed_at": "2026-02-04",
+      "notes": "Reduced from 1498 to 1369 lines. Removed main SkillsGraphRAG class (~170 lines). Added interview context, query flow diagram, intent table, Interview Tips section."
     },
     {
       "id": "F011",
