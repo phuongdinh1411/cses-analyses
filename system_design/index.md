@@ -31,6 +31,7 @@ Comprehensive guides for designing scalable, distributed systems. Each guide cov
 |-------|-------------|--------------|
 | [URL Shortener](/cses-analyses/system_design/design-url-shortener) | Design TinyURL/bit.ly | Base62 encoding, Key generation, Caching |
 | [Web Crawler](/cses-analyses/system_design/design-web-crawler) | Design a distributed web crawler | BFS, URL frontier, Politeness |
+| [Chat System](/cses-analyses/system_design/design-chat-system) | Design WhatsApp/Messenger | WebSocket, Message delivery, Presence |
 
 ### Domain-Specific Systems
 
