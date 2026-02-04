@@ -637,7 +637,7 @@ main:
     - title: Minimum Cost Max Flow
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/minimum_cost_max_flow_analysis
 - title: B
-  url: /cses-analyses/problem_soulutions/Blue
+  url: /cses-analyses/problem_soulutions/Blue/summary
   children:
   - title: Summary
     url: /cses-analyses/problem_soulutions/Blue/summary
@@ -682,7 +682,7 @@ main:
   - title: Final Exam
     url: /cses-analyses/problem_soulutions/Blue/Final%20Exam/
 - title: O
-  url: /cses-analyses/problem_soulutions/Orange
+  url: /cses-analyses/problem_soulutions/Orange/summary
   children:
   - title: Summary
     url: /cses-analyses/problem_soulutions/Orange/summary
