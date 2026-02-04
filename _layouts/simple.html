@@ -831,13 +831,12 @@
             
             // Handle main navigation items (categories)
             const navItems = document.querySelectorAll('.nav__item > a');
-
+            
             navItems.forEach(item => {
                 const subItems = item.nextElementSibling;
                 if (subItems && subItems.classList.contains('nav__sub-items')) {
                     item.addEventListener('click', function(e) {
                         e.preventDefault();
-                        e.stopPropagation();
                         subItems.classList.toggle('expanded');
                     });
                 }
@@ -845,13 +844,12 @@
             
             // Handle sub-navigation items (subcategories)
             const navSubItems = document.querySelectorAll('.nav__sub-item > a');
-
+            
             navSubItems.forEach(item => {
                 const subSubItems = item.nextElementSibling;
                 if (subSubItems && subSubItems.classList.contains('nav__sub-sub-items')) {
                     item.addEventListener('click', function(e) {
                         e.preventDefault();
-                        e.stopPropagation();
                         subSubItems.classList.toggle('expanded');
                     });
                 }
