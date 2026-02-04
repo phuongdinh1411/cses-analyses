@@ -12,24 +12,24 @@ Welcome to the Orange problem set! This collection contains competitive programm
 
 | Topic | Description |
 |-------|-------------|
-| [Backtracking](Backtracking/) | Systematic exploration of solution spaces |
-| [Bit Manipulation](Bit%20Manipulation/) | Bitwise operations and techniques |
-| [Divide and Conquer](Divide%20and%20conquer/) | Breaking problems into smaller subproblems |
-| [DP](dp/) | Dynamic Programming across multiple sessions |
-| [Greedy](Greedy/) | Greedy algorithm strategies |
-| [Hash Map](Hash%20Map/) | Hash-based data structure problems |
-| [Knuth-Morris-Pratt](Knuth-Morris-Pratt/) | String matching algorithm |
-| [Number Theory](Number%20Theory/) | Mathematical and number theory problems |
-| [Number Theory 2](Number%20Theory%202/) | Advanced number theory concepts |
-| [Segment Tree](Segment%20Tree/) | Range query data structure |
-| [Topological Sort](Topological%20Sort/) | DAG ordering and applications |
+| [Backtracking](/cses-analyses/problem_soulutions/Orange/Backtracking/) | Systematic exploration of solution spaces |
+| [Bit Manipulation](/cses-analyses/problem_soulutions/Orange/Bit%20Manipulation/) | Bitwise operations and techniques |
+| [Divide and Conquer](/cses-analyses/problem_soulutions/Orange/Divide%20and%20conquer/) | Breaking problems into smaller subproblems |
+| [DP](/cses-analyses/problem_soulutions/Orange/dp/) | Dynamic Programming across multiple sessions |
+| [Greedy](/cses-analyses/problem_soulutions/Orange/Greedy/) | Greedy algorithm strategies |
+| [Hash Map](/cses-analyses/problem_soulutions/Orange/Hash%20Map/) | Hash-based data structure problems |
+| [Knuth-Morris-Pratt](/cses-analyses/problem_soulutions/Orange/Knuth-Morris-Pratt/) | String matching algorithm |
+| [Number Theory](/cses-analyses/problem_soulutions/Orange/Number%20Theory/) | Mathematical and number theory problems |
+| [Number Theory 2](/cses-analyses/problem_soulutions/Orange/Number%20Theory%202/) | Advanced number theory concepts |
+| [Segment Tree](/cses-analyses/problem_soulutions/Orange/Segment%20Tree/) | Range query data structure |
+| [Topological Sort](/cses-analyses/problem_soulutions/Orange/Topological%20Sort/) | DAG ordering and applications |
 
 ## Exams
 
 | Exam | Description |
 |------|-------------|
-| [Midterm](Midterm/) | Midterm examination problems |
-| [Final Term](Final%20term/) | Final examination problems |
+| [Midterm](/cses-analyses/problem_soulutions/Orange/Midterm/) | Midterm examination problems |
+| [Final Term](/cses-analyses/problem_soulutions/Orange/Final%20term/) | Final examination problems |
 
 ## Topics Overview
 

@@ -639,6 +639,8 @@ main:
 - title: B
   url: /cses-analyses/problem_soulutions/Blue
   children:
+  - title: Summary
+    url: /cses-analyses/problem_soulutions/Blue
   - title: Session 01 - Dynamic Array
     url: /cses-analyses/problem_soulutions/Blue/Session 01 - Dynamic Array
   - title: Session 02 - Algorithmic Complexity
@@ -682,6 +684,8 @@ main:
 - title: O
   url: /cses-analyses/problem_soulutions/Orange
   children:
+  - title: Summary
+    url: /cses-analyses/problem_soulutions/Orange
   - title: Backtracking
     url: /cses-analyses/problem_soulutions/Orange/Backtracking
   - title: Bit Manipulation
@@ -730,25 +734,13 @@ main:
 - title: Quick Reference
   url: /cses-analyses/quick_reference
   children:
-  - title: Learning Roadmap
-    url: /cses-analyses/quick_reference/learning_roadmap
-  - title: Pattern Recognition
-    url: /cses-analyses/quick_reference/pattern_recognition
+  - title: Study Guide
+    url: /cses-analyses/quick_reference/study_guide
   - title: Code Templates
     url: /cses-analyses/quick_reference/code_templates
-  - title: Interview Patterns
-    url: /cses-analyses/quick_reference/interview_patterns
-  - title: Ultimate Cheatsheet
-    url: /cses-analyses/quick_reference/ultimate_cheatsheet
   - title: Advanced Algorithms
     url: /cses-analyses/quick_reference/advanced_algorithms
   - title: Common Mistakes
     url: /cses-analyses/quick_reference/common_mistakes
-  - title: B Problems
-    url: /cses-analyses/problem_soulutions/Blue
-  - title: O Problems
-    url: /cses-analyses/problem_soulutions/Orange
-  - title: System Design
-    url: /cses-analyses/system_design
 - title: About
   url: /cses-analyses/about
